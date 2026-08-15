@@ -12,8 +12,31 @@ from Read the Docs). Adopters should start from the golden-path contracts below.
 ## Planned 0.43 maintainer contract
 
 [Refreshable views and commands](REFRESHABLE_VIEWS.md) records the accepted D-071 / RFC-0070
-public contract for the planned 0.43 phase. It is **not importable on 0.42** and is not part of the
+public contract for the planned 0.43 phase, with its 0.44 handoff refined by D-073. It is **not
+importable on 0.42** and is not part of the
 shipped golden path until all 0.43 gates are Verified.
+
+## Planned 0.44 maintainer contract
+
+[Type-driven authoring](TYPE_DRIVEN_AUTHORING.md) records the accepted D-072 / RFC-0071 public
+contract, refined against 0.43 by D-073, for the planned 0.44 phase. It depends on Verified 0.43
+and is **not importable on 0.42**. Boundary models, generated forms, effect declarations, typed
+outcomes, generic specialization, and class handlers are not part of the shipped golden path until
+all predecessor and 0.44 gates are Verified.
+
+## Planned 0.45 maintainer contract
+
+[Interaction catalog and package projections](INTERACTION_CATALOG.md) records the accepted
+D-074 / RFC-0072 public contract for the planned 0.45 phase. It requires Verified 0.44 and adds a
+read-only catalog, redacted manifest, package projection protocol, and whole-fleet integration
+dispositions without changing interaction runtime authority.
+
+## Planned 0.46 maintainer contract
+
+[Package-native typed workflows](PACKAGE_WORKFLOWS.md) records the accepted D-075 / RFC-0073 public
+contract for the planned 0.46 phase. It requires Verified 0.45 and adds opt-in package feature
+bundles, data workspaces, linked charts, enhanced elements, remote workflows, and workbench
+experiences that compile to the existing stack.
 
 ## Start here (golden path)
 

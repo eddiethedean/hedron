@@ -1,0 +1,243 @@
+# Phase 0.44 type-driven authoring capability inventory.
+# Stage 0 contract artifact: capabilities are Planned until their owning gate is Verified.
+
+schema_version = 1
+phase = "0.44"
+status = "Planned"
+planning_baseline = "v0.42.0"
+required_predecessor = "v0.43.0"
+target = "v0.44.0"
+decision = "D-072"
+cross_phase_refinement = "D-073"
+owning_rfc = "RFC-0071"
+implementation = "docs/implementation/TYPE_DRIVEN_AUTHORING_044.md"
+public_contract = "docs/api/TYPE_DRIVEN_AUTHORING.md"
+
+[[capability]]
+id = "TA-MODEL-001..011"
+area = "boundary-models"
+gate = "MODEL-044"
+state = "Planned"
+packages = ["hedron", "hedron-core"]
+evidence = ["unit", "integration", "pydantic-matrix", "di-separation"]
+summary = "One Pydantic-backed adapter implementing the 0.43 binding seam for bind, documented request registration, form, preview, and scenario validation without dependency shadowing."
+
+[[capability]]
+id = "TA-MARKER-001..008"
+area = "annotation-markers"
+gate = "MODEL-044"
+secondary_gates = ["SECURITY-044"]
+state = "Planned"
+packages = ["hedron", "hedron-core"]
+evidence = ["unit", "normalization", "redaction", "negative-corpus"]
+summary = "Immutable source, sensitivity, identity, control, and effect metadata with closed valid positions; route/fallback/cache policy stays explicit and 0.43-owned."
+
+[[capability]]
+id = "TA-HANDLE-001..007"
+area = "static-typing"
+gate = "TYPING-044"
+state = "Planned"
+packages = ["hedron"]
+evidence = ["mypy", "pyright", "python-matrix", "autodoc"]
+summary = "Pydantic specialization of the fixed 0.43 fragment, bound-fragment, action, and patch generic slots with overloads and no required checker plugin."
+
+[[capability]]
+id = "TA-FORM-001..009"
+area = "schema-derived-forms"
+gate = "FORM-044"
+secondary_gates = ["A11Y-044", "BROWSER-044", "SECURITY-044"]
+state = "Planned"
+packages = ["hedron", "hedron-core"]
+evidence = ["unit", "integration", "browser", "accessibility", "no-js"]
+summary = "Conservative native forms for a closed field inventory with explicit overrides, server validation, CSRF, and progressive enhancement."
+
+[[capability]]
+id = "TA-EFFECT-001..009"
+area = "effects-and-outcomes"
+gate = "EFFECT-044"
+secondary_gates = ["SECURITY-044"]
+state = "Planned"
+packages = ["hedron", "hedron-core"]
+evidence = ["unit", "integration", "adversarial", "graph"]
+summary = "Declared allowed effects and complete discriminated outcome maps validated against explicit app-owned command results."
+
+[[capability]]
+id = "TA-CLASS-001..009"
+area = "class-handlers"
+gate = "CLASS-044"
+state = "Planned"
+packages = ["hedron"]
+evidence = ["unit", "equivalence", "concurrency", "cancellation"]
+summary = "Optional load/render and execute lifecycles compiled into the same 0.43 handles, routes, responses, and security path."
+
+[[capability]]
+id = "TA-SCHEMA-001..006"
+area = "normalized-schema"
+gate = "SCHEMA-044"
+secondary_gates = ["TOOLING-044"]
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-explorer"]
+evidence = ["schema-fixtures", "cache", "versioning", "static-no-exec"]
+summary = "Versioned redacted TypeSchema extension bound to the authoritative 0.43 descriptor fingerprint, with provenance, bounds, cache invalidation, and no-execution static mode."
+
+[[capability]]
+id = "TA-SEC-001..008"
+area = "security"
+gate = "SECURITY-044"
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-explorer"]
+evidence = ["threat-model", "adversarial", "redaction", "limits", "csrf"]
+summary = "Dependency isolation, secret-safe schemas/errors, bounded hostile models/forms/effects, and preservation of 0.43 authority."
+
+[[capability]]
+id = "TA-A11Y-001..006"
+area = "accessibility-and-browser"
+gate = "A11Y-044"
+secondary_gates = ["BROWSER-044"]
+state = "Planned"
+packages = ["hedron"]
+evidence = ["keyboard", "automated-a11y", "no-js", "chromium", "firefox", "webkit"]
+summary = "Native generated-form semantics, errors, focus, safe retention, choice/group handling, visual modes, and scoped evidence honesty."
+
+[[capability]]
+id = "TA-DX-001..008"
+area = "developer-experience"
+gate = "TOOLING-044"
+secondary_gates = ["DOCS-044"]
+state = "Planned"
+packages = ["hedron", "hedron-explorer"]
+evidence = ["explorer", "cli", "scenario", "diagnostics", "autodoc"]
+summary = "Model-first learning path, human diagnostics, Explorer/CLI/AppScenario schema consumers, and honest static/dynamic inspection."
+
+[[capability]]
+id = "TA-QUAL-001..006"
+area = "compatibility"
+gate = "COMPAT-044"
+secondary_gates = ["REGRESS-044"]
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-conformance", "hedron-flask", "hedron-django", "hedron-jinja"]
+evidence = ["upgrade", "rollback", "adapter-matrix", "public-api"]
+summary = "Unchanged 0.42/0.43 apps, opt-in annotation semantics, documented upstream APIs, adapters, and no new client runtime."
+
+[[capability]]
+id = "TA-QUAL-011"
+area = "predecessor-handoff"
+gate = "COMPAT-044"
+secondary_gates = ["SCHEMA-044", "TYPING-044"]
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-explorer", "hedron-conformance"]
+evidence = ["generic-arity", "descriptor-fingerprint", "binding-adapter", "explicit-form", "dynamic-effect", "response-golden"]
+summary = "Verified 0.43 generic, descriptor, structural-binding, explicit-form, dynamic-effect, target, and response contracts remain authoritative after 0.44 attaches."
+
+[[capability]]
+id = "TA-QUAL-007..008"
+area = "performance"
+gate = "PERF-044"
+state = "Planned"
+packages = ["hedron-core", "hedron"]
+evidence = ["latency", "allocation", "schema-payload", "concurrency", "memory"]
+summary = "Bounded cold/warm schema, validation, form, effect/outcome, cache, payload, allocation, and retained-memory costs."
+
+[[capability]]
+id = "TA-QUAL-009"
+area = "documentation"
+gate = "DOCS-044"
+state = "Planned"
+packages = ["docs"]
+evidence = ["api", "guides", "examples", "migration", "troubleshooting"]
+summary = "Complete layered type-driven documentation with limitations, security, accessibility, testing, adapters, and escape hatches."
+
+[[capability]]
+id = "TA-QUAL-010"
+area = "packaging"
+gate = "PKG-044"
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-explorer", "hedron-conformance", "hedron-flask", "hedron-django", "hedron-jinja"]
+evidence = ["clean-wheel", "source-install", "import-smoke", "dependency-matrix", "release-rehearsal"]
+summary = "Clean packages across Python, Pydantic, FastAPI, type-checker, browser, and adapter matrices without optional-tool leakage."
+
+[[compatibility]]
+symbol = "Hedron.refreshable / FragmentHandle / BoundFragment"
+disposition = "Existing generic slots specialized by opt-in models"
+stability = "0.43 arity, descriptor, and runtime semantics unchanged"
+replacement_required = false
+
+[[compatibility]]
+symbol = "Hedron.command / ActionHandle / refresh / PatchSet"
+disposition = "Existing input slot specialized plus optional form/effect/outcome extensions"
+stability = "0.43 explicit-form, dynamic-effect, target, and response semantics unchanged without opt-in"
+replacement_required = false
+
+[[compatibility]]
+symbol = "FastAPI Depends/Path/Query/Form/Body"
+disposition = "Retained"
+stability = "documented upstream behavior"
+replacement_required = false
+
+[[compatibility]]
+symbol = "Form / AutoForm / Action"
+disposition = "Retained"
+stability = "unchanged"
+replacement_required = false
+
+[[compatibility]]
+symbol = "FragmentRegion / InteractionResult / low-level interaction facade"
+disposition = "Retained"
+stability = "unchanged"
+replacement_required = false
+
+[[limit]]
+name = "max_model_fields"
+value = 256
+unit = "fields"
+gate = "MODEL-044"
+
+[[limit]]
+name = "max_schema_depth"
+value = 16
+unit = "levels"
+gate = "SCHEMA-044"
+
+[[limit]]
+name = "max_union_variants"
+value = 32
+unit = "variants"
+gate = "MODEL-044"
+
+[[limit]]
+name = "max_validation_errors"
+value = 100
+unit = "errors"
+gate = "SECURITY-044"
+
+[[limit]]
+name = "cached_path_relative_p95_overhead"
+value = 10
+unit = "percent"
+gate = "PERF-044"
+
+[[limit]]
+name = "cached_path_absolute_p95_delta"
+value = 1
+unit = "millisecond"
+gate = "PERF-044"
+
+[[exclusion]]
+id = "TA-EX-001"
+summary = "No inferred authorization, tenancy, transactions, idempotency, retry safety, or business validation from types."
+
+[[exclusion]]
+id = "TA-EX-002"
+summary = "No hidden dependency discovery, reactive invalidation, signals, hooks, global store, or full-script rerun."
+
+[[exclusion]]
+id = "TA-EX-003"
+summary = "No automatic form generation for arbitrary Pydantic or JSON Schema shapes."
+
+[[exclusion]]
+id = "TA-EX-004"
+summary = "No required class handlers, type-checker plugin, browser framework, hydration, Node build, or live transport."
+
+[[exclusion]]
+id = "TA-EX-005"
+summary = "No imports or annotation evaluation during static/offline project analysis."

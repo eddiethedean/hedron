@@ -1,0 +1,660 @@
+"""Freeze the hedron public import surface across internal refactors.
+
+Names listed here must remain importable. New exports are allowed; removals fail.
+"""
+
+from __future__ import annotations
+
+import importlib
+
+REQUIRED_EXPORTS = {
+    "hedron": frozenset(
+        [
+            "ActionDock",
+            "Alert",
+            "RegisteredAction",
+            "PredictionScore",
+            "PredictionLabel",
+            "PredictionFeedback",
+            "ParameterViewer",
+            "ModelDemo",
+            "InferenceWorkflow",
+            "InferencePolicy",
+            "InferenceInterface",
+            "FeedbackPolicy",
+            "ExampleSet",
+            "ExampleItem",
+            "DialogueTurn",
+            "Dialogue",
+            "ActionRegistry",
+            "Aside",
+            "Audio",
+            "Auto",
+            "AutoForm",
+            "Badge",
+            "BottomDock",
+            "BrowserContext",
+            "BrowserStorage",
+            "BrowserStorageUnavailable",
+            "Button",
+            "ByteRangeNotSatisfiable",
+            "CameraCapture",
+            "Card",
+            "Carousel",
+            "ChatInput",
+            "ChatMessage",
+            "Checkbox",
+            "ChipInput",
+            "CircularProgress",
+            "ClipboardCopy",
+            "CodeBlock",
+            "CodeViewer",
+            "ColorInput",
+            "ColorMode",
+            "ColorModeToggle",
+            "Component",
+            "ComponentRef",
+            "ComponentResponse",
+            "ConfirmButton",
+            "Container",
+            "ContextMenu",
+            "DateInput",
+            "DateTimeInput",
+            "DescriptionList",
+            "Dialog",
+            "DirectoryUpload",
+            "DirectoryUploadFile",
+            "Divider",
+            "DownloadButton",
+            "ErrorState",
+            "Expander",
+            "Field",
+            "FileComponentResponse",
+            "FileUpload",
+            "Footer",
+            "Form",
+            "CsrfField",
+            "LoginCsrfField",
+            "Hx",
+            "FormErrors",
+            "FormField",
+            "FormModel",
+            "Fragment",
+            "FragmentRegion",
+            "FragmentRegionError",
+            "FragmentResponse",
+            "Gallery",
+            "GalleryItem",
+            "GeoJSONLayer",
+            "GeolocationButton",
+            "GeolocationHint",
+            "Grid",
+            "HTML",
+            "Head",
+            "Header",
+            "Heading",
+            "Hedron",
+            "HedronRoute",
+            "HedronRouter",
+            "Help",
+            "HelpInspector",
+            "HtmxRequest",
+            "IconButton",
+            "IFrame",
+            "Image",
+            "InfiniteScroll",
+            "Inline",
+            "InteractionPolicy",
+            "InteractionResult",
+            "JSONViewer",
+            "Label",
+            "Lazy",
+            "Link",
+            "HtmxLink",
+            "NavLink",
+            "OobHost",
+            "AttrHost",
+            "AppShell",
+            "MainPanel",
+            "LinkButton",
+            "List",
+            "Loading",
+            "Logo",
+            "Main",
+            "Map",
+            "MarkerSpec",
+            "Math",
+            "MenuButton",
+            "Metric",
+            "MicrophoneCapture",
+            "Model",
+            "MultiSelect",
+            "Nav",
+            "NumberInput",
+            "OobUpdate",
+            "Page",
+            "PageIcon",
+            "PageResponse",
+            "Pagination",
+            "PdfViewer",
+            "Pills",
+            "Poll",
+            "Popover",
+            "Progress",
+            "Props",
+            "RadioGroup",
+            "RangeInput",
+            "RatingInput",
+            "RefreshButton",
+            "RenderContext",
+            "RenderMode",
+            "RenderResult",
+            "SafeUrl",
+            "Secret",
+            "Section",
+            "SecurityPolicy",
+            "SecurityHeadersPolicy",
+            "SecurityProfile",
+            "SegmentedControl",
+            "Select",
+            "SelectSlider",
+            "MountPath",
+            "cookie_path_for_mount",
+            "mount_from_request",
+            "normalize_mount_path",
+            "prefix_local_path",
+            "resolve_mount_path",
+            "resolve_mount_path_from_environ",
+            "SessionState",
+            "Sidebar",
+            "Skeleton",
+            "Spacer",
+            "Stack",
+            "Status",
+            "StorageQuotaExceeded",
+            "StyleSymbols",
+            "SubmitButton",
+            "Table",
+            "Tabs",
+            "Text",
+            "TextArea",
+            "TextInput",
+            "Theme",
+            "TimeInput",
+            "Timeline",
+            "Title",
+            "Toast",
+            "ToggleSwitch",
+            "Tooltip",
+            "TrustedHtml",
+            "UrlPurpose",
+            "Video",
+            "ViewportHint",
+            "__version__",
+            "action_attrs",
+            "addressable",
+            "apply_color_mode_cookie",
+            "approved_headers",
+            "await_if_needed",
+            "browser_context",
+            "browser_context_from_request",
+            "cache_component",
+            "cache_data",
+            "compile_css",
+            "CsrfStrategy",
+            "CsrfValidationError",
+            "DoubleSubmitCookieCsrf",
+            "SessionTokenCsrf",
+            "csrf_token_for_request",
+            "default_interaction_policy",
+            "download_all_zip",
+            "form_sync_attrs",
+            "gather",
+            "get_icon",
+            "hedron_response",
+            "html",
+            "htmx_context",
+            "htmx_request",
+            "invalidate_tags",
+            "list_icons",
+            "media_file_response",
+            "merge_htmx_headers",
+            "mount_hedron_static",
+            "oob_swap",
+            "parse_byte_range",
+            "read_color_mode_preference",
+            "redact_cookie_value",
+            "redirect_external",
+            "redirect_htmx",
+            "redirect_local",
+            "register_icon",
+            "render",
+            "render_component_response",
+            "render_interaction",
+            "InteractionRecorder",
+            "RecordedExchange",
+            "RecordingSnippet",
+            "resolve_color_mode",
+            "resolve_route_path",
+            "resolved_theme_from_request",
+            "retarget",
+            "run_sync",
+            "safe_download_response",
+            "session_state",
+            "styles_from_manifest",
+            "swap",
+            "swap_oob",
+            "trusted_svg",
+            "validate_directory_upload",
+        ]
+    ),
+    "hedron.app": frozenset(
+        [
+            "Hedron",
+            "mount_build_assets",
+            "mount_hedron_static",
+        ]
+    ),
+    "hedron.interaction": frozenset(
+        [
+            "FragmentRegion",
+            "FragmentRegionError",
+            "HtmxRequest",
+            "InteractionPolicy",
+            "InteractionResult",
+            "OobUpdate",
+            "StatusPolicy",
+            "authorize_oob_update",
+            "conflicting_select_oob_targets",
+            "default_interaction_policy",
+            "form_sync_attrs",
+            "htmx_request",
+            "interaction_headers",
+            "merge_route_regions",
+            "oob_update_element_ids",
+            "parse_select_oob_element_ids",
+            "redirect_htmx",
+            "resolve_fragment_region",
+            "retarget",
+            "status_policy_for",
+            "swap",
+            "swap_oob",
+        ]
+    ),
+    "hedron.jobs": frozenset(
+        [
+            "enqueue_durable",
+            "schedule_post_response",
+            "job_status_response",
+        ]
+    ),
+    "hedron.testing": frozenset(
+        [
+            "AdapterAppFixture",
+            "AdapterResponse",
+            "AdversarialCase",
+            "AppScenario",
+            "AsyncScenario",
+            "AuthPrincipal",
+            "BrowserHintFixture",
+            "ControllableClock",
+            "MarkedElement",
+            "NamedConnectionFixture",
+            "OidcCallbackStub",
+            "SandboxBudgetFixture",
+            "ScriptedDependency",
+            "StoragePayload",
+            "UploadFixture",
+            "as_adapter",
+            "assert_accessible_fallback",
+            "assert_action_authorized",
+            "assert_budget",
+            "assert_fragment_body",
+            "assert_html_contains",
+            "assert_http_fallback_present",
+            "assert_htmx_trigger",
+            "assert_hx_push_url",
+            "assert_hx_redirect",
+            "assert_hx_reswap",
+            "assert_hx_retarget",
+            "assert_non_200_fragment",
+            "assert_oob_present",
+            "assert_ordered_events",
+            "assert_page_document",
+            "assert_render_result",
+            "assert_renders",
+            "assert_shell_dual_path",
+            "assert_stable_row_identity",
+            "assert_stable_trace_identity",
+            "assert_toast_markup",
+            "assert_lazy_markup",
+            "assert_pagination_markup",
+            "assert_tabs_markup",
+            "assert_dialog_markup",
+            "assert_transform_plan_bounded",
+            "assert_ui_targets_subset_of_regions",
+            "assert_undeclared_target_rejected",
+            "chart_event_fixture",
+            "data_changes_fixture",
+            "data_query_fixture",
+            "django_fixture",
+            "fastapi_fixture",
+            "find_all_marks",
+            "find_mark",
+            "flask_fixture",
+            "fragment_client",
+            "grid_event_fixture",
+            "image_region_fixture",
+            "iter_named_examples",
+            "json_document_fixture",
+            "labeled_adversarial_cases",
+            "named_example",
+            "normalize_snapshot_html",
+            "override_dependencies",
+            "redact_secrets_for_failure",
+            "render_html",
+            "sandbox_budget_fixture",
+            "scripted_outcome",
+            "transform_plan_fixture",
+            "tree_document_fixture",
+            "validate_fixture",
+            "workbench_action_fixture",
+        ]
+    ),
+    "hedron.htmx": frozenset(
+        [
+            "APPROVED_REQUEST_HEADERS",
+            "APPROVED_RESPONSE_HEADERS",
+            "HtmxContext",
+            "approved_headers",
+            "htmx_context",
+            "is_htmx_request",
+            "render_mode_for_request",
+        ]
+    ),
+    "hedron.cli": frozenset(
+        [
+            "main",
+        ]
+    ),
+    "hedron.build": frozenset(
+        [
+            "BuildResult",
+            "load_build_manifest",
+            "run_build",
+        ]
+    ),
+    "hedron.cache": frozenset(
+        [
+            "cache_component",
+            "cache_data",
+            "htmx_vary_dimensions",
+        ]
+    ),
+    "hedron.security": frozenset(
+        [
+            "LOGIN_CSRF_KEY",
+            "SESSION_CREATED_KEY",
+            "SESSION_LAST_SEEN_KEY",
+            "AuthRateLimiter",
+            "CsrfStrategy",
+            "CsrfValidationError",
+            "DoubleSubmitCookieCsrf",
+            "SecurityHeadersMiddleware",
+            "SecurityHeadersPolicy",
+            "SecurityPolicy",
+            "SecurityProfile",
+            "SecurityProfileName",
+            "SessionTimeoutError",
+            "SessionTokenCsrf",
+            "TrustedHeaderIdentity",
+            "auth_rate_limit_dependency",
+            "auth_rate_limit_exception",
+            "auth_rate_limit_response",
+            "check_session_timeout",
+            "csrf_token_for_request",
+            "ensure_csrf_cookie",
+            "generate_csrf_token",
+            "issue_login_csrf",
+            "redirect_external",
+            "redirect_local",
+            "sign_login_csrf",
+            "touch_session",
+            "unsign_login_csrf",
+            "validate_csrf",
+            "validate_login_csrf",
+        ]
+    ),
+    "hedron.security.csrf": frozenset(
+        [
+            "csrf_token_for_request",
+            "ensure_csrf_cookie",
+            "extract_csrf_from_form",
+            "generate_csrf_token",
+            "prepare_csrf_from_request",
+            "resolve_strategy",
+            "validate_csrf",
+        ]
+    ),
+    "hedron.security.policy": frozenset(
+        [
+            "SecurityHeadersPolicy",
+            "SecurityPolicy",
+            "SecurityProfile",
+            "SecurityProfileName",
+        ]
+    ),
+    "hedron.security.redirects": frozenset(
+        [
+            "redirect_external",
+            "redirect_local",
+        ]
+    ),
+    "hedron.mount": frozenset(
+        [
+            "MountPath",
+            "cookie_path_for_mount",
+            "normalize_mount_path",
+            "prefix_local_path",
+            "resolve_mount_path",
+            "resolve_mount_path_from_environ",
+        ]
+    ),
+    "hedron.responses": frozenset(
+        [
+            "ComponentResponse",
+            "FileComponentResponse",
+            "FragmentResponse",
+            "HTML",
+            "PageResponse",
+            "hedron_response",
+            "merge_htmx_headers",
+            "render_component_response",
+            "render_interaction",
+        ]
+    ),
+    "hedron.status_responses": frozenset(
+        [
+            "install_interaction_handlers",
+            "semantic_error_fragment",
+            "validation_error_fragment",
+        ]
+    ),
+    "hedron.routing": frozenset(
+        [
+            "ComponentRef",
+            "HedronRoute",
+            "HedronRouter",
+            "resolve_route_path",
+        ]
+    ),
+    "hedron.auth": frozenset(
+        [
+            "OAuthHelper",
+            "create_oauth_client",
+            "install_authenticated_from_session",
+            "mark_authenticated",
+            "require_authlib",
+        ]
+    ),
+    "hedron.oidc": frozenset(
+        [
+            "OidcClientConfig",
+            "OidcPkcePair",
+            "OidcUserClaims",
+            "OidcUserClaimsDict",
+            "generate_nonce",
+            "generate_pkce",
+            "generate_state",
+            "login_url",
+            "logout_url",
+            "normalize_claims",
+            "redact_claims",
+            "store_oidc_handshake",
+            "validate_callback_nonce",
+            "validate_callback_state",
+        ]
+    ),
+    "hedron.connections": frozenset(
+        [
+            "ClosableConnection",
+            "ConnectionKind",
+            "ConnectionRegistry",
+            "ConnectionSpec",
+            "bind_connection_fixture",
+            "connection_dependency",
+            "get_connection",
+            "install_connections",
+            "snowflake_connection_factory",
+            "sqlalchemy_connection_factory",
+        ]
+    ),
+    "hedron.builtins": frozenset(
+        [
+            "AutoForm",
+            "ErrorState",
+            "InfiniteScroll",
+            "Lazy",
+            "Loading",
+            "LoginCsrfField",
+            "Pagination",
+            "Poll",
+            "RefreshButton",
+            "action_attrs",
+            "oob_swap",
+        ]
+    ),
+    "hedron.config": frozenset(
+        [
+            "CONFIG_FORMAT_VERSION",
+            "AssetPolicy",
+            "HedronSettings",
+            "load_hedron_settings",
+            "settings_digest",
+        ]
+    ),
+    "hedron.concurrency": frozenset(
+        [
+            "ConcurrencyConfig",
+            "ConcurrencyLimiter",
+            "adaptive_gather",
+            "configure_concurrency",
+            "get_concurrency_config",
+            "reset_concurrency_for_tests",
+        ]
+    ),
+    "hedron.sse": frozenset(
+        [
+            "SseResponse",
+            "extension_script_tags",
+            "job_status_sse_response",
+            "sse_response",
+        ]
+    ),
+}
+
+LEAKED_PRIVATES = (
+    (
+        "hedron.responses",
+        (
+            "_apply_auth_cache_headers",
+            "_inject_htmx_extension_assets",
+            "_safe_content_disposition_filename",
+        ),
+    ),
+    ("hedron.concurrency", ("_get_limiter",)),
+    ("hedron.routing.router", ("_normalize_fragment_regions",)),
+    (
+        "hedron.cli",
+        (
+            "_cmd_run_app",
+            "_release_pin_bounds",
+            "_scaffold_dep",
+            "_check_select_oob_conflicts",
+            "_check_htmx_region_mismatches",
+        ),
+    ),
+    ("hedron.build", ("_relink_fingerprinted_modules", "_rewrite_module_imports")),
+    ("hedron.security.csrf", ("_csrf_cookie_should_be_secure",)),
+    ("hedron.connections", ("_dispose_instance_async",)),
+    ("hedron.sse", ("_poll_interval",)),
+    ("hedron.htmx", ("_safe_css_selector",)),
+)
+
+LAZY_BARREL = (
+    "ALLOW_MISSING_ORIGIN",
+    "AltairChart",
+    "DataTable",
+    "Markdown",
+    "OAuthHelper",
+    "SseResponse",
+    "create_oauth_client",
+    "job_status_sse_response",
+)
+
+
+STABLE_JOBS = ("enqueue_durable", "job_status_response")
+STABLE_TESTING = (
+    "AppScenario",
+    "assert_page_document",
+    "assert_fragment_body",
+    "assert_htmx_trigger",
+    "assert_hx_retarget",
+    "assert_oob_present",
+    "assert_hx_push_url",
+    "assert_hx_redirect",
+    "assert_hx_reswap",
+)
+
+
+def test_required_module_exports_remain() -> None:
+    for module_name, names in REQUIRED_EXPORTS.items():
+        module = importlib.import_module(module_name)
+        missing = sorted(name for name in names if not hasattr(module, name))
+        assert not missing, f"{module_name} lost attributes: {missing}"
+        exported = getattr(module, "__all__", None)
+        if exported is not None:
+            vanished = sorted(name for name in names if name not in exported)
+            assert not vanished, f"{module_name}.__all__ dropped: {vanished}"
+
+
+def test_leaked_private_import_paths() -> None:
+    for module_name, names in LEAKED_PRIVATES:
+        module = importlib.import_module(module_name)
+        missing = [name for name in names if not hasattr(module, name)]
+        assert not missing, f"{module_name} lost {missing}"
+
+
+def test_lazy_barrel_getattr() -> None:
+    module = importlib.import_module("hedron")
+    for name in LAZY_BARREL:
+        assert hasattr(module, name), f"hedron lost lazy export {name}"
+
+
+def test_stable_jobs_and_testing() -> None:
+    jobs = importlib.import_module("hedron.jobs")
+    missing = [name for name in STABLE_JOBS if not hasattr(jobs, name)]
+    assert not missing, missing
+    testing = importlib.import_module("hedron.testing")
+    missing = [name for name in STABLE_TESTING if not hasattr(testing, name)]
+    assert not missing, missing

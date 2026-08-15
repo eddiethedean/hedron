@@ -1,0 +1,107 @@
+# Phase 0.44 type-driven authoring evidence index.
+# Stage 0 requirements packet. Commands are reserved names until implemented.
+
+[[evidence]]
+id = "MODEL-044"
+state = "Planned"
+command = "python scripts/check_models_044.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "TYPING-044"
+state = "Planned"
+command = "python scripts/check_typing_044.py"
+ci_job = "quality"
+owner = "hedron"
+
+[[evidence]]
+id = "FORM-044"
+state = "Planned"
+command = "python scripts/check_forms_044.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "EFFECT-044"
+state = "Planned"
+command = "python scripts/check_effects_044.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "CLASS-044"
+state = "Planned"
+command = "python scripts/check_class_handlers_044.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "SCHEMA-044"
+state = "Planned"
+command = "python scripts/check_type_schema_044.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "SECURITY-044"
+state = "Planned"
+command = "python scripts/check_security_044.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "A11Y-044"
+state = "Planned"
+command = "python scripts/check_a11y_044.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "BROWSER-044"
+state = "Planned"
+command = "python scripts/check_browser_044.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "TOOLING-044"
+state = "Planned"
+command = "python scripts/check_tooling_044.py"
+ci_job = "test"
+owner = "hedron-explorer"
+
+[[evidence]]
+id = "COMPAT-044"
+state = "Planned"
+command = "python scripts/check_compat_044.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "PERF-044"
+state = "Planned"
+command = "python scripts/check_perf_044.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "DOCS-044"
+state = "Planned"
+command = "python scripts/check_docs_044.py"
+ci_job = "quality"
+owner = "docs"
+
+[[evidence]]
+id = "REGRESS-044"
+state = "Planned"
+command = "python scripts/check_regress_044.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-044"
+state = "Planned"
+command = "python scripts/verify_pkg_44.py"
+ci_job = "packaging"
+owner = "hedron"

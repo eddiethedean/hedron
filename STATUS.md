@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.42 **Published** as `v0.42.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Phase 0.43 refreshable views/commands is **Planned** (D-071 / RFC-0070); no 0.43 runtime or version claim.
+**Roadmap position:** phase 0.42 **Published** as `v0.42.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Phases 0.43 refreshable views/commands (D-071 / RFC-0070), 0.44 type-driven authoring (D-072 / RFC-0071), 0.45 typed interaction ecosystem convergence (D-074 / RFC-0072), and 0.46 package-native typed workflows (D-075 / RFC-0073) are **Planned** in that order; D-073 reconciles the 0.43/0.44 boundary. No 0.43–0.46 runtime or version claim.
 Living tip = `v0.42.0`.
 **Date:** 2026-08-15
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -28,6 +28,22 @@ Next planned phase is **0.43** (D-071 / [RFC-0070](docs/rfcs/RFC-0070-REFRESHABL
 refreshable view handles, command handles, bounded refresh intents, and typed patches over the
 existing region/`InteractionResult` stack. Its Stage 0 requirements packet is complete; all
 `release-gate-0.43.toml` rows remain Planned and a tracking issue is required before Stage 1.
+Phase **0.44** follows only after 0.43 is Verified (D-072 /
+[RFC-0071](docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)). It adds explicit Pydantic boundary models,
+annotation markers, fixed-slot generic specialization, schema-derived forms, declared effects, typed outcomes,
+optional class handlers, and a shared redacted schema. Its Stage 0 requirements packet is complete;
+all `release-gate-0.44.toml` rows remain Planned and a separate tracking issue is required before
+Stage 1.
+Phase **0.45** follows only after 0.44 is Verified (D-074 /
+[RFC-0072](docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)). It adds one sealed read-only catalog,
+deterministic redacted manifest, bounded package projections/dispositions, and shared host/tooling/
+package/portable/deployment consumers without changing runtime authority. Its Stage 0 packet is
+complete; all `release-gate-0.45.toml` rows remain Planned and a separate tracking issue is required.
+Phase **0.46** follows only after 0.45 is Verified (D-075 /
+[RFC-0073](docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)). It adds opt-in feature bundles, bounded data
+workspaces, explicit chart/data links, schema-aware elements, remote workflows, and catalog-backed
+workbench/scenario features that compile to the existing stack. Its Stage 0 packet is complete; all
+`release-gate-0.46.toml` rows remain Planned and a separate tracking issue is required.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
@@ -368,6 +384,18 @@ commands, and typed updates is **Planned** (D-071 /
 [RFC-0070](docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md); all 0.43 gates Planned; see
 [implementation requirements](docs/implementation/INTERACTION_HANDLES_043.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_43.md)). Living tip remains **`v0.42.0`**.
+Phase **0.44** type-driven authoring is also **Planned**, strictly after Verified 0.43 (D-072 /
+[RFC-0071](docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md); all 0.44 gates Planned; see
+[implementation requirements](docs/implementation/TYPE_DRIVEN_AUTHORING_044.md) and
+[acceptance packet](docs/acceptance/RELEASE_0_44.md)).
+Phase **0.45** typed interaction ecosystem convergence is **Planned**, strictly after Verified 0.44
+(D-074 / [RFC-0072](docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md); all 0.45 gates Planned; see
+[implementation requirements](docs/implementation/TYPED_INTERACTION_ECOSYSTEM_045.md) and
+[acceptance packet](docs/acceptance/RELEASE_0_45.md)). Phase **0.46** package-native typed workflows is
+**Planned**, strictly after Verified 0.45 (D-075 /
+[RFC-0073](docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md); all 0.46 gates Planned; see
+[implementation requirements](docs/implementation/PACKAGE_NATIVE_WORKFLOWS_046.md) and
+[acceptance packet](docs/acceptance/RELEASE_0_46.md)).
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

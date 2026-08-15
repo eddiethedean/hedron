@@ -16,11 +16,6 @@ from starlette.responses import Response as StarletteResponse
 
 from hedron.async_utils import await_if_needed
 from hedron.context import render_context_from_request
-from hedron.interaction import (
-    FragmentRegion,
-    FragmentRegionError,
-    InteractionResult,
-)
 from hedron.responses import (
     HTML,
     _fragment_region_http_detail,
@@ -30,6 +25,7 @@ from hedron.responses import (
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
 from hedron_core.component import Component, NodeLike
+from hedron_core.interaction import FragmentRegion, FragmentRegionError, InteractionResult
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
 

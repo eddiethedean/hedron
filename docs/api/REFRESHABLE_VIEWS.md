@@ -42,6 +42,11 @@ def home():
 The low-level region, selector, and `InteractionResult` APIs remain available for advanced HTMX
 work. The high-level interface compiles to those existing contracts.
 
+Phase 0.43 owns the runtime foundation. The planned
+[0.44 type-driven contract](TYPE_DRIVEN_AUTHORING.md) fills the generic input slots and descriptor
+extension seam defined here; it does not replace 0.43 routing, binding identity, forms, effects, or
+target authorization.
+
 ## Planned symbols
 
 | Symbol | Package | Role |
@@ -80,8 +85,13 @@ def view(...) -> NodeLike: ...
     fallback: str | None = None,
     include_in_schema: bool = False,
     dependencies: Sequence[Depends] | None = None,
-) -> Callable[[Callable[P, R]], FragmentHandle[P, R]]: ...
+) -> Callable[[Callable[P, ContentT]], FragmentHandle[Mapping[str, object], ContentT]]: ...
 ```
+
+The first `FragmentHandle` type slot is deliberately the bind-input type, not the renderer's
+`ParamSpec`. In 0.43 it is coarse `Mapping[str, object]`; 0.44 may specialize it to a Pydantic model
+without changing generic arity. The original callable signature remains available through renderer
+inspection.
 
 ### Parameters
 
@@ -100,8 +110,9 @@ def view(...) -> NodeLike: ...
 ### Returns
 
 The decorator returns a `FragmentHandle` while registering the original renderer as a component
-route. The handle preserves inspection metadata and signature. Calling the handle returns a mounted
-host, not raw unaddressed content.
+route. The handle preserves the renderer and its inspection metadata. Calling the handle takes no
+renderer/dependency arguments and returns a mounted host; parameterized views use `bind(...)`
+first. The renderer's dependencies run only on the registered GET route.
 
 ### Errors
 
@@ -118,7 +129,7 @@ host, not raw unaddressed content.
 Conceptual members:
 
 ```python
-class FragmentHandle(Generic[P, R]):
+class FragmentHandle(Generic[BindT, ContentT]):
     logical_id: str
     name: str
     path: str
@@ -127,16 +138,19 @@ class FragmentHandle(Generic[P, R]):
     selector: str               # inspectable compatibility detail
     region: FragmentRegion      # low-level compatibility value
     ref: ComponentRef
+    renderer: Callable[..., ContentT]
+    renderer_signature: Signature
 
-    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> FragmentHost: ...
-    def bind(self, **parameters: object) -> BoundFragment: ...
+    def __call__(self) -> FragmentHost: ...
+    def bind(self, **parameters: object) -> BoundFragment[ContentT]: ...
     def refresh_button(self, label: str = "Refresh", **kwargs: object) -> Refresh: ...
-    def replace(self, content: NodeLike, **kwargs: object) -> Patch: ...
-    def update(self, content: NodeLike, **kwargs: object) -> Patch: ...
+    def replace(self, content: ContentT, **kwargs: object) -> Patch[ContentT]: ...
+    def update(self, content: ContentT, **kwargs: object) -> Patch[ContentT]: ...
 ```
 
 `selector` and `region` exist for inspection and advanced interoperation; beginner examples do not
-copy them into markup or route policy.
+copy them into markup or route policy. The two generic slots and their order are fixed by 0.43;
+their precision may improve in 0.44 without changing the runtime class.
 
 ## Bound fragments
 
@@ -146,14 +160,18 @@ card = user_card.bind(user_id=user.id)
 Page(card(), card.refresh_button())
 ```
 
-Binding must:
+0.43 binding is structural. It must:
 
-- validate required parameters;
+- accept only registered bindable path/query names and validate required/extra parameters;
 - resolve path parameters and encode query parameters through safe URL helpers;
 - derive a deterministic instance id without exposing secret values;
 - preserve the base handle's app ownership and policy;
 - reject unresolved parameters before render;
 - allow the same bound object to drive mounting, controls, patches, tests, and diagnostics.
+
+It does not call dependency injection or perform full Pydantic/domain validation. The normal GET
+route remains authoritative and may return its ordinary validation error. The 0.44 model adapter
+may add eager validation for explicitly modeled views through the same binding protocol.
 
 Two instances with the same canonical binding have the same identity. Authors mounting the same
 binding twice must provide an explicit instance key or restructure the page.
@@ -204,8 +222,11 @@ def save_note(...): ...
     fallback: str | None = None,
     include_in_schema: bool = False,
     dependencies: Sequence[Depends] | None = None,
-) -> Callable[[Callable[P, R]], ActionHandle[P, R]]: ...
+) -> Callable[[Callable[P, ResultT]], ActionHandle[Mapping[str, object], ResultT]]: ...
 ```
+
+`ActionHandle` has the same fixed two-slot convention: command input, then result. Phase 0.43 uses a
+coarse mapping input; 0.44 may specialize it to a `FormBody` model.
 
 `ActionHandle` provides at least:
 
@@ -215,8 +236,30 @@ Form(action=save_note, ...)
 scenario.run(save_note, note="Hello")
 ```
 
+Conceptual members:
+
+```python
+class ActionHandle(Generic[InputT, ResultT]):
+    logical_id: str
+    name: str
+    path: str
+    method: str
+    result_type: object
+    handler: Callable[..., ResultT]
+    handler_signature: Signature
+
+    def button(self, label: str, **kwargs: object) -> NodeLike: ...
+```
+
 Commands default to POST. Unsafe methods follow the active CSRF strategy; action handles do not
 embed or bypass application authorization. Generated routes are hidden from OpenAPI by default.
+
+### Explicit forms in 0.43
+
+`Form(action=save_note, ...)` still requires explicit fields/controls. The handle supplies the
+registered URL, method, CSRF/fallback integration, identity, and testing metadata. Phase 0.43 does
+not expose `ActionHandle.form()` or infer fields from annotations. Those capabilities begin in 0.44
+only for an explicit `FormBody` model.
 
 ## `refresh`
 
@@ -258,9 +301,9 @@ Conceptual types:
 
 ```python
 @dataclass(frozen=True, slots=True)
-class Patch:
+class Patch(Generic[ContentT]):
     target: FragmentHandle | BoundFragment
-    content: NodeLike
+    content: ContentT
     swap: Literal["outerHTML", "innerHTML"]
 
 
@@ -316,6 +359,26 @@ fragment, header, OOB, and selector assertions remain supported.
 | Refresh intent | Typed bounded HTMX trigger consumed by registered hosts |
 | Command | Existing action route, CSRF policy, and response conversion |
 
+## Base handle descriptor and 0.44 extensions
+
+Runtime, Explorer, CLI, `AppScenario`, and adapters consume one versioned base handle descriptor.
+It records handle kind, logical/app identity, route/method, host/target/output mechanics, structural
+binding plan, fallback, limits, stability, and extension namespaces. The base descriptor is
+authoritative; tools must not re-inspect the handler to reconstruct these facts independently.
+
+In 0.43, command effect knowledge is one of:
+
+- `dynamic`: possible targets are unknown until execution;
+- `observed`: a development trace recorded actual targets, but this is not a declaration.
+
+Phase 0.44 may attach a versioned redacted `TypeSchema` extension and change effect knowledge to
+`declared`. The extension references the base descriptor fingerprint and may narrow validation or
+improve tooling. It cannot override the route, app ownership, target authority, host, fallback, or
+response conversion. Unknown extension namespaces do not alter base behavior.
+
+The 0.43 binding adapter performs structural binding. Its protocol is the only supported extension
+point for the 0.44 Pydantic adapter; consumers do not create a second binding path.
+
 ## Stability
 
 All new 0.43 symbols begin at `beta`. Existing region and interaction symbols keep their current
@@ -330,3 +393,4 @@ documentation preference alone does not change API stability.
 - [Actions](ACTION.md)
 - [Progressive enhancement](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0053-PROGRESSIVE-ENHANCEMENT.md)
 - [0.43 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_43.md)
+- [Planned 0.44 type-driven extension](TYPE_DRIVEN_AUTHORING.md)

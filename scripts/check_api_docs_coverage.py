@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INIT = ROOT / "packages/hedron/src/hedron/__init__.py"
 COVERAGE = ROOT / "docs/api/COVERAGE.md"
-CLI_SOURCE = ROOT / "packages/hedron/src/hedron/cli.py"
+CLI_SOURCE = ROOT / "packages/hedron/src/hedron/cli/parser.py"
 CLI_REFERENCE = ROOT / "docs/api/CLI.md"
 CHARTS_INIT = ROOT / "packages/hedron-charts/src/hedron_charts/__init__.py"
 CHARTS_REFERENCE = ROOT / "docs/api/CHART.md"

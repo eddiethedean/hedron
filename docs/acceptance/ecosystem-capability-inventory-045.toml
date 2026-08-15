@@ -1,0 +1,342 @@
+# Phase 0.45 typed interaction ecosystem capability inventory.
+# Stage 0 contract artifact: capabilities are Planned until their owning gate is Verified.
+
+schema_version = 1
+phase = "0.45"
+status = "Planned"
+planning_baseline = "v0.42.0"
+required_predecessor = "v0.44.0"
+target = "v0.45.0"
+decision = "D-074"
+owning_rfc = "RFC-0072"
+implementation = "docs/implementation/TYPED_INTERACTION_ECOSYSTEM_045.md"
+public_contract = "docs/api/INTERACTION_CATALOG.md"
+
+[[capability]]
+id = "EC-CAT-001..010"
+area = "catalog"
+gate = "CATALOG-045"
+secondary_gates = ["SECURITY-045", "COMPAT-045"]
+state = "Planned"
+packages = ["hedron-core", "hedron"]
+evidence = ["unit", "integration", "determinism", "concurrency", "golden"]
+summary = "One sealed read-only catalog indexes authoritative 0.43 descriptors and optional matching 0.44 type extensions without executing or reinterpreting them."
+
+[[capability]]
+id = "EC-MAN-001..010"
+area = "manifest"
+gate = "MANIFEST-045"
+secondary_gates = ["SECURITY-045", "DEPLOY-045"]
+state = "Planned"
+packages = ["hedron-core", "hedron"]
+evidence = ["json-schema", "byte-golden", "build", "startup", "adversarial"]
+summary = "Versioned deterministic redacted manifests support trusted build, static reads, bounded parsing, compatibility, fingerprint validation, and atomic deployment."
+
+[[capability]]
+id = "EC-PROJ-001..010"
+area = "package-projections"
+gate = "PROJECTION-045"
+secondary_gates = ["SECURITY-045", "PKG-045"]
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-sample-kit"]
+evidence = ["provider", "namespace", "version-skew", "optional-dependency", "rollback"]
+summary = "Namespaced bounded projections attach package metadata and limitations to catalog fingerprints without runtime, policy, exposure, or mutation authority."
+
+[[capability]]
+id = "EC-HOST-001..008"
+area = "host-adapters"
+gate = "HOST-045"
+secondary_gates = ["COMPAT-045"]
+state = "Planned"
+packages = ["hedron", "hedron-flask", "hedron-django", "hedron-conformance"]
+evidence = ["fastapi", "flask", "django", "asgi", "wsgi", "no-js"]
+summary = "FastAPI, Flask, and Django agree on portable catalog facts while preserving public host-native routing, security, and explicit capability limitations."
+
+[[capability]]
+id = "EC-AUTHOR-001..008"
+area = "authoring-and-plugins"
+gate = "AUTHOR-045"
+secondary_gates = ["TOOLING-045", "DOCS-045"]
+state = "Planned"
+packages = ["hedron", "hedron-jinja", "hedron-sample-kit"]
+evidence = ["jinja", "plugin", "scaffold", "diagnostics", "uninstall"]
+summary = "Jinja and third-party-shaped plugins consume registered handles and public catalog projections without raw manifest execution or privileged registry access."
+
+[[capability]]
+id = "EC-SURFACE-001..008"
+area = "surface-packages"
+gate = "SURFACE-045"
+secondary_gates = ["PKG-045"]
+state = "Planned"
+packages = ["hedron-data", "hedron-charts", "hedron-elements", "hedron-extras"]
+evidence = ["projection", "coexistence", "direct-api", "optional-absence"]
+summary = "Current data, chart, element, and extras surfaces attach honest package projections and consume handles without pre-implementing 0.46 workflow features."
+
+[[capability]]
+id = "EC-REMOTE-001..008"
+area = "remote-projections"
+gate = "REMOTE-045"
+secondary_gates = ["SECURITY-045"]
+state = "Planned"
+packages = ["hedron-mcp", "hedron-gradio", "hedron"]
+evidence = ["deny-default", "authz", "egress", "files", "audit", "rollback"]
+summary = "MCP and Gradio consume safe catalog facts only through separate explicit allowlisted authorization and egress policies; catalog registration never exposes an operation."
+
+[[capability]]
+id = "EC-TOOL-001..010"
+area = "tooling"
+gate = "TOOLING-045"
+secondary_gates = ["SECURITY-045", "DOCS-045"]
+state = "Planned"
+packages = ["hedron", "hedron-explorer"]
+evidence = ["explorer", "cli", "openapi", "scenario", "static-no-exec"]
+summary = "Explorer, CLI, OpenAPI, diagnostics, build, and AppScenario use the same catalog/manifest contract with honest trusted/static modes."
+
+[[capability]]
+id = "EC-PORT-001..009"
+area = "portable-development-tooling"
+gate = "PORTABLE-045"
+secondary_gates = ["COMPAT-045", "PKG-045"]
+state = "Planned"
+packages = ["hedron-conformance", "hedron-sim", "hedron-notebook", "hedron-sample-kit"]
+evidence = ["portable-fixtures", "node", "java", "offline", "localhost", "clean-wheel"]
+summary = "Conformance, sim, notebook, sample-kit, and language evaluators consume bounded portable artifacts with explicit offline/localhost/non-server limitations."
+
+[[capability]]
+id = "EC-DEPLOY-001..007"
+area = "deployment"
+gate = "DEPLOY-045"
+secondary_gates = ["SECURITY-045", "COMPAT-045"]
+state = "Planned"
+packages = ["hedron-posit", "hedron-workbench", "fastapi-workbench", "hedron"]
+evidence = ["workbench", "connect", "mount", "multi-worker", "rollback"]
+summary = "Deployment adapters validate catalog artifacts and mount-aware diagnostics without moving Hedron semantics into generic fastapi-workbench."
+
+[[capability]]
+id = "EC-SEC-001..010"
+area = "security-and-privacy"
+gate = "SECURITY-045"
+secondary_gates = ["REGRESS-045"]
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-explorer", "hedron-mcp", "hedron-gradio"]
+evidence = ["threat-model", "redaction", "hostile-json", "provider-trust", "review"]
+summary = "Catalogs, manifests, projections, providers, tools, and remote adapters are bounded untrusted inputs with strict redaction and no capability/exposure semantics."
+
+[[capability]]
+id = "EC-A11Y-001..006"
+area = "accessibility-and-browser"
+gate = "A11Y-045"
+secondary_gates = ["BROWSER-045"]
+state = "Planned"
+packages = ["hedron", "hedron-explorer", "hedron-elements"]
+evidence = ["keyboard", "automated-a11y", "no-js", "chromium", "firefox", "webkit"]
+summary = "Catalog-derived tooling and package controls preserve native semantics and honest evidence without expanding product-wide accessibility claims."
+
+[[capability]]
+id = "EC-QUAL-001..006"
+area = "compatibility-and-packaging"
+gate = "COMPAT-045"
+secondary_gates = ["PKG-045", "REGRESS-045"]
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-conformance"]
+evidence = ["unchanged-apps", "whole-fleet", "direct-api", "clean-install", "version-range"]
+summary = "Unchanged predecessor apps, public package APIs, optional dependency direction, dispositions, and independently versioned satellites remain compatible."
+
+[[capability]]
+id = "EC-QUAL-007..008"
+area = "performance"
+gate = "PERF-045"
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-explorer"]
+evidence = ["compile", "lookup", "manifest", "startup", "allocation", "memory"]
+summary = "Catalog/manifest/projection/tooling costs are bounded and unused integration adds no material request-path or browser-asset cost."
+
+[[capability]]
+id = "EC-QUAL-009"
+area = "upgrade-and-rollback"
+gate = "COMPAT-045"
+secondary_gates = ["DEPLOY-045"]
+state = "Planned"
+packages = ["hedron", "hedron-conformance", "hedron-posit"]
+evidence = ["mixed-version", "rolling", "disable", "uninstall", "rollback"]
+summary = "Version skew, provider removal, rolling deploy, manifest rollback, and return to 0.44 preserve base interactions."
+
+[[capability]]
+id = "EC-QUAL-010"
+area = "documentation"
+gate = "DOCS-045"
+state = "Planned"
+packages = ["docs"]
+evidence = ["api", "package-author", "deployment", "migration", "troubleshooting"]
+summary = "Layered application, package-author, tooling, format, security, deployment, and rollback documentation is complete."
+
+[[capability]]
+id = "EC-QUAL-011..012"
+area = "release-closure"
+gate = "PKG-045"
+secondary_gates = ["REGRESS-045", "DOCS-045"]
+state = "Planned"
+packages = ["hedron", "docs"]
+evidence = ["stability", "inventory", "changelog", "release-rehearsal", "zero-deferred"]
+summary = "New surfaces have honest stability and the full gate/package/version/release packet closes with zero Deferred."
+
+[[package_disposition]]
+package = "hedron-core"
+disposition = "native_consumer"
+owner_gate = "CATALOG-045"
+
+[[package_disposition]]
+package = "hedron"
+disposition = "native_consumer"
+owner_gate = "CATALOG-045"
+
+[[package_disposition]]
+package = "hedron-flask"
+disposition = "projection_adapter"
+owner_gate = "HOST-045"
+
+[[package_disposition]]
+package = "hedron-django"
+disposition = "projection_adapter"
+owner_gate = "HOST-045"
+
+[[package_disposition]]
+package = "hedron-explorer"
+disposition = "native_consumer"
+owner_gate = "TOOLING-045"
+
+[[package_disposition]]
+package = "hedron-jinja"
+disposition = "projection_adapter"
+owner_gate = "AUTHOR-045"
+
+[[package_disposition]]
+package = "hedron-data"
+disposition = "projection_adapter"
+owner_gate = "SURFACE-045"
+
+[[package_disposition]]
+package = "hedron-charts"
+disposition = "projection_adapter"
+owner_gate = "SURFACE-045"
+
+[[package_disposition]]
+package = "hedron-elements"
+disposition = "projection_adapter"
+owner_gate = "SURFACE-045"
+
+[[package_disposition]]
+package = "hedron-extras"
+disposition = "projection_adapter"
+owner_gate = "SURFACE-045"
+
+[[package_disposition]]
+package = "hedron-mcp"
+disposition = "projection_adapter"
+owner_gate = "REMOTE-045"
+
+[[package_disposition]]
+package = "hedron-gradio"
+disposition = "projection_adapter"
+owner_gate = "REMOTE-045"
+
+[[package_disposition]]
+package = "hedron-conformance"
+disposition = "native_consumer"
+owner_gate = "PORTABLE-045"
+
+[[package_disposition]]
+package = "hedron-sim"
+disposition = "projection_adapter"
+owner_gate = "PORTABLE-045"
+
+[[package_disposition]]
+package = "hedron-notebook"
+disposition = "projection_adapter"
+owner_gate = "PORTABLE-045"
+
+[[package_disposition]]
+package = "hedron-sample-kit"
+disposition = "projection_adapter"
+owner_gate = "PORTABLE-045"
+
+[[package_disposition]]
+package = "hedron-posit"
+disposition = "projection_adapter"
+owner_gate = "DEPLOY-045"
+
+[[package_disposition]]
+package = "hedron-workbench"
+disposition = "projection_adapter"
+owner_gate = "DEPLOY-045"
+
+[[package_disposition]]
+package = "fastapi-workbench"
+disposition = "compatibility_only"
+owner_gate = "DEPLOY-045"
+
+[[package_disposition]]
+package = "hedron-native"
+disposition = "compatibility_only"
+owner_gate = "PORTABLE-045"
+
+[[package_disposition]]
+package = "hedron-runtime-node"
+disposition = "compatibility_only"
+owner_gate = "PORTABLE-045"
+
+[[package_disposition]]
+package = "hedron-runtime-java"
+disposition = "compatibility_only"
+owner_gate = "PORTABLE-045"
+
+[[limit]]
+name = "max_catalog_entries"
+value = 10000
+unit = "entries"
+gate = "CATALOG-045"
+
+[[limit]]
+name = "max_projections_per_entry"
+value = 32
+unit = "projections"
+gate = "PROJECTION-045"
+
+[[limit]]
+name = "max_projection_bytes"
+value = 65536
+unit = "bytes"
+gate = "SECURITY-045"
+
+[[limit]]
+name = "max_manifest_bytes"
+value = 16777216
+unit = "bytes"
+gate = "MANIFEST-045"
+
+[[limit]]
+name = "warm_lookup_p95"
+value = 1
+unit = "millisecond"
+gate = "PERF-045"
+
+[[exclusion]]
+id = "EC-EX-001"
+summary = "No third runtime/schema authority, route engine, form engine, validation engine, response converter, or reactive graph."
+
+[[exclusion]]
+id = "EC-EX-002"
+summary = "No automatic MCP, Gradio, HTTP, plugin, or deployment exposure from registration or catalog presence."
+
+[[exclusion]]
+id = "EC-EX-003"
+summary = "No target-project import, annotation evaluation, plugin loading, or remote discovery in static mode."
+
+[[exclusion]]
+id = "EC-EX-004"
+summary = "No 0.46 package feature bundles, data workspaces, linked charts, or remote workflows implemented early."
+
+[[exclusion]]
+id = "EC-EX-005"
+summary = "No dependency inversion, mandatory optional package, Node requirement, maturity promotion, SR-021 closure, or 1.0 scheduling."
+

@@ -3,9 +3,11 @@
 **Status:** Accepted  
 **Target phase:** 0.43 (`v0.43.0`)  
 **Decision:** D-071  
+**Cross-phase refinement:** D-073<br>
 **Baseline:** Published `v0.42.0`  
 **Extends:** RFC-0008, RFC-0009, RFC-0015, RFC-0019, RFC-0023, RFC-0024,
 RFC-0025, RFC-0039, RFC-0040, RFC-0044, and RFC-0053
+**Forward extension:** RFC-0071 / D-072, refined by D-073 (phase 0.44 type-driven authoring)
 
 ## Summary
 
@@ -48,6 +50,11 @@ and registry metadata derive from those handles. Direct multi-target responses u
 This is an additive authoring layer, not a reactive client runtime, global state system, SPA
 router, hydration model, or replacement for explicit server authorization.
 
+Phase 0.43 is also the stable runtime foundation for phase 0.44. It owns handle identity, routing,
+structural binding, explicit form actions, response effects, target authority, host behavior, and a
+versioned handle descriptor. Phase 0.44 may attach typed Pydantic metadata and refine the generic
+input slots, but it may not replace those mechanics or change unmodeled 0.43 behavior.
+
 ## Problem
 
 The current region API correctly exposes Hedron's HTMX transport and fail-closed target policy,
@@ -73,6 +80,8 @@ HTMX work; it should not be the only supported way to express “refresh this vi
 - Make a single refresh readable without knowledge of HTMX targets or CSS selectors.
 - Make handles the source of truth for rendering, reverse routing, controls, output identity,
   diagnostics, testing, and Explorer metadata.
+- Freeze a two-slot generic handle shape and versioned base descriptor that 0.44 can enrich without
+  changing class arity, route identity, or response semantics.
 - Generate internal routes and DOM ids when the author does not need public stable values.
 - Make mutations addressable through typed command handles with automatic unsafe-method and CSRF
   defaults.
@@ -94,6 +103,10 @@ HTMX work; it should not be the only supported way to express “refresh this vi
 - Removing or deprecating the stable region/`swap` facade in 0.43.
 - Requiring custom elements, hydration, a virtual DOM, Node.js, SSE, WebSockets, or preload.
 - Making every existing action or component decorator return a different runtime type.
+- Pydantic boundary models, Hedron `Annotated` markers, schema-derived field controls, declared
+  effect sets, discriminated outcome maps, and class-handler registration; these belong to 0.44.
+- Full type/constraint validation during 0.43 `bind(...)`; 0.43 performs structural route binding
+  and the normal GET route remains authoritative for request validation.
 
 ## Terminology
 
@@ -102,6 +115,9 @@ HTMX work; it should not be the only supported way to express “refresh this vi
 | **Refreshable view** | Explicitly exposed GET renderer with a stable logical identity and mounted fragment host. |
 | **`FragmentHandle`** | Callable, inspectable descriptor returned by `@app.refreshable`. |
 | **Bound fragment** | A handle plus validated path/query parameters and an instance identity. |
+| **Structural binding** | 0.43 validation of route/query names, required values, safe serialization, URL encoding, ownership, and identity; it is not Pydantic/domain validation. |
+| **Handle descriptor** | Versioned registry record for handle kind, identity, route, host, binding shape, output mechanics, fallback, and extension namespaces. |
+| **Dynamic effect graph** | A command's outputs are explicit at runtime but unknown before execution unless a later typed extension declares them. |
 | **Fragment host** | Stable server-rendered wrapper that owns swap, busy, error, and identity behavior. |
 | **Command** | Explicitly exposed unsafe operation, POST by default, with ordinary authz/CSRF requirements. |
 | **`ActionHandle`** | Callable, inspectable descriptor returned by `@app.command`. |
@@ -133,8 +149,10 @@ def status():
     return StatusPanel(...)
 ```
 
-The decorated name is a `FragmentHandle`. It preserves `__name__`, `__wrapped__`, signature,
-annotations, documentation, and the original renderer for inspection. Calling it mounts the view:
+The decorated name is a `FragmentHandle`. It preserves the original renderer through `renderer`,
+`renderer_signature`, `__wrapped__`, annotations, documentation, and source metadata. The handle's
+own public call means “mount this already-unbound view” and accepts no application/dependency
+arguments. Calling it mounts the view:
 
 ```python
 Page(status())
@@ -148,6 +166,10 @@ status.replace(special_content)  # outerHTML patch
 status.update(inner_content)     # innerHTML patch
 status.bind(account_id=account.id)
 ```
+
+Parameterized views must be bound before mounting: `status.bind(account_id=...)()`. Dependency
+values are supplied only when the registered GET route runs; they are never caller arguments to the
+handle.
 
 The exact generated route and DOM id are inspectable but are not public compatibility promises.
 Authors who link from outside the application, write CSS against the host, or persist an identity
@@ -186,10 +208,16 @@ Page(
 )
 ```
 
-Binding validates required parameters, produces a mount-aware URL, and derives an instance id from
-the handle plus a canonical non-secret fingerprint. Secret-like values must never appear in DOM
-ids, debug metadata, traces, or generated event names. Path and query values still follow ordinary
-URL privacy rules; secret values do not become safe merely because they are bound to a handle.
+Binding performs structural validation: it accepts only the registered route's bindable path/query
+names, checks required/extra values and safe serialization, produces a mount-aware URL, and derives
+an instance id from a canonical non-secret fingerprint. It does not invoke FastAPI dependency
+injection or duplicate the route's full Pydantic/type validation. Invalid typed/domain values
+therefore follow the normal GET route's validation behavior. Phase 0.44 may install an opt-in
+Pydantic binding adapter for eager model validation through this same binding seam.
+
+Secret-like values must never appear in DOM ids, debug metadata, traces, or generated event names.
+Path and query values still follow ordinary URL privacy rules; secret values do not become safe
+merely because they are bound to a handle.
 
 ### Commands
 
@@ -212,6 +240,10 @@ forms without string URLs:
 restart_service.button("Restart")
 Form(action=save_note, ...)
 ```
+
+In 0.43, form fields remain explicit. The handle supplies only the registered action URL, method,
+CSRF/fallback integration, identity, and testing metadata. `ActionHandle.form()` and model-derived
+controls are reserved for the opt-in 0.44 `FormBody` contract.
 
 Existing `@app.action` semantics do not change. `@app.command` is additive so 0.43 does not change
 the decorated value type or identity behavior of stable routes.
@@ -257,8 +289,10 @@ The high-level patch API does not accept arbitrary CSS selector strings. Advance
 continue using `InteractionResult`, `retarget`, and `OobUpdate` with existing validation.
 
 Duplicate patch targets, cross-application handles, an unbound parameterized handle, unknown swap
-strategies, OOB updates on 204, and targets outside an optional command output declaration fail
-before response emission.
+strategies, and OOB updates on 204 fail before response emission. Phase 0.43 verifies the explicit
+runtime result against app ownership and target policy; it has no public predeclared command-effect
+set. Phase 0.44 may add `Refreshes`/`Updates` declarations that further narrow—never widen—this
+runtime authority.
 
 ### Loading and failure states
 
@@ -299,14 +333,34 @@ scenario.expect(notes).to_contain("Hello")
 
 Raw client, header, selector, and `InteractionResult` assertions remain available.
 
-Explorer and CLI show a handle graph with view/command names, generated or explicit paths, bound
-parameters with redaction, primary and possible secondary outputs, refresh fan-out, swap strategy,
-CSRF, fallback, cache, loading/error policy, and the equivalent low-level route/region mechanics.
+Explorer and CLI show a handle graph with view/command names, generated or explicit paths,
+structurally bindable parameters with redaction, canonical view outputs, observed command outputs,
+refresh fan-out, swap strategy, CSRF, fallback, cache, loading/error policy, and equivalent
+low-level route/region mechanics. Before 0.44 declarations, a command's possible effects are
+explicitly labeled **dynamic**, not guessed from code or prior observations.
 
 Development diagnostics use application language first. For example, a mismatch reports that the
 “Restart” command attempted to update the `stats` view while the request targeted the `status`
 view, then shows a handle-based fix. Production diagnostics remain compact and redact route maps,
 bound values, and application structure.
+
+## Phase 0.43 / 0.44 contract boundary
+
+The phases form one stack with a deliberate ownership line:
+
+| Concern | 0.43 owns | 0.44 may add |
+|---|---|---|
+| Handle typing | Stable two-slot `FragmentHandle[Bind, Content]` and `ActionHandle[Input, Result]` arity; coarse `Mapping[str, object]` input slots | Pydantic model types in the existing input slots plus stricter overloads; no arity change |
+| Binding | Structural path/query plan, safe encoding, identity, ownership, mount-aware reversal, normal-route validation | Opt-in Pydantic adapter implementing the same binding protocol for eager model validation |
+| Forms | Explicit `Form(action=handle, ...)` and handle-derived URL/method/CSRF/fallback | `FormBody` and `ActionHandle.form()` for a closed schema-derived control inventory |
+| Effects | Explicit runtime `RefreshIntent`/`PatchSet`, app ownership, target policy, dynamic/observed tooling graph | `Refreshes`/`Updates` declarations that narrow actual results and make the graph statically known |
+| Metadata | Versioned base handle descriptor authoritative for route, identity, host, output, and security | Versioned redacted `TypeSchema` extension referencing the base descriptor fingerprint |
+| Handler shape | Decorated functions/callables; no handler-class registration contract | Optional `RefreshableView` / `CommandHandler` classes compiling to the same handles |
+
+The 0.43 base descriptor reserves namespaced extensions and records whether binding/effect/type
+metadata is structural, dynamic, observed, or declared. Unknown future extensions cannot alter base
+route/output authority. The 0.43 runtime and tooling do not evaluate application annotations in
+anticipation of 0.44.
 
 ## Layered authoring contract
 
@@ -333,9 +387,15 @@ The implementation reuses the existing contracts:
 - conflicting client targets fail through the existing target-disagreement path;
 - cache, CSRF, history, status, response-header, OOB, and selector policies remain centralized;
 - Flask/Django adapters consume portable patch and metadata types rather than importing FastAPI.
+- one versioned base handle descriptor is shared by runtime, Explorer, CLI, scenarios, and adapter
+  fixtures; consumers do not reconstruct handle semantics independently;
+- a binding-adapter protocol separates 0.43 structural binding from the opt-in 0.44 model adapter;
+- descriptor extensions are namespaced, versioned, bounded, and cannot override base route,
+  identity, ownership, target, fallback, or host fields.
 
-The registry gains typed output metadata. Existing string `fragment_regions` inference remains for
-legacy routes during the compatibility window.
+The registry gains typed base handle/output metadata. Command effects are `dynamic` until observed
+at runtime; an observation is diagnostic evidence, not a declaration. Existing string
+`fragment_regions` inference remains for legacy routes during the compatibility window.
 
 ## Security implications
 
@@ -348,6 +408,8 @@ legacy routes during the compatibility window.
 - New high-level APIs do not branch sensitive response content on raw client target values.
 - Commands default to unsafe-method protections and do not silently downgrade to GET.
 - Binding and diagnostics redact secrets and bound values according to existing policies.
+- Structural binding never accepts dependency/request/security-context names and does not create a
+  synthetic request or invoke dependency/type solvers.
 - Refresh fan-out, patch count, content size, event payloads, recursion, and generated metadata are
   bounded before allocation or response emission.
 - Cross-origin URLs, unsafe selectors, raw HTML, executable event payloads, and unregistered sinks
@@ -422,8 +484,9 @@ requests are sufficient.
 
 ## Testing strategy
 
-- **Unit:** identity generation, host configuration, binding, redaction, handle ownership, patch
-  normalization, duplicate targets, closed swaps, refresh event payloads, introspection.
+- **Unit:** identity generation, host configuration, structural binding, redaction, handle
+  ownership, patch normalization, duplicate targets, closed swaps, refresh event payloads,
+  descriptor version/extensions, generic arity, and renderer/handle introspection.
 - **Routing:** generated/explicit paths, mounts, routers, methods, OpenAPI visibility, dependency
   injection, async handlers, exceptions, redirects, cookies, cache, CSRF.
 - **Interaction:** matching/missing/conflicting targets, refresh fan-out, primary/OOB patches,
@@ -454,7 +517,7 @@ The migration guide provides side-by-side recipes:
   `@app.refreshable` handle;
 - action `fragment_regions=` + OOB updates to command handles and `PatchSet`;
 - public fragment URLs to explicit-path refreshables;
-- parameterized routes to bound handles;
+- parameterized routes to structurally bound handles, with full request validation left on the GET;
 - raw test headers/selectors to scenario handle assertions;
 - rollback to the unchanged low-level API.
 
@@ -478,6 +541,7 @@ depend on them must make them explicit.
 | Stability | New surface starts Beta; stable promotion requires the phase inventory and all gates Verified. |
 | Adapter depth | Portable types and fixtures are required; FastAPI owns full ergonomic decorators, Flask/Django receive documented parity or explicit bounded exceptions before cut. |
 | Human AT | Automated/scoped interaction evidence only; phase does not close `SR-021`. |
+| 0.44 handoff | Freeze two-slot generic arity, structural binding adapter, explicit-form plumbing, dynamic-effect labeling, and a versioned extensible base descriptor; do not pre-implement annotation/model/class features. |
 
 ## Acceptance criteria
 
@@ -497,6 +561,8 @@ depend on them must make them explicit.
 - Loading, error, focus, announcement, keyboard, no-JavaScript, cancellation, and late-response
   browser scenarios pass.
 - Explorer, CLI, and `AppScenario` use handles and expose equivalent low-level mechanics.
+- The 0.43 handoff fixture proves 0.44 can attach a model adapter and namespaced type metadata
+  without replacing route identity, target authority, explicit forms, or response conversion.
 - FastAPI, Flask, and Django portable patch conformance is Verified or any adapter exception is
   explicitly inventoried with owner and destination.
 - Existing region/interaction tests and 0.42 upgrade fixtures pass unchanged.

@@ -28,8 +28,17 @@ These documents describe how accepted RFC behavior will be implemented. They def
   D-069 architecture, work slices, failure boundaries, and evidence plan
 - [Production-grade Web Component platform](HEDRON_ELEMENTS_042.md) — phase 0.42 D-070 Stage 0
   graduation plan, Supported inventory, AT-042 honesty, and fleet remediation bind
-- [Refreshable views and command handles](INTERACTION_HANDLES_043.md) — phase 0.43 D-071
+- [Refreshable views and command handles](INTERACTION_HANDLES_043.md) — phase 0.43 D-071 / D-073
   requirements, architecture, work slices, traceability, compatibility, and evidence plan
+- [Type-driven authoring](TYPE_DRIVEN_AUTHORING_044.md) — phase 0.44 D-072 / D-073 Pydantic boundaries,
+  annotation markers, generics, generated forms, effects/outcomes, optional class lifecycles, and
+  shared schema requirements
+- [Typed interaction ecosystem](TYPED_INTERACTION_ECOSYSTEM_045.md) — phase 0.45 D-074 catalog,
+  manifest, package projections/dispositions, hosts, tooling, remote, portable, and deployment
+  convergence requirements
+- [Package-native typed workflows](PACKAGE_NATIVE_WORKFLOWS_046.md) — phase 0.46 D-075 feature
+  bundles, data workspaces, linked charts, enhanced elements, remote workflows, workbenches, and
+  scenario requirements
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

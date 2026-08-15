@@ -7,6 +7,7 @@
 
 ### Changed
 - Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
+- Internal module split; public imports unchanged.
 
 ## [0.41.0] — Unreleased
 

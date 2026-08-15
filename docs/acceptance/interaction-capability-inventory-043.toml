@@ -7,6 +7,7 @@ status = "Planned"
 baseline = "v0.42.0"
 target = "v0.43.0"
 decision = "D-071"
+cross_phase_refinement = "D-073"
 owning_rfc = "RFC-0070"
 implementation = "docs/implementation/INTERACTION_HANDLES_043.md"
 public_contract = "docs/api/REFRESHABLE_VIEWS.md"
@@ -18,25 +19,25 @@ gate = "VIEW-043"
 state = "Planned"
 packages = ["hedron", "hedron-core"]
 evidence = ["unit", "integration", "registry", "autodoc"]
-summary = "Refreshable decorator, callable handle, generated routes/ids, stable hosts, introspection, and duplicate-mount diagnostics."
+summary = "Refreshable decorator, callable mount handle, generated routes/ids, stable hosts, renderer introspection, and duplicate-mount diagnostics."
 
 [[capability]]
-id = "IH-BIND-001..005"
+id = "IH-BIND-001..006"
 area = "binding"
 gate = "VIEW-043"
 state = "Planned"
 packages = ["hedron", "hedron-core"]
 evidence = ["unit", "integration", "security", "mount-matrix"]
-summary = "Validated bound fragment instances with deterministic non-secret identities and mount-aware URLs."
+summary = "Structurally validated bound fragments with deterministic non-secret identities, mount-aware URLs, GET-authoritative type validation, and one future model-adapter seam."
 
 [[capability]]
-id = "IH-CMD-001..006"
+id = "IH-CMD-001..007"
 area = "command"
 gate = "COMMAND-043"
 state = "Planned"
 packages = ["hedron"]
 evidence = ["integration", "csrf", "fallback", "autodoc"]
-summary = "Additive action handles, generated/explicit mutation routes, native controls/forms, and ordinary HTTP fallback."
+summary = "Additive action handles, generated/explicit mutation routes, native buttons, explicit-field forms, and ordinary HTTP fallback without model-derived fields."
 
 [[capability]]
 id = "IH-REFRESH-001..007"
@@ -90,7 +91,17 @@ gate = "TOOLING-043"
 state = "Planned"
 packages = ["hedron", "hedron-explorer"]
 evidence = ["cli", "explorer", "scaffold", "snapshots"]
-summary = "Handle-first scaffold, human diagnostics, Explorer graph, CLI checks, autocomplete, and layered authoring."
+summary = "Handle-first scaffold, human diagnostics, dynamic/observed-effect Explorer graph, CLI checks, autocomplete, and layered authoring."
+
+[[capability]]
+id = "IH-EXT-001..007"
+area = "type-extension-seam"
+gate = "COMPAT-043"
+secondary_gates = ["TOOLING-043"]
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-explorer", "hedron-conformance"]
+evidence = ["generic-arity", "descriptor-schema", "binding-adapter", "handoff-fixture"]
+summary = "Fixed two-slot handle generics, versioned authoritative base descriptor, structural binding adapter, dynamic effects, and a non-replacing 0.44 extension handoff."
 
 [[capability]]
 id = "IH-QUAL-001..004"
@@ -204,3 +215,6 @@ summary = "No generated-route security-through-obscurity or inferred business au
 id = "IH-EX-004"
 summary = "No required custom element, hydration, Node consumer build, live transport, or new general browser framework."
 
+[[exclusion]]
+id = "IH-EX-005"
+summary = "No 0.44 Pydantic boundary models, Hedron Annotated markers, schema-derived form fields, declared effects, typed outcome maps, annotation evaluation, or handler-class registration in 0.43."

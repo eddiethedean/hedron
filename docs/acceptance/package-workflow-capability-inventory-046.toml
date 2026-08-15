@@ -1,0 +1,260 @@
+# Phase 0.46 package-native typed workflow capability inventory.
+# Stage 0 contract artifact: capabilities are Planned until their owning gate is Verified.
+
+schema_version = 1
+phase = "0.46"
+status = "Planned"
+planning_baseline = "v0.42.0"
+required_predecessor = "v0.45.0"
+target = "v0.46.0"
+decision = "D-075"
+owning_rfc = "RFC-0073"
+implementation = "docs/implementation/PACKAGE_NATIVE_WORKFLOWS_046.md"
+public_contract = "docs/api/PACKAGE_WORKFLOWS.md"
+
+[[capability]]
+id = "PW-BUNDLE-001..010"
+area = "feature-bundles"
+gate = "BUNDLE-046"
+secondary_gates = ["SECURITY-046", "COMPAT-046"]
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-sample-kit"]
+evidence = ["atomic-registration", "composition", "plugin", "eject", "rollback"]
+summary = "Immutable package feature bundles atomically register ordinary handles/components/scenarios/projections and own no executor or policy authority."
+
+[[capability]]
+id = "PW-DATA-001..012"
+area = "data-workspaces"
+gate = "DATAFLOW-046"
+secondary_gates = ["SECURITY-046", "A11Y-046", "ADAPTER-046"]
+state = "Planned"
+packages = ["hedron-data", "hedron", "hedron-elements"]
+evidence = ["list", "detail", "create", "edit", "authz", "conflict", "no-js"]
+summary = "Opt-in DataWorkspace assembles bounded list/detail/create/edit workflows over explicit authorized sources and mutation policy with complete override paths."
+
+[[capability]]
+id = "PW-VISUAL-001..010"
+area = "linked-visualization"
+gate = "VISUAL-046"
+secondary_gates = ["A11Y-046", "BROWSER-046", "PERF-046"]
+state = "Planned"
+packages = ["hedron-charts", "hedron-data", "hedron-elements"]
+evidence = ["selection", "filter", "drilldown", "export", "cycle-bounds", "fallback"]
+summary = "Typed chart events invoke explicit commands/effects for linked data surfaces with no hidden dependencies and complete non-pointer/fallback behavior."
+
+[[capability]]
+id = "PW-ELEMENT-001..009"
+area = "schema-aware-elements"
+gate = "ELEMENT-046"
+secondary_gates = ["A11Y-046", "BROWSER-046"]
+state = "Planned"
+packages = ["hedron-elements", "hedron"]
+evidence = ["control-map", "form-parity", "events", "async-state", "failed-upgrade"]
+summary = "A closed control mapping and async command elements enhance native forms while preserving encoding, semantics, server authority, and failed/no-JS fallback."
+
+[[capability]]
+id = "PW-REMOTE-001..010"
+area = "remote-and-agent-workflows"
+gate = "REMOTE-046"
+secondary_gates = ["SECURITY-046"]
+state = "Planned"
+packages = ["hedron-mcp", "hedron-gradio", "hedron"]
+evidence = ["explicit-exposure", "authz", "confirmation", "egress", "files", "jobs", "audit"]
+summary = "Explicit MCP exposure and Gradio RemoteWorkflow adapters reuse local schemas while retaining separate live authz, egress, file, job, bounds, and audit policy."
+
+[[capability]]
+id = "PW-WORKBENCH-001..010"
+area = "workbench-and-authoring"
+gate = "WORKBENCH-046"
+secondary_gates = ["SECURITY-046", "DOCS-046"]
+state = "Planned"
+packages = ["hedron-explorer", "hedron-jinja", "hedron-extras", "hedron-notebook", "hedron-sim", "hedron"]
+evidence = ["explorer", "jinja", "extras", "notebook", "sim", "generation"]
+summary = "Catalog-backed workflow workbenches inspect and generate reviewable code/tests without arbitrary callable inspection or an opaque production workflow store."
+
+[[capability]]
+id = "PW-SCENARIO-001..009"
+area = "scenarios-and-conformance"
+gate = "SCENARIO-046"
+secondary_gates = ["COMPAT-046", "PKG-046"]
+state = "Planned"
+packages = ["hedron", "hedron-conformance", "hedron-sample-kit"]
+evidence = ["app-scenario", "portable-fixtures", "fuzz", "node", "java", "clean-wheel"]
+summary = "Every first-party feature has synthetic AppScenario and portable conformance coverage, with third-party author and language-evaluator fixtures."
+
+[[capability]]
+id = "PW-HOST-001..006"
+area = "host-and-deployment"
+gate = "ADAPTER-046"
+secondary_gates = ["COMPAT-046"]
+state = "Planned"
+packages = ["hedron", "hedron-flask", "hedron-django", "hedron-posit", "hedron-workbench"]
+evidence = ["fastapi", "flask", "django", "workbench", "connect", "mount"]
+summary = "Package features use normal host registration/security/reversal and expose machine-readable adapter limitations across ordinary and Posit deployments."
+
+[[capability]]
+id = "PW-SEC-001..010"
+area = "security-and-privacy"
+gate = "SECURITY-046"
+secondary_gates = ["REGRESS-046"]
+state = "Planned"
+packages = ["hedron", "hedron-data", "hedron-charts", "hedron-elements", "hedron-mcp", "hedron-gradio"]
+evidence = ["threat-model", "redaction", "hostile-input", "destructive-deny", "review"]
+summary = "Bundles, sources, events, remote operations, files, and generated artifacts remain explicit, bounded, redacted, deny-by-default, and subordinate to live policy."
+
+[[capability]]
+id = "PW-A11Y-001..007"
+area = "accessibility-and-browser"
+gate = "A11Y-046"
+secondary_gates = ["BROWSER-046"]
+state = "Planned"
+packages = ["hedron", "hedron-data", "hedron-charts", "hedron-elements", "hedron-explorer"]
+evidence = ["keyboard", "tabular-alternative", "no-js", "visual-modes", "three-engine"]
+summary = "Integrated data/chart/element/workbench workflows preserve semantic native fallbacks and equivalent keyboard/non-visual paths with scoped evidence honesty."
+
+[[capability]]
+id = "PW-QUAL-001..006"
+area = "compatibility-and-packaging"
+gate = "COMPAT-046"
+secondary_gates = ["PKG-046", "REGRESS-046"]
+state = "Planned"
+packages = ["hedron", "hedron-conformance", "hedron-data", "hedron-charts", "hedron-elements"]
+evidence = ["unchanged-apps", "direct-api", "incremental", "eject", "clean-install", "version-range"]
+summary = "Unchanged applications/direct package APIs, incremental adoption/ejection, clean optional dependencies, and independent version ranges remain compatible."
+
+[[capability]]
+id = "PW-QUAL-007..008"
+area = "performance"
+gate = "PERF-046"
+state = "Planned"
+packages = ["hedron", "hedron-data", "hedron-charts", "hedron-elements"]
+evidence = ["registration", "request", "query", "event", "browser", "remote", "memory"]
+summary = "Bundle and vertical-feature overhead is bounded against equivalent explicit 0.45 paths and cannot hide N+1, fan-out, or retry amplification."
+
+[[capability]]
+id = "PW-QUAL-009"
+area = "upgrade-and-rollback"
+gate = "COMPAT-046"
+secondary_gates = ["ADAPTER-046"]
+state = "Planned"
+packages = ["hedron", "hedron-conformance"]
+evidence = ["mixed-version", "absence", "outage", "rolling", "rollback"]
+summary = "Version skew, package/provider absence, remote outage, failed inclusion, rolling deployment, ejection, and return to 0.45 preserve explicit surfaces."
+
+[[capability]]
+id = "PW-QUAL-010"
+area = "documentation"
+gate = "DOCS-046"
+state = "Planned"
+packages = ["docs"]
+evidence = ["api", "recipes", "customize", "eject", "security", "accessibility", "migration"]
+summary = "Complete package/API/recipe/customization/ejection/security/accessibility/testing/remote/deployment docs teach explicit boundaries and escape hatches."
+
+[[capability]]
+id = "PW-QUAL-011..012"
+area = "release-closure"
+gate = "PKG-046"
+secondary_gates = ["REGRESS-046", "DOCS-046"]
+state = "Planned"
+packages = ["hedron", "docs"]
+evidence = ["stability", "inventory", "changelog", "release-rehearsal", "zero-deferred"]
+summary = "Feature stability and whole-fleet release artifacts remain honest and every gate closes with zero Deferred."
+
+[[feature_inventory]]
+id = "data-workspace"
+package = "hedron-data"
+initial_scope = ["list", "detail", "create", "edit", "validation", "forbidden", "not_found", "conflict"]
+excluded = ["automatic_delete", "bulk_mutation", "relation_discovery", "nested_write", "inferred_authz"]
+gate = "DATAFLOW-046"
+
+[[feature_inventory]]
+id = "chart-interaction"
+package = "hedron-charts"
+initial_scope = ["selection", "filter", "drilldown", "deterministic_export", "linked_refresh"]
+excluded = ["hidden_dependency", "arbitrary_callback", "automatic_crossfilter", "adapter_promotion"]
+gate = "VISUAL-046"
+
+[[feature_inventory]]
+id = "schema-aware-elements"
+package = "hedron-elements"
+initial_scope = ["supported_control_map", "typed_events", "async_command_state", "native_fallback"]
+excluded = ["arbitrary_schema", "browser_authority", "required_javascript", "react_promotion"]
+gate = "ELEMENT-046"
+
+[[feature_inventory]]
+id = "mcp-exposure"
+package = "hedron-mcp"
+initial_scope = ["explicit_resource", "explicit_tool", "confirmation", "authz", "audit"]
+excluded = ["automatic_exposure", "dom_authority", "ambient_principal", "unbounded_output"]
+gate = "REMOTE-046"
+
+[[feature_inventory]]
+id = "gradio-remote-workflow"
+package = "hedron-gradio"
+initial_scope = ["allowlisted_endpoint", "local_models", "files", "progress", "typed_outcomes"]
+excluded = ["ui_embedding", "user_url", "ambient_credentials", "trusted_remote_schema"]
+gate = "REMOTE-046"
+
+[[feature_inventory]]
+id = "workflow-workbench"
+package = "hedron-explorer"
+initial_scope = ["inspect", "preview", "outcome_matrix", "effect_coverage", "reviewable_generation"]
+excluded = ["production_workflow_store", "direct_handler_call", "opaque_format"]
+gate = "WORKBENCH-046"
+
+[[limit]]
+name = "max_bundles"
+value = 512
+unit = "bundles"
+gate = "BUNDLE-046"
+
+[[limit]]
+name = "max_bundle_dependency_depth"
+value = 16
+unit = "levels"
+gate = "SECURITY-046"
+
+[[limit]]
+name = "max_workspace_fields"
+value = 256
+unit = "fields"
+gate = "DATAFLOW-046"
+
+[[limit]]
+name = "max_chart_selection_items"
+value = 1000
+unit = "items"
+gate = "VISUAL-046"
+
+[[limit]]
+name = "max_effect_fanout"
+value = 32
+unit = "targets"
+gate = "SECURITY-046"
+
+[[limit]]
+name = "max_generated_scenarios_per_bundle"
+value = 128
+unit = "scenarios"
+gate = "SCENARIO-046"
+
+[[exclusion]]
+id = "PW-EX-001"
+summary = "No package workflow executor, hidden reactivity, global store, signal system, or full-script rerun."
+
+[[exclusion]]
+id = "PW-EX-002"
+summary = "No universal CRUD, ORM/source discovery, inferred authz/tenancy/transactions/idempotency/retries, or automatic destructive action."
+
+[[exclusion]]
+id = "PW-EX-003"
+summary = "No automatic MCP/Gradio/public exposure, user-supplied remote origin, ambient credentials, or trusted remote schema."
+
+[[exclusion]]
+id = "PW-EX-004"
+summary = "No opaque Explorer production workflow store or unreviewed generated code/test authority."
+
+[[exclusion]]
+id = "PW-EX-005"
+summary = "No required custom elements, Node/browser framework/live transport/type-checker plugin or blanket package maturity promotion."
+

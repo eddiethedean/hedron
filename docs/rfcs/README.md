@@ -88,3 +88,6 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0068](RFC-0068-WHOLE-FLEET-CLOSURE.md) | Whole-fleet production-grade closure | Accepted |
 | [0069](RFC-0069-HIGH-FIDELITY-CHARTS.md) | High-fidelity declarative charts | Accepted |
 | [0070](RFC-0070-REFRESHABLE-VIEWS.md) | Refreshable views, commands, and typed updates | Accepted |
+| [0071](RFC-0071-TYPE-DRIVEN-AUTHORING.md) | Type-driven authoring and schema-derived interactions | Accepted |
+| [0072](RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md) | Typed interaction ecosystem convergence | Accepted |
+| [0073](RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md) | Package-native typed workflows | Accepted |

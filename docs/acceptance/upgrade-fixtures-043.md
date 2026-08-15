@@ -93,7 +93,28 @@ equivalent performance/transaction behavior.
 
 Parameterized component/action routes migrate to `bind(...)`. Fixtures cover path converters,
 query parameters, Unicode, mount prefixes, repeated instances, missing/extra parameters, secret
-redaction, and stable explicit instance keys.
+redaction, and stable explicit instance keys. The fixture distinguishes 0.43 structural failures
+(unknown/missing names, unsafe serialization/encoding, identity conflicts) from full typed request
+validation, which remains the normal GET route's responsibility.
+
+### Phase 0.44 handoff baseline
+
+The fixture freezes the intentional predecessor seam before 0.43 cuts:
+
+- `FragmentHandle[Bind, Content]` and `ActionHandle[Input, Result]` have two generic slots in the
+  documented order; `BoundFragment[Content]` and `Patch[Content]` keep one content slot;
+- runtime, Explorer, CLI, scenarios, and conformance read the same versioned base handle descriptor
+  and fingerprint;
+- the structural binding adapter is replaceable only through its documented protocol;
+- `Form(action=handle, ...)` wires explicit fields and no `ActionHandle.form()` exists;
+- command effects are labeled `dynamic` or `observed`, never inferred as declared;
+- namespaced descriptor extensions cannot override base route, identity, ownership, host, target,
+  fallback, limits, or response conversion.
+
+A test-only model adapter, `TypeSchema` extension, generated-form consumer, and declared-effect
+extension attach to this fixture. They may narrow validation and enrich tooling, but the base
+request/response/markup/authorization goldens stay unchanged. This proves the seam without shipping
+0.44 public features in 0.43.
 
 ### Testing migration
 
@@ -114,9 +135,10 @@ version-stable values must use explicit `path=` and `key=` before cutover.
 
 - source fixtures for every family above;
 - golden request/response/markup and registry metadata;
+- generic-arity, base-descriptor/fingerprint, structural-adapter, dynamic-effect, and 0.44 handoff
+  fixtures;
 - FastAPI/Flask/Django conformance output;
 - 0.42 and 0.43 environment lock files;
 - migration and rollback commands;
 - a review ledger for every intentional difference;
 - confirmation that no 0.42 stable symbol was deprecated or removed.
-

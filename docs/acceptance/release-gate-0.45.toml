@@ -1,0 +1,129 @@
+# Phase 0.45 typed interaction ecosystem evidence index.
+# Stage 0 requirements packet. Commands are reserved names until implemented.
+
+[[evidence]]
+id = "CATALOG-045"
+state = "Planned"
+command = "python scripts/check_catalog_045.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "MANIFEST-045"
+state = "Planned"
+command = "python scripts/check_manifest_045.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "PROJECTION-045"
+state = "Planned"
+command = "python scripts/check_projections_045.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "HOST-045"
+state = "Planned"
+command = "python scripts/check_hosts_045.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "AUTHOR-045"
+state = "Planned"
+command = "python scripts/check_authoring_045.py"
+ci_job = "test"
+owner = "hedron-jinja"
+
+[[evidence]]
+id = "SURFACE-045"
+state = "Planned"
+command = "python scripts/check_surfaces_045.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REMOTE-045"
+state = "Planned"
+command = "python scripts/check_remote_projections_045.py"
+ci_job = "test"
+owner = "hedron-mcp"
+
+[[evidence]]
+id = "TOOLING-045"
+state = "Planned"
+command = "python scripts/check_tooling_045.py"
+ci_job = "test"
+owner = "hedron-explorer"
+
+[[evidence]]
+id = "PORTABLE-045"
+state = "Planned"
+command = "python scripts/check_portable_045.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "DEPLOY-045"
+state = "Planned"
+command = "python scripts/check_deploy_045.py"
+ci_job = "evidence"
+owner = "hedron-posit"
+
+[[evidence]]
+id = "SECURITY-045"
+state = "Planned"
+command = "python scripts/check_security_045.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "A11Y-045"
+state = "Planned"
+command = "python scripts/check_a11y_045.py"
+ci_job = "browser"
+owner = "hedron-explorer"
+
+[[evidence]]
+id = "BROWSER-045"
+state = "Planned"
+command = "python scripts/check_browser_045.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "COMPAT-045"
+state = "Planned"
+command = "python scripts/check_compat_045.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "PERF-045"
+state = "Planned"
+command = "python scripts/check_perf_045.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "DOCS-045"
+state = "Planned"
+command = "python scripts/check_docs_045.py"
+ci_job = "quality"
+owner = "docs"
+
+[[evidence]]
+id = "REGRESS-045"
+state = "Planned"
+command = "python scripts/check_regress_045.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-045"
+state = "Planned"
+command = "python scripts/verify_pkg_45.py"
+ci_job = "packaging"
+owner = "hedron"
+

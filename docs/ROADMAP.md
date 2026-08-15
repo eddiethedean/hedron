@@ -40,7 +40,10 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.40** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | **Published** (`v0.40.0`; in-tree cut, tag/PyPI deferred; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95)) |
 | **0.41** | Typed browser composition, bounded draft state, and navigation | **Published** (`v0.41.0`; in-tree cut, tag/PyPI deferred; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96)) |
 | **0.42** | Production-grade Web Component platform | Published (`v0.42.0`; in-tree cut, tag/PyPI deferred; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
-| **0.43** | Refreshable views, command handles, and typed updates | **Planned** (`v0.43.0`; D-071 / RFC-0070; tracking issue required before Stage 1) |
+| **0.43** | Refreshable views, command handles, and typed updates | **Planned** (`v0.43.0`; D-071 / RFC-0070, refined by D-073; tracking issue required before Stage 1) |
+| **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Planned** (`v0.44.0`; D-072 / RFC-0071, refined by D-073; requires Verified 0.43 and a tracking issue before Stage 1) |
+| **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Planned** (`v0.45.0`; D-074 / RFC-0072; requires Verified 0.44 and a tracking issue before Stage 1) |
+| **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Planned** (`v0.46.0`; D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -76,8 +79,12 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   package fleet. **Published 0.36–0.42** establish a standards-based Web
   Component platform while preserving SSR, native forms/navigation, HTMX, and no-Node Python
   consumption. Planned **0.43** adds a handle-first interaction facade over the existing
-  region/`InteractionResult` stack. None of these programs is a blanket feature promotion or a
-  scheduled `1.0`.
+  region/`InteractionResult` stack; planned **0.44** then adds opt-in Pydantic boundaries,
+  schema-derived forms/effects/outcomes, generic specialization, and optional class lifecycles over
+  that verified facade. Planned **0.45** converges those contracts across the package fleet through
+  one catalog/manifest/projection boundary; planned **0.46** then adds opt-in package-native data,
+  visualization, element, remote, and workbench workflows that compile to the same stack. None of
+  these programs is a blanket feature promotion or a scheduled `1.0`.
 
 ### Honest gaps on the current train (0.42.x)
 
@@ -3337,7 +3344,7 @@ complete browser supply-chain provenance.
 
 ## 0.43 — Refreshable views, commands, and typed updates (`v0.43.0`)
 
-**Status:** Planned (D-071 /
+**Status:** Planned (D-071, refined by D-073 /
 [RFC-0070](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)). Stage 0
 requirements packet is defined against Published `v0.42.0`; target is `v0.43.0`. A tracking issue
 must be created and bound to every 0.43 gate before runtime implementation begins.
@@ -3354,10 +3361,12 @@ route allowlists, copied URLs, or swap envelopes. The existing low-level region 
   a stable `FragmentHost`, route/region/reference metadata, handle-derived controls, and preserved
   sync/async/dependency introspection.
 - Add validated `BoundFragment` instances for dynamic path/query parameters, repeated view
-  instances, mount prefixes, safe URL encoding, and non-secret deterministic identity.
+  instances, mount prefixes, safe URL encoding, and non-secret deterministic identity. Binding is
+  structural in 0.43; the normal GET remains authoritative for full type/domain validation.
 - Add `@app.command` returning an `ActionHandle` for POST+CSRF mutation routes, buttons, forms,
   tests, generated/explicit paths, ordinary HTTP fallbacks, and Explorer/CLI inspection without
-  changing existing `@app.action` semantics.
+  changing existing `@app.action` semantics. Forms have explicit fields; model-derived
+  `ActionHandle.form()` begins in 0.44.
 - Add bounded `refresh(view, ...)` intents that rerun each view through its normal GET route and
   dependencies using typed HTMX events; document that fan-out is neither atomic nor free.
 - Add portable frozen `Patch` / `PatchSet` and `replace` / `update` / `patches` ergonomics that
@@ -3370,6 +3379,9 @@ route allowlists, copied URLs, or swap envelopes. The existing low-level region 
   rules, native controls, no-JavaScript command fallback, and three-engine browser evidence.
 - Extend typed route/output registry metadata, Explorer view-command-output graphs, CLI diagnostics,
   handle-based `AppScenario` operations/assertions, scaffold, examples, and migration guidance.
+- Freeze `FragmentHandle[Bind, Content]` / `ActionHandle[Input, Result]` generic arity,
+  `BoundFragment[Content]` / `Patch[Content]`, one versioned authoritative base descriptor, one
+  structural binding-adapter protocol, and dynamic/observed effect labels as the 0.44 handoff.
 - Prove portable patch/refresh conformance on FastAPI, Flask, and Django or inventory a bounded
   adapter exception with owner and destination; keep `hedron-core` framework-neutral.
 - Retain `Hedron.region`, `Hedron.fragment`, `FragmentRegion`, `fragment_regions=`,
@@ -3419,13 +3431,13 @@ the machine inventory is
 
 | Gate | Verified means |
 |---|---|
-| `VIEW-043` | Handle/host/binding/generated+explicit route/id/introspection/async/DI/mount matrix passes. |
-| `COMMAND-043` | Command handles, POST/CSRF, native controls/forms, validation/errors, and ordinary HTTP fallback pass. |
+| `VIEW-043` | Handle/host/structural-binding/GET-validation/generated+explicit route/id/introspection/async/DI/mount matrix passes. |
+| `COMMAND-043` | Command handles, POST/CSRF, native controls/explicit-field forms, validation/errors, and ordinary HTTP fallback pass. |
 | `UPDATE-043` | Refresh-intent and Patch/PatchSet bounds, ordering, target authority, OOB/status/cache/history conversion pass. |
 | `SECURITY-043` | App ownership, target disagreement, authz/CSRF, redaction, unsafe input, and resource-limit adversarial matrix passes. |
 | `A11Y-043` / `BROWSER-043` | Host semantics, busy/error/focus/announcements/keyboard/no-JS and three-engine lifecycle/cleanup pass without a new human-AT claim. |
-| `TOOLING-043` | Explorer, CLI, scaffold, registry metadata, and handle-based scenario UX pass. |
-| `COMPAT-043` | Unchanged 0.42 facade, mixed migration, rollback, and FastAPI/Flask/Django conformance pass. |
+| `TOOLING-043` | Base descriptor, dynamic/observed graph, Explorer, CLI, scaffold, registry metadata, and handle-based scenario UX pass. |
+| `COMPAT-043` | Unchanged 0.42 facade, frozen 0.44 handoff, mixed migration, rollback, and FastAPI/Flask/Django conformance pass. |
 | `PERF-043` | No required new browser asset; handle/refresh/patch latency, allocation, payload, request, and memory budgets pass. |
 | `DOCS-043` / `REGRESS-043` / `PKG-043` | Complete docs/migration plus full regression, clean package, inventory, and release rehearsal pass. |
 
@@ -3448,6 +3460,8 @@ Upgrade fixtures:
   runtime.
 - Removing, deprecating, or changing the return identity of existing stable decorators and
   interaction helpers.
+- Evaluating annotations, adding Pydantic boundary models, generating model fields, declaring
+  effect sets, mapping typed outcomes, or registering handler classes; those belong to 0.44.
 - Closing `SR-021`, claiming unqualified human-AT support, scheduling `1.0`, or changing package
   maturity solely because the new facade exists.
 
@@ -3459,6 +3473,364 @@ Upgrade fixtures:
   performance, tooling, adapter, migration, and package evidence.
 - Existing 0.42 interaction behavior passes unchanged.
 - Every 0.43-owned release-gate row is Verified with zero Deferred before `v0.43.0` is cut.
+
+## 0.44 — Type-driven authoring and schema-derived interactions (`v0.44.0`)
+
+**Status:** Planned (D-072, refined by D-073 /
+[RFC-0071](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)).
+Stage 0 requirements are defined against Published `v0.42.0`; Verified `v0.43.0` is a hard
+prerequisite for Stage 1 and the 0.44 cut baseline. Target is `v0.44.0`. A separate tracking issue
+must be created and bound to every 0.44 gate before runtime implementation begins.
+
+**Outcome:** Pydantic models and Python annotations become a single explicit typed extension for
+refreshable-view parameters, command inputs, native forms, declared outputs, validation, tooling,
+and testing. They attach to the authoritative 0.43 descriptor and specialize its fixed generic
+slots without replacing route/host/output/security mechanics. Larger applications may choose
+structured class lifecycles, while simple function views/commands stay primary and unchanged.
+
+### Scope
+
+- Add explicit Pydantic v2 boundary models marked with `ViewParams()` and `FormBody()` so bindable
+  or request-supplied data cannot be confused with `Depends`, request context, principals, or other
+  injected values.
+- Add immutable, closed-position `Annotated` metadata: `Sensitive`, `InstanceKey`, `Control`,
+  `Refreshes`, and `Updates`; ignore unknown third-party metadata without invoking or serializing
+  it. Fallback/cache stay explicit route/class configuration.
+- Specialize the fixed 0.43 generic slots—`FragmentHandle[Params, Content]`,
+  `BoundFragment[Content]`, `ActionHandle[Input, Result]`, and `Patch[Content]`—with stock
+  mypy/pyright evidence, no arity change, and no required checker plugin.
+- Compile one Pydantic implementation of the 0.43 binding adapter and one versioned, redacted
+  `TypeSchema` extension per opted-in handler/model config. It references the base descriptor
+  fingerprint for form parsing, Explorer preview, scenarios, effects/outcomes, OpenAPI extensions,
+  and diagnostics; routing/identity/hosts/targets/responses remain base-owned.
+- Generate accessible native forms for a closed machine-inventoried field set only; support safe
+  `Control` hints and explicit per-field or full-form overrides for unsupported/ambiguous shapes.
+- Reflect safe Pydantic constraints for usability while keeping server validation authoritative;
+  preserve CSRF, method/content type, upload/body limits, validation fragments, ordinary HTTP
+  fallback, error association/focus, safe value retention, and no-JavaScript behavior.
+- Add `Refreshes`/`Updates` effect declarations that validate explicit returned 0.43 refresh/patch
+  targets without executing effects, discovering data dependencies, or widening target authority.
+- Add finite discriminated Pydantic outcomes with a complete explicit mapping from every variant
+  to content/response, status, effects, and fallback; do not auto-render arbitrary `BaseModel`
+  returns.
+- Add optional `RefreshableView[Params, Data]` load/render and
+  `CommandHandler[Input, Result]` execute/outcome lifecycles that compile into the same 0.43
+  handles, routes, responses, CSRF, targets, fallbacks, tests, and tooling as functions.
+- Reject shared mutable request state on handler instances; provide a documented request-scoped
+  factory/teardown path only where lifecycle and concurrency are explicit.
+- Give Explorer, CLI static/dynamic inspection, OpenAPI extensions, autodoc, `AppScenario`, Jinja,
+  and adapter/conformance projections the same redacted schema and provenance/version checks.
+- Prove Published 0.42 and future Verified 0.43 applications run unchanged unless they opt into a
+  Hedron marker/class; preserve FastAPI-native source markers and third-party `Annotated` metadata.
+
+### Locked public model
+
+```python
+class UserCardParams(BaseModel):
+    user_id: UUID
+    tab: Literal["overview", "activity"] = "overview"
+
+
+@app.refreshable
+def user_card(
+    params: Annotated[UserCardParams, ViewParams()],
+    actor: Annotated[User, Depends(current_user)],
+) -> UserCard:
+    return UserCard(...)
+
+
+class AddNoteInput(BaseModel):
+    title: Annotated[str, Field(min_length=1, max_length=80), Control(label="Title")]
+    body: Annotated[str, Field(max_length=4000), Control(kind="textarea", label="Note")]
+
+
+@app.command
+def add_note(
+    data: Annotated[AddNoteInput, FormBody()],
+    actor: Annotated[User, Depends(current_user)],
+) -> Annotated[CommandResult, Refreshes(notes, note_count)]:
+    save_note(actor, data)
+    return refresh(notes, note_count)
+```
+
+Optional class structure is explicit rather than magical:
+
+```python
+class UserCardView(RefreshableView[UserCardParams, UserCardData]):
+    async def load(self, params: Annotated[UserCardParams, ViewParams()], actor=Depends(current_user)):
+        return await repository.load(actor, params.user_id)
+
+    def render(self, data: UserCardData):
+        return UserCard(data)
+```
+
+The public contract is [TYPE_DRIVEN_AUTHORING](api/TYPE_DRIVEN_AUTHORING.md); implementation
+requirements are
+[TYPE_DRIVEN_AUTHORING_044](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/TYPE_DRIVEN_AUTHORING_044.md);
+the machine inventory is
+[`type-authoring-capability-inventory-044.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-authoring-capability-inventory-044.toml).
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `MODEL-044` | Pydantic boundary/source/marker normalization, serialization, ambiguity, DI separation, errors, and limits pass. |
+| `TYPING-044` | Fixed-arity 0.43 generic specialization plus decorators/classes pass stock mypy and pyright on the supported Python matrix. |
+| `FORM-044` | Closed field inventory, native form generation/overrides, validation, CSRF, encoding, fallback, and errors pass. |
+| `EFFECT-044` | Declared effects, dynamic labeling, discriminated outcomes/maps, actual-result checking, and failures pass. |
+| `CLASS-044` | Function/class lifecycle equivalence, factory/shared-state rules, sync/async, cancellation, concurrency, and teardown pass. |
+| `SCHEMA-044` | One fingerprint-bound redacted schema extension, provenance, consumer/version checks, cache invalidation, limits, and descriptor mismatch behavior pass. |
+| `SECURITY-044` | Dependency shadowing, secret leakage, hostile schemas/forms/effects/outcomes, static no-execution, CSRF/uploads, and limits pass. |
+| `A11Y-044` / `BROWSER-044` | Native semantics, labels/groups/errors/focus/retention/keyboard/no-JS/visual modes and three-engine workflows pass without a new human-AT claim. |
+| `TOOLING-044` | Explorer, CLI static/dynamic modes, OpenAPI extensions, autodoc, diagnostics, and typed scenarios use the shared schema. |
+| `COMPAT-044` | Unchanged 0.42/0.43 and frozen predecessor handoff, incremental migration/rollback, public Pydantic/FastAPI APIs, and adapter/Jinja conformance pass. |
+| `PERF-044` | Cold/warm normalization, validation/forms/effects/outcomes, schema payload/cache, allocation, concurrency, and memory budgets pass. |
+| `DOCS-044` / `REGRESS-044` / `PKG-044` | Complete docs and full regression, package/version/dependency/import matrices, inventory, and release rehearsal pass. |
+
+Evidence index:
+[`release-gate-0.44.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.44.toml).
+Acceptance packet:
+[RELEASE_0_44](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_44.md).
+Upgrade fixtures:
+[upgrade-fixtures-044](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-044.md).
+
+### Non-goals
+
+- Inferring authn/authz, tenancy, business rules, transactions, idempotency, retry safety, cache
+  correctness, or accessible semantics from types/field names.
+- Discovering data reads/writes, automatic invalidation, hidden refreshes, signals/hooks, global
+  stores, or full-script reruns.
+- Auto-generating UI for arbitrary Pydantic/JSON Schema shapes or auto-rendering arbitrary model
+  results.
+- Making classes mandatory or replacing the primary function decorator experience.
+- Allowing bind/form/model data to populate dependencies, request context, principals, or
+  framework-owned result/effect metadata.
+- Importing or evaluating target projects during static/offline analysis.
+- Depending on private Pydantic/FastAPI dependency/schema internals or requiring a type-checker
+  plugin.
+- Required browser frameworks, custom elements, Node/bundlers, hydration, VDOM, live transports,
+  preload, or a new client state runtime.
+- Removing/deprecating existing models/forms/actions/routes/regions/interactions or changing 0.43
+  behavior without opt-in.
+- Changing 0.43 generic arity, base descriptor authority/fingerprint, unmodeled structural binding,
+  explicit forms, dynamic/observed effects, target policy, or response conversion.
+- Closing `SR-021`, changing package maturity, scheduling `1.0`, or changing versions/published
+  claims during planning.
+
+### Exit gate
+
+- 0.43 is Verified and serves as the recorded compatibility/performance baseline.
+- Modeled function and class examples use one fingerprint-bound extension across binding, forms,
+  effects/outcomes, Explorer/CLI/OpenAPI/scenarios, and diagnostics while routing/authority stay on
+  the 0.43 descriptor.
+- Generated form, static typing, security, accessibility, browser, performance, adapter, migration,
+  and package matrices pass.
+- Published 0.42 and Verified 0.43 behavior passes unchanged without opt-in.
+- Every 0.44-owned release-gate row is Verified with zero Deferred before `v0.44.0` is cut.
+
+## 0.45 — Typed interaction ecosystem convergence (`v0.45.0`)
+
+**Status:** Planned (D-074 /
+[RFC-0072](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)).
+Stage 0 requirements are defined against Published `v0.42.0`; Verified `v0.44.0` is a hard
+prerequisite for Stage 1 and the 0.45 cut baseline. A tracking issue must be created and bound to
+every 0.45 gate before runtime implementation begins.
+
+**Outcome:** One registered interaction is described consistently across the whole Hedron
+ecosystem. The 0.43 base descriptor remains runtime authority, the optional 0.44 `TypeSchema`
+remains typed-extension authority, and 0.45 adds only a sealed read-only catalog, deterministic
+redacted manifest, and bounded namespaced package projections. Applications keep the same beginner
+view/command/form API.
+
+### Scope
+
+- Add framework-neutral immutable `InteractionCatalog`, `CatalogEntry`, `InteractionManifest`,
+  `PackageProjection`, capability, disposition, and version-error contracts.
+- Compile one catalog from the sealed registry's public base descriptors and matching type
+  extensions; never re-inspect or reinterpret handlers per consumer.
+- Emit one versioned canonical redacted `interactions.json` build artifact with trusted dynamic and
+  no-import static modes, atomic I/O, format compatibility, bounds, and fingerprint validation.
+- Add a trusted registration/build-only projection provider protocol. Projections are namespaced,
+  versioned, bounded, redacted, fingerprint-bound consumer metadata with no runtime authority.
+- Integrate FastAPI, Flask, and Django on a portable semantic contract while exposing native-host
+  reversal/security/async/lifespan limitations explicitly.
+- Integrate Explorer, CLI, build, OpenAPI extensions, `AppScenario`, diagnostics, Jinja helpers,
+  plugins, and sample-kit through the same catalog.
+- Add current-surface projections for data, charts, elements, and extras without implementing
+  phase 0.46 feature bundles/workspaces.
+- Add explicit separately authorized MCP/Gradio catalog adapters; registration/catalog presence
+  exposes nothing.
+- Add portable conformance, sim, notebook, sample-kit, Node/Java, Posit/Workbench/Connect, native,
+  and clean-package evidence.
+- Give every first-party package/runtime an owned machine-readable `native_consumer`,
+  `projection_adapter`, `compatibility_only`, or `not_applicable` disposition.
+
+### Locked authority model
+
+```text
+0.43 base descriptor (route/security/runtime authority)
+                 │
+                 ├── optional 0.44 TypeSchema (typed extension authority)
+                 │
+                 ▼
+        0.45 CatalogEntry (read-only index)
+                 │
+                 └── PackageProjection (namespaced consumer metadata)
+```
+
+Manifest or projection disagreement is stale data, not a competing fact. Development rebuilds or
+reports it; security-sensitive production consumers fail closed.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `CATALOG-045` | Compiler, immutable entries, descriptor/type authority, seal, deterministic lookup, unmodeled behavior, app ownership, concurrency, and no-execution pass. |
+| `MANIFEST-045` | Canonical schema/bytes, profiles/redaction, trusted/static modes, atomic I/O, startup validation, compatibility, hostile input, and bounds pass. |
+| `PROJECTION-045` | Provider protocol, namespaces, versions/fingerprints, capability labels, optionality, cache invalidation, third-party isolation, and rollback pass. |
+| `HOST-045` | FastAPI/Flask/Django portable parity, public host APIs, honest exceptions, mounts, native/HTMX/no-JS, and clean imports pass. |
+| `AUTHOR-045` | Jinja registered-handle helpers, plugins/sample-kit/scaffold, diagnostics, no manifest execution, and uninstall pass. |
+| `SURFACE-045` / `REMOTE-045` | Current data/chart/element/extras projections and deny-by-default MCP/Gradio adapters coexist with direct APIs and security policy. |
+| `TOOLING-045` | Explorer/CLI/build/OpenAPI/scenarios/diagnostics use one contract with drift, static/trusted provenance, redaction, and large-catalog behavior. |
+| `PORTABLE-045` / `DEPLOY-045` | Conformance/sim/notebook/sample-kit/Node/Java and Posit/Workbench/Connect portable, mount, package, real-deployment, and rollback evidence pass. |
+| `SECURITY-045` | Threat model, sensitive-data absence, hostile artifacts/providers/paths/injection/exposure, access controls, and review pass. |
+| `A11Y-045` / `BROWSER-045` | Native semantics, catalog/tool accessibility, fallback, three-engine package workflows, cleanup, and evidence honesty pass. |
+| `COMPAT-045` / `PERF-045` | Unchanged 0.42–0.44, dispositions/direct APIs/skew/removal/rollback, and compile/lookup/manifest/tool/request-path budgets pass. |
+| `DOCS-045` / `REGRESS-045` / `PKG-045` | Complete docs plus full regression, whole-fleet package/disposition/inventory/version/release rehearsal pass. |
+
+Evidence index:
+[`release-gate-0.45.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.45.toml).
+Acceptance packet:
+[RELEASE_0_45](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_45.md).
+Capability/disposition inventory:
+[`ecosystem-capability-inventory-045.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/ecosystem-capability-inventory-045.toml).
+
+### Non-goals
+
+- A third route/type/form/effect/outcome source of truth or executable manifest.
+- Automatic MCP, Gradio, HTTP, plugin, or deployment exposure.
+- Importing/evaluating target code, annotations, plugins, or remotes in static mode.
+- Inverting optional package dependencies or requiring Node/browser packages.
+- Adding package-native feature bundles, data workspaces, chart links, enhanced workflows, or
+  remote workflow factories; those belong to 0.46.
+- Blanket maturity promotion, closing `SR-021`, scheduling `1.0`, or changing versions during
+  planning.
+
+### Exit gate
+
+- Verified 0.44 is the baseline and the frozen descriptor/type handoff passes unchanged.
+- Every declared consumer uses the catalog/manifest/projection public contract.
+- Every package/runtime has an evidence-backed disposition, owner, capability/limitation set,
+  compatibility range, and rollback path.
+- Remote exposure remains separate and deny-by-default; static inspection remains no-execution.
+- Every 0.45-owned release-gate row is Verified with zero Deferred before `v0.45.0` is cut.
+
+## 0.46 — Package-native typed workflows (`v0.46.0`)
+
+**Status:** Planned (D-075 /
+[RFC-0073](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)).
+Stage 0 requirements are defined against Published `v0.42.0`; Verified `v0.45.0` is a hard
+prerequisite for Stage 1 and the 0.46 cut baseline. A tracking issue must be created and bound to
+every 0.46 gate before runtime implementation begins.
+
+**Outcome:** Packages use the converged catalog/type/handle foundation to provide useful opt-in
+features. Immutable `FeatureBundle` values atomically register ordinary views, commands,
+components, scenarios, requirements, and projections. Data, chart, element, MCP, Gradio, Explorer,
+Jinja, extras, notebook, and simulation features all compile to the existing runtime rather than a
+package workflow engine.
+
+### Scope
+
+- Add immutable bounded `FeatureBundle`, capability requirement, conflict, atomic inclusion,
+  composition, plugin author, disable/uninstall, inspect/eject, and rollback contracts.
+- Add an opt-in `DataWorkspace` initial Supported inventory of list/detail/create/edit over explicit
+  Pydantic models, already-authorized sources/factories, mutation policies, conflicts, effects,
+  and complete override paths.
+- Add typed chart selection, filter, drill-down, deterministic export, and chart↔data links through
+  explicit command inputs/effects; bound cycles/fan-out/rate/payload/state/cost.
+- Map the closed Supported 0.44 control inventory to Supported `hedron-elements` controls and async
+  command states while native forms remain canonical under no-JS/failed-upgrade/CSP.
+- Add separately explicit `McpExposure`-class and Gradio `RemoteWorkflow` policies with live authz,
+  confirmation, egress, file/job/progress/cancellation/output bounds, and audit.
+- Add catalog-backed Explorer workflow inspection and reviewable code/test generation, Jinja
+  feature helpers, extras workbenches, notebook labs, sim offline subset, scenarios/conformance,
+  and sample-kit third-party author proof.
+- Prove portable FastAPI/Flask/Django and Posit/Workbench deployment semantics and honest
+  limitations.
+- Preserve all direct package APIs and permit incremental package/feature adoption and ejection.
+
+### Locked public model
+
+```python
+orders = DataWorkspace(
+    name="orders",
+    model=Order,
+    source=authorized_orders,
+    policy=DataWorkspacePolicy(
+        can_read=can_read_orders,
+        can_create=can_create_order,
+        can_edit=can_edit_order,
+        delete="disabled",
+    ),
+)
+
+app.include_feature(orders)
+
+sales_selection = ChartInteraction(
+    chart=sales_chart,
+    event="select",
+    payload=SalesSelection,
+    command=filter_sales,
+    refreshes=[orders.list_view, sales_summary],
+)
+```
+
+Bundles register before seal and own no executor, application/global state, transaction,
+dependency solver, route dispatcher, response converter, effect engine, or browser authority.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `BUNDLE-046` | Immutable bundles, atomic inclusion, conflicts/dependencies/capabilities, deterministic providers, plugin isolation, cleanup, eject, and rollback pass. |
+| `DATAFLOW-046` | Explicit sources/policies, list/detail/create/edit, queries/identity/forms/outcomes/authz/conflicts/optimism/overrides/bounds/hosts/direct APIs pass. |
+| `VISUAL-046` | Typed selection/filter/drill-down/export, explicit command/effect links, cycles/fan-out/rate/payload/state/authz/fallback/a11y/races pass. |
+| `ELEMENT-046` | Closed control mapping, native encoding/semantics, typed events, async states, secret handling, failed/no-JS/CSP fallback, cleanup, and ABI compatibility pass. |
+| `REMOTE-046` | Explicit MCP/Gradio schema/authz/confirmation/egress/files/jobs/progress/cancel/output/audit/denial/drift/rollback pass. |
+| `WORKBENCH-046` | Explorer/Jinja/extras/notebook/sim/CLI catalog use, safe execution, reviewable generation, trust/localhost/offline boundaries, a11y, and performance pass. |
+| `SCENARIO-046` | AppScenario, portable conformance, sample-kit, fuzz, Node/Java, real-service separation, package data, and offline evidence pass. |
+| `ADAPTER-046` | FastAPI/Flask/Django/Posit public host authority, semantic portability, declared limits, mounts/deployments, and clean imports pass. |
+| `SECURITY-046` | Bundle/source/event/remote/file/generated-code threat model, policy preservation, redaction, allowlists, bounds, destructive deny, tool controls, and review pass. |
+| `A11Y-046` / `BROWSER-046` | Integrated data/chart/element/workbench semantic, keyboard/tabular/native fallback, visual modes, three-engine races/cancellation/cleanup, and evidence honesty pass. |
+| `COMPAT-046` / `PERF-046` | Unchanged 0.42–0.45/direct APIs, incremental adopt/eject/absence/skew/outage/rollback, and explicit-path performance/amplification budgets pass. |
+| `DOCS-046` / `REGRESS-046` / `PKG-046` | Complete docs plus full regression, feature inventory, clean fleet packages, versions/stability/changelogs/release rehearsal pass. |
+
+Evidence index:
+[`release-gate-0.46.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.46.toml).
+Acceptance packet:
+[RELEASE_0_46](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_46.md).
+Capability/feature inventory:
+[`package-workflow-capability-inventory-046.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/package-workflow-capability-inventory-046.toml).
+
+### Non-goals
+
+- A package workflow executor, hidden reactivity, global store, signals, or full-script reruns.
+- Universal CRUD, ORM/source/relation discovery, inferred authorization/tenancy/transactions/
+  idempotency/retries/destructive safety/business validation.
+- Automatic remote exposure, user-supplied remote origins, ambient credentials, or trusted remote
+  schemas.
+- Arbitrary-schema controls, browser authority, or required custom elements/Node/live transports.
+- An opaque Explorer production workflow database or unreviewed generated-code authority.
+- Blanket package/feature maturity promotion, closing `SR-021`, or scheduling `1.0`.
+
+### Exit gate
+
+- Verified 0.45 is the baseline and every feature compiles through ordinary 0.43–0.45 contracts.
+- Bundle/data/chart/element/remote/workbench/scenario vertical slices pass complete policy,
+  security, accessibility, browser, adapter, performance, package, and rollback matrices.
+- Existing applications/direct package APIs pass unchanged and each feature can be overridden,
+  ejected, disabled, uninstalled, and rolled back without orphan artifacts.
+- Every 0.46-owned release-gate row is Verified with zero Deferred before `v0.46.0` is cut.
 
 ## Complete capability-to-release ledger
 
@@ -3545,7 +3917,10 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | HTTP-faithful `AppScenario` application-flow harness | 0.15 | Route, session, typed control/action, fragment, redirect, and response assertions; explicitly no whole-script rerun simulation. |
 | HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); Dialog/Tabs/Pagination/Lazy asserts deferred to 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
 | Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
-| Refreshable views, command handles, typed refresh intents, and `Patch`/`PatchSet` | 0.43 | Handle-first facade over the existing region/`InteractionResult` stack; generated plumbing, server-canonical outputs, accessible hosts, and no hidden reactive runtime (RFC-0070 / D-071). |
+| Refreshable views, command handles, typed refresh intents, and `Patch`/`PatchSet` | 0.43 | Handle-first facade over the existing region/`InteractionResult` stack plus the frozen generic/descriptor/adapter handoff; generated plumbing, server-canonical outputs, accessible hosts, and no hidden reactive runtime (RFC-0070 / D-071 / D-073). |
+| Pydantic boundary models, `Annotated` source/sensitivity/identity/control/effect markers, and generic specialization | 0.44 | Explicit model-driven validation and typing over Verified 0.43 through its public adapter/descriptor seams; dependencies stay injection-owned and annotations never trigger hidden effects (RFC-0071 / D-072 / D-073). |
+| Sealed interaction catalog, manifest, package projections, and fleet dispositions | 0.45 | Read-only convergence over Verified 0.43/0.44 authority; trusted/static tooling, adapters, packages, portable fixtures, remote/deployment consumers, and no third runtime schema (RFC-0072 / D-074). |
+| Package feature bundles, data workspaces, linked charts, enhanced elements, and explicit remote workflows | 0.46 | Opt-in package-native features compile to the 0.43–0.45 stack with explicit policy, overrides/ejection, native fallbacks, and no package workflow executor (RFC-0073 / D-075). |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
 | Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |
 | Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |
@@ -3558,6 +3933,9 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Human screen-reader matrix and compensated disabled-participant evaluation | 0.21 | VoiceOver/Safari, NVDA/Firefox, TalkBack; ≥2 compensated sessions; redacted ledger + remediations (D-052; [#86](https://github.com/eddiethedean/hedron/issues/86)). |
 | Progressive-enhancement form/mutation contract (no-JS + HTMX) | 0.19 | Guide, recipe, and automated non-`HX-Request` success path ([#8](https://github.com/eddiethedean/hedron/issues/8)). |
 | Handle-based Explorer/CLI/AppScenario interaction tooling and migration fixtures | 0.43 | View-command-output graph, human diagnostics, typed scenario operations/assertions, three-host conformance, and unchanged 0.42 rollback evidence. |
+| Schema-derived native forms, typed outcomes, optional class handlers, and shared `TypeSchema` tooling | 0.44 | Closed safe form inventory, explicit effect/outcome mappings, function/class equivalence, fingerprint-bound schema extension, static-no-execution inspection, and unchanged 0.42/0.43 migration evidence. |
+| Whole-ecosystem interaction inspection/build/conformance/deployment tooling | 0.45 | One catalog/manifest/projection contract across Explorer, CLI, OpenAPI, Jinja, scenarios, packages, adapters, portable tools, and deployment with explicit dispositions. |
+| Package workflow workbenches, generated reviewable scenarios, and third-party bundle author kit | 0.46 | Explorer/Jinja/extras/notebook/sim/conformance use the catalog to inspect, preview, test, customize, and eject package features without opaque production workflow state. |
 | `hedron new --flask` / `--django` and adapter clean-wheel CI smoke | 0.20 | Scaffold parity with FastAPI; import-smoke flask/django wheels (`SCAFFOLD-020` / `WHEEL-020`; [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19)). |
 | Project scaffolding, author docs, package conventions | 0.4 | Supports third-party component packages. |
 

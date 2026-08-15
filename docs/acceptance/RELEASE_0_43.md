@@ -3,7 +3,7 @@
 **Status:** Planned; Stage 0 requirements packet complete  
 **Baseline:** Published `v0.42.0`  
 **Target:** `v0.43.0`  
-**Decision/RFC:** D-071 / [RFC-0070](../rfcs/RFC-0070-REFRESHABLE-VIEWS.md)
+**Decision/RFC:** D-071, refined by D-073 / [RFC-0070](../rfcs/RFC-0070-REFRESHABLE-VIEWS.md)
 
 Phase 0.43 adds a high-level view/command/update model over Hedron's existing region and
 `InteractionResult` stack. It does not remove the stable low-level surface, add a general reactive
@@ -22,12 +22,16 @@ index: [`release-gate-0.43.toml`](release-gate-0.43.toml). Upgrade fixtures:
   metadata without copied region ids/selectors/URLs.
 - `@app.command` / `ActionHandle` provide explicit POST+CSRF mutation handles without changing
   existing `@app.action` semantics.
+- Handle classes freeze two-slot input/content-or-result generics, a versioned authoritative base
+  descriptor, and one structural binding-adapter seam for additive 0.44 specialization.
+- 0.43 binding validates route/query structure and safe encoding; the normal GET owns full request
+  validation. Action handles wire explicit-field forms but do not generate model fields.
 - `refresh(view)` sends bounded refresh intents that rerun normal GET routes; `Patch`/`PatchSet`
   provide direct one-response updates.
 - The server output is canonical; missing client targets work and conflicting targets fail closed.
 - Host loading/error/focus/a11y/no-JS behavior is deterministic and tested.
 - Explorer, CLI, `AppScenario`, adapters, and docs speak the same view/command/update language while
-  exposing equivalent low-level mechanics.
+  exposing equivalent low-level mechanics and labeling undeclared command effects dynamic/observed.
 - Existing 0.42 region, interaction, adapter, and package fixtures pass unchanged.
 - No required browser framework/asset, global store, hydration, Node consumer build, or live
   transport is introduced.
@@ -36,14 +40,14 @@ index: [`release-gate-0.43.toml`](release-gate-0.43.toml). Upgrade fixtures:
 
 | Gate | Verified means |
 |---|---|
-| `VIEW-043` | Handles, hosts, generated/explicit paths/ids, binding, introspection, async/DI/mount behavior pass. |
-| `COMMAND-043` | Command handles, POST/CSRF, native controls/forms, errors, and ordinary HTTP fallback pass. |
+| `VIEW-043` | Handles, hosts, generated/explicit paths/ids, structural binding, GET-authoritative validation, renderer introspection, async/DI/mount behavior pass. |
+| `COMMAND-043` | Command handles, POST/CSRF, native controls/explicit-field forms, errors, ordinary HTTP fallback, and no 0.44 field generation pass. |
 | `UPDATE-043` | Refresh intents and Patch/PatchSet translation, bounds, ordering, target authority, status/cache/OOB behavior pass. |
 | `SECURITY-043` | App ownership, target disagreement, authz/CSRF, redaction, unsafe input, and resource-limit adversarial matrix passes. |
 | `A11Y-043` | Native controls, semantic hosts, busy/error/focus/announcements, keyboard/no-JS/reduced-motion/forced-color/zoom pass without a new human-AT claim. |
 | `BROWSER-043` | Chromium/Firefox/WebKit loading, fan-out, cancellation, late/disconnected/nested hosts, history, cleanup pass. |
-| `TOOLING-043` | Explorer graph/preview, CLI checks, scaffold, and handle-based AppScenario experience pass. |
-| `COMPAT-043` | 0.42 unchanged/mixed/migrated fixtures plus FastAPI/Flask/Django conformance and rollback pass. |
+| `TOOLING-043` | Base descriptor, dynamic/observed graph/preview, CLI checks, scaffold, and handle-based AppScenario experience pass. |
+| `COMPAT-043` | 0.42 unchanged/mixed/migrated fixtures, fixed generic/descriptor/binding seams, 0.44 handoff, FastAPI/Flask/Django conformance, and rollback pass. |
 | `PERF-043` | No required asset; relative/absolute response overhead, fan-out/patch latency, allocation, payload, and memory budgets pass. |
 | `DOCS-043` | API, guides, migration, PE, security, a11y, testing, errors, examples, and limitations are complete and claim-honest. |
 | `REGRESS-043` | Full supported suite passes with zero phase-owned unresolved blocker/high regression. |
@@ -54,10 +58,12 @@ command name is not evidence.
 
 ## Stage 0 entry
 
-- [x] D-071 records the accepted phase boundary.
+- [x] D-071 records the accepted phase; D-073 reconciles its handoff to 0.44.
 - [x] RFC-0070, API contract, implementation requirements, capability inventory, release gate,
   acceptance packet, upgrade fixtures, and traceability references exist.
 - [x] Published/living baseline remains `v0.42.0`; no package or runtime version changed.
+- [x] D-072/RFC-0071 context is reconciled: 0.43 owns the base runtime and reserves only explicit
+  generic/descriptor/binding extension seams, not 0.44 model/form/effect/class features.
 - [ ] A tracking issue is created and bound to every 0.43 gate before Stage 1 begins.
 - [ ] Stage 1 baselines the existing region path before facade implementation.
 
@@ -68,12 +74,14 @@ command name is not evidence.
   output identity, diagnostics, and scenario tests.
 - [ ] Generated and explicit paths/keys behave under routers, mounts, reverse proxies, sync/async,
   dependencies, and exceptions.
-- [ ] Bound fragments cover dynamic paths/query values, repeated instances, redaction, and invalid
-  inputs.
-- [ ] Commands drive buttons/forms without copied URLs or methods and preserve native action
-  semantics.
+- [ ] Bound fragments cover dynamic paths/query values, repeated instances, redaction, structural
+  invalid inputs, and normal-GET typed validation without invoking DI during `bind`.
+- [ ] Commands drive buttons and explicit-field forms without copied URLs or methods and preserve
+  native action semantics; no annotation-derived fields or `ActionHandle.form()` exist in 0.43.
 - [ ] Refresh intent and direct patch examples make their request/atomicity differences explicit.
 - [ ] Multi-output updates preserve primary/secondary ordering and semantic hosts.
+- [ ] Base descriptor/version/fingerprint, fixed generic arity, structural binding adapter, and
+  dynamic/observed effect labels pass the 0.44 handoff fixture.
 
 ## Security acceptance
 
@@ -112,6 +120,9 @@ command name is not evidence.
 - [ ] FastAPI, Flask, and Django portable patch fixtures pass or bounded adapter exceptions have an
   owner and destination.
 - [ ] Migration and rollback fixtures are executable and preserve explicit public URLs/keys.
+- [ ] A modeled binding adapter, declared effect, and type-schema extension can attach in the
+  handoff fixture without changing 0.43 route identity, target authority, explicit forms, or
+  response conversion.
 - [ ] Quickstart, HTMX interactions, mutations, forms/actions, testing, troubleshooting, errors,
   security, accessibility, API, Explorer, and scaffold docs are updated together.
 - [ ] Documentation maintains beginner, explicit-patch, and protocol-level layers without implying

@@ -15,13 +15,13 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from hedron.async_utils import await_if_needed
-from hedron.interaction import FragmentRegion
 from hedron.openapi import operation_id_for
 from hedron.routing.route import HedronRoute
 from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
 from hedron.security.policy import SecurityPolicy
 from hedron_core.addressable import AddressableDescriptor
 from hedron_core.identifiers import component_type_id
+from hedron_core.interaction import FragmentRegion
 from hedron_core.registry import register_route
 from hedron_core.rendering import RenderMode
 
