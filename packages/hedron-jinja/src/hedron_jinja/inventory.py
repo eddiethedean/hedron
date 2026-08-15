@@ -8,6 +8,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TypedDict, cast
+from urllib.parse import urlsplit
 
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonObject, JsonValue
@@ -146,6 +147,43 @@ def _script_src_value(directives: Mapping[str, str]) -> str:
     return directives.get("default-src", "")
 
 
+def _csp_source_tokens(value: str) -> tuple[str, ...]:
+    return tuple(token for token in value.split() if token)
+
+
+def _has_keyword_source(tokens: Sequence[str], keyword: str) -> bool:
+    return keyword in tokens
+
+
+def _has_nonce_source(tokens: Sequence[str]) -> bool:
+    """True when script-src has a quoted CSP nonce source expression."""
+    prefix = "'nonce-"
+    return any(
+        token.startswith(prefix) and token.endswith("'") and len(token) > len(prefix) + 1
+        for token in tokens
+    )
+
+
+def _parse_origin(value: str) -> tuple[str, str, int] | None:
+    """Return ``(scheme, hostname, port)`` for a host-source; otherwise ``None``."""
+    if not value or value.startswith(("'", '"', "*", "data:")):
+        return None
+    parsed = urlsplit(value)
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        return None
+    port = parsed.port
+    if port is None:
+        port = 443 if parsed.scheme == "https" else 80
+    return (parsed.scheme, parsed.hostname.lower(), port)
+
+
+def _origin_in_sources(origin: str, tokens: Sequence[str]) -> bool:
+    required = _parse_origin(origin)
+    if required is None:
+        return False
+    return any(_parse_origin(token) == required for token in tokens)
+
+
 def reconcile_csp(
     policy_csp: str | None,
     *,
@@ -160,32 +198,39 @@ def reconcile_csp(
 
     Script capabilities are evaluated only against ``script-src`` (falling back to
     ``default-src``). Tokens on ``style-src`` must not authorize script behavior.
+    Source lists are matched as CSP source expressions, not raw substrings.
     """
     mismatches: list[str] = []
     csp = (policy_csp or "").lower()
     directives = _csp_directives(csp)
     script_src = _script_src_value(directives)
-    has_script_src = bool(script_src) or "script-src" in directives
+    script_tokens = _csp_source_tokens(script_src)
+    all_tokens = tuple(
+        token for value in directives.values() for token in _csp_source_tokens(value)
+    )
+    has_script_src = bool(script_tokens) or "script-src" in directives
     for capability in required_capabilities:
         if capability == "browser.inline-script":
             authorized = has_script_src and (
-                "'unsafe-inline'" in script_src
-                or "nonce-" in script_src
-                or "'strict-dynamic'" in script_src
+                _has_keyword_source(script_tokens, "'unsafe-inline'")
+                or _has_nonce_source(script_tokens)
+                or _has_keyword_source(script_tokens, "'strict-dynamic'")
             )
             if not authorized:
                 mismatches.append(
                     f"{source_name}:{line}: capability {capability!r} conflicts with CSP "
                     f"(missing explicit inline/nonce/strict-dynamic authorization)"
                 )
-        if capability == "htmx.eval" and (not has_script_src or "unsafe-eval" not in script_src):
+        if capability == "htmx.eval" and (
+            not has_script_src or not _has_keyword_source(script_tokens, "'unsafe-eval'")
+        ):
             mismatches.append(
                 f"{source_name}:{line}: capability {capability!r} requires explicit "
                 f"unsafe-eval authorization in SecurityPolicy CSP"
             )
         if capability.startswith("network.") and "https://" in capability:
             origin = capability.split(":", 1)[-1]
-            if origin and origin not in csp:
+            if origin and not _origin_in_sources(origin, all_tokens):
                 mismatches.append(
                     f"{source_name}:{line}: remote origin {origin!r} is not present in CSP"
                 )

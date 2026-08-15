@@ -51,6 +51,41 @@ def test_reconcile_csp_fails_closed_when_csp_missing() -> None:
     assert len(mismatches) == 2
 
 
+def test_reconcile_csp_authorizes_quoted_script_tokens() -> None:
+    assert not reconcile_csp(
+        "script-src 'self' 'unsafe-inline' 'nonce-abc123' 'strict-dynamic'",
+        required_capabilities=["browser.inline-script"],
+    )
+    assert not reconcile_csp(
+        "script-src 'self' 'unsafe-eval'",
+        required_capabilities=["htmx.eval"],
+    )
+    assert not reconcile_csp(
+        "default-src 'self'; script-src https://cdn.example",
+        required_capabilities=["network.script-origin:https://cdn.example"],
+    )
+
+
+def test_reconcile_csp_rejects_path_and_host_substrings() -> None:
+    """#290: path tokens and sibling hostnames must not authorize capabilities."""
+    assert reconcile_csp(
+        "script-src https://cdn.example/nonce-pack.js",
+        required_capabilities=["browser.inline-script"],
+    )
+    assert reconcile_csp(
+        "script-src https://example.com/unsafe-eval-docs",
+        required_capabilities=["htmx.eval"],
+    )
+    assert reconcile_csp(
+        "script-src https://evil.com.attacker.example",
+        required_capabilities=["network.script-origin:https://evil.com"],
+    )
+    assert reconcile_csp(
+        "script-src https://cdn.example/'unsafe-inline'/app.js",
+        required_capabilities=["browser.inline-script"],
+    )
+
+
 def test_production_inventory() -> None:
     dep = DynamicDependency.from_bytes("app:a", "a.hdj", b"x")
     manifest = DynamicDependencyManifest(dependencies=(dep,))
