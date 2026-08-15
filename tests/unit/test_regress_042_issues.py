@@ -60,43 +60,67 @@ ISSUES = (
     249,
 )
 
+# Bound executable evidence for each locked remediation (path::node).
+_U = "tests/unit"
+_I = "tests/integration"
+_A = "tests/adapters"
+_R = f"{_U}/test_regress_042_issues.py"
+ISSUE_TESTS: dict[int, str] = {
+    99: (
+        f"{_U}/test_cache_single_flight_async.py::test_single_flight_async_safe_across_event_loops"
+    ),
+    100: f"{_U}/test_phase05_platform.py::test_cache_data_caches_none_results",
+    108: (
+        f"{_U}/test_snowflake_source.py::test_assert_select_only_allows_semicolon_inside_literals"
+    ),
+    136: f"{_I}/test_workbench_runner.py::test_prepare_app_exports_into_caller_environ",
+    137: f"{_A}/workbench/test_cli.py::test_check_discover_binds_before_rserver_url",
+    138: (
+        f"{_U}/test_phase15_identity.py::test_login_csrf_accepts_valid_cookie_when_session_diverges"
+    ),
+    139: f"{_U}/test_phase15_identity.py::test_auth_rate_limiter_evicts_stale_ip_keys",
+    140: f"{_R}::test_140_negative_session_timeout_limits_rejected",
+    141: f"{_U}/test_models_security.py::test_secret_hash_handles_unhashable_inner_value",
+    145: f"{_R}::test_145_redis_status_store_reads_legacy_idempotency_key",
+    146: f"{_R}::test_146_redis_status_store_cross_scope_idempotency_fails_closed",
+    147: f"{_R}::test_147_explicit_workers_one_beats_env",
+    148: f"{_R}::test_148_workbenchify_honors_caller_environ_for_expected_origins",
+    151: f"{_R}::test_151_public_cache_rejects_positional_user_id",
+    152: f"{_R}::test_152_store_oidc_handshake_merges_partial_updates",
+    156: f"{_R}::test_156_explorer_simulate_requires_csrf_when_disabled",
+    160: f"{_R}::test_160_doctor_empty_set_cookie_fails_closed",
+    174: f"{_R}::test_174_preview_root_path_rejects_cookie_injection",
+    175: f"{_R}::test_175_explorer_rate_limiter_deletes_idle_client_keys",
+    177: f"{_R}::test_177_mcp_validates_tool_arguments_against_schema",
+    187: f"{_R}::test_187_flask_csrf_enforced_on_connect_and_purge",
+    205: f"{_R}::test_205_gradio_abbreviated_loopback_is_private",
+    206: f"{_R}::test_206_rq_cancel_fails_closed_on_fetch_connection_error",
+    208: f"{_R}::test_208_redis_cache_tag_index_gets_ttl",
+    217: f"{_R}::test_217_mcp_cancel_is_bound_to_principal",
+    218: f"{_R}::test_218_redis_cache_set_and_tag_sadd_are_atomic",
+    238: f"{_R}::test_238_weak_secret_rejects_repeated_placeholders",
+    242: f"{_R}::test_242_redis_cache_ttl_matches_in_memory_semantics",
+    243: f"{_R}::test_243_rq_local_job_cache_pruned_on_terminal_and_cleanup",
+    245: f"{_R}::test_245_normalize_mount_path_rejects_cookie_attribute_injection",
+    246: f"{_R}::test_246_inference_release_drops_request_maps",
+    249: f"{_R}::test_249_color_mode_cookie_sets_secure_in_production",
+}
 
-def test_exact_issue_packet() -> None:
+
+def test_every_locked_issue_has_bound_evidence() -> None:
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2]
     assert len(ISSUES) == 32
-    assert ISSUES == (
-        99,
-        100,
-        108,
-        136,
-        137,
-        138,
-        139,
-        140,
-        141,
-        145,
-        146,
-        147,
-        148,
-        151,
-        152,
-        156,
-        160,
-        174,
-        175,
-        177,
-        187,
-        205,
-        206,
-        208,
-        217,
-        218,
-        238,
-        242,
-        243,
-        245,
-        246,
-        249,
-    )
+    assert tuple(ISSUE_TESTS) == ISSUES
+    for issue, node in ISSUE_TESTS.items():
+        path = root / node.split("::", 1)[0]
+        assert path.is_file(), f"#{issue} evidence missing file {path}"
+        name = node.split("::", 1)[1] if "::" in node else ""
+        if name:
+            assert f"def {name}(" in path.read_text(encoding="utf-8"), (
+                f"#{issue} missing test {name} in {path}"
+            )
 
 
 class WatchError(Exception):
@@ -351,15 +375,29 @@ def test_160_doctor_cookie_path_rejects_prefix_siblings_and_accepts_quoted() -> 
 
 
 def test_160_doctor_empty_set_cookie_fails_closed() -> None:
-    # Mirror doctor aggregation: empty headers must not vacuously pass.
-    cookie_headers: list[str] = []
-    mount = "/s/x/p/1"
-    from fastapi_workbench.cli import _cookie_path_matches_mount
+    """Call production doctor probe: empty Set-Cookie must fail closed (#160)."""
+    import asyncio
 
-    cookie_paths_ok = bool(cookie_headers) and all(
-        _cookie_path_matches_mount(header, mount) for header in cookie_headers
-    )
-    assert cookie_paths_ok is False
+    from hedron_posit.cli import _probe_app
+
+    class _NoCookieApp:
+        async def __call__(self, scope: object, receive: object, send: object) -> None:
+            if not isinstance(scope, dict) or scope.get("type") != "http":
+                return
+            await send(  # type: ignore[misc]
+                {
+                    "type": "http.response.start",
+                    "status": 200,
+                    "headers": [(b"content-type", b"text/html")],
+                }
+            )
+            await send(  # type: ignore[misc]
+                {"type": "http.response.body", "body": b"<html></html>"}
+            )
+
+    probe = asyncio.run(_probe_app(_NoCookieApp(), "/s/x/p/1"))
+    assert probe["cookie_paths_mounted"] is False
+    assert probe["reachable"] is True
 
 
 def test_174_preview_root_path_rejects_cookie_injection() -> None:

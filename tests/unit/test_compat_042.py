@@ -11,18 +11,16 @@ INVENTORY = ROOT / "docs" / "acceptance" / "supported-element-inventory-042.toml
 NPM = ROOT / "packages" / "hedron-elements" / "npm"
 STATIC = ROOT / "packages" / "hedron-elements" / "src" / "hedron_elements" / "static"
 SUPPLY = ROOT / "docs" / "acceptance" / "fleet-supply-042"
+BROWSER_MATRIX = ROOT / "tests" / "browser" / "test_browser_matrix.py"
+BROWSER_HTMX = ROOT / "tests" / "browser" / "test_htmx_lifecycle.py"
 
 
 def test_upgrade_fixture_matrix_locked() -> None:
     text = UPGRADE.read_text(encoding="utf-8")
-    assert (
-        "Baseline Published `v0.41.0`" in text
-        or "baseline Published `v0.41.0`" in text.lower()
-        or "v0.41.0" in text
-    )
+    assert "Baseline Published `v0.41.0`" in text or "baseline Published `v0.41.0`" in text
     assert ">=0.42.0,<0.43" in text
     assert ">=0.41.0,<0.42" in text
-    assert "CDN refusal" in text or "CDN" in text
+    assert "CDN refusal" in text
     assert "offline" in text.lower()
     assert "rollback" in text.lower()
     assert "full-fragment" in text
@@ -35,19 +33,25 @@ def test_mixed_version_and_unknown_feature_fail_closed_language() -> None:
     assert "Experimental" in text
 
 
-def test_browser_floor_matches_inventory() -> None:
+def test_browser_floor_binds_executable_matrix() -> None:
     data = tomllib.loads(INVENTORY.read_text(encoding="utf-8"))
     assert data["browser_floor"] == "playwright_chromium_firefox_webkit"
-    matrix = ROOT / "tests" / "browser" / "test_browser_matrix.py"
-    assert matrix.is_file()
+    assert BROWSER_MATRIX.is_file()
+    assert BROWSER_HTMX.is_file()
+    matrix = BROWSER_MATRIX.read_text(encoding="utf-8")
+    htmx = BROWSER_HTMX.read_text(encoding="utf-8")
+    assert "pytestmark" in matrix and "browser" in matrix
+    assert "def test_htmx_fragment_and_oob_update" in htmx
+    assert "def test_unauthorized_target_returns_forbidden" in htmx
 
 
 def test_cdn_refusal_and_offline_supply_notes() -> None:
-    assert (SUPPLY / "OFFLINE_INSTALL.md").is_file()
-    assert (SUPPLY / "ROLLBACK.md").is_file()
     offline = (SUPPLY / "OFFLINE_INSTALL.md").read_text(encoding="utf-8")
-    assert "CDN" in offline or "cdn" in offline.lower() or "offline" in offline.lower()
+    rollback = (SUPPLY / "ROLLBACK.md").read_text(encoding="utf-8")
+    assert "CDN refusal" in offline
     assert "hedron-elements" in offline
+    assert "Rollback" in rollback or "rollback" in rollback.lower()
+    assert "hedron-elements" in rollback
 
 
 def test_package_removal_preserves_npm_wheel_identity_for_rollback() -> None:

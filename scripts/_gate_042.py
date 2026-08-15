@@ -83,36 +83,40 @@ PACKET_FILES = (
     DECISIONS,
 )
 
-# Domain evidence plus packet integrity. Verified gates require non-empty lists.
+# Domain evidence. Packet integrity lives only under PKG-042 (not padded into every gate).
 GATE_TESTS: dict[str, list[str]] = {
     "STABLE-042": [
         "tests/unit/test_stable_042.py",
-        "tests/unit/test_phase042_packet.py",
     ],
     "COMPAT-042": [
         "tests/unit/test_compat_042.py",
-        "tests/unit/test_phase042_packet.py",
+        "tests/browser/test_browser_matrix.py",
+        "tests/browser/test_htmx_lifecycle.py",
     ],
     "REVIEW-042": [
         "tests/unit/test_review_042.py",
-        "tests/unit/test_phase042_packet.py",
+        "tests/unit/test_phase20_production_gates.py",
     ],
     "AT-042": [
         "tests/unit/test_at_042.py",
-        "tests/unit/test_phase042_packet.py",
     ],
     "PERF-042": [
         "tests/unit/test_perf_042.py",
-        "tests/unit/test_phase042_packet.py",
+        "tests/performance/test_budgets.py",
     ],
     "SUPPLY-042": [
         "tests/unit/test_supply_042.py",
-        "tests/unit/test_phase042_packet.py",
     ],
     "REGRESS-042": [
         "tests/unit/test_regress_042_issues.py",
         "tests/unit/test_cache_single_flight_async.py",
-        "tests/unit/test_phase042_packet.py",
+        "tests/unit/test_phase05_platform.py::test_cache_data_caches_none_results",
+        "tests/unit/test_snowflake_source.py::test_assert_select_only_allows_semicolon_inside_literals",
+        "tests/integration/test_workbench_runner.py::test_prepare_app_exports_into_caller_environ",
+        "tests/adapters/workbench/test_cli.py::test_check_discover_binds_before_rserver_url",
+        "tests/unit/test_phase15_identity.py::test_login_csrf_accepts_valid_cookie_when_session_diverges",
+        "tests/unit/test_phase15_identity.py::test_auth_rate_limiter_evicts_stale_ip_keys",
+        "tests/unit/test_models_security.py::test_secret_hash_handles_unhashable_inner_value",
     ],
     "PKG-042": ["tests/unit/test_phase042_packet.py"],
 }

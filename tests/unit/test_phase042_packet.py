@@ -48,9 +48,13 @@ def test_phase042_manifest_commands_exist() -> None:
     rows = data["evidence"]
     assert {row["id"] for row in rows} == EXPECTED_GATES_SET
     assert set(GATE_TESTS) == EXPECTED_GATES_SET
+    # Packet integrity is PKG-only; domain gates must not pad with this file.
+    assert GATE_TESTS["PKG-042"] == ["tests/unit/test_phase042_packet.py"]
     for gate_id, tests in GATE_TESTS.items():
-        assert "tests/unit/test_phase042_packet.py" in tests, gate_id
         assert tests, gate_id
+        if gate_id == "PKG-042":
+            continue
+        assert "tests/unit/test_phase042_packet.py" not in tests, gate_id
     for row in rows:
         command_path = ROOT / row["command"].removeprefix("python ")
         assert command_path.is_file(), row["command"]

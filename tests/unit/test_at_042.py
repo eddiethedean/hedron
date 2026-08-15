@@ -44,16 +44,27 @@ def test_at_042_disclaims_product_wide_human_at() -> None:
     data = tomllib.loads(DISPOSITION.read_text(encoding="utf-8"))
     assert data["gate"] == "AT-042"
     assert int(data["summary"]["blocking"]) == 0
+    sessions = data.get("sessions") or []
+    recorded = int(data["summary"]["sessions_recorded"])
     if data["state"] == "planned":
-        assert int(data["summary"]["sessions_recorded"]) == 0
+        assert recorded == 0
+        assert sessions == []
     else:
         assert data["state"] == "verified"
-        assert int(data["summary"]["sessions_recorded"]) >= 2
+        assert recorded >= 2
+        # Disposition counters must match concrete session rows (not free-floating).
+        assert len(sessions) == recorded
+        for row in sessions:
+            assert str(row.get("id", "")).startswith("AT-042-S")
+            assert row.get("result") == "pass"
+            assert row.get("matrix")
+            assert row.get("surfaces")
 
 
 def test_at_042_supported_workflows_keep_native_semantics() -> None:
     field = render(FieldText("email", value="a@b.c", label="Email")).html
-    assert "<label" in field or "Email" in field
+    assert 'label="Email"' in field
+    assert "<input" in field
     assert "hedron-field-text" in field
     dialog = render(Dialog(title="Settings")).html
     assert "hedron-dialog" in dialog
@@ -66,7 +77,7 @@ def test_at_042_supported_workflows_keep_native_semantics() -> None:
         )
     ).html
     assert "hedron-data-editor-fallback" in editor
-    assert 'role="grid"' in editor or "<table" in editor
+    assert 'role="grid"' in editor
     action = render(
         ActionAsync(
             "Save",

@@ -1,4 +1,9 @@
-"""External cache conformance (fakeredis or stub)."""
+"""External cache conformance (in-process stub / fakeredis).
+
+Protocol-only: proves RedisCacheBackend call shapes against a stub client.
+Not a multi-process or real-Redis durability proof — keep real Redis behind an
+explicit opt-in marker/job.
+"""
 
 from __future__ import annotations
 

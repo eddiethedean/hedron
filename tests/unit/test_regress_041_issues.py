@@ -1,4 +1,9 @@
-"""Locked 14-issue phase 0.41 regression packet."""
+"""Locked 14-issue phase 0.41 regression packet.
+
+Historical honesty: this packet listed 14 issue IDs but only ships two behavioral
+tests below. New remediations must follow the REGRESS-042 ``ISSUE_TESTS`` binding
+pattern instead of length-only locks.
+"""
 
 from __future__ import annotations
 
@@ -10,8 +15,12 @@ from hedron_core.htmx_eval import reject_hx_eval_value
 ISSUES = (70, 74, 85, 98, 103, 106, 135, 149, 150, 185, 186, 200, 202, 207)
 
 
-def test_exact_issue_packet() -> None:
+def test_historical_packet_lists_fourteen_ids_without_overclaiming_coverage() -> None:
     assert len(ISSUES) == 14
+    # Explicitly document incomplete binding — do not equate this with Verified
+    # remediation coverage for every ID.
+    behavioral_tests_in_this_module = 2
+    assert behavioral_tests_in_this_module < len(ISSUES)
 
 
 def test_explicit_mount_hint_accepts_hedron_root_path() -> None:

@@ -141,8 +141,9 @@ def test_create_user_progressive_enhancement_redirects(hedron_client: TestClient
     assert "msg=" in location
     follow = hedron_client.get(location, headers=_auth())
     assert follow.status_code == 200
-    assert "<!DOCTYPE html>" in follow.text or "<html" in follow.text.lower()
-    assert "PE User" in follow.text or "User created" in follow.text
+    assert "<html" in follow.text.lower()
+    assert "PE User" in follow.text
+    assert "User created" in follow.text
     assert "Edit users" in follow.text
 
 
@@ -166,7 +167,9 @@ def test_edit_user_page_and_progressive_update(hedron_client: TestClient) -> Non
     )
     assert updated.status_code == 303
     follow = hedron_client.get(updated.headers["location"], headers=_auth())
-    assert "Grace PE" in follow.text or "User updated" in follow.text
+    assert follow.status_code == 200
+    assert "Grace PE" in follow.text
+    assert "User updated" in follow.text
 
 
 def test_update_and_delete_user(hedron_client: TestClient) -> None:
@@ -206,7 +209,8 @@ def test_delete_user_progressive_enhancement_redirects(hedron_client: TestClient
     assert "msg=" in location
     follow = hedron_client.get(location, headers=_auth())
     assert follow.status_code == 200
-    assert "User deleted" in follow.text or "alan@example.com" not in follow.text
+    assert "User deleted" in follow.text
+    assert "alan@example.com" not in follow.text
     table = hedron_client.get("/users/table", headers=_auth())
     assert "alan@example.com" not in table.text
 
@@ -222,7 +226,9 @@ def test_htmx_update_validation_returns_error_state(hedron_client: TestClient) -
         data={"name": "ok", "email": "ab", "role": "member"},
     )
     assert bad.status_code == 200
-    assert "error" in bad.text.lower() or "invalid" in bad.text.lower() or "min" in bad.text.lower()
+    assert 'role="alert"' in bad.text
+    assert "hedron-error" in bad.text
+    assert "at least 3" in bad.text.lower()
 
 
 def test_plain_update_validates_user_form(plain_client: TestClient) -> None:
@@ -236,7 +242,9 @@ def test_plain_update_validates_user_form(plain_client: TestClient) -> None:
         data={"name": "ok", "email": "ab", "role": "member"},
     )
     assert bad.status_code == 200
-    assert "error" in bad.text.lower() or "invalid" in bad.text.lower() or "min" in bad.text.lower()
+    assert 'role="alert"' in bad.text
+    assert "hedron-error" in bad.text
+    assert "at least 3" in bad.text.lower()
 
 
 def test_chart_fragment_oob_authorized(hedron_client: TestClient) -> None:
@@ -245,7 +253,8 @@ def test_chart_fragment_oob_authorized(hedron_client: TestClient) -> None:
         headers={**_auth(), "HX-Request": "true", "HX-Target": "#chart-panel"},
     )
     assert response.status_code == 200
-    assert "OOB status refreshed" in response.text or "hx-swap-oob" in response.text.lower()
+    assert "OOB status refreshed" in response.text
+    assert "hx-swap-oob" in response.text.lower()
 
 
 def test_plain_fastapi_mode(plain_client: TestClient) -> None:
@@ -358,7 +367,8 @@ def test_roster_download_requires_auth(hedron_client: TestClient) -> None:
     ok = hedron_client.get("/downloads/roster.csv", headers=_auth())
     assert ok.status_code == 200
     assert "text/csv" in ok.headers.get("content-type", "")
-    assert "Ada" in ok.text or "name" in ok.text
+    assert "Ada" in ok.text
+    assert ok.text.lstrip().lower().startswith("id") or "name" in ok.text.splitlines()[0].lower()
 
 
 def test_explorer_phase05_panels(hedron_client: TestClient) -> None:
@@ -366,7 +376,8 @@ def test_explorer_phase05_panels(hedron_client: TestClient) -> None:
         response = hedron_client.get(path, headers=_auth())
         assert response.status_code == 200, path
     data = hedron_client.get("/hedron-explorer/data", headers=_auth())
-    assert "Writable" in data.text or "writable" in data.text.lower() or "Data" in data.text
+    assert "Writable" in data.text or "writable" in data.text.lower()
+    assert "Data" in data.text or "data" in data.text.lower()
 
 
 def test_plain_fastapi_phase05_routes(plain_client: TestClient) -> None:

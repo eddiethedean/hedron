@@ -15,7 +15,8 @@ def test_job_status_renders_accessible_live_region() -> None:
     result = job_status_interaction(status)
     assert result.content is not None
     html = render(result.content, mode=RenderMode.FRAGMENT).html
-    assert "aria-live" in html or "role" in html or status.job_id in html
+    assert "aria-live" in html
+    assert status.job_id in html
     assert result.headers.get("Retry-After")
     from hedron_core.interaction import interaction_headers
 

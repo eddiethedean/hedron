@@ -25,6 +25,25 @@ def test_submit_idempotent_and_cancel() -> None:
     assert st.cancel_requested is True
 
 
+def test_get_and_cancel_fail_closed_for_wrong_tenant() -> None:
+    reset_jobs_for_tests()
+    backend = InMemoryJobBackend()
+    handle = backend.submit("demo", {}, tenant_id="acme", auth_subject="alice")
+    assert backend.get(handle.job_id, tenant_id="other", auth_subject="alice") is None
+    assert backend.get(handle.job_id, tenant_id="acme", auth_subject="bob") is None
+    assert backend.get(handle.job_id, tenant_id="acme", auth_subject="alice") is not None
+    assert backend.request_cancel(handle.job_id, tenant_id="other", auth_subject="alice") is False
+    assert backend.request_cancel(handle.job_id, tenant_id="acme", auth_subject="alice") is True
+
+
+def test_terminal_cancel_returns_false() -> None:
+    reset_jobs_for_tests()
+    backend = InMemoryJobBackend()
+    handle = backend.submit("demo", {}, tenant_id="t1")
+    backend.mark(handle.job_id, JobState.SUCCEEDED)
+    assert backend.request_cancel(handle.job_id, tenant_id="t1") is False
+
+
 def test_cleanup_drops_idempotency() -> None:
     backend = InMemoryJobBackend()
     handle = backend.submit("demo", {}, idempotency_key="gone")

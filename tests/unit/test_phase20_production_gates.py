@@ -87,6 +87,46 @@ def test_parsed_risk_acceptance_normalizes() -> None:
     assert "weak-session-secret" in parsed_risk_acceptance(" Weak-Session-Secret , other ")
 
 
+def test_production_rejects_explorer_development(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    with pytest.raises(RuntimeError, match="explorer-development"):
+        assert_production_security_config(
+            production=True,
+            security_profile="standard",
+            session_secret="a-sufficiently-long-production-secret",
+            explorer_mode="development",
+            content_security_policy="default-src 'self'",
+        )
+
+
+def test_production_rejects_external_redirects(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    with pytest.raises(RuntimeError, match="external-redirects"):
+        assert_production_security_config(
+            production=True,
+            security_profile="standard",
+            session_secret="a-sufficiently-long-production-secret",
+            explorer_mode="off",
+            allow_external_redirects=True,
+            content_security_policy="default-src 'self'",
+        )
+
+
+def test_production_rejects_missing_csp_alone(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    with pytest.raises(RuntimeError, match="missing-csp"):
+        assert_production_security_config(
+            production=True,
+            security_profile="standard",
+            session_secret="a-sufficiently-long-production-secret",
+            explorer_mode="off",
+            content_security_policy=None,
+        )
+
+
 def test_hedron_constructor_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
     monkeypatch.setattr(

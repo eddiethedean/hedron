@@ -34,16 +34,20 @@ def test_supported_tag_modules_match_wheel_and_npm() -> None:
         wheel = (STATIC / name).read_bytes()
         mirror = (NPM / "modules" / name).read_bytes()
         assert wheel == mirror, name
-        assert (NPM / "modules" / name.replace(".mjs", ".d.ts")).is_file() or True
+        stub = NPM / "modules" / name.replace(".mjs", ".d.ts")
+        assert stub.is_file(), f"missing typed stub for {name}"
 
 
 def test_supply_packet_artifacts_exist() -> None:
-    for name in (
-        "LICENSE_INVENTORY.md",
-        "SBOM_NOTES.md",
-        "OFFLINE_INSTALL.md",
-        "ROLLBACK.md",
-    ):
+    required_headings = {
+        "LICENSE_INVENTORY.md": ("license", "hedron-elements"),
+        "SBOM_NOTES.md": ("sbom", "hedron-elements"),
+        "OFFLINE_INSTALL.md": ("offline", "cdn refusal"),
+        "ROLLBACK.md": ("rollback", "hedron-elements"),
+    }
+    for name, needles in required_headings.items():
         path = SUPPLY / name
         assert path.is_file(), name
-        assert len(path.read_text(encoding="utf-8").strip()) > 40
+        text = path.read_text(encoding="utf-8").lower()
+        for needle in needles:
+            assert needle in text, f"{name} missing {needle!r}"
