@@ -122,5 +122,3 @@ class ExampleSet:
     @property
     def size(self) -> int:
         return len(self._items)
-
-

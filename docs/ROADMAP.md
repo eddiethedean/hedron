@@ -3337,7 +3337,8 @@ complete browser supply-chain provenance.
 
 ## 0.43 — Refreshable views, commands, and typed updates (`v0.43.0`)
 
-**Status:** Planned (D-071 / [RFC-0070](rfcs/RFC-0070-REFRESHABLE-VIEWS.md)). Stage 0
+**Status:** Planned (D-071 /
+[RFC-0070](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)). Stage 0
 requirements packet is defined against Published `v0.42.0`; target is `v0.43.0`. A tracking issue
 must be created and bound to every 0.43 gate before runtime implementation begins.
 
@@ -3410,8 +3411,9 @@ return patches(
 
 The public contract is
 [REFRESHABLE_VIEWS](api/REFRESHABLE_VIEWS.md); implementation requirements are
-[INTERACTION_HANDLES_043](implementation/INTERACTION_HANDLES_043.md); the machine inventory is
-[`interaction-capability-inventory-043.toml`](acceptance/interaction-capability-inventory-043.toml).
+[INTERACTION_HANDLES_043](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_HANDLES_043.md);
+the machine inventory is
+[`interaction-capability-inventory-043.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/interaction-capability-inventory-043.toml).
 
 ### Locked exit evidence
 
@@ -3427,9 +3429,12 @@ The public contract is
 | `PERF-043` | No required new browser asset; handle/refresh/patch latency, allocation, payload, request, and memory budgets pass. |
 | `DOCS-043` / `REGRESS-043` / `PKG-043` | Complete docs/migration plus full regression, clean package, inventory, and release rehearsal pass. |
 
-Evidence index: [`release-gate-0.43.toml`](acceptance/release-gate-0.43.toml). Acceptance packet:
-[RELEASE_0_43](acceptance/RELEASE_0_43.md). Upgrade fixtures:
-[upgrade-fixtures-043](acceptance/upgrade-fixtures-043.md).
+Evidence index:
+[`release-gate-0.43.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.43.toml).
+Acceptance packet:
+[RELEASE_0_43](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_43.md).
+Upgrade fixtures:
+[upgrade-fixtures-043](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-043.md).
 
 ### Non-goals
 

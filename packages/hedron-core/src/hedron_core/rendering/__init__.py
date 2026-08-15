@@ -58,6 +58,7 @@ class RenderMode(StrEnum):
 @dataclass(frozen=True, slots=True)
 class RenderContext:
     """Per-render locale, theme, budgets, and CSRF token provider fields."""
+
     locale: str = "en"
     theme: str | None = None
     max_depth: int = 100

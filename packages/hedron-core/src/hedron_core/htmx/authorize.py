@@ -159,6 +159,7 @@ RESERVED_OOB_ELEMENT_IDS = frozenset({"hedron-toast"})
 # without declaring them on every fragment route (status policies + toast).
 RESERVED_RESPONSE_SINK_IDS = frozenset({"hedron-toast", "hedron-errors", "hedron-auth"})
 
+
 def _is_reserved_oob_target(*, element_id: str | None, select: str | None) -> bool:
     if element_id is not None and element_id in RESERVED_OOB_ELEMENT_IDS:
         return True
@@ -254,6 +255,7 @@ def authorize_oob_update(
             if selected_id != update.element_id:
                 raise ValueError("OOB element_id must match authorized select #id")
 
+
 def authorize_location_selectors(
     policy: InteractionPolicy | None,
     location_header: str | None,
@@ -285,5 +287,3 @@ def authorize_location_selectors(
         if not isinstance(select, str):
             raise ValueError("HX-Location select must be a string selector")
         authorize_response_selector(policy, select, header_name="HX-Location select")
-
-

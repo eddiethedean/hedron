@@ -19,6 +19,7 @@ class UrlPurpose(StrEnum):
     FORM_ACTION = "form_action"
     REDIRECT = "redirect"
 
+
 _DANGEROUS_SCHEMES = frozenset(
     {
         "javascript",
@@ -315,4 +316,3 @@ def _url_error(message: str, purpose: UrlPurpose) -> HedronError:
         ),
         context={"purpose": purpose.value},
     )
-

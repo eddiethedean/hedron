@@ -81,8 +81,6 @@ def conflicting_select_oob_targets(
     return frozenset(selected & bound)
 
 
-
-
 def bound_oob_element_id(
     update: OobUpdate,
     *,

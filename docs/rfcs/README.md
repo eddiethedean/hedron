@@ -87,3 +87,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0067](RFC-0067-PRODUCTION-GRADE-GRADIO.md) | Production-grade Gradio client interoperability | Accepted |
 | [0068](RFC-0068-WHOLE-FLEET-CLOSURE.md) | Whole-fleet production-grade closure | Accepted |
 | [0069](RFC-0069-HIGH-FIDELITY-CHARTS.md) | High-fidelity declarative charts | Accepted |
+| [0070](RFC-0070-REFRESHABLE-VIEWS.md) | Refreshable views, commands, and typed updates | Accepted |

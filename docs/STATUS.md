@@ -1,8 +1,8 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.42 **Published** as `v0.42.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Prior Published: 0.41 as `v0.41.0` (2026-08-14).
+**Roadmap position:** phase 0.42 **Published** as `v0.42.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Phase 0.43 refreshable views/commands is **Planned** (D-071 / RFC-0070); no 0.43 runtime or version claim.
 Living tip = `v0.42.0`.
-**Date:** 2026-08-14
+**Date:** 2026-08-15
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
 `hedron-workbench` / `hedron-posit` / `hedron-elements` `0.42.0`;
@@ -22,6 +22,10 @@ platform graduation for the locked Supported inventory (`release-gate-0.42.toml`
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
 Tracking [#97](https://github.com/eddiethedean/hedron/issues/97) closes with this cut.
+Next planned phase is **0.43** (D-071 / [RFC-0070](rfcs/RFC-0070-REFRESHABLE-VIEWS.md)):
+refreshable view handles, command handles, bounded refresh intents, and typed patches over the
+existing region/`InteractionResult` stack. Its Stage 0 requirements packet is complete; all
+`release-gate-0.43.toml` rows remain Planned and a tracking issue is required before Stage 1.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
@@ -349,16 +353,19 @@ Web Component authoring and interoperability is **Published** as `v0.40.0` (D-06
 `hedron new element`, plugin/HDJ/Explorer/theme metadata parity, `ReactMigrationMatrix` with an
 Experimental island docs/reference, optional `@hedron/elements` modules/types mirror, and the
 locked 6-issue remediation packet. Phase **0.41** browser composition, draft transfer, and
-navigation is **Published** as `v0.42.0` (D-069 /
+navigation is **Published** as `v0.41.0` (D-069 /
 [RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md); `release-gate-0.41.toml` Verified;
 [#96](https://github.com/eddiethedean/hedron/issues/96); see
 [implementation plan](implementation/HEDRON_COMPOSITION_041.md) and
 [0.41 acceptance packet](acceptance/RELEASE_0_41.md)). Phase **0.42** production-grade Web
-Component platform Stage 0 is refined against Published `v0.42.0` (D-070 / RFC-0060;
-`release-gate-0.42.toml` all Planned; [#97](https://github.com/eddiethedean/hedron/issues/97)
-open — do not close until gates Verified; see
+Component platform is **Published** as `v0.42.0` (D-070 / RFC-0060;
+`release-gate-0.42.toml` Verified; [#97](https://github.com/eddiethedean/hedron/issues/97); see
 [implementation plan](implementation/HEDRON_ELEMENTS_042.md) and
-[0.42 acceptance packet](acceptance/RELEASE_0_42.md)). Living tip is **`v0.42.0`**.
+[0.42 acceptance packet](acceptance/RELEASE_0_42.md)). Phase **0.43** refreshable views,
+commands, and typed updates is **Planned** (D-071 /
+[RFC-0070](rfcs/RFC-0070-REFRESHABLE-VIEWS.md); all 0.43 gates Planned; see
+[implementation requirements](implementation/INTERACTION_HANDLES_043.md) and
+[acceptance packet](acceptance/RELEASE_0_43.md)). Living tip remains **`v0.42.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

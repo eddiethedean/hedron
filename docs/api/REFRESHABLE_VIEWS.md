@@ -324,10 +324,9 @@ documentation preference alone does not change API stability.
 
 ## See also
 
-- [RFC-0070](../rfcs/RFC-0070-REFRESHABLE-VIEWS.md)
-- [0.43 implementation requirements](../implementation/INTERACTION_HANDLES_043.md)
+- [RFC-0070](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)
+- [0.43 implementation requirements](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_HANDLES_043.md)
 - [Interaction APIs](INTERACTION.md)
 - [Actions](ACTION.md)
-- [Progressive enhancement](../rfcs/RFC-0053-PROGRESSIVE-ENHANCEMENT.md)
-- [0.43 acceptance packet](../acceptance/RELEASE_0_43.md)
-
+- [Progressive enhancement](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0053-PROGRESSIVE-ENHANCEMENT.md)
+- [0.43 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_43.md)

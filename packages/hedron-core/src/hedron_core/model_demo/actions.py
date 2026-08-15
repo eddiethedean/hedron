@@ -84,5 +84,3 @@ class ActionRegistry:
 
     def get_adapter(self, adapter_id: str) -> RegisteredCallableAdapter | None:
         return self._adapters.get(adapter_id)
-
-

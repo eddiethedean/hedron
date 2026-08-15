@@ -9,6 +9,12 @@ lists **every** root export → docs page. Public exception types:
 Accepted RFCs that are not yet importable live in the GitHub maintainer corpus (excluded
 from Read the Docs). Adopters should start from the golden-path contracts below.
 
+## Planned 0.43 maintainer contract
+
+[Refreshable views and commands](REFRESHABLE_VIEWS.md) records the accepted D-071 / RFC-0070
+public contract for the planned 0.43 phase. It is **not importable on 0.42** and is not part of the
+shipped golden path until all 0.43 gates are Verified.
+
 ## Start here (golden path)
 
 After [First app → What is HTMX → HTMX interactions → Minimal form](../getting-started/index.md), these

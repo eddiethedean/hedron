@@ -702,7 +702,10 @@ LEAKED_PRIVATES = (
     ("hedron_core.html", ("_is_safe_layout_style", "_normalize_srcset", "_NativeElement")),
     ("hedron_core.builtins._base", ("ElementProps", "class_names", "mark_data")),
     ("hedron_core.csrf", ("redact_secret_like",)),
-    ("hedron_core.jobs", ("_idempotency_scope_key", "_legacy_idempotency_scope_key", "RedisClient")),
+    (
+        "hedron_core.jobs",
+        ("_idempotency_scope_key", "_legacy_idempotency_scope_key", "RedisClient"),
+    ),
     ("hedron_core.htmx_eval", ("allow_htmx_eval", "htmx_eval_allowed", "reject_hx_eval_value")),
 )
 

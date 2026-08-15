@@ -28,6 +28,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
   D-069 architecture, work slices, failure boundaries, and evidence plan
 - [Production-grade Web Component platform](HEDRON_ELEMENTS_042.md) — phase 0.42 D-070 Stage 0
   graduation plan, Supported inventory, AT-042 honesty, and fleet remediation bind
+- [Refreshable views and command handles](INTERACTION_HANDLES_043.md) — phase 0.43 D-071
+  requirements, architecture, work slices, traceability, compatibility, and evidence plan
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

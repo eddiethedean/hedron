@@ -26,14 +26,15 @@ status commentary, not a satisfied release gate.
 - [Jobs and asynchronous work](JOBS.md)
 - [Observability](OBSERVABILITY.md)
 - [Accessibility](ACCESSIBILITY.md)
-- [Web Component platform](WEB_COMPONENT_PLATFORM.md) — 0.36–0.42 program; **0.36–0.41 Published**; 0.42 Stage 0 Planned (D-070)
+- [Web Component platform](WEB_COMPONENT_PLATFORM.md) — 0.36–0.42 program; **Published** through 0.42 (D-070)
 - [`v0.36` Web Component ABI](RELEASE_0_36.md) — **Published**; all owned gates Verified; tip `v0.36.0`
 - [`v0.37` form-associated elements and primitives](RELEASE_0_37.md) — **Published** (`v0.37.0`)
 - [`v0.38` high-fidelity charts](RELEASE_0_38.md) — **Published** (`v0.38.0` / `hedron-charts` `0.2.0`); RFC-0069 / D-066; [#251](https://github.com/eddiethedean/hedron/issues/251)
 - [`v0.39` rich data and OptimisticMutation](RELEASE_0_39.md) — **Published** (`v0.39.0`); RFC-0060 / D-067; [#94](https://github.com/eddiethedean/hedron/issues/94) closed
 - [`v0.40` authoring and React migration](RELEASE_0_40.md) — **Published** (`v0.40.0`; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95) closed)
-- [`v0.41` browser composition, state, and navigation](RELEASE_0_41.md) — **Published** (`v0.42.0`; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96))
-- [`v0.42` production-grade Web Component platform](RELEASE_0_42.md) — **Planned** Stage 0 refined vs `v0.42.0` (D-070; [#97](https://github.com/eddiethedean/hedron/issues/97) open)
+- [`v0.41` browser composition, state, and navigation](RELEASE_0_41.md) — **Published** (`v0.41.0`; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96))
+- [`v0.42` production-grade Web Component platform](RELEASE_0_42.md) — **Published** (`v0.42.0`; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97))
+- [`v0.43` refreshable views, commands, and typed updates](RELEASE_0_43.md) — **Planned** Stage 0 requirements packet (D-071 / RFC-0070; tracking issue required before Stage 1)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
@@ -86,7 +87,10 @@ status commentary, not a satisfied release gate.
   [release-gate-0.37.toml](release-gate-0.37.toml) (Verified),
   [release-gate-0.38.toml](release-gate-0.38.toml) (Verified),
   [release-gate-0.39.toml](release-gate-0.39.toml) (Verified),
-  [release-gate-0.40.toml](release-gate-0.40.toml) (Verified)
+  [release-gate-0.40.toml](release-gate-0.40.toml) (Verified),
+  [release-gate-0.41.toml](release-gate-0.41.toml) (Verified),
+  [release-gate-0.42.toml](release-gate-0.42.toml) (Verified),
+  [release-gate-0.43.toml](release-gate-0.43.toml) (Planned)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.

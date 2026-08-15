@@ -167,6 +167,7 @@ def interaction_trace(result: InteractionResult) -> InteractionTrace:
         "explanation": result.explanation,
     }
 
+
 _STATUS_DEFAULTS: dict[int, StatusPolicy] = {
     202: StatusPolicy(202, message="Accepted", swap="innerHTML"),
     204: StatusPolicy(204, no_swap=True, message="No content"),
@@ -197,4 +198,3 @@ def form_sync_attrs(policy: InteractionPolicy | None = None) -> dict[str, str]:
     if pol.aria_busy:
         attrs["aria-busy"] = "true"
     return attrs
-

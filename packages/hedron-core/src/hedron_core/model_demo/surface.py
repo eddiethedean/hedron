@@ -234,5 +234,3 @@ class ModelDemo:
         )
         self._interfaces[interface_id] = iface
         return iface
-
-

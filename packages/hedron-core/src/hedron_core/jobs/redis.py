@@ -60,9 +60,7 @@ class RedisJobBackend:
         auth_subject: str | None = None,
         tenant_id: str | None = None,
     ) -> bool:
-        return self._store.request_cancel(
-            job_id, auth_subject=auth_subject, tenant_id=tenant_id
-        )
+        return self._store.request_cancel(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:
         return self._store.cleanup_expired(older_than_seconds=older_than_seconds)

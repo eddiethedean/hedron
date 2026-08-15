@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from hedron_core.inference import InferencePolicy
     from hedron_core.model_demo import ActionRegistry
 
+
 @dataclass
 class InferenceWorkflow:
     """Typed, versioned inference DAG with separate read/run/edit/publish authority."""

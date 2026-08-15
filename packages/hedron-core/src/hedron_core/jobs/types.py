@@ -33,4 +33,3 @@ class JobStatus:
     created_at: float = 0.0
     updated_at: float = 0.0
     cancel_requested: bool = False
-
