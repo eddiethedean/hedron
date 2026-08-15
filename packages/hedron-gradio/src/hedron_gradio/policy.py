@@ -38,6 +38,25 @@ def normalize_host(host: str) -> str:
     return host.strip().lower().rstrip(".")
 
 
+def _embedded_ipv4(
+    addr: ipaddress.IPv4Address | ipaddress.IPv6Address,
+) -> ipaddress.IPv4Address | None:
+    """Return the IPv4 address embedded in an IPv4-mapped or IPv4-compatible IPv6 literal."""
+    if isinstance(addr, ipaddress.IPv4Address):
+        return addr
+    mapped = addr.ipv4_mapped
+    if mapped is not None:
+        return mapped
+    packed = addr.packed
+    if packed[:12] == bytes(12):
+        return ipaddress.IPv4Address(packed[12:])
+    return None
+
+
+def _addr_is_private(addr: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
+    return any(addr in net for net in _PRIVATE_NETWORKS)
+
+
 def _host_is_private(host: str) -> bool:
     host = normalize_host(host)
     if host in {"localhost", "localhost.localdomain"}:
@@ -54,7 +73,10 @@ def _host_is_private(host: str) -> bool:
         addr = ipaddress.ip_address(host)
     except ValueError:
         return False
-    return any(addr in net for net in _PRIVATE_NETWORKS)
+    if _addr_is_private(addr):
+        return True
+    embedded = _embedded_ipv4(addr)
+    return embedded is not None and _addr_is_private(embedded)
 
 
 @dataclass(frozen=True)
