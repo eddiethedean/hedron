@@ -240,10 +240,14 @@ def run_target(
                 factory=cfg.factory,
             )
             return
+        # Pass the caller's environ (often None), not the merged copy. A merged
+        # dict would make prepare_app treat the handoff as isolated (#136) and
+        # skip writing HEDRON_ROOT_PATH into process os.environ before import,
+        # leaving HedronPosit inactive under workbenchify (REALWB-030).
         app, resolved = prepare_app(
             target=target,
             config=cfg,
-            environ=env,
+            environ=environ,
             bound_port=bound_port,
             discovered_raw=discovered,
         )

@@ -27,6 +27,7 @@ from hedron_workbench.runner import (
     export_hedron_state,
     load_app,
     prepare_app,
+    run_target,
     serve,
     supervised_uvicorn_command,
 )
@@ -167,6 +168,41 @@ def test_prepare_app_exports_into_caller_environ(monkeypatch: pytest.MonkeyPatch
     assert RESOLVED_MOUNT_ENV not in os.environ or os.environ.get(RESOLVED_MOUNT_ENV) != (
         "/s/isolated/p/1"
     )
+
+
+def test_run_target_exports_process_environ_before_import(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """REALWB-030: CLI run (environ=None) must hand off mount via os.environ."""
+    monkeypatch.delenv("HEDRON_ROOT_PATH", raising=False)
+    monkeypatch.delenv(RESOLVED_MOUNT_ENV, raising=False)
+
+    class FakeSock:
+        def getsockname(self) -> tuple[str, int]:
+            return ("127.0.0.1", 18050)
+
+        def close(self) -> None:
+            return None
+
+    served: list[object] = []
+
+    monkeypatch.setattr("hedron_posit.runner.bind_loopback", lambda _h, _p: FakeSock())
+    monkeypatch.setattr(
+        "hedron_posit.runner.serve",
+        lambda app, resolved, sock=None: served.append((app, resolved)),
+    )
+
+    run_target(
+        "tests.integration._workbench_sample:create_workbench_app",
+        config=WorkbenchConfig(mount="/s/cli/p/8050", factory=True),
+    )
+
+    assert os.environ.get("HEDRON_ROOT_PATH") == "/s/cli/p/8050"
+    assert len(served) == 1
+    app, resolved = served[0]
+    assert resolved.browser_mount == "/s/cli/p/8050"
+    assert getattr(app, "hedron_workbench").active is True
+    assert app.state.hedron_mount_path == "/s/cli/p/8050"
 
 
 def test_prepare_workbench_facade_is_not_double_wrapped(
