@@ -8,6 +8,9 @@
 ### Changed
 - Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- Treat IPv4-mapped and IPv4-compatible IPv6 literals as their embedded IPv4 for private-host checks.
+
 ## [0.2.0] — 2026-08-13
 
 ### Added

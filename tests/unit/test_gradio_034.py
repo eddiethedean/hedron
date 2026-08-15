@@ -33,6 +33,27 @@ def test_validate_remote_url_blocks_private_host() -> None:
         validate_remote_url("https://127.0.0.1/predict", config)
 
 
+def test_host_is_private_for_ipv4_mapped_and_compatible_ipv6() -> None:
+    """#284: IPv4-mapped / IPv4-compatible IPv6 literals embed private IPv4."""
+    from hedron_gradio.policy import _host_is_private
+
+    assert _host_is_private("::ffff:127.0.0.1") is True
+    assert _host_is_private("::127.0.0.1") is True
+    assert _host_is_private("::ffff:169.254.169.254") is True
+    assert _host_is_private("::ffff:8.8.8.8") is False
+
+    cfg = GradioRemoteConfig(
+        base_url="https://example.invalid",
+        allowed_hosts=frozenset({"::ffff:127.0.0.1", "::ffff:169.254.169.254"}),
+        allowed_schemes=frozenset({"https"}),
+        allow_private_hosts=False,
+    )
+    with pytest.raises(GradioRemoteError, match="Private or loopback"):
+        validate_remote_url("https://[::ffff:127.0.0.1]/run", cfg)
+    with pytest.raises(GradioRemoteError, match="Private or loopback"):
+        validate_remote_url("https://[::ffff:169.254.169.254]/run", cfg)
+
+
 def test_validate_remote_url_allows_declared_host() -> None:
     config = GradioRemoteConfig.from_base_url("https://demo.example.invalid")
     validate_remote_url("https://demo.example.invalid/predict", config)
