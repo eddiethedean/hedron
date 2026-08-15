@@ -7,7 +7,7 @@ description: Typed first-party charts, deterministic exports, and optional plott
 `hedron-charts` provides Hedron's first-party declarative chart path, four beginner components,
 deterministic server exports, and explicit adapters for established Python plotting libraries.
 
-**Package maturity:** Beta · Compatible with Hedron `0.41.x` · **Package version:** `0.2.0`
+**Package maturity:** Beta · Compatible with Hedron `0.42.x` · **Package version:** `0.2.0`
 (pin `>=0.2.0,<0.3`)
 
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`
@@ -19,7 +19,7 @@ Experimental explicit opt-ins.
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.41.0,<0.42"
+pip install "hedron[charts]>=0.42.0,<0.43"
 
 # Or install the independently versioned satellite:
 pip install "hedron-charts>=0.2.0,<0.3"

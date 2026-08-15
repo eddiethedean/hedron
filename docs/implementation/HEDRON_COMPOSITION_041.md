@@ -1,9 +1,9 @@
 # Phase 0.41 plan: browser composition, draft transfer, and navigation
 
-**Status:** Implemented for the untagged `v0.41.0` release candidate; all D-069 gates Verified.
+**Status:** Implemented for the untagged `v0.42.0` release candidate; all D-069 gates Verified.
 
 This plan turns [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) and D-069 into reviewable
-work. Baseline: Published `v0.40.0`. Target: coordinated `v0.41.0`. Tracking:
+work. Baseline: Published `v0.40.0`. Target: coordinated `v0.42.0`. Tracking:
 [#96](https://github.com/eddiethedean/hedron/issues/96). Completion requires every row in
 [`release-gate-0.41.toml`](../acceptance/release-gate-0.41.toml) Verified with zero Deferred.
 

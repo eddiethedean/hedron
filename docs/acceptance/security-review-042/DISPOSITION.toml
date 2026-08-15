@@ -1,0 +1,27 @@
+# Security review disposition — REVIEW-042
+
+phase = "0.42"
+gate = "REVIEW-042"
+state = "verified"
+critical_open = 0
+high_open = 0
+scope = "hedron-elements Supported inventory graduation; CSP/TT; sinks; origins/workers; skew; fleet remediations in REGRESS-042"
+graduation_review = true
+
+[summary]
+critical = 0
+high = 0
+medium_accepted_residual = 2
+low_accepted_residual = 3
+
+[[findings]]
+id = "REV-042-001"
+severity = "low"
+status = "accepted_residual"
+summary = "Experimental React-island bridge remains docs/reference only and is excluded from hedron-elements."
+
+[[findings]]
+id = "REV-042-002"
+severity = "medium"
+status = "accepted_residual"
+summary = "Optional vendor chart adapters remain Experimental and non-default; not in Supported inventory."

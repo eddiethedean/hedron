@@ -8,6 +8,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from hedron_core.color_mode import ColorMode, resolve_color_mode
+from hedron_core.csrf_secure import csrf_cookie_should_be_secure
 
 COOKIE_NAME = "hedron_color_mode"
 SESSION_KEY = "color_mode"
@@ -45,6 +46,7 @@ def apply_color_mode_cookie(
     max_age: int = 60 * 60 * 24 * 365,
     path: str | None = None,
     request: Request | None = None,
+    secure: bool | None = None,
 ) -> None:
     value = preference.value if isinstance(preference, ColorMode) else str(preference)
     cookie_path = path
@@ -52,6 +54,22 @@ def apply_color_mode_cookie(
         cookie_path = str(getattr(request.app.state, "hedron_cookie_path", "/") or "/")
     if not cookie_path:
         cookie_path = "/"
+    if secure is None:
+        force_secure: bool | None = None
+        request_is_secure = False
+        if request is not None:
+            request_is_secure = bool(request.url.is_secure)
+            # Match CSRF: STRICT profiles always emit Secure (#249).
+            scope = getattr(request, "scope", None)
+            app = scope.get("app") if isinstance(scope, dict) else None
+            policy = getattr(getattr(app, "state", None), "hedron_security", None)
+            profile = getattr(policy, "profile", None)
+            if profile is not None and str(getattr(profile, "value", profile)).lower() == "strict":
+                force_secure = True
+        secure = csrf_cookie_should_be_secure(
+            force_secure=force_secure,
+            request_is_secure=request_is_secure,
+        )
     response.set_cookie(
         COOKIE_NAME,
         value,
@@ -59,6 +77,7 @@ def apply_color_mode_cookie(
         httponly=False,
         samesite="lax",
         path=cookie_path,
+        secure=bool(secure),
     )
 
 

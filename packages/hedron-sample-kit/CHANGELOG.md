@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.42.0] - 2026-08-14
+
+### Added
+- Phase 0.42 production-grade Web Component platform graduation (D-070).
+
+### Changed
+- Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
+
 ## [0.1.10] — 2026-08-11
 
 ### Changed

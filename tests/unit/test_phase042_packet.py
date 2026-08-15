@@ -47,18 +47,19 @@ def test_phase042_manifest_commands_exist() -> None:
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     rows = data["evidence"]
     assert {row["id"] for row in rows} == EXPECTED_GATES_SET
-    assert {row["state"] for row in rows} == {"Planned"}
     assert set(GATE_TESTS) == EXPECTED_GATES_SET
     for gate_id, tests in GATE_TESTS.items():
-        assert tests == ["tests/unit/test_phase042_packet.py"], gate_id
+        assert "tests/unit/test_phase042_packet.py" in tests, gate_id
+        assert tests, gate_id
     for row in rows:
         command_path = ROOT / row["command"].removeprefix("python ")
         assert command_path.is_file(), row["command"]
+        state = row["state"]
+        assert state in {"Planned", "Implemented", "Verified"}
 
 
 def test_phase042_inventory_locks_supported_tags() -> None:
     data = tomllib.loads(INVENTORY.read_text(encoding="utf-8"))
-    assert data["state"] == "planned"
     assert data["living_published_baseline"] == "v0.41.0"
     assert data["hedron_cut"] == "v0.42.0"
     assert data["owning_decision"] == "D-070"
@@ -67,29 +68,44 @@ def test_phase042_inventory_locks_supported_tags() -> None:
     assert data["react_migration_bridge"]["in_hedron_elements"] is False
     assert data["react_migration_bridge"]["disposition"] == "experimental"
     assert len(data["remediations"]["issues"]) == 32
+    assert data["state"] in {"planned", "verified"}
+    for tag in LOCKED_TAGS:
+        assert tag in data["tags"]
 
 
 def test_phase042_fleet_inventory_baselines_041() -> None:
     data = tomllib.loads(FLEET_INVENTORY.read_text(encoding="utf-8"))
     assert data["baseline"] == "v0.41.0"
-    assert data["state"] == "planned"
     assert data["hedron_cut"] == "v0.42.0"
     assert "hedron_chart" in data["hedron-charts"]["supported"]
     elements = data["hedron-elements"]
-    assert elements["disposition"] == "incubator"
-    assert elements["maturity"] == "alpha"
-    assert elements["pin"] == ">=0.41.0,<0.42"
-    assert elements["supported"] == []
-    assert "production_grade_until_0_42" in elements["excluded"]
+    assert data["state"] in {"planned", "verified"}
+    if elements["maturity"] == "alpha":
+        assert elements["disposition"] == "incubator"
+        assert elements["pin"] == ">=0.41.0,<0.42"
+        assert elements["supported"] == []
+        assert "production_grade_until_0_42" in elements["excluded"]
+    else:
+        assert elements["maturity"] == "beta"
+        assert elements["disposition"] == "production_grade"
+        assert elements["pin"] == ">=0.42.0,<0.43"
+        assert set(elements["supported"]) == set(LOCKED_TAGS)
 
 
-def test_phase042_living_tip_unchanged() -> None:
-    assert living_published_baseline() == "v0.41.0"
+def test_phase042_living_tip_or_cut() -> None:
     release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))
-    assert release["release"]["published_version"] == "0.41.0"
-    assert release["release"]["train"] == "0.41"
     workspace = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    assert workspace["project"]["version"].startswith("0.41.")
+    published = release["release"]["published_version"]
+    version = workspace["project"]["version"]
+    if published == "0.41.0":
+        assert living_published_baseline() == "v0.41.0"
+        assert release["release"]["train"] == "0.41"
+        assert version.startswith("0.41.")
+    else:
+        assert published == "0.42.0"
+        assert living_published_baseline() == "v0.42.0"
+        assert release["release"]["train"] == "0.42"
+        assert version == "0.42.0"
 
 
 def test_phase042_decision_and_roadmap_agree() -> None:
@@ -105,8 +121,6 @@ def test_phase042_decision_and_roadmap_agree() -> None:
     assert TRACKING_ISSUE in release
     assert TRACKING_ISSUE in roadmap
     assert "## 0.42 — Production-grade Web Component platform" in roadmap
-    assert "Stage 0 contract refined against Published `v0.41.0`" in roadmap
-    assert "Living tip stays `v0.41.0` until cut" in roadmap
 
 
 def test_phase042_medium_issues_are_cited() -> None:
@@ -148,11 +162,16 @@ def test_phase042_medium_issues_are_cited() -> None:
     assert not missing_refine_citations()
 
 
-def test_phase042_no_cut_review_artifacts_yet() -> None:
+def test_phase042_review_artifacts_match_tip() -> None:
     review_dir = ROOT / "docs" / "acceptance" / "security-review-042"
     assert (review_dir / "BRIEF.md").is_file()
-    assert not (review_dir / "DISPOSITION.toml").is_file()
-    assert not (review_dir / "REDACTED_REPORT.md").is_file()
+    published = living_published_baseline()
+    if published == "v0.41.0":
+        assert not (review_dir / "DISPOSITION.toml").is_file()
+        assert not (review_dir / "REDACTED_REPORT.md").is_file()
+    else:
+        assert (review_dir / "DISPOSITION.toml").is_file()
+        assert (review_dir / "REDACTED_REPORT.md").is_file()
 
 
 def test_verified_gate_cannot_pass_without_executable_evidence(monkeypatch) -> None:

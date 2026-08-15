@@ -14,6 +14,7 @@ from hedron_mcp.compat import (
 )
 from hedron_mcp.server import (
     AuthorizationError,
+    InvalidParamsError,
     McpProjection,
     McpResource,
     McpTool,
@@ -26,6 +27,7 @@ __all__ = [
     "AuthorizationError",
     "BoundsError",
     "DEFAULT_PROTOCOL_VERSION",
+    "InvalidParamsError",
     "McpAuditEvent",
     "McpAuditLog",
     "McpBounds",

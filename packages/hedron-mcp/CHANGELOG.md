@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.42.0] - 2026-08-14
+
+### Added
+- Phase 0.42 production-grade Web Component platform graduation (D-070).
+
+### Changed
+- Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
+
 ## [0.2.0] — 2026-08-12
 
 - Production-grade deny-by-default Streamable HTTP MCP projection (phase 0.32 / RFC-0065).

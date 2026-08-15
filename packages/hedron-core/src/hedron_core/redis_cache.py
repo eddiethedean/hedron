@@ -14,6 +14,9 @@ class RedisCacheBackend(CacheBackend):
     """JSON-valued Redis cache with ``h1:`` key prefix and tag index sets.
 
     Serialization failures raise — values are never stored poisoned.
+    Value SET and tag SADDs commit together via ``MULTI``/``EXEC`` (#218).
+    Positive TTLs use millisecond ``PX`` so fractional lifetimes match in-memory (#242).
+    Tag index keys receive a matching ``PEXPIRE`` so they cannot outlive values (#208).
     """
 
     def __init__(self, client: Any, *, prefix: str = "h1:") -> None:
@@ -34,13 +37,17 @@ class RedisCacheBackend(CacheBackend):
         return str(raw)
 
     def get(self, key: str) -> Any | None:
+        hit, value = self.lookup(key)
+        return value if hit else None
+
+    def lookup(self, key: str) -> tuple[bool, Any]:
         raw = self._client.get(self._key(key))
         if raw is None:
-            return None
+            return False, None
         if isinstance(raw, bytes):
             raw = raw.decode("utf-8")
         try:
-            return json.loads(raw)
+            return True, json.loads(raw)
         except json.JSONDecodeError as exc:
             raise ValueError(f"Corrupt cache value for {key}") from exc
 
@@ -57,12 +64,57 @@ class RedisCacheBackend(CacheBackend):
         except (TypeError, ValueError) as exc:
             raise ValueError("Cache value is not JSON-serializable") from exc
         redis_key = self._key(key)
-        if ttl is None:
-            self._client.set(redis_key, payload)
-        else:
-            self._client.set(redis_key, payload, ex=max(1, int(ttl)))
-        for tag in tags:
-            self._client.sadd(self._tag_key(tag), key)
+        # Match InMemoryCacheBackend: ttl<=0 means already expired / do not keep (#242).
+        if ttl is not None and ttl <= 0:
+            self._client.delete(redis_key)
+            return
+
+        px_ms = max(1, int(ttl * 1000)) if ttl is not None else None
+        tag_keys = [self._tag_key(tag) for tag in tags]
+        pipe_factory = getattr(self._client, "pipeline", None)
+        if callable(pipe_factory):
+            pipe = pipe_factory(transaction=True)
+            self._queue_set(pipe, redis_key, payload, px_ms=px_ms)
+            for tag_key in tag_keys:
+                pipe.sadd(tag_key, key)
+                if px_ms is not None:
+                    self._queue_tag_expire(pipe, tag_key, px_ms)
+            pipe.execute()
+            return
+
+        # Stubs without pipeline: still write value then tags (best-effort).
+        self._queue_set(self._client, redis_key, payload, px_ms=px_ms)
+        for tag_key in tag_keys:
+            self._client.sadd(tag_key, key)
+            if px_ms is not None:
+                self._queue_tag_expire(self._client, tag_key, px_ms)
+
+    @staticmethod
+    def _queue_set(target: Any, redis_key: str, payload: str, *, px_ms: int | None) -> None:
+        if px_ms is None:
+            target.set(redis_key, payload)
+            return
+        target.set(redis_key, payload, px=px_ms)
+
+    def _queue_tag_expire(self, target: Any, tag_key: str, px_ms: int) -> None:
+        """Extend tag-index TTL to at least the value TTL (never shorten)."""
+        current = None
+        pttl = getattr(self._client, "pttl", None)
+        if callable(pttl):
+            try:
+                current = int(pttl(tag_key))
+            except Exception:  # noqa: BLE001
+                current = None
+        # pttl: -2 missing, -1 no expire, >0 remaining ms
+        if current is not None and current >= px_ms:
+            return
+        pexpire = getattr(target, "pexpire", None)
+        if callable(pexpire):
+            pexpire(tag_key, px_ms)
+            return
+        expire = getattr(target, "expire", None)
+        if callable(expire):
+            expire(tag_key, max(1, (px_ms + 999) // 1000))
 
     def invalidate(self, *, tags: tuple[str, ...] = (), keys: tuple[str, ...] = ()) -> int:
         removed = 0

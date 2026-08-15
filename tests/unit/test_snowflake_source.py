@@ -67,3 +67,25 @@ def test_assert_select_only_allows_with() -> None:
 def test_assert_select_only_allows_into_inside_string_literal() -> None:
     cleaned = assert_select_only("SELECT ' into TABLE ' AS note, id FROM customers")
     assert "into" in cleaned.lower()
+
+
+@pytest.mark.parametrize(
+    "statement",
+    [
+        "SELECT 'a;b' AS marker",
+        'SELECT "a;b" AS marker',
+        "SELECT $$a;b$$ AS marker",
+        "SELECT $tag$a;b$tag$ AS marker",
+        "SELECT 'it''s; fine' AS marker",
+    ],
+)
+def test_assert_select_only_allows_semicolon_inside_literals(statement: str) -> None:
+    """#108: semicolons inside quoted/dollar-quoted literals are not multi-statement."""
+    cleaned = assert_select_only(statement)
+    assert cleaned.lower().startswith("select")
+
+
+def test_assert_select_only_still_rejects_real_multi_statement() -> None:
+    with pytest.raises(HedronError) as exc:
+        assert_select_only("SELECT 1; SELECT 2")
+    assert exc.value.diagnostic.code == "HED-DATA-0061"

@@ -112,7 +112,7 @@ services, multiple contributors, or conventional production operations.
 ## Worked migration: sales dashboard
 
 This guide rewrites a small sales dashboard with filters, metrics, and a table. On Hedron
-**0.38.x**, install `hedron[charts]>=0.41.0,<0.42` for first-party or Matplotlib charts; or keep
+**0.38.x**, install `hedron[charts]>=0.42.0,<0.43` for first-party or Matplotlib charts; or keep
 `Metric` + `DataTable` when charts are optional.
 
 ## The Streamlit version
@@ -165,13 +165,13 @@ changes, Streamlit reruns the file and reconstructs the page.
 Install Hedron with the data extra, plus an ASGI server:
 
 ```bash
-uv add "hedron[data]>=0.41.0,<0.42" "uvicorn[standard]"
+uv add "hedron[data]>=0.42.0,<0.43" "uvicorn[standard]"
 ```
 
 To include charts, install the compatible satellite through the flagship extra:
 
 ```bash
-uv add "hedron[charts]>=0.41.0,<0.42"
+uv add "hedron[charts]>=0.42.0,<0.43"
 ```
 
 This enforces `hedron-charts>=0.2.0,<0.3`; see
@@ -343,7 +343,7 @@ Details: [Charts and HTMX](charts-and-htmx.md).
 | `st.columns` | `Grid` or `Inline` | Compose child components explicitly. |
 | `st.metric` | `Metric` | Pass the label, formatted value, and optional delta. |
 | `st.dataframe` | `DataTable` | Declare a `Model` when stable column types matter. Use `DataEditor` for edits. |
-| `st.line_chart` | `LineChart` (`hedron[charts]>=0.41.0,<0.42`) | Provide a title and accessible description; a table fallback remains useful. |
+| `st.line_chart` | `LineChart` (`hedron[charts]>=0.42.0,<0.43`) | Provide a title and accessible description; a table fallback remains useful. |
 | `st.plotly_chart` | `PlotlyChart` (experimental) | Hedron compiles the figure through its bounded chart adapter. |
 | `st.cache_data` | `cache_data` | Choose a TTL and a cache scope; include user or tenant dimensions for private data. |
 | `st.session_state` | Query parameters, your database, or `SessionState` | Prefer addressable URL state for filters and durable application storage for domain data. |
@@ -378,7 +378,7 @@ without a browser. Continue with [Test your UI](testing.md), [Security](security
 | Query returns 422 | FastAPI rejected an invalid typed value or bound | Correct the form value and render friendly validation guidance for the workflow |
 | `DataTable` cannot be imported | The data extra is not installed | Install `hedron[data]` at the same 0.25 version as `hedron` |
 | A private cache never hits | Sensitive scopes require concrete `vary_on` dimensions | Pass the user/tenant/session key as a function argument and include its name in `vary_on` |
-| Chart installation resolves an older core | The lower bound allowed a satellite before `0.1.6` | Install `hedron[charts]>=0.41.0,<0.42` in a clean environment |
+| Chart installation resolves an older core | The lower bound allowed a satellite before `0.1.6` | Install `hedron[charts]>=0.42.0,<0.43` in a clean environment |
 | State disappears after deployment/restart | Process/session memory was treated as durable storage | Move durable state to a database or shared service and review the multi-worker model |
 
 ## Migration checkpoint

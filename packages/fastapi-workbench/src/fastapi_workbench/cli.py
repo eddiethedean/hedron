@@ -34,7 +34,7 @@ def _config_from_args(args: argparse.Namespace) -> WorkbenchConfig:
         rserver_url_bin=getattr(args, "rserver_url", None) or WorkbenchConfig().rserver_url_bin,
         open_browser=bool(getattr(args, "open_browser", False)),
         reload=bool(getattr(args, "reload", False)),
-        workers=int(getattr(args, "workers", 1)),
+        workers=getattr(args, "workers", None),
         forwarded_allow_ips=getattr(args, "forwarded_allow_ips", None),
         allow_external_bind=bool(getattr(args, "allow_external_bind", False)),
         debug=bool(getattr(args, "debug", False)),
@@ -94,6 +94,38 @@ def _cmd_run(args: argparse.Namespace) -> int:
     return 0
 
 
+def _normalize_cookie_path(path: str) -> str:
+    if not path or path == "/":
+        return "/"
+    return path.rstrip("/") or "/"
+
+
+def _parse_set_cookie_path(header: str) -> str | None:
+    """Return the RFC6265 Path attribute from a Set-Cookie header.
+
+    Missing Path attributes yield ``None`` (fail closed for mount checks).
+    Quoted values are unquoted; comparison callers normalize trailing slashes.
+    """
+    parts = header.split(";")
+    for part in parts[1:]:
+        name, sep, value = part.strip().partition("=")
+        if not sep or name.lower() != "path":
+            continue
+        path = value.strip()
+        if len(path) >= 2 and path[0] == path[-1] and path[0] in "\"'":
+            path = path[1:-1]
+        return path
+    return None
+
+
+def _cookie_path_matches_mount(header: str, mount: str) -> bool:
+    expected = _normalize_cookie_path(mount or "/")
+    path = _parse_set_cookie_path(header)
+    if path is None:
+        return False
+    return _normalize_cookie_path(path) == expected
+
+
 async def _probe_app(app: Any, mount: str) -> dict[str, object]:
     import re
 
@@ -115,9 +147,9 @@ async def _probe_app(app: Any, mount: str) -> dict[str, object]:
             if value != mount and not value.startswith(mount + "/"):
                 unmounted.append(value)
     cookie_headers = response.headers.get_list("set-cookie")
-    cookie_paths_ok = all(
-        f"path={mount}" in header.lower() if mount else "path=/" in header.lower()
-        for header in cookie_headers
+    # Empty Set-Cookie list must fail closed (all([]) is True otherwise) — #160.
+    cookie_paths_ok = bool(cookie_headers) and all(
+        _cookie_path_matches_mount(header, mount) for header in cookie_headers
     )
     return {
         "target": target,
@@ -229,7 +261,7 @@ def main(argv: list[str] | None = None) -> int:
         p.add_argument(
             "--workers",
             type=int,
-            default=1,
+            default=None,
             help="Discover once, then exec this many Uvicorn workers",
         )
 

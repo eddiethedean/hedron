@@ -20,7 +20,6 @@ __all__ = ["HedronBlueprint", "convert_view_result", "wrap_hedron_view"]
 
 F = TypeVar("F", bound=Callable[..., Any])
 
-_UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
@@ -133,7 +132,7 @@ def wrap_hedron_view(
     @wraps(view)
     def wrapped(*args: object, **kwargs: object) -> object:
         protect, cookie_name, policy = _csrf_settings()
-        if require_csrf and protect and request.method.upper() in _UNSAFE_METHODS:
+        if require_csrf and protect and request.method.upper() not in _SAFE_METHODS:
             if isinstance(policy, SecurityPolicy):
                 validate_csrf(request, cookie_name=cookie_name, policy=policy)
             else:

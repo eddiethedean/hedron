@@ -100,7 +100,7 @@ Start with a clean environment and remove Streamlit only after the Hedron app no
 imports it.
 
 ```bash
-uv add "hedron[data]>=0.41.0,<0.42" "uvicorn[standard]"
+uv add "hedron[data]>=0.42.0,<0.43" "uvicorn[standard]"
 uv remove streamlit
 uv lock
 ```
@@ -112,7 +112,7 @@ if Streamlit previously installed some transitively.
 
 !!! note "Hedron 0.27 chart floor"
 
-    Install `hedron[charts]>=0.41.0,<0.42`; this requires the compatible
+    Install `hedron[charts]>=0.42.0,<0.43`; this requires the compatible
     `hedron-charts>=0.2.0,<0.3` satellite. See
     [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

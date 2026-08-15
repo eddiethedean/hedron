@@ -1,12 +1,12 @@
 # Upgrade to Hedron 0.41
 
-This guide covers an application upgrade onto the **0.41.x** train
-(current tip **`v0.41.0`**). New applications should use
+This guide covers an application upgrade onto the **0.42.x** train
+(current tip **`v0.42.0`**). New applications should use
 [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.41.x ships allowlisted typed browser composition, subject-bound draft transfer,
+Hedron 0.42.x ships allowlisted typed browser composition, subject-bound draft transfer,
 progressive navigation/restoration, content-free traces, and element/region failure
 isolation (D-069 / RFC-0060):
 
@@ -39,13 +39,13 @@ preload / View Transitions never affect correctness.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.41.0,<0.42"
-python -m pip install -U "hedron[data]>=0.41.0,<0.42"
-python -m pip install -U "hedron[charts]>=0.41.0,<0.42"
+python -m pip install -U "hedron>=0.42.0,<0.43"
+python -m pip install -U "hedron[data]>=0.42.0,<0.43"
+python -m pip install -U "hedron[charts]>=0.42.0,<0.43"
 # independent charts satellite:
 python -m pip install -U "hedron-charts>=0.2.0,<0.3"
 # optional Alpha elements:
-python -m pip install -U "hedron[elements]>=0.41.0,<0.42"
+python -m pip install -U "hedron[elements]>=0.42.0,<0.43"
 ```
 
 ## Behavioral notes (0.40 → 0.41)

@@ -71,15 +71,25 @@ class AuthRateLimiter:
     def _key(self, ip: str, route: str) -> str:
         return f"{ip}\0{route}"
 
+    def _prune_expired_unlocked(self, cutoff: float) -> None:
+        """Drop expired timestamps and delete keys with empty windows (under lock)."""
+        empty: list[str] = []
+        for key, bucket in self._events.items():
+            while bucket and bucket[0] <= cutoff:
+                bucket.popleft()
+            if not bucket:
+                empty.append(key)
+        for key in empty:
+            del self._events[key]
+
     def check(self, ip: str, route: str, *, now: float | None = None) -> tuple[bool, int]:
         """Return ``(allowed, retry_after_seconds)``. Consumes a slot when allowed."""
         ts = float(time.time() if now is None else now)
         key = self._key(ip or "unknown", route)
         with self._lock:
-            bucket = self._events[key]
             cutoff = ts - self.window_seconds
-            while bucket and bucket[0] <= cutoff:
-                bucket.popleft()
+            self._prune_expired_unlocked(cutoff)
+            bucket = self._events[key]
             if len(bucket) >= self.limit:
                 oldest = bucket[0]
                 retry_after = max(1, int(self.window_seconds - (ts - oldest) + 0.999))

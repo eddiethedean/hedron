@@ -1,8 +1,6 @@
 # Hedron `v0.42` production-grade Web Component platform acceptance
 
-**Status:** Planned (Stage 0 contract refined against Published **`v0.41.0`**). Runtime
-implementation begins at Stage 1; this refine ships no runtime, version bump, living-tip claim,
-or Verified gates.
+**Status:** Verified in-tree as Published **`v0.42.0`** (tag/PyPI deferred). Stage 0 baseline was Published **`v0.41.0`**.
 
 Phase 0.42 graduates `hedron-elements` and a locked first-party Supported element inventory to
 production-grade for declared workflows only, with compatibility, independent review, element

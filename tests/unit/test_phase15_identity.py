@@ -124,6 +124,16 @@ def test_login_csrf_roundtrip_session_and_cookie() -> None:
         validate_login_csrf(token, cookie="not-signed", secret=secret)
 
 
+def test_login_csrf_accepts_valid_cookie_when_session_diverges() -> None:
+    """#138: a valid signed cookie must pass even if session holds another token."""
+    session: dict = {}
+    issue_login_csrf(session)  # session holds token A
+    tok_b = "different_token_value_xxxxxxxx"
+    signed_b = sign_login_csrf(tok_b, "sec")
+    validate_login_csrf(tok_b, session=session, cookie=signed_b, secret="sec")
+    validate_login_csrf(tok_b, session={}, cookie=signed_b, secret="sec")
+
+
 def test_session_timeout_idle_and_absolute() -> None:
     session: dict = {}
     touch_session(session, now=1_000.0)
@@ -192,6 +202,17 @@ def test_auth_rate_limit_returns_429_with_retry_after() -> None:
     with pytest.raises(HTTPException) as limited:
         limiter.check_request(request, now=4.0)
     assert limited.value.status_code == 429
+
+
+def test_auth_rate_limiter_evicts_stale_ip_keys() -> None:
+    """#139: unique IPs must not permanently retain empty window entries."""
+    lim = AuthRateLimiter(limit=10, window_seconds=60.0)
+    for i in range(1_000):
+        lim.check(f"ip{i}", "/login", now=1.0)
+    assert len(lim._events) == 1_000
+    lim.check("fresh", "/login", now=100.0)
+    assert len(lim._events) == 1
+    assert lim._key("fresh", "/login") in lim._events
 
 
 def test_trusted_header_allow_and_deny() -> None:

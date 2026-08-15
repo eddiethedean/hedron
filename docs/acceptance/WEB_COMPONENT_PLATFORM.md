@@ -13,10 +13,10 @@ Phase **0.40** authoring / React migration is **Published** as `v0.40.0` (D-068;
 gates Verified; React-island remains Experimental) — see
 [`RELEASE_0_40.md`](RELEASE_0_40.md) and
 [`release-gate-0.40.toml`](release-gate-0.40.toml). Phase **0.41** browser composition / state /
-navigation is **Published** as `v0.41.0` (D-069; all owned gates Verified) — see
+navigation is **Published** as `v0.42.0` (D-069; all owned gates Verified) — see
 [`RELEASE_0_41.md`](RELEASE_0_41.md) and
 [`release-gate-0.41.toml`](release-gate-0.41.toml). Phase **0.42** Stage 0 is refined against
-Published `v0.41.0` (D-070; `release-gate-0.42.toml` all Planned) — see
+Published `v0.42.0` (D-070; `release-gate-0.42.toml` all Planned) — see
 [`RELEASE_0_42.md`](RELEASE_0_42.md).
 Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061. D-066 inserts charts
 at 0.38 and moves the former 0.38–0.41 capabilities to 0.39–0.42 without scope loss.

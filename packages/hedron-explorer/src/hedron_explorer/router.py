@@ -123,11 +123,26 @@ def _preview_frame(html: str) -> str:
     )
 
 
+def _prune_explorer_rate(now: float) -> None:
+    """Drop expired timestamps and delete idle client keys (#175)."""
+    window = 60.0
+    idle: list[str] = []
+    for key, stamps in list(_RATE.items()):
+        kept = [t for t in stamps if now - t < window]
+        if not kept:
+            idle.append(key)
+        else:
+            _RATE[key] = kept
+    for key in idle:
+        _RATE.pop(key, None)
+
+
 async def explorer_guards(request: Request) -> None:
     """Rate-limit and audit Explorer requests."""
     client = request.client.host if request.client else "unknown"
     now = time.time()
-    bucket = [t for t in _RATE.get(client, []) if now - t < 60]
+    _prune_explorer_rate(now)
+    bucket = list(_RATE.get(client, []))
     if len(bucket) >= 120:
         _RATE[client] = bucket
         _audit("rate_limited", path=str(request.url.path))
@@ -954,18 +969,27 @@ def explorer_router() -> APIRouter:
             or request.headers.get("X-Hedron-CSRF")
         )
         form_token = None
-        validator = getattr(request.app.state, "hedron_csrf_validate", None)
-        if callable(validator):
-            try:
-                result = validator(request, policy)
-                if hasattr(result, "__await__"):
-                    await result  # type: ignore[misc]
-            except Exception:  # noqa: BLE001
+        # Simulate always requires a real CSRF check. When the app has
+        # csrf_enabled=False, hedron_csrf_validate is a no-op — force
+        # double-submit instead of treating the bridge as success (#156).
+        if strategy is None:
+            if not validate_double_submit(
+                cookie_token=cookie, header_token=header, form_token=form_token
+            ):
                 return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
-        elif not validate_double_submit(
-            cookie_token=cookie, header_token=header, form_token=form_token
-        ):
-            return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
+        else:
+            validator = getattr(request.app.state, "hedron_csrf_validate", None)
+            if callable(validator):
+                try:
+                    result = validator(request, policy)
+                    if hasattr(result, "__await__"):
+                        await result  # type: ignore[misc]
+                except Exception:  # noqa: BLE001
+                    return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
+            elif not validate_double_submit(
+                cookie_token=cookie, header_token=header, form_token=form_token
+            ):
+                return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
 
         name = payload.get("route")
         if not isinstance(name, str) or not name:

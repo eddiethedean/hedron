@@ -2,12 +2,12 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.41 **Published** as `v0.41.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Prior Published: 0.40 as `v0.40.0` (2026-08-14).
-Living tip = `v0.41.0`.
+**Roadmap position:** phase 0.42 **Published** as `v0.42.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Prior Published: 0.41 as `v0.41.0` (2026-08-14).
+Living tip = `v0.42.0`.
 **Date:** 2026-08-14
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` `0.41.0`; Alpha (train-aligned) — `hedron-elements` `0.41.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.42.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
@@ -15,18 +15,15 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-`hedron-workbench`, `hedron-posit`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
-`hedron-sim`, `hedron-mcp`, `hedron-gradio`. Alpha — `hedron-elements`.
+`hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-charts`,
+`hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.41** (D-069 / RFC-0060) — typed browser composition, bounded
-draft transfer, navigation/restoration, content-free traces, and per-element failure isolation
-(`release-gate-0.41.toml` Verified; tip `v0.41.0`). Prior Published
-**0.40** authoring / **0.39** rich data / OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
+**Phase focus:** Living train is **0.42** (D-070 / RFC-0060) — production-grade Web Component
+platform graduation for the locked Supported inventory (`release-gate-0.42.toml` Verified; tip
+`v0.42.0`). Prior Published **0.41** composition / **0.40** authoring / **0.39** rich data /
+OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
-Phase **0.42** Stage 0 contract packet is refined against Published `v0.41.0` (D-070 / RFC-0060;
-[`RELEASE_0_42.md`](docs/acceptance/RELEASE_0_42.md); `release-gate-0.42.toml` all Planned;
-[#97](https://github.com/eddiethedean/hedron/issues/97) open — do not close until gates Verified).
-Living tip remains **`v0.41.0`**.
+Tracking [#97](https://github.com/eddiethedean/hedron/issues/97) closes with this cut.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
@@ -38,8 +35,9 @@ disposition remains **`polling_only`** from 0.24 — polling is the Supported pr
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
 remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` /
 `REMEDIATE-021` remain Planned** until real sessions — **do not market human AT as
-Supported**. Automated AT (`AT-019`, phase 0.19) remains Supported and is not a substitute
-for human AT. Prior production-quality packet **0.25** (D-053 / RFC-0056) remains
+Supported**. `AT-042` is element-inventory honesty only and does not close `#86`. Automated AT
+(`AT-019`, phase 0.19) remains Supported and is not a substitute for human AT. Prior
+production-quality packet **0.25** (D-053 / RFC-0056) remains
 **Verified** — see [production-quality](docs/guides/production-quality.md) ·
 [PRODUCTION_ARCHETYPE](docs/api/PRODUCTION_ARCHETYPE.md). `REV-026-003` (Explorer process-local
 audit buffer) remains an Explorer-owned accepted risk; it was not expanded into satellite
@@ -353,16 +351,16 @@ Web Component authoring and interoperability is **Published** as `v0.40.0` (D-06
 `hedron new element`, plugin/HDJ/Explorer/theme metadata parity, `ReactMigrationMatrix` with an
 Experimental island docs/reference, optional `@hedron/elements` modules/types mirror, and the
 locked 6-issue remediation packet. Phase **0.41** browser composition, draft transfer, and
-navigation is **Published** as `v0.41.0` (D-069 /
+navigation is **Published** as `v0.42.0` (D-069 /
 [RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md); `release-gate-0.41.toml` Verified;
 [#96](https://github.com/eddiethedean/hedron/issues/96); see
 [implementation plan](docs/implementation/HEDRON_COMPOSITION_041.md) and
 [0.41 acceptance packet](docs/acceptance/RELEASE_0_41.md)). Phase **0.42** production-grade Web
-Component platform Stage 0 is refined against Published `v0.41.0` (D-070 / RFC-0060;
+Component platform Stage 0 is refined against Published `v0.42.0` (D-070 / RFC-0060;
 `release-gate-0.42.toml` all Planned; [#97](https://github.com/eddiethedean/hedron/issues/97)
 open — do not close until gates Verified; see
 [implementation plan](docs/implementation/HEDRON_ELEMENTS_042.md) and
-[0.42 acceptance packet](docs/acceptance/RELEASE_0_42.md)). Living tip is **`v0.41.0`**.
+[0.42 acceptance packet](docs/acceptance/RELEASE_0_42.md)). Living tip is **`v0.42.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

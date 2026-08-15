@@ -91,10 +91,17 @@ def check_session_timeout(
 
     When expired: raise ``SessionTimeoutError`` if ``raise_on_expired``, else
     return False. Pass ``None`` for a limit to disable that axis.
+    Negative limits are rejected (``ValueError``) so misconfiguration cannot
+    instantly expire every active session.
 
     Note: signed cookies alone cannot revoke early — clearing server session
     state (or rotating refresh) is required for immediate invalidation.
     """
+    if idle_seconds is not None and float(idle_seconds) < 0:
+        raise ValueError(f"idle_seconds must be >= 0 or None, got {idle_seconds!r}")
+    if absolute_seconds is not None and float(absolute_seconds) < 0:
+        raise ValueError(f"absolute_seconds must be >= 0 or None, got {absolute_seconds!r}")
+
     ts = float(time.time() if now is None else now)
     created = session.get(SESSION_CREATED_KEY)
     last_seen = session.get(SESSION_LAST_SEEN_KEY)

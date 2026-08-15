@@ -90,6 +90,8 @@ def normalize_mount_path(value: str | None) -> str:
         or "?" in text
         or "#" in text
         or any(ch.isspace() for ch in text)
+        # Cookie Path is a Set-Cookie attribute value; reject separators/CTL (#245).
+        or any(ch in ';,"=' or ord(ch) < 32 for ch in text)
     ):
         return ""
     if not text.startswith("/"):
@@ -109,6 +111,8 @@ def normalize_mount_path(value: str | None) -> str:
             break
         decoded = next_decoded
         if "//" in decoded or "\\" in decoded or "://" in decoded:
+            return ""
+        if any(ch in ';,"=' or ord(ch) < 32 for ch in decoded):
             return ""
         for segment in decoded.split("/")[1:]:
             if not segment or segment in {".", ".."}:

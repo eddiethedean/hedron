@@ -461,7 +461,9 @@ def resolve_deployment(
         or (truthy(env.get("RELOAD")) if compatibility_aliases else False)
     )
     workers = (
-        _parse_workers(cfg.workers) if cfg.workers != 1 else _parse_workers(env.get(_ENV_WORKERS))
+        _parse_workers(cfg.workers)
+        if cfg.workers is not None
+        else _parse_workers(env.get(_ENV_WORKERS))
     )
     open_browser = cfg.open_browser or truthy(env.get(_ENV_OPEN))
 

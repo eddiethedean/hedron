@@ -112,7 +112,21 @@ def _is_weak_secret(secret: str) -> bool:
         return True
     if lowered in DEFAULT_SESSION_SECRET_MARKERS:
         return True
-    return "replace-in-production" in lowered or "change-me" in lowered
+    if "replace-in-production" in lowered or "change-me" in lowered:
+        return True
+    # Low-entropy: single character or all digits (#238).
+    if len(set(lowered)) == 1:
+        return True
+    if lowered.isdigit():
+        return True
+    # Repeated denylist markers that only meet the length floor via repetition.
+    for marker in DEFAULT_SESSION_SECRET_MARKERS:
+        if not marker:
+            continue
+        if len(lowered) >= len(marker) and len(lowered) % len(marker) == 0:
+            if marker * (len(lowered) // len(marker)) == lowered:
+                return True
+    return False
 
 
 def assert_production_security_config(

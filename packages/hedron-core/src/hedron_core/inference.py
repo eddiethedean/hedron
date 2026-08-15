@@ -11,7 +11,7 @@ from __future__ import annotations
 import itertools
 import threading
 import time
-from collections import defaultdict, deque
+from collections import OrderedDict, defaultdict, deque
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import StrEnum
@@ -138,11 +138,16 @@ class InferencePolicy:
     default_eta_per_item: float = 1.0
     batch: BatchWindow | None = None
     development_in_process: bool = False
+    cancel_ttl_seconds: float = 60.0
+    max_cancelled: int = 1_024
     _inflight: dict[str, int] = field(default_factory=lambda: defaultdict(int), init=False)
+    _inflight_ids: dict[str, deque[str]] = field(
+        default_factory=lambda: defaultdict(deque), init=False, repr=False
+    )
     _queue: list[QueuedInference] = field(default_factory=list, init=False)
     _lock: threading.RLock = field(default_factory=threading.RLock, init=False)
     _seq: Iterator[int] = field(default_factory=lambda: itertools.count(1), init=False, repr=False)
-    _cancel: set[str] = field(default_factory=set, init=False)
+    _cancel: OrderedDict[str, float] = field(default_factory=OrderedDict, init=False, repr=False)
     _diagnostics: dict[str, InferenceDiagnostics] = field(default_factory=dict, init=False)
     _request_jobs: dict[str, str] = field(default_factory=dict, init=False)
     _request_groups: dict[str, str] = field(default_factory=dict, init=False)
@@ -209,6 +214,7 @@ class InferencePolicy:
             if self._inflight[group] < capacity:
                 handle = self._submit(item, backend=backend)
                 self._inflight[group] += 1
+                self._inflight_ids[group].append(request_id)
                 self._request_jobs[request_id] = handle.job_id
                 self._request_groups[request_id] = group
                 self._request_auth[request_id] = (auth_subject, tenant_id)
@@ -227,12 +233,6 @@ class InferencePolicy:
                     job_id=handle.job_id,
                 )
             if len(self._queue) >= self.max_queue:
-                self._diagnostics[request_id] = InferenceDiagnostics(
-                    request_id=request_id,
-                    group=group,
-                    queue_ms=0.0,
-                    overload=True,
-                )
                 raise InferenceError(
                     "Inference queue overload",
                     code=HED_INFER_0001,
@@ -264,6 +264,7 @@ class InferencePolicy:
 
     def request_cancel(self, request_id: str, *, backend: JobBackend | None = None) -> bool:
         with self._lock:
+            self._prune_cancelled(time.monotonic())
             known = (
                 request_id in self._diagnostics
                 or any(q.request_id == request_id for q in self._queue)
@@ -281,25 +282,10 @@ class InferencePolicy:
                     tenant_id = queued.tenant_id
                     break
 
-            def _mark_cancelled() -> None:
-                diag = self._diagnostics.get(request_id)
-                if diag is not None:
-                    self._diagnostics[request_id] = InferenceDiagnostics(
-                        request_id=diag.request_id,
-                        group=diag.group,
-                        queue_ms=diag.queue_ms,
-                        execute_ms=diag.execute_ms,
-                        batch_id=diag.batch_id,
-                        batch_size=diag.batch_size,
-                        cancelled=True,
-                        overload=diag.overload,
-                    )
-
             if was_queued:
-                self._cancel.add(request_id)
+                self._mark_cancel_id(request_id)
                 self._queue = [q for q in self._queue if q.request_id != request_id]
-                self._request_auth.pop(request_id, None)
-                _mark_cancelled()
+                self._forget_request_maps(request_id)
                 return True
 
             if job_id is not None:
@@ -315,22 +301,28 @@ class InferencePolicy:
                     # Do not free the concurrency slot or claim cancel while the
                     # durable job remains running (scoped authz denial / race).
                     return False
-                self._cancel.add(request_id)
+                self._mark_cancel_id(request_id)
                 if group is not None and request_id in self._request_groups:
                     self._inflight[group] = max(0, self._inflight[group] - 1)
-                    self._request_groups.pop(request_id, None)
-                self._request_jobs.pop(request_id, None)
-                self._request_auth.pop(request_id, None)
-                _mark_cancelled()
+                    self._drop_inflight_id(group, request_id)
+                self._forget_request_maps(request_id)
                 return True
 
-            self._cancel.add(request_id)
-            _mark_cancelled()
+            self._mark_cancel_id(request_id)
+            self._forget_request_maps(request_id)
             return known
 
     def is_cancelled(self, request_id: str) -> bool:
         with self._lock:
-            return request_id in self._cancel
+            now = time.monotonic()
+            self._prune_cancelled(now)
+            stamped = self._cancel.get(request_id)
+            if stamped is None:
+                return False
+            if now - stamped > self.cancel_ttl_seconds:
+                del self._cancel[request_id]
+                return False
+            return True
 
     def drain_ready(
         self, *, backend: JobBackend | None = None
@@ -338,6 +330,7 @@ class InferencePolicy:
         """Promote queued items into free concurrency slots (fair within group)."""
         started: list[tuple[QueuedInference, JobHandle]] = []
         with self._lock:
+            self._prune_cancelled(time.monotonic())
             # Partition by group while preserving priority/enqueue order inside each group.
             by_group: dict[str, list[QueuedInference]] = defaultdict(list)
             for item in self._queue:
@@ -374,6 +367,7 @@ class InferencePolicy:
                         continue
                     handle = self._submit(item, backend=backend)
                     self._inflight[group_name] += 1
+                    self._inflight_ids[group_name].append(item.request_id)
                     self._request_jobs[item.request_id] = handle.job_id
                     self._request_groups[item.request_id] = group_name
                     self._request_auth[item.request_id] = (item.auth_subject, item.tenant_id)
@@ -438,9 +432,18 @@ class InferencePolicy:
                 _flush(shape, pending)
         return batches
 
-    def release(self, group: str, *, count: int = 1) -> None:
+    def release(self, group: str, *, count: int = 1, request_id: str | None = None) -> None:
         with self._lock:
             self._inflight[group] = max(0, self._inflight[group] - count)
+            if request_id is not None:
+                self._drop_inflight_id(group, request_id)
+                self._forget_request_maps(request_id)
+                return
+            for _ in range(max(0, count)):
+                pending = self._inflight_ids.get(group)
+                if not pending:
+                    break
+                self._forget_request_maps(pending.popleft())
 
     def queue_status(self) -> list[InferenceQueueStatus]:
         with self._lock:
@@ -496,6 +499,38 @@ class InferencePolicy:
             tenant_id=item.tenant_id,
             auth_subject=item.auth_subject,
         )
+
+    def _forget_request_maps(self, request_id: str) -> None:
+        self._diagnostics.pop(request_id, None)
+        self._request_jobs.pop(request_id, None)
+        self._request_auth.pop(request_id, None)
+        self._request_groups.pop(request_id, None)
+
+    def _drop_inflight_id(self, group: str, request_id: str) -> None:
+        pending = self._inflight_ids.get(group)
+        if not pending:
+            return
+        try:
+            pending.remove(request_id)
+        except ValueError:
+            return
+
+    def _mark_cancel_id(self, request_id: str) -> None:
+        now = time.monotonic()
+        self._prune_cancelled(now)
+        self._cancel[request_id] = now
+        self._cancel.move_to_end(request_id)
+        while len(self._cancel) > self.max_cancelled:
+            self._cancel.popitem(last=False)
+
+    def _prune_cancelled(self, now: float) -> None:
+        expired = [
+            key
+            for key, stamped in self._cancel.items()
+            if now - stamped > self.cancel_ttl_seconds
+        ]
+        for key in expired:
+            del self._cancel[key]
 
 
 @dataclass

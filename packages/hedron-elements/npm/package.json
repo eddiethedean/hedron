@@ -1,6 +1,6 @@
 {
   "name": "@hedron/elements",
-  "version": "0.41.0",
+  "version": "0.42.0",
   "description": "Modules and TypeScript types mirror for Hedron elements (no React runtime)",
   "type": "module",
   "license": "MIT",
@@ -19,6 +19,38 @@
     "./composition-041": {
       "types": "./modules/composition-041.d.ts",
       "default": "./modules/composition-041.mjs"
+    },
+    "./hedron-field-text": {
+      "types": "./modules/hedron-field-text.d.ts",
+      "default": "./modules/hedron-field-text.mjs"
+    },
+    "./hedron-field-choice": {
+      "types": "./modules/hedron-field-choice.d.ts",
+      "default": "./modules/hedron-field-choice.mjs"
+    },
+    "./hedron-field-file": {
+      "types": "./modules/hedron-field-file.d.ts",
+      "default": "./modules/hedron-field-file.mjs"
+    },
+    "./hedron-disclosure": {
+      "types": "./modules/hedron-disclosure.d.ts",
+      "default": "./modules/hedron-disclosure.mjs"
+    },
+    "./hedron-dialog": {
+      "types": "./modules/hedron-dialog.d.ts",
+      "default": "./modules/hedron-dialog.mjs"
+    },
+    "./hedron-action-async": {
+      "types": "./modules/hedron-action-async.d.ts",
+      "default": "./modules/hedron-action-async.mjs"
+    },
+    "./gesture-catalog": {
+      "types": "./modules/gesture-catalog.d.ts",
+      "default": "./modules/gesture-catalog.mjs"
+    },
+    "./interaction-state": {
+      "types": "./modules/interaction-state.d.ts",
+      "default": "./modules/interaction-state.mjs"
     }
   },
   "scripts": {

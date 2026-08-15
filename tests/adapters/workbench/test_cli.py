@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import stat
+from pathlib import Path
 
 import pytest
 
@@ -18,6 +20,50 @@ def test_check_json(capsys: pytest.CaptureFixture[str]) -> None:
     payload = json.loads(capsys.readouterr().out)
     assert payload["browser_mount"] == "/s/demo/p/9"
     assert payload["cookie_mount"] == "/s/demo/p/9"
+
+
+def test_check_discover_binds_before_rserver_url(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """#137: ``check --discover`` must bind a listener and pass that port."""
+    from hedron_posit import cli as posit_cli
+
+    bound: list[int] = []
+    real_bind = posit_cli.bind_loopback
+
+    def tracking_bind(host: str, port: int):
+        sock = real_bind(host, port)
+        bound.append(int(sock.getsockname()[1]))
+        return sock
+
+    monkeypatch.setattr(posit_cli, "bind_loopback", tracking_bind)
+    script = tmp_path / "fake-rserver-url"
+    script.write_text(
+        "#!/bin/sh\necho \"https://wb.example/s/disc/p/$2\"\n",
+        encoding="utf-8",
+    )
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    monkeypatch.setenv("RS_SERVER_URL", "https://wb.example/s/x/")
+    assert (
+        main(
+            [
+                "check",
+                "--discover",
+                "--format",
+                "json",
+                "--rserver-url",
+                str(script),
+            ]
+        )
+        == 0
+    )
+    assert bound, "check --discover must bind a listener before rserver-url"
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["browser_mount"] == f"/s/disc/p/{bound[0]}"
+    assert payload["discovered"] is True
+
 
 
 def test_dry_run_alias() -> None:

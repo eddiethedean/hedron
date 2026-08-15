@@ -149,6 +149,26 @@ def test_prepare_app_exports_before_import(monkeypatch: pytest.MonkeyPatch) -> N
     assert inner.state.hedron_cookie_path == "/s/prep/p/2"
 
 
+def test_prepare_app_exports_into_caller_environ(monkeypatch: pytest.MonkeyPatch) -> None:
+    """#136: custom environ must receive handoff keys; os.environ must stay clean."""
+    monkeypatch.delenv("HEDRON_ROOT_PATH", raising=False)
+    monkeypatch.delenv(RESOLVED_MOUNT_ENV, raising=False)
+    isolated: dict[str, str] = {}
+    _app, resolved = prepare_app(
+        target="tests.integration._workbench_sample:create_app",
+        config=WorkbenchConfig(mount="/s/isolated/p/1", factory=True),
+        environ=isolated,
+        wrap=False,
+    )
+    assert resolved.browser_mount == "/s/isolated/p/1"
+    assert isolated.get("HEDRON_ROOT_PATH") == "/s/isolated/p/1"
+    assert isolated.get(RESOLVED_MOUNT_ENV) == "/s/isolated/p/1"
+    assert os.environ.get("HEDRON_ROOT_PATH") != "/s/isolated/p/1"
+    assert RESOLVED_MOUNT_ENV not in os.environ or os.environ.get(RESOLVED_MOUNT_ENV) != (
+        "/s/isolated/p/1"
+    )
+
+
 def test_prepare_workbench_facade_is_not_double_wrapped(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

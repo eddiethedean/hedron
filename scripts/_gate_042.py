@@ -83,15 +83,37 @@ PACKET_FILES = (
     DECISIONS,
 )
 
-# Stage 0: every gate binds only the packet test until Stage 1+ evidence lands.
+# Domain evidence plus packet integrity. Verified gates require non-empty lists.
 GATE_TESTS: dict[str, list[str]] = {
-    "STABLE-042": ["tests/unit/test_phase042_packet.py"],
-    "COMPAT-042": ["tests/unit/test_phase042_packet.py"],
-    "REVIEW-042": ["tests/unit/test_phase042_packet.py"],
-    "AT-042": ["tests/unit/test_phase042_packet.py"],
-    "PERF-042": ["tests/unit/test_phase042_packet.py"],
-    "SUPPLY-042": ["tests/unit/test_phase042_packet.py"],
-    "REGRESS-042": ["tests/unit/test_phase042_packet.py"],
+    "STABLE-042": [
+        "tests/unit/test_stable_042.py",
+        "tests/unit/test_phase042_packet.py",
+    ],
+    "COMPAT-042": [
+        "tests/unit/test_compat_042.py",
+        "tests/unit/test_phase042_packet.py",
+    ],
+    "REVIEW-042": [
+        "tests/unit/test_review_042.py",
+        "tests/unit/test_phase042_packet.py",
+    ],
+    "AT-042": [
+        "tests/unit/test_at_042.py",
+        "tests/unit/test_phase042_packet.py",
+    ],
+    "PERF-042": [
+        "tests/unit/test_perf_042.py",
+        "tests/unit/test_phase042_packet.py",
+    ],
+    "SUPPLY-042": [
+        "tests/unit/test_supply_042.py",
+        "tests/unit/test_phase042_packet.py",
+    ],
+    "REGRESS-042": [
+        "tests/unit/test_regress_042_issues.py",
+        "tests/unit/test_cache_single_flight_async.py",
+        "tests/unit/test_phase042_packet.py",
+    ],
     "PKG-042": ["tests/unit/test_phase042_packet.py"],
 }
 

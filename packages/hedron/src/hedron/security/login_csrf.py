@@ -84,22 +84,25 @@ def validate_login_csrf(
             detail="Login CSRF validation failed",
         )
 
-    expected: str | None = None
+    expected_candidates: list[str] = []
     if session is not None:
         stored = session.get(LOGIN_CSRF_KEY)
         if isinstance(stored, str) and stored:
-            expected = stored
+            expected_candidates.append(stored)
 
-    if expected is None and cookie and secret:
+    if cookie and secret:
         try:
-            expected = unsign_login_csrf(cookie, secret, max_age=max_age)
+            expected_candidates.append(unsign_login_csrf(cookie, secret, max_age=max_age))
         except ValueError as exc:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Login CSRF validation failed",
-            ) from exc
+            if not expected_candidates:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Login CSRF validation failed",
+                ) from exc
 
-    if expected is None or not secrets.compare_digest(expected, token):
+    if not expected_candidates or not any(
+        secrets.compare_digest(expected, token) for expected in expected_candidates
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Login CSRF validation failed",

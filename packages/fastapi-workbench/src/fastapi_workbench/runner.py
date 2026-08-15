@@ -291,6 +291,8 @@ def prepare_app(
             expected_mount=resolved.browser_mount,
             debug=resolved.debug,
             owned_cookie_names=owned_cookie_names,
+            environ=environ,
+            expected_origins=(resolved.external_origin,),
         )
     return app, resolved
 

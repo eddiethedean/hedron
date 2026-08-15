@@ -1,6 +1,6 @@
 # Upgrade fixtures — phase 0.42 production-grade Web Component platform
 
-**Status:** Planned Stage 0 corpus. Baseline Published `v0.41.0`; target `v0.42.0`.
+**Status:** Verified at cut. Baseline Published `v0.41.0`; target `v0.42.0`.
 
 ## Required matrix
 

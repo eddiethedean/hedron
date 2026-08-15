@@ -144,6 +144,17 @@ class CacheBackend:
     def get(self, key: str) -> Any | None:  # pragma: no cover - protocol
         raise NotImplementedError
 
+    def lookup(self, key: str) -> tuple[bool, Any]:
+        """Return ``(hit, value)`` so stored ``None`` is distinguishable from a miss.
+
+        Default implementation cannot distinguish a cached ``None`` from absence;
+        backends that store ``None`` should override.
+        """
+        value = self.get(key)
+        if value is None:
+            return False, None
+        return True, value
+
     def set(
         self,
         key: str,
@@ -175,17 +186,22 @@ class InMemoryCacheBackend(CacheBackend):
         self._flight_results: dict[str, object] = {}
         self._flight_errors: dict[str, BaseException] = {}
         self._flight_waiters: dict[str, int] = {}
-        self._async_flights: dict[str, asyncio.Future[Any]] = {}
+        # Keyed by (cache key, event-loop id) so Futures are never shared across loops.
+        self._async_flights: dict[tuple[str, int], asyncio.Future[Any]] = {}
 
     def get(self, key: str) -> Any | None:
+        hit, value = self.lookup(key)
+        return value if hit else None
+
+    def lookup(self, key: str) -> tuple[bool, Any]:
         with self._lock:
             entry = self._store.get(key)
             if entry is None:
-                return None
+                return False, None
             if entry.expires_at is not None and time.monotonic() >= entry.expires_at:
                 del self._store[key]
-                return None
-            return entry.value
+                return False, None
+            return True, entry.value
 
     def age_ms(self, key: str) -> float | None:
         with self._lock:
@@ -226,8 +242,8 @@ class InMemoryCacheBackend(CacheBackend):
 
     def single_flight(self, key: str, loader: Callable[[], R]) -> R:
         with self._lock:
-            cached = self.get(key)
-            if cached is not None:
+            hit, cached = self.lookup(key)
+            if hit:
                 return cached  # type: ignore[return-value]
             if key in self._flights:
                 event = self._flights[key]
@@ -272,18 +288,19 @@ class InMemoryCacheBackend(CacheBackend):
 
     async def single_flight_async(self, key: str, loader: Callable[[], Any]) -> Any:
         while True:
-            cached = self.get(key)
-            if cached is not None:
+            hit, cached = self.lookup(key)
+            if hit:
                 return cached
             loop = asyncio.get_running_loop()
+            flight_key = (key, id(loop))
             with self._lock:
-                existing = self._async_flights.get(key)
+                existing = self._async_flights.get(flight_key)
                 if existing is not None:
                     fut = existing
                     owner = False
                 else:
                     fut = loop.create_future()
-                    self._async_flights[key] = fut
+                    self._async_flights[flight_key] = fut
                     owner = True
             if not owner:
                 try:
@@ -302,8 +319,8 @@ class InMemoryCacheBackend(CacheBackend):
                 # Do not publish CancelledError into the shared future — that
                 # would cancel sibling waiters that were not themselves cancelled.
                 with self._lock:
-                    if self._async_flights.get(key) is fut:
-                        self._async_flights.pop(key, None)
+                    if self._async_flights.get(flight_key) is fut:
+                        self._async_flights.pop(flight_key, None)
                 if not fut.done():
                     fut.set_exception(_AsyncSingleFlightRetry())
                 raise
@@ -313,8 +330,8 @@ class InMemoryCacheBackend(CacheBackend):
                 raise
             finally:
                 with self._lock:
-                    if self._async_flights.get(key) is fut:
-                        self._async_flights.pop(key, None)
+                    if self._async_flights.get(flight_key) is fut:
+                        self._async_flights.pop(flight_key, None)
 
 
 _backend: CacheBackend = InMemoryCacheBackend()

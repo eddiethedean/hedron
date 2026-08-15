@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.41.x** published train (tip `v0.41.0`)
+**Status:** Accepted; kept current with the **0.42.x** published train (tip `v0.42.0`)
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -76,7 +76,7 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.41.x`) |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.42.x`) |
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
@@ -92,7 +92,7 @@ hedron/
 | `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Beta tooling) | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
 | `hedron-elements` | `hedron_elements` | Alpha Web Component ABI / modules (phase 0.36) | `v0.36.0` |
-| `hedron-workbench` | `hedron_workbench` | `hedron-posit`; Posit Workbench compatibility; also `hedron[workbench]` | `v0.29.0` (current 0.41.x compatibility subclass) |
+| `hedron-workbench` | `hedron_workbench` | `hedron-posit`; Posit Workbench compatibility; also `hedron[workbench]` | `v0.29.0` (current 0.42.x compatibility subclass) |
 | `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | `v0.33.0` |
 | `fastapi-workbench` | `fastapi_workbench` | Starlette, Uvicorn; independent plain-FastAPI/ASGI Workbench adapter | `v1.0.0` |
 
@@ -101,7 +101,7 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated published train tip is **`v0.41.0`** — see
+**Publish note:** the coordinated published train tip is **`v0.42.0`** — see
 [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.

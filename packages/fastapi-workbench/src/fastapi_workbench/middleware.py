@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+from collections.abc import Mapping
 from typing import cast
 from urllib.parse import quote, unquote, urlsplit
 
@@ -365,6 +366,8 @@ def workbenchify(
     strip_root_path_from_path: bool = True,
     debug: bool = False,
     owned_cookie_names: tuple[str, ...] = (),
+    environ: Mapping[str, str] | None = None,
+    expected_origins: tuple[str, ...] | None = None,
 ) -> ASGIApp:
     """Wrap ``app`` at most once. Cookie Path must still be set before construction."""
     if is_workbenchified(app):
@@ -384,15 +387,16 @@ def workbenchify(
     resolved_mode = mode
     resolved_debug = debug
     resolved_mount = expected_mount
-    expected_origins: tuple[str, ...] = ()
+    origins: tuple[str, ...] = expected_origins if expected_origins is not None else ()
     if config is not None:
         from fastapi_workbench.resolve import resolve_deployment
 
-        resolved = resolve_deployment(config)
+        resolved = resolve_deployment(config, environ=environ)
         resolved_mode = resolved_mode or resolved.mode
         resolved_debug = debug or resolved.debug
         resolved_mount = resolved_mount if resolved_mount is not None else resolved.browser_mount
-        expected_origins = (resolved.external_origin,)
+        if expected_origins is None:
+            origins = (resolved.external_origin,)
     return WorkbenchPathMiddleware(
         app,
         mode=resolved_mode or WorkbenchMode.AUTO,
@@ -401,7 +405,7 @@ def workbenchify(
         decode_absolute_url_path=decode_absolute_url_path,
         strip_root_path_from_path=strip_root_path_from_path,
         debug=resolved_debug,
-        expected_origins=expected_origins,
+        expected_origins=origins,
         runtime_mounts=True,
         mounted_response_headers=True,
         owned_cookie_names=owned_cookie_names,

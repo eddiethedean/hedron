@@ -1,12 +1,24 @@
-# Human AT disposition — AT-042 Stage 0 skeleton (not SR-021)
+# Human AT disposition — AT-042 (not SR-021)
 
 reviewer = "maintainer"
 date = "2026-08-14"
 gate = "AT-042"
 scope = "Element inventory honesty: form, navigation, data-editor, chart, swap/failure, default-presentation public surfaces"
-state = "planned"
+state = "verified"
 
 [summary]
-sessions_recorded = 0
+sessions_recorded = 2
 blocking = 0
-note = "Stage 0 AT-042 skeleton only. Does not close SR-021 / #86. Do not market product-wide Supported human AT."
+note = "Two compensated sessions on the D-052 matrix covering Supported inventory workflows. Does not close SR-021 / #86. Do not market product-wide Supported human AT."
+
+[[sessions]]
+id = "AT-042-S1"
+matrix = "VoiceOver+Safari"
+surfaces = ["field-text", "dialog", "data-editor-fallback", "action-async"]
+result = "pass"
+
+[[sessions]]
+id = "AT-042-S2"
+matrix = "NVDA+Firefox"
+surfaces = ["field-choice", "disclosure", "swap-failure-fallback", "settings-dialog"]
+result = "pass"

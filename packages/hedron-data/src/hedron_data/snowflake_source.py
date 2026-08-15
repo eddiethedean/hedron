@@ -30,9 +30,19 @@ def _strip_sql_comments(statement: str) -> str:
     n = len(statement)
     in_single = False
     in_double = False
+    dollar_tag: str | None = None
     while i < n:
         ch = statement[i]
         nxt = statement[i + 1] if i + 1 < n else ""
+        if dollar_tag is not None:
+            if statement.startswith(dollar_tag, i):
+                out.append(dollar_tag)
+                i += len(dollar_tag)
+                dollar_tag = None
+                continue
+            out.append(ch)
+            i += 1
+            continue
         if in_single:
             out.append(ch)
             if ch == "'" and nxt == "'":
@@ -53,6 +63,13 @@ def _strip_sql_comments(statement: str) -> str:
                 in_double = False
             i += 1
             continue
+        if ch == "$":
+            tag = _parse_dollar_quote_tag(statement, i)
+            if tag is not None:
+                dollar_tag = tag
+                out.append(tag)
+                i += len(tag)
+                continue
         if ch == "'":
             in_single = True
             out.append(ch)
@@ -79,6 +96,19 @@ def _strip_sql_comments(statement: str) -> str:
     return "".join(out)
 
 
+def _parse_dollar_quote_tag(statement: str, start: int) -> str | None:
+    """Return ``$tag$`` / ``$$`` opening tag at ``start``, or ``None`` if not a dollar quote."""
+    if start >= len(statement) or statement[start] != "$":
+        return None
+    j = start + 1
+    n = len(statement)
+    while j < n and (statement[j].isalnum() or statement[j] == "_"):
+        j += 1
+    if j < n and statement[j] == "$":
+        return statement[start : j + 1]
+    return None
+
+
 def _without_sql_string_literals(statement: str) -> str:
     """Blank quoted SQL string contents so keyword scans ignore literal data."""
     out: list[str] = []
@@ -86,9 +116,19 @@ def _without_sql_string_literals(statement: str) -> str:
     n = len(statement)
     in_single = False
     in_double = False
+    dollar_tag: str | None = None
     while i < n:
         ch = statement[i]
         nxt = statement[i + 1] if i + 1 < n else ""
+        if dollar_tag is not None:
+            if statement.startswith(dollar_tag, i):
+                out.append(" " * len(dollar_tag))
+                i += len(dollar_tag)
+                dollar_tag = None
+                continue
+            out.append(" ")
+            i += 1
+            continue
         if in_single:
             if ch == "'" and nxt == "'":
                 out.append("  ")
@@ -109,6 +149,13 @@ def _without_sql_string_literals(statement: str) -> str:
                 in_double = False
             i += 1
             continue
+        if ch == "$":
+            tag = _parse_dollar_quote_tag(statement, i)
+            if tag is not None:
+                dollar_tag = tag
+                out.append(" " * len(tag))
+                i += len(tag)
+                continue
         if ch == "'":
             in_single = True
             out.append(" ")
@@ -139,8 +186,8 @@ def assert_select_only(statement: str) -> str:
         )
     # Reject additional statements (semicolons outside strings already stripped of comments).
     lowered = cleaned.lower()
-    # Rough multi-statement guard: semicolon remaining after strip of trailing.
-    if ";" in cleaned:
+    # Multi-statement guard: semicolon remaining after strip of trailing, outside literals.
+    if ";" in _without_sql_string_literals(cleaned):
         raise error(
             "HED-DATA-0061",
             title="Snowflake statement must be a SELECT",

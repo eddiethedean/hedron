@@ -150,8 +150,19 @@ def store_oidc_handshake(
     nonce: str | None = None,
     code_verifier: str | None = None,
 ) -> None:
-    """Persist handshake secrets on the host session (not an identity DB)."""
-    payload: dict[str, str] = {"state": state}
+    """Persist handshake secrets on the host session (not an identity DB).
+
+    Partial updates merge into any existing handshake so callers can set
+    ``state`` / ``nonce`` / ``code_verifier`` across steps without dropping
+    previously stored fields (#152).
+    """
+    existing = session.get(_OIDC_HANDSHAKE_KEY)
+    payload: dict[str, str] = {}
+    if isinstance(existing, Mapping):
+        for key, value in existing.items():
+            if isinstance(key, str) and isinstance(value, str):
+                payload[key] = value
+    payload["state"] = state
     if nonce is not None:
         payload["nonce"] = nonce
     if code_verifier is not None:

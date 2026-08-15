@@ -168,6 +168,35 @@ def test_cache_data_hit_miss_and_scope_isolation() -> None:
     assert "miss" in kinds and "hit" in kinds
 
 
+def test_cache_data_caches_none_results() -> None:
+    """#100: cached ``None`` must be a hit, not treated as a miss."""
+    reset_cache_for_tests()
+    calls = {"n": 0}
+
+    @cache_data(ttl=60, scope="public")
+    def maybe_missing() -> None:
+        calls["n"] += 1
+        return None
+
+    assert maybe_missing() is None
+    assert maybe_missing() is None
+    assert calls["n"] == 1
+
+    async def _async_none() -> None:
+        calls["async"] = 0
+
+        @cache_data(ttl=60, scope="public")
+        async def async_maybe_missing() -> None:
+            calls["async"] += 1
+            return None
+
+        assert await async_maybe_missing() is None
+        assert await async_maybe_missing() is None
+        assert calls["async"] == 1
+
+    asyncio.run(_async_none())
+
+
 def test_cache_rejects_public_user_specific() -> None:
     @cache_component(ttl=10, scope="public")
     def user_card(user_id: int) -> str:

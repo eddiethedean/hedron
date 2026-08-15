@@ -23,7 +23,7 @@ __all__ = [
 
 F = TypeVar("F", bound=Callable[..., Any])
 
-_UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
+_SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
 class FlaskUrlReverser:
@@ -86,7 +86,7 @@ def hedron_route(
             protect = csrf_protect
             if isinstance(policy, SecurityPolicy) and not policy.csrf_enabled:
                 protect = False
-            if protect and request.method.upper() in _UNSAFE_METHODS:
+            if protect and request.method.upper() not in _SAFE_METHODS:
                 if isinstance(policy, SecurityPolicy):
                     validate_csrf(request, cookie_name=cookie, policy=policy)
                 else:

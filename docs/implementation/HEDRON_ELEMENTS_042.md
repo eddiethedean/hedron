@@ -1,10 +1,9 @@
 # Phase 0.42 plan: production-grade Web Component platform
 
-**Status:** Stage 0 contract refined against Published `v0.41.0` (D-070). Runtime
-implementation begins at Stage 1.
+**Status:** Stages 1–5 complete; cut Verified against Published `v0.42.0` (D-070; tag/PyPI deferred).
 
 This plan turns [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) and D-070 into reviewable
-work. Baseline: Published `v0.41.0`. Target: coordinated `v0.42.0`. Tracking:
+work. Baseline: Published `v0.42.0`. Target: coordinated `v0.42.0`. Tracking:
 [#97](https://github.com/eddiethedean/hedron/issues/97). Completion requires every row in
 [`release-gate-0.42.toml`](../acceptance/release-gate-0.42.toml) Verified with zero Deferred.
 
@@ -34,7 +33,7 @@ work. Baseline: Published `v0.41.0`. Target: coordinated `v0.42.0`. Tracking:
 
 - Accept D-070 and RFC-0060 resolved questions.
 - Lock release packet, planned gate manifest, inventories, upgrade matrix, review brief, AT skeleton.
-- Bind #97 and the exact 32 regression issues; preserve Published `v0.41.0` living tip.
+- Bind #97 and the exact 32 regression issues; preserve Published `v0.42.0` living tip.
 
 ### Stage 1 — Supported inventory (`STABLE-042`, sketched)
 

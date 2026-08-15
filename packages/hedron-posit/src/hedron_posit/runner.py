@@ -133,9 +133,14 @@ def prepare_app(
         discovered_raw=discovered_raw,
     )
     if apply_environ:
-        export_hedron_state(resolved)
-        if environ is not None:
-            export_hedron_state(resolved, environ=dict(merged))
+        if environ is None:
+            export_hedron_state(resolved)
+        elif isinstance(environ, dict):
+            export_hedron_state(resolved, environ=environ)
+        else:
+            # Immutable Mapping: do not mutate process os.environ; caller cannot
+            # observe writes into a throwaway copy either.
+            export_hedron_state(resolved, environ=dict(environ))
     app = load_app(target, factory=cfg.factory)
     if wrap:
         app = workbenchify(

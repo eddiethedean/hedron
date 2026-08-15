@@ -1,11 +1,11 @@
 # Phase 0.42 Supported element inventory (STABLE-042 artifact)
-# Stage 0 planned. Living published baseline: Published v0.41.0. Cut: Hedron v0.42.0.
+# Verified at cut. Living published baseline for phase: v0.41.0. Cut: Hedron v0.42.0.
 # Owning decision: D-070. RFC: RFC-0060. Tracking #97.
 # At Stage 0, supported tags are locked as Planned; evidence lands at cut.
 
 schema = 1
 phase = "0.42"
-state = "planned"
+state = "verified"
 living_published_baseline = "v0.41.0"
 hedron_cut = "v0.42.0"
 owning_decision = "D-070"
@@ -99,3 +99,101 @@ issues = [
   99, 100, 108, 136, 137, 138, 139, 140, 141, 145, 146, 147, 148, 151, 152, 156,
   160, 174, 175, 177, 187, 205, 206, 208, 217, 218, 238, 242, 243, 245, 246, 249,
 ]
+
+# Per-tag Supported contract rows (STABLE-042 evidence). No new tags beyond D-070 lock.
+
+[budgets]
+reference_app = "examples/reference-app"
+bundle_kb_ceiling = 750
+request_count_ceiling = 40
+upgrade_ms_ceiling = 2500
+interaction_ms_ceiling = 100
+memory_mb_ceiling = 256
+leak_listeners_ceiling = 0
+long_task_ms_ceiling = 50
+layout_shift_ceiling = 0.1
+
+[tags.hedron-example]
+package = "hedron-elements"
+module = "hedron-example.mjs"
+abi_version = 1
+form_associated = false
+ssr_fallback = "server_region_content"
+events = ["hedron-example-change"]
+ownership = ["controlled", "local"]
+slots_parts_tokens = ["status", "expanded"]
+
+[tags.hedron-field-text]
+package = "hedron-elements"
+module = "hedron-field-text.mjs"
+abi_version = 1
+form_associated = true
+ssr_fallback = "native_input"
+events = ["hedron-field-change"]
+ownership = ["controlled", "draft"]
+slots_parts_tokens = ["value", "name"]
+
+[tags.hedron-field-choice]
+package = "hedron-elements"
+module = "hedron-field-choice.mjs"
+abi_version = 1
+form_associated = true
+ssr_fallback = "native_select_or_radios"
+events = ["hedron-field-change"]
+ownership = ["controlled", "draft"]
+slots_parts_tokens = ["value", "name", "options"]
+
+[tags.hedron-field-file]
+package = "hedron-elements"
+module = "hedron-field-file.mjs"
+abi_version = 1
+form_associated = true
+ssr_fallback = "native_file_input"
+events = ["hedron-field-change"]
+ownership = ["controlled", "draft"]
+slots_parts_tokens = ["name", "accept"]
+
+[tags.hedron-disclosure]
+package = "hedron-elements"
+module = "hedron-disclosure.mjs"
+abi_version = 1
+form_associated = false
+ssr_fallback = "details_summary"
+events = ["hedron-disclosure-change"]
+ownership = ["local", "preference"]
+slots_parts_tokens = ["open"]
+gesture_overlay = "disclosure"
+
+[tags.hedron-dialog]
+package = "hedron-elements"
+module = "hedron-dialog.mjs"
+abi_version = 1
+form_associated = false
+ssr_fallback = "dialog_native_or_link"
+events = ["hedron-dialog-change"]
+ownership = ["local"]
+slots_parts_tokens = ["open"]
+gesture_overlay = "dialog"
+
+[tags.hedron-action-async]
+package = "hedron-elements"
+module = "hedron-action-async.mjs"
+abi_version = 1
+form_associated = false
+ssr_fallback = "form_or_button_post"
+events = ["hedron-action-state"]
+ownership = ["controlled"]
+interaction_state = ["idle", "pending", "success", "error", "canceled"]
+slots_parts_tokens = ["state"]
+
+[tags.hedron-data-editor]
+package = "hedron-data"
+module = "assets/tabulator/editor.js"
+abi_version = 1
+form_associated = false
+ssr_fallback = "hedron-data-editor-fallback"
+events = ["hedron-data-editor-change"]
+ownership = ["controlled", "draft"]
+optimistic_mutation = ["bounded_dataeditor_collection_cell_edits"]
+slots_parts_tokens = ["rows", "columns"]
+

@@ -12,6 +12,7 @@ from hedron_mcp.compat import (
     UNSUPPORTED_CAPABILITY_BEHAVIOR,
     negotiate_protocol_version,
 )
+from hedron_mcp.server import InvalidParamsError
 
 PrincipalResolver = Callable[[Any], str | None]
 # Starlette/FastAPI Request-like object.
@@ -43,8 +44,20 @@ def _cancel_key(req_id: Any) -> str | None:
     return str(req_id)
 
 
-def _raise_if_cancelled(projection: Any, cancel_key: str | None) -> None:
-    if cancel_key and projection.bounds.is_cancelled(cancel_key):
+def _cancel_owner(*, session_id: str | None, principal: str | None) -> str:
+    """Scope cancel marks to the MCP session when present, else the principal (#217)."""
+    if session_id:
+        return f"session:{session_id}"
+    return f"principal:{principal or 'anonymous'}"
+
+
+def _raise_if_cancelled(
+    projection: Any,
+    cancel_key: str | None,
+    *,
+    owner: str,
+) -> None:
+    if cancel_key and projection.bounds.is_cancelled(cancel_key, owner=owner):
         raise BoundsError("MCP request cancelled")
 
 
@@ -168,6 +181,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
     cancel_key = _cancel_key(req_id)
     client_session_id = request.headers.get("mcp-session-id")
     origin = request.headers.get("origin")
+    cancel_owner = _cancel_owner(session_id=client_session_id, principal=principal)
 
     try:
         projection.bounds.check_rate(principal or "anonymous")
@@ -183,7 +197,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
 
     try:
         if method not in {"notifications/cancelled"}:
-            _raise_if_cancelled(projection, cancel_key)
+            _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
 
         if method in {"initialize", "notifications/initialized"}:
             version = negotiate_protocol_version(params.get("protocolVersion"))
@@ -251,7 +265,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             return _json_response(_result(req_id, {"resources": resources}))
 
         if method == "resources/read":
-            _raise_if_cancelled(projection, cancel_key)
+            _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
             uri = str(params.get("uri") or "")
             content = projection.read_resource(uri, principal=principal)
             projection.audit.emit(
@@ -261,7 +275,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 detail={"uri": uri},
             )
             if cancel_key:
-                projection.bounds.clear_cancel(cancel_key)
+                projection.bounds.clear_cancel(cancel_key, owner=cancel_owner)
             return _json_response(
                 _result(
                     req_id,
@@ -296,7 +310,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             return _json_response(_result(req_id, {"tools": tools}))
 
         if method == "tools/call":
-            _raise_if_cancelled(projection, cancel_key)
+            _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
             name = str(params.get("name") or "")
             arguments = params.get("arguments") if isinstance(params.get("arguments"), dict) else {}
             result = projection.call_tool(name, arguments, principal=principal)
@@ -307,7 +321,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 detail={"name": name},
             )
             if cancel_key:
-                projection.bounds.clear_cancel(cancel_key)
+                projection.bounds.clear_cancel(cancel_key, owner=cancel_owner)
             return _json_response(
                 _result(
                     req_id,
@@ -323,12 +337,12 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                     status_code=400,
                 )
             cancel_id = str(raw_cancel)
-            projection.bounds.request_cancel(cancel_id)
+            projection.bounds.request_cancel(cancel_id, owner=cancel_owner)
             projection.audit.emit(
                 code="HED-MCP-CANCEL",
                 kind="cancellation",
                 principal=principal,
-                detail={"request_id": cancel_id},
+                detail={"request_id": cancel_id, "owner": cancel_owner},
             )
             # Cancel marks a request; it must not tear down the MCP session.
             return _json_response({"ok": True})
@@ -357,6 +371,14 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             detail={"error": str(exc), "method": method},
         )
         return _json_response(_error(req_id, -32001, str(exc)), status_code=403)
+    except InvalidParamsError as exc:
+        projection.audit.emit(
+            code="HED-MCP-INVALID-PARAMS",
+            kind="failure",
+            principal=principal,
+            detail={"error": str(exc), "method": method},
+        )
+        return _json_response(_error(req_id, -32602, str(exc)), status_code=400)
     except KeyError as exc:
         projection.audit.emit(
             code="HED-MCP-NOT-FOUND",

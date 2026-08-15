@@ -75,7 +75,11 @@ class Secret(Generic[T]):
         return self.reveal() == other.reveal()
 
     def __hash__(self) -> int:
-        return hash(("Secret", self.reveal()))
+        try:
+            return hash(("Secret", self.reveal()))
+        except TypeError:
+            # Unhashable payloads (e.g. list) fall back to identity hashing.
+            return hash(("Secret", id(self)))
 
     def __getstate__(self) -> dict[str, object]:
         return {"value": _REDACTED}

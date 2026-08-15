@@ -69,7 +69,8 @@ class WorkbenchConfig:
     forwarded_allow_ips: str | None = None
     allow_external_bind: bool = False
     reload: bool = False
-    workers: int = 1
+    # None = unset (env may supply); explicit 1 must beat FASTAPI_WORKBENCH_WORKERS (#147).
+    workers: int | None = None
     debug: bool = False
     factory: bool = False
     app_target: str | None = None

@@ -82,7 +82,8 @@ def _should_reject_cache(
         if missing:
             return f"scope {scope!r} missing vary_on values: {', '.join(missing)}"
     if scope == CacheScope.PUBLIC.value:
-        if any(k in _PUBLIC_SENSITIVE_NAMES for k in kwargs):
+        source = bound if bound is not None else kwargs
+        if any(k in _PUBLIC_SENSITIVE_NAMES for k in source):
             return "user-specific kwargs under public scope"
         # Positional request-like objects must not be cached publicly.
         for arg in args:
@@ -133,8 +134,8 @@ def _decorate(
                 vary=_vary_from_kwargs(bound, vary_on) if vary_on else {},
             )
             backend = get_cache_backend()
-            cached = backend.get(key)
-            if cached is not None:
+            hit, cached = backend.lookup(key)
+            if hit:
                 age = None
                 if isinstance(backend, InMemoryCacheBackend):
                     age = backend.age_ms(key)
@@ -195,8 +196,8 @@ def _decorate(
             vary=_vary_from_kwargs(bound, vary_on) if vary_on else {},
         )
         backend = get_cache_backend()
-        cached = backend.get(key)
-        if cached is not None:
+        hit, cached = backend.lookup(key)
+        if hit:
             age = backend.age_ms(key) if isinstance(backend, InMemoryCacheBackend) else None
             record_cache_trace(CacheEvent(kind="hit", key_fingerprint=key, scope=scope, age_ms=age))
             return cached  # type: ignore[return-value]

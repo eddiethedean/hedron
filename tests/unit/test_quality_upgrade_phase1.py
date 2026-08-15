@@ -132,5 +132,6 @@ def test_rq_fetch_unexpected_error_is_logged(
     backend = object.__new__(RQJobBackend)
     backend._queue = _Queue()
     with caplog.at_level(logging.WARNING, logger="hedron.jobs.rq"):
-        assert backend._fetch_rq_job("job-1") is None
+        with pytest.raises(RuntimeError, match="redis down"):
+            backend._fetch_rq_job("job-1")
     assert any("Job.fetch failed" in record.message for record in caplog.records)

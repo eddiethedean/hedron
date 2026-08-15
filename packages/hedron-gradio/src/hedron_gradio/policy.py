@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ipaddress
 import re
+import socket
 from dataclasses import dataclass, field
 from urllib.parse import urlparse
 
@@ -43,6 +44,12 @@ def _host_is_private(host: str) -> bool:
         return True
     if host.endswith(".localhost"):
         return True
+    # Expand abbreviated IPv4 forms accepted by many stacks (e.g. 127.1 → 127.0.0.1).
+    try:
+        packed = socket.inet_aton(host)
+        host = socket.inet_ntoa(packed)
+    except OSError:
+        pass
     try:
         addr = ipaddress.ip_address(host)
     except ValueError:

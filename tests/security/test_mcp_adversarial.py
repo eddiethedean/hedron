@@ -283,7 +283,7 @@ def test_notifications_cancelled_blocks_matching_jsonrpc_request_id() -> None:
         },
     )
     assert cancelled.status_code == 200
-    assert projection.bounds.is_cancelled("99")
+    assert projection.bounds.is_cancelled("99", owner="principal:alice")
 
     blocked = client.post(
         "/mcp",

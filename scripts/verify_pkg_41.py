@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the untagged phase 0.41 release candidate."""
+"""Verify the untagged phase 0.41 release candidate (historical after 0.42 tip)."""
 
 from __future__ import annotations
 
@@ -12,6 +12,6 @@ rows = data["evidence"]
 if tuple(row["id"] for row in rows) != EXPECTED or any(row["state"] != "Verified" for row in rows):
     raise SystemExit("all 0.41 gates must be Verified")
 version = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]["version"]
-if version != "0.41.0":
-    raise SystemExit(f"workspace version must be 0.41.0, got {version}")
+if version not in {"0.41.0", "0.42.0"} and not version.startswith("0.42."):
+    raise SystemExit(f"workspace version must be 0.41.0 or post-cut 0.42.x, got {version}")
 raise SystemExit(check("PKG-041"))

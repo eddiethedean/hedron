@@ -150,8 +150,8 @@ def _check_fleet_inventory(*, allow_planned: bool) -> None:
     if allow_planned:
         if state != "planned":
             raise SystemExit(f"{FLEET_INVENTORY}: Stage 0 requires state planned")
-    elif state not in {"planned", "verified"}:
-        raise SystemExit(f"{FLEET_INVENTORY}: state must be planned or verified")
+    elif state != "verified":
+        raise SystemExit(f"{FLEET_INVENTORY}: cut requires state verified")
     packages = data.get("packages")
     if not isinstance(packages, list):
         raise SystemExit(f"{FLEET_INVENTORY}: packages list required")
@@ -168,19 +168,36 @@ def _check_fleet_inventory(*, allow_planned: bool) -> None:
     elements = data.get("hedron-elements")
     if not isinstance(elements, dict):
         raise SystemExit(f"{FLEET_INVENTORY}: hedron-elements table required")
-    if str(elements.get("disposition", "")).strip() != "incubator":
-        raise SystemExit(f"{FLEET_INVENTORY}: hedron-elements disposition must be incubator")
-    if str(elements.get("maturity", "")).strip() != "alpha":
-        raise SystemExit(f"{FLEET_INVENTORY}: Stage 0 hedron-elements maturity must be alpha")
-    if str(elements.get("pin", "")).strip() != ">=0.41.0,<0.42":
-        raise SystemExit(f"{FLEET_INVENTORY}: Stage 0 hedron-elements pin must stay >=0.41.0,<0.42")
-    if elements.get("supported") not in ([], None):
-        raise SystemExit(f"{FLEET_INVENTORY}: Stage 0 hedron-elements.supported must be empty")
-    excluded = elements.get("excluded") or []
-    if "production_grade_until_0_42" not in excluded:
-        raise SystemExit(
-            f"{FLEET_INVENTORY}: excluded must include production_grade_until_0_42"
-        )
+    if allow_planned:
+        if str(elements.get("disposition", "")).strip() != "incubator":
+            raise SystemExit(f"{FLEET_INVENTORY}: hedron-elements disposition must be incubator")
+        if str(elements.get("maturity", "")).strip() != "alpha":
+            raise SystemExit(f"{FLEET_INVENTORY}: Stage 0 hedron-elements maturity must be alpha")
+        if str(elements.get("pin", "")).strip() != ">=0.41.0,<0.42":
+            raise SystemExit(
+                f"{FLEET_INVENTORY}: Stage 0 hedron-elements pin must stay >=0.41.0,<0.42"
+            )
+        if elements.get("supported") not in ([], None):
+            raise SystemExit(f"{FLEET_INVENTORY}: Stage 0 hedron-elements.supported must be empty")
+        excluded = elements.get("excluded") or []
+        if "production_grade_until_0_42" not in excluded:
+            raise SystemExit(
+                f"{FLEET_INVENTORY}: excluded must include production_grade_until_0_42"
+            )
+    else:
+        if str(elements.get("disposition", "")).strip() != "production_grade":
+            raise SystemExit(
+                f"{FLEET_INVENTORY}: cut hedron-elements disposition must be production_grade"
+            )
+        if str(elements.get("maturity", "")).strip() != "beta":
+            raise SystemExit(f"{FLEET_INVENTORY}: cut hedron-elements maturity must be beta")
+        if str(elements.get("pin", "")).strip() != ">=0.42.0,<0.43":
+            raise SystemExit(f"{FLEET_INVENTORY}: cut hedron-elements pin must be >=0.42.0,<0.43")
+        supported_tags = elements.get("supported") or []
+        if set(supported_tags) != set(SUPPORTED_TAGS):
+            raise SystemExit(
+                f"{FLEET_INVENTORY}: cut hedron-elements.supported must equal locked tags"
+            )
     print("ok: production-grade-inventory-042.toml")
 
 

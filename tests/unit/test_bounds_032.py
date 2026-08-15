@@ -22,8 +22,8 @@ def test_size_rate_concurrency_cancel() -> None:
         bounds.acquire()
     bounds.release()
     rid = bounds.new_request_id()
-    bounds.request_cancel(rid)
-    assert bounds.is_cancelled(rid)
+    bounds.request_cancel(rid, owner="principal:alice")
+    assert bounds.is_cancelled(rid, owner="principal:alice")
     bounds.open_session("s1", principal="alice", origin="https://app.example")
     assert bounds.session("s1")["principal"] == "alice"
     bounds.close_session("s1")
@@ -41,15 +41,15 @@ def test_multi_worker_shared_prefix_required() -> None:
 def test_cancelled_ids_cap_and_ttl_evict() -> None:
     bounds = McpBounds(max_cancelled=3, cancel_ttl_seconds=0.05)
     for i in range(5):
-        bounds.request_cancel(str(i))
+        bounds.request_cancel(str(i), owner="principal:alice")
     assert len(bounds._cancelled) == 3
-    assert "0" not in bounds._cancelled
-    assert "1" not in bounds._cancelled
-    assert bounds.is_cancelled("4")
+    assert bounds.scoped_cancel_key("0", owner="principal:alice") not in bounds._cancelled
+    assert bounds.scoped_cancel_key("1", owner="principal:alice") not in bounds._cancelled
+    assert bounds.is_cancelled("4", owner="principal:alice")
 
     time.sleep(0.06)
-    assert bounds.is_cancelled("4") is False
-    assert "4" not in bounds._cancelled
+    assert bounds.is_cancelled("4", owner="principal:alice") is False
+    assert bounds.scoped_cancel_key("4", owner="principal:alice") not in bounds._cancelled
 
 
 def test_sessions_cap_and_ttl_evict() -> None:

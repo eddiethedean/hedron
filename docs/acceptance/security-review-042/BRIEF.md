@@ -1,6 +1,6 @@
 # Security review brief — phase 0.42
 
-**Status:** Stage 0 brief only (Planned). Full redacted report + disposition land at cut.
+**Status:** Cut review complete (Verified). Stage 0 brief retained as scope preamble.
 
 ## Scope
 

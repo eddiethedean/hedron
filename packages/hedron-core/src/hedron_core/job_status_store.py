@@ -15,6 +15,7 @@ from hedron_core.jobs import (
     RedisClient,
     RedisPipeline,
     _idempotency_scope_key,
+    _legacy_idempotency_scope_key,
     _status_from_dict,
     _status_to_dict,
     job_authorized,
@@ -267,24 +268,42 @@ class RedisStatusStore:
             idem_redis_key = self._idem_key(
                 idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
             )
-            existing_raw = self._decode(self._client.get(idem_redis_key))
-            if existing_raw:
-                existing = self.get(existing_raw, auth_subject=auth_subject, tenant_id=tenant_id)
-                if existing is not None:
+            legacy_scoped = _legacy_idempotency_scope_key(
+                idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
+            )
+            legacy_redis_key = f"{self._prefix}idem:{legacy_scoped}"
+            # Mirror RedisJobBackend: honor new + legacy keys; fail closed on
+            # cross-scope pointers instead of reclaiming them (#145 / #146).
+            for candidate_key in (idem_redis_key, legacy_redis_key):
+                existing_raw = self._decode(self._client.get(candidate_key))
+                if existing_raw is None:
+                    continue
+                loaded = self._load(existing_raw)
+                if loaded is not None:
+                    status = _status_from_dict(loaded)
+                    if not job_authorized(
+                        status, auth_subject=auth_subject, tenant_id=tenant_id
+                    ):
+                        raise PermissionError(
+                            "Idempotency key is already bound to another scope"
+                        )
                     if (
-                        existing.state is JobState.FAILED
-                        and existing.error in ENQUEUE_FAILED_ERRORS
+                        status.state is JobState.FAILED
+                        and status.error in ENQUEUE_FAILED_ERRORS
                     ):
                         # Heal pre-fix stuck pointers: broker never accepted the task.
-                        self.release_idempotency(existing.job_id)
-                    else:
-                        return (
-                            JobHandle(job_id=existing.job_id, idempotency_key=idempotency_key),
-                            False,
-                        )
-                else:
-                    # Stale or cross-scope pointer — drop and continue.
-                    self._client.delete(idem_redis_key)
+                        self.release_idempotency(status.job_id)
+                        # Legacy pointers are not owned by release_idempotency().
+                        pointed = self._decode(self._client.get(candidate_key))
+                        if pointed == existing_raw:
+                            self._client.delete(candidate_key)
+                        continue
+                    return (
+                        JobHandle(job_id=status.job_id, idempotency_key=idempotency_key),
+                        False,
+                    )
+                # The pointed-to job expired or was removed, so reclaim the key.
+                self._client.delete(candidate_key)
 
         job_id = secrets.token_urlsafe(12)
         now = time.time()

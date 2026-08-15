@@ -35,6 +35,14 @@ def test_secret_redacts_repr_and_str() -> None:
     assert secret.reveal() == "super-secret"
 
 
+def test_secret_hash_handles_unhashable_inner_value() -> None:
+    """#141: ``Secret`` wrapping an unhashable value must still be hashable."""
+    assert isinstance(hash(Secret("ok")), int)
+    assert isinstance(hash(Secret([1])), int)
+    # Identity-based fallback: distinct wrappers remain distinct set members.
+    assert len({Secret([1, 2]), Secret([1, 2])}) == 2
+
+
 def test_secret_redacted_in_model_dump_and_json() -> None:
     class Row(Model):
         token: Secret[str]

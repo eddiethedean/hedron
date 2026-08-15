@@ -83,30 +83,38 @@ class McpBounds:
         with self._lock:
             self._inflight = max(0, self._inflight - 1)
 
-    def request_cancel(self, request_id: str) -> None:
+    @staticmethod
+    def scoped_cancel_key(request_id: str, *, owner: str) -> str:
+        """Bind a cancel id to a session or principal so ids cannot cross tenants (#217)."""
+        return f"{owner}\x1f{request_id}"
+
+    def request_cancel(self, request_id: str, *, owner: str) -> None:
+        key = self.scoped_cancel_key(request_id, owner=owner)
         now = time.monotonic()
         with self._lock:
             self._prune_cancelled(now)
-            self._cancelled[request_id] = now
-            self._cancelled.move_to_end(request_id)
+            self._cancelled[key] = now
+            self._cancelled.move_to_end(key)
             while len(self._cancelled) > self.max_cancelled:
                 self._cancelled.popitem(last=False)
 
-    def is_cancelled(self, request_id: str) -> bool:
+    def is_cancelled(self, request_id: str, *, owner: str) -> bool:
+        key = self.scoped_cancel_key(request_id, owner=owner)
         now = time.monotonic()
         with self._lock:
-            stamped = self._cancelled.get(request_id)
+            stamped = self._cancelled.get(key)
             if stamped is None:
                 return False
             if now - stamped > self.cancel_ttl_seconds:
-                del self._cancelled[request_id]
+                del self._cancelled[key]
                 return False
             return True
 
-    def clear_cancel(self, request_id: str) -> None:
+    def clear_cancel(self, request_id: str, *, owner: str) -> None:
         """Drop a cancel mark once the matching request has finished."""
+        key = self.scoped_cancel_key(request_id, owner=owner)
         with self._lock:
-            self._cancelled.pop(request_id, None)
+            self._cancelled.pop(key, None)
 
     def open_session(self, session_id: str, *, principal: str, origin: str | None) -> None:
         now = time.monotonic()

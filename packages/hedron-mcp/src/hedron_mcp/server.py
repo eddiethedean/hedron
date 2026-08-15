@@ -16,6 +16,7 @@ from hedron_mcp.compat import SDK_PIN, sdk_version
 __all__ = [
     "AuthorizationError",
     "BoundsError",
+    "InvalidParamsError",
     "McpBounds",
     "McpProjection",
     "McpResource",
@@ -31,6 +32,10 @@ ResourceReader = Callable[[str, str | None], Mapping[str, Any] | str]
 
 class AuthorizationError(PermissionError):
     """Raised when MCP authz fails closed (missing principal or overreach)."""
+
+
+class InvalidParamsError(ValueError):
+    """Raised when tool arguments fail the advertised JSON Schema (-32602)."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -259,10 +264,45 @@ class McpProjection:
                 "Mutating MCP tools require explicit allow_mutations=True "
                 "(Experimental; excluded from Supported inventory)."
             )
-        result = tool.handler(**dict(arguments)) if arguments else tool.handler()
+        validated = self._validate_tool_arguments(tool, arguments)
+        try:
+            result = tool.handler(**validated) if validated else tool.handler()
+        except TypeError as exc:
+            raise InvalidParamsError(f"Invalid arguments for tool {name!r}: {exc}") from exc
         if inspect.isawaitable(result):
             raise TypeError("async MCP tool handlers are not Supported; await in the host")
         return result
+
+    @staticmethod
+    def _validate_tool_arguments(
+        tool: McpTool, arguments: Mapping[str, Any]
+    ) -> dict[str, Any]:
+        """Enforce the advertised ``inputSchema`` before invoking the handler (#177)."""
+        payload = dict(arguments)
+        schema = tool.schema
+        if not schema:
+            return payload
+        try:
+            from jsonschema import Draft202012Validator
+            from jsonschema.exceptions import SchemaError, ValidationError
+        except ImportError as exc:  # pragma: no cover - mcp pins jsonschema
+            raise RuntimeError(
+                "jsonschema is required to validate MCP tool arguments"
+            ) from exc
+        try:
+            validator = Draft202012Validator(dict(schema))
+            errors = sorted(validator.iter_errors(payload), key=lambda e: list(e.path))
+        except SchemaError as exc:
+            raise InvalidParamsError(
+                f"Tool {tool.name!r} has an invalid inputSchema: {exc.message}"
+            ) from exc
+        if errors:
+            first = errors[0]
+            path = ".".join(str(p) for p in first.path) or "(root)"
+            raise InvalidParamsError(
+                f"Invalid arguments for tool {tool.name!r} at {path}: {first.message}"
+            )
+        return payload
 
     @staticmethod
     def _assert_safe_uri(uri: str) -> None:

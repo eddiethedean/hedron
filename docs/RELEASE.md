@@ -1,7 +1,7 @@
 # Cutting a Hedron release
 
-This is the living maintainer runbook for the `0.41.x` train. Historical cut records
-live under `docs/archive/`. The last published release is `v0.41.0`; the next planned
+This is the living maintainer runbook for the `0.42.x` train. Historical cut records
+live under `docs/archive/`. The last published release is `v0.42.0`; the next planned
 patch is `v0.41.1`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
@@ -33,7 +33,7 @@ uv run python scripts/verify_pkg_41.py
 ## Tag and publish
 
 After reviewing the complete version/changelog diff (tip honesty already treats
-`v0.41.0` as published in adopter docs/`docs/release.toml`):
+`v0.42.0` as published in adopter docs/`docs/release.toml`):
 
 ```bash
 git fetch --tags origin

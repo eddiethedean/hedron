@@ -245,7 +245,7 @@ PY
   run uv run --python "$PYTHON" python scripts/verify_pkg_39.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_40.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_41.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_42.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_42.py
 
   uv run --python "$PYTHON" python - <<'PY'
 import re
@@ -327,7 +327,7 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/verify_pkg_39.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_40.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_41.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_42.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_42.py
 }
 
 cmd_realconnect() {
@@ -351,7 +351,7 @@ cmd_packaging() {
   run uv run --python "$PYTHON" python scripts/verify_pkg_39.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_40.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_41.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_42.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_42.py
 }
 
 cmd_all() {

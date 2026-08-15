@@ -31,7 +31,7 @@ from hedron_flask.static_mount import mount_hedron_static
 
 __all__ = ["HedronFlask"]
 
-_UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
+_SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 P = ParamSpec("P")
 R = TypeVar("R")
 _logger = logging.getLogger("hedron.flask")
@@ -235,7 +235,7 @@ class HedronFlask:
         if (
             self.csrf_protect
             and self.security_policy.csrf_enabled
-            and request.method.upper() in _UNSAFE_METHODS
+            and request.method.upper() not in _SAFE_METHODS
         ):
             validate_csrf(
                 request,
@@ -281,7 +281,7 @@ class HedronFlask:
         if (
             self.csrf_protect
             and self.security_policy.csrf_enabled
-            and request.method.upper() in _UNSAFE_METHODS
+            and request.method.upper() not in _SAFE_METHODS
         ):
             validate_csrf(
                 request,

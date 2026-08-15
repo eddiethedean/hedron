@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ipaddress
+import re
 import secrets
 import socket
 import threading
@@ -58,11 +59,21 @@ def _pick_free_port(host: str) -> int:
         return int(sock.getsockname()[1])
 
 
+_ROOT_PATH_SAFE = re.compile(r"^/[A-Za-z0-9._~\-/]*$")
+
+
 def _normalize_root_path(root_path: str) -> str:
     if not root_path:
         return ""
     path = root_path if root_path.startswith("/") else f"/{root_path}"
-    return path.rstrip("/")
+    path = path.rstrip("/")
+    # Reject cookie-attribute / header injection via Path= (#174).
+    if path and (
+        any(ch in path for ch in (";", "\r", "\n", "\x00"))
+        or not _ROOT_PATH_SAFE.fullmatch(path)
+    ):
+        raise ValueError(f"Unsafe root_path for preview cookie Path: {root_path!r}")
+    return path
 
 
 def _header_map(scope: MutableMapping[str, Any]) -> dict[str, str]:

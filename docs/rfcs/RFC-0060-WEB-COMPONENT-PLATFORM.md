@@ -515,7 +515,7 @@ normative.
 | Question | Answer |
 |---|---|
 | Stage 0 / cut | Living baseline Published `v0.41.0`; coordinated Hedron and `hedron-elements` cut target `v0.42.0`. Refinement changes contracts only. |
-| Package maturity at cut | `hedron-elements` becomes **Beta** and **production-grade for the declared Supported inventory only** (same pattern as `hedron` / `hedron-core`). Train-aligned `0.42.0`, pin `>=0.42.0,<0.43`. Stage 0 keeps Alpha / incubator / `>=0.41.0,<0.42`. Not PyPI Production/Stable, not `1.0`. |
+| Package maturity at cut | `hedron-elements` becomes **Beta** and **production-grade for the declared Supported inventory only** (same pattern as `hedron` / `hedron-core`). Train-aligned `0.42.0`, pin `>=0.42.0,<0.43`. Stage 0 keeps Alpha / incubator / `>=0.42.0,<0.43`. Not PyPI Production/Stable, not `1.0`. |
 | Supported tags | First-party tags already proven in 0.36–0.41: `hedron-example`; `hedron-field-text` / `hedron-field-choice` / `hedron-field-file`; `hedron-disclosure`; `hedron-dialog`; `hedron-action-async`; `hedron-data-editor`. `hedron-chart` is **cross-referenced** from Published `hedron-charts` `0.2.x` — do not re-cut charts. No new tags in 0.42. |
 | Five interaction contracts | Named Supported subsets of `ElementStateOwnership`, `InteractionState`, `OptimisticMutation`, `GestureOverlayCatalog` go in the inventory. Any remainder stays explicit Experimental/excluded. None may disappear. |
 | React-island | Remains **Experimental** with the 0.40 removal/destination ledger. Not inside `hedron-elements`. Not Supported. |

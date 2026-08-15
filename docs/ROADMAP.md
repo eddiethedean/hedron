@@ -39,7 +39,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.39** | Optimistic mutations and rich data, chart integration, map, media, and editor elements | **Published** (`v0.39.0`; D-067; [#94](https://github.com/eddiethedean/hedron/issues/94) closed) |
 | **0.40** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | **Published** (`v0.40.0`; in-tree cut, tag/PyPI deferred; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95)) |
 | **0.41** | Typed browser composition, bounded draft state, and navigation | **Published** (`v0.41.0`; in-tree cut, tag/PyPI deferred; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96)) |
-| **0.42** | Production-grade Web Component platform | Planned (Stage 0 refined vs `v0.41.0`; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
+| **0.42** | Production-grade Web Component platform | Published (`v0.42.0`; in-tree cut, tag/PyPI deferred; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -72,11 +72,11 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](guides/production-quality.md).
 - Planned **0.26–0.35** phases apply an evidence-based production-grade contract to the remaining
-  package fleet. **Published 0.36–0.41** and Planned **0.42** then establish a standards-based Web
+  package fleet. **Published 0.36–0.42** then establish a standards-based Web
   Component platform while preserving SSR, native forms/navigation, HTMX, and no-Node Python
   consumption. Neither program is a blanket feature promotion or a scheduled `1.0`.
 
-### Honest gaps on the current train (0.41.x)
+### Honest gaps on the current train (0.42.x)
 
 - Current **published** PyPI train is **0.41.x** (last `v0.41.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
@@ -84,7 +84,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
   (0.28), and Workbench packages (`hedron-workbench` / `fastapi-workbench` on 0.29–0.30)
   Supported inventories — not every Beta symbol
-- Alpha `hedron-elements` ships on the 0.41 train (incubator until 0.42 graduation; D-070)
+- Beta `hedron-elements` is production-grade for the locked Supported inventory only (D-070)
 - Notebook preview is tooling-grade / localhost-only (0.31); MCP is Beta for the declared
   Supported inventory (`hedron-mcp` `0.2.0`; phase 0.32 / RFC-0065); mutations remain Experimental
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
@@ -3277,12 +3277,10 @@ and failure isolation make multi-element applications predictable across HTMX sw
 
 ## 0.42 — Production-grade Web Component platform (`v0.42.0`)
 
-**Status:** Planned (Stage 0 contract refined against Published `v0.41.0`; D-070). Final
-graduation phase for the 0.36–0.42 program; not a blanket promotion of every element/backend and
-not a scheduled `1.0`. Living tip stays `v0.41.0` until cut.
+**Status:** Published as `v0.42.0` (in-tree cut; tag/PyPI deferred; D-070). Graduates `hedron-elements` to Beta for the locked Supported inventory. Stage 0 baseline was Published `v0.41.0`.
+
 **Tracking:** [#97](https://github.com/eddiethedean/hedron/issues/97) (stale 0.38 title/body
-superseded by D-066/D-070). Close when all 0.42-owned gates are Verified and the Supported element
-inventory is published with review/AT/perf/supply evidence.
+superseded by D-066/D-070). Closed with the in-tree `v0.42.0` cut; all 0.42-owned gates Verified.
 
 **Outcome:** `hedron-elements` and a locked first-party element inventory are production-grade for
 their declared Supported workflows. Stable browser ABI/tag/event/form/customization contracts have

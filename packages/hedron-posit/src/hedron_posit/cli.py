@@ -74,30 +74,41 @@ def _cmd_check(args: argparse.Namespace) -> int:
 
     cfg = _config_from_args(args)
     discovered: str | None = None
-    if getattr(args, "discover", False) and rs_server_url() and explicit_mount_hint(cfg) is None:
+    bound_port: int | None = None
+    sock = None
+    try:
+        if getattr(args, "discover", False) and rs_server_url() and explicit_mount_hint(cfg) is None:
+            # Match doctor --live: bind first, then pass the listening port to rserver-url.
+            # ``--port 0`` / unset means ephemeral (``or 0``), not a hard-coded 8000.
+            sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
+            bound_port = int(sock.getsockname()[1])
+            try:
+                discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=bound_port)
+            except HedronError as exc:
+                print(redact_text(str(exc)), file=sys.stderr)
+                return 1
         try:
-            discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=cfg.port or 8000)
+            posit = resolve_posit_deployment(
+                PositConfig(workbench=cfg),
+                discovered_raw=discovered,
+                bound_port=bound_port,
+            )
+            resolved = posit.workbench
         except HedronError as exc:
             print(redact_text(str(exc)), file=sys.stderr)
             return 1
-    try:
-        posit = resolve_posit_deployment(
-            PositConfig(workbench=cfg),
-            discovered_raw=discovered,
-        )
-        resolved = posit.workbench
-    except HedronError as exc:
-        print(redact_text(str(exc)), file=sys.stderr)
-        return 1
-    status: dict[str, object] = {
-        "product": posit.product.value,
-        "evidence": posit.evidence,
-        "cookie_strategy": posit.cookie_mode.value,
-        "bridge_enabled": posit.bridge_enabled,
-        "compatibility_facade": posit.compatibility_facade,
-    }
-    _emit(resolved, fmt=args.format, posit_status=status)
-    return 0
+        status: dict[str, object] = {
+            "product": posit.product.value,
+            "evidence": posit.evidence,
+            "cookie_strategy": posit.cookie_mode.value,
+            "bridge_enabled": posit.bridge_enabled,
+            "compatibility_facade": posit.compatibility_facade,
+        }
+        _emit(resolved, fmt=args.format, posit_status=status)
+        return 0
+    finally:
+        if sock is not None:
+            sock.close()
 
 
 def _cmd_run(args: argparse.Namespace) -> int:
@@ -108,6 +119,38 @@ def _cmd_run(args: argparse.Namespace) -> int:
         print(redact_text(str(exc)), file=sys.stderr)
         return 1
     return 0
+
+
+def _normalize_cookie_path(path: str) -> str:
+    if not path or path == "/":
+        return "/"
+    return path.rstrip("/") or "/"
+
+
+def _parse_set_cookie_path(header: str) -> str | None:
+    """Return the RFC6265 Path attribute from a Set-Cookie header.
+
+    Missing Path attributes yield ``None`` (fail closed for mount checks).
+    Quoted values are unquoted; comparison callers normalize trailing slashes.
+    """
+    parts = header.split(";")
+    for part in parts[1:]:
+        name, sep, value = part.strip().partition("=")
+        if not sep or name.lower() != "path":
+            continue
+        path = value.strip()
+        if len(path) >= 2 and path[0] == path[-1] and path[0] in "\"'":
+            path = path[1:-1]
+        return path
+    return None
+
+
+def _cookie_path_matches_mount(header: str, mount: str) -> bool:
+    expected = _normalize_cookie_path(mount or "/")
+    path = _parse_set_cookie_path(header)
+    if path is None:
+        return False
+    return _normalize_cookie_path(path) == expected
 
 
 async def _probe_app(app: Any, mount: str) -> dict[str, object]:
@@ -131,9 +174,9 @@ async def _probe_app(app: Any, mount: str) -> dict[str, object]:
             if value != mount and not value.startswith(mount + "/"):
                 unmounted.append(value)
     cookie_headers = response.headers.get_list("set-cookie")
-    cookie_paths_ok = all(
-        f"path={mount}" in header.lower() if mount else "path=/" in header.lower()
-        for header in cookie_headers
+    # Empty Set-Cookie list must fail closed (all([]) is True otherwise) — #160.
+    cookie_paths_ok = bool(cookie_headers) and all(
+        _cookie_path_matches_mount(header, mount) for header in cookie_headers
     )
     return {
         "target": target,
