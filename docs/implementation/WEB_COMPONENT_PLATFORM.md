@@ -1,13 +1,15 @@
 # Web Component platform implementation
 
 **Planning status:** Normative under Accepted
-[RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (D-064).
+[RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (D-064–D-070).
 
 This document specifies implementation boundaries for phases 0.36–0.42. Names are descriptive
 unless the RFC and public API review promote them; private class/function names are not frozen.
 The program moved from 0.34–0.39 to 0.35–0.40 under D-058, then to 0.36–0.41 under D-061.
 D-066 inserts high-fidelity charts at 0.38 and moves the former 0.38–0.41 phases to 0.39–0.42;
-scope and ordering are unchanged.
+scope and ordering are unchanged. Phase **0.42** Stage 0 is refined against Published `v0.41.0`
+(D-070); living tip stays `v0.41.0` until cut. Stable general tag/event contracts begin only with
+the 0.42 inventory ([HEDRON_ELEMENTS_042.md](HEDRON_ELEMENTS_042.md)).
 The companion [interaction-contract specification](WEB_COMPONENT_INTERACTION_CONTRACTS.md) defines
 state ownership, asynchronous interaction, optimistic mutation, gesture/overlay, and React-migration
 behavior on top of this platform.

@@ -1,0 +1,12 @@
+# Human AT disposition — AT-042 Stage 0 skeleton (not SR-021)
+
+reviewer = "maintainer"
+date = "2026-08-14"
+gate = "AT-042"
+scope = "Element inventory honesty: form, navigation, data-editor, chart, swap/failure, default-presentation public surfaces"
+state = "planned"
+
+[summary]
+sessions_recorded = 0
+blocking = 0
+note = "Stage 0 AT-042 skeleton only. Does not close SR-021 / #86. Do not market product-wide Supported human AT."

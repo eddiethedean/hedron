@@ -51,10 +51,11 @@ For quality-suite work beyond docs, use `uv sync --all-groups` (and install a
 ### STATUS / ROADMAP footgun
 
 Canonical STATUS/ROADMAP live under `docs/`. Root `STATUS.md` / `ROADMAP.md` are
-generated mirrors. Running `uv run python scripts/sync_status_roadmap.py` updates the
-root mirrors, which are **not** on the docs-only allowlist — that PR will run full CI.
-Prefer docs-only edits that leave root mirrors untouched unless a maintainer asked for a
-STATUS sync.
+generated mirrors, and `docs/guides/roadmap.md` is generated from the adopter
+section of `docs/ROADMAP.md`. Running `uv run python scripts/sync_status_roadmap.py`
+updates those outputs, which are **not** on the docs-only allowlist — that PR will run full CI.
+Prefer docs-only edits that leave generated mirrors untouched unless a maintainer asked for a
+STATUS/ROADMAP sync.
 
 ## Good first issues
 

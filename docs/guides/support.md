@@ -37,5 +37,5 @@ Community GitHub support only;
 
 Issues without a minimal reproduction, version string (`hedron.__version__`), and expected
 vs actual behavior may be closed. Feature requests should map to the
-[public roadmap](roadmap.md) / [full roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md) or an RFC discussion rather
+[roadmap](roadmap.md) or an RFC discussion rather
 than informal “please add X” without context.

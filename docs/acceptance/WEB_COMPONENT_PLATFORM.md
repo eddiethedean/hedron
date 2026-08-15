@@ -1,6 +1,6 @@
 # Web Component platform acceptance
 
-**Planning status:** RFC-0060 **Accepted** (D-064 / D-065 / D-067 / D-068); phases 0.36–0.42. Phase
+**Planning status:** RFC-0060 **Accepted** (D-064 / D-065 / D-067 / D-068 / D-069 / D-070); phases 0.36–0.42. Phase
 **0.36** is **Published** (`v0.36.0`; all owned gates Verified) — see
 [`RELEASE_0_36.md`](RELEASE_0_36.md) and [`release-gate-0.36.toml`](release-gate-0.36.toml).
 Phase **0.37** is **Published** (`v0.37.0`; all owned gates Verified) — see
@@ -12,14 +12,18 @@ RFC-0069 / D-066; all owned gates Verified) — see [`RELEASE_0_38.md`](RELEASE_
 Phase **0.40** authoring / React migration is **Published** as `v0.40.0` (D-068; all owned
 gates Verified; React-island remains Experimental) — see
 [`RELEASE_0_40.md`](RELEASE_0_40.md) and
-[`release-gate-0.40.toml`](release-gate-0.40.toml). Later phases (0.41–0.42) remain draft until
-their own Stage 0 packets land.
+[`release-gate-0.40.toml`](release-gate-0.40.toml). Phase **0.41** browser composition / state /
+navigation is **Published** as `v0.41.0` (D-069; all owned gates Verified) — see
+[`RELEASE_0_41.md`](RELEASE_0_41.md) and
+[`release-gate-0.41.toml`](release-gate-0.41.toml). Phase **0.42** Stage 0 is refined against
+Published `v0.41.0` (D-070; `release-gate-0.42.toml` all Planned) — see
+[`RELEASE_0_42.md`](RELEASE_0_42.md).
 Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061. D-066 inserts charts
 at 0.38 and moves the former 0.38–0.41 capabilities to 0.39–0.42 without scope loss.
 The exact five interaction protocols are defined in the
 [interaction-contract specification](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md).
 
-Unchecked requirements are future release gates, not claims about the current 0.40 train. Each
+Unchecked 0.42 requirements are future release gates, not claims about the current 0.41 train. Each
 phase requires a `release-gate-0.N.toml` index, retained evidence under the release evidence policy,
 and zero Deferred rows among that phase's owned gates at cut.
 

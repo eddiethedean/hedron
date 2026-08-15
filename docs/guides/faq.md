@@ -12,7 +12,7 @@ That is the current published line (`v0.41.x`). Package maturity is **Beta** —
 [How to read](../getting-started/how-to-read.md). Pin with an upper bound:
 `hedron>=0.41.0,<0.42`. Using `>=0.24.0` alone (no upper bound) can resolve a future
 **0.25+** breaking train. See [What’s ready today](whats-ready.md) and the
-[public roadmap](roadmap.md).
+[roadmap](roadmap.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 

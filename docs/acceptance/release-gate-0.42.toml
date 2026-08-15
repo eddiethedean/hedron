@@ -1,0 +1,60 @@
+# Phase 0.42 production-grade Web Component platform evidence index.
+# Stage 0 contract refine against Published v0.41.0 (all rows Planned).
+# Owning decision: D-070. Design: RFC-0060. Tracking: #97.
+# Commands are reserved and MUST NOT be executed or treated as evidence yet.
+
+[[evidence]]
+id = "STABLE-042"
+state = "Planned"
+command = "python scripts/check_stable_042.py"
+ci_job = "test"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "COMPAT-042"
+state = "Planned"
+command = "python scripts/check_compat_042.py"
+ci_job = "browser"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "REVIEW-042"
+state = "Planned"
+command = "python scripts/check_review_042.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "AT-042"
+state = "Planned"
+command = "python scripts/check_at_042.py"
+ci_job = "browser"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "PERF-042"
+state = "Planned"
+command = "python scripts/check_perf_042.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "SUPPLY-042"
+state = "Planned"
+command = "python scripts/check_supply_042.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-042"
+state = "Planned"
+command = "python scripts/check_regress_042.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-042"
+state = "Planned"
+command = "python scripts/verify_pkg_42.py"
+ci_job = "packaging"
+owner = "hedron"

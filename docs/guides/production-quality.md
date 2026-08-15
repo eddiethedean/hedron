@@ -70,8 +70,7 @@ label changes. “Production-grade” applies only to the declared Supported sur
 local development tooling, native remains optional, and experimental backends/namespaces remain
 explicitly outside the claim.
 
-Public phase table: [Roadmap](roadmap.md). Maintainer detail:
-[`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
+Phase table: [Roadmap](roadmap.md) (generated from `docs/ROADMAP.md`).
 
 ## What to do today
 
@@ -80,7 +79,7 @@ Public phase table: [Roadmap](roadmap.md). Maintainer detail:
 3. Keep optional scopes narrow: Gradio is Beta for allowlisted client interop, notebook is
    Beta tooling-grade and localhost-only, MCP is Beta for its Supported inventory, and
    specialty UI stubs remain Experimental.
-4. Track trust-program progress on this page and the [public roadmap](roadmap.md).
+4. Track trust-program progress on this page and the [roadmap](roadmap.md).
 
 ## What we will not do
 

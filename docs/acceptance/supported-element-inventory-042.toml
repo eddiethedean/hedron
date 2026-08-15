@@ -1,0 +1,101 @@
+# Phase 0.42 Supported element inventory (STABLE-042 artifact)
+# Stage 0 planned. Living published baseline: Published v0.41.0. Cut: Hedron v0.42.0.
+# Owning decision: D-070. RFC: RFC-0060. Tracking #97.
+# At Stage 0, supported tags are locked as Planned; evidence lands at cut.
+
+schema = 1
+phase = "0.42"
+state = "planned"
+living_published_baseline = "v0.41.0"
+hedron_cut = "v0.42.0"
+owning_decision = "D-070"
+owning_rfc = "RFC-0060"
+tracking = "#97"
+browser_floor = "playwright_chromium_firefox_webkit"
+browser_floor_source = "tests/browser/test_browser_matrix.py"
+
+supported_tags = [
+  "hedron-example",
+  "hedron-field-text",
+  "hedron-field-choice",
+  "hedron-field-file",
+  "hedron-disclosure",
+  "hedron-dialog",
+  "hedron-action-async",
+  "hedron-data-editor",
+]
+
+[cross_referenced]
+# Published chart workflow; do not re-cut hedron-charts in 0.42.
+hedron_chart = { package = "hedron-charts", pin = ">=0.2.0,<0.3", disposition = "cross_reference" }
+
+[element_state_ownership]
+supported = ["controlled", "local", "draft", "preference"]
+experimental = []
+excluded = ["ambient_global_store"]
+
+[interaction_state]
+supported = ["idle", "pending", "success", "error", "canceled"]
+experimental = []
+excluded = []
+
+[optimistic_mutation]
+supported = ["bounded_dataeditor_collection_cell_edits"]
+experimental = []
+excluded = [
+  "auth",
+  "irreversible_destruction",
+  "payments",
+  "secrets",
+  "file_publication",
+  "cross_tenant_moves",
+]
+
+[gesture_overlay_catalog]
+supported = [
+  "disclosure",
+  "dialog",
+  "tabs",
+  "menu_popover",
+  "selection",
+  "bounded_upload",
+]
+experimental = []
+excluded = []
+
+[react_migration_bridge]
+disposition = "experimental"
+in_hedron_elements = false
+supported_default = false
+removal_ledger = "REACT_MIGRATION_MATRIX_040.md"
+
+[experimental_or_excluded]
+specialty_ui = ["CodeEditor", "TerminalView", "device_capture"]
+vendor_chart_adapters = ["plotly", "altair", "echarts", "chartjs", "bokeh", "holoviews", "hvplot", "pygal"]
+live_transports = ["sse", "websocket", "streaming", "preload"]
+other = [
+  "arbitrary_remote_modules",
+  "private_shadow_dom_customization",
+  "npm_bundler_required_for_python_apps",
+  "spa_framework_claim",
+  "wrap_all_components_as_custom_elements",
+]
+
+[npm_mirror]
+package = "@hedron/elements"
+modules_and_types_only = true
+react_runtime = false
+application_bundler_required = false
+python_no_node = true
+
+[package_maturity_at_cut]
+hedron_elements = "beta"
+production_grade_for = "declared_supported_inventory_only"
+pin = ">=0.42.0,<0.43"
+not = ["pypi_production_stable", "hedron_1_0"]
+
+[remediations]
+issues = [
+  99, 100, 108, 136, 137, 138, 139, 140, 141, 145, 146, 147, 148, 151, 152, 156,
+  160, 174, 175, 177, 187, 205, 206, 208, 217, 218, 238, 242, 243, 245, 246, 249,
+]

@@ -1,7 +1,11 @@
-# Roadmap (public)
+<!-- Generated from docs/ROADMAP.md ADOPTER_ROADMAP section — edit docs/ROADMAP.md, then run scripts/sync_status_roadmap.py -->
 
-Capability phases for adopters. The full phase tables, gates, and RFC ownership live
-in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
+# Roadmap
+
+This is the **single** Hedron roadmap (adopter phase table and maintainer detail). Pin
+`hedron` for production; see [What's ready today](whats-ready.md) for capability maturity.
+
+## Phase status (current train)
 
 | Phase | Theme | Status |
 |---|---|---|
@@ -36,13 +40,12 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.38** | High-fidelity typed charts: `hedron-chart`, modular D3, SVG/Canvas, visual system, interactions, a11y, export, and hard performance/security gates | **Published** (`v0.38.0` / `hedron-charts` `0.2.0`; D-066 / RFC-0069; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
 | **0.39** | Optimistic mutations and rich data, chart integration, map, media, and editor elements | **Published** (`v0.39.0`; D-067; [#94](https://github.com/eddiethedean/hedron/issues/94) closed) |
 | **0.40** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | **Published** (`v0.40.0`; in-tree cut, tag/PyPI deferred; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95)) |
-| **0.41** | Typed browser composition, bounded draft state, and navigation | Planned ([#96](https://github.com/eddiethedean/hedron/issues/96)) |
-| **0.42** | Production-grade Web Component platform | Planned; locked Supported inventory only ([#97](https://github.com/eddiethedean/hedron/issues/97)) |
+| **0.41** | Typed browser composition, bounded draft state, and navigation | **Published** (`v0.41.0`; in-tree cut, tag/PyPI deferred; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96)) |
+| **0.42** | Production-grade Web Component platform | Planned (Stage 0 refined vs `v0.41.0`; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
 
-The maintainer roadmap also locks the 2026-08-14 open medium/low remediation snapshot into these
-future regression gates: 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42.
-See the [issue ownership index](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-mediumlow-remediation-ownership-2026-08-14-snapshot)
-for the exact set and phase rationale.
+Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
+8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
+[Open medium/low remediation ownership](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-mediumlow-remediation-ownership-2026-08-14-snapshot).
 
 ### Cross-cutting default presentation plan (0.33+)
 
@@ -51,35 +54,31 @@ Phases 0.33–0.42 also carry the
 framework-owned visual gallery and responsive geometry contract in 0.33, a refreshed polished
 `default_styles=True` experience in 0.34, a whole-fleet presentation audit in 0.35, then shared
 element, form, chart, data, authoring, navigation, accessibility, performance, and upgrade evidence
-through 0.42. This improves Hedron's out-of-box
-appearance without copying an application brand, owning authentication policy, or removing
-`default_styles=False` for custom canvases. **It does not own phase 0.33 release gates** and must
-not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
+through 0.42. This improves Hedron's out-of-box appearance without copying an application brand,
+owning authentication policy, or removing `default_styles=False` for custom canvases. **It does not
+own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
 
-## What this means for you
+### What this means for you
 
 - Pin `hedron` (and extras) in production; `0.x` may still take breaking changes under the
   [compatibility policy](../COMPATIBILITY.md).
 - Package maturity is **Beta** for the flagship, adapters, charts, and native Supported inventories.
 - No Hedron `1.0` phase is scheduled (D-038). `fastapi-workbench` 1.0.0 in phase 0.30 is an
-  independently versioned package release, not Hedron 1.0. A **minimal + expanded (0.23) `stable` API tier** is
-  catalogued in [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or
+  independently versioned package release, not Hedron 1.0. A **minimal + expanded (0.23) `stable` API
+  tier** is catalogued in [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or
   `experimental`.
 - **0.23** (**Published**) expanded that tier for a locked Beginner/CRUD facade only —
   [STABLE_FACADE](../api/STABLE_FACADE.md) — not every What’s ready Supported row.
-- **0.24** (**Published**) Accepted **`polling_only`**: live transports stay
-  **experimental**; polling is the Supported production story —
-  [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md).
+- **0.24** (**Published**) Accepted **`polling_only`**: live transports stay **experimental**;
+  polling is the Supported production story — [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md).
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
 - Planned **0.26–0.35** phases apply an evidence-based production-grade contract to the remaining
-  package fleet. **Published 0.36–0.40** and Planned **0.41–0.42** then establish a
-  standards-based Web Component platform while preserving SSR, native forms/navigation, HTMX,
-  and no-Node Python consumption. Neither program is a blanket feature promotion or a scheduled
-  `1.0`; see the
-  [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
+  package fleet. **Published 0.36–0.41** and Planned **0.42** then establish a standards-based Web
+  Component platform while preserving SSR, native forms/navigation, HTMX, and no-Node Python
+  consumption. Neither program is a blanket feature promotion or a scheduled `1.0`.
 
-## Honest gaps on the current train (0.41.x)
+### Honest gaps on the current train (0.41.x)
 
 - Current **published** PyPI train is **0.41.x** (last `v0.41.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
@@ -87,7 +86,7 @@ not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
   (0.28), and Workbench packages (`hedron-workbench` / `fastapi-workbench` on 0.29–0.30)
   Supported inventories — not every Beta symbol
-- Alpha `hedron-elements` ships on the 0.37 train (incubator until 0.42)
+- Alpha `hedron-elements` ships on the 0.41 train (incubator until 0.42 graduation; D-070)
 - Notebook preview is tooling-grade / localhost-only (0.31); MCP is Beta for the declared
   Supported inventory (`hedron-mcp` `0.2.0`; phase 0.32 / RFC-0065); mutations remain Experimental
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
@@ -104,14 +103,17 @@ not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
   · [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md)
 
 CSRF / SecurityPolicy composition (#36–#38) shipped in **0.22**
-([RELEASE_0_22](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_22.md)). Human AT evaluation engineering is
-**0.21** (D-052; sessions outstanding). Stable-tier expansion shipped in **0.23**;
-live-transport disposition shipped in **0.24**; production archetype shipped in **0.25**
-(D-053; **Published** `v0.25.0` — [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md)).
+([RELEASE_0_22](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_22.md)). Human AT evaluation engineering is **0.21**
+(D-052; sessions outstanding). Stable-tier expansion shipped in **0.23**; live-transport disposition
+shipped in **0.24**; production archetype shipped in **0.25** (D-053; **Published** `v0.25.0` —
+[PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md)).
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))
 addresses FastAPI live learning paths. Flask/Django ship capability-labeled live helpers with
 polling as the Supported fallback.
-Details: [What's ready today](whats-ready.md) · [Production readiness](production-readiness.md) ·
+Details: [What's ready today](whats-ready.md) ·
+[Production readiness](production-readiness.md) ·
 [Production-quality maturity](production-quality.md).
+
+Maintainer phase tables, gates, and RFC ownership continue below the adopter summary in [`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md) (root `ROADMAP.md` is a generated mirror of that file).

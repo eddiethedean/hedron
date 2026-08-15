@@ -134,7 +134,7 @@ and no fixture implies that Hedron owns user persistence, permissions, or email 
 | **0.39** | Complete dense data, table, editor, map, and media containment, optimistic-state presentation, and integration with the 0.38 chart system. |
 | **0.40** | Publish third-party authoring rules for tokens, classes, parts, slots, variants, theme compatibility, visual fixtures, and safe application overrides. |
 | **0.41** | Complete active-navigation reveal, fragment-entry motion, history/focus/title behavior, bounded draft-state presentation, and multi-element failure isolation. |
-| **0.42** | Lock the Supported visual inventory and prove browser, accessibility, human-AT, performance, compatibility, upgrade/rollback, and supply-chain evidence for production-grade graduation. |
+| **0.42** | Lock the Supported visual inventory and prove browser, accessibility, human-AT, performance, compatibility, upgrade/rollback, and supply-chain evidence for production-grade graduation (D-070 Stage 0 refined; satisfied by `STABLE-042` / `AT-042` / `PERF-042` — do not invent `PRESENT-042`). |
 
 The 0.33 work establishes evidence and fixes clear defects; it does not make `hedron-posit`
 delivery depend on a wholesale redesign. The refreshed default becomes mandatory at 0.34 only after the compatibility

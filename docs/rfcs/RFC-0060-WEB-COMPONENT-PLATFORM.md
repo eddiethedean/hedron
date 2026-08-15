@@ -416,7 +416,7 @@ rewrite Python routes merely because a component's internal browser implementati
 | 0.38 chart flagship | **Published** `hedron-chart` / `ChartSpec` for the locked RFC-0069 inventory; whole-platform ABI graduation remains 0.42. |
 | `@hedron/elements` in 0.40 | **Owned by D-068** — see [Resolved questions (D-068)](#resolved-questions-d-068). |
 | React-island bridge home | **Owned by D-068** — see [Resolved questions (D-068)](#resolved-questions-d-068). |
-| Browser floor at 0.42 | Same three-engine family; exact build IDs re-recorded at graduation cut. |
+| Browser floor at 0.42 | **Owned by D-070** — see [Resolved questions (D-070)](#resolved-questions-d-070). |
 
 ## Resolved questions (D-067)
 
@@ -503,3 +503,33 @@ suffixes are historical; D-066 rephased this packet to 0.41 and these answers ar
 These answers do not create a client router/store, durable or cross-tab draft sync, offline
 authority, required live transport, or production-grade platform claim. Human AT remains governed
 by its existing evidence program; 0.41 planning does not claim Supported human-AT coverage.
+
+## Resolved questions (D-070)
+
+Tracking: [#97](https://github.com/eddiethedean/hedron/issues/97). The issue's original 0.38 title
+and gate suffixes are historical; D-066 rephased this packet to 0.42 and these answers are
+normative.
+
+### 0.42 definitive
+
+| Question | Answer |
+|---|---|
+| Stage 0 / cut | Living baseline Published `v0.41.0`; coordinated Hedron and `hedron-elements` cut target `v0.42.0`. Refinement changes contracts only. |
+| Package maturity at cut | `hedron-elements` becomes **Beta** and **production-grade for the declared Supported inventory only** (same pattern as `hedron` / `hedron-core`). Train-aligned `0.42.0`, pin `>=0.42.0,<0.43`. Stage 0 keeps Alpha / incubator / `>=0.41.0,<0.42`. Not PyPI Production/Stable, not `1.0`. |
+| Supported tags | First-party tags already proven in 0.36–0.41: `hedron-example`; `hedron-field-text` / `hedron-field-choice` / `hedron-field-file`; `hedron-disclosure`; `hedron-dialog`; `hedron-action-async`; `hedron-data-editor`. `hedron-chart` is **cross-referenced** from Published `hedron-charts` `0.2.x` — do not re-cut charts. No new tags in 0.42. |
+| Five interaction contracts | Named Supported subsets of `ElementStateOwnership`, `InteractionState`, `OptimisticMutation`, `GestureOverlayCatalog` go in the inventory. Any remainder stays explicit Experimental/excluded. None may disappear. |
+| React-island | Remains **Experimental** with the 0.40 removal/destination ledger. Not inside `hedron-elements`. Not Supported. |
+| Stay Experimental | Specialty UI (`CodeEditor` / `TerminalView` / device capture); vendor chart adapters; live SSE/WS/streaming/preload; arbitrary remote modules; private Shadow-DOM customization; npm/bundler required for Python apps. |
+| `@hedron/elements` | Optional modules/TS mirror only; Python no-Node path unchanged. Graduate with wheel identity at cut, not as a required consumer toolchain. |
+| Browser floor | Same three-engine Playwright family as `tests/browser/test_browser_matrix.py`; exact build IDs re-recorded at cut. CDN refusal, mixed 0.36–0.41 assets, rollback, offline, package removal, unknown-feature fallback. |
+| AT-042 vs SR-021 | **Distinct.** AT-042 is inventory honesty for element workflows (form, navigation, data-editor, chart, swap/failure, plus default-presentation public form/settings/table/dialog). Matrix = D-052 (VoiceOver+Safari, NVDA+Firefox, TalkBack+Chromium; ≥2 compensated; ≥1 SR + ≥1 other disability). Unproven surfaces stay out of Supported. **Does not close** [#86](https://github.com/eddiethedean/hedron/issues/86) / `SR-021`. 0.42 may cut with SR-021 still Planned. Never market product-wide Supported human AT. |
+| REVIEW-042 | Structured maintainer-led review with redacted report + disposition (same as 0.38–0.41). Zero unresolved critical/high at cut. External firm allowed, not required. |
+| PERF-042 | Stage 0 names budget categories (bundle/request/upgrade/interaction/memory/leak/long-task/layout-shift/slow-module) on `examples/reference-app`. Numeric ceilings land at Stage 1+; do not invent numbers now. |
+| Default presentation | 0.33–0.42 visual-inventory destination is satisfied by `STABLE-042` / `AT-042` / `PERF-042`. Do not invent `PRESENT-042`. |
+| Regression packet | Exactly #99, #100, #108, #136, #137, #138, #139, #140, #141, #145, #146, #147, #148, #151, #152, #156, #160, #174, #175, #177, #187, #205, #206, #208, #217, #218, #238, #242, #243, #245, #246, #249; all close for `REGRESS-042`. |
+| Gate IDs | `STABLE-042`, `COMPAT-042`, `REVIEW-042`, `AT-042`, `PERF-042`, `SUPPLY-042`, `REGRESS-042`, `PKG-042`. |
+| Independent review scope | Code execution, CSP/Trusted Types, XSS/HTML sinks, payloads/events, origins/assets/workers, Shadow DOM assumptions, state/forms, version skew, dependencies, failure isolation, redaction. |
+
+These answers do not authorize a global store, SPA rewrite, wrapping every Hedron component as a
+custom element, reopening `polling_only`, closing `SR-021`, or Stage 0 tip/runtime bumps. SSR,
+native HTML/forms/navigation, HTMX fragments, server validation, and polling remain canonical.

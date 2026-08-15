@@ -10,7 +10,7 @@
 | Docs voice / Diátaxis | [Documentation standards](docs/guides/documentation-standards.md) |
 | Code of Conduct | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
 | Status / freeze | [docs/STATUS.md](docs/STATUS.md) (root `STATUS.md` is a mirror) |
-| Roadmap | [docs/ROADMAP.md](docs/ROADMAP.md) (root `ROADMAP.md` is a mirror) |
+| Roadmap | [docs/ROADMAP.md](docs/ROADMAP.md) (root `ROADMAP.md` and `docs/guides/roadmap.md` are generated) |
 | Cutting a release | [docs/RELEASE.md](docs/RELEASE.md) |
 
 Edit STATUS/ROADMAP under `docs/`, then run `uv run python scripts/sync_status_roadmap.py`

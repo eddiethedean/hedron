@@ -237,7 +237,7 @@ CI/toolchain contract: [`ENGINEERING_BASELINE.md`](https://github.com/eddiethede
 
 | Topic | Edit here | Notes |
 |---|---|---|
-| STATUS / ROADMAP | `docs/STATUS.md`, `docs/ROADMAP.md` | Then `uv run python scripts/sync_status_roadmap.py` (CI `--check`) |
+| STATUS / ROADMAP | `docs/STATUS.md`, `docs/ROADMAP.md` | Then `uv run python scripts/sync_status_roadmap.py` (updates root mirrors + `docs/guides/roadmap.md`; CI `--check`) |
 | Adopter maturity | `docs/guides/whats-ready.md` | Public SSOT — do not send adopters to STATUS |
 | Documentation conventions | `docs/guides/documentation-standards.md` | Audience, source ownership, generation, review checklist |
 | Contributing | `docs/CONTRIBUTING.md` | Root `CONTRIBUTING.md` is a stub pointer |

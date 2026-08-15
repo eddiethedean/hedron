@@ -18,12 +18,15 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `hedron-workbench`, `hedron-posit`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
 `hedron-sim`, `hedron-mcp`, `hedron-gradio`. Alpha — `hedron-elements`.
 
-**Phase focus:** Living train is **0.41** (D-069 / RFC-0060) — public author kit and
-`hedron new element`, plugin/HDJ/Explorer/theme metadata parity, ReactMigrationMatrix with
-Experimental island docs/reference, optional `@hedron/elements` modules/types mirror, and the
-6-issue remediation packet (`release-gate-0.41.toml` Verified; tip `v0.41.0`). Prior Published
+**Phase focus:** Living train is **0.41** (D-069 / RFC-0060) — typed browser composition, bounded
+draft transfer, navigation/restoration, content-free traces, and per-element failure isolation
+(`release-gate-0.41.toml` Verified; tip `v0.41.0`). Prior Published
 **0.40** authoring / **0.39** rich data / OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
+Phase **0.42** Stage 0 contract packet is refined against Published `v0.41.0` (D-070 / RFC-0060;
+[`RELEASE_0_42.md`](docs/acceptance/RELEASE_0_42.md); `release-gate-0.42.toml` all Planned;
+[#97](https://github.com/eddiethedean/hedron/issues/97) open — do not close until gates Verified).
+Living tip remains **`v0.41.0`**.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
@@ -349,9 +352,17 @@ Web Component authoring and interoperability is **Published** as `v0.40.0` (D-06
 [0.40 acceptance packet](docs/acceptance/RELEASE_0_40.md)). It ships the public author kit and
 `hedron new element`, plugin/HDJ/Explorer/theme metadata parity, `ReactMigrationMatrix` with an
 Experimental island docs/reference, optional `@hedron/elements` modules/types mirror, and the
-locked 6-issue remediation packet. Later phases
-[#96](https://github.com/eddiethedean/hedron/issues/96)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(rephased to 0.41–0.42) still require their own Stage 0 packets. Living tip is **`v0.41.0`**.
+locked 6-issue remediation packet. Phase **0.41** browser composition, draft transfer, and
+navigation is **Published** as `v0.41.0` (D-069 /
+[RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md); `release-gate-0.41.toml` Verified;
+[#96](https://github.com/eddiethedean/hedron/issues/96); see
+[implementation plan](docs/implementation/HEDRON_COMPOSITION_041.md) and
+[0.41 acceptance packet](docs/acceptance/RELEASE_0_41.md)). Phase **0.42** production-grade Web
+Component platform Stage 0 is refined against Published `v0.41.0` (D-070 / RFC-0060;
+`release-gate-0.42.toml` all Planned; [#97](https://github.com/eddiethedean/hedron/issues/97)
+open — do not close until gates Verified; see
+[implementation plan](docs/implementation/HEDRON_ELEMENTS_042.md) and
+[0.42 acceptance packet](docs/acceptance/RELEASE_0_42.md)). Living tip is **`v0.41.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

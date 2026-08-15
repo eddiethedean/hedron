@@ -13,7 +13,7 @@ scripts here when you add them.
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
-| `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
+| `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors + `docs/guides/roadmap.md`). CI: `--check` |
 | `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: quality job |
 | `check_package_docs_inventory.py` | Keep the package catalog, README maturity labels, PyPI classifiers, and package pages aligned with the living fleet inventory. CI: quality job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
@@ -52,6 +52,9 @@ Documentation source ownership and review rules:
 | `verify_pkg_36.py` | Phase **0.36** Web Component ABI/lifecycle packet |
 | `verify_pkg_37.py` | Phase **0.37** form/primitives packet (Published `v0.37.0`) |
 | `verify_pkg_40.py` | Phase **0.40** authoring / React migration packet (Published `v0.40.0`) |
+| `verify_pkg_41.py` | Phase **0.41** composition / state / navigation packet (Published `v0.41.0`) |
+| `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Stage 0: `--allow-planned`) |
+| `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |
 | `verify_pkg_39.py` | Phase **0.39** rich data / OptimisticMutation packet (Published `v0.39.0`) |
 | `verify_pkg_38.py` | Phase **0.38** high-fidelity charts packet (Published `v0.38.0` / `hedron-charts` `0.2.0`) |
 | `check_*_038.py` | Phase 0.38 grammar/render/design/visual/interaction/a11y/perf/export/security/compat/docs/regression gate entry points |
@@ -77,7 +80,7 @@ Documentation source ownership and review rules:
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
 | `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
-| `verify_pkg_40.py` / `verify_pkg_39.py` / `verify_pkg_38.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_39.py`**; next Planned: **`verify_pkg_40.py --allow-planned`**) |
+| `verify_pkg_42.py` / `verify_pkg_41.py` / `verify_pkg_40.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_41.py`**; next Planned: **`verify_pkg_42.py --allow-planned`**) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

@@ -9,6 +9,10 @@ The full authoritative table lives in the repository (not duplicated here):
 
 | ID | Topic |
 |---|---|
+| D-070 | Production-grade Web Component platform graduation owns 0.42 Stage 0 (RFC-0060; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
+| D-069 | Typed browser composition, draft transfer, and navigation own Published 0.41 (RFC-0060; [#96](https://github.com/eddiethedean/hedron/issues/96)) |
+| D-068 | Web Component authoring / React migration matrix own Published 0.40 (RFC-0060; [#95](https://github.com/eddiethedean/hedron/issues/95)) |
+| D-067 | Rich data / OptimisticMutation own Published 0.39 (RFC-0060; [#94](https://github.com/eddiethedean/hedron/issues/94)) |
 | D-066 | High-fidelity charts own 0.38; later Web Component phases move to 0.39–0.42 (RFC-0069; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
 | D-065 | Form-associated elements, InteractionState, gesture/overlay primitives, and high-severity remediations #230–#237 own 0.37 |
 | D-064 | Web Component ABI and lifecycle foundation owns published 0.37 |

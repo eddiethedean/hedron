@@ -26,6 +26,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
   async interaction, optimism, gestures/overlays, and React migration
 - [Browser composition, draft transfer, and navigation](HEDRON_COMPOSITION_041.md) — phase 0.41
   D-069 architecture, work slices, failure boundaries, and evidence plan
+- [Production-grade Web Component platform](HEDRON_ELEMENTS_042.md) — phase 0.42 D-070 Stage 0
+  graduation plan, Supported inventory, AT-042 honesty, and fleet remediation bind
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)
