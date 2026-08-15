@@ -64,6 +64,10 @@ def test_reconcile_csp_authorizes_quoted_script_tokens() -> None:
         "default-src 'self'; script-src https://cdn.example",
         required_capabilities=["network.script-origin:https://cdn.example"],
     )
+    assert not reconcile_csp(
+        "script-src http://cdn.example",
+        required_capabilities=["network.script-origin:http://cdn.example"],
+    )
 
 
 def test_reconcile_csp_rejects_path_and_host_substrings() -> None:
@@ -83,6 +87,20 @@ def test_reconcile_csp_rejects_path_and_host_substrings() -> None:
     assert reconcile_csp(
         "script-src https://cdn.example/'unsafe-inline'/app.js",
         required_capabilities=["browser.inline-script"],
+    )
+
+
+def test_reconcile_csp_checks_http_network_origins() -> None:
+    """#289: cleartext network origins must fail closed against CSP."""
+    mismatches = reconcile_csp(
+        "default-src 'none'",
+        required_capabilities=["network.script-origin:http://evil.example"],
+    )
+    assert mismatches
+    assert "http://evil.example" in mismatches[0]
+    assert reconcile_csp(
+        "default-src 'self'; script-src https://cdn.example",
+        required_capabilities=["network.script-origin:http://cdn.example"],
     )
 
 

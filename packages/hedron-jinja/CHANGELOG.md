@@ -10,6 +10,7 @@
 
 ### Fixed
 - `reconcile_csp` matches CSP source tokens and origins instead of URL path/host substrings.
+- `reconcile_csp` checks `http://` and `https://` `network.*` origin capabilities against CSP.
 
 ## [0.41.0] — Unreleased
 

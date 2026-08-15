@@ -184,6 +184,19 @@ def _origin_in_sources(origin: str, tokens: Sequence[str]) -> bool:
     return any(_parse_origin(token) == required for token in tokens)
 
 
+def _network_capability_origin(capability: str) -> str | None:
+    """Extract an ``http(s)://`` origin after the last colon before ``://``."""
+    marker = "://"
+    idx = capability.find(marker)
+    if idx <= 0:
+        return None
+    scheme_sep = capability.rfind(":", 0, idx)
+    origin = capability[scheme_sep + 1 :] if scheme_sep != -1 else capability
+    if _parse_origin(origin) is None:
+        return None
+    return origin
+
+
 def reconcile_csp(
     policy_csp: str | None,
     *,
@@ -228,9 +241,9 @@ def reconcile_csp(
                 f"{source_name}:{line}: capability {capability!r} requires explicit "
                 f"unsafe-eval authorization in SecurityPolicy CSP"
             )
-        if capability.startswith("network.") and "https://" in capability:
-            origin = capability.split(":", 1)[-1]
-            if origin and not _origin_in_sources(origin, all_tokens):
+        if capability.startswith("network."):
+            origin = _network_capability_origin(capability)
+            if origin is not None and not _origin_in_sources(origin, all_tokens):
                 mismatches.append(
                     f"{source_name}:{line}: remote origin {origin!r} is not present in CSP"
                 )
