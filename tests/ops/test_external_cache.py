@@ -136,6 +136,20 @@ def test_redis_cache_tag_invalidation() -> None:
     assert backend.get("b") is None
 
 
+def test_redis_cache_tag_index_does_not_expire_immortal_members() -> None:
+    """#285: PTTL -1 must not be treated as shorter than a later member TTL."""
+    client = _StubRedis()
+    backend = RedisCacheBackend(client)
+    backend.set("perm", {"v": 1}, ttl=None, tags=("t",))
+    tag_key = "h1:tag:t"
+    assert client.pttl(tag_key) == -1
+    backend.set("temp", {"v": 2}, ttl=2, tags=("t",))
+    assert client.pttl(tag_key) == -1
+    assert backend.invalidate(tags=("t",)) == 2
+    hit, _value = backend.lookup("perm")
+    assert hit is False
+
+
 def test_redis_cache_rejects_bad_json() -> None:
     client = _StubRedis()
     backend = RedisCacheBackend(client)

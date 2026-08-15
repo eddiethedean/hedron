@@ -9,6 +9,9 @@
 - Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
 - Internal module split; public imports unchanged.
 
+### Fixed
+- Redis tag indexes with PTTL ``-1`` are not given a finite TTL by a later tagged write.
+
 ## [0.41.0] — Unreleased
 
 - Phase 0.41 browser composition, bounded draft transfer, navigation, tracing, failure isolation, and regression closure (D-069).
