@@ -15,7 +15,11 @@ SUPPLY = ROOT / "docs" / "acceptance" / "fleet-supply-042"
 
 def test_upgrade_fixture_matrix_locked() -> None:
     text = UPGRADE.read_text(encoding="utf-8")
-    assert "Baseline Published `v0.41.0`" in text or "baseline Published `v0.41.0`" in text.lower() or "v0.41.0" in text
+    assert (
+        "Baseline Published `v0.41.0`" in text
+        or "baseline Published `v0.41.0`" in text.lower()
+        or "v0.41.0" in text
+    )
     assert ">=0.42.0,<0.43" in text
     assert ">=0.41.0,<0.42" in text
     assert "CDN refusal" in text or "CDN" in text

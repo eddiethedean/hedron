@@ -612,7 +612,7 @@ measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
 first-party data boundary supports Django QuerySets without compromising bounded execution or
 framework-neutral core ownership.
 
-**Status:** Published as `v0.11.0` (2026-08-04). See [STATUS.md](STATUS.md) and
+**Status:** Published as `v0.11.0` (2026-08-04). See [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [acceptance/RELEASE_0_11.md](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_11.md).
 
 ### Entry gate
@@ -651,7 +651,7 @@ framework-neutral core ownership.
 **Outcome:** Hedron handles richer editing, distributed/lazy data, and geospatial or high-volume
 visualization through bounded, inspectable adapters.
 
-**Status:** Published as `v0.12.0` (2026-08-05). See [STATUS.md](STATUS.md) and
+**Status:** Published as `v0.12.0` (2026-08-05). See [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [release-gate-0.12.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.12.toml) (zero Deferred; D-047).
 
 ### Scope
@@ -705,7 +705,7 @@ visualization through bounded, inspectable adapters.
 **Outcome:** Applications can prepare component data concurrently and adapt resource use without
 introducing a second hidden runtime or losing trace and cancellation semantics.
 
-**Status:** Published as `v0.13.0` (2026-08-05). See [STATUS.md](STATUS.md) and
+**Status:** Published as `v0.13.0` (2026-08-05). See [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [release-gate-0.13.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.13.toml) (zero Deferred for 0.13-owned rows).
 
 ### Scope
@@ -960,7 +960,7 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
 
 ## 0.16 — Curated extras and interactive analysis tools (`v0.16.0`)
 
-**Status:** Published as `v0.16.0` (2026-08-06). See [STATUS.md](STATUS.md) and
+**Status:** Published as `v0.16.0` (2026-08-06). See [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [acceptance/RELEASE_0_16.md](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_16.md).
 
 **Outcome:** Hedron offers a maintained optional toolkit for specialized data-app interactions and
@@ -1196,7 +1196,7 @@ and leftover docs/assert completions ship in the same cut.
 
 ## 0.18 — Model demos and inference workflows (`v0.18.0`)
 
-**Status:** Published as `v0.18.0` (2026-08-06). See [STATUS](STATUS.md) and
+**Status:** Published as `v0.18.0` (2026-08-06). See [STATUS](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [release-gate-0.18.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.18.toml).
 
 **Outcome:** Hedron can turn explicitly registered typed model actions into production-auditable
@@ -1292,7 +1292,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 **Status:** Published as `v0.19.0` (2026-08-07). The current train is **0.40.x**
 (last published tip `v0.40.0`).
-See [STATUS](STATUS.md) and
+See [STATUS](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [release-gate-0.19.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
 [RFC-0051](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0051-ACCESSIBILITY-CONTRACT.md)–[RFC-0055](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md)
@@ -1422,7 +1422,7 @@ Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
 
 ## 0.20 — Production security floor and adapter parity (`v0.20.0`)
 
-**Status:** **Published** as `v0.20.0` (2026-08-07). See [STATUS](STATUS.md) and
+**Status:** **Published** as `v0.20.0` (2026-08-07). See [STATUS](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [release-gate-0.20.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.20.toml). Decision: D-051.
 Owning RFCs (Accepted baselines; phase deltas): [RFC-0012](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0012-SECURITY.md),
 [RFC-0021](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0021-BROWSER-RUNTIME.md), [RFC-0028](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0028-DEPLOYMENT.md).
@@ -1848,7 +1848,7 @@ Cut requires exactly one of `quarantine` | `finish_supported`. Do not half-verif
 | `BUDGET-025` | Runnable evidence (CI or immutable artifact) against [PERFORMANCE_BUDGETS.md](PERFORMANCE_BUDGETS.md) for `W-025-FRAGMENT`, `W-025-JOB-POLL`, and `W-025-DATAEDITOR` |
 | `EXTRAS-025` | Quarantine TOML is `quarantine` **or** `finish_supported`; SSOT + What’s ready agree; `hedron[extras]` honesty matches the chosen path |
 | `CHARTS-025` | Matplotlib-default Supported path documented; Plotly/Altair remain experimental until pins + CSP + a11y match the DataTable bar (graduation checklist present; full Plotly graduation not required) |
-| `SUPPLY-025` | [RELEASE.md](RELEASE.md) requires SBOM/evidence-bundle attach on train tags; regenerate instructions remain in the Evidence pack |
+| `SUPPLY-025` | [RELEASE.md](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md) requires SBOM/evidence-bundle attach on train tags; regenerate instructions remain in the Evidence pack |
 | `REGRESS-025` / `PKG-025` | Full suite + `verify_pkg_25.py` at cut |
 
 ### Scope (locked gate commands)
@@ -2493,7 +2493,7 @@ generic package never imports, discovers, or conditionally activates Hedron.
 **Status:** Published as `v0.31.0` (2026-08-12). Tooling-grade means reliable and supported for its
 stated development or conformance purpose; it does not convert the tools into application
 production servers.
-**Owning decision / RFCs:** [D-059](DECISIONS.md) ·
+**Owning decision / RFCs:** [D-059](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) ·
 [RFC-0064](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0064-PRODUCTION-GRADE-TOOLING.md) (tooling) ·
 [RFC-0061](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0061-STREAMLIT-AST-MIGRATOR.md) (migrator; Accepted).
 Evidence: [release-gate-0.31.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.31.toml) ·
@@ -2573,7 +2573,7 @@ flagship CLI gains a reviewable Streamlit AST migration assistant (RFC-0061).
 
 **Status:** Published as `v0.32.0` (2026-08-12); `hedron-mcp` **`0.2.0` Beta**.
 `release-gate-0.32.toml` Verified with zero Deferred.
-**Owning decision / RFC:** [D-060](DECISIONS.md) ·
+**Owning decision / RFC:** [D-060](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) ·
 [RFC-0065](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) (graduation). Alpha product contract remains
 [RFC-0043](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0043-MCP-PROJECTION.md) (phase 0.17; not reopened).
 Evidence: [release-gate-0.32.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.32.toml) ·
@@ -2717,7 +2717,7 @@ branding, authentication/recovery policy, authorization, or compliance claims.
 ## 0.33 — Unified Posit deployment adapter (`v0.33.0`)
 
 **Status:** Published as `v0.33.0` (2026-08-13); `hedron-posit` **`0.33.0` Beta**.
-**Owning decision / RFC:** [D-061](DECISIONS.md) ·
+**Owning decision / RFC:** [D-061](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) ·
 [RFC-0066](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0066-HEDRON-POSIT.md) (**Accepted**).
 **Implementation plan:** [HEDRON_POSIT_033](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_POSIT_033.md).
 **Acceptance packet:** [RELEASE_0_33](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_33.md).

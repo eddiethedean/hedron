@@ -45,9 +45,7 @@ def test_perf_042_named_budget_ceilings_locked() -> None:
 
 def test_perf_042_supported_surfaces_render_within_markup_bound() -> None:
     rows = [{"id": str(i), "name": f"r{i}"} for i in range(40)]
-    editor = render(
-        DataEditor(rows, key_field="id", save_endpoint="/s")
-    ).html
+    editor = render(DataEditor(rows, key_field="id", save_endpoint="/s")).html
     assert "hedron-data-editor" in editor
     assert len(editor.encode("utf-8")) < 750_000
     example = render(Example(status="ok")).html

@@ -235,7 +235,7 @@ def test_workflow_run_honors_cancel() -> None:
         )
     )
     policy = InferencePolicy()
-    policy._cancel.add("req-1")
+    policy._mark_cancel_id("req-1")
     wf = InferenceWorkflow(workflow_id="cancel-demo")
     wf.grant("alice", WorkflowPermission.EDIT, WorkflowPermission.RUN)
     wf.add_node(

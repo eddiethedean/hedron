@@ -525,9 +525,7 @@ class InferencePolicy:
 
     def _prune_cancelled(self, now: float) -> None:
         expired = [
-            key
-            for key, stamped in self._cancel.items()
-            if now - stamped > self.cancel_ttl_seconds
+            key for key, stamped in self._cancel.items() if now - stamped > self.cancel_ttl_seconds
         ]
         for key in expired:
             del self._cancel[key]

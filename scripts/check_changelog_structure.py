@@ -9,9 +9,7 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RELEASE_HEADING = re.compile(
-    r"^## \[([^\]]+)\](?: — (?:\d{4}-\d{2}-\d{2}|Unreleased))?$"
-)
+RELEASE_HEADING = re.compile(r"^## \[([^\]]+)\](?: — (?:\d{4}-\d{2}-\d{2}|Unreleased))?$")
 
 
 def check_changelog(path: Path) -> list[str]:

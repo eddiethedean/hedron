@@ -191,7 +191,7 @@ class RQJobBackend:
             return None
         try:
             return Job.fetch(job_id, connection=connection)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             # Prefer typed NoSuchJobError when present; fall back to class name.
             try:
                 from rq.exceptions import NoSuchJobError  # type: ignore[import-not-found]

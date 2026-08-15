@@ -77,7 +77,11 @@ def _cmd_check(args: argparse.Namespace) -> int:
     bound_port: int | None = None
     sock = None
     try:
-        if getattr(args, "discover", False) and rs_server_url() and explicit_mount_hint(cfg) is None:
+        if (
+            getattr(args, "discover", False)
+            and rs_server_url()
+            and explicit_mount_hint(cfg) is None
+        ):
             # Match doctor --live: bind first, then pass the listening port to rserver-url.
             # ``--port 0`` / unset means ephemeral (``or 0``), not a hard-coded 8000.
             sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)

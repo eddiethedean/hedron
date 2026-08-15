@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
+import tomllib
+from pathlib import Path
+
 from hedron_core.plugins import PluginContext, reset_explorer_panels_for_tests
 from hedron_sample_kit.plugin import PLUGIN_META, register
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_sample_kit_registers_explorer_panel() -> None:
@@ -16,4 +21,5 @@ def test_sample_kit_registers_explorer_panel() -> None:
 
 def test_sample_kit_meta_pins_living_train() -> None:
     # Compatibility floor for the exemplar plugin.
-    assert "0.41" in PLUGIN_META.hedron_version
+    release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
+    assert str(release["train"]) in PLUGIN_META.hedron_version

@@ -67,8 +67,8 @@ def test_cli_scaffolds_element_with_public_plugin_api(tmp_path: Path) -> None:
     )
     assert all((destination / relative).is_file() for relative in expected)
     project = (destination / "pyproject.toml").read_text(encoding="utf-8")
-    assert "hedron-core>=0.41.0,<0.42" in project
-    assert "hedron-elements>=0.41.0,<0.42" in project
+    assert "hedron-core>=0.42.0,<0.43" in project
+    assert "hedron-elements>=0.42.0,<0.43" in project
     plugin = (destination / "src/demo_probe/plugin.py").read_text(encoding="utf-8")
     assert "ctx.register_element_definition" in plugin
     assert "from hedron_core.registry import register_element" not in plugin

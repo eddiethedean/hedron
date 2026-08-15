@@ -187,6 +187,7 @@ class _FakeRedis:
     def pipeline(self) -> _FakePipeline:
         return _FakePipeline(self)
 
+
 def test_140_negative_session_timeout_limits_rejected() -> None:
     session: dict[str, float] = {}
     touch_session(session, now=1000.0)
@@ -198,9 +199,7 @@ def test_140_negative_session_timeout_limits_rejected() -> None:
         check_session_timeout(session, idle_seconds=None, absolute_seconds=-5, now=1000.5)
 
     # Still within limits for non-negative configuration.
-    assert check_session_timeout(
-        session, idle_seconds=10, absolute_seconds=None, now=1000.5
-    )
+    assert check_session_timeout(session, idle_seconds=10, absolute_seconds=None, now=1000.5)
     with pytest.raises(SessionTimeoutError) as idle_exc:
         check_session_timeout(session, idle_seconds=0, absolute_seconds=None, now=1000.5)
     assert idle_exc.value.reason == "idle"
@@ -214,9 +213,7 @@ def test_145_redis_status_store_reads_legacy_idempotency_key() -> None:
     legacy = _legacy_idempotency_scope_key("same", tenant_id="tenant", auth_subject=None)
     redis.set(f"h1:job:idem:{legacy}", handle.job_id)
 
-    again, created_again = store.submit(
-        "t", {}, idempotency_key="same", tenant_id="tenant"
-    )
+    again, created_again = store.submit("t", {}, idempotency_key="same", tenant_id="tenant")
     assert created_again is False
     assert again.job_id == handle.job_id
 
@@ -347,15 +344,9 @@ def test_160_doctor_cookie_path_rejects_prefix_siblings_and_accepts_quoted() -> 
     from fastapi_workbench.cli import _cookie_path_matches_mount
 
     mount = "/s/x/p/1"
-    assert not _cookie_path_matches_mount(
-        "session=abc; Path=/s/x/p/10; HttpOnly", mount
-    )
-    assert _cookie_path_matches_mount(
-        'session=abc; Path="/s/x/p/1"; HttpOnly', mount
-    )
-    assert _cookie_path_matches_mount(
-        "session=abc; path=/s/x/p/1; HttpOnly", mount
-    )
+    assert not _cookie_path_matches_mount("session=abc; Path=/s/x/p/10; HttpOnly", mount)
+    assert _cookie_path_matches_mount('session=abc; Path="/s/x/p/1"; HttpOnly', mount)
+    assert _cookie_path_matches_mount("session=abc; path=/s/x/p/1; HttpOnly", mount)
     assert not _cookie_path_matches_mount("session=abc; HttpOnly", mount)
 
 
@@ -824,9 +815,7 @@ def test_242_redis_cache_ttl_matches_in_memory_semantics() -> None:
         def get(self, key: str) -> str | None:
             return self.store.get(key)
 
-        def set(
-            self, key: str, value: str, ex: int | None = None, px: int | None = None
-        ) -> bool:
+        def set(self, key: str, value: str, ex: int | None = None, px: int | None = None) -> bool:
             del ex
             self.store[key] = value
             if px is not None:
@@ -983,7 +972,7 @@ def test_245_normalize_mount_path_rejects_cookie_attribute_injection() -> None:
     for raw in (
         "/app;Max-Age=0",
         "/app;Secure",
-        '/app;Domain=evil.com',
+        "/app;Domain=evil.com",
         "/app,evil",
         '/app"evil',
         "/app=evil",

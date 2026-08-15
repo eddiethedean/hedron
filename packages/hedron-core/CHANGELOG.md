@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.42.0] - 2026-08-14
+## [0.42.0] — 2026-08-14
 
 ### Added
 - Phase 0.42 production-grade Web Component platform graduation (D-070).

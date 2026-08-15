@@ -41,7 +41,7 @@ def test_check_discover_binds_before_rserver_url(
     monkeypatch.setattr(posit_cli, "bind_loopback", tracking_bind)
     script = tmp_path / "fake-rserver-url"
     script.write_text(
-        "#!/bin/sh\necho \"https://wb.example/s/disc/p/$2\"\n",
+        '#!/bin/sh\necho "https://wb.example/s/disc/p/$2"\n',
         encoding="utf-8",
     )
     script.chmod(script.stat().st_mode | stat.S_IEXEC)
@@ -63,7 +63,6 @@ def test_check_discover_binds_before_rserver_url(
     payload = json.loads(capsys.readouterr().out)
     assert payload["browser_mount"] == f"/s/disc/p/{bound[0]}"
     assert payload["discovered"] is True
-
 
 
 def test_dry_run_alias() -> None:

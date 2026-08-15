@@ -73,7 +73,7 @@ class RedisCacheBackend(CacheBackend):
         tag_keys = [self._tag_key(tag) for tag in tags]
         pipe_factory = getattr(self._client, "pipeline", None)
         if callable(pipe_factory):
-            pipe = pipe_factory(transaction=True)
+            pipe: Any = pipe_factory(transaction=True)
             self._queue_set(pipe, redis_key, payload, px_ms=px_ms)
             for tag_key in tag_keys:
                 pipe.sadd(tag_key, key)
@@ -98,11 +98,12 @@ class RedisCacheBackend(CacheBackend):
 
     def _queue_tag_expire(self, target: Any, tag_key: str, px_ms: int) -> None:
         """Extend tag-index TTL to at least the value TTL (never shorten)."""
-        current = None
+        current: int | None = None
         pttl = getattr(self._client, "pttl", None)
         if callable(pttl):
             try:
-                current = int(pttl(tag_key))
+                raw_ttl = pttl(tag_key)
+                current = int(raw_ttl) if isinstance(raw_ttl, (int, float, str)) else None
             except Exception:  # noqa: BLE001
                 current = None
         # pttl: -2 missing, -1 no expire, >0 remaining ms

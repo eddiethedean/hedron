@@ -69,8 +69,7 @@ def _normalize_root_path(root_path: str) -> str:
     path = path.rstrip("/")
     # Reject cookie-attribute / header injection via Path= (#174).
     if path and (
-        any(ch in path for ch in (";", "\r", "\n", "\x00"))
-        or not _ROOT_PATH_SAFE.fullmatch(path)
+        any(ch in path for ch in (";", "\r", "\n", "\x00")) or not _ROOT_PATH_SAFE.fullmatch(path)
     ):
         raise ValueError(f"Unsafe root_path for preview cookie Path: {root_path!r}")
     return path

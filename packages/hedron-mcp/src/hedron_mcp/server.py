@@ -274,9 +274,7 @@ class McpProjection:
         return result
 
     @staticmethod
-    def _validate_tool_arguments(
-        tool: McpTool, arguments: Mapping[str, Any]
-    ) -> dict[str, Any]:
+    def _validate_tool_arguments(tool: McpTool, arguments: Mapping[str, Any]) -> dict[str, Any]:
         """Enforce the advertised ``inputSchema`` before invoking the handler (#177)."""
         payload = dict(arguments)
         schema = tool.schema
@@ -284,11 +282,9 @@ class McpProjection:
             return payload
         try:
             from jsonschema import Draft202012Validator
-            from jsonschema.exceptions import SchemaError, ValidationError
+            from jsonschema.exceptions import SchemaError
         except ImportError as exc:  # pragma: no cover - mcp pins jsonschema
-            raise RuntimeError(
-                "jsonschema is required to validate MCP tool arguments"
-            ) from exc
+            raise RuntimeError("jsonschema is required to validate MCP tool arguments") from exc
         try:
             validator = Draft202012Validator(dict(schema))
             errors = sorted(validator.iter_errors(payload), key=lambda e: list(e.path))

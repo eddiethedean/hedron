@@ -14,7 +14,9 @@ class _StubPipeline:
         self._client = client
         self._ops: list[tuple[str, tuple[Any, ...], dict[str, Any]]] = []
 
-    def set(self, key: str, value: str, ex: int | None = None, px: int | None = None) -> _StubPipeline:
+    def set(
+        self, key: str, value: str, ex: int | None = None, px: int | None = None
+    ) -> _StubPipeline:
         self._ops.append(("set", (key, value), {"ex": ex, "px": px}))
         return self
 

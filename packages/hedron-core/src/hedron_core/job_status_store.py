@@ -281,16 +281,9 @@ class RedisStatusStore:
                 loaded = self._load(existing_raw)
                 if loaded is not None:
                     status = _status_from_dict(loaded)
-                    if not job_authorized(
-                        status, auth_subject=auth_subject, tenant_id=tenant_id
-                    ):
-                        raise PermissionError(
-                            "Idempotency key is already bound to another scope"
-                        )
-                    if (
-                        status.state is JobState.FAILED
-                        and status.error in ENQUEUE_FAILED_ERRORS
-                    ):
+                    if not job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
+                        raise PermissionError("Idempotency key is already bound to another scope")
+                    if status.state is JobState.FAILED and status.error in ENQUEUE_FAILED_ERRORS:
                         # Heal pre-fix stuck pointers: broker never accepted the task.
                         self.release_idempotency(status.job_id)
                         # Legacy pointers are not owned by release_idempotency().

@@ -123,9 +123,12 @@ def _is_weak_secret(secret: str) -> bool:
     for marker in DEFAULT_SESSION_SECRET_MARKERS:
         if not marker:
             continue
-        if len(lowered) >= len(marker) and len(lowered) % len(marker) == 0:
-            if marker * (len(lowered) // len(marker)) == lowered:
-                return True
+        if (
+            len(lowered) >= len(marker)
+            and len(lowered) % len(marker) == 0
+            and marker * (len(lowered) // len(marker)) == lowered
+        ):
+            return True
     return False
 
 
