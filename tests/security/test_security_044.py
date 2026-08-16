@@ -68,6 +68,34 @@ def test_csrf_still_required_for_modeled_command() -> None:
     assert allowed.status_code != 403
 
 
+def test_generated_form_csrf_field_submits_without_htmx_header() -> None:
+    app = make_app(security="standard")
+
+    class Payload(BaseModel):
+        title: str
+
+    @app.command(fallback="/")
+    def add(data: Annotated[Payload, FormBody()]):
+        return Text(data.title)
+
+    @app.page("/")
+    def home():
+        return Page(add.form(), title="Form")
+
+    client = TestClient(app)
+    page = client.get("/")
+    assert page.status_code == 200
+    assert "hedron-pending-csrf" not in page.text
+    cookie = page.cookies.get("hedron_csrf") or ""
+    assert cookie
+    assert cookie in page.text
+    posted = client.post(add.path, data={"title": "hello", "csrf_token": cookie})
+    assert posted.status_code != 403
+    assert posted.status_code in {200, 303}
+    if posted.status_code == 200:
+        assert "hello" in posted.text
+
+
 def test_schema_bomb_field_limit() -> None:
     namespace: dict[str, object] = {"BaseModel": BaseModel}
     fields = "\n".join(f"    f{i}: str = 'x'" for i in range(MAX_MODEL_FIELDS + 1))
