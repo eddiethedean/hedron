@@ -101,9 +101,15 @@ def test_batch_grouping_and_dev_queue() -> None:
 
 def test_cancel_stream() -> None:
     policy = InferencePolicy(groups={"g": ConcurrencyGroup(name="g", limit=2)})
-    req = policy.admit(job_type="infer", payload={}, group="g")
-    assert policy.request_cancel(req.request_id) is True
-    assert policy.request_cancel("unknown-id") is False
+    req = policy.admit(
+        job_type="infer",
+        payload={},
+        group="g",
+        auth_subject="alice",
+        tenant_id="ten",
+    )
+    assert policy.request_cancel(req.request_id, auth_subject="alice", tenant_id="ten") is True
+    assert policy.request_cancel("unknown-id", auth_subject="alice", tenant_id="ten") is False
 
     def gen():
         yield 1
@@ -118,11 +124,81 @@ def test_cancel_releases_inflight_and_backend() -> None:
     backend = InMemoryJobBackend()
     set_job_backend(backend)
     policy = InferencePolicy(groups={"g": ConcurrencyGroup(name="g", limit=1)})
-    req = policy.admit(job_type="infer", payload={}, group="g", backend=backend)
+    req = policy.admit(
+        job_type="infer",
+        payload={},
+        group="g",
+        backend=backend,
+        auth_subject="alice",
+        tenant_id="ten",
+    )
     assert req.job_id is not None
     assert policy._inflight["g"] == 1
-    assert policy.request_cancel(req.request_id, backend=backend) is True
+    assert (
+        policy.request_cancel(
+            req.request_id, backend=backend, auth_subject="alice", tenant_id="ten"
+        )
+        is True
+    )
     assert policy._inflight["g"] == 0
+
+
+def test_cancel_requires_caller_identity_matching_owner() -> None:
+    """#264: cancel must not replay stored owner credentials to the backend."""
+    backend = InMemoryJobBackend()
+    set_job_backend(backend)
+    policy = InferencePolicy()
+    policy.register_group(ConcurrencyGroup(name="g", limit=1))
+    st = policy.admit(
+        job_type="demo",
+        payload={"x": 1},
+        group="g",
+        auth_subject="alice",
+        tenant_id="ten",
+    )
+    assert st.job_id is not None
+    assert backend.request_cancel(st.job_id, auth_subject="eve", tenant_id="ten") is False
+    assert policy.request_cancel(st.request_id, auth_subject="eve", tenant_id="ten") is False
+    assert policy.request_cancel(st.request_id) is False
+    queued = policy.admit(
+        job_type="demo",
+        payload={"x": 2},
+        group="g",
+        auth_subject="alice",
+        tenant_id="ten",
+    )
+    assert queued.admission == InferenceAdmission.QUEUED
+    assert policy.request_cancel(queued.request_id, auth_subject="eve", tenant_id="ten") is False
+    assert any(q.request_id == queued.request_id for q in policy._queue)
+    assert policy.request_cancel(queued.request_id, auth_subject="alice", tenant_id="ten") is True
+    assert policy.request_cancel(st.request_id, auth_subject="alice", tenant_id="ten") is True
+
+
+def test_cancel_fails_closed_for_unscoped_and_mismatched_tenant() -> None:
+    policy = InferencePolicy(groups={"g": ConcurrencyGroup(name="g", limit=2)})
+    unscoped = policy.admit(job_type="demo", payload={}, group="g")
+    assert policy.request_cancel(unscoped.request_id) is False
+    assert (
+        policy.request_cancel(unscoped.request_id, auth_subject="alice", tenant_id="ten") is False
+    )
+    scoped = policy.admit(
+        job_type="demo",
+        payload={},
+        group="g",
+        auth_subject="alice",
+        tenant_id="ten",
+    )
+    assert (
+        policy.request_cancel(scoped.request_id, auth_subject="alice", tenant_id="other") is False
+    )
+
+
+def test_request_ids_are_not_sequential() -> None:
+    policy = InferencePolicy(groups={"g": ConcurrencyGroup(name="g", limit=8)})
+    ids = [policy.admit(job_type="infer", payload={}, group="g").request_id for _ in range(8)]
+    assert all(rid.startswith("inf-") for rid in ids)
+    assert ids != [f"inf-{n}" for n in range(1, 9)]
+    assert len(set(ids)) == 8
 
 
 def test_fair_drain_and_batch_max_wait() -> None:

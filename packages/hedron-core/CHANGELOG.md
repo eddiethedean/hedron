@@ -16,6 +16,9 @@
 - ``RedisStatusStore`` reclaims idempotency pointers with the same Lua/WATCH
   compare-and-delete as ``RedisJobBackend`` so concurrent ``SET NX`` cannot
   drop a live key (#269).
+- ``InferencePolicy.request_cancel`` requires caller ``auth_subject`` /
+  ``tenant_id`` matching the request (``job_authorized_http``) and never replays
+  stored owner credentials to ``JobBackend`` (#264).
 
 ## [0.41.0] — Unreleased
 

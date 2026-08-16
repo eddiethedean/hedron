@@ -113,7 +113,8 @@ load/proxy backpressure proof is required ([What's ready](guides/whats-ready.md)
 
 `InferencePolicy` admits/queues work onto the same `JobBackend`. `ModelDemo` /
 `InferenceWorkflow` never auto-publish callables as HTTP/MCP endpoints. Cancel maps
-accepted requests to `JobBackend.request_cancel`. Details: [Inference](api/INFERENCE.md).
+accepted requests to `JobBackend.request_cancel` with the **caller** identity after
+`job_authorized_http` (never the stored owner). Details: [Inference](api/INFERENCE.md).
 
 ## Security placement
 
