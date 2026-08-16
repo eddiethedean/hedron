@@ -5,6 +5,7 @@ from __future__ import annotations
 import html as html_stdlib
 import posixpath
 import re
+import unicodedata
 from enum import StrEnum
 from urllib.parse import unquote, urlsplit
 
@@ -38,13 +39,20 @@ _FORMAT_CHARS = re.compile(
 _SCHEME_PREFIX = re.compile(r"^([a-z][a-z0-9+.-]*):", re.IGNORECASE)
 
 
-def _strip_format_chars(value: str) -> str:
-    return _FORMAT_CHARS.sub("", value)
+def nfkc_strip_format(value: str) -> str:
+    """NFKC-normalize and drop Unicode format (Cf) characters.
+
+    Shared by SafeUrl / ``contains_dangerous_scheme`` scans and EVAL-020 so
+    fullwidth schemes such as ``ｊａｖａｓｃｒｉｐｔ:`` fold to ASCII.
+    """
+    return "".join(
+        ch for ch in unicodedata.normalize("NFKC", value) if unicodedata.category(ch) != "Cf"
+    )
 
 
 def _normalize_for_scheme_scan(value: str) -> str:
-    """HTML-unescape and percent-decode (bounded) to defeat scheme smuggling."""
-    current = _strip_format_chars(value)
+    """HTML-unescape, percent-decode, and NFKC-normalize to defeat scheme smuggling."""
+    current = nfkc_strip_format(value)
     for _ in range(_DECODE_ROUNDS):
         unescaped = html_stdlib.unescape(current)
         try:
@@ -52,7 +60,7 @@ def _normalize_for_scheme_scan(value: str) -> str:
         except Exception:  # noqa: BLE001
             decoded = unquote(unescaped)
         # Collapse whitespace used to break scheme detection; drop format chars each round.
-        collapsed = _strip_format_chars(re.sub(r"\s+", "", decoded))
+        collapsed = nfkc_strip_format(re.sub(r"\s+", "", decoded))
         if collapsed == current:
             break
         current = collapsed

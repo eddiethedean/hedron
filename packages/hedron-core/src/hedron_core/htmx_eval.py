@@ -5,8 +5,9 @@ from __future__ import annotations
 import contextlib
 import contextvars
 import re
-import unicodedata
 from collections.abc import Iterator
+
+from hedron_core.security.urls import nfkc_strip_format
 
 # Matches HDJ ``_HX_JS_VALUE_RE`` in hedron_jinja.source.
 _HX_JS_VALUE_RE = re.compile(r"(?:^|[\s,{])js\s*:", re.I)
@@ -88,9 +89,7 @@ def reject_hx_eval_value(attribute: str, value: object) -> None:
     canonical = canonical_hx_attribute(attribute)
     normalized = value
     if isinstance(value, str):
-        normalized = "".join(
-            ch for ch in unicodedata.normalize("NFKC", value) if unicodedata.category(ch) != "Cf"
-        )
+        normalized = nfkc_strip_format(value)
     if not hx_value_needs_eval(canonical, normalized):
         return
     if htmx_eval_allowed():

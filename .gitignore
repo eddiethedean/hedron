@@ -13,6 +13,7 @@ dist/
 packages/hedron-runtime-java/build/
 target/
 .venv*/
+.bounds-venv*
 venv*/
 .env
 .coverage

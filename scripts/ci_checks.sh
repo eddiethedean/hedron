@@ -20,9 +20,15 @@
 #   browser (Chromium; pass --all-browsers for main-branch matrix) → realwb →
 #   realconnect → evidence → packaging
 #
+# Independent checks inside a suite run concurrently (ruff / pyright / docs,
+# workbench bounds, evidence bundle vs verifiers). Wheel smoke stays sequential
+# after those jobs so `uv build` cannot race the project .venv. Suite order in
+# `all` stays sequential for the same reason.
+#
 # `all` options (opt out of slow or credential-gated jobs):
 #   --python 3.12       Single Python for test (default matrix: 3.11–3.14)
 #   --all-pythons       Force full test matrix even after --python
+#   --jobs N            Max concurrent jobs (default: CPUs, or HEDRON_CHECK_JOBS)
 #   --skip-browser      Skip Playwright HTMX suite
 #   --skip-workbench    Skip Workbench dependency bounds matrix
 #   --skip-realwb       Skip REALWB-030 Docker smoke
@@ -33,6 +39,7 @@
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
 #   HEDRON_GATE_VERSION — default for --gate-version
+#   HEDRON_CHECK_JOBS — default concurrency for --jobs
 #   PWB_LICENSE / CONNECT_LICENSE — optional; realwb/realconnect skip when unset
 #
 # Prerequisites for `all` (match workflow setup steps):
@@ -46,6 +53,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+export UV_NO_PROGRESS="${UV_NO_PROGRESS:-1}"
+
 PYTHON="${PYTHON:-3.12}"
 GATE_VERSION="${HEDRON_GATE_VERSION:-0.39.0}"
 CI_PYTHONS=(3.11 3.12 3.13 3.14)
@@ -56,6 +65,8 @@ SKIP_BROWSER=0
 SKIP_WORKBENCH=0
 SKIP_REALWB=0
 SKIP_REALCONNECT=0
+JOBS="${HEDRON_CHECK_JOBS:-}"
+HEDRON_PYTHON_EXE=""
 
 usage() {
   awk '
@@ -83,6 +94,18 @@ section() {
   printf '\n======== %s ========\n' "$*"
 }
 
+default_jobs() {
+  local n
+  n="$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)"
+  if [[ -z "$n" || "$n" -lt 1 ]]; then
+    n="$(sysctl -n hw.ncpu 2>/dev/null || true)"
+  fi
+  if [[ -z "$n" || "$n" -lt 1 ]]; then
+    n=4
+  fi
+  printf '%s\n' "$n"
+}
+
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -93,6 +116,10 @@ parse_args() {
         ;;
       --gate-version)
         GATE_VERSION="${2:?--gate-version requires a version}"
+        shift 2
+        ;;
+      --jobs)
+        JOBS="${2:?--jobs requires a positive integer}"
         shift 2
         ;;
       --all-pythons)
@@ -134,28 +161,163 @@ parse_args() {
   done
 }
 
+resolve_python() {
+  if [[ -n "$HEDRON_PYTHON_EXE" ]]; then
+    return 0
+  fi
+  local venv_py=".venv/bin/python" ver
+  if [[ -x "$venv_py" ]]; then
+    ver="$("$venv_py" -c 'import sys; print("%d.%d" % sys.version_info[:2])')"
+    if [[ "$ver" == "$PYTHON" ]]; then
+      HEDRON_PYTHON_EXE="$("$venv_py" -c 'import sys; print(sys.executable)')"
+      return 0
+    fi
+  fi
+  HEDRON_PYTHON_EXE="$(uv run --python "$PYTHON" python -c 'import sys; print(sys.executable)')"
+}
+
+run_py() {
+  resolve_python
+  run "$HEDRON_PYTHON_EXE" "$@"
+}
+
+run_uv() {
+  run uv run --python "$PYTHON" "$@"
+}
+
+run_venv_tool() {
+  resolve_python
+  local tool="$1" bin
+  shift
+  bin="$(dirname "$HEDRON_PYTHON_EXE")"
+  if [[ -x "$bin/$tool" ]]; then
+    run "$bin/$tool" "$@"
+  else
+    run_uv "$tool" "$@"
+  fi
+}
+
+# --- parallel job pool (bash 3.2-compatible) ----------------------------------
+
+_job_dir=""
+_job_names=()
+_job_pids=()
+
+job_pool_init() {
+  if [[ -n "$_job_dir" && -d "$_job_dir" ]]; then
+    rm -rf "$_job_dir"
+  fi
+  _job_dir="$(mktemp -d "${TMPDIR:-/tmp}/hedron-ci.XXXXXX")"
+  _job_names=()
+  _job_pids=()
+}
+
+job_pool_cleanup() {
+  if [[ -n "$_job_dir" && -d "$_job_dir" ]]; then
+    rm -rf "$_job_dir"
+  fi
+  _job_dir=""
+  _job_names=()
+  _job_pids=()
+}
+
+_running_job_count() {
+  local pid count=0
+  for pid in "${_job_pids[@]+"${_job_pids[@]}"}"; do
+    if kill -0 "$pid" 2>/dev/null; then
+      count=$((count + 1))
+    fi
+  done
+  printf '%s\n' "$count"
+}
+
+start_job() {
+  local name="$1"
+  shift
+  if [[ -z "$_job_dir" ]]; then
+    job_pool_init
+  fi
+  while [[ "$(_running_job_count)" -ge "$JOBS" ]]; do
+    sleep 0.25
+  done
+  log "[$name] $*"
+  (
+    set +e
+    (
+      set -euo pipefail
+      "$@"
+    ) >"$_job_dir/$name.out" 2>&1
+    echo $? >"$_job_dir/$name.rc"
+  ) &
+  _job_pids+=("$!")
+  _job_names+=("$name")
+}
+
+wait_jobs() {
+  local i pid name rc remaining anyfail=0
+  local -a done_flags
+  if [[ ${#_job_pids[@]} -eq 0 ]]; then
+    return 0
+  fi
+  for i in "${!_job_pids[@]}"; do
+    done_flags[$i]=0
+  done
+  while true; do
+    remaining=0
+    for i in "${!_job_pids[@]}"; do
+      if [[ "${done_flags[$i]}" -eq 1 ]]; then
+        continue
+      fi
+      pid="${_job_pids[$i]}"
+      if kill -0 "$pid" 2>/dev/null; then
+        remaining=1
+        continue
+      fi
+      wait "$pid" || true
+      name="${_job_names[$i]}"
+      rc="$(cat "$_job_dir/$name.rc" 2>/dev/null || echo 1)"
+      printf '\n======== %s (exit %s) ========\n' "$name" "$rc"
+      cat "$_job_dir/$name.out"
+      if [[ "$rc" != "0" ]]; then
+        anyfail=1
+      fi
+      done_flags[$i]=1
+    done
+    if [[ "$remaining" -eq 0 ]]; then
+      break
+    fi
+    sleep 0.2
+  done
+  _job_names=()
+  _job_pids=()
+  if [[ "$anyfail" -ne 0 ]]; then
+    return 1
+  fi
+  return 0
+}
+
 # --- suites (edit checks here) -------------------------------------------------
 
 cmd_test() {
   # Treat unknown markers and invalid pytest configuration as CI failures.
-  run uv run --python "$PYTHON" pytest -q --strict-config --strict-markers
+  run_uv pytest -q --strict-config --strict-markers
 }
 
-cmd_quality() {
-  run uv run --python "$PYTHON" ruff format --check packages tests examples
-  run uv run --python "$PYTHON" ruff check packages tests examples
-  run uv run --python "$PYTHON" pyright
+quality_ruff() {
+  run_venv_tool ruff format --check packages tests examples
+  run_venv_tool ruff check packages tests examples
+}
 
+quality_pyright() {
+  run_venv_tool pyright
+}
+
+quality_wheels_smoke() {
   # Fresh dist avoids conflicting train wheels on local re-runs.
+  # Wheel-only: the smoke venv installs `dist/*.whl`; sdists are unused.
   rm -rf dist/*.whl dist/*.tar.gz
   mkdir -p dist
-  local pyproject package
-  for pyproject in packages/*/pyproject.toml; do
-    package="$(basename "$(dirname "$pyproject")")"
-    echo "Building $package"
-    # Pin interpreter so maturin/native wheels match the smoke venv.
-    UV_PYTHON="$PYTHON" uv build --package "$package"
-  done
+  run env UV_NO_SYNC=1 UV_PYTHON="$PYTHON" uv build --all-packages --wheel --out-dir dist
 
   rm -rf /tmp/hedron-smoke
   uv venv /tmp/hedron-smoke --python "$PYTHON"
@@ -204,8 +366,10 @@ assert issubclass(hedron_workbench.HedronWorkbench, Hedron)
 assert "Content-Security-Policy" in SecurityPolicy.from_name("standard").response_headers()
 print("ok: all workspace wheels install and import cleanly")
 PY
+}
 
-  uv run --python "$PYTHON" python - <<'PY'
+quality_core_neutral() {
+  run_py - <<'PY'
 import ast
 import tomllib
 from pathlib import Path
@@ -227,27 +391,32 @@ PY
   test ! -f package.json
   test ! -d node_modules
   echo "ok: no Node package tooling in repo"
+}
 
-  run uv run --python "$PYTHON" python scripts/sync_status_roadmap.py --check
-  run uv run --python "$PYTHON" python scripts/generate_sim_demos.py --check
-  run uv run --python "$PYTHON" python scripts/generate_component_docs.py --check
-  run uv run --python "$PYTHON" python scripts/check_docs_train_ssot.py
-  run uv run --python "$PYTHON" python scripts/check_package_docs_inventory.py
-  run uv run --python "$PYTHON" python scripts/check_documentation_ownership.py
-  run uv run --python "$PYTHON" python scripts/check_api_docs_coverage.py
-  run uv run --python "$PYTHON" python scripts/check_package_readme_links.py
-  run uv run --python "$PYTHON" python scripts/check_public_doc_links.py
-  run uv run --python "$PYTHON" python scripts/check_changelog_structure.py
-  run uv run --python "$PYTHON" python scripts/check_recipe_code_sync.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_39.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_40.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_41.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_42.py
+quality_verify_pkgs() {
+  run_py scripts/verify_pkg_36.py --allow-planned
+  run_py scripts/verify_pkg_37.py --allow-planned
+  run_py scripts/verify_pkg_38.py --allow-planned
+  run_py scripts/verify_pkg_39.py --allow-planned
+  run_py scripts/verify_pkg_40.py --allow-planned
+  run_py scripts/verify_pkg_41.py
+  run_py scripts/verify_pkg_42.py
+}
 
-  uv run --python "$PYTHON" python - <<'PY'
+quality_docs() {
+  # Sim --check copies JS/CSS assets; keep MkDocs after that so they cannot race.
+  run_py scripts/sync_status_roadmap.py --check
+  run_py scripts/generate_sim_demos.py --check
+  run_py scripts/generate_component_docs.py --check
+  run_py scripts/check_docs_train_ssot.py
+  run_py scripts/check_package_docs_inventory.py
+  run_py scripts/check_documentation_ownership.py
+  run_py scripts/check_api_docs_coverage.py
+  run_py scripts/check_package_readme_links.py
+  run_py scripts/check_public_doc_links.py
+  run_py scripts/check_changelog_structure.py
+  run_py scripts/check_recipe_code_sync.py
+  run_py - <<'PY'
 import re
 from pathlib import Path
 
@@ -277,103 +446,160 @@ if missing:
     raise SystemExit("\n".join(missing[:50]))
 print("ok: relative doc links resolve")
 PY
+  if [[ -x "$(dirname "$HEDRON_PYTHON_EXE")/mkdocs" ]]; then
+    run "$(dirname "$HEDRON_PYTHON_EXE")/mkdocs" build --strict
+  else
+    run uv run --python "$PYTHON" --group docs mkdocs build --strict
+  fi
+}
 
-  run uv run --python "$PYTHON" --group docs mkdocs build --strict
+cmd_quality() {
+  job_pool_init
+  resolve_python
+  # Keep wheel builds off this pool: `uv build` can recreate the project .venv
+  # and race with pyright / docs / verify scripts.
+  start_job ruff quality_ruff
+  start_job pyright quality_pyright
+  start_job core-neutral quality_core_neutral
+  start_job verify-pkgs quality_verify_pkgs
+  start_job docs quality_docs
+  wait_jobs
+  quality_wheels_smoke
 }
 
 cmd_browser() {
   export HEDRON_BROWSER="${HEDRON_BROWSER:-1}"
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
-  run uv run --python "$PYTHON" pytest -q -m browser --tb=short
+  run_uv pytest -q -m browser --tb=short
+}
+
+cmd_workbench_bounds() {
+  # Matches ci.yml workbench-dependencies (minimum + latest Starlette/Uvicorn bounds).
+  local bounds="$1"
+  local venv=".bounds-venv-${bounds}"
+  echo "== workbench dependencies ($bounds) =="
+  uv venv "$venv" --python "$PYTHON" --clear
+  if [[ "$bounds" == minimum ]]; then
+    uv pip install --python "$venv/bin/python" \
+      -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
+      -e packages/hedron-django \
+      pytest httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
+  else
+    uv pip install --python "$venv/bin/python" \
+      -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
+      -e packages/hedron-django \
+      pytest httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
+  fi
+  run "$venv/bin/pytest" -q \
+    tests/adapters/workbench \
+    tests/integration/test_workbench_urls.py \
+    tests/integration/test_workbench_runner.py \
+    tests/security/test_workbench_adversarial.py
 }
 
 cmd_workbench() {
-  # Matches ci.yml workbench-dependencies (minimum + latest Starlette/Uvicorn bounds).
-  local bounds venv=".bounds-venv"
-  for bounds in minimum latest; do
-    echo "== workbench dependencies ($bounds) =="
-    uv venv "$venv" --python "$PYTHON" --clear
-    if [[ "$bounds" == minimum ]]; then
-      uv pip install --python "$venv/bin/python" \
-        -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
-        -e packages/hedron-django \
-        pytest httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
-    else
-      uv pip install --python "$venv/bin/python" \
-        -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
-        -e packages/hedron-django \
-        pytest httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
-    fi
-    run "$venv/bin/pytest" -q \
-      tests/adapters/workbench \
-      tests/integration/test_workbench_urls.py \
-      tests/integration/test_workbench_runner.py \
-      tests/security/test_workbench_adversarial.py
-  done
+  job_pool_init
+  start_job workbench-minimum cmd_workbench_bounds minimum
+  start_job workbench-latest cmd_workbench_bounds latest
+  wait_jobs
+}
+
+evidence_bundle() {
+  run_py scripts/build_evidence_bundle.py
+}
+
+evidence_audit() {
+  run uv run --python "$PYTHON" --with pip-audit python scripts/dep_audit.py
+}
+
+evidence_gates() {
+  # Living tip capability gates are Verified for the configured train.
+  run_py scripts/check_release_gate.py "$GATE_VERSION"
+  run_py scripts/check_human_at_packet.py
+  run_py scripts/check_hed_codes.py
+}
+
+evidence_verify_pkgs() {
+  run_py scripts/verify_pkg_34.py --allow-planned
+  run_py scripts/verify_pkg_35.py --allow-planned
+  # `all` already ran 36–42 during quality; skip the second execute-verified pass.
+  if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
+    echo "skip: verify_pkg_36–42 (already covered by quality)"
+    return 0
+  fi
+  run_py scripts/verify_pkg_36.py --allow-planned
+  run_py scripts/verify_pkg_37.py --allow-planned
+  run_py scripts/verify_pkg_38.py --allow-planned
+  run_py scripts/verify_pkg_39.py --allow-planned
+  run_py scripts/verify_pkg_40.py --allow-planned
+  run_py scripts/verify_pkg_41.py
+  run_py scripts/verify_pkg_42.py
 }
 
 cmd_evidence() {
-  run uv run --python "$PYTHON" python scripts/build_evidence_bundle.py
-  run uv run --python "$PYTHON" --with pip-audit python scripts/dep_audit.py
-  # Living tip capability gates are Verified for the configured train.
-  run uv run --python "$PYTHON" python scripts/check_release_gate.py "$GATE_VERSION"
-  run uv run --python "$PYTHON" python scripts/check_human_at_packet.py
-  run uv run --python "$PYTHON" python scripts/check_hed_codes.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_34.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_35.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_39.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_40.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_41.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_42.py
+  job_pool_init
+  resolve_python
+  start_job evidence-bundle evidence_bundle
+  start_job dep-audit evidence_audit
+  start_job evidence-gates evidence_gates
+  start_job evidence-verify evidence_verify_pkgs
+  wait_jobs
 }
 
 cmd_realconnect() {
   # Live Posit Connect Docker smoke (REALCONNECT-033). Requires Docker and CONNECT_LICENSE.
   # Skips successfully when CONNECT_LICENSE is unavailable (see check_realconnect_033.py).
-  run uv run --python "$PYTHON" python scripts/check_realconnect_033.py --live
+  run_py scripts/check_realconnect_033.py --live
 }
 
 cmd_realwb() {
   # Live Posit Workbench Docker smoke (REALWB-030). Requires Docker and PWB_LICENSE.
   # Skips successfully when PWB_LICENSE is unavailable (see check_realwb_smoke.py).
-  run uv run --python "$PYTHON" python scripts/check_realwb_smoke.py --live
+  run_py scripts/check_realwb_smoke.py --live
 }
 
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
-  run uv run --python "$PYTHON" python scripts/verify_pkg_35.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_39.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_40.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_41.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_42.py
+  if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
+    echo "skip: packaging (verify_pkg_35–42 already covered by quality + evidence)"
+    return 0
+  fi
+  resolve_python
+  run_py scripts/verify_pkg_35.py --allow-planned
+  run_py scripts/verify_pkg_36.py --allow-planned
+  run_py scripts/verify_pkg_37.py --allow-planned
+  run_py scripts/verify_pkg_38.py --allow-planned
+  run_py scripts/verify_pkg_39.py --allow-planned
+  run_py scripts/verify_pkg_40.py --allow-planned
+  run_py scripts/verify_pkg_41.py
+  run_py scripts/verify_pkg_42.py
 }
 
 cmd_all() {
   local py browser saved_python="$PYTHON"
   local -a browsers
 
+  HEDRON_CI_ALL=1
+  export HEDRON_CI_ALL
+
   if [[ "$ALL_PYTHONS" -eq 0 && "$PYTHON_EXPLICIT" -eq 0 ]]; then
     ALL_PYTHONS=1
   fi
 
   section "CI full check (mirrors .github/workflows/ci.yml)"
-  cat <<'NOTE'
+  cat <<NOTE
 Prerequisites (same as GitHub Actions setup steps):
   uv sync --locked --all-groups --python 3.12
   uv sync --locked --python 3.12 --group docs
   Rust, Java 17, Node 20, Playwright — see script header
+Concurrency: ${JOBS} jobs (--jobs / HEDRON_CHECK_JOBS)
 NOTE
 
   if [[ "$ALL_PYTHONS" -eq 1 ]]; then
     for py in "${CI_PYTHONS[@]}"; do
       section "test (Python $py)"
       PYTHON="$py"
+      HEDRON_PYTHON_EXE=""
       cmd_test
     done
   else
@@ -383,6 +609,7 @@ NOTE
 
   if [[ "$PYTHON_EXPLICIT" -eq 0 ]]; then
     PYTHON="3.12"
+    HEDRON_PYTHON_EXE=""
   else
     PYTHON="$saved_python"
   fi
@@ -441,6 +668,16 @@ fi
 SUITE="$1"
 shift
 parse_args "$@"
+
+if [[ -z "$JOBS" ]]; then
+  JOBS="$(default_jobs)"
+fi
+if [[ "$JOBS" -lt 1 ]]; then
+  echo "--jobs must be a positive integer" >&2
+  exit 1
+fi
+
+trap job_pool_cleanup EXIT
 
 case "$SUITE" in
   test) cmd_test ;;
