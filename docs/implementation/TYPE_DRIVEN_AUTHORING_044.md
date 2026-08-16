@@ -1,13 +1,19 @@
 # Phase 0.44 implementation requirements — type-driven authoring
 
-**Status:** Planned; Stage 0 requirements packet<br>
+**Status:** Planned; Stage 0 contract refined against Published in-tree `v0.43.0` (D-076)<br>
 **Target:** Hedron `v0.44.0`<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified Hedron `v0.43.0`<br>
-**Decision/RFC:** D-072, refined by D-073 / [RFC-0071](../rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)<br>
+**Planning baseline:** Published in-tree `v0.43.0` (original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree Hedron `v0.43.0`<br>
+**Decision/RFC:** D-072, refined by D-073 / D-076 / [RFC-0071](../rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)<br>
 **Public contract:** [TYPE_DRIVEN_AUTHORING](../api/TYPE_DRIVEN_AUTHORING.md)<br>
 **Capability inventory:**
-[`type-authoring-capability-inventory-044.toml`](../acceptance/type-authoring-capability-inventory-044.toml)
+[`type-authoring-capability-inventory-044.toml`](../acceptance/type-authoring-capability-inventory-044.toml)<br>
+**Form inventory:**
+[`type-form-inventory-044.toml`](../acceptance/type-form-inventory-044.toml)<br>
+**TypeSchema lock:**
+[`type-schema-044.toml`](../acceptance/type-schema-044.toml)<br>
+**Adapter dispositions:**
+[`adapter-disposition-044.toml`](../acceptance/adapter-disposition-044.toml)
 
 This document defines implementation boundaries and traceable requirements for Pydantic-backed
 view/command boundaries, annotation markers, generic specialization, generated forms, typed effects and
@@ -52,8 +58,8 @@ target policy, or reactive dependency graph is permitted.
 
 | Package | 0.44 responsibility |
 |---|---|
-| `hedron-core` | Immutable markers with no FastAPI dependency where portable, normalized descriptor-extension models, redaction/provenance, schema limits, generic portable result metadata. |
-| `hedron` | Signature/source normalization, Pydantic implementation of the 0.43 binding adapter, overload specialization, form controls, effects/outcomes, class handler registration, FastAPI integration, scenarios. |
+| `hedron-core` | Portable markers (`Sensitive`, `InstanceKey`) with no FastAPI dependency, `TypeSchema` records under `hedron.type`, redaction/provenance, schema limits, generic portable result metadata. |
+| `hedron` | `ViewParams`/`FormBody`/`Control`/`Refreshes`/`Updates`/`OutcomeMap`/`RefreshableView`/`CommandHandler`/`ActionHandle.form`, Pydantic implementation of the 0.43 `BindingAdapter`, overload specialization, FastAPI integration, scenarios. |
 | `hedron-explorer` | Redacted model/form/effect/outcome inspection, preview, diagnostics, dynamic-mode labeling. |
 | `hedron-conformance` | Versioned boundary/form/effect/outcome fixtures and adapter capability labels. |
 | `hedron-flask` / `hedron-django` | Consume portable schemas/results where supported; expose bounded machine-readable exceptions instead of emulating FastAPI DI. |
@@ -139,7 +145,9 @@ v2 APIs.
   explicit `Form(action=handle, ...)` remains the universal/manual path.
 - **TA-FORM-002:** a machine-readable field-shape inventory dispositions scalar, enum, optional,
   bounded collection, date/time, UUID, file, nested model, and discriminated union shapes as
-  Supported, explicit-override-only, or rejected.
+  Supported, explicit-override-only, or rejected. The locked catalog is
+  [`type-form-inventory-044.toml`](../acceptance/type-form-inventory-044.toml)
+  (D-076). Unknown `Control.kind` values fail generation.
 - **TA-FORM-003:** unsupported/ambiguous model shapes fail generation with an explicit
   field/control/form override; no guessed text-input fallback is emitted.
 - **TA-FORM-004:** Pydantic field order, aliases, constraints, titles/descriptions, required state,
@@ -206,7 +214,9 @@ v2 APIs.
 - **TA-SCHEMA-001:** immutable `TypeSchema` records schema version, handler/model fingerprints,
   referenced 0.43 descriptor version/fingerprint, boundary/field provenance, validation/control
   disposition, sensitivity/identity disposition, outcomes/effects, and read-only fallback/cache
-  projection without runtime values or callbacks.
+  projection without runtime values or callbacks. The payload lives under
+  `BaseHandleDescriptor.extensions["hedron.type"]` and must match
+  [`type-schema-044.toml`](../acceptance/type-schema-044.toml) (D-076).
 - **TA-SCHEMA-002:** modeled binding, forms, effects/outcomes, Explorer, CLI, OpenAPI extensions,
   and `AppScenario` consume the same schema extension/version or fail a compatibility check;
   runtime routing/identity/host/output/security continue consuming the 0.43 base descriptor.
@@ -272,12 +282,14 @@ v2 APIs.
   suggests that an unresolved effect/schema is verified.
 - **TA-DX-008:** docs retain four layers: function handles, type-driven boundaries/forms, optional
   class lifecycles, and existing explicit/protocol escape hatches.
-- **TA-QUAL-001:** unchanged Published 0.42 and future 0.43 fixtures pass; existing annotations are
+- **TA-QUAL-001:** unchanged Published 0.42 and Published 0.43 fixtures pass; existing annotations are
   not reinterpreted without a Hedron opt-in marker/class.
 - **TA-QUAL-002:** migration fixtures cover incremental function annotations, generated-to-manual
   form fallback, effect declaration, typed outcomes, function/class equivalence, and rollback.
 - **TA-QUAL-003:** FastAPI is the complete flagship; Flask/Django/Jinja/conformance surfaces either
   pass portable schema/result fixtures or publish a machine-visible bounded exception.
+  Locked dispositions:
+  [`adapter-disposition-044.toml`](../acceptance/adapter-disposition-044.toml) (D-076).
 - **TA-QUAL-004:** new 0.44 symbols begin Beta and no existing stability tier is reduced or
   promoted solely by this phase.
 - **TA-QUAL-005:** Pydantic/FastAPI integration uses documented public APIs and the supported version
@@ -303,9 +315,13 @@ v2 APIs.
 
 - Accept D-072/RFC-0071 and land API, implementation, inventory, release gate, acceptance, upgrade,
   roadmap, decision, status, index, and traceability documents.
+- **D-076:** rebase planning onto Published in-tree `v0.43.0`; lock form/`TypeSchema`/adapter
+  inventories; consume shipped 0.43 handle/descriptor/adapter symbols; remove Fallback/Cache
+  marker drift. No runtime or version bump.
 - Create and bind one tracking issue before implementation begins.
-- Keep workspace versions and published claims at 0.42.
-- Make Verified 0.43 an explicit Stage 1 prerequisite.
+- Keep workspace versions and published claims at 0.43. Do not claim 0.44 runtime.
+- Make Verified in-tree 0.43 an explicit Stage 1 prerequisite. Do not block Stage 1 on `#311`
+  PyPI/Git assets.
 
 ### Stage 1 — normalized schema and markers
 
@@ -379,7 +395,8 @@ become Verified while a mapped requirement is missing, Deferred, or represented 
 
 ## Implementation prohibitions
 
-- Do not begin runtime implementation before 0.43 is Verified.
+- Do not begin runtime implementation before 0.43 is Verified in-tree and a tracking issue exists.
+The D-076 refine does not authorize Stage 1.
 - Do not change 0.43 generic arity/order, base descriptor fields/fingerprint authority, structural
   binding for unmodeled handlers, explicit-form path, dynamic/observed semantics, target policy, or
   response conversion; amend the RFC/decision instead if that becomes necessary.

@@ -41,7 +41,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.41** | Typed browser composition, bounded draft state, and navigation | **Published** (`v0.41.0`; in-tree cut, tag/PyPI deferred; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96)) |
 | **0.42** | Production-grade Web Component platform | Published (`v0.42.0`; in-tree cut, tag/PyPI deferred; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
 | **0.43** | Refreshable views, command handles, and typed updates | **Published** (`v0.43.0`; in-tree cut, tag/PyPI deferred; D-071; [#311](https://github.com/eddiethedean/hedron/issues/311)) |
-| **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Planned** (`v0.44.0`; D-072 / RFC-0071, refined by D-073; requires Verified 0.43 and a tracking issue before Stage 1) |
+| **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Planned** (`v0.44.0`; D-072 / RFC-0071, refined by D-073 / D-076 against Published `v0.43.0`; tracking issue required before Stage 1) |
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Planned** (`v0.45.0`; D-074 / RFC-0072; requires Verified 0.44 and a tracking issue before Stage 1) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Planned** (`v0.46.0`; D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1) |
 
@@ -3477,10 +3477,13 @@ Upgrade fixtures:
 ## 0.44 — Type-driven authoring and schema-derived interactions (`v0.44.0`)
 
 **Status:** Planned (D-072, refined by D-073 /
-[RFC-0071](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)).
-Stage 0 requirements are defined against Published `v0.42.0`; Verified `v0.43.0` is a hard
-prerequisite for Stage 1 and the 0.44 cut baseline. Target is `v0.44.0`. A separate tracking issue
-must be created and bound to every 0.44 gate before runtime implementation begins.
+[RFC-0071](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md);
+Stage 0 contract refined by D-076 against Published in-tree `v0.43.0`).
+Stage 0 living/planning baseline is Published in-tree `v0.43.0` (original Stage 0 baseline was
+Published `v0.42.0`). Verified in-tree `v0.43.0` is a hard prerequisite for Stage 1 and the 0.44
+cut baseline. Target is `v0.44.0`. A separate tracking issue must be created and bound to every
+0.44 gate before runtime implementation begins. This refine does not start Stage 1 or change
+0.45/0.46.
 
 **Outcome:** Pydantic models and Python annotations become a single explicit typed extension for
 refreshable-view parameters, command inputs, native forms, declared outputs, validation, tooling,
@@ -3520,7 +3523,7 @@ structured class lifecycles, while simple function views/commands stay primary a
   factory/teardown path only where lifecycle and concurrency are explicit.
 - Give Explorer, CLI static/dynamic inspection, OpenAPI extensions, autodoc, `AppScenario`, Jinja,
   and adapter/conformance projections the same redacted schema and provenance/version checks.
-- Prove Published 0.42 and future Verified 0.43 applications run unchanged unless they opt into a
+- Prove Published 0.42 and Published 0.43 applications run unchanged unless they opt into a
   Hedron marker/class; preserve FastAPI-native source markers and third-party `Annotated` metadata.
 
 ### Locked public model
@@ -3568,7 +3571,12 @@ The public contract is [TYPE_DRIVEN_AUTHORING](api/TYPE_DRIVEN_AUTHORING.md); im
 requirements are
 [TYPE_DRIVEN_AUTHORING_044](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/TYPE_DRIVEN_AUTHORING_044.md);
 the machine inventory is
-[`type-authoring-capability-inventory-044.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-authoring-capability-inventory-044.toml).
+[`type-authoring-capability-inventory-044.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-authoring-capability-inventory-044.toml);
+form/`TypeSchema`/adapter locks are
+[`type-form-inventory-044.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-form-inventory-044.toml),
+[`type-schema-044.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-schema-044.toml),
+and
+[`adapter-disposition-044.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/adapter-disposition-044.toml).
 
 ### Locked exit evidence
 
@@ -3918,7 +3926,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); Dialog/Tabs/Pagination/Lazy asserts deferred to 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
 | Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
 | Refreshable views, command handles, typed refresh intents, and `Patch`/`PatchSet` | 0.43 | Handle-first facade over the existing region/`InteractionResult` stack plus the frozen generic/descriptor/adapter handoff; generated plumbing, server-canonical outputs, accessible hosts, and no hidden reactive runtime (RFC-0070 / D-071 / D-073). |
-| Pydantic boundary models, `Annotated` source/sensitivity/identity/control/effect markers, and generic specialization | 0.44 | Explicit model-driven validation and typing over Verified 0.43 through its public adapter/descriptor seams; dependencies stay injection-owned and annotations never trigger hidden effects (RFC-0071 / D-072 / D-073). |
+| Pydantic boundary models, `Annotated` source/sensitivity/identity/control/effect markers, and generic specialization | 0.44 | Explicit model-driven validation and typing over Published 0.43 through its public adapter/descriptor seams; dependencies stay injection-owned and annotations never trigger hidden effects (RFC-0071 / D-072 / D-073 / D-076). |
 | Sealed interaction catalog, manifest, package projections, and fleet dispositions | 0.45 | Read-only convergence over Verified 0.43/0.44 authority; trusted/static tooling, adapters, packages, portable fixtures, remote/deployment consumers, and no third runtime schema (RFC-0072 / D-074). |
 | Package feature bundles, data workspaces, linked charts, enhanced elements, and explicit remote workflows | 0.46 | Opt-in package-native features compile to the 0.43–0.45 stack with explicit policy, overrides/ejection, native fallbacks, and no package workflow executor (RFC-0073 / D-075). |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |

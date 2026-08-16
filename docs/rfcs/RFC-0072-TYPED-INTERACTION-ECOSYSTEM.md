@@ -9,6 +9,9 @@
 RFC-0043, RFC-0049, RFC-0060, RFC-0064, RFC-0066, RFC-0070, and RFC-0071<br>
 **Forward extension:** RFC-0073 / D-075 (phase 0.46 package-native typed workflows)
 
+D-076's 0.44 Stage 0 contract refine does not change this RFC's catalog/manifest/projection
+authority or 0.45 Stage 0/Stage 1 gates.
+
 ## Summary
 
 Phase 0.45 makes the phase 0.43 interaction handles and phase 0.44 type extensions a coherent

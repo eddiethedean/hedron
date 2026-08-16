@@ -1,5 +1,6 @@
 # Phase 0.44 type-driven authoring evidence index.
-# Stage 0 requirements packet. Commands are reserved names until implemented.
+# Stage 0 contract packet, refined by D-076 against Published v0.43.0.
+# Commands are reserved names until implemented. Rows remain Planned.
 
 [[evidence]]
 id = "MODEL-044"

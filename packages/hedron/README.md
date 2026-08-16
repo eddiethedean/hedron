@@ -120,7 +120,7 @@ uv add "hedron>=0.43.0,<0.44" "uvicorn[standard]"
 python -m pip install "hedron>=0.43.0,<0.44" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Train:** `0.40.x` · published `v0.40.0` ·
+**Package maturity:** Beta · **Train:** `0.43.x` · published `v0.43.0` ·
 pin `>=0.43.0,<0.44`
 
 Before deploying, read
@@ -146,7 +146,7 @@ interactions, security profiles, and CLI. Integrations are optional:
 | `hedron[mcp]` | Beta MCP projection (Supported inventory; mutations Experimental) |
 | `hedron[notebook]` | Beta tooling-grade localhost preview; not a production server |
 | `hedron[gradio]` | Beta allowlisted Gradio/Hugging Face client interoperability |
-| `hedron[elements]` | Alpha Web Component ABI incubator |
+| `hedron[elements]` | Beta Web Component ABI (Supported inventory only) |
 
 For example:
 

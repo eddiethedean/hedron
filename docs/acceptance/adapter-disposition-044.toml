@@ -1,0 +1,75 @@
+# Phase 0.44 host/tooling TypeSchema disposition (TA-QUAL-003).
+# Stage 0 contract artifact (D-076). FastAPI is the complete flagship.
+# Other hosts consume portable TypeSchema/results or emit a machine-visible
+# bounded exception. This file does not authorize RFC-0072 catalogs.
+
+schema_version = 1
+phase = "0.44"
+status = "Planned"
+planning_baseline = "v0.43.0"
+target = "v0.44.0"
+decision = "D-076"
+owning_rfc = "RFC-0071"
+gate = "COMPAT-044"
+requirement = "TA-QUAL-003"
+
+[[surface]]
+id = "fastapi"
+package = "hedron"
+disposition = "native"
+owner = "hedron"
+notes = "Complete flagship: modeled bind, FormBody, DI, TypeSchema production, OpenAPI extensions."
+
+[[surface]]
+id = "hedron-core"
+package = "hedron-core"
+disposition = "native"
+owner = "hedron-core"
+notes = "Portable markers (Sensitive, InstanceKey) and TypeSchema records; no FastAPI imports."
+
+[[surface]]
+id = "explorer"
+package = "hedron-explorer"
+disposition = "native_consumer"
+owner = "hedron-explorer"
+notes = "Redacted TypeSchema inspection only; cannot override 0.43 base descriptor authority."
+
+[[surface]]
+id = "conformance"
+package = "hedron-conformance"
+disposition = "native_consumer"
+owner = "hedron-conformance"
+notes = "Portable boundary/form/effect/outcome fixtures and capability labels."
+
+[[surface]]
+id = "cli-app-scenario"
+package = "hedron"
+disposition = "native_consumer"
+owner = "hedron"
+notes = "Static no-import and trusted dynamic inspection plus typed AppScenario inputs/outcomes."
+
+[[surface]]
+id = "flask"
+package = "hedron-flask"
+disposition = "bounded_exception"
+owner = "hedron-flask"
+reason = "No FastAPI dependency injection; do not emulate a parallel DI solver."
+destination = "portable TypeSchema/result consumption or labeled exception"
+notes = "May consume portable schemas/results; must not invent FastAPI request parsing."
+
+[[surface]]
+id = "django"
+package = "hedron-django"
+disposition = "bounded_exception"
+owner = "hedron-django"
+reason = "No FastAPI dependency injection; do not emulate a parallel DI solver."
+destination = "portable TypeSchema/result consumption or labeled exception"
+
+[[surface]]
+id = "jinja"
+package = "hedron-jinja"
+disposition = "bounded_exception"
+owner = "hedron-jinja"
+reason = "Templates must not evaluate annotations."
+destination = "explicit access to registered form/handle schema components"
+notes = "native_consumer only for already-registered schema/handle bridges; annotation evaluation is refused."

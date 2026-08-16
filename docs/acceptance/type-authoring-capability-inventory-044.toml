@@ -1,17 +1,22 @@
 # Phase 0.44 type-driven authoring capability inventory.
-# Stage 0 contract artifact: capabilities are Planned until their owning gate is Verified.
+# Stage 0 contract artifact (D-076 refine against Published v0.43.0):
+# capabilities are Planned until their owning gate is Verified.
 
 schema_version = 1
 phase = "0.44"
 status = "Planned"
-planning_baseline = "v0.42.0"
+planning_baseline = "v0.43.0"
 required_predecessor = "v0.43.0"
 target = "v0.44.0"
 decision = "D-072"
 cross_phase_refinement = "D-073"
+contract_refine = "D-076"
 owning_rfc = "RFC-0071"
 implementation = "docs/implementation/TYPE_DRIVEN_AUTHORING_044.md"
 public_contract = "docs/api/TYPE_DRIVEN_AUTHORING.md"
+form_inventory = "docs/acceptance/type-form-inventory-044.toml"
+type_schema = "docs/acceptance/type-schema-044.toml"
+adapter_dispositions = "docs/acceptance/adapter-disposition-044.toml"
 
 [[capability]]
 id = "TA-MODEL-001..011"
@@ -49,7 +54,7 @@ secondary_gates = ["A11Y-044", "BROWSER-044", "SECURITY-044"]
 state = "Planned"
 packages = ["hedron", "hedron-core"]
 evidence = ["unit", "integration", "browser", "accessibility", "no-js"]
-summary = "Conservative native forms for a closed field inventory with explicit overrides, server validation, CSRF, and progressive enhancement."
+summary = "Conservative native forms for the locked field inventory in type-form-inventory-044.toml, with explicit overrides, server validation, CSRF, and progressive enhancement."
 
 [[capability]]
 id = "TA-EFFECT-001..009"
@@ -78,7 +83,7 @@ secondary_gates = ["TOOLING-044"]
 state = "Planned"
 packages = ["hedron-core", "hedron", "hedron-explorer"]
 evidence = ["schema-fixtures", "cache", "versioning", "static-no-exec"]
-summary = "Versioned redacted TypeSchema extension bound to the authoritative 0.43 descriptor fingerprint, with provenance, bounds, cache invalidation, and no-execution static mode."
+summary = "Versioned redacted TypeSchema extension under hedron.type bound to the authoritative 0.43 descriptor fingerprint, with provenance, bounds, cache invalidation, and no-execution static mode."
 
 [[capability]]
 id = "TA-SEC-001..008"
@@ -117,7 +122,7 @@ secondary_gates = ["REGRESS-044"]
 state = "Planned"
 packages = ["hedron-core", "hedron", "hedron-conformance", "hedron-flask", "hedron-django", "hedron-jinja"]
 evidence = ["upgrade", "rollback", "adapter-matrix", "public-api"]
-summary = "Unchanged 0.42/0.43 apps, opt-in annotation semantics, documented upstream APIs, adapters, and no new client runtime."
+summary = "Unchanged 0.42/0.43 apps, opt-in annotation semantics, documented upstream APIs, adapters per adapter-disposition-044.toml, and no new client runtime."
 
 [[capability]]
 id = "TA-QUAL-011"

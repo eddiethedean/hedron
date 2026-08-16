@@ -36,7 +36,7 @@
 - Redis cache keys use ``h1:c:`` so they cannot read or delete ``h1:job:``
   status records on a shared client (#252).
 
-## [0.41.0] — Unreleased
+## [0.41.0] — 2026-08-15
 
 - Phase 0.41 browser composition, bounded draft transfer, navigation, tracing, failure isolation, and regression closure (D-069).
 

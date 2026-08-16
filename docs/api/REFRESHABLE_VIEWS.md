@@ -48,9 +48,9 @@ The low-level region, selector, and `InteractionResult` APIs remain available fo
 work. The high-level interface compiles to those existing contracts.
 
 Phase 0.43 owns the runtime foundation. The planned
-[0.44 type-driven contract](TYPE_DRIVEN_AUTHORING.md) fills the generic input slots and descriptor
-extension seam defined here; it does not replace 0.43 routing, binding identity, forms, effects, or
-target authorization.
+[0.44 type-driven contract](TYPE_DRIVEN_AUTHORING.md) (D-076 refine against this published
+seam) fills the generic input slots and `hedron.type` descriptor extension defined here; it does
+not replace 0.43 routing, binding identity, forms, effects, or target authorization.
 
 ## Planned symbols
 

@@ -20,7 +20,7 @@
 - `reconcile_csp` matches CSP source tokens and origins instead of URL path/host substrings.
 - `reconcile_csp` checks `http://` and `https://` `network.*` origin capabilities against CSP.
 
-## [0.41.0] — Unreleased
+## [0.41.0] — 2026-08-15
 
 - Phase 0.41 browser composition, bounded draft transfer, navigation, tracing, failure isolation, and regression closure (D-069).
 

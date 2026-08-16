@@ -9,6 +9,9 @@
 RFC-0033, RFC-0039, RFC-0040, RFC-0043, RFC-0049, RFC-0060, RFC-0064, RFC-0070,
 RFC-0071, and RFC-0072
 
+D-076's 0.44 Stage 0 contract refine does not change this RFC's package-native workflow
+authority or 0.46 Stage 0/Stage 1 gates.
+
 ## Summary
 
 Phase 0.46 turns the converged 0.45 interaction ecosystem into new opt-in package capabilities.

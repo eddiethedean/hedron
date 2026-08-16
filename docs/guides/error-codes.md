@@ -6,6 +6,10 @@ support reports. Full format: [Diagnostics](https://github.com/eddiethedean/hedr
 This catalog is complete for the registered set enforced by
 `scripts/check_hed_codes.py --docs-align` (`HEDDOC-017`).
 
+Planned `HED-TYPE-*` names for phase 0.44 are documented under
+[Planned HED-TYPE (0.44)](#planned-hed-type-044) and are **not** in `hedron_core.codes` until
+Stage 1.
+
 ## Common errors (what to do)
 
 | Code | Severity | Meaning | Fix |
@@ -548,6 +552,18 @@ Streamlit AST migrator findings (RFC-0061 / `MIGRATE-031`).
 | `HED-MIG-ST-0012` | `HED_MIG_ST_0012` |
 | `HED-MIG-ST-0013` | `HED_MIG_ST_0013` |
 | `HED-MIG-ST-0014` | `HED_MIG_ST_0014` |
+
+## Planned HED-TYPE (0.44)
+
+Reserved names for phase 0.44 type-driven authoring (D-076). **Not registered** in
+`hedron_core.codes` and not importable on 0.43. Stage 1 maps these tokens to numbered
+`HED-TYPE-*` codes. Public contract:
+[Type-driven authoring](../api/TYPE_DRIVEN_AUTHORING.md).
+
+| Planned name | Meaning |
+|---|---|
+| `HED-TYPE-BIND-SOURCE` | Dependency, request, or security name supplied to `bind` / form input |
+| `HED-TYPE-*` | Boundary, marker, form-generation, effect, outcome, schema, and class-lifecycle diagnostics |
 
 ## HED-WORKFLOW
 

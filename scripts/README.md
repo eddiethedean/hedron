@@ -54,7 +54,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_40.py` | Phase **0.40** authoring / React migration packet (Published `v0.40.0`) |
 | `verify_pkg_41.py` | Phase **0.41** composition / state / navigation packet (Published `v0.41.0`) |
 | `verify_pkg_43.py` | Phase **0.43** refreshable views / commands / typed updates packet (Published `v0.43.0`; omit `--allow-planned` after cut) |
-| `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Stage 0: `--allow-planned`) |
+| `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Published `v0.42.0`) |
 | `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |
 | `verify_pkg_39.py` | Phase **0.39** rich data / OptimisticMutation packet (Published `v0.39.0`) |
 | `verify_pkg_38.py` | Phase **0.38** high-fidelity charts packet (Published `v0.38.0` / `hedron-charts` `0.2.0`) |
@@ -81,7 +81,7 @@ Documentation source ownership and review rules:
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
 | `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
-| `verify_pkg_42.py` / `verify_pkg_41.py` / `verify_pkg_40.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_41.py`**; next Planned: **`verify_pkg_42.py --allow-planned`**) |
+| `verify_pkg_43.py` / `verify_pkg_42.py` / `verify_pkg_41.py` / `verify_pkg_40.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_43.py`**; phase 0.44 remains Planned in `release-gate-0.44.toml`) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

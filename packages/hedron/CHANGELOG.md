@@ -20,7 +20,8 @@
 ### Fixed
 - ``Hedron(session_secret=None)`` is refused when sessions are enabled instead of
   installing ``SessionMiddleware(secret_key=None)`` (#260).
-## [0.41.0] — Unreleased
+
+## [0.41.0] — 2026-08-15
 
 - Phase 0.41 browser composition, bounded draft transfer, navigation, tracing, failure isolation, and regression closure (D-069).
 

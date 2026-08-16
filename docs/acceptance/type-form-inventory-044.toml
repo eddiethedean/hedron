@@ -1,0 +1,147 @@
+# Phase 0.44 closed field-shape and Control.kind inventory (TA-FORM-002).
+# Stage 0 contract artifact (D-076). Dispositions are Planned until FORM-044 is Verified.
+# Unknown Control.kind values fail generation. Dispositioned does not mean every
+# supported shape is auto-generated when a Control hint is incompatible.
+
+schema_version = 1
+phase = "0.44"
+status = "Planned"
+planning_baseline = "v0.43.0"
+target = "v0.44.0"
+decision = "D-076"
+owning_rfc = "RFC-0071"
+gate = "FORM-044"
+requirement = "TA-FORM-002"
+
+# Closed native widgets. Unknown values fail generation.
+control_kinds = [
+    "text",
+    "textarea",
+    "password",
+    "number",
+    "checkbox",
+    "select",
+    "radio",
+    "date",
+    "time",
+    "datetime-local",
+    "file",
+    "email",
+    "url",
+]
+
+[[shape]]
+id = "str"
+disposition = "supported"
+native = ["text", "textarea", "email", "url", "password"]
+
+[[shape]]
+id = "int"
+disposition = "supported"
+native = ["number"]
+
+[[shape]]
+id = "float"
+disposition = "supported"
+native = ["number"]
+
+[[shape]]
+id = "decimal"
+disposition = "supported"
+native = ["text"]
+notes = "Decimal serializes as a string input; server Pydantic validation remains authoritative."
+
+[[shape]]
+id = "bool"
+disposition = "supported"
+native = ["checkbox"]
+
+[[shape]]
+id = "enum_or_literal"
+disposition = "supported"
+native = ["select", "radio"]
+
+[[shape]]
+id = "optional_supported_scalar"
+disposition = "supported"
+native = ["inherits"]
+
+[[shape]]
+id = "bounded_list_or_set_of_supported_scalars"
+disposition = "supported"
+native = ["select"]
+notes = "Collection bounds come from the TypeSchema limits; excessive collections fail generation."
+
+[[shape]]
+id = "date"
+disposition = "supported"
+native = ["date"]
+
+[[shape]]
+id = "time"
+disposition = "supported"
+native = ["time"]
+
+[[shape]]
+id = "datetime"
+disposition = "supported"
+native = ["datetime-local"]
+
+[[shape]]
+id = "uuid"
+disposition = "supported"
+native = ["text"]
+
+[[shape]]
+id = "upload_file"
+disposition = "supported"
+native = ["file"]
+notes = "Hedron file types and Starlette/FastAPI UploadFile; encoding must be multipart."
+
+[[shape]]
+id = "secret"
+disposition = "supported"
+native = ["password"]
+notes = "Never echoed into markup, errors, traces, or snapshots. Field(secret=True) implies Sensitive."
+
+[[shape]]
+id = "nested_basemodel"
+disposition = "override_only"
+notes = "Requires an explicit control or full-form override."
+
+[[shape]]
+id = "discriminated_union"
+disposition = "override_only"
+notes = "Requires an explicit control or full-form override; fieldsets/legends remain required when generated via override."
+
+[[shape]]
+id = "list_of_models"
+disposition = "override_only"
+
+[[shape]]
+id = "unconstrained_dict"
+disposition = "rejected"
+
+[[shape]]
+id = "recursive_model"
+disposition = "rejected"
+
+[[shape]]
+id = "any"
+disposition = "rejected"
+
+[[shape]]
+id = "callback"
+disposition = "rejected"
+
+[[shape]]
+id = "trusted_html"
+disposition = "rejected"
+
+[[shape]]
+id = "component_node"
+disposition = "rejected"
+
+[[shape]]
+id = "arbitrary_json_schema"
+disposition = "rejected"

@@ -4,10 +4,18 @@
 **Target phase:** 0.44 (`v0.44.0`)<br>
 **Decision:** D-072<br>
 **Cross-phase refinement:** D-073<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor:** Phase 0.43 (`v0.43.0`; D-071 / RFC-0070)<br>
+**Stage 0 contract refine:** D-076<br>
+**Planning baseline:** Published in-tree `v0.43.0` (D-076; original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.43.0`<br>
 **Extends:** RFC-0003, RFC-0004, RFC-0008, RFC-0015, RFC-0016, RFC-0019, RFC-0023,
 RFC-0024, RFC-0039, RFC-0040, RFC-0044, and RFC-0070
+
+**Revision:** 2026-08-16 — D-076 contract refine against Published in-tree `v0.43.0`:
+planning baseline rebased, marker/`FormModel`/`TypeSchema`/form-inventory/`OutcomeMap`
+locks recorded, real 0.43 handle/descriptor/adapter seams named. D-072 goals, D-073
+seams, gate IDs, CLASS-044, and TOOLING-044 stay in scope. 0.45/0.46 authority is
+unchanged. Prior: Stage 0 packet written against Published `v0.42.0` while 0.43 was
+planned; D-073 froze the 0.43/0.44 runtime boundary.
 
 ## Summary
 
@@ -128,14 +136,21 @@ semantics from field names, which would make apparently convenient behavior unsa
 
 ## Required 0.43 predecessor contract
 
-Phase 0.44 begins only after the following 0.43 handoff is Verified:
+Phase 0.44 begins only after the following 0.43 handoff is Verified. D-076 binds these
+to shipped symbols rather than planned names:
 
-- fixed two-slot handle generics and one-slot bound/patch content generics;
-- one authoritative versioned base handle descriptor and fingerprint;
-- one structural binding-adapter protocol with normal-GET validation authority;
+- fixed two-slot handle generics and one-slot bound/patch content generics —
+  `FragmentHandle[BindT, ContentT]`, `ActionHandle[InputT, ResultT]`,
+  `BoundFragment[ContentT]`, `Patch[ContentT]` in `hedron.handles` /
+  `hedron_core.updates`;
+- one authoritative versioned `BaseHandleDescriptor` and `descriptor_fingerprint`;
+- one `BindingAdapter` protocol with `StructuralBindingAdapter` default and
+  normal-GET validation authority; `BindingPlan` / `BoundValues` remain the
+  unmodeled bind records;
 - explicit-field `Form(action=handle, ...)` wiring;
 - runtime `RefreshIntent`/`PatchSet` target authority and dynamic/observed effect labels; and
-- bounded namespaced descriptor extensions that cannot override base mechanics.
+- bounded namespaced `BaseHandleDescriptor.extensions` that cannot override base
+  mechanics. The 0.44 payload uses reserved namespace `hedron.type`.
 
 If implementation discovers that a 0.44 feature requires changing one of those base semantics,
 work stops for an RFC/decision amendment; 0.44 must not silently replace its predecessor.
@@ -498,7 +513,7 @@ useful typing in stock mypy/pyright first.
 ## Compatibility and migration
 
 Phase 0.44 is additive and cannot begin runtime work until 0.43's handle contracts are implemented
-and Verified. Existing function-based refreshable views and commands require no annotations beyond
+and Verified (Published in-tree `v0.43.0`; D-076). Existing function-based refreshable views and commands require no annotations beyond
 their current signatures. Authors may adopt boundary models one handler at a time.
 
 Existing Pydantic Hedron models, FastAPI parameter markers, `Form`, `AutoForm`, `Action`, explicit
@@ -526,11 +541,59 @@ markers/classes or returns handlers to explicit parameters/forms while preservin
 8. **Does `Sensitive` make a value safe everywhere?** No. It controls framework-owned redaction;
    authors remain responsible for application/third-party output.
 9. **Is a type-checker plugin required?** No for the core contract; stock typing must be useful.
-10. **What is the baseline?** Planning remains honest against Published `v0.42.0`; implementation
-    depends on Verified 0.43 and the 0.44 cut baseline is `v0.43.0`.
+10. **What is the baseline?** Original Stage 0 planning used Published `v0.42.0`. **D-076** rebases
+    the living/planning baseline to Published in-tree `v0.43.0`. Implementation still depends on
+    Verified in-tree 0.43; the 0.44 cut baseline is `v0.43.0`; the cut target remains `v0.44.0`.
 11. **May 0.44 change the 0.43 handle type arity or descriptor authority?** No. It fills the
     reserved generic input slots and attaches a fingerprint-bound extension; base mechanics remain
     0.43-owned.
+
+## Resolved questions (D-076)
+
+1. **Does 0.44 still include CLASS-044 and FastAPI TypeSchema consumers?** Yes. D-076 does not
+   split class handlers or flagship tooling into 0.45.
+2. **Are `Fallback` and `Cache` annotation markers?** No. D-073 already moved them to explicit
+   decorator/handle/class configuration (`fallback=`, `CacheHint`). D-076 removes the leftover
+   D-072 marker-list wording.
+3. **Which 0.43 symbols does 0.44 consume?** The shipped handle classes, `BaseHandleDescriptor`,
+   `descriptor_fingerprint`, `BindingAdapter` / `StructuralBindingAdapter` / `BindingPlan` /
+   `BoundValues`, and the `extensions` map. Modeled handlers replace only the binding adapter.
+   Unmodeled handlers keep `StructuralBindingAdapter`.
+4. **What is the TypeSchema extension namespace?** `hedron.type`. Payload keys must not overlap
+   reserved base fields (`path`, `method`, `app_id`, `logical_id`, `host`, `target`, `fallback`,
+   `limits`, `swap`, `region`). The wire lock is
+   [type-schema-044.toml](../acceptance/type-schema-044.toml).
+5. **How do `FormModel` / `Field` / `AutoForm` relate?** Additive. `ViewParams`/`FormBody` accept
+   Pydantic v2 `BaseModel`, including Hedron `Model`/`FormModel`. Existing `Field` presentation
+   remains valid; `Control` overrides generated-form presentation only. `secret=True` implies
+   `Sensitive`; `identity=True` implies `InstanceKey`; contradictions fail registration.
+   `AutoForm`, explicit `Form(action=handle, ...)`, and `@app.action` remain the universal path.
+   `ActionHandle.form()` is additive and only for opted-in `FormBody`.
+6. **Does `ViewParams.source` invent routes?** No. Path placeholders on the 0.43 handle path own
+   path fields; remaining serializable fields go to query. Ambiguous alias vs path name fails
+   registration. `bind(model)` serializes through the Pydantic adapter into existing `BoundValues`.
+7. **What field shapes generate native forms?** Only the closed inventory in
+   [type-form-inventory-044.toml](../acceptance/type-form-inventory-044.toml). Unknown
+   `Control.kind` values fail. Nested models, discriminated unions, and lists of models are
+   override-only. Unconstrained dicts, recursive models, `Any`, callbacks, `TrustedHtml`,
+   component nodes, and arbitrary JSON Schema are rejected for generation.
+8. **What is the `OutcomeMap` builder spelling?** `OutcomeMap(case(...), ...)`. Observable
+   completeness/non-overlap/status/effect mapping requirements from D-072 stay in force.
+9. **Where do symbols live?** Portable markers (`Sensitive`, `InstanceKey`) and `TypeSchema` in
+   `hedron-core`. FastAPI source markers and handler APIs (`ViewParams`, `FormBody`, `Control`,
+   `Refreshes`, `Updates`, `OutcomeMap`, `RefreshableView`, `CommandHandler`,
+   `ActionHandle.form`) in `hedron`. Explorer consumes redacted schema only.
+10. **Do Flask/Django/Jinja get FastAPI DI?** No. FastAPI is the complete flagship. Other hosts
+    consume portable `TypeSchema`/results or emit a machine-visible bounded exception. Dispositions:
+    [adapter-disposition-044.toml](../acceptance/adapter-disposition-044.toml). 0.44 does not
+    implement RFC-0072 catalogs/manifests/projections.
+11. **What versions are in scope?** Python 3.11–3.14; Pydantic v2 public APIs only;
+    FastAPI/Starlette as already pinned on the 0.43 train; stock mypy and pyright. No required
+    type-checker plugin.
+12. **May Stage 1 start before the 0.43 PyPI/Git tag?** Yes for in-tree Verified 0.43 evidence.
+    A tracking issue is still required. Do not wait on `#311` publish assets. Do not start Stage 1
+    during this contract refine.
+13. **Does this refine change 0.45 or 0.46?** No. RFC-0072/RFC-0073 authority and stage gates stay.
 
 ## Acceptance criteria
 
@@ -546,6 +609,6 @@ markers/classes or returns handlers to explicit parameters/forms while preservin
   refresh behavior.
 - Function and class handlers compile to the same 0.43 route/handle/response/security machinery.
 - Static analysis never imports/evaluates the target project; dynamic analysis is explicit.
-- Existing 0.42 and future 0.43 fixtures pass unchanged.
+- Existing 0.42 and Published 0.43 fixtures pass unchanged.
 - Every `release-gate-0.44.toml` row is Verified with retained evidence and no 0.44-owned row is
   Deferred before `v0.44.0` is cut.

@@ -20,7 +20,9 @@ def test_docs_043_three_layers_and_whats_new() -> None:
         ROOT / "packages" / "hedron" / "src" / "hedron" / "cli" / "scaffold" / "fastapi.py"
     ).read_text(encoding="utf-8")
     mkdocs = (ROOT / "mkdocs.yml").read_text(encoding="utf-8")
+    ready = (ROOT / "docs" / "guides" / "whats-ready.md").read_text(encoding="utf-8")
     assert "Published `v0.43.0`" in whats or "0.43" in whats
+    assert "@app.refreshable" in ready
     assert "FragmentHandle" in contract
     assert "PatchSet" in contract
     assert "compile_to_interaction" in impl or "protocol" in rfc.lower()

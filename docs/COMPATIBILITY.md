@@ -20,12 +20,12 @@ The **Supported matrix** is the CI-tested range. Package metadata may declare a 
 compatible range; versions outside the Supported column are installable but unsupported
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
-`hedron-extras`, `hedron-workbench`, `hedron-posit`)
-stay on the `0.42.x` train (Published as `v0.42.0`). Independent Beta packages
+`hedron-extras`, `hedron-workbench`, `hedron-posit`, `hedron-elements`)
+stay on the `0.43.x` train (Published as `v0.43.0`). Independent Beta packages
 `hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
 lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
-also version independently. `hedron-elements` is the Alpha incubator on the coordinated
-0.40 line.
+also version independently. `hedron-elements` is Beta for the declared Supported
+inventory only.
 
 ### Charts and sample-kit compatibility floor
 

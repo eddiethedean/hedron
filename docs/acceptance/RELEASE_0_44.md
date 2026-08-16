@@ -1,21 +1,25 @@
 # Hedron `v0.44` type-driven authoring acceptance
 
-**Status:** Planned; Stage 0 requirements packet complete<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.43.0`<br>
+**Status:** Planned; Stage 0 contract refined against Published in-tree `v0.43.0` (D-076)<br>
+**Planning baseline:** Published in-tree `v0.43.0` (original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.43.0`<br>
 **Target:** `v0.44.0`<br>
-**Decision/RFC:** D-072, refined by D-073 / [RFC-0071](../rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)
+**Decision/RFC:** D-072, refined by D-073 / D-076 / [RFC-0071](../rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)
 
 Phase 0.44 adds Pydantic-backed boundary models, `Annotated` markers, generic specialization,
 schema-derived native forms, declared command effects, typed outcomes, optional class handlers,
-and a shared normalized schema extension over the planned 0.43 handle API. It neither changes
-Published 0.42 during planning nor authorizes implementation before 0.43 is Verified.
+and a shared normalized schema extension over the **shipped** 0.43 handle API. It neither changes
+Published 0.43 during planning nor authorizes implementation before a tracking issue exists.
 
 Implementation requirements:
 [TYPE_DRIVEN_AUTHORING_044](../implementation/TYPE_DRIVEN_AUTHORING_044.md). Public contract:
 [TYPE_DRIVEN_AUTHORING](../api/TYPE_DRIVEN_AUTHORING.md). Capability inventory:
 [`type-authoring-capability-inventory-044.toml`](type-authoring-capability-inventory-044.toml).
-Evidence index: [`release-gate-0.44.toml`](release-gate-0.44.toml). Upgrade fixtures:
+Form inventory:
+[`type-form-inventory-044.toml`](type-form-inventory-044.toml). TypeSchema lock:
+[`type-schema-044.toml`](type-schema-044.toml). Adapter dispositions:
+[`adapter-disposition-044.toml`](adapter-disposition-044.toml). Evidence index:
+[`release-gate-0.44.toml`](release-gate-0.44.toml). Upgrade fixtures:
 [upgrade-fixtures-044](upgrade-fixtures-044.md).
 
 ## Release contract
@@ -67,14 +71,17 @@ name is not evidence.
 ## Stage 0 entry
 
 - [x] D-072 records the accepted phase; D-073 reconciles its boundary with the 0.43 foundation.
-- [x] RFC-0071, API contract, implementation requirements, capability inventory, release gate,
-  acceptance packet, upgrade fixtures, roadmap, indexes, status, and traceability references exist.
-- [x] Published/living baseline remains `v0.42.0`; no package or runtime version changed.
-- [x] Verified 0.43 is an explicit prerequisite for Stage 1 and the 0.44 cut baseline.
+- [x] D-076 rebases planning onto Published in-tree `v0.43.0` and locks form/`TypeSchema`/adapter
+  inventories against shipped handle/descriptor/adapter seams. No runtime or version bump.
+- [x] RFC-0071, API contract, implementation requirements, capability inventory, form inventory,
+  TypeSchema lock, adapter dispositions, release gate, acceptance packet, upgrade fixtures,
+  roadmap, indexes, status, and traceability references exist.
+- [x] Published/living baseline is `v0.43.0`; no package or runtime version changed by this refine.
+- [x] Verified in-tree 0.43 is an explicit prerequisite for Stage 1 and the 0.44 cut baseline.
+  Stage 1 does not wait on `#311` PyPI/Git assets.
 - [x] The predecessor boundary is reconciled: 0.44 consumes fixed generic slots, the structural
-  binding adapter, explicit form plumbing, dynamic effects, and the base descriptor extension seam.
+  binding adapter, explicit form plumbing, dynamic effects, and the `hedron.type` extension seam.
 - [ ] A tracking issue is created and bound to every 0.44 gate before Stage 1 begins.
-- [ ] Every 0.43-owned gate is Verified before any 0.44 runtime implementation begins.
 - [ ] Stage 1 records equivalent 0.43 bind/form/result performance and compatibility baselines.
 
 ## Functional acceptance

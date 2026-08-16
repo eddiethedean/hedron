@@ -6,6 +6,32 @@ also attaches a checksum manifest and refuses to create the GitHub Release until
 exact PyPI artifact passes the documented scaffold smoke. PyPI remains authoritative
 for installable package versions.
 
+## 0.43.0 assets
+
+- [GitHub Release v0.43.0](https://github.com/eddiethedean/hedron/releases/tag/v0.43.0)
+- [Hedron 0.43.0 on PyPI](https://pypi.org/project/hedron/0.43.0/)
+- [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
+
+Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
+evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
+expected asset is missing. GitHub and PyPI assets attach when `v0.43.0` is tagged.
+
+## 0.42.0 assets
+
+- [GitHub Release v0.42.0](https://github.com/eddiethedean/hedron/releases/tag/v0.42.0)
+- [Hedron 0.42.0 on PyPI](https://pypi.org/project/hedron/0.42.0/)
+- [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
+
+Historical train assets; prefer **0.43.0** above for the living train.
+
+## 0.41.0 assets
+
+- [GitHub Release v0.41.0](https://github.com/eddiethedean/hedron/releases/tag/v0.41.0)
+- [Hedron 0.41.0 on PyPI](https://pypi.org/project/hedron/0.41.0/)
+- [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
+
+Historical train assets; prefer **0.43.0** above for the living train.
+
 ## 0.40.0 assets
 
 - [GitHub Release v0.40.0](https://github.com/eddiethedean/hedron/releases/tag/v0.40.0)
@@ -15,6 +41,8 @@ for installable package versions.
 Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
 evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
 expected asset is missing.
+
+Historical train assets; prefer **0.43.0** above for the living train.
 
 ## 0.39.0 assets
 
@@ -58,7 +86,7 @@ expected asset is missing.
 - [Hedron 0.30.0 on PyPI](https://pypi.org/project/hedron/0.30.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical train assets; prefer **0.40.0** above for the living train.
+Historical train assets; prefer **0.43.0** above for the living train.
 
 ## 0.28.2 assets
 
@@ -66,7 +94,7 @@ Historical train assets; prefer **0.40.0** above for the living train.
 - [Hedron 0.28.2 on PyPI](https://pypi.org/project/hedron/0.28.2/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical 0.28 tip assets; prefer **0.40.0** above for the living train.
+Historical 0.28 tip assets; prefer **0.43.0** above for the living train.
 
 ## 0.26.0 assets
 

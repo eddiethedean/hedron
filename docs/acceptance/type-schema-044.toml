@@ -1,0 +1,69 @@
+# Phase 0.44 TypeSchema extension payload lock (TA-SCHEMA-001).
+# Stage 0 contract artifact (D-076). Payload attaches to BaseHandleDescriptor.extensions
+# under namespace "hedron.type" and cannot override reserved base fields.
+
+schema_version = 1
+phase = "0.44"
+status = "Planned"
+planning_baseline = "v0.43.0"
+target = "v0.44.0"
+decision = "D-076"
+owning_rfc = "RFC-0071"
+gate = "SCHEMA-044"
+requirement = "TA-SCHEMA-001"
+
+namespace = "hedron.type"
+mismatch_behavior = "fail_closed"
+json_schema_authority = "pydantic"
+openapi_authority = "fastapi"
+fallback_cache_role = "projection_only"
+
+reserved_base_keys = [
+    "path",
+    "method",
+    "app_id",
+    "logical_id",
+    "host",
+    "target",
+    "fallback",
+    "limits",
+    "swap",
+    "region",
+]
+
+[fields]
+schema_version = "TypeSchema format version integer"
+handler_fingerprint = "Stable opted-in handler fingerprint"
+model_fingerprint = "Stable boundary-model/config fingerprint"
+descriptor_fingerprint = "Referenced 0.43 descriptor_fingerprint"
+handler_kind = "view or command"
+boundary_sources = "ViewParams and/or FormBody provenance without values"
+field_paths = "Model field paths, aliases, constraints, and marker provenance"
+control_dispositions = "supported, override_only, or rejected per field"
+sensitivity_flags = "Sensitive disposition without values or defaults"
+identity_flags = "InstanceKey disposition without values"
+effect_knowledge = "dynamic or declared"
+declared_target_ids = "App-owned logical ids when effect_knowledge is declared"
+outcome_variant_ids = "Discriminated outcome variant ids when an OutcomeMap exists"
+fallback_cache_projection = "Read-only copy of 0.43 fallback/CacheHint; not annotation policy"
+diagnostics = "Unsupported or partially known static facts"
+
+[effect_knowledge]
+values = ["dynamic", "declared"]
+observations_are_declarations = false
+
+[bounds]
+max_model_fields = 256
+max_schema_depth = 16
+max_union_variants = 32
+max_validation_errors = 100
+
+[forbidden]
+values = true
+defaults = true
+examples = true
+callbacks = true
+request_instances = true
+dependency_values = true
+executable_code = true
+raw_reprs = true

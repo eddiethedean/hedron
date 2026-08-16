@@ -16,7 +16,7 @@
 ### Changed
 - Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
 
-## [0.41.0] — Unreleased
+## [0.41.0] — 2026-08-15
 
 - Phase 0.41 browser composition, bounded draft transfer, navigation, tracing, failure isolation, and regression closure (D-069).
 

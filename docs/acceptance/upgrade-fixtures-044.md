@@ -1,14 +1,21 @@
 # Upgrade fixtures — phase 0.44 type-driven authoring
 
-**Status:** Planned<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.43.0`<br>
+**Status:** Planned; Stage 0 contract refined against Published in-tree `v0.43.0` (D-076)<br>
+**Planning baseline:** Published in-tree `v0.43.0`<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.43.0`<br>
 **Target:** `v0.44.0`
 **Owning gate:** `COMPAT-044`
 
 Phase 0.44 is additive and opt-in. The upgrade suite proves that existing annotations are not
 reinterpreted, that 0.43 function handles run unchanged, and that boundary models, generated forms,
 effect declarations, outcomes, and class handlers can be adopted independently.
+
+In-tree 0.43 sources for the unchanged-handle fixture include
+[`examples/reference-app`](../../examples/reference-app/), the `hedron new` FastAPI scaffold
+(`packages/hedron/src/hedron/cli/scaffold/fastapi.py`), and the shipped handle module
+[`packages/hedron/src/hedron/handles.py`](../../packages/hedron/src/hedron/handles.py).
+Predecessor goldens live under `tests/upgrade/` 0.42/0.43 families and
+[upgrade-fixtures-043](upgrade-fixtures-043.md).
 
 ## Required fixture families
 

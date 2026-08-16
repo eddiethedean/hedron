@@ -22,7 +22,7 @@
 - Draft transfer Python helpers mint the same ``sessionStorage`` key and camelCase
   millisecond envelope as ``composition-041.mjs`` (#255).
 
-## [0.41.0] — Unreleased
+## [0.41.0] — 2026-08-15
 
 - Typed allowlisted browser composition with bounded graph execution and native fallback.
 - Subject-bound, session-scoped, single-consume draft transfer with strict clearing and ceilings.

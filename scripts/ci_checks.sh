@@ -56,7 +56,7 @@ cd "$ROOT"
 export UV_NO_PROGRESS="${UV_NO_PROGRESS:-1}"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.39.0}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.43.0}"
 CI_PYTHONS=(3.11 3.12 3.13 3.14)
 PYTHON_EXPLICIT=0
 ALL_PYTHONS=0
@@ -567,7 +567,7 @@ cmd_realwb() {
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
-    echo "skip: packaging (verify_pkg_35–42 already covered by quality + evidence)"
+    echo "skip: packaging (verify_pkg_35–43 already covered by quality + evidence)"
     return 0
   fi
   resolve_python

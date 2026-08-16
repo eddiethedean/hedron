@@ -243,6 +243,8 @@ nav:
     - Application: api/HEDRON.md
     - Routing: api/ROUTER.md
     - Pages: api/PAGE.md
+    - Refreshable views (0.43): api/REFRESHABLE_VIEWS.md
+    - Type-driven authoring (planned 0.44): api/TYPE_DRIVEN_AUTHORING.md
     - Actions: api/ACTION.md
     - Rendering: api/RENDERING.md
     - Models and props: api/MODELS.md

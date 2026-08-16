@@ -11,18 +11,17 @@ from Read the Docs). Adopters should start from the golden-path contracts below.
 
 ## Planned 0.43 maintainer contract
 
-[Refreshable views and commands](REFRESHABLE_VIEWS.md) records the accepted D-071 / RFC-0070
-public contract for the planned 0.43 phase, with its 0.44 handoff refined by D-073. It is **not
-importable on 0.42** and is not part of the
-shipped golden path until all 0.43 gates are Verified.
+[Refreshable views and commands](REFRESHABLE_VIEWS.md) records the shipped D-071 / RFC-0070
+public contract for Published 0.43, with its 0.44 handoff refined by D-073. These symbols
+are Beta on the living train.
 
 ## Planned 0.44 maintainer contract
 
 [Type-driven authoring](TYPE_DRIVEN_AUTHORING.md) records the accepted D-072 / RFC-0071 public
-contract, refined against 0.43 by D-073, for the planned 0.44 phase. It depends on Verified 0.43
-and is **not importable on 0.42**. Boundary models, generated forms, effect declarations, typed
-outcomes, generic specialization, and class handlers are not part of the shipped golden path until
-all predecessor and 0.44 gates are Verified.
+contract, refined against 0.43 by D-073 and D-076, for the planned 0.44 phase. It consumes
+Published in-tree 0.43 and is **not importable on 0.43**. Boundary models, generated forms,
+effect declarations, typed outcomes, generic specialization, and class handlers are not part of
+the shipped golden path until all 0.44 gates are Verified.
 
 ## Planned 0.45 maintainer contract
 

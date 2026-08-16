@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.43 **Published** as `v0.43.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phases 0.44 type-driven authoring (D-072 / RFC-0071), 0.45 typed interaction ecosystem convergence (D-074 / RFC-0072), and 0.46 package-native typed workflows (D-075 / RFC-0073) are **Planned** in that order; D-073 reconciles the 0.43/0.44 boundary. No 0.44–0.46 runtime or version claim.
+**Roadmap position:** phase 0.43 **Published** as `v0.43.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phases 0.44 type-driven authoring (D-072 / RFC-0071, refined by D-073 / D-076 against Published `v0.43.0`), 0.45 typed interaction ecosystem convergence (D-074 / RFC-0072), and 0.46 package-native typed workflows (D-075 / RFC-0073) are **Planned** in that order. No 0.44–0.46 runtime or version claim.
 Living tip = `v0.43.0`.
 **Date:** 2026-08-16
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -24,14 +24,15 @@ handles, and typed updates (`release-gate-0.43.toml` Verified; tip
 composition / **0.40** authoring / **0.39** rich data /
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
-Tracking [#311](https://github.com/eddiethedean/hedron/issues/311) closes with this cut.
+Tracking [#311](https://github.com/eddiethedean/hedron/issues/311) remains open until
+the `v0.43.0` Git tag and PyPI/GitHub Release assets exist.
 Next planned phase is **0.44**, targeting **`v0.44.0`** (D-072 /
-[RFC-0071](docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)):
+[RFC-0071](docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md), refined by D-073 / D-076):
 explicit Pydantic boundary models, annotation markers, fixed-slot generic specialization,
 schema-derived forms, declared effects, typed outcomes, optional class handlers, and a
-shared redacted schema. Its Stage 0 requirements packet is complete;
-all `release-gate-0.44.toml` rows remain Planned and a separate tracking issue is required before
-Stage 1.
+shared redacted schema. Its Stage 0 packet is contract-refined against Published in-tree
+`v0.43.0`; all `release-gate-0.44.toml` rows remain Planned and a separate tracking issue is
+required before Stage 1.
 Phase **0.45** follows only after 0.44 is Verified (D-074 /
 [RFC-0072](docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)). It adds one sealed read-only catalog,
 deterministic redacted manifest, bounded package projections/dispositions, and shared host/tooling/
@@ -378,12 +379,14 @@ Component platform is **Published** as `v0.42.0` (D-070 / RFC-0060;
 `release-gate-0.42.toml` Verified; [#97](https://github.com/eddiethedean/hedron/issues/97); see
 [implementation plan](docs/implementation/HEDRON_ELEMENTS_042.md) and
 [0.42 acceptance packet](docs/acceptance/RELEASE_0_42.md)). Phase **0.43** refreshable views,
-commands, and typed updates is **Planned** (D-071 /
-[RFC-0070](docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md); all 0.43 gates Planned; see
+commands, and typed updates is **Published** as `v0.43.0` (D-071 /
+[RFC-0070](docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md); `release-gate-0.43.toml` Verified;
+[#311](https://github.com/eddiethedean/hedron/issues/311); see
 [implementation requirements](docs/implementation/INTERACTION_HANDLES_043.md) and
-[acceptance packet](docs/acceptance/RELEASE_0_43.md)). Living tip remains **`v0.42.0`**.
+[acceptance packet](docs/acceptance/RELEASE_0_43.md)). Living tip is **`v0.43.0`**.
 Phase **0.44** type-driven authoring is also **Planned**, strictly after Verified 0.43 (D-072 /
-[RFC-0071](docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md); all 0.44 gates Planned; see
+[RFC-0071](docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md); D-076 Stage 0 refine against Published
+`v0.43.0`; all 0.44 gates Planned; see
 [implementation requirements](docs/implementation/TYPE_DRIVEN_AUTHORING_044.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_44.md)).
 Phase **0.45** typed interaction ecosystem convergence is **Planned**, strictly after Verified 0.44

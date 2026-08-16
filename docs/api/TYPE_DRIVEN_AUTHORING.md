@@ -7,9 +7,12 @@ phase: "0.44"
 
 !!! warning "Planned 0.44 contract"
 
-    This is the accepted public contract for phase 0.44. These symbols are not importable on the
-    published 0.42 train. They also depend on the planned 0.43 handle API. Runtime behavior must
-    not be claimed until both predecessor and 0.44 release gates are Verified.
+    This is the accepted public contract for phase 0.44, refined by D-076 against
+    Published in-tree `v0.43.0`. These symbols are **not importable** on the living
+    0.43 train. They consume the shipped 0.43 handle API
+    ([Refreshable views and commands](REFRESHABLE_VIEWS.md)). Runtime behavior must
+    not be claimed until 0.44 release gates are Verified. Pin remains
+    `hedron>=0.43.0,<0.44`.
 
 Type-driven authoring uses Pydantic models and `typing.Annotated` metadata to describe validated
 view parameters, command forms, result effects, and optional class lifecycles:
@@ -71,35 +74,46 @@ transactions, retry safety, accessible semantics, or hidden data dependencies.
 | `OutcomeMap` | `hedron` | Closed mapping from typed outcome variants to response behavior. |
 | `TypeSchema` | `hedron-core` | Versioned normalized, redacted extension attached to a 0.43 base handle descriptor. |
 
-Final import placement and signatures must be confirmed by `API-044`. Names and semantics in this
-contract may not drift silently during implementation. Phase 0.43 already defines the public
-generic slot count/order and base descriptor; 0.44 specializes those slots and attaches metadata
-without changing runtime meaning. That meaning remains controlled by
+Final import placement is locked by D-076: portable markers and `TypeSchema` in
+`hedron-core`; FastAPI source markers and handler APIs in `hedron`. Names and
+semantics in this contract may not drift silently during implementation. Phase 0.43
+already defines the public generic slot count/order and base descriptor; 0.44
+specializes those slots and attaches metadata without changing runtime meaning.
+That meaning remains controlled by
 [Refreshable views and commands](REFRESHABLE_VIEWS.md).
 
 ## Required 0.43 handoff
 
-Before this API can be implemented, 0.43 must Verify:
+Before this API can be implemented, 0.43 must remain Verified in-tree with these shipped seams
+(D-073 / D-076):
 
-- `FragmentHandle[Bind, Content]` and `ActionHandle[Input, Result]` with exactly two slots;
-- `BoundFragment[Content]` and `Patch[Content]` with one content slot;
-- one versioned authoritative base descriptor and fingerprint;
-- one structural binding-adapter protocol;
+- `FragmentHandle[BindT, ContentT]` and `ActionHandle[InputT, ResultT]` with exactly two slots;
+- `BoundFragment[ContentT]` and `Patch[ContentT]` with one content slot;
+- one versioned authoritative `BaseHandleDescriptor` and `descriptor_fingerprint`;
+- one `BindingAdapter` protocol with `StructuralBindingAdapter` default;
 - explicit `Form(action=handle, ...)` action/method/CSRF/fallback wiring; and
 - dynamic/observed effect labels plus existing target authority.
 
-`TypeSchema` is a namespaced extension of that contract. It cannot override route/method, app
-ownership, logical/DOM identity, host, target/output policy, fallback, limits, or response
-conversion.
+`TypeSchema` is a namespaced extension of that contract under `hedron.type`. It cannot override
+route/method, app ownership, logical/DOM identity, host, target/output policy, fallback, limits,
+or response conversion.
 
 ## Boundary model rules
 
-A boundary model is a Pydantic v2 `BaseModel` attached to exactly one supported source marker:
+A boundary model is a Pydantic v2 `BaseModel` attached to exactly one supported source marker,
+including Hedron `Model` / `FormModel` subclasses:
 
 ```python
 Annotated[SearchParams, ViewParams()]
 Annotated[CreateRecord, FormBody()]
 ```
+
+Existing `FormModel` / `Field` / `AutoForm` behavior is retained. `Field` presentation
+(`label`, `help`, `secret`, `identity`) remains valid. `Control` overrides generated-form
+presentation only and cannot weaken Pydantic or `Field` validation. `secret=True` implies
+`Sensitive` disposition; `identity=True` implies `InstanceKey`; contradictions fail
+registration. `AutoForm`, explicit `Form(action=handle, ...)`, and `@app.action` stay the
+universal path. `ActionHandle.form()` is additive and only for opted-in `FormBody`.
 
 Registration must fail when:
 
@@ -148,9 +162,11 @@ class ViewParams:
 ```
 
 `ViewParams` identifies the only parameter model that `bind(...)` may populate. `source` constrains
-where model fields may appear but does not guess a route mapping. Explicit route placeholders and
-documented field metadata decide path placement; remaining serializable fields use query
-parameters. Ambiguous aliases or two fields mapped to the same route name fail registration.
+where model fields may appear but does not guess or invent a route mapping. Path placeholders on
+the handle's 0.43 path own path fields; remaining serializable fields use query parameters.
+Ambiguous aliases or two fields mapped to the same route name fail registration. `bind(model)`
+serializes through the Pydantic adapter then into existing `BoundValues`. Unmodeled handlers keep
+`StructuralBindingAdapter`; modeled handlers replace only that adapter.
 
 Calling forms:
 
@@ -167,7 +183,7 @@ passing a model instance remains available.
 | Situation | Result |
 |---|---|
 | Invalid/missing/extra field | Build-time validation error with stable model field paths. |
-| Dependency name supplied to `bind` | `HED-TYPE-BIND-SOURCE` diagnostic; value is not accepted. |
+| Dependency name supplied to `bind` | `HED-TYPE-BIND-SOURCE` (Planned `HED-TYPE-*` family); value is not accepted. |
 | Ambiguous path/query mapping | Registration error. |
 | Sensitive value would enter public URL | Registration/build error unless the author explicitly uses a safe non-secret representation. |
 | Cross-model instance passed | Type-checker error where visible and runtime validation error. |
@@ -244,7 +260,10 @@ class Control:
     rows: int | None = None
 ```
 
-The final supported `kind` values come from a closed machine-readable inventory. Unknown values,
+The final supported `kind` values are the closed set in
+[type-form-inventory-044.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-form-inventory-044.toml):
+`text`, `textarea`, `password`, `number`, `checkbox`, `select`, `radio`, `date`,
+`time`, `datetime-local`, `file`, `email`, `url`. Unknown values,
 unsafe autocomplete tokens, missing usable labels, invalid row bounds, or a hint incompatible with
 the field schema fail form generation. `Control` does not accept arbitrary attributes, JavaScript,
 raw HTML, roles, event handlers, or validation expressions.
@@ -283,10 +302,14 @@ Generation requirements:
 - safe value retention and error summary/focus behavior;
 - no arbitrary schema-to-HTML interpretation.
 
-The supported-field inventory must at least disposition strings, numbers, booleans, enums,
-optional fields, bounded lists/sets, date/time types, UUIDs, uploads, nested models, and
-discriminated unions as Supported, explicit-override-only, or rejected. “Dispositioned” does not
-mean every shape must be auto-generated.
+The supported-field inventory is locked in
+[type-form-inventory-044.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-form-inventory-044.toml).
+Strings, numbers, booleans, enums/literals, optional scalars, bounded lists/sets of scalars,
+date/time types, UUIDs, uploads, and `Secret` (password, never echoed) are Supported.
+Nested models, discriminated unions, and lists of models are override-only. Unconstrained
+dicts, recursive models, `Any`, callbacks, `TrustedHtml`, component nodes, and arbitrary JSON
+Schema are rejected for generation. “Dispositioned” does not mean every shape must be
+auto-generated.
 
 ## Effect markers
 
@@ -363,7 +386,8 @@ fixtures define the contract. Basic usage cannot require a Hedron-specific mypy/
 
 ## Typed outcomes and `OutcomeMap`
 
-`OutcomeMap` accepts a discriminated Pydantic union and one mapping per variant:
+`OutcomeMap` accepts a discriminated Pydantic union and one mapping per variant.
+The frozen builder spelling is:
 
 ```python
 OutcomeMap[SaveOutcome](
@@ -372,7 +396,7 @@ OutcomeMap[SaveOutcome](
 )
 ```
 
-Exact builder spelling remains subject to `API-044`; observable requirements are fixed:
+Observable requirements are fixed:
 
 - discriminator variants are finite and resolvable at registration;
 - every variant has exactly one mapping;
@@ -438,7 +462,9 @@ or unsupported signatures.
 
 ## `TypeSchema`
 
-`TypeSchema` is an immutable, versioned extension of a 0.43 base handle descriptor. At minimum it
+`TypeSchema` is an immutable, versioned extension of a 0.43 `BaseHandleDescriptor` attached at
+`extensions["hedron.type"]`. Payload keys and mismatch behavior are locked in
+[type-schema-044.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-schema-044.toml). At minimum it
 exposes:
 
 - schema version, stable handler/model fingerprints, and the referenced 0.43 base-descriptor
@@ -461,6 +487,20 @@ Runtime/dynamic inspection occurs after the trusted application is imported norm
 inspection parses source without importing modules or evaluating string annotations. Static
 findings distinguish syntactic facts, unresolved names, and runtime-only facts; they do not claim a
 complete schema when one cannot be proven.
+
+## Hosts and versions
+
+FastAPI is the complete flagship. Flask, Django, and Jinja either consume portable
+`TypeSchema`/results or emit a machine-visible bounded exception. Dispositions:
+[`adapter-disposition-044.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/adapter-disposition-044.toml).
+This phase does not implement 0.45 catalogs or 0.46 workflows.
+
+Supported authoring matrix: Python 3.11–3.14, Pydantic v2 public APIs only, FastAPI/Starlette as
+pinned on the 0.43 train, stock mypy and pyright. No required type-checker plugin.
+
+The `HED-TYPE-*` diagnostic family, including `HED-TYPE-BIND-SOURCE`, is reserved in the
+[error catalog](../guides/error-codes.md#planned-hed-type-044) until Stage 1. Do not treat
+those names as runtime codes on 0.43.
 
 ## Common errors
 
@@ -487,3 +527,6 @@ complete schema when one cannot be proven.
 - [RFC-0071](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)
 - [Phase 0.44 implementation requirements](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/TYPE_DRIVEN_AUTHORING_044.md)
 - [Phase 0.44 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_44.md)
+- [Form field inventory](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-form-inventory-044.toml)
+- [TypeSchema lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-schema-044.toml)
+- [Adapter dispositions](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/adapter-disposition-044.toml)

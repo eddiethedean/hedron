@@ -76,7 +76,7 @@ third-party open-source software with pinned versions and your own threat model 
 
 ## Supply-chain evidence
 
-Prefer GitHub Release assets for the current tag **`v0.42.0`** (SBOM / license /
+Prefer GitHub Release assets for the current tag **`v0.43.0`** (SBOM / license /
 evidence-bundle) when
 attached. If assets are missing, regenerate from the tagged checkout — see
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.

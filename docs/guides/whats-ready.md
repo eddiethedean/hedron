@@ -6,8 +6,9 @@ Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
 For a pinned internal admin/CRUD app on 0.43.x (`hedron>=0.43.0,<0.44`), you can use:
-typed pages, HTMX fragments, CSRF (`standard`/`strict`), Flask/Django adapters,
-and polling for job status.
+typed pages, HTMX fragments, refreshable views and commands (`@app.refreshable` /
+`@app.command`), CSRF (`standard`/`strict`), Flask/Django adapters, and polling for
+job status.
 
 Pin versions. The flagship and adapters are Beta (no Hedron 1.0, no SLA);
 `hedron-elements` is Beta (Supported inventory only), while `fastapi-workbench` has an independent 1.x line.
@@ -78,6 +79,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Job | Status | Start here |
 |---|---|---|
 | Ship CRUD / admin / forms | **Supported** | [First app](../getting-started/quickstart.md) → HTMX → Minimal form |
+| Refreshable views / command handles | **Supported** (API `beta`) | [Refreshable views](../api/REFRESHABLE_VIEWS.md) · [What’s new in 0.43](whats-new-0.43.md) |
 | Multi-worker durable jobs | **Supported** with shared Redis backend | [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`; ABI `hedron-data-editor`) | [Data apps](data-apps.md) · [DATA.md](../api/DATA.md) |
 | Bounded OptimisticMutation | **Supported** for collection/cell edits only; deny-by-default elsewhere | [DATA.md](../api/DATA.md) · [What’s new in 0.39](whats-new-0.39.md) |
@@ -109,6 +111,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Typed pages, fragments, built-ins | `hedron` + `hedron-core` | Supported |
 | FastAPI routing, CSRF profiles, CLI, testing helpers | `hedron` | Supported |
 | HTMX fragment loops, `InteractionResult` | `hedron` | Supported |
+| `@app.refreshable` / `@app.command` / `refresh()` / `PatchSet` | `hedron` / `hedron-core` | Supported; API `beta`; compiles into the existing region / OOB stack |
 | Chat / Dialog surfaces | `hedron` | Supported; history application-owned |
 | Flask Blueprint / `init_app` | `hedron-flask` | Supported; live helpers Experimental (prefer polling) |
 | Django AppConfig, forms bridge, QuerySet DataSource | `hedron-django` + `hedron-data` | Supported |
