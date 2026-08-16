@@ -23,6 +23,8 @@
   keyframes the same as ``to=`` (#261).
 - Production security gate treats a missing ``session_secret`` as insecure when
   sessions are enabled; pass ``sessions_enabled=False`` to skip (#260).
+- Redis cache overwrite and ``ttl<=0`` drop previous tag memberships so stale
+  indexes cannot delete the live value (#253).
 
 ## [0.41.0] — Unreleased
 

@@ -669,6 +669,13 @@ def test_208_redis_cache_tag_index_gets_ttl() -> None:
             self._sets.setdefault(key, set()).add(member)
             return 1
 
+        def srem(self, key: str, member: str) -> int:
+            bucket = self._sets.get(key)
+            if not bucket or member not in bucket:
+                return 0
+            bucket.discard(member)
+            return 1
+
         def smembers(self, key: str) -> set[str]:
             return set(self._sets.get(key, set()))
 
@@ -772,6 +779,14 @@ def test_218_redis_cache_set_and_tag_sadd_are_atomic() -> None:
             self._ops.append(("sadd", a, k))
             return self
 
+        def srem(self, *a: object, **k: object) -> _Pipe:
+            self._ops.append(("srem", a, k))
+            return self
+
+        def delete(self, *a: object, **k: object) -> _Pipe:
+            self._ops.append(("delete", a, k))
+            return self
+
         def pexpire(self, *a: object, **k: object) -> _Pipe:
             self._ops.append(("pexpire", a, k))
             return self
@@ -820,6 +835,18 @@ def test_218_redis_cache_set_and_tag_sadd_are_atomic() -> None:
         def _apply_sadd(self, key: str, member: str) -> int:
             self.sets.setdefault(key, set()).add(member)
             return 1
+
+        def _apply_srem(self, key: str, member: str) -> int:
+            bucket = self.sets.get(key)
+            if not bucket or member not in bucket:
+                return 0
+            bucket.discard(member)
+            return 1
+
+        def _apply_delete(self, key: str) -> int:
+            self.sets.pop(key, None)
+            self.ttls.pop(key, None)
+            return 1 if self.store.pop(key, None) is not None else 0
 
         def _apply_pexpire(self, key: str, milliseconds: int) -> bool:
             self.ttls[key] = int(milliseconds)
