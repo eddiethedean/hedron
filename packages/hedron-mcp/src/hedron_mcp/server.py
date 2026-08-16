@@ -7,7 +7,7 @@ import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from hedron_mcp.audit import McpAuditLog
 from hedron_mcp.bounds import BoundsError, McpBounds
@@ -28,6 +28,31 @@ PrincipalResolver = Callable[[Any], str | None]
 AuthzHook = Callable[..., None]
 TenantHook = Callable[..., None]
 ResourceReader = Callable[[str, str | None], Mapping[str, Any] | str]
+
+# Deny-by-default: only the documented Hedron resource URI scheme is Supported.
+_ALLOWED_RESOURCE_URI_SCHEMES = frozenset({"hedron"})
+_URI_DECODE_ROUNDS = 3
+
+
+def _percent_decode_uri(uri: str) -> str:
+    decoded = uri
+    for _ in range(_URI_DECODE_ROUNDS):
+        next_decoded = unquote(decoded)
+        if next_decoded == decoded:
+            break
+        decoded = next_decoded
+    return decoded
+
+
+def _uri_has_traversal(candidate: str) -> bool:
+    lowered = candidate.lower()
+    if "%2e%2e" in lowered or "%2e." in lowered or ".%2e" in lowered:
+        return True
+    if ".." in candidate or candidate.startswith("/"):
+        return True
+    path = urlparse(candidate).path.replace(";", "/")
+    parts = [p for p in path.split("/") if p not in {"", "."}]
+    return any(part == ".." or part.startswith("..") for part in parts)
 
 
 class AuthorizationError(PermissionError):
@@ -302,14 +327,21 @@ class McpProjection:
 
     @staticmethod
     def _assert_safe_uri(uri: str) -> None:
-        parsed = urlparse(uri)
-        if parsed.scheme in {"file", "http", "https", "ftp", "data"}:
+        if not uri or uri.strip() != uri:
+            raise AuthorizationError("MCP resource URI is empty or not canonical.")
+        if "\\" in uri or any(ord(ch) < 32 for ch in uri):
+            raise AuthorizationError("MCP resource URI path traversal is denied.")
+        decoded = _percent_decode_uri(uri)
+        if "\\" in decoded or any(ord(ch) < 32 for ch in decoded):
+            raise AuthorizationError("MCP resource URI path traversal is denied.")
+        if _uri_has_traversal(uri) or _uri_has_traversal(decoded):
+            raise AuthorizationError("MCP resource URI path traversal is denied.")
+        scheme = (urlparse(decoded).scheme or urlparse(uri).scheme).lower()
+        if scheme not in _ALLOWED_RESOURCE_URI_SCHEMES:
             raise AuthorizationError(
-                f"MCP resource URI scheme {parsed.scheme!r} is excluded "
+                f"MCP resource URI scheme {scheme!r} is excluded "
                 "(no arbitrary filesystem/URL projection)."
             )
-        if ".." in uri or uri.startswith("/"):
-            raise AuthorizationError("MCP resource URI path traversal is denied.")
 
 
 def mount_mcp(app: Any, projection: McpProjection, *, path: str = "/mcp") -> None:

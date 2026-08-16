@@ -16,6 +16,9 @@
 
 ### Fixed
 
+- ``McpProjection._assert_safe_uri`` allowlists ``hedron:`` resource URIs and
+  percent-decodes before traversal checks, so ``javascript:`` and encoded
+  ``..`` (``%2e%2e``) fail closed (#282).
 - Default ``resolve_principal`` no longer trusts client-controlled
   ``x-hedron-principal`` / ``x-user`` headers. Identity comes from an
   authenticated session subject or an explicit host ``principal_resolver``
