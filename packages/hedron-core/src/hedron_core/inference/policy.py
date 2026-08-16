@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import itertools
+import secrets
 import threading
 import time
 from collections import OrderedDict, defaultdict, deque
@@ -24,7 +24,27 @@ from hedron_core.inference.types import (
     QueuedInference,
 )
 from hedron_core.jobs import JobBackend, JobHandle, get_job_backend
+from hedron_core.jobs.auth import job_authorized_http
+from hedron_core.jobs.types import JobState, JobStatus
 from hedron_core.typing_aliases import JsonValue
+
+
+def _inference_cancel_authorized(
+    *,
+    stored_auth_subject: str | None,
+    stored_tenant_id: str | None,
+    auth_subject: str | None,
+    tenant_id: str | None,
+) -> bool:
+    """Match :func:`job_authorized_http` without exposing a durable job status."""
+    probe = JobStatus(
+        job_id="inference-cancel",
+        state=JobState.QUEUED,
+        job_type="inference",
+        tenant_id=stored_tenant_id,
+        auth_subject=stored_auth_subject,
+    )
+    return job_authorized_http(probe, auth_subject=auth_subject, tenant_id=tenant_id)
 
 
 @runtime_checkable
@@ -45,7 +65,14 @@ class InferenceScheduler(Protocol):
         shape_key: str | None = None,
     ) -> QueuedInference: ...
 
-    def request_cancel(self, request_id: str, *, backend: JobBackend | None = None) -> bool: ...
+    def request_cancel(
+        self,
+        request_id: str,
+        *,
+        auth_subject: str | None = None,
+        tenant_id: str | None = None,
+        backend: JobBackend | None = None,
+    ) -> bool: ...
 
     def drain_ready(
         self, *, backend: JobBackend | None = None
@@ -69,7 +96,6 @@ class InferencePolicy:
     )
     _queue: list[QueuedInference] = field(default_factory=list, init=False)
     _lock: threading.RLock = field(default_factory=threading.RLock, init=False)
-    _seq: Iterator[int] = field(default_factory=lambda: itertools.count(1), init=False, repr=False)
     _cancel: OrderedDict[str, float] = field(default_factory=OrderedDict, init=False, repr=False)
     _diagnostics: dict[str, InferenceDiagnostics] = field(default_factory=dict, init=False)
     _request_jobs: dict[str, str] = field(default_factory=dict, init=False)
@@ -119,7 +145,7 @@ class InferencePolicy:
                         remediation="Register the group before admitting work.",
                     ),
                 )
-            request_id = f"inf-{next(self._seq)}"
+            request_id = f"inf-{secrets.token_urlsafe(12)}"
             now = time.monotonic()
             item = QueuedInference(
                 request_id=request_id,
@@ -185,7 +211,21 @@ class InferencePolicy:
                 group=group,
             )
 
-    def request_cancel(self, request_id: str, *, backend: JobBackend | None = None) -> bool:
+    def request_cancel(
+        self,
+        request_id: str,
+        *,
+        auth_subject: str | None = None,
+        tenant_id: str | None = None,
+        backend: JobBackend | None = None,
+    ) -> bool:
+        """Cancel queued or inflight work when the caller owns the request.
+
+        Caller ``auth_subject`` / ``tenant_id`` must match the admitting scope
+        under :func:`job_authorized_http` (unscoped requests and omitted
+        credentials fail closed). The job backend is invoked with the **caller**
+        identity, never the stored owner.
+        """
         with self._lock:
             self._prune_cancelled(time.monotonic())
             known = (
@@ -193,17 +233,26 @@ class InferencePolicy:
                 or any(q.request_id == request_id for q in self._queue)
                 or request_id in self._request_jobs
             )
-            if not known and request_id not in self._cancel:
+            if not known:
                 return False
+
+            stored_auth, stored_tenant = self._request_auth.get(request_id, (None, None))
+            for queued in self._queue:
+                if queued.request_id == request_id:
+                    stored_auth = queued.auth_subject
+                    stored_tenant = queued.tenant_id
+                    break
+            if not _inference_cancel_authorized(
+                stored_auth_subject=stored_auth,
+                stored_tenant_id=stored_tenant,
+                auth_subject=auth_subject,
+                tenant_id=tenant_id,
+            ):
+                return False
+
             was_queued = any(q.request_id == request_id for q in self._queue)
             job_id = self._request_jobs.get(request_id)
             group = self._request_groups.get(request_id)
-            auth_subject, tenant_id = self._request_auth.get(request_id, (None, None))
-            for queued in self._queue:
-                if queued.request_id == request_id:
-                    auth_subject = queued.auth_subject
-                    tenant_id = queued.tenant_id
-                    break
 
             if was_queued:
                 self._mark_cancel_id(request_id)
@@ -233,7 +282,7 @@ class InferencePolicy:
 
             self._mark_cancel_id(request_id)
             self._forget_request_maps(request_id)
-            return known
+            return True
 
     def is_cancelled(self, request_id: str) -> bool:
         with self._lock:

@@ -75,10 +75,12 @@ unrestricted `get` + hardcoded auth kwargs.
 
 ## InferencePolicy cancel (0.18)
 
-`InferencePolicy.request_cancel(request_id, backend=...)` layers admission/queue cancel on
-top of this contract: queued requests are dropped locally; accepted requests map to a
-backend `job_id` and call `JobBackend.request_cancel`, releasing inflight concurrency
-capacity. See [Inference API](INFERENCE.md).
+`InferencePolicy.request_cancel(request_id, *, auth_subject=..., tenant_id=..., backend=...)`
+layers admission/queue cancel on top of this contract: the caller must match the
+request's stored auth scope (same fail-closed rules as `job_authorized_http`). Queued
+requests are dropped locally; accepted requests map to a backend `job_id` and call
+`JobBackend.request_cancel` with the **caller** identity (never the stored owner),
+releasing inflight concurrency capacity. See [Inference API](INFERENCE.md).
 
 ## HTTP and HTMX behavior (Supported path)
 

@@ -59,11 +59,13 @@ status = policy.admit(
     payload={"text": "meow"},
     group="cpu",
     priority=InferencePriority.NORMAL,
+    auth_subject="alice",
+    tenant_id="app",
 )
 # When finished:
 policy.release("cpu")
 # Cancel maps to JobBackend when the request was accepted:
-policy.request_cancel(status.request_id)
+policy.request_cancel(status.request_id, auth_subject="alice", tenant_id="app")
 ```
 
 Prefer durable backends in production. `InProcessInferenceQueue` is development-only.

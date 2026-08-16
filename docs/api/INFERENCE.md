@@ -91,7 +91,7 @@ Admission and scheduling layered on a durable `JobBackend`.
 |---|---|---|
 | `register_group(group)` | `None` | Register / replace a concurrency group (`HED-INFER-0002` if `limit < 1`) |
 | `admit(*, job_type, payload, group, priority=NORMAL, tenant_id=None, auth_subject=None, correlation_id="", shape_key="default", backend=None)` | `InferenceQueueStatus` | Accept immediately, queue, or reject on overload |
-| `request_cancel(request_id, *, backend=None)` | `bool` | Drop queued work or cancel accepted `job_id` via `JobBackend` |
+| `request_cancel(request_id, *, auth_subject=None, tenant_id=None, backend=None)` | `bool` | Drop queued work or cancel accepted `job_id` via `JobBackend` when the caller matches the request scope (`job_authorized_http`) |
 | `is_cancelled(request_id)` | `bool` | Cooperative cancel flag for workers / workflows |
 | `drain_ready(*, backend=None)` | `list[tuple[QueuedInference, JobHandle]]` | Promote queued work when capacity frees |
 | `release(group, *, count=1)` | `None` | Free inflight slots after terminal work |
@@ -128,6 +128,7 @@ status = policy.admit(
 | Unknown / invalid concurrency group | `InferenceError` (`HED-INFER-0002`) |
 | Queue full | Admission `rejected` (no raise) |
 | Unknown `request_id` on cancel | Returns `False` |
+| Unauthorized cancel (mismatched or omitted caller credentials) | Returns `False` (no queue/backend mutation) |
 | In-process queue without `development_in_process=True` | Fail closed |
 
 ## InteractionRecorder (RFC-0048)
