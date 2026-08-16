@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import socket
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -57,6 +59,66 @@ def test_host_is_private_for_ipv4_mapped_and_compatible_ipv6() -> None:
 def test_validate_remote_url_allows_declared_host() -> None:
     config = GradioRemoteConfig.from_base_url("https://demo.example.invalid")
     validate_remote_url("https://demo.example.invalid/predict", config)
+
+
+def _addrinfo_for(ip: str) -> list[tuple[Any, ...]]:
+    family = socket.AF_INET6 if ":" in ip else socket.AF_INET
+    sockaddr: tuple[Any, ...] = (ip, 0, 0, 0) if family == socket.AF_INET6 else (ip, 0)
+    return [(family, socket.SOCK_STREAM, 6, "", sockaddr)]
+
+
+def test_validate_remote_url_blocks_dns_to_private(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """#268: allowlisted names that resolve to link-local/loopback fail closed."""
+    import hedron_gradio.policy as policy
+    from hedron_gradio.policy import _host_is_private
+
+    def _getaddrinfo(
+        host: str, port: object, *args: object, **kwargs: object
+    ) -> list[tuple[Any, ...]]:
+        del port, args, kwargs
+        if str(host).strip().lower().rstrip(".") == "attacker.example":
+            return _addrinfo_for("169.254.169.254")
+        raise socket.gaierror(socket.EAI_NONAME, "not found")
+
+    monkeypatch.setattr(policy.socket, "getaddrinfo", _getaddrinfo)
+    assert _host_is_private("attacker.example") is False
+    cfg = GradioRemoteConfig.from_base_url("https://attacker.example", allow_private_hosts=False)
+    assert cfg.allow_private_hosts is False
+    with pytest.raises(GradioRemoteError, match="Private or loopback"):
+        validate_remote_url("https://attacker.example/latest/meta-data/", cfg)
+
+
+def test_validate_remote_url_blocks_mixed_public_and_private_answers(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import hedron_gradio.policy as policy
+
+    def _getaddrinfo(
+        host: str, port: object, *args: object, **kwargs: object
+    ) -> list[tuple[Any, ...]]:
+        del host, port, args, kwargs
+        return _addrinfo_for("8.8.8.8") + _addrinfo_for("127.0.0.1")
+
+    monkeypatch.setattr(policy.socket, "getaddrinfo", _getaddrinfo)
+    cfg = GradioRemoteConfig.from_base_url("https://mixed.example")
+    with pytest.raises(GradioRemoteError, match="resolved 127.0.0.1"):
+        validate_remote_url("https://mixed.example/run", cfg)
+
+
+def test_validate_remote_url_allows_private_dns_when_opted_in(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import hedron_gradio.policy as policy
+
+    monkeypatch.setattr(
+        policy.socket,
+        "getaddrinfo",
+        lambda host, port, *a, **k: _addrinfo_for("127.0.0.1"),
+    )
+    cfg = GradioRemoteConfig.from_base_url("https://internal.example", allow_private_hosts=True)
+    validate_remote_url("https://internal.example/run", cfg)
 
 
 def test_redact_sensitive_text() -> None:
