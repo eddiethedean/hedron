@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import socket
+import threading
 from collections.abc import Iterator
 
 import pytest
@@ -58,7 +59,7 @@ def browser_app_url() -> Iterator[str]:
     port = _free_port()
     config = uvicorn.Config(app, host="127.0.0.1", port=port, log_level="warning")
     server = uvicorn.Server(config)
-    thread = __import__("threading").Thread(target=server.run, daemon=True)
+    thread = threading.Thread(target=server.run, daemon=True)
     thread.start()
     wait_for_port(port)
     try:
@@ -68,12 +69,20 @@ def browser_app_url() -> Iterator[str]:
         thread.join(timeout=5)
 
 
-def test_form_keyboard_submit(browser_app_url: str) -> None:
+def _run_engine(browser_type: str, url: str) -> None:
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        launcher = getattr(playwright, browser_type)
+        browser = launcher.launch(headless=True)
         page = browser.new_page()
-        page.goto(browser_app_url)
+        page.goto(url)
         page.locator("form").first.focus()
         assert page.locator("label").count() >= 1
         browser.close()
-    assert True
+
+
+@pytest.mark.parametrize("engine", ["chromium", "firefox", "webkit"])
+def test_form_keyboard_submit(engine: str, browser_app_url: str) -> None:
+    selected = os.environ.get("HEDRON_BROWSER_ENGINE")
+    if selected and selected != engine:
+        pytest.skip(f"engine filter {selected}")
+    _run_engine(engine, browser_app_url)
