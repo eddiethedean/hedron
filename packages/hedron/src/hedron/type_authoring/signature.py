@@ -6,11 +6,29 @@ import inspect
 from collections.abc import Callable
 from typing import Annotated, Any
 
-from fastapi import File, Form, Path, Query
+from fastapi import File, Form, HTTPException, Path, Query, status
 
+from hedron.type_authoring.markers import FormBody
 from hedron.type_authoring.normalize import CompiledTypeHandler, FieldRecord
+from hedron_core.codes import HED_TYPE_0003
 
-__all__ = ["apply_modeled_signature", "reconstruct_kwargs"]
+__all__ = ["apply_modeled_signature", "reconstruct_kwargs", "reject_json_formbody"]
+
+
+def reject_json_formbody(compiled: CompiledTypeHandler, request: object | None) -> None:
+    """Refuse JSON as a silent empty FormBody (RFC-0071 / D-076)."""
+    if request is None or not compiled.modeled or not isinstance(compiled.source, FormBody):
+        return
+    headers = getattr(request, "headers", None)
+    raw = ""
+    if headers is not None:
+        raw = str(headers.get("content-type") or "")
+    media = raw.split(";", 1)[0].strip().lower()
+    if media == "application/json" or media.endswith("+json"):
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail=HED_TYPE_0003,
+        )
 
 
 def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) -> dict[str, Any]:

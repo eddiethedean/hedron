@@ -330,6 +330,7 @@ class HedronPagesMixin:
                 compile_command_class,
                 reconstruct_kwargs,
             )
+            from hedron.type_authoring.signature import reject_json_formbody
             from hedron_core.codes import HED_CMD_0002
             from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
@@ -357,6 +358,7 @@ class HedronPagesMixin:
                 call_kw = dict(kw)
                 meta = handle.type_meta
                 if meta is not None and getattr(meta, "modeled", False):
+                    reject_json_formbody(meta, current_request.get())
                     call_kw = reconstruct_kwargs(meta, call_kw)
                 result = await await_if_needed(fn(*args, **call_kw))
                 if meta is not None and getattr(meta, "outcomes", None):
