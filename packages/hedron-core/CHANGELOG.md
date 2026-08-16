@@ -11,6 +11,8 @@
 
 ### Fixed
 - Redis tag indexes with PTTL ``-1`` are not given a finite TTL by a later tagged write.
+- SafeUrl / ``contains_dangerous_scheme`` / icon scans NFKC-normalize like EVAL-020
+  so fullwidth ``javascript:`` / ``data:`` schemes fail closed (#281).
 
 ## [0.41.0] — Unreleased
 

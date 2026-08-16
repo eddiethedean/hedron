@@ -64,6 +64,11 @@ def test_attribute_escaping() -> None:
         "\ufeffjavascript:alert(1)",
         "\u202ejavascript:alert(1)",
         "java\u200cscript:alert(1)",
+        "ｊａｖａｓｃｒｉｐｔ:alert(1)",
+        "javascript：alert(1)",
+        "ｊａｖａｓｃｒｉｐｔ：alert(1)",
+        "javaｓcript:alert(1)",
+        "ｄａｔａ:text/html,hi",
         "//evil.example",
         "https://u:p@host.example/",
         "file:///etc/passwd",
@@ -117,6 +122,37 @@ def test_icon_rejects_scheme_smuggled_svg() -> None:
             source="unit-test",
         )
     assert exc.value.diagnostic.code == "HED-ICON-0003"
+
+
+@pytest.mark.security
+@pytest.mark.parametrize(
+    "payload",
+    [
+        "ｊａｖａｓｃｒｉｐｔ:alert(1)",
+        "javascript：alert(1)",
+        "ｊａｖａｓｃｒｉｐｔ：alert(1)",
+        "javaｓcript:alert(1)",
+        "ｄａｔａ:text/html,hi",
+        "ｖｂｓｃｒｉｐｔ:msgbox(1)",
+    ],
+)
+def test_fullwidth_dangerous_schemes_rejected(payload: str) -> None:
+    """#281: NFKC-fold fullwidth / mixed-width schemes on SafeUrl and icon scans."""
+    from hedron_core.icons import register_icon
+    from hedron_core.security import contains_dangerous_scheme
+
+    assert contains_dangerous_scheme(payload) is True
+    with pytest.raises(HedronError) as parsed:
+        SafeUrl.parse(payload, purpose=UrlPurpose.ASSET)
+    assert parsed.value.diagnostic.code == "HED-SEC-0001"
+    with pytest.raises(HedronError) as icon:
+        register_icon(
+            "evil-nfkc",
+            f'<svg xmlns="http://www.w3.org/2000/svg"><a href="{payload}">x</a></svg>',
+            title="Evil",
+            source="unit-test",
+        )
+    assert icon.value.diagnostic.code == "HED-ICON-0003"
 
 
 @pytest.mark.security

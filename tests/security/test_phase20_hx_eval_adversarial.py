@@ -17,6 +17,8 @@ from hedron_core.diagnostics import HedronError
         "{js:1}",
         "JS:{x:1}",
         "foo,js:bar",
+        "ｊｓ:1",
+        "js：1",
     ],
 )
 def test_adversarial_js_vals_rejected(value: str) -> None:
