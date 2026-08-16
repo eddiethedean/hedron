@@ -48,6 +48,51 @@ def test_csrf_required_and_wrong_target_403() -> None:
     assert bad.status_code == 403
 
 
+def test_hyphenated_sibling_view_is_not_an_instance_target() -> None:
+    app = make_app(security="standard")
+
+    @app.refreshable
+    def user():
+        return Text("user")
+
+    @app.refreshable
+    def user_admin():
+        return Text("admin")
+
+    client = TestClient(app)
+    ok = client.get(user.path, headers={"HX-Request": "true", "HX-Target": user.dom_id})
+    sibling = client.get(
+        user.path,
+        headers={"HX-Request": "true", "HX-Target": user_admin.dom_id},
+    )
+    other = client.get(user.path, headers={"HX-Request": "true", "HX-Target": "h-view-other"})
+    assert ok.status_code == 200
+    assert "user" in ok.text
+    assert sibling.status_code == 403
+    assert other.status_code == 403
+
+
+def test_bound_instance_host_remains_authorized() -> None:
+    app = make_app(security="development")
+
+    @app.refreshable
+    def item(item_id: str):
+        return Text(item_id)
+
+    bound = item.bind(item_id="42")
+    client = TestClient(app)
+    instance = client.get(
+        "/_hedron/views/item/42",
+        headers={"HX-Request": "true", "HX-Target": bound.dom_id},
+    )
+    assert instance.status_code == 200
+    fake = client.get(
+        "/_hedron/views/item/42",
+        headers={"HX-Request": "true", "HX-Target": "h-view-item-detail"},
+    )
+    assert fake.status_code == 403
+
+
 def test_foreign_handle_refresh_is_403() -> None:
     app = make_app(security="standard")
 

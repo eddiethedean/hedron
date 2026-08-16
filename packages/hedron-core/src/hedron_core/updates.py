@@ -79,6 +79,8 @@ MAX_EVENT_BYTES = 8192
 SUPPORTED_SWAPS = frozenset({"outerHTML", "innerHTML"})
 _LOGICAL_RE = re.compile(r"^[a-z][a-z0-9-]{0,62}$")
 _KEY_RE = re.compile(r"^[A-Za-z][\w:-]{0,63}$")
+# Bound instance suffix from ``instance_id(...)[2:]`` (20 lowercase RFC 4648 base32).
+_INSTANCE_TOKEN_RE = re.compile(r"^[a-z2-7]{20}$")
 
 HandleKind = Literal["view", "command"]
 EffectKnowledge = Literal["dynamic", "observed", "declared"]
@@ -125,7 +127,12 @@ def refresh_event_name(dom_id: str) -> str:
 
 
 def matches_declared_host(region: FragmentRegion, target: str | None) -> bool:
-    """Return True when ``target`` is this host or a bound instance of it."""
+    """Return True when ``target`` is this host or a bound instance of it.
+
+    Bound instances are ``{canonical}-{instance_token}`` where the token is the
+    20-character lowercase base32 suffix from ``instance_id``. A sibling view whose
+    logical id extends this one (``user`` vs ``user-admin``) must not match.
+    """
     if not target:
         return True
     if target.startswith("##"):
@@ -134,7 +141,12 @@ def matches_declared_host(region: FragmentRegion, target: str | None) -> bool:
     if not needle or "#" in needle:
         return False
     canonical = region.id if region.id.startswith("h-") else safe_dom_id(region.id)
-    return needle == canonical or needle.startswith(f"{canonical}-")
+    if needle == canonical:
+        return True
+    prefix = f"{canonical}-"
+    if not needle.startswith(prefix):
+        return False
+    return _INSTANCE_TOKEN_RE.fullmatch(needle[len(prefix) :]) is not None
 
 
 def generated_view_path(
