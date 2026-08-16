@@ -58,6 +58,7 @@ def _addr_is_private(addr: ipaddress.IPv4Address | ipaddress.IPv6Address) -> boo
 
 
 def _host_is_private(host: str) -> bool:
+    """True for loopback/private *literals* (not DNS). See ``_first_private_resolved_address``."""
     host = normalize_host(host)
     if host in {"localhost", "localhost.localdomain"}:
         return True
@@ -77,6 +78,43 @@ def _host_is_private(host: str) -> bool:
         return True
     embedded = _embedded_ipv4(addr)
     return embedded is not None and _addr_is_private(embedded)
+
+
+def _ip_literal(host: str) -> bool:
+    try:
+        socket.inet_aton(host)
+        return True
+    except OSError:
+        pass
+    try:
+        ipaddress.ip_address(host)
+        return True
+    except ValueError:
+        return False
+
+
+def _first_private_resolved_address(host: str) -> str | None:
+    """Return the first A/AAAA that is private, or ``None`` if DNS fails or is public.
+
+    Resolution is sampled at validation time. DNS TTL rebinding between this
+    check and the HTTP connect remains a residual unless ``allow_private_hosts``.
+    """
+    host = normalize_host(host)
+    if not host or _ip_literal(host):
+        return None
+    try:
+        records = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
+    except OSError:
+        return None
+    for _family, _type, _proto, _canon, sockaddr in records:
+        if not sockaddr:
+            continue
+        raw = str(sockaddr[0])
+        if "%" in raw:
+            raw = raw.split("%", 1)[0]
+        if _host_is_private(raw):
+            return raw
+    return None
 
 
 @dataclass(frozen=True)
@@ -135,6 +173,11 @@ def validate_remote_url(
     *,
     label: str = "destination",
 ) -> None:
+    """Reject disallowed scheme/host and private destinations unless opted in.
+
+    DNS names are resolved (A/AAAA) when ``allow_private_hosts`` is false so
+    an allowlisted name cannot point at loopback/link-local/metadata (#268).
+    """
     parsed = urlparse(url.strip())
     scheme = (parsed.scheme or "").lower()
     if scheme not in config.allowed_schemes:
@@ -147,8 +190,16 @@ def validate_remote_url(
     normalized = normalize_host(host)
     if normalized not in config.allowed_hosts:
         raise GradioRemoteError(f"Host {normalized!r} is not in the allowlist for {label}")
-    if not config.allow_private_hosts and _host_is_private(normalized):
+    if config.allow_private_hosts:
+        return
+    if _host_is_private(normalized):
         raise GradioRemoteError(f"Private or loopback host blocked for {label}: {normalized!r}")
+    resolved_private = _first_private_resolved_address(normalized)
+    if resolved_private is not None:
+        raise GradioRemoteError(
+            f"Private or loopback host blocked for {label}: {normalized!r} "
+            f"(resolved {resolved_private})"
+        )
 
 
 def redact_sensitive_text(text: str) -> str:

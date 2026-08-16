@@ -20,6 +20,24 @@ def test_metadata_endpoint_blocked() -> None:
         validate_remote_url("https://169.254.169.254/latest/meta-data/", config)
 
 
+def test_allowlisted_dns_to_metadata_is_blocked(monkeypatch: pytest.MonkeyPatch) -> None:
+    """#268: hostname-only private checks cannot bypass link-local SSRF."""
+    import socket
+
+    import hedron_gradio.policy as policy
+
+    monkeypatch.setattr(
+        policy.socket,
+        "getaddrinfo",
+        lambda host, port, *a, **k: [
+            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("169.254.169.254", 0))
+        ],
+    )
+    config = GradioRemoteConfig.from_base_url("https://attacker.example")
+    with pytest.raises(GradioRemoteError, match="Private or loopback"):
+        validate_remote_url("https://attacker.example/latest/meta-data/", config)
+
+
 def test_adapter_requires_allowlisted_base_when_enabled() -> None:
     adapter = GradioClientAdapter(
         "https://allowed.example.invalid",
