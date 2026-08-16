@@ -35,6 +35,36 @@ def test_composition_edge_bounds_and_trace_privacy() -> None:
         detail_keys=("query",),
     )
     assert edge.as_payload()["fallback"] == "native"
+    with pytest.raises(ValueError, match="invalid concurrency"):
+        CompositionEdge(
+            id="e1",
+            event="ev",
+            action="act",
+            target="t1",
+            concurrency="noop",  # type: ignore[arg-type]
+        )
+
+
+def test_composition_edge_payload_matches_js_runner_schema() -> None:
+    """#256: as_payload must emit camelCase keys the JS runner reads."""
+    edge = CompositionEdge(
+        id="e1",
+        event="ev",
+        action="act",
+        target="t1",
+        detail_keys=("x",),
+        max_depth=4,
+        max_payload_bytes=128,
+        concurrency="queue",
+    )
+    payload = edge.as_payload()
+    assert payload["detailKeys"] == ["x"]
+    assert payload["maxDepth"] == 4
+    assert payload["maxPayloadBytes"] == 128
+    assert payload["concurrency"] == "queue"
+    assert "detail_keys" not in payload
+    assert "max_depth" not in payload
+    assert "max_payload_bytes" not in payload
     assert (
         BrowserTrace(correlation_id="c1", element_id="e1", outcome="success").as_payload()[
             "outcome"
