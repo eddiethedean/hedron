@@ -46,6 +46,7 @@ class Hedron(HedronPagesMixin, FastAPI):
             ``None`` follows the security profile and optional ``[tool.hedron]`` settings.
         session_secret: Secret for Starlette session cookies. Replace the development
             default before production; ``strict`` requires an explicit value.
+            ``None`` is refused when ``enable_sessions`` is ``True``.
         enable_sessions: When ``True`` (default), install ``SessionMiddleware``.
         explorer_dependencies: FastAPI dependencies required for ``secured`` Explorer.
         theme: Registered theme name (``default`` when unchanged).
@@ -70,7 +71,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         *args: Any,
         security: SecurityProfileName | str | SecurityPolicy = "standard",
         explorer: ExplorerMode | str | None = None,
-        session_secret: str = DEFAULT_SESSION_SECRET,
+        session_secret: str | None = DEFAULT_SESSION_SECRET,
         enable_sessions: bool = True,
         explorer_dependencies: Sequence[DependsParam] | None = None,
         theme: str | None = "default",
@@ -122,7 +123,8 @@ class Hedron(HedronPagesMixin, FastAPI):
         assert_production_security_config(
             production=is_prod,
             security_profile=self.hedron_policy.profile.value,
-            session_secret=session_secret if enable_sessions else None,
+            session_secret=session_secret,
+            sessions_enabled=enable_sessions,
             explorer_mode=self.hedron_explorer_mode,
             allow_external_redirects=self.hedron_policy.allow_external_redirects,
             content_security_policy=self.hedron_policy.content_security_policy,

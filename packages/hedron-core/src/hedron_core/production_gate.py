@@ -141,12 +141,16 @@ def assert_production_security_config(
     allow_external_redirects: bool = False,
     content_security_policy: str | None = None,
     risk_acceptance: Iterable[str] | None = None,
+    sessions_enabled: bool = True,
 ) -> None:
     """Fail closed on insecure production configuration unless risks are accepted.
 
     Accepted risks are listed in ``HEDRON_SECURITY_RISK_ACCEPTANCE`` (or ``risk_acceptance``)
     as comma-separated codes: ``weak-session-secret``, ``security-development``,
     ``explorer-development``, ``external-redirects``, ``missing-csp``.
+
+    Pass ``sessions_enabled=False`` when the app will not install session middleware
+    so a missing ``session_secret`` is not treated as a weak secret (#260).
     """
     if not is_production_env(production=production):
         return
@@ -158,7 +162,7 @@ def assert_production_security_config(
     )
     failures: list[tuple[str, str]] = []
 
-    if session_secret is not None and _is_weak_secret(session_secret):
+    if sessions_enabled and (session_secret is None or _is_weak_secret(session_secret)):
         failures.append(
             (
                 RISK_WEAK_SECRET,

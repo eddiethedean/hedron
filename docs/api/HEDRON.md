@@ -41,7 +41,7 @@ def home() -> Page:
 |---|---|---|---|
 | `security` | `"development"` \| `"standard"` \| `"strict"` \| `SecurityPolicy` | `"standard"` | Security profile or explicit policy |
 | `explorer` | `"off"` \| `"development"` \| `"secured"` \| `None` | `None` | `None` follows policy / `[tool.hedron] explorer`; production forces `development` off |
-| `session_secret` | `str` | development default | Required for production; `strict` refuses the built-in default |
+| `session_secret` | `str` \| `None` | development default | Required when `enable_sessions=True` (`None` is refused). Production rejects missing/weak values; `strict` refuses the built-in default |
 | `enable_sessions` | `bool` | `True` | Install Starlette `SessionMiddleware` |
 | `explorer_dependencies` | sequence of FastAPI dependencies | `()` | Applied to Explorer when `explorer="secured"` |
 | `theme` | `str` \| `None` | `"default"` | Registered theme name for lifespan/build |
@@ -122,12 +122,14 @@ may use `FastAPI` plus `HedronRouter` without this class.
 | Registry / plugin collision | Startup failure with subsystem + source |
 | Missing production manifest | `HED-BUILD-0003` (or related); refuse start |
 | Default `session_secret` under `strict` | Startup failure |
+| `session_secret=None` with sessions enabled | Startup failure |
 | Invalid CSRF on unsafe action | HTTP 403 |
 | Unauthorized fragment region / OOB | HTTP 403 |
 
 Startup fails for registry collisions, incompatible plugins, invalid component routes,
-asset conflicts, compiler errors, missing production manifests, or a default session
-secret under `strict`. Errors identify the responsible subsystem and source.
+asset conflicts, compiler errors, missing production manifests, a default session
+secret under `strict`, or `session_secret=None` when sessions are enabled. Errors identify
+the responsible subsystem and source.
 
 ## See also
 

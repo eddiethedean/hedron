@@ -37,7 +37,7 @@ SLA**. Confirm your intended surfaces against [What's ready](whats-ready.md).
 4. HTTPS + sticky sessions or external session/CSRF/job store for multi-worker
 5. Under `HEDRON_ENV=production`, configure durable `set_job_backend` / `set_cache_backend`
    (in-memory backends are refused at app startup)
-6. Production also fail-closes on weak/`replace-in-production` secrets, `security="development"`,
+6. Production also fail-closes on missing/weak/`replace-in-production` secrets, `security="development"`,
    Explorer development mode, open external redirects, and missing CSP unless you set
    `HEDRON_SECURITY_RISK_ACCEPTANCE` to a comma-separated list of explicit risk codes
    (`weak-session-secret`, `security-development`, `explorer-development`,

@@ -22,13 +22,17 @@ class _SessionHost(Protocol):
 def configure_sessions(
     app: _SessionHost,
     *,
-    session_secret: str,
+    session_secret: str | None,
     enable_sessions: bool,
     is_prod: bool,
     mount_cookie_path: str,
 ) -> None:
     """Install session cookies when enabled; warn or reject the development secret."""
     if enable_sessions:
+        if session_secret is None:
+            raise ValueError(
+                "enable_sessions=True requires a session_secret; do not pass session_secret=None."
+            )
         if (
             session_secret == DEFAULT_SESSION_SECRET
             and app.hedron_policy.profile is SecurityProfile.STRICT

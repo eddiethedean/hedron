@@ -9,6 +9,9 @@
 - Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
 - Internal module split; public imports unchanged.
 
+### Fixed
+- ``Hedron(session_secret=None)`` is refused when sessions are enabled instead of
+  installing ``SessionMiddleware(secret_key=None)`` (#260).
 ## [0.41.0] — Unreleased
 
 - Phase 0.41 browser composition, bounded draft transfer, navigation, tracing, failure isolation, and regression closure (D-069).

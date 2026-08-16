@@ -21,6 +21,8 @@
   stored owner credentials to ``JobBackend`` (#264).
 - SMIL remote-href scanning ignores attribute order and rejects ``values=``
   keyframes the same as ``to=`` (#261).
+- Production security gate treats a missing ``session_secret`` as insecure when
+  sessions are enabled; pass ``sessions_enabled=False`` to skip (#260).
 
 ## [0.41.0] — Unreleased
 
