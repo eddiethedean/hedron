@@ -19,6 +19,8 @@
 - ``InferencePolicy.request_cancel`` requires caller ``auth_subject`` /
   ``tenant_id`` matching the request (``job_authorized_http``) and never replays
   stored owner credentials to ``JobBackend`` (#264).
+- SMIL remote-href scanning ignores attribute order and rejects ``values=``
+  keyframes the same as ``to=`` (#261).
 
 ## [0.41.0] — Unreleased
 
