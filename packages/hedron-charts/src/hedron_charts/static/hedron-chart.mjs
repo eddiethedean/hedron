@@ -214,8 +214,16 @@ function renderCanvas(el, plan) {
   return wrap;
 }
 
+function dropKeydown(el) {
+  if (el._hedronChartKeydown) {
+    el.removeEventListener("keydown", el._hedronChartKeydown);
+    el._hedronChartKeydown = null;
+  }
+}
+
 function cleanup(el) {
   el._hedronChartGen = (el._hedronChartGen || 0) + 1;
+  dropKeydown(el);
   if (el._hedronChartRo) {
     try {
       el._hedronChartRo.disconnect();
@@ -260,11 +268,14 @@ function mount(el) {
     el._hedronChartRo.observe(el);
   }
 
-  el.addEventListener("keydown", function onKey(ev) {
+  function onKey(ev) {
     if (el._hedronChartGen !== gen) return;
     if (ev.key === "Escape") emit(el, "reset", {});
     if (ev.key === "Enter") emit(el, "inspect", {});
-  });
+  }
+  dropKeydown(el);
+  el._hedronChartKeydown = onKey;
+  el.addEventListener("keydown", onKey);
 }
 
 class HedronChart extends HTMLElement {

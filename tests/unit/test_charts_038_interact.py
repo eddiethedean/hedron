@@ -40,3 +40,11 @@ def test_element_emits_versioned_event_names() -> None:
     for kind in ("inspect", "focus", "select", "reset"):
         assert "hedron-chart-" in src
         assert f'"{kind}"' in src or f"'{kind}'" in src or f'emit(el, "{kind}"' in src
+
+
+def test_keydown_listener_removed_on_cleanup() -> None:
+    """#270: remounts must not stack keydown listeners."""
+    src = chart_module_path().read_text(encoding="utf-8")
+    assert 'removeEventListener("keydown"' in src
+    assert "_hedronChartKeydown" in src
+    assert "dropKeydown" in src
