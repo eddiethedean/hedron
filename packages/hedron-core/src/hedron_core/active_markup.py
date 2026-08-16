@@ -38,12 +38,43 @@ _CSS_IMPORT = re.compile(
     r"@import\b[^;]*?(?:url\s*\(\s*)?[\"']?\s*(?:https?:)?//",
     re.IGNORECASE,
 )
-# SMIL set/animate that mutates href/xlink:href to a remote target (#239).
-_SMIL_REMOTE_HREF = re.compile(
-    r"<(?:set|animate|animateTransform)\b[^>]*\battributeName\s*=\s*[\"']?\s*"
-    r"(?:xlink:)?href\b[^>]*\bto\s*=\s*[\"']?\s*(?:https?:)?//",
+# SMIL set/animate/animateTransform elements (#239 / #261).
+_SMIL_ELEMENT = re.compile(
+    r"<(?:set|animate|animateTransform)\b(?P<attrs>[^>]*)>",
     re.IGNORECASE,
 )
+_SMIL_ATTR = re.compile(
+    r"""\b(?P<name>[\w:.-]+)\s*=\s*(?:"(?P<dquot>[^"]*)"|'(?P<squot>[^']*)'|(?P<bare>[^\s>]+))""",
+    re.IGNORECASE,
+)
+_REMOTE_URL_START = re.compile(r"(?:https?:)?//", re.IGNORECASE)
+
+
+def _attr_value(match: re.Match[str]) -> str:
+    return match.group("dquot") or match.group("squot") or match.group("bare") or ""
+
+
+def _smil_remote_href_mutation(payload: str) -> bool:
+    """True when SMIL assigns a remote URL to href / xlink:href via to= or values=.
+
+    Attribute order is irrelevant. ``values`` keyframes are split on ``;``.
+    """
+    for element in _SMIL_ELEMENT.finditer(payload):
+        attrs = {
+            m.group("name").lower(): _attr_value(m)
+            for m in _SMIL_ATTR.finditer(element.group("attrs"))
+        }
+        attr_name = attrs.get("attributename", "").strip().lower()
+        if attr_name not in {"href", "xlink:href"}:
+            continue
+        assignments: list[str] = []
+        if "to" in attrs:
+            assignments.append(attrs["to"])
+        if "values" in attrs:
+            assignments.extend(attrs["values"].split(";"))
+        if any(_REMOTE_URL_START.match(part.strip()) is not None for part in assignments):
+            return True
+    return False
 
 
 def _scan_payload(payload: str) -> str | None:
@@ -59,7 +90,7 @@ def _scan_payload(payload: str) -> str | None:
         return "event handler attribute"
     if _SMIL_ON_ATTR.search(payload) is not None:
         return "SMIL event handler attribute"
-    if _SMIL_REMOTE_HREF.search(payload) is not None:
+    if _smil_remote_href_mutation(payload):
         return "SMIL remote href mutation"
     if _REMOTE_HREF.search(payload) is not None:
         return "remote href"

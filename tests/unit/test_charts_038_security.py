@@ -1,4 +1,4 @@
-"""SECURITY-038 adversarial suite + remediations #75/#81/#201/#239."""
+"""SECURITY-038 adversarial suite + remediations #75/#81/#201/#239/#261."""
 
 from __future__ import annotations
 
@@ -33,6 +33,28 @@ def test_smil_remote_href_mutation_rejected() -> None:
     payload = '<svg><set attributeName="href" to="https://evil.example/x" begin="0s" /></svg>'
     reason = active_markup_reason(payload)
     assert reason in {"SMIL remote href mutation", "remote href"}
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        '<set to="https://evil.example/x" attributeName="href"/>',
+        '<animate attributeName="href" values="//evil.example/a"/>',
+        '<set to="//evil.example/x" attributeName="xlink:href"/>',
+        '<animateTransform values="#ok;https://evil.example/a" attributeName="href"/>',
+        "<set to=https://evil.example/x attributeName=href />",
+    ],
+)
+def test_smil_remote_href_ignores_attribute_order_and_values(payload: str) -> None:
+    """#261: order of to=/values= vs attributeName must not bypass the #239 guard."""
+    assert active_markup_reason(payload) == "SMIL remote href mutation"
+    with pytest.raises(HedronError):
+        reject_active_svg(f"<svg>{payload}</svg>")
+
+
+def test_smil_local_href_mutation_is_not_remote() -> None:
+    assert active_markup_reason('<set to="#frag" attributeName="href"/>') is None
+    assert active_markup_reason('<animate attributeName="href" values="#a;#b"/>') is None
 
 
 def test_spec_pollution_and_callbacks() -> None:
