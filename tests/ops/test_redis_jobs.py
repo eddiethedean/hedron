@@ -114,6 +114,9 @@ class _SharedPipeline:
     ) -> None:
         self._buffer.append(("set", (key, value), {"ex": ex, "nx": nx}))
 
+    def delete(self, key: str) -> None:
+        self._buffer.append(("delete", (key,), {}))
+
     def execute(self) -> list[object]:
         for watched_key, watched_value in self._watched.items():
             current = self._client._store.get(watched_key)
@@ -124,6 +127,8 @@ class _SharedPipeline:
         for op, args, kwargs in self._buffer:
             if op == "set":
                 results.append(self._client.set(args[0], args[1], **kwargs))  # type: ignore[arg-type]
+            elif op == "delete":
+                results.append(self._client.delete(str(args[0])))
         self.unwatch()
         return results
 
@@ -269,3 +274,50 @@ def test_cleanup_expired_drops_idempotency_when_still_owner() -> None:
     assert backend.cleanup_expired(older_than_seconds=10) == 1
     assert shared.get(f"h1:job:{handle.job_id}") is None
     assert shared.get(idem_key) is None
+
+
+def test_status_store_release_preserves_newer_idempotency_owner() -> None:
+    """#269: concurrent SET NX after reclaim starts must not delete the new pointer."""
+    from hedron_core.job_status_store import RedisStatusStore
+
+    class _RacyEval(_SharedRedis):
+        def eval(self, script: str, numkeys: int, *args: object) -> object:
+            key = str(args[0])
+            expected = str(args[1])
+            if self._store.get(key) == expected:
+                self._store[key] = "job-b"
+            return super().eval(script, numkeys, *args)
+
+    shared: Any = _RacyEval()
+    store = RedisStatusStore(shared)  # type: ignore[arg-type]
+    handle, created = store.submit("demo", {}, idempotency_key="k1", tenant_id="t")
+    assert created is True
+    idem_key = next(k for k in shared._store if ":idem:" in k)
+    assert shared.get(idem_key) == handle.job_id
+
+    store.release_idempotency(handle.job_id)
+    assert shared.get(idem_key) == "job-b"
+
+
+def test_status_store_release_watch_fallback_preserves_newer_owner() -> None:
+    """#269: without EVAL, WATCH/MULTI delete must still fail closed on a newer owner."""
+    from hedron_core.job_status_store import RedisStatusStore
+
+    shared: Any = _SharedRedis()
+    shared.eval = None  # type: ignore[method-assign]
+    store = RedisStatusStore(shared)  # type: ignore[arg-type]
+    handle, created = store.submit("demo", {}, idempotency_key="k1", tenant_id="t")
+    assert created is True
+    idem_key = next(k for k in shared._store if ":idem:" in k)
+
+    original_get = shared.get
+
+    def _flip_then_get(key: str) -> str | None:
+        val = original_get(key)
+        if key == idem_key and val == handle.job_id:
+            shared._store[key] = "job-b"
+        return val
+
+    shared.get = _flip_then_get  # type: ignore[method-assign]
+    store.release_idempotency(handle.job_id)
+    assert original_get(idem_key) == "job-b"

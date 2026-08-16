@@ -35,6 +35,79 @@ ENQUEUE_FAILED_ERRORS = frozenset({CELERY_ENQUEUE_FAILED, RQ_ENQUEUE_FAILED})
 _TERMINAL = frozenset({JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED})
 _CANCEL_FORCE = frozenset({JobState.RUNNING, JobState.SUCCEEDED, JobState.FAILED})
 
+# Atomic owner check + delete for idempotency pointers (#236 / #269).
+_COMPARE_AND_DELETE_LUA = (
+    "if redis.call('get', KEYS[1]) == ARGV[1] then "
+    "return redis.call('del', KEYS[1]) else return 0 end"
+)
+
+
+def _decode_redis(raw: bytes | str | None) -> str | None:
+    if raw is None:
+        return None
+    if isinstance(raw, bytes):
+        return raw.decode("utf-8")
+    return str(raw)
+
+
+def _watch_error_type() -> type[BaseException]:
+    try:
+        from redis.exceptions import WatchError as _WatchError  # type: ignore[import-not-found]
+    except ImportError as exc:
+        raise RuntimeError(
+            "RedisStatusStore requires redis.exceptions.WatchError for CAS; "
+            "install redis-py or use a client with WATCH support."
+        ) from exc
+    return _WatchError
+
+
+def _is_watch_error(exc: BaseException) -> bool:
+    """True for redis-py WatchError and duplicate in-process stub classes."""
+    if type(exc).__name__ == "WatchError":
+        return True
+    try:
+        return isinstance(exc, _watch_error_type())
+    except RuntimeError:
+        return False
+
+
+def _compare_and_delete_if_owner(client: RedisClient, key: str, expected: str) -> bool:
+    """Delete ``key`` only when it still equals ``expected``.
+
+    Prefer Lua ``EVAL`` (atomic GET+DEL). Without ``eval``, WATCH/MULTI +
+    ``pipeline.delete``. Never GET-then-DELETE (#236 / #269).
+    """
+    eval_fn = getattr(client, "eval", None)
+    if callable(eval_fn):
+        result = eval_fn(_COMPARE_AND_DELETE_LUA, 1, key, expected)
+        return bool(result) and result != 0
+
+    pipeline_factory = getattr(client, "pipeline", None)
+    if not callable(pipeline_factory):
+        raise RuntimeError("idempotency compare-and-delete requires Redis EVAL or a WATCH pipeline")
+    pipe = cast(RedisPipeline, pipeline_factory())
+    deleter = getattr(pipe, "delete", None)
+    if not callable(deleter):
+        raise RuntimeError(
+            "idempotency compare-and-delete requires pipeline.delete when EVAL is unavailable"
+        )
+    for _ in range(8):
+        try:
+            pipe.watch(key)
+            pointed = _decode_redis(pipe.get(key) if hasattr(pipe, "get") else client.get(key))
+            if pointed != expected:
+                pipe.unwatch()
+                return False
+            pipe.multi()
+            deleter(key)
+            pipe.execute()
+            return True
+        except Exception as exc:
+            if _is_watch_error(exc):
+                continue
+            raise
+    return False
+
 
 def require_redis_status_client(client: RedisClient | None) -> RedisClient:
     """Refuse process-local durability claims when Redis is missing."""
@@ -85,11 +158,7 @@ class RedisStatusStore:
         return f"{self._prefix}idem:{scoped}"
 
     def _decode(self, raw: bytes | str | None) -> str | None:
-        if raw is None:
-            return None
-        if isinstance(raw, bytes):
-            return raw.decode("utf-8")
-        return str(raw)
+        return _decode_redis(raw)
 
     def _load(self, job_id: str) -> dict[str, object] | None:
         raw = self._decode(self._client.get(self._key(job_id)))
@@ -137,18 +206,7 @@ class RedisStatusStore:
                 "blind overwrite is not allowed for production job state."
             )
         pipe = cast(RedisPipeline, pipeline_factory())
-        watch_error: type[BaseException] | None = None
-        try:
-            from redis.exceptions import WatchError as _WatchError  # type: ignore[import-not-found]
-
-            watch_error = _WatchError
-        except ImportError:
-            watch_error = None
-        if watch_error is None:
-            raise RuntimeError(
-                "RedisStatusStore requires redis.exceptions.WatchError for CAS; "
-                "install redis-py or use a client with WATCH support."
-            )
+        _watch_error_type()  # fail closed without redis-py WatchError
         for _ in range(8):
             try:
                 pipe.watch(key)
@@ -186,7 +244,7 @@ class RedisStatusStore:
                 pipe.execute()
                 return True
             except Exception as exc:
-                if isinstance(exc, watch_error):
+                if _is_watch_error(exc):
                     continue
                 raise
         return False
@@ -232,8 +290,8 @@ class RedisStatusStore:
     def _release_idempotency_pointer(self, job_id: str, data: Mapping[str, object]) -> None:
         """Drop the idempotency pointer only when it still names ``job_id``.
 
-        Prefer Lua ``eval`` compare-and-delete so a concurrent submit cannot lose
-        a newer claim (#198 / #236).
+        Uses atomic compare-and-delete so a concurrent submit cannot lose a
+        newer claim (#198 / #236 / #269).
         """
         idem_key = self._idem_redis_key_from_data(data)
         if idem_key is None:
@@ -247,20 +305,7 @@ class RedisStatusStore:
                 )
             else:
                 return
-        pointed = self._decode(self._client.get(idem_key))
-        if pointed != job_id:
-            return
-        release = getattr(self._client, "eval", None)
-        if callable(release):
-            script = (
-                "if redis.call('get', KEYS[1]) == ARGV[1] then "
-                "return redis.call('del', KEYS[1]) else return 0 end"
-            )
-            release(script, 1, idem_key, job_id)
-            return
-        pointed_again = self._decode(self._client.get(idem_key))
-        if pointed_again == job_id:
-            self._client.delete(idem_key)
+        _compare_and_delete_if_owner(self._client, idem_key, job_id)
 
     def mark_enqueue_failed(self, job_id: str, *, error: str) -> JobStatus | None:
         """Mark FAILED for a broker enqueue miss and reclaim the idempotency key (#199)."""
@@ -309,16 +354,15 @@ class RedisStatusStore:
                         # Heal pre-fix stuck pointers: broker never accepted the task.
                         self.release_idempotency(status.job_id)
                         # Legacy pointers are not owned by release_idempotency().
-                        pointed = self._decode(self._client.get(candidate_key))
-                        if pointed == existing_raw:
-                            self._client.delete(candidate_key)
+                        _compare_and_delete_if_owner(self._client, candidate_key, existing_raw)
                         continue
                     return (
                         JobHandle(job_id=status.job_id, idempotency_key=idempotency_key),
                         False,
                     )
-                # The pointed-to job expired or was removed, so reclaim the key.
-                self._client.delete(candidate_key)
+                # The pointed-to job expired or was removed, so reclaim the key
+                # only if we still own it (concurrent SET NX may have claimed it).
+                _compare_and_delete_if_owner(self._client, candidate_key, existing_raw)
 
         job_id = secrets.token_urlsafe(12)
         now = time.time()
