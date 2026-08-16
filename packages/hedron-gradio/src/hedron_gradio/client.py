@@ -204,12 +204,12 @@ class GradioClientAdapter:
         assert self._artifact_store is not None
         if self.remote_config is not None and len(data) > self.remote_config.max_upload_bytes:
             raise GradioRemoteError("Upload exceeds configured max_upload_bytes")
-        return self._artifact_store.store(name, data)
+        return self._artifact_store.store(name, data, scope_key=self.scope_key)
 
     def download_artifact(self, artifact_id: str) -> bytes:
         self._require_enabled()
         assert self._artifact_store is not None
-        return self._artifact_store.fetch(artifact_id)
+        return self._artifact_store.fetch(artifact_id, scope_key=self.scope_key)
 
     def close(self) -> None:
         if self._artifact_store is not None:

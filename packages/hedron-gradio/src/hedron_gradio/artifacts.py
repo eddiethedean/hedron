@@ -19,11 +19,12 @@ _UNSAFE_NAME = re.compile(r"[\\/]|(?:\.\.)")
 class ArtifactRecord:
     name: str
     data: bytes
+    scope_key: str
     created_at: float = field(default_factory=time.monotonic)
 
 
 class ArtifactStore:
-    """Bounded artifact store with TTL eviction."""
+    """Bounded artifact store with TTL eviction and job-matching scope isolation."""
 
     def __init__(
         self,
@@ -67,7 +68,11 @@ class ArtifactStore:
         if record is not None:
             self._total_bytes -= len(record.data)
 
-    def store(self, name: str, data: bytes) -> str:
+    def _require_scope(self, record: ArtifactRecord, scope_key: str) -> None:
+        if record.scope_key != scope_key:
+            raise GradioRemoteError("Artifact scope mismatch")
+
+    def store(self, name: str, data: bytes, *, scope_key: str = "") -> str:
         self._evict_expired()
         self._validate_name(name)
         if len(data) > self._max_bytes:
@@ -78,22 +83,25 @@ class ArtifactStore:
         projected = self._total_bytes + len(data)
         if projected > self._max_bytes:
             raise GradioRemoteError("Artifact store capacity exceeded")
-        self._records[artifact_id] = ArtifactRecord(name=name, data=data)
+        self._records[artifact_id] = ArtifactRecord(name=name, data=data, scope_key=scope_key)
         self._total_bytes = projected
         return artifact_id
 
-    def fetch(self, artifact_id: str) -> bytes:
+    def fetch(self, artifact_id: str, *, scope_key: str = "") -> bytes:
         self._evict_expired()
         if not _ARTIFACT_ID.match(artifact_id):
             raise GradioRemoteError(f"Invalid artifact id: {artifact_id!r}")
         record = self._records.get(artifact_id)
         if record is None:
             raise GradioRemoteError(f"Unknown artifact id: {artifact_id}")
+        self._require_scope(record, scope_key)
         return record.data
 
-    def delete(self, artifact_id: str) -> bool:
-        if artifact_id not in self._records:
+    def delete(self, artifact_id: str, *, scope_key: str = "") -> bool:
+        record = self._records.get(artifact_id)
+        if record is None:
             return False
+        self._require_scope(record, scope_key)
         self._delete_unlocked(artifact_id)
         return True
 

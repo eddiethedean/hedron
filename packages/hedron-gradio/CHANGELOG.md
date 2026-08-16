@@ -12,6 +12,8 @@
 - Treat IPv4-mapped and IPv4-compatible IPv6 literals as their embedded IPv4 for private-host checks.
 - ``validate_remote_url`` resolves A/AAAA and fails closed when any address is
   private/link-local unless ``allow_private_hosts`` is set (#268).
+- ``ArtifactStore`` binds the same tenant/auth ``scope_key`` as jobs so
+  download/delete fail closed across principals (#267).
 
 ## [0.2.0] — 2026-08-13
 

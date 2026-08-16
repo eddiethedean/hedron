@@ -76,3 +76,22 @@ def test_path_traversal_artifact_id_rejected() -> None:
     adapter.download_artifact(file_id)
     with pytest.raises(GradioRemoteError, match="Invalid artifact id"):
         adapter.download_artifact("../../../etc/passwd")
+
+
+def test_artifact_download_fails_closed_across_tenant() -> None:
+    """#267: shared ArtifactStore ids are not readable after a principal change."""
+    adapter = GradioClientAdapter(
+        "https://demo.example.invalid",
+        enabled=True,
+        remote_config=GradioRemoteConfig.from_base_url(
+            "https://demo.example.invalid",
+            allow_private_hosts=True,
+        ),
+        tenant_id="tenant-a",
+        auth_subject="alice",
+    )
+    file_id = adapter.upload_file("secret.txt", b"tenant-a-secret")
+    adapter.tenant_id = "tenant-b"
+    adapter.auth_subject = "bob"
+    with pytest.raises(GradioRemoteError, match="Artifact scope mismatch"):
+        adapter.download_artifact(file_id)
