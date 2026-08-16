@@ -70,6 +70,57 @@ def test_file_and_http_uri_schemes_rejected() -> None:
         projection.register_resource(McpResource(uri="https://evil.example/x", name="remote"))
 
 
+@pytest.mark.parametrize(
+    "uri",
+    [
+        "javascript:alert(1)",
+        "JAVASCRIPT:alert(1)",
+        "vbscript:msgbox(1)",
+        "blob:http://example/uuid",
+        "data:text/html,hi",
+        "ftp://evil.example/x",
+        "java%73cript:alert(1)",
+    ],
+)
+def test_executable_and_remote_uri_schemes_rejected(uri: str) -> None:
+    """#282: deny-by-default URI policy rejects executable/remote schemes."""
+    projection = McpProjection(enabled=True)
+    with pytest.raises(AuthorizationError, match="excluded"):
+        projection.register_resource(McpResource(uri=uri, name="x"))
+    with pytest.raises(AuthorizationError, match="excluded"):
+        projection.read_resource(uri, principal="alice")
+
+
+@pytest.mark.parametrize(
+    "uri",
+    [
+        "hedron://x/%2e%2e/secret",
+        "hedron://x/%2E%2E/secret",
+        "hedron://x/%2e%2e%2fsecret",
+        "hedron://x/%252e%252e/secret",
+        "hedron://x/.%2e/secret",
+        "hedron://x/%2e./secret",
+        "hedron://x/foo/../secret",
+        "/absolute/path",
+        "%2fetc/passwd",
+    ],
+)
+def test_percent_encoded_uri_path_traversal_rejected(uri: str) -> None:
+    """#282: decode percent-encoding before rejecting path traversal."""
+    projection = McpProjection(enabled=True)
+    with pytest.raises(AuthorizationError, match="traversal"):
+        projection.register_resource(McpResource(uri=uri, name="x"))
+    with pytest.raises(AuthorizationError, match="traversal"):
+        projection.read_resource(uri, principal="alice")
+
+
+def test_hedron_resource_uri_still_registers() -> None:
+    projection = McpProjection(enabled=True)
+    projection.register_resource(McpResource(uri="hedron://page/home", name="home"))
+    payload = projection.read_resource("hedron://page/home", principal="alice")
+    assert "home" in payload["text"]
+
+
 def test_origin_allowlist_blocks_exfiltration_origin() -> None:
     app = Starlette()
     projection = McpProjection(
