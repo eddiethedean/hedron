@@ -61,6 +61,16 @@ def _watch_error_type() -> type[BaseException]:
     return _WatchError
 
 
+def _is_watch_error(exc: BaseException) -> bool:
+    """True for redis-py WatchError and duplicate in-process stub classes."""
+    if type(exc).__name__ == "WatchError":
+        return True
+    try:
+        return isinstance(exc, _watch_error_type())
+    except RuntimeError:
+        return False
+
+
 def _compare_and_delete_if_owner(client: RedisClient, key: str, expected: str) -> bool:
     """Delete ``key`` only when it still equals ``expected``.
 
@@ -75,7 +85,6 @@ def _compare_and_delete_if_owner(client: RedisClient, key: str, expected: str) -
     pipeline_factory = getattr(client, "pipeline", None)
     if not callable(pipeline_factory):
         raise RuntimeError("idempotency compare-and-delete requires Redis EVAL or a WATCH pipeline")
-    watch_error = _watch_error_type()
     pipe = cast(RedisPipeline, pipeline_factory())
     deleter = getattr(pipe, "delete", None)
     if not callable(deleter):
@@ -94,7 +103,7 @@ def _compare_and_delete_if_owner(client: RedisClient, key: str, expected: str) -
             pipe.execute()
             return True
         except Exception as exc:
-            if isinstance(exc, watch_error):
+            if _is_watch_error(exc):
                 continue
             raise
     return False
@@ -197,7 +206,7 @@ class RedisStatusStore:
                 "blind overwrite is not allowed for production job state."
             )
         pipe = cast(RedisPipeline, pipeline_factory())
-        watch_error = _watch_error_type()
+        _watch_error_type()  # fail closed without redis-py WatchError
         for _ in range(8):
             try:
                 pipe.watch(key)
@@ -235,7 +244,7 @@ class RedisStatusStore:
                 pipe.execute()
                 return True
             except Exception as exc:
-                if isinstance(exc, watch_error):
+                if _is_watch_error(exc):
                     continue
                 raise
         return False
