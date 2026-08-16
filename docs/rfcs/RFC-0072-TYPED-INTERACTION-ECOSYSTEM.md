@@ -3,14 +3,20 @@
 **Status:** Accepted<br>
 **Target phase:** 0.45 (`v0.45.0`)<br>
 **Decision:** D-074<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.44.0`<br>
+**Stage 0 contract refine:** D-077<br>
+**Planning baseline:** Published in-tree `v0.44.0` (D-077; original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.44.0`<br>
 **Extends:** RFC-0007, RFC-0014, RFC-0015, RFC-0016, RFC-0019, RFC-0024, RFC-0031,
 RFC-0043, RFC-0049, RFC-0060, RFC-0064, RFC-0066, RFC-0070, and RFC-0071<br>
 **Forward extension:** RFC-0073 / D-075 (phase 0.46 package-native typed workflows)
 
-D-076's 0.44 Stage 0 contract refine does not change this RFC's catalog/manifest/projection
-authority or 0.45 Stage 0/Stage 1 gates.
+**Revision:** 2026-08-16 — D-077 contract refine against Published in-tree `v0.44.0`:
+planning baseline rebased, catalog/manifest/host locks recorded, real 0.43 descriptor
+and 0.44 `TypeSchema` seams named. D-074 catalog/manifest/projection authority and
+gate IDs stay in scope. 0.46 authority is unchanged. Prior: Stage 0 packet written
+against Published `v0.42.0` while 0.43/0.44 were planned. D-076's 0.44 Stage 0
+contract refine did not change this RFC's catalog/manifest/projection authority.
+D-077 rebases planning facts only.
 
 ## Summary
 
@@ -251,8 +257,60 @@ explicit compatibility ranges rather than being forced onto a synthetic shared v
    0.46 without pre-implementing those features.
 7. **Can a projection change a route, form, effect, or outcome?** No. It can only describe how a
    package consumes the existing contract.
-8. **What is the cut baseline?** Verified `v0.44.0`; Published `v0.42.0` remains the planning
-   baseline until predecessor phases are implemented and cut.
+8. **What is the cut baseline?** Verified in-tree `v0.44.0`. Original Stage 0 planning used
+   Published `v0.42.0`. **D-077** rebases the living/planning baseline to Published in-tree
+   `v0.44.0`.
+
+## Resolved questions (D-077)
+
+1. **Does 0.45 still include CLASS-044 consumers as a third catalog kind?** No. CLASS-044 class
+   handlers stay in Verified 0.44 and index as ordinary `view`/`command` entries. D-077 does not
+   split class handlers, SCHEMA-044, FORM-044, or TOOLING-044 into 0.45.
+2. **Which 0.43 symbols does the catalog consume?** Shipped `FragmentHandle[BindT, ContentT]`,
+   `ActionHandle[InputT, ResultT]`, `BoundFragment[ContentT]`, `Patch[ContentT]`,
+   `BaseHandleDescriptor` (`kind` is `view` or `command`, `version=1`), `descriptor_fingerprint`,
+   `BindingAdapter` / `StructuralBindingAdapter` / `BindingPlan` / `BoundValues`, and explicit
+   `Form(action=handle, ...)`. Unmodeled handlers keep `StructuralBindingAdapter` and absent
+   type-extension fields.
+3. **How are fingerprints split?** `descriptor_fingerprint()` hashes the 0.43 base descriptor and
+   does **not** hash `effect` or `extensions`. Attaching `TypeSchema` updates `descriptor.effect`
+   and `extensions["hedron.type"]` without changing the base fingerprint.
+   `CatalogEntry.descriptor_fingerprint` copies that base fingerprint.
+   `CatalogEntry.type_schema_fingerprint` is `TypeSchema.stable_fingerprint()` over the redacted
+   `hedron.type` payload (SHA-256 canonical JSON, first 32 hex chars). A type-extension change
+   invalidates catalog/manifest/projections, not the base runtime. Wire lock:
+   [catalog-entry-045.toml](../acceptance/catalog-entry-045.toml).
+4. **What is the TypeSchema namespace the catalog indexes?** `hedron.type`,
+   `TYPE_SCHEMA_VERSION = 1`, via `type_schema_from_descriptor()`. Payload keys must not overlap
+   reserved base fields. The 0.44 payload lock remains
+   [type-schema-044.toml](../acceptance/type-schema-044.toml). Optional catalog references also
+   index `handler_fingerprint`, `model_fingerprint`, `boundary_sources`, `field_paths`,
+   `control_dispositions`, `sensitivity_flags`, `identity_flags`, `declared_target_ids`, and
+   `outcome_variant_ids` without becoming a second schema authority.
+5. **How does `effect_state` relate to 0.43/0.44 labels?** Catalog `effect_state` copies
+   `BaseHandleDescriptor.effect` (`dynamic` / `observed` / `declared`).
+   `TypeSchema.effect_knowledge` stays `dynamic` / `declared` only. Observed is never a
+   declaration. Unmodeled 0.43 entries keep coarse/dynamic/observed labels and absent type fields.
+6. **Where do symbols live?** Portable catalog/manifest/projection values
+   (`InteractionCatalog`, `CatalogEntry`, `InteractionManifest`, `PackageProjection`,
+   `ProjectionDisposition`, `ProjectionCapability`, `ProjectionProvider`, `CatalogVersionError`)
+   in `hedron-core`. FastAPI compiler/seal/app accessor/CLI/OpenAPI/scenarios
+   (`Hedron.interactions`) in `hedron`, re-exported like `TypeSchema`.
+7. **Do Flask/Django/Jinja gain FastAPI DI or TypeSchema production?** No. They remain
+   `projection_adapter` surfaces stacked on
+   [adapter-disposition-044.toml](../acceptance/adapter-disposition-044.toml). Portable facts and
+   host exceptions:
+   [host-portable-facts-045.toml](../acceptance/host-portable-facts-045.toml). Jinja helpers bind
+   to shipped `FragmentHandle.bind`, `ActionHandle.form()` (opted-in `FormBody` only), and
+   `Form(action=handle, ...)`. Templates never evaluate annotations or execute manifests.
+8. **Does 0.45 add form kinds or an OutcomeMap spelling?** No. `Control.kind` stays
+   [type-form-inventory-044.toml](../acceptance/type-form-inventory-044.toml). The builder
+   spelling remains `OutcomeMap(case(...), ...)`.
+9. **May Stage 1 start before the 0.44 PyPI/Git tag?** Yes for in-tree Verified 0.44 evidence.
+   A tracking issue is still required. Do not wait on `#318` or `#311` publish assets. Do not
+   start Stage 1 during this contract refine.
+10. **Does this refine change 0.46?** No. RFC-0073/D-075 authority and stage gates stay. D-077
+    does not rebase 0.46's Published `v0.42.0` planning baseline.
 
 ## Acceptance criteria
 

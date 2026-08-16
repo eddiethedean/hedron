@@ -1,5 +1,6 @@
 # Phase 0.45 typed interaction ecosystem evidence index.
-# Stage 0 requirements packet. Commands are reserved names until implemented.
+# Stage 0 contract packet, refined by D-077 against Published v0.44.0.
+# Commands are reserved names until implemented. Rows remain Planned.
 
 [[evidence]]
 id = "CATALOG-045"

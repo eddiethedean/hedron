@@ -1,18 +1,21 @@
 # Phase 0.45 implementation requirements — typed interaction ecosystem
 
-**Status:** Planned; Stage 0 requirements packet<br>
+**Status:** Planned; Stage 0 contract refined against Published in-tree `v0.44.0` (D-077)<br>
 **Target:** Hedron `v0.45.0`<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified Hedron `v0.44.0`<br>
-**Decision/RFC:** D-074 / [RFC-0072](../rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)<br>
+**Planning baseline:** Published in-tree `v0.44.0` (D-077; original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree Hedron `v0.44.0`<br>
+**Decision/RFC:** D-074, refined by D-077 / [RFC-0072](../rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)<br>
 **Public contract:** [INTERACTION_CATALOG](../api/INTERACTION_CATALOG.md)<br>
 **Capability inventory:**
-[`ecosystem-capability-inventory-045.toml`](../acceptance/ecosystem-capability-inventory-045.toml)
+[`ecosystem-capability-inventory-045.toml`](../acceptance/ecosystem-capability-inventory-045.toml)<br>
+**Entry lock:** [`catalog-entry-045.toml`](../acceptance/catalog-entry-045.toml)<br>
+**Manifest lock:** [`manifest-format-045.toml`](../acceptance/manifest-format-045.toml)<br>
+**Host lock:** [`host-portable-facts-045.toml`](../acceptance/host-portable-facts-045.toml)
 
 This document defines the implementation and verification requirements for the read-only
 interaction catalog, sealed manifest, package projections, host/tooling integration, and
 whole-fleet disposition program. Runtime work cannot begin until 0.43 and 0.44 are implemented and
-Verified.
+Verified. **D-077 does not authorize Stage 1.**
 
 ## Architecture
 
@@ -33,6 +36,16 @@ The compiler indexes existing artifacts; it does not reinterpret them. Runtime r
 validation, effects, outcomes, and response conversion continue using their 0.43/0.44 paths. A
 consumer that needs executable behavior resolves an entry back through the live app-owned registry
 and repeats normal policy checks.
+
+D-077 binds the compiler to shipped seams rather than planned names:
+`FragmentHandle[BindT, ContentT]`, `ActionHandle[InputT, ResultT]`, `BoundFragment[ContentT]`,
+`Patch[ContentT]`, `BaseHandleDescriptor`, `descriptor_fingerprint`, `BindingAdapter` /
+`StructuralBindingAdapter` / `BindingPlan` / `BoundValues`, explicit `Form(action=handle, ...)`,
+`TypeSchema` under `hedron.type`, and `OutcomeMap(case(...), ...)`.
+`descriptor_fingerprint()` does not hash `effect` or `extensions`; type-extension fingerprints
+are separate.
+
+The D-077 refine does not authorize Stage 1.
 
 ## Package boundaries
 
@@ -58,12 +71,17 @@ the flagship must not eagerly import them.
 
 ### Catalog compiler and lifecycle (`EC-CAT-*`)
 
-- **EC-CAT-001:** one compiler consumes the sealed registry's public 0.43 base descriptors and
-  optional fingerprint-matching 0.44 `TypeSchema` extensions; consumers may not independently
-  reconstruct catalog entries.
+- **EC-CAT-001:** one compiler consumes the sealed registry's public 0.43 `BaseHandleDescriptor`
+  values and optional fingerprint-matching 0.44 `TypeSchema` extensions under `hedron.type`
+  (`type_schema_from_descriptor()`); consumers may not independently reconstruct catalog entries.
+  Field/fingerprint lock:
+  [`catalog-entry-045.toml`](../acceptance/catalog-entry-045.toml).
 - **EC-CAT-002:** `CatalogEntry` is immutable, deterministic, JSON-projectable, and records logical
-  id, kind, descriptor/type versions and fingerprints, effect-state label, capabilities,
-  limitations, projections, and redacted provenance.
+  id, kind (`view`/`command` from `BaseHandleDescriptor.kind`), descriptor/type versions and
+  fingerprints, effect-state copied from `BaseHandleDescriptor.effect`, optional TypeSchema
+  references (`handler_fingerprint`, `model_fingerprint`, `boundary_sources`, `field_paths`,
+  `control_dispositions`, `sensitivity_flags`, `identity_flags`, `declared_target_ids`,
+  `outcome_variant_ids`), capabilities, limitations, projections, and redacted provenance.
 - **EC-CAT-003:** descriptor fields remain authoritative and are referenced rather than copied into
   an independently mutable routing/security model; disagreement is a stale-catalog error.
 - **EC-CAT-004:** the catalog follows the existing registration/seal lifecycle, rejects mutation
@@ -77,7 +95,8 @@ the flagship must not eagerly import them.
 - **EC-CAT-008:** catalog entries contain no callbacks, request/model/dependency instances,
   credentials, current input values, arbitrary HTML/scripts, or raw sensitive identity material.
 - **EC-CAT-009:** applications with only unmodeled 0.43 handlers receive valid entries with absent
-  type-extension fields and dynamic/observed effect labels, not false type precision.
+  type-extension fields and dynamic/observed effect labels copied from the descriptor, not false
+  type precision. CLASS-044 class handlers remain the same `view`/`command` kinds.
 - **EC-CAT-010:** app/registry/catalog fingerprints make cross-app or stale entry reuse fail clearly;
   logical ids and fingerprints are not authorization capabilities.
 
@@ -85,7 +104,8 @@ the flagship must not eagerly import them.
 
 - **EC-MAN-001:** `InteractionManifest` has an independent format version, canonical JSON
   serialization, deterministic whole-document fingerprint, entry/projection fingerprints, and
-  explicit application/catalog provenance.
+  explicit application/catalog provenance. Format lock:
+  [`manifest-format-045.toml`](../acceptance/manifest-format-045.toml).
 - **EC-MAN-002:** production, development, and conformance profiles have closed redaction rules;
   development-only source detail cannot leak into production output.
 - **EC-MAN-003:** manifest ordering and numeric/string/Unicode normalization are specified and
@@ -134,7 +154,11 @@ the flagship must not eagerly import them.
 - **EC-HOST-001:** FastAPI catalog entries reflect the existing 0.43/0.44 route, dependency,
   OpenAPI, validation, response, and security paths without adding a parallel request parser.
 - **EC-HOST-002:** Flask and Django project the portable descriptor/type/effect/outcome subset and
-  record machine-readable host capability exceptions.
+  record machine-readable host capability exceptions. They remain `projection_adapter` surfaces
+  stacked on
+  [`adapter-disposition-044.toml`](../acceptance/adapter-disposition-044.toml); they do not become
+  FastAPI DI or TypeSchema producers. Portable fact lock:
+  [`host-portable-facts-045.toml`](../acceptance/host-portable-facts-045.toml).
 - **EC-HOST-003:** adapter projections use each host's public reversal, request, session, CSRF,
   response, async, and mount contracts; they do not emulate FastAPI dependency injection.
 - **EC-HOST-004:** equivalent portable fixtures produce the same logical ids, semantic fingerprints,
@@ -151,7 +175,9 @@ the flagship must not eagerly import them.
 ### Authoring and plugin integration (`EC-AUTHOR-*`)
 
 - **EC-AUTHOR-001:** Jinja helpers accept registered handles/bound handles or catalog logical ids
-  through an explicit environment binding; templates never execute raw manifest records.
+  through an explicit environment binding; templates never execute raw manifest records. Helpers
+  bind to shipped `FragmentHandle.bind`, `ActionHandle.form()` (opted-in `FormBody` only), and
+  `Form(action=handle, ...)`.
 - **EC-AUTHOR-002:** Jinja view/form helpers preserve normal reversal, target, CSRF, fallback,
   validation, escaping, and async rendering behavior without annotation evaluation.
 - **EC-AUTHOR-003:** missing, stale, foreign-app, wrong-kind, or unsupported catalog references fail
@@ -309,8 +335,8 @@ the flagship must not eagerly import them.
 
 ### Quality, compatibility, and release (`EC-QUAL-*`)
 
-- **EC-QUAL-001:** unchanged Published 0.42 and future Verified 0.43/0.44 applications pass; catalog
-  unused means no behavioral reinterpretation.
+- **EC-QUAL-001:** unchanged Published 0.42, Published 0.43 unmodeled-handle, and Published 0.44
+  modeled applications pass; catalog unused means no behavioral reinterpretation.
 - **EC-QUAL-002:** the frozen 0.43/0.44 descriptor/type/binding/form/effect/outcome handoff fixtures
   remain authoritative after catalog/projection attachment.
 - **EC-QUAL-003:** every first-party package/runtime has a machine-readable disposition, owner,
@@ -340,8 +366,13 @@ the flagship must not eagerly import them.
 
 - Accept D-074/RFC-0072 and land API, implementation, inventory, gate, acceptance, upgrade,
   roadmap, status, traceability, and package-disposition artifacts.
-- Require Verified 0.44 before runtime work and record descriptor/type/catalog baseline goldens.
-- Create a tracking issue bound to every 0.45 gate.
+- **D-077:** rebase planning onto Published in-tree `v0.44.0`; lock catalog-entry/manifest/host
+  inventories; consume shipped 0.43 handle/descriptor/adapter symbols and 0.44 `hedron.type`
+  `TypeSchema`; keep CLASS-044 as the same view/command kinds. No runtime or version bump.
+- Require Verified in-tree 0.44 before runtime work. Do not block a later Stage 1 on `#318`/`#311`
+  PyPI/Git assets. The D-077 refine does not authorize Stage 1.
+- Create a tracking issue bound to every 0.45 gate before implementation begins.
+- Keep workspace versions and published claims at 0.44. Do not claim 0.45 runtime.
 
 ### Stage 1 — core catalog and manifest
 

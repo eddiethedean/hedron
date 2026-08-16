@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.44 **Published** as `v0.44.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phases 0.45 typed interaction ecosystem convergence (D-074 / RFC-0072) and 0.46 package-native typed workflows (D-075 / RFC-0073) are **Planned** in that order. No 0.45–0.46 runtime or version claim.
+**Roadmap position:** phase 0.44 **Published** as `v0.44.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phases 0.45 typed interaction ecosystem convergence (D-074 / D-077 / RFC-0072) and 0.46 package-native typed workflows (D-075 / RFC-0073) are **Planned** in that order. No 0.45–0.46 runtime or version claim.
 Living tip = `v0.44.0`.
 **Date:** 2026-08-16
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -28,11 +28,11 @@ OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form p
 Tracking [#318](https://github.com/eddiethedean/hedron/issues/318) remains open until
 the `v0.44.0` Git tag and PyPI/GitHub Release assets exist. [#311](https://github.com/eddiethedean/hedron/issues/311)
 remains open for the deferred `v0.43.0` tag/PyPI assets.
-Phase **0.45** follows only after 0.44 is Verified (D-074 /
+Phase **0.45** follows only after 0.44 is Verified (D-074 / D-077 /
 [RFC-0072](docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)). It adds one sealed read-only catalog,
 deterministic redacted manifest, bounded package projections/dispositions, and shared host/tooling/
-package/portable/deployment consumers without changing runtime authority. Its Stage 0 packet is
-complete; all `release-gate-0.45.toml` rows remain Planned and a separate tracking issue is required.
+package/portable/deployment consumers without changing runtime authority. Stage 0 is rebased onto
+Published in-tree `v0.44.0` (D-077); all `release-gate-0.45.toml` rows remain Planned and a separate tracking issue is required.
 Phase **0.46** follows only after 0.45 is Verified (D-075 /
 [RFC-0073](docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)). It adds opt-in feature bundles, bounded data
 workspaces, explicit chart/data links, schema-aware elements, remote workflows, and catalog-backed
@@ -385,7 +385,8 @@ Verified; [#318](https://github.com/eddiethedean/hedron/issues/318); see
 [implementation requirements](docs/implementation/TYPE_DRIVEN_AUTHORING_044.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_44.md)). Living tip is **`v0.44.0`**.
 Phase **0.45** typed interaction ecosystem convergence is **Planned**, strictly after Verified 0.44
-(D-074 / [RFC-0072](docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md); all 0.45 gates Planned; see
+(D-074 / D-077 / [RFC-0072](docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md); planning baseline
+Published in-tree `v0.44.0`; all 0.45 gates Planned; see
 [implementation requirements](docs/implementation/TYPED_INTERACTION_ECOSYSTEM_045.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_45.md)). Phase **0.46** package-native typed workflows is
 **Planned**, strictly after Verified 0.45 (D-075 /

@@ -1,20 +1,21 @@
 # Phase 0.45 interaction ecosystem upgrade fixtures
 
 **Status:** Planned<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.44.0`<br>
+**Planning baseline:** Published in-tree `v0.44.0` (D-077; original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.44.0`<br>
 **Target:** `v0.45.0`
 
 These fixtures lock the additive migration from typed interactions to whole-ecosystem catalog and
-package projections.
+package projections. D-077 binds them to shipped 0.43 `descriptor_fingerprint` /
+`BindingAdapter` seams and 0.44 `hedron.type` / `OutcomeMap(case(...), ...)` facts.
 
 ## Unchanged predecessor applications
 
 - Published 0.42 applications with routes/actions/forms/regions/interactions and no 0.43+ opt-in
   run unchanged.
-- Verified 0.43 unmodeled handle applications retain fixed arity, structural binding, explicit
+- Published 0.43 unmodeled handle applications retain fixed arity, structural binding, explicit
   forms, dynamic/observed effects, targets, and response goldens.
-- Verified 0.44 modeled applications retain Pydantic validation, generated/overridden forms,
+- Published 0.44 modeled applications retain Pydantic validation, generated/overridden forms,
   declared effects, typed outcomes, class/function equivalence, and base/type authority.
 - Reading no catalog, loading no provider, and emitting no required manifest changes no request or
   browser behavior.
@@ -34,7 +35,8 @@ At each step, runtime route/form/effect/outcome goldens remain identical.
 
 - unchanged app/provider/config produces identical catalog/manifest/projection fingerprints;
 - base descriptor change invalidates type/catalog/projection/manifest references transitively;
-- type extension change invalidates catalog/projection/manifest but not the base runtime;
+- type extension change updates `hedron.type` / `TypeSchema.stable_fingerprint()` and invalidates
+  catalog/projection/manifest but not the 0.43 `descriptor_fingerprint` or base runtime;
 - provider config/version change invalidates only its projections and containing manifest;
 - unknown optional projection remains inspectable and ignored by unsupported consumers;
 - unknown required manifest/catalog version fails with upgrade/regeneration guidance;

@@ -35,11 +35,11 @@ status commentary, not a satisfied release gate.
 - [`v0.41` browser composition, state, and navigation](RELEASE_0_41.md) — **Published** (`v0.41.0`; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96))
 - [`v0.42` production-grade Web Component platform](RELEASE_0_42.md) — **Published** (`v0.42.0`; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97))
 - [`v0.43` refreshable views, commands, and typed updates](RELEASE_0_43.md) — **Published** (`v0.43.0`; D-071 / RFC-0070, refined by D-073; [#311](https://github.com/eddiethedean/hedron/issues/311))
-- [`v0.44` type-driven authoring](RELEASE_0_44.md) — **Planned** Stage 0 contract refined against
-  Published in-tree `v0.43.0`
-  (D-072 / RFC-0071, refined by D-073 / D-076; tracking issue required before Stage 1)
-- [`v0.45` typed interaction ecosystem](RELEASE_0_45.md) — **Planned** Stage 0 requirements packet
-  (D-074 / RFC-0072; requires Verified 0.44 and a tracking issue before Stage 1)
+- [`v0.44` type-driven authoring](RELEASE_0_44.md) — **Published** in-tree as `v0.44.0`
+  (tag/PyPI deferred; D-072 / RFC-0071, refined by D-073 / D-076; [#318](https://github.com/eddiethedean/hedron/issues/318))
+- [`v0.45` typed interaction ecosystem](RELEASE_0_45.md) — **Planned** Stage 0 contract refined
+  against Published in-tree `v0.44.0` (D-074 / RFC-0072, refined by D-077; requires Verified
+  in-tree 0.44 and a tracking issue before Stage 1)
 - [`v0.46` package-native typed workflows](RELEASE_0_46.md) — **Planned** Stage 0 requirements
   packet (D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /

@@ -1,0 +1,76 @@
+# Phase 0.45 CatalogEntry field and fingerprint lock (EC-CAT-001).
+# Stage 0 contract artifact (D-077). Entries index shipped 0.43 descriptors and
+# optional 0.44 TypeSchema extensions; they are not a second runtime authority.
+
+schema_version = 1
+phase = "0.45"
+status = "Planned"
+planning_baseline = "v0.44.0"
+required_predecessor = "v0.44.0"
+target = "v0.45.0"
+decision = "D-077"
+owning_rfc = "RFC-0072"
+gate = "CATALOG-045"
+requirement = "EC-CAT-001"
+
+kind_source = "BaseHandleDescriptor.kind"
+kind_values = ["view", "command"]
+descriptor_version_source = "BaseHandleDescriptor.version"
+descriptor_fingerprint_source = "descriptor_fingerprint()"
+descriptor_fingerprint_algorithm = "SHA-256 canonical JSON, first 32 hex chars"
+type_schema_namespace = "hedron.type"
+type_schema_version_source = "TypeSchema.schema_version"
+type_schema_fingerprint_source = "TypeSchema.stable_fingerprint()"
+type_schema_fingerprint_algorithm = "SHA-256 canonical JSON of redacted hedron.type payload, first 32 hex chars"
+effect_state_source = "BaseHandleDescriptor.effect"
+effect_state_values = ["dynamic", "observed", "declared"]
+type_schema_effect_knowledge_values = ["dynamic", "declared"]
+observations_are_declarations = false
+unmodeled_type_fields = "absent"
+class_handlers = "same view/command kinds; no third catalog kind"
+type_schema_access = "descriptor.extensions['hedron.type'] via type_schema_from_descriptor()"
+
+descriptor_fingerprint_excludes = [
+    "effect",
+    "extensions",
+]
+
+reserved_base_keys = [
+    "path",
+    "method",
+    "app_id",
+    "logical_id",
+    "host",
+    "target",
+    "fallback",
+    "limits",
+    "swap",
+    "region",
+]
+
+[fields]
+logical_id = "BaseHandleDescriptor.logical_id"
+kind = "BaseHandleDescriptor.kind"
+descriptor_version = "BaseHandleDescriptor.version"
+descriptor_fingerprint = "0.43 descriptor_fingerprint(); excludes effect and extensions"
+type_schema_version = "TypeSchema.schema_version when a matching hedron.type extension exists"
+type_schema_fingerprint = "TypeSchema.stable_fingerprint() of the redacted hedron.type payload"
+handler_fingerprint = "TypeSchema.handler_fingerprint reference; absent when unmodeled"
+model_fingerprint = "TypeSchema.model_fingerprint reference; absent when unmodeled"
+effect_state = "Copy of BaseHandleDescriptor.effect; never invents declared from observed"
+boundary_sources = "ViewParams and/or FormBody provenance without values"
+field_paths = "Model field paths/aliases/constraints/marker provenance; absent when unmodeled"
+control_dispositions = "supported, override_only, or rejected per field from TypeSchema"
+sensitivity_flags = "Sensitive disposition without values or defaults"
+identity_flags = "InstanceKey disposition without values"
+declared_target_ids = "App-owned logical ids when effect_knowledge is declared"
+outcome_variant_ids = "Discriminated OutcomeMap(case(...), ...) variant ids"
+projections = "Namespaced PackageProjection map"
+limitations = "Redacted host/package/capability limitations"
+
+[authority]
+base_descriptor = "0.43 BaseHandleDescriptor remains route/security/runtime authority"
+type_schema = "0.44 TypeSchema remains typed-extension authority under hedron.type"
+catalog_entry = "0.45 CatalogEntry indexes fingerprints and redacted references only"
+form_kinds = "docs/acceptance/type-form-inventory-044.toml"
+type_payload = "docs/acceptance/type-schema-044.toml"

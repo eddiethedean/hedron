@@ -1,0 +1,62 @@
+# Phase 0.45 InteractionManifest format lock (EC-MAN-001).
+# Stage 0 contract artifact (D-077). The manifest is a redacted serialization of a
+# sealed catalog. It is not a credential, signature, authorization token, remote
+# exposure policy, or executable application format.
+
+schema_version = 1
+phase = "0.45"
+status = "Planned"
+planning_baseline = "v0.44.0"
+required_predecessor = "v0.44.0"
+target = "v0.45.0"
+decision = "D-077"
+owning_rfc = "RFC-0072"
+gate = "MANIFEST-045"
+requirement = "EC-MAN-001"
+
+manifest_format_version = 1
+canonicalization = "canonical JSON"
+hash_algorithm = "SHA-256"
+fingerprint_encoding = "first 32 hex chars"
+artifact_name = "interactions.json"
+atomic_write = true
+trusted_dynamic_may_import_app = true
+static_mode_imports_target = false
+unknown_facts_labeled = true
+modes_not_equivalent_when_unknown = true
+reserved_diagnostics = ["HED-CATALOG-*", "HED-PROJECTION-*"]
+reserved_diagnostics_status = "docs_only"
+type_forbidden = "docs/acceptance/type-schema-044.toml"
+catalog_entry_lock = "docs/acceptance/catalog-entry-045.toml"
+
+fingerprints = [
+    "whole_document",
+    "catalog",
+    "entry",
+    "projection",
+]
+
+[profiles]
+production = "minimum redacted fact set; no development source paths"
+development = "may include source detail that production must refuse"
+conformance = "portable fixture subset with the same forbidden keys"
+
+[forbidden]
+values = true
+defaults = true
+examples = true
+callbacks = true
+request_instances = true
+dependency_values = true
+executable_code = true
+raw_reprs = true
+credentials = true
+session_data = true
+arbitrary_html = true
+current_field_values = true
+
+[compatibility]
+unknown_optional_fields = "ignored_and_labeled"
+unknown_required_version = "fail_closed"
+downgrade = "regenerate"
+cross_app_reuse = "fail_closed"

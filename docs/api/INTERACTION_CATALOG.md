@@ -7,9 +7,11 @@ phase: "0.45"
 
 !!! warning "Planned 0.45 contract"
 
-    This is the accepted public contract for phase 0.45. These symbols are not importable on the
-    published 0.42 train. Implementation requires Verified 0.43 and 0.44 predecessors; no runtime
-    behavior may be claimed until every 0.45 release gate is Verified.
+    This is the accepted D-074 / RFC-0072 public contract for phase 0.45, refined by D-077
+    against Published in-tree `v0.44.0`. These symbols are not importable on the published
+    0.44 train. Implementation requires Verified in-tree 0.43 and 0.44 predecessors; no
+    runtime behavior may be claimed until every 0.45 release gate is Verified. D-077 does
+    not authorize Stage 1.
 
 Phase 0.45 gives application, tooling, adapter, and package consumers one read-only index of the
 interaction contracts established by 0.43 and 0.44:
@@ -29,10 +31,15 @@ artifacts that already own those behaviors.
 
 ## Planned symbols
 
+D-077 locks import placement the same way D-076 locked TypeSchema: portable catalog/manifest/
+projection values in `hedron-core`; FastAPI compiler, `Hedron.interactions`, CLI, OpenAPI, and
+scenarios in `hedron`. Re-export the portable types from `hedron` like `TypeSchema`. Names and
+semantics in this contract may not drift silently during implementation.
+
 | Symbol | Package | Role |
 |---|---|---|
 | `InteractionCatalog` | `hedron-core` | Immutable application-level index of catalog entries and projections. |
-| `CatalogEntry` | `hedron-core` | Redacted reference to one base descriptor and optional type extension. |
+| `CatalogEntry` | `hedron-core` | Redacted reference to one `BaseHandleDescriptor` and optional `hedron.type` TypeSchema. |
 | `InteractionManifest` | `hedron-core` | Versioned deterministic serialized catalog snapshot. |
 | `PackageProjection` | `hedron-core` | Namespaced, bounded, fingerprint-bound package metadata. |
 | `ProjectionDisposition` | `hedron-core` | `native_consumer`, `projection_adapter`, `compatibility_only`, or `not_applicable`. |
@@ -41,8 +48,7 @@ artifacts that already own those behaviors.
 | `CatalogVersionError` | `hedron-core` | Manifest/catalog/projection version or fingerprint mismatch. |
 | `Hedron.interactions` | `hedron` | Read-only view of the application catalog. |
 
-Final import placement and signatures require `API-045` review during implementation. The
-authority hierarchy and no-execution semantics are compatibility requirements and may not drift.
+The authority hierarchy and no-execution semantics are compatibility requirements and may not drift.
 
 ## Authority hierarchy
 
@@ -60,6 +66,28 @@ authority hierarchy and no-execution semantics are compatibility requirements an
 `CatalogEntry` and `PackageProjection` cannot override route, method, identity, app ownership,
 host, target, fallback, limits, validation, effects, outcomes, response conversion, CSRF, or
 authorization.
+
+## Required 0.43/0.44 handoff
+
+Before this API can be implemented, 0.43 and 0.44 must remain Verified in-tree with these shipped
+seams (D-073 / D-076 / D-077):
+
+- `FragmentHandle[BindT, ContentT]` and `ActionHandle[InputT, ResultT]` with exactly two slots;
+- `BoundFragment[ContentT]` and `Patch[ContentT]` with one content slot;
+- one versioned authoritative `BaseHandleDescriptor` (`kind` is `view` or `command`) and
+  `descriptor_fingerprint` (SHA-256 canonical JSON, first 32 hex chars; does **not** hash
+  `effect` or `extensions`);
+- one `BindingAdapter` protocol with `StructuralBindingAdapter` default;
+- explicit `Form(action=handle, ...)` action/method/CSRF/fallback wiring;
+- optional `TypeSchema` under `hedron.type` (`schema_version=1`) accessed with
+  `type_schema_from_descriptor()`, fingerprinted by `TypeSchema.stable_fingerprint()`;
+- closed markers `ViewParams` / `FormBody` / `Sensitive` / `InstanceKey` / `Control` /
+  `Refreshes` / `Updates`; and
+- `OutcomeMap(case(...), ...)` as the frozen builder spelling.
+
+Class handlers from CLASS-044 keep the same `view`/`command` kinds. Flask/Django/Jinja remain
+projection adapters stacked on
+[adapter-disposition-044.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/adapter-disposition-044.toml).
 
 ## `CatalogEntry`
 
@@ -79,9 +107,19 @@ class CatalogEntry:
     limitations: tuple[str, ...]
 ```
 
+Optional TypeSchema **references** (absent on unmodeled 0.43 entries; never a second authority):
+`handler_fingerprint`, `model_fingerprint`, `boundary_sources` (`ViewParams`/`FormBody` provenance
+without values), `field_paths`, `control_dispositions`, `sensitivity_flags`, `identity_flags`,
+`declared_target_ids`, and `outcome_variant_ids`. `effect_state` copies
+`BaseHandleDescriptor.effect`. `TypeSchema.effect_knowledge` is only `dynamic` or `declared`;
+observed is never a declaration.
+
 The concrete contract also contains bounded redacted capability and provenance fields. It never
 contains handlers, callbacks, model/request instances, dependency values, credentials, current
 form values, arbitrary markup, or executable code.
+
+Field/fingerprint lock:
+[catalog-entry-045.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/catalog-entry-045.toml).
 
 ## `InteractionCatalog`
 
@@ -155,7 +193,8 @@ loaded.validate_against(catalog)
 ```
 
 Writes are atomic. Compatibility is based on manifest format and referenced artifact versions,
-not the filename or application version alone.
+not the filename or application version alone. Format lock:
+[manifest-format-045.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/manifest-format-045.toml).
 
 ## Application and CLI surface
 
@@ -191,7 +230,10 @@ Conceptual Jinja helpers:
 ```
 
 The environment receives registered safe helper objects. Templates do not evaluate annotations,
-construct routes from manifest strings, load providers, or bypass form/CSRF/output policy.
+construct routes from manifest strings, load providers, or bypass form/CSRF/output policy. Helpers
+bind to shipped `FragmentHandle.bind`, `ActionHandle.form()` for opted-in `FormBody`, and
+`Form(action=handle, ...)`. Unknown `Control.kind` values remain rejected by
+[type-form-inventory-044.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/type-form-inventory-044.toml).
 
 ## Remote projection boundary
 

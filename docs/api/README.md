@@ -26,9 +26,9 @@ the shipped golden path until all 0.44 gates are Verified.
 ## Planned 0.45 maintainer contract
 
 [Interaction catalog and package projections](INTERACTION_CATALOG.md) records the accepted
-D-074 / RFC-0072 public contract for the planned 0.45 phase. It requires Verified 0.44 and adds a
-read-only catalog, redacted manifest, package projection protocol, and whole-fleet integration
-dispositions without changing interaction runtime authority.
+D-074 / RFC-0072 public contract, refined against 0.44 by D-077, for the planned 0.45 phase.
+It consumes Published in-tree 0.44 and is **not importable on 0.44**. Catalog, manifest, package
+projections, and whole-fleet dispositions do not change interaction runtime authority.
 
 ## Planned 0.46 maintainer contract
 

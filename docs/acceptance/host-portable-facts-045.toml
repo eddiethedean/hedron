@@ -1,0 +1,102 @@
+# Phase 0.45 host portable-fact vs exception lock (EC-HOST-002).
+# Stage 0 contract artifact (D-077). Stacks on 0.44 TypeSchema adapter honesty;
+# does not upgrade Flask/Django/Jinja into FastAPI DI or TypeSchema producers.
+
+schema_version = 1
+phase = "0.45"
+status = "Planned"
+planning_baseline = "v0.44.0"
+required_predecessor = "v0.44.0"
+target = "v0.45.0"
+decision = "D-077"
+owning_rfc = "RFC-0072"
+gate = "HOST-045"
+requirement = "EC-HOST-002"
+
+stacks_on = "docs/acceptance/adapter-disposition-044.toml"
+type_schema = "docs/acceptance/type-schema-044.toml"
+form_inventory = "docs/acceptance/type-form-inventory-044.toml"
+catalog_entry = "docs/acceptance/catalog-entry-045.toml"
+
+[portable_facts]
+shared = [
+    "logical_id",
+    "kind",
+    "descriptor_version",
+    "descriptor_fingerprint",
+    "type_schema_version",
+    "type_schema_fingerprint",
+    "effect_state",
+    "declared_target_ids",
+    "outcome_variant_ids",
+    "redacted_limitations",
+]
+live_host_authoritative = [
+    "mount_path",
+    "external_url",
+    "session",
+    "csrf",
+    "reversal",
+]
+
+[[surface]]
+id = "fastapi"
+package = "hedron"
+disposition = "native_consumer"
+owner = "hedron"
+notes = "Complete flagship: compile/seal catalog, FastAPI DI, TypeSchema production, OpenAPI, Hedron.interactions."
+
+[[surface]]
+id = "hedron-core"
+package = "hedron-core"
+disposition = "native_consumer"
+owner = "hedron-core"
+notes = "Portable catalog/manifest/projection/disposition value types; no FastAPI/Flask/Django imports."
+
+[[surface]]
+id = "flask"
+package = "hedron-flask"
+disposition = "projection_adapter"
+owner = "hedron-flask"
+type_schema_disposition = "bounded_exception"
+reason = "No FastAPI dependency injection; do not emulate a parallel DI solver."
+notes = "Project the portable descriptor/type/effect/outcome subset and machine-readable host exceptions."
+
+[[surface]]
+id = "django"
+package = "hedron-django"
+disposition = "projection_adapter"
+owner = "hedron-django"
+type_schema_disposition = "bounded_exception"
+reason = "No FastAPI dependency injection; do not emulate a parallel DI solver."
+notes = "Same portable subset as Flask; host CSRF/session/reversal remain Django-owned."
+
+[[surface]]
+id = "jinja"
+package = "hedron-jinja"
+disposition = "projection_adapter"
+owner = "hedron-jinja"
+type_schema_disposition = "bounded_exception"
+reason = "Templates must not evaluate annotations or execute manifests."
+notes = "Helpers accept registered handles, BoundFragment, or catalog logical ids. Bind to FragmentHandle.bind, ActionHandle.form() for opted-in FormBody, and Form(action=handle, ...)."
+
+[[surface]]
+id = "explorer"
+package = "hedron-explorer"
+disposition = "native_consumer"
+owner = "hedron-explorer"
+notes = "Inspect the catalog that indexes TypeSchema; do not re-inspect handlers for already-normalized facts."
+
+[[surface]]
+id = "conformance"
+package = "hedron-conformance"
+disposition = "native_consumer"
+owner = "hedron-conformance"
+notes = "Portable catalog/manifest/projection/binding/form/effect/outcome fixtures."
+
+[[surface]]
+id = "cli-app-scenario"
+package = "hedron"
+disposition = "native_consumer"
+owner = "hedron"
+notes = "Static no-import and trusted dynamic inspection plus catalog-aware AppScenario lookup."

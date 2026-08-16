@@ -1,16 +1,24 @@
 # Phase 0.45 typed interaction ecosystem capability inventory.
-# Stage 0 contract artifact: capabilities are Planned until their owning gate is Verified.
+# Stage 0 contract artifact (D-077 refine against Published v0.44.0):
+# capabilities are Planned until their owning gate is Verified.
 
 schema_version = 1
 phase = "0.45"
 status = "Planned"
-planning_baseline = "v0.42.0"
+planning_baseline = "v0.44.0"
 required_predecessor = "v0.44.0"
 target = "v0.45.0"
 decision = "D-074"
+contract_refine = "D-077"
 owning_rfc = "RFC-0072"
 implementation = "docs/implementation/TYPED_INTERACTION_ECOSYSTEM_045.md"
 public_contract = "docs/api/INTERACTION_CATALOG.md"
+catalog_entry = "docs/acceptance/catalog-entry-045.toml"
+manifest_format = "docs/acceptance/manifest-format-045.toml"
+host_portable_facts = "docs/acceptance/host-portable-facts-045.toml"
+form_inventory = "docs/acceptance/type-form-inventory-044.toml"
+type_schema = "docs/acceptance/type-schema-044.toml"
+adapter_dispositions = "docs/acceptance/adapter-disposition-044.toml"
 
 [[capability]]
 id = "EC-CAT-001..010"
@@ -20,7 +28,7 @@ secondary_gates = ["SECURITY-045", "COMPAT-045"]
 state = "Planned"
 packages = ["hedron-core", "hedron"]
 evidence = ["unit", "integration", "determinism", "concurrency", "golden"]
-summary = "One sealed read-only catalog indexes authoritative 0.43 descriptors and optional matching 0.44 type extensions without executing or reinterpreting them."
+summary = "One sealed read-only catalog indexes authoritative 0.43 BaseHandleDescriptor values and optional matching 0.44 TypeSchema extensions under hedron.type without executing or reinterpreting them."
 
 [[capability]]
 id = "EC-MAN-001..010"
@@ -50,7 +58,7 @@ secondary_gates = ["COMPAT-045"]
 state = "Planned"
 packages = ["hedron", "hedron-flask", "hedron-django", "hedron-conformance"]
 evidence = ["fastapi", "flask", "django", "asgi", "wsgi", "no-js"]
-summary = "FastAPI, Flask, and Django agree on portable catalog facts while preserving public host-native routing, security, and explicit capability limitations."
+summary = "FastAPI, Flask, and Django agree on portable catalog facts while preserving public host-native routing, security, and explicit capability limitations stacked on adapter-disposition-044.toml."
 
 [[capability]]
 id = "EC-AUTHOR-001..008"

@@ -33,7 +33,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Type-driven authoring](TYPE_DRIVEN_AUTHORING_044.md) — phase 0.44 D-072 / D-073 / D-076 Pydantic
   boundaries, annotation markers, generics, generated forms, effects/outcomes, optional class
   lifecycles, and shared schema requirements
-- [Typed interaction ecosystem](TYPED_INTERACTION_ECOSYSTEM_045.md) — phase 0.45 D-074 catalog,
+- [Typed interaction ecosystem](TYPED_INTERACTION_ECOSYSTEM_045.md) — phase 0.45 D-074 / D-077 catalog,
   manifest, package projections/dispositions, hosts, tooling, remote, portable, and deployment
   convergence requirements
 - [Package-native typed workflows](PACKAGE_NATIVE_WORKFLOWS_046.md) — phase 0.46 D-075 feature

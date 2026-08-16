@@ -1,19 +1,25 @@
 # Hedron `v0.45` typed interaction ecosystem acceptance
 
-**Status:** Planned; Stage 0 requirements packet complete<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.44.0`<br>
+**Status:** Planned; Stage 0 contract refined against Published in-tree `v0.44.0` (D-077)<br>
+**Planning baseline:** Published in-tree `v0.44.0`<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.44.0`<br>
 **Target:** `v0.45.0`<br>
-**Decision/RFC:** D-074 / [RFC-0072](../rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)
+**Decision/RFC:** D-074, refined by D-077 / [RFC-0072](../rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)
 
 Phase 0.45 makes the 0.43/0.44 interaction contract consumable across the whole package fleet
 through one sealed catalog, one redacted manifest, and one bounded package-projection protocol.
 It adds no third runtime/schema authority and cannot begin implementation until 0.44 is Verified.
+D-077 rebases planning onto shipped 0.43 `BaseHandleDescriptor` / `descriptor_fingerprint` /
+`BindingAdapter` seams and 0.44 `TypeSchema` under `hedron.type` with `OutcomeMap(case(...), ...)`.
+The refine does not authorize Stage 1.
 
 Implementation requirements:
 [TYPED_INTERACTION_ECOSYSTEM_045](../implementation/TYPED_INTERACTION_ECOSYSTEM_045.md). Public
 contract: [INTERACTION_CATALOG](../api/INTERACTION_CATALOG.md). Capability/disposition inventory:
-[`ecosystem-capability-inventory-045.toml`](ecosystem-capability-inventory-045.toml). Evidence index:
+[`ecosystem-capability-inventory-045.toml`](ecosystem-capability-inventory-045.toml). Entry lock:
+[`catalog-entry-045.toml`](catalog-entry-045.toml). Manifest lock:
+[`manifest-format-045.toml`](manifest-format-045.toml). Host lock:
+[`host-portable-facts-045.toml`](host-portable-facts-045.toml). Evidence index:
 [`release-gate-0.45.toml`](release-gate-0.45.toml). Upgrade fixtures:
 [upgrade-fixtures-045](upgrade-fixtures-045.md).
 
@@ -63,13 +69,16 @@ exist.
 ## Stage 0 entry
 
 - [x] D-074 and RFC-0072 define the accepted phase and authority hierarchy.
+- [x] D-077 rebases planning onto Published in-tree `v0.44.0` and locks
+  catalog-entry/manifest/host inventories. No runtime or version bump.
 - [x] API, implementation, inventory, gate, acceptance, upgrade, roadmap, index, status, and
   traceability artifacts exist.
-- [x] Published/living baseline remains `v0.42.0`; no package/runtime version changed.
-- [x] Verified `v0.44.0` is the Stage 1 prerequisite and cut baseline.
+- [x] Published/living baseline is `v0.44.0`; no package/runtime version changed by this refine.
+- [x] Verified in-tree `v0.44.0` is the Stage 1 prerequisite and cut baseline. Stage 1 does not
+  wait on `#318`/`#311` PyPI/Git assets. This refine does not authorize Stage 1.
 - [x] Phase 0.46 feature bundles/workflows are explicitly excluded from 0.45.
+- [x] Every 0.43/0.44-owned gate is Verified in-tree.
 - [ ] A tracking issue is created and bound to every 0.45 gate.
-- [ ] Every 0.43/0.44-owned gate is Verified before runtime work begins.
 - [ ] Stage 1 records descriptor/type/route/form/effect/outcome/package baselines.
 
 ## Catalog and manifest acceptance
@@ -127,7 +136,8 @@ exist.
 
 ## Compatibility and release acceptance
 
-- [ ] Published 0.42 and future Verified 0.43/0.44 fixtures pass unchanged.
+- [ ] Published 0.42, Published 0.43 unmodeled-handle, and Published 0.44 modeled fixtures pass
+  unchanged.
 - [ ] Mixed versions, rolling deploy, unknown projection, missing provider/package, manifest
   rollback, provider uninstall, and full 0.44 rollback pass.
 - [ ] Wheel/sdist/source/offline imports preserve package dependency direction and optionality.
@@ -143,10 +153,11 @@ python scripts/check_projections_045.py
 python scripts/check_hosts_045.py
 python scripts/check_security_045.py
 python scripts/check_compat_045.py
-python scripts/verify_pkg_45.py
+python scripts/verify_pkg_45.py --allow-planned
 python scripts/check_release_gate.py 0.45.0 --execute-verified
 ```
 
-`v0.45.0` may be cut only from Verified `v0.44.0` when every 0.45 row is Verified with zero
-Deferred.
+`v0.45.0` may be cut only from Verified in-tree `v0.44.0` when every 0.45 row is Verified with zero
+Deferred. Reserved Stage 1 command names remain reserved until their scripts exist;
+`verify_pkg_45.py --allow-planned` is the Stage 0 SSOT checker only.
 
