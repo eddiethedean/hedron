@@ -68,6 +68,7 @@ class FieldRecord:
     default: object
     location: str
     alias: str | None
+    http_name: str
     disposition: str
     sensitive: bool
     identity: bool
@@ -465,6 +466,7 @@ def _walk_model(
             )
         location = _location_for(name, info, source, path_names)
         alias = info.alias if info.alias and info.alias != name else None
+        http_name = _http_name(name, alias, location, path_names)
         route_name = alias or name
         if route_name in aliases and aliases[route_name] != path:
             raise error(
@@ -499,6 +501,7 @@ def _walk_model(
                 default=default,
                 location=location,
                 alias=alias,
+                http_name=http_name,
                 disposition=disp,
                 sensitive=field_sensitive,
                 identity=field_identity,
@@ -541,7 +544,10 @@ def _location_for(
 ) -> str:
     if isinstance(source, FormBody):
         return "form"
-    route_name = info.alias or name
+    # Path placeholders own the field when either the Python name or alias
+    # matches. Prefer the Python name so Path() params stay aligned with the
+    # route template (Field.alias is not a second path segment).
+    matched_path = name in path_names or (info.alias is not None and info.alias in path_names)
     if (
         not path_names
         and isinstance(source, ViewParams)
@@ -550,7 +556,7 @@ def _location_for(
         and source.source in {"path", "path_query"}
     ):
         return "path"
-    if route_name in path_names:
+    if matched_path:
         if isinstance(source, ViewParams) and source.source == "query":
             raise error(
                 HED_TYPE_0003,
@@ -569,11 +575,27 @@ def _location_for(
     return "query"
 
 
+def _http_name(
+    name: str,
+    alias: str | None,
+    location: str,
+    path_names: Sequence[str],
+) -> str:
+    """Public HTTP name: path placeholders, otherwise Field.alias or the field name."""
+    if location == "path":
+        if name in path_names:
+            return name
+        if alias is not None and alias in path_names:
+            return alias
+        return name
+    return alias or name
+
+
 def _plan_from_fields(fields: Sequence[FieldRecord]) -> BindingPlan:
-    path_params = tuple(item.name for item in fields if item.location == "path")
-    query_params = tuple(item.name for item in fields if item.location == "query")
+    path_params = tuple(item.http_name for item in fields if item.location == "path")
+    query_params = tuple(item.http_name for item in fields if item.location == "query")
     required = tuple(
-        item.name for item in fields if item.required and item.location in {"path", "query"}
+        item.http_name for item in fields if item.required and item.location in {"path", "query"}
     )
     return BindingPlan(path_params=path_params, query_params=query_params, required=required)
 

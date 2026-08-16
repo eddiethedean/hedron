@@ -189,7 +189,7 @@ def _native_control(
     raw = current.get(record.name)
     text = "" if raw is None or record.sensitive else str(raw)
     autocomplete = control.autocomplete if control is not None else None
-    name = record.alias or record.name
+    name = record.http_name
     if kind == "textarea":
         return TextArea(
             name,
