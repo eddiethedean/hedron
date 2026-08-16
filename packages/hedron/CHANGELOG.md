@@ -8,6 +8,14 @@
 ### Changed
 - Coordinated train tip `0.44.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``ActionHandle.form()`` CSRF tokens resolve at render time so no-JS POSTs
+  succeed (#319).
+- Modeled ``Field.alias`` names match FastAPI Path/Query/Form parameters and
+  bind URLs (#320).
+- ``FormBody`` commands reject ``application/json`` with HTTP 415 instead of
+  executing on model defaults (#321).
+
 
 ## [0.43.0] — 2026-08-16
 

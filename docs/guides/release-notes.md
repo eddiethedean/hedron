@@ -14,6 +14,8 @@ effects, typed outcomes, and optional class handlers (D-072 / D-076 / RFC-0071).
 - Optional `RefreshableView` / `CommandHandler` classes compile to the same handles.
 - New symbols begin Beta. Unmodeled 0.43 handlers remain unchanged.
 - Pin `hedron>=0.44.0,<0.45`. Charts remain on `hedron-charts>=0.2.0,<0.3`.
+- Generated-form CSRF tokens, `Field.alias` HTTP names, and FormBody JSON
+  rejection land in this cut (#319, #320, #321).
 
 ```bash
 python -m pip install -U "hedron>=0.44.0,<0.45"

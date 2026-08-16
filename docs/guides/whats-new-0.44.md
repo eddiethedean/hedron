@@ -17,6 +17,12 @@ Type-driven authoring is opt-in on top of 0.43 refreshable views and commands:
 
 This is not a new client runtime, type-checker plugin, or Supported human AT claim.
 
+## Fixes in this cut
+
+- Generated `ActionHandle.form()` CSRF tokens resolve at render time (#319).
+- `Field.alias` is the public form/query name and does not crash Path registration (#320).
+- `FormBody` commands reject JSON with HTTP 415 instead of executing on defaults (#321).
+
 ## Layers
 
 1. **Functions and models** — one `ViewParams` or `FormBody` model on a decorated function.
