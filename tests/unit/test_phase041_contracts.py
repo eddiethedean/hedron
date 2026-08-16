@@ -88,8 +88,14 @@ def test_draft_transfer_is_subject_bound_bounded_and_forbids_capabilities() -> N
         now=100,
         ttl_seconds=60,
     )
-    assert env.storage_key.startswith("hedron:draft:v1:")
-    assert json.loads(env.to_json())["fields"] == {"title": "Draft"}
+    assert env.storage_key == (f"hedron:draft:v1:app:edit:hedron-field-text:1:{subject}")
+    blob = json.loads(env.to_json())
+    assert blob["fields"] == {"title": "Draft"}
+    assert blob["routeFamily"] == "edit"
+    assert blob["createdAt"] == 100
+    assert blob["expiresAt"] == 60_100
+    assert "route_family" not in blob
+    assert "created_at" not in blob
     with pytest.raises(ValueError, match="forbidden draft field"):
         DraftTransferEnvelope.create(
             app="app",
@@ -100,6 +106,66 @@ def test_draft_transfer_is_subject_bound_bounded_and_forbids_capabilities() -> N
             fields={"csrf_token": "x"},
             operation_id="op-2",
             now=100,
+        )
+
+
+def test_draft_storage_key_encodes_like_js_encode_uri_component() -> None:
+    from hedron_elements.transfer import draft_storage_key
+
+    assert (
+        draft_storage_key(
+            app="a",
+            route_family="r",
+            element_contract="c",
+            schema_version="1",
+            subject="s",
+        )
+        == "hedron:draft:v1:a:r:c:1:s"
+    )
+    assert (
+        draft_storage_key(
+            app="a b",
+            route_family="r:q",
+            element_contract="c",
+            schema_version="1",
+            subject="s",
+        )
+        == "hedron:draft:v1:a%20b:r%3Aq:c:1:s"
+    )
+
+
+def test_draft_from_json_requires_camel_case_millisecond_envelope() -> None:
+    env = DraftTransferEnvelope.create(
+        app="a",
+        route_family="r",
+        element_contract="c",
+        schema_version="1",
+        subject="s",
+        fields={"name": "x"},
+        operation_id="op1",
+        now=1_000,
+        ttl_seconds=5,
+    )
+    parsed = DraftTransferEnvelope.from_json(env.to_json(), now=1_000)
+    assert parsed.storage_key == env.storage_key
+    assert parsed.fields == {"name": "x"}
+    with pytest.raises(ValueError, match="missing required fields"):
+        DraftTransferEnvelope.from_json(
+            json.dumps(
+                {
+                    "version": 1,
+                    "app": "a",
+                    "route_family": "r",
+                    "element_contract": "c",
+                    "schema_version": "1",
+                    "subject": "s",
+                    "fields": {"name": "x"},
+                    "created_at": 1,
+                    "expires_at": 6,
+                    "operation_id": "op1",
+                }
+            ),
+            now=1,
         )
 
 

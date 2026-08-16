@@ -69,6 +69,7 @@ export async function dispatchComposition(edgeId, event, handlers, context = {})
 }
 
 export function draftStorageKey(identity) {
+  // Canonical STATE-041 key (Python draft_storage_key must stay identical).
   const required = ["app", "routeFamily", "elementContract", "schemaVersion", "subject"];
   if (!plainObject(identity) || required.some((key) => typeof identity[key] !== "string" || !identity[key])) throw new TypeError("invalid draft identity");
   return `hedron:draft:v1:${required.map((key) => encodeURIComponent(identity[key])).join(":")}`;

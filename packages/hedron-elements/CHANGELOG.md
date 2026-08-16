@@ -11,6 +11,8 @@
 ### Fixed
 - ``CompositionEdge.as_payload`` emits camelCase keys the JS runner reads, and
   ``concurrency="queue"`` serializes overlapping dispatches (#256).
+- Draft transfer Python helpers mint the same ``sessionStorage`` key and camelCase
+  millisecond envelope as ``composition-041.mjs`` (#255).
 
 ## [0.41.0] — Unreleased
 
