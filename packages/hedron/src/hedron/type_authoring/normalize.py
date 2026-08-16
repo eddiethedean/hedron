@@ -592,10 +592,10 @@ def _http_name(
 
 
 def _plan_from_fields(fields: Sequence[FieldRecord]) -> BindingPlan:
-    path_params = tuple(item.name for item in fields if item.location == "path")
-    query_params = tuple(item.name for item in fields if item.location == "query")
+    path_params = tuple(item.http_name for item in fields if item.location == "path")
+    query_params = tuple(item.http_name for item in fields if item.location == "query")
     required = tuple(
-        item.name for item in fields if item.required and item.location in {"path", "query"}
+        item.http_name for item in fields if item.required and item.location in {"path", "query"}
     )
     return BindingPlan(path_params=path_params, query_params=query_params, required=required)
 
