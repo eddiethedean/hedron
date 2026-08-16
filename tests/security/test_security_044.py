@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from tests.unit._helpers_044 import csrf_headers, make_app, reset_044
 
 from hedron import FormBody, Page, Refreshes, Text, ViewParams, refresh
-from hedron_core.codes import HED_TYPE_0001, HED_TYPE_0004, HED_TYPE_0006
+from hedron_core.codes import HED_TYPE_0001, HED_TYPE_0003, HED_TYPE_0004, HED_TYPE_0006
 from hedron_core.diagnostics import HedronError
 from hedron_core.type_schema import MAX_MODEL_FIELDS
 
@@ -94,6 +94,31 @@ def test_generated_form_csrf_field_submits_without_htmx_header() -> None:
     assert posted.status_code in {200, 303}
     if posted.status_code == 200:
         assert "hello" in posted.text
+
+
+def test_formbody_rejects_json_content_type() -> None:
+    app = make_app(security="standard")
+
+    class Flags(BaseModel):
+        urgent: bool = False
+
+    @app.command(fallback="/")
+    def flag(data: Annotated[Flags, FormBody()]):
+        return Text(str(data.urgent))
+
+    @app.page("/")
+    def home():
+        return Page(Text("h"), title="H")
+
+    client = TestClient(app)
+    headers = csrf_headers(client, htmx=False)
+    refused = client.post(flag.path, json={"urgent": True}, headers=headers)
+    assert refused.status_code == 415
+    assert HED_TYPE_0003 in str(refused.json().get("detail"))
+    assert "True" not in refused.text
+    form_ok = client.post(flag.path, data={}, headers=headers)
+    assert form_ok.status_code == 200
+    assert "False" in form_ok.text
 
 
 def test_schema_bomb_field_limit() -> None:
