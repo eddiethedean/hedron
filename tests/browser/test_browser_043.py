@@ -89,4 +89,7 @@ def _run_engine(browser_type: str, url: str) -> None:
 
 @pytest.mark.parametrize("engine", ["chromium", "firefox", "webkit"])
 def test_handle_lifecycle_three_engines(engine: str, browser_app_url: str) -> None:
+    selected = os.environ.get("HEDRON_BROWSER_ENGINE")
+    if selected and selected != engine:
+        pytest.skip(f"engine filter {selected}")
     _run_engine(engine, browser_app_url)
