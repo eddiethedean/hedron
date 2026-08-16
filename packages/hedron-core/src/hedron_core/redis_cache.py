@@ -9,14 +9,25 @@ from hedron_core.cache import CacheBackend
 
 __all__ = ["RedisCacheBackend"]
 
+# Disjoint from RedisStatusStore / RedisJobBackend (``h1:job:``). Sharing a client
+# with the legacy cache prefix ``h1:`` nests ``job:{id}`` onto live job records (#252).
+REDIS_CACHE_PREFIX = "h1:c:"
+REDIS_JOB_PREFIX = "h1:job:"
+
+
+def _keyspace_overlaps(left: str, right: str) -> bool:
+    return left.startswith(right) or right.startswith(left)
+
 
 class RedisCacheBackend(CacheBackend):
-    """JSON-valued Redis cache with ``h1:`` key prefix and tag index sets.
+    """JSON-valued Redis cache with ``h1:c:`` key prefix and tag index sets.
 
-    Serialization failures raise — values are never stored poisoned.
-    Value SET and tag SADDs commit together via ``MULTI``/``EXEC`` (#218).
-    Overwrite ``SREM``s previous tag memberships so stale indexes cannot delete
-    the live value (#253). Positive TTLs use millisecond ``PX`` so fractional
+    The default prefix is disjoint from job records (``h1:job:``). Sharing a Redis
+    client with overlapping prefixes is rejected so cache lookup/invalidate cannot
+    leak or delete job JSON (#252). Serialization failures raise — values are never
+    stored poisoned. Value SET and tag SADDs commit together via ``MULTI``/``EXEC``
+    (#218). Overwrite ``SREM``s previous tag memberships so stale indexes cannot
+    delete the live value (#253). Positive TTLs use millisecond ``PX`` so fractional
     lifetimes match in-memory (#242). Tag index keys receive a matching
     ``PEXPIRE`` so they cannot outlive values (#208). Indexes with no TTL
     (PTTL -1) stay immortal so mixed non-TTL members stay invalidatable (#285).
@@ -24,7 +35,13 @@ class RedisCacheBackend(CacheBackend):
 
     process_local = False
 
-    def __init__(self, client: Any, *, prefix: str = "h1:") -> None:
+    def __init__(self, client: Any, *, prefix: str = REDIS_CACHE_PREFIX) -> None:
+        if _keyspace_overlaps(prefix, REDIS_JOB_PREFIX):
+            raise ValueError(
+                "RedisCacheBackend prefix must not overlap the Redis job keyspace "
+                f"{REDIS_JOB_PREFIX!r}; got {prefix!r}. Use a dedicated cache prefix "
+                f"(default {REDIS_CACHE_PREFIX!r}) when sharing a Redis client."
+            )
         self._client = client
         self._prefix = prefix
 

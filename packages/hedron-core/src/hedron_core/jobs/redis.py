@@ -11,7 +11,10 @@ from hedron_core.typing_aliases import JsonValue
 
 
 class RedisJobBackend:
-    """Redis-backed JobBackend using JSON values and shared idempotency keys."""
+    """Redis-backed JobBackend using JSON values and shared idempotency keys.
+
+    Default prefix ``h1:job:`` does not nest under ``RedisCacheBackend`` (``h1:c:``).
+    """
 
     process_local = False
 

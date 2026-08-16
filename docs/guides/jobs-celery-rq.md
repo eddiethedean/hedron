@@ -178,6 +178,8 @@ progress.
 3. Scope jobs with `auth_subject` / `tenant_id`; poll with the same credentials.
 4. Run periodic `backend.cleanup_expired()` from a scheduled task.
 5. Keep status UX on **polling** until your proxy/load story covers experimental SSE.
+6. If the same Redis client also backs `RedisCacheBackend`, keep prefixes disjoint
+   (cache default `h1:c:`, jobs `h1:job:`). Do not reuse `h1:` as the cache prefix.
 
 ## See also
 

@@ -63,6 +63,12 @@ See [Multi-tenant isolation](../guides/multi-tenant.md).
 
 Backends are pluggable. Hedron does not implement a distributed cache service.
 
+`RedisCacheBackend` defaults to prefix `h1:c:` (tag indexes `h1:c:tag:`).
+`RedisJobBackend` / `RedisStatusStore` default to `h1:job:`. Sharing one Redis
+client is the production archetype, so those prefixes must not nest — including
+the legacy cache prefix `h1:`, which the cache constructor rejects. Pass a custom
+`prefix=` only when it stays disjoint from the job keyspace.
+
 ## Errors
 
 | Condition | Behavior |
