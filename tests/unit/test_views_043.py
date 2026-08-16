@@ -122,6 +122,20 @@ def test_bind_is_structural_and_get_authoritative() -> None:
     )
     assert response.status_code == 200
     assert "42:hot" in response.text
+    assert f'id="{bound.dom_id}"' in response.text
+    assert f"hedron:refresh-{bound.dom_id}" in response.text
+    assert "{item_id}" not in response.text
+    assert 'hx-get="/_hedron/views/item/42?q=hot"' in response.text
+    path_only = item.bind(item_id="42")
+    default_q = client.get(
+        "/_hedron/views/item/42",
+        headers={"HX-Request": "true", "HX-Target": path_only.dom_id},
+    )
+    assert default_q.status_code == 200
+    assert f'id="{path_only.dom_id}"' in default_q.text
+    assert path_only.dom_id != bound.dom_id
+    assert "{item_id}" not in default_q.text
+    assert 'hx-get="/_hedron/views/item/42"' in default_q.text
 
 
 def test_duplicate_unbound_mounts_fail() -> None:
