@@ -182,9 +182,13 @@ def test_fragment_host_allowlist_and_duplicate_mount() -> None:
 
 def test_matches_declared_host_instances() -> None:
     region = FragmentRegion(id="h-view-status", selector="#h-view-status")
+    user = FragmentRegion(id="h-view-user", selector="#h-view-user")
+    token = "a" * 20
     assert matches_declared_host(region, None)
     assert matches_declared_host(region, "h-view-status")
-    assert matches_declared_host(region, "#h-view-status-abc")
+    assert matches_declared_host(region, f"#h-view-status-{token}")
+    assert not matches_declared_host(region, "#h-view-status-abc")
+    assert not matches_declared_host(user, "#h-view-user-admin")
     assert not matches_declared_host(region, "#evil")
 
 
