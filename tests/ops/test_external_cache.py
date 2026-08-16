@@ -29,6 +29,14 @@ class _StubPipeline:
         self._ops.append(("sadd", (key, member), {}))
         return self
 
+    def srem(self, key: str, member: str) -> _StubPipeline:
+        self._ops.append(("srem", (key, member), {}))
+        return self
+
+    def delete(self, key: str) -> _StubPipeline:
+        self._ops.append(("delete", (key,), {}))
+        return self
+
     def pexpire(self, key: str, milliseconds: int) -> _StubPipeline:
         self._ops.append(("pexpire", (key, milliseconds), {}))
         return self
@@ -77,6 +85,15 @@ class _StubRedis:
 
     def sadd(self, key: str, member: str) -> int:
         self._sets.setdefault(key, set()).add(member)
+        return 1
+
+    def srem(self, key: str, member: str) -> int:
+        bucket = self._sets.get(key)
+        if not bucket or member not in bucket:
+            return 0
+        bucket.discard(member)
+        if not bucket:
+            del self._sets[key]
         return 1
 
     def smembers(self, key: str) -> set[str]:
@@ -148,6 +165,33 @@ def test_redis_cache_tag_index_does_not_expire_immortal_members() -> None:
     assert backend.invalidate(tags=("t",)) == 2
     hit, _value = backend.lookup("perm")
     assert hit is False
+
+
+def test_redis_cache_overwrite_drops_stale_tag_membership() -> None:
+    """#253: invalidating an old tag must not delete a live value tagged only with the new tag."""
+    client = _StubRedis()
+    backend = RedisCacheBackend(client)
+    backend.set("k", {"v": 1}, tags=("a",))
+    backend.set("k", {"v": 2}, tags=("b",))
+    assert "k" not in client._sets.get("h1:tag:a", set())
+    assert "k" in client._sets["h1:tag:b"]
+    assert backend.invalidate(tags=("a",)) == 0
+    assert backend.lookup("k") == (True, {"v": 2})
+    assert backend.invalidate(tags=("b",)) == 1
+    assert backend.lookup("k") == (False, None)
+
+
+def test_redis_cache_ttl_zero_cleans_tag_membership() -> None:
+    """#253: ttl<=0 must SREM the key from tag indexes, not only DELETE the value."""
+    client = _StubRedis()
+    backend = RedisCacheBackend(client)
+    backend.set("k", {"v": 1}, tags=("a",))
+    backend.set("k", {"v": 1}, tags=("a",), ttl=0)
+    assert backend.lookup("k") == (False, None)
+    assert "k" not in client._sets.get("h1:tag:a", set())
+    backend.set("k", {"v": 2}, tags=("b",))
+    assert backend.invalidate(tags=("a",)) == 0
+    assert backend.lookup("k") == (True, {"v": 2})
 
 
 def test_redis_cache_rejects_bad_json() -> None:

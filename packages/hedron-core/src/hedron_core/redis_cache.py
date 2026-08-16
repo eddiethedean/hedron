@@ -15,10 +15,11 @@ class RedisCacheBackend(CacheBackend):
 
     Serialization failures raise — values are never stored poisoned.
     Value SET and tag SADDs commit together via ``MULTI``/``EXEC`` (#218).
-    Positive TTLs use millisecond ``PX`` so fractional lifetimes match in-memory (#242).
-    Tag index keys receive a matching ``PEXPIRE`` so they cannot outlive values (#208).
-    Indexes with no TTL (PTTL -1) stay immortal so mixed non-TTL members stay
-    invalidatable (#285).
+    Overwrite ``SREM``s previous tag memberships so stale indexes cannot delete
+    the live value (#253). Positive TTLs use millisecond ``PX`` so fractional
+    lifetimes match in-memory (#242). Tag index keys receive a matching
+    ``PEXPIRE`` so they cannot outlive values (#208). Indexes with no TTL
+    (PTTL -1) stay immortal so mixed non-TTL members stay invalidatable (#285).
     """
 
     process_local = False
@@ -32,6 +33,9 @@ class RedisCacheBackend(CacheBackend):
 
     def _tag_key(self, tag: str) -> str:
         return f"{self._prefix}tag:{tag}"
+
+    def _ktags_key(self, key: str) -> str:
+        return f"{self._prefix}_tags:{key}"
 
     def _decode(self, raw: Any) -> str | None:
         if raw is None:
@@ -68,32 +72,97 @@ class RedisCacheBackend(CacheBackend):
         except (TypeError, ValueError) as exc:
             raise ValueError("Cache value is not JSON-serializable") from exc
         redis_key = self._key(key)
+        ktags_key = self._ktags_key(key)
+        prior = self._prior_tags(key)
         # Match InMemoryCacheBackend: ttl<=0 means already expired / do not keep (#242).
         if ttl is not None and ttl <= 0:
-            self._client.delete(redis_key)
+            self._drop_membership(key, prior)
             return
 
         px_ms = max(1, int(ttl * 1000)) if ttl is not None else None
-        tag_keys = [self._tag_key(tag) for tag in tags]
+        stale = prior.difference(tags)
         pipe_factory = getattr(self._client, "pipeline", None)
         if callable(pipe_factory):
             pipe: Any = pipe_factory(transaction=True)
-            self._queue_set(pipe, redis_key, payload, px_ms=px_ms)
-            for tag_key in tag_keys:
-                current = self._tag_pttl(tag_key) if px_ms is not None else None
-                pipe.sadd(tag_key, key)
-                if px_ms is not None:
-                    self._queue_tag_expire(pipe, tag_key, px_ms, current=current)
+            self._queue_overwrite(
+                pipe, key, redis_key, ktags_key, payload, tags=tags, stale=stale, px_ms=px_ms
+            )
             pipe.execute()
             return
 
         # Stubs without pipeline: still write value then tags (best-effort).
-        self._queue_set(self._client, redis_key, payload, px_ms=px_ms)
-        for tag_key in tag_keys:
+        self._queue_overwrite(
+            self._client, key, redis_key, ktags_key, payload, tags=tags, stale=stale, px_ms=px_ms
+        )
+
+    def _prior_tags(self, key: str) -> set[str]:
+        smembers = getattr(self._client, "smembers", None)
+        if not callable(smembers):
+            return set()
+        raw: Any = smembers(self._ktags_key(key))
+        if not raw:
+            return set()
+        prior: set[str] = set()
+        for member in raw:
+            decoded = self._decode(member)
+            if decoded is not None:
+                prior.add(decoded)
+        return prior
+
+    def _queue_srem(self, target: Any, tag_key: str, member: str) -> None:
+        srem = getattr(target, "srem", None)
+        if callable(srem):
+            srem(tag_key, member)
+
+    def _queue_delete(self, target: Any, redis_key: str) -> None:
+        delete = getattr(target, "delete", None)
+        if callable(delete):
+            delete(redis_key)
+
+    def _drop_membership(self, key: str, prior: set[str]) -> None:
+        redis_key = self._key(key)
+        ktags_key = self._ktags_key(key)
+        pipe_factory = getattr(self._client, "pipeline", None)
+        if callable(pipe_factory):
+            pipe: Any = pipe_factory(transaction=True)
+            self._queue_drop(pipe, key, redis_key, ktags_key, prior)
+            pipe.execute()
+            return
+        self._queue_drop(self._client, key, redis_key, ktags_key, prior)
+
+    def _queue_drop(
+        self, target: Any, key: str, redis_key: str, ktags_key: str, prior: set[str]
+    ) -> None:
+        for tag in prior:
+            self._queue_srem(target, self._tag_key(tag), key)
+        self._queue_delete(target, redis_key)
+        self._queue_delete(target, ktags_key)
+
+    def _queue_overwrite(
+        self,
+        target: Any,
+        key: str,
+        redis_key: str,
+        ktags_key: str,
+        payload: str,
+        *,
+        tags: tuple[str, ...],
+        stale: set[str],
+        px_ms: int | None,
+    ) -> None:
+        for tag in stale:
+            self._queue_srem(target, self._tag_key(tag), key)
+        self._queue_set(target, redis_key, payload, px_ms=px_ms)
+        self._queue_delete(target, ktags_key)
+        for tag in tags:
+            tag_key = self._tag_key(tag)
             current = self._tag_pttl(tag_key) if px_ms is not None else None
-            self._client.sadd(tag_key, key)
+            target.sadd(tag_key, key)
+            target.sadd(ktags_key, tag)
             if px_ms is not None:
-                self._queue_tag_expire(self._client, tag_key, px_ms, current=current)
+                self._queue_tag_expire(target, tag_key, px_ms, current=current)
+        if tags and px_ms is not None:
+            self._queue_tag_expire(target, ktags_key, px_ms, current=None)
 
     @staticmethod
     def _queue_set(target: Any, redis_key: str, payload: str, *, px_ms: int | None) -> None:
