@@ -1,6 +1,6 @@
 # Phase 0.45 implementation requirements — typed interaction ecosystem
 
-**Status:** Planned; Stage 0 contract refined against Published in-tree `v0.44.0` (D-077)<br>
+**Status:** Published as in-tree `v0.45.0` (tag/PyPI deferred; D-074 / D-077)<br>
 **Target:** Hedron `v0.45.0`<br>
 **Planning baseline:** Published in-tree `v0.44.0` (D-077; original Stage 0 baseline was Published `v0.42.0`)<br>
 **Required predecessor/cut baseline:** Verified in-tree Hedron `v0.44.0`<br>

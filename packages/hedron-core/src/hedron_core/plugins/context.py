@@ -94,3 +94,8 @@ class PluginContext:
 
     def on_shutdown(self, hook: Callable[[], None]) -> None:
         self._shutdown.append(hook)
+
+    def register_projection_provider(self, provider: Any) -> None:
+        from hedron_core.catalog import register_projection_provider
+
+        register_projection_provider(provider, plugin=self.meta.name)

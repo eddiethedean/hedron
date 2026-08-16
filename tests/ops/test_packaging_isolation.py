@@ -42,11 +42,14 @@ _ALPHA_INDEPENDENT: set[str] = set()
 
 
 def test_all_packages_declare_license_and_version() -> None:
+    workspace_version = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))[
+        "project"
+    ]["version"]
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
         if name in _BETA_PACKAGES or name in _TRAIN_ALIGNED_ALPHA:
-            assert project["version"] == "0.44.0", pyproject
+            assert project["version"] == workspace_version, pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert project["version"] == "0.2.0", pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:

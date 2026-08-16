@@ -135,6 +135,11 @@ def compose_lifespan(
                 raise
 
             seal_registry()
+            from hedron.interactions import seal_app_catalog, validate_production_interactions
+
+            catalog = seal_app_catalog(app)
+            if is_production:
+                validate_production_interactions(resolved_build, catalog)
             if is_production:
                 from hedron_core.production_gate import assert_durable_backends
 

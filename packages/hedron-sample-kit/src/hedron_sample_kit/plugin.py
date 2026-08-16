@@ -16,7 +16,7 @@ PLUGIN_META = PluginMeta(
     name="sample_kit",
     version="0.1.10",
     distribution="hedron-sample-kit",
-    hedron_version=">=0.44,<0.45",
+    hedron_version=">=0.45,<0.46",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -55,6 +55,18 @@ def register(ctx: PluginContext) -> None:
         path="/hedron-explorer/packages",
     )
     ctx.register_diagnostic_owner("HED-SAMPLE-")
+    from hedron_core.catalog import SurfaceProjectionProvider
+
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.sample-kit",
+            provider="hedron-sample-kit",
+            provider_version=PLUGIN_META.version,
+            surface="Callout",
+            limitations=("third-party-shaped; no privileged registry mutation",),
+            disposition="native_consumer",
+        )
+    )
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

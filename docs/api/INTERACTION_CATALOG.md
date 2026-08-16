@@ -1,17 +1,15 @@
 ---
-status: planned
+status: current
 phase: "0.45"
 ---
 
 # Interaction catalog and package projections
 
-!!! warning "Planned 0.45 contract"
+!!! note "Published 0.45 contract"
 
     This is the accepted D-074 / RFC-0072 public contract for phase 0.45, refined by D-077
-    against Published in-tree `v0.44.0`. These symbols are not importable on the published
-    0.44 train. Implementation requires Verified in-tree 0.43 and 0.44 predecessors; no
-    runtime behavior may be claimed until every 0.45 release gate is Verified. D-077 does
-    not authorize Stage 1.
+    against Published in-tree `v0.44.0`. Implementation is the in-tree `v0.45.0` cut
+    (tag/PyPI deferred). Tracking [#328](https://github.com/eddiethedean/hedron/issues/328).
 
 Phase 0.45 gives application, tooling, adapter, and package consumers one read-only index of the
 interaction contracts established by 0.43 and 0.44:
@@ -29,7 +27,7 @@ print(entry.projections.keys())           # bounded package namespaces
 The catalog does not route, validate, authorize, render, or execute anything. It references the
 artifacts that already own those behaviors.
 
-## Planned symbols
+## Published symbols
 
 D-077 locks import placement the same way D-076 locked TypeSchema: portable catalog/manifest/
 projection values in `hedron-core`; FastAPI compiler, `Hedron.interactions`, CLI, OpenAPI, and
@@ -272,6 +270,13 @@ own bounds/audit. It cannot be stored as a generic package projection and treate
 - Base descriptors and `TypeSchema` remain independently valid without a manifest.
 - Existing direct package APIs remain supported.
 - Rollback deletes/ignores 0.45 manifests and projections without rewriting application handlers.
+
+## Out of scope (phase 0.46)
+
+Phase **0.46** ([RFC-0073](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md))
+owns `FeatureBundle`, `DataWorkspace`, chart/data link workflows, schema-aware element workflows,
+and explicit `McpExposure` factories. 0.45 does not ship those types or compile package-native
+workflows.
 
 ## See also
 

@@ -34,6 +34,9 @@ def _register() -> None:
         def register_explorer_panel(self, **kwargs: object) -> None:
             return None
 
+        def register_projection_provider(self, provider: object) -> None:
+            return None
+
     register(_Ctx())  # type: ignore[arg-type]
 
 

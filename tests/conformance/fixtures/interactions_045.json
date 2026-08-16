@@ -1,0 +1,22 @@
+{
+  "format_version": 1,
+  "profile": "conformance",
+  "schema_version": 1,
+  "app_id": "fixture",
+  "catalog_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "entries": [
+    {
+      "logical_id": "status",
+      "kind": "view",
+      "descriptor_version": 1,
+      "descriptor_fingerprint": "cccccccccccccccccccccccccccccccc",
+      "effect_state": "dynamic",
+      "fingerprint": "dddddddddddddddddddddddddddddddd"
+    }
+  ],
+  "projections": [],
+  "diagnostics": [],
+  "limitations": [],
+  "provenance": {"unknown": false, "mode": "conformance-fixture"}
+}

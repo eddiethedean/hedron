@@ -38,6 +38,7 @@ __all__ = [
     "TYPE_SCHEMA_VERSION",
     "TypeSchema",
     "attach_type_schema",
+    "payload_fingerprint",
     "redact_type_payload",
     "stable_fingerprint",
 ]
@@ -67,9 +68,14 @@ class InstanceKey:
     include: bool = True
 
 
-def stable_fingerprint(payload: object) -> str:
+def payload_fingerprint(payload: object) -> str:
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()[:32]
+
+
+def stable_fingerprint(payload: object) -> str:
+    """SHA-256 of canonical JSON, first 32 hex chars (module-level helper)."""
+    return payload_fingerprint(payload)
 
 
 def redact_type_payload(payload: Mapping[str, JsonValue]) -> JsonObject:
@@ -120,6 +126,10 @@ class TypeSchema:
             )
         object.__setattr__(self, "control_dispositions", dict(self.control_dispositions))
         object.__setattr__(self, "fallback_cache_projection", dict(self.fallback_cache_projection))
+
+    def stable_fingerprint(self) -> str:
+        """Fingerprint of the redacted ``hedron.type`` payload (D-077)."""
+        return payload_fingerprint(self.as_mapping())
 
     def as_mapping(self) -> JsonObject:
         payload: JsonObject = {

@@ -15,6 +15,7 @@ import ast
 import difflib
 import inspect
 import re
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -40,12 +41,13 @@ def _format_sim_live_demo(sim_name: str) -> str:
     )
 
 
-# Keep install snippets aligned with scripts/check_docs_train_ssot.py.
+# Keep install snippets aligned with docs/release.toml / check_docs_train_ssot.py.
 _ALPHA_EXTRAS = frozenset({"notebook", "mcp", "gradio"})
-_TRAIN_PIN = ">=0.44.0,<0.45"
+_RELEASE = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
+_TRAIN_PIN = f">={_RELEASE['pin_floor']},<{_RELEASE['pin_ceiling']}"
 _ALPHA_PIN = ">=0.1.0,<0.2"
 _CHARTS_PIN = ">=0.2.0,<0.3"
-_CHARTS_FLAGSHIP_PIN = ">=0.44.0,<0.45"
+_CHARTS_FLAGSHIP_PIN = _TRAIN_PIN
 _NATIVE_PIN = ">=0.1.2,<0.2"
 
 

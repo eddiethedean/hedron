@@ -22,9 +22,9 @@ _CSS = _ROOT / "assets" / "tabulator" / "editor.css"
 
 PLUGIN_META = PluginMeta(
     name="hedron_data",
-    version="0.44.0",
+    version="0.45.0",
     distribution="hedron-data",
-    hedron_version=">=0.44,<0.45",
+    hedron_version=">=0.45,<0.46",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -145,6 +145,17 @@ def register(ctx: PluginContext) -> None:
         path="/hedron-explorer/data",
     )
     ctx.register_diagnostic_owner("HED-DATA-")
+    from hedron_core.catalog import SurfaceProjectionProvider
+
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.data",
+            provider="hedron-data",
+            provider_version=PLUGIN_META.version,
+            surface="DataTable/DataEditor",
+            limitations=("current surface only; no DataWorkspace",),
+        )
+    )
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

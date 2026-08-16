@@ -39,9 +39,9 @@ _STATIC = _ROOT / "static"
 
 PLUGIN_META = PluginMeta(
     name="hedron_elements",
-    version="0.44.0",
+    version="0.45.0",
     distribution="hedron-elements",
-    hedron_version=">=0.44,<0.45",
+    hedron_version=">=0.45,<0.46",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -187,6 +187,17 @@ def register(ctx: PluginContext) -> None:
             "Custom-element events are untrusted; Shadow DOM is not a security boundary; "
             "CSRF/authz remain server-owned."
         ),
+    )
+    from hedron_core.catalog import SurfaceProjectionProvider
+
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.elements",
+            provider="hedron-elements",
+            provider_version=PLUGIN_META.version,
+            surface="web_component_abi",
+            limitations=("current ABI only; no schema-aware 0.46 elements",),
+        )
     )
 
 

@@ -68,6 +68,9 @@ def test_plugin_registers_037_elements() -> None:
         def register_explorer_panel(self, **kwargs: object) -> None:
             return None
 
+        def register_projection_provider(self, provider: object) -> None:
+            return None
+
     ctx = _Ctx()
     register(ctx)  # type: ignore[arg-type]
     reg = get_registry()

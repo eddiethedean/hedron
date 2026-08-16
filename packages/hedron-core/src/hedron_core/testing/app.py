@@ -288,6 +288,19 @@ class AppScenario:
         data = {str(key): "" if value is None else str(value) for key, value in dumped_raw.items()}
         return self.fragment_post(path, data=data, target=target, headers=headers, cookies=cookies)
 
+    def catalog(self, *, app_id: str | None = None):
+        from hedron_core.catalog import compile_interaction_catalog
+
+        return compile_interaction_catalog(app_id=app_id)
+
+    def catalog_entry(self, logical_id: str, *, app_id: str | None = None):
+        return self.catalog(app_id=app_id).require(logical_id)
+
+    def assert_catalog_kind(self, logical_id: str, kind: str, *, app_id: str | None = None):
+        entry = self.catalog_entry(logical_id, app_id=app_id)
+        assert entry.kind == kind, f"{logical_id} kind {entry.kind!r} != {kind!r}"
+        return entry
+
     def field_path_errors(self, payload: Mapping[str, object] | Sequence[object]) -> list[str]:
         """Extract model field paths from a validation error payload."""
         rows: Sequence[object]

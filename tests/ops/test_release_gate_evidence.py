@@ -65,7 +65,10 @@ def test_release_gate_0_23_manifest_passes_strict_checks() -> None:
 
 
 def test_current_patch_package_metadata_passes() -> None:
-    assert gate.check_packages("0.44.0") == []
+    published = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))[
+        "release"
+    ]["published_version"]
+    assert gate.check_packages(str(published)) == []
 
 
 def test_github_release_requires_successful_pypi_publish() -> None:

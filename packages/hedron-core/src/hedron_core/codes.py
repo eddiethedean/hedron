@@ -336,6 +336,22 @@ HED_TYPE_0007 = "HED-TYPE-0007"  # OutcomeMap coverage / mapping
 HED_TYPE_0008 = "HED-TYPE-0008"  # class handler lifecycle
 HED_TYPE_0009 = "HED-TYPE-0009"  # host/adapter TypeSchema disposition
 HED_TYPE_0010 = "HED-TYPE-0010"  # sensitive leak / identity contradiction
+# Interaction catalog / projections (0.45 RFC-0072 / D-077)
+HED_CATALOG_0001 = "HED-CATALOG-0001"  # version / fingerprint / ownership mismatch
+HED_CATALOG_0002 = "HED-CATALOG-0002"  # duplicate logical id or ambiguous ownership
+HED_CATALOG_0003 = "HED-CATALOG-0003"  # mutation after catalog seal
+HED_CATALOG_0004 = "HED-CATALOG-0004"  # required catalog entry missing
+HED_CATALOG_0005 = "HED-CATALOG-0005"  # catalog / manifest bounds exceeded
+HED_CATALOG_0006 = "HED-CATALOG-0006"  # required manifest missing or corrupt
+HED_CATALOG_0007 = "HED-CATALOG-0007"  # adversarial or non-canonical JSON
+HED_CATALOG_0008 = "HED-CATALOG-0008"  # production profile leakage / forbidden keys
+HED_PROJECTION_0001 = "HED-PROJECTION-0001"  # duplicate or reserved namespace
+HED_PROJECTION_0002 = "HED-PROJECTION-0002"  # projection bounds or schema failure
+HED_PROJECTION_0003 = "HED-PROJECTION-0003"  # unknown optional projection version
+HED_PROJECTION_0004 = "HED-PROJECTION-0004"  # untrusted provider invocation
+HED_PROJECTION_0005 = "HED-PROJECTION-0005"  # host / consumer exception
+HED_PROJECTION_0006 = "HED-PROJECTION-0006"  # provider disable/uninstall mismatch
+
 HED_SIM_ASSET_0001 = "HED-SIM-ASSET-0001"  # packaged sim asset name escapes static/
 HED_SIM_ASSET_0002 = "HED-SIM-ASSET-0002"  # packaged sim asset missing
 

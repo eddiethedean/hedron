@@ -1,8 +1,8 @@
 # Cutting a Hedron release
 
-This is the living maintainer runbook for the `0.44.x` train. Historical cut records
-live under `docs/archive/`. The last published release is `v0.44.0`; the next planned
-phase is `v0.45.0`.
+This is the living maintainer runbook for the `0.45.x` train. Historical cut records
+live under `docs/archive/`. The last published release is `v0.45.0`; the next planned
+phase is `v0.46.0`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag.
@@ -12,8 +12,8 @@ Python metadata does not. Never move or replace a published tag.
 1. The release commit is on green `main`, with no unexplained waived checks.
 2. `docs/release.toml`, package metadata, `__version__`, dependency pins, lockfile,
    changelog headings, CI gate version, security support window, and release notes agree.
-3. `docs/acceptance/release-gate-0.43.toml` remains Verified and `scripts/verify_pkg_43.py`
-   still passes as a historical packet. The living packet is `scripts/verify_pkg_44.py`
+3. `docs/acceptance/release-gate-0.45.toml` remains Verified and `scripts/verify_pkg_44.py`
+   still passes as a historical packet. The living packet is `scripts/verify_pkg_45.py`
    (omit `--allow-planned`).
 4. The repository and PyPI trusted-publishing configuration are controlled by active
    maintainers; the release uses the GitHub Actions workflow.

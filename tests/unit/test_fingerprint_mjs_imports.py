@@ -98,6 +98,9 @@ def test_production_build_relinks_elements_modules(tmp_path: Path) -> None:
         def register_explorer_panel(self, **kwargs: object) -> None:
             return None
 
+        def register_projection_provider(self, provider: object) -> None:
+            return None
+
     reset_registry_for_tests()
     try:
         register_elements(_Ctx())  # type: ignore[arg-type]

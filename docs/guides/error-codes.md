@@ -7,7 +7,8 @@ This catalog is complete for the registered set enforced by
 `scripts/check_hed_codes.py --docs-align` (`HEDDOC-017`).
 
 `HED-TYPE-*` codes for type-driven authoring are documented under
-[HED-TYPE (0.44)](#hed-type-044).
+[HED-TYPE (0.44)](#hed-type-044). Catalog/projection codes are under
+[HED-CATALOG (0.45)](#hed-catalog-045) and [HED-PROJECTION (0.45)](#hed-projection-045).
 
 ## Common errors (what to do)
 
@@ -30,7 +31,7 @@ This catalog is complete for the registered set enforced by
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
 | `HED-SIM-ASSET-0001` | blocker | Packaged sim asset path escape | Pass a single basename under `static/` |
 | `HED-SIM-ASSET-0002` | blocker | Packaged sim asset missing | Use a filename that ships in `hedron_sim/static/` |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.44.0,<0.45"` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.45.0,<0.46"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -42,7 +43,7 @@ This catalog is complete for the registered set enforced by
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.44.0,<0.45"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.45.0,<0.46"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -570,6 +571,36 @@ mnemonic alias of `HED-TYPE-0001`.
 | `HED-TYPE-0008` | `HED_TYPE_0008` |
 | `HED-TYPE-0009` | `HED_TYPE_0009` |
 | `HED-TYPE-0010` | `HED_TYPE_0010` |
+
+## HED-CATALOG (0.45)
+
+Interaction catalog and sealed-manifest diagnostics (D-074 / D-077 / RFC-0072). Public
+contract: [Interaction catalog](../api/INTERACTION_CATALOG.md).
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-CATALOG-0001` | `HED_CATALOG_0001` |
+| `HED-CATALOG-0002` | `HED_CATALOG_0002` |
+| `HED-CATALOG-0003` | `HED_CATALOG_0003` |
+| `HED-CATALOG-0004` | `HED_CATALOG_0004` |
+| `HED-CATALOG-0005` | `HED_CATALOG_0005` |
+| `HED-CATALOG-0006` | `HED_CATALOG_0006` |
+| `HED-CATALOG-0007` | `HED_CATALOG_0007` |
+| `HED-CATALOG-0008` | `HED_CATALOG_0008` |
+
+## HED-PROJECTION (0.45)
+
+Namespaced package projection diagnostics. Registration and catalog presence never
+grant remote exposure.
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-PROJECTION-0001` | `HED_PROJECTION_0001` |
+| `HED-PROJECTION-0002` | `HED_PROJECTION_0002` |
+| `HED-PROJECTION-0003` | `HED_PROJECTION_0003` |
+| `HED-PROJECTION-0004` | `HED_PROJECTION_0004` |
+| `HED-PROJECTION-0005` | `HED_PROJECTION_0005` |
+| `HED-PROJECTION-0006` | `HED_PROJECTION_0006` |
 
 ## HED-WORKFLOW
 

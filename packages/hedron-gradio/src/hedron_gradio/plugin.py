@@ -8,7 +8,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_gradio",
     version="0.2.0",
     distribution="hedron-gradio",
-    hedron_version=">=0.44,<0.45",
+    hedron_version=">=0.45,<0.46",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -34,6 +34,17 @@ def register(ctx: PluginContext) -> None:
         ),
     )
     ctx.register_diagnostic_owner("HED-GRADIO-")
+    from hedron_core.catalog import SurfaceProjectionProvider
+
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.gradio",
+            provider="hedron-gradio",
+            provider_version=PLUGIN_META.version,
+            surface="GradioClientAdapter",
+            limitations=("disabled by default; catalog presence is not exposure",),
+        )
+    )
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

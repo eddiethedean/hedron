@@ -2,7 +2,7 @@
 
 Unified Posit Workbench / Connect deployment adapter for Hedron.
 
-**Package maturity:** Beta (`0.36.0`) · extra `hedron[posit]` · pin `>=0.44.0,<0.45`
+**Package maturity:** Beta (`0.36.0`) · extra `hedron[posit]` · pin `>=0.45.0,<0.46`
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust. Connect credential

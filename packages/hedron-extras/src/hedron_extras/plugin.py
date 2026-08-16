@@ -39,9 +39,9 @@ _ROOT = Path(__file__).resolve().parent
 
 PLUGIN_META = PluginMeta(
     name="hedron_extras",
-    version="0.44.0",
+    version="0.45.0",
     distribution="hedron-extras",
-    hedron_version=">=0.44,<0.45",
+    hedron_version=">=0.45,<0.46",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -259,6 +259,17 @@ def register(ctx: PluginContext) -> None:
         path="/hedron-explorer/packages",
     )
     ctx.register_diagnostic_owner("HED-EXTRAS-")
+    from hedron_core.catalog import SurfaceProjectionProvider
+
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.extras",
+            provider="hedron-extras",
+            provider_version=PLUGIN_META.version,
+            surface="curated extras",
+            limitations=("current extras only; landmines stay experimental",),
+        )
+    )
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

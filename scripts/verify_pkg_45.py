@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Verify the phase 0.45 typed interaction ecosystem planning packet.
+"""Verify the phase 0.45 typed interaction ecosystem planning packet or release cut.
 
-This command never publishes or tags. Use ``--allow-planned`` while 0.45 rows are
-Planned and the published/development baseline remains 0.44.0.
-Do not omit ``--allow-planned`` until a 0.45 cut; D-077 does not authorize Stage 1.
+This command never publishes or tags. Use ``--allow-planned`` only while the 0.45
+rows are Planned and the published/development baseline is 0.44.0.
+At the in-tree cut, omit ``--allow-planned`` and require published 0.45.0.
 """
 
 from __future__ import annotations
 
 import argparse
+import subprocess
 import sys
 import tomllib
 from pathlib import Path
@@ -28,6 +29,7 @@ from _gate_045 import (  # noqa: E402
     RELEASE,
     ROADMAP,
     STATUS,
+    TRACKING_ISSUE,
     accepted_contract_present,
     contract_refine_present,
 )
@@ -129,6 +131,9 @@ def _check_contract() -> None:
         raise SystemExit("RFC-0072 and D-074 must remain Accepted")
     if not contract_refine_present():
         raise SystemExit("D-077 and the frozen 0.45 contract markers must remain present")
+    packet = (ROOT / "docs" / "acceptance" / "RELEASE_0_45.md").read_text(encoding="utf-8")
+    if TRACKING_ISSUE not in packet:
+        raise SystemExit(f"tracking issue {TRACKING_ISSUE} must be bound in RELEASE_0_45.md")
     for path in (ROADMAP, STATUS, API, IMPLEMENTATION):
         text = path.read_text(encoding="utf-8")
         for marker in ("0.44", "0.45", "D-074", "D-077"):
@@ -165,23 +170,31 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--allow-planned", action="store_true")
     args = parser.parse_args(argv)
-    if not args.allow_planned:
-        raise SystemExit(
-            "D-077 Stage 0 refine requires --allow-planned; omitting it would claim a 0.45 cut"
-        )
     _check_packet_files()
-    _check_gates(allow_planned=True)
-    _check_inventory(allow_planned=True)
+    _check_gates(allow_planned=args.allow_planned)
+    _check_inventory(allow_planned=args.allow_planned)
     _check_contract()
-    _check_versions(allow_planned=True)
+    _check_versions(allow_planned=args.allow_planned)
 
     import check_release_gate as release_gate
 
-    errors = release_gate.check_evidence_manifest_lenient(GATE)
-    if errors:
-        raise SystemExit("\n".join(errors))
-    print("ok: 0.45 planned gate shape")
-    print("ok: verify_pkg_45 (allow-planned)")
+    if args.allow_planned:
+        errors = release_gate.check_evidence_manifest_lenient(GATE)
+        if errors:
+            raise SystemExit("\n".join(errors))
+        print("ok: 0.45 planned gate shape")
+    else:
+        command = [
+            sys.executable,
+            str(ROOT / "scripts" / "check_release_gate.py"),
+            RELEASE_CANDIDATE,
+            "--evidence-manifest",
+            str(GATE),
+            "--execute-verified",
+        ]
+        print("+", *command)
+        subprocess.check_call(command, cwd=ROOT)
+    print(f"ok: verify_pkg_45 ({'allow-planned' if args.allow_planned else 'cut'})")
     return 0
 
 

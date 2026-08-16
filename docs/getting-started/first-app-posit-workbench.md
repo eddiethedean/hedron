@@ -98,9 +98,9 @@ Choose a private project location approved by your organization. The following u
 ```bash
 mkdir -p ~/projects
 cd ~/projects
-uvx --from "hedron>=0.44.0,<0.45" hedron new my-workbench-app
+uvx --from "hedron>=0.45.0,<0.46" hedron new my-workbench-app
 cd my-workbench-app
-uv add "hedron-posit>=0.44.0,<0.45"
+uv add "hedron-posit>=0.45.0,<0.46"
 ```
 
 These commands create the project, make its isolated `.venv`, install the declared dependencies,
@@ -114,7 +114,7 @@ pwd
 uv run python -c "import hedron, hedron_posit; print(hedron.__version__)"
 ```
 
-Expect the path to end in `my-workbench-app` and the version to be on the current `0.44.x` train
+Expect the path to end in `my-workbench-app` and the version to be on the current `0.45.x` train
 (`0.43.0` or a later patch).
 
 The project contains:
@@ -302,7 +302,7 @@ mkdir -p ~/projects/my-workbench-app
 cd ~/projects/my-workbench-app
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install "hedron>=0.44.0,<0.45" "hedron-posit>=0.44.0,<0.45" "uvicorn[standard]>=0.30"
+python -m pip install "hedron>=0.45.0,<0.46" "hedron-posit>=0.45.0,<0.46" "uvicorn[standard]>=0.30"
 python -m hedron new my-workbench-app --path .
 ```
 
@@ -310,7 +310,7 @@ Open `pyproject.toml` and add the adapter to the `dependencies` list so another 
 reproduce the app:
 
 ```toml
-"hedron-posit>=0.44.0,<0.45",
+"hedron-posit>=0.45.0,<0.46",
 ```
 
 Then install the declared project and run it:

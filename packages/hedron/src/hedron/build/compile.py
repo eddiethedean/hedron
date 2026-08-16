@@ -180,6 +180,9 @@ def _run_build_locked(
     registry_snapshot = snapshot_registry_builder()
     panel_snapshot = dict(plugins_mod._panels)
     owner_snapshot = dict(plugins_mod._diagnostic_owners)
+    from hedron_core.catalog import restore_projection_providers, snapshot_projection_providers
+
+    provider_snapshot = snapshot_projection_providers()
 
     def _restore_registry() -> None:
         restore_registry_builder(registry_snapshot)
@@ -187,6 +190,7 @@ def _run_build_locked(
         plugins_mod._panels.update(panel_snapshot)
         plugins_mod._diagnostic_owners.clear()
         plugins_mod._diagnostic_owners.update(owner_snapshot)
+        restore_projection_providers(provider_snapshot)
 
     try:
         discovered = discover_component_folders(roots)
@@ -400,6 +404,10 @@ def _execute_build(
             asset_manifest=asset_manifest,
             css_symbols=css_symbols,
         )
+        from hedron.interactions import emit_interactions_manifest
+
+        profile = "production" if production else "development"
+        emit_interactions_manifest(tmp_root, profile=profile)
 
         _atomic_promote(tmp_root, final_dir)
         # Ownership transferred; avoid deleting promoted tree in finally.

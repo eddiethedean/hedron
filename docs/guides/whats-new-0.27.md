@@ -1,7 +1,7 @@
 # What’s new in Hedron 0.27
 
 **Published** as `v0.27.0`. Historical pin: `hedron>=0.27.0,<0.28`.
-For new apps, use `hedron>=0.44.0,<0.45`; see [What’s new in 0.40](whats-new-0.41.md).
+For new apps, use `hedron>=0.45.0,<0.46`; see [What’s new in 0.40](whats-new-0.41.md).
 
 Hedron 0.27 graduates `hedron-data`, `hedron-flask`, `hedron-django`, `hedron-jinja`,
 and `hedron-extras` to production-grade for their declared Supported inventories

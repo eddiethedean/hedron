@@ -2,7 +2,7 @@
 
 DataTable, DataEditor, and data-source toolkit for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.44.x` (published `v0.44.0`) · pin `>=0.44.0,<0.45`
+**Package maturity:** Beta · **Train:** `0.45.x` (published `v0.45.0`) · pin `>=0.45.0,<0.46`
 **Flagship extra:** `hedron[data]` · **Import:** `hedron_data`  
 **Capability:** Supported for DataTable / DataEditor (ABI `hedron-data-editor`) and
 bounded `OptimisticMutation` when pinned — see [What’s ready](../guides/whats-ready.md)
@@ -11,9 +11,9 @@ and [DATA.md](../api/DATA.md).
 ## Install
 
 ```bash
-pip install "hedron[data]>=0.44.0,<0.45"
+pip install "hedron[data]>=0.45.0,<0.46"
 # or
-pip install "hedron-data>=0.44.0,<0.45"
+pip install "hedron-data>=0.45.0,<0.46"
 ```
 
 Requires `hedron-core`. The package registers through the `hedron.plugins` entry
@@ -31,8 +31,8 @@ point on import/install.
 | `aggrid` / `spreadsheet` | Reserved feature gates (no heavy deps) |
 
 ```bash
-pip install "hedron-data[dataframes]>=0.44.0,<0.45"
-pip install "hedron-data[sqlalchemy]>=0.44.0,<0.45"
+pip install "hedron-data[dataframes]>=0.45.0,<0.46"
+pip install "hedron-data[sqlalchemy]>=0.45.0,<0.46"
 ```
 
 ## When to use

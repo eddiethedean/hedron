@@ -42,7 +42,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.42** | Production-grade Web Component platform | Published (`v0.42.0`; in-tree cut, tag/PyPI deferred; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
 | **0.43** | Refreshable views, command handles, and typed updates | **Published** (`v0.43.0`; in-tree cut, tag/PyPI deferred; D-071; [#311](https://github.com/eddiethedean/hedron/issues/311)) |
 | **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Published** (`v0.44.0`; in-tree cut, tag/PyPI deferred; D-072 / RFC-0071; [#318](https://github.com/eddiethedean/hedron/issues/318)) |
-| **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Planned** (`v0.45.0`; D-074 / D-077 / RFC-0072; requires Verified in-tree 0.44 and a tracking issue before Stage 1) |
+| **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Planned** (`v0.46.0`; D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
@@ -86,9 +86,9 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   visualization, element, remote, and workbench workflows that compile to the same stack. None of
   these programs is a blanket feature promotion or a scheduled `1.0`.
 
-### Honest gaps on the current train (0.44.x)
+### Honest gaps on the current train (0.45.x)
 
-- Current **published** in-tree train is **0.44.x** (last `v0.44.0`; tag/PyPI deferred)
+- Current **published** in-tree train is **0.45.x** (last `v0.45.0`; tag/PyPI deferred)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -3476,7 +3476,7 @@ Upgrade fixtures:
 
 ## 0.44 — Type-driven authoring and schema-derived interactions (`v0.44.0`)
 
-**Status:** Published as `v0.44.0` (in-tree cut, tag/PyPI deferred; D-072, refined by D-073 /
+**Status:** Published as `v0.45.0` (in-tree cut, tag/PyPI deferred; D-072, refined by D-073 /
 [RFC-0071](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md);
 Stage 0 contract refined by D-076 against Published in-tree `v0.43.0`).
 Tracking: [#318](https://github.com/eddiethedean/hedron/issues/318). `release-gate-0.44.toml`
@@ -3635,12 +3635,11 @@ Upgrade fixtures:
 
 ## 0.45 — Typed interaction ecosystem convergence (`v0.45.0`)
 
-**Status:** Planned (D-074 /
+**Status:** Published as `v0.45.0` (in-tree cut, tag/PyPI deferred; D-074,
 [RFC-0072](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md);
 Stage 0 contract refined by D-077 against Published in-tree `v0.44.0`).
-Stage 0 requirements are defined against Published in-tree `v0.44.0`; Verified in-tree `v0.44.0` is a hard
-prerequisite for Stage 1 and the 0.45 cut baseline. D-077 does not authorize Stage 1. A tracking issue must be created and bound to
-every 0.45 gate before runtime implementation begins.
+Tracking: [#328](https://github.com/eddiethedean/hedron/issues/328). `release-gate-0.45.toml`
+is Verified. Tag/PyPI remain deferred. This cut does not start 0.46.
 
 **Outcome:** One registered interaction is described consistently across the whole Hedron
 ecosystem. The 0.43 base descriptor remains runtime authority, the optional 0.44 `TypeSchema`
@@ -3723,8 +3722,8 @@ Catalog/manifest/host locks:
 - Inverting optional package dependencies or requiring Node/browser packages.
 - Adding package-native feature bundles, data workspaces, chart links, enhanced workflows, or
   remote workflow factories; those belong to 0.46.
-- Blanket maturity promotion, closing `SR-021`, scheduling `1.0`, or changing versions during
-  planning.
+- Blanket maturity promotion, closing `SR-021`, scheduling `1.0`, or tagging/publishing from this
+  in-tree cut.
 
 ### Exit gate
 

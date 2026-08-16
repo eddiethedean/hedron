@@ -9,12 +9,14 @@ import pytest
 from fastapi.testclient import TestClient
 
 from hedron import Hedron, Text
+from hedron_core.registry import reset_registry_for_tests
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 @pytest.fixture(scope="module")
 def minimal_client():
+    reset_registry_for_tests()
     app = Hedron(title="compose-035", explorer="off", session_secret="compose-035-secret")
 
     @app.page("/")

@@ -41,7 +41,20 @@ def main(argv: list[str] | None = None) -> None:
         "inspect",
         help="Explain a component's styles, dependencies, and accessibility contract",
     )
-    inspect_p.add_argument("component", help="Component name or logical id")
+    inspect_p.add_argument("component", help="Component name, logical id, or 'interactions'")
+    inspect_p.add_argument("--json", action="store_true", help="Emit versioned JSON")
+    inspect_p.add_argument(
+        "--static",
+        nargs="?",
+        const=".",
+        default=None,
+        help="Static/no-import inspect of a project root (interactions only)",
+    )
+    inspect_p.add_argument(
+        "--manifest",
+        default=None,
+        help="Read an existing interactions.json without importing the app",
+    )
     inspect_p.set_defaults(func=_cmd_inspect)
 
     eject_p = sub.add_parser(

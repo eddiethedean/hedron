@@ -37,9 +37,9 @@ status commentary, not a satisfied release gate.
 - [`v0.43` refreshable views, commands, and typed updates](RELEASE_0_43.md) — **Published** (`v0.43.0`; D-071 / RFC-0070, refined by D-073; [#311](https://github.com/eddiethedean/hedron/issues/311))
 - [`v0.44` type-driven authoring](RELEASE_0_44.md) — **Published** in-tree as `v0.44.0`
   (tag/PyPI deferred; D-072 / RFC-0071, refined by D-073 / D-076; [#318](https://github.com/eddiethedean/hedron/issues/318))
-- [`v0.45` typed interaction ecosystem](RELEASE_0_45.md) — **Planned** Stage 0 contract refined
-  against Published in-tree `v0.44.0` (D-074 / RFC-0072, refined by D-077; requires Verified
-  in-tree 0.44 and a tracking issue before Stage 1)
+- [`v0.45` typed interaction ecosystem](RELEASE_0_45.md) — **Published** in-tree as `v0.45.0`
+  (tag/PyPI deferred; D-074 / RFC-0072, refined by D-077;
+  [#328](https://github.com/eddiethedean/hedron/issues/328))
 - [`v0.46` package-native typed workflows](RELEASE_0_46.md) — **Planned** Stage 0 requirements
   packet (D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
@@ -99,7 +99,7 @@ status commentary, not a satisfied release gate.
   [release-gate-0.42.toml](release-gate-0.42.toml) (Verified),
   [release-gate-0.43.toml](release-gate-0.43.toml) (Verified),
   [release-gate-0.44.toml](release-gate-0.44.toml) (Verified),
-  [release-gate-0.45.toml](release-gate-0.45.toml) (Planned),
+  [release-gate-0.45.toml](release-gate-0.45.toml) (Verified),
   [release-gate-0.46.toml](release-gate-0.46.toml) (Planned)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning

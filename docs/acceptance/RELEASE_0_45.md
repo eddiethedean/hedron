@@ -1,10 +1,11 @@
 # Hedron `v0.45` typed interaction ecosystem acceptance
 
-**Status:** Planned; Stage 0 contract refined against Published in-tree `v0.44.0` (D-077)<br>
+**Status:** **Published** in-tree as `v0.45.0` (tag/PyPI deferred; D-074 / D-077)<br>
 **Planning baseline:** Published in-tree `v0.44.0`<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.44.0`<br>
-**Target:** `v0.45.0`<br>
+**Target:** `v0.45.0` (in-tree; tag/PyPI deferred)<br>
 **Decision/RFC:** D-074, refined by D-077 / [RFC-0072](../rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)
+**Tracking:** [#328](https://github.com/eddiethedean/hedron/issues/328) remains open until later tag/PyPI assets exist.
 
 Phase 0.45 makes the 0.43/0.44 interaction contract consumable across the whole package fleet
 through one sealed catalog, one redacted manifest, and one bounded package-projection protocol.
@@ -78,71 +79,72 @@ exist.
   wait on `#318`/`#311` PyPI/Git assets. This refine does not authorize Stage 1.
 - [x] Phase 0.46 feature bundles/workflows are explicitly excluded from 0.45.
 - [x] Every 0.43/0.44-owned gate is Verified in-tree.
-- [ ] A tracking issue is created and bound to every 0.45 gate.
-- [ ] Stage 1 records descriptor/type/route/form/effect/outcome/package baselines.
+- [x] A tracking issue is created and bound to every 0.45 gate:
+  [#328](https://github.com/eddiethedean/hedron/issues/328).
+- [x] Stage 1 records descriptor/type/route/form/effect/outcome/package baselines.
 
 ## Catalog and manifest acceptance
 
-- [ ] Every registered 0.43 view/command appears exactly once with correct descriptor/type
+- [x] Every registered 0.43 view/command appears exactly once with correct descriptor/type
   versions/fingerprints, effect label, provenance, limitations, and app ownership.
-- [ ] Unmodeled handles remain coarse/dynamic and absent optional type/projection data is honest.
-- [ ] Registration conflicts and stale/cross-app artifacts fail atomically before publication.
-- [ ] Catalog reads never execute handlers/dependencies/providers or perform I/O.
-- [ ] Equivalent registries produce deterministic catalog and canonical manifest fingerprints.
-- [ ] Production/development/conformance profiles pass secret/source/default/example/request-value
+- [x] Unmodeled handles remain coarse/dynamic and absent optional type/projection data is honest.
+- [x] Registration conflicts and stale/cross-app artifacts fail atomically before publication.
+- [x] Catalog reads never execute handlers/dependencies/providers or perform I/O.
+- [x] Equivalent registries produce deterministic catalog and canonical manifest fingerprints.
+- [x] Production/development/conformance profiles pass secret/source/default/example/request-value
   redaction goldens.
-- [ ] Trusted build and static/no-execution modes have distinct provenance and behavior.
-- [ ] Production-required manifest mismatch fails before serving and rollback is atomic.
-- [ ] Unknown optional and incompatible required versions follow documented compatibility rules.
+- [x] Trusted build and static/no-execution modes have distinct provenance and behavior.
+- [x] Production-required manifest mismatch fails before serving and rollback is atomic.
+- [x] Unknown optional and incompatible required versions follow documented compatibility rules.
 
 ## Projection and package acceptance
 
-- [ ] Projection namespaces/versions/provider/config/fingerprints/capabilities/limitations/bounds are
+- [x] Projection namespaces/versions/provider/config/fingerprints/capabilities/limitations/bounds are
   validated and unknown optional projections cannot change base behavior.
-- [ ] Provider disable/uninstall removes only its projection and leaks no registry/cache/resource.
-- [ ] Third-party sample provider receives no privileged registry/app/dependency/secret access.
-- [ ] Every package/runtime row in the inventory has an owner, exact compatibility range,
+- [x] Provider disable/uninstall removes only its projection and leaks no registry/cache/resource.
+- [x] Third-party sample provider receives no privileged registry/app/dependency/secret access.
+- [x] Every package/runtime row in the inventory has an owner, exact compatibility range,
   capability/limitation evidence, clean import, and rollback path.
-- [ ] Data/chart/element/extras projections describe current surfaces only; no feature bundle,
+- [x] Data/chart/element/extras projections describe current surfaces only; no feature bundle,
   DataWorkspace, chart-link, or remote-workflow factory is present.
-- [ ] Independently versioned satellites and maturity/readiness labels remain honest.
+- [x] Independently versioned satellites and maturity/readiness labels remain honest.
 
 ## Consumer acceptance
 
-- [ ] FastAPI/Flask/Django agree on portable semantic goldens and expose host-specific limitations.
-- [ ] Jinja resolves only registered handles/logical ids and retains reversal/CSRF/validation/
+- [x] FastAPI/Flask/Django agree on portable semantic goldens and expose host-specific limitations.
+- [x] Jinja resolves only registered handles/logical ids and retains reversal/CSRF/validation/
   escaping/fallback without annotation or manifest execution.
-- [ ] Explorer/CLI/OpenAPI/scenarios use the catalog, expose static/trusted provenance, and pass
+- [x] Explorer/CLI/OpenAPI/scenarios use the catalog, expose static/trusted provenance, and pass
   stale/large/unsupported/redaction cases.
-- [ ] Conformance/sim/notebook/sample-kit/Node/Java consumers pass their declared portable subset
+- [x] Conformance/sim/notebook/sample-kit/Node/Java consumers pass their declared portable subset
   and refuse unsupported server/remote/browser behavior.
-- [ ] Posit/Workbench/Connect preserve mount-aware diagnostics and manifest validation without
+- [x] Posit/Workbench/Connect preserve mount-aware diagnostics and manifest validation without
   moving Hedron logic into `fastapi-workbench`.
-- [ ] MCP/Gradio create no operation from catalog presence; explicit adapters repeat live authz/
+- [x] MCP/Gradio create no operation from catalog presence; explicit adapters repeat live authz/
   egress/bounds/audit and fail closed.
 
 ## Security, accessibility, and performance acceptance
 
-- [ ] Catalog/manifest/projection ids and fingerprints are never treated as capabilities.
-- [ ] Hostile JSON, provider metadata, paths, symlinks, partial writes, downgrade, namespace,
+- [x] Catalog/manifest/projection ids and fingerprints are never treated as capabilities.
+- [x] Hostile JSON, provider metadata, paths, symlinks, partial writes, downgrade, namespace,
   cross-app, stale, injection, and TOCTOU corpora pass.
-- [ ] Explorer/CLI/notebook/deployment retain authentication/origin/CSRF/rate/token/production
+- [x] Explorer/CLI/notebook/deployment retain authentication/origin/CSRF/rate/token/production
   controls and structured redacted audit.
-- [ ] Native form/no-JS semantics and Explorer graph/table keyboard/focus/error/visual-mode behavior
+- [x] Native form/no-JS semantics and Explorer graph/table keyboard/focus/error/visual-mode behavior
   pass three-engine browser evidence without a new human-AT claim.
-- [ ] Performance evidence separates compile/build/tooling cost from request-path cost and proves
+- [x] Performance evidence separates compile/build/tooling cost from request-path cost and proves
   no material unused-path regression or new required browser asset.
-- [ ] Security review records zero unresolved critical/high findings.
+- [x] Security review records zero unresolved critical/high findings.
 
 ## Compatibility and release acceptance
 
-- [ ] Published 0.42, Published 0.43 unmodeled-handle, and Published 0.44 modeled fixtures pass
+- [x] Published 0.42, Published 0.43 unmodeled-handle, and Published 0.44 modeled fixtures pass
   unchanged.
-- [ ] Mixed versions, rolling deploy, unknown projection, missing provider/package, manifest
+- [x] Mixed versions, rolling deploy, unknown projection, missing provider/package, manifest
   rollback, provider uninstall, and full 0.44 rollback pass.
-- [ ] Wheel/sdist/source/offline imports preserve package dependency direction and optionality.
-- [ ] API/stability/package/disposition/format documentation and changelogs agree.
-- [ ] Every row in `release-gate-0.45.toml` is Verified with retained evidence and none is Deferred.
+- [x] Wheel/sdist/source/offline imports preserve package dependency direction and optionality.
+- [x] API/stability/package/disposition/format documentation and changelogs agree.
+- [x] Every row in `release-gate-0.45.toml` is Verified with retained evidence and none is Deferred.
 
 ## Verification entry points
 
@@ -153,11 +155,11 @@ python scripts/check_projections_045.py
 python scripts/check_hosts_045.py
 python scripts/check_security_045.py
 python scripts/check_compat_045.py
-python scripts/verify_pkg_45.py --allow-planned
+python scripts/verify_pkg_45.py
 python scripts/check_release_gate.py 0.45.0 --execute-verified
 ```
 
-`v0.45.0` may be cut only from Verified in-tree `v0.44.0` when every 0.45 row is Verified with zero
-Deferred. Reserved Stage 1 command names remain reserved until their scripts exist;
-`verify_pkg_45.py --allow-planned` is the Stage 0 SSOT checker only.
+`v0.45.0` is cut in-tree from Verified `v0.44.0` with every 0.45 row Verified and zero
+Deferred. Git tag, GitHub Release, and PyPI remain deferred; tracking [#328] stays open.
+`verify_pkg_45.py` (no `--allow-planned`) is the living-train cut checker.
 

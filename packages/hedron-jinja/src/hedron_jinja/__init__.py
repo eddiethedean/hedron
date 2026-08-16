@@ -17,7 +17,12 @@ from hedron_jinja.contracts import (
     TemplateSource,
     TemplateSpec,
 )
-from hedron_jinja.handles import resolve_registered_handle
+from hedron_jinja.handles import (
+    catalog_command_form,
+    catalog_view,
+    coerce_interaction_target,
+    resolve_registered_handle,
+)
 from hedron_jinja.instrumentation import (
     ExtensionEvidence,
     ExtensionRegistry,
@@ -47,7 +52,7 @@ from hedron_jinja.providers import (
 )
 from hedron_jinja.source import validate_element_declarations
 
-__version__ = "0.44.0"
+__version__ = "0.45.0"
 
 __all__ = [
     "AsyncIoBudget",
@@ -75,8 +80,11 @@ __all__ = [
     "a11y_static_diagnostics",
     "async_io_session",
     "build_production_inventory",
+    "catalog_command_form",
+    "catalog_view",
     "charts_provider_manifest",
     "checker_fixture_from_diagnostics",
+    "coerce_interaction_target",
     "data_provider_manifest",
     "instrumentation_session",
     "portable_checker_json",

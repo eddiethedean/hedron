@@ -12,6 +12,7 @@ from typing import Any, cast
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 
+from hedron_core.catalog import InteractionCatalog, compile_interaction_catalog, get_sealed_catalog
 from hedron_core.dashboard import dashboard_graph_payload
 from hedron_core.plugins import get_explorer_panels
 from hedron_core.registry import ComponentMeta, get_registry
@@ -43,6 +44,16 @@ def _redact(value: str | None) -> str | None:
     if "/" in value or "\\" in value:
         return Path(value).name
     return value
+
+
+def _app_catalog(app: object) -> InteractionCatalog:
+    cached = getattr(getattr(app, "state", None), "hedron_interactions", None)
+    if isinstance(cached, InteractionCatalog):
+        return cached
+    live = get_sealed_catalog()
+    if live is not None:
+        return live
+    return compile_interaction_catalog()
 
 
 def _handle_graph_html(request: Request) -> str:
@@ -238,6 +249,7 @@ def _shell(title: str, body: str, *, request: Request, active: str = "components
         ("packages", "Packages", "/hedron-explorer/packages"),
         ("elements", "Elements", "/hedron-explorer/elements"),
         ("inventory", "Inventory", "/hedron-explorer/inventory"),
+        ("interactions", "Interactions", "/hedron-explorer/interactions"),
         ("settings", "Settings", "/hedron-explorer/settings"),
     ]
     links = "".join(_nav_link(request, key, label, href, active) for key, label, href in nav)
@@ -870,6 +882,46 @@ def explorer_router() -> APIRouter:
         """
         return _shell("Settings", body, request=request, active="settings")
 
+    @router.get("/interactions", response_class=HTMLResponse, include_in_schema=False)
+    async def interactions_view(request: Request) -> str:
+        catalog = _app_catalog(request.app)
+        rows = []
+        for entry in catalog.entries.values():
+            ident = html_lib.escape(entry.logical_id)
+            kind = html_lib.escape(entry.kind)
+            effect = html_lib.escape(entry.effect_state)
+            desc = html_lib.escape(entry.descriptor_fingerprint)
+            schema = html_lib.escape(entry.type_schema_fingerprint or "absent")
+            namespaces = html_lib.escape(", ".join(sorted(entry.projections)) or "none")
+            rows.append(
+                f"<tr><td>{ident}</td><td>{kind}</td><td>{effect}</td>"
+                f"<td><code>{desc}</code></td><td><code>{schema}</code></td>"
+                f"<td>{namespaces}</td></tr>"
+            )
+        projections = "".join(
+            f"<li><code>{html_lib.escape(name)}</code> "
+            f"provider={html_lib.escape(item.provider)}</li>"
+            for name, item in catalog.catalog_projections.items()
+        )
+        body = f"""
+        <h2>Interaction catalog</h2>
+        <p>Read-only index of 0.43 descriptors and optional 0.44 TypeSchema.
+        Catalog ids and fingerprints are not capabilities.</p>
+        <p>Fingerprint <code>{html_lib.escape(catalog.fingerprint)}</code>
+        sealed={catalog.sealed}</p>
+        <h3>Entries</h3>
+        <table>
+          <thead><tr><th>Logical id</th><th>Kind</th><th>Effect</th>
+          <th>Descriptor</th><th>TypeSchema</th><th>Projections</th></tr></thead>
+          <tbody>{"".join(rows) or "<tr><td colspan='6'>No registered handles</td></tr>"}</tbody>
+        </table>
+        <h3>Package projections</h3>
+        <ul>{projections or "<li>No catalog-level projections</li>"}</ul>
+        <h3>Provenance</h3>
+        <pre>{html_lib.escape(str(dict(catalog.provenance)))}</pre>
+        """
+        return _shell("Interactions", body, request=request, active="interactions")
+
     @router.get("/api/routes", include_in_schema=False)
     async def api_routes() -> list[dict[str, Any]]:
         return [
@@ -943,6 +995,11 @@ def explorer_router() -> APIRouter:
             if descriptor is not None:
                 redacted.append(redacted_descriptor_view(descriptor))
         return {**payload, "handles": redacted}
+
+    @router.get("/api/interactions", include_in_schema=False)
+    async def api_interactions(request: Request) -> dict[str, Any]:
+        catalog = _app_catalog(request.app)
+        return catalog.to_manifest(profile="development").as_mapping()
 
     @router.get("/api/dashboard-graph", include_in_schema=False)
     async def api_dashboard_graph() -> dict[str, Any]:

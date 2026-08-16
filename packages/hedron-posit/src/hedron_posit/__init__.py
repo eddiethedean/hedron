@@ -26,6 +26,7 @@ from hedron_posit.detect import (
     is_workbench_job,
     is_workbench_scope,
 )
+from hedron_posit.interactions import validate_deployed_interactions
 from hedron_posit.middleware import WorkbenchPathMiddleware, workbenchify
 from hedron_posit.products import PositProduct, resolve_product
 from hedron_posit.resolve import parse_rserver_url_output, resolve_deployment
@@ -41,7 +42,7 @@ from hedron_posit.urls import (
     validate_external_base_url,
 )
 
-__version__ = "0.44.0"
+__version__ = "0.45.0"
 
 __all__ = [
     "ConnectConfig",
@@ -75,6 +76,7 @@ __all__ = [
     "resolve_deployment",
     "resolve_posit_deployment",
     "resolve_product",
+    "validate_deployed_interactions",
     "validate_external_base_url",
     "workbenchify",
 ]

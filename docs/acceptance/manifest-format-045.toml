@@ -5,7 +5,7 @@
 
 schema_version = 1
 phase = "0.45"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.44.0"
 required_predecessor = "v0.44.0"
 target = "v0.45.0"
@@ -25,7 +25,7 @@ static_mode_imports_target = false
 unknown_facts_labeled = true
 modes_not_equivalent_when_unknown = true
 reserved_diagnostics = ["HED-CATALOG-*", "HED-PROJECTION-*"]
-reserved_diagnostics_status = "docs_only"
+reserved_diagnostics_status = "implemented"
 type_forbidden = "docs/acceptance/type-schema-044.toml"
 catalog_entry_lock = "docs/acceptance/catalog-entry-045.toml"
 

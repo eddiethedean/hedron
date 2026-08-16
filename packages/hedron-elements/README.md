@@ -1,6 +1,6 @@
 # hedron-elements
 
-**Package maturity:** Beta · **Train:** `0.44.x` · pin `>=0.44.0,<0.45`
+**Package maturity:** Beta · **Train:** `0.45.x` · pin `>=0.45.0,<0.46`
 
 Framework-neutral Web Component ABI and HTMX-safe bridge for Hedron. Includes the
 `hedron-example` reference plus Beta form controls (`hedron-field-text`,
@@ -9,9 +9,9 @@ Framework-neutral Web Component ABI and HTMX-safe bridge for Hedron. Includes th
 D-064 / D-065).
 
 ```bash
-pip install "hedron[elements]>=0.44.0,<0.45"
+pip install "hedron[elements]>=0.45.0,<0.46"
 # or
-pip install "hedron-elements>=0.44.0,<0.45"
+pip install "hedron-elements>=0.45.0,<0.46"
 ```
 
 Depends on `hedron-core` only. Host applications do not need Node.js.

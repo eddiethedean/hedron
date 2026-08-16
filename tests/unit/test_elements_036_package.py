@@ -12,8 +12,7 @@ from hedron_elements.plugin import PLUGIN_META, register
 
 
 def test_version_and_exports() -> None:
-    assert hedron_elements.__version__ == "0.44.0"
-    assert version("hedron-elements").startswith("0.44.")
+    assert hedron_elements.__version__ == version("hedron-elements")
     assert Example is not None
 
 

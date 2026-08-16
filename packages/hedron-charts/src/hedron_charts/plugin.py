@@ -54,7 +54,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_charts",
     version="0.2.0",
     distribution="hedron-charts",
-    hedron_version=">=0.44,<0.45",
+    hedron_version=">=0.45,<0.46",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -325,6 +325,17 @@ def register(ctx: PluginContext) -> None:
         path="/hedron-explorer/charts",
     )
     ctx.register_diagnostic_owner("HED-CHART-")
+    from hedron_core.catalog import SurfaceProjectionProvider
+
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.charts",
+            provider="hedron-charts",
+            provider_version=PLUGIN_META.version,
+            surface="Chart/LineChart/BarChart",
+            limitations=("current surface only; no chart-link workflows",),
+        )
+    )
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

@@ -371,6 +371,9 @@ def handle_graph_payload(*, app_id: str | None = None) -> dict[str, object]:
 def reset_handles_for_tests() -> None:
     _DESCRIPTORS.clear()
     _KEYS.clear()
+    from hedron_core.catalog import reset_catalog_for_tests
+
+    reset_catalog_for_tests()
 
 
 def _canonical_params(parameters: Mapping[str, object]) -> dict[str, object]:

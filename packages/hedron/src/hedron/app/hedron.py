@@ -184,5 +184,12 @@ class Hedron(HedronPagesMixin, FastAPI):
             explorer_dependencies=self._explorer_dependencies,
         )
 
+    @property
+    def interactions(self) -> object:
+        """Read-only interaction catalog for this application."""
+        from hedron.interactions import app_interactions
+
+        return app_interactions(self)
+
     def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
         super().include_router(router, *args, **kwargs)

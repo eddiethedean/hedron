@@ -1,8 +1,8 @@
-REALCONNECT-033 start 2026-08-16T21:35:08Z
+REALCONNECT-033 start 2026-08-16T23:53:43Z
 image=posit/connect@sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9
 host_arch=arm64
 protocol_floor=2024.11.0
-python=Python 3.12.13
+python=Python 3.11.14
 image_digest=sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9
 container=start privileged=true
 CONNECT_HEALTH=ok
@@ -26,6 +26,6 @@ WORKBENCH_ISOLATION=ok encoded_target=307 external_escape=blocked
 WEBSOCKET=ok
 OUTSIDE_CONNECT=ok hedron_parity=ok generic_aliases_ignored=ok
 RESULT=pass
-REALCONNECT-033 end 2026-08-16T21:35:39Z
+REALCONNECT-033 end 2026-08-16T23:54:19Z
 LICENSE_DEACTIVATE=begin timeout=120s
 LICENSE_DEACTIVATE=end

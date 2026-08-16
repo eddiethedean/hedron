@@ -395,6 +395,10 @@ class HedronJinja:
             jinja_globals["hedron_record_loop"] = lambda n=1: record_loop_iteration(int(n))
         if "hedron_record_macro" not in jinja_globals:
             jinja_globals["hedron_record_macro"] = lambda n=1: record_macro_call(int(n))
+        from hedron_jinja.handles import catalog_command_form, catalog_view
+
+        jinja_globals.setdefault("h_view", catalog_view)
+        jinja_globals.setdefault("h_command_form", catalog_command_form)
 
         environment.loader = HdjLoader(environment.loader)
         environment.template_class = _hdj_template_class(environment.template_class)

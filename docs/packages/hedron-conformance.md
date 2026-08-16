@@ -2,16 +2,16 @@
 
 Language-neutral Hedron conformance-test kit and capability runner.
 
-**Package maturity:** Beta · **Train:** `0.44.x` (published `v0.44.0`) · pin `>=0.44.0,<0.45`
+**Package maturity:** Beta · **Train:** `0.45.x` (published `v0.45.0`) · pin `>=0.45.0,<0.46`
 **Flagship extra:** `hedron[conformance]` · **Import:** `hedron_conformance`  
 **CLI:** `hedron-conformance` · depends on pydantic only (no `hedron-core`)
 
 ## Install
 
 ```bash
-pip install "hedron[conformance]>=0.44.0,<0.45"
+pip install "hedron[conformance]>=0.45.0,<0.46"
 # or
-pip install "hedron-conformance>=0.44.0,<0.45"
+pip install "hedron-conformance>=0.45.0,<0.46"
 ```
 
 ## When to use

@@ -34,6 +34,8 @@ def _accessibility_contract_for(meta: object) -> Any:
 
 
 def _cmd_inspect(args: argparse.Namespace) -> int:
+    if args.component == "interactions":
+        return _cmd_inspect_interactions(args)
     _load_app(args.app)
     from hedron.config import load_hedron_settings
     from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
@@ -71,4 +73,59 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     if meta.styles_path and Path(meta.styles_path).is_file():
         payload["styles"] = Path(meta.styles_path).read_text(encoding="utf-8")
     print(json.dumps(payload, indent=2))
+    return 0
+
+
+def _set_inspect_provenance(payload: JsonObject, *, mode: str) -> None:
+    previous = payload.get("provenance")
+    merged: JsonObject = dict(previous) if isinstance(previous, dict) else {}
+    merged["mode"] = mode
+    merged["unknown"] = False
+    payload["provenance"] = merged
+
+
+def _cmd_inspect_interactions(args: argparse.Namespace) -> int:
+    from hedron.interactions import (
+        app_interactions,
+        inspect_interactions_static,
+    )
+    from hedron_core.catalog import compile_interaction_catalog
+
+    as_json = bool(getattr(args, "json", False))
+    manifest = getattr(args, "manifest", None)
+    static_root = getattr(args, "static", None)
+    if manifest:
+        payload = inspect_interactions_static(Path("."), manifest=Path(manifest))
+    elif static_root:
+        payload = inspect_interactions_static(Path(static_root))
+    elif getattr(args, "app", None):
+        app = _load_app(args.app)
+        catalog = app_interactions(app) if app is not None else compile_interaction_catalog()
+        payload = catalog.to_manifest(profile="development").as_mapping()
+        _set_inspect_provenance(payload, mode="trusted-app")
+    else:
+        catalog = compile_interaction_catalog()
+        payload = catalog.to_manifest(profile="development").as_mapping()
+        _set_inspect_provenance(payload, mode="process-registry")
+    if as_json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    entries = payload.get("entries") or []
+    provenance = payload.get("provenance")
+    mode = provenance.get("mode") if isinstance(provenance, dict) else None
+    print(
+        f"interactions  fingerprint="
+        f"{payload.get('fingerprint') or payload.get('catalog_fingerprint')}"
+    )
+    print(f"mode={mode} unknown={payload.get('unknown', False)}")
+    if not isinstance(entries, list):
+        return 0
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        print(
+            f"  {entry.get('logical_id')}  kind={entry.get('kind')}  "
+            f"descriptor={entry.get('descriptor_fingerprint')}  "
+            f"type={entry.get('type_schema_fingerprint') or 'absent'}"
+        )
     return 0

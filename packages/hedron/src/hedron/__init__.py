@@ -125,6 +125,8 @@ from hedron_core import (
     CameraCapture,
     Card,
     Carousel,
+    CatalogEntry,
+    CatalogVersionError,
     ChatMessage,
     Checkbox,
     ChipInput,
@@ -183,6 +185,8 @@ from hedron_core import (
     InferenceWorkflow,
     Inline,
     InstanceKey,
+    InteractionCatalog,
+    InteractionManifest,
     JSONViewer,
     Label,
     Link,
@@ -203,6 +207,7 @@ from hedron_core import (
     NavLink,
     NumberInput,
     OobHost,
+    PackageProjection,
     Page,
     PageIcon,
     ParameterViewer,
@@ -215,6 +220,7 @@ from hedron_core import (
     PredictionLabel,
     PredictionScore,
     Progress,
+    ProjectionCapability,
     Props,
     RadioGroup,
     RangeInput,
@@ -381,7 +387,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.44.0"
+__version__ = "0.45.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -578,6 +584,12 @@ __all__ = [
     "Timeline",
     "Title",
     "TypeSchema",
+    "CatalogEntry",
+    "CatalogVersionError",
+    "InteractionCatalog",
+    "InteractionManifest",
+    "PackageProjection",
+    "ProjectionCapability",
     "Toast",
     "ToggleSwitch",
     "Tooltip",

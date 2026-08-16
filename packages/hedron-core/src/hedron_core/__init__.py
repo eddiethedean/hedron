@@ -148,6 +148,20 @@ from hedron_core.cache import (
     invalidate_tags,
     reset_cache_for_tests,
 )
+from hedron_core.catalog import (
+    CatalogEntry,
+    CatalogVersionError,
+    InteractionCatalog,
+    InteractionManifest,
+    PackageProjection,
+    ProjectionCapability,
+    ProjectionDisposition,
+    ProjectionProvider,
+    SurfaceProjectionProvider,
+    compile_interaction_catalog,
+    register_projection_provider,
+    seal_interaction_catalog,
+)
 from hedron_core.channel import (
     ChannelBudget,
     ChannelMessage,
@@ -379,7 +393,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.44.0"
+__version__ = "0.45.0"
 
 __all__ = [
     "ActionRegistry",
@@ -431,6 +445,18 @@ __all__ = [
     "StructuralBindingAdapter",
     "TYPE_SCHEMA_NAMESPACE",
     "TYPE_SCHEMA_VERSION",
+    "CatalogEntry",
+    "CatalogVersionError",
+    "compile_interaction_catalog",
+    "InteractionCatalog",
+    "InteractionManifest",
+    "PackageProjection",
+    "ProjectionCapability",
+    "ProjectionDisposition",
+    "ProjectionProvider",
+    "register_projection_provider",
+    "seal_interaction_catalog",
+    "SurfaceProjectionProvider",
     "TypeSchema",
     "compile_to_interaction",
     "descriptor_fingerprint",

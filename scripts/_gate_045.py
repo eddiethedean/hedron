@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import subprocess
 import tomllib
 from pathlib import Path
 
@@ -34,6 +35,7 @@ PACKET_FILES = (
     MANIFEST_FORMAT,
     HOST_FACTS,
 )
+TRACKING_ISSUE = "#328"
 
 EXPECTED_GATES = (
     "CATALOG-045",
@@ -107,9 +109,70 @@ def require_files(paths: list[Path], errors: list[str]) -> None:
             errors.append(f"missing required file: {path}")
 
 
+GATE_TESTS: dict[str, list[str]] = {
+    "CATALOG-045": ["tests/unit/test_catalog_045.py"],
+    "MANIFEST-045": ["tests/unit/test_manifest_045.py"],
+    "PROJECTION-045": ["tests/unit/test_projections_045.py"],
+    "HOST-045": ["tests/adapters/test_hosts_045.py"],
+    "AUTHOR-045": ["tests/unit/test_authoring_045.py"],
+    "SURFACE-045": ["tests/unit/test_surfaces_045.py"],
+    "REMOTE-045": ["tests/unit/test_remote_045.py"],
+    "TOOLING-045": ["tests/unit/test_tooling_045.py"],
+    "PORTABLE-045": [
+        "tests/unit/test_portable_045.py",
+        "tests/conformance/test_catalog_045.py",
+    ],
+    "DEPLOY-045": ["tests/unit/test_deploy_045.py"],
+    "SECURITY-045": ["tests/security/test_security_045.py"],
+    "A11Y-045": ["tests/a11y/test_a11y_045.py"],
+    "BROWSER-045": ["tests/browser/test_browser_045.py"],
+    "COMPAT-045": ["tests/unit/test_compat_045.py"],
+    "PERF-045": ["tests/performance/test_perf_045.py"],
+    "DOCS-045": ["tests/unit/test_docs_045.py"],
+    "REGRESS-045": ["tests/unit/test_regress_045.py"],
+    "PKG-045": ["tests/unit/test_phase045_packet.py"],
+}
+
+
 def gate_state(gate_id: str) -> str | None:
     data = tomllib.loads(GATE.read_text(encoding="utf-8"))
     for row in data.get("evidence") or []:
         if row.get("id") == gate_id:
             return str(row.get("state", "")).strip()
     return None
+
+
+def run_pytest(paths: list[str]) -> int:
+    command = ["uv", "run", "pytest", "-q", "--tb=short", *paths]
+    print("+", *command, flush=True)
+    return subprocess.call(command, cwd=ROOT)
+
+
+def check_gate(gate_id: str) -> int:
+    errors: list[str] = []
+    require_files(list(PACKET_FILES), errors)
+    if not accepted_contract_present():
+        errors.append("RFC-0072 and D-074 must remain Accepted")
+    if not contract_refine_present():
+        errors.append("D-077 and the frozen 0.45 contract markers must remain present")
+    packet = PACKET.read_text(encoding="utf-8")
+    if TRACKING_ISSUE not in packet:
+        errors.append(f"{PACKET}: tracking issue {TRACKING_ISSUE} must be bound")
+    state = gate_state(gate_id)
+    if state is None:
+        errors.append(f"{gate_id} missing from release-gate-0.45.toml")
+    elif state not in {"Planned", "Implemented", "Verified"}:
+        errors.append(f"{gate_id} unexpected state {state!r}")
+    tests = GATE_TESTS.get(gate_id, [])
+    if state == "Verified" and not tests:
+        errors.append(f"{gate_id} is Verified but has no executable evidence tests bound")
+    if errors:
+        for message in errors:
+            print(f"{gate_id}: {message}", flush=True)
+        return 1
+    if tests:
+        code = run_pytest(tests)
+        if code:
+            return code
+    print(f"ok: {gate_id}")
+    return 0

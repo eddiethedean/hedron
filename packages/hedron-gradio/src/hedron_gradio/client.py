@@ -80,6 +80,11 @@ class GradioClientAdapter:
                 ),
             )
 
+    def consume_catalog(self, catalog: Any) -> tuple[str, ...]:
+        """Read catalog facts. Catalog registration does not enable Gradio."""
+        entries = getattr(catalog, "entries", {}) or {}
+        return tuple(sorted(str(key) for key in entries))
+
     @property
     def scope_key(self) -> str:
         return job_scope_key(tenant_id=self.tenant_id, auth_subject=self.auth_subject)

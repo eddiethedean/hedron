@@ -47,6 +47,22 @@ def install_openapi(app: FastAPI) -> None:
                         continue
                     operation.setdefault("x-hedron-kind", meta.kind)
                     operation.setdefault("x-hedron-logical-id", meta.logical_id)
+                    entry = None
+                    catalog = getattr(app.state, "hedron_interactions", None)
+                    if catalog is not None:
+                        getter = getattr(catalog, "get", None)
+                        if callable(getter):
+                            entry = getter(meta.logical_id)
+                    if entry is not None:
+                        operation.setdefault(
+                            "x-hedron-descriptor-fingerprint",
+                            getattr(entry, "descriptor_fingerprint", None),
+                        )
+                        if getattr(entry, "type_schema_fingerprint", None):
+                            operation.setdefault(
+                                "x-hedron-type-schema-fingerprint",
+                                getattr(entry, "type_schema_fingerprint", None),
+                            )
                     if meta.htmx_inference:
                         operation.setdefault(
                             "x-hedron-htmx",

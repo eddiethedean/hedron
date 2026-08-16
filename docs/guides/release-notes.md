@@ -3,6 +3,27 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.45.0 — 2026-08-16
+
+Coordinated Beta train cut for the typed interaction ecosystem (D-074 / D-077 / RFC-0072).
+
+- One sealed `InteractionCatalog` indexes 0.43 descriptors and optional 0.44 `TypeSchema` extensions.
+- `hedron build` emits redacted sibling `interactions.json`; production validates it fail-closed when the catalog has entries.
+- Namespaced `PackageProjection` values describe current data/charts/elements/extras surfaces. Direct APIs remain.
+- FastAPI is the complete flagship; Flask/Django project portable facts and are not TypeSchema producers.
+- MCP/Gradio consume catalog facts without auto-exposure. Catalog ids/fingerprints are not capabilities.
+- New symbols begin Beta. Unused catalog is request-path neutral. `SR-021` stays open.
+- Pin `hedron>=0.45.0,<0.46`. Charts remain on `hedron-charts>=0.2.0,<0.3`.
+- In-tree cut only; Git tag / GitHub Release / PyPI are deferred ([#328](https://github.com/eddiethedean/hedron/issues/328)).
+
+```bash
+python -m pip install -U "hedron>=0.45.0,<0.46"
+python -m pip install "hedron[data]>=0.45.0,<0.46"
+python -m pip install "hedron[charts]>=0.45.0,<0.46"
+python -m pip install "hedron[elements]>=0.45.0,<0.46"
+python -m pip install "hedron-charts>=0.2.0,<0.3"
+```
+
 ## 0.44.0 — 2026-08-16
 
 Coordinated Beta train cut for type-driven authoring, schema-derived forms, declared
@@ -13,15 +34,16 @@ effects, typed outcomes, and optional class handlers (D-072 / D-076 / RFC-0071).
 - `Refreshes` / `Updates` declare effects; `OutcomeMap(case(...), ...)` maps results.
 - Optional `RefreshableView` / `CommandHandler` classes compile to the same handles.
 - New symbols begin Beta. Unmodeled 0.43 handlers remain unchanged.
-- Pin `hedron>=0.44.0,<0.45`. Charts remain on `hedron-charts>=0.2.0,<0.3`.
+- Historical cut; install the current tip with the pin under **0.45.0** above.
+  Charts remain on `hedron-charts>=0.2.0,<0.3`.
 - Generated-form CSRF tokens, `Field.alias` HTTP names, and FormBody JSON
   rejection land in this cut (#319, #320, #321).
 
 ```bash
-python -m pip install -U "hedron>=0.44.0,<0.45"
-python -m pip install "hedron[data]>=0.44.0,<0.45"
-python -m pip install "hedron[charts]>=0.44.0,<0.45"
-python -m pip install "hedron[elements]>=0.44.0,<0.45"
+python -m pip install -U "hedron>=0.45.0,<0.46"
+python -m pip install "hedron[data]>=0.45.0,<0.46"
+python -m pip install "hedron[charts]>=0.45.0,<0.46"
+python -m pip install "hedron[elements]>=0.45.0,<0.46"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
 ```
 
@@ -33,13 +55,13 @@ Coordinated Beta train cut for refreshable views, command handles, and typed upd
 - `@app.refreshable` / `@app.command` return handles that own routes, hosts, and controls.
 - `refresh()` and `Patch` / `PatchSet` compile into the existing `InteractionResult` / OOB stack.
 - Low-level `region` / `swap` APIs remain supported. New symbols begin Beta.
-- Pin `hedron>=0.44.0,<0.45`. Charts remain on `hedron-charts>=0.2.0,<0.3`.
+- Pin `hedron>=0.45.0,<0.46`. Charts remain on `hedron-charts>=0.2.0,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=0.44.0,<0.45"
-python -m pip install "hedron[data]>=0.44.0,<0.45"
-python -m pip install "hedron[charts]>=0.44.0,<0.45"
-python -m pip install "hedron[elements]>=0.44.0,<0.45"
+python -m pip install -U "hedron>=0.45.0,<0.46"
+python -m pip install "hedron[data]>=0.45.0,<0.46"
+python -m pip install "hedron[charts]>=0.45.0,<0.46"
+python -m pip install "hedron[elements]>=0.45.0,<0.46"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
 ```
 
@@ -52,14 +74,14 @@ Coordinated Beta train cut for browser composition, state, and navigation
   navigation/restoration, content-free traces, and element/region failure isolation.
 - Server and ordinary links/forms remain authoritative; optional preload/View Transitions
   never affect correctness.
-- Historical cut; install the current tip with the pin under **0.44.0** above.
+- Historical cut; install the current tip with the pin under **0.45.0** above.
   Charts remain on `hedron-charts>=0.2.0,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=0.44.0,<0.45"
-python -m pip install "hedron[data]>=0.44.0,<0.45"
-python -m pip install "hedron[charts]>=0.44.0,<0.45"
-python -m pip install "hedron[elements]>=0.44.0,<0.45"
+python -m pip install -U "hedron>=0.45.0,<0.46"
+python -m pip install "hedron[data]>=0.45.0,<0.46"
+python -m pip install "hedron[charts]>=0.45.0,<0.46"
+python -m pip install "hedron[elements]>=0.45.0,<0.46"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
 ```
 
@@ -74,13 +96,13 @@ Coordinated Beta train cut for Web Component authoring and interoperability
   docs/reference only; optional in-repo `@hedron/elements` modules/TS types.
 - Closes remediations #162, #203, #204, #219, #220, and #222.
 - Historical cut pin `hedron>=0.40.0,<0.42`. Install the current tip with the pin under
-  **0.44.0** above. Charts remain on `hedron-charts>=0.2.0,<0.3`.
+  **0.45.0** above. Charts remain on `hedron-charts>=0.2.0,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=0.44.0,<0.45"
-python -m pip install "hedron[data]>=0.44.0,<0.45"
-python -m pip install "hedron[charts]>=0.44.0,<0.45"
-python -m pip install "hedron[elements]>=0.44.0,<0.45"
+python -m pip install -U "hedron>=0.45.0,<0.46"
+python -m pip install "hedron[data]>=0.45.0,<0.46"
+python -m pip install "hedron[charts]>=0.45.0,<0.46"
+python -m pip install "hedron[elements]>=0.45.0,<0.46"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
 ```
 
@@ -98,12 +120,12 @@ Coordinated Beta train cut for rich data surfaces and OptimisticMutation
 - Closes tracking [#94](https://github.com/eddiethedean/hedron/issues/94) and the
   locked 27-issue rich-data remediation packet.
 - Historical cut pin `hedron>=0.39.0,<0.40`. Install the current tip with the pin under
-  **0.44.0** above. Charts remain on `hedron-charts>=0.2.0,<0.3`.
+  **0.45.0** above. Charts remain on `hedron-charts>=0.2.0,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=0.44.0,<0.45"
-python -m pip install "hedron[data]>=0.44.0,<0.45"
-python -m pip install "hedron[charts]>=0.44.0,<0.45"
+python -m pip install -U "hedron>=0.45.0,<0.46"
+python -m pip install "hedron[data]>=0.45.0,<0.46"
+python -m pip install "hedron[charts]>=0.45.0,<0.46"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
 ```
 
@@ -118,11 +140,11 @@ Coordinated Beta train cut for first-party high-fidelity charts
 - `MatplotlibChart` remains Supported; Plotly/Altair stay Experimental.
 - Closes remediations #71, #72, #75, #81, #82, #83, #201, and #239.
 - Historical cut pin `hedron>=0.38.0,<0.39`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 ```bash
-python -m pip install -U "hedron>=0.44.0,<0.45"
-python -m pip install "hedron[charts]>=0.44.0,<0.45"
+python -m pip install -U "hedron>=0.45.0,<0.46"
+python -m pip install "hedron[charts]>=0.45.0,<0.46"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
 ```
 
@@ -138,11 +160,11 @@ Coordinated Beta train cut for form-associated elements and interactive primitiv
 - Closes high-severity remediations #230–#237 and follow-on #244 (element-markup
   `style=` / dangerous URL schemes).
 - Historical cut pin `hedron>=0.37.0,<0.39`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 ```bash
-python -m pip install -U "hedron>=0.44.0,<0.45"
-python -m pip install "hedron[elements]>=0.44.0,<0.45"
+python -m pip install -U "hedron>=0.45.0,<0.46"
+python -m pip install "hedron[elements]>=0.45.0,<0.46"
 ```
 
 ## 0.36.0 — 2026-08-13
@@ -156,11 +178,11 @@ Coordinated Beta train cut for Web Component ABI / lifecycle foundation
   `HED-ELEMENT-STATE-*` diagnostics.
 - Fleet inventory-036 registers `hedron-elements` as incubator until the rephased 0.42 graduation.
 - Historical cut pin `hedron>=0.36.0,<0.37`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 ```bash
-python -m pip install -U "hedron>=0.44.0,<0.45"
-python -m pip install "hedron[elements]>=0.44.0,<0.45"
+python -m pip install -U "hedron>=0.45.0,<0.46"
+python -m pip install "hedron[elements]>=0.45.0,<0.46"
 ```
 
 ## 0.35.0 — 2026-08-13
@@ -173,7 +195,7 @@ Coordinated Beta train cut for whole-fleet production-grade closure
 - Tooling packages (notebook, sample-kit, sim, runtimes) reconciled to Beta tooling-grade.
 - PRESENT-034 default presentation gallery remains deferred/experimental.
 - Historical cut pin `hedron>=0.35.0,<0.36`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 ## 0.34.0 — 2026-08-13
 
@@ -186,7 +208,7 @@ interop (D-062 / RFC-0067).
   MCP stays satellite `>=0.2.0,<0.3`.
 - Default presentation gallery (`PRESENT-034`) deferred to whole-fleet `0.35` audit.
 - Historical cut pin `hedron>=0.34.0,<0.35`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 ## 0.33.0 — 2026-08-13
 
@@ -199,7 +221,7 @@ Coordinated Beta train cut for unified Posit Workbench / Connect adapter
 - Coordinated `hedron` / core packages `0.33.0`; `fastapi-workbench` stays `1.x`;
   MCP stays satellite `>=0.2.0,<0.3`.
 - Historical cut pin `hedron>=0.33.0,<0.34`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 ## 0.32.0 — 2026-08-12
 
@@ -212,7 +234,7 @@ Coordinated Beta train cut for production-grade deny-by-default MCP projection
 - Security hardening: session-bound MCP principals, formula-injection evasion strip,
   optional-session scope gates, MCP cancel/session lifecycle bounds.
 - Historical cut pin `hedron>=0.32.0,<0.33`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 ## 0.31.0 — 2026-08-12
 
@@ -223,10 +245,10 @@ Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061).
 - Published Node/Java evaluators (`hedron-runtime-node` / `hedron-runtime-java` `0.31.0`).
 - `hedron migrate streamlit` non-executing AST assistant.
 - Historical cut pin `hedron>=0.31.0,<0.32`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 ```bash
-python -m pip install -U "hedron>=0.44.0,<0.45"
+python -m pip install -U "hedron>=0.45.0,<0.46"
 hedron migrate streamlit streamlit_app.py --analyze-only --format text
 ```
 
@@ -240,10 +262,10 @@ RFC-0063).
 - `hedron-workbench` `0.30.0` depends on `fastapi-workbench>=1.0.0,<2.0` and delegates
   generic resolver / middleware / runner behavior.
 - Historical cut pin `hedron>=0.30.0,<0.31`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 Historical cut used `hedron` / `hedron-workbench` on the 0.30 train and
-`fastapi-workbench>=1.0.0,<2.0`. Prefer the current tip pin under **0.44.0** above.
+`fastapi-workbench>=1.0.0,<2.0`. Prefer the current tip pin under **0.45.0** above.
 
 ## 0.29.0 — 2026-08-11
 
@@ -255,7 +277,7 @@ Coordinated Beta train cut for production-grade `hedron-workbench`.
   `resolve_mount_path_from_environ`, color-mode cookie Path.
 - No auto-activation on install/import/`RS_SERVER_URL`. Flask/Django unchanged.
 - Historical cut pin `hedron>=0.29.0,<0.30`. Install the current tip with the pin under
-  **0.44.0** above.
+  **0.45.0** above.
 
 ## 0.28.2 — 2026-08-11
 
@@ -273,7 +295,7 @@ Coordinated Beta patch on the 0.28 train.
 - GitHub Release create waits on quickstart verify and omits plain `linux_*` wheels.
 - No Supported CRUD/admin API removal.
 
-Install the current tip with the pin under **0.44.0** above (historical cut pin was
+Install the current tip with the pin under **0.45.0** above (historical cut pin was
 `>=0.28.2,<0.29`).
 
 ## 0.28.1 — 2026-08-10
@@ -285,7 +307,7 @@ Correctness and tip-honesty patch for the 0.28 train.
   mount-aware static prefixes, and live `HEDRON_NATIVE_DISABLE`.
 - Hardens tip-hub SSOT wrap scans and CI native/crates publish footguns.
 
-Install the current tip with the pin under **0.44.0** above (historical cut pin was
+Install the current tip with the pin under **0.45.0** above (historical cut pin was
 `>=0.28.1,<0.29`).
 
 ## 0.28.0 — 2026-08-10
@@ -322,7 +344,7 @@ Hedron 0.27.0 graduates data, Flask/Django, HDJ, and curated extras inventories.
 No Supported CRUD/admin API removal is listed. Polling remains the production path for
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
-Install the current tip with the pin under **0.44.0** above.
+Install the current tip with the pin under **0.45.0** above.
 
 Read [Upgrade to 0.38](upgrade.md) before changing a production lockfile. Maintainer
 evidence identifiers and packets are linked from [What’s new in 0.27](whats-new-0.27.md).
@@ -365,7 +387,7 @@ No Supported CRUD/admin API removal is listed. Polling remains the production pa
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
 Historical pin for this train: `hedron>=0.26.0,<0.27`. Current tip guidance:
-[Upgrade to 0.44](upgrade.md) / [What’s new in 0.44](whats-new-0.44.md).
+[Upgrade to 0.45](upgrade.md) / [What’s new in 0.45](whats-new-0.45.md).
 
 ## 0.25.2 — 2026-08-10
 

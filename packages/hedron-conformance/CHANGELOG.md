@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.45.0] — 2026-08-16
+
+### Added
+- Phase 0.45 portable catalog fixtures and evaluator JSON checks.
+
+### Changed
+- Coordinated train tip `0.45.0` (in-tree cut; tag/PyPI deferred).
+
 ## [0.44.0] — 2026-08-16
 
 ### Added

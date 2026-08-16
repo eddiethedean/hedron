@@ -143,6 +143,18 @@ class McpProjection:
             detail={"name": tool.name, "mutate": tool.mutate},
         )
 
+    def consume_catalog(self, catalog: Any) -> tuple[str, ...]:
+        """Read catalog logical ids. Does not enable MCP or register tools."""
+        entries = getattr(catalog, "entries", {}) or {}
+        ids = tuple(sorted(str(key) for key in entries))
+        self.audit.emit(
+            code="HED-MCP-CATALOG-CONSUME",
+            kind="registration",
+            principal=None,
+            detail={"count": len(ids), "enabled": self.enabled, "exposure": False},
+        )
+        return ids
+
     def list_resources(self) -> list[McpResource]:
         """Return registered resources, or empty when disabled."""
         if not self.enabled:
