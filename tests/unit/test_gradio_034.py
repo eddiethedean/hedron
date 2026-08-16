@@ -145,6 +145,35 @@ def test_job_scope_isolation() -> None:
         manager.poll(job_id, scope_key=job_scope_key(tenant_id="b"))
 
 
+def test_artifact_store_fails_closed_on_scope_mismatch() -> None:
+    """#267: artifacts bind the same scope_key contract as jobs."""
+    store = ArtifactStore(max_bytes=1024, retention_seconds=60.0)
+    aid = store.store("secret.txt", b"tenant-a-secret", scope_key=job_scope_key(tenant_id="a"))
+    assert store.fetch(aid, scope_key=job_scope_key(tenant_id="a")) == b"tenant-a-secret"
+    with pytest.raises(GradioRemoteError, match="Artifact scope mismatch"):
+        store.fetch(aid, scope_key=job_scope_key(tenant_id="b"))
+    with pytest.raises(GradioRemoteError, match="Artifact scope mismatch"):
+        store.delete(aid, scope_key=job_scope_key(tenant_id="b"))
+    assert store.fetch(aid, scope_key=job_scope_key(tenant_id="a")) == b"tenant-a-secret"
+    assert store.delete(aid, scope_key=job_scope_key(tenant_id="a")) is True
+
+
+def test_adapter_download_artifact_fails_closed_after_principal_change() -> None:
+    adapter = GradioClientAdapter(
+        "https://demo.example.invalid",
+        enabled=True,
+        remote_config=GradioRemoteConfig.from_base_url("https://demo.example.invalid"),
+        tenant_id="tenant-a",
+        auth_subject="alice",
+    )
+    aid = adapter.upload_file("secret.txt", b"tenant-a-secret")
+    assert adapter.download_artifact(aid) == b"tenant-a-secret"
+    adapter.tenant_id = "tenant-b"
+    adapter.auth_subject = "bob"
+    with pytest.raises(GradioRemoteError, match="Artifact scope mismatch"):
+        adapter.download_artifact(aid)
+
+
 def test_hf_space_base_url_and_config() -> None:
     url = hf_space_base_url("org/demo")
     assert url == "https://org-demo.hf.space"
