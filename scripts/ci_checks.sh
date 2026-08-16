@@ -20,10 +20,10 @@
 #   browser (Chromium; pass --all-browsers for main-branch matrix) → realwb →
 #   realconnect → evidence → packaging
 #
-# Independent checks inside a suite run concurrently (ruff / pyright / docs,
-# workbench bounds, evidence bundle vs verifiers). Wheel smoke stays sequential
-# after those jobs so `uv build` cannot race the project .venv. Suite order in
-# `all` stays sequential for the same reason.
+# Independent checks inside a suite run concurrently (ruff / pyright / docs;
+# workbench bounds; evidence bundle vs verifiers). Wheel smoke and verify-pkgs
+# stay sequential after those jobs so `uv build` / `uv run` cannot race the
+# project .venv. Suite order in `all` stays sequential for the same reason.
 #
 # `all` options (opt out of slow or credential-gated jobs):
 #   --python 3.12       Single Python for test (default matrix: 3.11–3.14)
@@ -456,14 +456,16 @@ PY
 cmd_quality() {
   job_pool_init
   resolve_python
-  # Keep wheel builds off this pool: `uv build` can recreate the project .venv
-  # and race with pyright / docs / verify scripts.
+  # Keep `.venv` mutations off this pool: `uv run` without a pinned interpreter
+  # (verify_pkg_*.py) and `uv build` can recreate the project venv and race
+  # with pyright / docs.
   start_job ruff quality_ruff
   start_job pyright quality_pyright
   start_job core-neutral quality_core_neutral
-  start_job verify-pkgs quality_verify_pkgs
   start_job docs quality_docs
   wait_jobs
+  printf '\n======== verify-pkgs ========\n'
+  quality_verify_pkgs
   quality_wheels_smoke
 }
 
@@ -668,6 +670,10 @@ fi
 SUITE="$1"
 shift
 parse_args "$@"
+
+# Pin child `uv run` (verify_pkg_*.py pytest) to this interpreter so they cannot
+# recreate `.venv` with another CPython while pyright is using it.
+export UV_PYTHON="${UV_PYTHON:-$PYTHON}"
 
 if [[ -z "$JOBS" ]]; then
   JOBS="$(default_jobs)"
