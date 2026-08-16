@@ -197,6 +197,7 @@ from hedron_core.diagnostics import (
     meets_severity_threshold,
 )
 from hedron_core.field import Field
+from hedron_core.hosts import FRAGMENT_HOST_TAGS, FragmentHost
 from hedron_core.html import html
 from hedron_core.htmx_contract import HtmxContext, approved_headers
 from hedron_core.htmx_eval import allow_htmx_eval, htmx_eval_allowed
@@ -344,6 +345,20 @@ from hedron_core.typing_aliases import (
     PluginMetaDict,
     RenderTrace,
 )
+from hedron_core.updates import (
+    BASE_DESCRIPTOR_VERSION,
+    MAX_PATCH_TARGETS,
+    MAX_REFRESH_TARGETS,
+    BaseHandleDescriptor,
+    BindingPlan,
+    Patch,
+    PatchSet,
+    PortableTarget,
+    RefreshIntent,
+    StructuralBindingAdapter,
+    compile_to_interaction,
+    descriptor_fingerprint,
+)
 from hedron_core.visualization import (
     ChartAccessibility,
     ChartAnnotation,
@@ -356,7 +371,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.42.0"
+__version__ = "0.43.0"
 
 __all__ = [
     "ActionRegistry",
@@ -376,6 +391,8 @@ __all__ = [
     "ExampleSet",
     "FeedbackPolicy",
     "FeedbackRecord",
+    "FRAGMENT_HOST_TAGS",
+    "FragmentHost",
     "FragmentRegion",
     "HtmxContext",
     "InMemoryFeedbackSink",
@@ -394,6 +411,18 @@ __all__ = [
     "ModelDemo",
     "ModelDemoError",
     "OobUpdate",
+    "Patch",
+    "PatchSet",
+    "PortableTarget",
+    "RefreshIntent",
+    "BaseHandleDescriptor",
+    "BindingPlan",
+    "StructuralBindingAdapter",
+    "compile_to_interaction",
+    "descriptor_fingerprint",
+    "MAX_PATCH_TARGETS",
+    "MAX_REFRESH_TARGETS",
+    "BASE_DESCRIPTOR_VERSION",
     "ParameterViewer",
     "PartialFailurePolicy",
     "PredictionFeedback",

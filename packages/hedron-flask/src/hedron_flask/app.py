@@ -242,6 +242,19 @@ class HedronFlask:
                 cookie_name=self.csrf_cookie_name,
                 policy=self.security_policy,
             )
+        from hedron_core.diagnostics import HedronError
+        from hedron_core.updates import compile_to_interaction
+
+        try:
+            compiled = compile_to_interaction(value)
+        except HedronError as exc:
+            code = getattr(exc.diagnostic, "code", "")
+            status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
+            from flask import Response as FlaskResponse
+
+            return FlaskResponse(str(exc), status=status, content_type="text/plain")
+        if isinstance(compiled, InteractionResult):
+            value = compiled
         if isinstance(value, InteractionResult):
             return interaction_response(
                 value,
@@ -288,6 +301,19 @@ class HedronFlask:
                 cookie_name=self.csrf_cookie_name,
                 policy=self.security_policy,
             )
+        from hedron_core.diagnostics import HedronError
+        from hedron_core.updates import compile_to_interaction
+
+        try:
+            compiled = compile_to_interaction(value)
+        except HedronError as exc:
+            code = getattr(exc.diagnostic, "code", "")
+            status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
+            from flask import Response as FlaskResponse
+
+            return FlaskResponse(str(exc), status=status, content_type="text/plain")
+        if isinstance(compiled, InteractionResult):
+            value = compiled
         if isinstance(value, InteractionResult):
             if value.content is not None:
                 await prepare_tree(value.content)

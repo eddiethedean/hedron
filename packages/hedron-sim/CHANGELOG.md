@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.43.0] — 2026-08-16
+
+### Changed
+- Coordinated train tip `0.43.0` (in-tree cut; tag/PyPI deferred).
+
 ## [0.42.0] — 2026-08-14
 
 ### Added

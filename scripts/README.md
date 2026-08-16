@@ -53,7 +53,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_37.py` | Phase **0.37** form/primitives packet (Published `v0.37.0`) |
 | `verify_pkg_40.py` | Phase **0.40** authoring / React migration packet (Published `v0.40.0`) |
 | `verify_pkg_41.py` | Phase **0.41** composition / state / navigation packet (Published `v0.41.0`) |
-| `verify_pkg_43.py` | Phase **0.43** refreshable views / commands / typed updates packet (`--allow-planned` before cut) |
+| `verify_pkg_43.py` | Phase **0.43** refreshable views / commands / typed updates packet (Published `v0.43.0`; omit `--allow-planned` after cut) |
 | `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Stage 0: `--allow-planned`) |
 | `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |
 | `verify_pkg_39.py` | Phase **0.39** rich data / OptimisticMutation packet (Published `v0.39.0`) |

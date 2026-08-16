@@ -78,6 +78,17 @@ class HedronDjango:
                     status=403,
                     content_type="text/plain; charset=utf-8",
                 )
+        from hedron_core.diagnostics import HedronError
+        from hedron_core.updates import compile_to_interaction
+
+        try:
+            compiled = compile_to_interaction(value)
+        except HedronError as exc:
+            code = getattr(exc.diagnostic, "code", "")
+            status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
+            return HttpResponse(str(exc).encode("utf-8"), status=status, content_type="text/plain")
+        if isinstance(compiled, InteractionResult):
+            value = compiled
         if isinstance(value, InteractionResult):
             return interaction_response(
                 value,
@@ -128,6 +139,17 @@ class HedronDjango:
                     content_type="text/plain; charset=utf-8",
                 )
 
+        from hedron_core.diagnostics import HedronError
+        from hedron_core.updates import compile_to_interaction
+
+        try:
+            compiled = compile_to_interaction(value)
+        except HedronError as exc:
+            code = getattr(exc.diagnostic, "code", "")
+            status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
+            return HttpResponse(str(exc).encode("utf-8"), status=status, content_type="text/plain")
+        if isinstance(compiled, InteractionResult):
+            value = compiled
         if isinstance(value, InteractionResult):
             if value.content is not None:
                 await prepare_tree(value.content)

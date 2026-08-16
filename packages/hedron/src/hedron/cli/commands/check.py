@@ -288,6 +288,139 @@ def _check_select_oob_conflicts(base: Path) -> list[Any]:
     return diags
 
 
+def _check_043_handles(base: Path) -> list[Any]:
+    """IH-DX-006: duplicate mounts, stale paths, foreign handles, missing fallback, fan-out."""
+    from hedron_core import DiagnosticSeverity
+    from hedron_core.codes import (
+        HED_CMD_0002,
+        HED_UPDATE_0003,
+        HED_UPDATE_0004,
+        HED_VIEW_0002,
+    )
+    from hedron_core.diagnostics import make_diagnostic
+    from hedron_core.updates import MAX_REFRESH_TARGETS, list_handle_descriptors
+
+    diags: list[Any] = []
+    refreshable_names: dict[str, str] = {}
+    command_without_fallback: list[str] = []
+    for path in _iter_project_py_files(base):
+        try:
+            source = path.read_text(encoding="utf-8")
+            tree = ast.parse(source, filename=str(path))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                for deco in node.decorator_list:
+                    name = _decorator_attr(deco)
+                    if name == "refreshable":
+                        owner = refreshable_names.get(node.name)
+                        if owner and owner != str(path):
+                            diags.append(
+                                make_diagnostic(
+                                    HED_VIEW_0002,
+                                    severity=DiagnosticSeverity.ERROR,
+                                    title="Duplicate refreshable name",
+                                    explanation=(
+                                        f"{node.name} is registered in both {owner} and {path}."
+                                    ),
+                                    remediation="Use distinct names or explicit key=.",
+                                )
+                            )
+                        refreshable_names[node.name] = str(path)
+                    if name == "command" and not _decorator_has_kw(deco, "fallback"):
+                        command_without_fallback.append(f"{path}:{node.name}")
+            if isinstance(node, ast.Call):
+                func = node.func
+                if (
+                    isinstance(func, ast.Name)
+                    and func.id == "refresh"
+                    and len(node.args) > MAX_REFRESH_TARGETS
+                ):
+                    diags.append(
+                        make_diagnostic(
+                            HED_UPDATE_0004,
+                            severity=DiagnosticSeverity.ERROR,
+                            title="Unbounded refresh fan-out",
+                            explanation=(
+                                f"{path} calls refresh() with {len(node.args)} targets; "
+                                f"max is {MAX_REFRESH_TARGETS}."
+                            ),
+                            remediation="Coalesce or reduce fan-out; refresh is not atomic.",
+                        )
+                    )
+            if isinstance(node, ast.Constant) and isinstance(node.value, str):
+                value = node.value
+                if "/_hedron/views/" in value or "/_hedron/commands/" in value:
+                    registered = {item.path for item in list_handle_descriptors()}
+                    if (
+                        registered
+                        and value not in registered
+                        and not any(value.startswith(path_value) for path_value in registered)
+                    ):
+                        diags.append(
+                            make_diagnostic(
+                                HED_UPDATE_0003,
+                                severity=DiagnosticSeverity.WARNING,
+                                title="Copied stale handle path",
+                                explanation=f"{path} embeds generated path {value!r}.",
+                                remediation=(
+                                    "Use handle.path / handle.bind(...) instead of copied URLs."
+                                ),
+                            )
+                        )
+            if (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "fragment"
+            ):
+                diags.append(
+                    make_diagnostic(
+                        "HED-HTMX-0001",
+                        severity=DiagnosticSeverity.INFORMATION,
+                        title="Consider migrating @app.fragment to @app.refreshable",
+                        explanation=(
+                            f"{path} still uses @app.fragment. 0.43 prefers "
+                            "@app.refreshable handles."
+                        ),
+                        remediation=(
+                            "See docs/acceptance/upgrade-fixtures-043.md for a one-view migration."
+                        ),
+                    )
+                )
+    for item in command_without_fallback:
+        diags.append(
+            make_diagnostic(
+                HED_CMD_0002,
+                severity=DiagnosticSeverity.WARNING,
+                title="Command missing fallback for ordinary HTTP",
+                explanation=(
+                    f"{item} has no fallback=; HTMX refresh cannot be the only success path."
+                ),
+                remediation="Pass fallback= to @app.command or handle.button(fallback=...).",
+            )
+        )
+    return diags
+
+
+def _decorator_attr(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Attribute):
+        return node.attr
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
+        return node.func.attr
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+        return node.func.id
+    if isinstance(node, ast.Name):
+        return node.id
+    return None
+
+
+def _decorator_has_kw(node: ast.AST, name: str) -> bool:
+    if not isinstance(node, ast.Call):
+        return False
+    return any(kw.arg == name for kw in node.keywords)
+
+
 _SKIP_SCAN_DIRS = frozenset(
     {
         ".git",
@@ -526,6 +659,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
 
     diags.extend(_check_htmx_region_mismatches(base))
     diags.extend(_check_select_oob_conflicts(base))
+    diags.extend(_check_043_handles(base))
 
     # Security / a11y / compatibility-boundary informational findings (excluded from exit code).
     # Adapter/extra COMPAT notices are scoped to the project under check unless --all-compat (#54).

@@ -366,3 +366,6 @@ def reset_registry_for_tests() -> None:
     global _builder, _active
     _builder = RegistryBuilder()
     _active = None
+    from hedron_core.updates import reset_handles_for_tests
+
+    reset_handles_for_tests()

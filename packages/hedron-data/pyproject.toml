@@ -1,6 +1,6 @@
 [project]
 name = "hedron-data"
-version = "0.42.0"
+version = "0.43.0"
 description = "DataTable, DataEditor, and data-source toolkit for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -36,7 +36,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.42.0,<0.43",
+    "hedron-core>=0.43.0,<0.44",
 ]
 
 [project.optional-dependencies]

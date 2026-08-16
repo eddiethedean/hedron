@@ -34,6 +34,14 @@ from hedron.color_mode import (
     read_color_mode_preference,
     resolved_theme_from_request,
 )
+from hedron.handles import (
+    ActionHandle,
+    BoundFragment,
+    FragmentHandle,
+    Refresh,
+    patches,
+    refresh,
+)
 from hedron.htmx import approved_headers, htmx_context
 from hedron.interaction import (
     FragmentRegion,
@@ -142,6 +150,7 @@ from hedron_core import (
     FormField,
     FormModel,
     Fragment,
+    FragmentHost,
     Gallery,
     GeoJSONLayer,
     GeolocationButton,
@@ -184,6 +193,8 @@ from hedron_core import (
     Page,
     PageIcon,
     ParameterViewer,
+    Patch,
+    PatchSet,
     PdfViewer,
     Pills,
     Popover,
@@ -195,6 +206,7 @@ from hedron_core import (
     RadioGroup,
     RangeInput,
     RatingInput,
+    RefreshIntent,
     RegisteredAction,
     RenderContext,
     RenderMode,
@@ -354,13 +366,14 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.42.0"
+__version__ = "0.43.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
 # extras remain lazy and are not part of the stable tier.
 __all__ = [
     "ActionDock",
+    "ActionHandle",
     "Alert",
     "RegisteredAction",
     "PredictionScore",
@@ -382,6 +395,7 @@ __all__ = [
     "Auto",
     "AutoForm",
     "Badge",
+    "BoundFragment",
     "BottomDock",
     "BrowserContext",
     "BrowserStorage",
@@ -430,6 +444,8 @@ __all__ = [
     "FormField",
     "FormModel",
     "Fragment",
+    "FragmentHandle",
+    "FragmentHost",
     "FragmentRegion",
     "FragmentRegionError",
     "FragmentResponse",
@@ -486,6 +502,8 @@ __all__ = [
     "PageIcon",
     "PageResponse",
     "Pagination",
+    "Patch",
+    "PatchSet",
     "PdfViewer",
     "Pills",
     "Poll",
@@ -495,7 +513,9 @@ __all__ = [
     "RadioGroup",
     "RangeInput",
     "RatingInput",
+    "Refresh",
     "RefreshButton",
+    "RefreshIntent",
     "RenderContext",
     "RenderMode",
     "RenderResult",
@@ -572,10 +592,12 @@ __all__ = [
     "mount_hedron_static",
     "oob_swap",
     "parse_byte_range",
+    "patches",
     "read_color_mode_preference",
     "redact_cookie_value",
     "redirect_external",
     "redirect_htmx",
+    "refresh",
     "redirect_local",
     "register_icon",
     "render",

@@ -1,6 +1,6 @@
 # Upgrade fixtures — phase 0.43 refreshable views and commands
 
-**Status:** Planned  
+**Status:** Verified  
 **Baseline:** Published `v0.42.0`  
 **Target:** `v0.43.0`  
 **Owning gate:** `COMPAT-043`

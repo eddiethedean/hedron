@@ -1,5 +1,5 @@
 ---
-status: planned
+status: current
 phase: "0.43"
 ---
 
@@ -8,11 +8,13 @@ phase: "0.43"
 **Decision/RFC:** D-071, refined by D-073 /
 [RFC-0070](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)
 
-!!! warning "Planned 0.43 contract"
+!!! note "Beta 0.43 contract"
 
-    This is the accepted public contract for phase 0.43. These symbols are not importable on the
-    published 0.42 train. Runtime behavior must not be claimed until the owning release gates are
-    Verified. Existing [Interaction APIs](INTERACTION.md) remain the shipped interface.
+    These symbols are **beta** on the Published 0.43 train, which extends the 0.42
+    region/`InteractionResult` stack
+    (D-071 / D-073). Existing [Interaction APIs](INTERACTION.md)
+    remain the shipped low-level interface. 0.44 may specialize generic bind slots without
+    changing arity, routing, or conversion goldens.
 
 Refreshable views and commands are the high-level interface for server-rendered partial updates:
 

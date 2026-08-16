@@ -40,7 +40,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.40** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | **Published** (`v0.40.0`; in-tree cut, tag/PyPI deferred; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95)) |
 | **0.41** | Typed browser composition, bounded draft state, and navigation | **Published** (`v0.41.0`; in-tree cut, tag/PyPI deferred; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96)) |
 | **0.42** | Production-grade Web Component platform | Published (`v0.42.0`; in-tree cut, tag/PyPI deferred; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
-| **0.43** | Refreshable views, command handles, and typed updates | **Planned** (`v0.43.0`; D-071 / RFC-0070, refined by D-073; tracking issue required before Stage 1) |
+| **0.43** | Refreshable views, command handles, and typed updates | **Published** (`v0.43.0`; in-tree cut, tag/PyPI deferred; D-071; [#311](https://github.com/eddiethedean/hedron/issues/311)) |
 | **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Planned** (`v0.44.0`; D-072 / RFC-0071, refined by D-073; requires Verified 0.43 and a tracking issue before Stage 1) |
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Planned** (`v0.45.0`; D-074 / RFC-0072; requires Verified 0.44 and a tracking issue before Stage 1) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Planned** (`v0.46.0`; D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1) |
@@ -3344,10 +3344,10 @@ complete browser supply-chain provenance.
 
 ## 0.43 — Refreshable views, commands, and typed updates (`v0.43.0`)
 
-**Status:** Planned (D-071, refined by D-073 /
+**Status:** Published `v0.43.0` (2026-08-16; in-tree cut, tag/PyPI deferred; D-071, refined by D-073 /
 [RFC-0070](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)). Stage 0
-requirements packet is defined against Published `v0.42.0`; target is `v0.43.0`. A tracking issue
-must be created and bound to every 0.43 gate before runtime implementation begins.
+requirements packet was defined against Published `v0.42.0`. Tracking
+[#311](https://github.com/eddiethedean/hedron/issues/311) is bound to every 0.43 gate.
 
 **Outcome:** Ordinary server-rendered interactions use one handle for rendering, routing, mounted
 identity, controls, updates, tests, and diagnostics. Authors can express “render this view,” “run

@@ -8,6 +8,7 @@
 **Extends:** RFC-0008, RFC-0009, RFC-0015, RFC-0019, RFC-0023, RFC-0024,
 RFC-0025, RFC-0039, RFC-0040, RFC-0044, and RFC-0053
 **Forward extension:** RFC-0071 / D-072, refined by D-073 (phase 0.44 type-driven authoring)
+**Tracking:** [#311](https://github.com/eddiethedean/hedron/issues/311)
 
 ## Summary
 

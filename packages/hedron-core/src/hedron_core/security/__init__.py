@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hedron_core.security.secrets import Secret, is_secret, redact_value
+from hedron_core.security.secrets import Secret, is_secret, redact_secret_like, redact_value
 from hedron_core.security.trusted import TrustedHtml
 from hedron_core.security.urls import (
     SafeUrl,
@@ -20,6 +20,7 @@ __all__ = [
     "check_url_purpose_for_attribute",
     "contains_dangerous_scheme",
     "is_secret",
+    "redact_secret_like",
     "redact_value",
     "reject_asset_path_traversal",
 ]

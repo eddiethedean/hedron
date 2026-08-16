@@ -12,6 +12,7 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `MountPath`, `resolve_mount_path`, `resolve_mount_path_from_environ`, `normalize_mount_path`, `cookie_path_for_mount`, `mount_from_request`, `prefix_local_path` | [MOUNT.md](MOUNT.md), [deployment](../guides/deployment.md) |
 | `HedronRouter`, `HedronRoute`, `ComponentRef`, `resolve_route_path` | [ROUTER.md](ROUTER.md), [ADDRESSABLE.md](ADDRESSABLE.md) |
 | `InteractionResult`, `FragmentRegion`, `InteractionPolicy`, `HtmxRequest`, `OobUpdate` | [INTERACTION.md](INTERACTION.md), Autodoc |
+| `FragmentHandle`, `BoundFragment`, `ActionHandle`, `Refresh`, `refresh`, `patches`, `FragmentHost`, `Patch`, `PatchSet`, `RefreshIntent` | [REFRESHABLE_VIEWS.md](REFRESHABLE_VIEWS.md) |
 | `default_interaction_policy`, `form_sync_attrs`, `htmx_request`, `approved_headers`, `htmx_context` | [INTERACTION.md](INTERACTION.md), [htmx-interactions](../guides/htmx-interactions.md) |
 | `swap`, `swap_oob`, `retarget`, `redirect_htmx` | [INTERACTION.md](INTERACTION.md) (day-1 ergonomics), Autodoc |
 | `action_attrs`, `oob_swap` | [BUILT_INS.md](BUILT_INS.md), [INTERACTION.md](INTERACTION.md) |

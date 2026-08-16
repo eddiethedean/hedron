@@ -1,86 +1,87 @@
 # Phase 0.43 refreshable views, commands, and typed updates evidence index.
-# Stage 0 requirements packet. Commands are reserved names until implemented.
+# In-tree Verified cut. Commands are executable evidence.
+# Tracking: #311.
 
 [[evidence]]
 id = "VIEW-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_views_043.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "COMMAND-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_commands_043.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "UPDATE-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_updates_043.py"
 ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "SECURITY-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_security_043.py"
 ci_job = "evidence"
 owner = "hedron"
 
 [[evidence]]
 id = "A11Y-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_a11y_043.py"
 ci_job = "browser"
 owner = "hedron"
 
 [[evidence]]
 id = "BROWSER-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_browser_043.py"
 ci_job = "browser"
 owner = "hedron"
 
 [[evidence]]
 id = "TOOLING-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_tooling_043.py"
 ci_job = "test"
 owner = "hedron-explorer"
 
 [[evidence]]
 id = "COMPAT-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_compat_043.py"
 ci_job = "test"
 owner = "hedron-conformance"
 
 [[evidence]]
 id = "PERF-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_perf_043.py"
 ci_job = "evidence"
 owner = "hedron"
 
 [[evidence]]
 id = "DOCS-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_docs_043.py"
 ci_job = "quality"
 owner = "docs"
 
 [[evidence]]
 id = "REGRESS-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_regress_043.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-043"
-state = "Planned"
+state = "Verified"
 command = "python scripts/verify_pkg_43.py"
 ci_job = "packaging"
 owner = "hedron"

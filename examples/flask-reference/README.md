@@ -11,7 +11,7 @@ Minimal **native Flask** slice: home page + HTMX fragment route. Depends on
 Or in a fresh project:
 
 ```bash
-pip install "hedron-flask>=0.42.0,<0.43"
+pip install "hedron-flask>=0.43.0,<0.44"
 # Optional ASGI bridge only if you intentionally serve Flask via uvicorn:
 # pip install "uvicorn[standard]"
 ```

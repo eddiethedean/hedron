@@ -27,16 +27,19 @@ This catalog is complete for the registered set enforced by
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
 | `HED-SIM-ASSET-0001` | blocker | Packaged sim asset path escape | Pass a single basename under `static/` |
 | `HED-SIM-ASSET-0002` | blocker | Packaged sim asset missing | Use a filename that ships in `hedron_sim/static/` |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.42.0,<0.43"` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.43.0,<0.44"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
 | CSRF **403** on POST | blocker | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
+| `HED-VIEW-0003` | blocker | Unbound parameterized handle mounted | Call `handle.bind(...)` before mount |
+| `HED-UPDATE-0001` | blocker | Mixed refresh and patch | Return `refresh(...)` or `patches(...)`, not both |
+| `HED-CMD-0002` | blocker | Command has no ordinary HTTP fallback | Pass `fallback=` to `@app.command` |
 | `HED-PLUGIN-0001` | blocker | Named plugin missing from entry points | Install the package or remove the name from `[tool.hedron].plugins` |
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.42.0,<0.43"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.43.0,<0.44"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -119,6 +122,13 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-CHART-0071` | `HED_CHART_0071` |
 | `HED-CHART-0072` | `HED_CHART_0072` |
 | `HED-CHART-0073` | `HED_CHART_0073` |
+
+## HED-CMD
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-CMD-0001` | `HED_CMD_0001` |
+| `HED-CMD-0002` | `HED_CMD_0002` |
 
 ## HED-COMPAT
 
@@ -228,6 +238,12 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-HDJ-0110` | `HED_HDJ_0110` |
 | `HED-HDJ-0111` | `HED_HDJ_0111` |
 | `HED-HDJ-0112` | `HED_HDJ_0112` |
+
+## HED-HOST
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-HOST-0001` | `HED_HOST_0001` |
 
 ## HED-HTML
 
@@ -428,6 +444,29 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | Code | Catalog symbol |
 |---|---|
 | `HED-TRACE-0001` | `HED_TRACE_0001` |
+
+## HED-UPDATE
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-UPDATE-0001` | `HED_UPDATE_0001` |
+| `HED-UPDATE-0002` | `HED_UPDATE_0002` |
+| `HED-UPDATE-0003` | `HED_UPDATE_0003` |
+| `HED-UPDATE-0004` | `HED_UPDATE_0004` |
+| `HED-UPDATE-0005` | `HED_UPDATE_0005` |
+| `HED-UPDATE-0006` | `HED_UPDATE_0006` |
+| `HED-UPDATE-0007` | `HED_UPDATE_0007` |
+| `HED-UPDATE-0008` | `HED_UPDATE_0008` |
+| `HED-UPDATE-0009` | `HED_UPDATE_0009` |
+
+## HED-VIEW
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-VIEW-0001` | `HED_VIEW_0001` |
+| `HED-VIEW-0002` | `HED_VIEW_0002` |
+| `HED-VIEW-0003` | `HED_VIEW_0003` |
+| `HED-VIEW-0004` | `HED_VIEW_0004` |
 
 ## HED-WB
 

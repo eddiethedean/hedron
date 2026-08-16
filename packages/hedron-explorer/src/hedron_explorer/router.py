@@ -45,6 +45,32 @@ def _redact(value: str | None) -> str | None:
     return value
 
 
+def _handle_graph_html(request: Request) -> str:
+    from hedron_core.updates import handle_graph_payload
+
+    app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
+    payload = handle_graph_payload(app_id=app_id or None)
+    nodes = payload.get("nodes") or []
+    if not isinstance(nodes, list) or not nodes:
+        return "<p>No refreshable views or commands registered.</p>"
+    rows = []
+    for node in nodes:
+        if not isinstance(node, dict):
+            continue
+        kind = html_lib.escape(str(node.get("kind", "")))
+        effect = html_lib.escape(str(node.get("effect", "dynamic")))
+        ident = html_lib.escape(str(node.get("id", "")))
+        path = html_lib.escape(str(node.get("path", "")))
+        rows.append(f"<tr><td>{ident}</td><td>{kind}</td><td>{effect}</td><td>{path}</td></tr>")
+    body = "".join(rows)
+    return (
+        "<p>Command effects are labeled <code>dynamic</code> or <code>observed</code>, "
+        "never declared.</p>"
+        "<table><thead><tr><th>Handle</th><th>Kind</th><th>Effect</th><th>Path</th></tr></thead>"
+        f"<tbody>{body}</tbody></table>"
+    )
+
+
 def _audit(event: str, **payload: JsonValue) -> None:
     _AUDIT.appendleft({"event": event, **payload, "ts": time.time()})
 
@@ -372,7 +398,10 @@ def explorer_router() -> APIRouter:
         items = "".join(f"<li>{html_lib.escape(e)}</li>" for e in edges)
         return _shell(
             "Graph",
-            f"<h2>Component graph</h2><ul>{items or '<li>No edges</li>'}</ul>",
+            (
+                f"<h2>Component graph</h2><ul>{items or '<li>No edges</li>'}</ul>"
+                f"<h2>View / command graph</h2>{_handle_graph_html(request)}"
+            ),
             request=request,
             active="graph",
         )
@@ -899,6 +928,21 @@ def explorer_router() -> APIRouter:
                     }
                 )
         return {"nodes": nodes, "edges": edges}
+
+    @router.get("/api/handle-graph", include_in_schema=False)
+    async def api_handle_graph(request: Request) -> dict[str, Any]:
+        """View-command-output graph (not the asset graph or 0.17 InteractionGraph)."""
+        from hedron_core.updates import handle_graph_payload, redacted_descriptor_view
+
+        app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
+        payload = handle_graph_payload(app_id=app_id or None)
+        handles = getattr(getattr(request.app, "state", None), "hedron_handles", {}) or {}
+        redacted = []
+        for handle in handles.values() if isinstance(handles, dict) else []:
+            descriptor = getattr(handle, "descriptor", None)
+            if descriptor is not None:
+                redacted.append(redacted_descriptor_view(descriptor))
+        return {**payload, "handles": redacted}
 
     @router.get("/api/dashboard-graph", include_in_schema=False)
     async def api_dashboard_graph() -> dict[str, Any]:

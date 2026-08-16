@@ -36,7 +36,9 @@ _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
 def _logical_id(fn: Callable[..., object], distribution: str = "hedron") -> str:
-    return component_type_id(distribution, fn.__module__, fn.__name__)
+    module = getattr(fn, "__module__", None) or "hedron"
+    name = getattr(fn, "__name__", None) or "endpoint"
+    return component_type_id(distribution, module, name)
 
 
 def _requires_csrf(methods: Sequence[str]) -> bool:
@@ -115,6 +117,9 @@ def _wrap_endpoint(
         return_annotation=hints.get("return", sig.return_annotation),
     )
     endpoint._hedron_fragment_regions = fragment_regions  # type: ignore[attr-defined]
+    logical = getattr(fn, "_hedron_view_logical_id", None)
+    if logical:
+        endpoint._hedron_view_logical_id = logical  # type: ignore[attr-defined]
     return endpoint  # type: ignore[return-value]
 
 

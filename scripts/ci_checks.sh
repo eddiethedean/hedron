@@ -300,6 +300,7 @@ wait_jobs() {
 
 cmd_test() {
   # Treat unknown markers and invalid pytest configuration as CI failures.
+  # Parallel workers come from pyproject addopts (`-n auto --dist=loadfile`).
   run_uv pytest -q --strict-config --strict-markers
 }
 
@@ -401,7 +402,7 @@ quality_verify_pkgs() {
   run_py scripts/verify_pkg_40.py --allow-planned
   run_py scripts/verify_pkg_41.py
   run_py scripts/verify_pkg_42.py
-  run_py scripts/verify_pkg_43.py --allow-planned
+  run_py scripts/verify_pkg_43.py
 }
 
 quality_docs() {
@@ -473,7 +474,8 @@ cmd_quality() {
 cmd_browser() {
   export HEDRON_BROWSER="${HEDRON_BROWSER:-1}"
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
-  run_uv pytest -q -m browser --tb=short
+  # Keep Playwright serial: xdist contention on a shared browser install flakes.
+  run_uv pytest -q -m browser --tb=short -n 0
 }
 
 cmd_workbench_bounds() {
@@ -486,12 +488,12 @@ cmd_workbench_bounds() {
     uv pip install --python "$venv/bin/python" \
       -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
       -e packages/hedron-django \
-      pytest httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
+      pytest pytest-xdist httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
   else
     uv pip install --python "$venv/bin/python" \
       -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
       -e packages/hedron-django \
-      pytest httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
+      pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
   fi
   run "$venv/bin/pytest" -q \
     tests/adapters/workbench \
@@ -537,7 +539,7 @@ evidence_verify_pkgs() {
   run_py scripts/verify_pkg_40.py --allow-planned
   run_py scripts/verify_pkg_41.py
   run_py scripts/verify_pkg_42.py
-  run_py scripts/verify_pkg_43.py --allow-planned
+  run_py scripts/verify_pkg_43.py
 }
 
 cmd_evidence() {
@@ -577,7 +579,7 @@ cmd_packaging() {
   run_py scripts/verify_pkg_40.py --allow-planned
   run_py scripts/verify_pkg_41.py
   run_py scripts/verify_pkg_42.py
-  run_py scripts/verify_pkg_43.py --allow-planned
+  run_py scripts/verify_pkg_43.py
 }
 
 cmd_all() {

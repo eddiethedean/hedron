@@ -10,7 +10,7 @@ train). Detailed acceptance evidence maps live on GitHub under
 - Hatchling builds wheels and source distributions.
 - Ruff provides formatting and linting.
 - Pyright runs strict type checking on public packages; documented narrow exceptions require justification.
-- pytest, httpx, and optional Playwright browser tooling implement the test layers.
+- pytest, pytest-xdist, httpx, and optional Playwright browser tooling implement the test layers.
 - Relative documentation links and `mkdocs build --strict` run in CI.
 - Root `STATUS.md` must match `docs/STATUS.md` (`scripts/sync_status_roadmap.py --check`). The roadmap is only `docs/ROADMAP.md`.
 - A Rust toolchain is required in CI (and for local `quality` / native wheel smoke) because
@@ -27,7 +27,7 @@ classified **docs-only** by the allowlist in `.github/workflows/ci.yml` (see
 | Job | Coverage |
 |---|---|
 | `quality` | ruff format + check, pyright, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
-| `test` | `pytest` on Ubuntu for Python **3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
+| `test` | `pytest` with pytest-xdist (`-n auto`) on Ubuntu for Python **3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
 | `browser` | Playwright HTMX suite — **Chromium on PRs**; Chromium + Firefox + WebKit on `main` / workflow_dispatch (skipped when docs-only) |
 | `evidence` | Supply-chain evidence bundle scripts (skipped when docs-only) |
 

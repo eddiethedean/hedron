@@ -2,12 +2,12 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.42 **Published** as `v0.42.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Phases 0.43 refreshable views/commands (D-071 / RFC-0070), 0.44 type-driven authoring (D-072 / RFC-0071), 0.45 typed interaction ecosystem convergence (D-074 / RFC-0072), and 0.46 package-native typed workflows (D-075 / RFC-0073) are **Planned** in that order; D-073 reconciles the 0.43/0.44 boundary. No 0.43–0.46 runtime or version claim.
-Living tip = `v0.42.0`.
-**Date:** 2026-08-15
+**Roadmap position:** phase 0.43 **Published** as `v0.43.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phases 0.44 type-driven authoring (D-072 / RFC-0071), 0.45 typed interaction ecosystem convergence (D-074 / RFC-0072), and 0.46 package-native typed workflows (D-075 / RFC-0073) are **Planned** in that order; D-073 reconciles the 0.43/0.44 boundary. No 0.44–0.46 runtime or version claim.
+Living tip = `v0.43.0`.
+**Date:** 2026-08-16
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.42.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.43.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
@@ -18,21 +18,18 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.42** (D-070 / RFC-0060) — production-grade Web Component
-platform graduation for the locked Supported inventory (`release-gate-0.42.toml` Verified; tip
-`v0.42.0`). Prior Published **0.41** composition / **0.40** authoring / **0.39** rich data /
+**Phase focus:** Living train is **0.43** (D-071 / RFC-0070) — refreshable views, command
+handles, and typed updates (`release-gate-0.43.toml` Verified; tip
+`v0.43.0`). Prior Published **0.42** production-grade Web Component platform / **0.41**
+composition / **0.40** authoring / **0.39** rich data /
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
-Tracking [#97](https://github.com/eddiethedean/hedron/issues/97) closes with this cut.
-Next planned phase is **0.43**, targeting **`v0.43.0`** (D-071 /
-[RFC-0070](docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)):
-refreshable view handles, command handles, bounded refresh intents, and typed patches over the
-existing region/`InteractionResult` stack. Its Stage 0 requirements packet is complete; all
-`release-gate-0.43.toml` rows remain Planned and a tracking issue is required before Stage 1.
-Phase **0.44** follows only after 0.43 is Verified (D-072 /
-[RFC-0071](docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)). It adds explicit Pydantic boundary models,
-annotation markers, fixed-slot generic specialization, schema-derived forms, declared effects, typed outcomes,
-optional class handlers, and a shared redacted schema. Its Stage 0 requirements packet is complete;
+Tracking [#311](https://github.com/eddiethedean/hedron/issues/311) closes with this cut.
+Next planned phase is **0.44**, targeting **`v0.44.0`** (D-072 /
+[RFC-0071](docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md)):
+explicit Pydantic boundary models, annotation markers, fixed-slot generic specialization,
+schema-derived forms, declared effects, typed outcomes, optional class handlers, and a
+shared redacted schema. Its Stage 0 requirements packet is complete;
 all `release-gate-0.44.toml` rows remain Planned and a separate tracking issue is required before
 Stage 1.
 Phase **0.45** follows only after 0.44 is Verified (D-074 /

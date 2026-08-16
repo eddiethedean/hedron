@@ -92,7 +92,7 @@ A fresh scaffold is typically `pyproject.toml`, `README.md`, and `app.py` — no
 FROM python:3.12-slim
 WORKDIR /app
 COPY pyproject.toml README.md app.py ./
-RUN pip install --no-cache-dir "hedron>=0.42.0,<0.43" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=0.43.0,<0.44" "uvicorn[standard]" \
     && pip install --no-cache-dir -e . \
     && hedron build
 ENV HEDRON_ENV=production
@@ -142,7 +142,7 @@ Single-stage sketch when you already vendor a lockfile:
 FROM python:3.12-slim
 WORKDIR /app
 COPY . .
-RUN pip install --no-cache-dir "hedron>=0.42.0,<0.43" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=0.43.0,<0.44" "uvicorn[standard]" \
  && hedron build
 ENV HEDRON_ENV=production
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -2,17 +2,18 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.42.x`). Older `0.x` lines should
+Security fixes land on the **current published train** (`0.43.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.41.x`) continues through approximately **2027-08-14** — after that, upgrade
+minor (`0.42.x`) continues through approximately **2027-08-16** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.42.x` | Yes (current published train — pin `>=0.42.0,<0.43`; published `v0.42.0`) |
-| `0.41.x` | Best-effort security triage through approximately 2027-08-14; upgrade to `0.42.x` |
-| `0.40.x` | Best-effort security triage through approximately 2027-08-14; upgrade to `0.41.x` |
-| `0.39.x` | Best-effort security triage through approximately 2027-08-14; upgrade to `0.40.x` |
+| `0.43.x` | Yes (current published train — pin `>=0.43.0,<0.44`; published `v0.43.0`) |
+| `0.42.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.43.x` |
+| `0.41.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.42.x` |
+| `0.40.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.41.x` |
+| `0.39.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.40.x` |
 | `0.9.x`–`0.38.x` | No; upgrade to the current train |
 | `0.8.x` | No; final HDN-capable line, retained only for historical migration context |
 | `< 0.8` | No |
@@ -34,7 +35,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes land on the current published train (`0.42.x`); see Supported versions above.
+4. Fixes land on the current published train (`0.43.x`); see Supported versions above.
 
 ### Alternate contact
 

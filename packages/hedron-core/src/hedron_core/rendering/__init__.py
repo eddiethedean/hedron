@@ -164,10 +164,14 @@ class RenderSession:
         previous_diagnostic_count = len(self._state.diagnostics)
         previous_node_count = self._state.node_count
         ctx_token: Token[RenderContext | None] = _active_render_context.set(self.context)
+        from hedron_core.hosts import begin_host_mount_scope, end_host_mount_scope
+
+        mount_token = begin_host_mount_scope()
         try:
             nodes = _normalize(value, self._state, depth=base_depth)
             html_text = _serialize_result(value, nodes, self.context, mode)
         finally:
+            end_host_mount_scope(mount_token)
             _active_render_context.reset(ctx_token)
         self._render_count += 1
         identity_delta = {

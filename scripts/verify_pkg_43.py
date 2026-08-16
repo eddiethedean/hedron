@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Verify the phase 0.43 refreshable-view planning packet or release cut.
 
-This command never publishes or tags. Use ``--allow-planned`` while the 0.43
+This command never publishes or tags. Use ``--allow-planned`` only while the 0.43
 rows are Planned/Implemented and the published/development baseline is 0.42.0.
+At the in-tree cut, omit ``--allow-planned`` and require published 0.43.0.
 """
 
 from __future__ import annotations
@@ -128,14 +129,19 @@ def _check_versions(*, allow_planned: bool) -> None:
         raise SystemExit(f"{RELEASE}: [release] table required")
     published = str(release.get("published_version", "")).strip()
     development = str(release.get("development_version", "")).strip()
-    if published != "0.42.0":
-        raise SystemExit(f"published baseline must remain 0.42.0; found {published!r}")
-    expected = "0.42.0" if allow_planned else RELEASE_CANDIDATE
+    if allow_planned:
+        if published != "0.42.0":
+            raise SystemExit(f"published baseline must remain 0.42.0; found {published!r}")
+        expected = "0.42.0"
+    else:
+        if published != RELEASE_CANDIDATE:
+            raise SystemExit(f"cut published version must be {RELEASE_CANDIDATE}; found {published!r}")
+        expected = RELEASE_CANDIDATE
     if workspace != expected or development != expected:
         raise SystemExit(
             f"workspace/development version must be {expected}; found {workspace}/{development}"
         )
-    print(f"ok: version honesty (published 0.42.0, development {development})")
+    print(f"ok: version honesty (published {published}, development {development})")
 
 
 def main(argv: list[str] | None = None) -> int:

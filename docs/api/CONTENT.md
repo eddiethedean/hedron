@@ -19,7 +19,7 @@ diagnostics with exact install commands).
 ## `Markdown`
 
 ```bash
-pip install "hedron[markdown]>=0.42.0,<0.43"
+pip install "hedron[markdown]>=0.43.0,<0.44"
 ```
 
 | Parameter | Type | Default | Description |
@@ -39,7 +39,7 @@ Rendered Markdown is sanitized through `TrustedHtml.nh3` before `html.raw`. Inst
 ## `highlight_code`
 
 ```bash
-pip install "hedron[code]>=0.42.0,<0.43"
+pip install "hedron[code]>=0.43.0,<0.44"
 ```
 
 | Parameter | Type | Default | Description |
@@ -60,7 +60,7 @@ node = html.div(html.raw(trusted), class_="hedron-code")
 ## `process_image`
 
 ```bash
-pip install "hedron[images]>=0.42.0,<0.43"
+pip install "hedron[images]>=0.43.0,<0.44"
 ```
 
 | Parameter | Type | Default | Description |
@@ -80,7 +80,7 @@ png_bytes = process_image("photo.jpg", max_width=1200, format="PNG")
 ## `validate_email_address`
 
 ```bash
-pip install "hedron[email]>=0.42.0,<0.43"
+pip install "hedron[email]>=0.43.0,<0.44"
 ```
 
 | Parameter | Type | Default | Description |
@@ -109,10 +109,10 @@ validate_email_address("user@example.com")
 
 | API | Extra |
 |---|---|
-| `Markdown` | `pip install "hedron[markdown]>=0.42.0,<0.43"` |
-| `highlight_code` | `pip install "hedron[code]>=0.42.0,<0.43"` |
-| `process_image` | `pip install "hedron[images]>=0.42.0,<0.43"` |
-| `validate_email_address` | `pip install "hedron[email]>=0.42.0,<0.43"` |
-| `TrustedHtml.nh3` | `pip install "hedron[sanitize]>=0.42.0,<0.43"` |
+| `Markdown` | `pip install "hedron[markdown]>=0.43.0,<0.44"` |
+| `highlight_code` | `pip install "hedron[code]>=0.43.0,<0.44"` |
+| `process_image` | `pip install "hedron[images]>=0.43.0,<0.44"` |
+| `validate_email_address` | `pip install "hedron[email]>=0.43.0,<0.44"` |
+| `TrustedHtml.nh3` | `pip install "hedron[sanitize]>=0.43.0,<0.44"` |
 
 See also [Security types](SECURITY_TYPES.md) and [Charts and HTMX](../guides/charts-and-htmx.md).

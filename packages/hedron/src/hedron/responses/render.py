@@ -101,6 +101,23 @@ def _authorize_component_htmx(
         return
     target = request.headers.get("HX-Target") if target is None else target
     history_restore = (request.headers.get("HX-History-Restore-Request") or "").lower() == "true"
+    from hedron_core.updates import matches_declared_host
+
+    handle_hosts = tuple(
+        region
+        for region in fragment_regions
+        if region.id.startswith("h-view-") or region.selector.startswith("#h-view-")
+    )
+    if handle_hosts:
+        if not target:
+            return
+        if any(matches_declared_host(region, target) for region in handle_hosts):
+            return
+        raise FragmentRegionError(
+            f"HX-Target {target!r} disagrees with owned handle host",
+            requested=target,
+            declared=tuple(region.selector for region in handle_hosts),
+        )
     authorize_htmx_target(
         InteractionPolicy(
             declared_regions=fragment_regions,

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import ClassVar, Literal
+from typing import ClassVar, Literal, cast
 
 from hedron_core.builtins._base import class_names, collect_children, dom_id_part
 from hedron_core.component import Component, NodeLike
@@ -49,26 +49,44 @@ class Form(Component[FormProps]):
         self,
         *nodes: NodeLike,
         children: NodeLike = None,
-        action: SafeUrl | str | None = None,
+        action: SafeUrl | str | object | None = None,
         method: Literal["get", "post"] = "post",
         hx: Hx | None = None,
         **kwargs: HtmlAttrValue,
     ) -> None:
         url = None
+        resolved_method = method
+        extras: dict[str, HtmlAttrValue] = {}
+        if action is not None and not isinstance(action, (SafeUrl, str)):
+            path = getattr(action, "path", None)
+            command_method = getattr(action, "method", None)
+            if isinstance(path, str) and command_method:
+                url = SafeUrl.parse(path, purpose=UrlPurpose.FORM_ACTION)
+                resolved_method = str(command_method).lower()
+                if resolved_method not in {"get", "post"}:
+                    resolved_method = "post"
+                extras["data-hedron-command"] = str(getattr(action, "logical_id", "") or "")
+                fallback = getattr(action, "fallback", None)
+                if fallback:
+                    extras["data-hedron-fallback"] = str(fallback)
+                action = None
         if action is not None:
-            url = (
-                action
-                if isinstance(action, SafeUrl)
-                else SafeUrl.parse(action, purpose=UrlPurpose.FORM_ACTION)
-            )
+            if isinstance(action, SafeUrl):
+                url = action
+            else:
+                url = SafeUrl.parse(str(action), purpose=UrlPurpose.FORM_ACTION)
         # Extra kwargs are native/HTMX attributes forwarded to the form element.
-        extras = {k: v for k, v in kwargs.items() if k not in FormProps.model_fields}
+        extras.update({k: v for k, v in kwargs.items() if k not in FormProps.model_fields})
         if hx is not None:
             # Validated Hx attrs win over raw kwargs (cannot override with unsafe strings).
             extras = {**extras, **hx.as_html_attrs()}
+        if extras.get("data-hedron-command") and url is not None:
+            extras.setdefault("hx-post", str(url))
+            extras.setdefault("hx-swap", "none")
         _validate_hx_attr_map(extras)
         props_kwargs = {k: v for k, v in kwargs.items() if k in FormProps.model_fields}
-        super().__init__(FormProps(action=url, method=method, **props_kwargs))
+        form_method = cast(Literal["get", "post"], resolved_method)
+        super().__init__(FormProps(action=url, method=form_method, **props_kwargs))
         self._children = collect_children(*nodes, children=children)
         self._html_attrs = extras
 

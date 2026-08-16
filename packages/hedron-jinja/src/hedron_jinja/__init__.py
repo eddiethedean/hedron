@@ -17,6 +17,7 @@ from hedron_jinja.contracts import (
     TemplateSource,
     TemplateSpec,
 )
+from hedron_jinja.handles import resolve_registered_handle
 from hedron_jinja.instrumentation import (
     ExtensionEvidence,
     ExtensionRegistry,
@@ -46,7 +47,7 @@ from hedron_jinja.providers import (
 )
 from hedron_jinja.source import validate_element_declarations
 
-__version__ = "0.42.0"
+__version__ = "0.43.0"
 
 __all__ = [
     "AsyncIoBudget",
@@ -82,6 +83,7 @@ __all__ = [
     "provider_available",
     "reconcile_csp",
     "record_loop_iteration",
+    "resolve_registered_handle",
     "record_macro_call",
     "run_declared_async_io",
     "validate_element_declarations",

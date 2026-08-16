@@ -213,6 +213,24 @@ HED_JOB_0001 = "HED-JOB-0001"
 HED_HTMX_0001 = "HED-HTMX-0001"
 HED_HTMX_0002 = "HED-HTMX-0002"  # select_oob + OobUpdate same-target conflict
 
+# Refreshable views / commands / typed updates (0.43 RFC-0070)
+HED_VIEW_0001 = "HED-VIEW-0001"  # unsafe or duplicate explicit key
+HED_VIEW_0002 = "HED-VIEW-0002"  # duplicate unbound mount
+HED_VIEW_0003 = "HED-VIEW-0003"  # unbound parameterized handle
+HED_VIEW_0004 = "HED-VIEW-0004"  # structural bind failure
+HED_CMD_0001 = "HED-CMD-0001"  # command cannot use a safe method
+HED_CMD_0002 = "HED-CMD-0002"  # progressive-enhancement claim without fallback
+HED_UPDATE_0001 = "HED-UPDATE-0001"  # mixed refresh and patch
+HED_UPDATE_0002 = "HED-UPDATE-0002"  # duplicate patch target
+HED_UPDATE_0003 = "HED-UPDATE-0003"  # foreign or unregistered handle
+HED_UPDATE_0004 = "HED-UPDATE-0004"  # refresh/patch target limit exceeded
+HED_UPDATE_0005 = "HED-UPDATE-0005"  # unsafe or unknown swap
+HED_UPDATE_0006 = "HED-UPDATE-0006"  # OOB content with status 204
+HED_UPDATE_0007 = "HED-UPDATE-0007"  # unbound parameterized patch target
+HED_UPDATE_0008 = "HED-UPDATE-0008"  # missing primary patch
+HED_UPDATE_0009 = "HED-UPDATE-0009"  # refresh event payload too large
+HED_HOST_0001 = "HED-HOST-0001"  # unsafe fragment host tag or attribute
+
 # Map / GeoJSON (0.15 RFC-0033)
 HED_MAP_0001 = "HED-MAP-0001"
 HED_MAP_0002 = "HED-MAP-0002"

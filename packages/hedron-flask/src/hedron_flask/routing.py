@@ -97,6 +97,9 @@ def hedron_route(
             if callable(auth_fn):
                 signal = auth_fn(request)
                 authenticated = bool(getattr(signal, "authenticated", False))
+            from hedron_core.updates import compile_to_interaction
+
+            value = compile_to_interaction(value)
             if isinstance(value, InteractionResult):
                 return interaction_response(
                     value,

@@ -393,6 +393,72 @@ class AppScenario:
     def assert_http_fallback_present(self, token: str, *, html: str | None = None) -> None:
         assert_http_fallback_present(self._html(html), token=token)
 
+    def refresh(
+        self,
+        handle: object,
+        *,
+        headers: Mapping[str, str] | None = None,
+        cookies: Mapping[str, str] | None = None,
+    ) -> AdapterResponse:
+        path = str(getattr(handle, "path", "") or "")
+        selector = str(getattr(handle, "selector", "") or "")
+        return self.fragment_get(
+            path,
+            target=selector.removeprefix("#") or None,
+            headers=headers,
+            cookies=cookies,
+        )
+
+    def run(
+        self,
+        handle: object,
+        *,
+        data: Mapping[str, str] | None = None,
+        headers: Mapping[str, str] | None = None,
+        cookies: Mapping[str, str] | None = None,
+    ) -> AdapterResponse:
+        path = str(getattr(handle, "path", "") or "")
+        return self.fragment_post(path, data=data, headers=headers, cookies=cookies)
+
+    def expect(
+        self,
+        handle: object,
+        *,
+        contains: str,
+        response: AdapterResponse | None = None,
+    ) -> None:
+        row = response or self._require_response()
+        host_id = str(getattr(handle, "dom_id", "") or getattr(handle, "logical_id", ""))
+        assert contains in row.body, f"expected {contains!r} in {row.body!r}"
+        if host_id:
+            assert host_id in row.body or f"#{host_id}" in row.body, row.body
+
+    def expect_refreshes(
+        self,
+        *handles: object,
+        response: AdapterResponse | None = None,
+    ) -> None:
+        from hedron_core.updates import refresh_event_name
+
+        row = response or self._require_response()
+        for handle in handles:
+            event = refresh_event_name(str(getattr(handle, "dom_id", "") or ""))
+            assert_htmx_trigger(row, event)
+
+    def expect_patch(
+        self,
+        handle: object,
+        *,
+        contains: str,
+        response: AdapterResponse | None = None,
+    ) -> None:
+        row = response or self._require_response()
+        assert contains in row.body, f"expected patch body {contains!r} in {row.body!r}"
+        selector = str(getattr(handle, "selector", "") or "")
+        if selector:
+            retarget = row.headers.get("HX-Retarget") or row.headers.get("hx-retarget") or ""
+            assert selector == retarget or not retarget or selector.removeprefix("#") in retarget
+
     def _require_response(self) -> AdapterResponse:
         assert self.last_response is not None, "no response recorded; make a request first"
         return self.last_response

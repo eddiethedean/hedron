@@ -1,0 +1,51 @@
+[
+  {
+    "id": "refresh-ok",
+    "capability": "refresh",
+    "description": "Bounded refresh intent compiles to HX-Trigger events",
+    "input": {"kind": "refresh", "targets": ["status"]},
+    "expected": {"status": 200, "error_code": null}
+  },
+  {
+    "id": "foreign-handle",
+    "capability": "adversarial",
+    "description": "Foreign app handles fail closed",
+    "input": {"kind": "refresh", "targets": ["status"], "app_id": "other"},
+    "expected": {"error_code": "HED-UPDATE-0003"}
+  },
+  {
+    "id": "unbound-target",
+    "capability": "adversarial",
+    "description": "Unbound parameterized targets fail closed",
+    "input": {"kind": "patch", "bound": false},
+    "expected": {"error_code": "HED-UPDATE-0007"}
+  },
+  {
+    "id": "duplicate-patch-target",
+    "capability": "adversarial",
+    "description": "Duplicate patch targets fail closed",
+    "input": {"kind": "patch", "duplicate": true},
+    "expected": {"error_code": "HED-UPDATE-0002"}
+  },
+  {
+    "id": "unsafe-swap",
+    "capability": "adversarial",
+    "description": "Unknown swap values fail closed",
+    "input": {"kind": "patch", "swap": "beforeend"},
+    "expected": {"error_code": "HED-UPDATE-0005"}
+  },
+  {
+    "id": "status-204-oob",
+    "capability": "adversarial",
+    "description": "204 plus OOB is refused",
+    "input": {"kind": "patch", "status_code": 204, "toast": true},
+    "expected": {"error_code": "HED-UPDATE-0006"}
+  },
+  {
+    "id": "oversize-fan-out",
+    "capability": "adversarial",
+    "description": "Refresh fan-out is bounded at 16",
+    "input": {"kind": "refresh", "count": 17},
+    "expected": {"error_code": "HED-UPDATE-0004"}
+  }
+]

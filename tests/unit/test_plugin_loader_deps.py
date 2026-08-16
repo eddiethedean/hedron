@@ -26,7 +26,7 @@ def _meta(name: str, *, depends_on: tuple[str, ...] = ()) -> PluginMeta:
         name=name,
         version="0.42.0",
         distribution=name,
-        hedron_version=">=0.42,<0.43",
+        hedron_version=">=0.43,<0.44",
         depends_on=depends_on,
     )
 

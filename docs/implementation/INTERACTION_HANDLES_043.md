@@ -1,9 +1,10 @@
 # Phase 0.43 implementation requirements — refreshable views and commands
 
-**Status:** Planned; Stage 0 requirements packet  
+**Status:** Verified in-tree as Published `v0.43.0` (tag/PyPI deferred). Stage 0 baseline was Published `v0.42.0`.  
 **Target:** Hedron `v0.43.0`  
 **Baseline:** Published `v0.42.0`  
 **Decision/RFC:** D-071, refined by D-073 / [RFC-0070](../rfcs/RFC-0070-REFRESHABLE-VIEWS.md)<br>
+**Tracking:** [#311](https://github.com/eddiethedean/hedron/issues/311)<br>
 **Public contract:** [REFRESHABLE_VIEWS](../api/REFRESHABLE_VIEWS.md)  
 **Capability inventory:**
 [`interaction-capability-inventory-043.toml`](../acceptance/interaction-capability-inventory-043.toml)

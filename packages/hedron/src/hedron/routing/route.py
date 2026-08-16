@@ -136,6 +136,21 @@ class HedronRoute(APIRoute):
         result = await await_if_needed(result)
         vary = {"Vary": "HX-Request, HX-History-Restore-Request"}
 
+        from hedron_core.diagnostics import HedronError
+        from hedron_core.updates import compile_to_interaction
+
+        app_id = getattr(getattr(request.app, "state", None), "hedron_app_id", None)
+        try:
+            compiled = compile_to_interaction(result, expected_app_id=app_id)
+        except HedronError as exc:
+            from fastapi import HTTPException
+
+            code = getattr(exc.diagnostic, "code", "")
+            status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
+            raise HTTPException(status_code=status, detail=str(exc)) from exc
+        if isinstance(compiled, InteractionResult):
+            result = compiled
+
         if isinstance(result, StarletteResponse):
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(result, policy, request=request)
@@ -317,6 +332,34 @@ def _authorize_component_fragment(
     if not is_htmx:
         return
     history_restore = (request.headers.get("HX-History-Restore-Request") or "").lower() == "true"
+    from hedron_core.updates import matches_declared_host
+
+    handle_hosts = tuple(
+        region
+        for region in fragment_regions
+        if region.id.startswith("h-view-") or region.selector.startswith("#h-view-")
+    )
+    if handle_hosts:
+        if not target:
+            return
+        if any(matches_declared_host(region, target) for region in handle_hosts):
+            return
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        mismatch = FragmentRegionError(
+            f"HX-Target {target!r} disagrees with owned handle host",
+            requested=target,
+            declared=tuple(region.selector for region in handle_hosts),
+        )
+        emit_security_audit(
+            SecurityAuditEventType.HTMX_TARGET_REJECTED,
+            str(mismatch),
+            attributes={"path": str(request.url.path), "target": target},
+        )
+        raise HTTPException(
+            status_code=403,
+            detail=_fragment_region_http_detail(mismatch, request=request),
+        )
     # Empty fragment_regions still fail closed when the client sends HX-Target
     # (same contract as InteractionResult / authorize_htmx_target).
     try:

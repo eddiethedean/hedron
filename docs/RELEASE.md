@@ -1,8 +1,8 @@
 # Cutting a Hedron release
 
-This is the living maintainer runbook for the `0.42.x` train. Historical cut records
-live under `docs/archive/`. The last published release is `v0.42.0`; the next planned
-patch is `v0.41.1`.
+This is the living maintainer runbook for the `0.43.x` train. Historical cut records
+live under `docs/archive/`. The last published release is `v0.43.0`; the next planned
+phase is `v0.44.0`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag.

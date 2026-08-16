@@ -25,7 +25,7 @@ guide.
 |---|---|
 | `ruff` format + check | < 1 min |
 | `pyright` | 1–3 min |
-| `pytest -q` (default, no browser) | 2–5 min |
+| `pytest -q` (default, xdist `-n auto`, no browser) | 2–5 min |
 | `mkdocs build --strict` | 1–2 min |
 | Playwright Chromium (`HEDRON_BROWSER=1`) | 5–15+ min |
 
@@ -108,7 +108,7 @@ Foundations non-goals and performance budgets **are** published on RTD under
 
 ```bash
 uv run playwright install chromium
-HEDRON_BROWSER=1 uv run pytest -q -m browser
+HEDRON_BROWSER=1 uv run pytest -q -m browser -n 0
 ```
 
 Smoke the core renderer without the FastAPI flagship:
@@ -153,7 +153,7 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 
 | Job | Suite (`ci_checks.sh …`) | On pull requests? |
 |---|---|---|
-| `test` | `test` — `pytest` on Python 3.11–3.14 | Yes, unless **docs-only** |
+| `test` | `test` — `pytest -n auto` on Python 3.11–3.14 | Yes, unless **docs-only** |
 | `workbench-dependencies` | `workbench` — Workbench contract tests at minimum/latest Starlette/Uvicorn bounds | Yes, unless **docs-only** |
 | `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS mirror `--check` (forbids extra roadmap files), docs train SSOT, recipe/sim checks, historical 0.36–0.38 packet shape, living `verify_pkg_39.py` cut, relative doc links, `mkdocs build --strict` | **Always** |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |

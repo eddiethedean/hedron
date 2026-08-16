@@ -93,7 +93,11 @@ class Hedron(HedronPagesMixin, FastAPI):
         )
         super().__init__(*args, **kwargs)
 
+        import secrets
+
         self.hedron_policy = SecurityPolicy.from_name(security)
+        self.hedron_app_id = secrets.token_hex(8)
+        self.state.hedron_app_id = self.hedron_app_id
         is_prod = is_production_env(production=production)
         self.hedron_explorer_mode = resolve_explorer_mode(
             explorer,

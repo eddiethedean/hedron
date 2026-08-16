@@ -17,7 +17,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by release.yml).
-  HEDRON_GATE_VERSION: "0.42.0"
+  HEDRON_GATE_VERSION: "0.43.0"
 
 jobs:
   changes:
@@ -125,14 +125,14 @@ jobs:
           uv pip install --python .bounds-venv/bin/python
           -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench
           -e packages/hedron-django
-          pytest httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
+          pytest pytest-xdist httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
       - name: Install latest supported dependencies
         if: matrix.bounds == 'latest'
         run: >-
           uv pip install --python .bounds-venv/bin/python
           -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench
           -e packages/hedron-django
-          pytest httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
+          pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
       - name: Run Workbench contract suite
         run: >-
           .bounds-venv/bin/pytest -q

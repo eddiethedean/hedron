@@ -1,7 +1,6 @@
 # Hedron `v0.43` refreshable views, commands, and typed updates acceptance
 
-**Status:** Planned; Stage 0 requirements packet complete  
-**Baseline:** Published `v0.42.0`  
+**Status:** Verified in-tree as Published **`v0.43.0`** (tag/PyPI deferred). Stage 0 baseline was Published **`v0.42.0`**.  
 **Target:** `v0.43.0`  
 **Decision/RFC:** D-071, refined by D-073 / [RFC-0070](../rfcs/RFC-0070-REFRESHABLE-VIEWS.md)
 
@@ -64,68 +63,68 @@ command name is not evidence.
 - [x] Published/living baseline remains `v0.42.0`; no package or runtime version changed.
 - [x] D-072/RFC-0071 context is reconciled: 0.43 owns the base runtime and reserves only explicit
   generic/descriptor/binding extension seams, not 0.44 model/form/effect/class features.
-- [ ] A tracking issue is created and bound to every 0.43 gate before Stage 1 begins.
-- [ ] Stage 1 baselines the existing region path before facade implementation.
+- [x] Tracking issue [#311](https://github.com/eddiethedean/hedron/issues/311) is bound to every 0.43 gate.
+- [x] Stage 1 baselines the existing region path before facade implementation.
 
 ## Functional acceptance
 
-- [ ] The scaffold refresh example contains no visible region/id/selector/allowlist/`swap` code.
-- [ ] A refreshable handle is the sole declared source for initial render, refresh route, control,
+- [x] The scaffold refresh example contains no visible region/id/selector/allowlist/`swap` code.
+- [x] A refreshable handle is the sole declared source for initial render, refresh route, control,
   output identity, diagnostics, and scenario tests.
-- [ ] Generated and explicit paths/keys behave under routers, mounts, reverse proxies, sync/async,
+- [x] Generated and explicit paths/keys behave under routers, mounts, reverse proxies, sync/async,
   dependencies, and exceptions.
-- [ ] Bound fragments cover dynamic paths/query values, repeated instances, redaction, structural
+- [x] Bound fragments cover dynamic paths/query values, repeated instances, redaction, structural
   invalid inputs, and normal-GET typed validation without invoking DI during `bind`.
-- [ ] Commands drive buttons and explicit-field forms without copied URLs or methods and preserve
+- [x] Commands drive buttons and explicit-field forms without copied URLs or methods and preserve
   native action semantics; no annotation-derived fields or `ActionHandle.form()` exist in 0.43.
-- [ ] Refresh intent and direct patch examples make their request/atomicity differences explicit.
-- [ ] Multi-output updates preserve primary/secondary ordering and semantic hosts.
-- [ ] Base descriptor/version/fingerprint, fixed generic arity, structural binding adapter, and
+- [x] Refresh intent and direct patch examples make their request/atomicity differences explicit.
+- [x] Multi-output updates preserve primary/secondary ordering and semantic hosts.
+- [x] Base descriptor/version/fingerprint, fixed generic arity, structural binding adapter, and
   dynamic/observed effect labels pass the 0.44 handoff fixture.
 
 ## Security acceptance
 
-- [ ] Cross-app, forged, unregistered, unbound, duplicate, unsafe-swap, and excessive targets fail
+- [x] Cross-app, forged, unregistered, unbound, duplicate, unsafe-swap, and excessive targets fail
   before response emission.
-- [ ] Missing target uses the canonical server output; disagreement returns audited 403.
-- [ ] Commands preserve authentication, application authorization, tenancy, CSRF, validation,
+- [x] Missing target uses the canonical server output; disagreement returns audited 403.
+- [x] Commands preserve authentication, application authorization, tenancy, CSRF, validation,
   idempotency, and redirect boundaries.
-- [ ] Bound values, route graphs, errors, events, traces, Explorer, and test failures redact secrets.
-- [ ] Generated routes are never described or tested as authorization-by-obscurity.
+- [x] Bound values, route graphs, errors, events, traces, Explorer, and test failures redact secrets.
+- [x] Generated routes are never described or tested as authorization-by-obscurity.
 
 ## Accessibility and browser acceptance
 
-- [ ] Hosts remain semantically neutral unless configured and retain tag/name/attributes across
+- [x] Hosts remain semantically neutral unless configured and retain tag/name/attributes across
   replacement.
-- [ ] Busy/error/retry/focus/announcement behavior passes keyboard and automated a11y coverage.
-- [ ] No-JavaScript command flow succeeds through ordinary HTTP or a documented safe failure.
-- [ ] Three engines pass refresh fan-out, cancellation, late response, disconnect, nested host,
+- [x] Busy/error/retry/focus/announcement behavior passes keyboard and automated a11y coverage.
+- [x] No-JavaScript command flow succeeds through ordinary HTTP or a documented safe failure.
+- [x] Three engines pass refresh fan-out, cancellation, late response, disconnect, nested host,
   history, failure, and cleanup scenarios.
-- [ ] Evidence remains scoped and does not close or market the outstanding `SR-021` work.
+- [x] Evidence remains scoped and does not close or market the outstanding `SR-021` work.
 
 ## Performance acceptance
 
-- [ ] Simple handle response p95 overhead is within 10% and at most 1 ms absolute above the
+- [x] Simple handle response p95 overhead is within 10% and at most 1 ms absolute above the
   equivalent recorded legacy region path.
-- [ ] No new required browser asset or request is added to a page that does not mount/use handles.
-- [ ] One/four/sixteen-target refresh and patch results record latency, allocation, payload, request
+- [x] No new required browser asset or request is added to a page that does not mount/use handles.
+- [x] One/four/sixteen-target refresh and patch results record latency, allocation, payload, request
   count, cancellation, and failure behavior.
-- [ ] Repeated mount/refresh/remove cycles show no material retained-memory or listener growth beyond
+- [x] Repeated mount/refresh/remove cycles show no material retained-memory or listener growth beyond
   the recorded noise allowance.
 
 ## Compatibility and documentation acceptance
 
-- [ ] Every 0.42 stable interaction symbol keeps source and behavioral compatibility.
-- [ ] New symbols begin Beta and the stability inventory matches runtime exports exactly.
-- [ ] FastAPI, Flask, and Django portable patch fixtures pass or bounded adapter exceptions have an
+- [x] Every 0.42 stable interaction symbol keeps source and behavioral compatibility.
+- [x] New symbols begin Beta and the stability inventory matches runtime exports exactly.
+- [x] FastAPI, Flask, and Django portable patch fixtures pass or bounded adapter exceptions have an
   owner and destination.
-- [ ] Migration and rollback fixtures are executable and preserve explicit public URLs/keys.
-- [ ] A modeled binding adapter, declared effect, and type-schema extension can attach in the
+- [x] Migration and rollback fixtures are executable and preserve explicit public URLs/keys.
+- [x] A modeled binding adapter, declared effect, and type-schema extension can attach in the
   handoff fixture without changing 0.43 route identity, target authority, explicit forms, or
   response conversion.
-- [ ] Quickstart, HTMX interactions, mutations, forms/actions, testing, troubleshooting, errors,
+- [x] Quickstart, HTMX interactions, mutations, forms/actions, testing, troubleshooting, errors,
   security, accessibility, API, Explorer, and scaffold docs are updated together.
-- [ ] Documentation maintains beginner, explicit-patch, and protocol-level layers without implying
+- [x] Documentation maintains beginner, explicit-patch, and protocol-level layers without implying
   the lower layer is removed.
 
 ## Verification

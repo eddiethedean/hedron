@@ -222,8 +222,11 @@ def _check_versions(*, allow_planned: bool) -> None:
             )
         print(f"ok: living tip {version} / Published {published} (0.42 allow-planned)")
         return
-    if version != RELEASE_CANDIDATE:
-        raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE}; found {version!r}")
+    if version != RELEASE_CANDIDATE and not version.startswith("0.43."):
+        raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE} or post-cut 0.43.x; found {version!r}")
+    if version.startswith("0.43."):
+        print(f"ok: post-cut living tip {version} (0.42 packet verified)")
+        return
     print(f"ok: cut version Hedron {version}")
 
 
@@ -297,6 +300,11 @@ def main(argv: list[str] | None = None) -> int:
         if errors:
             raise SystemExit("\n".join(errors))
         print("ok: release-gate-0.42.toml (planned shape)")
+    elif _workspace_version().startswith("0.43."):
+        errors = gate.check_evidence_manifest(GATE)
+        if errors:
+            raise SystemExit("\n".join(errors))
+        print("ok: release-gate-0.42.toml (verified historical packet)")
     else:
         command = [
             sys.executable,

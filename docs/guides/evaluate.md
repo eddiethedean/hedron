@@ -36,7 +36,7 @@ HTML forms. HTMX is introduced in
 
 | Item | Value |
 |---|---|
-| Version | **0.42.x** (Beta; **Published** — pin `hedron>=0.42.0,<0.43`) |
+| Version | **0.42.x** (Beta; **Published** — pin `hedron>=0.43.0,<0.44`) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
@@ -65,7 +65,7 @@ human AT evidence as Supported; team will not own FastAPI+HTMX literacy.
   optional `hedron[data]` / `hedron[jinja]` / `hedron[dev]`, polling job status
 - **Prefer polling:** live SSE / WebSocket (`hedron.experimental`)
 - **Charts / sample kit:** pin floors
-  `hedron[charts]>=0.42.0,<0.43` and `hedron-sample-kit>=0.1.10,<0.2`
+  `hedron[charts]>=0.43.0,<0.44` and `hedron-sample-kit>=0.1.10,<0.2`
   ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor))
 - **Narrow optional scopes:** notebook is Beta tooling-grade for localhost preview only;
   Gradio is Beta for declared allowlisted client interoperability; MCP is Beta for its
