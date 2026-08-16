@@ -130,13 +130,14 @@ command name is not evidence.
 
 ## Verification
 
-During planning:
+During planning and implementation:
 
 ```bash
 python scripts/verify_pkg_43.py --allow-planned
 ```
 
-The command is reserved and does not exist at Stage 0. At cut:
+This validates the packet, exact gate inventory, requirement coverage, cross-phase boundary, and
+published/version honesty without treating Planned rows as release evidence. At cut:
 
 ```bash
 python scripts/verify_pkg_43.py

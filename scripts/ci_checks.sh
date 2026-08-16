@@ -401,6 +401,7 @@ quality_verify_pkgs() {
   run_py scripts/verify_pkg_40.py --allow-planned
   run_py scripts/verify_pkg_41.py
   run_py scripts/verify_pkg_42.py
+  run_py scripts/verify_pkg_43.py --allow-planned
 }
 
 quality_docs() {
@@ -524,9 +525,9 @@ evidence_gates() {
 evidence_verify_pkgs() {
   run_py scripts/verify_pkg_34.py --allow-planned
   run_py scripts/verify_pkg_35.py --allow-planned
-  # `all` already ran 36–42 during quality; skip the second execute-verified pass.
+  # `all` already ran 36–43 during quality; skip the second verification pass.
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
-    echo "skip: verify_pkg_36–42 (already covered by quality)"
+    echo "skip: verify_pkg_36–43 (already covered by quality)"
     return 0
   fi
   run_py scripts/verify_pkg_36.py --allow-planned
@@ -536,6 +537,7 @@ evidence_verify_pkgs() {
   run_py scripts/verify_pkg_40.py --allow-planned
   run_py scripts/verify_pkg_41.py
   run_py scripts/verify_pkg_42.py
+  run_py scripts/verify_pkg_43.py --allow-planned
 }
 
 cmd_evidence() {
@@ -575,6 +577,7 @@ cmd_packaging() {
   run_py scripts/verify_pkg_40.py --allow-planned
   run_py scripts/verify_pkg_41.py
   run_py scripts/verify_pkg_42.py
+  run_py scripts/verify_pkg_43.py --allow-planned
 }
 
 cmd_all() {

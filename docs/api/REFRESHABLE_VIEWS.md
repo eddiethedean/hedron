@@ -5,6 +5,9 @@ phase: "0.43"
 
 # Refreshable views and commands
 
+**Decision/RFC:** D-071, refined by D-073 /
+[RFC-0070](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)
+
 !!! warning "Planned 0.43 contract"
 
     This is the accepted public contract for phase 0.43. These symbols are not importable on the

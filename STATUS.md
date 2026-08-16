@@ -24,7 +24,8 @@ platform graduation for the locked Supported inventory (`release-gate-0.42.toml`
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
 Tracking [#97](https://github.com/eddiethedean/hedron/issues/97) closes with this cut.
-Next planned phase is **0.43** (D-071 / [RFC-0070](docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)):
+Next planned phase is **0.43**, targeting **`v0.43.0`** (D-071 /
+[RFC-0070](docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)):
 refreshable view handles, command handles, bounded refresh intents, and typed patches over the
 existing region/`InteractionResult` stack. Its Stage 0 requirements packet is complete; all
 `release-gate-0.43.toml` rows remain Planned and a tracking issue is required before Stage 1.
