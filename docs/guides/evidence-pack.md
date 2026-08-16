@@ -8,13 +8,13 @@ for installable package versions.
 
 ## 0.43.0 assets
 
-- [GitHub Release v0.43.0](https://github.com/eddiethedean/hedron/releases/tag/v0.43.0)
+- [GitHub Release v0.44.0](https://github.com/eddiethedean/hedron/releases/tag/v0.44.0)
 - [Hedron 0.43.0 on PyPI](https://pypi.org/project/hedron/0.43.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
 Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
 evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
-expected asset is missing. GitHub and PyPI assets attach when `v0.43.0` is tagged.
+expected asset is missing. GitHub and PyPI assets attach when `v0.44.0` is tagged.
 
 ## 0.42.0 assets
 

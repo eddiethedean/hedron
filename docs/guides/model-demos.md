@@ -1,10 +1,10 @@
 # Model demos and inference workflows
 
 Build reviewable model demos, schedule inference over durable jobs, collect governed
-feedback, and compose permissioned workflows (introduced in **0.18**; living train **0.43.x**).
+feedback, and compose permissioned workflows (introduced in **0.18**; living train **0.44.x**).
 
 Capability readiness is **Supported** (fail-closed); API compatibility remains **`beta`**.
-Pin `hedron>=0.43.0,<0.44`.
+Pin `hedron>=0.44.0,<0.45`.
 
 API contract: [Inference](../api/INFERENCE.md)
 
@@ -117,7 +117,7 @@ assert result.status in {"completed", "partial", "failed", "cancelled"}
 ## Gradio (optional Beta client interop)
 
 ```bash
-pip install "hedron[gradio]>=0.43.0,<0.44"
+pip install "hedron[gradio]>=0.44.0,<0.45"
 # For live remote calls also install gradio_client
 ```
 

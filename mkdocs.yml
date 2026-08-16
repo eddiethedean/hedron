@@ -244,7 +244,7 @@ nav:
     - Routing: api/ROUTER.md
     - Pages: api/PAGE.md
     - Refreshable views (0.43): api/REFRESHABLE_VIEWS.md
-    - Type-driven authoring (planned 0.44): api/TYPE_DRIVEN_AUTHORING.md
+    - Type-driven authoring: api/TYPE_DRIVEN_AUTHORING.md
     - Actions: api/ACTION.md
     - Rendering: api/RENDERING.md
     - Models and props: api/MODELS.md
@@ -271,6 +271,7 @@ nav:
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.44: guides/whats-new-0.44.md
     - What's new in 0.43: guides/whats-new-0.43.md
     - What's new in 0.42: guides/whats-new-0.42.md
     - What's new in 0.41: guides/whats-new-0.41.md

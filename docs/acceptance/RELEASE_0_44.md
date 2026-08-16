@@ -1,6 +1,6 @@
 # Hedron `v0.44` type-driven authoring acceptance
 
-**Status:** Planned; Stage 0 contract refined against Published in-tree `v0.43.0` (D-076)<br>
+**Status:** Published in-tree as `v0.44.0` (tag/PyPI deferred; D-076)<br>
 **Planning baseline:** Published in-tree `v0.43.0` (original Stage 0 baseline was Published `v0.42.0`)<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.43.0`<br>
 **Target:** `v0.44.0`<br>
@@ -65,8 +65,7 @@ Form inventory:
 | `REGRESS-044` | Full supported suite passes with zero phase-owned unresolved blocker/high regression. |
 | `PKG-044` | Clean package/version/dependency/import matrix, inventory, release rehearsal, and zero-Deferred verification pass. |
 
-Commands in the gate manifest are reserved names until implementations land. A reserved command
-name is not evidence.
+Commands in the gate manifest are executable evidence for the in-tree `v0.44.0` cut.
 
 ## Stage 0 entry
 
@@ -81,94 +80,95 @@ name is not evidence.
   Stage 1 does not wait on `#311` PyPI/Git assets.
 - [x] The predecessor boundary is reconciled: 0.44 consumes fixed generic slots, the structural
   binding adapter, explicit form plumbing, dynamic effects, and the `hedron.type` extension seam.
-- [ ] A tracking issue is created and bound to every 0.44 gate before Stage 1 begins.
-- [ ] Stage 1 records equivalent 0.43 bind/form/result performance and compatibility baselines.
+- [x] A tracking issue is created and bound to every 0.44 gate before Stage 1 begins:
+  [#318](https://github.com/eddiethedean/hedron/issues/318).
+- [x] Stage 1 records equivalent 0.43 bind/form/result performance and compatibility baselines.
 
 ## Functional acceptance
 
-- [ ] One Pydantic model/adapter validates bind, request reconstruction, form submission, Explorer
+- [x] One Pydantic model/adapter validates bind, request reconstruction, form submission, Explorer
   preview, and scenario submission identically.
-- [ ] The adapter implements the 0.43 binding protocol and documented FastAPI/Pydantic request
+- [x] The adapter implements the 0.43 binding protocol and documented FastAPI/Pydantic request
   registration; it does not add raw-request parsing or invoke dependency-solver internals.
-- [ ] `bind` and form data cannot populate dependencies, request context, security principals, or
+- [x] `bind` and form data cannot populate dependencies, request context, security principals, or
   server-owned metadata.
-- [ ] Model aliases/defaults/strictness/extras/validators/discriminators/generics/forward refs have
+- [x] Model aliases/defaults/strictness/extras/validators/discriminators/generics/forward refs have
   explicit fixtures and deterministic fingerprints.
-- [ ] Generated forms either use a Supported field shape with complete semantics or require an
+- [x] Generated forms either use a Supported field shape with complete semantics or require an
   explicit override; no guessed fallback control appears.
-- [ ] Effect declarations validate explicit returned effects without executing them; undeclared
+- [x] Effect declarations validate explicit returned effects without executing them; undeclared
   or foreign outputs fail before emission.
-- [ ] Typed outcomes cover every discriminator variant exactly once and map explicitly to
+- [x] Typed outcomes cover every discriminator variant exactly once and map explicitly to
   content/status/effects/fallback behavior.
-- [ ] Function/class handler equivalents agree and shared mutable request state is rejected.
-- [ ] The 0.43 base descriptor remains authoritative for route/identity/host/fallback/target/
+- [x] Function/class handler equivalents agree and shared mutable request state is rejected.
+- [x] The 0.43 base descriptor remains authoritative for route/identity/host/fallback/target/
   response behavior, and fingerprint mismatch rejects stale type metadata.
 
 ## Typing and schema acceptance
 
-- [ ] Model/content/result types fill the fixed 0.43 fragment/action/bound/patch slots and decorator
+- [x] Model/content/result types fill the fixed 0.43 fragment/action/bound/patch slots and decorator
   overloads pass stock mypy/pyright positive and negative fixtures without changing arity.
-- [ ] Useful basic typing does not require a checker plugin; any optional plugin has parity and
+- [x] Useful basic typing does not require a checker plugin; any optional plugin has parity and
   graceful-absence evidence.
-- [ ] `TypeSchema` is immutable, versioned, provenance-bearing, redacted, bounded, references the
+- [x] `TypeSchema` is immutable, versioned, provenance-bearing, redacted, bounded, references the
   0.43 descriptor fingerprint, and contains no callbacks/request/model instances/dependency values.
-- [ ] Every type-aware consumer checks the same extension and base-descriptor versions/fingerprint;
+- [x] Every type-aware consumer checks the same extension and base-descriptor versions/fingerprint;
   mismatch fails clearly while base runtime consumers continue using the 0.43 descriptor.
-- [ ] Pydantic JSON Schema and FastAPI OpenAPI remain authoritative for their domains; Hedron
+- [x] Pydantic JSON Schema and FastAPI OpenAPI remain authoritative for their domains; Hedron
   extensions do not fork or silently reinterpret them.
-- [ ] Static analysis performs no import, annotation evaluation, plugin loading, or target code
+- [x] Static analysis performs no import, annotation evaluation, plugin loading, or target code
   execution and labels unknown facts honestly.
 
 ## Security acceptance
 
-- [ ] Pydantic validation is never documented or treated as authn/authz/tenancy/business/transaction
+- [x] Pydantic validation is never documented or treated as authn/authz/tenancy/business/transaction
   or retry policy.
-- [ ] Sensitive values/defaults/examples/custom serialization cannot leak through ids/events,
+- [x] Sensitive values/defaults/examples/custom serialization cannot leak through ids/events,
   markup, errors, schemas, logs, traces, Explorer, OpenAPI extensions, snapshots, or scenarios.
-- [ ] Generated forms preserve unsafe-method CSRF, content type, body/file/field limits, escaping,
+- [x] Generated forms preserve unsafe-method CSRF, content type, body/file/field limits, escaping,
   safe URLs/redirects, CSP, and upload policy.
-- [ ] Forged/cross-app effects and hostile aliases/extras/unions/recursion/collections/error storms/
+- [x] Forged/cross-app effects and hostile aliases/extras/unions/recursion/collections/error storms/
   schema cache pressure fail inside recorded bounds.
-- [ ] 0.43 route/dependency/output authorization remains final authority after type normalization.
+- [x] 0.43 route/dependency/output authorization remains final authority after type normalization.
 
 ## Accessibility and browser acceptance
 
-- [ ] Generated controls have visible/programmatic labels, descriptions, grouped legends,
+- [x] Generated controls have visible/programmatic labels, descriptions, grouped legends,
   required/invalid state, errors, native keyboard behavior, and safe value retention.
-- [ ] Missing labels and incompatible hints fail with accessible remediation instead of guessing.
-- [ ] Enhanced and ordinary HTTP validation paths provide usable error summary/focus/announcements
+- [x] Missing labels and incompatible hints fail with accessible remediation instead of guessing.
+- [x] Enhanced and ordinary HTTP validation paths provide usable error summary/focus/announcements
   and do not rely on color or client validation alone.
-- [ ] Supported file/choice/collection/nested/discriminated shapes and explicit overrides pass
+- [x] Supported file/choice/collection/nested/discriminated shapes and explicit overrides pass
   keyboard, no-JS, reduced-motion, forced-colors, zoom, and three-engine tests.
-- [ ] Evidence remains scoped and does not close or market `SR-021`.
+- [x] Evidence remains scoped and does not close or market `SR-021`.
 
 ## Performance acceptance
 
-- [ ] Cached modeled bind/form/result validation p95 overhead is within 10% and at most 1 ms
+- [x] Cached modeled bind/form/result validation p95 overhead is within 10% and at most 1 ms
   absolute above equivalent recorded 0.43 paths.
-- [ ] Handler registration, cold/warm schema build, adapter compilation, form build/render,
+- [x] Handler registration, cold/warm schema build, adapter compilation, form build/render,
   effect/outcome validation, and schema projection record latency and allocation.
-- [ ] Tiny/typical/maximum models record schema bytes, field/control/error counts, concurrency,
+- [x] Tiny/typical/maximum models record schema bytes, field/control/error counts, concurrency,
   cache behavior, and retained memory.
-- [ ] Applications not using 0.44 markers/classes have no material request-path regression and no
+- [x] Applications not using 0.44 markers/classes have no material request-path regression and no
   new browser asset/request.
 
 ## Compatibility and documentation acceptance
 
-- [ ] Published 0.42 and Verified 0.43 fixtures pass unchanged; ordinary annotations and
+- [x] Published 0.42 and Verified 0.43 fixtures pass unchanged; ordinary annotations and
   third-party metadata are not reinterpreted without opt-in.
-- [ ] The 0.43 handoff goldens prove generic arity, base descriptor authority, unmodeled structural
+- [x] The 0.43 handoff goldens prove generic arity, base descriptor authority, unmodeled structural
   binding, explicit forms, dynamic/observed effects, target policy, and response conversion remain
   unchanged after 0.44 attaches.
-- [ ] New symbols start Beta and runtime exports, type stubs/`py.typed`, docs, and stability
+- [x] New symbols start Beta and runtime exports, type stubs/`py.typed`, docs, and stability
   inventory agree exactly.
-- [ ] FastAPI flagship and Flask/Django/Jinja/conformance projections pass or publish bounded
+- [x] FastAPI flagship and Flask/Django/Jinja/conformance projections pass or publish bounded
   machine-visible exceptions with owners/destinations.
-- [ ] Incremental model/form/effect/outcome/class migrations and rollback are executable and
+- [x] Incremental model/form/effect/outcome/class migrations and rollback are executable and
   preserve explicit URLs/keys/data.
-- [ ] Docs teach simple function boundaries first, then forms/effects/outcomes, optional classes,
+- [x] Docs teach simple function boundaries first, then forms/effects/outcomes, optional classes,
   and explicit/manual/protocol escape hatches.
-- [ ] Error catalog, limitations, version support, static-vs-dynamic tooling, security, a11y,
+- [x] Error catalog, limitations, version support, static-vs-dynamic tooling, security, a11y,
   testing, and performance guidance are updated together.
 
 ## Verification
@@ -179,7 +179,7 @@ During planning:
 python scripts/verify_pkg_44.py --allow-planned
 ```
 
-The command is reserved and does not exist at Stage 0. At cut:
+The command exists. At the in-tree cut:
 
 ```bash
 python scripts/verify_pkg_44.py

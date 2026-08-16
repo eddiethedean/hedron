@@ -222,9 +222,12 @@ def _check_versions(*, allow_planned: bool) -> None:
             )
         print(f"ok: living tip {version} / Published {published} (0.42 allow-planned)")
         return
-    if version != RELEASE_CANDIDATE and not version.startswith("0.43."):
-        raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE} or post-cut 0.43.x; found {version!r}")
-    if version.startswith("0.43."):
+    if version != RELEASE_CANDIDATE and not version.startswith(("0.43.", "0.44.")):
+        raise SystemExit(
+            f"cut requires workspace version {RELEASE_CANDIDATE} or post-cut "
+            f"0.43.x/0.44.x; found {version!r}"
+        )
+    if version.startswith("0.43.") or version.startswith("0.44."):
         print(f"ok: post-cut living tip {version} (0.42 packet verified)")
         return
     print(f"ok: cut version Hedron {version}")
@@ -300,7 +303,7 @@ def main(argv: list[str] | None = None) -> int:
         if errors:
             raise SystemExit("\n".join(errors))
         print("ok: release-gate-0.42.toml (planned shape)")
-    elif _workspace_version().startswith("0.43."):
+    elif _workspace_version().startswith("0.43.") or _workspace_version().startswith("0.44."):
         errors = gate.check_evidence_manifest(GATE)
         if errors:
             raise SystemExit("\n".join(errors))

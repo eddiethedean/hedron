@@ -323,6 +323,19 @@ HED_ELEMENT_STATE_0003 = "HED-ELEMENT-STATE-0003"  # controlled update loop / il
 HED_ELEMENT_STATE_0004 = "HED-ELEMENT-STATE-0004"  # dirty-draft incoming without policy
 HED_ELEMENT_STATE_0005 = "HED-ELEMENT-STATE-0005"  # conflict entered; LWW refused
 HED_ELEMENT_STATE_0006 = "HED-ELEMENT-STATE-0006"  # transfer attempted before 0.40
+
+# Type-driven authoring (0.44 RFC-0071 / D-076). HED-TYPE-BIND-SOURCE maps to 0001.
+HED_TYPE_0001 = "HED-TYPE-0001"  # dependency/request/security name supplied to bind/form
+HED_TYPE_BIND_SOURCE = HED_TYPE_0001
+HED_TYPE_0002 = "HED-TYPE-0002"  # duplicate or conflicting Hedron markers
+HED_TYPE_0003 = "HED-TYPE-0003"  # invalid boundary model / validation
+HED_TYPE_0004 = "HED-TYPE-0004"  # TypeSchema bounds or fingerprint mismatch
+HED_TYPE_0005 = "HED-TYPE-0005"  # form generation inventory / Control.kind
+HED_TYPE_0006 = "HED-TYPE-0006"  # declared effect subset mismatch
+HED_TYPE_0007 = "HED-TYPE-0007"  # OutcomeMap coverage / mapping
+HED_TYPE_0008 = "HED-TYPE-0008"  # class handler lifecycle
+HED_TYPE_0009 = "HED-TYPE-0009"  # host/adapter TypeSchema disposition
+HED_TYPE_0010 = "HED-TYPE-0010"  # sensitive leak / identity contradiction
 HED_SIM_ASSET_0001 = "HED-SIM-ASSET-0001"  # packaged sim asset name escapes static/
 HED_SIM_ASSET_0002 = "HED-SIM-ASSET-0002"  # packaged sim asset missing
 

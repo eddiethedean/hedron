@@ -23,6 +23,6 @@ Tracking: [#97](https://github.com/eddiethedean/hedron/issues/97).
 
 ## Upgrade
 
-Pin the train to `hedron>=0.43.0,<0.44` (and `hedron-elements` the same when used).
+Pin the train to `hedron>=0.44.0,<0.45` (and `hedron-elements` the same when used).
 Rollback: pin `>=0.41.0,<0.42`. See [Upgrade](upgrade.md) · [What's ready](whats-ready.md) ·
 [Roadmap](../ROADMAP.md).

@@ -98,7 +98,7 @@ status commentary, not a satisfied release gate.
   [release-gate-0.41.toml](release-gate-0.41.toml) (Verified),
   [release-gate-0.42.toml](release-gate-0.42.toml) (Verified),
   [release-gate-0.43.toml](release-gate-0.43.toml) (Verified),
-  [release-gate-0.44.toml](release-gate-0.44.toml) (Planned),
+  [release-gate-0.44.toml](release-gate-0.44.toml) (Verified),
   [release-gate-0.45.toml](release-gate-0.45.toml) (Planned),
   [release-gate-0.46.toml](release-gate-0.46.toml) (Planned)
 

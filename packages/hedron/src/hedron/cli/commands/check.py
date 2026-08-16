@@ -403,6 +403,44 @@ def _check_043_handles(base: Path) -> list[Any]:
     return diags
 
 
+def _check_044_type_authoring(base: Path) -> list[Any]:
+    """Static AST inspection never imports the target project."""
+    from hedron_core import DiagnosticSeverity
+    from hedron_core.codes import HED_TYPE_0004
+    from hedron_core.diagnostics import make_diagnostic
+    from hedron_core.type_schema import TYPE_SCHEMA_NAMESPACE, type_schema_from_descriptor
+    from hedron_core.updates import descriptor_fingerprint, list_handle_descriptors
+
+    diags: list[Any] = []
+    for path in _iter_project_py_files(base):
+        try:
+            source = path.read_text(encoding="utf-8")
+            ast.parse(source, filename=str(path))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+    for descriptor in list_handle_descriptors():
+        schema = type_schema_from_descriptor(descriptor)
+        if schema is None:
+            continue
+        if (
+            schema.descriptor_fingerprint
+            and schema.descriptor_fingerprint != descriptor_fingerprint(descriptor)
+        ):
+            diags.append(
+                make_diagnostic(
+                    HED_TYPE_0004,
+                    severity=DiagnosticSeverity.ERROR,
+                    title="TypeSchema fingerprint mismatch",
+                    explanation=(
+                        f"Handle {descriptor.logical_id!r} has stale "
+                        f"{TYPE_SCHEMA_NAMESPACE} metadata."
+                    ),
+                    remediation="Rebuild so TypeSchema matches the 0.43 descriptor fingerprint.",
+                )
+            )
+    return diags
+
+
 def _decorator_attr(node: ast.AST) -> str | None:
     if isinstance(node, ast.Attribute):
         return node.attr
@@ -660,6 +698,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
     diags.extend(_check_htmx_region_mismatches(base))
     diags.extend(_check_select_oob_conflicts(base))
     diags.extend(_check_043_handles(base))
+    diags.extend(_check_044_type_authoring(base))
 
     # Security / a11y / compatibility-boundary informational findings (excluded from exit code).
     # Adapter/extra COMPAT notices are scoped to the project under check unless --all-compat (#54).

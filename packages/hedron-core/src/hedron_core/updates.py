@@ -339,10 +339,16 @@ def list_handle_descriptors(*, app_id: str | None = None) -> tuple[BaseHandleDes
 
 
 def handle_graph_payload(*, app_id: str | None = None) -> dict[str, object]:
-    """View-command-output graph. Effects are dynamic or observed, never declared."""
+    """View-command-output graph. Effects are dynamic, observed, or declared."""
+    from hedron_core.type_schema import TYPE_SCHEMA_NAMESPACE
+
     nodes: list[dict[str, object]] = []
+    any_declared = False
     for descriptor in list_handle_descriptors(app_id=app_id):
         view = redacted_descriptor_view(descriptor)
+        if descriptor.effect == "declared":
+            any_declared = True
+        type_payload = descriptor.extensions.get(TYPE_SCHEMA_NAMESPACE)
         nodes.append(
             {
                 "id": descriptor.logical_id,
@@ -351,11 +357,12 @@ def handle_graph_payload(*, app_id: str | None = None) -> dict[str, object]:
                 "path": descriptor.path,
                 "method": descriptor.method,
                 "fingerprint": view["fingerprint"],
+                "type_schema": type_payload if isinstance(type_payload, dict) else None,
             }
         )
     return {
         "kind": "view-command-output",
-        "effects": "dynamic/observed",
+        "effects": "declared" if any_declared else "dynamic/observed",
         "nodes": nodes,
         "edges": [],
     }
@@ -677,19 +684,23 @@ def compile_to_interaction(value: object, *, expected_app_id: str | None = None)
 
 
 def redacted_descriptor_view(descriptor: BaseHandleDescriptor) -> dict[str, object]:
-    return redact_secret_like(
-        {
-            "kind": descriptor.kind,
-            "logical_id": descriptor.logical_id,
-            "name": descriptor.name,
-            "path": descriptor.path,
-            "method": descriptor.method,
-            "fallback": descriptor.fallback,
-            "effect": descriptor.effect,
-            "fingerprint": descriptor_fingerprint(descriptor),
-            "binding": {
-                "path_params": list(descriptor.binding.path_params),
-                "query_params": list(descriptor.binding.query_params),
-            },
-        }
-    )
+    from hedron_core.type_schema import TYPE_SCHEMA_NAMESPACE
+
+    payload: dict[str, object] = {
+        "kind": descriptor.kind,
+        "logical_id": descriptor.logical_id,
+        "name": descriptor.name,
+        "path": descriptor.path,
+        "method": descriptor.method,
+        "fallback": descriptor.fallback,
+        "effect": descriptor.effect,
+        "fingerprint": descriptor_fingerprint(descriptor),
+        "binding": {
+            "path_params": list(descriptor.binding.path_params),
+            "query_params": list(descriptor.binding.query_params),
+        },
+    }
+    type_payload = descriptor.extensions.get(TYPE_SCHEMA_NAMESPACE)
+    if isinstance(type_payload, dict):
+        payload["type_schema"] = type_payload
+    return redact_secret_like(payload)

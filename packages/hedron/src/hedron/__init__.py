@@ -93,6 +93,18 @@ from hedron.security import (
     redirect_local,
 )
 from hedron.state import SessionState, session_state
+from hedron.type_authoring import (
+    CommandHandler,
+    CommandResult,
+    Control,
+    FormBody,
+    OutcomeMap,
+    RefreshableView,
+    Refreshes,
+    Updates,
+    ViewParams,
+    case,
+)
 
 # Re-export beginner core API.
 from hedron_core import (
@@ -170,6 +182,7 @@ from hedron_core import (
     InferencePolicy,
     InferenceWorkflow,
     Inline,
+    InstanceKey,
     JSONViewer,
     Label,
     Link,
@@ -217,6 +230,7 @@ from hedron_core import (
     SegmentedControl,
     Select,
     SelectSlider,
+    Sensitive,
     SessionTokenCsrf,
     Sidebar,
     Skeleton,
@@ -239,6 +253,7 @@ from hedron_core import (
     ToggleSwitch,
     Tooltip,
     TrustedHtml,
+    TypeSchema,
     UrlPurpose,
     Video,
     ViewportHint,
@@ -366,7 +381,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.43.0"
+__version__ = "0.44.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -420,6 +435,9 @@ __all__ = [
     "ComponentRef",
     "ComponentResponse",
     "ConfirmButton",
+    "CommandHandler",
+    "CommandResult",
+    "Control",
     "Container",
     "ContextMenu",
     "DateInput",
@@ -437,6 +455,7 @@ __all__ = [
     "FileUpload",
     "Footer",
     "Form",
+    "FormBody",
     "CsrfField",
     "LoginCsrfField",
     "Hx",
@@ -468,6 +487,7 @@ __all__ = [
     "IconButton",
     "IFrame",
     "Image",
+    "InstanceKey",
     "InfiniteScroll",
     "Inline",
     "InteractionPolicy",
@@ -479,6 +499,7 @@ __all__ = [
     "HtmxLink",
     "NavLink",
     "OobHost",
+    "OutcomeMap",
     "AttrHost",
     "AppShell",
     "MainPanel",
@@ -514,13 +535,16 @@ __all__ = [
     "RangeInput",
     "RatingInput",
     "Refresh",
+    "RefreshableView",
     "RefreshButton",
     "RefreshIntent",
+    "Refreshes",
     "RenderContext",
     "RenderMode",
     "RenderResult",
     "SafeUrl",
     "Secret",
+    "Sensitive",
     "Section",
     "SecurityPolicy",
     "SecurityHeadersPolicy",
@@ -553,16 +577,20 @@ __all__ = [
     "TimeInput",
     "Timeline",
     "Title",
+    "TypeSchema",
     "Toast",
     "ToggleSwitch",
     "Tooltip",
     "TrustedHtml",
+    "Updates",
     "UrlPurpose",
     "Video",
+    "ViewParams",
     "ViewportHint",
     "__version__",
     "action_attrs",
     "addressable",
+    "case",
     "apply_color_mode_cookie",
     "approved_headers",
     "await_if_needed",

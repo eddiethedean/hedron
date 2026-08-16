@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.43.x** published train (tip `v0.43.0`)
+**Status:** Accepted; kept current with the **0.44.x** published train (tip `v0.44.0`)
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -76,7 +76,7 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.43.x`) |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.44.x`) |
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |

@@ -38,7 +38,10 @@ def test_command_returns_handle_not_function_and_action_unchanged() -> None:
     assert isinstance(ping, ActionHandle)
     assert ping.path == "/_hedron/commands/ping"
     assert ping.method == "POST"
-    assert not callable(getattr(ping, "form", None))
+    form_fn = getattr(ping, "form", None)
+    if callable(form_fn):
+        with pytest.raises(HedronError):
+            form_fn()
     assert callable(legacy_action) and not isinstance(legacy_action, ActionHandle)
     client = TestClient(app, follow_redirects=False)
     headers = csrf_headers(client)

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.44.0] — 2026-08-16
+
+### Added
+- Phase 0.44 type-driven authoring (D-072 / D-076 / RFC-0071).
+
+### Changed
+- Coordinated train tip `0.44.0` (in-tree cut; tag/PyPI deferred).
+
+
 ## [0.43.0] — 2026-08-16
 
 ### Added

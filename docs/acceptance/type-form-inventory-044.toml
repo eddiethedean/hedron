@@ -1,11 +1,11 @@
 # Phase 0.44 closed field-shape and Control.kind inventory (TA-FORM-002).
-# Stage 0 contract artifact (D-076). Dispositions are Planned until FORM-044 is Verified.
+# Stage 0 contract artifact (D-076). Dispositions are Verified for FORM-044.
 # Unknown Control.kind values fail generation. Dispositioned does not mean every
 # supported shape is auto-generated when a Control hint is incompatible.
 
 schema_version = 1
 phase = "0.44"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.43.0"
 target = "v0.44.0"
 decision = "D-076"

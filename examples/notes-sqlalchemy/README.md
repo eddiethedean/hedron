@@ -6,7 +6,7 @@ Minimal FastAPI + Hedron notes app with SQLite persistence (create / list / dele
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.43.0,<0.44" "uvicorn[standard]" "sqlalchemy>=2.0"
+pip install "hedron>=0.44.0,<0.45" "uvicorn[standard]" "sqlalchemy>=2.0"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/notes-sqlalchemy/app.py -o app.py
 uvicorn app:app --reload
 ```

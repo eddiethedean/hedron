@@ -8,13 +8,13 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 
 | Item | Value |
 |---|---|
-| Published | **v0.43.0** (`hedron` / Beta train packages `0.43.0`; Beta `hedron-elements` `0.43.0`; independent Beta `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.0`; `fastapi-workbench` `1.0.0`) |
-| Pin | `hedron>=0.43.0,<0.44` |
+| Published | **v0.44.0** (`hedron` / Beta train packages `0.44.0`; Beta `hedron-elements` `0.44.0`; independent Beta `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.0`; `fastapi-workbench` `1.0.0`) |
+| Pin | `hedron>=0.44.0,<0.45` |
 | Charts satellite | `hedron-charts>=0.2.0,<0.3` |
-| Gate checker | `python scripts/check_release_gate.py 0.43.0` |
-| Packet verify | `python scripts/verify_pkg_43.py` |
+| Gate checker | `python scripts/check_release_gate.py 0.44.0` |
+| Packet verify | `python scripts/verify_pkg_44.py` |
 
-Adopter-facing notes: [What’s new in 0.43](whats-new-0.43.md) ·
+Adopter-facing notes: [What’s new in 0.44](whats-new-0.44.md) ·
 [Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 

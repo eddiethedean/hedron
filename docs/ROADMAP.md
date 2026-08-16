@@ -41,7 +41,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.41** | Typed browser composition, bounded draft state, and navigation | **Published** (`v0.41.0`; in-tree cut, tag/PyPI deferred; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96)) |
 | **0.42** | Production-grade Web Component platform | Published (`v0.42.0`; in-tree cut, tag/PyPI deferred; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
 | **0.43** | Refreshable views, command handles, and typed updates | **Published** (`v0.43.0`; in-tree cut, tag/PyPI deferred; D-071; [#311](https://github.com/eddiethedean/hedron/issues/311)) |
-| **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Planned** (`v0.44.0`; D-072 / RFC-0071, refined by D-073 / D-076 against Published `v0.43.0`; tracking issue required before Stage 1) |
+| **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Published** (`v0.44.0`; in-tree cut, tag/PyPI deferred; D-072 / RFC-0071; [#318](https://github.com/eddiethedean/hedron/issues/318)) |
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Planned** (`v0.45.0`; D-074 / RFC-0072; requires Verified 0.44 and a tracking issue before Stage 1) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Planned** (`v0.46.0`; D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1) |
 
@@ -78,17 +78,17 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 - Planned **0.26–0.35** phases apply an evidence-based production-grade contract to the remaining
   package fleet. **Published 0.36–0.42** establish a standards-based Web
   Component platform while preserving SSR, native forms/navigation, HTMX, and no-Node Python
-  consumption. Planned **0.43** adds a handle-first interaction facade over the existing
-  region/`InteractionResult` stack; planned **0.44** then adds opt-in Pydantic boundaries,
+  consumption. **Published 0.43** adds a handle-first interaction facade over the existing
+  region/`InteractionResult` stack; **Published 0.44** adds opt-in Pydantic boundaries,
   schema-derived forms/effects/outcomes, generic specialization, and optional class lifecycles over
   that verified facade. Planned **0.45** converges those contracts across the package fleet through
   one catalog/manifest/projection boundary; planned **0.46** then adds opt-in package-native data,
   visualization, element, remote, and workbench workflows that compile to the same stack. None of
   these programs is a blanket feature promotion or a scheduled `1.0`.
 
-### Honest gaps on the current train (0.42.x)
+### Honest gaps on the current train (0.44.x)
 
-- Current **published** PyPI train is **0.41.x** (last `v0.41.0`)
+- Current **published** in-tree train is **0.44.x** (last `v0.44.0`; tag/PyPI deferred)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -3476,14 +3476,11 @@ Upgrade fixtures:
 
 ## 0.44 — Type-driven authoring and schema-derived interactions (`v0.44.0`)
 
-**Status:** Planned (D-072, refined by D-073 /
+**Status:** Published as `v0.44.0` (in-tree cut, tag/PyPI deferred; D-072, refined by D-073 /
 [RFC-0071](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md);
 Stage 0 contract refined by D-076 against Published in-tree `v0.43.0`).
-Stage 0 living/planning baseline is Published in-tree `v0.43.0` (original Stage 0 baseline was
-Published `v0.42.0`). Verified in-tree `v0.43.0` is a hard prerequisite for Stage 1 and the 0.44
-cut baseline. Target is `v0.44.0`. A separate tracking issue must be created and bound to every
-0.44 gate before runtime implementation begins. This refine does not start Stage 1 or change
-0.45/0.46.
+Tracking: [#318](https://github.com/eddiethedean/hedron/issues/318). `release-gate-0.44.toml`
+is Verified. Tag/PyPI remain deferred. This cut does not start 0.45/0.46.
 
 **Outcome:** Pydantic models and Python annotations become a single explicit typed extension for
 refreshable-view parameters, command inputs, native forms, declared outputs, validation, tooling,

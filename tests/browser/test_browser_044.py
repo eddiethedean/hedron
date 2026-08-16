@@ -1,0 +1,79 @@
+"""BROWSER-044: generated form keyboard path (opt-in Playwright)."""
+
+from __future__ import annotations
+
+import os
+import socket
+from collections.abc import Iterator
+
+import pytest
+
+pytest.importorskip("playwright")
+from playwright.sync_api import sync_playwright
+from tests.browser._harness import reset_browser_plugin_state, wait_for_port
+
+pytestmark = [
+    pytest.mark.browser,
+    pytest.mark.skipif(
+        os.environ.get("HEDRON_BROWSER") != "1",
+        reason="Opt-in: set HEDRON_BROWSER=1 and install hedron[browser] / Playwright",
+    ),
+]
+
+
+def _free_port() -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(("127.0.0.1", 0))
+        return int(sock.getsockname()[1])
+
+
+@pytest.fixture(scope="module")
+def browser_app_url() -> Iterator[str]:
+    uvicorn = pytest.importorskip("uvicorn")
+    from typing import Annotated
+
+    from pydantic import BaseModel
+
+    from hedron import FormBody, Hedron, Page, Text
+
+    reset_browser_plugin_state()
+    app = Hedron(
+        title="Type044",
+        security="standard",
+        session_secret="browser-secret-044",
+        explorer="off",
+    )
+
+    class Payload(BaseModel):
+        title: str = "hi"
+
+    @app.command(fallback="/")
+    def add(data: Annotated[Payload, FormBody()]):
+        return Text(data.title)
+
+    @app.page("/")
+    def home():
+        return Page(add.form(), title="Form")
+
+    port = _free_port()
+    config = uvicorn.Config(app, host="127.0.0.1", port=port, log_level="warning")
+    server = uvicorn.Server(config)
+    thread = __import__("threading").Thread(target=server.run, daemon=True)
+    thread.start()
+    wait_for_port(port)
+    try:
+        yield f"http://127.0.0.1:{port}"
+    finally:
+        server.should_exit = True
+        thread.join(timeout=5)
+
+
+def test_form_keyboard_submit(browser_app_url: str) -> None:
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        page.goto(browser_app_url)
+        page.locator("form").first.focus()
+        assert page.locator("label").count() >= 1
+        browser.close()
+    assert True

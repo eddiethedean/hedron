@@ -1,9 +1,9 @@
 # Dashboards and interaction graphs
 
 Phase **0.17** shipped page-local dashboard bindings and finite interaction graphs for
-reactive admin / data UIs. Capability readiness is **Supported** on the living **0.43**
+reactive admin / data UIs. Capability readiness is **Supported** on the living **0.44**
 train (feature introduced in 0.17); API compatibility remains **`beta`** — pin
-`hedron>=0.43.0,<0.44`.
+`hedron>=0.44.0,<0.45`.
 
 ## Start here
 

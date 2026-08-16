@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.44"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.43.0"
 target = "v0.44.0"
 decision = "D-076"

@@ -133,9 +133,14 @@ def _check_versions(*, allow_planned: bool) -> None:
         if published != "0.42.0":
             raise SystemExit(f"published baseline must remain 0.42.0; found {published!r}")
         expected = "0.42.0"
+    elif published.startswith("0.44."):
+        print(f"ok: 0.43 historical under living published {published}")
+        return
     else:
         if published != RELEASE_CANDIDATE:
-            raise SystemExit(f"cut published version must be {RELEASE_CANDIDATE}; found {published!r}")
+            raise SystemExit(
+                f"cut published version must be {RELEASE_CANDIDATE}; found {published!r}"
+            )
         expected = RELEASE_CANDIDATE
     if workspace != expected or development != expected:
         raise SystemExit(
@@ -161,6 +166,11 @@ def main(argv: list[str] | None = None) -> int:
         if errors:
             raise SystemExit("\n".join(errors))
         print("ok: 0.43 planned gate shape")
+    elif str(_load(PYPROJECT).get("project", {}).get("version", "")).startswith("0.44."):
+        errors = release_gate.check_evidence_manifest(GATE)
+        if errors:
+            raise SystemExit("\n".join(errors))
+        print("ok: 0.43 verified historical packet")
     else:
         command = [
             sys.executable,

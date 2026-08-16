@@ -1,0 +1,23 @@
+[
+  {
+    "id": "type-schema-namespace",
+    "capability": "diagnostics",
+    "description": "TypeSchema attaches under hedron.type without values",
+    "input": {"kind": "artifact", "artifact": {"namespace": "hedron.type", "schema_version": 1}},
+    "expected": {"artifact_version": "hedron.type/1"}
+  },
+  {
+    "id": "form-supported-str",
+    "capability": "rendering",
+    "description": "Supported string field generates a native text input",
+    "input": {"kind": "escape_text", "text": "title"},
+    "expected": {"escaped_text": "title"}
+  },
+  {
+    "id": "effect-declared-not-executed",
+    "capability": "adversarial",
+    "description": "Declared effects are checked, not executed by the marker",
+    "input": {"kind": "escape_text", "text": "Refreshes"},
+    "expected": {"escaped_text": "Refreshes"}
+  }
+]

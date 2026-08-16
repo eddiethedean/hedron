@@ -171,7 +171,38 @@ class HedronPagesMixin:
         **kwargs: Any,
     ) -> Any:
         """Register a GET renderer and return a ``FragmentHandle``."""
-        if callable(path):
+        import inspect
+
+        if inspect.isclass(path):
+            from typing import cast
+
+            from hedron.type_authoring import (
+                RefreshableView,
+                class_config_conflict,
+                compile_view_class,
+            )
+
+            view_cls = cast("type[RefreshableView[Any, Any]]", path)
+            class_config_conflict(
+                view_cls,
+                decorator_fallback=fallback,
+                decorator_path=None,
+            )
+            compiled = compile_view_class(view_cls)
+            return self.refreshable(
+                None,
+                key=key,
+                name=name or getattr(view_cls, "__name__", None),
+                host=host or getattr(view_cls, "host", None),
+                loading=loading if loading is not None else getattr(view_cls, "loading", None),
+                error=error if error is not None else getattr(view_cls, "error", None),
+                fallback=fallback or getattr(view_cls, "fallback", None),
+                include_in_schema=include_in_schema,
+                dependencies=dependencies,
+                **kwargs,
+            )(compiled)
+
+        if callable(path) and not inspect.isclass(path):
             return self.refreshable(
                 None,
                 key=key,
@@ -186,7 +217,14 @@ class HedronPagesMixin:
             )(path)
 
         def decorator(fn: Callable[P, R]) -> Any:
+            import inspect
+
             from hedron.handles import build_view_handle, wrap_endpoint_result
+            from hedron.type_authoring import class_config_conflict, compile_view_class
+
+            if inspect.isclass(fn):
+                class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
+                fn = compile_view_class(fn)  # type: ignore[assignment]
 
             app_id = str(getattr(self, "hedron_app_id", "") or "")
             mount = str(getattr(getattr(self, "state", None), "hedron_mount_path", "") or "")
@@ -239,7 +277,32 @@ class HedronPagesMixin:
         **kwargs: Any,
     ) -> Any:
         """Register a mutation and return an ``ActionHandle``."""
-        if callable(path):
+        import inspect
+
+        if inspect.isclass(path):
+            from typing import cast
+
+            from hedron.type_authoring import (
+                CommandHandler,
+                class_config_conflict,
+                compile_command_class,
+            )
+
+            command_cls = cast("type[CommandHandler[Any, Any]]", path)
+            class_config_conflict(command_cls, decorator_fallback=fallback, decorator_path=None)
+            compiled = compile_command_class(command_cls)
+            compiled.__hedron_outcomes__ = getattr(command_cls, "outcomes", None)  # type: ignore[attr-defined]
+            return self.command(
+                None,
+                method=method,
+                name=name or getattr(command_cls, "__name__", None),
+                fallback=fallback or getattr(command_cls, "fallback", None),
+                include_in_schema=include_in_schema,
+                dependencies=dependencies,
+                **kwargs,
+            )(compiled)
+
+        if callable(path) and not inspect.isclass(path):
             return self.command(
                 None,
                 method=method,
@@ -260,8 +323,21 @@ class HedronPagesMixin:
             from hedron.async_utils import await_if_needed
             from hedron.handles import build_command_handle
             from hedron.routing.router import current_request
+            from hedron.type_authoring import (
+                apply_modeled_signature,
+                assert_declared_effects,
+                class_config_conflict,
+                compile_command_class,
+                reconstruct_kwargs,
+            )
             from hedron_core.codes import HED_CMD_0002
             from hedron_core.updates import Patch, PatchSet, RefreshIntent
+
+            if inspect.isclass(fn):
+                class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
+                compiled_fn = compile_command_class(fn)
+                compiled_fn.__hedron_outcomes__ = getattr(fn, "outcomes", None)
+                fn = compiled_fn  # type: ignore[assignment]
 
             app_id = str(getattr(self, "hedron_app_id", "") or "")
             mount = str(getattr(getattr(self, "state", None), "hedron_mount_path", "") or "")
@@ -278,7 +354,14 @@ class HedronPagesMixin:
 
             @functools.wraps(fn)
             async def endpoint(*args: Any, **kw: Any) -> Any:
-                result = await await_if_needed(fn(*args, **kw))
+                call_kw = dict(kw)
+                meta = handle.type_meta
+                if meta is not None and getattr(meta, "modeled", False):
+                    call_kw = reconstruct_kwargs(meta, call_kw)
+                result = await await_if_needed(fn(*args, **call_kw))
+                if meta is not None and getattr(meta, "outcomes", None):
+                    result, _status = meta.outcomes.map_result(result)
+                assert_declared_effects(meta, result, app_id=app_id)
                 request = current_request.get()
                 is_htmx = bool(
                     request is not None
@@ -292,7 +375,11 @@ class HedronPagesMixin:
                 return result
 
             with contextlib.suppress(TypeError, ValueError):
-                endpoint.__signature__ = inspect.signature(fn)  # type: ignore[attr-defined]
+                meta = handle.type_meta
+                if meta is not None and getattr(meta, "modeled", False):
+                    endpoint.__signature__ = apply_modeled_signature(fn, meta)  # type: ignore[attr-defined]
+                else:
+                    endpoint.__signature__ = inspect.signature(fn)  # type: ignore[attr-defined]
             self._root_router.action(
                 handle.path,
                 method=handle.method,

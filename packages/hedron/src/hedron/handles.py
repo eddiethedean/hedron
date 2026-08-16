@@ -4,16 +4,16 @@ from __future__ import annotations
 
 import functools
 import inspect
-from collections.abc import Callable, Mapping
-from dataclasses import dataclass
-from typing import Any, Generic, Literal, TypeVar, cast
+from collections.abc import Callable, Mapping, Sequence
+from dataclasses import dataclass, field
+from typing import Any, Generic, Literal, TypeVar, cast, overload
 from urllib.parse import urlencode
 
 from fastapi.params import Depends as DependsParam
 from starlette.requests import Request
 
 from hedron.routing.reverse import ComponentRef
-from hedron_core.codes import HED_CMD_0001, HED_VIEW_0003, HED_VIEW_0004
+from hedron_core.codes import HED_CMD_0001, HED_TYPE_0005, HED_VIEW_0003, HED_VIEW_0004
 from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.hosts import FragmentHost
@@ -57,6 +57,7 @@ __all__ = [
 
 _ADAPTER = StructuralBindingAdapter()
 _REQUEST_NAMES = frozenset({"request", "websocket"})
+_UNSET = object()
 
 
 def _is_injected(parameter: inspect.Parameter) -> bool:
@@ -138,6 +139,20 @@ def _try_initial_render(
     return cast(NodeLike, result)
 
 
+def _try_initial_render_model(
+    fn: Callable[..., Any], param_name: str, model: object
+) -> NodeLike | None:
+    try:
+        result = fn(**{param_name: model})
+    except TypeError:
+        return None
+    if inspect.iscoroutine(result) or inspect.isasyncgen(result):
+        if inspect.iscoroutine(result):
+            result.close()
+        return None
+    return cast(NodeLike, result)
+
+
 @dataclass(frozen=False)
 class FragmentHandle(Generic[BindT, ContentT]):
     """Callable mounted-view handle returned by ``@app.refreshable``."""
@@ -158,8 +173,20 @@ class FragmentHandle(Generic[BindT, ContentT]):
     binding_plan: BindingPlan
     descriptor: BaseHandleDescriptor
     include_in_schema: bool = False
+    adapter: Any = field(default=None)
+    type_meta: Any = None
     _bound: BoundValues | None = None
     __wrapped__: Callable[..., ContentT] | None = None
+
+    @property
+    def schema(self) -> object | None:
+        meta = self.type_meta
+        return None if meta is None else getattr(meta, "schema", None)
+
+    @property
+    def parameter_model(self) -> object | None:
+        meta = self.type_meta
+        return None if meta is None else getattr(meta, "model_type", None)
 
     @property
     def bound(self) -> bool:
@@ -174,7 +201,15 @@ class FragmentHandle(Generic[BindT, ContentT]):
                 remediation="Call handle.bind(...) with the registered path parameters.",
             )
         bound_map = dict(self._bound.parameters) if self._bound is not None else {}
-        content = _try_initial_render(self.renderer, bound_map)
+        meta = self.type_meta
+        if meta is not None and getattr(meta, "modeled", False) and meta.param_name:
+            try:
+                model = meta.adapter.validate(bound_map)
+                content = _try_initial_render_model(self.renderer, meta.param_name, model)
+            except Exception:  # noqa: BLE001
+                content = None
+        else:
+            content = _try_initial_render(self.renderer, bound_map)
         get_url = _bound_url(self._bound) if self._bound is not None else self.path
         load_on_mount = content is None
         return self.host.materialize(
@@ -187,8 +222,38 @@ class FragmentHandle(Generic[BindT, ContentT]):
             load_on_mount=load_on_mount,
         )
 
-    def bind(self, **parameters: object) -> BoundFragment[ContentT]:
-        values = _ADAPTER.bind(self.binding_plan, parameters, path=self.path)
+    @overload
+    def bind(self, value: BindT, /) -> BoundFragment[ContentT]: ...
+
+    @overload
+    def bind(self, **parameters: object) -> BoundFragment[ContentT]: ...
+
+    def bind(self, *args: object, **parameters: object) -> BoundFragment[ContentT]:
+        adapter = self.adapter or _ADAPTER
+        value: object = _UNSET
+        if args:
+            if len(args) != 1 or parameters:
+                raise error(
+                    HED_VIEW_0004,
+                    title="Ambiguous bind() call",
+                    explanation="Pass either a model instance or keyword fields, not both.",
+                    remediation="Use bind(model) or bind(**fields).",
+                )
+            value = args[0]
+            if self.type_meta is not None and getattr(self.type_meta, "adapter", None):
+                model = self.type_meta.adapter.validate(value)  # type: ignore[union-attr]
+                parameters = self.type_meta.adapter.dump(model)
+            elif isinstance(value, Mapping):
+                parameters = dict(value)
+            else:
+                raise error(
+                    HED_VIEW_0004,
+                    title="Unsupported bind() value",
+                    explanation="Unmodeled handlers accept keyword fields only.",
+                    remediation="Call bind(**fields) or opt into ViewParams.",
+                )
+        template = self.descriptor.path or self.path
+        values = adapter.bind(self.binding_plan, parameters, path=template)
         extra_token = values.instance_token
         nested = FragmentHandle(
             logical_id=self.logical_id,
@@ -207,6 +272,8 @@ class FragmentHandle(Generic[BindT, ContentT]):
             binding_plan=self.binding_plan,
             descriptor=self.descriptor,
             include_in_schema=self.include_in_schema,
+            adapter=self.adapter,
+            type_meta=self.type_meta,
             _bound=values,
             __wrapped__=self.renderer,
         )
@@ -314,7 +381,48 @@ class ActionHandle(Generic[InputT, ResultT]):
     app_id: str
     fallback: str | None
     descriptor: BaseHandleDescriptor
+    type_meta: Any = None
     __wrapped__: Callable[..., ResultT] | None = None
+
+    @property
+    def schema(self) -> object | None:
+        meta = self.type_meta
+        return None if meta is None else getattr(meta, "schema", None)
+
+    @property
+    def input_model(self) -> object | None:
+        meta = self.type_meta
+        return None if meta is None else getattr(meta, "model_type", None)
+
+    def form(
+        self,
+        *,
+        value: object | None = None,
+        errors: Sequence[object] = (),
+        submit_label: str = "Submit",
+        controls: Mapping[str, object] | None = None,
+        fallback: str | None = None,
+        **safe_form_attrs: object,
+    ) -> NodeLike:
+        from hedron.type_authoring.forms import generate_form
+
+        if self.type_meta is None:
+            raise error(
+                HED_TYPE_0005,
+                title="form() requires a FormBody boundary",
+                explanation="Unmodeled commands keep explicit Form(action=handle).",
+                remediation="Mark a FormBody parameter or build Form(action=handle) manually.",
+            )
+        return generate_form(
+            self.type_meta,
+            action=self,
+            value=value,
+            errors=errors,
+            submit_label=submit_label,
+            controls=controls,  # type: ignore[arg-type]
+            fallback=fallback or self.fallback,
+            **safe_form_attrs,
+        )
 
     @property
     def bound(self) -> bool:
@@ -509,8 +617,27 @@ def build_view_handle(
     mount_path: str = "",
 ) -> FragmentHandle[Mapping[str, object], ContentT]:
     logical = validate_explicit_key(key) if key else normalize_logical_id(name or fn.__name__)
-    plan = binding_plan_for(fn)
+    from hedron.type_authoring import inspect_handler
+    from hedron_core.type_schema import attach_type_schema
+
+    compiled = inspect_handler(
+        fn,
+        kind="view",
+        path=path,
+        handler_name=name or fn.__name__,
+        fallback=fallback,
+    )
+    plan = compiled.binding_plan if compiled.modeled else binding_plan_for(fn)
     route_path = path or generated_view_path(logical, plan.path_params, mount_path=mount_path)
+    if compiled.modeled and path:
+        compiled = inspect_handler(
+            fn,
+            kind="view",
+            path=route_path,
+            handler_name=name or fn.__name__,
+            fallback=fallback,
+        )
+        plan = compiled.binding_plan
     if fallback is None and (include_in_schema or (path is not None)):
         pass
     if fallback is not None:
@@ -532,6 +659,8 @@ def build_view_handle(
         binding=plan,
         effect="dynamic",
     )
+    if compiled.schema is not None:
+        descriptor = attach_type_schema(descriptor, compiled.schema)
     register_handle_descriptor(descriptor, key=key)
     handle = FragmentHandle(
         logical_id=logical,
@@ -556,6 +685,8 @@ def build_view_handle(
         binding_plan=plan,
         descriptor=descriptor,
         include_in_schema=include_in_schema,
+        adapter=compiled.adapter,
+        type_meta=compiled if compiled.modeled or compiled.schema is not None else None,
         __wrapped__=fn,
     )
     return handle
@@ -581,7 +712,18 @@ def build_command_handle(
             remediation="Keep POST (default) or another unsafe method.",
         )
     logical = normalize_logical_id(name or fn.__name__)
-    plan = binding_plan_for(fn)
+    from hedron.type_authoring import inspect_handler
+    from hedron_core.type_schema import attach_type_schema
+
+    compiled = inspect_handler(
+        fn,
+        kind="command",
+        path=path,
+        handler_name=name or fn.__name__,
+        fallback=fallback,
+        outcomes=getattr(fn, "__hedron_outcomes__", None),
+    )
+    plan = compiled.binding_plan if compiled.modeled else binding_plan_for(fn)
     route_path = path or generated_command_path(logical, plan.path_params, mount_path=mount_path)
     if fallback is not None:
         SafeUrl.parse(fallback, purpose=UrlPurpose.NAVIGATION)
@@ -597,6 +739,8 @@ def build_command_handle(
         binding=plan,
         effect="dynamic",
     )
+    if compiled.schema is not None:
+        descriptor = attach_type_schema(descriptor, compiled.schema)
     register_handle_descriptor(descriptor)
     return ActionHandle(
         logical_id=logical,
@@ -609,15 +753,22 @@ def build_command_handle(
         app_id=app_id,
         fallback=fallback,
         descriptor=descriptor,
+        type_meta=compiled if compiled.modeled or compiled.schema is not None else None,
         __wrapped__=fn,
     )
 
 
 def wrap_endpoint_result(handle: FragmentHandle[Any, Any]) -> Callable[..., Any]:
+    from hedron.type_authoring import apply_modeled_signature, reconstruct_kwargs
+
     @functools.wraps(handle.renderer)
     def wrapped(*args: Any, **kwargs: Any) -> object:
         resolved = _materialize_request_handle(handle, args, kwargs)
-        result = handle.renderer(*args, **kwargs)
+        render_kwargs = dict(kwargs)
+        meta = handle.type_meta
+        if meta is not None and getattr(meta, "modeled", False):
+            render_kwargs = reconstruct_kwargs(meta, render_kwargs)
+        result = handle.renderer(*args, **render_kwargs)
         if inspect.iscoroutine(result):
 
             async def _async() -> object:
@@ -626,7 +777,11 @@ def wrap_endpoint_result(handle: FragmentHandle[Any, Any]) -> Callable[..., Any]
             return _async()
         return wrap_refreshable_result(resolved, result)
 
-    wrapped.__signature__ = handle.renderer_signature  # type: ignore[attr-defined]
+    meta = handle.type_meta
+    if meta is not None and getattr(meta, "modeled", False):
+        wrapped.__signature__ = apply_modeled_signature(handle.renderer, meta)  # type: ignore[attr-defined]
+    else:
+        wrapped.__signature__ = handle.renderer_signature  # type: ignore[attr-defined]
     wrapped.__wrapped__ = handle.renderer  # type: ignore[attr-defined]
     wrapped.__module__ = getattr(handle.renderer, "__module__", None) or "hedron.handles"
     wrapped.__name__ = getattr(handle.renderer, "__name__", "refreshable")

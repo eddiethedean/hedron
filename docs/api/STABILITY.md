@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.43.0,<0.44`. Treat the **stable** tables below (minimal +
+**For adopters:** Pin `hedron>=0.44.0,<0.45`. Treat the **stable** tables below (minimal +
 expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
 `experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
 lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -8,8 +8,8 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Living train **0.43.x** (**Published**; last published
-PyPI/git = `v0.43.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
+**Status:** Living train **0.44.x** (**Published**; last published
+PyPI/git = `v0.44.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
 (D-038: no calendar `1.0` scheduled; D-053 / RFC-0056; D-054 / RFC-0057).
 **Version:** `0.28.x` / catalog baseline
@@ -135,7 +135,10 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   `render_interaction`, dashboard graph / patch facades, `InteractionRecorder`, and model-demo /
   inference / workflow facades re-exported from core. Phase 0.43 handle/update symbols are **beta**:
   `@app.refreshable`, `@app.command`, `FragmentHandle`, `BoundFragment`, `ActionHandle`, `Refresh`,
-  `refresh`, `patches`, `FragmentHost`, `Patch`, `PatchSet`, `RefreshIntent`.
+  `refresh`, `patches`, `FragmentHost`, `Patch`, `PatchSet`, `RefreshIntent`. Phase 0.44 type-driven
+  authoring symbols are **beta**: `ViewParams`, `FormBody`, `Sensitive`, `InstanceKey`, `Control`,
+  `Refreshes`, `Updates`, `OutcomeMap`, `case`, `CommandResult`, `RefreshableView`,
+  `CommandHandler`, `TypeSchema`.
 - **experimental:** live transports — import from `hedron.experimental`
   (`SseResponse`, `job_status_sse_response`, `sse_response`,
   `StreamingComponentResponse`, `stream_*`, `accept_page_session_channel`,
@@ -179,7 +182,7 @@ Schema acceptance is broader than specialized host painting in `hedron-charts 0.
 
 ### `hedron-workbench` (Beta) — `beta` optional Workbench adapter
 
-Install `hedron[workbench]` / `hedron-workbench>=0.43.0,<0.44`. Supported:
+Install `hedron[workbench]` / `hedron-workbench>=0.44.0,<0.45`. Supported:
 `HedronWorkbench`, pre-import launcher and resolved-state handoff,
 `HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic typed URL and safe
 response-header adaptation, Hedron-owned request-time cookie repair,

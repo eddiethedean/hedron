@@ -269,6 +269,41 @@ class AppScenario:
             hdrs["HX-Target"] = target
         return self.post(path, data=data, headers=hdrs, cookies=cookies)
 
+    def submit_model(
+        self,
+        path: str,
+        model: object,
+        *,
+        target: str | None = None,
+        headers: Mapping[str, str] | None = None,
+        cookies: Mapping[str, str] | None = None,
+    ) -> AdapterResponse:
+        """POST a Pydantic/FormBody model as urlencoded fields (no secret echo)."""
+        dump = getattr(model, "model_dump", None)
+        if not callable(dump):
+            raise TypeError("submit_model requires a Pydantic model instance")
+        dumped_raw = dump()
+        if not isinstance(dumped_raw, Mapping):
+            raise TypeError("submit_model requires model_dump() to return a mapping")
+        data = {str(key): "" if value is None else str(value) for key, value in dumped_raw.items()}
+        return self.fragment_post(path, data=data, target=target, headers=headers, cookies=cookies)
+
+    def field_path_errors(self, payload: Mapping[str, object] | Sequence[object]) -> list[str]:
+        """Extract model field paths from a validation error payload."""
+        rows: Sequence[object]
+        if isinstance(payload, Mapping):
+            detail = payload.get("detail", payload.get("errors", ()))
+            rows = detail if isinstance(detail, Sequence) else ()
+        else:
+            rows = payload
+        paths: list[str] = []
+        for item in rows:
+            if isinstance(item, Mapping):
+                loc = item.get("loc") or item.get("path")
+                if isinstance(loc, Sequence):
+                    paths.append(".".join(str(part) for part in loc if part not in {"body"}))
+        return paths
+
     def _html(self, html: str | None) -> str:
         if html is not None:
             return html

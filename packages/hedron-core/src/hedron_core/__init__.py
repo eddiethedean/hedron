@@ -332,6 +332,13 @@ from hedron_core.theme import (
     theme_element_compatibility,
     validate_element_style_contract,
 )
+from hedron_core.type_schema import (
+    TYPE_SCHEMA_NAMESPACE,
+    TYPE_SCHEMA_VERSION,
+    InstanceKey,
+    Sensitive,
+    TypeSchema,
+)
 from hedron_core.typing_aliases import (
     HtmlAttrMap,
     HtmlAttrValue,
@@ -350,6 +357,7 @@ from hedron_core.updates import (
     MAX_PATCH_TARGETS,
     MAX_REFRESH_TARGETS,
     BaseHandleDescriptor,
+    BindingAdapter,
     BindingPlan,
     Patch,
     PatchSet,
@@ -371,7 +379,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.43.0"
+__version__ = "0.44.0"
 
 __all__ = [
     "ActionRegistry",
@@ -416,8 +424,14 @@ __all__ = [
     "PortableTarget",
     "RefreshIntent",
     "BaseHandleDescriptor",
+    "BindingAdapter",
     "BindingPlan",
+    "InstanceKey",
+    "Sensitive",
     "StructuralBindingAdapter",
+    "TYPE_SCHEMA_NAMESPACE",
+    "TYPE_SCHEMA_VERSION",
+    "TypeSchema",
     "compile_to_interaction",
     "descriptor_fingerprint",
     "MAX_PATCH_TARGETS",

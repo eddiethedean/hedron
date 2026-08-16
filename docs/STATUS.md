@@ -1,11 +1,11 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.43 **Published** as `v0.43.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phases 0.44 type-driven authoring (D-072 / RFC-0071, refined by D-073 / D-076 against Published `v0.43.0`), 0.45 typed interaction ecosystem convergence (D-074 / RFC-0072), and 0.46 package-native typed workflows (D-075 / RFC-0073) are **Planned** in that order. No 0.44–0.46 runtime or version claim.
-Living tip = `v0.43.0`.
+**Roadmap position:** phase 0.44 **Published** as `v0.44.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phases 0.45 typed interaction ecosystem convergence (D-074 / RFC-0072) and 0.46 package-native typed workflows (D-075 / RFC-0073) are **Planned** in that order. No 0.45–0.46 runtime or version claim.
+Living tip = `v0.44.0`.
 **Date:** 2026-08-16
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.43.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.44.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
@@ -16,21 +16,16 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.43** (D-071 / RFC-0070) — refreshable views, command
-handles, and typed updates (`release-gate-0.43.toml` Verified; tip
-`v0.43.0`). Prior Published **0.42** production-grade Web Component platform / **0.41**
+**Phase focus:** Living train is **0.44** (D-072 / RFC-0071) — type-driven authoring,
+schema-derived forms, declared effects, typed outcomes, and optional class handlers
+(`release-gate-0.44.toml` Verified; tip `v0.44.0`). Prior Published **0.43** refreshable
+views and commands / **0.42** production-grade Web Component platform / **0.41**
 composition / **0.40** authoring / **0.39** rich data /
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
-Tracking [#311](https://github.com/eddiethedean/hedron/issues/311) remains open until
-the `v0.43.0` Git tag and PyPI/GitHub Release assets exist.
-Next planned phase is **0.44**, targeting **`v0.44.0`** (D-072 /
-[RFC-0071](rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md), refined by D-073 / D-076):
-explicit Pydantic boundary models, annotation markers, fixed-slot generic specialization,
-schema-derived forms, declared effects, typed outcomes, optional class handlers, and a
-shared redacted schema. Its Stage 0 packet is contract-refined against Published in-tree
-`v0.43.0`; all `release-gate-0.44.toml` rows remain Planned and a separate tracking issue is
-required before Stage 1.
+Tracking [#318](https://github.com/eddiethedean/hedron/issues/318) remains open until
+the `v0.44.0` Git tag and PyPI/GitHub Release assets exist. [#311](https://github.com/eddiethedean/hedron/issues/311)
+remains open for the deferred `v0.43.0` tag/PyPI assets.
 Phase **0.45** follows only after 0.44 is Verified (D-074 /
 [RFC-0072](rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md)). It adds one sealed read-only catalog,
 deterministic redacted manifest, bounded package projections/dispositions, and shared host/tooling/
@@ -381,12 +376,12 @@ commands, and typed updates is **Published** as `v0.43.0` (D-071 /
 [RFC-0070](rfcs/RFC-0070-REFRESHABLE-VIEWS.md); `release-gate-0.43.toml` Verified;
 [#311](https://github.com/eddiethedean/hedron/issues/311); see
 [implementation requirements](implementation/INTERACTION_HANDLES_043.md) and
-[acceptance packet](acceptance/RELEASE_0_43.md)). Living tip is **`v0.43.0`**.
-Phase **0.44** type-driven authoring is also **Planned**, strictly after Verified 0.43 (D-072 /
-[RFC-0071](rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md); D-076 Stage 0 refine against Published
-`v0.43.0`; all 0.44 gates Planned; see
+[acceptance packet](acceptance/RELEASE_0_43.md)).
+Phase **0.44** type-driven authoring is **Published** as `v0.44.0` (D-072 /
+[RFC-0071](rfcs/RFC-0071-TYPE-DRIVEN-AUTHORING.md); D-076; `release-gate-0.44.toml`
+Verified; [#318](https://github.com/eddiethedean/hedron/issues/318); see
 [implementation requirements](implementation/TYPE_DRIVEN_AUTHORING_044.md) and
-[acceptance packet](acceptance/RELEASE_0_44.md)).
+[acceptance packet](acceptance/RELEASE_0_44.md)). Living tip is **`v0.44.0`**.
 Phase **0.45** typed interaction ecosystem convergence is **Planned**, strictly after Verified 0.44
 (D-074 / [RFC-0072](rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md); all 0.45 gates Planned; see
 [implementation requirements](implementation/TYPED_INTERACTION_ECOSYSTEM_045.md) and

@@ -6,9 +6,8 @@ support reports. Full format: [Diagnostics](https://github.com/eddiethedean/hedr
 This catalog is complete for the registered set enforced by
 `scripts/check_hed_codes.py --docs-align` (`HEDDOC-017`).
 
-Planned `HED-TYPE-*` names for phase 0.44 are documented under
-[Planned HED-TYPE (0.44)](#planned-hed-type-044) and are **not** in `hedron_core.codes` until
-Stage 1.
+`HED-TYPE-*` codes for type-driven authoring are documented under
+[HED-TYPE (0.44)](#hed-type-044).
 
 ## Common errors (what to do)
 
@@ -31,7 +30,7 @@ Stage 1.
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
 | `HED-SIM-ASSET-0001` | blocker | Packaged sim asset path escape | Pass a single basename under `static/` |
 | `HED-SIM-ASSET-0002` | blocker | Packaged sim asset missing | Use a filename that ships in `hedron_sim/static/` |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.43.0,<0.44"` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.44.0,<0.45"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -43,7 +42,7 @@ Stage 1.
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.43.0,<0.44"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.44.0,<0.45"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -553,17 +552,24 @@ Streamlit AST migrator findings (RFC-0061 / `MIGRATE-031`).
 | `HED-MIG-ST-0013` | `HED_MIG_ST_0013` |
 | `HED-MIG-ST-0014` | `HED_MIG_ST_0014` |
 
-## Planned HED-TYPE (0.44)
+## HED-TYPE (0.44)
 
-Reserved names for phase 0.44 type-driven authoring (D-076). **Not registered** in
-`hedron_core.codes` and not importable on 0.43. Stage 1 maps these tokens to numbered
-`HED-TYPE-*` codes. Public contract:
-[Type-driven authoring](../api/TYPE_DRIVEN_AUTHORING.md).
+Type-driven authoring diagnostics (D-072 / D-076 / RFC-0071). Public contract:
+[Type-driven authoring](../api/TYPE_DRIVEN_AUTHORING.md). `HED-TYPE-BIND-SOURCE` is the
+mnemonic alias of `HED-TYPE-0001`.
 
-| Planned name | Meaning |
+| Code | Catalog symbol |
 |---|---|
-| `HED-TYPE-BIND-SOURCE` | Dependency, request, or security name supplied to `bind` / form input |
-| `HED-TYPE-*` | Boundary, marker, form-generation, effect, outcome, schema, and class-lifecycle diagnostics |
+| `HED-TYPE-0001` | `HED_TYPE_0001` / `HED_TYPE_BIND_SOURCE` |
+| `HED-TYPE-0002` | `HED_TYPE_0002` |
+| `HED-TYPE-0003` | `HED_TYPE_0003` |
+| `HED-TYPE-0004` | `HED_TYPE_0004` |
+| `HED-TYPE-0005` | `HED_TYPE_0005` |
+| `HED-TYPE-0006` | `HED_TYPE_0006` |
+| `HED-TYPE-0007` | `HED_TYPE_0007` |
+| `HED-TYPE-0008` | `HED_TYPE_0008` |
+| `HED-TYPE-0009` | `HED_TYPE_0009` |
+| `HED-TYPE-0010` | `HED_TYPE_0010` |
 
 ## HED-WORKFLOW
 

@@ -1,18 +1,16 @@
 ---
-status: planned
+status: current
 phase: "0.44"
 ---
 
 # Type-driven authoring
 
-!!! warning "Planned 0.44 contract"
+!!! note "Current 0.44 contract"
 
-    This is the accepted public contract for phase 0.44, refined by D-076 against
-    Published in-tree `v0.43.0`. These symbols are **not importable** on the living
-    0.43 train. They consume the shipped 0.43 handle API
-    ([Refreshable views and commands](REFRESHABLE_VIEWS.md)). Runtime behavior must
-    not be claimed until 0.44 release gates are Verified. Pin remains
-    `hedron>=0.43.0,<0.44`.
+    Published in-tree `v0.44.0` type-driven authoring (D-072 / D-073 / D-076). These symbols are
+    **Beta**. They consume the shipped 0.43 handle API
+    ([Refreshable views and commands](REFRESHABLE_VIEWS.md)). Pin remains
+    `hedron>=0.44.0,<0.45` after the in-tree cut.
 
 Type-driven authoring uses Pydantic models and `typing.Annotated` metadata to describe validated
 view parameters, command forms, result effects, and optional class lifecycles:
@@ -498,9 +496,9 @@ This phase does not implement 0.45 catalogs or 0.46 workflows.
 Supported authoring matrix: Python 3.11–3.14, Pydantic v2 public APIs only, FastAPI/Starlette as
 pinned on the 0.43 train, stock mypy and pyright. No required type-checker plugin.
 
-The `HED-TYPE-*` diagnostic family, including `HED-TYPE-BIND-SOURCE`, is reserved in the
-[error catalog](../guides/error-codes.md#planned-hed-type-044) until Stage 1. Do not treat
-those names as runtime codes on 0.43.
+The `HED-TYPE-*` diagnostic family, including `HED-TYPE-BIND-SOURCE` (`HED-TYPE-0001`),
+is listed in the [error catalog](../guides/error-codes.md#hed-type-044). These codes are
+runtime diagnostics on the 0.44 train.
 
 ## Common errors
 
