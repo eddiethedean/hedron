@@ -27,7 +27,7 @@ chart satellite; see
 | Ingredient | How this app covers it |
 |---|---|
 | reverse-proxy subpath | Caddy `handle_path /hedron/*` + `HEDRON_ROOT_PATH=/hedron` |
-| Redis job/cache | `HEDRON_REDIS_URL` wires `RedisJobBackend` + `RedisCacheBackend` (requires the `redis` package — see `requirements-prod.txt`) |
+| Redis job/cache | `HEDRON_REDIS_URL` wires `RedisJobBackend` (`h1:job:`) + `RedisCacheBackend` (`h1:c:`) on one client (requires the `redis` package — see `requirements-prod.txt`) |
 | sticky sessions or external session store | Signed cookie sessions/CSRF (default external path); optional Caddy sticky noted in `Caddyfile` |
 | `HEDRON_ENV=production` | Set in compose + Dockerfile; refuses placeholder / `change-me` secrets |
 | CSP | `security="strict"` + `[tool.hedron.asset_policy] strict_csp = true` |

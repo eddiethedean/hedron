@@ -158,7 +158,7 @@ def test_redis_cache_tag_index_does_not_expire_immortal_members() -> None:
     client = _StubRedis()
     backend = RedisCacheBackend(client)
     backend.set("perm", {"v": 1}, ttl=None, tags=("t",))
-    tag_key = "h1:tag:t"
+    tag_key = f"{backend._prefix}tag:t"
     assert client.pttl(tag_key) == -1
     backend.set("temp", {"v": 2}, ttl=2, tags=("t",))
     assert client.pttl(tag_key) == -1
@@ -173,8 +173,8 @@ def test_redis_cache_overwrite_drops_stale_tag_membership() -> None:
     backend = RedisCacheBackend(client)
     backend.set("k", {"v": 1}, tags=("a",))
     backend.set("k", {"v": 2}, tags=("b",))
-    assert "k" not in client._sets.get("h1:tag:a", set())
-    assert "k" in client._sets["h1:tag:b"]
+    assert "k" not in client._sets.get(f"{backend._prefix}tag:a", set())
+    assert "k" in client._sets[f"{backend._prefix}tag:b"]
     assert backend.invalidate(tags=("a",)) == 0
     assert backend.lookup("k") == (True, {"v": 2})
     assert backend.invalidate(tags=("b",)) == 1
@@ -188,7 +188,7 @@ def test_redis_cache_ttl_zero_cleans_tag_membership() -> None:
     backend.set("k", {"v": 1}, tags=("a",))
     backend.set("k", {"v": 1}, tags=("a",), ttl=0)
     assert backend.lookup("k") == (False, None)
-    assert "k" not in client._sets.get("h1:tag:a", set())
+    assert "k" not in client._sets.get(f"{backend._prefix}tag:a", set())
     backend.set("k", {"v": 2}, tags=("b",))
     assert backend.invalidate(tags=("a",)) == 0
     assert backend.lookup("k") == (True, {"v": 2})
@@ -199,3 +199,35 @@ def test_redis_cache_rejects_bad_json() -> None:
     backend = RedisCacheBackend(client)
     with pytest.raises(ValueError):
         backend.set("x", object())  # type: ignore[arg-type]
+
+
+def test_redis_cache_does_not_share_job_keyspace() -> None:
+    """#252: cache lookup/invalidate of job:{id} must not hit or delete job records."""
+    from hedron_core.job_status_store import RedisStatusStore
+
+    client = _StubRedis()
+    jobs = RedisStatusStore(client)  # type: ignore[arg-type]
+    cache = RedisCacheBackend(client)
+    handle, _created = jobs.submit("demo", {"secret": "payload"}, auth_subject="alice")
+    job_cache_key = f"job:{handle.job_id}"
+    hit, value = cache.lookup(job_cache_key)
+    assert hit is False
+    assert value is None
+    assert cache.invalidate(keys=(job_cache_key,)) == 0
+    status = jobs.get(handle.job_id)
+    assert status is not None
+    assert status.auth_subject == "alice"
+    assert "secret" in str(client._store[f"h1:job:{handle.job_id}"])
+    cache.set(job_cache_key, {"v": 1})
+    assert cache.lookup(job_cache_key) == (True, {"v": 1})
+    assert jobs.get(handle.job_id) is not None
+    assert cache.invalidate(keys=(job_cache_key,)) == 1
+    assert jobs.get(handle.job_id) is not None
+
+
+def test_redis_cache_rejects_prefix_that_nests_jobs() -> None:
+    """#252: legacy ``h1:`` cache prefix nests ``h1:job:`` records."""
+    with pytest.raises(ValueError, match="overlap"):
+        RedisCacheBackend(_StubRedis(), prefix="h1:")
+    with pytest.raises(ValueError, match="overlap"):
+        RedisCacheBackend(_StubRedis(), prefix="h1:job:")

@@ -129,7 +129,11 @@ def _apply_cancel_sticky(merged: dict[str, object]) -> None:
 
 
 class RedisStatusStore:
-    """Redis-backed job status + idempotency used by Celery/RQ bridges."""
+    """Redis-backed job status + idempotency used by Celery/RQ bridges.
+
+    Default prefix ``h1:job:`` is disjoint from ``RedisCacheBackend`` (``h1:c:``)
+    so a shared Redis client cannot leak or delete job records via cache APIs (#252).
+    """
 
     def __init__(
         self,

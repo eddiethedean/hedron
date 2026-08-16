@@ -25,6 +25,8 @@
   sessions are enabled; pass ``sessions_enabled=False`` to skip (#260).
 - Redis cache overwrite and ``ttl<=0`` drop previous tag memberships so stale
   indexes cannot delete the live value (#253).
+- Redis cache keys use ``h1:c:`` so they cannot read or delete ``h1:job:``
+  status records on a shared client (#252).
 
 ## [0.41.0] — Unreleased
 
