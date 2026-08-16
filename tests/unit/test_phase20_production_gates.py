@@ -143,3 +143,82 @@ def test_hedron_constructor_fails_closed(monkeypatch: pytest.MonkeyPatch) -> Non
             session_secret="replace-in-production",
             production=True,
         )
+
+
+def test_production_rejects_missing_session_secret(monkeypatch: pytest.MonkeyPatch) -> None:
+    """#260: None must fail the gate, not skip the weak-secret check."""
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    with pytest.raises(RuntimeError, match="weak-session-secret"):
+        assert_production_security_config(
+            production=True,
+            security_profile="standard",
+            session_secret=None,
+            explorer_mode="off",
+            content_security_policy="default-src 'self'",
+        )
+
+
+def test_production_skips_secret_when_sessions_disabled(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    assert_production_security_config(
+        production=True,
+        security_profile="standard",
+        session_secret=None,
+        sessions_enabled=False,
+        explorer_mode="off",
+        content_security_policy="default-src 'self'",
+    )
+
+
+def test_hedron_refuses_none_session_secret_when_sessions_enabled() -> None:
+    """#260: never install SessionMiddleware(secret_key=None)."""
+    from hedron import Hedron
+
+    with pytest.raises(ValueError, match="session_secret"):
+        Hedron(
+            title="x",
+            security="standard",
+            explorer="off",
+            session_secret=None,
+            production=False,
+        )
+
+
+def test_hedron_allows_none_secret_when_sessions_disabled() -> None:
+    from starlette.middleware.sessions import SessionMiddleware
+
+    from hedron import Hedron
+
+    app = Hedron(
+        title="x",
+        security="standard",
+        explorer="off",
+        session_secret=None,
+        enable_sessions=False,
+        production=False,
+    )
+    assert not any(m.cls is SessionMiddleware for m in app.user_middleware)
+
+
+def test_hedron_production_rejects_none_session_secret(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    monkeypatch.setattr(
+        "hedron_core.production_gate.assert_durable_backends",
+        lambda **_kwargs: None,
+    )
+    from hedron import Hedron
+
+    with pytest.raises(RuntimeError, match="weak-session-secret"):
+        Hedron(
+            title="demo",
+            security="standard",
+            explorer="off",
+            session_secret=None,
+            production=True,
+        )
