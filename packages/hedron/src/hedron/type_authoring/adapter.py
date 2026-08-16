@@ -19,6 +19,36 @@ from hedron_core.updates import (
 
 __all__ = ["PydanticBindingAdapter"]
 
+
+def _values_for_model(
+    model_type: type[BaseModel], values: Mapping[str, object]
+) -> dict[str, object]:
+    """Map Python field names to Pydantic aliases so validation keys stay consistent."""
+    name_to_key = {name: (info.alias or name) for name, info in model_type.model_fields.items()}
+    out: dict[str, object] = {}
+    for key, value in values.items():
+        out[name_to_key.get(key, key)] = value
+    return out
+
+
+def _plan_values(
+    model_type: type[BaseModel], dumped: Mapping[str, object], plan: BindingPlan
+) -> dict[str, object]:
+    """Select dumped field values using BindingPlan keys (path placeholders / aliases)."""
+    alias_to_name = {
+        info.alias: name for name, info in model_type.model_fields.items() if info.alias
+    }
+    out: dict[str, object] = {}
+    for key in (*plan.path_params, *plan.query_params):
+        if key in dumped:
+            out[key] = dumped[key]
+            continue
+        python_name = alias_to_name.get(key)
+        if python_name is not None and python_name in dumped:
+            out[key] = dumped[python_name]
+    return out
+
+
 _BLOCKED_BIND_NAMES = frozenset(
     {
         "request",
@@ -63,7 +93,7 @@ class PydanticBindingAdapter:
             )
         self._reject_injected(values)
         try:
-            return self.model_type.model_validate(dict(values))
+            return self.model_type.model_validate(_values_for_model(self.model_type, values))
         except ValidationError as exc:
             errors = exc.errors()[:100]
             paths = [".".join(str(part) for part in item.get("loc", ())) for item in errors]
@@ -80,17 +110,20 @@ class PydanticBindingAdapter:
     def bind(self, plan: BindingPlan, values: Mapping[str, object], *, path: str) -> BoundValues:
         model = self.validate(values)
         dumped = self.dump(model)
+        plan_keys = set(plan.path_params) | set(plan.query_params)
+        public_name = {
+            name: (info.alias or name) for name, info in self.model_type.model_fields.items()
+        }
         for name in self.sensitive_fields:
-            if name in dumped and name in set(plan.path_params) | set(plan.query_params):
+            exposed = name in plan_keys or public_name.get(name, name) in plan_keys
+            if name in dumped and exposed:
                 raise error(
                     HED_TYPE_0010,
                     title="Sensitive value cannot enter a public URL",
                     explanation=f"Field {name!r} is Sensitive and cannot be path/query-bound.",
                     remediation="Keep secrets on dependencies; use a non-secret public key.",
                 )
-        filtered = {
-            name: dumped[name] for name in (*plan.path_params, *plan.query_params) if name in dumped
-        }
+        filtered = _plan_values(self.model_type, dumped, plan)
         bound = structural_bind(plan, filtered, path=path)
         if self.identity_fields:
             identity = {name: dumped[name] for name in self.identity_fields if name in dumped}

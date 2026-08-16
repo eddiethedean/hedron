@@ -20,11 +20,34 @@ from hedron_core.builtins.forms import (
 )
 from hedron_core.builtins.forms_extra import DateInput, DateTimeInput, NumberInput, TimeInput
 from hedron_core.codes import HED_TYPE_0005
-from hedron_core.component import NodeLike
+from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.models import Props
+from hedron_core.rendering import active_render_context
 
 __all__ = ["generate_form"]
+
+_PENDING_CSRF_TOKEN = "hedron-pending-csrf"
+
+
+class _RenderTimeCsrfProps(Props):
+    pass
+
+
+class _RenderTimeCsrfField(Component[_RenderTimeCsrfProps]):
+    """Defer CSRF resolution until ``CsrfField.render()`` sees a live context."""
+
+    props_type = _RenderTimeCsrfProps
+
+    def __init__(self) -> None:
+        super().__init__(_RenderTimeCsrfProps())
+
+    def render(self) -> NodeLike:
+        ctx = active_render_context()
+        if ctx is not None and ctx.csrf_token:
+            return CsrfField()
+        return CsrfField(token=_PENDING_CSRF_TOKEN)
 
 
 def generate_form(
@@ -51,12 +74,9 @@ def generate_form(
     current = _value_map(value)
     error_map = _error_map(errors)
     nodes: list[NodeLike] = []
-    from hedron_core.rendering import active_render_context
-
-    if active_render_context() is not None:
-        nodes.append(CsrfField())
-    else:
-        nodes.append(CsrfField(token="hedron-pending-csrf"))
+    # Resolve the token at render time. Page handlers call form() before
+    # RenderContext exists; baking token= here freezes the placeholder.
+    nodes.append(_RenderTimeCsrfField())
     if error_map:
         nodes.append(FormErrors(list(error_map.values())))
     for record in compiled.fields:
@@ -169,7 +189,7 @@ def _native_control(
     raw = current.get(record.name)
     text = "" if raw is None or record.sensitive else str(raw)
     autocomplete = control.autocomplete if control is not None else None
-    name = record.alias or record.name
+    name = record.http_name
     if kind == "textarea":
         return TextArea(
             name,

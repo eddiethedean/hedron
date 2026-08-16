@@ -7,7 +7,7 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi import Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from tests.unit._helpers_044 import make_app, reset_044
 
 from hedron import FragmentHandle, Page, Text, ViewParams
@@ -109,3 +109,50 @@ def test_get_modeled_view_roundtrip() -> None:
     )
     assert frag.status_code == 200
     assert "activity" in frag.text
+
+
+def test_viewparams_path_matches_python_name_when_alias_differs() -> None:
+    from fastapi.testclient import TestClient
+
+    class Params(BaseModel):
+        item_id: Annotated[str, Field(alias="itemId")]
+
+    app = make_app()
+
+    @app.refreshable("/items/{item_id}")
+    def item(params: Annotated[Params, ViewParams()]):
+        return Text(params.item_id)
+
+    bound = item.bind(item_id="abc")
+    assert bound.handle.bound
+    client = TestClient(app)
+    frag = client.get(
+        "/items/xyz",
+        headers={"HX-Request": "true", "HX-Target": item.dom_id},
+    )
+    assert frag.status_code == 200
+    assert "xyz" in frag.text
+
+
+def test_viewparams_query_alias_is_the_public_name() -> None:
+    from fastapi.testclient import TestClient
+
+    class Params(BaseModel):
+        item_id: str
+        nick: Annotated[str, Field(alias="displayName")] = "anon"
+
+    app = make_app()
+
+    @app.refreshable("/items/{item_id}")
+    def item(params: Annotated[Params, ViewParams()]):
+        return Text(params.nick)
+
+    bound = item.bind(item_id="1", nick="zed")
+    assert "displayName=zed" in bound.handle.path
+    client = TestClient(app)
+    frag = client.get(
+        "/items/1?displayName=zed",
+        headers={"HX-Request": "true", "HX-Target": item.dom_id},
+    )
+    assert frag.status_code == 200
+    assert "zed" in frag.text
