@@ -96,6 +96,18 @@ class _FakeRedis:
                 removed += 1
         return removed
 
+    def eval(self, script: str, numkeys: int, *args: object) -> int:
+        del script
+        if numkeys != 1 or len(args) != 2:
+            raise NotImplementedError("stub eval supports one-key compare-and-delete only")
+        store = self._data
+        key = str(args[0])
+        expected = str(args[1])
+        if store.get(key) == expected:
+            store.pop(key, None)
+            return 1
+        return 0
+
     def keys(self, pattern: str) -> list[str]:
         del pattern
         return list(self._data)
@@ -232,3 +244,29 @@ def test_submit_heals_legacy_enqueue_failed_pointer() -> None:
     status = backend.get(handle2.job_id, auth_subject="u")
     assert status is not None
     assert status.state is JobState.QUEUED
+
+
+def test_celery_status_store_release_preserves_newer_idempotency_owner() -> None:
+    """#269: Celery/RQ RedisStatusStore reclaim must not DELETE a newer SET NX."""
+
+    class _RacyRedis(_FakeRedis):
+        def eval(self, script: str, numkeys: int, *args: object) -> int:
+            del script
+            if numkeys != 1 or len(args) != 2:
+                raise NotImplementedError("stub eval supports one-key compare-and-delete only")
+            key = str(args[0])
+            expected = str(args[1])
+            if self._data.get(key) == expected:
+                self._data[key] = "job-b"
+            if self._data.get(key) == expected:
+                self._data.pop(key, None)
+                return 1
+            return 0
+
+    celery = MagicMock()
+    redis = _RacyRedis()
+    backend = CeleryJobBackend(celery, redis_client=redis)  # type: ignore[arg-type]
+    handle = backend.submit("demo", {}, idempotency_key="k", auth_subject="u")
+    idem_key = next(k for k in redis._data if ":idem:" in k)
+    backend._store.release_idempotency(handle.job_id)
+    assert redis.get(idem_key) == "job-b"

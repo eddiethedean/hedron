@@ -93,6 +93,17 @@ class _SharedRedis:
     def delete(self, key: str) -> int:
         return 1 if self._store.pop(key, None) is not None else 0
 
+    def eval(self, script: str, numkeys: int, *args: object) -> int:
+        del script
+        if numkeys != 1 or len(args) != 2:
+            raise NotImplementedError("stub eval supports one-key compare-and-delete only")
+        key = str(args[0])
+        expected = str(args[1])
+        if self._store.get(key) == expected:
+            self._store.pop(key, None)
+            return 1
+        return 0
+
     def keys(self, pattern: str) -> list[str]:
         prefix = pattern.rstrip("*")
         return [k for k in self._store if k.startswith(prefix)]
