@@ -454,6 +454,48 @@ def wrap_refreshable_result(handle: FragmentHandle[Any, Any], result: object) ->
     )
 
 
+def _call_arguments(
+    handle: FragmentHandle[Any, Any], args: tuple[Any, ...], kwargs: dict[str, Any]
+) -> dict[str, Any]:
+    try:
+        bound = handle.renderer_signature.bind_partial(*args, **kwargs)
+    except TypeError:
+        return dict(kwargs)
+    return dict(bound.arguments)
+
+
+def _materialize_request_handle(
+    handle: FragmentHandle[Any, Any],
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
+) -> FragmentHandle[Any, Any]:
+    """Bind GET path/query the same way ``handle.bind`` did on the page.
+
+    FastAPI injects default query values even when the URL omitted them. Using those
+    defaults would change the instance token vs ``bind(item_id=...)`` without query.
+    """
+    plan = handle.binding_plan
+    if not plan.path_params and not plan.query_params:
+        return handle
+    from hedron.routing.router import current_request
+
+    arguments = _call_arguments(handle, args, kwargs)
+    values: dict[str, object] = {}
+    for name in plan.path_params:
+        if name in arguments:
+            values[name] = arguments[name]
+    request = current_request.get()
+    query_names: set[str] = set()
+    if request is not None:
+        query_names = {str(key) for key in request.query_params}
+    for name in plan.query_params:
+        if name in query_names and name in arguments:
+            values[name] = arguments[name]
+    if not values:
+        return handle
+    return handle.bind(**values).handle
+
+
 def build_view_handle(
     fn: Callable[..., ContentT],
     *,
@@ -574,14 +616,15 @@ def build_command_handle(
 def wrap_endpoint_result(handle: FragmentHandle[Any, Any]) -> Callable[..., Any]:
     @functools.wraps(handle.renderer)
     def wrapped(*args: Any, **kwargs: Any) -> object:
+        resolved = _materialize_request_handle(handle, args, kwargs)
         result = handle.renderer(*args, **kwargs)
         if inspect.iscoroutine(result):
 
             async def _async() -> object:
-                return wrap_refreshable_result(handle, await result)
+                return wrap_refreshable_result(resolved, await result)
 
             return _async()
-        return wrap_refreshable_result(handle, result)
+        return wrap_refreshable_result(resolved, result)
 
     wrapped.__signature__ = handle.renderer_signature  # type: ignore[attr-defined]
     wrapped.__wrapped__ = handle.renderer  # type: ignore[attr-defined]
