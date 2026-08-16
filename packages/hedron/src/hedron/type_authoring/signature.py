@@ -16,7 +16,12 @@ __all__ = ["apply_modeled_signature", "reconstruct_kwargs"]
 def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) -> dict[str, Any]:
     if not compiled.modeled or compiled.param_name is None or compiled.adapter is None:
         return kwargs
-    raw = {field.name: kwargs.pop(field.name) for field in compiled.fields if field.name in kwargs}
+    raw: dict[str, Any] = {}
+    for field in compiled.fields:
+        if field.http_name in kwargs:
+            raw[field.name] = kwargs.pop(field.http_name)
+        elif field.name in kwargs:
+            raw[field.name] = kwargs.pop(field.name)
     kwargs[compiled.param_name] = compiled.adapter.validate(raw)
     return kwargs
 
@@ -53,9 +58,10 @@ def _fastapi_parameter(field: FieldRecord) -> inspect.Parameter:
     annotation: object = (
         field.annotation if field.annotation is not inspect.Parameter.empty else Any
     )
+    param_name = field.http_name
     if field.location == "path":
         return inspect.Parameter(
-            field.name,
+            param_name,
             inspect.Parameter.POSITIONAL_OR_KEYWORD,
             annotation=Annotated[annotation, Path()],  # type: ignore[valid-type]
         )
@@ -67,14 +73,14 @@ def _fastapi_parameter(field: FieldRecord) -> inspect.Parameter:
         marker = Form()
     if field.required:
         return inspect.Parameter(
-            field.name,
+            param_name,
             inspect.Parameter.POSITIONAL_OR_KEYWORD,
             annotation=Annotated[annotation, marker],  # type: ignore[valid-type]
         )
     default: object
     default = None if field.default is inspect.Parameter.empty else field.default
     return inspect.Parameter(
-        field.name,
+        param_name,
         inspect.Parameter.POSITIONAL_OR_KEYWORD,
         default=default,
         annotation=Annotated[annotation, marker],  # type: ignore[valid-type]

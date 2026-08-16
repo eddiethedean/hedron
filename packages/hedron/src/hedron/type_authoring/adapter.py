@@ -19,6 +19,17 @@ from hedron_core.updates import (
 
 __all__ = ["PydanticBindingAdapter"]
 
+
+def _values_for_model(
+    model_type: type[BaseModel], values: Mapping[str, object]
+) -> dict[str, object]:
+    """Map Python field names to Pydantic aliases so validation keys stay consistent."""
+    name_to_key = {name: (info.alias or name) for name, info in model_type.model_fields.items()}
+    out: dict[str, object] = {}
+    for key, value in values.items():
+        out[name_to_key.get(key, key)] = value
+    return out
+
 _BLOCKED_BIND_NAMES = frozenset(
     {
         "request",
@@ -63,7 +74,7 @@ class PydanticBindingAdapter:
             )
         self._reject_injected(values)
         try:
-            return self.model_type.model_validate(dict(values))
+            return self.model_type.model_validate(_values_for_model(self.model_type, values))
         except ValidationError as exc:
             errors = exc.errors()[:100]
             paths = [".".join(str(part) for part in item.get("loc", ())) for item in errors]
