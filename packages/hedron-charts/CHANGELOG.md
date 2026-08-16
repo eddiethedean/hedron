@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``hedron-chart`` removes its keydown listener in ``cleanup`` so remounts do not
+  stack handlers (#270).
+
 ## [0.2.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
