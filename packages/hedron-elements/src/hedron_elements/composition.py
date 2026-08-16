@@ -8,6 +8,12 @@ from typing import Literal
 
 _ID = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]{0,127}$")
 _FORBIDDEN_TRACE = frozenset({"payload", "detail", "value", "content", "query", "fragment"})
+_CONCURRENCY_MODES = frozenset({"drop", "replace", "queue", "parallel"})
+_PAYLOAD_KEYS = {
+    "detail_keys": "detailKeys",
+    "max_depth": "maxDepth",
+    "max_payload_bytes": "maxPayloadBytes",
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,9 +44,16 @@ class CompositionEdge:
             raise ValueError("max_payload_bytes must be between 1 and 65536")
         if len(set(self.detail_keys)) != len(self.detail_keys):
             raise ValueError("detail_keys must be unique")
+        if self.concurrency not in _CONCURRENCY_MODES:
+            raise ValueError(f"invalid concurrency: {self.concurrency!r}")
 
     def as_payload(self) -> dict[str, object]:
-        return asdict(self)
+        """Return the JS runner schema (camelCase keys, list detailKeys)."""
+        payload: dict[str, object] = {}
+        for key, value in asdict(self).items():
+            out_key = _PAYLOAD_KEYS.get(key, key)
+            payload[out_key] = list(value) if key == "detail_keys" else value
+        return payload
 
 
 @dataclass(frozen=True, slots=True)

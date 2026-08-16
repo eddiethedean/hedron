@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``CompositionEdge.as_payload`` emits camelCase keys the JS runner reads, and
+  ``concurrency="queue"`` serializes overlapping dispatches (#256).
+
 ## [0.41.0] — Unreleased
 
 - Typed allowlisted browser composition with bounded graph execution and native fallback.

@@ -1,6 +1,8 @@
 /** Phase 0.41 typed composition, bounded draft transfer, navigation and traces. */
 const EDGES = new Map();
 const ACTIVE = new Map();
+const QUEUES = new Map();
+const CONCURRENCY = new Set(["drop", "replace", "queue", "parallel"]);
 const MAX_AGGREGATE = 262144;
 
 function plainObject(value) {
@@ -17,13 +19,33 @@ export function registerCompositionEdge(edge) {
   if (!plainObject(edge) || !/^[A-Za-z][\w.:-]{0,127}$/.test(edge.id || "")) throw new TypeError("invalid edge");
   if (EDGES.has(edge.id)) throw new Error(`duplicate edge ${edge.id}`);
   for (const key of ["event", "action", "target"]) if (typeof edge[key] !== "string" || !edge[key]) throw new TypeError(`invalid ${key}`);
-  edge.maxDepth = Math.min(32, Math.max(1, Number(edge.maxDepth || 8)));
-  edge.maxPayloadBytes = Math.min(65536, Math.max(1, Number(edge.maxPayloadBytes || 16384)));
-  edge.detailKeys = Object.freeze([...(edge.detailKeys || [])]);
-  EDGES.set(edge.id, Object.freeze({ ...edge }));
+  const concurrency = edge.concurrency || "replace";
+  if (!CONCURRENCY.has(concurrency)) throw new TypeError("invalid concurrency");
+  const normalized = {
+    ...edge,
+    concurrency,
+    maxDepth: Math.min(32, Math.max(1, Number(edge.maxDepth ?? edge.max_depth ?? 8))),
+    maxPayloadBytes: Math.min(65536, Math.max(1, Number(edge.maxPayloadBytes ?? edge.max_payload_bytes ?? 16384))),
+    detailKeys: Object.freeze([...(edge.detailKeys ?? edge.detail_keys ?? [])]),
+  };
+  delete normalized.detail_keys;
+  delete normalized.max_depth;
+  delete normalized.max_payload_bytes;
+  EDGES.set(edge.id, Object.freeze(normalized));
 }
 
-export function clearCompositionEdges() { EDGES.clear(); }
+export function clearCompositionEdges() { EDGES.clear(); ACTIVE.clear(); QUEUES.clear(); }
+
+async function invokeComposition(edge, detail, handlers, visited) {
+  if (edge.concurrency === "drop" && ACTIVE.has(edge.id)) return { outcome: "canceled", code: "HED-COMPOSE-0006" };
+  if (edge.concurrency === "replace") ACTIVE.get(edge.id)?.abort();
+  const controller = new AbortController(); ACTIVE.set(edge.id, controller);
+  try {
+    const result = await handlers.action(edge.action, detail, { edge, visited, signal: controller.signal });
+    return { outcome: "success", result };
+  } catch (_) { return { outcome: controller.signal.aborted ? "canceled" : "error", code: "HED-COMPOSE-0007" }; }
+  finally { if (ACTIVE.get(edge.id) === controller) ACTIVE.delete(edge.id); }
+}
 
 export async function dispatchComposition(edgeId, event, handlers, context = {}) {
   const edge = EDGES.get(edgeId);
@@ -37,14 +59,13 @@ export async function dispatchComposition(edgeId, event, handlers, context = {})
   visited.add(edge.id);
   if (typeof handlers?.authorize === "function" && !(await handlers.authorize(edge, event))) return { outcome: "fallback", code: "HED-COMPOSE-0004" };
   if (typeof handlers?.action !== "function") return { outcome: "fallback", code: "HED-COMPOSE-0005" };
-  if (edge.concurrency === "drop" && ACTIVE.has(edge.id)) return { outcome: "canceled", code: "HED-COMPOSE-0006" };
-  if (edge.concurrency === "replace") ACTIVE.get(edge.id)?.abort();
-  const controller = new AbortController(); ACTIVE.set(edge.id, controller);
-  try {
-    const result = await handlers.action(edge.action, detail, { edge, visited, signal: controller.signal });
-    return { outcome: "success", result };
-  } catch (_) { return { outcome: controller.signal.aborted ? "canceled" : "error", code: "HED-COMPOSE-0007" }; }
-  finally { if (ACTIVE.get(edge.id) === controller) ACTIVE.delete(edge.id); }
+  const run = () => invokeComposition(edge, detail, handlers, visited);
+  if (edge.concurrency !== "queue") return run();
+  const previous = QUEUES.get(edge.id) || Promise.resolve();
+  let next;
+  next = previous.then(run, run).finally(() => { if (QUEUES.get(edge.id) === next) QUEUES.delete(edge.id); });
+  QUEUES.set(edge.id, next);
+  return next;
 }
 
 export function draftStorageKey(identity) {
