@@ -5,6 +5,10 @@
 ### Changed
 - Coordinated train tip `0.43.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``RemoteWorkflow`` fails closed when ``GradioClientAdapter.endpoints`` is empty
+  or the named endpoint is not allowlisted (#338).
+
 ## [0.42.0] — 2026-08-14
 
 ### Added
