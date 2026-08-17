@@ -1,10 +1,14 @@
 # Hedron `v0.49` FastAPI/Pydantic convergence acceptance
 
-**Status:** Planned; Stage 0 requirements packet complete<br>
-**Planning baseline:** Published in-tree `v0.46.0`<br>
+**Status:** Planned; Stage 0 contract refined by D-084 against Published in-tree `v0.48.0`<br>
+**Planning baseline:** Published in-tree `v0.48.0`<br>
 **Required predecessor/cut baseline:** Verified `v0.48.0`<br>
 **Target:** Hedron `v0.49.0`<br>
-**Decision/RFC:** D-081 / [RFC-0076](../rfcs/RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md)
+**Decision/RFC:** D-081 / D-084 / [RFC-0076](../rfcs/RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md)<br>
+**Tracking:** [#380](https://github.com/eddiethedean/hedron/issues/380)
+
+D-084 does not authorize Stage 1. It names shipped 0.48 seams and rebases the planning
+baseline. No 0.49 runtime, version, or Published claim.
 
 ## Release contract
 
@@ -26,7 +30,7 @@
 | `ROUTER-049` | Preserved nested route identity/provenance, pre-seal late registration, duplicate/seal failures, plugin/package composition, and no alpha hook reliance pass. |
 | `OPENAPI-049` | Typed statuses/media/headers/SSE/downloads/callbacks/webhooks/security/operation ids/input-output schemas and generated-client fixtures pass. |
 | `SECURITY-049` | Strict content type, binding parity, scopes non-authority, schema/secret/subclass safety, callback honesty, transport bounds, and adversarial review pass. |
-| `ADAPTER-VALIDATION-049` | Cached TypeAdapter candidates, direct JSON path, duplicate keys, bounds, errors, canonicalization, redaction, benchmarks, and rollback pass. |
+| `ADAPTER-VALIDATION-049` | Cached TypeAdapter candidates, direct JSON path, duplicate keys, bounds, errors, canonicalization, redaction, benchmarks, and rollback pass. FailFast is not this gate. |
 | `SETTINGS-049` | Each deployment package records adopt or retain-custom-loader after precedence/provenance/unknown/secret/digest/I-O/path/compatibility evidence. |
 | `RESEARCH-049` | Partial validation, unset/PATCH, and FailFast spikes record explicit experimental/defer/exclude dispositions with no Supported leakage. |
 | `A11Y-049` | Schema/form labels, required/read/write/computed state, error summaries/paths/focus, binding parity, and scoped AT honesty pass. |
@@ -41,8 +45,16 @@
 - [x] D-081 and RFC-0076 define adoption, portability, authority, and exclusion boundaries.
 - [x] API, implementation, inventory, upgrade, gate, roadmap, decision, and traceability artifacts exist.
 - [x] Stage 0 changes documentation/contracts only; no 0.49 runtime/version claim.
-- [ ] Verified 0.48 and a tracking issue are bound before Stage 1.
-- [ ] Stage 1 locks binding eligibility, schema subset, migration inventory, and performance budgets.
+- [x] D-084 rebases the living/planning baseline to Published in-tree `v0.48.0` and names shipped seams.
+- [x] Tracking issue [#380](https://github.com/eddiethedean/hedron/issues/380) is bound.
+- [x] In-tree Verified 0.48 is enough predecessor evidence; do not wait on PyPI/Git `#373` assets.
+- [ ] Stage 1 locks numeric limits, exact union symbols, adapter benchmarks, and settings-spike evidence.
+
+Locks: [fastapi-lifetime-049.toml](fastapi-lifetime-049.toml) ·
+[fastapi-binding-049.toml](fastapi-binding-049.toml) ·
+[typeschema-v2-049.toml](typeschema-v2-049.toml) ·
+[fastapi-unions-openapi-049.toml](fastapi-unions-openapi-049.toml) ·
+[fastapi-settings-research-049.toml](fastapi-settings-research-049.toml).
 
 ## Cut rule
 
@@ -50,4 +62,3 @@ Do not cut `v0.49.0` until every non-disposition gate in
 [`release-gate-0.49.toml`](release-gate-0.49.toml) is Verified. `SETTINGS-049` and `RESEARCH-049`
 must contain explicit per-candidate dispositions; deferred or excluded candidates cannot appear in
 the Supported inventory.
-

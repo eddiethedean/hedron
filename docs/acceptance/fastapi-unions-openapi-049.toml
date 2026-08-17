@@ -1,0 +1,76 @@
+# Phase 0.49 tagged-union, router, OpenAPI, and scope lock
+# (FP-UNION-001 / FP-OPENAPI-001). Stage 0 contract artifact (D-084).
+# CatalogEntry.kind stays view/command. Exact union symbols are Stage 1.
+
+schema_version = 1
+phase = "0.49"
+status = "Planned"
+planning_baseline = "v0.48.0"
+required_predecessor = "v0.48.0"
+target = "v0.49.0"
+decision = "D-084"
+owning_rfc = "RFC-0076"
+gates = ["UNION-049", "ROUTER-049", "OPENAPI-049", "SECURITY-049"]
+requirement = "FP-UNION-001"
+
+stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
+stacks_on_schema = "docs/acceptance/type-schema-044.toml"
+stacks_on_v2 = "docs/acceptance/typeschema-v2-049.toml"
+stacks_on_adapter = "docs/acceptance/adapter-disposition-044.toml"
+stacks_on_host = "docs/acceptance/host-portable-facts-045.toml"
+new_catalog_kind = false
+catalog_entry_kinds = ["view", "command"]
+fourth_fingerprint_authority = false
+numeric_limits = "Stage 1 evidence; do not invent unmeasured payload or OpenAPI sizes here"
+diagnostic_family = "HED-FP-*"
+diagnostic_family_docs_only = true
+
+[unions]
+public_wire_discriminator = "kind"
+untagged_application_models = "valid"
+smart_union_public_catalog = "tooling warning; not a Supported public-wire pattern"
+exact_symbols = "Stage 1 inventory; lock families only here"
+
+[union_families]
+outcome_map_results = true
+typed_updates = true
+selected_event_envelopes = true
+job_messages = true
+mcp_envelopes = true
+remote_adapter_descriptors = true
+package_projection_entries = "warn; CatalogEntry.kind stays view/command"
+
+[router]
+identity = "existing HedronRouter(APIRouter) / HedronRoute"
+alpha_matches_handle = false
+late_registration_until = ["seal_registry", "seal_app_catalog", "OpenAPI cache"]
+post_seal_registration = "fail closed"
+
+[openapi]
+html_routes = "response classes plus text/html injection in install_openapi"
+json_routes = "may retain native FastAPI response models"
+operation_ids = "hedron.openapi.operation_id_for remains the stable generator"
+htmx_headers = "project declared InteractionResult headers; do not invent a new wire"
+callbacks_webhooks = "documentation only; no delivery"
+
+[scopes]
+symbol = "RequiresScopes"
+portable_package = "hedron-core"
+compile_package = "hedron"
+fastapi_projection = "Security / OpenAPI security requirements"
+portable_projection = "adapter facts / existing guard seams"
+grants_access = false
+replaces_authz = false
+replaces_tenant_object_policy = false
+
+[content_type]
+strict_json = "extend reject_json_formbody 415 under security profiles"
+new_csrf_protocol = false
+
+[consumed]
+hedron_router = "hedron.routing.router.HedronRouter"
+install_openapi = "hedron.openapi.install_openapi"
+operation_id_for = "hedron.openapi.operation_id_for"
+interactions = "Hedron.include_component / include_feature / interactions"
+seals = "compile_interaction_catalog / seal_app_catalog after seal_registry"
+outcome_map = "hedron.type_authoring.outcomes.OutcomeMap(case(...), ...)"

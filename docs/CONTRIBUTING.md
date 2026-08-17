@@ -60,6 +60,7 @@ uv run python scripts/check_docs_train_ssot.py
 uv run python scripts/check_package_docs_inventory.py
 uv run python scripts/verify_pkg_46.py
 uv run python scripts/verify_pkg_47.py
+uv run python scripts/verify_pkg_49.py --allow-planned
 uv run python scripts/check_documentation_ownership.py
 uv run python scripts/check_api_docs_coverage.py
 uv run python scripts/check_package_readme_links.py

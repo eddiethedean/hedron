@@ -59,6 +59,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_46.py` | Phase **0.46** package-native typed workflows packet (Published `v0.46.0`; historical after 0.47) |
 | `verify_pkg_47.py` | Phase **0.47** first-class maps packet (Published in-tree `v0.47.0`; omit `--allow-planned` after cut) |
 | `verify_pkg_48.py` | Phase **0.48** HTMX extension integration packet (Published in-tree `v0.48.0`; omit `--allow-planned` after cut) |
+| `verify_pkg_49.py` | Phase **0.49** FastAPI/Pydantic Stage 0 packet (keep `--allow-planned`; D-084; no 0.49 runtime) |
 | `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Published `v0.42.0`) |
 | `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |
 | `verify_pkg_39.py` | Phase **0.39** rich data / OptimisticMutation packet (Published `v0.39.0`) |
@@ -86,7 +87,7 @@ Documentation source ownership and review rules:
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
 | `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
-| `verify_pkg_46.py` / `verify_pkg_45.py` / `verify_pkg_44.py` / `verify_pkg_43.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_48.py`**; `verify_pkg_47.py` remains the historical 0.47 packet) |
+| `verify_pkg_46.py` / `verify_pkg_45.py` / `verify_pkg_44.py` / `verify_pkg_43.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_48.py`**; `verify_pkg_49.py --allow-planned` is the 0.49 Stage 0 packet; `verify_pkg_47.py` remains the historical 0.47 packet) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

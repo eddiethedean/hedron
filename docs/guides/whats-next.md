@@ -11,7 +11,7 @@ Capability maturity for *this* train: [What’s ready](whats-ready.md).
 
 | Topic | Disposition |
 |---|---|
-| FastAPI/Pydantic convergence | **0.49 Planned** (D-081 / RFC-0076) — requires Verified 0.48 and a tracking issue before Stage 1; no 0.49 runtime |
+| FastAPI/Pydantic convergence | **0.49 Planned** (D-081 / D-084 / RFC-0076) — Stage 0 refined against in-tree `v0.48.0`; tracking [#380](https://github.com/eddiethedean/hedron/issues/380); no 0.49 runtime |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |

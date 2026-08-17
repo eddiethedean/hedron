@@ -100,6 +100,7 @@ _RECURSIVE_SCRIPT_NAMES = frozenset(
         "verify_pkg_46.py",
         "verify_pkg_47.py",
         "verify_pkg_48.py",
+        "verify_pkg_49.py",
         "ci_checks.sh",
     }
 )

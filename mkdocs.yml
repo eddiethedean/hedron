@@ -274,6 +274,7 @@ nav:
       - Charts: api/CHART.md
       - Maps: api/MAPS.md
       - HTMX extensions: api/HTMX_EXTENSIONS.md
+      - FastAPI/Pydantic: api/FASTAPI_PYDANTIC_CONVERGENCE.md
   - Evaluate:
     - Overview: guides/evaluate.md
     - Why Hedron: guides/why-hedron.md

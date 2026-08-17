@@ -3,13 +3,21 @@
 **Status:** Accepted<br>
 **Target phase:** 0.49 (`v0.49.0`)<br>
 **Decision:** D-081<br>
-**Planning baseline:** Published in-tree `v0.46.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.48.0`<br>
+**Stage 0 contract refine:** D-084<br>
+**Planning baseline:** Published in-tree `v0.48.0` (D-084; original Stage 0 baseline was Published in-tree `v0.46.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.48.0`<br>
+**Tracking:** [#380](https://github.com/eddiethedean/hedron/issues/380)<br>
 **Upstream baseline:** FastAPI `>=0.141.1,<0.150`; Pydantic `>=2.13.4,<2.15`<br>
 **Extends:** RFC-0001, RFC-0002, RFC-0004, RFC-0008, RFC-0009, RFC-0012,
 RFC-0013, RFC-0015, RFC-0016, RFC-0019, RFC-0020, RFC-0021, RFC-0024,
 RFC-0026, RFC-0028, RFC-0040, RFC-0043, RFC-0049, RFC-0053, RFC-0064,
 RFC-0065, RFC-0066, RFC-0070, RFC-0071, RFC-0072, RFC-0073, and RFC-0075
+
+**Revision:** 2026-08-17 — D-084 contract refine against Published in-tree `v0.48.0`:
+planning baseline rebased; lifetime, binding, TypeSchema v2, unions/OpenAPI/scopes,
+and settings/research locks recorded; FailFast moved off the adapter gate; real 0.43–0.48
+handles, TypeSchema v1, expanded-field signatures, `HedronRouter`, `install_openapi`, and
+HTMX SSE seams named. No runtime or version claim.
 
 ## Summary
 
@@ -189,6 +197,126 @@ OpenAPI extension behavior remains supported. `TypeSchema` v1 has a documented r
 Every optimized path retains an explicit fallback and rollback. Upstream minor ranges remain
 bounded; no alpha API becomes foundational.
 
+## Resolved questions (D-081)
+
+1. **Which gates?** Closed inventory `LIFETIME-049`, `BINDING-049`, `SCHEMA-049`,
+   `UNION-049`, `ROUTER-049`, `OPENAPI-049`, `SECURITY-049`, `ADAPTER-VALIDATION-049`,
+   `SETTINGS-049`, `RESEARCH-049`, `A11Y-049`, `PERF-049`, `COMPAT-049`, `DOCS-049`,
+   `REGRESS-049`, and `PKG-049`. Do not split SCHEMA vs UNION or park TypeSchema v2 later.
+2. **Does Hedron wrap FastAPI/Pydantic transparently?** No. Native adoption is an
+   inspectable compilation plan with expanded-fields fallback and portable authority.
+3. **May settings or research ship without a disposition?** No. `SETTINGS-049` and
+   `RESEARCH-049` may conclude with adopt/retain/defer/exclude; unadmitted experimental
+   features cannot appear in the Supported inventory.
+4. **What is the release baseline?** Verified 0.48 is required before Stage 1 or the
+   0.49 cut. Original Stage 0 planning baseline was Published in-tree `v0.46.0`.
+   **D-084** rebases the living/planning baseline to Published in-tree `v0.48.0`.
+
+## Resolved questions (D-084)
+
+1. **Does 0.49 still include all 16 gates?** Yes. The D-081 list remains in scope.
+   `SETTINGS-049` and `RESEARCH-049` may finish as explicit dispositions. Do not split
+   SCHEMA vs UNION and do not park TypeSchema v2 later.
+2. **Does this refine change a later phase or the living tip?** No. Cut target stays
+   `v0.49.0`. Living tip stays `v0.48.0`. Do not reopen 0.48, `polling_only`,
+   `MORPH-048`, `SR-021`, or schedule `1.0`.
+3. **Which shipped seams does 0.49 consume?** `TypeSchema` v1 under `hedron.type`
+   (`schema_version=1`, `attach_type_schema`, `type_schema_from_descriptor`,
+   `TypeSchema.stable_fingerprint()`; forbidden keys `values`/`defaults`/`examples`/
+   `callbacks`/`request`/`model`). Structural bind:
+   `BindingPlan` / `BindingAdapter` / `StructuralBindingAdapter` /
+   `PydanticBindingAdapter` / `apply_modeled_signature`. Markers:
+   `ViewParams` / `FormBody` / `Sensitive` / `InstanceKey` / `Control` /
+   `Refreshes` / `Updates` and `OutcomeMap(case(...), ...)`. Handles:
+   `FragmentHandle[BindT, ContentT]`, `ActionHandle[InputT, ResultT]`,
+   `BoundFragment[ContentT]`, `Patch[ContentT]`, `BaseHandleDescriptor`
+   (`kind` `view`/`command`, `version=1`). `descriptor_fingerprint` does **not** hash
+   `effect` or `extensions`. Router/OpenAPI: `HedronRouter(APIRouter)`, `HedronRoute`,
+   `install_openapi`, `operation_id_for`. Catalog:
+   `Hedron.include_component` / `include_feature` / `interactions`,
+   `compile_interaction_catalog` / `seal_app_catalog` after `seal_registry`.
+   0.48 HTMX: `Page.htmx_extensions`, `SseRegion` / `SseTrigger`, experimental SSE
+   helpers — LIFETIME consumers only. Flask/Django stay `projection_adapter` /
+   TypeSchema `bounded_exception` stacked on
+   [adapter-disposition-044.toml](../acceptance/adapter-disposition-044.toml) and
+   [host-portable-facts-045.toml](../acceptance/host-portable-facts-045.toml).
+   Pins: FastAPI `>=0.141.1,<0.150` (Supported CI still `<0.142`), Pydantic
+   `>=2.13.4,<2.15`, Python 3.11–3.14. `Depends(scope=...)` exists since FastAPI
+   0.121; do not widen the Supported FastAPI matrix in Stage 0.
+4. **How do Hedron lifetime names map to FastAPI scopes?** Public Hedron values stay
+   `handler` / `response`. FastAPI values are `function` / `request`, not `response`.
+   `DependencyLifetime.HANDLER` → `Depends(scope="function")`.
+   `DependencyLifetime.RESPONSE` → `Depends(scope="request")` (exit after the response
+   is sent). Ordinary routes default to HANDLER when evidence allows;
+   streaming/SSE/download that still need the resource after handler return require
+   RESPONSE. Background work must not capture either request-owned value (D-020).
+   User-authored FastAPI `Depends()` remains valid; `DependsOn` is additive.
+   Portable `DependencyLifetime` / `DependencyPlan` live in `hedron-core`; compilation
+   lives in `hedron`. Flask/Django record disposition only. Lock:
+   [fastapi-lifetime-049.toml](../acceptance/fastapi-lifetime-049.toml).
+5. **Is `BoundaryBindingPlan` a rename of `BindingPlan`?** No. `BindingPlan` stays the
+   0.43 structural path/query plan. `BoundaryBindingPlan` is new (`native-model` or
+   `expanded-fields`, fingerprint, fallback reason). Native-model is allowed only for
+   query-only, header-only, cookie-only, and non-file form models when FastAPI native
+   Pydantic parameter-model behavior is equivalent. Mixed path/query, multipart/file,
+   incompatible aliases, and portable adapters keep expanded-fields via
+   `apply_modeled_signature`. Existing `ViewParams`/`FormBody` routes keep expanded
+   behavior unless equivalence is proven or the author forces the portable fallback.
+   Flask/Django never receive FastAPI native-model. Lock:
+   [fastapi-binding-049.toml](../acceptance/fastapi-binding-049.toml).
+6. **Is TypeSchema v2 a replacement payload?** No. Keep
+   [type-schema-044.toml](../acceptance/type-schema-044.toml). v2 adds
+   `input_projection`, `output_projection`, shared/read-only/write-only classification,
+   and separate TypeSchema-internal fingerprints. Pydantic owns JSON Schema generation;
+   Hedron sanitizes to a closed inert subset. OpenAPI authority stays FastAPI. Today's
+   `TypeSchema.__post_init__` fail-closes on `schema_version != 1`; v1 readers remain
+   during the compatibility window; Stage 1 implements dual-version load; Stage 0 does
+   not bump `TYPE_SCHEMA_VERSION`. Dual-projection fingerprints are not a second
+   `descriptor_fingerprint`. Lock:
+   [typeschema-v2-049.toml](../acceptance/typeschema-v2-049.toml).
+7. **What are the tagged-union and OpenAPI rules?** New public **wire** unions use
+   literal discriminator `kind`. `CatalogEntry.kind` stays `view`/`command`. Lock
+   migration **families** now (exact symbols in Stage 1): `OutcomeMap` results, typed
+   updates, selected event envelopes, job messages, MCP envelopes, remote-adapter
+   descriptors. Untagged application models stay valid; tooling warns when a public
+   catalog/wire schema relies on smart-union selection. Nested `HedronRouter` identity
+   is the existing `APIRouter` subclass. Exclude FastAPI alpha `APIRouter.matches()` /
+   `.handle()`. Late registration is legal only before `seal_registry` /
+   `seal_app_catalog` / OpenAPI cache. HTML routes keep response-class + `text/html`
+   injection; JSON routes may keep native response models. `RequiresScopes` is a
+   portable declaration compiled to FastAPI Security/OpenAPI and adapter facts; it does
+   not grant or replace live authz. Strict JSON content-type extends
+   `reject_json_formbody` 415 under security profiles — not a new CSRF protocol. Lock:
+   [fastapi-unions-openapi-049.toml](../acceptance/fastapi-unions-openapi-049.toml).
+8. **Where does FailFast live?** `ADAPTER-VALIDATION-049` is measured cached
+   `TypeAdapter` / `validate_json()` only. Candidates: WebSocket messages, MCP
+   envelopes, job/cache records, build manifests, remote-adapter metadata, bounded data
+   batches. **Not** the FormBody request path. **FailFast belongs entirely to
+   `RESEARCH-049`.** Remove it from adapter `adopt_if_measured`.
+9. **Which settings packages?** Only `fastapi-workbench`, `hedron-workbench`, and
+   `hedron-posit`. Today they use argparse / `WorkbenchConfig` and custom loaders, not
+   `pydantic-settings`. Do **not** evaluate `hedron.config.HedronSettings`. Default
+   until a Stage 1 spike: Evaluate, likely `retain-custom-loader`. Stage 0 adds no
+   dependency. Research stays quarantined: partial streamed validation (complete
+   validation before persist/action/authz/canonical UI), Hedron-owned unset vs
+   experimental Pydantic `MISSING`, and FailFast for whole-batch-reject only. Lock:
+   [fastapi-settings-research-049.toml](../acceptance/fastapi-settings-research-049.toml).
+10. **Where do symbols live?** Portable plans, scopes, and schema fields in
+    `hedron-core` (no FastAPI). Compiler, `DependsOn`, native-model eligibility, and
+    OpenAPI projection in `hedron`. No new package. Optional namespaced
+    `PackageProjection` is allowed; plans are not a new `CatalogEntry.kind` and not a
+    fourth fingerprint.
+11. **Which diagnostic family?** Keep `HED-TYPE-0001`–`0010`. Reserve `HED-FP-*` in
+    docs only. Do not assign new numbers during this refine.
+12. **What does Stage 1 still own?** Numeric limits, exact union-symbol inventory,
+    adapter microbenchmarks, pydantic-settings spike evidence, any Supported FastAPI
+    matrix expansion, tracking-issue-bound runtime, and dual-version TypeSchema load.
+    Do not invent those numbers here.
+13. **May Stage 1 start before the 0.48 PyPI/Git tag?** Yes for in-tree Verified 0.48
+    evidence. Tracking issue [#380](https://github.com/eddiethedean/hedron/issues/380)
+    is bound. Do not wait on `#373` publish assets. Do not start Stage 1 during this
+    contract refine.
+
 ## Acceptance criteria
 
 `LIFETIME-049`, `BINDING-049`, `SCHEMA-049`, `UNION-049`, `ROUTER-049`, `OPENAPI-049`,
@@ -196,4 +324,5 @@ bounded; no alpha API becomes foundational.
 `PERF-049`, `COMPAT-049`, `DOCS-049`, `REGRESS-049`, and `PKG-049` satisfy the release gate.
 Settings and research gates may conclude with explicit retain/defer/exclude dispositions; no
 unadmitted experimental feature may appear in the Supported inventory.
+The `v0.49.0` cut contains no Deferred row hidden inside a Supported claim.
 

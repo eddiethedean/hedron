@@ -46,7 +46,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Published** (`v0.47.0` / `hedron-maps` `0.1.0`; in-tree cut, tag/PyPI deferred; D-078 / D-082 / RFC-0074; [#350](https://github.com/eddiethedean/hedron/issues/350)) |
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0`; in-tree cut, tag/PyPI deferred; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
-| **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Planned** (`v0.49.0`; D-081 / RFC-0076; requires Verified 0.48 and a tracking issue before Stage 1; no 0.49 runtime) |
+| **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Planned** (`v0.49.0`; D-081 / D-084 / RFC-0076; Stage 0 refined against in-tree `v0.48.0`; tracking [#380](https://github.com/eddiethedean/hedron/issues/380); no 0.49 runtime) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -4048,10 +4048,11 @@ Artifacts: [public contract](https://github.com/eddiethedean/hedron/blob/main/do
 
 ## 0.49 — FastAPI and Pydantic convergence (`v0.49.0`)
 
-**Status:** Planned (D-081 /
+**Status:** Planned (D-081 / D-084 /
 [RFC-0076](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md)).
-Verified `v0.48.0` is the hard Stage 1 prerequisite and cut baseline. A tracking issue must bind
-every 0.49 gate before runtime implementation begins. Stage 0 changes planning contracts only.
+Planning baseline is Published in-tree `v0.48.0`. Verified `v0.48.0` is the hard Stage 1
+prerequisite and cut baseline. Tracking [#380](https://github.com/eddiethedean/hedron/issues/380)
+owns every 0.49 gate. Stage 0 changes planning contracts only; D-084 does not authorize runtime.
 
 **Outcome:** Hedron uses stable upstream capabilities where they improve correctness, performance,
 schema fidelity, and ecosystem interoperability without surrendering portable authority. Resource
@@ -4119,11 +4120,16 @@ Artifacts: [public contract](https://github.com/eddiethedean/hedron/blob/main/do
 [acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_49.md) ·
 [release gate](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.49.toml) ·
 [capability inventory](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/fastapi-pydantic-capability-inventory-049.toml) ·
+[lifetime lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/fastapi-lifetime-049.toml) ·
+[binding lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/fastapi-binding-049.toml) ·
+[TypeSchema v2 lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/typeschema-v2-049.toml) ·
+[unions/OpenAPI lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/fastapi-unions-openapi-049.toml) ·
+[settings/research lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/fastapi-settings-research-049.toml) ·
 [upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-049.md).
 
 ### Exit gate
 
-- Verified 0.48 is the baseline and a tracking issue owns every 0.49 row.
+- Verified 0.48 is the baseline and tracking [#380](https://github.com/eddiethedean/hedron/issues/380) owns every 0.49 row.
 - Stable adoption paths pass portable, security, accessibility, performance, package, and rollback
   evidence without raw upstream authority leakage.
 - Settings and research candidates have explicit dispositions and excluded/deferred candidates do

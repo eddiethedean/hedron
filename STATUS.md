@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.48 **Published** as in-tree `v0.48.0` (2026-08-17; tag/PyPI deferred). Phase 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) remains **Planned**. No 0.49 runtime or version claim.
+**Roadmap position:** phase 0.48 **Published** as in-tree `v0.48.0` (2026-08-17; tag/PyPI deferred). Phase 0.49 FastAPI/Pydantic convergence (D-081 / D-084 / RFC-0076) remains **Planned**; Stage 0 contract refined against `v0.48.0`. No 0.49 runtime or version claim.
 Living tip = `v0.48.0`.
 **Date:** 2026-08-17
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -33,11 +33,14 @@ OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form p
 **0.36** ABI / **0.35** fleet closure remain in force.
 Tracking [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48 gate until later tag/PyPI assets exist.
 [#350](https://github.com/eddiethedean/hedron/issues/350) remains open for 0.47 publish assets.
-Phase **0.49** follows only after Verified 0.48. Its Stage 0 packet plans explicit dependency
-lifetimes, native/expanded parameter binding, dual input/output schemas, tagged wire unions,
-router/OpenAPI/security convergence, measured validation adapters, and honest settings/experimental
-dispositions. All `release-gate-0.49.toml` rows remain Planned and require a tracking issue before
-Stage 1.
+Phase **0.49** follows only after Verified 0.48. **D-084** rebases its Stage 0 packet onto
+Published in-tree `v0.48.0`: explicit dependency lifetimes, native/expanded parameter binding,
+dual input/output schemas, tagged wire unions, router/OpenAPI/security convergence, measured
+validation adapters, and honest settings/experimental dispositions. All
+`release-gate-0.49.toml` rows remain Planned. Tracking
+[#380](https://github.com/eddiethedean/hedron/issues/380) owns every 0.49 gate. Do not start
+Stage 1 during the D-084 contract refine. In-tree Verified 0.48 is enough predecessor
+evidence; do not wait on `#373` publish assets.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,

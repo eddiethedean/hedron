@@ -93,4 +93,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0073](RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md) | Package-native typed workflows | Accepted |
 | [0074](RFC-0074-FIRST-CLASS-MAPS.md) | First-class maps and offline geospatial presentation | Accepted |
 | [0075](RFC-0075-HTMX-EXTENSION-INTEGRATION.md) | First-class HTMX extension integration | Accepted |
-| [0076](RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md) | FastAPI and Pydantic convergence | Accepted |
+| [0076](RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md) | FastAPI and Pydantic convergence | Accepted (D-081; Stage 0 refined by D-084; [#380](https://github.com/eddiethedean/hedron/issues/380)) |

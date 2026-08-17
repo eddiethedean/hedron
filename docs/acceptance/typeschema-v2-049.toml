@@ -1,0 +1,58 @@
+# Phase 0.49 additive TypeSchema v2 lock (FP-SCHEMA-001).
+# Stage 0 contract artifact (D-084). v2 extends the 0.44 payload; it does not
+# replace field_paths authority or bump TYPE_SCHEMA_VERSION in this refine.
+
+schema_version = 1
+phase = "0.49"
+status = "Planned"
+planning_baseline = "v0.48.0"
+required_predecessor = "v0.48.0"
+target = "v0.49.0"
+decision = "D-084"
+owning_rfc = "RFC-0076"
+gate = "SCHEMA-049"
+requirement = "FP-SCHEMA-001"
+
+stacks_on = "docs/acceptance/type-schema-044.toml"
+namespace = "hedron.type"
+current_type_schema_version = 1
+stage_0_bumps_type_schema_version = false
+json_schema_authority = "pydantic"
+openapi_authority = "fastapi"
+fallback_cache_role = "projection_only"
+descriptor_fingerprint_hashes_extensions = false
+descriptor_fingerprint_hashes_effect = false
+fourth_fingerprint_authority = false
+diagnostic_family = "HED-FP-*"
+diagnostic_family_docs_only = true
+
+[today]
+class = "hedron_core.type_schema.TypeSchema"
+attach = "attach_type_schema"
+from_descriptor = "type_schema_from_descriptor"
+stable_fingerprint = "TypeSchema.stable_fingerprint()"
+fail_closed_other_versions = true
+forbidden = ["values", "defaults", "examples", "callbacks", "request", "model"]
+
+[v2_additive_keys]
+input_projection = "sanitized validation/input JSON Schema subset"
+output_projection = "sanitized serialization/output JSON Schema subset"
+shared_fields = "fields present in both projections"
+write_only_fields = "input-only; secrets write-only or excluded"
+read_only_fields = "output-only; computed/serializers here only"
+input_fingerprint = "TypeSchema-internal; not descriptor_fingerprint"
+output_fingerprint = "TypeSchema-internal; not descriptor_fingerprint"
+
+[compat]
+v1_reader = "required during the documented compatibility window"
+dual_version_load = "Stage 1 implements; Stage 0 does not change TypeSchema.__post_init__"
+upgrade_fixtures = "docs/acceptance/upgrade-fixtures-049.md"
+keep_field_paths = true
+keep_control_dispositions = true
+
+[sanitizer]
+generate_json_schema = "Hedron-owned pydantic.GenerateJsonSchema policy"
+unknown_keywords = "fail closed or explicit disposition"
+callables_and_executable_extensions = "fail closed"
+secrets_defaults_examples = "never projected"
+unsupported_recursion = "fail closed or explicit disposition"

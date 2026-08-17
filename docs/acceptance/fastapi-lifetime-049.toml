@@ -1,0 +1,64 @@
+# Phase 0.49 dependency-lifetime lock (FP-LIFETIME-001).
+# Stage 0 contract artifact (D-084). Hedron public names are handler/response;
+# FastAPI compile targets are function/request. No numeric hold-time budgets here.
+
+schema_version = 1
+phase = "0.49"
+status = "Planned"
+planning_baseline = "v0.48.0"
+required_predecessor = "v0.48.0"
+target = "v0.49.0"
+decision = "D-084"
+owning_rfc = "RFC-0076"
+gate = "LIFETIME-049"
+requirement = "FP-LIFETIME-001"
+
+stacks_on_adapter = "docs/acceptance/adapter-disposition-044.toml"
+stacks_on_host = "docs/acceptance/host-portable-facts-045.toml"
+htmx_slice = "docs/acceptance/htmx-sse-head-preload-048.toml"
+polling_only = true
+reopen_polling_only = false
+numeric_limits = "Stage 1 evidence; do not invent unmeasured hold-time or connection numbers here"
+diagnostic_family = "HED-FP-*"
+diagnostic_family_docs_only = true
+keep_existing_codes = [
+    "HED-TYPE-0001",
+    "HED-TYPE-0002",
+    "HED-TYPE-0003",
+    "HED-TYPE-0004",
+    "HED-TYPE-0005",
+    "HED-TYPE-0006",
+    "HED-TYPE-0007",
+    "HED-TYPE-0008",
+    "HED-TYPE-0009",
+    "HED-TYPE-0010",
+]
+
+[names]
+hedron_handler = "DependencyLifetime.HANDLER"
+hedron_response = "DependencyLifetime.RESPONSE"
+fastapi_handler_scope = "function"
+fastapi_response_scope = "request"
+compile_handler = "Depends(scope=\"function\")"
+compile_response = "Depends(scope=\"request\")"
+fastapi_scope_available_since = "0.121.0"
+pin_can_compile = true
+
+[defaults]
+ordinary_routes = "HANDLER when compatibility and evidence allow"
+streaming_sse_download_after_return = "RESPONSE required"
+background_capture = "forbidden (D-020 unchanged)"
+user_authored_depends = "remain valid; DependsOn is additive"
+
+[symbols]
+portable = ["DependencyLifetime", "DependencyPlan"]
+portable_package = "hedron-core"
+compile_package = "hedron"
+fastapi_facing = ["DependsOn"]
+flask_django = "disposition/diagnostic only; no FastAPI Depends scope"
+
+[consumed]
+sse_helpers = "hedron.experimental.SseResponse / sse_response / job_status_sse_response"
+sse_components = "hedron_core SseRegion / SseTrigger"
+page_extensions = "Page.htmx_extensions"
+do_not_reopen = ["polling_only", "MORPH-048"]

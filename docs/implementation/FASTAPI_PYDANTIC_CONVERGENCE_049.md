@@ -1,9 +1,51 @@
 # FastAPI/Pydantic convergence implementation plan (phase 0.49)
 
-**Status:** Planned; Stage 0 requirements<br>
-**Decision/RFC:** D-081 / [RFC-0076](../rfcs/RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md)<br>
+**Status:** Planned; Stage 0 contract refined by D-084 against Published in-tree `v0.48.0`<br>
+**Tracking:** [#380](https://github.com/eddiethedean/hedron/issues/380)<br>
+**Decision/RFC:** D-081, refined by D-084 / [RFC-0076](../rfcs/RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md)<br>
+**Planning baseline:** Published in-tree `v0.48.0`<br>
 **Target:** Hedron `v0.49.0`<br>
 **Required predecessor:** Verified `v0.48.0`
+
+D-084 does not authorize Stage 1. It names shipped seams `TypeSchema` v1,
+`BindingPlan`, `apply_modeled_signature`, `HedronRouter`, `install_openapi`,
+0.43–0.48 handles/catalog/HTMX SSE, and FastAPI `Depends(scope=)`. `DependsOn`,
+`BoundaryBindingPlan`, TypeSchema v2 projections, and `RequiresScopes` remain
+Stage 1 runtime. FailFast stays research. No version claim.
+
+## Consume shipped, do not fork
+
+- `hedron_core.type_schema.TypeSchema` / `attach_type_schema` /
+  `type_schema_from_descriptor` / `TYPE_SCHEMA_VERSION = 1` /
+  namespace `hedron.type`. Forbidden keys already include `values`, `defaults`,
+  `examples`, `callbacks`, `request`, `model`. Do not bump the version in Stage 0.
+- `hedron_core.updates.BindingPlan` / `BindingAdapter` /
+  `StructuralBindingAdapter` and `hedron.type_authoring.adapter.PydanticBindingAdapter`.
+  Field expansion: `hedron.type_authoring.signature.apply_modeled_signature` /
+  `reconstruct_kwargs` / `reject_json_formbody`.
+- Closed markers `ViewParams` / `FormBody` / `Sensitive` / `InstanceKey` /
+  `Control` / `Refreshes` / `Updates` and `OutcomeMap(case(...), ...)`.
+- 0.43–0.46 handles, `BaseHandleDescriptor` (`kind` `view`/`command`, `version=1`),
+  `descriptor_fingerprint` (does **not** hash `effect` or `extensions`),
+  `Hedron.include_component` / `include_feature` / `interactions`,
+  `compile_interaction_catalog` / `seal_app_catalog` after `seal_registry`,
+  `InteractionCatalog` / `CatalogEntry` / `PackageProjection`, `FeatureBundle`
+  (not an executor). Flask/Django remain `projection_adapter`.
+- `HedronRouter(APIRouter)`, `HedronRoute`, `hedron.openapi.install_openapi` /
+  `operation_id_for`.
+- 0.48 HTMX: `Page.htmx_extensions`, `SseRegion` / `SseTrigger`, experimental
+  SSE helpers. Use them only as LIFETIME streaming/SSE consumers. Do **not**
+  reopen `polling_only` or `MORPH-048`.
+- FastAPI `>=0.141.1,<0.150` (Supported CI still `<0.142`); `Depends(scope=)`
+  since 0.121. Pydantic `>=2.13.4,<2.15`. Deployment settings today: argparse
+  `WorkbenchConfig` / custom loaders — no `pydantic-settings`.
+- `hedron.config.HedronSettings` is **not** a `SETTINGS-049` candidate.
+
+Lock files: [fastapi-lifetime-049.toml](../acceptance/fastapi-lifetime-049.toml),
+[fastapi-binding-049.toml](../acceptance/fastapi-binding-049.toml),
+[typeschema-v2-049.toml](../acceptance/typeschema-v2-049.toml),
+[fastapi-unions-openapi-049.toml](../acceptance/fastapi-unions-openapi-049.toml),
+[fastapi-settings-research-049.toml](../acceptance/fastapi-settings-research-049.toml).
 
 ## Architecture
 
@@ -14,6 +56,13 @@ The implementation has five one-way layers:
 3. FastAPI route/dependency/OpenAPI projection using documented stable APIs.
 4. Flask/Django and package projection over the same portable plans.
 5. Explorer/CLI/scenario/conformance evidence that never becomes runtime authority.
+
+Authority stays 0.43 descriptor → 0.44 TypeSchema → 0.45 catalog. 0.49 compiles
+those plans onto FastAPI; it does not add a fourth fingerprint or a new
+`CatalogEntry.kind`.
+
+HDJ and Explorer consume TypeSchema/catalog facts. They never become runtime
+authority.
 
 ## Work packages
 
@@ -27,29 +76,33 @@ The implementation has five one-way layers:
 ### M2 — Dependency lifetimes
 
 - Define `DependencyLifetime` and `DependencyPlan` in portable core.
-- Compile FastAPI handler/response scopes and validate dependency graph cleanup order.
+- Compile FastAPI `HANDLER` → `Depends(scope="function")` and
+  `RESPONSE` → `Depends(scope="request")`.
 - Add streaming/SSE/download/background capture diagnostics and fixtures.
 - Preserve user-authored FastAPI dependencies and provide explicit no-inference fallback.
 
 ### M3 — Binding strategy
 
-- Define `BoundaryBindingPlan` and deterministic native eligibility rules.
+- Define `BoundaryBindingPlan` beside existing `BindingPlan`; do not overload the 0.43 plan.
 - Implement query/header/cookie/form native-model compilation.
-- Retain expanded path/query/file/multipart and portable-adapter paths.
+- Retain expanded path/query/file/multipart and portable-adapter paths via
+  `apply_modeled_signature`.
 - Prove model/error/OpenAPI/CSRF/alias/extra parity across strategies and adapters.
 
 ### M4 — Dual TypeSchema
 
-- Introduce TypeSchema v2 with validation/serialization projections and fingerprints.
+- Introduce TypeSchema v2 additive projections and fingerprints on the 0.44 payload.
 - Implement a closed Hedron JSON-schema generator and sanitizer.
 - Classify shared/read-only/write-only/computed/secret/unsupported fields.
 - Add v1 read/upgrade, static tooling, catalog/manifest/MCP/Gradio consumers, and rollback.
+- Do not bump `TYPE_SCHEMA_VERSION` until dual-version load exists.
 
 ### M5 — Tagged unions and adapters
 
 - Inventory public wire unions and migrate a bounded representative set.
 - Cache TypeAdapters per type/version boundary and measure direct JSON validation.
 - Preserve duplicate-key, size/depth/count, redaction, and canonical encoding policy.
+- Keep FailFast on `RESEARCH-049`.
 - Add Node/Java/cross-runtime fixtures for tags, unknown variants, and errors.
 
 ### M6 — Router and OpenAPI convergence
@@ -64,7 +117,7 @@ The implementation has five one-way layers:
 
 - Define portable `RequiresScopes` and adapter disposition.
 - Compile FastAPI OpenAPI/security metadata without replacing application authz.
-- Lock strict JSON content type under security profiles and test custom transports.
+- Extend `reject_json_formbody` 415 under security profiles; not a new CSRF protocol.
 - Add adversarial scope-confusion, content-type, schema leak, and callback overclaim cases.
 
 ### M8 — Settings evaluation
@@ -73,6 +126,7 @@ The implementation has five one-way layers:
 - Compare source precedence/provenance, unknowns, secrets, digests, import I/O, paths, and rollback.
 - Adopt per package only if all compatibility and operations requirements pass; otherwise record
   `retain-custom-loader`.
+- Do not evaluate `hedron.config.HedronSettings`.
 
 ### M9 — Experimental research
 
@@ -87,4 +141,3 @@ The implementation has five one-way layers:
   matrices.
 - Update reference applications and packaged examples.
 - Cut only with zero hidden Deferred claims and explicit settings/research dispositions.
-

@@ -1,10 +1,29 @@
 # Phase 0.49 FastAPI/Pydantic capability and disposition inventory.
+# Stage 0 contract artifact (D-084). FailFast is research only.
 
 schema_version = 1
 phase = "0.49"
 status = "Planned"
+planning_baseline = "v0.48.0"
+required_predecessor = "v0.48.0"
+target = "v0.49.0"
 decision = "D-081"
+contract_refine = "D-084"
 owning_rfc = "RFC-0076"
+implementation = "docs/implementation/FASTAPI_PYDANTIC_CONVERGENCE_049.md"
+public_contract = "docs/api/FASTAPI_PYDANTIC_CONVERGENCE.md"
+lifetime_lock = "docs/acceptance/fastapi-lifetime-049.toml"
+binding_lock = "docs/acceptance/fastapi-binding-049.toml"
+typeschema_v2_lock = "docs/acceptance/typeschema-v2-049.toml"
+unions_openapi_lock = "docs/acceptance/fastapi-unions-openapi-049.toml"
+settings_research_lock = "docs/acceptance/fastapi-settings-research-049.toml"
+form_inventory = "docs/acceptance/type-form-inventory-044.toml"
+type_schema = "docs/acceptance/type-schema-044.toml"
+catalog_entry = "docs/acceptance/catalog-entry-045.toml"
+host_portable_facts = "docs/acceptance/host-portable-facts-045.toml"
+adapter_dispositions = "docs/acceptance/adapter-disposition-044.toml"
+upgrade_fixtures = "docs/acceptance/upgrade-fixtures-049.md"
+tracking = "#380"
 
 [[capability]]
 id = "FP-LIFETIME-001..008"
@@ -12,6 +31,7 @@ area = "dependency-lifetimes"
 gate = "LIFETIME-049"
 state = "Planned"
 adopt = ["yield-scope-function", "yield-scope-request", "cleanup-graph", "streaming-diagnostics"]
+hedron_to_fastapi = { HANDLER = "function", RESPONSE = "request" }
 
 [[capability]]
 id = "FP-BIND-001..012"
@@ -19,6 +39,8 @@ area = "parameter-models"
 gate = "BINDING-049"
 state = "Planned"
 adopt = ["query-model", "header-model", "cookie-model", "form-model", "expanded-fallback"]
+structural_plan = "BindingPlan"
+strategy_plan = "BoundaryBindingPlan"
 
 [[capability]]
 id = "FP-SCHEMA-001..012"
@@ -26,6 +48,7 @@ area = "dual-schema"
 gate = "SCHEMA-049"
 state = "Planned"
 adopt = ["validation-schema", "serialization-schema", "read-only", "write-only", "schema-generator"]
+additive_to = "docs/acceptance/type-schema-044.toml"
 
 [[capability]]
 id = "FP-UNION-001..010"
@@ -33,6 +56,7 @@ area = "tagged-wire-unions"
 gate = "UNION-049"
 state = "Planned"
 adopt = ["literal-discriminator", "openapi-discriminator", "cross-runtime-fixtures"]
+catalog_entry_kinds = ["view", "command"]
 
 [[capability]]
 id = "FP-OPENAPI-001..014"
@@ -40,13 +64,15 @@ area = "router-openapi-security"
 gate = "OPENAPI-049"
 state = "Planned"
 adopt = ["preserved-route-provenance", "typed-responses", "media-types", "callbacks", "webhooks", "requires-scopes", "strict-content-type", "stable-operation-ids"]
+related_gates = ["ROUTER-049", "SECURITY-049"]
 
 [[capability]]
 id = "FP-ADAPTER-001..008"
 area = "validation-adapters"
 gate = "ADAPTER-VALIDATION-049"
 state = "Planned"
-adopt_if_measured = ["cached-type-adapter", "validate-json", "fail-fast-batch"]
+adopt_if_measured = ["cached-type-adapter", "validate-json"]
+not_on_this_gate = ["fail-fast-batch"]
 
 [[capability]]
 id = "FP-SETTINGS-001..008"
@@ -55,6 +81,7 @@ gate = "SETTINGS-049"
 state = "Evaluate"
 candidates = ["fastapi-workbench", "hedron-workbench", "hedron-posit"]
 allowed_dispositions = ["adopt", "retain-custom-loader"]
+not_candidates = ["hedron", "hedron-core", "hedron.config.HedronSettings"]
 
 [[capability]]
 id = "FP-RESEARCH-001..006"
@@ -70,4 +97,3 @@ area = "deliberate-exclusions"
 gate = "COMPAT-049"
 state = "Excluded"
 excluded = ["router-alpha-matches-handle", "serialize-as-any-security-boundaries", "serialization-context-authorization", "validate-call-handler-runtime", "computed-field-form-input", "pydantic-url-replaces-safe-url", "fastapi-cloud-contract", "automatic-webhook-delivery", "automatic-oauth-provider", "experimental-missing-public-api"]
-
