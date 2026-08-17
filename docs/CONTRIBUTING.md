@@ -59,6 +59,7 @@ uv run --group docs mkdocs build --strict
 uv run python scripts/check_docs_train_ssot.py
 uv run python scripts/check_package_docs_inventory.py
 uv run python scripts/verify_pkg_46.py --allow-planned
+uv run python scripts/verify_pkg_47.py --allow-planned
 uv run python scripts/check_documentation_ownership.py
 uv run python scripts/check_api_docs_coverage.py
 uv run python scripts/check_package_readme_links.py
@@ -158,11 +159,11 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 |---|---|---|
 | `test` | `test` — `pytest -n auto` on Python 3.11–3.14 | Yes, unless **docs-only** |
 | `workbench-dependencies` | `workbench` — Workbench contract tests at minimum/latest Starlette/Uvicorn bounds | Yes, unless **docs-only** |
-| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS mirror `--check` (forbids extra roadmap files), docs train SSOT, recipe/sim checks, historical 0.36–0.38 packet shape, living `verify_pkg_46.py` cut, relative doc links, `mkdocs build --strict` | **Always** |
+| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS mirror `--check` (forbids extra roadmap files), docs train SSOT, recipe/sim checks, historical 0.36–0.38 packet shape, living `verify_pkg_46.py` cut, planned `verify_pkg_47.py --allow-planned`, relative doc links, `mkdocs build --strict` | **Always** |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
 | `realwb` | `realwb` — REALWB-030 Docker smoke (skips when `PWB_LICENSE` unset) | Yes, unless **docs-only** or fork PR |
 | `realconnect` | `realconnect` — REALCONNECT-033 Docker smoke (skips when `CONNECT_LICENSE` unset) | Yes, unless **docs-only** or fork PR |
-| `evidence` | `evidence` — Evidence bundle, dependency audit, configured release gate, historical `verify_pkg_*`, and living `verify_pkg_46.py` | Yes, unless **docs-only**; also on release |
+| `evidence` | `evidence` — Evidence bundle, dependency audit, configured release gate, historical `verify_pkg_*`, living `verify_pkg_46.py` cut, and planned `verify_pkg_47.py --allow-planned` | Yes, unless **docs-only**; also on release |
 | `release` (commit CI) | `packaging` — Packaging rehearsal plus living `verify_pkg_46.py` cut | After `evidence` succeeds (skipped when docs-only) |
 
 Local full parity: `bash scripts/ci_checks.sh all --python 3.12 --skip-browser` runs every

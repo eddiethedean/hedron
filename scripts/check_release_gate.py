@@ -52,6 +52,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.43": ROOT / "docs" / "acceptance" / "release-gate-0.43.toml",
     "0.44": ROOT / "docs" / "acceptance" / "release-gate-0.44.toml",
     "0.45": ROOT / "docs" / "acceptance" / "release-gate-0.45.toml",
+    "0.47": ROOT / "docs" / "acceptance" / "release-gate-0.47.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 # Includes historical ``release`` attestation used by older gate manifests.
@@ -96,6 +97,7 @@ _RECURSIVE_SCRIPT_NAMES = frozenset(
         "verify_pkg_44.py",
         "verify_pkg_45.py",
         "verify_pkg_46.py",
+        "verify_pkg_47.py",
         "ci_checks.sh",
     }
 )

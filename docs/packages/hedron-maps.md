@@ -6,6 +6,8 @@ description: Planned first-class interactive, custom-server, and offline maps fo
 
 **Status:** Planned for phase 0.47 · **Target:** independent Beta `0.1.0`
 
+Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`. No runtime.
+
 `hedron-maps` will provide a typed map grammar, deterministic compilation, a pinned MapLibre host,
 custom raster/vector tile sources, and static/offline basemaps while preserving Hedron's semantic
 fallback and application-owned security policy.

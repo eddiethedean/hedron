@@ -1,0 +1,92 @@
+# Phase 0.47 MapSpec / MapPlan / compile_map lock (MAP-SPEC-001).
+# Stage 0 contract artifact (D-082). Portable grammar compiles to inert redacted
+# plans; it is not a MapLibre public API and not a fingerprint authority.
+
+schema_version = 1
+phase = "0.47"
+status = "Planned"
+planning_baseline = "v0.46.0"
+required_predecessor = "v0.46.0"
+target = "v0.47.0"
+package_target = "hedron-maps 0.1.0"
+decision = "D-082"
+owning_rfc = "RFC-0074"
+gate = "SPEC-047"
+requirement = "MAP-SPEC-001"
+
+stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
+stacks_on_host = "docs/acceptance/host-portable-facts-045.toml"
+stacks_on_adapter = "docs/acceptance/adapter-disposition-044.toml"
+stacks_on_form = "docs/acceptance/type-form-inventory-044.toml"
+
+public_api = "compile_map"
+spec_type = "MapSpec"
+plan_type = "MapPlan"
+compile_signature = "compile_map(spec, policy=...) -> MapPlan"
+compile_io = "no I/O for already materialized specs"
+inert_json = true
+contains_secrets = false
+contains_callables = false
+contains_file_handles = false
+contains_executable_source = false
+fourth_fingerprint_authority = false
+descriptor_fingerprint_excludes = ["effect", "extensions"]
+type_schema_namespace = "hedron.type"
+diagnostic_family = "HED-MAP-SPEC-*"
+diagnostic_family_docs_only = true
+keep_existing_codes = ["HED-MAP-0001", "HED-MAP-0002", "HED-MAP-0003", "HED-MAP-0004"]
+
+[imports]
+hedron_maps = [
+    "MapSpec",
+    "MapPlan",
+    "compile_map",
+    "MapPolicy",
+    "MapStyle",
+    "MapTheme",
+    "ViewState",
+    "Bounds",
+]
+hedron_maps_portable_forbidden = [
+    "fastapi",
+    "maplibre",
+    "sqlite",
+    "network",
+]
+hedron = ["hedron[maps] extra"]
+hedron_core_consumed = [
+    "hedron.Map",
+    "sanitize_geojson",
+    "MarkerSpec",
+]
+
+[spec]
+schema_version = 1
+basemap = "optional Basemap or None"
+layers = "bounded ordered typed layer sequence"
+view = "ViewState or explicit fit policy"
+controls = "closed control placement declarations"
+interactions = "optional MapInteraction declarations"
+theme = "MapTheme tokens"
+accessibility = "title plus useful description or reviewed decorative disposition"
+failure = "owned loading/empty/unsupported/renderer/source/partial states"
+policy = "optional MapPolicy reference resolved before compilation"
+
+[plan]
+renderer = "pinned local strict-CSP MapLibre; not a public Python type"
+resources = "local asset references and exact remote origins"
+csp = "required directives derived from resource closure"
+attribution = "visible required attribution strings"
+fallback = "semantic title/description/feature table/actions"
+bounds = "normalized view, zoom, geographic bounds"
+limits = "Stage 1 measured public facts; Stage 0 names dimensions only"
+warnings = "non-secret operator diagnostics"
+fingerprints = "canonical JSON SHA-256 of redacted plan; does not hash credentials"
+redaction = "no secrets, userinfo, bearer tokens, or request-derived URLs"
+
+[authority]
+handles = "0.43 BaseHandleDescriptor remains route/security/runtime authority"
+type_schema = "0.44 TypeSchema remains typed-extension authority under hedron.type"
+catalog = "0.45 CatalogEntry indexes fingerprints only; maps do not reinterpret entries"
+maplibre_not_public_api = true
+numeric_limits = "Stage 1 evidence; do not invent unmeasured numbers here"

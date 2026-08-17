@@ -1,12 +1,28 @@
 # Phase 0.47 first-class maps capability inventory.
+# Stage 0 contract artifact, contract-refined by D-082 against Published in-tree
+# v0.46.0. Capability ranges stay; lock TOMLs freeze consume-shipped seams.
 
 schema_version = 1
 phase = "0.47"
 status = "Planned"
+planning_baseline = "v0.46.0"
+required_predecessor = "v0.46.0"
+target = "v0.47.0"
+package_target = "hedron-maps 0.1.0"
 decision = "D-078"
+contract_refine = "D-082"
 owning_rfc = "RFC-0074"
-package = "hedron-maps"
-package_target = "0.1.0"
+implementation = "docs/implementation/HEDRON_MAPS_047.md"
+public_contract = "docs/api/MAPS.md"
+map_spec_plan = "docs/acceptance/map-spec-plan-047.toml"
+map_provider_policy = "docs/acceptance/map-provider-policy-047.toml"
+map_offline = "docs/acceptance/map-offline-047.toml"
+map_interaction_compat = "docs/acceptance/map-interaction-compat-047.toml"
+catalog_entry = "docs/acceptance/catalog-entry-045.toml"
+host_portable_facts = "docs/acceptance/host-portable-facts-045.toml"
+adapter_dispositions = "docs/acceptance/adapter-disposition-044.toml"
+form_inventory = "docs/acceptance/type-form-inventory-044.toml"
+chart_interaction_pattern = "docs/acceptance/chart-interaction-046.toml"
 
 [[capability]]
 id = "MAP-SPEC-001..012"

@@ -9,7 +9,8 @@ This catalog is complete for the registered set enforced by
 `HED-TYPE-*` codes for type-driven authoring are documented under
 [HED-TYPE (0.44)](#hed-type-044). Catalog/projection codes are under
 [HED-CATALOG (0.45)](#hed-catalog-045) and [HED-PROJECTION (0.45)](#hed-projection-045).
-Feature-bundle codes are under [HED-BUNDLE (0.46)](#hed-bundle-046).
+Feature-bundle codes are under [HED-BUNDLE (0.46)](#hed-bundle-046). Maps families
+reserved for 0.47 are listed under [HED-MAP](#hed-map).
 
 ## Common errors (what to do)
 
@@ -325,6 +326,11 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-JOB-0001` | `HED_JOB_0001` |
 
 ## HED-MAP
+
+Shipped core map/GeoJSON codes (`HED-MAP-0001`–`0004`) remain the 0.15 compatibility surface.
+Phase 0.47 (D-082) reserves the following families in docs only until implementation assigns
+numbers: `HED-MAP-SPEC-*`, `HED-MAP-SOURCE-*`, `HED-MAP-STYLE-*`, `HED-MAP-POLICY-*`,
+`HED-MAP-OFFLINE-*`, `HED-MAP-RUNTIME-*`, `HED-MAP-EVENT-*`.
 
 | Code | Catalog symbol |
 |---|---|

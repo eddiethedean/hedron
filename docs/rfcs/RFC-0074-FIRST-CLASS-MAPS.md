@@ -3,16 +3,21 @@
 **Status:** Accepted<br>
 **Target phase:** 0.47 (`v0.47.0`)<br>
 **Decision:** D-078<br>
-**Planning baseline:** Published in-tree `v0.45.0`<br>
-**Required predecessor/cut baseline:** Published in-tree `v0.46.0`<br>
+**Stage 0 contract refine:** D-082<br>
+**Planning baseline:** Published in-tree `v0.46.0` (D-082; original Stage 0 baseline was Published in-tree `v0.45.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.46.0`<br>
 **Package target:** `hedron-maps` `0.1.0` (Beta for its declared Supported inventory)<br>
 **Extends:** RFC-0011, RFC-0012, RFC-0014, RFC-0018, RFC-0019, RFC-0020,
 RFC-0021, RFC-0023, RFC-0024, RFC-0025, RFC-0028, RFC-0033, RFC-0040,
 RFC-0051, RFC-0053, RFC-0056, RFC-0060, RFC-0070, RFC-0072, and RFC-0073
 
-**Revision:** 2026-08-16 — D-079 rebases 0.46 planning onto Published in-tree `v0.45.0`
-without changing this RFC's maps authority, planning baseline, Stage 0/1 gates, or
-`hedron-maps` `0.1.0` target.
+**Revision:** 2026-08-17 — D-082 contract refine against Published in-tree `v0.46.0`:
+planning baseline rebased; map-spec/plan, provider/policy, offline, and
+interaction/compat locks recorded; real 0.15 `hedron.Map` / 0.43–0.46
+handle/catalog/bundle seams named. D-078 maps authority, 15 gate IDs, and
+`hedron-maps` `0.1.0` stay in scope. 0.48/0.49 authority is unchanged. Prior:
+Stage 0 packet written against Published `v0.45.0` while 0.46 was planned.
+D-079 did not rebase this RFC. D-082 rebases planning facts only.
 
 ## Summary
 
@@ -239,6 +244,77 @@ not silently promote them.
 8. **Are map events authoritative?** No. They are untrusted command inputs.
 9. **Does the map replace accessible content?** No. Semantic alternatives are required.
 10. **What is the release baseline?** Verified 0.46 is required before Stage 1 or the 0.47 cut.
+    Original Stage 0 planning baseline was Published in-tree `v0.45.0`. **D-082** rebases the
+    living/planning baseline to Published in-tree `v0.46.0`.
+
+## Resolved questions (D-082)
+
+1. **Does 0.47 still include all 15 gates?** Yes. `SPEC-047`, `PROVIDER-047`, `OFFLINE-047`,
+   `RENDER-047`, `INTERACT-047`, `SECURITY-047`, `A11Y-047`, `BROWSER-047`, `PERF-047`,
+   `ADAPTER-047`, `TOOLING-047`, `COMPAT-047`, `DOCS-047`, `REGRESS-047`, and `PKG-047`
+   remain in scope. Do not split SPEC/PROVIDER/OFFLINE/RENDER into a later phase.
+2. **Does this refine change 0.48 or 0.49?** No. D-080 still requires Verified 0.47 before
+   its Stage 1. D-081 still requires Verified 0.48.
+3. **Which shipped seams does 0.47 consume?** Core `hedron.Map`, sanitizer `GeoJSONLayer`,
+   `MarkerSpec`, `sanitize_geojson`, `tile_allowlist`, and `HED-MAP-0001`–`0004` from
+   `hedron_core.builtins.map_geo`. Core `Map` keeps **no** OSM default. Viewport events
+   stack on `MAP_VIEWPORT_TRIGGER = "map.viewport"`. Interaction stack:
+   `FragmentHandle[BindT, ContentT]`, `ActionHandle[InputT, ResultT]`,
+   `BoundFragment[ContentT]`, `Patch[ContentT]`, `BaseHandleDescriptor`,
+   `descriptor_fingerprint` (does **not** hash `effect` or `extensions`), `TypeSchema`
+   under `hedron.type`, `Hedron.include_component` / `include_feature` /
+   `Hedron.interactions`, `compile_interaction_catalog` / `seal_app_catalog` after
+   `seal_registry`, `InteractionCatalog` / `CatalogEntry` / `PackageProjection`,
+   `FeatureBundle` (not an executor), `AppScenario`. Flask/Django remain
+   `projection_adapter` stacked on
+   [adapter-disposition-044.toml](../acceptance/adapter-disposition-044.toml) and
+   [host-portable-facts-045.toml](../acceptance/host-portable-facts-045.toml).
+4. **`hedron.Map` vs `hedron_maps.Map`?** `from hedron import Map` is unchanged.
+   `hedron_maps.Map` is additive. An optional compatibility constructor may accept
+   `tiles`/`tile_allowlist`/`markers`/`geojson` and compile to the same semantic
+   fallback. No existing call silently gains remote access or MapLibre assets.
+   Migration of `tiles` plus `tile_allowlist` to `RasterTiles` plus `MapPolicy` is
+   documented, never implicit.
+5. **Two `GeoJSONLayer` names?** Keep both. Core `hedron_core.GeoJSONLayer` remains the
+   sanitizer wrapper. `hedron_maps.GeoJSONLayer` is a typed layer. Docs always qualify
+   the module. Reuse `sanitize_geojson`; do not fork feature/coordinate budgets.
+6. **Is `MapInteraction` a new type?** Yes, in `hedron-maps`. It is the ChartInteraction
+   analog: untrusted Pydantic event payloads to a registered `ActionHandle` plus
+   `Refreshes`/`Updates`. Do **not** reuse `ChartInteraction` or invent a fourth
+   fingerprint authority. Pattern lock remains
+   [chart-interaction-046.toml](../acceptance/chart-interaction-046.toml). Event lock:
+   [map-interaction-compat-047.toml](../acceptance/map-interaction-compat-047.toml).
+7. **Where do symbols live?** Portable `MapSpec`, `MapPlan`, `compile_map`, policy,
+   layers, and events in `hedron-maps` depending on `hedron-core` only. No FastAPI,
+   MapLibre, sqlite, or network imports in portable models. Flagship extra
+   `hedron[maps]`. MBTiles archive **routes** owned by flagship/adapters. Optional
+   `FeatureBundle` / `Hedron.include_feature` for declared archive/proxy features;
+   maps may add a namespaced `PackageProjection`. Not a `FeatureManifest`.
+8. **Renderer host?** ABI-conforming `hedron-map` consuming a bounded `MapPlan` behind
+   the existing Web Component / HTMX swap-dispose lifecycle. Do **not** adopt charts’
+   `[data-hedron-chart="maplibre"]` host as the Supported maps renderer.
+   `hedron-charts` MapLibre/Folium/PyDeck adapters stay explicit Experimental.
+9. **OSM default?** Versioned `OpenStreetMap.standard()` is the `hedron_maps.Map()`
+   default only. Lock preset id `openstreetmap-standard`, visible
+   `© OpenStreetMap contributors` attribution, HTTPS raster template, and closed
+   placeholders `{z}`, `{x}`, `{y}` plus opt-in scale/subdomain. The exact tile URL is
+   a versioned preset field, replaceable, and not an SLA. Do not retrofit OSM onto
+   core `hedron.Map`. Lock:
+   [map-provider-policy-047.toml](../acceptance/map-provider-policy-047.toml).
+10. **`tile_allowlist` vs `MapPolicy`?** Core `Map` keeps `tile_allowlist`. Maps
+    compilation uses `MapPolicy.allowed_origins` plus derived exact origins. Spec/plan
+    lock: [map-spec-plan-047.toml](../acceptance/map-spec-plan-047.toml).
+11. **Which diagnostic family?** Keep `HED-MAP-0001`–`0004`. Reserve `HED-MAP-SPEC-*`,
+    `HED-MAP-SOURCE-*`, `HED-MAP-STYLE-*`, `HED-MAP-POLICY-*`, `HED-MAP-OFFLINE-*`,
+    `HED-MAP-RUNTIME-*`, and `HED-MAP-EVENT-*` in docs only. Do not assign new numbers
+    during this refine.
+12. **What does Stage 1 still own?** Numeric limits, perf budgets, vendored MapLibre
+    version (do **not** inherit charts’ experimental 4.5.0 as the Supported pin),
+    tracking issue, and the `hedron-maps` package scaffold. Offline lock:
+    [map-offline-047.toml](../acceptance/map-offline-047.toml).
+13. **May Stage 1 start before the 0.46 PyPI/Git tag?** Yes for in-tree Verified 0.46
+    evidence. A tracking issue is still required. Do not wait on `#334` publish assets.
+    Do not start Stage 1 during this contract refine.
 
 ## Acceptance criteria
 

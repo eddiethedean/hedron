@@ -1,10 +1,27 @@
 # Hedron `v0.47` first-class maps acceptance
 
-**Status:** Planned; Stage 0 requirements packet complete<br>
-**Planning baseline:** Published in-tree `v0.45.0`<br>
+**Status:** Planned; Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`<br>
+**Planning baseline:** Published in-tree `v0.46.0` (D-082; original Stage 0 baseline was Published in-tree `v0.45.0`)<br>
 **Required predecessor/cut baseline:** Verified `v0.46.0`<br>
 **Targets:** Hedron `v0.47.0`; `hedron-maps` `0.1.0` Beta<br>
-**Decision/RFC:** D-078 / [RFC-0074](../rfcs/RFC-0074-FIRST-CLASS-MAPS.md)
+**Decision/RFC:** D-078, refined by D-082 / [RFC-0074](../rfcs/RFC-0074-FIRST-CLASS-MAPS.md)
+
+D-082 rebases planning onto shipped `hedron.Map` / `sanitize_geojson` / `MAP_VIEWPORT_TRIGGER`,
+0.43 `ActionHandle`, 0.44 `hedron.type`, 0.45 catalog/projection, and 0.46 `FeatureBundle` /
+`ChartInteraction` pattern seams. It does not authorize Stage 1. `MapInteraction` is the maps
+event binding. `OpenStreetMap.standard()` is the `hedron_maps.Map` default only.
+
+Implementation requirements:
+[HEDRON_MAPS_047](../implementation/HEDRON_MAPS_047.md). Public contract:
+[MAPS](../api/MAPS.md). Capability inventory:
+[`map-capability-inventory-047.toml`](map-capability-inventory-047.toml).
+Spec/plan, provider/policy, offline, and interaction/compat locks:
+[`map-spec-plan-047.toml`](map-spec-plan-047.toml),
+[`map-provider-policy-047.toml`](map-provider-policy-047.toml),
+[`map-offline-047.toml`](map-offline-047.toml),
+[`map-interaction-compat-047.toml`](map-interaction-compat-047.toml).
+Evidence index: [`release-gate-0.47.toml`](release-gate-0.47.toml). Upgrade fixtures:
+[upgrade-fixtures-047](upgrade-fixtures-047.md).
 
 ## Release contract
 
@@ -44,6 +61,7 @@
 - [x] API, package, implementation, inventory, gate, release, upgrade, roadmap, decision, and index
   artifacts exist.
 - [x] Stage 0 changes documentation/contracts only; no runtime/package/version availability claim.
+- [x] D-082 rebases planning onto Published in-tree `v0.46.0` without runtime/version claim.
 - [ ] Verified 0.46 and a tracking issue are bound before Stage 1.
 - [ ] Stage 1 measures and locks all default limits and performance budgets.
 

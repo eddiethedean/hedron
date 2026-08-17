@@ -1,0 +1,74 @@
+# Phase 0.47 offline and file-backed path lock (MAP-OFFLINE-001).
+# Stage 0 contract artifact (D-082). Four first-class paths plus OfflineMapBundle.
+# MBTiles is a declared archive route, not a general tile server.
+
+schema_version = 1
+phase = "0.47"
+status = "Planned"
+planning_baseline = "v0.46.0"
+required_predecessor = "v0.46.0"
+target = "v0.47.0"
+package_target = "hedron-maps 0.1.0"
+decision = "D-082"
+owning_rfc = "RFC-0074"
+gate = "OFFLINE-047"
+requirement = "MAP-OFFLINE-001"
+
+stacks_on_spec = "docs/acceptance/map-spec-plan-047.toml"
+stacks_on_provider = "docs/acceptance/map-provider-policy-047.toml"
+diagnostic_family = "HED-MAP-OFFLINE-*"
+diagnostic_family_docs_only = true
+
+file_uri_browser_access = false
+general_tile_server = false
+offline_prefetch_against_public_services = false
+mbtiles_request_path = false
+portable_models_own_routes = false
+
+supported_paths = [
+    "static-image",
+    "pmtiles-raster",
+    "pmtiles-vector",
+    "bounded-mbtiles",
+    "blank-map",
+    "offline-bundle",
+]
+
+[static_image]
+type = "StaticImage"
+formats = ["PNG", "JPEG", "WebP", "AVIF"]
+bounds = "declared geographic bounds or non-georeferenced accessible image"
+overlays = "optional SVG/DOM overlays; no executable HTML"
+
+[pmtiles]
+type = "PMTiles"
+access = "same-origin HTTP Range-capable packaged asset"
+vector_resources = "style/sprites/glyphs must resolve locally unless policy explicitly permits remote origins"
+
+[mbtiles]
+type = "MBTiles"
+access = "declared server-local archive through a bounded same-origin cache-aware application route"
+path_source = "construction-time declared handle; never a filesystem path from a request"
+routes_owned_by = "hedron flagship / host adapters"
+registration = "optional FeatureBundle / Hedron.include_feature; not FeatureManifest"
+integer_xyz_only = true
+no_path_or_sql_concatenation = true
+
+[blank_map]
+basemap = "None"
+valid_for = ["floor plans", "site maps", "fictional geography", "privacy-sensitive overlays"]
+
+[offline_map_bundle]
+type = "OfflineMapBundle"
+manifest_fields = [
+    "archive_or_image",
+    "style",
+    "sprites",
+    "glyphs",
+    "attribution",
+    "hashes",
+    "bounds",
+    "packaging_metadata",
+]
+air_gap = "network denied; fail on any undeclared external reference"
+browser_access = "same-origin asset routes only"

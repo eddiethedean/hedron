@@ -11,7 +11,7 @@ Capability maturity for *this* train: [What’s ready](whats-ready.md).
 
 | Topic | Disposition |
 |---|---|
-| First-class maps (`hedron-maps`, MapLibre, offline tiles) | **0.47 Planned** — no runtime or version claim yet |
+| First-class maps (`hedron-maps`, MapLibre, offline tiles) | **0.47 Planned** (D-082 Stage 0 refine) — no runtime or version claim yet |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |

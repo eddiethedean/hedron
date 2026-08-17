@@ -1,6 +1,6 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.46 **Published** as `v0.46.0` (2026-08-16). Phases 0.47 first-class maps (D-078 / RFC-0074), 0.48 HTMX extension integration (D-080 / RFC-0075), and 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) are **Planned**. No 0.47–0.49 runtime or version claim.
+**Roadmap position:** phase 0.46 **Published** as `v0.46.0` (2026-08-16). Phases 0.47 first-class maps (D-078 / D-082 / RFC-0074), 0.48 HTMX extension integration (D-080 / RFC-0075), and 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) are **Planned**. No 0.47–0.49 runtime or version claim.
 Living tip = `v0.46.0`.
 **Date:** 2026-08-16
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -25,7 +25,8 @@ composition / **0.40** authoring / **0.39** rich data /
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
 Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
-Phase **0.47** follows only after Verified 0.46. Its complete Stage 0 packet plans optional
+Phase **0.47** follows only after Verified 0.46. Its Stage 0 packet is contract-refined by
+D-082 against Published in-tree `v0.46.0` and plans optional
 `hedron-maps` `0.1.0`, a replaceable OSM default, custom raster/vector sources, pinned strict-CSP
 MapLibre, typed interactions, semantic fallback, and static/PMTiles/MBTiles/blank-map air-gapped
 paths. All `release-gate-0.47.toml` rows remain Planned and require a tracking issue before Stage 1.
@@ -393,7 +394,8 @@ Phase **0.46** package-native typed workflows is **Published** as `v0.46.0` (D-0
 `release-gate-0.46.toml` Verified; [#334](https://github.com/eddiethedean/hedron/issues/334); see
 [implementation requirements](implementation/PACKAGE_NATIVE_WORKFLOWS_046.md) and
 [acceptance packet](acceptance/RELEASE_0_46.md)). Living tip is **`v0.46.0`**.
-Phase **0.47** first-class maps remains **Planned** (D-078 / RFC-0074; fence only).
+Phase **0.47** first-class maps remains **Planned** (D-078 / D-082 / RFC-0074; Stage 0 contract
+refined against Published in-tree `v0.46.0`; fence only).
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

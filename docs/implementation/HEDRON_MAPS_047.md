@@ -1,11 +1,34 @@
 # `hedron-maps` implementation plan (phase 0.47)
 
-**Status:** Planned; Stage 0 requirements<br>
-**Decision/RFC:** D-078 / [RFC-0074](../rfcs/RFC-0074-FIRST-CLASS-MAPS.md)<br>
+**Status:** Planned; Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`<br>
+**Decision/RFC:** D-078, refined by D-082 / [RFC-0074](../rfcs/RFC-0074-FIRST-CLASS-MAPS.md)<br>
+**Planning baseline:** Published in-tree `v0.46.0`<br>
 **Target:** Hedron `v0.47.0`; independent `hedron-maps` `0.1.0` Beta<br>
 **Required predecessor:** Verified `v0.46.0`
 
+D-082 does not authorize Stage 1. It names shipped seams `hedron.Map`, `sanitize_geojson`,
+`MAP_VIEWPORT_TRIGGER`, `ActionHandle`, `Hedron.include_feature`, and catalog projections.
+`MapInteraction` is the ChartInteraction analog. `OpenStreetMap.standard()` is the
+`hedron_maps.Map` default only.
+
+## Consume shipped, do not fork
+
+- Core `hedron.Map` / sanitizer `GeoJSONLayer` / `MarkerSpec` / `sanitize_geojson` /
+  `tile_allowlist` / `HED-MAP-0001`–`0004`. Core `Map` has no OSM default.
+- `MAP_VIEWPORT_TRIGGER = "map.viewport"` — `ViewportChanged` stacks on this dialect.
+- 0.43–0.46 handles, `TypeSchema` under `hedron.type`, `InteractionCatalog` /
+  `PackageProjection`, `FeatureBundle` (not an executor), `Hedron.include_component` /
+  `include_feature` / `interactions`.
+- Element ABI / HTMX swap-dispose. Do **not** adopt `[data-hedron-chart="maplibre"]` as the
+  Supported maps renderer.
+
+Lock files: [map-spec-plan-047.toml](../acceptance/map-spec-plan-047.toml),
+[map-provider-policy-047.toml](../acceptance/map-provider-policy-047.toml),
+[map-offline-047.toml](../acceptance/map-offline-047.toml),
+[map-interaction-compat-047.toml](../acceptance/map-interaction-compat-047.toml).
+
 ## Architecture
+
 
 The package has five layers with one-way dependencies:
 
@@ -132,8 +155,10 @@ implementation and error-code documentation.
 
 ## Stage ordering
 
-- **Stage 0:** accepted contracts, complete planning packet, no runtime/version claim.
+- **Stage 0:** accepted contracts, complete planning packet, D-082 consume-shipped locks,
+  no runtime/version claim.
 - **Stage 1:** after Verified 0.46 and a tracking issue; measure baselines and implement M1–M3.
+  Do not start Stage 1 during the D-082 contract refine.
 - **Stage 2:** M4–M7 browser/offline/security vertical slices.
 - **Stage 3:** M8–M9 whole-matrix evidence, docs, package/release rehearsal.
 - **Cut:** every 0.47 gate Verified with zero Deferred; tag Hedron `v0.47.0` and publish

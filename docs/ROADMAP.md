@@ -44,7 +44,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Published** (`v0.44.0`; in-tree cut, tag/PyPI deferred; D-072 / RFC-0071; [#318](https://github.com/eddiethedean/hedron/issues/318)) |
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
-| **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Planned** (`v0.47.0` / `hedron-maps` `0.1.0`; D-078 / RFC-0074; requires Published 0.46 and a tracking issue before Stage 1; no 0.47 runtime) |
+| **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Planned** (`v0.47.0` / `hedron-maps` `0.1.0`; D-078 / D-082 / RFC-0074; Stage 0 contract refined against Published in-tree `v0.46.0`; requires a tracking issue before Stage 1; no 0.47 runtime) |
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Planned** (`v0.48.0`; D-080 / RFC-0075; requires Verified 0.47 and a tracking issue before Stage 1; no 0.48 runtime) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Planned** (`v0.49.0`; D-081 / RFC-0076; requires Verified 0.48 and a tracking issue before Stage 1; no 0.49 runtime) |
 
@@ -3858,10 +3858,11 @@ Bundle/workspace/chart locks:
 
 ## 0.47 — First-class maps and offline geospatial presentation (`v0.47.0`)
 
-**Status:** Planned (D-078 /
+**Status:** Planned (D-078 / D-082 /
 [RFC-0074](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0074-FIRST-CLASS-MAPS.md)).
-Verified `v0.46.0` is the hard Stage 1 prerequisite and cut baseline. A tracking issue must bind
-every 0.47 gate before runtime implementation begins. Stage 0 changes planning contracts only.
+Stage 0 contract refined against Published in-tree `v0.46.0`. Verified `v0.46.0` is the hard
+Stage 1 prerequisite and cut baseline. A tracking issue must bind every 0.47 gate before
+runtime implementation begins. Stage 0 changes planning contracts only.
 
 **Outcome:** The new optional `hedron-maps` package makes maps a first-class Hedron experience.
 Beginners get an attributed, replaceable OpenStreetMap map with one call. Applications can use
@@ -4210,7 +4211,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Pydantic boundary models, `Annotated` source/sensitivity/identity/control/effect markers, and generic specialization | 0.44 | Explicit model-driven validation and typing over Published 0.43 through its public adapter/descriptor seams; dependencies stay injection-owned and annotations never trigger hidden effects (RFC-0071 / D-072 / D-073 / D-076). |
 | Sealed interaction catalog, manifest, package projections, and fleet dispositions | 0.45 | Read-only convergence over Verified 0.43/0.44 authority; trusted/static tooling, adapters, packages, portable fixtures, remote/deployment consumers, and no third runtime schema (RFC-0072 / D-074 / D-077). |
 | Package feature bundles, data workspaces, linked charts, enhanced elements, and explicit remote workflows | 0.46 | Opt-in package-native features compile to the 0.43–0.45 stack with explicit policy, overrides/ejection, native fallbacks, and no package workflow executor (RFC-0073 / D-075 / D-079). |
-| First-class custom-server and offline maps | 0.47 | Optional `hedron-maps` compiles typed basemaps/sources/layers/styles/events to a deterministic plan, pinned strict-CSP MapLibre enhancement, semantic fallback, and OSM/custom/static/PMTiles/bounded-MBTiles/blank-map paths (RFC-0074 / D-078). |
+| First-class custom-server and offline maps | 0.47 | Optional `hedron-maps` compiles typed basemaps/sources/layers/styles/events to a deterministic plan, pinned strict-CSP MapLibre enhancement, semantic fallback, and OSM/custom/static/PMTiles/bounded-MBTiles/blank-map paths (RFC-0074 / D-078 / D-082). |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
 | Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |
 | Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |

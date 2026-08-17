@@ -1,87 +1,119 @@
 # Phase 0.47 first-class maps release evidence index.
-# Stage 0 contract artifact; all gates remain Planned until evidence is attached.
+# Stage 0 contract artifact, contract-refined by D-082 against Published in-tree
+# v0.46.0. Commands remain reserved names until Stage 1.
 
 schema_version = 1
 phase = "0.47"
 status = "Planned"
-planning_baseline = "v0.45.0"
+planning_baseline = "v0.46.0"
 required_predecessor = "v0.46.0"
 target = "v0.47.0"
 package_target = "hedron-maps 0.1.0"
 decision = "D-078"
+contract_refine = "D-082"
 owning_rfc = "RFC-0074"
 
-[[gate]]
+[[evidence]]
 id = "SPEC-047"
-status = "Planned"
-summary = "Typed closed map grammar and deterministic MapPlan compilation."
+state = "Planned"
+command = "python scripts/check_spec_047.py"
+ci_job = "test"
+owner = "hedron-maps"
 
-[[gate]]
+[[evidence]]
 id = "PROVIDER-047"
-status = "Planned"
-summary = "OSM default and custom raster/vector provider correctness and operations."
+state = "Planned"
+command = "python scripts/check_provider_047.py"
+ci_job = "test"
+owner = "hedron-maps"
 
-[[gate]]
+[[evidence]]
 id = "OFFLINE-047"
-status = "Planned"
-summary = "Static image, PMTiles, bounded MBTiles, blank-map, bundle, and air-gap evidence."
+state = "Planned"
+command = "python scripts/check_offline_047.py"
+ci_job = "test"
+owner = "hedron-maps"
 
-[[gate]]
+[[evidence]]
 id = "RENDER-047"
-status = "Planned"
-summary = "Pinned strict-CSP MapLibre rendering, failure behavior, and lifecycle."
+state = "Planned"
+command = "python scripts/check_render_047.py"
+ci_job = "browser"
+owner = "hedron-maps"
 
-[[gate]]
+[[evidence]]
 id = "INTERACT-047"
-status = "Planned"
-summary = "Typed bounded feature and viewport interactions through ordinary commands."
+state = "Planned"
+command = "python scripts/check_interact_047.py"
+ci_job = "test"
+owner = "hedron-maps"
 
-[[gate]]
+[[evidence]]
 id = "SECURITY-047"
-status = "Planned"
-summary = "Egress/style/resource closure, secrets, SSRF, archive, CSP, privacy, and adversarial review."
+state = "Planned"
+command = "python scripts/check_security_047.py"
+ci_job = "test"
+owner = "hedron"
 
-[[gate]]
+[[evidence]]
 id = "A11Y-047"
-status = "Planned"
-summary = "Semantic alternatives, keyboard/gesture/focus/visual behavior, and scoped AT evidence."
+state = "Planned"
+command = "python scripts/check_a11y_047.py"
+ci_job = "browser"
+owner = "hedron"
 
-[[gate]]
+[[evidence]]
 id = "BROWSER-047"
-status = "Planned"
-summary = "Three-engine enhanced/fallback/failure/swap/race/cancellation/cleanup evidence."
+state = "Planned"
+command = "python scripts/check_browser_047.py"
+ci_job = "browser"
+owner = "hedron"
 
-[[gate]]
+[[evidence]]
 id = "PERF-047"
-status = "Planned"
-summary = "Asset, render, request, data, memory, archive, lifecycle, and no-opt-in budgets."
+state = "Planned"
+command = "python scripts/check_perf_047.py"
+ci_job = "test"
+owner = "hedron-maps"
 
-[[gate]]
+[[evidence]]
 id = "ADAPTER-047"
-status = "Planned"
-summary = "Portable host, mount, asset, CSP, archive, authorization, and caching behavior."
+state = "Planned"
+command = "python scripts/check_adapter_047.py"
+ci_job = "test"
+owner = "hedron"
 
-[[gate]]
+[[evidence]]
 id = "TOOLING-047"
-status = "Planned"
-summary = "Explorer, CLI, scenario, conformance, and simulation map facts and tests."
+state = "Planned"
+command = "python scripts/check_tooling_047.py"
+ci_job = "test"
+owner = "hedron-explorer"
 
-[[gate]]
+[[evidence]]
 id = "COMPAT-047"
-status = "Planned"
-summary = "Core Map and chart adapter compatibility, optionality, migration, skew, and rollback."
+state = "Planned"
+command = "python scripts/check_compat_047.py"
+ci_job = "test"
+owner = "hedron-core"
 
-[[gate]]
+[[evidence]]
 id = "DOCS-047"
-status = "Planned"
-summary = "Complete author, operator, security, accessibility, offline, and migration documentation."
+state = "Planned"
+command = "python scripts/check_docs_047.py"
+ci_job = "quality"
+owner = "hedron"
 
-[[gate]]
+[[evidence]]
 id = "REGRESS-047"
-status = "Planned"
-summary = "Full Supported regression suite and zero unresolved phase-owned blocker/high issues."
+state = "Planned"
+command = "python scripts/check_regress_047.py"
+ci_job = "test"
+owner = "hedron"
 
-[[gate]]
+[[evidence]]
 id = "PKG-047"
-status = "Planned"
-summary = "Clean package, vendored assets/licenses, SBOM/provenance, matrices, and release rehearsal."
+state = "Planned"
+command = "python scripts/check_pkg_047.py"
+ci_job = "packaging"
+owner = "hedron-maps"

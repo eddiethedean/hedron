@@ -6,8 +6,9 @@ status: planned
 
 !!! warning "Planned 0.47 contract"
 
-    This is the accepted D-078 / RFC-0074 public contract. No `hedron-maps` runtime or package is
-    available until the 0.47 gates are Verified.
+    This is the accepted D-078 / RFC-0074 public contract, refined by D-082 against
+    Published in-tree `v0.46.0`. No `hedron-maps` runtime or package is available until
+    the 0.47 gates are Verified.
 
 Install target (not available until the 0.47 gates are Verified):
 
@@ -15,6 +16,14 @@ Install target (not available until the 0.47 gates are Verified):
 - independently versioned `hedron-maps` `>=0.1.0,<0.2`
 
 Do not install either extra on the living 0.46 train.
+
+## Consume shipped 0.46 seams
+
+`hedron.Map`, `sanitize_geojson`, `MarkerSpec`, and `MAP_VIEWPORT_TRIGGER` stay in
+`hedron-core`. `ActionHandle`, `Hedron.include_feature`, and catalog projections stay on
+the 0.43–0.46 stack. `MapInteraction` binds untrusted map events to a registered
+`ActionHandle` plus `Refreshes`/`Updates`. `OpenStreetMap.standard()` is the
+`hedron_maps.Map` default only; core `Map` keeps no OSM default.
 
 ## Beginner map
 
@@ -89,20 +98,23 @@ sprites, glyphs, attribution, and hashes form a closed local resource set.
 | `MapStyle`, `MapTheme` | Safe style subset and Hedron presentation tokens |
 | `ViewState`, `Bounds` | Initial camera, fit, bounds, padding, and zoom constraints |
 | `MarkerLayer`, `GeoJSONLayer`, `LineLayer`, `PolygonLayer`, `CircleLayer`, `RasterLayer` | Initial closed layer inventory |
-| typed map events | Untrusted feature/viewport inputs mapped to ordinary commands |
+| `MapInteraction` plus typed map events | Untrusted feature/viewport inputs mapped to ordinary commands |
 | `OfflineMapBundle` | Validate and package a closed local map asset set |
 
 ## Renderer and fallback
 
-The enhanced renderer is a pinned local strict-CSP MapLibre host. MapLibre classes, options,
-callbacks, and arbitrary style expressions are not public Hedron APIs. Every map renders a useful
-semantic title, description, attribution, and feature/action alternative before enhancement.
+The enhanced renderer is a pinned local strict-CSP MapLibre host behind `hedron-map`.
+MapLibre classes, options, callbacks, and arbitrary style expressions are not public
+Hedron APIs. Do not treat charts’ `[data-hedron-chart="maplibre"]` host as this
+Supported renderer. Every map renders a useful semantic title, description,
+attribution, and feature/action alternative before enhancement.
 
 ## Existing `hedron.Map`
 
 `from hedron import Map` remains the core policy-bounded presentation component. Existing
 `tiles`/`tile_allowlist`, markers, and GeoJSON calls remain valid. `hedron_maps.Map` is additive and
-compiles to the compatible semantic boundary.
+compiles to the compatible semantic boundary. Core sanitizer `GeoJSONLayer` and maps
+`GeoJSONLayer` keep their names in their modules; docs always qualify the import.
 
 See [RFC-0074](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0074-FIRST-CLASS-MAPS.md)
 and the [implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_MAPS_047.md).

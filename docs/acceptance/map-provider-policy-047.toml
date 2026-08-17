@@ -1,0 +1,65 @@
+# Phase 0.47 provider catalog and MapPolicy origin-closure lock (MAP-PROVIDER-001).
+# Stage 0 contract artifact (D-082). OSM is a replaceable default on hedron_maps.Map
+# only; core hedron.Map keeps tile_allowlist and no OSM default.
+
+schema_version = 1
+phase = "0.47"
+status = "Planned"
+planning_baseline = "v0.46.0"
+required_predecessor = "v0.46.0"
+target = "v0.47.0"
+package_target = "hedron-maps 0.1.0"
+decision = "D-082"
+owning_rfc = "RFC-0074"
+gate = "PROVIDER-047"
+requirement = "MAP-PROVIDER-001"
+
+stacks_on_spec = "docs/acceptance/map-spec-plan-047.toml"
+core_allowlist = "hedron.Map.tile_allowlist"
+maps_origin_policy = "MapPolicy.allowed_origins"
+diagnostic_family = "HED-MAP-SOURCE-*"
+policy_diagnostic_family = "HED-MAP-POLICY-*"
+diagnostic_family_docs_only = true
+
+supported_source_kinds = [
+    "openstreetmap-standard",
+    "xyz-raster",
+    "tilejson",
+    "mvt-vector",
+]
+
+core_map_osm_default = false
+request_derived_urls = false
+credentials_in_urls = false
+sla_claim = false
+bulk_prefetch = false
+
+[osm]
+preset = "OpenStreetMap.standard()"
+preset_id = "openstreetmap-standard"
+attribution = "© OpenStreetMap contributors"
+scheme = "https"
+template_kind = "raster"
+tile_url = "versioned preset field; replaceable; not a community-CDN SLA"
+no_bulk_prefetch = true
+ordinary_browser_caching = true
+
+[placeholders]
+required = ["{z}", "{x}", "{y}"]
+opt_in = ["scale", "subdomain"]
+unsupported = "any other interpolation, callbacks, or query templates"
+
+[policy]
+type = "MapPolicy"
+allowed_origins = "exact HTTPS origins; compilation derives remaining resource origins"
+https_remote_production = true
+local_asset_roots = "declared ids/roots only"
+allowed_source_kinds = "closed inventory above"
+remote_requests_permitted = "explicit policy flag; default fail-closed for undeclared origins"
+core_tile_allowlist_unchanged = true
+
+[custom]
+xyz = "RasterTiles with structural URL parse, exact origin, attribution, zoom/bounds/tile metadata"
+tilejson = "TileJSON with origin/style-resource graph closure"
+mvt = "VectorTiles plus locked safe MapLibre style subset"
+commercial_providers = "not silently bundled; third parties use plugin/projection contracts"

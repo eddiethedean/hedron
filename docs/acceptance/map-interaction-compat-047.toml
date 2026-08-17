@@ -1,0 +1,95 @@
+# Phase 0.47 MapInteraction, viewport dialect, and compatibility lock (MAP-EVENT-001).
+# Stage 0 contract artifact (D-082). Events are untrusted command inputs stacked on
+# shipped 0.43–0.46 handles. Core hedron.Map remains the semantic fallback.
+
+schema_version = 1
+phase = "0.47"
+status = "Planned"
+planning_baseline = "v0.46.0"
+required_predecessor = "v0.46.0"
+target = "v0.47.0"
+package_target = "hedron-maps 0.1.0"
+decision = "D-082"
+owning_rfc = "RFC-0074"
+gate = "INTERACT-047"
+requirement = "MAP-EVENT-001"
+compat_gate = "COMPAT-047"
+
+stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
+stacks_on_chart_pattern = "docs/acceptance/chart-interaction-046.toml"
+stacks_on_spec = "docs/acceptance/map-spec-plan-047.toml"
+
+public_api = "MapInteraction"
+reuse_chart_interaction = false
+fourth_fingerprint_authority = false
+effects = "Refreshes / Updates on registered handles"
+payloads = "untrusted Pydantic input to a registered ActionHandle"
+viewport_trigger = "map.viewport"
+viewport_trigger_symbol = "hedron_core.cross_filter.MAP_VIEWPORT_TRIGGER"
+sanitize_geojson = "hedron_core.builtins.map_geo.sanitize_geojson"
+keep_existing_codes = ["HED-MAP-0001", "HED-MAP-0002", "HED-MAP-0003", "HED-MAP-0004"]
+diagnostic_family = "HED-MAP-EVENT-*"
+diagnostic_family_docs_only = true
+
+supported_event_values = [
+    "feature-selected",
+    "feature-activated",
+    "viewport-changed",
+    "layer-visibility-changed",
+    "map-loaded",
+    "map-failed",
+]
+
+event_payload_types = [
+    "FeatureSelected",
+    "FeatureActivated",
+    "ViewportChanged",
+    "LayerVisibilityChanged",
+    "MapLoaded",
+    "MapFailed",
+]
+
+[compile]
+command = "registered ActionHandle"
+refreshes = "explicit handle logical ids; map camera state is not authorization"
+keyboard_tabular = "equivalent command/table/link path required for Supported feature actions"
+no_callbacks = true
+no_frame_streaming = true
+viewport = "coalesced/debounced ViewportChanged stacked on MAP_VIEWPORT_TRIGGER"
+
+[compat]
+core_map = "from hedron import Map remains unchanged"
+core_constructor = "center, zoom, width, height, tile_allowlist, tiles, attribution, markers, geojson, max_features"
+core_osm_default = false
+maps_map = "hedron_maps.Map is additive"
+compatibility_constructor = "optional tiles/tile_allowlist/markers/geojson on hedron_maps.Map; compiles to the same semantic fallback; never silent remote/MapLibre"
+geojson_layer_core = "hedron_core.GeoJSONLayer sanitizer wrapper"
+geojson_layer_maps = "hedron_maps.GeoJSONLayer typed layer"
+docs_must_qualify_geojson_layer = true
+migration = "tiles + tile_allowlist -> RasterTiles + MapPolicy; documented, never implicit"
+
+[host]
+supported_element = "hedron-map"
+consumes = "bounded MapPlan"
+lifecycle = "existing Web Component ABI and HTMX before-swap/after-swap dispose"
+charts_maplibre_host = "[data-hedron-chart=\"maplibre\"]"
+charts_maplibre_supported_maps_renderer = false
+charts_adapters_remain_explicit = ["MapLibreAdapter", "FoliumAdapter", "PyDeckAdapter"]
+charts_maplibre_pin = "experimental 4.5.0 is not the Supported maps pin"
+maplibre_version = "Stage 1 evidence; do not inherit charts experimental pin"
+
+[imports]
+hedron_maps = ["MapInteraction", "Map"]
+hedron_core_consumed = [
+    "Map",
+    "GeoJSONLayer",
+    "MarkerSpec",
+    "sanitize_geojson",
+    "MAP_VIEWPORT_TRIGGER",
+]
+hedron = [
+    "ActionHandle",
+    "Hedron.include_component",
+    "Hedron.include_feature",
+    "Hedron.interactions",
+]
