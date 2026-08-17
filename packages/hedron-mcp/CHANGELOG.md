@@ -5,6 +5,11 @@
 ### Changed
 - Coordinated train tip `0.43.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``McpExposure.to_bundle()`` no longer registers live MCP tools; host include
+  applies exposure atomically and maps duplicate names to ``FeatureConflictError``
+  (#337).
+
 ## [0.42.0] — 2026-08-14
 
 ### Added

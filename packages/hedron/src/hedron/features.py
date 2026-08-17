@@ -131,6 +131,39 @@ def materialize_feature(bundle: FeatureBundle, app: object) -> FeatureBundle:
     )
 
 
+def _is_mcp_exposure(feature: object) -> bool:
+    return type(feature).__name__ == "McpExposure"
+
+
+def _apply_optional_exposure(feature: object) -> None:
+    if not _is_mcp_exposure(feature):
+        return
+    apply = getattr(feature, "apply", None)
+    if callable(apply):
+        apply()
+
+
+def _unapply_optional_exposure(feature: object) -> None:
+    if not _is_mcp_exposure(feature):
+        return
+    unapply = getattr(feature, "unapply", None)
+    if callable(unapply):
+        with _suppress():
+            unapply()
+
+
+def _undo_included_bundle(app: object, logical_id: str, *, app_id: str) -> None:
+    with _suppress():
+        eject_bundle(logical_id, app_id=app_id)
+    state = getattr(app, "state", None)
+    recorded = getattr(state, "hedron_bundles", None)
+    if isinstance(recorded, dict):
+        recorded.pop(logical_id, None)
+    exposures = getattr(state, "hedron_mcp_exposures", None)
+    if isinstance(exposures, dict):
+        exposures.pop(logical_id, None)
+
+
 def include_feature(
     app: object,
     feature: FeatureBundle | FeatureProvider,
@@ -170,6 +203,8 @@ def include_feature(
             if isinstance(ident, str) and ident:
                 known.append(ident)
     materialized_items: list[object] = []
+    included_id: str | None = None
+    already = {item.logical_id for item in included_bundles(app_id=app_id)}
     try:
         live = materialize_feature(resolved, app)
         materialized_items.extend((*live.views, *live.commands))
@@ -181,6 +216,7 @@ def include_feature(
             capabilities=caps,
             known_logical_ids=known,
         )
+        included_id = live.logical_id
         state = getattr(app, "state", None)
         if state is not None:
             recorded = getattr(state, "hedron_bundles", None)
@@ -188,9 +224,20 @@ def include_feature(
                 state.hedron_bundles = {}
                 recorded = state.hedron_bundles
             recorded[live.logical_id] = live
+            if _is_mcp_exposure(feature):
+                exposures = getattr(state, "hedron_mcp_exposures", None)
+                if not isinstance(exposures, dict):
+                    state.hedron_mcp_exposures = {}
+                    exposures = state.hedron_mcp_exposures
+                exposures[live.logical_id] = feature
         _record_bundle_routes(app, live.logical_id, _collect_new_routes(app, snapshot_routes))
+        if live.logical_id not in already:
+            _apply_optional_exposure(feature)
         return live
     except FeatureConflictError:
+        if included_id is not None and included_id not in already:
+            _undo_included_bundle(app, included_id, app_id=app_id)
+            _unapply_optional_exposure(feature)
         rollback_materialized(
             materialized_items,
             app=app,
@@ -199,6 +246,9 @@ def include_feature(
         )
         raise
     except Exception as exc:
+        if included_id is not None and included_id not in already:
+            _undo_included_bundle(app, included_id, app_id=app_id)
+            _unapply_optional_exposure(feature)
         rollback_materialized(
             materialized_items,
             app=app,
@@ -224,6 +274,9 @@ def eject_feature(app: object, logical_id: str, *, out: Callable[[str], None] | 
     recorded = getattr(state, "hedron_bundles", None)
     if isinstance(recorded, dict):
         recorded.pop(logical_id, None)
+    exposures = getattr(state, "hedron_mcp_exposures", None)
+    exposure = exposures.pop(logical_id, None) if isinstance(exposures, dict) else None
+    _unapply_optional_exposure(exposure)
     routes_map = getattr(state, "hedron_bundle_routes", None)
     extra = routes_map.pop(logical_id, []) if isinstance(routes_map, dict) else []
     _drop_routes(app, extra)
