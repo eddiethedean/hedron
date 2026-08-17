@@ -123,3 +123,39 @@ def test_workspace_policy_hook_accepts_user_and_denies_mismatch() -> None:
     assert seen == ["ada"]
     assert ws._allowed(can_read) is False
     assert ws._allowed(lambda: True) is True
+
+
+def test_workspace_list_pages_sorts_filters_and_searches() -> None:
+    app = make_app()
+    rows = [{"id": f"{i:02d}", "customer": f"c{i:02d}", "quantity": 1} for i in range(40)]
+    ws = DataWorkspace(
+        name="orders",
+        model=Order,
+        source=InMemoryDataSource(rows, key_field="id"),
+        policy=DataWorkspacePolicy(can_read=lambda: True),
+    )
+    app.include_feature(ws)
+    client = TestClient(app)
+    path = ws.list_view.path  # type: ignore[union-attr]
+    first = client.get(path)
+    assert first.status_code == 200
+    assert "c00" in first.text
+    assert "c24" in first.text
+    assert "c25" not in first.text
+    second = client.get(path, params={"offset": 25})
+    assert second.status_code == 200
+    assert "c25" in second.text
+    assert "c00" not in second.text
+    last = client.get(path, params={"sort": "customer:desc", "limit": 1})
+    assert last.status_code == 200
+    assert "c39" in last.text
+    found = client.get(path, params={"q": "c03"})
+    assert found.status_code == 200
+    assert "c03" in found.text
+    assert "c04" not in found.text
+    filtered = client.get(path, params={"customer": "c10"})
+    assert filtered.status_code == 200
+    assert "c10" in filtered.text
+    assert "c11" not in filtered.text
+    bad = client.get(path, params={"sort": "nope"})
+    assert bad.status_code == 422
