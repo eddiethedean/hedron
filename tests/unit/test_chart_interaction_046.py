@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import pytest
+from fastapi.testclient import TestClient
 from pydantic import BaseModel
-from tests.unit._helpers_046 import make_app, reset_046
+from tests.unit._helpers_046 import csrf_headers, make_app, reset_046
 
 from hedron import Text
 from hedron_charts import ChartInteraction
@@ -46,6 +47,48 @@ def test_supported_select_compiles_to_export_command() -> None:
     assert any(
         item.namespace.startswith("hedron.charts.interaction")
         for item in catalog.catalog_projections.values()
+    )
+
+
+def test_select_event_invokes_bound_command() -> None:
+    app = make_app()
+    seen: list[list[str]] = []
+
+    @app.command("/filter")
+    def filter_sales(payload: Selection):
+        seen.append(list(payload.ids))
+        return Text(str(len(payload.ids)))
+
+    @app.refreshable
+    def sales_table():
+        return Text("table")
+
+    live = app.include_feature(
+        ChartInteraction(
+            chart=sales_table,
+            event="select",
+            payload=Selection,
+            command=filter_sales,
+            refreshes=(sales_table,),
+            name="tests:sales-select",
+        )
+    )
+
+    @app.page("/")
+    def home():
+        return Text("home")
+
+    event_handle = live.commands[0]
+    client = TestClient(app)
+    posted = client.post(
+        event_handle.path,
+        json={"ids": ["east", "west"]},
+        headers=csrf_headers(client),
+    )
+    assert posted.status_code == 200
+    assert seen == [["east", "west"]]
+    assert getattr(live.commands[1], "name", "").endswith("-export") or any(
+        "export" in str(getattr(item, "logical_id", "")) for item in live.commands
     )
 
 

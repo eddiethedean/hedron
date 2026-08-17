@@ -11,6 +11,8 @@
 ### Fixed
 - MCP tool registration runs only after a successful FeatureBundle include,
   so ``McpExposure.to_bundle()`` is side-effect free (#337).
+- ``eject_feature`` removes FastAPI routes materialized for the bundle, not
+  only handle descriptors (#336).
 - ``include_feature`` passes already-claimed bundle handle ids into include so
   a second FeatureBundle cannot override an existing handle (#335).
 
