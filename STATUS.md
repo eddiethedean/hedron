@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.47 **Published** as in-tree `v0.47.0` (2026-08-17; tag/PyPI deferred). Phases 0.48 HTMX extension integration (D-080 / RFC-0075) and 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) are **Planned**. No 0.48–0.49 runtime or version claim.
+**Roadmap position:** phase 0.47 **Published** as in-tree `v0.47.0` (2026-08-17; tag/PyPI deferred). Phase 0.48 HTMX extension integration (D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373)) is **Planned** with Stage 0 refined against `v0.47.0`. Phase 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) remains **Planned**. No 0.48–0.49 runtime or version claim.
 Living tip = `v0.47.0`.
 **Date:** 2026-08-17
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -30,10 +30,11 @@ composition / **0.40** authoring / **0.39** rich data /
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
 Tracking [#350](https://github.com/eddiethedean/hedron/issues/350) owns every 0.47 gate until later tag/PyPI assets exist.
-Phase **0.48** follows only after Verified 0.47. Its Stage 0 packet plans closed extension
-declarations, demand-driven pinned assets, complete SSE/head-support/preload vertical slices, and
-an evidence-gated Idiomorph disposition. All `release-gate-0.48.toml` rows remain Planned and
-require a tracking issue before Stage 1; no live-transport maturity claim changes at Stage 0.
+Phase **0.48** Stage 0 is the D-083 contract refine against Published in-tree `v0.47.0`:
+closed extension declarations, demand-driven pinned assets, complete SSE/head-support/preload
+vertical slices, and an evidence-gated Idiomorph disposition. All `release-gate-0.48.toml` rows
+remain Planned. Tracking [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48
+gate before Stage 1; no live-transport maturity claim changes at Stage 0.
 Phase **0.49** follows only after Verified 0.48. Its Stage 0 packet plans explicit dependency
 lifetimes, native/expanded parameter binding, dual input/output schemas, tagged wire unions,
 router/OpenAPI/security convergence, measured validation adapters, and honest settings/experimental
