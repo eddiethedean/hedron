@@ -352,27 +352,12 @@ def _style_subset(
                 if origin not in origins:
                     origins.append(origin)
             dumped[field] = checked
-    for source in (dumped.get("sources") or {}).values():
-        if not isinstance(source, Mapping):
-            continue
-        tiles = source.get("tiles")
-        if isinstance(tiles, Sequence):
-            for tile in tiles:
-                if isinstance(tile, str):
-                    checked = _validate_url(tile)
-                    origin = _origin_of(checked)
-                    if origin:
-                        _policy_allows(origin, policy, local=False)
-                        if origin not in origins:
-                            origins.append(origin)
-        url = source.get("url")
-        if isinstance(url, str) and url:
-            checked = _validate_url(url)
-            origin = _origin_of(checked)
-            if origin:
-                _policy_allows(origin, policy, local=False)
-                if origin not in origins:
-                    origins.append(origin)
+    sources = dumped.get("sources")
+    if isinstance(sources, dict):
+        dumped["sources"] = {
+            key: _close_style_source(source, origins=origins, policy=policy)
+            for key, source in sources.items()
+        }
     if (dumped.get("glyphs") or dumped.get("sprite")) and any(
         key in dumped for key in ("owner", "metadata-url")
     ):
@@ -383,6 +368,43 @@ def _style_subset(
             "Declare every sprite/glyph/source origin in policy.",
         )
     return dumped
+
+
+def _close_style_url(url: str, *, origins: list[str], policy: MapPolicy) -> str:
+    checked = _validate_url(url)
+    origin = _origin_of(checked)
+    if origin:
+        _policy_allows(origin, policy, local=False)
+        if origin not in origins:
+            origins.append(origin)
+    return checked
+
+
+def _close_style_source(source: object, *, origins: list[str], policy: MapPolicy) -> object:
+    if not isinstance(source, Mapping):
+        return source
+    closed = dict(source)
+    tiles = closed.get("tiles")
+    if isinstance(tiles, Sequence) and not isinstance(tiles, (str, bytes)):
+        closed["tiles"] = [
+            _close_style_url(tile, origins=origins, policy=policy)
+            if isinstance(tile, str)
+            else tile
+            for tile in tiles
+        ]
+    for field in ("url", "data"):
+        value = closed.get(field)
+        if isinstance(value, str) and value and not value.lstrip().startswith(("{", "[")):
+            closed[field] = _close_style_url(value, origins=origins, policy=policy)
+    urls = closed.get("urls")
+    if isinstance(urls, Sequence) and not isinstance(urls, (str, bytes)):
+        closed["urls"] = [
+            _close_style_url(item, origins=origins, policy=policy)
+            if isinstance(item, str)
+            else item
+            for item in urls
+        ]
+    return closed
 
 
 def _basemap_facts(
