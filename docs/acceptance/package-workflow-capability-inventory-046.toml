@@ -1,16 +1,25 @@
 # Phase 0.46 package-native typed workflow capability inventory.
-# Stage 0 contract artifact: capabilities are Planned until their owning gate is Verified.
+# Stage 0 contract artifact (D-079 refine against Published v0.45.0):
+# capabilities are Planned until their owning gate is Verified.
 
 schema_version = 1
 phase = "0.46"
 status = "Planned"
-planning_baseline = "v0.42.0"
+planning_baseline = "v0.45.0"
 required_predecessor = "v0.45.0"
 target = "v0.46.0"
 decision = "D-075"
+contract_refine = "D-079"
 owning_rfc = "RFC-0073"
 implementation = "docs/implementation/PACKAGE_NATIVE_WORKFLOWS_046.md"
 public_contract = "docs/api/PACKAGE_WORKFLOWS.md"
+feature_bundle = "docs/acceptance/feature-bundle-046.toml"
+data_workspace = "docs/acceptance/data-workspace-046.toml"
+chart_interaction = "docs/acceptance/chart-interaction-046.toml"
+form_inventory = "docs/acceptance/type-form-inventory-044.toml"
+catalog_entry = "docs/acceptance/catalog-entry-045.toml"
+host_portable_facts = "docs/acceptance/host-portable-facts-045.toml"
+adapter_dispositions = "docs/acceptance/adapter-disposition-044.toml"
 
 [[capability]]
 id = "PW-BUNDLE-001..010"
@@ -170,8 +179,8 @@ gate = "DATAFLOW-046"
 [[feature_inventory]]
 id = "chart-interaction"
 package = "hedron-charts"
-initial_scope = ["selection", "filter", "drilldown", "deterministic_export", "linked_refresh"]
-excluded = ["hidden_dependency", "arbitrary_callback", "automatic_crossfilter", "adapter_promotion"]
+initial_scope = ["select", "inspect", "focus", "reset", "deterministic_export_command", "linked_refresh"]
+excluded = ["hidden_dependency", "arbitrary_callback", "automatic_crossfilter", "adapter_promotion", "legend_filter_supported_without_host_a11y", "brush_supported_without_host_a11y", "drill_intent_supported_without_host_a11y"]
 gate = "VISUAL-046"
 
 [[feature_inventory]]

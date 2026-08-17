@@ -1,6 +1,6 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.45 **Published** as `v0.45.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phase 0.46 package-native typed workflows (D-075 / RFC-0073) and phase 0.47 first-class maps (D-078 / RFC-0074) are **Planned**. No 0.46/0.47 runtime or version claim.
+**Roadmap position:** phase 0.45 **Published** as `v0.45.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phase 0.46 package-native typed workflows (D-075 / D-079 / RFC-0073; Stage 0 refined against in-tree `v0.45.0`) and phase 0.47 first-class maps (D-078 / RFC-0074) are **Planned**. No 0.46/0.47 runtime or version claim.
 Living tip = `v0.45.0`.
 **Date:** 2026-08-16
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -28,11 +28,12 @@ Tracking [#328](https://github.com/eddiethedean/hedron/issues/328) remains open 
 `v0.45.0` Git tag and PyPI/GitHub Release assets exist. [#318](https://github.com/eddiethedean/hedron/issues/318)
 remains open for the deferred `v0.44.0` tag/PyPI assets. [#311](https://github.com/eddiethedean/hedron/issues/311)
 remains open for the deferred `v0.43.0` tag/PyPI assets.
-Phase **0.46** follows only after 0.45 is Verified (D-075 /
+Phase **0.46** follows only after 0.45 is Verified (D-075 / D-079 /
 [RFC-0073](rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)). It adds opt-in feature bundles, bounded data
 workspaces, explicit chart/data links, schema-aware elements, remote workflows, and catalog-backed
-workbench/scenario features that compile to the existing stack. Its Stage 0 packet is complete; all
-`release-gate-0.46.toml` rows remain Planned and a separate tracking issue is required.
+workbench/scenario features that compile to the existing stack. Stage 0 is refined against
+Published in-tree `v0.45.0`; all `release-gate-0.46.toml` rows remain Planned and a separate
+tracking issue is required before Stage 1. D-079 does not authorize runtime.
 Phase **0.47** follows only after Verified 0.46. Its complete Stage 0 packet plans optional
 `hedron-maps` `0.1.0`, a replaceable OSM default, custom raster/vector sources, pinned strict-CSP
 MapLibre, typed interactions, semantic fallback, and static/PMTiles/MBTiles/blank-map air-gapped
@@ -389,8 +390,9 @@ tag/PyPI deferred; D-074 / D-077 / [RFC-0072](rfcs/RFC-0072-TYPED-INTERACTION-EC
 [implementation requirements](implementation/TYPED_INTERACTION_ECOSYSTEM_045.md) and
 [acceptance packet](acceptance/RELEASE_0_45.md)). Living tip is **`v0.45.0`**.
 Phase **0.46** package-native typed workflows is
-**Planned**, strictly after Verified 0.45 (D-075 /
-[RFC-0073](rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md); all 0.46 gates Planned; see
+**Planned**, strictly after Verified 0.45 (D-075 / D-079 /
+[RFC-0073](rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md); Stage 0 refined against in-tree `v0.45.0`;
+all 0.46 gates Planned; see
 [implementation requirements](implementation/PACKAGE_NATIVE_WORKFLOWS_046.md) and
 [acceptance packet](acceptance/RELEASE_0_46.md)).
 These phases require Verified evidence before any package maturity label changes. They do not

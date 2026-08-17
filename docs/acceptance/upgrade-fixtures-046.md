@@ -1,12 +1,14 @@
 # Phase 0.46 package workflow upgrade fixtures
 
 **Status:** Planned<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.45.0`<br>
+**Planning baseline:** Published in-tree `v0.45.0` (D-079; original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.45.0`<br>
 **Target:** `v0.46.0`
 
 These fixtures prove package-native features are optional compositions over the Verified 0.45
-ecosystem, not a new runtime or irreversible application format.
+ecosystem, not a new runtime or irreversible application format. D-079 binds them to shipped
+0.43 `descriptor_fingerprint` / `Hedron.include_component`, 0.44 `hedron.type`, and 0.45
+`InteractionCatalog` / `Hedron.interactions` / `PackageProjection` seams.
 
 ## Unchanged predecessor applications
 

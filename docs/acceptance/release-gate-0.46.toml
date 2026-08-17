@@ -1,5 +1,6 @@
 # Phase 0.46 package-native typed workflow evidence index.
-# Stage 0 requirements packet. Commands are reserved names until implemented.
+# Stage 0 requirements packet, contract-refined by D-079 against Published in-tree
+# v0.45.0. Commands remain reserved names until Stage 1.
 
 [[evidence]]
 id = "BUNDLE-046"

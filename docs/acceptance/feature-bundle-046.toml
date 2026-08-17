@@ -1,0 +1,84 @@
+# Phase 0.46 FeatureBundle inclusion and import-placement lock (PW-BUNDLE-001).
+# Stage 0 contract artifact (D-079). Bundles register ordinary 0.43–0.45 artifacts
+# before catalog seal; they are not executors and not FeatureManifest.
+
+schema_version = 1
+phase = "0.46"
+status = "Planned"
+planning_baseline = "v0.45.0"
+required_predecessor = "v0.45.0"
+target = "v0.46.0"
+decision = "D-079"
+owning_rfc = "RFC-0073"
+gate = "BUNDLE-046"
+requirement = "PW-BUNDLE-001"
+
+stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
+stacks_on_manifest = "docs/acceptance/manifest-format-045.toml"
+stacks_on_host = "docs/acceptance/host-portable-facts-045.toml"
+stacks_on_adapter = "docs/acceptance/adapter-disposition-044.toml"
+stacks_on_form = "docs/acceptance/type-form-inventory-044.toml"
+
+executor = false
+fourth_fingerprint_authority = false
+descriptor_fingerprint_excludes = ["effect", "extensions"]
+type_schema_namespace = "hedron.type"
+seal_window = "before seal_registry and seal_app_catalog; same window as Hedron.include_component"
+include_api = "Hedron.include_feature"
+conflict = "FeatureConflictError; fail closed with no partial artifacts"
+scenarios = "AppScenario fixtures or ids; no WorkflowScenario type"
+not_reused = [
+    "PluginContext.register_feature",
+    "FeatureManifest",
+    "hedron_jinja.ProviderManifest.feature_id",
+]
+diagnostic_family = "HED-BUNDLE-*"
+diagnostic_family_docs_only = true
+do_not_reuse = ["HED-WORKFLOW-*", "HED-CATALOG-*", "HED-PROJECTION-*"]
+
+[imports]
+hedron_core = [
+    "FeatureBundle",
+    "FeatureRequirement",
+    "FeatureConflictError",
+]
+hedron_core_protocol_not_on_hedron_facade = ["FeatureProvider"]
+hedron = ["Hedron.include_feature"]
+hedron_data = ["DataWorkspace", "DataWorkspacePolicy"]
+hedron_charts = ["ChartInteraction"]
+hedron_mcp = ["McpExposure"]
+hedron_gradio = ["RemoteWorkflow"]
+
+[fields]
+logical_id = "stable package-namespaced id"
+provider = "package name"
+provider_version = "package version string"
+views = "tuple of FragmentHandle values or factories using documented registration APIs"
+commands = "tuple of ActionHandle values or factories using documented registration APIs"
+components = "tuple of Hedron components / include_component descriptors"
+scenarios = "tuple of AppScenario fixtures or ids"
+projections = "tuple of PackageProjection values; namespaced, fingerprint-bound, no runtime authority"
+requirements = "tuple of FeatureRequirement"
+dependencies = "declared acyclic bundle ids; depth/count bounded"
+
+[authority]
+handles = "0.43 BaseHandleDescriptor remains route/security/runtime authority"
+type_schema = "0.44 TypeSchema remains typed-extension authority under hedron.type"
+catalog = "0.45 CatalogEntry indexes fingerprints only; bundles do not reinterpret entries"
+projection_stacking = "new bundle/workspace namespaces stack on current-surface projections; do not replace hedron.data/charts/elements/mcp/gradio current-surface data"
+remote_exposure = "bundle inclusion grants zero MCP/Gradio operations"
+flask_django = "projection_adapter; no FastAPI DI or annotation evaluation"
+
+[element_map]
+form_inventory = "docs/acceptance/type-form-inventory-044.toml"
+native_canonical = true
+text_like = "hedron-field-text"
+checkbox_select_radio = "hedron-field-choice"
+file = "hedron-field-file"
+unknown = "native or explicit override"
+async_state = "hedron-action-async / InteractionState"
+
+[remote_wraps]
+mcp = "McpProjection.register_resource / register_tool + live authorize"
+gradio = "GradioClientAdapter + GradioRemoteConfig + GradioEndpoint"
+consume_catalog_exposes = false

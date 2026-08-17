@@ -41,7 +41,8 @@ status commentary, not a satisfied release gate.
   (tag/PyPI deferred; D-074 / RFC-0072, refined by D-077;
   [#328](https://github.com/eddiethedean/hedron/issues/328))
 - [`v0.46` package-native typed workflows](RELEASE_0_46.md) — **Planned** Stage 0 requirements
-  packet (D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1)
+  packet (D-075 / RFC-0073, refined by D-079 against in-tree `v0.45.0`; requires Verified 0.45
+  and a tracking issue before Stage 1)
 - [`v0.47` first-class maps](RELEASE_0_47.md) — **Planned** Stage 0 requirements packet
   (D-078 / RFC-0074; `hedron-maps` `0.1.0`; requires Verified 0.46 and a tracking issue before Stage 1)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /

@@ -1,0 +1,73 @@
+# Phase 0.46 ChartInteraction event and compile lock (PW-VISUAL-001).
+# Stage 0 contract artifact (D-079). Bindings compile onto first-party hedron-chart
+# kinds and ActionHandle effects; they are not a second chart runtime.
+
+schema_version = 1
+phase = "0.46"
+status = "Planned"
+planning_baseline = "v0.45.0"
+required_predecessor = "v0.45.0"
+target = "v0.46.0"
+decision = "D-079"
+owning_rfc = "RFC-0073"
+gate = "VISUAL-046"
+requirement = "PW-VISUAL-001"
+
+stacks_on_bundle = "docs/acceptance/feature-bundle-046.toml"
+closed_typed_kinds_source = "hedron_core.cross_filter.CHART_038_EVENT_KINDS"
+public_api = "ChartInteraction"
+compose_chartlink_039 = "implementation helper; not the public API"
+export_is = "ActionHandle"
+export_is_chartspec_callback = false
+effects = "Refreshes / Updates on registered handles"
+payloads = "untrusted Pydantic input to a registered ActionHandle"
+
+closed_typed_kinds = [
+    "inspect",
+    "focus",
+    "select",
+    "legend_filter",
+    "brush",
+    "zoom",
+    "pan",
+    "reset",
+    "crosshair",
+    "drill_intent",
+]
+
+supported_event_values = [
+    "select",
+    "inspect",
+    "focus",
+    "reset",
+]
+
+experimental_first_party_until_host_a11y = [
+    "legend_filter",
+    "brush",
+    "drill_intent",
+]
+
+experimental_adapter_chart_event_kinds = [
+    "hover",
+    "click",
+    "click-annotation",
+    "box",
+    "lasso",
+    "relayout",
+    "restyle",
+    "legend",
+    "extend",
+    "prepend",
+]
+
+[compile]
+chart = "Supported first-party ChartSpec / hedron-chart path"
+command = "registered ActionHandle"
+refreshes = "explicit handle logical ids; shared data reads do not create dependencies"
+keyboard_tabular = "equivalent command/table path required for Supported events"
+no_callbacks = true
+
+[limits]
+max_chart_selection_items = 1000
+max_effect_fanout = 32

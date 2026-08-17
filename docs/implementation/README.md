@@ -36,7 +36,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Typed interaction ecosystem](TYPED_INTERACTION_ECOSYSTEM_045.md) — phase 0.45 D-074 / D-077 catalog,
   manifest, package projections/dispositions, hosts, tooling, remote, portable, and deployment
   convergence requirements
-- [Package-native typed workflows](PACKAGE_NATIVE_WORKFLOWS_046.md) — phase 0.46 D-075 feature
+- [Package-native typed workflows](PACKAGE_NATIVE_WORKFLOWS_046.md) — phase 0.46 D-075 / D-079 feature
   bundles, data workspaces, linked charts, enhanced elements, remote workflows, workbenches, and
   scenario requirements
 - [First-class maps](HEDRON_MAPS_047.md) — phase 0.47 D-078 `hedron-maps`, MapLibre, custom

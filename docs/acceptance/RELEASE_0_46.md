@@ -1,20 +1,29 @@
 # Hedron `v0.46` package-native typed workflow acceptance
 
-**Status:** Planned; Stage 0 requirements packet complete<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.45.0`<br>
+**Status:** Planned; Stage 0 requirements packet complete; contract-refined by D-079<br>
+**Planning baseline:** Published in-tree `v0.45.0` (D-079; original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.45.0`<br>
 **Target:** `v0.46.0`<br>
-**Decision/RFC:** D-075 / [RFC-0073](../rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)
+**Decision/RFC:** D-075, refined by D-079 / [RFC-0073](../rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)
 
 Phase 0.46 uses the 0.45 ecosystem contract to deliver opt-in package features: atomic feature
 bundles, bounded data workspaces, explicit chart/data links, schema-aware elements, explicit MCP/
 Gradio workflows, and catalog-backed workbench/scenario experiences. Every feature compiles to the
 ordinary 0.43–0.45 stack and owns no parallel runtime.
 
+D-079 rebases planning onto shipped 0.43 `BaseHandleDescriptor` / `descriptor_fingerprint` /
+`Hedron.include_component`, 0.44 `hedron.type`, and 0.45 `InteractionCatalog` /
+`PackageProjection` / `Hedron.interactions` seams, plus `DataEditorSource` and first-party
+`hedron-chart` kinds. It does not authorize Stage 1.
+
 Implementation requirements:
 [PACKAGE_NATIVE_WORKFLOWS_046](../implementation/PACKAGE_NATIVE_WORKFLOWS_046.md). Public contract:
 [PACKAGE_WORKFLOWS](../api/PACKAGE_WORKFLOWS.md). Capability/feature inventory:
 [`package-workflow-capability-inventory-046.toml`](package-workflow-capability-inventory-046.toml).
+Bundle/workspace/chart locks:
+[`feature-bundle-046.toml`](feature-bundle-046.toml),
+[`data-workspace-046.toml`](data-workspace-046.toml),
+[`chart-interaction-046.toml`](chart-interaction-046.toml).
 Evidence index: [`release-gate-0.46.toml`](release-gate-0.46.toml). Upgrade fixtures:
 [upgrade-fixtures-046](upgrade-fixtures-046.md).
 
@@ -40,7 +49,7 @@ Evidence index: [`release-gate-0.46.toml`](release-gate-0.46.toml). Upgrade fixt
 |---|---|
 | `BUNDLE-046` | Immutable bundles, atomic inclusion, conflicts, dependencies, capability checks, deterministic config, plugin isolation, cleanup, eject, and rollback pass. |
 | `DATAFLOW-046` | Explicit sources/policies, list/detail/create/edit, query/identity, forms/outcomes, authz, transactions/conflicts/optimism, overrides, bounds, hosts, and direct APIs pass. |
-| `VISUAL-046` | Selection/filter/drill-down/export, explicit event/command/effect graph, cycle/fan-out/rate/payload/state/authz/fallback/adapter/race behavior pass. |
+| `VISUAL-046` | `select`/`inspect`/`focus`/`reset` plus export-as-command; `legend_filter`/`brush`/`drill_intent` Experimental until host+a11y; explicit event/command/effect graph, cycle/fan-out/rate/payload/state/authz/fallback/adapter/race behavior pass. |
 | `ELEMENT-046` | Closed control map, native encoding/semantics, typed events, async command states, secrets, failed/no-JS/CSP fallback, swap lifecycle, and ABI compatibility pass. |
 | `REMOTE-046` | Explicit MCP/Gradio policies, schemas, authz/confirmation, outputs/effects, egress/files/jobs/progress/cancellation/audit, denial, and rollback pass. |
 | `WORKBENCH-046` | Explorer/Jinja/extras/notebook/sim/CLI inspection, safe execution, reviewable generation, static boundaries, accessibility, cleanup, and performance pass. |
@@ -58,9 +67,11 @@ Evidence index: [`release-gate-0.46.toml`](release-gate-0.46.toml). Upgrade fixt
 ## Stage 0 entry
 
 - [x] D-075 and RFC-0073 define the accepted feature and authority boundaries.
+- [x] D-079 rebases planning onto Published in-tree `v0.45.0` and locks
+  bundle/workspace/chart inventories.
 - [x] API, implementation, inventory, gate, acceptance, upgrade, roadmap, index, status, and
   traceability artifacts exist.
-- [x] Published/living baseline remains `v0.42.0`; no package/runtime version changed.
+- [x] Published/living baseline remains `v0.45.0`; no package/runtime version changed.
 - [x] Verified `v0.45.0` is the Stage 1 prerequisite and cut baseline.
 - [x] Initial package-feature inventory and exclusions are machine-readable.
 - [ ] A tracking issue is created and bound to every 0.46 gate.

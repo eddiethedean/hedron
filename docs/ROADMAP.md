@@ -43,7 +43,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.43** | Refreshable views, command handles, and typed updates | **Published** (`v0.43.0`; in-tree cut, tag/PyPI deferred; D-071; [#311](https://github.com/eddiethedean/hedron/issues/311)) |
 | **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Published** (`v0.44.0`; in-tree cut, tag/PyPI deferred; D-072 / RFC-0071; [#318](https://github.com/eddiethedean/hedron/issues/318)) |
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
-| **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Planned** (`v0.46.0`; D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1) |
+| **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Planned** (`v0.46.0`; D-075 / D-079 / RFC-0073; Stage 0 refined against in-tree `v0.45.0`; requires Verified 0.45 and a tracking issue before Stage 1) |
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Planned** (`v0.47.0` / `hedron-maps` `0.1.0`; D-078 / RFC-0074; requires Verified 0.46 and a tracking issue before Stage 1) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
@@ -3742,10 +3742,11 @@ Catalog/manifest/host locks:
 ## 0.46 — Package-native typed workflows (`v0.46.0`)
 
 **Status:** Planned (D-075 /
-[RFC-0073](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)).
-Stage 0 requirements are defined against Published `v0.42.0`; Verified `v0.45.0` is a hard
-prerequisite for Stage 1 and the 0.46 cut baseline. A tracking issue must be created and bound to
-every 0.46 gate before runtime implementation begins.
+[RFC-0073](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md);
+Stage 0 contract refined by D-079 against Published in-tree `v0.45.0`).
+Verified in-tree `v0.45.0` is a hard prerequisite for Stage 1 and the 0.46 cut baseline.
+A tracking issue must be created and bound to every 0.46 gate before runtime implementation
+begins. D-079 does not authorize Stage 1, bump versions, or rebase 0.47.
 
 **Outcome:** Packages use the converged catalog/type/handle foundation to provide useful opt-in
 features. Immutable `FeatureBundle` values atomically register ordinary views, commands,
@@ -3808,7 +3809,7 @@ dependency solver, route dispatcher, response converter, effect engine, or brows
 |---|---|
 | `BUNDLE-046` | Immutable bundles, atomic inclusion, conflicts/dependencies/capabilities, deterministic providers, plugin isolation, cleanup, eject, and rollback pass. |
 | `DATAFLOW-046` | Explicit sources/policies, list/detail/create/edit, queries/identity/forms/outcomes/authz/conflicts/optimism/overrides/bounds/hosts/direct APIs pass. |
-| `VISUAL-046` | Typed selection/filter/drill-down/export, explicit command/effect links, cycles/fan-out/rate/payload/state/authz/fallback/a11y/races pass. |
+| `VISUAL-046` | Typed `select`/`inspect`/`focus`/`reset` plus export-as-command; `legend_filter`/`brush`/`drill_intent` Experimental until host+a11y evidence; explicit command/effect links, cycles/fan-out/rate/payload/state/authz/fallback/a11y/races pass. |
 | `ELEMENT-046` | Closed control mapping, native encoding/semantics, typed events, async states, secret handling, failed/no-JS/CSP fallback, cleanup, and ABI compatibility pass. |
 | `REMOTE-046` | Explicit MCP/Gradio schema/authz/confirmation/egress/files/jobs/progress/cancel/output/audit/denial/drift/rollback pass. |
 | `WORKBENCH-046` | Explorer/Jinja/extras/notebook/sim/CLI catalog use, safe execution, reviewable generation, trust/localhost/offline boundaries, a11y, and performance pass. |
@@ -3825,6 +3826,10 @@ Acceptance packet:
 [RELEASE_0_46](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_46.md).
 Capability/feature inventory:
 [`package-workflow-capability-inventory-046.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/package-workflow-capability-inventory-046.toml).
+Bundle/workspace/chart locks:
+[`feature-bundle-046.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/feature-bundle-046.toml),
+[`data-workspace-046.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/data-workspace-046.toml),
+[`chart-interaction-046.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/chart-interaction-046.toml).
 
 ### Non-goals
 
@@ -4041,7 +4046,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Refreshable views, command handles, typed refresh intents, and `Patch`/`PatchSet` | 0.43 | Handle-first facade over the existing region/`InteractionResult` stack plus the frozen generic/descriptor/adapter handoff; generated plumbing, server-canonical outputs, accessible hosts, and no hidden reactive runtime (RFC-0070 / D-071 / D-073). |
 | Pydantic boundary models, `Annotated` source/sensitivity/identity/control/effect markers, and generic specialization | 0.44 | Explicit model-driven validation and typing over Published 0.43 through its public adapter/descriptor seams; dependencies stay injection-owned and annotations never trigger hidden effects (RFC-0071 / D-072 / D-073 / D-076). |
 | Sealed interaction catalog, manifest, package projections, and fleet dispositions | 0.45 | Read-only convergence over Verified 0.43/0.44 authority; trusted/static tooling, adapters, packages, portable fixtures, remote/deployment consumers, and no third runtime schema (RFC-0072 / D-074 / D-077). |
-| Package feature bundles, data workspaces, linked charts, enhanced elements, and explicit remote workflows | 0.46 | Opt-in package-native features compile to the 0.43–0.45 stack with explicit policy, overrides/ejection, native fallbacks, and no package workflow executor (RFC-0073 / D-075). |
+| Package feature bundles, data workspaces, linked charts, enhanced elements, and explicit remote workflows | 0.46 | Opt-in package-native features compile to the 0.43–0.45 stack with explicit policy, overrides/ejection, native fallbacks, and no package workflow executor (RFC-0073 / D-075 / D-079). |
 | First-class custom-server and offline maps | 0.47 | Optional `hedron-maps` compiles typed basemaps/sources/layers/styles/events to a deterministic plan, pinned strict-CSP MapLibre enhancement, semantic fallback, and OSM/custom/static/PMTiles/bounded-MBTiles/blank-map paths (RFC-0074 / D-078). |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
 | Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |

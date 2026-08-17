@@ -7,9 +7,9 @@ phase: "0.46"
 
 !!! warning "Planned 0.46 contract"
 
-    This is the accepted public contract for phase 0.46. It requires Verified 0.45 and is not
-    importable on the published 0.42 train. Package APIs and exact symbols remain planned until all
-    0.46 gates are Verified.
+    This is the accepted D-075 / RFC-0073 public contract for phase 0.46, refined by D-079
+    against Published in-tree `v0.45.0`. It requires Verified 0.45 and is not importable on
+    the published 0.45 train. Runtime symbols remain planned until all 0.46 gates are Verified.
 
 Phase 0.46 lets packages assemble ordinary views, commands, components, scenarios, and catalog
 projections into opt-in features. It does not add a second workflow runtime.
@@ -19,7 +19,7 @@ orders = DataWorkspace(
     name="orders",
     model=Order,
     source=authorized_orders,
-    policy=OrderPolicy(
+    policy=DataWorkspacePolicy(
         can_read=can_read_orders,
         can_create=can_create_order,
         can_edit=can_edit_order,
@@ -30,24 +30,31 @@ app.include_feature(orders)
 ```
 
 The workspace compiles to normal refreshable views, commands, forms, effects, outcomes,
-components, and a 0.45 package projection. Applications can use or replace each explicit surface.
+components, and a 0.45 `PackageProjection`. Applications can use or replace each explicit surface.
+Sources are shipped `DataEditorSource` adapters. After include, handles appear in
+`Hedron.interactions` as ordinary `InteractionCatalog` entries. `descriptor_fingerprint` and
+`hedron.type` stay the 0.43/0.44 authorities.
 
 ## Planned common symbols
 
 | Symbol | Package | Role |
 |---|---|---|
-| `FeatureBundle` | `hedron-core` / `hedron` | Immutable package feature registration description; no execution semantics. |
+| `FeatureBundle` | `hedron-core` | Immutable package feature registration description; no execution semantics. |
 | `FeatureRequirement` | `hedron-core` | Declared package/host/browser capability required by a bundle. |
 | `FeatureConflictError` | `hedron-core` | Atomic registration failure for id/route/projection/dependency conflicts. |
-| `Hedron.include_feature` | `hedron` | Include one validated bundle before registry seal. |
+| `FeatureProvider` | `hedron-core` | Protocol that compiles package configuration into a `FeatureBundle`; not on the `hedron` facade. |
+| `Hedron.include_feature` | `hedron` | Include one validated bundle before registry/catalog seal. |
 | `DataWorkspace` | `hedron-data` | Opt-in typed list/detail/create/edit feature over an explicit authorized source and policy. |
 | `DataWorkspacePolicy` | `hedron-data` | Explicit read/create/edit/delete/auth/optimism behavior; defaults deny mutation. |
 | `ChartInteraction` | `hedron-charts` | Explicit typed chart event → command/effect binding. |
 | `McpExposure` | `hedron-mcp` | Separate deny-by-default view/resource or command/tool exposure policy. |
 | `RemoteWorkflow` | `hedron-gradio` | Allowlisted Gradio endpoint → Hedron feature adapter. |
 
-Final names, generics, and import placement require `API-046` review. Package-specific APIs may
-remain independently versioned, but the no-parallel-runtime and explicit-authority rules are fixed.
+Import placement is frozen by D-079. Portable bundle values live in `hedron-core`;
+`Hedron.include_feature` lives in `hedron`; package-native types stay in their packages.
+Do not reuse `FeatureManifest` or Jinja `ProviderManifest`. Independently versioned satellites
+retain explicit compatibility ranges, but the no-parallel-runtime and explicit-authority rules
+are fixed.
 
 ## `FeatureBundle`
 
@@ -62,7 +69,7 @@ class FeatureBundle:
     views: tuple[FragmentHandle[object, object], ...] = ()
     commands: tuple[ActionHandle[object, object], ...] = ()
     components: tuple[type[Component], ...] = ()
-    scenarios: tuple[WorkflowScenario, ...] = ()
+    scenarios: tuple[AppScenario, ...] = ()
     projections: tuple[PackageProjection, ...] = ()
     requirements: tuple[FeatureRequirement, ...] = ()
     dependencies: tuple[str, ...] = ()
@@ -148,9 +155,11 @@ authoritative. Chart interaction configuration cannot contain callbacks or execu
 Cycles, fan-out, frequency, payload bytes, selection cardinality, refresh requests, and export size
 are bounded.
 
-Initial Supported interactions are selection, filter, drill-down, and deterministic export on the
-first-party `ChartSpec`/`hedron-chart` path. Optional chart adapters retain their existing
-capability classifications.
+Initial Supported `event` values are host-emitted first-party `hedron-chart` kinds plus equivalent
+keyboard/tabular commands: `select`, `inspect`, `focus`, and `reset`. Export is an `ActionHandle`,
+never a `ChartSpec` callback. `legend_filter`, `brush`, and `drill_intent` stay typed but
+Experimental until host emission and accessibility evidence. Optional chart adapters retain their
+existing Experimental classifications.
 
 ## Schema-aware elements
 
@@ -253,6 +262,11 @@ user input.
 - Independently versioned satellites retain explicit compatibility ranges and maturity labels.
 
 ## See also
+
+See also: D-079 locks
+[feature-bundle-046.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/feature-bundle-046.toml),
+[data-workspace-046.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/data-workspace-046.toml),
+[chart-interaction-046.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/chart-interaction-046.toml).
 
 - [Interaction catalog](INTERACTION_CATALOG.md)
 - [Type-driven authoring](TYPE_DRIVEN_AUTHORING.md)

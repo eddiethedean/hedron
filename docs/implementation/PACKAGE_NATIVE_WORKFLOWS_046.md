@@ -1,17 +1,21 @@
 # Phase 0.46 implementation requirements — package-native typed workflows
 
-**Status:** Planned; Stage 0 requirements packet<br>
+**Status:** Planned; Stage 0 requirements packet, contract-refined by D-079<br>
 **Target:** Hedron `v0.46.0`<br>
-**Planning baseline:** Published `v0.42.0`<br>
-**Required predecessor/cut baseline:** Verified Hedron `v0.45.0`<br>
-**Decision/RFC:** D-075 / [RFC-0073](../rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)<br>
+**Planning baseline:** Published in-tree `v0.45.0` (D-079; original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree Hedron `v0.45.0`<br>
+**Decision/RFC:** D-075, refined by D-079 / [RFC-0073](../rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)<br>
 **Public contract:** [PACKAGE_WORKFLOWS](../api/PACKAGE_WORKFLOWS.md)<br>
 **Capability inventory:**
-[`package-workflow-capability-inventory-046.toml`](../acceptance/package-workflow-capability-inventory-046.toml)
+[`package-workflow-capability-inventory-046.toml`](../acceptance/package-workflow-capability-inventory-046.toml)<br>
+**Bundle lock:** [`feature-bundle-046.toml`](../acceptance/feature-bundle-046.toml)<br>
+**Workspace lock:** [`data-workspace-046.toml`](../acceptance/data-workspace-046.toml)<br>
+**Chart lock:** [`chart-interaction-046.toml`](../acceptance/chart-interaction-046.toml)
 
 This document defines implementation boundaries and traceable requirements for feature bundles,
 data workspaces, linked charts/data, schema-aware elements, remote workflows, authoring workbenches,
 and package scenario/conformance experiences. Runtime work requires Verified 0.45.
+**D-079 does not authorize Stage 1.**
 
 ## Architecture
 
@@ -19,38 +23,50 @@ and package scenario/conformance experiences. Runtime work requires Verified 0.4
 package configuration + explicit app policy
                     │
                     ▼
-              FeatureProvider
+              FeatureProvider (hedron-core Protocol; not on hedron facade)
                     │
                     ▼
-    immutable FeatureBundle description
+    immutable FeatureBundle (hedron-core)
        │          │          │
        ▼          ▼          ▼
-  0.43 handles  components  scenarios
+ FragmentHandle  include_component  AppScenario
+ ActionHandle    DataTable/hedron-chart
        │          │          │
        └──────────┴──────────┘
                     │
                     ▼
-   normal registry + 0.44 type extensions
+ Hedron.include_feature before seal_registry / seal_app_catalog
                     │
                     ▼
-       0.45 catalog + package projection
+ 0.43 BaseHandleDescriptor + optional 0.44 TypeSchema (hedron.type)
                     │
                     ▼
-       existing runtime/tooling/adapters
+ compile_interaction_catalog / Hedron.interactions
+                    │
+                    ▼
+ existing runtime/tooling/adapters
 ```
 
-There is no package workflow executor. A feature provider compiles configuration into ordinary
-registered artifacts before registry seal. Request execution uses the existing handle/route/form/
-effect/outcome machinery.
+D-079 binds compile to shipped seams rather than planned 0.42 names:
+`FragmentHandle[BindT, ContentT]`, `ActionHandle[InputT, ResultT]`, `Hedron.include_component`,
+`Hedron.interactions`, `InteractionCatalog`, `PackageProjection`, `DataEditorSource` /
+`AsyncDataEditorSource`, `DataTable` / `DataQuery` / `write_policy`, `OptimisticMutation`
+(`collection_edit`), first-party `hedron-chart` kinds, `ActionHandle.form()`,
+`McpProjection.register_resource` / `register_tool`, `GradioClientAdapter` /
+`GradioRemoteConfig` / `GradioEndpoint`, and `AppScenario`.
+`descriptor_fingerprint()` does not hash `effect` or `extensions`. Bundles are not
+`FeatureManifest` and not a fourth fingerprint authority.
+
+The D-079 refine does not authorize Stage 1.
 
 ## Package boundaries
 
 | Package | 0.46 responsibility |
 |---|---|
-| `hedron-core` | Immutable feature requirement/descriptor/conflict values and portable bundle metadata only. |
-| `hedron` | Atomic include/registration orchestration, capability checks, scenario hooks, diagnostics, rollback bookkeeping. |
+| `hedron-core` | Immutable `FeatureBundle` / `FeatureRequirement` / `FeatureConflictError` values and the `FeatureProvider` protocol only; no FastAPI imports. |
+| `hedron` | `Hedron.include_feature`, atomic inclusion/orchestration, capability checks, scenario hooks, diagnostics, rollback bookkeeping. |
 | `hedron-data` | `DataWorkspace`, explicit source/policy contracts, query/list/detail/create/edit/conflict surfaces. |
-| `hedron-charts` | Typed selection/filter/drill-down/export bindings on Supported first-party chart paths. |
+| `hedron-charts` | `ChartInteraction` bindings on first-party `hedron-chart` paths; Supported events `select`/`inspect`/`focus`/`reset` plus export-as-command. |
 | `hedron-elements` | Supported schema-control mappings and async command/outcome enhancement with native fallback. |
 | `hedron-mcp`, `hedron-gradio` | Separate explicit exposure/remote-workflow policies and adapters. |
 | `hedron-explorer`, `hedron-jinja`, `hedron-extras`, `hedron-notebook`, `hedron-sim` | Workflow inspection, registered rendering, workbenches, labs, offline subset, and reviewable test/code generation. |
@@ -115,8 +131,10 @@ effect/outcome machinery.
 
 ### Linked charts and data (`PW-VISUAL-*`)
 
-- **PW-VISUAL-001:** `ChartInteraction` supports a closed initial inventory of typed selection,
-  filter, drill-down, and deterministic export bindings on Supported first-party chart paths.
+- **PW-VISUAL-001:** `ChartInteraction` supports a closed typed kind inventory from
+  `CHART_038_EVENT_KINDS` on first-party `hedron-chart` paths. Initial Supported `event` values
+  are `select`, `inspect`, `focus`, and `reset`. Export is an `ActionHandle`. `legend_filter`,
+  `brush`, and `drill_intent` remain typed but Experimental until host emission and a11y evidence.
 - **PW-VISUAL-002:** each browser event maps to an explicit Pydantic input model and registered
   command; event payloads are untrusted and cannot contain executable callbacks/expressions.
 - **PW-VISUAL-003:** command results declare explicit refresh/update targets for linked charts,
@@ -314,8 +332,13 @@ effect/outcome machinery.
 ### Stage 0 — contracts and predecessor lock
 
 - Accept D-075/RFC-0073 and land the complete documentation/evidence packet.
-- Require Verified 0.45 and freeze bundle/catalog/projection handoff goldens.
-- Create a tracking issue bound to every 0.46 gate.
+- **D-079:** rebase planning onto Published in-tree `v0.45.0`; lock
+  bundle/workspace/chart inventories; consume shipped 0.43 handles, 0.44 `hedron.type`, and
+  0.45 catalog/projection symbols. No runtime or version bump.
+- Require Verified in-tree 0.45 before runtime work. Do not block a later Stage 1 on `#328`
+  PyPI/Git assets. The D-079 refine does not authorize Stage 1.
+- Create a tracking issue bound to every 0.46 gate before implementation begins.
+- Keep workspace versions and published claims at 0.45. Do not claim 0.46 runtime.
 
 ### Stage 1 — feature bundle SDK
 

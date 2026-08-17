@@ -33,9 +33,10 @@ projections, and whole-fleet dispositions do not change interaction runtime auth
 ## Planned 0.46 maintainer contract
 
 [Package-native typed workflows](PACKAGE_WORKFLOWS.md) records the accepted D-075 / RFC-0073 public
-contract for the planned 0.46 phase. It requires Verified 0.45 and adds opt-in package feature
-bundles, data workspaces, linked charts, enhanced elements, remote workflows, and workbench
-experiences that compile to the existing stack.
+contract, refined against 0.45 by D-079, for the planned 0.46 phase. It consumes Published in-tree
+0.45 and is **not importable on 0.45**. Opt-in package feature bundles, data workspaces, linked
+charts, enhanced elements, remote workflows, and workbench experiences compile to the existing
+stack and do not add a package workflow executor.
 
 ## Planned 0.47 maps contract
 

@@ -10,6 +10,10 @@
 RFC-0021, RFC-0023, RFC-0024, RFC-0025, RFC-0028, RFC-0033, RFC-0040,
 RFC-0051, RFC-0053, RFC-0056, RFC-0060, RFC-0070, RFC-0072, and RFC-0073
 
+**Revision:** 2026-08-16 — D-079 rebases 0.46 planning onto Published in-tree `v0.45.0`
+without changing this RFC's maps authority, planning baseline, Stage 0/1 gates, or
+`hedron-maps` `0.1.0` target.
+
 ## Summary
 
 Phase 0.47 makes geographic presentation a first-class Hedron experience through a new optional

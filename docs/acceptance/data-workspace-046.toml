@@ -1,0 +1,73 @@
+# Phase 0.46 DataWorkspace compile and policy lock (PW-DATA-001).
+# Stage 0 contract artifact (D-079). Workspaces produce FeatureBundles over shipped
+# DataEditorSource adapters; they never discover ORM managers or infer authz.
+
+schema_version = 1
+phase = "0.46"
+status = "Planned"
+planning_baseline = "v0.45.0"
+required_predecessor = "v0.45.0"
+target = "v0.46.0"
+decision = "D-079"
+owning_rfc = "RFC-0073"
+gate = "DATAFLOW-046"
+requirement = "PW-DATA-001"
+
+stacks_on_bundle = "docs/acceptance/feature-bundle-046.toml"
+stacks_on_form = "docs/acceptance/type-form-inventory-044.toml"
+stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
+
+beginner_spelling = "app.include_feature(orders)"
+produces = "FeatureBundle"
+policy_type = "DataWorkspacePolicy"
+generic = "DataWorkspace[ModelT]"
+objects_all = false
+delete_default = "disabled"
+optimism_class = "collection_edit"
+projection_namespace = "new namespaced PackageProjection stacked on hedron.data"
+
+[current_surface]
+direct_apis = true
+catalog_required = false
+exposure = false
+
+[source]
+protocol = "DataEditorSource / AsyncDataEditorSource"
+existing_adapters = [
+    "InMemoryDataSource",
+    "AsyncInMemoryDataSource",
+    "DjangoQuerySetDataSource",
+    "SQLAlchemyDataSource",
+]
+never = [
+    ".objects.all()",
+    "ambient ORM manager discovery",
+    "inferred tenant filters",
+    "invented transactions",
+]
+
+[surfaces]
+list_view = "FragmentHandle compiling to DataTable + DataQuery paging/sort/filter"
+detail_view = "FragmentHandle with explicit validated identity (ViewParams / InstanceKey)"
+create_command = "ActionHandle + ActionHandle.form() or explicit Form(action=handle, ...)"
+edit_command = "ActionHandle + ActionHandle.form() or explicit Form(action=handle, ...)"
+writes = "DataEditorSource.apply / write_policy / filter_writable_changes"
+catalog_kind = "ordinary view/command CatalogEntry rows after include"
+
+[policy]
+type = "DataWorkspacePolicy"
+can_read = "explicit live authorization hook; repeated on every read"
+can_create = "explicit; default deny"
+can_edit = "explicit; default deny"
+delete = "disabled unless an application-supplied command, confirmation, fallback, and policy exist"
+optimism = "opt-in collection_edit only via shipped OptimisticMutation; destructive/high-risk classes denied"
+
+[inventory]
+supported = ["list", "detail", "create", "edit", "validation", "forbidden", "not_found", "conflict"]
+excluded = [
+    "automatic_delete",
+    "bulk_mutation",
+    "relation_discovery",
+    "nested_write",
+    "inferred_authz",
+]

@@ -408,6 +408,7 @@ quality_verify_pkgs() {
   run_py scripts/verify_pkg_43.py
   run_py scripts/verify_pkg_44.py
   run_py scripts/verify_pkg_45.py
+  run_py scripts/verify_pkg_46.py --allow-planned
 }
 
 quality_docs() {
@@ -532,9 +533,9 @@ evidence_gates() {
 evidence_verify_pkgs() {
   run_py scripts/verify_pkg_34.py --allow-planned
   run_py scripts/verify_pkg_35.py --allow-planned
-  # `all` already ran 36–44 during quality; skip the second verification pass.
+  # `all` already ran 36–46 during quality; skip the second verification pass.
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
-    echo "skip: verify_pkg_36–45 (already covered by quality)"
+    echo "skip: verify_pkg_36–46 (already covered by quality)"
     return 0
   fi
   run_py scripts/verify_pkg_36.py --allow-planned
@@ -547,6 +548,7 @@ evidence_verify_pkgs() {
   run_py scripts/verify_pkg_43.py
   run_py scripts/verify_pkg_44.py
   run_py scripts/verify_pkg_45.py
+  run_py scripts/verify_pkg_46.py --allow-planned
 }
 
 cmd_evidence() {
@@ -574,7 +576,7 @@ cmd_realwb() {
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
-    echo "skip: packaging (verify_pkg_35–45 already covered by quality + evidence)"
+    echo "skip: packaging (verify_pkg_35–46 already covered by quality + evidence)"
     return 0
   fi
   resolve_python
@@ -589,6 +591,7 @@ cmd_packaging() {
   run_py scripts/verify_pkg_43.py
   run_py scripts/verify_pkg_44.py
   run_py scripts/verify_pkg_45.py
+  run_py scripts/verify_pkg_46.py --allow-planned
 }
 
 cmd_all() {
