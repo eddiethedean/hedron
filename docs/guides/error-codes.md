@@ -7,7 +7,8 @@ This catalog is complete for the registered set enforced by
 `scripts/check_hed_codes.py --docs-align` (`HEDDOC-017`).
 
 `HED-TYPE-*` codes for type-driven authoring are documented under
-[HED-TYPE (0.44)](#hed-type-044). Catalog/projection codes are under
+[HED-TYPE (0.44)](#hed-type-044). FastAPI/Pydantic convergence codes are under
+[HED-FP (0.49)](#hed-fp-049). Catalog/projection codes are under
 [HED-CATALOG (0.45)](#hed-catalog-045) and [HED-PROJECTION (0.45)](#hed-projection-045).
 Feature-bundle codes are under [HED-BUNDLE (0.46)](#hed-bundle-046). Maps families
 reserved for 0.47 are listed under [HED-MAP](#hed-map).
@@ -33,7 +34,7 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
 | `HED-SIM-ASSET-0001` | blocker | Packaged sim asset path escape | Pass a single basename under `static/` |
 | `HED-SIM-ASSET-0002` | blocker | Packaged sim asset missing | Use a filename that ships in `hedron_sim/static/` |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.48.0,<0.49"` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.49.0,<0.50"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -45,7 +46,7 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.48.0,<0.49"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.49.0,<0.50"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -284,6 +285,23 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-EXT-0009` | `HED_EXT_0009` |
 | `HED-EXT-0010` | `HED_EXT_0010` |
 | `HED-EXT-0011` | `HED_EXT_0011` |
+
+## HED-FP (0.49)
+
+FastAPI/Pydantic convergence diagnostics (D-081 / D-084 / RFC-0076). Do not reuse
+`HED-TYPE-0001`–`0010`. Public contract:
+[FastAPI/Pydantic convergence](../api/FASTAPI_PYDANTIC_CONVERGENCE.md).
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-FP-0001` | `HED_FP_0001` |
+| `HED-FP-0002` | `HED_FP_0002` |
+| `HED-FP-0003` | `HED_FP_0003` |
+| `HED-FP-0004` | `HED_FP_0004` |
+| `HED-FP-0005` | `HED_FP_0005` |
+| `HED-FP-0006` | `HED_FP_0006` |
+| `HED-FP-0007` | `HED_FP_0007` |
+| `HED-FP-0008` | `HED_FP_0008` |
 
 ## HED-ICON
 
@@ -661,6 +679,23 @@ contract: [Package-native typed workflows](../api/PACKAGE_WORKFLOWS.md). Never r
 | `HED-BUNDLE-0008` | `HED_BUNDLE_0008` |
 | `HED-BUNDLE-0009` | `HED_BUNDLE_0009` |
 | `HED-BUNDLE-0010` | `HED_BUNDLE_0010` |
+
+## HED-FP (0.49)
+
+FastAPI/Pydantic convergence diagnostics (D-081 / D-084 / RFC-0076). Public contract:
+[FastAPI and Pydantic convergence](../api/FASTAPI_PYDANTIC_CONVERGENCE.md). Do not reuse
+`HED-TYPE-0001`–`0010` for these failures.
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-FP-0001` | `HED_FP_0001` |
+| `HED-FP-0002` | `HED_FP_0002` |
+| `HED-FP-0003` | `HED_FP_0003` |
+| `HED-FP-0004` | `HED_FP_0004` |
+| `HED-FP-0005` | `HED_FP_0005` |
+| `HED-FP-0006` | `HED_FP_0006` |
+| `HED-FP-0007` | `HED_FP_0007` |
+| `HED-FP-0008` | `HED_FP_0008` |
 
 ## HED-WORKFLOW
 

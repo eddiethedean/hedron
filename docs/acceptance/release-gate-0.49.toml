@@ -1,9 +1,9 @@
 # Phase 0.49 FastAPI/Pydantic convergence release evidence index.
-# Stage 0 contract artifact (D-084). All rows Planned; commands reserved.
+# In-tree v0.49.0 cut. All rows Verified; tag/PyPI deferred.
 
 schema_version = 1
 phase = "0.49"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.48.0"
 required_predecessor = "v0.48.0"
 target = "v0.49.0"
@@ -14,7 +14,7 @@ tracking = "#380"
 
 [[evidence]]
 id = "LIFETIME-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_lifetime_049.py"
 ci_job = "test"
 owner = "hedron"
@@ -22,7 +22,7 @@ summary = "Explicit handler/response dependency lifetimes and streaming-safe cle
 
 [[evidence]]
 id = "BINDING-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_binding_049.py"
 ci_job = "test"
 owner = "hedron"
@@ -30,7 +30,7 @@ summary = "Native parameter models with deterministic expanded-field fallback an
 
 [[evidence]]
 id = "SCHEMA-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_schema_049.py"
 ci_job = "test"
 owner = "hedron-core"
@@ -38,7 +38,7 @@ summary = "Sanitized validation and serialization TypeSchema projections and mig
 
 [[evidence]]
 id = "UNION-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_union_049.py"
 ci_job = "test"
 owner = "hedron-core"
@@ -46,7 +46,7 @@ summary = "Tagged public wire unions with OpenAPI and cross-runtime evidence."
 
 [[evidence]]
 id = "ROUTER-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_router_049.py"
 ci_job = "test"
 owner = "hedron"
@@ -54,7 +54,7 @@ summary = "Preserved router identity, provenance, pre-seal registration, and pac
 
 [[evidence]]
 id = "OPENAPI-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_openapi_049.py"
 ci_job = "test"
 owner = "hedron"
@@ -62,7 +62,7 @@ summary = "Typed responses, media, callbacks, webhooks, security, schemas, and s
 
 [[evidence]]
 id = "SECURITY-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_security_049.py"
 ci_job = "test"
 owner = "hedron"
@@ -70,7 +70,7 @@ summary = "Strict content type, binding, scopes, schema, secrets, callbacks, and
 
 [[evidence]]
 id = "ADAPTER-VALIDATION-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_adapter_validation_049.py"
 ci_job = "test"
 owner = "hedron-core"
@@ -78,7 +78,7 @@ summary = "Measured reusable TypeAdapters with existing parser security and roll
 
 [[evidence]]
 id = "SETTINGS-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_settings_049.py"
 ci_job = "test"
 owner = "hedron-posit"
@@ -86,7 +86,7 @@ summary = "Per-deployment-package pydantic-settings adopt or retain-custom-loade
 
 [[evidence]]
 id = "RESEARCH-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_research_049.py"
 ci_job = "test"
 owner = "hedron"
@@ -94,7 +94,7 @@ summary = "Quarantined partial-validation, missing-state, and FailFast research 
 
 [[evidence]]
 id = "A11Y-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_a11y_049.py"
 ci_job = "browser"
 owner = "hedron"
@@ -102,7 +102,7 @@ summary = "Schema-driven form/error semantics and binding-strategy accessibility
 
 [[evidence]]
 id = "PERF-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_perf_049.py"
 ci_job = "test"
 owner = "hedron"
@@ -110,7 +110,7 @@ summary = "Startup, schema, OpenAPI, binding, validation, streaming, memory, and
 
 [[evidence]]
 id = "COMPAT-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_compat_049.py"
 ci_job = "test"
 owner = "hedron"
@@ -118,7 +118,7 @@ summary = "FastAPI, portable adapters, TypeSchema v1, upstream skew, exclusions,
 
 [[evidence]]
 id = "DOCS-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_docs_049.py"
 ci_job = "quality"
 owner = "hedron"
@@ -126,7 +126,7 @@ summary = "Complete author, operator, security, accessibility, research, and mig
 
 [[evidence]]
 id = "REGRESS-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_regress_049.py"
 ci_job = "test"
 owner = "hedron"
@@ -134,7 +134,7 @@ summary = "Full Supported regression suite and honest phase-owned disposition cl
 
 [[evidence]]
 id = "PKG-049"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_pkg_049.py"
 ci_job = "quality"
 owner = "hedron"

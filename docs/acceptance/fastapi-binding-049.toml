@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.49"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.48.0"
 required_predecessor = "v0.48.0"
 target = "v0.49.0"
@@ -18,9 +18,9 @@ stacks_on_schema = "docs/acceptance/type-schema-044.toml"
 stacks_on_adapter = "docs/acceptance/adapter-disposition-044.toml"
 stacks_on_host = "docs/acceptance/host-portable-facts-045.toml"
 overload_binding_plan = false
-numeric_limits = "Stage 1 evidence; do not invent unmeasured field/alias counts here"
+numeric_limits = "MAX_MODEL_FIELDS=256; MAX_SCHEMA_DEPTH=16; MAX_UNION_VARIANTS=32; MAX_VALIDATION_ERRORS=100"
 diagnostic_family = "HED-FP-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
 
 [plans]
 structural = "BindingPlan (path_params, query_params, required)"

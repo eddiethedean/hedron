@@ -1,6 +1,6 @@
 # Phase 0.49 upgrade and rollback fixtures
 
-**Status:** Planned; Stage 0 contract refined by D-084<br>
+**Status:** Verified for in-tree `v0.49.0`; Stage 0 contract refined by D-084<br>
 **Planning baseline:** Published in-tree `v0.48.0`<br>
 **From:** Verified `v0.48.0`<br>
 **To:** `v0.49.0`<br>
@@ -21,8 +21,7 @@ Required fixtures:
    (`HANDLER` / `scope="function"`) without premature cleanup or changed output. Consume shipped
    0.48 `SseRegion` / experimental SSE helpers; do not reopen `polling_only`.
 5. TypeSchema v1 artifacts load and upgrade deterministically to v2 additive projections; rollback
-   restores v1 readers without exposing output-only or secret fields. Stage 0 does not bump
-   `TYPE_SCHEMA_VERSION`.
+   restores v1 readers without exposing output-only or secret fields. `TYPE_SCHEMA_VERSION` is 2.
 6. Migrated tagged unions retain Python construction, schema versions, unknown-kind failure,
    redaction, and Node/Java fixtures. `CatalogEntry.kind` stays `view`/`command`.
 7. Nested package routers preserve paths, route metadata, package provenance, OpenAPI, and seal

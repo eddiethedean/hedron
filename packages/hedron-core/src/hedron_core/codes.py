@@ -371,6 +371,15 @@ HED_TYPE_0007 = "HED-TYPE-0007"  # OutcomeMap coverage / mapping
 HED_TYPE_0008 = "HED-TYPE-0008"  # class handler lifecycle
 HED_TYPE_0009 = "HED-TYPE-0009"  # host/adapter TypeSchema disposition
 HED_TYPE_0010 = "HED-TYPE-0010"  # sensitive leak / identity contradiction
+# FastAPI/Pydantic convergence (0.49 RFC-0076 / D-084). Do not reuse TYPE 0001–0010.
+HED_FP_0001 = "HED-FP-0001"  # lifetime / DependsOn compile or background capture
+HED_FP_0002 = "HED-FP-0002"  # BoundaryBindingPlan ineligible native-model / fallback
+HED_FP_0003 = "HED-FP-0003"  # TypeSchema v2 sanitizer / dual-version load
+HED_FP_0004 = "HED-FP-0004"  # tagged public-wire union / unknown kind
+HED_FP_0005 = "HED-FP-0005"  # late registration after seal / OpenAPI cache
+HED_FP_0006 = "HED-FP-0006"  # RequiresScopes / strict content-type (non-granting)
+HED_FP_0007 = "HED-FP-0007"  # cached TypeAdapter / JSON bounds / duplicate keys
+HED_FP_0008 = "HED-FP-0008"  # settings/research leakage into Supported surfaces
 # Interaction catalog / projections (0.45 RFC-0072 / D-077)
 HED_CATALOG_0001 = "HED-CATALOG-0001"  # version / fingerprint / ownership mismatch
 HED_CATALOG_0002 = "HED-CATALOG-0002"  # duplicate logical id or ambiguous ownership

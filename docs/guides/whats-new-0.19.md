@@ -1,14 +1,14 @@
 # What’s new in 0.19
 
 
-!!! note "Current train is 0.48"
+!!! note "Current train is 0.49"
 
-    Pin `hedron>=0.48.0,<0.49` for new apps. The pin below is historical for this train only.
+    Pin `hedron>=0.49.0,<0.50` for new apps. The pin below is historical for this train only.
     See [What’s new in 0.41](whats-new-0.41.md).
 
-**Published as `v0.19.0`** (2026-08-07). Current published train is **0.48.x** (last `v0.48.0`).
+**Published as `v0.19.0`** (2026-08-07). Current published train is **0.49.x** (last `v0.49.0`).
 Historical installs for this phase used a 0.19 upper-bound pin; the current pin is
-`hedron>=0.48.0,<0.49`.
+`hedron>=0.49.0,<0.50`.
 
 Phase 0.19 delivers accessibility engineering and inclusive authoring without automatic
 WCAG / legal / VPAT claims (D-050).

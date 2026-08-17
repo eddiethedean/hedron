@@ -1,17 +1,25 @@
-# Upgrade to Hedron 0.48
+# Upgrade to Hedron 0.49
 
-This guide covers an application upgrade onto the **0.48.x** train
-(in-tree **`v0.48.0`**; Git tag and PyPI remain deferred — PyPI still serves `0.47.0`).
+This guide covers an application upgrade onto the **0.49.x** train
+(in-tree **`v0.49.0`**; Git tag and PyPI remain deferred — PyPI still serves `0.47.0`).
 New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.48.x adds first-class HTMX extension integration on top of the 0.47 maps stack:
+Hedron 0.49.x compiles existing handle, TypeSchema, and catalog plans onto FastAPI:
+
+- `DependsOn` / `DependencyLifetime` compile to FastAPI `Depends(scope="function"|"request")`
+- `BoundaryBindingPlan` chooses native-model or expanded-fields; `BindingPlan` stays URL identity
+- Additive TypeSchema v2 input/output projections; v1 readers remain
+- Tagged public-wire `kind` unions and cached TypeAdapter on non-FormBody candidates
+- Router provenance, typed OpenAPI, and non-granting `RequiresScopes`
+- Workbench/Posit keep custom loaders. FailFast / Pydantic `MISSING` stay research-only
+
+0.48 HTMX extensions remain:
 
 - Closed `Page.htmx_extensions` / `HtmxExtension` / `ExtensionSet` with demand-driven pinned local `sse`, `head-support`, and `preload` assets
 - Unset pages keep the 0.47 `sse` + `head-support` compatibility default; `htmx_extensions=()` loads zero extension bytes
 - Typed `SseRegion` / `SseTrigger` over experimental SSE helpers; polling remains the Supported fallback
-- Registered `AssetRef` head merge; GET-only preload on `HtmxLink` (`mousedown` / `mouseover` / `touchstart`)
 - Idiomorph / morph swap is **Deferred** and is not a Supported capability
 
 Maps from 0.47 remain:
@@ -36,7 +44,7 @@ preload remain experimental.
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.48.0,<0.49`,
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.49.0,<0.50`,
    or the tip pin already). Registry installs remain `>=0.47.0,<0.48` until the deferred upload.
 3. Existing 0.42–0.46 handlers and unused `include_feature` keep working.
 4. Adopt maps only via `hedron[maps]` / `from hedron_maps import …`.
@@ -47,14 +55,14 @@ preload remain experimental.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.48.0,<0.49"
-python -m pip install -U "hedron[data]>=0.48.0,<0.49"
-python -m pip install -U "hedron[charts]>=0.48.0,<0.49"
-python -m pip install -U "hedron[maps]>=0.48.0,<0.49"
+python -m pip install -U "hedron>=0.49.0,<0.50"
+python -m pip install -U "hedron[data]>=0.49.0,<0.50"
+python -m pip install -U "hedron[charts]>=0.49.0,<0.50"
+python -m pip install -U "hedron[maps]>=0.49.0,<0.50"
 # independent charts satellite:
 python -m pip install -U "hedron-charts>=0.2.0,<0.3"
 # optional production-grade elements inventory:
-python -m pip install -U "hedron[elements]>=0.48.0,<0.49"
+python -m pip install -U "hedron[elements]>=0.49.0,<0.50"
 ```
 
 From PyPI today, pin `hedron>=0.47.0,<0.48` until the 0.48 upload.
@@ -142,6 +150,7 @@ Hedron 0.46.x added opt-in package-native features that compile onto existing
 
 ## See also
 
+- [What's new in 0.49](whats-new-0.49.md)
 - [What's new in 0.48](whats-new-0.48.md)
 - [What's new in 0.46](whats-new-0.46.md)
 - [What's new in 0.45](whats-new-0.45.md)

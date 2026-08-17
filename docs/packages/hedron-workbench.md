@@ -2,7 +2,7 @@
 
 Compatibility Posit Workbench / RStudio Server deployment adapter.
 
-**Package maturity:** Beta (`0.36.0`) · extra `hedron[workbench]` · pin `>=0.48.0,<0.49`
+**Package maturity:** Beta (`0.36.0`) · extra `hedron[workbench]` · pin `>=0.49.0,<0.50`
 
 Prefer [`hedron-posit`](hedron-posit.md) / `HedronPosit` for new applications.
 This package retains `HedronWorkbench` as a thin subclass (supported through at

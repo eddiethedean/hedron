@@ -3,7 +3,7 @@
 The canonical release history now lives on [Releases](release-notes.md).
 
 Current in-tree release: **v0.48.0**. Recommended constraint:
-`hedron>=0.48.0,<0.49`. Git tag and PyPI remain deferred; the registry still
+`hedron>=0.49.0,<0.50`. Git tag and PyPI remain deferred; the registry still
 serves `hedron` `0.47.0` (`hedron>=0.47.0,<0.48`) until the 0.48 upload.
 
 Continue with:

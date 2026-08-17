@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "discriminator": "kind",
+  "families": {
+    "typed_updates": ["patch", "patch-set", "refresh-intent"],
+    "job_messages": ["job-status"],
+    "channel": ["channel-message"],
+    "selected_events": ["cell"]
+  },
+  "examples": [
+    {"kind": "patch", "target_id": "view.items"},
+    {"kind": "job-status", "job_id": "1", "state": "queued"},
+    {"kind": "channel-message", "channel": "page"}
+  ],
+  "unknown_kind": "must-fail-closed"
+}

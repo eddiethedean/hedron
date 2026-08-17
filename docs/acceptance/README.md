@@ -49,9 +49,10 @@ status commentary, not a satisfied release gate.
 - [`v0.48` HTMX extension integration](RELEASE_0_48.md) — **Published** as in-tree `v0.48.0`
   (tag/PyPI deferred; D-080 / RFC-0075, refined by D-083;
   [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred)
-- [`v0.49` FastAPI/Pydantic convergence](RELEASE_0_49.md) — **Planned** Stage 0 packet, contract-refined by
-  D-084 against Published in-tree `v0.48.0` (D-081 / RFC-0076;
-  [#380](https://github.com/eddiethedean/hedron/issues/380))
+- [`v0.49` FastAPI/Pydantic convergence](RELEASE_0_49.md) — **Published** as in-tree `v0.49.0`
+  (tag/PyPI deferred; D-081 / RFC-0076, refined by D-084;
+  [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader;
+  RESEARCH Experimental)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

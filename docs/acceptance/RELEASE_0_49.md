@@ -1,14 +1,14 @@
 # Hedron `v0.49` FastAPI/Pydantic convergence acceptance
 
-**Status:** Planned; Stage 0 contract refined by D-084 against Published in-tree `v0.48.0`<br>
+**Status:** Published in-tree `v0.49.0` (tag/PyPI deferred). Does **not** close `SR-021`.<br>
 **Planning baseline:** Published in-tree `v0.48.0`<br>
 **Required predecessor/cut baseline:** Verified `v0.48.0`<br>
 **Target:** Hedron `v0.49.0`<br>
 **Decision/RFC:** D-081 / D-084 / [RFC-0076](../rfcs/RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md)<br>
 **Tracking:** [#380](https://github.com/eddiethedean/hedron/issues/380)
 
-D-084 does not authorize Stage 1. It names shipped 0.48 seams and rebases the planning
-baseline. No 0.49 runtime, version, or Published claim.
+D-084 named shipped 0.48 seams and rebased the planning baseline. Stage 1 compiled
+those plans onto FastAPI as in-tree `v0.49.0`. Tag/PyPI remain deferred.
 
 ## Release contract
 
@@ -44,11 +44,16 @@ baseline. No 0.49 runtime, version, or Published claim.
 
 - [x] D-081 and RFC-0076 define adoption, portability, authority, and exclusion boundaries.
 - [x] API, implementation, inventory, upgrade, gate, roadmap, decision, and traceability artifacts exist.
-- [x] Stage 0 changes documentation/contracts only; no 0.49 runtime/version claim.
+- [x] Stage 0 changes documentation/contracts only; no 0.49 runtime/version claim (completed before Stage 1).
 - [x] D-084 rebases the living/planning baseline to Published in-tree `v0.48.0` and names shipped seams.
 - [x] Tracking issue [#380](https://github.com/eddiethedean/hedron/issues/380) is bound.
 - [x] In-tree Verified 0.48 is enough predecessor evidence; do not wait on PyPI/Git `#373` assets.
-- [ ] Stage 1 locks numeric limits, exact union symbols, adapter benchmarks, and settings-spike evidence.
+- [x] Stage 1 locked numeric limits, exact union symbols, adapter benchmarks, and settings-spike evidence.
+
+## Cut result
+
+In-tree `v0.49.0` is Published. Git tag / PyPI remain deferred. `SETTINGS-049` recorded
+**retain-custom-loader**. `RESEARCH-049` stays Experimental. `SR-021` stays open.
 
 Locks: [fastapi-lifetime-049.toml](fastapi-lifetime-049.toml) ·
 [fastapi-binding-049.toml](fastapi-binding-049.toml) ·

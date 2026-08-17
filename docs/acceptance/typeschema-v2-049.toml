@@ -1,10 +1,10 @@
 # Phase 0.49 additive TypeSchema v2 lock (FP-SCHEMA-001).
-# Stage 0 contract artifact (D-084). v2 extends the 0.44 payload; it does not
-# replace field_paths authority or bump TYPE_SCHEMA_VERSION in this refine.
+# Stage 0 contract artifact (D-084). v2 extends the 0.44 payload. Stage 1
+# bumps TYPE_SCHEMA_VERSION to 2 after dual-version load; v1 readers remain.
 
 schema_version = 1
 phase = "0.49"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.48.0"
 required_predecessor = "v0.48.0"
 target = "v0.49.0"
@@ -15,8 +15,9 @@ requirement = "FP-SCHEMA-001"
 
 stacks_on = "docs/acceptance/type-schema-044.toml"
 namespace = "hedron.type"
-current_type_schema_version = 1
+current_type_schema_version = 2
 stage_0_bumps_type_schema_version = false
+stage_1_bumped_type_schema_version = true
 json_schema_authority = "pydantic"
 openapi_authority = "fastapi"
 fallback_cache_role = "projection_only"
@@ -24,7 +25,7 @@ descriptor_fingerprint_hashes_extensions = false
 descriptor_fingerprint_hashes_effect = false
 fourth_fingerprint_authority = false
 diagnostic_family = "HED-FP-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
 
 [today]
 class = "hedron_core.type_schema.TypeSchema"
@@ -45,14 +46,20 @@ output_fingerprint = "TypeSchema-internal; not descriptor_fingerprint"
 
 [compat]
 v1_reader = "required during the documented compatibility window"
-dual_version_load = "Stage 1 implements; Stage 0 does not change TypeSchema.__post_init__"
+dual_version_load = "implemented; TypeSchema.__post_init__ accepts 1 and 2"
 upgrade_fixtures = "docs/acceptance/upgrade-fixtures-049.md"
 keep_field_paths = true
 keep_control_dispositions = true
 
+[limits]
+max_model_fields = 256
+max_schema_depth = 16
+max_union_variants = 32
+max_validation_errors = 100
+
 [sanitizer]
 generate_json_schema = "Hedron-owned pydantic.GenerateJsonSchema policy"
-unknown_keywords = "fail closed or explicit disposition"
+unknown_keywords = "fail closed"
 callables_and_executable_extensions = "fail closed"
 secrets_defaults_examples = "never projected"
-unsupported_recursion = "fail closed or explicit disposition"
+unsupported_recursion = "fail closed"

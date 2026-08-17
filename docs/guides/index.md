@@ -150,7 +150,7 @@ Shipping? [Ship](ship.md).
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>Upgrade to the living 0.48 train (also under Project → Upgrade).</p>
+    <p>Upgrade to the living 0.49 train (also under Project → Upgrade).</p>
   </a>
   <a class="hedron-card" href="openapi/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>

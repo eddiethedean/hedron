@@ -6,8 +6,8 @@ The golden-path Hello copy-paste lives on
 [Build your first app](quickstart.md) (`hedron new` → Hello → Refresh). Use **this** page
 for version checks, optional extras, Flask/Django adapters, and install failures.
 
-**Published in-tree `v0.48.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.47.0`**;
+**Published in-tree `v0.49.0`.** Git tag and PyPI upload are **deferred**.
+In-tree pin `hedron>=0.49.0,<0.50`. The latest on **PyPI** is **`0.47.0`**;
 registry installs should pin `hedron>=0.47.0,<0.48` until a later upload.
 
 Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
@@ -92,7 +92,7 @@ If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 | Wrong / old version | `pip install -U "hedron>=0.47.0,<0.48"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
-| Need charts | Install `hedron[charts]>=0.48.0,<0.49` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
+| Need charts | Install `hedron[charts]>=0.49.0,<0.50` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
 | Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
 | Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
 
@@ -123,13 +123,13 @@ Other extras (`jinja`, `auth`, `mcp`, `gradio`, `elements` **Beta** for Supporte
 inventory, Workbench/Posit, notebook, native): [Packages](../packages/index.md).
 
 ```bash
-pip install "hedron[data]>=0.48.0,<0.49"
+pip install "hedron[data]>=0.49.0,<0.50"
 ```
 
 Charts and the sample plugin have explicit compatibility floors:
 
 ```bash
-pip install "hedron[charts]>=0.48.0,<0.49"
+pip install "hedron[charts]>=0.49.0,<0.50"
 pip install "hedron-sample-kit>=0.1.10,<0.2"
 ```
 
@@ -144,7 +144,7 @@ Versions through `0.1.5` target older cores. Details:
     download browser binaries once per environment:
 
     ```bash
-    pip install "hedron[browser]>=0.48.0,<0.49"
+    pip install "hedron[browser]>=0.49.0,<0.50"
     playwright install chromium
     ```
 

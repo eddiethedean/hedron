@@ -192,4 +192,14 @@ class Hedron(HedronPagesMixin, FastAPI):
         return app_interactions(self)
 
     def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
+        from hedron.registration import fail_closed_late_registration
+        from hedron_core.catalog import get_sealed_catalog
+        from hedron_core.registry.builder import active_builder
+
+        builder = active_builder()
+        fail_closed_late_registration(
+            registry_sealed=builder._sealed,
+            catalog_sealed=get_sealed_catalog() is not None,
+            openapi_cached=self.openapi_schema is not None,
+        )
         super().include_router(router, *args, **kwargs)

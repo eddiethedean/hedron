@@ -26,4 +26,4 @@ def test_extension_package_data_and_license() -> None:
 def test_core_version_is_train_tip() -> None:
     pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
     assert f'version = "{core_version}"' in pyproject
-    assert core_version in {"0.47.0", "0.48.0"}
+    assert core_version in {"0.47.0", "0.48.0", "0.49.0"}

@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
 from hedron_core.registry import get_registry
+from hedron_core.scopes import RequiresScopes
 from hedron_core.typing_aliases import JsonObject, JsonValue
 
 __all__ = ["install_openapi", "operation_id_for"]
@@ -68,6 +69,43 @@ def install_openapi(app: FastAPI) -> None:
                             "x-hedron-htmx",
                             cast(JsonValue, dict(meta.htmx_inference)),
                         )
+                    provenance = getattr(meta, "router_provenance", None)
+                    if not provenance:
+                        for route in app.routes:
+                            if getattr(route, "operation_id", None) == op_id:
+                                provenance = getattr(route, "hedron_provenance", None)
+                                break
+                    if provenance:
+                        operation.setdefault("x-hedron-router-provenance", provenance)
+                    descriptor = getattr(meta, "descriptor", None)
+                    if descriptor is not None:
+                        from hedron_core.type_schema import type_schema_from_descriptor
+
+                        loaded = type_schema_from_descriptor(descriptor)
+                        if loaded is not None and loaded.schema_version >= 2:
+                            operation.setdefault(
+                                "x-hedron-input-schema",
+                                cast(JsonValue, dict(loaded.input_projection)),
+                            )
+                            operation.setdefault(
+                                "x-hedron-output-schema",
+                                cast(JsonValue, dict(loaded.output_projection)),
+                            )
+                    scopes = getattr(meta, "requires_scopes", None)
+                    endpoint = getattr(meta, "endpoint", None)
+                    if scopes is None and endpoint is not None:
+                        scopes = getattr(endpoint, "_hedron_requires_scopes", None)
+                    if isinstance(scopes, RequiresScopes) and scopes.scopes:
+                        operation.setdefault(
+                            "security",
+                            [{"hedronScopes": list(scopes.scopes)}],
+                        )
+                    callbacks = getattr(meta, "openapi_callbacks", None)
+                    if isinstance(callbacks, dict):
+                        operation.setdefault("callbacks", callbacks)
+                    webhooks_note = getattr(meta, "openapi_webhooks", None)
+                    if webhooks_note:
+                        operation.setdefault("x-hedron-webhooks", webhooks_note)
                     responses = operation.setdefault("responses", {})
                     if not isinstance(responses, dict):
                         continue

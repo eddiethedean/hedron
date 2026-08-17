@@ -138,7 +138,7 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.48.0,<0.49" "uvicorn[standard]" "sqlalchemy>=2.0"
+pip install "hedron>=0.49.0,<0.50" "uvicorn[standard]" "sqlalchemy>=2.0"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/notes-sqlalchemy/app.py -o app.py
 uvicorn app:app --reload
 ```

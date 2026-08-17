@@ -126,9 +126,15 @@ def _wrap_endpoint(
 class HedronRouter(APIRouter):
     """APIRouter with Hedron page/component/action decorators."""
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, provenance: str = "", **kwargs: Any) -> None:
         kwargs.setdefault("route_class", HedronRoute)
         super().__init__(*args, **kwargs)
+        self.hedron_provenance = provenance or str(self.prefix or "")
+
+    def add_api_route(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
+        super().add_api_route(*args, **kwargs)
+        if self.routes:
+            self.routes[-1].hedron_provenance = self.hedron_provenance or self.prefix  # type: ignore[attr-defined]
 
     def page(
         self,

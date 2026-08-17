@@ -13,7 +13,7 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `HedronRouter`, `HedronRoute`, `ComponentRef`, `resolve_route_path` | [ROUTER.md](ROUTER.md), [ADDRESSABLE.md](ADDRESSABLE.md) |
 | `InteractionResult`, `FragmentRegion`, `InteractionPolicy`, `HtmxRequest`, `OobUpdate` | [INTERACTION.md](INTERACTION.md), Autodoc |
 | `FragmentHandle`, `BoundFragment`, `ActionHandle`, `Refresh`, `refresh`, `patches`, `FragmentHost`, `Patch`, `PatchSet`, `RefreshIntent` | [REFRESHABLE_VIEWS.md](REFRESHABLE_VIEWS.md) |
-| `ViewParams`, `FormBody`, `Control`, `Refreshes`, `Updates`, `OutcomeMap`, `case`, `CommandResult`, `RefreshableView`, `CommandHandler`, `Sensitive`, `InstanceKey`, `TypeSchema` | [TYPE_DRIVEN_AUTHORING.md](TYPE_DRIVEN_AUTHORING.md) |
+| `ViewParams`, `FormBody`, `Control`, `Refreshes`, `Updates`, `OutcomeMap`, `case`, `CommandResult`, `RefreshableView`, `CommandHandler`, `Sensitive`, `InstanceKey`, `TypeSchema`, `DependsOn`, `DependencyLifetime`, `DependencyPlan`, `BoundaryBindingPlan`, `RequiresScopes` | [TYPE_DRIVEN_AUTHORING.md](TYPE_DRIVEN_AUTHORING.md), [FASTAPI_PYDANTIC_CONVERGENCE.md](FASTAPI_PYDANTIC_CONVERGENCE.md) |
 | `CatalogEntry`, `InteractionCatalog`, `InteractionManifest`, `PackageProjection`, `ProjectionCapability`, `CatalogVersionError` | [INTERACTION_CATALOG.md](INTERACTION_CATALOG.md) |
 | `default_interaction_policy`, `form_sync_attrs`, `htmx_request`, `approved_headers`, `htmx_context` | [INTERACTION.md](INTERACTION.md), [htmx-interactions](../guides/htmx-interactions.md) |
 | `swap`, `swap_oob`, `retarget`, `redirect_htmx` | [INTERACTION.md](INTERACTION.md) (day-1 ergonomics), Autodoc |

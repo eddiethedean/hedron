@@ -105,6 +105,7 @@ from hedron.type_authoring import (
     ViewParams,
     case,
 )
+from hedron.type_authoring.depends import DependsOn
 
 # Re-export beginner core API.
 from hedron_core import (
@@ -276,9 +277,12 @@ from hedron_core import (
     styles_from_manifest,
     trusted_svg,
 )
+from hedron_core.binding_plan import BoundaryBindingPlan
 from hedron_core.builtins.forms_extra import DirectoryUploadFile, validate_directory_upload
 from hedron_core.builtins.map_geo import MarkerSpec
 from hedron_core.builtins.media import GalleryItem
+from hedron_core.lifetime import DependencyLifetime, DependencyPlan
+from hedron_core.scopes import RequiresScopes
 
 if TYPE_CHECKING:
     from hedron.auth import OAuthHelper as OAuthHelper
@@ -387,7 +391,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.48.0"
+__version__ = "0.49.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -417,6 +421,7 @@ __all__ = [
     "AutoForm",
     "Badge",
     "BoundFragment",
+    "BoundaryBindingPlan",
     "BottomDock",
     "BrowserContext",
     "BrowserStorage",
@@ -448,6 +453,9 @@ __all__ = [
     "ContextMenu",
     "DateInput",
     "DateTimeInput",
+    "DependsOn",
+    "DependencyLifetime",
+    "DependencyPlan",
     "DescriptionList",
     "Dialog",
     "DirectoryUpload",
@@ -542,6 +550,7 @@ __all__ = [
     "RatingInput",
     "Refresh",
     "RefreshableView",
+    "RequiresScopes",
     "RefreshButton",
     "RefreshIntent",
     "Refreshes",

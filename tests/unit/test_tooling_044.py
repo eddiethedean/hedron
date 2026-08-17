@@ -12,6 +12,7 @@ from hedron import FormBody, Page, Text, ViewParams
 from hedron.cli.commands.check import _check_044_type_authoring
 from hedron_core.testing.adapters import fastapi_fixture
 from hedron_core.testing.app import AppScenario
+from hedron_core.type_schema import TYPE_SCHEMA_VERSION
 
 
 def setup_function() -> None:
@@ -41,7 +42,7 @@ def test_explorer_includes_redacted_type_schema() -> None:
     payload = client.get("/hedron-explorer/api/handle-graph").json()
     node = next(row for row in payload["nodes"] if row["id"] == item.logical_id)
     assert node.get("type_schema")
-    assert node["type_schema"]["schema_version"] == 1
+    assert node["type_schema"]["schema_version"] == TYPE_SCHEMA_VERSION
     assert "values" not in node["type_schema"]
 
 

@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.49"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.48.0"
 required_predecessor = "v0.48.0"
 target = "v0.49.0"
@@ -19,7 +19,7 @@ stage_0_adds_pydantic_settings = false
 evaluate_hedron_settings = false
 formbody_request_path_not_adapter_candidate = true
 diagnostic_family = "HED-FP-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
 
 [adapters]
 gate = "ADAPTER-VALIDATION-049"
@@ -50,6 +50,8 @@ candidates = ["fastapi-workbench", "hedron-workbench", "hedron-posit"]
 not_candidates = ["hedron", "hedron-core", "hedron.config.HedronSettings"]
 today = "argparse WorkbenchConfig and custom loaders; no pydantic-settings dependency"
 stage_1_default_until_spike = "Evaluate; likely retain-custom-loader"
+disposition = "retain-custom-loader"
+recorded = { "fastapi-workbench" = "retain-custom-loader", "hedron-workbench" = "retain-custom-loader", "hedron-posit" = "retain-custom-loader" }
 
 [research]
 gate = "RESEARCH-049"
@@ -60,3 +62,4 @@ partial_validation = "provisional stream only; complete validation before persis
 missing_sentinel = "Hedron-owned unset vs experimental Pydantic MISSING; MISSING never Supported"
 fail_fast = "whole-batch-reject adversarial ingestion only; off for forms/configuration"
 no_supported_leakage = true
+recorded = { "partial-validation" = "experimental", "missing-sentinel" = "exclude", "fail-fast" = "experimental" }

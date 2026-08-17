@@ -4,15 +4,21 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Callable
-from typing import Annotated, Any
+from typing import Annotated, Any, get_args, get_origin
 
-from fastapi import File, Form, HTTPException, Path, Query, status
+from fastapi import Cookie, File, Form, Header, HTTPException, Path, Query, status
 
 from hedron.type_authoring.markers import FormBody
 from hedron.type_authoring.normalize import CompiledTypeHandler, FieldRecord
+from hedron_core.binding_plan import compile_boundary_binding
 from hedron_core.codes import HED_TYPE_0003
 
-__all__ = ["apply_modeled_signature", "reconstruct_kwargs", "reject_json_formbody"]
+__all__ = [
+    "apply_modeled_signature",
+    "compile_injected_depends",
+    "reconstruct_kwargs",
+    "reject_json_formbody",
+]
 
 _FORM_MEDIA = {
     "urlencoded": "application/x-www-form-urlencoded",
@@ -20,9 +26,23 @@ _FORM_MEDIA = {
 }
 
 
-def reject_json_formbody(compiled: CompiledTypeHandler, request: object | None) -> None:
+def reject_json_formbody(
+    compiled: CompiledTypeHandler,
+    request: object | None,
+    *,
+    strict_json: bool = False,
+) -> None:
     """Refuse non-form bodies as a silent empty FormBody (RFC-0071 / D-076 / #329)."""
     if request is None or not compiled.modeled or not isinstance(compiled.source, FormBody):
+        if strict_json and request is not None:
+            headers = getattr(request, "headers", None)
+            raw = str(headers.get("content-type") or "") if headers is not None else ""
+            media = raw.split(";", 1)[0].strip().lower()
+            if media and media not in {"application/json", "application/problem+json"}:
+                raise HTTPException(
+                    status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                    detail=HED_TYPE_0003,
+                )
         return
     headers = getattr(request, "headers", None)
     raw = ""
@@ -41,6 +61,9 @@ def reject_json_formbody(compiled: CompiledTypeHandler, request: object | None) 
 def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) -> dict[str, Any]:
     if not compiled.modeled or compiled.param_name is None or compiled.adapter is None:
         return kwargs
+    existing = kwargs.get(compiled.param_name)
+    if compiled.model_type is not None and isinstance(existing, compiled.model_type):
+        return kwargs
     raw: dict[str, Any] = {}
     for field in compiled.fields:
         if field.http_name in kwargs:
@@ -51,14 +74,82 @@ def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) ->
     return kwargs
 
 
+def compile_injected_depends(signature: inspect.Signature) -> inspect.Signature:
+    """Rewrite DependsOn markers to FastAPI Depends(scope=function|request)."""
+    from hedron.type_authoring.depends import DependsOn, as_fastapi_depends
+
+    rewritten: list[inspect.Parameter] = []
+    changed = False
+    for param in signature.parameters.values():
+        marker = param.default
+        if isinstance(marker, DependsOn):
+            rewritten.append(param.replace(default=as_fastapi_depends(marker)))
+            changed = True
+            continue
+        annotation = param.annotation
+        metadata: tuple[object, ...] = ()
+        origin = get_origin(annotation)
+        args = get_args(annotation)
+        if origin is Annotated and args:
+            metadata = tuple(args[1:])
+        depends_meta = next((item for item in metadata if isinstance(item, DependsOn)), None)
+        if depends_meta is not None:
+            rewritten.append(param.replace(default=as_fastapi_depends(depends_meta)))
+            changed = True
+            continue
+        rewritten.append(param)
+    if not changed:
+        return signature
+    return signature.replace(parameters=rewritten)
+
+
 def apply_modeled_signature(
     fn: Callable[..., Any],
     compiled: CompiledTypeHandler,
 ) -> inspect.Signature:
+    original = compile_injected_depends(inspect.signature(fn))
     if not compiled.modeled:
-        return inspect.signature(fn)
-    original = inspect.signature(fn)
-    injected: list[inspect.Parameter] = []
+        return original
+    plan = compile_boundary_binding(
+        source=type(compiled.source).__name__ if compiled.source is not None else "",
+        model_identity=compiled.model_type.__name__ if compiled.model_type is not None else "",
+        locations=tuple(field.location for field in compiled.fields),
+        aliases=tuple(field.http_name for field in compiled.fields if field.alias),
+        structural=compiled.binding_plan,
+        has_files=any(field.is_file for field in compiled.fields),
+        content_type=(
+            "application/x-www-form-urlencoded"
+            if compiled.form_encoding == "urlencoded"
+            else "multipart/form-data"
+            if compiled.form_encoding == "multipart"
+            else ""
+        ),
+    )
+    if (
+        plan.strategy == "native-model"
+        and compiled.model_type is not None
+        and compiled.param_name is not None
+    ):
+        marker = _native_marker(plan.field_locations)
+        if marker is not None:
+            injected: list[inspect.Parameter] = []
+            for name, param in original.parameters.items():
+                if name == compiled.param_name:
+                    injected.append(
+                        inspect.Parameter(
+                            name,
+                            param.kind,
+                            default=param.default,
+                            annotation=Annotated[compiled.model_type, marker],
+                        )
+                    )
+                else:
+                    injected.append(param)
+            if any(item.name == compiled.param_name for item in injected):
+                compiled.boundary_plan = plan  # type: ignore[attr-defined]
+                return inspect.Signature(injected)
+    compiled.boundary_plan = plan  # type: ignore[attr-defined]
+    injected = []
     for name, param in original.parameters.items():
         if name == compiled.param_name:
             continue
@@ -79,6 +170,17 @@ def apply_modeled_signature(
     return inspect.Signature(path_params + required_rest + injected + optional)
 
 
+def _native_marker(locations: tuple[str, ...]) -> object | None:
+    unique = set(locations)
+    if unique == {"query"}:
+        return Query()
+    if unique == {"header"}:
+        return Header()
+    if unique == {"cookie"}:
+        return Cookie()
+    return None
+
+
 def _fastapi_parameter(field: FieldRecord) -> inspect.Parameter:
     annotation: object = (
         field.annotation if field.annotation is not inspect.Parameter.empty else Any
@@ -94,6 +196,10 @@ def _fastapi_parameter(field: FieldRecord) -> inspect.Parameter:
         marker: object = File()
     elif field.location == "query":
         marker = Query()
+    elif field.location == "header":
+        marker = Header()
+    elif field.location == "cookie":
+        marker = Cookie()
     else:
         marker = Form()
     if field.required:

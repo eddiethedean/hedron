@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.49"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.48.0"
 required_predecessor = "v0.48.0"
 target = "v0.49.0"
@@ -21,15 +21,39 @@ stacks_on_host = "docs/acceptance/host-portable-facts-045.toml"
 new_catalog_kind = false
 catalog_entry_kinds = ["view", "command"]
 fourth_fingerprint_authority = false
-numeric_limits = "Stage 1 evidence; do not invent unmeasured payload or OpenAPI sizes here"
+numeric_limits = "MAX_MODEL_FIELDS=256; MAX_SCHEMA_DEPTH=16; MAX_UNION_VARIANTS=32; MAX_VALIDATION_ERRORS=100"
 diagnostic_family = "HED-FP-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
 
 [unions]
 public_wire_discriminator = "kind"
 untagged_application_models = "valid"
 smart_union_public_catalog = "tooling warning; not a Supported public-wire pattern"
-exact_symbols = "Stage 1 inventory; lock families only here"
+exact_symbols = [
+    "OutcomeMap",
+    "OutcomeCase",
+    "Patch",
+    "PatchSet",
+    "RefreshIntent",
+    "GridCellEvent",
+    "GridEditEvent",
+    "GridSelectionEvent",
+    "GridViewportEvent",
+    "GridDragEvent",
+    "GridPaginationEvent",
+    "ChannelMessage",
+    "JobStatus",
+    "JobHandle",
+    "JobState",
+    "McpResource",
+    "McpTool",
+    "GradioEndpoint",
+    "GradioRemoteConfig",
+]
+cross_runtime_fixtures = [
+    "packages/hedron-runtime-node/fixtures/portable_unions_v1.json",
+    "packages/hedron-runtime-java/fixtures/portable_unions_v1.json",
+]
 
 [union_families]
 outcome_map_results = true

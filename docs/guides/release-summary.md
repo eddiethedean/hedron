@@ -8,13 +8,13 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 
 | Item | Value |
 |---|---|
-| Published | **v0.48.0** in-tree (`hedron` / Beta train packages `0.48.0`; independent Beta `hedron-maps` `0.1.0`; `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.1`; `fastapi-workbench` `1.0.0`; tag/PyPI deferred, PyPI still `0.47.0`) |
-| Pin | `hedron>=0.48.0,<0.49` (in-tree); registry `hedron>=0.47.0,<0.48` |
+| Published | **v0.49.0** in-tree (`hedron` / Beta train packages `0.49.0`; independent Beta `hedron-maps` `0.1.0`; `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.1`; `fastapi-workbench` `1.0.0`; tag/PyPI deferred, PyPI still `0.47.0`) |
+| Pin | `hedron>=0.49.0,<0.50` (in-tree); registry `hedron>=0.47.0,<0.48` |
 | Charts satellite | `hedron-charts>=0.2.0,<0.3` |
-| Gate checker | `python scripts/check_release_gate.py 0.48.0` |
-| Packet verify | `python scripts/verify_pkg_48.py` |
+| Gate checker | `python scripts/check_release_gate.py 0.49.0` |
+| Packet verify | `python scripts/verify_pkg_49.py` |
 
-Adopter-facing notes: [What’s new in 0.48](whats-new-0.48.md) ·
+Adopter-facing notes: [What’s new in 0.49](whats-new-0.49.md) ·
 [Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 

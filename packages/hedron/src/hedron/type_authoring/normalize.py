@@ -27,6 +27,7 @@ from pydantic.fields import FieldInfo
 from hedron.type_authoring.adapter import PydanticBindingAdapter
 from hedron.type_authoring.markers import FormBody, Refreshes, Updates, ViewParams
 from hedron.type_authoring.outcomes import OutcomeMap
+from hedron_core.binding_plan import BoundaryBindingPlan
 from hedron_core.codes import (
     HED_TYPE_0002,
     HED_TYPE_0003,
@@ -37,6 +38,7 @@ from hedron_core.codes import (
 from hedron_core.component import Component
 from hedron_core.diagnostics import error
 from hedron_core.field import hedron_meta
+from hedron_core.schema_sanitizer import projections_from_model
 from hedron_core.security import Secret, TrustedHtml
 from hedron_core.type_schema import (
     MAX_MODEL_FIELDS,
@@ -94,6 +96,7 @@ class CompiledTypeHandler:
     form_encoding: str | None = None
     fastapi_parameters: tuple[inspect.Parameter, ...] = ()
     original: Callable[..., Any] | None = None
+    boundary_plan: BoundaryBindingPlan | None = None
 
     def reconstruct(self, values: Mapping[str, object]) -> BaseModel:
         if self.adapter is None or self.model_type is None:
@@ -266,6 +269,10 @@ class TypeNormalizer:
                 }
                 for item in fields
             ]
+            input_proj, output_proj, shared, write_only, read_only = projections_from_model(
+                model_type,
+                sensitive=tuple(sensitive),
+            )
             schema = TypeSchema(
                 handler_fingerprint=stable_fingerprint(
                     {
@@ -294,6 +301,11 @@ class TypeNormalizer:
                 declared_target_ids=declared_refresh + declared_update,
                 outcome_variant_ids=outcomes.variant_ids if outcomes else (),
                 fallback_cache_projection={"fallback": fallback} if fallback else {},
+                input_projection=input_proj,
+                output_projection=output_proj,
+                shared_fields=shared,
+                write_only_fields=write_only,
+                read_only_fields=read_only,
             )
         return CompiledTypeHandler(
             modeled=model_type is not None,
@@ -386,8 +398,16 @@ def _injected_names(signature: inspect.Signature, hints: Mapping[str, Any]) -> f
         if isinstance(parameter.default, DependsParam):
             names.add(name)
             continue
+        from hedron.type_authoring.depends import DependsOn
+
+        if isinstance(parameter.default, DependsOn):
+            names.add(name)
+            continue
         _, metadata = _split_annotated(annotation)
         if any(isinstance(item, DependsParam) for item in metadata):
+            names.add(name)
+            continue
+        if any(type(item).__name__ == "DependsOn" for item in metadata):
             names.add(name)
     return frozenset(names)
 

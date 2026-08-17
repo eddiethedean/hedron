@@ -153,6 +153,16 @@ class HedronPagesMixin:
         path: str,
         **kwargs: Any,
     ) -> None:
+        from hedron.registration import fail_closed_late_registration
+        from hedron_core.catalog import get_sealed_catalog
+        from hedron_core.registry.builder import active_builder
+
+        builder = active_builder()
+        fail_closed_late_registration(
+            registry_sealed=builder._sealed,
+            catalog_sealed=get_sealed_catalog() is not None,
+            openapi_cached=getattr(self, "openapi_schema", None) is not None,
+        )
         self._root_router.include_component(descriptor, path=path, **kwargs)
         self._sync_root_route()
 
@@ -294,6 +304,7 @@ class HedronPagesMixin:
         """Register a mutation and return an ``ActionHandle``."""
         import inspect
 
+        authorization = kwargs.pop("authorization", None)
         if inspect.isclass(path):
             from typing import cast
 
@@ -314,6 +325,7 @@ class HedronPagesMixin:
                 fallback=fallback or getattr(command_cls, "fallback", None),
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
+                authorization=authorization,
                 **kwargs,
             )(compiled)
 
@@ -325,6 +337,7 @@ class HedronPagesMixin:
                 fallback=fallback,
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
+                authorization=authorization,
                 **kwargs,
             )(path)
 
@@ -391,12 +404,16 @@ class HedronPagesMixin:
                     return PlainTextResponse(HED_CMD_0002, status_code=400)
                 return result
 
+            if authorization is not None:
+                endpoint._hedron_requires_scopes = authorization  # type: ignore[attr-defined]
             with contextlib.suppress(TypeError, ValueError):
                 meta = handle.type_meta
-                if meta is not None and getattr(meta, "modeled", False):
+                if meta is not None:
                     endpoint.__signature__ = apply_modeled_signature(fn, meta)  # type: ignore[attr-defined]
                 else:
-                    endpoint.__signature__ = inspect.signature(fn)  # type: ignore[attr-defined]
+                    from hedron.type_authoring.signature import compile_injected_depends
+
+                    endpoint.__signature__ = compile_injected_depends(inspect.signature(fn))  # type: ignore[attr-defined]
             self._root_router.action(
                 handle.path,
                 method=handle.method,

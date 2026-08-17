@@ -1,8 +1,8 @@
 # What's new in Hedron 0.39
 
-!!! note "Current train is 0.48"
+!!! note "Current train is 0.49"
 
-    Pin `hedron>=0.48.0,<0.49` for new apps. See [What's new in 0.41](whats-new-0.41.md).
+    Pin `hedron>=0.49.0,<0.50` for new apps. See [What's new in 0.41](whats-new-0.41.md).
 
 **Published** as `v0.39.0` on 2026-08-14. Historical pin: `hedron>=0.39.0,<0.40`. Charts remain on the
 Published 0.2 line: `hedron-charts>=0.2.0,<0.3`.

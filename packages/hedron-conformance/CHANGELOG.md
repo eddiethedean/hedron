@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.49.0] — 2026-08-17
+
+### Added
+- Phase 0.49 FastAPI/Pydantic convergence (D-081 / D-084 / RFC-0076).
+
+### Changed
+- Coordinated train tip `0.49.0` (in-tree cut; tag/PyPI deferred).
+
+
 ## [0.48.0] — 2026-08-17
 
 ### Added

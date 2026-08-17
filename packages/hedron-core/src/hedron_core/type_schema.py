@@ -14,7 +14,8 @@ from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_core.updates import BaseHandleDescriptor, descriptor_fingerprint
 
 TYPE_SCHEMA_NAMESPACE = "hedron.type"
-TYPE_SCHEMA_VERSION = 1
+TYPE_SCHEMA_VERSION = 2
+SUPPORTED_TYPE_SCHEMA_VERSIONS = frozenset({1, 2})
 MAX_MODEL_FIELDS = 256
 MAX_SCHEMA_DEPTH = 16
 MAX_UNION_VARIANTS = 32
@@ -36,11 +37,14 @@ __all__ = [
     "Sensitive",
     "TYPE_SCHEMA_NAMESPACE",
     "TYPE_SCHEMA_VERSION",
+    "SUPPORTED_TYPE_SCHEMA_VERSIONS",
     "TypeSchema",
     "attach_type_schema",
     "payload_fingerprint",
     "redact_type_payload",
     "stable_fingerprint",
+    "type_schema_from_descriptor",
+    "upgrade_type_schema",
 ]
 
 
@@ -108,14 +112,21 @@ class TypeSchema:
     outcome_variant_ids: tuple[str, ...] = ()
     fallback_cache_projection: Mapping[str, JsonValue] = field(default_factory=dict)
     diagnostics: tuple[str, ...] = ()
+    input_projection: Mapping[str, JsonValue] = field(default_factory=dict)
+    output_projection: Mapping[str, JsonValue] = field(default_factory=dict)
+    shared_fields: tuple[str, ...] = ()
+    write_only_fields: tuple[str, ...] = ()
+    read_only_fields: tuple[str, ...] = ()
+    input_fingerprint: str = ""
+    output_fingerprint: str = ""
 
     def __post_init__(self) -> None:
-        if self.schema_version != TYPE_SCHEMA_VERSION:
+        if self.schema_version not in SUPPORTED_TYPE_SCHEMA_VERSIONS:
             raise error(
                 HED_TYPE_0004,
                 title="Unsupported TypeSchema version",
                 explanation=f"schema_version={self.schema_version} is not supported.",
-                remediation=f"Use TypeSchema version {TYPE_SCHEMA_VERSION}.",
+                remediation=f"Use TypeSchema version in {sorted(SUPPORTED_TYPE_SCHEMA_VERSIONS)}.",
             )
         if len(self.field_paths) > MAX_MODEL_FIELDS:
             raise error(
@@ -126,6 +137,17 @@ class TypeSchema:
             )
         object.__setattr__(self, "control_dispositions", dict(self.control_dispositions))
         object.__setattr__(self, "fallback_cache_projection", dict(self.fallback_cache_projection))
+        object.__setattr__(self, "input_projection", dict(self.input_projection))
+        object.__setattr__(self, "output_projection", dict(self.output_projection))
+        if self.schema_version >= 2:
+            if not self.input_fingerprint and self.input_projection:
+                object.__setattr__(
+                    self, "input_fingerprint", payload_fingerprint(self.input_projection)
+                )
+            if not self.output_fingerprint and self.output_projection:
+                object.__setattr__(
+                    self, "output_fingerprint", payload_fingerprint(self.output_projection)
+                )
 
     def stable_fingerprint(self) -> str:
         """Fingerprint of the redacted ``hedron.type`` payload (D-077)."""
@@ -149,6 +171,18 @@ class TypeSchema:
             "fallback_cache_projection": dict(self.fallback_cache_projection),
             "diagnostics": list(self.diagnostics),
         }
+        if self.schema_version >= 2:
+            payload.update(
+                {
+                    "input_projection": dict(self.input_projection),
+                    "output_projection": dict(self.output_projection),
+                    "shared_fields": list(self.shared_fields),
+                    "write_only_fields": list(self.write_only_fields),
+                    "read_only_fields": list(self.read_only_fields),
+                    "input_fingerprint": self.input_fingerprint,
+                    "output_fingerprint": self.output_fingerprint,
+                }
+            )
         return redact_type_payload(payload)
 
 
@@ -187,6 +221,13 @@ def attach_type_schema(
         outcome_variant_ids=schema.outcome_variant_ids,
         fallback_cache_projection=schema.fallback_cache_projection,
         diagnostics=schema.diagnostics,
+        input_projection=schema.input_projection,
+        output_projection=schema.output_projection,
+        shared_fields=schema.shared_fields,
+        write_only_fields=schema.write_only_fields,
+        read_only_fields=schema.read_only_fields,
+        input_fingerprint=schema.input_fingerprint,
+        output_fingerprint=schema.output_fingerprint,
     )
     payload = linked.as_mapping()
     extensions[TYPE_SCHEMA_NAMESPACE] = payload
@@ -232,7 +273,7 @@ def type_schema_from_descriptor(descriptor: BaseHandleDescriptor) -> TypeSchema 
         else ()
     )
     return TypeSchema(
-        schema_version=_json_int(payload.get("schema_version"), TYPE_SCHEMA_VERSION),
+        schema_version=_json_int(payload.get("schema_version"), 1),
         handler_fingerprint=str(payload.get("handler_fingerprint") or ""),
         model_fingerprint=str(payload.get("model_fingerprint") or ""),
         descriptor_fingerprint=str(payload.get("descriptor_fingerprint") or ""),
@@ -249,4 +290,41 @@ def type_schema_from_descriptor(descriptor: BaseHandleDescriptor) -> TypeSchema 
         outcome_variant_ids=_json_str_tuple(payload.get("outcome_variant_ids")),
         fallback_cache_projection=_json_object(payload.get("fallback_cache_projection")),
         diagnostics=_json_str_tuple(payload.get("diagnostics")),
+        input_projection=_json_object(payload.get("input_projection")),
+        output_projection=_json_object(payload.get("output_projection")),
+        shared_fields=_json_str_tuple(payload.get("shared_fields")),
+        write_only_fields=_json_str_tuple(payload.get("write_only_fields")),
+        read_only_fields=_json_str_tuple(payload.get("read_only_fields")),
+        input_fingerprint=str(payload.get("input_fingerprint") or ""),
+        output_fingerprint=str(payload.get("output_fingerprint") or ""),
+    )
+
+
+def upgrade_type_schema(schema: TypeSchema) -> TypeSchema:
+    """Deterministic v1 → v2 additive upgrade. Rollback is keeping schema_version=1."""
+    if schema.schema_version >= 2:
+        return schema
+    return TypeSchema(
+        schema_version=2,
+        handler_fingerprint=schema.handler_fingerprint,
+        model_fingerprint=schema.model_fingerprint,
+        descriptor_fingerprint=schema.descriptor_fingerprint,
+        handler_kind=schema.handler_kind,
+        boundary_sources=schema.boundary_sources,
+        field_paths=schema.field_paths,
+        control_dispositions=schema.control_dispositions,
+        sensitivity_flags=schema.sensitivity_flags,
+        identity_flags=schema.identity_flags,
+        effect_knowledge=schema.effect_knowledge,
+        declared_target_ids=schema.declared_target_ids,
+        outcome_variant_ids=schema.outcome_variant_ids,
+        fallback_cache_projection=schema.fallback_cache_projection,
+        diagnostics=schema.diagnostics,
+        shared_fields=tuple(
+            str(item.get("name") or "") for item in schema.field_paths if item.get("name")
+        ),
+        write_only_fields=tuple(schema.sensitivity_flags),
+        read_only_fields=(),
+        input_projection={},
+        output_projection={},
     )

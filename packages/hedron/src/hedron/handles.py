@@ -780,10 +780,12 @@ def wrap_endpoint_result(handle: FragmentHandle[Any, Any]) -> Callable[..., Any]
         return wrap_refreshable_result(resolved, result)
 
     meta = handle.type_meta
-    if meta is not None and getattr(meta, "modeled", False):
+    if meta is not None:
         wrapped.__signature__ = apply_modeled_signature(handle.renderer, meta)  # type: ignore[attr-defined]
     else:
-        wrapped.__signature__ = handle.renderer_signature  # type: ignore[attr-defined]
+        from hedron.type_authoring.signature import compile_injected_depends
+
+        wrapped.__signature__ = compile_injected_depends(handle.renderer_signature)  # type: ignore[attr-defined]
     wrapped.__wrapped__ = handle.renderer  # type: ignore[attr-defined]
     wrapped.__module__ = getattr(handle.renderer, "__module__", None) or "hedron.handles"
     wrapped.__name__ = getattr(handle.renderer, "__name__", "refreshable")

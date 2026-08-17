@@ -10,6 +10,7 @@ from hedron.type_authoring.classes import (
     compile_command_class,
     compile_view_class,
 )
+from hedron.type_authoring.depends import DependsOn
 from hedron.type_authoring.effects import assert_declared_effects
 from hedron.type_authoring.forms import generate_form
 from hedron.type_authoring.markers import Control, FormBody, Refreshes, Updates, ViewParams
@@ -22,6 +23,7 @@ __all__ = [
     "CommandResult",
     "CompiledTypeHandler",
     "Control",
+    "DependsOn",
     "FormBody",
     "OutcomeMap",
     "PydanticBindingAdapter",

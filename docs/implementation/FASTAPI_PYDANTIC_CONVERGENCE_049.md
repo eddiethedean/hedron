@@ -1,24 +1,20 @@
 # FastAPI/Pydantic convergence implementation plan (phase 0.49)
 
-**Status:** Planned; Stage 0 contract refined by D-084 against Published in-tree `v0.48.0`<br>
+**Status:** Published as in-tree `v0.49.0` (tag/PyPI deferred). Human AT (`SR-021`) stays open.<br>
 **Tracking:** [#380](https://github.com/eddiethedean/hedron/issues/380)<br>
 **Decision/RFC:** D-081, refined by D-084 / [RFC-0076](../rfcs/RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md)<br>
 **Planning baseline:** Published in-tree `v0.48.0`<br>
 **Target:** Hedron `v0.49.0`<br>
 **Required predecessor:** Verified `v0.48.0`
 
-D-084 does not authorize Stage 1. It names shipped seams `TypeSchema` v1,
-`BindingPlan`, `apply_modeled_signature`, `HedronRouter`, `install_openapi`,
-0.43–0.48 handles/catalog/HTMX SSE, and FastAPI `Depends(scope=)`. `DependsOn`,
-`BoundaryBindingPlan`, TypeSchema v2 projections, and `RequiresScopes` remain
-Stage 1 runtime. FailFast stays research. No version claim.
+Stage 1 compiled those plans as in-tree `v0.49.0`. FailFast stays research.
 
 ## Consume shipped, do not fork
 
 - `hedron_core.type_schema.TypeSchema` / `attach_type_schema` /
-  `type_schema_from_descriptor` / `TYPE_SCHEMA_VERSION = 1` /
+  `type_schema_from_descriptor` / `TYPE_SCHEMA_VERSION = 2` (v1 readers remain) /
   namespace `hedron.type`. Forbidden keys already include `values`, `defaults`,
-  `examples`, `callbacks`, `request`, `model`. Do not bump the version in Stage 0.
+  `examples`, `callbacks`, `request`, `model`.
 - `hedron_core.updates.BindingPlan` / `BindingAdapter` /
   `StructuralBindingAdapter` and `hedron.type_authoring.adapter.PydanticBindingAdapter`.
   Field expansion: `hedron.type_authoring.signature.apply_modeled_signature` /

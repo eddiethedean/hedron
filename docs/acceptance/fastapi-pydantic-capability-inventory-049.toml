@@ -3,7 +3,7 @@
 
 schema_version = 1
 phase = "0.49"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.48.0"
 required_predecessor = "v0.48.0"
 target = "v0.49.0"
@@ -29,7 +29,7 @@ tracking = "#380"
 id = "FP-LIFETIME-001..008"
 area = "dependency-lifetimes"
 gate = "LIFETIME-049"
-state = "Planned"
+state = "Verified"
 adopt = ["yield-scope-function", "yield-scope-request", "cleanup-graph", "streaming-diagnostics"]
 hedron_to_fastapi = { HANDLER = "function", RESPONSE = "request" }
 
@@ -37,7 +37,7 @@ hedron_to_fastapi = { HANDLER = "function", RESPONSE = "request" }
 id = "FP-BIND-001..012"
 area = "parameter-models"
 gate = "BINDING-049"
-state = "Planned"
+state = "Verified"
 adopt = ["query-model", "header-model", "cookie-model", "form-model", "expanded-fallback"]
 structural_plan = "BindingPlan"
 strategy_plan = "BoundaryBindingPlan"
@@ -46,7 +46,7 @@ strategy_plan = "BoundaryBindingPlan"
 id = "FP-SCHEMA-001..012"
 area = "dual-schema"
 gate = "SCHEMA-049"
-state = "Planned"
+state = "Verified"
 adopt = ["validation-schema", "serialization-schema", "read-only", "write-only", "schema-generator"]
 additive_to = "docs/acceptance/type-schema-044.toml"
 
@@ -54,7 +54,7 @@ additive_to = "docs/acceptance/type-schema-044.toml"
 id = "FP-UNION-001..010"
 area = "tagged-wire-unions"
 gate = "UNION-049"
-state = "Planned"
+state = "Verified"
 adopt = ["literal-discriminator", "openapi-discriminator", "cross-runtime-fixtures"]
 catalog_entry_kinds = ["view", "command"]
 
@@ -62,7 +62,7 @@ catalog_entry_kinds = ["view", "command"]
 id = "FP-OPENAPI-001..014"
 area = "router-openapi-security"
 gate = "OPENAPI-049"
-state = "Planned"
+state = "Verified"
 adopt = ["preserved-route-provenance", "typed-responses", "media-types", "callbacks", "webhooks", "requires-scopes", "strict-content-type", "stable-operation-ids"]
 related_gates = ["ROUTER-049", "SECURITY-049"]
 
@@ -70,7 +70,7 @@ related_gates = ["ROUTER-049", "SECURITY-049"]
 id = "FP-ADAPTER-001..008"
 area = "validation-adapters"
 gate = "ADAPTER-VALIDATION-049"
-state = "Planned"
+state = "Verified"
 adopt_if_measured = ["cached-type-adapter", "validate-json"]
 not_on_this_gate = ["fail-fast-batch"]
 

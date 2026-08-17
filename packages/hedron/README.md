@@ -15,8 +15,8 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-**Published in-tree `v0.48.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.47.0`**.
+**Published in-tree `v0.49.0`.** Git tag and PyPI upload are **deferred**.
+In-tree pin `hedron>=0.49.0,<0.50`. The latest on **PyPI** is **`0.47.0`**.
 
 Requires Python 3.11–3.14. The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
@@ -113,7 +113,7 @@ Coming from Streamlit? Start with the
 
 ## Install
 
-Pin from **PyPI** today (`0.47.0`; tag/PyPI deferred). In-tree pin is `>=0.48.0,<0.49`.
+Pin from **PyPI** today (`0.47.0`; tag/PyPI deferred). In-tree pin is `>=0.49.0,<0.50`.
 
 ```bash
 uv add "hedron>=0.47.0,<0.48" "uvicorn[standard]"
@@ -121,7 +121,7 @@ uv add "hedron>=0.47.0,<0.48" "uvicorn[standard]"
 python -m pip install "hedron>=0.47.0,<0.48" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Train:** `0.48.x` · published `v0.48.0` · pin `>=0.48.0,<0.49`
+**Package maturity:** Beta · **Train:** `0.49.x` · published `v0.49.0` · pin `>=0.49.0,<0.50`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the
@@ -151,13 +151,13 @@ interactions, security profiles, and CLI. Integrations are optional:
 For example:
 
 ```bash
-uv add "hedron[data,dev]>=0.48.0,<0.49"
+uv add "hedron[data,dev]>=0.49.0,<0.50"
 ```
 
 Charts require the fixed compatible floor:
 
 ```bash
-uv add "hedron[charts]>=0.48.0,<0.49"
+uv add "hedron[charts]>=0.49.0,<0.50"
 ```
 
 See the full

@@ -20,6 +20,7 @@ from hedron_core.audit import (
     set_security_audit_sink,
 )
 from hedron_core.auto import Auto, inspect_data, register_renderer
+from hedron_core.binding_plan import BoundaryBindingPlan
 from hedron_core.browser import (
     BrowserContext,
     BrowserStorage,
@@ -273,6 +274,7 @@ from hedron_core.interaction import (
     default_interaction_policy,
     interaction_headers,
 )
+from hedron_core.lifetime import DependencyLifetime, DependencyPlan
 from hedron_core.live import LiveObservation, SseEvent, encode_sse, job_status_sse_events
 from hedron_core.media_session import (
     MediaChunk,
@@ -344,6 +346,7 @@ from hedron_core.rendering import (
     RenderSession,
     render,
 )
+from hedron_core.scopes import RequiresScopes
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
 from hedron_core.security_policy import (
     SecurityHeadersPolicy,
@@ -413,7 +416,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.48.0"
+__version__ = "0.49.0"
 
 __all__ = [
     "ActionRegistry",
@@ -463,11 +466,13 @@ __all__ = [
     "BaseHandleDescriptor",
     "BindingAdapter",
     "BindingPlan",
+    "BoundaryBindingPlan",
     "InstanceKey",
     "Sensitive",
     "StructuralBindingAdapter",
     "TYPE_SCHEMA_NAMESPACE",
     "TYPE_SCHEMA_VERSION",
+    "RequiresScopes",
     "FeatureBundle",
     "FeatureConflictError",
     "FeatureProvider",
@@ -538,6 +543,8 @@ __all__ = [
     "capability_matrix",
     "htmx_eval_allowed",
     "default_interaction_policy",
+    "DependencyLifetime",
+    "DependencyPlan",
     "emit_security_audit",
     "get_security_audit_sink",
     "interaction_headers",

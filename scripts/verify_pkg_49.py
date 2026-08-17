@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""Verify the phase 0.49 FastAPI/Pydantic convergence Stage 0 packet.
+"""Verify the phase 0.49 FastAPI/Pydantic convergence packet or in-tree cut.
 
-This command never publishes, tags, or implements 0.49 runtime. Use
-``--allow-planned`` while every 0.49 gate is Planned and the living baseline is
-0.48.0. Omitting the flag requires a 0.49 cut that this refine does not make.
+This command never publishes or tags. Use ``--allow-planned`` only while the 0.49
+rows are Planned and the living baseline is 0.48.0.
+At the in-tree cut, omit ``--allow-planned`` and require published 0.49.0.
+PKG evidence is ``scripts/check_pkg_049.py`` so ``--execute-verified`` cannot recurse here.
 """
 
 from __future__ import annotations
 
 import argparse
+import subprocess
 import sys
 import tomllib
 from pathlib import Path
@@ -16,89 +18,31 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-GATE = ROOT / "docs" / "acceptance" / "release-gate-0.49.toml"
-INVENTORY = ROOT / "docs" / "acceptance" / "fastapi-pydantic-capability-inventory-049.toml"
-PACKET = ROOT / "docs" / "acceptance" / "RELEASE_0_49.md"
-UPGRADE = ROOT / "docs" / "acceptance" / "upgrade-fixtures-049.md"
-IMPLEMENTATION = ROOT / "docs" / "implementation" / "FASTAPI_PYDANTIC_CONVERGENCE_049.md"
-API = ROOT / "docs" / "api" / "FASTAPI_PYDANTIC_CONVERGENCE.md"
-RFC = ROOT / "docs" / "rfcs" / "RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md"
-LIFETIME = ROOT / "docs" / "acceptance" / "fastapi-lifetime-049.toml"
-BINDING = ROOT / "docs" / "acceptance" / "fastapi-binding-049.toml"
-TYPESCHEMA_V2 = ROOT / "docs" / "acceptance" / "typeschema-v2-049.toml"
-UNIONS = ROOT / "docs" / "acceptance" / "fastapi-unions-openapi-049.toml"
-SETTINGS = ROOT / "docs" / "acceptance" / "fastapi-settings-research-049.toml"
-DECISIONS = ROOT / "docs" / "DECISIONS.md"
-ROADMAP = ROOT / "docs" / "ROADMAP.md"
-STATUS = ROOT / "STATUS.md"
-RELEASE = ROOT / "docs" / "release.toml"
-PYPROJECT = ROOT / "pyproject.toml"
+from _gate_049 import (  # noqa: E402
+    API,
+    EVALUATE_REQUIREMENT_IDS,
+    EXCLUDED_REQUIREMENT_IDS,
+    EXPECTED_GATES,
+    EXPECTED_REQUIREMENT_RANGES,
+    EXPERIMENTAL_REQUIREMENT_IDS,
+    GATE,
+    IMPLEMENTATION,
+    INVENTORY,
+    PACKET_FILES,
+    PYPROJECT,
+    RELEASE,
+    ROADMAP,
+    STATUS,
+    TRACKING_ISSUE,
+    accepted_contract_present,
+    contract_refine_present,
+)
 
-TRACKING_ISSUE = "#380"
 PREDECESSOR = "0.48.0"
 RELEASE_CANDIDATE = "0.49.0"
 
-PACKET_FILES = (
-    GATE,
-    INVENTORY,
-    PACKET,
-    UPGRADE,
-    IMPLEMENTATION,
-    API,
-    RFC,
-    LIFETIME,
-    BINDING,
-    TYPESCHEMA_V2,
-    UNIONS,
-    SETTINGS,
-)
 
-EXPECTED_GATES = (
-    "LIFETIME-049",
-    "BINDING-049",
-    "SCHEMA-049",
-    "UNION-049",
-    "ROUTER-049",
-    "OPENAPI-049",
-    "SECURITY-049",
-    "ADAPTER-VALIDATION-049",
-    "SETTINGS-049",
-    "RESEARCH-049",
-    "A11Y-049",
-    "PERF-049",
-    "COMPAT-049",
-    "DOCS-049",
-    "REGRESS-049",
-    "PKG-049",
-)
-EXPECTED_REQUIREMENT_RANGES = (
-    "FP-LIFETIME-001..008",
-    "FP-BIND-001..012",
-    "FP-SCHEMA-001..012",
-    "FP-UNION-001..010",
-    "FP-OPENAPI-001..014",
-    "FP-ADAPTER-001..008",
-    "FP-SETTINGS-001..008",
-    "FP-RESEARCH-001..006",
-    "FP-EXCLUDE-001..010",
-)
-EVALUATE_REQUIREMENT_IDS = frozenset({"FP-SETTINGS-001..008"})
-EXPERIMENTAL_REQUIREMENT_IDS = frozenset({"FP-RESEARCH-001..006"})
-EXCLUDED_REQUIREMENT_IDS = frozenset({"FP-EXCLUDE-001..010"})
-
-FROZEN_CONTRACT_MARKERS = (
-    'Depends(scope="function")',
-    'Depends(scope="request")',
-    "BoundaryBindingPlan",
-    "BindingPlan",
-    "apply_modeled_signature",
-    "RESEARCH-049",
-    "RequiresScopes",
-    "TypeSchema",
-)
-
-
-def _load(path: Path) -> dict[str, object]:
+def _load(path: Path) -> dict:
     return tomllib.loads(path.read_text(encoding="utf-8"))
 
 
@@ -210,21 +154,10 @@ def _check_inventory(*, allow_planned: bool) -> None:
 
 
 def _check_contract() -> None:
-    rfc = RFC.read_text(encoding="utf-8")
-    decisions = DECISIONS.read_text(encoding="utf-8")
-    if "**Status:** Accepted" not in rfc or "| D-081 | Accepted |" not in decisions:
+    if not accepted_contract_present():
         raise SystemExit("RFC-0076 and D-081 must remain Accepted")
-    combined = "\n".join(
-        path.read_text(encoding="utf-8") for path in (RFC, IMPLEMENTATION, API, PACKET)
-    )
-    if "| D-084 | Accepted |" not in decisions or not all(
-        marker in combined for marker in FROZEN_CONTRACT_MARKERS
-    ):
+    if not contract_refine_present():
         raise SystemExit("D-084 and the frozen 0.49 contract markers must remain present")
-    if TRACKING_ISSUE not in PACKET.read_text(encoding="utf-8"):
-        raise SystemExit(f"{PACKET}: tracking issue {TRACKING_ISSUE} must be bound")
-    if TRACKING_ISSUE not in rfc:
-        raise SystemExit(f"{RFC}: tracking issue {TRACKING_ISSUE} must be bound")
     for path in (ROADMAP, STATUS, API, IMPLEMENTATION):
         text = path.read_text(encoding="utf-8")
         for marker in ("0.48", "0.49", "D-081", "D-084"):
@@ -241,26 +174,22 @@ def _check_versions(*, allow_planned: bool) -> None:
     published = str(release.get("published_version", "")).strip()
     development = str(release.get("development_version", "")).strip()
     if allow_planned:
+        expected = PREDECESSOR
         if published != PREDECESSOR:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
-        if workspace != PREDECESSOR or development != PREDECESSOR:
-            raise SystemExit(
-                f"workspace/development version must stay {PREDECESSOR}; "
-                f"found {workspace}/{development}"
-            )
     elif published.startswith("0.50."):
         print(f"ok: 0.49 historical under living published {published}")
         return
     else:
+        expected = RELEASE_CANDIDATE
         if published != RELEASE_CANDIDATE:
             raise SystemExit(
                 f"cut published version must be {RELEASE_CANDIDATE}; found {published!r}"
             )
-        if workspace != RELEASE_CANDIDATE or development != RELEASE_CANDIDATE:
-            raise SystemExit(
-                f"workspace/development version must be {RELEASE_CANDIDATE}; "
-                f"found {workspace}/{development}"
-            )
+    if workspace != expected or development != expected:
+        raise SystemExit(
+            f"workspace/development version must be {expected}; found {workspace}/{development}"
+        )
     print(f"ok: version honesty (published {published}, development {development})")
 
 
@@ -282,9 +211,16 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit("\n".join(errors))
         print("ok: 0.49 planned gate shape")
     else:
-        raise SystemExit(
-            "0.49 is Stage 0 only; omit --allow-planned only after an in-tree v0.49.0 cut"
-        )
+        command = [
+            sys.executable,
+            str(ROOT / "scripts" / "check_release_gate.py"),
+            RELEASE_CANDIDATE,
+            "--evidence-manifest",
+            str(GATE),
+            "--execute-verified",
+        ]
+        print("+", *command)
+        subprocess.check_call(command, cwd=ROOT)
     print(f"ok: verify_pkg_49 ({'allow-planned' if args.allow_planned else 'cut'})")
     return 0
 

@@ -1,14 +1,14 @@
 ---
-status: planned
+status: beta
 ---
 
 # FastAPI and Pydantic convergence
 
-!!! warning "Planned 0.49 contract"
-
-    This is the D-081 / D-084 / RFC-0076 public contract. No 0.49 API is available
-    until every owning release gate is satisfied. Planning baseline is Published
-    in-tree `v0.48.0`. Tracking [#380](https://github.com/eddiethedean/hedron/issues/380).
+Phase 0.49 (D-081 / D-084 / RFC-0076) compiles existing handle, TypeSchema, and catalog
+plans onto FastAPI from the Published in-tree `v0.48.0` predecessor. Authority stays
+descriptor → TypeSchema → catalog. Tracking
+[#380](https://github.com/eddiethedean/hedron/issues/380). Published as in-tree
+`v0.49.0` (tag/PyPI deferred).
 
 ## Dependency lifetimes
 
@@ -38,21 +38,22 @@ Existing authoring stays valid:
 
 ```python
 from typing import Annotated
-from hedron import FormBody, FormModel, ViewParams
+from pydantic import BaseModel
+from hedron import FormBody, ViewParams
 
-class Filters(FormModel):
+class Filters(BaseModel):
     q: str = ""
     limit: int = 50
 
 @app.refreshable("/items")
-def items(filters: Annotated[Filters, ViewParams()]): ...
+def items(filters: Annotated[Filters, ViewParams(source="query")]): ...
 ```
 
 Hedron chooses `native-model` only when FastAPI's native parameter-model behavior is equivalent.
 Otherwise it retains `expanded-fields`. `BoundaryBindingPlan` exposes the decision and fallback
 reason; `BindingPlan` remains the structural path/query plan. Authors can force the portable
 fallback during migration. Existing `ViewParams` / `FormBody` routes keep expanded-fields unless
-equivalence is proven.
+equivalence is proven. Flask/Django never receive FastAPI native-model binding.
 
 ## Input and output schemas
 
@@ -72,13 +73,13 @@ def export_report(...): ...
 ```
 
 Scopes are inspectable requirements, not authorization decisions. Applications still own
-authentication, tenant/object policy, and denial.
+authentication, tenant/object policy, and denial. Removing `RequiresScopes` returns to
+existing guards.
 
 ## Compatibility
 
 - Existing routes keep their current behavior unless the compiler proves native equivalence.
-- HTML routes continue returning Hedron response classes.
-- JSON routes may retain native FastAPI response models and serialization.
-- Flask and Django compile the same declarations through their existing guard/binding seams.
-- TypeSchema v1 remains readable for the documented compatibility window.
-- Experimental partial validation, Pydantic `MISSING`, and `FailFast` are not Supported APIs.
+- TypeSchema v1 readers remain. CatalogEntry.kind stays `view` / `command`.
+- Workbench/Posit settings keep custom loaders (`retain-custom-loader`). FailFast, Pydantic
+  `MISSING`, and partial streamed validation stay research-only and are not Supported.
+- `polling_only` and Deferred `MORPH-048` are unchanged.

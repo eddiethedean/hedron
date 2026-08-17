@@ -58,7 +58,7 @@ on import order. Expensive inspection is bounded.
 |---|---|
 | No renderer matched the value | Raises with code **`HED-AUTO-0001`** (“No Auto renderer matched…”) |
 | Unknown `as_` renderer name | Raises with code **`HED-AUTO-0001`** (unknown forced renderer) |
-| Optional package missing for chosen renderer | Install `hedron[data]>=0.48.0,<0.49` for data or `hedron[charts]>=0.48.0,<0.49` for charts |
+| Optional package missing for chosen renderer | Install `hedron[data]>=0.49.0,<0.50` for data or `hedron[charts]>=0.49.0,<0.50` for charts |
 | Ambiguous match without `as_` | Documented winner when the registry can pick one; otherwise **`HED-AUTO-0001`** |
 
 ## See also

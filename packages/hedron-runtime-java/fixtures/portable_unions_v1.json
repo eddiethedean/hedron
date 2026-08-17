@@ -1,0 +1,37 @@
+[
+  {
+    "id": "union-patch",
+    "capability": "tagged-wire",
+    "description": "Typed update payload uses literal kind",
+    "input": {"kind": "patch", "target": "items"},
+    "expected": {"kind": "patch"}
+  },
+  {
+    "id": "union-job-status",
+    "capability": "tagged-wire",
+    "description": "Job JSON envelope is kind-tagged",
+    "input": {"kind": "job-status", "state": "queued", "job_id": "1"},
+    "expected": {"kind": "job-status"}
+  },
+  {
+    "id": "union-channel-ping",
+    "capability": "tagged-wire",
+    "description": "ChannelMessage ping is kind-tagged",
+    "input": {"kind": "ping"},
+    "expected": {"kind": "ping"}
+  },
+  {
+    "id": "union-grid-cell",
+    "capability": "tagged-wire",
+    "description": "Grid cell event uses discriminator kind",
+    "input": {"kind": "cell", "row_key": "1"},
+    "expected": {"kind": "cell"}
+  },
+  {
+    "id": "union-unknown-kind",
+    "capability": "tagged-wire",
+    "description": "Unknown public-wire variants fail closed",
+    "input": {"kind": "nope"},
+    "expected": {"diagnostic_code": "HED-FP-0004"}
+  }
+]

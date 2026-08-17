@@ -20,7 +20,7 @@ from hedron_core.catalog import (
     seal_interaction_catalog,
 )
 from hedron_core.codes import HED_CATALOG_0003, HED_CATALOG_0004
-from hedron_core.type_schema import TYPE_SCHEMA_NAMESPACE, payload_fingerprint
+from hedron_core.type_schema import TYPE_SCHEMA_NAMESPACE, TYPE_SCHEMA_VERSION, payload_fingerprint
 from hedron_core.updates import descriptor_fingerprint
 
 
@@ -62,7 +62,7 @@ def test_modeled_entry_indexes_type_schema_fingerprint() -> None:
     catalog = app.interactions
     entry = catalog.require(item.logical_id)
     schema = item.descriptor.extensions[TYPE_SCHEMA_NAMESPACE]
-    assert entry.type_schema_version == 1
+    assert entry.type_schema_version == TYPE_SCHEMA_VERSION
     assert entry.type_schema_fingerprint == payload_fingerprint(schema)
     assert len(item.schema.stable_fingerprint()) == 32
     assert entry.descriptor_fingerprint == descriptor_fingerprint(item.descriptor)
