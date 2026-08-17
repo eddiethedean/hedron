@@ -52,17 +52,21 @@ class RemoteWorkflow:
                     remediation="Attach GradioRemoteConfig.from_base_url(...) before including.",
                 )
             )
-        allowed = self.endpoint.name
-        names = {item.name for item in self.adapter.endpoints} or {allowed}
-        if self.endpoint.name not in names and self.adapter.endpoints:
+        names = {item.name for item in self.adapter.endpoints}
+        empty = not names
+        if empty or self.endpoint.name not in names:
+            if empty:
+                explanation = (
+                    "An enabled Gradio adapter with an empty endpoints allowlist exposes nothing."
+                )
+            else:
+                explanation = f"Endpoint {self.endpoint.name!r} is outside the adapter allowlist."
             raise FeatureConflictError(
                 make_diagnostic(
                     HED_BUNDLE_0007,
                     severity=DiagnosticSeverity.ERROR,
                     title="Gradio endpoint is not allowlisted",
-                    explanation=(
-                        f"Endpoint {self.endpoint.name!r} is outside the adapter allowlist."
-                    ),
+                    explanation=explanation,
                     remediation="Declare the endpoint on GradioClientAdapter.endpoints.",
                 )
             )
