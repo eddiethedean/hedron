@@ -5,6 +5,10 @@
 ### Changed
 - Coordinated train tip `0.43.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``ChartInteraction`` materializes an event command that posts the typed payload
+  to the bound ActionHandle, instead of only a dummy export stub (#341).
+
 ## [0.42.0] — 2026-08-14
 
 ### Added
