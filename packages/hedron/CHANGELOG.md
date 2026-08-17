@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``eject_feature`` removes FastAPI routes materialized for the bundle, not
+  only handle descriptors (#336).
+
 
 ## [0.45.0] — 2026-08-16
 

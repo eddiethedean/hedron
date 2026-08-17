@@ -131,6 +131,34 @@ def test_eject_restores_explicit_source() -> None:
     assert included_bundles(app_id=app.hedron_app_id) == ()
 
 
+def test_eject_feature_removes_materialized_routes() -> None:
+    from fastapi.testclient import TestClient
+    from pydantic import BaseModel
+
+    from hedron.features import eject_feature
+    from hedron_core.updates import list_handle_descriptors
+    from hedron_data import DataWorkspace, DataWorkspacePolicy, InMemoryDataSource
+
+    class Row(BaseModel):
+        id: str
+        title: str = "n"
+
+    app = make_app()
+    workspace = DataWorkspace(
+        name="notes",
+        model=Row,
+        source=InMemoryDataSource([{"id": "1", "title": "hello"}], key_field="id"),
+        policy=DataWorkspacePolicy(can_read=lambda: True),
+    )
+    app.include_feature(workspace)
+    path = workspace.list_view.path  # type: ignore[union-attr]
+    client = TestClient(app)
+    assert client.get(path).status_code == 200
+    eject_feature(app, "hedron-data:notes")
+    assert list_handle_descriptors(app_id=app.hedron_app_id) == ()
+    assert client.get(path).status_code == 404
+
+
 def test_failed_include_leaves_no_partial_artifacts() -> None:
     app = make_app()
 
