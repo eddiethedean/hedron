@@ -129,6 +129,7 @@ class Map(Component[MapProps]):
     ) -> None:
         super().__init__(MapProps(title=title, class_=class_, **kwargs))
         self._max_features = max_features
+        self._interaction_commands: dict[str, str] = {}
         if spec is not None:
             self._spec = spec if isinstance(spec, MapSpec) else MapSpec.model_validate(dict(spec))
             return
@@ -197,15 +198,20 @@ class Map(Component[MapProps]):
         plan = self.compile_plan()
         payload = plan_payload_json(plan)
         children = fallback_nodes(plan)
+        attrs = {
+            "data-hedron-abi": str(ABI_VERSION),
+            "data-hedron-element": ELEMENT_ID,
+            "data-hedron-map": "first-party",
+            "data-hedron-payload": payload,
+            "role": "region",
+            "aria-label": plan.accessibility.title,
+            "class_": self.props.class_,
+        }
+        if self._interaction_commands:
+            attrs["data-hedron-map-commands"] = json.dumps(
+                self._interaction_commands, separators=(",", ":")
+            )
         return html.tag(TAG_NAME)(
             html.figure(*children, class_="hedron-map-fallback-figure"),
-            **{
-                "data-hedron-abi": str(ABI_VERSION),
-                "data-hedron-element": ELEMENT_ID,
-                "data-hedron-map": "first-party",
-                "data-hedron-payload": payload,
-                "role": "region",
-                "aria-label": plan.accessibility.title,
-                "class_": self.props.class_,
-            },
+            **attrs,
         )

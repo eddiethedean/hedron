@@ -26,14 +26,56 @@ function parsePlan(el) {
   }
 }
 
+function cookieValue(name) {
+  const parts = (document.cookie || "").split("; ");
+  for (const part of parts) {
+    if (part.startsWith(name + "=")) return decodeURIComponent(part.slice(name.length + 1));
+  }
+  return "";
+}
+
+function commandMap(el) {
+  const raw = el.getAttribute("data-hedron-map-commands");
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (_) {
+    return {};
+  }
+}
+
+function postCommand(url, detail) {
+  const token = cookieValue("hedron_csrf");
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json, text/html",
+    "HX-Request": "true",
+  };
+  if (token) headers["X-CSRF-Token"] = token;
+  const body = JSON.stringify(detail || {});
+  if (window.htmx && typeof window.htmx.ajax === "function") {
+    window.htmx.ajax("POST", url, {
+      values: detail || {},
+      headers: token ? { "X-CSRF-Token": token } : {},
+      swap: "none",
+    });
+    return;
+  }
+  fetch(url, { method: "POST", credentials: "same-origin", headers, body });
+}
+
 function emit(el, kind, detail) {
+  const payload = Object.assign({ kind }, detail || {});
   el.dispatchEvent(
     new CustomEvent("hedron-map-" + kind, {
       bubbles: true,
       composed: true,
-      detail: Object.assign({ kind }, detail || {}),
+      detail: payload,
     })
   );
+  const url = commandMap(el)[kind];
+  if (typeof url === "string" && url) postCommand(url, payload);
 }
 
 function runtimeUrls() {
