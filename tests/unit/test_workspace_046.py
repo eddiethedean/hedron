@@ -104,3 +104,22 @@ def test_direct_datatable_still_works() -> None:
 
     table = DataTable(rows=[{"id": "1"}], caption="plain")
     assert table.distribution == "hedron-data"
+
+
+def test_workspace_policy_hook_accepts_user_and_denies_mismatch() -> None:
+    seen: list[object] = []
+
+    def can_read(user: str) -> bool:
+        seen.append(user)
+        return user == "ada"
+
+    ws = DataWorkspace(
+        name="notes",
+        model=Order,
+        source=InMemoryDataSource([{"id": "1", "customer": "acme", "quantity": 1}], key_field="id"),
+        policy=DataWorkspacePolicy(can_read=can_read),
+    )
+    assert ws._allowed(can_read, user="ada") is True
+    assert seen == ["ada"]
+    assert ws._allowed(can_read) is False
+    assert ws._allowed(lambda: True) is True
