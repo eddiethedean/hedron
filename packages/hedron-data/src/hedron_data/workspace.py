@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, Generic, Literal, TypeVar
@@ -113,13 +114,58 @@ class DataWorkspace(Generic[ModelT]):
         self.create_command: object | None = None
         self.edit_command: object | None = None
 
+    def _request_kwargs(self) -> dict[str, object]:
+        kwargs: dict[str, object] = {}
+        try:
+            from hedron.routing.router import current_request
+        except ImportError:
+            return kwargs
+        request = current_request.get()
+        kwargs["request"] = request
+        if request is None:
+            return kwargs
+        scope = getattr(request, "scope", None)
+        if isinstance(scope, Mapping) and "session" in scope:
+            session = request.session
+            if isinstance(session, Mapping):
+                for key in ("user", "username", "principal", "sub"):
+                    value = session.get(key)
+                    if value:
+                        kwargs["user"] = value
+                        kwargs["principal"] = value
+                        break
+        return kwargs
+
     def _allowed(self, hook: AuthzHook | None, **kwargs: object) -> bool:
         if hook is None:
             return False
+        merged = {**self._request_kwargs(), **kwargs}
         try:
-            return bool(hook(**kwargs) if kwargs else hook())
+            signature = inspect.signature(hook)
+        except (TypeError, ValueError):
+            try:
+                return bool(hook(**merged))
+            except TypeError:
+                try:
+                    return bool(hook())
+                except TypeError:
+                    return False
+        if any(
+            param.kind is inspect.Parameter.VAR_KEYWORD for param in signature.parameters.values()
+        ):
+            return bool(hook(**merged))
+        accepted: dict[str, object] = {}
+        for name, param in signature.parameters.items():
+            if name in merged and param.kind in {
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                inspect.Parameter.KEYWORD_ONLY,
+            }:
+                accepted[name] = merged[name]
+        try:
+            signature.bind(**accepted)
         except TypeError:
-            return bool(hook())
+            return False
+        return bool(hook(**accepted))
 
     def _identity_model(self) -> type[BaseModel]:
         return create_model(
@@ -172,8 +218,6 @@ class DataWorkspace(Generic[ModelT]):
                 name=f"{workspace.name}-detail",
             )
             def detail_view(params: Annotated[identity, ViewParams()]):  # type: ignore[valid-type]
-                if not workspace._allowed(workspace.policy.can_read):
-                    raise HTTPException(status_code=403, detail="forbidden")
                 key = str(getattr(params, workspace.key_field))
                 page = workspace.source.fetch(
                     DataQuery(filters={workspace.key_field: key}, limit=1)
@@ -181,6 +225,8 @@ class DataWorkspace(Generic[ModelT]):
                 if not page.rows:
                     raise HTTPException(status_code=404, detail="not_found")
                 row = page.rows[0]
+                if not workspace._allowed(workspace.policy.can_read, row=row):
+                    raise HTTPException(status_code=403, detail="forbidden")
                 from hedron import Text
 
                 return Text(str(row.get(workspace.key_field, key)))
@@ -210,9 +256,9 @@ class DataWorkspace(Generic[ModelT]):
                 fallback=f"/{workspace.name}",
             )
             def create_command(data: Annotated[workspace.create_model, FormBody()]):  # type: ignore[valid-type]
-                if not workspace._allowed(workspace.policy.can_create):
-                    raise HTTPException(status_code=403, detail="forbidden")
                 payload = data.model_dump() if hasattr(data, "model_dump") else dict(data)
+                if not workspace._allowed(workspace.policy.can_create, data=payload):
+                    raise HTTPException(status_code=403, detail="forbidden")
                 result = workspace.source.apply(DataChanges(inserts=(payload,)))
                 if result.conflicts:
                     raise HTTPException(status_code=409, detail="conflict")
@@ -259,9 +305,9 @@ class DataWorkspace(Generic[ModelT]):
                 fallback=f"/{workspace.name}",
             )
             def edit_command(data: Annotated[EditModel, FormBody()]):  # type: ignore[valid-type]
-                if not workspace._allowed(workspace.policy.can_edit):
-                    raise HTTPException(status_code=403, detail="forbidden")
                 payload = data.model_dump() if hasattr(data, "model_dump") else dict(data)
+                if not workspace._allowed(workspace.policy.can_edit, data=payload, row=payload):
+                    raise HTTPException(status_code=403, detail="forbidden")
                 key = str(payload.get(workspace.key_field, ""))
                 updates = tuple(
                     CellUpdate(row_key=key, field=field, value=value)
