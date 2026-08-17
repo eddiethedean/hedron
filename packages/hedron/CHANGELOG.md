@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``include_feature`` passes already-claimed bundle handle ids into include so
+  a second FeatureBundle cannot override an existing handle (#335).
+
 
 ## [0.45.0] — 2026-08-16
 

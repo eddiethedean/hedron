@@ -9,6 +9,8 @@
 - Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
 
 ### Fixed
+- FeatureBundle include fails closed with ``HED-BUNDLE-0008`` when a handle is
+  already claimed by an included bundle (#335).
 - ``include_bundle`` fails closed with ``HED-BUNDLE-0007`` when views or commands
   are still factories, so Flask/Django cannot silently store an unmaterialized
   DataWorkspace (#339).
