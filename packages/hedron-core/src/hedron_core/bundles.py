@@ -230,6 +230,21 @@ def include_bundle(
                 explanation=f"Bundle {bundle.logical_id!r} is already included on this app.",
                 remediation="Use a distinct logical_id or eject the existing bundle.",
             )
+        for item in (*bundle.views, *bundle.commands):
+            logical = getattr(item, "logical_id", None)
+            if callable(item) and not isinstance(item, type) and not isinstance(logical, str):
+                raise _bundle_error(
+                    HED_BUNDLE_0007,
+                    title="Unmaterialized FeatureBundle handle",
+                    explanation=(
+                        f"Bundle {bundle.logical_id!r} includes a factory with no logical_id. "
+                        "DataWorkspace materialization is FastAPI Hedron.include_feature only."
+                    ),
+                    remediation=(
+                        "Call Hedron.include_feature on FastAPI, or include "
+                        "already-registered handles."
+                    ),
+                )
         existing_graph = {
             item.logical_id: item.dependencies for item in included_bundles(app_id=app_id)
         }
