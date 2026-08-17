@@ -73,6 +73,7 @@ class McpResource:
     mime_type: str = "application/json"
     metadata: Mapping[str, Any] = field(default_factory=dict)
     reader: ResourceReader | None = None
+    authorize: AuthzHook | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,6 +85,7 @@ class McpTool:
     mutate: bool
     handler: Callable[..., Any]
     description: str = ""
+    authorize: AuthzHook | None = None
 
 
 @dataclass
@@ -233,6 +235,15 @@ class McpProjection:
                 scopes=scopes,
                 tenant_id=tenant_id,
             )
+        item_hook = self._authorize_for_resource(resource)
+        if item_hook is not None and item_hook is not self.authz_hook:
+            item_hook(
+                principal=principal,
+                action=action,
+                resource=resource,
+                scopes=scopes,
+                tenant_id=tenant_id,
+            )
         if self.tenant_hook is not None:
             self.tenant_hook(
                 principal=principal,
@@ -246,6 +257,17 @@ class McpProjection:
             principal=principal,
             detail={"action": action, "resource": resource, "tenant_id": tenant_id},
         )
+
+    def _authorize_for_resource(self, resource: str | None) -> AuthzHook | None:
+        if not resource:
+            return None
+        tool = self._tools.get(resource)
+        if tool is not None:
+            return tool.authorize
+        rec = self._resources.get(resource)
+        if rec is not None:
+            return rec.authorize
+        return None
 
     def authorize(
         self,

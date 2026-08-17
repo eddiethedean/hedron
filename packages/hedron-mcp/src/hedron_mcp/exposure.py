@@ -48,6 +48,7 @@ class McpExposure:
                         uri=self.uri or f"hedron://{self.catalog_id}",
                         name=self.name,
                         description=self.description,
+                        authorize=self.authorize,
                     )
                 )
             except ValueError as exc:
@@ -62,7 +63,6 @@ class McpExposure:
                         ),
                     )
                 ) from exc
-            self.projection.authz_hook = self.authorize
             return
         handler = self.handler
         if handler is None:
@@ -83,6 +83,7 @@ class McpExposure:
                     mutate=self.mutate,
                     handler=handler,
                     description=self.description,
+                    authorize=self.authorize,
                 )
             )
         except ValueError as exc:
@@ -97,15 +98,12 @@ class McpExposure:
                     ),
                 )
             ) from exc
-        self.projection.authz_hook = self.authorize
 
     def unapply(self) -> None:
         if self.role == "resource":
             self.projection.unregister_resource(self.uri or f"hedron://{self.catalog_id}")
         else:
             self.projection.unregister_tool(self.name)
-        if self.projection.authz_hook is self.authorize:
-            self.projection.authz_hook = None
 
     def to_bundle(self) -> FeatureBundle:
         return FeatureBundle(

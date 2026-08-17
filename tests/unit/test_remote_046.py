@@ -187,3 +187,42 @@ def test_remote_workflow_rejects_endpoint_outside_allowlist() -> None:
     from hedron_core.codes import HED_BUNDLE_0007
 
     assert raised.value.diagnostic.code == HED_BUNDLE_0007
+
+
+def test_mcp_second_exposure_keeps_first_tool_authorize() -> None:
+    from hedron_mcp import AuthorizationError
+
+    proj = McpProjection(enabled=True)
+
+    def deny_admin(**kwargs: object) -> None:
+        if kwargs.get("resource") == "admin_wipe":
+            raise AuthorizationError("admin only")
+
+    admin = McpExposure(
+        catalog_id="admin",
+        role="tool",
+        projection=proj,
+        name="admin_wipe",
+        authorize=deny_admin,
+        handler=lambda: "wiped",
+        mutate=True,
+        schema={},
+    )
+    read = McpExposure(
+        catalog_id="list",
+        role="tool",
+        projection=proj,
+        name="list_items",
+        authorize=lambda **k: None,
+        handler=lambda: [],
+        schema={},
+    )
+    admin.apply()
+    read.apply()
+    with pytest.raises(AuthorizationError):
+        proj.authorize(principal="alice", action="tools/call", resource="admin_wipe")
+    proj.authorize(principal="alice", action="tools/call", resource="list_items")
+    read.unapply()
+    with pytest.raises(AuthorizationError):
+        proj.authorize(principal="alice", action="tools/call", resource="admin_wipe")
+    assert [tool.name for tool in proj.tools] == ["admin_wipe"]
