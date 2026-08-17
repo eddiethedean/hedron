@@ -85,13 +85,9 @@ def _run_engine(browser_type: str, url: str) -> None:
         browser.close()
 
 
-def test_chromium(browser_app_url: str) -> None:
-    _run_engine("chromium", browser_app_url)
-
-
-def test_firefox(browser_app_url: str) -> None:
-    _run_engine("firefox", browser_app_url)
-
-
-def test_webkit(browser_app_url: str) -> None:
-    _run_engine("webkit", browser_app_url)
+@pytest.mark.parametrize("engine", ["chromium", "firefox", "webkit"])
+def test_workspace_and_features_across_engines(engine: str, browser_app_url: str) -> None:
+    selected = os.environ.get("HEDRON_BROWSER_ENGINE")
+    if selected and selected != engine:
+        pytest.skip(f"engine filter {selected}")
+    _run_engine(engine, browser_app_url)
