@@ -77,3 +77,6 @@ def test_preload_and_head_boundaries() -> None:
     with pytest.raises(HedronError) as remote:
         admit_head_assets((AssetRef(kind="js", href="http://evil.example/x.js"),))
     assert remote.value.diagnostic.code == HED_EXT_0011
+    with pytest.raises(HedronError) as breakout:
+        admit_head_assets((AssetRef(kind="js", href='/ok?"onclick="alert(1)'),))
+    assert breakout.value.diagnostic.code == HED_EXT_0011

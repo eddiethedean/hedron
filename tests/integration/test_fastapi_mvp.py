@@ -6,8 +6,8 @@ import pytest
 from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
 
-from hedron import HTML, Hedron, HedronRouter, Page, Text, hedron_response
-from hedron_core import Model, addressable, get_registry, reset_registry_for_tests
+from hedron import HTML, Hedron, HedronRouter, Page, Text, hedron_response, swap
+from hedron_core import HedronError, Model, addressable, get_registry, reset_registry_for_tests
 from hedron_core.registry import seal_registry
 
 
@@ -52,6 +52,37 @@ def test_hedron_page_and_fragment() -> None:
     assert "<!DOCTYPE" not in frag.text
     assert "hello" in frag.text
     assert "hedron-default.css" not in frag.text
+
+
+def test_fragment_rejects_invented_script_tags() -> None:
+    from hedron_core.html import html
+    from hedron_core.security import TrustedHtml
+
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
+    panel = app.region("panel", description="status panel")
+
+    @app.page("/", fragment_regions=(panel,))
+    def home() -> Page:
+        return Page(Text("hello"), title="Demo")
+
+    @app.fragment("/panel", region=panel)
+    def panel_fragment():
+        return swap(
+            html.div(
+                html.raw(
+                    TrustedHtml.reviewed(
+                        '<script src="/evil.js"></script>',
+                        source="test-head-374",
+                    )
+                ),
+                id=panel.id,
+            )
+        )
+
+    client = TestClient(app, raise_server_exceptions=True)
+    with pytest.raises(HedronError) as invented:
+        client.get("/panel", headers={"HX-Request": "true", "HX-Target": "#panel"})
+    assert invented.value.diagnostic.code == "HED-EXT-0011"
 
 
 def test_default_styles_can_be_disabled() -> None:

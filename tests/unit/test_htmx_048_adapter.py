@@ -4,8 +4,15 @@ from __future__ import annotations
 
 import ast
 from pathlib import Path
+from types import MappingProxyType
 
+import pytest
+
+from hedron_core import HedronError
+from hedron_core.codes import HED_EXT_0011
+from hedron_core.htmx_extensions import ExtensionPlan
 from hedron_core.page_assets import inject_page_assets
+from hedron_core.rendering import AssetRef, RenderMode
 
 
 def test_core_and_catalog_forbid_host_imports() -> None:
@@ -37,6 +44,21 @@ def test_flask_and_django_call_portable_injector() -> None:
     assert "htmx_plan" in flask
     assert "htmx_plan" in django
     assert callable(inject_page_assets)
+
+
+def test_flask_django_injector_rejects_breakout_href() -> None:
+    evil = AssetRef(kind="js", href='/ok?"onclick="alert(1)', attributes=MappingProxyType({}))
+    plan = ExtensionPlan(ids=("head-support",), source="declared", inject=True)
+    with pytest.raises(HedronError) as injected:
+        inject_page_assets(
+            "<html><head></head><body></body></html>",
+            RenderMode.PAGE,
+            assets=(evil,),
+            include_default_styles=False,
+            include_ui_modules=False,
+            plan=plan,
+        )
+    assert injected.value.diagnostic.code == HED_EXT_0011
 
 
 def test_posit_workbench_keep_mount_prefix_labels() -> None:

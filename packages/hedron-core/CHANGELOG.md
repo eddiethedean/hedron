@@ -9,6 +9,11 @@
 ### Changed
 - Coordinated train tip `0.48.0` (in-tree cut; tag/PyPI deferred). Idiomorph / morph swap stays Deferred.
 
+### Fixed
+- Head-support admits only `is_local_path` hrefs, HTML-escapes them, and rejects
+  quote/breakout/`..` values instead of interpolating a second unescaped copy
+  (#374). FRAGMENT inject now runs `reject_invented_fragment_scripts`.
+
 ## [0.47.0] — 2026-08-17
 
 ### Added
