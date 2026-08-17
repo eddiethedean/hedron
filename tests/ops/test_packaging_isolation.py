@@ -52,7 +52,7 @@ def test_all_packages_declare_license_and_version() -> None:
         if name in _BETA_PACKAGES or name in _TRAIN_ALIGNED_ALPHA:
             assert project["version"] == workspace_version, pyproject
         elif name in _INDEPENDENT_BETA_02:
-            assert project["version"] == "0.2.0", pyproject
+            assert str(project["version"]).startswith("0.2."), pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:
             assert str(project["version"]).startswith("0.1."), pyproject
         elif name in _INDEPENDENT_MAJOR:

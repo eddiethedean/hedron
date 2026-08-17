@@ -25,7 +25,7 @@ First-party `ChartSpec` / `hedron-chart` (SVG or Canvas) and Matplotlib/static c
 **Tooling-grade:** notebook preview is Supported only on localhost and is not a production
 server. **Experimental:** live SSE/WS. Gradio remote client interop is **Beta**
 (`hedron-gradio` `0.2.0`) for declared allowlisted destinations. MCP is **Beta** for its
-declared Supported inventory (`hedron-mcp` `0.2.0`).
+declared Supported inventory (`hedron-mcp` `0.2.1`).
 
 Need procurement detail (API stability tiers, a11y sessions, evidence)? See
 [How labels work](#how-labels-work) below — skip it if you are just building.
@@ -99,7 +99,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
 | Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.47.0,<0.48`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
-| MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.0` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
+| MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.1` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
 
@@ -184,7 +184,7 @@ guaranteed multi-worker live-transport proof.
 
 | Package | Role |
 |---|---|
-| `hedron[mcp]` / `hedron-mcp` | Beta `0.2.0` (`>=0.2.0,<0.3`); deny-by-default Supported inventory; mutations Experimental |
+| `hedron[mcp]` / `hedron-mcp` | Beta `0.2.1` (`>=0.2.0,<0.3`); deny-by-default Supported inventory; mutations Experimental |
 | `hedron[gradio]` / `hedron-gradio` | Beta `0.2.0` (`>=0.2.0,<0.3`); allowlisted remote predict/stream/file transport |
 | `hedron[charts]` / `hedron-charts` | Beta package (`>=0.2.0,<0.3`); first-party `ChartSpec` / `hedron-chart` and Matplotlib/static Supported; Plotly/Altair Experimental |
 | `hedron[native]` / `hedron-native` | Optional Rust HTML-escape accel; pure-Python fallback Supported |

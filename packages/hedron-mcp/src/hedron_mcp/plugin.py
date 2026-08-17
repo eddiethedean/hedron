@@ -6,7 +6,7 @@ from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 
 PLUGIN_META = PluginMeta(
     name="hedron_mcp",
-    version="0.2.0",
+    version="0.2.1",
     distribution="hedron-mcp",
     hedron_version=">=0.47,<0.48",
     capabilities=PluginCapabilities(

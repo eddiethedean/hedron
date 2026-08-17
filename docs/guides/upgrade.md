@@ -60,6 +60,12 @@ From PyPI today, pin `hedron>=0.46.0,<0.47` until the 0.47 upload.
    silently switch to `hedron-maps`.
 4. **Rollback:** uninstall `hedron-maps` and revert `hedron_maps` imports; pin
    `hedron>=0.46.0,<0.47` from the registry.
+5. **Map origin policy.** Custom `OpenStreetMap(tile_url=...)` and `Map(tiles=)` require
+   exact-origin allowlists; empty prefixes fail closed.
+6. **Generated list views page.** `DataWorkspace` list routes honor `offset` / `limit` /
+   `sort` / `q` and allowlisted field filters.
+7. **MCP authorize isolation.** Pin `hedron-mcp>=0.2.1,<0.3` (or `hedron[mcp]`) so a second
+   `McpExposure.apply` cannot overwrite the first tool's authorize hook.
 
 ## Behavioral notes (0.45 → 0.46)
 

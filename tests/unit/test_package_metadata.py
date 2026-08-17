@@ -92,7 +92,7 @@ def test_version_is_synchronized() -> None:
         if classifier.startswith("Development Status ::")
     ]
     assert mcp_status == ["Development Status :: 4 - Beta"]
-    assert mcp["version"] == "0.2.0"
+    assert mcp["version"].startswith("0.2.")
     gradio = tomllib.loads(
         (ROOT / "packages" / "hedron-gradio" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]

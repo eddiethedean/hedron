@@ -109,12 +109,12 @@ class McpExposure:
         return FeatureBundle(
             logical_id=f"hedron-mcp:{self.name}",
             provider="hedron-mcp",
-            provider_version="0.2.0",
+            provider_version="0.2.1",
             projections=(
                 PackageProjection(
                     namespace=f"hedron.mcp.exposure.{self.name}",
                     provider="hedron-mcp",
-                    provider_version="0.2.0",
+                    provider_version="0.2.1",
                     capabilities=(ProjectionCapability(name="McpExposure", support="supported"),),
                     data={
                         "catalog_id": self.catalog_id,

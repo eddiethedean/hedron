@@ -99,7 +99,7 @@ class McpProjection:
 
     enabled: bool = False
     allow_mutations: bool = False
-    package_version: str = "0.2.0"
+    package_version: str = "0.2.1"
     principal_resolver: PrincipalResolver | None = None
     authz_hook: AuthzHook | None = None
     tenant_hook: TenantHook | None = None

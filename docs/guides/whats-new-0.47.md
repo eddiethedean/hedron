@@ -15,3 +15,10 @@ from the registry until a later upload; in-tree pins are `hedron>=0.47.0,<0.48`.
 - `hedron_maps.GeoJSONLayer` is the typed overlay; `hedron_core.GeoJSONLayer` is the sanitizer.
 
 This cut does not tag Git, publish a GitHub Release, or upload PyPI.
+
+## Fixed before first PyPI upload
+
+- Custom OSM `tile_url`, `Map(tiles=)`, and MapStyle `data`/`urls` honor exact-origin policy (#351–#353).
+- Generated DataWorkspace lists page/sort/filter; policy hooks receive identity and deny closed (#354, #355).
+- `hedron-mcp` **0.2.1** keeps per-tool authorize instead of overwriting the projection hook (#356).
+- `MapInteraction` POSTs feature events to the registered command path (#357).

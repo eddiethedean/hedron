@@ -8,6 +8,11 @@
 ### Changed
 - Coordinated train tip `0.47.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- Map origin policy, DataWorkspace paging/authz, MCP authorize isolation, and
+  MapInteraction command POSTs land in this first 0.47 registry cut
+  (#351–#357).
+
 ## [0.46.0] — 2026-08-16
 
 ### Added

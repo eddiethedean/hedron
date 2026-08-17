@@ -12,6 +12,7 @@ Coordinated Beta in-tree cut for first-class maps (D-078 / D-082 / RFC-0074).
 - New symbols begin Beta. Unused maps extra is request-path identical to 0.46. `SR-021` stays open.
 - Pin in-tree `hedron>=0.47.0,<0.48`. Charts remain on `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
 - In-tree cut only; Git tag / GitHub Release / PyPI remain deferred ([#350](https://github.com/eddiethedean/hedron/issues/350)). PyPI still serves `hedron` `0.46.0`.
+- High-severity map origin, DataWorkspace paging/authz, MCP authorize, and MapInteraction POST fixes land in this first 0.47 registry cut (#351–#357). `hedron-mcp` publishes **0.2.1** because **0.2.0** is already on PyPI.
 
 ```bash
 python -m pip install -U "hedron>=0.47.0,<0.48"

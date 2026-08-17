@@ -8,6 +8,12 @@
 ### Changed
 - Coordinated train tip `0.47.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- Generated DataWorkspace list views bind ``offset`` / ``limit`` / ``sort`` / ``q``
+  and allowlisted field filters into ``DataQuery`` (#354).
+- DataWorkspacePolicy hooks receive request identity and deny closed on
+  signature mismatch instead of HTTP 500 (#355).
+
 ## [0.46.0] — 2026-08-16
 
 ### Added

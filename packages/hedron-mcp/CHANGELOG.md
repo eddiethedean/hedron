@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1] — 2026-08-17
+
+### Fixed
+- ``McpExposure.apply`` stores authorize on the tool/resource instead of
+  overwriting the projection ``authz_hook``, so a second exposure cannot steal
+  the first tool's gate (#356).
+
 ## [0.43.0] — 2026-08-16
 
 ### Changed

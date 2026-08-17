@@ -11,7 +11,7 @@ Living tip = `v0.47.0`.
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
-`hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
+`hedron-sim` `0.1.0`, `hedron-mcp` `0.2.1`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.32.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
@@ -64,7 +64,7 @@ Adopter summary: [What’s ready today](docs/guides/whats-ready.md). Rule of thu
 capability as unqualified **Supported** when its owning gate row is **Deferred** or still
 **Planned**. Live SSE/WS/streaming/preload remain **experimental** (polling Supported —
 `polling_only` Accepted in 0.24). Notebook preview is tooling-grade / localhost-only;
-MCP is Beta for the declared Supported inventory (0.32 / `hedron-mcp` `0.2.0`); Gradio remote
+MCP is Beta for the declared Supported inventory (0.32 / `hedron-mcp` `0.2.1`); Gradio remote
 client interop is Beta for declared allowlisted destinations (0.34 / `hedron-gradio` `0.2.0`). Phase 0.20 closed with **zero Deferred** among **0.20 gate IDs**.
 Phase 0.21 ships the engineering train with an honest human-AT gap: protocol Verified;
 sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy composition with
