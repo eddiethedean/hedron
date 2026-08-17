@@ -8,6 +8,7 @@ from tests.unit._helpers_046 import make_app, reset_046
 
 from hedron import Text
 from hedron_core.bundles import FeatureConflictError
+from hedron_core.codes import HED_BUNDLE_0002
 from hedron_gradio import GradioClientAdapter, GradioEndpoint, GradioRemoteConfig, RemoteWorkflow
 from hedron_mcp import McpExposure, McpProjection
 
@@ -59,6 +60,59 @@ def test_mcp_exposure_registers_tool_with_live_authz() -> None:
     )
     app.include_feature(exposure)
     assert any(tool.name == "echo_tool" for tool in projection.tools)
+
+
+def test_mcp_to_bundle_does_not_register_tools() -> None:
+    projection = McpProjection(enabled=True)
+    exposure = McpExposure(
+        catalog_id="x",
+        role="tool",
+        projection=projection,
+        name="echo_tool",
+        authorize=lambda **k: None,
+        schema={},
+        handler=lambda: "ok",
+    )
+    exposure.to_bundle()
+    assert projection.tools == ()
+
+
+def test_mcp_double_include_keeps_one_tool() -> None:
+    app = make_app()
+    projection = McpProjection(enabled=True)
+
+    def make() -> McpExposure:
+        return McpExposure(
+            catalog_id="x",
+            role="tool",
+            projection=projection,
+            name="echo_tool",
+            authorize=lambda **k: None,
+            schema={},
+            handler=lambda: "ok",
+        )
+
+    app.include_feature(make())
+    app.include_feature(make())
+    assert [tool.name for tool in projection.tools] == ["echo_tool"]
+
+
+def test_mcp_duplicate_apply_is_feature_conflict() -> None:
+    projection = McpProjection(enabled=True)
+    exposure = McpExposure(
+        catalog_id="x",
+        role="tool",
+        projection=projection,
+        name="echo_tool",
+        authorize=lambda **k: None,
+        schema={},
+        handler=lambda: "ok",
+    )
+    exposure.apply()
+    with pytest.raises(FeatureConflictError) as raised:
+        exposure.apply()
+    assert raised.value.diagnostic.code == HED_BUNDLE_0002
+    assert [tool.name for tool in projection.tools] == ["echo_tool"]
 
 
 def test_remote_workflow_requires_enabled_adapter() -> None:

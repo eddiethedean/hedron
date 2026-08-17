@@ -143,6 +143,12 @@ class McpProjection:
             detail={"name": tool.name, "mutate": tool.mutate},
         )
 
+    def unregister_resource(self, uri: str) -> None:
+        self._resources.pop(uri, None)
+
+    def unregister_tool(self, name: str) -> None:
+        self._tools.pop(name, None)
+
     def consume_catalog(self, catalog: Any) -> tuple[str, ...]:
         """Read catalog logical ids. Does not enable MCP or register tools."""
         entries = getattr(catalog, "entries", {}) or {}

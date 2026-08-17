@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- MCP tool registration runs only after a successful FeatureBundle include,
+  so ``McpExposure.to_bundle()`` is side-effect free (#337).
+
 
 ## [0.45.0] — 2026-08-16
 
