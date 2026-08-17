@@ -41,7 +41,31 @@ class McpExposure:
                     remediation="Construct McpProjection(enabled=True) and call live authorize.",
                 )
             )
-        if self.role != "resource" and self.handler is None:
+        if self.role == "resource":
+            try:
+                self.projection.register_resource(
+                    McpResource(
+                        uri=self.uri or f"hedron://{self.catalog_id}",
+                        name=self.name,
+                        description=self.description,
+                    )
+                )
+            except ValueError as exc:
+                raise FeatureConflictError(
+                    make_diagnostic(
+                        HED_BUNDLE_0002,
+                        severity=DiagnosticSeverity.ERROR,
+                        title="MCP exposure already registered",
+                        explanation=str(exc),
+                        remediation=(
+                            "Use a distinct tool or resource name, or eject the existing bundle."
+                        ),
+                    )
+                ) from exc
+            self.projection.authz_hook = self.authorize
+            return
+        handler = self.handler
+        if handler is None:
             raise FeatureConflictError(
                 make_diagnostic(
                     HED_BUNDLE_0007,
@@ -52,24 +76,15 @@ class McpExposure:
                 )
             )
         try:
-            if self.role == "resource":
-                self.projection.register_resource(
-                    McpResource(
-                        uri=self.uri or f"hedron://{self.catalog_id}",
-                        name=self.name,
-                        description=self.description,
-                    )
+            self.projection.register_tool(
+                McpTool(
+                    name=self.name,
+                    schema=dict(self.schema or {}),
+                    mutate=self.mutate,
+                    handler=handler,
+                    description=self.description,
                 )
-            else:
-                self.projection.register_tool(
-                    McpTool(
-                        name=self.name,
-                        schema=dict(self.schema or {}),
-                        mutate=self.mutate,
-                        handler=self.handler,
-                        description=self.description,
-                    )
-                )
+            )
         except ValueError as exc:
             raise FeatureConflictError(
                 make_diagnostic(
