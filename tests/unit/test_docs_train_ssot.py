@@ -96,9 +96,7 @@ def test_first_run_pages_must_disclose_deferred_pypi() -> None:
         f"On PyPI today: {ssot.FACTS.pypi_version}. "
         "This repository is 0.46.0 (Git tag / PyPI deferred).\n"
     )
-    ok = ssot.check_first_run_registry_honesty(
-        {path: honest for path in ssot.FIRST_RUN_PATHS}
-    )
+    ok = ssot.check_first_run_registry_honesty({path: honest for path in ssot.FIRST_RUN_PATHS})
     assert not ok
 
 
