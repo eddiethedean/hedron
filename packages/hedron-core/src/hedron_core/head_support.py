@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html as html_lib
 import re
 from collections.abc import Sequence
 
@@ -21,29 +22,42 @@ _SCRIPT_SRC = re.compile(r"<script\b[^>]*\bsrc=['\"]([^'\"]+)['\"][^>]*>", re.IG
 _INLINE_SCRIPT = re.compile(r"<script\b(?![^>]*\bsrc=)[^>]*>", re.IGNORECASE)
 _ON_HANDLER = re.compile(r"\son[a-z]+\s*=", re.IGNORECASE)
 _HTTP_ORIGIN = re.compile(r"^https?://", re.IGNORECASE)
+# Attribute/tag breakouts that is_local_path can still admit in query/fragment.
+_UNSAFE_HEAD_HREF_CHARS = frozenset("\"'<>`")
+
+
+def _require_local_head_href(href: str) -> str:
+    text = href.strip()
+    if not text:
+        return ""
+    if _HTTP_ORIGIN.match(text) or text.startswith("//"):
+        raise error(
+            HED_EXT_0011,
+            title="Remote head asset rejected",
+            explanation=f"Head AssetRef href {text!r} is not a local path.",
+            remediation="Register same-origin AssetRef values only.",
+        )
+    if (
+        not is_local_path(text)
+        or any(ch in text for ch in _UNSAFE_HEAD_HREF_CHARS)
+        or any(ch.isspace() for ch in text)
+    ):
+        raise error(
+            HED_EXT_0011,
+            title="Unregistered head asset rejected",
+            explanation=f"Head AssetRef href {text!r} is not an admitted local path.",
+            remediation="Use a root-relative AssetRef under the application origin.",
+        )
+    return text
 
 
 def admit_head_assets(assets: Sequence[AssetRef]) -> tuple[AssetRef, ...]:
     admitted: list[AssetRef] = []
     seen: set[str] = set()
     for asset in assets:
-        href = asset.href.strip()
+        href = _require_local_head_href(asset.href)
         if not href:
             continue
-        if _HTTP_ORIGIN.match(href) or href.startswith("//"):
-            raise error(
-                HED_EXT_0011,
-                title="Remote head asset rejected",
-                explanation=f"Head AssetRef href {href!r} is not a local path.",
-                remediation="Register same-origin AssetRef values only.",
-            )
-        if not is_local_path(href) and not href.startswith("/"):
-            raise error(
-                HED_EXT_0011,
-                title="Unregistered head asset rejected",
-                explanation=f"Head AssetRef href {href!r} is not an admitted local path.",
-                remediation="Use a root-relative AssetRef under the application origin.",
-            )
         for key, value in asset.attributes.items():
             lowered = key.lower()
             if lowered.startswith("on") or lowered == "nonce":
@@ -72,7 +86,7 @@ def admit_head_assets(assets: Sequence[AssetRef]) -> tuple[AssetRef, ...]:
 def head_tags_from_assets(assets: Sequence[AssetRef]) -> str:
     tags: list[str] = []
     for asset in admit_head_assets(assets):
-        href = asset.href
+        href = html_lib.escape(_require_local_head_href(asset.href), quote=True)
         if asset.kind == "css":
             tags.append(f'<link rel="stylesheet" href="{href}">')
         elif asset.kind == "module":

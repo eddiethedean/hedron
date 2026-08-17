@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.48.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- FastAPI fragment responses reject invented ``<script>`` tags before returning
+  HTML, matching HEAD-048 ``fragment_invents_scripts = false`` (#374).
+
 ## [0.47.0] — 2026-08-17
 
 ### Added

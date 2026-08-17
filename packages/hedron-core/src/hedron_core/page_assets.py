@@ -16,7 +16,7 @@ from typing import Protocol
 
 from hedron_core.codes import HED_EXT_0005
 from hedron_core.diagnostics import error
-from hedron_core.head_support import merge_registered_head
+from hedron_core.head_support import merge_registered_head, reject_invented_fragment_scripts
 from hedron_core.htmx_extensions import (
     ExtensionPlan,
     ExtensionSet,
@@ -218,6 +218,7 @@ def inject_page_assets(
     html_text = inject_page_theme(html_text, mode, theme)
     html_text = inject_htmx_core(html_text, mode, policy=policy, static_href=static_href)
     if mode is not RenderMode.PAGE:
+        reject_invented_fragment_scripts(html_text)
         return html_text
     tags: list[str] = []
     seen: set[str] = set()

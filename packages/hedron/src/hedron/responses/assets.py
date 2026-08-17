@@ -77,6 +77,9 @@ def _inject_build_assets(
     html_text = inject_page_theme(html_text, mode, theme)
     html_text = _ensure_htmx_asset(html_text, mode, policy=policy, request=request)
     if mode is not RenderMode.PAGE:
+        from hedron_core.head_support import reject_invented_fragment_scripts
+
+        reject_invented_fragment_scripts(html_text)
         return html_text
     tags: list[str] = []
     seen: set[str] = set()
