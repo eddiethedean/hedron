@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 
 from hedron_core.bundles import (
     FeatureBundle,
@@ -37,6 +37,51 @@ def _materialize_item(item: object, app: object) -> object:
     return item
 
 
+def _host_routers(app: object) -> list[object]:
+    routers: list[object] = []
+    root = getattr(app, "_root_router", None)
+    if root is not None:
+        routers.append(root)
+    fastapi_router = getattr(app, "router", None)
+    if fastapi_router is not None and fastapi_router is not root:
+        routers.append(fastapi_router)
+    return routers
+
+
+def _collect_new_routes(app: object, snapshot: Sequence[object]) -> list[object]:
+    found: list[object] = []
+    seen: set[int] = set()
+    for router in _host_routers(app):
+        for route in list(getattr(router, "routes", [])):
+            if route in snapshot or id(route) in seen:
+                continue
+            seen.add(id(route))
+            found.append(route)
+    return found
+
+
+def _drop_routes(app: object, routes: Sequence[object]) -> None:
+    for router in _host_routers(app):
+        live_routes = getattr(router, "routes", None)
+        if not isinstance(live_routes, list):
+            continue
+        for route in routes:
+            if route in live_routes:
+                with _suppress():
+                    live_routes.remove(route)
+
+
+def _record_bundle_routes(app: object, logical_id: str, routes: Sequence[object]) -> None:
+    state = getattr(app, "state", None)
+    if state is None:
+        return
+    recorded = getattr(state, "hedron_bundle_routes", None)
+    if not isinstance(recorded, dict):
+        state.hedron_bundle_routes = {}
+        recorded = state.hedron_bundle_routes
+    recorded[logical_id] = list(routes)
+
+
 def rollback_materialized(
     items: list[object],
     *,
@@ -47,21 +92,9 @@ def rollback_materialized(
     app_id = str(getattr(app, "hedron_app_id", "") or "")
     state = getattr(app, "state", None)
     handles = getattr(state, "hedron_handles", None)
-    router = getattr(app, "_root_router", None)
     preserved = keep_logical_ids or set()
-    if routes_snapshot is not None and router is not None:
-        current = list(getattr(router, "routes", []))
-        extra = [route for route in current if route not in routes_snapshot]
-        for route in extra:
-            with _suppress():
-                router.routes.remove(route)
-        fastapi_router = getattr(app, "router", None)
-        if fastapi_router is not None and fastapi_router is not router:
-            current_app = list(getattr(fastapi_router, "routes", []))
-            extra_app = [route for route in current_app if route not in routes_snapshot]
-            for route in extra_app:
-                with _suppress():
-                    fastapi_router.routes.remove(route)
+    if routes_snapshot is not None:
+        _drop_routes(app, _collect_new_routes(app, routes_snapshot))
     for item in items:
         ident = getattr(item, "logical_id", None)
         if not isinstance(ident, str) or ident in preserved:
@@ -155,6 +188,7 @@ def include_feature(
                 state.hedron_bundles = {}
                 recorded = state.hedron_bundles
             recorded[live.logical_id] = live
+        _record_bundle_routes(app, live.logical_id, _collect_new_routes(app, snapshot_routes))
         return live
     except FeatureConflictError:
         rollback_materialized(
@@ -190,6 +224,15 @@ def eject_feature(app: object, logical_id: str, *, out: Callable[[str], None] | 
     recorded = getattr(state, "hedron_bundles", None)
     if isinstance(recorded, dict):
         recorded.pop(logical_id, None)
+    routes_map = getattr(state, "hedron_bundle_routes", None)
+    extra = routes_map.pop(logical_id, []) if isinstance(routes_map, dict) else []
+    _drop_routes(app, extra)
+    handles = getattr(state, "hedron_handles", None)
+    if isinstance(handles, dict):
+        for item in (*bundle.views, *bundle.commands):
+            ident = getattr(item, "logical_id", None)
+            if isinstance(ident, str):
+                handles.pop(ident, None)
     if out is not None:
         out(source)
     return source
