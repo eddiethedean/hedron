@@ -4,112 +4,112 @@
 
 [[evidence]]
 id = "BUNDLE-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_bundles_046.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "DATAFLOW-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_data_workspaces_046.py"
 ci_job = "test"
 owner = "hedron-data"
 
 [[evidence]]
 id = "VISUAL-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_visual_workflows_046.py"
 ci_job = "test"
 owner = "hedron-charts"
 
 [[evidence]]
 id = "ELEMENT-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_element_workflows_046.py"
 ci_job = "browser"
 owner = "hedron-elements"
 
 [[evidence]]
 id = "REMOTE-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_remote_workflows_046.py"
 ci_job = "test"
 owner = "hedron-mcp"
 
 [[evidence]]
 id = "WORKBENCH-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_workbenches_046.py"
 ci_job = "test"
 owner = "hedron-explorer"
 
 [[evidence]]
 id = "SCENARIO-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_scenarios_046.py"
 ci_job = "test"
 owner = "hedron-conformance"
 
 [[evidence]]
 id = "ADAPTER-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_adapters_046.py"
 ci_job = "test"
 owner = "hedron-conformance"
 
 [[evidence]]
 id = "SECURITY-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_security_046.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "A11Y-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_a11y_046.py"
 ci_job = "browser"
 owner = "hedron"
 
 [[evidence]]
 id = "BROWSER-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_browser_046.py"
 ci_job = "browser"
 owner = "hedron-elements"
 
 [[evidence]]
 id = "COMPAT-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_compat_046.py"
 ci_job = "test"
 owner = "hedron-conformance"
 
 [[evidence]]
 id = "PERF-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_perf_046.py"
 ci_job = "evidence"
 owner = "hedron"
 
 [[evidence]]
 id = "DOCS-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_docs_046.py"
 ci_job = "quality"
 owner = "docs"
 
 [[evidence]]
 id = "REGRESS-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_regress_046.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-046"
-state = "Planned"
+state = "Verified"
 command = "python scripts/verify_pkg_46.py"
 ci_job = "packaging"
 owner = "hedron"

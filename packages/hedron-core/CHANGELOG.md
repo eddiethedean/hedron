@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.46.0] — 2026-08-16
+
+### Added
+- Phase 0.46 FeatureBundle / FeatureRequirement / FeatureConflictError / FeatureProvider (D-075 / D-079 / RFC-0073).
+
+### Changed
+- Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
+
+
 ## [0.45.0] — 2026-08-16
 
 ### Added

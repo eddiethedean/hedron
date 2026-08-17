@@ -41,7 +41,9 @@ def main(argv: list[str] | None = None) -> None:
         "inspect",
         help="Explain a component's styles, dependencies, and accessibility contract",
     )
-    inspect_p.add_argument("component", help="Component name, logical id, or 'interactions'")
+    inspect_p.add_argument(
+        "component", help="Component name, logical id, 'interactions', or 'features'"
+    )
     inspect_p.add_argument("--json", action="store_true", help="Emit versioned JSON")
     inspect_p.add_argument(
         "--static",
@@ -61,7 +63,7 @@ def main(argv: list[str] | None = None) -> None:
         "eject",
         help="Eject accessibility_contract.json and editable local CSS overrides",
     )
-    eject_p.add_argument("component", help="Component name or logical id")
+    eject_p.add_argument("component", help="Component name, logical id, or 'features:<bundle-id>'")
     eject_p.add_argument("--out", help="Output directory")
     eject_p.add_argument("--force", action="store_true")
     eject_p.set_defaults(func=_cmd_eject)

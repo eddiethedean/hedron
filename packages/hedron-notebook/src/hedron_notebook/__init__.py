@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from hedron_notebook.features import inspect_features
 from hedron_notebook.preview import (
     PREVIEW_TOKEN_COOKIE,
     PREVIEW_TOKEN_HEADER,
@@ -23,4 +24,5 @@ __all__ = [
     "__version__",
     "start_preview",
     "wrap_preview_app",
+    "inspect_features",
 ]

@@ -43,8 +43,8 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.43** | Refreshable views, command handles, and typed updates | **Published** (`v0.43.0`; in-tree cut, tag/PyPI deferred; D-071; [#311](https://github.com/eddiethedean/hedron/issues/311)) |
 | **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Published** (`v0.44.0`; in-tree cut, tag/PyPI deferred; D-072 / RFC-0071; [#318](https://github.com/eddiethedean/hedron/issues/318)) |
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
-| **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Planned** (`v0.46.0`; D-075 / D-079 / RFC-0073; Stage 0 refined against in-tree `v0.45.0`; requires Verified 0.45 and a tracking issue before Stage 1) |
-| **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Planned** (`v0.47.0` / `hedron-maps` `0.1.0`; D-078 / RFC-0074; requires Verified 0.46 and a tracking issue before Stage 1) |
+| **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; in-tree cut, tag/PyPI deferred; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
+| **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Planned** (`v0.47.0` / `hedron-maps` `0.1.0`; D-078 / RFC-0074; requires Published 0.46 and a tracking issue before Stage 1; no 0.47 runtime) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -86,14 +86,14 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   consumption. **Published 0.43** adds a handle-first interaction facade over the existing
   region/`InteractionResult` stack; **Published 0.44** adds opt-in Pydantic boundaries,
   schema-derived forms/effects/outcomes, generic specialization, and optional class lifecycles over
-  that verified facade. Planned **0.45** converges those contracts across the package fleet through
-  one catalog/manifest/projection boundary; planned **0.46** then adds opt-in package-native data,
+  that verified facade. **Published 0.45** converges those contracts across the package fleet through
+  one catalog/manifest/projection boundary; **Published 0.46** then adds opt-in package-native data,
   visualization, element, remote, and workbench workflows that compile to the same stack. None of
   these programs is a blanket feature promotion or a scheduled `1.0`.
 
-### Honest gaps on the current train (0.45.x)
+### Honest gaps on the current train (0.46.x)
 
-- Current **published** in-tree train is **0.45.x** (last `v0.45.0`; tag/PyPI deferred)
+- Current **published** in-tree train is **0.46.x** (last `v0.46.0`; tag/PyPI deferred)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -3741,12 +3741,11 @@ Catalog/manifest/host locks:
 
 ## 0.46 — Package-native typed workflows (`v0.46.0`)
 
-**Status:** Planned (D-075 /
+**Status:** Published as `v0.46.0` (in-tree cut, tag/PyPI deferred; D-075 /
 [RFC-0073](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md);
 Stage 0 contract refined by D-079 against Published in-tree `v0.45.0`).
-Verified in-tree `v0.45.0` is a hard prerequisite for Stage 1 and the 0.46 cut baseline.
-A tracking issue must be created and bound to every 0.46 gate before runtime implementation
-begins. D-079 does not authorize Stage 1, bump versions, or rebase 0.47.
+Tracking: [#334](https://github.com/eddiethedean/hedron/issues/334). `release-gate-0.46.toml`
+is Verified. Tag/PyPI remain deferred. This cut does not start 0.47.
 
 **Outcome:** Packages use the converged catalog/type/handle foundation to provide useful opt-in
 features. Immutable `FeatureBundle` values atomically register ordinary views, commands,

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from typing import Any, ParamSpec, TypeVar
 
 from hedron.routing.router import HedronRouter
@@ -155,6 +155,21 @@ class HedronPagesMixin:
     ) -> None:
         self._root_router.include_component(descriptor, path=path, **kwargs)
         self._sync_root_route()
+
+    def include_feature(
+        self,
+        feature: object,
+        *,
+        capabilities: Mapping[str, bool] | None = None,
+    ) -> object:
+        """Include one validated FeatureBundle before registry/catalog seal.
+
+        Accepts a ``FeatureBundle`` or a ``FeatureProvider`` such as
+        ``DataWorkspace``. Beginner spelling: ``app.include_feature(orders)``.
+        """
+        from hedron.features import include_feature as _include
+
+        return _include(self, feature, capabilities=capabilities)  # type: ignore[arg-type]
 
     def refreshable(
         self,

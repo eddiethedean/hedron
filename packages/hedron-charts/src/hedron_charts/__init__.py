@@ -17,6 +17,7 @@ from hedron_charts.components import (
 )
 from hedron_charts.element import TAG_NAME, chart_from_beginner
 from hedron_charts.export import export_csv, export_json, export_svg, plan_export_bundle
+from hedron_charts.interaction import ChartInteraction
 from hedron_charts.optional_adapters import optional_adapters
 from hedron_charts.pins import RUNTIME_PINS, ensure_pin_stubs, pinned_runtime, verify_pin
 from hedron_charts.spec import ChartPlan, ChartSpec
@@ -29,6 +30,7 @@ __all__ = [
     "AreaChart",
     "BarChart",
     "Chart",
+    "ChartInteraction",
     "ChartPlan",
     "ChartSpec",
     "LineChart",

@@ -22,9 +22,9 @@ _CSS = _ROOT / "assets" / "tabulator" / "editor.css"
 
 PLUGIN_META = PluginMeta(
     name="hedron_data",
-    version="0.45.0",
+    version="0.46.0",
     distribution="hedron-data",
-    hedron_version=">=0.45,<0.46",
+    hedron_version=">=0.46,<0.47",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -153,7 +153,16 @@ def register(ctx: PluginContext) -> None:
             provider="hedron-data",
             provider_version=PLUGIN_META.version,
             surface="DataTable/DataEditor",
-            limitations=("current surface only; no DataWorkspace",),
+            limitations=("current surface plus opt-in DataWorkspace via include_feature",),
+        )
+    )
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.data.workspace",
+            provider="hedron-data",
+            provider_version=PLUGIN_META.version,
+            surface="DataWorkspace",
+            limitations=("opt-in; explicit source/policy; no inferred authz",),
         )
     )
 

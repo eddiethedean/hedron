@@ -1,0 +1,9 @@
+# PERF-046 explicit 0.45 baselines
+
+phase = "0.46"
+method = "on-device p95 vs compile_interaction_catalog / TestClient GET"
+explicit_045 = "compile_interaction_catalog of unmodeled refreshable views"
+workflow_046 = "Hedron.include_feature of FeatureBundle wrapping the same handles"
+multiplier = "1.25"
+note = "CI asserts include/compile remain startup work and request samples stay defined."
+max_bundles = 512

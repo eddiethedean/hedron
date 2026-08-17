@@ -27,7 +27,7 @@ Pin versions in production, read [upgrade](upgrade.md) notes before bumping trai
 Treat the Alpha `hedron-elements` incubator as more volatile. Charts and the sample kit require the compatible
 `>=0.2.0,<0.3` satellite floor — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current published train (`0.45.x`). The
+**Support window:** security fixes target the current published train (`0.46.x`). The
 previous `0.44.x` train receives best-effort security triage through approximately
 **2027-08-16**. There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).
 Community GitHub support only;

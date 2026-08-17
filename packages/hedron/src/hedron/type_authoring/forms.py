@@ -59,6 +59,7 @@ def generate_form(
     submit_label: str = "Submit",
     controls: Mapping[str, NodeLike | Control] | None = None,
     fallback: str | None = None,
+    enhance: Literal["native", "elements"] = "native",
     **safe_form_attrs: object,
 ) -> Form:
     if compiled.model_type is None or not any(
@@ -101,6 +102,8 @@ def generate_form(
             control_node = override
         else:
             control_node = _native_control(record, current, control=None)
+        if enhance == "elements" and override is None:
+            control_node = _maybe_enhance(record, control_node, current)
         retained = current.get(record.name)
         if record.sensitive or record.control_kind == "password":
             retained = None
@@ -232,6 +235,25 @@ def _native_control(
         required=record.required,
         type=input_type,  # type: ignore[arg-type]
         autocomplete=autocomplete,
+    )
+
+
+def _maybe_enhance(
+    record: FieldRecord,
+    native: NodeLike,
+    current: Mapping[str, object],
+) -> NodeLike:
+    try:
+        from hedron_elements.schema import enhanced_control
+    except ImportError:
+        return native
+    kind = record.control_kind or _default_kind(record)
+    return enhanced_control(  # type: ignore[return-value]
+        kind,
+        native,
+        name=record.http_name,
+        value=current.get(record.name, ""),
+        options=_enum_options(record.annotation),
     )
 
 

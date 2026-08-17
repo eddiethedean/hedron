@@ -140,6 +140,18 @@ from hedron_core.builtins.map_geo import MarkerSpec, sanitize_geojson
 from hedron_core.builtins.media import GalleryItem
 from hedron_core.builtins.model_demo import DialogueTurn, PredictionScore
 from hedron_core.builtins.register import register_builtins as _register_builtins
+from hedron_core.bundles import (
+    FeatureBundle,
+    FeatureConflictError,
+    FeatureProvider,
+    FeatureRequirement,
+    eject_bundle,
+    eject_source,
+    include_bundle,
+    included_bundles,
+    reset_bundles_for_tests,
+    resolve_feature,
+)
 from hedron_core.cache import (
     CacheScope,
     CacheTrace,
@@ -393,7 +405,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.45.0"
+__version__ = "0.46.0"
 
 __all__ = [
     "ActionRegistry",
@@ -445,6 +457,16 @@ __all__ = [
     "StructuralBindingAdapter",
     "TYPE_SCHEMA_NAMESPACE",
     "TYPE_SCHEMA_VERSION",
+    "FeatureBundle",
+    "FeatureConflictError",
+    "FeatureProvider",
+    "FeatureRequirement",
+    "eject_bundle",
+    "eject_source",
+    "include_bundle",
+    "included_bundles",
+    "reset_bundles_for_tests",
+    "resolve_feature",
     "CatalogEntry",
     "CatalogVersionError",
     "compile_interaction_catalog",

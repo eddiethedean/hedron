@@ -66,6 +66,7 @@ __all__ = [
     "refresh_event_name",
     "register_handle_descriptor",
     "reset_handles_for_tests",
+    "unregister_handle_descriptor",
     "safe_dom_id",
     "structural_bind",
     "validate_explicit_key",
@@ -331,6 +332,14 @@ def register_handle_descriptor(descriptor: BaseHandleDescriptor, *, key: str | N
         _KEYS[key_slot] = descriptor.logical_id
 
 
+def unregister_handle_descriptor(logical_id: str, *, app_id: str) -> None:
+    """Drop a handle descriptor. Used by FeatureBundle rollback/eject."""
+    _DESCRIPTORS.pop((app_id, logical_id), None)
+    stale = [key for key, owner in _KEYS.items() if key[0] == app_id and owner == logical_id]
+    for key in stale:
+        _KEYS.pop(key, None)
+
+
 def list_handle_descriptors(*, app_id: str | None = None) -> tuple[BaseHandleDescriptor, ...]:
     rows = list(_DESCRIPTORS.values())
     if app_id is not None:
@@ -374,6 +383,9 @@ def reset_handles_for_tests() -> None:
     from hedron_core.catalog import reset_catalog_for_tests
 
     reset_catalog_for_tests()
+    from hedron_core.bundles import reset_bundles_for_tests
+
+    reset_bundles_for_tests()
 
 
 def _canonical_params(parameters: Mapping[str, object]) -> dict[str, object]:

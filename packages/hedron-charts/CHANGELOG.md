@@ -19,6 +19,10 @@
 
 ## [0.2.0] — 2026-08-14
 
+### Added
+- `ChartInteraction` compiles Supported chart events onto ActionHandle effects; core pin `>=0.46.0,<0.47`.
+
+
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
 
 

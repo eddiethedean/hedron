@@ -20,7 +20,7 @@ status: beta
 
 ## Availability
 
-Install `hedron[charts]>=0.45.0,<0.46` (or `hedron-charts>=0.2.0,<0.3`). See
+Install `hedron[charts]>=0.46.0,<0.47` (or `hedron-charts>=0.2.0,<0.3`). See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## Public surface
@@ -31,6 +31,7 @@ versioned charts package, not the Hedron flagship version.
 | Surface | Purpose | Stability |
 |---|---|---|
 | `Chart`, `ChartSpec`, `ChartPlan` | Advanced schema-versioned authoring and deterministic compilation result | Beta |
+| `ChartInteraction` | Opt-in typed chart event → `ActionHandle` / effects (`select`/`inspect`/`focus`/`reset`) | Beta |
 | `LineChart`, `AreaChart`, `BarChart`, `ScatterChart` | Beginner row-mapping components compiled to `ChartSpec` | Beta |
 | `MatplotlibChart`, `MatplotlibAdapter` | Static Matplotlib SVG/PNG path | Beta / Supported capability |
 | `PlotlyChart`, `PlotlyAdapter`, `AltairChart`, `AltairAdapter` | Familiar-library adapters; full browser runtimes remain opt-in | Experimental capability |

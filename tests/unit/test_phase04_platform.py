@@ -46,7 +46,7 @@ def test_plugin_loader_registers_panel_and_rolls_back_on_failure() -> None:
         version="0.4.0",
         distribution="good",
         capabilities=PluginCapabilities(explorer_panels=True),
-        hedron_version=">=0.45,<0.46",
+        hedron_version=">=0.46,<0.47",
     )
 
     def bad(ctx: PluginContext) -> None:
@@ -56,7 +56,7 @@ def test_plugin_loader_registers_panel_and_rolls_back_on_failure() -> None:
         name="bad",
         version="0.4.0",
         distribution="bad",
-        hedron_version=">=0.45,<0.46",
+        hedron_version=">=0.46,<0.47",
     )
 
     class EP:
@@ -89,7 +89,7 @@ def test_plugin_loader_rolls_back_components_on_failure() -> None:
         version="0.4.0",
         distribution="good",
         capabilities=PluginCapabilities(python=True),
-        hedron_version=">=0.45,<0.46",
+        hedron_version=">=0.46,<0.47",
     )
 
     def bad(ctx: PluginContext) -> None:
@@ -99,7 +99,7 @@ def test_plugin_loader_rolls_back_components_on_failure() -> None:
         name="bad",
         version="0.4.0",
         distribution="bad",
-        hedron_version=">=0.45,<0.46",
+        hedron_version=">=0.46,<0.47",
     )
 
     class EP:
@@ -131,7 +131,7 @@ def test_plugin_enabled_empty_loads_none() -> None:
         name="demo",
         version="0.4.0",
         distribution="demo",
-        hedron_version=">=0.45,<0.46",
+        hedron_version=">=0.46,<0.47",
     )
 
     class EP:
@@ -177,7 +177,7 @@ def test_plugin_loader_success() -> None:
         version="0.4.0",
         distribution="demo",
         capabilities=PluginCapabilities(python=True, explorer_panels=True),
-        hedron_version=">=0.45,<0.46",
+        hedron_version=">=0.46,<0.47",
     )
 
     class EP:
@@ -200,7 +200,7 @@ def test_cli_new_check_graph_audit(tmp_path: Path, monkeypatch: pytest.MonkeyPat
     assert new_exc.value.code == 0
     assert (tmp_path / "demoapp" / "app.py").is_file()
     scaffold_toml = (tmp_path / "demoapp" / "pyproject.toml").read_text(encoding="utf-8")
-    assert "hedron>=0.45.0,<0.46" in scaffold_toml
+    assert "hedron>=0.46.0,<0.47" in scaffold_toml
     assert "uvicorn[standard]" in scaffold_toml
     assert "0.4.0" not in scaffold_toml
 

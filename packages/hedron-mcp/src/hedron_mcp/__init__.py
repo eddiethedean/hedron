@@ -12,6 +12,7 @@ from hedron_mcp.compat import (
     negotiate_protocol_version,
     sdk_version,
 )
+from hedron_mcp.exposure import McpExposure
 from hedron_mcp.server import (
     AuthorizationError,
     InvalidParamsError,
@@ -31,6 +32,7 @@ __all__ = [
     "McpAuditEvent",
     "McpAuditLog",
     "McpBounds",
+    "McpExposure",
     "McpProjection",
     "McpResource",
     "McpTool",

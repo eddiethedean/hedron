@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.46"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.45.0"
 required_predecessor = "v0.45.0"
 target = "v0.46.0"
@@ -33,7 +33,7 @@ not_reused = [
     "hedron_jinja.ProviderManifest.feature_id",
 ]
 diagnostic_family = "HED-BUNDLE-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
 do_not_reuse = ["HED-WORKFLOW-*", "HED-CATALOG-*", "HED-PROJECTION-*"]
 
 [imports]

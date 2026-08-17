@@ -54,7 +54,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_charts",
     version="0.2.0",
     distribution="hedron-charts",
-    hedron_version=">=0.45,<0.46",
+    hedron_version=">=0.46,<0.47",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -333,7 +333,16 @@ def register(ctx: PluginContext) -> None:
             provider="hedron-charts",
             provider_version=PLUGIN_META.version,
             surface="Chart/LineChart/BarChart",
-            limitations=("current surface only; no chart-link workflows",),
+            limitations=("current surface plus opt-in ChartInteraction via include_feature",),
+        )
+    )
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.charts.interaction",
+            provider="hedron-charts",
+            provider_version=PLUGIN_META.version,
+            surface="ChartInteraction",
+            limitations=("Supported events: select, inspect, focus, reset",),
         )
     )
 

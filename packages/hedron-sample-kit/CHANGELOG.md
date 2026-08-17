@@ -15,6 +15,10 @@
 
 ## [0.1.10] — 2026-08-11
 
+### Added
+- Third-party FeatureBundle author path via PluginContext.register_feature_bundle.
+
+
 ### Changed
 
 - Coordinated satellite floor with `hedron-charts` `0.1.10` (pin `hedron-core>=0.28.2,<0.29`).

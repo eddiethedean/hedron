@@ -14,7 +14,7 @@ Install target (not available until the 0.47 gates are Verified):
 - flagship extra `hedron[maps]` on the 0.47 train
 - independently versioned `hedron-maps` `>=0.1.0,<0.2`
 
-Do not install either extra on the living 0.45 train.
+Do not install either extra on the living 0.46 train.
 
 ## Beginner map
 

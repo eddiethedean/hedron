@@ -402,6 +402,7 @@ class ActionHandle(Generic[InputT, ResultT]):
         submit_label: str = "Submit",
         controls: Mapping[str, object] | None = None,
         fallback: str | None = None,
+        enhance: str = "native",
         **safe_form_attrs: object,
     ) -> NodeLike:
         from hedron.type_authoring.forms import generate_form
@@ -421,6 +422,7 @@ class ActionHandle(Generic[InputT, ResultT]):
             submit_label=submit_label,
             controls=controls,  # type: ignore[arg-type]
             fallback=fallback or self.fallback,
+            enhance=enhance,  # type: ignore[arg-type]
             **safe_form_attrs,
         )
 

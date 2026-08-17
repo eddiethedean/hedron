@@ -1,21 +1,28 @@
-# Upgrade to Hedron 0.45
+# Upgrade to Hedron 0.46
 
-This guide covers an application upgrade onto the **0.45.x** train
-(current tip **`v0.45.0`**). New applications should use
+This guide covers an application upgrade onto the **0.46.x** train
+(current tip **`v0.46.0`**). New applications should use
 [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.45.x adds a sealed read-only interaction catalog over Published 0.43/0.44
-artifacts (D-074 / D-077 / RFC-0072):
+Hedron 0.46.x adds opt-in package-native features that compile onto Published 0.43–0.45
+seams (D-075 / D-079 / RFC-0073):
 
-- `app.interactions` / `InteractionCatalog` index `BaseHandleDescriptor` and optional `TypeSchema`
-- `hedron build` emits sibling `interactions.json`; production validates it against the live catalog
-- Namespaced `PackageProjection` values describe current package surfaces; they have no runtime authority
-- Direct 0.43/0.44 APIs remain; Flask/Django project portable catalog facts and are not TypeSchema producers
-- MCP/Gradio consume catalog facts without auto-exposing tools
+- `FeatureBundle` / `Hedron.include_feature` atomically register ordinary handles, components,
+  scenarios, and stacked projections; they are not executors
+- `DataWorkspace` produces a beginner `app.include_feature(orders)` bundle over an explicit
+  `DataEditorSource` and `DataWorkspacePolicy`
+- `ChartInteraction` maps Supported `select` / `inspect` / `focus` / `reset` onto `ActionHandle`
+  effects; `legend_filter` / `brush` / `drill_intent` stay Experimental
+- Schema-aware elements are opt-in (`ActionHandle.form(enhance="elements")`); native forms remain
+  canonical
+- `McpExposure` and `RemoteWorkflow` wrap live MCP/Gradio registration; catalog presence never
+  grants exposure
 
-Prior trains remain in force: type-driven authoring (0.44), refreshable views and commands (0.43), production-grade
+Apps that never call `include_feature` stay request-path identical to 0.45. Direct package APIs
+remain. Prior trains remain in force: typed interaction catalog (0.45), type-driven authoring (0.44),
+refreshable views and commands (0.43), production-grade
 Web Component inventory (0.42), browser composition / draft transfer / navigation (0.41),
 authoring kit (0.40), rich data / OptimisticMutation (0.39), high-fidelity charts
 (`hedron-charts` `0.2.x`, 0.38), MCP (`hedron-mcp` `0.2.x`), Workbench ASGI
@@ -26,10 +33,11 @@ preload remain experimental.
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.44.0,<0.45`,
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.45.0,<0.46`,
    or the tip pin already).
-3. Existing 0.42–0.44 handlers keep working. Unused catalog is request-path neutral.
-4. Adopt catalog/manifest consumers after modeled 0.44 types if you need fingerprints.
+3. Existing 0.42–0.45 handlers keep working. Unused `include_feature` is request-path
+   identical to 0.45.
+4. Adopt bundles after modeled 0.44 types and 0.45 catalog consumers if you need fingerprints.
 5. If you use editable grids or charts, keep `hedron[data]` / `hedron[charts]` on the
    tip pin (or `hedron-charts>=0.2.0,<0.3`).
 6. If you use Posit Workbench or Connect, prefer `hedron[posit]` / `HedronPosit`.
@@ -37,14 +45,26 @@ preload remain experimental.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.45.0,<0.46"
-python -m pip install -U "hedron[data]>=0.45.0,<0.46"
-python -m pip install -U "hedron[charts]>=0.45.0,<0.46"
+python -m pip install -U "hedron>=0.46.0,<0.47"
+python -m pip install -U "hedron[data]>=0.46.0,<0.47"
+python -m pip install -U "hedron[charts]>=0.46.0,<0.47"
 # independent charts satellite:
 python -m pip install -U "hedron-charts>=0.2.0,<0.3"
 # optional production-grade elements inventory:
-python -m pip install -U "hedron[elements]>=0.45.0,<0.46"
+python -m pip install -U "hedron[elements]>=0.46.0,<0.47"
 ```
+
+## Behavioral notes (0.45 → 0.46)
+
+1. **Bundles are not executors.** `include_feature` registers ordinary 0.43–0.45 handles,
+   components, scenarios, and stacked projections. Authz stays explicit; catalog presence is not
+   a capability.
+2. **Unused include is request-path identical.** Apps that never call `include_feature` keep the
+   0.45 request path.
+3. **MCP/Gradio stay opt-in.** `McpExposure` / `RemoteWorkflow` wrap live registration; consuming
+   the catalog never grants exposure.
+4. **Rollback:** pin `hedron>=0.45.0,<0.46`. Eject or remove `include_feature` first; explicit
+   handlers stay.
 
 ## Behavioral notes (0.44 → 0.45)
 
@@ -80,19 +100,22 @@ python -m pip install -U "hedron[elements]>=0.45.0,<0.46"
 
 ## After upgrading
 
-- Keep existing region and unmodeled handle pages running unchanged, then add one
-  `ViewParams` / `FormBody` model at a time.
-- Smoke command buttons and generated forms through ordinary HTTP as well as HTMX.
-- Confirm Explorer's redacted TypeSchema and `hedron check` (static never imports the target).
+- Keep existing pages and 0.45 catalog consumers running unchanged, then add one
+  `include_feature` at a time.
+- Smoke workspace list/detail/create/edit through ordinary HTTP as well as HTMX.
+- Confirm `hedron inspect features` and Explorer Features without treating catalog presence as
+  exposure.
 
 ## See also
 
+- [What's new in 0.46](whats-new-0.46.md)
 - [What's new in 0.45](whats-new-0.45.md)
 - [What's new in 0.44](whats-new-0.44.md)
 - [What's new in 0.43](whats-new-0.43.md)
+- [Package-native typed workflows](../api/PACKAGE_WORKFLOWS.md)
 - [Interaction catalog](../api/INTERACTION_CATALOG.md)
 - [Type-driven authoring](../api/TYPE_DRIVEN_AUTHORING.md)
 - [Release notes](release-notes.md)
-- [upgrade-fixtures-045](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-045.md)
+- [upgrade-fixtures-046](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-046.md)
 - [COMPATIBILITY](../COMPATIBILITY.md)
-- [RELEASE_0_45](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_45.md)
+- [RELEASE_0_46](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_46.md)

@@ -8,7 +8,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_mcp",
     version="0.2.0",
     distribution="hedron-mcp",
-    hedron_version=">=0.45,<0.46",
+    hedron_version=">=0.46,<0.47",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -44,6 +44,15 @@ def register(ctx: PluginContext) -> None:
             provider_version=PLUGIN_META.version,
             surface="McpProjection",
             limitations=("deny-by-default; catalog presence is not exposure",),
+        )
+    )
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.mcp.exposure",
+            provider="hedron-mcp",
+            provider_version=PLUGIN_META.version,
+            surface="McpExposure",
+            limitations=("explicit opt-in; consume_catalog does not expose",),
         )
     )
 

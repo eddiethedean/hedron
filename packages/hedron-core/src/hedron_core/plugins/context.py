@@ -99,3 +99,15 @@ class PluginContext:
         from hedron_core.catalog import register_projection_provider
 
         register_projection_provider(provider, plugin=self.meta.name)
+
+    def register_feature_bundle(self, bundle: Any, *, app_id: str = "") -> None:
+        """Include a FeatureBundle through the public 0.46 API. Do not reuse register_feature."""
+        from hedron_core.bundles import include_bundle, resolve_feature
+
+        resolved = resolve_feature(bundle)
+        include_bundle(
+            resolved,
+            app_id=app_id or self.meta.name,
+            capabilities={self.meta.distribution or self.meta.name: True},
+            allow_privileged=False,
+        )

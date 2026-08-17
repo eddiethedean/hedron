@@ -4,7 +4,7 @@
 **Target phase:** 0.47 (`v0.47.0`)<br>
 **Decision:** D-078<br>
 **Planning baseline:** Published in-tree `v0.45.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.46.0`<br>
+**Required predecessor/cut baseline:** Published in-tree `v0.46.0`<br>
 **Package target:** `hedron-maps` `0.1.0` (Beta for its declared Supported inventory)<br>
 **Extends:** RFC-0011, RFC-0012, RFC-0014, RFC-0018, RFC-0019, RFC-0020,
 RFC-0021, RFC-0023, RFC-0024, RFC-0025, RFC-0028, RFC-0033, RFC-0040,

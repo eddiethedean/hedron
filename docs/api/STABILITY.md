@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.45.0,<0.46`. Treat the **stable** tables below (minimal +
+**For adopters:** Pin `hedron>=0.46.0,<0.47`. Treat the **stable** tables below (minimal +
 expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
 `experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
 lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -8,8 +8,8 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Living train **0.45.x** (**Published**; last published
-PyPI/git = `v0.45.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
+**Status:** Living train **0.46.x** (**Published**; last published
+PyPI/git = `v0.46.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
 (D-038: no calendar `1.0` scheduled; D-053 / RFC-0056; D-054 / RFC-0057).
 **Version:** `0.28.x` / catalog baseline
@@ -140,7 +140,9 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   `Refreshes`, `Updates`, `OutcomeMap`, `case`, `CommandResult`, `RefreshableView`,
   `CommandHandler`, `TypeSchema`. Phase 0.45 catalog symbols are **beta**: `InteractionCatalog`,
   `CatalogEntry`, `InteractionManifest`, `PackageProjection`, `ProjectionProvider`,
-  `Hedron.interactions`.
+  `Hedron.interactions`. Phase 0.46 package-workflow symbols are **beta**: `FeatureBundle`,
+  `FeatureRequirement`, `FeatureConflictError`, `Hedron.include_feature`, `DataWorkspace`,
+  `ChartInteraction`, `McpExposure`, `RemoteWorkflow`.
 - **experimental:** live transports — import from `hedron.experimental`
   (`SseResponse`, `job_status_sse_response`, `sse_response`,
   `StreamingComponentResponse`, `stream_*`, `accept_page_session_channel`,
@@ -184,7 +186,7 @@ Schema acceptance is broader than specialized host painting in `hedron-charts 0.
 
 ### `hedron-workbench` (Beta) — `beta` optional Workbench adapter
 
-Install `hedron[workbench]` / `hedron-workbench>=0.45.0,<0.46`. Supported:
+Install `hedron[workbench]` / `hedron-workbench>=0.46.0,<0.47`. Supported:
 `HedronWorkbench`, pre-import launcher and resolved-state handoff,
 `HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic typed URL and safe
 response-header adaptation, Hedron-owned request-time cookie repair,

@@ -112,12 +112,14 @@ def load_plugins(
     """
     from hedron_core import __version__ as core_version
     from hedron_core import plugins as plugins_mod
+    from hedron_core.bundles import restore_bundles, snapshot_bundles
 
     version = hedron_version or core_version
     registry_snapshot = snapshot_registry_builder()
     panel_snapshot = dict(plugins_mod._panels)
     owner_snapshot = dict(plugins_mod._diagnostic_owners)
     feature_snapshot = dict(plugins_mod._features)
+    bundle_snapshot = snapshot_bundles()
     experimental_env = os.environ.get("HEDRON_EXPERIMENTAL_UI", "").strip().lower() in {
         "1",
         "true",
@@ -133,6 +135,7 @@ def load_plugins(
         plugins_mod._diagnostic_owners.update(owner_snapshot)
         plugins_mod._features.clear()
         plugins_mod._features.update(feature_snapshot)
+        restore_bundles(*bundle_snapshot)
 
     discovered = list(entry_points) if entry_points is not None else _discover_entry_points()
     discovered_names: list[str] = []
@@ -165,7 +168,7 @@ def load_plugins(
                     ),
                     remediation=(
                         # Example pin must stay aligned with docs/release.toml train bounds.
-                        "Attach PluginMeta(..., hedron_version='>=0.45,<0.46') to the "
+                        "Attach PluginMeta(..., hedron_version='>=0.46,<0.47') to the "
                         "register entry point."
                     ),
                 )

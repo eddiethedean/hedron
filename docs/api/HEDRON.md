@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.45.x**)
+**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.46.x**)
 
 `Hedron` is the batteries-included FastAPI application. It preserves normal FastAPI
 behavior while installing Hedron route classes, response handling, lifespan composition,
@@ -76,6 +76,7 @@ parameters:
 | `region(id, selector=None, description="")` | Declare a `FragmentRegion` (default selector `#{id}`) for `RefreshButton.for_region` / allowlists |
 | `fragment(path, region=..., regions=..., **kwargs)` | Alias of `component` that merges `region` / `regions` into the allowlist |
 | `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
+| `include_feature(bundle, *, capabilities=None)` | Include one `FeatureBundle` / `FeatureProvider` before registry/catalog seal |
 | `include_router(...)` | Standard FastAPI router include |
 
 Golden-path HTMX scaffolding uses `app.region(...)` plus `@app.fragment(...)` (see

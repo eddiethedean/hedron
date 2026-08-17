@@ -21,6 +21,7 @@ from hedron_jinja.handles import (
     catalog_command_form,
     catalog_view,
     coerce_interaction_target,
+    list_feature_bundles,
     resolve_registered_handle,
 )
 from hedron_jinja.instrumentation import (
@@ -52,7 +53,7 @@ from hedron_jinja.providers import (
 )
 from hedron_jinja.source import validate_element_declarations
 
-__version__ = "0.45.0"
+__version__ = "0.46.0"
 
 __all__ = [
     "AsyncIoBudget",
@@ -87,6 +88,7 @@ __all__ = [
     "coerce_interaction_target",
     "data_provider_manifest",
     "instrumentation_session",
+    "list_feature_bundles",
     "portable_checker_json",
     "provider_available",
     "reconcile_csp",

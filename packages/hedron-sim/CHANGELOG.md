@@ -15,6 +15,10 @@
 
 ## [0.1.0] — 2026-08-07
 
+### Added
+- inspect_features consumes included bundles (offline subset).
+
+
 ### Fixed
 
 - Store route tables in ``<template data-hedron-sim-routes>`` instead of

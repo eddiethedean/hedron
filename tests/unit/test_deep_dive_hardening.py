@@ -503,7 +503,7 @@ def test_plugin_start_failure_rolls_back_registry() -> None:
         version="0.4.0",
         distribution="demo",
         capabilities=PluginCapabilities(python=True, explorer_panels=True),
-        hedron_version=">=0.45,<0.46",
+        hedron_version=">=0.46,<0.47",
     )
 
     class EP:

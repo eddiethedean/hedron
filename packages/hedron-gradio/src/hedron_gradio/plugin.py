@@ -8,7 +8,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_gradio",
     version="0.2.0",
     distribution="hedron-gradio",
-    hedron_version=">=0.45,<0.46",
+    hedron_version=">=0.46,<0.47",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -43,6 +43,15 @@ def register(ctx: PluginContext) -> None:
             provider_version=PLUGIN_META.version,
             surface="GradioClientAdapter",
             limitations=("disabled by default; catalog presence is not exposure",),
+        )
+    )
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.gradio.workflow",
+            provider="hedron-gradio",
+            provider_version=PLUGIN_META.version,
+            surface="RemoteWorkflow",
+            limitations=("allowlisted adapter/endpoint; catalog presence is not exposure",),
         )
     )
 

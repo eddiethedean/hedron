@@ -15,6 +15,10 @@
 
 ## [0.2.0] — 2026-08-12
 
+### Added
+- `McpExposure` wraps live register_resource/tool + authorize; catalog presence is not exposure.
+
+
 - Production-grade deny-by-default Streamable HTTP MCP projection (phase 0.32 / RFC-0065).
 - Host authn reuse, app authz/tenant hooks, bounds, redacted audit, Experimental mutations gated by ``allow_mutations``.
 - Pin official ``mcp>=1.9.0,<2`` SDK; Supported inventory only (Beta).

@@ -36,6 +36,8 @@ def _accessibility_contract_for(meta: object) -> Any:
 def _cmd_inspect(args: argparse.Namespace) -> int:
     if args.component == "interactions":
         return _cmd_inspect_interactions(args)
+    if args.component == "features":
+        return _cmd_inspect_features(args)
     _load_app(args.app)
     from hedron.config import load_hedron_settings
     from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
@@ -128,4 +130,38 @@ def _cmd_inspect_interactions(args: argparse.Namespace) -> int:
             f"descriptor={entry.get('descriptor_fingerprint')}  "
             f"type={entry.get('type_schema_fingerprint') or 'absent'}"
         )
+    return 0
+
+
+def _cmd_inspect_features(args: argparse.Namespace) -> int:
+    from hedron_core.bundles import included_bundles
+
+    app_id = None
+    if getattr(args, "app", None):
+        app = _load_app(args.app)
+        app_id = str(getattr(app, "hedron_app_id", "") or "") or None
+    bundles = included_bundles(app_id=app_id)
+    payload: JsonObject = {
+        "features": [
+            {
+                "logical_id": item.logical_id,
+                "provider": item.provider,
+                "provider_version": item.provider_version,
+                "views": [getattr(view, "logical_id", str(view)) for view in item.views],
+                "commands": [
+                    getattr(command, "logical_id", str(command)) for command in item.commands
+                ],
+                "projections": [proj.namespace for proj in item.projections],
+                "dependencies": list(item.dependencies),
+                "limitations": list(item.limitations),
+            }
+            for item in bundles
+        ]
+    }
+    if bool(getattr(args, "json", False)):
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    print(f"features  count={len(bundles)}")
+    for item in bundles:
+        print(f"  {item.logical_id}  provider={item.provider}  version={item.provider_version}")
     return 0

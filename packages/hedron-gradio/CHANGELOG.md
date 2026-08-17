@@ -23,6 +23,8 @@
 ## [0.2.0] — 2026-08-13
 
 ### Added
+- `RemoteWorkflow` wraps GradioClientAdapter + GradioRemoteConfig/GradioEndpoint.
+
 
 - Production-grade remote policy: `GradioRemoteConfig`, destination allowlist, SSRF/private-host
   defenses, and diagnostic redaction (RFC-0067 / phase 0.34).

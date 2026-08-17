@@ -250,6 +250,7 @@ def _shell(title: str, body: str, *, request: Request, active: str = "components
         ("elements", "Elements", "/hedron-explorer/elements"),
         ("inventory", "Inventory", "/hedron-explorer/inventory"),
         ("interactions", "Interactions", "/hedron-explorer/interactions"),
+        ("features", "Features", "/hedron-explorer/features"),
         ("settings", "Settings", "/hedron-explorer/settings"),
     ]
     links = "".join(_nav_link(request, key, label, href, active) for key, label, href in nav)
@@ -921,6 +922,42 @@ def explorer_router() -> APIRouter:
         <pre>{html_lib.escape(str(dict(catalog.provenance)))}</pre>
         """
         return _shell("Interactions", body, request=request, active="interactions")
+
+    @router.get("/features", response_class=HTMLResponse, include_in_schema=False)
+    async def features_view(request: Request) -> str:
+        from hedron_core.bundles import included_bundles
+
+        app_id = str(getattr(getattr(request.app, "state", None), "hedron_app_id", "") or "")
+        rows = []
+        for bundle in included_bundles(app_id=app_id or None):
+            ident = html_lib.escape(bundle.logical_id)
+            provider = html_lib.escape(f"{bundle.provider} {bundle.provider_version}")
+            views = html_lib.escape(
+                ", ".join(str(getattr(item, "logical_id", item)) for item in bundle.views) or "—"
+            )
+            commands = html_lib.escape(
+                ", ".join(str(getattr(item, "logical_id", item)) for item in bundle.commands) or "—"
+            )
+            projections = html_lib.escape(
+                ", ".join(item.namespace for item in bundle.projections) or "—"
+            )
+            limitations = html_lib.escape("; ".join(bundle.limitations) or "—")
+            rows.append(
+                f"<tr><td>{ident}</td><td>{provider}</td><td>{views}</td>"
+                f"<td>{commands}</td><td>{projections}</td><td>{limitations}</td></tr>"
+            )
+        empty = '<tr><td colspan="6">No FeatureBundles included</td></tr>'
+        body = f"""
+        <h2>Feature bundles</h2>
+        <p>Opt-in package features compiled to ordinary handles. Bundles are not executors
+        and catalog/projection presence is not a capability.</p>
+        <table>
+          <thead><tr><th>Id</th><th>Provider</th><th>Views</th><th>Commands</th>
+          <th>Projections</th><th>Limitations</th></tr></thead>
+          <tbody>{"".join(rows) or empty}</tbody>
+        </table>
+        """
+        return _shell("Features", body, request=request, active="features")
 
     @router.get("/api/routes", include_in_schema=False)
     async def api_routes() -> list[dict[str, Any]]:

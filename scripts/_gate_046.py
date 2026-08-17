@@ -22,6 +22,8 @@ STATUS = ROOT / "STATUS.md"
 RELEASE = ROOT / "docs" / "release.toml"
 PYPROJECT = ROOT / "pyproject.toml"
 
+TRACKING_ISSUE = "#334"
+
 PACKET_FILES = (
     GATE,
     INVENTORY,
@@ -110,3 +112,61 @@ def gate_state(gate_id: str) -> str | None:
         if row.get("id") == gate_id:
             return str(row.get("state", "")).strip()
     return None
+
+
+GATE_TESTS: dict[str, list[str]] = {
+    "BUNDLE-046": ["tests/unit/test_bundles_046.py"],
+    "DATAFLOW-046": ["tests/unit/test_workspace_046.py"],
+    "VISUAL-046": ["tests/unit/test_chart_interaction_046.py"],
+    "ELEMENT-046": ["tests/unit/test_elements_046.py"],
+    "REMOTE-046": ["tests/unit/test_remote_046.py"],
+    "WORKBENCH-046": ["tests/unit/test_workbench_046.py"],
+    "SCENARIO-046": ["tests/unit/test_scenario_046.py"],
+    "ADAPTER-046": ["tests/adapters/test_hosts_046.py"],
+    "SECURITY-046": ["tests/security/test_security_046.py"],
+    "A11Y-046": ["tests/a11y/test_a11y_046.py"],
+    "BROWSER-046": ["tests/browser/test_browser_046.py"],
+    "COMPAT-046": ["tests/unit/test_compat_046.py"],
+    "PERF-046": ["tests/performance/test_perf_046.py"],
+    "DOCS-046": ["tests/unit/test_docs_046.py"],
+    "REGRESS-046": ["tests/unit/test_regress_046.py"],
+    "PKG-046": ["tests/unit/test_phase046_packet.py"],
+}
+
+
+def run_pytest(paths: list[str]) -> int:
+    import subprocess
+
+    command = ["uv", "run", "pytest", "-q", "--tb=short", *paths]
+    print("+", *command, flush=True)
+    return subprocess.call(command, cwd=ROOT)
+
+
+def check_gate(gate_id: str) -> int:
+    errors: list[str] = []
+    require_files(list(PACKET_FILES), errors)
+    if not accepted_contract_present():
+        errors.append("RFC-0073 and D-075 must remain Accepted")
+    if not contract_refine_present():
+        errors.append("D-079 and the frozen 0.46 contract markers must remain present")
+    packet = PACKET.read_text(encoding="utf-8")
+    if TRACKING_ISSUE not in packet:
+        errors.append(f"{PACKET}: tracking issue {TRACKING_ISSUE} must be bound")
+    state = gate_state(gate_id)
+    if state is None:
+        errors.append(f"{gate_id} missing from release-gate-0.46.toml")
+    elif state not in {"Planned", "Implemented", "Verified"}:
+        errors.append(f"{gate_id} unexpected state {state!r}")
+    tests = GATE_TESTS.get(gate_id, [])
+    if state == "Verified" and not tests:
+        errors.append(f"{gate_id} is Verified but has no executable evidence tests bound")
+    if errors:
+        for message in errors:
+            print(f"{gate_id}: {message}", flush=True)
+        return 1
+    if tests:
+        code = run_pytest(tests)
+        if code:
+            return code
+    print(f"ok: {gate_id}")
+    return 0

@@ -13,6 +13,9 @@ from hedron.cli.discovery import _find_component, _load_app, _registry_empty_hin
 
 
 def _cmd_eject(args: argparse.Namespace) -> int:
+    target = str(args.component or "")
+    if target == "features" or target.startswith("features:"):
+        return _cmd_eject_feature(args)
     _load_app(args.app)
     from hedron.config import load_hedron_settings
     from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
@@ -75,4 +78,47 @@ def _cmd_eject(args: argparse.Namespace) -> int:
         )
         return 1
     print(json.dumps({"component": meta.logical_id, "written": written}, indent=2))
+    return 0
+
+
+def _cmd_eject_feature(args: argparse.Namespace) -> int:
+    from hedron.features import eject_feature
+    from hedron_core.bundles import eject_source, included_bundles
+
+    target = str(args.component or "")
+    logical_id = target.split(":", 1)[1] if ":" in target else ""
+    app = _load_app(getattr(args, "app", None))
+    app_id = str(getattr(app, "hedron_app_id", "") or "") if app is not None else ""
+    if not logical_id:
+        bundles = included_bundles(app_id=app_id or None)
+        if not bundles:
+            print("No FeatureBundles included", file=sys.stderr)
+            return 1
+        logical_id = bundles[0].logical_id
+    cwd = Path.cwd().resolve()
+    out_dir = Path(args.out).expanduser().resolve() if args.out else cwd / "ejected" / logical_id
+    try:
+        out_dir.relative_to(cwd)
+    except ValueError:
+        print(f"Refusing to eject outside the project root: {out_dir}", file=sys.stderr)
+        return 1
+    dest = out_dir / "explicit.py"
+    if dest.exists() and not args.force:
+        print(f"Refusing to overwrite {dest} (use --force)", file=sys.stderr)
+        return 1
+    out_dir.mkdir(parents=True, exist_ok=True)
+    if app is not None:
+        source = eject_feature(app, logical_id)
+    else:
+        matches = [
+            item
+            for item in included_bundles(app_id=app_id or None)
+            if item.logical_id == logical_id
+        ]
+        if not matches:
+            print(f"FeatureBundle {logical_id!r} not found", file=sys.stderr)
+            return 1
+        source = eject_source(matches[0])
+    dest.write_text(source, encoding="utf-8")
+    print(json.dumps({"feature": logical_id, "written": [str(dest)]}, indent=2))
     return 0

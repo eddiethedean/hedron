@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import Any, Protocol, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Protocol, TypeVar, cast
 
 from flask import Blueprint, Flask, Response, current_app, request
 
@@ -15,6 +15,9 @@ from hedron_core.rendering import RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfile
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, assert_flask_csrf_strategy, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
+
+if TYPE_CHECKING:
+    from hedron_core.bundles import FeatureBundle, FeatureProvider
 
 __all__ = ["HedronBlueprint", "convert_view_result", "wrap_hedron_view"]
 
@@ -283,6 +286,13 @@ class HedronBlueprint(Blueprint):
             allow_undeclared_targets=allow_undeclared_targets,
         )
         self.add_url_rule(path, endpoint=ep, view_func=wrapped, methods=method_list, **options)
+
+    def include_feature(
+        self, feature: FeatureBundle | FeatureProvider, *, app_id: str | None = None
+    ) -> FeatureBundle:
+        from hedron_flask.catalog import include_feature as _include
+
+        return _include(feature, app_id=app_id or "flask")
 
 
 def _apply_flask_session_cookie_defaults(app: Flask, policy: SecurityPolicy) -> None:

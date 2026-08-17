@@ -1,6 +1,6 @@
 # hedron-elements
 
-**Package maturity:** Beta · **Train:** `0.45.x` · pin `>=0.45.0,<0.46`
+**Package maturity:** Beta · **Train:** `0.45.x` · pin `>=0.46.0,<0.47`
 
 Framework-neutral Web Component ABI and HTMX-safe bridge. The package includes the
 `hedron-example` ABI reference plus Beta form controls (`hedron-field-text`,
@@ -17,8 +17,8 @@ docs/reference only**
 ([react-island-reference](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/react-island-reference/README.md)).
 
 ```bash
-pip install "hedron[elements]>=0.45.0,<0.46"
-pip install "hedron-elements>=0.45.0,<0.46"
+pip install "hedron[elements]>=0.46.0,<0.47"
+pip install "hedron-elements>=0.46.0,<0.47"
 ```
 
 Depends on `hedron-core` only. Applications do not need Node.js. Disposition in the

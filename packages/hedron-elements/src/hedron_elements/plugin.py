@@ -39,9 +39,9 @@ _STATIC = _ROOT / "static"
 
 PLUGIN_META = PluginMeta(
     name="hedron_elements",
-    version="0.45.0",
+    version="0.46.0",
     distribution="hedron-elements",
-    hedron_version=">=0.45,<0.46",
+    hedron_version=">=0.46,<0.47",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -196,7 +196,18 @@ def register(ctx: PluginContext) -> None:
             provider="hedron-elements",
             provider_version=PLUGIN_META.version,
             surface="web_component_abi",
-            limitations=("current ABI only; no schema-aware 0.46 elements",),
+            limitations=(
+                "opt-in schema-aware generate_form(enhance='elements'); native remains canonical",
+            ),
+        )
+    )
+    ctx.register_projection_provider(
+        SurfaceProjectionProvider(
+            namespace="hedron.elements.schema",
+            provider="hedron-elements",
+            provider_version=PLUGIN_META.version,
+            surface="schema-aware-forms",
+            limitations=("opt-in enhance=elements; native ActionHandle.form() remains canonical",),
         )
     )
 

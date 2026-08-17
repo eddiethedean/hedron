@@ -19,7 +19,7 @@ Experimental explicit opt-ins.
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.45.0,<0.46"
+pip install "hedron[charts]>=0.46.0,<0.47"
 
 # Or install the independently versioned satellite:
 pip install "hedron-charts>=0.2.0,<0.3"

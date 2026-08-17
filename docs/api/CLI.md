@@ -126,7 +126,10 @@ hedron eject UserCard --out ./ejected --force
 |---|---|
 | `preview <logical_id>` | Inspect a route/component preview payload |
 | `inspect <component>` | Explain styles and dependencies |
+| `inspect interactions` | Read-only interaction catalog |
+| `inspect features` | Included FeatureBundles |
 | `eject <component>` | Write `accessibility_contract.json` plus an editable `styles.css` override (`--out`, `--force`) |
+| `eject features:<id>` | Write reviewable explicit-registration Python for a bundle |
 
 ### `conformance`
 

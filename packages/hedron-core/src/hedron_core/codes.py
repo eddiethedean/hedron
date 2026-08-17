@@ -351,6 +351,17 @@ HED_PROJECTION_0003 = "HED-PROJECTION-0003"  # unknown optional projection versi
 HED_PROJECTION_0004 = "HED-PROJECTION-0004"  # untrusted provider invocation
 HED_PROJECTION_0005 = "HED-PROJECTION-0005"  # host / consumer exception
 HED_PROJECTION_0006 = "HED-PROJECTION-0006"  # provider disable/uninstall mismatch
+# Feature bundles (0.46 RFC-0073 / D-075 / D-079)
+HED_BUNDLE_0001 = "HED-BUNDLE-0001"  # include/eject after registry or catalog seal
+HED_BUNDLE_0002 = "HED-BUNDLE-0002"  # duplicate bundle/handle/route/namespace
+HED_BUNDLE_0003 = "HED-BUNDLE-0003"  # dependency cycle, missing dep, or depth
+HED_BUNDLE_0004 = "HED-BUNDLE-0004"  # missing required capability
+HED_BUNDLE_0005 = "HED-BUNDLE-0005"  # bundle/workspace/chart bounds exceeded
+HED_BUNDLE_0006 = "HED-BUNDLE-0006"  # include failure; rollback required
+HED_BUNDLE_0007 = "HED-BUNDLE-0007"  # invalid bundle shape or identity
+HED_BUNDLE_0008 = "HED-BUNDLE-0008"  # conflict with an existing artifact
+HED_BUNDLE_0009 = "HED-BUNDLE-0009"  # eject/uninstall after seal or unknown id
+HED_BUNDLE_0010 = "HED-BUNDLE-0010"  # third-party isolation / private API
 
 HED_SIM_ASSET_0001 = "HED-SIM-ASSET-0001"  # packaged sim asset name escapes static/
 HED_SIM_ASSET_0002 = "HED-SIM-ASSET-0002"  # packaged sim asset missing

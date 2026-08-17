@@ -1,0 +1,99 @@
+"""Explicit MCP exposure wrapping live McpProjection registration."""
+
+from __future__ import annotations
+
+from collections.abc import Callable, Mapping
+from dataclasses import dataclass
+from typing import Any, Literal
+
+from hedron_core.bundles import FeatureBundle, FeatureConflictError, FeatureRequirement
+from hedron_core.catalog import PackageProjection, ProjectionCapability
+from hedron_core.codes import HED_BUNDLE_0007
+from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
+from hedron_mcp.server import McpProjection, McpResource, McpTool
+
+__all__ = ["McpExposure"]
+
+
+@dataclass(frozen=True, slots=True)
+class McpExposure:
+    """Deny-by-default catalog-entry exposure. Catalog presence grants nothing."""
+
+    catalog_id: str
+    role: Literal["resource", "tool"]
+    projection: McpProjection
+    name: str
+    authorize: Callable[..., None]
+    schema: Mapping[str, Any] | None = None
+    mutate: bool = False
+    uri: str = ""
+    handler: Callable[..., Any] | None = None
+    description: str = ""
+
+    def apply(self) -> None:
+        if not self.projection.enabled:
+            raise FeatureConflictError(
+                make_diagnostic(
+                    HED_BUNDLE_0007,
+                    severity=DiagnosticSeverity.ERROR,
+                    title="McpExposure requires an enabled McpProjection",
+                    explanation="Catalog presence and consume_catalog() never grant exposure.",
+                    remediation="Construct McpProjection(enabled=True) and call live authorize.",
+                )
+            )
+        self.projection.authz_hook = self.authorize
+        if self.role == "resource":
+            self.projection.register_resource(
+                McpResource(
+                    uri=self.uri or f"hedron://{self.catalog_id}",
+                    name=self.name,
+                    description=self.description,
+                )
+            )
+            return
+        if self.handler is None:
+            raise FeatureConflictError(
+                make_diagnostic(
+                    HED_BUNDLE_0007,
+                    severity=DiagnosticSeverity.ERROR,
+                    title="MCP tool exposure requires a handler",
+                    explanation="Tools wrap an explicit ActionHandle or typed function.",
+                    remediation="Pass handler= the live authorized function.",
+                )
+            )
+        self.projection.register_tool(
+            McpTool(
+                name=self.name,
+                schema=dict(self.schema or {}),
+                mutate=self.mutate,
+                handler=self.handler,
+                description=self.description,
+            )
+        )
+
+    def to_bundle(self) -> FeatureBundle:
+        self.apply()
+        return FeatureBundle(
+            logical_id=f"hedron-mcp:{self.name}",
+            provider="hedron-mcp",
+            provider_version="0.2.0",
+            projections=(
+                PackageProjection(
+                    namespace=f"hedron.mcp.exposure.{self.name}",
+                    provider="hedron-mcp",
+                    provider_version="0.2.0",
+                    capabilities=(ProjectionCapability(name="McpExposure", support="supported"),),
+                    data={
+                        "catalog_id": self.catalog_id,
+                        "role": self.role,
+                        "name": self.name,
+                        "exposure": True,
+                        "consume_catalog_exposes": False,
+                    },
+                    limitations=(
+                        "explicit opt-in; live authorize; catalog presence is not exposure",
+                    ),
+                ),
+            ),
+            requirements=(FeatureRequirement(name="hedron-mcp", required=True),),
+        )

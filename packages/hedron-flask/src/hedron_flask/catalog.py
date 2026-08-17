@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from hedron_core.catalog import compile_interaction_catalog
 from hedron_core.codes import HED_PROJECTION_0005
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonObject
 from hedron_flask.type_authoring import refuse_fastapi_type_authoring
+
+if TYPE_CHECKING:
+    from hedron_core.bundles import FeatureBundle, FeatureProvider
 
 PORTABLE_FACT_KEYS = (
     "logical_id",
@@ -34,9 +39,40 @@ HOST_EXCEPTIONS: JsonObject = {
 __all__ = [
     "HOST_EXCEPTIONS",
     "PORTABLE_FACT_KEYS",
+    "project_bundle_facts",
     "project_catalog_facts",
     "refuse_live_host_authority",
 ]
+
+
+def project_bundle_facts(logical_id: str, *, app_id: str | None = None) -> JsonObject:
+    from hedron_core.bundles import included_bundles
+
+    matches = [item for item in included_bundles(app_id=app_id) if item.logical_id == logical_id]
+    if not matches:
+        raise error(
+            HED_PROJECTION_0005,
+            title="Unknown FeatureBundle",
+            explanation=f"Bundle {logical_id!r} is not included.",
+            remediation="Include the portable bundle before projecting facts.",
+        )
+    bundle = matches[0]
+    return {
+        "logical_id": bundle.logical_id,
+        "provider": bundle.provider,
+        "provider_version": bundle.provider_version,
+        "redacted_limitations": list(bundle.limitations),
+        "disposition": "projection_adapter",
+        "host_exceptions": dict(HOST_EXCEPTIONS),
+        "fastapi_di": False,
+        "type_schema_production": False,
+    }
+
+
+def include_feature(feature: FeatureBundle | FeatureProvider, *, app_id: str) -> FeatureBundle:
+    from hedron_core.bundles import include_bundle, resolve_feature
+
+    return include_bundle(resolve_feature(feature), app_id=app_id)
 
 
 def project_catalog_facts(logical_id: str, *, app_id: str | None = None) -> JsonObject:

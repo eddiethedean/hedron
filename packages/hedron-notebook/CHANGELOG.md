@@ -15,6 +15,10 @@
 
 ## [0.1.0] — 2026-08-06
 
+### Added
+- inspect_features consumes included bundles (localhost/offline).
+
+
 ### Fixed
 
 - Enforce the preview session token on HTTP and WebSocket requests (`hedron_preview_token`

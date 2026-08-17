@@ -15,28 +15,23 @@ from Read the Docs). Adopters should start from the golden-path contracts below.
 public contract for Published 0.43, with its 0.44 handoff refined by D-073. These symbols
 are Beta on the living train.
 
-## Planned 0.44 maintainer contract
+## Current 0.44 maintainer contract
 
-[Type-driven authoring](TYPE_DRIVEN_AUTHORING.md) records the accepted D-072 / RFC-0071 public
-contract, refined against 0.43 by D-073 and D-076, for the planned 0.44 phase. It consumes
-Published in-tree 0.43 and is **not importable on 0.43**. Boundary models, generated forms,
-effect declarations, typed outcomes, generic specialization, and class handlers are not part of
-the shipped golden path until all 0.44 gates are Verified.
+[Type-driven authoring](TYPE_DRIVEN_AUTHORING.md) records the shipped D-072 / RFC-0071 public
+contract, refined against 0.43 by D-073 and D-076. These symbols are Beta on the living train.
 
-## Planned 0.45 maintainer contract
+## Current 0.45 maintainer contract
 
-[Interaction catalog and package projections](INTERACTION_CATALOG.md) records the accepted
-D-074 / RFC-0072 public contract, refined against 0.44 by D-077, for the planned 0.45 phase.
-It consumes Published in-tree 0.44 and is **not importable on 0.44**. Catalog, manifest, package
+[Interaction catalog and package projections](INTERACTION_CATALOG.md) records the shipped
+D-074 / RFC-0072 public contract, refined against 0.44 by D-077. Catalog, manifest, package
 projections, and whole-fleet dispositions do not change interaction runtime authority.
 
-## Planned 0.46 maintainer contract
+## Current 0.46 maintainer contract
 
-[Package-native typed workflows](PACKAGE_WORKFLOWS.md) records the accepted D-075 / RFC-0073 public
-contract, refined against 0.45 by D-079, for the planned 0.46 phase. It consumes Published in-tree
-0.45 and is **not importable on 0.45**. Opt-in package feature bundles, data workspaces, linked
-charts, enhanced elements, remote workflows, and workbench experiences compile to the existing
-stack and do not add a package workflow executor.
+[Package-native typed workflows](PACKAGE_WORKFLOWS.md) records the shipped D-075 / RFC-0073
+public contract, refined against 0.45 by D-079. Opt-in package feature bundles, data workspaces,
+linked charts, enhanced elements, remote workflows, and workbench experiences compile to the
+existing stack and do not add a package workflow executor.
 
 ## Planned 0.47 maps contract
 
@@ -94,7 +89,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 
 ## Surfaces introduced in 0.19 (available on the 0.31 train)
 
-These surfaces first shipped in the 0.19 phase and remain on the living **0.45.x**
+These surfaces first shipped in the 0.19 phase and remain on the living **0.46.x**
 train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
 phases through 0.25).
 
@@ -135,7 +130,7 @@ phases through 0.25).
 - [Security types](SECURITY_TYPES.md)
 - [Auth](AUTH.md)
 - [Explorer](EXPLORER.md)
-- [Accessibility (`hedron_core.a11y`)](A11Y.md) — introduced in 0.19; available on the living 0.45 train
+- [Accessibility (`hedron_core.a11y`)](A11Y.md) — introduced in 0.19; available on the living 0.46 train
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
 - [API diagnostics](DIAGNOSTICS.md)
@@ -149,7 +144,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.45.x)
+- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.46.x)
 - [Security types](SECURITY_TYPES.md) — `Secret` / `TrustedHtml` / `SafeUrl` / `SecurityPolicy`
 - [CSRF composition (0.22)](CSRF_COMPOSITION.md) — strategies, header merge, `CsrfField`
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
@@ -158,13 +153,13 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 ## Current train notes
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
-  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.45.x**
-  (**Published**; last **v0.45.0**) — [A11Y API](A11Y.md),
+  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.46.x**
+  (**Published**; last **v0.46.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.45.x**)
+  (introduced in 0.11; Supported on **0.46.x**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.45.x**
+  — Supported on **0.46.x**
 - Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
 - Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
   narrative [What's new in 0.16](../guides/whats-new-0.16.md); package

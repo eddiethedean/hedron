@@ -1,15 +1,16 @@
 ---
-status: planned
+status: current
 phase: "0.46"
 ---
 
 # Package-native typed workflows
 
-!!! warning "Planned 0.46 contract"
+!!! note "Published 0.46 contract"
 
     This is the accepted D-075 / RFC-0073 public contract for phase 0.46, refined by D-079
-    against Published in-tree `v0.45.0`. It requires Verified 0.45 and is not importable on
-    the published 0.45 train. Runtime symbols remain planned until all 0.46 gates are Verified.
+    against Published in-tree `v0.45.0`. Implementation is the in-tree `v0.46.0` cut
+    (tag/PyPI deferred). Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
+    New symbols are **Beta**. Pin `hedron>=0.46.0,<0.47`.
 
 Phase 0.46 lets packages assemble ordinary views, commands, components, scenarios, and catalog
 projections into opt-in features. It does not add a second workflow runtime.
@@ -35,7 +36,7 @@ Sources are shipped `DataEditorSource` adapters. After include, handles appear i
 `Hedron.interactions` as ordinary `InteractionCatalog` entries. `descriptor_fingerprint` and
 `hedron.type` stay the 0.43/0.44 authorities.
 
-## Planned common symbols
+## Common symbols
 
 | Symbol | Package | Role |
 |---|---|---|

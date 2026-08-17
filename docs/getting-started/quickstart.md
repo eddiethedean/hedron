@@ -14,7 +14,7 @@ use [Your first application with VS Code](first-app-vscode.md). In Posit Workben
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.45.0,<0.46" hedron new my-hedron-app
+    uvx --from "hedron>=0.46.0,<0.47" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -23,7 +23,7 @@ use [Your first application with VS Code](first-app-vscode.md). In Posit Workben
 === "pip (activated virtual environment)"
 
     ```bash
-    python -m pip install "hedron>=0.45.0,<0.46" "uvicorn[standard]"
+    python -m pip install "hedron>=0.46.0,<0.47" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .

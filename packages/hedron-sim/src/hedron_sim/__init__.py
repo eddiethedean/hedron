@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from hedron_sim.app import SimApp, SimRoute
 from hedron_sim.embed import embed_demo, render_handler_html, wrap_browser_chrome
+from hedron_sim.features import inspect_features
 from hedron_sim.subset import (
     DECLARED_HX_ATTRS,
     DECLARED_HX_METHODS,
@@ -27,6 +28,7 @@ __all__ = [
     "SimRoute",
     "UnsupportedSimFeatureError",
     "embed_demo",
+    "inspect_features",
     "render_handler_html",
     "require_supported_method",
     "require_supported_swap",

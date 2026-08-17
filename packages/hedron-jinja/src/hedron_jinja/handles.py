@@ -14,8 +14,16 @@ __all__ = [
     "catalog_command_form",
     "catalog_view",
     "coerce_interaction_target",
+    "list_feature_bundles",
     "resolve_registered_handle",
 ]
+
+
+def list_feature_bundles(*, app_id: str | None = None) -> tuple[object, ...]:
+    """Reviewable FeatureBundle facts for HDJ; not a production workflow store."""
+    from hedron_core.bundles import included_bundles
+
+    return included_bundles(app_id=app_id)
 
 
 def resolve_registered_handle(

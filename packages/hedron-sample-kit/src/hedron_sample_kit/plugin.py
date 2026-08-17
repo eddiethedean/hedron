@@ -16,7 +16,7 @@ PLUGIN_META = PluginMeta(
     name="sample_kit",
     version="0.1.10",
     distribution="hedron-sample-kit",
-    hedron_version=">=0.45,<0.46",
+    hedron_version=">=0.46,<0.47",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -65,6 +65,28 @@ def register(ctx: PluginContext) -> None:
             surface="Callout",
             limitations=("third-party-shaped; no privileged registry mutation",),
             disposition="native_consumer",
+        )
+    )
+    from hedron_core.bundles import FeatureBundle
+    from hedron_core.catalog import PackageProjection, ProjectionCapability
+
+    ctx.register_feature_bundle(
+        FeatureBundle(
+            logical_id="hedron-sample-kit:callout-feature",
+            provider="hedron-sample-kit",
+            provider_version=PLUGIN_META.version,
+            projections=(
+                PackageProjection(
+                    namespace="hedron.sample-kit.feature",
+                    provider="hedron-sample-kit",
+                    provider_version=PLUGIN_META.version,
+                    capabilities=(
+                        ProjectionCapability(name="CalloutFeature", support="supported"),
+                    ),
+                    data={"third_party": True, "privileged": False},
+                    limitations=("public plugin APIs only",),
+                ),
+            ),
         )
     )
 

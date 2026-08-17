@@ -1,14 +1,14 @@
 # What’s new in 0.18
 
 
-!!! note "Current train is 0.45"
+!!! note "Current train is 0.46"
 
-    Pin `hedron>=0.45.0,<0.46` for new apps. The pin below is historical for this train only.
+    Pin `hedron>=0.46.0,<0.47` for new apps. The pin below is historical for this train only.
     See [What’s new in 0.41](whats-new-0.41.md).
 
 !!! note "Historical phase"
 
-    This page describes **0.18**. The current published train is **0.45.x** (last `v0.45.0`). Pin `hedron>=0.45.0,<0.46`.
+    This page describes **0.18**. The current published train is **0.46.x** (last `v0.46.0`). Pin `hedron>=0.46.0,<0.47`.
 
 Phase **0.18** adds model demos and inference workflows — fail-closed demo composition,
 governed feedback, inference scheduling over `JobBackend`, an interaction recorder, typed
@@ -40,6 +40,6 @@ workflows, and optional Gradio interop. See
 
 ## Upgrade notes
 
-Prefer the current 0.45 train for new apps; stay on a historical upper-bound pin
+Prefer the current 0.46 train for new apps; stay on a historical upper-bound pin
 only when you must freeze this phase. Install `hedron[gradio]` only when needed.
 See [Gradio migration](gradio-migration.md).
