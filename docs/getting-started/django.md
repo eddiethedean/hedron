@@ -1,17 +1,22 @@
 # Django — greenfield or existing project
 
 Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
-The adapter does not install FastAPI. Like FastAPI, the adapter mounts `/hedron-static`
-so PAGE responses can inject bundled HTMX.
+The **CLI** (`hedron new --django`) comes from the `hedron` package; **runtime** is
+`hedron-django` + `hedron-core`. The adapter does **not** install FastAPI.
+It mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
+
+**On PyPI today:** pin `hedron>=0.45.0,<0.46`. **This repository** is 0.46.0
+(Git tag / PyPI deferred).
 
 ## Golden path (scaffold + Refresh)
 
 Same success criteria as FastAPI: open the app, see Hello, click **Refresh**, watch
-the status region update without a full page reload.
+the status region update without a full page reload. The scaffold uses Django views
+and raw `hx-*` attributes, not FastAPI `RefreshButton`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.46.0,<0.47" hedron new my-django-app --django
+uvx --from "hedron>=0.45.0,<0.46" hedron new my-django-app --django
 cd my-django-app && uv sync
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```
@@ -50,7 +55,7 @@ ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
 ## Existing Django project (add a Refresh page)
 
 ```bash
-pip install "hedron-django>=0.46.0,<0.47" "django>=5.2,<6"
+pip install "hedron-django>=0.45.0,<0.46" "django>=5.2,<6"
 ```
 
 Add `hedron_django` to `INSTALLED_APPS` when you need forms/QuerySet helpers.
@@ -124,13 +129,21 @@ CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"
 ```
 
 in Django settings (as the reference app does).
-Stock Django's `X-CSRFToken` remains valid if you keep the default. Form posts may use
-`csrfmiddlewaretoken` or `csrf_token`.
+Stock Django's `X-CSRFToken` remains valid if you keep the default.
+**Form posts must use `csrfmiddlewaretoken`.** Django's `CsrfViewMiddleware` does **not**
+accept Hedron's portable `csrf_token` field name.
 
 ## Next
 
-- [HTMX interactions](../guides/htmx-interactions.md) · [Minimal form](../guides/minimal-form.md)
+Stay on Django: extend `@hedron_view` and POST with `csrfmiddlewaretoken`. Prefer
+[polling](../guides/live-interaction.md) for job status.
+
+!!! warning "FastAPI-only continuation"
+
+    [HTMX interactions](../guides/htmx-interactions.md) and
+    [Minimal form](../guides/minimal-form.md) assume `Hedron()` / `CsrfField()`
+    (`csrf_token`). Use them after you switch hosts.
+
 - [Security](../guides/security.md) · [Ship a Hedron app](../guides/ship.md)
 - Forms: `hedron_django.forms.form_to_nodes` / `validation_interaction`
 - QuerySets: `hedron_data.DjangoQuerySetDataSource` with an already-authorized base QS
-- Job status: prefer [polling](../guides/live-interaction.md) on Django

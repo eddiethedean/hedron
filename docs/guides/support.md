@@ -24,18 +24,20 @@ issues for undisclosed security problems.
 Package maturity **Beta** means the public API is usable and tested, but breaking changes
 may still land on the `0.x` line under the [compatibility policy](../COMPATIBILITY.md).
 Pin versions in production, read [upgrade](upgrade.md) notes before bumping trains, and
-Treat the Alpha `hedron-elements` incubator as more volatile. Charts and the sample kit require the compatible
+treat the Beta `hedron-elements` Supported inventory as still more volatile than CRUD
+pages. Charts and the sample kit require the compatible
 `>=0.2.0,<0.3` satellite floor — see [Compatibility](../COMPATIBILITY.md).
 
 **Support window:** security fixes target the current published train (`0.46.x`). The
-previous `0.44.x` train receives best-effort security triage through approximately
-**2027-08-16**. There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).
+previous `0.45.x` train receives best-effort security triage through approximately
+**2027-08-16**. Until the `v0.46.0` tag ships, **install from PyPI is `0.45.x`**.
+There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).
 Community GitHub support only;
 [Ship a Hedron app](ship.md) for ops.
 
 ## Maintainer expectations
 
 Issues without a minimal reproduction, version string (`hedron.__version__`), and expected
-vs actual behavior may be closed. Feature requests should map to the
-[roadmap](../ROADMAP.md) or an RFC discussion rather
+vs actual behavior may be closed. Feature requests should map to
+[What’s next](whats-next.md) or an RFC discussion rather
 than informal “please add X” without context.

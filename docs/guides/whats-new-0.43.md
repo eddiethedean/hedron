@@ -33,4 +33,4 @@ Authoring model: views render, commands do work, commands refresh views.
 
 Pin the train to `hedron>=0.44.0,<0.45`. Rollback: pin `>=0.42.0,<0.43`. Generated view/command ids
 are not rollback-stable. See [Upgrade](upgrade.md) · [Refreshable views](../api/REFRESHABLE_VIEWS.md)
-· [Roadmap](../ROADMAP.md).
+· [Roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).

@@ -7,18 +7,22 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/v/release/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/releases/latest)
 
-Build admin tools, CRUD apps, and dashboards in Python on FastAPI.
-Routes return typed UI components; HTMX swaps HTML fragments — no Node frontend,
-and no Streamlit-style full-script rerun.
+Hedron lets you build admin tools, CRUD apps, and dashboards in Python on FastAPI.
+Routes return typed UI; HTMX swaps HTML fragments. No Node frontend.
 
 **Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
+
+**On PyPI today:** latest is **0.45.0** — pin `hedron>=0.45.0,<0.46`.
+**This repository** is **0.46.0** (in-tree; Git tag / PyPI deferred —
+[#334](https://github.com/eddiethedean/hedron/issues/334)). If `>=0.46.0,<0.47`
+cannot resolve, use the 0.45 pin or clone this repo and `uv sync`.
 
 ```bash
 # Need uv? macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
 # Windows (PowerShell): irm https://astral.sh/uv/install.ps1 | iex
 
-uvx --from "hedron>=0.46.0,<0.47" hedron new my-hedron-app
+uvx --from "hedron>=0.45.0,<0.46" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
@@ -28,20 +32,16 @@ fragment into the declared region).
 
 ![Hello from hedron new with Refresh status control](docs/assets/hello-refresh.jpg)
 
-Pin installs with `hedron>=0.46.0,<0.47`. Full walkthrough:
+Working PyPI pin: `hedron>=0.45.0,<0.46`. After `v0.46.0` is on PyPI, pin
+`hedron>=0.46.0,<0.47`. Full walkthrough:
 [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/).
-
-**Coming from Streamlit?** Start with the
-[Streamlit migration center](https://hedron.readthedocs.io/en/latest/guides/streamlit-migration/):
-fit guidance, a worked dashboard conversion, rerun/session-state mappings, a component
-matrix, and a production cutover checklist.
 
 Alternate (pip + venv):
 
 ```bash
 # macOS / Linux
 python3 -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron>=0.46.0,<0.47" "uvicorn[standard]"
+python -m pip install "hedron>=0.45.0,<0.46" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 ```
@@ -50,7 +50,7 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 # Windows (PowerShell)
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install "hedron>=0.46.0,<0.47" "uvicorn[standard]"
+python -m pip install "hedron>=0.45.0,<0.46" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app
 python -m pip install -e .
@@ -74,10 +74,12 @@ Jinja+HTMX stack.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
-Hedron **0.46.x** is published as `v0.46.0` (Beta packages — pin as above). Before
-production, read
+Packages are **Beta** (no SLA, no scheduled 1.0). Before production, read
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
+
+Coming from Streamlit? Use the
+[Streamlit migration center](https://hedron.readthedocs.io/en/latest/guides/streamlit-migration/).
 
 ### When not to choose Hedron
 
@@ -85,13 +87,13 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new in 0.43](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.43/) ·
+[What’s new in 0.46](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.46/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 
 [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/) ·
-[Roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
+[What’s next](https://hedron.readthedocs.io/en/latest/guides/whats-next/).
 
 ## Packages
 

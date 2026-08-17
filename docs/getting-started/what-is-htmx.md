@@ -65,14 +65,22 @@ interaction is an inspectable HTTP request and HTML response.
 
 ## How Hedron expresses it in Python
 
-This is the complete interaction pattern used by `hedron new`. It assumes the Hedron
-`app` has already been created; the [Quick Start](quickstart.md) contains the complete,
-runnable file.
+This is the complete interaction pattern used by `hedron new`. For a paste-ready file that
+includes `Hedron(...)` and `session_secret`, copy the listing on
+[Build your first app](quickstart.md).
 
 ```python
+import os
 from datetime import UTC, datetime
 
-from hedron import Page, RefreshButton, Stack, Text, html, swap
+from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+
+app = Hedron(
+    title="Hedron App",
+    security="standard",
+    explorer="off",
+    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
+)
 
 # 1. Declare the region that may be replaced.
 status = app.region("service-status", description="Live status panel")

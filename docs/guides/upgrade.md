@@ -1,13 +1,13 @@
 # Upgrade to Hedron 0.46
 
-This guide covers an application upgrade onto the **0.46.x** train
-(current tip **`v0.46.0`**). New applications should use
-[Build your first app](../getting-started/quickstart.md).
+This guide covers an application upgrade onto the **0.46.x** train (in-tree cut
+**`v0.46.0`**; Git tag / PyPI deferred). **On PyPI today** latest is **0.45.0**.
+New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.46.x adds opt-in package-native features that compile onto Published 0.43–0.45
-seams (D-075 / D-079 / RFC-0073):
+Hedron 0.46.x adds opt-in package-native features that compile onto existing
+0.43–0.45 seams:
 
 - `FeatureBundle` / `Hedron.include_feature` atomically register ordinary handles, components,
   scenarios, and stacked projections; they are not executors

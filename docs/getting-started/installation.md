@@ -6,6 +6,11 @@ The golden-path Hello copy-paste lives on
 [Build your first app](quickstart.md) (`hedron new` → Hello → Refresh). Use **this** page
 for version checks, optional extras, Flask/Django adapters, and install failures.
 
+**On PyPI today:** latest is **0.45.0** — pin `hedron>=0.45.0,<0.46`.
+**This repository** is **0.46.0** (in-tree; Git tag / PyPI deferred —
+[#334](https://github.com/eddiethedean/hedron/issues/334)). If `>=0.46.0,<0.47`
+cannot resolve, use the 0.45 pin.
+
 Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Prerequisites
@@ -35,11 +40,12 @@ interpreter for `pip` / `uv` / `uvicorn` (`which python3`, `py -0p` on Windows).
 
     Point `pip` / `uv` at your internal index (`PIP_INDEX_URL`, `UV_INDEX_URL`, or
     `--index-url`). Mirror **PyPI** wheels for `hedron`, `hedron-core`, and matching
-    extras onto that index; pin `hedron>=0.46.0,<0.47`. Offline: download wheels on a
-    connected host (`pip download "hedron>=0.46.0,<0.47"`) and `pip install --no-index
-    --find-links=...`. TLS / corporate MITM: install your org’s CA into the env
-    (`REQUESTS_CA_BUNDLE` / `SSL_CERT_FILE`, or `pip`/`uv` trust-store docs). Codespaces
-    still needs a GitHub account and billed minutes — it is not an offline playground.
+    extras onto that index; pin `hedron>=0.45.0,<0.46` until `v0.46.0` is on PyPI.
+    Offline: download wheels on a connected host (`pip download "hedron>=0.45.0,<0.46"`)
+    and `pip install --no-index --find-links=...`. TLS / corporate MITM: install your
+    org’s CA into the env (`REQUESTS_CA_BUNDLE` / `SSL_CERT_FILE`, or `pip`/`uv`
+    trust-store docs). Codespaces still needs a GitHub account and billed minutes — it is
+    not an offline playground.
 
 === "Install uv"
 
@@ -71,9 +77,9 @@ After following [Build your first app](quickstart.md):
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.46.0`** or a newer **`0.46.x`** patch on this train. Last published
-PyPI/git is **`v0.46.0`**. Pin with `hedron>=0.46.0,<0.47` for
-production.
+Expect **`0.45.0`** from the PyPI pin above, or **`0.46.0`** if you installed from this
+repository. The in-tree train is **0.46.x**; Git tag / PyPI for `v0.46.0` are deferred
+([#334](https://github.com/eddiethedean/hedron/issues/334)).
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
@@ -82,14 +88,15 @@ If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 
 | Symptom | Fix |
 |---|---|
-| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.46.0,<0.47" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
+| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.45.0,<0.46" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
+| `No matching distribution` for 0.46.0 | Latest on PyPI is **0.45.0**. Pin `hedron>=0.45.0,<0.46` or clone this repo — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
 | FastAPI / pip resolver conflict | Empty venv recommended; see [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
-| Wrong / old version | `pip install -U "hedron>=0.46.0,<0.47"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
+| Wrong / old version | `pip install -U "hedron>=0.45.0,<0.46"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
-| Need charts | Install `hedron[charts]>=0.46.0,<0.47` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
+| Need charts | Install `hedron[charts]>=0.45.0,<0.46` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
 | Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
 | Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
 
@@ -107,30 +114,20 @@ Full list: [Troubleshooting](../guides/troubleshooting.md) ·
 ## Optional extras
 
 **You only need `hedron` (+ uvicorn) for Hello and most CRUD/admin apps.** Install
-extras only when you need them:
+extras only when you need them. Full catalog: [Optional packages](../packages/index.md).
 
 | Extra | When you need it | Package docs |
 |---|---|---|
 | `hedron[data]` | DataTable / DataEditor / data sources | [hedron-data](../packages/hedron-data.md) |
-| `hedron[jinja]` | Optional HDJ (`.hdj`) templates | [hedron-jinja](../packages/hedron-jinja.md) |
 | `hedron[dev]` | Component Explorer (`/hedron-explorer/`) | [hedron-explorer](../packages/hedron-explorer.md) |
-| `hedron[conformance]` | Language-neutral conformance kit / CLI runner | [hedron-conformance](../packages/hedron-conformance.md) |
-| `hedron[native]` | Optional Rust HTML-escape acceleration (Beta) | [hedron-native](../packages/hedron-native.md) |
-| `hedron[extras]` | Curated extras / workbenches | [hedron-extras](../packages/hedron-extras.md) |
-| `hedron[notebook]` | Beta tooling-grade localhost notebook preview | [hedron-notebook](../packages/hedron-notebook.md) |
-| `hedron[mcp]` | Beta deny-by-default MCP projection (Supported inventory) | [hedron-mcp](../packages/hedron-mcp.md) |
-| `hedron[gradio]` | Beta allowlisted Gradio client interoperability | [hedron-gradio](../packages/hedron-gradio.md) |
-| `hedron[elements]` | Alpha Web Component ABI incubator | [hedron-elements](../packages/hedron-elements.md) |
-| `hedron[otel]` | Optional OpenTelemetry tracing helpers | [Observability](../guides/observability.md) |
-| `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` | Content rendering and validation helpers | [Content API](../api/CONTENT.md) |
-| `hedron[auth]` | Authlib-backed OIDC helpers | [OIDC walkthrough](../guides/oidc.md) |
-| `hedron[browser]` | Browser testing helpers | [Testing](../guides/testing.md) |
+| `hedron[charts]` | First-party / Matplotlib charts | [hedron-charts](../packages/hedron-charts.md) |
+| `hedron-flask` / `hedron-django` | Flask or Django host (no FastAPI at runtime) | [Flask](flask.md) · [Django](django.md) |
 
-Also install directly (no flagship extra): [hedron-sim](../packages/hedron-sim.md).
-Full catalog: [Optional packages](../packages/index.md).
+Other extras (`jinja`, `auth`, `mcp`, `gradio`, `elements` **Beta** for Supported
+inventory, Workbench/Posit, notebook, native): [Packages](../packages/index.md).
 
 ```bash
-pip install "hedron[data]>=0.46.0,<0.47"          # example
+pip install "hedron[data]>=0.45.0,<0.46"          # example — PyPI today
 ```
 
 Charts and the sample plugin have explicit compatibility floors:
@@ -205,7 +202,8 @@ Use this only if you are **not** using `hedron new`.
     python -m pip install "hedron>=0.46.0,<0.47" "uvicorn[standard]"
     ```
 
-Then create `app.py` from the [quickstart](quickstart.md) (manual / no-scaffold path).
+Then create `app.py` from the complete listing on
+[Build your first app](quickstart.md) (manual / no-scaffold path).
 
 ## Supported environments
 

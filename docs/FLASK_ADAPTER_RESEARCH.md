@@ -22,7 +22,7 @@ The release sequence matters:
    in small minor releases with their
    own capability and conformance evidence.
 
-This preserves the commitments in the [roadmap](ROADMAP.md),
+This preserves the commitments in the [roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md),
 [adapter contract](api/ADAPTERS.md), and [adapter acceptance ledger](acceptance/ADAPTERS.md).
 
 ## What “same quality” should mean

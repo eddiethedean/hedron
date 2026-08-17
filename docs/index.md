@@ -6,16 +6,20 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · last published v0.46.0</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · PyPI 0.45.0 · in-tree 0.46.0</div>
 
 # Build interactive web apps in Python.
 
-Routes return components; HTMX updates the page without a Node frontend or full-script
-rerun — unlike Streamlit’s script-rerun model.
+Routes return components; HTMX updates the page — no Node build, no full-script rerun.
 { .hedron-lede }
 
-**In about 10 minutes:** install → `hedron new` → open localhost:8000 → click
-**Refresh status**. Pin `hedron>=0.46.0,<0.47`. Before production, see
+**In about 10 minutes after Python 3.11+ and uv or pip:** install → `hedron new` →
+open localhost:8000 → click **Refresh status**.
+{ .hedron-lede }
+
+**On PyPI today:** latest is **0.45.0** (`hedron>=0.45.0,<0.46`). **This documentation**
+describes in-tree **0.46.0** (Git tag / PyPI deferred —
+[#334](https://github.com/eddiethedean/hedron/issues/334)). Before production, see
 [What’s ready](guides/whats-ready.md).
 { .hedron-lede }
 
@@ -38,10 +42,6 @@ rerun — unlike Streamlit’s script-rerun model.
 [Build your first app (~10 minutes)](getting-started/quickstart.md) — the only full
 Hello walkthrough (scaffold, Refresh, edit).
 
-**Coming from Streamlit?** Use the
-[Streamlit migration center](guides/streamlit-migration.md) for fit guidance, a worked
-dashboard conversion, rerun/session-state mappings, an API matrix, and production cutover.
-
 Hedron is for FastAPI teams who want typed components and HTMX fragment regions
 without assembling a hand-rolled Jinja stack. Prefer Streamlit for notebook-style
 rerun dashboards.
@@ -60,26 +60,26 @@ rerun dashboards.
 ## A backend-native way to build UI
 
 <div class="hedron-grid">
-  <a class="hedron-card" href="guides/streamlit-migration/">
-    <span class="hedron-card__icon" aria-hidden="true">→</span>
-    <strong>Migrate from Streamlit</strong>
-    <p>Convert one workflow, redesign state safely, map components, test, and cut over.</p>
-  </a>
-  <div class="hedron-card">
-    <span class="hedron-card__icon" aria-hidden="true">⌁</span>
-    <strong>Typed composition</strong>
-    <p>Compose pages from Python components and validated props. Your editor, type checker, and tests stay in the loop.</p>
-  </div>
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">ϟ</span>
     <strong>FastAPI + HTMX</strong>
     <p>Return full pages or targeted fragments from ordinary routes. Keep dependency injection, OpenAPI, and async I/O.</p>
   </div>
   <div class="hedron-card">
+    <span class="hedron-card__icon" aria-hidden="true">⌁</span>
+    <strong>Typed composition</strong>
+    <p>Compose pages from Python components and validated props. Your editor, type checker, and tests stay in the loop.</p>
+  </div>
+  <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">◇</span>
     <strong>Secure-by-default boundaries</strong>
     <p>Contextual escaping, CSRF validation, safe URL types, and conservative cache behavior.</p>
   </div>
+  <a class="hedron-card" href="guides/streamlit-migration/">
+    <span class="hedron-card__icon" aria-hidden="true">→</span>
+    <strong>Migrate from Streamlit</strong>
+    <p>Convert one workflow, redesign state safely, map components, test, and cut over.</p>
+  </a>
 </div>
 
 ## Next steps
@@ -93,8 +93,9 @@ rerun dashboards.
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron’s flagship and host-adapter packages are Beta, so use the bounded pin shown
-above. Capability readiness and API compatibility are separate: read
+Hedron’s flagship and host-adapter packages are Beta. **On PyPI today** pin
+`hedron>=0.45.0,<0.46`. After `v0.46.0` is uploaded, pin `hedron>=0.46.0,<0.47`.
+Capability readiness and API compatibility are separate: read
 [Maturity labels](getting-started/how-to-read.md) before interpreting Supported,
 Experimental, `stable`, or `beta`. For production adoption, continue with
 [What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
@@ -114,4 +115,4 @@ choices (cache, Explorer, assets) are inspectable and overrideable; components b
 HTTP endpoints only when you address them explicitly.
 
 [Read the architecture](ARCHITECTURE.md) · [Runnable examples](examples/runnable.md) ·
-[Roadmap](ROADMAP.md)
+[What’s next](guides/whats-next.md)

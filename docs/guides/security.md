@@ -24,7 +24,7 @@ app = Hedron(
 )
 ```
 
-### HTMX browser preset (`HTMX-020`)
+### HTMX browser preset
 
 For `standard` / `strict`, PAGE responses inject `<meta name="htmx-config">` with
 `allowEval` / `allowScriptTags` false, `historyEnabled` false, and `historyCacheSize` 0 (plus
@@ -32,7 +32,7 @@ existing restore/selfRequests defaults). `development` keeps eval/scripts disabl
 wipe history cache. Opt out with `SecurityPolicy(..., htmx_browser_preset=False)` or own the full
 meta yourself. Inspect with `SecurityPolicy.htmx_config_json()`.
 
-### Python `hx-vals` / `hx-headers` `js:` (`EVAL-020`)
+### Python `hx-vals` / `hx-headers` `js:`
 
 `html.*` rejects `js:` expressions on `hx-vals` / `hx-headers` by default (`HED-SEC-0011`), matching
 HDJ `htmx.eval`. Opt in with `allow_htmx_eval()` or `SecurityPolicy(allow_htmx_eval=True)`. JSON

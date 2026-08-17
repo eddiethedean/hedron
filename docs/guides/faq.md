@@ -2,30 +2,35 @@
 
 ## Which version should I install?
 
+**On PyPI today:** latest is **0.45.0**:
+
 ```bash
-pip install "hedron>=0.46.0,<0.47"
+pip install "hedron>=0.45.0,<0.46"
 # or
-uv add "hedron>=0.46.0,<0.47"
+uv add "hedron>=0.45.0,<0.46"
 ```
 
-That is the current published line (`v0.46.x`). Package maturity is **Beta** — see
-[How to read](../getting-started/how-to-read.md). Pin with an upper bound:
-`hedron>=0.46.0,<0.47`. Using `>=0.24.0` alone (no upper bound) can resolve a future
-**0.25+** breaking train. See [What’s ready today](whats-ready.md) and the
-[roadmap](../ROADMAP.md).
+**This repository** is **0.46.0** (in-tree; Git tag / PyPI deferred —
+[#334](https://github.com/eddiethedean/hedron/issues/334)). After `v0.46.0` is on
+PyPI, pin `hedron>=0.46.0,<0.47`. Always use an upper bound so a future minor train
+cannot install by accident.
+
+If the resolver reports **no matching distribution for 0.46.0**, you hit the deferred
+tag — use the 0.45 pin above or clone this repository and `uv sync`.
+
+Packages are **Beta** (usable, no 1.0, no SLA). Capability detail:
+[What’s ready](whats-ready.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For curated extras (`hedron-extras`), install `hedron[extras]>=0.46.0,<0.47`.
-**Auto** (inspectable object rendering built into `hedron` — no extra) is included.
-For DataTable/DataEditor, install `hedron[data]>=0.46.0,<0.47`. For charts, install
-`hedron[charts]>=0.46.0,<0.47`
+For DataTable/DataEditor, install `hedron[data]>=0.45.0,<0.46`. For charts, install
+`hedron[charts]>=0.45.0,<0.46`
 ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
-For Flask/Django adapters:
+Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=0.46.0,<0.47"
-pip install "hedron-django>=0.46.0,<0.47"   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.45.0,<0.46"
+pip install "hedron-django>=0.45.0,<0.46"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -62,8 +67,9 @@ See [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) and
 ## First POST returns 403
 
 Built-in `security="standard"` validates CSRF on unsafe methods. Load a GET page first
-so the cookie/context is seeded, and include `CsrfField()` (or a matching
-`csrf_token`) in the form. See [Minimal form POST](minimal-form.md) and
+so the cookie/context is seeded. FastAPI/Flask: include `CsrfField()` (`csrf_token`).
+Django: use `csrfmiddlewaretoken` (portable `csrf_token` is not accepted). See
+[Minimal form POST](minimal-form.md) and
 [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask).
 
 ## `api.mount` or `HedronRouter`?
@@ -82,15 +88,10 @@ status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
 ## Is Hedron production-ready for internal admin?
 
 For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
-with eyes open: packages are **Beta**, pin `>=0.46.0,<0.47`, prefer polling for live
-status, and read [What’s ready](whats-ready.md). There is no vendor SLA or scheduled
-1.0. Use the [PoC checklist](evaluate.md#poc-checklist) on [Evaluate](evaluate.md).
-
-## How did CSRF forms change in 0.22?
-
-Prefer `CsrfField()` / `Form(hx=Hx(...))` on FastAPI pages. Manual
-`csrf_token_for_request` + hidden inputs still work for existing apps. See
-[CSRF composition](../api/CSRF_COMPOSITION.md) and [Minimal form](minimal-form.md).
+with eyes open: packages are **Beta**, pin `>=0.45.0,<0.46` on PyPI today, prefer polling
+for live status, and read [What’s ready](whats-ready.md). There is no vendor SLA or
+scheduled 1.0. Use the [PoC checklist](evaluate.md#poc-checklist) on
+[Evaluate](evaluate.md).
 
 ## `hedron: command not found`
 
@@ -109,19 +110,20 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then
-`uv add "hedron>=0.46.0,<0.47"`. Or use
-`hedron new my-app` after `pip install "hedron>=0.46.0,<0.47"`.
+`uv add "hedron>=0.45.0,<0.46"`. Or use
+`hedron new my-app` after `pip install "hedron>=0.45.0,<0.46"`.
 
 ## Should I use `uv init` or `hedron new`?
 
-Prefer **`hedron new`** for a ready scaffold on **0.36.x** (install Hedron first).
+Prefer **`hedron new`** for a ready scaffold (install Hedron first).
 `uv init` + a hand-written `app.py` from the quickstart also works. Do not nest both into
 the same directory by accident.
 
 ## What do Beta, Supported, and Deferred mean?
 
-Short version for builders: **pin `hedron>=0.46.0,<0.47`**. Packages are Beta; that does
-not mean “do not use” — it means expect occasional `0.x` churn and pin upper bounds.
+Short version for builders: **pin what is on the index** (`hedron>=0.45.0,<0.46` on
+PyPI today). Packages are Beta; that does not mean “do not use” — it means expect
+occasional `0.x` churn and pin upper bounds.
 
 Evaluators (three axes — skip if you are just building):
 
@@ -133,12 +135,12 @@ Evaluators (three axes — skip if you are just building):
 Full cheat-sheet: [Maturity labels (evaluators)](../getting-started/how-to-read.md).
 Snapshot: [What’s ready today](whats-ready.md).
 
-## Why pin with an upper bound (`<0.31`)?
+## Why pin with an upper bound?
 
-A lower bound without an upper bound allows a future **0.31+** train to install
-automatically. Use `hedron>=0.46.0,<0.47` (and matching adapters/extras) so compatible
-0.30 patches are accepted while the next minor train requires an intentional review. See
-[Compatibility](../COMPATIBILITY.md).
+A lower bound without an upper bound allows a future minor train to install
+automatically. Use `hedron>=0.45.0,<0.46` on PyPI today (and `>=0.46.0,<0.47` after the
+tag ships) so compatible patches are accepted while the next minor train requires an
+intentional review. See [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
 
@@ -170,26 +172,18 @@ Supported production fallback for live status. See [What’s ready](whats-ready.
 [Flask — add to existing app](../getting-started/flask.md), and
 [Django — add to existing project](../getting-started/django.md).
 
-## What replaced HDN?
-
-An experimental template prototype (HDN) was removed in 0.9. New apps use typed Python
-components or optional `hedron[jinja]` (HDJ). Migration details:
-[upgrade guide](upgrade.md).
-
 ## Are the docs simulated UI demos a running Hedron server?
 
 No. They are in-browser simulations. Clone and run a real app from
 [examples/](https://github.com/eddiethedean/hedron/tree/main/examples) (`uv sync` after
-clone)—FastAPI, Flask, and Django reference slices. See also
-[Support](support.md) and [SECURITY.md](../SECURITY.md).
+clone)—FastAPI, Flask, and Django reference slices.
 
 ## Multi-worker / production secrets?
 
-Use a real secret store for `session_secret` / Flask `SECRET_KEY` / Django `SECRET_KEY`.
-Do not share development secrets across environments. Adopter convention:
-`HEDRON_SESSION_SECRET` in the process environment, read in `app.py` and passed to
-`Hedron(session_secret=...)`. See [Deployment](deployment.md) and
-[Configuration](../CONFIGURATION.md).
+See [Secrets, sessions, and workers](secrets-and-workers.md). Short version: pass
+`session_secret=` into `Hedron` (the env var `HEDRON_SESSION_SECRET` is a convention —
+Hedron does not load it for you). Multiple workers need sticky sessions **or** a shared
+session store, plus a shared job backend for status.
 
 ## How do I test a Hedron app?
 
@@ -208,11 +202,11 @@ Start from the [Notes + SQLAlchemy recipe](../examples/notes-sqlalchemy.md) (SQL
 swap the SQLAlchemy URL for Postgres). Hedron is not an ORM — use SQLAlchemy/SQLModel as
 usual.
 
-## How do I add OAuth / OIDC?
+## How do I add login?
 
-You own the IdP. Optional helpers: `hedron[auth]` / `hedron.oidc` — see
-[Authentication](authentication.md). Session cookie demo:
-[Session auth recipe](../examples/session-auth.md).
+Start with [session auth](../examples/session-auth.md) to gate a page. Optional OIDC
+helpers: `hedron[auth]` — [Authentication](authentication.md). You own the identity
+provider.
 
 ## Where do I put configuration?
 
@@ -220,35 +214,23 @@ Non-secret project settings go in `[tool.hedron]` (see
 [Configuration](../CONFIGURATION.md)). Secrets and deployment mode use environment
 variables / your secret store. Constructor args override both when explicit.
 
-## How do I install HDJ / Jinja templates?
+## How do I install Jinja templates?
 
 ```bash
-pip install "hedron[jinja]>=0.46.0,<0.47"
+pip install "hedron[jinja]>=0.45.0,<0.46"
 # or
-uv add "hedron[jinja]>=0.46.0,<0.47"
+uv add "hedron[jinja]>=0.45.0,<0.46"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).
 
-## Where is the SBOM / evidence bundle?
+## Procurement / evidence pack?
 
-Prefer GitHub Release assets for the current train tag (`v0.46.0`), or regenerate from the
-tagged checkout with
-`scripts/build_evidence_bundle.py`. Step-by-step:
-[Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.
+Evaluator diligence (SBOM, support window, GitHub release lag) lives on
+[Evaluate](evaluate.md) and [Evidence pack](evidence-pack.md), not this builder FAQ.
 
-## Why might GitHub “Latest release” lag PyPI?
-
-Tags can land before Release objects/assets are attached. Trust **PyPI + the git tag** for
-version truth; regenerate evidence from the tag if assets are missing.
-
-## Supported vs Deferred (PERF / live browser)
-
-**Supported** means the capability is claimed on that host for the current train.
-Prior live-ops Deferred rows (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) are
-**Superseded** under 0.24 **`polling_only`** — prefer **polling** for jobs; live helpers
-remain **experimental**, not Supported. See [What’s ready](whats-ready.md),
-[LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md), and [Performance](performance.md).
+Prefer **polling** for job status. SSE / WebSocket helpers remain experimental. See
+[What’s ready](whats-ready.md) and [Live updates](live-interaction.md).
 
 ## How do I contribute code?
 

@@ -5,7 +5,7 @@ build system. The golden path extends one small application across four pages; e
 has an observable browser result.
 
 **Start now:** [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
-(~5–10 minutes after Python + uv/pip are ready).
+(~10 minutes after Python + uv/pip are ready).
 
 New to application development, VS Code, or terminals? Choose the slower, fully explained
 walkthrough for your environment:

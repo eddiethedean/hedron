@@ -7,7 +7,7 @@
 | `hedron: command not found` | `zsh: command not found: hedron` | `python -m hedron …` or [below](#hedron-command-not-found) |
 | Wrong interpreter | `ModuleNotFoundError: No module named 'hedron'` | Activate venv; `pip install -e .` / `uv sync` |
 | Port busy | `ERROR: [Errno 48] Address already in use` | `--port 8001` or stop the other process |
-| CSRF 403 | HTTP **403** on POST | GET the form page first; include `csrf_token` |
+| CSRF 403 | HTTP **403** on POST | GET the form page first; FastAPI/Flask: `csrf_token`; Django: `csrfmiddlewaretoken` |
 | HTMX 403 | HTTP **403** on fragment | Fix `HX-Target` to a declared region id/selector |
 
 ## `hedron: command not found`
@@ -88,15 +88,16 @@ that port in the browser.
 
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
-**Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U "hedron>=0.46.0,<0.47"` (or `uv add "hedron>=0.46.0,<0.47"`). The current
-train is **0.46.x** (Published; last published PyPI/git = `v0.46.0`)—see
-[What's ready](whats-ready.md) and the [roadmap](../ROADMAP.md). The `v0.25.2` patch
-hardened mount `..` / `%2e`, RedisStatusStore / Celery–RQ cancel CAS, adapter prepare under
-a running loop, SSE/streaming `Cache-Control`, and root-relative SafeUrl/Hx attrs — still
-relevant when upgrading from earlier 0.25 lines onto `>=0.46.0,<0.47`. If docs describe a
-feature missing from your install, upgrade to the current `0.39.x` pin
-(`hedron>=0.46.0,<0.47`) or switch the docs to the tag matching your installed release.
+**Fix:** Check `python -c "import hedron; print(hedron.__version__)"`.
+**On PyPI today** latest is **0.45.0**. If the resolver reports **no matching
+distribution** for `hedron==0.46.0` or `hedron>=0.46.0,<0.47`, pin
+`hedron>=0.45.0,<0.46` or clone this repository (`uv sync`). The in-tree train is
+**0.46.x** (Git tag / PyPI deferred —
+[#334](https://github.com/eddiethedean/hedron/issues/334)). Upgrade with
+`pip install -U "hedron>=0.45.0,<0.46"` (or `uv add "hedron>=0.45.0,<0.46"`).
+See [What's ready](whats-ready.md). If docs describe a feature missing from your
+install, either upgrade toward the pin that matches this documentation or switch the
+docs to the tag that matches your installed release.
 
 ## CSRF 403 on POST (FastAPI / Flask)
 
@@ -199,8 +200,9 @@ See [HTMX interactions](htmx-interactions.md).
 
 **Fix:** Seed the cookie with a safe GET through `HedronDjango.respond` / `hedron_view`.
 Send Django's `X-CSRFToken` **or** set `CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"` and send
-Hedron's portable `X-CSRF-Token`. Form fields: `csrfmiddlewaretoken` or `csrf_token`.
-See [Django quickstart](../getting-started/django.md).
+Hedron's portable `X-CSRF-Token`. **Form field must be `csrfmiddlewaretoken`.**
+Django's `CsrfViewMiddleware` does **not** accept Hedron's portable `csrf_token` name.
+See [Django quickstart](../getting-started/django.md) and [Security](security.md).
 
 ## Explorer 404 or missing in production
 
@@ -239,7 +241,8 @@ setting production mode.
 ## Cannot import `Auto` / `DataTable` / chart helpers
 
 **Cause:** `Auto` is core (`from hedron import Auto`). `DataTable` / `DataEditor` need the
-data extra. First-party charts on Hedron 0.38 require `hedron-charts>=0.2.0,<0.3`.
+data extra. First-party charts require `hedron[charts]` on the same pin as the rest of
+Hedron (`>=0.45.0,<0.46` on PyPI today).
 
 **Fix:**
 
@@ -249,7 +252,7 @@ pip install "hedron[data]>=0.46.0,<0.47"      # DataTable, DataEditor
 pip install "hedron[charts]>=0.46.0,<0.47"   # chart components
 ```
 
-The old `hedron-charts 0.1.x` line is incompatible with Hedron 0.38. See
+The old `hedron-charts 0.1.x` line is incompatible with current Hedron. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor),
 [Installation](../getting-started/installation.md), and
 [charts and HTMX](charts-and-htmx.md).

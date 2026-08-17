@@ -1,10 +1,32 @@
 # Earlier what’s-new (archive)
 
-Archived train notes: [What’s new in 0.29](whats-new-0.29.md) · [What’s new in 0.28](whats-new-0.28.md) · [What’s new in 0.27](whats-new-0.27.md) ·
-[What’s new in 0.24](whats-new-0.24.md) · [Release notes](release-notes.md) ·
-[Changelog](changelog.md).
+Read these only if you are upgrading from that line. Current train:
+[What’s new in 0.46](whats-new-0.46.md). Full chronology: [Release notes](release-notes.md).
 
-Historical phase notes (read only if you are upgrading from that line):
+| Train | Notes |
+|---|---|
+| 0.45 | [whats-new-0.45](whats-new-0.45.md) |
+| 0.44 | [whats-new-0.44](whats-new-0.44.md) |
+| 0.43 | [whats-new-0.43](whats-new-0.43.md) |
+| 0.42 | [whats-new-0.42](whats-new-0.42.md) |
+| 0.41 | [whats-new-0.41](whats-new-0.41.md) |
+| 0.40 | [whats-new-0.40](whats-new-0.40.md) |
+| 0.39 | [whats-new-0.39](whats-new-0.39.md) |
+| 0.38 | [whats-new-0.38](whats-new-0.38.md) |
+| 0.37 | [whats-new-0.37](whats-new-0.37.md) |
+| 0.36 | [whats-new-0.36](whats-new-0.36.md) |
+| 0.35 | [whats-new-0.35](whats-new-0.35.md) |
+| 0.34 | [whats-new-0.34](whats-new-0.34.md) |
+| 0.33 | [whats-new-0.33](whats-new-0.33.md) |
+| 0.32 | [whats-new-0.32](whats-new-0.32.md) |
+| 0.31 | [whats-new-0.31](whats-new-0.31.md) |
+| 0.30 | [whats-new-0.30](whats-new-0.30.md) |
+| 0.29 | [whats-new-0.29](whats-new-0.29.md) |
+| 0.28 | [whats-new-0.28](whats-new-0.28.md) |
+| 0.27 | [whats-new-0.27](whats-new-0.27.md) |
+| 0.26 | [whats-new-0.26](whats-new-0.26.md) |
+
+Earlier still:
 
 | Train | Notes |
 |---|---|

@@ -137,7 +137,9 @@ Confirm that the project environment can import Hedron:
 uv run python -c "import hedron; print(hedron.__version__)"
 ```
 
-Expect the current `0.46.x` train (`0.45.0` or a later patch). The words `uv run` mean “run the
+Expect a version on the **in-tree `0.46.x` train** if you cloned this repo, or
+**`0.45.0`** if you installed from PyPI. Git tag / PyPI for `v0.46.0` are deferred
+([#334](https://github.com/eddiethedean/hedron/issues/334)). The words `uv run` mean “run the
 following command using this project's environment.” They prevent the common mistake of using a
 different Python from the one where the packages were installed.
 

@@ -59,22 +59,9 @@ churn and polling for live status.
 **No-go / defer:** need SLA or scheduled 1.0; need live SSE/WS as Supported; need
 human AT evidence as Supported; team will not own FastAPI+HTMX literacy.
 
-## What to use today
+## Capability matrix
 
-- **Ship:** typed pages/fragments, CSRF profiles, HTMX loops, Flask/Django adapters,
-  optional `hedron[data]` / `hedron[jinja]` / `hedron[dev]`, polling job status
-- **Prefer polling:** live SSE / WebSocket (`hedron.experimental`)
-- **Charts / sample kit:** pin floors
-  `hedron[charts]>=0.46.0,<0.47` and `hedron-sample-kit>=0.1.10,<0.2`
-  ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor))
-- **Narrow optional scopes:** notebook is Beta tooling-grade for localhost preview only;
-  Gradio is Beta for declared allowlisted client interoperability; MCP is Beta for its
-  Supported inventory (`hedron-mcp` `0.2.0`). MCP mutations and Gradio vendor extensions
-  remain Experimental.
-- **Model demos:** **Supported** capability (fail-closed) via [Model demos](model-demos.md)
-  guide snippets — the in-tree evidence app is a stub, not a product demo
-
-Full matrix: [What’s ready](whats-ready.md).
+Use [What’s ready](whats-ready.md) as the sole capability list for this PoC page.
 
 ## What not to depend on yet
 

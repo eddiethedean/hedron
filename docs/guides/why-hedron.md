@@ -86,7 +86,7 @@ rerun engine. `Auto` and data extras cover common object display, not every Stre
 ## When Hedron is a poor fit
 
 - You need a pure client-rendered SPA with a separate JS build
-- You require every Streamlit/Dash widget on day one (see [roadmap](../ROADMAP.md))
+- You require every Streamlit/Dash widget on day one (see [What’s next](whats-next.md))
 - You cannot accept `0.x` Beta pinning and upgrade notes
 - You only need notebook-style reruns and do not want FastAPI routing
 

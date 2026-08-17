@@ -5,27 +5,25 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Framework-neutral typed rendering core for Hedron.
+`hedron-core` is the framework-neutral HTML renderer. It has no FastAPI, Flask, or Django
+dependency.
 
-Defines models, security boundary types, components, the HTML serializer,
-`Auto()` intelligent rendering, cache protocols, ColorMode, utility built-ins,
-and the public `render(...) -> RenderResult` and request-scoped `RenderSession`
-APIs — with **no** FastAPI, Flask, Django, ASGI, or WSGI dependency.
+Building an app? Install [`hedron`](https://pypi.org/project/hedron/) instead. Use this
+package if you are writing a host adapter or rendering components outside a web
+framework.
 
-Host adapters share this renderer:
+**On PyPI today:** latest `hedron-core` follows flagship **0.45.0**.
+**This repository** is **0.46.0** (Git tag / PyPI deferred —
+[#334](https://github.com/eddiethedean/hedron/issues/334)).
 
-- FastAPI — [`hedron`](https://pypi.org/project/hedron/)
-- Flask — [`hedron-flask`](https://pypi.org/project/hedron-flask/)
-- Django — [`hedron-django`](https://pypi.org/project/hedron-django/)
-
-**Package maturity:** Beta · **Train:** `0.46.x` (published `v0.46.0`) · pin `>=0.46.0,<0.47`
+**Package maturity:** Beta · pin `>=0.45.0,<0.46` on PyPI; in-tree pin `>=0.46.0,<0.47`.
 
 ## Install
 
 ```bash
-pip install "hedron-core>=0.46.0,<0.47"
+pip install "hedron-core>=0.45.0,<0.46"
 # or
-uv add "hedron-core>=0.46.0,<0.47"
+uv add "hedron-core>=0.45.0,<0.46"
 ```
 
 Requires Python 3.11–3.14.

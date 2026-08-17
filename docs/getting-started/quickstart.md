@@ -1,7 +1,6 @@
 # Build your first app
 
-In about five minutes, scaffold a Hedron app, run it, and confirm an HTMX fragment
-update. You need CPython **3.11–3.14** and either
+About 10 minutes after Python **3.11–3.14** and either
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/) or an activated virtual
 environment. Node.js is not required.
 
@@ -9,12 +8,17 @@ If terms such as project folder, terminal, virtual environment, or development s
 use [Your first application with VS Code](first-app-vscode.md). In Posit Workbench, use the
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
+**On PyPI today:** latest is **0.45.0** — pin `hedron>=0.45.0,<0.46`.
+**This repository** is **0.46.0** (in-tree; Git tag / PyPI deferred —
+[#334](https://github.com/eddiethedean/hedron/issues/334)). If `>=0.46.0,<0.47`
+cannot resolve, use the 0.45 pin below.
+
 ## 1. Scaffold and run
 
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.46.0,<0.47" hedron new my-hedron-app
+    uvx --from "hedron>=0.45.0,<0.46" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -23,7 +27,7 @@ use [Your first application with VS Code](first-app-vscode.md). In Posit Workben
 === "pip (activated virtual environment)"
 
     ```bash
-    python -m pip install "hedron>=0.46.0,<0.47" "uvicorn[standard]"
+    python -m pip install "hedron>=0.45.0,<0.46" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .
@@ -54,7 +58,52 @@ quickstart.
 
 ## 2. Make one edit
 
-Open `app.py` and change:
+The generated `app.py` looks like this (you can paste it if scaffold is unavailable):
+
+```python
+import os
+from datetime import UTC, datetime
+
+from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+
+app = Hedron(
+    title="Hedron App",
+    security="standard",
+    explorer="off",
+    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
+)
+
+status = app.region("service-status", description="Live status panel")
+
+
+def status_panel():
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return html.div(
+        Text(f"All systems operational · refreshed {stamp}"),
+        id=status.id,
+        role="status",
+        aria={"live": "polite"},
+    )
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(
+        Stack(
+            Text("Hello from hedron new"),
+            status_panel(),
+            RefreshButton.for_region(status, href="/status", label="Refresh status"),
+        ),
+        title="Home",
+    )
+
+
+@app.fragment("/status", region=status)
+def refresh_status():
+    return swap(status_panel())
+```
+
+Change:
 
 ```python
 Text("Hello from hedron new")
@@ -76,7 +125,7 @@ python -m hedron --app app:app check
 ```
 
 Informational findings on a development scaffold are normal. Errors include a
-remediation and a `HED-*` diagnostic code.
+remediation and a `HED-*` diagnostic code (see [Error codes](../guides/error-codes.md)).
 
 ## If something fails
 
@@ -84,6 +133,7 @@ remediation and a `HED-*` diagnostic code.
 |---|---|
 | `hedron: command not found` | Use `python -m hedron`, or use the `uvx` command above |
 | `ModuleNotFoundError: hedron` | Run `uv sync` or `python -m pip install -e .` inside the generated directory |
+| `No matching distribution` for `hedron==0.46.0` (or `>=0.46.0,<0.47`) | PyPI latest is **0.45.0**. Use `hedron>=0.45.0,<0.46`, or clone this repo |
 | Resolver conflict | Start in a clean environment; see [Compatibility](../COMPATIBILITY.md) |
 | Port 8000 is busy | Add `--port 8001` and open that port |
 | Refresh does nothing | See [HTMX troubleshooting](../guides/troubleshooting.md#htmx-403-on-fragment-request) |
@@ -95,8 +145,7 @@ For Python installation, Windows commands, optional extras, proxies, and adapter
 
 `hedron new` writes an ordinary `app.py`, a `pyproject.toml` with a bounded Hedron pin,
 and a `components/` directory. The generated page declares a region and returns a small
-fragment for that region. See [Scaffold anatomy](core-concepts.md) or the
-[single-file examples](../examples/single-file.md) when you want the complete source.
+fragment for that region.
 
 ```text
 my-hedron-app/

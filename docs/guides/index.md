@@ -2,20 +2,14 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.46 train** (**Published**; last **v0.46.0**): typed FastAPI/HTMX applications,
-rich data ABI / OptimisticMutation / chartlink, Published first-party charts
-(`hedron-charts` `0.2.x`), tooling-grade conformance/sim/notebook/sample-kit,
-Node/Java evaluators, and `hedron migrate streamlit` — [What’s ready](whats-ready.md).
+Complete **Start** first ([Learning path](../getting-started/learning-path.md):
+First app → HTMX → Minimal form). This section continues with polling, data, security,
+and ops.
 
-Complete **Learn** first ([Learning path](../getting-started/learning-path.md):
-First app → HTMX → Minimal form). HTMX and minimal form live under **Learn** — this
-section continues with forms depth, polling / experimental live transports, data,
-security, and ops.
+**Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md).
+Evaluating adoption? [What’s ready](whats-ready.md) · [Evaluate](evaluate.md).
+Shipping? [Ship](ship.md).
 
-**Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md) · [Error codes](error-codes.md).
-
-Evaluating adoption? Use the **Evaluate** tab
-([What’s ready](whats-ready.md) · [Evaluate Hedron](evaluate.md)).
 
 <div class="hedron-grid">
   <a class="hedron-card" href="streamlit-migration/">

@@ -26,4 +26,4 @@ Phase 0.20 (D-051) is the production security floor and adapter-parity packet.
 CSRF composition (`CsrfField`, pluggable strategies, header merge) remains **0.22**.
 Human AT evaluation remains **0.21** (D-050).
 
-See [upgrade](upgrade.md) · [what's ready](whats-ready.md) · [roadmap](../ROADMAP.md).
+See [upgrade](upgrade.md) · [what's ready](whats-ready.md) · [roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).

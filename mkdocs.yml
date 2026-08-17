@@ -84,6 +84,7 @@ exclude_docs: |
   foundations/README.md
   implementation/**
   /STATUS.md
+  /ROADMAP.md
   /RELEASE.md
   /DECISIONS.md
   /SPECIFICATION.md
@@ -199,20 +200,25 @@ nav:
       - HTMX interactions: guides/htmx-interactions.md
       - Forms and actions: guides/forms-and-actions.md
       - Mutations: guides/mutations.md
-      - Cookbook: guides/cookbook.md
+      - Live updates (polling): guides/live-interaction.md
     - Add data and visuals:
       - Data applications: guides/data-apps.md
       - Charts and HTMX: guides/charts-and-htmx.md
+      - Dashboards: guides/dashboards.md
       - Compose built-ins: guides/component-composition.md
     - Secure an app:
       - Authentication: guides/authentication.md
       - OIDC: guides/oidc.md
       - Security: guides/security.md
+      - Threat model: guides/threat-model.md
       - Hardened sessions: guides/hardened-sessions.md
       - Multi-tenant isolation: guides/multi-tenant.md
     - Operate an app:
       - Ship an app: guides/ship.md
       - Deployment: guides/deployment.md
+      - Secrets and workers: guides/secrets-and-workers.md
+      - Cookbook: guides/cookbook.md
+      - Error codes: guides/error-codes.md
       - Posit deployments: guides/posit.md
       - Posit Workbench: guides/posit-workbench.md
       - Durable jobs: guides/jobs-celery-rq.md
@@ -227,7 +233,6 @@ nav:
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Hands-on team training: guides/training-streamlit-to-hedron-posit.md
     - FAQ: guides/faq.md
-    - Error codes: guides/error-codes.md
   - Examples:
     - Overview: examples/index.md
     - Try in Codespaces: examples/try-it.md
@@ -237,67 +242,54 @@ nav:
     - Simulation gallery: examples/gallery.md
   - Reference:
     - API overview: api/README.md
-    - Public API coverage: api/COVERAGE.md
-    - Stability and maturity: api/STABILITY.md
-    - Components index: components/index.md
     - Application: api/HEDRON.md
     - Routing: api/ROUTER.md
     - Pages: api/PAGE.md
-    - Refreshable views (0.43): api/REFRESHABLE_VIEWS.md
-    - Type-driven authoring: api/TYPE_DRIVEN_AUTHORING.md
-    - Interaction catalog (0.45): api/INTERACTION_CATALOG.md
-    - Actions: api/ACTION.md
-    - Rendering: api/RENDERING.md
-    - Models and props: api/MODELS.md
-    - Built-ins: api/BUILT_INS.md
-    - Charts: api/CHART.md
+    - Interaction: api/INTERACTION.md
+    - Mount: api/MOUNT.md
+    - Auth: api/AUTH.md
+    - CSRF: api/CSRF_COMPOSITION.md
+    - Testing: api/TESTING.md
     - Responses: api/RESPONSES.md
     - Exceptions: api/EXCEPTIONS.md
     - CLI: api/CLI.md
+    - Components index: components/index.md
+    - Autodoc: api/AUTODOC.md
+    - Public API coverage: api/COVERAGE.md
+    - Stability and maturity: api/STABILITY.md
     - Configuration: CONFIGURATION.md
     - Compatibility: COMPATIBILITY.md
     - Packages: packages/index.md
     - Glossary: GLOSSARY.md
+    - Advanced:
+      - Refreshable views: api/REFRESHABLE_VIEWS.md
+      - Type-driven authoring: api/TYPE_DRIVEN_AUTHORING.md
+      - Interaction catalog: api/INTERACTION_CATALOG.md
+      - Actions: api/ACTION.md
+      - Rendering: api/RENDERING.md
+      - Models and props: api/MODELS.md
+      - Built-ins: api/BUILT_INS.md
+      - Charts: api/CHART.md
   - Evaluate:
     - Overview: guides/evaluate.md
     - Why Hedron: guides/why-hedron.md
     - What's ready today: guides/whats-ready.md
+    - What's next: guides/whats-next.md
     - Maturity labels: getting-started/how-to-read.md
     - Enterprise diligence: guides/enterprise-diligence.md
     - Architecture: ARCHITECTURE.md
     - Security disclosure: SECURITY.md
     - Support policy: guides/support.md
     - Evidence pack: guides/evidence-pack.md
-    - Roadmap: ROADMAP.md
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
     - What's new in 0.46: guides/whats-new-0.46.md
-    - What's new in 0.45: guides/whats-new-0.45.md
-    - What's new in 0.44: guides/whats-new-0.44.md
-    - What's new in 0.43: guides/whats-new-0.43.md
-    - What's new in 0.42: guides/whats-new-0.42.md
-    - What's new in 0.41: guides/whats-new-0.41.md
-    - What's new in 0.40: guides/whats-new-0.40.md
-    - What's new in 0.39: guides/whats-new-0.39.md
-    - What's new in 0.38: guides/whats-new-0.38.md
-    - What's new in 0.37: guides/whats-new-0.37.md
-    - What's new in 0.36: guides/whats-new-0.36.md
-    - What's new in 0.35: guides/whats-new-0.35.md
-    - What's new in 0.34: guides/whats-new-0.34.md
-    - What's new in 0.33: guides/whats-new-0.33.md
-    - What's new in 0.32: guides/whats-new-0.32.md
-    - What's new in 0.31: guides/whats-new-0.31.md
-    - What's new in 0.30: guides/whats-new-0.30.md
-    - What's new in 0.29: guides/whats-new-0.29.md
-    - What's new in 0.28: guides/whats-new-0.28.md
-    - What's new in 0.27: guides/whats-new-0.27.md
-    - What's new in 0.26: guides/whats-new-0.26.md
     - Versioned documentation: guides/versions.md
     - Earlier releases: guides/whats-new-archive.md
   - Contribute:
-    - Contributing: CONTRIBUTING.md
     - Contributor day one: guides/contributor-day-one.md
+    - Contributing: CONTRIBUTING.md
     - Documentation standards: guides/documentation-standards.md
     - Governance: guides/governance.md
     - Maintainer handbook: guides/maintainer-handbook.md

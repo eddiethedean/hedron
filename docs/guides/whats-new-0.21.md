@@ -32,4 +32,4 @@ substitute for human AT.
 CSRF composition (`CsrfField`, pluggable strategies, header merge) remains **0.22**.
 
 See [upgrade](upgrade.md) · [what's ready](whats-ready.md) · [accessibility](accessibility.md) ·
-[roadmap](../ROADMAP.md).
+[roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).

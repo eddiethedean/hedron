@@ -27,7 +27,7 @@ The release boundary is decisive:
 3. **0.8 establishes the compatibility baseline. Net-new Django conveniences belong to 0.9**, shipped as
    additive minor releases with explicit capability and conformance evidence.
 
-This preserves the commitments in the [roadmap](ROADMAP.md),
+This preserves the commitments in the [roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md),
 [adapter contract](api/ADAPTERS.md), [compatibility policy](COMPATIBILITY.md), and
 [adapter acceptance ledger](acceptance/ADAPTERS.md).
 

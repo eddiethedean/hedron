@@ -7,20 +7,18 @@ full context. For standalone mini-apps (pip + `app.py`), use
 ## CSRF-safe POST (classic form)
 
 ```python
-from fastapi import Form, Request
+from fastapi import Form
 
-from hedron import Hedron, Page, SubmitButton, Text, TextInput, html
-from hedron.security import csrf_token_for_request
+from hedron import CsrfField, Hedron, Page, SubmitButton, Text, TextInput, html
 
 app = Hedron(title="Notes", security="standard", session_secret="replace-me")
 
 
 @app.page("/")
-def home(request: Request) -> Page:
-    token = csrf_token_for_request(request, request.app.state.hedron_security)
+def home() -> Page:
     return Page(
         html.form(
-            html.input(type="hidden", name="csrf_token", value=token),
+            CsrfField(),
             TextInput("note", value="", required=True),
             SubmitButton("Save"),
             action="/save",

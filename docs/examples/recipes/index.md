@@ -27,8 +27,18 @@ Also useful:
 
 - [Live interaction](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) —
   **polling** is Supported; SSE/WS paths are Experimental
-- [CRUD tutorial](../crud-tutorial.md) — guided tour of the reference app
+- [CRUD tutorial](../crud-tutorial.md) — Notes CRUD walkthrough (not the kitchen-sink
+  [reference app](../reference-app.md))
+- [OIDC login](https://github.com/eddiethedean/hedron/tree/main/examples/oidc) —
+  authorization-code loop with `hedron[auth]` (you own the IdP)
 - [Runnable matrix](../runnable.md) — every example folder and how to run it
+
+!!! note "Not recipes"
+
+    [Phase evidence](../phase-evidence.md) and version-stamped dirs (`dashboard-0.17`,
+    `model-demo-0.18`, …) are **maintainer exit scenarios**, not product tutorials.
+    [Simulated UI patterns](../gallery.md) are Read the Docs simulations — not a live
+    Hedron process.
 
 !!! note "Not recipes"
 

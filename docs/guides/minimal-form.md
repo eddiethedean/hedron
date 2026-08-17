@@ -1,16 +1,21 @@
 # Minimal form POST
 
-Add a CSRF-safe note form to the **same** scaffold from
+Add a CSRF-safe note form to the **same** FastAPI scaffold from
 [HTMX interactions](htmx-interactions.md). Submitting appends to `_NOTES` and
 redirects home so **Notes saved: N** updates. Use this before choosing between
 `@action` and `@component` POST in [Mutations](mutations.md). The full
 [Forms and actions](forms-and-actions.md) deep dive covers validation fragments.
 
+!!! note "FastAPI field name"
+
+    FastAPI/Flask hidden field is **`csrf_token`** via `CsrfField()`. Django middleware
+    requires **`csrfmiddlewaretoken`** and does not accept the portable name.
+
 ## What you will build
 
 A note field on the home page (next to the notes counter). POST `/save` appends the
 note, then `redirect_local("/")` reloads the page so the count increments. CSRF uses
-`CsrfField()` (0.22) — FastAPI page renders seed the token automatically.
+`CsrfField()` — FastAPI page renders seed the token automatically.
 
 ### Try it (simulated)
 
@@ -294,7 +299,7 @@ no longer the recommended golden-path pattern — see
 
 | Piece | Role |
 |---|---|
-| `CsrfField()` | Hidden CSRF input from page `RenderContext` (0.22) |
+| `CsrfField()` | Hidden CSRF input from page `RenderContext` |
 | GET page | Seeds the CSRF cookie / context via the security profile |
 | `@app.action(..., method="POST")` | Mutation route; CSRF validated under `security="standard"` |
 | `_NOTES.append(...)` | Same in-memory list the HTMX notes region reads |

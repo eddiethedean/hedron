@@ -1,5 +1,12 @@
 # Extend the HTMX scaffold
 
+!!! note "FastAPI scaffold"
+
+    This page extends `Hedron()` / `@app.fragment` from
+    [Build your first app](../getting-started/quickstart.md). Flask and Django adapters
+    keep their own `HedronBlueprint` / `@hedron_view` APIs — do not paste this onto an
+    adapter scaffold.
+
 You already have a working Refresh loop from
 [Build your first app](../getting-started/quickstart.md). This page **extends that same
 `app.py`** — do not paste a second full scaffold, and do not re-declare

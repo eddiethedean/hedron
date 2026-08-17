@@ -1,6 +1,7 @@
 # Production readiness
 
-Ops-oriented narrative for **Hedron 0.36.x**. **Do not start here for the checklist.**
+Historical ops narrative. **Do not start here** — use [Ship](ship.md) and
+[What’s ready](whats-ready.md) for the living checklist.
 
 | Need | Canonical page |
 |---|---|
@@ -59,6 +60,6 @@ SLA**. Confirm your intended surfaces against [What's ready](whats-ready.md).
 - Community support via GitHub Issues only — **no commercial SLA**
 - Supported version lines: see [SECURITY.md](../SECURITY.md)
 
-See [Error codes](error-codes.md) · [Roadmap](../ROADMAP.md) ·
+See [Error codes](error-codes.md) · [Roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md) ·
 [Production-quality maturity](production-quality.md) ·
 [Enterprise diligence](enterprise-diligence.md).

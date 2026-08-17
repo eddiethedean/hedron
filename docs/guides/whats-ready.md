@@ -1,15 +1,19 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.46.x** (last published `v0.46.0`). Other
-evaluator pages link here — do not treat parallel summaries as a second source of truth.
+Use this page to decide **whether a capability is safe to depend on** in a pinned app.
+**On PyPI today:** latest is **0.45.0**. **This repository** is **0.46.0** (in-tree;
+Git tag / PyPI deferred — [#334](https://github.com/eddiethedean/hedron/issues/334)).
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-For a pinned internal admin/CRUD app on 0.46.x (`hedron>=0.46.0,<0.47`), you can use:
-typed pages, HTMX fragments, refreshable views and commands (`@app.refreshable` /
-`@app.command`), a sealed `InteractionCatalog` / `interactions.json` for inspection,
-opt-in `include_feature` / `DataWorkspace` bundles, CSRF (`standard`/`strict`), Flask/Django
-adapters, and polling for job status.
+For a pinned internal admin/CRUD app (PyPI pin `hedron>=0.45.0,<0.46`; in-tree 0.46
+when the tag ships), you can use typed pages, HTMX fragments, CSRF
+(`standard`/`strict`), Flask/Django adapters, and polling for job status.
+
+**Ship today (pinned CRUD / admin on FastAPI, Flask, or Django):** pages, HTMX
+fragments, CSRF, polling job status, DataTable, first-party charts.
+**Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
+screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
 Pin versions. The flagship and adapters are Beta (no Hedron 1.0, no SLA);
 `hedron-elements` is Beta (Supported inventory only), while `fastapi-workbench` has an independent 1.x line.
@@ -259,4 +263,4 @@ and `"hedron-sample-kit>=0.1.10,<0.2"`.
 | Trust / maturity program | [Production-quality maturity](production-quality.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 
-Also: [Upgrade](upgrade.md) · [Roadmap](../ROADMAP.md) · [Live interaction](live-interaction.md)
+Also: [Upgrade](upgrade.md) · [What’s next](whats-next.md) · [Live interaction](live-interaction.md)

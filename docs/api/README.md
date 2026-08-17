@@ -1,55 +1,21 @@
 # Public API
 
-Hand-maintained **contracts** for shipped surfaces on the **0.28** train, plus
-[Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. Autodoc is still a
-**subset** of every `hedron.__all__` name (~230 exports). The [coverage map](COVERAGE.md)
-lists **every** root export → docs page. Public exception types:
-[EXCEPTIONS.md](EXCEPTIONS.md).
+Start with the contracts that match Hello / Refresh / a CSRF form. Autodoc signatures
+and the full export map sit below that path.
 
-Accepted RFCs that are not yet importable live in the GitHub maintainer corpus (excluded
-from Read the Docs). Adopters should start from the golden-path contracts below.
-
-## Planned 0.43 maintainer contract
-
-[Refreshable views and commands](REFRESHABLE_VIEWS.md) records the shipped D-071 / RFC-0070
-public contract for Published 0.43, with its 0.44 handoff refined by D-073. These symbols
-are Beta on the living train.
-
-## Current 0.44 maintainer contract
-
-[Type-driven authoring](TYPE_DRIVEN_AUTHORING.md) records the shipped D-072 / RFC-0071 public
-contract, refined against 0.43 by D-073 and D-076. These symbols are Beta on the living train.
-
-## Current 0.45 maintainer contract
-
-[Interaction catalog and package projections](INTERACTION_CATALOG.md) records the shipped
-D-074 / RFC-0072 public contract, refined against 0.44 by D-077. Catalog, manifest, package
-projections, and whole-fleet dispositions do not change interaction runtime authority.
-
-## Current 0.46 maintainer contract
-
-[Package-native typed workflows](PACKAGE_WORKFLOWS.md) records the shipped D-075 / RFC-0073
-public contract, refined against 0.45 by D-079. Opt-in package feature bundles, data workspaces,
-linked charts, enhanced elements, remote workflows, and workbench experiences compile to the
-existing stack and do not add a package workflow executor.
-
-## Planned 0.47 maps contract
-
-[Maps](MAPS.md) records the accepted D-078 / RFC-0074 public contract for the planned 0.47 phase and
-new optional `hedron-maps` package: custom raster/vector sources, pinned MapLibre enhancement,
-typed interaction, semantic fallback, and static/PMTiles/MBTiles/blank-map offline paths.
-
-## Start here (golden path)
-
-After [First app → What is HTMX → HTMX interactions → Minimal form](../getting-started/index.md), these
-contracts match what you just used:
+After [First app → What is HTMX → HTMX interactions → Minimal form](../getting-started/index.md):
 
 1. [Hedron](HEDRON.md) — FastAPI application facade
 2. [Router](ROUTER.md) — `@page` / `@component` / `@action`
 3. [Page](PAGE.md) — navigable HTML documents
-4. [Interaction](INTERACTION.md) — `FragmentRegion`, `InteractionResult`
-5. [Mount / path prefix](MOUNT.md) — reverse-proxy subpaths and cookie `Path`
-6. [CLI](CLI.md) — `hedron check`, `routes`, `new`, `build`
+4. [Interaction](INTERACTION.md) — `FragmentRegion`, `InteractionResult`, `swap`
+5. [Responses](RESPONSES.md) — PAGE vs FRAGMENT HTML
+6. [Exceptions](EXCEPTIONS.md) — CSRF / region HTTP map
+7. [Mount / path prefix](MOUNT.md) — reverse-proxy subpaths and cookie `Path`
+8. [Auth](AUTH.md) — optional OIDC helpers (`hedron[auth]`)
+9. [CSRF composition](CSRF_COMPOSITION.md)
+10. [Testing](TESTING.md) — `AppScenario`, HTMX asserts
+11. [CLI](CLI.md) — `hedron check`, `routes`, `new`, `build`
 
 !!! tip "`hedron` vs `hedron_core`"
 
@@ -60,9 +26,12 @@ contracts match what you just used:
 **Stability:** API levels are defined in [STABILITY.md](STABILITY.md). A **minimal
 `stable` tier** (render/model/interaction/CSRF/router facades and portable adapter
 helpers) is compatibility-protected on the 0.x train. Everything else is `beta` or
-`experimental` unless listed. Package maturity remains **Beta** on PyPI — pin versions.
+`experimental` unless listed. Package maturity remains **Beta** — pin versions.
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
+
+**On PyPI today:** latest is **0.45.0**. This repository is **0.46.0** (Git tag / PyPI
+deferred).
 
 !!! note "Contracts vs full reference"
 
@@ -87,11 +56,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
     may stay shorter — prefer guides + Autodoc when Errors is missing.
     Human error index: [Error codes](../guides/error-codes.md).
 
-## Surfaces introduced in 0.19 (available on the 0.31 train)
-
-These surfaces first shipped in the 0.19 phase and remain on the living **0.46.x**
-train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
-phases through 0.25).
+## Full catalog
 
 ### Application
 
@@ -130,7 +95,7 @@ phases through 0.25).
 - [Security types](SECURITY_TYPES.md)
 - [Auth](AUTH.md)
 - [Explorer](EXPLORER.md)
-- [Accessibility (`hedron_core.a11y`)](A11Y.md) — introduced in 0.19; available on the living 0.46 train
+- [Accessibility (`hedron_core.a11y`)](A11Y.md)
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
 - [API diagnostics](DIAGNOSTICS.md)
@@ -138,31 +103,27 @@ phases through 0.25).
 - [Jobs](JOBS.md)
 - [Prepare lifecycle](PREPARE.md) · [Security audit sink](AUDIT.md) · [Tracing](TRACING.md)
 
-Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md) ·
+Also: [Configuration](../CONFIGURATION.md) ·
 [Compatibility](../COMPATIBILITY.md) · [Glossary](../GLOSSARY.md) ·
 [Live interaction guide](../guides/live-interaction.md)
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.46.x)
-- [Security types](SECURITY_TYPES.md) — `Secret` / `TrustedHtml` / `SafeUrl` / `SecurityPolicy`
-- [CSRF composition (0.22)](CSRF_COMPOSITION.md) — strategies, header merge, `CsrfField`
-- [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
-- [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling Supported; SSE experimental
+- [Stability classifications](STABILITY.md)
+- [Security types](SECURITY_TYPES.md)
+- [CSRF composition](CSRF_COMPOSITION.md)
+- [Framework adapter contracts](ADAPTERS.md)
+- [Job interaction contracts](JOBS.md) — polling Supported; SSE experimental
 
-## Current train notes
 
-- Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
-  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.46.x**
-  (**Published**; last **v0.46.0**) — [A11Y API](A11Y.md),
-  [What's new in 0.19](../guides/whats-new-0.19.md)
-- Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.46.x**)
-- Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.46.x**
-- Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
-- Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
-  narrative [What's new in 0.16](../guides/whats-new-0.16.md); package
-  [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-extras/CHANGELOG.md)
-- Model demos / inference workflows ship in **0.18** — [Inference API](INFERENCE.md),
-  [What's new in 0.18](../guides/whats-new-0.18.md), optional Beta `hedron[gradio]`
+## Later trains (opt-in)
+
+These contracts compile onto the golden path. They are **not** required for Hello.
+
+- [Refreshable views](REFRESHABLE_VIEWS.md)
+- [Type-driven authoring](TYPE_DRIVEN_AUTHORING.md)
+- [Interaction catalog](INTERACTION_CATALOG.md)
+- [Package-native typed workflows](PACKAGE_WORKFLOWS.md)
+- [Maps](MAPS.md) — **0.47 Planned** (no runtime claim)
+
+Public exception types: [EXCEPTIONS.md](EXCEPTIONS.md).

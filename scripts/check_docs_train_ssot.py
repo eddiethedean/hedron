@@ -30,6 +30,10 @@ class ReleaseFacts:
     previous_train: str
     previous_version: str
     previous_security_until: str
+    pypi_version: str
+    pypi_pin_floor: str
+    pypi_pin_ceiling: str
+    registry_status: str
     satellite_minimum: str
     satellite_maximum: str
     charts_minimum: str
@@ -40,8 +44,21 @@ class ReleaseFacts:
         return f">={self.pin_floor},<{self.pin_ceiling}"
 
     @property
+    def pypi_pin(self) -> str:
+        return f">={self.pypi_pin_floor},<{self.pypi_pin_ceiling}"
+
+    @property
     def train_line(self) -> str:
         return f"{self.train}.x"
+
+    @property
+    def pypi_train_line(self) -> str:
+        parts = self.pypi_version.split(".")
+        return f"{parts[0]}.{parts[1]}.x" if len(parts) >= 2 else f"{self.pypi_version}.x"
+
+    @property
+    def registry_deferred(self) -> bool:
+        return self.registry_status == "deferred"
 
     @property
     def sample_kit_pin(self) -> str:
@@ -56,15 +73,20 @@ def load_release_facts(path: Path = RELEASE_FILE) -> ReleaseFacts:
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     release = data["release"]
     satellites = data["satellites"]
+    published = str(release["published_version"])
     return ReleaseFacts(
         train=release["train"],
-        published_version=release["published_version"],
+        published_version=published,
         development_version=release["development_version"],
         pin_floor=release["pin_floor"],
         pin_ceiling=release["pin_ceiling"],
         previous_train=release["previous_train"],
         previous_version=release["previous_version"],
         previous_security_until=release["previous_security_until"],
+        pypi_version=str(release.get("pypi_version") or published),
+        pypi_pin_floor=str(release.get("pypi_pin_floor") or release["pin_floor"]),
+        pypi_pin_ceiling=str(release.get("pypi_pin_ceiling") or release["pin_ceiling"]),
+        registry_status=str(release.get("registry_status") or "uploaded"),
         satellite_minimum=satellites["minimum_version"],
         satellite_maximum=satellites["maximum_version"],
         charts_minimum=str(satellites.get("charts_minimum_version") or "0.2.0"),
@@ -163,9 +185,28 @@ def _normalized_version(value: str) -> str:
     return value[:-2] if value.endswith(".x") else value
 
 
+FIRST_RUN_PATHS = frozenset(
+    {
+        Path("README.md"),
+        Path("docs/index.md"),
+        Path("docs/getting-started/quickstart.md"),
+        Path("docs/getting-started/installation.md"),
+        Path("docs/guides/faq.md"),
+        Path("docs/guides/whats-ready.md"),
+        Path("packages/hedron/README.md"),
+        Path("packages/hedron-core/README.md"),
+    }
+)
+
+
 def _version_matches_current(value: str, facts: ReleaseFacts) -> bool:
     value = _normalized_version(value)
     return value in {facts.train, facts.published_version}
+
+
+def _version_matches_pypi(value: str, facts: ReleaseFacts) -> bool:
+    value = _normalized_version(value)
+    return value in {facts.pypi_version, facts.pypi_version.rsplit(".", 1)[0]}
 
 
 def _line_allows_previous_support(line: str, facts: ReleaseFacts) -> bool:
@@ -181,6 +222,34 @@ def _line_allows_previous_support(line: str, facts: ReleaseFacts) -> bool:
             "upgrading from",
         )
     )
+
+
+def _line_describes_pypi_latest(line: str) -> bool:
+    lower = line.lower()
+    return any(
+        phrase in lower
+        for phrase in (
+            "on pypi today",
+            "latest on pypi",
+            "pypi today",
+            "currently on pypi",
+            "from pypi",
+            "pypi is",
+            "pypi latest",
+            "not on pypi",
+            "cannot resolve",
+            "no matching distribution",
+            "tag/pypi deferred",
+            "pypi deferred",
+        )
+    )
+
+
+def _allowed_install_pins(facts: ReleaseFacts) -> set[str]:
+    allowed = {facts.pin}
+    if facts.registry_deferred and facts.pypi_pin != facts.pin:
+        allowed.add(facts.pypi_pin)
+    return allowed
 
 
 def check_text(
@@ -209,6 +278,8 @@ def check_text(
                 value = next((group for group in claim.groups() if group), None)
                 if value is None:
                     continue
+                if _line_describes_pypi_latest(scan) and _version_matches_pypi(value, facts):
+                    continue
                 if not _version_matches_current(value, facts) and not _line_allows_previous_support(
                     scan, facts
                 ):
@@ -218,10 +289,11 @@ def check_text(
                     )
             for claim in CURRENT_PIN_CLAIM.finditer(scan):
                 constraint = claim.group(1)
-                if constraint != facts.pin:
+                if constraint not in _allowed_install_pins(facts):
+                    expected = " or ".join(sorted(_allowed_install_pins(facts)))
                     failures.append(
                         f"{path}:{index}: current/living pin uses {constraint}; "
-                        f"expected {facts.pin}"
+                        f"expected {expected}"
                     )
 
         if MATURITY_COLLISION.search(line):
@@ -230,7 +302,11 @@ def check_text(
         if (
             not check_installs
             or not INSTALL_LINE.search(line)
-            or re.search(r"\b(?:not available|do not|don't|never|failed with)\b", line, re.I)
+            or re.search(
+                r"\b(?:not available|do not|don't|never|failed with|cannot resolve)\b",
+                line,
+                re.I,
+            )
         ):
             continue
 
@@ -242,10 +318,11 @@ def check_text(
             )
             if not constraint and not is_requirement_position:
                 continue
-            if constraint != facts.pin:
+            if constraint not in _allowed_install_pins(facts):
+                expected = " or ".join(sorted(_allowed_install_pins(facts)))
                 failures.append(
                     f"{path}:{index}: install for {match.group('name')} must use "
-                    f"{facts.pin}; found {constraint or 'no version constraint'}"
+                    f"{expected}; found {constraint or 'no version constraint'}"
                 )
 
         for match in SATELLITE_REQUIREMENT.finditer(line):
@@ -307,6 +384,42 @@ def check_metadata(facts: ReleaseFacts = FACTS) -> list[str]:
         failures.append("published_version is not on the configured release train")
     if facts.pin_floor != facts.published_version:
         failures.append("pin_floor must equal published_version")
+    if facts.registry_status not in {"uploaded", "deferred"}:
+        failures.append("registry_status must be 'uploaded' or 'deferred'")
+    if facts.registry_status == "uploaded" and facts.pypi_version != facts.published_version:
+        failures.append("uploaded registry_status requires pypi_version == published_version")
+    if facts.registry_status == "deferred" and facts.pypi_version == facts.published_version:
+        failures.append(
+            "deferred registry_status requires pypi_version to differ from published_version"
+        )
+    return failures
+
+
+def check_first_run_registry_honesty(
+    files: dict[Path, str],
+    facts: ReleaseFacts = FACTS,
+) -> list[str]:
+    """When the train is not on PyPI, first-run pages must say so."""
+    if not facts.registry_deferred:
+        return []
+    failures: list[str] = []
+    required_bits = (facts.pypi_version, "pypi")
+    for relative in sorted(FIRST_RUN_PATHS):
+        text = files.get(relative)
+        if text is None:
+            failures.append(f"{relative}: missing first-run page")
+            continue
+        lower = text.lower()
+        missing = [bit for bit in required_bits if bit.lower() not in lower]
+        if missing:
+            failures.append(
+                f"{relative}: deferred PyPI train must mention {', '.join(missing)} "
+                f"(latest on PyPI is {facts.pypi_version})"
+            )
+        if "deferred" not in lower and "not on pypi" not in lower:
+            failures.append(
+                f"{relative}: deferred PyPI train must say the Git tag/PyPI upload is deferred"
+            )
     return failures
 
 
@@ -334,9 +447,13 @@ def check_security_policy(
 
 def main() -> int:
     failures = check_metadata()
+    first_run_texts: dict[Path, str] = {}
     for path in adopter_files():
         relative = path.relative_to(ROOT)
-        failures.extend(check_text(relative, path.read_text(encoding="utf-8")))
+        text = path.read_text(encoding="utf-8")
+        if relative in FIRST_RUN_PATHS:
+            first_run_texts[relative] = text
+        failures.extend(check_text(relative, text))
     # Historical release pages may keep their original install commands, but any
     # explicit current/living pointer on those pages must track release.toml.
     for path in sorted((ROOT / "docs" / "guides").glob("whats-new-0.*.md")):
@@ -344,6 +461,7 @@ def main() -> int:
         failures.extend(
             check_text(relative, path.read_text(encoding="utf-8"), check_installs=False)
         )
+    failures.extend(check_first_run_registry_honesty(first_run_texts))
     root_security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
     docs_security = (ROOT / "docs" / "SECURITY.md").read_text(encoding="utf-8")
     failures.extend(check_security_policy(Path("SECURITY.md"), root_security))
@@ -353,10 +471,15 @@ def main() -> int:
     if failures:
         print("\n".join(failures), file=sys.stderr)
         return 1
+    registry = (
+        f"PyPI {FACTS.pypi_version} ({FACTS.registry_status})"
+        if FACTS.registry_deferred
+        else f"PyPI {FACTS.pypi_version}"
+    )
     print(
         f"ok: adopter docs agree with published v{FACTS.published_version}, "
-        f"train {FACTS.train_line}, pin {FACTS.pin}, charts floor {FACTS.charts_pin}, "
-        f"and sample-kit floor {FACTS.sample_kit_pin}"
+        f"train {FACTS.train_line}, pin {FACTS.pin}, {registry}, "
+        f"charts floor {FACTS.charts_pin}, and sample-kit floor {FACTS.sample_kit_pin}"
     )
     return 0
 

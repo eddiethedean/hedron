@@ -72,6 +72,34 @@ def test_install_commands_require_the_canonical_bounded_pin() -> None:
     assert not failures(f'pip install "hedron{ssot.FACTS.pin}"')
     assert failures('pip install "hedron>=0.26.0"')
     assert failures("uv add hedron")
+    if ssot.FACTS.registry_deferred:
+        assert not failures(f'uvx --from "hedron{ssot.FACTS.pypi_pin}" hedron new demo')
+
+
+def test_pypi_latest_claim_is_allowed_when_registry_is_deferred() -> None:
+    if not ssot.FACTS.registry_deferred:
+        return
+    assert not failures(
+        f"On PyPI today the latest is **{ssot.FACTS.pypi_version}** (tag/PyPI deferred)."
+    )
+    assert failures("The current published train is 0.25.x.")
+
+
+def test_first_run_pages_must_disclose_deferred_pypi() -> None:
+    if not ssot.FACTS.registry_deferred:
+        return
+    missing = ssot.check_first_run_registry_honesty(
+        {path: "Train 0.46 without mentioning the index.\n" for path in ssot.FIRST_RUN_PATHS}
+    )
+    assert missing
+    honest = (
+        f"On PyPI today: {ssot.FACTS.pypi_version}. "
+        "This repository is 0.46.0 (Git tag / PyPI deferred).\n"
+    )
+    ok = ssot.check_first_run_registry_honesty(
+        {path: honest for path in ssot.FIRST_RUN_PATHS}
+    )
+    assert not ok
 
 
 def test_historical_install_can_be_skipped_without_skipping_current_claims() -> None:

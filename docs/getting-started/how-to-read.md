@@ -21,8 +21,8 @@ the [API stability catalog](../api/STABILITY.md).
 | **`experimental`** | May change or be removed at a minor boundary |
 | **`internal` / `deferred`** | Not a public application contract |
 
-Package classifiers provide additional context: the flagship and adapters are **Beta**;
-the optional `hedron-elements` incubator is **Alpha**. Always pin package versions. Package maturity
+Package classifiers provide additional context: the flagship, adapters, and
+`hedron-elements` (Supported inventory) are **Beta**. Always pin package versions. Package maturity
 does not override the two application questions above.
 
 ## Example
@@ -34,10 +34,11 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current published train is **0.46.x** (last published `v0.46.0`). Use:
+The current in-tree train is **0.46.x**. **On PyPI today** latest is **0.45.0**
+(Git tag / PyPI deferred). Install from the index you can resolve:
 
 ```bash
-python -m pip install "hedron>=0.46.0,<0.47"
+python -m pip install "hedron>=0.45.0,<0.46"
 ```
 
 There is no commercial SLA or scheduled 1.0. See [Evaluate Hedron](../guides/evaluate.md)

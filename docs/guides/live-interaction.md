@@ -2,8 +2,9 @@
 
 The FastAPI flagship ships **experimental** live observation and navigation helpers
 (`hedron.experimental`): HTMX SSE, focused streaming, page/session WebSocket channels,
-and opt-in navigation preload. Chat/Dialog are beta. **Polling and ordinary HTTP remain
-the Supported path** on every host — phase **0.24** Accepted **`polling_only`**.
+and opt-in navigation preload. **Polling and ordinary HTTP remain the Supported path**
+on every host.
+
 
 Flask and Django adapters expose capability-labeled live helpers; **bounded polling is
 the Supported fallback** behind buffering proxies. Prefer polling

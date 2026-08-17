@@ -1,18 +1,21 @@
 # Flask — greenfield or existing app
 
-Use `hedron-flask` when your app is Flask-native. The adapter renders the same
-`hedron-core` components and `InteractionResult` values as the FastAPI flagship—
-without installing FastAPI. Like FastAPI, the adapter mounts `/hedron-static` so PAGE
-responses can inject bundled HTMX.
+Use `hedron-flask` when your app is Flask-native. The **CLI** (`hedron new --flask`)
+comes from the `hedron` package; **runtime** is `hedron-flask` + `hedron-core`. The
+adapter does **not** install or require FastAPI in the app process.
+
+**On PyPI today:** pin `hedron>=0.45.0,<0.46` (latest 0.45.0). **This repository** is
+0.46.0 (Git tag / PyPI deferred). If `>=0.46.0,<0.47` cannot resolve, use the 0.45 pin.
 
 ## Golden path (scaffold + Refresh)
 
 Same success criteria as FastAPI: open the app, see Hello, click **Refresh**, watch
-the status region update without a full page reload.
+the status region update without a full page reload. The scaffold uses Flask
+blueprints and raw `hx-*` attributes, not FastAPI `RefreshButton`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.46.0,<0.47" hedron new my-flask-app --flask
+uvx --from "hedron>=0.45.0,<0.46" hedron new my-flask-app --flask
 cd my-flask-app && uv sync && uv run flask --app app run --port 8000
 ```
 
@@ -45,7 +48,7 @@ Set `HEDRON_SESSION_SECRET` before production.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron-flask>=0.46.0,<0.47"
+python -m pip install "hedron-flask>=0.45.0,<0.46"
 ```
 
 Save as `app.py`:
@@ -125,8 +128,16 @@ Safe GETs issue the `hedron_csrf` cookie. Unsafe methods on `hedron_route` and
 
 ## Next
 
-- [HTMX interactions](../guides/htmx-interactions.md) · [Minimal form](../guides/minimal-form.md)
+Stay on Flask: extend the scaffold `HedronBlueprint` / `HedronFlask` and keep POST field
+`csrf_token`. Job status: prefer bounded **polling** (FastAPI SSE helpers are experimental).
+
+!!! warning "FastAPI-only continuation"
+
+    [HTMX interactions](../guides/htmx-interactions.md) and
+    [Minimal form](../guides/minimal-form.md) assume `Hedron()` / `@app.fragment` /
+    `RefreshButton` / `CsrfField()`. Use them after you switch hosts, not as the Flask
+    next step.
+
 - [Security](../guides/security.md) · [Ship a Hedron app](../guides/ship.md)
 - [Adapters API](../api/ADAPTERS.md)
-- Job status: prefer bounded **polling** (FastAPI SSE helpers are experimental —
-  see [What’s ready](../guides/whats-ready.md))
+- Clone [`examples/flask-reference`](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference)

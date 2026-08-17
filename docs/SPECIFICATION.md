@@ -28,7 +28,7 @@ decision log and affected RFCs first.
   [design principles](foundations/03_DESIGN_PRINCIPLES.md), and
   [non-goals](foundations/04_NON_GOALS.md)
 - [Architecture](ARCHITECTURE.md), [decisions](DECISIONS.md), [glossary](GLOSSARY.md),
-  [roadmap](ROADMAP.md), and [project status](STATUS.md)
+  [roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md), and [project status](STATUS.md)
 - [Compatibility](COMPATIBILITY.md), [project layout](PROJECT_LAYOUT.md),
   [engineering baseline](ENGINEERING_BASELINE.md), [configuration](CONFIGURATION.md),
   [diagnostics](DIAGNOSTICS.md), and [identifiers](IDENTIFIERS.md)

@@ -49,7 +49,23 @@ def home() -> Page:
 | `build_dir` | `str` \| `Path` \| `None` | `None` | Build/manifest directory (else settings / `HEDRON_BUILD_DIR`) |
 | `production` | `bool` \| `None` | `None` | `None` uses `HEDRON_ENV`; `True` requires a build manifest and gates runtime compile |
 
-All other keyword arguments are passed to `FastAPI` (`title`, `lifespan`, …).
+All other keyword arguments are passed to `FastAPI` (`title`, `lifespan`, `middleware`,
+`docs_url`, OpenAPI options, …). Hedron does **not** wrap a second ASGI runtime.
+
+## Hedron vs `FastAPI()`
+
+| Topic | Behavior |
+|---|---|
+| Unrecognized kwargs | Forwarded to `FastAPI` |
+| Lifespan | Your lifespan is **composed** with Hedron startup/shutdown, not replaced |
+| Middleware | You may add Starlette/FastAPI middleware as usual |
+| OpenAPI | `include_in_schema` defaults: `True` for page/action, `False` for component |
+| `HEDRON_SESSION_SECRET` | **Convention only** — Hedron never reads the env var. Pass `session_secret=` |
+| `HEDRON_ENV` / `production=` | Production mode; `HEDRON_BUILD_DIR` is loaded for the build manifest |
+| Existing app | Use `HedronRouter` + `mount_hedron_static` instead of this class |
+
+See [Secrets, sessions, and workers](../guides/secrets-and-workers.md) and
+[Plain FastAPI](../guides/plain-fastapi.md).
 
 ## Methods
 

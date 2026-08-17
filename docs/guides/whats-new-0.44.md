@@ -34,4 +34,4 @@ This is not a new client runtime, type-checker plugin, or Supported human AT cla
 
 Pin the train to `hedron>=0.44.0,<0.45`. Rollback: pin `>=0.43.0,<0.44`. See
 [Upgrade](upgrade.md) · [Type-driven authoring](../api/TYPE_DRIVEN_AUTHORING.md) ·
-[Roadmap](../ROADMAP.md).
+[Roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
