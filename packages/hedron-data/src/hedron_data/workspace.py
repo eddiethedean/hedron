@@ -7,7 +7,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, Generic, Literal, TypeVar
 
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, Field, TypeAdapter, create_model
 
 from hedron_core.bundles import (
     MAX_WORKSPACE_FIELDS,
@@ -19,6 +19,7 @@ from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_BUNDLE_0005, HED_BUNDLE_0007
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
 from hedron_data.sources import (
+    HARD_MAX_PAGE_SIZE,
     CellUpdate,
     DataChanges,
     DataEditorSource,
@@ -28,6 +29,7 @@ from hedron_data.table import DataTable
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 AuthzHook = Callable[..., bool]
+_LIST_RESERVED = frozenset({"offset", "limit", "sort", "q"})
 
 __all__ = ["DataWorkspace", "DataWorkspacePolicy"]
 
@@ -173,12 +175,70 @@ class DataWorkspace(Generic[ModelT]):
             **{self.key_field: (str, ...)},  # type: ignore[arg-type]
         )
 
+    def _list_query_model(self) -> type[BaseModel]:
+        fields: dict[str, tuple[object, object]] = {
+            "offset": (int, Field(default=0, ge=0)),
+            "limit": (int, Field(default=25, ge=1, le=HARD_MAX_PAGE_SIZE)),
+            "sort": (str | None, None),
+            "q": (str | None, None),
+        }
+        for name in getattr(self.model, "model_fields", {}) or {}:
+            if name not in _LIST_RESERVED:
+                fields[name] = (str | None, None)
+        return create_model(
+            f"{self.name.title()}ListQuery",
+            **fields,  # type: ignore[arg-type]
+        )
+
+    def _data_query_from_list_params(self, params: BaseModel | None) -> DataQuery:
+        from hedron_data.sources import DEFAULT_MAX_PAGE_SIZE
+
+        model_fields = getattr(self.model, "model_fields", {}) or {}
+        allow = frozenset(model_fields)
+        offset = int(getattr(params, "offset", 0) or 0) if params is not None else 0
+        limit = int(getattr(params, "limit", 25) or 25) if params is not None else 25
+        search = getattr(params, "q", None) if params is not None else None
+        if search == "":
+            search = None
+        sort: tuple[tuple[str, str], ...] = ()
+        raw_sort = getattr(params, "sort", None) if params is not None else None
+        if raw_sort:
+            name, _sep, direction = str(raw_sort).partition(":")
+            direction = direction or "asc"
+            if direction not in {"asc", "desc"} or name not in allow:
+                raise ValueError("invalid_sort")
+            sort = ((name, direction),)
+        filters: dict[str, Any] = {}
+        if params is not None:
+            for name, finfo in model_fields.items():
+                if name in _LIST_RESERVED:
+                    continue
+                raw = getattr(params, name, None)
+                if raw is None or raw == "":
+                    continue
+                try:
+                    filters[name] = TypeAdapter(finfo.annotation).validate_python(raw)
+                except (TypeError, ValueError):
+                    raise ValueError(f"invalid_filter:{name}") from None
+        return DataQuery(
+            offset=offset,
+            limit=limit,
+            sort=sort,
+            filters=filters,
+            search=str(search) if search is not None else None,
+            allowlisted_sort_fields=allow,
+            allowlisted_filter_fields=allow,
+        ).validated(max_page_size=DEFAULT_MAX_PAGE_SIZE)
+
     def to_bundle(self) -> FeatureBundle:
         workspace = self
 
         def list_factory(app: object) -> object:
+            from typing import Annotated
 
             from starlette.exceptions import HTTPException
+
+            from hedron import ViewParams
 
             if workspace.list_override is not None:
                 handle = app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")(  # type: ignore[union-attr]
@@ -187,11 +247,20 @@ class DataWorkspace(Generic[ModelT]):
                 workspace.list_view = handle
                 return handle
 
+            list_query = workspace._list_query_model()
+            list_defaults = list_query()
+
             @app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")  # type: ignore[union-attr]
-            def list_view() -> object:
+            def list_view(
+                params: Annotated[list_query, ViewParams(source="query")] = list_defaults,  # type: ignore[valid-type]
+            ) -> object:
                 if not workspace._allowed(workspace.policy.can_read):
                     raise HTTPException(status_code=403, detail="forbidden")
-                page = workspace.source.fetch(DataQuery(limit=25))
+                try:
+                    query = workspace._data_query_from_list_params(params)
+                except ValueError:
+                    raise HTTPException(status_code=422, detail="invalid_query") from None
+                page = workspace.source.fetch(query)
                 return DataTable(page=page, caption=workspace.name)
 
             workspace.list_view = list_view
