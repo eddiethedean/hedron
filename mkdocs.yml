@@ -204,6 +204,7 @@ nav:
     - Add data and visuals:
       - Data applications: guides/data-apps.md
       - Charts and HTMX: guides/charts-and-htmx.md
+      - Maps: guides/maps.md
       - Dashboards: guides/dashboards.md
       - Compose built-ins: guides/component-composition.md
     - Secure an app:
@@ -270,6 +271,7 @@ nav:
       - Models and props: api/MODELS.md
       - Built-ins: api/BUILT_INS.md
       - Charts: api/CHART.md
+      - Maps: api/MAPS.md
   - Evaluate:
     - Overview: guides/evaluate.md
     - Why Hedron: guides/why-hedron.md
@@ -284,6 +286,7 @@ nav:
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.47: guides/whats-new-0.47.md
     - What's new in 0.46: guides/whats-new-0.46.md
     - Versioned documentation: guides/versions.md
     - Earlier releases: guides/whats-new-archive.md

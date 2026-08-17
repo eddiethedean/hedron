@@ -17,7 +17,8 @@ Routes return components; HTMX updates the page — no Node build, no full-scrip
 open localhost:8000 → click **Refresh status**.
 { .hedron-lede }
 
-**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`. Before production, see
+**Published in-tree `v0.47.0`.** Git tag and PyPI upload are **deferred**.
+In-tree pin `hedron>=0.47.0,<0.48`. The latest on **PyPI** is **`0.46.0`**. Before production, see
 [What’s ready](guides/whats-ready.md).
 { .hedron-lede }
 
@@ -91,7 +92,7 @@ rerun dashboards.
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.46.0,<0.47`.
+Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.47.0,<0.48`.
 Capability readiness and API compatibility are separate: read
 [Maturity labels](getting-started/how-to-read.md) before interpreting Supported,
 Experimental, `stable`, or `beta`. For production adoption, continue with

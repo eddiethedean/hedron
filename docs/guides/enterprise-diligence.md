@@ -10,7 +10,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Current version | **v0.46.0** (pin `hedron>=0.46.0,<0.47`) |
+| Current version | **v0.47.0** in-tree (pin `hedron>=0.47.0,<0.48`; PyPI still `0.46.0`, tag/PyPI deferred) |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner |
@@ -76,7 +76,7 @@ third-party open-source software with pinned versions and your own threat model 
 
 ## Supply-chain evidence
 
-Prefer GitHub Release assets for the current tag **`v0.46.0`** (SBOM / license /
+Prefer GitHub Release assets for the latest **uploaded** tag **`v0.46.0`** (SBOM / license /
 evidence-bundle) when
 attached. If assets are missing, regenerate from the tagged checkout — see
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.

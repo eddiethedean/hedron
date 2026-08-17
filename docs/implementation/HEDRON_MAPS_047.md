@@ -1,6 +1,7 @@
 # `hedron-maps` implementation plan (phase 0.47)
 
-**Status:** Planned; Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`<br>
+**Status:** Published as in-tree `v0.47.0` (tag/PyPI deferred); Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`<br>
+**Tracking:** [#350](https://github.com/eddiethedean/hedron/issues/350)
 **Decision/RFC:** D-078, refined by D-082 / [RFC-0074](../rfcs/RFC-0074-FIRST-CLASS-MAPS.md)<br>
 **Planning baseline:** Published in-tree `v0.46.0`<br>
 **Target:** Hedron `v0.47.0`; independent `hedron-maps` `0.1.0` Beta<br>
@@ -138,6 +139,28 @@ by package-data tests.
   policy, accessibility, operations, migration, troubleshooting, and rollback guides.
 - Run clean wheel/sdist/install/absence/skew/license/SBOM/provenance/rehearsal gates.
 
+## Default limits (Stage 1 measured)
+
+| Dimension | Locked default |
+|---|---|
+| maps/page (`maps_per_page`) | 8 |
+| layers/map | 32 |
+| sources/map | 16 |
+| GeoJSON features | 500 (`DEFAULT_MAX_FEATURES`) |
+| coordinate depth | 8 |
+| coordinate count | 50_000 |
+| property bytes / feature envelope | 4_096 |
+| plan bytes | 1_000_000 |
+| style bytes | 250_000 |
+| TileJSON bytes | 64_000 |
+| zoom | 0–24 |
+| tile concurrency | 8 |
+| event rate / payload / cardinality | 4 Hz / 8_192 / 100 |
+| workers | 1 |
+| cache memory | 32 MiB |
+| proxy response / timeout / redirects | 4 MiB / 5 s / 3 |
+| mount/destroy cycles | 100 |
+
 ## Default limits to resolve during Stage 1
 
 Stage 0 names the dimensions but does not invent unmeasured numbers. Stage 1 must lock evidence-
@@ -161,5 +184,6 @@ implementation and error-code documentation.
   Do not start Stage 1 during the D-082 contract refine.
 - **Stage 2:** M4–M7 browser/offline/security vertical slices.
 - **Stage 3:** M8–M9 whole-matrix evidence, docs, package/release rehearsal.
-- **Cut:** every 0.47 gate Verified with zero Deferred; tag Hedron `v0.47.0` and publish
-  `hedron-maps` `0.1.0` only after the coordinated release decision.
+- **Cut:** every 0.47 gate Verified with zero Deferred. In-tree Published `v0.47.0`;
+  Git tag / PyPI remain deferred. Do not tag `v0.47.0` or publish `hedron-maps` until
+  a later registry cut.

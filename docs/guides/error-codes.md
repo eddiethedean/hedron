@@ -33,7 +33,7 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
 | `HED-SIM-ASSET-0001` | blocker | Packaged sim asset path escape | Pass a single basename under `static/` |
 | `HED-SIM-ASSET-0002` | blocker | Packaged sim asset missing | Use a filename that ships in `hedron_sim/static/` |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.46.0,<0.47"` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.47.0,<0.48"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -45,7 +45,7 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.46.0,<0.47"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.47.0,<0.48"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -328,9 +328,7 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 ## HED-MAP
 
 Shipped core map/GeoJSON codes (`HED-MAP-0001`–`0004`) remain the 0.15 compatibility surface.
-Phase 0.47 (D-082) reserves the following families in docs only until implementation assigns
-numbers: `HED-MAP-SPEC-*`, `HED-MAP-SOURCE-*`, `HED-MAP-STYLE-*`, `HED-MAP-POLICY-*`,
-`HED-MAP-OFFLINE-*`, `HED-MAP-RUNTIME-*`, `HED-MAP-EVENT-*`.
+Phase 0.47 assigns the following families:
 
 | Code | Catalog symbol |
 |---|---|
@@ -338,6 +336,26 @@ numbers: `HED-MAP-SPEC-*`, `HED-MAP-SOURCE-*`, `HED-MAP-STYLE-*`, `HED-MAP-POLIC
 | `HED-MAP-0002` | `HED_MAP_0002` |
 | `HED-MAP-0003` | `HED_MAP_0003` |
 | `HED-MAP-0004` | `HED_MAP_0004` |
+| `HED-MAP-SPEC-0001` | `HED_MAP_SPEC_0001` |
+| `HED-MAP-SPEC-0002` | `HED_MAP_SPEC_0002` |
+| `HED-MAP-SPEC-0003` | `HED_MAP_SPEC_0003` |
+| `HED-MAP-SPEC-0004` | `HED_MAP_SPEC_0004` |
+| `HED-MAP-SOURCE-0001` | `HED_MAP_SOURCE_0001` |
+| `HED-MAP-SOURCE-0002` | `HED_MAP_SOURCE_0002` |
+| `HED-MAP-SOURCE-0003` | `HED_MAP_SOURCE_0003` |
+| `HED-MAP-POLICY-0001` | `HED_MAP_POLICY_0001` |
+| `HED-MAP-POLICY-0002` | `HED_MAP_POLICY_0002` |
+| `HED-MAP-STYLE-0001` | `HED_MAP_STYLE_0001` |
+| `HED-MAP-STYLE-0002` | `HED_MAP_STYLE_0002` |
+| `HED-MAP-OFFLINE-0001` | `HED_MAP_OFFLINE_0001` |
+| `HED-MAP-OFFLINE-0002` | `HED_MAP_OFFLINE_0002` |
+| `HED-MAP-OFFLINE-0003` | `HED_MAP_OFFLINE_0003` |
+| `HED-MAP-RUNTIME-0001` | `HED_MAP_RUNTIME_0001` |
+| `HED-MAP-RUNTIME-0002` | `HED_MAP_RUNTIME_0002` |
+| `HED-MAP-RUNTIME-0003` | `HED_MAP_RUNTIME_0003` |
+| `HED-MAP-EVENT-0001` | `HED_MAP_EVENT_0001` |
+| `HED-MAP-EVENT-0002` | `HED_MAP_EVENT_0002` |
+| `HED-MAP-EVENT-0003` | `HED_MAP_EVENT_0003` |
 
 ## HED-MODEL
 

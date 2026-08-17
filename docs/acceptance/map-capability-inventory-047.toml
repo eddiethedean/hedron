@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.47"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.46.0"
 required_predecessor = "v0.46.0"
 target = "v0.47.0"
@@ -28,14 +28,14 @@ chart_interaction_pattern = "docs/acceptance/chart-interaction-046.toml"
 id = "MAP-SPEC-001..012"
 area = "grammar-and-plan"
 gate = "SPEC-047"
-state = "Planned"
+state = "Verified"
 summary = "Immutable closed MapSpec and deterministic redacted MapPlan with complete resource facts."
 
 [[capability]]
 id = "MAP-PROVIDER-001..012"
 area = "providers-and-sources"
 gate = "PROVIDER-047"
-state = "Planned"
+state = "Verified"
 supported = ["openstreetmap-standard", "xyz-raster", "tilejson", "mvt-vector"]
 summary = "Replaceable OSM default and exact-origin custom raster/vector infrastructure."
 
@@ -43,7 +43,7 @@ summary = "Replaceable OSM default and exact-origin custom raster/vector infrast
 id = "MAP-OFFLINE-001..014"
 area = "offline"
 gate = "OFFLINE-047"
-state = "Planned"
+state = "Verified"
 supported = ["static-image", "pmtiles-raster", "pmtiles-vector", "bounded-mbtiles", "blank-map", "offline-bundle"]
 summary = "No-external-network maps with complete local resource closure and air-gap evidence."
 
@@ -51,7 +51,7 @@ summary = "No-external-network maps with complete local resource closure and air
 id = "MAP-LAYER-001..010"
 area = "layers"
 gate = "RENDER-047"
-state = "Planned"
+state = "Verified"
 supported = ["marker", "geojson", "line", "polygon", "circle", "raster"]
 summary = "Bounded first-party layer inventory rendered through pinned MapLibre and semantic fallback."
 
@@ -59,7 +59,7 @@ summary = "Bounded first-party layer inventory rendered through pinned MapLibre 
 id = "MAP-EVENT-001..010"
 area = "interactions"
 gate = "INTERACT-047"
-state = "Planned"
+state = "Verified"
 supported = ["feature-selected", "feature-activated", "viewport-changed", "layer-visibility-changed", "map-loaded", "map-failed"]
 summary = "Closed untrusted event payloads mapped to ordinary commands/effects with rate and payload bounds."
 

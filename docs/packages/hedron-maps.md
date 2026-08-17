@@ -1,30 +1,27 @@
 ---
-description: Planned first-class interactive, custom-server, and offline maps for Hedron.
+description: Independent Beta first-class maps for Hedron.
 ---
 
 # `hedron-maps`
 
-**Status:** Planned for phase 0.47 · **Target:** independent Beta `0.1.0`
+**Package maturity:** Beta · **Package version:** `0.1.0` (phase 0.47) · extra `hedron[maps]`
 
-Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`. No runtime.
+`hedron-maps` provides a typed map grammar, deterministic compilation, a pinned MapLibre
+5.6.1 strict-CSP host, custom raster/vector tile sources, and static/offline basemaps
+while preserving Hedron's semantic fallback and application-owned security policy.
 
-`hedron-maps` will provide a typed map grammar, deterministic compilation, a pinned MapLibre host,
-custom raster/vector tile sources, and static/offline basemaps while preserving Hedron's semantic
-fallback and application-owned security policy.
+The Supported inventory is deliberately bounded:
 
-The initial Supported inventory is deliberately bounded:
-
-- replaceable OpenStreetMap raster default;
+- replaceable OpenStreetMap raster default on `hedron_maps.Map` only;
 - custom XYZ raster, TileJSON, and MVT/vector sources;
 - static georeferenced images, PMTiles, bounded MBTiles, and blank maps;
 - markers and bounded GeoJSON/line/polygon/circle/raster overlays;
+- `hedron_maps.GeoJSONLayer` typed overlays vs `hedron_core.GeoJSONLayer` sanitizer;
 - safe local styles, exact-origin policy, attribution, and resource manifests;
 - typed feature/viewport events through ordinary Hedron commands; and
 - no-JavaScript, WebGL-failure, source-failure, and air-gapped behavior.
 
 Leaflet/OpenLayers, deck.gl, WMS/WMTS/WFS, arbitrary projections, drawing, terrain, globe, routing,
-geocoding, and offline-region download are not in the initial Supported inventory.
+geocoding, and offline-region download are not in the Supported inventory.
 
-Planning authority: [Maps API](../api/MAPS.md) ·
-[RFC-0074](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0074-FIRST-CLASS-MAPS.md) ·
-[implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_MAPS_047.md).
+Authority: [Maps API](../api/MAPS.md) · [RFC-0074](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0074-FIRST-CLASS-MAPS.md).

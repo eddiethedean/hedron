@@ -80,7 +80,7 @@ Skip RFC / decision vocabulary unless your change alters a public contract — s
 ## Good first contributions
 
 - Typos, dead links, and Install/FAQ/Troubleshooting clarity
-- Example README fixes that match the living `0.46` train pins
+- Example README fixes that match the living `0.47` train pins
 - Small test coverage for an existing bug you hit
 
 Avoid starting with release-gate TOMLs, STATUS ledgers, or phase packets unless a

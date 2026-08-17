@@ -19,6 +19,7 @@ packages = [
   "hedron-extras",
   "hedron-conformance",
   "hedron-charts",
+  "hedron-maps",
   "hedron-native",
   "hedron-sample-kit",
   "hedron-sim",
@@ -269,6 +270,32 @@ supported = ["published_signed_evaluator", "python_reference_parity"]
 experimental = []
 excluded = ["application_server", "full_hedron_port"]
 notes = "Tooling-grade evaluator; package maturity Beta tooling-grade at 0.35 reconcile"
+
+[hedron-maps]
+owner = "hedron-maps"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.1.0,<0.2"
+evidence = "release-gate-0.47.toml"
+disposition = "production_grade"
+supported = [
+  "mapspec_mapplan",
+  "openstreetmap_standard",
+  "custom_xyz_tilejson_vector",
+  "static_pmtiles_mbtiles_blank",
+  "hedron_map_maplibre_strict_csp",
+  "map_interaction",
+  "semantic_fallback",
+]
+experimental = []
+excluded = [
+  "leaflet_openlayers_deck_cesium",
+  "wms_wmts_wfs",
+  "drawing_routing_geocoding",
+  "terrain_globe",
+  "osm_offline_prefetch",
+]
+notes = "Independent Beta 0.1.0 added on the living 0.47 train; FLEET-035 remains closed"
 
 [experimental_namespaces]
 owner = "hedron"

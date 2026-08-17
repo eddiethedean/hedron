@@ -68,7 +68,7 @@ class DataWorkspace(Generic[ModelT]):
         edit_model: type[BaseModel] | None = None,
         key_field: str = "id",
         provider: str = "hedron-data",
-        provider_version: str = "0.46.0",
+        provider_version: str = "0.47.0",
         columns: Sequence[object] = (),
         form_overrides: Mapping[str, object] | None = None,
         list_override: Callable[..., object] | None = None,

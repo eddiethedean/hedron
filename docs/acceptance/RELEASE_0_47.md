@@ -1,10 +1,11 @@
 # Hedron `v0.47` first-class maps acceptance
 
-**Status:** Planned; Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`<br>
+**Status:** Published as in-tree `v0.47.0` (tag/PyPI deferred); Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`<br>
 **Planning baseline:** Published in-tree `v0.46.0` (D-082; original Stage 0 baseline was Published in-tree `v0.45.0`)<br>
 **Required predecessor/cut baseline:** Verified `v0.46.0`<br>
 **Targets:** Hedron `v0.47.0`; `hedron-maps` `0.1.0` Beta<br>
 **Decision/RFC:** D-078, refined by D-082 / [RFC-0074](../rfcs/RFC-0074-FIRST-CLASS-MAPS.md)
+**Tracking:** [#350](https://github.com/eddiethedean/hedron/issues/350) remains open until later tag/PyPI assets exist.
 
 D-082 rebases planning onto shipped `hedron.Map` / `sanitize_geojson` / `MAP_VIEWPORT_TRIGGER`,
 0.43 `ActionHandle`, 0.44 `hedron.type`, 0.45 catalog/projection, and 0.46 `FeatureBundle` /
@@ -62,8 +63,9 @@ Evidence index: [`release-gate-0.47.toml`](release-gate-0.47.toml). Upgrade fixt
   artifacts exist.
 - [x] Stage 0 changes documentation/contracts only; no runtime/package/version availability claim.
 - [x] D-082 rebases planning onto Published in-tree `v0.46.0` without runtime/version claim.
-- [ ] Verified 0.46 and a tracking issue are bound before Stage 1.
-- [ ] Stage 1 measures and locks all default limits and performance budgets.
+- [x] Verified 0.46 and a tracking issue are bound before Stage 1
+  ([#350](https://github.com/eddiethedean/hedron/issues/350)).
+- [x] Stage 1 measures and locks all default limits and performance budgets.
 
 ## Cut rule
 

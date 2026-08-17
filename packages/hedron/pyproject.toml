@@ -1,6 +1,6 @@
 [project]
 name = "hedron"
-version = "0.46.0"
+version = "0.47.0"
 description = "FastAPI-native typed component framework for HTML and HTMX"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -37,7 +37,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.46.0,<0.47",
+    "hedron-core>=0.47.0,<0.48",
     "pydantic>=2.13.4,<2.15",
     "fastapi>=0.141.1,<0.150",
     "itsdangerous>=2.2",
@@ -47,13 +47,16 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "hedron-explorer>=0.46.0,<0.47",
+    "hedron-explorer>=0.47.0,<0.48",
 ]
 data = [
-    "hedron-data>=0.46.0,<0.47",
+    "hedron-data>=0.47.0,<0.48",
 ]
 charts = [
     "hedron-charts>=0.2.0,<0.3",
+]
+maps = [
+    "hedron-maps>=0.1.0,<0.2",
 ]
 markdown = [
     "markdown>=3.5",
@@ -80,19 +83,19 @@ browser = [
     "axe-playwright-python>=0.1.4",
 ]
 jinja = [
-    "hedron-jinja>=0.46.0,<0.47",
+    "hedron-jinja>=0.47.0,<0.48",
 ]
 native = [
     "hedron-native>=0.1.2,<0.2",
 ]
 conformance = [
-    "hedron-conformance>=0.46.0,<0.47",
+    "hedron-conformance>=0.47.0,<0.48",
 ]
 extras = [
-    "hedron-extras>=0.46.0,<0.47",
+    "hedron-extras>=0.47.0,<0.48",
 ]
 experimental-ui = [
-    "hedron-extras[experimental-ui]>=0.46.0,<0.47",
+    "hedron-extras[experimental-ui]>=0.47.0,<0.48",
 ]
 notebook = [
     "hedron-notebook>=0.1.0,<0.2",
@@ -100,15 +103,15 @@ notebook = [
 mcp = [
     "hedron-mcp>=0.2.0,<0.3",
 ]
-elements = ["hedron-elements>=0.46.0,<0.47"]
+elements = ["hedron-elements>=0.47.0,<0.48"]
 gradio = [
     "hedron-gradio>=0.2.0,<0.3",
 ]
 workbench = [
-    "hedron-workbench>=0.46.0,<0.47",
+    "hedron-workbench>=0.47.0,<0.48",
 ]
 posit = [
-    "hedron-posit>=0.46.0,<0.47",
+    "hedron-posit>=0.47.0,<0.48",
 ]
 otel = [
     "opentelemetry-api>=1.27,<2",

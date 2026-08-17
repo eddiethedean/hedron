@@ -1,6 +1,6 @@
 # Phase 0.47 upgrade and rollback fixtures
 
-**Status:** Planned; Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`<br>
+**Status:** Published as in-tree `v0.47.0` (tag/PyPI deferred); Stage 0 contract refined by D-082 against Published in-tree `v0.46.0`<br>
 **From:** Verified `v0.46.0`<br>
 **To:** `v0.47.0` with optional `hedron-maps` `0.1.0`
 

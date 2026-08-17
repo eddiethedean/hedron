@@ -4,7 +4,7 @@ Third-party-shaped sample Hedron plugin package.
 
 **Package maturity:** Beta tooling-grade · **Current compatible release:** `0.1.10`
 **Flagship extra:** none — install directly · **Import:** `hedron_sample_kit`  
-The repository source is compatible with `hedron-core>=0.46.0,<0.47`. Reference / demo
+The repository source is compatible with `hedron-core>=0.47.0,<0.48`. Reference / demo
 only — not an app framework.
 
 ## Install

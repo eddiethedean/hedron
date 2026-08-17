@@ -6,7 +6,9 @@ The golden-path Hello copy-paste lives on
 [Build your first app](quickstart.md) (`hedron new` → Hello → Refresh). Use **this** page
 for version checks, optional extras, Flask/Django adapters, and install failures.
 
-**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`.
+**Published in-tree `v0.47.0`.** Git tag and PyPI upload are **deferred**.
+In-tree pin `hedron>=0.47.0,<0.48`. The latest on **PyPI** is **`0.46.0`**;
+registry installs should pin `hedron>=0.46.0,<0.47` until a later upload.
 
 Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
@@ -37,7 +39,7 @@ interpreter for `pip` / `uv` / `uvicorn` (`which python3`, `py -0p` on Windows).
 
     Point `pip` / `uv` at your internal index (`PIP_INDEX_URL`, `UV_INDEX_URL`, or
     `--index-url`). Mirror **PyPI** wheels for `hedron`, `hedron-core`, and matching
-    extras onto that index; pin `hedron>=0.46.0,<0.47`.
+    extras onto that index; pin `hedron>=0.46.0,<0.47` (latest on **PyPI** today).
     Offline: download wheels on a connected host (`pip download "hedron>=0.46.0,<0.47"`)
     and `pip install --no-index --find-links=...`. TLS / corporate MITM: install your
     org’s CA into the env (`REQUESTS_CA_BUNDLE` / `SSL_CERT_FILE`, or `pip`/`uv`
@@ -90,7 +92,7 @@ If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 | Wrong / old version | `pip install -U "hedron>=0.46.0,<0.47"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
-| Need charts | Install `hedron[charts]>=0.46.0,<0.47` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
+| Need charts | Install `hedron[charts]>=0.47.0,<0.48` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
 | Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
 | Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
 
@@ -121,13 +123,13 @@ Other extras (`jinja`, `auth`, `mcp`, `gradio`, `elements` **Beta** for Supporte
 inventory, Workbench/Posit, notebook, native): [Packages](../packages/index.md).
 
 ```bash
-pip install "hedron[data]>=0.46.0,<0.47"
+pip install "hedron[data]>=0.47.0,<0.48"
 ```
 
 Charts and the sample plugin have explicit compatibility floors:
 
 ```bash
-pip install "hedron[charts]>=0.46.0,<0.47"
+pip install "hedron[charts]>=0.47.0,<0.48"
 pip install "hedron-sample-kit>=0.1.10,<0.2"
 ```
 
@@ -142,7 +144,7 @@ Versions through `0.1.5` target older cores. Details:
     download browser binaries once per environment:
 
     ```bash
-    pip install "hedron[browser]>=0.46.0,<0.47"
+    pip install "hedron[browser]>=0.47.0,<0.48"
     playwright install chromium
     ```
 

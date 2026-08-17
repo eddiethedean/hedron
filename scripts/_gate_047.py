@@ -23,6 +23,8 @@ STATUS = ROOT / "STATUS.md"
 RELEASE = ROOT / "docs" / "release.toml"
 PYPROJECT = ROOT / "pyproject.toml"
 
+TRACKING_ISSUE = "#350"
+
 PACKET_FILES = (
     GATE,
     INVENTORY,
@@ -105,28 +107,37 @@ def gate_state(gate_id: str) -> str | None:
 
 
 GATE_TESTS: dict[str, list[str]] = {
-    "SPEC-047": [],
-    "PROVIDER-047": [],
-    "OFFLINE-047": [],
-    "RENDER-047": [],
-    "INTERACT-047": [],
-    "SECURITY-047": [],
-    "A11Y-047": [],
-    "BROWSER-047": [],
-    "PERF-047": [],
-    "ADAPTER-047": [],
-    "TOOLING-047": [],
-    "COMPAT-047": [],
-    "DOCS-047": [],
-    "REGRESS-047": [],
-    "PKG-047": [],
+    "SPEC-047": ["tests/unit/test_maps_047_spec.py"],
+    "PROVIDER-047": ["tests/unit/test_maps_047_provider.py"],
+    "OFFLINE-047": ["tests/unit/test_maps_047_offline.py"],
+    "RENDER-047": [
+        "tests/unit/test_maps_047_render.py",
+        "tests/browser/test_maps_047_render.py",
+    ],
+    "INTERACT-047": ["tests/unit/test_maps_047_interact.py"],
+    "SECURITY-047": ["tests/unit/test_maps_047_security.py"],
+    "A11Y-047": ["tests/browser/test_maps_047_a11y.py"],
+    "BROWSER-047": ["tests/browser/test_maps_047_render.py"],
+    "PERF-047": ["tests/unit/test_maps_047_perf.py"],
+    "ADAPTER-047": ["tests/unit/test_maps_047_adapter.py"],
+    "TOOLING-047": ["tests/unit/test_maps_047_tooling.py"],
+    "COMPAT-047": [
+        "tests/unit/test_maps_047_compat.py",
+        "tests/unit/test_phase15_map.py",
+    ],
+    "DOCS-047": ["tests/unit/test_maps_047_docs.py"],
+    "REGRESS-047": ["tests/unit/test_maps_047_compat.py"],
+    "PKG-047": ["tests/unit/test_maps_047_pkg.py"],
 }
 
 
 def run_pytest(paths: list[str]) -> int:
     import subprocess
+    import sys
 
-    command = ["uv", "run", "pytest", "-q", "--tb=short", *paths]
+    # Use the active interpreter so `uv run` cannot recreate `.venv` mid-CI
+    # (quality already pinned that interpreter).
+    command = [sys.executable, "-m", "pytest", "-q", "--tb=short", *paths]
     print("+", *command, flush=True)
     return subprocess.call(command, cwd=ROOT)
 
@@ -138,6 +149,9 @@ def check_gate(gate_id: str) -> int:
         errors.append("RFC-0074 and D-078 must remain Accepted")
     if not contract_refine_present():
         errors.append("D-082 and the frozen 0.47 contract markers must remain present")
+    packet = PACKET.read_text(encoding="utf-8")
+    if TRACKING_ISSUE not in packet:
+        errors.append(f"{PACKET}: tracking issue {TRACKING_ISSUE} must be bound")
     state = gate_state(gate_id)
     if state is None:
         errors.append(f"{gate_id} missing from release-gate-0.47.toml")

@@ -1,35 +1,33 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.46 **Published** as `v0.46.0` (2026-08-16). Phases 0.47 first-class maps (D-078 / D-082 / RFC-0074), 0.48 HTMX extension integration (D-080 / RFC-0075), and 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) are **Planned**. No 0.47–0.49 runtime or version claim.
-Living tip = `v0.46.0`.
-**Date:** 2026-08-16
+**Roadmap position:** phase 0.47 **Published** as in-tree `v0.47.0` (2026-08-17; tag/PyPI deferred). Phases 0.48 HTMX extension integration (D-080 / RFC-0075) and 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) are **Planned**. No 0.48–0.49 runtime or version claim.
+Living tip = `v0.47.0`.
+**Date:** 2026-08-17
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.46.0`;
-Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.47.0`;
+Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
+`0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.32.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-`hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-charts`,
+`hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.46** (D-075 / D-079 / RFC-0073) — opt-in `FeatureBundle`
-atomic include, `DataWorkspace`, `ChartInteraction`, schema-aware elements, explicit MCP/Gradio
-workflows, and catalog-backed workbench/scenario consumers (`release-gate-0.46.toml` Verified; tip
-`v0.46.0`). Prior Published **0.45** typed interaction catalog / **0.44** type-driven authoring /
+**Phase focus:** Living train is **0.47** (D-078 / D-082 / RFC-0074) — independent Beta
+`hedron-maps` `0.1.0`, `MapSpec` / `MapPlan` / `compile_map`, replaceable OSM default, custom
+raster/vector sources, pinned strict-CSP MapLibre, `MapInteraction`, semantic fallback, and
+static/PMTiles/MBTiles/blank-map air-gapped paths (`release-gate-0.47.toml` Verified; in-tree tip
+`v0.47.0`; tag/PyPI deferred). Prior Published **0.46** package-native typed workflows /
+**0.45** typed interaction catalog / **0.44** type-driven authoring /
 **0.43** refreshable views and commands / **0.42** production-grade Web Component platform / **0.41**
 composition / **0.40** authoring / **0.39** rich data /
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
-Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
-Phase **0.47** follows only after Verified 0.46. Its Stage 0 packet is contract-refined by
-D-082 against Published in-tree `v0.46.0` and plans optional
-`hedron-maps` `0.1.0`, a replaceable OSM default, custom raster/vector sources, pinned strict-CSP
-MapLibre, typed interactions, semantic fallback, and static/PMTiles/MBTiles/blank-map air-gapped
-paths. All `release-gate-0.47.toml` rows remain Planned and require a tracking issue before Stage 1.
+Tracking [#350](https://github.com/eddiethedean/hedron/issues/350) owns every 0.47 gate until later tag/PyPI assets exist.
 Phase **0.48** follows only after Verified 0.47. Its Stage 0 packet plans closed extension
 declarations, demand-driven pinned assets, complete SSE/head-support/preload vertical slices, and
 an evidence-gated Idiomorph disposition. All `release-gate-0.48.toml` rows remain Planned and
@@ -393,9 +391,12 @@ tag/PyPI deferred; D-074 / D-077 / [RFC-0072](rfcs/RFC-0072-TYPED-INTERACTION-EC
 Phase **0.46** package-native typed workflows is **Published** as `v0.46.0` (D-075 / D-079 / [RFC-0073](rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md);
 `release-gate-0.46.toml` Verified; [#334](https://github.com/eddiethedean/hedron/issues/334); see
 [implementation requirements](implementation/PACKAGE_NATIVE_WORKFLOWS_046.md) and
-[acceptance packet](acceptance/RELEASE_0_46.md)). Living tip is **`v0.46.0`**.
-Phase **0.47** first-class maps remains **Planned** (D-078 / D-082 / RFC-0074; Stage 0 contract
-refined against Published in-tree `v0.46.0`; fence only).
+[acceptance packet](acceptance/RELEASE_0_46.md)).
+Phase **0.47** first-class maps is **Published** as in-tree `v0.47.0` (tag/PyPI deferred;
+D-078 / D-082 / RFC-0074; `release-gate-0.47.toml` Verified;
+tracking [#350](https://github.com/eddiethedean/hedron/issues/350); see
+[implementation requirements](implementation/HEDRON_MAPS_047.md) and
+[acceptance packet](acceptance/RELEASE_0_47.md)). Living tip is **`v0.47.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

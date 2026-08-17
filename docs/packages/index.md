@@ -38,7 +38,7 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
 
 ```bash
-pip install "hedron[data,dev,posit]>=0.46.0,<0.47"
+pip install "hedron[data,dev,posit]>=0.47.0,<0.48"
 ```
 
 ## Tooling-grade and independent Beta lines
@@ -61,7 +61,7 @@ deny-by-default, and Gradio allows only declared remote destinations.
 
 | Package | Target | Role |
 |---|---|---|
-| [hedron-maps](hedron-maps.md) | `hedron[maps]` / independent `0.1.0` | First-class custom-server, MapLibre, and offline maps planned for phase 0.47 |
+| [hedron-maps](hedron-maps.md) | `hedron[maps]` / independent `0.1.0` | First-class custom-server, MapLibre, and offline maps |
 
 ## Alpha incubator
 
@@ -70,7 +70,7 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Alpha Web Component ABI, form controls, interaction state, and primitives; no Supported production inventory before graduation |
 
 ```bash
-pip install "hedron[charts]>=0.46.0,<0.47"
+pip install "hedron[charts]>=0.47.0,<0.48"
 pip install "hedron-sample-kit>=0.1.10,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 

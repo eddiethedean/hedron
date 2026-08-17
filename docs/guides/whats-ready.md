@@ -1,11 +1,12 @@
 # What’s ready today
 
 Use this page to decide **whether a capability is safe to depend on** in a pinned app.
-**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`.
+**Published in-tree `v0.47.0`.** Git tag and PyPI upload are **deferred**.
+In-tree pin `hedron>=0.47.0,<0.48`. The latest on **PyPI** is **`0.46.0`**.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-For a pinned internal admin/CRUD app (`hedron>=0.46.0,<0.47`), you can use typed pages, HTMX fragments, CSRF
+For a pinned internal admin/CRUD app (`hedron>=0.47.0,<0.48`), you can use typed pages, HTMX fragments, CSRF
 (`standard`/`strict`), Flask/Django adapters, and polling for job status.
 
 **Ship today (pinned CRUD / admin on FastAPI, Flask, or Django):** pages, HTMX
@@ -18,7 +19,7 @@ Pin versions. The flagship and adapters are Beta (no Hedron 1.0, no SLA);
 Prefer polling over SSE/WebSocket.
 
 **Charts / sample kit:** install with floors
-`hedron[charts]>=0.46.0,<0.47` and `hedron-sample-kit>=0.1.10,<0.2`.
+`hedron[charts]>=0.47.0,<0.48` and `hedron-sample-kit>=0.1.10,<0.2`.
 First-party `ChartSpec` / `hedron-chart` (SVG or Canvas) and Matplotlib/static charts are
 **Supported** on the Beta `hedron-charts` package; Plotly / Altair remain **Experimental**.
 **Tooling-grade:** notebook preview is Supported only on localhost and is not a production
@@ -85,6 +86,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Refreshable views / command handles | **Supported** (API `beta`) | [Refreshable views](../api/REFRESHABLE_VIEWS.md) · [What’s new in 0.43](whats-new-0.43.md) |
 | Type-driven authoring / generated forms | **Supported** (API `beta`) | [Type-driven authoring](../api/TYPE_DRIVEN_AUTHORING.md) · [What’s new in 0.44](whats-new-0.44.md) |
 | Feature bundles / data workspaces | **Supported** (API `beta`; opt-in) | [Package workflows](../api/PACKAGE_WORKFLOWS.md) · [What’s new in 0.46](whats-new-0.46.md) |
+| First-class maps | **Supported** (API `beta`; `hedron[maps]`) | [Maps](../api/MAPS.md) · [What’s new in 0.47](whats-new-0.47.md) |
 | Multi-worker durable jobs | **Supported** with shared Redis backend | [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`; ABI `hedron-data-editor`) | [Data apps](data-apps.md) · [DATA.md](../api/DATA.md) |
 | Bounded OptimisticMutation | **Supported** for collection/cell edits only; deny-by-default elsewhere | [DATA.md](../api/DATA.md) · [What’s new in 0.39](whats-new-0.39.md) |
@@ -95,7 +97,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronWorkbench` / `HedronPosit`; no import auto-wrap |
 | Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.46.0,<0.47`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
+| Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.47.0,<0.48`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.0` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
@@ -103,7 +105,7 @@ sessions are not Supported yet** — do not market human AT as done.
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `hedron>=0.46.0,<0.47`. The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.47.0,<0.48`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
@@ -241,15 +243,15 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.46.0,<0.47` for the current published train.
+Pin `hedron>=0.47.0,<0.48` in-tree, or `hedron>=0.46.0,<0.47` from **PyPI** until the deferred upload.
 
-Extras: `"hedron[data]>=0.46.0,<0.47"`, `"hedron[extras]>=0.46.0,<0.47"`,
-`"hedron[jinja]>=0.46.0,<0.47"`, `"hedron[dev]>=0.46.0,<0.47"`,
-`"hedron[notebook]>=0.46.0,<0.47"` (tooling / localhost),
-`"hedron[mcp]>=0.46.0,<0.47"` (Beta Supported inventory),
-`"hedron[gradio]>=0.46.0,<0.47"` (Beta satellite; pin `hedron-gradio>=0.2.0,<0.3`),
-`"hedron[charts]>=0.46.0,<0.47"`, `"hedron[workbench]>=0.46.0,<0.47"`,
-`"hedron[posit]>=0.46.0,<0.47"`,
+Extras: `"hedron[data]>=0.47.0,<0.48"`, `"hedron[extras]>=0.47.0,<0.48"`,
+`"hedron[jinja]>=0.47.0,<0.48"`, `"hedron[dev]>=0.47.0,<0.48"`,
+`"hedron[notebook]>=0.47.0,<0.48"` (tooling / localhost),
+`"hedron[mcp]>=0.47.0,<0.48"` (Beta Supported inventory),
+`"hedron[gradio]>=0.47.0,<0.48"` (Beta satellite; pin `hedron-gradio>=0.2.0,<0.3`),
+`"hedron[charts]>=0.47.0,<0.48"`, `"hedron[maps]>=0.47.0,<0.48"`, `"hedron[workbench]>=0.47.0,<0.48"`,
+`"hedron[posit]>=0.47.0,<0.48"`,
 and `"hedron-sample-kit>=0.1.10,<0.2"`.
 
 ## Role-specific wrappers

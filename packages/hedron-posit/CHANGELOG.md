@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.47.0] — 2026-08-17
+
+### Added
+- Phase 0.47 first-class maps (`hedron-maps` 0.1.0) on the coordinated train (D-078 / D-082 / RFC-0074).
+
+### Changed
+- Coordinated train tip `0.47.0` (in-tree cut; tag/PyPI deferred).
+
 ## [0.46.0] — 2026-08-16
 
 ### Added

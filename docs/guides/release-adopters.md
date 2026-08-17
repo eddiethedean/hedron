@@ -3,7 +3,7 @@
 The canonical release history now lives on [Releases](release-notes.md).
 
 Current public release: **v0.44.0**. Recommended constraint:
-`hedron>=0.46.0,<0.47`.
+`hedron>=0.47.0,<0.48`.
 
 Continue with:
 

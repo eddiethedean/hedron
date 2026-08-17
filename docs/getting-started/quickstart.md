@@ -8,7 +8,8 @@ If terms such as project folder, terminal, virtual environment, or development s
 use [Your first application with VS Code](first-app-vscode.md). In Posit Workbench, use the
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
-**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`.
+**Published in-tree `v0.47.0`.** Git tag and PyPI upload are **deferred**.
+In-tree pin `hedron>=0.47.0,<0.48`. The latest on **PyPI** is **`0.46.0`**.
 
 ## 1. Scaffold and run
 

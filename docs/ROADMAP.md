@@ -44,7 +44,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Published** (`v0.44.0`; in-tree cut, tag/PyPI deferred; D-072 / RFC-0071; [#318](https://github.com/eddiethedean/hedron/issues/318)) |
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
-| **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Planned** (`v0.47.0` / `hedron-maps` `0.1.0`; D-078 / D-082 / RFC-0074; Stage 0 contract refined against Published in-tree `v0.46.0`; requires a tracking issue before Stage 1; no 0.47 runtime) |
+| **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Published** (`v0.47.0` / `hedron-maps` `0.1.0`; in-tree cut, tag/PyPI deferred; D-078 / D-082 / RFC-0074; [#350](https://github.com/eddiethedean/hedron/issues/350)) |
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Planned** (`v0.48.0`; D-080 / RFC-0075; requires Verified 0.47 and a tracking issue before Stage 1; no 0.48 runtime) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Planned** (`v0.49.0`; D-081 / RFC-0076; requires Verified 0.48 and a tracking issue before Stage 1; no 0.49 runtime) |
 
@@ -76,7 +76,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   [STABLE_FACADE](api/STABLE_FACADE.md) — not every What’s ready Supported row.
 - **0.24** (**Published**) Accepted **`polling_only`**: live transports stay **experimental**;
   polling is the Supported production story — [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md).
-- Planned **0.47** adds the optional `hedron-maps` package: a typed map grammar, pinned strict-CSP
+- Published **0.47** adds the optional `hedron-maps` package: a typed map grammar, pinned strict-CSP
   MapLibre enhancement, replaceable OSM default, custom raster/vector sources, and tested static,
   PMTiles, MBTiles, blank-map, and air-gapped paths. It does not change the availability of the
   existing core `Map` before the phase is cut.
@@ -97,9 +97,9 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   visualization, element, remote, and workbench workflows that compile to the same stack. None of
   these programs is a blanket feature promotion or a scheduled `1.0`.
 
-### Honest gaps on the current train (0.46.x)
+### Honest gaps on the current train (0.47.x)
 
-- Current **published** train is **0.46.x** (`v0.46.0`)
+- Current **published** train is **0.47.x** (in-tree `v0.47.0`; tag/PyPI deferred; PyPI still `0.46.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -3858,11 +3858,11 @@ Bundle/workspace/chart locks:
 
 ## 0.47 — First-class maps and offline geospatial presentation (`v0.47.0`)
 
-**Status:** Planned (D-078 / D-082 /
+**Status:** Published as in-tree `v0.47.0` (D-078 / D-082 /
 [RFC-0074](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0074-FIRST-CLASS-MAPS.md)).
-Stage 0 contract refined against Published in-tree `v0.46.0`. Verified `v0.46.0` is the hard
-Stage 1 prerequisite and cut baseline. A tracking issue must bind every 0.47 gate before
-runtime implementation begins. Stage 0 changes planning contracts only.
+Tag/PyPI remain deferred. Tracking
+[#350](https://github.com/eddiethedean/hedron/issues/350) owns every 0.47 gate until a later
+tag/PyPI; it stays open at the in-tree cut. This cut does not start 0.48.
 
 **Outcome:** The new optional `hedron-maps` package makes maps a first-class Hedron experience.
 Beginners get an attributed, replaceable OpenStreetMap map with one call. Applications can use

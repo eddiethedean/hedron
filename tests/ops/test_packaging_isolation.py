@@ -28,6 +28,7 @@ _INDEPENDENT_BETA = {
     "hedron-sample-kit",
     "hedron-sim",
     "hedron-notebook",
+    "hedron-maps",
 }
 _INDEPENDENT_BETA_02 = {
     "hedron-mcp",
@@ -92,6 +93,7 @@ def test_first_party_plugin_meta_matches_package_version() -> None:
         "hedron-elements",
         "hedron-extras",
         "hedron-gradio",
+        "hedron-maps",
         "hedron-mcp",
         "hedron-notebook",
         "hedron-sample-kit",

@@ -245,6 +245,7 @@ def _shell(title: str, body: str, *, request: Request, active: str = "components
         ("cache", "Cache", "/hedron-explorer/cache"),
         ("data", "Data", "/hedron-explorer/data"),
         ("charts", "Charts", "/hedron-explorer/charts"),
+        ("maps", "Maps", "/hedron-explorer/maps"),
         ("auto", "Auto", "/hedron-explorer/auto"),
         ("packages", "Packages", "/hedron-explorer/packages"),
         ("elements", "Elements", "/hedron-explorer/elements"),
@@ -624,6 +625,52 @@ def explorer_router() -> APIRouter:
         </ul>
         """
         return _shell("Charts", body, request=request, active="charts")
+
+    @router.get("/maps", response_class=HTMLResponse, include_in_schema=False)
+    async def maps_view(request: Request) -> str:
+        from hedron_core.registry import get_registry
+
+        registry = get_registry()
+        map_components = [
+            c
+            for c in registry.components()
+            if c.distribution == "hedron-maps"
+            or c.name == "Map"
+            and "hedron_maps" in (c.module or "")
+        ]
+        rows = "".join(
+            "<tr>"
+            f"<td><code>{html_lib.escape(c.name)}</code></td>"
+            f"<td><code>{html_lib.escape(c.distribution)}</code></td>"
+            f"<td>{html_lib.escape(c.accessibility_notes or '')}</td>"
+            "</tr>"
+            for c in map_components
+        )
+        assets = "".join(
+            f"<li><code>{html_lib.escape(a.logical_id)}</code> ({html_lib.escape(a.kind)})</li>"
+            for a in registry.assets()
+            if "hedron-maps" in a.logical_id or "maplibre" in a.logical_id
+        )
+        body = f"""
+        <h2>Maps</h2>
+        <p>Explorer inspects compiled MapPlan facts, origins, attribution, CSP, fallback,
+        and event schemas without executing untrusted map data.</p>
+        <h3>Registered map components</h3>
+        <table>
+          <thead><tr><th>Name</th><th>Distribution</th><th>A11y notes</th></tr></thead>
+          <tbody>{rows or "<tr><td colspan='3'>No map components registered</td></tr>"}</tbody>
+        </table>
+        <h3>Map assets</h3>
+        <ul>{assets or "<li>No map assets registered yet</li>"}</ul>
+        <h3>Closed events</h3>
+        <ul>
+          <li>feature-selected / feature-activated</li>
+          <li>viewport-changed (map.viewport)</li>
+          <li>layer-visibility-changed</li>
+          <li>map-loaded / map-failed</li>
+        </ul>
+        """
+        return _shell("Maps", body, request=request, active="maps")
 
     @router.get("/data", response_class=HTMLResponse, include_in_schema=False)
     async def data_view(request: Request) -> str:

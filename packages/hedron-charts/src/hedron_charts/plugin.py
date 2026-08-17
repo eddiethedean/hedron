@@ -54,7 +54,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_charts",
     version="0.2.0",
     distribution="hedron-charts",
-    hedron_version=">=0.46,<0.47",
+    hedron_version=">=0.47,<0.48",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,

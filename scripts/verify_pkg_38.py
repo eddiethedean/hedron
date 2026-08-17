@@ -169,10 +169,10 @@ def _check_versions(*, allow_planned: bool) -> None:
             or version.startswith("0.43.")
             or version.startswith("0.44.")
             or version.startswith("0.45.")
-            or version.startswith("0.46.")
+            or version.startswith(("0.46.", "0.47."))
         ):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0/history expects 0.37.x–0.46.x"
+                f"unexpected workspace version {version!r}; Stage 0/history expects 0.37.x–0.47.x"
             )
         print(f"ok: living tip {version} (0.38 allow-planned)")
         return
@@ -184,10 +184,10 @@ def _check_versions(*, allow_planned: bool) -> None:
         or version.startswith("0.43.")
         or version.startswith("0.44.")
         or version.startswith("0.45.")
-            or version.startswith("0.46.")
+            or version.startswith(("0.46.", "0.47."))
     ):
         raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE}; found {version!r}")
-    if version.startswith(("0.39.", "0.40.", "0.41.", "0.42.", "0.43.", "0.44.", "0.45.", "0.46.")):
+    if version.startswith(("0.39.", "0.40.", "0.41.", "0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.")):
         # Post-0.38 tip: packet already Verified; skip workspace pin equality.
         print(f"ok: post-cut living tip {version} (0.38 packet verified)")
         return

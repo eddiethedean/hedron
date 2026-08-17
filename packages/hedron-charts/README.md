@@ -34,7 +34,7 @@ and the
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.46.0,<0.47"
+pip install "hedron[charts]>=0.47.0,<0.48"
 # independent satellite:
 pip install "hedron-charts>=0.2.0,<0.3"
 # Add a backend when needed:

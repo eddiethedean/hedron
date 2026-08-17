@@ -1,12 +1,69 @@
-# Upgrade to Hedron 0.46
+# Upgrade to Hedron 0.47
 
-This guide covers an application upgrade onto the **0.46.x** train
-(**`v0.46.0`**).
+This guide covers an application upgrade onto the **0.47.x** train
+(in-tree **`v0.47.0`**; Git tag and PyPI remain deferred — PyPI still serves `0.46.0`).
 New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.46.x adds opt-in package-native features that compile onto existing
+Hedron 0.47.x adds independent Beta **`hedron-maps` `0.1.0`** on top of the 0.46
+package-native stack:
+
+- `MapSpec` / `MapPlan` / `compile_map` compile a closed, redacted map grammar
+- `hedron_maps.Map` defaults to attributed `OpenStreetMap.standard()`; core `hedron.Map` is unchanged
+- Custom XYZ / TileJSON / vector sources, static images, PMTiles, bounded MBTiles, and blank maps
+- Pinned strict-CSP MapLibre behind `hedron-map`; `MapInteraction` binds typed events
+- Semantic table alternatives survive no JavaScript / WebGL / CSP / network failure
+
+Apps that never install `hedron-maps` stay request-path identical to 0.46. Direct
+`hedron.Map` and explicit chart map adapters remain. Prior trains remain in force:
+package-native workflows (0.46), typed interaction catalog (0.45), type-driven authoring (0.44),
+refreshable views and commands (0.43), production-grade
+Web Component inventory (0.42), browser composition / draft transfer / navigation (0.41),
+authoring kit (0.40), rich data / OptimisticMutation (0.39), high-fidelity charts
+(`hedron-charts` `0.2.x`, 0.38), MCP (`hedron-mcp` `0.2.x`), Workbench ASGI
+(`fastapi-workbench` `1.x`), and Posit (`hedron[posit]` / `HedronPosit`). Polling remains
+the production recommendation for live status. SSE, WebSocket, streaming, and navigation
+preload remain experimental.
+
+## Before upgrading
+
+1. Commit or back up your lockfile.
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.47.0,<0.48`,
+   or the tip pin already). Registry installs remain `>=0.46.0,<0.47` until the deferred upload.
+3. Existing 0.42–0.46 handlers and unused `include_feature` keep working.
+4. Adopt maps only via `hedron[maps]` / `from hedron_maps import …`.
+5. If you use editable grids or charts, keep `hedron[data]` / `hedron[charts]` on the
+   tip pin (or `hedron-charts>=0.2.0,<0.3`).
+6. If you use Posit Workbench or Connect, prefer `hedron[posit]` / `HedronPosit`.
+
+## Install
+
+```bash
+python -m pip install -U "hedron>=0.47.0,<0.48"
+python -m pip install -U "hedron[data]>=0.47.0,<0.48"
+python -m pip install -U "hedron[charts]>=0.47.0,<0.48"
+python -m pip install -U "hedron[maps]>=0.47.0,<0.48"
+# independent charts satellite:
+python -m pip install -U "hedron-charts>=0.2.0,<0.3"
+# optional production-grade elements inventory:
+python -m pip install -U "hedron[elements]>=0.47.0,<0.48"
+```
+
+From PyPI today, pin `hedron>=0.46.0,<0.47` until the 0.47 upload.
+
+## Behavioral notes (0.46 → 0.47)
+
+1. **Core Map stays core.** `from hedron import Map` does not gain an OSM default or MapLibre host.
+2. **OSM default is `hedron_maps.Map` only.** `basemap=None` is a blank map, not OSM.
+3. **Charts map adapters stay explicit.** MapLibre/Folium/PyDeck on `hedron-charts` do not
+   silently switch to `hedron-maps`.
+4. **Rollback:** uninstall `hedron-maps` and revert `hedron_maps` imports; pin
+   `hedron>=0.46.0,<0.47` from the registry.
+
+## Behavioral notes (0.45 → 0.46)
+
+Hedron 0.46.x added opt-in package-native features that compile onto existing
 0.43–0.45 seams:
 
 - `FeatureBundle` / `Hedron.include_feature` atomically register ordinary handles, components,
@@ -19,42 +76,6 @@ Hedron 0.46.x adds opt-in package-native features that compile onto existing
   canonical
 - `McpExposure` and `RemoteWorkflow` wrap live MCP/Gradio registration; catalog presence never
   grants exposure
-
-Apps that never call `include_feature` stay request-path identical to 0.45. Direct package APIs
-remain. Prior trains remain in force: typed interaction catalog (0.45), type-driven authoring (0.44),
-refreshable views and commands (0.43), production-grade
-Web Component inventory (0.42), browser composition / draft transfer / navigation (0.41),
-authoring kit (0.40), rich data / OptimisticMutation (0.39), high-fidelity charts
-(`hedron-charts` `0.2.x`, 0.38), MCP (`hedron-mcp` `0.2.x`), Workbench ASGI
-(`fastapi-workbench` `1.x`), and Posit (`hedron[posit]` / `HedronPosit`). Polling remains
-the production recommendation for live status. SSE, WebSocket, streaming, and navigation
-preload remain experimental.
-
-## Before upgrading
-
-1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.46.0,<0.47`,
-   or the tip pin already).
-3. Existing 0.42–0.45 handlers keep working. Unused `include_feature` is request-path
-   identical to 0.45.
-4. Adopt bundles after modeled 0.44 types and 0.45 catalog consumers if you need fingerprints.
-5. If you use editable grids or charts, keep `hedron[data]` / `hedron[charts]` on the
-   tip pin (or `hedron-charts>=0.2.0,<0.3`).
-6. If you use Posit Workbench or Connect, prefer `hedron[posit]` / `HedronPosit`.
-
-## Install
-
-```bash
-python -m pip install -U "hedron>=0.46.0,<0.47"
-python -m pip install -U "hedron[data]>=0.46.0,<0.47"
-python -m pip install -U "hedron[charts]>=0.46.0,<0.47"
-# independent charts satellite:
-python -m pip install -U "hedron-charts>=0.2.0,<0.3"
-# optional production-grade elements inventory:
-python -m pip install -U "hedron[elements]>=0.46.0,<0.47"
-```
-
-## Behavioral notes (0.45 → 0.46)
 
 1. **Bundles are not executors.** `include_feature` registers ordinary 0.43–0.45 handles,
    components, scenarios, and stacked projections. Authz stays explicit; catalog presence is not
@@ -100,14 +121,15 @@ python -m pip install -U "hedron[elements]>=0.46.0,<0.47"
 
 ## After upgrading
 
-- Keep existing pages and 0.45 catalog consumers running unchanged, then add one
-  `include_feature` at a time.
-- Smoke workspace list/detail/create/edit through ordinary HTTP as well as HTMX.
-- Confirm `hedron inspect features` and Explorer Features without treating catalog presence as
+- Keep existing pages and 0.46 map-free routes running unchanged, then add one
+  `hedron_maps.Map` at a time.
+- Smoke OSM, custom XYZ, and one offline path (static image or blank map) with and without JavaScript.
+- Confirm Explorer `/hedron-explorer/maps` and `hedron inspect` without treating catalog presence as
   exposure.
 
 ## See also
 
+- [What's new in 0.47](whats-new-0.47.md)
 - [What's new in 0.46](whats-new-0.46.md)
 - [What's new in 0.45](whats-new-0.45.md)
 - [What's new in 0.44](whats-new-0.44.md)

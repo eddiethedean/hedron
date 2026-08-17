@@ -15,6 +15,7 @@ below record package-specific implementation changes.
 | `hedron-conformance` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-conformance/CHANGELOG.md) |
 | `hedron-extras` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-extras/CHANGELOG.md) |
 | `hedron-charts` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-charts/CHANGELOG.md) |
+| `hedron-maps` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-maps/CHANGELOG.md) |
 | `hedron-elements` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-elements/CHANGELOG.md) |
 | `hedron-native` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-native/CHANGELOG.md) |
 | `hedron-notebook` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-notebook/CHANGELOG.md) |

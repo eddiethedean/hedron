@@ -1,0 +1,38 @@
+.hedron-map-canvas {
+  min-height: 240px;
+  width: 100%;
+  outline: none;
+}
+.hedron-map-canvas:focus {
+  outline: 2px solid var(--hedron-map-focus-ring, #2563eb);
+  outline-offset: 2px;
+}
+hedron-map {
+  display: block;
+  --hedron-map-focus-ring: #2563eb;
+  --hedron-map-label: #0f172a;
+  --hedron-map-empty: #f8fafc;
+  --hedron-map-error: #b91c1c;
+}
+@media (prefers-color-scheme: dark) {
+  hedron-map {
+    --hedron-map-label: #f8fafc;
+    --hedron-map-empty: #0f172a;
+  }
+}
+@media (forced-colors: active) {
+  hedron-map {
+    --hedron-map-focus-ring: CanvasText;
+    --hedron-map-label: CanvasText;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hedron-map-canvas * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+.hedron-map-alternative {
+  caption-side: top;
+  width: 100%;
+}

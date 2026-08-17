@@ -5,13 +5,13 @@ ledger (gate IDs, RFCs) lives on GitHub:
 [`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 Capability maturity for *this* train: [What’s ready](whats-ready.md).
 
-**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`.
+**Published in-tree `v0.47.0`.** Pin `hedron>=0.47.0,<0.48`. Tag/PyPI deferred; PyPI still `0.46.0`.
 
-## Planned after 0.46
+## Planned after 0.47
 
 | Topic | Disposition |
 |---|---|
-| First-class maps (`hedron-maps`, MapLibre, offline tiles) | **0.47 Planned** (D-082 Stage 0 refine) — no runtime or version claim yet |
+| First-class HTMX extension integration | **0.48 Planned** (D-080) — no runtime or version claim yet |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |
