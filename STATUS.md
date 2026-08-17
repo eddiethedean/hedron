@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.45 **Published** as `v0.45.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phase 0.46 package-native typed workflows (D-075 / RFC-0073) is **Planned**. No 0.46 runtime or version claim.
+**Roadmap position:** phase 0.45 **Published** as `v0.45.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phase 0.46 package-native typed workflows (D-075 / RFC-0073) and phase 0.47 first-class maps (D-078 / RFC-0074) are **Planned**. No 0.46/0.47 runtime or version claim.
 Living tip = `v0.45.0`.
 **Date:** 2026-08-16
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -35,6 +35,10 @@ Phase **0.46** follows only after 0.45 is Verified (D-075 /
 workspaces, explicit chart/data links, schema-aware elements, remote workflows, and catalog-backed
 workbench/scenario features that compile to the existing stack. Its Stage 0 packet is complete; all
 `release-gate-0.46.toml` rows remain Planned and a separate tracking issue is required.
+Phase **0.47** follows only after Verified 0.46. Its complete Stage 0 packet plans optional
+`hedron-maps` `0.1.0`, a replaceable OSM default, custom raster/vector sources, pinned strict-CSP
+MapLibre, typed interactions, semantic fallback, and static/PMTiles/MBTiles/blank-map air-gapped
+paths. All `release-gate-0.47.toml` rows remain Planned and require a tracking issue before Stage 1.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,

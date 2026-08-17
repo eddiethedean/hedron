@@ -9,13 +9,12 @@ status: planned
     This is the accepted D-078 / RFC-0074 public contract. No `hedron-maps` runtime or package is
     available until the 0.47 gates are Verified.
 
-Install target:
+Install target (not available until the 0.47 gates are Verified):
 
-```bash
-pip install "hedron[maps]>=0.47.0,<0.48"
-# or independently versioned package
-pip install "hedron-maps>=0.1.0,<0.2"
-```
+- flagship extra `hedron[maps]` on the 0.47 train
+- independently versioned `hedron-maps` `>=0.1.0,<0.2`
+
+Do not install either extra on the living 0.45 train.
 
 ## Beginner map
 
