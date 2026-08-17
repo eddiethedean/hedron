@@ -30,8 +30,7 @@ helpers) is compatibility-protected on the 0.x train. Everything else is `beta` 
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-**On PyPI today:** latest is **0.45.0**. This repository is **0.46.0** (Git tag / PyPI
-deferred).
+**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`.
 
 !!! note "Contracts vs full reference"
 

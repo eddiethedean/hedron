@@ -6,7 +6,7 @@
 - Portable FeatureBundle facts via include_feature / project_bundle_facts.
 
 ### Changed
-- Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
+- Coordinated train tip `0.46.0`.
 
 ### Fixed
 - Flask ``include_feature`` now fails closed for unmaterialized DataWorkspace

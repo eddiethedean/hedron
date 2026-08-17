@@ -6,7 +6,7 @@
 - Coordinated train tip with catalog-backed workbench inspection.
 
 ### Changed
-- Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
+- Coordinated train tip `0.46.0`.
 
 
 ## [0.45.0] — 2026-08-16

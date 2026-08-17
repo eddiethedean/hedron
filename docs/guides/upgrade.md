@@ -1,7 +1,7 @@
 # Upgrade to Hedron 0.46
 
-This guide covers an application upgrade onto the **0.46.x** train (in-tree cut
-**`v0.46.0`**; Git tag / PyPI deferred). **On PyPI today** latest is **0.45.0**.
+This guide covers an application upgrade onto the **0.46.x** train
+(**`v0.46.0`**).
 New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
@@ -33,7 +33,7 @@ preload remain experimental.
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.45.0,<0.46`,
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.46.0,<0.47`,
    or the tip pin already).
 3. Existing 0.42–0.45 handlers keep working. Unused `include_feature` is request-path
    identical to 0.45.

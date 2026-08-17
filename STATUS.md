@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.46 **Published** as `v0.46.0` (2026-08-16; in-tree cut, tag/PyPI deferred). Phase 0.47 first-class maps (D-078 / RFC-0074) is **Planned**. No 0.47 runtime or version claim.
+**Roadmap position:** phase 0.46 **Published** as `v0.46.0` (2026-08-16). Phases 0.47 first-class maps (D-078 / RFC-0074), 0.48 HTMX extension integration (D-080 / RFC-0075), and 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) are **Planned**. No 0.47–0.49 runtime or version claim.
 Living tip = `v0.46.0`.
 **Date:** 2026-08-16
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -26,15 +26,20 @@ workflows, and catalog-backed workbench/scenario consumers (`release-gate-0.46.t
 composition / **0.40** authoring / **0.39** rich data /
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
-Tracking [#334](https://github.com/eddiethedean/hedron/issues/334) remains open until the
-`v0.46.0` Git tag and PyPI/GitHub Release assets exist. [#328](https://github.com/eddiethedean/hedron/issues/328)
-remains open for the deferred `v0.45.0` tag/PyPI assets. [#318](https://github.com/eddiethedean/hedron/issues/318)
-remains open for the deferred `v0.44.0` tag/PyPI assets. [#311](https://github.com/eddiethedean/hedron/issues/311)
-remains open for the deferred `v0.43.0` tag/PyPI assets.
+Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
 Phase **0.47** follows only after Verified 0.46. Its complete Stage 0 packet plans optional
 `hedron-maps` `0.1.0`, a replaceable OSM default, custom raster/vector sources, pinned strict-CSP
 MapLibre, typed interactions, semantic fallback, and static/PMTiles/MBTiles/blank-map air-gapped
 paths. All `release-gate-0.47.toml` rows remain Planned and require a tracking issue before Stage 1.
+Phase **0.48** follows only after Verified 0.47. Its Stage 0 packet plans closed extension
+declarations, demand-driven pinned assets, complete SSE/head-support/preload vertical slices, and
+an evidence-gated Idiomorph disposition. All `release-gate-0.48.toml` rows remain Planned and
+require a tracking issue before Stage 1; no live-transport maturity claim changes at Stage 0.
+Phase **0.49** follows only after Verified 0.48. Its Stage 0 packet plans explicit dependency
+lifetimes, native/expanded parameter binding, dual input/output schemas, tagged wire unions,
+router/OpenAPI/security convergence, measured validation adapters, and honest settings/experimental
+dispositions. All `release-gate-0.49.toml` rows remain Planned and require a tracking issue before
+Stage 1.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
@@ -386,8 +391,7 @@ tag/PyPI deferred; D-074 / D-077 / [RFC-0072](docs/rfcs/RFC-0072-TYPED-INTERACTI
 `release-gate-0.45.toml` Verified; [#328](https://github.com/eddiethedean/hedron/issues/328); see
 [implementation requirements](docs/implementation/TYPED_INTERACTION_ECOSYSTEM_045.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_45.md)).
-Phase **0.46** package-native typed workflows is **Published** as `v0.46.0` (in-tree cut,
-tag/PyPI deferred; D-075 / D-079 / [RFC-0073](docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md);
+Phase **0.46** package-native typed workflows is **Published** as `v0.46.0` (D-075 / D-079 / [RFC-0073](docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md);
 `release-gate-0.46.toml` Verified; [#334](https://github.com/eddiethedean/hedron/issues/334); see
 [implementation requirements](docs/implementation/PACKAGE_NATIVE_WORKFLOWS_046.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_46.md)). Living tip is **`v0.46.0`**.

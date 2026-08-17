@@ -6,7 +6,7 @@
 - Opt-in schema-aware generate_form(enhance='elements'); native forms remain canonical.
 
 ### Changed
-- Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
+- Coordinated train tip `0.46.0`.
 
 
 ## [0.45.0] — 2026-08-16

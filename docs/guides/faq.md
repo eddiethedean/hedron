@@ -2,35 +2,28 @@
 
 ## Which version should I install?
 
-**On PyPI today:** latest is **0.45.0**:
+**Published `v0.46.0`:**
 
 ```bash
-pip install "hedron>=0.45.0,<0.46"
+pip install "hedron>=0.46.0,<0.47"
 # or
-uv add "hedron>=0.45.0,<0.46"
+uv add "hedron>=0.46.0,<0.47"
 ```
 
-**This repository** is **0.46.0** (in-tree; Git tag / PyPI deferred —
-[#334](https://github.com/eddiethedean/hedron/issues/334)). After `v0.46.0` is on
-PyPI, pin `hedron>=0.46.0,<0.47`. Always use an upper bound so a future minor train
-cannot install by accident.
-
-If the resolver reports **no matching distribution for 0.46.0**, you hit the deferred
-tag — use the 0.45 pin above or clone this repository and `uv sync`.
-
+Always use an upper bound so a future minor train cannot install by accident.
 Packages are **Beta** (usable, no 1.0, no SLA). Capability detail:
 [What’s ready](whats-ready.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For DataTable/DataEditor, install `hedron[data]>=0.45.0,<0.46`. For charts, install
-`hedron[charts]>=0.45.0,<0.46`
+For DataTable/DataEditor, install `hedron[data]>=0.46.0,<0.47`. For charts, install
+`hedron[charts]>=0.46.0,<0.47`
 ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=0.45.0,<0.46"
-pip install "hedron-django>=0.45.0,<0.46"   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.46.0,<0.47"
+pip install "hedron-django>=0.46.0,<0.47"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -88,7 +81,7 @@ status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
 ## Is Hedron production-ready for internal admin?
 
 For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
-with eyes open: packages are **Beta**, pin `>=0.45.0,<0.46` on PyPI today, prefer polling
+with eyes open: packages are **Beta**, pin `>=0.46.0,<0.47` on PyPI today, prefer polling
 for live status, and read [What’s ready](whats-ready.md). There is no vendor SLA or
 scheduled 1.0. Use the [PoC checklist](evaluate.md#poc-checklist) on
 [Evaluate](evaluate.md).
@@ -110,8 +103,8 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then
-`uv add "hedron>=0.45.0,<0.46"`. Or use
-`hedron new my-app` after `pip install "hedron>=0.45.0,<0.46"`.
+`uv add "hedron>=0.46.0,<0.47"`. Or use
+`hedron new my-app` after `pip install "hedron>=0.46.0,<0.47"`.
 
 ## Should I use `uv init` or `hedron new`?
 
@@ -121,7 +114,7 @@ the same directory by accident.
 
 ## What do Beta, Supported, and Deferred mean?
 
-Short version for builders: **pin what is on the index** (`hedron>=0.45.0,<0.46` on
+Short version for builders: **pin what is on the index** (`hedron>=0.46.0,<0.47` on
 PyPI today). Packages are Beta; that does not mean “do not use” — it means expect
 occasional `0.x` churn and pin upper bounds.
 
@@ -138,9 +131,8 @@ Snapshot: [What’s ready today](whats-ready.md).
 ## Why pin with an upper bound?
 
 A lower bound without an upper bound allows a future minor train to install
-automatically. Use `hedron>=0.45.0,<0.46` on PyPI today (and `>=0.46.0,<0.47` after the
-tag ships) so compatible patches are accepted while the next minor train requires an
-intentional review. See [Compatibility](../COMPATIBILITY.md).
+automatically. Use `hedron>=0.46.0,<0.47` so compatible patches are accepted while the
+next minor train requires an intentional review. See [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
 
@@ -217,9 +209,9 @@ variables / your secret store. Constructor args override both when explicit.
 ## How do I install Jinja templates?
 
 ```bash
-pip install "hedron[jinja]>=0.45.0,<0.46"
+pip install "hedron[jinja]>=0.46.0,<0.47"
 # or
-uv add "hedron[jinja]>=0.45.0,<0.46"
+uv add "hedron[jinja]>=0.46.0,<0.47"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).

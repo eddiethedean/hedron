@@ -1,0 +1,73 @@
+# Phase 0.49 FastAPI/Pydantic capability and disposition inventory.
+
+schema_version = 1
+phase = "0.49"
+status = "Planned"
+decision = "D-081"
+owning_rfc = "RFC-0076"
+
+[[capability]]
+id = "FP-LIFETIME-001..008"
+area = "dependency-lifetimes"
+gate = "LIFETIME-049"
+state = "Planned"
+adopt = ["yield-scope-function", "yield-scope-request", "cleanup-graph", "streaming-diagnostics"]
+
+[[capability]]
+id = "FP-BIND-001..012"
+area = "parameter-models"
+gate = "BINDING-049"
+state = "Planned"
+adopt = ["query-model", "header-model", "cookie-model", "form-model", "expanded-fallback"]
+
+[[capability]]
+id = "FP-SCHEMA-001..012"
+area = "dual-schema"
+gate = "SCHEMA-049"
+state = "Planned"
+adopt = ["validation-schema", "serialization-schema", "read-only", "write-only", "schema-generator"]
+
+[[capability]]
+id = "FP-UNION-001..010"
+area = "tagged-wire-unions"
+gate = "UNION-049"
+state = "Planned"
+adopt = ["literal-discriminator", "openapi-discriminator", "cross-runtime-fixtures"]
+
+[[capability]]
+id = "FP-OPENAPI-001..014"
+area = "router-openapi-security"
+gate = "OPENAPI-049"
+state = "Planned"
+adopt = ["preserved-route-provenance", "typed-responses", "media-types", "callbacks", "webhooks", "requires-scopes", "strict-content-type", "stable-operation-ids"]
+
+[[capability]]
+id = "FP-ADAPTER-001..008"
+area = "validation-adapters"
+gate = "ADAPTER-VALIDATION-049"
+state = "Planned"
+adopt_if_measured = ["cached-type-adapter", "validate-json", "fail-fast-batch"]
+
+[[capability]]
+id = "FP-SETTINGS-001..008"
+area = "deployment-settings"
+gate = "SETTINGS-049"
+state = "Evaluate"
+candidates = ["fastapi-workbench", "hedron-workbench", "hedron-posit"]
+allowed_dispositions = ["adopt", "retain-custom-loader"]
+
+[[capability]]
+id = "FP-RESEARCH-001..006"
+area = "experimental-research"
+gate = "RESEARCH-049"
+state = "Experimental"
+candidates = ["partial-validation", "missing-sentinel", "fail-fast"]
+supported = []
+
+[[capability]]
+id = "FP-EXCLUDE-001..010"
+area = "deliberate-exclusions"
+gate = "COMPAT-049"
+state = "Excluded"
+excluded = ["router-alpha-matches-handle", "serialize-as-any-security-boundaries", "serialization-context-authorization", "validate-call-handler-runtime", "computed-field-form-input", "pydantic-url-replaces-safe-url", "fastapi-cloud-contract", "automatic-webhook-delivery", "automatic-oauth-provider", "experimental-missing-public-api"]
+

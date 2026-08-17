@@ -34,11 +34,10 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current in-tree train is **0.46.x**. **On PyPI today** latest is **0.45.0**
-(Git tag / PyPI deferred). Install from the index you can resolve:
+The current published train is **0.46.x**. Install:
 
 ```bash
-python -m pip install "hedron>=0.45.0,<0.46"
+python -m pip install "hedron>=0.46.0,<0.47"
 ```
 
 There is no commercial SLA or scheduled 1.0. See [Evaluate Hedron](../guides/evaluate.md)

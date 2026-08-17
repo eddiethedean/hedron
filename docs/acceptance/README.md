@@ -40,8 +40,8 @@ status commentary, not a satisfied release gate.
 - [`v0.45` typed interaction ecosystem](RELEASE_0_45.md) — **Published** in-tree as `v0.45.0`
   (tag/PyPI deferred; D-074 / RFC-0072, refined by D-077;
   [#328](https://github.com/eddiethedean/hedron/issues/328))
-- [`v0.46` package-native typed workflows](RELEASE_0_46.md) — **Published** in-tree as `v0.46.0`
-  (tag/PyPI deferred; D-075 / RFC-0073, refined by D-079;
+- [`v0.46` package-native typed workflows](RELEASE_0_46.md) — **Published** as `v0.46.0`
+  (D-075 / RFC-0073, refined by D-079;
   [#334](https://github.com/eddiethedean/hedron/issues/334))
 - [`v0.47` first-class maps](RELEASE_0_47.md) — **Planned** Stage 0 requirements packet
   (D-078 / RFC-0074; `hedron-maps` `0.1.0`; requires Published 0.46 and a tracking issue before Stage 1)

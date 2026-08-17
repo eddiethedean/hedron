@@ -1,6 +1,6 @@
 # Phase 0.46 implementation requirements — package-native typed workflows
 
-**Status:** Published as in-tree `v0.46.0` (tag/PyPI deferred; D-075 / D-079)<br>
+**Status:** Published as `v0.46.0` (D-075 / D-079)<br>
 **Target:** Hedron `v0.46.0`<br>
 **Planning baseline:** Published in-tree `v0.45.0` (D-079; original Stage 0 baseline was Published `v0.42.0`)<br>
 **Required predecessor/cut baseline:** Verified in-tree Hedron `v0.45.0`<br>
@@ -15,7 +15,7 @@
 This document defines implementation boundaries and traceable requirements for feature bundles,
 data workspaces, linked charts/data, schema-aware elements, remote workflows, authoring workbenches,
 and package scenario/conformance experiences. Runtime work compiled onto Verified 0.45 seams. This document remains the implementation
-boundary after the in-tree cut.
+boundary after the Published `v0.46.0` cut.
 
 ## Architecture
 

@@ -8,7 +8,7 @@ Participants finish with a migrated sales dashboard that has typed URL filters, 
 server-rendered component tree, an allowlisted HTMX fragment, HTTP-level tests, and one
 application object that adapts to local, Workbench, and Connect environments.
 
-This workshop targets Hedron **0.46.x** (PyPI latest **0.45.0** until the tag ships) and Python **3.11–3.14**. Before scheduling it,
+This workshop targets Hedron **0.46.x** (`hedron>=0.46.0,<0.47`) and Python **3.11–3.14**. Before scheduling it,
 check the current [capability matrix](whats-ready.md) and [compatibility guide](../COMPATIBILITY.md)
 against your Posit versions and internal package mirror.
 

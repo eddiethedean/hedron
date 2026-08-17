@@ -1,10 +1,8 @@
 # Cutting a Hedron release
 
 This is the living maintainer runbook for the `0.46.x` train. Historical cut records
-live under `docs/archive/`. The last published in-tree release is `v0.46.0`; the next
-planned phase is `v0.47.0`. Do not create the `v0.46.0` Git tag until this runbook is
-executed on green `main`. Tracking issues #334 / #328 / #318 / #311 remain deferred-tag
-work until publish assets exist.
+live under `docs/archive/`. The published train is `v0.46.0`; the next planned phase
+is `v0.47.0`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag.
@@ -50,7 +48,7 @@ Pushing `v0.46.0` runs `.github/workflows/release.yml`, which re-runs CI, publis
 coordinated wheels to PyPI, and creates the GitHub Release. Release CI requires
 SBOM/evidence-bundle attach on train tags (SUPPLY-025) via
 `scripts/build_evidence_bundle.py` and `scripts/generate_sbom.py`. Do not retag
-`v0.41.0`, `v0.42.0`, `v0.43.0`, `v0.44.0`, or `v0.45.0`.
+`v0.41.0`, `v0.42.0`, `v0.43.0`, `v0.44.0`, `v0.45.0`, or `v0.46.0`.
 
 ## Template: next patch (`0.46.1`)
 

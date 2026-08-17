@@ -1,13 +1,11 @@
 # What’s ready today
 
 Use this page to decide **whether a capability is safe to depend on** in a pinned app.
-**On PyPI today:** latest is **0.45.0**. **This repository** is **0.46.0** (in-tree;
-Git tag / PyPI deferred — [#334](https://github.com/eddiethedean/hedron/issues/334)).
+**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-For a pinned internal admin/CRUD app (PyPI pin `hedron>=0.45.0,<0.46`; in-tree 0.46
-when the tag ships), you can use typed pages, HTMX fragments, CSRF
+For a pinned internal admin/CRUD app (`hedron>=0.46.0,<0.47`), you can use typed pages, HTMX fragments, CSRF
 (`standard`/`strict`), Flask/Django adapters, and polling for job status.
 
 **Ship today (pinned CRUD / admin on FastAPI, Flask, or Django):** pages, HTMX

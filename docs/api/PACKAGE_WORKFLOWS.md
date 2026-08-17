@@ -8,8 +8,8 @@ phase: "0.46"
 !!! note "Published 0.46 contract"
 
     This is the accepted D-075 / RFC-0073 public contract for phase 0.46, refined by D-079
-    against Published in-tree `v0.45.0`. Implementation is the in-tree `v0.46.0` cut
-    (tag/PyPI deferred). Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
+    against Published `v0.45.0`. Implementation is Published `v0.46.0`.
+    Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
     New symbols are **Beta**. Pin `hedron>=0.46.0,<0.47`.
 
 Phase 0.46 lets packages assemble ordinary views, commands, components, scenarios, and catalog

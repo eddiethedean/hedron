@@ -6,7 +6,7 @@
 - Phase 0.46 FeatureBundle include_feature, HED-BUNDLE diagnostics (D-075 / D-079 / RFC-0073).
 
 ### Changed
-- Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
+- Coordinated train tip `0.46.0`.
 
 ### Fixed
 - MCP tool registration runs only after a successful FeatureBundle include,

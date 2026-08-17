@@ -6,7 +6,7 @@
 - Phase 0.46 FeatureBundle / FeatureRequirement / FeatureConflictError / FeatureProvider (D-075 / D-079 / RFC-0073).
 
 ### Changed
-- Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
+- Coordinated train tip `0.46.0`.
 
 ### Fixed
 - FeatureBundle include fails closed with ``HED-BUNDLE-0008`` when a handle is

@@ -8,17 +8,14 @@ If terms such as project folder, terminal, virtual environment, or development s
 use [Your first application with VS Code](first-app-vscode.md). In Posit Workbench, use the
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
-**On PyPI today:** latest is **0.45.0** — pin `hedron>=0.45.0,<0.46`.
-**This repository** is **0.46.0** (in-tree; Git tag / PyPI deferred —
-[#334](https://github.com/eddiethedean/hedron/issues/334)). If `>=0.46.0,<0.47`
-cannot resolve, use the 0.45 pin below.
+**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`.
 
 ## 1. Scaffold and run
 
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.45.0,<0.46" hedron new my-hedron-app
+    uvx --from "hedron>=0.46.0,<0.47" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -27,7 +24,7 @@ cannot resolve, use the 0.45 pin below.
 === "pip (activated virtual environment)"
 
     ```bash
-    python -m pip install "hedron>=0.45.0,<0.46" "uvicorn[standard]"
+    python -m pip install "hedron>=0.46.0,<0.47" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .
@@ -134,7 +131,6 @@ remediation and a `HED-*` diagnostic code (see [Error codes](../guides/error-cod
 |---|---|
 | `hedron: command not found` | Use `python -m hedron`, or use the `uvx` command above |
 | `ModuleNotFoundError: hedron` | Run `uv sync` or `python -m pip install -e .` inside the generated directory |
-| `No matching distribution` for `hedron==0.46.0` (or `>=0.46.0,<0.47`) | PyPI latest is **0.45.0**. Use `hedron>=0.45.0,<0.46`, or clone this repo |
 | Resolver conflict | Start in a clean environment; see [Compatibility](../COMPATIBILITY.md) |
 | Port 8000 is busy | Add `--port 8001` and open that port |
 | Refresh does nothing | See [HTMX troubleshooting](../guides/troubleshooting.md#htmx-403-on-fragment-request) |

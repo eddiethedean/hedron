@@ -1,11 +1,11 @@
 # Hedron `v0.46` package-native typed workflow acceptance
 
-**Status:** **Published** in-tree as `v0.46.0` (tag/PyPI deferred; D-075 / D-079)<br>
-**Planning baseline:** Published in-tree `v0.45.0` (D-079; original Stage 0 baseline was Published `v0.42.0`)<br>
-**Required predecessor/cut baseline:** Verified in-tree `v0.45.0`<br>
-**Target:** `v0.46.0` (in-tree; tag/PyPI deferred)<br>
+**Status:** **Published** as `v0.46.0` (D-075 / D-079)<br>
+**Planning baseline:** Published `v0.45.0` (D-079; original Stage 0 baseline was Published `v0.42.0`)<br>
+**Required predecessor/cut baseline:** Verified `v0.45.0`<br>
+**Target:** `v0.46.0`<br>
 **Decision/RFC:** D-075, refined by D-079 / [RFC-0073](../rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md)
-**Tracking:** [#334](https://github.com/eddiethedean/hedron/issues/334) remains open until later tag/PyPI assets exist.
+**Tracking:** [#334](https://github.com/eddiethedean/hedron/issues/334).
 
 Phase 0.46 uses the 0.45 ecosystem contract to deliver opt-in package features: atomic feature
 bundles, bounded data workspaces, explicit chart/data links, schema-aware elements, explicit MCP/
@@ -158,7 +158,7 @@ python scripts/verify_pkg_46.py
 python scripts/check_release_gate.py 0.46.0 --execute-verified
 ```
 
-`v0.46.0` is cut in-tree from Verified `v0.45.0` with every 0.46 row Verified and zero
-Deferred. Git tag, GitHub Release, and PyPI remain deferred; tracking [#334] stays open.
+`v0.46.0` is Published from Verified `v0.45.0` with every 0.46 row Verified and zero
+Deferred. Git tag, GitHub Release, and PyPI track `v0.46.0`; tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
 `verify_pkg_46.py` (no `--allow-planned`) is the living-train cut checker.
 

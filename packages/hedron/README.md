@@ -15,15 +15,13 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-**On PyPI today:** latest is **0.45.0** — pin `hedron>=0.45.0,<0.46`.
-**This repository** is **0.46.0** (in-tree; Git tag / PyPI deferred —
-[#334](https://github.com/eddiethedean/hedron/issues/334)).
+**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`.
 
 Requires Python 3.11–3.14. The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash
-uvx --from "hedron>=0.45.0,<0.46" hedron new my-hedron-app
+uvx --from "hedron>=0.46.0,<0.47" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run uvicorn app:app --reload
@@ -114,16 +112,15 @@ Coming from Streamlit? Start with the
 
 ## Install
 
-Pin the train that is actually on the index you use. **On PyPI today:**
+Pin the train:
 
 ```bash
-uv add "hedron>=0.45.0,<0.46" "uvicorn[standard]"
+uv add "hedron>=0.46.0,<0.47" "uvicorn[standard]"
 # or
-python -m pip install "hedron>=0.45.0,<0.46" "uvicorn[standard]"
+python -m pip install "hedron>=0.46.0,<0.47" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **In-tree train:** `0.46.x` · published packet `v0.46.0`
-(Git tag / PyPI deferred) · PyPI pin `>=0.45.0,<0.46`
+**Package maturity:** Beta · **Train:** `0.46.x` · published `v0.46.0` · pin `>=0.46.0,<0.47`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the

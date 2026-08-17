@@ -7,10 +7,6 @@ upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately 
 minor (`0.45.x`) continues through approximately **2027-08-16** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-Until the `v0.46.0` Git tag and PyPI upload exist, **install from PyPI is the previous
-line (`0.45.x`)**. This matrix still names `0.46.x` as the current published train
-(in-tree packet).
-
 | Version | Supported |
 |---|---|
 | `0.46.x` | Yes (current published train — pin `>=0.46.0,<0.47`; published `v0.46.0`) |

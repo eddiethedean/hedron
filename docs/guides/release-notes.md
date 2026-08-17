@@ -14,7 +14,7 @@ Coordinated Beta train cut for package-native typed workflows (D-075 / D-079 / R
 - `McpExposure` and `RemoteWorkflow` wrap live MCP/Gradio registration. Catalog presence never grants exposure.
 - New symbols begin Beta. Unused `include_feature` is request-path identical to 0.45. `SR-021` stays open.
 - Pin `hedron>=0.46.0,<0.47`. Charts remain on `hedron-charts>=0.2.0,<0.3`.
-- In-tree cut only; Git tag / GitHub Release / PyPI are deferred ([#334](https://github.com/eddiethedean/hedron/issues/334)).
+- Git tag `v0.46.0`, GitHub Release, and PyPI (`hedron` 0.46.0). Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
 
 ```bash
 python -m pip install -U "hedron>=0.46.0,<0.47"

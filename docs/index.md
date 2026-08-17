@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · PyPI 0.45.0 · in-tree 0.46.0</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · PyPI 0.46.0</div>
 
 # Build interactive web apps in Python.
 
@@ -17,9 +17,7 @@ Routes return components; HTMX updates the page — no Node build, no full-scrip
 open localhost:8000 → click **Refresh status**.
 { .hedron-lede }
 
-**On PyPI today:** latest is **0.45.0** (`hedron>=0.45.0,<0.46`). **This documentation**
-describes in-tree **0.46.0** (Git tag / PyPI deferred —
-[#334](https://github.com/eddiethedean/hedron/issues/334)). Before production, see
+**Published `v0.46.0`.** Pin `hedron>=0.46.0,<0.47`. Before production, see
 [What’s ready](guides/whats-ready.md).
 { .hedron-lede }
 
@@ -93,8 +91,7 @@ rerun dashboards.
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron’s flagship and host-adapter packages are Beta. **On PyPI today** pin
-`hedron>=0.45.0,<0.46`. After `v0.46.0` is uploaded, pin `hedron>=0.46.0,<0.47`.
+Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.46.0,<0.47`.
 Capability readiness and API compatibility are separate: read
 [Maturity labels](getting-started/how-to-read.md) before interpreting Supported,
 Experimental, `stable`, or `beta`. For production adoption, continue with

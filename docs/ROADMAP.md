@@ -43,8 +43,10 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.43** | Refreshable views, command handles, and typed updates | **Published** (`v0.43.0`; in-tree cut, tag/PyPI deferred; D-071; [#311](https://github.com/eddiethedean/hedron/issues/311)) |
 | **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Published** (`v0.44.0`; in-tree cut, tag/PyPI deferred; D-072 / RFC-0071; [#318](https://github.com/eddiethedean/hedron/issues/318)) |
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
-| **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; in-tree cut, tag/PyPI deferred; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
+| **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Planned** (`v0.47.0` / `hedron-maps` `0.1.0`; D-078 / RFC-0074; requires Published 0.46 and a tracking issue before Stage 1; no 0.47 runtime) |
+| **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Planned** (`v0.48.0`; D-080 / RFC-0075; requires Verified 0.47 and a tracking issue before Stage 1; no 0.48 runtime) |
+| **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Planned** (`v0.49.0`; D-081 / RFC-0076; requires Verified 0.48 and a tracking issue before Stage 1; no 0.49 runtime) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -78,6 +80,10 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   MapLibre enhancement, replaceable OSM default, custom raster/vector sources, and tested static,
   PMTiles, MBTiles, blank-map, and air-gapped paths. It does not change the availability of the
   existing core `Map` before the phase is cut.
+- Planned **0.48** makes HTMX extensions explicit and useful: pages and regions declare extensions,
+  unused pages load none, SSE/head-support/preload ship complete progressive-enhancement slices,
+  and Idiomorph is admitted only after lifecycle evidence. It does not change the 0.24
+  `polling_only` disposition before the phase is cut.
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](guides/production-quality.md).
 - Planned **0.26–0.35** phases apply an evidence-based production-grade contract to the remaining
@@ -93,7 +99,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 
 ### Honest gaps on the current train (0.46.x)
 
-- Current **published** in-tree train is **0.46.x** (last `v0.46.0`; tag/PyPI deferred)
+- Current **published** train is **0.46.x** (`v0.46.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -3741,11 +3747,11 @@ Catalog/manifest/host locks:
 
 ## 0.46 — Package-native typed workflows (`v0.46.0`)
 
-**Status:** Published as `v0.46.0` (in-tree cut, tag/PyPI deferred; D-075 /
+**Status:** Published as `v0.46.0` (D-075 /
 [RFC-0073](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md);
-Stage 0 contract refined by D-079 against Published in-tree `v0.45.0`).
+Stage 0 contract refined by D-079 against Published `v0.45.0`).
 Tracking: [#334](https://github.com/eddiethedean/hedron/issues/334). `release-gate-0.46.toml`
-is Verified. Tag/PyPI remain deferred. This cut does not start 0.47.
+is Verified. This cut does not start 0.47.
 
 **Outcome:** Packages use the converged catalog/type/handle foundation to provide useful opt-in
 features. Immutable `FeatureBundle` values atomically register ordinary views, commands,
@@ -3956,6 +3962,164 @@ Capability inventory:
 - Existing applications without `hedron-maps` remain behaviorally and operationally unchanged.
 - Every 0.47-owned release-gate row is Verified with zero Deferred before `v0.47.0` and
   `hedron-maps` `0.1.0` are cut.
+
+## 0.48 — First-class HTMX extension integration (`v0.48.0`)
+
+**Status:** Planned (D-080 /
+[RFC-0075](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0075-HTMX-EXTENSION-INTEGRATION.md)).
+Verified `v0.47.0` is the hard Stage 1 prerequisite and cut baseline. A tracking issue must bind
+every 0.48 gate before runtime implementation begins. Stage 0 changes planning contracts only.
+
+**Outcome:** HTMX extensions become a deliberate Hedron capability rather than scripts that happen
+to be present. Pages and bounded regions declare what they need; rendering injects compatible,
+pinned local assets once, activates the correct `hx-ext` scope, and exposes the same facts to CSP,
+manifests, diagnostics, adapters, and tests. SSE, head-support, and preload work end to end with
+ordinary HTML/polling fallbacks. Morphing remains evidence-gated.
+
+### Scope
+
+- Add a closed `HtmxExtension` catalog and immutable `ExtensionSet` declaration consumed by Page,
+  typed components, HDJ evidence, render planning, manifests, Explorer, CLI, and conformance.
+- Replace unconditional extension injection with demand-driven local asset delivery, exact
+  versions/digests/licenses, dependency order after HTMX core, mount-prefix correctness, CSP facts,
+  deduplication, compatibility diagnostics, and zero extension bytes when unused.
+- Add typed `SseRegion` / event-trigger authoring over existing SSE helpers, including named swaps,
+  reconnect and `Last-Event-ID`, terminal close, auth/tenant/connection bounds, cleanup,
+  observability, and bounded polling fallback.
+- Enable head-support only for registered asset/head responses; test boosted/full-document merge,
+  title and metadata, add/retain/remove/dedupe, CSP, failure, and rollback without arbitrary scripts.
+- Vendor and integrate core preload for explicit cacheable GET links and `hx-get` controls using the
+  existing `HX-Preloaded` decision path, with no mutation preload or hidden correctness dependency.
+- Run an Idiomorph admission spike across forms, focus, Web Components, charts, OOB, accessibility,
+  three-engine lifecycle, and memory. Ship it only if `MORPH-048` verifies; otherwise record it as
+  Deferred/excluded.
+- Preserve `InteractionResult`, `StatusPolicy`, `HX-Retarget`/`HX-Reselect`, OOB updates,
+  indicators, disabled controls, typed updates, safe URL/selector/eval policy, and HTMX 2 behavior.
+- Ship a packaged reference example that visibly exercises every admitted extension and its
+  fallback, plus author/operator/security/accessibility/performance/migration guidance.
+
+### Deliberate exclusions
+
+- `response-targets`, multi-swap, loading-states, and HTMX 1 compatibility because existing Hedron
+  server-authoritative targeting, OOB, loading, and compatibility contracts already own them.
+- HTMX WebSocket integration until a separate RFC aligns its wire format with the typed
+  page/session channel.
+- Arbitrary community extensions, CDN assets, client templates, JSON encoding, executable event
+  headers, unrestricted JavaScript extension hooks, and request-derived extension installation.
+- Promotion of SSE/streaming/preload to the Supported correctness path, weakening progressive
+  enhancement, changing application authorization, or scheduling `1.0`.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `EXTENSION-048` / `ASSET-048` | Closed declarations/scopes/components/HDJ/manifests plus demand-driven pinned local assets, CSP/order/mount/dedupe/compatibility and zero unused cost pass. |
+| `SSE-048` | Live/job regions, named swaps/triggers, reconnect/id, close, auth/tenant/limits, cleanup/observability and polling fallback pass. |
+| `HEAD-048` | Registered head merge, navigation, metadata, retain/add/remove/dedupe, CSP, failure and rollback pass. |
+| `PRELOAD-048` | Cacheable GET preload, server decision, pointer/keyboard/touch behavior, cache/auth isolation, no mutation and amplification bounds pass. |
+| `MORPH-048` | Complete form/focus/element/chart/OOB/a11y/browser lifecycle evidence admits morph, or a truthful Deferred/excluded disposition prevents it shipping. |
+| `SECURITY-048` / `A11Y-048` | Asset/URL/selector/event/head/stream/cache/CSP/HDJ boundaries plus fallback/focus/live-region/control/motion/input/metadata evidence pass. |
+| `BROWSER-048` / `PERF-048` | Three-engine activation/failure/reconnect/navigation/race/cancel/cleanup plus asset/execution/connection/preload/merge/memory budgets pass. |
+| `ADAPTER-048` / `TOOLING-048` | Portable hosts/mounts/static/CSP/cache/stream labels plus Explorer/CLI/manifest/scenario/conformance/sim/HDJ facts pass. |
+| `COMPAT-048` / `DOCS-048` | Existing interactions and opt-out/upgrade/skew/deprecation/rollback plus complete recipes, operations, limitations, security and migration docs pass. |
+| `REGRESS-048` / `PKG-048` | Full regression and clean package/assets/licenses/SBOM/provenance/matrices/version/rehearsal pass with no hidden Deferred claim. |
+
+Evidence index:
+[`release-gate-0.48.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.48.toml).
+Acceptance packet:
+[RELEASE_0_48](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_48.md).
+
+### Exit gate
+
+- Verified 0.47 is the baseline and a tracking issue owns every 0.48 row.
+- The packaged reference application exercises every admitted extension and fallback.
+- Applications declaring no extensions receive no extension assets or behavioral change.
+- Every non-disposition 0.48 row is Verified before `v0.48.0`; morph is either Verified or visibly
+  Deferred/excluded and never included in a Supported claim.
+
+## 0.49 — FastAPI and Pydantic convergence (`v0.49.0`)
+
+**Status:** Planned (D-081 /
+[RFC-0076](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md)).
+Verified `v0.48.0` is the hard Stage 1 prerequisite and cut baseline. A tracking issue must bind
+every 0.49 gate before runtime implementation begins. Stage 0 changes planning contracts only.
+
+**Outcome:** Hedron uses stable upstream capabilities where they improve correctness, performance,
+schema fidelity, and ecosystem interoperability without surrendering portable authority. Resource
+lifetimes become explicit; eligible boundaries use native FastAPI parameter models; TypeSchema
+separates input and output; public wire variants are tagged; router provenance and OpenAPI become
+richer; validation optimization is measured; and experimental or deployment-specific candidates
+receive honest dispositions.
+
+### Scope
+
+- Add handler/response dependency lifetime plans compiled to FastAPI yield scopes, with streaming,
+  SSE, download, background capture, cleanup-order, capacity, and portability diagnostics.
+- Add a deterministic native-model versus expanded-fields binding compiler for query, header,
+  cookie, form, mixed path/query, multipart/file, alias, extra-field, and adapter cases.
+- Introduce TypeSchema v2 with sanitized validation/input and serialization/output projections,
+  shared/read-only/write-only/computed/secret dispositions, fingerprints, and v1 migration.
+- Require stable literal discriminators for new wire unions and migrate a bounded representative
+  inventory across outcomes, updates, events, manifests, MCP, jobs, and remote adapters.
+- Use preserved nested route identity for package/feature provenance and pre-seal registration;
+  explicitly exclude FastAPI's alpha router matching/handling hooks.
+- Project typed statuses, media types, HTMX headers, SSE/download responses, callbacks, webhooks,
+  security requirements, stable operation ids, and input/output schemas into OpenAPI.
+- Add portable `RequiresScopes` declarations without inferring grants or replacing live
+  authentication, tenant, object, or application authorization.
+- Lock strict JSON content types under security profiles and audit equivalent custom transports.
+- Benchmark cached TypeAdapter/direct JSON validation at selected transport, manifest, job/cache,
+  remote, and batch boundaries while preserving duplicate-key, bounds, canonical, and redaction
+  policy.
+- Evaluate pydantic-settings independently for FastAPI Workbench, Hedron Workbench, and Posit;
+  adopt only with exact precedence/provenance/unknown/secret/digest/I-O/path compatibility.
+- Quarantine partial streamed validation, missing-value PATCH semantics, and FailFast research;
+  require final validation and forbid experimental values in Supported APIs or authority paths.
+- Preserve direct FastAPI, structural binding, Flask/Django, HTML response, SafeUrl, catalog,
+  manifest, and package behavior with explicit fallback, upgrade, skew, and rollback evidence.
+
+### Deliberate exclusions
+
+- Raw upstream replacement of Hedron security, URLs, models, catalogs, manifests, portable
+  adapters, authorization, or deterministic metadata.
+- Router alpha matching hooks, SerializeAsAny at protected boundaries, serialization context for
+  authorization, validate_call handler runtime, computed writable form fields, Pydantic URLs in
+  place of SafeUrl, FastAPI Cloud contracts, or automatic OAuth/webhook delivery.
+- Experimental partial validation, Pydantic MISSING, or FailFast as default form/action/persistence
+  behavior; automatic settings migration; or unmeasured performance claims.
+- Hidden database/transaction/background ownership, non-opted-in behavior changes, `SR-021`
+  closure, blanket maturity promotion, or scheduling `1.0`.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `LIFETIME-049` | Explicit handler/response scopes, graph/cleanup rules, streaming/SSE/download/background behavior, diagnostics, and adapter dispositions pass. |
+| `BINDING-049` | Native query/header/cookie/form selection and expanded path/file fallback produce equivalent models, aliases, extras, errors, CSRF, OpenAPI, and adapter results. |
+| `SCHEMA-049` / `UNION-049` | Sanitized dual projections/v1 migration plus tagged representative wire variants, unknown-kind, bounds, OpenAPI, and cross-runtime evidence pass. |
+| `ROUTER-049` / `OPENAPI-049` | Preserved provenance/pre-seal composition plus typed statuses/media/headers/callbacks/webhooks/security/operation ids/schemas and client fixtures pass. |
+| `SECURITY-049` | Strict content type, binding parity, non-authoritative scopes, schema/secret/subclass safety, callback honesty, transport bounds, and adversarial review pass. |
+| `ADAPTER-VALIDATION-049` | Measured cached adapters/direct JSON retain duplicate-key, bounds, errors, canonicalization, redaction, and rollback. |
+| `SETTINGS-049` / `RESEARCH-049` | Every settings and experimental candidate records an evidence-backed adopt/retain/defer/exclude disposition with no Supported leakage. |
+| `A11Y-049` / `PERF-049` | Form/schema/error/focus parity plus startup/schema/OpenAPI/binding/validation/streaming/memory/no-opt-in budgets pass. |
+| `COMPAT-049` / `DOCS-049` | Direct FastAPI, portable adapters, TypeSchema v1, upstream skew/exclusions/rollback and complete author/operator/migration guidance pass. |
+| `REGRESS-049` / `PKG-049` | Full regression and clean packages/dependency matrices/SBOM/provenance/version/rehearsal pass with no hidden Deferred claim. |
+
+Artifacts: [public contract](https://github.com/eddiethedean/hedron/blob/main/docs/api/FASTAPI_PYDANTIC_CONVERGENCE.md) ·
+[implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/FASTAPI_PYDANTIC_CONVERGENCE_049.md) ·
+[acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_49.md) ·
+[release gate](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.49.toml) ·
+[capability inventory](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/fastapi-pydantic-capability-inventory-049.toml) ·
+[upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-049.md).
+
+### Exit gate
+
+- Verified 0.48 is the baseline and a tracking issue owns every 0.49 row.
+- Stable adoption paths pass portable, security, accessibility, performance, package, and rollback
+  evidence without raw upstream authority leakage.
+- Settings and research candidates have explicit dispositions and excluded/deferred candidates do
+  not appear in Supported inventories.
+- Every non-disposition 0.49 row is Verified before `v0.49.0` is cut.
 
 ## Complete capability-to-release ledger
 

@@ -1,0 +1,90 @@
+# Phase 0.49 FastAPI/Pydantic convergence release evidence index.
+
+schema_version = 1
+phase = "0.49"
+status = "Planned"
+planning_baseline = "v0.46.0"
+required_predecessor = "v0.48.0"
+target = "v0.49.0"
+decision = "D-081"
+owning_rfc = "RFC-0076"
+
+[[gate]]
+id = "LIFETIME-049"
+status = "Planned"
+summary = "Explicit handler/response dependency lifetimes and streaming-safe cleanup."
+
+[[gate]]
+id = "BINDING-049"
+status = "Planned"
+summary = "Native parameter models with deterministic expanded-field fallback and parity."
+
+[[gate]]
+id = "SCHEMA-049"
+status = "Planned"
+summary = "Sanitized validation and serialization TypeSchema projections and migration."
+
+[[gate]]
+id = "UNION-049"
+status = "Planned"
+summary = "Tagged public wire unions with OpenAPI and cross-runtime evidence."
+
+[[gate]]
+id = "ROUTER-049"
+status = "Planned"
+summary = "Preserved router identity, provenance, pre-seal registration, and package composition."
+
+[[gate]]
+id = "OPENAPI-049"
+status = "Planned"
+summary = "Typed responses, media, callbacks, webhooks, security, schemas, and stable clients."
+
+[[gate]]
+id = "SECURITY-049"
+status = "Planned"
+summary = "Strict content type, binding, scopes, schema, secrets, callbacks, and transport review."
+
+[[gate]]
+id = "ADAPTER-VALIDATION-049"
+status = "Planned"
+summary = "Measured reusable TypeAdapters with existing parser security and rollback."
+
+[[gate]]
+id = "SETTINGS-049"
+status = "Planned"
+summary = "Per-deployment-package pydantic-settings adopt or retain-custom-loader disposition."
+
+[[gate]]
+id = "RESEARCH-049"
+status = "Planned"
+summary = "Quarantined partial-validation, missing-state, and FailFast research dispositions."
+
+[[gate]]
+id = "A11Y-049"
+status = "Planned"
+summary = "Schema-driven form/error semantics and binding-strategy accessibility parity."
+
+[[gate]]
+id = "PERF-049"
+status = "Planned"
+summary = "Startup, schema, OpenAPI, binding, validation, streaming, memory, and no-opt-in budgets."
+
+[[gate]]
+id = "COMPAT-049"
+status = "Planned"
+summary = "FastAPI, portable adapters, TypeSchema v1, upstream skew, exclusions, and rollback."
+
+[[gate]]
+id = "DOCS-049"
+status = "Planned"
+summary = "Complete author, operator, security, accessibility, research, and migration docs."
+
+[[gate]]
+id = "REGRESS-049"
+status = "Planned"
+summary = "Full Supported regression suite and honest phase-owned disposition closure."
+
+[[gate]]
+id = "PKG-049"
+status = "Planned"
+summary = "Clean packages, dependency matrices, SBOM/provenance, versions, and rehearsal."

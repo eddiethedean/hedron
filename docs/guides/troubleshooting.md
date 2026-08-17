@@ -89,12 +89,8 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`.
-**On PyPI today** latest is **0.45.0**. If the resolver reports **no matching
-distribution** for `hedron==0.46.0` or `hedron>=0.46.0,<0.47`, pin
-`hedron>=0.45.0,<0.46` or clone this repository (`uv sync`). The in-tree train is
-**0.46.x** (Git tag / PyPI deferred —
-[#334](https://github.com/eddiethedean/hedron/issues/334)). Upgrade with
-`pip install -U "hedron>=0.45.0,<0.46"` (or `uv add "hedron>=0.45.0,<0.46"`).
+Expect **`0.46.0`** on this train. Upgrade with
+`pip install -U "hedron>=0.46.0,<0.47"` (or `uv add "hedron>=0.46.0,<0.47"`).
 See [What's ready](whats-ready.md). If docs describe a feature missing from your
 install, either upgrade toward the pin that matches this documentation or switch the
 docs to the tag that matches your installed release.
@@ -242,7 +238,7 @@ setting production mode.
 
 **Cause:** `Auto` is core (`from hedron import Auto`). `DataTable` / `DataEditor` need the
 data extra. First-party charts require `hedron[charts]` on the same pin as the rest of
-Hedron (`>=0.45.0,<0.46` on PyPI today).
+Hedron (`>=0.46.0,<0.47` on PyPI today).
 
 **Fix:**
 

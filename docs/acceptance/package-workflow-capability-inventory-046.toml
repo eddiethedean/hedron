@@ -1,5 +1,5 @@
 # Phase 0.46 package-native typed workflow capability inventory.
-# In-tree cut artifact (Published v0.46.0; tag/PyPI deferred).
+# Published v0.46.0 artifact.
 # capabilities are Verified with their owning gates.
 
 schema_version = 1

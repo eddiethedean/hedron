@@ -1,8 +1,7 @@
 # What's new in 0.46
 
-**In-tree `v0.46.0`** (Git tag / PyPI deferred —
-[#334](https://github.com/eddiethedean/hedron/issues/334)). **On PyPI today** latest is
-**0.45.0**.
+**Published `v0.46.0`.** Owning decisions: D-075 / D-079.
+Tracking: [#334](https://github.com/eddiethedean/hedron/issues/334).
 
 Package-native typed workflows assemble ordinary 0.43–0.45 handles into opt-in features.
 Maintainer contracts (decisions / RFC) sit in GitHub, not this adopter page.
