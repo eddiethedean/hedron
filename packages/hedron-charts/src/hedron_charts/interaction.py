@@ -108,6 +108,40 @@ class ChartInteraction:
         chart = self.chart
         event = self.event
         max_items = self.max_items
+        payload_type = self.payload
+        refresh_targets = tuple(self.refreshes)
+
+        def event_command(app: object) -> object:
+            def on_chart_event(payload: object) -> object:
+                typed = payload
+                validator = getattr(payload_type, "model_validate", None)
+                if callable(validator) and not isinstance(payload, payload_type):
+                    typed = validator(payload)
+                ids = getattr(typed, "ids", None)
+                if isinstance(ids, list) and len(ids) > max_items:
+                    copier = getattr(typed, "model_copy", None)
+                    if callable(copier):
+                        typed = copier(update={"ids": ids[:max_items]})
+                handler = getattr(command, "__wrapped__", None) or getattr(command, "handler", None)
+                result = handler(typed) if callable(handler) else None
+                if result is not None:
+                    return result
+                from hedron.handles import BoundFragment, FragmentHandle, refresh
+
+                targets = tuple(
+                    item
+                    for item in refresh_targets
+                    if isinstance(item, (BoundFragment, FragmentHandle))
+                )
+                if targets:
+                    return refresh(*targets)
+                return result
+
+            on_chart_event.__annotations__ = {"payload": payload_type, "return": object}
+            return app.command(  # type: ignore[union-attr]
+                f"/charts/{ident}/{event}",
+                name=f"{ident}-{event}",
+            )(on_chart_event)
 
         def export_command(app: object) -> object:
             from hedron import Text
@@ -147,7 +181,7 @@ class ChartInteraction:
             provider=self.provider,
             provider_version=self.provider_version,
             views=(),
-            commands=(export_command,),
+            commands=(event_command, export_command),
             projections=(projection,),
             requirements=(FeatureRequirement(name="hedron-charts", required=True),),
         )
