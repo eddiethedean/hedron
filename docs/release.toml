@@ -13,9 +13,9 @@ previous_security_until = "2027-08-17"
 # Latest version actually on PyPI. Keep in sync with pypi.org (not workspace version).
 # When registry_status is "deferred", first-run docs must say so and may pin this
 # version; in-tree train pins remain allowed.
-pypi_version = "0.46.0"
-pypi_pin_floor = "0.46.0"
-pypi_pin_ceiling = "0.47"
+pypi_version = "0.47.0"
+pypi_pin_floor = "0.47.0"
+pypi_pin_ceiling = "0.48"
 registry_status = "deferred"
 
 [satellites]

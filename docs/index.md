@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · PyPI 0.46.0</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · PyPI 0.47.0</div>
 
 # Build interactive web apps in Python.
 
@@ -18,7 +18,7 @@ open localhost:8000 → click **Refresh status**.
 { .hedron-lede }
 
 **Published in-tree `v0.48.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.46.0`**. Before production, see
+In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.47.0`**. Before production, see
 [What’s ready](guides/whats-ready.md).
 { .hedron-lede }
 

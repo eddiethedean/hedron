@@ -13,7 +13,8 @@ Coordinated Beta in-tree cut for first-class HTMX extension integration (D-080 /
 - Registered `AssetRef` head merge; GET-only preload on `HtmxLink`. Idiomorph / morph swap is **Deferred**.
 - New symbols begin Beta. `SR-021` stays open. Live-transport maturity is unchanged (`polling_only`).
 - Pin in-tree `hedron>=0.48.0,<0.49`. Charts remain on `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
-- In-tree cut only; Git tag / GitHub Release / PyPI remain deferred ([#373](https://github.com/eddiethedean/hedron/issues/373)). PyPI still serves `hedron` `0.46.0`.
+- Head-support admits only local `AssetRef` hrefs, HTML-escapes them, and rejects quote/breakout/`..` values. Fragment inject rejects invented `<script>` tags (#374).
+- In-tree cut only; Git tag / GitHub Release / PyPI remain deferred ([#373](https://github.com/eddiethedean/hedron/issues/373)). PyPI still serves `hedron` `0.47.0`.
 
 ```bash
 python -m pip install -U "hedron>=0.48.0,<0.49"
@@ -26,32 +27,26 @@ python -m pip install "hedron-charts>=0.2.0,<0.3"
 Registry installs until the deferred upload:
 
 ```bash
-python -m pip install -U "hedron>=0.46.0,<0.47"
+python -m pip install -U "hedron>=0.47.0,<0.48"
 ```
 
 ## 0.47.0 — 2026-08-17
 
-Coordinated Beta in-tree cut for first-class maps (D-078 / D-082 / RFC-0074).
+Coordinated Beta cut for first-class maps (D-078 / D-082 / RFC-0074).
 
 - Independent Beta `hedron-maps` `0.1.0`: `MapSpec` / `MapPlan` / `compile_map`, `hedron_maps.Map`, OSM preset, custom/offline sources, `hedron-map` + MapLibre 5.6.1 strict-CSP, and `MapInteraction`.
 - Core `hedron.Map` and charts MapLibre/Folium/PyDeck stay explicit and optional.
 - New symbols begin Beta. Unused maps extra is request-path identical to 0.46. `SR-021` stays open.
-- Pin in-tree `hedron>=0.48.0,<0.49`. Charts remain on `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
-- In-tree cut only; Git tag / GitHub Release / PyPI remain deferred ([#350](https://github.com/eddiethedean/hedron/issues/350)). PyPI still serves `hedron` `0.46.0`.
-- High-severity map origin, DataWorkspace paging/authz, MCP authorize, and MapInteraction POST fixes land in this first 0.47 registry cut (#351–#357). `hedron-mcp` publishes **0.2.1** because **0.2.0** is already on PyPI.
+- Pin the living tip with the 0.48.0 install block above. Charts remain on `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
+- Git tag `v0.47.0`, GitHub Release, and PyPI (`hedron` 0.47.0). Tracking [#350](https://github.com/eddiethedean/hedron/issues/350).
+- High-severity map origin, DataWorkspace paging/authz, MCP authorize, and MapInteraction POST fixes land in this 0.47 registry cut (#351–#357). `hedron-mcp` publishes **0.2.1** because **0.2.0** is already on PyPI.
 
 ```bash
-python -m pip install -U "hedron>=0.48.0,<0.49"
-python -m pip install "hedron[maps]>=0.48.0,<0.49"
-python -m pip install "hedron[data]>=0.48.0,<0.49"
-python -m pip install "hedron[charts]>=0.48.0,<0.49"
+python -m pip install -U "hedron>=0.47.0,<0.48"
+python -m pip install "hedron[maps]>=0.47.0,<0.48"
+python -m pip install "hedron[data]>=0.47.0,<0.48"
+python -m pip install "hedron[charts]>=0.47.0,<0.48"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
-```
-
-Registry installs until the deferred upload:
-
-```bash
-python -m pip install -U "hedron>=0.46.0,<0.47"
 ```
 
 ## 0.46.0 — 2026-08-16
@@ -64,14 +59,15 @@ Coordinated Beta train cut for package-native typed workflows (D-075 / D-079 / R
 - Schema-aware elements are opt-in (`ActionHandle.form(enhance="elements")`). Native `ActionHandle.form()` remains canonical.
 - `McpExposure` and `RemoteWorkflow` wrap live MCP/Gradio registration. Catalog presence never grants exposure.
 - New symbols begin Beta. Unused `include_feature` is request-path identical to 0.45. `SR-021` stays open.
-- Pin `hedron>=0.46.0,<0.47`. Charts remain on `hedron-charts>=0.2.0,<0.3`.
-- Git tag `v0.46.0`, GitHub Release, and PyPI (`hedron` 0.46.0). Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
+- Historical cut; Git tag `v0.46.0`, GitHub Release, and PyPI (`hedron` 0.46.0). Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
+  Install the current tip with the pin under **0.48.0** above.
+  Charts remain on `hedron-charts>=0.2.0,<0.3`.
 
 ```bash
-python -m pip install -U "hedron>=0.46.0,<0.47"
-python -m pip install "hedron[data]>=0.46.0,<0.47"
-python -m pip install "hedron[charts]>=0.46.0,<0.47"
-python -m pip install "hedron[elements]>=0.46.0,<0.47"
+python -m pip install -U "hedron>=0.48.0,<0.49"
+python -m pip install "hedron[data]>=0.48.0,<0.49"
+python -m pip install "hedron[charts]>=0.48.0,<0.49"
+python -m pip install "hedron[elements]>=0.48.0,<0.49"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
 ```
 
@@ -460,7 +456,7 @@ No Supported CRUD/admin API removal is listed. Polling remains the production pa
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
 Historical pin for this train: `hedron>=0.26.0,<0.27`. Current tip guidance:
-[Upgrade to 0.48](upgrade.md) / [What’s new in 0.47](whats-new-0.47.md).
+[Upgrade to 0.48](upgrade.md) / [What’s new in 0.48](whats-new-0.48.md).
 
 ## 0.25.2 — 2026-08-10
 

@@ -3,7 +3,7 @@
 **Published in-tree `v0.48.0`** (in-tree cut; tag/PyPI deferred). Owning decisions: D-080 / D-083.
 Tracking: [#373](https://github.com/eddiethedean/hedron/issues/373).
 
-PyPI still serves **`hedron` `0.46.0`**. First-run installs should pin `hedron>=0.46.0,<0.47`
+PyPI still serves **`hedron` `0.47.0`**. First-run installs should pin `hedron>=0.47.0,<0.48`
 from the registry until a later upload; in-tree pins are `hedron>=0.48.0,<0.49`.
 
 ## Highlights
@@ -17,5 +17,10 @@ from the registry until a later upload; in-tree pins are `hedron>=0.48.0,<0.49`.
   APIs stay experimental.
 - GET-only preload authoring on `HtmxLink` (`mousedown` / `mouseover` / `touchstart`).
 - Idiomorph / morph swap is **Deferred** and is not a Supported capability.
+
+## Fixed before first PyPI upload
+
+- Head-support admits only local `AssetRef` hrefs, HTML-escapes them, and rejects
+  quote/breakout/`..` values. Fragment inject rejects invented `<script>` tags (#374).
 
 This cut does not tag Git, publish a GitHub Release, or upload PyPI.

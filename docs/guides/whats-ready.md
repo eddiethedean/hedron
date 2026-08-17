@@ -2,7 +2,7 @@
 
 Use this page to decide **whether a capability is safe to depend on** in a pinned app.
 **Published in-tree `v0.48.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.46.0`**.
+In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.47.0`**.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
@@ -230,7 +230,7 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.46.0,<0.47" hedron new my-app
+    uvx --from "hedron>=0.47.0,<0.48" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -238,13 +238,13 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "pip"
 
     ```bash
-    pip install "hedron>=0.46.0,<0.47" "uvicorn[standard]"
+    pip install "hedron>=0.47.0,<0.48" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.48.0,<0.49` in-tree, or `hedron>=0.46.0,<0.47` from **PyPI** until the deferred upload.
+Pin `hedron>=0.48.0,<0.49` in-tree, or `hedron>=0.47.0,<0.48` from **PyPI** until the deferred upload.
 
 Extras: `"hedron[data]>=0.48.0,<0.49"`, `"hedron[extras]>=0.48.0,<0.49"`,
 `"hedron[jinja]>=0.48.0,<0.49"`, `"hedron[dev]>=0.48.0,<0.49"`,

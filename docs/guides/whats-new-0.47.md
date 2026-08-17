@@ -1,10 +1,10 @@
 # What's new in 0.47
 
-**Published in-tree `v0.47.0`** (in-tree cut; tag/PyPI deferred). Owning decisions: D-078 / D-082.
+**Published `v0.47.0`** (Git tag, GitHub Release, and PyPI). Owning decisions: D-078 / D-082.
 Tracking: [#350](https://github.com/eddiethedean/hedron/issues/350).
 
-PyPI still serves **`hedron` `0.46.0`**. First-run installs should pin `hedron>=0.46.0,<0.47`
-from the registry until a later upload; in-tree pins are `hedron>=0.47.0,<0.48`.
+PyPI serves **`hedron` `0.47.0`**. First-run installs until the 0.48 upload should pin
+`hedron>=0.47.0,<0.48`; the living in-tree tip is `hedron>=0.48.0,<0.49`.
 
 ## Highlights
 
@@ -14,7 +14,7 @@ from the registry until a later upload; in-tree pins are `hedron>=0.47.0,<0.48`.
 - Core `hedron.Map` and charts MapLibre/Folium/PyDeck stay explicit and optional.
 - `hedron_maps.GeoJSONLayer` is the typed overlay; `hedron_core.GeoJSONLayer` is the sanitizer.
 
-This cut does not tag Git, publish a GitHub Release, or upload PyPI.
+Git tag `v0.47.0`, GitHub Release, and PyPI `hedron` `0.47.0`.
 
 ## Fixed before first PyPI upload
 

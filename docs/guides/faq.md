@@ -3,12 +3,12 @@
 ## Which version should I install?
 
 **Published in-tree `v0.48.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.46.0`**:
+In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.47.0`**:
 
 ```bash
-pip install "hedron>=0.46.0,<0.47"
+pip install "hedron>=0.47.0,<0.48"
 # or
-uv add "hedron>=0.46.0,<0.47"
+uv add "hedron>=0.47.0,<0.48"
 ```
 
 Always use an upper bound so a future minor train cannot install by accident.
@@ -17,14 +17,14 @@ Packages are **Beta** (usable, no 1.0, no SLA). Capability detail:
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For DataTable/DataEditor, install `hedron[data]>=0.46.0,<0.47`. For charts, install
-`hedron[charts]>=0.46.0,<0.47`
+For DataTable/DataEditor, install `hedron[data]>=0.47.0,<0.48`. For charts, install
+`hedron[charts]>=0.47.0,<0.48`
 ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=0.46.0,<0.47"
-pip install "hedron-django>=0.46.0,<0.47"   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.47.0,<0.48"
+pip install "hedron-django>=0.47.0,<0.48"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -82,7 +82,7 @@ status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
 ## Is Hedron production-ready for internal admin?
 
 For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
-with eyes open: packages are **Beta**, pin `>=0.46.0,<0.47` on PyPI today (tag/PyPI deferred), prefer polling
+with eyes open: packages are **Beta**, pin `>=0.47.0,<0.48` on PyPI today (tag/PyPI deferred), prefer polling
 for live status, and read [What’s ready](whats-ready.md). There is no vendor SLA or
 scheduled 1.0. Use the [PoC checklist](evaluate.md#poc-checklist) on
 [Evaluate](evaluate.md).
@@ -104,8 +104,8 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then
-`uv add "hedron>=0.46.0,<0.47"`. Or use
-`hedron new my-app` after `pip install "hedron>=0.46.0,<0.47"`.
+`uv add "hedron>=0.47.0,<0.48"`. Or use
+`hedron new my-app` after `pip install "hedron>=0.47.0,<0.48"`.
 
 ## Should I use `uv init` or `hedron new`?
 
@@ -115,7 +115,7 @@ the same directory by accident.
 
 ## What do Beta, Supported, and Deferred mean?
 
-Short version for builders: **pin what is on the index** (`hedron>=0.46.0,<0.47` on
+Short version for builders: **pin what is on the index** (`hedron>=0.47.0,<0.48` on
 PyPI today). Packages are Beta; that does not mean “do not use” — it means expect
 occasional `0.x` churn and pin upper bounds.
 

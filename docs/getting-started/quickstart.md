@@ -9,14 +9,14 @@ use [Your first application with VS Code](first-app-vscode.md). In Posit Workben
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
 **Published in-tree `v0.48.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.46.0`**.
+In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.47.0`**.
 
 ## 1. Scaffold and run
 
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.46.0,<0.47" hedron new my-hedron-app
+    uvx --from "hedron>=0.47.0,<0.48" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -25,7 +25,7 @@ In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.46.0`**.
 === "pip (activated virtual environment)"
 
     ```bash
-    python -m pip install "hedron>=0.46.0,<0.47" "uvicorn[standard]"
+    python -m pip install "hedron>=0.47.0,<0.48" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .
