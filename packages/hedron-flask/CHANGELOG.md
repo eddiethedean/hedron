@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- Flask ``include_feature`` now fails closed for unmaterialized DataWorkspace
+  factories instead of recording a bundle with no routes (#339).
+
 
 ## [0.45.0] — 2026-08-16
 
