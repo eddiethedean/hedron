@@ -61,11 +61,13 @@ def _collect_new_routes(app: object, snapshot: Sequence[object]) -> list[object]
 
 def _drop_routes(app: object, routes: Sequence[object]) -> None:
     for router in _host_routers(app):
-        current = list(getattr(router, "routes", []))
+        live_routes = getattr(router, "routes", None)
+        if not isinstance(live_routes, list):
+            continue
         for route in routes:
-            if route in current:
+            if route in live_routes:
                 with _suppress():
-                    router.routes.remove(route)
+                    live_routes.remove(route)
 
 
 def _record_bundle_routes(app: object, logical_id: str, routes: Sequence[object]) -> None:
