@@ -14,9 +14,14 @@ from hedron_core.codes import HED_TYPE_0003
 
 __all__ = ["apply_modeled_signature", "reconstruct_kwargs", "reject_json_formbody"]
 
+_FORM_MEDIA = {
+    "urlencoded": "application/x-www-form-urlencoded",
+    "multipart": "multipart/form-data",
+}
+
 
 def reject_json_formbody(compiled: CompiledTypeHandler, request: object | None) -> None:
-    """Refuse JSON as a silent empty FormBody (RFC-0071 / D-076)."""
+    """Refuse non-form bodies as a silent empty FormBody (RFC-0071 / D-076 / #329)."""
     if request is None or not compiled.modeled or not isinstance(compiled.source, FormBody):
         return
     headers = getattr(request, "headers", None)
@@ -24,11 +29,13 @@ def reject_json_formbody(compiled: CompiledTypeHandler, request: object | None) 
     if headers is not None:
         raw = str(headers.get("content-type") or "")
     media = raw.split(";", 1)[0].strip().lower()
-    if media == "application/json" or media.endswith("+json"):
-        raise HTTPException(
-            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-            detail=HED_TYPE_0003,
-        )
+    allowed = _FORM_MEDIA.get(compiled.form_encoding or "")
+    if allowed and media == allowed:
+        return
+    raise HTTPException(
+        status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+        detail=HED_TYPE_0003,
+    )
 
 
 def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) -> dict[str, Any]:

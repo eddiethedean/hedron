@@ -8,6 +8,11 @@
 ### Changed
 - Coordinated train tip `0.45.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``FormBody`` commands allowlist ``urlencoded`` / ``multipart`` Content-Types and
+  reject every other media type (including ``text/plain``) with HTTP 415 instead of
+  executing on model defaults (#329).
+
 ## [0.44.0] — 2026-08-16
 
 ### Added

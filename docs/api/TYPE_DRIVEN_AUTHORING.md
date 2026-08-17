@@ -202,7 +202,8 @@ registration/build time. Existing body-size, file-count, upload, CSRF, method, a
 policies remain authoritative.
 
 JSON command bodies continue to use FastAPI's documented `Body`/model conventions. `FormBody`
-does not silently accept JSON and is not a generic content-negotiation layer.
+accepts only `application/x-www-form-urlencoded` or `multipart/form-data` matching the compiled
+encoding. Other content types, including JSON and `text/plain`, fail closed with HTTP 415.
 
 ### Validation response
 
