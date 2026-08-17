@@ -25,11 +25,12 @@ from hedron_core.codes import (
     HED_BUNDLE_0005,
     HED_BUNDLE_0006,
     HED_BUNDLE_0007,
+    HED_BUNDLE_0008,
     HED_BUNDLE_0009,
     HED_BUNDLE_0010,
 )
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
-from hedron_core.updates import list_handle_descriptors, unregister_handle_descriptor
+from hedron_core.updates import unregister_handle_descriptor
 
 MAX_BUNDLES = 512
 MAX_BUNDLE_DEPENDENCY_DEPTH = 16
@@ -272,7 +273,11 @@ def include_bundle(
                 remediation="Use a reverse-DNS id under the third-party package namespace.",
             )
         known = set(known_logical_ids or ())
-        known.update(descriptor.logical_id for descriptor in list_handle_descriptors(app_id=app_id))
+        for existing in included_bundles(app_id=app_id):
+            for item in (*existing.views, *existing.commands):
+                ident = getattr(item, "logical_id", None)
+                if isinstance(ident, str) and ident:
+                    known.add(ident)
         claimed: list[str] = []
         for item in (*bundle.views, *bundle.commands):
             logical = getattr(item, "logical_id", None)
@@ -283,6 +288,16 @@ def include_bundle(
                         title="Duplicate handle inside FeatureBundle",
                         explanation=f"Handle {logical!r} is listed twice in {bundle.logical_id!r}.",
                         remediation="Give each view/command a unique logical id.",
+                    )
+                if logical in known:
+                    raise _bundle_error(
+                        HED_BUNDLE_0008,
+                        title="FeatureBundle conflicts with an existing handle",
+                        explanation=(
+                            f"Handle {logical!r} is already claimed by an included bundle "
+                            f"and cannot be overridden by {bundle.logical_id!r}."
+                        ),
+                        remediation="Use a distinct logical id or eject the existing bundle first.",
                     )
                 claimed.append(logical)
         snapshot_ids = tuple(_BUNDLES)

@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.46.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- FeatureBundle include fails closed with ``HED-BUNDLE-0008`` when a handle is
+  already claimed by an included bundle (#335).
+
 
 ## [0.45.0] — 2026-08-16
 
