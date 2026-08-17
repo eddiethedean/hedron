@@ -15,6 +15,7 @@ def test_docs_044_layers_and_whats_new() -> None:
     )
     codes = (ROOT / "docs" / "guides" / "error-codes.md").read_text(encoding="utf-8")
     stability = (ROOT / "docs" / "api" / "STABILITY.md").read_text(encoding="utf-8")
+    archive = (ROOT / "docs" / "guides" / "whats-new-archive.md").read_text(encoding="utf-8")
     mkdocs = (ROOT / "mkdocs.yml").read_text(encoding="utf-8")
     header = contract.split("---", 2)[1] if contract.startswith("---") else contract[:200]
     assert "status: current" in header or "status: current" in contract
@@ -23,7 +24,8 @@ def test_docs_044_layers_and_whats_new() -> None:
     assert "SR-021" not in whats
     assert "HED-TYPE-0001" in codes
     assert "ViewParams" in stability
-    assert "whats-new-0.44" in mkdocs
+    assert "whats-new-0.44" in archive
+    assert "whats-new-archive" in mkdocs
     assert "functions" in impl.lower() or "function" in contract.lower()
     scaffold = (
         ROOT / "packages" / "hedron" / "src" / "hedron" / "cli" / "scaffold" / "fastapi.py"

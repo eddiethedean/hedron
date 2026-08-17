@@ -19,6 +19,7 @@ def test_docs_043_three_layers_and_whats_new() -> None:
     scaffold = (
         ROOT / "packages" / "hedron" / "src" / "hedron" / "cli" / "scaffold" / "fastapi.py"
     ).read_text(encoding="utf-8")
+    archive = (ROOT / "docs" / "guides" / "whats-new-archive.md").read_text(encoding="utf-8")
     mkdocs = (ROOT / "mkdocs.yml").read_text(encoding="utf-8")
     ready = (ROOT / "docs" / "guides" / "whats-ready.md").read_text(encoding="utf-8")
     assert "Published `v0.43.0`" in whats or "0.43" in whats
@@ -33,7 +34,8 @@ def test_docs_043_three_layers_and_whats_new() -> None:
     assert "FragmentHandle" in stability
     assert "@app.refreshable" in scaffold
     assert "swap(" not in scaffold
-    assert "whats-new-0.43" in mkdocs
+    assert "whats-new-0.43" in archive
+    assert "whats-new-archive" in mkdocs
     assert "SR-021" not in whats or "#86" not in whats.split("Highlights")[0]
 
 
