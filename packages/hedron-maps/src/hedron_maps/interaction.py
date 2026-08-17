@@ -95,6 +95,18 @@ EVENT_PAYLOADS: dict[str, type[BaseModel]] = {
 }
 
 
+def _projection_id(value: object) -> str:
+    ident = getattr(value, "logical_id", None)
+    if callable(ident):
+        try:
+            ident = ident()
+        except TypeError:
+            ident = None
+    if isinstance(ident, str) and ident:
+        return ident
+    return type(value).__name__
+
+
 def _error(code: str, title: str, explanation: str, remediation: str) -> FeatureConflictError:
     return FeatureConflictError(
         make_diagnostic(
@@ -173,6 +185,16 @@ class MapInteraction:
         payload_type = self.payload
         refresh_targets = tuple(self.refreshes)
         map_ref = self.map
+        path = f"/maps/{ident}/{event}"
+        commands = getattr(map_ref, "_interaction_commands", None)
+        if not isinstance(commands, dict):
+            try:
+                map_ref._interaction_commands = {}
+                commands = map_ref._interaction_commands
+            except (AttributeError, TypeError):
+                commands = None
+        if isinstance(commands, dict):
+            commands[event] = path
 
         def event_command(app: object) -> object:
             def on_map_event(payload: object) -> object:
@@ -210,7 +232,7 @@ class MapInteraction:
 
             on_map_event.__annotations__ = {"payload": payload_type, "return": object}
             return app.command(  # type: ignore[union-attr]
-                f"/maps/{ident}/{event}",
+                path,
                 name=f"{ident}-{event}",
             )(on_map_event)
 
@@ -221,10 +243,11 @@ class MapInteraction:
             capabilities=(ProjectionCapability(name="MapInteraction", support="supported"),),
             data={
                 "event": event,
-                "command": getattr(command, "logical_id", ""),
-                "map": getattr(map_ref, "logical_id", type(map_ref).__name__),
+                "command": _projection_id(command),
+                "map": _projection_id(map_ref),
                 "max_items": max_items,
-                "refreshes": [getattr(item, "logical_id", str(item)) for item in self.refreshes],
+                "command_path": path,
+                "refreshes": [_projection_id(item) for item in self.refreshes],
                 "viewport_trigger": MAP_VIEWPORT_TRIGGER,
                 "reuse_chart_interaction": False,
             },

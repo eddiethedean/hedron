@@ -2,14 +2,18 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
+from fastapi.testclient import TestClient
 from pydantic import BaseModel
-from tests.unit._helpers_046 import make_app
+from tests.unit._helpers_046 import csrf_headers, make_app
 
 from hedron_core.bundles import FeatureConflictError
 from hedron_core.cross_filter import MAP_VIEWPORT_TRIGGER
 from hedron_maps import (
     FeatureSelected,
+    Map,
     MapInteraction,
     ViewportChanged,
 )
@@ -70,3 +74,41 @@ def test_viewport_stacks_on_map_viewport_trigger() -> None:
     } == SUPPORTED_EVENTS
     app.include_feature(binding)
     assert any(item.logical_id == bundle.logical_id for item in app.state.hedron_bundles.values())
+
+
+def test_map_interaction_binds_command_path_on_map() -> None:
+    from hedron_core import RenderMode, render
+
+    app = make_app()
+
+    @app.command("/pick-ids")
+    def pick(body: FeatureSelected) -> str:
+        return "ok"
+
+    chart_map = Map(title="T", description="D")
+    binding = MapInteraction(
+        map=chart_map,
+        event="feature-selected",
+        payload=FeatureSelected,
+        command=pick,
+        name="pick-layer",
+    )
+    app.include_feature(binding)
+    assert (
+        chart_map._interaction_commands["feature-selected"] == "/maps/pick-layer/feature-selected"
+    )
+    html = render(chart_map, mode=RenderMode.FRAGMENT).html
+    assert "/maps/pick-layer/feature-selected" in html
+    src = Path("packages/hedron-maps/src/hedron_maps/static/hedron-map.mjs").read_text(
+        encoding="utf-8"
+    )
+    assert "data-hedron-map-commands" in src
+    assert "hedron_csrf" in src
+    client = TestClient(app)
+    headers = csrf_headers(client)
+    posted = client.post(
+        "/maps/pick-layer/feature-selected",
+        json={"ids": ["a", "b"], "layer": "pins"},
+        headers=headers,
+    )
+    assert posted.status_code < 500
