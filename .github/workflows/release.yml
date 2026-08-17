@@ -386,6 +386,7 @@ jobs:
           done
 
           published_new=0
+          uploaded_new=()
           for name in "${new_names[@]}"; do
             if [ "$published_new" -eq 1 ]; then
               if [ "${PUBLISH_ONLY}" = "true" ]; then
@@ -398,6 +399,7 @@ jobs:
             fi
             if publish_one "$name" "NEW"; then
               published_new=1
+              uploaded_new+=("$name")
             else
               echo "WARN: publish failed for NEW project ${name}; continuing with next package" >&2
               failed_names+=("$name")
@@ -410,26 +412,42 @@ jobs:
           done
 
           # Any NEW name not yet on PyPI after the loop counts as remaining work.
-          # PyPI's simple index can lag seconds behind a successful upload.
+          # PyPI's simple index can lag a few minutes behind a successful first
+          # upload (hedron-maps 0.1.0); do not fail a successful uv publish.
           still_missing=()
           for name in "${new_names[@]}"; do
             normalized="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | tr '_.' '-')"
             found=0
-            for attempt in 1 2 3 4 5 6; do
+            for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
               code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
                 -H 'Accept: application/vnd.pypi.simple.v1+json' \
                 "https://pypi.org/simple/${normalized}/")"
-              if [ "$code" = "200" ]; then
+              json_code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
+                "https://pypi.org/pypi/${normalized}/json")"
+              if [ "$code" = "200" ] || [ "$json_code" = "200" ]; then
                 found=1
                 break
               fi
-              if [ "$attempt" -lt 6 ]; then
-                echo "Waiting for ${name} to appear on PyPI (attempt ${attempt}/6)..."
-                sleep 10
+              if [ "$attempt" -lt 12 ]; then
+                echo "Waiting for ${name} to appear on PyPI (attempt ${attempt}/12)..."
+                sleep 15
               fi
             done
             if [ "$found" -eq 0 ]; then
-              still_missing+=("$name")
+              uploaded=0
+              if ((${#uploaded_new[@]})); then
+                for uploaded_name in "${uploaded_new[@]}"; do
+                  if [ "$uploaded_name" = "$name" ]; then
+                    uploaded=1
+                    break
+                  fi
+                done
+              fi
+              if [ "$uploaded" -eq 1 ]; then
+                echo "WARN: ${name} uploaded but PyPI index still lagging; treating as published" >&2
+              else
+                still_missing+=("$name")
+              fi
             fi
           done
 
