@@ -72,3 +72,46 @@ def test_threat_review_packet_present() -> None:
     ).html
     assert "<script>" not in html
     assert "Safe Place" in html
+
+
+def test_style_source_data_and_javascript_rejected() -> None:
+    from hedron_core.codes import HED_MAP_POLICY_0001
+
+    with pytest.raises(HedronError) as remote:
+        compile_map(
+            MapSpec(
+                basemap=VectorTiles(
+                    url="https://tiles.example.com/{z}/{x}/{y}.pbf",
+                    attribution="x",
+                    style=MapStyle(
+                        sources={
+                            "ok": {
+                                "type": "vector",
+                                "tiles": ["https://tiles.example.com/{z}/{x}/{y}.pbf"],
+                            },
+                            "exfil": {"type": "geojson", "data": "https://evil.example/steal.json"},
+                        },
+                        layers=[{"id": "bg", "type": "background"}],
+                    ),
+                ),
+                policy=MapPolicy(allowed_origins=("https://tiles.example.com",)),
+                accessibility=AccessibilityDef(title="T", description="D"),
+            )
+        )
+    assert remote.value.diagnostic.code == HED_MAP_POLICY_0001
+    with pytest.raises(HedronError) as js:
+        compile_map(
+            MapSpec(
+                basemap=VectorTiles(
+                    url="https://tiles.example.com/{z}/{x}/{y}.pbf",
+                    attribution="x",
+                    style=MapStyle(
+                        sources={"js": {"type": "geojson", "data": "javascript:alert(1)"}},
+                        layers=[{"id": "bg", "type": "background"}],
+                    ),
+                ),
+                policy=MapPolicy(allowed_origins=("https://tiles.example.com",)),
+                accessibility=AccessibilityDef(title="T", description="D"),
+            )
+        )
+    assert js.value.diagnostic.code == HED_MAP_POLICY_0002
