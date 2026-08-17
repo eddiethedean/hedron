@@ -11,6 +11,7 @@ from hedron_core.bundles import (
     eject_bundle,
     eject_source,
     include_bundle,
+    included_bundles,
     resolve_feature,
 )
 from hedron_core.codes import HED_BUNDLE_0006
@@ -86,15 +87,17 @@ def rollback_materialized(
     *,
     app: object,
     routes_snapshot: list[object] | None = None,
+    keep_logical_ids: set[str] | None = None,
 ) -> None:
     app_id = str(getattr(app, "hedron_app_id", "") or "")
     state = getattr(app, "state", None)
     handles = getattr(state, "hedron_handles", None)
+    preserved = keep_logical_ids or set()
     if routes_snapshot is not None:
         _drop_routes(app, _collect_new_routes(app, routes_snapshot))
     for item in items:
         ident = getattr(item, "logical_id", None)
-        if not isinstance(ident, str):
+        if not isinstance(ident, str) or ident in preserved:
             continue
         unregister_handle_descriptor(ident, app_id=app_id)
         if isinstance(handles, dict):
@@ -159,7 +162,13 @@ def include_feature(
     router = getattr(app, "_root_router", None)
     snapshot_routes = list(getattr(router, "routes", [])) if router is not None else []
     app_id = str(getattr(app, "hedron_app_id", "") or "")
-    known = [item.logical_id for item in list_handle_descriptors(app_id=app_id)]
+    prior_ids = {item.logical_id for item in list_handle_descriptors(app_id=app_id)}
+    known: list[str] = []
+    for item in included_bundles(app_id=app_id):
+        for handle in (*item.views, *item.commands):
+            ident = getattr(handle, "logical_id", None)
+            if isinstance(ident, str) and ident:
+                known.append(ident)
     materialized_items: list[object] = []
     try:
         live = materialize_feature(resolved, app)
@@ -182,10 +191,20 @@ def include_feature(
         _record_bundle_routes(app, live.logical_id, _collect_new_routes(app, snapshot_routes))
         return live
     except FeatureConflictError:
-        rollback_materialized(materialized_items, app=app, routes_snapshot=snapshot_routes)
+        rollback_materialized(
+            materialized_items,
+            app=app,
+            routes_snapshot=snapshot_routes,
+            keep_logical_ids=prior_ids,
+        )
         raise
     except Exception as exc:
-        rollback_materialized(materialized_items, app=app, routes_snapshot=snapshot_routes)
+        rollback_materialized(
+            materialized_items,
+            app=app,
+            routes_snapshot=snapshot_routes,
+            keep_logical_ids=prior_ids,
+        )
         raise FeatureConflictError(
             make_diagnostic(
                 HED_BUNDLE_0006,
