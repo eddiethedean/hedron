@@ -91,3 +91,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0071](RFC-0071-TYPE-DRIVEN-AUTHORING.md) | Type-driven authoring and schema-derived interactions | Accepted |
 | [0072](RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md) | Typed interaction ecosystem convergence | Accepted |
 | [0073](RFC-0073-PACKAGE-NATIVE-WORKFLOWS.md) | Package-native typed workflows | Accepted |
+| [0074](RFC-0074-FIRST-CLASS-MAPS.md) | First-class maps and offline geospatial presentation | Accepted |

@@ -44,6 +44,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.44** | Type-driven authoring, schema-derived forms, effects, outcomes, and optional class handlers | **Published** (`v0.44.0`; in-tree cut, tag/PyPI deferred; D-072 / RFC-0071; [#318](https://github.com/eddiethedean/hedron/issues/318)) |
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Planned** (`v0.46.0`; D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1) |
+| **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Planned** (`v0.47.0` / `hedron-maps` `0.1.0`; D-078 / RFC-0074; requires Verified 0.46 and a tracking issue before Stage 1) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -73,6 +74,10 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   [STABLE_FACADE](api/STABLE_FACADE.md) — not every What’s ready Supported row.
 - **0.24** (**Published**) Accepted **`polling_only`**: live transports stay **experimental**;
   polling is the Supported production story — [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md).
+- Planned **0.47** adds the optional `hedron-maps` package: a typed map grammar, pinned strict-CSP
+  MapLibre enhancement, replaceable OSM default, custom raster/vector sources, and tested static,
+  PMTiles, MBTiles, blank-map, and air-gapped paths. It does not change the availability of the
+  existing core `Map` before the phase is cut.
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](guides/production-quality.md).
 - Planned **0.26–0.35** phases apply an evidence-based production-grade contract to the remaining
@@ -3841,6 +3846,113 @@ Capability/feature inventory:
   ejected, disabled, uninstalled, and rolled back without orphan artifacts.
 - Every 0.46-owned release-gate row is Verified with zero Deferred before `v0.46.0` is cut.
 
+## 0.47 — First-class maps and offline geospatial presentation (`v0.47.0`)
+
+**Status:** Planned (D-078 /
+[RFC-0074](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0074-FIRST-CLASS-MAPS.md)).
+Verified `v0.46.0` is the hard Stage 1 prerequisite and cut baseline. A tracking issue must bind
+every 0.47 gate before runtime implementation begins. Stage 0 changes planning contracts only.
+
+**Outcome:** The new optional `hedron-maps` package makes maps a first-class Hedron experience.
+Beginners get an attributed, replaceable OpenStreetMap map with one call. Applications can use
+custom raster/vector infrastructure, safe local styles, typed layers and interactions, or operate
+without external services through static images, PMTiles, bounded MBTiles, and blank maps. Every
+enhanced map retains useful semantic content and actions when JavaScript, WebGL, workers, tiles, or
+the network are absent.
+
+### Scope
+
+- Publish independently versioned Beta `hedron-maps` `0.1.0` and the `hedron[maps]` extra with a
+  closed immutable `MapSpec` / deterministic redacted `MapPlan` / `compile_map()` contract.
+- Add distinct typed basemap, source, layer, style, theme, view, policy, and event models rather
+  than exposing MapLibre option dictionaries.
+- Ship a small versioned provider catalog led by `OpenStreetMap.standard()`, with correct visible
+  attribution, current policy/operations diagnostics, replaceability, cache-respecting behavior,
+  no bulk prefetch, and no availability/SLA claim.
+- Support exact-origin custom XYZ raster, TileJSON, and MVT/vector sources with bounded templates,
+  zoom/bounds/tile metadata, attribution, and complete style/sprite/glyph/image egress closure.
+- Support static georeferenced images, raster/vector PMTiles, declared bounded MBTiles routes,
+  `basemap=None`, and manifest-driven `OfflineMapBundle` deployment with network-denied evidence.
+- Vendor a pinned MapLibre GL JS strict-CSP build behind the common element/HTMX lifecycle; ship no
+  CDN runtime and require no consumer Node build.
+- Support marker, GeoJSON, line, polygon, circle, and raster layers; view/fit controls; responsive
+  light/dark/forced-colors presentation; and explicit loading/empty/partial/failure states.
+- Add closed typed feature selection/activation, debounced viewport completion, layer visibility,
+  load, and failure inputs through ordinary commands/effects with server authority and bounds.
+- Inspect provider, style, origin, local asset, attribution, fallback, limit, failure, and event
+  facts in Explorer/CLI/scenario/conformance/simulation without executing untrusted map data.
+- Preserve existing `hedron.Map` / `GeoJSONLayer` and explicit `hedron-charts` map adapters with
+  migration, absence, skew, rollback, and clean-package proof.
+
+### Locked public model
+
+```python
+from hedron_maps import Map, MapPolicy, PMTiles, RasterTiles
+
+public = Map(center=(37.7749, -122.4194), zoom=11)
+
+custom = Map(
+    basemap=RasterTiles(
+        url="https://maps.example.com/{z}/{x}/{y}.png",
+        attribution="© Example Maps",
+        min_zoom=0,
+        max_zoom=18,
+    ),
+    policy=MapPolicy(allowed_origins={"https://maps.example.com"}),
+)
+
+offline = Map(
+    basemap=PMTiles(
+        src="/assets/maps/region.pmtiles",
+        style="/assets/maps/region-style.json",
+        attribution="© OpenStreetMap contributors",
+    )
+)
+```
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `SPEC-047` | Closed grammar, immutable values, deterministic/redacted plans and fingerprints, renderer/resource/fallback facts, bounds, versioning, and hostile/unknown input pass. |
+| `PROVIDER-047` | OSM default plus custom XYZ/TileJSON/vector sources, exact origins, attribution, metadata, replacement, caching, outage, and provider-policy diagnostics pass. |
+| `OFFLINE-047` | Static image, PMTiles raster/vector, bounded MBTiles, blank map, bundle closure, Range/cache/integrity/package data, and network-denied air-gap paths pass. |
+| `RENDER-047` | Pinned strict-CSP MapLibre assets, safe styles, initial layers/controls/theme/view/failures, lazy/resize/update/destroy, and no-CDN/no-consumer-build behavior pass. |
+| `INTERACT-047` | Stable feature ids and bounded typed select/activate/viewport/layer/load/failure events, command/effect authority, debounce/rate/payload, fallback, and race behavior pass. |
+| `SECURITY-047` | URL/origin/template/style closure, secret redaction, popup/GeoJSON safety, CSP/privacy, proxy SSRF/redirect/DNS/response bounds, archive path/SQL safety, and threat review pass. |
+| `A11Y-047` / `BROWSER-047` | Semantic alternatives, keyboard/cooperative gestures/focus/popups/visual modes/scoped AT plus three-engine no-JS/WebGL/CSP/network/swap/cancel/cleanup evidence pass. |
+| `PERF-047` | Asset/lazy/interactive timing, data/request/long-task/memory/archive/lifecycle and zero no-opt-in cost budgets pass. |
+| `ADAPTER-047` / `TOOLING-047` | Portable hosts/mounts/assets/CSP/archive authz/caching plus Explorer/CLI/scenario/conformance/sim facts and limitations pass. |
+| `COMPAT-047` / `DOCS-047` | Existing maps/adapters, optionality/migration/rollback/skew and complete beginner/custom/self-hosted/offline/security/a11y/operator documentation pass. |
+| `REGRESS-047` / `PKG-047` | Full regression, clean packages/assets/licenses/SBOM/provenance/matrices/versioning/rehearsal and zero Deferred pass. |
+
+Evidence index:
+[`release-gate-0.47.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.47.toml).
+Acceptance packet:
+[RELEASE_0_47](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_47.md).
+Capability inventory:
+[`map-capability-inventory-047.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/map-capability-inventory-047.toml).
+
+### Non-goals
+
+- A general GIS desktop, spatial database, geocoder/router, map/tile authoring pipeline, CDN, or
+  automatic provider/account/license/credential discovery.
+- Arbitrary MapLibre callbacks/plugins/styles/expressions, executable popups, user-supplied remote
+  origins, browser authority, or hidden remote requests.
+- Initial Supported WMS/WMTS/WFS, arbitrary CRS, Leaflet/OpenLayers/deck.gl/Cesium adapters,
+  terrain, globe, 3D Tiles, drawing/editing, routing/geocoding, or public-service offline prefetch.
+- Requiring WebGL for content/actions, replacing core `Map`, silently promoting chart adapters,
+  blanket package maturity promotion, `SR-021` closure, or scheduling `1.0`.
+
+### Exit gate
+
+- Verified 0.46 is the baseline and a tracking issue owns every 0.47 row.
+- Default/custom/offline maps pass full policy, security, accessibility, browser, adapter,
+  performance, packaging, operations, and rollback matrices.
+- Existing applications without `hedron-maps` remain behaviorally and operationally unchanged.
+- Every 0.47-owned release-gate row is Verified with zero Deferred before `v0.47.0` and
+  `hedron-maps` `0.1.0` are cut.
+
 ## Complete capability-to-release ledger
 
 This ledger is the coverage check for planned capabilities. The detailed phase sections above remain normative; the ledger prevents a subsystem or cross-cutting requirement from disappearing between plans.
@@ -3930,6 +4042,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Pydantic boundary models, `Annotated` source/sensitivity/identity/control/effect markers, and generic specialization | 0.44 | Explicit model-driven validation and typing over Published 0.43 through its public adapter/descriptor seams; dependencies stay injection-owned and annotations never trigger hidden effects (RFC-0071 / D-072 / D-073 / D-076). |
 | Sealed interaction catalog, manifest, package projections, and fleet dispositions | 0.45 | Read-only convergence over Verified 0.43/0.44 authority; trusted/static tooling, adapters, packages, portable fixtures, remote/deployment consumers, and no third runtime schema (RFC-0072 / D-074 / D-077). |
 | Package feature bundles, data workspaces, linked charts, enhanced elements, and explicit remote workflows | 0.46 | Opt-in package-native features compile to the 0.43–0.45 stack with explicit policy, overrides/ejection, native fallbacks, and no package workflow executor (RFC-0073 / D-075). |
+| First-class custom-server and offline maps | 0.47 | Optional `hedron-maps` compiles typed basemaps/sources/layers/styles/events to a deterministic plan, pinned strict-CSP MapLibre enhancement, semantic fallback, and OSM/custom/static/PMTiles/bounded-MBTiles/blank-map paths (RFC-0074 / D-078). |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
 | Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |
 | Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |

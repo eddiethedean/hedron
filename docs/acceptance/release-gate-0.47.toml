@@ -1,0 +1,87 @@
+# Phase 0.47 first-class maps release evidence index.
+# Stage 0 contract artifact; all gates remain Planned until evidence is attached.
+
+schema_version = 1
+phase = "0.47"
+status = "Planned"
+planning_baseline = "v0.45.0"
+required_predecessor = "v0.46.0"
+target = "v0.47.0"
+package_target = "hedron-maps 0.1.0"
+decision = "D-078"
+owning_rfc = "RFC-0074"
+
+[[gate]]
+id = "SPEC-047"
+status = "Planned"
+summary = "Typed closed map grammar and deterministic MapPlan compilation."
+
+[[gate]]
+id = "PROVIDER-047"
+status = "Planned"
+summary = "OSM default and custom raster/vector provider correctness and operations."
+
+[[gate]]
+id = "OFFLINE-047"
+status = "Planned"
+summary = "Static image, PMTiles, bounded MBTiles, blank-map, bundle, and air-gap evidence."
+
+[[gate]]
+id = "RENDER-047"
+status = "Planned"
+summary = "Pinned strict-CSP MapLibre rendering, failure behavior, and lifecycle."
+
+[[gate]]
+id = "INTERACT-047"
+status = "Planned"
+summary = "Typed bounded feature and viewport interactions through ordinary commands."
+
+[[gate]]
+id = "SECURITY-047"
+status = "Planned"
+summary = "Egress/style/resource closure, secrets, SSRF, archive, CSP, privacy, and adversarial review."
+
+[[gate]]
+id = "A11Y-047"
+status = "Planned"
+summary = "Semantic alternatives, keyboard/gesture/focus/visual behavior, and scoped AT evidence."
+
+[[gate]]
+id = "BROWSER-047"
+status = "Planned"
+summary = "Three-engine enhanced/fallback/failure/swap/race/cancellation/cleanup evidence."
+
+[[gate]]
+id = "PERF-047"
+status = "Planned"
+summary = "Asset, render, request, data, memory, archive, lifecycle, and no-opt-in budgets."
+
+[[gate]]
+id = "ADAPTER-047"
+status = "Planned"
+summary = "Portable host, mount, asset, CSP, archive, authorization, and caching behavior."
+
+[[gate]]
+id = "TOOLING-047"
+status = "Planned"
+summary = "Explorer, CLI, scenario, conformance, and simulation map facts and tests."
+
+[[gate]]
+id = "COMPAT-047"
+status = "Planned"
+summary = "Core Map and chart adapter compatibility, optionality, migration, skew, and rollback."
+
+[[gate]]
+id = "DOCS-047"
+status = "Planned"
+summary = "Complete author, operator, security, accessibility, offline, and migration documentation."
+
+[[gate]]
+id = "REGRESS-047"
+status = "Planned"
+summary = "Full Supported regression suite and zero unresolved phase-owned blocker/high issues."
+
+[[gate]]
+id = "PKG-047"
+status = "Planned"
+summary = "Clean package, vendored assets/licenses, SBOM/provenance, matrices, and release rehearsal."

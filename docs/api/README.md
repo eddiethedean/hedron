@@ -37,6 +37,12 @@ contract for the planned 0.46 phase. It requires Verified 0.45 and adds opt-in p
 bundles, data workspaces, linked charts, enhanced elements, remote workflows, and workbench
 experiences that compile to the existing stack.
 
+## Planned 0.47 maps contract
+
+[Maps](MAPS.md) records the accepted D-078 / RFC-0074 public contract for the planned 0.47 phase and
+new optional `hedron-maps` package: custom raster/vector sources, pinned MapLibre enhancement,
+typed interaction, semantic fallback, and static/PMTiles/MBTiles/blank-map offline paths.
+
 ## Start here (golden path)
 
 After [First app → What is HTMX → HTMX interactions → Minimal form](../getting-started/index.md), these

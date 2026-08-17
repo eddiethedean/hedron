@@ -39,6 +39,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Package-native typed workflows](PACKAGE_NATIVE_WORKFLOWS_046.md) — phase 0.46 D-075 feature
   bundles, data workspaces, linked charts, enhanced elements, remote workflows, workbenches, and
   scenario requirements
+- [First-class maps](HEDRON_MAPS_047.md) — phase 0.47 D-078 `hedron-maps`, MapLibre, custom
+  raster/vector sources, typed interaction, offline assets/archives, and air-gapped requirements
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

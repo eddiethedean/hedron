@@ -57,6 +57,12 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-runtime-node](hedron-runtime-node.md) | npm | Portable Node conformance evaluator |
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 
+## Planned packages
+
+| Package | Target | Role |
+|---|---|---|
+| [hedron-maps](hedron-maps.md) | `hedron[maps]` / independent `0.1.0` | First-class custom-server, MapLibre, and offline maps planned for phase 0.47 |
+
 ## Alpha incubator
 
 | Package | Extra | Role |

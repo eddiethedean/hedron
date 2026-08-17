@@ -1,0 +1,56 @@
+# Phase 0.47 first-class maps capability inventory.
+
+schema_version = 1
+phase = "0.47"
+status = "Planned"
+decision = "D-078"
+owning_rfc = "RFC-0074"
+package = "hedron-maps"
+package_target = "0.1.0"
+
+[[capability]]
+id = "MAP-SPEC-001..012"
+area = "grammar-and-plan"
+gate = "SPEC-047"
+state = "Planned"
+summary = "Immutable closed MapSpec and deterministic redacted MapPlan with complete resource facts."
+
+[[capability]]
+id = "MAP-PROVIDER-001..012"
+area = "providers-and-sources"
+gate = "PROVIDER-047"
+state = "Planned"
+supported = ["openstreetmap-standard", "xyz-raster", "tilejson", "mvt-vector"]
+summary = "Replaceable OSM default and exact-origin custom raster/vector infrastructure."
+
+[[capability]]
+id = "MAP-OFFLINE-001..014"
+area = "offline"
+gate = "OFFLINE-047"
+state = "Planned"
+supported = ["static-image", "pmtiles-raster", "pmtiles-vector", "bounded-mbtiles", "blank-map", "offline-bundle"]
+summary = "No-external-network maps with complete local resource closure and air-gap evidence."
+
+[[capability]]
+id = "MAP-LAYER-001..010"
+area = "layers"
+gate = "RENDER-047"
+state = "Planned"
+supported = ["marker", "geojson", "line", "polygon", "circle", "raster"]
+summary = "Bounded first-party layer inventory rendered through pinned MapLibre and semantic fallback."
+
+[[capability]]
+id = "MAP-EVENT-001..010"
+area = "interactions"
+gate = "INTERACT-047"
+state = "Planned"
+supported = ["feature-selected", "feature-activated", "viewport-changed", "layer-visibility-changed", "map-loaded", "map-failed"]
+summary = "Closed untrusted event payloads mapped to ordinary commands/effects with rate and payload bounds."
+
+[[capability]]
+id = "MAP-ADAPTER-001..006"
+area = "future-adapters"
+gate = "COMPAT-047"
+state = "Excluded"
+excluded = ["leaflet", "openlayers", "deck-gl", "cesium", "wms", "wmts", "wfs", "drawing", "routing", "geocoding", "terrain", "globe", "3d-tiles", "offline-prefetch"]
+summary = "Potential future adapters and GIS capabilities are not part of the initial Supported inventory."

@@ -83,7 +83,7 @@ Documentation source ownership and review rules:
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
 | `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
-| `verify_pkg_45.py` / `verify_pkg_44.py` / `verify_pkg_43.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_45.py`**; phase 0.45 rows are Verified in `release-gate-0.45.toml`; tag/PyPI deferred) |
+| `verify_pkg_45.py` / `verify_pkg_44.py` / `verify_pkg_43.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_45.py`**; phase 0.45 rows are Verified in `release-gate-0.45.toml`; tag `v0.45.0` when RELEASE.md is executed) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

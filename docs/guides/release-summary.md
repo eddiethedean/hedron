@@ -8,15 +8,18 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 
 | Item | Value |
 |---|---|
-| Published | **v0.44.0** (`hedron` / Beta train packages `0.44.0`; Beta `hedron-elements` `0.44.0`; independent Beta `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.0`; `fastapi-workbench` `1.0.0`) |
+| Published | **v0.45.0** (`hedron` / Beta train packages `0.45.0`; Beta `hedron-elements` `0.45.0`; independent Beta `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.0`; `fastapi-workbench` `1.0.0`) |
 | Pin | `hedron>=0.45.0,<0.46` |
 | Charts satellite | `hedron-charts>=0.2.0,<0.3` |
-| Gate checker | `python scripts/check_release_gate.py 0.44.0` |
-| Packet verify | `python scripts/verify_pkg_44.py` |
+| Gate checker | `python scripts/check_release_gate.py 0.45.0` |
+| Packet verify | `python scripts/verify_pkg_45.py` |
 
-Adopter-facing notes: [What’s new in 0.44](whats-new-0.44.md) ·
+Adopter-facing notes: [What’s new in 0.45](whats-new-0.45.md) ·
 [Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
+
+The `v0.45.0` Git tag is not created until a maintainer executes the RELEASE.md tag
+step on green `main`. Do not retag `v0.44.0`.
 
 ## Contributor checklist (abbreviated)
 

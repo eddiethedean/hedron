@@ -53,7 +53,7 @@ python -m pip install -U "hedron[elements]>=0.45.0,<0.46"
 2. **Unused catalog is request-path neutral.** Apps that never inspect `app.interactions` keep the
    0.44 request path.
 3. **Production `interactions.json`** is required only when the live sealed catalog has entries.
-4. **Rollback:** pin `hedron>=0.45.0,<0.46`. Remove catalog consumers first; handlers stay.
+4. **Rollback:** pin `hedron>=0.44.0,<0.45`. Remove catalog consumers first; handlers stay.
 
 ## Behavioral notes (0.43 → 0.44)
 

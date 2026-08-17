@@ -42,6 +42,8 @@ status commentary, not a satisfied release gate.
   [#328](https://github.com/eddiethedean/hedron/issues/328))
 - [`v0.46` package-native typed workflows](RELEASE_0_46.md) — **Planned** Stage 0 requirements
   packet (D-075 / RFC-0073; requires Verified 0.45 and a tracking issue before Stage 1)
+- [`v0.47` first-class maps](RELEASE_0_47.md) — **Planned** Stage 0 requirements packet
+  (D-078 / RFC-0074; `hedron-maps` `0.1.0`; requires Verified 0.46 and a tracking issue before Stage 1)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
@@ -100,7 +102,8 @@ status commentary, not a satisfied release gate.
   [release-gate-0.43.toml](release-gate-0.43.toml) (Verified),
   [release-gate-0.44.toml](release-gate-0.44.toml) (Verified),
   [release-gate-0.45.toml](release-gate-0.45.toml) (Verified),
-  [release-gate-0.46.toml](release-gate-0.46.toml) (Planned)
+  [release-gate-0.46.toml](release-gate-0.46.toml) (Planned),
+  [release-gate-0.47.toml](release-gate-0.47.toml) (Planned)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.
