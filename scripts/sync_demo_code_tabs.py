@@ -175,7 +175,7 @@ _CODE_BLURBS: dict[tuple[str, str], str] = {
         "examples/notes-sqlalchemy.md",
         "crud-notes",
     ): (
-        "Real recipe listing with SQLAlchemy + SQLite and Post-Redirect-Get. "
+        "Real recipe listing with SQLAlchemy + SQLite and HTMX fragment refresh. "
         "The Demo tab is a simplified in-memory HTMX list view:"
     ),
     (

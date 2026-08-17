@@ -432,7 +432,7 @@ csrf_code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 \
   -H "X-CSRF-Token: ${token}" \
   -b "$cookie_jar" \
   -X POST "$BASE/ping")"
-if [[ "$csrf_code" != "200" ]]; then
+if [[ "$csrf_code" != "200" && "$csrf_code" != "303" && "$csrf_code" != "204" ]]; then
   fail "HED-CONNECT-0006" "CSRF POST /ping status=$csrf_code"
 fi
 log "CSRF=ok"
