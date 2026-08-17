@@ -1,0 +1,68 @@
+# Phase 0.48 Idiomorph disposition and existing-interaction compatibility lock
+# (EXT-MORPH-001 / COMPAT-048). Stage 0 contract artifact (D-083). Morph stays
+# Planned until a Stage 1 spike; other 0.48 gates do not wait on admission.
+
+schema_version = 1
+phase = "0.48"
+status = "Planned"
+planning_baseline = "v0.47.0"
+required_predecessor = "v0.47.0"
+target = "v0.48.0"
+decision = "D-083"
+owning_rfc = "RFC-0075"
+gate = "MORPH-048"
+compat_gate = "COMPAT-048"
+requirement = "EXT-MORPH-001"
+
+stacks_on_catalog = "docs/acceptance/htmx-extension-catalog-048.toml"
+stacks_on_assets = "docs/acceptance/htmx-asset-activation-048.toml"
+vendor_in_stage_0 = false
+compatibility_default_includes_morph = false
+safe_hx_swap_today = "hedron_core.htmx_contract.safe_hx_swap; morph not admitted"
+sim_rejects = "hedron_sim.require_supported_swap('morphdom') remains rejected until admission"
+numeric_limits = "Stage 1 evidence; do not invent unmeasured numbers here"
+diagnostic_family = "HED-EXT-*"
+diagnostic_family_docs_only = true
+
+[disposition]
+until_stage_1_spike = "Planned"
+pass = "Verified Supported morph; vendor pinned local asset; admit declared swap values"
+fail = "explicit Deferred or excluded; no unverified morph asset or API ships"
+block_other_gates = false
+supported_claim_if_deferred = false
+
+[admitted_swap_values]
+requires_declaration = true
+values = ["morph", "morph:outerHTML", "morph:innerHTML"]
+enter = "safe_hx_swap only when morph is declared on the page or region"
+
+[spike_matrix]
+forms_values_selection = true
+focus = true
+hx_preserve = true
+web_components = ["hedron-example"]
+charts = ["hedron-chart"]
+maps = ["hedron-map"]
+oob = true
+accessibility_announcement = true
+engines = ["chromium", "firefox", "webkit"]
+do_not_reopen = ["hedron-maps grammar", "hedron-charts grammar", "polling_only"]
+
+[compat]
+existing_pages = "HTMX core, OOB, InteractionResult, StatusPolicy, polling, and non-extension swaps unchanged"
+direct_hx_ext = "low-level hx-ext markup remains possible only with matching extension evidence"
+opt_out = "explicit empty htmx_extensions receives zero extension assets"
+upgrade = "0.47 pair remains the unset-page compatibility default until a later train"
+rollback = "removing declarations restores compatibility-default injection of sse + head-support"
+interaction_result_authority = true
+hx_retarget_authority = true
+oob_authority = true
+hx_indicator_not_replaced = true
+hx_disabled_elt_not_replaced = true
+
+[excluded_duplicates]
+response_targets = "HX-Retarget / HX-Reselect / InteractionResult status policies"
+multi_swap = "Hedron OOB materialization"
+loading_states = "typed indicator / disabled-element behavior"
+websocket_extension = "requires a separate wire-protocol RFC against the typed page/session channel"
+htmx_1 = false

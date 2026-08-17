@@ -1,91 +1,141 @@
 # Phase 0.48 HTMX extension integration release evidence index.
-# Stage 0 contract artifact; all gates remain Planned until evidence is attached.
+# Stage 0 contract artifact, contract-refined by D-083 against Published in-tree
+# v0.47.0. Commands remain reserved names until Stage 1. All rows Planned.
 
 schema_version = 1
 phase = "0.48"
 status = "Planned"
-planning_baseline = "v0.46.0"
+planning_baseline = "v0.47.0"
 required_predecessor = "v0.47.0"
 target = "v0.48.0"
 decision = "D-080"
+contract_refine = "D-083"
 owning_rfc = "RFC-0075"
 
-[[gate]]
+[[evidence]]
 id = "EXTENSION-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_extension_048.py"
+ci_job = "test"
+owner = "hedron-core"
 summary = "Closed declaration catalog, activation scopes, typed composition, and manifests."
 
-[[gate]]
+[[evidence]]
 id = "ASSET-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_asset_048.py"
+ci_job = "test"
+owner = "hedron-core"
 summary = "Demand-driven pinned local assets, compatibility, CSP, order, and zero unused cost."
 
-[[gate]]
+[[evidence]]
 id = "SSE-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_sse_048.py"
+ci_job = "test"
+owner = "hedron"
 summary = "End-to-end SSE regions and jobs with reconnect, closure, cleanup, and polling fallback."
 
-[[gate]]
+[[evidence]]
 id = "HEAD-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_head_048.py"
+ci_job = "test"
+owner = "hedron-core"
 summary = "Controlled registered head merging across navigation, fragments, CSP, and rollback."
 
-[[gate]]
+[[evidence]]
 id = "PRELOAD-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_preload_048.py"
+ci_job = "test"
+owner = "hedron-core"
 summary = "Explicit cacheable GET preload with server policy and bounded request amplification."
 
-[[gate]]
+[[evidence]]
 id = "MORPH-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_morph_048.py"
+ci_job = "test"
+owner = "hedron-core"
 summary = "Evidence-gated Idiomorph admission or explicit Deferred/excluded disposition."
 
-[[gate]]
+[[evidence]]
 id = "SECURITY-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_security_048.py"
+ci_job = "test"
+owner = "hedron-core"
 summary = "Asset, URL, selector, event, head, stream, cache, CSP, and HDJ trust boundaries."
 
-[[gate]]
+[[evidence]]
 id = "A11Y-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_a11y_048.py"
+ci_job = "test"
+owner = "hedron"
 summary = "Fallback, focus, live-region, control, motion, input-parity, and metadata behavior."
 
-[[gate]]
+[[evidence]]
 id = "BROWSER-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_browser_048.py"
+ci_job = "browser"
+owner = "hedron"
 summary = "Three-engine activation, failure, reconnect, swap, race, cancellation, and cleanup."
 
-[[gate]]
+[[evidence]]
 id = "PERF-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_perf_048.py"
+ci_job = "test"
+owner = "hedron"
 summary = "No-op assets, execution, connection, preload, merge, morph, memory, and lifecycle budgets."
 
-[[gate]]
+[[evidence]]
 id = "ADAPTER-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_adapter_048.py"
+ci_job = "test"
+owner = "hedron"
 summary = "Portable host paths, mounts, CSP, cache, stream labels, and extension absence."
 
-[[gate]]
+[[evidence]]
 id = "TOOLING-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_tooling_048.py"
+ci_job = "test"
+owner = "hedron"
 summary = "Explorer, CLI, manifests, scenarios, conformance, simulation, diagnostics, and HDJ facts."
 
-[[gate]]
+[[evidence]]
 id = "COMPAT-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_compat_048.py"
+ci_job = "test"
+owner = "hedron"
 summary = "Existing interaction compatibility, opt-out, deprecation, upgrade, skew, and rollback."
 
-[[gate]]
+[[evidence]]
 id = "DOCS-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_docs_048.py"
+ci_job = "quality"
+owner = "hedron"
 summary = "Complete extension authoring, operations, security, accessibility, and migration docs."
 
-[[gate]]
+[[evidence]]
 id = "REGRESS-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/check_regress_048.py"
+ci_job = "test"
+owner = "hedron"
 summary = "Full Supported regression suite and honest phase-owned issue/disposition closure."
 
-[[gate]]
+[[evidence]]
 id = "PKG-048"
-status = "Planned"
+state = "Planned"
+command = "python scripts/verify_pkg_48.py"
+ci_job = "packaging"
+owner = "hedron"
 summary = "Clean packages, assets/licenses/SBOM/provenance, matrices, versions, and rehearsal."

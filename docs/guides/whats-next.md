@@ -11,7 +11,7 @@ Capability maturity for *this* train: [What’s ready](whats-ready.md).
 
 | Topic | Disposition |
 |---|---|
-| First-class HTMX extension integration | **0.48 Planned** (D-080) — no runtime or version claim yet |
+| First-class HTMX extension integration | **0.48 Planned** (D-080 / D-083; [#373](https://github.com/eddiethedean/hedron/issues/373)) — Stage 0 refined against `v0.47.0`; no runtime or version claim yet |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |

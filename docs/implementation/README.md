@@ -41,6 +41,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
   scenario requirements
 - [First-class maps](HEDRON_MAPS_047.md) — phase 0.47 D-078 / D-082 `hedron-maps`, MapLibre, custom
   raster/vector sources, typed interaction, offline assets/archives, and air-gapped requirements
+- [HTMX extension integration](HTMX_EXTENSION_INTEGRATION_048.md) — phase 0.48 D-080 / D-083
+  declared activation, demand-driven assets, SSE/head-support/preload slices, and morph disposition
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

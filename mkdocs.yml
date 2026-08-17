@@ -272,6 +272,7 @@ nav:
       - Built-ins: api/BUILT_INS.md
       - Charts: api/CHART.md
       - Maps: api/MAPS.md
+      - HTMX extensions: api/HTMX_EXTENSIONS.md
   - Evaluate:
     - Overview: guides/evaluate.md
     - Why Hedron: guides/why-hedron.md

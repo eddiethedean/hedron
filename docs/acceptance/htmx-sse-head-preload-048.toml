@@ -1,0 +1,104 @@
+# Phase 0.48 SSE, head-support, and preload vertical-slice lock (EXT-SLICE-001).
+# Stage 0 contract artifact (D-083). Completing packaged slices does not reopen
+# 0.24 polling_only or promote live helpers to Supported.
+
+schema_version = 1
+phase = "0.48"
+status = "Planned"
+planning_baseline = "v0.47.0"
+required_predecessor = "v0.47.0"
+target = "v0.48.0"
+decision = "D-083"
+owning_rfc = "RFC-0075"
+gates = ["SSE-048", "HEAD-048", "PRELOAD-048"]
+requirement = "EXT-SLICE-001"
+
+stacks_on_catalog = "docs/acceptance/htmx-extension-catalog-048.toml"
+stacks_on_assets = "docs/acceptance/htmx-asset-activation-048.toml"
+polling_only = true
+reopen_polling_only = false
+live_transport_promotion = false
+numeric_limits = "Stage 1 evidence; name knobs only"
+diagnostic_family = "HED-EXT-*"
+diagnostic_family_docs_only = true
+keep_existing_codes = ["HED-HTMX-0001", "HED-HTMX-0002", "HED-JINJA-0030"]
+
+[maturity]
+sse_api = "experimental; remain on EXPERIMENTAL_LIVE_SURFACES"
+sse_asset = "Supported when declared and pinned"
+head_support_asset = "Supported when declared and pinned"
+preload_api = "experimental; remain on EXPERIMENTAL_LIVE_SURFACES"
+preload_asset = "Supported when declared and pinned; never compatibility-default"
+correctness_path = "ordinary HTML, forms, links, and polling remain the Supported path"
+
+[consumed]
+sse_response = "hedron.experimental.sse_response / SseResponse / job_status_sse_response"
+sse_framing = "hedron_core.live.SseEvent / encode_sse / iter_sse_bytes / job_status_sse_events"
+extension_script_tags = "hedron.sse.extension_script_tags; demand-driven replacement, not a fork"
+preload_policy = "hedron_core.preload.NavigationPreloadPolicy / PreloadDecision / decide_preload"
+preload_header = "HX-Preloaded"
+preload_helpers = "hedron.experimental.evaluate_preload_request / apply_preload_headers"
+asset_ref = "hedron_core.rendering.AssetRef"
+
+[sse]
+authoring_components = ["SseRegion", "SseTrigger"]
+package = "hedron-core"
+hx_ext = "sse"
+sse_connect = "validated same-origin SafeUrl"
+sse_swap = "bounded closed event-name tokens"
+sse_close = "optional closed terminal name"
+trigger = "hx-trigger=sse:<name> requests a server-canonical fragment"
+event_html = "ordinary renderer and escaping pipeline"
+last_event_id = "honor Last-Event-ID; invalid values fail closed"
+auth_tenant = "existing job_authorized_http / application authz; 0.48 does not infer grants"
+polling_fallback = "required Supported fallback"
+page_visibility_cleanup = true
+dom_removal_cleanup = true
+
+[head_support]
+hx_ext = "head-support"
+eligible_content = "controlled head assembled from admitted AssetRef values"
+unknown_inline_scripts = false
+event_handlers = false
+remote_origins = false
+nonce_invention = false
+unregistered_removal = false
+fragment_invents_scripts = false
+merge_events_observable = true
+tested = [
+    "full-document merge",
+    "boosted navigation",
+    "title and metadata",
+    "add",
+    "retain",
+    "replace",
+    "remove",
+    "dedupe",
+    "mount-prefix",
+    "csp",
+    "failure",
+    "rollback",
+]
+
+[preload]
+authoring = "GET-only authoring value on links and hx-get controls"
+python_type_name = "not Preload; that collides with PreloadDecision"
+closed_initiation_modes = ["mousedown", "mouseover", "touchstart"]
+maps_to = "existing decide_preload / HX-Preloaded path"
+mutation_methods = false
+user_derived_urls = false
+unbounded_inherited_scope = false
+changes_authorization = false
+changes_csrf = false
+changes_cache_partitioning = false
+changes_availability = false
+visible_state = false
+steals_focus = false
+announces_content = false
+pointer_keyboard_touch_parity = true
+
+[knobs_stage_1]
+sse = ["connection_count", "reconnect_budget", "event_size", "stream_lifetime"]
+preload = ["hit_rate", "wasted_bytes", "amplification", "origin_load"]
+head_support = ["merge_duration", "retained_memory"]
+assets = ["compressed_bytes", "uncompressed_bytes", "parse_execute"]

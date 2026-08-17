@@ -1,0 +1,73 @@
+# Phase 0.48 demand-driven HTMX extension asset activation lock (EXT-ASSET-001).
+# Stage 0 contract artifact (D-083). Cut-day default preserves the 0.47 PAGE pair
+# unless the application opts out or declares a non-empty ExtensionSet.
+
+schema_version = 1
+phase = "0.48"
+status = "Planned"
+planning_baseline = "v0.47.0"
+required_predecessor = "v0.47.0"
+target = "v0.48.0"
+decision = "D-083"
+owning_rfc = "RFC-0075"
+gate = "ASSET-048"
+requirement = "EXT-ASSET-001"
+compat_gate = "COMPAT-048"
+
+stacks_on_catalog = "docs/acceptance/htmx-extension-catalog-048.toml"
+
+current_page_behavior = "inject_htmx_extensions inserts every non-deferred known_extensions() asset after HTMX core"
+consumed_injector = "hedron_core.page_assets.inject_htmx_extensions"
+consumed_core_inject = "hedron_core.page_assets.inject_htmx_core"
+static_prefix = "/hedron-static"
+mount_prefix_rewritten = true
+dedupe = true
+fragment_invents_scripts = false
+runtime_cdn = false
+request_derived_asset_url = false
+new_package = false
+numeric_limits = "Stage 1 evidence; name knobs only"
+diagnostic_family = "HED-EXT-*"
+diagnostic_family_docs_only = true
+
+[shipped_pins]
+htmx_core = "2.0.10"
+"htmx-ext-sse" = "2.2.2"
+"htmx-ext-head-support" = "2.0.2"
+preload_pin = "Stage 1; do not invent a digest here"
+morph_pin = "Stage 1 only if MORPH-048 Verified; vendor nothing in Stage 0"
+
+[load_order]
+after_htmx_core = true
+head_support = 10
+sse = 50
+preload = "Stage 1; after core, before or after head-support as pinned"
+morph = "Stage 1; after core; only if admitted"
+
+[csp]
+script_src_self = true
+facts_exported = true
+nonce_invention = false
+unregistered_inline = false
+
+[compatibility_default]
+applies_when = "Page.htmx_extensions unset and no typed component requirement"
+injects = ["sse", "head-support"]
+never_injects = ["preload", "morph"]
+diagnostic = "bounded compatibility-injection diagnostic"
+removal_train = "later documented train; not the v0.48.0 cut"
+
+[opt_out]
+spelling = "Page(htmx_extensions=()) or ExtensionSet.empty()"
+bytes = "zero HTMX extension script tags on unused pages"
+
+[demand_driven]
+applies_when = "explicit non-empty htmx_extensions or component requirement"
+injects = "declared union only, each local asset once after HTMX core"
+hx_ext_scope = "canonical hx-ext at the narrowest valid scope"
+
+[adapters]
+fastapi = "flagship continues to call inject_page_assets"
+flask_django = "projection_adapter; same portable injector; no FastAPI imports"
+posit_workbench = "mount-prefix and static path labels"
+absence = "applications that declare no extensions and opt out receive no extension assets"

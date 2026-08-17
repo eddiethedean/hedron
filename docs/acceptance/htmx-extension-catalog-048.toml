@@ -1,0 +1,126 @@
+# Phase 0.48 closed HtmxExtension / ExtensionSet catalog lock (EXT-CAT-001).
+# Stage 0 contract artifact (D-083). Declarations compile to render/CSP/diagnostic
+# facts; they are not a CatalogEntry kind, FeatureBundle executor, or fourth
+# fingerprint authority.
+
+schema_version = 1
+phase = "0.48"
+status = "Planned"
+planning_baseline = "v0.47.0"
+required_predecessor = "v0.47.0"
+target = "v0.48.0"
+decision = "D-083"
+owning_rfc = "RFC-0075"
+gate = "EXTENSION-048"
+requirement = "EXT-CAT-001"
+
+stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
+stacks_on_host = "docs/acceptance/host-portable-facts-045.toml"
+stacks_on_adapter = "docs/acceptance/adapter-disposition-044.toml"
+stacks_on_form = "docs/acceptance/type-form-inventory-044.toml"
+stacks_on_assets = "docs/acceptance/htmx-asset-activation-048.toml"
+
+fourth_fingerprint_authority = false
+descriptor_fingerprint_excludes = ["effect", "extensions"]
+type_schema_namespace = "hedron.type"
+catalog_entry_kinds = ["view", "command"]
+new_catalog_kind = false
+feature_bundle_executor = false
+new_package = false
+htmx_major = ">=2,<3"
+htmx_4 = "out of scope"
+diagnostic_family = "HED-EXT-*"
+diagnostic_family_docs_only = true
+keep_existing_codes = ["HED-HTMX-0001", "HED-HTMX-0002", "HED-JINJA-0030"]
+
+closed_public_ids = ["sse", "head-support", "preload"]
+conditional_public_ids = ["morph"]
+hx_ext_uses_public_id = true
+hdj_extension_id_uses_public_id = true
+hdj_feature_prefix = "htmx.extension:"
+hx_ext_never_installs = true
+
+[identity]
+public_id = "HtmxExtension closed identifier"
+asset_name = "ExtensionAsset.name remains npm-style htmx-ext-*"
+hx_ext = "emits the public id (sse, not htmx-ext-sse)"
+hdj_evidence = "hedron_jinja.ExtensionEvidence.extension_id matches public id"
+
+[asset_name_map]
+sse = "htmx-ext-sse"
+"head-support" = "htmx-ext-head-support"
+preload = "htmx-ext-preload"
+morph = "htmx-ext-idiomorph"
+
+[imports]
+hedron_core = [
+    "HtmxExtension",
+    "ExtensionSet",
+    "ExtensionAsset",
+    "known_extensions",
+    "Page.htmx_extensions",
+    "SseRegion",
+    "SseTrigger",
+]
+hedron_core_consumed = [
+    "ExtensionAsset",
+    "known_extensions",
+    "SSE_EXTENSION_DEFERRED",
+    "inject_htmx_extensions",
+    "inject_page_assets",
+    "safe_hx_swap",
+    "Page",
+]
+hedron_jinja_consumed = [
+    "ExtensionEvidence",
+    "ExtensionRegistry",
+]
+hedron_jinja_not_replaced = true
+hedron = ["inject_page_assets callers; no new package"]
+hedron_core_portable_forbidden = ["fastapi", "flask", "django"]
+
+[declaration]
+page_kwarg = "Page(..., htmx_extensions=...)"
+unset = "compatibility default; see htmx-asset-activation-048.toml"
+empty = "explicit empty sequence or ExtensionSet.empty() opts out"
+nonempty = "demand-driven union of page plus component requirements"
+component_contribution = "typed components such as SseRegion may require an id during render planning"
+fragment = "FRAGMENT never invents executable assets; requirements must be satisfied by the shell or authorized head-support"
+
+[fail_closed]
+cases = [
+    "unknown public id",
+    "incompatible combination",
+    "missing pinned asset",
+    "digest mismatch",
+    "invalid dependency order",
+    "undeclared fragment requirement",
+    "declaration incompatible with HTMX major 2",
+    "request-derived or CDN asset URL",
+]
+development = "fail closed"
+production = "bounded diagnostics; do not install unknown extensions"
+
+[authority]
+handles = "0.43 BaseHandleDescriptor remains route/security/runtime authority"
+type_schema = "0.44 TypeSchema remains typed-extension authority under hedron.type"
+catalog = "0.45 CatalogEntry indexes fingerprints only; extension plans do not reinterpret entries"
+projections = "optional namespaced PackageProjection; never route, validate, authorize, or execute"
+hdj = "ExtensionEvidence stays in hedron-jinja; 0.48 projects core catalog facts into it"
+interaction_result = "InteractionResult, StatusPolicy, HX-Retarget, HX-Reselect, OOB remain authoritative"
+numeric_limits = "Stage 1 evidence; do not invent unmeasured numbers here"
+
+[excluded]
+ids = [
+    "response-targets",
+    "multi-swap",
+    "loading-states",
+    "ws",
+    "client-templates",
+    "json-enc",
+    "event-header",
+    "htmx-1-compat",
+]
+cdn = false
+community_arbitrary = false
+request_derived_install = false

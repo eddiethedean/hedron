@@ -45,7 +45,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Published** (`v0.47.0` / `hedron-maps` `0.1.0`; in-tree cut, tag/PyPI deferred; D-078 / D-082 / RFC-0074; [#350](https://github.com/eddiethedean/hedron/issues/350)) |
-| **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Planned** (`v0.48.0`; D-080 / RFC-0075; requires Verified 0.47 and a tracking issue before Stage 1; no 0.48 runtime) |
+| **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Planned** (`v0.48.0`; D-080 / D-083 / RFC-0075; Stage 0 refined against Published in-tree `v0.47.0`; [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48 gate before Stage 1; no 0.48 runtime) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Planned** (`v0.49.0`; D-081 / RFC-0076; requires Verified 0.48 and a tracking issue before Stage 1; no 0.49 runtime) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
@@ -3966,9 +3966,10 @@ Capability inventory:
 
 ## 0.48 — First-class HTMX extension integration (`v0.48.0`)
 
-**Status:** Planned (D-080 /
+**Status:** Planned (D-080 / D-083 /
 [RFC-0075](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0075-HTMX-EXTENSION-INTEGRATION.md)).
-Verified `v0.47.0` is the hard Stage 1 prerequisite and cut baseline. A tracking issue must bind
+Planning baseline is Published in-tree `v0.47.0`. Verified `v0.47.0` is the hard Stage 1
+prerequisite and cut baseline. [#373](https://github.com/eddiethedean/hedron/issues/373) must bind
 every 0.48 gate before runtime implementation begins. Stage 0 changes planning contracts only.
 
 **Outcome:** HTMX extensions become a deliberate Hedron capability rather than scripts that happen
@@ -4029,10 +4030,18 @@ Evidence index:
 [`release-gate-0.48.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.48.toml).
 Acceptance packet:
 [RELEASE_0_48](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_48.md).
+Artifacts: [public contract](https://github.com/eddiethedean/hedron/blob/main/docs/api/HTMX_EXTENSIONS.md) ·
+[implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_EXTENSION_INTEGRATION_048.md) ·
+[catalog lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/htmx-extension-catalog-048.toml) ·
+[asset lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/htmx-asset-activation-048.toml) ·
+[SSE/head/preload lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/htmx-sse-head-preload-048.toml) ·
+[morph/compat lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/htmx-morph-compat-048.toml) ·
+[capability inventory](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/htmx-capability-inventory-048.toml) ·
+[upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-048.md).
 
 ### Exit gate
 
-- Verified 0.47 is the baseline and a tracking issue owns every 0.48 row.
+- Verified 0.47 is the baseline and [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48 row.
 - The packaged reference application exercises every admitted extension and fallback.
 - Applications declaring no extensions receive no extension assets or behavioral change.
 - Every non-disposition 0.48 row is Verified before `v0.48.0`; morph is either Verified or visibly
@@ -4212,6 +4221,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Sealed interaction catalog, manifest, package projections, and fleet dispositions | 0.45 | Read-only convergence over Verified 0.43/0.44 authority; trusted/static tooling, adapters, packages, portable fixtures, remote/deployment consumers, and no third runtime schema (RFC-0072 / D-074 / D-077). |
 | Package feature bundles, data workspaces, linked charts, enhanced elements, and explicit remote workflows | 0.46 | Opt-in package-native features compile to the 0.43–0.45 stack with explicit policy, overrides/ejection, native fallbacks, and no package workflow executor (RFC-0073 / D-075 / D-079). |
 | First-class custom-server and offline maps | 0.47 | Optional `hedron-maps` compiles typed basemaps/sources/layers/styles/events to a deterministic plan, pinned strict-CSP MapLibre enhancement, semantic fallback, and OSM/custom/static/PMTiles/bounded-MBTiles/blank-map paths (RFC-0074 / D-078 / D-082). |
+| First-class HTMX extension integration | 0.48 | Closed `HtmxExtension`/`ExtensionSet` declarations, demand-driven pinned assets with a 0.47-pair compatibility default, SSE/head-support/preload vertical slices, and evidence-gated Idiomorph (RFC-0075 / D-080 / D-083). |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
 | Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |
 | Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |

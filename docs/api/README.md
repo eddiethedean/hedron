@@ -123,6 +123,7 @@ These contracts compile onto the golden path. They are **not** required for Hell
 - [Type-driven authoring](TYPE_DRIVEN_AUTHORING.md)
 - [Interaction catalog](INTERACTION_CATALOG.md)
 - [Package-native typed workflows](PACKAGE_WORKFLOWS.md)
-- [Maps](MAPS.md) — **0.47 Planned** (no runtime claim)
+- [Maps](MAPS.md)
+- [HTMX extension integration](HTMX_EXTENSIONS.md) — **0.48 Planned** (no runtime claim)
 
 Public exception types: [EXCEPTIONS.md](EXCEPTIONS.md).

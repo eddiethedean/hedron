@@ -1,6 +1,9 @@
 # HTMX 2 extension evaluation (phase 0.10)
 
-**Status:** Official SSE and head-support pinned for phase 0.10 (D-044 / RFC-0032)
+**Status:** Official SSE and head-support pinned for phase 0.10 (D-044 / RFC-0032).
+Phase 0.48 (D-080 / D-083 / RFC-0075) refines first-class extension *planning* against
+Published in-tree `v0.47.0`; this page remains the current 0.10 pin and disposition
+snapshot until 0.48 gates are Verified. No 0.48 runtime claim.
 **Date:** 2026-08-04
 
 Hedron's fragment asset/head policy:
@@ -17,7 +20,7 @@ Hedron's fragment asset/head policy:
 |---|---|---|
 | Official SSE (`htmx-ext-sse`) | **Experimental (API); asset Supported** | Pinned local asset; job/region observation with auth/reconnect; polling remains Supported fallback under 0.24 `polling_only` (ops IDs Superseded — helpers stay experimental). |
 | `head-support` | **Supported (optional)** | Locally served with digest/CSP/load order for registered fragment head merge. |
-| Idiomorph | **Deferred (opt-in later)** | Morphing helps preserve custom-element state, but form/focus/CE lifecycle harnesses are not yet green enough to ship a pinned default. |
+| Idiomorph | **Deferred (opt-in later)** | Morphing helps preserve custom-element state, but form/focus/CE lifecycle harnesses are not yet green enough to ship a pinned default. `MORPH-048` keeps this evidence-gated in 0.48. |
 | `response-targets` | **Deferred** | Core `HX-Retarget` / `HX-Reselect` plus `InteractionResult` status policies cover declared error/validation targets without another extension. |
 | View Transitions | **Deferred** | Progressive enhancement only; requires `prefers-reduced-motion` gating and focus stability evidence reserved for later browser-matrix work. |
 

@@ -3,11 +3,19 @@
 **Status:** Accepted<br>
 **Target phase:** 0.48 (`v0.48.0`)<br>
 **Decision:** D-080<br>
-**Planning baseline:** Published in-tree `v0.46.0`<br>
-**Required predecessor/cut baseline:** Verified `v0.47.0`<br>
+**Stage 0 contract refine:** D-083<br>
+**Planning baseline:** Published in-tree `v0.47.0` (D-083; original Stage 0 baseline was Published in-tree `v0.46.0`)<br>
+**Required predecessor/cut baseline:** Verified in-tree `v0.47.0`<br>
+**Tracking:** [#373](https://github.com/eddiethedean/hedron/issues/373)<br>
 **Extends:** RFC-0008, RFC-0009, RFC-0012, RFC-0019, RFC-0021, RFC-0023,
 RFC-0024, RFC-0025, RFC-0031, RFC-0032, RFC-0053, RFC-0060, RFC-0070,
 RFC-0072, RFC-0073, and RFC-0074
+
+**Revision:** 2026-08-17 — D-083 contract refine against Published in-tree `v0.47.0`:
+planning baseline rebased; catalog, asset/activation, SSE/head/preload, and
+morph/compat locks recorded; real 0.10 `ExtensionAsset` / `inject_htmx_extensions`
+/ SSE / preload / HDJ `ExtensionEvidence` / `safe_hx_swap` seams and 0.43–0.47
+handles/catalog/maps lifecycle named. No runtime or version claim.
 
 ## Summary
 
@@ -183,6 +191,108 @@ and all non-extension swaps retain their behavior.
 
 Phase 0.48 targets HTMX 2 (`>=2,<3`). HTMX 4's different extension registration and SSE semantics
 are outside this phase and require an explicit future compatibility decision.
+
+## Resolved questions (D-080)
+
+1. **Which extensions?** Closed inventory `sse`, `head-support`, `preload`, and
+   conditionally `morph`. `response-targets`, multi-swap, loading-states, HTMX 1,
+   WebSocket, CDN/community loaders, client templates, JSON encoding, and executable
+   event headers stay excluded.
+2. **Demand-driven assets?** Yes. Unused pages load no extension assets once
+   declarations replace the 0.10 unconditional PAGE injection, with one documented
+   compatibility window.
+3. **Live-transport promotion?** No. Completing SSE/preload slices does not supersede
+   0.24 `polling_only`.
+4. **Morph?** Evidence-gated. `MORPH-048` Verified or an explicit Deferred/excluded
+   disposition; unverified morph does not ship.
+5. **What is the release baseline?** Verified 0.47 is required before Stage 1 or the
+   0.48 cut. Original Stage 0 planning baseline was Published in-tree `v0.46.0`.
+   **D-083** rebases the living/planning baseline to Published in-tree `v0.47.0`.
+
+## Resolved questions (D-083)
+
+1. **Does 0.48 still include all 16 gates?** Yes. `EXTENSION-048`, `ASSET-048`,
+   `SSE-048`, `HEAD-048`, `PRELOAD-048`, `MORPH-048`, `SECURITY-048`, `A11Y-048`,
+   `BROWSER-048`, `PERF-048`, `ADAPTER-048`, `TOOLING-048`, `COMPAT-048`,
+   `DOCS-048`, `REGRESS-048`, and `PKG-048` remain in scope. Do not split catalog/assets
+   or park morph in a later phase.
+2. **Does this refine change 0.49?** No. D-081 still requires Verified 0.48 before
+   its Stage 1.
+3. **Which shipped seams does 0.48 consume?** `ExtensionAsset` /
+   `known_extensions()` / `SSE_EXTENSION_DEFERRED` from
+   `hedron_core.htmx_extensions` (pins htmx-ext-sse **2.2.2**,
+   htmx-ext-head-support **2.0.2**). PAGE injection via
+   `hedron_core.page_assets.inject_htmx_extensions` currently inserts every
+   non-deferred known extension after HTMX core. SSE:
+   `SseResponse` / `sse_response` / `job_status_sse_response` /
+   `extension_script_tags` and `hedron_core.live.SseEvent` / `encode_sse`.
+   Preload: `NavigationPreloadPolicy` / `PreloadDecision` / `decide_preload` /
+   `HX-Preloaded`. Swap: `safe_hx_swap` does not admit morph;
+   `require_supported_swap("morphdom")` stays rejected. HDJ:
+   `ExtensionEvidence` with `hx-ext` never installing; tests already use
+   `extension_id="sse"`. Interaction stack: `FragmentHandle[BindT, ContentT]`,
+   `ActionHandle[InputT, ResultT]`, `BoundFragment[ContentT]`, `Patch[ContentT]`,
+   `BaseHandleDescriptor`, `descriptor_fingerprint` (does **not** hash `effect`
+   or `extensions`), `TypeSchema` under `hedron.type`,
+   `Hedron.include_component` / `include_feature` / `Hedron.interactions`,
+   `compile_interaction_catalog` / `seal_app_catalog` after `seal_registry`,
+   `InteractionCatalog` / `CatalogEntry` / `PackageProjection`, `FeatureBundle`
+   (not an executor), `AppScenario`. Flask/Django remain `projection_adapter`
+   stacked on
+   [adapter-disposition-044.toml](../acceptance/adapter-disposition-044.toml) and
+   [host-portable-facts-045.toml](../acceptance/host-portable-facts-045.toml).
+   Morph/browser lifecycle includes `hedron-example`, `hedron-chart`, and 0.47
+   `hedron-map`.
+4. **Public ids vs asset names?** Closed `HtmxExtension` ids are `sse`,
+   `head-support`, `preload`, and conditionally `morph`. `ExtensionAsset.name`
+   stays npm-style `htmx-ext-*`. `hx-ext` and HDJ `extension_id` use the public
+   id (`sse`, not `htmx-ext-sse`). Lock:
+   [htmx-extension-catalog-048.toml](../acceptance/htmx-extension-catalog-048.toml).
+5. **Where do symbols live?** Portable catalog/set/plan in `hedron-core` (no
+   FastAPI). Additive `Page(..., htmx_extensions=...)` on existing core `Page`.
+   `SseRegion` / `SseTrigger` are core HTML components. Preload is a GET-only
+   authoring value on links/`hx-get`, not a type named `Preload` (that collides
+   with `PreloadDecision`). Flagship/adapters keep calling `inject_page_assets`.
+   No new package. HDJ keeps `ExtensionEvidence`; 0.48 projects core catalog
+   facts into it.
+6. **Compatibility injection?** Cut-day default: PAGE responses with **no**
+   explicit declaration and no component requirement still inject the 0.47 pair
+   (`sse` + `head-support`) and emit a bounded diagnostic. Explicit empty
+   `htmx_extensions=()` opts out (zero extension bytes). Explicit non-empty sets
+   are demand-driven only. `preload` / `morph` never ride the default. Removal of
+   the default is a later documented train, not the `v0.48.0` cut. Lock:
+   [htmx-asset-activation-048.toml](../acceptance/htmx-asset-activation-048.toml).
+7. **SSE/preload maturity?** Complete vertical slices do **not** reopen 0.24
+   `polling_only`. `SseResponse` / job SSE / `evaluate_preload_request` stay on
+   `EXPERIMENTAL_LIVE_SURFACES`. Declared extension assets are Supported-when-pinned;
+   APIs stay experimental until a separate live-transport packet. Slice lock:
+   [htmx-sse-head-preload-048.toml](../acceptance/htmx-sse-head-preload-048.toml).
+8. **Catalog/manifest?** Extension plans are render/CSP/diagnostic facts, **not** a
+   new `CatalogEntry.kind`, not a fourth fingerprint, not a `FeatureBundle`
+   executor. Optional namespaced `PackageProjection` is allowed; `kind` stays
+   `view`/`command`.
+9. **Head-support?** Eligible `<head>` merge uses existing `AssetRef` /
+   security-policy admission. FRAGMENT still never invents executable assets.
+10. **Morph?** Keep `MORPH-048` Planned until a Stage 1 spike covering forms,
+    focus, `hx-preserve`, `hedron-example`, `hedron-chart`, **`hedron-map`**,
+    OOB, a11y, and three engines. Vendor nothing in Stage 0. Failed spike →
+    explicit Deferred/excluded; other gates still cut. Admitted values
+    (`morph`, `morph:outerHTML`, `morph:innerHTML`) enter `safe_hx_swap` only
+    when `morph` is declared. Lock:
+    [htmx-morph-compat-048.toml](../acceptance/htmx-morph-compat-048.toml).
+11. **Which diagnostic family?** Keep `HED-HTMX-0001`/`0002` and
+    `HED-JINJA-0030`. Reserve `HED-EXT-*` in docs only. Do not assign new
+    numbers during this refine.
+12. **What does Stage 1 still own?** Numeric limits (asset bytes, SSE
+    connections, preload amplification, merge duration, memory), preload.js and
+    (if admitted) Idiomorph pins/digests, tracking-issue-bound runtime, and the
+    `inject_htmx_extensions` demand-driven implementation. Do not invent those
+    numbers here.
+13. **HTMX major?** Phase stays HTMX 2 (`>=2,<3`). HTMX 4 is out of scope.
+14. **May Stage 1 start before the 0.47 PyPI/Git tag?** Yes for in-tree
+    Verified 0.47 evidence. Tracking issue [#373](https://github.com/eddiethedean/hedron/issues/373)
+    is bound. Do not wait on `#350` publish assets. Do not start Stage 1 during
+    this contract refine.
 
 ## Acceptance criteria
 
