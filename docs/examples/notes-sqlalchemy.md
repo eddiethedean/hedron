@@ -13,7 +13,7 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
 
 === "Code"
 
-    Real recipe listing with SQLAlchemy + SQLite and Post-Redirect-Get. The Demo tab is a simplified in-memory HTMX list view:
+    Real recipe listing with SQLAlchemy + SQLite and HTMX fragment refresh. The Demo tab is a simplified in-memory HTMX list view:
 
     ```python title="app.py"
     """Notes list persisted with SQLAlchemy (SQLite). Local demo only.

@@ -48,13 +48,13 @@ page="$(curl -fsS --max-time 10 "http://127.0.0.1:${PORT}${MOUNT}/")"
 grep -Fq 'Hello from Hedron on Workbench' <<<"$page"
 grep -Fq "${MOUNT}/hedron-static/hedron-mount.mjs" <<<"$page"
 grep -Fq "hx-get=\"${MOUNT}/status\"" <<<"$page"
-grep -Fq "action=\"${MOUNT}/ping\"" <<<"$page"
+grep -Fq "hx-post=\"${MOUNT}/ping\"" <<<"$page"
 
 headers="$(curl -fsS -D - -o /dev/null --max-time 10 "http://127.0.0.1:${PORT}${MOUNT}/")"
 grep -qi "path=${MOUNT}" <<<"$headers"
 
 fragment="$(curl -fsS --max-time 10 \
-  -H 'HX-Request: true' -H 'HX-Target: #service-status' \
+  -H 'HX-Request: true' -H 'HX-Target: #h-view-status' \
   "http://127.0.0.1:${PORT}${MOUNT}/status")"
 grep -Fq 'All systems operational' <<<"$fragment"
 

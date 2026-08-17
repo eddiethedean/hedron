@@ -281,7 +281,7 @@ fi
 if ! fragment="$(curl -fsS --max-time 15 \
   -H "Authorization: Key ${AUTH}" \
   -H 'HX-Request: true' \
-  -H 'HX-Target: #service-status' \
+  -H 'HX-Target: #h-view-status' \
   -b "$cookie_jar" \
   "$BASE/status")"; then
   fail "HED-CONNECT-0006" "FRAGMENT /status request failed"

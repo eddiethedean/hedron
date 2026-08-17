@@ -417,7 +417,7 @@ print(urlsplit(value).path if "://" in value else value)
     fail "HED-WB-0006" "proxied page or generated controls were incorrect"
   fi
   proxy_fragment="$(curl -fsS --max-time 15 -b "$auth_cookie" \
-    -H 'HX-Request: true' -H 'HX-Target: #service-status' \
+    -H 'HX-Request: true' -H 'HX-Target: #h-view-status' \
     "http://127.0.0.1:8787${proxy_mount}/status")" || \
     fail "HED-WB-0006" "proxied refresh control request failed"
   if [[ "$proxy_fragment" != *"All systems operational"* ]]; then
@@ -506,7 +506,7 @@ fi
 
 frag="$(curl -fsS --max-time 5 \
   -H 'HX-Request: true' \
-  -H 'HX-Target: #service-status' \
+  -H 'HX-Target: #h-view-status' \
   -H "X-CSRF-Token: ${token}" \
   -H "Cookie: hedron_csrf=${token}" \
   "http://127.0.0.1:${APP_PORT}${MOUNT}/status")"
