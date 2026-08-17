@@ -22,6 +22,11 @@ artifacts:
 This is not `FeatureBundle`, `DataWorkspace`, `McpExposure`, a new client runtime, or a Supported
 human AT claim.
 
+## Fixes in this cut
+
+- `FormBody` commands reject non-form `Content-Type` values with HTTP 415 instead of executing on
+  defaults (#329). Completes the JSON-only #321 allowlist.
+
 ## Layers
 
 1. **Catalog and manifest** — compile/seal after plugins, fail closed on production mismatch.

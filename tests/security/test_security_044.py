@@ -96,7 +96,71 @@ def test_generated_form_csrf_field_submits_without_htmx_header() -> None:
         assert "hello" in posted.text
 
 
-def test_formbody_rejects_json_content_type() -> None:
+@pytest.mark.parametrize(
+    "content_type",
+    [
+        "application/json",
+        "application/ld+json",
+        "text/plain",
+        "application/xml",
+        "application/octet-stream",
+        "",
+    ],
+)
+def test_formbody_rejects_non_form_content_type(content_type: str) -> None:
+    app = make_app(security="standard")
+    hits: list[bool] = []
+
+    class Flags(BaseModel):
+        urgent: bool = False
+
+    @app.command(fallback="/")
+    def flag(data: Annotated[Flags, FormBody()]):
+        hits.append(data.urgent)
+        return Text(str(data.urgent))
+
+    @app.page("/")
+    def home():
+        return Page(Text("h"), title="H")
+
+    client = TestClient(app)
+    headers = csrf_headers(client, htmx=False)
+    refused = client.post(
+        flag.path,
+        content=b'{"urgent":true}',
+        headers={**headers, "Content-Type": content_type},
+    )
+    assert refused.status_code == 415
+    assert HED_TYPE_0003 in str(refused.json().get("detail"))
+    assert hits == []
+    assert "True" not in refused.text
+
+
+def test_formbody_rejects_omitted_content_type() -> None:
+    app = make_app(security="standard")
+    hits: list[bool] = []
+
+    class Flags(BaseModel):
+        urgent: bool = False
+
+    @app.command(fallback="/")
+    def flag(data: Annotated[Flags, FormBody()]):
+        hits.append(data.urgent)
+        return Text(str(data.urgent))
+
+    @app.page("/")
+    def home():
+        return Page(Text("h"), title="H")
+
+    client = TestClient(app)
+    headers = csrf_headers(client, htmx=False)
+    omitted = client.post(flag.path, content=b'{"urgent":true}', headers=headers)
+    assert omitted.status_code == 415
+    assert HED_TYPE_0003 in str(omitted.json().get("detail"))
+    assert hits == []
+
+
+def test_formbody_accepts_urlencoded_content_type() -> None:
     app = make_app(security="standard")
 
     class Flags(BaseModel):
@@ -112,13 +176,27 @@ def test_formbody_rejects_json_content_type() -> None:
 
     client = TestClient(app)
     headers = csrf_headers(client, htmx=False)
-    refused = client.post(flag.path, json={"urgent": True}, headers=headers)
-    assert refused.status_code == 415
-    assert HED_TYPE_0003 in str(refused.json().get("detail"))
-    assert "True" not in refused.text
-    form_ok = client.post(flag.path, data={}, headers=headers)
+    form_ok = client.post(
+        flag.path,
+        content=b"",
+        headers={**headers, "Content-Type": "application/x-www-form-urlencoded"},
+    )
     assert form_ok.status_code == 200
     assert "False" in form_ok.text
+    charset = client.post(
+        flag.path,
+        content=b"urgent=true",
+        headers={**headers, "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
+    )
+    assert charset.status_code == 200
+    assert "True" in charset.text
+    mismatched = client.post(
+        flag.path,
+        files={"urgent": (None, "true")},
+        headers=headers,
+    )
+    assert mismatched.status_code == 415
+    assert HED_TYPE_0003 in str(mismatched.json().get("detail"))
 
 
 def test_schema_bomb_field_limit() -> None:
