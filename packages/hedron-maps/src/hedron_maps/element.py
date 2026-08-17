@@ -151,19 +151,9 @@ class Map(Component[MapProps]):
         resolved_basemap: object
         resolved_policy = policy
         if tiles is not None:
-            # Compatibility constructor: compile to RasterTiles + fallback, never silent MapLibre.
-            allow = tuple(tile_allowlist)
-            if allow and not any(tiles.startswith(prefix) for prefix in allow if prefix):
-                from hedron_core.diagnostics import error as _error
+            from hedron_core.builtins.map_geo import _ensure_tile_allowed
 
-                raise _error(
-                    "HED-MAP-0002",
-                    title="Tile template is not allowlisted",
-                    explanation=f"{tiles!r} is outside tile_allowlist.",
-                    remediation=(
-                        "Use RasterTiles + MapPolicy.allowed_origins, or expand the allowlist."
-                    ),
-                )
+            _ensure_tile_allowed(tiles, tile_allowlist)
             resolved_basemap = RasterTiles(url=tiles, attribution=attribution or "Tiles")
             origin = None
             if tiles.startswith("https://"):

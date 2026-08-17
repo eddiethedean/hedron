@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from hedron_core import Map as CoreMap
 from hedron_core import MarkerSpec, RenderMode, render
 from hedron_maps import MAPLIBRE_VERSION, Map, MapPolicy, RasterTiles
@@ -67,6 +69,43 @@ def test_fixture_3_osm_then_custom_xyz() -> None:
     assert osm.preset_id == "openstreetmap-standard"
     assert custom.preset_id is None
     assert custom.source_kind == "xyz-raster"
+
+
+def test_compat_tiles_empty_allowlist_rejected() -> None:
+    from hedron_core import HedronError
+    from hedron_maps import Map
+
+    with pytest.raises(HedronError) as exc:
+        Map(
+            title="T",
+            description="D",
+            tiles="https://attacker.example/{z}/{x}/{y}.png",
+            attribution="x",
+        )
+    assert exc.value.diagnostic.code == "HED-MAP-0002"
+
+
+def test_compat_tiles_prefix_requires_host_boundary() -> None:
+    from hedron_core import HedronError
+    from hedron_maps import Map
+
+    with pytest.raises(HedronError) as exc:
+        Map(
+            title="T",
+            description="D",
+            tiles="https://tiles.example.evil.com/{z}/{x}/{y}.png",
+            tile_allowlist=("https://tiles.example",),
+            attribution="x",
+        )
+    assert exc.value.diagnostic.code == "HED-MAP-0002"
+    plan = Map(
+        title="T",
+        description="D",
+        tiles="https://tiles.example.com/{z}/{x}/{y}.png",
+        tile_allowlist=("https://tiles.example.com",),
+        attribution="x",
+    ).compile_plan()
+    assert "https://tiles.example.com" in plan.origins
 
 
 def test_fixture_4_network_denied_pmtiles() -> None:
