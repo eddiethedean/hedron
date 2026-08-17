@@ -113,8 +113,6 @@ class ChartInteraction:
 
         def event_command(app: object) -> object:
             def on_chart_event(payload: object) -> object:
-                from hedron.handles import refresh
-
                 typed = payload
                 validator = getattr(payload_type, "model_validate", None)
                 if callable(validator) and not isinstance(payload, payload_type):
@@ -128,8 +126,12 @@ class ChartInteraction:
                 result = handler(typed) if callable(handler) else None
                 if result is not None:
                     return result
+                from hedron.handles import BoundFragment, FragmentHandle, refresh
+
                 targets = tuple(
-                    item for item in refresh_targets if getattr(item, "logical_id", None)
+                    item
+                    for item in refresh_targets
+                    if isinstance(item, (BoundFragment, FragmentHandle))
                 )
                 if targets:
                     return refresh(*targets)
