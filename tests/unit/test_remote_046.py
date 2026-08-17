@@ -93,3 +93,43 @@ def test_remote_workflow_include() -> None:
         item.namespace.startswith("hedron.gradio.workflow")
         for item in app.interactions.catalog_projections.values()
     )
+
+
+def _enabled_adapter(endpoints: tuple[GradioEndpoint, ...]) -> GradioClientAdapter:
+    return GradioClientAdapter(
+        base_url="https://example.invalid",
+        enabled=True,
+        endpoints=endpoints,
+        remote_config=GradioRemoteConfig.from_base_url(
+            "https://example.invalid", extra_hosts=("example.invalid",)
+        ),
+    )
+
+
+def test_remote_workflow_empty_endpoints_fails_closed() -> None:
+    endpoint = GradioEndpoint(name="secret-predict", api_name="/predict", parameters={})
+    with pytest.raises(FeatureConflictError) as raised:
+        RemoteWorkflow(
+            adapter=_enabled_adapter(()),
+            endpoint=endpoint,
+            input_model=Payload,
+            outcomes={},
+        )
+    from hedron_core.codes import HED_BUNDLE_0007
+
+    assert raised.value.diagnostic.code == HED_BUNDLE_0007
+
+
+def test_remote_workflow_rejects_endpoint_outside_allowlist() -> None:
+    endpoint = GradioEndpoint(name="secret-predict", api_name="/predict", parameters={})
+    allowed = GradioEndpoint(name="public-predict", api_name="/predict", parameters={})
+    with pytest.raises(FeatureConflictError) as raised:
+        RemoteWorkflow(
+            adapter=_enabled_adapter((allowed,)),
+            endpoint=endpoint,
+            input_model=Payload,
+            outcomes={},
+        )
+    from hedron_core.codes import HED_BUNDLE_0007
+
+    assert raised.value.diagnostic.code == HED_BUNDLE_0007
