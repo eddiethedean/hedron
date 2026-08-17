@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Protocol, cast
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -83,6 +83,10 @@ class MapLoaded(_Payload):
 class MapFailed(_Payload):
     code: str
     message: str = ""
+
+
+class _CommandHost(Protocol):
+    _interaction_commands: dict[str, str]
 
 
 EVENT_PAYLOADS: dict[str, type[BaseModel]] = {
@@ -189,8 +193,9 @@ class MapInteraction:
         commands = getattr(map_ref, "_interaction_commands", None)
         if not isinstance(commands, dict):
             try:
-                map_ref._interaction_commands = {}
-                commands = map_ref._interaction_commands
+                host = cast(_CommandHost, map_ref)
+                host._interaction_commands = {}
+                commands = host._interaction_commands
             except (AttributeError, TypeError):
                 commands = None
         if isinstance(commands, dict):
