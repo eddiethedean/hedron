@@ -1,11 +1,11 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.47 **Published** as in-tree `v0.47.0` (2026-08-17; tag/PyPI deferred). Phase 0.48 HTMX extension integration (D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373)) is **Planned** with Stage 0 refined against `v0.47.0`. Phase 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) remains **Planned**. No 0.48–0.49 runtime or version claim.
-Living tip = `v0.47.0`.
+**Roadmap position:** phase 0.48 **Published** as in-tree `v0.48.0` (2026-08-17; tag/PyPI deferred). Phase 0.49 FastAPI/Pydantic convergence (D-081 / RFC-0076) remains **Planned**. No 0.49 runtime or version claim.
+Living tip = `v0.48.0`.
 **Date:** 2026-08-17
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.47.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.48.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
@@ -17,22 +17,20 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.47** (D-078 / D-082 / RFC-0074) — independent Beta
-`hedron-maps` `0.1.0`, `MapSpec` / `MapPlan` / `compile_map`, replaceable OSM default, custom
-raster/vector sources, pinned strict-CSP MapLibre, `MapInteraction`, semantic fallback, and
-static/PMTiles/MBTiles/blank-map air-gapped paths (`release-gate-0.47.toml` Verified; in-tree tip
-`v0.47.0`; tag/PyPI deferred). Prior Published **0.46** package-native typed workflows /
+**Phase focus:** Living train is **0.48** (D-080 / D-083 / RFC-0075) — first-class HTMX
+extension integration: closed `HtmxExtension` / `ExtensionSet` declarations, demand-driven pinned
+local `sse` / `head-support` / `preload` assets, `SseRegion` / `SseTrigger`, registered head merge,
+GET-only preload authoring, and an explicit **Deferred** Idiomorph disposition (`MORPH-048`;
+`release-gate-0.48.toml` fifteen Verified plus morph Deferred; in-tree tip `v0.48.0`; tag/PyPI
+deferred). Prior Published **0.47** first-class maps (`hedron-maps` `0.1.0`) /
+**0.46** package-native typed workflows /
 **0.45** typed interaction catalog / **0.44** type-driven authoring /
 **0.43** refreshable views and commands / **0.42** production-grade Web Component platform / **0.41**
 composition / **0.40** authoring / **0.39** rich data /
 OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
-Tracking [#350](https://github.com/eddiethedean/hedron/issues/350) owns every 0.47 gate until later tag/PyPI assets exist.
-Phase **0.48** Stage 0 is the D-083 contract refine against Published in-tree `v0.47.0`:
-closed extension declarations, demand-driven pinned assets, complete SSE/head-support/preload
-vertical slices, and an evidence-gated Idiomorph disposition. All `release-gate-0.48.toml` rows
-remain Planned. Tracking [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48
-gate before Stage 1; no live-transport maturity claim changes at Stage 0.
+Tracking [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48 gate until later tag/PyPI assets exist.
+[#350](https://github.com/eddiethedean/hedron/issues/350) remains open for 0.47 publish assets.
 Phase **0.49** follows only after Verified 0.48. Its Stage 0 packet plans explicit dependency
 lifetimes, native/expanded parameter binding, dual input/output schemas, tagged wire unions,
 router/OpenAPI/security convergence, measured validation adapters, and honest settings/experimental
@@ -125,6 +123,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `LIVE-011-BROWSER` | Full adapter live browser matrix | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `BROWSER-024` |
 | `BROWSER-10-001` | Full three-engine live browser matrix | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `BROWSER-024` |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `PERF-024` |
+| `MORPH-048` | Idiomorph / morph swap | **Deferred** (0.48) | Not vendored; keep innerHTML/outerHTML; later train, not 0.49 |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | **Not** re-homed to 0.24; stays on `0.10.x` |
 
 ## Phase 0.24 evidence
@@ -397,7 +396,12 @@ Phase **0.47** first-class maps is **Published** as in-tree `v0.47.0` (tag/PyPI 
 D-078 / D-082 / RFC-0074; `release-gate-0.47.toml` Verified;
 tracking [#350](https://github.com/eddiethedean/hedron/issues/350); see
 [implementation requirements](implementation/HEDRON_MAPS_047.md) and
-[acceptance packet](acceptance/RELEASE_0_47.md)). Living tip is **`v0.47.0`**.
+[acceptance packet](acceptance/RELEASE_0_47.md)).
+Phase **0.48** first-class HTMX extension integration is **Published** as in-tree `v0.48.0`
+(tag/PyPI deferred; D-080 / D-083 / RFC-0075; `release-gate-0.48.toml` Verified except
+`MORPH-048` **Deferred**; tracking [#373](https://github.com/eddiethedean/hedron/issues/373); see
+[implementation requirements](implementation/HTMX_EXTENSION_INTEGRATION_048.md) and
+[acceptance packet](acceptance/RELEASE_0_48.md)). Living tip is **`v0.48.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

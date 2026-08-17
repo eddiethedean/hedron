@@ -1,6 +1,6 @@
 # Phase 0.48 upgrade and rollback fixtures
 
-**Status:** Planned; Stage 0 contract refined by D-083 against Published in-tree `v0.47.0`<br>
+**Status:** Published as in-tree `v0.48.0`; `MORPH-048` Deferred<br>
 **From:** Verified `v0.47.0`<br>
 **To:** `v0.48.0`
 

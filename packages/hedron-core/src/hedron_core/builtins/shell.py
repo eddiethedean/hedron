@@ -12,9 +12,12 @@ from hedron_core.builtins.landmarks import (
     _filter_landmark_kwargs,
     _landmark_attrs,
 )
+from hedron_core.codes import HED_EXT_0006
 from hedron_core.component import Component, NodeLike
+from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
+from hedron_core.htmx_extensions import PRELOAD_INITIATION_MODES, require_htmx_extension
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
@@ -99,6 +102,7 @@ class HtmxLinkProps(ElementProps):
     indicator: str | None = None
     active: bool = False
     external: bool = False
+    preload: str | None = None
 
 
 class HtmxLink(Component[HtmxLinkProps]):
@@ -122,6 +126,7 @@ class HtmxLink(Component[HtmxLinkProps]):
         indicator: str | None = None,
         active: bool = False,
         external: bool = False,
+        preload: str | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -144,6 +149,30 @@ class HtmxLink(Component[HtmxLinkProps]):
         indicator = _safe_optional_selector(indicator, label="indicator")
         if not safe_hx_swap(swap):
             raise ValueError(f"Unsafe HTMX swap value: {swap!r}")
+        if preload is not None:
+            mode = str(preload).strip().lower()
+            if mode not in PRELOAD_INITIATION_MODES:
+                raise error(
+                    HED_EXT_0006,
+                    title="Invalid preload initiation mode",
+                    explanation=f"preload={preload!r} is not a closed GET initiation mode.",
+                    remediation="Use mousedown, mouseover, or touchstart.",
+                )
+            if method.lower() != "get":
+                raise error(
+                    HED_EXT_0006,
+                    title="Preload requires a cacheable GET",
+                    explanation=f"Cannot preload {method.upper()} requests.",
+                    remediation="Attach preload only to GET links and hx-get controls.",
+                )
+            if external:
+                raise error(
+                    HED_EXT_0006,
+                    title="User-derived or external preload URL rejected",
+                    explanation="Preload cannot target external or request-derived URLs.",
+                    remediation="Use a same-origin SafeUrl navigation path.",
+                )
+            preload = mode
         super().__init__(
             HtmxLinkProps(
                 href=url,
@@ -158,6 +187,7 @@ class HtmxLink(Component[HtmxLinkProps]):
                 indicator=indicator,
                 active=active,
                 external=external,
+                preload=preload,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -189,6 +219,9 @@ class HtmxLink(Component[HtmxLinkProps]):
                 attrs["hx-disabled-elt"] = self.props.disabled_elt
             if self.props.indicator:
                 attrs["hx-indicator"] = self.props.indicator
+            if self.props.preload:
+                require_htmx_extension("preload")
+                attrs["preload"] = self.props.preload
         if self.props.id:
             attrs["id"] = self.props.id
         base = "hedron-nav-link"

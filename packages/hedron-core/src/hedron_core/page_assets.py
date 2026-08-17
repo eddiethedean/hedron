@@ -14,7 +14,14 @@ from importlib import resources
 from pathlib import Path
 from typing import Protocol
 
-from hedron_core.htmx_extensions import known_extensions
+from hedron_core.codes import HED_EXT_0005
+from hedron_core.diagnostics import error
+from hedron_core.head_support import merge_registered_head
+from hedron_core.htmx_extensions import (
+    ExtensionPlan,
+    ExtensionSet,
+    compile_extension_plan,
+)
 from hedron_core.rendering import AssetRef, RenderMode
 from hedron_core.security_policy import SecurityPolicy
 
@@ -113,29 +120,80 @@ def inject_htmx_core(
     return html_text + tag
 
 
+def _plan_or_compat(plan: ExtensionPlan | None) -> ExtensionPlan:
+    if plan is not None:
+        return plan
+    return compile_extension_plan(declaration=ExtensionSet.unset(), required=(), mode="page")
+
+
+def _verify_extension_asset(ext: object) -> None:
+
+    rel = str(getattr(ext, "path", "")).removeprefix("/hedron-static/")
+    path = static_directory() / rel
+    if not path.is_file():
+        raise error(
+            HED_EXT_0005,
+            title="Missing vendored HTMX extension",
+            explanation=f"{getattr(ext, 'name', rel)!r} is not present at {path}.",
+            remediation="Restore the pinned local asset; Hedron does not fetch CDNs.",
+        )
+    import hashlib
+
+    digest = f"sha256-{hashlib.sha256(path.read_bytes()).hexdigest()}"
+    expected = str(getattr(ext, "digest", ""))
+    if digest != expected:
+        raise error(
+            HED_EXT_0005,
+            title="HTMX extension digest mismatch",
+            explanation=f"{getattr(ext, 'name', rel)} digest {digest} != {expected}.",
+            remediation="Re-vendor the pinned extension or restore the catalog digest.",
+        )
+
+
+def apply_hx_ext_attribute(html_text: str, hx_ext: str) -> str:
+    """Emit catalog public ids on the document element. Empty plans omit hx-ext."""
+    if not hx_ext:
+        return html_text
+    match = _HTML_TAG_RE.search(html_text)
+    if match is None:
+        return html_text
+    tag = html_text[match.start() : html_text.find(">", match.start()) + 1]
+    if re.search(r"\bhx-ext\s*=", tag, re.IGNORECASE):
+        return html_text
+    insertion = html_text[: match.end()] + f' hx-ext="{html_lib.escape(hx_ext, quote=True)}"'
+    return insertion + html_text[match.end() :]
+
+
 def inject_htmx_extensions(
     html_text: str,
     *,
     static_href: Callable[[str], str] | None = None,
+    plan: ExtensionPlan | None = None,
 ) -> str:
-    """Insert non-deferred HTMX extensions after the core runtime script."""
+    """Insert planned HTMX extensions after the core runtime script.
+
+    ``plan=None`` keeps the 0.47 compatibility default (sse + head-support).
+    """
+    resolved = _plan_or_compat(plan)
+    if not resolved.inject or not resolved.ids:
+        return html_text
     tags: list[str] = []
-    for ext in sorted(known_extensions(), key=lambda e: e.load_order):
-        if ext.deferred:
-            continue
+    for ext in resolved.assets:
+        _verify_extension_asset(ext)
         ext_path = _prefix_href(ext.path, static_href=static_href)
         if ext.path in html_text or ext_path in html_text:
             continue
         tags.append(f'<script src="{ext_path}" defer></script>')
-    if not tags:
-        return html_text
-    injection = "\n".join(tags)
-    core_end = htmx_core_script_end(html_text)
-    if core_end is not None:
-        return html_text[:core_end] + "\n" + injection + html_text[core_end:]
-    if "</body>" in html_text:
-        return html_text.replace("</body>", f"{injection}\n</body>", 1)
-    return html_text + injection
+    if tags:
+        injection = "\n".join(tags)
+        core_end = htmx_core_script_end(html_text)
+        if core_end is not None:
+            html_text = html_text[:core_end] + "\n" + injection + html_text[core_end:]
+        elif "</body>" in html_text:
+            html_text = html_text.replace("</body>", f"{injection}\n</body>", 1)
+        else:
+            html_text = html_text + injection
+    return apply_hx_ext_attribute(html_text, resolved.hx_ext)
 
 
 def inject_page_assets(
@@ -149,6 +207,7 @@ def inject_page_assets(
     assets: Sequence[AssetRef] | None = None,
     asset_attributes: Mapping[str, Mapping[str, str]] | None = None,
     theme: str | None = None,
+    plan: ExtensionPlan | None = None,
 ) -> str:
     """Inject HTMX core, default CSS/UI modules, build assets, then extensions.
 
@@ -199,4 +258,10 @@ def inject_page_assets(
             html_text = html_text.replace("</body>", f"{injection}\n</body>", 1)
         else:
             html_text = html_text + injection
-    return inject_htmx_extensions(html_text, static_href=static_href)
+    resolved = _plan_or_compat(plan)
+    html_text = merge_registered_head(
+        html_text,
+        assets,
+        enabled="head-support" in resolved.ids,
+    )
+    return inject_htmx_extensions(html_text, static_href=static_href, plan=resolved)

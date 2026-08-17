@@ -35,6 +35,7 @@ from hedron_jinja.instrumentation import (
     portable_checker_json,
     record_loop_iteration,
     record_macro_call,
+    register_htmx_catalog,
 )
 from hedron_jinja.integration import HedronJinja, HedronJinjaExtension, TwoPhaseStream
 from hedron_jinja.inventory import (
@@ -53,7 +54,7 @@ from hedron_jinja.providers import (
 )
 from hedron_jinja.source import validate_element_declarations
 
-__version__ = "0.47.0"
+__version__ = "0.48.0"
 
 __all__ = [
     "AsyncIoBudget",
@@ -95,6 +96,7 @@ __all__ = [
     "record_loop_iteration",
     "resolve_registered_handle",
     "record_macro_call",
+    "register_htmx_catalog",
     "run_declared_async_io",
     "validate_element_declarations",
 ]

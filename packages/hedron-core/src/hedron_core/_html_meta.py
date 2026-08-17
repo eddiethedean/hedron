@@ -194,6 +194,7 @@ URL_ATTRS = frozenset(
         "hx-delete",
         "hx-push-url",
         "hx-replace-url",
+        "sse-connect",
     }
 )
 
@@ -319,6 +320,9 @@ ALLOWED_ATTRS = (
             "hx-validate",
             "hx-vals",
             "hx-boost",
+            "sse-connect",
+            "sse-swap",
+            "sse-close",
         }
     )
     | BOOLEAN_ATTRS

@@ -8,7 +8,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
-**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.47.x**)
+**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.48.x**)
 
 `Page` represents a complete navigable document and its associated metadata.
 

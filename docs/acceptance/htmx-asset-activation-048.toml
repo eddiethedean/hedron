@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.48"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.47.0"
 required_predecessor = "v0.47.0"
 target = "v0.48.0"
@@ -16,7 +16,7 @@ compat_gate = "COMPAT-048"
 
 stacks_on_catalog = "docs/acceptance/htmx-extension-catalog-048.toml"
 
-current_page_behavior = "inject_htmx_extensions inserts every non-deferred known_extensions() asset after HTMX core"
+current_page_behavior = "inject_htmx_extensions inserts the compiled ExtensionPlan after HTMX core; UNSET plan is the 0.47 sse+head-support pair"
 consumed_injector = "hedron_core.page_assets.inject_htmx_extensions"
 consumed_core_inject = "hedron_core.page_assets.inject_htmx_core"
 static_prefix = "/hedron-static"
@@ -26,23 +26,31 @@ fragment_invents_scripts = false
 runtime_cdn = false
 request_derived_asset_url = false
 new_package = false
-numeric_limits = "Stage 1 evidence; name knobs only"
+numeric_limits = "Measured uncompressed bytes locked below"
 diagnostic_family = "HED-EXT-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
+
+preload_uncompressed_bytes = 14099
+sse_uncompressed_bytes = 8896
+head_support_uncompressed_bytes = 6285
+preload_pin = "2.1.2"
+preload_digest = "sha256-7504ccd4c10e44b0aed3d62f30156e8a0abc7b9f18f3980f0fad58b465563466"
+morph_pin = "Deferred; not vendored"
 
 [shipped_pins]
 htmx_core = "2.0.10"
 "htmx-ext-sse" = "2.2.2"
 "htmx-ext-head-support" = "2.0.2"
-preload_pin = "Stage 1; do not invent a digest here"
-morph_pin = "Stage 1 only if MORPH-048 Verified; vendor nothing in Stage 0"
+preload_pin = "2.1.2"
+preload_digest = "sha256-7504ccd4c10e44b0aed3d62f30156e8a0abc7b9f18f3980f0fad58b465563466"
+morph_pin = "Deferred; not vendored"
 
 [load_order]
 after_htmx_core = true
 head_support = 10
+preload = 20
 sse = 50
-preload = "Stage 1; after core, before or after head-support as pinned"
-morph = "Stage 1; after core; only if admitted"
+morph = "not admitted"
 
 [csp]
 script_src_self = true

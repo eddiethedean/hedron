@@ -42,7 +42,8 @@ def main(argv: list[str] | None = None) -> None:
         help="Explain a component's styles, dependencies, and accessibility contract",
     )
     inspect_p.add_argument(
-        "component", help="Component name, logical id, 'interactions', or 'features'"
+        "component",
+        help="Component name, logical id, 'interactions', 'features', or 'htmx-extensions'",
     )
     inspect_p.add_argument("--json", action="store_true", help="Emit versioned JSON")
     inspect_p.add_argument(

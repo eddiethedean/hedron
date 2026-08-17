@@ -1,0 +1,349 @@
+# Phase 0.48 whole-fleet inventory (Verified; baseline v0.47.0).
+# Machine-checked by check_package_docs_inventory / living train 0.48.
+# disposition: production_grade | incubator | fixture | eol
+# Extends the 0.47 fleet. HTMX extension integration (D-080 / D-083 / RFC-0075).
+# Living tip is Published in-tree v0.48.0; satellites keep independent versions.
+# Owning decision: D-080 / D-083; extends D-078 fleet. RFC: RFC-0075.
+# PRESENT-034 deferred presentation audit is recorded under hedron-core (see present_034_status).
+# Tracking: #373.
+
+baseline = "v0.47.0"
+state = "verified"
+hedron_cut = "v0.48.0"
+charts_cut = "0.2.0"
+present_034_status = "deferred_to_fleet_docs_audit"
+present_034_gates = ["FLEET-035", "DOCS-035"]
+
+packages = [
+  "hedron",
+  "hedron-core",
+  "hedron-explorer",
+  "hedron-data",
+  "hedron-flask",
+  "hedron-django",
+  "hedron-jinja",
+  "hedron-extras",
+  "hedron-conformance",
+  "hedron-charts",
+  "hedron-maps",
+  "hedron-native",
+  "hedron-sample-kit",
+  "hedron-sim",
+  "hedron-notebook",
+  "hedron-mcp",
+  "hedron-gradio",
+  "hedron-workbench",
+  "hedron-posit",
+  "hedron-elements",
+  "fastapi-workbench",
+  "hedron-runtime-node",
+  "hedron-runtime-java",
+]
+
+[hedron]
+owner = "hedron"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.26.toml"
+disposition = "production_grade"
+supported = ["typed_pages", "htmx_fragments", "csrf_profiles", "polling_jobs", "inference_workflows"]
+experimental = ["live_sse_ws_streaming_preload"]
+excluded = ["hedron_1_0_or_sla", "polling_only_reopen_without_packet"]
+
+[hedron-core]
+owner = "hedron-core"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.26.toml"
+disposition = "production_grade"
+supported = ["components", "jobs", "security_floor", "default_styles_baseline"]
+experimental = ["default_presentation_gallery_refresh"]
+excluded = ["framework_imports"]
+notes = "PRESENT-034 Deferred gallery/geometry audited via FLEET-035 + DOCS-035"
+
+[hedron-explorer]
+owner = "hedron-explorer"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.26.toml"
+disposition = "production_grade"
+supported = ["local_dev_diagnostics", "a11y_workspace"]
+experimental = []
+excluded = ["public_by_default", "durable_audit_buffer"]
+
+[hedron-data]
+owner = "hedron-data"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.27.toml"
+disposition = "production_grade"
+supported = ["datatable", "dataeditor", "transform_plan"]
+experimental = []
+excluded = ["ag_grid_enterprise"]
+
+[hedron-flask]
+owner = "hedron-flask"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.27.toml"
+disposition = "production_grade"
+supported = ["blueprint_init_app"]
+experimental = ["live_helpers"]
+excluded = []
+
+[hedron-django]
+owner = "hedron-django"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.27.toml"
+disposition = "production_grade"
+supported = ["appconfig_forms_queryset"]
+experimental = ["live_helpers"]
+excluded = []
+
+[hedron-jinja]
+owner = "hedron-jinja"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.27.toml"
+disposition = "production_grade"
+supported = ["hdj_templates", "a11y_static_checks"]
+experimental = []
+excluded = []
+
+[hedron-extras]
+owner = "hedron-extras"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.27.toml"
+disposition = "production_grade"
+supported = ["curated_extras_toolkit"]
+experimental = ["experimental_ui", "codeeditor_host_stub", "terminalview_joystick_bridges"]
+excluded = ["default_plugin_registration_for_experimental_ui"]
+
+[hedron-conformance]
+owner = "hedron-conformance"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.31.toml"
+disposition = "production_grade"
+supported = ["versioned_schemas", "golden_fixtures", "runner_cli_api"]
+experimental = []
+excluded = ["application_production_server"]
+
+[hedron-charts]
+owner = "hedron-charts"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.2.0,<0.3"
+cut_pin = ">=0.2.0,<0.3"
+evidence = "release-gate-0.38.toml"
+disposition = "production_grade"
+supported = [
+  "matplotlib_static",
+  "chart_spec",
+  "chart_plan",
+  "hedron_chart",
+  "beginner_line_area_bar_scatter",
+  "first_party_svg_canvas",
+]
+experimental = ["plotly", "altair", "echarts", "chartjs", "bokeh", "holoviews", "hvplot", "pygal"]
+excluded = [
+  "unpinned_cdn_chart_runtimes",
+  "javascript_callbacks",
+  "node_required_for_python_consumers",
+]
+notes = "Planned 0.2 Supported interactive inventory. First-party interactive Supported on 0.2.0; rollback pin >=0.1.10,<0.2."
+
+[hedron-native]
+owner = "hedron-native"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.1.0,<0.2"
+evidence = "release-gate-0.28.toml"
+disposition = "production_grade"
+supported = ["optional_rust_html_escape", "pure_python_fallback"]
+experimental = []
+excluded = ["required_for_correctness"]
+
+[hedron-sample-kit]
+owner = "hedron-sample-kit"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.1.10,<0.2"
+evidence = "release-gate-0.31.toml"
+disposition = "production_grade"
+supported = ["external_plugin_exemplar", "entry_point_discovery"]
+experimental = []
+excluded = ["required_runtime_dependency"]
+notes = "Tooling-grade Supported role from 0.31; package maturity Beta tooling-grade at 0.35 reconcile"
+
+[hedron-sim]
+owner = "hedron-sim"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.1.0,<0.2"
+evidence = "release-gate-0.31.toml"
+disposition = "production_grade"
+supported = ["deterministic_offline_fragments", "declared_htmx_subset"]
+experimental = []
+excluded = ["full_browser_htmx_emulation"]
+notes = "Tooling-grade Supported role from 0.31; package maturity Beta tooling-grade at 0.35 reconcile"
+
+[hedron-notebook]
+owner = "hedron-notebook"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.1.0,<0.2"
+evidence = "release-gate-0.31.toml"
+disposition = "production_grade"
+supported = ["localhost_only_preview", "iframe_isolation", "lifecycle_cleanup"]
+experimental = []
+excluded = ["hosted_multi_user_notebook", "remote_public_serving"]
+notes = "Tooling-grade Supported localhost role from 0.31; not Supported production hosting"
+
+[hedron-mcp]
+owner = "hedron-mcp"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.2.0,<0.3"
+evidence = "release-gate-0.32.toml"
+disposition = "production_grade"
+supported = ["deny_by_default_streamable_http", "authenticated_projection_inventory"]
+experimental = ["mutations", "vendor_extensions"]
+excluded = ["ambient_authority_on_install", "idp_or_secrets_broker"]
+
+[hedron-gradio]
+owner = "hedron-gradio"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.2.0,<0.3"
+evidence = "release-gate-0.34.toml"
+disposition = "production_grade"
+supported = ["allowlisted_egress", "bounded_file_stream", "hf_space_auth_scope"]
+experimental = ["vendor_specific_extensions", "gradio_auto_composition"]
+excluded = ["gradio_ui_runtime_embed", "arbitrary_caller_urls", "share_tunnels"]
+
+[hedron-workbench]
+owner = "hedron-workbench"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.33.toml"
+disposition = "production_grade"
+supported = ["HedronWorkbench_compat", "workbench_run_check_doctor"]
+experimental = []
+excluded = ["import_auto_wrap"]
+
+[hedron-posit]
+owner = "hedron-posit"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.33.toml"
+disposition = "production_grade"
+supported = ["HedronPosit", "native_connect_guid", "workbench_path_prefix"]
+experimental = ["authenticated_header_v1_extension_point"]
+excluded = ["supported_cookie_bridge"]
+
+[fastapi-workbench]
+owner = "fastapi-workbench"
+maturity = "stable"
+channel = "pypi"
+pin = ">=1.0.0,<2.0"
+evidence = "release-gate-0.30.toml"
+disposition = "production_grade"
+supported = ["plain_fastapi_workbench_run", "asgi_normalization"]
+experimental = []
+excluded = ["hedron_dependency", "hedron_1_0_claim"]
+
+[hedron-runtime-node]
+owner = "hedron-runtime-node"
+maturity = "beta"
+channel = "npm"
+pin = "0.32.0"
+evidence = "release-gate-0.31.toml"
+disposition = "production_grade"
+supported = ["published_signed_evaluator", "python_reference_parity"]
+experimental = []
+excluded = ["application_server", "full_hedron_port"]
+notes = "Tooling-grade evaluator; package maturity Beta tooling-grade at 0.35 reconcile"
+
+[hedron-runtime-java]
+owner = "hedron-runtime-java"
+maturity = "beta"
+channel = "maven"
+pin = "0.32.0"
+evidence = "release-gate-0.31.toml"
+disposition = "production_grade"
+supported = ["published_signed_evaluator", "python_reference_parity"]
+experimental = []
+excluded = ["application_server", "full_hedron_port"]
+notes = "Tooling-grade evaluator; package maturity Beta tooling-grade at 0.35 reconcile"
+
+
+[hedron-maps]
+owner = "hedron-maps"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.1.0,<0.2"
+evidence = "release-gate-0.47.toml"
+disposition = "production_grade"
+supported = [
+  "mapspec_mapplan",
+  "openstreetmap_standard",
+  "custom_xyz_tilejson_vector",
+  "static_pmtiles_mbtiles_blank",
+  "hedron_map_maplibre_strict_csp",
+  "map_interaction",
+  "semantic_fallback",
+]
+experimental = []
+excluded = [
+  "leaflet_openlayers_deck_cesium",
+  "wms_wmts_wfs",
+  "drawing_routing_geocoding",
+  "terrain_globe",
+  "osm_offline_prefetch",
+]
+notes = "Independent Beta 0.1.0; OSM default is hedron_maps.Map only"
+
+[experimental_namespaces]
+owner = "hedron"
+disposition = "incubator"
+surfaces = [
+  "hedron.experimental.live_sse_ws",
+  "hedron_extras.experimental.ui",
+]
+future_destination = "retain_experimental_until_owned_packet"
+human_at_sessions = "incubator_issue_86"
+
+
+[hedron-elements]
+owner = "hedron"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.48.0,<0.49"
+evidence = "release-gate-0.42.toml"
+disposition = "production_grade"
+supported = [
+  "hedron-example",
+  "hedron-field-text",
+  "hedron-field-choice",
+  "hedron-field-file",
+  "hedron-disclosure",
+  "hedron-dialog",
+  "hedron-action-async",
+  "hedron-data-editor",
+]
+experimental = ["react_migration_bridge_docs_only"]
+excluded = ["stable_tag_promotion", "pypi_production_stable", "hedron_1_0"]

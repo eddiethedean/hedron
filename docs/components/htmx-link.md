@@ -99,7 +99,7 @@ This component can initiate or represent a backend interaction. The live documen
 ## Constructor and parameters
 
 ```python
-HtmxLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, active=False, class_=None)
+HtmxLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, preload=None, active=False, class_=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -111,6 +111,7 @@ HtmxLink(label, href, *, method='get', target=None, swap='outerHTML', select=Non
 | `select` | `str | None` | Optional hx-select for the primary fragment in the response. |
 | `select_oob` | `str | None` | Optional hx-select-oob for response nodes that should be treated as OOB. Do not combine with a server OobUpdate for the same id. |
 | `push_url` | `bool | str` | Optional hx-push-url for in-shell history. |
+| `preload` | `str | None` | Optional GET-only HTMX preload initiation: mousedown, mouseover, or touchstart. Registers the preload extension; never a compatibility default. |
 | `active` | `bool` | Optional active styling hook for current location. |
 | `class_` | `str | None` | Additional CSS classes. |
 

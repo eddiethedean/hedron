@@ -4,6 +4,8 @@ FastAPI and HTMX-oriented request/response components.
 
 - [`OobHost`](oob-host.md) — Stable out-of-band swap root with a reserved id.
 - [`AttrHost`](attr-host.md) — Stable element that can receive attribute-only OOB updates.
+- [`SseRegion`](sse-region.md) — Typed SSE host that registers the sse extension and connects to a same-origin stream.
+- [`SseTrigger`](sse-trigger.md) — Listen for a named SSE event and optionally issue a cacheable GET swap.
 - [`RefreshButton`](refresh-button.md) — Refresh a target component through a typed reference or safe URL.
 - [`Lazy`](lazy.md) — Load a component fragment when its placeholder enters the document.
 - [`Poll`](poll.md) — Refresh a fragment at a bounded interval while it remains in the DOM.

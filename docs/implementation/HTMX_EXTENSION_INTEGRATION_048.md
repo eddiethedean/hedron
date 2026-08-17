@@ -1,6 +1,6 @@
 # HTMX extension integration implementation plan (phase 0.48)
 
-**Status:** Planned; Stage 0 contract refined by D-083 against Published in-tree `v0.47.0`<br>
+**Status:** Published as in-tree `v0.48.0` (tag/PyPI deferred); `MORPH-048` Deferred<br>
 **Tracking:** [#373](https://github.com/eddiethedean/hedron/issues/373)<br>
 **Decision/RFC:** D-080, refined by D-083 / [RFC-0075](../rfcs/RFC-0075-HTMX-EXTENSION-INTEGRATION.md)<br>
 **Planning baseline:** Published in-tree `v0.47.0`<br>
@@ -12,7 +12,7 @@ D-083 does not authorize Stage 1. It names shipped seams `ExtensionAsset`,
 `job_status_sse_response`, `decide_preload` / `HX-Preloaded`, HDJ
 `ExtensionEvidence`, `safe_hx_swap`, and 0.43–0.47 handles/catalog/maps
 lifecycle. `Page.htmx_extensions`, `HtmxExtension`, `ExtensionSet`,
-`SseRegion`, and `SseTrigger` remain unimplemented until Stage 1.
+`SseRegion`, and `SseTrigger` shipped in `v0.48.0`. Morph remains Deferred.
 
 ## Consume shipped, do not fork
 

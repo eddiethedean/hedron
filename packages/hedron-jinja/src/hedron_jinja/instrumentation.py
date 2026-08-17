@@ -26,6 +26,7 @@ __all__ = [
     "instrumentation_session",
     "record_loop_iteration",
     "record_macro_call",
+    "register_htmx_catalog",
 ]
 
 _loop_used: ContextVar[int] = ContextVar("hedron_hdj_loop_used", default=0)
@@ -63,6 +64,27 @@ class ExtensionEvidence:
         object.__setattr__(self, "csp", dict(self.csp))
         if not self.extension_id or not self.version or not self.digest:
             raise ValueError("extension_id, version, and digest are required")
+
+
+def register_htmx_catalog(registry: ExtensionRegistry | None = None) -> ExtensionRegistry:
+    """Project core HTMX catalog facts into HDJ evidence. Does not install scripts."""
+    from hedron_core.htmx_extensions import catalog_evidence_rows
+
+    target = registry if registry is not None else ExtensionRegistry()
+    for row in catalog_evidence_rows():
+        if target.get(row.public_id) is not None:
+            continue
+        target.register(
+            ExtensionEvidence(
+                extension_id=row.public_id,
+                version=row.version,
+                digest=row.digest,
+                csp={"script-src": "'self'"},
+                load_order=row.load_order,
+                kind="htmx",
+            )
+        )
+    return target
 
 
 class ExtensionRegistry:

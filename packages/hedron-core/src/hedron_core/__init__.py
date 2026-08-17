@@ -77,6 +77,7 @@ from hedron_core.builtins import (
     Help,
     HelpInspector,
     HtmxLink,
+    Hx,
     IconButton,
     IFrame,
     Image,
@@ -133,7 +134,6 @@ from hedron_core.builtins import (
     Tooltip,
     Video,
 )
-from hedron_core.builtins.forms import Hx
 from hedron_core.builtins.forms_extra import DirectoryUploadFile, validate_directory_upload
 from hedron_core.builtins.landmarks import LandmarkProps
 from hedron_core.builtins.map_geo import MarkerSpec, sanitize_geojson
@@ -227,6 +227,13 @@ from hedron_core.hosts import FRAGMENT_HOST_TAGS, FragmentHost
 from hedron_core.html import html
 from hedron_core.htmx_contract import HtmxContext, approved_headers
 from hedron_core.htmx_eval import allow_htmx_eval, htmx_eval_allowed
+from hedron_core.htmx_extensions import (
+    ExtensionAsset,
+    ExtensionSet,
+    HtmxExtension,
+    catalog_facts,
+    known_extensions,
+)
 from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
 from hedron_core.inference import (
     BatchWindow,
@@ -344,6 +351,7 @@ from hedron_core.security_policy import (
     SecurityProfile,
     SecurityProfileName,
 )
+from hedron_core.sse_ext import SseRegion, SseTrigger
 from hedron_core.streaming import ChunkedList, StreamBudget, StreamedDocument, TokenStream
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.theme import (
@@ -405,7 +413,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.47.0"
+__version__ = "0.48.0"
 
 __all__ = [
     "ActionRegistry",
@@ -423,12 +431,15 @@ __all__ = [
     "DialogueTurn",
     "ExampleItem",
     "ExampleSet",
+    "ExtensionAsset",
+    "ExtensionSet",
     "FeedbackPolicy",
     "FeedbackRecord",
     "FRAGMENT_HOST_TAGS",
     "FragmentHost",
     "FragmentRegion",
     "HtmxContext",
+    "HtmxExtension",
     "InMemoryFeedbackSink",
     "InProcessInferenceQueue",
     "InferenceAdmission",
@@ -678,6 +689,8 @@ __all__ = [
     "Skeleton",
     "Spacer",
     "SseEvent",
+    "SseRegion",
+    "SseTrigger",
     "Stack",
     "SourceSpan",
     "StorageQuotaExceeded",
@@ -747,6 +760,8 @@ __all__ = [
     "get_cache_traces",
     "get_icon",
     "inspect_data",
+    "known_extensions",
+    "catalog_facts",
     "invalidate_tags",
     "list_icons",
     "register_icon",

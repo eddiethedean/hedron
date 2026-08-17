@@ -5,7 +5,7 @@
 
 schema_version = 1
 phase = "0.48"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.47.0"
 required_predecessor = "v0.47.0"
 target = "v0.48.0"
@@ -30,7 +30,7 @@ new_package = false
 htmx_major = ">=2,<3"
 htmx_4 = "out of scope"
 diagnostic_family = "HED-EXT-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
 keep_existing_codes = ["HED-HTMX-0001", "HED-HTMX-0002", "HED-JINJA-0030"]
 
 closed_public_ids = ["sse", "head-support", "preload"]

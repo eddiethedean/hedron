@@ -234,7 +234,9 @@ def render_component_response(
     else:
         # Request-less PAGE paths still need extension order (#55).
         html_text = _ensure_htmx_asset(html_text, selected_mode, policy=policy)
-        html_text = _inject_htmx_extension_assets(html_text, request=None)
+        html_text = _inject_htmx_extension_assets(
+            html_text, request=None, plan=getattr(result, "htmx_plan", None)
+        )
     return response_cls(
         content=html_text,
         status_code=status_code,

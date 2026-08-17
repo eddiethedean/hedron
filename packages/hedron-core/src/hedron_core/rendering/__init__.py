@@ -102,6 +102,7 @@ class RenderResult:
     identity_map: Mapping[str, str] = field(default_factory=lambda: MappingProxyType({}))
     diagnostics: tuple[Diagnostic, ...] = ()
     trace: RenderTrace | Mapping[str, object] | None = None
+    htmx_plan: object | None = None
 
 
 class _RenderState:
@@ -165,12 +166,20 @@ class RenderSession:
         previous_node_count = self._state.node_count
         ctx_token: Token[RenderContext | None] = _active_render_context.set(self.context)
         from hedron_core.hosts import begin_host_mount_scope, end_host_mount_scope
+        from hedron_core.htmx_extensions import (
+            begin_extension_collect,
+            finish_extension_plan,
+            reset_extension_collect,
+        )
 
         mount_token = begin_host_mount_scope()
+        ext_tokens = begin_extension_collect()
         try:
             nodes = _normalize(value, self._state, depth=base_depth)
             html_text = _serialize_result(value, nodes, self.context, mode)
+            htmx_plan = finish_extension_plan(mode=mode)
         finally:
+            reset_extension_collect(ext_tokens)
             end_host_mount_scope(mount_token)
             _active_render_context.reset(ctx_token)
         self._render_count += 1
@@ -180,13 +189,15 @@ class RenderSession:
             if key not in previous_identity_keys
         }
         diagnostic_delta = tuple(self._state.diagnostics[previous_diagnostic_count:])
+        plan_diagnostics = getattr(htmx_plan, "diagnostics", ()) or ()
         return RenderResult(
             html=html_text,
             mode=mode,
             assets=(),
             headers=MappingProxyType({}),
             identity_map=MappingProxyType(identity_delta),
-            diagnostics=diagnostic_delta,
+            diagnostics=diagnostic_delta + tuple(plan_diagnostics),
+            htmx_plan=htmx_plan,
             trace=MappingProxyType(
                 {
                     "path": self._state.path(),

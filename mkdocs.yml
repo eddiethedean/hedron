@@ -201,6 +201,7 @@ nav:
       - Forms and actions: guides/forms-and-actions.md
       - Mutations: guides/mutations.md
       - Live updates (polling): guides/live-interaction.md
+      - HTMX extensions: guides/htmx-extensions.md
     - Add data and visuals:
       - Data applications: guides/data-apps.md
       - Charts and HTMX: guides/charts-and-htmx.md
@@ -287,6 +288,7 @@ nav:
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.48: guides/whats-new-0.48.md
     - What's new in 0.47: guides/whats-new-0.47.md
     - What's new in 0.46: guides/whats-new-0.46.md
     - Versioned documentation: guides/versions.md

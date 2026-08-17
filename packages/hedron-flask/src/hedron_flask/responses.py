@@ -240,13 +240,25 @@ def _render_theme(result: RenderResult) -> str | None:
     return theme if isinstance(theme, str) else None
 
 
-def _inject_page_html(html_text: str, mode: RenderMode, *, theme: str | None = None) -> str:
+def _inject_page_html(
+    html_text: str,
+    mode: RenderMode,
+    *,
+    theme: str | None = None,
+    plan: object | None = None,
+    assets: object | None = None,
+) -> str:
+    from hedron_core.htmx_extensions import ExtensionPlan
+
+    resolved = plan if isinstance(plan, ExtensionPlan) else None
     return inject_page_assets(
         html_text,
         mode,
         policy=_security_policy_from_app(),
         static_href=_flask_static_href,
         theme=theme,
+        plan=resolved,
+        assets=assets if isinstance(assets, tuple) else None,
     )
 
 
@@ -288,7 +300,13 @@ def component_response(
             return Response(str(exc), status=403, mimetype="text/plain")
         _apply_auth_cache_headers(headers, authenticated=authenticated)
     selected_mode = render_mode_for_request(hdrs, force=mode)
-    body = _inject_page_html(result.html, selected_mode, theme=_render_theme(result))
+    body = _inject_page_html(
+        result.html,
+        selected_mode,
+        theme=_render_theme(result),
+        plan=getattr(result, "htmx_plan", None),
+        assets=result.assets,
+    )
     return Response(body, status=status_code, mimetype="text/html", headers=headers)
 
 
@@ -360,7 +378,13 @@ def interaction_response(
         )
         body = rendered.html
         if selected_mode is RenderMode.PAGE:
-            body = _inject_page_html(body, selected_mode, theme=_render_theme(rendered))
+            body = _inject_page_html(
+                body,
+                selected_mode,
+                theme=_render_theme(rendered),
+                plan=getattr(rendered, "htmx_plan", None),
+                assets=rendered.assets,
+            )
     return Response(
         body,
         status=result.status_code,

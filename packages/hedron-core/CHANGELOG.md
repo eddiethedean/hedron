@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.48.0] — 2026-08-17
+
+### Added
+- Closed `HtmxExtension` / `ExtensionSet` / `Page.htmx_extensions` with demand-driven pinned local HTMX extension assets (`sse`, `head-support`, `preload`).
+- Portable `SseRegion` / `SseTrigger`, registered `AssetRef` head merge, and GET-only preload authoring on `HtmxLink`.
+
+### Changed
+- Coordinated train tip `0.48.0` (in-tree cut; tag/PyPI deferred). Idiomorph / morph swap stays Deferred.
+
 ## [0.47.0] — 2026-08-17
 
 ### Added

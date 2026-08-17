@@ -70,12 +70,21 @@ class SseResponse(StreamingResponse):
 
 
 def extension_script_tags(*names: str) -> list[str]:
-    from hedron_core.htmx_extensions import known_extensions
+    from hedron_core.htmx_extensions import (
+        COMPAT_DEFAULT_IDS,
+        PUBLIC_ID_BY_ASSET_NAME,
+        known_extensions,
+        normalize_public_id,
+    )
 
-    wanted = set(names) if names else {e.name for e in known_extensions() if not e.deferred}
+    if names:
+        wanted_public = {normalize_public_id(name) for name in names}
+    else:
+        wanted_public = set(COMPAT_DEFAULT_IDS)
     tags: list[str] = []
     for ext in sorted(known_extensions(), key=lambda e: e.load_order):
-        if ext.name in wanted and not ext.deferred:
+        public_id = ext.public_id or PUBLIC_ID_BY_ASSET_NAME.get(ext.name, "")
+        if public_id in wanted_public and not ext.deferred:
             tags.append(f'<script src="{ext.path}" defer></script>')
     return tags
 

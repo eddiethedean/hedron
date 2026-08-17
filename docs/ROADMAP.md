@@ -45,7 +45,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Published** (`v0.47.0` / `hedron-maps` `0.1.0`; in-tree cut, tag/PyPI deferred; D-078 / D-082 / RFC-0074; [#350](https://github.com/eddiethedean/hedron/issues/350)) |
-| **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Planned** (`v0.48.0`; D-080 / D-083 / RFC-0075; Stage 0 refined against Published in-tree `v0.47.0`; [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48 gate before Stage 1; no 0.48 runtime) |
+| **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0`; in-tree cut, tag/PyPI deferred; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Planned** (`v0.49.0`; D-081 / RFC-0076; requires Verified 0.48 and a tracking issue before Stage 1; no 0.49 runtime) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
@@ -80,10 +80,9 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   MapLibre enhancement, replaceable OSM default, custom raster/vector sources, and tested static,
   PMTiles, MBTiles, blank-map, and air-gapped paths. It does not change the availability of the
   existing core `Map` before the phase is cut.
-- Planned **0.48** makes HTMX extensions explicit and useful: pages and regions declare extensions,
+- **Published 0.48** makes HTMX extensions explicit: pages and regions declare extensions,
   unused pages load none, SSE/head-support/preload ship complete progressive-enhancement slices,
-  and Idiomorph is admitted only after lifecycle evidence. It does not change the 0.24
-  `polling_only` disposition before the phase is cut.
+  and Idiomorph stays **Deferred**. It does not change the 0.24 `polling_only` disposition.
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](guides/production-quality.md).
 - Planned **0.26–0.35** phases apply an evidence-based production-grade contract to the remaining
@@ -97,9 +96,9 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   visualization, element, remote, and workbench workflows that compile to the same stack. None of
   these programs is a blanket feature promotion or a scheduled `1.0`.
 
-### Honest gaps on the current train (0.47.x)
+### Honest gaps on the current train (0.48.x)
 
-- Current **published** train is **0.47.x** (in-tree `v0.47.0`; tag/PyPI deferred; PyPI still `0.46.0`)
+- Current **published** train is **0.48.x** (in-tree `v0.48.0`; tag/PyPI deferred; PyPI still `0.46.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -3966,11 +3965,11 @@ Capability inventory:
 
 ## 0.48 — First-class HTMX extension integration (`v0.48.0`)
 
-**Status:** Planned (D-080 / D-083 /
-[RFC-0075](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0075-HTMX-EXTENSION-INTEGRATION.md)).
-Planning baseline is Published in-tree `v0.47.0`. Verified `v0.47.0` is the hard Stage 1
-prerequisite and cut baseline. [#373](https://github.com/eddiethedean/hedron/issues/373) must bind
-every 0.48 gate before runtime implementation begins. Stage 0 changes planning contracts only.
+**Status:** Published as in-tree `v0.48.0` (D-080 / D-083 /
+[RFC-0075](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0075-HTMX-EXTENSION-INTEGRATION.md);
+tag/PyPI deferred). Predecessor is Published in-tree `v0.47.0`.
+[#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48 gate until later
+publish assets exist. `MORPH-048` is explicit **Deferred**.
 
 **Outcome:** HTMX extensions become a deliberate Hedron capability rather than scripts that happen
 to be present. Pages and bounded regions declare what they need; rendering injects compatible,
@@ -4044,8 +4043,8 @@ Artifacts: [public contract](https://github.com/eddiethedean/hedron/blob/main/do
 - Verified 0.47 is the baseline and [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48 row.
 - The packaged reference application exercises every admitted extension and fallback.
 - Applications declaring no extensions receive no extension assets or behavioral change.
-- Every non-disposition 0.48 row is Verified before `v0.48.0`; morph is either Verified or visibly
-  Deferred/excluded and never included in a Supported claim.
+- Every non-disposition 0.48 row is Verified at `v0.48.0`; morph is explicitly Deferred and
+  never included in a Supported claim.
 
 ## 0.49 — FastAPI and Pydantic convergence (`v0.49.0`)
 

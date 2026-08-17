@@ -1,11 +1,11 @@
 # Hedron `v0.48` HTMX extension integration acceptance
 
-**Status:** Planned; Stage 0 contract refined by D-083 against Published in-tree `v0.47.0`<br>
+**Status:** Published as in-tree `v0.48.0` (tag/PyPI deferred); `MORPH-048` Deferred<br>
 **Planning baseline:** Published in-tree `v0.47.0`<br>
 **Required predecessor/cut baseline:** Verified `v0.47.0`<br>
 **Target:** Hedron `v0.48.0`<br>
 **Decision/RFC:** D-080, refined by D-083 / [RFC-0075](../rfcs/RFC-0075-HTMX-EXTENSION-INTEGRATION.md)<br>
-**Tracking:** [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48 gate. Do not start Stage 1 until this issue is bound and 0.47 is Verified in-tree.
+**Tracking:** [#373](https://github.com/eddiethedean/hedron/issues/373) owns every 0.48 gate until later tag/PyPI assets exist.
 
 ## Release contract
 
@@ -44,10 +44,10 @@
 - [x] D-080 and RFC-0075 define extension, asset, lifecycle, fallback, and authority boundaries.
 - [x] D-083 rebases planning onto Published in-tree `v0.47.0` consume-shipped seams.
 - [x] Roadmap, traceability, release acceptance, lock TOMLs, capability inventory, upgrade fixtures, implementation requirements, and planned public contract exist.
-- [x] Stage 0 changes documentation/contracts only; no 0.48 runtime or version claim.
+- [x] Stage 0 contract remains the consume-shipped baseline; Stage 1 shipped the 0.48 runtime.
 - [x] Verified 0.47 and a tracking issue are bound before Stage 1
   ([#373](https://github.com/eddiethedean/hedron/issues/373)).
-- [ ] Stage 1 measures and locks asset, connection, amplification, lifecycle, and performance limits.
+- [x] Stage 1 measures and locks asset, connection, amplification, lifecycle, and performance limits.
 
 Contract locks: [catalog](htmx-extension-catalog-048.toml) ·
 [assets](htmx-asset-activation-048.toml) ·

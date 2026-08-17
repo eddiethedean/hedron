@@ -14,7 +14,7 @@ Production-grade for the declared Supported inventory (phase **0.32** /
 ## Install
 
 ```bash
-pip install "hedron[mcp]>=0.47.0,<0.48"
+pip install "hedron[mcp]>=0.48.0,<0.49"
 # or
 pip install "hedron-mcp>=0.2.0,<0.3"
 ```

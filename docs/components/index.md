@@ -78,7 +78,7 @@ Typed, labelled controls and validation presentation.
 
 FastAPI and HTMX-oriented request/response components.
 
-[`OobHost`](oob-host.md) · [`AttrHost`](attr-host.md) · [`RefreshButton`](refresh-button.md) · [`Lazy`](lazy.md) · [`Poll`](poll.md) · [`InfiniteScroll`](infinite-scroll.md) · [`Pagination`](pagination.md) · [`Loading`](loading.md) · [`ErrorState`](error-state.md) · [`Dialog`](dialog.md) · [`ChatMessage`](chat-message.md) · [`ChatInput`](chat-input.md)
+[`OobHost`](oob-host.md) · [`AttrHost`](attr-host.md) · [`SseRegion`](sse-region.md) · [`SseTrigger`](sse-trigger.md) · [`RefreshButton`](refresh-button.md) · [`Lazy`](lazy.md) · [`Poll`](poll.md) · [`InfiniteScroll`](infinite-scroll.md) · [`Pagination`](pagination.md) · [`Loading`](loading.md) · [`ErrorState`](error-state.md) · [`Dialog`](dialog.md) · [`ChatMessage`](chat-message.md) · [`ChatInput`](chat-input.md)
 
 ## Data
 

@@ -28,7 +28,7 @@ treat the Beta `hedron-elements` Supported inventory as still more volatile than
 pages. Charts and the sample kit require the compatible
 `>=0.2.0,<0.3` satellite floor — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current published train (`0.47.x`). The
+**Support window:** security fixes target the current published train (`0.48.x`). The
 previous `0.46.x` train receives best-effort security triage through approximately
 **2027-08-17**. Git tag / PyPI for `v0.47.0` are **deferred**; install from PyPI is
 still **`0.46.0`**.

@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.48.0] — 2026-08-17
+
+### Added
+- Phase 0.48 first-class HTMX extension integration (D-080 / D-083 / RFC-0075).
+
+### Changed
+- Coordinated train tip `0.48.0` (in-tree cut; tag/PyPI deferred).
+
 ## [0.47.0] — 2026-08-17
 
 ### Added

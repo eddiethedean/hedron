@@ -1,20 +1,14 @@
 ---
-status: planned
+status: stable
 ---
 
 # HTMX extension integration
 
-!!! warning "Planned 0.48 contract"
-
-    This is the D-080 / D-083 / RFC-0075 public contract. No 0.48 API is
-    available until every owning release gate is satisfied. Existing 0.10
-    SSE, head-support, and preload helpers remain experimental under
-    `polling_only`.
-
-Phase 0.48 makes HTMX extensions a declared Hedron capability. Pages and
-typed components name what they need; rendering injects only pinned local
-assets, emits `hx-ext`, and exposes the same facts to CSP, manifests,
-adapters, and tests.
+Phase 0.48 (D-080 / D-083 / RFC-0075) makes HTMX extensions a declared Hedron
+capability. Pages and typed components name what they need; rendering injects
+only pinned local assets, emits `hx-ext`, and exposes the same facts to CSP,
+manifests, adapters, and tests. SSE and preload **helpers** remain experimental
+under `polling_only`; declared extension **assets** are Supported when pinned.
 
 ## Declaration
 

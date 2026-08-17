@@ -120,9 +120,15 @@ def _inject_build_assets(
             html_text = html_text.replace("</body>", f"{injection}\n</body>", 1)
         else:
             html_text = html_text + injection
+    from hedron_core.head_support import merge_registered_head
+    from hedron_core.htmx_extensions import ExtensionPlan
+
+    plan = getattr(result, "htmx_plan", None)
+    enabled = isinstance(plan, ExtensionPlan) and "head-support" in plan.ids
+    html_text = merge_registered_head(html_text, result.assets, enabled=enabled)
     # Pin bundled HTMX extensions immediately after the core runtime so deferred
     # scripts execute in dependency order (issue #55 / RFC-0032).
-    return _inject_htmx_extension_assets(html_text, request)
+    return _inject_htmx_extension_assets(html_text, request, plan)
 
 
 def _htmx_core_script_end(html_text: str) -> int | None:
@@ -132,14 +138,20 @@ def _htmx_core_script_end(html_text: str) -> int | None:
     return htmx_core_script_end(html_text)
 
 
-def _inject_htmx_extension_assets(html_text: str, request: Request | None) -> str:
-    """Insert non-deferred HTMX extensions after the core runtime script."""
+def _inject_htmx_extension_assets(
+    html_text: str,
+    request: Request | None,
+    plan: object | None = None,
+) -> str:
+    """Insert planned HTMX extensions after the core runtime script."""
+    from hedron_core.htmx_extensions import ExtensionPlan
     from hedron_core.page_assets import inject_htmx_extensions
 
     def _href(path: str) -> str:
         return _mounted_static_href(path, request)
 
-    return inject_htmx_extensions(html_text, static_href=_href)
+    resolved = plan if isinstance(plan, ExtensionPlan) else None
+    return inject_htmx_extensions(html_text, static_href=_href, plan=resolved)
 
 
 def _ensure_htmx_asset(

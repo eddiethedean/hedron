@@ -56,7 +56,7 @@ cd "$ROOT"
 export UV_NO_PROGRESS="${UV_NO_PROGRESS:-1}"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.47.0}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.48.0}"
 CI_PYTHONS=(3.11 3.12 3.13 3.14)
 PYTHON_EXPLICIT=0
 ALL_PYTHONS=0
@@ -410,6 +410,7 @@ quality_verify_pkgs() {
   run_py scripts/verify_pkg_45.py
   run_py scripts/verify_pkg_46.py
   run_py scripts/verify_pkg_47.py
+  run_py scripts/verify_pkg_48.py
 }
 
 quality_docs() {
@@ -536,7 +537,7 @@ evidence_verify_pkgs() {
   run_py scripts/verify_pkg_35.py --allow-planned
   # `all` already ran 36–47 during quality; skip the second verification pass.
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
-    echo "skip: verify_pkg_36–47 (already covered by quality)"
+    echo "skip: verify_pkg_36–48 (already covered by quality)"
     return 0
   fi
   run_py scripts/verify_pkg_36.py --allow-planned
@@ -551,6 +552,7 @@ evidence_verify_pkgs() {
   run_py scripts/verify_pkg_45.py
   run_py scripts/verify_pkg_46.py
   run_py scripts/verify_pkg_47.py
+  run_py scripts/verify_pkg_48.py
 }
 
 cmd_evidence() {
@@ -578,7 +580,7 @@ cmd_realwb() {
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
-    echo "skip: packaging (verify_pkg_35–47 already covered by quality + evidence)"
+    echo "skip: packaging (verify_pkg_35–48 already covered by quality + evidence)"
     return 0
   fi
   resolve_python
@@ -595,6 +597,7 @@ cmd_packaging() {
   run_py scripts/verify_pkg_45.py
   run_py scripts/verify_pkg_46.py
   run_py scripts/verify_pkg_47.py
+  run_py scripts/verify_pkg_48.py
 }
 
 cmd_all() {

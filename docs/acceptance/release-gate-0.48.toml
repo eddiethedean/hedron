@@ -1,10 +1,9 @@
 # Phase 0.48 HTMX extension integration release evidence index.
-# Stage 0 contract artifact, contract-refined by D-083 against Published in-tree
-# v0.47.0. Commands remain reserved names until Stage 1. All rows Planned.
+# In-tree v0.48.0 cut. Fifteen gates Verified; MORPH-048 is explicit Deferred.
 
 schema_version = 1
 phase = "0.48"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.47.0"
 required_predecessor = "v0.47.0"
 target = "v0.48.0"
@@ -14,7 +13,7 @@ owning_rfc = "RFC-0075"
 
 [[evidence]]
 id = "EXTENSION-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_extension_048.py"
 ci_job = "test"
 owner = "hedron-core"
@@ -22,7 +21,7 @@ summary = "Closed declaration catalog, activation scopes, typed composition, and
 
 [[evidence]]
 id = "ASSET-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_asset_048.py"
 ci_job = "test"
 owner = "hedron-core"
@@ -30,7 +29,7 @@ summary = "Demand-driven pinned local assets, compatibility, CSP, order, and zer
 
 [[evidence]]
 id = "SSE-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_sse_048.py"
 ci_job = "test"
 owner = "hedron"
@@ -38,7 +37,7 @@ summary = "End-to-end SSE regions and jobs with reconnect, closure, cleanup, and
 
 [[evidence]]
 id = "HEAD-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_head_048.py"
 ci_job = "test"
 owner = "hedron-core"
@@ -46,7 +45,7 @@ summary = "Controlled registered head merging across navigation, fragments, CSP,
 
 [[evidence]]
 id = "PRELOAD-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_preload_048.py"
 ci_job = "test"
 owner = "hedron-core"
@@ -54,15 +53,17 @@ summary = "Explicit cacheable GET preload with server policy and bounded request
 
 [[evidence]]
 id = "MORPH-048"
-state = "Planned"
+state = "Deferred"
 command = "python scripts/check_morph_048.py"
 ci_job = "test"
 owner = "hedron-core"
 summary = "Evidence-gated Idiomorph admission or explicit Deferred/excluded disposition."
+rationale = "The three-engine Idiomorph spike did not admit morph: no vendored htmx-ext-idiomorph, safe_hx_swap still rejects morph/morph:outerHTML/morph:innerHTML, and sim require_supported_swap('morphdom') stays rejected. Forms, focus, hx-preserve, hedron-example/chart/map, and OOB stay on innerHTML/outerHTML."
+destination = "Later train after a passing Idiomorph lifecycle spike; not 0.49 FastAPI/Pydantic convergence. polling_only and maps/charts grammars stay closed."
 
 [[evidence]]
 id = "SECURITY-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_security_048.py"
 ci_job = "test"
 owner = "hedron-core"
@@ -70,7 +71,7 @@ summary = "Asset, URL, selector, event, head, stream, cache, CSP, and HDJ trust 
 
 [[evidence]]
 id = "A11Y-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_a11y_048.py"
 ci_job = "test"
 owner = "hedron"
@@ -78,7 +79,7 @@ summary = "Fallback, focus, live-region, control, motion, input-parity, and meta
 
 [[evidence]]
 id = "BROWSER-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_browser_048.py"
 ci_job = "browser"
 owner = "hedron"
@@ -86,7 +87,7 @@ summary = "Three-engine activation, failure, reconnect, swap, race, cancellation
 
 [[evidence]]
 id = "PERF-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_perf_048.py"
 ci_job = "test"
 owner = "hedron"
@@ -94,7 +95,7 @@ summary = "No-op assets, execution, connection, preload, merge, morph, memory, a
 
 [[evidence]]
 id = "ADAPTER-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_adapter_048.py"
 ci_job = "test"
 owner = "hedron"
@@ -102,7 +103,7 @@ summary = "Portable host paths, mounts, CSP, cache, stream labels, and extension
 
 [[evidence]]
 id = "TOOLING-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_tooling_048.py"
 ci_job = "test"
 owner = "hedron"
@@ -110,7 +111,7 @@ summary = "Explorer, CLI, manifests, scenarios, conformance, simulation, diagnos
 
 [[evidence]]
 id = "COMPAT-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_compat_048.py"
 ci_job = "test"
 owner = "hedron"
@@ -118,7 +119,7 @@ summary = "Existing interaction compatibility, opt-out, deprecation, upgrade, sk
 
 [[evidence]]
 id = "DOCS-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_docs_048.py"
 ci_job = "quality"
 owner = "hedron"
@@ -126,7 +127,7 @@ summary = "Complete extension authoring, operations, security, accessibility, an
 
 [[evidence]]
 id = "REGRESS-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_regress_048.py"
 ci_job = "test"
 owner = "hedron"
@@ -134,7 +135,7 @@ summary = "Full Supported regression suite and honest phase-owned issue/disposit
 
 [[evidence]]
 id = "PKG-048"
-state = "Planned"
+state = "Verified"
 command = "python scripts/verify_pkg_48.py"
 ci_job = "packaging"
 owner = "hedron"

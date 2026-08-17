@@ -213,6 +213,19 @@ HED_JOB_0001 = "HED-JOB-0001"
 HED_HTMX_0001 = "HED-HTMX-0001"
 HED_HTMX_0002 = "HED-HTMX-0002"  # select_oob + OobUpdate same-target conflict
 
+# First-class HTMX extension integration (0.48 RFC-0075 / D-083)
+HED_EXT_0001 = "HED-EXT-0001"  # compatibility-default injection (sse + head-support)
+HED_EXT_0002 = "HED-EXT-0002"  # unknown or excluded public id
+HED_EXT_0003 = "HED-EXT-0003"  # morph undeclared / not admitted
+HED_EXT_0004 = "HED-EXT-0004"  # opt-out conflicts with component requirement
+HED_EXT_0005 = "HED-EXT-0005"  # missing vendored asset or digest mismatch
+HED_EXT_0006 = "HED-EXT-0006"  # preload policy (mutation / user-derived URL)
+HED_EXT_0007 = "HED-EXT-0007"  # incompatible declaration shape or combination
+HED_EXT_0008 = "HED-EXT-0008"  # undeclared fragment requirement
+HED_EXT_0009 = "HED-EXT-0009"  # request-derived or CDN asset URL
+HED_EXT_0010 = "HED-EXT-0010"  # invalid SSE token or Last-Event-ID
+HED_EXT_0011 = "HED-EXT-0011"  # head merge reject (inline/remote/nonce/unregistered)
+
 # Refreshable views / commands / typed updates (0.43 RFC-0070)
 HED_VIEW_0001 = "HED-VIEW-0001"  # unsafe or duplicate explicit key
 HED_VIEW_0002 = "HED-VIEW-0002"  # duplicate unbound mount

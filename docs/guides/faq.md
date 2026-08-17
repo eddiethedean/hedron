@@ -2,8 +2,8 @@
 
 ## Which version should I install?
 
-**Published in-tree `v0.47.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.47.0,<0.48`. The latest on **PyPI** is **`0.46.0`**:
+**Published in-tree `v0.48.0`.** Git tag and PyPI upload are **deferred**.
+In-tree pin `hedron>=0.48.0,<0.49`. The latest on **PyPI** is **`0.46.0`**:
 
 ```bash
 pip install "hedron>=0.46.0,<0.47"
@@ -132,7 +132,7 @@ Snapshot: [What’s ready today](whats-ready.md).
 ## Why pin with an upper bound?
 
 A lower bound without an upper bound allows a future minor train to install
-automatically. Use `hedron>=0.47.0,<0.48` so compatible patches are accepted while the
+automatically. Use `hedron>=0.48.0,<0.49` so compatible patches are accepted while the
 next minor train requires an intentional review. See [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
@@ -140,14 +140,14 @@ next minor train requires an intentional review. See [Compatibility](../COMPATIB
 **Auto** (built-in — no extra) and **DataTable/DataEditor** (`hedron[data]`) are
 **Supported**. Those packages are **Beta** on PyPI — pin versions.
 
-Charts install through `hedron[charts]>=0.47.0,<0.48`; the sample kit installs as
+Charts install through `hedron[charts]>=0.48.0,<0.49`; the sample kit installs as
 `hedron-sample-kit>=0.1.10,<0.2`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ```bash
-pip install "hedron[data]>=0.47.0,<0.48"     # DataTable, DataEditor (Auto is already in hedron)
-pip install "hedron[charts]>=0.47.0,<0.48"   # compatible chart satellite
+pip install "hedron[data]>=0.48.0,<0.49"     # DataTable, DataEditor (Auto is already in hedron)
+pip install "hedron[charts]>=0.48.0,<0.49"   # compatible chart satellite
 ```
 
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), and the
@@ -210,9 +210,9 @@ variables / your secret store. Constructor args override both when explicit.
 ## How do I install Jinja templates?
 
 ```bash
-pip install "hedron[jinja]>=0.47.0,<0.48"
+pip install "hedron[jinja]>=0.48.0,<0.49"
 # or
-uv add "hedron[jinja]>=0.47.0,<0.48"
+uv add "hedron[jinja]>=0.48.0,<0.49"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).

@@ -104,6 +104,7 @@ from hedron_core.builtins.utilities import (
     Tabs,
     Toast,
 )
+from hedron_core.sse_ext import SseRegion, SseTrigger
 
 __all__ = [
     "ActionDock",
@@ -195,6 +196,8 @@ __all__ = [
     "Sidebar",
     "Skeleton",
     "Spacer",
+    "SseRegion",
+    "SseTrigger",
     "Stack",
     "Status",
     "SubmitButton",

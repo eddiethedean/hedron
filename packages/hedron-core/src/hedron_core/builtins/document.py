@@ -10,6 +10,7 @@ from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import HedronError, error
 from hedron_core.html import html
+from hedron_core.htmx_extensions import parse_htmx_extensions
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, TrustedHtml, UrlPurpose, reject_asset_path_traversal
 from hedron_core.typing_aliases import HtmlAttrValue
@@ -96,6 +97,7 @@ class Page(Component[PageProps]):
         scripts: Sequence[SafeUrl] | None = None,
         script_defer: bool = True,
         script_async: bool = False,
+        htmx_extensions: object = None,
         **kwargs: object,
     ) -> None:
         if script_async and script_defer:
@@ -126,8 +128,16 @@ class Page(Component[PageProps]):
                 raise TypeError("Page.scripts entries must be SafeUrl instances")
             validated.append(_validate_page_script(item))
         self._scripts = tuple(validated)
+        self._htmx_extensions = parse_htmx_extensions(htmx_extensions)
+
+    @property
+    def htmx_extensions(self) -> object:
+        return self._htmx_extensions
 
     def render(self) -> NodeLike:
+        from hedron_core.htmx_extensions import declare_page_extensions
+
+        declare_page_extensions(self._htmx_extensions)
         head_nodes: list[NodeLike] = [
             html.meta(charset="utf-8"),
             html.meta(name="viewport", content="width=device-width, initial-scale=1"),

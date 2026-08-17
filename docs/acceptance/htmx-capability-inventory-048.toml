@@ -1,10 +1,9 @@
 # Phase 0.48 first-class HTMX extension integration capability inventory.
-# Stage 0 contract artifact, contract-refined by D-083 against Published in-tree
-# v0.47.0. Capability ranges stay Planned until evidence is attached.
+# In-tree v0.48.0 cut. Admitted ranges Verified; morph Deferred; exclusions Excluded.
 
 schema_version = 1
 phase = "0.48"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.47.0"
 required_predecessor = "v0.47.0"
 target = "v0.48.0"
@@ -26,7 +25,7 @@ upgrade_fixtures = "docs/acceptance/upgrade-fixtures-048.md"
 id = "EXT-CAT-001..010"
 area = "catalog-and-declaration"
 gate = "EXTENSION-048"
-state = "Planned"
+state = "Verified"
 supported = ["sse", "head-support", "preload"]
 conditional = ["morph"]
 summary = "Closed HtmxExtension ids, immutable ExtensionSet, Page.htmx_extensions, HDJ evidence projection, and deterministic manifests."
@@ -35,14 +34,14 @@ summary = "Closed HtmxExtension ids, immutable ExtensionSet, Page.htmx_extension
 id = "EXT-ASSET-001..012"
 area = "demand-driven-assets"
 gate = "ASSET-048"
-state = "Planned"
+state = "Verified"
 summary = "Pinned local assets after HTMX core, CSP/order/mount/dedupe, zero unused cost after opt-out, and a 0.47-pair compatibility default."
 
 [[capability]]
 id = "EXT-SSE-001..012"
 area = "sse-vertical-slice"
 gate = "SSE-048"
-state = "Planned"
+state = "Verified"
 api_maturity = "experimental"
 asset_maturity = "supported-when-declared"
 summary = "SseRegion / SseTrigger over existing SSE helpers with reconnect, close, auth/tenant bounds, cleanup, and polling fallback."
@@ -51,14 +50,14 @@ summary = "SseRegion / SseTrigger over existing SSE helpers with reconnect, clos
 id = "EXT-HEAD-001..010"
 area = "head-support-vertical-slice"
 gate = "HEAD-048"
-state = "Planned"
+state = "Verified"
 summary = "Registered AssetRef head merge across navigation, retain/add/remove/dedupe, CSP, failure, and rollback. FRAGMENT never invents scripts."
 
 [[capability]]
 id = "EXT-PRELOAD-001..010"
 area = "preload-vertical-slice"
 gate = "PRELOAD-048"
-state = "Planned"
+state = "Verified"
 api_maturity = "experimental"
 summary = "GET-only authoring value mapped to decide_preload / HX-Preloaded. Never a compatibility default and never a correctness dependency."
 
@@ -66,8 +65,8 @@ summary = "GET-only authoring value mapped to decide_preload / HX-Preloaded. Nev
 id = "EXT-MORPH-001..008"
 area = "idiomorph-disposition"
 gate = "MORPH-048"
-state = "Planned"
-summary = "Stage 1 form/focus/element/chart/map/OOB/a11y/three-engine spike admits morph or records Deferred/excluded without blocking other gates."
+state = "Deferred"
+summary = "Spike matrix documented; Idiomorph not vendored; morph swap values remain rejected. Other 0.48 gates do not wait on admission."
 
 [[capability]]
 id = "EXT-EXCLUDE-001..010"

@@ -38,6 +38,8 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
         return _cmd_inspect_interactions(args)
     if args.component == "features":
         return _cmd_inspect_features(args)
+    if args.component == "htmx-extensions":
+        return _cmd_inspect_htmx_extensions(args)
     _load_app(args.app)
     from hedron.config import load_hedron_settings
     from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
@@ -164,4 +166,31 @@ def _cmd_inspect_features(args: argparse.Namespace) -> int:
     print(f"features  count={len(bundles)}")
     for item in bundles:
         print(f"  {item.logical_id}  provider={item.provider}  version={item.provider_version}")
+    return 0
+
+
+def _cmd_inspect_htmx_extensions(args: argparse.Namespace) -> int:
+    from hedron_core.htmx_extensions import catalog_facts
+
+    facts = catalog_facts()
+    extensions = list(facts["extensions"])
+    payload = {
+        "kind": facts["kind"],
+        "new_catalog_kind": facts["new_catalog_kind"],
+        "feature_bundle_executor": facts["feature_bundle_executor"],
+        "hx_ext_never_installs": facts["hx_ext_never_installs"],
+        "morph_admitted": facts["morph_admitted"],
+        "compat_default": list(facts["compat_default"]),
+        "extensions": extensions,
+        "executes_untrusted_code": False,
+    }
+    if bool(getattr(args, "json", False)):
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    print("htmx-extensions  executes_untrusted_code=false")
+    for item in extensions:
+        print(
+            f"  {item['public_id']}  asset={item['asset_name']}  "
+            f"version={item['version']}  hdj={item['hdj_extension_id']}"
+        )
     return 0

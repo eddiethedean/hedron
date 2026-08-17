@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.48"
-status = "Planned"
+status = "Deferred"
 planning_baseline = "v0.47.0"
 required_predecessor = "v0.47.0"
 target = "v0.48.0"
@@ -22,10 +22,11 @@ safe_hx_swap_today = "hedron_core.htmx_contract.safe_hx_swap; morph not admitted
 sim_rejects = "hedron_sim.require_supported_swap('morphdom') remains rejected until admission"
 numeric_limits = "Stage 1 evidence; do not invent unmeasured numbers here"
 diagnostic_family = "HED-EXT-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
 
 [disposition]
-until_stage_1_spike = "Planned"
+until_stage_1_spike = "Deferred"
+recorded = "Idiomorph not vendored; morph swap values remain rejected; destination later train, not 0.49"
 pass = "Verified Supported morph; vendor pinned local asset; admit declared swap values"
 fail = "explicit Deferred or excluded; no unverified morph asset or API ships"
 block_other_gates = false

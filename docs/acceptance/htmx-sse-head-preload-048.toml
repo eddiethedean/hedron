@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.48"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.47.0"
 required_predecessor = "v0.47.0"
 target = "v0.48.0"
@@ -18,9 +18,12 @@ stacks_on_assets = "docs/acceptance/htmx-asset-activation-048.toml"
 polling_only = true
 reopen_polling_only = false
 live_transport_promotion = false
-numeric_limits = "Stage 1 evidence; name knobs only"
+numeric_limits = "Measured uncompressed asset bytes; live-transport times remain experimental"
+sse_uncompressed_bytes = 8896
+head_support_uncompressed_bytes = 6285
+preload_uncompressed_bytes = 14099
 diagnostic_family = "HED-EXT-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
 keep_existing_codes = ["HED-HTMX-0001", "HED-HTMX-0002", "HED-JINJA-0030"]
 
 [maturity]

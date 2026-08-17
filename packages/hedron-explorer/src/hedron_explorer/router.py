@@ -246,6 +246,7 @@ def _shell(title: str, body: str, *, request: Request, active: str = "components
         ("data", "Data", "/hedron-explorer/data"),
         ("charts", "Charts", "/hedron-explorer/charts"),
         ("maps", "Maps", "/hedron-explorer/maps"),
+        ("extensions", "HTMX extensions", "/hedron-explorer/extensions"),
         ("auto", "Auto", "/hedron-explorer/auto"),
         ("packages", "Packages", "/hedron-explorer/packages"),
         ("elements", "Elements", "/hedron-explorer/elements"),
@@ -671,6 +672,37 @@ def explorer_router() -> APIRouter:
         </ul>
         """
         return _shell("Maps", body, request=request, active="maps")
+
+    @router.get("/extensions", response_class=HTMLResponse, include_in_schema=False)
+    async def extensions_view(request: Request) -> str:
+        from hedron_core.htmx_extensions import catalog_facts
+
+        facts = catalog_facts()
+        rows = "".join(
+            "<tr>"
+            f"<td><code>{html_lib.escape(str(item.get('public_id', '')))}</code></td>"
+            f"<td><code>{html_lib.escape(str(item.get('asset_name', '')))}</code></td>"
+            f"<td>{html_lib.escape(str(item.get('version', '')))}</td>"
+            f"<td><code>{html_lib.escape(str(item.get('hdj_extension_id', '')))}</code></td>"
+            "</tr>"
+            for item in facts["extensions"]
+        )
+        body = f"""
+        <h2>HTMX extensions</h2>
+        <p>Explorer lists catalog facts without executing untrusted extension code.
+        Writing <code>hx-ext</code> never installs an asset. Morph is not admitted
+        on this train.</p>
+        <p>new_catalog_kind={facts.get("new_catalog_kind")} ·
+        feature_bundle_executor={facts.get("feature_bundle_executor")} ·
+        morph_admitted={facts.get("morph_admitted")}</p>
+        <table>
+          <thead>
+            <tr><th>Public id</th><th>Asset name</th><th>Version</th><th>HDJ id</th></tr>
+          </thead>
+          <tbody>{rows or "<tr><td colspan='4'>No catalog facts</td></tr>"}</tbody>
+        </table>
+        """
+        return _shell("HTMX extensions", body, request=request, active="extensions")
 
     @router.get("/data", response_class=HTMLResponse, include_in_schema=False)
     async def data_view(request: Request) -> str:

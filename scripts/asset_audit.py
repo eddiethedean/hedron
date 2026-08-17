@@ -41,15 +41,17 @@ def main() -> int:
     for ext in exts:
         # path like /hedron-static/ext/sse.js -> packages/.../static/ext/sse.js
         rel = ext.path.removeprefix("/hedron-static/")
-        asset = ROOT / "packages" / "hedron" / "src" / "hedron" / "static" / rel
-        if not asset.is_file():
-            errors.append(f"missing extension asset for {ext.name}: {asset}")
-            continue
-        got = f"sha256-{hashlib.sha256(asset.read_bytes()).hexdigest()}"
-        if got != ext.digest:
-            errors.append(f"{ext.name} digest mismatch: got {got}, expected {ext.digest}")
-        if ext.deferred:
-            errors.append(f"{ext.name} must not be deferred in 0.10+")
+        flagship = ROOT / "packages" / "hedron" / "src" / "hedron" / "static" / rel
+        core = ROOT / "packages" / "hedron-core" / "src" / "hedron_core" / "static" / rel
+        for asset in (flagship, core):
+            if not asset.is_file():
+                errors.append(f"missing extension asset for {ext.name}: {asset}")
+                continue
+            got = f"sha256-{hashlib.sha256(asset.read_bytes()).hexdigest()}"
+            if got != ext.digest:
+                errors.append(f"{ext.name} digest mismatch at {asset}: got {got}, expected {ext.digest}")
+        if ext.deferred and ext.name != "htmx-ext-idiomorph":
+            errors.append(f"{ext.name} must not be deferred unless it is the excluded morph pin")
 
     report = {
         "htmx_version": EXPECTED_VERSION,

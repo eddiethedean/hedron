@@ -264,7 +264,7 @@ This tutorial **replaces** the generated `app.py` with a complete notes app. Tha
 deliberate — not the golden-path “edit the Hello string” flow.
 
 ```bash
-python -m pip install "hedron>=0.47.0,<0.48" "uvicorn[standard]"
+python -m pip install "hedron>=0.48.0,<0.49" "uvicorn[standard]"
 python -m hedron new crud-notes
 cd crud-notes
 python -m pip install -e .

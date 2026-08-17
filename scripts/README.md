@@ -58,6 +58,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_45.py` | Phase **0.45** typed interaction ecosystem packet (Published `v0.45.0`; omit `--allow-planned` after cut) |
 | `verify_pkg_46.py` | Phase **0.46** package-native typed workflows packet (Published `v0.46.0`; historical after 0.47) |
 | `verify_pkg_47.py` | Phase **0.47** first-class maps packet (Published in-tree `v0.47.0`; omit `--allow-planned` after cut) |
+| `verify_pkg_48.py` | Phase **0.48** HTMX extension integration packet (Published in-tree `v0.48.0`; omit `--allow-planned` after cut) |
 | `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Published `v0.42.0`) |
 | `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |
 | `verify_pkg_39.py` | Phase **0.39** rich data / OptimisticMutation packet (Published `v0.39.0`) |

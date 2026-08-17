@@ -8,7 +8,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_gradio",
     version="0.2.0",
     distribution="hedron-gradio",
-    hedron_version=">=0.47,<0.48",
+    hedron_version=">=0.48,<0.49",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,

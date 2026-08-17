@@ -16,6 +16,7 @@ on a clean venv — that is the polished first-success path.
 | [`jobs-poll/`](jobs-poll/) | FastAPI | Supported job polling (`Poll` + status) |
 | [`package-workflows/`](package-workflows/) | FastAPI | `DataWorkspace` + `ChartInteraction` + generated form (0.46) |
 | [`live-interaction/`](live-interaction/) | FastAPI | Polling **Supported**; SSE/WS **experimental** |
+| [`htmx-extensions/`](htmx-extensions/) | FastAPI | Declared SSE / head-support / preload (0.48) |
 | [`reference-app/`](reference-app/) | FastAPI | Kitchen-sink auth CRUD + DataEditor (learn recipes first) |
 | [`flask-reference/`](flask-reference/) | Flask | Home + HTMX refresh fragment (port **8000**) |
 | [`django-reference/`](django-reference/) | Django | Waitress WSGI or uvicorn ASGI (manage-less) |

@@ -1,8 +1,8 @@
 # What’s new in 0.28
 
-!!! note "Current train is 0.47"
+!!! note "Current train is 0.48"
 
-    Pin `hedron>=0.47.0,<0.48` for new apps. The pin below is historical for the 0.28 train only.
+    Pin `hedron>=0.48.0,<0.49` for new apps. The pin below is historical for the 0.28 train only.
     See [What’s new in 0.41](whats-new-0.41.md).
 
 **Published** as `v0.28.2`. Historical pin: `hedron>=0.28.2,<0.29`.

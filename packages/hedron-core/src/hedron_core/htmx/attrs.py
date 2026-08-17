@@ -31,6 +31,7 @@ class Hx:
     indicator: str | None = None
     method: Literal["get", "post", "put", "patch", "delete"] | None = None
     url: str | None = None
+    preload: str | None = None
 
     def as_html_attrs(self) -> dict[str, HtmlAttrValue]:
         target = _safe_optional_selector(self.target, label="target")
@@ -70,4 +71,27 @@ class Hx:
             attrs["hx-disabled-elt"] = disabled_elt
         if indicator:
             attrs["hx-indicator"] = indicator
+        if self.preload:
+            from hedron_core.codes import HED_EXT_0006
+            from hedron_core.diagnostics import error
+            from hedron_core.htmx_extensions import PRELOAD_INITIATION_MODES, require_htmx_extension
+
+            mode = str(self.preload).strip().lower()
+            if mode not in PRELOAD_INITIATION_MODES:
+                raise error(
+                    HED_EXT_0006,
+                    title="Invalid preload initiation mode",
+                    explanation=f"preload={self.preload!r} is not a closed GET initiation mode.",
+                    remediation="Use mousedown, mouseover, or touchstart.",
+                )
+            method = (self.method or "get").lower()
+            if method != "get":
+                raise error(
+                    HED_EXT_0006,
+                    title="Preload requires a cacheable GET",
+                    explanation=f"Cannot preload {method.upper()} controls.",
+                    remediation="Attach preload only to GET links and hx-get controls.",
+                )
+            require_htmx_extension("preload")
+            attrs["preload"] = mode
         return attrs
