@@ -424,10 +424,8 @@ def _basemap_facts(
         _validate_template(basemap.tile_url, scale=basemap.scale, subdomain=basemap.subdomain)
         _zoom_ok(basemap.min_zoom, basemap.max_zoom)
         origin = _origin_of(basemap.tile_url) or OSM_STANDARD_ORIGIN
-        if (
-            origin not in policy.allowed_origins
-            and OSM_STANDARD_ORIGIN not in policy.allowed_origins
-            and policy.allowed_origins
+        if origin != OSM_STANDARD_ORIGIN or (
+            policy.allowed_origins and origin not in policy.allowed_origins
         ):
             _policy_allows(origin, policy, local=False)
         origins.append(origin)
@@ -653,12 +651,16 @@ def compile_map(
             parsed, resolved_policy
         )
     elif isinstance(parsed.basemap, OpenStreetMap) and not effective.allowed_origins:
-        resolved_policy = MapPolicy(
-            allowed_origins=(OSM_STANDARD_ORIGIN,),
-            allowed_source_kinds=effective.allowed_source_kinds,
-            remote_requests_permitted=effective.remote_requests_permitted,
-            allow_proxy=effective.allow_proxy,
-        )
+        origin = _origin_of(parsed.basemap.tile_url)
+        if origin in {None, OSM_STANDARD_ORIGIN}:
+            resolved_policy = MapPolicy(
+                allowed_origins=(OSM_STANDARD_ORIGIN,),
+                allowed_source_kinds=effective.allowed_source_kinds,
+                remote_requests_permitted=effective.remote_requests_permitted,
+                allow_proxy=effective.allow_proxy,
+            )
+        else:
+            resolved_policy = effective
         kind, preset, resources, origins, attribution, style, warnings = _basemap_facts(
             parsed, resolved_policy
         )
