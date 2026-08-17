@@ -22,7 +22,7 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
     import os
     from datetime import UTC, datetime
 
-    from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+    from hedron import Hedron, Page, Stack, Text, html
 
     app = Hedron(
         title="Hedron App",
@@ -31,17 +31,22 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
         session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
     )
 
-    status = app.region("service-status", description="Live status panel")
 
-
-    def status_panel():
+    @app.refreshable("/status")
+    def status():
         stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
         return html.div(
             Text(f"All systems operational · refreshed {stamp}"),
-            id=status.id,
             role="status",
             aria={"live": "polite"},
         )
+
+
+    @app.command(fallback="/")
+    def ping():
+        from hedron import refresh
+
+        return refresh(status).toast("Refreshed")
 
 
     @app.page("/")
@@ -49,16 +54,12 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
         return Page(
             Stack(
                 Text("Hello from hedron new"),
-                status_panel(),
-                RefreshButton.for_region(status, href="/status", label="Refresh status"),
+                status(),
+                status.refresh_button("Refresh status"),
+                ping.button("Ping"),
             ),
             title="Home",
         )
-
-
-    @app.fragment("/status", region=status)
-    def refresh_status():
-        return swap(status_panel())
     ```
 
 ```bash

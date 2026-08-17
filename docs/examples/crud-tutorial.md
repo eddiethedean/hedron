@@ -280,20 +280,9 @@ from __future__ import annotations
 from typing import Annotated
 from uuid import uuid4
 
-from fastapi import Form, Request
+from pydantic import BaseModel, Field
 
-from hedron import (
-    FragmentRegion,
-    Hedron,
-    InteractionResult,
-    Page,
-    Stack,
-    SubmitButton,
-    Text,
-    TextInput,
-    html,
-)
-from hedron import csrf_token_for_request
+from hedron import Control, Form, FormBody, Hedron, Page, Stack, SubmitButton, Text, html, refresh
 
 app = Hedron(
     title="CRUD notes",
@@ -302,87 +291,55 @@ app = Hedron(
 )
 
 NOTES: dict[str, str] = {}
-LIST = FragmentRegion(id="notes-list", selector="#notes-list")
 
 
-def _csrf(request: Request) -> str:
-    return csrf_token_for_request(request, request.app.state.hedron_security)
+class NoteIn(BaseModel):
+    body: Annotated[str, Field(min_length=1), Control(label="Note")]
 
 
-def render_list(request: Request) -> object:
-    token = _csrf(request)
+class DeleteNote(BaseModel):
+    note_id: str
+
+
+@app.refreshable("/notes")
+def notes():
     if not NOTES:
-        return Text("No notes yet.")
-    items = []
-    for note_id, body in NOTES.items():
-        items.append(
+        items = [html.li(Text("No notes yet."))]
+    else:
+        items = [
             html.li(
                 Text(body),
-                " ",
-                html.form(
-                    html.input(type="hidden", name="csrf_token", value=token),
+                Form(
                     html.input(type="hidden", name="note_id", value=note_id),
                     SubmitButton("Delete"),
-                    method="post",
-                    **{
-                        "hx-post": "/notes/delete",
-                        "hx-target": LIST.selector,
-                        "hx-swap": "innerHTML",
-                    },
+                    action=delete,
+                    style="display:inline",
                 ),
             )
-        )
-    return html.ul(*items)
+            for note_id, body in NOTES.items()
+        ]
+    return html.ul(*items, id="notes-list")
+
+
+@app.command("/notes", fallback="/")
+def create_note(data: Annotated[NoteIn, FormBody()]):
+    text = data.body.strip()
+    if text:
+        NOTES[str(uuid4())] = text
+    return refresh(notes)
+
+
+@app.command("/notes/delete", fallback="/")
+def delete(data: Annotated[DeleteNote, FormBody()]):
+    NOTES.pop(data.note_id, None)
+    return refresh(notes)
 
 
 @app.page("/")
-def home(request: Request) -> Page:
-    token = _csrf(request)
+def home() -> Page:
     return Page(
-        Stack(
-            Text("Notes"),
-            html.div(render_list(request), id=LIST.id),
-            html.form(
-                html.input(type="hidden", name="csrf_token", value=token),
-                TextInput("body", value="", required=True),
-                SubmitButton("Add"),
-                method="post",
-                **{
-                    "hx-post": "/notes",
-                    "hx-target": LIST.selector,
-                    "hx-swap": "innerHTML",
-                },
-            ),
-        ),
+        Stack(Text("Notes"), create_note.form(submit_label="Add"), notes()),
         title="Notes",
-    )
-
-
-@app.component("/notes", methods=["POST"], fragment_regions=(LIST,))
-def create_note(
-    request: Request,
-    body: Annotated[str, Form()],
-) -> InteractionResult:
-    text = body.strip()
-    if text:
-        NOTES[str(uuid4())] = text
-    return InteractionResult(
-        content=render_list(request),
-        region_id=LIST.id,
-        explanation="Append a note and refresh the list",
-    )
-
-
-@app.component("/notes/delete", methods=["POST"], fragment_regions=(LIST,))
-def delete_note(
-    request: Request,
-    note_id: Annotated[str, Form()],
-) -> InteractionResult:
-    NOTES.pop(note_id, None)
-    return InteractionResult(
-        content=render_list(request),
-        region_id=LIST.id,
-        explanation="Delete a note and refresh the list",
     )
 ```
 
@@ -393,44 +350,30 @@ uvicorn app:app --reload
 ```
 
 1. Open <http://127.0.0.1:8000/>
-2. Add a note — `#notes-list` swaps without a full navigation
-3. Delete a note — the same region updates
+2. Add a note — the notes view refreshes without a full navigation
+3. Delete a note — the same view updates
 4. (Optional) Follow [Add update](#add-update) and edit a note in place
 
 ## Add update
 
-Extend `render_list` so each row can POST a new body, then add a handler:
+Add a third command that writes a new body and refreshes the same view:
 
 ```python
-# Inside the per-note <li>, after the body Text(...):
-html.form(
-    html.input(type="hidden", name="csrf_token", value=token),
-    html.input(type="hidden", name="note_id", value=note_id),
-    TextInput("body", value=body, required=True),
-    SubmitButton("Save"),
-    method="post",
-    **{
-        "hx-post": "/notes/update",
-        "hx-target": LIST.selector,
-        "hx-swap": "innerHTML",
-    },
-),
+class UpdateNote(BaseModel):
+    note_id: str
+    body: Annotated[str, Field(min_length=1), Control(label="Note")]
 
-@app.component("/notes/update", methods=["POST"], fragment_regions=(LIST,))
-def update_note(
-    request: Request,
-    note_id: Annotated[str, Form()],
-    body: Annotated[str, Form()],
-) -> InteractionResult:
-    text = body.strip()
-    if note_id in NOTES and text:
-        NOTES[note_id] = text
-    return InteractionResult(
-        content=render_list(request),
-        region_id=LIST.id,
-        explanation="Update a note and refresh the list",
-    )
+
+@app.command("/notes/update", fallback="/")
+def update_note(data: Annotated[UpdateNote, FormBody()]):
+    text = data.body.strip()
+    if data.note_id in NOTES and text:
+        NOTES[data.note_id] = text
+    return refresh(notes)
 ```
+
+Render `update_note.form(value=UpdateNote(note_id=note_id, body=body), submit_label="Save")`
+inside each row, or keep an explicit `Form(action=update_note)` with hidden `note_id`.
 
 For a fuller admin surface (auth + create/update/delete on users), see the
 [reference app walkthrough](reference-app.md).
@@ -439,10 +382,10 @@ For a fuller admin surface (auth + create/update/delete on users), see the
 
 | Concept | Where |
 |---|---|
-| CSRF cookie + form field | `_csrf` / hidden `csrf_token` |
-| Fragment allowlist | `fragment_regions=(LIST,)` |
-| Mutation decorator | `@component(..., methods=["POST"])` — see [Mutations](../guides/mutations.md) |
-| `InteractionResult` | Create/delete (and optional update) handlers |
+| Refreshable list | `@app.refreshable` / `notes()` |
+| Commands | `@app.command` + `refresh(notes)` |
+| Generated form | `create_note.form()` (`FormBody`) |
+| Per-row delete | `Form(action=delete)` |
 
 ## Next
 

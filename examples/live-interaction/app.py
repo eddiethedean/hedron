@@ -14,10 +14,8 @@ from fastapi import Request, WebSocket
 from fastapi.responses import HTMLResponse
 
 from hedron import (
-    ComponentRef,
     FragmentRegion,
     Hedron,
-    InteractionResult,
     Link,
     Page,
     Poll,
@@ -52,17 +50,6 @@ app = Hedron(
 _backend = InMemoryJobBackend()
 set_job_backend(_backend)
 
-CLOCK = FragmentRegion(
-    id="clock",
-    selector="#clock",
-    description="UTC clock panel",
-)
-CLOCK_REF = ComponentRef(
-    logical_id="clock",
-    path="/clock",
-    target="#clock",
-    swap="innerHTML",
-)
 ANSWER = FragmentRegion(id="answer", selector="#answer", description="Streamed answer")
 _channel = PageSessionChannel(
     channel_id="live-demo",
@@ -104,13 +91,9 @@ def _complete_demo_job(job_id: str) -> None:
     _backend.mark(job_id, JobState.SUCCEEDED, result={"ok": True})
 
 
-@app.component("/clock", fragment_regions=(CLOCK,))
-def clock_fragment() -> InteractionResult:
-    return InteractionResult(
-        content=clock_text(),
-        region_id=CLOCK.id,
-        explanation="Refresh the UTC clock region",
-    )
+@app.refreshable("/clock")
+def clock():
+    return clock_text()
 
 
 @app.page("/")
@@ -122,9 +105,9 @@ def home() -> Page:
             PreparedBanner(),
             Text("Server time (polls every 2s)"),
             Poll(
-                ref=CLOCK_REF,
+                ref=clock.ref,
                 interval_ms=2000,
-                target_id=CLOCK.id,
+                target_id=clock.dom_id,
                 content=clock_text(),
             ),
             Text("Streamed answer (loads on page open)"),

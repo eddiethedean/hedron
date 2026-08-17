@@ -5,13 +5,26 @@ Create / list / delete — not a full admin CRUD app.
 
 from __future__ import annotations
 
-from fastapi import Form as FastAPIForm
-from fastapi import HTTPException, Request, status
-from fastapi.responses import RedirectResponse
+from typing import Annotated
+
+from fastapi import HTTPException, status
+from pydantic import BaseModel, Field
 from sqlalchemy import Column, Integer, String, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
-from hedron import CsrfField, Form, Hedron, Page, Stack, SubmitButton, Text, TextInput, html
+from hedron import (
+    Control,
+    CsrfField,
+    Form,
+    FormBody,
+    Hedron,
+    Page,
+    Stack,
+    SubmitButton,
+    Text,
+    html,
+    refresh,
+)
 
 engine = create_engine("sqlite:///./notes.db", connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
@@ -27,6 +40,14 @@ class Note(Base):
     body = Column(String(500), nullable=False)
 
 
+class NoteIn(BaseModel):
+    body: Annotated[str, Field(min_length=1, max_length=500), Control(label="Note")]
+
+
+class DeleteNote(BaseModel):
+    note_id: int
+
+
 Base.metadata.create_all(bind=engine)
 
 app = Hedron(
@@ -37,46 +58,31 @@ app = Hedron(
 )
 
 
-@app.page("/")
-def home(request: Request) -> Page:
+@app.refreshable("/notes")
+def notes():
     with Session(engine) as db:
-        notes = list(db.scalars(select(Note).order_by(Note.id.desc())).all())
-    items = []
-    for n in notes:
-        items.append(
-            html.li(
-                Text(str(n.body)),
-                Form(
-                    CsrfField(),
-                    html.input(type="hidden", name="note_id", value=str(n.id)),
-                    SubmitButton("Delete"),
-                    action="/delete",
-                    method="post",
-                    style="display:inline",
-                ),
-            )
-        )
-    if not items:
-        items = [html.li(Text("No notes yet."))]
-    return Page(
-        Stack(
-            Text("Notes (SQLAlchemy + SQLite) — create, list, delete"),
+        rows = list(db.scalars(select(Note).order_by(Note.id.desc())).all())
+    items = [
+        html.li(
+            Text(str(row.body)),
             Form(
                 CsrfField(),
-                TextInput("body", value="", required=True, placeholder="Write a note"),
-                SubmitButton("Save"),
-                action="/save",
-                method="post",
+                html.input(type="hidden", name="note_id", value=str(row.id)),
+                SubmitButton("Delete"),
+                action=delete,
+                style="display:inline",
             ),
-            html.ul(*items),
-        ),
-        title="Notes",
-    )
+        )
+        for row in rows
+    ]
+    if not items:
+        items = [html.li(Text("No notes yet."))]
+    return html.ul(*items)
 
 
-@app.action("/save", method="POST")
-def save(body: str = FastAPIForm(...)) -> RedirectResponse:
-    normalized = body.strip()
+@app.command("/save", fallback="/")
+def save(data: Annotated[NoteIn, FormBody()]):
+    normalized = data.body.strip()
     if not normalized:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
@@ -85,14 +91,26 @@ def save(body: str = FastAPIForm(...)) -> RedirectResponse:
     with SessionLocal() as db:
         db.add(Note(body=normalized[:500]))
         db.commit()
-    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+    return refresh(notes)
 
 
-@app.action("/delete", method="POST")
-def delete(note_id: int = FastAPIForm(...)) -> RedirectResponse:
+@app.command("/delete", fallback="/")
+def delete(data: Annotated[DeleteNote, FormBody()]):
     with SessionLocal() as db:
-        note = db.get(Note, note_id)
+        note = db.get(Note, data.note_id)
         if note is not None:
             db.delete(note)
             db.commit()
-    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+    return refresh(notes)
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(
+        Stack(
+            Text("Notes (SQLAlchemy + SQLite) — create, list, delete"),
+            save.form(),
+            notes(),
+        ),
+        title="Notes",
+    )

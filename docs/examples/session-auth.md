@@ -23,7 +23,17 @@ Minimal session login gate with CSRF. Demo credentials only — replace before a
     from fastapi import Request, status
     from fastapi.responses import RedirectResponse
 
-    from hedron import Alert, CsrfField, Form, Hedron, Page, Stack, SubmitButton, Text, TextInput
+    from hedron import (
+        Alert,
+        CsrfField,
+        Form,
+        Hedron,
+        Page,
+        Stack,
+        SubmitButton,
+        Text,
+        TextInput,
+    )
 
     app = Hedron(
         title="Session auth demo",
@@ -34,6 +44,24 @@ Minimal session login gate with CSRF. Demo credentials only — replace before a
 
     # Demo only — never hard-code production passwords.
     USERS = {"ada": "correct-horse"}
+
+
+    @app.command("/login", fallback="/login")
+    def login(
+        request: Request,
+        username: str = FastAPIForm(...),
+        password: str = FastAPIForm(...),
+    ):
+        if USERS.get(username) != password:
+            return RedirectResponse("/login?error=1", status_code=status.HTTP_303_SEE_OTHER)
+        request.session["username"] = username
+        return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+
+
+    @app.command("/logout", fallback="/login")
+    def logout(request: Request):
+        request.session.clear()
+        return RedirectResponse("/login", status_code=status.HTTP_303_SEE_OTHER)
 
 
     @app.page("/login")
@@ -54,24 +82,11 @@ Minimal session login gate with CSRF. Demo credentials only — replace before a
                     TextInput("username", value="", required=True),
                     TextInput("password", value="", type="password", required=True),
                     SubmitButton("Sign in"),
-                    action="/login",
-                    method="post",
+                    action=login,
                 ),
             ),
             title="Login",
         )
-
-
-    @app.action("/login", method="POST")
-    def login(
-        request: Request,
-        username: str = FastAPIForm(...),
-        password: str = FastAPIForm(...),
-    ) -> RedirectResponse:
-        if USERS.get(username) != password:
-            return RedirectResponse("/login?error=1", status_code=status.HTTP_303_SEE_OTHER)
-        request.session["username"] = username
-        return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
     @app.page("/")
@@ -83,21 +98,10 @@ Minimal session login gate with CSRF. Demo credentials only — replace before a
         return Page(
             Stack(
                 Text(f"Signed in as {username}"),
-                Form(
-                    CsrfField(),
-                    SubmitButton("Sign out"),
-                    action="/logout",
-                    method="post",
-                ),
+                logout.button("Sign out"),
             ),
             title="Home",
         )
-
-
-    @app.action("/logout", method="POST")
-    def logout(request: Request) -> RedirectResponse:
-        request.session.clear()
-        return RedirectResponse("/login", status_code=status.HTTP_303_SEE_OTHER)
     ```
 
 ## Run without cloning the monorepo
@@ -123,7 +127,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — unauthenticated visits *
 
 - Starlette session cookie via `Hedron(session_secret=...)`
 - Soft landing redirect (not a bare 401) when `/` is unauthenticated
-- CSRF-safe login and logout POSTs
+- `@app.command` login/logout with `Form(action=login)` and `logout.button()`
 
 Source: [`examples/session-auth`](https://github.com/eddiethedean/hedron/tree/main/examples/session-auth).
 Full narrative: [Authentication](../guides/authentication.md).

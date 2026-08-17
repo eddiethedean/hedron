@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from fastapi import File, Request, UploadFile
+from fastapi import File, UploadFile
 
-from hedron import FileUpload, Form, Hedron, Page, Stack, SubmitButton, Text, html
-from hedron.security import csrf_token_for_request
+from hedron import CsrfField, FileUpload, Form, Hedron, Page, Stack, SubmitButton, Text
 
 app = Hedron(
     title="Upload demo",
@@ -18,30 +17,7 @@ MAX_BYTES = 64 * 1024
 ALLOWED = {".txt", ".csv"}
 
 
-def _csrf(request: Request) -> str:
-    return csrf_token_for_request(request, request.app.state.hedron_security)
-
-
-@app.page("/")
-def home(request: Request) -> Page:
-    token = _csrf(request)
-    return Page(
-        Stack(
-            Text("Upload a .txt or .csv file (max 64 KiB)"),
-            Form(
-                html.input(type="hidden", name="csrf_token", value=token),
-                FileUpload(name="roster", accept=".txt,.csv"),
-                SubmitButton("Upload"),
-                action="/upload",
-                method="post",
-                enctype="multipart/form-data",
-            ),
-        ),
-        title="Upload",
-    )
-
-
-@app.action("/upload", method="POST")
+@app.command("/upload", fallback="/")
 async def upload(roster: UploadFile = File(...)) -> Page:
     name = roster.filename or "upload"
     suffix = "." + name.rsplit(".", 1)[-1].lower() if "." in name else ""
@@ -57,4 +33,21 @@ async def upload(roster: UploadFile = File(...)) -> Page:
             Text(preview or "(empty)"),
         ),
         title="Uploaded",
+    )
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(
+        Stack(
+            Text("Upload a .txt or .csv file (max 64 KiB)"),
+            Form(
+                CsrfField(),
+                FileUpload(name="roster", accept=".txt,.csv"),
+                SubmitButton("Upload"),
+                action=upload,
+                enctype="multipart/form-data",
+            ),
+        ),
+        title="Upload",
     )

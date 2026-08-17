@@ -199,6 +199,7 @@ _CODE_SOURCES: dict[str, Path] = {
     "examples/session-auth.md": ROOT / "examples" / "session-auth" / "app.py",
     "examples/jobs-poll.md": ROOT / "examples" / "jobs-poll" / "app.py",
     "examples/notes-sqlalchemy.md": ROOT / "examples" / "notes-sqlalchemy" / "app.py",
+    "examples/file-upload.md": ROOT / "examples" / "file-upload" / "app.py",
 }
 
 

@@ -37,7 +37,7 @@ app = Hedron(
 
 
 def _page(*body: object) -> str:
-    return render(Page(*body, title="0.16 workbench"), mode=RenderMode.DOCUMENT).html
+    return render(Page(*body, title="0.16 workbench"), mode=RenderMode.PAGE).html
 
 
 @app.get("/", response_class=HTMLResponse)

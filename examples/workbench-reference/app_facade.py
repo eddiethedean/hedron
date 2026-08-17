@@ -9,18 +9,7 @@ from datetime import UTC, datetime
 from fastapi import Request, WebSocket
 from starlette.responses import JSONResponse
 
-from hedron import (
-    CsrfField,
-    Form,
-    Page,
-    RefreshButton,
-    Stack,
-    SubmitButton,
-    Text,
-    html,
-    redirect_local,
-    swap,
-)
+from hedron import Page, Stack, Text, html, redirect_local, refresh
 from hedron_workbench import HedronWorkbench
 
 app = HedronWorkbench(
@@ -30,17 +19,20 @@ app = HedronWorkbench(
     session_secret=os.environ.get("HEDRON_SESSION_SECRET") or secrets.token_urlsafe(32),
 )
 
-status = app.region("service-status", description="Live status panel")
 
-
-def status_panel():
+@app.refreshable("/status")
+def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
-        id=status.id,
         role="status",
         aria={"live": "polite"},
     )
+
+
+@app.command("/ping", fallback="/")
+def ping():
+    return refresh(status).toast("pong")
 
 
 @app.page("/")
@@ -49,27 +41,12 @@ def home(request: Request) -> Page:
     return Page(
         Stack(
             Text("Hello from Hedron on Workbench"),
-            status_panel(),
-            RefreshButton.for_region(status, href="/status", label="Refresh status"),
-            Form(
-                CsrfField(),
-                SubmitButton("Ping"),
-                action="/ping",
-                method="post",
-            ),
+            status(),
+            status.refresh_button("Refresh status"),
+            ping.button("Ping"),
         ),
         title="Home",
     )
-
-
-@app.fragment("/status", region=status)
-def refresh_status():
-    return swap(status_panel())
-
-
-@app.action("/ping", method="POST")
-def ping() -> Page:
-    return Page(Text("pong"), title="Pong")
 
 
 @app.page("/login")

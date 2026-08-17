@@ -1,9 +1,11 @@
-"""Smoke import for the 0.16 sample app."""
+"""Smoke import and HTTP for the 0.16 sample app."""
 
 from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
+
+from fastapi.testclient import TestClient
 
 
 def test_data_app_016_imports() -> None:
@@ -14,3 +16,7 @@ def test_data_app_016_imports() -> None:
     spec.loader.exec_module(module)
     assert hasattr(module, "app")
     assert module.app.title == "Hedron 0.16 workbench sample"
+    with TestClient(module.app) as client:
+        home = client.get("/")
+        assert home.status_code == 200
+        assert "0.16 analysis workbench" in home.text

@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
-from fastapi import Form as FastAPIForm
+from typing import Annotated
+
 from fastapi import Request, status
 from fastapi.responses import RedirectResponse
+from pydantic import BaseModel, Field
 
 from hedron import (
-    CsrfField,
-    Form,
+    Control,
+    FormBody,
     Hedron,
     InteractionRecorder,
-    SubmitButton,
     Text,
-    TextInput,
 )
 from hedron_core import (
     ActionRegistry,
@@ -150,6 +150,30 @@ RECORDER.record(
 )
 
 
+class ClassifyIn(BaseModel):
+    text: Annotated[
+        str,
+        Field(min_length=1, max_length=500),
+        Control(kind="textarea", label="Text"),
+    ]
+
+
+@app.command("/predict", fallback="/")
+def predict_public(request: Request, data: Annotated[ClassifyIn, FormBody()]):
+    handler = CLASSIFY_ACTION.handler
+    if handler is None:  # Defensive: registered demos fail closed without a handler.
+        raise RuntimeError("classify action has no handler")
+    result = handler(text=data.text)
+    request.session["prediction"] = result
+    RECORDER.record(
+        method="POST",
+        path="/predict",
+        body={"text": data.text, "password": "should-redact"},
+        session_assumptions=("optional demo session",),
+    )
+    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+
+
 @app.page("/")
 def home(request: Request) -> AppShell:
     # Show policy groups without admitting on every GET (avoids slot leak).
@@ -172,12 +196,9 @@ def home(request: Request) -> AppShell:
         body=MainPanel(
             Text("Model demo (0.18 reference)"),
             Text("Try “meow at the window” or “walk the dog”. This runs locally."),
-            Form(
-                CsrfField(),
-                TextInput("text", value="meow at the window", required=True),
-                SubmitButton("Classify"),
-                action="/predict",
-                method="post",
+            predict_public.form(
+                submit_label="Classify",
+                value=ClassifyIn(text="meow at the window"),
             ),
             prediction_panel,
             Text(f"Interface={INTERFACE.interface_id} source={INTERFACE.source_id}"),
@@ -194,25 +215,6 @@ def home(request: Request) -> AppShell:
             Text(f"Recorder snippets={len(RECORDER.snippets())}"),
         ),
     )
-
-
-@app.action("/predict", method="POST")
-def predict_public(
-    request: Request,
-    text: str = FastAPIForm(..., min_length=1, max_length=500),
-) -> RedirectResponse:
-    handler = CLASSIFY_ACTION.handler
-    if handler is None:  # Defensive: registered demos fail closed without a handler.
-        raise RuntimeError("classify action has no handler")
-    result = handler(text=text)
-    request.session["prediction"] = result
-    RECORDER.record(
-        method="POST",
-        path="/predict",
-        body={"text": text, "password": "should-redact"},
-        session_assumptions=("optional demo session",),
-    )
-    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 def recorded_snippets() -> list[str]:

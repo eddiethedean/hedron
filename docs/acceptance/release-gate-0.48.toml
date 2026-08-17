@@ -1,0 +1,91 @@
+# Phase 0.48 HTMX extension integration release evidence index.
+# Stage 0 contract artifact; all gates remain Planned until evidence is attached.
+
+schema_version = 1
+phase = "0.48"
+status = "Planned"
+planning_baseline = "v0.46.0"
+required_predecessor = "v0.47.0"
+target = "v0.48.0"
+decision = "D-080"
+owning_rfc = "RFC-0075"
+
+[[gate]]
+id = "EXTENSION-048"
+status = "Planned"
+summary = "Closed declaration catalog, activation scopes, typed composition, and manifests."
+
+[[gate]]
+id = "ASSET-048"
+status = "Planned"
+summary = "Demand-driven pinned local assets, compatibility, CSP, order, and zero unused cost."
+
+[[gate]]
+id = "SSE-048"
+status = "Planned"
+summary = "End-to-end SSE regions and jobs with reconnect, closure, cleanup, and polling fallback."
+
+[[gate]]
+id = "HEAD-048"
+status = "Planned"
+summary = "Controlled registered head merging across navigation, fragments, CSP, and rollback."
+
+[[gate]]
+id = "PRELOAD-048"
+status = "Planned"
+summary = "Explicit cacheable GET preload with server policy and bounded request amplification."
+
+[[gate]]
+id = "MORPH-048"
+status = "Planned"
+summary = "Evidence-gated Idiomorph admission or explicit Deferred/excluded disposition."
+
+[[gate]]
+id = "SECURITY-048"
+status = "Planned"
+summary = "Asset, URL, selector, event, head, stream, cache, CSP, and HDJ trust boundaries."
+
+[[gate]]
+id = "A11Y-048"
+status = "Planned"
+summary = "Fallback, focus, live-region, control, motion, input-parity, and metadata behavior."
+
+[[gate]]
+id = "BROWSER-048"
+status = "Planned"
+summary = "Three-engine activation, failure, reconnect, swap, race, cancellation, and cleanup."
+
+[[gate]]
+id = "PERF-048"
+status = "Planned"
+summary = "No-op assets, execution, connection, preload, merge, morph, memory, and lifecycle budgets."
+
+[[gate]]
+id = "ADAPTER-048"
+status = "Planned"
+summary = "Portable host paths, mounts, CSP, cache, stream labels, and extension absence."
+
+[[gate]]
+id = "TOOLING-048"
+status = "Planned"
+summary = "Explorer, CLI, manifests, scenarios, conformance, simulation, diagnostics, and HDJ facts."
+
+[[gate]]
+id = "COMPAT-048"
+status = "Planned"
+summary = "Existing interaction compatibility, opt-out, deprecation, upgrade, skew, and rollback."
+
+[[gate]]
+id = "DOCS-048"
+status = "Planned"
+summary = "Complete extension authoring, operations, security, accessibility, and migration docs."
+
+[[gate]]
+id = "REGRESS-048"
+status = "Planned"
+summary = "Full Supported regression suite and honest phase-owned issue/disposition closure."
+
+[[gate]]
+id = "PKG-048"
+status = "Planned"
+summary = "Clean packages, assets/licenses/SBOM/provenance, matrices, versions, and rehearsal."

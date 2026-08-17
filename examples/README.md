@@ -10,13 +10,14 @@ on a clean venv — that is the polished first-success path.
 |---|---|---|
 | [`theme-gallery/`](theme-gallery/) | FastAPI | Visual QA across common interfaces in forced light and dark modes |
 | [`streamlit-migration/`](streamlit-migration/) | FastAPI | Runnable sales-dashboard migration with typed GET filters |
-| [`notes-sqlalchemy/`](notes-sqlalchemy/) | FastAPI | SQLite create / list / delete + CSRF |
+| [`notes-sqlalchemy/`](notes-sqlalchemy/) | FastAPI | SQLite create / list / delete via `@app.refreshable` + `@app.command` |
 | [`session-auth/`](session-auth/) | FastAPI | Session login; `/` redirects to `/login` |
 | [`file-upload/`](file-upload/) | FastAPI | Multipart upload with size/type checks |
 | [`jobs-poll/`](jobs-poll/) | FastAPI | Supported job polling (`Poll` + status) |
+| [`package-workflows/`](package-workflows/) | FastAPI | `DataWorkspace` + `ChartInteraction` + generated form (0.46) |
 | [`live-interaction/`](live-interaction/) | FastAPI | Polling **Supported**; SSE/WS **experimental** |
 | [`reference-app/`](reference-app/) | FastAPI | Kitchen-sink auth CRUD + DataEditor (learn recipes first) |
-| [`flask-reference/`](flask-reference/) | Flask | Home + fragment slice (port **8000**) |
+| [`flask-reference/`](flask-reference/) | Flask | Home + HTMX refresh fragment (port **8000**) |
 | [`django-reference/`](django-reference/) | Django | Waitress WSGI or uvicorn ASGI (manage-less) |
 | [`hdj-progressive/`](hdj-progressive/) | CLI render | Prints HTML to stdout — not a web server |
 | [`workbench-reference/`](workbench-reference/) | FastAPI | Ordinary Hedron and `HedronWorkbench` launch paths (0.29) |

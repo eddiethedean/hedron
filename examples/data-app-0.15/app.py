@@ -18,11 +18,9 @@ from hedron import (
     Map,
     MarkerSpec,
     Page,
-    RefreshButton,
     Stack,
     Text,
     html,
-    swap,
 )
 
 app = Hedron(
@@ -32,17 +30,14 @@ app = Hedron(
     explorer="off",
 )
 
-# Interaction ergonomics (RFC-0039): region + @fragment + swap
-panel = app.region("panel", description="Refreshable panel")
-
 # Optional identity / connections (stubs — wire in real apps):
 # from hedron.oidc import ...  # OIDC login/logout helpers; host session remains authoritative
 # from hedron.connections import ...  # named registry + providers; prefer host DI/lifespan
 
 
-@app.fragment("/panel", region=panel)
-def refresh_panel():
-    return swap(html.div(Text("Panel refreshed"), id=panel.id))
+@app.refreshable("/panel")
+def panel():
+    return html.div(Text("Panel refreshed"))
 
 
 @app.page("/")
@@ -50,14 +45,9 @@ def home() -> Page:
     return Page(
         Stack(
             Heading("0.15 data-app surface", level=1),
-            Text("region / @fragment / swap, typed controls, Map, Gallery/Audio, mark="),
-            html.div(Text("Initial panel"), id=panel.id),
-            RefreshButton(
-                "Refresh panel",
-                href="/panel",
-                target=panel.selector,
-                swap="outerHTML",
-            ),
+            Text("refreshable view, typed controls, Map, Gallery/Audio, mark="),
+            panel(),
+            panel.refresh_button("Refresh panel"),
             DateInput("visit_date", value="2026-08-05", mark="visit-date"),
             Map(
                 center=(37.77, -122.42),

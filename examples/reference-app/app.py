@@ -263,6 +263,7 @@ def dashboard_page(
     request: Request | None = None,
     store: Store | None = None,
     flash: str | None = None,
+    create_command: object | None = None,
 ) -> Page:
     table_ref = ComponentRef(
         logical_id="hedron-reference:examples.reference-app.app.user_table",
@@ -288,7 +289,11 @@ def dashboard_page(
     children.extend(
         [
             Card(
-                _create_form(csrf_token=csrf_token, form_errors=form_errors),
+                _create_form(
+                    csrf_token=csrf_token,
+                    form_errors=form_errors,
+                    action=create_command,
+                ),
                 title="Create user",
             ),
         ]
@@ -512,7 +517,12 @@ def _status_banner_section(*, request: Request | None = None) -> Any:
     )
 
 
-def _create_form(*, csrf_token: str, form_errors: tuple[str, ...] = ()) -> Any:
+def _create_form(
+    *,
+    csrf_token: str,
+    form_errors: tuple[str, ...] = (),
+    action: object | None = None,
+) -> Any:
     import json
 
     from hedron import Form
@@ -544,7 +554,7 @@ def _create_form(*, csrf_token: str, form_errors: tuple[str, ...] = ()) -> Any:
             required=True,
         ),
         SubmitButton("Create user"),
-        action=SafeUrl.parse("/users", purpose=UrlPurpose.FORM_ACTION),
+        action=action or SafeUrl.parse("/users", purpose=UrlPurpose.FORM_ACTION),
         method="post",
         **{  # type: ignore[arg-type]
             "hx-post": "/users",
@@ -715,21 +725,6 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
     )
     users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
 
-    @app.page("/")
-    def home(
-        request: Request,
-        username: Annotated[str, Depends(require_user)],
-        store: Annotated[Store, Depends(get_store)],
-    ) -> Page:
-        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("strict"))
-        token = csrf_token_for_request(request, policy)
-        return dashboard_page(
-            csrf_token=token,
-            username=username,
-            request=request,
-            store=store,
-        )
-
     @users.component("/table", fragment_regions=USER_TABLE_REGION)
     async def table(store: Annotated[Store, Depends(get_store)]) -> Table:
         return users_table_component(store)
@@ -750,7 +745,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         token = csrf_token_for_request(request, policy)
         return edit_user_page(user=user, csrf_token=token, username=username)
 
-    @users.action("", method="POST", fragment_regions=USER_TABLE_REGION)
+    @app.command("/users", fallback="/", dependencies=[Depends(require_user)])
     async def create_user(
         request: Request,
         name: Annotated[str, Form()],
@@ -782,7 +777,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
             return users_table_component(store)
         return redirect_local("/?msg=User%20created")
 
-    @users.action("/{user_id}", method="POST", fragment_regions=USER_TABLE_REGION)
+    @app.command("/users/{user_id}", fallback="/", dependencies=[Depends(require_user)])
     async def update_user(
         request: Request,
         user_id: str,
@@ -817,7 +812,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
             return users_table_component(store)
         return redirect_local("/?msg=User%20updated")
 
-    @users.action("/{user_id}/delete", method="POST", fragment_regions=USER_TABLE_REGION)
+    @app.command("/users/{user_id}/delete", fallback="/", dependencies=[Depends(require_user)])
     async def delete_user(
         request: Request,
         user_id: str,
@@ -831,6 +826,22 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         if is_htmx_request(request):
             return users_table_component(store)
         return redirect_local("/?msg=User%20deleted")
+
+    @app.page("/")
+    def home(
+        request: Request,
+        username: Annotated[str, Depends(require_user)],
+        store: Annotated[Store, Depends(get_store)],
+    ) -> Page:
+        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("strict"))
+        token = csrf_token_for_request(request, policy)
+        return dashboard_page(
+            csrf_token=token,
+            username=username,
+            request=request,
+            store=store,
+            create_command=create_user,
+        )
 
     mount_phase05_routes(app)
     mount_phase06_routes(app)

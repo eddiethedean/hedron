@@ -36,7 +36,8 @@ cd examples/django-reference
 uv run uvicorn asgi:application --host 127.0.0.1 --port 8000
 ```
 
-Open <http://127.0.0.1:8000/>. Fragment: `/fragment/`.
+Open <http://127.0.0.1:8000/>. Click **Refresh** to swap the `#panel` timestamp.
+Fragment: `/fragment`.
 
 ## CSRF
 

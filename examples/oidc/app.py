@@ -9,17 +9,7 @@ from authlib.integrations.base_client.errors import OAuthError
 from fastapi import Request, status
 from fastapi.responses import RedirectResponse
 
-from hedron import (
-    Alert,
-    CsrfField,
-    Form,
-    Hedron,
-    Link,
-    Page,
-    Stack,
-    SubmitButton,
-    Text,
-)
+from hedron import Alert, Hedron, Link, Page, Stack, Text
 from hedron.auth import create_oauth_client, install_authenticated_from_session
 from hedron.oidc import normalize_claims
 
@@ -107,18 +97,13 @@ def home(request: Request, error: str | None = None) -> Page:
     return Page(
         Stack(
             Text(f"Signed in as {request.session.get('oidc_name', subject)}"),
-            Form(
-                CsrfField(),
-                SubmitButton("Sign out"),
-                action="/logout",
-                method="post",
-            ),
+            logout.button("Sign out"),
         ),
         title="OIDC account",
     )
 
 
-@app.action("/logout", method="POST")
+@app.command("/logout", fallback="/")
 def logout(request: Request) -> RedirectResponse:
     """End the local session; add provider end-session redirect if required."""
     request.session.clear()

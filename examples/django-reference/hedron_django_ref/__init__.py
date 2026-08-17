@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 from django.http import HttpRequest
 from django.urls import path
 
-from hedron_core import Heading, Page, Text
-from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core import Heading, Page, Text, html
+from hedron_core.interaction import FragmentRegion, InteractionPolicy, InteractionResult
 from hedron_django import HedronDjango, hedron_static_urlpatterns, hedron_view
 
 if not settings.configured:
@@ -38,12 +40,26 @@ hedron = HedronDjango()
 PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
+def panel_body():
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return html.div(Text(f"Django status · {stamp}"), id="panel")
+
+
 @hedron_view
 def home(request: HttpRequest):
     return hedron.respond(
         Page(
             Heading("Hedron Django Reference", level=1),
             Text("Native Django URLconf with Hedron components."),
+            panel_body(),
+            html.button(
+                Text("Refresh"),
+                **{
+                    "hx-get": "/fragment",
+                    "hx-target": "#panel",
+                    "hx-swap": "outerHTML",
+                },
+            ),
             title="Django Reference",
         ),
         request,
@@ -52,13 +68,18 @@ def home(request: HttpRequest):
 
 @hedron_view(fragment_regions=(PANEL,))
 def fragment(request: HttpRequest):
-    return InteractionResult(content=Text("HTMX fragment refreshed"), explanation="demo fragment")
+    return InteractionResult(
+        content=panel_body(),
+        region_id="panel",
+        policy=InteractionPolicy(declared_regions=(PANEL,)),
+        explanation="demo fragment",
+    )
 
 
 urlpatterns = [
     *hedron_static_urlpatterns(),
     path("", home, name="home"),
-    path("fragment/", fragment, name="fragment"),
+    path("fragment", fragment, name="fragment"),
 ]
 
 application = get_wsgi_application()

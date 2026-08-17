@@ -34,12 +34,15 @@ uv run flask --app examples/flask-reference/app:create_app run --host 127.0.0.1 
 ```
 
 Open <http://127.0.0.1:8000/> (`python …/app.py` and the factory both use port **8000**).
-Fragment: `GET /fragment` (add `HX-Request: true` for fragment-mode rendering).
+Click **Refresh** to swap the `#panel` timestamp. Fragment: `GET /fragment`
+(add `HX-Request: true` for fragment-mode rendering).
 
 CSRF: safe GETs set the `hedron_csrf` cookie. Unsafe methods on `hedron_route` /
 `HedronFlask.respond` require matching `X-CSRF-Token` (or `csrf_token` form field).
 
 ## Scope
 
-This slice proves portable components and `InteractionResult` on Flask. It is not the
-full FastAPI reference application (auth, DataEditor, charts).
+This slice proves portable components and `InteractionResult` on Flask. Adapters
+do not ship `@app.refreshable`; the home page still uses the same Refresh
+pattern as `hedron new --flask`. It is not the full FastAPI reference application
+(auth, DataEditor, charts).

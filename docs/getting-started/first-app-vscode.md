@@ -209,13 +209,13 @@ You do not need to memorize `app.py`. Its main pieces are:
 
 1. **Imports** make Hedron and Python names available.
 2. `app = Hedron(...)` creates the application object Uvicorn imports.
-3. `status = app.region(...)` gives the replaceable status area a stable identity.
+3. `@app.refreshable("/status")` registers the status view and returns a handle.
 4. `@app.page("/")` connects the browser path `/` to the `home` Python function.
-5. `@app.fragment("/status", ...)` connects the refresh request to a smaller response.
+5. `status.refresh_button(...)` and `ping.button(...)` derive HTMX wiring from those handles.
 
-When a browser opens `/`, Hedron calls `home()` and renders its returned `Page`. When the button
-requests `/status`, Hedron calls `refresh_status()` and checks that the request targets the declared
-region. This explicit page/fragment boundary is the core interaction model.
+When a browser opens `/`, Hedron calls `home()` and renders its returned `Page`, including
+`status()`. When the button requests `/status`, Hedron reruns the refreshable view. This
+explicit view/command boundary is the core interaction model.
 
 Read [What is HTMX?](what-is-htmx.md) for a visual explanation after the application works.
 
