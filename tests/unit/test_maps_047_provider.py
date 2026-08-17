@@ -48,6 +48,26 @@ def test_raster_requires_policy_origin() -> None:
     assert "https://maps.example.com" in plan.origins
 
 
+def test_custom_osm_tile_url_requires_policy_origin() -> None:
+    url = "https://evil.example/{z}/{x}/{y}.png"
+    with pytest.raises(HedronError) as exc:
+        compile_map(
+            MapSpec(
+                basemap=OpenStreetMap(tile_url=url, attribution="© OpenStreetMap contributors"),
+                accessibility=AccessibilityDef(title="T", description="D"),
+            )
+        )
+    assert exc.value.diagnostic.code == HED_MAP_POLICY_0001
+    plan = compile_map(
+        MapSpec(
+            basemap=OpenStreetMap(tile_url=url, attribution="© OpenStreetMap contributors"),
+            policy=MapPolicy(allowed_origins=("https://evil.example",)),
+            accessibility=AccessibilityDef(title="T", description="D"),
+        )
+    )
+    assert plan.origins == ("https://evil.example",)
+
+
 def test_credentials_and_protocol_relative_rejected() -> None:
     with pytest.raises(HedronError) as exc:
         compile_map(
