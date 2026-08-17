@@ -42,11 +42,13 @@ def rollback_materialized(
     *,
     app: object,
     routes_snapshot: list[object] | None = None,
+    keep_logical_ids: set[str] | None = None,
 ) -> None:
     app_id = str(getattr(app, "hedron_app_id", "") or "")
     state = getattr(app, "state", None)
     handles = getattr(state, "hedron_handles", None)
     router = getattr(app, "_root_router", None)
+    preserved = keep_logical_ids or set()
     if routes_snapshot is not None and router is not None:
         current = list(getattr(router, "routes", []))
         extra = [route for route in current if route not in routes_snapshot]
@@ -62,7 +64,7 @@ def rollback_materialized(
                     fastapi_router.routes.remove(route)
     for item in items:
         ident = getattr(item, "logical_id", None)
-        if not isinstance(ident, str):
+        if not isinstance(ident, str) or ident in preserved:
             continue
         unregister_handle_descriptor(ident, app_id=app_id)
         if isinstance(handles, dict):
@@ -160,7 +162,13 @@ def include_feature(
     router = getattr(app, "_root_router", None)
     snapshot_routes = list(getattr(router, "routes", [])) if router is not None else []
     app_id = str(getattr(app, "hedron_app_id", "") or "")
-    known = [item.logical_id for item in list_handle_descriptors(app_id=app_id)]
+    prior_ids = {item.logical_id for item in list_handle_descriptors(app_id=app_id)}
+    known: list[str] = []
+    for item in included_bundles(app_id=app_id):
+        for handle in (*item.views, *item.commands):
+            ident = getattr(handle, "logical_id", None)
+            if isinstance(ident, str) and ident:
+                known.append(ident)
     materialized_items: list[object] = []
     included_id: str | None = None
     already = {item.logical_id for item in included_bundles(app_id=app_id)}
@@ -196,13 +204,23 @@ def include_feature(
         if included_id is not None and included_id not in already:
             _undo_included_bundle(app, included_id, app_id=app_id)
             _unapply_optional_exposure(feature)
-        rollback_materialized(materialized_items, app=app, routes_snapshot=snapshot_routes)
+        rollback_materialized(
+            materialized_items,
+            app=app,
+            routes_snapshot=snapshot_routes,
+            keep_logical_ids=prior_ids,
+        )
         raise
     except Exception as exc:
         if included_id is not None and included_id not in already:
             _undo_included_bundle(app, included_id, app_id=app_id)
             _unapply_optional_exposure(feature)
-        rollback_materialized(materialized_items, app=app, routes_snapshot=snapshot_routes)
+        rollback_materialized(
+            materialized_items,
+            app=app,
+            routes_snapshot=snapshot_routes,
+            keep_logical_ids=prior_ids,
+        )
         raise FeatureConflictError(
             make_diagnostic(
                 HED_BUNDLE_0006,

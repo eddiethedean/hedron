@@ -78,6 +78,26 @@ def test_duplicate_bundle_id_fails_closed() -> None:
     assert len(included_bundles(app_id=app.hedron_app_id)) == 1
 
 
+def test_second_bundle_cannot_claim_existing_handle() -> None:
+    app = make_app()
+
+    @app.refreshable
+    def status():
+        return Text("ok")
+
+    app.include_feature(_bundle("tests:first", views=(status,)))
+    with pytest.raises(FeatureConflictError) as raised:
+        app.include_feature(_bundle("tests:reuse-status", views=(status,)))
+    assert raised.value.diagnostic.code == HED_BUNDLE_0008
+    ids = [item.logical_id for item in included_bundles(app_id=app.hedron_app_id)]
+    assert ids == ["tests:first"]
+    from hedron_core.updates import list_handle_descriptors
+
+    assert [d.logical_id for d in list_handle_descriptors(app_id=app.hedron_app_id)] == [
+        status.logical_id
+    ]
+
+
 def test_identical_reinclude_is_idempotent() -> None:
     app = make_app()
     bundle = _bundle("tests:same")
