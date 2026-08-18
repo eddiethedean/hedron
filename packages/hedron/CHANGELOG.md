@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.49.1] — 2026-08-18
+
+### Changed
+- Coordinated train tip `0.49.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Django ``@hedron_view`` validates CSRF before the handler (#392).
+- Directory-upload paths reject raw CR/LF/TAB (#393).
+- ``hedron.Field()`` metadata no longer crashes TypeSchema v2 (#394).
+- OpenAPI discriminator objects are copied as metadata, not sanitized as schemas (#395).
+- ``Field(default_factory=...)`` compiles as optional FastAPI params (#396).
+- ``DependsOn(streaming=True)`` fail-closes without RESPONSE lifetime (#397).
+- ``data-hx-*`` URLs receive the mount-path prefix (#398).
+- Form-associated ``hedron-field-*`` elements no longer double-submit (#399).
+- Flask session cookies set Secure when ``FLASK_ENV=production`` (#400).
+- Flask and Django hosts run production security and durability gates (#401).
+
 ## [0.49.0] — 2026-08-17
 
 ### Added

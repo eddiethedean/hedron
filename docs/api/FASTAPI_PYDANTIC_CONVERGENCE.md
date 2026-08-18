@@ -8,7 +8,7 @@ Phase 0.49 (D-081 / D-084 / RFC-0076) compiles existing handle, TypeSchema, and 
 plans onto FastAPI from the Published in-tree `v0.48.0` predecessor. Authority stays
 descriptor → TypeSchema → catalog. Tracking
 [#380](https://github.com/eddiethedean/hedron/issues/380). Published as in-tree
-`v0.49.0` (tag/PyPI deferred).
+`v0.49.1` (tag/PyPI deferred).
 
 ## Dependency lifetimes
 

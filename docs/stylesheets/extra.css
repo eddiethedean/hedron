@@ -260,6 +260,14 @@ body {
   max-width: 47rem;
 }
 
+.md-typeset .hedron-hero-shot {
+  border: 1px solid var(--hedron-border);
+  border-radius: 0.5rem;
+  display: block;
+  margin: 1.75rem 0 0;
+  max-width: min(42rem, 100%);
+}
+
 .hedron-actions {
   display: flex;
   flex-wrap: wrap;

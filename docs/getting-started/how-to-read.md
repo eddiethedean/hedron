@@ -1,5 +1,8 @@
 # Maturity and compatibility
 
+Evaluator cheat-sheet for the three label axes. Builders can skip this page and use
+[What’s ready today](../guides/whats-ready.md).
+
 Builders usually need two answers:
 
 1. **Can I use this capability for a pinned application today?**
@@ -34,11 +37,14 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current published train is **0.49.x**. Install:
+The current published train is **0.49.x**. Install from PyPI:
 
 ```bash
-python -m pip install "hedron>=0.49.0,<0.50"
+python -m pip install "hedron>=0.48.0,<0.49"
 ```
+
+Pins for this repository versus the public index:
+[Installation](installation.md).
 
 There is no commercial SLA or scheduled 1.0. See [Evaluate Hedron](../guides/evaluate.md)
 for the adoption checklist and [Glossary](../GLOSSARY.md) for project terminology.

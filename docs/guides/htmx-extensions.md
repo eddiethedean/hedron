@@ -34,6 +34,75 @@ values. Fragments never invent executable scripts.
 `HtmxLink(..., preload="mousedown")` is GET-only. It maps to `decide_preload` / `HX-Preloaded`.
 Preload never changes authorization or availability.
 
+## Try progressive navigation (simulated)
+
+The links below swap one declared panel in the docs simulation. The Code tab is a complete
+Hedron app and keeps each `href` usable as the non-JavaScript fallback. Add
+`preload="mousedown"` only after the destination is safe to fetch speculatively.
+
+=== "Demo"
+
+    Choose a destination to swap the main panel while preserving an ordinary href fallback. Docs simulation.
+
+    <!-- hedron-sim:component-htmx-link -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from hedron import Fragment, Hedron, HtmxLink, MainPanel, Page, Stack, html, swap
+
+    app = Hedron(
+        title="HtmxLink demo",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+    panel = app.region("htmx-link-panel")
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                html.div(
+                    HtmxLink("Reports", "/reports", target=panel.selector, swap="innerHTML"),
+                    HtmxLink("Team", "/team", target=panel.selector, swap="innerHTML"),
+                ),
+                MainPanel(
+                    html.strong("Choose a link"),
+                    html.span("HtmxLink keeps href as the progressive-enhancement path."),
+                    id=panel.id,
+                ),
+            ),
+            title="HtmxLink",
+        )
+
+
+    @app.fragment("/reports", region=panel)
+    def reports():
+        return swap(
+            Fragment(
+                html.strong("Reports"),
+                html.span("In-shell navigation with SafeUrl href fallback."),
+            )
+        )
+
+
+    @app.fragment("/team", region=panel)
+    def team():
+        return swap(
+            Fragment(
+                html.strong("Team"),
+                html.span("Ordinary href still works without JavaScript."),
+            )
+        )
+    ```
+
 ## Security
 
 Unknown ids, CDN URLs, digest mismatches, and undeclared morph fail closed (`HED-EXT-*`).

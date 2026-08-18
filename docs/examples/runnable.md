@@ -22,6 +22,7 @@ uv sync
 | [session-auth](session-auth.md) | FastAPI | [Try it](session-auth.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/session-auth --reload` |
 | [file-upload](file-upload.md) | FastAPI | [Try it](file-upload.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/file-upload --reload` |
 | [jobs-poll](jobs-poll.md) | FastAPI | [Try it](jobs-poll.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/jobs-poll --reload` |
+| [model-demo-0.18](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/model-demo-0.18 --reload` |
 | [package-workflows](https://github.com/eddiethedean/hedron/tree/main/examples/package-workflows) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/package-workflows --reload` |
 | [live-interaction](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) | FastAPI | [Live poll](../guides/live-interaction.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/live-interaction --reload` |
 | [htmx-extensions](https://github.com/eddiethedean/hedron/tree/main/examples/htmx-extensions) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/htmx-extensions --reload` |
@@ -37,7 +38,6 @@ Capability-phase exit scenarios — not polished product demos. See
 
 | Example | Run |
 |---|---|
-| model-demo-0.18 | `uv run uvicorn app:app --app-dir examples/model-demo-0.18 --reload` |
 | dashboard-0.17 | `uv run uvicorn app:app --app-dir examples/dashboard-0.17 --reload` |
 | data-app-0.16 | `uv run uvicorn app:app --app-dir examples/data-app-0.16 --reload` |
 | data-app-0.15 | `uv run uvicorn app:app --app-dir examples/data-app-0.15 --reload` |

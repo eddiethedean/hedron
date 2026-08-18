@@ -7,7 +7,8 @@
 # Usage:
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh workbench [--python 3.12]
-#   scripts/ci_checks.sh quality [--python 3.12]
+#   scripts/ci_checks.sh docs [--python 3.12]
+#   scripts/ci_checks.sh quality [--python 3.12] [--skip-wheels]
 #   scripts/ci_checks.sh browser [--python 3.12]
 #   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.37.0]
 #   scripts/ci_checks.sh realwb [--python 3.12]
@@ -33,6 +34,7 @@
 #   --skip-workbench    Skip Workbench dependency bounds matrix
 #   --skip-realwb       Skip REALWB-030 Docker smoke
 #   --skip-realconnect  Skip REALCONNECT-033 Docker smoke
+#   --skip-wheels       Skip `uv build --all-packages` wheel smoke (`quality` only)
 #   --all-browsers      Run Chromium + Firefox + WebKit (main / release CI)
 #   --with-browser      Deprecated alias (browser runs by default in `all`)
 #
@@ -65,6 +67,7 @@ SKIP_BROWSER=0
 SKIP_WORKBENCH=0
 SKIP_REALWB=0
 SKIP_REALCONNECT=0
+SKIP_WHEELS=0
 JOBS="${HEDRON_CHECK_JOBS:-}"
 HEDRON_PYTHON_EXE=""
 
@@ -144,6 +147,10 @@ parse_args() {
         ;;
       --skip-realconnect)
         SKIP_REALCONNECT=1
+        shift
+        ;;
+      --skip-wheels)
+        SKIP_WHEELS=1
         shift
         ;;
       --with-browser)
@@ -464,6 +471,11 @@ PY
   fi
 }
 
+cmd_docs() {
+  resolve_python
+  quality_docs
+}
+
 cmd_quality() {
   job_pool_init
   resolve_python
@@ -477,7 +489,11 @@ cmd_quality() {
   wait_jobs
   printf '\n======== verify-pkgs ========\n'
   quality_verify_pkgs
-  quality_wheels_smoke
+  if [[ "$SKIP_WHEELS" -eq 0 ]]; then
+    quality_wheels_smoke
+  else
+    echo "skip: quality_wheels_smoke (--skip-wheels)"
+  fi
 }
 
 cmd_browser() {
@@ -715,6 +731,7 @@ trap job_pool_cleanup EXIT
 case "$SUITE" in
   test) cmd_test ;;
   workbench) cmd_workbench ;;
+  docs) cmd_docs ;;
   quality) cmd_quality ;;
   browser) cmd_browser ;;
   evidence) cmd_evidence ;;

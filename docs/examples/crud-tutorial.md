@@ -27,6 +27,7 @@ Warm up with the two prerequisite patterns (docs simulations — no server):
 
     ```python title="app.py"
     import os
+    from datetime import UTC, datetime
 
     from fastapi import Form as FastAPIForm
 
@@ -35,14 +36,12 @@ Warm up with the two prerequisite patterns (docs simulations — no server):
         Form,
         Hedron,
         Page,
-        RefreshButton,
         Stack,
         SubmitButton,
         Text,
         TextInput,
         html,
         redirect_local,
-        swap,
     )
 
     app = Hedron(
@@ -52,14 +51,23 @@ Warm up with the two prerequisite patterns (docs simulations — no server):
         session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
     )
 
-    notes_region = app.region("notes-count", description="Notes counter")
     _NOTES: list[str] = []
 
 
-    def notes_panel():
+    @app.refreshable("/status")
+    def status():
+        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+        return html.div(
+            Text(f"All systems operational · refreshed {stamp}"),
+            role="status",
+            aria={"live": "polite"},
+        )
+
+
+    @app.refreshable("/notes-count")
+    def notes():
         return html.div(
             Text(f"Notes saved: {len(_NOTES)}"),
-            id=notes_region.id,
             role="status",
             aria={"live": "polite"},
         )
@@ -69,10 +77,10 @@ Warm up with the two prerequisite patterns (docs simulations — no server):
     def home() -> Page:
         return Page(
             Stack(
-                notes_panel(),
-                RefreshButton.for_region(
-                    notes_region, href="/notes-count", label="Refresh notes count"
-                ),
+                status(),
+                status.refresh_button("Refresh status"),
+                notes(),
+                notes.refresh_button("Refresh notes count"),
                 Text("Leave a note"),
                 Form(
                     CsrfField(),
@@ -84,11 +92,6 @@ Warm up with the two prerequisite patterns (docs simulations — no server):
             ),
             title="Notes",
         )
-
-
-    @app.fragment("/notes-count", region=notes_region)
-    def refresh_notes_count():
-        return swap(notes_panel())
 
 
     @app.action("/save", method="POST")
@@ -264,7 +267,7 @@ This tutorial **replaces** the generated `app.py` with a complete notes app. Tha
 deliberate — not the golden-path “edit the Hello string” flow.
 
 ```bash
-python -m pip install "hedron>=0.49.0,<0.50" "uvicorn[standard]"
+python -m pip install "hedron>=0.49.1,<0.50" "uvicorn[standard]"
 python -m hedron new crud-notes
 cd crud-notes
 python -m pip install -e .

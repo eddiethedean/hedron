@@ -6,9 +6,9 @@
 [Contributor day-one](guides/contributor-day-one.md) (local docs verify ~15 minutes;
 **canonical first-contribution page** — root `CONTRIBUTING.md` points there).
 
-Docs-only PRs still run the **`quality`** job (including **package wheel builds** —
-Rust toolchain in CI, not required on your laptop for typos). `test` / `browser` /
-`evidence` skip when every changed path is allowlisted (see
+Docs-only PRs run the **`docs`** suite (mkdocs + train SSOT + recipe/sim checks) and
+**skip** the Rust toolchain and package wheel builds. `test` / `browser` /
+`evidence` also skip when every changed path is allowlisted (see
 [CI path filters](#ci-path-filters) below). The rest of this page is the full contributor
 guide.
 
@@ -58,9 +58,6 @@ uv run --group docs mkdocs build --strict
 # or: ./scripts/mkdocs.sh serve
 uv run python scripts/check_docs_train_ssot.py
 uv run python scripts/check_package_docs_inventory.py
-uv run python scripts/verify_pkg_46.py
-uv run python scripts/verify_pkg_47.py
-uv run python scripts/verify_pkg_49.py --allow-planned
 uv run python scripts/check_documentation_ownership.py
 uv run python scripts/check_api_docs_coverage.py
 uv run python scripts/check_package_readme_links.py
@@ -68,15 +65,28 @@ uv run python scripts/check_recipe_code_sync.py
 uv run python scripts/generate_component_docs.py --check
 uv run python scripts/generate_sim_demos.py --check
 # quality suite also covers docs checks after `uv sync --all-groups`:
+# bash scripts/ci_checks.sh docs --python 3.12
+# Packet / wheel checks belong on the full quality suite:
 # bash scripts/ci_checks.sh quality --python 3.12
 ```
 
 You do **not** need Playwright or the full pytest suite locally for markdown/typo PRs.
 
+**Package packet checks (`verify_pkg_*`)** belong on the full `quality` suite, not on
+docs-only PRs:
+
+```bash
+uv sync --all-groups
+uv run python scripts/verify_pkg_46.py --allow-planned
+uv run python scripts/verify_pkg_47.py
+uv run python scripts/verify_pkg_49.py --allow-planned
+bash scripts/ci_checks.sh quality --python 3.12
+```
+
 ### CI path filters
 
-Docs-only PRs (allowlisted paths in `.github/workflows/ci.yml`) still run **`quality`**
-(lint, types, wheels, docs strict, train SSOT, recipe/sim checks) but **skip** `test`,
+Docs-only PRs (allowlisted paths in `.github/workflows/ci.yml`) run the **`docs`**
+suite (mkdocs, train SSOT, recipe/sim checks) and **skip** Rust, wheel smoke, `test`,
 `browser`, and `evidence`. Allowlisted paths today:
 
 - `docs/*`, `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `mkdocs.yml`
@@ -107,7 +117,7 @@ When to leave Read the Docs for the GitHub corpus: RFCs, acceptance gates, STATU
 internals, ENGINEERING_BASELINE, and DECISIONS are **excluded from the public MkDocs site**
 — edit them on GitHub; adopters should stay on What’s ready / guides / API pages.
 Foundations non-goals and performance budgets **are** published on RTD under
-**Evaluate** / **Project → Maintainers** (not the adopter golden path).
+**Adopt** (not the adopter golden path).
 
 **Local browser suite (optional):** install Playwright Chromium, then:
 
@@ -160,7 +170,8 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 |---|---|---|
 | `test` | `test` — `pytest -n auto` on Python 3.11–3.14 | Yes, unless **docs-only** |
 | `workbench-dependencies` | `workbench` — Workbench contract tests at minimum/latest Starlette/Uvicorn bounds | Yes, unless **docs-only** |
-| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS mirror `--check` (forbids extra roadmap files), docs train SSOT, recipe/sim checks, historical 0.36–0.46 packet shape, living `verify_pkg_47.py` cut, relative doc links, `mkdocs build --strict` | **Always** |
+| `quality` | `quality` — ruff, pyright, `verify_pkg_*`, wheel build + smoke, docs train SSOT, recipe/sim checks, `mkdocs build --strict` | Yes, unless **docs-only** (then the same job runs `docs` instead) |
+| `quality` (docs-only) | `docs` — mkdocs, train SSOT, recipe/sim checks; **no** Rust toolchain and **no** `uv build --all-packages` | Docs-only PRs |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
 | `realwb` | `realwb` — REALWB-030 Docker smoke (skips when `PWB_LICENSE` unset) | Yes, unless **docs-only** or fork PR |
 | `realconnect` | `realconnect` — REALCONNECT-033 Docker smoke (skips when `CONNECT_LICENSE` unset) | Yes, unless **docs-only** or fork PR |
@@ -175,12 +186,12 @@ Release workflow (`release.yml`) runs the same `test` / `quality` / `browser` / 
 suites before `publish` (tag pushes only).
 
 Local Playwright is still optional for docs-only work. On docs-only PRs, CI skips
-`browser` / `evidence` / `test`; `quality` remains required (see [CI path filters](#ci-path-filters)).
+`browser` / `evidence` / `test` and runs `docs` instead of full `quality` (see
+[CI path filters](#ci-path-filters)).
 
-**Rust:** the `quality` and `test` jobs install a Rust toolchain so `hedron-native` wheels
-can build. Docs-only contributors do not need Rust locally for markdown verify; full
-`bash scripts/ci_checks.sh quality` on a cold machine may require Rust if the native
-package builds.
+**Rust:** the `test` job and non-docs `quality` job install a Rust toolchain so
+`hedron-native` wheels can build. Docs-only CI skips that toolchain. Full
+`bash scripts/ci_checks.sh quality` on a cold machine may require Rust.
 
 ### Bugs vs RFCs vs decisions
 

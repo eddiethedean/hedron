@@ -31,6 +31,7 @@ note, then `redirect_local("/")` reloads the page so the count increments. CSRF 
 
     ```python title="app.py"
     import os
+    from datetime import UTC, datetime
 
     from fastapi import Form as FastAPIForm
 
@@ -39,14 +40,12 @@ note, then `redirect_local("/")` reloads the page so the count increments. CSRF 
         Form,
         Hedron,
         Page,
-        RefreshButton,
         Stack,
         SubmitButton,
         Text,
         TextInput,
         html,
         redirect_local,
-        swap,
     )
 
     app = Hedron(
@@ -56,14 +55,23 @@ note, then `redirect_local("/")` reloads the page so the count increments. CSRF 
         session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
     )
 
-    notes_region = app.region("notes-count", description="Notes counter")
     _NOTES: list[str] = []
 
 
-    def notes_panel():
+    @app.refreshable("/status")
+    def status():
+        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+        return html.div(
+            Text(f"All systems operational · refreshed {stamp}"),
+            role="status",
+            aria={"live": "polite"},
+        )
+
+
+    @app.refreshable("/notes-count")
+    def notes():
         return html.div(
             Text(f"Notes saved: {len(_NOTES)}"),
-            id=notes_region.id,
             role="status",
             aria={"live": "polite"},
         )
@@ -73,10 +81,10 @@ note, then `redirect_local("/")` reloads the page so the count increments. CSRF 
     def home() -> Page:
         return Page(
             Stack(
-                notes_panel(),
-                RefreshButton.for_region(
-                    notes_region, href="/notes-count", label="Refresh notes count"
-                ),
+                status(),
+                status.refresh_button("Refresh status"),
+                notes(),
+                notes.refresh_button("Refresh notes count"),
                 Text("Leave a note"),
                 Form(
                     CsrfField(),
@@ -90,11 +98,6 @@ note, then `redirect_local("/")` reloads the page so the count increments. CSRF 
         )
 
 
-    @app.fragment("/notes-count", region=notes_region)
-    def refresh_notes_count():
-        return swap(notes_panel())
-
-
     @app.action("/save", method="POST")
     def save(note: str = FastAPIForm(...)):
         text = note.strip()
@@ -104,7 +107,7 @@ note, then `redirect_local("/")` reloads the page so the count increments. CSRF 
     ```
 
 **If you used `hedron new` (or finished the HTMX guide):** keep the existing `Hedron(...)`
-app, `notes_region`, `_NOTES`, and `notes_panel()`. Add the imports and routes below
+app, `status`, `_NOTES`, and `notes`. Add the imports and routes below
 **beside** what you already have. Do not create a second app file.
 
 ### 1. Add form imports
@@ -130,8 +133,8 @@ from hedron import (
 
 ### 2. Put the form on `home()` and add `/save`
 
-Replace your `home()` from the HTMX guide with this (keep `status_panel` /
-`RefreshButton` / `notes_panel` as you already have them):
+Replace your `home()` from the HTMX guide with this (keep `status` /
+`notes` as you already have them):
 
 ```python
 @app.page("/")
@@ -139,12 +142,10 @@ def home() -> Page:
     return Page(
         Stack(
             Text("Hello from hedron new"),
-            status_panel(),
-            RefreshButton.for_region(status, href="/status", label="Refresh status"),
-            notes_panel(),
-            RefreshButton.for_region(
-                notes_region, href="/notes-count", label="Refresh notes count"
-            ),
+            status(),
+            status.refresh_button("Refresh status"),
+            notes(),
+            notes.refresh_button("Refresh notes count"),
             Text("Leave a note"),
             Form(
                 CsrfField(),
@@ -177,78 +178,8 @@ Without a matching CSRF token, the POST returns `403`.
 
 ### Complete file (Path B / reference)
 
-Use this only if you are starting a fresh manual `app.py` (not extending a scaffold):
-
-```python title="app.py"
-from fastapi import Form as FastAPIForm
-
-from hedron import (
-    CsrfField,
-    Form,
-    Hedron,
-    Page,
-    RefreshButton,
-    Stack,
-    SubmitButton,
-    Text,
-    TextInput,
-    html,
-    redirect_local,
-    swap,
-)
-
-app = Hedron(
-    title="Notes",
-    security="standard",
-    session_secret="replace-in-production",
-)
-
-notes_region = app.region("notes-count", description="Notes counter")
-_NOTES: list[str] = []
-
-
-def notes_panel():
-    return html.div(
-        Text(f"Notes saved: {len(_NOTES)}"),
-        id=notes_region.id,
-        role="status",
-        aria={"live": "polite"},
-    )
-
-
-@app.page("/")
-def home() -> Page:
-    return Page(
-        Stack(
-            notes_panel(),
-            RefreshButton.for_region(
-                notes_region, href="/notes-count", label="Refresh notes count"
-            ),
-            Text("Leave a note"),
-            Form(
-                CsrfField(),
-                TextInput("note", value="", required=True),
-                SubmitButton("Save"),
-                action="/save",
-                method="post",
-            ),
-        ),
-        title="Notes",
-    )
-
-
-@app.fragment("/notes-count", region=notes_region)
-def refresh_notes_count():
-    return swap(notes_panel())
-
-
-@app.action("/save", method="POST")
-def save(note: str = FastAPIForm(...)):
-    text = note.strip()
-    if text:
-        _NOTES.append(text)
-    return redirect_local("/")
-```
+Use this only if you are starting a fresh manual `app.py` (not extending a scaffold).
+Copy the **Code** tab above — it is the same refreshable + form app.
 
 Run it:
 

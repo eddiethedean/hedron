@@ -15,8 +15,8 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-**Published in-tree `v0.49.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.49.0,<0.50`. The latest on **PyPI** is **`0.48.0`**.
+**Published in-tree `v0.49.1`.** Git tag and PyPI upload are **deferred**.
+In-tree pin `hedron>=0.49.1,<0.50`. The latest on **PyPI** is **`0.48.0`**.
 
 Requires Python 3.11–3.14. The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
@@ -37,7 +37,7 @@ The generated app is ordinary Python:
 import os
 from datetime import UTC, datetime
 
-from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+from hedron import Hedron, Page, Stack, Text, html
 
 app = Hedron(
     title="Hedron App",
@@ -46,14 +46,12 @@ app = Hedron(
     session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
 )
 
-status = app.region("service-status", description="Live status panel")
 
-
-def status_panel():
+@app.refreshable("/status")
+def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
-        id=status.id,
         role="status",
         aria={"live": "polite"},
     )
@@ -64,20 +62,14 @@ def home() -> Page:
     return Page(
         Stack(
             Text("Hello from Hedron"),
-            status_panel(),
-            RefreshButton.for_region(status, href="/status", label="Refresh status"),
+            status(),
+            status.refresh_button("Refresh status"),
         ),
         title="Home",
     )
-
-
-@app.fragment("/status", region=status)
-def refresh_status():
-    return swap(status_panel())
 ```
 
-The declared `region` is both the browser swap target and a server-side allowlist.
-Requests aimed at undeclared targets fail closed.
+Undeclared HTMX targets fail closed.
 
 [Follow the first-app walkthrough](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/)
 or browse the
@@ -113,7 +105,7 @@ Coming from Streamlit? Start with the
 
 ## Install
 
-Pin from **PyPI** today (`0.48.0`; tag/PyPI deferred). In-tree pin is `>=0.49.0,<0.50`.
+Pin from **PyPI** today (`0.48.0`; tag/PyPI deferred). In-tree pin is `>=0.49.1,<0.50`.
 
 ```bash
 uv add "hedron>=0.48.0,<0.49" "uvicorn[standard]"
@@ -121,7 +113,7 @@ uv add "hedron>=0.48.0,<0.49" "uvicorn[standard]"
 python -m pip install "hedron>=0.48.0,<0.49" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Train:** `0.49.x` · published `v0.49.0` · pin `>=0.49.0,<0.50`
+**Package maturity:** Beta · **Train:** `0.49.x` · published `v0.49.1` · pin `>=0.49.1,<0.50`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the
@@ -151,13 +143,13 @@ interactions, security profiles, and CLI. Integrations are optional:
 For example:
 
 ```bash
-uv add "hedron[data,dev]>=0.49.0,<0.50"
+uv add "hedron[data,dev]>=0.49.1,<0.50"
 ```
 
 Charts require the fixed compatible floor:
 
 ```bash
-uv add "hedron[charts]>=0.49.0,<0.50"
+uv add "hedron[charts]>=0.49.1,<0.50"
 ```
 
 See the full

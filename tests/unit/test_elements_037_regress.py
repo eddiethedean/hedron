@@ -39,6 +39,18 @@ def test_231_flask_session_cookie_defaults_on_attach() -> None:
     assert app.config["SESSION_COOKIE_SAMESITE"] == "Lax"
 
 
+def test_400_flask_session_cookie_secure_on_flask_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("FLASK_ENV", "production")
+    monkeypatch.delenv("HEDRON_ENV", raising=False)
+    app = Flask(__name__)
+    ext = MagicMock()
+    ext.auth_signal = None
+    ext.security_policy = SecurityPolicy.from_name("standard")
+    attach_hedron_to_flask(app, ext, auto_csrf_cookie=False)
+    assert app.config["SESSION_COOKIE_SECURE"] is True
+    assert app.config["SESSION_COOKIE_SAMESITE"] == "Lax"
+
+
 def test_232_mcp_origin_fail_closed_without_allowlist() -> None:
     class _Req:
         def __init__(self) -> None:
@@ -74,6 +86,14 @@ def test_233_mcp_bounded_body_read() -> None:
 def test_234_directory_upload_nul_rejected() -> None:
     with pytest.raises(ValueError, match="Unsafe directory upload path"):
         validate_directory_upload([("a\x00b.txt", 1)], max_files=10, max_total_size=100)
+
+
+@pytest.mark.parametrize("name", ["foo\nbar.txt", "foo\rbar.txt", "foo\tbar.txt", "foo\x07bar.txt"])
+def test_393_directory_upload_raw_controls_rejected(name: str) -> None:
+    with pytest.raises(ValueError, match="Unsafe directory upload path"):
+        validate_directory_upload([(name, 1)], max_files=10, max_total_size=100)
+    with pytest.raises(ValueError, match="Unsafe directory upload path"):
+        validate_directory_upload([("foo%0abar.txt", 1)], max_files=10, max_total_size=100)
 
 
 def test_235_select_slider_hidden_value_not_index() -> None:

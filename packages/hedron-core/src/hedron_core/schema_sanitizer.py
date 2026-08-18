@@ -177,6 +177,9 @@ def sanitize_json_schema(schema: Mapping[str, Any] | None, *, depth: int = 0) ->
         name = _keyword(str(key))
         if name in FORBIDDEN_SCHEMA_KEYWORDS:
             continue
+        if name == "hedron":
+            # Hedron Field() metadata is consumed via FieldInfo, not public schema.
+            continue
         if name not in ALLOWED_SCHEMA_KEYWORDS:
             _refuse(
                 "Unknown JSON Schema keyword refused",

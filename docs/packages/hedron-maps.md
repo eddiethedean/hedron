@@ -25,3 +25,8 @@ Leaflet/OpenLayers, deck.gl, WMS/WMTS/WFS, arbitrary projections, drawing, terra
 geocoding, and offline-region download are not in the Supported inventory.
 
 Authority: [Maps API](../api/MAPS.md) · [RFC-0074](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0074-FIRST-CLASS-MAPS.md).
+
+Try the package-native simulations: [marker filtering](../guides/maps.md#try-markers-and-filtering-simulated)
+and [GeoJSON layer accessibility](../guides/maps-accessibility.md#try-the-semantic-alternative-simulated).
+Each page includes the complete runnable Hedron app; the docs simulations make no live tile
+requests.

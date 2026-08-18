@@ -31,7 +31,7 @@ Stub exit scenarios, not product tutorials. Docs:
 
 | Example | Phase | Notes |
 |---|---|---|
-| [`model-demo-0.18/`](model-demo-0.18/) | 0.18 | Stub UI — inference setup exit |
+| [`model-demo-0.18/`](model-demo-0.18/) | 0.18 | Runnable synthetic classifier — also a product recipe |
 | [`dashboard-0.17/`](dashboard-0.17/) | 0.17 | Stub UI — dashboard exit |
 | [`data-app-0.16/`](data-app-0.16/) | 0.16 | Extras / workbench exit |
 | [`data-app-0.15/`](data-app-0.15/) | 0.15 | Data-app surface exit |

@@ -1,7 +1,7 @@
 import os
 from datetime import UTC, datetime
 
-from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+from hedron import Hedron, Page, Stack, Text, html
 
 app = Hedron(
     title="HTMX interactions",
@@ -10,38 +10,23 @@ app = Hedron(
     session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
 )
 
-# Path B standalone IDs match the hedron new scaffold (Path A) where possible.
-status = app.region("service-status", description="Status panel")
-notes = app.region("notes-count", description="Notes counter")
-probe = app.region("allowlist-probe", description="Allowlist probe")
+_NOTES: list[str] = []
 
 
-def status_panel():
+@app.refreshable("/status")
+def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S")
     return html.div(
-        html.strong("Service healthy"),
-        html.span(f"Checked at {stamp}"),
-        id=status.id,
+        Text(f"All systems operational · refreshed {stamp}"),
         role="status",
         aria={"live": "polite"},
     )
 
 
-def notes_panel():
+@app.refreshable("/notes-count")
+def notes():
     return html.div(
-        Text("Sample notes region"),
-        html.span("Allowlisted #notes-count — count stays 0 in this example"),
-        id=notes.id,
-        role="status",
-        aria={"live": "polite"},
-    )
-
-
-def probe_panel():
-    return html.div(
-        html.strong("Allowlisted swap"),
-        html.span("HX-Target matched the declared probe region"),
-        id=probe.id,
+        Text(f"Notes saved: {len(_NOTES)}"),
         role="status",
         aria={"live": "polite"},
     )
@@ -51,46 +36,11 @@ def probe_panel():
 def home() -> Page:
     return Page(
         Stack(
-            status_panel(),
-            RefreshButton.for_region(status, href="/status", label="Refresh status"),
-            notes_panel(),
-            RefreshButton.for_region(notes, href="/notes-count", label="Refresh sample region"),
-            html.div(
-                html.button(
-                    "Correct target → 200",
-                    type="button",
-                    **{
-                        "hx-get": "/probe",
-                        "hx-target": probe.selector,
-                        "hx-swap": "outerHTML",
-                    },
-                ),
-                html.button(
-                    "Wrong #panel → 403",
-                    type="button",
-                    **{
-                        "hx-get": "/probe",
-                        "hx-target": "#panel",
-                        "hx-swap": "outerHTML",
-                    },
-                ),
-                probe_panel(),
-            ),
+            Text("Hello from hedron new"),
+            status(),
+            status.refresh_button("Refresh status"),
+            notes(),
+            notes.refresh_button("Refresh notes count"),
         ),
-        title="HTMX",
+        title="Home",
     )
-
-
-@app.fragment("/status", region=status)
-def refresh_status():
-    return swap(status_panel())
-
-
-@app.fragment("/notes-count", region=notes)
-def refresh_notes():
-    return swap(notes_panel())
-
-
-@app.fragment("/probe", region=probe)
-def refresh_probe():
-    return swap(probe_panel())

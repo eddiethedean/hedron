@@ -1,10 +1,10 @@
 # What's new in 0.49
 
-**Published in-tree `v0.49.0`** (in-tree cut; tag/PyPI deferred). Owning decisions: D-081 / D-084.
+**Published in-tree `v0.49.1`** (0.49.1 patch on the original `v0.49.0` cut; tag/PyPI deferred). Owning decisions: D-081 / D-084.
 Tracking: [#380](https://github.com/eddiethedean/hedron/issues/380).
 
 PyPI still serves **`hedron` `0.48.0`**. First-run installs should pin `hedron>=0.48.0,<0.49`
-from the registry until a later upload; in-tree pins are `hedron>=0.49.0,<0.50`.
+from the registry until a later upload; in-tree pins are `hedron>=0.49.1,<0.50`.
 
 ## Highlights
 
@@ -26,5 +26,9 @@ from the registry until a later upload; in-tree pins are `hedron>=0.49.0,<0.50`.
 - Page and nested-router registration after OpenAPI cache or registry seal fail closed (#382).
 - Required `FormBody` commands reject non-form Content-Types with HTTP 415 `HED-TYPE-0003` (#383).
 - TypeSchema sanitizer allowlists JSON Schema keywords and fail-closes unknown keys and `json_schema_extra` secrets (#384).
+
+## 0.49.1 patch
+
+- Django `@hedron_view` CSRF-before-handler, upload control characters, TypeSchema Field/discriminator, `default_factory`, `DependsOn(streaming=True)`, `data-hx-*` mount prefix, form-associated field double-submit, Flask `FLASK_ENV` Secure cookies, and Flask/Django production gates (#392–#401).
 
 This cut does not tag Git, publish a GitHub Release, or upload PyPI.

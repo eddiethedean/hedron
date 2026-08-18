@@ -4,7 +4,7 @@
 Tracking: [#373](https://github.com/eddiethedean/hedron/issues/373).
 
 PyPI serves **`hedron` `0.48.0`**. First-run installs until the 0.49 upload should pin
-`hedron>=0.48.0,<0.49`; the living in-tree tip is `hedron>=0.49.0,<0.50`.
+`hedron>=0.48.0,<0.49`; the living in-tree tip is `hedron>=0.49.1,<0.50`.
 
 ## Highlights
 

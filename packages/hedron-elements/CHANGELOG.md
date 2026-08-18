@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.49.1] — 2026-08-18
+
+### Changed
+- Coordinated train tip `0.49.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Form-associated ``hedron-field-*`` elements drop inner ``name`` so light-DOM controls do not double-submit (#399).
+
 ## [0.49.0] — 2026-08-17
 
 ### Added

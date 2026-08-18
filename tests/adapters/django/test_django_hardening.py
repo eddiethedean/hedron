@@ -209,6 +209,43 @@ def test_undeclared_hx_target_is_forbidden(django_setup: Client) -> None:
     assert response.status_code == 403
 
 
+def test_hedron_view_csrf_rejects_before_handler(django_setup: Client) -> None:
+    del django_setup
+    from django.test import RequestFactory
+
+    ran = {"n": 0}
+
+    @hedron_view
+    def mutating(request: HttpRequest):
+        ran["n"] += 1
+        return Text("mutated")
+
+    response = mutating(RequestFactory().post("/x/", data={"name": "Ada"}))
+    assert response.status_code == 403
+    assert ran["n"] == 0
+
+
+def test_hedron_view_async_csrf_rejects_before_handler(django_setup: Client) -> None:
+    del django_setup
+    import asyncio
+
+    from django.test import RequestFactory
+
+    ran = {"n": 0}
+
+    @hedron_view
+    async def mutating(request: HttpRequest):
+        ran["n"] += 1
+        return Text("mutated")
+
+    async def _run() -> None:
+        response = await mutating(RequestFactory().post("/x/", data={"name": "Ada"}))
+        assert response.status_code == 403
+        assert ran["n"] == 0
+
+    asyncio.run(_run())
+
+
 def test_401_hedron_django_production_gate(django_setup: Client, monkeypatch: pytest.MonkeyPatch) -> None:
     del django_setup
     monkeypatch.setenv("HEDRON_ENV", "production")

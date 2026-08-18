@@ -11,6 +11,9 @@ status: shipped
 
 **Status:** Shipped (fragment regions + `InteractionResult`; living train **0.49.x**)
 
+Day-to-day apps should start with [`@app.refreshable` / `@app.command`](../getting-started/interaction-apis.md).
+This page documents the explicit region / `InteractionResult` contracts those handles compile to.
+
 Typed FastAPI/HTMX request and result contracts live in `hedron.interaction` and are
 re-exported from `hedron`.
 

@@ -26,20 +26,20 @@ Hedron renders as a complete HTML document.
 HTMX adds a second, smaller interaction model:
 
 ```text
-Browser: GET /status and says “the target is #service-status”
-Server:  <div id="service-status">All systems operational</div>
-Browser: replaces only #service-status
+Browser: GET /status and says “the target is the status view host”
+Server:  <div id="h-view-status">All systems operational</div>
+Browser: replaces only that host
 ```
 
 The small piece of HTML returned by the server is called a **fragment**. The part of the
-page it replaces is a **region**. Replacing it is a **swap**.
+page it replaces is a **region** (the view’s host). Replacing it is a **swap**.
 
 | | Full-page navigation | HTMX fragment update |
 |---|---|---|
 | Browser requests | A page URL | A fragment URL |
 | Server returns | A complete HTML document | HTML for one region |
 | Browser updates | The whole document | The chosen region only |
-| Hedron API | `@app.page` + `Page` | `@app.fragment` + `swap(...)` |
+| Hedron API | `@app.page` + `Page` | `@app.refreshable` + `status.refresh_button(...)` |
 
 ## The Hedron + HTMX request cycle
 
@@ -49,8 +49,8 @@ When someone clicks the scaffold's **Refresh status** button, this is what happe
 User clicks Refresh status
   → HTMX sends GET /status
       HX-Request: true
-      HX-Target: service-status
-  → Hedron returns HTML for #service-status only
+      HX-Target: the status view host
+  → Hedron returns HTML for that host only
   → HTMX replaces that region in the current page
 ```
 
@@ -70,81 +70,64 @@ includes `Hedron(...)` and `session_secret`, copy the listing on
 [Build your first app](quickstart.md).
 
 ```python
-import os
 from datetime import UTC, datetime
 
-from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+from hedron import Hedron, Page, Stack, Text, html
 
 app = Hedron(
     title="Hedron App",
     security="standard",
     explorer="off",
-    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
+    session_secret="replace-in-production",
 )
 
-# 1. Declare the region that may be replaced.
-status = app.region("service-status", description="Live status panel")
 
-
-# 2. Return the region's current HTML. Keep its id stable.
-def status_panel():
+@app.refreshable("/status")
+def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
-        id=status.id,
         role="status",
         aria={"live": "polite"},
     )
 
 
-# 3. Put the region and a control that targets it on the full page.
 @app.page("/")
 def home() -> Page:
     return Page(
         Stack(
-            status_panel(),
-            RefreshButton.for_region(
-                status,
-                href="/status",
-                label="Refresh status",
-            ),
+            status(),
+            status.refresh_button("Refresh status"),
         ),
         title="Home",
     )
-
-
-# 4. Return only the replacement HTML when HTMX requests it.
-@app.fragment("/status", region=status)
-def refresh_status():
-    return swap(status_panel())
 ```
 
-`RefreshButton.for_region(...)` renders the browser wiring for you. Its relevant output
+`status.refresh_button(...)` renders the browser wiring for you. Its relevant output
 is equivalent to:
 
 ```html
 <button
   type="button"
   hx-get="/status"
-  hx-target="#service-status"
+  hx-target="#h-view-status"
   hx-swap="outerHTML"
 >
   Refresh status
 </button>
 ```
 
-You can use HTMX attributes directly when you need them, but Hedron's region-aware
-components remove selector duplication from the common path.
+You can use HTMX attributes directly when you need them, but handles remove selector
+duplication from the common path. The lower-level `app.region` / `@app.fragment` API is
+documented in [Which interaction API?](interaction-apis.md).
 
-## The five pieces to remember
+## The pieces to remember
 
 | Hedron code | Meaning |
 |---|---|
-| `app.region("service-status")` | Names a replaceable part of the page and gives it the selector `#service-status`. |
-| `id=status.id` | Marks the actual HTML element for that region. The replacement must keep this id when using `outerHTML`. |
-| `RefreshButton.for_region(status, href="/status")` | Makes a GET request and targets the declared region when clicked. |
-| `@app.fragment("/status", region=status)` | Registers the fragment endpoint and allows it to update that region. |
-| `swap(status_panel())` | Returns the replacement HTML as an interaction result. |
+| `@app.refreshable("/status")` | Registers a GET fragment view at `/status` and returns a handle. |
+| `status()` | Renders the view host on the page. |
+| `status.refresh_button(...)` | Makes a GET request and targets that host when clicked. |
 
 !!! tip "A useful reading trick"
 
@@ -152,20 +135,17 @@ components remove selector duplication from the common path.
     request? Which URL handles it? Which region receives the response?** If those three
     answers agree, you understand the interaction.
 
-## Why declare regions?
+## Why targets are allowlisted
 
 HTMX sends the intended target in the `HX-Target` request header. Hedron checks that
-target against the regions declared on the route.
+target against the view host (or, on the explicit API, declared regions).
 
-The browser normally sends the target element's bare id; Hedron also accepts the
-equivalent `#id` selector in hand-written requests and tests. For the example above:
-
-- `HX-Target: service-status` (or `#service-status`) is allowed.
+- A matching host / region is allowed.
 - `HX-Target: another-panel` (or `#another-panel`) receives HTTP **403**.
 - A missing target on an ordinary HTMX fragment request also fails closed.
 
 This catches selector mistakes early and prevents a fragment endpoint from being used
-to update an undeclared part of the page. Prefer `RefreshButton.for_region(...)` over
+to update an undeclared part of the page. Prefer `status.refresh_button(...)` over
 repeating a target string by hand.
 
 ## Why Hedron uses HTMX

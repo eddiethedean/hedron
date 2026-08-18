@@ -20,6 +20,7 @@ in-memory variant** — labeled on the page when it differs from the recipe), th
 | [Session auth](../session-auth.md) | Login / logout with Starlette sessions | Demo credentials only; `/` redirects to login |
 | [File upload](../file-upload.md) | CSRF-safe multipart upload | In-memory / local demo — no durable store |
 | [Jobs poll](../jobs-poll.md) | `Poll` + `job_status_response` | In-memory backend — single process only |
+| [Model demo](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) | Synthetic classifier (`ModelDemo` / inference workflow) | Deterministic local scores; clone the repo |
 | [Flask Refresh](../flask-recipe.md) | `hedron new --flask` + HTMX Refresh | Adapter host (no FastAPI) |
 | [Django Refresh](../django-recipe.md) | `hedron new --django` + HTMX Refresh | Django `>=5.2,<6` |
 
@@ -36,13 +37,6 @@ Also useful:
 !!! note "Not recipes"
 
     [Phase evidence](../phase-evidence.md) and version-stamped dirs (`dashboard-0.17`,
-    `model-demo-0.18`, …) are **maintainer exit scenarios**, not product tutorials.
-    [Simulated UI patterns](../gallery.md) are Read the Docs simulations — not a live
-    Hedron process.
-
-!!! note "Not recipes"
-
-    [Phase evidence](../phase-evidence.md) and version-stamped dirs (`dashboard-0.17`,
-    `model-demo-0.18`, …) are **maintainer exit scenarios**, not product tutorials.
+    `data-app-0.15`, …) are **maintainer exit scenarios**, not product tutorials.
     [Simulated UI patterns](../gallery.md) are Read the Docs simulations — not a live
     Hedron process.

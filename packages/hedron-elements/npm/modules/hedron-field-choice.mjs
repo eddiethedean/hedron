@@ -13,9 +13,12 @@ class HedronFieldChoice extends HTMLElement {
   }
 
   connectedCallback() {
-    track(this);
+    const signal = track(this);
+    if (this.#internals) {
+      this.querySelectorAll("input").forEach((el) => el.removeAttribute("name"));
+    }
     this.#syncFormValue();
-    this.addEventListener("change", () => this.#syncFormValue());
+    this.addEventListener("change", () => this.#syncFormValue(), { signal });
   }
 
   disconnectedCallback() {
@@ -25,7 +28,8 @@ class HedronFieldChoice extends HTMLElement {
   #syncFormValue() {
     const values = [...this.querySelectorAll("input:checked")].map((el) => el.value);
     const fd = new FormData();
-    for (const v of values) fd.append(this.getAttribute("name") || "choice", v);
+    const name = this.getAttribute("name") || "choice";
+    for (const v of values) fd.append(name, v);
     this.#internals?.setFormValue?.(fd);
   }
 }

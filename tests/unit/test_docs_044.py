@@ -30,5 +30,5 @@ def test_docs_044_layers_and_whats_new() -> None:
     scaffold = (
         ROOT / "packages" / "hedron" / "src" / "hedron" / "cli" / "scaffold" / "fastapi.py"
     ).read_text(encoding="utf-8")
-    assert "@app.refreshable" in scaffold
+    assert '@app.refreshable("/status")' in scaffold
     assert "RefreshableView" not in scaffold

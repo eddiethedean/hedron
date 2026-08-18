@@ -38,12 +38,13 @@ app = Hedron(
     security="standard",
     explorer="off",
     session_secret=os.environ.get(
+        # Convention only — Hedron does not load HEDRON_SESSION_SECRET itself.
         "HEDRON_SESSION_SECRET", "replace-in-production"
     ),
 )
 
 
-@app.refreshable
+@app.refreshable("/status")
 def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(

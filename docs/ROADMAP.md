@@ -46,7 +46,11 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Published** (`v0.47.0` / `hedron-maps` `0.1.0`; in-tree cut, tag/PyPI deferred; D-078 / D-082 / RFC-0074; [#350](https://github.com/eddiethedean/hedron/issues/350)) |
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0`; in-tree cut, tag/PyPI deferred; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
-| **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.0`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
+| **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
+| **0.50** | Explorer architecture and operator-grade development tooling | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
+| **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
+| **0.52** | Conformance kit and independent Node/Java runtime credibility | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
+| **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -98,7 +102,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 
 ### Honest gaps on the current train (0.49.x)
 
-- Current **published** train is **0.49.x** (in-tree `v0.49.0`; tag/PyPI deferred; PyPI still `0.48.0`)
+- Current **published** train is **0.49.x** (in-tree `v0.49.1`; tag/PyPI deferred; PyPI still `0.48.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -4048,7 +4052,7 @@ Artifacts: [public contract](https://github.com/eddiethedean/hedron/blob/main/do
 
 ## 0.49 — FastAPI and Pydantic convergence (`v0.49.0`)
 
-**Status:** Published as in-tree `v0.49.0` (tag/PyPI deferred; D-081 / D-084 /
+**Status:** Published as in-tree `v0.49.1` (tag/PyPI deferred; D-081 / D-084 /
 [RFC-0076](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md)).
 Planning baseline remains Published in-tree `v0.48.0`. Tracking [#380](https://github.com/eddiethedean/hedron/issues/380)
 owns every 0.49 gate until later tag/PyPI assets exist. SETTINGS recorded retain-custom-loader.
@@ -4134,7 +4138,385 @@ Artifacts: [public contract](https://github.com/eddiethedean/hedron/blob/main/do
   evidence without raw upstream authority leakage.
 - Settings and research candidates have explicit dispositions and excluded/deferred candidates do
   not appear in Supported inventories.
-- Every non-disposition 0.49 row is Verified at in-tree `v0.49.0`.
+- Every non-disposition 0.49 row is Verified at in-tree `v0.49.1`.
+
+## Extra-package quality audit (0.49 baseline)
+
+This audit covers publishable or independently runnable Hedron satellite packages beyond
+`hedron-core`, the `hedron` FastAPI flagship, the first-party framework adapters, and the main
+data/charts/elements implementation packages. It evaluates implementation depth, package-owned
+tests, documented scope, isolation, security posture, browser/runtime evidence, upgrade evidence,
+and whether an intentionally narrow package is being asked to become something broader.
+
+Passing tests alone is not a reason to schedule a phase. A new phase is warranted where the package
+has a material product surface but lacks commensurate architecture or end-to-end evidence, where its
+reference-tooling role has fallen behind the current 0.45–0.49 contracts, or where an Experimental
+surface needs a durable ship/remove/quarantine decision.
+
+| Package | 0.49 quality assessment | Disposition |
+|---|---|---|
+| `hedron-explorer` | Valuable and widely integrated, but most implementation remains concentrated in one large router module. Its broad inspection UI needs clearer service/view boundaries, browser workflows, extension isolation, and failure/performance evidence proportional to its role. | **Significant upgrade: 0.50.** |
+| `hedron-extras` | Useful breadth and correct optional-dependency quarantine, but the number of browser-backed components and workbenches exceeds the depth of package-owned lifecycle, accessibility, security, visual, and cross-browser evidence. Experimental UI also lacks a final product disposition. | **Significant upgrade: 0.51.** |
+| `hedron-conformance` + Node/Java evaluators | The Python kit is a sound seed, but the independent runtimes are explicitly experimental and the cross-language surface remains narrow. Version negotiation, negative vectors, streaming fixtures, packaging, and CI/runtime-skew evidence are not yet strong enough for ecosystem authority. | **Significant upgrade: 0.52.** |
+| `hedron-notebook` | Honest localhost-only scope and useful security checks, but still a small preview helper rather than a current package-workflow notebook tool; cleanup, kernel/frontend compatibility, and richer output evidence need work. | **Significant upgrade: 0.53.** |
+| `hedron-sim` | Good deterministic documentation utility, but its supported HTMX/browser subset and divergence behavior need a machine-readable contract, current interaction coverage, and parity tests against real server/browser execution. | **Significant upgrade: 0.53.** |
+| `hedron-sample-kit` | Correctly third-party-shaped, but still demonstrates the phase-0.4 era surface and is too small to prove the modern catalog, element, workflow, compatibility, and release-authoring story. | **Significant upgrade: 0.53.** |
+| `hedron-maps` | Strong typed grammar, offline modes, security limits, browser rendering/a11y checks, and bounded provider behavior for a young package. | Maintain in normal trains; no corrective phase. |
+| `hedron-mcp` | Deny-by-default Supported inventory has focused adversarial coverage and explicit mutation quarantine. Experimental mutations are a deliberate product boundary, not evidence of package neglect. | Maintain; require a separate RFC before any mutation promotion. |
+| `hedron-gradio` | Bounded client/workflow surface, explicit policy and artifact handling, migration support, and adversarial fixtures are proportionate to its interop role. | Maintain; add providers through ordinary feature phases. |
+| `hedron-posit`, `hedron-workbench`, `fastapi-workbench` | The deployment stack has detailed topology, trust, URL, cookie, isolation, upgrade, and real-host contracts. The compatibility wrapper is intentionally thin. | Maintain; avoid re-expanding the compatibility layer. |
+| `hedron-native` | Intentionally tiny optional acceleration with Python as the semantic fallback, parity/fuzz work, and wheel automation. Breadth is not a quality goal. | Maintain; expand only behind measured hotspots. |
+
+The audit does not treat Beta versioning, small code size, or an explicitly narrow Supported
+inventory as defects by themselves. `hedron-data`, `hedron-charts`, `hedron-elements`, Flask,
+Django, and Jinja remain governed by their existing production-grade and remediation programs and
+are outside this extra-package corrective pass.
+
+## 0.50 — Explorer architecture and operator-grade development tooling (`v0.50.0`)
+
+**Status:** Planned. An owning RFC, decision, issue, acceptance inventory, and release-gate file
+must be accepted before implementation starts.
+
+**Outcome:** `hedron-explorer` becomes a maintainable, extensible development product whose UI and
+machine-readable outputs remain useful on large applications and degrade safely when a package,
+panel, trace, or optional dependency fails.
+
+### Scope
+
+- Split catalog/query services, inspection models, rendering, request simulation, and panel routing
+  out of the monolithic router boundary without changing the public mount contract.
+- Define a versioned Explorer panel/provider API with capability negotiation, per-provider timeout
+  and failure isolation, redaction, payload bounds, and deterministic ordering.
+- Add searchable package/interaction/schema/route graphs, diffable manifests, source ownership,
+  and actionable diagnostics for 0.45–0.49 catalogs, workflows, TypeSchema v2, and OpenAPI.
+- Add complete keyboard, focus, landmark, reduced-motion, high-contrast, narrow-viewport, and
+  no-JavaScript behavior for every Supported Explorer workflow.
+- Add browser journeys for mounting, filtering, inspecting, simulating, exporting, provider
+  failure, malformed data, large registries, and development/production security gates.
+- Establish startup, first-render, query, memory, and maximum-payload budgets using small, medium,
+  and adversarial application fixtures; require pagination or virtualization rather than unbounded
+  document construction.
+- Preserve development-only defaults, explicit production enablement, CSP compatibility, secret
+  redaction, and import isolation from applications that do not install Explorer.
+
+### Product and ecosystem workstreams
+
+- Add saved, shareable inspection queries whose URLs contain only bounded non-secret filter state;
+  provide JSON export for CI artifacts and SARIF export for source-addressable diagnostics.
+- Add baseline comparison for catalogs, manifests, routes, schemas, assets, dependencies, and
+  capability maturity so framework and package upgrades show added, removed, or changed contracts
+  before deployment.
+- Add an interaction laboratory that can construct typed inputs from TypeSchema v2, execute only
+  explicitly exposed safe preview operations, display response/effect timelines, and export a
+  redacted `AppScenario` regression without inventing production authorization.
+- Add package health and compatibility views for entry-point discovery, version skew, missing
+  optional dependencies, asset integrity/CSP, duplicate registrations, conformance results, and
+  package-owned documentation links.
+- Add read-only adapters for Flask and Django registries plus portable Jinja, Elements, Data,
+  Charts, Maps, MCP, Gradio, Posit/Workbench, Extras, Notebook, and third-party package projections;
+  unsupported host features must be labeled rather than omitted.
+- Publish a provider-author tutorial, typed reference, compatibility policy, migration guide from
+  the 0.49 router hooks, production-enable threat model, troubleshooting decision tree, and recipes
+  for custom panels, large registries, remote development, and CI artifact capture.
+- Ship a documented headless inspection command using the same query/model services as the browser
+  UI; HTML, JSON, SARIF, and CLI results must agree on identities, severity, redaction, and links.
+
+### Hardening and compatibility matrix
+
+- Threat-model production opt-in, cross-origin requests, forwarded headers, mount/root paths,
+  session/cookie state, CSRF, request simulation, file/source links, provider code, and exported
+  artifacts. Explorer must never grant authority merely because an object appears in a catalog.
+- Enforce request, provider, graph, trace, source, export, and retained-state limits with typed
+  truncation diagnostics; add cancellation and backpressure for slow queries and disconnects.
+- Run Python 3.11–3.14; FastAPI flagship; Flask/Django read-only; proxy/root-path; strict CSP;
+  default-styles on/off; and latest-minus-one manifest/schema compatibility lanes.
+- Add deterministic clock/ID fixtures, property/adversarial tests for filters and graph traversal,
+  leak checks for repeated navigation, cache invalidation tests, and fuzzed malformed provider data.
+
+### Locked gate plan
+
+| Gate | Verified means |
+|---|---|
+| `ARCH-050` / `PROVIDER-050` | Router decomposition and versioned provider isolation pass public-contract, timeout, crash, ordering, and skew tests. |
+| `DIFF-050` / `LAB-050` | Baseline comparison and typed interaction laboratory produce deterministic, bounded, redacted results and reviewable scenario exports. |
+| `ECOSYSTEM-050` | Every first-party projection has a declared capability/disposition and at least one third-party provider passes without private imports. |
+| `SECURITY-050` / `PRIVACY-050` | Production opt-in, auth/CSRF/origin/proxy/source/export boundaries, redaction, retention, and adversarial corpus pass. |
+| `A11Y-050` / `BROWSER-050` | Complete keyboard/no-JS/zoom/contrast/reduced-motion behavior and Chromium/Firefox/WebKit journeys pass. |
+| `PERF-050` / `RESILIENCE-050` | Registry, graph, trace, query, memory, cancellation, provider-failure, and repeated-navigation budgets pass. |
+| `DOCS-050` / `COMPAT-050` | Author/operator/security/migration/troubleshooting docs and Python/host/schema/root-path upgrade matrices pass. |
+| `PKG-050` / `REGRESS-050` | Clean wheel, optional-dependency isolation, SBOM/provenance, 0.49 upgrade/rollback, and whole-fleet regression pass. |
+
+### Exit gate
+
+- The package has explicit internal boundaries and contract tests that prevent router-level
+  regressions while keeping the existing supported mount/API path compatible.
+- Chromium, Firefox, and WebKit journeys pass for the Supported workflows, including a provider
+  crash and a maximum-size application fixture.
+- Accessibility, security, performance, clean-wheel, upgrade, rollback, SBOM, and provenance rows
+  are Verified with no hidden Deferred claim.
+- The reference application and one third-party-shaped package expose useful inspection without
+  importing private Hedron internals.
+
+## 0.51 — Curated extras depth and lifecycle closure (`v0.51.0`)
+
+**Status:** Planned. An owning RFC/issue must lock the Supported component inventory and record an
+explicit disposition for every Experimental UI surface before implementation.
+
+**Outcome:** `hedron-extras` is a genuinely curated package: each admitted component is complete
+across server fallback, browser lifecycle, accessibility, security, theming, testing, and upgrade,
+while components that cannot meet that bar remain clearly quarantined or are removed.
+
+### Scope
+
+- Inventory every component, event, asset, optional dependency, fallback, and enhancement as
+  Supported, Experimental, Deprecated, or removed; keep optional features non-transitive and
+  demand-loaded.
+- Standardize custom-element/HTMX connect, disconnect, reconnect, duplicate-registration, form,
+  draft-state, focus-restoration, and cleanup behavior on the shared element ABI.
+- Give JSON/Data/Chart workbenches bounded schemas, deterministic large-input behavior, explicit
+  action authority, cancellation, export rules, and useful server-rendered fallbacks.
+- Complete keyboard/touch parity, accessible names/instructions/status, non-spatial alternatives,
+  zoom/reflow, reduced motion, contrast, and error recovery for composition, editor, signature,
+  image, and typeahead surfaces.
+- Add strict-CSP and offline asset verification, hostile input/file/image/clipboard cases, URL and
+  HTML boundary tests, resource teardown, and supply-chain/license evidence for each browser asset.
+- Add cross-browser interaction and visual-regression matrices plus performance budgets for initial
+  load, repeated HTMX swaps, large trees/options/documents/images, and long-lived pages.
+- Decide `CodeEditor`, `TerminalView`, joystick/device bridges, and the browser-Python sandbox
+  individually: graduate behind complete evidence, retain in `experimental-ui`, deprecate, or
+  remove. A host stub or package opt-in alone is not a graduation argument.
+
+### Product and ecosystem workstreams
+
+- Add a versioned `ExtrasFeature` descriptor covering component tag, Python facade, schemas,
+  events, assets, optional dependencies, fallback, limits, maturity, accessibility contract, and
+  Explorer/Jinja/conformance projections; make it the package's single inventory authority.
+- Add reusable bounded workbench primitives: undoable draft history, validation issue navigation,
+  import preview, explicit apply/cancel, diff/export, cancellation, and restoration from a
+  server-owned revision. These are UI mechanics, not persistence or authorization policy.
+- Add virtualized/batched TreeView and Typeahead data providers with stable identities, abortable
+  requests, race handling, empty/error/retry states, and ordinary paged/select fallbacks.
+- Add schema-driven JSON editing modes, accessible structural outline, JSON Patch preview, duplicate
+  key/number/depth policy, and redacted copy/export; never evaluate code embedded in documents.
+- Add image transformation intent objects for crop/region/annotation work, with source dimensions,
+  normalized coordinates, revision preconditions, preview limits, and server-confirmed output.
+- Integrate every Supported feature with Explorer examples, HDJ bindings, typed interaction
+  catalogs, AppScenario helpers, the shared element ABI, token/default-style themes, and the package
+  conformance manifest.
+- Publish a choose-an-extra guide, per-component task tutorials, full state/event/limit tables,
+  accessibility and no-JS guidance, CSP/offline deployment guide, theming recipes, migration pages,
+  and an Experimental UI risk/disposition page.
+
+### Hardening and compatibility matrix
+
+- Add per-feature threat models for document editors, rich text/code-like input, images, signatures,
+  clipboard/download, URLs, sandbox messages, terminal output, devices, and high-frequency events;
+  lock content, byte, pixel, depth, item, rate, and retained-history limits.
+- Require trusted-types-compatible/strict-CSP code paths where applicable, no ambient remote assets,
+  no `eval`/dynamic module fetch, integrity-pinned vendored assets, and clean import without optional
+  packages installed.
+- Verify Chromium/Firefox/WebKit; mouse/keyboard/touch; light/dark/high contrast; default styles
+  on/off; HTMX full swap/OOB/reconnect; Flask/Django/FastAPI rendering; and reduced-motion lanes for
+  every Supported browser-backed feature.
+- Run lifecycle stress tests across repeated mount/swap/remove, abandoned fetches, object URLs,
+  observers/listeners/workers, large data, malformed events, and optional-dependency failures.
+
+### Locked gate plan
+
+| Gate | Verified means |
+|---|---|
+| `INVENTORY-051` / `DESCRIPTOR-051` | Every feature has one versioned descriptor and honest Supported/Experimental/Deprecated/removed disposition across package projections. |
+| `WORKBENCH-051` / `DATA-051` | Editor/workbench and provider workflows are bounded, cancelable, revision-aware, accessible, and preserve server authority. |
+| `IMAGE-051` / `INPUT-051` | Image, signature, clipboard, document, URL, and high-frequency inputs pass normalized-schema and adversarial limit tests. |
+| `LIFECYCLE-051` / `BROWSER-051` | Element/HTMX lifecycle, race, cleanup, cross-browser, touch/keyboard, theme, and failed-enhancement matrices pass. |
+| `SECURITY-051` / `SUPPLY-051` | Per-feature threats, strict CSP/offline behavior, dependency isolation, asset integrity/license/SBOM, and sandbox/device boundaries pass. |
+| `A11Y-051` / `VISUAL-051` | Semantics, instructions, status/errors, reflow/zoom/contrast/motion and state-complete visual gallery pass. |
+| `ECOSYSTEM-051` / `DOCS-051` | Explorer, HDJ, catalog, scenarios, conformance, adapters, tutorials, reference, deployment, and migration integration pass. |
+| `PKG-051` / `REGRESS-051` | Minimal/per-feature/all wheels, import isolation, performance budgets, 0.49 upgrade/rollback, and fleet regression pass. |
+
+### Exit gate
+
+- Every Supported component has a package-owned contract fixture, no-JavaScript fallback, browser
+  journey, accessibility evidence, adversarial cases, lifecycle leak check, and documented limits.
+- Every Experimental component has an explicit rationale, install boundary, warning, owner, and
+  future disposition; none is pulled into `hedron[extras]` or a Supported workflow transitively.
+- Clean minimal/per-feature/all installs and upgrade/rollback from 0.49 pass without optional
+  dependency or asset leakage.
+- The component gallery demonstrates empty, loading, error, disabled, read-only, maximum-size,
+  narrow-screen, high-contrast, and failed-enhancement states.
+
+## 0.52 — Cross-language conformance authority (`v0.52.0`)
+
+**Status:** Planned. This phase does not promise full Hedron ports; its RFC must lock the portable
+IR subset and independent runtime release model before either evaluator is promoted.
+
+**Outcome:** `hedron-conformance` becomes a versioned compatibility authority, and the Node and Java
+evaluators become independently installable reference consumers for the declared portable subset
+rather than repository-only demonstrations.
+
+### Scope
+
+- Publish a versioned conformance manifest with protocol/version negotiation, capabilities,
+  canonical encoding, limits, diagnostic codes, expected failures, and forward-unknown behavior.
+- Expand positive and negative vectors for escaping, URLs, attributes, nested components, forms,
+  interactions, TypeSchema v2, tagged unions, manifests, extensions, assets, size/depth limits, and
+  malformed or adversarial input.
+- Add deterministic streaming/JSON-lines execution, bounded memory, cancellation/timeouts, stable
+  exit codes, machine-readable reports, fixture provenance, and shardable CI operation.
+- Package the Node runtime with locked engine/dependency metadata and the Java runtime with a normal
+  build artifact, CLI, checksums, licenses, SBOM, and reproducible release instructions.
+- Run Python/Node/Java differential tests across supported runtime versions and operating systems;
+  minimize and retain any discovered disagreement as a regression vector.
+- Version and test the third-party author kit so external packages can run only the capabilities
+  they declare without importing the monorepo or executing untrusted plugin code.
+
+### Product and ecosystem workstreams
+
+- Add a conformance profile registry (`core-render`, `interaction`, `manifest`, `element`,
+  `package`, and future profiles) with required/optional capabilities, semantic version ranges,
+  feature discovery, waiver metadata, and exact suite digests.
+- Add a fixture compiler and validator that catches contradictory expectations, undeclared
+  capabilities, nondeterministic fields, invalid limits, duplicate IDs, and unsafe fixture paths
+  before any runtime executes a suite.
+- Add differential and metamorphic testing: reordered maps, equivalent Unicode, split stream
+  chunks, unknown optional fields, boundary-size inputs, and canonical re-encoding must preserve or
+  intentionally reject semantics identically.
+- Add a signed result-envelope format with runtime identity, platform, profile, manifest digest,
+  timing/resource data, skips, waivers, failures, and redacted diagnostics; signing attests to the
+  report artifact, not to application security.
+- Provide GitHub Actions examples, generic CI shell recipes, JUnit/SARIF converters, badge guidance,
+  offline fixture bundles, and a compatibility dashboard input format without requiring GitHub.
+- Integrate conformance execution with Explorer package health, `hedron check`, sample-kit release
+  rehearsal, plugin discovery, Elements npm authoring, and Python wheel verification.
+- Publish protocol and fixture-author specifications, runtime implementer guide, profile reference,
+  failure-debugging handbook, version negotiation/migration guide, security model, and worked
+  external Node, Java, and Python consumer examples.
+
+### Hardening and compatibility matrix
+
+- Treat suites and result data as untrusted: prevent path traversal, decompression bombs, oversized
+  lines/documents, entity/network resolution, terminal escape injection, unsafe temp reuse, secret
+  capture, executable fixture hooks, and ambiguous Unicode/path normalization.
+- Require streaming parsers and explicit byte/depth/case/time/output limits; kill subprocess trees
+  on timeout/cancel; isolate working directories; and make partial/crashed runs unambiguously fail.
+- Test CPython 3.11–3.14, active Node LTS lines, supported Java LTS lines, Linux/macOS/Windows,
+  locale/timezone/line-ending differences, offline execution, and current/previous protocol pairs.
+- Reproducibly build npm/JAR/Python artifacts from clean checkouts and verify checksums, license
+  inventories, SBOMs, provenance, install/uninstall, and absence of source-tree assumptions.
+
+### Locked gate plan
+
+| Gate | Verified means |
+|---|---|
+| `PROTOCOL-052` / `PROFILE-052` | Negotiation, profiles, canonical encoding, forward-unknown behavior, suite digests, and waivers are versioned and interoperable. |
+| `FIXTURE-052` / `NEGATIVE-052` | Compiler validation plus positive, negative, boundary, metamorphic, and adversarial vectors pass all runtimes. |
+| `RUNTIME-052` / `DIFF-052` | Python/Node/Java stream, cancellation, resource, diagnostic, and differential behavior agrees across the declared subset. |
+| `SECURITY-052` / `SANDBOX-052` | Untrusted suites/results, files, archives, processes, terminals, temp state, network, and secret boundaries pass. |
+| `REPORT-052` / `CI-052` | Signed envelopes, JUnit/SARIF conversion, offline bundles, CI recipes, and Explorer/CLI ingestion preserve exact provenance. |
+| `COMPAT-052` / `PLATFORM-052` | Runtime/OS/locale/current-previous protocol matrix and explicit incompatible-version behavior pass. |
+| `DOCS-052` / `AUTHOR-052` | Protocol, author, implementer, debugging, migration, security, and three-language external examples pass doc tests. |
+| `PKG-052` / `SUPPLY-052` | Clean npm/JAR/wheel artifacts, reproducibility, checksums, licenses, SBOM/provenance, upgrade, rollback, and uninstall pass. |
+
+### Exit gate
+
+- Clean consumers can install each evaluator from its intended ecosystem artifact and pass the same
+  pinned manifest without a source checkout.
+- The negative/adversarial corpus, unknown-version behavior, resource budgets, differential matrix,
+  and at least one external-package fixture are Verified.
+- Capability claims identify the exact portable subset; Node and Java are not described as FastAPI,
+  browser, or complete Hedron runtimes.
+- Upgrade and rollback evidence covers the prior Python kit and repository-only evaluator commands.
+
+## 0.53 — Notebook, simulation, and external-author reference tooling (`v0.53.0`)
+
+**Status:** Planned. The three packages remain tooling-grade unless their own acceptance inventories
+justify a narrower Supported claim; this phase does not turn notebook preview into a production
+server.
+
+**Outcome:** The notebook preview, offline simulator, and sample plugin form a coherent modern
+authoring loop: preview real package workflows, understand simulation limits, and copy a credible
+third-party package without depending on private monorepo behavior.
+
+### Scope
+
+- Refresh `hedron-sample-kit` to demonstrate catalog/manifest projection, Web Components with SSR
+  fallback, typed interactions/workflows, TypeSchema v2, assets, Explorer/Jinja integration,
+  conformance declarations, compatibility metadata, diagnostics, packaging, and upgrade policy.
+- Give `hedron-sim` a machine-readable supported-subset/divergence manifest for HTMX attributes,
+  events, swaps, history, forms, extensions, errors, and timing; unsupported behavior must fail
+  visibly rather than silently approximate.
+- Differential-test simulator scenarios against real Hedron HTTP plus browser execution and retain
+  parity fixtures for package workflows, validation failures, navigation, and asset lifecycle.
+- Extend `hedron-notebook` from single preview output to bounded multi-view/package-workflow
+  sessions with explicit display handles, update/dispose semantics, deterministic cleanup, and
+  readable static fallbacks.
+- Test supported Jupyter/IPython/kernel/frontend combinations, repeated-cell execution, interrupt,
+  kernel restart, stale handles, port collision, token rejection, hostile proxy headers, and
+  resource cleanup; keep non-loopback/public hosting rejected by default.
+- Share fixtures and diagnostics across all three tools so a sample-kit workflow can be rendered,
+  simulated, previewed, inspected, and conformance-tested without application-private adapters.
+
+### Product and ecosystem workstreams
+
+- Add a `hedron package doctor` reference workflow, implemented through public tooling contracts,
+  that checks metadata, entry points, feature descriptors, assets, schema fingerprints, docs links,
+  conformance profiles, optional dependencies, version ranges, and publishable artifacts.
+- Add sample-kit variants for a pure-Python component, an asset-backed Web Component, a typed
+  action/workflow, an HDJ binding, and an optional integration; each variant must be independently
+  removable so authors can copy the smallest relevant pattern.
+- Add simulator recording and time control for requests, swaps, triggers, focus, history, delays,
+  cancellations, and failures; export/import a deterministic scenario format shared with
+  `AppScenario` where semantics overlap.
+- Add notebook rich-display handles with explicit `update`, `snapshot`, `open_in_browser`, and
+  `close` operations, plus static HTML/image/text representations suitable for saved notebooks and
+  inaccessible or unsupported frontends.
+- Add opt-in notebook-to-real-server handoff that starts through existing Hedron development
+  tooling, prints the exact security/topology disposition, and never silently turns the embedded
+  localhost preview into a public server.
+- Integrate the authoring loop with Explorer, HDJ, Elements npm metadata, conformance profiles,
+  Charts/Maps/Extras examples, FastAPI/Flask/Django portable rendering, and CI/release rehearsal.
+- Publish a package-author handbook, copy/minimize recipes, simulator semantics reference, notebook
+  frontend matrix, security/topology guide, lifecycle troubleshooting, CI publishing tutorial,
+  migration guide from the old sample kit, and an end-to-end external package walkthrough.
+
+### Hardening and compatibility matrix
+
+- Harden notebook token/origin/host/proxy/root-path/port handling, browser opening, iframe policy,
+  output escaping, asset URLs, stale sessions, background thread/task shutdown, and temporary data;
+  redact tokens and local paths from saved outputs and logs.
+- Harden simulator parsing, URL/target selection, HTML fragments, event detail, history, timing,
+  imported recordings, asset lookup, and unsupported features with byte/depth/step/time limits and
+  deterministic failure codes.
+- Test JupyterLab and classic-compatible frontends where supported, IPython/kernel current and
+  previous lines, VS Code notebook disposition, headless saved-output rendering, Python 3.11–3.14,
+  and Linux/macOS/Windows cleanup behavior.
+- Build the sample kit outside the monorepo with only published-style dependencies; run sdist/wheel
+  contents, editable install, missing-extra, minimum/maximum compatibility, reproducible build,
+  README rendering, and package-index metadata checks.
+
+### Locked gate plan
+
+| Gate | Verified means |
+|---|---|
+| `SAMPLE-053` / `DOCTOR-053` | Modular modern examples and package-doctor checks pass from a clean external repository using only public contracts. |
+| `SIM-053` / `PARITY-053` | Declared subset, divergence, recording/time control, deterministic scenarios, and real-server/browser differential tests pass. |
+| `NOTEBOOK-053` / `LIFECYCLE-053` | Display handles, saved fallbacks, repeated execution, interrupt/restart/stale/close, cleanup, and bounded sessions pass. |
+| `SECURITY-053` / `TOPOLOGY-053` | Token/origin/host/proxy/port/iframe/output/temp/browser-open and simulator input/URL/event/history boundaries pass. |
+| `ECOSYSTEM-053` | Explorer, HDJ, Elements, conformance, package workflows, adapters, examples, and release rehearsal interoperate without private imports. |
+| `COMPAT-053` / `PLATFORM-053` | Python, OS, kernel/frontend, saved-output, current-previous, missing-extra, and external-build matrices pass. |
+| `A11Y-053` / `DOCS-053` | Static/rich output accessibility plus author, simulator, notebook, security, migration, troubleshooting, and publishing docs pass. |
+| `PKG-053` / `REGRESS-053` | Clean artifacts, metadata, reproducibility, SBOM/provenance, 0.49 upgrade/rollback, and whole-fleet regression pass. |
+
+### Exit gate
+
+- A clean external repository can build/install the refreshed sample kit and run its tests,
+  conformance suite, Explorer view, simulator, and notebook preview from published-style artifacts.
+- Simulator parity and explicit-divergence suites cover every declared attribute/event/extension;
+  no unsupported behavior silently passes.
+- Notebook lifecycle, security, compatibility, accessibility, memory/cleanup, upgrade, and rollback
+  evidence is Verified while public-network serving remains explicitly unsupported.
+- Documentation includes a decision guide for real server, simulator, notebook preview, and static
+  fallback use, with exact limitations and troubleshooting.
 
 ## Complete capability-to-release ledger
 
@@ -4199,6 +4581,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Production-grade Web Component Supported inventory | 0.42 | Stable ABI/tag/event/form/customization contracts require independent review, human AT, performance, compatibility, and supply evidence ([#97](https://github.com/eddiethedean/hedron/issues/97)). |
 | Component package authoring and browser-asset declarations | 0.4 | Public extension and audit contracts. |
 | `hedron-explorer` and official Explorer browser assets | 0.2 preview; 0.4 full | Optional development distribution with production opt-in controls. |
+| Explorer provider API, contract diffs, interaction laboratory, package health, headless JSON/SARIF, and large-app resilience | 0.50 | Versioned providers remain isolated and read-only by default; preview visibility never grants production authority. |
 
 ### Developer experience and extensibility
 
@@ -4218,6 +4601,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Durable Celery/RQ job status (or honest non-durable labeling) | 0.13 | Multi-worker status visibility matches production-gate claims ([#11](https://github.com/eddiethedean/hedron/issues/11)). |
 | Live-transport Supported vs experimental claim reconciliation | 0.13 | Aligns capability matrix and docs with deferred ops gates ([#13](https://github.com/eddiethedean/hedron/issues/13)). |
 | Published cross-language conformance-test kit | 0.14 | Versioned fixtures, negative cases, artifacts, and capability-level failure reports. |
+| Cross-language conformance profiles, fixture compiler, differential/metamorphic corpus, signed result envelopes, and packaged Node/Java evaluators | 0.52 | Establishes authority for a declared portable subset, not full non-Python Hedron runtimes. |
 | HTTP-faithful `AppScenario` application-flow harness | 0.15 | Route, session, typed control/action, fragment, redirect, and response assertions; explicitly no whole-script rerun simulation. |
 | HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); Dialog/Tabs/Pagination/Lazy asserts deferred to 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
 | Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
@@ -4232,6 +4616,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |
 | Plugin discovery, compatibility, capabilities, lifecycle, rollback | 0.4 | Plugins are executable packages, not sandboxed data. |
 | Curated optional `hedron-extras` package and per-feature capability manifests | 0.16 | Built only on public package/plugin contracts; no privileged runtime or eager dependency bundle. |
+| Versioned Extras feature descriptors, bounded workbench primitives/providers, JSON/image intent workflows, lifecycle closure, and Experimental UI dispositions | 0.51 | Every admitted component requires fallback, browser/a11y/security/performance evidence and optional-dependency isolation. |
+| Modern sample-kit variants, package doctor, simulator recordings/parity, notebook display handles, and real-server handoff | 0.53 | One public-contract authoring loop with explicit simulation divergence and localhost-only notebook security defaults. |
 | Dash migration inventory, notebook preview helper, and dashboard graph diagnostics | 0.17 | Migration is reviewable guidance, notebook previews are development-only, and Explorer shows graph timing/payload/failures. |
 | Gradio interoperability, migration inventory, interaction recorder, and inference/workflow diagnostics | 0.18 | Optional protocol adapter and reviewable guidance; credentials and sensitive values are never recorded. |
 | ATAG-oriented authoring assistance and Explorer accessibility review workspace | 0.19 | Source-mapped checking/repair guidance, accessibility tree, focus/live-region traces, visual modes, and manual status. |
