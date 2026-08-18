@@ -129,6 +129,10 @@ def is_local_path(url: str) -> bool:
             return False
         if decoded.startswith("//") or "://" in decoded:
             return False
+    if url.startswith("//") or "://" in url:
+        return False
+    if decoded.startswith("//") or "://" in decoded:
+        return False
     parsed = urlparse(url)
     if parsed.scheme or parsed.netloc:
         return False
