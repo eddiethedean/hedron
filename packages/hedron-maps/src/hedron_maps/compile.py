@@ -244,6 +244,13 @@ def _policy_allows(origin: str | None, policy: MapPolicy, *, local: bool) -> Non
             "A remote source did not produce an exact HTTPS origin.",
             "Use an https URL with a host.",
         )
+    if not policy.remote_requests_permitted:
+        raise _map_error(
+            HED_MAP_POLICY_0001,
+            "Remote map requests are not permitted",
+            f"{origin} requires a remote fetch while remote_requests_permitted is false.",
+            "Set remote_requests_permitted=True or use same-origin /assets paths.",
+        )
     allowed = tuple(policy.allowed_origins)
     if origin not in allowed:
         raise _map_error(
@@ -252,6 +259,17 @@ def _policy_allows(origin: str | None, policy: MapPolicy, *, local: bool) -> Non
             f"{origin} is not an exact allowed origin.",
             "Add the exact HTTPS origin to MapPolicy(allowed_origins=...).",
         )
+
+
+def _reject_remote_origins(origins: Sequence[str], policy: MapPolicy) -> None:
+    if policy.remote_requests_permitted or not origins:
+        return
+    raise _map_error(
+        HED_MAP_POLICY_0001,
+        "Remote map requests are not permitted",
+        f"Compiled remote origins {tuple(origins)} while remote_requests_permitted is false.",
+        "Set remote_requests_permitted=True or use same-origin /assets paths.",
+    )
 
 
 def _zoom_ok(min_zoom: int, max_zoom: int) -> None:
@@ -691,6 +709,8 @@ def compile_map(
         kind, preset, resources, origins, attribution, style, warnings = _basemap_facts(
             parsed, resolved_policy
         )
+
+    _reject_remote_origins(origins, resolved_policy)
 
     source_count = 1 if kind != "none" else 0
     for layer in parsed.layers:
