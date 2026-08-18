@@ -36,8 +36,6 @@ class SessionState(Generic[T]):
 
     @property
     def value(self) -> T:
-        if self._has_session(self._request) and self._key in self._request.session:
-            self._value = self._adapter.validate_python(self._request.session[self._key])
         return self._value
 
     @value.setter
