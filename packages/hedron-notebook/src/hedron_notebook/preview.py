@@ -188,6 +188,11 @@ class PreviewTokenGate:
             return
 
         root_path = str(scope.get("root_path") or "")
+        try:
+            root_path = _normalize_root_path(root_path)
+        except ValueError:
+            await self.app(scope, receive, send)
+            return
         cookie = _set_cookie_header(self.token, root_path=root_path)
         cookie_sent = False
 
