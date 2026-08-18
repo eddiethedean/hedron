@@ -15,6 +15,11 @@ __all__ = ["PROXY_MAX_REDIRECTS", "PROXY_RESPONSE_BYTES", "PROXY_TIMEOUT_MS", "a
 
 
 def _block_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
+    mapped = getattr(ip, "ipv4_mapped", None)
+    if mapped is not None:
+        return _block_ip(mapped)
+    if not ip.is_global:
+        return True
     return bool(
         ip.is_private
         or ip.is_loopback
