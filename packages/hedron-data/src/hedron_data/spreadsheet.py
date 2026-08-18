@@ -28,6 +28,7 @@ _MAX_ZIP_MEMBERS = 256
 _MAX_COMPRESSION_RATIO = 100
 _MAX_COLUMN_REPEATS = 10_000
 _MAX_ROW_REPEATS = 10_000
+_MAX_EXPANDED_CELLS = 50_000
 _CELL_REF = re.compile(r"^([A-Za-z]+)(\d+)$")
 # XML 1.0 Char exclusions (plus DEL): controls other than TAB/LF/CR.
 _XML_ILLEGAL = re.compile(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]")
@@ -458,6 +459,7 @@ def import_rows_ods(
             text_ns = "urn:oasis:names:tc:opendocument:xmlns:text:1.0"
             table_ns = "urn:oasis:names:tc:opendocument:xmlns:table:1.0"
             matrix: list[list[str]] = []
+            expanded = 0
             for row in root.findall(f".//{{{table_ns}}}table-row"):
                 row_repeat = _ods_repeat(
                     row.get(f"{{{table_ns}}}number-rows-repeated"),
@@ -484,6 +486,18 @@ def import_rows_ods(
                             formula_policy=formula_policy,
                         )
                     values.extend([cell_text] * col_repeat)
+                added = row_repeat * max(len(values), 1)
+                if expanded + added > _MAX_EXPANDED_CELLS:
+                    raise error(
+                        "HED-DATA-0041",
+                        title="ODS expanded cell budget exceeded",
+                        explanation=(
+                            f"row_repeat × columns expands to {expanded + added} cells; "
+                            f"max is {_MAX_EXPANDED_CELLS}."
+                        ),
+                        remediation="Reduce repeated empty rows/columns before import.",
+                    )
+                expanded += added
                 for _ in range(row_repeat):
                     matrix.append(list(values))
             if not matrix:
