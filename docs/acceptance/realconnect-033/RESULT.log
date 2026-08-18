@@ -1,4 +1,4 @@
-REALCONNECT-033 start 2026-08-18T15:27:33Z
+REALCONNECT-033 start 2026-08-18T18:06:22Z
 image=posit/connect@sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9
 host_arch=arm64
 protocol_floor=2024.11.0
@@ -26,6 +26,6 @@ WORKBENCH_ISOLATION=ok encoded_target=307 external_escape=blocked
 WEBSOCKET=ok
 OUTSIDE_CONNECT=ok hedron_parity=ok generic_aliases_ignored=ok
 RESULT=pass
-REALCONNECT-033 end 2026-08-18T15:28:07Z
+REALCONNECT-033 end 2026-08-18T18:06:51Z
 LICENSE_DEACTIVATE=begin timeout=120s
 LICENSE_DEACTIVATE=end
