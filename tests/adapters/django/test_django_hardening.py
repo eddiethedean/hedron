@@ -244,3 +244,11 @@ def test_hedron_view_async_csrf_rejects_before_handler(django_setup: Client) -> 
         assert ran["n"] == 0
 
     asyncio.run(_run())
+
+
+def test_401_hedron_django_production_gate(django_setup: Client, monkeypatch: pytest.MonkeyPatch) -> None:
+    del django_setup
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv("HEDRON_SECURITY_RISK_ACCEPTANCE", raising=False)
+    with pytest.raises(RuntimeError, match="InMemoryJobBackend|Production security|weak-session-secret"):
+        HedronDjango()

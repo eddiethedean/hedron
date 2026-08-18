@@ -7,7 +7,7 @@ from typing import ClassVar
 from django.apps import AppConfig
 from django.core.checks import CheckMessage, Error, Warning, register
 
-__all__ = ["HedronDjangoConfig", "register_checks"]
+__all__ = ["HedronDjangoConfig", "register_checks", "run_django_production_gates"]
 
 _checks_registered = False
 
@@ -22,6 +22,43 @@ class HedronDjangoConfig(AppConfig):
 
     def ready(self) -> None:
         register_checks()
+        run_django_production_gates()
+
+
+def run_django_production_gates() -> None:
+    """Fail closed on insecure production config (FastAPI Hedron() parity, #401)."""
+    from django.core.exceptions import ImproperlyConfigured
+
+    from hedron_core.compile_gate import is_production_env
+    from hedron_core.production_gate import (
+        assert_durable_backends,
+        assert_production_security_config,
+    )
+    from hedron_core.security_policy import SecurityProfile
+    from hedron_django.middleware import security_policy_from_settings
+
+    try:
+        from django.conf import settings
+
+        secret = getattr(settings, "SECRET_KEY", None)
+    except ImproperlyConfigured:
+        return
+    is_prod = is_production_env()
+    policy = security_policy_from_settings()
+    assert_durable_backends(
+        production=is_prod,
+        strict_profile=policy.profile is SecurityProfile.STRICT,
+    )
+    session_secret = secret if isinstance(secret, str) else (str(secret) if secret else None)
+    assert_production_security_config(
+        production=is_prod,
+        security_profile=policy.profile.value,
+        session_secret=session_secret,
+        sessions_enabled=True,
+        explorer_mode="off",
+        allow_external_redirects=policy.allow_external_redirects,
+        content_security_policy=policy.content_security_policy,
+    )
 
 
 def register_checks() -> None:

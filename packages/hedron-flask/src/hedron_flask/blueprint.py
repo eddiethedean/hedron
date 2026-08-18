@@ -311,6 +311,32 @@ def _apply_flask_session_cookie_defaults(app: Flask, policy: SecurityPolicy) -> 
         app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 
+def _apply_flask_production_gates(app: Flask, policy: SecurityPolicy) -> None:
+    """Fail closed on insecure production config (FastAPI Hedron() parity, #401)."""
+    from hedron_core.compile_gate import is_production_env
+    from hedron_core.production_gate import (
+        assert_durable_backends,
+        assert_production_security_config,
+    )
+
+    is_prod = is_production_env()
+    assert_durable_backends(
+        production=is_prod,
+        strict_profile=policy.profile is SecurityProfile.STRICT,
+    )
+    secret = app.secret_key
+    session_secret = secret if isinstance(secret, str) else (str(secret) if secret else None)
+    assert_production_security_config(
+        production=is_prod,
+        security_profile=policy.profile.value,
+        session_secret=session_secret,
+        sessions_enabled=True,
+        explorer_mode="off",
+        allow_external_redirects=policy.allow_external_redirects,
+        content_security_policy=policy.content_security_policy,
+    )
+
+
 def attach_hedron_to_flask(
     app: Flask,
     extension: object,
@@ -362,6 +388,7 @@ def attach_hedron_to_flask(
     app.auth_signal = ext.auth_signal  # type: ignore[attr-defined]  # Flask monkey-patch
 
     _apply_flask_session_cookie_defaults(app, policy)
+    _apply_flask_production_gates(app, policy)
 
     @app.after_request
     def _hedron_after_request(response: Response) -> Response:

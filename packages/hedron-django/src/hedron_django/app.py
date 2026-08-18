@@ -23,7 +23,10 @@ class HedronDjango:
     """Native Django integration with Hedron render and interaction helpers."""
 
     def __init__(self) -> None:
+        from hedron_django.apps import run_django_production_gates
+
         self.url_reverser = DjangoUrlReverser()
+        run_django_production_gates()
 
     @property
     def capabilities(self):
