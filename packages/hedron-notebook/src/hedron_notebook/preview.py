@@ -7,6 +7,7 @@ import re
 import secrets
 import socket
 import threading
+import time
 from collections.abc import MutableMapping
 from dataclasses import dataclass, field
 from typing import Any, Protocol
@@ -246,7 +247,6 @@ class _UvicornThreadServer:
         self._server = server
 
         def _run() -> None:
-            self._started.set()
             server.run()
 
         thread = threading.Thread(
@@ -256,7 +256,15 @@ class _UvicornThreadServer:
         )
         self._thread = thread
         thread.start()
-        if not self._started.wait(timeout=5.0):
+        deadline = time.monotonic() + 5.0
+        while time.monotonic() < deadline:
+            if getattr(server, "started", False):
+                self._started.set()
+                break
+            if not thread.is_alive():
+                break
+            time.sleep(0.02)
+        if not self._started.is_set():
             raise RuntimeError("Notebook preview server failed to start")
 
     def shutdown(self) -> None:
