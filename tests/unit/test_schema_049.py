@@ -121,3 +121,26 @@ def test_sensitive_stays_write_only() -> None:
     schema = save.schema
     assert schema is not None
     assert "token" in schema.write_only_fields or "token" in schema.sensitivity_flags
+
+
+def test_395_tagged_union_discriminator_sanitizes() -> None:
+    from typing import Literal
+
+    from pydantic import Field
+
+    class Cat(BaseModel):
+        kind: Literal["cat"] = "cat"
+        meow: str = "m"
+
+    class Dog(BaseModel):
+        kind: Literal["dog"] = "dog"
+        bark: str = "b"
+
+    class Zoo(BaseModel):
+        pet: Annotated[Cat | Dog, Field(discriminator="kind")]
+
+    cleaned = sanitize_json_schema(Zoo.model_json_schema())
+    pet = (cleaned.get("properties") or {}).get("pet") or {}
+    disc = pet.get("discriminator") or cleaned.get("discriminator")
+    assert disc is not None
+    assert "propertyName" in disc or "mapping" in disc
