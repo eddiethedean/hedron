@@ -222,6 +222,43 @@ def sanitize_json_schema(schema: Mapping[str, Any] | None, *, depth: int = 0) ->
     return redact_type_payload(cast(MutableMapping[str, JsonValue], out))
 
 
+def _strip_sensitive_defs(schema: JsonObject, sensitive: tuple[str, ...]) -> JsonObject:
+    """Remove nested write-only properties from JSON Schema ``$defs``."""
+    nested: dict[str, set[str]] = {}
+    for path in sensitive:
+        parts = path.split(".")
+        if len(parts) < 2:
+            continue
+        parent, field = parts[0], parts[1]
+        nested.setdefault(parent, set()).add(field)
+    defs = schema.get("$defs")
+    if not isinstance(defs, dict) or not nested:
+        return schema
+    new_defs: dict[str, JsonValue] = {}
+    for def_name, def_schema in defs.items():
+        if not isinstance(def_schema, dict):
+            new_defs[def_name] = def_schema
+            continue
+        props = def_schema.get("properties")
+        if not isinstance(props, dict):
+            new_defs[def_name] = def_schema
+            continue
+        remove: set[str] = set()
+        for parent, fields in nested.items():
+            if parent == def_name or parent.lower() == def_name.lower():
+                remove.update(fields)
+            elif parent in props:
+                remove.update(fields)
+        if remove:
+            new_defs[def_name] = {
+                **def_schema,
+                "properties": {key: value for key, value in props.items() if key not in remove},
+            }
+        else:
+            new_defs[def_name] = def_schema
+    return {**schema, "$defs": new_defs}
+
+
 def projections_from_model(
     model_type: type[Any] | None,
     *,
@@ -255,4 +292,5 @@ def projections_from_model(
     if isinstance(properties, dict) and read_only:
         in_props = {key: value for key, value in properties.items() if key not in read_only}
         input_proj = {**sanitized, "properties": in_props}
+    output_proj = _strip_sensitive_defs(output_proj, sensitive)
     return input_proj, output_proj, shared, write_only, read_only
