@@ -66,3 +66,12 @@ def test_streaming_helpers_remain_response_lifetime() -> None:
         return Text("ok")
 
     assert plain.path.endswith("/plain")
+
+
+def test_397_streaming_without_response_lifetime_fail_closes() -> None:
+    try:
+        as_fastapi_depends(DependsOn("sse", streaming=True))
+    except HedronError as exc:
+        assert exc.diagnostic.code == "HED-FP-0001"
+    else:
+        raise AssertionError("streaming DependsOn must require RESPONSE lifetime")
