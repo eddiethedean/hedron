@@ -47,6 +47,24 @@ def _inference_cancel_authorized(
     return job_authorized_http(probe, auth_subject=auth_subject, tenant_id=tenant_id)
 
 
+def _inference_release_authorized(
+    *,
+    stored_auth_subject: str | None,
+    stored_tenant_id: str | None,
+    auth_subject: str | None,
+    tenant_id: str | None,
+) -> bool:
+    """Worker completion may release unscoped inflight; scoped maps require a match."""
+    if stored_auth_subject is None and stored_tenant_id is None:
+        return auth_subject is None and tenant_id is None
+    return _inference_cancel_authorized(
+        stored_auth_subject=stored_auth_subject,
+        stored_tenant_id=stored_tenant_id,
+        auth_subject=auth_subject,
+        tenant_id=tenant_id,
+    )
+
+
 @runtime_checkable
 class InferenceScheduler(Protocol):
     """Admit, cancel, and drain inference work over a ``JobBackend``."""
@@ -404,18 +422,47 @@ class InferencePolicy:
                 _flush(shape, pending)
         return batches
 
-    def release(self, group: str, *, count: int = 1, request_id: str | None = None) -> None:
+    def release(
+        self,
+        group: str,
+        *,
+        count: int = 1,
+        request_id: str | None = None,
+        auth_subject: str | None = None,
+        tenant_id: str | None = None,
+    ) -> None:
+        """Drop inflight slots only when the caller owns the request maps (#279)."""
         with self._lock:
-            self._inflight[group] = max(0, self._inflight[group] - count)
             if request_id is not None:
+                stored_auth, stored_tenant = self._request_auth.get(request_id, (None, None))
+                if not _inference_release_authorized(
+                    stored_auth_subject=stored_auth,
+                    stored_tenant_id=stored_tenant,
+                    auth_subject=auth_subject,
+                    tenant_id=tenant_id,
+                ):
+                    return
+                self._inflight[group] = max(0, self._inflight[group] - count)
                 self._drop_inflight_id(group, request_id)
                 self._forget_request_maps(request_id)
                 return
-            for _ in range(max(0, count)):
-                pending = self._inflight_ids.get(group)
-                if not pending:
+            released = 0
+            pending = self._inflight_ids.get(group)
+            while pending and released < max(0, count):
+                rid = pending[0]
+                stored_auth, stored_tenant = self._request_auth.get(rid, (None, None))
+                if not _inference_release_authorized(
+                    stored_auth_subject=stored_auth,
+                    stored_tenant_id=stored_tenant,
+                    auth_subject=auth_subject,
+                    tenant_id=tenant_id,
+                ):
                     break
-                self._forget_request_maps(pending.popleft())
+                pending.popleft()
+                self._forget_request_maps(rid)
+                released += 1
+            if released:
+                self._inflight[group] = max(0, self._inflight[group] - released)
 
     def queue_status(self) -> list[InferenceQueueStatus]:
         with self._lock:
