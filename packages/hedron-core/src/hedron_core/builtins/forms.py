@@ -56,15 +56,15 @@ class Form(Component[FormProps]):
     ) -> None:
         url = None
         resolved_method = method
+        command_verb: str | None = None
         extras: dict[str, HtmlAttrValue] = {}
         if action is not None and not isinstance(action, (SafeUrl, str)):
             path = getattr(action, "path", None)
             command_method = getattr(action, "method", None)
             if isinstance(path, str) and command_method:
                 url = SafeUrl.parse(path, purpose=UrlPurpose.FORM_ACTION)
-                resolved_method = str(command_method).lower()
-                if resolved_method not in {"get", "post"}:
-                    resolved_method = "post"
+                command_verb = str(command_method).upper()
+                resolved_method = "post"
                 extras["data-hedron-command"] = str(getattr(action, "logical_id", "") or "")
                 fallback = getattr(action, "fallback", None)
                 if fallback:
@@ -81,7 +81,13 @@ class Form(Component[FormProps]):
             # Validated Hx attrs win over raw kwargs (cannot override with unsafe strings).
             extras = {**extras, **hx.as_html_attrs()}
         if extras.get("data-hedron-command") and url is not None:
-            extras.setdefault("hx-post", str(url))
+            hx_attr = {
+                "POST": "hx-post",
+                "PUT": "hx-put",
+                "PATCH": "hx-patch",
+                "DELETE": "hx-delete",
+            }.get(command_verb or "POST", "hx-post")
+            extras.setdefault(hx_attr, str(url))
             extras.setdefault("hx-swap", "none")
         _validate_hx_attr_map(extras)
         props_kwargs = {k: v for k, v in kwargs.items() if k in FormProps.model_fields}
