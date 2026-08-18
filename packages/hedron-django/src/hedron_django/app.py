@@ -14,7 +14,7 @@ from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_django.csrf import csrf_token_for_request
 from hedron_django.htmx import htmx_context, render_mode_for_request
 from hedron_django.responses import _headers_mapping, component_response, interaction_response
-from hedron_django.routing import DjangoUrlReverser
+from hedron_django.routing import HEDRON_APP_ID, DjangoUrlReverser
 
 __all__ = ["HedronDjango"]
 
@@ -26,6 +26,7 @@ class HedronDjango:
         from hedron_django.apps import run_django_production_gates
 
         self.url_reverser = DjangoUrlReverser()
+        self.hedron_app_id = HEDRON_APP_ID
         run_django_production_gates()
 
     @property
@@ -85,7 +86,7 @@ class HedronDjango:
         from hedron_core.updates import compile_to_interaction
 
         try:
-            compiled = compile_to_interaction(value)
+            compiled = compile_to_interaction(value, expected_app_id=self.hedron_app_id)
         except HedronError as exc:
             code = getattr(exc.diagnostic, "code", "")
             status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
@@ -146,7 +147,7 @@ class HedronDjango:
         from hedron_core.updates import compile_to_interaction
 
         try:
-            compiled = compile_to_interaction(value)
+            compiled = compile_to_interaction(value, expected_app_id=self.hedron_app_id)
         except HedronError as exc:
             code = getattr(exc.diagnostic, "code", "")
             status = 403 if str(code).startswith("HED-UPDATE-0003") else 400

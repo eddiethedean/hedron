@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import inspect
+import secrets
 from collections.abc import Callable, Sequence
 from functools import wraps
 from typing import Any, TypeVar
@@ -20,10 +21,13 @@ from hedron_django.responses import component_response, interaction_response
 
 __all__ = [
     "DjangoUrlReverser",
+    "HEDRON_APP_ID",
     "hedron_view",
 ]
 
 F = TypeVar("F", bound=Callable[..., Any])
+
+HEDRON_APP_ID = secrets.token_hex(8)
 
 
 class DjangoUrlReverser:
@@ -63,7 +67,7 @@ def _convert(
     from hedron_core.updates import compile_to_interaction
 
     try:
-        value = compile_to_interaction(value)
+        value = compile_to_interaction(value, expected_app_id=HEDRON_APP_ID)
     except HedronError as exc:
         code = getattr(exc.diagnostic, "code", "")
         status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
@@ -126,7 +130,7 @@ async def _convert_async(
     from hedron_core.updates import compile_to_interaction
 
     try:
-        value = compile_to_interaction(value)
+        value = compile_to_interaction(value, expected_app_id=HEDRON_APP_ID)
     except HedronError as exc:
         code = getattr(exc.diagnostic, "code", "")
         status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
