@@ -415,6 +415,7 @@ def test_packaged_assets_include_theme_and_runtime_hooks() -> None:
     assert "data-hedron-sim-modes" in js
     assert 'hx-trigger="load"' in js or "hx-trigger" in js
     assert "regionAllows" in js
+    assert 'targetSelector === selector + "-body"' in js
     assert "applyTokens" in js
     assert "SIM_UTC" in js or "__HEDRON_SIM_UTC__" in js
     assert "stopImmediatePropagation" in js

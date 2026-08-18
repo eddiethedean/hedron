@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Annotated, Literal
 
+import pytest
 from fastapi.testclient import TestClient
 from pydantic import BaseModel
 from tests.unit._helpers_050 import csrf_headers, make_app, reset_050
@@ -16,7 +17,14 @@ from hedron.testing import render_html
 from hedron_core.builtins import Select, ToastHost
 from hedron_core.builtins._base import dom_id_part
 from hedron_core.htmx.attrs import Hx
-from hedron_core.interaction import InteractionPolicy, InteractionResult
+from hedron_core.htmx.policy import FragmentRegion
+from hedron_core.interaction import (
+    FragmentRegionError,
+    InteractionPolicy,
+    InteractionResult,
+    resolve_fragment_region,
+    select_htmx_auth_target,
+)
 from hedron_core.rendering import RenderMode
 from hedron_core.security_policy import SecurityPolicy
 
@@ -98,6 +106,49 @@ def test_lazy_error_slot_without_hx_on() -> None:
     )
     assert "htmx:responseError" in ui
     assert "htmx:sendError" in ui
+
+
+def test_lazy_inner_body_is_authorized_as_host_region() -> None:
+    policy = InteractionPolicy(
+        declared_regions=(FragmentRegion(id="lazy-box", selector="#lazy-box"),),
+    )
+    assert resolve_fragment_region(policy, "#lazy-box-body") is not None
+    assert resolve_fragment_region(policy, "lazy-box-body") is not None
+    assert (
+        select_htmx_auth_target(client_target="#lazy-box-body", region_id="lazy-box")
+        == "#lazy-box-body"
+    )
+    with pytest.raises(FragmentRegionError):
+        resolve_fragment_region(policy, "#other-body")
+    with pytest.raises(FragmentRegionError):
+        select_htmx_auth_target(client_target="#lazy-box-body", region_id="other")
+
+    app = make_app(security="standard")
+
+    @app.page("/", fragment_regions=("#lazy-box",))
+    def home():
+        return Page(Text("ok"), title="Lazy host")
+
+    @app.fragment("/feed", region="lazy-box")
+    def feed():
+        return InteractionResult(content=Text("3 recent events"), region_id="lazy-box")
+
+    with TestClient(app) as client:
+        ok = client.get(
+            "/",
+            headers={"HX-Request": "true", "HX-Target": "#lazy-box-body"},
+        )
+        assert ok.status_code == 200
+        feed_ok = client.get(
+            "/feed",
+            headers={"HX-Request": "true", "HX-Target": "#lazy-box-body"},
+        )
+        assert feed_ok.status_code == 200
+        denied = client.get(
+            "/",
+            headers={"HX-Request": "true", "HX-Target": "#other-body"},
+        )
+        assert denied.status_code == 403
 
 
 def test_history_restore_policy_and_htmx_config() -> None:

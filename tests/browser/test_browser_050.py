@@ -32,16 +32,8 @@ def _free_port() -> int:
 def browser_app_url() -> Iterator[str]:
     uvicorn = pytest.importorskip("uvicorn")
     from hedron import Hedron, Page, Text
-    from hedron_core.plugins import ExplorerProvider, register_explorer_provider
 
     reset_browser_plugin_state()
-
-    def _boom() -> str:
-        raise RuntimeError("boom")
-
-    register_explorer_provider(
-        ExplorerProvider(panel_id="crashy", title="Crashy", plugin="demo", render=_boom)
-    )
 
     app = Hedron(
         title="Explorer050",
@@ -67,7 +59,20 @@ def browser_app_url() -> Iterator[str]:
         thread.join(timeout=5)
 
 
+def _register_crashy_provider() -> None:
+    """Re-register after autouse registry reset (module fixture runs first)."""
+    from hedron_core.plugins import ExplorerProvider, register_explorer_provider
+
+    def _boom() -> str:
+        raise RuntimeError("boom")
+
+    register_explorer_provider(
+        ExplorerProvider(panel_id="crashy", title="Crashy", plugin="demo", render=_boom)
+    )
+
+
 def _run_engine(browser_type: str, url: str) -> None:
+    _register_crashy_provider()
     with sync_playwright() as playwright:
         launcher = getattr(playwright, browser_type)
         browser = launcher.launch(headless=True)

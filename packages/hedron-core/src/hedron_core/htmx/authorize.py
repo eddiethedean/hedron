@@ -27,6 +27,34 @@ def _single_hash_id(value: str) -> str | None:
     return value.removeprefix("#")
 
 
+# Lazy swaps into #{id}-body so error templates outside the inner wrapper survive.
+_LAZY_INNER_BODY_SUFFIX = "-body"
+
+
+def _simple_hash_id(selector: str) -> str | None:
+    """Return the id for a single ``#id`` selector, else None."""
+    if not selector.startswith("#") or selector.startswith("##") or "#" in selector[1:]:
+        return None
+    return selector[1:]
+
+
+def _target_matches_region_selector(selector: str, target: str) -> bool:
+    """True when ``target`` is the declared selector, HTMX bare id, or Lazy inner body."""
+    if selector == target:
+        return True
+    host_id = _simple_hash_id(selector)
+    if host_id is None:
+        return False
+    if target == host_id:
+        return True
+    return target in {f"#{host_id}{_LAZY_INNER_BODY_SUFFIX}", f"{host_id}{_LAZY_INNER_BODY_SUFFIX}"}
+
+
+def _ids_agree_for_auth(client_id: str, handler_id: str) -> bool:
+    """True when client HX-Target id is the handler region or its Lazy inner body."""
+    return client_id == handler_id or client_id == f"{handler_id}{_LAZY_INNER_BODY_SUFFIX}"
+
+
 def resolve_fragment_region(
     policy: InteractionPolicy | None,
     target: str | None,
@@ -35,9 +63,10 @@ def resolve_fragment_region(
 
     Authorization is selector-based (``FragmentRegion.id`` is bookkeeping only).
     Accepts either the exact declared selector (``#panel``) or HTMX's common bare-id
-    header form (``panel``) when the selector is a single ``#id``. Rejects
-    ``##…`` collapsing and matching on ``region.id`` when it differs from the
-    selector id.
+    header form (``panel``) when the selector is a single ``#id``. Lazy's inner
+    wrapper (``#panel-body`` / ``panel-body``) is authorized as the same host
+    region. Rejects ``##…`` collapsing and matching on ``region.id`` when it
+    differs from the selector id.
     """
     if policy is None or not policy.declared_regions:
         return None
@@ -53,15 +82,7 @@ def resolve_fragment_region(
             declared=declared,
         )
     for region in policy.declared_regions:
-        if region.selector == target:
-            return region
-        # HTMX frequently sends HX-Target without the leading '#' for #id selectors.
-        if (
-            region.selector.startswith("#")
-            and not region.selector.startswith("##")
-            and "#" not in region.selector[1:]
-            and target == region.selector[1:]
-        ):
+        if _target_matches_region_selector(region.selector, target):
             return region
     declared = _declared_region_labels(policy.declared_regions)
     raise FragmentRegionError(
@@ -81,8 +102,9 @@ def select_htmx_auth_target(
     Prefer the client ``HX-Target`` when present. When both client target and
     handler ``region_id`` are set but refer to different ids, reject — the
     browser swaps into ``HX-Target``, so authorizing ``region_id`` alone is
-    fail-open. ``region_id`` is compared with a single leading ``#`` stripped
-    (never ``lstrip``), and multi-hash targets are rejected.
+    fail-open. Lazy's inner ``#{id}-body`` wrapper agrees with handler ``id``.
+    ``region_id`` is compared with a single leading ``#`` stripped (never
+    ``lstrip``), and multi-hash targets are rejected.
     """
     if client_target and client_target.startswith("##"):
         raise FragmentRegionError(
@@ -93,7 +115,11 @@ def select_htmx_auth_target(
     if client_target and region_id:
         client_id = _single_hash_id(client_target)
         handler_id = _single_hash_id(region_id)
-        if client_id is None or handler_id is None or client_id != handler_id:
+        if (
+            client_id is None
+            or handler_id is None
+            or not _ids_agree_for_auth(client_id, handler_id)
+        ):
             raise FragmentRegionError(
                 f"HX-Target {client_target!r} disagrees with region_id {region_id!r}",
                 requested=client_target,

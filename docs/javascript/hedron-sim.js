@@ -169,7 +169,13 @@
     if (!regions.length) return true;
     if (!targetSelector) return false;
     for (var i = 0; i < regions.length; i += 1) {
-      if (regions[i].selector === targetSelector || "#" + regions[i].id === targetSelector) {
+      var selector = regions[i].selector;
+      var idSel = "#" + regions[i].id;
+      if (selector === targetSelector || idSel === targetSelector) {
+        return true;
+      }
+      // Lazy inner wrapper: declared #id, hx-target #id-body
+      if (targetSelector === selector + "-body" || targetSelector === idSel + "-body") {
         return true;
       }
     }
