@@ -71,3 +71,21 @@ process.stdout.write(JSON.stringify({{
     assert payload["meta"] == "from-meta"
     assert payload["cookieOnly"] == "cookie-tok"
     assert payload["empty"] == ""
+
+
+def test_read_csrf_token_falls_back_to_django_csrftoken_cookie(node_bin: str) -> None:
+    out = _run_node(
+        node_bin,
+        f"""
+const api = require({json.dumps(str(EDITOR_JS))});
+const noMeta = {{ querySelector() {{ return null; }} }};
+const djangoJar = "session=abc; csrftoken=django%2Dtok; other=1";
+process.stdout.write(JSON.stringify({{
+  django: api.readCsrfToken(noMeta, djangoJar),
+  hedronPreferred: api.readCsrfToken(noMeta, "csrftoken=ignored; hedron_csrf=hedron-tok"),
+}}));
+""",
+    )
+    payload = json.loads(out)
+    assert payload["django"] == "django-tok"
+    assert payload["hedronPreferred"] == "hedron-tok"
