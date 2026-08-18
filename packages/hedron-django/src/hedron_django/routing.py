@@ -122,9 +122,15 @@ async def _convert_async(
 ) -> HttpResponse:
     """ASGI path: await prepare_tree before converting to HttpResponse."""
     from hedron_core.prepare import prepare_tree
+    from hedron_core.diagnostics import HedronError
     from hedron_core.updates import compile_to_interaction
 
-    value = compile_to_interaction(value)
+    try:
+        value = compile_to_interaction(value)
+    except HedronError as exc:
+        code = getattr(exc.diagnostic, "code", "")
+        status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
+        return HttpResponse(str(exc).encode("utf-8"), status=status, content_type="text/plain")
     if isinstance(value, InteractionResult):
         if value.content is not None:
             await prepare_tree(value.content)
