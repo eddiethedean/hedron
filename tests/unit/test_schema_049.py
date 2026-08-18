@@ -59,15 +59,52 @@ def test_v1_artifacts_still_load_and_upgrade() -> None:
 
 
 def test_sanitizer_strips_secrets_and_callables() -> None:
-    clean = sanitize_json_schema({"type": "object", "examples": ["x"], "default": 1})
+    clean = sanitize_json_schema(
+        {
+            "type": "object",
+            "examples": ["x"],
+            "default": 1,
+            "properties": {
+                "name": {"type": "string", "example": "private"},
+                "count": {"type": "integer", "minimum": 0},
+            },
+        }
+    )
     assert "examples" not in clean
     assert "default" not in clean
+    assert clean["properties"] == {
+        "name": {"type": "string"},
+        "count": {"type": "integer", "minimum": 0},
+    }
     try:
-        sanitize_json_schema({"type": "object", "x": (lambda: None)})
+        sanitize_json_schema({"type": (lambda: None)})
     except HedronError as exc:
         assert exc.diagnostic.code == "HED-FP-0003"
     else:
         raise AssertionError("callable schema must fail closed")
+
+
+def test_sanitizer_fail_closes_unknown_keys_and_homoglyphs() -> None:
+    class Extra(BaseModel):
+        model_config = {"json_schema_extra": {"secret": "p@ss", "examples": ["x"]}}
+        v: str = "a"
+
+    try:
+        sanitize_json_schema(Extra.model_json_schema())
+    except HedronError as exc:
+        assert exc.diagnostic.code == "HED-FP-0003"
+    else:
+        raise AssertionError("json_schema_extra secrets must fail closed")
+
+    homoglyph = sanitize_json_schema({"type": "object", "ｄefault": "secret", "default": 1})
+    assert "default" not in homoglyph
+    assert "ｄefault" not in homoglyph
+    try:
+        sanitize_json_schema({"type": "object", "mystery": True})
+    except HedronError as exc:
+        assert exc.diagnostic.code == "HED-FP-0003"
+    else:
+        raise AssertionError("unknown keywords must fail closed")
 
 
 def test_sensitive_stays_write_only() -> None:
