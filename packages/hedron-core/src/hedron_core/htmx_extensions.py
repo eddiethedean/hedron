@@ -144,8 +144,8 @@ def known_extensions() -> tuple[ExtensionAsset, ...]:
         ),
         ExtensionAsset(
             name="htmx-ext-sse",
-            version="2.2.2",
-            digest="sha256-83eca6fa0611fe2b0bf1700b424b88b5eced38ef448ef9760a2ea08fbc875611",
+            version="2.2.4",
+            digest="sha256-3b5992a541619babefc4c169505af474df5c3039da51e59b96ccf9241ecd61d2",
             path="/hedron-static/ext/sse.js",
             csp="script-src 'self'",
             load_order=50,

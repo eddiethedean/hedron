@@ -26,7 +26,7 @@ def test_reads_every_authoritative_htmx_pin() -> None:
         ("htmx.org", "2.0.10"),
         ("htmx-ext-head-support", "2.0.2"),
         ("htmx-ext-preload", "2.1.2"),
-        ("htmx-ext-sse", "2.2.2"),
+        ("htmx-ext-sse", "2.2.4"),
     }
 
 
