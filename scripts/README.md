@@ -7,14 +7,14 @@ scripts here when you add them.
 
 | Script | When to run |
 |---|---|
-| `ci_checks.sh` | **Shared CI suites** used by `.github/workflows/ci.yml` and `release.yml`. Local: `bash scripts/ci_checks.sh test\|workbench\|quality\|browser\|evidence\|packaging\|all` — `all` mirrors the full workflow. Independent checks inside a suite overlap. `--jobs N` or `HEDRON_CHECK_JOBS` caps concurrency (see `ci_checks.sh --help`) |
+| `ci_checks.sh` | **Shared CI suites** used by `.github/workflows/ci.yml` and `release.yml`. Local: `bash scripts/ci_checks.sh test\|workbench\|docs\|quality\|browser\|evidence\|packaging\|all` — `all` mirrors the full workflow. Docs-only CI calls `docs` (no wheels). Independent checks inside a suite overlap. `--jobs N` or `HEDRON_CHECK_JOBS` caps concurrency (see `ci_checks.sh --help`) |
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
 | `smoke_workbench_adapter_docker.sh` | License-independent Linux smoke for mounted Workbench adapter behavior |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` (updates root `STATUS.md`; forbids extra roadmap files). CI: `--check` |
-| `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: quality job |
+| `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: `docs` / `quality` |
 | `check_package_docs_inventory.py` | Keep the package catalog, README maturity labels, PyPI classifiers, and package pages aligned with the living fleet inventory. CI: quality job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
 | `check_api_docs_coverage.py` | Require every `hedron.__all__` and `hedron_charts.__all__` export in public API reference. CI: quality job |
@@ -59,7 +59,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_46.py` | Phase **0.46** package-native typed workflows packet (Published `v0.46.0`; historical after 0.47) |
 | `verify_pkg_47.py` | Phase **0.47** first-class maps packet (Published in-tree `v0.47.0`; omit `--allow-planned` after cut) |
 | `verify_pkg_48.py` | Phase **0.48** HTMX extension integration packet (Published in-tree `v0.48.0`; omit `--allow-planned`) |
-| `verify_pkg_49.py` | Phase **0.49** FastAPI/Pydantic packet (Published in-tree `v0.49.0`; omit `--allow-planned` after cut) |
+| `verify_pkg_49.py` | Phase **0.49** FastAPI/Pydantic packet (Published in-tree `v0.49.1`; omit `--allow-planned` after cut) |
 | `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Published `v0.42.0`) |
 | `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |
 | `verify_pkg_39.py` | Phase **0.39** rich data / OptimisticMutation packet (Published `v0.39.0`) |

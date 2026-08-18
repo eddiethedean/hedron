@@ -207,3 +207,40 @@ def test_undeclared_hx_target_is_forbidden(django_setup: Client) -> None:
     request = RequestFactory().get("/", HTTP_HX_REQUEST="true", HTTP_HX_TARGET="#panel")
     response = interaction_response(InteractionResult(content=Text("body")), request=request)
     assert response.status_code == 403
+
+
+def test_hedron_view_csrf_rejects_before_handler(django_setup: Client) -> None:
+    del django_setup
+    from django.test import RequestFactory
+
+    ran = {"n": 0}
+
+    @hedron_view
+    def mutating(request: HttpRequest):
+        ran["n"] += 1
+        return Text("mutated")
+
+    response = mutating(RequestFactory().post("/x/", data={"name": "Ada"}))
+    assert response.status_code == 403
+    assert ran["n"] == 0
+
+
+def test_hedron_view_async_csrf_rejects_before_handler(django_setup: Client) -> None:
+    del django_setup
+    import asyncio
+
+    from django.test import RequestFactory
+
+    ran = {"n": 0}
+
+    @hedron_view
+    async def mutating(request: HttpRequest):
+        ran["n"] += 1
+        return Text("mutated")
+
+    async def _run() -> None:
+        response = await mutating(RequestFactory().post("/x/", data={"name": "Ada"}))
+        assert response.status_code == 403
+        assert ran["n"] == 0
+
+    asyncio.run(_run())

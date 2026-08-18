@@ -16,9 +16,7 @@ There is **no hosted playground**. Use Codespaces / Dev Container, a local clone
    for full admin CRUD see the [reference app](reference-app.md).
 6. **[Single-file apps](single-file.md)** — alternate paste-an-`app.py` path with Hello +
    Refresh. Prefer `hedron new` when you want the scaffold and learning-path deltas.
-7. **[Phase evidence](phase-evidence.md)** — maintainer exit stubs (not product recipes);
-   listed under **Maintainer evidence** in the nav.
-8. **[Simulated UI patterns](gallery.md)** — in-browser **simulations** on Read the Docs
+7. **[Simulated UI patterns](gallery.md)** — in-browser **simulations** on Read the Docs
    (not a live Hedron process). Prefer [runnable examples](runnable.md) for real HTMX/CSRF.
 
 After Hello + Refresh, prefer [recipes](recipes/index.md) before the kitchen-sink

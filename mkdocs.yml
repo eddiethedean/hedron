@@ -176,25 +176,20 @@ nav:
   - Home: index.md
   - Start:
     - Overview: getting-started/index.md
-    - Build your first app: getting-started/quickstart.md
-    - New developer — VS Code: getting-started/first-app-vscode.md
-    - New developer — Posit Workbench: getting-started/first-app-posit-workbench.md
     - Installation: getting-started/installation.md
+    - Build your first app: getting-started/quickstart.md
     - What is HTMX?: getting-started/what-is-htmx.md
-    - Add an HTMX region: guides/htmx-interactions.md
+    - Which interaction API?: getting-started/interaction-apis.md
     - Post a minimal form: guides/minimal-form.md
-    - Core concepts: getting-started/core-concepts.md
     - Learning path: getting-started/learning-path.md
     - Troubleshooting: guides/troubleshooting.md
-    - Flask: getting-started/flask.md
-    - Django: getting-started/django.md
-    - Existing FastAPI app: guides/plain-fastapi.md
-  - Tutorials:
-    - Notes CRUD: examples/crud-tutorial.md
-    - Session authentication: examples/session-auth.md
-    - Notes with SQLAlchemy: examples/notes-sqlalchemy.md
-    - Reference app walkthrough: examples/reference-app.md
-  - How-to:
+    - Choose a host:
+      - Flask: getting-started/flask.md
+      - Django: getting-started/django.md
+      - Existing FastAPI app: guides/plain-fastapi.md
+      - New developer — VS Code: getting-started/first-app-vscode.md
+      - New developer — Posit Workbench: getting-started/first-app-posit-workbench.md
+  - Guides:
     - Overview: guides/index.md
     - Build interactions:
       - HTMX interactions: guides/htmx-interactions.md
@@ -237,68 +232,39 @@ nav:
     - FAQ: guides/faq.md
   - Examples:
     - Overview: examples/index.md
-    - Try in Codespaces: examples/try-it.md
     - Recipe index: examples/recipes/index.md
     - Runnable examples: examples/runnable.md
+    - Try in Codespaces: examples/try-it.md
+    - Notes CRUD: examples/crud-tutorial.md
+    - Session authentication: examples/session-auth.md
+    - Notes with SQLAlchemy: examples/notes-sqlalchemy.md
+    - Reference app walkthrough: examples/reference-app.md
     - Single-file apps: examples/single-file.md
     - Simulation gallery: examples/gallery.md
   - Reference:
-    - API overview: api/README.md
-    - Application: api/HEDRON.md
-    - Routing: api/ROUTER.md
-    - Pages: api/PAGE.md
+    - Hedron: api/HEDRON.md
+    - Router: api/ROUTER.md
+    - Page: api/PAGE.md
     - Interaction: api/INTERACTION.md
-    - Mount: api/MOUNT.md
-    - Auth: api/AUTH.md
-    - CSRF: api/CSRF_COMPOSITION.md
-    - Testing: api/TESTING.md
-    - Responses: api/RESPONSES.md
-    - Exceptions: api/EXCEPTIONS.md
-    - CLI: api/CLI.md
-    - Components index: components/index.md
+    - Components: components/index.md
     - Autodoc: api/AUTODOC.md
-    - Public API coverage: api/COVERAGE.md
-    - Stability and maturity: api/STABILITY.md
-    - Configuration: CONFIGURATION.md
-    - Compatibility: COMPATIBILITY.md
-    - Packages: packages/index.md
-    - Glossary: GLOSSARY.md
     - Advanced:
       - Refreshable views: api/REFRESHABLE_VIEWS.md
       - Type-driven authoring: api/TYPE_DRIVEN_AUTHORING.md
-      - Interaction catalog: api/INTERACTION_CATALOG.md
-      - Actions: api/ACTION.md
-      - Rendering: api/RENDERING.md
-      - Models and props: api/MODELS.md
-      - Built-ins: api/BUILT_INS.md
-      - Charts: api/CHART.md
-      - Maps: api/MAPS.md
-      - HTMX extensions: api/HTMX_EXTENSIONS.md
-      - FastAPI/Pydantic: api/FASTAPI_PYDANTIC_CONVERGENCE.md
-  - Evaluate:
-    - Overview: guides/evaluate.md
+      - FastAPI/Pydantic 0.49: api/FASTAPI_PYDANTIC_CONVERGENCE.md
+  - Adopt:
     - Why Hedron: guides/why-hedron.md
     - What's ready today: guides/whats-ready.md
-    - What's next: guides/whats-next.md
-    - Maturity labels: getting-started/how-to-read.md
-    - Enterprise diligence: guides/enterprise-diligence.md
+    - Evaluate Hedron: guides/evaluate.md
     - Architecture: ARCHITECTURE.md
-    - Security disclosure: SECURITY.md
-    - Support policy: guides/support.md
-    - Evidence pack: guides/evidence-pack.md
+    - Security: SECURITY.md
+    - Support: guides/support.md
+    - Design principles: guides/design-principles.md
+  - Contribute:
+    - Contributor day one: guides/contributor-day-one.md
+    - Contributing: CONTRIBUTING.md
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
     - What's new in 0.49: guides/whats-new-0.49.md
-    - What's new in 0.48: guides/whats-new-0.48.md
-    - What's new in 0.47: guides/whats-new-0.47.md
-    - What's new in 0.46: guides/whats-new-0.46.md
-    - Versioned documentation: guides/versions.md
     - Earlier releases: guides/whats-new-archive.md
-  - Contribute:
-    - Contributor day one: guides/contributor-day-one.md
-    - Contributing: CONTRIBUTING.md
-    - Documentation standards: guides/documentation-standards.md
-    - Governance: guides/governance.md
-    - Maintainer handbook: guides/maintainer-handbook.md
-    - Code of Conduct: CODE_OF_CONDUCT.md

@@ -22,7 +22,8 @@ Session State, caching, components, tests, and deployment.
    [beginner Posit Workbench](first-app-posit-workbench.md)
 2. [Installation](installation.md) (extras / troubleshooting as needed)
 3. [What is HTMX?](what-is-htmx.md) — browser / fragment / region / swap mental model
-4. Optional later (evaluators only): [Maturity labels](how-to-read.md)
+4. Optional: [Which interaction API?](interaction-apis.md) — refreshable vs region/fragment
+5. Optional later (evaluators only): [Maturity labels](how-to-read.md)
 
 That is the first success. Extend the **same** app in the next section; do not start a
 second project.
@@ -61,7 +62,7 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 [reference app](../examples/reference-app.md) is an optional kitchen sink after that.
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
-   (`hedron[charts]>=0.49.0,<0.50`; static Matplotlib is the conservative default)
+   (`hedron[charts]>=0.49.1,<0.50`; static Matplotlib is the conservative default)
 2. More recipes: [File upload](../examples/file-upload.md) ·
    [Jobs poll](../examples/jobs-poll.md)
 3. Optional: [Dashboards](../guides/dashboards.md) · [Model demos](../guides/model-demos.md) ·

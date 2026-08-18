@@ -13,12 +13,23 @@ class HedronFieldFile extends HTMLElement {
   }
 
   connectedCallback() {
-    track(this);
+    const signal = track(this);
     const input = this.querySelector("input[type='file']");
-    input?.addEventListener("change", () => {
-      this.#internals?.setFormValue?.(input.files);
-    });
-    track(this, { listener: input });
+    if (this.#internals) input?.removeAttribute("name");
+    input?.addEventListener(
+      "change",
+      () => {
+        if (!input.files || input.files.length === 0) {
+          this.#internals?.setFormValue?.(null);
+          return;
+        }
+        const fd = new FormData();
+        const name = this.getAttribute("name") || "file";
+        for (const file of input.files) fd.append(name, file);
+        this.#internals?.setFormValue?.(fd);
+      },
+      { signal },
+    );
   }
 
   disconnectedCallback() {

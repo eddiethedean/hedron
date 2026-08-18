@@ -20,7 +20,7 @@ walkthrough for your environment:
 |---|---|---|
 | 1. [Build your first app](quickstart.md) | A generated FastAPI application | A button refreshes one region without reloading the page |
 | 2. [Understand HTMX](what-is-htmx.md) | The request/target/swap mental model | You can explain why the refresh is a fragment request |
-| 3. [Add a second region](../guides/htmx-interactions.md) | Another independently addressable fragment | Each button updates only its declared target |
+| 3. [Add a second region](../guides/htmx-interactions.md) | Another `@app.refreshable` view | Each button updates only its view |
 | 4. [Post a minimal form](../guides/minimal-form.md) | A form, action, and CSRF field | A valid POST changes the page; a missing token fails closed |
 | 5. [Continue through the curriculum](learning-path.md) | Validation, persistence, auth, testing, and deployment | The same app grows along a production-minded path |
 

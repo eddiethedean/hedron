@@ -41,13 +41,19 @@ def _reject_traversal(path: str) -> None:
     if raw.startswith("/") or (len(raw) > 1 and raw[1] == ":"):
         raise ValueError(f"Absolute directory upload paths are not allowed: {path!r}")
 
+    def _has_controls(candidate: str) -> bool:
+        return "\\" in candidate or any(ord(ch) < 32 for ch in candidate)
+
+    if _has_controls(raw):
+        raise ValueError(f"Unsafe directory upload path: {path!r}")
+
     decoded = raw
     for _ in range(3):
         next_decoded = unquote(decoded)
         if next_decoded == decoded:
             break
         decoded = next_decoded
-        if "\\" in decoded or any(ord(ch) < 32 for ch in decoded):
+        if _has_controls(decoded):
             raise ValueError(f"Unsafe directory upload path: {path!r}")
         if decoded.startswith("/") or (len(decoded) > 1 and decoded[1] == ":"):
             raise ValueError(f"Absolute directory upload paths are not allowed: {path!r}")

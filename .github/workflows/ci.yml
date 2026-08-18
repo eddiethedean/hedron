@@ -17,7 +17,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by release.yml).
-  HEDRON_GATE_VERSION: "0.49.0"
+  HEDRON_GATE_VERSION: "0.49.1"
 
 jobs:
   changes:
@@ -159,11 +159,20 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
       - name: Install Rust toolchain
+        if: needs.changes.outputs.docs_only != 'true'
         uses: dtolnay/rust-toolchain@stable
       - name: Install all dependency groups
+        if: needs.changes.outputs.docs_only != 'true'
         run: uv sync --locked --all-groups --python 3.12
+      - name: Install docs-check dependencies
+        if: needs.changes.outputs.docs_only == 'true'
+        run: uv sync --locked --all-groups --python 3.12 --no-install-package hedron-native
       - name: Run quality suite
+        if: needs.changes.outputs.docs_only != 'true'
         run: bash scripts/ci_checks.sh quality --python 3.12
+      - name: Run docs suite
+        if: needs.changes.outputs.docs_only == 'true'
+        run: bash scripts/ci_checks.sh docs --python 3.12
 
   browser:
     name: Browser HTMX (${{ matrix.browser }})
@@ -171,7 +180,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     # PRs: Chromium only. Main/dispatch: Chromium + Firefox + WebKit.
-    # Docs-only PRs skip the browser matrix (quality still runs mkdocs + train SSOT).
+    # Docs-only PRs skip the browser matrix (the quality job runs `docs` instead of wheels).
     if: >
       needs.changes.outputs.docs_only != 'true' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')

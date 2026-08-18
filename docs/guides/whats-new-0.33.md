@@ -1,7 +1,7 @@
 # What’s new in 0.33
 
 **Published** as `v0.33.0`. Historical coordinated pin: `hedron>=0.33.0,<0.34`.
-For new apps, use `hedron>=0.49.0,<0.50`; see [What’s new in 0.40](whats-new-0.41.md).
+For new apps, use `hedron>=0.49.1,<0.50`; see [What’s new in 0.49](whats-new-0.49.md).
 
 Phase **0.33** (D-061 / RFC-0066) ships **`hedron-posit`** as the unified Posit
 Workbench / Connect deployment adapter. Native Connect GUID on Connect

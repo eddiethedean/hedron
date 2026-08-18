@@ -1,11 +1,11 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.49 **Published** as in-tree `v0.49.0` (2026-08-17; tag/PyPI deferred). Phase 0.48 HTMX extension integration remains Published in-tree `v0.48.0`.
-Living tip = `v0.49.0`.
-**Date:** 2026-08-17
+**Roadmap position:** phase 0.49 **Published** as in-tree `v0.49.1` (2026-08-17; tag/PyPI deferred). Phase 0.48 HTMX extension integration remains Published in-tree `v0.48.0`.
+Living tip = `v0.49.1`.
+**Date:** 2026-08-18
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.49.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.49.1`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
@@ -23,7 +23,7 @@ expanded binding, TypeSchema v2 dual projections, tagged public-wire unions, rou
 provenance, typed OpenAPI, non-granting `RequiresScopes`, measured TypeAdapter candidates,
 Workbench/Posit **retain-custom-loader**, and RESEARCH still Experimental (`FailFast` /
 `MISSING` / partial validation not Supported). `release-gate-0.49.toml` sixteen Verified
-rows; in-tree tip `v0.49.0`; tag/PyPI deferred. Tracking
+rows; in-tree tip `v0.49.1`; tag/PyPI deferred. Tracking
 [#380](https://github.com/eddiethedean/hedron/issues/380) owns every 0.49 gate.
 Prior Published **0.48** HTMX extensions (`MORPH-048` Deferred) / **0.47** first-class maps (`hedron-maps` `0.1.0`) /
 **0.46** package-native typed workflows /
@@ -400,11 +400,11 @@ Phase **0.48** first-class HTMX extension integration is **Published** as in-tre
 `MORPH-048` **Deferred**; tracking [#373](https://github.com/eddiethedean/hedron/issues/373); see
 [implementation requirements](implementation/HTMX_EXTENSION_INTEGRATION_048.md) and
 [acceptance packet](acceptance/RELEASE_0_48.md)).
-Phase **0.49** FastAPI/Pydantic convergence is **Published** as in-tree `v0.49.0`
+Phase **0.49** FastAPI/Pydantic convergence is **Published** as in-tree `v0.49.1`
 (tag/PyPI deferred; D-081 / D-084 / RFC-0076; `release-gate-0.49.toml` Verified;
 tracking [#380](https://github.com/eddiethedean/hedron/issues/380); see
 [implementation requirements](implementation/FASTAPI_PYDANTIC_CONVERGENCE_049.md) and
-[acceptance packet](acceptance/RELEASE_0_49.md)). Living tip is **`v0.49.0`**.
+[acceptance packet](acceptance/RELEASE_0_49.md)). Living tip is **`v0.49.1`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

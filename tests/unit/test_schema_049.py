@@ -123,6 +123,26 @@ def test_sensitive_stays_write_only() -> None:
     assert "token" in schema.write_only_fields or "token" in schema.sensitivity_flags
 
 
+def test_394_hedron_field_secret_registers() -> None:
+    from hedron_core.field import Field
+
+    app = make_app()
+
+    class Login(BaseModel):
+        password: str = Field(secret=True)
+        name: str = "x"
+
+    @app.command(fallback="/")
+    def login(data: Annotated[Login, FormBody()]):
+        return Text(data.name)
+
+    schema = login.schema
+    assert schema is not None
+    dumped = str(schema.as_mapping())
+    assert "'hedron'" not in dumped
+    assert "hedron" not in (schema.input_projection.get("properties") or {}).get("password", {})
+
+
 def test_395_tagged_union_discriminator_sanitizes() -> None:
     from typing import Literal
 

@@ -1,9 +1,9 @@
 # Production-quality maturity
 
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
-checklist in [Production readiness](production-readiness.md).
+checklist in [Ship a Hedron app](ship.md).
 
-**Living published train:** pin `hedron>=0.49.0,<0.50`. Capability maturity snapshot:
+**Living published train:** pin `hedron>=0.49.1,<0.50`. Capability maturity snapshot:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 (maintainer corpus on GitHub).
@@ -74,7 +74,7 @@ Phase table: [Roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROA
 
 ## What to do today
 
-1. Ship with pins and the [production readiness](production-readiness.md) checklist.
+1. Ship with pins and the [Ship a Hedron app](ship.md) checklist.
 2. Prefer [polling](live-interaction.md) over `hedron.experimental` live helpers.
 3. Keep optional scopes narrow: Gradio is Beta for allowlisted client interop, notebook is
    Beta tooling-grade and localhost-only, MCP is Beta for its Supported inventory, and

@@ -41,6 +41,7 @@ code, or internal decision number.
 |---|---|---|
 | Root project introduction | `README.md` | docs checks below |
 | Package landing page on PyPI | `packages/<package>/README.md` | package build/smoke for that package |
+| Install pins / PyPI vs in-tree | `docs/getting-started/installation.md` | `check_docs_train_ssot.py` |
 | Adopter maturity | `docs/guides/whats-ready.md` | `check_docs_train_ssot.py` |
 | Component reference page | entry in `scripts/generate_component_docs.py` | generator with `--check` |
 | Interactive docs simulation | `docs/demos/*.py` and its runnable source | simulation generator and recipe sync |
@@ -72,7 +73,10 @@ and regenerate them; do not hand-edit output that the next generator run will ov
 - Document failure behavior. Public API reference should name raised exceptions or HTTP
   status/error codes, not only the happy-path return value.
 - Avoid duplicating current-version claims. Link to the canonical page when a second copy
-  would create another release-time edit.
+  would create another release-time edit. Install pins and deferred-upload honesty live
+  only on [Installation](../getting-started/installation.md); first-run copy-paste
+  commands use the PyPI pin from `docs/release.toml` while `registry_status` is
+  `deferred`.
 
 ## README quality bar
 

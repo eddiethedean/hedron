@@ -30,3 +30,13 @@ def test_data_hx_post_accepts_safe_url() -> None:
 def test_data_hx_rejects_javascript_scheme() -> None:
     with pytest.raises(HedronError):
         render(h.a("x", **{"data-hx-get": "javascript:alert(1)"}))
+
+
+def test_398_data_hx_get_receives_mount_prefix() -> None:
+    from hedron_core.rendering import RenderContext
+
+    ctx = RenderContext.standalone(mount_path="/app")
+    hx = render(h.button("Go", **{"hx-get": "/panel"}), context=ctx).html
+    alias = render(h.button("Go", **{"data-hx-get": "/panel"}), context=ctx).html
+    assert 'hx-get="/app/panel"' in hx
+    assert 'data-hx-get="/app/panel"' in alias

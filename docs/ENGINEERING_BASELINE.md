@@ -13,20 +13,23 @@ train). Detailed acceptance evidence maps live on GitHub under
 - pytest, pytest-xdist, httpx, and optional Playwright browser tooling implement the test layers.
 - Relative documentation links and `mkdocs build --strict` run in CI.
 - Root `STATUS.md` must match `docs/STATUS.md` (`scripts/sync_status_roadmap.py --check`). The roadmap is only `docs/ROADMAP.md`.
-- A Rust toolchain is required in CI (and for local `quality` / native wheel smoke) because
-  `hedron-native` builds via maturin.
+- A Rust toolchain is required in CI for `test` and non-docs `quality` (and for local
+  `quality` / native wheel smoke) because `hedron-native` builds via maturin. **Docs-only**
+  PRs skip the Rust toolchain and `uv build --all-packages`.
 
 These are contributor tools, not runtime dependencies. Application users may install Hedron with any standards-compliant Python package installer.
 
 ## CI gates (actual jobs)
 
-Pull requests always run `quality`. `test`, `browser`, and `evidence` run unless the PR is
-classified **docs-only** by the allowlist in `.github/workflows/ci.yml` (see
+Pull requests run `quality` unless classified **docs-only**, in which case the same job
+runs the `docs` suite (no Rust, no wheels). `test`, `browser`, and `evidence` run unless
+the PR is classified **docs-only** by the allowlist in `.github/workflows/ci.yml` (see
 [Contributing → CI path filters](CONTRIBUTING.md#ci-path-filters)).
 
 | Job | Coverage |
 |---|---|
-| `quality` | ruff format + check, pyright, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
+| `quality` | ruff format + check, pyright, `verify_pkg_*`, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
+| `quality` (docs-only) | `docs` suite: train SSOT / recipe / sim checks, relative links, `mkdocs build --strict` — **no** Rust toolchain, **no** `uv build --all-packages` |
 | `test` | `pytest` with pytest-xdist (`-n auto`) on Ubuntu for Python **3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
 | `browser` | Playwright HTMX suite — **Chromium on PRs**; Chromium + Firefox + WebKit on `main` / workflow_dispatch (skipped when docs-only) |
 | `evidence` | Supply-chain evidence bundle scripts (skipped when docs-only) |

@@ -25,17 +25,15 @@ cd hedron
 uv sync --group docs
 uv run --group docs mkdocs build --strict
 uv run python scripts/check_docs_train_ssot.py
-uv run python scripts/check_package_docs_inventory.py
-uv run python scripts/verify_pkg_46.py --allow-planned
 uv run python scripts/check_recipe_code_sync.py
 uv run python scripts/generate_sim_demos.py --check
 ```
 
-**Local verify does not need Rust or Playwright.** GitHub Actions still runs the
-**quality** job on docs-only PRs (mkdocs + SSOT checks **and** package wheel builds).
-That wheel step installs a Rust toolchain **in CI** — you do not need it locally for
-typos. Default `pytest` uses xdist `-n auto`; browser tests need
-`HEDRON_BROWSER=1 uv run pytest -q -m browser -n 0`. Details:
+**Local verify does not need Rust or Playwright.** Docs-only PRs run the **`docs`**
+CI suite (mkdocs + SSOT + recipe/sim checks) and **skip** the Rust toolchain and
+package wheel builds. Packet scripts (`verify_pkg_*`) belong on full `quality` runs —
+see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md). Default `pytest` uses xdist `-n auto`;
+browser tests need `HEDRON_BROWSER=1 uv run pytest -q -m browser -n 0`. Details:
 [Contributor day-one](docs/guides/contributor-day-one.md).
 
 ## Code / bug fix

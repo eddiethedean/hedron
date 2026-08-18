@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.49.1] — 2026-08-18
+
+### Changed
+- Coordinated train tip `0.49.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Session cookies set Secure when ``FLASK_ENV=production`` (#400).
+- Production security and durability gates run when attaching Hedron to Flask (#401).
+
 ## [0.49.0] — 2026-08-17
 
 ### Added

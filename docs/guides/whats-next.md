@@ -4,8 +4,7 @@ Short public list of **planned** versus **not planned as Supported**. The mainta
 ledger (gate IDs, RFCs) lives on GitHub:
 [`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 Capability maturity for *this* train: [What’s ready](whats-ready.md).
-
-**Published in-tree `v0.49.0`.** Pin `hedron>=0.49.0,<0.50`. Tag/PyPI deferred; PyPI still `0.48.0`.
+Install pins: [Installation](../getting-started/installation.md).
 
 ## Planned after 0.49
 

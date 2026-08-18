@@ -15,6 +15,7 @@ from hedron_core.adapter import UrlReverseRequest
 from hedron_core.component import Component
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderResult
+from hedron_django.csrf import DjangoCsrfError, seed_csrf_cookie, validate_csrf
 from hedron_django.responses import component_response, interaction_response
 
 __all__ = [
@@ -49,8 +50,6 @@ def _convert(
     allow_undeclared_targets: bool = False,
     skip_prepare: bool = False,
 ) -> HttpResponse:
-    from hedron_django.csrf import DjangoCsrfError, seed_csrf_cookie, validate_csrf
-
     method = (request.method or "GET").upper()
     if method in {"GET", "HEAD"}:
         seed_csrf_cookie(request)
@@ -101,6 +100,19 @@ def _convert(
     raise TypeError(f"Unsupported Hedron view return type: {type(value)!r}")
 
 
+def _csrf_gate(request: HttpRequest) -> HttpResponse | None:
+    """Reject unsafe methods before the view runs (Flask/FastAPI parity, #392)."""
+    method = (request.method or "GET").upper()
+    if method in {"GET", "HEAD"}:
+        seed_csrf_cookie(request)
+        return None
+    try:
+        validate_csrf(request)
+    except DjangoCsrfError as exc:
+        return HttpResponse(str(exc).encode("utf-8"), status=403, content_type="text/plain")
+    return None
+
+
 async def _convert_async(
     value: object,
     request: HttpRequest,
@@ -146,6 +158,9 @@ def hedron_view(
             async def async_wrapped(
                 request: HttpRequest, *args: object, **kwargs: object
             ) -> HttpResponse:
+                denied = _csrf_gate(request)
+                if denied is not None:
+                    return denied
                 value = await fn(request, *args, **kwargs)
                 return await _convert_async(
                     value,
@@ -159,6 +174,9 @@ def hedron_view(
 
         @wraps(fn)
         def wrapped(request: HttpRequest, *args: object, **kwargs: object) -> HttpResponse:
+            denied = _csrf_gate(request)
+            if denied is not None:
+                return denied
             value = fn(request, *args, **kwargs)
             return _convert(
                 value,

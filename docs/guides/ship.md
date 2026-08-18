@@ -4,7 +4,7 @@
 maturity lives only on [What’s ready](whats-ready.md). Evaluators:
 [Evaluate Hedron](evaluate.md).
 
-Pin `hedron>=0.49.0,<0.50` (and matching adapters/extras) in your lockfile.
+Pin `hedron>=0.49.1,<0.50` (and matching adapters/extras) in your lockfile.
 
 | Need | Go here |
 |---|---|
