@@ -85,7 +85,9 @@ def test_field_file_ssr_and_contract() -> None:
 def test_399_form_associated_scripts_drop_inner_name() -> None:
     from pathlib import Path
 
-    root = Path(__file__).resolve().parents[2] / "packages/hedron-elements/src/hedron_elements/static"
+    root = (
+        Path(__file__).resolve().parents[2] / "packages/hedron-elements/src/hedron_elements/static"
+    )
     text = (root / "hedron-field-text.mjs").read_text(encoding="utf-8")
     choice = (root / "hedron-field-choice.mjs").read_text(encoding="utf-8")
     files = (root / "hedron-field-file.mjs").read_text(encoding="utf-8")

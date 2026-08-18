@@ -122,7 +122,7 @@ def known_extensions() -> tuple[ExtensionAsset, ...]:
     return (
         ExtensionAsset(
             name="htmx-ext-head-support",
-            version="2.0.2",
+            version="2.0.5",
             digest="sha256-207f449ba70ad0d384b1734288ddae8493d26737bd74d8510829c0be5b737568",
             path="/hedron-static/ext/head-support.js",
             csp="script-src 'self'",

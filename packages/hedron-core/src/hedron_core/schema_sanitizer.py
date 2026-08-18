@@ -245,9 +245,7 @@ def _strip_sensitive_defs(schema: JsonObject, sensitive: tuple[str, ...]) -> Jso
             continue
         remove: set[str] = set()
         for parent, fields in nested.items():
-            if parent == def_name or parent.lower() == def_name.lower():
-                remove.update(fields)
-            elif parent in props:
+            if parent == def_name or parent.lower() == def_name.lower() or parent in props:
                 remove.update(fields)
         if remove:
             new_defs[def_name] = {

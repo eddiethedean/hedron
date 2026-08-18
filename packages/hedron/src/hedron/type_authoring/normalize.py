@@ -22,7 +22,8 @@ from typing import (
 from uuid import UUID
 
 from pydantic import BaseModel, SecretStr
-from pydantic.fields import FieldInfo, PydanticUndefined
+from pydantic.fields import FieldInfo
+from pydantic_core import PydanticUndefined
 
 from hedron.type_authoring.adapter import PydanticBindingAdapter
 from hedron.type_authoring.markers import FormBody, Refreshes, Updates, ViewParams

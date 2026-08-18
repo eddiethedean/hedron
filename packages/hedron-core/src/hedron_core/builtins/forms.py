@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import ClassVar, Literal, cast
+from typing import ClassVar, Literal
 
 from hedron_core.builtins._base import class_names, collect_children, dom_id_part
 from hedron_core.component import Component, NodeLike
@@ -91,8 +91,7 @@ class Form(Component[FormProps]):
             extras.setdefault("hx-swap", "none")
         _validate_hx_attr_map(extras)
         props_kwargs = {k: v for k, v in kwargs.items() if k in FormProps.model_fields}
-        form_method = cast(Literal["get", "post"], resolved_method)
-        super().__init__(FormProps(action=url, method=form_method, **props_kwargs))
+        super().__init__(FormProps(action=url, method=resolved_method, **props_kwargs))
         self._children = collect_children(*nodes, children=children)
         self._html_attrs = extras
 

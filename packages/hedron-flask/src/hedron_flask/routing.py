@@ -7,7 +7,7 @@ from functools import wraps
 from typing import Any, TypeVar
 from urllib.parse import urlsplit
 
-from flask import Flask, current_app, request, url_for
+from flask import Flask, Response, current_app, request, url_for
 
 from hedron_core.adapter import UrlReverseRequest
 from hedron_core.component import Component
