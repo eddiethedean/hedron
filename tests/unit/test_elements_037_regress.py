@@ -76,6 +76,14 @@ def test_234_directory_upload_nul_rejected() -> None:
         validate_directory_upload([("a\x00b.txt", 1)], max_files=10, max_total_size=100)
 
 
+@pytest.mark.parametrize("name", ["foo\nbar.txt", "foo\rbar.txt", "foo\tbar.txt", "foo\x07bar.txt"])
+def test_393_directory_upload_raw_controls_rejected(name: str) -> None:
+    with pytest.raises(ValueError, match="Unsafe directory upload path"):
+        validate_directory_upload([(name, 1)], max_files=10, max_total_size=100)
+    with pytest.raises(ValueError, match="Unsafe directory upload path"):
+        validate_directory_upload([("foo%0abar.txt", 1)], max_files=10, max_total_size=100)
+
+
 def test_235_select_slider_hidden_value_not_index() -> None:
     html = render(SelectSlider("size", [("s", "S"), ("m", "M"), ("l", "L")], value="l")).html
     match = re.search(r'type="hidden"[^>]*value="([^"]*)"', html)
