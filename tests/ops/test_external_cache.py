@@ -158,7 +158,7 @@ def test_redis_cache_tag_index_does_not_expire_immortal_members() -> None:
     client = _StubRedis()
     backend = RedisCacheBackend(client)
     backend.set("perm", {"v": 1}, ttl=None, tags=("t",))
-    tag_key = f"{backend._prefix}tag:t"
+    tag_key = f"{backend._prefix}t:t"
     assert client.pttl(tag_key) == -1
     backend.set("temp", {"v": 2}, ttl=2, tags=("t",))
     assert client.pttl(tag_key) == -1
@@ -173,8 +173,8 @@ def test_redis_cache_overwrite_drops_stale_tag_membership() -> None:
     backend = RedisCacheBackend(client)
     backend.set("k", {"v": 1}, tags=("a",))
     backend.set("k", {"v": 2}, tags=("b",))
-    assert "k" not in client._sets.get(f"{backend._prefix}tag:a", set())
-    assert "k" in client._sets[f"{backend._prefix}tag:b"]
+    assert "k" not in client._sets.get(f"{backend._prefix}t:a", set())
+    assert "k" in client._sets[f"{backend._prefix}t:b"]
     assert backend.invalidate(tags=("a",)) == 0
     assert backend.lookup("k") == (True, {"v": 2})
     assert backend.invalidate(tags=("b",)) == 1
@@ -188,7 +188,7 @@ def test_redis_cache_ttl_zero_cleans_tag_membership() -> None:
     backend.set("k", {"v": 1}, tags=("a",))
     backend.set("k", {"v": 1}, tags=("a",), ttl=0)
     assert backend.lookup("k") == (False, None)
-    assert "k" not in client._sets.get(f"{backend._prefix}tag:a", set())
+    assert "k" not in client._sets.get(f"{backend._prefix}t:a", set())
     backend.set("k", {"v": 2}, tags=("b",))
     assert backend.invalidate(tags=("a",)) == 0
     assert backend.lookup("k") == (True, {"v": 2})

@@ -19,10 +19,17 @@ def _keyspace_overlaps(left: str, right: str) -> bool:
     return left.startswith(right) or right.startswith(left)
 
 
+def _reject_reserved_cache_key(key: str) -> None:
+    if key.startswith("tag:"):
+        raise ValueError("Cache keys must not use the reserved 'tag:' prefix")
+
+
 class RedisCacheBackend(CacheBackend):
     """JSON-valued Redis cache with ``h1:c:`` key prefix and tag index sets.
 
-    The default prefix is disjoint from job records (``h1:job:``). Sharing a Redis
+    The default prefix is disjoint from job records (``h1:job:``). Value keys use
+    ``{prefix}v:`` and tag indexes use ``{prefix}t:`` so a cache key named
+    ``tag:{name}`` cannot collide with a tag set (#254). Sharing a Redis
     client with overlapping prefixes is rejected so cache lookup/invalidate cannot
     leak or delete job JSON (#252). Serialization failures raise — values are never
     stored poisoned. Value SET and tag SADDs commit together via ``MULTI``/``EXEC``
@@ -46,10 +53,11 @@ class RedisCacheBackend(CacheBackend):
         self._prefix = prefix
 
     def _key(self, key: str) -> str:
-        return f"{self._prefix}{key}"
+        _reject_reserved_cache_key(key)
+        return f"{self._prefix}v:{key}"
 
     def _tag_key(self, tag: str) -> str:
-        return f"{self._prefix}tag:{tag}"
+        return f"{self._prefix}t:{tag}"
 
     def _ktags_key(self, key: str) -> str:
         return f"{self._prefix}_tags:{key}"
@@ -66,6 +74,7 @@ class RedisCacheBackend(CacheBackend):
         return value if hit else None
 
     def lookup(self, key: str) -> tuple[bool, Any]:
+        _reject_reserved_cache_key(key)
         raw = self._client.get(self._key(key))
         if raw is None:
             return False, None
@@ -84,6 +93,7 @@ class RedisCacheBackend(CacheBackend):
         ttl: float | None = None,
         tags: tuple[str, ...] = (),
     ) -> None:
+        _reject_reserved_cache_key(key)
         try:
             payload = json.dumps(value, separators=(",", ":"))
         except (TypeError, ValueError) as exc:
@@ -226,7 +236,10 @@ class RedisCacheBackend(CacheBackend):
 
     def invalidate(self, *, tags: tuple[str, ...] = (), keys: tuple[str, ...] = ()) -> int:
         removed = 0
-        to_delete: set[str] = set(keys)
+        to_delete: set[str] = set()
+        for key in keys:
+            _reject_reserved_cache_key(key)
+            to_delete.add(key)
         for tag in tags:
             members = self._client.smembers(self._tag_key(tag)) or set()
             for member in members:

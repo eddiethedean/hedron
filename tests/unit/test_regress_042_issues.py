@@ -705,7 +705,7 @@ def test_208_redis_cache_tag_index_gets_ttl() -> None:
     client = _StubRedis()
     backend = RedisCacheBackend(client)
     backend.set("k1", {"n": 1}, ttl=1.5, tags=("t",))
-    tag_key = f"{backend._prefix}tag:t"
+    tag_key = f"{backend._prefix}t:t"
     assert "k1" in client._sets[tag_key]
     assert client.pttl(tag_key) >= 1500
     # Longer entry extends tag TTL rather than leaving it immortal.
@@ -930,7 +930,7 @@ def test_242_redis_cache_ttl_matches_in_memory_semantics() -> None:
     client = _Client()
     redis = RedisCacheBackend(client)
     redis.set("frac", "v", ttl=1.9)
-    assert client.px[f"{redis._prefix}frac"] == 1900
+    assert client.px[f"{redis._prefix}v:frac"] == 1900
 
 
 def test_243_rq_local_job_cache_pruned_on_terminal_and_cleanup() -> None:
