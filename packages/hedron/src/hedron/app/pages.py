@@ -358,7 +358,7 @@ class HedronPagesMixin:
                 compile_command_class,
                 reconstruct_kwargs,
             )
-            from hedron.type_authoring.signature import reject_json_formbody
+            from hedron.type_authoring.signature import formbody_media_types, reject_json_formbody
             from hedron_core.codes import HED_CMD_0002
             from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
@@ -406,8 +406,12 @@ class HedronPagesMixin:
 
             if authorization is not None:
                 endpoint._hedron_requires_scopes = authorization  # type: ignore[attr-defined]
+            meta = handle.type_meta
+            if meta is not None:
+                media = formbody_media_types(meta)
+                if media:
+                    endpoint._hedron_form_media = media  # type: ignore[attr-defined]
             with contextlib.suppress(TypeError, ValueError):
-                meta = handle.type_meta
                 if meta is not None:
                     endpoint.__signature__ = apply_modeled_signature(fn, meta)  # type: ignore[attr-defined]
                 else:

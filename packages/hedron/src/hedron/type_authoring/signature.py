@@ -16,6 +16,7 @@ from hedron_core.codes import HED_TYPE_0003
 __all__ = [
     "apply_modeled_signature",
     "compile_injected_depends",
+    "formbody_media_types",
     "reconstruct_kwargs",
     "reject_json_formbody",
 ]
@@ -24,6 +25,16 @@ _FORM_MEDIA = {
     "urlencoded": "application/x-www-form-urlencoded",
     "multipart": "multipart/form-data",
 }
+
+
+def formbody_media_types(compiled: CompiledTypeHandler) -> tuple[str, ...]:
+    """Allowed Content-Type values for a FormBody command, or empty if not FormBody."""
+    if not compiled.modeled or not isinstance(compiled.source, FormBody):
+        return ()
+    allowed = _FORM_MEDIA.get(compiled.form_encoding or "urlencoded")
+    if allowed:
+        return (allowed,)
+    return tuple(_FORM_MEDIA.values())
 
 
 def reject_json_formbody(
