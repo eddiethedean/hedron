@@ -62,10 +62,12 @@ _DANGEROUS_FORMULA_PREFIXES = frozenset(
         "+",
         "-",
         "@",
+        "|",
         "\uff1d",  # fullwidth equals
         "\uff0b",  # fullwidth plus
         "\uff0d",  # fullwidth hyphen-minus
         "\uff20",  # fullwidth commercial at
+        "\uff5c",  # fullwidth vertical line
     }
 )
 
