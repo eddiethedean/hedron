@@ -54,7 +54,18 @@ def inspect_data(value: object) -> DataIntelligenceReport:
             isinstance(v, Sequence) and not isinstance(v, (str, bytes)) for v in value.values()
         ):
             keys = list(value.keys())[:_MAX_INSPECT_COLS]
-            length = len(next(iter(value.values())))
+            lengths = [len(v) for v in value.values()]
+            if any(col_len != lengths[0] for col_len in lengths):
+                raise error(
+                    "HED-DATA-0005",
+                    title="Column-oriented lengths mismatch",
+                    explanation=(
+                        "All column sequences must share the same length; "
+                        f"got {dict(zip((str(k) for k in value), lengths, strict=True))}."
+                    ),
+                    remediation="Align column arrays or pass list[dict] rows instead.",
+                )
+            length = lengths[0]
             if length > _MAX_INSPECT_ROWS:
                 notes.append(f"truncated rows to {_MAX_INSPECT_ROWS}")
             n = min(length, _MAX_INSPECT_ROWS)
