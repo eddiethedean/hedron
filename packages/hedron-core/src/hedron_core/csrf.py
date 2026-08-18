@@ -21,7 +21,20 @@ def generate_csrf_token() -> str:
 def tokens_match(expected: str, provided: str) -> bool:
     if not expected or not provided:
         return False
-    return hmac.compare_digest(expected, provided)
+    if not isinstance(expected, str) or not isinstance(provided, str):
+        return False
+    try:
+        left = expected.encode("utf-8")
+        right = provided.encode("utf-8")
+    except (TypeError, UnicodeEncodeError):
+        return False
+    if len(left) != len(right):
+        hmac.compare_digest(left, left)
+        return False
+    try:
+        return hmac.compare_digest(left, right)
+    except (TypeError, ValueError):
+        return False
 
 
 def validate_double_submit(

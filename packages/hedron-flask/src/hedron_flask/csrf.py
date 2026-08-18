@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 from werkzeug.exceptions import Forbidden
 
+from hedron_core.csrf import tokens_match
 from hedron_core.csrf_strategy import DoubleSubmitCookieCsrf
 from hedron_core.security_policy import SecurityPolicy, SecurityProfile
 
@@ -232,7 +233,7 @@ def validate_csrf(
     submitted = request.headers.get(header_name)
     if not submitted and request.form:
         submitted = extract_csrf_from_form(dict(request.form), field_name=form_field)
-    if not submitted or not secrets.compare_digest(cookie, submitted):
+    if not submitted or not tokens_match(cookie, submitted):
         from hedron_core.audit import SecurityAuditEventType, emit_security_audit
 
         emit_security_audit(
