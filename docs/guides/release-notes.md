@@ -5,17 +5,29 @@ details remain in the [package changelogs](changelog.md).
 
 ## 0.49.0 — 2026-08-17
 
-Coordinated Beta in-tree cut for FastAPI/Pydantic convergence (D-081 / D-084 / RFC-0076).
+In-tree FastAPI/Pydantic binding work. **PyPI still serves `hedron` 0.48.0** until the
+deferred upload — [Installation](../getting-started/installation.md).
 
-- `DependsOn` compiles `HANDLER` → FastAPI `Depends(scope="function")` and `RESPONSE` → `Depends(scope="request")`.
-- `BoundaryBindingPlan` sits beside `BindingPlan`; eligible query/header/cookie/non-file form models may use native Pydantic parameter models; mixed path/query and files stay expanded-fields.
-- Additive TypeSchema v2 dual projections; v1 readers remain. Tagged public-wire `kind` unions for locked families.
-- Router provenance, typed OpenAPI projection, and non-granting `RequiresScopes`. Cached `TypeAdapter` is measured off the FormBody path.
-- Workbench/Posit settings retain custom loaders. FailFast / Pydantic `MISSING` / partial validation stay experimental (not Supported).
-- New symbols begin Beta. `SR-021` stays open. Live-transport maturity is unchanged (`polling_only`). `MORPH-048` stays Deferred.
-- Pin in-tree `hedron>=0.49.0,<0.50`. Charts remain on `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
-- Query-only native-model `ViewParams` keep compiled `Query()` markers so GET does not 422 as a JSON body (#381). Late page/router registration after OpenAPI cache or registry seal fail closed (#382). Required `FormBody` JSON is HTTP 415 `HED-TYPE-0003` (#383). TypeSchema sanitizer fail-closes unknown keys and `json_schema_extra` secrets (#384).
-- In-tree cut only; Git tag / GitHub Release / PyPI remain deferred ([#380](https://github.com/eddiethedean/hedron/issues/380)). PyPI still serves `hedron` `0.48.0`.
+- FastAPI `Depends` compiles from Hedron `DependsOn` for handler and response scopes.
+- Query, header, cookie, and non-file form models can bind as native Pydantic parameter models.
+- TypeSchema v2 dual projections; v1 readers still work.
+- Router provenance and typed OpenAPI projection; `RequiresScopes` remains non-granting.
+- Workbench/Posit settings keep custom loaders.
+- Bugfixes: query-only GET no longer 422s as JSON (#381); late registration fails closed (#382); required FormBody JSON is HTTP 415 (#383); TypeSchema sanitizer fail-closes unknown keys (#384).
+
+Pin this docs tree with `hedron>=0.49.0,<0.50`. Charts remain on
+`hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
+
+<details markdown>
+<summary>Maintainer identifiers</summary>
+
+D-081 / D-084 / RFC-0076. New symbols begin Beta. `SR-021` stays open. Live-transport
+maturity is unchanged (`polling_only`). `MORPH-048` stays Deferred. FailFast / Pydantic
+`MISSING` / partial validation stay experimental (not Supported). In-tree cut only; Git
+tag / GitHub Release / PyPI remain deferred
+([#380](https://github.com/eddiethedean/hedron/issues/380)).
+
+</details>
 
 ```bash
 python -m pip install -U "hedron>=0.49.0,<0.50"

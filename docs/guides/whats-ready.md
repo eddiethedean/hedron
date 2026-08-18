@@ -1,34 +1,18 @@
 # What’s ready today
 
-Use this page to decide **whether a capability is safe to depend on** in a pinned app.
-**Published in-tree `v0.49.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.49.0,<0.50`. The latest on **PyPI** is **`0.48.0`**.
-Maintainer evidence tables live in the repository
-[`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
-
-For a pinned internal admin/CRUD app (`hedron>=0.49.0,<0.50`), you can use typed pages, HTMX fragments, CSRF
-(`standard`/`strict`), Flask/Django adapters, and polling for job status.
-
 **Ship today (pinned CRUD / admin on FastAPI, Flask, or Django):** pages, HTMX
 fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-Pin versions. The flagship and adapters are Beta (no Hedron 1.0, no SLA);
-`hedron-elements` is Beta (Supported inventory only), while `fastapi-workbench` has an independent 1.x line.
-Prefer polling over SSE/WebSocket.
+Install from PyPI with `hedron>=0.48.0,<0.49` — extras and this-repository checkout:
+[Installation](../getting-started/installation.md). This docs tree describes **0.49**
+in-tree APIs. Capability readiness, API compatibility, and package maturity are three
+separate axes — [How labels work](#how-labels-work). Evaluators who need the cheat-sheet:
+[Maturity labels](../getting-started/how-to-read.md).
 
-**Charts / sample kit:** install with floors
-`hedron[charts]>=0.49.0,<0.50` and `hedron-sample-kit>=0.1.10,<0.2`.
-First-party `ChartSpec` / `hedron-chart` (SVG or Canvas) and Matplotlib/static charts are
-**Supported** on the Beta `hedron-charts` package; Plotly / Altair remain **Experimental**.
-**Tooling-grade:** notebook preview is Supported only on localhost and is not a production
-server. **Experimental:** live SSE/WS. Gradio remote client interop is **Beta**
-(`hedron-gradio` `0.2.0`) for declared allowlisted destinations. MCP is **Beta** for its
-declared Supported inventory (`hedron-mcp` `0.2.1`).
-
-Need procurement detail (API stability tiers, a11y sessions, evidence)? See
-[How labels work](#how-labels-work) below — skip it if you are just building.
+Maintainer evidence tables live in the repository
+[`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
 !!! tip "Can I ship an internal admin app?"
 
@@ -99,7 +83,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
 | Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.49.0,<0.50`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
-| Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
+| Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Runnable [model-demo example](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) — [Model demos](model-demos.md) · [Recipes](../examples/recipes/index.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.1` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
@@ -219,9 +203,11 @@ Prefer adopter recipes first:
 - [Flask Refresh](../examples/flask-recipe.md) · [Django Refresh](../examples/django-recipe.md)
 - FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
 
-Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …) are
+Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, …) are
 **maintainer evidence stubs**, not product tutorials — see
-[phase evidence](../examples/phase-evidence.md). Live interaction sample:
+[phase evidence](../examples/phase-evidence.md). The
+[model-demo example](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18)
+is a runnable classifier. Live interaction sample:
 [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
 (polling Supported; SSE/WS experimental).
 

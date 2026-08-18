@@ -37,7 +37,7 @@ The generated app is ordinary Python:
 import os
 from datetime import UTC, datetime
 
-from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+from hedron import Hedron, Page, Stack, Text, html
 
 app = Hedron(
     title="Hedron App",
@@ -46,14 +46,12 @@ app = Hedron(
     session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
 )
 
-status = app.region("service-status", description="Live status panel")
 
-
-def status_panel():
+@app.refreshable("/status")
+def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
-        id=status.id,
         role="status",
         aria={"live": "polite"},
     )
@@ -64,20 +62,14 @@ def home() -> Page:
     return Page(
         Stack(
             Text("Hello from Hedron"),
-            status_panel(),
-            RefreshButton.for_region(status, href="/status", label="Refresh status"),
+            status(),
+            status.refresh_button("Refresh status"),
         ),
         title="Home",
     )
-
-
-@app.fragment("/status", region=status)
-def refresh_status():
-    return swap(status_panel())
 ```
 
-The declared `region` is both the browser swap target and a server-side allowlist.
-Requests aimed at undeclared targets fail closed.
+Undeclared HTMX targets fail closed.
 
 [Follow the first-app walkthrough](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/)
 or browse the

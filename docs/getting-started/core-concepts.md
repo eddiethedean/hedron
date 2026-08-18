@@ -47,8 +47,9 @@ unit tests fast.
 ## Pages and routes
 
 `@app.page` declares a navigable HTML route. A `Page` carries document metadata and page
-content. App-local fragments use explicit component routes, while reusable packages can
-declare addressable components that an application must opt into.
+content. Day-to-day fragment updates use `@app.refreshable` (what `hedron new` generates).
+The explicit `app.region` / `@app.fragment` API remains for custom allowlists —
+[Which interaction API?](interaction-apis.md).
 
 That separation matters: rendering a component never silently makes it reachable over
 HTTP, and reachability never grants authorization.

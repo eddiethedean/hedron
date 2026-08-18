@@ -30,28 +30,23 @@ explicit HTTP request, and it may swap a **typed HTML fragment** into a declared
 
     ```python
     from datetime import UTC, datetime
-    from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+    from hedron import Hedron, Page, Stack, Text, html
 
     app = Hedron(title="Demo", security="standard", session_secret="dev", explorer="off")
-    status = app.region("status")
 
 
-    def panel():
+    @app.refreshable("/status")
+    def status():
         stamp = datetime.now(UTC).strftime("%H:%M:%S")
-        return html.div(Text(f"ok · {stamp}"), id=status.id)
+        return html.div(Text(f"ok · {stamp}"), role="status")
 
 
     @app.page("/")
     def home() -> Page:
         return Page(
-            Stack(Text("Hello"), panel(), RefreshButton.for_region(status, href="/status")),
+            Stack(Text("Hello"), status(), status.refresh_button("Refresh")),
             title="Demo",
         )
-
-
-    @app.fragment("/status", region=status)
-    def refresh():
-        return swap(panel())  # HTMX swaps only this region
     ```
 
 Hedron keeps FastAPI dependency injection, OpenAPI, and CSRF-ready forms.

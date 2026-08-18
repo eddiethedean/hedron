@@ -17,10 +17,12 @@ Routes return components; HTMX updates the page — no Node build, no full-scrip
 open localhost:8000 → click **Refresh status**.
 { .hedron-lede }
 
-**Published in-tree `v0.49.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.49.0,<0.50`. The latest on **PyPI** is **`0.48.0`**. Before production, see
+```bash
+uvx --from "hedron>=0.48.0,<0.49" hedron new my-hedron-app
+```
+
+Pins and extras: [Installation](getting-started/installation.md). Before production:
 [What’s ready](guides/whats-ready.md).
-{ .hedron-lede }
 
 <div class="hedron-actions" markdown>
 [Get started](getting-started/quickstart.md){ .md-button .md-button--primary }
@@ -33,6 +35,8 @@ In-tree pin `hedron>=0.49.0,<0.50`. The latest on **PyPI** is **`0.48.0`**. Befo
   <span>FastAPI + HTMX</span>
   <span>No Node build</span>
 </div>
+
+![Hello from Hedron with Refresh status](assets/hello-refresh.jpg){ .hedron-hero-shot }
 
 </div>
 
@@ -92,7 +96,7 @@ rerun dashboards.
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.49.0,<0.50`.
+Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.48.0,<0.49` from PyPI.
 Capability readiness and API compatibility are separate: read
 [Maturity labels](getting-started/how-to-read.md) before interpreting Supported,
 Experimental, `stable`, or `beta`. For production adoption, continue with

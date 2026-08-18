@@ -103,17 +103,33 @@ docs to the tag that matches your installed release.
 (or form field `csrf_token`) with the same value. On HTTPS, ensure the client stores
 `Secure` cookies. See [Security](security.md).
 
+## Tutorial code does not match `hedron new`
+
+**Cause:** A guide still shows `app.region` / `@app.fragment` / `RefreshButton.for_region`,
+but `hedron new` generates `@app.refreshable("/status")` and `status.refresh_button(...)`.
+
+**Fix:** Keep the generated app. Add a second `@app.refreshable` as in
+[HTMX interactions](htmx-interactions.md). Do not paste a region/fragment scaffold over
+Hello. See [Which interaction API?](../getting-started/interaction-apis.md).
+
+## `HEDRON_SESSION_SECRET` did nothing
+
+**Cause:** Hedron does not read that environment variable. It is an adopter convention.
+
+**Fix:** Pass `session_secret=` into `Hedron(...)`, typically
+`session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production")`.
+See [Secrets and workers](secrets-and-workers.md).
+
 ## HTMX 403 on fragment request
 
 **Cause:** The request’s `HX-Target` is not in the route’s declared region allowlist
 (typo in the region id / selector, or wrong fragment route).
 
-**Fix:** Prefer one region object end-to-end: `status = app.region("service-status")`,
+**Fix:** Prefer the generated handle: `@app.refreshable("/status")` plus
+`status.refresh_button(...)`. If you use the explicit allowlist path, keep one region
+object end-to-end: `status = app.region("service-status")`,
 `RefreshButton.for_region(status, href="/status", ...)`, and
-`@app.fragment("/status", region=status)`. If you use the lower-level path, ensure
-`RefreshButton(..., target=STATUS_REGION.selector)` matches
-`FragmentRegion(selector=...)`, and that `@app.component(..., fragment_regions=(...))`
-lists that region. Confirm with:
+`@app.fragment("/status", region=status)`. Confirm with:
 
 ```bash
 curl -H 'HX-Request: true' -H 'HX-Target: #service-status' http://127.0.0.1:8000/status

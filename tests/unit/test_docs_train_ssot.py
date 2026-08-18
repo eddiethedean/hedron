@@ -89,15 +89,48 @@ def test_first_run_pages_must_disclose_deferred_pypi() -> None:
     if not ssot.FACTS.registry_deferred:
         return
     missing = ssot.check_first_run_registry_honesty(
-        {path: "Train 0.46 without mentioning the index.\n" for path in ssot.FIRST_RUN_PATHS}
+        {path: "Train 0.46 without mentioning the index.\n" for path in ssot.REGISTRY_HONESTY_PATHS}
     )
     assert missing
     honest = (
         f"On PyPI today: {ssot.FACTS.pypi_version}. "
-        "This repository is 0.46.0 (Git tag / PyPI deferred).\n"
+        f"This repository is {ssot.FACTS.published_version} (Git tag / PyPI deferred).\n"
     )
-    ok = ssot.check_first_run_registry_honesty({path: honest for path in ssot.FIRST_RUN_PATHS})
+    ok = ssot.check_first_run_registry_honesty(
+        {path: honest for path in ssot.REGISTRY_HONESTY_PATHS}
+    )
     assert not ok
+
+
+def test_first_run_install_commands_require_pypi_pin_when_deferred() -> None:
+    if not ssot.FACTS.registry_deferred:
+        return
+    path = Path("README.md")
+    assert not ssot.check_text(path, f'uvx --from "hedron{ssot.FACTS.pypi_pin}" hedron new demo')
+    assert ssot.check_text(path, f'uvx --from "hedron{ssot.FACTS.pin}" hedron new demo')
+    install = Path("docs/getting-started/installation.md")
+    assert not ssot.check_text(install, f'pip install "hedron{ssot.FACTS.pin}"')
+    assert not ssot.check_text(install, f'pip install "hedron{ssot.FACTS.pypi_pin}"')
+
+
+def test_in_tree_deferred_boilerplate_is_restricted() -> None:
+    blob = (
+        f"**Published in-tree `v{ssot.FACTS.published_version}`.** "
+        "Git tag and PyPI upload are **deferred**.\n"
+    )
+    assert ssot.check_in_tree_deferred_boilerplate(Path("docs/index.md"), blob)
+    assert not ssot.check_in_tree_deferred_boilerplate(ssot.CANONICAL_INSTALL_PAGE, blob)
+
+
+def test_evaluate_version_row_rejects_stale_train() -> None:
+    stale = "| Version | **0.46.x** (Beta; pin `hedron>=0.49.0,<0.50`) |\n"
+    assert ssot.check_evaluate_version(stale)
+    if ssot.FACTS.registry_deferred:
+        ok = (
+            f"| Version | **{ssot.FACTS.pypi_version}** on PyPI (Beta). "
+            f"This docs tree is **{ssot.FACTS.published_version}**. |\n"
+        )
+        assert not ssot.check_evaluate_version(ok)
 
 
 def test_historical_install_can_be_skipped_without_skipping_current_claims() -> None:

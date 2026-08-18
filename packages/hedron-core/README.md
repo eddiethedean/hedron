@@ -15,7 +15,7 @@ framework.
 **Published in-tree `v0.49.0`.** Git tag and PyPI upload are **deferred**.
 In-tree pin `hedron-core>=0.49.0,<0.50`. The latest on **PyPI** is **`0.48.0`**.
 
-**Package maturity:** Beta · pin `>=0.49.0,<0.50`.
+**Package maturity:** Beta · pin `>=0.48.0,<0.49` from the public index.
 
 ## Install
 

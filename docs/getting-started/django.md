@@ -5,7 +5,8 @@ The **CLI** (`hedron new --django`) comes from the `hedron` package; **runtime**
 `hedron-django` + `hedron-core`. The adapter does **not** install FastAPI.
 It mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
 
-**Published in-tree `v0.49.0`.** Pin `hedron>=0.49.0,<0.50` (or `hedron-django>=0.49.0,<0.50`).
+Install from PyPI: `hedron>=0.48.0,<0.49` (or `hedron-django>=0.48.0,<0.49`).
+Pins: [Installation](installation.md).
 
 ## Golden path (scaffold + Refresh)
 
@@ -15,7 +16,7 @@ and raw `hx-*` attributes, not FastAPI `RefreshButton`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.49.0,<0.50" hedron new my-django-app --django
+uvx --from "hedron>=0.48.0,<0.49" hedron new my-django-app --django
 cd my-django-app && uv sync
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```

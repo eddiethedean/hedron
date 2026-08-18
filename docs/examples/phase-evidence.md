@@ -10,7 +10,7 @@ Prefer [recipes](recipes/index.md), the [CRUD tutorial](crud-tutorial.md), and
 | [`data-app-0.15`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.15) | 0.15 | Data-app surface exit | Incomplete assets; not a gallery demo |
 | [`data-app-0.16`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.16) | 0.16 | Extras / workbench exit | Raw routes — not idiomatic `@page` teaching |
 | [`dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17) | 0.17 | Dashboard / agent interface exit | **Stub UI** — bindings declared; not an interactive dashboard |
-| [`model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) | 0.18 | Model demo / inference exit | **Stub UI** — setup + text dump; not a full classify form |
+| [`model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) | 0.18 | Model demo / inference exit | Runnable classifier — also listed under [Recipes](recipes/index.md) |
 | Reference app a11y statement | 0.19 | Accessibility statement / PE evidence | See [`accessibility_statement.py`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/accessibility_statement.py); human AT → 0.21 |
 
 ```bash

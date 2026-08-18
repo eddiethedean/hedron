@@ -25,6 +25,7 @@ charts_minimum_version = "0.2.0"
 charts_maximum_version = "0.3"
 
 [documentation]
+canonical_install_page = "getting-started/installation.md"
 canonical_release_page = "guides/release-notes.md"
 canonical_maturity_page = "guides/whats-ready.md"
 canonical_upgrade_page = "guides/upgrade.md"

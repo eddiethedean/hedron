@@ -32,7 +32,7 @@ def test_docs_043_three_layers_and_whats_new() -> None:
     assert "HED-UPDATE-0001" in codes
     assert "HED-HOST-0001" in codes
     assert "FragmentHandle" in stability
-    assert "@app.refreshable" in scaffold
+    assert '@app.refreshable("/status")' in scaffold
     assert "swap(" not in scaffold
     assert "whats-new-0.43" in archive
     assert "whats-new-archive" in mkdocs

@@ -1,4 +1,4 @@
-# How-to guides
+# Guides
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 

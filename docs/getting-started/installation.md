@@ -3,16 +3,29 @@
 Prerequisites, extras, host adapters, and troubleshooting.
 
 The golden-path Hello copy-paste lives on
-[Build your first app](quickstart.md) (`hedron new` → Hello → Refresh). Use **this** page
-for version checks, optional extras, Flask/Django adapters, and install failures.
-
-**Published in-tree `v0.49.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.49.0,<0.50`. The latest on **PyPI** is **`0.48.0`**;
-registry installs should pin `hedron>=0.48.0,<0.49` until a later upload.
+[Build your first app](quickstart.md) (`hedron new` → Hello → Refresh). Use **this**
+page for version pins, optional extras, Flask/Django adapters, and install failures.
 
 Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
-## Prerequisites
+## Which version to install
+
+**Install from PyPI** unless you are developing Hedron itself. The latest on **PyPI**
+is **`0.48.0`**. Git tag and PyPI upload for in-tree **`v0.49.0`** are **deferred** —
+registry installs cannot resolve `hedron>=0.49.0,<0.50` until that upload.
+
+| You are… | Install |
+|---|---|
+| Building an app from the public index | `hedron>=0.48.0,<0.49` |
+| Working in this repository | `uv sync` (editable `0.49.0`) |
+
+Always use an upper bound so a future minor train cannot install by accident. Packages
+are **Beta** (usable, no 1.0, no SLA). Capability detail:
+[What’s ready](../guides/whats-ready.md).
+
+## Install from PyPI
+
+### Prerequisites
 
 - CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
 - Use a **clean virtual environment**. Prefer **CI-supported** pins for first apps:
@@ -60,117 +73,7 @@ interpreter for `pip` / `uv` / `uvicorn` (`which python3`, `py -0p` on Windows).
     Prefer `python3` on macOS/Linux and `py -3` on Windows when `python` is missing or
     points at the wrong interpreter. Prefer **`python -m hedron`** so PATH never matters.
 
-## Verify
-
-After following [Build your first app](quickstart.md):
-
-=== "uv"
-
-    ```bash
-    uv run python -c "import hedron; print(hedron.__version__)"
-    ```
-
-=== "pip (activated venv)"
-
-    ```bash
-    python -c "import hedron; print(hedron.__version__)"
-    ```
-
-Expect **`0.48.0`**.
-
-If `hedron` is not found after install, prefer **`python -m hedron …`** or see
-[Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
-
-## Common install problems
-
-| Symptom | Fix |
-|---|---|
-| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.48.0,<0.49" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
-| `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
-| FastAPI / pip resolver conflict | Empty venv recommended; see [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
-| `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
-| Wrong / old version | `pip install -U "hedron>=0.48.0,<0.49"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
-| CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
-| Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
-| Need charts | Install `hedron[charts]>=0.49.0,<0.50` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
-| Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
-| Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
-
-Full list: [Troubleshooting](../guides/troubleshooting.md) ·
-[Failure gallery](../guides/troubleshooting.md#failure-gallery-top-5) ·
-[FAQ](../guides/faq.md).
-
-!!! tip "If install fails on FastAPI/Pydantic"
-
-    Prefer a **clean virtual environment** for your first app (do not reuse a shared env
-    that already pins an older FastAPI). Then see
-    [Dependency pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) for the
-    Supported vs declared FastAPI/Pydantic ranges.
-
-## Optional extras
-
-**You only need `hedron` (+ uvicorn) for Hello and most CRUD/admin apps.** Install
-extras only when you need them. Full catalog: [Optional packages](../packages/index.md).
-
-| Extra | When you need it | Package docs |
-|---|---|---|
-| `hedron[data]` | DataTable / DataEditor / data sources | [hedron-data](../packages/hedron-data.md) |
-| `hedron[dev]` | Component Explorer (`/hedron-explorer/`) | [hedron-explorer](../packages/hedron-explorer.md) |
-| `hedron[charts]` | First-party / Matplotlib charts | [hedron-charts](../packages/hedron-charts.md) |
-| `hedron-flask` / `hedron-django` | Flask or Django host (no FastAPI at runtime) | [Flask](flask.md) · [Django](django.md) |
-
-Other extras (`jinja`, `auth`, `mcp`, `gradio`, `elements` **Beta** for Supported
-inventory, Workbench/Posit, notebook, native): [Packages](../packages/index.md).
-
-```bash
-pip install "hedron[data]>=0.49.0,<0.50"
-```
-
-Charts and the sample plugin have explicit compatibility floors:
-
-```bash
-pip install "hedron[charts]>=0.49.0,<0.50"
-pip install "hedron-sample-kit>=0.1.10,<0.2"
-```
-
-Versions through `0.1.5` target older cores. Details:
-[Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) ·
-[hedron-charts](../packages/hedron-charts.md) ·
-[Charts and HTMX](../guides/charts-and-htmx.md).
-
-!!! note "`hedron[browser]` needs Playwright browsers"
-
-    The `[browser]` extra installs the Playwright **Python** package. You must also
-    download browser binaries once per environment:
-
-    ```bash
-    pip install "hedron[browser]>=0.49.0,<0.50"
-    playwright install chromium
-    ```
-
-    Without `playwright install`, browser tests fail with missing-browser errors. Adopter
-    apps do **not** need `[browser]` — it is for testing helpers. Contributors: see
-    [Contributing](../CONTRIBUTING.md).
-
-### Other hosts
-
-| Package | Use when |
-|---|---|
-| `hedron-flask` | Flask — `init_app` / Blueprint, page + fragment routing/HTMX Supported |
-| `hedron-django` | Django `>=5.2,<6` — forms bridge + QuerySet DataSource Supported |
-| `hedron-core` | Framework-neutral rendering only |
-
-Quickstarts: [Flask](flask.md) · [Django](django.md).
-
-### Component Explorer
-
-With `hedron[dev]` installed and `explorer="development"` on `Hedron(...)`, open
-[`/hedron-explorer/`](http://127.0.0.1:8000/hedron-explorer/) while the app is running.
-Leave Explorer off in production.
-
-## Alternative: manual project
-
-Use this only if you are **not** using `hedron new`.
+Then follow [Build your first app](quickstart.md), or install into an existing project:
 
 === "uv"
 
@@ -199,14 +102,31 @@ Use this only if you are **not** using `hedron new`.
     ```
 
 Then create `app.py` from the complete listing on
-[Build your first app](quickstart.md) (manual / no-scaffold path).
+[Build your first app](quickstart.md) (manual / no-scaffold path). Prefer
+`hedron new` when you want the generated project.
 
-## Supported environments
+### Verify
 
-See the [compatibility policy](../COMPATIBILITY.md) for exact ranges. When evaluating
-production use, see [What’s ready today](../guides/whats-ready.md).
+=== "uv"
 
-## Contributor checkout
+    ```bash
+    uv run python -c "import hedron; print(hedron.__version__)"
+    ```
+
+=== "pip (activated venv)"
+
+    ```bash
+    python -c "import hedron; print(hedron.__version__)"
+    ```
+
+Expect **`0.48.0`** from the public index.
+
+If `hedron` is not found after install, prefer **`python -m hedron …`** or see
+[Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
+
+## This repository (`uv sync`)
+
+Clone only if you are contributing or running in-tree examples:
 
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
@@ -214,4 +134,97 @@ cd hedron
 uv sync
 ```
 
+This checkout is **0.49.0**. Do not tell PyPI users to
+`pip install "hedron>=0.49.0,<0.50"` until the wheel is on the index.
+
 See [Contributing](../CONTRIBUTING.md).
+
+## Optional extras
+
+**You only need `hedron` (+ uvicorn) for Hello and most CRUD/admin apps.** Install
+extras only when you need them. Full catalog: [Optional packages](../packages/index.md).
+
+Registry extras use the same PyPI pin as the flagship:
+
+```bash
+pip install "hedron[data]>=0.48.0,<0.49"
+pip install "hedron[charts]>=0.48.0,<0.49"
+pip install "hedron-sample-kit>=0.1.10,<0.2"
+```
+
+| Extra | When you need it | Package docs |
+|---|---|---|
+| `hedron[data]` | DataTable / DataEditor / data sources | [hedron-data](../packages/hedron-data.md) |
+| `hedron[dev]` | Component Explorer (`/hedron-explorer/`) | [hedron-explorer](../packages/hedron-explorer.md) |
+| `hedron[charts]` | First-party / Matplotlib charts | [hedron-charts](../packages/hedron-charts.md) |
+| `hedron-flask` / `hedron-django` | Flask or Django host (no FastAPI at runtime) | [Flask](flask.md) · [Django](django.md) |
+
+Other extras (`jinja`, `auth`, `mcp`, `gradio`, `elements` **Beta** for Supported
+inventory, Workbench/Posit, notebook, native): [Packages](../packages/index.md).
+
+Charts and the sample plugin have explicit compatibility floors. Versions through
+`0.1.5` of the sample kit target older cores. Details:
+[Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) ·
+[hedron-charts](../packages/hedron-charts.md) ·
+[Charts and HTMX](../guides/charts-and-htmx.md).
+
+!!! note "`hedron[browser]` needs Playwright browsers"
+
+    The `[browser]` extra installs the Playwright **Python** package. You must also
+    download browser binaries once per environment:
+
+    ```bash
+    pip install "hedron[browser]>=0.48.0,<0.49"
+    playwright install chromium
+    ```
+
+    Without `playwright install`, browser tests fail with missing-browser errors. Adopter
+    apps do **not** need `[browser]` — it is for testing helpers. Contributors: see
+    [Contributing](../CONTRIBUTING.md).
+
+### Other hosts
+
+| Package | Use when |
+|---|---|
+| `hedron-flask` | Flask — `init_app` / Blueprint, page + fragment routing/HTMX Supported |
+| `hedron-django` | Django `>=5.2,<6` — forms bridge + QuerySet DataSource Supported |
+| `hedron-core` | Framework-neutral rendering only |
+
+Quickstarts: [Flask](flask.md) · [Django](django.md).
+
+### Component Explorer
+
+With `hedron[dev]` installed and `explorer="development"` on `Hedron(...)`, open
+[`/hedron-explorer/`](http://127.0.0.1:8000/hedron-explorer/) while the app is running.
+Leave Explorer off in production.
+
+## Common install problems
+
+| Symptom | Fix |
+|---|---|
+| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.48.0,<0.49" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
+| `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
+| FastAPI / pip resolver conflict | Empty venv recommended; see [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
+| `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
+| Wrong / old version | `pip install -U "hedron>=0.48.0,<0.49"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
+| CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
+| Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
+| Need charts | Install `hedron[charts]>=0.48.0,<0.49` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
+| Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
+| Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
+
+Full list: [Troubleshooting](../guides/troubleshooting.md) ·
+[Failure gallery](../guides/troubleshooting.md#failure-gallery-top-5) ·
+[FAQ](../guides/faq.md).
+
+!!! tip "If install fails on FastAPI/Pydantic"
+
+    Prefer a **clean virtual environment** for your first app (do not reuse a shared env
+    that already pins an older FastAPI). Then see
+    [Dependency pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) for the
+    Supported vs declared FastAPI/Pydantic ranges.
+
+## Supported environments
+
+See the [compatibility policy](../COMPATIBILITY.md) for exact ranges. When evaluating
+production use, see [What’s ready today](../guides/whats-ready.md).

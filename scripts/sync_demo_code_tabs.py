@@ -20,7 +20,7 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
     (
         "guides/htmx-interactions.md",
         "htmx-interactions",
-        "Multi-region refresh plus an allowlist miss — docs simulation (no live server).",
+        "Two refreshable regions on the Hello scaffold — docs simulation (no live server).",
     ),
     (
         "guides/forms-and-actions.md",

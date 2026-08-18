@@ -185,17 +185,45 @@ def _normalized_version(value: str) -> str:
     return value[:-2] if value.endswith(".x") else value
 
 
-FIRST_RUN_PATHS = frozenset(
+CANONICAL_INSTALL_PAGE = Path("docs/getting-started/installation.md")
+
+# Pages whose pip/uv/uvx lines must use the PyPI pin while the upload is deferred.
+FIRST_RUN_INSTALL_PATHS = frozenset(
     {
         Path("README.md"),
         Path("docs/index.md"),
         Path("docs/getting-started/quickstart.md"),
-        Path("docs/getting-started/installation.md"),
         Path("docs/guides/faq.md"),
-        Path("docs/guides/whats-ready.md"),
+        Path("docs/examples/try-it.md"),
+        Path("docs/getting-started/how-to-read.md"),
+    }
+)
+
+# Deferred-upload honesty lives here — not on every first-run page.
+REGISTRY_HONESTY_PATHS = frozenset(
+    {
+        CANONICAL_INSTALL_PAGE,
         Path("packages/hedron/README.md"),
         Path("packages/hedron-core/README.md"),
     }
+)
+
+BOILERPLATE_ALLOWED_PATHS = frozenset(
+    {
+        *REGISTRY_HONESTY_PATHS,
+        Path("docs/guides/release-notes.md"),
+        Path("docs/guides/whats-new-0.49.md"),
+        Path("docs/RELEASE.md"),
+    }
+)
+
+# Alias used by tests; honesty is no longer required on every first-run page.
+FIRST_RUN_PATHS = REGISTRY_HONESTY_PATHS
+
+IN_TREE_DEFERRED_BOILERPLATE = re.compile(
+    r"published in-tree\s+`?v?0\.\d+(?:\.\d+)?`?\.?\*?\*?\s*"
+    r"git tag and pypi upload are",
+    re.IGNORECASE,
 )
 
 
@@ -245,10 +273,12 @@ def _line_describes_pypi_latest(line: str) -> bool:
     )
 
 
-def _allowed_install_pins(facts: ReleaseFacts) -> set[str]:
+def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[str]:
     allowed = {facts.pin}
     if facts.registry_deferred and facts.pypi_pin != facts.pin:
         allowed.add(facts.pypi_pin)
+        if path is not None and path in FIRST_RUN_INSTALL_PATHS:
+            return {facts.pypi_pin}
     return allowed
 
 
@@ -289,8 +319,8 @@ def check_text(
                     )
             for claim in CURRENT_PIN_CLAIM.finditer(scan):
                 constraint = claim.group(1)
-                if constraint not in _allowed_install_pins(facts):
-                    expected = " or ".join(sorted(_allowed_install_pins(facts)))
+                if constraint not in _allowed_install_pins(facts, path):
+                    expected = " or ".join(sorted(_allowed_install_pins(facts, path)))
                     failures.append(
                         f"{path}:{index}: current/living pin uses {constraint}; "
                         f"expected {expected}"
@@ -318,8 +348,8 @@ def check_text(
             )
             if not constraint and not is_requirement_position:
                 continue
-            if constraint not in _allowed_install_pins(facts):
-                expected = " or ".join(sorted(_allowed_install_pins(facts)))
+            if constraint not in _allowed_install_pins(facts, path):
+                expected = " or ".join(sorted(_allowed_install_pins(facts, path)))
                 failures.append(
                     f"{path}:{index}: install for {match.group('name')} must use "
                     f"{expected}; found {constraint or 'no version constraint'}"
@@ -399,15 +429,15 @@ def check_first_run_registry_honesty(
     files: dict[Path, str],
     facts: ReleaseFacts = FACTS,
 ) -> list[str]:
-    """When the train is not on PyPI, first-run pages must say so."""
+    """When the train is not on PyPI, the canonical install page (and PyPI READMEs) must say so."""
     if not facts.registry_deferred:
         return []
     failures: list[str] = []
     required_bits = (facts.pypi_version, "pypi")
-    for relative in sorted(FIRST_RUN_PATHS):
+    for relative in sorted(REGISTRY_HONESTY_PATHS):
         text = files.get(relative)
         if text is None:
-            failures.append(f"{relative}: missing first-run page")
+            failures.append(f"{relative}: missing registry-honesty page")
             continue
         lower = text.lower()
         missing = [bit for bit in required_bits if bit.lower() not in lower]
@@ -419,6 +449,65 @@ def check_first_run_registry_honesty(
         if "deferred" not in lower and "not on pypi" not in lower:
             failures.append(
                 f"{relative}: deferred PyPI train must say the Git tag/PyPI upload is deferred"
+            )
+    return failures
+
+
+def check_in_tree_deferred_boilerplate(
+    path: Path,
+    text: str,
+) -> list[str]:
+    """Adopter pages must not paste the in-tree/deferred release sentence."""
+    if path in BOILERPLATE_ALLOWED_PATHS or _is_historical(path):
+        return []
+    if IN_TREE_DEFERRED_BOILERPLATE.search(text):
+        return [
+            f"{path}: paste the in-tree/deferred upload sentence only on "
+            f"{CANONICAL_INSTALL_PAGE} (or a PyPI package README / release notes)"
+        ]
+    return []
+
+
+_EVALUATE_VERSION_ROW = re.compile(r"^\|\s*Version\s*\|\s*(.+?)\s*\|", re.IGNORECASE)
+_VERSION_TOKEN = re.compile(r"0\.\d+(?:\.\d+)?(?:\.x)?")
+
+
+def check_evaluate_version(
+    text: str,
+    facts: ReleaseFacts = FACTS,
+    path: Path = Path("docs/guides/evaluate.md"),
+) -> list[str]:
+    """Evaluate's Version row may name the current train or labeled PyPI version only."""
+    allowed_trains = {
+        facts.train,
+        facts.train_line,
+        facts.published_version,
+        facts.pypi_version,
+        facts.pypi_train_line,
+        facts.previous_train,
+        f"{facts.previous_train}.x",
+        facts.previous_version,
+    }
+    failures: list[str] = []
+    for index, line in enumerate(text.splitlines(), start=1):
+        match = _EVALUATE_VERSION_ROW.match(line)
+        if not match:
+            continue
+        cell = match.group(1)
+        for token in _VERSION_TOKEN.findall(cell):
+            train = token[:-2] if token.endswith(".x") else token
+            if "." in train and train.count(".") == 2:
+                train = ".".join(train.split(".")[:2])
+            if token not in allowed_trains and train not in allowed_trains:
+                failures.append(
+                    f"{path}:{index}: Version row names {token}; expected current "
+                    f"{facts.train_line} / v{facts.published_version} or labeled PyPI "
+                    f"{facts.pypi_version}"
+                )
+        if facts.registry_deferred and facts.pypi_version not in cell:
+            failures.append(
+                f"{path}:{index}: Version row must name PyPI {facts.pypi_version} "
+                "while the upload is deferred"
             )
     return failures
 
@@ -447,13 +536,17 @@ def check_security_policy(
 
 def main() -> int:
     failures = check_metadata()
-    first_run_texts: dict[Path, str] = {}
+    honesty_texts: dict[Path, str] = {}
+    evaluate_text: str | None = None
     for path in adopter_files():
         relative = path.relative_to(ROOT)
         text = path.read_text(encoding="utf-8")
-        if relative in FIRST_RUN_PATHS:
-            first_run_texts[relative] = text
+        if relative in REGISTRY_HONESTY_PATHS:
+            honesty_texts[relative] = text
+        if relative == Path("docs/guides/evaluate.md"):
+            evaluate_text = text
         failures.extend(check_text(relative, text))
+        failures.extend(check_in_tree_deferred_boilerplate(relative, text))
     # Historical release pages may keep their original install commands, but any
     # explicit current/living pointer on those pages must track release.toml.
     for path in sorted((ROOT / "docs" / "guides").glob("whats-new-0.*.md")):
@@ -461,7 +554,11 @@ def main() -> int:
         failures.extend(
             check_text(relative, path.read_text(encoding="utf-8"), check_installs=False)
         )
-    failures.extend(check_first_run_registry_honesty(first_run_texts))
+    failures.extend(check_first_run_registry_honesty(honesty_texts))
+    if evaluate_text is None:
+        failures.append("docs/guides/evaluate.md: missing evaluate page")
+    else:
+        failures.extend(check_evaluate_version(evaluate_text))
     root_security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
     docs_security = (ROOT / "docs" / "SECURITY.md").read_text(encoding="utf-8")
     failures.extend(check_security_policy(Path("SECURITY.md"), root_security))
