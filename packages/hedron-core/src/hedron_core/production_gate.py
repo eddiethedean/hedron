@@ -190,7 +190,7 @@ def assert_production_security_config(
                 "allow_external_redirects=True requires explicit risk acceptance in production",
             )
         )
-    if not content_security_policy:
+    if not (content_security_policy or "").strip():
         failures.append(
             (
                 RISK_NO_CSP,
