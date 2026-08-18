@@ -287,3 +287,16 @@ def authorize_location_selectors(
         if not isinstance(select, str):
             raise ValueError("HX-Location select must be a string selector")
         authorize_response_selector(policy, select, header_name="HX-Location select")
+
+
+def fragment_region_http_detail(
+    exc: FragmentRegionError,
+    *,
+    production: bool | None = None,
+) -> str:
+    """Return production-opaque or diagnostic HTMX target rejection detail."""
+    from hedron_core.compile_gate import is_production_env
+
+    if production if production is not None else is_production_env():
+        return "HX-Target is not an authorized fragment region"
+    return str(exc)

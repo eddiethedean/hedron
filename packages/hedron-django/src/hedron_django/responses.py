@@ -292,8 +292,10 @@ def component_response(
             allow_undeclared_targets=allow_undeclared_targets,
         )
     except FragmentRegionError as exc:
+        from hedron_core.htmx.authorize import fragment_region_http_detail
+
         return HttpResponse(
-            str(exc).encode("utf-8"),
+            fragment_region_http_detail(exc).encode("utf-8"),
             status=403,
             content_type="text/plain; charset=utf-8",
         )
@@ -370,8 +372,15 @@ def interaction_response(
             str(exc),
             attributes={"path": path, "target": client_target},
         )
+        from hedron_core.htmx.authorize import fragment_region_http_detail
+
+        detail = (
+            fragment_region_http_detail(exc)
+            if isinstance(exc, FragmentRegionError)
+            else str(exc)
+        )
         return HttpResponse(
-            str(exc).encode("utf-8"),
+            detail.encode("utf-8"),
             status=403,
             content_type="text/plain; charset=utf-8",
         )
