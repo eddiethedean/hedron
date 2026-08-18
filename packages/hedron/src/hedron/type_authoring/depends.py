@@ -50,7 +50,8 @@ def as_fastapi_depends(
 ) -> DependsParam:
     if background:
         forbid_background_capture((marker.resource_id,))
-    scope = compile_fastapi_scope(marker.lifetime)
+    plan = plan_for(marker)
+    scope = compile_fastapi_scope(plan.lifetime)
     provider = dependency if dependency is not None else _missing_provider(marker.resource_id)
     return Depends(provider, scope=scope)
 
