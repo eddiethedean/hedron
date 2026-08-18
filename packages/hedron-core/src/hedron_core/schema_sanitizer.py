@@ -104,7 +104,6 @@ _SCHEMA_MAP_CHILDREN = frozenset(
         "unevaluatedItems",
         "contains",
         "contentSchema",
-        "discriminator",
     }
 )
 _SCHEMA_NAMED_MAP_CHILDREN = frozenset(

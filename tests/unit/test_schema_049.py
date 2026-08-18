@@ -141,3 +141,26 @@ def test_394_hedron_field_secret_registers() -> None:
     dumped = str(schema.as_mapping())
     assert "'hedron'" not in dumped
     assert "hedron" not in (schema.input_projection.get("properties") or {}).get("password", {})
+
+
+def test_395_tagged_union_discriminator_sanitizes() -> None:
+    from typing import Literal
+
+    from pydantic import Field
+
+    class Cat(BaseModel):
+        kind: Literal["cat"] = "cat"
+        meow: str = "m"
+
+    class Dog(BaseModel):
+        kind: Literal["dog"] = "dog"
+        bark: str = "b"
+
+    class Zoo(BaseModel):
+        pet: Annotated[Cat | Dog, Field(discriminator="kind")]
+
+    cleaned = sanitize_json_schema(Zoo.model_json_schema())
+    pet = (cleaned.get("properties") or {}).get("pet") or {}
+    disc = pet.get("discriminator") or cleaned.get("discriminator")
+    assert disc is not None
+    assert "propertyName" in disc or "mapping" in disc
