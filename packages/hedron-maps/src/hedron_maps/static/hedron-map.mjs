@@ -100,14 +100,39 @@ function ensureCss(href) {
 
 function loadScript(src, signal) {
   return new Promise((resolve, reject) => {
+    const fail = () => reject(new Error("maplibre-load"));
+    if (signal && signal.aborted) {
+      fail();
+      return;
+    }
+    if (signal) {
+      signal.addEventListener("abort", fail, { once: true });
+    }
     if (window.maplibregl) {
       resolve(window.maplibregl);
       return;
     }
-    const existing = document.querySelector('script[data-hedron-maplibre="runtime"]');
+    let existing = document.querySelector('script[data-hedron-maplibre="runtime"]');
     if (existing) {
-      existing.addEventListener("load", () => resolve(window.maplibregl), { once: true });
-      existing.addEventListener("error", () => reject(new Error("maplibre-load")), { once: true });
+      const failed =
+        existing.getAttribute("data-hedron-maplibre-error") === "1" ||
+        (existing.complete && !window.maplibregl);
+      if (failed) {
+        existing.remove();
+        existing = null;
+      }
+    }
+    if (existing) {
+      existing.addEventListener("load", () => resolve(window.maplibregl), { once: true, signal });
+      existing.addEventListener(
+        "error",
+        () => {
+          existing.setAttribute("data-hedron-maplibre-error", "1");
+          existing.remove();
+          fail();
+        },
+        { once: true, signal }
+      );
       return;
     }
     const script = document.createElement("script");
@@ -116,7 +141,15 @@ function loadScript(src, signal) {
     script.defer = true;
     script.setAttribute("data-hedron-maplibre", "runtime");
     script.addEventListener("load", () => resolve(window.maplibregl), { once: true, signal });
-    script.addEventListener("error", () => reject(new Error("maplibre-load")), { once: true, signal });
+    script.addEventListener(
+      "error",
+      () => {
+        script.setAttribute("data-hedron-maplibre-error", "1");
+        script.remove();
+        fail();
+      },
+      { once: true, signal }
+    );
     document.head.appendChild(script);
   });
 }
