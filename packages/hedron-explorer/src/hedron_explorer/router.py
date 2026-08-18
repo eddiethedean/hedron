@@ -127,6 +127,21 @@ def _allowed_roots(meta: object, request: Request | None = None) -> list[Path]:
     return _project_component_roots(request)
 
 
+def _hdj_text_under_root(path: Path, root: Path) -> str | None:
+    """Read ``*.hdj`` only when the resolved target stays under ``root`` (#275)."""
+    try:
+        resolved = path.resolve()
+        resolved.relative_to(root)
+    except (OSError, ValueError):
+        return None
+    if not resolved.is_file():
+        return None
+    try:
+        return resolved.read_text(encoding="utf-8")
+    except OSError:
+        return None
+
+
 def _safe_read_text(
     path_str: str | None, meta: object, request: Request | None = None
 ) -> str | None:
@@ -904,9 +919,12 @@ def explorer_router() -> APIRouter:
                 for path in sorted(root.rglob("*.hdj")):
                     if any(part.startswith(".") for part in path.parts):
                         continue
+                    source = _hdj_text_under_root(path, root)
+                    if source is None:
+                        continue
                     try:
                         rel = str(path.relative_to(root))
-                        parsed = parse_hdj_source(rel, path.read_text(encoding="utf-8"))
+                        parsed = parse_hdj_source(rel, source)
                         required = sorted(
                             set(inferred_capabilities(parsed)) | set(parsed.declaration.requires)
                         )
