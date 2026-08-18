@@ -19,7 +19,7 @@ def test_extension_package_data_and_license() -> None:
     assert "BSD" in license_txt.read_text(encoding="utf-8")
     versions = {ext.public_id: ext.version for ext in known_extensions()}
     assert versions["sse"] == "2.2.2"
-    assert versions["head-support"] == "2.0.2"
+    assert versions["head-support"] == "2.0.5"
     assert versions["preload"] == "2.1.2"
 
 
