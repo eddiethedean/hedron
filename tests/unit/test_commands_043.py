@@ -55,6 +55,34 @@ def test_command_returns_handle_not_function_and_action_unchanged() -> None:
     assert pe.headers.get("location") == "/"
 
 
+def test_command_button_embeds_csrf_headers_on_page() -> None:
+    app = make_app(security="standard")
+
+    @app.refreshable
+    def status():
+        return Text("idle")
+
+    @app.command(fallback="/")
+    def ping():
+        return refresh(status).toast("pong")
+
+    @app.page("/")
+    def home():
+        return Page(status(), ping.button("Ping"), title="Home")
+
+    client = TestClient(app)
+    page = client.get("/")
+    token = page.cookies.get("hedron_csrf")
+    assert token
+    assert "hx-headers" in page.text
+    assert token in page.text
+    response = client.post(
+        ping.path,
+        headers={"HX-Request": "true", "X-CSRF-Token": token},
+    )
+    assert response.status_code == 200
+
+
 def test_command_rejects_safe_method() -> None:
     app = make_app()
 
