@@ -8,6 +8,7 @@
 ### Fixed
 - Session cookies set Secure when ``FLASK_ENV=production`` (#400).
 - Production security and durability gates run when attaching Hedron to Flask (#401).
+- Fragment hosts pass ``expected_app_id`` into core app-id checks (#315).
 
 ## [0.49.0] — 2026-08-17
 

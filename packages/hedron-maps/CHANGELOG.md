@@ -16,3 +16,7 @@
   (#352).
 - MapStyle source ``data`` / ``urls`` close through origin policy (#353).
 - ``MapInteraction`` POSTs typed events to the registered command path with CSRF (#357).
+- ``MapPolicy.remote_requests_permitted`` is enforced at compile and proxy time (#363).
+- TileJSON / PMTiles / MBTiles emit compiled MapLibre sources; overlay layers fold into the style (#358, #360).
+- Zoom ``0`` is preserved; viewport debounce is cleared on dispose; loadScript retries after a failed runtime tag (#359, #361, #362).
+- Marker ``href`` is validated at compile; CGNAT and non-global IPs are blocked in map SSRF checks (#364, #365).

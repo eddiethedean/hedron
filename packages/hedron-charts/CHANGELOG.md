@@ -25,9 +25,12 @@
 
 ### Added
 - `ChartInteraction` compiles Supported chart events onto ActionHandle effects; core pin `>=0.47.0,<0.48`.
-
-
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
+
+### Fixed
+- ``reject_remote_urls`` blocks ``blob:`` and ``vbscript:`` asset schemes (#265).
+- ``hedron-chart`` title/desc IDs are unique per instance (#277).
+- ThreeJs ``model_url`` rejects percent-encoded path traversal (#262).
 
 
 ## [0.1.11] — 2026-08-11

@@ -30,5 +30,6 @@ from the registry until a later upload; in-tree pins are `hedron>=0.49.1,<0.50`.
 ## 0.49.1 patch
 
 - Django `@hedron_view` CSRF-before-handler, upload control characters, TypeSchema Field/discriminator, `default_factory`, `DependsOn(streaming=True)`, `data-hx-*` mount prefix, form-associated field double-submit, Flask `FLASK_ENV` Secure cookies, and Flask/Django production gates (#392–#401).
+- Later in-tree follow-ups on the same tip close the remaining GitHub `bug` issues for this train (CSRF bytes, OutcomeMap, MCP authz, job cancel/SSE, Redis cache keyspaces, spreadsheet formulas, chart/map compile, element reconnect, and related medium/low rows).
 
 This cut does not tag Git, publish a GitHub Release, or upload PyPI.

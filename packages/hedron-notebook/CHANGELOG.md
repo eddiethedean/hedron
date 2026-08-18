@@ -26,6 +26,8 @@
   after the first successful query/header auth). Missing or wrong tokens now fail closed
   with HTTP 401 / WebSocket close 4401 instead of serving the app to anyone who can reach
   the bound port (#161).
+- Preview waits for uvicorn listen before marking the server started (#278).
+- Preview cookie ``Path`` is sanitized before ``Set-Cookie`` (#283).
 
 
 ### Added

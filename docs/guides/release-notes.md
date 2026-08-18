@@ -17,6 +17,7 @@ High-severity correctness and security patch for the 0.49 train. **PyPI still se
 - Form-associated `hedron-field-*` elements no longer double-submit (#399).
 - Flask session cookies set Secure when `FLASK_ENV=production` (#400).
 - Flask and Django hosts run production security and durability gates (#401).
+- Follow-up in-tree correctness/security fixes on this same `0.49.1` tip: CSRF UTF-8 compare, OutcomeMap/`generate_form`/button attrs, job cancel and SSE Last-Event-ID, MCP authz, Redis cache keyspaces, spreadsheet formula prefixes, chart asset schemes, map compile/proxy, and remaining open `bug` issues on the train (#254–#495).
 
 Pin this docs tree with `hedron>=0.49.1,<0.50`. Charts remain on
 `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.

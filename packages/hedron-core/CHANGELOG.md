@@ -10,6 +10,14 @@
 - Strip Hedron ``Field()`` metadata from TypeSchema v2 instead of failing closed (#394).
 - Copy OpenAPI discriminator objects instead of sanitizing them as nested schemas (#395).
 - Prefix ``data-hx-*`` URLs with the mount path at serialize time (#398).
+- Redis cache values use ``v:`` keys and tag indexes use ``t:`` so ``tag:`` cannot collide (#254).
+- ``inspect_data`` raises ``HED-DATA-0005`` on mismatched column-oriented lengths (#258).
+- ``is_local_path`` rejects raw ``://`` / leading ``//`` in query strings (#273).
+- Unscoped ``JobBackend.request_cancel`` fails closed via ``job_authorized_http`` (#266).
+- ``InferencePolicy.release`` requires matching caller auth (#279).
+- CSRF tokens compare as UTF-8 bytes (#402).
+- ``DependsOn`` lifetime strings coerce to the enum; write-only fields drop from output ``required`` (#386, #385).
+- OpenAPI registers ``hedronScopes`` and projects TypeSchema (#387).
 
 ## [0.49.0] — 2026-08-17
 

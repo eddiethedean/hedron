@@ -1,5 +1,5 @@
 # Phase 0.49 FastAPI/Pydantic convergence release evidence index.
-# In-tree v0.49.0 cut. All rows Verified; tag/PyPI deferred.
+# In-tree v0.49.1 cut. All rows Verified; tag/PyPI deferred.
 
 schema_version = 1
 phase = "0.49"

@@ -16,6 +16,15 @@
 - Form-associated ``hedron-field-*`` elements no longer double-submit (#399).
 - Flask session cookies set Secure when ``FLASK_ENV=production`` (#400).
 - Flask and Django hosts run production security and durability gates (#401).
+- CSRF tokens compare as UTF-8 bytes (#402).
+- OutcomeMap unwraps ``Annotated`` unions, applies function-command maps, and honors case status/effects (#403, #322, #331).
+- ``generate_form`` honors ``Control.label`` / ``Control.help`` (#323).
+- Refresh and command buttons forward ``class_`` / ARIA kwargs and reject ``on*`` (#314).
+- Job SSE ``Last-Event-ID`` uses the closed 0.48 grammar (#378).
+- Flask/Django adapters pass ``expected_app_id`` (#315).
+- Optimistic patches reject dangerous URL schemes (#291).
+- Whitespace-only CSP is treated as missing in production (#286).
+- ``RefreshableView`` / ``CommandHandler`` empty, cache, and class effects apply (#330, #332).
 
 ## [0.49.0] — 2026-08-17
 

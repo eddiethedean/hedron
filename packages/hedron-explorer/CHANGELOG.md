@@ -5,6 +5,9 @@
 ### Changed
 - Coordinated train tip `0.49.1` (in-tree patch; tag/PyPI deferred).
 
+### Fixed
+- HDJ inventory refuses symlink targets that resolve outside the allowlisted root (#275).
+
 ## [0.49.0] — 2026-08-17
 
 ### Added

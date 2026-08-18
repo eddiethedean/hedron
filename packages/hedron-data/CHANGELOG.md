@@ -5,6 +5,11 @@
 ### Changed
 - Coordinated train tip `0.49.1` (in-tree patch; tag/PyPI deferred).
 
+### Fixed
+- Formula policy NFKC-folds lookalike prefixes and treats ``|`` as a DDE/CSV injection prefix (#263, #274).
+- ODS ``row_repeat`` × column expansion is capped (#292).
+- ``DataWorkspace`` honors ``columns`` and ``form_overrides`` (#340).
+
 ## [0.49.0] — 2026-08-17
 
 ### Added

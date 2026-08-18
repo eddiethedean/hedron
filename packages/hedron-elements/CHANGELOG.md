@@ -7,6 +7,10 @@
 
 ### Fixed
 - Form-associated ``hedron-field-*`` elements drop inner ``name`` so light-DOM controls do not double-submit (#399).
+- Reconnect aborts prior DOM listeners on bridge, disclosure, and async-action elements (#276).
+- Draft transfer forbids exact sensitive field names, not substrings such as ``secretary`` (#259).
+- ``ActionAsync`` validates ``hx-post`` as a form-action URL (#257).
+- ``enhanceNavigation`` listener registration is idempotent (#280).
 
 ## [0.49.0] — 2026-08-17
 

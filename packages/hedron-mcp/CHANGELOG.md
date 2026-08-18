@@ -6,6 +6,8 @@
 - ``McpExposure.apply`` stores authorize on the tool/resource instead of
   overwriting the projection ``authz_hook``, so a second exposure cannot steal
   the first tool's gate (#356).
+- ``resolve_principal`` ignores non-string session values; ``call_tool`` / ``read_resource`` authorize before dispatch (#271, #272).
+- Client tenant/scope headers are ignored; anonymous cancel does not share a namespace (#287, #288).
 
 ## [0.43.0] — 2026-08-16
 

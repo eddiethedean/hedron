@@ -8,6 +8,7 @@
 ### Fixed
 - ``@hedron_view`` validates CSRF before the handler so forged POSTs cannot commit (#392).
 - Production security and durability gates run from AppConfig.ready and ``HedronDjango()`` (#401).
+- Fragment hosts pass ``expected_app_id`` into core app-id checks (#315).
 
 ## [0.49.0] — 2026-08-17
 
