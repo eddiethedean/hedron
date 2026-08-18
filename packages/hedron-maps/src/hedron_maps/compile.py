@@ -719,7 +719,7 @@ def compile_map(
                         "Reuse HED-MAP-0004 semantics: one ordinary action path per marker.",
                         "Supply href or action, not both.",
                     )
-                spec = MarkerSpec.model_validate(
+                marker_spec = MarkerSpec.model_validate(
                     {
                         "id": str(item.get("id") or "marker"),
                         "lat": item.get("lat") or 0.0,
@@ -731,12 +731,12 @@ def compile_map(
                 )
                 sanitized.append(
                     {
-                        "id": spec.id,
-                        "lat": spec.lat,
-                        "lon": spec.lon,
-                        "label": spec.label,
-                        "href": str(spec.href) if spec.href is not None else None,
-                        "action": spec.action,
+                        "id": marker_spec.id,
+                        "lat": marker_spec.lat,
+                        "lon": marker_spec.lon,
+                        "label": marker_spec.label,
+                        "href": (str(marker_spec.href) if marker_spec.href is not None else None),
+                        "action": marker_spec.action,
                     }
                 )
             marker["markers"] = sanitized
