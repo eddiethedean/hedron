@@ -118,6 +118,10 @@ def test_render_mode_history_restore() -> None:
     )
 
 
+def test_render_mode_boosted() -> None:
+    assert render_mode_for_request({"HX-Request": "true", "HX-Boosted": "true"}) is RenderMode.PAGE
+
+
 def test_render_mode_for_request() -> None:
     assert render_mode_for_request({}) is RenderMode.PAGE
     assert render_mode_for_request({"HX-Request": "true"}) is RenderMode.FRAGMENT

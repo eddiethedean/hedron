@@ -41,7 +41,7 @@ def render_mode_for_request(request: Request, *, force: RenderMode | None = None
     if force is not None:
         return force
     ctx = htmx_context(request)
-    if ctx.history_restore:
+    if ctx.history_restore or ctx.boosted:
         return RenderMode.PAGE
     return RenderMode.FRAGMENT if ctx.is_htmx else RenderMode.PAGE
 
