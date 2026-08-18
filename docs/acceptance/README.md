@@ -53,6 +53,11 @@ status commentary, not a satisfied release gate.
   (tag/PyPI deferred; D-081 / RFC-0076, refined by D-084;
   [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader;
   RESEARCH Experimental)
+- [`v0.50` Explorer architecture](RELEASE_0_50.md) — **Planned** Stage 0 (D-085 / RFC-0077,
+  refined by D-086; [#501](https://github.com/eddiethedean/hedron/issues/501);
+  related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
+  [#502](https://github.com/eddiethedean/hedron/issues/502) /
+  [#503](https://github.com/eddiethedean/hedron/issues/503); no runtime claim)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
@@ -114,7 +119,8 @@ status commentary, not a satisfied release gate.
   [release-gate-0.46.toml](release-gate-0.46.toml) (Verified),
   [release-gate-0.47.toml](release-gate-0.47.toml) (Verified),
   [release-gate-0.48.toml](release-gate-0.48.toml) (Verified except `MORPH-048` Deferred),
-  [release-gate-0.49.toml](release-gate-0.49.toml) (Planned; D-084)
+  [release-gate-0.49.toml](release-gate-0.49.toml) (Verified; D-084),
+  [release-gate-0.50.toml](release-gate-0.50.toml) (Planned; D-086)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.

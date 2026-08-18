@@ -12,7 +12,12 @@ status: shipped
 **Status:** Shipped · package `hedron-explorer` via `hedron[dev]`
 
 `hedron-explorer` mounts under **`/hedron-explorer/`** when `explorer` is `development`
-or `secured` on `Hedron(...)`.
+or `secured` on `Hedron(...)`. Phase **0.50** Explorer architecture is **Planned**
+(D-085 / D-086 / RFC-0077; tracking [#501](https://github.com/eddiethedean/hedron/issues/501);
+related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
+[#502](https://github.com/eddiethedean/hedron/issues/502) /
+[#503](https://github.com/eddiethedean/hedron/issues/503);
+no runtime claim) — see [Explorer architecture](EXPLORER_ARCHITECTURE.md).
 
 ```python
 from hedron import Hedron, Page, Text

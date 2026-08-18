@@ -1,5 +1,5 @@
 # Phase 0.50 Explorer architecture release evidence index.
-# Planned phase; all rows transition to Verified as implementation gates complete.
+# Stage 0 Planned packet (D-085 / D-086). No runtime or version claim.
 
 schema_version = 1
 phase = "0.50"
@@ -8,9 +8,9 @@ planning_baseline = "v0.49.1"
 required_predecessor = "v0.49.1"
 target = "v0.50.0"
 decision = "D-085"
-contract_refine = "D-085"
+contract_refine = "D-086"
 owning_rfc = "RFC-0077"
-tracking = "#TODO-ENH-050"
+tracking = "#501"
 
 [[evidence]]
 id = "ARCH-050"
@@ -66,7 +66,7 @@ state = "Planned"
 command = "python scripts/check_headless_050.py"
 ci_job = "test"
 owner = "hedron-explorer"
-summary = "CLI/HTML/JSON diagnostic identity and redaction parity."
+summary = "CLI/HTML/JSON diagnostic identity and redaction parity; reuse diagnostics_to_sarif."
 
 [[evidence]]
 id = "ECOSYSTEM-050"
@@ -106,7 +106,7 @@ state = "Planned"
 command = "python scripts/check_browser_050.py"
 ci_job = "browser"
 owner = "hedron"
-summary = "Chromium, Firefox, and WebKit journeys for mount/filter/filter-failure/provider-failure paths."
+summary = "Chromium, Firefox, and WebKit journeys for mount/filter/provider-failure paths."
 
 [[evidence]]
 id = "PERF-050"

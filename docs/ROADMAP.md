@@ -47,7 +47,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Published** (`v0.47.0` / `hedron-maps` `0.1.0`; in-tree cut, tag/PyPI deferred; D-078 / D-082 / RFC-0074; [#350](https://github.com/eddiethedean/hedron/issues/350)) |
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0`; in-tree cut, tag/PyPI deferred; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
-| **0.50** | Explorer architecture and operator-grade development tooling | **Planned** (baseline `v0.49.1`; RFC-0077 / D-085 and tracking issue required before implementation) |
+| **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Planned** (Stage 0; baseline `v0.49.1`; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503); no runtime claim) |
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.52** | Conformance kit and independent Node/Java runtime credibility | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
@@ -4174,8 +4174,17 @@ are outside this extra-package corrective pass.
 
 ## 0.50 — Explorer architecture and operator-grade development tooling (`v0.50.0`)
 
-**Status:** Planned. RFC-0077, decision **D-085**, a tracking issue, capability inventory,
-release-gate file, and implementation plan must be **Accepted** before implementation starts.
+**Status:** Planned Stage 0 (D-085 / D-086 /
+[RFC-0077](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md)).
+Planning baseline remains Published in-tree `v0.49.1`. Tracking
+[#501](https://github.com/eddiethedean/hedron/issues/501) owns every Explorer 0.50 gate until a later
+in-tree cut. Companion authoring issues
+[#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500),
+[#502](https://github.com/eddiethedean/hedron/issues/502), and
+[#503](https://github.com/eddiethedean/hedron/issues/503)
+are bound to this phase and do not reopen Explorer gate IDs. No Stage 0 runtime or
+version claim. Stage 1 is blocked on [#501](https://github.com/eddiethedean/hedron/issues/501)
+and Verified 0.49.
 
 **Planning baseline:** Published in-tree **`v0.49.1`**. Verified 0.45–0.49 catalog, manifest,
 TypeSchema v2, handle-graph, OpenAPI, and HTMX-extension contracts are inputs — not
@@ -4190,34 +4199,45 @@ resilience, not production operations tooling.
 ### Entry criteria
 
 - **0.49.1** Verified and recorded as baseline.
-- RFC-0077 and D-085 **Accepted**.
-- A tracking issue owns every gate row until tag/PyPI.
-- Capability inventory draft lists every current panel/API with Supported vs Experimental vs
+- RFC-0077, D-085, and D-086 **Accepted** (Stage 0 packet).
+- Tracking [#501](https://github.com/eddiethedean/hedron/issues/501) owns every Explorer gate row until tag/PyPI.
+- Companion authoring [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
+  [#502](https://github.com/eddiethedean/hedron/issues/502) /
+  [#503](https://github.com/eddiethedean/hedron/issues/503) are bound to this phase.
+- Capability inventory lists every current panel/API with Supported vs Experimental vs
   excluded disposition.
 - Upgrade fixtures from `v0.49.1` JSON/mount shapes drafted.
 - [`EXPLORER_BACKEND.md`](implementation/EXPLORER_BACKEND.md) and
-  [`EXPLORER_FRONTEND.md`](implementation/EXPLORER_FRONTEND.md) reconciled with RFC-0077
-  (or folded into the implementation plan below).
+  [`EXPLORER_FRONTEND.md`](implementation/EXPLORER_FRONTEND.md) reconciled with RFC-0077.
 
 ### Architecture
 
 ```text
-hedron-core          portable inspection models, redaction, trace read APIs, ExplorerProvider v1
+hedron-core          portable inspection models, redaction, trace read APIs,
+                     ExplorerProvider v1, ExplorerPanelMeta compatibility
        │
 hedron_explorer.services   catalog, simulation, traces, diff, view rendering
        │
        ├── thin HTTP router (/hedron-explorer/, frozen mount contract)
-       ├── hedron CLI (inspect/graph/check — shared services, no duplicated query logic)
+       ├── hedron CLI (inspect/graph/check — shared services when explorer installed)
        └── first- and third-party ExplorerProvider panels
 ```
+
+Shipped 0.49.1 seams to consume (do not fork): `explorer_router` (~1,366 lines),
+`ExplorerMode` / `resolve_explorer_mode` / `mount_explorer_if_enabled` /
+`install_explorer_bridges`, `ExplorerPanelMeta` / `register_explorer_panel`,
+`explorer_guards` (120/60s), CSRF `hedron_csrf` / `X-CSRF-Token` / `X-Hedron-CSRF`,
+CLI `inspect`/`graph`/`check` (no `hedron_explorer` import today),
+`diagnostics_to_sarif`. Flask/Django hard-set `explorer_mode="off"`.
 
 Layer rules:
 
 1. **`hedron-core`** owns portable inspection models, redaction, trace read APIs, and the
    provider protocol — no FastAPI imports.
 2. **`hedron-explorer`** owns HTTP mounting, HTML shell, provider orchestration, and
-   package-owned tests.
-3. **`hedron` CLI** calls the same services; it does not duplicate query logic.
+   package-owned tests (depends on `hedron-core` + FastAPI, not `hedron`).
+3. **`hedron` CLI** may call the same services when `hedron-explorer` is installed;
+   absence is a labeled skip.
 4. **Mount contract frozen:** `/hedron-explorer/`, `explorer="off"|"development"|"secured"`,
    existing JSON path prefix, production forced-off for `development`.
 
@@ -4237,9 +4257,9 @@ flowchart LR
 |---|---|---|
 | **M1** | Baseline and inventory | Capability inventory TOML; map every existing route in `router.py` to a target module; upgrade-fixture plan from `v0.49.1` mount URLs and JSON shapes |
 | **M2** | Service extraction | Split into `services/catalog.py`, `services/simulation.py`, `services/traces.py`, `services/diff.py`, `views/`; thin `router.py` (under 200 lines target); contract tests preventing re-monolithization |
-| **M3** | Provider protocol v1 | Replace metadata-only `ExplorerPanelMeta` with versioned `ExplorerProvider` (capabilities, timeout, max payload, ordering, redaction profile); migrate first-party panels (data/charts/maps/extras/sample-kit) |
-| **M4** | Query UX and resilience | Search/filter/sort; cursor pagination or virtualization for components/routes/graph/catalog; explicit empty/error/truncated states; budgets on startup/first-render/query/memory |
-| **M5** | Headless operator outputs | Unify CLI `inspect`/`graph`/`check` relevant subcommands on shared services; JSON export; SARIF subset for source-addressable diagnostics; baseline diff for catalog/manifest/routes/OpenAPI fingerprints |
+| **M3** | Provider protocol v1 | Additive versioned `ExplorerProvider` (capabilities, timeout, max payload, ordering, redaction profile); keep `ExplorerPanelMeta` / `register_explorer_panel`; migrate first-party panels (data/charts/maps/extras/sample-kit) |
+| **M4** | Query UX and resilience | Search/filter/sort; cursor pagination or virtualization for components/routes/graph/catalog; explicit empty/error/truncated states replacing silent `[:200]`; budgets on startup/first-render/query/memory |
+| **M5** | Headless operator outputs | Unify CLI `inspect`/`graph`/`check` on shared services when Explorer is installed; JSON export; reuse `diagnostics_to_sarif`; baseline diff for catalog/manifest/routes/OpenAPI fingerprints |
 | **M6** | Interaction laboratory (bounded) | Construct inputs from TypeSchema v2; execute only declared safe preview operations; export redacted `AppScenario` snippets — no invented auth |
 | **M7** | Evidence and docs | Package-owned tests; Chromium/Firefox/WebKit journeys; a11y keyboard/no-JS; security corpus; perf fixtures (small/medium/large registry apps); author/operator docs |
 
@@ -4286,6 +4306,24 @@ flowchart LR
 - Ship headless inspection through existing CLI subcommands backed by the same query/model
   services as the browser UI; HTML, JSON, SARIF-subset, and CLI results must agree on
   identities, severity, redaction, and links.
+
+### Related 0.50 authoring issues
+
+These close Data Mover imperative-JS gaps with framework-level HTMX declarations.
+They stack on RFC-0009 / RFC-0070 / RFC-0075. They are **not** Explorer gates
+([#501](https://github.com/eddiethedean/hedron/issues/501) still owns
+`ARCH-050`…`REGRESS-050`) and they do not reopen `MORPH-048` or Explorer mount/simulate
+allowlists.
+
+| Issue | Deliverable |
+|---|---|
+| [#496](https://github.com/eddiethedean/hedron/issues/496) | First-class HTMX side-effect helper for POST/GET mutation workflows (payload, CSRF, fragment swap, success/error hooks). No manual `fetch` + HTML parse for common actions. |
+| [#497](https://github.com/eddiethedean/hedron/issues/497) | Declarative dependent select-fields with derived option/data synthesis, synthetic values, and per-dependency validation. |
+| [#498](https://github.com/eddiethedean/hedron/issues/498) | Default fallback UI for `hx-trigger="load"` failed loads (retry slot, copy, persistence). No manual `hx:responseError` markup rewrite. |
+| [#499](https://github.com/eddiethedean/hedron/issues/499) | Queue-aware toast primitives with TTL, tone, and host lifecycle across swaps/OOB. |
+| [#500](https://github.com/eddiethedean/hedron/issues/500) | Configurable history-restore semantics for declared primary/OOB targets. No manual `htmx:historyRestore` ajax handler. |
+| [#502](https://github.com/eddiethedean/hedron/issues/502) | Declarative action-chaining for load-then-conditional-run (predicates, optional delay/debounce, target/payload source). No synthetic `click()` / `setTimeout` for saved-card auto-run. |
+| [#503](https://github.com/eddiethedean/hedron/issues/503) | Declarative pre-submit validation gates for HTMX forms, actionable feedback (`setCustomValidity` / toast), and busy-state hooks. No server call when invalid. |
 
 ### Deliberate exclusions
 
@@ -4345,13 +4383,23 @@ flowchart LR
 | `DOCS-050` / `COMPAT-050` | Provider author guide, migration from 0.49 hooks, upgrade matrices |
 | `PKG-050` / `REGRESS-050` | Package-owned tests, clean wheel, optional-dep isolation, 0.49 upgrade/rollback, fleet regression |
 
-Artifacts (planned; required before implementation):
+Artifacts (Stage 0 packet; Stage 1 blocked on [#501](https://github.com/eddiethedean/hedron/issues/501);
+related authoring [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
+[#502](https://github.com/eddiethedean/hedron/issues/502) /
+[#503](https://github.com/eddiethedean/hedron/issues/503)):
 
-- [RFC-0077 — Explorer architecture and provider protocol](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md) (extends [RFC-0007](rfcs/RFC-0007-COMPONENT-EXPLORER.md))
+- [RFC-0077 — Explorer architecture and provider protocol](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md) (extends [RFC-0007](rfcs/RFC-0007-COMPONENT-EXPLORER.md); D-085, refined by D-086; [#501](https://github.com/eddiethedean/hedron/issues/501))
 - [implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EXPLORER_050.md)
+- [public contract](https://github.com/eddiethedean/hedron/blob/main/docs/api/EXPLORER_ARCHITECTURE.md)
 - [acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_50.md)
 - [release gate](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.50.toml)
 - [capability inventory](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/explorer-capability-inventory-050.toml)
+- [architecture lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/explorer-architecture-050.toml)
+- [provider lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/explorer-provider-050.toml)
+- [query lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/explorer-query-050.toml)
+- [diff lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/explorer-diff-050.toml)
+- [lab lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/explorer-lab-050.toml)
+- [headless lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/explorer-headless-050.toml)
 - [upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-050.md)
 
 ### Exit gate
@@ -4365,8 +4413,11 @@ Artifacts (planned; required before implementation):
   app.
 - Reference app and one third-party-shaped package demonstrate provider registration without
   private imports.
-- Every gate row Verified; no hidden Deferred claims; `EXPLORER-10-001` remains explicitly
+- Every Explorer gate row Verified; no hidden Deferred claims; `EXPLORER-10-001` remains explicitly
   Deferred.
+- Companion authoring [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
+  [#502](https://github.com/eddiethedean/hedron/issues/502) /
+  [#503](https://github.com/eddiethedean/hedron/issues/503) closed or explicitly deferred.
 
 ## 0.51 — Curated extras depth and lifecycle closure (`v0.51.0`)
 

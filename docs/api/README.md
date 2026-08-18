@@ -124,6 +124,8 @@ These contracts compile onto the golden path. They are **not** required for Hell
 - [Interaction catalog](INTERACTION_CATALOG.md)
 - [Package-native typed workflows](PACKAGE_WORKFLOWS.md)
 - [Maps](MAPS.md)
-- [HTMX extension integration](HTMX_EXTENSIONS.md) — **0.48 Planned** (no runtime claim)
+- [HTMX extension integration](HTMX_EXTENSIONS.md) — **0.48** Published in-tree (morph Deferred)
+- [FastAPI/Pydantic convergence](FASTAPI_PYDANTIC_CONVERGENCE.md) — **0.49** Published in-tree
+- [Explorer architecture](EXPLORER_ARCHITECTURE.md) — **0.50 Planned** (no runtime claim; related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503))
 
 Public exception types: [EXCEPTIONS.md](EXCEPTIONS.md).

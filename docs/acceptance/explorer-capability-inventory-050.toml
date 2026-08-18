@@ -1,5 +1,5 @@
 # Phase 0.50 Explorer capability and disposition inventory.
-# Stage 0 planning artifact (D-085). Planned until tracking issue and scripts are accepted.
+# Stage 0 contract artifact (D-086). EXPLORER-10-001 / EXPLORER-019 stay Excluded from 0.50 Supported.
 
 schema_version = 1
 phase = "0.50"
@@ -8,18 +8,31 @@ planning_baseline = "v0.49.1"
 required_predecessor = "v0.49.1"
 target = "v0.50.0"
 decision = "D-085"
+contract_refine = "D-086"
 owning_rfc = "RFC-0077"
 implementation = "docs/implementation/EXPLORER_050.md"
-public_contract = "docs/api/EXPLORER_API.md"
+public_contract = "docs/api/EXPLORER_ARCHITECTURE.md"
+shipped_contract = "docs/api/EXPLORER.md"
+architecture_lock = "docs/acceptance/explorer-architecture-050.toml"
+provider_lock = "docs/acceptance/explorer-provider-050.toml"
+query_lock = "docs/acceptance/explorer-query-050.toml"
+diff_lock = "docs/acceptance/explorer-diff-050.toml"
+lab_lock = "docs/acceptance/explorer-lab-050.toml"
+headless_lock = "docs/acceptance/explorer-headless-050.toml"
+catalog_entry = "docs/acceptance/catalog-entry-045.toml"
+type_schema_v2 = "docs/acceptance/typeschema-v2-049.toml"
+htmx_catalog = "docs/acceptance/htmx-extension-catalog-048.toml"
+adapter_dispositions = "docs/acceptance/adapter-disposition-044.toml"
+host_portable_facts = "docs/acceptance/host-portable-facts-045.toml"
 upgrade_fixtures = "docs/acceptance/upgrade-fixtures-050.md"
-trackable_issue_set = "5_explorer_enhancements"
+tracking = "#501"
 
 [[capability]]
-id = "EXP-BE-001..005"
+id = "EXP-ARCH-001..005"
 area = "explorer-architecture"
 gate = "ARCH-050"
 state = "Planned"
-adopt = ["service-boundaries", "router-thinning", "golden-route-map", "no-regression" ]
+adopt = ["service-boundaries", "router-thinning", "golden-route-map", "frozen-mount", "no-route-drop"]
 
 [[capability]]
 id = "EXP-PROVIDER-001..005"
@@ -27,6 +40,14 @@ area = "explorer-provider-protocol"
 gate = "PROVIDER-050"
 state = "Planned"
 adopt = ["provider-v1", "timeout", "ordering", "redaction", "payload-bounds"]
+keep = ["ExplorerPanelMeta", "register_explorer_panel"]
+
+[[capability]]
+id = "EXP-CONSUME-001..004"
+area = "consume-045-049"
+gate = "CONSUME-050"
+state = "Planned"
+adopt = ["catalog-manifest", "handle-graph", "typeschema-v2", "htmx-extension-facts"]
 
 [[capability]]
 id = "EXP-QUERY-001..004"
@@ -41,6 +62,7 @@ area = "baseline-diffing"
 gate = "DIFF-050"
 state = "Planned"
 adopt = ["catalog-diff", "manifest-fingerprint", "route-diff", "schema-fingerprint"]
+fourth_fingerprint_authority = false
 
 [[capability]]
 id = "EXP-LAB-001..003"
@@ -48,3 +70,105 @@ area = "interaction-lab"
 gate = "LAB-050"
 state = "Planned"
 adopt = ["safe-preview", "redacted-scenario-export", "no-auth-invention"]
+
+[[capability]]
+id = "EXP-HEADLESS-001..004"
+area = "headless-parity"
+gate = "HEADLESS-050"
+state = "Planned"
+adopt = ["cli-html-json-parity", "diagnostics_to_sarif", "labeled-skip-without-explorer"]
+not_on_this_gate = ["second-sarif-writer"]
+
+[[capability]]
+id = "EXP-ECOSYSTEM-001..004"
+area = "ecosystem-projections"
+gate = "ECOSYSTEM-050"
+state = "Planned"
+adopt = ["first-party-labeled", "one-third-party-provider", "flask-django-read-only-label"]
+
+[[capability]]
+id = "EXP-SECURITY-001..004"
+area = "explorer-security"
+gate = "SECURITY-050"
+state = "Planned"
+adopt = ["production-opt-in", "simulate-allowlist", "csrf-frozen", "no-catalog-authority"]
+
+[[capability]]
+id = "EXP-PRIVACY-001..003"
+area = "redaction-export"
+gate = "PRIVACY-050"
+state = "Planned"
+adopt = ["secret-redaction", "bounded-artifacts", "rev-026-003-accepted-risk"]
+
+[[capability]]
+id = "EXP-A11Y-001..003"
+area = "explorer-shell-a11y"
+gate = "A11Y-050"
+state = "Planned"
+adopt = ["keyboard", "no-js", "landmarks"]
+not_explorer_019 = true
+
+[[capability]]
+id = "EXP-BROWSER-001..003"
+area = "explorer-browser"
+gate = "BROWSER-050"
+state = "Planned"
+adopt = ["chromium", "firefox", "webkit"]
+
+[[capability]]
+id = "EXP-PERF-001..003"
+area = "explorer-perf"
+gate = "PERF-050"
+state = "Planned"
+adopt = ["startup", "query-budgets", "large-registry-fixture"]
+
+[[capability]]
+id = "EXP-RESILIENCE-001..003"
+area = "explorer-resilience"
+gate = "RESILIENCE-050"
+state = "Planned"
+adopt = ["cancellation", "provider-crash-isolation", "leak-checks"]
+
+[[capability]]
+id = "EXP-DOCS-001..003"
+area = "explorer-docs"
+gate = "DOCS-050"
+state = "Planned"
+adopt = ["provider-author-guide", "migration-from-049", "upgrade-matrix"]
+
+[[capability]]
+id = "EXP-COMPAT-001..003"
+area = "explorer-compat"
+gate = "COMPAT-050"
+state = "Planned"
+adopt = ["frozen-049-paths", "panel-meta-shim", "rollback"]
+
+[[capability]]
+id = "EXP-PKG-001..002"
+area = "explorer-packaging"
+gate = "PKG-050"
+state = "Planned"
+adopt = ["clean-wheel", "optional-dep-isolation"]
+
+[[capability]]
+id = "EXP-REGRESS-001..002"
+area = "explorer-regress"
+gate = "REGRESS-050"
+state = "Planned"
+adopt = ["fleet-regression", "no-hidden-deferred"]
+
+[[capability]]
+id = "EXP-EXCLUDE-001..008"
+area = "excluded"
+gate = "—"
+state = "Excluded"
+exclude = [
+    "explorer-10-001-live-traces",
+    "explorer-019-atag-workspace",
+    "rev-026-003-durable-audit",
+    "production-default-explorer",
+    "flask-django-explorer-router-mount",
+    "package-doctor-053",
+    "second-sarif-writer",
+    "application-author-node",
+]

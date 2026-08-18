@@ -1,0 +1,36 @@
+# Phase 0.50 Explorer query resilience lock (QUERY-050).
+# Stage 0 contract artifact (D-086). Silent slices become pagination or truncation.
+
+schema_version = 1
+phase = "0.50"
+status = "Planned"
+planning_baseline = "v0.49.1"
+required_predecessor = "v0.49.1"
+target = "v0.50.0"
+decision = "D-086"
+owning_rfc = "RFC-0077"
+gate = "QUERY-050"
+requirement = "EXP-QUERY-001..004"
+tracking = "#501"
+
+unbounded_tables_forbidden = true
+pagination = "cursor"
+virtualization_allowed = true
+silent_slice_forbidden_after_cut = true
+large_registry_fixture = "at least 2000 components or documented equivalent"
+
+[current_silent_caps]
+components = 200
+a11y_contracts = 40
+audit_tail = 20
+cache_recent = 50
+
+[adopt]
+search = true
+filter = true
+sort = true
+pagination = true
+truncation_diagnostics = true
+
+[surfaces]
+required = ["components", "routes", "catalog", "graph"]

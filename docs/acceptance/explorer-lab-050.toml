@@ -1,0 +1,52 @@
+# Phase 0.50 Explorer interaction lab and package-health lock (LAB-050).
+# Stage 0 contract artifact (D-086). No invented auth. Package doctor stays 0.53.
+
+schema_version = 1
+phase = "0.50"
+status = "Planned"
+planning_baseline = "v0.49.1"
+required_predecessor = "v0.49.1"
+target = "v0.50.0"
+decision = "D-086"
+owning_rfc = "RFC-0077"
+gate = "LAB-050"
+requirement = "EXP-LAB-001..003"
+tracking = "#501"
+
+stacks_on_typeschema = "docs/acceptance/typeschema-v2-049.toml"
+invent_auth = false
+allow_mutations_default = false
+package_doctor_phase = "0.53"
+package_health_is_doctor = false
+
+[simulate_keys]
+allowlist = [
+    "route",
+    "allow_mutations",
+    "mode",
+    "target",
+    "boosted",
+    "history_restore",
+    "status",
+]
+mutations_http = 403
+
+[safe_preview_ops]
+simulate = "POST /hedron-explorer/api/simulate"
+click_preview = "GET /hedron-explorer/api/click-preview"
+element_simulate = "POST /hedron-explorer/api/element-simulate"
+element_failure_values = ["none", "module", "upgrade"]
+
+[export]
+redacted_app_scenario = true
+csrf_required = true
+
+[package_health]
+read_only = true
+entry_points = true
+version_skew = true
+missing_optional_dependencies = true
+asset_integrity_csp = true
+duplicate_registrations = true
+conformance_envelope_ingest = true
+packages_panel_today = "title/description list only"

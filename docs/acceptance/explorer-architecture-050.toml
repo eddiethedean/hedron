@@ -1,0 +1,119 @@
+# Phase 0.50 Explorer architecture lock (ARCH-050).
+# Stage 0 contract artifact (D-086). Frozen 0.49.1 mount, modes, and golden route map.
+# Thin router.py (~200 lines) is a module-boundary target, not permission to drop routes.
+
+schema_version = 1
+phase = "0.50"
+status = "Planned"
+planning_baseline = "v0.49.1"
+required_predecessor = "v0.49.1"
+target = "v0.50.0"
+decision = "D-086"
+owning_rfc = "RFC-0077"
+gate = "ARCH-050"
+requirement = "EXP-ARCH-001..005"
+tracking = "#501"
+
+stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
+stacks_on_adapter = "docs/acceptance/adapter-disposition-044.toml"
+stacks_on_host = "docs/acceptance/host-portable-facts-045.toml"
+diagnostic_family = "HED-EXPLORER-*"
+diagnostic_family_docs_only = true
+thin_router_line_target = 200
+thin_router_drops_routes = false
+current_router_lines = 1366
+services_layer_shipped = false
+explorer_depends_on_hedron = false
+
+[mount]
+prefix = "/hedron-explorer"
+json_prefix = "/hedron-explorer/api/"
+modes = ["off", "development", "secured"]
+production_development = "force-off"
+risk_code = "RISK_EXPLORER_DEVELOPMENT"
+standard_strict_explorer_enabled = false
+secured_default = "request.state.hedron_authenticated"
+flask_django_explorer_mode = "off"
+include_in_schema = false
+router_tag = "hedron-explorer"
+guards = "explorer_guards"
+guards_rate = "120/60s"
+guards_denied = "EXPLORER_DENIED"
+
+[symbols]
+mount = [
+    "ExplorerMode",
+    "resolve_explorer_mode",
+    "mount_explorer_if_enabled",
+    "install_explorer_bridges",
+]
+router = "hedron_explorer.router.explorer_router"
+target_services = [
+    "hedron_explorer.services.catalog",
+    "hedron_explorer.services.simulation",
+    "hedron_explorer.services.traces",
+    "hedron_explorer.services.diff",
+]
+
+[html_routes]
+"/" = "GET"
+"/routes" = "GET"
+"/component/{name}" = "GET"
+"/graph" = "GET"
+"/security" = "GET"
+"/a11y" = "GET"
+"/cache" = "GET"
+"/charts" = "GET"
+"/maps" = "GET"
+"/extensions" = "GET"
+"/data" = "GET"
+"/auto" = "GET"
+"/packages" = "GET"
+"/elements" = "GET"
+"/elements/{logical_id}" = "GET"
+"/inventory" = "GET"
+"/settings" = "GET"
+"/interactions" = "GET"
+"/features" = "GET"
+"/static/{asset_path}" = "GET"
+
+[json_routes]
+"/api/routes" = "GET"
+"/api/security" = "GET"
+"/api/components" = "GET"
+"/api/graph" = "GET"
+"/api/handle-graph" = "GET"
+"/api/interactions" = "GET"
+"/api/dashboard-graph" = "GET"
+"/api/click-preview" = "GET"
+"/api/simulate" = "POST"
+"/api/element-simulate" = "POST"
+
+html_only_no_json = [
+    "/a11y",
+    "/cache",
+    "/charts",
+    "/maps",
+    "/extensions",
+    "/data",
+    "/auto",
+    "/packages",
+    "/elements",
+    "/inventory",
+    "/settings",
+    "/features",
+    "/component/{name}",
+]
+
+[silent_caps]
+components = 200
+a11y_contracts = 40
+audit_tail = 20
+cache_recent = 50
+audit_maxlen = 200
+trace_maxlen = 100
+
+dashboard_graph_stability = "experimental"
+plugin_path_adds_nav = false
+csrf_cookie = "hedron_csrf"
+csrf_headers = ["X-CSRF-Token", "X-Hedron-CSRF"]

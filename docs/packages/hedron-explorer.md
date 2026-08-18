@@ -5,7 +5,7 @@ Development Component Explorer for Hedron.
 **Package maturity:** Beta · **Train:** `0.49.x` (published `v0.49.1`) · pin `>=0.49.1,<0.50`
 **Flagship extra:** `hedron[dev]` · **Import:** `hedron_explorer`  
 **Mount:** `/hedron-explorer/` when enabled · **not required in production**  
-**Planned:** phase [0.50](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#050--explorer-architecture-and-operator-grade-development-tooling-v0500) — modular architecture, provider API, headless parity, large-app resilience (RFC-0077 required before implementation).
+**Planned:** phase [0.50](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#050--explorer-architecture-and-operator-grade-development-tooling-v0500) — modular architecture, provider API, headless parity, large-app resilience (D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); Stage 0 contracts only).
 
 ## Install
 
@@ -82,7 +82,7 @@ Open **`/hedron-explorer/`** on the running app.
 
 ## Related docs
 
-- API: [Explorer](../api/EXPLORER.md)
+- API: [Explorer](../api/EXPLORER.md) · [Explorer architecture (0.50 Planned)](../api/EXPLORER_ARCHITECTURE.md)
 - A11y: [Accessibility API](../api/A11Y.md)
 - Install troubleshooting: [Explorer 404](../guides/troubleshooting.md#explorer-404-or-missing-in-production)
 

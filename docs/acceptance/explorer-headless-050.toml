@@ -1,0 +1,43 @@
+# Phase 0.50 Explorer headless parity lock (HEADLESS-050).
+# Stage 0 contract artifact (D-086). Reuse CLI SARIF; no second writer.
+
+schema_version = 1
+phase = "0.50"
+status = "Planned"
+planning_baseline = "v0.49.1"
+required_predecessor = "v0.49.1"
+target = "v0.50.0"
+decision = "D-086"
+owning_rfc = "RFC-0077"
+gate = "HEADLESS-050"
+requirement = "EXP-HEADLESS-001..004"
+tracking = "#501"
+
+cli_imports_explorer_today = false
+second_sarif_writer = false
+full_sarif_all_diagnostics = false
+sarif_seam = "hedron check --format sarif"
+sarif_function = "diagnostics_to_sarif"
+cli_optional_explorer_skip = "labeled skip when hedron-explorer absent"
+
+[cli_commands]
+inspect = "hedron.cli.commands.inspect"
+graph = "hedron.cli.commands.graph"
+check = "hedron.cli.commands.check"
+routes = "hedron.cli.commands.routes"
+
+[parity]
+identities = true
+severity = true
+redaction = true
+links = true
+
+[known_divergence]
+inverse_consumers = "CLI graph includes inverse_consumers; Explorer HTML/JSON omit it"
+must_name_in_stage1 = true
+
+[formats]
+html = true
+json = true
+cli = true
+sarif_subset = true

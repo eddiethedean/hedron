@@ -27,6 +27,11 @@ Workbench/Posit **retain-custom-loader**, and RESEARCH still Experimental (`Fail
 `MISSING` / partial validation not Supported). `release-gate-0.49.toml` sixteen Verified
 rows; in-tree tip `v0.49.1`; tag/PyPI deferred. Tracking
 [#380](https://github.com/eddiethedean/hedron/issues/380) owns every 0.49 gate.
+Phase **0.50** Explorer architecture is **Planned** Stage 0 only (D-085 / D-086 /
+RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501);
+related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
+[#502](https://github.com/eddiethedean/hedron/issues/502) /
+[#503](https://github.com/eddiethedean/hedron/issues/503); no runtime claim).
 Prior Published **0.48** HTMX extensions (`MORPH-048` Deferred) / **0.47** first-class maps (`hedron-maps` `0.1.0`) /
 **0.46** package-native typed workflows /
 **0.45** typed interaction catalog / **0.44** type-driven authoring /
@@ -407,6 +412,13 @@ Phase **0.49** FastAPI/Pydantic convergence is **Published** as in-tree `v0.49.1
 tracking [#380](https://github.com/eddiethedean/hedron/issues/380); see
 [implementation requirements](docs/implementation/FASTAPI_PYDANTIC_CONVERGENCE_049.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_49.md)). Living tip is **`v0.49.1`**.
+Phase **0.50** Explorer architecture is **Planned** Stage 0 (D-085 / D-086 / RFC-0077;
+`release-gate-0.50.toml` Planned; tracking [#501](https://github.com/eddiethedean/hedron/issues/501);
+related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
+[#502](https://github.com/eddiethedean/hedron/issues/502) /
+[#503](https://github.com/eddiethedean/hedron/issues/503);
+see [implementation requirements](docs/implementation/EXPLORER_050.md) and
+[acceptance packet](docs/acceptance/RELEASE_0_50.md)). No 0.50 runtime or version claim.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

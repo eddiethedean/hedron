@@ -252,6 +252,7 @@ nav:
       - Refreshable views: api/REFRESHABLE_VIEWS.md
       - Type-driven authoring: api/TYPE_DRIVEN_AUTHORING.md
       - FastAPI/Pydantic 0.49: api/FASTAPI_PYDANTIC_CONVERGENCE.md
+      - Explorer architecture 0.50: api/EXPLORER_ARCHITECTURE.md
   - Adopt:
     - Why Hedron: guides/why-hedron.md
     - What's ready today: guides/whats-ready.md

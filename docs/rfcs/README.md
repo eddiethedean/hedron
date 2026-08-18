@@ -94,3 +94,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0074](RFC-0074-FIRST-CLASS-MAPS.md) | First-class maps and offline geospatial presentation | Accepted |
 | [0075](RFC-0075-HTMX-EXTENSION-INTEGRATION.md) | First-class HTMX extension integration | Accepted |
 | [0076](RFC-0076-FASTAPI-PYDANTIC-CONVERGENCE.md) | FastAPI and Pydantic convergence | Accepted (D-081; Stage 0 refined by D-084; [#380](https://github.com/eddiethedean/hedron/issues/380)) |
+| [0077](RFC-0077-EXPLORER-ARCHITECTURE.md) | Explorer architecture and operator-grade development tooling | Accepted (D-085; Stage 0 refined by D-086; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |

@@ -1,0 +1,36 @@
+# Phase 0.50 Explorer baseline diff lock (DIFF-050).
+# Stage 0 contract artifact (D-086). No fourth fingerprint authority.
+
+schema_version = 1
+phase = "0.50"
+status = "Planned"
+planning_baseline = "v0.49.1"
+required_predecessor = "v0.49.1"
+target = "v0.50.0"
+decision = "D-086"
+owning_rfc = "RFC-0077"
+gate = "DIFF-050"
+requirement = "EXP-DIFF-001..004"
+tracking = "#501"
+
+stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
+stacks_on_typeschema = "docs/acceptance/typeschema-v2-049.toml"
+fourth_fingerprint_authority = false
+descriptor_fingerprint_hashes_effect = false
+descriptor_fingerprint_hashes_extensions = false
+
+[diff_subjects]
+catalog = true
+manifest = true
+routes = true
+schema = true
+assets = true
+dependencies = true
+capability_maturity = true
+
+[output]
+added = true
+removed = true
+changed = true
+deterministic = true
+html_json_cli_agree = true

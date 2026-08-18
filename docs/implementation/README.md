@@ -43,6 +43,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
   raster/vector sources, typed interaction, offline assets/archives, and air-gapped requirements
 - [HTMX extension integration](HTMX_EXTENSION_INTEGRATION_048.md) — phase 0.48 D-080 / D-083
   declared activation, demand-driven assets, SSE/head-support/preload slices, and morph disposition
+- [FastAPI/Pydantic convergence](FASTAPI_PYDANTIC_CONVERGENCE_049.md) — phase 0.49 D-081 / D-084
+- [Explorer architecture](EXPLORER_050.md) — phase 0.50 D-085 / D-086 Stage 0 (no runtime claim)
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

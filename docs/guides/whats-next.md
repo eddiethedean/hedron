@@ -10,6 +10,8 @@ Install pins: [Installation](../getting-started/installation.md).
 
 | Topic | Disposition |
 |---|---|
+| Explorer architecture (0.50) | **Planned** Stage 0 (D-085 / D-086 / RFC-0077); living train stays 0.49.1 |
+| Declarative HTMX authoring primitives | **Planned** with 0.50 ([#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500), [#502](https://github.com/eddiethedean/hedron/issues/502), [#503](https://github.com/eddiethedean/hedron/issues/503)); living train stays 0.49.1 |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |

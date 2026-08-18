@@ -1,0 +1,74 @@
+# Phase 0.50 ExplorerProvider protocol lock (PROVIDER-050).
+# Stage 0 contract artifact (D-086). ExplorerPanelMeta stays; provider is additive.
+
+schema_version = 1
+phase = "0.50"
+status = "Planned"
+planning_baseline = "v0.49.1"
+required_predecessor = "v0.49.1"
+target = "v0.50.0"
+decision = "D-086"
+owning_rfc = "RFC-0077"
+gate = "PROVIDER-050"
+requirement = "EXP-PROVIDER-001..005"
+tracking = "#501"
+
+stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
+stacks_on_typeschema = "docs/acceptance/typeschema-v2-049.toml"
+stacks_on_htmx = "docs/acceptance/htmx-extension-catalog-048.toml"
+diagnostic_family = "HED-EXPLORER-*"
+diagnostic_family_docs_only = true
+explorer_panel_meta_removed = false
+provider_additive = true
+provider_package = "hedron-core"
+provider_has_fastapi_imports = false
+http_package = "hedron-explorer"
+
+[existing_meta]
+type = "ExplorerPanelMeta"
+fields = ["panel_id", "title", "plugin", "description", "path"]
+register = "register_explorer_panel"
+list = "get_explorer_panels"
+context = "PluginContext.register_explorer_panel"
+
+[provider_v1]
+type = "ExplorerProvider"
+fields = [
+    "panel_id",
+    "title",
+    "plugin",
+    "description",
+    "path",
+    "capabilities",
+    "timeout_ms",
+    "max_payload_bytes",
+    "ordering",
+    "redaction_profile",
+]
+isolation = ["timeout", "crash", "ordering", "skew", "max_payload", "redaction"]
+
+[[first_party_panel]]
+panel_id = "hedron-data-schema"
+plugin = "hedron-data"
+path = "/hedron-explorer/data"
+
+[[first_party_panel]]
+panel_id = "hedron-charts-viz"
+plugin = "hedron-charts"
+path = "/hedron-explorer/charts"
+
+[[first_party_panel]]
+panel_id = "hedron-maps"
+plugin = "hedron-maps"
+path = "/hedron-explorer/maps"
+
+[[first_party_panel]]
+panel_id = "hedron-extras-features"
+plugin = "hedron-extras"
+path = "/hedron-explorer/packages"
+dedicated_extras_route_shipped = false
+
+[[first_party_panel]]
+panel_id = "sample-kit-callout"
+plugin = "hedron-sample-kit"
+path = "/hedron-explorer/packages"
