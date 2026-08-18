@@ -3,7 +3,7 @@
 ## Which version should I install?
 
 Install from **PyPI**: `hedron>=0.48.0,<0.49`. Full pin table (including this
-repository’s `0.49.0` checkout): [Installation](../getting-started/installation.md).
+repository’s `0.49.1` checkout): [Installation](../getting-started/installation.md).
 
 ```bash
 pip install "hedron>=0.48.0,<0.49"

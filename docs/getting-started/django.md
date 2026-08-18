@@ -55,7 +55,7 @@ ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
 ## Existing Django project (add a Refresh page)
 
 ```bash
-pip install "hedron-django>=0.49.0,<0.50" "django>=5.2,<6"
+pip install "hedron-django>=0.49.1,<0.50" "django>=5.2,<6"
 ```
 
 Add `hedron_django` to `INSTALLED_APPS` when you need forms/QuerySet helpers.

@@ -79,6 +79,29 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
         "Filter chips swap the declared table region. Docs simulation.",
     ),
     (
+        "guides/dashboards.md",
+        "data-table-filter",
+        "Use page-local controls to cross-filter one declared table region. Docs simulation.",
+    ),
+    (
+        "guides/htmx-extensions.md",
+        "component-htmx-link",
+        "Choose a destination to swap the main panel while preserving an ordinary href fallback. "
+        "Docs simulation.",
+    ),
+    (
+        "guides/maps.md",
+        "maps-markers",
+        "Filter package-native map markers and inspect the accessible fallback table. "
+        "Docs simulation; no live tile requests.",
+    ),
+    (
+        "guides/maps-accessibility.md",
+        "maps-layers",
+        "Swap typed GeoJSON layers while keeping their feature names and coordinates "
+        "available as HTML. Docs simulation; no live tile requests.",
+    ),
+    (
         "guides/jobs-celery-rq.md",
         "jobs-poll",
         "Bounded job poll — each click advances one status step. Docs simulation.",

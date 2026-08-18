@@ -1,7 +1,7 @@
 # Upgrade to Hedron 0.49
 
 This guide covers an application upgrade onto the **0.49.x** train
-(in-tree **`v0.49.0`**; Git tag and PyPI remain deferred — PyPI still serves `0.48.0`).
+(in-tree **`v0.49.1`**; Git tag and PyPI remain deferred — PyPI still serves `0.48.0`).
 New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
@@ -44,7 +44,7 @@ preload remain experimental.
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.49.0,<0.50`,
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.49.1,<0.50`,
    or the tip pin already). Registry installs remain `>=0.48.0,<0.49` until the deferred upload.
 3. Existing 0.42–0.46 handlers and unused `include_feature` keep working.
 4. Adopt maps only via `hedron[maps]` / `from hedron_maps import …`.
@@ -55,14 +55,14 @@ preload remain experimental.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.49.0,<0.50"
-python -m pip install -U "hedron[data]>=0.49.0,<0.50"
-python -m pip install -U "hedron[charts]>=0.49.0,<0.50"
-python -m pip install -U "hedron[maps]>=0.49.0,<0.50"
+python -m pip install -U "hedron>=0.49.1,<0.50"
+python -m pip install -U "hedron[data]>=0.49.1,<0.50"
+python -m pip install -U "hedron[charts]>=0.49.1,<0.50"
+python -m pip install -U "hedron[maps]>=0.49.1,<0.50"
 # independent charts satellite:
 python -m pip install -U "hedron-charts>=0.2.0,<0.3"
 # optional production-grade elements inventory:
-python -m pip install -U "hedron[elements]>=0.49.0,<0.50"
+python -m pip install -U "hedron[elements]>=0.49.1,<0.50"
 ```
 
 From PyPI today, pin `hedron>=0.48.0,<0.49` until the 0.49 upload.

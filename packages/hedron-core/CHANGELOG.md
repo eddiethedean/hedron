@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.49.1] — 2026-08-18
+
+### Changed
+- Coordinated train tip `0.49.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Directory-upload paths reject raw CR/LF/TAB, not only percent-encoded forms (#393).
+- Strip Hedron ``Field()`` metadata from TypeSchema v2 instead of failing closed (#394).
+- Copy OpenAPI discriminator objects instead of sanitizing them as nested schemas (#395).
+- Prefix ``data-hx-*`` URLs with the mount path at serialize time (#398).
+
 ## [0.49.0] — 2026-08-17
 
 ### Added

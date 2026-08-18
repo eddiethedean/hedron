@@ -30,6 +30,7 @@ from demos.guides import (
     build_tenant_deny_demo,
 )
 from demos.hello_refresh import build_hello_refresh_demo
+from demos.maps import build_maps_layers_demo, build_maps_markers_demo
 
 __all__ = ["CONTRACTS", "DemoContract", "Step", "contract_ids"]
 
@@ -74,6 +75,49 @@ def _link(label: str) -> str:
 
 
 CONTRACTS: tuple[DemoContract, ...] = (
+    DemoContract(
+        id="maps-markers",
+        builder=build_maps_markers_demo,
+        min_steps=2,
+        steps=(
+            Step(
+                click=_btn("Civic only"),
+                expect_text="#places-map",
+                contains="Civic places",
+                contains_all=("Main Library", "Museum of Modern Art"),
+                not_contains="Ferry Building",
+                expect_trace="GET /places/civic → 200",
+            ),
+            Step(
+                click=_btn("All places"),
+                expect_text="#places-map",
+                contains="Ferry Building",
+                expect_trace="GET /places → 200",
+            ),
+        ),
+    ),
+    DemoContract(
+        id="maps-layers",
+        builder=build_maps_layers_demo,
+        min_steps=2,
+        steps=(
+            Step(
+                click=_btn("Inspections"),
+                expect_text="#operations-map",
+                contains="Scheduled inspections",
+                contains_all=("Pier inspection",),
+                not_contains="Signal repair",
+                expect_trace="GET /layers/inspections → 200",
+            ),
+            Step(
+                click=_btn("Incidents"),
+                expect_text="#operations-map",
+                contains="Active incidents",
+                contains_all=("Signal repair", "Street closure"),
+                expect_trace="GET /layers/incidents → 200",
+            ),
+        ),
+    ),
     DemoContract(
         id="hello-refresh",
         builder=lambda: build_hello_refresh_demo(

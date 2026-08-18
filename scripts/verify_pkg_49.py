@@ -3,7 +3,7 @@
 
 This command never publishes or tags. Use ``--allow-planned`` only while the 0.49
 rows are Planned and the living baseline is 0.48.0.
-At the in-tree cut, omit ``--allow-planned`` and require published 0.49.0.
+At the in-tree cut, omit ``--allow-planned`` and require published 0.49.x.
 PKG evidence is ``scripts/check_pkg_049.py`` so ``--execute-verified`` cannot recurse here.
 """
 
@@ -181,11 +181,11 @@ def _check_versions(*, allow_planned: bool) -> None:
         print(f"ok: 0.49 historical under living published {published}")
         return
     else:
-        expected = RELEASE_CANDIDATE
-        if published != RELEASE_CANDIDATE:
+        if not published.startswith("0.49."):
             raise SystemExit(
-                f"cut published version must be {RELEASE_CANDIDATE}; found {published!r}"
+                f"cut published version must be on 0.49.x; found {published!r}"
             )
+        expected = published
     if workspace != expected or development != expected:
         raise SystemExit(
             f"workspace/development version must be {expected}; found {workspace}/{development}"
@@ -211,10 +211,11 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit("\n".join(errors))
         print("ok: 0.49 planned gate shape")
     else:
+        published = str(_load(RELEASE).get("release", {}).get("published_version", "")).strip()
         command = [
             sys.executable,
             str(ROOT / "scripts" / "check_release_gate.py"),
-            RELEASE_CANDIDATE,
+            published,
             "--evidence-manifest",
             str(GATE),
             "--execute-verified",
