@@ -14,7 +14,13 @@ from fastapi.params import Depends as DependsParam
 from starlette.requests import Request
 
 from hedron.routing.reverse import ComponentRef
-from hedron_core.codes import HED_CMD_0001, HED_TYPE_0005, HED_VIEW_0003, HED_VIEW_0004
+from hedron_core.codes import (
+    HED_CMD_0001,
+    HED_HOST_0001,
+    HED_TYPE_0005,
+    HED_VIEW_0003,
+    HED_VIEW_0004,
+)
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.hosts import FragmentHost
@@ -370,6 +376,45 @@ class BoundFragment(Generic[ContentT]):
         return self.handle.update(content, **kwargs)
 
 
+_RESERVED_BUTTON_ATTRS = frozenset(
+    {
+        "type",
+        "hx-get",
+        "hx-post",
+        "hx-put",
+        "hx-patch",
+        "hx-delete",
+        "hx-target",
+        "hx-swap",
+        "hx-sync",
+        "hx-headers",
+        "data-hedron-command",
+        "fallback",
+    }
+)
+
+
+def _safe_button_attrs(attrs: Mapping[str, object]) -> dict[str, object]:
+    """Forward class_/ARIA/data attrs; keep HTMX identity authoritative (#314)."""
+    out: dict[str, object] = {}
+    for raw_name, value in attrs.items():
+        name = str(raw_name)
+        lowered = name.lower()
+        if lowered in _RESERVED_BUTTON_ATTRS:
+            continue
+        if lowered.startswith("on") or lowered.startswith("hx-on"):
+            raise error(
+                HED_HOST_0001,
+                title="Unsafe command button attribute",
+                explanation=(
+                    f"Button attribute {name!r} is not an allowlisted ordinary HTML/ARIA attribute."
+                ),
+                remediation="Use safe HTML/ARIA attributes; do not attach event handlers.",
+            )
+        out[name] = value
+    return out
+
+
 class _CommandButtonProps(Props):
     pass
 
@@ -400,11 +445,14 @@ class _CommandButton(Component[_CommandButtonProps]):
         self._extra = dict(extra or {})
 
     def render(self) -> NodeLike:
-        attrs: dict[str, object] = {
-            "type": "button" if self._fallback else "submit",
-            "hx-swap": self._swap,
-            "data-hedron-command": self._logical_id,
-        }
+        attrs: dict[str, object] = dict(self._extra)
+        attrs.update(
+            {
+                "type": "button" if self._fallback else "submit",
+                "hx-swap": self._swap,
+                "data-hedron-command": self._logical_id,
+            }
+        )
         method = self._method.upper()
         if method == "POST":
             attrs["hx-post"] = self._path
@@ -419,7 +467,6 @@ class _CommandButton(Component[_CommandButtonProps]):
         ctx = active_render_context()
         if ctx is not None and ctx.csrf_token:
             attrs["hx-headers"] = json.dumps({"X-CSRF-Token": ctx.csrf_token})
-        attrs.update(self._extra)
         attrs = {key: value for key, value in attrs.items() if value is not None}
         return html.button(self._label, **cast(dict[str, HtmlAttrValue], attrs))
 
@@ -500,8 +547,9 @@ class ActionHandle(Generic[InputT, ResultT]):
         return FragmentRegion(id=self.logical_id, selector=f"#{self.logical_id}")
 
     def button(self, label: str, **kwargs: object) -> NodeLike:
-        fallback = str(kwargs.get("fallback") or self.fallback or "")
-        swap = str(kwargs.pop("hx-swap", "none"))
+        extra = dict(kwargs)
+        fallback = str(extra.pop("fallback", None) or self.fallback or "")
+        swap = str(extra.pop("hx-swap", "none"))
         method = self.method.upper()
         if method in {"GET", "HEAD", "OPTIONS", "TRACE"}:
             raise error(
@@ -517,7 +565,7 @@ class ActionHandle(Generic[InputT, ResultT]):
             logical_id=self.logical_id,
             fallback=fallback,
             swap=swap,
-            extra=kwargs,
+            extra=_safe_button_attrs(extra),
         )
 
 
@@ -544,17 +592,20 @@ class Refresh:
         self._kwargs = kwargs
 
     def render(self) -> NodeLike:
-        attrs = {
-            "type": "button",
-            "hx-get": self._handle.path,
-            "hx-target": self._handle.selector,
-            "hx-swap": "outerHTML",
-            "hx-sync": "this:drop",
-        }
+        attrs: dict[str, object] = _safe_button_attrs(self._kwargs)
+        attrs.update(
+            {
+                "type": "button",
+                "hx-get": self._handle.path,
+                "hx-target": self._handle.selector,
+                "hx-swap": "outerHTML",
+                "hx-sync": "this:drop",
+            }
+        )
         fallback = self._handle.fallback
         if fallback:
             attrs["data-hedron-fallback"] = fallback
-        return html.button(self._label, **attrs)
+        return html.button(self._label, **cast(dict[str, HtmlAttrValue], attrs))
 
     def __hedron_node__(self) -> NodeLike:
         return self.render()
