@@ -44,20 +44,22 @@ def _cancel_key(req_id: Any) -> str | None:
     return str(req_id)
 
 
-def _cancel_owner(*, session_id: str | None, principal: str | None) -> str:
-    """Scope cancel marks to the MCP session when present, else the principal (#217)."""
+def _cancel_owner(*, session_id: str | None, principal: str | None) -> str | None:
+    """Scope cancel marks to a session or authenticated principal (#217, #288)."""
     if session_id:
         return f"session:{session_id}"
-    return f"principal:{principal or 'anonymous'}"
+    if principal:
+        return f"principal:{principal}"
+    return None
 
 
 def _raise_if_cancelled(
     projection: Any,
     cancel_key: str | None,
     *,
-    owner: str,
+    owner: str | None,
 ) -> None:
-    if cancel_key and projection.bounds.is_cancelled(cancel_key, owner=owner):
+    if cancel_key and owner and projection.bounds.is_cancelled(cancel_key, owner=owner):
         raise BoundsError("MCP request cancelled")
 
 
@@ -274,7 +276,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 principal=principal,
                 detail={"uri": uri},
             )
-            if cancel_key:
+            if cancel_key and cancel_owner:
                 projection.bounds.clear_cancel(cancel_key, owner=cancel_owner)
             return _json_response(
                 _result(
@@ -320,7 +322,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 principal=principal,
                 detail={"name": name},
             )
-            if cancel_key:
+            if cancel_key and cancel_owner:
                 projection.bounds.clear_cancel(cancel_key, owner=cancel_owner)
             return _json_response(
                 _result(
@@ -335,6 +337,15 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 return _json_response(
                     _error(req_id, -32602, "notifications/cancelled requires params.requestId"),
                     status_code=400,
+                )
+            if not cancel_owner:
+                return _json_response(
+                    _error(
+                        req_id,
+                        -32600,
+                        "notifications/cancelled requires mcp-session-id or a principal",
+                    ),
+                    status_code=403,
                 )
             cancel_id = str(raw_cancel)
             projection.bounds.request_cancel(cancel_id, owner=cancel_owner)
