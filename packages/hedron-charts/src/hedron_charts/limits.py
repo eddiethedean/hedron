@@ -197,11 +197,21 @@ def _walk_remote(obj: object) -> bool:
     return False
 
 
+_UNSAFE_ASSET_SCHEMES = (
+    "data:",
+    "file:",
+    "javascript:",
+    "vbscript:",
+    "blob:",
+    "about:",
+)
+
+
 def _is_remote_url(value: str) -> bool:
     lowered = value.lower().strip()
     # These schemes are unsafe in asset positions even though they do not all name
     # a remote host. Chart specifications must use registered local assets instead.
-    if lowered.startswith(("data:", "file:", "javascript:")):
+    if lowered.startswith(_UNSAFE_ASSET_SCHEMES):
         return True
     return (
         lowered.startswith("http://")
