@@ -184,6 +184,24 @@ def test_history_restore_uses_page_mode() -> None:
     assert '"allowEval":false' in response.text
 
 
+def test_boosted_htmx_uses_page_mode() -> None:
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(Text("home"), title="Home")
+
+    client = TestClient(app)
+    response = client.get(
+        "/",
+        headers={"HX-Request": "true", "HX-Boosted": "true"},
+    )
+    assert response.status_code == 200
+    assert response.text.startswith("<!DOCTYPE html>")
+    assert 'name="htmx-config"' in response.text
+    assert "home" in response.text
+
+
 def test_explicit_htmx_config_replaces_hedron_defaults() -> None:
     from hedron import html
 
