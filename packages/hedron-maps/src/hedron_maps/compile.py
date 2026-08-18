@@ -254,6 +254,24 @@ def _policy_allows(origin: str | None, policy: MapPolicy, *, local: bool) -> Non
         )
 
 
+def _set_basemap_raster(
+    style: dict[str, Any],
+    *,
+    tiles: Sequence[str],
+    attribution: str,
+    extra: Mapping[str, Any] | None = None,
+) -> None:
+    source: dict[str, Any] = {
+        "type": "raster",
+        "tiles": list(tiles),
+        "attribution": attribution,
+    }
+    if extra:
+        source.update(dict(extra))
+    style["sources"]["basemap"] = source
+    style["layers"] = [{"id": "basemap", "type": "raster", "source": "basemap"}]
+
+
 def _zoom_ok(min_zoom: int, max_zoom: int) -> None:
     if min_zoom < MIN_ZOOM or max_zoom > MAX_ZOOM or min_zoom > max_zoom:
         raise _map_error(
@@ -452,13 +470,12 @@ def _basemap_facts(
             _policy_allows(origin, policy, local=False)
         origins.append(origin)
         resources.append(basemap.tile_url)
-        style["sources"]["basemap"] = {
-            "type": "raster",
-            "tiles": [basemap.tile_url],
-            "tileSize": basemap.tile_size,
-            "attribution": attr,
-        }
-        style["layers"] = [{"id": "basemap", "type": "raster", "source": "basemap"}]
+        _set_basemap_raster(
+            style,
+            tiles=[basemap.tile_url],
+            attribution=attr,
+            extra={"tileSize": basemap.tile_size},
+        )
         warnings.append("OSM standard preset is replaceable and has no availability/SLA claim.")
         return str(kind), OSM_STANDARD_ID, resources, origins, attribution, style, warnings
 
@@ -470,14 +487,12 @@ def _basemap_facts(
         if origin:
             origins.append(origin)
         resources.append(basemap.url)
-        style["sources"]["basemap"] = {
-            "type": "raster",
-            "tiles": [basemap.url],
-            "tileSize": basemap.tile_size,
-            "scheme": basemap.scheme,
-            "attribution": attr,
-        }
-        style["layers"] = [{"id": "basemap", "type": "raster", "source": "basemap"}]
+        _set_basemap_raster(
+            style,
+            tiles=[basemap.url],
+            attribution=attr,
+            extra={"tileSize": basemap.tile_size, "scheme": basemap.scheme},
+        )
         return str(kind), None, resources, origins, attribution, style, warnings
 
     if isinstance(basemap, TileJSON):
@@ -500,6 +515,20 @@ def _basemap_facts(
                         if origin and origin not in origins:
                             origins.append(origin)
                         resources.append(tile)
+                tile_urls = [tile for tile in tiles if isinstance(tile, str)]
+                if tile_urls:
+                    source_type = "raster"
+                    if isinstance(basemap.document, Mapping):
+                        declared = str(basemap.document.get("type") or "raster")
+                        if declared in {"raster", "vector"}:
+                            source_type = declared
+                    style["sources"]["basemap"] = {
+                        "type": source_type,
+                        "tiles": tile_urls,
+                        "attribution": attr,
+                    }
+                    layer_type = "raster" if source_type == "raster" else "circle"
+                    style["layers"] = [{"id": "basemap", "type": layer_type, "source": "basemap"}]
         if basemap.url:
             checked = _validate_url(basemap.url)
             origin = _origin_of(checked)
@@ -507,6 +536,13 @@ def _basemap_facts(
             if origin:
                 origins.append(origin)
             resources.append(checked)
+            if "basemap" not in style["sources"]:
+                style["sources"]["basemap"] = {
+                    "type": "raster",
+                    "url": checked,
+                    "attribution": attr,
+                }
+                style["layers"] = [{"id": "basemap", "type": "raster", "source": "basemap"}]
         return str(kind), None, resources, origins, attribution, style, warnings
 
     if isinstance(basemap, VectorTiles):
@@ -532,6 +568,16 @@ def _basemap_facts(
             _policy_allows(origin, policy, local=False)
             origins.append(origin)
         resources.append(checked)
+        coordinates = [[-180.0, 85.0], [180.0, 85.0], [180.0, -85.0], [-180.0, -85.0]]
+        if basemap.bounds is not None:
+            west, south, east, north = basemap.bounds
+            coordinates = [[west, north], [east, north], [east, south], [west, south]]
+        style["sources"]["basemap"] = {
+            "type": "image",
+            "url": checked,
+            "coordinates": coordinates,
+        }
+        style["layers"] = [{"id": "basemap", "type": "raster", "source": "basemap"}]
         return str(kind), None, resources, origins, attribution, style, warnings
 
     if isinstance(basemap, PMTiles):
@@ -541,6 +587,19 @@ def _basemap_facts(
             _policy_allows(origin, policy, local=False)
             origins.append(origin)
         resources.append(checked)
+        source_type = "vector" if basemap.vector else "raster"
+        style["sources"]["basemap"] = {
+            "type": source_type,
+            "url": checked,
+            "attribution": attr,
+        }
+        style["layers"] = [
+            {
+                "id": "basemap",
+                "type": "circle" if source_type == "vector" else "raster",
+                "source": "basemap",
+            }
+        ]
         if basemap.style:
             style_url = _validate_url(basemap.style)
             style_origin = _origin_of(style_url)
@@ -567,6 +626,13 @@ def _basemap_facts(
                 "Use a declared handle; routes stay integer XYZ only.",
             )
         resources.append(basemap.route_template.replace("{archive_id}", basemap.archive_id))
+        route = basemap.route_template.replace("{archive_id}", basemap.archive_id)
+        _set_basemap_raster(
+            style,
+            tiles=[route],
+            attribution=attr,
+            extra={"minzoom": basemap.min_zoom, "maxzoom": basemap.max_zoom},
+        )
         return str(kind), None, resources, origins, attribution, style, warnings
 
     if isinstance(basemap, NoBasemap):
@@ -583,6 +649,14 @@ def _basemap_facts(
                     if origin not in origins:
                         origins.append(origin)
                 resources.append(checked)
+        archive = getattr(basemap, "archive_or_image", None)
+        if isinstance(archive, str) and archive and "basemap" not in style["sources"]:
+            style["sources"]["basemap"] = {
+                "type": "raster",
+                "url": archive,
+                "attribution": attr or str(basemap.attribution or ""),
+            }
+            style["layers"] = [{"id": "basemap", "type": "raster", "source": "basemap"}]
         if basemap.attribution:
             attribution.append(basemap.attribution)
         return "pmtiles", None, resources, origins, attribution, style, warnings
