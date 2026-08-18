@@ -46,6 +46,40 @@ def test_html_routes_keep_text_html_and_scopes_do_not_grant() -> None:
                 found_html = True
             if operation.get("security"):
                 assert RequiresScopes("read").grants_access() is False
+                schemes = (schema.get("components") or {}).get("securitySchemes") or {}
+                assert "hedronScopes" in schemes
     assert found_html
     assert RequiresScopes("read").scopes == ("read",)
     assert export.path
+    op = (schema.get("paths") or {}).get("/export", {}).get("post") or {}
+    assert op.get("security") == [{"hedronScopes": ["read"]}]
+    assert "x-hedron-input-schema" in op or op.get("x-hedron-kind") == "action"
+
+
+def test_modeled_command_emits_type_schema_and_security_scheme() -> None:
+    from typing import Annotated
+
+    from pydantic import BaseModel
+
+    from hedron import FormBody, RequiresScopes, Text
+
+    app = make_app()
+
+    class Payload(BaseModel):
+        name: str
+
+    @app.command(
+        "/save",
+        fallback="/",
+        include_in_schema=True,
+        authorization=RequiresScopes("write"),
+    )
+    def save(data: Annotated[Payload, FormBody()]):
+        return Text(data.name)
+
+    schema = app.openapi()
+    op = ((schema.get("paths") or {}).get("/save") or {}).get("post") or {}
+    assert op.get("security") == [{"hedronScopes": ["write"]}]
+    schemes = (schema.get("components") or {}).get("securitySchemes") or {}
+    assert "hedronScopes" in schemes
+    assert "x-hedron-input-schema" in op
