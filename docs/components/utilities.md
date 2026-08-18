@@ -10,6 +10,7 @@ Metrics, viewers, progress, status, disclosure, tabs, and files.
 - [`Progress`](progress.md) — Show determinate completion with a native progress element.
 - [`Status`](status.md) — Announce a concise operation state with a semantic tone.
 - [`Toast`](toast.md) — Render a polite, transient-looking status message.
+- [`ToastHost`](toast-host.md) — Frozen out-of-band toast sink at `#hedron-toast`.
 - [`Expander`](expander.md) — Reveal optional content with native details/summary behavior.
 - [`Tabs`](tabs.md) — Render a small ARIA tablist with one initially active labelled panel.
 - [`Sidebar`](sidebar.md) — Render complementary page content with an accessible label.

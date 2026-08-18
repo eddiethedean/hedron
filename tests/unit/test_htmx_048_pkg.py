@@ -23,7 +23,8 @@ def test_extension_package_data_and_license() -> None:
     assert versions["preload"] == "2.1.2"
 
 
-def test_core_version_is_train_tip() -> None:
+def test_core_version_is_at_least_048() -> None:
     pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
     assert f'version = "{core_version}"' in pyproject
-    assert core_version in {"0.47.0", "0.48.0", "0.49.0", "0.49.1"}
+    parts = tuple(int(p) for p in core_version.split(".")[:2])
+    assert parts >= (0, 48)

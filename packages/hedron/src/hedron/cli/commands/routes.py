@@ -16,7 +16,10 @@ def _cmd_routes(args: argparse.Namespace) -> int:
     try:
         from hedron_explorer.services.catalog import routes_json
 
-        print(json.dumps(routes_json(), indent=2))
+        payload = routes_json()
+        if not payload:
+            _registry_empty_hint(app=args.app, what="routes")
+        print(json.dumps(payload, indent=2))
         return 0
     except ImportError:
         print("hedron-explorer: skipped (not installed)", file=sys.stderr)

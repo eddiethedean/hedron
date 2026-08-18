@@ -78,20 +78,21 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-Toast emits a polite status region with a tone class. It does not include timing or dismissal behavior; the docs Show button simulates inserting the server-rendered toast into an application shell.
+Toast emits a polite status region with a tone class and optional TTL. Pair with ToastHost at frozen `#hedron-toast`. Danger toasts stay until dismissed unless ttl_ms is set.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
 ## Constructor and parameters
 
 ```python
-Toast(message, *, tone='info')
+Toast(message, *, tone='info', ttl_ms=4000)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `message` | `str` | Escaped toast text. |
 | `tone` | `info | success | warning | danger` | Visual token. |
+| `ttl_ms` | `int | None` | Auto-dismiss delay in milliseconds; danger defaults to none. |
 
 ## Composition and backend behavior
 

@@ -90,7 +90,7 @@ Automatic rendering, tabular display, and editable data.
 
 Metrics, viewers, progress, status, disclosure, tabs, and files.
 
-[`Metric`](metric.md) · [`FileUpload`](file-upload.md) · [`DownloadButton`](download-button.md) · [`CodeViewer`](code-viewer.md) · [`JSONViewer`](json-viewer.md) · [`Progress`](progress.md) · [`Status`](status.md) · [`Toast`](toast.md) · [`Expander`](expander.md) · [`Tabs`](tabs.md) · [`Sidebar`](sidebar.md) · [`CircularProgress`](circular-progress.md) · [`HelpInspector`](help-inspector.md)
+[`Metric`](metric.md) · [`FileUpload`](file-upload.md) · [`DownloadButton`](download-button.md) · [`CodeViewer`](code-viewer.md) · [`JSONViewer`](json-viewer.md) · [`Progress`](progress.md) · [`Status`](status.md) · [`Toast`](toast.md) · [`ToastHost`](toast-host.md) · [`Expander`](expander.md) · [`Tabs`](tabs.md) · [`Sidebar`](sidebar.md) · [`CircularProgress`](circular-progress.md) · [`HelpInspector`](help-inspector.md)
 
 ## Theme
 
