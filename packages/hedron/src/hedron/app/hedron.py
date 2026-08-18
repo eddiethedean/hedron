@@ -170,6 +170,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         mount_build_assets(self, build_dir)
 
         self._root_router = HedronRouter()
+        self._root_router._hedron_host_app = self
         install_openapi(self)
 
         from hedron.status_responses import install_interaction_handlers
@@ -202,4 +203,6 @@ class Hedron(HedronPagesMixin, FastAPI):
             catalog_sealed=get_sealed_catalog() is not None,
             openapi_cached=self.openapi_schema is not None,
         )
+        if isinstance(router, HedronRouter):
+            router._hedron_host_app = self
         super().include_router(router, *args, **kwargs)
