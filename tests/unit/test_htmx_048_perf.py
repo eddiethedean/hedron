@@ -11,7 +11,7 @@ from hedron_core.htmx_extensions import known_extensions
 
 # Stage 1 measured uncompressed bytes (HTMX extension files as vendored).
 PRELOAD_BYTES = 14099
-SSE_BYTES = 8896
+SSE_BYTES = 8921
 HEAD_SUPPORT_BYTES = 6285
 
 

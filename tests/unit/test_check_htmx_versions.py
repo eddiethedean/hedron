@@ -26,7 +26,7 @@ def test_reads_every_authoritative_htmx_pin() -> None:
         ("htmx.org", "2.0.10"),
         ("htmx-ext-head-support", "2.0.5"),
         ("htmx-ext-preload", "2.1.2"),
-        ("htmx-ext-sse", "2.2.2"),
+        ("htmx-ext-sse", "2.2.4"),
     }
 
 
@@ -70,8 +70,8 @@ def test_outdated_message_names_required_upgrade() -> None:
 
 def test_current_pin_passes_and_lookup_failure_is_actionable() -> None:
     module = _load_module()
-    pin = module.AssetPin("htmx-ext-sse", "2.2.2", module.EXTENSION_PIN_SOURCE)
-    assert module.check_pins((pin,), latest_for=lambda _package: "2.2.2") == ([], [])
+    pin = module.AssetPin("htmx-ext-sse", "2.2.4", module.EXTENSION_PIN_SOURCE)
+    assert module.check_pins((pin,), latest_for=lambda _package: "2.2.4") == ([], [])
 
     def unavailable(_package):
         raise TimeoutError("registry timed out")
