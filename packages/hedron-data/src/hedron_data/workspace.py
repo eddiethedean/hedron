@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, Literal, TypeVar
+from typing import Any, Generic, Literal, TypeVar, cast
 
 from pydantic import BaseModel, Field, TypeAdapter, create_model
 
@@ -18,6 +18,7 @@ from hedron_core.bundles import (
 from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_BUNDLE_0005, HED_BUNDLE_0007
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
+from hedron_data.columns import Column
 from hedron_data.sources import (
     HARD_MAX_PAGE_SIZE,
     CellUpdate,
@@ -169,6 +170,39 @@ class DataWorkspace(Generic[ModelT]):
             return False
         return bool(hook(**accepted))
 
+    def _column_objects(self) -> tuple[Column, ...] | None:
+        if not self.columns:
+            return None
+        out: list[Column] = []
+        for item in self.columns:
+            if isinstance(item, Column):
+                out.append(item)
+            else:
+                out.append(Column(name=str(item)))
+        return tuple(out)
+
+    def _column_names(self) -> tuple[str, ...]:
+        columns = self._column_objects()
+        if columns is None:
+            return tuple(getattr(self.model, "model_fields", {}) or {})
+        names = [item.name for item in columns]
+        if self.key_field not in names:
+            names.insert(0, self.key_field)
+        return tuple(names)
+
+    def _attach_form_overrides(self, handle: object) -> None:
+        overrides = dict(self.form_overrides)
+        original = getattr(handle, "form", None)
+        if not overrides or not callable(original):
+            return
+
+        def form(*, controls: Mapping[str, object] | None = None, **kwargs: object) -> object:
+            merged = {**overrides, **dict(controls or {})}
+            return original(controls=merged, **kwargs)
+
+        target = cast(Any, handle)
+        target.form = form
+
     def _identity_model(self) -> type[BaseModel]:
         return create_model(
             f"{self.name.title()}Identity",
@@ -182,7 +216,7 @@ class DataWorkspace(Generic[ModelT]):
             "sort": (str | None, None),
             "q": (str | None, None),
         }
-        for name in getattr(self.model, "model_fields", {}) or {}:
+        for name in self._column_names():
             if name not in _LIST_RESERVED:
                 fields[name] = (str | None, None)
         return create_model(
@@ -194,7 +228,8 @@ class DataWorkspace(Generic[ModelT]):
         from hedron_data.sources import DEFAULT_MAX_PAGE_SIZE
 
         model_fields = getattr(self.model, "model_fields", {}) or {}
-        allow = frozenset(model_fields)
+        names = self._column_names()
+        allow = frozenset(names)
         offset = int(getattr(params, "offset", 0) or 0) if params is not None else 0
         limit = int(getattr(params, "limit", 25) or 25) if params is not None else 25
         search = getattr(params, "q", None) if params is not None else None
@@ -210,8 +245,11 @@ class DataWorkspace(Generic[ModelT]):
             sort = ((name, direction),)
         filters: dict[str, Any] = {}
         if params is not None:
-            for name, finfo in model_fields.items():
+            for name in names:
                 if name in _LIST_RESERVED:
+                    continue
+                finfo = model_fields.get(name)
+                if finfo is None:
                     continue
                 raw = getattr(params, name, None)
                 if raw is None or raw == "":
@@ -226,8 +264,10 @@ class DataWorkspace(Generic[ModelT]):
             sort=sort,
             filters=filters,
             search=str(search) if search is not None else None,
+            projection=names or None,
             allowlisted_sort_fields=allow,
             allowlisted_filter_fields=allow,
+            allowlisted_projection_fields=allow,
         ).validated(max_page_size=DEFAULT_MAX_PAGE_SIZE)
 
     def to_bundle(self) -> FeatureBundle:
@@ -261,7 +301,12 @@ class DataWorkspace(Generic[ModelT]):
                 except ValueError:
                     raise HTTPException(status_code=422, detail="invalid_query") from None
                 page = workspace.source.fetch(query)
-                return DataTable(page=page, caption=workspace.name)
+                return DataTable(
+                    page=page,
+                    caption=workspace.name,
+                    columns=workspace._column_objects(),
+                    row_model=workspace.model,  # type: ignore[arg-type]
+                )
 
             workspace.list_view = list_view
             return list_view
@@ -317,6 +362,7 @@ class DataWorkspace(Generic[ModelT]):
                     fallback=f"/{workspace.name}",
                 )(workspace.create_override)
                 workspace.create_command = handle
+                workspace._attach_form_overrides(handle)
                 return handle
 
             @app.command(  # type: ignore[union-attr]
@@ -338,6 +384,7 @@ class DataWorkspace(Generic[ModelT]):
                 return Text("created")
 
             workspace.create_command = create_command
+            workspace._attach_form_overrides(create_command)
             return create_command
 
         def edit_factory(app: object) -> object:
@@ -354,6 +401,7 @@ class DataWorkspace(Generic[ModelT]):
                     fallback=f"/{workspace.name}",
                 )(workspace.edit_override)
                 workspace.edit_command = handle
+                workspace._attach_form_overrides(handle)
                 return handle
 
             class EditPayload(workspace.edit_model):  # type: ignore[valid-type,misc]
@@ -393,6 +441,7 @@ class DataWorkspace(Generic[ModelT]):
                 return Text("updated")
 
             workspace.edit_command = edit_command
+            workspace._attach_form_overrides(edit_command)
             return edit_command
 
         projection = PackageProjection(

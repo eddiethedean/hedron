@@ -244,6 +244,13 @@ def _policy_allows(origin: str | None, policy: MapPolicy, *, local: bool) -> Non
             "A remote source did not produce an exact HTTPS origin.",
             "Use an https URL with a host.",
         )
+    if not policy.remote_requests_permitted:
+        raise _map_error(
+            HED_MAP_POLICY_0001,
+            "Remote map requests are not permitted",
+            f"{origin} requires a remote fetch while remote_requests_permitted is false.",
+            "Set remote_requests_permitted=True or use same-origin /assets paths.",
+        )
     allowed = tuple(policy.allowed_origins)
     if origin not in allowed:
         raise _map_error(
@@ -270,6 +277,17 @@ def _set_basemap_raster(
         source.update(dict(extra))
     style["sources"]["basemap"] = source
     style["layers"] = [{"id": "basemap", "type": "raster", "source": "basemap"}]
+
+
+def _reject_remote_origins(origins: Sequence[str], policy: MapPolicy) -> None:
+    if policy.remote_requests_permitted or not origins:
+        return
+    raise _map_error(
+        HED_MAP_POLICY_0001,
+        "Remote map requests are not permitted",
+        f"Compiled remote origins {tuple(origins)} while remote_requests_permitted is false.",
+        "Set remote_requests_permitted=True or use same-origin /assets paths.",
+    )
 
 
 def _zoom_ok(min_zoom: int, max_zoom: int) -> None:
@@ -669,6 +687,79 @@ def _basemap_facts(
     )
 
 
+def _apply_overlay_style(
+    style: dict[str, Any], compiled_layers: Sequence[Mapping[str, Any]]
+) -> None:
+    """Fold compiled overlay layers into the MapLibre style the host mounts."""
+    sources = style.setdefault("sources", {})
+    layers = style.setdefault("layers", [])
+    if not isinstance(sources, dict) or not isinstance(layers, list):
+        return
+    for index, layer in enumerate(compiled_layers):
+        kind = str(layer.get("kind") or "")
+        source_id = f"overlay-{index}"
+        if kind == "marker":
+            features: list[dict[str, Any]] = []
+            for marker in layer.get("markers") or ():
+                if not isinstance(marker, Mapping):
+                    continue
+                features.append(
+                    {
+                        "type": "Feature",
+                        "id": marker.get("id"),
+                        "properties": {
+                            "id": marker.get("id"),
+                            "name": marker.get("label"),
+                            "label": marker.get("label"),
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [marker.get("lon"), marker.get("lat")],
+                        },
+                    }
+                )
+            sources[source_id] = {
+                "type": "geojson",
+                "data": {"type": "FeatureCollection", "features": features},
+            }
+            layers.append({"id": source_id, "type": "circle", "source": source_id})
+        elif kind in {"geojson", "line", "polygon", "circle"}:
+            data = layer.get("data") or {"type": "FeatureCollection", "features": []}
+            sources[source_id] = {"type": "geojson", "data": data}
+            paint = layer.get("paint") if isinstance(layer.get("paint"), Mapping) else None
+            if kind == "geojson":
+                layers.append(
+                    {
+                        "id": f"{source_id}-fill",
+                        "type": "fill",
+                        "source": source_id,
+                        "filter": ["==", ["geometry-type"], "Polygon"],
+                    }
+                )
+                layers.append({"id": f"{source_id}-line", "type": "line", "source": source_id})
+                layers.append(
+                    {
+                        "id": f"{source_id}-circle",
+                        "type": "circle",
+                        "source": source_id,
+                        "filter": ["==", ["geometry-type"], "Point"],
+                    }
+                )
+            else:
+                layer_type = {"line": "line", "polygon": "fill", "circle": "circle"}[kind]
+                entry: dict[str, Any] = {
+                    "id": source_id,
+                    "type": layer_type,
+                    "source": source_id,
+                }
+                if paint:
+                    entry["paint"] = dict(paint)
+                layers.append(entry)
+        elif kind == "raster":
+            raster_source = str(layer.get("source") or "basemap")
+            layers.append({"id": source_id, "type": "raster", "source": raster_source})
+
+
 def _fallback_rows(spec: MapSpec, layers: Sequence[dict[str, Any]]) -> tuple[dict[str, Any], ...]:
     rows: list[dict[str, Any]] = []
     for layer in spec.layers:
@@ -766,6 +857,8 @@ def compile_map(
             parsed, resolved_policy
         )
 
+    _reject_remote_origins(origins, resolved_policy)
+
     source_count = 1 if kind != "none" else 0
     for layer in parsed.layers:
         if isinstance(layer, RasterLayer):
@@ -814,6 +907,8 @@ def compile_map(
                     }
                 )
             marker["markers"] = sanitized
+
+    _apply_overlay_style(style, compiled_layers)
 
     renderer = {
         "engine": "maplibre",
