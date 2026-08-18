@@ -244,10 +244,12 @@ async function enhance(el, plan, gen, signal) {
     map.on("error", (err) =>
       emit(el, "map-failed", { code: "HED-MAP-RUNTIME-0001", message: String(err && err.error || err) })
     );
-    let pending = 0;
     map.on("moveend", () => {
-      if (pending) clearTimeout(pending);
-      pending = setTimeout(() => {
+      const state = bag(el);
+      if (state.timer) clearTimeout(state.timer);
+      state.timer = setTimeout(() => {
+        state.timer = 0;
+        if (gen !== bag(el).gen || !bag(el).map) return;
         const b = map.getBounds();
         emit(el, "viewport-changed", {
           west: b.getWest(),
