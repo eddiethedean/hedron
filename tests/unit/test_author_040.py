@@ -70,6 +70,7 @@ def test_cli_scaffolds_element_with_public_plugin_api(tmp_path: Path) -> None:
     assert "hedron-core>=0.49.1,<0.50" in project
     assert "hedron-elements>=0.49.1,<0.50" in project
     plugin = (destination / "src/demo_probe/plugin.py").read_text(encoding="utf-8")
+    assert "PLUGIN_META = _META" in plugin
     assert "ctx.register_element_definition" in plugin
     assert "from hedron_core.registry import register_element" not in plugin
 
