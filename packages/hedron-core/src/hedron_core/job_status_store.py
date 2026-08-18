@@ -8,7 +8,7 @@ import time
 from collections.abc import Iterable, Mapping
 from typing import Any, cast
 
-from hedron_core.jobs.auth import job_authorized
+from hedron_core.jobs.auth import job_authorized, job_authorized_http
 from hedron_core.jobs.backend import RedisClient, RedisPipeline
 from hedron_core.jobs.codec import (
     _idempotency_scope_key,
@@ -449,7 +449,7 @@ class RedisStatusStore:
                 return False
             status = _status_from_dict(data)
             # Fail closed for scoped jobs when credentials are omitted (match RedisJobBackend).
-            if not job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
+            if not job_authorized_http(status, auth_subject=auth_subject, tenant_id=tenant_id):
                 return False
             if status.state in _TERMINAL:
                 return False
