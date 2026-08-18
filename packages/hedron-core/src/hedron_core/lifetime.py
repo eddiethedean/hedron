@@ -53,7 +53,8 @@ class DependencyPlan:
                 remediation="Split the resource graph.",
             )
         object.__setattr__(self, "portability", dict(self.portability))
-        if self.streaming and self.lifetime is not DependencyLifetime.RESPONSE:
+        object.__setattr__(self, "lifetime", _coerce_lifetime(self.lifetime))
+        if self.streaming and self.lifetime != DependencyLifetime.RESPONSE:
             raise error(
                 HED_FP_0001,
                 title="Streaming resources require RESPONSE lifetime",
@@ -62,8 +63,14 @@ class DependencyPlan:
             )
 
 
-def compile_fastapi_scope(lifetime: DependencyLifetime) -> Literal["function", "request"]:
-    if lifetime is DependencyLifetime.RESPONSE:
+def _coerce_lifetime(lifetime: DependencyLifetime | str) -> DependencyLifetime:
+    if isinstance(lifetime, DependencyLifetime):
+        return lifetime
+    return DependencyLifetime(str(lifetime))
+
+
+def compile_fastapi_scope(lifetime: DependencyLifetime | str) -> Literal["function", "request"]:
+    if _coerce_lifetime(lifetime) == DependencyLifetime.RESPONSE:
         return FASTAPI_RESPONSE_SCOPE
     return FASTAPI_HANDLER_SCOPE
 
