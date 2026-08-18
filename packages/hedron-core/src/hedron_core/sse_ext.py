@@ -11,6 +11,7 @@ from hedron_core.codes import HED_EXT_0010
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.htmx_extensions import require_htmx_extension
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
@@ -76,11 +77,7 @@ class SseRegion(Component[SseRegionProps]):
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
-        url = (
-            connect
-            if isinstance(connect, SafeUrl)
-            else SafeUrl.parse(str(connect), purpose=UrlPurpose.NAVIGATION)
-        )
+        url = _sse_connect_url(connect)
         swap_token = validate_sse_event_token(swap, field="sse-swap")
         close_token = (
             validate_sse_event_token(close, field="sse-close") if close is not None else None
@@ -130,6 +127,23 @@ class SseTrigger(Component[SseTriggerProps]):
         **kwargs: object,
     ) -> None:
         token = validate_sse_event_token(event, field="sse-trigger")
+        if not safe_hx_swap(swap):
+            raise error(
+                HED_EXT_0010,
+                title="Invalid SSE swap",
+                explanation=f"hx-swap {swap!r} is not an admitted HTMX swap style.",
+                remediation="Use innerHTML, outerHTML, none, or another Supported swap token.",
+            )
+        selector = None
+        if target:
+            if not safe_css_selector(target):
+                raise error(
+                    HED_EXT_0010,
+                    title="Invalid SSE target",
+                    explanation=f"hx-target {target!r} is not a closed CSS selector.",
+                    remediation="Use a simple #id selector such as #panel.",
+                )
+            selector = target
         url = None
         if href is not None:
             url = (
@@ -137,7 +151,9 @@ class SseTrigger(Component[SseTriggerProps]):
                 if isinstance(href, SafeUrl)
                 else SafeUrl.parse(str(href), purpose=UrlPurpose.NAVIGATION)
             )
-        super().__init__(SseTriggerProps(event=token, href=url, target=target, swap=swap, **kwargs))
+        super().__init__(
+            SseTriggerProps(event=token, href=url, target=selector, swap=swap, **kwargs)
+        )
         self._children: Sequence[NodeLike] = collect_children(*children)
 
     def render(self) -> NodeLike:
@@ -150,3 +166,31 @@ class SseTrigger(Component[SseTriggerProps]):
         if self.props.swap:
             attrs["hx-swap"] = self.props.swap
         return html.div(*self._children, **attrs)
+
+
+def _sse_connect_url(connect: SafeUrl | str) -> SafeUrl:
+    """EventSource URLs must be root-relative same-origin paths, not navigation URLs."""
+    if isinstance(connect, SafeUrl) and getattr(connect, "_allow_external", False):
+        raise error(
+            HED_EXT_0010,
+            title="External SSE connect URL rejected",
+            explanation="sse-connect cannot use allow_external EventSource URLs.",
+            remediation="Pass a same-origin root-relative path such as /jobs/1/events.",
+        )
+    raw = str(connect).strip()
+    lowered = raw.lower()
+    if (
+        not raw
+        or raw.startswith("#")
+        or lowered.startswith("mailto:")
+        or lowered.startswith("tel:")
+        or "://" in raw
+        or raw.startswith("//")
+    ):
+        raise error(
+            HED_EXT_0010,
+            title="Invalid SSE connect URL",
+            explanation=f"sse-connect {raw!r} is not a same-origin EventSource path.",
+            remediation="Pass a root-relative path such as /jobs/1/events.",
+        )
+    return SafeUrl.parse(raw, purpose=UrlPurpose.NAVIGATION)
