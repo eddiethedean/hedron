@@ -710,6 +710,7 @@ def compile_map(
     rows = _fallback_rows(parsed, compiled_layers)
     for marker in compiled_layers:
         if marker.get("kind") == "marker":
+            sanitized: list[dict[str, Any]] = []
             for item in marker.get("markers") or ():
                 if item.get("action") and item.get("href"):
                     raise _map_error(
@@ -718,14 +719,27 @@ def compile_map(
                         "Reuse HED-MAP-0004 semantics: one ordinary action path per marker.",
                         "Supply href or action, not both.",
                     )
-                MarkerSpec.model_validate(
+                spec = MarkerSpec.model_validate(
                     {
                         "id": str(item.get("id") or "marker"),
                         "lat": item.get("lat") or 0.0,
                         "lon": item.get("lon") or 0.0,
                         "label": str(item.get("label") or ""),
+                        "href": item.get("href"),
+                        "action": item.get("action"),
                     }
                 )
+                sanitized.append(
+                    {
+                        "id": spec.id,
+                        "lat": spec.lat,
+                        "lon": spec.lon,
+                        "label": spec.label,
+                        "href": str(spec.href) if spec.href is not None else None,
+                        "action": spec.action,
+                    }
+                )
+            marker["markers"] = sanitized
 
     renderer = {
         "engine": "maplibre",
