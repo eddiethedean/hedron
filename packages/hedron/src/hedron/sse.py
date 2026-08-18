@@ -9,9 +9,11 @@ from fastapi.responses import StreamingResponse
 from starlette.background import BackgroundTask
 from starlette.requests import Request
 
+from hedron_core.diagnostics import HedronError
 from hedron_core.jobs import JobBackend, JobState, JobStatus, get_job_backend, job_authorized_http
 from hedron_core.live import SseEvent, encode_sse, iter_sse_bytes, job_status_sse_events
 from hedron_core.rendering import render
+from hedron_core.sse_ext import parse_last_event_id
 
 __all__ = [
     "SseResponse",
@@ -96,14 +98,6 @@ def sse_response(events: Iterator[SseEvent] | list[SseEvent]) -> SseResponse:
     return SseResponse(_gen())
 
 
-def _safe_last_event_id(raw: str | None) -> str | None:
-    if raw is None:
-        return None
-    if any(ord(ch) < 32 for ch in raw):
-        return None
-    return raw
-
-
 def job_status_sse_response(
     job_id: str,
     *,
@@ -144,12 +138,15 @@ def job_status_sse_response(
 
         last_id: str | None = None
         if request is not None:
-            last_id = _safe_last_event_id(request.headers.get("last-event-id"))
-            if request.headers.get("last-event-id") is not None and last_id is None:
-                yield encode_sse(
-                    SseEvent(data="invalid-last-event-id", event="error", id=job_id)
-                ).encode("utf-8")
-                return
+            raw_last_id = request.headers.get("last-event-id")
+            if raw_last_id is not None:
+                try:
+                    last_id = parse_last_event_id(raw_last_id)
+                except HedronError:
+                    yield encode_sse(
+                        SseEvent(data="invalid-last-event-id", event="error", id=job_id)
+                    ).encode("utf-8")
+                    return
         last_emitted_key: tuple[str, float] | None = None
         while True:
             status_obj = store.get(job_id)
