@@ -73,13 +73,14 @@ def generate_form(
         )
     overrides = dict(controls or {})
     current = _value_map(value)
-    error_map = _error_map(errors)
+    error_map, model_errors = _error_map(errors)
     nodes: list[NodeLike] = []
     # Resolve the token at render time. Page handlers call form() before
     # RenderContext exists; baking token= here freezes the placeholder.
     nodes.append(_RenderTimeCsrfField())
-    if error_map:
-        nodes.append(FormErrors(list(error_map.values())))
+    form_errors = model_errors + list(error_map.values())
+    if form_errors:
+        nodes.append(FormErrors(form_errors))
     for record in compiled.fields:
         override = overrides.get(record.name) or overrides.get(record.path)
         if record.disposition == "override_only" and override is None:
@@ -141,8 +142,9 @@ def _value_map(value: object | Mapping[str, object] | None) -> dict[str, object]
     return {}
 
 
-def _error_map(errors: Sequence[object]) -> dict[str, str]:
+def _error_map(errors: Sequence[object]) -> tuple[dict[str, str], list[str]]:
     out: dict[str, str] = {}
+    model_level: list[str] = []
     for item in errors:
         loc: object
         msg: object
@@ -158,7 +160,9 @@ def _error_map(errors: Sequence[object]) -> dict[str, str]:
             key = str(loc or "")
         if key:
             out[key] = str(msg)
-    return out
+        else:
+            model_level.append(str(msg))
+    return out, model_level
 
 
 def _label(record: FieldRecord) -> str:
