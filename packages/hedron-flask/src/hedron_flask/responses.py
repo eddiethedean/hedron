@@ -286,7 +286,9 @@ def component_response(
             allow_undeclared_targets=allow_undeclared_targets,
         )
     except FragmentRegionError as exc:
-        return Response(str(exc), status=403, mimetype="text/plain")
+        from hedron_core.htmx.authorize import fragment_region_http_detail
+
+        return Response(fragment_region_http_detail(exc), status=403, mimetype="text/plain")
     result = _render_body(
         value, headers=hdrs, context=context, mode=mode, skip_prepare=skip_prepare
     )
@@ -361,7 +363,14 @@ def interaction_response(
                 "target": client_target,
             },
         )
-        return Response(str(exc), status=403, mimetype="text/plain")
+        from hedron_core.htmx.authorize import fragment_region_http_detail
+
+        detail = (
+            fragment_region_http_detail(exc)
+            if isinstance(exc, FragmentRegionError)
+            else str(exc)
+        )
+        return Response(detail, status=403, mimetype="text/plain")
     multi = bool(result.policy and len(result.policy.declared_regions) > 1)
     vary_target = bool(result.policy and (result.policy.vary_on_target or multi))
     _merge_vary(headers, include_target=vary_target)
