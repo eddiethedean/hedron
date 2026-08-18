@@ -207,3 +207,11 @@ def test_undeclared_hx_target_is_forbidden(django_setup: Client) -> None:
     request = RequestFactory().get("/", HTTP_HX_REQUEST="true", HTTP_HX_TARGET="#panel")
     response = interaction_response(InteractionResult(content=Text("body")), request=request)
     assert response.status_code == 403
+
+
+def test_401_hedron_django_production_gate(django_setup: Client, monkeypatch: pytest.MonkeyPatch) -> None:
+    del django_setup
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv("HEDRON_SECURITY_RISK_ACCEPTANCE", raising=False)
+    with pytest.raises(RuntimeError, match="InMemoryJobBackend|Production security|weak-session-secret"):
+        HedronDjango()

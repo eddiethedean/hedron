@@ -222,3 +222,29 @@ def test_hedron_production_rejects_none_session_secret(
             session_secret=None,
             production=True,
         )
+
+
+def test_401_flask_production_rejects_development_profile(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    monkeypatch.setattr(
+        "hedron_core.production_gate.assert_durable_backends",
+        lambda **_kwargs: None,
+    )
+    from flask import Flask
+
+    from hedron_core.security_policy import SecurityPolicy
+    from hedron_flask.blueprint import attach_hedron_to_flask
+
+    app = Flask(__name__)
+    app.secret_key = "a-sufficiently-long-production-secret"
+
+    class _Ext:
+        auth_signal = None
+        security_policy = SecurityPolicy.from_name("development")
+        csrf_cookie_name = "hedron_csrf"
+
+    with pytest.raises(RuntimeError, match="security-development"):
+        attach_hedron_to_flask(app, _Ext(), auto_csrf_cookie=False, security="development")
