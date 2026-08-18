@@ -194,8 +194,12 @@ class Settings(BaseModel):
 def test_session_state_refresh_and_dependency_identity() -> None:
     request = Request({"type": "http", "session": {"settings": {"count": 1}}, "headers": []})
     state = SessionState(request, "settings", Settings)
-    request.session["settings"] = {"count": 2}
+    assert state.value.count == 1
+    state.value.count += 1
     assert state.value.count == 2
+    state.value = Settings(count=5)
+    assert state.value.count == 5
+    assert request.session["settings"]["count"] == 5
     assert (
         session_state("settings", Settings).dependency
         is session_state("settings", Settings).dependency
