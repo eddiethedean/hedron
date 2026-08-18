@@ -105,7 +105,7 @@ class OutcomeMap(Generic[ResultT]):
                 remediation="Cover every discriminator variant exactly once.",
             )
 
-    def map_result(self, value: object) -> tuple[object, int]:
+    def map_result(self, value: object) -> tuple[object, int, Refreshes | Updates | None]:
         if isinstance(value, BaseModel) and not any(
             isinstance(value, item.variant) for item in self._cases
         ):
@@ -117,8 +117,8 @@ class OutcomeMap(Generic[ResultT]):
             )
         for item in self._cases:
             if isinstance(value, item.variant):
-                return item.render(value), item.status
-        return value, 200
+                return item.render(value), item.status, item.effects
+        return value, 200, None
 
 
 def _names(types: Sequence[type[Any]]) -> list[str]:

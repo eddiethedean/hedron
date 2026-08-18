@@ -9,6 +9,7 @@ from hedron_core.codes import HED_HOST_0001, HED_VIEW_0002
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error as raise_error
 from hedron_core.html import html
+from hedron_core.htmx.policy import CacheHint
 from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrMap, HtmlAttrValue
 
@@ -117,6 +118,8 @@ class FragmentHost(Component[FragmentHostProps]):
         attrs: HtmlAttrMap | None = None,
         loading: NodeLike | None = None,
         error: NodeLike | str | None = None,
+        empty: NodeLike | None = None,
+        cache: CacheHint | None = None,
         dom_id: str | None = None,
         get_url: str | None = None,
         event_name: str | None = None,
@@ -137,6 +140,8 @@ class FragmentHost(Component[FragmentHostProps]):
         self._attrs = _validate_attrs(dict(attrs or {}))
         self._loading = loading
         self._error = error
+        self._empty = empty
+        self._cache: CacheHint | None = cache
         self._dom_id = dom_id
         self._get_url = get_url
         self._event_name = event_name
@@ -163,6 +168,8 @@ class FragmentHost(Component[FragmentHostProps]):
             attrs=dict(self._attrs),
             loading=self._loading,
             error=self._error,
+            empty=self._empty,
+            cache=self._cache,
             dom_id=dom_id,
             get_url=get_url,
             event_name=event_name,

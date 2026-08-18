@@ -3,15 +3,57 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, ParamSpec, TypeVar
+from typing import Any, ParamSpec, TypeVar, cast
 
 from hedron.routing.router import HedronRouter
 from hedron_core.addressable import AddressableDescriptor
+from hedron_core.component import NodeLike
 from hedron_core.hosts import FragmentHost
-from hedron_core.interaction import FragmentRegion
+from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
 P = ParamSpec("P")
 R = TypeVar("R")
+
+
+def _apply_mapped_outcome(
+    mapped: object,
+    status: int,
+    case_effects: object,
+    *,
+    meta: object,
+    app_id: str,
+) -> object:
+    from hedron.handles import refresh
+    from hedron.type_authoring import assert_declared_effects
+    from hedron.type_authoring.markers import Refreshes
+    from hedron_core.updates import compile_to_interaction
+
+    effect_result: object = mapped
+    if isinstance(case_effects, Refreshes):
+        effect_result = refresh(*case_effects.targets)
+    assert_declared_effects(meta, effect_result, app_id=app_id)  # type: ignore[arg-type]
+    if isinstance(effect_result, (RefreshIntent, Patch, PatchSet)):
+        compiled = compile_to_interaction(effect_result)
+        if isinstance(compiled, InteractionResult):
+            content = (
+                mapped
+                if not isinstance(mapped, (RefreshIntent, Patch, PatchSet, InteractionResult))
+                else compiled.content
+            )
+            return InteractionResult(
+                content=cast(NodeLike | None, content),
+                status_code=status,
+                trigger=compiled.trigger,
+                oob=compiled.oob,
+                policy=compiled.policy,
+                explanation=compiled.explanation,
+            )
+    if status != 200 and not isinstance(
+        mapped, (RefreshIntent, Patch, PatchSet, InteractionResult)
+    ):
+        return InteractionResult(content=cast(NodeLike, mapped), status_code=status)
+    return mapped
 
 
 class HedronPagesMixin:
@@ -190,6 +232,8 @@ class HedronPagesMixin:
         host: FragmentHost | None = None,
         loading: Any = None,
         error: Any = None,
+        empty: Any = None,
+        cache: Any = None,
         fallback: str | None = None,
         include_in_schema: bool = False,
         dependencies: Sequence[Any] | None = None,
@@ -221,6 +265,8 @@ class HedronPagesMixin:
                 host=host or getattr(view_cls, "host", None),
                 loading=loading if loading is not None else getattr(view_cls, "loading", None),
                 error=error if error is not None else getattr(view_cls, "error", None),
+                empty=empty if empty is not None else getattr(view_cls, "empty", None),
+                cache=cache if cache is not None else getattr(view_cls, "cache", None),
                 fallback=fallback or getattr(view_cls, "fallback", None),
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
@@ -235,6 +281,8 @@ class HedronPagesMixin:
                 host=host,
                 loading=loading,
                 error=error,
+                empty=empty,
+                cache=cache,
                 fallback=fallback,
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
@@ -250,12 +298,16 @@ class HedronPagesMixin:
             resolved_host = host
             resolved_loading = loading
             resolved_error = error
+            resolved_empty = empty
+            resolved_cache = cache
             resolved_fallback = fallback
             if inspect.isclass(fn):
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
                 resolved_host = host or getattr(fn, "host", None)
                 resolved_loading = loading if loading is not None else getattr(fn, "loading", None)
                 resolved_error = error if error is not None else getattr(fn, "error", None)
+                resolved_empty = empty if empty is not None else getattr(fn, "empty", None)
+                resolved_cache = cache if cache is not None else getattr(fn, "cache", None)
                 resolved_fallback = fallback or getattr(fn, "fallback", None)
                 fn = compile_view_class(fn)  # type: ignore[assignment]
 
@@ -266,6 +318,10 @@ class HedronPagesMixin:
                 view_host._loading = resolved_loading
             if resolved_error is not None:
                 view_host._error = resolved_error
+            if resolved_empty is not None:
+                view_host._empty = resolved_empty
+            if resolved_cache is not None:
+                view_host._cache = resolved_cache
             handle = build_view_handle(
                 fn,
                 app_id=app_id,
@@ -326,6 +382,7 @@ class HedronPagesMixin:
             class_config_conflict(command_cls, decorator_fallback=fallback, decorator_path=None)
             compiled = compile_command_class(command_cls)
             compiled.__hedron_outcomes__ = getattr(command_cls, "outcomes", None)  # type: ignore[attr-defined]
+            compiled.__hedron_effects__ = getattr(command_cls, "effects", None)  # type: ignore[attr-defined]
             return self.command(
                 None,
                 method=method,
@@ -368,6 +425,7 @@ class HedronPagesMixin:
             )
             from hedron.type_authoring.signature import formbody_media_types, reject_json_formbody
             from hedron_core.codes import HED_CMD_0002
+            from hedron_core.interaction import InteractionResult
             from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
             resolved_fallback = fallback
@@ -375,6 +433,7 @@ class HedronPagesMixin:
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
                 compiled_fn = compile_command_class(fn)
                 compiled_fn.__hedron_outcomes__ = getattr(fn, "outcomes", None)
+                compiled_fn.__hedron_effects__ = getattr(fn, "effects", None)
                 resolved_fallback = fallback or getattr(fn, "fallback", None)
                 fn = compiled_fn  # type: ignore[assignment]
 
@@ -400,15 +459,19 @@ class HedronPagesMixin:
                     call_kw = reconstruct_kwargs(meta, call_kw)
                 result = await await_if_needed(fn(*args, **call_kw))
                 if meta is not None and getattr(meta, "outcomes", None):
-                    result, _status = meta.outcomes.map_result(result)
-                assert_declared_effects(meta, result, app_id=app_id)
+                    mapped, status, case_effects = meta.outcomes.map_result(result)
+                    result = _apply_mapped_outcome(
+                        mapped, status, case_effects, meta=meta, app_id=app_id
+                    )
+                else:
+                    assert_declared_effects(meta, result, app_id=app_id)
                 request = current_request.get()
                 is_htmx = bool(
                     request is not None
                     and str(request.headers.get("HX-Request") or "").lower() == "true"
                 )
-                update = isinstance(result, (RefreshIntent, Patch, PatchSet))
-                if not is_htmx and update:
+                update = isinstance(result, (RefreshIntent, Patch, PatchSet, InteractionResult))
+                if not is_htmx and update and isinstance(result, (RefreshIntent, Patch, PatchSet)):
                     if handle.fallback:
                         return RedirectResponse(handle.fallback, status_code=303)
                     return PlainTextResponse(HED_CMD_0002, status_code=400)

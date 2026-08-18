@@ -190,7 +190,16 @@ class TypeNormalizer:
                 remediation="Move those fields onto the ViewParams/FormBody model.",
             )
         refreshes, updates = _return_effects(hints.get("return", signature.return_annotation))
-        if not view_hits and not form_hits and not refreshes and not updates and outcomes is None:
+        class_refresh, class_update = _class_effect_ids(fn)
+        if (
+            not view_hits
+            and not form_hits
+            and not refreshes
+            and not updates
+            and outcomes is None
+            and not class_refresh
+            and not class_update
+        ):
             return CompiledTypeHandler(
                 modeled=False,
                 kind=kind,
@@ -250,8 +259,12 @@ class TypeNormalizer:
                 identity_fields=tuple(identity),
                 sensitive_fields=tuple(sensitive),
             )
-        declared_refresh = tuple(getattr(refreshes, "target_ids", ()) if refreshes else ())
-        declared_update = tuple(getattr(updates, "target_ids", ()) if updates else ())
+        declared_refresh = tuple(getattr(refreshes, "target_ids", ()) if refreshes else ()) + (
+            class_refresh
+        )
+        declared_update = tuple(getattr(updates, "target_ids", ()) if updates else ()) + (
+            class_update
+        )
         effect: str = "declared" if (declared_refresh or declared_update) else "dynamic"
         if outcomes is not None:
             outcomes.validate_union(hints.get("return", signature.return_annotation))
@@ -425,6 +438,22 @@ def _return_effects(annotation: object) -> tuple[Refreshes | None, Updates | Non
             remediation="Collapse duplicate effect annotations.",
         )
     return (refreshes[0] if refreshes else None, updates[0] if updates else None)
+
+
+def _class_effect_ids(fn: Callable[..., Any]) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    extra = getattr(fn, "__hedron_effects__", None)
+    if extra is None:
+        return (), ()
+    items = extra if isinstance(extra, (tuple, list)) else (extra,)
+    refresh_ids: list[str] = []
+    update_ids: list[str] = []
+    for item in items:
+        ids = tuple(getattr(item, "target_ids", ()) or ())
+        if isinstance(item, Updates):
+            update_ids.extend(ids)
+        else:
+            refresh_ids.extend(ids)
+    return tuple(refresh_ids), tuple(update_ids)
 
 
 def _walk_model(
