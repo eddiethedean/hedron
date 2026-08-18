@@ -33,9 +33,9 @@ class ActionAsync(Component[ActionAsyncProps]):
         **kwargs: object,
     ) -> None:
         url = (
-            hx_post
-            if isinstance(hx_post, SafeUrl) or hx_post is None
-            else SafeUrl.parse(str(hx_post), purpose=UrlPurpose.NAVIGATION)
+            None
+            if hx_post is None
+            else SafeUrl.parse(str(hx_post), purpose=UrlPurpose.FORM_ACTION)
         )
         super().__init__(ActionAsyncProps(label=label, hx_post=url, **kwargs))
 
@@ -46,8 +46,9 @@ class ActionAsync(Component[ActionAsyncProps]):
             "data-hedron-element": ELEMENT_ID,
         }
         if self.props.hx_post is not None:
-            btn_attrs["hx-post"] = self.props.hx_post
-            tag_attrs["hx-post"] = str(self.props.hx_post)
+            posted = str(self.props.hx_post)
+            btn_attrs["hx-post"] = posted
+            tag_attrs["hx-post"] = posted
         return html.tag(TAG_NAME)(html.button(self.props.label, **btn_attrs), **tag_attrs)
 
     def render_markup(self) -> str:
