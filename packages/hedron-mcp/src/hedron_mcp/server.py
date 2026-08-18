@@ -194,8 +194,8 @@ class McpProjection:
         if isinstance(session, Mapping):
             for key in ("user", "username", "principal", "sub"):
                 value = session.get(key)
-                if value:
-                    return str(value)
+                if isinstance(value, str) and value.strip():
+                    return value
         return None
 
     def check_authz(
