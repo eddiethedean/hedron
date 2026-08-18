@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
+from fastapi.testclient import TestClient
 from pydantic import BaseModel
 from tests.unit._helpers_049 import make_app, reset_049
 
@@ -38,6 +39,27 @@ def test_query_only_is_native_model() -> None:
     plan = boundary_plan_for(compiled)
     assert plan.strategy == "native-model"
     assert plan.structural.path_params == ()
+
+
+def test_query_only_http_binds_query_string_not_json_body() -> None:
+    app = make_app()
+
+    @app.refreshable("/items", include_in_schema=True)
+    def items(filters: Annotated[Filters, ViewParams(source="query")]):
+        return Text(filters.q or "all")
+
+    with TestClient(app) as client:
+        matched = client.get("/items", params={"q": "hello"})
+        defaults = client.get("/items")
+
+    assert matched.status_code == 200
+    assert "hello" in matched.text
+    assert defaults.status_code == 200
+    assert "all" in defaults.text
+    operation = app.openapi()["paths"]["/items"]["get"]
+    assert "requestBody" not in operation
+    parameters = {item["name"]: item["in"] for item in operation.get("parameters") or []}
+    assert parameters.get("q") == "query"
 
 
 def test_mixed_path_query_stays_expanded() -> None:

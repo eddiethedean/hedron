@@ -109,12 +109,22 @@ def _wrap_endpoint(
         hints = {}
     sig = inspect.signature(fn)
     params = [
-        param.replace(annotation=hints[name]) if name in hints else param
+        # Type-authoring may have installed a concrete FastAPI signature on the
+        # function before it reaches the router.  Preserve those annotations;
+        # replacing them with the original type hints silently turns native
+        # query models back into request bodies.
+        param.replace(annotation=hints[name])
+        if isinstance(param.annotation, str) and name in hints
+        else param
         for name, param in sig.parameters.items()
     ]
     endpoint.__signature__ = sig.replace(  # type: ignore[attr-defined]
         parameters=params,
-        return_annotation=hints.get("return", sig.return_annotation),
+        return_annotation=(
+            hints.get("return", sig.return_annotation)
+            if isinstance(sig.return_annotation, str)
+            else sig.return_annotation
+        ),
     )
     endpoint._hedron_fragment_regions = fragment_regions  # type: ignore[attr-defined]
     logical = getattr(fn, "_hedron_view_logical_id", None)
