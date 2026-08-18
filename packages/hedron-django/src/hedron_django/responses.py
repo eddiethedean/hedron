@@ -375,9 +375,7 @@ def interaction_response(
         from hedron_core.htmx.authorize import fragment_region_http_detail
 
         detail = (
-            fragment_region_http_detail(exc)
-            if isinstance(exc, FragmentRegionError)
-            else str(exc)
+            fragment_region_http_detail(exc) if isinstance(exc, FragmentRegionError) else str(exc)
         )
         return HttpResponse(
             detail.encode("utf-8"),
