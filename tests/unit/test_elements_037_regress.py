@@ -39,6 +39,18 @@ def test_231_flask_session_cookie_defaults_on_attach() -> None:
     assert app.config["SESSION_COOKIE_SAMESITE"] == "Lax"
 
 
+def test_400_flask_session_cookie_secure_on_flask_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("FLASK_ENV", "production")
+    monkeypatch.delenv("HEDRON_ENV", raising=False)
+    app = Flask(__name__)
+    ext = MagicMock()
+    ext.auth_signal = None
+    ext.security_policy = SecurityPolicy.from_name("standard")
+    attach_hedron_to_flask(app, ext, auto_csrf_cookie=False)
+    assert app.config["SESSION_COOKIE_SECURE"] is True
+    assert app.config["SESSION_COOKIE_SAMESITE"] == "Lax"
+
+
 def test_232_mcp_origin_fail_closed_without_allowlist() -> None:
     class _Req:
         def __init__(self) -> None:
