@@ -47,7 +47,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Published** (`v0.47.0` / `hedron-maps` `0.1.0`; in-tree cut, tag/PyPI deferred; D-078 / D-082 / RFC-0074; [#350](https://github.com/eddiethedean/hedron/issues/350)) |
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0`; in-tree cut, tag/PyPI deferred; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
-| **0.50** | Explorer architecture and operator-grade development tooling | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
+| **0.50** | Explorer architecture and operator-grade development tooling | **Planned** (baseline `v0.49.1`; RFC-0077 / D-085 and tracking issue required before implementation) |
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.52** | Conformance kit and independent Node/Java runtime credibility | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
@@ -4155,7 +4155,7 @@ surface needs a durable ship/remove/quarantine decision.
 
 | Package | 0.49 quality assessment | Disposition |
 |---|---|---|
-| `hedron-explorer` | Valuable and widely integrated, but most implementation remains concentrated in one large router module. Its broad inspection UI needs clearer service/view boundaries, browser workflows, extension isolation, and failure/performance evidence proportional to its role. | **Significant upgrade: 0.50.** |
+| `hedron-explorer` | Valuable and widely integrated, but most implementation remains concentrated in one large router module. Its broad inspection UI needs clearer service/view boundaries, browser workflows, extension isolation, and failure/performance evidence proportional to its role. | **Significant upgrade: 0.50** — see [0.50 M1 inventory](#050--explorer-architecture-and-operator-grade-development-tooling-v0500). |
 | `hedron-extras` | Useful breadth and correct optional-dependency quarantine, but the number of browser-backed components and workbenches exceeds the depth of package-owned lifecycle, accessibility, security, visual, and cross-browser evidence. Experimental UI also lacks a final product disposition. | **Significant upgrade: 0.51.** |
 | `hedron-conformance` + Node/Java evaluators | The Python kit is a sound seed, but the independent runtimes are explicitly experimental and the cross-language surface remains narrow. Version negotiation, negative vectors, streaming fixtures, packaging, and CI/runtime-skew evidence are not yet strong enough for ecosystem authority. | **Significant upgrade: 0.52.** |
 | `hedron-notebook` | Honest localhost-only scope and useful security checks, but still a small preview helper rather than a current package-workflow notebook tool; cleanup, kernel/frontend compatibility, and richer output evidence need work. | **Significant upgrade: 0.53.** |
@@ -4174,52 +4174,146 @@ are outside this extra-package corrective pass.
 
 ## 0.50 — Explorer architecture and operator-grade development tooling (`v0.50.0`)
 
-**Status:** Planned. An owning RFC, decision, issue, acceptance inventory, and release-gate file
-must be accepted before implementation starts.
+**Status:** Planned. RFC-0077, decision **D-085**, a tracking issue, capability inventory,
+release-gate file, and implementation plan must be **Accepted** before implementation starts.
 
-**Outcome:** `hedron-explorer` becomes a maintainable, extensible development product whose UI and
-machine-readable outputs remain useful on large applications and degrade safely when a package,
-panel, trace, or optional dependency fails.
+**Planning baseline:** Published in-tree **`v0.49.1`**. Verified 0.45–0.49 catalog, manifest,
+TypeSchema v2, handle-graph, OpenAPI, and HTMX-extension contracts are inputs — not
+re-litigation.
+
+**Outcome:** `hedron-explorer` becomes a modular development product whose browser UI and
+headless outputs share one query/model layer, stay useful on large applications, and fail
+safely per panel — without changing mount modes, production refusal, or runtime authority.
+**Operator-grade** here means CI-friendly headless inspection artifacts and large-app
+resilience, not production operations tooling.
+
+### Entry criteria
+
+- **0.49.1** Verified and recorded as baseline.
+- RFC-0077 and D-085 **Accepted**.
+- A tracking issue owns every gate row until tag/PyPI.
+- Capability inventory draft lists every current panel/API with Supported vs Experimental vs
+  excluded disposition.
+- Upgrade fixtures from `v0.49.1` JSON/mount shapes drafted.
+- [`EXPLORER_BACKEND.md`](implementation/EXPLORER_BACKEND.md) and
+  [`EXPLORER_FRONTEND.md`](implementation/EXPLORER_FRONTEND.md) reconciled with RFC-0077
+  (or folded into the implementation plan below).
+
+### Architecture
+
+```text
+hedron-core          portable inspection models, redaction, trace read APIs, ExplorerProvider v1
+       │
+hedron_explorer.services   catalog, simulation, traces, diff, view rendering
+       │
+       ├── thin HTTP router (/hedron-explorer/, frozen mount contract)
+       ├── hedron CLI (inspect/graph/check — shared services, no duplicated query logic)
+       └── first- and third-party ExplorerProvider panels
+```
+
+Layer rules:
+
+1. **`hedron-core`** owns portable inspection models, redaction, trace read APIs, and the
+   provider protocol — no FastAPI imports.
+2. **`hedron-explorer`** owns HTTP mounting, HTML shell, provider orchestration, and
+   package-owned tests.
+3. **`hedron` CLI** calls the same services; it does not duplicate query logic.
+4. **Mount contract frozen:** `/hedron-explorer/`, `explorer="off"|"development"|"secured"`,
+   existing JSON path prefix, production forced-off for `development`.
+
+### Sequenced scope
+
+```mermaid
+flowchart LR
+  inv[Inventory and RFC] --> split[Service extraction]
+  split --> provider[Provider API v1]
+  provider --> ui[Progressive UI and queries]
+  ui --> headless[CLI and diff outputs]
+  headless --> lab[Interaction lab]
+  lab --> evidence[Browser security perf pkg]
+```
+
+| WP | Name | Deliverables |
+|---|---|---|
+| **M1** | Baseline and inventory | Capability inventory TOML; map every existing route in `router.py` to a target module; upgrade-fixture plan from `v0.49.1` mount URLs and JSON shapes |
+| **M2** | Service extraction | Split into `services/catalog.py`, `services/simulation.py`, `services/traces.py`, `services/diff.py`, `views/`; thin `router.py` (under 200 lines target); contract tests preventing re-monolithization |
+| **M3** | Provider protocol v1 | Replace metadata-only `ExplorerPanelMeta` with versioned `ExplorerProvider` (capabilities, timeout, max payload, ordering, redaction profile); migrate first-party panels (data/charts/maps/extras/sample-kit) |
+| **M4** | Query UX and resilience | Search/filter/sort; cursor pagination or virtualization for components/routes/graph/catalog; explicit empty/error/truncated states; budgets on startup/first-render/query/memory |
+| **M5** | Headless operator outputs | Unify CLI `inspect`/`graph`/`check` relevant subcommands on shared services; JSON export; SARIF subset for source-addressable diagnostics; baseline diff for catalog/manifest/routes/OpenAPI fingerprints |
+| **M6** | Interaction laboratory (bounded) | Construct inputs from TypeSchema v2; execute only declared safe preview operations; export redacted `AppScenario` snippets — no invented auth |
+| **M7** | Evidence and docs | Package-owned tests; Chromium/Firefox/WebKit journeys; a11y keyboard/no-JS; security corpus; perf fixtures (small/medium/large registry apps); author/operator docs |
 
 ### Scope
 
-- Split catalog/query services, inspection models, rendering, request simulation, and panel routing
-  out of the monolithic router boundary without changing the public mount contract.
-- Define a versioned Explorer panel/provider API with capability negotiation, per-provider timeout
-  and failure isolation, redaction, payload bounds, and deterministic ordering.
+- Decompose the monolithic [`router.py`](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-explorer/src/hedron_explorer/router.py) while preserving public mount/API compatibility.
+- Define a versioned Explorer panel/provider API with capability negotiation, per-provider
+  timeout and failure isolation, redaction, payload bounds, and deterministic ordering.
+- **Consume** (not re-define) 0.45–0.49 artifacts: sealed catalog, manifest, TypeSchema v2,
+  handle-graph, OpenAPI extensions, and HTMX extension facts.
 - Add searchable package/interaction/schema/route graphs, diffable manifests, source ownership,
-  and actionable diagnostics for 0.45–0.49 catalogs, workflows, TypeSchema v2, and OpenAPI.
+  and actionable diagnostics.
+- Add progressive browser UX: server-rendered shell with HTMX partial navigation; no
+  application-developer Node requirement.
 - Add complete keyboard, focus, landmark, reduced-motion, high-contrast, narrow-viewport, and
   no-JavaScript behavior for every Supported Explorer workflow.
 - Add browser journeys for mounting, filtering, inspecting, simulating, exporting, provider
   failure, malformed data, large registries, and development/production security gates.
-- Establish startup, first-render, query, memory, and maximum-payload budgets using small, medium,
-  and adversarial application fixtures; require pagination or virtualization rather than unbounded
-  document construction.
+- Establish startup, first-render, query, memory, and maximum-payload budgets using small,
+  medium, and adversarial application fixtures; require pagination or virtualization rather
+  than unbounded document construction.
 - Preserve development-only defaults, explicit production enablement, CSP compatibility, secret
   redaction, and import isolation from applications that do not install Explorer.
 
 ### Product and ecosystem workstreams
 
-- Add saved, shareable inspection queries whose URLs contain only bounded non-secret filter state;
-  provide JSON export for CI artifacts and SARIF export for source-addressable diagnostics.
+- Add saved, shareable inspection queries whose URLs contain only bounded non-secret filter
+  state; provide JSON export for CI artifacts and a SARIF subset for source-addressable
+  diagnostics (full SARIF for every diagnostic remains out of scope — see deferred table).
 - Add baseline comparison for catalogs, manifests, routes, schemas, assets, dependencies, and
-  capability maturity so framework and package upgrades show added, removed, or changed contracts
-  before deployment.
-- Add an interaction laboratory that can construct typed inputs from TypeSchema v2, execute only
-  explicitly exposed safe preview operations, display response/effect timelines, and export a
-  redacted `AppScenario` regression without inventing production authorization.
-- Add package health and compatibility views for entry-point discovery, version skew, missing
-  optional dependencies, asset integrity/CSP, duplicate registrations, conformance results, and
-  package-owned documentation links.
+  capability maturity so framework and package upgrades show added, removed, or changed
+  contracts before deployment.
+- Add a bounded interaction laboratory (M6): TypeSchema v2 typed inputs, safe preview
+  operations, response/effect timelines, and redacted `AppScenario` export.
+- Add a read-only **package health** slice: entry-point discovery, version skew, missing
+  optional dependencies, asset integrity/CSP, duplicate registrations, and conformance result
+  envelope ingestion — **not** the full `hedron package doctor` workflow (owned by 0.53).
 - Add read-only adapters for Flask and Django registries plus portable Jinja, Elements, Data,
-  Charts, Maps, MCP, Gradio, Posit/Workbench, Extras, Notebook, and third-party package projections;
+  Charts, Maps, MCP, Gradio, Posit/Workbench, Extras, and third-party package projections;
   unsupported host features must be labeled rather than omitted.
-- Publish a provider-author tutorial, typed reference, compatibility policy, migration guide from
-  the 0.49 router hooks, production-enable threat model, troubleshooting decision tree, and recipes
-  for custom panels, large registries, remote development, and CI artifact capture.
-- Ship a documented headless inspection command using the same query/model services as the browser
-  UI; HTML, JSON, SARIF, and CLI results must agree on identities, severity, redaction, and links.
+- Publish a provider-author tutorial, typed reference, compatibility policy, migration guide
+  from the 0.49 router hooks, production-enable threat model, troubleshooting decision tree,
+  and recipes for custom panels, large registries, and CI artifact capture.
+- Ship headless inspection through existing CLI subcommands backed by the same query/model
+  services as the browser UI; HTML, JSON, SARIF-subset, and CLI results must agree on
+  identities, severity, redaction, and links.
+
+### Deliberate exclusions
+
+- Re-graduating 0.26 production-grade security posture (only extends evidence where new
+  surfaces appear).
+- `EXPLORER-10-001` live SSE/WebSocket trace streaming — stays **Deferred** on `0.10.x`;
+  0.50 may expose bounded historical render/simulate traces only.
+- `EXPLORER-019` / `ATAG-019` full accessibility review workspace — remains Deferred; 0.50
+  covers shell/panel a11y only.
+- `hedron package doctor` (owned by **0.53**).
+- Conformance kit authority or packaged Node/Java evaluators (**0.52**); 0.50 may ingest
+  conformance result envelopes only.
+- Making Explorer a production default, unauthenticated endpoint, or authority grant.
+- Durable cross-process audit store (`REV-026-003` stays accepted risk unless explicitly
+  promoted later).
+- Requiring application authors to install Node; internal authoring of Explorer assets may
+  use build tooling.
+- Closing `SR-021`, scheduling `1.0`, or promoting Beta package maturity.
+
+### Deferred disposition
+
+| Item | 0.50 disposition |
+|---|---|
+| `EXPLORER-10-001` live transport traces | **Stays Deferred**; bounded offline render/simulate trace panel only |
+| `EXPLORER-019` AT review workspace | **Stays Deferred** |
+| `REV-026-003` durable audit buffer | **Stays accepted risk** |
+| Full SARIF for all diagnostics | **Partial** — source-addressable subset; rest JSON |
+| Remote development / multi-host federation | **Deferred** — document localhost-only |
 
 ### Hardening and compatibility matrix
 
@@ -4237,25 +4331,42 @@ panel, trace, or optional dependency fails.
 
 | Gate | Verified means |
 |---|---|
-| `ARCH-050` / `PROVIDER-050` | Router decomposition and versioned provider isolation pass public-contract, timeout, crash, ordering, and skew tests. |
-| `DIFF-050` / `LAB-050` | Baseline comparison and typed interaction laboratory produce deterministic, bounded, redacted results and reviewable scenario exports. |
-| `ECOSYSTEM-050` | Every first-party projection has a declared capability/disposition and at least one third-party provider passes without private imports. |
-| `SECURITY-050` / `PRIVACY-050` | Production opt-in, auth/CSRF/origin/proxy/source/export boundaries, redaction, retention, and adversarial corpus pass. |
-| `A11Y-050` / `BROWSER-050` | Complete keyboard/no-JS/zoom/contrast/reduced-motion behavior and Chromium/Firefox/WebKit journeys pass. |
-| `PERF-050` / `RESILIENCE-050` | Registry, graph, trace, query, memory, cancellation, provider-failure, and repeated-navigation budgets pass. |
-| `DOCS-050` / `COMPAT-050` | Author/operator/security/migration/troubleshooting docs and Python/host/schema/root-path upgrade matrices pass. |
-| `PKG-050` / `REGRESS-050` | Clean wheel, optional-dependency isolation, SBOM/provenance, 0.49 upgrade/rollback, and whole-fleet regression pass. |
+| `ARCH-050` | Module boundary contract tests; thin `router.py`; no business-logic regression via golden route map |
+| `PROVIDER-050` | Provider v1 isolation: timeout, crash, ordering, skew, max payload, redaction |
+| `CONSUME-050` | Catalog, TypeSchema v2, handle-graph, OpenAPI, HTMX extension panels match 0.45–0.49 fingerprints |
+| `QUERY-050` | Search/filter/pagination on components, routes, catalog entries; truncation diagnostics |
+| `DIFF-050` | Deterministic baseline diff for catalog/manifest/routes/schema fingerprints |
+| `LAB-050` | TypeSchema v2 laboratory: safe preview ops, redacted scenario export, no auth invention |
+| `HEADLESS-050` | CLI + JSON + HTML diagnostic identity/severity/redaction parity |
+| `ECOSYSTEM-050` | Every first-party projection labeled; one third-party provider; Flask/Django read-only |
+| `SECURITY-050` / `PRIVACY-050` | Production opt-in threat model; simulate/mutation bounds; export/redaction; adversarial corpus |
+| `A11Y-050` / `BROWSER-050` | Keyboard, focus, landmark, no-JS fallbacks, contrast/motion/reflow; Chromium/Firefox/WebKit journeys incl. provider crash |
+| `PERF-050` / `RESILIENCE-050` | Small/medium/large fixtures; cancellation; repeated-navigation leak checks |
+| `DOCS-050` / `COMPAT-050` | Provider author guide, migration from 0.49 hooks, upgrade matrices |
+| `PKG-050` / `REGRESS-050` | Package-owned tests, clean wheel, optional-dep isolation, 0.49 upgrade/rollback, fleet regression |
+
+Artifacts (planned; required before implementation):
+
+- [RFC-0077 — Explorer architecture and provider protocol](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md) (extends [RFC-0007](rfcs/RFC-0007-COMPONENT-EXPLORER.md))
+- [implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EXPLORER_050.md)
+- [acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_50.md)
+- [release gate](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.50.toml)
+- [capability inventory](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/explorer-capability-inventory-050.toml)
+- [upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-050.md)
 
 ### Exit gate
 
-- The package has explicit internal boundaries and contract tests that prevent router-level
-  regressions while keeping the existing supported mount/API path compatible.
-- Chromium, Firefox, and WebKit journeys pass for the Supported workflows, including a provider
-  crash and a maximum-size application fixture.
-- Accessibility, security, performance, clean-wheel, upgrade, rollback, SBOM, and provenance rows
-  are Verified with no hidden Deferred claim.
-- The reference application and one third-party-shaped package expose useful inspection without
-  importing private Hedron internals.
+- Internal module boundaries enforced by contract tests; public mount/API unchanged for 0.49
+  consumers.
+- Large-registry fixture (target: at least 2,000 components or documented equivalent) passes
+  query budgets with pagination.
+- Chromium, Firefox, and WebKit pass Supported workflows including provider failure injection.
+- Headless JSON/CLI/SARIF-subset outputs agree with browser diagnostics for the same fixture
+  app.
+- Reference app and one third-party-shaped package demonstrate provider registration without
+  private imports.
+- Every gate row Verified; no hidden Deferred claims; `EXPLORER-10-001` remains explicitly
+  Deferred.
 
 ## 0.51 — Curated extras depth and lifecycle closure (`v0.51.0`)
 
@@ -4581,7 +4692,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Production-grade Web Component Supported inventory | 0.42 | Stable ABI/tag/event/form/customization contracts require independent review, human AT, performance, compatibility, and supply evidence ([#97](https://github.com/eddiethedean/hedron/issues/97)). |
 | Component package authoring and browser-asset declarations | 0.4 | Public extension and audit contracts. |
 | `hedron-explorer` and official Explorer browser assets | 0.2 preview; 0.4 full | Optional development distribution with production opt-in controls. |
-| Explorer provider API, contract diffs, interaction laboratory, package health, headless JSON/SARIF, and large-app resilience | 0.50 | Versioned providers remain isolated and read-only by default; preview visibility never grants production authority. |
+| Explorer provider API, contract diffs, interaction laboratory, package health, headless JSON/SARIF-subset, and large-app resilience | 0.50 | Versioned providers remain isolated and read-only by default; preview visibility never grants production authority; `EXPLORER-10-001` live traces stay Deferred |
 
 ### Developer experience and extensibility
 
