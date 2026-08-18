@@ -210,7 +210,7 @@ def test_fair_drain_and_batch_max_wait() -> None:
     policy.admit(job_type="infer", payload={}, group="g", tenant_id="t1")
     policy.admit(job_type="infer", payload={}, group="g", tenant_id="t2")
     policy.admit(job_type="infer", payload={}, group="g", tenant_id="t1")
-    policy.release("g")
+    policy.release("g", tenant_id="t1")
     started = policy.drain_ready()
     assert len(started) == 1
     # Fairness should prefer alternating tenants (t2 before second t1).
