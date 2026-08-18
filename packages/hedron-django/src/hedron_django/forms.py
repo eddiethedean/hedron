@@ -88,7 +88,17 @@ def _choices(bound: BoundField) -> tuple[tuple[str, str], ...]:
     raw = getattr(field, "choices", None)
     if raw is None:
         return ()
-    return tuple((str(value), str(label)) for value, label in raw)
+    flat: list[tuple[str, str]] = []
+    for entry in raw:
+        if not entry:
+            continue
+        value, label = entry[0], entry[1]
+        if isinstance(label, (list, tuple)):
+            for sub_value, sub_label in label:
+                flat.append((str(sub_value), str(sub_label)))
+        else:
+            flat.append((str(value), str(label)))
+    return tuple(flat)
 
 
 def form_fields(form: BaseForm) -> list[NodeLike]:
