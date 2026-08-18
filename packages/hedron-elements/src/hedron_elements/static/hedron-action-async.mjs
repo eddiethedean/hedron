@@ -8,7 +8,7 @@ class HedronActionAsync extends HTMLElement {
   #unbind = null;
 
   connectedCallback() {
-    track(this);
+    const signal = track(this);
     this.setAttribute("aria-live", "polite");
     this.#unbind = bindHtmxInteractionState(this, this.#machine);
     const btn = this.querySelector("button");
@@ -19,7 +19,7 @@ class HedronActionAsync extends HTMLElement {
           detail: { state: this.#machine.state },
         }),
       );
-    });
+    }, { signal });
   }
 
   disconnectedCallback() {

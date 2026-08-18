@@ -6,8 +6,13 @@
 const OWNED = new WeakMap();
 
 export function track(el, resources) {
-  const bag = OWNED.get(el) || { ac: null, listeners: [], timers: [] };
-  if (!bag.ac) bag.ac = new AbortController();
+  const existing = OWNED.get(el);
+  if (existing?.ac && !existing.ac.signal.aborted) {
+    try {
+      existing.ac.abort();
+    } catch (_) {}
+  }
+  const bag = { ac: new AbortController(), listeners: [], timers: existing?.timers || [] };
   OWNED.set(el, bag);
   if (resources?.listener) bag.listeners.push(resources.listener);
   if (resources?.timer != null) bag.timers.push(resources.timer);
