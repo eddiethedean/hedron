@@ -34,9 +34,10 @@
   function sanitizeFormulaCell(value) {
     const text = value == null ? "" : String(value);
     const normalized = stripFormulaEvasionPrefix(text);
-    const prefix = normalized.charAt(0);
+    const folded = normalized.normalize("NFKC");
+    const prefix = folded.charAt(0);
     const dangerous =
-      normalized.length > 0 &&
+      folded.length > 0 &&
       ("=+-@|".indexOf(prefix) !== -1 ||
         prefix === "\uff1d" ||
         prefix === "\uff0b" ||
