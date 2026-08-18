@@ -39,7 +39,7 @@ _KNOWN_KEYS = frozenset(
         "plugins",
         "explorer",
         "compiler_checks",
-        "diagnostic_severityities",
+        "diagnostic_severities",
     }
 )
 
