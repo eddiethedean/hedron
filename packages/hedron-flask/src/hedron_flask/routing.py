@@ -97,9 +97,15 @@ def hedron_route(
             if callable(auth_fn):
                 signal = auth_fn(request)
                 authenticated = bool(getattr(signal, "authenticated", False))
+            from hedron_core.diagnostics import HedronError
             from hedron_core.updates import compile_to_interaction
 
-            value = compile_to_interaction(value)
+            try:
+                value = compile_to_interaction(value)
+            except HedronError as exc:
+                code = getattr(exc.diagnostic, "code", "")
+                status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
+                return Response(str(exc), status=status, content_type="text/plain")
             if isinstance(value, InteractionResult):
                 return interaction_response(
                     value,
