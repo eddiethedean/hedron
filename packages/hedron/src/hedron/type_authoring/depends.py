@@ -27,6 +27,9 @@ class DependsOn:
     lifetime: DependencyLifetime = DependencyLifetime.HANDLER
     streaming: bool = False
 
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "lifetime", DependencyLifetime(self.lifetime))
+
     def plan(self) -> DependencyPlan:
         return plan_for(self)
 
