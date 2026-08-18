@@ -12,7 +12,7 @@ from hedron_core.addressable import AddressableDescriptor
 from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderResult
-from hedron_core.security_policy import SecurityPolicy, SecurityProfile
+from hedron_core.security_policy import SecurityPolicy
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, assert_flask_csrf_strategy, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
 
@@ -296,13 +296,17 @@ class HedronBlueprint(Blueprint):
 
 
 def _apply_flask_session_cookie_defaults(app: Flask, policy: SecurityPolicy) -> None:
-    """Set Secure/SameSite session cookies in production and STRICT profiles (#231)."""
-    from hedron_core.compile_gate import is_production_env
+    """Set Secure/SameSite session cookies in production and STRICT profiles (#231, #400)."""
+    from hedron_core.csrf_secure import csrf_cookie_should_be_secure as shared
     from hedron_flask.csrf import csrf_cookie_force_secure
 
     force = csrf_cookie_force_secure(None, policy)
-    prod = is_production_env() or policy.profile is SecurityProfile.STRICT
-    if force is True or prod:
+    if shared(
+        force_secure=force,
+        request_is_secure=False,
+        forwarded_proto_https_trusted=False,
+        extra_production_env_vars=("FLASK_ENV", "ENV"),
+    ):
         app.config["SESSION_COOKIE_SECURE"] = True
         app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
