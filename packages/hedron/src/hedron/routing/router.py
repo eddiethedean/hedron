@@ -140,11 +140,39 @@ class HedronRouter(APIRouter):
         kwargs.setdefault("route_class", HedronRoute)
         super().__init__(*args, **kwargs)
         self.hedron_provenance = provenance or str(self.prefix or "")
+        self._hedron_host_app: Any | None = None
+
+    def _fail_closed_late(self) -> None:
+        from hedron.registration import fail_closed_late_registration
+        from hedron_core.catalog import get_sealed_catalog
+        from hedron_core.registry.builder import active_builder
+
+        host = self._hedron_host_app
+        fail_closed_late_registration(
+            registry_sealed=active_builder()._sealed,
+            catalog_sealed=get_sealed_catalog() is not None,
+            openapi_cached=getattr(host, "openapi_schema", None) is not None,
+        )
 
     def add_api_route(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
+        self._fail_closed_late()
         super().add_api_route(*args, **kwargs)
         if self.routes:
             self.routes[-1].hedron_provenance = self.hedron_provenance or self.prefix  # type: ignore[attr-defined]
+
+    def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
+        self._fail_closed_late()
+        if isinstance(router, HedronRouter) and self._hedron_host_app is not None:
+            router._hedron_host_app = self._hedron_host_app
+        super().include_router(router, *args, **kwargs)
+
+    def _register_route_or_rollback(self, **kwargs: Any) -> None:
+        try:
+            register_route(**kwargs)
+        except Exception:
+            if self.routes:
+                self.routes.pop()
+            raise
 
     def page(
         self,
@@ -190,7 +218,7 @@ class HedronRouter(APIRouter):
                 **kwargs,
             )
             region_meta = {r.id: f"{r.selector}|{r.description}" for r in regions}
-            register_route(
+            self._register_route_or_rollback(
                 kind="page",
                 logical_id=logical_id,
                 name=route_name,
@@ -257,7 +285,7 @@ class HedronRouter(APIRouter):
                 **kwargs,
             )
             region_meta = {r.id: f"{r.selector}|{r.description}" for r in regions}
-            register_route(
+            self._register_route_or_rollback(
                 kind="component",
                 logical_id=logical_id,
                 name=route_name,
@@ -331,7 +359,7 @@ class HedronRouter(APIRouter):
             if isinstance(route, HedronRoute):
                 route.hedron_kind = "action"  # type: ignore[attr-defined]
             region_meta = tuple({"id": r.id, "selector": r.selector} for r in regions)
-            register_route(
+            self._register_route_or_rollback(
                 kind="action",
                 logical_id=logical_id,
                 name=route_name,
