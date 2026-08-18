@@ -363,6 +363,7 @@ class HedronPagesMixin:
         fallback: str | None = None,
         include_in_schema: bool = False,
         dependencies: Sequence[Any] | None = None,
+        outcomes: object | None = None,
         **kwargs: Any,
     ) -> Any:
         """Register a mutation and return an ``ActionHandle``."""
@@ -381,7 +382,9 @@ class HedronPagesMixin:
             command_cls = cast("type[CommandHandler[Any, Any]]", path)
             class_config_conflict(command_cls, decorator_fallback=fallback, decorator_path=None)
             compiled = compile_command_class(command_cls)
-            compiled.__hedron_outcomes__ = getattr(command_cls, "outcomes", None)  # type: ignore[attr-defined]
+            compiled.__hedron_outcomes__ = (  # type: ignore[attr-defined]
+                getattr(command_cls, "outcomes", None) or outcomes
+            )
             compiled.__hedron_effects__ = getattr(command_cls, "effects", None)  # type: ignore[attr-defined]
             return self.command(
                 None,
@@ -391,6 +394,7 @@ class HedronPagesMixin:
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
                 authorization=authorization,
+                outcomes=outcomes,
                 **kwargs,
             )(compiled)
 
@@ -403,6 +407,7 @@ class HedronPagesMixin:
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
                 authorization=authorization,
+                outcomes=outcomes,
                 **kwargs,
             )(path)
 
@@ -432,10 +437,12 @@ class HedronPagesMixin:
             if inspect.isclass(fn):
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
                 compiled_fn = compile_command_class(fn)
-                compiled_fn.__hedron_outcomes__ = getattr(fn, "outcomes", None)
+                compiled_fn.__hedron_outcomes__ = getattr(fn, "outcomes", None) or outcomes
                 compiled_fn.__hedron_effects__ = getattr(fn, "effects", None)
                 resolved_fallback = fallback or getattr(fn, "fallback", None)
                 fn = compiled_fn  # type: ignore[assignment]
+            elif outcomes is not None and getattr(fn, "__hedron_outcomes__", None) is None:
+                fn.__hedron_outcomes__ = outcomes  # type: ignore[attr-defined]
 
             app_id = str(getattr(self, "hedron_app_id", "") or "")
             mount = str(getattr(getattr(self, "state", None), "hedron_mount_path", "") or "")
