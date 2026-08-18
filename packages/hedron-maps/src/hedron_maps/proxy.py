@@ -54,6 +54,15 @@ def assert_ssrf_safe(url: str, policy: MapPolicy, *, resolve_dns: bool = True) -
         # keep host:port when non-default
         if parsed.port not in {443, 80}:
             origin = f"{parsed.scheme}://{host}:{parsed.port}"
+    if not policy.remote_requests_permitted:
+        raise error(
+            HED_MAP_POLICY_0001,
+            title="Remote map requests are not permitted",
+            explanation=(
+                "The map proxy cannot fetch remote tiles when remote_requests_permitted is false."
+            ),
+            remediation="Set remote_requests_permitted=True or serve tiles same-origin.",
+        )
     if origin not in policy.allowed_origins:
         raise error(
             HED_MAP_POLICY_0001,
