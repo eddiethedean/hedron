@@ -138,10 +138,10 @@ def _check_living_tip(*, allow_planned: bool) -> None:
             or version.startswith("0.43.")
             or version.startswith("0.44.")
             or version.startswith("0.45.")
-            or version.startswith(("0.46.", "0.47.", "0.48.", "0.49."))
+            or version.startswith(("0.46.", "0.47.", "0.48.", "0.49.", "0.50."))
         ):
             raise SystemExit(
-                f"unexpected workspace version {version!r} (expected 0.36.x–0.49.x during refine/history)"
+                f"unexpected workspace version {version!r} (expected 0.36.x–0.50.x during refine/history)"
             )
         print(f"ok: living tip {version} (allow-planned)")
         return

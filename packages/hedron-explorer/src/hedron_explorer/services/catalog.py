@@ -2,18 +2,20 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TypeVar
 
 from fastapi import Request
 
+from hedron_core.a11y import AccessibilityContract
 from hedron_core.catalog import InteractionCatalog, compile_interaction_catalog, get_sealed_catalog
 from hedron_core.dashboard import dashboard_graph_payload
-from hedron_core.registry import ComponentMeta, get_registry
+from hedron_core.registry import ComponentMeta, RouteMeta, get_registry
 from hedron_explorer.services.query import (
     A11Y_LIMIT,
     AUDIT_LIMIT,
     COMPONENTS_LIMIT,
     DEFAULT_LIMIT,
+    Page,
     envelope,
     paginate,
     parse_cursor,
@@ -22,6 +24,8 @@ from hedron_explorer.services.query import (
     wants_envelope,
 )
 from hedron_explorer.services.runtime import AUDIT, redact
+
+T = TypeVar("T")
 
 
 def app_catalog(app: object) -> InteractionCatalog:
@@ -42,7 +46,7 @@ def find_component(name: str) -> ComponentMeta | None:
     return None
 
 
-def _sort_items(items: list[Any], request: Request | None, allowed: tuple[str, ...]) -> list[Any]:
+def _sort_items(items: list[T], request: Request | None, allowed: tuple[str, ...]) -> list[T]:
     if request is None:
         return items
     raw = request.query_params.get("sort")
@@ -66,7 +70,7 @@ def list_components(request: Request | None = None) -> list[ComponentMeta]:
     return _sort_items(filtered, request, ("name", "logical_id", "distribution"))
 
 
-def page_components(request: Request | None = None):
+def page_components(request: Request | None = None) -> Page[ComponentMeta]:
     items = list_components(request)
     return paginate(
         items,
@@ -75,14 +79,14 @@ def page_components(request: Request | None = None):
     )
 
 
-def list_routes(request: Request | None = None):
+def list_routes(request: Request | None = None) -> list[RouteMeta]:
     items = list(get_registry().routes())
     query = None if request is None else request.query_params.get("q")
     filtered = search_filter(items, query, key=lambda r: f"{r.kind} {r.name} {r.path}")
     return _sort_items(filtered, request, ("kind", "name", "path"))
 
 
-def page_routes(request: Request | None = None):
+def page_routes(request: Request | None = None) -> Page[RouteMeta]:
     items = list_routes(request)
     return paginate(
         items,
@@ -101,7 +105,7 @@ def component_payload(c: ComponentMeta) -> dict[str, Any]:
     }
 
 
-def route_payload(r: object) -> dict[str, Any]:
+def route_payload(r: RouteMeta) -> dict[str, Any]:
     return {
         "kind": r.kind,
         "name": r.name,
@@ -118,7 +122,7 @@ def route_payload(r: object) -> dict[str, Any]:
 
 def components_json(request: Request | None = None) -> Any:
     page = page_components(request)
-    items = [component_payload(c) for c in page.items]  # type: ignore[arg-type]
+    items = [component_payload(c) for c in page.items]
     if wants_envelope(request):
         wrapped = envelope(page)
         wrapped["items"] = items
@@ -220,7 +224,7 @@ def security_json(request: Request | None = None) -> dict[str, Any]:
     return payload
 
 
-def a11y_contracts(*, request: Request | None = None):
+def a11y_contracts(*, request: Request | None = None) -> Page[AccessibilityContract]:
     from hedron_core.a11y import AccessibilityContractCatalog, seed_reviewed_contracts
 
     catalog = AccessibilityContractCatalog()

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import TypeVar
+from typing import Generic, TypeVar
 
 from fastapi import Request
 
@@ -21,8 +21,8 @@ CACHE_LIMIT = 50
 
 
 @dataclass(frozen=True, slots=True)
-class Page:
-    items: list[object]
+class Page(Generic[T]):
+    items: list[T]
     total: int
     limit: int
     offset: int
@@ -58,7 +58,7 @@ def parse_cursor(request: Request | None) -> int:
         return 0
 
 
-def paginate(items: Sequence[T], *, offset: int, limit: int) -> Page:
+def paginate(items: Sequence[T], *, offset: int, limit: int) -> Page[T]:
     total = len(items)
     start = min(offset, total)
     end = min(start + limit, total)
@@ -86,7 +86,7 @@ def search_filter(items: Sequence[T], query: str | None, key: Callable[[T], str]
     return [item for item in items if needle in str(key(item)).lower()]
 
 
-def truncation_banner(page: Page, *, noun: str) -> str:
+def truncation_banner(page: Page[T], *, noun: str) -> str:
     if not page.truncated and page.total <= page.limit:
         return ""
     nxt = f" cursor={page.next_cursor}" if page.next_cursor else ""
@@ -97,7 +97,7 @@ def truncation_banner(page: Page, *, noun: str) -> str:
     )
 
 
-def envelope(page: Page) -> dict[str, object]:
+def envelope(page: Page[T]) -> dict[str, object]:
     return {
         "items": page.items,
         "total": page.total,

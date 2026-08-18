@@ -79,9 +79,11 @@ def test_lazy_error_slot_without_hx_on() -> None:
     )
     assert "data-hedron-error-slot" in html
     assert "hx-on" not in html
-    ui = __import__("pathlib").Path(
-        "packages/hedron-core/src/hedron_core/static/hedron-ui.mjs"
-    ).read_text(encoding="utf-8")
+    ui = (
+        __import__("pathlib")
+        .Path("packages/hedron-core/src/hedron_core/static/hedron-ui.mjs")
+        .read_text(encoding="utf-8")
+    )
     assert "htmx:responseError" in ui
     assert "htmx:sendError" in ui
 

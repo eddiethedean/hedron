@@ -7,7 +7,7 @@ from typing import Any, cast
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from hedron_core.registry import get_registry
+from hedron_core.registry import RouteMeta, get_registry
 from hedron_core.typing_aliases import JsonObject
 from hedron_explorer.services.runtime import TRACE
 
@@ -99,7 +99,7 @@ async def require_csrf(request: Request) -> JSONResponse | None:
     return None
 
 
-def click_preview_payload(route: object, *, target: str | None) -> dict[str, Any]:
+def click_preview_payload(route: RouteMeta, *, target: str | None) -> dict[str, Any]:
     inference = dict(getattr(route, "htmx_inference", {}) or {})
     regions = parse_regions(inference)
     methods = tuple(route.methods or ("GET",))

@@ -12,7 +12,7 @@ def package_health() -> dict[str, Any]:
     entries: list[dict[str, str]] = []
     versions: dict[str, str] = {}
     for dist in distributions():
-        name = dist.metadata.get("Name") or dist.metadata.get("name") or ""
+        name = dist.name
         if not str(name).lower().startswith("hedron"):
             continue
         versions[str(name)] = dist.version
@@ -24,20 +24,25 @@ def package_health() -> dict[str, Any]:
         if panel.panel_id in seen:
             duplicates.append(panel.panel_id)
         seen[panel.panel_id] = panel.plugin
-    train_versions = {k: v for k, v in versions.items() if k.lower() in {
-        "hedron",
-        "hedron-core",
-        "hedron-explorer",
-        "hedron-data",
-        "hedron-flask",
-        "hedron-django",
-        "hedron-jinja",
-        "hedron-conformance",
-        "hedron-extras",
-        "hedron-workbench",
-        "hedron-posit",
-        "hedron-elements",
-    }}
+    train_versions = {
+        k: v
+        for k, v in versions.items()
+        if k.lower()
+        in {
+            "hedron",
+            "hedron-core",
+            "hedron-explorer",
+            "hedron-data",
+            "hedron-flask",
+            "hedron-django",
+            "hedron-jinja",
+            "hedron-conformance",
+            "hedron-extras",
+            "hedron-workbench",
+            "hedron-posit",
+            "hedron-elements",
+        }
+    }
     skew = len(set(train_versions.values())) > 1
     return {
         "read_only": True,

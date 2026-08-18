@@ -68,7 +68,9 @@ def test_keyboard_focus_playwright() -> None:
     wait_for_port(port)
     try:
         with sync_playwright() as playwright:
-            page = playwright.chromium.launch(headless=True).new_page()
+            engine = os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium"
+            launcher = getattr(playwright, engine)
+            page = launcher.launch(headless=True).new_page()
             page.goto(f"http://127.0.0.1:{port}/hedron-explorer/")
             page.keyboard.press("Tab")
             focused = page.evaluate(

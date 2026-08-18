@@ -35,11 +35,7 @@ def current_baseline() -> dict[str, Any]:
     registry = get_registry()
     assets = tuple(sorted(f"{a.logical_id}:{a.kind}" for a in registry.assets()))
     dependencies = tuple(
-        sorted(
-            f"{c.logical_id}:{dep}"
-            for c in registry.components()
-            for dep in c.browser_modules
-        )
+        sorted(f"{c.logical_id}:{dep}" for c in registry.components() for dep in c.browser_modules)
     )
     from hedron_core.plugins.explorer import get_feature_manifests
 

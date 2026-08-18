@@ -61,6 +61,7 @@ async def index(request: Request) -> str:
     """
     return shell("Components", body, request=request, active="components")
 
+
 async def routes_view(request: Request) -> str:
     page = page_routes(request)
     rows = "".join(
@@ -87,6 +88,7 @@ async def routes_view(request: Request) -> str:
     """
     return shell("Routes", body, request=request, active="routes")
 
+
 async def component_detail(name: str, request: Request) -> str:
     meta = find_component(name)
     if meta is None:
@@ -94,6 +96,7 @@ async def component_detail(name: str, request: Request) -> str:
     return shell(
         meta.name, component_detail_body(meta, request), request=request, active="components"
     )
+
 
 async def graph_view(request: Request) -> str:
     edges = []
@@ -113,6 +116,7 @@ async def graph_view(request: Request) -> str:
         active="graph",
     )
 
+
 async def security_view(request: Request) -> str:
     findings = [
         "Explorer absent in production by default",
@@ -127,6 +131,7 @@ async def security_view(request: Request) -> str:
         request=request,
         active="security",
     )
+
 
 async def a11y_view(request: Request) -> str:
     from hedron_core import Main, Page, Text, render
@@ -171,9 +176,7 @@ async def a11y_view(request: Request) -> str:
     ).html
     structure = validate_page_structure(sample)
     landmark_items = (
-        "".join(
-            f"<li><code>{html_lib.escape(name)}</code></li>" for name in structure.landmarks
-        )
+        "".join(f"<li><code>{html_lib.escape(name)}</code></li>" for name in structure.landmarks)
         or "<li>(none)</li>"
     )
     heading_items = (
@@ -244,6 +247,7 @@ async def a11y_view(request: Request) -> str:
     """
     return shell("Accessibility", body, request=request, active="a11y")
 
+
 async def cache_view(request: Request) -> str:
     from hedron_core.cache import CacheTrace
 
@@ -276,6 +280,7 @@ async def cache_view(request: Request) -> str:
     </table>
     """
     return shell("Cache", body, request=request, active="cache")
+
 
 async def charts_view(request: Request) -> str:
     from hedron_core.registry import get_registry
@@ -322,6 +327,7 @@ async def charts_view(request: Request) -> str:
     """
     return shell("Charts", body, request=request, active="charts")
 
+
 async def maps_view(request: Request) -> str:
     from hedron_core.registry import get_registry
 
@@ -329,9 +335,7 @@ async def maps_view(request: Request) -> str:
     map_components = [
         c
         for c in registry.components()
-        if c.distribution == "hedron-maps"
-        or c.name == "Map"
-        and "hedron_maps" in (c.module or "")
+        if c.distribution == "hedron-maps" or c.name == "Map" and "hedron_maps" in (c.module or "")
     ]
     rows = "".join(
         "<tr>"
@@ -367,6 +371,7 @@ async def maps_view(request: Request) -> str:
     """
     return shell("Maps", body, request=request, active="maps")
 
+
 async def extensions_view(request: Request) -> str:
     from hedron_core.htmx_extensions import catalog_facts
 
@@ -396,6 +401,7 @@ async def extensions_view(request: Request) -> str:
     </table>
     """
     return shell("HTMX extensions", body, request=request, active="extensions")
+
 
 async def data_view(request: Request) -> str:
     from hedron_core.registry import get_registry
@@ -429,9 +435,7 @@ async def data_view(request: Request) -> str:
     <table>
       <thead><tr><th>Name</th><th>Distribution</th><th>A11y notes</th>
       <th>Browser host</th></tr></thead>
-      <tbody>{
-        rows or "<tr><td colspan='4'>No DataTable/DataEditor registered</td></tr>"
-    }</tbody>
+      <tbody>{rows or "<tr><td colspan='4'>No DataTable/DataEditor registered</td></tr>"}</tbody>
     </table>
     <h3>Sample writable policy</h3>
     <table>
@@ -445,6 +449,7 @@ async def data_view(request: Request) -> str:
     </ul>
     """
     return shell("Data", body, request=request, active="data")
+
 
 async def auto_view(request: Request) -> str:
     from hedron_core.auto import get_last_auto_decision
@@ -472,6 +477,7 @@ async def auto_view(request: Request) -> str:
     body = f"<h2>Auto renderer evidence</h2>{detail}"
     return shell("Auto", body, request=request, active="auto")
 
+
 async def packages_view(request: Request) -> str:
     panels = get_explorer_panels()
     items = "".join(
@@ -493,6 +499,7 @@ async def packages_view(request: Request) -> str:
         request=request,
         active="packages",
     )
+
 
 async def elements_view(request: Request) -> str:
     rows = []
@@ -521,6 +528,7 @@ async def elements_view(request: Request) -> str:
     )
     return shell("Elements", body, request=request, active="elements")
 
+
 async def element_detail_view(request: Request, logical_id: str) -> str:
     meta = get_registry().get_element_definition(logical_id)
     if meta is None:
@@ -545,6 +553,7 @@ async def element_detail_view(request: Request, logical_id: str) -> str:
     <ul>{fallback or "<li>None declared</li>"}</ul>
     """
     return shell(meta.tag_name, body, request=request, active="elements")
+
 
 async def inventory_view(request: Request) -> str:
     """Production / HDJ inventory panel (phase 0.11)."""
@@ -616,6 +625,7 @@ async def inventory_view(request: Request) -> str:
     body = f"<h2>Production inventory</h2><pre>{payload}</pre>"
     return shell("Inventory", body, request=request, active="inventory")
 
+
 async def settings_view(request: Request) -> str:
     theme = getattr(request.app.state, "hedron_theme", None)
     production = getattr(request.app.state, "hedron_production", None)
@@ -628,6 +638,7 @@ async def settings_view(request: Request) -> str:
     </dl>
     """
     return shell("Settings", body, request=request, active="settings")
+
 
 async def interactions_view(request: Request) -> str:
     catalog = app_catalog(request.app)
@@ -645,8 +656,7 @@ async def interactions_view(request: Request) -> str:
             f"<td>{namespaces}</td></tr>"
         )
     projections = "".join(
-        f"<li><code>{html_lib.escape(name)}</code> "
-        f"provider={html_lib.escape(item.provider)}</li>"
+        f"<li><code>{html_lib.escape(name)}</code> provider={html_lib.escape(item.provider)}</li>"
         for name, item in catalog.catalog_projections.items()
     )
     body = f"""
@@ -667,6 +677,7 @@ async def interactions_view(request: Request) -> str:
     <pre>{html_lib.escape(str(dict(catalog.provenance)))}</pre>
     """
     return shell("Interactions", body, request=request, active="interactions")
+
 
 async def features_view(request: Request) -> str:
     from hedron_core.bundles import included_bundles

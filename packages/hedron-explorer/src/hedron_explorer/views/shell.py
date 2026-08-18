@@ -49,8 +49,7 @@ def explorer_href(request: Request, path: str) -> str:
 def nav_link(request: Request, key: str, label: str, href: str, active: str) -> str:
     css_class = "active" if key == active else ""
     return (
-        f'<a href="{explorer_href(request, href)}" class="{css_class}">'
-        f"{html_lib.escape(label)}</a>"
+        f'<a href="{explorer_href(request, href)}" class="{css_class}">{html_lib.escape(label)}</a>'
     )
 
 

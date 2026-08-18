@@ -12,10 +12,19 @@ rows = data["evidence"]
 if tuple(row["id"] for row in rows) != EXPECTED or any(row["state"] != "Verified" for row in rows):
     raise SystemExit("all 0.41 gates must be Verified")
 version = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]["version"]
-if version not in {"0.41.0", "0.42.0", "0.43.0", "0.44.0", "0.45.0", "0.46.0", "0.47.0", "0.48.0", "0.49.0"} and not version.startswith(
-    ("0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.")
+if version not in {
+    "0.41.0",
+    "0.42.0",
+    "0.43.0",
+    "0.44.0",
+    "0.45.0",
+    "0.46.0",
+    "0.47.0",
+    "0.48.0",
+    "0.49.0",
+    "0.50.0",
+} and not version.startswith(
+    ("0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.")
 ):
-    raise SystemExit(
-        f"workspace version must be 0.41.0 or post-cut 0.42.x–0.49.x, got {version}"
-    )
+    raise SystemExit(f"workspace version must be 0.41.0 or post-cut 0.42.x–0.50.x, got {version}")
 raise SystemExit(check("PKG-041"))

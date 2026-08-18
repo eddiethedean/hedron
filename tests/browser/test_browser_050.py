@@ -36,9 +36,7 @@ def browser_app_url() -> Iterator[str]:
     from hedron_explorer.services.provider import run_isolated
 
     reset_browser_plugin_state()
-    register_explorer_provider(
-        ExplorerProvider(panel_id="crashy", title="Crashy", plugin="demo")
-    )
+    register_explorer_provider(ExplorerProvider(panel_id="crashy", title="Crashy", plugin="demo"))
     crashed = run_isolated(
         ExplorerProvider(panel_id="crashy", title="Crashy", plugin="demo"),
         lambda: (_ for _ in ()).throw(RuntimeError("boom")),
@@ -82,13 +80,22 @@ def _run_engine(browser_type: str, url: str) -> None:
         browser.close()
 
 
+def _maybe_skip_engine(engine: str) -> None:
+    selected = os.environ.get("HEDRON_BROWSER_ENGINE")
+    if selected and selected != engine:
+        pytest.skip(f"engine filter {selected}")
+
+
 def test_chromium(browser_app_url: str) -> None:
+    _maybe_skip_engine("chromium")
     _run_engine("chromium", browser_app_url)
 
 
 def test_firefox(browser_app_url: str) -> None:
+    _maybe_skip_engine("firefox")
     _run_engine("firefox", browser_app_url)
 
 
 def test_webkit(browser_app_url: str) -> None:
+    _maybe_skip_engine("webkit")
     _run_engine("webkit", browser_app_url)

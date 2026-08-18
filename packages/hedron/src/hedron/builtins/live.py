@@ -106,9 +106,7 @@ class Lazy(Component[Props]):
         children: list[NodeLike] = []
         if self.error is not None:
             attrs["data-hedron-error-slot"] = "true"
-            children.append(
-                html.template(self.error, **{"data-hedron-error-template": "true"})
-            )
+            children.append(html.template(self.error, **{"data-hedron-error-template": "true"}))
         body = self.placeholder if self.placeholder is not None else Loading("Loading…")
         children.append(body)
         return html.div(*children, **attrs)

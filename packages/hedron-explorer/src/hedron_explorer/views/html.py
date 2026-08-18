@@ -1,3 +1,45 @@
 """HTML builders (ARCH-050 ``views/html`` alias)."""
 
-from hedron_explorer.views.pages import *  # noqa: F403
+from hedron_explorer.views.pages import (
+    a11y_view,
+    auto_view,
+    cache_view,
+    charts_view,
+    component_detail,
+    data_view,
+    element_detail_view,
+    elements_view,
+    extensions_view,
+    features_view,
+    graph_view,
+    index,
+    interactions_view,
+    inventory_view,
+    maps_view,
+    packages_view,
+    routes_view,
+    security_view,
+    settings_view,
+)
+
+__all__ = [
+    "a11y_view",
+    "auto_view",
+    "cache_view",
+    "charts_view",
+    "component_detail",
+    "data_view",
+    "element_detail_view",
+    "elements_view",
+    "extensions_view",
+    "features_view",
+    "graph_view",
+    "index",
+    "interactions_view",
+    "inventory_view",
+    "maps_view",
+    "packages_view",
+    "routes_view",
+    "security_view",
+    "settings_view",
+]

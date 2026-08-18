@@ -171,15 +171,34 @@ def _workspace_version() -> str:
 def _check_versions(*, allow_planned: bool) -> None:
     version = _workspace_version()
     if allow_planned:
-        if not version.startswith(("0.39.", "0.40.", "0.41.", "0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.")):
+        if not version.startswith(
+            (
+                "0.39.",
+                "0.40.",
+                "0.41.",
+                "0.42.",
+                "0.43.",
+                "0.44.",
+                "0.45.",
+                "0.46.",
+                "0.47.",
+                "0.48.",
+                "0.49.",
+                "0.50.",
+            )
+        ):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.39.x–0.49.x"
+                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.39.x–0.50.x"
             )
         print(f"ok: living tip {version} (0.40 allow-planned)")
         return
-    if version != RELEASE_CANDIDATE and not version.startswith(("0.41.", "0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.")):
+    if version != RELEASE_CANDIDATE and not version.startswith(
+        ("0.41.", "0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.")
+    ):
         raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE}; found {version!r}")
-    if version.startswith(("0.41.", "0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.")):
+    if version.startswith(
+        ("0.41.", "0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.")
+    ):
         print(f"ok: post-cut living tip {version} (0.40 packet verified)")
         return
     print(f"ok: cut version Hedron {version}")
@@ -242,7 +261,9 @@ def main(argv: list[str] | None = None) -> int:
         if errors:
             raise SystemExit("\n".join(errors))
         print("ok: release-gate-0.40.toml (planned shape)")
-    elif _workspace_version().startswith(("0.41.", "0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.")):
+    elif _workspace_version().startswith(
+        ("0.41.", "0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.")
+    ):
         errors = gate.check_evidence_manifest(GATE)
         if errors:
             raise SystemExit("\n".join(errors))

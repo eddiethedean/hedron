@@ -216,9 +216,7 @@ class FragmentHost(Component[FragmentHostProps]):
             error_node: NodeLike = (
                 html.p(self._error) if isinstance(self._error, str) else self._error
             )
-            children.append(
-                html.template(error_node, **{"data-hedron-error-template": "true"})
-            )
+            children.append(html.template(error_node, **{"data-hedron-error-template": "true"}))
         if inner is not None:
             children.append(inner)
         return tag(*children, **attrs)

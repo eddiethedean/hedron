@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 from hedron.cli.discovery import _apply_project_discovery, _load_app
 from hedron_core.registry import get_registry
@@ -20,13 +20,15 @@ def _cmd_graph(args: argparse.Namespace) -> int:
     try:
         from hedron_explorer.services.catalog import graph_json
 
-        payload = graph_json()
+        explorer_payload: dict[str, Any] = graph_json()
         inverse: dict[str, list[str]] = {}
-        for edge in payload.get("edges") or []:
+        raw_edges = explorer_payload.get("edges")
+        edges_list = raw_edges if isinstance(raw_edges, list) else []
+        for edge in edges_list:
             if isinstance(edge, dict):
                 inverse.setdefault(str(edge.get("to")), []).append(str(edge.get("from")))
-        payload["inverse_consumers"] = inverse
-        print(json.dumps(payload, indent=2))
+        explorer_payload["inverse_consumers"] = inverse
+        print(json.dumps(explorer_payload, indent=2))
         return 0
     except ImportError:
         print("hedron-explorer: skipped (not installed)", file=sys.stderr)
