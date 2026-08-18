@@ -77,6 +77,9 @@ class FieldRecord:
     identity: bool
     control_kind: str | None
     is_file: bool = False
+    control_label: str | None = None
+    control_help: str | None = None
+    field_title: str | None = None
 
 
 @dataclass
@@ -267,7 +270,9 @@ class TypeNormalizer:
         )
         effect: str = "declared" if (declared_refresh or declared_update) else "dynamic"
         if outcomes is not None:
-            outcomes.validate_union(hints.get("return", signature.return_annotation))
+            return_annotation = hints.get("return", signature.return_annotation)
+            if return_annotation is not inspect.Parameter.empty:
+                outcomes.validate_union(return_annotation)
         if model_type is not None or effect == "declared" or outcomes is not None:
             field_paths: list[Mapping[str, JsonValue]] = [
                 {
@@ -560,6 +565,9 @@ def _walk_model(
                 identity=field_identity,
                 control_kind=kind,
                 is_file=is_file,
+                control_label=getattr(control, "label", None) if control is not None else None,
+                control_help=getattr(control, "help", None) if control is not None else None,
+                field_title=getattr(info, "title", None),
             )
         )
         disposition[path] = disp

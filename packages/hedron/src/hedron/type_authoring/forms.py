@@ -166,13 +166,15 @@ def _error_map(errors: Sequence[object]) -> tuple[dict[str, str], list[str]]:
 
 
 def _label(record: FieldRecord) -> str:
-    if record.control_kind:
-        return record.name.replace("_", " ").title()
+    if record.control_label:
+        return record.control_label
+    if record.field_title:
+        return record.field_title
     return record.name.replace("_", " ").title()
 
 
 def _help(record: FieldRecord) -> str | None:
-    return None
+    return record.control_help
 
 
 def _native_control(
