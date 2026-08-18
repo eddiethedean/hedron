@@ -121,8 +121,8 @@ async def _convert_async(
     allow_undeclared_targets: bool = False,
 ) -> HttpResponse:
     """ASGI path: await prepare_tree before converting to HttpResponse."""
-    from hedron_core.prepare import prepare_tree
     from hedron_core.diagnostics import HedronError
+    from hedron_core.prepare import prepare_tree
     from hedron_core.updates import compile_to_interaction
 
     try:

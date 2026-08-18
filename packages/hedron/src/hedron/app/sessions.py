@@ -51,9 +51,7 @@ def configure_sessions(
         app.add_middleware(
             SessionMiddleware,
             secret_key=session_secret,
-            https_only=(
-                app.hedron_policy.profile is SecurityProfile.STRICT or is_prod
-            ),
+            https_only=(app.hedron_policy.profile is SecurityProfile.STRICT or is_prod),
             path=mount_cookie_path,
         )
     app.state.hedron_cookie_path = mount_cookie_path

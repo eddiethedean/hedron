@@ -366,9 +366,7 @@ def interaction_response(
         from hedron_core.htmx.authorize import fragment_region_http_detail
 
         detail = (
-            fragment_region_http_detail(exc)
-            if isinstance(exc, FragmentRegionError)
-            else str(exc)
+            fragment_region_http_detail(exc) if isinstance(exc, FragmentRegionError) else str(exc)
         )
         return Response(detail, status=403, mimetype="text/plain")
     multi = bool(result.policy and len(result.policy.declared_regions) > 1)
