@@ -95,8 +95,21 @@ class HedronRoute(APIRoute):
         original = super().get_route_handler()
 
         async def handler(request: Request) -> StarletteResponse:
+            from fastapi import HTTPException, status
+
             from hedron.routing.router import current_request
+            from hedron_core.codes import HED_TYPE_0003
             from hedron_core.htmx_eval import reset_htmx_eval_allowed, set_htmx_eval_allowed
+
+            allowed = getattr(self.endpoint, "_hedron_form_media", None)
+            if allowed:
+                raw = str(request.headers.get("content-type") or "")
+                media = raw.split(";", 1)[0].strip().lower()
+                if media not in allowed:
+                    raise HTTPException(
+                        status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                        detail=HED_TYPE_0003,
+                    )
 
             policy: SecurityPolicy = getattr(
                 request.app.state, "hedron_security", SecurityPolicy.from_name("standard")

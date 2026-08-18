@@ -23,6 +23,10 @@ class Payload(BaseModel):
     title: str = "x"
 
 
+class RequiredPayload(BaseModel):
+    title: str
+
+
 def test_formbody_json_still_415() -> None:
     app = make_app(security="standard")
 
@@ -42,6 +46,29 @@ def test_formbody_json_still_415() -> None:
             headers={**headers, "Content-Type": "application/json"},
         )
         assert response.status_code == status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+        assert response.json()["detail"] == "HED-TYPE-0003"
+
+
+def test_required_formbody_json_is_415_not_422() -> None:
+    app = make_app(security="standard")
+
+    @app.command("/save-req", fallback="/")
+    def save_req(data: Annotated[RequiredPayload, FormBody()]):
+        return Text(data.title)
+
+    @app.page("/")
+    def home():
+        return Page(Text("h"), title="H")
+
+    with TestClient(app) as client:
+        headers = csrf_headers(client, htmx=False)
+        response = client.post(
+            save_req.path,
+            content=b'{"title":"nope"}',
+            headers={**headers, "Content-Type": "application/json"},
+        )
+        assert response.status_code == status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+        assert response.json()["detail"] == "HED-TYPE-0003"
 
 
 def test_strict_json_profile_and_scopes_are_declarations() -> None:
