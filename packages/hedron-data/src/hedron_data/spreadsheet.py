@@ -75,7 +75,8 @@ _DANGEROUS_FORMULA_PREFIXES = frozenset(
 def _reject_or_sanitize(value: str, *, formula_policy: str) -> str:
     # Classic spreadsheet/CSV injection prefixes, after stripping evasion padding.
     normalized = _strip_formula_evasion_prefix(value)
-    dangerous = bool(normalized) and normalized[:1] in _DANGEROUS_FORMULA_PREFIXES
+    folded = unicodedata.normalize("NFKC", normalized) if normalized else ""
+    dangerous = bool(folded) and folded[:1] in _DANGEROUS_FORMULA_PREFIXES
     if dangerous:
         if formula_policy == "reject":
             raise error(
