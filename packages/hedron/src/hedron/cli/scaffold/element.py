@@ -64,6 +64,8 @@ _META = PluginMeta(
     capabilities=PluginCapabilities(browser_js=True, styles=True, assets=True),
 )
 
+PLUGIN_META = _META
+
 _STATIC = Path(__file__).parent / "static"
 _TAG = "{tag_name}"
 
