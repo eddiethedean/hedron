@@ -533,7 +533,35 @@ def _walk_model(
             )
         )
         disposition[path] = disp
+        nested = _nested_model_type(annotation)
+        if nested is not None:
+            _, _, nested_sensitive, nested_identity = _walk_model(
+                nested,
+                source=None,
+                path_names=(),
+                prefix=f"{path}.",
+                depth=depth + 1,
+                seen=seen,
+            )
+            sensitive.extend(nested_sensitive)
+            identity.extend(nested_identity)
     return tuple(records), disposition, sensitive, identity
+
+
+def _nested_model_type(annotation: object) -> type[BaseModel] | None:
+    origin = get_origin(annotation)
+    if origin is Annotated:
+        args = get_args(annotation)
+        if args:
+            return _nested_model_type(args[0])
+        return None
+    if _is_model(annotation):
+        return annotation
+    if _is_union(origin) or str(type(annotation)) == "<class 'types.UnionType'>":
+        for item in get_args(annotation):
+            if item is not type(None) and _is_model(item):
+                return item
+    return None
 
 
 def _field_markers(info: FieldInfo) -> tuple[bool, bool, object]:
