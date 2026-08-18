@@ -54,9 +54,27 @@ def _load_app(app_path: str | None) -> Any | None:
     target: Any = module
     for part in attr.split("."):
         target = getattr(target, part)
-    if callable(target) and not hasattr(target, "routes"):
+    if _should_invoke_app_factory(target):
         target = target()
     return target
+
+
+def _should_invoke_app_factory(target: Any) -> bool:
+    """Invoke only ASGI/Starlette factories, not Flask apps or WSGI callables."""
+    if not callable(target):
+        return False
+    if hasattr(target, "routes"):
+        return False
+    if hasattr(target, "wsgi_app"):
+        return False
+    import inspect
+
+    try:
+        if len(inspect.signature(target).parameters) == 2:
+            return False
+    except (ValueError, TypeError):
+        pass
+    return True
 
 
 def _registry_empty_hint(*, app: str | None, what: str) -> None:
