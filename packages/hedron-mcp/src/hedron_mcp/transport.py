@@ -400,22 +400,15 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
 
 
 def _tenant_from(request: Any, params: Mapping[str, Any]) -> str | None:
-    header = request.headers.get("x-hedron-tenant")
-    if header:
-        return header
-    tenant = params.get("tenant_id")
-    return str(tenant) if tenant is not None else None
+    """Ignore client tenant claims; tenant is derived server-side (#287)."""
+    del request, params
+    return None
 
 
 def _scopes_from(request: Any) -> Mapping[str, Any] | None:
-    raw = request.headers.get("x-hedron-scopes")
-    if not raw:
-        return None
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError:
-        return None
-    return data if isinstance(data, dict) else None
+    """Ignore client-supplied scope headers (#287)."""
+    del request
+    return None
 
 
 def mount_streamable_http(
