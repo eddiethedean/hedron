@@ -79,8 +79,9 @@ def test_outcome_map_complete_coverage() -> None:
         case(Conflict, render=lambda item: Text("no"), status=409),
     )
     mapping.validate_union(SaveOutcome)
-    content, status = mapping.map_result(Saved(id="1"))
+    content, status, effects = mapping.map_result(Saved(id="1"))
     assert status == 200
+    assert effects is None
     incomplete = OutcomeMap(case(Saved, render=lambda item: Text("x")))
     with pytest.raises(HedronError) as inner:
         incomplete.validate_union(SaveOutcome)

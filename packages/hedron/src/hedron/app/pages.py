@@ -3,15 +3,57 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, ParamSpec, TypeVar
+from typing import Any, ParamSpec, TypeVar, cast
 
 from hedron.routing.router import HedronRouter
 from hedron_core.addressable import AddressableDescriptor
+from hedron_core.component import NodeLike
 from hedron_core.hosts import FragmentHost
-from hedron_core.interaction import FragmentRegion
+from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
 P = ParamSpec("P")
 R = TypeVar("R")
+
+
+def _apply_mapped_outcome(
+    mapped: object,
+    status: int,
+    case_effects: object,
+    *,
+    meta: object,
+    app_id: str,
+) -> object:
+    from hedron.handles import refresh
+    from hedron.type_authoring import assert_declared_effects
+    from hedron.type_authoring.markers import Refreshes
+    from hedron_core.updates import compile_to_interaction
+
+    effect_result: object = mapped
+    if isinstance(case_effects, Refreshes):
+        effect_result = refresh(*case_effects.targets)
+    assert_declared_effects(meta, effect_result, app_id=app_id)  # type: ignore[arg-type]
+    if isinstance(effect_result, (RefreshIntent, Patch, PatchSet)):
+        compiled = compile_to_interaction(effect_result)
+        if isinstance(compiled, InteractionResult):
+            content = (
+                mapped
+                if not isinstance(mapped, (RefreshIntent, Patch, PatchSet, InteractionResult))
+                else compiled.content
+            )
+            return InteractionResult(
+                content=cast(NodeLike | None, content),
+                status_code=status,
+                trigger=compiled.trigger,
+                oob=compiled.oob,
+                policy=compiled.policy,
+                explanation=compiled.explanation,
+            )
+    if status != 200 and not isinstance(
+        mapped, (RefreshIntent, Patch, PatchSet, InteractionResult)
+    ):
+        return InteractionResult(content=cast(NodeLike, mapped), status_code=status)
+    return mapped
 
 
 class HedronPagesMixin:
@@ -383,6 +425,7 @@ class HedronPagesMixin:
             )
             from hedron.type_authoring.signature import formbody_media_types, reject_json_formbody
             from hedron_core.codes import HED_CMD_0002
+            from hedron_core.interaction import InteractionResult
             from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
             resolved_fallback = fallback
@@ -416,15 +459,19 @@ class HedronPagesMixin:
                     call_kw = reconstruct_kwargs(meta, call_kw)
                 result = await await_if_needed(fn(*args, **call_kw))
                 if meta is not None and getattr(meta, "outcomes", None):
-                    result, _status = meta.outcomes.map_result(result)
-                assert_declared_effects(meta, result, app_id=app_id)
+                    mapped, status, case_effects = meta.outcomes.map_result(result)
+                    result = _apply_mapped_outcome(
+                        mapped, status, case_effects, meta=meta, app_id=app_id
+                    )
+                else:
+                    assert_declared_effects(meta, result, app_id=app_id)
                 request = current_request.get()
                 is_htmx = bool(
                     request is not None
                     and str(request.headers.get("HX-Request") or "").lower() == "true"
                 )
-                update = isinstance(result, (RefreshIntent, Patch, PatchSet))
-                if not is_htmx and update:
+                update = isinstance(result, (RefreshIntent, Patch, PatchSet, InteractionResult))
+                if not is_htmx and update and isinstance(result, (RefreshIntent, Patch, PatchSet)):
                     if handle.fallback:
                         return RedirectResponse(handle.fallback, status_code=303)
                     return PlainTextResponse(HED_CMD_0002, status_code=400)
