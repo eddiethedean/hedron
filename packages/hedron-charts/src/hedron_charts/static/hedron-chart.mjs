@@ -6,6 +6,7 @@
 const TAG = "hedron-chart";
 const ABI = "1";
 const instances = new Set();
+let svgLabelSeq = 0;
 
 function parsePlan(el) {
   const raw = el.getAttribute("data-hedron-payload");
@@ -63,13 +64,16 @@ function renderSvg(el, plan) {
   const svg = document.createElementNS(ns, "svg");
   svg.setAttribute("width", String(box.width));
   svg.setAttribute("height", String(box.height));
-  svg.setAttribute("role", "img");
-  svg.setAttribute("aria-labelledby", "hc-title hc-desc");
+    svg.setAttribute("role", "img");
+  const uid = `hc-${++svgLabelSeq}`;
+  const titleId = `${uid}-title`;
+  const descId = `${uid}-desc`;
+  svg.setAttribute("aria-labelledby", `${titleId} ${descId}`);
   const title = document.createElementNS(ns, "title");
-  title.id = "hc-title";
+  title.id = titleId;
   title.textContent = (plan.accessibility && plan.accessibility.title) || "Chart";
   const desc = document.createElementNS(ns, "desc");
-  desc.id = "hc-desc";
+  desc.id = descId;
   desc.textContent = (plan.accessibility && plan.accessibility.description) || "";
   svg.appendChild(title);
   svg.appendChild(desc);
