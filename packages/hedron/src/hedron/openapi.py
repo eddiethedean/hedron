@@ -10,6 +10,7 @@ from fastapi.openapi.utils import get_openapi
 from hedron_core.registry import get_registry
 from hedron_core.scopes import RequiresScopes
 from hedron_core.typing_aliases import JsonObject, JsonValue
+from hedron_core.updates import list_handle_descriptors
 
 __all__ = ["install_openapi", "operation_id_for"]
 
@@ -34,6 +35,10 @@ def install_openapi(app: FastAPI) -> None:
         )
         registry = get_registry()
         route_by_op = {r.operation_id: r for r in registry.routes()}
+        handles = getattr(getattr(app, "state", None), "hedron_handles", None)
+        handle_map = handles if isinstance(handles, dict) else {}
+        descriptors = {item.logical_id: item for item in list_handle_descriptors()}
+        needs_hedron_scopes = False
         paths = schema.get("paths")
         if isinstance(paths, dict):
             for path_item in paths.values():
@@ -78,6 +83,21 @@ def install_openapi(app: FastAPI) -> None:
                     if provenance:
                         operation.setdefault("x-hedron-router-provenance", provenance)
                     descriptor = getattr(meta, "descriptor", None)
+                    if descriptor is None:
+                        handle = handle_map.get(meta.logical_id)
+                        descriptor = getattr(handle, "descriptor", None)
+                    if descriptor is None:
+                        for handle in handle_map.values():
+                            if getattr(handle, "path", None) == meta.path:
+                                descriptor = getattr(handle, "descriptor", None)
+                                break
+                    if descriptor is None:
+                        descriptor = descriptors.get(meta.logical_id)
+                    if descriptor is None:
+                        for item in descriptors.values():
+                            if getattr(item, "path", None) == meta.path:
+                                descriptor = item
+                                break
                     if descriptor is not None:
                         from hedron_core.type_schema import type_schema_from_descriptor
 
@@ -100,6 +120,7 @@ def install_openapi(app: FastAPI) -> None:
                             "security",
                             [{"hedronScopes": list(scopes.scopes)}],
                         )
+                        needs_hedron_scopes = True
                     callbacks = getattr(meta, "openapi_callbacks", None)
                     if isinstance(callbacks, dict):
                         operation.setdefault("callbacks", callbacks)
@@ -115,6 +136,23 @@ def install_openapi(app: FastAPI) -> None:
                     content = ok.setdefault("content", {})
                     if isinstance(content, dict):
                         content.setdefault("text/html", {"schema": {"type": "string"}})
+        if needs_hedron_scopes:
+            components = schema.setdefault("components", {})
+            if isinstance(components, dict):
+                schemes = components.setdefault("securitySchemes", {})
+                if isinstance(schemes, dict):
+                    schemes.setdefault(
+                        "hedronScopes",
+                        {
+                            "type": "apiKey",
+                            "in": "header",
+                            "name": "X-Hedron-Scopes",
+                            "description": (
+                                "Declared application scopes. Hedron does not grant "
+                                "access; the host application owns authorization."
+                            ),
+                        },
+                    )
         app.openapi_schema = schema
         return schema
 
