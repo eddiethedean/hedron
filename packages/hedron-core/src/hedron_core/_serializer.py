@@ -25,7 +25,7 @@ from hedron_core._nodes import (
     TrustedHtmlNode,
 )
 from hedron_core.diagnostics import error
-from hedron_core.htmx_eval import reject_hx_eval_value
+from hedron_core.htmx_eval import hx_attribute_is_url, reject_hx_eval_value
 from hedron_core.mount import prefix_local_path
 from hedron_core.security import SafeUrl, check_url_purpose_for_attribute
 from hedron_core.typing_aliases import HtmlAttrValue
@@ -130,7 +130,12 @@ def _format_attr(name: str, value: HtmlAttrValue, *, mount_path: str = "") -> st
             remediation="Pass True/False or SafeUrl.parse(...).",
         )
 
-    if lower in URL_ATTRS or lower.endswith("href") or lower.endswith("src"):
+    if (
+        lower in URL_ATTRS
+        or hx_attribute_is_url(lower)
+        or lower.endswith("href")
+        or lower.endswith("src")
+    ):
         if lower == "srcset" and isinstance(value, str):
             # Construction already validates candidates; re-check schemes at serialize.
             text = default_html_policy.normalize_srcset(value)
