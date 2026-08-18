@@ -8,7 +8,7 @@ import time
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 
-from hedron_core.jobs.auth import job_authorized
+from hedron_core.jobs.auth import job_authorized, job_authorized_http
 from hedron_core.jobs.codec import _idempotency_scope_key, _legacy_idempotency_scope_key
 from hedron_core.jobs.types import JobHandle, JobState, JobStatus
 from hedron_core.typing_aliases import JsonValue
@@ -116,7 +116,7 @@ class InMemoryJobBackend:
             if rec is None:
                 return False
             st = rec.status
-            if not job_authorized(st, auth_subject=auth_subject, tenant_id=tenant_id):
+            if not job_authorized_http(st, auth_subject=auth_subject, tenant_id=tenant_id):
                 return False
             if st.state in {JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED}:
                 return False

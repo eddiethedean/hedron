@@ -200,8 +200,8 @@ def test_inmemory_mark_refuses_terminal_resurrect() -> None:
 
 def test_inmemory_cancel_sticky_forces_cancelled_on_success() -> None:
     backend = InMemoryJobBackend()
-    handle = backend.submit("t", {})
-    assert backend.request_cancel(handle.job_id) is True
+    handle = backend.submit("t", {}, auth_subject="alice")
+    assert backend.request_cancel(handle.job_id, auth_subject="alice") is True
     backend.mark(handle.job_id, JobState.RUNNING)
     status = backend.mark(handle.job_id, JobState.SUCCEEDED)
     assert status is not None
@@ -229,8 +229,8 @@ def test_redis_status_store_cleanup_deletes_idem_keys() -> None:
 
 def test_redis_status_cancel_sticky_on_succeeded_mark() -> None:
     store = RedisStatusStore(_FakeRedis())  # type: ignore[arg-type]
-    handle, _created = store.submit("t", {})
-    assert store.request_cancel(handle.job_id) is True
+    handle, _created = store.submit("t", {}, auth_subject="alice")
+    assert store.request_cancel(handle.job_id, auth_subject="alice") is True
     store.mark(handle.job_id, JobState.RUNNING)
     status = store.mark(handle.job_id, JobState.SUCCEEDED)
     assert status is not None

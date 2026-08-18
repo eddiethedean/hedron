@@ -228,14 +228,14 @@ def test_rq_unknown_type_and_cross_worker_cancel() -> None:
         redis_client=_FakeRedis(),  # type: ignore[arg-type]
         task_registry={"demo": _task},
     )
-    handle = backend.submit("demo", {})
+    handle = backend.submit("demo", {}, auth_subject="alice")
     # Simulate another worker: local RQ job map empty; fetch via shared connection.
     backend._rq_jobs.clear()
     fetched = MagicMock()
     fake_job = MagicMock()
     fake_job.fetch.return_value = fetched
     with patch.dict("sys.modules", {"rq": MagicMock(), "rq.job": MagicMock(Job=fake_job)}):
-        assert backend.request_cancel(handle.job_id) is True
+        assert backend.request_cancel(handle.job_id, auth_subject="alice") is True
     fetched.cancel.assert_called_once()
     status = backend.get(handle.job_id)
     assert status is not None
