@@ -287,6 +287,7 @@ class McpProjection:
         )
 
     def read_resource(self, uri: str, *, principal: str | None) -> dict[str, Any]:
+        self.authorize(principal=principal, action="resources/read", resource=uri)
         self._assert_safe_uri(uri)
         if not self.enabled:
             raise KeyError(uri)
@@ -319,6 +320,7 @@ class McpProjection:
         *,
         principal: str | None,
     ) -> Any:
+        self.authorize(principal=principal, action="tools/call", resource=name)
         if not self.enabled:
             raise KeyError(name)
         tool = self._tools.get(name)
