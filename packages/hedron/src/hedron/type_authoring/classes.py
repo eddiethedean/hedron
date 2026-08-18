@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import inspect
-from collections.abc import Callable
+from collections.abc import Callable, Mapping, Sequence
 from typing import Any, Generic, TypeVar
 
+from hedron.type_authoring.markers import Refreshes, Updates
 from hedron.type_authoring.outcomes import OutcomeMap
 from hedron_core.codes import HED_TYPE_0008
 from hedron_core.component import NodeLike
@@ -53,6 +54,7 @@ class CommandHandler(Generic[InputT, ResultT]):
 
     outcomes: OutcomeMap[ResultT] | None = None
     fallback: str | None = None
+    effects: Refreshes | Updates | tuple[Refreshes | Updates, ...] | None = None
 
     def execute(self, *args: Any, **kwargs: Any) -> ResultT:
         raise error(
@@ -98,6 +100,9 @@ def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., An
         data = load(instance, *args, **kwargs)
         if inspect.isawaitable(data):
             data = await data
+        empty = getattr(view_cls, "empty", None)
+        if empty is not None and _is_empty_view_data(data):
+            return empty
         result = render(instance, data)
         if inspect.isawaitable(result):
             raise error(
@@ -166,6 +171,18 @@ def compile_command_class(cls: type[CommandHandler[Any, Any]]) -> Callable[..., 
         annotations["return"] = ret
     endpoint.__annotations__ = annotations
     return endpoint
+
+
+def _is_empty_view_data(data: object) -> bool:
+    if data is None:
+        return True
+    if isinstance(data, (str, bytes)):
+        return len(data) == 0
+    if isinstance(data, Mapping):
+        return len(data) == 0
+    if isinstance(data, Sequence) and not isinstance(data, (str, bytes)):
+        return len(data) == 0
+    return False
 
 
 def class_config_conflict(
