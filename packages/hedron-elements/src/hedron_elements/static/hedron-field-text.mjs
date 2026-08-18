@@ -15,9 +15,10 @@ class HedronFieldText extends HTMLElement {
   }
 
   connectedCallback() {
-    track(this);
+    const signal = track(this);
     this.#ensure();
     this.#sync();
+    this.#input.addEventListener("input", () => this.#publish(), { signal });
   }
 
   disconnectedCallback() {
@@ -39,10 +40,18 @@ class HedronFieldText extends HTMLElement {
 
   #sync() {
     const name = this.getAttribute("name") || "field";
-    this.#input.name = name;
+    if (this.#internals) {
+      this.#input.removeAttribute("name");
+    } else {
+      this.#input.name = name;
+    }
     this.#input.value = this.getAttribute("value") || "";
     this.#input.required = this.hasAttribute("required");
     this.#input.disabled = this.hasAttribute("disabled");
+    this.#publish();
+  }
+
+  #publish() {
     this.#internals?.setFormValue?.(this.#input.value);
   }
 }
