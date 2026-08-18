@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Annotated, Any, Generic, TypeVar, get_args, get_origin
@@ -126,6 +127,8 @@ def _names(types: Sequence[type[Any]]) -> list[str]:
 
 
 def _union_variants(annotation: object) -> tuple[type[Any], ...]:
+    if annotation is inspect.Parameter.empty:
+        return ()
     origin = get_origin(annotation)
     if origin is Annotated:
         args = get_args(annotation)
