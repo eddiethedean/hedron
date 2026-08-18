@@ -175,6 +175,8 @@ jobs:
     if: >
       needs.changes.outputs.docs_only != 'true' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
     strategy:
       fail-fast: false
       matrix:
@@ -191,11 +193,20 @@ jobs:
           cache-dependency-glob: uv.lock
       - name: Set up Python
         run: uv python install 3.12
-      - name: Install dependencies with browser extra
+      - name: Sync locked dependencies
+        run: uv sync --locked --python 3.12
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(uv run --python 3.12 python -c 'from importlib.metadata import version; print(version("playwright"))')" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browser
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}-${{ matrix.browser }}
+      - name: Install Playwright browser
         run: |
-          uv sync --locked --python 3.12 --group docs
-          uv pip install --python 3.12 "playwright>=1.40" "uvicorn[standard]>=0.30" "axe-playwright-python>=0.1.4"
-          uv run --python 3.12 playwright install --with-deps ${{ matrix.browser }}
+          uv run --python 3.12 playwright install-deps ${{ matrix.browser }}
+          uv run --python 3.12 playwright install ${{ matrix.browser }}
       - name: Run browser suite
         env:
           HEDRON_BROWSER: "1"

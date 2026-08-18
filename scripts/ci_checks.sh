@@ -484,6 +484,7 @@ cmd_browser() {
   export HEDRON_BROWSER="${HEDRON_BROWSER:-1}"
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
   # Keep Playwright serial: xdist contention on a shared browser install flakes.
+  # One driver/browser per engine is reused for the process (tests/browser/_playwright.py).
   run_uv pytest -q -m browser --tb=short -n 0
 }
 
