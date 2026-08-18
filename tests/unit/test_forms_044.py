@@ -113,3 +113,30 @@ def test_form_field_alias_is_the_posted_name() -> None:
     )
     assert posted.status_code == 200
     assert "hello" in posted.text
+
+
+def test_396_default_factory_list_is_optional() -> None:
+    from fastapi.testclient import TestClient
+
+    app = make_app()
+
+    class Payload(BaseModel):
+        tags: list[str] = Field(default_factory=list)
+        title: str = "x"
+
+    @app.command("/save", fallback="/")
+    def save(data: Annotated[Payload, FormBody()]):
+        return Text(f"{data.title}:{len(data.tags)}")
+
+    @app.page("/")
+    def home():
+        return Page(Text("h"), title="H")
+
+    client = TestClient(app)
+    posted = client.post(
+        save.path,
+        data={"title": "hello"},
+        headers=csrf_headers(client),
+    )
+    assert posted.status_code == 200
+    assert "hello:0" in posted.text

@@ -22,7 +22,7 @@ from typing import (
 from uuid import UUID
 
 from pydantic import BaseModel, SecretStr
-from pydantic.fields import FieldInfo
+from pydantic.fields import FieldInfo, PydanticUndefined
 
 from hedron.type_authoring.adapter import PydanticBindingAdapter
 from hedron.type_authoring.markers import FormBody, Refreshes, Updates, ViewParams
@@ -510,7 +510,10 @@ def _walk_model(
                 remediation="Remove the field or provide an explicit full-form override.",
             )
         required = info.is_required()
-        default = info.default if info.default is not None else inspect.Parameter.empty
+        if not required and info.default is not PydanticUndefined:
+            default = info.default
+        else:
+            default = inspect.Parameter.empty
         kind = getattr(control, "kind", None) if control is not None else None
         records.append(
             FieldRecord(
