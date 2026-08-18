@@ -80,3 +80,17 @@ def test_field_file_ssr_and_contract() -> None:
     meta = get_registry().get_element_definition("hedron-field-file")
     assert meta is not None
     assert meta.form_contract == FIELD_FILE_CONTRACT
+
+
+def test_399_form_associated_scripts_drop_inner_name() -> None:
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2] / "packages/hedron-elements/src/hedron_elements/static"
+    text = (root / "hedron-field-text.mjs").read_text(encoding="utf-8")
+    choice = (root / "hedron-field-choice.mjs").read_text(encoding="utf-8")
+    files = (root / "hedron-field-file.mjs").read_text(encoding="utf-8")
+    assert 'removeAttribute("name")' in text
+    assert 'removeAttribute("name")' in choice
+    assert 'removeAttribute("name")' in files
+    assert "new FormData()" in files
+    assert "setFormValue?.(input.files)" not in files
