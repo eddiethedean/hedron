@@ -190,6 +190,7 @@ async function enhance(el, plan, gen, signal) {
   host.style.minHeight = "240px";
   const view = plan.view || {};
   const center = view.center || [0, 0];
+  const zoom = Number(view.zoom);
   const style = plan.style && Object.keys(plan.style.sources || {}).length ? plan.style : {
     version: 8,
     sources: {},
@@ -200,7 +201,7 @@ async function enhance(el, plan, gen, signal) {
       container: host,
       style,
       center: [Number(center[1]) || 0, Number(center[0]) || 0],
-      zoom: Number(view.zoom) || 2,
+      zoom: Number.isFinite(zoom) ? zoom : 2,
       interactive: !reducedMotion(),
       attributionControl: true,
       fadeDuration: reducedMotion() ? 0 : 300,
