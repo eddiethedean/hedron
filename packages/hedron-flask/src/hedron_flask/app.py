@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import secrets
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import replace
 from typing import Any, ParamSpec, TypeVar, cast
@@ -63,6 +64,7 @@ class HedronFlask:
         self._auto_csrf_cookie = auto_csrf_cookie
         self.security_policy = SecurityPolicy.from_name(security)
         self._sync_csrf_cookie_name()
+        self.hedron_app_id = secrets.token_hex(8)
         self.flask: Flask | None = None
         self.url_reverser: FlaskUrlReverser | None = None
         if import_name is not None:
@@ -246,7 +248,7 @@ class HedronFlask:
         from hedron_core.updates import compile_to_interaction
 
         try:
-            compiled = compile_to_interaction(value)
+            compiled = compile_to_interaction(value, expected_app_id=self.hedron_app_id)
         except HedronError as exc:
             code = getattr(exc.diagnostic, "code", "")
             status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
@@ -305,7 +307,7 @@ class HedronFlask:
         from hedron_core.updates import compile_to_interaction
 
         try:
-            compiled = compile_to_interaction(value)
+            compiled = compile_to_interaction(value, expected_app_id=self.hedron_app_id)
         except HedronError as exc:
             code = getattr(exc.diagnostic, "code", "")
             status = 403 if str(code).startswith("HED-UPDATE-0003") else 400

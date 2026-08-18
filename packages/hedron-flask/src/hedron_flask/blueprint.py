@@ -69,9 +69,10 @@ def convert_view_result(
         return value
     from hedron_core.diagnostics import HedronError
     from hedron_core.updates import compile_to_interaction
+    from hedron_flask.identity import expected_hedron_app_id
 
     try:
-        value = compile_to_interaction(value)
+        value = compile_to_interaction(value, expected_app_id=expected_hedron_app_id())
     except HedronError as exc:
         code = getattr(exc.diagnostic, "code", "")
         status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
