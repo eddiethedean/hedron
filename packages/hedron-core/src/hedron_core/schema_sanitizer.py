@@ -248,13 +248,33 @@ def _strip_sensitive_defs(schema: JsonObject, sensitive: tuple[str, ...]) -> Jso
             if parent == def_name or parent.lower() == def_name.lower() or parent in props:
                 remove.update(fields)
         if remove:
-            new_defs[def_name] = {
+            new_def = {
                 **def_schema,
                 "properties": {key: value for key, value in props.items() if key not in remove},
             }
+            new_defs[def_name] = _drop_named_fields(new_def, remove)
         else:
             new_defs[def_name] = def_schema
     return {**schema, "$defs": new_defs}
+
+
+def _drop_named_fields(schema: JsonObject, fields: set[str] | tuple[str, ...]) -> JsonObject:
+    """Remove field names from properties and required without leaving orphans."""
+    blocked = set(fields)
+    properties = schema.get("properties")
+    result = dict(schema)
+    if isinstance(properties, dict):
+        result["properties"] = {
+            key: value for key, value in properties.items() if key not in blocked
+        }
+    required = schema.get("required")
+    if isinstance(required, list):
+        filtered = [item for item in required if item not in blocked]
+        if filtered:
+            result["required"] = filtered
+        else:
+            result.pop("required", None)
+    return result
 
 
 def projections_from_model(
@@ -285,10 +305,8 @@ def projections_from_model(
     input_proj = dict(sanitized)
     output_proj = dict(sanitized)
     if isinstance(properties, dict) and write_only:
-        out_props = {key: value for key, value in properties.items() if key not in write_only}
-        output_proj = {**sanitized, "properties": out_props}
+        output_proj = _drop_named_fields(output_proj, write_only)
     if isinstance(properties, dict) and read_only:
-        in_props = {key: value for key, value in properties.items() if key not in read_only}
-        input_proj = {**sanitized, "properties": in_props}
+        input_proj = _drop_named_fields(input_proj, read_only)
     output_proj = _strip_sensitive_defs(output_proj, sensitive)
     return input_proj, output_proj, shared, write_only, read_only
