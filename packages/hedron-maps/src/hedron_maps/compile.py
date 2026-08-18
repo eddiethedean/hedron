@@ -613,6 +613,79 @@ def _basemap_facts(
     )
 
 
+def _apply_overlay_style(
+    style: dict[str, Any], compiled_layers: Sequence[Mapping[str, Any]]
+) -> None:
+    """Fold compiled overlay layers into the MapLibre style the host mounts."""
+    sources = style.setdefault("sources", {})
+    layers = style.setdefault("layers", [])
+    if not isinstance(sources, dict) or not isinstance(layers, list):
+        return
+    for index, layer in enumerate(compiled_layers):
+        kind = str(layer.get("kind") or "")
+        source_id = f"overlay-{index}"
+        if kind == "marker":
+            features: list[dict[str, Any]] = []
+            for marker in layer.get("markers") or ():
+                if not isinstance(marker, Mapping):
+                    continue
+                features.append(
+                    {
+                        "type": "Feature",
+                        "id": marker.get("id"),
+                        "properties": {
+                            "id": marker.get("id"),
+                            "name": marker.get("label"),
+                            "label": marker.get("label"),
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [marker.get("lon"), marker.get("lat")],
+                        },
+                    }
+                )
+            sources[source_id] = {
+                "type": "geojson",
+                "data": {"type": "FeatureCollection", "features": features},
+            }
+            layers.append({"id": source_id, "type": "circle", "source": source_id})
+        elif kind in {"geojson", "line", "polygon", "circle"}:
+            data = layer.get("data") or {"type": "FeatureCollection", "features": []}
+            sources[source_id] = {"type": "geojson", "data": data}
+            paint = layer.get("paint") if isinstance(layer.get("paint"), Mapping) else None
+            if kind == "geojson":
+                layers.append(
+                    {
+                        "id": f"{source_id}-fill",
+                        "type": "fill",
+                        "source": source_id,
+                        "filter": ["==", ["geometry-type"], "Polygon"],
+                    }
+                )
+                layers.append({"id": f"{source_id}-line", "type": "line", "source": source_id})
+                layers.append(
+                    {
+                        "id": f"{source_id}-circle",
+                        "type": "circle",
+                        "source": source_id,
+                        "filter": ["==", ["geometry-type"], "Point"],
+                    }
+                )
+            else:
+                layer_type = {"line": "line", "polygon": "fill", "circle": "circle"}[kind]
+                entry: dict[str, Any] = {
+                    "id": source_id,
+                    "type": layer_type,
+                    "source": source_id,
+                }
+                if paint:
+                    entry["paint"] = dict(paint)
+                layers.append(entry)
+        elif kind == "raster":
+            raster_source = str(layer.get("source") or "basemap")
+            layers.append({"id": source_id, "type": "raster", "source": raster_source})
+
+
 def _fallback_rows(spec: MapSpec, layers: Sequence[dict[str, Any]]) -> tuple[dict[str, Any], ...]:
     rows: list[dict[str, Any]] = []
     for layer in spec.layers:
@@ -760,6 +833,8 @@ def compile_map(
                     }
                 )
             marker["markers"] = sanitized
+
+    _apply_overlay_style(style, compiled_layers)
 
     renderer = {
         "engine": "maplibre",
