@@ -33,9 +33,7 @@ class ActionAsync(Component[ActionAsyncProps]):
         **kwargs: object,
     ) -> None:
         url = (
-            None
-            if hx_post is None
-            else SafeUrl.parse(str(hx_post), purpose=UrlPurpose.FORM_ACTION)
+            None if hx_post is None else SafeUrl.parse(str(hx_post), purpose=UrlPurpose.FORM_ACTION)
         )
         super().__init__(ActionAsyncProps(label=label, hx_post=url, **kwargs))
 
