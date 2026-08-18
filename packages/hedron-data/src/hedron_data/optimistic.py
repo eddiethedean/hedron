@@ -11,6 +11,7 @@ from enum import StrEnum
 from typing import Literal
 from uuid import uuid4
 
+from hedron_core.security import contains_dangerous_scheme
 from hedron_core.typing_aliases import JsonValue
 
 __all__ = [
@@ -123,7 +124,7 @@ class OptimisticMutation:
             if patch.field.startswith("__") or patch.field in {"constructor", "prototype"}:
                 raise ValueError(f"forbidden patch field {patch.field!r}")
             if isinstance(patch.value, str) and (
-                "<" in patch.value or "javascript:" in patch.value.lower()
+                "<" in patch.value or contains_dangerous_scheme(patch.value)
             ):
                 raise ValueError("Optimistic patches cannot contain HTML or executable URLs")
 
