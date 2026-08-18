@@ -31,7 +31,7 @@ pages. Charts and the sample kit require the compatible
 **Support window:** security fixes target the current published train (`0.49.x`). The
 previous `0.48.x` train receives best-effort security triage through approximately
 **2027-08-17**. Git tag / PyPI for `v0.49.0` are **deferred**; install from PyPI is
-still **`0.47.0`**.
+still **`0.48.0`**.
 There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).
 Community GitHub support only;
 [Ship a Hedron app](ship.md) for ops.

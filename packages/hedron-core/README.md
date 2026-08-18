@@ -13,16 +13,16 @@ package if you are writing a host adapter or rendering components outside a web
 framework.
 
 **Published in-tree `v0.49.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron-core>=0.49.0,<0.50`. The latest on **PyPI** is **`0.47.0`**.
+In-tree pin `hedron-core>=0.49.0,<0.50`. The latest on **PyPI** is **`0.48.0`**.
 
 **Package maturity:** Beta · pin `>=0.49.0,<0.50`.
 
 ## Install
 
 ```bash
-pip install "hedron-core>=0.47.0,<0.48"
+pip install "hedron-core>=0.48.0,<0.49"
 # or
-uv add "hedron-core>=0.47.0,<0.48"
+uv add "hedron-core>=0.48.0,<0.49"
 ```
 
 Requires Python 3.11–3.14.

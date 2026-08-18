@@ -1,7 +1,7 @@
 # Compatibility policy
 
 **Status:** Accepted for the **0.49.x** train (**Published**; in-tree tip
-`v0.49.0`; Git tag / PyPI deferred, PyPI still `0.47.0`)
+`v0.49.0`; Git tag / PyPI deferred, PyPI still `0.48.0`)
 **Reviewed:** 2026-08-17
 
 ## Current train (read this first)

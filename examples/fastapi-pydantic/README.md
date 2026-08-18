@@ -2,7 +2,7 @@
 
 First-party FastAPI demo for **phase 0.49** lifetimes, native/expanded binding, and
 non-granting scopes. Existing `ViewParams` / `FormBody` keep working. PyPI still
-serves Hedron `0.47.0`; this example is for the in-tree `v0.49.0` tip.
+serves Hedron `0.48.0`; this example is for the in-tree `v0.49.0` tip.
 
 ## Run
 

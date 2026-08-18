@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.49.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- TypeSchema sanitizer allowlists JSON Schema keywords and fail-closes unknown keys
+  and ``json_schema_extra`` secrets (#384).
+
 
 ## [0.48.0] — 2026-08-17
 

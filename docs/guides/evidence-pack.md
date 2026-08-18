@@ -6,15 +6,23 @@ also attaches a checksum manifest and refuses to create the GitHub Release until
 exact PyPI artifact passes the documented scaffold smoke. PyPI remains authoritative
 for installable package versions.
 
+## 0.48.0 assets
+
+- [GitHub Release v0.48.0](https://github.com/eddiethedean/hedron/releases/tag/v0.48.0)
+- [Hedron 0.48.0 on PyPI](https://pypi.org/project/hedron/0.48.0/)
+- [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
+
+Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
+evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
+expected asset is missing.
+
 ## 0.47.0 assets
 
 - [GitHub Release v0.47.0](https://github.com/eddiethedean/hedron/releases/tag/v0.47.0)
 - [Hedron 0.47.0 on PyPI](https://pypi.org/project/hedron/0.47.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
-evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
-expected asset is missing.
+Historical train assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.46.0 assets
 
@@ -22,7 +30,7 @@ expected asset is missing.
 - [Hedron 0.46.0 on PyPI](https://pypi.org/project/hedron/0.46.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical train assets; prefer **0.47.0** above for the latest uploaded train.
+Historical train assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.45.0 assets
 
@@ -30,7 +38,7 @@ Historical train assets; prefer **0.47.0** above for the latest uploaded train.
 - [Hedron 0.45.0 on PyPI](https://pypi.org/project/hedron/0.45.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical train assets; prefer **0.47.0** above for the latest uploaded train.
+Historical train assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.44.0 assets
 
@@ -38,7 +46,7 @@ Historical train assets; prefer **0.47.0** above for the latest uploaded train.
 - [Hedron 0.44.0 on PyPI](https://pypi.org/project/hedron/0.44.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical train assets; prefer **0.47.0** above for the latest uploaded train.
+Historical train assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.43.0 assets
 
@@ -46,7 +54,7 @@ Historical train assets; prefer **0.47.0** above for the latest uploaded train.
 - [Hedron 0.43.0 on PyPI](https://pypi.org/project/hedron/0.43.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical train assets; prefer **0.47.0** above for the latest uploaded train.
+Historical train assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.42.0 assets
 
@@ -54,7 +62,7 @@ Historical train assets; prefer **0.47.0** above for the latest uploaded train.
 - [Hedron 0.42.0 on PyPI](https://pypi.org/project/hedron/0.42.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical train assets; prefer **0.47.0** above for the latest uploaded train.
+Historical train assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.41.0 assets
 
@@ -62,7 +70,7 @@ Historical train assets; prefer **0.47.0** above for the latest uploaded train.
 - [Hedron 0.41.0 on PyPI](https://pypi.org/project/hedron/0.41.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical train assets; prefer **0.47.0** above for the latest uploaded train.
+Historical train assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.40.0 assets
 
@@ -74,7 +82,7 @@ Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / licen
 evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
 expected asset is missing.
 
-Historical train assets; prefer **0.47.0** above for the latest uploaded train.
+Historical train assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.39.0 assets
 
@@ -118,7 +126,7 @@ expected asset is missing.
 - [Hedron 0.30.0 on PyPI](https://pypi.org/project/hedron/0.30.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical train assets; prefer **0.47.0** above for the latest uploaded train.
+Historical train assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.28.2 assets
 
@@ -126,7 +134,7 @@ Historical train assets; prefer **0.47.0** above for the latest uploaded train.
 - [Hedron 0.28.2 on PyPI](https://pypi.org/project/hedron/0.28.2/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical 0.28 tip assets; prefer **0.47.0** above for the latest uploaded train.
+Historical 0.28 tip assets; prefer **0.48.0** above for the latest uploaded train.
 
 ## 0.26.0 assets
 
@@ -147,7 +155,7 @@ For 0.26.1 or later, download `release-manifest.json`, the assets you need, and 
 verification script from the same tag. Replace `VERSION` below, then run:
 
 ```bash
-VERSION=0.47.0
+VERSION=0.48.0
 curl -fsSLO "https://github.com/eddiethedean/hedron/releases/download/v${VERSION}/release-manifest.json"
 curl -fsSLO "https://raw.githubusercontent.com/eddiethedean/hedron/v${VERSION}/scripts/verify_release_manifest.py"
 # Download the wheel, sdist, and/or evidence assets you intend to verify.
@@ -171,10 +179,10 @@ the artifacts actually published by the release workflow.
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
-git checkout v0.47.0
+git checkout v0.48.0
 uv sync --locked
-uv run python scripts/build_evidence_bundle.py --version 0.47.0
-uv run python scripts/verify_pkg_47.py
+uv run python scripts/build_evidence_bundle.py --version 0.48.0
+uv run python scripts/verify_pkg_48.py
 ```
 
 | Artifact | Generator |
@@ -184,4 +192,4 @@ uv run python scripts/verify_pkg_47.py
 | Asset audit | `scripts/asset_audit.py` |
 | Evidence bundle | `scripts/build_evidence_bundle.py` |
 | Gate checker | `scripts/check_release_gate.py` |
-| Packet verify | `scripts/verify_pkg_46.py` |
+| Packet verify | `scripts/verify_pkg_48.py` |

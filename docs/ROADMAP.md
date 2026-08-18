@@ -98,7 +98,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 
 ### Honest gaps on the current train (0.49.x)
 
-- Current **published** train is **0.49.x** (in-tree `v0.49.0`; tag/PyPI deferred; PyPI still `0.47.0`)
+- Current **published** train is **0.49.x** (in-tree `v0.49.0`; tag/PyPI deferred; PyPI still `0.48.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`

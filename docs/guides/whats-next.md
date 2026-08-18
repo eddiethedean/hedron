@@ -5,7 +5,7 @@ ledger (gate IDs, RFCs) lives on GitHub:
 [`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 Capability maturity for *this* train: [What’s ready](whats-ready.md).
 
-**Published in-tree `v0.49.0`.** Pin `hedron>=0.49.0,<0.50`. Tag/PyPI deferred; PyPI still `0.47.0`.
+**Published in-tree `v0.49.0`.** Pin `hedron>=0.49.0,<0.50`. Tag/PyPI deferred; PyPI still `0.48.0`.
 
 ## Planned after 0.49
 

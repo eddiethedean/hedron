@@ -14,13 +14,13 @@ Routes return typed UI; HTMX swaps HTML fragments. No Node frontend.
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
 **Published in-tree `v0.49.0`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.49.0,<0.50`. The latest on **PyPI** is **`0.47.0`**.
+In-tree pin `hedron>=0.49.0,<0.50`. The latest on **PyPI** is **`0.48.0`**.
 
 ```bash
 # Need uv? macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
 # Windows (PowerShell): irm https://astral.sh/uv/install.ps1 | iex
 
-uvx --from "hedron>=0.47.0,<0.48" hedron new my-hedron-app
+uvx --from "hedron>=0.48.0,<0.49" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
@@ -30,7 +30,7 @@ fragment into the declared region).
 
 ![Hello from hedron new with Refresh status control](docs/assets/hello-refresh.jpg)
 
-Registry pin until upload: `hedron>=0.47.0,<0.48`. Full walkthrough:
+Registry pin until upload: `hedron>=0.48.0,<0.49`. Full walkthrough:
 [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/).
 
 Alternate (pip + venv):
@@ -38,7 +38,7 @@ Alternate (pip + venv):
 ```bash
 # macOS / Linux
 python3 -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron>=0.47.0,<0.48" "uvicorn[standard]"
+python -m pip install "hedron>=0.48.0,<0.49" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 ```
@@ -47,7 +47,7 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 # Windows (PowerShell)
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install "hedron>=0.47.0,<0.48" "uvicorn[standard]"
+python -m pip install "hedron>=0.48.0,<0.49" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app
 python -m pip install -e .
@@ -84,7 +84,7 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new in 0.48](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.48/) ·
+[What’s new in 0.49](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.49/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).

@@ -8,6 +8,14 @@
 ### Changed
 - Coordinated train tip `0.49.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- Query-only native-model ``ViewParams`` keep compiled ``Query()`` markers through
+  endpoint wrapping so GET does not 422 as a JSON body (#381).
+- Page and nested-router registration after OpenAPI cache or registry seal fail
+  closed instead of serving stale schema or live routes (#382).
+- Required ``FormBody`` commands reject non-form Content-Types with HTTP 415
+  ``HED-TYPE-0003`` before FastAPI bind (#383).
+
 
 ## [0.48.0] — 2026-08-17
 

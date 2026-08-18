@@ -1,10 +1,10 @@
 # What's new in 0.48
 
-**Published in-tree `v0.48.0`** (in-tree cut; tag/PyPI deferred). Owning decisions: D-080 / D-083.
+**Published `v0.48.0`** (Git tag, GitHub Release, and PyPI). Owning decisions: D-080 / D-083.
 Tracking: [#373](https://github.com/eddiethedean/hedron/issues/373).
 
-PyPI still serves **`hedron` `0.47.0`**. First-run installs should pin `hedron>=0.47.0,<0.48`
-from the registry until a later upload; in-tree pins are `hedron>=0.48.0,<0.49`.
+PyPI serves **`hedron` `0.48.0`**. First-run installs until the 0.49 upload should pin
+`hedron>=0.48.0,<0.49`; the living in-tree tip is `hedron>=0.49.0,<0.50`.
 
 ## Highlights
 
@@ -23,4 +23,4 @@ from the registry until a later upload; in-tree pins are `hedron>=0.48.0,<0.49`.
 - Head-support admits only local `AssetRef` hrefs, HTML-escapes them, and rejects
   quote/breakout/`..` values. Fragment inject rejects invented `<script>` tags (#374).
 
-This cut does not tag Git, publish a GitHub Release, or upload PyPI.
+Git tag `v0.48.0`, GitHub Release, and PyPI `hedron` `0.48.0`.
