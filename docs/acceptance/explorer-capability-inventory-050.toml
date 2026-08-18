@@ -1,0 +1,50 @@
+# Phase 0.50 Explorer capability and disposition inventory.
+# Stage 0 planning artifact (D-085). Planned until tracking issue and scripts are accepted.
+
+schema_version = 1
+phase = "0.50"
+status = "Planned"
+planning_baseline = "v0.49.1"
+required_predecessor = "v0.49.1"
+target = "v0.50.0"
+decision = "D-085"
+owning_rfc = "RFC-0077"
+implementation = "docs/implementation/EXPLORER_050.md"
+public_contract = "docs/api/EXPLORER_API.md"
+upgrade_fixtures = "docs/acceptance/upgrade-fixtures-050.md"
+trackable_issue_set = "5_explorer_enhancements"
+
+[[capability]]
+id = "EXP-BE-001..005"
+area = "explorer-architecture"
+gate = "ARCH-050"
+state = "Planned"
+adopt = ["service-boundaries", "router-thinning", "golden-route-map", "no-regression" ]
+
+[[capability]]
+id = "EXP-PROVIDER-001..005"
+area = "explorer-provider-protocol"
+gate = "PROVIDER-050"
+state = "Planned"
+adopt = ["provider-v1", "timeout", "ordering", "redaction", "payload-bounds"]
+
+[[capability]]
+id = "EXP-QUERY-001..004"
+area = "query-usability"
+gate = "QUERY-050"
+state = "Planned"
+adopt = ["search", "filter", "pagination", "truncation-diagnostics"]
+
+[[capability]]
+id = "EXP-DIFF-001..004"
+area = "baseline-diffing"
+gate = "DIFF-050"
+state = "Planned"
+adopt = ["catalog-diff", "manifest-fingerprint", "route-diff", "schema-fingerprint"]
+
+[[capability]]
+id = "EXP-LAB-001..003"
+area = "interaction-lab"
+gate = "LAB-050"
+state = "Planned"
+adopt = ["safe-preview", "redacted-scenario-export", "no-auth-invention"]

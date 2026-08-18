@@ -1,0 +1,157 @@
+# Phase 0.50 Explorer architecture release evidence index.
+# Planned phase; all rows transition to Verified as implementation gates complete.
+
+schema_version = 1
+phase = "0.50"
+status = "Planned"
+planning_baseline = "v0.49.1"
+required_predecessor = "v0.49.1"
+target = "v0.50.0"
+decision = "D-085"
+contract_refine = "D-085"
+owning_rfc = "RFC-0077"
+tracking = "#TODO-ENH-050"
+
+[[evidence]]
+id = "ARCH-050"
+state = "Planned"
+command = "python scripts/check_architecture_050.py"
+ci_job = "test"
+owner = "hedron-explorer"
+summary = "Service boundaries and thin router contract with deterministic golden route mapping."
+
+[[evidence]]
+id = "PROVIDER-050"
+state = "Planned"
+command = "python scripts/check_provider_050.py"
+ci_job = "test"
+owner = "hedron-explorer"
+summary = "ExplorerProvider v1 protocol with timeout, ordering, redaction, and payload limits."
+
+[[evidence]]
+id = "CONSUME-050"
+state = "Planned"
+command = "python scripts/check_consume_050.py"
+ci_job = "test"
+owner = "hedron"
+summary = "Consumes 0.45–0.49 catalog, handle-graph, TypeSchema v2, and HTMX extension facts without drift."
+
+[[evidence]]
+id = "QUERY-050"
+state = "Planned"
+command = "python scripts/check_query_050.py"
+ci_job = "test"
+owner = "hedron-explorer"
+summary = "Search/filter/pagination behavior and truncation diagnostics for large registries."
+
+[[evidence]]
+id = "DIFF-050"
+state = "Planned"
+command = "python scripts/check_diff_050.py"
+ci_job = "test"
+owner = "hedron-explorer"
+summary = "Catalog/manifest/route/schema diff determinism and baseline comparison output parity."
+
+[[evidence]]
+id = "LAB-050"
+state = "Planned"
+command = "python scripts/check_lab_050.py"
+ci_job = "test"
+owner = "hedron-explorer"
+summary = "Safe interaction lab preview operations and redacted output export behavior."
+
+[[evidence]]
+id = "HEADLESS-050"
+state = "Planned"
+command = "python scripts/check_headless_050.py"
+ci_job = "test"
+owner = "hedron-explorer"
+summary = "CLI/HTML/JSON diagnostic identity and redaction parity."
+
+[[evidence]]
+id = "ECOSYSTEM-050"
+state = "Planned"
+command = "python scripts/check_ecosystem_050.py"
+ci_job = "test"
+owner = "hedron"
+summary = "First-party projections and one third-party provider remain labeled and non-authoritative."
+
+[[evidence]]
+id = "SECURITY-050"
+state = "Planned"
+command = "python scripts/check_security_050.py"
+ci_job = "browser"
+owner = "hedron"
+summary = "Threat-model and production-opt-in guardrails for simulation, exports, and secrets."
+
+[[evidence]]
+id = "PRIVACY-050"
+state = "Planned"
+command = "python scripts/check_privacy_050.py"
+ci_job = "test"
+owner = "hedron"
+summary = "Redaction and bounded artifact rules enforced for headless and exported diagnostics."
+
+[[evidence]]
+id = "A11Y-050"
+state = "Planned"
+command = "python scripts/check_a11y_050.py"
+ci_job = "browser"
+owner = "hedron"
+summary = "Keyboard/focus/no-JS/contrast/motion checks for all Supported Explorer workflows."
+
+[[evidence]]
+id = "BROWSER-050"
+state = "Planned"
+command = "python scripts/check_browser_050.py"
+ci_job = "browser"
+owner = "hedron"
+summary = "Chromium, Firefox, and WebKit journeys for mount/filter/filter-failure/provider-failure paths."
+
+[[evidence]]
+id = "PERF-050"
+state = "Planned"
+command = "python scripts/check_perf_050.py"
+ci_job = "test"
+owner = "hedron"
+summary = "Startup/first-render/query/memory budgets with small/medium/large fixtures."
+
+[[evidence]]
+id = "RESILIENCE-050"
+state = "Planned"
+command = "python scripts/check_resilience_050.py"
+ci_job = "test"
+owner = "hedron-explorer"
+summary = "Cancellation/backpressure, crash isolation, and repeated-navigation leak checks."
+
+[[evidence]]
+id = "DOCS-050"
+state = "Planned"
+command = "python scripts/check_docs_050.py"
+ci_job = "quality"
+owner = "hedron"
+summary = "Provider author guide, migration notes, upgrade matrix, and operating docs."
+
+[[evidence]]
+id = "COMPAT-050"
+state = "Planned"
+command = "python scripts/check_compat_050.py"
+ci_job = "test"
+owner = "hedron"
+summary = "Upgrade and coexistence evidence for 0.49 consumers; no implied authority changes."
+
+[[evidence]]
+id = "PKG-050"
+state = "Planned"
+command = "python scripts/check_pkg_050.py"
+ci_job = "quality"
+owner = "hedron-explorer"
+summary = "Clean wheel, dependency isolation, package footprint, and package-owned regression closure."
+
+[[evidence]]
+id = "REGRESS-050"
+state = "Planned"
+command = "python scripts/check_regress_050.py"
+ci_job = "test"
+owner = "hedron"
+summary = "Phase 0.50 regression and gate bundle integrity for Explorer and dependent packages."
