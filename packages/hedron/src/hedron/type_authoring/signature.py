@@ -78,9 +78,14 @@ def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) ->
     raw: dict[str, Any] = {}
     for field in compiled.fields:
         if field.http_name in kwargs:
-            raw[field.name] = kwargs.pop(field.http_name)
+            value = kwargs.pop(field.http_name)
         elif field.name in kwargs:
-            raw[field.name] = kwargs.pop(field.name)
+            value = kwargs.pop(field.name)
+        else:
+            continue
+        if value is None and not field.required:
+            continue
+        raw[field.name] = value
     kwargs[compiled.param_name] = compiled.adapter.validate(raw)
     return kwargs
 
