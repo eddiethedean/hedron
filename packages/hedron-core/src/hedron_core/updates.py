@@ -8,6 +8,7 @@ import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Generic, Literal, Protocol, TypeVar, cast, runtime_checkable
+from urllib.parse import quote
 
 from hedron_core.codes import (
     HED_UPDATE_0001,
@@ -432,7 +433,16 @@ def structural_bind(plan: BindingPlan, values: Mapping[str, object], *, path: st
                 remediation="Pass printable scalar values only.",
             )
         if name in plan.path_params:
-            path_values[name] = text
+            if not text or any(ch in text for ch in "/?#") or ".." in text:
+                raise error(
+                    HED_VIEW_0004,
+                    title="Unsafe bind path value",
+                    explanation=(
+                        f"Parameter {name!r} cannot contain empty, '/', '?', '#', or '..' values."
+                    ),
+                    remediation="Pass a single path segment without reserved URL characters.",
+                )
+            path_values[name] = quote(text, safe="")
         else:
             encoded[name] = text
     rendered = path
