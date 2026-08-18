@@ -81,7 +81,7 @@
     return copy;
   }
 
-  const CSRF_COOKIE = "hedron_csrf";
+  const CSRF_COOKIE_NAMES = ["hedron_csrf", "csrftoken"];
 
   function readCookie(name, cookieSource) {
     const raw =
@@ -108,8 +108,8 @@
 
   /**
    * CSRF token for JSON fetch saves under Hedron double-submit (#216).
-   * Prefer meta[name=csrf-token] when present; otherwise read the non-HttpOnly
-   * hedron_csrf cookie that PAGE responses already seed.
+   * Prefer meta[name=csrf-token] when present; otherwise read a non-HttpOnly
+   * cookie (hedron_csrf on FastAPI/Flask, csrftoken on Django).
    */
   function readCsrfToken(doc, cookieSource) {
     const root = doc || (typeof document !== "undefined" ? document : null);
@@ -119,7 +119,11 @@
         meta && typeof meta.getAttribute === "function" ? meta.getAttribute("content") || "" : "";
       if (fromMeta) return fromMeta;
     }
-    return readCookie(CSRF_COOKIE, cookieSource);
+    for (let i = 0; i < CSRF_COOKIE_NAMES.length; i++) {
+      const fromCookie = readCookie(CSRF_COOKIE_NAMES[i], cookieSource);
+      if (fromCookie) return fromCookie;
+    }
+    return "";
   }
 
   /** Snapshot live queues before fetch so success can drop only that batch. */
