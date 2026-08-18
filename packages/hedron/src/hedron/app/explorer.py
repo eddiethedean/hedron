@@ -93,6 +93,12 @@ def _maybe_mount_explorer(
         prefix="/hedron-explorer",
         dependencies=deps or None,
     )
+    try:
+        from hedron_explorer.services.diff import snapshot_diff_baseline
+
+        snapshot_diff_baseline(app)
+    except ImportError:
+        logger.debug("hedron-explorer diff snapshot unavailable")
 
 
 def install_explorer_bridges(app: FastAPI) -> None:

@@ -82,7 +82,8 @@ Helpers: `action_attrs`, `oob_swap` — see [Interaction](INTERACTION.md).
 [Charts API](CHART.md) · [`Metric`](../components/metric.md) ·
 [`FileUpload`](../components/file-upload.md) ·
 [`DownloadButton`](../components/download-button.md) ·
-[`Progress`](../components/progress.md) · [`Toast`](../components/toast.md) ·
+[`Progress`](../components/progress.md) · [`Toast`](../components/toast.md)
+(danger dismiss) ·
 [`ToastHost`](../components/toast-host.md) ·
 [`ColorModeToggle`](../components/color-mode-toggle.md)
 

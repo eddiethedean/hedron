@@ -6,7 +6,7 @@ import functools
 import inspect
 import json
 from collections.abc import Callable, Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Generic, Literal, TypeVar, cast, overload
 from urllib.parse import urlencode
 
@@ -67,6 +67,8 @@ __all__ = [
 _ADAPTER = StructuralBindingAdapter()
 _REQUEST_NAMES = frozenset({"request", "websocket"})
 _UNSET = object()
+_DISPATCH_EFFECTS: dict[str, object] = {}
+_DISPATCH_AFTER_LOAD: dict[str, str] = {}
 
 
 def _is_injected(parameter: inspect.Parameter) -> bool:
@@ -556,8 +558,8 @@ class ActionHandle(Generic[InputT, ResultT]):
 
     def effect(self, intent: RefreshIntent | InteractionResult) -> ActionHandle[InputT, ResultT]:
         """Compile success as refresh+toast / InteractionResult (hx-swap none)."""
-        self._effect = intent
-        return self
+        _DISPATCH_EFFECTS[self.logical_id] = intent
+        return replace(self, _effect=intent)
 
     def after(
         self,
@@ -567,10 +569,14 @@ class ActionHandle(Generic[InputT, ResultT]):
         delay_ms: int | None = None,
     ) -> ActionHandle[InputT, ResultT]:
         """Compile delayed/filtered hx-trigger or after-swap load (no setTimeout/click)."""
-        self._after_load = load
-        self._after_when = when
-        self._after_delay_ms = delay_ms
-        return self
+        if load:
+            _DISPATCH_AFTER_LOAD[self.logical_id] = load
+        return replace(
+            self,
+            _after_load=load if load is not None else self._after_load,
+            _after_when=when if when is not None else self._after_when,
+            _after_delay_ms=delay_ms if delay_ms is not None else self._after_delay_ms,
+        )
 
     @property
     def bound(self) -> bool:
@@ -591,7 +597,7 @@ class ActionHandle(Generic[InputT, ResultT]):
     def button(self, label: str, **kwargs: object) -> NodeLike:
         extra = dict(kwargs)
         fallback = str(extra.pop("fallback", None) or self.fallback or "")
-        default_swap = "none" if self._effect is not None else "none"
+        default_swap = "none" if self._effect is not None else "innerHTML"
         swap = str(extra.pop("hx-swap", extra.pop("hx_swap", default_swap)))
         trigger = _compile_after_trigger("click", self._after_when, self._after_delay_ms)
         if trigger and "hx-trigger" not in extra and "hx_trigger" not in extra:
@@ -657,6 +663,82 @@ class Refresh:
 
     def __hedron_node__(self) -> NodeLike:
         return self.render()
+
+
+def apply_action_handle_effects(
+    result: object,
+    handle: ActionHandle[Any, Any],
+    *,
+    app_id: str,
+) -> object:
+    """Merge ``effect()`` / ``after(load=)`` into the command result."""
+    from hedron_core.updates import compile_to_interaction
+
+    effect = (
+        handle._effect if handle._effect is not None else _DISPATCH_EFFECTS.get(handle.logical_id)
+    )
+    after_load = handle._after_load or _DISPATCH_AFTER_LOAD.get(handle.logical_id)
+    if effect is None and not after_load:
+        return result
+    compiled: object = result
+    if effect is not None:
+        effect_ir = compile_to_interaction(effect, expected_app_id=app_id)
+        if isinstance(compiled, (RefreshIntent, PatchSet, Patch)):
+            compiled = compile_to_interaction(compiled, expected_app_id=app_id)
+        if isinstance(effect_ir, InteractionResult):
+            if isinstance(compiled, InteractionResult):
+                compiled = InteractionResult(
+                    content=compiled.content if compiled.content is not None else effect_ir.content,
+                    status_code=compiled.status_code,
+                    target=compiled.target or effect_ir.target,
+                    swap=compiled.swap or effect_ir.swap or "none",
+                    oob=compiled.oob + effect_ir.oob,
+                    trigger=compiled.trigger or effect_ir.trigger,
+                    trigger_after_swap=compiled.trigger_after_swap or effect_ir.trigger_after_swap,
+                    trigger_after_settle=compiled.trigger_after_settle
+                    or effect_ir.trigger_after_settle,
+                    push_url=(
+                        compiled.push_url if compiled.push_url is not None else effect_ir.push_url
+                    ),
+                    replace_url=compiled.replace_url
+                    if compiled.replace_url is not None
+                    else effect_ir.replace_url,
+                    redirect=compiled.redirect or effect_ir.redirect,
+                    refresh=compiled.refresh or effect_ir.refresh,
+                    retarget=compiled.retarget or effect_ir.retarget,
+                    reswap=compiled.reswap or effect_ir.reswap,
+                    reselect=compiled.reselect or effect_ir.reselect,
+                    location=compiled.location or effect_ir.location,
+                    history=compiled.history,
+                    cache=compiled.cache if compiled.cache is not None else effect_ir.cache,
+                    policy=compiled.policy or effect_ir.policy,
+                    headers=dict(compiled.headers) or dict(effect_ir.headers),
+                    explanation=compiled.explanation or effect_ir.explanation,
+                )
+            else:
+                compiled = InteractionResult(
+                    content=cast(NodeLike | None, compiled),
+                    oob=effect_ir.oob,
+                    trigger=effect_ir.trigger,
+                    swap="none",
+                    cache=effect_ir.cache,
+                    policy=effect_ir.policy,
+                )
+    if after_load:
+        if isinstance(compiled, (RefreshIntent, PatchSet, Patch)):
+            compiled = compile_to_interaction(compiled, expected_app_id=app_id)
+        if isinstance(compiled, InteractionResult):
+            compiled = replace(
+                compiled,
+                trigger_after_swap=compiled.trigger_after_swap or after_load,
+            )
+        else:
+            compiled = InteractionResult(
+                content=cast(NodeLike | None, compiled),
+                swap="none",
+                trigger_after_swap=after_load,
+            )
+    return compiled
 
 
 def refresh(*targets: FragmentHandle[Any, Any] | BoundFragment[Any]) -> RefreshIntent:

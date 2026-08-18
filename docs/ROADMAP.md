@@ -100,9 +100,9 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   visualization, element, remote, and workbench workflows that compile to the same stack. None of
   these programs is a blanket feature promotion or a scheduled `1.0`.
 
-### Honest gaps on the current train (0.49.x)
+### Honest gaps on the current train (0.50.x)
 
-- Current **published** train is **0.49.x** (in-tree `v0.49.1`; tag/PyPI deferred; PyPI still `0.48.0`)
+- Current **published** train is **0.50.x** (`v0.50.0`; [#501](https://github.com/eddiethedean/hedron/issues/501) stays open for tag/PyPI only)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -4225,7 +4225,7 @@ Shipped 0.49.1 seams to consume (do not fork): `explorer_router` (~1,366 lines),
 `ExplorerMode` / `resolve_explorer_mode` / `mount_explorer_if_enabled` /
 `install_explorer_bridges`, `ExplorerPanelMeta` / `register_explorer_panel`,
 `explorer_guards` (120/60s), CSRF `hedron_csrf` / `X-CSRF-Token` / `X-Hedron-CSRF`,
-CLI `inspect`/`graph`/`check` (no `hedron_explorer` import today),
+CLI `inspect`/`graph`/`check` (shared explorer services when installed),
 `diagnostics_to_sarif`. Flask/Django hard-set `explorer_mode="off"`.
 
 Layer rules:
@@ -4260,6 +4260,9 @@ flowchart LR
 | **M5** | Headless operator outputs | Unify CLI `inspect`/`graph`/`check` on shared services when Explorer is installed; JSON export; reuse `diagnostics_to_sarif`; baseline diff for catalog/manifest/routes/OpenAPI fingerprints |
 | **M6** | Interaction laboratory (bounded) | Construct inputs from TypeSchema v2; execute only declared safe preview operations; export redacted `AppScenario` snippets — no invented auth |
 | **M7** | Evidence and docs | Package-owned tests; Chromium/Firefox/WebKit journeys; a11y keyboard/no-JS; security corpus; perf fixtures (small/medium/large registry apps); author/operator docs |
+
+M1–M7 are **Verified** on the in-tree `v0.50.0` cut. [#501](https://github.com/eddiethedean/hedron/issues/501)
+stays open for tag/PyPI only.
 
 ### Scope
 

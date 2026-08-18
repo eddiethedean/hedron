@@ -3,11 +3,17 @@
 ## [0.50.0] — 2026-08-18
 
 ### Changed
-- Coordinated train tip `0.50.0` (in-tree cut; tag/PyPI deferred).
+- Coordinated train tip `0.50.0`.
 
 ### Added
 - Explorer architecture services/views split, ExplorerProvider v1, query pagination,
   diffs, headless CLI parity, bounded lab, and HTMX authoring primitives (#496–#500, #502, #503).
+
+### Fixed
+- Query/CLI surfaces no longer silent-slice; truncation emits ``HED-EXPLORER-0001``.
+- Graph JSON includes ``browser_module`` edges; ``find_component`` matches exact ``logical_id``.
+- ``element-simulate`` requires CSRF; junk simulate ``status`` is 400; falsey CSRF validators 403.
+- Diff snapshots a real catalog baseline; ``/packages`` runs providers in isolation.
 
 ## [0.49.1] — 2026-08-18
 

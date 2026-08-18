@@ -112,6 +112,8 @@ presentation only and cannot weaken Pydantic or `Field` validation. `secret=True
 `Sensitive` disposition; `identity=True` implies `InstanceKey`; contradictions fail
 registration. `AutoForm`, explicit `Form(action=handle, ...)`, and `@app.action` stay the
 universal path. `ActionHandle.form()` is additive and only for opted-in `FormBody`.
+0.50 `ActionHandle.effect` / `.after` compile command success to OOB refresh+toast and
+`HX-Trigger-After-Swap` — [Interaction API](INTERACTION.md).
 
 Registration must fail when:
 

@@ -315,7 +315,17 @@ class Toast(Component[ToastProps]):
         }
         if self.props.ttl_ms is not None:
             attrs["data-hedron-ttl"] = str(self.props.ttl_ms)
-        return html.div(self.props.message, **attrs)
+        children: list[NodeLike] = [self.props.message]
+        if self.props.tone == "danger" and self.props.ttl_ms is None:
+            children.append(
+                html.button(
+                    "Dismiss",
+                    type="button",
+                    class_="hedron-toast-dismiss",
+                    data={"hedron-toast-dismiss": "true"},
+                )
+            )
+        return html.div(*children, **attrs)
 
 
 class ToastHost(Component[Props]):

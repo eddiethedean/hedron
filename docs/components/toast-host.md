@@ -32,7 +32,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-ToastHost mounts the reserved `#hedron-toast` live region. Queue and TTL live in `hedron-ui.mjs`; authors do not write `hx-on` listeners.
+ToastHost mounts the reserved `#hedron-toast` live region. Queue, TTL, and danger dismiss live in both `hedron-ui.mjs` copies (`hedron-core` static and `hedron/static`); authors do not write `hx-on` listeners.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 

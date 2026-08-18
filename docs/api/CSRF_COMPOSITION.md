@@ -130,6 +130,7 @@ Built-in FastAPI / Flask / Django hosts map that exception to HTTP **403**.
 | `CsrfField()` without token and without page `RenderContext.csrf_token` | `ValueError` at render time |
 | `security_headers=False` / `"app"` | Hedron skips applying profile headers — host owns them |
 | Strategy `get_expected` returns no match | Validation fails closed (`CsrfValidationError` / 403) |
+| Explorer `POST /api/simulate` or `/api/element-simulate` without CSRF | HTTP **403** (LAB-050; falsey non-raising validators also 403) |
 
 Exception type: [Public exceptions](EXCEPTIONS.md). Human index:
 [Error codes](../guides/error-codes.md). First-hour form:

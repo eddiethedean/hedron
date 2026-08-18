@@ -43,6 +43,11 @@ def register(ctx: PluginContext) -> None:
         distribution="hedron-sample-kit",
     )
     ctx.register_explorer_panel(panel_id="sample-kit-callout", title="Sample Callout")
+    ctx.register_explorer_provider(
+        panel_id="sample-kit-callout",
+        title="Sample Callout",
+        description="Isolated 0.50 panel",
+    )
     ctx.on_startup(lambda: None)
     ctx.on_shutdown(lambda: None)
 
@@ -124,7 +129,21 @@ Guide: [Plugin authoring — custom elements](../guides/plugin-authoring.md#5-cu
 | `panel_id` | `str` | required | Unique panel id |
 | `title` | `str` | required | Panel title |
 | `description` | `str` | `""` | Short description |
-| `path` | `str` | `""` | Optional panel path |
+| `path` | `str` | `""` | Optional panel path; does **not** add Explorer nav |
+
+### `register_explorer_provider` (0.50)
+
+Additive `ExplorerProvider` beside `ExplorerPanelMeta`. Explorer runs the panel on
+`/packages` inside `run_isolated` (`HED-EXPLORER-0002` / `0003`).
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `panel_id` | `str` | required | Unique panel id |
+| `title` | `str` | required | Panel title |
+| `description` | `str` | `""` | Short description |
+| `path` | `str` | `""` | Optional panel path (no nav) |
+| `timeout_ms` | `int` | `250` | Isolation timeout |
+| `max_payload_bytes` | `int` | `65536` | Payload ceiling |
 
 ### Lifecycle
 

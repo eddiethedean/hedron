@@ -142,7 +142,7 @@ This component can initiate or represent a backend interaction. The live documen
 ## Constructor and parameters
 
 ```python
-Hx(*, target=None, swap='outerHTML', select=None, indicator=None, ...)
+Hx(*, target=None, swap='outerHTML', select=None, indicator=None, trigger=None, include=None, validate=None, ...)
 ```
 
 | Parameter | Type | Meaning |
@@ -151,6 +151,10 @@ Hx(*, target=None, swap='outerHTML', select=None, indicator=None, ...)
 | `swap` | `str` | hx-swap value (must pass safe_hx_swap). |
 | `select` | `str | None` | hx-select selector. |
 | `indicator` | `str | None` | hx-indicator selector. |
+| `trigger` | `str | None` | `hx-trigger`. |
+| `include` | `str | None` | `hx-include`. |
+| `validate` | `str | None` | `"native"` compiles `hx-validate="true"`. |
+| `vals` / `headers` | `str | None` | JSON only; `js:` expressions are rejected. |
 
 ## Composition and backend behavior
 

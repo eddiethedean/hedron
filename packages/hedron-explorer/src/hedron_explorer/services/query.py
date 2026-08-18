@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import html as html_lib
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Generic, TypeVar
+from urllib.parse import urlencode
 
 from fastapi import Request
 
@@ -86,14 +88,34 @@ def search_filter(items: Sequence[T], query: str | None, key: Callable[[T], str]
     return [item for item in items if needle in str(key(item)).lower()]
 
 
-def truncation_banner(page: Page[T], *, noun: str) -> str:
+def _page_href(request: Request, *, cursor: int) -> str:
+    params = [(key, value) for key, value in request.query_params.multi_items() if key != "offset"]
+    filtered = [(key, value) for key, value in params if key != "cursor"]
+    if cursor:
+        filtered.append(("cursor", str(cursor)))
+    qs = urlencode(filtered)
+    path = str(request.url.path)
+    return f"{path}?{qs}" if qs else path
+
+
+def truncation_banner(page: Page[T], *, noun: str, request: Request | None = None) -> str:
     if not page.truncated and page.total <= page.limit:
         return ""
     nxt = f" cursor={page.next_cursor}" if page.next_cursor else ""
     code = page.diagnostic or HED_EXPLORER_0001
+    links: list[str] = []
+    if request is not None:
+        if page.offset > 0:
+            prev = max(0, page.offset - page.limit)
+            href = html_lib.escape(_page_href(request, cursor=prev), quote=True)
+            links.append(f"<a rel='prev' href='{href}'>Previous</a>")
+        if page.next_cursor is not None:
+            href = html_lib.escape(_page_href(request, cursor=int(page.next_cursor)), quote=True)
+            links.append(f"<a rel='next' href='{href}'>Next</a>")
+    nav = f" {' '.join(links)}" if links else ""
     return (
         f"<p role='status'><code>{code}</code> Showing {len(page.items)} of {page.total} {noun}"
-        f" (limit={page.limit}{nxt}). Use cursor pagination; tables are not unbounded.</p>"
+        f" (limit={page.limit}{nxt}). Use cursor pagination; tables are not unbounded.{nav}</p>"
     )
 
 
@@ -109,9 +131,11 @@ def envelope(page: Page[T]) -> dict[str, object]:
     }
 
 
-def wants_envelope(request: Request | None) -> bool:
+def wants_envelope(request: Request | None, page: Page[T] | None = None) -> bool:
     if request is None:
         return False
+    if page is not None and (page.truncated or page.total > page.limit or page.diagnostic):
+        return True
     return request.query_params.get("envelope") in {"1", "true", "yes"} or (
         request.query_params.get("cursor") is not None
         or request.query_params.get("limit") is not None

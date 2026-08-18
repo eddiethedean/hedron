@@ -5,9 +5,11 @@ details remain in the [package changelogs](changelog.md).
 
 ## 0.50.0 — 2026-08-18
 
-In-tree Explorer architecture and HTMX authoring cut. **PyPI still serves `hedron`
-0.48.0** until the deferred upload — [Installation](../getting-started/installation.md).
+Explorer architecture and HTMX authoring cut. Pin `hedron>=0.50.0,<0.51`.
+Public-index notes: [Installation](../getting-started/installation.md).
 
+- Command `effect` / `after`, history restore, Lazy error templates, dependent Select, and danger toast dismiss compile as documented.
+- Explorer query/CLI envelopes replace silent caps; lab CSRF, diff baseline, and isolated `/packages` providers.
 - Thin `explorer_router` plus services/views; frozen `/hedron-explorer/` mount.
 - Additive `ExplorerProvider` v1 beside `ExplorerPanelMeta`.
 - Cursor pagination and truncation diagnostics (`HED-EXPLORER-0001`).

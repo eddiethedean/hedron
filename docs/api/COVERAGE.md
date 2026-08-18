@@ -106,8 +106,9 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 [BUILT_INS.md](BUILT_INS.md). FastAPI-only builtins also under Autodoc:
 `AutoForm`, `ErrorState`, `InfiniteScroll`, `Loading`, `Pagination`, `ChatInput`,
 `DownloadButton`, `FileUpload`, `safe_download_response`, plus layout helpers such as
-`Page`, `Stack`, `Grid`, `Form`, `TextInput`, `RefreshButton`, `Poll`, `Lazy`,
-`Metric`, `Toast`, `ToastHost` (covered in sections above / component pages).
+`Page`, `Stack`, `Grid`, `Form`, `TextInput`, `RefreshButton`, `Poll`, `Lazy`
+(error template outside `#…-body`), `Metric`, `Toast` (danger dismiss), `ToastHost`
+(covered in sections above / component pages).
 
 | Export | Primary docs |
 |---|---|

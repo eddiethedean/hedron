@@ -1,10 +1,18 @@
-# Upgrade to Hedron 0.49
+# Upgrade to Hedron 0.50
 
-This guide covers an application upgrade onto the **0.49.x** train
-(in-tree **`v0.50.0`**; Git tag and PyPI remain deferred — PyPI still serves `0.48.0`).
+This guide covers an application upgrade onto the **0.50.x** train
+(**`v0.50.0`**). Public-index notes: [Installation](../getting-started/installation.md).
 New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
+
+Hedron 0.50.x ships Explorer architecture and companion HTMX authoring on top of the
+0.49 FastAPI/Pydantic convergence:
+
+- Thin `explorer_router`, `ExplorerProvider` isolation, cursor pagination, catalog diffs, and CLI/HTML/JSON agreement when `hedron-explorer` is installed
+- Production still force-offs `explorer="development"` after `RISK_EXPLORER_DEVELOPMENT` (accept the risk, Explorer still does not mount)
+- `ActionHandle.effect` / `after(load=)`, `Lazy` error templates, `Select.depends_on`, and danger `Toast` dismiss compile to HTMX
+- 0.49 handle, TypeSchema, and catalog contracts remain:
 
 Hedron 0.49.x compiles existing handle, TypeSchema, and catalog plans onto FastAPI:
 
@@ -45,7 +53,7 @@ preload remain experimental.
 
 1. Commit or back up your lockfile.
 2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.50.0,<0.51`,
-   or the tip pin already). Registry installs remain `>=0.48.0,<0.49` until the deferred upload.
+   or the tip pin already). Public-index notes: [Installation](../getting-started/installation.md).
 3. Existing 0.42–0.46 handlers and unused `include_feature` keep working.
 4. Adopt maps only via `hedron[maps]` / `from hedron_maps import …`.
 5. If you use editable grids or charts, keep `hedron[data]` / `hedron[charts]` on the
@@ -65,7 +73,7 @@ python -m pip install -U "hedron-charts>=0.2.0,<0.3"
 python -m pip install -U "hedron[elements]>=0.50.0,<0.51"
 ```
 
-From PyPI today, pin `hedron>=0.48.0,<0.49` until the 0.49 upload.
+Public-index notes: [Installation](../getting-started/installation.md).
 
 ## Behavioral notes (0.46 → 0.47)
 

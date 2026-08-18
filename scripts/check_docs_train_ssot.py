@@ -187,7 +187,8 @@ def _normalized_version(value: str) -> str:
 
 CANONICAL_INSTALL_PAGE = Path("docs/getting-started/installation.md")
 
-# Pages whose pip/uv/uvx lines must use the PyPI pin while the upload is deferred.
+# Pages whose pip/uv/uvx lines must use the current published train pin.
+# PyPI-lag honesty lives on REGISTRY_HONESTY_PATHS, not on these pages.
 FIRST_RUN_INSTALL_PATHS = frozenset(
     {
         Path("README.md"),
@@ -277,9 +278,9 @@ def _line_describes_pypi_latest(line: str) -> bool:
 def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[str]:
     allowed = {facts.pin}
     if facts.registry_deferred and facts.pypi_pin != facts.pin:
-        allowed.add(facts.pypi_pin)
         if path is not None and path in FIRST_RUN_INSTALL_PATHS:
-            return {facts.pypi_pin}
+            return {facts.pin}
+        allowed.add(facts.pypi_pin)
     return allowed
 
 
@@ -485,9 +486,6 @@ def check_evaluate_version(
         facts.published_version,
         facts.pypi_version,
         facts.pypi_train_line,
-        facts.previous_train,
-        f"{facts.previous_train}.x",
-        facts.previous_version,
     }
     failures: list[str] = []
     for index, line in enumerate(text.splitlines(), start=1):

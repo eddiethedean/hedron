@@ -78,7 +78,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-Toast emits a polite status region with a tone class and optional TTL. Pair with ToastHost at frozen `#hedron-toast`. Danger toasts stay until dismissed unless ttl_ms is set.
+Toast emits a polite status region with a tone class and optional TTL. Pair with ToastHost at frozen `#hedron-toast`. Danger toasts stay until dismissed unless `ttl_ms` is set; they render a Dismiss control (`data-hedron-toast-dismiss`) handled by `hedron-ui.mjs`.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 

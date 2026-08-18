@@ -2,9 +2,7 @@
 
 **Published `v0.47.0`** (Git tag, GitHub Release, and PyPI). Owning decisions: D-078 / D-082.
 Tracking: [#350](https://github.com/eddiethedean/hedron/issues/350).
-
-PyPI serves **`hedron` `0.47.0`**. First-run installs until the 0.49 upload should pin
-`hedron>=0.48.0,<0.49`; the living in-tree tip is `hedron>=0.50.0,<0.51`.
+For new apps, use `hedron>=0.50.0,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
 
 ## Highlights
 

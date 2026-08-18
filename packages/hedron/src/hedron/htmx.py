@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from starlette.requests import Request
 
+from hedron_core.htmx.policy import InteractionPolicy
 from hedron_core.htmx_contract import (
     APPROVED_REQUEST_HEADERS,
     APPROVED_RESPONSE_HEADERS,
@@ -37,12 +38,24 @@ def htmx_context(request: Request) -> HtmxContext:
     return htmx_context_from_headers(dict(request.headers))
 
 
-def render_mode_for_request(request: Request, *, force: RenderMode | None = None) -> RenderMode:
+def render_mode_for_request(
+    request: Request,
+    *,
+    force: RenderMode | None = None,
+    policy: InteractionPolicy | None = None,
+) -> RenderMode:
     if force is not None:
         return force
     ctx = htmx_context(request)
-    if ctx.history_restore or ctx.boosted:
+    if policy is None:
+        policy = getattr(getattr(request.app, "state", None), "hedron_interaction_policy", None)
+    if ctx.boosted:
         return RenderMode.PAGE
+    if ctx.history_restore:
+        restore = getattr(policy, "history_restore", None) or "page"
+        if restore == "page":
+            return RenderMode.PAGE
+        return RenderMode.FRAGMENT
     return RenderMode.FRAGMENT if ctx.is_htmx else RenderMode.PAGE
 
 

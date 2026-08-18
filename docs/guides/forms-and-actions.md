@@ -6,7 +6,8 @@ validation fragment or a success update—without a client-side SPA.
 If you have not yet shipped a classic POST, start with
 [Minimal form POST](minimal-form.md). Decide between `@action` and `@component` POST in
 [Mutations](mutations.md). For GET-only fragment refresh, see
-[HTMX interactions](htmx-interactions.md).
+[HTMX interactions](htmx-interactions.md). Command success refresh+toast compiles through
+`ActionHandle.effect` — [Interaction API](../api/INTERACTION.md).
 
 ## What you will build
 

@@ -8,26 +8,30 @@ from typing import cast
 
 from fastapi import HTTPException, Request
 
-from hedron_core.plugins import get_explorer_panels
+from hedron_core.plugins import ExplorerProvider
 from hedron_core.registry import get_registry
 from hedron_core.typing_aliases import JsonObject
 from hedron_explorer.services.catalog import (
     a11y_contracts,
     app_catalog,
     find_component,
+    graph_json,
     page_components,
+    page_interactions,
     page_routes,
 )
+from hedron_explorer.services.diff import explorer_diff_report, format_diff_html
 from hedron_explorer.services.fs import hdj_text_under_root, project_component_roots
 from hedron_explorer.services.health import package_health
+from hedron_explorer.services.provider import providers_or_defaults, run_isolated
 from hedron_explorer.services.query import (
     CACHE_LIMIT,
+    Page,
     paginate,
     parse_cursor,
     parse_limit,
     truncation_banner,
 )
-from hedron_explorer.services.runtime import redact
 from hedron_explorer.views.shell import (
     component_detail_body,
     component_href,
@@ -48,7 +52,7 @@ async def index(request: Request) -> str:
     )
     body = f"""
     <h2>Components</h2>
-    {truncation_banner(page, noun="components")}
+    {truncation_banner(page, noun="components", request=request)}
     <form method="get" action="">
       <label>Search <input type="search" name="q"
         value="{html_lib.escape(request.query_params.get("q") or "")}"></label>
@@ -73,7 +77,7 @@ async def routes_view(request: Request) -> str:
     )
     body = f"""
     <h2>Routes</h2>
-    {truncation_banner(page, noun="routes")}
+    {truncation_banner(page, noun="routes", request=request)}
     <form method="get" action="">
       <label>Search <input type="search" name="q"
         value="{html_lib.escape(request.query_params.get("q") or "")}"></label>
@@ -99,17 +103,31 @@ async def component_detail(name: str, request: Request) -> str:
 
 
 async def graph_view(request: Request) -> str:
-    edges = []
-    for c in get_registry().components():
-        if c.styles_path:
-            edges.append(f"{c.name} → CSS")
-        for m in c.browser_modules:
-            edges.append(f"{c.name} → {redact(m)}")
-    items = "".join(f"<li>{html_lib.escape(e)}</li>" for e in edges)
+    payload = graph_json(request)
+    next_cursor = payload.get("next_cursor")
+    diagnostic = payload.get("diagnostic")
+    graph_page = Page(
+        items=list(payload["nodes"]),
+        total=int(payload["total"]),
+        limit=int(payload["limit"]),
+        offset=int(payload["offset"]),
+        next_cursor=next_cursor if isinstance(next_cursor, str) else None,
+        truncated=bool(payload["truncated"]),
+        diagnostic=diagnostic if isinstance(diagnostic, str) else None,
+    )
+    items = "".join(
+        f"<li>{html_lib.escape(str(edge.get('from')))} → "
+        f"{html_lib.escape(str(edge.get('kind')))} "
+        f"{html_lib.escape(str(edge.get('to')))}</li>"
+        for edge in payload.get("edges") or []
+        if isinstance(edge, dict)
+    )
     return shell(
         "Graph",
         (
-            f"<h2>Component graph</h2><ul>{items or '<li>No edges</li>'}</ul>"
+            f"<h2>Component graph</h2>"
+            f"{truncation_banner(graph_page, noun='graph nodes', request=request)}"
+            f"<ul>{items or '<li>No edges</li>'}</ul>"
             f"<h2>View / command graph</h2>{handle_graph_html(request)}"
         ),
         request=request,
@@ -203,7 +221,7 @@ async def a11y_view(request: Request) -> str:
     mode_items = "".join(f"<li>{html_lib.escape(m)}</li>" for m in modes)
     body = f"""
         <h2>Accessibility review workspace</h2>
-        {truncation_banner(page, noun="contracts")}
+        {truncation_banner(page, noun="contracts", request=request)}
     <p>Findings distinguish automatic, semi-automatic, and manual status.
     Empty scans never summarize as accessible
     (status: <code>{html_lib.escape(str(summary["status"]))}</code>).</p>
@@ -249,9 +267,19 @@ async def a11y_view(request: Request) -> str:
 
 
 async def cache_view(request: Request) -> str:
-    from hedron_core.cache import CacheTrace
+    from hedron_core.cache import get_cache_traces
 
-    events = CacheTrace.recent(CACHE_LIMIT)
+    events = [
+        {
+            "kind": event.kind,
+            "key_fingerprint": event.key_fingerprint,
+            "scope": event.scope,
+            "age_ms": event.age_ms,
+            "size": event.size,
+            "detail": event.detail or "",
+        }
+        for event in reversed(get_cache_traces())
+    ]
     cache_page = paginate(
         events,
         offset=parse_cursor(request),
@@ -271,7 +299,7 @@ async def cache_view(request: Request) -> str:
     )
     body = f"""
     <h2>Cache traces</h2>
-    {truncation_banner(cache_page, noun="cache events")}
+    {truncation_banner(cache_page, noun="cache events", request=request)}
     <p>Key fingerprints only — secret values are never shown.</p>
     <table>
       <thead><tr><th>Kind</th><th>Key</th><th>Scope</th><th>Age ms</th>
@@ -478,19 +506,39 @@ async def auto_view(request: Request) -> str:
     return shell("Auto", body, request=request, active="auto")
 
 
+def _provider_panel_body(provider: ExplorerProvider) -> str:
+    render = getattr(provider, "render", None)
+    if callable(render):
+        return str(render())
+    return f"{provider.title} ({provider.plugin}): {provider.description}"
+
+
 async def packages_view(request: Request) -> str:
-    panels = get_explorer_panels()
-    items = "".join(
-        f"<li><strong>{html_lib.escape(p.title)}</strong> "
-        f"({html_lib.escape(p.plugin)}): {html_lib.escape(p.description)}</li>"
-        for p in panels
+    items: list[str] = []
+    for provider in providers_or_defaults():
+        isolated = run_isolated(provider, lambda current=provider: _provider_panel_body(current))
+        if isolated.get("ok"):
+            items.append(f"<li>{html_lib.escape(str(isolated.get('result')))}</li>")
+            continue
+        diagnostic = html_lib.escape(str(isolated.get("diagnostic") or ""))
+        error = html_lib.escape(str(isolated.get("error") or "isolated"))
+        title = html_lib.escape(provider.title)
+        items.append(f"<li role='status'><code>{diagnostic}</code> {title} ({error})</li>")
+    health_provider = ExplorerProvider(
+        panel_id="package-health",
+        title="Package health",
+        plugin="hedron-explorer",
     )
-    health = package_health()
-    health_pre = html_lib.escape(str(health))
+    health_isolated = run_isolated(health_provider, package_health)
+    if health_isolated.get("ok"):
+        health_pre = html_lib.escape(str(health_isolated.get("result")))
+    else:
+        health_pre = html_lib.escape(str(health_isolated))
     return shell(
         "Packages",
         (
-            f"<h2>Packages / plugin panels</h2><ul>{items or '<li>No plugin panels</li>'}</ul>"
+            f"<h2>Packages / plugin panels</h2>"
+            f"<ul>{''.join(items) or '<li>No plugin panels</li>'}</ul>"
             f"<h2>Package health (read-only)</h2>"
             "<p>Not <code>hedron package doctor</code> (0.53). Entry points, version skew, "
             "and duplicate registrations only.</p>"
@@ -629,6 +677,7 @@ async def inventory_view(request: Request) -> str:
 async def settings_view(request: Request) -> str:
     theme = getattr(request.app.state, "hedron_theme", None)
     production = getattr(request.app.state, "hedron_production", None)
+    diff_html = format_diff_html(explorer_diff_report(request.app))
     body = f"""
     <h2>Settings</h2>
     <dl>
@@ -636,14 +685,17 @@ async def settings_view(request: Request) -> str:
       <dt>Production</dt><dd>{html_lib.escape(str(production))}</dd>
       <dt>Allow mutations</dt><dd>false (default)</dd>
     </dl>
+    <h2>Catalog diff</h2>
+    {diff_html}
     """
     return shell("Settings", body, request=request, active="settings")
 
 
 async def interactions_view(request: Request) -> str:
     catalog = app_catalog(request.app)
+    page = page_interactions(request, catalog)
     rows = []
-    for entry in catalog.entries.values():
+    for entry in page.items:
         ident = html_lib.escape(entry.logical_id)
         kind = html_lib.escape(entry.kind)
         effect = html_lib.escape(entry.effect_state)
@@ -666,6 +718,7 @@ async def interactions_view(request: Request) -> str:
     <p>Fingerprint <code>{html_lib.escape(catalog.fingerprint)}</code>
     sealed={catalog.sealed}</p>
     <h3>Entries</h3>
+    {truncation_banner(page, noun="interactions", request=request)}
     <table>
       <thead><tr><th>Logical id</th><th>Kind</th><th>Effect</th>
       <th>Descriptor</th><th>TypeSchema</th><th>Projections</th></tr></thead>

@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.50 **Published** as in-tree `v0.50.0` (2026-08-18; tag/PyPI deferred). Phase 0.49 FastAPI/Pydantic convergence remains Published in-tree `v0.49.1`.
+**Roadmap position:** phase 0.50 **Published** as `v0.50.0` (2026-08-18). Phase 0.49 FastAPI/Pydantic convergence remains Published as `v0.49.1`.
 Living tip = `v0.50.0`.
 **Date:** 2026-08-18
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -409,14 +409,17 @@ Phase **0.49** FastAPI/Pydantic convergence is **Published** as in-tree `v0.49.1
 (tag/PyPI deferred; D-081 / D-084 / RFC-0076; `release-gate-0.49.toml` Verified;
 tracking [#380](https://github.com/eddiethedean/hedron/issues/380); see
 [implementation requirements](docs/implementation/FASTAPI_PYDANTIC_CONVERGENCE_049.md) and
-[acceptance packet](docs/acceptance/RELEASE_0_49.md)). Living tip is **`v0.49.1`**.
-Phase **0.50** Explorer architecture is **Planned** Stage 0 (D-085 / D-086 / RFC-0077;
-`release-gate-0.50.toml` Planned; tracking [#501](https://github.com/eddiethedean/hedron/issues/501);
+[acceptance packet](docs/acceptance/RELEASE_0_49.md)).
+Phase **0.50** Explorer architecture is **Published** as in-tree `v0.50.0`
+(D-085 / D-086 / RFC-0077; `release-gate-0.50.toml` Verified; living tip **`v0.50.0`**;
+tracking [#501](https://github.com/eddiethedean/hedron/issues/501) stays open for tag/PyPI only;
 related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
 [#502](https://github.com/eddiethedean/hedron/issues/502) /
-[#503](https://github.com/eddiethedean/hedron/issues/503);
+[#503](https://github.com/eddiethedean/hedron/issues/503) closed on this cut;
 see [implementation requirements](docs/implementation/EXPLORER_050.md) and
-[acceptance packet](docs/acceptance/RELEASE_0_50.md)). No 0.50 runtime or version claim.
+[acceptance packet](docs/acceptance/RELEASE_0_50.md)).
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.
+[#373](https://github.com/eddiethedean/hedron/issues/373) and
+[#350](https://github.com/eddiethedean/hedron/issues/350) remain open for 0.48 / 0.47 publish assets.

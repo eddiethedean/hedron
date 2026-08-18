@@ -41,6 +41,31 @@ def test_simulate_keys_and_mutations_403() -> None:
         body = ok.json()
         assert "scenario" in body
         assert body["scenario"].get("redacted") is True or "route" in body["scenario"]
+        bad_status = client.post(
+            "/hedron-explorer/api/simulate",
+            json={"route": "home", "status": "nope"},
+            headers=headers,
+        )
+        assert bad_status.status_code == 400
+        no_csrf = client.post("/hedron-explorer/api/element-simulate", json={"logical_id": "x"})
+        assert no_csrf.status_code == 403
+
+
+def test_require_csrf_falsey_validator_is_403() -> None:
+    app = make_app(security="standard", explorer="development")
+
+    @app.page("/")
+    def home():
+        return Page(Text("hi"), title="T")
+
+    app.state.hedron_csrf_validate = lambda _request, _policy: False
+    with TestClient(app) as client:
+        denied = client.post(
+            "/hedron-explorer/api/simulate",
+            json={"route": "home"},
+            headers=csrf_headers(client),
+        )
+        assert denied.status_code == 403
 
 
 def test_package_health_is_not_doctor() -> None:

@@ -353,6 +353,8 @@ CSRF stays framework-injected (`X-CSRF-Token` + cookie `hedron_csrf`). Native HT
 `hx-swap="none"` when success is refresh+toast / `InteractionResult`.
 `handle.after(load=..., when=..., delay_ms=...)` compiles to `hx-trigger` delay/filter
 or `data-hedron-after-load` for `HX-Trigger-After-Swap` — not `setTimeout` / `click()`.
+`effect()` / `after()` return copies (`dataclasses.replace`); command success applies
+the registered effect as OOB refresh+toast / `InteractionResult`.
 
 ### Dependent `Select` / `Control(depends_on=)`
 
@@ -361,11 +363,14 @@ synthesizes options at `Control.source`.
 
 ### `Lazy` / `FragmentHost(error=ErrorState(...))`
 
-Authors do not write `hx-on`. `hedron-ui.mjs` listens for `htmx:responseError` /
-`htmx:sendError` and swaps the `data-hedron-error-template`.
+Authors do not write `hx-on`. Both `hedron-ui.mjs` copies (`hedron-core` static and
+`hedron/static`, kept byte-identical) listen for `htmx:responseError` /
+`htmx:sendError` and swap the `data-hedron-error-template` kept outside the inner
+`#…-body` Lazy swap target.
 
 ### `Toast(..., ttl_ms=)` / `ToastHost()`
 
-Frozen `#hedron-toast` OOB sink. Queue and TTL live in `hedron-ui.mjs`. Danger toasts
+Frozen `#hedron-toast` OOB sink. Queue, TTL, and danger dismiss live in both
+`hedron-ui.mjs` copies. Danger toasts
 keep no TTL unless an author sets one.
 

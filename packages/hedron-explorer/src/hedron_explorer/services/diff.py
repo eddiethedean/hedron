@@ -90,3 +90,58 @@ def diff_baselines(
                 "after": new,
             }
     return {"authority": "explorer-diff-050", "changes": changes}
+
+
+_STATE_ATTR = "hedron_diff_baseline"
+
+
+def snapshot_diff_baseline(holder: object | None = None) -> dict[str, Any]:
+    """Persist the current fingerprint baseline on ``app.state`` (or a holder)."""
+    baseline = current_baseline()
+    state = getattr(holder, "state", None)
+    if state is not None:
+        setattr(state, _STATE_ATTR, baseline)
+    return baseline
+
+
+def stored_baseline(holder: object | None = None) -> dict[str, Any]:
+    state = getattr(holder, "state", None)
+    existing = getattr(state, _STATE_ATTR, None) if state is not None else None
+    if isinstance(existing, dict):
+        return existing
+    return snapshot_diff_baseline(holder)
+
+
+def explorer_diff_report(holder: object | None = None) -> dict[str, Any]:
+    """Compare the snapshotted baseline against the live fingerprints."""
+    return diff_baselines(stored_baseline(holder), current_baseline())
+
+
+def format_diff_html(report: Mapping[str, Any]) -> str:
+    import html as html_lib
+
+    changes = report.get("changes")
+    if not isinstance(changes, dict):
+        return "<p>No catalog diff.</p>"
+    rows: list[str] = []
+    for key, change in changes.items():
+        if not isinstance(change, dict):
+            continue
+        added = ", ".join(str(item) for item in change.get("added") or []) or "—"
+        removed = ", ".join(str(item) for item in change.get("removed") or []) or "—"
+        rows.append(
+            "<tr>"
+            f"<td>{html_lib.escape(str(key))}</td>"
+            f"<td>{html_lib.escape(str(change.get('changed')))}</td>"
+            f"<td>{html_lib.escape(added)}</td>"
+            f"<td>{html_lib.escape(removed)}</td>"
+            "</tr>"
+        )
+    body = "".join(rows) or "<tr><td colspan='4'>No subjects</td></tr>"
+    authority = html_lib.escape(str(report.get("authority") or ""))
+    return (
+        f"<p>Authority <code>{authority}</code></p>"
+        "<table><thead><tr><th>Subject</th><th>Changed</th>"
+        "<th>Added</th><th>Removed</th></tr></thead>"
+        f"<tbody>{body}</tbody></table>"
+    )

@@ -195,7 +195,8 @@ def render_component_response(
         selected_mode = result.mode
     else:
         if request is not None:
-            selected_mode = render_mode_for_request(request, force=force_mode)
+            result_policy = value.policy if isinstance(value, InteractionResult) else None
+            selected_mode = render_mode_for_request(request, force=force_mode, policy=result_policy)
         else:
             selected_mode = force_mode or RenderMode.PAGE
         render_context = context

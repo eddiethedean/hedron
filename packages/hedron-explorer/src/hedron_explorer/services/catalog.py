@@ -39,11 +39,25 @@ def app_catalog(app: object) -> InteractionCatalog:
 
 
 def find_component(name: str) -> ComponentMeta | None:
-    """Resolve a registered component by short name or logical-id suffix."""
+    """Resolve a registered component by exact logical id, short name, or suffix."""
     for component in get_registry().components():
-        if component.name == name or component.logical_id.endswith(f".{name}"):
+        if (
+            component.logical_id == name
+            or component.name == name
+            or component.logical_id.endswith(f".{name}")
+        ):
             return component
     return None
+
+
+def _page_or_all(items: list[T], request: Request | None, *, default: int, cap: int) -> Page[T]:
+    if request is None:
+        return paginate(items, offset=0, limit=max(len(items), 1))
+    return paginate(
+        items,
+        offset=parse_cursor(request),
+        limit=parse_limit(request, default=default, cap=cap),
+    )
 
 
 def _sort_items(items: list[T], request: Request | None, allowed: tuple[str, ...]) -> list[T]:
@@ -72,11 +86,7 @@ def list_components(request: Request | None = None) -> list[ComponentMeta]:
 
 def page_components(request: Request | None = None) -> Page[ComponentMeta]:
     items = list_components(request)
-    return paginate(
-        items,
-        offset=parse_cursor(request),
-        limit=parse_limit(request, default=COMPONENTS_LIMIT, cap=COMPONENTS_LIMIT),
-    )
+    return _page_or_all(items, request, default=COMPONENTS_LIMIT, cap=COMPONENTS_LIMIT)
 
 
 def list_routes(request: Request | None = None) -> list[RouteMeta]:
@@ -88,11 +98,7 @@ def list_routes(request: Request | None = None) -> list[RouteMeta]:
 
 def page_routes(request: Request | None = None) -> Page[RouteMeta]:
     items = list_routes(request)
-    return paginate(
-        items,
-        offset=parse_cursor(request),
-        limit=parse_limit(request, default=DEFAULT_LIMIT, cap=COMPONENTS_LIMIT),
-    )
+    return _page_or_all(items, request, default=DEFAULT_LIMIT, cap=COMPONENTS_LIMIT)
 
 
 def component_payload(c: ComponentMeta) -> dict[str, Any]:
@@ -123,7 +129,7 @@ def route_payload(r: RouteMeta) -> dict[str, Any]:
 def components_json(request: Request | None = None) -> Any:
     page = page_components(request)
     items = [component_payload(c) for c in page.items]
-    if wants_envelope(request):
+    if wants_envelope(request, page):
         wrapped = envelope(page)
         wrapped["items"] = items
         return wrapped
@@ -133,7 +139,7 @@ def components_json(request: Request | None = None) -> Any:
 def routes_json(request: Request | None = None) -> Any:
     page = page_routes(request)
     items = [route_payload(r) for r in page.items]
-    if wants_envelope(request):
+    if wants_envelope(request, page):
         wrapped = envelope(page)
         wrapped["items"] = items
         return wrapped
@@ -145,11 +151,7 @@ def graph_json(request: Request | None = None) -> dict[str, Any]:
     nodes = [{"id": c.logical_id, "name": c.name} for c in get_registry().components()]
     query = None if request is None else request.query_params.get("q")
     nodes = search_filter(nodes, query, key=lambda n: f"{n['id']} {n['name']}")
-    page = paginate(
-        nodes,
-        offset=parse_cursor(request),
-        limit=parse_limit(request, default=COMPONENTS_LIMIT, cap=COMPONENTS_LIMIT),
-    )
+    page = _page_or_all(nodes, request, default=COMPONENTS_LIMIT, cap=COMPONENTS_LIMIT)
     kept = {str(item["id"]) for item in page.items if isinstance(item, dict)}
     edges = []
     for c in get_registry().components():
@@ -163,17 +165,39 @@ def graph_json(request: Request | None = None) -> dict[str, Any]:
                     "kind": "styles",
                 }
             )
+        for dep in c.browser_modules:
+            edges.append(
+                {
+                    "from": c.logical_id,
+                    "to": redact(dep),
+                    "kind": "browser_module",
+                }
+            )
     return {
         "nodes": page.items,
         "edges": edges,
         "truncated": page.truncated,
         "total": page.total,
+        "limit": page.limit,
+        "offset": page.offset,
+        "next_cursor": page.next_cursor,
         "diagnostic": page.diagnostic,
         "divergence": {
             "cli_only": ["inverse_consumers"],
-            "note": "hedron graph CLI includes inverse_consumers and browser_module edges",
+            "note": "hedron graph CLI includes inverse_consumers; browser_module edges are shared",
         },
     }
+
+
+def page_interactions(request: Request, catalog: InteractionCatalog) -> Page[Any]:
+    items = list(catalog.entries.values())
+    query = request.query_params.get("q")
+    filtered = search_filter(items, query, key=lambda entry: f"{entry.logical_id} {entry.kind}")
+    return paginate(
+        filtered,
+        offset=parse_cursor(request),
+        limit=parse_limit(request, default=DEFAULT_LIMIT, cap=COMPONENTS_LIMIT),
+    )
 
 
 def handle_graph_json(request: Request) -> dict[str, Any]:

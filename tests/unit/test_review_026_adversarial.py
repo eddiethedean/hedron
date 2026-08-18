@@ -66,10 +66,22 @@ def test_csrf_required_on_standard_mutating_form() -> None:
 def test_production_explorer_development_forced_off(monkeypatch: pytest.MonkeyPatch) -> None:
     import warnings
 
+    from hedron_core.production_gate import RISK_ACCEPTANCE_ENV
+
     monkeypatch.setattr(
         "hedron_core.production_gate.assert_durable_backends",
         lambda **_kwargs: None,
     )
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    with pytest.raises(RuntimeError, match="explorer-development"):
+        Hedron(
+            title="rev026",
+            security="standard",
+            explorer="development",
+            session_secret="test-secret-rev026-prod-ok-32chars!",
+            production=True,
+        )
+    monkeypatch.setenv(RISK_ACCEPTANCE_ENV, "explorer-development")
     with warnings.catch_warnings(record=True):
         warnings.simplefilter("always")
         app = Hedron(

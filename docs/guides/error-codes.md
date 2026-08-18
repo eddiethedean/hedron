@@ -38,6 +38,9 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
+| `HED-EXPLORER-0001` | warning | Explorer table truncated | Use `cursor` / `limit` query params; HTML banners include Next/Previous |
+| `HED-EXPLORER-0002` | warning | Explorer provider timed out or crashed | Fix the panel callback; other `/packages` panels keep rendering |
+| `HED-EXPLORER-0003` | warning | Explorer provider payload too large | Reduce panel output under `max_payload_bytes` |
 | CSRF **403** on POST | blocker | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | `HED-VIEW-0003` | blocker | Unbound parameterized handle mounted | Call `handle.bind(...)` before mount |
 | `HED-UPDATE-0001` | blocker | Mixed refresh and patch | Return `refresh(...)` or `patches(...)`, not both |
@@ -687,23 +690,6 @@ contract: [Package-native typed workflows](../api/PACKAGE_WORKFLOWS.md). Never r
 | `HED-BUNDLE-0008` | `HED_BUNDLE_0008` |
 | `HED-BUNDLE-0009` | `HED_BUNDLE_0009` |
 | `HED-BUNDLE-0010` | `HED_BUNDLE_0010` |
-
-## HED-FP (0.49)
-
-FastAPI/Pydantic convergence diagnostics (D-081 / D-084 / RFC-0076). Public contract:
-[FastAPI and Pydantic convergence](../api/FASTAPI_PYDANTIC_CONVERGENCE.md). Do not reuse
-`HED-TYPE-0001`–`0010` for these failures.
-
-| Code | Catalog symbol |
-|---|---|
-| `HED-FP-0001` | `HED_FP_0001` |
-| `HED-FP-0002` | `HED_FP_0002` |
-| `HED-FP-0003` | `HED_FP_0003` |
-| `HED-FP-0004` | `HED_FP_0004` |
-| `HED-FP-0005` | `HED_FP_0005` |
-| `HED-FP-0006` | `HED_FP_0006` |
-| `HED-FP-0007` | `HED_FP_0007` |
-| `HED-FP-0008` | `HED_FP_0008` |
 
 ## HED-WORKFLOW
 

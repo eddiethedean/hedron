@@ -93,6 +93,7 @@ class Lazy(Component[Props]):
 
     def render(self) -> NodeLike:
         target_id = self.target_id or f"lazy-{self.render_instance_id()}"
+        body_id = f"{target_id}-body"
         attrs: HtmlAttrMap = {
             "id": target_id,
             "hx-trigger": "load",
@@ -101,14 +102,13 @@ class Lazy(Component[Props]):
             "aria-live": "polite",
         }
         attrs.update(self.ref.hx_attrs())
-        # Lazy container loads into itself.
-        attrs["hx-target"] = f"#{target_id}"
+        attrs["hx-target"] = f"#{body_id}"
         children: list[NodeLike] = []
         if self.error is not None:
             attrs["data-hedron-error-slot"] = "true"
             children.append(html.template(self.error, **{"data-hedron-error-template": "true"}))
         body = self.placeholder if self.placeholder is not None else Loading("Loading…")
-        children.append(body)
+        children.append(html.div(body, id=body_id))
         return html.div(*children, **attrs)
 
 

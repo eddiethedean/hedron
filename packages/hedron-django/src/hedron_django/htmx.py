@@ -26,10 +26,16 @@ def render_mode_for_request(
     headers: Mapping[str, str],
     *,
     force: RenderMode | None = None,
+    policy: object | None = None,
 ) -> RenderMode:
     if force is not None:
         return force
     ctx = htmx_context(headers)
-    if ctx.history_restore or ctx.boosted:
+    if ctx.boosted:
         return RenderMode.PAGE
+    if ctx.history_restore:
+        restore = getattr(policy, "history_restore", None) or "page"
+        if restore == "page":
+            return RenderMode.PAGE
+        return RenderMode.FRAGMENT
     return RenderMode.FRAGMENT if ctx.is_htmx else RenderMode.PAGE

@@ -3,11 +3,15 @@
 ## [0.50.0] — 2026-08-18
 
 ### Changed
-- Coordinated train tip `0.50.0` (in-tree cut; tag/PyPI deferred).
+- Coordinated train tip `0.50.0`.
 
 ### Added
 - Explorer architecture services/views split, ExplorerProvider v1, query pagination,
   diffs, headless CLI parity, bounded lab, and HTMX authoring primitives (#496–#500, #502, #503).
+
+### Fixed
+- ``Select.depends_on`` sanitizes parent field ids the same way as ``dom_id_part``.
+- ``hedron-ui.mjs`` handles toast dismiss and ``data-hedron-after-load`` GET after swap.
 
 ## [0.49.1] — 2026-08-18
 

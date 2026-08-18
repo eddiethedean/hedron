@@ -17,8 +17,9 @@ from hedron_explorer.services.catalog import (
     routes_json,
     security_json,
 )
-from hedron_explorer.services.diff import current_baseline, diff_baselines
+from hedron_explorer.services.diff import explorer_diff_report
 from hedron_explorer.services.health import package_health
+from hedron_explorer.services.provider import run_isolated
 from hedron_explorer.services.runtime import (
     RATE,
     explorer_guards,
@@ -162,12 +163,24 @@ def explorer_router() -> APIRouter:
         return await element_simulate(request)
 
     @router.get("/api/diff", include_in_schema=False)
-    async def api_diff() -> dict[str, Any]:
-        baseline = current_baseline()
-        return diff_baselines(baseline, baseline)
+    async def api_diff(request: Request) -> dict[str, Any]:
+        return explorer_diff_report(request.app)
 
     @router.get("/api/package-health", include_in_schema=False)
     async def api_package_health() -> dict[str, Any]:
-        return package_health()
+        from hedron_core.plugins import ExplorerProvider
+
+        isolated = run_isolated(
+            ExplorerProvider(
+                panel_id="package-health",
+                title="Package health",
+                plugin="hedron-explorer",
+            ),
+            package_health,
+        )
+        if not isolated.get("ok"):
+            return isolated
+        result = isolated.get("result")
+        return result if isinstance(result, dict) else {"result": result}
 
     return router

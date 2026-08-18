@@ -59,7 +59,8 @@ frozen `/hedron-explorer/` mount/modes, CLI `inspect`/`graph`/`check`,
   [#503](https://github.com/eddiethedean/hedron/issues/503) are bound to this phase
   (not Explorer gates).
 - [x] In-tree Verified 0.49 is enough predecessor evidence; do not wait on PyPI/Git `#380` assets.
-- [ ] Stage 1 implements services, provider runtime, pagination, laboratory, and headless parity.
+- [x] Stage 1 implements services, provider runtime, pagination, laboratory, and headless parity
+  (in-tree `v0.50.0`; [#501](https://github.com/eddiethedean/hedron/issues/501) remains open for tag/PyPI).
 
 Locks: [explorer-architecture-050.toml](explorer-architecture-050.toml) ·
 [explorer-provider-050.toml](explorer-provider-050.toml) ·

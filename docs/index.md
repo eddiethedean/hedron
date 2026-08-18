@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · PyPI 0.48.0</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · 0.50.0</div>
 
 # Build interactive web apps in Python.
 
@@ -18,7 +18,7 @@ open localhost:8000 → click **Refresh status**.
 { .hedron-lede }
 
 ```bash
-uvx --from "hedron>=0.48.0,<0.49" hedron new my-hedron-app
+uvx --from "hedron>=0.50.0,<0.51" hedron new my-hedron-app
 ```
 
 Pins and extras: [Installation](getting-started/installation.md). Before production:
@@ -96,7 +96,7 @@ rerun dashboards.
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.48.0,<0.49` from PyPI.
+Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.50.0,<0.51`.
 Capability readiness and API compatibility are separate: read
 [Maturity labels](getting-started/how-to-read.md) before interpreting Supported,
 Experimental, `stable`, or `beta`. For production adoption, continue with

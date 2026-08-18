@@ -90,8 +90,10 @@ async def require_csrf(request: Request) -> JSONResponse | None:
         try:
             result = validator(request, policy)
             if hasattr(result, "__await__"):
-                await result  # type: ignore[misc]
+                result = await result  # type: ignore[misc]
         except Exception:  # noqa: BLE001
+            return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
+        if result is not None and not result:
             return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
         return None
     if not validate_double_submit(cookie_token=cookie, header_token=header, form_token=form_token):
@@ -154,7 +156,14 @@ async def simulate(request: Request) -> Any:
     mode = str(payload.get("mode") or "fragment")
     route = routes[name]
     inference = dict(getattr(route, "htmx_inference", {}) or {})
-    status_code = int(payload.get("status") or 200)
+    status_raw = payload.get("status")
+    if status_raw is None or status_raw == "":
+        status_code = 200
+    else:
+        try:
+            status_code = int(status_raw)
+        except (TypeError, ValueError):
+            return JSONResponse({"detail": "status must be an integer"}, status_code=400)
     target = payload.get("target")
     regions = parse_regions(inference)
     region_ok = True
@@ -207,6 +216,9 @@ async def click_preview(request: Request) -> Any:
 
 
 async def element_simulate(request: Request) -> Any:
+    csrf_error = await require_csrf(request)
+    if csrf_error is not None:
+        return csrf_error
     try:
         payload = await request.json()
     except Exception:  # noqa: BLE001

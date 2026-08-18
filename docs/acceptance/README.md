@@ -49,7 +49,7 @@ status commentary, not a satisfied release gate.
 - [`v0.48` HTMX extension integration](RELEASE_0_48.md) — **Published** as in-tree `v0.48.0`
   (tag/PyPI deferred; D-080 / RFC-0075, refined by D-083;
   [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred)
-- [`v0.49` FastAPI/Pydantic convergence](RELEASE_0_49.md) — **Published** as in-tree `v0.49.0`
+- [`v0.49` FastAPI/Pydantic convergence](RELEASE_0_49.md) — **Published** as in-tree `v0.49.1`
   (tag/PyPI deferred; D-081 / RFC-0076, refined by D-084;
   [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader;
   RESEARCH Experimental)

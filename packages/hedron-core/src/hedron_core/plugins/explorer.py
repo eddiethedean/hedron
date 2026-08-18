@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 
 from hedron_core.plugins.meta import StabilityLabel
@@ -84,6 +84,7 @@ class ExplorerProvider:
     max_payload_bytes: int = 65_536
     ordering: int = 0
     redaction_profile: str = "standard"
+    render: Callable[[], object] | None = None
 
     def to_panel_meta(self) -> ExplorerPanelMeta:
         return ExplorerPanelMeta(

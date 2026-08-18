@@ -29,8 +29,9 @@ stays open until publish assets exist.
 - `_SIMULATE_KEYS`, CSRF `hedron_csrf` / `X-CSRF-Token` / `X-Hedron-CSRF`.
 - `InteractionCatalog.to_manifest(profile="development")`, `handle_graph_payload`,
   `catalog_facts`, `included_bundles`.
-- CLI `hedron inspect` / `graph` / `check` / `routes` — no `hedron_explorer` import
-  today. SARIF is `hedron check --format sarif` via `diagnostics_to_sarif`.
+- CLI `hedron inspect` / `graph` / `check` / `routes` import `hedron_explorer.services`
+  when the extra is installed (labeled skip otherwise). SARIF is
+  `hedron check --format sarif` via `diagnostics_to_sarif`.
 - `_AUDIT` maxlen 200 (`REV-026-003`), `_TRACE` maxlen 100.
 - Do **not** reopen `polling_only`, `MORPH-048`, `EXPLORER-10-001`, or
   `EXPLORER-019`.

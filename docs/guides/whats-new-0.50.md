@@ -1,13 +1,12 @@
 # What's new in 0.50
 
-**Published in-tree `v0.50.0`** (tag/PyPI deferred). Owning decisions: D-085 / D-086.
+**Published `v0.50.0`**. Owning decisions: D-085 / D-086.
 Tracking: [#501](https://github.com/eddiethedean/hedron/issues/501). Companion authoring:
 [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500),
 [#502](https://github.com/eddiethedean/hedron/issues/502),
 [#503](https://github.com/eddiethedean/hedron/issues/503).
 
-PyPI still serves **`hedron` `0.48.0`**. First-run installs should pin `hedron>=0.48.0,<0.49`
-from the registry until a later upload; in-tree pins are `hedron>=0.50.0,<0.51`.
+Pin `hedron>=0.50.0,<0.51`. Public-index notes: [Installation](../getting-started/installation.md).
 
 ## Highlights
 

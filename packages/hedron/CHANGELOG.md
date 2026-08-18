@@ -3,11 +3,19 @@
 ## [0.50.0] — 2026-08-18
 
 ### Changed
-- Coordinated train tip `0.50.0` (in-tree cut; tag/PyPI deferred).
+- Coordinated train tip `0.50.0`.
 
 ### Added
 - Explorer architecture services/views split, ExplorerProvider v1, query pagination,
   diffs, headless CLI parity, bounded lab, and HTMX authoring primitives (#496–#500, #502, #503).
+
+### Fixed
+- Command success applies ``ActionHandle.effect`` / ``after`` (OOB refresh and
+  ``HX-Trigger-After-Swap``).
+- ``InteractionPolicy.history_restore`` selects PAGE vs FRAGMENT restore.
+- Lazy keeps error templates outside the HTMX swap target.
+- Danger toasts include a dismiss control.
+- Requested ``explorer="development"`` in production is risk-gated, then still force-off.
 
 ## [0.49.1] — 2026-08-18
 

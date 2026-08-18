@@ -532,7 +532,7 @@ class Select(Component[SelectProps]):
         if self._depends_on and self._source:
             parent = self._depends_on
             if not parent.startswith("#"):
-                parent = f"#field-{parent}"
+                parent = f"#field-{dom_id_part(parent)}"
             attrs["hx-get"] = SafeUrl.parse(self._source, purpose=UrlPurpose.NAVIGATION)
             attrs["hx-trigger"] = f"change from:{parent}"
             attrs["hx-include"] = parent

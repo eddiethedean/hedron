@@ -39,7 +39,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Select(name, options, *, id=None, required=False, value=None)
+Select(name, options, *, id=None, required=False, value=None, depends_on=None, source=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -49,6 +49,8 @@ Select(name, options, *, id=None, required=False, value=None)
 | `id` | `str | None` | Control ID. |
 | `required` | `bool` | Native required constraint. |
 | `value` | `str | None` | Selected option value. |
+| `depends_on` | `str | None` | Parent field name; compiles `hx-trigger="change from:#field-{dom_id_part(name)}"`. |
+| `source` | `str | None` | Child `hx-get` fragment that synthesizes options. |
 
 ## Composition and backend behavior
 

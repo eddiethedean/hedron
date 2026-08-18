@@ -2,13 +2,12 @@
 
 The canonical release history now lives on [Releases](release-notes.md).
 
-Current in-tree release: **v0.49.1**. Recommended constraint:
-`hedron>=0.50.0,<0.51`. Git tag and PyPI remain deferred; the registry still
-serves `hedron` `0.48.0` (`hedron>=0.48.0,<0.49`) until the 0.49 upload.
+Current release: **v0.50.0**. Recommended constraint: `hedron>=0.50.0,<0.51`.
+Public-index notes: [Installation](../getting-started/installation.md).
 
 Continue with:
 
-- [Upgrade to 0.49](upgrade.md)
+- [Upgrade to 0.50](upgrade.md)
 - [What’s ready today](whats-ready.md)
 - [Ship a Hedron app](ship.md)
 - [Release evidence](evidence-pack.md)

@@ -60,10 +60,22 @@ def test_secured_authz_dependency_can_refuse() -> None:
 
 
 def test_production_refuses_development_explorer(monkeypatch: pytest.MonkeyPatch) -> None:
+    from hedron_core.production_gate import RISK_ACCEPTANCE_ENV
+
     monkeypatch.setattr(
         "hedron_core.production_gate.assert_durable_backends",
         lambda **_kwargs: None,
     )
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    with pytest.raises(RuntimeError, match="explorer-development"):
+        Hedron(
+            title="ex026",
+            security="standard",
+            explorer="development",
+            session_secret="test-secret-ex026-prod-ok-32chars!!",
+            production=True,
+        )
+    monkeypatch.setenv(RISK_ACCEPTANCE_ENV, "explorer-development")
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
         app = Hedron(

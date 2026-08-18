@@ -52,7 +52,10 @@ Phase 0.43 owns the runtime foundation. The planned
 seam) fills the generic input slots and `hedron.type` descriptor extension defined here; it does
 not replace 0.43 routing, binding identity, forms, effects, or target authorization.
 
-## Planned symbols
+## Shipped symbols
+
+These 0.43 handles shipped; 0.50 adds `ActionHandle.effect` / `.after` success compilation
+(see [Interaction API](INTERACTION.md)).
 
 | Symbol | Package | Role |
 |---|---|---|

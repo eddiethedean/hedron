@@ -12,6 +12,8 @@ You already have a working Refresh loop from
 `app.py`** — do not paste a second full scaffold.
 
 Default vs explicit APIs: [Which interaction API?](../getting-started/interaction-apis.md).
+0.50 authoring (`ActionHandle.effect` / `.after(load=)`, `Select.depends_on`, `Lazy` error
+templates, danger `Toast` dismiss) is documented on [Interaction API](../api/INTERACTION.md).
 
 ## What you already have
 

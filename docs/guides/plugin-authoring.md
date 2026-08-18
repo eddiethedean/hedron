@@ -137,6 +137,8 @@ shipped inside `hedron-elements`.
 - Prefer package resources for assets; avoid remote asset URLs unless policy allows
 - Do not ship active script / dangerous URL schemes in registered SVG icons
 - Optional: `ctx.register_explorer_panel(...)` for Explorer UI (see sample kit)
+- Optional: `ctx.register_explorer_provider(...)` for isolated 0.50 Explorer panels
+  (`HED-EXPLORER-0002` / `0003` on crash/timeout/payload)
 - Optional: `ctx.register_diagnostic_owner("HED-MINE-")` for plugin-owned codes
 
 ## 7. Test without FastAPI

@@ -74,3 +74,28 @@ def test_crash_and_payload_isolation() -> None:
     huge = run_isolated(provider, lambda: "x" * 64)
     assert huge["ok"] is False
     assert huge["diagnostic"] == "HED-EXPLORER-0003"
+
+
+def test_packages_page_isolates_crashing_provider() -> None:
+    from fastapi.testclient import TestClient
+    from tests.unit._helpers_050 import make_app
+
+    from hedron import Page, Text
+
+    def _boom() -> str:
+        raise RuntimeError("boom")
+
+    register_explorer_provider(
+        ExplorerProvider(panel_id="crashy", title="Crashy", plugin="demo", render=_boom)
+    )
+    app = make_app(security="standard", explorer="development")
+
+    @app.page("/")
+    def home():
+        return Page(Text("h"), title="H")
+
+    with TestClient(app) as client:
+        page = client.get("/hedron-explorer/packages")
+        assert page.status_code == 200
+        assert "HED-EXPLORER-0002" in page.text
+        assert "Crashy" in page.text

@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.49.x** published train (tip `v0.49.0`)
+**Status:** Accepted; kept current with the **0.50.x** published train (tip `v0.50.0`)
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package

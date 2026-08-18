@@ -9,6 +9,10 @@
 
 Baseline JSON shape capture and rollback checks remain read-only during Stage 0.
 
+**Post-cut (in-tree `v0.50.0`):** production + requested `explorer="development"` now
+raises `RISK_EXPLORER_DEVELOPMENT` unless accepted, then still force-offs. Pagination
+and `HED-EXPLORER-0001` replace silent slices. CLI imports explorer services when installed.
+
 ## Mount and mode fixtures (0.49.1)
 
 1. Prefix `/hedron-explorer/` via `include_router(..., prefix="/hedron-explorer")`.

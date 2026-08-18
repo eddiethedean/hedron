@@ -452,11 +452,23 @@ def test_csrf_secure_cookie_on_https_standard() -> None:
 
 
 def test_production_disables_development_explorer(monkeypatch: pytest.MonkeyPatch) -> None:
+    from hedron_core.production_gate import RISK_ACCEPTANCE_ENV
+
     monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
     monkeypatch.setattr(
         "hedron_core.production_gate.assert_durable_backends",
         lambda **_kwargs: None,
     )
+    with pytest.raises(RuntimeError, match="explorer-development"):
+        Hedron(
+            title="prod",
+            security="standard",
+            explorer="development",
+            session_secret="production-ok-session-secret-32ch",
+            production=True,
+        )
+    monkeypatch.setenv(RISK_ACCEPTANCE_ENV, "explorer-development")
     with pytest.warns(UserWarning, match="Explorer development mode"):
         app = Hedron(
             title="prod",

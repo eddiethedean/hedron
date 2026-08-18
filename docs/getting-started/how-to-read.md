@@ -40,7 +40,7 @@ reference page before treating its signature as compatibility-protected.
 The current published train is **0.50.x**. Install from PyPI:
 
 ```bash
-python -m pip install "hedron>=0.48.0,<0.49"
+python -m pip install "hedron>=0.50.0,<0.51"
 ```
 
 Pins for this repository versus the public index:

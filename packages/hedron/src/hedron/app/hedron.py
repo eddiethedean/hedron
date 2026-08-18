@@ -99,6 +99,11 @@ class Hedron(HedronPagesMixin, FastAPI):
         self.hedron_app_id = secrets.token_hex(8)
         self.state.hedron_app_id = self.hedron_app_id
         is_prod = is_production_env(production=production)
+        requested_explorer_mode = resolve_explorer_mode(
+            explorer,
+            explorer_enabled=self.hedron_policy.explorer_enabled,
+            is_prod=False,
+        )
         self.hedron_explorer_mode = resolve_explorer_mode(
             explorer,
             explorer_enabled=self.hedron_policy.explorer_enabled,
@@ -129,7 +134,7 @@ class Hedron(HedronPagesMixin, FastAPI):
             security_profile=self.hedron_policy.profile.value,
             session_secret=session_secret,
             sessions_enabled=enable_sessions,
-            explorer_mode=self.hedron_explorer_mode,
+            explorer_mode=requested_explorer_mode,
             allow_external_redirects=self.hedron_policy.allow_external_redirects,
             content_security_policy=self.hedron_policy.content_security_policy,
         )

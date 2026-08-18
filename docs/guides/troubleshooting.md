@@ -89,7 +89,7 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`.
-Expect **`0.49.1`** on this in-tree train (PyPI today is **`0.48.0`**). Upgrade with
+Expect **`0.50.0`** on this train. Upgrade with
 `pip install -U "hedron>=0.50.0,<0.51"` (or `uv add "hedron>=0.50.0,<0.51"`).
 See [What's ready](whats-ready.md). If docs describe a feature missing from your
 install, either upgrade toward the pin that matches this documentation or switch the

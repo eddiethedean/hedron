@@ -36,7 +36,7 @@ HTML forms. HTMX is introduced in
 
 | Item | Value |
 |---|---|
-| Version | **0.48.0** on PyPI (Beta). This docs tree is **0.49.1**. Registry pin `hedron>=0.48.0,<0.49` |
+| Version | **0.50.0** (Beta). Latest uploaded PyPI wheel is **0.48.0**. Pin floor `hedron>=0.50.0` on the 0.50.x train |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |

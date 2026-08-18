@@ -100,6 +100,38 @@ def test_production_rejects_explorer_development(monkeypatch: pytest.MonkeyPatch
         )
 
 
+def test_hedron_requested_explorer_development_then_force_off(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    monkeypatch.setattr(
+        "hedron_core.production_gate.assert_durable_backends",
+        lambda **_kwargs: None,
+    )
+    from hedron import Hedron
+
+    with pytest.raises(RuntimeError, match="explorer-development"):
+        Hedron(
+            title="demo",
+            security="standard",
+            explorer="development",
+            session_secret="a-sufficiently-long-production-secret",
+            production=True,
+        )
+    monkeypatch.setenv(RISK_ACCEPTANCE_ENV, "explorer-development")
+    with pytest.warns(UserWarning, match="Explorer development mode"):
+        app = Hedron(
+            title="demo",
+            security="standard",
+            explorer="development",
+            session_secret="a-sufficiently-long-production-secret",
+            production=True,
+        )
+    assert app.hedron_explorer_mode == "off"
+    paths = [getattr(route, "path", "") for route in app.router.routes]
+    assert not any(str(path).startswith("/hedron-explorer") for path in paths)
+
+
 def test_production_rejects_external_redirects(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("HEDRON_ENV", "production")
     monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)

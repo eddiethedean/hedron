@@ -114,7 +114,7 @@ pwd
 uv run python -c "import hedron, hedron_posit; print(hedron.__version__)"
 ```
 
-Expect the path to end in `my-workbench-app` and the version to be **`0.48.0`**.
+Expect the path to end in `my-workbench-app` and the version to be **`0.50.0`**.
 
 The project contains:
 

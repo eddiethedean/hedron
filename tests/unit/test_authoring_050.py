@@ -2,17 +2,22 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Annotated, Literal
 
+from fastapi.testclient import TestClient
 from pydantic import BaseModel
-from tests.unit._helpers_050 import make_app, reset_050
+from tests.unit._helpers_050 import csrf_headers, make_app, reset_050
 
 from hedron import Control, ErrorState, FormBody, Lazy, Page, Text, Toast
+from hedron.htmx import render_mode_for_request
 from hedron.routing.reverse import ComponentRef
 from hedron.testing import render_html
 from hedron_core.builtins import Select, ToastHost
+from hedron_core.builtins._base import dom_id_part
 from hedron_core.htmx.attrs import Hx
 from hedron_core.interaction import InteractionPolicy, InteractionResult
+from hedron_core.rendering import RenderMode
 from hedron_core.security_policy import SecurityPolicy
 
 
@@ -56,8 +61,10 @@ def test_select_depends_on_compiles_htmx_get() -> None:
         )
     )
     assert "hx-get" in html
-    assert "change from:#field-country" in html
-    assert "#field-country" in html
+    assert f"change from:#field-{dom_id_part('country')}" in html
+    assert f"#field-{dom_id_part('country')}" in html
+    spaced = render_html(Select("city", [("x", "X")], depends_on="parent field", source="/cities"))
+    assert f"#field-{dom_id_part('parent field')}" in spaced
 
 
 def test_toast_ttl_and_host() -> None:
@@ -66,6 +73,7 @@ def test_toast_ttl_and_host() -> None:
     assert "2500" in info
     danger = render_html(Toast("Boom", tone="danger"))
     assert "data-hedron-ttl" not in danger
+    assert "data-hedron-toast-dismiss" in danger
     host = render_html(ToastHost())
     assert 'id="hedron-toast"' in host
 
@@ -78,7 +86,11 @@ def test_lazy_error_slot_without_hx_on() -> None:
         )
     )
     assert "data-hedron-error-slot" in html
+    assert "data-hedron-error-template" in html
+    assert "-body" in html
     assert "hx-on" not in html
+    assert "</template>" in html
+    assert html.index("</template>") < html.rindex("-body")
     ui = (
         __import__("pathlib")
         .Path("packages/hedron-core/src/hedron_core/static/hedron-ui.mjs")
@@ -94,6 +106,44 @@ def test_history_restore_policy_and_htmx_config() -> None:
     config = SecurityPolicy.from_name("standard").htmx_config_json()
     assert '"historyRestoreAsHxRequest":false' in config
     assert '"reportValidityOfForms":true' in config
+    app = make_app(security="standard")
+
+    @app.page("/")
+    def home():
+        return Page(Text("h"), title="H")
+
+    app.state.hedron_interaction_policy = policy
+    with TestClient(app) as client:
+        restored = client.get(
+            "/",
+            headers={"HX-Request": "true", "HX-History-Restore-Request": "true"},
+        )
+        assert restored.status_code == 200
+    from starlette.requests import Request
+
+    scope = {
+        "type": "http",
+        "asgi": {"version": "3.0"},
+        "http_version": "1.1",
+        "method": "GET",
+        "scheme": "http",
+        "path": "/",
+        "raw_path": b"/",
+        "query_string": b"",
+        "headers": [
+            (b"hx-request", b"true"),
+            (b"hx-history-restore-request", b"true"),
+        ],
+        "client": ("test", 50000),
+        "server": ("test", 80),
+    }
+    request = Request(scope)
+    request.scope["app"] = app
+    assert render_mode_for_request(request, policy=policy) is RenderMode.FRAGMENT
+    assert (
+        render_mode_for_request(request, policy=InteractionPolicy(history_restore="page"))
+        is RenderMode.PAGE
+    )
 
 
 def test_action_handle_effect_after_and_dependent_control() -> None:
@@ -110,16 +160,38 @@ def test_action_handle_effect_after_and_dependent_control() -> None:
     def home():
         return Page(Text("h"), title="H")
 
-    button = render_html(
-        save.effect(InteractionResult(content=Text("ok"))).after(delay_ms=250).button("Go")
-    )
+    chained = save.effect(InteractionResult(trigger="saved")).after(load="/next", delay_ms=250)
+    assert chained is not save
+    assert save._effect is None
+    button = render_html(chained.button("Go"))
     assert "hx-post" in button
     assert "delay:250ms" in button
+    assert "data-hedron-after-load" in button
+    assert "hx-swap" in button
     form = render_html(
-        save.effect(InteractionResult(content=Text("ok"))).form(
+        chained.form(
             controls={"city": Control(kind="select", depends_on="country", source="/cities")}
         )
     )
     assert "hx-swap" in form
     assert "change from:#field-country" in form
     assert home is not None
+    with TestClient(app) as client:
+        headers = csrf_headers(client)
+        headers["HX-Request"] = "true"
+        response = client.post(save.path, data={"city": "a"}, headers=headers)
+        assert response.status_code == 200
+        assert response.headers.get("HX-Trigger-After-Swap") == "/next"
+        trigger = response.headers.get("HX-Trigger") or ""
+        assert "saved" in trigger
+
+
+def test_hedron_ui_mjs_copies_are_byte_identical() -> None:
+    core = Path("packages/hedron-core/src/hedron_core/static/hedron-ui.mjs").read_bytes()
+    host = Path("packages/hedron/src/hedron/static/hedron-ui.mjs").read_bytes()
+    assert core == host
+    text = core.decode("utf-8")
+    assert "data-hedron-toast-dismiss" in text
+    assert "data-hedron-after-load" in text
+    assert "data-hedron-error-template" in text
+    assert "htmx:responseError" in text

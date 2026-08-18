@@ -662,16 +662,17 @@ def _cmd_check(args: argparse.Namespace) -> int:
     from hedron_core.diagnostics import make_diagnostic
     from hedron_core.discovery import discover_component_folders
 
-    _load_app(args.app)
+    app = _load_app(args.app)
     base = Path(args.project or Path.cwd()).resolve()
     settings = _apply_project_discovery(base)
     diags = []
+    explorer_diff: JsonObject | None = None
     try:
-        from hedron_explorer.services.diff import current_baseline, diff_baselines
+        from hedron_explorer.services.diff import explorer_diff_report
         from hedron_explorer.services.health import package_health
 
         package_health()
-        diff_baselines(current_baseline(), current_baseline())
+        explorer_diff = cast(JsonObject, explorer_diff_report(app))
     except ImportError:
         print("hedron-explorer: skipped (not installed)", file=sys.stderr)
     # Routes / components presence
@@ -820,6 +821,8 @@ def _cmd_check(args: argparse.Namespace) -> int:
         print(json.dumps(diagnostics_to_json(all_diags), indent=2))
         if inventory_summary is not None:
             print(json.dumps({"hdj_inventory": inventory_summary}, indent=2))
+        if explorer_diff is not None:
+            print(json.dumps({"explorer_diff": explorer_diff}, indent=2))
     elif fmt == "sarif":
         print(json.dumps(diagnostics_to_sarif(all_diags), indent=2))
     else:
@@ -827,5 +830,8 @@ def _cmd_check(args: argparse.Namespace) -> int:
         print(text or "No diagnostics.")
         if inventory_summary is not None and hdj_reports:
             print(f"HDJ inventory: {json.dumps(inventory_summary, indent=2)}")
+        if explorer_diff is not None:
+            print("Explorer diff:")
+            print(json.dumps(explorer_diff, indent=2))
     # Exit on real findings only — evergreen INFORMATION never fails the gate.
     return 1 if meets_severity_threshold(diags, threshold) else 0

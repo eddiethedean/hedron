@@ -1,5 +1,6 @@
 # Phase 0.50 Explorer query resilience lock (QUERY-050).
 # Stage 0 contract artifact (D-086). Silent slices become pagination or truncation.
+# [current_silent_caps] records the 0.49.1 baseline; after cut, silent slices are forbidden.
 
 schema_version = 1
 phase = "0.50"

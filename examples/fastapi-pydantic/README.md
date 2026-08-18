@@ -1,8 +1,8 @@
 # FastAPI / Pydantic convergence sample
 
 First-party FastAPI demo for **phase 0.49** lifetimes, native/expanded binding, and
-non-granting scopes. Existing `ViewParams` / `FormBody` keep working. PyPI still
-serves Hedron `0.48.0`; this example is for the in-tree `v0.49.1` tip.
+non-granting scopes. Existing `ViewParams` / `FormBody` keep working. This example
+targets the current **0.50.0** train (phase 0.49 contracts still apply).
 
 ## Run
 

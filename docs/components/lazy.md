@@ -82,21 +82,22 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-Lazy emits a load-triggered HTMX request that targets its own collision-free container and swaps the response inside it. Repeated instances can share one ComponentRef safely. The initial node is busy and polite; the server fragment should clear busy state by replacing the placeholder.
+Lazy emits a load-triggered HTMX request that swaps into an inner `#…-body` wrapper so a `template[data-hedron-error-template]` survives a successful load. `hedron-ui.mjs` (core and FastAPI copies, kept byte-identical) rematerializes the template on `htmx:responseError` / `htmx:sendError`.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
 ## Constructor and parameters
 
 ```python
-Lazy(*, ref, placeholder=None, target_id=None)
+Lazy(*, ref, placeholder=None, target_id=None, error=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `ref` | `ComponentRef` | Typed fragment endpoint. |
 | `placeholder` | `NodeLike | None` | Initial content; defaults to Loading. |
-| `target_id` | `str | None` | Explicit self-target ID; generated collision-free by default. |
+| `target_id` | `str | None` | Explicit host ID; generated collision-free by default. |
+| `error` | `NodeLike | None` | Error template kept outside the inner `#…-body` swap target. |
 
 ## Composition and backend behavior
 

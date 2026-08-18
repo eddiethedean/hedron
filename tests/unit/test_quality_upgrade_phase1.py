@@ -118,6 +118,7 @@ def test_find_component_by_name_and_logical_suffix() -> None:
     )
     seal_registry()
     assert _find_component("Widget") is not None
+    assert _find_component("demo.Widget") is not None
     assert _find_component("missing") is None
 
 

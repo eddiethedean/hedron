@@ -64,11 +64,19 @@ document.addEventListener("click", (event) => {
   }
 
   const trigger = event.target.closest("[data-hedron-dialog-open]");
-  if (!(trigger instanceof HTMLElement)) return;
-  const dialog = dialogFromTrigger(trigger);
-  if (!dialog) return;
-  if (dialog.dataset.modal === "false") dialog.show();
-  else dialog.showModal();
+  if (trigger instanceof HTMLElement) {
+    const dialog = dialogFromTrigger(trigger);
+    if (dialog) {
+      if (dialog.dataset.modal === "false") dialog.show();
+      else dialog.showModal();
+    }
+    return;
+  }
+
+  const dismiss = event.target.closest("[data-hedron-toast-dismiss]");
+  if (dismiss instanceof HTMLElement) {
+    dismiss.closest("[data-hedron-toast]")?.remove();
+  }
 });
 
 document.addEventListener("keydown", (event) => {
@@ -96,6 +104,11 @@ document.addEventListener("keydown", (event) => {
 document.body.addEventListener("htmx:afterSwap", (event) => {
   normalizeTabs(event.target);
   upgradeOpenModalDialogs(event.target);
+  const source = event.detail?.requestConfig?.elt;
+  const load = source instanceof Element ? source.getAttribute("data-hedron-after-load") : null;
+  if (load && typeof window.htmx?.ajax === "function") {
+    window.htmx.ajax("GET", load, { source, swap: "none" });
+  }
 });
 normalizeTabs(document);
 upgradeOpenModalDialogs(document);

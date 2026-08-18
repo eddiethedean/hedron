@@ -472,6 +472,9 @@ class HedronPagesMixin:
                     )
                 else:
                     assert_declared_effects(meta, result, app_id=app_id)
+                from hedron.handles import apply_action_handle_effects
+
+                result = apply_action_handle_effects(result, handle, app_id=app_id)
                 request = current_request.get()
                 is_htmx = bool(
                     request is not None

@@ -33,15 +33,15 @@ def browser_app_url() -> Iterator[str]:
     uvicorn = pytest.importorskip("uvicorn")
     from hedron import Hedron, Page, Text
     from hedron_core.plugins import ExplorerProvider, register_explorer_provider
-    from hedron_explorer.services.provider import run_isolated
 
     reset_browser_plugin_state()
-    register_explorer_provider(ExplorerProvider(panel_id="crashy", title="Crashy", plugin="demo"))
-    crashed = run_isolated(
-        ExplorerProvider(panel_id="crashy", title="Crashy", plugin="demo"),
-        lambda: (_ for _ in ()).throw(RuntimeError("boom")),
+
+    def _boom() -> str:
+        raise RuntimeError("boom")
+
+    register_explorer_provider(
+        ExplorerProvider(panel_id="crashy", title="Crashy", plugin="demo", render=_boom)
     )
-    assert crashed["isolated"] is True
 
     app = Hedron(
         title="Explorer050",
@@ -76,7 +76,9 @@ def _run_engine(browser_type: str, url: str) -> None:
         page.goto(f"{url}/hedron-explorer/")
         assert page.locator("table").count() >= 1
         page.goto(f"{url}/hedron-explorer/packages")
-        assert "Package health" in page.content()
+        content = page.content()
+        assert "Package health" in content
+        assert "HED-EXPLORER-0002" in content
         browser.close()
 
 

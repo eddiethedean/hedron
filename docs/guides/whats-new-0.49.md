@@ -1,10 +1,7 @@
 # What's new in 0.49
 
-**Published in-tree `v0.49.1`** (0.49.1 patch on the original `v0.49.0` cut; tag/PyPI deferred). Owning decisions: D-081 / D-084.
-Tracking: [#380](https://github.com/eddiethedean/hedron/issues/380).
-
-PyPI still serves **`hedron` `0.48.0`**. First-run installs should pin `hedron>=0.48.0,<0.49`
-from the registry until a later upload; in-tree pins are `hedron>=0.49.1,<0.50`.
+**Published** as `v0.49.1`. Historical pin: `hedron>=0.49.1,<0.50`.
+For new apps, use `hedron>=0.50.0,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
 
 ## Highlights
 

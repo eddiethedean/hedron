@@ -63,7 +63,10 @@ keyboard-operable shell. Explorer live traces for SSE/WebSocket remain owned Def
 | Condition | Behavior |
 |---|---|
 | Missing `hedron[dev]` | Mount fails / Explorer unavailable |
-| Production + `development` | Forced off at startup |
+| Production + `development` | Forced off at startup after `RISK_EXPLORER_DEVELOPMENT` (accept the risk, Explorer still does not mount) |
+| Truncated table | `HED-EXPLORER-0001` plus cursor `Next`/`Previous` links; not a silent slice |
+| Provider timeout/crash | `HED-EXPLORER-0002`; other panels keep rendering |
+| Provider payload too large | `HED-EXPLORER-0003` |
 | Path outside allowlist | Blocked (no secret file reads) |
 
 ## See also

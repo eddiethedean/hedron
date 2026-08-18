@@ -5,9 +5,9 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-Install from PyPI with `hedron>=0.48.0,<0.49` — extras and this-repository checkout:
-[Installation](../getting-started/installation.md). This docs tree describes **0.50**
-in-tree APIs. Capability readiness, API compatibility, and package maturity are three
+This page describes **0.50.0**. Install with `hedron>=0.50.0,<0.51` — extras and
+public-index notes: [Installation](../getting-started/installation.md). Capability
+readiness, API compatibility, and package maturity are three
 separate axes — [How labels work](#how-labels-work). Evaluators who need the cheat-sheet:
 [Maturity labels](../getting-started/how-to-read.md).
 
@@ -119,7 +119,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | DataTable / DataEditor + column catalog, views, TransformPlan | `hedron[data]` | Supported |
 | AG Grid Community client + infinite row models | `hedron-data[aggrid]` | Supported; Enterprise out of scope |
 | Dask / Snowflake bounded sources | `hedron-data[dask]` / `[snowflake]` | Supported |
-| Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics |
+| Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics; 0.50 pagination, provider isolation, catalog diffs, and CLI/HTML/JSON agreement |
 | Language-neutral conformance kit | `hedron[conformance]` | Supported |
 | HDJ loop/macro budgets, a11y static checks | `hedron[jinja]` | Supported |
 | AppScenario + HTMX InteractionResult asserts | `hedron.testing` | Supported |
@@ -216,7 +216,7 @@ is a runnable classifier. Live interaction sample:
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.48.0,<0.49" hedron new my-app
+    uvx --from "hedron>=0.50.0,<0.51" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -224,13 +224,13 @@ is a runnable classifier. Live interaction sample:
 === "pip"
 
     ```bash
-    pip install "hedron>=0.48.0,<0.49" "uvicorn[standard]"
+    pip install "hedron>=0.50.0,<0.51" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.50.0,<0.51` in-tree, or `hedron>=0.48.0,<0.49` from **PyPI** until the deferred upload.
+Pin `hedron>=0.50.0,<0.51`. Public-index notes: [Installation](../getting-started/installation.md).
 
 Extras: `"hedron[data]>=0.50.0,<0.51"`, `"hedron[extras]>=0.50.0,<0.51"`,
 `"hedron[jinja]>=0.50.0,<0.51"`, `"hedron[dev]>=0.50.0,<0.51"`,

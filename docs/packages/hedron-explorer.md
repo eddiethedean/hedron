@@ -77,12 +77,15 @@ Open **`/hedron-explorer/`** on the running app.
 | Condition | Behavior |
 |---|---|
 | Missing `hedron[dev]` | Mount fails / Explorer unavailable |
-| Production + `development` | Forced off at startup |
+| Production + `development` | Forced off at startup after `RISK_EXPLORER_DEVELOPMENT` |
+| Truncated table | `HED-EXPLORER-0001` with cursor pagination |
+| Isolated provider crash/timeout | `HED-EXPLORER-0002` |
+| Isolated provider payload ceiling | `HED-EXPLORER-0003` |
 | Path outside allowlist | Blocked (no secret file reads) |
 
 ## Related docs
 
-- API: [Explorer](../api/EXPLORER.md) · [Explorer architecture (0.50 Planned)](../api/EXPLORER_ARCHITECTURE.md)
+- API: [Explorer](../api/EXPLORER.md) · [Explorer architecture (0.50 shipped)](../api/EXPLORER_ARCHITECTURE.md)
 - A11y: [Accessibility API](../api/A11Y.md)
 - Install troubleshooting: [Explorer 404](../guides/troubleshooting.md#explorer-404-or-missing-in-production)
 

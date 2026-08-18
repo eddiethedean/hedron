@@ -256,6 +256,7 @@ nav:
   - Adopt:
     - Why Hedron: guides/why-hedron.md
     - What's ready today: guides/whats-ready.md
+    - What's next: guides/whats-next.md
     - Evaluate Hedron: guides/evaluate.md
     - Architecture: ARCHITECTURE.md
     - Security: SECURITY.md

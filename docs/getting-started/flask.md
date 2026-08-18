@@ -4,8 +4,8 @@ Use `hedron-flask` when your app is Flask-native. The **CLI** (`hedron new --fla
 comes from the `hedron` package; **runtime** is `hedron-flask` + `hedron-core`. The
 adapter does **not** install or require FastAPI in the app process.
 
-Install from PyPI: `hedron>=0.48.0,<0.49` (or `hedron-flask>=0.48.0,<0.49`).
-Pins: [Installation](installation.md).
+This documentation is **0.50.0**. Pin `hedron>=0.50.0,<0.51` (or `hedron-flask>=0.50.0,<0.51`).
+Public-index notes: [Installation](installation.md).
 
 ## Golden path (scaffold + Refresh)
 
@@ -15,7 +15,7 @@ blueprints and raw `hx-*` attributes, not FastAPI `RefreshButton`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.48.0,<0.49" hedron new my-flask-app --flask
+uvx --from "hedron>=0.50.0,<0.51" hedron new my-flask-app --flask
 cd my-flask-app && uv sync && uv run flask --app app run --port 8000
 ```
 
