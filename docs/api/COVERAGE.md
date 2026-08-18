@@ -107,7 +107,7 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 `AutoForm`, `ErrorState`, `InfiniteScroll`, `Loading`, `Pagination`, `ChatInput`,
 `DownloadButton`, `FileUpload`, `safe_download_response`, plus layout helpers such as
 `Page`, `Stack`, `Grid`, `Form`, `TextInput`, `RefreshButton`, `Poll`, `Lazy`,
-`Metric`, `Toast` (covered in sections above / component pages).
+`Metric`, `Toast`, `ToastHost` (covered in sections above / component pages).
 
 | Export | Primary docs |
 |---|---|

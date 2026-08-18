@@ -83,6 +83,7 @@ Helpers: `action_attrs`, `oob_swap` — see [Interaction](INTERACTION.md).
 [`FileUpload`](../components/file-upload.md) ·
 [`DownloadButton`](../components/download-button.md) ·
 [`Progress`](../components/progress.md) · [`Toast`](../components/toast.md) ·
+[`ToastHost`](../components/toast-host.md) ·
 [`ColorModeToggle`](../components/color-mode-toggle.md)
 
 ## Inference presentation (0.18)

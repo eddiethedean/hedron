@@ -71,5 +71,6 @@ No invented auth. Package health is read-only; `hedron package doctor` stays 0.5
 `REV-026-003` process-local audit stays accepted risk. Explorer is not a
 production default.
 
-See [RFC-0077](../rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md) and
-[implementation plan](../implementation/EXPLORER_050.md).
+See [RFC-0077](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md)
+and the
+[implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EXPLORER_050.md).
