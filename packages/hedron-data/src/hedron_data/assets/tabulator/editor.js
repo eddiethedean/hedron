@@ -37,11 +37,12 @@
     const prefix = normalized.charAt(0);
     const dangerous =
       normalized.length > 0 &&
-      ("=+-@".indexOf(prefix) !== -1 ||
+      ("=+-@|".indexOf(prefix) !== -1 ||
         prefix === "\uff1d" ||
         prefix === "\uff0b" ||
         prefix === "\uff0d" ||
-        prefix === "\uff20");
+        prefix === "\uff20" ||
+        prefix === "\uff5c");
     if (!dangerous) return text;
     return "'" + normalized;
   }
