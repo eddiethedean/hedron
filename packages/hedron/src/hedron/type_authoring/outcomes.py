@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, TypeVar
+from typing import Annotated, Any, Generic, TypeVar, get_args, get_origin
 
 from pydantic import BaseModel
 
@@ -126,20 +126,29 @@ def _names(types: Sequence[type[Any]]) -> list[str]:
 
 
 def _union_variants(annotation: object) -> tuple[type[Any], ...]:
-    origin = getattr(annotation, "__origin__", None)
-    args = getattr(annotation, "__args__", ())
-    if origin is None:
-        name = getattr(getattr(annotation, "__class__", None), "__name__", "")
+    origin = get_origin(annotation)
+    if origin is Annotated:
+        args = get_args(annotation)
+        return _union_variants(args[0]) if args else ()
+    alias_value = getattr(annotation, "__value__", None)
+    if type(annotation).__name__ == "TypeAliasType" and alias_value is not None:
+        return _union_variants(alias_value)
+    args = get_args(annotation)
+    if origin is None and not args:
+        if isinstance(annotation, type):
+            return (annotation,)
+        name = type(annotation).__name__
         if name in {"UnionType", "Union"}:
             args = getattr(annotation, "__args__", ())
-        elif isinstance(annotation, type):
-            return (annotation,)
         else:
             return ()
     variants: list[type[Any]] = []
     for arg in args:
         if arg is type(None):
             continue
-        if isinstance(arg, type):
+        nested = _union_variants(arg)
+        if nested:
+            variants.extend(nested)
+        elif isinstance(arg, type):
             variants.append(arg)
     return tuple(variants)
