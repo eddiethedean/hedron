@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import functools
 import inspect
+import json
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any, Generic, Literal, TypeVar, cast, overload
@@ -14,12 +15,14 @@ from starlette.requests import Request
 
 from hedron.routing.reverse import ComponentRef
 from hedron_core.codes import HED_CMD_0001, HED_TYPE_0005, HED_VIEW_0003, HED_VIEW_0004
-from hedron_core.component import NodeLike
+from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.hosts import FragmentHost
 from hedron_core.html import html
 from hedron_core.htmx.policy import CacheHint, FragmentRegion
 from hedron_core.interaction import InteractionResult
+from hedron_core.models import Props
+from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
 from hedron_core.updates import (
@@ -367,6 +370,60 @@ class BoundFragment(Generic[ContentT]):
         return self.handle.update(content, **kwargs)
 
 
+class _CommandButtonProps(Props):
+    pass
+
+
+class _CommandButton(Component[_CommandButtonProps]):
+    """Defer command button attrs (including CSRF headers) until render time."""
+
+    props_type = _CommandButtonProps
+
+    def __init__(
+        self,
+        *,
+        label: str,
+        path: str,
+        method: str,
+        logical_id: str,
+        fallback: str = "",
+        swap: str = "none",
+        extra: Mapping[str, object] | None = None,
+    ) -> None:
+        super().__init__(_CommandButtonProps())
+        self._label = label
+        self._path = path
+        self._method = method
+        self._logical_id = logical_id
+        self._fallback = fallback
+        self._swap = swap
+        self._extra = dict(extra or {})
+
+    def render(self) -> NodeLike:
+        attrs: dict[str, object] = {
+            "type": "button" if self._fallback else "submit",
+            "hx-swap": self._swap,
+            "data-hedron-command": self._logical_id,
+        }
+        method = self._method.upper()
+        if method == "POST":
+            attrs["hx-post"] = self._path
+        elif method == "PUT":
+            attrs["hx-put"] = self._path
+        elif method == "PATCH":
+            attrs["hx-patch"] = self._path
+        elif method == "DELETE":
+            attrs["hx-delete"] = self._path
+        if self._fallback:
+            attrs["data-hedron-fallback"] = self._fallback
+        ctx = active_render_context()
+        if ctx is not None and ctx.csrf_token:
+            attrs["hx-headers"] = json.dumps({"X-CSRF-Token": ctx.csrf_token})
+        attrs.update(self._extra)
+        attrs = {key: value for key, value in attrs.items() if value is not None}
+        return html.button(self._label, **cast(dict[str, HtmlAttrValue], attrs))
+
+
 @dataclass(frozen=False)
 class ActionHandle(Generic[InputT, ResultT]):
     """Typed command reference returned by ``@app.command``."""
@@ -444,31 +501,24 @@ class ActionHandle(Generic[InputT, ResultT]):
 
     def button(self, label: str, **kwargs: object) -> NodeLike:
         fallback = str(kwargs.get("fallback") or self.fallback or "")
-        attrs: dict[str, object] = {
-            "type": "button" if fallback else "submit",
-            "hx-swap": kwargs.pop("hx-swap", "none"),
-            "data-hedron-command": self.logical_id,
-        }
+        swap = str(kwargs.pop("hx-swap", "none"))
         method = self.method.upper()
-        if method == "POST":
-            attrs["hx-post"] = self.path
-        elif method == "PUT":
-            attrs["hx-put"] = self.path
-        elif method == "PATCH":
-            attrs["hx-patch"] = self.path
-        elif method == "DELETE":
-            attrs["hx-delete"] = self.path
-        elif method in {"GET", "HEAD", "OPTIONS", "TRACE"}:
+        if method in {"GET", "HEAD", "OPTIONS", "TRACE"}:
             raise error(
                 HED_CMD_0001,
                 title="Command cannot use a safe method",
                 explanation="Action handles must not silently downgrade to GET.",
                 remediation="Use POST or another unsafe method.",
             )
-        if fallback:
-            attrs["data-hedron-fallback"] = fallback
-        attrs = {key: value for key, value in attrs.items() if value is not None}
-        return html.button(label, **cast(dict[str, HtmlAttrValue], attrs))
+        return _CommandButton(
+            label=label,
+            path=self.path,
+            method=self.method,
+            logical_id=self.logical_id,
+            fallback=fallback,
+            swap=swap,
+            extra=kwargs,
+        )
 
 
 class Refresh:
