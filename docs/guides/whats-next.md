@@ -6,12 +6,13 @@ ledger (gate IDs, RFCs) lives on GitHub:
 Capability maturity for *this* train: [What’s ready](whats-ready.md).
 Install pins: [Installation](../getting-started/installation.md).
 
-## Planned after 0.49
+## Planned after 0.50
 
 | Topic | Disposition |
 |---|---|
-| Explorer architecture (0.50) | **Planned** Stage 0 (D-085 / D-086 / RFC-0077); living train stays 0.49.1 |
-| Declarative HTMX authoring primitives | **Planned** with 0.50 ([#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500), [#502](https://github.com/eddiethedean/hedron/issues/502), [#503](https://github.com/eddiethedean/hedron/issues/503)); living train stays 0.49.1 |
+| Curated extras depth / experimental-UI (0.51) | **Planned**; owning RFC required |
+| Conformance kit and Node/Java runtime (0.52) | **Planned**; owning RFC required |
+| Notebook / simulation / sample-kit refresh (0.53) | **Planned**; owning RFC required |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |

@@ -666,6 +666,14 @@ def _cmd_check(args: argparse.Namespace) -> int:
     base = Path(args.project or Path.cwd()).resolve()
     settings = _apply_project_discovery(base)
     diags = []
+    try:
+        from hedron_explorer.services.diff import current_baseline, diff_baselines
+        from hedron_explorer.services.health import package_health
+
+        package_health()
+        diff_baselines(current_baseline(), current_baseline())
+    except ImportError:
+        print("hedron-explorer: skipped (not installed)", file=sys.stderr)
     # Routes / components presence
     registry = get_registry()
     if not list(registry.components()) and not list(registry.routes()):

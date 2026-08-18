@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.49.x**)
+**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.50.x**)
 
 Day-to-day apps should start with [`@app.refreshable` / `@app.command`](../getting-started/interaction-apis.md).
 This page documents the explicit region / `InteractionResult` contracts those handles compile to.
@@ -80,6 +80,7 @@ def handler(request: Request):
 | `vary_on_target` | `bool` | `False` | Include target in cache Vary behavior when enabled |
 | `declared_regions` | `tuple[FragmentRegion, ...]` | `()` | Allowlisted HTMX targets for this result/route |
 | `allow_undeclared_targets` | `bool` | `False` | Opt out of fail-closed target authorization (avoid in production) |
+| `history_restore` | `"page"` / `"primary"` / `"oob"` | `"page"` | How history restore should rebuild the document. Keep HTMX `historyRestoreAsHxRequest:false`; do not add app `htmx:historyRestore` handlers. |
 
 ```python
 from hedron import FragmentRegion, InteractionPolicy, InteractionResult, Text
@@ -333,3 +334,38 @@ Prefer `vary-htmx` when one URL can return both a document and a fragment. Enabl
 
 Full response shape: [Responses](RESPONSES.md). Walkthrough:
 [Build an HTMX interaction](../guides/htmx-interactions.md).
+
+## 0.50 authoring primitives
+
+These compile into existing `Hx` / `ActionHandle` / reserved OOB. They are not Explorer APIs
+and do not use `fetch()`, `hx-on*`, `js:` vals, or extra HTMX extensions.
+
+### `Hx`
+
+`trigger`, `include`, `validate="native"` (`hx-validate="true"` plus optional
+`data-hedron-validity="native"`), and `vals` / `headers` without `js:` expressions.
+CSRF stays framework-injected (`X-CSRF-Token` + cookie `hedron_csrf`). Native HTML
+`reportValidityOfForms` remains true; HTTP 422 stays authoritative.
+
+### `ActionHandle.effect` / `.after`
+
+`handle.effect(refresh(status).toast("Saved"))` keeps the CSRF POST and defaults
+`hx-swap="none"` when success is refresh+toast / `InteractionResult`.
+`handle.after(load=..., when=..., delay_ms=...)` compiles to `hx-trigger` delay/filter
+or `data-hedron-after-load` for `HX-Trigger-After-Swap` — not `setTimeout` / `click()`.
+
+### Dependent `Select` / `Control(depends_on=)`
+
+Child `hx-get` fragment + `hx-trigger="change from:#…"` + `hx-include`. The server
+synthesizes options at `Control.source`.
+
+### `Lazy` / `FragmentHost(error=ErrorState(...))`
+
+Authors do not write `hx-on`. `hedron-ui.mjs` listens for `htmx:responseError` /
+`htmx:sendError` and swaps the `data-hedron-error-template`.
+
+### `Toast(..., ttl_ms=)` / `ToastHost()`
+
+Frozen `#hedron-toast` OOB sink. Queue and TTL live in `hedron-ui.mjs`. Danger toasts
+keep no TTL unless an author sets one.
+

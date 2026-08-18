@@ -47,7 +47,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Published** (`v0.47.0` / `hedron-maps` `0.1.0`; in-tree cut, tag/PyPI deferred; D-078 / D-082 / RFC-0074; [#350](https://github.com/eddiethedean/hedron/issues/350)) |
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0`; in-tree cut, tag/PyPI deferred; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
-| **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Planned** (Stage 0; baseline `v0.49.1`; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503); no runtime claim) |
+| **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.0`; in-tree cut, tag/PyPI deferred; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.52** | Conformance kit and independent Node/Java runtime credibility | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
@@ -4174,17 +4174,15 @@ are outside this extra-package corrective pass.
 
 ## 0.50 — Explorer architecture and operator-grade development tooling (`v0.50.0`)
 
-**Status:** Planned Stage 0 (D-085 / D-086 /
+**Status:** Published in-tree `v0.50.0` (D-085 / D-086 /
 [RFC-0077](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md)).
 Planning baseline remains Published in-tree `v0.49.1`. Tracking
-[#501](https://github.com/eddiethedean/hedron/issues/501) owns every Explorer 0.50 gate until a later
-in-tree cut. Companion authoring issues
+[#501](https://github.com/eddiethedean/hedron/issues/501) owns every Explorer 0.50 gate until
+tag/PyPI. Companion authoring issues
 [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500),
 [#502](https://github.com/eddiethedean/hedron/issues/502), and
 [#503](https://github.com/eddiethedean/hedron/issues/503)
-are bound to this phase and do not reopen Explorer gate IDs. No Stage 0 runtime or
-version claim. Stage 1 is blocked on [#501](https://github.com/eddiethedean/hedron/issues/501)
-and Verified 0.49.
+shipped on this cut and do not reopen Explorer gate IDs.
 
 **Planning baseline:** Published in-tree **`v0.49.1`**. Verified 0.45–0.49 catalog, manifest,
 TypeSchema v2, handle-graph, OpenAPI, and HTMX-extension contracts are inputs — not

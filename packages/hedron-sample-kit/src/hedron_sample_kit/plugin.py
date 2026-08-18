@@ -16,7 +16,7 @@ PLUGIN_META = PluginMeta(
     name="sample_kit",
     version="0.1.10",
     distribution="hedron-sample-kit",
-    hedron_version=">=0.49,<0.50",
+    hedron_version=">=0.50,<0.51",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -48,11 +48,12 @@ def register(ctx: PluginContext) -> None:
             digest=digest,
             content_type="text/plain",
         )
-    ctx.register_explorer_panel(
+    ctx.register_explorer_provider(
         panel_id="sample-kit-callout",
         title="Sample Callout",
         description="Demo panel contributed by hedron-sample-kit",
         path="/hedron-explorer/packages",
+        capabilities=("html",),
     )
     ctx.register_diagnostic_owner("HED-SAMPLE-")
     from hedron_core.catalog import SurfaceProjectionProvider

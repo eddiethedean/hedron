@@ -3,7 +3,7 @@
 
 schema_version = 1
 phase = "0.50"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.49.1"
 required_predecessor = "v0.49.1"
 target = "v0.50.0"
@@ -31,14 +31,14 @@ tracking = "#501"
 id = "EXP-ARCH-001..005"
 area = "explorer-architecture"
 gate = "ARCH-050"
-state = "Planned"
+state = "Verified"
 adopt = ["service-boundaries", "router-thinning", "golden-route-map", "frozen-mount", "no-route-drop"]
 
 [[capability]]
 id = "EXP-PROVIDER-001..005"
 area = "explorer-provider-protocol"
 gate = "PROVIDER-050"
-state = "Planned"
+state = "Verified"
 adopt = ["provider-v1", "timeout", "ordering", "redaction", "payload-bounds"]
 keep = ["ExplorerPanelMeta", "register_explorer_panel"]
 
@@ -46,21 +46,21 @@ keep = ["ExplorerPanelMeta", "register_explorer_panel"]
 id = "EXP-CONSUME-001..004"
 area = "consume-045-049"
 gate = "CONSUME-050"
-state = "Planned"
+state = "Verified"
 adopt = ["catalog-manifest", "handle-graph", "typeschema-v2", "htmx-extension-facts"]
 
 [[capability]]
 id = "EXP-QUERY-001..004"
 area = "query-usability"
 gate = "QUERY-050"
-state = "Planned"
+state = "Verified"
 adopt = ["search", "filter", "pagination", "truncation-diagnostics"]
 
 [[capability]]
 id = "EXP-DIFF-001..004"
 area = "baseline-diffing"
 gate = "DIFF-050"
-state = "Planned"
+state = "Verified"
 adopt = ["catalog-diff", "manifest-fingerprint", "route-diff", "schema-fingerprint"]
 fourth_fingerprint_authority = false
 
@@ -68,14 +68,14 @@ fourth_fingerprint_authority = false
 id = "EXP-LAB-001..003"
 area = "interaction-lab"
 gate = "LAB-050"
-state = "Planned"
+state = "Verified"
 adopt = ["safe-preview", "redacted-scenario-export", "no-auth-invention"]
 
 [[capability]]
 id = "EXP-HEADLESS-001..004"
 area = "headless-parity"
 gate = "HEADLESS-050"
-state = "Planned"
+state = "Verified"
 adopt = ["cli-html-json-parity", "diagnostics_to_sarif", "labeled-skip-without-explorer"]
 not_on_this_gate = ["second-sarif-writer"]
 
@@ -83,28 +83,28 @@ not_on_this_gate = ["second-sarif-writer"]
 id = "EXP-ECOSYSTEM-001..004"
 area = "ecosystem-projections"
 gate = "ECOSYSTEM-050"
-state = "Planned"
+state = "Verified"
 adopt = ["first-party-labeled", "one-third-party-provider", "flask-django-read-only-label"]
 
 [[capability]]
 id = "EXP-SECURITY-001..004"
 area = "explorer-security"
 gate = "SECURITY-050"
-state = "Planned"
+state = "Verified"
 adopt = ["production-opt-in", "simulate-allowlist", "csrf-frozen", "no-catalog-authority"]
 
 [[capability]]
 id = "EXP-PRIVACY-001..003"
 area = "redaction-export"
 gate = "PRIVACY-050"
-state = "Planned"
+state = "Verified"
 adopt = ["secret-redaction", "bounded-artifacts", "rev-026-003-accepted-risk"]
 
 [[capability]]
 id = "EXP-A11Y-001..003"
 area = "explorer-shell-a11y"
 gate = "A11Y-050"
-state = "Planned"
+state = "Verified"
 adopt = ["keyboard", "no-js", "landmarks"]
 not_explorer_019 = true
 
@@ -112,49 +112,49 @@ not_explorer_019 = true
 id = "EXP-BROWSER-001..003"
 area = "explorer-browser"
 gate = "BROWSER-050"
-state = "Planned"
+state = "Verified"
 adopt = ["chromium", "firefox", "webkit"]
 
 [[capability]]
 id = "EXP-PERF-001..003"
 area = "explorer-perf"
 gate = "PERF-050"
-state = "Planned"
+state = "Verified"
 adopt = ["startup", "query-budgets", "large-registry-fixture"]
 
 [[capability]]
 id = "EXP-RESILIENCE-001..003"
 area = "explorer-resilience"
 gate = "RESILIENCE-050"
-state = "Planned"
+state = "Verified"
 adopt = ["cancellation", "provider-crash-isolation", "leak-checks"]
 
 [[capability]]
 id = "EXP-DOCS-001..003"
 area = "explorer-docs"
 gate = "DOCS-050"
-state = "Planned"
+state = "Verified"
 adopt = ["provider-author-guide", "migration-from-049", "upgrade-matrix"]
 
 [[capability]]
 id = "EXP-COMPAT-001..003"
 area = "explorer-compat"
 gate = "COMPAT-050"
-state = "Planned"
+state = "Verified"
 adopt = ["frozen-049-paths", "panel-meta-shim", "rollback"]
 
 [[capability]]
 id = "EXP-PKG-001..002"
 area = "explorer-packaging"
 gate = "PKG-050"
-state = "Planned"
+state = "Verified"
 adopt = ["clean-wheel", "optional-dep-isolation"]
 
 [[capability]]
 id = "EXP-REGRESS-001..002"
 area = "explorer-regress"
 gate = "REGRESS-050"
-state = "Planned"
+state = "Verified"
 adopt = ["fleet-regression", "no-hidden-deferred"]
 
 [[capability]]

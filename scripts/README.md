@@ -60,7 +60,8 @@ Documentation source ownership and review rules:
 | `verify_pkg_47.py` | Phase **0.47** first-class maps packet (Published in-tree `v0.47.0`; omit `--allow-planned` after cut) |
 | `verify_pkg_48.py` | Phase **0.48** HTMX extension integration packet (Published in-tree `v0.48.0`; omit `--allow-planned`) |
 | `verify_pkg_49.py` | Phase **0.49** FastAPI/Pydantic packet (Published in-tree `v0.49.1`; omit `--allow-planned` after cut) |
-| `verify_pkg_50.py` | Phase **0.50** Explorer architecture packet (Stage 0: `--allow-planned`; living baseline `v0.49.1`) |
+| `verify_pkg_50.py` | Phase **0.50** Explorer architecture packet (Published in-tree `v0.50.0`; omit `--allow-planned` after cut) |
+| `check_*_050.py` | Phase 0.50 architecture/provider/consume/query/diff/lab/headless/ecosystem/security/privacy/a11y/browser/perf/resilience/docs/compat/pkg/regress gate entry points |
 | `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Published `v0.42.0`) |
 | `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |
 | `verify_pkg_39.py` | Phase **0.39** rich data / OptimisticMutation packet (Published `v0.39.0`) |
@@ -88,7 +89,7 @@ Documentation source ownership and review rules:
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
 | `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
-| `verify_pkg_46.py` / `verify_pkg_45.py` / `verify_pkg_44.py` / `verify_pkg_43.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_49.py`**; `verify_pkg_48.py` remains the previous living cut) |
+| `verify_pkg_46.py` / `verify_pkg_45.py` / `verify_pkg_44.py` / `verify_pkg_43.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_50.py`**; `verify_pkg_49.py` remains the previous living cut) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

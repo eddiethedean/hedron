@@ -26,7 +26,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_maps",
     version="0.1.0",
     distribution="hedron-maps",
-    hedron_version=">=0.49,<0.50",
+    hedron_version=">=0.50,<0.51",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -139,11 +139,12 @@ def register(ctx: PluginContext) -> None:
                 content_type=ctype,
             )
 
-    ctx.register_explorer_panel(
+    ctx.register_explorer_provider(
         panel_id="hedron-maps",
         title="Maps",
         description="Map plans, origins, attribution, CSP, fallback, and event schemas",
         path="/hedron-explorer/maps",
+        capabilities=("html",),
     )
     ctx.register_diagnostic_owner("HED-MAP-SPEC-")
     ctx.register_diagnostic_owner("HED-MAP-SOURCE-")

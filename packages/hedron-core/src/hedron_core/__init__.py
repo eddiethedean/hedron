@@ -131,6 +131,7 @@ from hedron_core.builtins import (
     Timeline,
     Title,
     Toast,
+    ToastHost,
     ToggleSwitch,
     Tooltip,
     Video,
@@ -416,7 +417,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.49.1"
+__version__ = "0.50.0"
 
 __all__ = [
     "ActionRegistry",
@@ -716,6 +717,7 @@ __all__ = [
     "Title",
     "TokenStream",
     "Toast",
+    "ToastHost",
     "ToggleSwitch",
     "Tooltip",
     "TriggerContext",

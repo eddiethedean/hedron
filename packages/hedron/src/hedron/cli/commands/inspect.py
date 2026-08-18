@@ -76,6 +76,14 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     }
     if meta.styles_path and Path(meta.styles_path).is_file():
         payload["styles"] = Path(meta.styles_path).read_text(encoding="utf-8")
+    try:
+        from hedron_explorer.services.catalog import component_payload, find_component
+
+        explorer_meta = find_component(args.component)
+        if explorer_meta is not None:
+            payload["explorer"] = component_payload(explorer_meta)
+    except ImportError:
+        print("hedron-explorer: skipped (not installed)", file=sys.stderr)
     print(json.dumps(payload, indent=2))
     return 0
 

@@ -60,6 +60,36 @@ class PluginContext:
             path=path,
         )
 
+    def register_explorer_provider(
+        self,
+        *,
+        panel_id: str,
+        title: str,
+        description: str = "",
+        path: str = "",
+        capabilities: Iterable[str] = (),
+        timeout_ms: int = 250,
+        max_payload_bytes: int = 65_536,
+        ordering: int = 0,
+        redaction_profile: str = "standard",
+    ) -> None:
+        from hedron_core.plugins.explorer import ExplorerProvider, register_explorer_provider
+
+        register_explorer_provider(
+            ExplorerProvider(
+                panel_id=panel_id,
+                title=title,
+                plugin=self.meta.name,
+                description=description,
+                path=path,
+                capabilities=tuple(capabilities),
+                timeout_ms=timeout_ms,
+                max_payload_bytes=max_payload_bytes,
+                ordering=ordering,
+                redaction_profile=redaction_profile,
+            )
+        )
+
     def register_diagnostic_owner(self, code_prefix: str) -> None:
         register_diagnostic_owner(code_prefix, self.meta.name)
 

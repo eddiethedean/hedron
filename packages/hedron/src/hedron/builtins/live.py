@@ -83,11 +83,13 @@ class Lazy(Component[Props]):
         ref: ComponentRef,
         placeholder: NodeLike | None = None,
         target_id: str | None = None,
+        error: NodeLike | None = None,
     ) -> None:
         super().__init__(Props())
         self.ref = ref
         self.placeholder = placeholder
         self.target_id = target_id
+        self.error = error
 
     def render(self) -> NodeLike:
         target_id = self.target_id or f"lazy-{self.render_instance_id()}"
@@ -101,8 +103,15 @@ class Lazy(Component[Props]):
         attrs.update(self.ref.hx_attrs())
         # Lazy container loads into itself.
         attrs["hx-target"] = f"#{target_id}"
+        children: list[NodeLike] = []
+        if self.error is not None:
+            attrs["data-hedron-error-slot"] = "true"
+            children.append(
+                html.template(self.error, **{"data-hedron-error-template": "true"})
+            )
         body = self.placeholder if self.placeholder is not None else Loading("Loading…")
-        return html.div(body, **attrs)
+        children.append(body)
+        return html.div(*children, **attrs)
 
 
 class Poll(Component[Props]):

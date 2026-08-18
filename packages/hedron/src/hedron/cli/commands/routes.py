@@ -13,6 +13,13 @@ from hedron_core.typing_aliases import JsonObject
 
 def _cmd_routes(args: argparse.Namespace) -> int:
     _load_app(args.app)
+    try:
+        from hedron_explorer.services.catalog import routes_json
+
+        print(json.dumps(routes_json(), indent=2))
+        return 0
+    except ImportError:
+        print("hedron-explorer: skipped (not installed)", file=sys.stderr)
     registry = get_registry()
     rows = [
         {

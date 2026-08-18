@@ -7,10 +7,11 @@ from pathlib import Path
 from hedron_core import __version__ as core_version
 
 
-def test_core_version_is_train_tip() -> None:
+def test_core_version_is_at_least_049() -> None:
     pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
     assert f'version = "{core_version}"' in pyproject
-    assert core_version == "0.49.1"
+    parts = tuple(int(p) for p in core_version.split(".")[:2])
+    assert parts >= (0, 49)
 
 
 def test_packet_files_exist() -> None:

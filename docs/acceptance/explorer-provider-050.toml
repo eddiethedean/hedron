@@ -3,7 +3,7 @@
 
 schema_version = 1
 phase = "0.50"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.49.1"
 required_predecessor = "v0.49.1"
 target = "v0.50.0"

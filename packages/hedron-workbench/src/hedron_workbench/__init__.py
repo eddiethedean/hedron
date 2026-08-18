@@ -41,7 +41,7 @@ from hedron_posit import (
 )
 from hedron_workbench.app import HedronWorkbench
 
-__version__ = "0.49.1"
+__version__ = "0.50.0"
 
 __all__ = [
     "ConnectConfig",

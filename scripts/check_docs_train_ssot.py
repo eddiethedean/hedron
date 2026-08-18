@@ -213,6 +213,7 @@ BOILERPLATE_ALLOWED_PATHS = frozenset(
         *REGISTRY_HONESTY_PATHS,
         Path("docs/guides/release-notes.md"),
         Path("docs/guides/whats-new-0.49.md"),
+        Path("docs/guides/whats-new-0.50.md"),
         Path("docs/RELEASE.md"),
     }
 )

@@ -1,6 +1,6 @@
 # Phase 0.50 upgrade and rollback fixtures
 
-**Status:** Planned for Stage 0 planning (0.49.1 baseline)<br>
+**Status:** Verified in-tree `v0.50.0` (0.49.1 baseline)<br>
 **Planning baseline:** Published in-tree `v0.49.1`<br>
 **Required predecessor/cut baseline:** Verified `v0.49.1`<br>
 **Target:** Hedron `v0.50.0`<br>
@@ -70,4 +70,4 @@ Known 0.49.1 divergence: CLI graph includes `inverse_consumers`; Explorer omits 
 
 Removing or renaming a frozen 0.49.1 path, dropping `ExplorerPanelMeta`, mounting
 Explorer on Flask/Django, or treating catalog presence as authority is a
-`COMPAT-050` failure. Workspace version stays `0.49.1` for this Stage 0 packet.
+`COMPAT-050` failure. Workspace version is `0.50.0` for this in-tree cut.

@@ -57,7 +57,7 @@ required for native wheel smoke).
 ## Good first contributions
 
 - Typos, dead links, and Install/FAQ/Troubleshooting clarity
-- Example README fixes that match the living `0.49` train pins
+- Example README fixes that match the living `0.50` train pins
 - Small test coverage for an existing bug you hit
 
 Avoid starting with release-gate TOMLs, STATUS ledgers, or phase packets unless a

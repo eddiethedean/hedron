@@ -1,6 +1,6 @@
 # Hedron `v0.50` Explorer architecture acceptance
 
-**Status:** Planned Stage 0; no runtime or version claim. Does **not** close `SR-021`.<br>
+**Status:** Published in-tree `v0.50.0`; tag/PyPI deferred. Does **not** close `SR-021`.<br>
 **Planning baseline:** Published in-tree `v0.49.1`<br>
 **Required predecessor/cut baseline:** Verified `v0.49.1`<br>
 **Target:** Hedron `v0.50.0`<br>
@@ -12,7 +12,7 @@
 
 D-086 named shipped 0.49.1 Explorer seams (`explorer_router`, `ExplorerPanelMeta`,
 frozen `/hedron-explorer/` mount/modes, CLI `inspect`/`graph`/`check`,
-`diagnostics_to_sarif`). Stage 0 changes contracts only.
+`diagnostics_to_sarif`). This cut ships the Stage 1 architecture on those seams.
 
 ## Release contract
 

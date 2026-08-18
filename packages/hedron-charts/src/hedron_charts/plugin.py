@@ -54,7 +54,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_charts",
     version="0.2.0",
     distribution="hedron-charts",
-    hedron_version=">=0.49,<0.50",
+    hedron_version=">=0.50,<0.51",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -318,11 +318,12 @@ def register(ctx: PluginContext) -> None:
         )
     )
 
-    ctx.register_explorer_panel(
+    ctx.register_explorer_provider(
         panel_id="hedron-charts-viz",
         title="Visualization",
         description="Chart backend, payload, assets, accessibility, and security policy",
         path="/hedron-explorer/charts",
+        capabilities=("html",),
     )
     ctx.register_diagnostic_owner("HED-CHART-")
     from hedron_core.catalog import SurfaceProjectionProvider

@@ -286,6 +286,7 @@ class Status(Component[StatusProps]):
 class ToastProps(Props):
     message: str
     tone: Literal["info", "success", "warning", "danger"] = "info"
+    ttl_ms: int | None = 4000
 
 
 class Toast(Component[ToastProps]):
@@ -297,16 +298,38 @@ class Toast(Component[ToastProps]):
         message: str,
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
+        ttl_ms: int | None = -1,
         **kwargs: Any,
     ) -> None:
-        super().__init__(ToastProps(message=message, tone=tone, **kwargs))
+        resolved = ttl_ms
+        if ttl_ms == -1:
+            resolved = None if tone == "danger" else 4000
+        super().__init__(ToastProps(message=message, tone=tone, ttl_ms=resolved, **kwargs))
+
+    def render(self) -> NodeLike:
+        attrs: dict[str, Any] = {
+            "class_": f"hedron-toast hedron-toast-{self.props.tone}",
+            "role": "status",
+            "aria": {"live": "polite"},
+            "data-hedron-toast": "true",
+        }
+        if self.props.ttl_ms is not None:
+            attrs["data-hedron-ttl"] = str(self.props.ttl_ms)
+        return html.div(self.props.message, **attrs)
+
+
+class ToastHost(Component[Props]):
+    """Frozen OOB toast sink ``#hedron-toast``."""
+
+    logical_name = "ToastHost"
 
     def render(self) -> NodeLike:
         return html.div(
-            self.props.message,
-            class_=f"hedron-toast hedron-toast-{self.props.tone}",
+            id="hedron-toast",
+            class_="hedron-toast-host",
             role="status",
             aria={"live": "polite"},
+            data={"hedron-toast-host": "true"},
         )
 
 

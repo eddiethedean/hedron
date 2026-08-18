@@ -34,7 +34,7 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
 | `HED-SIM-ASSET-0001` | blocker | Packaged sim asset path escape | Pass a single basename under `static/` |
 | `HED-SIM-ASSET-0002` | blocker | Packaged sim asset missing | Use a filename that ships in `hedron_sim/static/` |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.49.1,<0.50"` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.50.0,<0.51"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -46,7 +46,7 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.49.1,<0.50"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.50.0,<0.51"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -420,6 +420,14 @@ Phase 0.47 assigns the following families:
 | `HED-PLUGIN-0003` | `HED_PLUGIN_CYCLE` |
 | `HED-PLUGIN-0004` | `HED_PLUGIN_DUPLICATE` |
 | `HED-PLUGIN-0005` | `HED_PLUGIN_FAILED` |
+
+## HED-EXPLORER
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-EXPLORER-0001` | `HED_EXPLORER_0001` |
+| `HED-EXPLORER-0002` | `HED_EXPLORER_0002` |
+| `HED-EXPLORER-0003` | `HED_EXPLORER_0003` |
 
 ## HED-PREPARE
 

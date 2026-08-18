@@ -39,9 +39,9 @@ _ROOT = Path(__file__).resolve().parent
 
 PLUGIN_META = PluginMeta(
     name="hedron_extras",
-    version="0.49.1",
+    version="0.50.0",
     distribution="hedron-extras",
-    hedron_version=">=0.49,<0.50",
+    hedron_version=">=0.50,<0.51",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -252,11 +252,12 @@ def register(ctx: PluginContext) -> None:
         )
 
     # Packages view lists plugin panels; dedicated /extras route is not shipped yet.
-    ctx.register_explorer_panel(
+    ctx.register_explorer_provider(
         panel_id="hedron-extras-features",
         title="Extras features",
         description="Curated extras feature manifests and stability labels",
         path="/hedron-explorer/packages",
+        capabilities=("html",),
     )
     ctx.register_diagnostic_owner("HED-EXTRAS-")
     from hedron_core.catalog import SurfaceProjectionProvider

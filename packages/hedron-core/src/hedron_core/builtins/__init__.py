@@ -103,6 +103,7 @@ from hedron_core.builtins.utilities import (
     Status,
     Tabs,
     Toast,
+    ToastHost,
 )
 from hedron_core.sse_ext import SseRegion, SseTrigger
 
@@ -210,6 +211,7 @@ __all__ = [
     "Timeline",
     "Title",
     "Toast",
+    "ToastHost",
     "ToggleSwitch",
     "Tooltip",
     "Video",

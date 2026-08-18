@@ -32,6 +32,11 @@ class Hx:
     method: Literal["get", "post", "put", "patch", "delete"] | None = None
     url: str | None = None
     preload: str | None = None
+    trigger: str | None = None
+    include: str | None = None
+    validate: Literal["native"] | bool | None = None
+    vals: str | None = None
+    headers: str | None = None
 
     def as_html_attrs(self) -> dict[str, HtmlAttrValue]:
         target = _safe_optional_selector(self.target, label="target")
@@ -94,4 +99,21 @@ class Hx:
                 )
             require_htmx_extension("preload")
             attrs["preload"] = mode
+        if self.trigger:
+            attrs["hx-trigger"] = self.trigger
+        if self.include:
+            include = _safe_optional_selector(self.include, label="include")
+            if include:
+                attrs["hx-include"] = include
+        if self.validate is True or self.validate == "native":
+            attrs["hx-validate"] = "true"
+            attrs["data-hedron-validity"] = "native"
+        if self.vals:
+            if "js:" in self.vals.lower():
+                raise ValueError("hx-vals must not use js: expressions")
+            attrs["hx-vals"] = self.vals
+        if self.headers:
+            if "js:" in self.headers.lower():
+                raise ValueError("hx-headers must not use js: expressions")
+            attrs["hx-headers"] = self.headers
         return attrs

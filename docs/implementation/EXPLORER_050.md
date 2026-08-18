@@ -1,6 +1,6 @@
 # Explorer architecture and operator-grade development tooling (`v0.50`)
 
-**Status:** Planned Stage 0; no runtime or version claim. Human AT (`SR-021`) stays open.<br>
+**Status:** Published in-tree `v0.50.0`; tag/PyPI deferred. Human AT (`SR-021`) stays open.<br>
 **Tracking:** [#501](https://github.com/eddiethedean/hedron/issues/501)<br>
 **Related:** [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
 [#502](https://github.com/eddiethedean/hedron/issues/502) /
@@ -10,8 +10,8 @@
 **Target:** Hedron `v0.50.0`<br>
 **Required predecessor:** Verified `v0.49.1`
 
-Stage 0 records contracts only. Stage 1 may not start until this tracking issue and
-Verified 0.49 exist.
+Stage 1 shipped on the in-tree `v0.50.0` cut. [#501](https://github.com/eddiethedean/hedron/issues/501)
+stays open until publish assets exist.
 
 ## Consume shipped, do not fork
 
@@ -19,7 +19,7 @@ Verified 0.49 exist.
   `resolve_explorer_mode`, `mount_explorer_if_enabled`, `install_explorer_bridges`.
   Prefix `/hedron-explorer`. Production + `development` force off
   (`RISK_EXPLORER_DEVELOPMENT`). Flask/Django hard-set `explorer_mode="off"`.
-- `hedron_explorer.router.explorer_router` (~1,366 lines today), `explorer_guards`
+- `hedron_explorer.router.explorer_router` (thin factory; services/views split), `explorer_guards`
   (120 req / 60s, `EXPLORER_DENIED`), `include_in_schema=False`.
 - `ExplorerPanelMeta` / `register_explorer_panel` / `get_explorer_panels` in
   `hedron_core.plugins.explorer`. Fields: `panel_id`, `title`, `plugin`,

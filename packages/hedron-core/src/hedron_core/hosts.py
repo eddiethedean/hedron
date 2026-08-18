@@ -208,8 +208,17 @@ class FragmentHost(Component[FragmentHostProps]):
                 attrs["hx-trigger"] = trigger
         if self._fallback:
             attrs["data-hedron-fallback"] = self._fallback
+        if self._error is not None:
+            attrs["data-hedron-error-slot"] = "true"
         tag = getattr(html, self.props.tag)
         children: list[NodeLike] = []
+        if self._error is not None:
+            error_node: NodeLike = (
+                html.p(self._error) if isinstance(self._error, str) else self._error
+            )
+            children.append(
+                html.template(error_node, **{"data-hedron-error-template": "true"})
+            )
         if inner is not None:
             children.append(inner)
         return tag(*children, **attrs)

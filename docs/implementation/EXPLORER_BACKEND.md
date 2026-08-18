@@ -4,9 +4,15 @@
 
 The backend is an optional development router over sanitized registry views and trace stores. It never imports application modules from user-supplied names or reads arbitrary paths. Preview and request operations reference registered identifiers only.
 
-**Shipped (0.49.1):** one FastAPI module, `hedron_explorer.router.explorer_router` (~1,366 lines), plus `hedron.app.explorer` mount helpers. There is no `services/` layer. Process-local `_AUDIT` (maxlen 200; `REV-026-003` accepted risk) and `_TRACE` (maxlen 100) are not durable SIEM.
+**Shipped (0.50.0):** thin FastAPI `hedron_explorer.router.explorer_router` (factory +
+`Depends(explorer_guards)` + one-liner handlers) over `services/` (catalog, simulation,
+traces, diff, fs, query, provider, health, runtime) and `views/` (shell, pages).
+`hedron.app.explorer` mount helpers stay frozen. Process-local `_AUDIT` (maxlen 200;
+`REV-026-003` accepted risk) and `_TRACE` (maxlen 100) are not durable SIEM.
 
-**Planned (0.50):** split catalog, simulation, traces, and diff into services behind a thin router, with `ExplorerProvider` v1 in `hedron-core`. Contracts: [RFC-0077](../rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md), [EXPLORER_050](EXPLORER_050.md). Do not treat the bullets below as shipped if they are labeled 0.50.
+**Not in 0.50:** live SSE/WS traces (`EXPLORER-10-001`), ATAG workspace, Flask/Django
+`explorer_router` mount, `hedron package doctor` (0.53). Contracts:
+[RFC-0077](../rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md), [EXPLORER_050](EXPLORER_050.md).
 
 ## Services
 
@@ -14,9 +20,11 @@ Shipped:
 
 - Component, route, asset, style, plugin, and example queries (HTML tables; JSON for a subset of panels).
 - Addressable-resource request simulation through allowlisted `/api/simulate` (not a live application test transport).
-- Cache traces via `CacheTrace.recent(50)`; static security findings; a11y contract listing `[:40]`.
+- Cache traces via `CacheTrace.recent` with cursor pagination / truncation diagnostics; static security findings; a11y contract listing with typed caps.
+- Shared CLI/Explorer query services when `hedron-explorer` is installed (labeled skip otherwise).
+- Additive `ExplorerProvider` v1 isolation (timeout/crash/payload/ordering/redaction).
 
-0.50 targets (not shipped): isolated example rendering with FastAPI dependency overrides; performance-trace panel; build-result panel; shared CLI/Explorer query services.
+Not shipped: live traces; performance-trace panel as a production default; `hedron package doctor`.
 
 Mutation simulation is disabled by default. Example data sources are isolated from production persistence unless an explicit authenticated configuration says otherwise.
 

@@ -70,6 +70,8 @@ class Control:
     help: str | None = None
     autocomplete: str | None = None
     rows: int | None = None
+    depends_on: str | None = None
+    source: str | None = None
 
     def __post_init__(self) -> None:
         if self.kind is not None and self.kind not in CONTROL_KINDS:

@@ -47,6 +47,11 @@ HED_PLUGIN_CYCLE = "HED-PLUGIN-0003"
 HED_PLUGIN_DUPLICATE = "HED-PLUGIN-0004"
 HED_PLUGIN_FAILED = "HED-PLUGIN-0005"
 
+# Explorer (0.50)
+HED_EXPLORER_0001 = "HED-EXPLORER-0001"  # truncated table / cursor pagination required
+HED_EXPLORER_0002 = "HED-EXPLORER-0002"  # provider timeout/crash isolation
+HED_EXPLORER_0003 = "HED-EXPLORER-0003"  # provider payload ceiling exceeded
+
 # Render / HTML / model / route / security
 HED_HTML_0001 = "HED-HTML-0001"
 HED_HTML_0002 = "HED-HTML-0002"

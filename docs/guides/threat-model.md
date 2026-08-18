@@ -1,7 +1,7 @@
 # Threat model
 
-**Status:** Maintained for the current **0.49.x** train (**Published**; last published
-PyPI/git = `v0.49.1`; baseline established in 0.11 and extended through the 0.36
+**Status:** Maintained for the current **0.50.x** train (**Published**; last published
+PyPI/git = `v0.50.0`; baseline established in 0.11 and extended through the 0.36
 Web Component ABI/lifecycle surface)
 
 **Owner:** hedron  

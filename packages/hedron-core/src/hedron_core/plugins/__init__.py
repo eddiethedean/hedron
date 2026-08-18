@@ -5,10 +5,13 @@ from __future__ import annotations
 from hedron_core.plugins.context import PluginContext
 from hedron_core.plugins.explorer import (
     ExplorerPanelMeta,
+    ExplorerProvider,
     FeatureManifest,
     get_explorer_panels,
+    get_explorer_providers,
     get_feature_manifests,
     register_explorer_panel,
+    register_explorer_provider,
     register_feature,
     reset_explorer_panels_for_tests,
     reset_feature_manifests_for_tests,
@@ -33,13 +36,16 @@ from hedron_core.plugins.meta import StabilityLabel as StabilityLabel
 
 __all__ = [
     "ExplorerPanelMeta",
+    "ExplorerProvider",
     "FeatureManifest",
     "PluginCapabilities",
     "PluginMeta",
     "PluginContext",
     "get_explorer_panels",
+    "get_explorer_providers",
     "get_feature_manifests",
     "register_explorer_panel",
+    "register_explorer_provider",
     "register_feature",
     "reset_explorer_panels_for_tests",
     "reset_feature_manifests_for_tests",

@@ -225,7 +225,14 @@ def _native_control(
             from hedron_core.builtins.forms import RadioGroup
 
             return RadioGroup(name, _label(record), options, value=text or None)
-        return Select(name, options, required=record.required, value=text or None)
+        return Select(
+            name,
+            options,
+            required=record.required,
+            value=text or None,
+            depends_on=control.depends_on if control is not None else None,
+            source=control.source if control is not None else None,
+        )
     if kind == "date":
         return DateInput(name, value=text)
     if kind == "time":

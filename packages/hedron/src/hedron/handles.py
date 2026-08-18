@@ -415,6 +415,19 @@ def _safe_button_attrs(attrs: Mapping[str, object]) -> dict[str, object]:
     return out
 
 
+def _compile_after_trigger(
+    event: str,
+    when: str | None,
+    delay_ms: int | None,
+) -> str | None:
+    if not when and delay_ms is None:
+        return None
+    trigger = f"{event}[{when}]" if when else event
+    if delay_ms is not None:
+        trigger = f"{trigger} delay:{int(delay_ms)}ms"
+    return trigger
+
+
 class _CommandButtonProps(Props):
     pass
 
@@ -487,6 +500,10 @@ class ActionHandle(Generic[InputT, ResultT]):
     descriptor: BaseHandleDescriptor
     type_meta: Any = None
     __wrapped__: Callable[..., ResultT] | None = None
+    _effect: object | None = None
+    _after_load: str | None = None
+    _after_when: str | None = None
+    _after_delay_ms: int | None = None
 
     @property
     def schema(self) -> object | None:
@@ -518,6 +535,13 @@ class ActionHandle(Generic[InputT, ResultT]):
                 explanation="Unmodeled commands keep explicit Form(action=handle).",
                 remediation="Mark a FormBody parameter or build Form(action=handle) manually.",
             )
+        if self._effect is not None:
+            safe_form_attrs.setdefault("hx-swap", "none")
+        trigger = _compile_after_trigger("submit", self._after_when, self._after_delay_ms)
+        if trigger:
+            safe_form_attrs.setdefault("hx-trigger", trigger)
+        if self._after_load:
+            safe_form_attrs.setdefault("data-hedron-after-load", self._after_load)
         return generate_form(
             self.type_meta,
             action=self,
@@ -529,6 +553,24 @@ class ActionHandle(Generic[InputT, ResultT]):
             enhance=enhance,  # type: ignore[arg-type]
             **safe_form_attrs,
         )
+
+    def effect(self, intent: RefreshIntent | InteractionResult) -> ActionHandle[InputT, ResultT]:
+        """Compile success as refresh+toast / InteractionResult (hx-swap none)."""
+        self._effect = intent
+        return self
+
+    def after(
+        self,
+        *,
+        load: str | None = None,
+        when: str | None = None,
+        delay_ms: int | None = None,
+    ) -> ActionHandle[InputT, ResultT]:
+        """Compile delayed/filtered hx-trigger or after-swap load (no setTimeout/click)."""
+        self._after_load = load
+        self._after_when = when
+        self._after_delay_ms = delay_ms
+        return self
 
     @property
     def bound(self) -> bool:
@@ -549,7 +591,13 @@ class ActionHandle(Generic[InputT, ResultT]):
     def button(self, label: str, **kwargs: object) -> NodeLike:
         extra = dict(kwargs)
         fallback = str(extra.pop("fallback", None) or self.fallback or "")
-        swap = str(extra.pop("hx-swap", "none"))
+        default_swap = "none" if self._effect is not None else "none"
+        swap = str(extra.pop("hx-swap", extra.pop("hx_swap", default_swap)))
+        trigger = _compile_after_trigger("click", self._after_when, self._after_delay_ms)
+        if trigger and "hx-trigger" not in extra and "hx_trigger" not in extra:
+            extra["hx-trigger"] = trigger
+        if self._after_load:
+            extra.setdefault("data-hedron-after-load", self._after_load)
         method = self.method.upper()
         if method in {"GET", "HEAD", "OPTIONS", "TRACE"}:
             raise error(

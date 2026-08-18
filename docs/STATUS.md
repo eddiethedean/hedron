@@ -1,11 +1,11 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.49 **Published** as in-tree `v0.49.1` (2026-08-17; tag/PyPI deferred). Phase 0.48 HTMX extension integration remains Published in-tree `v0.48.0`.
-Living tip = `v0.49.1`.
+**Roadmap position:** phase 0.50 **Published** as in-tree `v0.50.0` (2026-08-18; tag/PyPI deferred). Phase 0.49 FastAPI/Pydantic convergence remains Published in-tree `v0.49.1`.
+Living tip = `v0.50.0`.
 **Date:** 2026-08-18
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.49.1`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.50.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
@@ -17,19 +17,17 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.49** (D-081 / D-084 / RFC-0076) — FastAPI/Pydantic
-convergence: `DependsOn` / handler-response lifetimes, `BoundaryBindingPlan` native vs
-expanded binding, TypeSchema v2 dual projections, tagged public-wire unions, router
-provenance, typed OpenAPI, non-granting `RequiresScopes`, measured TypeAdapter candidates,
-Workbench/Posit **retain-custom-loader**, and RESEARCH still Experimental (`FailFast` /
-`MISSING` / partial validation not Supported). `release-gate-0.49.toml` sixteen Verified
-rows; in-tree tip `v0.49.1`; tag/PyPI deferred. Tracking
-[#380](https://github.com/eddiethedean/hedron/issues/380) owns every 0.49 gate.
-Phase **0.50** Explorer architecture is **Planned** Stage 0 only (D-085 / D-086 /
-RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501);
-related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
+**Phase focus:** Living train is **0.50** (D-085 / D-086 / RFC-0077) — Explorer architecture:
+thin `explorer_router`, `ExplorerProvider` v1, query pagination, diffs, headless CLI
+parity, bounded lab, read-only package health, and companion HTMX authoring
+[#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
 [#502](https://github.com/eddiethedean/hedron/issues/502) /
-[#503](https://github.com/eddiethedean/hedron/issues/503); no runtime claim).
+[#503](https://github.com/eddiethedean/hedron/issues/503).
+`release-gate-0.50.toml` eighteen Verified rows; in-tree tip `v0.50.0`; tag/PyPI deferred.
+Tracking [#501](https://github.com/eddiethedean/hedron/issues/501) owns every Explorer 0.50
+gate until publish assets exist. Prior Published **0.49** FastAPI/Pydantic convergence
+(D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380)).
+Phase **0.51** curated extras remains **Planned**.
 Prior Published **0.48** HTMX extensions (`MORPH-048` Deferred) / **0.47** first-class maps (`hedron-maps` `0.1.0`) /
 **0.46** package-native typed workflows /
 **0.45** typed interaction catalog / **0.44** type-driven authoring /

@@ -120,3 +120,49 @@ function upgradeOpenModalDialogs(root) {
     }
   }
 }
+
+function toastHost() {
+  return document.getElementById("hedron-toast");
+}
+
+function enqueueToast(node) {
+  const host = toastHost();
+  if (!(host instanceof HTMLElement) || !(node instanceof HTMLElement)) return;
+  host.appendChild(node);
+  const ttl = node.getAttribute("data-hedron-ttl");
+  if (ttl) {
+    const ms = Number(ttl);
+    if (Number.isFinite(ms) && ms > 0) {
+      window.setTimeout(() => node.remove(), ms);
+    }
+  }
+}
+
+function applyErrorTemplate(elt) {
+  const host = elt instanceof Element ? elt.closest("[data-hedron-error-slot]") : null;
+  if (!(host instanceof HTMLElement)) return;
+  const tpl = host.querySelector("template[data-hedron-error-template]");
+  if (!(tpl instanceof HTMLTemplateElement)) return;
+  host.replaceChildren(tpl.content.cloneNode(true));
+}
+
+document.body.addEventListener("htmx:afterSwap", (event) => {
+  const swapped = event.detail?.elt;
+  if (swapped instanceof HTMLElement && swapped.matches("[data-hedron-toast]")) {
+    enqueueToast(swapped);
+  }
+  const host = toastHost();
+  if (host instanceof HTMLElement) {
+    host.querySelectorAll("[data-hedron-toast]").forEach((node) => {
+      if (node.parentElement !== host) enqueueToast(node);
+    });
+  }
+});
+
+document.body.addEventListener("htmx:responseError", (event) => {
+  applyErrorTemplate(event.detail?.elt);
+});
+document.body.addEventListener("htmx:sendError", (event) => {
+  applyErrorTemplate(event.detail?.elt);
+});
+

@@ -104,6 +104,7 @@ class InteractionPolicy:
     declared_regions: tuple[FragmentRegion, ...] = ()
     # When False (default), HTMX HX-Target without declared regions is rejected.
     allow_undeclared_targets: bool = False
+    history_restore: Literal["page", "primary", "oob"] = "page"
 
 
 @dataclass(frozen=True, slots=True)

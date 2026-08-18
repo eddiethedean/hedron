@@ -493,6 +493,8 @@ class Select(Component[SelectProps]):
         aria_invalid: str | None = None,
         aria_required: str | None = None,
         class_: str | None = None,
+        depends_on: str | None = None,
+        source: str | None = None,
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -509,6 +511,8 @@ class Select(Component[SelectProps]):
         )
         self._options = tuple(options)
         self._value = value
+        self._depends_on = depends_on
+        self._source = source
 
     def render(self) -> NodeLike:
         opts = []
@@ -525,6 +529,15 @@ class Select(Component[SelectProps]):
             attrs["class_"] = class_names("hedron-select", self.props.class_)
         if self.props.required:
             attrs["required"] = True
+        if self._depends_on and self._source:
+            parent = self._depends_on
+            if not parent.startswith("#"):
+                parent = f"#field-{parent}"
+            attrs["hx-get"] = SafeUrl.parse(self._source, purpose=UrlPurpose.NAVIGATION)
+            attrs["hx-trigger"] = f"change from:{parent}"
+            attrs["hx-include"] = parent
+            attrs["hx-target"] = "this"
+            attrs["hx-swap"] = "outerHTML"
         attrs["aria"] = {
             "describedby": self.props.aria_describedby,
             "invalid": self.props.aria_invalid,

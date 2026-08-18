@@ -42,7 +42,7 @@ from hedron_posit.urls import (
     validate_external_base_url,
 )
 
-__version__ = "0.49.1"
+__version__ = "0.50.0"
 
 __all__ = [
     "ConnectConfig",

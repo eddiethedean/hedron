@@ -4,7 +4,7 @@
 
 schema_version = 1
 phase = "0.50"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.49.1"
 required_predecessor = "v0.49.1"
 target = "v0.50.0"
@@ -18,11 +18,11 @@ stacks_on_catalog = "docs/acceptance/catalog-entry-045.toml"
 stacks_on_adapter = "docs/acceptance/adapter-disposition-044.toml"
 stacks_on_host = "docs/acceptance/host-portable-facts-045.toml"
 diagnostic_family = "HED-EXPLORER-*"
-diagnostic_family_docs_only = true
+diagnostic_family_docs_only = false
 thin_router_line_target = 200
 thin_router_drops_routes = false
-current_router_lines = 1366
-services_layer_shipped = false
+current_router_lines = 173
+services_layer_shipped = true
 explorer_depends_on_hedron = false
 
 [mount]
