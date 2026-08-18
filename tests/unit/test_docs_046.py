@@ -23,6 +23,9 @@ def test_docs_046_layers_and_whats_new() -> None:
     assert "SR-021" not in whats
     assert "HED-BUNDLE-0001" in codes
     assert "FeatureBundle" in stability or "PACKAGE_WORKFLOWS" in stability or "0.46" in stability
-    assert "whats-new-0.46" in mkdocs
+    assert "whats-new-archive" in mkdocs
+    assert "whats-new-0.46" in (ROOT / "docs" / "guides" / "whats-new-archive.md").read_text(
+        encoding="utf-8"
+    )
     assert "include_feature" in impl
     assert "#334" in (ROOT / "docs" / "acceptance" / "RELEASE_0_46.md").read_text(encoding="utf-8")

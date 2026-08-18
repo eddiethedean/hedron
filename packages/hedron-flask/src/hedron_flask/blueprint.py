@@ -12,7 +12,7 @@ from hedron_core.addressable import AddressableDescriptor
 from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderResult
-from hedron_core.security_policy import SecurityPolicy
+from hedron_core.security_policy import SecurityPolicy, SecurityProfile
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, assert_flask_csrf_strategy, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
 

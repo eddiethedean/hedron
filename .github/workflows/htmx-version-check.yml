@@ -1,0 +1,31 @@
+name: HTMX stable version check
+
+on:
+  schedule:
+    # Nightly at 05:17 UTC. The non-round minute reduces scheduled-run congestion.
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: htmx-stable-version-check
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Compare vendored HTMX pins with npm stable
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check HTMX core and extension versions
+        run: python scripts/check_htmx_versions.py
