@@ -247,17 +247,25 @@ class HedronPagesMixin:
             from hedron.handles import build_view_handle, wrap_endpoint_result
             from hedron.type_authoring import class_config_conflict, compile_view_class
 
+            resolved_host = host
+            resolved_loading = loading
+            resolved_error = error
+            resolved_fallback = fallback
             if inspect.isclass(fn):
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
+                resolved_host = host or getattr(fn, "host", None)
+                resolved_loading = loading if loading is not None else getattr(fn, "loading", None)
+                resolved_error = error if error is not None else getattr(fn, "error", None)
+                resolved_fallback = fallback or getattr(fn, "fallback", None)
                 fn = compile_view_class(fn)  # type: ignore[assignment]
 
             app_id = str(getattr(self, "hedron_app_id", "") or "")
             mount = str(getattr(getattr(self, "state", None), "hedron_mount_path", "") or "")
-            view_host = host or FragmentHost()
-            if loading is not None:
-                view_host._loading = loading
-            if error is not None:
-                view_host._error = error
+            view_host = resolved_host or FragmentHost()
+            if resolved_loading is not None:
+                view_host._loading = resolved_loading
+            if resolved_error is not None:
+                view_host._error = resolved_error
             handle = build_view_handle(
                 fn,
                 app_id=app_id,
@@ -265,7 +273,7 @@ class HedronPagesMixin:
                 key=key,
                 name=name,
                 host=view_host,
-                fallback=fallback,
+                fallback=resolved_fallback,
                 include_in_schema=include_in_schema,
                 mount_path=mount,
             )
@@ -362,10 +370,12 @@ class HedronPagesMixin:
             from hedron_core.codes import HED_CMD_0002
             from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
+            resolved_fallback = fallback
             if inspect.isclass(fn):
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
                 compiled_fn = compile_command_class(fn)
                 compiled_fn.__hedron_outcomes__ = getattr(fn, "outcomes", None)
+                resolved_fallback = fallback or getattr(fn, "fallback", None)
                 fn = compiled_fn  # type: ignore[assignment]
 
             app_id = str(getattr(self, "hedron_app_id", "") or "")
@@ -376,7 +386,7 @@ class HedronPagesMixin:
                 path=path if isinstance(path, str) else None,
                 method=method,
                 name=name,
-                fallback=fallback,
+                fallback=resolved_fallback,
                 include_in_schema=include_in_schema,
                 mount_path=mount,
             )
