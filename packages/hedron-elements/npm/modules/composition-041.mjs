@@ -78,8 +78,8 @@ export function draftStorageKey(identity) {
 function validDraft(envelope, now = Date.now()) {
   if (!plainObject(envelope) || envelope.version !== 1 || !plainObject(envelope.fields)) return false;
   if (!Number.isFinite(envelope.expiresAt) || envelope.expiresAt <= now || envelope.expiresAt - envelope.createdAt > 1800000) return false;
-  const forbidden = /auth|authorization|cookie|csrf|file|html|password|secret|token/i;
-  return !Object.keys(envelope.fields).some((key) => forbidden.test(key));
+  const forbidden = new Set(["auth", "authorization", "cookie", "csrf", "file", "html", "password", "secret", "token"]);
+  return !Object.keys(envelope.fields).some((key) => forbidden.has(String(key).toLowerCase()));
 }
 
 export function storeDraft(identity, fields, options = {}) {

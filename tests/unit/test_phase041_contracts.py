@@ -103,7 +103,7 @@ def test_draft_transfer_is_subject_bound_bounded_and_forbids_capabilities() -> N
             element_contract="x",
             schema_version="1",
             subject=subject,
-            fields={"csrf_token": "x"},
+            fields={"password": "x"},
             operation_id="op-2",
             now=100,
         )

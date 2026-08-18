@@ -146,7 +146,7 @@ class DraftTransferEnvelope:
             raise ValueError("draft transfer is expired or exceeds maximum TTL")
         for name, value in self.fields.items():
             lowered = str(name).lower()
-            if any(token in lowered for token in FORBIDDEN_FIELD_TOKENS):
+            if lowered in FORBIDDEN_FIELD_TOKENS:
                 raise ValueError(f"forbidden draft field: {name!r}")
             if isinstance(value, (bytes, bytearray, memoryview)):
                 raise ValueError(f"binary draft field is forbidden: {name!r}")
