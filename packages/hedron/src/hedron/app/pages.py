@@ -190,6 +190,8 @@ class HedronPagesMixin:
         host: FragmentHost | None = None,
         loading: Any = None,
         error: Any = None,
+        empty: Any = None,
+        cache: Any = None,
         fallback: str | None = None,
         include_in_schema: bool = False,
         dependencies: Sequence[Any] | None = None,
@@ -221,6 +223,8 @@ class HedronPagesMixin:
                 host=host or getattr(view_cls, "host", None),
                 loading=loading if loading is not None else getattr(view_cls, "loading", None),
                 error=error if error is not None else getattr(view_cls, "error", None),
+                empty=empty if empty is not None else getattr(view_cls, "empty", None),
+                cache=cache if cache is not None else getattr(view_cls, "cache", None),
                 fallback=fallback or getattr(view_cls, "fallback", None),
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
@@ -235,6 +239,8 @@ class HedronPagesMixin:
                 host=host,
                 loading=loading,
                 error=error,
+                empty=empty,
+                cache=cache,
                 fallback=fallback,
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
@@ -250,12 +256,16 @@ class HedronPagesMixin:
             resolved_host = host
             resolved_loading = loading
             resolved_error = error
+            resolved_empty = empty
+            resolved_cache = cache
             resolved_fallback = fallback
             if inspect.isclass(fn):
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
                 resolved_host = host or getattr(fn, "host", None)
                 resolved_loading = loading if loading is not None else getattr(fn, "loading", None)
                 resolved_error = error if error is not None else getattr(fn, "error", None)
+                resolved_empty = empty if empty is not None else getattr(fn, "empty", None)
+                resolved_cache = cache if cache is not None else getattr(fn, "cache", None)
                 resolved_fallback = fallback or getattr(fn, "fallback", None)
                 fn = compile_view_class(fn)  # type: ignore[assignment]
 
@@ -266,6 +276,10 @@ class HedronPagesMixin:
                 view_host._loading = resolved_loading
             if resolved_error is not None:
                 view_host._error = resolved_error
+            if resolved_empty is not None:
+                view_host._empty = resolved_empty
+            if resolved_cache is not None:
+                view_host._cache = resolved_cache
             handle = build_view_handle(
                 fn,
                 app_id=app_id,
@@ -326,6 +340,7 @@ class HedronPagesMixin:
             class_config_conflict(command_cls, decorator_fallback=fallback, decorator_path=None)
             compiled = compile_command_class(command_cls)
             compiled.__hedron_outcomes__ = getattr(command_cls, "outcomes", None)  # type: ignore[attr-defined]
+            compiled.__hedron_effects__ = getattr(command_cls, "effects", None)  # type: ignore[attr-defined]
             return self.command(
                 None,
                 method=method,
@@ -375,6 +390,7 @@ class HedronPagesMixin:
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
                 compiled_fn = compile_command_class(fn)
                 compiled_fn.__hedron_outcomes__ = getattr(fn, "outcomes", None)
+                compiled_fn.__hedron_effects__ = getattr(fn, "effects", None)
                 resolved_fallback = fallback or getattr(fn, "fallback", None)
                 fn = compiled_fn  # type: ignore[assignment]
 

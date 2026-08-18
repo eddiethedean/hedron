@@ -604,7 +604,7 @@ def wrap_refreshable_result(handle: FragmentHandle[Any, Any], result: object) ->
     if isinstance(result, (InteractionResult, Patch, PatchSet, RefreshIntent)):
         return result
     url = _bound_url(handle._bound) if handle._bound is not None else handle.path
-    return handle.host.materialize(
+    hosted = handle.host.materialize(
         cast(NodeLike, result),
         dom_id=handle.dom_id,
         get_url=url,
@@ -612,6 +612,10 @@ def wrap_refreshable_result(handle: FragmentHandle[Any, Any], result: object) ->
         logical_id=handle.logical_id,
         fallback=handle.fallback,
     )
+    cache = getattr(handle.host, "_cache", None)
+    if cache is not None:
+        return InteractionResult(content=hosted, cache=cache)
+    return hosted
 
 
 def _call_arguments(
