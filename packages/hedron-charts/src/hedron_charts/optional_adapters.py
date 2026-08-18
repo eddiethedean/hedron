@@ -7,6 +7,7 @@ import json
 import re
 from collections.abc import Mapping, Sequence
 from typing import Any
+from urllib.parse import unquote
 
 from hedron_charts.host_render import (
     downsample_plotly_body,
@@ -562,8 +563,9 @@ class ThreeJsAdapter:
             raise ValueError(f"Model format not allowlisted: {url!r}")
         if url.startswith(("http://", "https://", "//", "data:", "file:", "javascript:")):
             reject_remote_urls({"url": url})
-        # App-controlled local asset refs only; reject path traversal (#194).
-        parts = [p for p in url.replace("\\", "/").split("/") if p not in ("", ".")]
+        # App-controlled local asset refs only; reject path traversal (#194, #262).
+        decoded = unquote(url.replace("\\", "/"))
+        parts = [p for p in decoded.split("/") if p not in ("", ".")]
         if ".." in parts:
             raise ValueError(f"Model path traversal rejected: {url!r}")
         size = int(value.get("bytes") or 0)
