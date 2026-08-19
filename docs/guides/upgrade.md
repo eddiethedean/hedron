@@ -1,7 +1,7 @@
 # Upgrade to Hedron 0.50
 
 This guide covers an application upgrade onto the **0.50.x** train
-(**`v0.50.1`**). Public-index notes: [Installation](../getting-started/installation.md).
+(**`v0.50.2`** in-tree; latest on PyPI **`v0.50.1`**). Public-index notes: [Installation](../getting-started/installation.md).
 New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary

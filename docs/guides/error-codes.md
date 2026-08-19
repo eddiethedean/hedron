@@ -171,6 +171,8 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-CONTENT-0003` | `HED_CONTENT_0003` |
 | `HED-CONTENT-0004` | `HED_CONTENT_0004` |
 | `HED-CONTENT-0005` | `HED_CONTENT_0005` |
+| `HED-CONTENT-0006` | `HED_CONTENT_0006` |
+| `HED-CONTENT-0007` | `HED_CONTENT_0007` |
 
 ## HED-CSS
 

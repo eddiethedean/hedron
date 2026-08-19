@@ -702,6 +702,42 @@ def test_208_redis_cache_tag_index_gets_ttl() -> None:
         def ping(self) -> bool:
             return True
 
+        def pipeline(self, transaction: bool = True) -> _StubPipe:
+            del transaction
+            return _StubPipe(self)
+
+    class _StubPipe:
+        def __init__(self, client: _StubRedis) -> None:
+            self._client = client
+            self._ops: list[tuple[str, tuple[object, ...], dict[str, object]]] = []
+
+        def set(self, *a: object, **k: object) -> _StubPipe:
+            self._ops.append(("set", a, k))
+            return self
+
+        def sadd(self, *a: object, **k: object) -> _StubPipe:
+            self._ops.append(("sadd", a, k))
+            return self
+
+        def srem(self, *a: object, **k: object) -> _StubPipe:
+            self._ops.append(("srem", a, k))
+            return self
+
+        def delete(self, *a: object, **k: object) -> _StubPipe:
+            self._ops.append(("delete", a, k))
+            return self
+
+        def pexpire(self, *a: object, **k: object) -> _StubPipe:
+            self._ops.append(("pexpire", a, k))
+            return self
+
+        def execute(self) -> list[object]:
+            out: list[object] = []
+            for name, args, kwargs in self._ops:
+                out.append(getattr(self._client, name)(*args, **kwargs))
+            self._ops.clear()
+            return out
+
     client = _StubRedis()
     backend = RedisCacheBackend(client)
     backend.set("k1", {"n": 1}, ttl=1.5, tags=("t",))

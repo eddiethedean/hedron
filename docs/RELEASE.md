@@ -2,7 +2,7 @@
 
 This is the living maintainer runbook for the `0.50.x` train. Historical cut records
 live under `docs/archive/`. The current train on PyPI is `hedron` `0.50.1`
-(`registry_status = "uploaded"`).
+(`registry_status = "deferred"` for in-tree `0.50.2`).
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag.
@@ -29,9 +29,9 @@ Python metadata does not. Never move or replace a published tag.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.50.1
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.50.2
 bash scripts/ci_checks.sh browser --python 3.12
-uv run python scripts/check_release_gate.py 0.50.1
+uv run python scripts/check_release_gate.py 0.50.2
 uv run python scripts/verify_pkg_50.py
 uv run python scripts/verify_pkg_49.py
 ```
@@ -42,17 +42,17 @@ After reviewing the complete version/changelog diff and confirming CI on `main` 
 
 ```bash
 git fetch --tags origin
-git rev-parse v0.50.1 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
-git tag -a v0.50.1 -m "Hedron 0.50.1"
-git push origin v0.50.1
+git rev-parse v0.50.2 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
+git tag -a v0.50.2 -m "Hedron 0.50.2"
+git push origin v0.50.2
 ```
 
-Pushing `v0.50.1` runs `.github/workflows/release.yml`, which re-runs CI, publishes
+Pushing `v0.50.2` runs `.github/workflows/release.yml`, which re-runs CI, publishes
 coordinated wheels to PyPI (skipping satellite versions already on the index), and
 creates the GitHub Release. Release CI requires SBOM/evidence-bundle attach on train
 tags (SUPPLY-025) via `scripts/build_evidence_bundle.py` and `scripts/generate_sbom.py`.
 Do not retag `v0.41.0`, `v0.42.0`, `v0.43.0`, `v0.44.0`, `v0.45.0`, `v0.46.0`,
-`v0.47.0`, `v0.48.0`, `v0.49.0`, `v0.49.1`, or `v0.50.0`.
+`v0.47.0`, `v0.48.0`, `v0.49.0`, `v0.49.1`, `v0.50.0`, or `v0.50.1`.
 
 ## After a successful upload
 

@@ -218,16 +218,9 @@ def _apply_auth_cache_headers(headers: dict[str, str], *, authenticated: bool) -
 
 
 def _security_policy_from_settings() -> SecurityPolicy:
-    try:
-        from django.conf import settings
-        from django.core.exceptions import ImproperlyConfigured
-    except ImportError:
-        return SecurityPolicy.from_name("standard")
-    try:
-        name = getattr(settings, "HEDRON_SECURITY_PROFILE", "standard")
-        return SecurityPolicy.from_name(str(name))
-    except ImproperlyConfigured:
-        return SecurityPolicy.from_name("standard")
+    from hedron_django.middleware import security_policy_from_settings
+
+    return security_policy_from_settings()
 
 
 def _django_static_href(path: str) -> str:

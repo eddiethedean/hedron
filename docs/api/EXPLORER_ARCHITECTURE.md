@@ -11,7 +11,7 @@ headless/CLI parity. Planning baseline was Published in-tree `v0.49.1`. Tracking
 [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
 [#502](https://github.com/eddiethedean/hedron/issues/502) /
 [#503](https://github.com/eddiethedean/hedron/issues/503) shipped on this cut and
-are not Explorer gates. Living tip is `v0.50.1`.
+are not Explorer gates. Living tip is `v0.50.2`.
 
 The shipped 0.49 mount/mode contract remains [Explorer API](EXPLORER.md). This page is
 the 0.50 architecture contract.

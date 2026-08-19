@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from collections.abc import Callable, Sequence
 
 from django.urls import URLPattern, URLResolver, path
@@ -33,8 +34,14 @@ def include_component_path(
     ep = name or f"hedron_{descriptor.logical_id.replace(':', '_').replace('.', '_')}"
 
     def view(request: object, **kwargs: object) -> object:
-        del request
-        return descriptor.factory(**kwargs)
+        factory = descriptor.factory
+        try:
+            signature = inspect.signature(factory)
+        except (TypeError, ValueError):
+            return factory(**kwargs)
+        if "request" in signature.parameters:
+            return factory(request=request, **kwargs)
+        return factory(**kwargs)
 
     return path(route, hedron_view(view), name=ep)
 

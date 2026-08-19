@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.50.2] — 2026-08-19
+
+### Changed
+- Coordinated train tip `0.50.2` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- flask-login `is_authenticated=False` is authoritative; leftover session ids are ignored.
+- `csrf_protect=False` cannot disable an enabled `SecurityPolicy` CSRF gate.
+- Missing CSRF strategy with CSRF enabled fails closed.
+- Auth-signal errors apply private `Cache-Control`.
+
 ## [0.50.1] — 2026-08-18
 
 ### Changed

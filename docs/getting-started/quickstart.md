@@ -8,7 +8,7 @@ If terms such as project folder, terminal, virtual environment, or development s
 use [Your first application with VS Code](first-app-vscode.md). In Posit Workbench, use the
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
-Install the current train: `hedron>=0.50.1,<0.51`. Other pins and extras:
+Install from PyPI: `hedron>=0.50.1,<0.51`. Other pins and extras:
 [Installation](installation.md).
 
 ## 1. Scaffold and run

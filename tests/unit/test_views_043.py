@@ -49,7 +49,7 @@ def test_refreshable_returns_handle_and_generated_route() -> None:
     assert frag.status_code == 200
     assert "live" in frag.text
     missing = client.get(status.path, headers={"HX-Request": "true"})
-    assert missing.status_code == 200
+    assert missing.status_code == 403
     disagree = client.get(
         status.path,
         headers={"HX-Request": "true", "HX-Target": "evil"},

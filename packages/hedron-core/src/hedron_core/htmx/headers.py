@@ -174,7 +174,9 @@ _STATUS_DEFAULTS: dict[int, StatusPolicy] = {
     401: StatusPolicy(401, message="Authentication required", retarget="#hedron-auth"),
     403: StatusPolicy(403, message="Forbidden", retarget="#hedron-auth"),
     409: StatusPolicy(409, message="Conflict", reswap="outerHTML"),
-    422: StatusPolicy(422, message="Validation failed", reswap="innerHTML"),
+    422: StatusPolicy(
+        422, message="Validation failed", retarget="#hedron-errors", reswap="innerHTML"
+    ),
     429: StatusPolicy(429, message="Too many requests", reswap="innerHTML"),
     500: StatusPolicy(500, message="Server error", retarget="#hedron-errors"),
 }

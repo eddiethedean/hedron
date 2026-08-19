@@ -65,16 +65,25 @@ pip install "hedron[images]>=0.50.1,<0.51"
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `path_or_bytes` | `str \| bytes` | required | Filesystem path or raw image bytes |
+| `path_or_bytes` | `str \| Path \| bytes` | required | Raw image bytes, or a filesystem path |
+| `root` | `Path` | required for `str`/`Path` | Jail directory; resolved path must stay under `root` |
 | `max_width` | `int` | `1600` | Downscale when wider |
 | `format` | `str` | `"PNG"` | Pillow output format (`PNG` → RGBA, else RGB) |
 
 **Returns:** `bytes` — encoded image bytes.
 
+Paths are resolved with `Path.resolve().relative_to(root)` (same contract as
+`safe_download_response`). Bytes need no `root`. Missing `root` for a path is
+`HED-CONTENT-0006`; escape is `HED-CONTENT-0007`.
+
 ```python
+from pathlib import Path
+
 from hedron import process_image
 
-png_bytes = process_image("photo.jpg", max_width=1200, format="PNG")
+uploads = Path("/var/app/uploads")
+png_bytes = process_image("photo.jpg", root=uploads, max_width=1200, format="PNG")
+png_from_bytes = process_image(raw, max_width=1200, format="PNG")
 ```
 
 ## `validate_email_address`

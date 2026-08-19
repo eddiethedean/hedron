@@ -14,6 +14,7 @@ from hedron_core.builtins.content import Text
 from hedron_core.builtins.surfaces import Alert
 from hedron_core.component import NodeLike
 from hedron_core.html import html
+from hedron_core.htmx.policy import FragmentRegion
 from hedron_core.interaction import StatusPolicy, status_policy_for
 
 __all__ = [
@@ -64,6 +65,15 @@ def _policy_headers(policy: StatusPolicy) -> dict[str, str]:
     return {}
 
 
+def _status_chrome(policy: StatusPolicy) -> tuple[tuple[FragmentRegion, ...], str]:
+    """Authorize error HTML against status chrome, never the client's HX-Target."""
+    retarget = policy.retarget or ""
+    if not retarget:
+        return (), ""
+    name = retarget.removeprefix("#")
+    return (FragmentRegion(id=name, selector=retarget),), retarget
+
+
 def install_interaction_handlers(app: FastAPI) -> None:
     """Register HTMX-aware exception handlers on a FastAPI/Hedron app."""
 
@@ -72,6 +82,7 @@ def install_interaction_handlers(app: FastAPI) -> None:
         if not is_htmx_request(request):
             return JSONResponse(status_code=422, content={"detail": exc.errors()})
         policy = status_policy_for(422)
+        chrome, authorized = _status_chrome(policy)
         return render_component_response(
             validation_error_fragment(exc),
             request=request,
@@ -79,7 +90,9 @@ def install_interaction_handlers(app: FastAPI) -> None:
             extra_headers=_policy_headers(policy),
             authenticated=bool(getattr(request.state, "hedron_authenticated", False)),
             policy=getattr(request.app.state, "hedron_security", None),
-            allow_undeclared_targets=True,
+            fragment_regions=chrome or None,
+            allow_undeclared_targets=False,
+            _authorized_htmx_target=authorized,
         )
 
     @app.exception_handler(StarletteHTTPException)
@@ -89,6 +102,7 @@ def install_interaction_handlers(app: FastAPI) -> None:
         if exc.status_code == 204:
             return Response(status_code=204, headers=_policy_headers(status_policy_for(204)))
         policy = status_policy_for(exc.status_code)
+        chrome, authorized = _status_chrome(policy)
         return render_component_response(
             semantic_error_fragment(exc.status_code, exc.detail),
             request=request,
@@ -96,5 +110,7 @@ def install_interaction_handlers(app: FastAPI) -> None:
             extra_headers=_policy_headers(policy),
             authenticated=bool(getattr(request.state, "hedron_authenticated", False)),
             policy=getattr(request.app.state, "hedron_security", None),
-            allow_undeclared_targets=True,
+            fragment_regions=chrome or None,
+            allow_undeclared_targets=False,
+            _authorized_htmx_target=authorized,
         )

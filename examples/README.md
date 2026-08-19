@@ -27,7 +27,7 @@ on a clean venv — that is the polished first-success path.
 ## Phase evidence (0.15–0.18) — maintainers
 
 Stub exit scenarios, not product tutorials. Docs:
-[phase evidence](https://hedron.readthedocs.io/en/latest/examples/phase-evidence/).
+[phase evidence](https://github.com/eddiethedean/hedron/tree/main/examples/phase-evidence).
 
 | Example | Phase | Notes |
 |---|---|---|

@@ -19,7 +19,8 @@ planning baseline locked; architecture, provider, query, diff, lab, and headless
 locks recorded; real `explorer_router`, `ExplorerPanelMeta`, frozen `/hedron-explorer/`
 mount/modes, CLI `inspect`/`graph`/`check`, and `diagnostics_to_sarif` seams named.
 
-**Post-cut:** Stage 1 shipped in-tree `v0.50.0`. Living tip is `v0.50.0`.
+**Post-cut:** Stage 1 shipped in-tree `v0.50.0`. Living tip is `v0.50.2`
+(PyPI latest `v0.50.1`; 0.50.2 tag deferred).
 [#501](https://github.com/eddiethedean/hedron/issues/501) stays open for tag/PyPI.
 Do not rewrite the Stage 0 contract above.
 No runtime or version claim.

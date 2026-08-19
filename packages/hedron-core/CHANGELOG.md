@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.50.2] — 2026-08-19
+
+### Changed
+- Coordinated train tip `0.50.2` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Update-target ownership treats empty `app_id` as foreign when an expected id is set;
+  incoming `InteractionResult` refresh/OOB hosts are re-checked.
+- Redis cache SET requires transactional `pipeline` (MULTI/EXEC).
+- Invalid plugin PEP 440 specifiers raise `HED-PLUGIN-FAILED` instead of incompatible.
+- Status 422 retargets `#hedron-errors`.
+
 ## [0.50.1] — 2026-08-18
 
 ### Changed

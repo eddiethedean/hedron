@@ -1,4 +1,4 @@
-"""hedron-elements: Alpha Web Component ABI and first-party elements."""
+"""hedron-elements: Beta Web Component ABI and first-party elements."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from hedron_elements.state import (
 )
 from hedron_elements.transfer import DraftTransferEnvelope, subject_fingerprint
 
-__version__ = "0.50.1"
+__version__ = "0.50.2"
 
 __all__ = [
     "AUTHOR_SURFACES",

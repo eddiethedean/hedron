@@ -612,9 +612,53 @@ def _toast_oob(toast: NodeLike | str | None) -> tuple[OobUpdate, ...]:
 
 
 def _ensure_ownership(target: UpdateTarget, expected_app_id: str | None) -> None:
-    if expected_app_id is None or not target.app_id:
+    if expected_app_id is None:
         return
-    if target.app_id != expected_app_id:
+    if not target.app_id or target.app_id != expected_app_id:
+        raise error(
+            HED_UPDATE_0003,
+            title="Foreign or unregistered handle",
+            explanation="Patch/refresh target is not owned by the active application.",
+            remediation="Use handles registered on this app; do not forge metadata.",
+        )
+
+
+def _ensure_result_ownership(result: InteractionResult, expected_app_id: str | None) -> None:
+    """Re-check refresh/OOB hosts on a precompiled ``InteractionResult``."""
+    if expected_app_id is None:
+        return
+    trigger_keys: set[str] = set()
+    for payload in (result.trigger, result.trigger_after_swap, result.trigger_after_settle):
+        if isinstance(payload, dict):
+            trigger_keys.update(str(key) for key in payload)
+    refresh_keys = {key for key in trigger_keys if key.startswith("hedron:refresh-")}
+    matched_refresh: set[str] = set()
+    oob_ids = {item.element_id for item in result.oob if item.element_id}
+    region = result.region_id or ""
+    for descriptor in list_handle_descriptors():
+        host = safe_dom_id(descriptor.logical_id)
+        event = refresh_event_name(host)
+        if event in refresh_keys:
+            matched_refresh.add(event)
+        referenced = (
+            event in refresh_keys
+            or region in {descriptor.logical_id, host}
+            or host in oob_ids
+            or descriptor.logical_id in oob_ids
+        )
+        if not referenced:
+            continue
+        _ensure_ownership(
+            PortableTarget(
+                logical_id=descriptor.logical_id,
+                dom_id=host,
+                path=descriptor.path or "/",
+                app_id=descriptor.app_id,
+                region=FragmentRegion(id=host, selector=f"#{host}"),
+            ),
+            expected_app_id,
+        )
+    if refresh_keys - matched_refresh:
         raise error(
             HED_UPDATE_0003,
             title="Foreign or unregistered handle",
@@ -691,6 +735,7 @@ def compile_to_interaction(value: object, *, expected_app_id: str | None = None)
                 explanation="A response cannot combine refresh intents with patch targets.",
                 remediation="Return refresh(...) or patches(...), not both.",
             )
+        _ensure_result_ownership(value, expected_app_id)
         return value
     if isinstance(value, RefreshIntent) and isinstance(value, PatchSet):
         raise error(

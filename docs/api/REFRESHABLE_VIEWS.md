@@ -46,7 +46,8 @@ need them. They are not the first-app path.
 
 ## Shipped symbols
 
-These 0.43 handles shipped; 0.50 adds `ActionHandle.effect` / `.after` success compilation
+These 0.43 handles shipped on the 0.42 Web Component platform predecessor (D-071);
+0.50 adds `ActionHandle.effect` / `.after` success compilation
 (see [Interaction API](INTERACTION.md)).
 
 | Symbol | Package | Role |

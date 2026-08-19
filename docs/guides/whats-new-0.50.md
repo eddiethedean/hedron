@@ -1,6 +1,16 @@
 # What's new in 0.50
 
-Pin `hedron>=0.50.1,<0.51`. This version is on PyPI.
+Pin `hedron>=0.50.1,<0.51` from PyPI. In-tree tip is **0.50.2** (Git tag and PyPI
+upload are deferred). This patch is not on PyPI yet.
+
+## 0.50.2 patch
+
+Correctness and security patch on the 0.50 train: login/OIDC CSRF compare, OIDC
+`extra_params` and logout redirect, Flask leftover-session and CSRF fail-closed
+gates, `include_component` rollback, handle ownership and ActionHandle merge,
+FragmentHandle exception leak, HTMX 422/`h-view-*` targets, Explorer simulate,
+Django policy/`include_component_path`, Flask cache-on-auth-error, `process_image`
+root jail, Redis pipeline fail-closed, and plugin specifier parse codes.
 
 ## 0.50.1 patch
 

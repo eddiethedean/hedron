@@ -10,13 +10,14 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-This documentation describes **0.50.1**, which is on **PyPI**. **Install from PyPI**
-unless you are developing Hedron itself.
+This documentation describes **0.50.2**. Git tag and PyPI upload are **deferred**;
+the latest on **PyPI** is **0.50.1**. **Install from PyPI** unless you are developing
+Hedron itself.
 
 | You are… | Install |
 |---|---|
 | Building an app from PyPI | `hedron>=0.50.1,<0.51` |
-| Working in this repository | `uv sync` (editable `0.50.1`) |
+| Working in this repository | `uv sync` (editable `0.50.2`) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
 are **Beta** (usable, no 1.0, no SLA). Capability detail:
@@ -137,7 +138,7 @@ cd hedron
 uv sync
 ```
 
-This checkout is **0.50.1**. Application installs from PyPI use the same pin:
+This checkout is **0.50.2** (tag/PyPI deferred). Application installs from PyPI use
 `hedron>=0.50.1,<0.51`.
 
 See [Contributing](../CONTRIBUTING.md).
@@ -160,9 +161,10 @@ pip install "hedron-sample-kit>=0.1.10,<0.2"
 | `hedron[data]` | DataTable / DataEditor / data sources | [hedron-data](../packages/hedron-data.md) |
 | `hedron[dev]` | Component Explorer (`/hedron-explorer/`) | [hedron-explorer](../packages/hedron-explorer.md) |
 | `hedron[charts]` | First-party / Matplotlib charts | [hedron-charts](../packages/hedron-charts.md) |
+| `hedron[maps]` | First-class maps (`hedron-maps`) | [hedron-maps](../packages/hedron-maps.md) |
 | `hedron-flask` / `hedron-django` | Flask or Django host (no FastAPI at runtime) | [Flask](flask.md) · [Django](django.md) |
 
-Other extras (`jinja`, `auth`, `mcp`, `gradio`, `elements` **Beta** for Supported
+Other extras (`jinja`, `auth`, `mcp`, `gradio`, `maps`, `elements` **Beta** for Supported
 inventory, Workbench/Posit, notebook, native): [Packages](../packages/index.md).
 
 Charts and the sample plugin have explicit compatibility floors. Versions through

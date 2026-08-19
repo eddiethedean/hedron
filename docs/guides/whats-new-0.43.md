@@ -1,6 +1,6 @@
 # What's new in 0.43
 
-**Published `v0.43.0`** (in-tree cut; tag/PyPI deferred). Owning decisions: D-071 / D-073.
+**Published `v0.43.0`**. Owning decisions: D-071 / D-073.
 Tracking: [#311](https://github.com/eddiethedean/hedron/issues/311).
 
 For new apps, pin `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).

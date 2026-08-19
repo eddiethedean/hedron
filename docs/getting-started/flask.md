@@ -4,7 +4,8 @@ Use `hedron-flask` when your app is Flask-native. The **CLI** (`hedron new --fla
 comes from the `hedron` package; **runtime** is `hedron-flask` + `hedron-core`. The
 adapter does **not** install or require FastAPI in the app process.
 
-This documentation is **0.50.1**. Pin `hedron>=0.50.1,<0.51` (or `hedron-flask>=0.50.1,<0.51`).
+This documentation describes **0.50.2** (in-tree; latest on PyPI is **0.50.1**).
+Pin from PyPI `hedron>=0.50.1,<0.51` (or `hedron-flask>=0.50.1,<0.51`).
 Public-index notes: [Installation](installation.md).
 
 ## Golden path (scaffold + Refresh)

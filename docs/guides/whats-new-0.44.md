@@ -1,6 +1,6 @@
 # What's new in 0.44
 
-**Published `v0.44.0`** (in-tree cut; tag/PyPI deferred). Owning decisions: D-072 / D-073 / D-076.
+**Published `v0.44.0`**. Owning decisions: D-072 / D-073 / D-076.
 Tracking: [#318](https://github.com/eddiethedean/hedron/issues/318).
 
 For new apps, pin `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).

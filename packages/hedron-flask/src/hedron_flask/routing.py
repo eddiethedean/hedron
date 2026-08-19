@@ -84,8 +84,8 @@ def hedron_route(
             if extension is not None:
                 cookie = str(getattr(extension, "csrf_cookie_name", csrf_cookie_name))
             protect = csrf_protect
-            if isinstance(policy, SecurityPolicy) and not policy.csrf_enabled:
-                protect = False
+            if isinstance(policy, SecurityPolicy):
+                protect = bool(policy.csrf_enabled)
             if protect and request.method.upper() not in _SAFE_METHODS:
                 if isinstance(policy, SecurityPolicy):
                     validate_csrf(request, cookie_name=cookie, policy=policy)

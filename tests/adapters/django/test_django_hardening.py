@@ -256,3 +256,39 @@ def test_401_hedron_django_production_gate(
         RuntimeError, match="InMemoryJobBackend|Production security|weak-session-secret"
     ):
         HedronDjango()
+
+
+def test_django_responses_honor_security_policy_instance(django_setup: Client) -> None:
+    del django_setup
+    from dataclasses import replace
+
+    from hedron_core.security_policy import SecurityPolicy
+    from hedron_django.responses import _security_policy_from_settings
+
+    custom = replace(SecurityPolicy.from_name("standard"), allow_htmx_eval=True)
+    settings.HEDRON_SECURITY_POLICY = custom
+    try:
+        assert _security_policy_from_settings().allow_htmx_eval is True
+    finally:
+        delattr(settings, "HEDRON_SECURITY_POLICY")
+
+
+def test_include_component_path_forwards_request(django_setup: Client) -> None:
+    del django_setup
+    from django.test import RequestFactory
+
+    from hedron_core.addressable import addressable
+    from hedron_django.urls import include_component_path
+
+    seen: dict[str, str] = {}
+
+    @addressable
+    def piece(request: HttpRequest) -> object:
+        seen["method"] = request.method or ""
+        return Text("ok")
+
+    pattern = include_component_path(piece, route="piece/")
+    response = pattern.callback(RequestFactory().get("/piece/"))
+    assert response.status_code == 200
+    assert seen["method"] == "GET"
+    assert b"ok" in response.content

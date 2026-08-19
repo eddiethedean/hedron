@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from hedron_core.auto import RendererSpec, register_renderer
@@ -87,10 +88,11 @@ def _nh3_available() -> bool:
 
 
 def process_image(
-    path_or_bytes: str | bytes,
+    path_or_bytes: str | bytes | Path,
     *,
     max_width: int = 1600,
     format: str = "PNG",
+    root: Path | None = None,
 ) -> bytes:
     try:
         from io import BytesIO
@@ -106,7 +108,27 @@ def process_image(
     if isinstance(path_or_bytes, bytes):
         img = Image.open(BytesIO(path_or_bytes))
     else:
-        img = Image.open(path_or_bytes)
+        if root is None:
+            raise error(
+                "HED-CONTENT-0006",
+                title="image path requires an authorized root",
+                explanation="Filesystem paths must be jailed with root= like downloads.",
+                remediation="Pass bytes, or process_image(path, root=authorized_dir).",
+            )
+        root_resolved = Path(root).resolve()
+        file_path = Path(path_or_bytes).resolve()
+        try:
+            file_path.relative_to(root_resolved)
+        except ValueError as exc:
+            raise error(
+                "HED-CONTENT-0007",
+                title="image path escapes authorized root",
+                explanation="Resolved image path is outside root.",
+                remediation="Pass a path under root, or supply image bytes.",
+            ) from exc
+        if not file_path.is_file():
+            raise FileNotFoundError(str(file_path))
+        img = Image.open(file_path)
     img = img.convert("RGBA") if format.upper() == "PNG" else img.convert("RGB")
     if img.width > max_width:
         ratio = max_width / float(img.width)

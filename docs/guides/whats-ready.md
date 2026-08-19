@@ -5,7 +5,7 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page describes **0.50.1**. Install with `hedron>=0.50.1,<0.51` — extras and
+This page describes **0.50.2** (in-tree; PyPI still **0.50.1**). Install from PyPI with `hedron>=0.50.1,<0.51` — extras and
 public-index notes: [Installation](../getting-started/installation.md). Capability
 readiness, API compatibility, and package maturity are three
 separate axes — [How labels work](#how-labels-work). Evaluators who need the cheat-sheet:

@@ -127,6 +127,7 @@ hedron eject UserCard --out ./ejected --force
 | `preview <logical_id>` | Inspect a route/component preview payload |
 | `inspect <component>` | Explain styles and dependencies |
 | `inspect interactions` | Read-only interaction catalog |
+| `inspect htmx-extensions` | Declared HTMX extension catalog |
 | `inspect features` | Included FeatureBundles |
 | `eject <component>` | Write `accessibility_contract.json` plus an editable `styles.css` override (`--out`, `--force`) |
 | `eject features:<id>` | Write reviewable explicit-registration Python for a bundle |
@@ -178,7 +179,7 @@ hedron run app:app --workbench --workbench-mode on
 | `--mount`, `--public-base-url` | Explicit proxy/mount settings |
 | `--forwarded-allow-ips` | Trusted proxy allowlist |
 | `--allow-external-bind` | Permit a reviewed non-loopback bind |
-| `--topology` | `auto`, local, launcher, or reverse-proxy topology |
+| `--topology` | `auto`, `local`, `launcher-local`, `launcher-kubernetes`, `launcher-slurm`, or `reverse-proxy` |
 
 The target must be `module:attribute` (or supplied through global `--app`). A detected
 Workbench runtime without `hedron[workbench]` exits `2` with an install hint.

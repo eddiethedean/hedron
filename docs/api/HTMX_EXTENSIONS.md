@@ -1,5 +1,5 @@
 ---
-status: stable
+status: mixed
 ---
 
 # HTMX extension integration

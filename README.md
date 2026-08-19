@@ -13,7 +13,7 @@ Routes return typed UI; HTMX swaps HTML fragments. No Node frontend.
 **Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
-Install the current train: `hedron>=0.50.1,<0.51`. Pins and extras:
+Install from PyPI: `hedron>=0.50.1,<0.51`. Pins and extras:
 [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 ```bash
@@ -113,6 +113,7 @@ Web Components, Workbench, and Posit):
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 Charts: `pip install "hedron[charts]>=0.50.1,<0.51"`.
+Maps: `pip install "hedron[maps]>=0.50.1,<0.51"`.
 Plugin authors can install `hedron-sample-kit>=0.1.10,<0.2`. Older satellite releases target
 older cores; see [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 

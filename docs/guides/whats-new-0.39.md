@@ -37,8 +37,8 @@ optimistic edits ([RFC-0060](https://github.com/eddiethedean/hedron/blob/main/do
 Historical 0.39 pin below. For new apps, use `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
 
 ```bash
-pip install "hedron>=0.44.0,<0.45"
-pip install "hedron[data]>=0.44.0,<0.45"
+pip install "hedron>=0.39.0,<0.40"
+pip install "hedron[data]>=0.39.0,<0.40"
 # charts satellite (Published 0.38 line):
 pip install "hedron-charts>=0.2.0,<0.3"
 ```

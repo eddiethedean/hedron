@@ -1,6 +1,6 @@
 # Explorer architecture and operator-grade development tooling (`v0.50`)
 
-**Status:** Published in-tree `v0.50.0`; tag/PyPI deferred. Human AT (`SR-021`) stays open.<br>
+**Status:** Published `v0.50.1` on PyPI; in-tree `v0.50.2` (tag deferred). Human AT (`SR-021`) stays open.<br>
 **Tracking:** [#501](https://github.com/eddiethedean/hedron/issues/501)<br>
 **Related:** [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
 [#502](https://github.com/eddiethedean/hedron/issues/502) /

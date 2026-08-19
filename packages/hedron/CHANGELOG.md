@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.50.2] — 2026-08-19
+
+### Changed
+- Coordinated train tip `0.50.2` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Login CSRF and OIDC state/nonce comparisons no longer 500 on length mismatch.
+- OIDC `extra_params` cannot override protocol fields; logout redirect URIs are allowlisted.
+- `include_component` rolls back the Starlette route when registry registration fails.
+- Handle ownership fail-closes on empty `app_id`; mapped outcomes pass `expected_app_id`.
+- ActionHandle effect merge keeps effect headers and does not OR-in undeclared HTMX targets.
+- FragmentHandle initial render no longer swallows `HedronError`.
+- HTMX 422 handlers retarget `#hedron-errors` without authorizing arbitrary `HX-Target`.
+- Missing `HX-Target` on `h-view-*` hosts fails closed.
+- `process_image` requires `root=` for filesystem paths.
+
 ## [0.50.1] — 2026-08-18
 
 ### Changed

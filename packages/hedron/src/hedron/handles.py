@@ -11,6 +11,7 @@ from typing import Any, Generic, Literal, TypeVar, cast, overload
 from urllib.parse import urlencode
 
 from fastapi.params import Depends as DependsParam
+from pydantic import ValidationError
 from starlette.requests import Request
 
 from hedron.routing.reverse import ComponentRef
@@ -25,12 +26,12 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.hosts import FragmentHost
 from hedron_core.html import html
-from hedron_core.htmx.policy import CacheHint, FragmentRegion
+from hedron_core.htmx.policy import CacheHint, FragmentRegion, InteractionPolicy
 from hedron_core.interaction import InteractionResult
 from hedron_core.models import Props
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
-from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.typing_aliases import HtmlAttrValue, JsonValue
 from hedron_core.updates import (
     MAX_REFRESH_TARGETS,
     BaseHandleDescriptor,
@@ -111,6 +112,56 @@ def binding_plan_for(fn: Callable[..., object]) -> BindingPlan:
         path_params=tuple(path_params),
         query_params=tuple(query_params),
         required=tuple(required),
+    )
+
+
+def _merge_trigger(
+    left: str | Mapping[str, object] | None, right: str | Mapping[str, object] | None
+) -> str | dict[str, JsonValue] | None:
+    if isinstance(left, str) or isinstance(right, str):
+        if isinstance(left, str) and left:
+            return left
+        if isinstance(right, str) and right:
+            return right
+        mapping = left if isinstance(left, Mapping) else right
+        if isinstance(mapping, Mapping):
+            return {str(key): cast(JsonValue, value) for key, value in mapping.items()}
+        return None
+    if not left and not right:
+        return None
+    merged: dict[str, JsonValue] = {}
+    if isinstance(right, Mapping):
+        merged.update({str(key): cast(JsonValue, value) for key, value in right.items()})
+    if isinstance(left, Mapping):
+        merged.update({str(key): cast(JsonValue, value) for key, value in left.items()})
+    return merged
+
+
+def _merge_headers(
+    left: Mapping[str, str] | None, right: Mapping[str, str] | None
+) -> dict[str, str]:
+    merged: dict[str, str] = {}
+    if right:
+        merged.update(right)
+    if left:
+        merged.update(left)
+    return merged
+
+
+def _merge_interaction_policies(
+    compiled: InteractionPolicy | None, effect: InteractionPolicy | None
+) -> InteractionPolicy | None:
+    if compiled is None:
+        if effect is None:
+            return None
+        return replace(effect, allow_undeclared_targets=False)
+    if effect is None:
+        return compiled
+    return replace(
+        compiled,
+        allow_undeclared_targets=compiled.allow_undeclared_targets
+        and effect.allow_undeclared_targets,
+        declared_regions=compiled.declared_regions or effect.declared_regions,
     )
 
 
@@ -217,7 +268,7 @@ class FragmentHandle(Generic[BindT, ContentT]):
             try:
                 model = meta.adapter.validate(bound_map)
                 content = _try_initial_render_model(self.renderer, meta.param_name, model)
-            except Exception:  # noqa: BLE001
+            except (TypeError, ValidationError):
                 content = None
         else:
             content = _try_initial_render(self.renderer, bound_map)
@@ -693,10 +744,13 @@ def apply_action_handle_effects(
                     target=compiled.target or effect_ir.target,
                     swap=compiled.swap or effect_ir.swap or "none",
                     oob=compiled.oob + effect_ir.oob,
-                    trigger=compiled.trigger or effect_ir.trigger,
-                    trigger_after_swap=compiled.trigger_after_swap or effect_ir.trigger_after_swap,
-                    trigger_after_settle=compiled.trigger_after_settle
-                    or effect_ir.trigger_after_settle,
+                    trigger=_merge_trigger(compiled.trigger, effect_ir.trigger),
+                    trigger_after_swap=_merge_trigger(
+                        compiled.trigger_after_swap, effect_ir.trigger_after_swap
+                    ),
+                    trigger_after_settle=_merge_trigger(
+                        compiled.trigger_after_settle, effect_ir.trigger_after_settle
+                    ),
                     push_url=(
                         compiled.push_url if compiled.push_url is not None else effect_ir.push_url
                     ),
@@ -711,8 +765,8 @@ def apply_action_handle_effects(
                     location=compiled.location or effect_ir.location,
                     history=compiled.history,
                     cache=compiled.cache if compiled.cache is not None else effect_ir.cache,
-                    policy=compiled.policy or effect_ir.policy,
-                    headers=dict(compiled.headers) or dict(effect_ir.headers),
+                    policy=_merge_interaction_policies(compiled.policy, effect_ir.policy),
+                    headers=_merge_headers(compiled.headers, effect_ir.headers),
                     explanation=compiled.explanation or effect_ir.explanation,
                 )
             else:

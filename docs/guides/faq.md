@@ -115,7 +115,7 @@ the same directory by accident.
 
 ## What do Beta, Supported, and Deferred mean?
 
-Short version for builders: **pin the current train** (`hedron>=0.50.1,<0.51`).
+Short version for builders: **pin from PyPI** (`hedron>=0.50.1,<0.51`).
 Packages are Beta; that does not mean “do not use” — it means expect
 occasional `0.x` churn and pin upper bounds.
 

@@ -13,10 +13,11 @@ import secrets
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any, TypedDict
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 from hedron.auth.oauth import require_authlib
-from hedron_core.csrf import redact_secret_like
+from hedron_core.csrf import redact_secret_like, tokens_match
+from hedron_core.htmx_contract import is_local_path
 
 __all__ = [
     "OidcClientConfig",
@@ -36,6 +37,20 @@ __all__ = [
 ]
 
 _OIDC_HANDSHAKE_KEY = "hedron_oidc_handshake"
+_RESERVED_OIDC_PARAM_KEYS = frozenset(
+    {
+        "response_type",
+        "client_id",
+        "redirect_uri",
+        "scope",
+        "state",
+        "nonce",
+        "code_challenge",
+        "code_challenge_method",
+        "id_token_hint",
+        "post_logout_redirect_uri",
+    }
+)
 _CLAIM_REDACT_KEYS = frozenset(
     {
         "password",
@@ -134,13 +149,34 @@ def generate_pkce(*, nbytes: int = 64) -> OidcPkcePair:
 
 
 def validate_callback_state(*, expected: str, received: str | None) -> None:
-    if not expected or not received or not secrets.compare_digest(expected, received):
+    if not expected or not received or not tokens_match(expected, received):
         raise ValueError("OIDC callback state mismatch")
 
 
 def validate_callback_nonce(*, expected: str, received: str | None) -> None:
-    if not expected or not received or not secrets.compare_digest(expected, received):
+    if not expected or not received or not tokens_match(expected, received):
         raise ValueError("OIDC callback nonce mismatch")
+
+
+def _reject_reserved_extra_params(extra_params: Mapping[str, str]) -> None:
+    for key in extra_params:
+        if str(key).lower() in _RESERVED_OIDC_PARAM_KEYS:
+            raise ValueError(f"OIDC extra_params must not include protocol field {key!r}")
+
+
+def _validate_post_logout_redirect_uri(uri: str, config: OidcClientConfig) -> None:
+    if is_local_path(uri):
+        return
+    parsed = urlparse(uri)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise ValueError("Invalid post_logout_redirect_uri")
+    if parsed.username is not None or parsed.password is not None:
+        raise ValueError("post_logout_redirect_uri must not contain credentials")
+    registered = urlparse(config.redirect_uri)
+    if parsed.scheme.lower() not in {"http", "https"}:
+        raise ValueError("Invalid post_logout_redirect_uri")
+    if parsed.netloc.lower() != registered.netloc.lower():
+        raise ValueError("post_logout_redirect_uri host must match redirect_uri")
 
 
 def store_oidc_handshake(
@@ -247,6 +283,7 @@ def login_url(
         params.append(("code_challenge", code_challenge))
         params.append(("code_challenge_method", code_challenge_method))
     if extra_params:
+        _reject_reserved_extra_params(extra_params)
         params.extend((str(k), str(v)) for k, v in extra_params.items())
     return add_params_to_uri(config.resolved_authorize_url(), params)
 
@@ -271,9 +308,11 @@ def logout_url(
     if id_token_hint:
         params.append(("id_token_hint", id_token_hint))
     if post_logout_redirect_uri:
+        _validate_post_logout_redirect_uri(post_logout_redirect_uri, config)
         params.append(("post_logout_redirect_uri", post_logout_redirect_uri))
     if state:
         params.append(("state", state))
     if extra_params:
+        _reject_reserved_extra_params(extra_params)
         params.extend((str(k), str(v)) for k, v in extra_params.items())
     return add_params_to_uri(config.resolved_end_session_url(), params)

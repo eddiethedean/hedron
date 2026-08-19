@@ -128,8 +128,8 @@ def _csrf_settings() -> tuple[bool, str, SecurityPolicy | None]:
     protect = bool(getattr(extension, "csrf_protect", True))
     cookie_name = str(getattr(extension, "csrf_cookie_name", DEFAULT_CSRF_COOKIE))
     policy = getattr(extension, "security_policy", None)
-    if isinstance(policy, SecurityPolicy) and not policy.csrf_enabled:
-        protect = False
+    if isinstance(policy, SecurityPolicy):
+        protect = bool(policy.csrf_enabled)
     return protect, cookie_name, policy if isinstance(policy, SecurityPolicy) else None
 
 
@@ -403,7 +403,7 @@ def attach_hedron_to_flask(
                 else:
                     authenticated = bool(getattr(signal, "authenticated", False))
             except Exception:  # noqa: BLE001
-                authenticated = False
+                authenticated = True
         for key, value in policy.response_headers(authenticated=authenticated).items():
             # Authenticated responses must not remain publicly cacheable even if the
             # app already set a weaker Cache-Control.

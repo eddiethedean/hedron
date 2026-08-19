@@ -168,10 +168,14 @@ async def simulate(request: Request) -> Any:
     regions = parse_regions(inference)
     region_ok = True
     region_error = None
-    if target and regions:
-        region_ok = any(target == value.split("|", 1)[0] for _rid, value in regions.items())
-        if not region_ok:
+    if target:
+        if not regions:
+            region_ok = False
             region_error = f"HX-Target {target!r} is not an authorized fragment region"
+        else:
+            region_ok = any(target == value.split("|", 1)[0] for _rid, value in regions.items())
+            if not region_ok:
+                region_error = f"HX-Target {target!r} is not an authorized fragment region"
     swap = str(inference.get("swap") or "outerHTML")
     click_preview = click_preview_payload(route, target=target if isinstance(target, str) else None)
     return cast(

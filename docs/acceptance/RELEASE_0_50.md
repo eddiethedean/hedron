@@ -1,6 +1,6 @@
 # Hedron `v0.50` Explorer architecture acceptance
 
-**Status:** Published in-tree `v0.50.0`; tag/PyPI deferred. Does **not** close `SR-021`.<br>
+**Status:** Published `v0.50.1` on PyPI; in-tree `v0.50.2` (tag deferred). Does **not** close `SR-021`.<br>
 **Planning baseline:** Published in-tree `v0.49.1`<br>
 **Required predecessor/cut baseline:** Verified `v0.49.1`<br>
 **Target:** Hedron `v0.50.0`<br>

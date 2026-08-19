@@ -42,11 +42,11 @@ app = Hedron(
     session_secret="dev-only",
 )
 
-# Prefer session / host auth. Header identity is host-owned opt-in only —
-# the default resolver never trusts x-hedron-principal / x-user.
+# Prefer session / host auth after SessionMiddleware is installed.
+# Do not read request.session without that middleware.
 projection = McpProjection(
     enabled=True,
-    principal_resolver=lambda request: request.session.get("user"),
+    principal_resolver=lambda request: getattr(request, "user", None),
 )
 projection.register_resource(McpResource(uri="hedron://page/home", name="home"))
 projection.register_tool(

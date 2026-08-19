@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import sys
 from pathlib import Path
 
 import pytest
@@ -104,7 +105,8 @@ def test_component_vary_header(client: FlaskClient) -> None:
     assert "HX-Request" in vary
 
 
-def test_auth_signal_uses_flask_session() -> None:
+def test_auth_signal_uses_flask_session(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setitem(sys.modules, "flask_login", None)
     hedron = HedronFlask(__name__)
     hedron.flask.secret_key = "test"
     with hedron.flask.test_request_context("/"):

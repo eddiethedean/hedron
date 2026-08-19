@@ -34,7 +34,7 @@ def _apply_mapped_outcome(
         effect_result = refresh(*case_effects.targets)
     assert_declared_effects(meta, effect_result, app_id=app_id)  # type: ignore[arg-type]
     if isinstance(effect_result, (RefreshIntent, Patch, PatchSet)):
-        compiled = compile_to_interaction(effect_result)
+        compiled = compile_to_interaction(effect_result, expected_app_id=app_id)
         if isinstance(compiled, InteractionResult):
             content = (
                 mapped

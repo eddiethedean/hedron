@@ -8,8 +8,8 @@ phase: "0.45"
 !!! note "Published 0.45 contract"
 
     This is the accepted D-074 / RFC-0072 public contract for phase 0.45, refined by D-077
-    against Published in-tree `v0.44.0`. Implementation is the in-tree `v0.45.0` cut
-    (tag/PyPI deferred). Tracking [#328](https://github.com/eddiethedean/hedron/issues/328).
+    against Published in-tree `v0.44.0`. Implementation shipped as `v0.45.0` on the
+    published 0.45 train. Tracking [#328](https://github.com/eddiethedean/hedron/issues/328).
 
 Phase 0.45 gives application, tooling, adapter, and package consumers one read-only index of the
 interaction contracts established by 0.43 and 0.44:
@@ -196,11 +196,9 @@ not the filename or application version alone. Format lock:
 
 ## Application and CLI surface
 
-Planned commands:
-
 ```bash
 # Trusted configured-app mode; may import through the documented app entry point.
-hedron inspect interactions --app myapp:app
+hedron --app myapp:app inspect interactions
 
 # Static/no-execution mode; does not import the target project.
 hedron inspect interactions --static .

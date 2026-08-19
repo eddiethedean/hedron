@@ -18,6 +18,8 @@ from typing import Any
 from fastapi import HTTPException, status
 from itsdangerous import BadSignature, BadTimeSignature, URLSafeTimedSerializer
 
+from hedron_core.csrf import tokens_match
+
 __all__ = [
     "LOGIN_CSRF_KEY",
     "issue_login_csrf",
@@ -101,7 +103,7 @@ def validate_login_csrf(
                 ) from exc
 
     if not expected_candidates or not any(
-        secrets.compare_digest(expected, token) for expected in expected_candidates
+        tokens_match(expected, token) for expected in expected_candidates
     ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

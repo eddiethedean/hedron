@@ -15,7 +15,8 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-**Published `v0.50.1` on PyPI.** Pin `hedron>=0.50.1,<0.51`.
+**In-tree `v0.50.2` — Git tag and PyPI upload are deferred.** Latest on **PyPI** is
+`v0.50.1`. Pin `hedron>=0.50.1,<0.51` until 0.50.2 is uploaded.
 
 Requires Python 3.11–3.14. The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
@@ -30,7 +31,7 @@ uv run uvicorn app:app --reload
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000), then click **Refresh status**.
 Only the status region is returned and swapped into the page.
 
-The generated app is ordinary Python:
+The generated app (from `hedron new`) is ordinary Python:
 
 ```python
 import os
@@ -56,13 +57,21 @@ def status():
     )
 
 
+@app.command(fallback="/")
+def ping():
+    from hedron import refresh
+
+    return refresh(status).toast("Refreshed")
+
+
 @app.page("/")
 def home() -> Page:
     return Page(
         Stack(
-            Text("Hello from Hedron"),
+            Text("Hello from hedron new"),
             status(),
             status.refresh_button("Refresh status"),
+            ping.button("Ping"),
         ),
         title="Home",
     )
@@ -112,7 +121,7 @@ uv add "hedron>=0.50.1,<0.51" "uvicorn[standard]"
 python -m pip install "hedron>=0.50.1,<0.51" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Train:** `0.50.x` · published `v0.50.1` · pin `>=0.50.1,<0.51`
+**Package maturity:** Beta · **Train:** `0.50.x` · published `v0.50.2` · pin `>=0.50.1,<0.51`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the
@@ -128,6 +137,7 @@ interactions, security profiles, and CLI. Integrations are optional:
 |---|---|
 | `hedron[data]` | DataTable and DataEditor |
 | `hedron[charts]` | Charts with a compatible satellite floor |
+| `hedron[maps]` | First-class maps (`hedron-maps`) |
 | `hedron[jinja]` | Optional `.hdj` templates |
 | `hedron[dev]` | Component Explorer |
 | `hedron[extras]` | Curated workbenches |

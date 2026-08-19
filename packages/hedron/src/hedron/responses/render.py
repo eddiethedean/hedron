@@ -109,15 +109,14 @@ def _authorize_component_htmx(
         if region.id.startswith("h-view-") or region.selector.startswith("#h-view-")
     )
     if handle_hosts:
-        if not target:
+        if target and any(matches_declared_host(region, target) for region in handle_hosts):
             return
-        if any(matches_declared_host(region, target) for region in handle_hosts):
-            return
-        raise FragmentRegionError(
-            f"HX-Target {target!r} disagrees with owned handle host",
-            requested=target,
-            declared=tuple(region.selector for region in handle_hosts),
-        )
+        if target:
+            raise FragmentRegionError(
+                f"HX-Target {target!r} disagrees with owned handle host",
+                requested=target,
+                declared=tuple(region.selector for region in handle_hosts),
+            )
     authorize_htmx_target(
         InteractionPolicy(
             declared_regions=fragment_regions,

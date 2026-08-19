@@ -9,7 +9,7 @@ is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.50.x` | Yes (current published train — pin `>=0.50.1,<0.51`; published `v0.50.1`) |
+| `0.50.x` | Yes (current published train — pin `>=0.50.2,<0.51`; published `v0.50.2`) |
 | `0.49.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.50.x` |
 | `0.48.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.49.x` |
 | `0.47.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.48.x` |
@@ -21,7 +21,7 @@ is required. There is **no contractual patch SLA**.
 | `0.41.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.42.x` |
 | `0.40.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.41.x` |
 | `0.39.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.40.x` |
-| `0.9.x`–`0.38.x` | No; upgrade to `0.50.x` (`v0.50.1`) |
+| `0.9.x`–`0.38.x` | No; upgrade to `0.50.x` (`v0.50.2`) |
 | `0.8.x` | No; final HDN-capable line, retained only for historical migration context |
 | `< 0.8` | No |
 

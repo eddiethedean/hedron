@@ -13,6 +13,16 @@ from hedron_mcp.audit import McpAuditLog
 from hedron_mcp.bounds import BoundsError, McpBounds
 from hedron_mcp.compat import SDK_PIN, sdk_version
 
+
+def _package_version() -> str:
+    from importlib.metadata import PackageNotFoundError, version
+
+    try:
+        return version("hedron-mcp")
+    except PackageNotFoundError:
+        return "0.2.1"
+
+
 __all__ = [
     "AuthorizationError",
     "BoundsError",
@@ -99,7 +109,7 @@ class McpProjection:
 
     enabled: bool = False
     allow_mutations: bool = False
-    package_version: str = "0.2.1"
+    package_version: str = field(default_factory=_package_version)
     principal_resolver: PrincipalResolver | None = None
     authz_hook: AuthzHook | None = None
     tenant_hook: TenantHook | None = None

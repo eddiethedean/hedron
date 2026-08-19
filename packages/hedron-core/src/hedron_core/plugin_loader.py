@@ -173,6 +173,19 @@ def load_plugins(
                     ),
                 )
             if not compatible_hedron_version(meta.hedron_version, version):
+                try:
+                    SpecifierSet(meta.hedron_version)
+                    Version(version)
+                except (InvalidSpecifier, InvalidVersion) as exc:
+                    raise error(
+                        HED_PLUGIN_FAILED,
+                        title="Plugin version specifier is invalid",
+                        explanation=(
+                            f"Plugin {meta.name!r} hedron_version={meta.hedron_version!r} "
+                            f"or running version {version!r} is not a valid PEP 440 value."
+                        ),
+                        remediation="Fix PluginMeta.hedron_version to a PEP 440 specifier set.",
+                    ) from exc
                 raise error(
                     HED_PLUGIN_INCOMPATIBLE,
                     title="Incompatible plugin",

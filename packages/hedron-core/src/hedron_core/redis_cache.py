@@ -109,18 +109,16 @@ class RedisCacheBackend(CacheBackend):
         px_ms = max(1, int(ttl * 1000)) if ttl is not None else None
         stale = prior.difference(tags)
         pipe_factory = getattr(self._client, "pipeline", None)
-        if callable(pipe_factory):
-            pipe: Any = pipe_factory(transaction=True)
-            self._queue_overwrite(
-                pipe, key, redis_key, ktags_key, payload, tags=tags, stale=stale, px_ms=px_ms
+        if not callable(pipe_factory):
+            raise ValueError(
+                "RedisCacheBackend requires a client.pipeline(transaction=True) "
+                "so value SET and tag indexes commit atomically"
             )
-            pipe.execute()
-            return
-
-        # Stubs without pipeline: still write value then tags (best-effort).
+        pipe: Any = pipe_factory(transaction=True)
         self._queue_overwrite(
-            self._client, key, redis_key, ktags_key, payload, tags=tags, stale=stale, px_ms=px_ms
+            pipe, key, redis_key, ktags_key, payload, tags=tags, stale=stale, px_ms=px_ms
         )
+        pipe.execute()
 
     def _prior_tags(self, key: str) -> set[str]:
         smembers = getattr(self._client, "smembers", None)

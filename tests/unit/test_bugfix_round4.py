@@ -383,11 +383,12 @@ def test_csrf_policy_names_and_ensure_cookie_gap() -> None:
     assert policy.csrf_cookie_name in set_cookie
 
 
-def test_flask_auth_signal_reads_user_id_variants() -> None:
+def test_flask_auth_signal_reads_user_id_variants(monkeypatch: pytest.MonkeyPatch) -> None:
     from flask import session
 
     from hedron_flask.app import HedronFlask
 
+    monkeypatch.setitem(sys.modules, "flask_login", None)
     hedron = HedronFlask(__name__)
     app = hedron.flask
     assert app is not None

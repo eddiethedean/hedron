@@ -353,26 +353,25 @@ def _authorize_component_fragment(
         if region.id.startswith("h-view-") or region.selector.startswith("#h-view-")
     )
     if handle_hosts:
-        if not target:
+        if target and any(matches_declared_host(region, target) for region in handle_hosts):
             return
-        if any(matches_declared_host(region, target) for region in handle_hosts):
-            return
-        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+        if target:
+            from hedron_core.audit import SecurityAuditEventType, emit_security_audit
 
-        mismatch = FragmentRegionError(
-            f"HX-Target {target!r} disagrees with owned handle host",
-            requested=target,
-            declared=tuple(region.selector for region in handle_hosts),
-        )
-        emit_security_audit(
-            SecurityAuditEventType.HTMX_TARGET_REJECTED,
-            str(mismatch),
-            attributes={"path": str(request.url.path), "target": target},
-        )
-        raise HTTPException(
-            status_code=403,
-            detail=_fragment_region_http_detail(mismatch, request=request),
-        )
+            mismatch = FragmentRegionError(
+                f"HX-Target {target!r} disagrees with owned handle host",
+                requested=target,
+                declared=tuple(region.selector for region in handle_hosts),
+            )
+            emit_security_audit(
+                SecurityAuditEventType.HTMX_TARGET_REJECTED,
+                str(mismatch),
+                attributes={"path": str(request.url.path), "target": target},
+            )
+            raise HTTPException(
+                status_code=403,
+                detail=_fragment_region_http_detail(mismatch, request=request),
+            )
     # Empty fragment_regions still fail closed when the client sends HX-Target
     # (same contract as InteractionResult / authorize_htmx_target).
     try:

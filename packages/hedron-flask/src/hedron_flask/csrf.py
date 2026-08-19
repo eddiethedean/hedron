@@ -39,7 +39,10 @@ def assert_flask_csrf_strategy(policy: SecurityPolicy) -> None:
         return
     strategy = policy.resolve_csrf_strategy()
     if strategy is None:
-        return
+        raise ValueError(
+            "Flask CSRF is enabled but no CSRF strategy is configured; "
+            "use DoubleSubmitCookieCsrf or set csrf_enabled=False."
+        )
     if isinstance(strategy, DoubleSubmitCookieCsrf):
         return
     # Default resolve without explicit csrf= is DoubleSubmitCookieCsrf.
@@ -62,7 +65,10 @@ def csrf_token_for_request(
             return ""
         strategy = policy.resolve_csrf_strategy()
         if strategy is None:
-            return ""
+            raise ValueError(
+                "Flask CSRF is enabled but no CSRF strategy is configured; "
+                "use DoubleSubmitCookieCsrf or set csrf_enabled=False."
+            )
         assert_flask_csrf_strategy(policy)
         cookie_name = getattr(strategy, "cookie_name", cookie_name) or cookie_name
     existing = request.cookies.get(cookie_name)
@@ -191,7 +197,7 @@ def validate_csrf(
             return
         strategy = policy.resolve_csrf_strategy()
         if strategy is None:
-            return
+            raise Forbidden("CSRF strategy required when CSRF is enabled")
         assert_flask_csrf_strategy(policy)
         form_value = None
         if request.form:

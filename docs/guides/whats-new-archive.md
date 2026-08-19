@@ -1,4 +1,4 @@
-# Earlier what’s-new (archive)
+# What’s new archive
 
 Read these only if you are upgrading from that line. Current train:
 [What’s new in 0.50](whats-new-0.50.md). Full chronology: [Release notes](release-notes.md).
@@ -30,6 +30,7 @@ Read these only if you are upgrading from that line. Current train:
 | 0.28 | [whats-new-0.28](whats-new-0.28.md) |
 | 0.27 | [whats-new-0.27](whats-new-0.27.md) |
 | 0.26 | [whats-new-0.26](whats-new-0.26.md) |
+| 0.25 | [whats-new-0.25](whats-new-0.25.md) |
 
 Earlier still:
 

@@ -44,7 +44,17 @@ def _format_sim_live_demo(sim_name: str) -> str:
 # Keep install snippets aligned with docs/release.toml / check_docs_train_ssot.py.
 _ALPHA_EXTRAS = frozenset({"notebook", "mcp", "gradio"})
 _RELEASE = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
-_TRAIN_PIN = f">={_RELEASE['pin_floor']},<{_RELEASE['pin_ceiling']}"
+_PIN_FLOOR = (
+    _RELEASE["pypi_pin_floor"]
+    if _RELEASE.get("registry_status") == "deferred"
+    else _RELEASE["pin_floor"]
+)
+_PIN_CEILING = (
+    _RELEASE["pypi_pin_ceiling"]
+    if _RELEASE.get("registry_status") == "deferred"
+    else _RELEASE["pin_ceiling"]
+)
+_TRAIN_PIN = f">={_PIN_FLOOR},<{_PIN_CEILING}"
 _ALPHA_PIN = ">=0.1.0,<0.2"
 _CHARTS_PIN = ">=0.2.0,<0.3"
 _CHARTS_FLAGSHIP_PIN = _TRAIN_PIN

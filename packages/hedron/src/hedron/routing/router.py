@@ -440,7 +440,7 @@ class HedronRouter(APIRouter):
             **kwargs,
         )
         region_meta = {r.id: f"{r.selector}|{r.description}" for r in regions}
-        register_route(
+        self._register_route_or_rollback(
             kind="component",
             logical_id=logical_id,
             name=route_name,

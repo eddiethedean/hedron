@@ -27,7 +27,7 @@ inventory. Install and mount grant no ambient authority.
 ## Upgrade
 
 ```bash
-python -m pip install -U "hedron>=0.34.0,<0.35"
+python -m pip install -U "hedron>=0.32.0,<0.33"
 # Optional MCP projection:
 python -m pip install -U "hedron[mcp]>=0.32.0,<0.33"
 # or

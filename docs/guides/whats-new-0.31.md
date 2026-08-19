@@ -22,7 +22,7 @@ conformance tooling and ships a reviewable Streamlit AST migration assistant.
 ## Upgrade
 
 ```bash
-python -m pip install -U "hedron>=0.34.0,<0.35"
+python -m pip install -U "hedron>=0.31.0,<0.32"
 # Optional tooling:
 python -m pip install -U "hedron[conformance]>=0.32.0,<0.33"
 python -m pip install -U "hedron-sample-kit>=0.1.10,<0.2"

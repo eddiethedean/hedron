@@ -26,8 +26,11 @@ def _install_fake_flask_login(monkeypatch: Any, *, authenticated: bool, user_id:
     monkeypatch.setitem(sys.modules, "flask_login", fake)
 
 
-def test_auth_signal_without_flask_login_uses_session_user_id() -> None:
-    """Session fallback when flask_login is not installed / not authenticated."""
+def test_auth_signal_without_flask_login_uses_session_user_id(
+    monkeypatch: Any,
+) -> None:
+    """Session fallback when flask_login is not installed."""
+    monkeypatch.setitem(sys.modules, "flask_login", None)
     hedron = HedronFlask(__name__)
     app = hedron.flask
     assert app is not None
@@ -39,7 +42,8 @@ def test_auth_signal_without_flask_login_uses_session_user_id() -> None:
     assert signal.subject_id == "session-user"
 
 
-def test_auth_signal_without_flask_login_uses_underscore_user_id() -> None:
+def test_auth_signal_without_flask_login_uses_underscore_user_id(monkeypatch: Any) -> None:
+    monkeypatch.setitem(sys.modules, "flask_login", None)
     hedron = HedronFlask(__name__)
     app = hedron.flask
     assert app is not None
@@ -73,8 +77,8 @@ def test_auth_signal_falls_back_when_flask_login_anonymous(monkeypatch: Any) -> 
     with app.test_request_context("/"):
         session["user_id"] = "session-user"
         signal = hedron.auth_signal()
-    assert signal.authenticated is True
-    assert signal.subject_id == "session-user"
+    assert signal.authenticated is False
+    assert signal.subject_id is None
 
 
 def test_authenticated_signal_sets_private_cache(monkeypatch: Any) -> None:

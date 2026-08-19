@@ -3,6 +3,28 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.50.2 — 2026-08-19
+
+In-tree correctness and security patch on the 0.50 train. Git tag and PyPI upload
+are **deferred**; install from PyPI with `hedron>=0.50.1,<0.51` until 0.50.2 is
+uploaded. [Installation](../getting-started/installation.md).
+
+- Login CSRF and OIDC state/nonce compare never 500 on length mismatch.
+- OIDC `extra_params` cannot override protocol keys; logout redirect is allowlisted.
+- Flask leftover session is not authenticated when flask-login says anonymous; CSRF
+  stays on when the policy requires it; missing strategy fails closed.
+- `include_component` rolls back Starlette routes; handle ownership and ActionHandle
+  merge fail closed; FragmentHandle re-raises security/HTTP errors.
+- HTMX 422 handlers retarget status chrome; missing `HX-Target` on `h-view-*` is 403;
+  Explorer simulate rejects empty region lists.
+- Django render honors `HEDRON_SECURITY_POLICY`; `include_component_path` forwards
+  `request`; Flask cache-on-auth-error is private; `process_image` path jail; Redis
+  SET requires MULTI; plugin specifier parse is `HED-PLUGIN-FAILED`.
+
+```bash
+python -m pip install -U "hedron>=0.50.1,<0.51"
+```
+
 ## 0.50.1 — 2026-08-18
 
 Bugfix patch on the 0.50 train. Pin `hedron>=0.50.1,<0.51`.
@@ -46,8 +68,8 @@ python -m pip install "hedron-charts>=0.2.0,<0.3"
 
 ## 0.49.1 — 2026-08-18
 
-High-severity correctness and security patch for the 0.49 train. Prefer the current
-train pin `hedron>=0.50.1,<0.51` — [Installation](../getting-started/installation.md).
+High-severity correctness and security patch for the 0.49 train. Prefer the 0.50.x pin
+from PyPI `hedron>=0.50.1,<0.51` — [Installation](../getting-started/installation.md).
 
 - Django `@hedron_view` validates CSRF before the handler (#392).
 - Directory-upload paths reject raw CR/LF/TAB (#393).
@@ -60,7 +82,7 @@ train pin `hedron>=0.50.1,<0.51` — [Installation](../getting-started/installat
 - Flask and Django hosts run production security and durability gates (#401).
 - Follow-up in-tree correctness/security fixes on this same `0.49.1` tip: CSRF UTF-8 compare, OutcomeMap/`generate_form`/button attrs, job cancel and SSE Last-Event-ID, MCP authz, Redis cache keyspaces, spreadsheet formula prefixes, chart asset schemes, map compile/proxy, and remaining open `bug` issues on the train (#254–#495).
 
-Historical 0.49.1 in-tree pin was `hedron>=0.49.1,<0.50` (superseded; see 0.50.0 above).
+Historical 0.49.1 in-tree pin was `hedron>=0.49.1,<0.50` (superseded; see 0.50.2 / 0.50.1 above).
 Charts remain on `hedron-charts>=0.2.0,<0.3`.
 
 ```bash
@@ -69,8 +91,8 @@ python -m pip install -U "hedron>=0.50.1,<0.51"
 
 ## 0.49.0 — 2026-08-17
 
-In-tree FastAPI/Pydantic binding work. Prefer the current train pin
-`hedron>=0.50.1,<0.51` — [Installation](../getting-started/installation.md).
+In-tree FastAPI/Pydantic binding work. Prefer the 0.50.x pin
+from PyPI `hedron>=0.50.1,<0.51` — [Installation](../getting-started/installation.md).
 
 - FastAPI `Depends` compiles from Hedron `DependsOn` for handler and response scopes.
 - Query, header, cookie, and non-file form models can bind as native Pydantic parameter models.
@@ -79,7 +101,7 @@ In-tree FastAPI/Pydantic binding work. Prefer the current train pin
 - Workbench/Posit settings keep custom loaders.
 - Bugfixes: query-only GET no longer 422s as JSON (#381); late registration fails closed (#382); required FormBody JSON is HTTP 415 (#383); TypeSchema sanitizer fail-closes unknown keys (#384).
 
-Historical 0.49.0 in-tree pin was `hedron>=0.49.0,<0.50` (superseded; see 0.50.1 above). Charts remain on
+Historical 0.49.0 in-tree pin was `hedron>=0.49.0,<0.50` (superseded; see the 0.50 install block above). Charts remain on
 `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
 
 <details markdown>

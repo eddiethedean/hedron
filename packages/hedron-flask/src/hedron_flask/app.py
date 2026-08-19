@@ -63,6 +63,8 @@ class HedronFlask:
         self.csrf_cookie_secure = csrf_cookie_secure
         self._auto_csrf_cookie = auto_csrf_cookie
         self.security_policy = SecurityPolicy.from_name(security)
+        if self.security_policy.csrf_enabled:
+            self.csrf_protect = True
         self._sync_csrf_cookie_name()
         self.hedron_app_id = secrets.token_hex(8)
         self.flask: Flask | None = None
@@ -98,6 +100,8 @@ class HedronFlask:
         """Bind this extension to ``app`` (idempotent for the same app)."""
         if security is not None:
             self.security_policy = SecurityPolicy.from_name(security)
+        if self.security_policy.csrf_enabled:
+            self.csrf_protect = True
         self._sync_csrf_cookie_name()
         existing = app.extensions.get("hedron")
         if existing is self:
@@ -234,11 +238,7 @@ class HedronFlask:
                 "HedronFlask.respond() cannot prepare components while an event loop "
                 "is running; await respond_async(...) instead."
             )
-        if (
-            self.csrf_protect
-            and self.security_policy.csrf_enabled
-            and request.method.upper() not in _SAFE_METHODS
-        ):
+        if self.security_policy.csrf_enabled and request.method.upper() not in _SAFE_METHODS:
             validate_csrf(
                 request,
                 cookie_name=self.csrf_cookie_name,
@@ -293,11 +293,7 @@ class HedronFlask:
         """Async-safe respond that awaits ``prepare_tree`` before rendering."""
         from hedron_core.prepare import prepare_tree
 
-        if (
-            self.csrf_protect
-            and self.security_policy.csrf_enabled
-            and request.method.upper() not in _SAFE_METHODS
-        ):
+        if self.security_policy.csrf_enabled and request.method.upper() not in _SAFE_METHODS:
             validate_csrf(
                 request,
                 cookie_name=self.csrf_cookie_name,
@@ -351,9 +347,11 @@ class HedronFlask:
     def auth_signal(self, request: Request | None = None) -> AuthSignal:
         del request  # Flask session / flask_login proxies are request-local.
         user_id = None
+        flask_login_authoritative = False
         try:
             from flask_login import current_user  # type: ignore[import-not-found]
 
+            flask_login_authoritative = True
             if getattr(current_user, "is_authenticated", False):
                 get_id = getattr(current_user, "get_id", None)
                 if callable(get_id):
@@ -364,8 +362,9 @@ class HedronFlask:
             _logger.debug("flask_login is not installed; using session identity")
         except Exception as exc:  # noqa: BLE001
             # flask_login may raise outside a request context; fall back to session.
+            flask_login_authoritative = False
             _logger.debug("flask_login current_user unavailable: %s", exc)
-        if user_id is None:
+        if user_id is None and not flask_login_authoritative:
             user_id = flask_session.get("user_id")
             if user_id is None:
                 user_id = flask_session.get("_user_id")
