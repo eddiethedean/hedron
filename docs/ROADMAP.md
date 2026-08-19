@@ -45,9 +45,9 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.45** | Typed interaction catalog, manifest, package projections, and whole-ecosystem convergence | **Published** (`v0.45.0`; in-tree cut, tag/PyPI deferred; D-074 / D-077 / RFC-0072; [#328](https://github.com/eddiethedean/hedron/issues/328)) |
 | **0.46** | Package-native typed workflows across data, charts, elements, remote adapters, and workbenches | **Published** (`v0.46.0`; D-075 / D-079 / RFC-0073; [#334](https://github.com/eddiethedean/hedron/issues/334)) |
 | **0.47** | First-class maps: custom raster/vector sources, MapLibre, typed interaction, and offline static/PMTiles/MBTiles paths | **Published** (`v0.47.0` / `hedron-maps` `0.1.0`; in-tree cut, tag/PyPI deferred; D-078 / D-082 / RFC-0074; [#350](https://github.com/eddiethedean/hedron/issues/350)) |
-| **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0`; in-tree cut, tag/PyPI deferred; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
+| **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0` on PyPI; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
-| **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.0`; in-tree cut, tag/PyPI deferred; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
+| **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.1`; in-tree cut, tag/PyPI deferred; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.52** | Conformance kit and independent Node/Java runtime credibility | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
@@ -102,7 +102,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 
 ### Honest gaps on the current train (0.50.x)
 
-- Current **published** train is **0.50.x** (`v0.50.0`; [#501](https://github.com/eddiethedean/hedron/issues/501) stays open for tag/PyPI only)
+- Current **published** train is **0.50.x** (`v0.50.1`; [#501](https://github.com/eddiethedean/hedron/issues/501) stays open for tag/PyPI only)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -110,7 +110,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   Supported inventories — not every Beta symbol
 - Beta `hedron-elements` is production-grade for the locked Supported inventory only (D-070)
 - Notebook preview is tooling-grade / localhost-only (0.31); MCP is Beta for the declared
-  Supported inventory (`hedron-mcp` `0.2.0`; phase 0.32 / RFC-0065); mutations remain Experimental
+  Supported inventory (`hedron-mcp` `0.2.1`; phase 0.32 / RFC-0065); mutations remain Experimental
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
   `hedron[experimental-ui]` (quarantined from `hedron[extras]`)
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)
@@ -4172,9 +4172,9 @@ inventory as defects by themselves. `hedron-data`, `hedron-charts`, `hedron-elem
 Django, and Jinja remain governed by their existing production-grade and remediation programs and
 are outside this extra-package corrective pass.
 
-## 0.50 — Explorer architecture and operator-grade development tooling (`v0.50.0`)
+## 0.50 — Explorer architecture and operator-grade development tooling (`v0.50.1`)
 
-**Status:** Published in-tree `v0.50.0` (D-085 / D-086 /
+**Status:** Published in-tree `v0.50.1` (D-085 / D-086 /
 [RFC-0077](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md)).
 Planning baseline remains Published in-tree `v0.49.1`. Tracking
 [#501](https://github.com/eddiethedean/hedron/issues/501) owns every Explorer 0.50 gate until
@@ -4261,7 +4261,7 @@ flowchart LR
 | **M6** | Interaction laboratory (bounded) | Construct inputs from TypeSchema v2; execute only declared safe preview operations; export redacted `AppScenario` snippets — no invented auth |
 | **M7** | Evidence and docs | Package-owned tests; Chromium/Firefox/WebKit journeys; a11y keyboard/no-JS; security corpus; perf fixtures (small/medium/large registry apps); author/operator docs |
 
-M1–M7 are **Verified** on the in-tree `v0.50.0` cut. [#501](https://github.com/eddiethedean/hedron/issues/501)
+M1–M7 are **Verified** on the in-tree `v0.50.1` cut. [#501](https://github.com/eddiethedean/hedron/issues/501)
 stays open for tag/PyPI only.
 
 ### Scope

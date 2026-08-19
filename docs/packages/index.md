@@ -15,7 +15,7 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 
 Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). `hedron-sim`
 and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` on the
-0.38 train.
+0.50 train.
 
 !!! note "Maturity"
 
@@ -32,13 +32,15 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 | [hedron-explorer](hedron-explorer.md) | `hedron[dev]` | Development Component Explorer |
 | [hedron-extras](hedron-extras.md) | `hedron[extras]` | Curated toolkit (specialty widgets may be Experimental/stub) |
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=0.2.0,<0.3` on Hedron 0.38 |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=0.2.0,<0.3` on the 0.50 train |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-workbench](hedron-workbench.md) | `hedron[workbench]` | Posit Workbench compatibility facade (`HedronWorkbench`) |
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
+| [hedron-maps](hedron-maps.md) | `hedron[maps]` | First-class custom-server, MapLibre, and offline maps (`hedron-maps` `0.1.0`) |
+| [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |
 
 ```bash
-pip install "hedron[data,dev,posit]>=0.50.0,<0.51"
+pip install "hedron[data,dev,posit]>=0.50.1,<0.51"
 ```
 
 ## Tooling-grade and independent Beta lines
@@ -57,20 +59,8 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-runtime-node](hedron-runtime-node.md) | npm | Portable Node conformance evaluator |
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 
-## Planned packages
-
-| Package | Target | Role |
-|---|---|---|
-| [hedron-maps](hedron-maps.md) | `hedron[maps]` / independent `0.1.0` | First-class custom-server, MapLibre, and offline maps |
-
-## Alpha incubator
-
-| Package | Extra | Role |
-|---|---|---|
-| [hedron-elements](hedron-elements.md) | `hedron[elements]` | Alpha Web Component ABI, form controls, interaction state, and primitives; no Supported production inventory before graduation |
-
 ```bash
-pip install "hedron[charts]>=0.50.0,<0.51"
+pip install "hedron[charts]>=0.50.1,<0.51"
 pip install "hedron-sample-kit>=0.1.10,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 

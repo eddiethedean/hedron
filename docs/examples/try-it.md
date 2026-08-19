@@ -29,15 +29,15 @@ This repository includes a [Dev Container](https://containers.dev/) definition a
 2. Wait until the container finishes `uv sync` (terminal prompt returns; `uv` is on PATH).
    First boot often takes **5–15 minutes** because the Dev Container syncs the full
    monorepo (including the docs dependency group) — not a 60-second sandbox.
-3. Run the Hello scaffold (published pin — independent of editable workspace packages):
+3. Run the Hello scaffold (in-tree / this docs pin — the public index still serves 0.48.0):
 
 ```bash
-uvx --from "hedron>=0.50.0,<0.51" hedron new /tmp/my-hedron-app
+uvx --from "hedron>=0.50.1,<0.51" hedron new /tmp/my-hedron-app
 cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-Pin production installs with `hedron>=0.50.0,<0.51`.
+Pin production installs with `hedron>=0.50.1,<0.51`.
 See [Installation](../getting-started/installation.md).
 
 4. Forward port **8000** and open the URL. You should see **Hello from hedron new**.
@@ -90,7 +90,7 @@ That path does **not** require cloning this repository.
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync
-uvx --from "hedron>=0.50.0,<0.51" hedron new /tmp/my-hedron-app
+uvx --from "hedron>=0.50.1,<0.51" hedron new /tmp/my-hedron-app
 cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --reload
 ```

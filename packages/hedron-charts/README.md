@@ -34,14 +34,15 @@ and the
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.50.0,<0.51"
+# flagship extra (in-tree / this docs tree; public index is 0.48.0):
+pip install "hedron[charts]>=0.50.1,<0.51"
 # independent satellite:
 pip install "hedron-charts>=0.2.0,<0.3"
 # Add a backend when needed:
 pip install "hedron-charts[matplotlib]>=0.2.0,<0.3"
 ```
 
-Pin the living charts line at `>=0.2.0,<0.3` for the Published 0.38 train.
+Pin the living charts line at `>=0.2.0,<0.3` on the 0.50 train.
 ### Optional backends
 
 | Extra | Backend |

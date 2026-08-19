@@ -10,14 +10,14 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-This documentation describes **0.50.0**. **Install from PyPI** unless you are developing Hedron itself. The latest on **PyPI**
-is **`0.48.0`**. Git tag and PyPI upload for **`v0.50.0`** are **deferred** —
-registry installs cannot resolve `hedron>=0.50.0,<0.51` until that upload.
+This documentation describes **0.50.1**. **Install from PyPI** unless you are developing Hedron itself. The latest on **PyPI**
+is **`0.48.0`**. Git tag and PyPI upload for **`v0.50.1`** are **deferred** —
+registry installs cannot resolve `hedron>=0.50.1,<0.51` until that upload.
 
 | You are… | Install |
 |---|---|
 | Building an app from the public index | `hedron>=0.48.0,<0.49` |
-| Working in this repository | `uv sync` (editable `0.50.0`) |
+| Working in this repository | `uv sync` (editable `0.50.1`) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
 are **Beta** (usable, no 1.0, no SLA). Capability detail:
@@ -134,8 +134,8 @@ cd hedron
 uv sync
 ```
 
-This checkout is **0.50.0**. Do not tell PyPI users to
-`pip install "hedron>=0.50.0,<0.51"` until the wheel is on the index.
+This checkout is **0.50.1**. Do not tell PyPI users to
+`pip install "hedron>=0.50.1,<0.51"` until the wheel is on the index.
 
 See [Contributing](../CONTRIBUTING.md).
 
@@ -206,7 +206,7 @@ Leave Explorer off in production.
 | `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
 | FastAPI / pip resolver conflict | Empty venv recommended; see [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
-| Wrong / old version | `pip install -U "hedron>=0.50.0,<0.51"` to match this documentation, or the public-index pin in the table above — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
+| Wrong / old version | Public-index upgrade: `pip install -U "hedron>=0.48.0,<0.49"`. In-tree/docs pin after upload: `pip install -U "hedron>=0.50.1,<0.51"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
 | Need charts | Install `hedron[charts]>=0.48.0,<0.49` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |

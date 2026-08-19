@@ -12,7 +12,7 @@ Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README
 
 Click through the pattern demos below (docs simulations for CSRF, fragments, and chart
 **panel** refresh — not a live login), then run the full app locally or via production
-compose. Outside the workspace, install `hedron[charts]>=0.50.0,<0.51` for the compatible
+compose. Outside the workspace, install `hedron[charts]>=0.50.1,<0.51` for the compatible
 chart satellite; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
@@ -340,7 +340,7 @@ Prefer this path when validating production posture —
 | CSRF on forms | `csrf_token_for_request` + hidden field / `hx-headers` in `_create_form` | CSRF on forms |
 | Create user POST | `@users.action("", method="POST")` | Fragment list refresh |
 | Fragment table refresh | `@users.component("/table")`, addressable `user_table` | Fragment list refresh |
-| DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=0.50.0,<0.51` or the monorepo source) | Chart panel refresh (sim) |
+| DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=0.50.1,<0.51` or the monorepo source) | Chart panel refresh (sim) |
 | Color mode | `ColorModeToggle` + preference cookie helpers | — |
 | Production archetype | compose + `requirements-prod.txt` + README ingredient table | — |
 

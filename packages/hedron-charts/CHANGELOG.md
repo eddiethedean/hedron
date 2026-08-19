@@ -28,6 +28,10 @@
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
 
 ### Fixed
+- Host tabular fallback renders admitted rows instead of an empty caption.
+- SVG export and beginner fallback scale negative Y into the viewBox.
+- `GreatTablesAdapter.supports()` matches great_tables objects only, not bare lists.
+- Missing-extra remediation pins `hedron[charts]>=0.50.1,<0.51`.
 - ``reject_remote_urls`` blocks ``blob:`` and ``vbscript:`` asset schemes (#265).
 - ``hedron-chart`` title/desc IDs are unique per instance (#277).
 - ThreeJs ``model_url`` rejects percent-encoded path traversal (#262).

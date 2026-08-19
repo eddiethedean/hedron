@@ -78,7 +78,13 @@ class FieldFile(Component[FieldFileProps]):
             tag_name=TAG_NAME,
             abi_version=ABI_VERSION,
             element_id=ELEMENT_ID,
-            attributes={"name": self.props.name},
+            attributes={
+                "name": self.props.name,
+                **({"accept": self.props.accept} if self.props.accept else {}),
+                **({"multiple": "true"} if self.props.multiple else {}),
+                **({"required": "true"} if self.props.required else {}),
+                **({"disabled": "true"} if self.props.disabled else {}),
+            },
             server_content=self.props.label,
         )
 

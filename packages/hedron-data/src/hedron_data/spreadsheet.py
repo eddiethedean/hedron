@@ -47,7 +47,7 @@ def _strip_formula_evasion_prefix(value: str) -> str:
             or code < 32
             or code == 127
             or char.isspace()
-            or category in {"Cf", "Cc", "Zl", "Zp"}
+            or category in {"Cf", "Cc", "Zl", "Zp", "Mn", "Me"}
         ):
             index += 1
             continue

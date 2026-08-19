@@ -122,7 +122,7 @@ def test_in_tree_deferred_boilerplate_is_restricted() -> None:
 
 
 def test_evaluate_version_row_rejects_stale_train() -> None:
-    stale = "| Version | **0.46.x** (Beta; pin `hedron>=0.50.0,<0.51`) |\n"
+    stale = "| Version | **0.46.x** (Beta; pin `hedron>=0.50.1,<0.51`) |\n"
     assert ssot.check_evaluate_version(stale)
     if ssot.FACTS.registry_deferred:
         ok = (

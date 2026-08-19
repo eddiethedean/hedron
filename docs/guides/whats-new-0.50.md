@@ -1,12 +1,19 @@
 # What's new in 0.50
 
-**Published `v0.50.0`**. Owning decisions: D-085 / D-086.
+**Published `v0.50.1`**. Owning decisions: D-085 / D-086.
 Tracking: [#501](https://github.com/eddiethedean/hedron/issues/501). Companion authoring:
 [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500),
 [#502](https://github.com/eddiethedean/hedron/issues/502),
 [#503](https://github.com/eddiethedean/hedron/issues/503).
 
-Pin `hedron>=0.50.0,<0.51`. Public-index notes: [Installation](../getting-started/installation.md).
+Pin `hedron>=0.50.1,<0.51`. Public-index notes: [Installation](../getting-started/installation.md).
+
+## 0.50.1 patch
+
+In-tree correctness and security patch (tag/PyPI deferred). Spreadsheet combining-mark
+prefixes, HTMX `this` targets, control `id`s, TerminalView CSRF, formula coerce-to-zero,
+chart tabular/negative-Y/GreatTables/`hedron[charts]` pin, frozen element markup,
+ActionAsync `hx-target`, and Explorer dashboard-graph / packages / maps / security wiring.
 
 ## Highlights
 

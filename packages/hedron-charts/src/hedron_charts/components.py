@@ -130,7 +130,9 @@ def _xy_fallback_figure(
             except (TypeError, ValueError):
                 categorical = True
                 break
-        max_y = max(ys) or 1.0 if ys else 1.0
+        y_min = min(0.0, min(ys)) if ys else 0.0
+        y_max = max(0.0, max(ys)) if ys else 1.0
+        y_span = y_max - y_min or 1.0
         width, height = 320, 160
         shapes: list[str] = []
         use_index = kind == "bar" or categorical or not numeric_xs
@@ -147,31 +149,40 @@ def _xy_fallback_figure(
         def _px(xv: float) -> float:
             return ((xv - min_x) / (max_x - min_x)) * (width - 20) + 10
 
+        def _py(yv: float) -> float:
+            t = (yv - y_min) / y_span
+            raw = height - 10 - t * (height - 20)
+            return min(height - 10, max(10.0, raw))
+
+        zero_y = _py(0.0)
         if kind == "bar":
             bar_w = (width - 20) / max(len(ys), 1)
             for i, yv in enumerate(ys):
-                bh = (yv / max_y) * (height - 20)
+                top = _py(yv)
+                y_rect = min(zero_y, top)
+                bh = abs(zero_y - top)
                 shapes.append(
-                    f'<rect x="{10 + i * bar_w:.1f}" y="{height - 10 - bh:.1f}" '
-                    f'width="{max(bar_w - 2, 1):.1f}" height="{bh:.1f}" fill="currentColor"/>'
+                    f'<rect x="{10 + i * bar_w:.1f}" y="{y_rect:.1f}" '
+                    f'width="{max(bar_w - 2, 1):.1f}" '
+                    f'height="{max(bh, 0.0):.1f}" fill="currentColor"/>'
                 )
         elif kind == "scatter":
             for xv, yv in zip(xs_plot, ys, strict=False):
                 px = _px(float(xv))
-                py = height - 10 - (yv / max_y) * (height - 20)
+                py = _py(yv)
                 shapes.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="3" fill="currentColor"/>')
         else:
             points = []
             for xv, yv in zip(xs_plot, ys, strict=False):
                 px = _px(float(xv))
-                py = height - 10 - (yv / max_y) * (height - 20)
+                py = _py(yv)
                 points.append(f"{px:.1f},{py:.1f}")
             poly = " ".join(points)
             if kind == "area" and points:
                 shapes.append(
                     f'<polygon fill="currentColor" fill-opacity="0.3" '
-                    f'points="{_px(float(xs_plot[0])):.1f},{height - 10} {poly} '
-                    f'{_px(float(xs_plot[-1])):.1f},{height - 10}"/>'
+                    f'points="{_px(float(xs_plot[0])):.1f},{zero_y:.1f} {poly} '
+                    f'{_px(float(xs_plot[-1])):.1f},{zero_y:.1f}"/>'
                 )
             shapes.append(
                 f'<polyline fill="none" stroke="currentColor" stroke-width="2" points="{poly}"/>'

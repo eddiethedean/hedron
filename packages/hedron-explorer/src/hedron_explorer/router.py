@@ -140,8 +140,8 @@ def explorer_router() -> APIRouter:
         return interactions_json(request)
 
     @router.get("/api/dashboard-graph", include_in_schema=False)
-    async def api_dashboard_graph() -> dict[str, Any]:
-        return dashboard_graph_json()
+    async def api_dashboard_graph(request: Request) -> dict[str, Any]:
+        return dashboard_graph_json(request)
 
     @router.get("/api/click-preview", include_in_schema=False)
     async def api_click_preview(request: Request) -> Any:

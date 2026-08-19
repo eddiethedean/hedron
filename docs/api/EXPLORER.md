@@ -39,7 +39,17 @@ def home() -> Page:
 - HTML shell with HTMX navigation across components, routes, graph, security,
   accessibility, packages, and settings.
 - JSON APIs under `/hedron-explorer/api/*` return sanitized registry views (no secrets, no
-  absolute paths as live data).
+  absolute paths as live data). `GET /hedron-explorer/api/dashboard-graph` serializes
+  `app.state.hedron_dashboard_graph` when it is an `InteractionGraph`; otherwise it returns
+  an empty experimental payload.
+
+```python
+from hedron_core.dashboard import InteractionGraph
+
+graph = InteractionGraph()
+# graph.declare_inputs(...) / graph.register(...)
+app.state.hedron_dashboard_graph = graph
+```
 - Preview renders through the production renderer and attaches the active build manifest
   when present.
 - Request simulation is allowlisted and mutation-safe by default (`allow_mutations=false`).

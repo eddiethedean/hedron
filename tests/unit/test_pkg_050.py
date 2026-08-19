@@ -10,7 +10,7 @@ from hedron_core import __version__ as core_version
 def test_core_version_is_train_tip() -> None:
     pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
     assert f'version = "{core_version}"' in pyproject
-    assert core_version == "0.50.0"
+    assert core_version == "0.50.1"
 
 
 def test_packet_files_exist() -> None:

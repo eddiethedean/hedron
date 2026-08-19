@@ -1,9 +1,17 @@
 # Changelog
 
+## [0.50.1] — 2026-08-18
+
+### Changed
+- Coordinated train tip `0.50.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- HTMX relative target `this`, control `id`s, formula/CSV injection prefixes, and Explorer 0.50 wiring (see satellite changelogs).
+
 ## [0.50.0] — 2026-08-18
 
 ### Changed
-- Coordinated train tip `0.50.0`.
+- Coordinated train tip `0.50.0` (in-tree cut; tag/PyPI deferred).
 
 ### Added
 - Explorer architecture services/views split, ExplorerProvider v1, query pagination,

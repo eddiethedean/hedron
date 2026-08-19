@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from hedron.testing import assert_renders
+from hedron_core.rendering import RenderContext, RenderMode, render
 from hedron_extras.specialty import DeviceBridge, Joystick, TerminalPolicy, TerminalView
 
 
@@ -45,8 +46,15 @@ def test_terminal_requires_full_policy() -> None:
         output_budget=1000,
         timeout_s=10,
     )
-    html = assert_renders(TerminalView(policy=policy), contains="hedron-terminal-view")
+    html = render(
+        TerminalView(policy=policy),
+        context=RenderContext.standalone(csrf_token="terminal-csrf"),
+        mode=RenderMode.FRAGMENT,
+    ).html
+    assert "hedron-terminal-view" in html
     assert 'data-allowlist="1"' in html
+    assert 'name="csrf_token"' in html
+    assert 'value="terminal-csrf"' in html
 
 
 def test_joystick_and_device_bridge() -> None:

@@ -8,8 +8,10 @@ from typing import cast
 
 from fastapi import HTTPException, Request
 
+from hedron_core.component import Component
 from hedron_core.plugins import ExplorerProvider
 from hedron_core.registry import get_registry
+from hedron_core.rendering import NodeLike, RenderMode, render
 from hedron_core.typing_aliases import JsonObject
 from hedron_explorer.services.catalog import (
     a11y_contracts,
@@ -19,6 +21,7 @@ from hedron_explorer.services.catalog import (
     page_components,
     page_interactions,
     page_routes,
+    security_json,
 )
 from hedron_explorer.services.diff import explorer_diff_report, format_diff_html
 from hedron_explorer.services.fs import hdj_text_under_root, project_component_roots
@@ -136,16 +139,18 @@ async def graph_view(request: Request) -> str:
 
 
 async def security_view(request: Request) -> str:
-    findings = [
-        "Explorer absent in production by default",
-        "CSRF required for unsafe cookie-authenticated actions",
-        "Authenticated fragments use private, no-store caching",
-        "Mutation simulation disabled by default",
-    ]
-    items = "".join(f"<li>{html_lib.escape(f)}</li>" for f in findings)
+    payload = security_json(request)
+    findings = payload.get("findings") or []
+    items = "".join(f"<li>{html_lib.escape(str(f))}</li>" for f in findings)
+    audit = payload.get("audit_tail") or []
+    audit_items = "".join(f"<li><pre>{html_lib.escape(str(entry))}</pre></li>" for entry in audit)
     return shell(
         "Security",
-        f"<h2>Security findings</h2><ul>{items}</ul>",
+        (
+            f"<h2>Security findings</h2><ul>{items}</ul>"
+            f"<h2>Audit tail</h2>"
+            f"<ul>{audit_items or '<li>No audit events</li>'}</ul>"
+        ),
         request=request,
         active="security",
     )
@@ -378,10 +383,12 @@ async def maps_view(request: Request) -> str:
         for a in registry.assets()
         if "hedron-maps" in a.logical_id or "maplibre" in a.logical_id
     )
+    facts_block = _map_plan_facts_html(request)
     body = f"""
     <h2>Maps</h2>
     <p>Explorer inspects compiled MapPlan facts, origins, attribution, CSP, fallback,
     and event schemas without executing untrusted map data.</p>
+    {facts_block}
     <h3>Registered map components</h3>
     <table>
       <thead><tr><th>Name</th><th>Distribution</th><th>A11y notes</th></tr></thead>
@@ -506,10 +513,62 @@ async def auto_view(request: Request) -> str:
     return shell("Auto", body, request=request, active="auto")
 
 
-def _provider_panel_body(provider: ExplorerProvider) -> str:
-    render = getattr(provider, "render", None)
-    if callable(render):
-        return str(render())
+def _map_plan_facts_html(request: Request) -> str:
+    """Read-only MapPlan facts from app.state or a default OSM compile (no I/O)."""
+    try:
+        from hedron_maps.compile import compile_map
+        from hedron_maps.facts import plan_facts
+        from hedron_maps.spec import AccessibilityDef, MapPlan, MapSpec, OpenStreetMap
+    except ImportError:
+        return "<p>hedron-maps is not installed; MapPlan inspection is unavailable.</p>"
+
+    plans: list[MapPlan] = []
+    stored = getattr(getattr(request.app, "state", None), "hedron_map_plans", None)
+    if isinstance(stored, (list, tuple)):
+        plans.extend(item for item in stored if isinstance(item, MapPlan))
+    single = getattr(getattr(request.app, "state", None), "hedron_map_plan", None)
+    if isinstance(single, MapPlan):
+        plans.append(single)
+    if not plans:
+        plans.append(
+            compile_map(
+                MapSpec(
+                    basemap=OpenStreetMap.standard(),
+                    accessibility=AccessibilityDef(
+                        title="Explorer default map",
+                        description="Read-only MapPlan inspection sample",
+                    ),
+                )
+            )
+        )
+    blocks: list[str] = []
+    for plan in plans:
+        facts = plan_facts(plan)
+        rows = "".join(
+            "<tr>"
+            f"<th>{html_lib.escape(str(key))}</th>"
+            f"<td><code>{html_lib.escape(str(value))}</code></td>"
+            "</tr>"
+            for key, value in facts.items()
+        )
+        blocks.append(
+            "<table>"
+            "<thead><tr><th>Fact</th><th>Value</th></tr></thead>"
+            f"<tbody>{rows}</tbody></table>"
+        )
+    return "<h3>MapPlan facts</h3>" + "".join(blocks)
+
+
+def _provider_panel_markup(result: object) -> str:
+    if isinstance(result, Component) or hasattr(result, "__hedron_node__"):
+        return render(cast(NodeLike, result), mode=RenderMode.FRAGMENT).html
+    return html_lib.escape(str(result))
+
+
+def _provider_panel_body(provider: ExplorerProvider) -> object:
+    render_fn = getattr(provider, "render", None)
+    if callable(render_fn):
+        return render_fn()
     return f"{provider.title} ({provider.plugin}): {provider.description}"
 
 
@@ -518,7 +577,7 @@ async def packages_view(request: Request) -> str:
     for provider in providers_or_defaults():
         isolated = run_isolated(provider, lambda current=provider: _provider_panel_body(current))
         if isolated.get("ok"):
-            items.append(f"<li>{html_lib.escape(str(isolated.get('result')))}</li>")
+            items.append(f"<li>{_provider_panel_markup(isolated.get('result'))}</li>")
             continue
         diagnostic = html_lib.escape(str(isolated.get("diagnostic") or ""))
         error = html_lib.escape(str(isolated.get("error") or "isolated"))

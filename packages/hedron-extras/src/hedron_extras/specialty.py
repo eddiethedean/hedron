@@ -9,6 +9,7 @@ from typing import Any
 from pydantic import Field
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
+from hedron_core.builtins.forms import CsrfField
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 
@@ -127,6 +128,7 @@ class TerminalView(Component[TerminalViewProps]):
         return html.div(
             html.p("Experimental terminal (command allowlist enforced server-side)."),
             html.form(
+                CsrfField(),
                 html.input(type="text", name="command", autocomplete="off"),
                 html.button("Run", type="submit"),
                 method="post",

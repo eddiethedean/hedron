@@ -75,8 +75,9 @@ and regenerate them; do not hand-edit output that the next generator run will ov
 - Avoid duplicating current-version claims. Link to the canonical page when a second copy
   would create another release-time edit. Install pins and deferred-upload honesty live
   only on [Installation](../getting-started/installation.md); first-run copy-paste
-  commands use the PyPI pin from `docs/release.toml` while `registry_status` is
-  `deferred`.
+  commands use the in-tree pin from `docs/release.toml`. While `registry_status` is
+  `deferred`, Installation and the `hedron` / `hedron-core` READMEs must also name the
+  public-index pin.
 
 ## README quality bar
 

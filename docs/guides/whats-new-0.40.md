@@ -1,6 +1,6 @@
 !!! note "Current train is 0.50"
 
-    Pin `hedron>=0.50.0,<0.51` for new apps. See [What's new in 0.41](whats-new-0.41.md).
+    Pin `hedron>=0.50.1,<0.51` for new apps. See [What's new in 0.50](whats-new-0.50.md).
 
 # What's new in Hedron 0.40
 

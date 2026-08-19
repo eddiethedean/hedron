@@ -96,15 +96,30 @@ def evaluate_formula(
     def _cell_float(name: str) -> float:
         raw = row.get(name)
         if isinstance(raw, bool) or raw is None:
-            return 0.0
+            raise error(
+                "HED-DATA-0032",
+                title="Non-numeric formula cell",
+                explanation=f"Column {name!r} is {raw!r}; formulas require numbers.",
+                remediation="Use numeric cells, or omit non-numeric columns from the formula.",
+            )
         if isinstance(raw, (int, float)):
             return float(raw)
         if isinstance(raw, str):
             try:
                 return float(raw)
             except ValueError:
-                return 0.0
-        return 0.0
+                raise error(
+                    "HED-DATA-0032",
+                    title="Non-numeric formula cell",
+                    explanation=f"Column {name!r} value {raw!r} is not a number.",
+                    remediation="Use numeric cells, or omit non-numeric columns from the formula.",
+                ) from None
+        raise error(
+            "HED-DATA-0032",
+            title="Non-numeric formula cell",
+            explanation=f"Column {name!r} has unsupported type {type(raw).__name__}.",
+            remediation="Use numeric cells, or omit non-numeric columns from the formula.",
+        )
 
     # Replace column refs with bound Names so "[a]e3" cannot become scientific
     # notation after string substitution (#247).

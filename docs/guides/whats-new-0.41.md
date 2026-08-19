@@ -1,7 +1,7 @@
 # What's new in Hedron 0.41
 
-**Published** as `v0.41.0` on 2026-08-14 (in-tree tip; tag/PyPI may follow). Pin:
-`hedron>=0.44.0,<0.45`. Charts remain on `hedron-charts>=0.2.0,<0.3`.
+**Published** as `v0.41.0` (historical). Historical pin: `hedron>=0.41.0,<0.42`.
+For new apps, use `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
 
 Phase **0.41** adds allowlisted typed browser composition, subject-bound draft transfer,
 progressive navigation/restoration, content-free traces, and element/region failure isolation

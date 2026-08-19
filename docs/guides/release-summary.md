@@ -8,17 +8,17 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 
 | Item | Value |
 |---|---|
-| Published | **v0.50.0** (`hedron` / Beta train packages `0.50.0`; independent Beta `hedron-maps` `0.1.0`; `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.1`; `fastapi-workbench` `1.0.0`) |
-| Pin | `hedron>=0.50.0,<0.51` |
+| Published | **v0.50.1** (`hedron` / Beta train packages `0.50.1`; independent Beta `hedron-maps` `0.1.0`; `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.1`; `fastapi-workbench` `1.0.0`) |
+| Pin | `hedron>=0.50.1,<0.51` |
 | Charts satellite | `hedron-charts>=0.2.0,<0.3` |
-| Gate checker | `python scripts/check_release_gate.py 0.50.0` |
+| Gate checker | `python scripts/check_release_gate.py 0.50.1` |
 | Packet verify | `python scripts/verify_pkg_50.py` |
 
 Adopter-facing notes: [What’s new in 0.50](whats-new-0.50.md) ·
 [Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 
-The `v0.50.0` Git tag is not created in this cut. Do not retag `v0.49.1`, `v0.48.0`, or `v0.47.0`.
+The `v0.50.1` Git tag is not created in this in-tree patch. Do not retag `v0.49.1`, `v0.48.0`, or `v0.47.0`.
 
 ## Contributor checklist (abbreviated)
 

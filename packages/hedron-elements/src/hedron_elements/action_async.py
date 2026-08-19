@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
+from hedron_core.htmx_contract import safe_css_selector
 from hedron_core.models import Props
 from hedron_core.registry import ElementFieldOwnership
 from hedron_core.security import SafeUrl, UrlPurpose
@@ -18,6 +19,15 @@ ELEMENT_ID = "hedron-action-async"
 class ActionAsyncProps(Props):
     label: str = "Run"
     hx_post: SafeUrl | None = None
+    hx_target: str | None = None
+
+
+def _validated_hx_target(value: str | None) -> str | None:
+    if value is None or value == "":
+        return None
+    if not safe_css_selector(value):
+        raise ValueError(f"Unsafe HTMX target selector: {value!r}")
+    return value
 
 
 class ActionAsync(Component[ActionAsyncProps]):
@@ -30,12 +40,20 @@ class ActionAsync(Component[ActionAsyncProps]):
         label: str = "Run",
         *,
         hx_post: SafeUrl | str | None = None,
+        hx_target: str | None = None,
         **kwargs: object,
     ) -> None:
         url = (
             None if hx_post is None else SafeUrl.parse(str(hx_post), purpose=UrlPurpose.FORM_ACTION)
         )
-        super().__init__(ActionAsyncProps(label=label, hx_post=url, **kwargs))
+        super().__init__(
+            ActionAsyncProps(
+                label=label,
+                hx_post=url,
+                hx_target=_validated_hx_target(hx_target),
+                **kwargs,
+            )
+        )
 
     def render(self) -> NodeLike:
         btn_attrs: HtmlAttrMap = {"type": "button", "data-hedron-server-region": "control"}
@@ -47,12 +65,17 @@ class ActionAsync(Component[ActionAsyncProps]):
             posted = str(self.props.hx_post)
             btn_attrs["hx-post"] = posted
             tag_attrs["hx-post"] = posted
+        if self.props.hx_target is not None:
+            btn_attrs["hx-target"] = self.props.hx_target
+            tag_attrs["hx-target"] = self.props.hx_target
         return html.tag(TAG_NAME)(html.button(self.props.label, **btn_attrs), **tag_attrs)
 
     def render_markup(self) -> str:
         attrs = {"label": self.props.label}
         if self.props.hx_post is not None:
             attrs["hx-post"] = str(self.props.hx_post)
+        if self.props.hx_target is not None:
+            attrs["hx-target"] = self.props.hx_target
         return render_element_markup(
             tag_name=TAG_NAME,
             abi_version=ABI_VERSION,

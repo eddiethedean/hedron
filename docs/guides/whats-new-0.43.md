@@ -3,6 +3,8 @@
 **Published `v0.43.0`** (in-tree cut; tag/PyPI deferred). Owning decisions: D-071 / D-073.
 Tracking: [#311](https://github.com/eddiethedean/hedron/issues/311).
 
+For new apps, pin `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
+
 ## Highlights
 
 Refreshable views and commands are the high-level interface for server-rendered partial updates:
@@ -31,6 +33,7 @@ Authoring model: views render, commands do work, commands refresh views.
 
 ## Upgrade
 
-Pin the train to `hedron>=0.44.0,<0.45`. Rollback: pin `>=0.42.0,<0.43`. Generated view/command ids
+Historical 0.43 pin was `hedron>=0.43.0,<0.44`. For new apps, pin `hedron>=0.50.1,<0.51`.
+Rollback of a 0.43-era app: pin `>=0.42.0,<0.43`. Generated view/command ids
 are not rollback-stable. See [Upgrade](upgrade.md) · [Refreshable views](../api/REFRESHABLE_VIEWS.md)
 · [Roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).

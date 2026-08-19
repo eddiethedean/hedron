@@ -41,11 +41,14 @@ class Dialog(Component[DialogProps]):
         )
 
     def render_markup(self) -> str:
+        attrs = {"title": self.props.title}
+        if self.props.open:
+            attrs["open"] = "true"
         return render_element_markup(
             tag_name=TAG_NAME,
             abi_version=ABI_VERSION,
             element_id=ELEMENT_ID,
-            attributes={"title": self.props.title},
+            attributes=attrs,
             server_content=self.props.title,
         )
 

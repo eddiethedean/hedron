@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Any
 
 from hedron_core.builtins.content import Text
@@ -59,12 +59,14 @@ def render_host_figure(
 
 
 def _tabular(rows: object) -> NodeLike:
+    from hedron_charts.adapters import _fallback_table
+
     if not rows:
         return Text("")
-    return html.div(
-        html.p("Tabular fallback"),
-        class_="hedron-chart-fallback",
-    )
+    if isinstance(rows, Sequence) and not isinstance(rows, (str, bytes)):
+        cleaned = [dict(row) for row in rows if isinstance(row, Mapping)]
+        return _fallback_table(cleaned)
+    return Text("")
 
 
 def _coerce_zoom(raw: object, *, default: int = 2) -> int:

@@ -2,7 +2,7 @@
 
 The canonical release history now lives on [Releases](release-notes.md).
 
-Current release: **v0.50.0**. Recommended constraint: `hedron>=0.50.0,<0.51`.
+Current release: **v0.50.1**. Recommended constraint: `hedron>=0.50.1,<0.51`.
 Public-index notes: [Installation](../getting-started/installation.md).
 
 Continue with:

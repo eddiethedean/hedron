@@ -41,11 +41,14 @@ class Disclosure(Component[DisclosureProps]):
         )
 
     def render_markup(self) -> str:
+        attrs = {"summary": self.props.summary}
+        if self.props.open:
+            attrs["open"] = "true"
         return render_element_markup(
             tag_name=TAG_NAME,
             abi_version=ABI_VERSION,
             element_id=ELEMENT_ID,
-            attributes={"summary": self.props.summary},
+            attributes=attrs,
             server_content=self.props.summary,
         )
 

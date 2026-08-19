@@ -436,7 +436,7 @@ class GreatTablesAdapter:
     optional_package = "great_tables"
 
     def supports(self, value: object) -> bool:
-        return "great_tables" in type(value).__module__ or isinstance(value, (list, tuple))
+        return "great_tables" in type(value).__module__
 
     def compile(
         self,

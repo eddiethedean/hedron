@@ -3,6 +3,8 @@
 **Published `v0.44.0`** (in-tree cut; tag/PyPI deferred). Owning decisions: D-072 / D-073 / D-076.
 Tracking: [#318](https://github.com/eddiethedean/hedron/issues/318).
 
+For new apps, pin `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
+
 ## Highlights
 
 Type-driven authoring is opt-in on top of 0.43 refreshable views and commands:
@@ -32,6 +34,7 @@ This is not a new client runtime, type-checker plugin, or Supported human AT cla
 
 ## Upgrade
 
-Pin the train to `hedron>=0.44.0,<0.45`. Rollback: pin `>=0.43.0,<0.44`. See
+Historical 0.44 pin was `hedron>=0.44.0,<0.45`. For new apps, pin `hedron>=0.50.1,<0.51`.
+Rollback of a 0.44-era app: pin `>=0.43.0,<0.44`. See
 [Upgrade](upgrade.md) · [Type-driven authoring](../api/TYPE_DRIVEN_AUTHORING.md) ·
 [Roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).

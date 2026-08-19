@@ -3,6 +3,8 @@
 **Published `v0.42.0`** (in-tree cut; tag/PyPI deferred). Owning decision: D-070.
 Tracking: [#97](https://github.com/eddiethedean/hedron/issues/97).
 
+For new apps, pin `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
+
 ## Highlights
 
 - Graduates **`hedron-elements`** from Alpha incubator to **Beta**, production-grade
@@ -23,6 +25,7 @@ Tracking: [#97](https://github.com/eddiethedean/hedron/issues/97).
 
 ## Upgrade
 
-Pin the train to `hedron>=0.44.0,<0.45` (and `hedron-elements` the same when used).
-Rollback: pin `>=0.41.0,<0.42`. See [Upgrade](upgrade.md) · [What's ready](whats-ready.md) ·
+Historical 0.42 pin was `hedron>=0.42.0,<0.43`. For new apps, pin
+`hedron>=0.50.1,<0.51` (and `hedron-elements` the same when used).
+Rollback of a 0.42-era app: pin `>=0.41.0,<0.42`. See [Upgrade](upgrade.md) · [What's ready](whats-ready.md) ·
 [Roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).

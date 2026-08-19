@@ -1,9 +1,14 @@
 # Changelog
 
+## [0.50.1] — 2026-08-18
+
+### Changed
+- Coordinated train tip `0.50.1` (in-tree patch; tag/PyPI deferred).
+
 ## [0.50.0] — 2026-08-18
 
 ### Changed
-- Coordinated train tip `0.50.0`.
+- Coordinated train tip `0.50.0` (in-tree cut; tag/PyPI deferred).
 
 ### Added
 - Explorer architecture services/views split, ExplorerProvider v1, query pagination,

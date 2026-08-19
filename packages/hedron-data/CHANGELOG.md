@@ -1,9 +1,18 @@
 # Changelog
 
+## [0.50.1] — 2026-08-18
+
+### Changed
+- Coordinated train tip `0.50.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Spreadsheet formula filter strips combining-mark prefixes before the dangerous-prefix check.
+- `evaluate_formula` rejects bool, `None`, and unparseable cells instead of coercing them to `0.0`.
+
 ## [0.50.0] — 2026-08-18
 
 ### Changed
-- Coordinated train tip `0.50.0`.
+- Coordinated train tip `0.50.0` (in-tree cut; tag/PyPI deferred).
 
 ### Added
 - Explorer architecture services/views split, ExplorerProvider v1, query pagination,

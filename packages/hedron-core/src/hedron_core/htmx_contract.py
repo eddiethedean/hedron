@@ -56,6 +56,8 @@ _SIMPLE_SELECTOR = re.compile(
     r'"[^"]*"|\'[^\']*\'|[A-Za-z0-9_\-]+))?\])$'
 )
 _ON_ATTR = re.compile(r"^on[a-z]+$", re.IGNORECASE)
+# Closed HTMX relative keywords (hx-target="this", hx-indicator="this").
+_HX_RELATIVE_SELECTORS = frozenset({"this"})
 _HX_SWAP_STYLES = frozenset(
     {
         "innerHTML",
@@ -151,10 +153,12 @@ def is_local_path(url: str) -> bool:
 
 
 def safe_css_selector(selector: str) -> bool:
-    """Allow only a single simple #id, .class, or [attr=value] selector."""
+    """Allow a simple #id, .class, [attr=value] selector, or HTMX ``this``."""
     if not selector or any(ch in selector for ch in "<>`);{}\\"):
         return False
     text = selector.strip()
+    if text in _HX_RELATIVE_SELECTORS:
+        return True
     if not text or any(ch.isspace() for ch in text):
         return False
     if any(token in text for token in (",", "*", ">", "+", "~", "/", ":")):

@@ -16,6 +16,7 @@ class ButtonProps(Props):
     type: Literal["button", "submit", "reset"] = "button"
     disabled: bool = False
     variant: Literal["primary", "secondary", "danger"] = "primary"
+    id: str | None = None
     class_: str | None = None
 
 
@@ -29,6 +30,7 @@ class Button(Component[ButtonProps]):
         type: Literal["button", "submit", "reset"] = "button",
         disabled: bool = False,
         variant: Literal["primary", "secondary", "danger"] = "primary",
+        id: str | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
@@ -38,6 +40,7 @@ class Button(Component[ButtonProps]):
                 type=type,
                 disabled=disabled,
                 variant=variant,
+                id=id,
                 class_=class_,
                 **kwargs,
             )
@@ -48,6 +51,7 @@ class Button(Component[ButtonProps]):
             self.props.label,
             type=self.props.type,
             disabled=self.props.disabled or None,
+            id=self.props.id,
             class_=class_names(
                 f"hedron-button hedron-button-{self.props.variant}", self.props.class_
             ),
@@ -57,6 +61,7 @@ class Button(Component[ButtonProps]):
 class LinkButtonProps(Props):
     label: str
     href: SafeUrl
+    id: str | None = None
     class_: str | None = None
 
 
@@ -68,6 +73,7 @@ class LinkButton(Component[LinkButtonProps]):
         label: str,
         href: SafeUrl | str,
         *,
+        id: str | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
@@ -76,12 +82,13 @@ class LinkButton(Component[LinkButtonProps]):
             if isinstance(href, SafeUrl)
             else SafeUrl.parse(href, purpose=UrlPurpose.NAVIGATION)
         )
-        super().__init__(LinkButtonProps(label=label, href=url, class_=class_, **kwargs))
+        super().__init__(LinkButtonProps(label=label, href=url, id=id, class_=class_, **kwargs))
 
     def render(self) -> NodeLike:
         return html.a(
             self.props.label,
             href=self.props.href,
+            id=self.props.id,
             class_=class_names("hedron-button hedron-button-secondary", self.props.class_),
             role="button",
         )
@@ -92,6 +99,7 @@ class IconButtonProps(Props):
     icon: str
     type: Literal["button", "submit", "reset"] = "button"
     disabled: bool = False
+    id: str | None = None
     class_: str | None = None
 
 
@@ -105,6 +113,7 @@ class IconButton(Component[IconButtonProps]):
         icon: str,
         type: Literal["button", "submit", "reset"] = "button",
         disabled: bool = False,
+        id: str | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
@@ -114,6 +123,7 @@ class IconButton(Component[IconButtonProps]):
                 icon=icon,
                 type=type,
                 disabled=disabled,
+                id=id,
                 class_=class_,
                 **kwargs,
             )
@@ -124,6 +134,7 @@ class IconButton(Component[IconButtonProps]):
             html.span(self.props.icon, aria={"hidden": "true"}),
             type=self.props.type,
             disabled=self.props.disabled or None,
+            id=self.props.id,
             class_=class_names("hedron-icon-button", self.props.class_),
             aria={"label": self.props.label},
         )

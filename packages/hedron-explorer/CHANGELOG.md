@@ -1,9 +1,21 @@
 # Changelog
 
+## [0.50.1] — 2026-08-18
+
+### Changed
+- Coordinated train tip `0.50.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- `/api/dashboard-graph` serializes `app.state.hedron_dashboard_graph` when set.
+- Packages panel renders Hedron nodes returned by `ExplorerProvider.render`.
+- Maps page shows compiled MapPlan facts (origins, attribution, CSP).
+- Security page lists the live audit tail.
+- `hedron-explorer[fastapi]` extra matches the base FastAPI upper bound.
+
 ## [0.50.0] — 2026-08-18
 
 ### Changed
-- Coordinated train tip `0.50.0`.
+- Coordinated train tip `0.50.0` (in-tree cut; tag/PyPI deferred).
 
 ### Added
 - Explorer architecture services/views split, ExplorerProvider v1, query pagination,

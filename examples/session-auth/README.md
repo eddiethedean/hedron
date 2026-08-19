@@ -6,7 +6,7 @@ Minimal session login gate with CSRF. Demo credentials only.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.50.0,<0.51" "uvicorn[standard]"
+pip install "hedron>=0.50.1,<0.51" "uvicorn[standard]"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/session-auth/app.py -o app.py
 uvicorn app:app --reload
 ```

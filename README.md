@@ -13,14 +13,14 @@ Routes return typed UI; HTMX swaps HTML fragments. No Node frontend.
 **Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
-Install the current train: `hedron>=0.50.0,<0.51`. Pins, extras, and public-index notes:
+Install the current train: `hedron>=0.50.1,<0.51`. Pins, extras, and public-index notes:
 [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 ```bash
 # Need uv? macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
 # Windows (PowerShell): irm https://astral.sh/uv/install.ps1 | iex
 
-uvx --from "hedron>=0.50.0,<0.51" hedron new my-hedron-app
+uvx --from "hedron>=0.50.1,<0.51" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
@@ -38,7 +38,7 @@ Alternate (pip + venv):
 ```bash
 # macOS / Linux
 python3 -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron>=0.50.0,<0.51" "uvicorn[standard]"
+python -m pip install "hedron>=0.50.1,<0.51" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 ```
@@ -47,7 +47,7 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 # Windows (PowerShell)
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install "hedron>=0.50.0,<0.51" "uvicorn[standard]"
+python -m pip install "hedron>=0.50.1,<0.51" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app
 python -m pip install -e .
@@ -84,7 +84,7 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new in 0.49](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.49/) ·
+[What’s new in 0.50](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.50/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
@@ -99,7 +99,7 @@ Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/
 | [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship |
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter |
-| [`hedron-data`](https://pypi.org/project/hedron-data/) | DataTable / DataEditor (also `pip install "hedron[data]>=0.50.0,<0.51"`) |
+| [`hedron-data`](https://pypi.org/project/hedron-data/) | DataTable / DataEditor (also `pip install "hedron[data]>=0.50.1,<0.51"`) |
 | [`hedron-jinja`](https://pypi.org/project/hedron-jinja/) | Optional HDJ templates (also `hedron[jinja]`) |
 | [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Component Explorer (also `hedron[dev]`) |
 
@@ -108,7 +108,7 @@ Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Op
 Web Components, Workbench, and Posit):
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
-Charts: `pip install "hedron[charts]>=0.50.0,<0.51"`.
+Charts: `pip install "hedron[charts]>=0.50.1,<0.51"`.
 Plugin authors can install `hedron-sample-kit>=0.1.10,<0.2`. Older satellite releases target
 older cores; see [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 

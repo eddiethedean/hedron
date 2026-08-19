@@ -8,7 +8,7 @@ from fastapi import Request
 
 from hedron_core.a11y import AccessibilityContract
 from hedron_core.catalog import InteractionCatalog, compile_interaction_catalog, get_sealed_catalog
-from hedron_core.dashboard import dashboard_graph_payload
+from hedron_core.dashboard import InteractionGraph, dashboard_graph_payload
 from hedron_core.registry import ComponentMeta, RouteMeta, get_registry
 from hedron_explorer.services.query import (
     A11Y_LIMIT,
@@ -219,10 +219,11 @@ def interactions_json(request: Request) -> dict[str, Any]:
     return catalog.to_manifest(profile="development").as_mapping()
 
 
-def dashboard_graph_json() -> dict[str, Any]:
-    from hedron_core import InteractionGraph
-
-    payload = dashboard_graph_payload(InteractionGraph())
+def dashboard_graph_json(request: Request) -> dict[str, Any]:
+    graph = getattr(getattr(request.app, "state", None), "hedron_dashboard_graph", None)
+    if not isinstance(graph, InteractionGraph):
+        graph = InteractionGraph()
+    payload = dashboard_graph_payload(graph)
     return {**payload, "stability": "experimental"}
 
 

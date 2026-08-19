@@ -79,14 +79,23 @@ class FieldText(Component[FieldTextProps]):
         )
 
     def render_markup(self) -> str:
+        attrs: dict[str, str] = {
+            "name": self.props.name,
+            "value": self.props.value,
+        }
+        if self.props.label:
+            attrs["label"] = self.props.label
+        if self.props.required:
+            attrs["required"] = "true"
+        if self.props.disabled:
+            attrs["disabled"] = "true"
+        if self.props.input_type != "text":
+            attrs["input-type"] = self.props.input_type
         return render_element_markup(
             tag_name=TAG_NAME,
             abi_version=ABI_VERSION,
             element_id=ELEMENT_ID,
-            attributes={
-                "name": self.props.name,
-                "value": self.props.value,
-            },
+            attributes=attrs,
             server_content=self.props.value,
         )
 

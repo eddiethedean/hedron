@@ -80,11 +80,16 @@ class FieldChoice(Component[FieldChoiceProps]):
         )
 
     def render_markup(self) -> str:
+        attrs = {"name": self.props.name, "choice-type": self.props.choice_type}
+        if self.props.required:
+            attrs["required"] = "true"
+        if self.props.disabled:
+            attrs["disabled"] = "true"
         return render_element_markup(
             tag_name=TAG_NAME,
             abi_version=ABI_VERSION,
             element_id=ELEMENT_ID,
-            attributes={"name": self.props.name, "choice-type": self.props.choice_type},
+            attributes=attrs,
             server_content=self.props.name,
         )
 

@@ -2,7 +2,7 @@
 
 Unified Posit Workbench / Connect deployment adapter for Hedron.
 
-**Package maturity:** Beta (`0.36.0`) · extra `hedron[posit]` · pin `>=0.50.0,<0.51`
+**Package maturity:** Beta (`0.50.1`) · extra `hedron[posit]` · pin `>=0.50.1,<0.51`
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust. Connect credential
@@ -29,7 +29,7 @@ Dependency graph (one-way):
 hedron-workbench -> hedron-posit -> hedron + fastapi-workbench
 ```
 
-`hedron-workbench` remains a Supported compatibility package through at least
-0.35 (`HedronWorkbench` subclass; no 0.33 deprecation warning).
+`hedron-workbench` remains a Supported compatibility package on the current
+0.50 train (`HedronWorkbench` subclass; no 0.33 deprecation warning).
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.

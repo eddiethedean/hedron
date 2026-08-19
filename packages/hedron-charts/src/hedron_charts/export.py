@@ -83,8 +83,9 @@ def export_svg(plan: ChartPlan, *, authorized: bool = True, width: int | None = 
             y_values.append(float(y))  # type: ignore[arg-type]
         except (TypeError, ValueError):
             continue
-    y_max = max(y_values) if y_values else 1.0
-    y_max = y_max if y_max else 1.0
+    y_min = min(0.0, min(y_values)) if y_values else 0.0
+    y_max = max(0.0, max(y_values)) if y_values else 1.0
+    y_span = y_max - y_min or 1.0
     margin = int(plan.layout.get("margin") or 40)
     plot_w = max(1, w - 2 * margin)
     plot_h = max(1, h - 2 * margin)
@@ -95,7 +96,9 @@ def export_svg(plan: ChartPlan, *, authorized: bool = True, width: int | None = 
         except (TypeError, ValueError):
             continue
         x = margin + (i / max(1, len(plan.marks) - 1)) * plot_w if len(plan.marks) > 1 else margin
-        py = margin + plot_h - (y / y_max) * plot_h
+        t = (y - y_min) / y_span
+        py = margin + plot_h - t * plot_h
+        py = min(margin + plot_h, max(margin, py))
         points.append(f"{x:.2f},{py:.2f}")
     poly = " ".join(points)
     return (
