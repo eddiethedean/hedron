@@ -213,9 +213,7 @@ jobs:
           path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}-${{ matrix.browser }}
       - name: Install Playwright browser
-        run: |
-          uv run --python 3.12 playwright install-deps ${{ matrix.browser }}
-          uv run --python 3.12 playwright install ${{ matrix.browser }}
+        run: bash scripts/ci_install_playwright.sh ${{ matrix.browser }} 3.12
       - name: Run browser suite
         env:
           HEDRON_BROWSER: "1"
