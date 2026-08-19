@@ -3,7 +3,7 @@
 ## [0.50.3] — 2026-08-19
 
 ### Changed
-- Coordinated train tip `0.50.3` (in-tree patch; tag/PyPI deferred). See satellite
+- Coordinated train tip `0.50.3`. See satellite
   changelogs for Flask/Django/Explorer-owned rows.
 
 ### Fixed

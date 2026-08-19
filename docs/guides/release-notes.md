@@ -5,9 +5,8 @@ details remain in the [package changelogs](changelog.md).
 
 ## 0.50.3 — 2026-08-19
 
-In-tree correctness and security patch on the 0.50 train. Git tag and PyPI upload
-are **deferred**; install from PyPI with `hedron>=0.50.1,<0.51` until 0.50.3 is
-uploaded. [Installation](../getting-started/installation.md).
+Bugfix patch on the 0.50 train. Pin `hedron>=0.50.1,<0.51` from PyPI until the
+0.50.3 wheel lands. [Installation](../getting-started/installation.md).
 
 - `@command` no longer opts out of HTMX target authorization; compiled refresh/patch
   policies declare owned hosts and stay fail-closed.

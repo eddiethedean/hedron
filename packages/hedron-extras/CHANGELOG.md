@@ -3,7 +3,7 @@
 ## [0.50.3] — 2026-08-19
 
 ### Changed
-- Coordinated train tip `0.50.3` (in-tree patch; tag/PyPI deferred).
+- Coordinated train tip `0.50.3`.
 
 ### Fixed
 - HTMX `@command` and compiled refresh/patch responses stay fail-closed for undeclared targets.
