@@ -50,8 +50,11 @@ Explorer/Jinja/conformance projections). It consumes
 
 ## Companion authoring
 
-Password visibility (#504), swap reveal (#505), and generic HTMX busy
-(#506) belong to the flagship. They do not graduate Experimental UI.
+Password visibility (#504) is built into `TextInput(type="password")` (and
+generated password Controls). Swap reveal (#505) is `SwapReveal` — first paint
+stays visible; after-swap replay honors `prefers-reduced-motion`. Generic HTMX
+busy (#506) is opt-in via `BusyRegion` / `Hx(busy=...)` and does not mark
+`document.body` busy for unmarked requests.
 
 ## Errors
 

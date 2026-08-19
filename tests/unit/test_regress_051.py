@@ -19,11 +19,14 @@ def test_password_toggle_and_busy_reveal() -> None:
     assert "Show password" in html
     reveal = assert_renders(SwapReveal("hello"), contains="data-hedron-reveal")
     assert "respect" in reveal
+    assert "is-revealed" in reveal
     busy = assert_renders(BusyRegion("body"), contains='aria-busy="false"')
     assert "data-hedron-busy" in busy
-    attrs = Hx(method="post", url="/x", busy="region").as_html_attrs()
+    attrs = Hx(method="post", url="/x", busy="region", indicator="#busy").as_html_attrs()
     assert attrs["data-hedron-busy"] == "region"
     assert attrs["aria-busy"] == "false"
+    assert attrs["data-hedron-busy-indicator"] == "#busy"
+    assert attrs["hx-indicator"] == "#busy"
 
 
 def test_050_packet_remains() -> None:
@@ -34,3 +37,4 @@ def test_050_packet_remains() -> None:
     assert "data-hedron-password-toggle" in ui
     assert "prefers-reduced-motion" in ui
     assert "htmx:beforeRequest" in ui
+    assert "busyCounts" in ui

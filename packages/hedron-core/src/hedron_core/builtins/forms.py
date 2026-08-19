@@ -756,7 +756,7 @@ class SwapReveal(Component[SwapRevealProps]):
     def render(self) -> NodeLike:
         return html.div(
             *self._children,
-            class_="hedron-swap-reveal",
+            class_="hedron-swap-reveal is-revealed",
             data={
                 "hedron-reveal": "swap",
                 "hedron-reduced-motion": "respect" if self.props.reduced_motion else "ignore",

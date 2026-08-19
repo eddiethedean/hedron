@@ -151,7 +151,7 @@ guaranteed multi-worker live-transport proof.
 |---|---|---|
 | Live interaction: SSE, streaming, WebSocket, preload | `hedron.experimental` (FastAPI) | Prefer [polling](live-interaction.md) |
 | CodeEditor | `hedron[experimental-ui]` | **Host stub** (CSP-safe shell; no pinned CodeMirror 6 bundle); importable from `hedron_extras.experimental`, but omitted from default plugin registration |
-| Browser-Python sandbox | `hedron[extras]` | Origin-isolated; Experimental until you accept the isolation model |
+| Browser-Python sandbox | opt-in `hedron_extras_sandbox` / `HEDRON_EXTRAS_SANDBOX` | Experimental; not registered by default `hedron[extras]`. Import stays `hedron_extras.sandbox` |
 | TerminalView / joystick / device bridges | `hedron[experimental-ui]` | Fail-closed experimental surfaces; omitted from default plugin registration but not blocked from direct Python imports |
 | Native desktop shell | docs recipe | Packaging guidance only |
 | Flask / Django live helpers | adapters | Prefer polling |

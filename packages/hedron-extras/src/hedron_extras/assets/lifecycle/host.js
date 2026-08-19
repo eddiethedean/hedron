@@ -76,24 +76,52 @@ class HedronExtrasHost extends HTMLElement {
     if (this.tagName.toLowerCase() === "hedron-extras-typeahead") {
       this._wireTypeahead(payload, signal, revision);
     }
+    this._wireFocus();
+  }
+
+  _wireFocus() {
+    const node = this.querySelector("[data-hedron-focus-target]");
+    if (!(node instanceof HTMLElement)) return;
+    const id = node.getAttribute("data-hedron-focus-target");
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!(target instanceof HTMLElement)) return;
+    const behavior = node.getAttribute("data-behavior") || "focus-scroll";
+    const reduced =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (behavior.includes("focus") && typeof target.focus === "function") {
+      target.focus({ preventScroll: behavior === "focus" });
+    }
+    if (behavior.includes("scroll") && typeof target.scrollIntoView === "function") {
+      target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+    }
   }
 
   _wireTypeahead(payload, signal, revision) {
     const input = this.querySelector("input[role='combobox']");
     if (!(input instanceof HTMLInputElement)) return;
-    const source = typeof payload.source === "string" ? payload.source : "";
-    if (!source || source.startsWith("javascript:")) return;
+    const source = typeof payload.source === "string" ? payload.source.trim() : "";
+    const blocked = /^(javascript|data|vbscript|file):/i;
+    if (!source || blocked.test(source)) return;
     let seq = 0;
+    let inflight = null;
     const onInput = () => {
+      if (inflight) inflight.abort();
       const requestId = ++seq;
-      const controller = new AbortController();
+      inflight = new AbortController();
+      const controller = inflight;
       const onParentAbort = () => controller.abort();
       signal.addEventListener("abort", onParentAbort, { once: true });
       this.dataset.hedronTypeahead = "pending";
       const url = source.includes("?")
         ? `${source}&q=${encodeURIComponent(input.value)}`
         : `${source}?q=${encodeURIComponent(input.value)}`;
-      fetch(url, { signal: controller.signal, headers: { Accept: "application/json" } })
+      fetch(url, {
+        signal: controller.signal,
+        credentials: "same-origin",
+        headers: { Accept: "application/json" },
+      })
         .then((res) => (res.ok ? res.json() : Promise.reject(new Error("typeahead"))))
         .then((body) => {
           if (requestId !== seq || revision !== this._revision) return;
@@ -105,11 +133,15 @@ class HedronExtrasHost extends HTMLElement {
         .catch((err) => {
           if (controller.signal.aborted) return;
           this.dataset.hedronTypeahead = "error";
-          this.setAttribute("data-hedron-optional-failure", err && err.message ? "1" : "1");
+          this.setAttribute("data-hedron-optional-failure", "1");
+          void err;
         });
     };
     input.addEventListener("input", onInput);
-    this._cleanups.push(() => input.removeEventListener("input", onInput));
+    this._cleanups.push(() => {
+      if (inflight) inflight.abort();
+      input.removeEventListener("input", onInput);
+    });
   }
 
   _disconnect() {

@@ -32,7 +32,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-BusyRegion covers HTMX requests that are not built-in forms. Pair with Hx(busy='region') when the request origin is a Form.
+BusyRegion and `Hx(busy=...)` mark opt-in HTMX busy hosts. Hedron UI sets aria-busy only on those hosts (document scope uses the document element), never on every request's body.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 

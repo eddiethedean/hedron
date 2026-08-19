@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Literal
 
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
+
+_BUSY_INDICATOR_ID = re.compile(r"^#[A-Za-z][\w:.-]*$")
 
 
 def _safe_optional_selector(value: str | None, *, label: str) -> str | None:
@@ -120,4 +123,6 @@ class Hx:
         if self.busy in {"region", "document"}:
             attrs["data-hedron-busy"] = self.busy
             attrs["aria-busy"] = "false"
+            if indicator and _BUSY_INDICATOR_ID.fullmatch(indicator):
+                attrs["data-hedron-busy-indicator"] = indicator
         return attrs

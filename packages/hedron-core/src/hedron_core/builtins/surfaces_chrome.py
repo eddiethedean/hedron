@@ -518,6 +518,8 @@ class ClipboardCopy(Component[ClipboardCopyProps]):
         mark: str | None = None,
         **kwargs: Any,
     ) -> None:
+        if len(text) > 100_000:
+            raise ValueError("ClipboardCopy text exceeds 100000 character budget")
         super().__init__(ClipboardCopyProps(text=text, label=label, mark=mark, **kwargs))
 
     def render(self) -> NodeLike:

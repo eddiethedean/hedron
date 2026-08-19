@@ -8,7 +8,7 @@ from typing import Any
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
-from hedron_extras.host import extras_host
+from hedron_extras.host import extras_host, reject_client_fetch_url
 
 
 class CalendarProps(ElementProps):
@@ -128,8 +128,7 @@ class Typeahead(Component[TypeaheadProps]):
             raise ValueError("Typeahead options exceed budget")
         if page_size < 1 or page_size > 500:
             raise ValueError("Typeahead page_size must be between 1 and 500")
-        if source and source.lower().startswith("javascript:"):
-            raise ValueError("Typeahead source must not be a javascript: URL")
+        source = reject_client_fetch_url(source, label="Typeahead source")
         super().__init__(
             TypeaheadProps(
                 name=name,

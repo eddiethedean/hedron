@@ -32,7 +32,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-SwapReveal is an opt-in layout wrapper. Hedron UI applies a reveal class on `htmx:afterSwap` unless reduced motion is requested.
+SwapReveal wraps a swapped region. First paint includes `is-revealed` so content is visible; Hedron UI replays the reveal class on `htmx:afterSwap` unless reduced motion is requested.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 

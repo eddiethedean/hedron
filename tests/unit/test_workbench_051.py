@@ -21,6 +21,8 @@ def test_json_editor_never_eval_and_cancel() -> None:
         JSONEditor("{not json")
     with pytest.raises(ValueError, match="max_chars"):
         JSONEditor("{" + "a" * 10, max_chars=5)
+    with pytest.raises(ValueError, match="max_chars"):
+        JSONEditor("{}", max_chars=0)
 
 
 def test_data_and_chart_apply_cancel_export() -> None:
@@ -35,5 +37,7 @@ def test_data_and_chart_apply_cancel_export() -> None:
     assert "__apply" in html
     assert "__export" in html
     assert 'data-revision="3"' in html
-    chart = assert_renders(ChartWorkbench(), contains="Export CSV")
+    chart = assert_renders(ChartWorkbench(revision="9"), contains="Export CSV")
     assert "__cancel" in chart
+    assert 'name="export__revision"' in chart
+    assert 'value="9"' in chart

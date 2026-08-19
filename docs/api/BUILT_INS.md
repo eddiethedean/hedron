@@ -56,7 +56,10 @@ manual.
 [`Card`](../components/card.md) · [`Badge`](../components/badge.md) ·
 [`Alert`](../components/alert.md) · [`Skeleton`](../components/skeleton.md) ·
 [`Button`](../components/button.md) · [`ConfirmButton`](../components/confirm-button.md) ·
-[`Form`](../components/form.md) · [`TextInput`](../components/text-input.md) ·
+[`Form`](../components/form.md) · [`Hx`](../components/hx.md) ·
+[`SwapReveal`](../components/swap-reveal.md) ·
+[`BusyRegion`](../components/busy-region.md) ·
+[`TextInput`](../components/text-input.md) ·
 [`NumberInput`](../components/number-input.md) · [`DateInput`](../components/date-input.md) ·
 [`MultiSelect`](../components/multi-select.md) · [`ToggleSwitch`](../components/toggle-switch.md) ·
 [`CameraCapture`](../components/camera-capture.md) ·

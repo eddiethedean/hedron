@@ -86,12 +86,19 @@ _BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Any], ...]], ...] = (
         _LIFECYCLE_REL,
         "hedron-extras:composition",
         "hedron-extras-composition",
-        (ChoiceCards, TreeView, Steps, SplitPane, FloatingAction, KeyboardShortcuts),
+        (
+            ChoiceCards,
+            TreeView,
+            Steps,
+            SplitPane,
+            FloatingAction,
+            KeyboardShortcuts,
+            FocusScrollRequest,
+        ),
     ),
 )
 
 _STATIC_COMPONENTS: tuple[type[Any], ...] = (
-    FocusScrollRequest,
     AvatarProfile,
     BadgeLink,
     MetricCard,

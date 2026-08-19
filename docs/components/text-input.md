@@ -32,7 +32,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-TextInput uses native constraints and preserves a supplied value during validation re-renders. The finite type set avoids accidentally exposing unsafe or poorly supported input modes.
+TextInput uses native constraints and preserves a supplied value during validation re-renders. The finite type set avoids accidentally exposing unsafe or poorly supported input modes. `type='password'` renders an accessible Show/Hide control (`data-hedron-password-toggle`) with no app-authored JavaScript.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 

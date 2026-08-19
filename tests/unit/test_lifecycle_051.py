@@ -50,6 +50,8 @@ def test_supported_hosts_share_lifecycle_js() -> None:
         "revokeObjectURL",
         "customElements.define",
         "htmx:afterSwap",
+        'credentials: "same-origin"',
+        "data-hedron-focus-target",
     ):
         assert token in host
     html = assert_renders(

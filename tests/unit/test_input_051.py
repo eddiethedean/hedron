@@ -26,3 +26,7 @@ def test_javascript_url_and_clipboard_size() -> None:
     assert "ok" in html or "clipboard" in html.lower()
     with pytest.raises(ValueError, match="budget"):
         Typeahead("q", [f"opt-{i}" for i in range(5_001)])
+    with pytest.raises(ValueError, match="data"):
+        Typeahead("q", ["a"], source="data:text/plain,hi")
+    with pytest.raises(ValueError, match="budget"):
+        ClipboardCopy("x" * 100_001)

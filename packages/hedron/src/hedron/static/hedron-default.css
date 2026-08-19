@@ -1969,26 +1969,29 @@
     }
   }
 
-    .hedron-password-field {
-      display: inline-flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
+  .hedron-password-field {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
 
-    .hedron-swap-reveal {
-      opacity: 1;
-    }
+  .hedron-password-field button {
+    flex: 0 0 auto;
+  }
 
-    .hedron-swap-reveal:not(.is-revealed) {
-      opacity: 0;
-    }
+  .hedron-swap-reveal {
+    opacity: 1;
+    transition: opacity 0.18s ease;
+  }
 
-    @media (prefers-reduced-motion: reduce) {
-      .hedron-swap-reveal {
-        opacity: 1 !important;
-        transition: none !important;
-      }
-    }
+  .hedron-swap-reveal:not(.is-revealed) {
+    opacity: 0;
+  }
+
+  [data-hedron-busy][aria-busy="true"],
+  html[aria-busy="true"] {
+    cursor: progress;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     *,

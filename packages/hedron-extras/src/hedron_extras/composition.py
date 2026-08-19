@@ -12,7 +12,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
-from hedron_extras.host import extras_host
+from hedron_extras.host import extras_host, reject_client_fetch_url
 
 MappingLike = Mapping[str, Any]
 
@@ -148,6 +148,7 @@ class TreeView(Component[TreeViewProps]):
         walk(parsed)
         if len(ids) != len(set(ids)):
             raise ValueError("TreeView node ids must be stable and unique")
+        source = reject_client_fetch_url(source, label="TreeView source")
         super().__init__(
             TreeViewProps(
                 nodes=parsed,
@@ -563,13 +564,17 @@ class FocusScrollRequest(Component[FocusScrollRequestProps]):
         super().__init__(FocusScrollRequestProps(target_id=target_id, behavior=behavior, **kwargs))
 
     def render(self) -> NodeLike:
-        return html.div(
-            class_=class_names("hedron-focus-scroll", self.props.class_),
-            id=self.props.id,
-            data={
-                **mark_data(self.props.mark),
-                "hedron-focus-target": self.props.target_id,
-                "behavior": self.props.behavior,
-            },
-            hidden=True,
+        return extras_host(
+            "hedron-extras-composition",
+            html.div(
+                class_=class_names("hedron-focus-scroll", self.props.class_),
+                id=self.props.id,
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-focus-target": self.props.target_id,
+                    "behavior": self.props.behavior,
+                },
+                hidden=True,
+            ),
+            payload={"kind": "focus-scroll", "target_id": self.props.target_id},
         )

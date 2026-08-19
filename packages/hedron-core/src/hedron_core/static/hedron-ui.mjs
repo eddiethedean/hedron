@@ -183,9 +183,11 @@ document.addEventListener("click", (event) => {
   if (!(event.target instanceof Element)) return;
   const toggle = event.target.closest("[data-hedron-password-toggle]");
   if (!(toggle instanceof HTMLButtonElement)) return;
+  event.preventDefault();
+  if (toggle.disabled) return;
   const inputId = toggle.getAttribute("data-hedron-password-toggle") || toggle.getAttribute("aria-controls");
   const input = inputId ? document.getElementById(inputId) : toggle.parentElement?.querySelector("input");
-  if (!(input instanceof HTMLInputElement)) return;
+  if (!(input instanceof HTMLInputElement) || input.disabled) return;
   const show = input.type === "password";
   input.type = show ? "text" : "password";
   toggle.setAttribute("aria-pressed", show ? "true" : "false");
@@ -193,28 +195,38 @@ document.addEventListener("click", (event) => {
   toggle.textContent = show ? "Hide password" : "Show password";
 });
 
-function busyHost(elt) {
-  if (!(elt instanceof Element)) return document.body;
-  return elt.closest("[data-hedron-busy]") || document.body;
+const busyCounts = new WeakMap();
+
+function busyMarked(elt) {
+  if (!(elt instanceof Element)) return null;
+  return elt.closest("[data-hedron-busy]");
 }
 
-function setBusy(host, busy) {
-  if (!(host instanceof HTMLElement)) return;
-  host.setAttribute("aria-busy", busy ? "true" : "false");
-  const indicatorSel = host.getAttribute("data-hedron-busy-indicator");
+function setBusy(marked, busy) {
+  if (!(marked instanceof HTMLElement)) return;
+  const next = (busyCounts.get(marked) || 0) + (busy ? 1 : -1);
+  const count = Math.max(0, next);
+  busyCounts.set(marked, count);
+  const on = count > 0;
+  const host =
+    marked.getAttribute("data-hedron-busy") === "document"
+      ? document.documentElement
+      : marked;
+  host.setAttribute("aria-busy", on ? "true" : "false");
+  const indicatorSel = marked.getAttribute("data-hedron-busy-indicator");
   if (indicatorSel && /^#[A-Za-z][\w:.-]*$/.test(indicatorSel)) {
     const indicator = document.querySelector(indicatorSel);
-    if (indicator instanceof HTMLElement) indicator.hidden = !busy;
+    if (indicator instanceof HTMLElement) indicator.hidden = !on;
   }
 }
 
 document.body.addEventListener("htmx:beforeRequest", (event) => {
-  const elt = event.detail?.elt;
-  setBusy(busyHost(elt), true);
+  const marked = busyMarked(event.detail?.elt);
+  if (marked) setBusy(marked, true);
 });
 document.body.addEventListener("htmx:afterRequest", (event) => {
-  const elt = event.detail?.elt;
-  setBusy(busyHost(elt), false);
+  const marked = busyMarked(event.detail?.elt);
+  if (marked) setBusy(marked, false);
 });
 document.body.addEventListener("htmx:afterSwap", (event) => {
   const root = event.target instanceof Element ? event.target : document;

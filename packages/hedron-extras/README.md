@@ -16,7 +16,9 @@ dependency cost.
 
 `CodeEditor`, `TerminalView`, and joystick/device bridges require the separate
 **`hedron[experimental-ui]`** opt-in (import `hedron_extras.experimental`) and are not
-part of the supported product UI under `hedron[extras]`. See
+part of the supported product UI under `hedron[extras]`. `BrowserPythonSandbox` is
+Experimental and is **not** registered by default `hedron[extras]`; enable
+`hedron_extras_sandbox` / `HEDRON_EXTRAS_SANDBOX`. See
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
 ## Install
@@ -58,7 +60,7 @@ package is installed.
 | Area | Components |
 |---|---|
 | Workbenches | `JSONEditor`, `DataExplorer`, `ChartWorkbench` |
-| Composition | `ChoiceCards`, `TreeView`, `Steps`, `SplitPane`, `FloatingAction` |
+| Composition | `ChoiceCards`, `TreeView`, `Steps`, `SplitPane`, `FloatingAction`, `KeyboardShortcuts`, `FocusScrollRequest` |
 | Editors | `Calendar`, `SignaturePad`, `Typeahead` |
 | Image | `ImageCompare`, `ImageCrop`, `ImageRegionSelect`, `ImageAnnotations` |
 | Recipes | `AvatarProfile`, `BadgeLink`, `MetricCard`, `TodoList` |

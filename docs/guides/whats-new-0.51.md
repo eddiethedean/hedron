@@ -28,3 +28,6 @@ Companion flagship authoring (#504–#506):
 - Accessible password show/hide on `TextInput(type="password")`.
 - Opt-in `SwapReveal` tied to HTMX after-swap, honoring `prefers-reduced-motion`.
 - Generic HTMX busy via `BusyRegion` / `Hx(busy=...)` (`aria-busy` + indicator).
+  Unmarked requests do not set `aria-busy` on `document.body`. Overlapping
+  requests on one host keep `aria-busy` until the last one finishes. A simple
+  `#id` `Hx.indicator` also drives the Hedron busy indicator.

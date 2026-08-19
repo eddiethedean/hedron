@@ -77,7 +77,7 @@ from hedron_extras.experimental import CodeEditor, TerminalView
 | Area | Components |
 |---|---|
 | Workbenches | `JSONEditor`, `DataExplorer`, `ChartWorkbench`, `CallableActionForm` |
-| Composition | `ChoiceCards`, `TreeView`, `Steps`, `SplitPane`, `FloatingAction`, `KeyboardShortcuts` |
+| Composition | `ChoiceCards`, `TreeView`, `Steps`, `SplitPane`, `FloatingAction`, `KeyboardShortcuts`, `FocusScrollRequest` |
 | Editors | `Calendar`, `SignaturePad`, `Typeahead` |
 | Image | `ImageCompare`, `ImageCrop`, `ImageRegionSelect`, `ImageAnnotations` |
 | Recipes | `AvatarProfile`, `BadgeLink`, `MetricCard`, `TodoList` |

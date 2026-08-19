@@ -157,6 +157,8 @@ class JSONEditor(Component[JSONEditorProps]):
         revision: str = "0",
         **kwargs: Any,
     ) -> None:
+        if max_chars < 1 or max_chars > 200_000:
+            raise ValueError("JSONEditor max_chars must be between 1 and 200000")
         text = value if isinstance(value, str) else json.dumps(value, indent=2, default=str)
         if len(text) > max_chars:
             raise ValueError(f"JSONEditor value exceeds max_chars={max_chars}")
@@ -254,6 +256,8 @@ class CodeEditor(Component[CodeEditorProps]):
                 f"CodeEditor language {language!r} not in allowlist: "
                 f"{sorted(_ALLOWED_CODE_LANGUAGES)}"
             )
+        if max_chars < 1 or max_chars > 200_000:
+            raise ValueError("CodeEditor max_chars must be between 1 and 200000")
         if len(value) > max_chars:
             raise ValueError(f"CodeEditor value exceeds max_chars={max_chars}")
         super().__init__(
@@ -305,6 +309,7 @@ class CodeEditor(Component[CodeEditorProps]):
 class ChartWorkbenchProps(ElementProps):
     title: str = "Chart workbench"
     export_name: str = "export"
+    revision: str = "0"
 
 
 class ChartWorkbench(Component[ChartWorkbenchProps]):
@@ -322,12 +327,15 @@ class ChartWorkbench(Component[ChartWorkbenchProps]):
         *,
         title: str = "Chart workbench",
         export_name: str = "export",
+        revision: str = "0",
         chart: NodeLike = None,
         table: NodeLike = None,
         explorer: NodeLike = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(ChartWorkbenchProps(title=title, export_name=export_name, **kwargs))
+        super().__init__(
+            ChartWorkbenchProps(title=title, export_name=export_name, revision=revision, **kwargs)
+        )
         self._chart = chart
         self._table = table
         self._explorer = explorer
@@ -342,6 +350,11 @@ class ChartWorkbench(Component[ChartWorkbenchProps]):
             html.h2(self.props.title),
             *tabs,
             html.button("Export CSV", type="submit", name=self.props.export_name, value="csv"),
+            html.input(
+                type="hidden",
+                name=f"{self.props.export_name}__revision",
+                value=self.props.revision,
+            ),
             html.button(
                 "Cancel",
                 type="submit",
@@ -356,6 +369,7 @@ class ChartWorkbench(Component[ChartWorkbenchProps]):
                 **mark_data(self.props.mark),
                 "hedron-workbench": "chart",
                 "http-fallback": "sections",
+                "revision": self.props.revision,
             },
         )
 

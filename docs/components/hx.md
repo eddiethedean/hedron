@@ -25,21 +25,21 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ```python
 from hedron import Form, Hx
 
-component = Form(..., hx=Hx(target='#region', swap='outerHTML', indicator='#busy'))
+component = Form(..., hx=Hx(target='#region', swap='outerHTML', indicator='#busy', busy='region'))
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
 
 ## How it works
 
-Prefer `hx=Hx(...)` over raw `hx-*` kwargs so unsafe selectors cannot slip through.
+Prefer `hx=Hx(...)` over raw `hx-*` kwargs so unsafe selectors cannot slip through. `busy=` is opt-in generic HTMX busy (#506); it does not mark `document.body` for unmarked requests.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
 ## Constructor and parameters
 
 ```python
-Hx(*, target=None, swap='outerHTML', select=None, indicator=None, trigger=None, include=None, validate=None, ...)
+Hx(*, target=None, swap='outerHTML', select=None, indicator=None, trigger=None, include=None, validate=None, busy=None, ...)
 ```
 
 | Parameter | Type | Meaning |
@@ -47,10 +47,11 @@ Hx(*, target=None, swap='outerHTML', select=None, indicator=None, trigger=None, 
 | `target` | `str | None` | hx-target selector (must pass safe_css_selector). |
 | `swap` | `str` | hx-swap value (must pass safe_hx_swap). |
 | `select` | `str | None` | hx-select selector. |
-| `indicator` | `str | None` | hx-indicator selector. |
+| `indicator` | `str | None` | hx-indicator selector; with `busy`, a simple #id also drives Hedron aria-busy indicator. |
 | `trigger` | `str | None` | `hx-trigger`. |
 | `include` | `str | None` | `hx-include`. |
 | `validate` | `str | None` | `"native"` compiles `hx-validate="true"`. |
+| `busy` | `'region' | 'document' | None` | Opt-in Hedron busy host (`data-hedron-busy`); unmarked requests stay idle. |
 | `vals` / `headers` | `str | None` | JSON only; `js:` expressions are rejected. |
 
 ## Composition and backend behavior
