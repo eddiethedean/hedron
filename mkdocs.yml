@@ -229,6 +229,7 @@ nav:
     - Extend Hedron:
       - Use plugins: guides/plugin-consumer.md
       - Author plugins: guides/plugin-authoring.md
+      - Curated extras (0.51): api/EXTRAS.md
     - Migrate from Streamlit: guides/streamlit-migration.md
     - FAQ: guides/faq.md
   - Examples:

@@ -1,0 +1,58 @@
+# Phase 0.51 ExtrasFeature descriptor lock (DESCRIPTOR-051).
+# Stage 0 contract artifact (D-088). Consume feature_specs; do not replace FeatureBundle.
+
+schema_version = 1
+phase = "0.51"
+status = "Planned"
+planning_baseline = "v0.50.3"
+required_predecessor = "v0.50.3"
+target = "v0.51.0"
+decision = "D-088"
+owning_rfc = "RFC-0078"
+gate = "DESCRIPTOR-051"
+tracking = "#507"
+
+owner_package = "hedron-extras"
+core_catalog_fork = false
+replaces_feature_bundle = false
+replaces_interaction_catalog = false
+consumes_register_feature = true
+consumes_feature_specs = true
+additive = true
+numeric_limits_stage0 = false
+diagnostic_family = "HED-EXTRAS-"
+reserved_docs_only = ["HED-EXTRAS-FEATURE-*"]
+
+[existing_feature_specs]
+names = [
+  "composition",
+  "workbench",
+  "image_tools",
+  "calendar",
+  "signature",
+  "typeahead",
+  "display",
+  "recipes",
+  "sandbox",
+]
+register = "PluginContext.register_feature"
+
+[extras_feature]
+type = "ExtrasFeature"
+fields = [
+  "name",
+  "component_tag",
+  "python_facade",
+  "schemas",
+  "events",
+  "assets",
+  "optional_dependencies",
+  "fallback",
+  "limits",
+  "maturity",
+  "accessibility_contract",
+  "explorer_projection",
+  "jinja_projection",
+  "conformance_projection",
+]
+single_inventory_authority = true

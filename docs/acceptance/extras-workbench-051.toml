@@ -1,0 +1,56 @@
+# Phase 0.51 workbench and provider lock (WORKBENCH-051 / DATA-051).
+# Stage 0 contract artifact (D-088). UI mechanics only; no persistence or authz.
+
+schema_version = 1
+phase = "0.51"
+status = "Planned"
+planning_baseline = "v0.50.3"
+required_predecessor = "v0.50.3"
+target = "v0.51.0"
+decision = "D-088"
+owning_rfc = "RFC-0078"
+gates = ["WORKBENCH-051", "DATA-051"]
+tracking = "#507"
+
+persistence_owned_by_app = true
+authorization_owned_by_app = true
+evaluate_embedded_code = false
+numeric_limits_stage0 = false
+
+[workbench]
+components = ["JSONEditor", "DataExplorer", "ChartWorkbench", "CallableActionForm"]
+require = [
+  "bounded-schemas",
+  "deterministic-large-input",
+  "explicit-action-authority",
+  "cancellation",
+  "export-rules",
+  "server-rendered-fallback",
+  "undoable-draft-history",
+  "validation-issue-navigation",
+  "import-preview",
+  "apply-cancel",
+  "diff-export",
+  "restore-from-server-revision",
+]
+json_never_eval = true
+
+[providers]
+components = ["TreeView", "Typeahead"]
+require = [
+  "stable-identities",
+  "abortable-requests",
+  "race-handling",
+  "empty-error-retry",
+  "paged-or-select-fallback",
+]
+
+[image_intents]
+components = ["ImageCrop", "ImageRegionSelect", "ImageAnnotations"]
+require = [
+  "source-dimensions",
+  "normalized-coordinates",
+  "revision-preconditions",
+  "preview-limits",
+  "server-confirmed-output",
+]

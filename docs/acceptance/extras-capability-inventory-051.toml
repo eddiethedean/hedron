@@ -1,0 +1,133 @@
+# Phase 0.51 extras capability and disposition inventory.
+# Stage 0 contract artifact (D-088). Sandbox and experimental-ui stay Excluded from Supported hedron[extras].
+
+schema_version = 1
+phase = "0.51"
+status = "Planned"
+planning_baseline = "v0.50.3"
+required_predecessor = "v0.50.3"
+target = "v0.51.0"
+decision = "D-087"
+contract_refine = "D-088"
+owning_rfc = "RFC-0078"
+implementation = "docs/implementation/EXTRAS_051.md"
+public_contract = "docs/api/EXTRAS.md"
+descriptor_lock = "docs/acceptance/extras-descriptor-051.toml"
+experimental_lock = "docs/acceptance/extras-experimental-disposition-051.toml"
+workbench_lock = "docs/acceptance/extras-workbench-051.toml"
+lifecycle_lock = "docs/acceptance/extras-lifecycle-051.toml"
+companion_lock = "docs/acceptance/extras-companion-authoring-051.toml"
+quarantine = "docs/acceptance/extras-quarantine-025.toml"
+catalog_entry = "docs/acceptance/catalog-entry-045.toml"
+adapter_dispositions = "docs/acceptance/adapter-disposition-044.toml"
+host_portable_facts = "docs/acceptance/host-portable-facts-045.toml"
+upgrade_fixtures = "docs/acceptance/upgrade-fixtures-051.md"
+tracking = "#507"
+
+[[capability]]
+id = "EXTRAS-COMP-001"
+area = "composition"
+gate = "INVENTORY-051"
+state = "Planned"
+maturity = "supported-target"
+components = [
+  "ChoiceCards",
+  "TreeView",
+  "Steps",
+  "SplitPane",
+  "FloatingAction",
+  "KeyboardShortcuts",
+  "FocusScrollRequest",
+]
+feature_spec = "composition"
+browser_host = "hedron-extras-composition"
+
+[[capability]]
+id = "EXTRAS-WB-001"
+area = "workbench"
+gate = "WORKBENCH-051"
+state = "Planned"
+maturity = "supported-target"
+components = ["JSONEditor", "DataExplorer", "ChartWorkbench", "CallableActionForm"]
+feature_spec = "workbench"
+optional_extras = ["json_editor", "data_explorer", "chart_workbench"]
+
+[[capability]]
+id = "EXTRAS-ED-001"
+area = "editors"
+gate = "INPUT-051"
+state = "Planned"
+maturity = "supported-target"
+components = ["Calendar", "SignaturePad", "Typeahead"]
+feature_specs = ["calendar", "signature", "typeahead"]
+
+[[capability]]
+id = "EXTRAS-IMG-001"
+area = "image-tools"
+gate = "IMAGE-051"
+state = "Planned"
+maturity = "supported-target"
+components = ["ImageCompare", "ImageCrop", "ImageRegionSelect", "ImageAnnotations"]
+feature_spec = "image_tools"
+browser_host = "hedron-extras-image-tools"
+
+[[capability]]
+id = "EXTRAS-DISP-001"
+area = "display"
+gate = "INVENTORY-051"
+state = "Planned"
+maturity = "supported-target"
+components = ["LogConsole", "TokenWeightedText", "DiagramOutput"]
+feature_spec = "display"
+
+[[capability]]
+id = "EXTRAS-RECIPE-001"
+area = "recipes"
+gate = "INVENTORY-051"
+state = "Planned"
+maturity = "recipe"
+components = ["AvatarProfile", "BadgeLink", "MetricCard", "TodoList"]
+feature_spec = "recipes"
+notes = "Stay recipe unless a named subset is promoted."
+
+[[capability]]
+id = "EXTRAS-SANDBOX-001"
+area = "sandbox"
+gate = "INVENTORY-051"
+state = "Planned"
+maturity = "experimental"
+components = ["BrowserPythonSandbox"]
+feature_spec = "sandbox"
+supported_hedron_extras = false
+default_plugin_registration_stage1 = "opt-in"
+honesty = "feature_specs stability beta and http_fallback false are defects vs Experimental lock"
+
+[[capability]]
+id = "EXTRAS-XUI-001"
+area = "experimental-ui"
+gate = "INVENTORY-051"
+state = "Planned"
+maturity = "experimental"
+components = ["CodeEditor", "TerminalView", "Joystick", "DeviceBridge"]
+plugin = "hedron_extras_experimental"
+extra = "hedron[experimental-ui]"
+graduate_in_051 = false
+
+[[capability]]
+id = "EXTRAS-EXCLUDE-001"
+area = "excluded"
+gate = "—"
+state = "Excluded"
+exclude = [
+    "codemirror-6-graduation",
+    "terminal-joystick-device-graduation",
+    "sandbox-in-supported-hedron-extras",
+    "featurebundle-replacement",
+    "interaction-catalog-fork",
+    "conformance-052",
+    "package-doctor-053",
+    "polling_only_reopen",
+    "morph-048-reopen",
+    "sr-021",
+    "hedron-1-0",
+]

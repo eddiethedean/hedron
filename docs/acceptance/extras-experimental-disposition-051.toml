@@ -1,0 +1,50 @@
+# Phase 0.51 experimental UI and sandbox disposition lock.
+# Stage 0 contract artifact (D-088). Stacks on extras-quarantine-025.toml; do not weaken XOR.
+
+schema_version = 1
+phase = "0.51"
+status = "Planned"
+planning_baseline = "v0.50.3"
+required_predecessor = "v0.50.3"
+target = "v0.51.0"
+decision = "D-088"
+owning_rfc = "RFC-0078"
+gate = "INVENTORY-051"
+tracking = "#507"
+
+stacks_on_quarantine = "docs/acceptance/extras-quarantine-025.toml"
+quarantine_xor = "quarantine"
+weaken_extras_025 = false
+
+experimental_extra = "hedron[experimental-ui]"
+plugin = "hedron_extras_experimental"
+enablement = ["HEDRON_EXPERIMENTAL_UI=1", "explicit-plugin-enable"]
+default_init_exports_landmines = false
+
+[code_editor]
+disposition = "experimental"
+graduate_in_051 = false
+reason = "host stub; no pinned CodeMirror 6 bundle"
+rfc_0037 = "historical"
+
+[terminal_view]
+disposition = "experimental"
+graduate_in_051 = false
+reason = "RFC-0038 specialty; fail-closed evidence incomplete"
+
+[joystick]
+disposition = "experimental"
+graduate_in_051 = false
+
+[device_bridge]
+disposition = "experimental"
+graduate_in_051 = false
+
+[browser_python_sandbox]
+disposition = "experimental"
+supported_hedron_extras = false
+today_default_plugin = true
+today_feature_spec_stability = "beta"
+today_http_fallback = false
+stage1_default_registration = "opt-in"
+reason = "Whats-ready already Experimental; http_fallback false; must not pull into Supported hedron[extras] transitively"

@@ -1,0 +1,59 @@
+# Phase 0.51 whole-fleet inventory (Planned; baseline v0.50.3).
+# Stage 0 extras honesty overlay. Living-train SSOT remains production-grade-inventory-050.toml.
+# Extends the 0.50 fleet. Curated extras (D-087 / D-088 / RFC-0078).
+# Owning decision: D-087 / D-088. RFC: RFC-0078.
+# Tracking: #507.
+
+baseline = "v0.50.3"
+state = "planned"
+hedron_cut = "v0.51.0"
+charts_cut = "0.2.0"
+extends = "docs/acceptance/production-grade-inventory-050.toml"
+tracking = "#507"
+
+packages = [
+  "hedron",
+  "hedron-core",
+  "hedron-explorer",
+  "hedron-data",
+  "hedron-flask",
+  "hedron-django",
+  "hedron-jinja",
+  "hedron-extras",
+  "hedron-conformance",
+  "hedron-charts",
+  "hedron-maps",
+  "hedron-native",
+  "hedron-sample-kit",
+  "hedron-sim",
+  "hedron-notebook",
+  "hedron-mcp",
+  "hedron-gradio",
+  "hedron-workbench",
+  "hedron-posit",
+  "hedron-elements",
+  "fastapi-workbench",
+  "hedron-runtime-node",
+  "hedron-runtime-java",
+]
+
+[hedron-extras]
+owner = "hedron-extras"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.50.0,<0.51"
+evidence = "release-gate-0.51.toml"
+disposition = "production_grade"
+supported = ["curated_extras_toolkit"]
+experimental = [
+  "experimental_ui",
+  "codeeditor_host_stub",
+  "terminalview_joystick_bridges",
+  "browser_python_sandbox",
+]
+excluded = [
+  "default_plugin_registration_for_experimental_ui",
+  "sandbox_in_supported_hedron_extras",
+  "codemirror_6_graduation",
+]
+notes = "Stage 1 makes sandbox default registration opt-in. Do not graduate experimental-ui in 0.51."

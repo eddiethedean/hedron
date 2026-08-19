@@ -48,7 +48,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0` on PyPI; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
 | **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.1` on PyPI; in-tree `v0.50.3` tag deferred; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
-| **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Planned** (package-quality audit; owning RFC/issue required before implementation; related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
+| **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Stage 0 refined** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506); no runtime) |
 | **0.52** | Conformance kit and independent Node/Java runtime credibility | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 
@@ -4421,10 +4421,16 @@ related authoring [#496](https://github.com/eddiethedean/hedron/issues/496)–[#
 
 ## 0.51 — Curated extras depth and lifecycle closure (`v0.51.0`)
 
-**Status:** Planned. An owning RFC/issue must lock the Supported component inventory and record an
-explicit disposition for every Experimental UI surface before implementation. Companion authoring
+**Status:** Stage 0 refined (RFC-0078 / D-087 / D-088). Tracking
+[#507](https://github.com/eddiethedean/hedron/issues/507)
+owns extras gate IDs until cut. Companion authoring
 [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
-is bound to this phase; those issues do not substitute for the extras RFC or lock extras gate IDs.
+is bound to this phase; those issues do not substitute for extras gates.
+Do not start Stage 1 during this refine. No runtime or version claim.
+
+**Planning baseline:** Published in-tree **`v0.50.3`**. Verified in-tree
+`v0.50.3` is the hard Stage 1 prerequisite. Do not block Stage 1 on PyPI/Git
+[#501](https://github.com/eddiethedean/hedron/issues/501) 0.50.3 assets.
 
 **Outcome:** `hedron-extras` is a genuinely curated package: each admitted component is complete
 across server fallback, browser lifecycle, accessibility, security, theming, testing, and upgrade,
@@ -4509,7 +4515,7 @@ graduate Experimental UI.
 | `SECURITY-051` / `SUPPLY-051` | Per-feature threats, strict CSP/offline behavior, dependency isolation, asset integrity/license/SBOM, and sandbox/device boundaries pass. |
 | `A11Y-051` / `VISUAL-051` | Semantics, instructions, status/errors, reflow/zoom/contrast/motion and state-complete visual gallery pass. |
 | `ECOSYSTEM-051` / `DOCS-051` | Explorer, HDJ, catalog, scenarios, conformance, adapters, tutorials, reference, deployment, and migration integration pass. |
-| `PKG-051` / `REGRESS-051` | Minimal/per-feature/all wheels, import isolation, performance budgets, 0.49 upgrade/rollback, and fleet regression pass. |
+| `PKG-051` / `REGRESS-051` | Minimal/per-feature/all wheels, import isolation, performance budgets, **0.50** upgrade/rollback, and fleet regression pass. |
 
 ### Exit gate
 
@@ -4517,12 +4523,23 @@ graduate Experimental UI.
   journey, accessibility evidence, adversarial cases, lifecycle leak check, and documented limits.
 - Every Experimental component has an explicit rationale, install boundary, warning, owner, and
   future disposition; none is pulled into `hedron[extras]` or a Supported workflow transitively.
-- Clean minimal/per-feature/all installs and upgrade/rollback from 0.49 pass without optional
+- Clean minimal/per-feature/all installs and upgrade/rollback from **0.50** pass without optional
   dependency or asset leakage.
 - The component gallery demonstrates empty, loading, error, disabled, read-only, maximum-size,
   narrow-screen, high-contrast, and failed-enhancement states.
 - Companion authoring [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
   closed or explicitly deferred.
+
+Artifacts (Stage 0 packet; Stage 1 blocked on [#507](https://github.com/eddiethedean/hedron/issues/507)):
+
+- [RFC-0078](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0078-CURATED-EXTRAS-LIFECYCLE.md)
+- [implementation](implementation/EXTRAS_051.md) · [public contract](api/EXTRAS.md)
+- [RELEASE_0_51](acceptance/RELEASE_0_51.md) · [release-gate-0.51.toml](acceptance/release-gate-0.51.toml)
+- [capability inventory](acceptance/extras-capability-inventory-051.toml)
+- [descriptor](acceptance/extras-descriptor-051.toml) · [experimental](acceptance/extras-experimental-disposition-051.toml)
+- [workbench](acceptance/extras-workbench-051.toml) · [lifecycle](acceptance/extras-lifecycle-051.toml)
+- [companion authoring](acceptance/extras-companion-authoring-051.toml)
+- [upgrade fixtures](acceptance/upgrade-fixtures-051.md)
 
 ## 0.52 — Cross-language conformance authority (`v0.52.0`)
 
@@ -5007,6 +5024,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0066 `hedron-posit` unified Posit deployment adapter | 0.33 (D-061; Draft; must be Accepted before implementation) |
 | 0060 Web Component platform program | 0.36–0.42 (**Accepted**; D-064 / D-066 rephase; 0.36 **Published**) |
 | 0069 High-fidelity declarative charts | 0.38 (**Accepted**; D-066; Stage 0 contract refined against `v0.38.0`; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
+| 0077 Explorer architecture | 0.50 (**Accepted**; D-085 / D-086; [#501](https://github.com/eddiethedean/hedron/issues/501)) |
+| 0078 Curated extras depth and lifecycle | 0.51 (**Accepted**; D-087 / D-088 Stage 0; [#507](https://github.com/eddiethedean/hedron/issues/507); no runtime) |
 
 ## Open GitHub issue ownership (0.13+)
 
@@ -5080,6 +5099,11 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#95](https://github.com/eddiethedean/hedron/issues/95) | Element authoring kit / React migration matrix / interop | 0.40 (rephased by D-066) |
 | [#96](https://github.com/eddiethedean/hedron/issues/96) | Browser composition / bounded draft state / navigation | 0.41 (rephased by D-066) |
 | [#97](https://github.com/eddiethedean/hedron/issues/97) | Production-grade Web Component platform graduation | 0.42 (rephased by D-066) |
+| [#501](https://github.com/eddiethedean/hedron/issues/501) | 0.50 Explorer architecture gates / publish assets | 0.50 |
+| [#507](https://github.com/eddiethedean/hedron/issues/507) | 0.51 curated extras gates (D-087 / D-088 / RFC-0078) | 0.51 |
+| [#504](https://github.com/eddiethedean/hedron/issues/504) | Built-in password visibility toggle (companion; not extras gates) | 0.51 |
+| [#505](https://github.com/eddiethedean/hedron/issues/505) | Declarative page reveal / swap transition helper | 0.51 |
+| [#506](https://github.com/eddiethedean/hedron/issues/506) | Framework-level busy fallback for generic HTMX requests | 0.51 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 

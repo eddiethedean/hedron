@@ -1,0 +1,56 @@
+# Phase 0.51 extras HTMX/element lifecycle lock (LIFECYCLE-051 / BROWSER-051).
+# Stage 0 contract artifact (D-088). Align with shared element ABI; no new ABI.
+
+schema_version = 1
+phase = "0.51"
+status = "Planned"
+planning_baseline = "v0.50.3"
+required_predecessor = "v0.50.3"
+target = "v0.51.0"
+decision = "D-088"
+owning_rfc = "RFC-0078"
+gates = ["LIFECYCLE-051", "BROWSER-051"]
+tracking = "#507"
+
+new_element_abi = false
+aligns_with_rfc_0060 = true
+htmx_lifecycle_today = true
+observed_attributes_today = ["data-hedron-payload"]
+shadow_dom_default = false
+numeric_perf_budgets_stage0 = false
+
+[lifecycle]
+require = [
+  "connect",
+  "disconnect",
+  "reconnect",
+  "duplicate-registration",
+  "form",
+  "draft-state",
+  "focus-restoration",
+  "cleanup",
+  "abandoned-fetches",
+  "object-urls",
+  "observers-listeners-workers",
+  "malformed-events",
+  "optional-dependency-failure",
+]
+
+[browser_hosts_0503]
+supported_targets = [
+  "hedron-extras-image-tools",
+  "hedron-extras-calendar",
+  "hedron-extras-signature",
+  "hedron-extras-typeahead",
+  "hedron-extras-composition",
+]
+experimental = [
+  "hedron-extras-sandbox",
+  "hedron-extras-code-editor",
+  "hedron-extras-terminal",
+]
+
+[engines]
+chromium = true
+firefox = true
+webkit = true

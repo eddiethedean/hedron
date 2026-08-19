@@ -1,0 +1,30 @@
+# Phase 0.51 companion HTMX authoring lock.
+# Stage 0 contract artifact (D-088). Flagship, not extras gates.
+
+schema_version = 1
+phase = "0.51"
+status = "Planned"
+planning_baseline = "v0.50.3"
+required_predecessor = "v0.50.3"
+target = "v0.51.0"
+decision = "D-088"
+owning_rfc = "RFC-0078"
+tracking = "#507"
+owner_package = "hedron"
+not_extras_gates = true
+does_not_graduate_experimental_ui = true
+stacks_on = ["RFC-0009", "RFC-0070", "RFC-0075"]
+
+[[issue]]
+id = "#504"
+deliverable = "Built-in password visibility toggle (accessible show/hide, keyboard, no custom app JS)."
+
+[[issue]]
+id = "#505"
+deliverable = "Declarative page reveal / swap transition helper tied to HTMX lifecycle (opt-in region or layout wrapper)."
+
+[[issue]]
+id = "#506"
+deliverable = "Framework-level busy fallback for generic HTMX requests (region/document aria-busy and indicator hook, not only built-in forms)."
+
+cut_requires = "closed-or-explicitly-deferred"

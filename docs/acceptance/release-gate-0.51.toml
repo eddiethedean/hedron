@@ -1,0 +1,141 @@
+# Phase 0.51 curated extras release evidence index.
+# Planned Stage 0 packet (D-087 / D-088). No runtime. Living train remains 0.50.x.
+
+schema_version = 1
+phase = "0.51"
+status = "Planned"
+planning_baseline = "v0.50.3"
+required_predecessor = "v0.50.3"
+target = "v0.51.0"
+decision = "D-087"
+contract_refine = "D-088"
+owning_rfc = "RFC-0078"
+tracking = "#507"
+
+[[evidence]]
+id = "INVENTORY-051"
+state = "Planned"
+command = "python scripts/check_inventory_051.py"
+ci_job = "quality"
+owner = "hedron-extras"
+summary = "Every extras feature has one honest Supported/Experimental/Deprecated/removed disposition."
+
+[[evidence]]
+id = "DESCRIPTOR-051"
+state = "Planned"
+command = "python scripts/check_descriptor_051.py"
+ci_job = "quality"
+owner = "hedron-extras"
+summary = "Versioned ExtrasFeature is the package inventory authority without replacing FeatureBundle."
+
+[[evidence]]
+id = "WORKBENCH-051"
+state = "Planned"
+command = "python scripts/check_workbench_051.py"
+ci_job = "test"
+owner = "hedron-extras"
+summary = "JSON/Data/Chart workbenches are bounded, cancelable, revision-aware, and preserve server authority."
+
+[[evidence]]
+id = "DATA-051"
+state = "Planned"
+command = "python scripts/check_data_051.py"
+ci_job = "test"
+owner = "hedron-extras"
+summary = "TreeView/Typeahead providers have stable identities, abort, races, and paged fallbacks."
+
+[[evidence]]
+id = "IMAGE-051"
+state = "Planned"
+command = "python scripts/check_image_051.py"
+ci_job = "test"
+owner = "hedron-extras"
+summary = "Image crop/region/annotation intents use normalized schemas and server-confirmed output."
+
+[[evidence]]
+id = "INPUT-051"
+state = "Planned"
+command = "python scripts/check_input_051.py"
+ci_job = "test"
+owner = "hedron-extras"
+summary = "Signature, clipboard, document, URL, and high-frequency inputs pass adversarial limits."
+
+[[evidence]]
+id = "LIFECYCLE-051"
+state = "Planned"
+command = "python scripts/check_lifecycle_051.py"
+ci_job = "test"
+owner = "hedron-extras"
+summary = "Element/HTMX connect, disconnect, reconnect, duplicate-registration, and cleanup pass."
+
+[[evidence]]
+id = "BROWSER-051"
+state = "Planned"
+command = "python scripts/check_browser_051.py"
+ci_job = "browser"
+owner = "hedron-extras"
+summary = "Chromium/Firefox/WebKit, keyboard/touch, theme, and failed-enhancement matrices for Supported extras."
+
+[[evidence]]
+id = "SECURITY-051"
+state = "Planned"
+command = "python scripts/check_security_051.py"
+ci_job = "test"
+owner = "hedron-extras"
+summary = "Per-feature threats, strict CSP/offline behavior, and sandbox/device boundaries."
+
+[[evidence]]
+id = "SUPPLY-051"
+state = "Planned"
+command = "python scripts/check_supply_051.py"
+ci_job = "quality"
+owner = "hedron-extras"
+summary = "Dependency isolation, asset integrity/license/SBOM, and no ambient remote assets."
+
+[[evidence]]
+id = "A11Y-051"
+state = "Planned"
+command = "python scripts/check_a11y_051.py"
+ci_job = "browser"
+owner = "hedron-extras"
+summary = "Semantics, instructions, status/errors, reflow/zoom/contrast/motion for Supported extras. Not SR-021."
+
+[[evidence]]
+id = "VISUAL-051"
+state = "Planned"
+command = "python scripts/check_visual_051.py"
+ci_job = "browser"
+owner = "hedron-extras"
+summary = "State-complete visual gallery including empty, loading, error, disabled, and failed-enhancement."
+
+[[evidence]]
+id = "ECOSYSTEM-051"
+state = "Planned"
+command = "python scripts/check_ecosystem_051.py"
+ci_job = "test"
+owner = "hedron-extras"
+summary = "Explorer, HDJ, catalog, scenarios, conformance, and adapter projections for Supported extras."
+
+[[evidence]]
+id = "DOCS-051"
+state = "Planned"
+command = "python scripts/check_docs_051.py"
+ci_job = "quality"
+owner = "hedron-extras"
+summary = "Choose-an-extra guide, per-feature tables, CSP/offline, Experimental UI risk page, and migration."
+
+[[evidence]]
+id = "PKG-051"
+state = "Planned"
+command = "python scripts/check_pkg_051.py"
+ci_job = "quality"
+owner = "hedron-extras"
+summary = "Minimal/per-feature/all wheels, import isolation, and 0.50 upgrade/rollback without optional leakage."
+
+[[evidence]]
+id = "REGRESS-051"
+state = "Planned"
+command = "python scripts/check_regress_051.py"
+ci_job = "test"
+owner = "hedron"
+summary = "Fleet regression and gate bundle integrity; no hidden Deferred extras claims."
