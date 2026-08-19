@@ -1,6 +1,6 @@
 # What's new in 0.50
 
-Pin `hedron>=0.50.1,<0.51` from PyPI until the 0.50.3 wheel lands. In-tree tip is
+Pin `hedron>=0.50.1,<0.51` on PyPI until the 0.50.3 wheel lands. In-tree tip is
 **0.50.3**.
 
 ## 0.50.3 patch
