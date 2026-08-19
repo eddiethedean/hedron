@@ -43,10 +43,12 @@ class _HedronFlaskExtension(Protocol):
 
 
 def _normalize_fragment_regions(
-    fragment_regions: Sequence[FragmentRegion | str] | None,
+    fragment_regions: Sequence[FragmentRegion | str] | FragmentRegion | str | None,
 ) -> tuple[FragmentRegion, ...]:
     if not fragment_regions:
         return ()
+    if isinstance(fragment_regions, (FragmentRegion, str)):
+        fragment_regions = (fragment_regions,)
     out: list[FragmentRegion] = []
     for region in fragment_regions:
         if isinstance(region, FragmentRegion):

@@ -31,7 +31,7 @@ from hedron_extras.workbench import (
     JSONEditor,
 )
 
-__version__ = "0.50.2"
+__version__ = "0.50.3"
 
 __all__ = [
     "AvatarProfile",

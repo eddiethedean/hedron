@@ -75,10 +75,12 @@ def _fragment_value(value: NodeLike) -> NodeLike:
 
 
 def _normalize_fragment_regions(
-    fragment_regions: Sequence[FragmentRegion | str] | None,
+    fragment_regions: Sequence[FragmentRegion | str] | FragmentRegion | str | None,
 ) -> tuple[FragmentRegion, ...]:
     if not fragment_regions:
         return ()
+    if isinstance(fragment_regions, (FragmentRegion, str)):
+        fragment_regions = (fragment_regions,)
     out: list[FragmentRegion] = []
     for region in fragment_regions:
         if isinstance(region, FragmentRegion):
@@ -94,6 +96,7 @@ def _authorize_component_htmx(
     *,
     fragment_regions: tuple[FragmentRegion, ...],
     allow_undeclared_targets: bool = False,
+    allow_missing_target: bool = False,
     target: str | None = None,
 ) -> None:
     is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
@@ -125,6 +128,7 @@ def _authorize_component_htmx(
         target,
         is_htmx=True,
         history_restore=history_restore,
+        allow_missing_target=allow_missing_target,
     )
 
 
@@ -156,6 +160,7 @@ def render_component_response(
     background: BackgroundTask | None = None,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
+    allow_missing_target: bool = False,
     _authorized_htmx_target: str | None = None,
 ) -> ComponentResponse:
     from fastapi import HTTPException
@@ -167,6 +172,7 @@ def render_component_response(
                 request,
                 fragment_regions=regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                allow_missing_target=allow_missing_target,
                 target=_authorized_htmx_target,
             )
         except FragmentRegionError as exc:
@@ -329,6 +335,7 @@ async def render_interaction(
             auth_target,
             is_htmx=is_htmx,
             history_restore=history_restore,
+            allow_missing_target=kind == "action",
         )
     except FragmentRegionError as exc:
         from hedron_core.audit import SecurityAuditEventType, emit_security_audit
@@ -403,6 +410,7 @@ async def render_interaction(
         or fragment_regions,
         allow_undeclared_targets=allow_undeclared_targets
         or bool(result.policy and result.policy.allow_undeclared_targets),
+        allow_missing_target=kind == "action",
         _authorized_htmx_target=auth_target,
     )
     if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:

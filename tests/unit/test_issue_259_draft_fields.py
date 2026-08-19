@@ -28,7 +28,7 @@ def _envelope(fields: dict[str, str]) -> DraftTransferEnvelope:
 
 
 def test_benign_field_names_are_allowed() -> None:
-    for name in ("secretary", "author", "html_preview"):
+    for name in ("secretary", "author"):
         env = _envelope({name: "x"})
         assert env.fields[name] == "x"
 
@@ -38,6 +38,8 @@ def test_exact_forbidden_tokens_still_rejected() -> None:
         _envelope({"secret": "x"})
     with pytest.raises(ValueError, match="forbidden draft field"):
         _envelope({"html": "<p>"})
+    with pytest.raises(ValueError, match="forbidden draft field"):
+        _envelope({"html_preview": "<p>"})
 
 
 def test_js_valid_draft_uses_exact_token_set() -> None:

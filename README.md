@@ -107,6 +107,8 @@ Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/
 | [`hedron-jinja`](https://pypi.org/project/hedron-jinja/) | Optional HDJ templates (also `hedron[jinja]`) |
 | [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Component Explorer (also `hedron[dev]`) |
 
+Full catalog: [packages](https://hedron.readthedocs.io/en/latest/packages/).
+
 Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Optional extras
 (data, charts, Jinja, conformance, curated UI, native acceleration, notebook, MCP, Gradio,
 Web Components, Workbench, and Posit):

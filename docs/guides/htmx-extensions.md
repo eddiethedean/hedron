@@ -1,6 +1,10 @@
 # HTMX extensions
 
-Phase 0.48 makes official HTMX 2 extensions a **declared** Hedron capability.
+Phase 0.48 makes official HTMX 2 extension **assets** a declared Hedron capability.
+Pinned local `sse` / `head-support` / `preload` files are Supported when declared.
+SSE/WebSocket **helpers** (`SseRegion` and friends) remain experimental on
+`hedron.experimental`; polling is the Supported production status path.
+
 Pages name what they need; rendering injects only pinned local assets.
 
 ## Declare

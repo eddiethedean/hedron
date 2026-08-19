@@ -267,8 +267,15 @@ def merge_route_regions(
     result: InteractionResult,
     route_regions: tuple[FragmentRegion, ...],
 ) -> InteractionResult:
-    """Route-declared regions are authoritative when present."""
+    """Union route-declared regions with the result policy (do not drop compiled hosts)."""
     if not route_regions:
         return result
     policy = result.policy or InteractionPolicy()
-    return replace(result, policy=replace(policy, declared_regions=route_regions))
+    existing = policy.declared_regions
+    seen = {region.id for region in existing}
+    merged = list(existing)
+    for region in route_regions:
+        if region.id not in seen:
+            merged.append(region)
+            seen.add(region.id)
+    return replace(result, policy=replace(policy, declared_regions=tuple(merged)))

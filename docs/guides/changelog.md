@@ -26,6 +26,8 @@ below record package-specific implementation changes.
 | `hedron-workbench` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-workbench/CHANGELOG.md) |
 | `hedron-posit` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-posit/CHANGELOG.md) |
 | `fastapi-workbench` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/fastapi-workbench/CHANGELOG.md) |
+| `hedron-runtime-node` | [README](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-runtime-node/README.md) |
+| `hedron-runtime-java` | [README](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-runtime-java/README.md) |
 
 PyPI is authoritative for package availability. GitHub Releases hold wheels, source
 archives, evidence, and checksums for a coordinated train.

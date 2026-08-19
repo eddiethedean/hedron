@@ -13,19 +13,23 @@ from hedron_core.typing_aliases import JsonValue
 _MAX_INLINE_ROWS = 10_000
 
 
+def _cell(value: object) -> JsonValue:
+    if isinstance(value, Secret):
+        return "***"
+    return cast(JsonValue, value)
+
+
 def _row_to_mapping(row: object) -> dict[str, JsonValue]:
     if isinstance(row, Model):
         data = row.model_dump()
-        return {
-            k: cast(JsonValue, v.reveal() if isinstance(v, Secret) else v) for k, v in data.items()
-        }
+        return {k: _cell(v) for k, v in data.items()}
     if isinstance(row, Mapping):
-        return {str(k): cast(JsonValue, v) for k, v in row.items()}
+        return {str(k): _cell(v) for k, v in row.items()}
     model_dump = getattr(row, "model_dump", None)
     if callable(model_dump):
         data = model_dump()
         if isinstance(data, Mapping):
-            return {str(k): cast(JsonValue, v) for k, v in data.items()}
+            return {str(k): _cell(v) for k, v in data.items()}
     raise error(
         "HED-DATA-0001",
         title="Unsupported row type",

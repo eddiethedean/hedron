@@ -481,17 +481,21 @@ class InferenceWorkflow:
         # Identity migration for v1; future versions append transforms here.
         if self.schema_version == target_version:
             return
-        if self.schema_version == "1" and target_version == "1":
-            return
-        # Accept forward identity for documented versions only
         allowed = {"1"}
         if target_version not in allowed:
             raise WorkflowError(
                 f"Unsupported schema migration to {target_version}",
                 code=HED_WORKFLOW_0001,
             )
-        self.schema_version = target_version
-        self._bump()
+        if self.schema_version not in allowed:
+            raise WorkflowError(
+                f"Unsupported schema migration from {self.schema_version}",
+                code=HED_WORKFLOW_0001,
+            )
+        raise WorkflowError(
+            f"No migration transform from {self.schema_version} to {target_version}",
+            code=HED_WORKFLOW_0001,
+        )
 
     def _port(self, node_id: str, port_id: str, direction: str) -> WorkflowPort:
         node = self._nodes[node_id]

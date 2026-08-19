@@ -54,7 +54,7 @@ status commentary, not a satisfied release gate.
   [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader;
   RESEARCH Experimental)
 - [`v0.50` Explorer architecture](RELEASE_0_50.md) — **Published** as `v0.50.1` on PyPI;
-  in-tree `v0.50.2` (0.50.2 tag deferred; D-085 / RFC-0077, refined by D-086;
+  in-tree `v0.50.3` (0.50.3 tag deferred; D-085 / RFC-0077, refined by D-086;
   [#501](https://github.com/eddiethedean/hedron/issues/501) stays open until publish assets;
   related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
   [#502](https://github.com/eddiethedean/hedron/issues/502) /

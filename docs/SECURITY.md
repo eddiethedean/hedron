@@ -9,7 +9,7 @@ is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.50.x` | Yes (current published train — pin `>=0.50.2,<0.51`; published `v0.50.2`) |
+| `0.50.x` | Yes (current published train — pin `>=0.50.3,<0.51`; published `v0.50.3`) |
 | `0.49.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.50.x` |
 | `0.48.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.49.x` |
 | `0.47.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.48.x` |
@@ -21,7 +21,7 @@ is required. There is **no contractual patch SLA**.
 | `0.41.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.42.x` |
 | `0.40.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.41.x` |
 | `0.39.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.40.x` |
-| `0.9.x`–`0.38.x` | No; upgrade to `0.50.x` (`v0.50.2`) |
+| `0.9.x`–`0.38.x` | No; upgrade to `0.50.x` (`v0.50.3`) |
 | `0.8.x` | No; final HDN-capable line, retained only for historical migration context |
 | `< 0.8` | No |
 
@@ -82,10 +82,13 @@ plugins, misconfigured deployments, and host-framework CVEs (report those upstre
 
 Release evidence and dependency inventories are produced by maintainer scripts
 (`scripts/build_evidence_bundle.py`, `scripts/generate_sbom.py`,
-`scripts/license_inventory.py`). See [Enterprise diligence](guides/enterprise-diligence.md) for how
-evaluators obtain SBOM / license inventory for the current train.
+`scripts/license_inventory.py`). See
+[Enterprise diligence](https://hedron.readthedocs.io/en/latest/guides/enterprise-diligence/)
+for how evaluators obtain SBOM / license inventory for the current train.
 
 ## See also
 
-[Security guide](guides/security.md) · [Threat model](guides/threat-model.md) ·
-[Support](guides/support.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
+[Security guide](https://hedron.readthedocs.io/en/latest/guides/security/) ·
+[Threat model](https://hedron.readthedocs.io/en/latest/guides/threat-model/) ·
+[Support](https://hedron.readthedocs.io/en/latest/guides/support/) ·
+[Code of Conduct](https://github.com/eddiethedean/hedron/blob/main/CODE_OF_CONDUCT.md)

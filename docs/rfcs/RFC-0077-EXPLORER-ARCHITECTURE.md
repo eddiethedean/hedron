@@ -19,8 +19,8 @@ planning baseline locked; architecture, provider, query, diff, lab, and headless
 locks recorded; real `explorer_router`, `ExplorerPanelMeta`, frozen `/hedron-explorer/`
 mount/modes, CLI `inspect`/`graph`/`check`, and `diagnostics_to_sarif` seams named.
 
-**Post-cut:** Stage 1 shipped in-tree `v0.50.0`. Living tip is `v0.50.2`
-(PyPI latest `v0.50.1`; 0.50.2 tag deferred).
+**Post-cut:** Stage 1 shipped in-tree `v0.50.0`. Living tip is `v0.50.3`
+(PyPI latest `v0.50.1`; 0.50.3 tag deferred).
 [#501](https://github.com/eddiethedean/hedron/issues/501) stays open for tag/PyPI.
 Do not rewrite the Stage 0 contract above.
 No runtime or version claim.
@@ -207,8 +207,9 @@ frozen routes is a `COMPAT-050` failure. `ExplorerPanelMeta` remains. Flask/Djan
 
 1. **Does 0.50 still include all 18 gates?** Yes. The D-085 list remains in scope.
    `EXPLORER-10-001` and `EXPLORER-019` stay explicitly Deferred outside this matrix.
-2. **Does this refine change a later phase or the living tip?** No. Cut target stays
-   `v0.50.0`. Living tip stays `v0.49.1`. Do not reopen 0.49, `polling_only`,
+2. **Does this refine change a later phase or the living tip?** No *(Stage 0 historical)*. Cut target stays
+   `v0.50.0`. Living tip at D-086 refine was `v0.49.1`. The living tip after the 0.50
+   train is **`v0.50.3`** (in-tree; PyPI `v0.50.1`). Do not reopen 0.49, `polling_only`,
    `MORPH-048`, `SR-021`, or schedule `1.0`.
 3. **Which shipped seams does 0.50 consume?** `explorer_router`, `ExplorerMode`
    `off`/`development`/`secured`, `resolve_explorer_mode` /

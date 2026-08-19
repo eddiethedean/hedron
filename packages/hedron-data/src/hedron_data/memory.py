@@ -55,6 +55,9 @@ class InMemoryDataSource:
         key_field: str = "id",
         schema: Sequence[ColumnSchema] = (),
         writable_fields: frozenset[str] | None = None,
+        allowlisted_sort_fields: frozenset[str] | None = None,
+        allowlisted_filter_fields: frozenset[str] | None = None,
+        search_fields: Sequence[str] = (),
         version: str = "1",
         audit_hook: Callable[[DataChanges[dict[str, JsonValue]]], None] | None = None,
     ) -> None:
@@ -94,6 +97,13 @@ class InMemoryDataSource:
         self._schema = tuple(schema)
         # Deny-by-default: omitted writable_fields means no field is writable.
         self._writable = frozenset() if writable_fields is None else writable_fields
+        self._sort_allow = (
+            frozenset[str]() if allowlisted_sort_fields is None else allowlisted_sort_fields
+        )
+        self._filter_allow = (
+            frozenset[str]() if allowlisted_filter_fields is None else allowlisted_filter_fields
+        )
+        self._search_fields = tuple(search_fields)
         self._dataset_version = version
         self._audit_hook = audit_hook
         self._version_counter = int(version) if version.isdigit() else 1
@@ -113,17 +123,52 @@ class InMemoryDataSource:
         with self._lock:
             return self._fetch_unlocked(query)
 
+    def _effective_allow(
+        self, query_allow: frozenset[str] | None, source_allow: frozenset[str]
+    ) -> frozenset[str]:
+        if query_allow is None:
+            return source_allow
+        if source_allow:
+            return query_allow & source_allow
+        return query_allow
+
     def _fetch_unlocked(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
-        q = query.validated()
+        q = DataQuery(
+            offset=query.offset,
+            limit=query.limit,
+            cursor=query.cursor,
+            sort=query.sort,
+            filters=query.filters,
+            projection=query.projection,
+            search=query.search,
+            locale=query.locale,
+            allowlisted_sort_fields=self._effective_allow(
+                query.allowlisted_sort_fields, self._sort_allow
+            ),
+            allowlisted_filter_fields=self._effective_allow(
+                query.allowlisted_filter_fields, self._filter_allow
+            ),
+        ).validated()
         items = list(self._rows.values())
         for field_name, expected in q.filters.items():
             items = [r for r in items if r.get(field_name) == expected]
         if q.search:
+            if not self._search_fields:
+                raise error(
+                    "HED-DATA-0012",
+                    title="In-memory search requires an allowlist",
+                    explanation="Deny-by-default: searchable fields must be declared.",
+                    remediation="Set InMemoryDataSource.search_fields.",
+                )
             needle = q.search.lower()
             items = [
                 r
                 for r in items
-                if any(needle in str(v).lower() for v in r.values() if v is not None)
+                if any(
+                    needle in str(r.get(field_name, "")).lower()
+                    for field_name in self._search_fields
+                    if r.get(field_name) is not None
+                )
             ]
         for field_name, direction in reversed(q.sort):
             items.sort(
@@ -238,12 +283,14 @@ class InMemoryDataSource:
                     row_errors = True
                     continue
                 schema_col = next((c for c in self._schema if c.name == upd.field), None)
-                if schema_col is not None and (schema_col.read_only or schema_col.hidden):
+                if schema_col is not None and (
+                    schema_col.read_only or schema_col.hidden or schema_col.secret
+                ):
                     errors.append(
                         FieldError(
                             row_key=upd.row_key,
                             field=upd.field,
-                            message="Field is read-only or hidden",
+                            message="Field is read-only, hidden, or secret",
                         )
                     )
                     row_errors = True

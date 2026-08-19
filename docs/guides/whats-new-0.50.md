@@ -1,7 +1,14 @@
 # What's new in 0.50
 
-Pin `hedron>=0.50.1,<0.51` from PyPI. In-tree tip is **0.50.2** (Git tag and PyPI
+Pin `hedron>=0.50.1,<0.51` from PyPI. In-tree tip is **0.50.3** (Git tag and PyPI
 upload are deferred). This patch is not on PyPI yet.
+
+## 0.50.3 patch
+
+Correctness and security patch on the 0.50 train: `@command` and compiled refresh/patch
+HTMX policies fail closed, secrets stay redacted at tabular/data boundaries, scaffolds
+pin the PyPI floor while the tag is deferred, and data/chart/patch/CSS/image/collab
+defects listed in `tests/unit/test_bugfix_0503.py`.
 
 ## 0.50.2 patch
 
@@ -19,7 +26,7 @@ prefixes, HTMX `this` targets, control `id`s, TerminalView CSRF, formula coerce-
 chart tabular/negative-Y/GreatTables/`hedron[charts]` pin, frozen element markup,
 ActionAsync `hx-target`, and Explorer dashboard-graph / packages / maps / security wiring.
 
-## Highlights
+## 0.50.0
 
 - Explorer architecture: thin `explorer_router`, services/views split, frozen
   `/hedron-explorer/` mount and CSRF/simulate allowlists.

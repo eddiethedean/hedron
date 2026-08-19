@@ -24,6 +24,17 @@ def _load_published_quickstart():
     return module
 
 
+def _scaffold_floor_ceiling() -> tuple[str, str]:
+    if RELEASE.get("registry_status") == "deferred":
+        return str(RELEASE["pypi_pin_floor"]), str(RELEASE["pypi_pin_ceiling"])
+    return str(RELEASE["pin_floor"]), str(RELEASE["pin_ceiling"])
+
+
+def _scaffold_pin_range() -> str:
+    floor, ceiling = _scaffold_floor_ceiling()
+    return f">={floor},<{ceiling}"
+
+
 @pytest.mark.parametrize(
     ("flag", "packages"),
     [
@@ -48,15 +59,16 @@ def test_new_scaffolds_pin_the_documented_train(
     assert result.value.code == 0
     pyproject = tomllib.loads((destination / "pyproject.toml").read_text(encoding="utf-8"))
     dependencies = pyproject["project"]["dependencies"]
-    expected_range = f">={RELEASE['pin_floor']},<{RELEASE['pin_ceiling']}"
+    expected_range = _scaffold_pin_range()
     for package in packages:
         assert f"{package}{expected_range}" in dependencies
 
 
 def test_scaffold_helper_matches_release_toml() -> None:
     floor, ceiling = _release_pin_bounds()
-    assert floor == RELEASE["pin_floor"]
-    assert ceiling == RELEASE["pin_ceiling"]
+    expected_floor, expected_ceiling = _scaffold_floor_ceiling()
+    assert floor == expected_floor
+    assert ceiling == expected_ceiling
     assert _scaffold_dep("hedron") == f"hedron>={floor},<{ceiling}"
 
 
@@ -64,12 +76,17 @@ def test_published_quickstart_pin_matches_scaffold_and_release_toml() -> None:
     """Release CI must not reintroduce the train-.0 pin that failed v0.28.1."""
     module = _load_published_quickstart()
     version = RELEASE["published_version"]
-    expected = module.expected_hedron_scaffold_pin(version)
-    assert expected == f">={RELEASE['pin_floor']},<{RELEASE['pin_ceiling']}"
-    assert f"hedron{expected}" == _scaffold_dep("hedron")
+    in_tree = module.expected_hedron_scaffold_pin(version)
+    assert in_tree == f">={RELEASE['pin_floor']},<{RELEASE['pin_ceiling']}"
+    scaffold = _scaffold_dep("hedron")
+    if RELEASE.get("registry_status") == "deferred":
+        assert scaffold == f"hedron>={RELEASE['pypi_pin_floor']},<{RELEASE['pypi_pin_ceiling']}"
+        assert f"hedron{in_tree}" != scaffold
+    else:
+        assert f"hedron{in_tree}" == scaffold
     if not version.endswith(".0"):
         train = ".".join(version.split(".")[:2])
-        assert expected != f">={train}.0,<{RELEASE['pin_ceiling']}"
+        assert in_tree != f">={train}.0,<{RELEASE['pin_ceiling']}"
 
 
 def test_hedron_run_auto_delegates_to_workbench_launcher(

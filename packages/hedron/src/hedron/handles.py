@@ -519,6 +519,8 @@ class _CommandButton(Component[_CommandButtonProps]):
                 "data-hedron-command": self._logical_id,
             }
         )
+        attrs.setdefault("id", self._logical_id)
+        attrs.setdefault("hx-target", f"#{self._logical_id}")
         method = self._method.upper()
         if method == "POST":
             attrs["hx-post"] = self._path

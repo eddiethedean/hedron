@@ -30,7 +30,7 @@ helpers) is compatibility-protected on the 0.x train. Everything else is `beta` 
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-**Published `v0.50.2` in-tree** (latest on PyPI `v0.50.1`). Pin `hedron>=0.50.1,<0.51`.
+**Published `v0.50.3` in-tree** (latest on PyPI `v0.50.1`). Pin `hedron>=0.50.1,<0.51`.
 
 !!! note "Contracts vs full reference"
 

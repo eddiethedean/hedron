@@ -66,6 +66,37 @@ def merge_changes(
     accepted: list[CellUpdate] = []
     conflicts: list[CollaborativeConflict] = []
     consumed_remote: set[tuple[object, object]] = set()
+
+    def _insert_key(row: Mapping[str, JsonValue]) -> str:
+        if "id" in row:
+            return str(row["id"])
+        return str(next(iter(row.values()), ""))
+
+    local_inserts = {_insert_key(row) for row in local.inserts if isinstance(row, Mapping)}
+    remote_inserts = {_insert_key(row) for row in remote.inserts if isinstance(row, Mapping)}
+    local_deletes = set(local.deletes)
+    remote_deletes = set(remote.deletes)
+    overlap = (
+        (local_inserts & remote_inserts)
+        | (local_inserts & remote_deletes)
+        | (remote_inserts & local_deletes)
+    )
+    for key in sorted(overlap):
+        if not key:
+            continue
+        conflicts.append(
+            CollaborativeConflict(
+                row_key=key,
+                field=None,
+                server_value=None,
+                client_value=None,
+                message="Concurrent insert/delete",
+                local_actor=local_actor,
+                remote_actor=remote_actor,
+            )
+        )
+    if conflicts:
+        return DataSaveResult(ok=False, conflicts=tuple(conflicts), version=base_version)
     for update in local.updates:
         key = (update.row_key, update.field)
         other = remote_keys.get(key)

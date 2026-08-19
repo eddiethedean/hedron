@@ -1,11 +1,11 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.50 **in-tree** as `v0.50.2` (2026-08-19); Git tag and PyPI upload deferred. Latest on PyPI is `v0.50.1`. Phase 0.49 FastAPI/Pydantic convergence remains Published as `v0.49.1`.
-Living tip = `v0.50.2`.
+**Roadmap position:** phase 0.50 **in-tree** as `v0.50.3` (2026-08-19); Git tag and PyPI upload deferred. Latest on PyPI is `v0.50.1`. Phase 0.49 FastAPI/Pydantic convergence remains Published as `v0.49.1`.
+Living tip = `v0.50.3`.
 **Date:** 2026-08-19
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.50.2`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.50.3`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
@@ -16,6 +16,8 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
+Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
+`hedron-runtime-node` / `hedron-runtime-java` `0.32.0`.
 
 **Phase focus:** Living train is **0.50** (D-085 / D-086 / RFC-0077) — Explorer architecture:
 thin `explorer_router`, `ExplorerProvider` v1, query pagination, diffs, headless CLI
@@ -23,7 +25,7 @@ parity, bounded lab, read-only package health, and companion HTMX authoring
 [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
 [#502](https://github.com/eddiethedean/hedron/issues/502) /
 [#503](https://github.com/eddiethedean/hedron/issues/503).
-`release-gate-0.50.toml` eighteen Verified rows; living tip `v0.50.2` in-tree (PyPI `v0.50.1`).
+`release-gate-0.50.toml` eighteen Verified rows; living tip `v0.50.3` in-tree (PyPI `v0.50.1`).
 Tracking [#501](https://github.com/eddiethedean/hedron/issues/501) owns every Explorer 0.50
 gate until publish assets exist. Prior Published **0.49** FastAPI/Pydantic convergence
 (D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380)).
@@ -276,7 +278,7 @@ Cut verify: `python scripts/verify_pkg_29.py`.
 **Baseline tip:** Published `v0.31.0`.
 **Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89).
 **Version policy at cut:** independent satellite `hedron-mcp` **`0.2.0` Beta**
-(pin `>=0.2.0,<0.3`).
+(pin `>=0.2.0,<0.3`; current satellite is **`0.2.1`**).
 
 | ID | Disposition | Notes |
 |---|---|---|
@@ -299,7 +301,7 @@ Cut verify: `python scripts/verify_pkg_32.py` (no `--allow-planned`).
 **Baseline tip:** Published `v0.36.0`.
 **Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93) (closed).
 **High-severity remediations:** [#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237) closed at cut; follow-on [#244](https://github.com/eddiethedean/hedron/issues/244) closed (element-markup `style=` / `vbscript:` / `data:`).
-**Version policy at cut:** Alpha `hedron-elements` **`0.39.0`** (pin `>=0.40.0,<0.41`).
+**Version policy at cut:** Alpha `hedron-elements` **`0.39.0`** (pin `>=0.39.0,<0.40`).
 
 | ID | Disposition | Notes |
 |---|---|---|
@@ -410,9 +412,9 @@ Phase **0.49** FastAPI/Pydantic convergence is **Published** as `v0.49.1`
 tracking [#380](https://github.com/eddiethedean/hedron/issues/380); see
 [implementation requirements](implementation/FASTAPI_PYDANTIC_CONVERGENCE_049.md) and
 [acceptance packet](acceptance/RELEASE_0_49.md)).
-Phase **0.50** Explorer architecture is **in-tree** as `v0.50.2`
-(D-085 / D-086 / RFC-0077; `release-gate-0.50.toml` Verified; living tip **`v0.50.2`**;
-PyPI latest **`v0.50.1`**; Git tag for 0.50.2 deferred).
+Phase **0.50** Explorer architecture is **in-tree** as `v0.50.3`
+(D-085 / D-086 / RFC-0077; `release-gate-0.50.toml` Verified; living tip **`v0.50.3`**;
+PyPI latest **`v0.50.1`**; Git tag for 0.50.3 deferred).
 tracking [#501](https://github.com/eddiethedean/hedron/issues/501);
 related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
 [#502](https://github.com/eddiethedean/hedron/issues/502) /

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any, Generic, TypeVar, get_args, get_origin
 
 from pydantic import GetCoreSchemaHandler, TypeAdapter
@@ -113,16 +114,33 @@ def redact_value(value: object) -> object:
     return value
 
 
+def _secret_like_key(key: str, secret_keys: frozenset[str]) -> bool:
+    lowered = str(key).lower()
+    normalized = lowered.replace("-", "_")
+    if lowered in secret_keys or normalized in secret_keys:
+        return True
+    tokens = [part for part in re.split(r"[-_.]", lowered) if part]
+    return any(token in secret_keys for token in tokens)
+
+
 def redact_secret_like(value: Any, *, keys: frozenset[str] | None = None) -> Any:
     """Redact mapping values whose keys look secret-bearing."""
     secret_keys = keys or frozenset(
-        {"password", "secret", "token", "api_key", "authorization", "cookie", "session"}
+        {
+            "password",
+            "passwd",
+            "secret",
+            "token",
+            "api_key",
+            "authorization",
+            "cookie",
+            "session",
+        }
     )
     if isinstance(value, dict):
         out: dict[str, Any] = {}
         for k, v in value.items():  # type: ignore[assignment]
-            key = str(k).lower()
-            if any(s in key for s in secret_keys):
+            if _secret_like_key(str(k), secret_keys):
                 out[str(k)] = "[redacted]"
             else:
                 out[str(k)] = redact_secret_like(v, keys=secret_keys)

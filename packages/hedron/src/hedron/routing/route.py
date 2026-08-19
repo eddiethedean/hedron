@@ -184,6 +184,7 @@ class HedronRoute(APIRoute):
                 request,
                 fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                allow_missing_target=kind == "action",
             )
             await _prepare_endpoint_value(result.value, request=request)
             response = render_component_response(
@@ -195,6 +196,7 @@ class HedronRoute(APIRoute):
                 extra_headers=vary,
                 fragment_regions=fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                allow_missing_target=kind == "action",
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(response, policy, request=request)
@@ -209,6 +211,7 @@ class HedronRoute(APIRoute):
                 request,
                 fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                allow_missing_target=kind == "action",
             )
             force = mode
             if kind == "component":
@@ -224,6 +227,7 @@ class HedronRoute(APIRoute):
                 extra_headers=vary,
                 fragment_regions=fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                allow_missing_target=kind == "action",
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(response, policy, request=request)
@@ -334,6 +338,7 @@ def _authorize_component_fragment(
     fragment_regions: tuple[FragmentRegion, ...],
     *,
     allow_undeclared_targets: bool = False,
+    allow_missing_target: bool = False,
 ) -> None:
     """Fail closed when HTMX targets an undeclared region for Component returns."""
     from fastapi import HTTPException
@@ -383,6 +388,7 @@ def _authorize_component_fragment(
             target,
             is_htmx=True,
             history_restore=history_restore,
+            allow_missing_target=allow_missing_target,
         )
     except FragmentRegionError as exc:
         from hedron_core.audit import SecurityAuditEventType, emit_security_audit

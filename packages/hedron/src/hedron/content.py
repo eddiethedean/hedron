@@ -132,7 +132,7 @@ def process_image(
     img = img.convert("RGBA") if format.upper() == "PNG" else img.convert("RGB")
     if img.width > max_width:
         ratio = max_width / float(img.width)
-        img = img.resize((max_width, int(img.height * ratio)))
+        img = img.resize((max_width, max(1, int(img.height * ratio))))
     out = BytesIO()
     img.save(out, format=format)
     return out.getvalue()

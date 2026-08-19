@@ -34,7 +34,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.50.2,<0.51",
+    "hedron-core>=0.50.3,<0.51",
 ]
 
 [project.entry-points."hedron.plugins"]

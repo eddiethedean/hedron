@@ -12,7 +12,7 @@ import json
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass
 from enum import StrEnum
-from typing import Literal
+from typing import Literal, TypeGuard
 
 from hedron_core.codes import (
     HED_PATCH_0001,
@@ -44,6 +44,10 @@ _FALLBACK_CODES = frozenset(
         HED_PATCH_0004,
     }
 )
+
+
+def _is_number(value: object) -> TypeGuard[int | float]:
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
 class PatchOp(StrEnum):
@@ -329,8 +333,14 @@ def _apply_op(
         return
     if op is PatchOp.REMOVE:
         seq = _require_list(parent, key, create=False)
-        if value in seq:
-            seq.remove(value)
+        if value not in seq:
+            raise _patch_error(
+                HED_PATCH_0004,
+                "remove target is not present in the sequence.",
+                title="Patch remove missed",
+                remediation="Refresh the fragment; do not assume a missing member was removed.",
+            )
+        seq.remove(value)
         return
     if op is PatchOp.DELETE:
         if key is None:
@@ -341,9 +351,23 @@ def _apply_op(
                 remediation="Provide a property path to delete.",
             )
         if isinstance(parent, MutableMapping):
-            parent.pop(str(key), None)
+            if str(key) not in parent:
+                raise _patch_error(
+                    HED_PATCH_0004,
+                    "delete target key is not present.",
+                    title="Patch delete missed",
+                    remediation="Refresh the fragment; do not assume a missing key was deleted.",
+                )
+            parent.pop(str(key))
         elif isinstance(parent, list) and isinstance(key, int) and 0 <= key < len(parent):
             del parent[key]
+        else:
+            raise _patch_error(
+                HED_PATCH_0004,
+                "delete target is not present.",
+                title="Patch delete missed",
+                remediation="Refresh the fragment; do not assume a missing member was deleted.",
+            )
         return
     if op is PatchOp.CLEAR:
         target = _get_at(parent, key) if key is not None else parent
@@ -379,7 +403,7 @@ def _apply_op(
     if op is PatchOp.INCREMENT:
         current = _get_at(parent, key)
         delta = 1 if value is None else value
-        if not isinstance(current, (int, float)) or not isinstance(delta, (int, float)):
+        if not _is_number(current) or not _is_number(delta):
             raise _patch_error(
                 HED_PATCH_0001,
                 "increment requires numeric current and delta.",
@@ -391,7 +415,7 @@ def _apply_op(
     if op is PatchOp.DECREMENT:
         current = _get_at(parent, key)
         delta = 1 if value is None else value
-        if not isinstance(current, (int, float)) or not isinstance(delta, (int, float)):
+        if not _is_number(current) or not _is_number(delta):
             raise _patch_error(
                 HED_PATCH_0001,
                 "decrement requires numeric current and delta.",
@@ -402,7 +426,7 @@ def _apply_op(
         return
     if op is PatchOp.CLAMP:
         current = _get_at(parent, key)
-        if not isinstance(current, (int, float)):
+        if not _is_number(current):
             raise _patch_error(
                 HED_PATCH_0001,
                 "clamp requires a numeric current value.",
@@ -418,7 +442,7 @@ def _apply_op(
             )
         lo = value.get("min", current)
         hi = value.get("max", current)
-        if not isinstance(lo, (int, float)) or not isinstance(hi, (int, float)):
+        if not _is_number(lo) or not _is_number(hi):
             raise _patch_error(
                 HED_PATCH_0001,
                 "clamp min/max must be numeric.",

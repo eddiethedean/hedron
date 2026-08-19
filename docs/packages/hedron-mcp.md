@@ -2,7 +2,7 @@
 
 Deny-by-default MCP Streamable HTTP projection for Hedron.
 
-**Package maturity:** Beta (`0.2.x`) · pin `>=0.2.0,<0.3`  
+**Package maturity:** Beta (`0.2.1`) · pin `>=0.2.1,<0.3` (compatible floor `>=0.2.0,<0.3`)  
 **Flagship extra:** `hedron[mcp]` · **Import:** `hedron_mcp`  
 Disabled and empty until resources and tools are **explicitly registered**. MCP
 never grants authority beyond the authenticated principal.

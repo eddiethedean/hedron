@@ -37,11 +37,13 @@ def home() -> Page:
 ## Surfaces
 
 - HTML shell with HTMX navigation across components, routes, graph, security,
-  accessibility, packages, and settings.
+  accessibility, cache, data, charts, maps, HTMX extensions, auto, packages,
+  elements, inventory, interactions, features, and settings.
 - JSON APIs under `/hedron-explorer/api/*` return sanitized registry views (no secrets, no
-  absolute paths as live data). `GET /hedron-explorer/api/dashboard-graph` serializes
-  `app.state.hedron_dashboard_graph` when it is an `InteractionGraph`; otherwise it returns
-  an empty experimental payload.
+  absolute paths as live data). Additive 0.50 routes include `GET /hedron-explorer/api/diff`
+  and `GET /hedron-explorer/api/package-health`. `GET /hedron-explorer/api/dashboard-graph`
+  serializes `app.state.hedron_dashboard_graph` when it is an `InteractionGraph`; otherwise
+  it returns an empty experimental payload.
 
 ```python
 from hedron_core.dashboard import InteractionGraph

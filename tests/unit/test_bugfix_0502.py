@@ -276,7 +276,7 @@ def test_invalid_plugin_specifier_is_plugin_failed() -> None:
             return broken
 
     with pytest.raises(HedronError, match="HED-PLUGIN-0005"):
-        load_plugins(entry_points=[EP()], hedron_version="0.50.2")
+        load_plugins(entry_points=[EP()], hedron_version="0.50.3")
 
 
 def test_flask_logged_out_does_not_trust_leftover_session(monkeypatch: pytest.MonkeyPatch) -> None:

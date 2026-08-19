@@ -16,7 +16,7 @@ Also ships a first-party bounded QuerySet `DataSource` and Django forms bridge �
 supply an already-authorized base QuerySet; omitted sort/filter allowlists deny
 client refinements.
 
-**Package maturity:** Beta · **Train:** `0.50.x` (published `v0.50.2`) · pin `>=0.50.1,<0.51`
+**Package maturity:** Beta · **Train:** `0.50.x` (published `v0.50.3`) · pin `>=0.50.1,<0.51`
 
 Adapter capability readiness is **Supported** when pinned — see
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).

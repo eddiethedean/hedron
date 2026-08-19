@@ -11,7 +11,7 @@ headless/CLI parity. Planning baseline was Published in-tree `v0.49.1`. Tracking
 [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
 [#502](https://github.com/eddiethedean/hedron/issues/502) /
 [#503](https://github.com/eddiethedean/hedron/issues/503) shipped on this cut and
-are not Explorer gates. Living tip is `v0.50.2`.
+are not Explorer gates. Living tip is `v0.50.3`.
 
 The shipped 0.49 mount/mode contract remains [Explorer API](EXPLORER.md). This page is
 the 0.50 architecture contract.
@@ -53,17 +53,20 @@ only when you need timeout, capabilities, or redaction_profile. Do not add field
 ## Query and headless
 
 Silent `[:200]` component slices become pagination or truncation diagnostics.
-CLI `hedron inspect` / `graph` / `check` share identities with HTML/JSON when
+CLI `hedron inspect` / `graph` / `check` / `routes` share identities with HTML/JSON when
 `hedron-explorer` is installed; otherwise skip is labeled. SARIF stays
 `hedron check --format sarif` (`diagnostics_to_sarif`). Graph JSON currently
-diverges on `inverse_consumers`.
+diverges on `inverse_consumers`. Query JSON includes `GET /hedron-explorer/api/diff`
+and `GET /hedron-explorer/api/package-health`. HTML panels also include cache, data,
+charts, maps, HTMX extensions, auto, elements, inventory, interactions, and features.
 
 ## Laboratory
 
 Safe preview ops only: `POST /hedron-explorer/api/simulate`,
 `GET /hedron-explorer/api/click-preview`,
 `POST /hedron-explorer/api/element-simulate`. Mutations stay 403 by default.
-No invented auth. Package health is read-only; `hedron package doctor` stays 0.53.
+No invented auth. Package health is read-only (`GET /hedron-explorer/api/package-health`);
+`hedron package doctor` stays 0.53.
 
 ## Explicitly not in 0.50
 

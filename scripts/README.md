@@ -60,7 +60,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_47.py` | Phase **0.47** first-class maps packet (Published in-tree `v0.47.0`; omit `--allow-planned` after cut) |
 | `verify_pkg_48.py` | Phase **0.48** HTMX extension integration packet (Published in-tree `v0.48.0`; omit `--allow-planned`) |
 | `verify_pkg_49.py` | Phase **0.49** FastAPI/Pydantic packet (Published in-tree `v0.49.1`; omit `--allow-planned` after cut) |
-| `verify_pkg_50.py` | Phase **0.50** Explorer architecture packet (Published in-tree `v0.50.0`; omit `--allow-planned` after cut) |
+| `verify_pkg_50.py` | Phase **0.50** Explorer architecture packet (living in-tree `v0.50.3`; omit `--allow-planned` after cut) |
 | `check_*_050.py` | Phase 0.50 architecture/provider/consume/query/diff/lab/headless/ecosystem/security/privacy/a11y/browser/perf/resilience/docs/compat/pkg/regress gate entry points |
 | `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Published `v0.42.0`) |
 | `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |

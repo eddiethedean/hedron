@@ -10,6 +10,7 @@ Canonical sessionStorage contract (shared with ``composition-041.mjs``):
 from __future__ import annotations
 
 import json
+import re
 import time
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -25,6 +26,12 @@ MAX_TTL_SECONDS = 1800
 MAX_TTL_MS = MAX_TTL_SECONDS * 1000
 # Match JS encodeURIComponent unescaped set: A-Z a-z 0-9 - _ . ! ~ * ' ( )
 _URI_COMPONENT_SAFE = "-_.!~*'()"
+
+
+def _forbidden_draft_field(name: str) -> bool:
+    lowered = name.lower().replace("-", "_")
+    tokens = [part for part in re.split(r"[._/:]", lowered) if part]
+    return any(token in FORBIDDEN_FIELD_TOKENS for token in tokens)
 
 
 def subject_fingerprint(subject: str, authority_revision: str) -> str:
@@ -145,8 +152,7 @@ class DraftTransferEnvelope:
         if self.expires_at <= timestamp or self.expires_at - self.created_at > MAX_TTL_MS:
             raise ValueError("draft transfer is expired or exceeds maximum TTL")
         for name, value in self.fields.items():
-            lowered = str(name).lower()
-            if lowered in FORBIDDEN_FIELD_TOKENS:
+            if _forbidden_draft_field(str(name)):
                 raise ValueError(f"forbidden draft field: {name!r}")
             if isinstance(value, (bytes, bytearray, memoryview)):
                 raise ValueError(f"binary draft field is forbidden: {name!r}")

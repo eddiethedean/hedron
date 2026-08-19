@@ -125,7 +125,7 @@ hedron eject UserCard --out ./ejected --force
 | Command | Purpose |
 |---|---|
 | `preview <logical_id>` | Inspect a route/component preview payload |
-| `inspect <component>` | Explain styles and dependencies |
+| `inspect <component>` | Explain styles and dependencies. With `hedron-explorer` installed, identities match Explorer HTML/JSON (HEADLESS-050); otherwise the skip is labeled. |
 | `inspect interactions` | Read-only interaction catalog |
 | `inspect htmx-extensions` | Declared HTMX extension catalog |
 | `inspect features` | Included FeatureBundles |

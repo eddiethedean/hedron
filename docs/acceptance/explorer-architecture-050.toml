@@ -88,6 +88,8 @@ target_services = [
 "/api/click-preview" = "GET"
 "/api/simulate" = "POST"
 "/api/element-simulate" = "POST"
+"/api/diff" = "GET"
+"/api/package-health" = "GET"
 
 html_only_no_json = [
     "/a11y",

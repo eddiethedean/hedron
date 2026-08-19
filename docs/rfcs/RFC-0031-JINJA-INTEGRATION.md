@@ -225,7 +225,7 @@ The currently implemented core (`HedronJinja`, `HedronJinjaExtension`, `Template
 
 ```python
 DASHBOARD = TemplateSpec[DashboardView](
-    "dashboard/index.hdj",
+    "examples/hdj-progressive/templates/01_minimal.hdj",
     view_type=DashboardView,
     source=TemplateSource.APPLICATION,
 )

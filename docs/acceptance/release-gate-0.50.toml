@@ -1,5 +1,5 @@
 # Phase 0.50 Explorer architecture release evidence index.
-# Verified cut (D-085 / D-086). `v0.50.1` is on PyPI.
+# Verified cut (D-085 / D-086). `v0.50.1` is on PyPI; living in-tree tip is `v0.50.3`.
 
 schema_version = 1
 phase = "0.50"

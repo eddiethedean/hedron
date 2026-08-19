@@ -10,14 +10,14 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-This documentation describes **0.50.2**. Git tag and PyPI upload are **deferred**;
+This documentation describes **0.50.3**. Git tag and PyPI upload are **deferred**;
 the latest on **PyPI** is **0.50.1**. **Install from PyPI** unless you are developing
 Hedron itself.
 
 | You are… | Install |
 |---|---|
 | Building an app from PyPI | `hedron>=0.50.1,<0.51` |
-| Working in this repository | `uv sync` (editable `0.50.2`) |
+| Working in this repository | `uv sync` (editable `0.50.3`) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
 are **Beta** (usable, no 1.0, no SLA). Capability detail:
@@ -138,7 +138,7 @@ cd hedron
 uv sync
 ```
 
-This checkout is **0.50.2** (tag/PyPI deferred). Application installs from PyPI use
+This checkout is **0.50.3** (tag/PyPI deferred). Application installs from PyPI use
 `hedron>=0.50.1,<0.51`.
 
 See [Contributing](../CONTRIBUTING.md).

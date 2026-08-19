@@ -116,6 +116,8 @@ def excel_col(index: int) -> str:
 
 def excel_col_index(letters: str) -> int:
     """Convert Excel column letters to 0-based index."""
+    if not letters:
+        raise ValueError("Invalid column letters ''")
     n = 0
     for ch in letters.upper():
         if not ("A" <= ch <= "Z"):

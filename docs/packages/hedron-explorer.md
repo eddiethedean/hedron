@@ -2,10 +2,10 @@
 
 Development Component Explorer for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.50.x` (published `v0.50.2`) · pin `>=0.50.1,<0.51`
+**Package maturity:** Beta · **Train:** `0.50.x` (published `v0.50.3`) · pin `>=0.50.1,<0.51`
 **Flagship extra:** `hedron[dev]` · **Import:** `hedron_explorer`  
 **Mount:** `/hedron-explorer/` when enabled · **not required in production**  
-**Shipped:** phase [0.50](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#050--explorer-architecture-and-operator-grade-development-tooling-v0500) — modular architecture, provider API, headless parity, large-app resilience (D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); in-tree `v0.50.2`).
+**Shipped:** phase [0.50](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#050--explorer-architecture-and-operator-grade-development-tooling-v0500) — modular architecture, provider API, headless parity, large-app resilience (D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); in-tree `v0.50.3`).
 
 ## Install
 
@@ -50,8 +50,8 @@ Open **`/hedron-explorer/`** on the running app.
 | Surface | Role |
 |---|---|
 | `explorer_router` | FastAPI router mounted under `/hedron-explorer/` |
-| HTML panels | Components, routes, graph, security, a11y, packages, settings, **Elements** |
-| JSON APIs | `/hedron-explorer/api/*` — sanitized registry views |
+| HTML panels | Components, routes, graph, security, a11y, cache, data, charts, maps, HTMX extensions, auto, packages, elements, inventory, interactions, features, settings |
+| JSON APIs | `/hedron-explorer/api/*` — sanitized registry views plus `GET /api/diff` and `GET /api/package-health` |
 | Element detail | Inspect ABI, parts/slots/tokens, events, and fallback for registered definitions |
 | Element simulate | `POST /hedron-explorer/api/element-simulate` for allowlisted event simulation |
 | Preview | Production renderer + active build manifest when present |

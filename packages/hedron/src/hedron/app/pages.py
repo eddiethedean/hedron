@@ -501,13 +501,17 @@ class HedronPagesMixin:
                     from hedron.type_authoring.signature import compile_injected_depends
 
                     endpoint.__signature__ = compile_injected_depends(inspect.signature(fn))  # type: ignore[attr-defined]
+            from hedron.routing.router import _normalize_fragment_regions
+
+            extra_regions = kwargs.pop("fragment_regions", None)
+            regions = (handle.region, *_normalize_fragment_regions(extra_regions))
             self._root_router.action(
                 handle.path,
                 method=handle.method,
                 name=handle.name,
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
-                allow_undeclared_targets=True,
+                fragment_regions=regions,
                 **kwargs,
             )(endpoint)
             self._sync_root_route()

@@ -116,6 +116,9 @@ class DataWorkspace(Generic[ModelT]):
         self.detail_view: object | None = None
         self.create_command: object | None = None
         self.edit_command: object | None = None
+        search_fields = getattr(source, "_search_fields", None)
+        if isinstance(search_fields, tuple) and not search_fields:
+            source._search_fields = tuple(fields)  # type: ignore[attr-defined]
 
     def _request_kwargs(self) -> dict[str, object]:
         kwargs: dict[str, object] = {}

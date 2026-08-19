@@ -662,6 +662,11 @@ def _ensure_result_ownership(result: InteractionResult, expected_app_id: str | N
         )
 
 
+def _owned_region(target: UpdateTarget) -> FragmentRegion:
+    selector = str(getattr(target, "selector", "") or f"#{target.dom_id}")
+    return FragmentRegion(id=target.dom_id, selector=selector)
+
+
 def _compile_refresh(intent: RefreshIntent, expected_app_id: str | None) -> InteractionResult:
     _target_app(intent.targets)
     trigger: dict[str, JsonValue] = {}
@@ -678,12 +683,16 @@ def _compile_refresh(intent: RefreshIntent, expected_app_id: str | None) -> Inte
             ),
             remediation="Reduce target count or logical id length.",
         )
+    hosts = tuple(_owned_region(target) for target in intent.targets)
     return InteractionResult(
         content=None,
         status_code=200,
         trigger=trigger,
         oob=_toast_oob(intent.toast_content),
-        policy=InteractionPolicy(allow_undeclared_targets=True),
+        policy=InteractionPolicy(
+            declared_regions=hosts,
+            allow_undeclared_targets=False,
+        ),
         explanation="refresh intent; follow-up GETs are not an atomic transaction",
     )
 
@@ -703,6 +712,7 @@ def _compile_patches(bundle: PatchSet, expected_app_id: str | None) -> Interacti
                 swap=item.swap,
             )
         )
+    hosts = tuple(_owned_region(target) for target in all_targets)
     return InteractionResult(
         content=cast(NodeLike, primary.content),
         status_code=bundle.status_code,
@@ -710,7 +720,10 @@ def _compile_patches(bundle: PatchSet, expected_app_id: str | None) -> Interacti
         swap=primary.swap,
         oob=tuple(oob),
         cache=bundle.cache,
-        policy=InteractionPolicy(allow_undeclared_targets=True),
+        policy=InteractionPolicy(
+            declared_regions=hosts,
+            allow_undeclared_targets=False,
+        ),
     )
 
 

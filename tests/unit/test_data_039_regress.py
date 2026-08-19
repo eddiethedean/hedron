@@ -35,7 +35,8 @@ def test_039_inmemory_rejects_duplicate_and_missing_keys() -> None:
 
 def test_039_inmemory_sorts_mixed_json_types() -> None:
     source = InMemoryDataSource(
-        [{"id": "1", "value": 1}, {"id": "2", "value": "2"}, {"id": "3", "value": None}]
+        [{"id": "1", "value": 1}, {"id": "2", "value": "2"}, {"id": "3", "value": None}],
+        allowlisted_sort_fields=frozenset({"value"}),
     )
     page = source.fetch(DataQuery(sort=(("value", "asc"),)))
     assert [r["id"] for r in page.rows] == ["3", "1", "2"]

@@ -213,10 +213,44 @@ def htmx_context_from_headers(headers: Mapping[str, str]) -> HtmxContext:
     )
 
 
+_MAX_HX_LOCATION_VALUES = 32
+_MAX_HX_LOCATION_VALUE_LEN = 512
+_HX_LOCATION_VALUE_KEYS = re.compile(r"^[A-Za-z_][A-Za-z0-9_\-]{0,63}$")
+
+
 def _require_local_path(url: str, header_name: str) -> str:
     if not is_local_path(url):
         raise ValueError(f"{header_name} must be a local path")
     return url
+
+
+def _sanitize_location_values(values: Mapping[str, JsonValue]) -> dict[str, JsonValue]:
+    if len(values) > _MAX_HX_LOCATION_VALUES:
+        raise ValueError("HX-Location values exceed the key budget")
+    cleaned: dict[str, JsonValue] = {}
+    for raw_key, raw_value in values.items():
+        key = str(raw_key)
+        if not _HX_LOCATION_VALUE_KEYS.match(key):
+            raise ValueError("Unsafe HX-Location values key")
+        if raw_value is None or isinstance(raw_value, bool):
+            cleaned[key] = raw_value
+            continue
+        if isinstance(raw_value, int) and not isinstance(raw_value, bool):
+            cleaned[key] = raw_value
+            continue
+        if isinstance(raw_value, float):
+            cleaned[key] = raw_value
+            continue
+        if isinstance(raw_value, str):
+            if len(raw_value) > _MAX_HX_LOCATION_VALUE_LEN:
+                raise ValueError("HX-Location values entry is too long")
+            if raw_value.startswith("/") or raw_value.startswith(("http:", "https:")):
+                cleaned[key] = _require_local_path(raw_value, "HX-Location")
+            else:
+                cleaned[key] = raw_value
+            continue
+        raise ValueError("HX-Location values must be scalars")
+    return cleaned
 
 
 def _validate_location_mapping(
@@ -249,7 +283,7 @@ def _validate_location_mapping(
     if values is not None:
         if not isinstance(values, Mapping):
             raise ValueError("HX-Location values must be a mapping")
-        cleaned["values"] = dict(values)
+        cleaned["values"] = _sanitize_location_values(dict(values))
     return cleaned
 
 

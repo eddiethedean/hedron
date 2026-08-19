@@ -27,8 +27,15 @@ def _release_pin_bounds() -> tuple[str, str]:
         if not candidate.is_file():
             continue
         release = tomllib.loads(candidate.read_text(encoding="utf-8")).get("release", {})
-        floor = str(release.get("pin_floor", "")).strip()
-        ceiling = str(release.get("pin_ceiling", "")).strip()
+        status = str(release.get("registry_status", "")).strip()
+        if status == "deferred":
+            floor = str(release.get("pypi_pin_floor") or release.get("pin_floor") or "").strip()
+            ceiling = str(
+                release.get("pypi_pin_ceiling") or release.get("pin_ceiling") or ""
+            ).strip()
+        else:
+            floor = str(release.get("pin_floor", "")).strip()
+            ceiling = str(release.get("pin_ceiling", "")).strip()
         if floor and ceiling:
             return floor, ceiling
     from hedron import __version__ as package_version

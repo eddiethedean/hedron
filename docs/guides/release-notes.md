@@ -3,6 +3,23 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.50.3 — 2026-08-19
+
+In-tree correctness and security patch on the 0.50 train. Git tag and PyPI upload
+are **deferred**; install from PyPI with `hedron>=0.50.1,<0.51` until 0.50.3 is
+uploaded. [Installation](../getting-started/installation.md).
+
+- `@command` no longer opts out of HTMX target authorization; compiled refresh/patch
+  policies declare owned hosts and stay fail-closed.
+- `hedron new` scaffolds pin the PyPI floor while `registry_status` is deferred.
+- Secrets stay redacted in tabular normalize and secret columns; draft-transfer names
+  tokenize forbidden fields; `redact_secret_like` no longer substring-matches.
+- In-memory sort/filter/search deny-by-default; SQLAlchemy search uses `search_fields`;
+  Great Tables HTML is sanitized; Three.js payloads require a verified size.
+- Patch increment rejects bools; missing remove/delete fail closed; CSS brace checks
+  ignore strings/comments; `process_image` keeps a 1px minimum height; collab merge
+  conflicts insert vs delete.
+
 ## 0.50.2 — 2026-08-19
 
 In-tree correctness and security patch on the 0.50 train. Git tag and PyPI upload

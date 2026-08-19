@@ -91,12 +91,14 @@ def require_sqlalchemy() -> _SQLAlchemyModule:
 def _fetch_rows(result: object) -> list[object]:
     """Return row objects without collapsing multi-column selects via scalars()."""
     keys: list[object] = []
+    keys_ok = False
     if isinstance(result, _HasKeys):
         try:
             keys = list(result.keys())
+            keys_ok = True
         except TypeError:
             keys = []
-    if len(keys) <= 1 and isinstance(result, _HasScalars):
+    if keys_ok and len(keys) == 1 and isinstance(result, _HasScalars):
         return list(result.scalars().all())
     if isinstance(result, _HasMappings):
         return list(result.mappings().all())
@@ -143,6 +145,7 @@ class SQLAlchemyDataSource(Generic[T]):
         to_row: Callable[[object], T] | None = None,
         apply_changes: Callable[[_SessionLike, DataChanges[T]], DataSaveResult[T]] | None = None,
         schema: Sequence[ColumnSchema] = (),
+        search_fields: Sequence[str] = (),
     ) -> None:
         require_sqlalchemy()
         from sqlalchemy.sql import Select
@@ -166,6 +169,7 @@ class SQLAlchemyDataSource(Generic[T]):
         self._to_row = to_row or _identity
         self._apply_changes = apply_changes
         self._schema = tuple(schema)
+        self._search_fields = tuple(search_fields)
 
     def plan_for(self, query: DataQuery) -> TransformPlan:
         return plan_from_query(query)
@@ -214,12 +218,12 @@ class SQLAlchemyDataSource(Generic[T]):
                             explanation=f"Projection field {name!r} is not allowlisted.",
                             remediation="Add the field to allowlisted_projection_fields.",
                         )
-            if q.search and q.allowlisted_filter_fields is None:
+            if q.search and not self._search_fields:
                 raise error(
                     "HED-DATA-0012",
                     title="SQLAlchemy search requires an allowlist",
                     explanation="Deny-by-default: searchable fields must be allowlisted.",
-                    remediation="Set DataQuery.allowlisted_filter_fields.",
+                    remediation="Set SQLAlchemyDataSource.search_fields.",
                 )
         stmt = _as_selectable(statement)
         for name, direction in q.sort:
@@ -233,7 +237,7 @@ class SQLAlchemyDataSource(Generic[T]):
             stmt = stmt.where(col == value)
         if q.search:
             clauses = []
-            fields = q.allowlisted_filter_fields or frozenset()
+            fields = self._search_fields
             # Escape LIKE metacharacters so user % / _ cannot broaden matches.
             escaped = q.search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
             pattern = f"%{escaped}%"

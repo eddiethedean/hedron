@@ -234,6 +234,9 @@ def _parse_user_form(name: str, email: str, role: Role) -> UserForm | str:
         return str(exc)
 
 
+USER_TABLE_REGION = FragmentRegion(id="user-table", selector="#user-table")
+
+
 def _htmx_user_form_error(message: str) -> ErrorState:
     return ErrorState(message, retry_href="/users/table", target="#user-table")
 
@@ -745,7 +748,12 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         token = csrf_token_for_request(request, policy)
         return edit_user_page(user=user, csrf_token=token, username=username)
 
-    @app.command("/users", fallback="/", dependencies=[Depends(require_user)])
+    @app.command(
+        "/users",
+        fallback="/",
+        dependencies=[Depends(require_user)],
+        fragment_regions=(USER_TABLE_REGION,),
+    )
     async def create_user(
         request: Request,
         name: Annotated[str, Form()],
@@ -777,7 +785,12 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
             return users_table_component(store)
         return redirect_local("/?msg=User%20created")
 
-    @app.command("/users/{user_id}", fallback="/", dependencies=[Depends(require_user)])
+    @app.command(
+        "/users/{user_id}",
+        fallback="/",
+        dependencies=[Depends(require_user)],
+        fragment_regions=(USER_TABLE_REGION,),
+    )
     async def update_user(
         request: Request,
         user_id: str,
@@ -812,7 +825,12 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
             return users_table_component(store)
         return redirect_local("/?msg=User%20updated")
 
-    @app.command("/users/{user_id}/delete", fallback="/", dependencies=[Depends(require_user)])
+    @app.command(
+        "/users/{user_id}/delete",
+        fallback="/",
+        dependencies=[Depends(require_user)],
+        fragment_regions=(USER_TABLE_REGION,),
+    )
     async def delete_user(
         request: Request,
         user_id: str,

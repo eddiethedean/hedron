@@ -461,13 +461,17 @@ class GreatTablesAdapter:
             importlib.import_module("great_tables")
         except ImportError as exc:
             raise missing_extra("great_tables") from exc
+        raw = str(value)
+        reject_active_svg(raw)
+        sanitized = TrustedHtml.nh3(raw)
+        reject_active_svg(sanitized.value)
         return ChartOutput(
             kind="html",
-            body=str(value),
+            body=sanitized.value,
             accessibility=accessibility.validated(),
             media_type="text/html",
-            payload_bytes=payload_size(str(value)),
-            metadata={"adapter": self.name},
+            payload_bytes=payload_size(sanitized.value),
+            metadata={"adapter": self.name, "sanitizer": sanitized.source},
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
@@ -568,7 +572,19 @@ class ThreeJsAdapter:
         parts = [p for p in decoded.split("/") if p not in ("", ".")]
         if ".." in parts:
             raise ValueError(f"Model path traversal rejected: {url!r}")
-        size = int(value.get("bytes") or 0)
+        from pathlib import Path
+
+        measured: int | None = None
+        local = Path(decoded)
+        if local.is_file():
+            measured = local.stat().st_size
+        raw_bytes = value.get("bytes")
+        claimed: int | None = None
+        if raw_bytes is not None and str(raw_bytes).strip() != "":
+            claimed = int(raw_bytes)
+        size = measured if measured is not None else claimed
+        if size is None or size <= 0:
+            raise ValueError("Model size is required (bytes) or a readable local asset")
         lim = limits or VisualizationLimits()
         if size > lim.max_payload_bytes:
             raise ValueError("Model exceeds size budget")

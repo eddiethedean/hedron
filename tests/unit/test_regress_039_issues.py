@@ -54,6 +54,7 @@ def test_115_116_117_190_memory_source() -> None:
     src = InMemoryDataSource(
         [{"id": "1", "v": 1}, {"id": "2", "v": "b"}, {"id": "3", "v": None}],
         writable_fields=frozenset({"v"}),
+        allowlisted_sort_fields=frozenset({"v"}),
     )
     page = src.fetch(DataQuery(sort=(("v", "asc"),), limit=10))
     assert len(page.rows) == 3

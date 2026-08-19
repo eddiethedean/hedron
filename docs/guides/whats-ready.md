@@ -5,7 +5,7 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page describes **0.50.2** (in-tree; PyPI still **0.50.1**). Install from PyPI with `hedron>=0.50.1,<0.51` — extras and
+This page describes **0.50.3** (in-tree; PyPI still **0.50.1**). Install from PyPI with `hedron>=0.50.1,<0.51` — extras and
 public-index notes: [Installation](../getting-started/installation.md). Capability
 readiness, API compatibility, and package maturity are three
 separate axes — [How labels work](#how-labels-work). Evaluators who need the cheat-sheet:
@@ -119,7 +119,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | DataTable / DataEditor + column catalog, views, TransformPlan | `hedron[data]` | Supported |
 | AG Grid Community client + infinite row models | `hedron-data[aggrid]` | Supported; Enterprise out of scope |
 | Dask / Snowflake bounded sources | `hedron-data[dask]` / `[snowflake]` | Supported |
-| Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics; 0.50 pagination, provider isolation, catalog diffs, and CLI/HTML/JSON agreement |
+| Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics; 0.50 pagination, provider isolation, catalog diffs, CLI/HTML/JSON agreement, and panels listed in [Explorer API](../api/EXPLORER.md) |
 | Language-neutral conformance kit | `hedron[conformance]` | Supported |
 | HDJ loop/macro budgets, a11y static checks | `hedron[jinja]` | Supported |
 | AppScenario + HTMX InteractionResult asserts | `hedron.testing` | Supported |

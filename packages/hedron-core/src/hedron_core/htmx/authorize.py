@@ -148,6 +148,7 @@ def authorize_htmx_target(
     *,
     is_htmx: bool,
     history_restore: bool = False,
+    allow_missing_target: bool = False,
 ) -> FragmentRegion | None:
     """Authorize ``HX-Target`` for HTMX requests (fail closed by default).
 
@@ -155,7 +156,8 @@ def authorize_htmx_target(
     raise :class:`FragmentRegionError` unless ``allow_undeclared_targets`` is set.
     HTMX fragment requests with declared regions but a missing ``HX-Target`` also fail
     closed (do not implicitly authorize the first region). History-restore requests
-    may omit ``HX-Target`` and still succeed (full PAGE navigation restore).
+    and action routes that own a host region (``allow_missing_target``) may omit
+    ``HX-Target`` and still succeed. A present ``HX-Target`` must still match.
     """
     regions = policy.declared_regions if policy is not None else ()
     allow_open = bool(policy is not None and policy.allow_undeclared_targets)
@@ -166,7 +168,14 @@ def authorize_htmx_target(
             requested=target,
             declared=(),
         )
-    if is_htmx and regions and not target and not allow_open and not history_restore:
+    if (
+        is_htmx
+        and regions
+        and not target
+        and not allow_open
+        and not history_restore
+        and not allow_missing_target
+    ):
         raise FragmentRegionError(
             "HTMX requests with declared fragment_regions require HX-Target",
             requested=None,

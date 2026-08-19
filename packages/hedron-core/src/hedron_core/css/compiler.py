@@ -249,6 +249,50 @@ def _check_urls_in_sheet(
     return CssStylesheet(rules=[walk(r) for r in sheet.rules]), tuple(found)
 
 
+def _braces_balanced_outside_literals(source: str) -> bool:
+    depth = 0
+    in_string: str | None = None
+    in_comment = False
+    escaped = False
+    index = 0
+    length = len(source)
+    while index < length:
+        ch = source[index]
+        nxt = source[index + 1] if index + 1 < length else ""
+        if in_comment:
+            if ch == "*" and nxt == "/":
+                in_comment = False
+                index += 2
+                continue
+            index += 1
+            continue
+        if in_string is not None:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == in_string:
+                in_string = None
+            index += 1
+            continue
+        if ch == "/" and nxt == "*":
+            in_comment = True
+            index += 2
+            continue
+        if ch in {'"', "'"}:
+            in_string = ch
+            index += 1
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth < 0:
+                return False
+        index += 1
+    return depth == 0 and in_string is None and not in_comment
+
+
 def compile_css(
     source: str,
     *,
@@ -276,7 +320,7 @@ def compile_css(
             component_id=component_id,
         ) from exc
 
-    if source.count("{") != source.count("}"):
+    if not _braces_balanced_outside_literals(source):
         raise error(
             HED_CSS_PARSE,
             title="CSS parse error",

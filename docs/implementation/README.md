@@ -44,7 +44,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [HTMX extension integration](HTMX_EXTENSION_INTEGRATION_048.md) — phase 0.48 D-080 / D-083
   declared activation, demand-driven assets, SSE/head-support/preload slices, and morph disposition
 - [FastAPI/Pydantic convergence](FASTAPI_PYDANTIC_CONVERGENCE_049.md) — phase 0.49 D-081 / D-084
-- [Explorer architecture](EXPLORER_050.md) — phase 0.50 **Published** `v0.50.1` on PyPI; in-tree `v0.50.2` (D-085 / D-086; 0.50.2 tag deferred)
+- [Explorer architecture](EXPLORER_050.md) — phase 0.50 **Published** `v0.50.1` on PyPI; in-tree `v0.50.3` (D-085 / D-086; 0.50.3 tag deferred)
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

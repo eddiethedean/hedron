@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.50.3] — 2026-08-19
+
+### Changed
+- Coordinated train tip `0.50.3` (in-tree patch; tag/PyPI deferred). See satellite
+  changelogs for Flask/Django/Explorer-owned rows.
+
+### Fixed
+- HTMX `@command` and compiled refresh/patch responses stay fail-closed for undeclared targets.
+- Tabular normalize, secret columns, draft-transfer names, and secret-like redaction no longer leak or false-match.
+- Data/chart/patch/CSS/image/collab correctness (see tests/unit/test_bugfix_0503.py).
+
 ## [0.50.2] — 2026-08-19
 
 ### Changed

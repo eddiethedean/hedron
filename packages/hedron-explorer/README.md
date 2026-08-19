@@ -7,12 +7,13 @@
 
 Development Component Explorer for Hedron.
 
-HTMX panels for components, routes, graph, security, accessibility, packages,
-settings, charts, and interaction simulation — plus sanitized JSON APIs with
-rate limiting and audit hooks. Installed through `hedron[dev]`; **not required**
-in production.
+HTMX panels for components, routes, graph, security, accessibility, cache, data,
+charts, maps, HTMX extensions, auto, packages, elements, inventory, interactions,
+features, settings, and interaction simulation — plus sanitized JSON APIs
+(`/api/diff`, `/api/package-health`) with rate limiting and audit hooks. Installed
+through `hedron[dev]`; **not required** in production.
 
-**Package maturity:** Beta · **Train:** `0.50.x` (published `v0.50.2`) · pin `>=0.50.1,<0.51`
+**Package maturity:** Beta · **Train:** `0.50.x` (published `v0.50.3`) · pin `>=0.50.1,<0.51`
 
 ## Install
 
