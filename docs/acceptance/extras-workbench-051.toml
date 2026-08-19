@@ -3,7 +3,7 @@
 
 schema_version = 1
 phase = "0.51"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.50.3"
 required_predecessor = "v0.50.3"
 target = "v0.51.0"
@@ -16,6 +16,15 @@ persistence_owned_by_app = true
 authorization_owned_by_app = true
 evaluate_embedded_code = false
 numeric_limits_stage0 = false
+
+[limits]
+json_max_chars = 200000
+data_max_rows = 10000
+typeahead_max_options = 5000
+typeahead_page_size_max = 500
+signature_max_bytes = 2000000
+annotation_max = 500
+tree_nodes_max = 5000
 
 [workbench]
 components = ["JSONEditor", "DataExplorer", "ChartWorkbench", "CallableActionForm"]

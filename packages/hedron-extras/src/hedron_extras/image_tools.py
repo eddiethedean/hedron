@@ -13,6 +13,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
+from hedron_extras.host import extras_host
 
 _MAX_SOURCE_CHARS = 2048
 
@@ -68,26 +69,30 @@ class ImageCompare(Component[ImageCompareProps]):
         )
 
     def render(self) -> NodeLike:
-        return html.figure(
-            html.img(src=self.props.before_src, alt=self.props.before_label),
-            html.img(src=self.props.after_src, alt=self.props.after_label),
-            html.input(
-                type="range",
-                min="0",
-                max="100",
-                value=str(int(self.props.position * 100)),
-                aria={"label": "Compare position"},
-                data={"keyboard-alt": "range"},
+        return extras_host(
+            "hedron-extras-image-tools",
+            html.figure(
+                html.img(src=self.props.before_src, alt=self.props.before_label),
+                html.img(src=self.props.after_src, alt=self.props.after_label),
+                html.input(
+                    type="range",
+                    min="0",
+                    max="100",
+                    value=str(int(self.props.position * 100)),
+                    aria={"label": "Compare position"},
+                    data={"keyboard-alt": "range"},
+                ),
+                html.figcaption(f"{self.props.before_label} / {self.props.after_label}"),
+                class_=class_names("hedron-image-compare", self.props.class_),
+                id=self.props.id,
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-image": "compare",
+                    "orientation": self.props.orientation,
+                    "static-fallback": "side-by-side",
+                },
             ),
-            html.figcaption(f"{self.props.before_label} / {self.props.after_label}"),
-            class_=class_names("hedron-image-compare", self.props.class_),
-            id=self.props.id,
-            data={
-                **mark_data(self.props.mark),
-                "hedron-image": "compare",
-                "orientation": self.props.orientation,
-                "static-fallback": "side-by-side",
-            },
+            payload={"kind": "compare"},
         )
 
 
@@ -99,6 +104,9 @@ class ImageCropProps(ElementProps):
     width: float = 1.0
     height: float = 1.0
     name: str = "crop"
+    source_width: int = 0
+    source_height: int = 0
+    revision: str = "0"
 
 
 class ImageCrop(Component[ImageCropProps]):
@@ -116,6 +124,9 @@ class ImageCrop(Component[ImageCropProps]):
         width: float = 1.0,
         height: float = 1.0,
         name: str = "crop",
+        source_width: int = 0,
+        source_height: int = 0,
+        revision: str = "0",
         **kwargs: Any,
     ) -> None:
         for label, value in (("x", x), ("y", y), ("width", width), ("height", height)):
@@ -123,6 +134,8 @@ class ImageCrop(Component[ImageCropProps]):
                 raise ValueError(f"ImageCrop {label} must be normalized 0..1")
         if x + width > 1.0 or y + height > 1.0:
             raise ValueError("ImageCrop rect must stay within the normalized unit square")
+        if source_width < 0 or source_height < 0:
+            raise ValueError("ImageCrop source dimensions must be >= 0")
         super().__init__(
             ImageCropProps(
                 src=_asset_src(src),
@@ -132,6 +145,9 @@ class ImageCrop(Component[ImageCropProps]):
                 width=width,
                 height=height,
                 name=name,
+                source_width=source_width,
+                source_height=source_height,
+                revision=revision,
                 **kwargs,
             )
         )
@@ -184,18 +200,47 @@ class ImageCrop(Component[ImageCropProps]):
                     step="0.01",
                 ),
             ),
+            html.input(
+                type="hidden",
+                name=f"{self.props.name}__revision",
+                value=self.props.revision,
+            ),
+            html.input(
+                type="hidden",
+                name=f"{self.props.name}__source_width",
+                value=str(self.props.source_width),
+            ),
+            html.input(
+                type="hidden",
+                name=f"{self.props.name}__source_height",
+                value=str(self.props.source_height),
+            ),
+            html.input(type="hidden", name=f"{self.props.name}__confirmed", value="server"),
         ]
-        return html.form(
-            *fields,
-            class_=class_names("hedron-image-crop", self.props.class_),
-            id=self.props.id,
-            method="post",
-            data={
-                **mark_data(self.props.mark),
-                "hedron-image": "crop",
-                "shape": self.props.shape,
-                "decode-limit": "server",
-                "drag-alternative": "numeric",
+        return extras_host(
+            "hedron-extras-image-tools",
+            html.form(
+                *fields,
+                class_=class_names("hedron-image-crop", self.props.class_),
+                id=self.props.id,
+                method="post",
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-image": "crop",
+                    "shape": self.props.shape,
+                    "decode-limit": "server",
+                    "drag-alternative": "numeric",
+                    "source-width": str(self.props.source_width),
+                    "source-height": str(self.props.source_height),
+                    "revision": self.props.revision,
+                    "server-confirmed": "true",
+                },
+            ),
+            payload={
+                "kind": "crop",
+                "source_width": self.props.source_width,
+                "source_height": self.props.source_height,
+                "revision": self.props.revision,
             },
         )
 
@@ -249,24 +294,30 @@ class ImageRegionSelect(Component[ImageRegionSelectProps]):
             [{"kind": r.kind, "points": r.points} for r in self.props.regions],
             separators=(",", ":"),
         )
-        return html.div(
-            html.img(src=self.props.src, alt="Region selection source"),
-            html.textarea(
-                payload,
-                name=self.props.name,
-                rows=3,
-                cols=40,
-                placeholder="Numeric region points (normalized)",
-                aria={"label": "Region points alternative to drawing"},
+        return extras_host(
+            "hedron-extras-image-tools",
+            html.div(
+                html.img(src=self.props.src, alt="Region selection source"),
+                html.textarea(
+                    payload,
+                    name=self.props.name,
+                    rows=3,
+                    cols=40,
+                    placeholder="Numeric region points (normalized)",
+                    aria={"label": "Region points alternative to drawing"},
+                ),
+                html.input(type="hidden", name=f"{self.props.name}__confirmed", value="server"),
+                class_=class_names("hedron-image-region", self.props.class_),
+                id=self.props.id,
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-image": "region",
+                    "mode": self.props.mode,
+                    "drag-alternative": "textarea",
+                    "server-confirmed": "true",
+                },
             ),
-            class_=class_names("hedron-image-region", self.props.class_),
-            id=self.props.id,
-            data={
-                **mark_data(self.props.mark),
-                "hedron-image": "region",
-                "mode": self.props.mode,
-                "drag-alternative": "textarea",
-            },
+            payload={"kind": "region", "mode": self.props.mode},
         )
 
 
@@ -326,14 +377,20 @@ class ImageAnnotations(Component[ImageAnnotationsProps]):
             html.li(f"{a.label} @ ({a.x:.2f},{a.y:.2f})", data={"ann-label": a.label})
             for a in self.props.annotations
         ]
-        return html.div(
-            html.img(src=self.props.src, alt="Annotated image"),
-            html.ul(*items, aria={"label": "Annotations list alternative"}),
-            class_=class_names("hedron-image-annotations", self.props.class_),
-            id=self.props.id,
-            data={
-                **mark_data(self.props.mark),
-                "hedron-image": "annotations",
-                "drag-alternative": "list",
-            },
+        return extras_host(
+            "hedron-extras-image-tools",
+            html.div(
+                html.img(src=self.props.src, alt="Annotated image"),
+                html.ul(*items, aria={"label": "Annotations list alternative"}),
+                html.input(type="hidden", name=f"{self.props.name}__confirmed", value="server"),
+                class_=class_names("hedron-image-annotations", self.props.class_),
+                id=self.props.id,
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-image": "annotations",
+                    "drag-alternative": "list",
+                    "server-confirmed": "true",
+                },
+            ),
+            payload={"kind": "annotations", "count": len(self.props.annotations)},
         )

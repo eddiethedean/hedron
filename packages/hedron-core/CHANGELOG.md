@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.51.0] — 2026-08-19
+
+### Added
+- Password visibility toggle, `SwapReveal`, `BusyRegion` / `Hx(busy=...)`.
+
+### Changed
+- Coordinated train tip `0.51.0` (in-tree; tag/PyPI deferred).
+
 ## [0.50.3] — 2026-08-19
 
 ### Changed

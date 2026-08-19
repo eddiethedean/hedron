@@ -2,7 +2,7 @@
 
 Curated optional extras and analysis workbenches for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.50.x` (published `v0.50.3`) · pin `>=0.50.1,<0.51`<br>
+**Package maturity:** Beta · **Train:** `0.51.x` (published `v0.51.0`) · pin `>=0.50.1,<0.51`<br>
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`<br>
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 
@@ -15,6 +15,10 @@ Experimental UI is **registration/discovery gated**, not import-gated:
 and set ``HEDRON_EXPERIMENTAL_UI=1`` or explicitly enable the experimental plugin. They are
 **not** part of the curated `hedron[extras]` product UI.
 
+`BrowserPythonSandbox` is Experimental and is **not** registered by the default
+`hedron_extras` plugin. Enable ``hedron_extras_sandbox`` (set ``HEDRON_EXTRAS_SANDBOX=1``
+or an explicit plugin list). Import remains ``from hedron_extras.sandbox import BrowserPythonSandbox``.
+
 ## Install
 
 ```bash
@@ -26,6 +30,8 @@ pip install "hedron-extras[data_explorer]>=0.50.1,<0.51"
 # experimental UI (requires an explicit opt-in):
 pip install "hedron[experimental-ui]>=0.50.1,<0.51"
 # then set HEDRON_EXPERIMENTAL_UI=1 or enable plugin hedron_extras_experimental
+# sandbox (Experimental; not in Supported extras):
+#   HEDRON_EXTRAS_SANDBOX=1  or enable plugin hedron_extras_sandbox
 ```
 
 Absent extras add **no** core import, browser asset, startup, or transitive dependency

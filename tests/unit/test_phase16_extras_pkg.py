@@ -45,6 +45,12 @@ def test_feature_manifest_registration() -> None:
     assert "recipes" in names
     workbench = next(f for f in features if f.name == "workbench")
     assert "CodeEditor" in workbench.security_notes
+    assert "sandbox" not in names
+    from hedron_extras.descriptor import extras_features, sandbox_feature
+
+    assert "sandbox" not in {f.name for f in extras_features()}
+    assert sandbox_feature().maturity == "experimental"
+    assert sandbox_feature().http_fallback is False
 
 
 def test_extras_components_registered_without_landmines() -> None:
@@ -63,6 +69,7 @@ def test_extras_components_registered_without_landmines() -> None:
     assert "DeviceBridge" not in names
     extras_panel = next(p for p in get_explorer_panels() if p.panel_id == "hedron-extras-features")
     assert extras_panel.path == "/hedron-explorer/packages"
+    assert "BrowserPythonSandbox" not in names
 
 
 def test_experimental_ui_landmines_register_when_enabled() -> None:
@@ -104,6 +111,44 @@ def test_experimental_skipped_on_default_discovery() -> None:
     names = {meta.name for meta in get_registry().components()}
     assert "TreeView" in names
     assert "CodeEditor" not in names
+
+
+def test_sandbox_skipped_on_default_discovery() -> None:
+    from hedron_extras.sandbox_plugin import register as sandbox_register
+
+    load_plugins(
+        enabled=None,
+        hedron_version=core_version,
+        entry_points=[
+            _EP("hedron_extras", extras_register),
+            _EP("hedron_extras_sandbox", sandbox_register),
+        ],
+    )
+    names = {meta.name for meta in get_registry().components()}
+    assert "TreeView" in names
+    assert "BrowserPythonSandbox" not in names
+    modules = list(get_registry().browser_modules())
+    assert not any(m.tag_name == "hedron-extras-sandbox" for m in modules)
+
+
+def test_sandbox_loads_when_env_enabled(monkeypatch: pytest.MonkeyPatch) -> None:
+    from hedron_extras.sandbox_plugin import register as sandbox_register
+
+    monkeypatch.setenv("HEDRON_EXTRAS_SANDBOX", "1")
+    load_plugins(
+        enabled=None,
+        hedron_version=core_version,
+        entry_points=[
+            _EP("hedron_extras", extras_register),
+            _EP("hedron_extras_sandbox", sandbox_register),
+        ],
+    )
+    names = {meta.name for meta in get_registry().components()}
+    assert "BrowserPythonSandbox" in names
+    features = get_feature_manifests(plugin="hedron_extras_sandbox")
+    sandbox = next(f for f in features if f.name == "sandbox")
+    assert sandbox.stability == "experimental"
+    assert sandbox.http_fallback is False
 
 
 def test_experimental_loads_when_env_enabled(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -12,14 +12,19 @@
 **Extends:** RFC-0014, RFC-0021, RFC-0023, RFC-0025, RFC-0037, RFC-0038,
 RFC-0051, RFC-0058, RFC-0060, RFC-0070, RFC-0072, RFC-0073
 
+**Post-cut:** Stage 1 shipped in-tree `v0.51.0` (Git tag and PyPI upload
+deferred; PyPI remains `v0.50.1`). Do not rewrite Stage 0 D-088.
+
 **Revision:** 2026-08-19 — D-088 contract refine against Published in-tree
 `v0.50.3`: planning baseline locked; inventory, descriptor, experimental
 disposition, workbench, lifecycle, and companion-authoring locks recorded;
 real `hedron_extras.plugin` / `hedron_extras.experimental` seams named.
 
-No runtime or version claim. Do not start Stage 1 during this refine.
-Do not block Stage 1 on PyPI/Git [#501](https://github.com/eddiethedean/hedron/issues/501)
-0.50.3 publish assets.
+Stage 1 added `hedron_extras_sandbox` / `HEDRON_EXTRAS_SANDBOX` opt-in
+registration, `ExtrasFeature`, shared extras HTMX lifecycle, workbench depth,
+and flagship #504–#506. Tracking
+[#507](https://github.com/eddiethedean/hedron/issues/507) remains open for
+tag/PyPI.
 
 ## Summary
 

@@ -38,6 +38,7 @@ from hedron_core.builtins import (
     Audio,
     Badge,
     BottomDock,
+    BusyRegion,
     Button,
     CameraCapture,
     Card,
@@ -122,6 +123,7 @@ from hedron_core.builtins import (
     Stack,
     Status,
     SubmitButton,
+    SwapReveal,
     Table,
     Tabs,
     Text,
@@ -417,7 +419,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.50.3"
+__version__ = "0.51.0"
 
 __all__ = [
     "ActionRegistry",
@@ -559,6 +561,7 @@ __all__ = [
     "Audio",
     "Badge",
     "BottomDock",
+    "BusyRegion",
     "BrowserContext",
     "BrowserModuleMeta",
     "BrowserStorage",
@@ -706,6 +709,7 @@ __all__ = [
     "StreamedDocument",
     "StyleSymbols",
     "SubmitButton",
+    "SwapReveal",
     "Suppression",
     "Table",
     "Text",

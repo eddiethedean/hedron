@@ -10,7 +10,7 @@ Install pins: [Installation](../getting-started/installation.md).
 
 | Topic | Disposition |
 |---|---|
-| Curated extras depth / experimental-UI (0.51) | **Stage 0 refined** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507)); companion [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506); no runtime |
+| Curated extras depth / experimental-UI (0.51) | **In-tree `v0.51.0`** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507)); companion [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506); tag/PyPI deferred |
 | Conformance kit and Node/Java runtime (0.52) | **Planned**; owning RFC required |
 | Notebook / simulation / sample-kit refresh (0.53) | **Planned**; owning RFC required |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |

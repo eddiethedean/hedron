@@ -1,6 +1,6 @@
 # Hedron `v0.51` curated extras acceptance
 
-**Status:** Planned. Stage 0 contract refined by D-088 against Published in-tree `v0.50.3`. Does **not** close `SR-021`. Does **not** ship runtime.<br>
+**Status:** Verified in-tree `v0.51.0`. Git tag and PyPI upload deferred (`registry_status = "deferred"`; PyPI `v0.50.1`). Does **not** close `SR-021`.<br>
 **Planning baseline:** Published in-tree `v0.50.3`<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.50.3`<br>
 **Target:** Hedron `v0.51.0`<br>
@@ -8,9 +8,10 @@
 **Tracking:** [#507](https://github.com/eddiethedean/hedron/issues/507)<br>
 **Related:** [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
 
-D-088 named shipped 0.50.3 extras seams (`hedron_extras.plugin`,
-`hedron_extras.experimental`, `feature_specs`, `hedron-extras-*` hosts,
-EXTRAS-025). Stage 1 may not start during this refine.
+D-088 named shipped 0.50.3 extras seams. Stage 1 shipped `ExtrasFeature`,
+shared extras HTMX lifecycle, workbench/image/input depth, sandbox opt-in
+(`hedron_extras_sandbox` / `HEDRON_EXTRAS_SANDBOX`), and flagship #504–#506.
+Do not create `v0.51.0` until PyPI upload is intended.
 
 ## Release contract
 

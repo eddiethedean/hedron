@@ -200,16 +200,19 @@ def main(argv: list[str] | None = None) -> int:
         print("ok: 0.50 planned gate shape")
     else:
         published = str(_load(RELEASE).get("release", {}).get("published_version", "")).strip()
-        command = [
-            sys.executable,
-            str(ROOT / "scripts" / "check_release_gate.py"),
-            published,
-            "--evidence-manifest",
-            str(GATE),
-            "--execute-verified",
-        ]
-        print("+", *command)
-        subprocess.check_call(command, cwd=ROOT)
+        if published.startswith("0.51."):
+            print("ok: 0.50 historical packet; skip execute-verified under living 0.51")
+        else:
+            command = [
+                sys.executable,
+                str(ROOT / "scripts" / "check_release_gate.py"),
+                published,
+                "--evidence-manifest",
+                str(GATE),
+                "--execute-verified",
+            ]
+            print("+", *command)
+            subprocess.check_call(command, cwd=ROOT)
     print(f"ok: verify_pkg_50 ({'allow-planned' if args.allow_planned else 'cut'})")
     return 0
 

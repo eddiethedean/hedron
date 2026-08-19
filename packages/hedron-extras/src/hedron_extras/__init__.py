@@ -19,6 +19,7 @@ from hedron_extras.composition import (
     TreeNodeProps,
     TreeView,
 )
+from hedron_extras.descriptor import ExtrasFeature
 from hedron_extras.display import DiagramOutput, LogConsole, TokenWeightedText
 from hedron_extras.editors import Calendar, SignaturePad, Typeahead
 from hedron_extras.image_tools import ImageAnnotations, ImageCompare, ImageCrop, ImageRegionSelect
@@ -31,7 +32,7 @@ from hedron_extras.workbench import (
     JSONEditor,
 )
 
-__version__ = "0.50.3"
+__version__ = "0.51.0"
 
 __all__ = [
     "AvatarProfile",
@@ -44,6 +45,7 @@ __all__ = [
     "ChoiceOption",
     "DataExplorer",
     "DiagramOutput",
+    "ExtrasFeature",
     "FloatingAction",
     "FocusScrollRequest",
     "ImageAnnotations",

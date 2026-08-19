@@ -5,7 +5,7 @@ The **CLI** (`hedron new --django`) comes from the `hedron` package; **runtime**
 `hedron-django` + `hedron-core`. The adapter does **not** install FastAPI.
 It mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
 
-This documentation describes **0.50.3** (in-tree; latest on PyPI is **0.50.1**).
+This documentation describes **0.51.0** (in-tree; latest on PyPI is **0.50.1**).
 Pin from PyPI `hedron>=0.50.1,<0.51` (or `hedron-django>=0.50.1,<0.51`).
 Public-index notes: [Installation](installation.md).
 

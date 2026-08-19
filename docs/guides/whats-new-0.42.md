@@ -3,7 +3,7 @@
 **Published `v0.42.0`**. Owning decision: D-070.
 Tracking: [#97](https://github.com/eddiethedean/hedron/issues/97).
 
-For new apps, pin `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
+For new apps, pin `hedron>=0.50.1,<0.51`; see [What’s new in 0.51](whats-new-0.51.md).
 
 ## Highlights
 

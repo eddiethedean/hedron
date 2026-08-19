@@ -3,6 +3,16 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.51.0 — 2026-08-19
+
+In-tree curated extras cut. Git tag and PyPI upload are **deferred**; install from
+PyPI with `hedron>=0.50.1,<0.51` until 0.51.0 is uploaded.
+[What’s new in 0.51](whats-new-0.51.md). [Installation](../getting-started/installation.md).
+
+- `ExtrasFeature`, shared extras HTMX lifecycle, workbench/image/input depth.
+- Sandbox default registration is opt-in (`hedron_extras_sandbox` / `HEDRON_EXTRAS_SANDBOX`).
+- Flagship password toggle, swap reveal, and generic HTMX busy (#504–#506).
+
 ## 0.50.3 — 2026-08-19
 
 Bugfix patch on the 0.50 train. Pin `hedron>=0.50.1,<0.51` from PyPI until the

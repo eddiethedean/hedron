@@ -45,7 +45,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
   declared activation, demand-driven assets, SSE/head-support/preload slices, and morph disposition
 - [FastAPI/Pydantic convergence](FASTAPI_PYDANTIC_CONVERGENCE_049.md) — phase 0.49 D-081 / D-084
 - [Explorer architecture](EXPLORER_050.md) — phase 0.50 **Published** `v0.50.1` on PyPI; in-tree `v0.50.3` (D-085 / D-086; 0.50.3 tag deferred)
-- [Curated extras depth](EXTRAS_051.md) — phase 0.51 **Planned** Stage 0 (D-087 / D-088; RFC-0078; [#507](https://github.com/eddiethedean/hedron/issues/507); no runtime)
+- [Curated extras depth](EXTRAS_051.md) — phase 0.51 **Verified** in-tree `v0.51.0` (D-087 / D-088; RFC-0078; [#507](https://github.com/eddiethedean/hedron/issues/507); tag/PyPI deferred)
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

@@ -5,7 +5,7 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page describes **0.50.3** (in-tree; PyPI still **0.50.1**). Install from PyPI with `hedron>=0.50.1,<0.51` — extras and
+This page describes **0.51.0** (in-tree; PyPI still **0.50.1**). Install from PyPI with `hedron>=0.50.1,<0.51` — extras and
 public-index notes: [Installation](../getting-started/installation.md). Capability
 readiness, API compatibility, and package maturity are three
 separate axes — [How labels work](#how-labels-work). Evaluators who need the cheat-sheet:
@@ -128,7 +128,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported with permission/retention policy |
 | BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported |
 | OIDC / session helpers + connection registry | `hedron` | Supported **helpers** (API `beta`); host auth/DI authoritative — **not** an IdP product |
-| Curated extras toolkit (install-isolated) | `hedron[extras]` | Supported for the curated toolkit surface; **not** CodeEditor / TerminalView / joystick / device. Those surfaces require `hedron[experimental-ui]` plus `HEDRON_EXPERIMENTAL_UI` or explicit plugin enablement and remain importable from `hedron_extras.experimental` |
+| Curated extras toolkit (install-isolated) | `hedron[extras]` | Supported for the curated toolkit surface; **not** CodeEditor / TerminalView / joystick / device / sandbox. Experimental UI requires `hedron[experimental-ui]` plus `HEDRON_EXPERIMENTAL_UI` or explicit plugin enablement. Sandbox requires `hedron_extras_sandbox` / `HEDRON_EXTRAS_SANDBOX`. |
 | Dashboard bindings, patches, cross-filter, AppShell | `hedron` / `hedron-core` | Supported (API `beta`; see [what's new 0.17](whats-new-0.17.md)) |
 | Public `render_interaction` | `hedron` | Supported |
 | Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported |

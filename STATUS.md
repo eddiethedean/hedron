@@ -2,12 +2,12 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.50 **in-tree** as `v0.50.3` (2026-08-19); Git tag and PyPI upload deferred. Latest on PyPI is `v0.50.1`. Phase 0.49 FastAPI/Pydantic convergence remains Published as `v0.49.1`.
-Living tip = `v0.50.3`.
+**Roadmap position:** phase 0.51 **in-tree** as `v0.51.0` (2026-08-19); Git tag and PyPI upload deferred. Latest on PyPI is `v0.50.1`. Phase 0.50 Explorer architecture remains Published in-tree as `v0.50.3`.
+Living tip = `v0.51.0`.
 **Date:** 2026-08-19
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.50.3`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.51.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
@@ -21,20 +21,16 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.32.0`.
 
-**Phase focus:** Living train is **0.50** (D-085 / D-086 / RFC-0077) — Explorer architecture:
-thin `explorer_router`, `ExplorerProvider` v1, query pagination, diffs, headless CLI
-parity, bounded lab, read-only package health, and companion HTMX authoring
-[#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
-[#502](https://github.com/eddiethedean/hedron/issues/502) /
-[#503](https://github.com/eddiethedean/hedron/issues/503).
-`release-gate-0.50.toml` eighteen Verified rows; living tip `v0.50.3` in-tree (PyPI `v0.50.1`).
-Tracking [#501](https://github.com/eddiethedean/hedron/issues/501) owns every Explorer 0.50
-gate until publish assets exist. Prior Published **0.49** FastAPI/Pydantic convergence
+**Phase focus:** Living train is **0.51** (D-087 / D-088 / RFC-0078) — curated extras
+depth, `ExtrasFeature`, HTMX host lifecycle, sandbox opt-in, and companion
+[#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506).
+`release-gate-0.51.toml` sixteen Verified rows; living tip `v0.51.0` in-tree (PyPI `v0.50.1`).
+Tracking [#507](https://github.com/eddiethedean/hedron/issues/507) owns extras gates until
+publish assets exist. Prior in-tree **0.50** Explorer architecture
+(D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501)).
+Prior Published **0.49** FastAPI/Pydantic convergence
 (D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380)).
-Phase **0.51** curated extras is **Stage 0 refined** (D-087 / D-088 / RFC-0078;
-[#507](https://github.com/eddiethedean/hedron/issues/507)); companion authoring
-[#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
-is bound to that phase and does not lock extras gate IDs. No 0.51 runtime.
+Phase **0.51** Stage 0 D-088 text is unchanged; Stage 1 shipped runtime without a Git tag.
 Prior Published **0.48** HTMX extensions (`MORPH-048` Deferred) / **0.47** first-class maps (`hedron-maps` `0.1.0`) /
 **0.46** package-native typed workflows /
 **0.45** typed interaction catalog / **0.44** type-driven authoring /
@@ -416,7 +412,7 @@ tracking [#380](https://github.com/eddiethedean/hedron/issues/380); see
 [implementation requirements](docs/implementation/FASTAPI_PYDANTIC_CONVERGENCE_049.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_49.md)).
 Phase **0.50** Explorer architecture is **in-tree** as `v0.50.3`
-(D-085 / D-086 / RFC-0077; `release-gate-0.50.toml` Verified; living tip **`v0.50.3`**;
+(D-085 / D-086 / RFC-0077; `release-gate-0.50.toml` Verified; train tip **`v0.50.3`**;
 PyPI latest **`v0.50.1`**; Git tag for 0.50.3 deferred).
 tracking [#501](https://github.com/eddiethedean/hedron/issues/501);
 related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
@@ -429,7 +425,7 @@ schedule `1.0`, promote every experimental subfeature, or expand Supported live 
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.
 [#373](https://github.com/eddiethedean/hedron/issues/373) and
 [#350](https://github.com/eddiethedean/hedron/issues/350) remain open for 0.48 / 0.47 publish assets.
-Phase **0.51** curated extras is **Stage 0 refined** (D-087 / D-088 / RFC-0078;
-[#507](https://github.com/eddiethedean/hedron/issues/507));
-related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
-are bound as companion authoring and do not lock extras gate IDs. No 0.51 runtime.
+Phase **0.51** curated extras shipped in-tree as `v0.51.0` (D-087 / D-088 / RFC-0078;
+[#507](https://github.com/eddiethedean/hedron/issues/507)); companion
+[#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
+closed as flagship authoring. Tag/PyPI deferred.

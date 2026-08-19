@@ -2,6 +2,9 @@
 
 EXTRAS-025 landmines (CodeEditor, TerminalView, Joystick, DeviceBridge) register
 via ``hedron_extras.experimental`` / ``hedron[experimental-ui]`` — not this plugin.
+
+``BrowserPythonSandbox`` registers via ``hedron_extras_sandbox`` (opt-in). Import
+remains ``from hedron_extras.sandbox import BrowserPythonSandbox``.
 """
 
 from __future__ import annotations
@@ -23,11 +26,11 @@ from hedron_extras.composition import (
     Steps,
     TreeView,
 )
+from hedron_extras.descriptor import extras_features
 from hedron_extras.display import DiagramOutput, LogConsole, TokenWeightedText
 from hedron_extras.editors import Calendar, SignaturePad, Typeahead
 from hedron_extras.image_tools import ImageAnnotations, ImageCompare, ImageCrop, ImageRegionSelect
 from hedron_extras.recipes import AvatarProfile, BadgeLink, MetricCard, TodoList
-from hedron_extras.sandbox import BrowserPythonSandbox
 from hedron_extras.workbench import (
     CallableActionForm,
     ChartWorkbench,
@@ -39,9 +42,9 @@ _ROOT = Path(__file__).resolve().parent
 
 PLUGIN_META = PluginMeta(
     name="hedron_extras",
-    version="0.50.3",
+    version="0.51.0",
     distribution="hedron-extras",
-    hedron_version=">=0.50,<0.51",
+    hedron_version=">=0.51,<0.52",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -51,40 +54,36 @@ PLUGIN_META = PluginMeta(
     ),
 )
 
+_LIFECYCLE_REL = "assets/lifecycle/host.js"
+
 # relative path → (browser module logical id, custom element tag, component classes)
 _BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Any], ...]], ...] = (
     (
-        "assets/sandbox/bridge.js",
-        "hedron-extras:sandbox-bridge",
-        "hedron-extras-sandbox",
-        (BrowserPythonSandbox,),
-    ),
-    (
-        "assets/image_tools/image.js",
+        _LIFECYCLE_REL,
         "hedron-extras:image-tools",
         "hedron-extras-image-tools",
         (ImageCompare, ImageCrop, ImageRegionSelect, ImageAnnotations),
     ),
     (
-        "assets/calendar/calendar.js",
+        _LIFECYCLE_REL,
         "hedron-extras:calendar",
         "hedron-extras-calendar",
         (Calendar,),
     ),
     (
-        "assets/signature/signature.js",
+        _LIFECYCLE_REL,
         "hedron-extras:signature",
         "hedron-extras-signature",
         (SignaturePad,),
     ),
     (
-        "assets/typeahead/typeahead.js",
+        _LIFECYCLE_REL,
         "hedron-extras:typeahead",
         "hedron-extras-typeahead",
         (Typeahead,),
     ),
     (
-        "assets/composition/composition.js",
+        _LIFECYCLE_REL,
         "hedron-extras:composition",
         "hedron-extras-composition",
         (ChoiceCards, TreeView, Steps, SplitPane, FloatingAction, KeyboardShortcuts),
@@ -135,22 +134,20 @@ def _register_module_asset(rel: str) -> tuple[str, Path]:
 
 def register(ctx: PluginContext) -> None:
     module_by_cls: dict[type[Any], str] = {}
-    asset_logical_by_rel: dict[str, str] = {}
+    lifecycle_id, lifecycle_path = _register_module_asset(_LIFECYCLE_REL)
 
-    for rel, module_id, tag_name, classes in _BROWSER_HOSTS:
-        asset_id, path = _register_module_asset(rel)
-        asset_logical_by_rel[rel] = asset_id
+    for _rel, module_id, tag_name, classes in _BROWSER_HOSTS:
         register_browser_module(
             logical_id=module_id,
             tag_name=tag_name,
-            module_path=str(path),
+            module_path=str(lifecycle_path),
             observed_attributes=("data-hedron-payload",),
             events=(),
             shadow_dom=False,
             htmx_lifecycle=True,
         )
         for cls in classes:
-            module_by_cls[cls] = str(path)
+            module_by_cls[cls] = str(lifecycle_path)
 
     for cls in (*module_by_cls, *_STATIC_COMPONENTS):
         logical = (
@@ -167,89 +164,8 @@ def register(ctx: PluginContext) -> None:
             accessibility_notes="See feature manifest a11y_notes.",
         )
 
-    feature_specs: tuple[dict[str, Any], ...] = (
-        {
-            "name": "composition",
-            "stability": "beta",
-            "description": "ChoiceCards, TreeView, Steps, SplitPane, FAB, shortcuts",
-            "assets": (asset_logical_by_rel["assets/composition/composition.js"],),
-            "http_fallback": True,
-            "a11y_notes": "Semantic controls with keyboard and no-JS fallbacks.",
-            "security_notes": "No filesystem authority from TreeView.",
-        },
-        {
-            "name": "workbench",
-            "stability": "beta",
-            "description": "DataExplorer, JSONEditor, ChartWorkbench, CallableActionForm",
-            "http_fallback": True,
-            "a11y_notes": "Textarea fallbacks for editors.",
-            "security_notes": (
-                "DataExplorer emits TransformPlan only. CodeEditor is quarantined under "
-                "hedron[experimental-ui] (EXTRAS-025)."
-            ),
-        },
-        {
-            "name": "image_tools",
-            "stability": "beta",
-            "assets": (asset_logical_by_rel["assets/image_tools/image.js"],),
-            "http_fallback": True,
-            "a11y_notes": "Numeric/list alternatives to drag.",
-            "security_notes": "Declared sources only; decode limits server-owned.",
-        },
-        {
-            "name": "calendar",
-            "stability": "beta",
-            "assets": (asset_logical_by_rel["assets/calendar/calendar.js"],),
-            "http_fallback": True,
-        },
-        {
-            "name": "signature",
-            "stability": "beta",
-            "assets": (asset_logical_by_rel["assets/signature/signature.js"],),
-            "http_fallback": True,
-            "a11y_notes": "File upload alternative to pointer drawing.",
-        },
-        {
-            "name": "typeahead",
-            "stability": "beta",
-            "assets": (asset_logical_by_rel["assets/typeahead/typeahead.js"],),
-            "http_fallback": True,
-            "a11y_notes": "Combobox pattern with datalist fallback.",
-        },
-        {
-            "name": "display",
-            "stability": "beta",
-            "description": "LogConsole, TokenWeightedText, DiagramOutput",
-            "http_fallback": True,
-            "security_notes": "No process-global stdout capture.",
-        },
-        {
-            "name": "recipes",
-            "stability": "recipe",
-            "description": "AvatarProfile, BadgeLink, MetricCard, TodoList composition recipes",
-            "http_fallback": True,
-        },
-        {
-            "name": "sandbox",
-            "stability": "beta",
-            "assets": (asset_logical_by_rel["assets/sandbox/bridge.js"],),
-            "http_fallback": False,
-            "security_notes": "Origin isolation; no server/session; network deny.",
-            "a11y_notes": "Budget and teardown documented; limited AT surface.",
-        },
-    )
-
-    for spec in feature_specs:
-        ctx.register_feature(
-            name=str(spec["name"]),
-            stability=spec.get("stability", "beta"),  # type: ignore[arg-type]
-            dependencies=tuple(spec.get("dependencies") or ()),
-            assets=tuple(spec.get("assets") or ()),
-            a11y_notes=str(spec.get("a11y_notes") or ""),
-            security_notes=str(spec.get("security_notes") or ""),
-            http_fallback=bool(spec.get("http_fallback", True)),
-            description=str(spec.get("description") or ""),
-        )
+    for feature in extras_features(assets={"lifecycle": lifecycle_id}):
+        feature.register(ctx)
 
     # Packages view lists plugin panels; dedicated /extras route is not shipped yet.
     ctx.register_explorer_provider(

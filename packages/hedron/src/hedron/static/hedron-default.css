@@ -1969,6 +1969,27 @@
     }
   }
 
+    .hedron-password-field {
+      display: inline-flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .hedron-swap-reveal {
+      opacity: 1;
+    }
+
+    .hedron-swap-reveal:not(.is-revealed) {
+      opacity: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hedron-swap-reveal {
+        opacity: 1 !important;
+        transition: none !important;
+      }
+    }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

@@ -22,6 +22,7 @@ from hedron_core.builtins.content_extra import (
 from hedron_core.builtins.controls import Button, IconButton, LinkButton
 from hedron_core.builtins.document import Fragment, Head, Page, Title
 from hedron_core.builtins.forms import (
+    BusyRegion,
     Checkbox,
     CsrfField,
     Form,
@@ -32,6 +33,7 @@ from hedron_core.builtins.forms import (
     RadioGroup,
     Select,
     SubmitButton,
+    SwapReveal,
     TextArea,
     TextInput,
 )
@@ -115,6 +117,7 @@ __all__ = [
     "AttrHost",
     "Audio",
     "Badge",
+    "BusyRegion",
     "BottomDock",
     "Button",
     "CameraCapture",
@@ -202,6 +205,7 @@ __all__ = [
     "Stack",
     "Status",
     "SubmitButton",
+    "SwapReveal",
     "Table",
     "Tabs",
     "Text",

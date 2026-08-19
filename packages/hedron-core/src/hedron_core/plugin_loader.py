@@ -105,6 +105,7 @@ def load_plugins(
     ``enabled`` semantics:
     - ``None``: load every discovered entry point except ``*_experimental``
       (unless ``HEDRON_EXPERIMENTAL_UI`` is truthy — EXTRAS-025 quarantine)
+      and except ``*_sandbox`` (unless ``HEDRON_EXTRAS_SANDBOX`` is truthy)
     - empty sequence: load none
     - non-empty: load only named entry points; missing names raise ``HED-PLUGIN-MISSING``
 
@@ -121,6 +122,12 @@ def load_plugins(
     feature_snapshot = dict(plugins_mod._features)
     bundle_snapshot = snapshot_bundles()
     experimental_env = os.environ.get("HEDRON_EXPERIMENTAL_UI", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+    sandbox_env = os.environ.get("HEDRON_EXTRAS_SANDBOX", "").strip().lower() in {
         "1",
         "true",
         "yes",
@@ -148,6 +155,8 @@ def load_plugins(
                 continue
             if enabled is None and not experimental_env and str(name).endswith("_experimental"):
                 continue
+            if enabled is None and not sandbox_env and str(name).endswith("_sandbox"):
+                continue
             try:
                 target = ep.load() if hasattr(ep, "load") else ep
             except Exception as exc:
@@ -168,7 +177,7 @@ def load_plugins(
                     ),
                     remediation=(
                         # Example pin must stay aligned with docs/release.toml train bounds.
-                        "Attach PluginMeta(..., hedron_version='>=0.50,<0.51') to the "
+                        "Attach PluginMeta(..., hedron_version='>=0.51,<0.52') to the "
                         "register entry point."
                     ),
                 )

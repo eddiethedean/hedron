@@ -12,8 +12,8 @@ Building an app? Install [`hedron`](https://pypi.org/project/hedron/) instead. U
 package if you are writing a host adapter or rendering components outside a web
 framework.
 
-**In-tree `v0.50.3` — Git tag and PyPI upload are deferred.** Latest on **PyPI** is
-`v0.50.1`. Pin `hedron-core>=0.50.1,<0.51` until 0.50.3 is uploaded.
+**In-tree `v0.51.0` — Git tag and PyPI upload are deferred.** Latest on **PyPI** is
+`v0.50.1`. Pin `hedron-core>=0.50.1,<0.51` until 0.51.0 is uploaded.
 
 **Package maturity:** Beta · pin `>=0.50.1,<0.51`.
 

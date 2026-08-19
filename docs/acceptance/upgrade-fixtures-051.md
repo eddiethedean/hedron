@@ -1,6 +1,6 @@
 # Phase 0.51 upgrade and rollback fixtures
 
-**Status:** Planned; Stage 0 contract refined against Published in-tree `v0.50.3` (D-088)<br>
+**Status:** Verified; Stage 1 shipped against Published in-tree `v0.50.3` (D-088)<br>
 **Planning baseline:** Published in-tree `v0.50.3`<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.50.3`<br>
 **Target:** Hedron `v0.51.0`<br>
@@ -19,15 +19,14 @@ PKG-051 upgrade source is **0.50**, not 0.49. Do not start Stage 1 during this r
    `image_tools`, `calendar`, `signature`, `typeahead`, `sandbox`,
    `code_editor`, `terminal`, `joystick`, `experimental-ui`, `all`.
 4. `all` pulls `hedron-data` + `hedron-charts` only.
-5. Plugin entry points: `hedron_extras`, `hedron_extras_experimental`.
+5. Plugin entry points: `hedron_extras`, `hedron_extras_experimental`, `hedron_extras_sandbox`.
 
 ## Honesty fixtures (Stage 1 migration)
 
-1. `BrowserPythonSandbox` is Experimental despite default-plugin registration
-   and `feature_specs` `stability: "beta"` on 0.50.3.
-2. Stage 1 moves default sandbox registration to opt-in; document rollback to
-   0.50.3 registration for apps that imported `hedron_extras.sandbox` via the
-   default plugin.
+1. `BrowserPythonSandbox` is Experimental. Stage 1 moved default registration to
+   `hedron_extras_sandbox` / `HEDRON_EXTRAS_SANDBOX`. Rollback to 0.50.3 if an app
+   relied on default-plugin sandbox registration.
+2. Import `from hedron_extras.sandbox import BrowserPythonSandbox` is unchanged.
 3. Do not graduate Experimental UI on upgrade.
 
 ## Frozen 0.50.3 browser tags

@@ -3,7 +3,7 @@
 **Published `v0.46.0`.** Owning decisions: D-075 / D-079.
 Tracking: [#334](https://github.com/eddiethedean/hedron/issues/334).
 
-For new apps, pin `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
+For new apps, pin `hedron>=0.50.1,<0.51`; see [What’s new in 0.51](whats-new-0.51.md).
 
 Package-native typed workflows assemble ordinary 0.43–0.45 handles into opt-in features.
 Maintainer contracts (decisions / RFC) sit in GitHub, not this adopter page.

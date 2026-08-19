@@ -4,6 +4,8 @@ Typed, labelled controls and validation presentation.
 
 - [`Form`](form.md) — Compose a native GET or POST form with validated action URLs and optional HTMX attributes.
 - [`Hx`](hx.md) — First-class HTMX attribute bundle for Form (validated selectors and swap).
+- [`SwapReveal`](swap-reveal.md) — Opt-in HTMX after-swap reveal wrapper that respects prefers-reduced-motion.
+- [`BusyRegion`](busy-region.md) — Generic HTMX busy host for region or document aria-busy and an optional indicator.
 - [`CsrfField`](csrf-field.md) — Hidden CSRF input wired to the active strategy or an explicit token.
 - [`LoginCsrfField`](login-csrf-field.md) — Hidden input for pre-auth login CSRF (issue_login_csrf / validate_login_csrf).
 - [`FormField`](form-field.md) — Bind a label, help text, required state, and field error to one control.

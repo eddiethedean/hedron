@@ -3,7 +3,7 @@
 
 schema_version = 1
 phase = "0.51"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.50.3"
 required_predecessor = "v0.50.3"
 target = "v0.51.0"
@@ -14,7 +14,7 @@ tracking = "#507"
 
 [[evidence]]
 id = "INVENTORY-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_inventory_051.py"
 ci_job = "quality"
 owner = "hedron-extras"
@@ -22,7 +22,7 @@ summary = "Every extras feature has one honest Supported/Experimental/Deprecated
 
 [[evidence]]
 id = "DESCRIPTOR-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_descriptor_051.py"
 ci_job = "quality"
 owner = "hedron-extras"
@@ -30,7 +30,7 @@ summary = "Versioned ExtrasFeature is the package inventory authority without re
 
 [[evidence]]
 id = "WORKBENCH-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_workbench_051.py"
 ci_job = "test"
 owner = "hedron-extras"
@@ -38,7 +38,7 @@ summary = "JSON/Data/Chart workbenches are bounded, cancelable, revision-aware, 
 
 [[evidence]]
 id = "DATA-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_data_051.py"
 ci_job = "test"
 owner = "hedron-extras"
@@ -46,7 +46,7 @@ summary = "TreeView/Typeahead providers have stable identities, abort, races, an
 
 [[evidence]]
 id = "IMAGE-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_image_051.py"
 ci_job = "test"
 owner = "hedron-extras"
@@ -54,7 +54,7 @@ summary = "Image crop/region/annotation intents use normalized schemas and serve
 
 [[evidence]]
 id = "INPUT-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_input_051.py"
 ci_job = "test"
 owner = "hedron-extras"
@@ -62,7 +62,7 @@ summary = "Signature, clipboard, document, URL, and high-frequency inputs pass a
 
 [[evidence]]
 id = "LIFECYCLE-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_lifecycle_051.py"
 ci_job = "test"
 owner = "hedron-extras"
@@ -70,7 +70,7 @@ summary = "Element/HTMX connect, disconnect, reconnect, duplicate-registration, 
 
 [[evidence]]
 id = "BROWSER-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_browser_051.py"
 ci_job = "browser"
 owner = "hedron-extras"
@@ -78,7 +78,7 @@ summary = "Chromium/Firefox/WebKit, keyboard/touch, theme, and failed-enhancemen
 
 [[evidence]]
 id = "SECURITY-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_security_051.py"
 ci_job = "test"
 owner = "hedron-extras"
@@ -86,7 +86,7 @@ summary = "Per-feature threats, strict CSP/offline behavior, and sandbox/device 
 
 [[evidence]]
 id = "SUPPLY-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_supply_051.py"
 ci_job = "quality"
 owner = "hedron-extras"
@@ -94,7 +94,7 @@ summary = "Dependency isolation, asset integrity/license/SBOM, and no ambient re
 
 [[evidence]]
 id = "A11Y-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_a11y_051.py"
 ci_job = "browser"
 owner = "hedron-extras"
@@ -102,7 +102,7 @@ summary = "Semantics, instructions, status/errors, reflow/zoom/contrast/motion f
 
 [[evidence]]
 id = "VISUAL-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_visual_051.py"
 ci_job = "browser"
 owner = "hedron-extras"
@@ -110,7 +110,7 @@ summary = "State-complete visual gallery including empty, loading, error, disabl
 
 [[evidence]]
 id = "ECOSYSTEM-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_ecosystem_051.py"
 ci_job = "test"
 owner = "hedron-extras"
@@ -118,7 +118,7 @@ summary = "Explorer, HDJ, catalog, scenarios, conformance, and adapter projectio
 
 [[evidence]]
 id = "DOCS-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_docs_051.py"
 ci_job = "quality"
 owner = "hedron-extras"
@@ -126,7 +126,7 @@ summary = "Choose-an-extra guide, per-feature tables, CSP/offline, Experimental 
 
 [[evidence]]
 id = "PKG-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_pkg_051.py"
 ci_job = "quality"
 owner = "hedron-extras"
@@ -134,7 +134,7 @@ summary = "Minimal/per-feature/all wheels, import isolation, and 0.50 upgrade/ro
 
 [[evidence]]
 id = "REGRESS-051"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_regress_051.py"
 ci_job = "test"
 owner = "hedron"

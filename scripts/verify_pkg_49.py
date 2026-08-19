@@ -177,14 +177,12 @@ def _check_versions(*, allow_planned: bool) -> None:
         expected = PREDECESSOR
         if published != PREDECESSOR:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
-    elif published.startswith("0.50."):
+    elif published.startswith(("0.50.", "0.51.")):
         print(f"ok: 0.49 historical under living published {published}")
         return
     else:
         if not published.startswith("0.49."):
-            raise SystemExit(
-                f"cut published version must be on 0.49.x; found {published!r}"
-            )
+            raise SystemExit(f"cut published version must be on 0.49.x; found {published!r}")
         expected = published
     if workspace != expected or development != expected:
         raise SystemExit(

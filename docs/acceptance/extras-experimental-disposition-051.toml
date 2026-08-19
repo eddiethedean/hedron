@@ -3,7 +3,7 @@
 
 schema_version = 1
 phase = "0.51"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.50.3"
 required_predecessor = "v0.50.3"
 target = "v0.51.0"
@@ -43,8 +43,8 @@ graduate_in_051 = false
 [browser_python_sandbox]
 disposition = "experimental"
 supported_hedron_extras = false
-today_default_plugin = true
-today_feature_spec_stability = "beta"
+today_default_plugin = false
+today_feature_spec_stability = "experimental"
 today_http_fallback = false
 stage1_default_registration = "opt-in"
 reason = "Whats-ready already Experimental; http_fallback false; must not pull into Supported hedron[extras] transitively"

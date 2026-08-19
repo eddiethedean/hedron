@@ -179,3 +179,58 @@ document.body.addEventListener("htmx:sendError", (event) => {
   applyErrorTemplate(event.detail?.elt);
 });
 
+document.addEventListener("click", (event) => {
+  if (!(event.target instanceof Element)) return;
+  const toggle = event.target.closest("[data-hedron-password-toggle]");
+  if (!(toggle instanceof HTMLButtonElement)) return;
+  const inputId = toggle.getAttribute("data-hedron-password-toggle") || toggle.getAttribute("aria-controls");
+  const input = inputId ? document.getElementById(inputId) : toggle.parentElement?.querySelector("input");
+  if (!(input instanceof HTMLInputElement)) return;
+  const show = input.type === "password";
+  input.type = show ? "text" : "password";
+  toggle.setAttribute("aria-pressed", show ? "true" : "false");
+  toggle.setAttribute("aria-label", show ? "Hide password" : "Show password");
+  toggle.textContent = show ? "Hide password" : "Show password";
+});
+
+function busyHost(elt) {
+  if (!(elt instanceof Element)) return document.body;
+  return elt.closest("[data-hedron-busy]") || document.body;
+}
+
+function setBusy(host, busy) {
+  if (!(host instanceof HTMLElement)) return;
+  host.setAttribute("aria-busy", busy ? "true" : "false");
+  const indicatorSel = host.getAttribute("data-hedron-busy-indicator");
+  if (indicatorSel && /^#[A-Za-z][\w:.-]*$/.test(indicatorSel)) {
+    const indicator = document.querySelector(indicatorSel);
+    if (indicator instanceof HTMLElement) indicator.hidden = !busy;
+  }
+}
+
+document.body.addEventListener("htmx:beforeRequest", (event) => {
+  const elt = event.detail?.elt;
+  setBusy(busyHost(elt), true);
+});
+document.body.addEventListener("htmx:afterRequest", (event) => {
+  const elt = event.detail?.elt;
+  setBusy(busyHost(elt), false);
+});
+document.body.addEventListener("htmx:afterSwap", (event) => {
+  const root = event.target instanceof Element ? event.target : document;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const nodes = [];
+  if (root instanceof Element && root.matches("[data-hedron-reveal='swap']")) nodes.push(root);
+  root.querySelectorAll?.("[data-hedron-reveal='swap']").forEach((n) => nodes.push(n));
+  for (const node of nodes) {
+    if (!(node instanceof HTMLElement)) continue;
+    if (reduced && node.getAttribute("data-hedron-reduced-motion") !== "ignore") {
+      node.classList.add("is-revealed");
+      continue;
+    }
+    node.classList.remove("is-revealed");
+    requestAnimationFrame(() => node.classList.add("is-revealed"));
+  }
+});
+
+

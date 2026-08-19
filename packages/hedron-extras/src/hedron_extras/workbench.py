@@ -29,6 +29,7 @@ class DataExplorerProps(ElementProps):
     facets: list[DataExplorerFacet]
     name: str = "explorer"
     max_rows: int = 1000
+    revision: str = "0"
 
 
 class DataExplorer(Component[DataExplorerProps]):
@@ -44,6 +45,7 @@ class DataExplorer(Component[DataExplorerProps]):
         *,
         name: str = "explorer",
         max_rows: int = 1000,
+        revision: str = "0",
         **kwargs: Any,
     ) -> None:
         parsed = [
@@ -52,7 +54,11 @@ class DataExplorer(Component[DataExplorerProps]):
         ]
         if max_rows < 1 or max_rows > 10_000:
             raise ValueError("DataExplorer max_rows must be between 1 and 10000")
-        super().__init__(DataExplorerProps(facets=parsed, name=name, max_rows=max_rows, **kwargs))
+        super().__init__(
+            DataExplorerProps(
+                facets=parsed, name=name, max_rows=max_rows, revision=revision, **kwargs
+            )
+        )
 
     def render(self) -> NodeLike:
         groups: list[NodeLike] = []
@@ -78,11 +84,35 @@ class DataExplorer(Component[DataExplorerProps]):
             )
         )
         groups.append(
+            html.input(
+                type="hidden",
+                name=f"{self.props.name}__revision",
+                value=self.props.revision,
+            )
+        )
+        groups.append(
             html.button(
                 "Apply",
                 type="submit",
                 name=f"{self.props.name}__apply",
                 value="1",
+            )
+        )
+        groups.append(
+            html.button(
+                "Cancel",
+                type="submit",
+                name=f"{self.props.name}__cancel",
+                value="1",
+                data={"hedron-cancel": "true"},
+            )
+        )
+        groups.append(
+            html.button(
+                "Export",
+                type="submit",
+                name=f"{self.props.name}__export",
+                value="csv",
             )
         )
         return html.form(
@@ -95,7 +125,9 @@ class DataExplorer(Component[DataExplorerProps]):
                 "hedron-workbench": "data-explorer",
                 "emits": "transform-plan",
                 "max-rows": str(self.props.max_rows),
+                "revision": self.props.revision,
                 "collect-distributed": "never",
+                "no-eval": "true",
             },
         )
 
@@ -106,6 +138,7 @@ class JSONEditorProps(ElementProps):
     name: str = "json"
     max_chars: int = 200_000
     read_only: bool = False
+    revision: str = "0"
 
 
 class JSONEditor(Component[JSONEditorProps]):
@@ -121,6 +154,7 @@ class JSONEditor(Component[JSONEditorProps]):
         name: str = "json",
         max_chars: int = 200_000,
         read_only: bool = False,
+        revision: str = "0",
         **kwargs: Any,
     ) -> None:
         text = value if isinstance(value, str) else json.dumps(value, indent=2, default=str)
@@ -142,28 +176,47 @@ class JSONEditor(Component[JSONEditorProps]):
                 name=name,
                 max_chars=max_chars,
                 read_only=read_only,
+                revision=revision,
                 **kwargs,
             )
         )
 
     def render(self) -> NodeLike:
-        return html.div(
+        return html.form(
             html.textarea(
                 self.props.value,
                 name=self.props.name,
                 readonly=self.props.read_only or None,
                 rows=16,
                 cols=80,
-                data={"schema": self.props.schema_text},
+                data={"schema": self.props.schema_text, "no-eval": "true"},
+                spellcheck="false",
             ),
+            html.input(
+                type="hidden",
+                name=f"{self.props.name}__revision",
+                value=self.props.revision,
+            ),
+            html.button("Apply", type="submit", name=f"{self.props.name}__apply", value="1"),
+            html.button(
+                "Cancel",
+                type="submit",
+                name=f"{self.props.name}__cancel",
+                value="1",
+                data={"hedron-cancel": "true"},
+            ),
+            html.button("Export", type="submit", name=f"{self.props.name}__export", value="json"),
             html.noscript(html.pre(self.props.value)),
             class_=class_names("hedron-json-editor", self.props.class_),
             id=self.props.id,
+            method="post",
             data={
                 **mark_data(self.props.mark),
                 "hedron-workbench": "json-editor",
                 "max-chars": str(self.props.max_chars),
+                "revision": self.props.revision,
                 "http-fallback": "textarea",
+                "no-eval": "true",
             },
         )
 
@@ -289,6 +342,13 @@ class ChartWorkbench(Component[ChartWorkbenchProps]):
             html.h2(self.props.title),
             *tabs,
             html.button("Export CSV", type="submit", name=self.props.export_name, value="csv"),
+            html.button(
+                "Cancel",
+                type="submit",
+                name=f"{self.props.export_name}__cancel",
+                value="1",
+                data={"hedron-cancel": "true"},
+            ),
             method="post",
             class_=class_names("hedron-chart-workbench", self.props.class_),
             id=self.props.id,
@@ -376,6 +436,15 @@ class CallableActionForm(Component[CallableActionFormProps]):
             )
         fields.append(html.input(type="hidden", name="hedron_action", value=self.props.action))
         fields.append(html.button(self.props.title, type="submit"))
+        fields.append(
+            html.button(
+                "Cancel",
+                type="submit",
+                name="hedron_action_cancel",
+                value="1",
+                data={"hedron-cancel": "true"},
+            )
+        )
         return html.form(
             *fields,
             class_=class_names("hedron-callable-action-form", self.props.class_),

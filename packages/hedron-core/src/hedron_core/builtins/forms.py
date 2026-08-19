@@ -398,7 +398,22 @@ class TextInput(Component[TextInputProps]):
             "invalid": self.props.aria_invalid,
             "required": self.props.aria_required,
         }
-        return html.input(**attrs)
+        field = html.input(**attrs)
+        if self.props.type != "password":
+            return field
+        toggle_id = f"{self.props.id}-visibility"
+        return html.span(
+            field,
+            html.button(
+                "Show password",
+                type="button",
+                id=toggle_id,
+                data={"hedron-password-toggle": self.props.id},
+                aria={"pressed": "false", "controls": self.props.id, "label": "Show password"},
+            ),
+            class_="hedron-password-field",
+            data={"hedron-password": "true"},
+        )
 
 
 class TextAreaProps(Props):
@@ -716,3 +731,74 @@ class FormErrors(Component[FormErrorsProps]):
             class_="hedron-form-errors",
             role="alert",
         )
+
+
+class SwapRevealProps(Props):
+    reduced_motion: bool = True
+
+
+class SwapReveal(Component[SwapRevealProps]):
+    """Opt-in HTMX after-swap reveal wrapper (#505). Respects prefers-reduced-motion."""
+
+    props_type = SwapRevealProps
+    logical_name = "SwapReveal"
+
+    def __init__(
+        self,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        reduced_motion: bool = True,
+        **kwargs: object,
+    ) -> None:
+        super().__init__(SwapRevealProps(reduced_motion=reduced_motion, **kwargs))
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        return html.div(
+            *self._children,
+            class_="hedron-swap-reveal",
+            data={
+                "hedron-reveal": "swap",
+                "hedron-reduced-motion": "respect" if self.props.reduced_motion else "ignore",
+            },
+        )
+
+
+class BusyRegionProps(Props):
+    scope: Literal["region", "document"] = "region"
+    indicator: str | None = None
+
+
+class BusyRegion(Component[BusyRegionProps]):
+    """Generic HTMX busy host for non-form requests (#506)."""
+
+    props_type = BusyRegionProps
+    logical_name = "BusyRegion"
+
+    def __init__(
+        self,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        scope: Literal["region", "document"] = "region",
+        indicator: str | None = None,
+        **kwargs: object,
+    ) -> None:
+        super().__init__(BusyRegionProps(scope=scope, indicator=indicator, **kwargs))
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
+            "class_": "hedron-busy-region",
+            "data": {
+                "hedron-busy": self.props.scope,
+            },
+            "aria": {"busy": "false"},
+        }
+        if self.props.indicator:
+            if not safe_css_selector(self.props.indicator):
+                raise ValueError(f"Unsafe busy indicator selector: {self.props.indicator!r}")
+            attrs["data"] = {
+                "hedron-busy": self.props.scope,
+                "hedron-busy-indicator": self.props.indicator,
+            }
+        return html.div(*self._children, **attrs)

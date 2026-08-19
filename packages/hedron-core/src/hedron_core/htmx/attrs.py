@@ -37,6 +37,7 @@ class Hx:
     validate: Literal["native"] | bool | None = None
     vals: str | None = None
     headers: str | None = None
+    busy: Literal["region", "document"] | None = None
 
     def as_html_attrs(self) -> dict[str, HtmlAttrValue]:
         target = _safe_optional_selector(self.target, label="target")
@@ -116,4 +117,7 @@ class Hx:
             if "js:" in self.headers.lower():
                 raise ValueError("hx-headers must not use js: expressions")
             attrs["hx-headers"] = self.headers
+        if self.busy in {"region", "document"}:
+            attrs["data-hedron-busy"] = self.busy
+            attrs["aria-busy"] = "false"
         return attrs

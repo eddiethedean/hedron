@@ -30,6 +30,6 @@ hedron-workbench -> hedron-posit -> hedron + fastapi-workbench
 ```
 
 `hedron-workbench` remains a Supported compatibility package on the current
-0.50 train (`HedronWorkbench` subclass; no 0.33 deprecation warning).
+0.51 train (`HedronWorkbench` subclass; no 0.33 deprecation warning).
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.

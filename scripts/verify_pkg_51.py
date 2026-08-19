@@ -1,0 +1,175 @@
+#!/usr/bin/env python3
+"""Verify the phase 0.51 extras packet or in-tree cut.
+
+This command never publishes or tags. PKG evidence is ``scripts/check_pkg_051.py``
+so ``--execute-verified`` cannot recurse here.
+"""
+
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+import tomllib
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from _gate_051 import (  # noqa: E402
+    API,
+    EXPECTED_GATES,
+    GATE,
+    IMPLEMENTATION,
+    INVENTORY,
+    PACKET_FILES,
+    PYPROJECT,
+    RELEASE,
+    ROADMAP,
+    STATUS,
+    TRACKING_ISSUE,
+    accepted_contract_present,
+    contract_refine_present,
+)
+
+PREDECESSOR = "0.50.3"
+RELEASE_CANDIDATE = "0.51.0"
+
+
+def _load(path: Path) -> dict:
+    return tomllib.loads(path.read_text(encoding="utf-8"))
+
+
+def _check_packet_files() -> None:
+    missing = [str(path.relative_to(ROOT)) for path in PACKET_FILES if not path.is_file()]
+    if missing:
+        raise SystemExit(f"missing 0.51 packet files: {missing}")
+    print("ok: 0.51 contract packet files")
+
+
+def _check_gates(*, allow_planned: bool) -> None:
+    rows = _load(GATE).get("evidence")
+    if not isinstance(rows, list):
+        raise SystemExit(f"{GATE}: [[evidence]] rows required")
+    found = tuple(str(row.get("id", "")).strip() for row in rows if isinstance(row, dict))
+    if found != EXPECTED_GATES:
+        raise SystemExit(f"{GATE}: expected {EXPECTED_GATES}; found {found}")
+    if str(_load(GATE).get("planning_baseline", "")).strip() != f"v{PREDECESSOR}":
+        raise SystemExit(f"{GATE}: planning_baseline must be v{PREDECESSOR}")
+    if str(_load(GATE).get("contract_refine", "")).strip() != "D-088":
+        raise SystemExit(f"{GATE}: contract_refine must be D-088")
+    if allow_planned:
+        non_planned = [
+            f"{row.get('id')}={row.get('state')}"
+            for row in rows
+            if isinstance(row, dict) and row.get("state") != "Planned"
+        ]
+        if non_planned:
+            raise SystemExit(f"Stage 0 requires Planned gates: {non_planned}")
+    else:
+        non_verified = [
+            f"{row.get('id')}={row.get('state')}"
+            for row in rows
+            if isinstance(row, dict) and row.get("state") != "Verified"
+        ]
+        if non_verified:
+            raise SystemExit(f"cut requires Verified gates: {non_verified}")
+    print("ok: release-gate-0.51.toml exact gate inventory")
+
+
+def _check_inventory(*, allow_planned: bool) -> None:
+    data = _load(INVENTORY)
+    required = {
+        "phase": "0.51",
+        "planning_baseline": f"v{PREDECESSOR}",
+        "required_predecessor": f"v{PREDECESSOR}",
+        "target": f"v{RELEASE_CANDIDATE}",
+        "decision": "D-087",
+        "contract_refine": "D-088",
+        "owning_rfc": "RFC-0078",
+        "tracking": TRACKING_ISSUE,
+    }
+    for key, expected in required.items():
+        if str(data.get(key, "")).strip() != expected:
+            raise SystemExit(f"{INVENTORY}: {key} must be {expected!r}")
+    expected_status = "Planned" if allow_planned else "Verified"
+    if str(data.get("status", "")).strip() != expected_status:
+        raise SystemExit(f"{INVENTORY}: status must be {expected_status!r}")
+    print("ok: extras-capability-inventory-051.toml")
+
+
+def _check_contract() -> None:
+    if not accepted_contract_present():
+        raise SystemExit("RFC-0078 and D-087 must remain Accepted")
+    if not contract_refine_present():
+        raise SystemExit("D-088 and the frozen 0.51 contract markers must remain present")
+    for path in (ROADMAP, STATUS, API, IMPLEMENTATION):
+        text = path.read_text(encoding="utf-8")
+        for marker in ("0.51", "D-087", "D-088"):
+            if marker not in text:
+                raise SystemExit(f"{path}: missing 0.51 traceability marker {marker}")
+    print("ok: RFC-0078 / D-087 / D-088 boundary and traceability")
+
+
+def _check_versions(*, allow_planned: bool) -> None:
+    workspace = str(_load(PYPROJECT).get("project", {}).get("version", "")).strip()
+    release = _load(RELEASE).get("release", {})
+    if not isinstance(release, dict):
+        raise SystemExit(f"{RELEASE}: [release] table required")
+    published = str(release.get("published_version", "")).strip()
+    development = str(release.get("development_version", "")).strip()
+    pypi = str(release.get("pypi_version", "")).strip()
+    status = str(release.get("registry_status", "")).strip()
+    if allow_planned:
+        if published != PREDECESSOR:
+            raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
+        return
+    if published != RELEASE_CANDIDATE or development != RELEASE_CANDIDATE:
+        raise SystemExit(
+            f"cut published/development must be {RELEASE_CANDIDATE}; "
+            f"found {published}/{development}"
+        )
+    if workspace != RELEASE_CANDIDATE:
+        raise SystemExit(f"workspace version must be {RELEASE_CANDIDATE}; found {workspace}")
+    if pypi != "0.50.1":
+        raise SystemExit(f"pypi_version must stay 0.50.1 until upload; found {pypi!r}")
+    if status != "deferred":
+        raise SystemExit(f"registry_status must be deferred; found {status!r}")
+    print(f"ok: version honesty (published {published}, pypi {pypi}, {status})")
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--allow-planned", action="store_true")
+    args = parser.parse_args(argv)
+    _check_packet_files()
+    _check_gates(allow_planned=args.allow_planned)
+    _check_inventory(allow_planned=args.allow_planned)
+    _check_contract()
+    _check_versions(allow_planned=args.allow_planned)
+
+    import check_release_gate as release_gate
+
+    if args.allow_planned:
+        errors = release_gate.check_evidence_manifest_lenient(GATE)
+        if errors:
+            raise SystemExit("\n".join(errors))
+        print("ok: 0.51 planned gate shape")
+    else:
+        published = str(_load(RELEASE).get("release", {}).get("published_version", "")).strip()
+        command = [
+            sys.executable,
+            str(ROOT / "scripts" / "check_release_gate.py"),
+            published,
+            "--evidence-manifest",
+            str(GATE),
+            "--execute-verified",
+        ]
+        print("+", *command)
+        subprocess.check_call(command, cwd=ROOT)
+    print(f"ok: verify_pkg_51 ({'allow-planned' if args.allow_planned else 'cut'})")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

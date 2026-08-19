@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.51.0] — 2026-08-19
+
+### Added
+- `ExtrasFeature` inventory, shared extras HTMX lifecycle, workbench/image/input depth.
+- Opt-in `hedron_extras_sandbox` plugin (`HEDRON_EXTRAS_SANDBOX`).
+
+### Changed
+- Coordinated train tip `0.51.0` (in-tree; tag/PyPI deferred).
+- Default extras plugin no longer registers `BrowserPythonSandbox`.
+
 ## [0.50.3] — 2026-08-19
 
 ### Changed

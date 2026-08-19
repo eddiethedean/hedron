@@ -1,10 +1,11 @@
 # What’s new archive
 
 Read these only if you are upgrading from that line. Current train:
-[What’s new in 0.50](whats-new-0.50.md). Full chronology: [Release notes](release-notes.md).
+[What’s new in 0.51](whats-new-0.51.md). Full chronology: [Release notes](release-notes.md).
 
 | Train | Notes |
 |---|---|
+| 0.51 | [whats-new-0.51](whats-new-0.51.md) |
 | 0.50 | [whats-new-0.50](whats-new-0.50.md) |
 | 0.49 | [whats-new-0.49](whats-new-0.49.md) |
 | 0.48 | [whats-new-0.48](whats-new-0.48.md) |

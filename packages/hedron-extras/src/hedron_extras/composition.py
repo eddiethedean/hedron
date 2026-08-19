@@ -12,6 +12,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
+from hedron_extras.host import extras_host
 
 MappingLike = Mapping[str, Any]
 
@@ -86,13 +87,17 @@ class ChoiceCards(Component[ChoiceCardsProps]):
                     ),
                 )
             )
-        return html.fieldset(
-            html.legend(self.props.name),
-            *cards,
-            class_=class_names("hedron-choice-cards", self.props.class_),
-            id=self.props.id,
-            data={**mark_data(self.props.mark), "hedron-choice": "cards"},
-            role="group",
+        return extras_host(
+            "hedron-extras-composition",
+            html.fieldset(
+                html.legend(self.props.name),
+                *cards,
+                class_=class_names("hedron-choice-cards", self.props.class_),
+                id=self.props.id,
+                data={**mark_data(self.props.mark), "hedron-choice": "cards"},
+                role="group",
+            ),
+            payload={"kind": "choice-cards"},
         )
 
 
@@ -107,6 +112,9 @@ class TreeViewProps(ElementProps):
     nodes: list[TreeNodeProps]
     selected: list[str] = Field(default_factory=list)
     name: str = "tree"
+    source: str | None = None
+    empty_message: str = "No items"
+    error_message: str | None = None
 
 
 class TreeView(Component[TreeViewProps]):
@@ -120,13 +128,36 @@ class TreeView(Component[TreeViewProps]):
         *,
         selected: Sequence[str] | None = None,
         name: str = "tree",
+        source: str | None = None,
+        empty_message: str = "No items",
+        error_message: str | None = None,
         **kwargs: Any,
     ) -> None:
         parsed = [
             n if isinstance(n, TreeNodeProps) else TreeNodeProps.model_validate(n) for n in nodes
         ]
+        if len(parsed) > 5_000:
+            raise ValueError("TreeView nodes exceed budget")
+        ids: list[str] = []
+
+        def walk(items: Sequence[TreeNodeProps]) -> None:
+            for item in items:
+                ids.append(item.id)
+                walk(item.children)
+
+        walk(parsed)
+        if len(ids) != len(set(ids)):
+            raise ValueError("TreeView node ids must be stable and unique")
         super().__init__(
-            TreeViewProps(nodes=parsed, selected=list(selected or []), name=name, **kwargs)
+            TreeViewProps(
+                nodes=parsed,
+                selected=list(selected or []),
+                name=name,
+                source=source,
+                empty_message=empty_message,
+                error_message=error_message,
+                **kwargs,
+            )
         )
 
     def _render_node(self, node: TreeNodeProps) -> NodeLike:
@@ -149,16 +180,37 @@ class TreeView(Component[TreeViewProps]):
         )
 
     def render(self) -> NodeLike:
-        return html.ul(
-            *[self._render_node(n) for n in self.props.nodes],
-            class_=class_names("hedron-tree-view", self.props.class_),
-            id=self.props.id,
-            role="tree",
-            data={
-                **mark_data(self.props.mark),
-                "hedron-tree": "true",
-                "fs-authority": "server",
-            },
+        if self.props.error_message:
+            body: NodeLike = html.div(
+                html.p(self.props.error_message, role="alert"),
+                html.button("Retry", type="submit", name=f"{self.props.name}__retry", value="1"),
+            )
+        elif not self.props.nodes:
+            body = html.p(self.props.empty_message)
+        else:
+            body = html.ul(*[self._render_node(n) for n in self.props.nodes], role="tree")
+        return extras_host(
+            "hedron-extras-composition",
+            html.form(
+                body,
+                html.select(
+                    html.option("(paged fallback)", value=""),
+                    *[html.option(n.label, value=n.id) for n in self.props.nodes],
+                    name=f"{self.props.name}__fallback",
+                    aria={"label": "Tree fallback"},
+                ),
+                method="post",
+                class_=class_names("hedron-tree-view", self.props.class_),
+                id=self.props.id,
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-tree": "true",
+                    "fs-authority": "server",
+                    "abortable": "true",
+                    "http-fallback": "select",
+                },
+            ),
+            payload={"kind": "tree", "source": self.props.source or "", "abortable": True},
         )
 
 
@@ -211,23 +263,27 @@ class Steps(Component[StepsProps]):
                     data={"step-index": str(i)},
                 )
             )
-        return html.nav(
-            html.form(
-                html.ol(*items),
-                method="post",
-                class_="hedron-steps-form",
+        return extras_host(
+            "hedron-extras-composition",
+            html.nav(
+                html.form(
+                    html.ol(*items),
+                    method="post",
+                    class_="hedron-steps-form",
+                ),
+                class_=class_names(
+                    f"hedron-steps hedron-steps-{self.props.orientation}",
+                    self.props.class_,
+                ),
+                id=self.props.id,
+                aria={"label": "Steps"},
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-steps": self.props.orientation,
+                    "current": str(self.props.current),
+                },
             ),
-            class_=class_names(
-                f"hedron-steps hedron-steps-{self.props.orientation}",
-                self.props.class_,
-            ),
-            id=self.props.id,
-            aria={"label": "Steps"},
-            data={
-                **mark_data(self.props.mark),
-                "hedron-steps": self.props.orientation,
-                "current": str(self.props.current),
-            },
+            payload={"kind": "steps", "current": self.props.current},
         )
 
 
@@ -284,39 +340,45 @@ class SplitPane(Component[SplitPaneProps]):
             self._slot_primary = self._slot_secondary = None
 
     def render(self) -> NodeLike:
-        return html.div(
+        return extras_host(
+            "hedron-extras-composition",
             html.div(
-                self._slot_primary,
-                class_="hedron-split-primary",
-                data={"pane": "primary"},
-            ),
-            html.div(
-                role="separator",
-                tabindex=0,
-                aria={
-                    "orientation": self.props.orientation,
-                    "valuenow": int(self.props.primary_ratio * 100),
+                html.div(
+                    self._slot_primary,
+                    class_="hedron-split-primary",
+                    data={"pane": "primary"},
+                ),
+                html.div(
+                    role="separator",
+                    tabindex=0,
+                    aria={
+                        "orientation": self.props.orientation,
+                        "valuenow": int(self.props.primary_ratio * 100),
+                    },
+                    class_="hedron-split-handle",
+                    data={"keyboard-resize": "true"},
+                ),
+                html.div(
+                    self._slot_secondary,
+                    class_="hedron-split-secondary",
+                    data={"pane": "secondary"},
+                ),
+                class_=class_names(
+                    f"hedron-split-pane hedron-split-{self.props.orientation}",
+                    self.props.class_,
+                ),
+                id=self.props.id,
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-split": self.props.orientation,
+                    "ratio": f"{self.props.primary_ratio:.3f}",
+                    "min-ratio": f"{self.props.min_ratio:.3f}",
+                    "max-ratio": f"{self.props.max_ratio:.3f}",
+                    "persist-key": self.props.persist_key,
+                    "responsive-fallback": "stack",
                 },
-                class_="hedron-split-handle",
-                data={"keyboard-resize": "true"},
             ),
-            html.div(
-                self._slot_secondary, class_="hedron-split-secondary", data={"pane": "secondary"}
-            ),
-            class_=class_names(
-                f"hedron-split-pane hedron-split-{self.props.orientation}",
-                self.props.class_,
-            ),
-            id=self.props.id,
-            data={
-                **mark_data(self.props.mark),
-                "hedron-split": self.props.orientation,
-                "ratio": f"{self.props.primary_ratio:.3f}",
-                "min-ratio": f"{self.props.min_ratio:.3f}",
-                "max-ratio": f"{self.props.max_ratio:.3f}",
-                "persist-key": self.props.persist_key,
-                "responsive-fallback": "stack",
-            },
+            payload={"kind": "split"},
         )
 
 
@@ -372,16 +434,20 @@ class FloatingAction(Component[FloatingActionProps]):
                 method="post",
                 class_="hedron-fab-form",
             )
-        return html.div(
-            control,
-            class_=class_names("hedron-floating-action", self.props.class_),
-            id=self.props.id,
-            data={
-                **mark_data(self.props.mark),
-                "hedron-fab": self.props.placement,
-                "safe-area": "true",
-                "collision": "action-dock",
-            },
+        return extras_host(
+            "hedron-extras-composition",
+            html.div(
+                control,
+                class_=class_names("hedron-floating-action", self.props.class_),
+                id=self.props.id,
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-fab": self.props.placement,
+                    "safe-area": "true",
+                    "collision": "action-dock",
+                },
+            ),
+            payload={"kind": "fab"},
         )
 
 
@@ -453,17 +519,21 @@ class KeyboardShortcuts(Component[KeyboardShortcutsProps]):
             )
             for b in self.props.bindings
         ]
-        return html.div(
-            html.ul(*items),
-            class_=class_names("hedron-keyboard-shortcuts", self.props.class_),
-            id=self.props.id,
-            hidden=True if not self.props.enabled else None,
-            data={
-                **mark_data(self.props.mark),
-                "hedron-shortcuts": "true",
-                "enabled": "1" if self.props.enabled else "0",
-                "focus-policy": "ignore-when-editable",
-            },
+        return extras_host(
+            "hedron-extras-composition",
+            html.div(
+                html.ul(*items),
+                class_=class_names("hedron-keyboard-shortcuts", self.props.class_),
+                id=self.props.id,
+                hidden=True if not self.props.enabled else None,
+                data={
+                    **mark_data(self.props.mark),
+                    "hedron-shortcuts": "true",
+                    "enabled": "1" if self.props.enabled else "0",
+                    "focus-policy": "ignore-when-editable",
+                },
+            ),
+            payload={"kind": "shortcuts"},
         )
 
 

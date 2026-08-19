@@ -1,7 +1,7 @@
 # What's new in Hedron 0.37
 
 **Published** as `v0.37.0`. Historical pin: `hedron>=0.37.0,<0.38`.
-For new apps, use `hedron>=0.50.1,<0.51`; see [What’s new in 0.50](whats-new-0.50.md).
+For new apps, use `hedron>=0.50.1,<0.51`; see [What’s new in 0.51](whats-new-0.51.md).
 
 Phase **0.37** ships Alpha **hedron-elements 0.37.0** with form-associated reference controls, an `InteractionState` bridge, semantic primitives, and high-severity remediations #230–#237 plus follow-on #244.
 
