@@ -3,7 +3,7 @@
 ## [0.50.1] — 2026-08-18
 
 ### Changed
-- Coordinated train tip `0.50.1` (in-tree patch; tag/PyPI deferred).
+- Coordinated train tip `0.50.1`.
 
 ### Fixed
 - `/api/dashboard-graph` serializes `app.state.hedron_dashboard_graph` when set.

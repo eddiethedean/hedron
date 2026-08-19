@@ -5,8 +5,8 @@ details remain in the [package changelogs](changelog.md).
 
 ## 0.50.1 — 2026-08-18
 
-In-tree bugfix patch on the 0.50 train (tag/PyPI deferred). Pin `hedron>=0.50.1,<0.51`.
-Public-index notes: [Installation](../getting-started/installation.md).
+Bugfix patch on the 0.50 train. Pin `hedron>=0.50.1,<0.51`.
+Public-index notes until the wheel lands: [Installation](../getting-started/installation.md).
 
 - Formula CSV/spreadsheet prefixes reject Unicode combining marks; `evaluate_formula` no longer coerces bool/junk to `0.0`.
 - HTMX `hx-target="this"` is a closed relative keyword; control `id=` is accepted on Button/LinkButton/IconButton.

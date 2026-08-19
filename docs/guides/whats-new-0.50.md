@@ -10,7 +10,7 @@ Pin `hedron>=0.50.1,<0.51`. Public-index notes: [Installation](../getting-starte
 
 ## 0.50.1 patch
 
-In-tree correctness and security patch (tag/PyPI deferred). Spreadsheet combining-mark
+Correctness and security patch on the 0.50 train. Spreadsheet combining-mark
 prefixes, HTMX `this` targets, control `id`s, TerminalView CSRF, formula coerce-to-zero,
 chart tabular/negative-Y/GreatTables/`hedron[charts]` pin, frozen element markup,
 ActionAsync `hx-target`, and Explorer dashboard-graph / packages / maps / security wiring.

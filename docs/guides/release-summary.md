@@ -18,7 +18,7 @@ Adopter-facing notes: [What’s new in 0.50](whats-new-0.50.md) ·
 [Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 
-The `v0.50.1` Git tag is not created in this in-tree patch. Do not retag `v0.49.1`, `v0.48.0`, or `v0.47.0`.
+Tag `v0.50.1` only after CI on `main` is green. Do not retag `v0.49.1`, `v0.48.0`, or `v0.47.0`.
 
 ## Contributor checklist (abbreviated)
 
