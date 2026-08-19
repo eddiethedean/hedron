@@ -19,8 +19,7 @@ Start here if you are deciding whether Hedron fits. Pick the page that matches y
 [reference app](../examples/reference-app.md) as an optional kitchen sink.
 
 Maintainer trust-program depth (not required for a PoC):
-[Production-quality maturity](production-quality.md) ·
-[Production readiness](production-readiness.md).
+[Ship a Hedron app](ship.md) · [What’s ready](whats-ready.md).
 
 ## What it is
 
@@ -28,15 +27,15 @@ Hedron is a typed, server-rendered Python UI layer for **FastAPI + HTMX** (with 
 Django adapters). It is not a notebook-style rerun engine, SPA framework, ORM, or IdP.
 Compare positioning: [Why Hedron](why-hedron.md).
 
-**Skills you need:** comfort with Python 3.11+, basic FastAPI (or Flask/Django), and
-HTML forms. HTMX is introduced in
-[What is HTMX](../getting-started/what-is-htmx.md) — you do not need a SPA background.
+**Skills you need:** comfort with Python 3.11–3.14 and HTML forms. Basic FastAPI (or
+Flask/Django) helps but is not required; [What is HTMX](../getting-started/what-is-htmx.md)
+introduces the web concepts as they appear.
 
 ## Version and support
 
 | Item | Value |
 |---|---|
-| Version | **0.50.1** (Beta). Latest uploaded PyPI wheel is **0.48.0**. Pin floor `hedron>=0.50.1` on the 0.50.x train |
+| Version | **0.50.1** on PyPI (Beta) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
@@ -92,5 +91,5 @@ Use [What’s ready](whats-ready.md) as the sole capability list for this PoC pa
 4. [Try with Codespaces](../examples/try-it.md) (real server in a container — not a playground)
 5. [Runnable examples](../examples/runnable.md)
 
-Then: [Ship a Hedron app](ship.md) · [Evidence pack](evidence-pack.md) ·
+Then: [Ship a Hedron app](ship.md) · [Enterprise diligence](enterprise-diligence.md) ·
 [Support](support.md).

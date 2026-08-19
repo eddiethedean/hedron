@@ -13,7 +13,7 @@ Routes return typed UI; HTMX swaps HTML fragments. No Node frontend.
 **Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
-Install the current train: `hedron>=0.50.1,<0.51`. Pins, extras, and public-index notes:
+Install the current train: `hedron>=0.50.1,<0.51`. Pins and extras:
 [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 ```bash
@@ -53,6 +53,10 @@ cd my-hedron-app
 python -m pip install -e .
 uvicorn app:app --reload
 ```
+
+If PowerShell reports that running scripts is disabled, use
+`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or activate with
+`.\.venv\Scripts\activate.bat` from cmd.exe.
 
 If `hedron` is not on your PATH, use `python -m hedron`
 ([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).

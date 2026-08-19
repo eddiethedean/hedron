@@ -1,12 +1,6 @@
 # What's new in 0.50
 
-**Published `v0.50.1`**. Owning decisions: D-085 / D-086.
-Tracking: [#501](https://github.com/eddiethedean/hedron/issues/501). Companion authoring:
-[#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500),
-[#502](https://github.com/eddiethedean/hedron/issues/502),
-[#503](https://github.com/eddiethedean/hedron/issues/503).
-
-Pin `hedron>=0.50.1,<0.51`. Public-index notes: [Installation](../getting-started/installation.md).
+Pin `hedron>=0.50.1,<0.51`. This version is on PyPI.
 
 ## 0.50.1 patch
 
@@ -30,4 +24,5 @@ ActionAsync `hx-target`, and Explorer dashboard-graph / packages / maps / securi
   dependent `Select`/`Control(depends_on=)`, `Lazy`/`FragmentHost` error slots,
   `Toast(..., ttl_ms=)` / `ToastHost()`, `InteractionPolicy.history_restore`.
 
-This cut does not tag Git, publish a GitHub Release, or upload PyPI.
+Explorer architecture, operator-grade development tooling, and HTMX authoring
+primitives. Tracking: [#501](https://github.com/eddiethedean/hedron/issues/501).

@@ -13,7 +13,7 @@ status: published
     [What’s ready](../guides/whats-ready.md) ·
     [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app).
 
-**Program context:** [Production-quality maturity](../guides/production-quality.md) ·
+**Program context:** [Ship a Hedron app](../guides/ship.md) ·
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 · maintainer decision D-053 (GitHub
 [DECISIONS](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md)).
@@ -47,8 +47,8 @@ multi-worker
 
 Public guides that must link the archetype at cut:
 
-- [Production-quality maturity](../guides/production-quality.md)
-- [Production readiness](../guides/production-readiness.md)
+- [Ship a Hedron app](../guides/ship.md)
+- [What's ready](../guides/whats-ready.md)
 
 Checker: `python scripts/check_archetype_025.py`.
 
@@ -113,7 +113,8 @@ Checker: `python scripts/check_charts_025.py`.
 The maintainer
 [RELEASE](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md)
 runbook requires **SBOM** and **evidence-bundle** attach on train tags.
-Regenerate instructions remain in the [Evidence pack](../guides/evidence-pack.md)
+Regenerate instructions remain in the GitHub
+[evidence pack](https://github.com/eddiethedean/hedron/blob/main/docs/guides/evidence-pack.md)
 (`scripts/build_evidence_bundle.py`, `scripts/generate_sbom.py`).
 
 Checker: `python scripts/check_supply_025.py`.

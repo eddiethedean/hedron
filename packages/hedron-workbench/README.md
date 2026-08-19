@@ -14,8 +14,6 @@ Also available as `hedron[workbench]`.
 
 **Package maturity:** Beta · **Train:** `0.50.x` · pin `>=0.50.1,<0.51`
 
-Git tag and PyPI upload for this train are **deferred**. Latest on **PyPI** is **`0.48.0`**.
-
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
 
 Behavior is reimplemented from observed

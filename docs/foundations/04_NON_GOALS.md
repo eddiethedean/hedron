@@ -36,4 +36,4 @@ of experimental live helpers was Accepted in **0.24** as **`polling_only`** (D-0
 
 Maturity-program non-goals (no calendar `1.0`, no SLA/WCAG product claims, no SPA/Streamlit
 parity chase) are recorded in D-053 /
-[production-quality](../guides/production-quality.md).
+[What's ready](../guides/whats-ready.md).

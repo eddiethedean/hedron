@@ -15,14 +15,13 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-**Published in-tree `v0.50.1`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron>=0.50.1,<0.51`. The latest on **PyPI** is **`0.48.0`**.
+**Published `v0.50.1` on PyPI.** Pin `hedron>=0.50.1,<0.51`.
 
 Requires Python 3.11–3.14. The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash
-uvx --from "hedron>=0.48.0,<0.49" hedron new my-hedron-app
+uvx --from "hedron>=0.50.1,<0.51" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run uvicorn app:app --reload
@@ -105,12 +104,12 @@ Coming from Streamlit? Start with the
 
 ## Install
 
-Pin from **PyPI** today (`0.48.0`; tag/PyPI deferred). In-tree pin is `>=0.50.1,<0.51`.
+Pin from **PyPI**: `hedron>=0.50.1,<0.51`.
 
 ```bash
-uv add "hedron>=0.48.0,<0.49" "uvicorn[standard]"
+uv add "hedron>=0.50.1,<0.51" "uvicorn[standard]"
 # or
-python -m pip install "hedron>=0.48.0,<0.49" "uvicorn[standard]"
+python -m pip install "hedron>=0.50.1,<0.51" "uvicorn[standard]"
 ```
 
 **Package maturity:** Beta · **Train:** `0.50.x` · published `v0.50.1` · pin `>=0.50.1,<0.51`
@@ -140,7 +139,7 @@ interactions, security profiles, and CLI. Integrations are optional:
 | `hedron[gradio]` | Beta allowlisted Gradio/Hugging Face client interoperability |
 | `hedron[elements]` | Beta Web Component ABI (Supported inventory only) |
 
-For example (in-tree / this docs tree; public index still `0.48.0`):
+For example:
 
 ```bash
 uv add "hedron[data,dev]>=0.50.1,<0.51"

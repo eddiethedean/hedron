@@ -91,7 +91,7 @@ Refresh a fragment at a bounded interval while it remains in the DOM.
 ```python
 from hedron import Poll, Status
 
-component = Poll(ref=app.ref('job-status', job_id=job.id), interval_ms=2000, content=Status('Queued'))
+component = Poll(ref=ComponentRef('job-status', job_id=job.id), interval_ms=2000, content=Status('Queued'))
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.

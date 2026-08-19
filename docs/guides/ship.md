@@ -16,10 +16,6 @@ Pin `hedron>=0.50.1,<0.51` (and matching adapters/extras) in your lockfile.
 | Support / SLA honesty | [Support](support.md) |
 | Enterprise diligence | [Enterprise diligence](enterprise-diligence.md) |
 
-Maintainer trust-program depth (not required to ship):
-[Production-quality maturity](production-quality.md) ·
-[Production readiness](production-readiness.md).
-
 ## Checklist
 
 1. **Secrets** — Set a strong `session_secret` / `SECRET_KEY` / Flask `secret_key` from the

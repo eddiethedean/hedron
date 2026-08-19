@@ -1,7 +1,7 @@
 # Threat model
 
-**Status:** Maintained for the current **0.50.x** train (**Published** in-tree `v0.50.1`;
-public PyPI/git = `v0.48.0`; baseline established in 0.11 and extended through the 0.36
+**Status:** Maintained for the current **0.50.x** train (**Published** `v0.50.1` on PyPI;
+baseline established in 0.11 and extended through the 0.36
 Web Component ABI/lifecycle surface)
 
 **Owner:** hedron  
@@ -84,4 +84,4 @@ to change HDJ source has application-code authority.
 ## Review cadence
 
 Re-review on every minor capability release. Record findings in the release
-evidence bundle ([Evidence pack](evidence-pack.md)).
+evidence bundle ([Enterprise diligence](enterprise-diligence.md)).

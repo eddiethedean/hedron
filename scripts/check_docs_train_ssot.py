@@ -187,7 +187,8 @@ def _normalized_version(value: str) -> str:
 
 CANONICAL_INSTALL_PAGE = Path("docs/getting-started/installation.md")
 
-# Pages whose pip/uv/uvx lines must use the current published train pin.
+# Pages whose pip/uv/uvx lines must be registry-resolvable. While the upload is
+# deferred, that is the public-index pin — never the unpublished in-tree pin.
 # PyPI-lag honesty lives on REGISTRY_HONESTY_PATHS, not on these pages.
 FIRST_RUN_INSTALL_PATHS = frozenset(
     {
@@ -279,7 +280,7 @@ def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[
     allowed = {facts.pin}
     if facts.registry_deferred and facts.pypi_pin != facts.pin:
         if path is not None and path in FIRST_RUN_INSTALL_PATHS:
-            return {facts.pin}
+            return {facts.pypi_pin}
         allowed.add(facts.pypi_pin)
     return allowed
 

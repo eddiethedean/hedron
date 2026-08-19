@@ -5,18 +5,10 @@ phase: "0.43"
 
 # Refreshable views and commands
 
-**Decision/RFC:** D-071, refined by D-073 /
-[RFC-0070](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0070-REFRESHABLE-VIEWS.md)
-
-!!! note "Beta 0.43 contract"
-
-    These symbols are **beta** on the Published 0.43 train, which extends the 0.42
-    region/`InteractionResult` stack
-    (D-071 / D-073). Existing [Interaction APIs](INTERACTION.md)
-    remain the shipped low-level interface. 0.44 may specialize generic bind slots without
-    changing arity, routing, or conversion goldens.
-
-Refreshable views and commands are the high-level interface for server-rendered partial updates:
+Golden-path FastAPI interaction API: `@app.refreshable` for GET fragments and
+`@app.command` for CSRF-backed mutations. Handles compile to the existing region /
+`InteractionResult` stack. Prefer these decorators for new pages; keep
+[Interaction](INTERACTION.md) for explicit HTMX allowlists.
 
 ```python
 from hedron import Hedron, Page, refresh
@@ -44,13 +36,13 @@ def home():
     )
 ```
 
-The low-level region, selector, and `InteractionResult` APIs remain available for advanced HTMX
-work. The high-level interface compiles to those existing contracts.
+The low-level region, selector, and `InteractionResult` APIs remain available when you
+need them. They are not the first-app path.
 
-Phase 0.43 owns the runtime foundation. The planned
-[0.44 type-driven contract](TYPE_DRIVEN_AUTHORING.md) (D-076 refine against this published
-seam) fills the generic input slots and `hedron.type` descriptor extension defined here; it does
-not replace 0.43 routing, binding identity, forms, effects, or target authorization.
+!!! note "API level"
+
+    These symbols are **beta**. Existing [Interaction APIs](INTERACTION.md) remain the
+    shipped low-level interface.
 
 ## Shipped symbols
 
@@ -71,8 +63,8 @@ These 0.43 handles shipped; 0.50 adds `ActionHandle.effect` / `.after` success c
 | `PatchSet` | `hedron-core` / `hedron` | One primary plus ordered secondary direct updates. |
 | `patches` | `hedron` | Ergonomic `PatchSet` builder. |
 
-Final import placement and signatures must be confirmed by `API-043`; names and semantics in this
-contract may not drift silently during implementation.
+Final import placement is `hedron` (`Hedron.refreshable`, `Hedron.command`,
+`FragmentHandle`, `ActionHandle`, `refresh`).
 
 ## `Hedron.refreshable`
 

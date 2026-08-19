@@ -104,12 +104,14 @@ def test_first_run_pages_must_disclose_deferred_pypi() -> None:
 
 def test_first_run_install_commands_require_current_pin() -> None:
     path = Path("README.md")
-    assert not ssot.check_text(path, f'uvx --from "hedron{ssot.FACTS.pin}" hedron new demo')
     if ssot.FACTS.registry_deferred:
-        assert ssot.check_text(path, f'uvx --from "hedron{ssot.FACTS.pypi_pin}" hedron new demo')
+        assert ssot.check_text(path, f'uvx --from "hedron{ssot.FACTS.pin}" hedron new demo')
+        assert not ssot.check_text(path, f'uvx --from "hedron{ssot.FACTS.pypi_pin}" hedron new demo')
         install = Path("docs/getting-started/installation.md")
         assert not ssot.check_text(install, f'pip install "hedron{ssot.FACTS.pin}"')
         assert not ssot.check_text(install, f'pip install "hedron{ssot.FACTS.pypi_pin}"')
+        return
+    assert not ssot.check_text(path, f'uvx --from "hedron{ssot.FACTS.pin}" hedron new demo')
 
 
 def test_in_tree_deferred_boilerplate_is_restricted() -> None:

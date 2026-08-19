@@ -54,5 +54,5 @@ Stable `HED-*` codes from `hedron check`, CLI, and runtime failures — see
 
 ## See also
 
-[Deployment](deployment.md) · [Production readiness](production-readiness.md) ·
+[Deployment](deployment.md) · [Ship a Hedron app](ship.md) ·
 [Support](support.md)

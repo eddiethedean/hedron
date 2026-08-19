@@ -24,4 +24,4 @@ Pin `hedron>=0.15.0,<0.16` when staying on the 0.15 line.
 
 Runnable phase exit sample:
 [`examples/data-app-0.15`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.15)
-(quarantined as [phase evidence](../examples/phase-evidence.md)).
+(quarantined as version-stamped maintainer evidence, not a product tutorial).

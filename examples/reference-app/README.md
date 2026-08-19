@@ -1,6 +1,6 @@
 # Hedron reference application (FastAPI)
 
-Multi-worker production kitchen-sink sample for the current Hedron train (**0.38**).
+Multi-worker production kitchen-sink sample for the current Hedron train (**0.50**).
 Authenticated team-administration demo with CRUD, DataEditor, optional charts (workspace
 `hedron-charts` or the published `hedron[charts]` extra), and the production-archetype checklist
 (reverse-proxy subpath, Redis, CSP, Explorer off).
@@ -60,7 +60,7 @@ uvicorn are installed in the image; for non-Docker prod installs use
 [`requirements-prod.txt`](requirements-prod.txt). Prefer this path when validating
 production posture. Generic packaging notes:
 [Deployment](https://hedron.readthedocs.io/en/latest/guides/deployment/) ·
-[Production readiness](https://hedron.readthedocs.io/en/latest/guides/production-readiness/).
+[Ship a Hedron app](https://hedron.readthedocs.io/en/latest/guides/ship/).
 
 ## Demonstrates
 

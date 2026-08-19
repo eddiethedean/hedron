@@ -14,8 +14,6 @@ dependency cost.
 
 **Package maturity:** Beta · **Train:** `0.50.x` (published `v0.50.1`) · pin `>=0.50.1,<0.51`
 
-Git tag and PyPI upload for this train are **deferred**. Latest on **PyPI** is **`0.48.0`**.
-
 `CodeEditor`, `TerminalView`, and joystick/device bridges require the separate
 **`hedron[experimental-ui]`** opt-in (import `hedron_extras.experimental`) and are not
 part of the supported product UI under `hedron[extras]`. See

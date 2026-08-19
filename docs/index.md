@@ -6,19 +6,22 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · 0.50.1</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · 0.50.1 on PyPI</div>
 
 # Build interactive web apps in Python.
 
-Routes return components; HTMX updates the page — no Node build, no full-script rerun.
+Routes return components; HTMX updates the page — no Node build.
 { .hedron-lede }
 
-**In about 10 minutes after Python 3.11+ and uv or pip:** install → `hedron new` →
+**In about 10 minutes after Python 3.11–3.14 and uv or pip:** install → `hedron new` →
 open localhost:8000 → click **Refresh status**.
 { .hedron-lede }
 
 ```bash
+# Need uv? https://docs.astral.sh/uv/
 uvx --from "hedron>=0.50.1,<0.51" hedron new my-hedron-app
+cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
+# Open http://127.0.0.1:8000 and click Refresh status
 ```
 
 Pins and extras: [Installation](getting-started/installation.md). Before production:
@@ -46,8 +49,7 @@ Pins and extras: [Installation](getting-started/installation.md). Before product
 Hello walkthrough (scaffold, Refresh, edit).
 
 Hedron is for FastAPI teams who want typed components and HTMX fragment regions
-without assembling a hand-rolled Jinja stack. Prefer Streamlit for notebook-style
-rerun dashboards.
+without assembling a hand-rolled Jinja stack.
 
 **You only need the `hedron` package** (+ uvicorn). Optional adapters and extras:
 [Installation](getting-started/installation.md).
@@ -97,9 +99,7 @@ rerun dashboards.
 <summary>Package maturity and production pins</summary>
 
 Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.50.1,<0.51`.
-Capability readiness and API compatibility are separate: read
-[Maturity labels](getting-started/how-to-read.md) before interpreting Supported,
-Experimental, `stable`, or `beta`. For production adoption, continue with
+For production adoption, continue with
 [What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
 </details>
 

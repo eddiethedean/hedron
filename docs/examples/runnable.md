@@ -33,8 +33,9 @@ uv sync
 
 ## Phase evidence (0.15–0.18)
 
-Capability-phase exit scenarios — not polished product demos. See
-[Phase evidence](phase-evidence.md).
+Capability-phase exit scenarios — not polished product demos. See the
+[runnable matrix](https://github.com/eddiethedean/hedron/tree/main/examples)
+for version-stamped folders.
 
 | Example | Run |
 |---|---|

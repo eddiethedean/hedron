@@ -25,4 +25,5 @@ def test_upgrade_and_whats_new() -> None:
     assert (ROOT / "docs/acceptance/upgrade-fixtures-050.md").is_file()
     assert (ROOT / "docs/guides/whats-new-0.50.md").is_file()
     whats = (ROOT / "docs/guides/whats-new-0.50.md").read_text(encoding="utf-8")
-    assert "does not tag Git" in whats
+    assert "hedron>=0.50.1,<0.51" in whats
+    assert "on PyPI" in whats

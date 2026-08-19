@@ -47,7 +47,7 @@ identity without a public decision record.
 Only a maintainer may publish a release. Trusted publishing, immutable tags, CI gates,
 and attached evidence are the expected release path. Supported versions and response
 expectations are defined in the [support policy](support.md). The detailed cut procedure
-lives in the [maintainer handbook](maintainer-handbook.md).
+lives in [docs/RELEASE.md](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
 
 ## Project assets
 

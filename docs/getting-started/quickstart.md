@@ -24,6 +24,11 @@ Install the current train: `hedron>=0.50.1,<0.51`. Other pins and extras:
 
 === "pip (activated virtual environment)"
 
+    Create and activate a **new empty** virtual environment first (`python3 -m venv .venv`
+    then `source .venv/bin/activate`, or on Windows `py -3 -m venv .venv` and
+    `.\.venv\Scripts\Activate.ps1`). If PowerShell blocks scripts, use
+    `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or `activate.bat`.
+
     ```bash
     python -m pip install "hedron>=0.50.1,<0.51" "uvicorn[standard]"
     python -m hedron new my-hedron-app

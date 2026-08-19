@@ -1,13 +1,12 @@
-# Forms and actions
+# Forms and actions (advanced)
+
+Use this page when you need explicit region allowlists and `InteractionResult` fragments.
+For the golden-path form (`@app.command` + `CsrfField` + `save.form()`), start with
+[Minimal form POST](minimal-form.md) and the
+[Notes + SQLAlchemy recipe](../examples/notes-sqlalchemy.md).
 
 Deep dive: typed form that POSTs with HTMX, validates CSRF, and returns either a
 validation fragment or a success update—without a client-side SPA.
-
-If you have not yet shipped a classic POST, start with
-[Minimal form POST](minimal-form.md). Decide between `@action` and `@component` POST in
-[Mutations](mutations.md). For GET-only fragment refresh, see
-[HTMX interactions](htmx-interactions.md). Command success refresh+toast compiles through
-`ActionHandle.effect` — [Interaction API](../api/INTERACTION.md).
 
 ## What you will build
 

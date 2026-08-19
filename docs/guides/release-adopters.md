@@ -10,6 +10,6 @@ Continue with:
 - [Upgrade to 0.50](upgrade.md)
 - [What’s ready today](whats-ready.md)
 - [Ship a Hedron app](ship.md)
-- [Release evidence](evidence-pack.md)
+- [Evaluate Hedron](evaluate.md)
 
 Hedron remains Beta, has no commercial SLA, and has no scheduled 1.0 date.

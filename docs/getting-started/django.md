@@ -12,7 +12,7 @@ Public-index notes: [Installation](installation.md).
 
 Same success criteria as FastAPI: open the app, see Hello, click **Refresh**, watch
 the status region update without a full page reload. The scaffold uses Django views
-and raw `hx-*` attributes, not FastAPI `RefreshButton`.
+and raw `hx-*` attributes, not FastAPI `status.refresh_button(...)`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
@@ -28,9 +28,9 @@ via HTMX into the declared `#panel` region.
 The scaffold includes page + fragment regions and security headers middleware.
 Set `HEDRON_SESSION_SECRET` before production.
 
-!!! note "RefreshButton vs raw `hx-*`"
+!!! note "`refresh_button` vs raw `hx-*`"
 
-    FastAPI scaffolds often use `RefreshButton`. Django getting-started samples may show
+    FastAPI scaffolds use `status.refresh_button(...)`. Django getting-started samples may show
     raw `hx-get` / `hx-target` attributes — both are valid across adapters.
 
 !!! tip "Try without local setup"

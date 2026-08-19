@@ -7,7 +7,7 @@ status: shipped
 !!! note "Shipped — phase 0.22"
 
     Pluggable CSRF strategies, composable security headers, and `CsrfField` /
-    `Form(hx=...)` shipped in **0.22** and remain available on the **0.25** train.
+    `Form(hx=...)` shipped in **0.22** and remain available on the **0.50** train.
     Living CSRF overview: [Security types](SECURITY_TYPES.md) and
     [Security guide](../guides/security.md). Acceptance (GitHub):
     [RELEASE_0_22](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_22.md) ·

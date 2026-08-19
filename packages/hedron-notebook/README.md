@@ -26,7 +26,7 @@ token are rejected. This package is **not** a Supported production server.
 pip install "hedron-notebook>=0.1.0,<0.2"
 # or
 uv add "hedron-notebook>=0.1.0,<0.2"
-# via flagship extra (in-tree / this docs tree; public index is 0.48.0):
+# via flagship extra:
 pip install "hedron[notebook]>=0.50.1,<0.51"
 ```
 

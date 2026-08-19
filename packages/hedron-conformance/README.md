@@ -16,8 +16,6 @@ Also available as the flagship extra `hedron[conformance]`.
 
 **Package maturity:** Beta · **Train:** `0.50.x` (published `v0.50.1`) · pin `>=0.50.1,<0.51`
 
-Git tag and PyPI upload for this train are **deferred**. Latest on **PyPI** is **`0.48.0`**.
-
 ## Install
 
 ```bash

@@ -59,7 +59,7 @@ Hedron documentation and marketing **do not** claim:
   TerminalView / device bridges are Experimental)
 
 Trust-program priorities that close diligence caveats without inventing those claims:
-[Production-quality maturity](production-quality.md).
+[Ship a Hedron app](ship.md) · [What's ready](whats-ready.md).
 
 ## Compliance positioning (not certification)
 
@@ -76,10 +76,9 @@ third-party open-source software with pinned versions and your own threat model 
 
 ## Supply-chain evidence
 
-Prefer GitHub Release assets for the latest **uploaded** tag **`v0.48.0`** (SBOM / license /
-evidence-bundle) when
-attached. If assets are missing, regenerate from the tagged checkout — see
-[Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.
+Prefer GitHub Release assets for **`v0.50.1`** (SBOM / license / evidence-bundle)
+when they are attached. If assets are missing, regenerate from that tagged checkout.
+PyPI remains authoritative for package versions.
 Maintainers should attach evidence bundles on release day when publishing a train tag.
 
 ## Evidence honesty

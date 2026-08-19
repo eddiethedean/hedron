@@ -12,17 +12,16 @@ Building an app? Install [`hedron`](https://pypi.org/project/hedron/) instead. U
 package if you are writing a host adapter or rendering components outside a web
 framework.
 
-**Published in-tree `v0.50.1`.** Git tag and PyPI upload are **deferred**.
-In-tree pin `hedron-core>=0.50.1,<0.51`. The latest on **PyPI** is **`0.48.0`**.
+**Published `v0.50.1` on PyPI.** Pin `hedron-core>=0.50.1,<0.51`.
 
-**Package maturity:** Beta · pin `>=0.48.0,<0.49` from the public index.
+**Package maturity:** Beta · pin `>=0.50.1,<0.51`.
 
 ## Install
 
 ```bash
-pip install "hedron-core>=0.48.0,<0.49"
+pip install "hedron-core>=0.50.1,<0.51"
 # or
-uv add "hedron-core>=0.48.0,<0.49"
+uv add "hedron-core>=0.50.1,<0.51"
 ```
 
 Requires Python 3.11–3.14.

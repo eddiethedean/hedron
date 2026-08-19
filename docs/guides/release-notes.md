@@ -6,7 +6,7 @@ details remain in the [package changelogs](changelog.md).
 ## 0.50.1 — 2026-08-18
 
 Bugfix patch on the 0.50 train. Pin `hedron>=0.50.1,<0.51`.
-Public-index notes until the wheel lands: [Installation](../getting-started/installation.md).
+This version is on PyPI: [Installation](../getting-started/installation.md).
 
 - Formula CSV/spreadsheet prefixes reject Unicode combining marks; `evaluate_formula` no longer coerces bool/junk to `0.0`.
 - HTMX `hx-target="this"` is a closed relative keyword; control `id=` is accepted on Button/LinkButton/IconButton.
@@ -18,16 +18,10 @@ Public-index notes until the wheel lands: [Installation](../getting-started/inst
 python -m pip install -U "hedron>=0.50.1,<0.51"
 ```
 
-Registry installs until the deferred upload:
-
-```bash
-python -m pip install -U "hedron>=0.48.0,<0.49"
-```
-
 ## 0.50.0 — 2026-08-18
 
 Explorer architecture and HTMX authoring cut. Pin `hedron>=0.50.1,<0.51`.
-Public-index notes: [Installation](../getting-started/installation.md).
+[Installation](../getting-started/installation.md).
 
 - Command `effect` / `after`, history restore, Lazy error templates, dependent Select, and danger toast dismiss compile as documented.
 - Explorer query/CLI envelopes replace silent caps; lab CSRF, diff baseline, and isolated `/packages` providers.
@@ -50,16 +44,10 @@ python -m pip install "hedron[charts]>=0.50.1,<0.51"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
 ```
 
-Registry installs until the deferred upload:
-
-```bash
-python -m pip install -U "hedron>=0.48.0,<0.49"
-```
-
 ## 0.49.1 — 2026-08-18
 
-High-severity correctness and security patch for the 0.49 train. **PyPI still serves
-`hedron` 0.48.0** until the deferred upload — [Installation](../getting-started/installation.md).
+High-severity correctness and security patch for the 0.49 train. Prefer the current
+train pin `hedron>=0.50.1,<0.51` — [Installation](../getting-started/installation.md).
 
 - Django `@hedron_view` validates CSRF before the handler (#392).
 - Directory-upload paths reject raw CR/LF/TAB (#393).
@@ -75,16 +63,14 @@ High-severity correctness and security patch for the 0.49 train. **PyPI still se
 Historical 0.49.1 in-tree pin was `hedron>=0.49.1,<0.50` (superseded; see 0.50.0 above).
 Charts remain on `hedron-charts>=0.2.0,<0.3`.
 
-Registry installs until the deferred upload:
-
 ```bash
-python -m pip install -U "hedron>=0.48.0,<0.49"
+python -m pip install -U "hedron>=0.50.1,<0.51"
 ```
 
 ## 0.49.0 — 2026-08-17
 
-In-tree FastAPI/Pydantic binding work. **PyPI still serves `hedron` 0.48.0** until the
-deferred upload — [Installation](../getting-started/installation.md).
+In-tree FastAPI/Pydantic binding work. Prefer the current train pin
+`hedron>=0.50.1,<0.51` — [Installation](../getting-started/installation.md).
 
 - FastAPI `Depends` compiles from Hedron `DependsOn` for handler and response scopes.
 - Query, header, cookie, and non-file form models can bind as native Pydantic parameter models.
@@ -101,8 +87,7 @@ Historical 0.49.0 in-tree pin was `hedron>=0.49.0,<0.50` (superseded; see 0.50.1
 
 D-081 / D-084 / RFC-0076. New symbols begin Beta. `SR-021` stays open. Live-transport
 maturity is unchanged (`polling_only`). `MORPH-048` stays Deferred. FailFast / Pydantic
-`MISSING` / partial validation stay experimental (not Supported). In-tree cut only; Git
-tag / GitHub Release / PyPI remain deferred
+`MISSING` / partial validation stay experimental (not Supported).
 ([#380](https://github.com/eddiethedean/hedron/issues/380)).
 
 </details>
@@ -113,12 +98,6 @@ python -m pip install "hedron[maps]>=0.50.1,<0.51"
 python -m pip install "hedron[data]>=0.50.1,<0.51"
 python -m pip install "hedron[charts]>=0.50.1,<0.51"
 python -m pip install "hedron-charts>=0.2.0,<0.3"
-```
-
-Registry installs until the deferred upload:
-
-```bash
-python -m pip install -U "hedron>=0.48.0,<0.49"
 ```
 
 ## 0.48.0 — 2026-08-17
@@ -133,14 +112,7 @@ Coordinated Beta cut for first-class HTMX extension integration (D-080 / D-083 /
 - Pin the living tip with the 0.50.0 install block above. Charts remain on `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
 - Head-support admits only local `AssetRef` hrefs, HTML-escapes them, and rejects quote/breakout/`..` values. Fragment inject rejects invented `<script>` tags (#374).
 - Git tag `v0.48.0`, GitHub Release, and PyPI (`hedron` 0.48.0). Tracking [#373](https://github.com/eddiethedean/hedron/issues/373).
-
-```bash
-python -m pip install -U "hedron>=0.48.0,<0.49"
-python -m pip install "hedron[maps]>=0.48.0,<0.49"
-python -m pip install "hedron[data]>=0.48.0,<0.49"
-python -m pip install "hedron[charts]>=0.48.0,<0.49"
-python -m pip install "hedron-charts>=0.2.0,<0.3"
-```
+  Historical 0.48 pin (do not copy this constraint): `hedron>=0.48.0,<0.49`. Prefer the 0.50.1 block above.
 
 ## 0.47.0 — 2026-08-17
 

@@ -2,8 +2,8 @@
 
 ## Which version should I install?
 
-Install the current train: `hedron>=0.50.1,<0.51`. Public index is still `0.48.0`
-until upload — [Installation](../getting-started/installation.md).
+Install from PyPI: `pip install "hedron>=0.50.1,<0.51"`. See
+[Installation](../getting-started/installation.md).
 
 ```bash
 pip install "hedron>=0.50.1,<0.51"
@@ -220,12 +220,12 @@ See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/inst
 ## Procurement / evidence pack?
 
 Evaluator diligence (SBOM, support window, GitHub release lag) lives on
-[Evaluate](evaluate.md) and [Evidence pack](evidence-pack.md), not this builder FAQ.
+[Evaluate](evaluate.md) and [Enterprise diligence](enterprise-diligence.md), not this builder FAQ.
 
 Prefer **polling** for job status. SSE / WebSocket helpers remain experimental. See
 [What’s ready](whats-ready.md) and [Live updates](live-interaction.md).
 
 ## How do I contribute code?
 
-See [Contributing](../CONTRIBUTING.md) for environment setup, tests, and the
+See [Contributor day-one](contributor-day-one.md) for environment setup, tests, and the
 specification process. Support expectations: [Support](support.md).

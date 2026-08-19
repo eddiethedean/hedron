@@ -23,12 +23,11 @@ architecture, release evidence, and beginner setup in the same flow.
 
 The public MkDocs path is organized around adopters:
 
-1. **Start** — install, first success, core mental model
+1. **Start** — install, first success, HTMX mental model, next steps
 2. **Guides** — task-oriented application work
-3. **Tutorials and examples** — runnable, realistic workflows
+3. **Examples** — runnable, realistic workflows
 4. **Reference** — exact surfaces, components, packages, and signatures
-5. **Evaluate** — fit, maturity, security, operations, support
-6. **Releases / Contribute** — upgrades, history, governance, and maintenance
+5. **Project** — fit, maturity, architecture, security, upgrades, and contributor day-one
 
 RFCs, acceptance packets, internal status ledgers, and research notes stay in the GitHub
 maintainer corpus and are excluded from MkDocs search. Public pages may link to that
@@ -73,11 +72,16 @@ and regenerate them; do not hand-edit output that the next generator run will ov
 - Document failure behavior. Public API reference should name raised exceptions or HTTP
   status/error codes, not only the happy-path return value.
 - Avoid duplicating current-version claims. Link to the canonical page when a second copy
-  would create another release-time edit. Install pins and deferred-upload honesty live
-  only on [Installation](../getting-started/installation.md); first-run copy-paste
-  commands use the in-tree pin from `docs/release.toml`. While `registry_status` is
-  `deferred`, Installation and the `hedron` / `hedron-core` READMEs must also name the
-  public-index pin.
+  would create another release-time edit. Canonical pin facts live in
+  [`docs/release.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/release.toml)
+  and are explained on [Installation](../getting-started/installation.md).
+  **First-run copy-paste must always be registry-resolvable.** While
+  `registry_status` is `uploaded`, Home, README, Quickstart, FAQ, and Installation use
+  the same pin (`pin_floor` / `pin_ceiling`). While `registry_status` is `deferred`,
+  first-run commands use the public-index pin (`pypi_pin_floor` / `pypi_pin_ceiling`);
+  Installation and the `hedron` / `hedron-core` READMEs must say the in-tree train is
+  not on PyPI yet. Never place an unpublished in-tree pin in a `pip` / `uv` / `uvx`
+  command a visitor can copy.
 
 ## README quality bar
 
@@ -157,5 +161,5 @@ bash scripts/ci_checks.sh quality --python 3.12
 - [ ] Generated outputs were updated from their owning source.
 
 See also: [Contributing](../CONTRIBUTING.md) ·
-[Maintainer handbook](maintainer-handbook.md) ·
+[Contributor day-one](contributor-day-one.md) ·
 [API coverage map](../api/COVERAGE.md)

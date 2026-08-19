@@ -87,17 +87,41 @@ parameters:
 | Method | Description |
 |---|---|
 | `page(path, **kwargs)` | Register a PAGE route (navigation HTML; fragment when `HX-Request`) |
+| `refreshable(path, **kwargs)` | Register a GET fragment view; returns a `FragmentHandle` |
+| `command(path, **kwargs)` | Register a CSRF-backed mutation; returns an `ActionHandle` |
 | `component(path, **kwargs)` | Register a FRAGMENT route; use `methods=["POST"]` for HTMX form fragments with `fragment_regions` |
-| `action(path, **kwargs)` | Register an action route (CSRF on unsafe methods). Accepts `fragment_regions` for HTMX target allowlists — same region policy as `page` / `component`. Prefer `@action` for CSRF-backed mutations that return `InteractionResult`; see [ACTION](ACTION.md) and [Mutations](../guides/mutations.md) |
+| `action(path, **kwargs)` | Register an action route (CSRF on unsafe methods). Prefer `@command` for new forms; see [ACTION](ACTION.md) |
 | `region(id, selector=None, description="")` | Declare a `FragmentRegion` (default selector `#{id}`) for `RefreshButton.for_region` / allowlists |
 | `fragment(path, region=..., regions=..., **kwargs)` | Alias of `component` that merges `region` / `regions` into the allowlist |
 | `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
 | `include_feature(bundle, *, capabilities=None)` | Include one `FeatureBundle` / `FeatureProvider` before registry/catalog seal |
 | `include_router(...)` | Standard FastAPI router include |
 
-Golden-path HTMX scaffolding uses `app.region(...)` plus `@app.fragment(...)` (see
-[HTMX interactions](../guides/htmx-interactions.md)). `fragment_regions` on `page` /
-`component` / `action` remains the lower-level allowlist API.
+Golden-path HTMX uses `@app.refreshable` and `@app.command` (see
+[Refreshable views](REFRESHABLE_VIEWS.md) and
+[HTMX interactions](../guides/htmx-interactions.md)). `page` / `component` / `action`
+plus `fragment_regions` remain the lower-level allowlist API.
+
+```python
+from hedron import Hedron, Page, Stack, Text, html, refresh
+
+app = Hedron(title="Demo", security="standard", explorer="off", session_secret="replace-in-production")
+
+
+@app.refreshable("/status")
+def status():
+    return html.div(Text("ok"), role="status")
+
+
+@app.command("/notes")
+def save():
+    return refresh(status)
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(Stack(status(), status.refresh_button("Refresh"), save.form()), title="Home")
+```
 
 Also see module helpers `mount_hedron_static(app)` and `mount_build_assets(app, build_dir)`.
 

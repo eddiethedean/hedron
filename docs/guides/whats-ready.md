@@ -204,8 +204,7 @@ Prefer adopter recipes first:
 - FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
 
 Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, …) are
-**maintainer evidence stubs**, not product tutorials — see
-[phase evidence](../examples/phase-evidence.md). The
+**maintainer evidence stubs**, not product tutorials. The
 [model-demo example](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18)
 is a runnable classifier. Live interaction sample:
 [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
@@ -247,7 +246,7 @@ and `"hedron-sample-kit>=0.1.10,<0.2"`.
 |---|---|
 | Quick fit check | [Evaluate Hedron](evaluate.md) |
 | Ops ship checklist | [Ship a Hedron app](ship.md) · [Deployment](deployment.md) |
-| Trust / maturity program | [Production-quality maturity](production-quality.md) |
+| Trust / maturity program | [Ship a Hedron app](ship.md) · [Evaluate Hedron](evaluate.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 
 Also: [Upgrade](upgrade.md) · [What’s next](whats-next.md) · [Live interaction](live-interaction.md)

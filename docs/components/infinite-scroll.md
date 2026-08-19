@@ -73,7 +73,7 @@ Append the next fragment when a pagination sentinel is revealed.
 ```python
 from hedron import InfiniteScroll
 
-component = InfiniteScroll(ref=app.ref('next-events', page=2), target='#event-list')
+component = InfiniteScroll(ref=ComponentRef('next-events', page=2), target='#event-list')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.

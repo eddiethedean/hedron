@@ -107,6 +107,14 @@ exclude_docs: |
   HTMX_2_EXTENSIONS.md
   READINESS_REPORT.md
   TRACEABILITY.md
+  guides/maintainer-handbook.md
+  guides/maintainers.md
+  guides/evidence-pack.md
+  guides/production-quality.md
+  guides/production-readiness.md
+  guides/ship-to-production.md
+  guides/training-streamlit-to-hedron-posit.md
+  examples/phase-evidence.md
 
 
 validation:
@@ -179,11 +187,8 @@ nav:
     - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
     - What is HTMX?: getting-started/what-is-htmx.md
-    - Which interaction API?: getting-started/interaction-apis.md
-    - Post a minimal form: guides/minimal-form.md
-    - Learning path: getting-started/learning-path.md
-    - Troubleshooting: guides/troubleshooting.md
-    - Choose a host:
+    - Next steps: getting-started/learning-path.md
+    - Other hosts:
       - Flask: getting-started/flask.md
       - Django: getting-started/django.md
       - Existing FastAPI app: guides/plain-fastapi.md
@@ -193,6 +198,7 @@ nav:
     - Overview: guides/index.md
     - Build interactions:
       - HTMX interactions: guides/htmx-interactions.md
+      - Post a minimal form: guides/minimal-form.md
       - Forms and actions: guides/forms-and-actions.md
       - Mutations: guides/mutations.md
       - Live updates (polling): guides/live-interaction.md
@@ -210,64 +216,59 @@ nav:
       - Threat model: guides/threat-model.md
       - Hardened sessions: guides/hardened-sessions.md
       - Multi-tenant isolation: guides/multi-tenant.md
+      - Accessibility: guides/accessibility.md
     - Operate an app:
       - Ship an app: guides/ship.md
       - Deployment: guides/deployment.md
       - Secrets and workers: guides/secrets-and-workers.md
-      - Cookbook: guides/cookbook.md
-      - Error codes: guides/error-codes.md
-      - Posit deployments: guides/posit.md
-      - Posit Workbench: guides/posit-workbench.md
       - Durable jobs: guides/jobs-celery-rq.md
-      - Observability: guides/observability.md
-      - Performance: guides/performance.md
       - Test your UI: guides/testing.md
+      - Performance: guides/performance.md
+      - Observability: guides/observability.md
       - Best practices: guides/best-practices.md
     - Extend Hedron:
       - Use plugins: guides/plugin-consumer.md
       - Author plugins: guides/plugin-authoring.md
-      - Model demos: guides/model-demos.md
     - Migrate from Streamlit: guides/streamlit-migration.md
-    - Hands-on team training: guides/training-streamlit-to-hedron-posit.md
     - FAQ: guides/faq.md
   - Examples:
     - Overview: examples/index.md
     - Recipe index: examples/recipes/index.md
-    - Runnable examples: examples/runnable.md
-    - Try in Codespaces: examples/try-it.md
-    - Notes CRUD: examples/crud-tutorial.md
-    - Session authentication: examples/session-auth.md
     - Notes with SQLAlchemy: examples/notes-sqlalchemy.md
-    - Reference app walkthrough: examples/reference-app.md
+    - Session authentication: examples/session-auth.md
+    - Notes CRUD: examples/crud-tutorial.md
+    - Try in Codespaces: examples/try-it.md
+    - Runnable examples: examples/runnable.md
     - Single-file apps: examples/single-file.md
     - Simulation gallery: examples/gallery.md
+    - Reference app walkthrough: examples/reference-app.md
   - Reference:
     - Hedron: api/HEDRON.md
     - Router: api/ROUTER.md
     - Page: api/PAGE.md
     - Interaction: api/INTERACTION.md
+    - Refreshable views: api/REFRESHABLE_VIEWS.md
+    - Field: api/FIELD.md
+    - Action: api/ACTION.md
+    - Jobs: api/JOBS.md
+    - Exceptions: api/EXCEPTIONS.md
+    - CSRF: api/CSRF_COMPOSITION.md
+    - CLI: api/CLI.md
     - Components: components/index.md
+    - Configuration: CONFIGURATION.md
+    - Compatibility: COMPATIBILITY.md
+    - Glossary: GLOSSARY.md
+    - Packages: packages/index.md
     - Autodoc: api/AUTODOC.md
-    - Advanced:
-      - Refreshable views: api/REFRESHABLE_VIEWS.md
-      - Type-driven authoring: api/TYPE_DRIVEN_AUTHORING.md
-      - FastAPI/Pydantic 0.49: api/FASTAPI_PYDANTIC_CONVERGENCE.md
-      - Explorer architecture 0.50: api/EXPLORER_ARCHITECTURE.md
-  - Adopt:
+  - Project:
     - Why Hedron: guides/why-hedron.md
     - What's ready today: guides/whats-ready.md
-    - What's next: guides/whats-next.md
     - Evaluate Hedron: guides/evaluate.md
     - Architecture: ARCHITECTURE.md
     - Security: SECURITY.md
     - Support: guides/support.md
-    - Design principles: guides/design-principles.md
-  - Contribute:
-    - Contributor day one: guides/contributor-day-one.md
-    - Contributing: CONTRIBUTING.md
-  - Releases:
-    - Release notes: guides/release-notes.md
+    - Enterprise diligence: guides/enterprise-diligence.md
     - Upgrade guide: guides/upgrade.md
-    - What's new in 0.50: guides/whats-new-0.50.md
-    - What's new in 0.49: guides/whats-new-0.49.md
+    - Releases: guides/release-notes.md
     - Earlier releases: guides/whats-new-archive.md
+    - Contributor day one: guides/contributor-day-one.md

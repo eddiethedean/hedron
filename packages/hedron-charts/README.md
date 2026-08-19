@@ -34,7 +34,7 @@ and the
 ## Install
 
 ```bash
-# flagship extra (in-tree / this docs tree; public index is 0.48.0):
+# flagship extra:
 pip install "hedron[charts]>=0.50.1,<0.51"
 # independent satellite:
 pip install "hedron-charts>=0.2.0,<0.3"

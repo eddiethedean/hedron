@@ -82,7 +82,7 @@ plugins, misconfigured deployments, and host-framework CVEs (report those upstre
 
 Release evidence and dependency inventories are produced by maintainer scripts
 (`scripts/build_evidence_bundle.py`, `scripts/generate_sbom.py`,
-`scripts/license_inventory.py`). See the [Evidence pack](guides/evidence-pack.md) for how
+`scripts/license_inventory.py`). See [Enterprise diligence](guides/enterprise-diligence.md) for how
 evaluators obtain SBOM / license inventory for the current train.
 
 ## See also

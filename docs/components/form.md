@@ -126,9 +126,9 @@ Compose a native GET or POST form with validated action URLs and optional HTMX a
 ## Basic use
 
 ```python
-from hedron import Form, FormField, Hx, SubmitButton, TextInput
+from hedron import CsrfField, Form, FormField, SubmitButton, TextInput
 
-component = Form(FormField(name='email', label='Email', control=TextInput('email', type='email')), SubmitButton('Subscribe'), action='/subscribe', hx=Hx(target='#main'))
+component = Form(CsrfField(), FormField(name='email', label='Email', control=TextInput(name='email', type='email')), SubmitButton('Subscribe'), action='/subscribe')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.

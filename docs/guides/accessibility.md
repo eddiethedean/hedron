@@ -199,8 +199,7 @@ Maintainer RFCs (GitHub; excluded from Read the Docs builds):
 - [RFC-0054](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0054-ATAG-AUTHORING.md) ATAG authoring
 - [RFC-0055](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md) Governance / AT matrix
 
-Adopters should treat this guide as the day-one checklist. Maintainers:
-[For maintainers](maintainers.md).
+Adopters should treat this guide as the day-one checklist.
 
 ## See also
 

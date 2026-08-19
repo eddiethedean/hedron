@@ -22,7 +22,7 @@ Also available as the flagship extra `hedron[native]`.
 pip install "hedron-native>=0.1.2,<0.2"
 # or
 uv add "hedron-native>=0.1.2,<0.2"
-# via flagship extra (in-tree / this docs tree; public index is 0.48.0):
+# via flagship extra:
 pip install "hedron[native]>=0.50.1,<0.51"
 ```
 

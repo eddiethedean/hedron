@@ -286,5 +286,5 @@ local use only.
 
 ## See also
 
-- [Security](security.md) · [Cookbook](cookbook.md) · [Production readiness](production-readiness.md)
+- [Security](security.md) · [Cookbook](cookbook.md) · [Ship a Hedron app](ship.md)
 - [Error codes](error-codes.md) · [Compatibility](../COMPATIBILITY.md)

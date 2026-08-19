@@ -137,13 +137,13 @@ page, status region, and fragment intact.
 Change:
 
 ```python
-from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+from hedron import Hedron, Page, Stack, Text, html
 ```
 
 to:
 
 ```python
-from hedron import Page, RefreshButton, Stack, Text, html, swap
+from hedron import Page, Stack, Text, html
 from hedron_posit import HedronPosit
 ```
 

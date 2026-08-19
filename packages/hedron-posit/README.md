@@ -8,8 +8,6 @@ Unified Posit Workbench / Connect deployment facade for Hedron.
 
 **Package maturity:** Beta · **Train:** `0.50.x` · pin `>=0.50.1,<0.51`
 
-Git tag and PyPI upload for this train are **deferred**. Latest on **PyPI** is **`0.48.0`**.
-
 ```python
 from hedron_posit import HedronPosit
 

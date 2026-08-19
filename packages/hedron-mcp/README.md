@@ -24,7 +24,7 @@ Mutating tools remain Experimental (`allow_mutations=True`).
 pip install "hedron-mcp>=0.2.0,<0.3"
 # or
 uv add "hedron-mcp>=0.2.0,<0.3"
-# via flagship extra (in-tree / this docs tree; public index is 0.48.0):
+# via flagship extra:
 pip install "hedron[mcp]>=0.50.1,<0.51"
 ```
 

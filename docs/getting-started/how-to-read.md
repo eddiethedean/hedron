@@ -37,16 +37,13 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current published train is **0.50.x**. This docs tree pins
-`hedron>=0.50.1,<0.51`. That pin is **not on PyPI yet** (public index is `0.48.0`
-until upload) — [Installation](installation.md).
+The current published train is **0.50.x**. Install from PyPI:
 
 ```bash
 python -m pip install "hedron>=0.50.1,<0.51"
 ```
 
-Pins for this repository versus the public index:
-[Installation](installation.md).
+Pins: [Installation](installation.md).
 
 There is no commercial SLA or scheduled 1.0. See [Evaluate Hedron](../guides/evaluate.md)
 for the adoption checklist and [Glossary](../GLOSSARY.md) for project terminology.

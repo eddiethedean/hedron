@@ -36,7 +36,7 @@ Also useful:
 
 !!! note "Not recipes"
 
-    [Phase evidence](../phase-evidence.md) and version-stamped dirs (`dashboard-0.17`,
+    Version-stamped dirs (`dashboard-0.17`,
     `data-app-0.15`, …) are **maintainer exit scenarios**, not product tutorials.
     [Simulated UI patterns](../gallery.md) are Read the Docs simulations — not a live
     Hedron process.

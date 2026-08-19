@@ -13,7 +13,12 @@ cd hedron
 uv sync --group docs
 uv run --group docs mkdocs build --strict
 uv run python scripts/check_docs_train_ssot.py
+uv run python scripts/check_package_docs_inventory.py
+uv run python scripts/check_documentation_ownership.py
+uv run python scripts/check_api_docs_coverage.py
+uv run python scripts/check_package_readme_links.py
 uv run python scripts/check_recipe_code_sync.py
+uv run python scripts/generate_component_docs.py --check
 uv run python scripts/generate_sim_demos.py --check
 ```
 
@@ -32,29 +37,17 @@ Open a PR with **“docs-only”** in the title or first line of the description
 This repository has no `.pre-commit-config.yaml` — ignore generic `--no-verify` advice
 from other projects.
 
-### STATUS sync footgun
+### STATUS sync
 
 Canonical STATUS lives under `docs/STATUS.md`; root `STATUS.md` is a generated mirror.
-The roadmap is only `docs/ROADMAP.md` (no generated copies). Running
-`uv run python scripts/sync_status_roadmap.py` updates root `STATUS.md`, which is
-**not** on the docs-only allowlist — that PR will run full CI.
-Prefer docs-only edits that leave the root STATUS mirror untouched unless a maintainer
-asked for a STATUS sync.
+The roadmap is only `docs/ROADMAP.md`. Leave the root STATUS mirror untouched unless a
+maintainer asked for a STATUS sync.
 
 ## Good first issues
 
 Browse GitHub issues labeled
 [`good first issue`](https://github.com/eddiethedean/hedron/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-when the queue has open items. **If the label is empty**, prefer docs clarity,
-FAQ/Troubleshooting, or a small failing test for a bug you hit.
-
-## Bug-fix and package PRs
-
-Use the full [Contributing](../CONTRIBUTING.md) guide: `uv sync --all-groups`,
-`verify_pkg_*`, and `bash scripts/ci_checks.sh quality --python 3.12` (Rust may be
-required for native wheel smoke).
-
-## Good first contributions
+when the queue has open items. **If the label is empty**, prefer:
 
 - Typos, dead links, and Install/FAQ/Troubleshooting clarity
 - Example README fixes that match the living `0.50` train pins
@@ -62,6 +55,12 @@ required for native wheel smoke).
 
 Avoid starting with release-gate TOMLs, STATUS ledgers, or phase packets unless a
 maintainer asked you to.
+
+## Bug-fix and package PRs
+
+Use the full [Contributing](../CONTRIBUTING.md) guide: `uv sync --all-groups`,
+`verify_pkg_*`, and `bash scripts/ci_checks.sh quality --python 3.12` (Rust may be
+required for native wheel smoke).
 
 ## Plugins and RFCs (second contribution)
 

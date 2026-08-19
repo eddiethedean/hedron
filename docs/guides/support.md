@@ -11,7 +11,7 @@ response time, or paid support contract.
 | Pull requests | Fixes and documentation improvements |
 
 Before filing an issue, check [FAQ](faq.md), [Troubleshooting](troubleshooting.md),
-[Error codes](error-codes.md), and [Production readiness](production-readiness.md).
+[Error codes](error-codes.md), and [Ship a Hedron app](ship.md).
 Known Deferred rows: [What's ready](whats-ready.md).
 
 ## Security

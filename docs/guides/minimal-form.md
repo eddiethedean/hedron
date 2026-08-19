@@ -1,10 +1,10 @@
 # Minimal form POST
 
 Add a CSRF-safe note form to the **same** FastAPI scaffold from
-[HTMX interactions](htmx-interactions.md). Submitting appends to `_NOTES` and
-redirects home so **Notes saved: N** updates. Use this before choosing between
-`@action` and `@component` POST in [Mutations](mutations.md). The full
-[Forms and actions](forms-and-actions.md) deep dive covers validation fragments.
+[HTMX interactions](htmx-interactions.md). The golden path is `@app.command` plus
+`CsrfField` and `save.form()`, matching
+[Notes + SQLAlchemy](../examples/notes-sqlalchemy.md). Use this before the advanced
+region / `InteractionResult` path in [Forms and actions](forms-and-actions.md).
 
 !!! note "FastAPI field name"
 

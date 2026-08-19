@@ -27,17 +27,19 @@ def users_page() -> Page:
 ```
 
 `HedronRouter` extends FastAPI `APIRouter` and supports prefixes, tags, dependencies,
-responses, and metadata. It adds `page`, `component`, and `action` registration
-decorators backed by `HedronRoute`. `Hedron` exposes the same decorators on its root
-router.
+responses, and metadata. It adds `page`, `refreshable`, `command`, `component`, and
+`action` registration decorators backed by `HedronRoute`. `Hedron` exposes the same
+decorators on its root router.
 
 ```python
-@users.component("/table")
-async def user_table() -> Text: ...
+@users.refreshable("/table")
+def user_table():
+    return Text("Users")
 
 
-@users.action("/{user_id}", method="DELETE")
-async def delete_user(user_id: str) -> Text: ...
+@users.command("/{user_id}")
+def delete_user(user_id: str):
+    ...
 ```
 
 Declare the fragment regions a page or component route is authorized to update:
@@ -60,18 +62,16 @@ conflicting `InteractionResult.policy.declared_regions` value.
 | Decorator | Typical return | Notes |
 |---|---|---|
 | `@router.page(path, **kwargs)` | `Page` / document | PAGE mode for navigation; fragment for `HX-Request`; accepts `fragment_regions` |
-| `@router.component(path, **kwargs)` | Component / fragment | FRAGMENT mode; accepts `fragment_regions` |
-| `@router.action(path, method=..., **kwargs)` | Component or redirect | CSRF required for unsafe methods when enabled |
+| `@router.refreshable(path, **kwargs)` | Fragment / `FragmentHandle` | Golden-path GET view; use `handle.refresh_button(...)` |
+| `@router.command(path, **kwargs)` | `ActionHandle` | Golden-path CSRF mutation; use `handle.form()` / `handle.button(...)` |
+| `@router.component(path, **kwargs)` | Component / fragment | Lower-level FRAGMENT mode; accepts `fragment_regions` |
+| `@router.action(path, method=..., **kwargs)` | Component or redirect | Lower-level CSRF action; prefer `@command` for new forms |
 
-On the flagship `Hedron` app (root router), prefer the golden-path helpers:
+On the flagship `Hedron` app (root router), prefer `@app.refreshable` and `@app.command`.
+`app.region(...)` plus `@app.fragment(...)` remain available for explicit HTMX allowlists.
 
-| Helper | Notes |
-|---|---|
-| `app.region(id, selector=None, description="")` | Declares a `FragmentRegion` (default selector `#{id}`) |
-| `@app.fragment(path, region=..., regions=..., **kwargs)` | Alias of `component` that merges region allowlists |
-
-`HedronRouter` itself exposes `page` / `component` / `action` plus `fragment_regions=`;
-use `FragmentRegion(...)` explicitly on a sub-router. See [Hedron](HEDRON.md).
+`HedronRouter` exposes the same decorators. See [Hedron](HEDRON.md) and
+[Refreshable views](REFRESHABLE_VIEWS.md).
 
 Keyword arguments follow FastAPI route options (`name`, `dependencies`,
 `include_in_schema`, `methods`, `tags`, …).

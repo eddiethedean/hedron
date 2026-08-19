@@ -806,7 +806,7 @@ COMPONENTS = (
         "forms",
         "Compose a native GET or POST form with validated action URLs and optional HTMX attributes.",
         "Form(*nodes, children=None, action=None, method='post', hx=None, **native_or_hx_attrs)",
-        "Form(FormField(name='email', label='Email', control=TextInput('email', type='email')), SubmitButton('Subscribe'), action='/subscribe', hx=Hx(target='#main'))",
+        "Form(CsrfField(), FormField(name='email', label='Email', control=TextInput(name='email', type='email')), SubmitButton('Subscribe'), action='/subscribe')",
         (
             p("nodes", "NodeLike", "Positional labels, fields, errors, and controls."),
             p(
@@ -845,7 +845,7 @@ COMPONENTS = (
         "Selector validation is the security boundary; do not bypass with stringly kwargs.",
         "Raw kwargs that survive after Hx merge are still validated.",
         server="No",
-        demo="form",
+        demo="static",
     ),
     ComponentDoc(
         "CsrfField",
@@ -869,7 +869,7 @@ COMPONENTS = (
         "The field is aria-hidden by nature as a hidden input; pair with visible validation feedback on failure.",
         "Never log or display the token value in diagnostics.",
         server="On submit",
-        demo="form",
+        demo="static",
     ),
     ComponentDoc(
         "LoginCsrfField",
@@ -886,7 +886,7 @@ COMPONENTS = (
         "Pair with validate_login_csrf on POST.",
         "Do not reuse login tokens after authentication succeeds.",
         server="On submit",
-        demo="form",
+        demo="static",
     ),
     ComponentDoc(
         "FormField",
@@ -1105,7 +1105,7 @@ COMPONENTS = (
         "interaction",
         "Load a component fragment when its placeholder enters the document.",
         "Lazy(*, ref, placeholder=None, target_id=None, error=None)",
-        "Lazy(ref=app.ref('activity-feed'), placeholder=Skeleton(lines=3), target_id='activity-feed')",
+        "Lazy(ref=ComponentRef('activity-feed'), placeholder=Skeleton(lines=3), target_id='activity-feed')",
         (
             p("ref", "ComponentRef", "Typed fragment endpoint."),
             p("placeholder", "NodeLike | None", "Initial content; defaults to Loading."),
@@ -1131,7 +1131,7 @@ COMPONENTS = (
         "interaction",
         "Refresh a fragment at a bounded interval while it remains in the DOM.",
         "Poll(*, ref, interval_ms=5000, target_id=None, content=None)",
-        "Poll(ref=app.ref('job-status', job_id=job.id), interval_ms=2000, content=Status('Queued'))",
+        "Poll(ref=ComponentRef('job-status', job_id=job.id), interval_ms=2000, content=Status('Queued'))",
         (
             p("ref", "ComponentRef", "Typed polling endpoint."),
             p("interval_ms", "int", "Interval, clamped to at least 250 ms."),
@@ -1153,7 +1153,7 @@ COMPONENTS = (
         "interaction",
         "Append the next fragment when a pagination sentinel is revealed.",
         "InfiniteScroll(*, ref, target, swap='beforeend')",
-        "InfiniteScroll(ref=app.ref('next-events', page=2), target='#event-list')",
+        "InfiniteScroll(ref=ComponentRef('next-events', page=2), target='#event-list')",
         (
             p("ref", "ComponentRef", "Typed next-page endpoint."),
             p("target", "safe CSS selector", "Collection receiving appended nodes."),
