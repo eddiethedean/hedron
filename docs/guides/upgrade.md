@@ -1,7 +1,7 @@
 # Upgrade to Hedron 0.50
 
 This guide covers an application upgrade onto the **0.50.x** train
-(**`v0.50.3`** in-tree; latest on PyPI **`v0.50.1`**). Public-index notes: [Installation](../getting-started/installation.md).
+(`v0.50.1` on PyPI; in-tree `v0.50.3`). Public-index notes: [Installation](../getting-started/installation.md).
 New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
@@ -52,7 +52,7 @@ preload remain experimental.
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.50.1,<0.51`,
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.51.0,<0.52`,
    or the tip pin already). Public-index notes: [Installation](../getting-started/installation.md).
 3. Existing 0.42–0.46 handlers and unused `include_feature` keep working.
 4. Adopt maps only via `hedron[maps]` / `from hedron_maps import …`.
@@ -63,14 +63,14 @@ preload remain experimental.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.50.1,<0.51"
-python -m pip install -U "hedron[data]>=0.50.1,<0.51"
-python -m pip install -U "hedron[charts]>=0.50.1,<0.51"
-python -m pip install -U "hedron[maps]>=0.50.1,<0.51"
+python -m pip install -U "hedron>=0.51.0,<0.52"
+python -m pip install -U "hedron[data]>=0.51.0,<0.52"
+python -m pip install -U "hedron[charts]>=0.51.0,<0.52"
+python -m pip install -U "hedron[maps]>=0.51.0,<0.52"
 # independent charts satellite:
 python -m pip install -U "hedron-charts>=0.2.0,<0.3"
 # optional production-grade elements inventory:
-python -m pip install -U "hedron[elements]>=0.50.1,<0.51"
+python -m pip install -U "hedron[elements]>=0.51.0,<0.52"
 ```
 
 Public-index notes: [Installation](../getting-started/installation.md).

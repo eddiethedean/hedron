@@ -5,7 +5,7 @@ HTML `id` stays stable so HTMX can swap it.
 
 **Swap** — Replacing that region's HTML with a fragment the server returned.
 
-**Pin** — An install constraint with an upper bound, for example `hedron>=0.50.1,<0.51`.
+**Pin** — An install constraint with an upper bound, for example `hedron>=0.51.0,<0.52`.
 Use the pin the package index can resolve.
 
 **Train** — A minor version line (`0.46.x`). Compatible patches stay inside the pin;

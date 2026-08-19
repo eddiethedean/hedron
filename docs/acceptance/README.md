@@ -59,10 +59,10 @@ status commentary, not a satisfied release gate.
   related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) /
   [#502](https://github.com/eddiethedean/hedron/issues/502) /
   [#503](https://github.com/eddiethedean/hedron/issues/503) closed)
-- [`v0.51` curated extras](RELEASE_0_51.md) — **Planned** Stage 0 (D-087 / RFC-0078, refined by D-088;
+- [`v0.51` curated extras](RELEASE_0_51.md) — **Verified** (D-087 / RFC-0078, refined by D-088;
   [#507](https://github.com/eddiethedean/hedron/issues/507); related
   [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506);
-  no runtime)
+  published `v0.51.0`)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
@@ -126,7 +126,7 @@ status commentary, not a satisfied release gate.
   [release-gate-0.48.toml](release-gate-0.48.toml) (Verified except `MORPH-048` Deferred),
   [release-gate-0.49.toml](release-gate-0.49.toml) (Verified; D-084),
   [release-gate-0.50.toml](release-gate-0.50.toml) (Verified; D-086),
-  [release-gate-0.51.toml](release-gate-0.51.toml) (Planned; D-088)
+  [release-gate-0.51.toml](release-gate-0.51.toml) (Verified; D-088)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.

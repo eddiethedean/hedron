@@ -129,7 +129,7 @@ def test_missing_extra_pin_matches_current_train() -> None:
     from hedron_charts.limits import missing_extra
 
     err = missing_extra("plotly")
-    assert "hedron[charts]>=0.50.1,<0.51" in err.diagnostic.remediation
+    assert "hedron[charts]>=0.51.0,<0.52" in err.diagnostic.remediation
     assert "0.38.0" not in err.diagnostic.remediation
 
 

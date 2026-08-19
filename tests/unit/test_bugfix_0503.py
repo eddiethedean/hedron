@@ -129,12 +129,12 @@ def test_normalize_rows_does_not_reveal_secrets() -> None:
     assert rows[0]["token"] == "***"
 
 
-def test_scaffold_uses_pypi_floor_while_deferred() -> None:
+def test_scaffold_uses_uploaded_train_pin() -> None:
     _release_pin_bounds.cache_clear()
     floor, ceiling = _release_pin_bounds()
-    assert floor == "0.50.1"
-    assert ceiling == "0.51"
-    assert _scaffold_dep("hedron") == "hedron>=0.50.1,<0.51"
+    assert floor == "0.51.0"
+    assert ceiling == "0.52"
+    assert _scaffold_dep("hedron") == "hedron>=0.51.0,<0.52"
     _release_pin_bounds.cache_clear()
 
 

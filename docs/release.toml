@@ -14,10 +14,10 @@ previous_security_until = "2027-08-19"
 # When registry_status is "deferred", first-run copy-paste must use this public-index
 # pin (never the unpublished in-tree pin). When "uploaded", pypi_version must equal
 # published_version and first-run commands use the same pin as Installation.
-pypi_version = "0.50.1"
-pypi_pin_floor = "0.50.1"
-pypi_pin_ceiling = "0.51"
-registry_status = "deferred"
+pypi_version = "0.51.0"
+pypi_pin_floor = "0.51.0"
+pypi_pin_ceiling = "0.52"
+registry_status = "uploaded"
 
 [satellites]
 minimum_version = "0.1.10"

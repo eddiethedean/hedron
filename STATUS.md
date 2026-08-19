@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.51 **in-tree** as `v0.51.0` (2026-08-19); Git tag and PyPI upload deferred. Latest on PyPI is `v0.50.1`. Phase 0.50 Explorer architecture remains Published in-tree as `v0.50.3`.
+**Roadmap position:** phase 0.51 **Published** as `v0.51.0` (2026-08-19) on PyPI. Phase 0.50 Explorer architecture remains Published in-tree as `v0.50.3`.
 Living tip = `v0.51.0`.
 **Date:** 2026-08-19
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -24,9 +24,8 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 **Phase focus:** Living train is **0.51** (D-087 / D-088 / RFC-0078) — curated extras
 depth, `ExtrasFeature`, HTMX host lifecycle, sandbox opt-in, and companion
 [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506).
-`release-gate-0.51.toml` sixteen Verified rows; living tip `v0.51.0` in-tree (PyPI `v0.50.1`).
-Tracking [#507](https://github.com/eddiethedean/hedron/issues/507) owns extras gates until
-publish assets exist. Prior in-tree **0.50** Explorer architecture
+`release-gate-0.51.toml` sixteen Verified rows; living tip `v0.51.0` on PyPI.
+Tracking [#507](https://github.com/eddiethedean/hedron/issues/507). Prior in-tree **0.50** Explorer architecture
 (D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501)).
 Prior Published **0.49** FastAPI/Pydantic convergence
 (D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380)).
@@ -425,7 +424,7 @@ schedule `1.0`, promote every experimental subfeature, or expand Supported live 
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.
 [#373](https://github.com/eddiethedean/hedron/issues/373) and
 [#350](https://github.com/eddiethedean/hedron/issues/350) remain open for 0.48 / 0.47 publish assets.
-Phase **0.51** curated extras shipped in-tree as `v0.51.0` (D-087 / D-088 / RFC-0078;
+Phase **0.51** curated extras shipped as `v0.51.0` on PyPI (D-087 / D-088 / RFC-0078;
 [#507](https://github.com/eddiethedean/hedron/issues/507)); companion
 [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
-closed as flagship authoring. Tag/PyPI deferred.
+closed as flagship authoring.

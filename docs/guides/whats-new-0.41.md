@@ -1,7 +1,7 @@
 # What's new in Hedron 0.41
 
 **Published** as `v0.41.0` (historical). Historical pin: `hedron>=0.41.0,<0.42`.
-For new apps, use `hedron>=0.50.1,<0.51`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use `hedron>=0.51.0,<0.52`; see [What’s new in 0.51](whats-new-0.51.md).
 
 Phase **0.41** adds allowlisted typed browser composition, subject-bound draft transfer,
 progressive navigation/restoration, content-free traces, and element/region failure isolation

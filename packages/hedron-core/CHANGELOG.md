@@ -6,7 +6,7 @@
 - Password visibility toggle, `SwapReveal`, `BusyRegion` / `Hx(busy=...)`.
 
 ### Changed
-- Coordinated train tip `0.51.0` (in-tree; tag/PyPI deferred).
+- Coordinated train tip `0.51.0`.
 
 ## [0.50.3] — 2026-08-19
 

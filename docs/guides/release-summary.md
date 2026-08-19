@@ -8,11 +8,11 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 
 | Item | Value |
 |---|---|
-| In-tree | **v0.50.3** (`hedron` / Beta train packages `0.50.3`) |
-| PyPI latest | **v0.50.1** (`hedron` / Beta train `0.50.1`; independent Beta `hedron-maps` `0.1.0`; `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.1`; `fastapi-workbench` `1.0.0`) |
-| Pin (PyPI) | `hedron>=0.50.1,<0.51` |
+| In-tree | **v0.51.0** (`hedron` / Beta train packages `0.51.0`) |
+| PyPI latest | **v0.51.0** (`hedron` / Beta train `0.51.0`; independent Beta `hedron-maps` `0.1.0`; `hedron-charts` `0.2.0`; `hedron-mcp` `0.2.1`; `fastapi-workbench` `1.0.0`) |
+| Pin (PyPI) | `hedron>=0.51.0,<0.52` |
 | Charts satellite | `hedron-charts>=0.2.0,<0.3` |
-| Gate checker | `python scripts/check_release_gate.py 0.50.3` |
+| Gate checker | `python scripts/check_release_gate.py 0.51.0` |
 | Packet verify | `python scripts/verify_pkg_50.py` |
 
 Adopter-facing notes: [What’s new in 0.50](whats-new-0.50.md) ·

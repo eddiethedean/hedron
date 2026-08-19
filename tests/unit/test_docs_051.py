@@ -15,4 +15,3 @@ def test_docs_name_sandbox_opt_in_and_companion() -> None:
         assert "experimental" in text.lower()
     assert "#504" in whats or "password" in whats.lower()
     assert "0.51.0" in whats
-    assert "0.50.1" in whats

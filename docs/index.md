@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · 0.50.1 on PyPI</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · 0.51.0 on PyPI</div>
 
 # Build interactive web apps in Python.
 
@@ -19,7 +19,7 @@ open localhost:8000 → click **Refresh status**.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "hedron>=0.50.1,<0.51" hedron new my-hedron-app
+uvx --from "hedron>=0.51.0,<0.52" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 # Open http://127.0.0.1:8000 and click Refresh status
 ```
@@ -98,7 +98,7 @@ without assembling a hand-rolled Jinja stack.
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.50.1,<0.51`.
+Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.51.0,<0.52`.
 For production adoption, continue with
 [What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
 </details>

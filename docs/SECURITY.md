@@ -26,9 +26,6 @@ is required. There is **no contractual patch SLA**.
 | `0.8.x` | No; final HDN-capable line, retained only for historical migration context |
 | `< 0.8` | No |
 
-PyPI currently serves `0.50.1` while in-tree `v0.51.0` is deferred. First-run copy-paste
-stays `hedron>=0.50.1,<0.51` until the upload lands.
-
 ## Reporting a vulnerability
 
 Please **do not** open a public GitHub issue for security vulnerabilities.

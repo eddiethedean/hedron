@@ -48,7 +48,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0` on PyPI; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
 | **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.1` on PyPI; in-tree `v0.50.3` tag deferred; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
-| **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **In-tree `v0.51.0`** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); tag/PyPI deferred; related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
+| **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Published** (`v0.51.0` on PyPI; RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
 | **0.52** | Conformance kit and independent Node/Java runtime credibility | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 
@@ -102,7 +102,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 
 ### Honest gaps on the current train (0.51.x)
 
-- Current **published** train is **0.51.x** (`v0.50.1` on PyPI; in-tree tip `v0.51.0`)
+- Current **published** train is **0.51.x** (`v0.51.0` on PyPI)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -5025,7 +5025,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0060 Web Component platform program | 0.36–0.42 (**Accepted**; D-064 / D-066 rephase; 0.36 **Published**) |
 | 0069 High-fidelity declarative charts | 0.38 (**Accepted**; D-066; Stage 0 contract refined against `v0.38.0`; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
 | 0077 Explorer architecture | 0.50 (**Accepted**; D-085 / D-086; [#501](https://github.com/eddiethedean/hedron/issues/501)) |
-| 0078 Curated extras depth and lifecycle | 0.51 (**Accepted**; D-087 / D-088; in-tree `v0.51.0`; [#507](https://github.com/eddiethedean/hedron/issues/507); tag/PyPI deferred) |
+| 0078 Curated extras depth and lifecycle | 0.51 (**Accepted**; D-087 / D-088; `v0.51.0` on PyPI; [#507](https://github.com/eddiethedean/hedron/issues/507)) |
 
 ## Open GitHub issue ownership (0.13+)
 

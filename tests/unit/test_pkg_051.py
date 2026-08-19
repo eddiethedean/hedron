@@ -23,7 +23,7 @@ def test_packet_and_sandbox_entry() -> None:
     release = tomllib.loads(Path("docs/release.toml").read_text(encoding="utf-8"))["release"]
     assert release["train"] == "0.51"
     assert release["published_version"] == "0.51.0"
-    assert release["pypi_version"] == "0.50.1"
-    assert release["registry_status"] == "deferred"
-    assert release["pypi_pin_ceiling"] == "0.51"
+    assert release["pypi_version"] == "0.51.0"
+    assert release["registry_status"] == "uploaded"
+    assert release["pypi_pin_ceiling"] == "0.52"
     assert release["previous_version"] == "0.50.3"

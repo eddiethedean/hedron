@@ -158,7 +158,7 @@ Load the plugin in CI via the same entry-point path production uses.
 ## 8. Publish and version
 
 - Pin against `hedron-core` (and optionally `hedron`) with an upper bound matching the
-  adopter train (for example `>=0.50.1,<0.51`).
+  adopter train (for example `>=0.51.0,<0.52`).
 - Declare license metadata; do not pull FastAPI/Flask/Django into a core-facing package.
 - Ship a CHANGELOG and document Experimental vs Supported claims honestly
   ([What’s ready](whats-ready.md)).

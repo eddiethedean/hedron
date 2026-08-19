@@ -1,7 +1,7 @@
 # What's new in 0.50
 
-Pin `hedron>=0.50.1,<0.51` on PyPI until the 0.50.3 wheel lands. In-tree tip is
-**0.50.3**.
+For new apps, pin `hedron>=0.51.0,<0.52`. The 0.50 train last uploaded on PyPI as
+**0.50.1**; in-tree 0.50 patches remained **0.50.3**.
 
 ## 0.50.3 patch
 

@@ -131,10 +131,12 @@ def _check_versions(*, allow_planned: bool) -> None:
         )
     if workspace != RELEASE_CANDIDATE:
         raise SystemExit(f"workspace version must be {RELEASE_CANDIDATE}; found {workspace}")
-    if pypi != "0.50.1":
-        raise SystemExit(f"pypi_version must stay 0.50.1 until upload; found {pypi!r}")
-    if status != "deferred":
-        raise SystemExit(f"registry_status must be deferred; found {status!r}")
+    if pypi != RELEASE_CANDIDATE:
+        raise SystemExit(
+            f"pypi_version must be {RELEASE_CANDIDATE} after upload; found {pypi!r}"
+        )
+    if status != "uploaded":
+        raise SystemExit(f"registry_status must be uploaded; found {status!r}")
     print(f"ok: version honesty (published {published}, pypi {pypi}, {status})")
 
 

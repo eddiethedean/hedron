@@ -4,9 +4,8 @@ status: beta
 
 # Curated extras (0.51)
 
-Phase 0.51 (D-087 / D-088 / RFC-0078) shipped in-tree as **`v0.51.0`**.
-PyPI remains **`v0.50.1`** until upload. Tracking
-[#507](https://github.com/eddiethedean/hedron/issues/507). Companion authoring
+Phase 0.51 (D-087 / D-088 / RFC-0078) shipped as **`v0.51.0`** on PyPI.
+Tracking [#507](https://github.com/eddiethedean/hedron/issues/507). Companion authoring
 [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
 is flagship HTMX, not extras gates.
 

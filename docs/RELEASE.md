@@ -1,15 +1,11 @@
 # Cutting a Hedron release
 
 This is the living maintainer runbook for the `0.51.x` train. Historical cut records
-live under `docs/archive/`. The published in-tree train is `v0.51.0`. PyPI currently
-serves `hedron` `0.50.1` (Git tag `v0.50.1`) until the `v0.51.0` upload lands.
+live under `docs/archive/`. The published train is `v0.51.0` on PyPI (Git tag
+`v0.51.0`).
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag.
-
-**Do not tag `v0.51.0` yet.** Keep `registry_status = "deferred"`. Issue
-[#507](https://github.com/eddiethedean/hedron/issues/507) owns the tag and PyPI
-upload. Do not run `.github/workflows/release.yml` until that upload is intended.
 
 ## Preconditions
 
@@ -21,9 +17,9 @@ upload. Do not run `.github/workflows/release.yml` until that upload is intended
    `scripts/verify_pkg_51.py` (omit `--allow-planned`).
 4. The repository and PyPI trusted-publishing configuration are controlled by active
    maintainers; the release uses the GitHub Actions workflow.
-5. The tag `v0.51.0` does not already exist locally or on the remote.
-6. Keep `registry_status = "deferred"` and `pypi_version = "0.50.1"` until PyPI
-   actually serves `0.51.0`. First-run copy-paste must keep using `pypi_pin_*`.
+5. The next patch tag does not already exist locally or on the remote.
+6. After a successful upload, `registry_status = "uploaded"` and `pypi_version`
+   equals `published_version`. First-run copy-paste uses the train pin.
 
 ## Local release candidate
 
@@ -40,13 +36,13 @@ uv run python scripts/verify_pkg_50.py
 
 ## Tag and publish
 
-Do **not** run this section until #507 is ready to close with a real upload.
+`v0.51.0` is already tagged and published. For a later patch:
 
 ```bash
 git fetch --tags origin
-git rev-parse v0.51.0 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
-git tag -a v0.51.0 -m "Hedron 0.51.0"
-git push origin v0.51.0
+git rev-parse v0.51.1 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
+git tag -a v0.51.1 -m "Hedron 0.51.1"
+git push origin v0.51.1
 ```
 
 Pushing `v0.51.0` runs `.github/workflows/release.yml`, which re-runs CI, publishes

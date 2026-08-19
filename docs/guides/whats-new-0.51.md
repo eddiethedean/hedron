@@ -1,8 +1,7 @@
 # What's new in 0.51
 
-Pin `hedron>=0.50.1,<0.51` on PyPI until the 0.51.0 wheel lands. In-tree tip is
-**0.51.0**. Tracking [#507](https://github.com/eddiethedean/hedron/issues/507)
-owns the Git tag and PyPI upload.
+Published **0.51.0** on PyPI. Pin `hedron>=0.51.0,<0.52`. Tracking
+[#507](https://github.com/eddiethedean/hedron/issues/507).
 
 ## 0.51.0
 

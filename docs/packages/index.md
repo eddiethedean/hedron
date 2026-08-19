@@ -40,7 +40,7 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |
 
 ```bash
-pip install "hedron[data,dev,posit]>=0.50.1,<0.51"
+pip install "hedron[data,dev,posit]>=0.51.0,<0.52"
 ```
 
 ## Tooling-grade and independent Beta lines
@@ -60,7 +60,7 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 
 ```bash
-pip install "hedron[charts]>=0.50.1,<0.51"
+pip install "hedron[charts]>=0.51.0,<0.52"
 pip install "hedron-sample-kit>=0.1.10,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 
