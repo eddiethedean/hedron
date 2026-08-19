@@ -27,7 +27,9 @@ parity, bounded lab, read-only package health, and companion HTMX authoring
 Tracking [#501](https://github.com/eddiethedean/hedron/issues/501) owns every Explorer 0.50
 gate until publish assets exist. Prior Published **0.49** FastAPI/Pydantic convergence
 (D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380)).
-Phase **0.51** curated extras remains **Planned**.
+Phase **0.51** curated extras remains **Planned**; companion authoring
+[#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
+is bound to that phase.
 Prior Published **0.48** HTMX extensions (`MORPH-048` Deferred) / **0.47** first-class maps (`hedron-maps` `0.1.0`) /
 **0.46** package-native typed workflows /
 **0.45** typed interaction catalog / **0.44** type-driven authoring /
@@ -422,3 +424,6 @@ schedule `1.0`, promote every experimental subfeature, or expand Supported live 
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.
 [#373](https://github.com/eddiethedean/hedron/issues/373) and
 [#350](https://github.com/eddiethedean/hedron/issues/350) remain open for 0.48 / 0.47 publish assets.
+Phase **0.51** curated extras remains **Planned** (owning RFC/issue still required);
+related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
+are bound as companion authoring and do not lock extras gate IDs.

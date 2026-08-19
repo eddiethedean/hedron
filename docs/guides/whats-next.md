@@ -10,7 +10,7 @@ Install pins: [Installation](../getting-started/installation.md).
 
 | Topic | Disposition |
 |---|---|
-| Curated extras depth / experimental-UI (0.51) | **Planned**; owning RFC required |
+| Curated extras depth / experimental-UI (0.51) | **Planned**; owning RFC required; companion [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506) |
 | Conformance kit and Node/Java runtime (0.52) | **Planned**; owning RFC required |
 | Notebook / simulation / sample-kit refresh (0.53) | **Planned**; owning RFC required |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |

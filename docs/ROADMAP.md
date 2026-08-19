@@ -48,7 +48,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.48** | First-class HTMX extension integration: declared activation, demand-driven assets, SSE/head-support/preload vertical slices, and evidence-gated morphing | **Published** (`v0.48.0` on PyPI; D-080 / D-083 / RFC-0075; [#373](https://github.com/eddiethedean/hedron/issues/373); `MORPH-048` Deferred) |
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
 | **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.1` on PyPI; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
-| **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
+| **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Planned** (package-quality audit; owning RFC/issue required before implementation; related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
 | **0.52** | Conformance kit and independent Node/Java runtime credibility | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 | **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 
@@ -4422,7 +4422,9 @@ related authoring [#496](https://github.com/eddiethedean/hedron/issues/496)–[#
 ## 0.51 — Curated extras depth and lifecycle closure (`v0.51.0`)
 
 **Status:** Planned. An owning RFC/issue must lock the Supported component inventory and record an
-explicit disposition for every Experimental UI surface before implementation.
+explicit disposition for every Experimental UI surface before implementation. Companion authoring
+[#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
+is bound to this phase; those issues do not substitute for the extras RFC or lock extras gate IDs.
 
 **Outcome:** `hedron-extras` is a genuinely curated package: each admitted component is complete
 across server fallback, browser lifecycle, accessibility, security, theming, testing, and upgrade,
@@ -4447,6 +4449,19 @@ while components that cannot meet that bar remain clearly quarantined or are rem
 - Decide `CodeEditor`, `TerminalView`, joystick/device bridges, and the browser-Python sandbox
   individually: graduate behind complete evidence, retain in `experimental-ui`, deprecate, or
   remove. A host stub or package opt-in alone is not a graduation argument.
+
+### Related 0.51 authoring issues
+
+These close remaining shell-JS gaps for password fields, HTMX swap polish, and non-form request
+busy state. They stack on RFC-0009 / RFC-0070 / RFC-0075 and the 0.50 authoring primitives. They
+are **not** extras inventory/descriptor gates (`INVENTORY-051`…`REGRESS-051`) and they do not
+graduate Experimental UI.
+
+| Issue | Deliverable |
+|---|---|
+| [#504](https://github.com/eddiethedean/hedron/issues/504) | Built-in password visibility toggle (accessible show/hide adornment, keyboard support, no custom app JS). |
+| [#505](https://github.com/eddiethedean/hedron/issues/505) | Declarative page reveal / swap transition helper tied to HTMX lifecycle (opt-in on a region or layout wrapper). |
+| [#506](https://github.com/eddiethedean/hedron/issues/506) | Framework-level busy fallback for generic HTMX requests (region/document `aria-busy` and indicator hook, not only built-in forms). |
 
 ### Product and ecosystem workstreams
 
@@ -4506,6 +4521,8 @@ while components that cannot meet that bar remain clearly quarantined or are rem
   dependency or asset leakage.
 - The component gallery demonstrates empty, loading, error, disabled, read-only, maximum-size,
   narrow-screen, high-contrast, and failed-enhancement states.
+- Companion authoring [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)
+  closed or explicitly deferred.
 
 ## 0.52 — Cross-language conformance authority (`v0.52.0`)
 
@@ -4778,7 +4795,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |
 | Plugin discovery, compatibility, capabilities, lifecycle, rollback | 0.4 | Plugins are executable packages, not sandboxed data. |
 | Curated optional `hedron-extras` package and per-feature capability manifests | 0.16 | Built only on public package/plugin contracts; no privileged runtime or eager dependency bundle. |
-| Versioned Extras feature descriptors, bounded workbench primitives/providers, JSON/image intent workflows, lifecycle closure, and Experimental UI dispositions | 0.51 | Every admitted component requires fallback, browser/a11y/security/performance evidence and optional-dependency isolation. |
+| Versioned Extras feature descriptors, bounded workbench primitives/providers, JSON/image intent workflows, lifecycle closure, and Experimental UI dispositions | 0.51 | Every admitted component requires fallback, browser/a11y/security/performance evidence and optional-dependency isolation. Companion authoring [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506) (password toggle, swap reveal, non-form busy). |
 | Modern sample-kit variants, package doctor, simulator recordings/parity, notebook display handles, and real-server handoff | 0.53 | One public-contract authoring loop with explicit simulation divergence and localhost-only notebook security defaults. |
 | Dash migration inventory, notebook preview helper, and dashboard graph diagnostics | 0.17 | Migration is reviewable guidance, notebook previews are development-only, and Explorer shows graph timing/payload/failures. |
 | Gradio interoperability, migration inventory, interaction recorder, and inference/workflow diagnostics | 0.18 | Optional protocol adapter and reviewable guidance; credentials and sensitive values are never recorded. |
