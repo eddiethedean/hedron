@@ -178,7 +178,7 @@ jobs:
     name: Browser HTMX (${{ matrix.browser }})
     needs: changes
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     # PRs: Chromium only. Main/dispatch: Chromium + Firefox + WebKit.
     # Docs-only PRs skip the browser matrix (the quality job runs `docs` instead of wheels).
     if: >

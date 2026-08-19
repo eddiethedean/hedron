@@ -76,7 +76,7 @@ jobs:
     name: Browser HTMX (${{ matrix.browser }})
     if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
     strategy:
