@@ -611,16 +611,20 @@ def _toast_oob(toast: NodeLike | str | None) -> tuple[OobUpdate, ...]:
     return (OobUpdate(content=content, element_id="hedron-toast", swap="innerHTML"),)
 
 
-def _ensure_ownership(target: UpdateTarget, expected_app_id: str | None) -> None:
+def _ensure_app_id(app_id: str, expected_app_id: str | None) -> None:
     if expected_app_id is None:
         return
-    if not target.app_id or target.app_id != expected_app_id:
+    if not app_id or app_id != expected_app_id:
         raise error(
             HED_UPDATE_0003,
             title="Foreign or unregistered handle",
             explanation="Patch/refresh target is not owned by the active application.",
             remediation="Use handles registered on this app; do not forge metadata.",
         )
+
+
+def _ensure_ownership(target: UpdateTarget, expected_app_id: str | None) -> None:
+    _ensure_app_id(target.app_id, expected_app_id)
 
 
 def _ensure_result_ownership(result: InteractionResult, expected_app_id: str | None) -> None:
@@ -648,16 +652,7 @@ def _ensure_result_ownership(result: InteractionResult, expected_app_id: str | N
         )
         if not referenced:
             continue
-        _ensure_ownership(
-            PortableTarget(
-                logical_id=descriptor.logical_id,
-                dom_id=host,
-                path=descriptor.path or "/",
-                app_id=descriptor.app_id,
-                region=FragmentRegion(id=host, selector=f"#{host}"),
-            ),
-            expected_app_id,
-        )
+        _ensure_app_id(descriptor.app_id, expected_app_id)
     if refresh_keys - matched_refresh:
         raise error(
             HED_UPDATE_0003,
