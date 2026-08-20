@@ -42,7 +42,10 @@ ISSUE_TESTS: dict[int, str] = {
     98: f"{_R}::test_issue_98_rejects_non_object_json_frames",
     103: f"{_U}/test_adaptive_concurrency.py::test_issue_103_cancels_siblings_on_overload",
     106: f"{_R}::test_issue_106_connection_registry_single_flight",
-    135: f"{_A}/fastapi_workbench/test_resolve.py::test_issue_135_resolved_public_base_preserves_mount_path",
+    135: (
+        f"{_A}/fastapi_workbench/test_resolve.py::"
+        "test_issue_135_resolved_public_base_preserves_mount_path"
+    ),
     149: f"{_R}::test_issue_149_session_state_refreshes_after_direct_session_mutation",
     150: f"{_R}::test_issue_150_duplicate_session_state_dependencies_share_cache",
     185: f"{_R}::test_explicit_mount_hint_accepts_hedron_root_path",
@@ -203,7 +206,7 @@ def test_issue_202_url_reversal_uses_boundary_safe_mount_prefix() -> None:
         else:
             set_urlconf("tests.adapters.django.urls")
             clear_url_caches()
-    except Exception:
+    except Exception:  # noqa: BLE001
         pytest.skip("Django not available")
 
     django_rev = DjangoUrlReverser()
