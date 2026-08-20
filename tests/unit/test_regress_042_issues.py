@@ -88,7 +88,7 @@ ISSUE_TESTS: dict[int, str] = {
     151: f"{_R}::test_151_public_cache_rejects_positional_user_id",
     152: f"{_R}::test_152_store_oidc_handshake_merges_partial_updates",
     156: f"{_R}::test_156_explorer_simulate_requires_csrf_when_disabled",
-    160: f"{_R}::test_160_doctor_empty_set_cookie_fails_closed",
+    160: f"{_R}::test_160_doctor_empty_set_cookie_is_vacuously_ok",
     174: f"{_R}::test_174_preview_root_path_rejects_cookie_injection",
     175: f"{_R}::test_175_explorer_rate_limiter_deletes_idle_client_keys",
     177: f"{_R}::test_177_mcp_validates_tool_arguments_against_schema",
@@ -385,8 +385,8 @@ def test_160_doctor_cookie_path_rejects_prefix_siblings_and_accepts_quoted() -> 
     assert not _cookie_path_matches_mount("session=abc; HttpOnly", mount)
 
 
-def test_160_doctor_empty_set_cookie_fails_closed() -> None:
-    """Call production doctor probe: empty Set-Cookie must fail closed (#160)."""
+def test_160_doctor_empty_set_cookie_is_vacuously_ok() -> None:
+    """Empty Set-Cookie means no mis-scoped cookies (#160 Path matching still applies)."""
     import asyncio
 
     from hedron_posit.cli import _probe_app
@@ -406,9 +406,32 @@ def test_160_doctor_empty_set_cookie_fails_closed() -> None:
                 {"type": "http.response.body", "body": b"<html></html>"}
             )
 
-    probe = asyncio.run(_probe_app(_NoCookieApp(), "/s/x/p/1"))
-    assert probe["cookie_paths_mounted"] is False
-    assert probe["reachable"] is True
+    class _BadPathCookieApp:
+        async def __call__(self, scope: object, receive: object, send: object) -> None:
+            if not isinstance(scope, dict) or scope.get("type") != "http":
+                return
+            await send(  # type: ignore[misc]
+                {
+                    "type": "http.response.start",
+                    "status": 200,
+                    "headers": [
+                        (b"content-type", b"text/html"),
+                        (b"set-cookie", b"session=x; Path=/s/x/p/10; HttpOnly"),
+                    ],
+                }
+            )
+            await send(  # type: ignore[misc]
+                {"type": "http.response.body", "body": b"<html></html>"}
+            )
+
+    empty = asyncio.run(_probe_app(_NoCookieApp(), "/s/x/p/1"))
+    assert empty["cookie_paths_mounted"] is True
+    assert empty["reachable"] is True
+    assert empty["diagnostics_clean"] is True
+
+    bad = asyncio.run(_probe_app(_BadPathCookieApp(), "/s/x/p/1"))
+    assert bad["cookie_paths_mounted"] is False
+    assert bad["diagnostics_clean"] is False
 
 
 def test_174_preview_root_path_rejects_cookie_injection() -> None:

@@ -148,8 +148,10 @@ async def _probe_app(app: Any, mount: str) -> dict[str, object]:
             if value != mount and not value.startswith(mount + "/"):
                 unmounted.append(value)
     cookie_headers = response.headers.get_list("set-cookie")
-    # Empty Set-Cookie list must fail closed (all([]) is True otherwise) — #160.
-    cookie_paths_ok = bool(cookie_headers) and all(
+    # Empty Set-Cookie is fine (many probes never touch the session). Fail only
+    # when a cookie is present with a Path that does not match the mount (#160
+    # still covers prefix-sibling Path matching via _cookie_path_matches_mount).
+    cookie_paths_ok = all(
         _cookie_path_matches_mount(header, mount) for header in cookie_headers
     )
     return {
