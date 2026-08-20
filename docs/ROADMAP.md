@@ -51,7 +51,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Published** (`v0.52.0` on PyPI; RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
 | **0.52** | Cross-language conformance authority; HedronPosit deployment lifecycle companions | **Published** in-tree (`v0.52.0`; Verified gates; tag/PyPI deferred; RFC-0079 / D-089 / D-090; [#522](https://github.com/eddiethedean/hedron/issues/522); companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
 | **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Verified** / **Published** in-tree (`v0.53.0`; Verified gates; tag/PyPI deferred; [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md), D-091/D-092, [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
-| **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
+| **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Planned** (package-quality audit; owning RFC/issue required before implementation; companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -4768,11 +4768,35 @@ theme surfaces, flat namespace hunting, and ad-hoc extras/fleet triage. Tracking
 
 **Status:** Planned. The three packages remain tooling-grade unless their own acceptance inventories
 justify a narrower Supported claim; this phase does not turn notebook preview into a production
-server.
+server. Companion application chrome / design-system issues
+[#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)
+are bound to this phase and do not reopen 0.53 Application DX gates or schedule `1.0`.
 
 **Outcome:** The notebook preview, offline simulator, and sample plugin form a coherent modern
 authoring loop: preview real package workflows, understand simulation limits, and copy a credible
-third-party package without depending on private monorepo behavior.
+third-party package without depending on private monorepo behavior. Companion workstreams make a
+Data Mover-class application front end reproducible with Hedron components and Python configuration
+while Hedron owns CSS (tracking [#528](https://github.com/eddiethedean/hedron/issues/528)).
+
+### Companion workstreams (#523–#537)
+
+| Issue | Workstream |
+|---|---|
+| [#523](https://github.com/eddiethedean/hedron/issues/523) | Pythonic responsive page-layout primitives for application workspaces |
+| [#524](https://github.com/eddiethedean/hedron/issues/524) | Composed, responsive application chrome for `AppShell` |
+| [#525](https://github.com/eddiethedean/hedron/issues/525) | Expand `Theme` into a Python-native application design-system API |
+| [#526](https://github.com/eddiethedean/hedron/issues/526) | Self-contained `SkipLink` and `RequestIndicator` shell utilities |
+| [#527](https://github.com/eddiethedean/hedron/issues/527) | Declarative responsive `ProcessFlow` for operational workflows |
+| [#528](https://github.com/eddiethedean/hedron/issues/528) | Tracking: Data Mover-class front end with Python and zero application CSS |
+| [#529](https://github.com/eddiethedean/hedron/issues/529) | First-class `Icon` component and coherent iconography system |
+| [#530](https://github.com/eddiethedean/hedron/issues/530) | Semantic typography roles and Python-managed font assets |
+| [#531](https://github.com/eddiethedean/hedron/issues/531) | Accessible semantic palette compiler and contrast diagnostics |
+| [#532](https://github.com/eddiethedean/hedron/issues/532) | Theme authoring diagnostics, Explorer state matrices, and visual diffs |
+| [#533](https://github.com/eddiethedean/hedron/issues/533) | Shared size, density, appearance, and emphasis contract across components |
+| [#534](https://github.com/eddiethedean/hedron/issues/534) | Theme inheritance, scoped themes, and distributable theme packages |
+| [#535](https://github.com/eddiethedean/hedron/issues/535) | Unified overlay, elevation, and stacking-layer styling contract |
+| [#536](https://github.com/eddiethedean/hedron/issues/536) | Unified loading, empty, error, permission, and result-state presentation |
+| [#537](https://github.com/eddiethedean/hedron/issues/537) | Production-grade static `Table` and `DescriptionList` presentation APIs |
 
 ### Scope
 
@@ -4958,6 +4982,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Versioned Extras feature descriptors, bounded workbench primitives/providers, JSON/image intent workflows, lifecycle closure, and Experimental UI dispositions | 0.51 | Every admitted component requires fallback, browser/a11y/security/performance evidence and optional-dependency isolation. Companion authoring [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506) (password toggle, swap reveal, non-form busy). |
 | Application asset registry, actionable diagnostics, structured route/effect graphs, long-running operation workflow, catalog test generation, semantic theming, API discovery, and fleet doctor | 0.53 | Downstream DX packet [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521); fleet doctor complements 0.54 external-author `DOCTOR-054`. |
 | Modern sample-kit variants, package doctor, simulator recordings/parity, notebook display handles, and real-server handoff | 0.54 | One public-contract authoring loop with explicit simulation divergence and localhost-only notebook security defaults. |
+| Python-native application chrome, layout, theme/design-system, iconography, and presentation contracts | 0.54 | Companion packet [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537); tracking [#528](https://github.com/eddiethedean/hedron/issues/528). |
 | Dash migration inventory, notebook preview helper, and dashboard graph diagnostics | 0.17 | Migration is reviewable guidance, notebook previews are development-only, and Explorer shows graph timing/payload/failures. |
 | Gradio interoperability, migration inventory, interaction recorder, and inference/workflow diagnostics | 0.18 | Optional protocol adapter and reviewable guidance; credentials and sensitive values are never recorded. |
 | ATAG-oriented authoring assistance and Explorer accessibility review workspace | 0.19 | Source-mapped checking/repair guidance, accessibility tree, focus/live-region traces, visual modes, and manual status. |
@@ -5264,6 +5289,21 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#519](https://github.com/eddiethedean/hedron/issues/519) | Semantic-only theming contract and visual conformance workflow | 0.53 |
 | [#520](https://github.com/eddiethedean/hedron/issues/520) | API-surface discovery tools and curated import guidance | 0.53 |
 | [#521](https://github.com/eddiethedean/hedron/issues/521) | Package-fleet doctor for extras, compatibility, and assets | 0.53 |
+| [#523](https://github.com/eddiethedean/hedron/issues/523) | Pythonic responsive page-layout primitives for application workspaces | 0.54 |
+| [#524](https://github.com/eddiethedean/hedron/issues/524) | Composed, responsive application chrome for AppShell | 0.54 |
+| [#525](https://github.com/eddiethedean/hedron/issues/525) | Expand Theme into a Python-native application design-system API | 0.54 |
+| [#526](https://github.com/eddiethedean/hedron/issues/526) | Self-contained SkipLink and RequestIndicator shell utilities | 0.54 |
+| [#527](https://github.com/eddiethedean/hedron/issues/527) | Declarative responsive ProcessFlow for operational workflows | 0.54 |
+| [#528](https://github.com/eddiethedean/hedron/issues/528) | Tracking: Data Mover-class front end with Python and zero application CSS | 0.54 |
+| [#529](https://github.com/eddiethedean/hedron/issues/529) | First-class Icon component and coherent iconography system | 0.54 |
+| [#530](https://github.com/eddiethedean/hedron/issues/530) | Semantic typography roles and Python-managed font assets | 0.54 |
+| [#531](https://github.com/eddiethedean/hedron/issues/531) | Accessible semantic palette compiler and contrast diagnostics | 0.54 |
+| [#532](https://github.com/eddiethedean/hedron/issues/532) | Theme authoring diagnostics, Explorer state matrices, and visual diffs | 0.54 |
+| [#533](https://github.com/eddiethedean/hedron/issues/533) | Shared size, density, appearance, and emphasis contract across components | 0.54 |
+| [#534](https://github.com/eddiethedean/hedron/issues/534) | Theme inheritance, scoped themes, and distributable theme packages | 0.54 |
+| [#535](https://github.com/eddiethedean/hedron/issues/535) | Unified overlay, elevation, and stacking-layer styling contract | 0.54 |
+| [#536](https://github.com/eddiethedean/hedron/issues/536) | Unified loading, empty, error, permission, and result-state presentation | 0.54 |
+| [#537](https://github.com/eddiethedean/hedron/issues/537) | Production-grade static Table and DescriptionList presentation APIs | 0.54 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 
