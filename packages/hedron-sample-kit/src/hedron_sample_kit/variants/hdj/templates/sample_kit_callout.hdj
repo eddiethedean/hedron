@@ -1,0 +1,6 @@
+---hdj
+version = 1
+kind = "fragment"
+profile = "standard"
+---
+{% hedron "Callout" message=view.message %}

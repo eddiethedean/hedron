@@ -1,0 +1,32 @@
+schema_version = 1
+phase = "0.54"
+state = "Verified"
+baseline = "v0.53.0"
+gates = ["ECOSYSTEM-054", "A11Y-054", "DOCS-054"]
+companion_issues = ["#523", "#524", "#525", "#526", "#527", "#528", "#529", "#530", "#531", "#532", "#533", "#534", "#535", "#536", "#537"]
+tracking_epic = "#528"
+
+[vocabulary]
+size = ["sm", "md", "lg"]
+density = ["compact", "comfortable", "spacious"]
+appearance = ["solid", "outline", "soft", "ghost"]
+emphasis = ["primary", "secondary", "danger", "neutral"]
+typography_roles = ["display", "eyebrow", "title", "body", "label", "caption", "mono"]
+state_kinds = ["loading", "empty", "error", "permission", "offline", "success"]
+
+[wave1]
+components = ["PageHeader", "SplitView", "FormGrid", "ActionGroup", "AppShell chrome slots", "Theme design-system fields", "SkipLink", "RequestIndicator", "ProcessFlow"]
+zero_app_css_fixture = true
+
+[wave2]
+components = ["Icon", "typography roles", "palette compiler", "theme CLI/Explorer diffs", "shared appearance contract", "Theme.extend/scoped/packages", "overlay elevation", "StateView family", "Table/DescriptionList presentation"]
+
+[theme]
+preserve = ["Theme", "REQUIRED_A11Y_TOKENS", "validate_theme_tokens", "default_styles"]
+python_design_system = true
+application_css_escape_hatch = false
+
+[reference_fixture]
+surfaces = ["sign_in", "pipeline", "settings", "team", "audit"]
+default_styles = true
+application_authored_css = false

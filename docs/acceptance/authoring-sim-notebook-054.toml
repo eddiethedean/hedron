@@ -1,0 +1,37 @@
+schema_version = 1
+phase = "0.54"
+state = "Verified"
+baseline = "v0.53.0"
+gates = ["SIM-054", "PARITY-054", "NOTEBOOK-054", "LIFECYCLE-054", "SECURITY-054", "TOPOLOGY-054"]
+
+[simulator]
+preserve = ["SimApp", "embed_demo", "require_supported_*", "UnsupportedSimFeatureError"]
+manifest = "machine_readable_subset_and_divergence"
+recording = true
+time_control = true
+scenario_format = "deterministic_shared_with_AppScenario_overlap"
+silent_unsupported = false
+limits = ["byte", "depth", "step", "time"]
+
+[parity]
+against = ["hedron_http", "browser"]
+fixtures = ["package_workflows", "validation_failures", "navigation", "asset_lifecycle"]
+
+[notebook]
+preserve = ["start_preview", "NotebookPreview", "PreviewTokenGate"]
+display_ops = ["update", "snapshot", "open_in_browser", "close"]
+static_fallbacks = ["html", "image", "text"]
+multi_view = true
+handoff_to_real_server = "opt_in_explicit_disposition"
+public_hosting = false
+
+[security]
+token_origin_host_proxy_port = true
+iframe_policy = true
+output_escaping = true
+redact_tokens_and_paths = true
+non_loopback_default = "rejected"
+
+[topology]
+print_disposition = true
+silent_public_promotion = false

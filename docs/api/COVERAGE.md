@@ -126,6 +126,9 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 | `SelectSlider`, `Sidebar`, `Skeleton`, `Spacer`, `Status`, `SubmitButton` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Table`, `Tabs`, `Text`, `TextArea`, `Theme`, `TimeInput` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Timeline`, `Title`, `ToggleSwitch`, `Tooltip` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `PageHeader`, `SplitView`, `FormGrid`, `ActionGroup` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
+| `SkipLink`, `RequestIndicator`, `ProcessFlow`, `FlowStep` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
+| `Icon`, `Typography`, `StateView`, `TableColumn` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
 
 ## Data and charts (extras)
 
@@ -146,6 +149,7 @@ SQLAlchemy adapter: `hedron_data.sqlalchemy_source.SQLAlchemyDataSource` — see
 | `SessionState`, `session_state` | [STATE.md](STATE.md) |
 | `ColorMode`, `ColorModeToggle`, `apply_color_mode_cookie`, `read_color_mode_preference`, `resolve_color_mode`, `resolved_theme_from_request` | [COLORMODE.md](COLORMODE.md), [THEME.md](THEME.md) |
 | `compile_css`, `styles_from_manifest`, `StyleSymbols` | [THEME.md](THEME.md), [CONFIGURATION.md](../CONFIGURATION.md) |
+| `compile_palette`, `contrast_diagnostics`, `contrast_ratio` | [THEME.md](THEME.md), [AUTHORING_LOOP.md](AUTHORING_LOOP.md) |
 | `get_icon`, `list_icons`, `register_icon`, `trusted_svg` | Component / theme docs; icons live in `hedron_core` |
 
 ## Async helpers and misc

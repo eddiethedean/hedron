@@ -240,6 +240,9 @@ nav:
     - Extend Hedron:
       - Use plugins: guides/plugin-consumer.md
       - Author plugins: guides/plugin-authoring.md
+      - Package author handbook (0.54): guides/package-author-handbook.md
+      - Simulator semantics (0.54): guides/simulator-semantics.md
+      - Notebook preview (0.54): guides/notebook-preview.md
       - Curated extras (0.51): api/EXTRAS.md
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Find answers:
@@ -284,6 +287,7 @@ nav:
     - Support: guides/support.md
     - Enterprise diligence: guides/enterprise-diligence.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.54: guides/whats-new-0.54.md
     - What's new in 0.51: guides/whats-new-0.51.md
     - Releases: guides/release-notes.md
     - Earlier releases: guides/whats-new-archive.md

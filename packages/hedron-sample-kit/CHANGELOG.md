@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0] — 2026-08-20
+
+### Changed
+
+- Significant upgrade for phase 0.54 authoring-loop tooling (RFC-0081 / D-093).
+- Independent Beta satellite tip `0.2.0`.
+
 ## [0.43.0] — 2026-08-16
 
 ### Changed

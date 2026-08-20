@@ -11,6 +11,17 @@ from hedron_conformance.author import (
     intentional_failure_examples,
     validate_author_manifest,
 )
+from hedron_conformance.authoring_loop import (
+    AUTHORING_LOOP_SCHEMA_VERSION,
+    HED_NOTEBOOK_TOKEN,
+    HED_NOTEBOOK_TOPOLOGY,
+    HED_PACKAGE_DOCTOR,
+    HED_SIM_LIMIT,
+    HED_SIM_UNSUPPORTED,
+    AuthoringLoopDiagnostic,
+    AuthoringLoopFixture,
+    validate_fixture_schema,
+)
 from hedron_conformance.compat import (
     CURRENT_CONTRACT_VERSION,
     PREVIOUS_CONTRACT_VERSION,
@@ -64,13 +75,19 @@ from hedron_conformance.schema import (
     load_bundled_fixtures,
 )
 
-__version__ = "0.53.0"
+__version__ = "0.54.0"
 
 __all__ = [
+    "AUTHORING_LOOP_SCHEMA_VERSION",
     "AUTHOR_KIT_VERSION",
     "CONTRACT_VERSION",
     "CURRENT_CONTRACT_VERSION",
     "FIXTURE_VERSION",
+    "HED_NOTEBOOK_TOKEN",
+    "HED_NOTEBOOK_TOPOLOGY",
+    "HED_PACKAGE_DOCTOR",
+    "HED_SIM_LIMIT",
+    "HED_SIM_UNSUPPORTED",
     "NO_NETWORK_MARKER",
     "PREVIOUS_CONTRACT_VERSION",
     "PROCESS_KILL_TIMEOUT_S",
@@ -78,6 +95,8 @@ __all__ = [
     "PROTOCOL_CURRENT",
     "PROTOCOL_PREVIOUS",
     "AuthorKitDiagnostic",
+    "AuthoringLoopDiagnostic",
+    "AuthoringLoopFixture",
     "Capability",
     "CapabilityResult",
     "CompatibilityDecision",
@@ -119,6 +138,7 @@ __all__ = [
     "to_junit",
     "to_sarif",
     "validate_author_manifest",
+    "validate_fixture_schema",
     "validate_suite_path",
     "verify_envelope_digest",
 ]

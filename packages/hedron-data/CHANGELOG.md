@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.54.0] — 2026-08-20
+
+### Changed
+
+- Coordinated train tip `0.54.0` (in-tree Published; tag/PyPI deferred).
+- Phase 0.54 authoring loop + application chrome (RFC-0081 / D-093 / D-094).
+
 ## [0.53.0] — 2026-08-20
 
 ### Added

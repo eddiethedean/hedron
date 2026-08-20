@@ -200,6 +200,7 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-CSS-0006` | `HED_CSS_INLINE` |
 | `HED-CSS-0007` | `HED_CSS_DUPLICATE` |
 | `HED-CSS-0008` | `HED_CSS_UNUSED` |
+| `HED-CSS-0009` | `HED_CSS_APPLICATION_AUTHORED` |
 
 ## HED-DATA
 
@@ -530,6 +531,7 @@ Phase 0.47 assigns the following families:
 | `HED-THEME-0004` | `HED_THEME_DUPLICATE` |
 | `HED-THEME-0005` | `HED_THEME_STYLE_CONTRACT` |
 | `HED-THEME-0006` | `HED_THEME_ELEMENT_TOKEN` |
+| `HED-THEME-0007` | `HED_THEME_CONTRAST` |
 
 ## HED-TRACE
 

@@ -16,9 +16,11 @@ from hedron.cli.commands.fleet import _cmd_fleet
 from hedron.cli.commands.graph import _cmd_graph
 from hedron.cli.commands.inspect import _cmd_inspect
 from hedron.cli.commands.new import _cmd_new
+from hedron.cli.commands.package import _cmd_package_doctor
 from hedron.cli.commands.routes import _cmd_components, _cmd_preview, _cmd_routes
 from hedron.cli.commands.run import _cmd_run_app
 from hedron.cli.commands.testgen import _cmd_testgen
+from hedron.cli.commands.theme import _cmd_style_check, _cmd_theme_check
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -177,6 +179,29 @@ def main(argv: list[str] | None = None) -> None:
     )
     fleet_p.set_defaults(func=_cmd_fleet)
 
+    package_p = sub.add_parser(
+        "package",
+        help="External package-author tooling for Hedron plugin distributions",
+    )
+    package_sub = package_p.add_subparsers(dest="package_command", required=True)
+    package_doctor_p = package_sub.add_parser(
+        "doctor",
+        help="Read-only validation of a package source tree (distinct from 'hedron fleet')",
+    )
+    package_doctor_p.add_argument(
+        "path",
+        nargs="?",
+        default=".",
+        help="Package root containing pyproject.toml (default: .)",
+    )
+    package_doctor_p.add_argument(
+        "--format",
+        choices=("json", "human"),
+        default="json",
+        help="Output format (default: json)",
+    )
+    package_doctor_p.set_defaults(func=_cmd_package_doctor)
+
     graph_p = sub.add_parser("graph", help="Component dependency graph")
     graph_p.set_defaults(func=_cmd_graph)
 
@@ -232,6 +257,41 @@ def main(argv: list[str] | None = None) -> None:
         default="auto",
     )
     run_p.set_defaults(func=_cmd_run_app)
+
+    theme_p = sub.add_parser("theme", help="Theme token and contrast diagnostics")
+    theme_sub = theme_p.add_subparsers(dest="theme_command", required=True)
+    theme_check_p = theme_sub.add_parser(
+        "check",
+        help="Validate theme tokens, element compatibility, and contrast basics",
+    )
+    theme_check_p.add_argument(
+        "--theme",
+        action="append",
+        default=None,
+        help="Theme name to check (repeatable; default: every built-in theme)",
+    )
+    theme_check_p.add_argument("--format", choices=("text", "json"), default="text")
+    theme_check_p.add_argument(
+        "--severity",
+        default="error",
+        help="Fail when diagnostics meet or exceed this severity (error|warning|info)",
+    )
+    theme_check_p.set_defaults(func=_cmd_theme_check)
+
+    style_p = sub.add_parser("style", help="Application presentation audits")
+    style_sub = style_p.add_subparsers(dest="style_command", required=True)
+    style_check_p = style_sub.add_parser(
+        "check",
+        help="Audit a path for application-authored CSS",
+    )
+    style_check_p.add_argument(
+        "--zero-app-css",
+        dest="zero_app_css",
+        required=True,
+        help="Fail when stylesheets or inline style blocks exist under this path",
+    )
+    style_check_p.add_argument("--format", choices=("text", "json"), default="text")
+    style_check_p.set_defaults(func=_cmd_style_check)
 
     migrate_p = sub.add_parser(
         "migrate",

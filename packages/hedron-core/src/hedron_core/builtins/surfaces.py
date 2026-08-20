@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
+from hedron_core.builtins.appearance import STATE_KINDS, StateKind, require_choice
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -138,3 +139,101 @@ class Skeleton(Component[SkeletonProps]):
             class_="hedron-skeleton",
             aria={"busy": "true"},
         )
+
+
+# Blocking states announce themselves as alerts; the rest are polite statuses.
+_STATE_ROLES: dict[str, str] = {
+    "loading": "status",
+    "empty": "status",
+    "error": "alert",
+    "permission": "alert",
+    "offline": "alert",
+    "success": "status",
+}
+
+
+class StateViewProps(ElementProps):
+    kind: StateKind
+    title: str
+    description: str | None = None
+    detail: str | None = None
+
+
+class StateView(Component[StateViewProps]):
+    """Unified loading / empty / error / permission / offline / success surface.
+
+    Each state renders its own live-region role and a text label, so the state is
+    never communicated by color or an icon alone.
+    """
+
+    props_type = StateViewProps
+    logical_name = "StateView"
+    slots: ClassVar[dict[str, str]] = {"actions": "optional"}
+
+    def __init__(
+        self,
+        title: str,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        kind: StateKind = "empty",
+        description: str | None = None,
+        detail: str | None = None,
+        actions: NodeLike = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        require_choice(kind, STATE_KINDS, label="kind")
+        super().__init__(
+            StateViewProps(
+                kind=kind,
+                title=title,
+                description=description,
+                detail=detail,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._children = collect_children(*nodes, children=children)
+        if actions is not None:
+            self._slot_values["actions"] = actions
+
+    def render(self) -> NodeLike:
+        kind = self.props.kind
+        parts: list[NodeLike] = [
+            html.p(kind.capitalize(), class_="hedron-state-view-kind"),
+            html.p(self.props.title, class_="hedron-state-view-title"),
+        ]
+        if self.props.description:
+            parts.append(html.p(self.props.description, class_="hedron-state-view-description"))
+        if self.props.detail:
+            parts.append(html.p(self.props.detail, class_="hedron-state-view-detail"))
+        if self._children:
+            parts.append(html.div(*self._children, class_="hedron-state-view-body"))
+        if "actions" in self._slot_values:
+            parts.append(
+                html.div(self._slot_values["actions"], class_="hedron-state-view-actions")
+            )
+        attrs: dict[str, HtmlAttrValue] = {
+            "id": self.props.id,
+            "class_": class_names(f"hedron-state-view hedron-state-{kind}", self.props.class_),
+            "role": _STATE_ROLES[kind],
+            "data": {
+                "hedron-state-view": kind,
+                **mark_data(self.props.mark),
+            },
+        }
+        aria: dict[str, str | bool | int | float | None] = {}
+        if kind == "loading":
+            aria["busy"] = "true"
+            aria["live"] = "polite"
+        elif kind in {"error", "permission", "offline"}:
+            aria["live"] = "assertive"
+        elif kind in {"empty", "success"}:
+            aria["live"] = "polite"
+        if aria:
+            attrs["aria"] = aria
+        return html.div(*parts, **attrs)

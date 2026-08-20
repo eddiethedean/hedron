@@ -51,7 +51,9 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Published** (`v0.52.0` on PyPI; RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
 | **0.52** | Cross-language conformance authority; HedronPosit deployment lifecycle companions | **Published** in-tree (`v0.52.0`; Verified gates; tag/PyPI deferred; RFC-0079 / D-089 / D-090; [#522](https://github.com/eddiethedean/hedron/issues/522); companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
 | **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Verified** / **Published** in-tree (`v0.53.0`; Verified gates; tag/PyPI deferred; [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md), D-091/D-092, [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
-| **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Planned** (package-quality audit; owning RFC/issue required before implementation; companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
+| **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Published** in-tree (`v0.54.0`; Verified gates; tag/PyPI deferred; [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md), D-093/D-094, foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543); companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
+| **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Planned** (issues [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549); tip remains `v0.54.0`) |
+| **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Planned** (security issues [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557); tip remains `v0.54.0`) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -4769,17 +4771,51 @@ theme surfaces, flat namespace hunting, and ad-hoc extras/fleet triage. Tracking
 
 ## 0.54 — Notebook, simulation, and external-author reference tooling (`v0.54.0`)
 
-**Status:** Planned. The three packages remain tooling-grade unless their own acceptance inventories
+**Status:** Published in-tree `v0.54.0` (D-093 / D-094 / [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md);
+all fifteen gates Verified; tag/PyPI deferred).
+Foundation tracking [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543).
+The three packages remain tooling-grade unless their own acceptance inventories
 justify a narrower Supported claim; this phase does not turn notebook preview into a production
 server. Companion application chrome / design-system issues
 [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)
 are bound to this phase and do not reopen 0.53 Application DX gates or schedule `1.0`.
+Living tip is `v0.54.0`.
 
 **Outcome:** The notebook preview, offline simulator, and sample plugin form a coherent modern
 authoring loop: preview real package workflows, understand simulation limits, and copy a credible
 third-party package without depending on private monorepo behavior. Companion workstreams make a
 Data Mover-class application front end reproducible with Hedron components and Python configuration
 while Hedron owns CSS (tracking [#528](https://github.com/eddiethedean/hedron/issues/528)).
+
+### Refinement: one authoring loop, two bounded tracks
+
+0.54 is accepted only when an external package author can move through this loop using published
+contracts: **copy a minimal sample → inspect its manifest → run it in the simulator → preview it
+in a notebook → hand it to a real development server → run the package doctor**. The same fixture
+and diagnostics must survive each boundary; a feature that exists only in one tool is not a phase
+deliverable.
+
+The phase is split into two tracks with a deliberate dependency order:
+
+1. **Foundation and evidence:** freeze the shared fixture/diagnostic schema, supported simulator
+   subset, notebook session/display lifecycle, and external-package test harness. This track owns
+   `SAMPLE-054`, `SIM-054`, `NOTEBOOK-054`, and their security/compatibility evidence.
+2. **Companion presentation:** deliver the Python-native layout/chrome/design-system primitives
+   needed by the reference application, then prove them through the same sample-kit, Explorer,
+   simulator, notebook, accessibility, and visual-diff fixtures. The companion issues are a
+   coordinated surface, not fifteen independent redesigns.
+
+The foundation track is the phase critical path. Companion work may proceed in parallel after its
+token, theme, state, and accessibility contracts are agreed, but it cannot redefine package
+discovery, workflow, simulation, or notebook semantics. The reference application is an evidence
+fixture and documentation aid, not a new product or a commitment to reproduce a specific vendor's
+branding.
+
+**Explicit non-goals:** public notebook hosting; a general-purpose browser automation engine;
+silent simulator parity; private-import compatibility for third-party packages; a new CSS escape
+hatch for application authors; replacing Explorer, the 0.53 fleet doctor, or the stable facade;
+and a Hedron `1.0` release. Any item requiring one of these belongs in a new RFC/phase rather than
+being absorbed into 0.54.
 
 ### Companion workstreams (#523–#537)
 
@@ -5405,6 +5441,262 @@ this medium/low packet; it was remediated on the 0.37 train (`HTMX-037`).
 | [#245](https://github.com/eddiethedean/hedron/issues/245) | Medium | Mount paths allow cookie-attribute injection | 0.42 |
 | [#246](https://github.com/eddiethedean/hedron/issues/246) | Medium | Inference policy retains request maps after release | 0.42 |
 | [#249](https://github.com/eddiethedean/hedron/issues/249) | Low | Color-mode cookie never sets `Secure` | 0.42 |
+
+## 0.55 — Secure, upgradeable application workflows (`v0.55.0`)
+
+**Status:** Planned. This phase binds issues [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549) into one application-workflow contract. It extends the 0.54 application-composition work without reopening earlier release gates or taking ownership of application RBAC, final security policy, storage backends, or deployment infrastructure.
+
+**Outcome:** Hedron provides secure, inspectable primitives for common application workflows: responsive master-detail composition, policy-aware affordances, replay-safe mutations, validated multipart actions, security-header reporting, and offline upgrade-impact reports.
+
+### Issue workstreams
+
+| Issue | Workstream |
+|---|---|
+| [#544](https://github.com/eddiethedean/hedron/issues/544) | Responsive master-detail and split-pane layout primitives with named fragment regions, selection/history policy, focus management, and mobile collapse |
+| [#545](https://github.com/eddiethedean/hedron/issues/545) | Optional CSP/security-header reporting, request-scoped nonce propagation, bounded violation ingestion, and test assertions |
+| [#546](https://github.com/eddiethedean/hedron/issues/546) | Typed authorization-aware component capabilities with request-bound evaluation and server-side action enforcement |
+| [#547](https://github.com/eddiethedean/hedron/issues/547) | Offline application-level upgrade compatibility reports with JSON output, source references, and reviewed-baseline mode |
+| [#548](https://github.com/eddiethedean/hedron/issues/548) | Explicit idempotency and replay-safe action policies with validated keys, scoped storage, conflict outcomes, and introspection |
+| [#549](https://github.com/eddiethedean/hedron/issues/549) | Typed multipart/file-upload fields and actions with limits, safe filenames, cleanup, CSRF, and streaming adapter hooks |
+
+### Phase shape and sequencing
+
+The phase is delivered as three vertical slices so each increment is useful and testable:
+
+1. **Composition and policy:** freeze shared request/route/component contract metadata, then
+   deliver master-detail regions and capability-aware affordances. Denied/disabled states must be
+   accessible, fragment-safe, and enforced at the action boundary.
+2. **Safe actions and inputs:** add idempotency/replay protection and multipart lifecycle handling
+   before application business logic. Add bounded security-report ingestion and nonce helpers while
+   keeping final policy composition and report storage application-owned.
+3. **Inspection and operations:** build the workflow manifest and offline upgrade report over the
+   same registered contract inventory, then exercise every slice in a supported-adapter reference
+   application with operator-facing diagnostics.
+
+The shared contract, reason-code, and budget vocabulary is the dependency for all three slices;
+the reference application is the integration proof, not a separate product commitment.
+
+### Related feature packet
+
+These supporting capabilities round out the issue workstreams and are phase-owned deliverables,
+not new standalone product areas:
+
+- **Workflow contract manifest:** expose layout regions, capabilities, action safety, upload
+  requirements, security headers, and migration status through one redacted, versioned inspection
+  model consumed by Explorer, CLI, and the upgrade report.
+- **Policy and decision explanations:** provide stable reason codes for allowed, denied, hidden,
+  disabled, replayed, rejected, and uploaded states so applications can render useful accessible
+  explanations without exposing policy internals.
+- **Audit and correlation hooks:** emit structured, secret-free decision records for capability
+  checks, mutation replays, upload rejection/cleanup, CSP reports, and compatibility findings,
+  with request, tenant, and action correlation supplied by the host application.
+- **Abuse and resource budgets:** define bounded body, field, filename, report, replay-key,
+  concurrency, retention, and cleanup budgets, with explicit failure outcomes and metrics rather
+  than unbounded buffering or silent truncation.
+- **Adapter-neutral conformance:** run the same contract suite through FastAPI, Flask, and Django
+  where supported, recording genuine capability differences for streaming, request disconnects,
+  nonce propagation, history, and transaction boundaries.
+- **Reference workflow:** add a synthetic list/detail application with permission-gated actions,
+  an idempotent mutation, a multipart upload, CSP reporting, and an offline upgrade diff. It must
+  work with default styling and without application JavaScript for the common path.
+
+### Security and reliability hardening
+
+- Bind capability decisions and replay keys to the authenticated subject, tenant, route/action,
+  and deployment scope; reject client-supplied policy context and cross-scope reuse.
+- Make nonce, upload temporary-file, replay-store, and report-ingestion lifecycles cancellation-
+  and disconnect-safe, including startup failure, timeout, worker restart, and partial-write paths.
+- Validate and normalize upload names once, reject path traversal and ambiguous MIME/content
+  claims, quarantine unsafe content, and document that validation is not malware scanning.
+- Require explicit cache/privacy behavior for capability-dependent fragments, security reports,
+  upload responses, and replay outcomes; prevent shared-cache disclosure of user-specific state.
+- Add rate limits and sampling controls for CSP reports and expensive compatibility scans, with
+  operator-visible counters for drops, denials, cleanup failures, and budget exhaustion.
+- Cover clock skew, concurrent first-use races, stale upgrade baselines, proxy prefixes, malformed
+  headers, duplicate form fields, browser retries, keyboard-only use, RTL, forced colors, reduced
+  motion, and 200% zoom in regression fixtures.
+
+### Explicit boundaries
+
+0.55 does not provide an RBAC/ABAC engine, malware scanner, object-storage implementation, general
+workflow orchestration, arbitrary CSS/JS layout escapes, automatic security-policy authoring, or
+blind source-to-source migration. It supplies typed boundaries, safe defaults, diagnostics, and
+pluggable hooks so applications and deployment platforms can own those concerns explicitly.
+
+### Stability and migration policy
+
+- New APIs are opt-in and `beta` for the first 0.55 release; existing action, form, security, and
+  layout APIs retain their current behavior unless an application declares the new policy.
+- Every policy-changing feature has an explicit compatibility mode, introspection record, and
+  migration note. Silent promotion of existing mutations to idempotent, capability-gated, or
+  multipart behavior is prohibited.
+- The upgrade report is advisory by default, but CI may fail on declared breaking changes or
+  budget violations. Heuristic findings remain distinguishable from confirmed contract breaks.
+- Deferred adapter behavior must be recorded with an owner and fallback; “works on FastAPI” is not
+  evidence of cross-adapter support.
+
+### Exit gate
+
+- Master-detail navigation passes desktop/mobile, keyboard, focus, history, fragment-swap, permission, and long-label browser coverage.
+- Capability denial is enforced server-side; hidden or disabled presentation cannot be used to bypass an action, and policy metadata does not leak sensitive details.
+- Declared mutations reject duplicate or conflicting replays according to an explicit, inspectable policy; storage scope, retention, and transactional limitations are documented.
+- Multipart limits and CSRF checks run before business logic; malformed, oversized, duplicate, failed, and disconnected uploads clean up temporary resources across supported adapters.
+- Security reports are bounded, content-type validated, redacted, request-scoped where applicable, and deterministic under test; opting out of managed headers remains supported.
+- Upgrade reports run without network access, distinguish definite breaks from heuristic warnings, emit CI-consumable JSON, and support reviewed baselines.
+- Existing applications remain behaviorally compatible unless they opt into a 0.55 policy, and
+  migration fixtures prove the declared compatibility modes.
+- The workflow manifest, reason codes, audit hooks, and resource budgets are documented, redacted,
+  versioned, and exercised by Explorer/CLI and the reference application.
+- Conformance evidence covers supported adapters and records any intentional capability difference;
+  no security-sensitive behavior is inferred from an unsupported adapter path.
+- Concurrent, cancelled, retried, disconnected, and worker-restarted requests leave no orphaned
+  temporary resources, replay locks, nonce state, or unbounded report/body buffers.
+- The reference application and acceptance ledger link every issue-owned requirement to automated security, accessibility, compatibility, performance, and migration evidence.
+
+## 0.56 — Security control plane and adversarial assurance (`v0.56.0`)
+
+**Status:** Planned. Security-only phase tracking
+[#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557).
+0.56 composes and hardens existing security mechanisms; it does not reopen 0.55 application-
+workflow scope or promote experimental transports, hosts, or packages. Living tip remains
+`v0.54.0` until the 0.55 and 0.56 trains are cut in order.
+
+**Outcome:** Every Hedron-controlled request crosses one inspectable security control plane. Identity
+and sensitivity provenance survive supported boundaries; dangerous sinks and outbound access use
+purpose-specific deny-by-default policy; high-risk actions carry authorization-bound intent;
+resource limits apply while data is streaming; and every Supported host proves the same portable
+security invariants with threat-oriented evidence.
+
+### Security principles
+
+- **One authority per boundary:** adapters and packages may tighten policy but cannot bypass or
+  weaken the shared security floor.
+- **Provenance before heuristics:** immutable context and sensitivity labels are authoritative;
+  key-name and pattern redaction remain defense in depth for unlabeled external values.
+- **Fail before side effects:** authorization context, sink purpose, signed intent, egress policy,
+  and request budgets are validated before application handlers or network/storage effects.
+- **Explicit unknowns:** posture reports distinguish proven facts, heuristic warnings,
+  application-owned decisions, unsupported capabilities, and deployment facts that cannot be
+  verified offline.
+- **Bounded evidence:** diagnostics and audit records are stable, redacted, correlation-friendly,
+  and subject to their own size, retention, and cardinality budgets.
+
+### Issue workstreams
+
+| Issue | Security workstream |
+|---|---|
+| [#550](https://github.com/eddiethedean/hedron/issues/550) | Permanent versioned cross-adapter security conformance profile and differential fixtures |
+| [#551](https://github.com/eddiethedean/hedron/issues/551) | Provenance-aware sensitive-data labels, propagation, sink enforcement, and explicit declassification |
+| [#552](https://github.com/eddiethedean/hedron/issues/552) | Immutable request `SecurityContext`, authority narrowing, serialization, and async-boundary isolation |
+| [#553](https://github.com/eddiethedean/hedron/issues/553) | Offline `hedron security-check` posture report with stable JSON/SARIF findings and expiring suppressions |
+| [#554](https://github.com/eddiethedean/hedron/issues/554) | Shared purpose-specific compiler for dangerous URL, selector, markup, SVG, and browser-payload sinks |
+| [#555](https://github.com/eddiethedean/hedron/issues/555) | Deny-by-default outbound egress/SSRF policy with DNS, redirect, deadline, and response-budget enforcement |
+| [#556](https://github.com/eddiethedean/hedron/issues/556) | Short-lived signed action intents binding actor, tenant, action, resource revision, payload, and target |
+| [#557](https://github.com/eddiethedean/hedron/issues/557) | Framework-wide streaming `RequestBudget` and one nested request-local resource ledger |
+
+### Related phase-owned features
+
+The following supporting features round out the eight issues without creating unrelated product
+surface:
+
+- **Versioned `SecurityProfile`:** one immutable composition object selects conformance version,
+  trust policy, context propagation, sensitivity sinks, egress rules, intent requirements, request
+  budgets, and posture strictness. Named `development`, `test`, and `production` profiles may supply
+  reviewed defaults, but production never silently inherits permissive development settings.
+- **Signing-key lifecycle:** a pluggable `SecurityKeyring` supports key IDs, purpose separation,
+  bounded verification overlap, rotation, revocation, startup validation, and test-only deterministic
+  keys. Hedron owns no hosted key-management service and never persists raw keys in diagnostics.
+- **Unified security-event schema:** denied boundaries emit stable event codes, safe fingerprints,
+  control/profile versions, ownership, and request correlation. Cardinality controls prevent attacker-
+  supplied subjects, URLs, filenames, or policy details from becoming unbounded metric labels.
+- **Security posture baselines and drift:** `hedron security-check` can compare a reviewed local
+  baseline with the registered application, expiring suppressions and failing CI only on configured
+  proven regressions. Baselines contain fingerprints and public contract metadata, never secrets.
+- **Policy simulation and test assertions:** test helpers can inject bounded contexts, transports,
+  clocks, DNS answers, disconnects, and stores while still executing policy. Assertions cover
+  context narrowing, sink decisions, budget charges, intent consumption, audit emission, and cleanup.
+- **Adversarial corpus and fuzz gates:** one reusable corpus covers Unicode and encoding smuggling,
+  parser differentials, duplicate fields, decompression bombs, DNS rebinding, redirect chains,
+  cancellation races, context confusion, taint loss, stale intents, and cross-tenant replay.
+- **Control inventory and exception registry:** every first-party dangerous sink, outbound fetch,
+  security-context serialization, sensitive sink, and pre-handler budget hook has an owner and
+  machine-readable disposition: `covered`, `tightened`, `unsupported`, or time-bounded `exception`.
+
+### Delivery sequence
+
+1. **Authority foundation:** freeze the `SecurityProfile`, `SecurityContext`, sensitivity-label,
+   sink-taxonomy, event-code, and conformance schemas before package migrations begin.
+2. **Boundary enforcement:** migrate dangerous sinks and server fetches to shared authorities;
+   install streaming request budgets at adapter ingress and propagate one ledger through nested work.
+3. **Mutation integrity:** add signed intents and key rotation, composing with 0.55 capability,
+   CSRF, idempotency, upload, and audit contracts without treating any one control as a substitute.
+4. **Fleet proof:** publish adapter/package inventories, run differential and adversarial suites,
+   and expose effective posture through `hedron security-check`, Explorer, and release evidence.
+
+### Hardening requirements
+
+- Contexts, labels, compiled trust values, intents, and budget ledgers are immutable or
+  monotonic; derived values may narrow authority or consume budget but never restore either.
+- Canonicalization is versioned and single-pass. Ambiguous duplicate form/JSON values, mixed
+  encodings, control characters, userinfo, alternate IP forms, and cross-purpose value reuse fail
+  closed with stable public diagnostics.
+- DNS and redirect validation occurs for every hop and resolved address; retries, redirects, and
+  decompression charge the same request-local egress budget.
+- Oversized bodies are rejected while streaming, before full buffering or parser expansion;
+  cancellation, timeout, exception, disconnect, and worker-shutdown paths release temporary files,
+  concurrency permits, intent locks, and network responses.
+- Sensitive values remain protected through validation errors, interactions, jobs, caches, exports,
+  recordings, telemetry, and custom sinks. Declassification requires explicit reason and source
+  metadata and is itself audited.
+- Security decisions cannot trust client-supplied subject, tenant, scope, policy, proxy, DNS,
+  capability, or audit metadata. Host-derived context and configured trust boundaries remain
+  authoritative.
+- Performance gates measure policy overhead, streaming memory, metadata retention, event
+  cardinality, and adversarial worst cases; security limits cannot be disabled by an optional
+  dependency failing to import.
+
+### Stability, migration, and ownership
+
+- New 0.56 public APIs begin `beta`; the shared internal authorities replace duplicated validators
+  only after compatibility fixtures prove equivalent or intentionally stricter behavior.
+- Existing public `SafeUrl`, `TrustedHtml`, security-header, CSRF, audit, and package-policy APIs
+  retain documented compatibility paths and delegate to the shared authority where applicable.
+- Applications continue to own authentication, object-level authorization, tenant semantics,
+  final CSP/header policy, key custody, egress allowlists, security-event retention, and incident
+  response. Hedron owns correct enforcement of the framework contracts supplied to it.
+- A supported adapter or package may declare a capability unsupported, but cannot silently omit a
+  required invariant or claim parity without conformance evidence.
+
+### Explicit non-goals
+
+0.56 is not an identity provider, RBAC/ABAC engine, secrets vault, hosted KMS, WAF, malware scanner,
+SIEM, compliance certification, vulnerability scanner, network proxy, or infrastructure sandbox.
+It does not implement arbitrary Python information-flow tracking, authorize remote access by
+default, inspect live production systems, or claim that framework controls replace deployment
+hardening and application-specific threat modeling.
+
+### Exit gate
+
+- FastAPI, Flask, and Django publish complete results for the portable security profile; Posit,
+  notebook, and other supported hosts publish applicable evidence plus explicit unsupported claims.
+- Every first-party dangerous sink and server-side fetch is inventoried and either migrated to the
+  shared authority, tightened by a package policy, or covered by a reviewed expiring exception.
+- Cross-subject, cross-tenant, cross-application, stale, missing, broadened, or incorrectly
+  serialized security contexts fail closed across actions, fragments, jobs, caches, idempotency,
+  MCP, background work, and audit events.
+- Labeled sensitive data is rejected or redacted by default at every framework-owned sink;
+  declassification, custom trusted sinks, aliases, unions, nested containers, and validation errors
+  have adversarial coverage and retention/performance budgets.
+- Signed intents reject actor, tenant, method, action, resource, revision, payload, target, expiry,
+  key, and canonicalization substitutions; one-time consumption is atomic across multiple workers.
+- Streaming request and egress limits reject before unbounded buffering, survive nested features,
+  and release every reserved resource on denial, cancellation, failure, timeout, or disconnect.
+- `hedron security-check` emits redacted human, JSON, and SARIF-style output with evidence,
+  confidence, ownership, remediation, suppressions, unknowns, conformance status, and baseline drift.
+- Shared adversarial and differential suites pass across Python, HDJ, Web Components, adapters, and
+  applicable packages; no security claim depends only on prose or a single-host happy path.
+- Release evidence records policy/schema versions, compatibility fixtures, control inventory,
+  threat scenarios, fuzz corpus results, performance budgets, and zero unexplained Deferred rows.
 
 ## Later-phase policy
 

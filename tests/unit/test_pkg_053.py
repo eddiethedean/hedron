@@ -27,14 +27,19 @@ def test_stage1_modules_exist_versions_unbumped() -> None:
     assert Path("packages/hedron/src/hedron/fleet.py").is_file()
     assert Path("packages/hedron/src/hedron/discover_api.py").is_file()
 
+    tip = tomllib.loads(Path("docs/release.toml").read_text(encoding="utf-8"))["release"][
+        "published_version"
+    ]
+    # Living tip may advance after 0.53; Stage 1 modules must remain present.
+    assert str(tip).startswith("0.")
     hedron_meta = tomllib.loads(Path("packages/hedron/pyproject.toml").read_text(encoding="utf-8"))
-    assert hedron_meta["project"]["version"] == "0.53.0"
+    assert hedron_meta["project"]["version"] == tip
     core_meta = tomllib.loads(
         Path("packages/hedron-core/pyproject.toml").read_text(encoding="utf-8")
     )
-    assert core_meta["project"]["version"] == "0.53.0"
+    assert core_meta["project"]["version"] == tip
     workspace = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
-    assert workspace["project"]["version"] == "0.53.0"
+    assert workspace["project"]["version"] == tip
 
     init_src = Path("packages/hedron/src/hedron/__init__.py").read_text(encoding="utf-8")
-    assert '__version__ = "0.53.0"' in init_src
+    assert f'__version__ = "{tip}"' in init_src

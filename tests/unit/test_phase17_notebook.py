@@ -45,7 +45,7 @@ async def _ok_app(scope: dict[str, object], receive: object, send: object) -> No
 
 
 def test_package_version_and_exports() -> None:
-    assert __version__ == "0.1.0"
+    assert __version__ == "0.2.0"
     assert callable(start_preview)
     assert NotebookPreview is not None
     assert callable(wrap_preview_app)

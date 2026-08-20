@@ -1,30 +1,32 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.53 **Published** in-tree as `v0.53.0` (2026-08-20; tag/PyPI deferred). Phase 0.52 remains Verified in-tree; PyPI still serves `v0.52.0`.
-Living tip = `v0.53.0`.
+**Roadmap position:** phase 0.54 **Published** in-tree as `v0.54.0` (2026-08-20; tag/PyPI deferred). Phase 0.53 remains Verified in-tree; PyPI still serves `v0.52.0`.
+Living tip = `v0.54.0`.
 **Date:** 2026-08-20
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.53.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.54.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
-`0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
-`hedron-sim` `0.1.0`, `hedron-mcp` `0.2.1`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.53.0`
+`0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
+`hedron-sim` `0.2.0`, `hedron-mcp` `0.2.1`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
+`0.54.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
-`hedron-runtime-node` / `hedron-runtime-java` `0.53.0`.
+`hedron-runtime-node` / `hedron-runtime-java` `0.54.0`.
 
-**Phase focus:** Living train is **0.53** (D-091 / D-092 / RFC-0080) — application DX
-contracts: assets, diagnostics, routes, workflows, testgen, theming, discovery, and
-fleet doctor
-[#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521).
-`release-gate-0.53.toml` Verified rows; living tip `v0.53.0` in-tree (`v0.52.0` on PyPI,
+**Phase focus:** Living train is **0.54** (D-093 / D-094 / RFC-0081) — authoring-loop
+foundation (sample-kit, package doctor, simulator, notebook) and application chrome
+companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537);
+foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543).
+`release-gate-0.54.toml` Verified rows; living tip `v0.54.0` in-tree (`v0.52.0` on PyPI,
 `registry_status = "deferred"`).
+Prior Published in-tree **0.53** application DX
+(D-091 / D-092 / RFC-0080; [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)).
 Prior Published in-tree **0.52** conformance authority and HedronPosit lifecycle
 (D-089 / D-090 / RFC-0079; [#522](https://github.com/eddiethedean/hedron/issues/522);
 companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)).
@@ -34,34 +36,6 @@ Prior in-tree **0.50** Explorer architecture
 (D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501)).
 Prior Published **0.49** FastAPI/Pydantic convergence
 (D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380)).
-Phase **0.51** Stage 0 D-088 text is unchanged; Stage 1 shipped runtime without a Git tag.
-Prior Published **0.48** HTMX extensions (`MORPH-048` Deferred) / **0.47** first-class maps (`hedron-maps` `0.1.0`) /
-**0.46** package-native typed workflows /
-**0.45** typed interaction catalog / **0.44** type-driven authoring /
-**0.43** refreshable views and commands / **0.42** production-grade Web Component platform / **0.41**
-composition / **0.40** authoring / **0.39** rich data /
-OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
-**0.36** ABI / **0.35** fleet closure remain in force.
-Tracking [#373](https://github.com/eddiethedean/hedron/issues/373) owns 0.48 tag/PyPI assets.
-[#350](https://github.com/eddiethedean/hedron/issues/350) remains open for 0.47 publish assets.
-Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
-Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
-Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
-`hedron-posit`, and `fastapi-workbench`. The
-[default presentation quality program](implementation/DEFAULT_PRESENTATION_033_PLUS.md) is
-**cross-cutting and must not block** Posit adapter work.
-Live-transport
-disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
-live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
-remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` /
-`REMEDIATE-021` remain Planned** until real sessions — **do not market human AT as
-Supported**. `AT-042` is element-inventory honesty only and does not close `#86`. Automated AT
-(`AT-019`, phase 0.19) remains Supported and is not a substitute for human AT. Prior
-production-quality packet **0.25** (D-053 / RFC-0056) remains
-**Verified** — see [production-quality](guides/production-quality.md) ·
-[PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). `REV-026-003` (Explorer process-local
-audit buffer) remains an Explorer-owned accepted risk; it was not expanded into satellite
-graduation scope.
 
 ## Supported vs Deferred (operator view)
 

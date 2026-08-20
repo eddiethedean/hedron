@@ -11,6 +11,8 @@ Text, links, media, code, lists, tables, and Markdown.
 - [`DescriptionList`](description-list.md) — Present term/value pairs as a native description list.
 - [`Table`](table.md) — Render a small static data table with explicit headers.
 - [`Markdown`](markdown.md) — Render Markdown through the optional, escaped content pipeline.
+- [`Typography`](typography.md) — Role-first text helper bound to the type scale.
+- [`Icon`](icon.md) — Trusted registry SVG with a bounded size vocabulary.
 - [`Audio`](audio.md) — Accessible HTML audio player with SafeUrl source.
 - [`PredictionLabel`](prediction-label.md) — Ranked prediction labels with class identity and an accessible table encoding.
 - [`ParameterViewer`](parameter-viewer.md) — Schema-oriented parameter documentation with secret redaction.

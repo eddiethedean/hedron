@@ -341,6 +341,67 @@ COMPONENTS = (
         "Do not use Container as a substitute for Main or Section.",
     ),
     ComponentDoc(
+        "PageHeader",
+        "layout",
+        "Eyebrow/title/description header with optional status and actions.",
+        "PageHeader(*, title, eyebrow=None, description=None, status=None, actions=None, id=None, class_=None)",
+        "PageHeader(title='Pipelines', eyebrow='Operate', description='Source to destination jobs.', actions=ActionGroup(Button('New')))",
+        (
+            p("title", "str | NodeLike", "Primary heading text or node."),
+            p("eyebrow", "str | NodeLike | None", "Optional overline label."),
+            p("description", "str | NodeLike | None", "Supporting copy under the title."),
+            p("status", "NodeLike | None", "Optional status chip or badge."),
+            p("actions", "NodeLike | None", "Primary action cluster (often ActionGroup)."),
+        ),
+        "PageHeader is the workspace page pattern for title, context, and actions without application CSS.",
+        "Keep one PageHeader per primary view and put long forms below it.",
+        "Do not nest PageHeader inside another PageHeader.",
+    ),
+    ComponentDoc(
+        "SplitView",
+        "layout",
+        "Two-pane layout with closed ratio and responsive collapse.",
+        "SplitView(primary, secondary, *, ratio='1:1', collapse='md', gap='1rem', id=None, class_=None)",
+        "SplitView(Card(Text('Source')), Card(Text('Destination')), ratio='2:1')",
+        (
+            p("primary / secondary", "NodeLike", "Left and right panes."),
+            p("ratio", "str", "Closed split ratio such as `1:1`, `2:1`, or `1:3`."),
+            p("collapse", "str", "Breakpoint where panes stack (`never` / `sm` / `md` / `lg`)."),
+        ),
+        "SplitView owns unequal column ratios through theme CSS so application authors never hand-write grid templates.",
+        "Prefer SplitView for source/destination or directory/detail workspaces.",
+        "Do not pass arbitrary CSS grid templates; use the closed ratio set.",
+    ),
+    ComponentDoc(
+        "FormGrid",
+        "layout",
+        "Responsive field grid for forms and settings panels.",
+        "FormGrid(*fields, *, columns=2, collapse='md', gap='1rem', id=None, class_=None)",
+        "FormGrid(FormField('Name', TextInput(name='name')), FormField('Email', TextInput(name='email')))",
+        (
+            p("fields", "NodeLike", "Form fields or labelled controls."),
+            p("columns", "int | Mapping", "Column count or responsive map."),
+            p("collapse", "str", "Breakpoint where the grid stacks."),
+        ),
+        "FormGrid lays out labelled controls with theme-owned gutters and collapse behavior.",
+        "Keep related fields in one FormGrid; use Stack for vertical-only sections.",
+        "Do not mix FormGrid with equal-column Grid when you need ratio control—use SplitView.",
+    ),
+    ComponentDoc(
+        "ActionGroup",
+        "layout",
+        "Aligned cluster of actions for headers and footers.",
+        "ActionGroup(*actions, *, align='end', gap='0.5rem', id=None, class_=None)",
+        "ActionGroup(Button('Cancel', appearance='ghost'), Button('Save'), align='end')",
+        (
+            p("actions", "NodeLike", "Buttons or links in the cluster."),
+            p("align", "str", "`start` / `center` / `end` / `between`."),
+        ),
+        "ActionGroup keeps toolbar spacing and alignment in the default theme.",
+        "Place primary actions last in LTR layouts.",
+        "Do not use ActionGroup for navigation lists—use Nav / NavLink.",
+    ),
+    ComponentDoc(
         "Stack",
         "layout",
         "Arrange children vertically with a validated, consistent gap.",
@@ -612,6 +673,67 @@ COMPONENTS = (
         "Do not combine `select_oob='#side-nav'` with `OobUpdate(element_id='side-nav')` on the same navigation flow.",
     ),
     ComponentDoc(
+        "SkipLink",
+        "layout",
+        "Keyboard bypass link to the shell main panel.",
+        "SkipLink(target='#main-panel', *, label='Skip to main content', id=None, class_=None)",
+        "SkipLink(target='#main-panel')",
+        (
+            p("target", "SafeUrl | str", "Same-document fragment such as `#main-panel`."),
+            p("label", "str", "Discernible link text for assistive technology."),
+        ),
+        "SkipLink is styled by the default theme so authors never write CSS for the focusable bypass control.",
+        "Place SkipLink as the first focusable element in the document and point it at AppShell's panel id.",
+        "Do not use an external URL or an empty fragment as the target.",
+    ),
+    ComponentDoc(
+        "RequestIndicator",
+        "interaction",
+        "Polite HTMX busy indicator with theme-owned placement.",
+        "RequestIndicator(label='Loading…', *, placement='inline', visible_label=True, id=None, class_=None)",
+        "RequestIndicator(label='Saving…', placement='top', id='save-indicator')",
+        (
+            p("label", "str", "Busy-state text announced to assistive technology."),
+            p("placement", "inline | top | bottom", "Closed placement vocabulary."),
+            p("visible_label", "bool", "When false, keep the label visually hidden but announced."),
+        ),
+        "RequestIndicator carries HTMX's `htmx-indicator` class and a polite live region so busy state is never color-only.",
+        "Reference the indicator id from HTMX controls via `indicator='#…'`.",
+        "Do not invent custom spinner CSS; use placement and the default theme.",
+    ),
+    ComponentDoc(
+        "ProcessFlow",
+        "layout",
+        "Accessible ordered workflow rendered as a process list.",
+        "ProcessFlow(*steps, *, label, direction='horizontal', collapse='md', id=None, class_=None)",
+        "ProcessFlow(FlowStep('Ingest', status='complete'), FlowStep('Validate', status='current'), FlowStep('Publish'), label='Release pipeline')",
+        (
+            p("steps", "FlowStep", "Ordered FlowStep children."),
+            p("label", "str", "Accessible name for the process list."),
+            p("direction", "horizontal | vertical", "Closed layout direction."),
+            p("collapse", "never | sm | md | lg", "Breakpoint where horizontal flows stack."),
+        ),
+        "ProcessFlow owns spacing and collapse through the default theme and requires FlowStep status text so state is never color-only.",
+        "Keep one ProcessFlow per operational workflow and update step status from the server.",
+        "Do not use ProcessFlow for primary navigation—use Nav / NavLink.",
+    ),
+    ComponentDoc(
+        "FlowStep",
+        "layout",
+        "One stage of a ProcessFlow with explicit status text.",
+        "FlowStep(label, *nodes, *, status='pending', description=None, status_text=None, id=None, class_=None)",
+        "FlowStep('Validate schemas', status='current', description='Checking required columns')",
+        (
+            p("label", "str", "Discernible step name."),
+            p("status", "complete | current | pending | blocked | skipped", "Closed status vocabulary."),
+            p("description", "str | None", "Optional supporting copy."),
+            p("status_text", "str | None", "Optional override for the default status phrase."),
+        ),
+        "Each FlowStep renders a textual status so progress is understandable without color perception.",
+        "Mark exactly one step `current` unless the flow is idle or complete.",
+        "Do not communicate status with icons alone; keep the status text.",
+    ),
+    ComponentDoc(
         "Image",
         "content",
         "Render an image with a validated source and required alternative text.",
@@ -763,6 +885,53 @@ COMPONENTS = (
         "Skeleton emits the requested placeholder lines, hides each line from the accessibility tree, and marks the wrapper busy. Pair it with a separate status message or the Loading component when users need progress context.",
         "Because the visual lines are hidden semantically, provide an adjacent live status for meaningful waits.",
         "Validate `lines` in application configuration; zero or negative values produce an empty busy wrapper rather than a useful placeholder.",
+    ),
+    ComponentDoc(
+        "StateView",
+        "surfaces",
+        "Unified loading, empty, error, permission, offline, and success surface.",
+        "StateView(title, *nodes, *, kind='empty', description=None, detail=None, actions=None, id=None, class_=None)",
+        "StateView('No pipelines yet', kind='empty', description='Create a pipeline to start ingesting data.', actions=Button('New pipeline'))",
+        (
+            p("title", "str", "Primary message for the state."),
+            p("kind", "loading | empty | error | permission | offline | success", "Closed state vocabulary."),
+            p("description / detail", "str | None", "Optional supporting copy."),
+            p("actions", "NodeLike | None", "Optional recovery or next-step controls."),
+        ),
+        "StateView chooses an appropriate live-region role and always shows a textual kind label so state is never color- or icon-only.",
+        "Prefer StateView for empty tables, failed loads, and permission blocks instead of ad-hoc cards.",
+        "Do not use StateView for ordinary inline validation—use FormErrors or Alert.",
+    ),
+    ComponentDoc(
+        "Typography",
+        "content",
+        "Role-first text helper bound to the type scale.",
+        "Typography(content, *, role='body', as_='p', class_=None)",
+        "Typography('Release readiness', role='title')",
+        (
+            p("content", "str", "Escaped text content."),
+            p("role", "str", "Closed typography role from the theme scale."),
+            p("as_", "p | span | div | strong | em | small | code", "Native element to emit."),
+        ),
+        "Typography maps author intent (role) to theme CSS classes without requiring application type CSS.",
+        "Use Heading for document outline levels; use Typography for scale-driven body, caption, and title text.",
+        "Do not invent CSS font sizes for product chrome—pick a role.",
+    ),
+    ComponentDoc(
+        "Icon",
+        "content",
+        "Trusted registry SVG with a bounded size vocabulary.",
+        "Icon(name, *, size='md', title=None, decorative=False, id=None, class_=None)",
+        "Icon('check', size='sm', title='Complete')",
+        (
+            p("name", "str", "Registered icon name from the trusted registry."),
+            p("size", "str", "Closed size vocabulary (`sm` / `md` / `lg` / …)."),
+            p("title", "str | None", "Accessible name override when not decorative."),
+            p("decorative", "bool", "When true, hide the icon from the accessibility tree."),
+        ),
+        "Icon fails closed on unknown names and never accepts raw SVG markup from application authors.",
+        "Prefer decorative=True beside visible text; otherwise supply a title that names the meaning.",
+        "Do not use Icon as a button—use IconButton for actionable controls.",
     ),
     ComponentDoc(
         "Button",
@@ -2400,6 +2569,22 @@ def static_demo(spec: ComponentDoc) -> str:
         return '<div class="hdc-container"><span class="hdc-eyebrow">Account settings</span><h3>Profile</h3><p>This readable block stays centered with a bounded width.</p><a href="#component-demo-result">Edit profile →</a></div>'
     if name == "Stack":
         return '<div class="hdc-stack"><span><b>Build completed</b><small>42 seconds ago</small></span><span><b>Preview deployed</b><small>Environment ready</small></span><span><b>Review requested</b><small>2 teammates notified</small></span></div>'
+    if name == "PageHeader":
+        return '<header class="hdc-type"><span class="hdc-eyebrow">Operate</span><h2>Pipelines</h2><p class="hdc-muted">Source to destination jobs.</p><div class="hdc-inline"><button class="hdc-button hdc-primary" type="button">New</button></div></header>'
+    if name == "SplitView":
+        return '<div class="hdc-grid"><span><small>Source</small><strong>orders.csv</strong><em>Ready</em></span><span><small>Destination</small><strong>warehouse</strong><em>Connected</em></span></div>'
+    if name == "FormGrid":
+        return '<div class="hdc-grid"><div class="hdc-form"><label for="demo-fg-name">Name</label><input id="demo-fg-name" type="text" value="Ada"></div><div class="hdc-form"><label for="demo-fg-email">Email</label><input id="demo-fg-email" type="email" value="ada@example.com"></div></div>'
+    if name == "ActionGroup":
+        return '<div class="hdc-inline"><button class="hdc-button" type="button">Cancel</button><button class="hdc-button hdc-primary" type="button">Save</button></div>'
+    if name == "SkipLink":
+        return '<p><a class="hdc-chip" href="#component-demo-result">Skip to main content</a><span class="hdc-muted">Focusable bypass to the main panel.</span></p>'
+    if name == "RequestIndicator":
+        return '<div class="hdc-loading" role="status" aria-live="polite"><i></i><span>Saving…</span></div>'
+    if name == "ProcessFlow":
+        return '<ol class="hdc-list" aria-label="Release pipeline"><li><span>Ingest</span><small>Complete</small></li><li><span>Validate</span><small>In progress</small></li><li><span>Publish</span><small>Not started</small></li></ol>'
+    if name == "FlowStep":
+        return '<div class="hdc-stack"><span><b>Validate schemas</b><small>In progress · Checking required columns</small></span></div>'
     if name == "Inline":
         return '<div class="hdc-inline"><span class="hdc-chip">Python</span><span class="hdc-chip">HTMX</span><span class="hdc-chip">FastAPI</span></div>'
     if name == "Grid":
@@ -2410,6 +2595,12 @@ def static_demo(spec: ComponentDoc) -> str:
         return '<div class="hdc-type"><span class="hdc-eyebrow">Production</span><h2>Deployment history</h2><p>Heading level two introduces this section.</p></div>'
     if name == "Text":
         return '<div class="hdc-type"><p><strong>Changes saved.</strong> This text is a paragraph that carries the primary message.</p><span class="hdc-muted">Updated just now · inline supporting text</span></div>'
+    if name == "Typography":
+        return '<div class="hdc-type"><span class="hdc-eyebrow">Title role</span><p><strong>Release readiness</strong></p><span class="hdc-muted">Body role · supporting copy on the type scale.</span></div>'
+    if name == "Icon":
+        return '<div class="hdc-inline"><span class="hdc-badge hdc-success" role="img" aria-label="Complete">✓</span><span class="hdc-muted">Trusted registry icon · size md</span></div>'
+    if name == "StateView":
+        return '<div class="hdc-alert" role="status"><strong>Empty</strong><p>No pipelines yet. Create a pipeline to start ingesting data.</p><button class="hdc-button hdc-primary" type="button">New pipeline</button></div>'
     if name in {"Link", "LinkButton"}:
         cls = ' class="hdc-button hdc-primary"' if name == "LinkButton" else ""
         return f'<div class="hdc-link-demo"><span class="hdc-eyebrow">Navigation</span><a{cls} href="#component-demo-result" data-hdc-local-link>{"Create account →" if name == "LinkButton" else "View audit log →"}</a><p id="component-demo-result" class="hdc-muted">A real anchor preserves browser navigation behavior.</p></div>'
@@ -2972,12 +3163,28 @@ def _direct_component_classes(*relative_paths: str) -> set[str]:
 
 def discover_builtin_components() -> set[str]:
     """Read the public built-in sources without importing optional dependencies."""
+    # Vocabulary constants and non-Component models are exported for authors but
+    # are not dedicated component-demo pages.
+    non_components = {
+        "APPEARANCES",
+        "BREAKPOINTS",
+        "CONTENT_WIDTHS",
+        "DENSITIES",
+        "EMPHASES",
+        "SIZES",
+        "STATE_KINDS",
+        "TYPOGRAPHY_ROLES",
+        "TableColumn",  # Pydantic model for Table metadata, not a Component
+        "action_attrs",
+        "oob_swap",
+    }
     names = _literal_all("packages/hedron-core/src/hedron_core/builtins/__init__.py")
     names |= {
         name
         for name in _literal_all("packages/hedron/src/hedron/builtins/__init__.py")
-        if name not in {"action_attrs", "oob_swap"}
+        if name not in non_components
     }
+    names -= non_components
     names |= _direct_component_classes(
         "packages/hedron-core/src/hedron_core/auto/widget.py",
         "packages/hedron-core/src/hedron_core/color_mode.py",

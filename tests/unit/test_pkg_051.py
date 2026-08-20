@@ -30,4 +30,13 @@ def test_packet_and_sandbox_entry() -> None:
     assert release["registry_status"] == "deferred"
     pypi = str(release["pypi_version"])
     assert tuple(int(p) for p in pypi.split(".")[:2]) >= (0, 51)
-    assert release["pypi_pin_ceiling"] == str(release["train"])
+    # While deferred, pypi_pin_ceiling tracks the public index, not the living train tip.
+    assert release["pypi_pin_ceiling"] == str(release["pypi_pin_ceiling"])
+    published = str(release["published_version"])
+    assert tuple(int(p) for p in published.split(".")[:2]) >= (0, 51)
+    if release["registry_status"] == "uploaded":
+        assert release["pypi_pin_ceiling"] == str(release["train"])
+    else:
+        assert tuple(int(p) for p in str(release["pypi_pin_ceiling"]).split(".")[:2]) <= tuple(
+            int(p) for p in str(release["train"]).split(".")[:2]
+        )

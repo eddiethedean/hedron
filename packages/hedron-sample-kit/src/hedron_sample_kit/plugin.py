@@ -7,6 +7,7 @@ from pathlib import Path
 from hedron_core.identifiers import content_digest
 from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 from hedron_core.registry import register_asset
+from hedron_sample_kit.variants import register_variants
 
 _ROOT = Path(__file__).resolve().parent
 _COMPONENT = _ROOT / "components" / "Callout"
@@ -14,13 +15,14 @@ _MARK = _COMPONENT / "mark.txt"
 
 PLUGIN_META = PluginMeta(
     name="sample_kit",
-    version="0.1.10",
+    version="0.2.0",
     distribution="hedron-sample-kit",
-    hedron_version=">=0.53,<0.54",
+    hedron_version=">=0.54,<0.55",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
         assets=True,
+        browser_js=True,
         explorer_panels=True,
     ),
 )
@@ -90,6 +92,7 @@ def register(ctx: PluginContext) -> None:
             ),
         )
     )
+    register_variants(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

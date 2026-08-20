@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import ipaddress
 import re
 import secrets
 import socket
@@ -12,6 +11,8 @@ from collections.abc import MutableMapping
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 from urllib.parse import parse_qs, quote, urlencode
+
+from hedron_notebook.topology import NotebookTokenError, require_loopback_host
 
 __all__ = [
     "PREVIEW_TOKEN_COOKIE",
@@ -23,8 +24,6 @@ __all__ = [
     "start_preview",
     "wrap_preview_app",
 ]
-
-_LOOPBACK_NAMES = frozenset({"localhost", "127.0.0.1", "::1", "0:0:0:0:0:0:0:1"})
 
 PREVIEW_TOKEN_QUERY = "hedron_preview_token"
 PREVIEW_TOKEN_HEADER = "x-hedron-preview-token"
@@ -40,16 +39,6 @@ class PreviewServer(Protocol):
     def start(self) -> None: ...
 
     def shutdown(self) -> None: ...
-
-
-def _is_loopback_host(host: str) -> bool:
-    normalized = host.strip().lower().strip("[]")
-    if normalized in _LOOPBACK_NAMES:
-        return True
-    try:
-        return ipaddress.ip_address(normalized).is_loopback
-    except ValueError:
-        return False
 
 
 def _pick_free_port(host: str) -> int:
@@ -148,7 +137,7 @@ class PreviewTokenGate:
 
     def __init__(self, app: Any, token: str) -> None:
         if not token:
-            raise ValueError("preview token must be non-empty")
+            raise NotebookTokenError("preview token must be non-empty", source="gate")
         self.app = app
         self.token = token
 
@@ -365,18 +354,12 @@ def start_preview(
         first successful query/header auth. Missing or wrong tokens receive
         HTTP 401 / WebSocket close 4401.
     """
-    hosted_warning = not _is_loopback_host(host)
-    if hosted_warning:
-        raise ValueError(
-            f"hedron-notebook preview refuses non-loopback host {host!r}. "
-            "Supported preview binds only to loopback (localhost / 127.0.0.1 / ::1). "
-            "Remote or public serving is not part of the Supported API."
-        )
+    require_loopback_host(host)
 
     bind_port = port if port else (server.port if server is not None else _pick_free_port(host))
     session_token = token if token is not None else secrets.token_urlsafe(32)
     if not session_token:
-        raise ValueError("preview token must be non-empty")
+        raise NotebookTokenError("preview token must be non-empty", source="start_preview")
     gated_app = wrap_preview_app(app, session_token)
 
     if server is None:
@@ -397,7 +380,6 @@ def start_preview(
         iframe=iframe,
         width=width,
         height=height,
-        hosted_warning=hosted_warning,
         _server=server,
         _app=gated_app,
     )

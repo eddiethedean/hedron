@@ -9,7 +9,8 @@
 
 Stage 0 bound the 0.53 gates and shipped 0.52 seams. Stage 1 Implemented the
 eight workstream seams and Verified shared exit gates `DOCS-053`, `PKG-053`,
-and `REGRESS-053`. Living tip is `v0.53.0` after cut; **do not tag yet**.
+and `REGRESS-053`. Living tip after the 0.53 cut was `v0.53.0`; living tip is now
+`v0.54.0` (0.54 Published in-tree; tag/PyPI deferred). **Do not tag 0.53/0.54 yet.**
 
 ## Exact gate matrix
 

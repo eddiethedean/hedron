@@ -25,15 +25,15 @@ _BETA_PACKAGES = {
 }
 _INDEPENDENT_BETA = {
     "hedron-native",
-    "hedron-sample-kit",
-    "hedron-sim",
-    "hedron-notebook",
     "hedron-maps",
 }
 _INDEPENDENT_BETA_02 = {
     "hedron-mcp",
     "hedron-gradio",
     "hedron-charts",
+    "hedron-sample-kit",
+    "hedron-sim",
+    "hedron-notebook",
 }
 _INDEPENDENT_MAJOR = {
     "fastapi-workbench",
@@ -122,7 +122,7 @@ def test_025_satellites_have_installable_patch_floors() -> None:
     # Tip may patch above the floor; pin floor stays >=0.2.0,<0.3.
     assert charts["version"].startswith("0.2.")
     assert tuple(int(p) for p in charts["version"].split(".")) >= (0, 2, 0)
-    assert sample["version"] == "0.1.10"
+    assert sample["version"] == "0.2.0"
 
 
 def test_hedron_build_module_is_packaged(tmp_path: Path) -> None:

@@ -1,0 +1,66 @@
+schema_version = 1
+phase = "0.54"
+state = "Verified"
+baseline = "v0.53.0"
+target = "v0.54.0"
+owning_rfc = "RFC-0081"
+decision = "D-093"
+contract_refine = "D-094"
+shared_schema_import = "hedron_conformance.authoring_loop"
+
+[[workstream]]
+id = "sample_doctor"
+issue = "#538"
+gates = ["SAMPLE-054", "DOCTOR-054"]
+shipped_seams = ["hedron-sample-kit Callout", "hedron.plugins", "Explorer panel", "hedron fleet package_doctor=False"]
+planned_contract = "modular sample-kit variants and external-author package doctor"
+
+[[workstream]]
+id = "simulator"
+issue = "#539"
+gates = ["SIM-054", "PARITY-054"]
+shipped_seams = ["SimApp", "embed_demo", "require_supported_*", "UnsupportedSimFeatureError"]
+planned_contract = "machine-readable subset/divergence, recording/time control, HTTP/browser parity"
+
+[[workstream]]
+id = "notebook_lifecycle"
+issue = "#540"
+gates = ["NOTEBOOK-054", "LIFECYCLE-054"]
+shipped_seams = ["start_preview", "NotebookPreview", "iframe_html", "shutdown"]
+planned_contract = "display handles, multi-view sessions, static fallbacks, cleanup"
+
+[[workstream]]
+id = "security_topology"
+issue = "#541"
+gates = ["SECURITY-054", "TOPOLOGY-054"]
+shipped_seams = ["PreviewTokenGate", "localhost defaults", "token redaction"]
+planned_contract = "token/origin/host/proxy/port/iframe boundaries and non-loopback rejection"
+
+[[workstream]]
+id = "ecosystem_matrices"
+issue = "#542"
+gates = ["ECOSYSTEM-054", "COMPAT-054", "PLATFORM-054"]
+shipped_seams = ["Explorer", "HDJ", "conformance profiles", "sample-kit-consumer"]
+planned_contract = "public-contract authoring loop and platform/compat matrices"
+
+[[workstream]]
+id = "exit_gates"
+issue = "#543"
+gates = ["A11Y-054", "DOCS-054", "PKG-054", "REGRESS-054"]
+shipped_seams = ["whats-ready honesty", "0.53 upgrade fixtures", "ci_checks.sh"]
+planned_contract = "a11y, author docs, packaging, and whole-fleet regression"
+
+[[companion]]
+id = "chrome"
+issues = ["#523", "#524", "#525", "#526", "#527", "#528", "#529", "#530", "#531", "#532", "#533", "#534", "#535", "#536", "#537"]
+evidence_gates = ["ECOSYSTEM-054", "A11Y-054", "DOCS-054"]
+tracking_epic = "#528"
+
+[boundaries]
+runtime_changes = false
+version_changes = false
+reopen_polling_only = false
+replace_fleet_doctor = false
+public_notebook_hosting = false
+silent_sim_parity = false
+schedule_1_0 = false

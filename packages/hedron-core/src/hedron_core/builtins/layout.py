@@ -3,9 +3,16 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Literal
+from collections.abc import Mapping
+from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
+from hedron_core.builtins.appearance import (
+    Density,
+    normalize_responsive_int,
+    require_choice,
+    responsive_data,
+)
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
@@ -13,6 +20,11 @@ from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrValue
 
 _GAP_RE = re.compile(r"^\d+(\.\d+)?(rem|em|px|%)$")
+
+# Split ratios are a closed set so the default stylesheet owns the grid math.
+SPLIT_RATIOS: tuple[str, ...] = ("1:1", "1:2", "2:1", "1:3", "3:1", "2:3", "3:2")
+ACTION_ALIGNMENTS: tuple[str, ...] = ("start", "center", "end", "between")
+COLLAPSE_BREAKPOINTS: tuple[str, ...] = ("never", "sm", "md", "lg")
 
 
 def _validated_gap(gap: str) -> str:
@@ -226,3 +238,274 @@ class Spacer(Component[SpacerProps]):
             "data": data,
         }
         return html.div(**attrs)
+
+
+class PageHeaderProps(ElementProps):
+    title: str
+    eyebrow: str | None = None
+    description: str | None = None
+    level: Literal[1, 2, 3, 4, 5, 6] = 1
+    density: Density | None = None
+
+
+class PageHeader(Component[PageHeaderProps]):
+    """Workspace page title block with optional eyebrow, description, and actions."""
+
+    props_type = PageHeaderProps
+    logical_name = "PageHeader"
+    slots: ClassVar[dict[str, str]] = {"actions": "optional", "meta": "optional"}
+
+    def __init__(
+        self,
+        title: str,
+        *,
+        eyebrow: str | None = None,
+        description: str | None = None,
+        level: Literal[1, 2, 3, 4, 5, 6] = 1,
+        density: Density | None = None,
+        actions: NodeLike = None,
+        meta: NodeLike = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            PageHeaderProps(
+                title=title,
+                eyebrow=eyebrow,
+                description=description,
+                level=level,
+                density=density,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        if actions is not None:
+            self._slot_values["actions"] = actions
+        if meta is not None:
+            self._slot_values["meta"] = meta
+
+    def render(self) -> NodeLike:
+        text: list[NodeLike] = []
+        if self.props.eyebrow:
+            text.append(
+                html.p(
+                    self.props.eyebrow,
+                    class_="hedron-page-header-eyebrow hedron-type-eyebrow",
+                    data={"hedron-type-role": "eyebrow"},
+                )
+            )
+        heading = getattr(html, f"h{self.props.level}")
+        text.append(heading(self.props.title, class_="hedron-page-header-title"))
+        if self.props.description:
+            text.append(html.p(self.props.description, class_="hedron-page-header-description"))
+        if "meta" in self._slot_values:
+            text.append(html.div(self._slot_values["meta"], class_="hedron-page-header-meta"))
+        parts: list[NodeLike] = [html.div(*text, class_="hedron-page-header-text")]
+        if "actions" in self._slot_values:
+            parts.append(
+                html.div(self._slot_values["actions"], class_="hedron-page-header-actions")
+            )
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-page-header": "true",
+            **mark_data(self.props.mark),
+        }
+        if self.props.density:
+            data["hedron-density"] = self.props.density
+        return html.header(
+            *parts,
+            id=self.props.id,
+            class_=class_names("hedron-page-header", self.props.class_),
+            data=data,
+        )
+
+
+class SplitViewProps(ElementProps):
+    ratio: str = "1:1"
+    gap: str = "1.5rem"
+    collapse: str = "md"
+    reverse: bool = False
+
+
+class SplitView(Component[SplitViewProps]):
+    """Two-pane workspace split with a closed ratio vocabulary."""
+
+    props_type = SplitViewProps
+    logical_name = "SplitView"
+
+    def __init__(
+        self,
+        primary: NodeLike = None,
+        secondary: NodeLike = None,
+        *,
+        ratio: str = "1:1",
+        gap: str = "1.5rem",
+        collapse: str = "md",
+        reverse: bool = False,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        require_choice(ratio, SPLIT_RATIOS, label="ratio")
+        require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
+        super().__init__(
+            SplitViewProps(
+                ratio=ratio,
+                gap=_validated_gap(gap),
+                collapse=collapse,
+                reverse=reverse,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._primary = primary
+        self._secondary = secondary
+
+    def render(self) -> NodeLike:
+        panes: list[NodeLike] = [
+            html.div(self._primary, class_="hedron-split-primary"),
+            html.div(self._secondary, class_="hedron-split-secondary"),
+        ]
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-layout": "split",
+            "hedron-gap": self.props.gap,
+            "hedron-split-ratio": self.props.ratio.replace(":", "-"),
+            "hedron-split-collapse": self.props.collapse,
+            **mark_data(self.props.mark),
+        }
+        if self.props.reverse:
+            data["hedron-split-reverse"] = "true"
+        return html.div(
+            *panes,
+            id=self.props.id,
+            class_=class_names("hedron-split", self.props.class_),
+            style=f"--hedron-gap: {self.props.gap}",
+            data=data,
+        )
+
+
+class FormGridProps(ElementProps):
+    columns: dict[str, int]
+    gap: str = "1rem"
+    density: Density | None = None
+
+
+class FormGrid(Component[FormGridProps]):
+    """Responsive form field grid driven by a breakpoint column map."""
+
+    props_type = FormGridProps
+    logical_name = "FormGrid"
+
+    def __init__(
+        self,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        columns: int | Mapping[str, int] = 2,
+        gap: str = "1rem",
+        density: Density | None = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        resolved = normalize_responsive_int(columns, label="columns", maximum=4)
+        super().__init__(
+            FormGridProps(
+                columns=resolved,
+                gap=_validated_gap(gap),
+                density=density,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-layout": "form-grid",
+            "hedron-gap": self.props.gap,
+            **responsive_data(self.props.columns, prefix="hedron-columns"),
+            **mark_data(self.props.mark),
+        }
+        if self.props.density:
+            data["hedron-density"] = self.props.density
+        return html.div(
+            *self._children,
+            id=self.props.id,
+            class_=class_names("hedron-form-grid", self.props.class_),
+            style=f"--hedron-gap: {self.props.gap}",
+            data=data,
+        )
+
+
+class ActionGroupProps(ElementProps):
+    label: str | None = None
+    align: str = "start"
+    gap: str = "0.5rem"
+    orientation: Literal["horizontal", "vertical"] = "horizontal"
+    collapse: str = "sm"
+
+
+class ActionGroup(Component[ActionGroupProps]):
+    """Grouped page or form actions with alignment and collapse behavior."""
+
+    props_type = ActionGroupProps
+    logical_name = "ActionGroup"
+
+    def __init__(
+        self,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        label: str | None = None,
+        align: str = "start",
+        gap: str = "0.5rem",
+        orientation: Literal["horizontal", "vertical"] = "horizontal",
+        collapse: str = "sm",
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        require_choice(align, ACTION_ALIGNMENTS, label="align")
+        require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
+        super().__init__(
+            ActionGroupProps(
+                label=label,
+                align=align,
+                gap=_validated_gap(gap),
+                orientation=orientation,
+                collapse=collapse,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
+            "id": self.props.id,
+            "class_": class_names("hedron-action-group", self.props.class_),
+            "style": f"--hedron-gap: {self.props.gap}",
+            "role": "group",
+            "data": {
+                "hedron-layout": "action-group",
+                "hedron-gap": self.props.gap,
+                "hedron-align": self.props.align,
+                "hedron-orientation": self.props.orientation,
+                "hedron-action-collapse": self.props.collapse,
+                **mark_data(self.props.mark),
+            },
+        }
+        if self.props.label:
+            attrs["aria"] = {"label": self.props.label}
+        return html.div(*self._children, **attrs)

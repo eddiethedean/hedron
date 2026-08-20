@@ -12,7 +12,7 @@ renderer used by FastAPI, map portable `InteractionResult` values to native Flas
 responses, and integrate CSRF double-submit cookies with Flask sessions. Does **not**
 install FastAPI.
 
-**Package maturity:** Beta · **Train:** `0.53.x` (in-tree tip `v0.53.0`) · pin `>=0.53.0,<0.54` (PyPI still `>=0.52.0,<0.53` while deferred)
+**Package maturity:** Beta · **Train:** `0.54.x` (in-tree tip `v0.54.0`) · pin `>=0.54.0,<0.55` (PyPI still `>=0.52.0,<0.53` while deferred)
 
 Adapter capability readiness is **Supported** when pinned — see
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).

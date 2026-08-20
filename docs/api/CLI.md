@@ -187,6 +187,27 @@ hedron conformance --json
 Without `hedron-conformance`, the command explains the required extra and exits `2`.
 Fixture failures return the conformance runner’s non-zero status.
 
+### `theme check` / `style check`
+
+Validate a design system without running the application.
+
+```bash
+hedron theme check
+hedron theme check --theme aurora --format json
+hedron style check --zero-app-css examples/chrome-zero-css
+```
+
+`theme check` reports missing accessibility tokens, element token/style-contract
+gaps, and contrast findings: text pairs (`color.fg`/`color.bg`,
+`color.muted`/`color.bg`, `color.on-accent`/`color.accent`,
+`color.on-danger`/`color.danger`) must clear 4.5:1 and `color.accent` on
+`color.bg` must clear 3:1. Non-literal token values such as `var(...)` are
+skipped because they cannot be measured statically.
+
+`style check --zero-app-css PATH` fails when the path contains an
+application-authored stylesheet (`.css`, `.scss`, `.sass`, `.less`, `.styl`) or a
+`<style>` block or `style=` attribute in markup, reported as `HED-CSS-0009`.
+
 ### `accel-status`
 
 Report whether optional `hedron-native` acceleration is loaded, disabled, absent, or using

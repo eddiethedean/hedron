@@ -4,6 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+# Mirrors hedron_conformance.authoring_loop.HED_SIM_UNSUPPORTED. hedron-sim does not
+# depend on hedron-conformance; tests/unit/test_sim_054.py asserts the two agree.
+HED_SIM_UNSUPPORTED = "HED-SIM-UNSUPPORTED"
+
 # Keep synchronized with packages/hedron-sim/src/hedron_sim/static/hedron-sim.js
 DECLARED_HX_METHODS: frozenset[str] = frozenset({"GET", "POST", "PUT", "PATCH", "DELETE"})
 DECLARED_HX_ATTRS: frozenset[str] = frozenset(
@@ -25,6 +29,13 @@ DECLARED_SWAP_STYLES: frozenset[str] = frozenset(
 
 class UnsupportedSimFeatureError(ValueError):
     """Raised when a caller requests behavior outside the declared HTMX subset."""
+
+    code: str = HED_SIM_UNSUPPORTED
+
+    def __init__(self, message: str, *, category: str = "", feature: str = "") -> None:
+        super().__init__(message)
+        self.category = category
+        self.feature = feature
 
 
 @dataclass(frozen=True, slots=True)
@@ -49,7 +60,9 @@ def require_supported_method(method: str) -> str:
     if normalized not in DECLARED_HX_METHODS:
         raise UnsupportedSimFeatureError(
             f"hedron-sim does not emulate HTTP method {method!r}; "
-            f"declared subset={sorted(DECLARED_HX_METHODS)}"
+            f"declared subset={sorted(DECLARED_HX_METHODS)}",
+            category="methods",
+            feature=normalized,
         )
     return normalized
 
@@ -64,7 +77,9 @@ def require_supported_swap(swap: str) -> str:
             return style if " " not in token else f"{style}{token[len(key) :]}"
     raise UnsupportedSimFeatureError(
         f"hedron-sim does not emulate hx-swap style {swap!r}; "
-        f"declared subset={sorted(DECLARED_SWAP_STYLES)}"
+        f"declared subset={sorted(DECLARED_SWAP_STYLES)}",
+        category="swaps",
+        feature=key,
     )
 
 

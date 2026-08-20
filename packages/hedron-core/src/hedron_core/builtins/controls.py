@@ -16,6 +16,7 @@ class ButtonProps(Props):
     type: Literal["button", "submit", "reset"] = "button"
     disabled: bool = False
     variant: Literal["primary", "secondary", "danger"] = "primary"
+    leading_icon: str | None = None
     id: str | None = None
     class_: str | None = None
 
@@ -30,6 +31,7 @@ class Button(Component[ButtonProps]):
         type: Literal["button", "submit", "reset"] = "button",
         disabled: bool = False,
         variant: Literal["primary", "secondary", "danger"] = "primary",
+        leading_icon: str | None = None,
         id: str | None = None,
         class_: str | None = None,
         **kwargs: object,
@@ -40,6 +42,7 @@ class Button(Component[ButtonProps]):
                 type=type,
                 disabled=disabled,
                 variant=variant,
+                leading_icon=leading_icon,
                 id=id,
                 class_=class_,
                 **kwargs,
@@ -47,8 +50,16 @@ class Button(Component[ButtonProps]):
         )
 
     def render(self) -> NodeLike:
+        children: list[NodeLike] = []
+        if self.props.leading_icon:
+            from hedron_core.builtins.icon import Icon
+
+            children.append(Icon(self.props.leading_icon, size="sm", decorative=True))
+            children.append(html.span(self.props.label, class_="hedron-button-label"))
+        else:
+            children.append(self.props.label)
         return html.button(
-            self.props.label,
+            *children,
             type=self.props.type,
             disabled=self.props.disabled or None,
             id=self.props.id,

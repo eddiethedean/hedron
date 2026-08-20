@@ -1,6 +1,6 @@
 # Conformance authority (`v0.52`)
 
-**Status:** Stage 1 Implemented / Verified. Living tip `v0.53.0`
+**Status:** Stage 1 Implemented / Verified. Living tip `v0.54.0`
 (in-tree Published; tag/PyPI deferred). D-090 Stage 0 contract preserved
 (`hedron-portable-1`).<br>
 **Tracking:** [#522](https://github.com/eddiethedean/hedron/issues/522)<br>

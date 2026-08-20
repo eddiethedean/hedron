@@ -54,6 +54,9 @@ def test_version_is_synchronized() -> None:
         "hedron-mcp",
         "hedron-gradio",
         "hedron-charts",
+        "hedron-sample-kit",
+        "hedron-sim",
+        "hedron-notebook",
     )
     for name in independent_beta_02:
         other = tomllib.loads(
@@ -68,9 +71,7 @@ def test_version_is_synchronized() -> None:
         assert str(other["version"]).startswith("0.2."), name
     independent_beta = (
         "hedron-native",
-        "hedron-sample-kit",
-        "hedron-sim",
-        "hedron-notebook",
+        "hedron-maps",
     )
     for name in independent_beta:
         other = tomllib.loads(

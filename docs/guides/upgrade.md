@@ -9,7 +9,7 @@ serves **`v0.52.0`** — keep `hedron>=0.52.0,<0.53` from the public index until
 
 ## 0.52 → 0.53
 
-Checkout tip `v0.53.0` uses the in-tree floor `>=0.53.0,<0.54`. From PyPI, keep
+Checkout tip `v0.54.0` uses the in-tree floor `>=0.54.0,<0.55`. From PyPI, keep
 `hedron>=0.52.0,<0.53` until the 0.53 wheel lands. See
 [What's new in 0.53](whats-new-0.53.md) and
 [Application DX API](../api/APPLICATION_DX.md).

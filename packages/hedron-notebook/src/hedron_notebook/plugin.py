@@ -6,9 +6,9 @@ from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 
 PLUGIN_META = PluginMeta(
     name="hedron_notebook",
-    version="0.1.0",
+    version="0.2.0",
     distribution="hedron-notebook",
-    hedron_version=">=0.53,<0.54",
+    hedron_version=">=0.54,<0.55",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,

@@ -9,7 +9,7 @@
 
 Baseline application DX seams remain read-only during Stage 0.
 PKG-053 upgrade source is **0.52**, not 0.51. Do not start Stage 1 during
-Stage 1. Living tip is `v0.53.0` (tag/PyPI deferred).
+Stage 1. Living tip is `v0.54.0` (tag/PyPI deferred).
 
 ## 0.52.0 install fixtures
 

@@ -1,0 +1,48 @@
+schema_version = 1
+phase = "0.54"
+state = "Verified"
+baseline = "v0.53.0"
+gates = ["SAMPLE-054", "DOCTOR-054", "ECOSYSTEM-054"]
+
+[shared]
+import_path = "hedron_conformance.authoring_loop"
+schema_version_symbol = "AUTHORING_LOOP_SCHEMA_VERSION"
+fixture_kind = "authoring_loop_fixture"
+diagnostic_kind = "authoring_loop_diagnostic"
+consumers = ["hedron-sample-kit", "hedron-sim", "hedron-notebook", "hedron package doctor", "AppScenario overlap"]
+
+[failure_codes]
+sim_unsupported = "HED-SIM-UNSUPPORTED"
+sim_limit = "HED-SIM-LIMIT"
+notebook_topology = "HED-NOTEBOOK-TOPOLOGY"
+notebook_token = "HED-NOTEBOOK-TOKEN"
+doctor_metadata = "HED-PACKAGE-DOCTOR"
+
+[doctor]
+cli = "hedron package doctor"
+scope = "external_package_author"
+distinct_from_fleet = true
+checks = [
+  "metadata",
+  "entry_points",
+  "feature_descriptors",
+  "assets",
+  "schema_fingerprints",
+  "docs_links",
+  "conformance_profiles",
+  "optional_dependencies",
+  "version_ranges",
+  "publishable_artifacts",
+]
+automatic_install_or_enable = false
+
+[sample_kit]
+variants = [
+  "pure_python_component",
+  "asset_backed_web_component",
+  "typed_action_workflow",
+  "hdj_binding",
+  "optional_integration",
+]
+independently_removable = true
+private_monorepo_imports = false

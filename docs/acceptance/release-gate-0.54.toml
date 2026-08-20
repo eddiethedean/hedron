@@ -1,0 +1,118 @@
+# Phase 0.54 authoring loop and chrome release evidence index.
+# Verified in-tree cut (D-093 / D-094). Living tip v0.54.0; PyPI deferred.
+
+schema_version = 1
+phase = "0.54"
+status = "Verified"
+planning_baseline = "v0.53.0"
+required_predecessor = "v0.53.0"
+target = "v0.54.0"
+decision = "D-093"
+contract_refine = "D-094"
+owning_rfc = "RFC-0081"
+tracking = "#538-#543,#523-#537"
+
+[[evidence]]
+id = "SAMPLE-054"
+state = "Verified"
+command = "python scripts/check_sample_054.py"
+ci_job = "test"
+owner = "hedron-sample-kit"
+
+[[evidence]]
+id = "DOCTOR-054"
+state = "Verified"
+command = "python scripts/check_doctor_054.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "SIM-054"
+state = "Verified"
+command = "python scripts/check_sim_054.py"
+ci_job = "test"
+owner = "hedron-sim"
+
+[[evidence]]
+id = "PARITY-054"
+state = "Verified"
+command = "python scripts/check_parity_054.py"
+ci_job = "test"
+owner = "hedron-sim"
+
+[[evidence]]
+id = "NOTEBOOK-054"
+state = "Verified"
+command = "python scripts/check_notebook_054.py"
+ci_job = "test"
+owner = "hedron-notebook"
+
+[[evidence]]
+id = "LIFECYCLE-054"
+state = "Verified"
+command = "python scripts/check_lifecycle_054.py"
+ci_job = "test"
+owner = "hedron-notebook"
+
+[[evidence]]
+id = "SECURITY-054"
+state = "Verified"
+command = "python scripts/check_security_054.py"
+ci_job = "test"
+owner = "hedron-notebook"
+
+[[evidence]]
+id = "TOPOLOGY-054"
+state = "Verified"
+command = "python scripts/check_topology_054.py"
+ci_job = "test"
+owner = "hedron-notebook"
+
+[[evidence]]
+id = "ECOSYSTEM-054"
+state = "Verified"
+command = "python scripts/check_ecosystem_054.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "COMPAT-054"
+state = "Verified"
+command = "python scripts/check_compat_054.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PLATFORM-054"
+state = "Verified"
+command = "python scripts/check_platform_054.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "A11Y-054"
+state = "Verified"
+command = "python scripts/check_a11y_054.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "DOCS-054"
+state = "Verified"
+command = "python scripts/check_docs_054.py"
+ci_job = "quality"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-054"
+state = "Verified"
+command = "python scripts/check_pkg_054.py"
+ci_job = "quality"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-054"
+state = "Verified"
+command = "python scripts/check_regress_054.py"
+ci_job = "test"
+owner = "hedron"

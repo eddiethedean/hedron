@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
+from hedron_core.builtins.appearance import CONTENT_WIDTHS, require_choice
 from hedron_core.builtins.landmarks import (
     LandmarkProps,
     Nav,
@@ -25,6 +26,21 @@ from hedron_core.typing_aliases import HtmlAttrValue
 
 def _kids(*children: NodeLike) -> tuple[NodeLike, ...]:
     return collect_children(*children)
+
+
+def _normalize_nav_groups(
+    groups: Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]] | None,
+) -> tuple[tuple[str, tuple[NodeLike, ...]], ...]:
+    """Accept a label→links mapping or an ordered sequence of label/link pairs."""
+    if groups is None:
+        return ()
+    items = groups.items() if isinstance(groups, Mapping) else groups
+    normalized: list[tuple[str, tuple[NodeLike, ...]]] = []
+    for label, links in items:
+        if not str(label).strip():
+            raise ValueError("AppShell nav_groups labels must be non-empty")
+        normalized.append((str(label), _kids(links)))  # type: ignore[arg-type]
+    return tuple(normalized)
 
 
 def _coerce_nav_url(href: SafeUrl | str, *, allow_external: bool = False) -> SafeUrl:
@@ -103,6 +119,7 @@ class HtmxLinkProps(ElementProps):
     active: bool = False
     external: bool = False
     preload: str | None = None
+    leading_icon: str | None = None
 
 
 class HtmxLink(Component[HtmxLinkProps]):
@@ -127,6 +144,7 @@ class HtmxLink(Component[HtmxLinkProps]):
         active: bool = False,
         external: bool = False,
         preload: str | None = None,
+        leading_icon: str | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -188,6 +206,7 @@ class HtmxLink(Component[HtmxLinkProps]):
                 active=active,
                 external=external,
                 preload=preload,
+                leading_icon=leading_icon,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -236,6 +255,14 @@ class HtmxLink(Component[HtmxLinkProps]):
         if self.props.external:
             attrs["rel"] = "noopener noreferrer"
             attrs["target"] = "_blank"
+        if self.props.leading_icon:
+            from hedron_core.builtins.icon import Icon
+
+            return html.a(
+                Icon(self.props.leading_icon, size="sm", decorative=True),
+                html.span(self.props.label, class_="hedron-nav-link-label"),
+                **attrs,
+            )
         return html.a(self.props.label, **attrs)
 
 
@@ -492,13 +519,33 @@ class AppShellProps(Props):
     panel_id: str = "main-panel"
     class_: str | None = None
     id: str | None = None
+    content_width: str = "default"
+    mobile_collapse: bool = True
+
+
+NavGroups = Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]]
 
 
 class AppShell(Component[AppShellProps]):
-    """Document shell with side nav slot and MainPanel body."""
+    """Document shell with composed chrome slots, side nav, and MainPanel body.
+
+    Every chrome slot is optional; an ``AppShell(nav=..., body=...)`` call keeps
+    the phase 0.17 markup so existing applications are unaffected.
+    """
 
     props_type = AppShellProps
     logical_name = "AppShell"
+    slots: ClassVar[dict[str, str]] = {
+        "nav": "optional",
+        "body": "optional",
+        "banner": "optional",
+        "brand": "optional",
+        "env_badge": "optional",
+        "account": "optional",
+        "nav_groups": "optional",
+        "nav_footer": "optional",
+        "app_footer": "optional",
+    }
 
     def __init__(
         self,
@@ -506,16 +553,55 @@ class AppShell(Component[AppShellProps]):
         nav: NodeLike | Sequence[NodeLike] | None = None,
         body: NodeLike | Sequence[NodeLike] | None = None,
         panel_id: str = "main-panel",
+        banner: NodeLike = None,
+        brand: NodeLike = None,
+        env_badge: NodeLike = None,
+        account: NodeLike = None,
+        nav_groups: NavGroups | None = None,
+        nav_footer: NodeLike = None,
+        app_footer: NodeLike = None,
+        content_width: str = "default",
+        mobile_collapse: bool = True,
         class_: str | None = None,
         id: str | None = None,
         **kwargs: object,
     ) -> None:
-        super().__init__(AppShellProps(panel_id=panel_id, class_=class_, id=id, **kwargs))
+        require_choice(content_width, CONTENT_WIDTHS, label="content_width")
+        super().__init__(
+            AppShellProps(
+                panel_id=panel_id,
+                class_=class_,
+                id=id,
+                content_width=content_width,
+                mobile_collapse=mobile_collapse,
+                **kwargs,
+            )
+        )
         self._nav = () if nav is None else _kids(nav)  # type: ignore[arg-type]
         self._body = () if body is None else _kids(body)  # type: ignore[arg-type]
+        self._banner = banner
+        self._brand = brand
+        self._env_badge = env_badge
+        self._account = account
+        self._nav_groups = _normalize_nav_groups(nav_groups)
+        self._nav_footer = nav_footer
+        self._app_footer = app_footer
 
-    def render(self) -> NodeLike:
-        panel = MainPanel(*self._body, id=self.props.panel_id)
+    def _nav_element(self) -> NodeLike:
+        extras: list[NodeLike] = []
+        for label, items in self._nav_groups:
+            extras.append(
+                html.div(
+                    html.p(label, class_="hedron-nav-group-label"),
+                    html.div(*items, class_="hedron-nav-group-items"),
+                    class_="hedron-nav-group",
+                    role="group",
+                    aria={"label": label},
+                    data={"hedron-nav-group": "true"},
+                )
+            )
+        if self._nav_footer is not None:
+            extras.append(html.div(self._nav_footer, class_="hedron-app-shell-nav-footer"))
         if len(self._nav) == 1 and isinstance(self._nav[0], Nav):
             # Avoid nested <nav> landmarks when callers pass Nav(...).
             child = self._nav[0]
@@ -532,21 +618,74 @@ class AppShell(Component[AppShellProps]):
                 data=data,
                 hidden=child.props.hidden,
             )
-            nav = html.nav(*child._children, **_landmark_attrs(props))
-        else:
-            nav = html.nav(
-                *self._nav,
-                class_="hedron-app-shell-nav",
-                data={"hedron-app-nav": "true"},
-                aria={"label": "Primary"},
+            return html.nav(*child._children, *extras, **_landmark_attrs(props))
+        return html.nav(
+            *self._nav,
+            *extras,
+            class_="hedron-app-shell-nav",
+            data={"hedron-app-nav": "true"},
+            aria={"label": "Primary"},
+        )
+
+    def _chrome_header(self) -> NodeLike | None:
+        parts: list[NodeLike] = []
+        if self._brand is not None:
+            parts.append(html.div(self._brand, class_="hedron-app-shell-brand"))
+        if self._env_badge is not None:
+            parts.append(
+                html.div(
+                    self._env_badge,
+                    class_="hedron-app-shell-env",
+                    data={"hedron-app-env": "true"},
+                )
             )
+        if self._account is not None:
+            parts.append(html.div(self._account, class_="hedron-app-shell-account"))
+        if not parts:
+            return None
+        return html.header(
+            *parts,
+            class_="hedron-app-shell-header",
+            data={"hedron-app-shell-header": "true"},
+        )
+
+    def render(self) -> NodeLike:
+        panel = MainPanel(*self._body, id=self.props.panel_id)
+        children: list[NodeLike] = []
+        if self._banner is not None:
+            children.append(
+                html.div(
+                    self._banner,
+                    class_="hedron-app-shell-banner",
+                    data={"hedron-app-banner": "true"},
+                )
+            )
+        header = self._chrome_header()
+        if header is not None:
+            children.append(header)
+        children.append(self._nav_element())
+        children.append(panel)
+        if self._app_footer is not None:
+            children.append(
+                html.footer(
+                    self._app_footer,
+                    class_="hedron-app-shell-footer",
+                    data={"hedron-app-footer": "true"},
+                )
+            )
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-app-shell": "true",
+            "hedron-content-width": self.props.content_width,
+        }
+        if not self.props.mobile_collapse:
+            data["hedron-mobile-collapse"] = "off"
         attrs: dict[str, HtmlAttrValue] = {
             "class_": class_names("hedron-app-shell", self.props.class_),
-            "data": {"hedron-app-shell": "true"},
+            "data": data,
         }
         if self.props.id:
             attrs["id"] = self.props.id
-        return html.div(nav, panel, **attrs)
+        return html.div(*children, **attrs)
 
     def as_fragment(self) -> NodeLike:
         """Return only the main panel subtree for HTMX fragment responses."""
