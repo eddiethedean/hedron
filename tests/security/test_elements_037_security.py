@@ -123,4 +123,3 @@ def test_issue_220_packaged_asset_path_rejects_escape() -> None:
         sim_asset_path("/etc/passwd")
     with pytest.raises(HedronError):
         sim_asset_path("../embed.py")
-

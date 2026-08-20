@@ -216,9 +216,7 @@ def export_workbench_state(
     if resolved.active and resolved.external_origin:
         origin = resolved.external_origin.rstrip("/")
         mount = resolved.browser_mount
-        env[RESOLVED_PUBLIC_BASE_ENV] = (
-            f"{origin}{mount}" if mount and mount != "/" else origin
-        )
+        env[RESOLVED_PUBLIC_BASE_ENV] = f"{origin}{mount}" if mount and mount != "/" else origin
     env[RESOLVED_MODE_ENV] = resolved.mode.value
     env[RESOLVED_SOURCE_ENV] = resolved.source
     env["FASTAPI_WORKBENCH_TRUSTED_PROXIES"] = resolved.forwarded_allow_ips

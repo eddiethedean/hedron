@@ -122,16 +122,12 @@ async def test_issue_103_cancels_siblings_on_overload() -> None:
             raise
         return n
 
-    gather_task = asyncio.create_task(
-        adaptive_gather(hold(1), hold(2), return_exceptions=True)
-    )
+    gather_task = asyncio.create_task(adaptive_gather(hold(1), hold(2), return_exceptions=True))
     await started.wait()
     results = await gather_task
 
     overloads = [
-        r
-        for r in results
-        if isinstance(r, HedronError) and r.diagnostic.code == "HED-CONC-0001"
+        r for r in results if isinstance(r, HedronError) and r.diagnostic.code == "HED-CONC-0001"
     ]
     assert len(overloads) >= 1
     assert 1 in cancelled

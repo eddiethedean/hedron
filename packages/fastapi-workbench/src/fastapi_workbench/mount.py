@@ -136,7 +136,9 @@ def path_has_mount_prefix(path: str, mount: str) -> bool:
     normalized = normalize_mount_path(mount)
     if not normalized:
         return False
-    suffix_at = min((index for token in "?#" if (index := path.find(token)) >= 0), default=len(path))
+    suffix_at = min(
+        (index for token in "?#" if (index := path.find(token)) >= 0), default=len(path)
+    )
     url_path = path[:suffix_at]
     return url_path == normalized or url_path.startswith(normalized + "/")
 

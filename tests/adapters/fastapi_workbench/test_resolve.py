@@ -15,9 +15,7 @@ def test_issue_135_resolved_public_base_preserves_mount_path() -> None:
     )
     env: dict[str, str] = {}
     export_workbench_state(resolved, environ=env)
-    assert env["FASTAPI_WORKBENCH_RESOLVED_PUBLIC_BASE"] == (
-        "https://wb.example/s/session/p/12345"
-    )
+    assert env["FASTAPI_WORKBENCH_RESOLVED_PUBLIC_BASE"] == ("https://wb.example/s/session/p/12345")
 
     env.pop("FASTAPI_WORKBENCH_RESOLVED_MOUNT", None)
     env.pop("FASTAPI_WORKBENCH_ROOT_PATH", None)

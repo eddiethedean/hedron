@@ -196,9 +196,7 @@ def test_pypi_claim_on_current_train_must_match_pypi_version() -> None:
         f"(**Published** `v0.50.1` on PyPI).\n"
     )
     assert failures(stale)
-    ok = (
-        f"Living train: **{facts.train_line}** (published **v{facts.pypi_version}**).\n"
-    )
+    ok = f"Living train: **{facts.train_line}** (published **v{facts.pypi_version}**).\n"
     assert not failures(ok)
     in_tree_ok = (
         f"Living train **{facts.train_line}** (**Published** as `v{facts.published_version}` "

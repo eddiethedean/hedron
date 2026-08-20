@@ -168,9 +168,7 @@ def render_component_response(
     if policy is None and request is not None:
         app = request.scope.get("app")
         if app is not None:
-            policy = getattr(
-                app.state, "hedron_security", SecurityPolicy.from_name("standard")
-            )
+            policy = getattr(app.state, "hedron_security", SecurityPolicy.from_name("standard"))
         else:
             policy = SecurityPolicy.from_name("standard")
 
