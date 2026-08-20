@@ -151,9 +151,7 @@ async def _probe_app(app: Any, mount: str) -> dict[str, object]:
     # Empty Set-Cookie is fine (many probes never touch the session). Fail only
     # when a cookie is present with a Path that does not match the mount (#160
     # still covers prefix-sibling Path matching via _cookie_path_matches_mount).
-    cookie_paths_ok = all(
-        _cookie_path_matches_mount(header, mount) for header in cookie_headers
-    )
+    cookie_paths_ok = all(_cookie_path_matches_mount(header, mount) for header in cookie_headers)
     return {
         "target": target,
         "status": response.status_code,
