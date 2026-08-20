@@ -18,7 +18,7 @@ ConnectCookieModeName = Literal["native", "authenticated_header_v1"]
 
 
 class ConnectCookieMode(StrEnum):
-    """Supported native cookies; bridge enum is an extension point only in 0.33."""
+    """Supported native cookies; bridge remains an unsupported extension point."""
 
     NATIVE = "native"
     AUTHENTICATED_HEADER_V1 = "authenticated_header_v1"
@@ -40,11 +40,11 @@ def require_supported_cookie_mode(mode: ConnectCookieMode) -> None:
             make_diagnostic(
                 "HED-POSIT-0401",
                 severity=DiagnosticSeverity.ERROR,
-                title="Connect cookie bridge is not Supported in 0.33",
+                title="Connect cookie bridge is not Supported",
                 explanation=(
                     "ConnectCookieMode.authenticated_header_v1 is retained only as a "
-                    "documented extension point. Stage 0 evidence dropped Supported bridge "
-                    "scope (BRIDGE_DECISION=drop_supported)."
+                    "documented extension point. Supported bridge scope remains "
+                    "dropped (BRIDGE_DECISION=drop_supported)."
                 ),
                 remediation=(
                     "Use ConnectCookieMode.native (default). A future Accepted decision is "
@@ -88,6 +88,9 @@ class CookieRegistry:
         if spec.name.lower() == "auto":
             raise ValueError("cookie name cannot be 'auto'")
         self._specs[spec.name] = spec
+        refresh = getattr(self._app, "_refresh_owned_cookie_middleware", None)
+        if callable(refresh):
+            refresh()
 
     def names(self) -> tuple[str, ...]:
         return tuple(sorted(self._specs))

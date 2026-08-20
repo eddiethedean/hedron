@@ -1,10 +1,12 @@
-# Phase 0.52 whole-fleet inventory (Verified; baseline v0.50.3).
+# Phase 0.52 whole-fleet inventory (Verified; baseline v0.51.2).
 # Machine-checked by check_package_docs_inventory / living train 0.52.
 # disposition: production_grade | incubator | fixture | eol
 # Extends the 0.51 fleet. Conformance authority + Posit lifecycle (D-089 / D-090 / RFC-0079).
 # Owning decision: D-089 / D-090. RFC: RFC-0079.
 # PRESENT-034 deferred presentation audit is recorded under hedron-core (see present_034_status).
 # Tracking: #522.
+# Channel honesty: registry_status=deferred — PyPI still serves v0.51.0; first-run pins stay
+# >=0.51.0,<0.52 until the Git tag / upload lands. In-tree tip / inventory pins use 0.52.0.
 
 baseline = "v0.51.2"
 state = "verified"
@@ -51,6 +53,7 @@ disposition = "production_grade"
 supported = ["typed_pages", "htmx_fragments", "csrf_profiles", "polling_jobs", "inference_workflows"]
 experimental = ["live_sse_ws_streaming_preload"]
 excluded = ["hedron_1_0_or_sla", "polling_only_reopen_without_packet"]
+notes = "registry deferred: public index still v0.51.0; first-run pins >=0.51.0,<0.52"
 
 [hedron-core]
 owner = "hedron-core"
@@ -147,9 +150,18 @@ channel = "pypi"
 pin = ">=0.52.0,<0.53"
 evidence = "release-gate-0.52.toml"
 disposition = "production_grade"
-supported = ["versioned_schemas", "golden_fixtures", "runner_cli_api"]
+supported = [
+  "versioned_schemas",
+  "golden_fixtures",
+  "runner_cli_api",
+  "profiles",
+  "compile_suite",
+  "report_envelopes",
+  "sandbox_policy",
+]
 experimental = []
 excluded = ["application_production_server"]
+notes = "0.52 authority: profiles/compile/report/sandbox; PyPI pin lag while registry deferred"
 
 [hedron-charts]
 owner = "hedron-charts"
@@ -260,11 +272,22 @@ owner = "hedron-posit"
 maturity = "beta"
 channel = "pypi"
 pin = ">=0.52.0,<0.53"
-evidence = "release-gate-0.33.toml"
+evidence = "release-gate-0.52.toml"
 disposition = "production_grade"
-supported = ["HedronPosit", "native_connect_guid", "workbench_path_prefix"]
+supported = [
+  "HedronPosit",
+  "native_connect_guid",
+  "workbench_path_prefix",
+  "cookie_registry",
+  "PositContext",
+  "hands_off",
+  "deployment_matrix",
+  "PositDiagnostic",
+  "routeurl_parity",
+]
 experimental = ["authenticated_header_v1_extension_point"]
 excluded = ["supported_cookie_bridge"]
+notes = "0.52 lifecycle companions #508–#513; PyPI pin lag while registry deferred"
 
 [fastapi-workbench]
 owner = "fastapi-workbench"

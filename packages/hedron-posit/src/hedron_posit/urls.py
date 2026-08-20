@@ -214,6 +214,13 @@ def compose_local_url(
         )
     result = prefix_local_path(value, mount)
     if query:
+        if isinstance(query, Mapping):
+            items: Sequence[tuple[str, object]] = list(query.items())
+        else:
+            items = list(query)
+        for key, raw in items:
+            if raw is None:
+                raise ValueError(f"local URL query value for {key!r} must not be None")
         result += "?" + urlencode(query, doseq=True)
     if fragment is not None:
         if any(ord(char) < 32 for char in str(fragment)):

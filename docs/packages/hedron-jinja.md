@@ -2,7 +2,7 @@
 
 Explicit standards-first `.hdj` templates over Jinja, HTML, and HTMX.
 
-**Package maturity:** Beta · **Train:** `0.51.x` (published `v0.51.0`) · pin `>=0.51.0,<0.52`
+**Package maturity:** Beta · **Train:** `0.52.x` (in-tree tip `v0.52.0`) · pin `>=0.52.0,<0.53` (PyPI still `>=0.51.0,<0.52` while deferred)
 **Flagship extra:** `hedron[jinja]` · **Import:** `hedron_jinja`  
 **Format:** HDJ v1 frozen · templates are **trusted application code**
 

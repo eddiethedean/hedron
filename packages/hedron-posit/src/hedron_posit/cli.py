@@ -180,6 +180,8 @@ async def _probe_app(app: Any, mount: str) -> dict[str, object]:
 
     import httpx
 
+    from hedron_posit.diagnostics import scan_location_header, scan_set_cookie_headers
+
     target = f"{mount}/" if mount else "/"
     async with httpx.AsyncClient(
         transport=httpx.ASGITransport(app=app),
@@ -196,10 +198,18 @@ async def _probe_app(app: Any, mount: str) -> dict[str, object]:
             if value != mount and not value.startswith(mount + "/"):
                 unmounted.append(value)
     cookie_headers = response.headers.get_list("set-cookie")
-    # Empty Set-Cookie list must fail closed (all([]) is True otherwise) — #160.
-    cookie_paths_ok = bool(cookie_headers) and all(
+    # Empty Set-Cookie is fine (many probes never touch the session). Fail only
+    # when a cookie is present with a Path that does not match the mount.
+    cookie_paths_ok = all(
         _cookie_path_matches_mount(header, mount) for header in cookie_headers
     )
+    diagnostics = [
+        item.as_dict()
+        for item in (
+            *scan_set_cookie_headers(cookie_headers, mount=mount or "/"),
+            *scan_location_header(response.headers.get("location"), mount=mount or "/"),
+        )
+    ]
     return {
         "target": target,
         "status": response.status_code,
@@ -207,6 +217,8 @@ async def _probe_app(app: Any, mount: str) -> dict[str, object]:
         "unmounted_generated_urls": sorted(set(unmounted)),
         "generated_urls_mounted": not unmounted,
         "cookie_paths_mounted": cookie_paths_ok,
+        "diagnostics": diagnostics,
+        "diagnostics_clean": not diagnostics,
     }
 
 
@@ -272,7 +284,12 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
             probe = cast(dict[str, object], value)
             if any(
                 probe.get(name) is False
-                for name in ("reachable", "generated_urls_mounted", "cookie_paths_mounted")
+                for name in (
+                    "reachable",
+                    "generated_urls_mounted",
+                    "cookie_paths_mounted",
+                    "diagnostics_clean",
+                )
             ):
                 return 1
     return 0

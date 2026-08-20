@@ -40,6 +40,12 @@ def test_admit_fixtures_filters_by_capability() -> None:
     )
     element = load_profile_registry().get("element")
     assert "element_abi" in element.admit_subdirectories
+    package = admit_fixtures("package")
+    package_caps = load_profile_registry().get("package").capabilities
+    assert package
+    assert all(fx.capability in package_caps for fx in package)
+    assert not any(fx.id == "form-supported-str" for fx in package)
+    assert not any(fx.id == "effect-declared-not-executed" for fx in package)
 
 
 def test_suite_digests_deterministic() -> None:

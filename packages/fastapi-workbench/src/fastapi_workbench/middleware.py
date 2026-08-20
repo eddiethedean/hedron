@@ -240,11 +240,26 @@ class WorkbenchPathMiddleware:
         first = value.split(b"=", 1)[0].strip().decode("latin-1")
         if first not in self.owned_cookie_names:
             return value
-        return _COOKIE_PATH_ROOT.sub(
-            lambda match: match.group(1) + mount.encode("ascii"),
+        mount_bytes = mount.encode("ascii")
+        # Rewrite Path=/ and literal Path=auto (browsers treat "auto" as a path).
+        rewritten = _COOKIE_PATH_ROOT.sub(
+            lambda match: match.group(1) + mount_bytes,
             value,
             count=1,
         )
+        if rewritten != value:
+            return rewritten
+        match = _COOKIE_PATH.search(value)
+        if match is None:
+            return value
+        current = match.group(2).strip()
+        if current.lower() == b"auto" or current == b"/":
+            return value[: match.start(2)] + mount_bytes + value[match.end(2) :]
+        return value
+
+    def set_owned_cookie_names(self, names: tuple[str, ...] | frozenset[str]) -> None:
+        """Refresh the owned-cookie set after late registration (HedronPosit)."""
+        self.owned_cookie_names = frozenset(names)
 
     def _prepare_connect_cookie(self, value: bytes, mount: str) -> bytes:
         """Undo app-side scoping that Connect will apply at its outer proxy."""

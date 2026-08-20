@@ -80,14 +80,45 @@ def refuse_secret_env_capture(env: Mapping[str, str]) -> list[str]:
     return sorted(name for name in env if looks_like_secret_env(name))
 
 
+class ArchiveBudgetError(ValueError):
+    """Raised when an archive exceeds sandbox size/member limits."""
+
+
+def check_archive_budget(
+    *,
+    member_count: int,
+    compressed_bytes: int,
+    expanded_bytes: int,
+    policy: SandboxPolicy | None = None,
+) -> None:
+    """Fail closed when archive dimensions exceed ``SandboxPolicy`` limits."""
+    limits = policy or SandboxPolicy()
+    if member_count < 0 or compressed_bytes < 0 or expanded_bytes < 0:
+        raise ArchiveBudgetError("archive budget dimensions must be non-negative")
+    if member_count > limits.max_archive_members:
+        raise ArchiveBudgetError(
+            f"archive member count {member_count} exceeds max {limits.max_archive_members}"
+        )
+    if compressed_bytes > limits.max_archive_bytes:
+        raise ArchiveBudgetError(
+            f"archive compressed size {compressed_bytes} exceeds max {limits.max_archive_bytes}"
+        )
+    if expanded_bytes > limits.max_expanded_bytes:
+        raise ArchiveBudgetError(
+            f"archive expanded size {expanded_bytes} exceeds max {limits.max_expanded_bytes}"
+        )
+
+
 __all__ = [
     "DEFAULT_MAX_ARCHIVE_BYTES",
     "DEFAULT_MAX_ARCHIVE_MEMBERS",
     "DEFAULT_MAX_EXPANDED_BYTES",
     "NO_NETWORK_MARKER",
     "PROCESS_KILL_TIMEOUT_S",
+    "ArchiveBudgetError",
     "SandboxPolicy",
     "SuitePathError",
+    "check_archive_budget",
     "looks_like_secret_env",
     "refuse_secret_env_capture",
     "validate_suite_path",

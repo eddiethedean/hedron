@@ -32,7 +32,7 @@ authority extensions):
 | `to_junit` / `to_sarif` | CI converters |
 | `offline_bundle_manifest(...)` | Offline provenance bundle inventory |
 | `validate_suite_path(...)` | Reject path traversal in suite paths |
-| `SandboxPolicy` | Archive/process/network/secret sandbox defaults |
+| `SandboxPolicy` / `check_archive_budget(...)` | Archive/process/network/secret sandbox defaults + fail-closed budget checks |
 | `AUTHOR_KIT_VERSION` / `declared_capabilities()` | Author kit 0.52 without monorepo import |
 
 ## 0.52 authority contract

@@ -5,8 +5,10 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page describes **0.51.0**. Install from PyPI with `hedron>=0.51.0,<0.52` — extras and
-public-index notes: [Installation](../getting-started/installation.md). Capability
+This page describes the living **0.52.x** train (in-tree tip **`v0.52.0`**). Git tag and
+PyPI upload remain **deferred** — install from PyPI with `hedron>=0.51.0,<0.52` until the
+0.52 wheel lands. Extras and public-index notes:
+[Installation](../getting-started/installation.md). Capability
 readiness, API compatibility, and package maturity are three
 separate axes — [How labels work](#how-labels-work). Evaluators who need the cheat-sheet:
 [Maturity labels](../getting-started/how-to-read.md).

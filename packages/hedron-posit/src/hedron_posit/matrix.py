@@ -16,12 +16,28 @@ class MatrixCase:
     label: str
     mount: str
     product: str
+    topology: str = "direct"
+    notes: str = ""
 
 
 DEFAULT_MATRIX: tuple[MatrixCase, ...] = (
     MatrixCase("root", "ordinary root hosting", "/", "hedron"),
-    MatrixCase("workbench-direct", "Workbench direct", "/s/abc/p/xyz/", "workbench"),
-    MatrixCase("workbench-proxy", "Workbench reverse proxy", "/s/abc/p/xyz/", "workbench"),
+    MatrixCase(
+        "workbench-direct",
+        "Workbench direct",
+        "/s/abc/p/xyz/",
+        "workbench",
+        topology="direct",
+        notes="session stickiness not required",
+    ),
+    MatrixCase(
+        "workbench-proxy",
+        "Workbench reverse proxy",
+        "/s/abc/p/xyz/",
+        "workbench",
+        topology="reverse_proxy",
+        notes="load-balanced deployments require Workbench session stickiness",
+    ),
     MatrixCase("connect-native", "Connect native", "/content/app1/", "connect"),
     MatrixCase("external-base", "explicit external base", "/apps/demo/", "hedron"),
 )
@@ -33,16 +49,20 @@ def evaluate_matrix_case(case: MatrixCase) -> dict[str, Any]:
     cookie_path = resolve_cookie_path(mount)
     href = compose_local_url("/profile", mount=mount, query={"tab": "1"}, fragment="main")
     redirect = compose_local_url("/login", mount=mount, query={"next": "/profile"})
+    stickiness_required = case.topology == "reverse_proxy"
     return {
         "id": case.id,
         "label": case.label,
         "product": case.product,
+        "topology": case.topology,
+        "notes": case.notes,
         "mount": mount,
         "cookie_path": cookie_path,
         "href_sample": href,
         "redirect_sample": redirect,
         "path_auto_forbidden": cookie_path.lower() != "auto",
         "cookie_path_matches_mount_helper": cookie_path == cookie_path_for_mount(mount or "/"),
+        "session_stickiness_required": stickiness_required,
         "ok": cookie_path.lower() != "auto",
     }
 

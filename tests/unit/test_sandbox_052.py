@@ -8,8 +8,10 @@ from pathlib import Path
 from hedron_conformance import (
     NO_NETWORK_MARKER,
     PROCESS_KILL_TIMEOUT_S,
+    ArchiveBudgetError,
     SandboxPolicy,
     SuitePathError,
+    check_archive_budget,
     validate_suite_path,
 )
 from hedron_conformance.sandbox import (
@@ -35,6 +37,20 @@ def test_sandbox_policy_defaults() -> None:
     env = policy.env_for_subprocess({"LANG": "C"})
     assert env[NO_NETWORK_MARKER] == "1"
     assert env["LANG"] == "C"
+
+
+def test_check_archive_budget_fail_closed() -> None:
+    check_archive_budget(member_count=1, compressed_bytes=10, expanded_bytes=20)
+    try:
+        check_archive_budget(
+            member_count=DEFAULT_MAX_ARCHIVE_MEMBERS + 1,
+            compressed_bytes=1,
+            expanded_bytes=1,
+        )
+        raised = False
+    except ArchiveBudgetError:
+        raised = True
+    assert raised
 
 
 def test_validate_suite_path_under_root(tmp_path: Path) -> None:

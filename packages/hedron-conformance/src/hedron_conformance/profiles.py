@@ -164,7 +164,11 @@ def admit_fixtures(
     source = list(fixtures) if fixtures is not None else load_bundled_fixtures()
     admitted = [fx for fx in source if fx.capability in profile.capabilities]
     if include_subdirectories and profile.admit_subdirectories:
-        admitted.extend(_load_subdirectory_markers(profile.admit_subdirectories))
+        admitted.extend(
+            fx
+            for fx in _load_subdirectory_markers(profile.admit_subdirectories)
+            if fx.capability in profile.capabilities
+        )
     return admitted
 
 
@@ -173,6 +177,7 @@ def _load_subdirectory_markers(names: frozenset[str]) -> list[ConformanceFixture
 
     Non-ConformanceFixture corpora (e.g. element_abi inventory JSON) are skipped
     rather than failing closed — they remain opt-in markers for the profile.
+    Capability filtering is applied by ``admit_fixtures``.
     """
     directory = fixtures_dir()
     out: list[ConformanceFixture] = []

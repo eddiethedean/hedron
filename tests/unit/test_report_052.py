@@ -7,9 +7,10 @@ from pathlib import Path
 
 from hedron_conformance import (
     build_result_envelope,
+    load_bundled_fixtures,
     offline_bundle_manifest,
-    profile_suite_digest,
     run_kit,
+    suite_digest,
     to_junit,
     to_sarif,
     verify_envelope_digest,
@@ -25,7 +26,7 @@ def test_report_052_packet_bound() -> None:
 
 def test_result_envelope_sha256_and_hmac() -> None:
     report = run_kit()
-    digest = profile_suite_digest("core-render")
+    digest = suite_digest(load_bundled_fixtures())
     envelope = build_result_envelope(report, manifest_digest=digest)
     assert envelope["ok"] is True
     assert envelope["provenance"]["algorithm"] == "sha256"
@@ -39,7 +40,7 @@ def test_result_envelope_sha256_and_hmac() -> None:
 
 def test_offline_bundle_manifest_deterministic() -> None:
     report = run_kit()
-    digest = profile_suite_digest("manifest")
+    digest = suite_digest(load_bundled_fixtures())
     envelope = build_result_envelope(report, manifest_digest=digest)
     junit = to_junit(report)
     sarif = to_sarif(report)

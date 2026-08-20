@@ -43,6 +43,8 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 pip install "hedron[data,dev,posit]>=0.51.0,<0.52"
 ```
 
+Checkout tip is `v0.52.0` (`>=0.52.0,<0.53` in-tree) until the Git tag / PyPI upload lands.
+
 ## Tooling-grade and independent Beta lines
 
 These packages version independently from the flagship train. Their declared Supported
@@ -63,6 +65,8 @@ deny-by-default, and Gradio allows only declared remote destinations.
 pip install "hedron[charts]>=0.51.0,<0.52"
 pip install "hedron-sample-kit>=0.1.10,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
+
+Checkout tip is `v0.52.0` (`>=0.52.0,<0.53` in-tree) until the Git tag / PyPI upload lands.
 
 ## Authoring an extension
 

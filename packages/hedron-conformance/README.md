@@ -14,7 +14,11 @@ reference — without matching incidental CPython formatting.
 
 Also available as the flagship extra `hedron[conformance]`.
 
-**Package maturity:** Beta · **Train:** `0.51.x` (published `v0.51.0`) · pin `>=0.51.0,<0.52`
+**Package maturity:** Beta · **Train:** `0.52.x` (in-tree tip `v0.52.0`) · pin `>=0.52.0,<0.53` (PyPI still `>=0.51.0,<0.52` while deferred)
+
+Phase 0.52 authority contract:
+[RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
+[#522](https://github.com/eddiethedean/hedron/issues/522).
 
 ## Install
 
@@ -26,6 +30,8 @@ uv add "hedron-conformance>=0.51.0,<0.52"
 pip install "hedron[conformance]>=0.51.0,<0.52"
 ```
 
+Checkout tip `v0.52.0` uses `>=0.52.0,<0.53` until the Git tag / PyPI upload lands.
+
 Requires Python 3.11–3.14.
 
 ## Runner
@@ -33,6 +39,11 @@ Requires Python 3.11–3.14.
 ```bash
 hedron-conformance run
 hedron-conformance run --json
+hedron-conformance run --junit
+hedron-conformance run --sarif
+hedron-conformance run --envelope
+hedron-conformance compile
+hedron-conformance profiles
 hedron-conformance list
 hedron-conformance schema
 hedron-conformance --version
@@ -45,19 +56,31 @@ Failures report fixture id, contract version, and violated capability.
 ### Python API
 
 ```python
-from hedron_conformance import load_bundled_fixtures, run_kit
+from hedron_conformance import compile_suite, load_bundled_fixtures, run_kit
 
 fixtures = load_bundled_fixtures()
+compiled = compile_suite(fixtures)
+assert compiled.ok
 result = run_kit(fixtures)
 assert result.ok
 ```
+
+### 0.52 surfaces
+
+| Symbol | Role |
+|---|---|
+| `compile_suite(...)` | Fixture compiler; rejects contradictory suites |
+| `load_profile_registry()` | Versioned profile registry |
+| `build_result_envelope(...)` | Signed-ish result envelope |
+| `to_junit` / `to_sarif` | CI converters |
+| `SandboxPolicy` / `check_archive_budget(...)` | Archive/process/network/secret sandbox defaults + fail-closed budget checks |
 
 ## Related runtimes
 
 Experimental evaluators in the monorepo (not published as PyPI apps):
 
-- [`hedron-runtime-node`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-node) — Node ≥ 18
-- [`hedron-runtime-java`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-java) — JDK 11+
+- [`hedron-runtime-node`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-node) — Node ≥ 18 (`0.52.0`)
+- [`hedron-runtime-java`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-java) — JDK 11+ (`0.52.0`)
 
 ## Links
 

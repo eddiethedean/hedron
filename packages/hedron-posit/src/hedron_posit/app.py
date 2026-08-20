@@ -158,9 +158,14 @@ class HedronPosit(Hedron):
             if self.hedron_workbench.active
             else (hands_off_mount or None)
         )
+        # hands_off must not stay stuck in WorkbenchMode.OFF: request mount strip
+        # and response adaptation both need _should_normalize to admit the mount.
+        middleware_mode = self.hedron_workbench.mode
+        if hands_off and expected_mount and middleware_mode is WorkbenchMode.OFF:
+            middleware_mode = WorkbenchMode.AUTO
         self._workbench_asgi = WorkbenchPathMiddleware(
             super().__call__,
-            mode=self.hedron_workbench.mode,
+            mode=middleware_mode,
             expected_mount=expected_mount,
             active=self.hedron_workbench.active or bool(hands_off and expected_mount),
             debug=self.hedron_workbench.debug,
@@ -194,7 +199,12 @@ class HedronPosit(Hedron):
             ),
             cookie_strategy=self.hedron_posit.cookie_mode.value,
             bridge_enabled=self.hedron_posit.bridge_enabled,
-            registered_cookie_count=len(self._owned_cookie_names()),
+            registered_cookie_count=len(
+                {
+                    *self._owned_cookie_names(),
+                    *(self._cookie_registry.names() if self._cookie_registry else ()),
+                }
+            ),
             normalizer_count=1,
             compatibility_facade=self.hedron_posit.compatibility_facade,
             capabilities=caps,
@@ -208,6 +218,16 @@ class HedronPosit(Hedron):
         if isinstance(csrf_name, str) and csrf_name:
             names.add(csrf_name)
         return tuple(sorted(names))
+
+    def _refresh_owned_cookie_middleware(self) -> None:
+        """Keep response Path repair in sync with late cookie registration (#508)."""
+        registry_names = self._cookie_registry.names() if self._cookie_registry else ()
+        owned = tuple(sorted({*self._owned_cookie_names(), *registry_names}))
+        setter = getattr(self._workbench_asgi, "set_owned_cookie_names", None)
+        if callable(setter):
+            setter(owned)
+        else:
+            self._workbench_asgi.owned_cookie_names = frozenset(owned)
 
     @property
     def cookies(self) -> CookieRegistry:
@@ -411,7 +431,12 @@ class HedronPosit(Hedron):
         return bool(self._posit_config.hands_off)
 
     def adapt_local_url(self, path: str, *, request: Request | None = None) -> str:
-        """Prefix a validated same-app path once when hands_off (or always via href)."""
+        """Prefix a validated same-app path once (same helper as ``href``).
+
+        Middleware response rewriting (``Location`` / HTMX / owned cookies) is
+        gated by ``hands_off`` or an active Workbench mount. This helper always
+        builds a correctly mounted path for authors who call it explicitly.
+        """
         return self.href(path, request=request)
 
     def deployment_capabilities(

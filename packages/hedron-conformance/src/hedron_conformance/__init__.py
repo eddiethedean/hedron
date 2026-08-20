@@ -45,8 +45,10 @@ from hedron_conformance.runner import CapabilityResult, FixtureResult, KitReport
 from hedron_conformance.sandbox import (
     NO_NETWORK_MARKER,
     PROCESS_KILL_TIMEOUT_S,
+    ArchiveBudgetError,
     SandboxPolicy,
     SuitePathError,
+    check_archive_budget,
     refuse_secret_env_capture,
     validate_suite_path,
 )
@@ -87,6 +89,7 @@ __all__ = [
     "KitReport",
     "Profile",
     "ProfileRegistry",
+    "ArchiveBudgetError",
     "SandboxPolicy",
     "SuitePathError",
     "__version__",
@@ -94,6 +97,7 @@ __all__ = [
     "author_kit_dir",
     "author_kit_summary",
     "build_result_envelope",
+    "check_archive_budget",
     "check_contract_version",
     "check_fixture_version",
     "compatibility_policy_dict",
