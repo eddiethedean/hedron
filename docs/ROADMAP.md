@@ -5343,6 +5343,12 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#535](https://github.com/eddiethedean/hedron/issues/535) | Unified overlay, elevation, and stacking-layer styling contract | 0.54 |
 | [#536](https://github.com/eddiethedean/hedron/issues/536) | Unified loading, empty, error, permission, and result-state presentation | 0.54 |
 | [#537](https://github.com/eddiethedean/hedron/issues/537) | Production-grade static Table and DescriptionList presentation APIs | 0.54 |
+| [#544](https://github.com/eddiethedean/hedron/issues/544) | Responsive master-detail and split-pane layout primitives | 0.55 |
+| [#545](https://github.com/eddiethedean/hedron/issues/545) | Security-header and CSP reporting integration | 0.55 |
+| [#546](https://github.com/eddiethedean/hedron/issues/546) | Typed authorization-aware component capabilities | 0.55 |
+| [#547](https://github.com/eddiethedean/hedron/issues/547) | Application-level upgrade compatibility reports | 0.55 |
+| [#548](https://github.com/eddiethedean/hedron/issues/548) | Idempotent and replay-safe action policies | 0.55 |
+| [#549](https://github.com/eddiethedean/hedron/issues/549) | First-class multipart and file-upload primitives | 0.55 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 
@@ -5448,6 +5454,18 @@ this medium/low packet; it was remediated on the 0.37 train (`HTMX-037`).
 
 **Outcome:** Hedron provides secure, inspectable primitives for common application workflows: responsive master-detail composition, policy-aware affordances, replay-safe mutations, validated multipart actions, security-header reporting, and offline upgrade-impact reports.
 
+### Stage 0: authority and contract freeze
+
+Implementation starts only after one phase RFC and release decision are Accepted. They must freeze
+the public type boundaries, adapter capability vocabulary, threat model, compatibility modes,
+machine-readable schemas, and the gate ledger below. Names and signatures in this Planned section
+are illustrative until that authority lands; issue bodies remain normative for feature acceptance.
+
+Stage 0 must also inventory the 0.22 `SecurityPolicy`/CSRF, 0.41 navigation, 0.43 action handle,
+0.45 interaction manifest, 0.49 request-model, 0.53 route/effect catalog, and 0.54 layout/state APIs.
+The phase extends those authorities rather than introducing parallel registries. A prototype may
+inform the RFC, but no prototype alone counts as a frozen public contract or release evidence.
+
 ### Issue workstreams
 
 | Issue | Workstream |
@@ -5475,6 +5493,50 @@ The phase is delivered as three vertical slices so each increment is useful and 
 
 The shared contract, reason-code, and budget vocabulary is the dependency for all three slices;
 the reference application is the integration proof, not a separate product commitment.
+
+### Provisional release gates
+
+The Accepted Stage 0 authority may rename these identifiers, but it must retain one independently
+reviewable row for every responsibility. The 0.55 cut requires every final row Verified with zero
+Deferred; a partially implemented vertical slice does not qualify for a release cut.
+
+| Provisional gate | Cut evidence |
+|---|---|
+| `CONTRACT-055` | Accepted RFC/decision; versioned workflow manifest, reason codes, budgets, compatibility modes, and schema fixtures |
+| `LAYOUT-055` | #544 desktop/mobile/PE browser matrix, history and focus invariants, named-region swap tests, and AppShell composition proof |
+| `CAP-055` | #546 request-bound provider contract, render semantics, server-side enforcement, adapter parity, and metadata-redaction tests |
+| `REPLAY-055` | #548 key/fingerprint/state-machine contract, atomic concurrency tests, retention/transaction limits, and retry fixtures |
+| `UPLOAD-055` | #549 bounded streaming/parser tests, filename/content validation, CSRF ordering, temporary-resource cleanup, and adapter capability matrix |
+| `CSP-055` | #545 nonce lifecycle, enforcing/report-only composition, bounded/redacted report ingestion, proxy diagnostics, and deterministic assertions |
+| `UPGRADE-055` | #547 offline definite/heuristic diff fixtures, source references, JSON schema, reviewed baselines, and CI exit-code contract |
+| `PARITY-055` | FastAPI/Flask/Django conformance report with explicit supported, degraded, and unsupported behaviors and application fallbacks |
+| `REGRESS-055` | 0.54 upgrade fixtures plus security, accessibility, performance, cancellation, retry, disconnect, and worker-restart suites |
+| `PKG-055` | Wheel/install/import/API-surface checks, docs and migration notes, reference workflow, acceptance ledger, and release metadata |
+
+### Normative ordering and failure semantics
+
+- Authorization is evaluated from trusted request context at render time for presentation and
+  again immediately before the protected side effect. Render-time results are never authorization
+  tokens, and hidden/disabled states are not enforcement.
+- For protected replay-safe actions the order is: request/body budgets and CSRF; authentication and
+  capability enforcement; normalized idempotency-key validation; request fingerprint comparison;
+  atomic claim; business effect; durable outcome publication. Rejected authentication or
+  authorization attempts must not reserve a caller-controlled replay key.
+- A request fingerprint covers the action/route identity, authenticated subject and tenant scope,
+  normalized semantic inputs, and a versioned policy identifier. It must not persist raw secrets or
+  full upload bodies. Same key plus different fingerprint is a typed conflict, never a cache hit.
+- Upload ownership transfers explicitly: the framework owns temporary resources until a handler
+  accepts a documented handle/stream transfer; otherwise it cleans them on every terminal path.
+  Size/count limits apply while streaming, before business logic, and adapter buffering must never
+  be mislabeled as streaming support.
+- CSP reports are untrusted telemetry. Ingestion performs no policy mutation, returns bounded
+  responses, drops or samples excess traffic observably, and never logs raw document URLs,
+  blocked URLs, samples, cookies, credentials, or application secrets.
+- Upgrade baselines are versioned application-contract artifacts. A stale, malformed, or schema-
+  incompatible baseline fails explicitly; it cannot silently suppress a definite break.
+- Master-detail URL state accepts only application-resolved identifiers. Missing, denied, or stale
+  selections converge to an explicit empty/not-found/permission state without disclosing whether
+  an inaccessible record exists, and fragment responses preserve the same decision.
 
 ### Related feature packet
 
