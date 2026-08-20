@@ -30,10 +30,26 @@ ELEMENT_FAILURES = frozenset({"none", "module", "upgrade"})
 
 
 def parse_regions(inference: dict[str, Any]) -> dict[str, str]:
-    regions_raw = inference.get("fragment_regions") or ""
+    """Return id → selector map from typed or legacy fragment_regions metadata."""
+    regions_raw = inference.get("fragment_regions")
     regions: dict[str, str] = {}
+    if isinstance(regions_raw, list):
+        for item in regions_raw:
+            if not isinstance(item, dict):
+                continue
+            rid = item.get("id")
+            selector = item.get("selector")
+            if isinstance(rid, str) and rid and isinstance(selector, str) and selector:
+                regions[rid] = selector
+        return regions
     if isinstance(regions_raw, dict):
-        return {str(k): str(v) for k, v in regions_raw.items()}
+        for key, value in regions_raw.items():
+            if isinstance(value, dict):
+                selector = value.get("selector")
+                regions[str(key)] = str(selector) if selector is not None else str(value)
+            else:
+                regions[str(key)] = str(value)
+        return regions
     if isinstance(regions_raw, str) and regions_raw.startswith("{"):
         import ast
 
@@ -115,15 +131,18 @@ def click_preview_payload(route: RouteMeta, *, target: str | None) -> dict[str, 
         csrf_required = any(m.upper() not in {"GET", "HEAD", "OPTIONS"} for m in methods)
     else:
         csrf_required = str(csrf_required).lower() in {"1", "true", "yes"}
+    declared: list[dict[str, str]] = []
+    for rid, value in regions.items():
+        # Legacy id → "selector|description"; typed list already normalized to selector.
+        selector = value.split("|", 1)[0] if "|" in value else value
+        declared.append({"id": rid, "selector": selector})
     return {
         "method": methods[0],
         "path": route.path,
         "target": target,
         "swap": str(inference.get("swap") or "outerHTML"),
         "csrf_required": bool(csrf_required),
-        "declared_regions": [
-            {"id": rid, "selector": value.split("|", 1)[0]} for rid, value in regions.items()
-        ],
+        "declared_regions": declared,
     }
 
 

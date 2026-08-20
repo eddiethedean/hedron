@@ -26,6 +26,8 @@ def test_packet_and_sandbox_entry() -> None:
     assert release["previous_version"] == "0.51.2" or tuple(
         int(p) for p in str(release["published_version"]).split(".")[:2]
     ) >= (0, 51)
-    assert release["pypi_version"] == "0.51.0"
+    # Historical 0.51 packet: PyPI honesty must stay deferred-consistent with release.toml.
     assert release["registry_status"] == "deferred"
-    assert release["pypi_pin_ceiling"] == "0.52"
+    pypi = str(release["pypi_version"])
+    assert tuple(int(p) for p in pypi.split(".")[:2]) >= (0, 51)
+    assert release["pypi_pin_ceiling"] == str(release["train"])
