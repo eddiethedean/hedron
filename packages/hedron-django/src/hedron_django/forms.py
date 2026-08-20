@@ -131,7 +131,11 @@ def form_fields(form: BaseForm) -> list[NodeLike]:
                 required=required,
             )
         elif kind == "checkbox":
-            control = Checkbox(name=name, label=label, checked=bool(value))
+            # BoundField.value() may expose the widget's textual false value.
+            checked = value is True or (
+                isinstance(value, str) and value.strip().lower() in {"1", "true", "on", "yes"}
+            )
+            control = Checkbox(name=name, label=label, checked=checked)
         elif kind == "number":
             control = html.input(
                 type="text",

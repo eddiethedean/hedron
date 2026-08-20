@@ -57,6 +57,9 @@ class PredictionLabel(Component[PredictionLabelProps]):
             if isinstance(item, PredictionScore):
                 resolved.append(item)
             else:
+                calibrated = item.get("calibrated", False)
+                if not isinstance(calibrated, bool):
+                    raise ValueError("PredictionScore.calibrated must be a boolean")
                 resolved.append(
                     PredictionScore(
                         class_id=str(item["class_id"]),
@@ -64,7 +67,7 @@ class PredictionLabel(Component[PredictionLabelProps]):
                         precision=(
                             float(item["precision"]) if item.get("precision") is not None else None
                         ),
-                        calibrated=bool(item.get("calibrated", False)),
+                        calibrated=calibrated,
                     )
                 )
         super().__init__(

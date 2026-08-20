@@ -72,6 +72,12 @@ never part of the serializable props contract. Prefer an explicit
 | `DataSaveResult[Row]` | model | Success, normalized values, field errors, concurrency conflicts |
 | Writable fields | server policy | Visible fields are not automatically writable; validate on every save |
 
+## Saved views
+
+`SavedView.deserialize()` accepts JSON-shaped column and selection string arrays, a filter object,
+and two-item sort arrays. It rejects scalar strings, non-object filters, and malformed sort entries
+instead of iterating or discarding them silently. Sort directions remain limited to `asc` and `desc`.
+
 ## `OptimisticMutation` (0.39)
 
 Typed optimistic edit contract for **bounded DataEditor / collection cell edits**.

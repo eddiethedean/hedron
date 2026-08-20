@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Transform compilation rejects non-boolean sort directions and reports invalid sample
+  or bin counts with chart diagnostics instead of leaking conversion errors.
+
 ## [0.43.0] — 2026-08-16
 
 ### Changed

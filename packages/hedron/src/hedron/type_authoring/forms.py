@@ -211,7 +211,14 @@ def _native_control(
     if kind == "checkbox":
         from hedron_core.builtins.forms import Checkbox
 
-        return Checkbox(name, _label(record), checked=bool(raw))
+        if raw is not None and not isinstance(raw, bool):
+            raise error(
+                HED_TYPE_0005,
+                title="Invalid checkbox value",
+                explanation=f"Checkbox field {record.path!r} requires a boolean current value.",
+                remediation="Validate current form data with the field model before rendering.",
+            )
+        return Checkbox(name, _label(record), checked=raw is True)
     if kind in {"select", "radio"}:
         options = _enum_options(record.annotation)
         if not options:

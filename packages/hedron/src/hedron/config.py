@@ -14,7 +14,7 @@ from hedron_core.codes import (
     HED_CONFIG_UNKNOWN_KEY,
     HED_CONFIG_UNSUPPORTED_VERSION,
 )
-from hedron_core.diagnostics import error
+from hedron_core.diagnostics import HedronError, error
 from hedron_core.identifiers import content_digest
 from hedron_core.manifests import canonical_json
 from hedron_core.typing_aliases import JsonObject
@@ -114,9 +114,33 @@ def _suggest(key: str, known: Sequence[str]) -> str:
     return ""
 
 
+def _invalid_type(key: str, expected: str, value: object) -> HedronError:
+    return error(
+        HED_CONFIG_INVALID,
+        title="Invalid configuration value",
+        explanation=f"{key} must be {expected}; got {type(value).__name__}.",
+        remediation=f"Set {key} to {expected}.",
+    )
+
+
+def _bool_value(raw: Mapping[str, Any], key: str, default: bool, *, prefix: str = "") -> bool:
+    value = raw.get(key, default)
+    if not isinstance(value, bool):
+        raise _invalid_type(f"{prefix}{key}", "a boolean", value)
+    return value
+
+
+def _string_list(value: object, key: str) -> tuple[str, ...]:
+    if not isinstance(value, (list, tuple)) or any(not isinstance(item, str) for item in value):
+        raise _invalid_type(key, "an array of strings", value)
+    return tuple(value)
+
+
 def _parse_asset_policy(raw: Mapping[str, Any] | None) -> AssetPolicy:
     if raw is None:
         return AssetPolicy()
+    if not isinstance(raw, Mapping):
+        raise _invalid_type("asset_policy", "a table", raw)
     unknown = set(raw) - _ASSET_POLICY_KEYS
     if unknown:
         key = sorted(unknown)[0]
@@ -128,10 +152,12 @@ def _parse_asset_policy(raw: Mapping[str, Any] | None) -> AssetPolicy:
             remediation="Remove or rename the unknown configuration key.",
         )
     return AssetPolicy(
-        allow_remote=bool(raw.get("allow_remote", False)),
-        strict_csp=bool(raw.get("strict_csp", True)),
-        registered_roots=tuple(str(x) for x in raw.get("registered_roots", ())),
-        reject_inline_style=bool(raw.get("reject_inline_style", True)),
+        allow_remote=_bool_value(raw, "allow_remote", False, prefix="asset_policy."),
+        strict_csp=_bool_value(raw, "strict_csp", True, prefix="asset_policy."),
+        registered_roots=_string_list(
+            raw.get("registered_roots", ()), "asset_policy.registered_roots"
+        ),
+        reject_inline_style=_bool_value(raw, "reject_inline_style", True, prefix="asset_policy."),
     )
 
 
@@ -202,7 +228,10 @@ def load_hedron_settings(
             remediation="Remove or rename the unknown configuration key.",
         )
 
-    format_version = int(raw.get("format_version", CONFIG_FORMAT_VERSION))
+    format_raw = raw.get("format_version", CONFIG_FORMAT_VERSION)
+    if isinstance(format_raw, bool) or not isinstance(format_raw, int):
+        raise _invalid_type("format_version", "an integer", format_raw)
+    format_version = format_raw
     if format_version != CONFIG_FORMAT_VERSION:
         raise error(
             HED_CONFIG_UNSUPPORTED_VERSION,
@@ -214,19 +243,33 @@ def load_hedron_settings(
             remediation="Update Hedron or migrate the configuration schema.",
         )
 
+    component_roots = _string_list(raw.get("component_roots", ()), "component_roots")
+    plugins_raw = raw.get("plugins")
+    plugins = (
+        None
+        if "plugins" not in raw or plugins_raw is None
+        else _string_list(plugins_raw, "plugins")
+    )
+    diagnostics_raw = raw.get("diagnostic_severities", {})
+    if not isinstance(diagnostics_raw, Mapping) or any(
+        not isinstance(k, str) or not isinstance(v, str) for k, v in diagnostics_raw.items()
+    ):
+        raise _invalid_type("diagnostic_severities", "a string-to-string table", diagnostics_raw)
+    for key in ("build_dir", "explorer"):
+        if key in raw and not isinstance(raw[key], str):
+            raise _invalid_type(key, "a string", raw[key])
+    if "theme" in raw and raw["theme"] is not None and not isinstance(raw["theme"], str):
+        raise _invalid_type("theme", "a string or null", raw["theme"])
+
     return HedronSettings(
         format_version=format_version,
-        component_roots=tuple(str(x) for x in raw.get("component_roots", ())),
-        build_dir=str(raw.get("build_dir", ".hedron/build")),
+        component_roots=component_roots,
+        build_dir=raw.get("build_dir", ".hedron/build"),
         theme=raw.get("theme", "default"),
         asset_policy=_parse_asset_policy(raw.get("asset_policy")),
-        plugins=(
-            None if "plugins" not in raw else tuple(str(x) for x in (raw.get("plugins") or ()))
-        ),
-        explorer=str(raw.get("explorer", "off")),
-        compiler_checks=bool(raw.get("compiler_checks", True)),
-        diagnostic_severities={
-            str(k): str(v) for k, v in dict(raw.get("diagnostic_severities") or {}).items()
-        },
+        plugins=plugins,
+        explorer=raw.get("explorer", "off"),
+        compiler_checks=_bool_value(raw, "compiler_checks", True),
+        diagnostic_severities=dict(diagnostics_raw),
         source_path=source_path,
     )

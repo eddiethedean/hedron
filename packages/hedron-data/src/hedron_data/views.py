@@ -59,17 +59,34 @@ class SavedView:
     @classmethod
     def deserialize(cls, data: Mapping[str, Any]) -> SavedView:
         sort_raw = data.get("sort") or ()
+        columns_raw = data.get("columns") or ()
+        selection_raw = data.get("selection") or ()
+        filters_raw = data.get("filters", {})
+        if not isinstance(columns_raw, (list, tuple)) or any(
+            not isinstance(item, str) for item in columns_raw
+        ):
+            raise ValueError("SavedView.columns must be an array of strings")
+        if not isinstance(selection_raw, (list, tuple)) or any(
+            not isinstance(item, str) for item in selection_raw
+        ):
+            raise ValueError("SavedView.selection must be an array of strings")
+        if not isinstance(filters_raw, Mapping):
+            raise ValueError("SavedView.filters must be an object")
+        if not isinstance(sort_raw, (list, tuple)):
+            raise ValueError("SavedView.sort must be an array of pairs")
         sort: list[tuple[str, str]] = []
         for item in sort_raw:
             if isinstance(item, (list, tuple)) and len(item) == 2:
                 sort.append((str(item[0]), str(item[1])))
+            else:
+                raise ValueError("SavedView.sort entries must be two-item arrays")
         return cls(
             name=str(data.get("name") or ""),
             version=str(data.get("version") or "1"),
             scope=str(data.get("scope") or "user"),  # type: ignore[arg-type]
-            columns=tuple(str(c) for c in (data.get("columns") or ())),
-            filters=dict(data.get("filters") or {}),
+            columns=tuple(columns_raw),
+            filters=dict(filters_raw),
             sort=tuple(sort),
-            selection=tuple(str(s) for s in (data.get("selection") or ())),
+            selection=tuple(selection_raw),
             owner_id=(str(data["owner_id"]) if data.get("owner_id") is not None else None),
         ).validated()

@@ -52,11 +52,17 @@ def _track_nodes(tracks: Sequence[Mapping[str, Any] | NodeLike]) -> list[NodeLik
             language = str(track.get("srclang") or track.get("language") or "")
             src_raw = track.get("src")
             src_str = None if src_raw is None else str(src_raw)
+            reviewed = track.get("reviewed", False)
+            default = track.get("default", False)
+            if not isinstance(reviewed, bool):
+                raise ValueError("Media track reviewed must be a boolean")
+            if not isinstance(default, bool):
+                raise ValueError("Media track default must be a boolean")
             MediaTrackContract(
                 kind=kind,  # type: ignore[arg-type]
                 language=language,
                 src=src_str,
-                reviewed=bool(track.get("reviewed", False)),
+                reviewed=reviewed,
             ).validated()
             # Transcript kinds are documented obligations, not <track> elements.
             if kind not in emit_kinds or not src_str:
@@ -70,7 +76,7 @@ def _track_nodes(tracks: Sequence[Mapping[str, Any] | NodeLike]) -> list[NodeLik
                 attrs["srclang"] = language
             if track.get("label"):
                 attrs["label"] = str(track["label"])
-            if track.get("default"):
+            if default:
                 attrs["default"] = True
             nodes.append(html.track(**attrs))
         else:

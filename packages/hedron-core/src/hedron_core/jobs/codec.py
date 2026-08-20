@@ -38,6 +38,9 @@ def _optional_str(value: object) -> str | None:
 
 
 def _status_from_dict(data: Mapping[str, object]) -> JobStatus:
+    cancel_requested = data.get("cancel_requested", False)
+    if not isinstance(cancel_requested, bool):
+        raise ValueError("cancel_requested must be a boolean")
     return JobStatus(
         job_id=str(data["job_id"]),
         state=JobState(str(data["state"])),
@@ -49,7 +52,7 @@ def _status_from_dict(data: Mapping[str, object]) -> JobStatus:
         retry_after=int(cast(int | float | str, data.get("retry_after", 2))),
         created_at=float(cast(int | float | str, data.get("created_at", 0))),
         updated_at=float(cast(int | float | str, data.get("updated_at", 0))),
-        cancel_requested=bool(data.get("cancel_requested", False)),
+        cancel_requested=cancel_requested,
     )
 
 

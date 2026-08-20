@@ -100,6 +100,10 @@ Supporting public types (not components): `PredictionScore`, `DialogueTurn`,
 `GalleryItem`, `ExampleItem`, `FeedbackPolicy` — see [EXCEPTIONS.md](EXCEPTIONS.md)
 (types section) and [INFERENCE.md](INFERENCE.md).
 
+Serialized mapping inputs use strict booleans: `PredictionScore.calibrated` and media-track
+`reviewed` / `default` reject textual values such as `"false"` rather than applying Python
+truthiness.
+
 Non-UI contracts (`ModelDemo`, `ExampleSet`, `PredictionFeedback`, `InferenceWorkflow`)
 are documented on [INFERENCE.md](INFERENCE.md), not as components.
 

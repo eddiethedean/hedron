@@ -7,6 +7,13 @@
 - Coordinated train tip `0.54.0` (in-tree Published; tag/PyPI deferred).
 - Phase 0.54 authoring loop + application chrome (RFC-0081 / D-093 / D-094).
 
+### Fixed
+
+- Configuration loading rejects coercive booleans, malformed string arrays and tables,
+  invalid scalar types, and boolean format versions instead of silently accepting them.
+- Type-authored checkbox controls reject non-boolean current values instead of rendering
+  truthy strings as checked.
+
 ## [0.53.0] — 2026-08-20
 
 ### Added

@@ -160,7 +160,10 @@ async def simulate(request: Request) -> Any:
             {"detail": f"Unknown keys: {', '.join(sorted(unknown))}"},
             status_code=400,
         )
-    if payload.get("allow_mutations"):
+    for key in ("allow_mutations", "boosted", "history_restore"):
+        if key in payload and not isinstance(payload[key], bool):
+            return JSONResponse({"detail": f"{key} must be a boolean"}, status_code=400)
+    if payload.get("allow_mutations", False):
         return JSONResponse(
             {"detail": "Mutation simulation is disabled by default"},
             status_code=403,
@@ -179,6 +182,8 @@ async def simulate(request: Request) -> Any:
         )
     TRACE.appendleft({"kind": "simulate", "route": name, "mutations": False})
     mode = str(payload.get("mode") or "fragment")
+    if mode not in {"fragment", "boosted", "page"}:
+        return JSONResponse({"detail": "Unsupported simulation mode"}, status_code=400)
     route = routes[name]
     inference = dict(getattr(route, "htmx_inference", {}) or {})
     status_raw = payload.get("status")
@@ -189,7 +194,11 @@ async def simulate(request: Request) -> Any:
             status_code = int(status_raw)
         except (TypeError, ValueError):
             return JSONResponse({"detail": "status must be an integer"}, status_code=400)
+    if status_code < 100 or status_code > 599:
+        return JSONResponse({"detail": "status must be between 100 and 599"}, status_code=400)
     target = payload.get("target")
+    if target is not None and not isinstance(target, str):
+        return JSONResponse({"detail": "target must be a string"}, status_code=400)
     regions = parse_regions(inference)
     region_ok = True
     region_error = None
@@ -210,8 +219,8 @@ async def simulate(request: Request) -> Any:
             "route": name,
             "mutations": False,
             "mode": mode,
-            "boosted": bool(payload.get("boosted")),
-            "history_restore": bool(payload.get("history_restore")),
+            "boosted": payload.get("boosted", False),
+            "history_restore": payload.get("history_restore", False),
             "status": status_code,
             "target": target,
             "primary": {

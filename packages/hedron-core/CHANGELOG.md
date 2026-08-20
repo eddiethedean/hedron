@@ -7,6 +7,12 @@
 - Coordinated train tip `0.54.0` (in-tree Published; tag/PyPI deferred).
 - Phase 0.54 authoring loop + application chrome (RFC-0081 / D-093 / D-094).
 
+### Fixed
+
+- Accessibility records reject malformed task/gate arrays and non-boolean flags.
+- Job snapshots, media tracks, prediction scores, and Workbench authorization fixtures
+  reject ambiguous serialized boolean values instead of coercing strings.
+
 ## [0.53.0] — 2026-08-20
 
 ### Added

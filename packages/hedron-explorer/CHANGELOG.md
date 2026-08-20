@@ -7,6 +7,11 @@
 - Coordinated train tip `0.54.0` (in-tree Published; tag/PyPI deferred).
 - Phase 0.54 authoring loop + application chrome (RFC-0081 / D-093 / D-094).
 
+### Fixed
+
+- Simulation requests reject non-boolean flags, unknown modes, invalid HTTP status codes,
+  and non-string targets instead of coercing malformed payloads.
+
 ## [0.53.0] — 2026-08-20
 
 ### Added

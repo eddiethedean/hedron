@@ -184,8 +184,20 @@ class HumanAtRecord:
         at: dict[str, Any] = at_raw if isinstance(at_raw, dict) else {}
         gate_raw = data.get("gate_ids") or ()
         task_ids_raw = data.get("task_ids") or ()
-        gate_ids = tuple(str(g) for g in gate_raw)  # type: ignore[union-attr]
-        task_ids = tuple(str(t) for t in task_ids_raw)  # type: ignore[union-attr]
+        if not isinstance(gate_raw, (list, tuple)) or any(not isinstance(g, str) for g in gate_raw):
+            raise ValueError("HumanAtRecord.gate_ids must be an array of strings")
+        if not isinstance(task_ids_raw, (list, tuple)) or any(
+            not isinstance(t, str) for t in task_ids_raw
+        ):
+            raise ValueError("HumanAtRecord.task_ids must be an array of strings")
+        redacted = data.get("redacted", False)
+        stretch = data.get("stretch", False)
+        if not isinstance(redacted, bool):
+            raise ValueError("HumanAtRecord.redacted must be a boolean")
+        if not isinstance(stretch, bool):
+            raise ValueError("HumanAtRecord.stretch must be a boolean")
+        gate_ids = tuple(gate_raw)
+        task_ids = tuple(task_ids_raw)
         at_settings_raw = at.get("settings")
         return cls(
             record_id=str(data.get("record_id") or ""),
@@ -201,8 +213,8 @@ class HumanAtRecord:
             result=str(data.get("result") or ""),
             owner=str(data.get("owner") or ""),
             retest_date=str(data.get("retest_date") or ""),
-            redacted=bool(data.get("redacted", False)),
-            stretch=bool(data.get("stretch", False)),
+            redacted=redacted,
+            stretch=stretch,
             session_id=str(data["session_id"]) if data.get("session_id") is not None else None,
             participant_category=(
                 str(data["participant_category"])

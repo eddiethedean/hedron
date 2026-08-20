@@ -17,6 +17,11 @@ From highest to lowest precedence:
 Configuration is resolved at startup or build time. Request data cannot alter application
 configuration.
 
+Configuration types are strict, including values supplied through `overrides=`. Strings such as
+`"false"` are not booleans, scalar strings are not accepted in place of `list[str]`, and malformed
+tables fail with `HED-CONFIG-0001` instead of being silently coerced. `plugins=None` retains entry
+point discovery; `plugins=[]` disables it.
+
 ## `[tool.hedron]` keys
 
 | Key | Type | Default | Description |

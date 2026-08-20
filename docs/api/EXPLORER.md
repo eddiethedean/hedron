@@ -54,7 +54,9 @@ app.state.hedron_dashboard_graph = graph
 ```
 - Preview renders through the production renderer and attaches the active build manifest
   when present.
-- Request simulation is allowlisted and mutation-safe by default (`allow_mutations=false`).
+- Request simulation is allowlisted and mutation-safe by default (`allow_mutations=false`). Boolean
+  fields require JSON booleans, modes are limited to `fragment`, `boosted`, and `page`, response
+  status overrides are limited to 100–599, and targets must be strings.
 
 ## Modes
 

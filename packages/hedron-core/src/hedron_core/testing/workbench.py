@@ -124,7 +124,9 @@ def assert_action_authorized(action: Mapping[str, Any], *, expect: bool = True) 
     This helper only checks the synthetic ``workbench_action_fixture`` field. It is
     not application authorization evidence — use real HTTP/authz tests for that.
     """
-    authorized = bool(action.get("authorized"))
+    authorized = action.get("authorized")
+    if not isinstance(authorized, bool):
+        raise AssertionError("Fixture authorized field must be a boolean")
     if authorized != expect:
         raise AssertionError(f"Expected authorized={expect}, got {authorized}")
 

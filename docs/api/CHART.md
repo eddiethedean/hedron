@@ -138,6 +138,10 @@ The compiler has dedicated implementations for `filter`, `aggregate`, `sort`, `s
 the first input value rather than providing distinct window/temporal semantics. Test transformed
 rows in `ChartPlan.transformed_rows` before relying on an advanced operator.
 
+Transform parameters are validated at compilation: `sample.n` and `bin.bins` must be positive,
+including when explicitly set to zero, and `sort.descending` / `sort.desc` must be a JSON boolean.
+Invalid values produce structured `HED-CHART-*` diagnostics rather than falling back to defaults.
+
 ## Beginner `LineChart`
 
 ```python

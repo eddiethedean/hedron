@@ -361,12 +361,26 @@ def _apply_sort(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[st
     field = tr.field
     if not field:
         return rows
-    reverse = bool(tr.params.get("descending") or tr.params.get("desc"))
+    descending = tr.params.get("descending", tr.params.get("desc", False))
+    if not isinstance(descending, bool):
+        raise _chart_error(
+            "HED-CHART-0072",
+            "Invalid sort direction",
+            "sort descending/desc must be a boolean.",
+            "Pass true or false for descending.",
+        )
+    reverse = descending
     return sorted(rows, key=lambda r: (r.get(field) is None, r.get(field)), reverse=reverse)
 
 
 def _apply_sample(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
-    n = int(cast(Any, tr.params.get("n") or MAX_ROWS))
+    raw_n = tr.params.get("n", MAX_ROWS)
+    if isinstance(raw_n, bool):
+        raw_n = 0
+    try:
+        n = int(cast(Any, raw_n))
+    except (TypeError, ValueError):
+        n = 0
     if n < 1:
         raise _chart_error(
             "HED-CHART-0071",
@@ -406,7 +420,13 @@ def _apply_bin(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str
     field = tr.field
     if not field:
         return rows
-    bins = int(cast(Any, tr.params.get("bins") or 10))
+    raw_bins = tr.params.get("bins", 10)
+    if isinstance(raw_bins, bool):
+        raw_bins = 0
+    try:
+        bins = int(cast(Any, raw_bins))
+    except (TypeError, ValueError):
+        bins = 0
     if bins < 1:
         raise _chart_error(
             "HED-CHART-0032",
