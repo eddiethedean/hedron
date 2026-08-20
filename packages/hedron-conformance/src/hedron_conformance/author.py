@@ -12,7 +12,14 @@ from hedron_conformance.compat import (
     check_fixture_version,
     compatibility_policy_dict,
 )
-from hedron_conformance.schema import CONTRACT_VERSION, FIXTURE_VERSION, load_bundled_fixtures
+from hedron_conformance.schema import (
+    CONTRACT_VERSION,
+    FIXTURE_VERSION,
+    Capability,
+    load_bundled_fixtures,
+)
+
+AUTHOR_KIT_VERSION = "0.52.0"
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,11 +78,21 @@ def intentional_failure_examples() -> list[AuthorKitDiagnostic]:
     ]
 
 
+def declared_capabilities() -> list[str]:
+    """Capability labels third parties may declare without a monorepo import."""
+    return [cap.value for cap in Capability]
+
+
 def author_kit_summary() -> dict[str, object]:
+    readme = author_kit_readme()
     return {
+        "author_kit_version": AUTHOR_KIT_VERSION,
         "policy": compatibility_policy_dict(),
         "readme_present": (author_kit_dir() / "README.md").is_file(),
         "template_present": (author_kit_dir() / "runtime_template.md").is_file(),
+        "declares_capability_without_monorepo": "Capability" in readme
+        and "monorepo" in readme.lower(),
+        "declared_capabilities": declared_capabilities(),
         "intentional_failures": [
             {"code": item.code, "message": item.message, "ok": item.ok}
             for item in intentional_failure_examples()
@@ -85,12 +102,14 @@ def author_kit_summary() -> dict[str, object]:
 
 # Re-export for author convenience.
 __all__ = [
+    "AUTHOR_KIT_VERSION",
     "AuthorKitDiagnostic",
     "CompatibilityDecision",
     "author_kit_dir",
     "author_kit_readme",
     "author_kit_summary",
     "compatibility_policy_dict",
+    "declared_capabilities",
     "intentional_failure_examples",
     "validate_author_manifest",
 ]

@@ -1,9 +1,27 @@
-# Upgrade to Hedron 0.51
+# Upgrade to Hedron 0.52
 
-This guide covers an application upgrade onto the **0.51.x** train
-(in-tree `v0.51.2`; **`v0.51.0` on PyPI**). Public-index notes:
+This guide covers an application upgrade onto the **0.52.x** train
+(in-tree `v0.52.0`; **`v0.51.0` on PyPI** until upload). Public-index notes:
 [Installation](../getting-started/installation.md). New applications should use
 [Build your first app](../getting-started/quickstart.md).
+
+## 0.51 → 0.52
+
+Pin `hedron>=0.51.0,<0.52` from PyPI until the 0.52 wheel lands (or use the in-tree
+floor when developing Hedron itself). See [What's new in 0.52](whats-new-0.52.md).
+
+1. **Conformance authority (RFC-0079 / D-089 / D-090).** `hedron-conformance` is the
+   portable-subset authority extending `hedron-portable-1`. Node/Java evaluators are
+   independently installable reference consumers — not full Hedron ports.
+2. **Posit lifecycle (#508–#513).** Prefer `CookieRegistry`, `PositContext` /
+   `posit_for(request)`, opt-in `hands_off`, and `hedron-posit check --matrix` over
+   app-owned cookie path math and redirect adaptation.
+3. **0.51 extras contracts remain.** No rollback required for apps that never adopted
+   Posit lifecycle helpers; add them when deploying under Workbench/Connect mounts.
+
+```bash
+python -m pip install -U "hedron>=0.51.0,<0.52"
+```
 
 ## 0.50 → 0.51
 
@@ -27,6 +45,13 @@ python -m pip install -U "hedron[extras]>=0.51.0,<0.52"
 ```
 
 ## Summary
+
+Hedron 0.52.x ships cross-language conformance authority and Posit lifecycle
+companions on top of the 0.51 extras train. From PyPI, keep using
+`hedron>=0.51.0,<0.52` until the 0.52 wheel lands.
+
+- Portable-subset conformance authority + Node/Java evaluators
+- `CookieRegistry`, `PositContext`, `hands_off`, matrix check, diagnostics (#508–#513)
 
 Hedron 0.51.x ships curated extras and companion HTMX authoring on top of the 0.50
 Explorer architecture cut:

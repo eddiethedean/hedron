@@ -1,0 +1,34 @@
+[
+  {
+    "id": "neg-boundary-empty-escape",
+    "capability": "escaping",
+    "negative": true,
+    "description": "Boundary: empty text escapes to empty string",
+    "input": {"kind": "escape_text", "text": ""},
+    "expected": {"escaped_text": ""}
+  },
+  {
+    "id": "neg-adversarial-nul-attr",
+    "capability": "adversarial",
+    "negative": true,
+    "description": "Adversarial: NUL bytes stripped from attribute values",
+    "input": {"kind": "escape_attr", "attr": "x\u0000y"},
+    "expected": {"escaped_attr": "xy"}
+  },
+  {
+    "id": "neg-metamorphic-escape-amp",
+    "capability": "escaping",
+    "negative": true,
+    "description": "Metamorphic: ampersand alone escapes identically to html.escape",
+    "input": {"kind": "escape_text", "text": "&"},
+    "expected": {"escaped_text": "&amp;"}
+  },
+  {
+    "id": "neg-expect-error-diagnostic",
+    "capability": "diagnostics",
+    "negative": true,
+    "description": "Negative: expect_error with diagnostic_code only (no html)",
+    "input": {"kind": "diagnostic", "expect_error": true},
+    "expected": {"diagnostic_code": "HED-SEC-0002"}
+  }
+]

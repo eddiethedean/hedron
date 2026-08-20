@@ -1,0 +1,197 @@
+# Phase 0.52 conformance authority and Posit lifecycle release evidence index.
+# Verified in-tree cut (D-089 / D-090). Living tip v0.52.0; PyPI remains deferred at 0.51.0.
+
+schema_version = 1
+phase = "0.52"
+status = "Verified"
+planning_baseline = "v0.51.2"
+required_predecessor = "v0.51.2"
+target = "v0.52.0"
+decision = "D-089"
+contract_refine = "D-090"
+owning_rfc = "RFC-0079"
+tracking = "#522"
+
+[[evidence]]
+id = "PROTOCOL-052"
+state = "Verified"
+command = "python scripts/check_protocol_052.py"
+ci_job = "quality"
+owner = "hedron-conformance"
+summary = "Negotiation, canonical encoding, and forward-unknown behavior are versioned and interoperable."
+
+[[evidence]]
+id = "PROFILE-052"
+state = "Verified"
+command = "python scripts/check_profile_052.py"
+ci_job = "quality"
+owner = "hedron-conformance"
+summary = "Profile registry, suite digests, and waivers are versioned and interoperable."
+
+[[evidence]]
+id = "FIXTURE-052"
+state = "Verified"
+command = "python scripts/check_fixture_052.py"
+ci_job = "test"
+owner = "hedron-conformance"
+summary = "Fixture compiler rejects contradictory expectations before any runtime executes a suite."
+
+[[evidence]]
+id = "NEGATIVE-052"
+state = "Verified"
+command = "python scripts/check_negative_052.py"
+ci_job = "test"
+owner = "hedron-conformance"
+summary = "Positive, negative, boundary, metamorphic, and adversarial vectors pass all runtimes."
+
+[[evidence]]
+id = "RUNTIME-052"
+state = "Verified"
+command = "python scripts/check_runtime_052.py"
+ci_job = "test"
+owner = "hedron-conformance"
+summary = "Python/Node/Java stream, cancellation, resource, and diagnostic behavior agrees on the subset."
+
+[[evidence]]
+id = "DIFF-052"
+state = "Verified"
+command = "python scripts/check_diff_052.py"
+ci_job = "test"
+owner = "hedron-conformance"
+summary = "Differential tests across CPython/Node/Java retain disagreements as regression vectors."
+
+[[evidence]]
+id = "SECURITY-052"
+state = "Verified"
+command = "python scripts/check_security_052.py"
+ci_job = "test"
+owner = "hedron-conformance"
+summary = "Untrusted suites/results, secret boundaries, and process isolation pass."
+
+[[evidence]]
+id = "SANDBOX-052"
+state = "Verified"
+command = "python scripts/check_sandbox_052.py"
+ci_job = "test"
+owner = "hedron-conformance"
+summary = "Files, archives, processes, terminals, temp state, and network boundaries pass."
+
+[[evidence]]
+id = "REPORT-052"
+state = "Verified"
+command = "python scripts/check_report_052.py"
+ci_job = "quality"
+owner = "hedron-conformance"
+summary = "Signed envelopes and machine-readable reports preserve exact provenance."
+
+[[evidence]]
+id = "CI-052"
+state = "Verified"
+command = "python scripts/check_ci_052.py"
+ci_job = "quality"
+owner = "hedron-conformance"
+summary = "JUnit/SARIF conversion, offline bundles, and CI recipes preserve provenance."
+
+[[evidence]]
+id = "COMPAT-052"
+state = "Verified"
+command = "python scripts/check_compat_052.py"
+ci_job = "test"
+owner = "hedron-conformance"
+summary = "Runtime/protocol current-previous matrix and incompatible-version behavior pass."
+
+[[evidence]]
+id = "PLATFORM-052"
+state = "Verified"
+command = "python scripts/check_platform_052.py"
+ci_job = "test"
+owner = "hedron-conformance"
+summary = "OS/locale/runtime matrix for the declared portable subset passes."
+
+[[evidence]]
+id = "COOKIE-052"
+state = "Verified"
+command = "python scripts/check_cookie_052.py"
+ci_job = "test"
+owner = "hedron-posit"
+summary = "Cookie registry lifecycle passes root/Workbench/Connect without app-owned path math (#508)."
+
+[[evidence]]
+id = "CONTEXT-052"
+state = "Verified"
+command = "python scripts/check_context_052.py"
+ci_job = "test"
+owner = "hedron-posit"
+summary = "Request-bound PositContext for links/redirects/cookies passes (#509)."
+
+[[evidence]]
+id = "HANDSOFF-052"
+state = "Verified"
+command = "python scripts/check_handsoff_052.py"
+ci_job = "test"
+owner = "hedron-posit"
+summary = "Hands-off URL adaptation rewrites only validated same-app paths (#510)."
+
+[[evidence]]
+id = "MATRIX-052"
+state = "Verified"
+command = "python scripts/check_matrix_052.py"
+ci_job = "test"
+owner = "hedron-posit"
+summary = "Deployment-matrix fixtures and hedron-posit check --matrix pass (#511)."
+
+[[evidence]]
+id = "PDIAG-052"
+state = "Verified"
+command = "python scripts/check_pdiag_052.py"
+ci_job = "test"
+owner = "hedron-posit"
+summary = "Proactive Posit diagnostics with stable codes; never log cookie values (#512)."
+
+[[evidence]]
+id = "ROUTEURL-052"
+state = "Verified"
+command = "python scripts/check_routeurl_052.py"
+ci_job = "test"
+owner = "hedron-posit"
+summary = "Named-route query/fragment/durable parity across href/redirect families (#513)."
+
+[[evidence]]
+id = "DOCS-052"
+state = "Verified"
+command = "python scripts/check_docs_052.py"
+ci_job = "quality"
+owner = "hedron"
+summary = "Protocol, author, implementer, Posit deployment, debugging, migration, and security docs pass."
+
+[[evidence]]
+id = "AUTHOR-052"
+state = "Verified"
+command = "python scripts/check_author_052.py"
+ci_job = "quality"
+owner = "hedron-conformance"
+summary = "External author kit runs declared capabilities without monorepo import."
+
+[[evidence]]
+id = "PKG-052"
+state = "Verified"
+command = "python scripts/check_pkg_052.py"
+ci_job = "quality"
+owner = "hedron"
+summary = "Clean npm/JAR/wheel artifacts and 0.51 upgrade/rollback without optional leakage."
+
+[[evidence]]
+id = "SUPPLY-052"
+state = "Verified"
+command = "python scripts/check_supply_052.py"
+ci_job = "quality"
+owner = "hedron"
+summary = "Reproducibility, checksums, licenses, SBOM/provenance for conformance and Posit artifacts."
+
+[[evidence]]
+id = "REGRESS-052"
+state = "Verified"
+command = "python scripts/check_regress_052.py"
+ci_job = "test"
+owner = "hedron"
+summary = "Fleet regression and gate bundle integrity; no hidden Deferred 0.52 claims."

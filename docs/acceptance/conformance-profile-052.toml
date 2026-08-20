@@ -1,0 +1,53 @@
+# Phase 0.52 conformance profile registry lock (PROFILE-052).
+# Verified in-tree cut (D-090). Extends hedron-portable-1; Stage 1 runtime shipped.
+
+schema_version = 1
+phase = "0.52"
+status = "Verified"
+planning_baseline = "v0.51.2"
+required_predecessor = "v0.51.2"
+target = "v0.52.0"
+decision = "D-090"
+owning_rfc = "RFC-0079"
+gate = "PROFILE-052"
+tracking = "#522"
+
+seed_contract_version = "hedron-portable-1"
+replace_seed_without_negotiation = false
+default_corpus = "fixtures/*.json"
+subdirectory_corpora_default = false
+subdirectory_corpora_opt_in = [
+  "type_authoring_044",
+  "updates_043",
+  "element_abi",
+]
+
+[[profile]]
+id = "core-render"
+state = "Verified"
+summary = "Core HTML/normalize render vectors under the portable subset."
+
+[[profile]]
+id = "interaction"
+state = "Verified"
+summary = "Interaction and event vectors admitted by the portable subset."
+
+[[profile]]
+id = "manifest"
+state = "Verified"
+summary = "Package/manifest negotiation and capability declaration vectors."
+
+[[profile]]
+id = "element"
+state = "Verified"
+summary = "Element ABI portable vectors (opt-in subdirectory until admitted)."
+
+[[profile]]
+id = "package"
+state = "Verified"
+summary = "External package author-kit declared-capability vectors."
+
+[forward_unknown]
+behavior = "fail-closed-or-waive"
+waivers_versioned = true
+suite_digests_required = true

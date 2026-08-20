@@ -6,12 +6,12 @@ ledger (gate IDs, RFCs) lives on GitHub:
 Capability maturity for *this* train: [What’s ready](whats-ready.md).
 Install pins: [Installation](../getting-started/installation.md).
 
-## Planned after 0.51
+## Planned after 0.52
 
 | Topic | Disposition |
 |---|---|
-| Curated extras depth / experimental-UI (0.51) | **Published `v0.51.0` on PyPI** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507)); in-tree **`v0.51.2`** ready to cut |
-| Conformance kit and Node/Java runtime (0.52) | **Planned** Stage 0 refine vs in-tree `v0.51.2`; owning RFC required; Posit lifecycle [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513) |
+| Conformance kit and Node/Java runtime (0.52) | **Published in-tree `v0.52.0`** (Verified gates; RFC-0079 / D-089 / D-090; [#522](https://github.com/eddiethedean/hedron/issues/522); Posit [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)); PyPI still **`v0.51.0`** (deferred) |
+| Curated extras depth / experimental-UI (0.51) | **Published `v0.51.0` on PyPI** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507)) |
 | Application DX contracts (0.53) | **Planned**; owning RFC required; [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521) |
 | Notebook / simulation / sample-kit refresh (0.54) | **Planned**; owning RFC required |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |

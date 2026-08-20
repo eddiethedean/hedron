@@ -1,12 +1,12 @@
 # What’s new in 0.19
 
 
-!!! note "Current train is 0.51"
+!!! note "Current train is 0.52"
 
-    Pin `hedron>=0.51.0,<0.52` for new apps. The pin below is historical for this train only.
+    Pin `hedron>=0.52.0,<0.53` for new apps (checkout tip; PyPI still `>=0.51.0,<0.52` while deferred). The pin below is historical for this train only.
     See [What’s new in 0.51](whats-new-0.51.md).
 
-**Published as `v0.19.0`** (2026-08-07). Current published train is **0.51.x** (last `v0.51.0`).
+**Published as `v0.19.0`** (2026-08-07). Current published train is **0.52.x** (last `v0.52.0`).
 Historical installs for this phase used a 0.19 upper-bound pin; the current pin is
 `hedron>=0.51.0,<0.52`.
 

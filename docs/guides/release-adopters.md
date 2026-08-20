@@ -2,12 +2,12 @@
 
 The canonical release history now lives on [Releases](release-notes.md).
 
-Current release: **v0.51.2** in-tree (**v0.51.0** on PyPI). Recommended constraint:
-`hedron>=0.51.0,<0.52`. Public-index notes: [Installation](../getting-started/installation.md).
+Current release: **v0.52.0** in-tree (**v0.51.0** on PyPI). Recommended constraint:
+`hedron>=0.51.0,<0.52` until the 0.52 wheel lands. Public-index notes: [Installation](../getting-started/installation.md).
 
 Continue with:
 
-- [Upgrade to 0.51](upgrade.md)
+- [Upgrade to 0.52](upgrade.md)
 - [What’s ready today](whats-ready.md)
 - [Ship a Hedron app](ship.md)
 - [Evaluate Hedron](evaluate.md)

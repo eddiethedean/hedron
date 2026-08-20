@@ -2,15 +2,19 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.51.x`). Older `0.x` lines should
+Security fixes land on the **current published train** (`0.52.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.50.x`) continues through approximately **2027-08-19** — after that, upgrade
+minor (`0.51.x`) continues through approximately **2027-08-20** — after that, upgrade
 is required. There is **no contractual patch SLA**.
+
+Until the Git tag / PyPI upload lands (`registry_status = deferred`), the public index still
+serves `v0.51.0` — first-run pins from PyPI stay `>=0.51.0,<0.52`. Checkout tip is `v0.52.0`.
 
 | Version | Supported |
 |---|---|
-| `0.51.x` | Yes (current published train — pin `>=0.51.2,<0.52`; published `v0.51.2`) |
-| `0.50.x` | Best-effort security triage through approximately 2027-08-19; upgrade to `0.51.x` |
+| `0.52.x` | Yes (current published train — pin `>=0.52.0,<0.53`; published `v0.52.0`) |
+| `0.51.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.52.x` |
+| `0.50.x` | Best-effort security triage through approximately 2027-08-19; upgrade to `0.51.x` / `0.52.x` |
 | `0.49.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.50.x` |
 | `0.48.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.49.x` |
 | `0.47.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.48.x` |
@@ -22,7 +26,7 @@ is required. There is **no contractual patch SLA**.
 | `0.41.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.42.x` |
 | `0.40.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.41.x` |
 | `0.39.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.40.x` |
-| `0.9.x`–`0.38.x` | No; upgrade to `0.51.x` (`v0.51.2`) |
+| `0.9.x`–`0.38.x` | No; upgrade to `0.52.x` (`v0.52.0` in-tree) or `0.51.x` from PyPI |
 | `0.8.x` | No; final HDN-capable line, retained only for historical migration context |
 | `< 0.8` | No |
 
@@ -43,7 +47,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes land on the current published train (`0.51.x`); see Supported versions above.
+4. Fixes land on the current published train (`0.52.x`); see Supported versions above.
 
 ### Alternate contact
 
@@ -77,19 +81,17 @@ charts, jinja) and their documented secure defaults (escaping, CSRF, redirects, 
 types, asset URLs).
 
 Out of scope: application-authored HDJ/templates that embed untrusted content, third-party
-plugins, misconfigured deployments, and host-framework CVEs (report those upstream).
+plugins, Posit/Connect host misconfiguration, and vulnerabilities that only appear when
+operators disable documented secure defaults.
 
-## Supply chain / evidence
+## Prefer secure defaults
 
-Release evidence and dependency inventories are produced by maintainer scripts
-(`scripts/build_evidence_bundle.py`, `scripts/generate_sbom.py`,
-`scripts/license_inventory.py`). See
-[Enterprise diligence](https://hedron.readthedocs.io/en/latest/guides/enterprise-diligence/)
-for how evaluators obtain SBOM / license inventory for the current train.
+- Keep CSRF, TrustedHost, and redirect allowlists enabled.
+- Do not disable escaping or pass untrusted HTML into trusted-HTML APIs.
+- Prefer polling for job status unless you accept the experimental SSE/WebSocket posture.
+- Treat session secrets and worker shared state as production requirements — see
+  [Secrets and workers](https://github.com/eddiethedean/hedron/blob/main/docs/guides/secrets-and-workers.md).
 
-## See also
+## Language
 
-[Security guide](https://hedron.readthedocs.io/en/latest/guides/security/) ·
-[Threat model](https://hedron.readthedocs.io/en/latest/guides/threat-model/) ·
-[Support](https://hedron.readthedocs.io/en/latest/guides/support/) ·
-[Code of Conduct](https://github.com/eddiethedean/hedron/blob/main/CODE_OF_CONDUCT.md)
+This policy describes maintainer intent. It is **not** a warranty, SLA, or insurance product.

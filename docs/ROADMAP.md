@@ -49,7 +49,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
 | **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.1` on PyPI; in-tree `v0.50.3` tag deferred; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Published** (`v0.51.0` on PyPI; RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
-| **0.52** | Cross-language conformance authority; HedronPosit deployment lifecycle companions | **Planned** (Stage 0 refine against in-tree `v0.51.2`; owning RFC/decision required before Stage 1; [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
+| **0.52** | Cross-language conformance authority; HedronPosit deployment lifecycle companions | **Published** in-tree (`v0.52.0`; Verified gates; tag/PyPI deferred; RFC-0079 / D-089 / D-090; [#522](https://github.com/eddiethedean/hedron/issues/522); companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
 | **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Planned** (owning RFC/issue required before implementation; related [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
 | **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 
@@ -4544,16 +4544,19 @@ Artifacts (Stage 0 packet; Stage 1 blocked on [#507](https://github.com/eddiethe
 
 ## 0.52 — Cross-language conformance authority (`v0.52.0`)
 
-**Status:** Planned. Stage 0 refine against Published in-tree **`v0.51.2`** (PyPI still
-serves `v0.51.0` until registry upload). This phase does **not** promise full Hedron ports,
-does **not** reopen the 0.24 `polling_only` disposition, and does **not** restore a Supported
-Connect cookie bridge (`BRIDGE_DECISION=drop_supported` from 0.33 remains in force).
+**Status:** **Published** in-tree as **`v0.52.0`** (D-089 / D-090 /
+[RFC-0079](rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md); tracking
+[#522](https://github.com/eddiethedean/hedron/issues/522)). All
+`release-gate-0.52.toml` rows are **Verified**. Living tip is **`v0.52.0`**
+(PyPI still serves `v0.51.0` until registry upload; Git tag deferred). This phase does
+**not** promise full Hedron ports, does **not** reopen the 0.24 `polling_only`
+disposition, and does **not** restore a Supported Connect cookie bridge
+(`BRIDGE_DECISION=drop_supported` from 0.33 remains in force).
 
 **Planning baseline:** Published in-tree **`v0.51.2`**. Verified 0.31 tooling
 (`CONF-031`…`JAVA-031`) and Published 0.33 HedronPosit topology are inputs — not re-litigation.
-Owning RFC + phase decision must be **Accepted** before Stage 1 runtime work. Prefer one RFC with
-two locked workstreams (conformance authority; Posit deployment lifecycle) or sibling RFCs that
-share the same cut baseline and exit gate.
+Owning RFC + phase decision are **Accepted**. Stage 1 runtime is **Verified** under
+RFC-0079’s two locked workstreams.
 
 **Outcome:** (1) `hedron-conformance` becomes a versioned compatibility **authority** for a
 declared portable subset, and Node/Java evaluators become independently installable reference
@@ -4669,13 +4672,14 @@ apps stop owning deployment cookie paths and redirect adaptation
 - Diagnostics remain redacted; Connect trust boundaries hold; Supported bridge stays dropped.
 - Upgrade/rollback evidence covers prior Python kit commands and repository-only evaluator paths.
 
-### Stage 0 artifacts (to create before Stage 1)
+### Stage 0 artifacts (Accepted; Planned gates)
 
-- Owning RFC + phase decision (and Stage 0 contract refine decision if the living tip moves again).
+- Owning RFC + decisions: [RFC-0079](rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
+  D-089 / D-090; tracking [#522](https://github.com/eddiethedean/hedron/issues/522).
 - `docs/acceptance/RELEASE_0_52.md` · `release-gate-0.52.toml` (all rows Planned until cut).
 - Conformance capability/profile inventory + Posit companion inventory locks.
 - Upgrade fixtures from in-tree `v0.51.2`.
-- Tracking issue for conformance authority gates (Posit companions already [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)).
+- Posit companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513).
 
 ## 0.53 — Application DX contracts (`v0.53.0`)
 
@@ -5152,6 +5156,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0069 High-fidelity declarative charts | 0.38 (**Accepted**; D-066; Stage 0 contract refined against `v0.38.0`; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
 | 0077 Explorer architecture | 0.50 (**Accepted**; D-085 / D-086; [#501](https://github.com/eddiethedean/hedron/issues/501)) |
 | 0078 Curated extras depth and lifecycle | 0.51 (**Accepted**; D-087 / D-088; `v0.51.0` on PyPI; [#507](https://github.com/eddiethedean/hedron/issues/507)) |
+| 0079 Conformance authority + Posit lifecycle | 0.52 (**Published** in-tree `v0.52.0`; Verified gates; tag/PyPI deferred; D-089 / D-090; [#522](https://github.com/eddiethedean/hedron/issues/522)) |
 
 ## Open GitHub issue ownership (0.13+)
 
@@ -5230,6 +5235,7 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#504](https://github.com/eddiethedean/hedron/issues/504) | Built-in password visibility toggle (companion; not extras gates) | 0.51 |
 | [#505](https://github.com/eddiethedean/hedron/issues/505) | Declarative page reveal / swap transition helper | 0.51 |
 | [#506](https://github.com/eddiethedean/hedron/issues/506) | Framework-level busy fallback for generic HTMX requests | 0.51 |
+| [#522](https://github.com/eddiethedean/hedron/issues/522) | 0.52 conformance authority + Posit lifecycle gates (D-089 / D-090 / RFC-0079) | 0.52 |
 | [#508](https://github.com/eddiethedean/hedron/issues/508) | HedronPosit deployment-aware cookie lifecycle | 0.52 |
 | [#509](https://github.com/eddiethedean/hedron/issues/509) | Request-bound PositContext for links/redirects/cookies | 0.52 |
 | [#510](https://github.com/eddiethedean/hedron/issues/510) | HedronPosit hands-off local URL / redirect adaptation | 0.52 |

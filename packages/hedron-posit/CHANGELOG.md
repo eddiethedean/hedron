@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.52.0] — 2026-08-20
+
+### Changed
+- Coordinated train tip `0.52.0` (in-tree Published; tag/PyPI deferred).
+- Phase 0.52 conformance authority + Posit lifecycle (RFC-0079 / D-089 / D-090; #522).
+- Posit lifecycle: `PositContext`, `CookieRegistry`, `hands_off`, matrix check, diagnostics, query/fragment parity (#508–#513).
+
 ## [0.51.2] — 2026-08-20
 
 ### Changed

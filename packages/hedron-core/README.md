@@ -13,7 +13,7 @@ package if you are writing a host adapter or rendering components outside a web
 framework.
 
 **Package maturity:** Beta · pin `>=0.51.0,<0.52` from PyPI. The living in-tree tip is
-**`v0.51.2`**; Git tag and PyPI upload for that patch are **deferred**.
+**`v0.52.0`**; Git tag and PyPI upload for that cut are **deferred**.
 
 ## Install
 

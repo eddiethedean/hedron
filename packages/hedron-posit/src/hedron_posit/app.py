@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import ipaddress
 from collections.abc import Mapping, Sequence
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from typing import Any
 from urllib.parse import urlsplit
 
@@ -27,7 +27,7 @@ from hedron_posit.config import (
     resolve_posit_deployment,
 )
 from hedron_posit.connect import native_connect_base_from_request
-from hedron_posit.cookies import ConnectCookieMode
+from hedron_posit.cookies import ConnectCookieMode, CookieRegistry, CookieSpec
 from hedron_posit.middleware import WorkbenchPathMiddleware
 from hedron_posit.products import PositProduct
 from hedron_posit.redact import redact_record, redact_text
@@ -97,8 +97,10 @@ class HedronPosit(Hedron):
             product=posit.product if posit is not None else PositProduct.AUTO,
             workbench=workbench_config,
             connect=posit.connect if posit is not None else ConnectConfig(),
+            hands_off=bool(posit.hands_off) if posit is not None else False,
         )
         self._posit_config = posit_config
+        self._cookie_registry: CookieRegistry | None = None
         # Broad compatibility aliases such as HOST/PORT/BASE_PATH belong to the
         # launcher. Ignoring them here keeps an inactive subclass byte-for-byte
         # compatible with ordinary Hedron on generic hosting platforms.
@@ -140,15 +142,27 @@ class HedronPosit(Hedron):
         self.state.hedron_workbench = self.hedron_workbench
         self.state.hedron_workbench_active = self.hedron_workbench.active
         self.state.hedron_posit = self.hedron_posit
+        self.state.hedron_posit_hands_off = bool(self._posit_config.hands_off)
         # Give the normalizer FastAPI's ASGI implementation, rather than this
         # facade, to avoid re-entering this method after normalization.
+        # hands_off (#510) opts into the same validated same-app Location/HTMX/
+        # owned-cookie Path adaptation without requiring Workbench detection.
+        hands_off = bool(self._posit_config.hands_off)
+        hands_off_mount = ""
+        if hands_off and not self.hedron_workbench.active:
+            hands_off_mount = normalize_mount_path(
+                str(resolved_root_path or getattr(self.state, "hedron_mount_path", "") or "")
+            )
+        expected_mount = (
+            self.hedron_workbench.browser_mount
+            if self.hedron_workbench.active
+            else (hands_off_mount or None)
+        )
         self._workbench_asgi = WorkbenchPathMiddleware(
             super().__call__,
             mode=self.hedron_workbench.mode,
-            expected_mount=(
-                self.hedron_workbench.browser_mount if self.hedron_workbench.active else None
-            ),
-            active=self.hedron_workbench.active,
+            expected_mount=expected_mount,
+            active=self.hedron_workbench.active or bool(hands_off and expected_mount),
             debug=self.hedron_workbench.debug,
             expected_origins=(self.hedron_workbench.external_origin,),
             runtime_mounts=True,
@@ -194,6 +208,17 @@ class HedronPosit(Hedron):
         if isinstance(csrf_name, str) and csrf_name:
             names.add(csrf_name)
         return tuple(sorted(names))
+
+    @property
+    def cookies(self) -> CookieRegistry:
+        """Deployment-aware cookie registry (set/delete share one Path)."""
+        if self._cookie_registry is None:
+            self._cookie_registry = CookieRegistry(self)
+        return self._cookie_registry
+
+    def register_cookie(self, spec: CookieSpec) -> None:
+        """Register an application cookie for lifecycle management."""
+        self.cookies.register(spec)
 
     def _connect_base(self, request: Request) -> ExternalBase | None:
         return native_connect_base_from_request(
@@ -305,22 +330,36 @@ class HedronPosit(Hedron):
     durable_url = external_url
     durable_url_for = external_url_for
 
-    def href(self, path: str, *, request: Request | None = None) -> str:
+    def href(
+        self,
+        path: str,
+        *,
+        request: Request | None = None,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+    ) -> str:
         """Prefix a local browser path once using construction or request mount."""
         mount = str(self.state.hedron_mount_path or "")
         if request is not None:
             mount = browser_mount_from_request(request)
-        return local_href(path, mount=mount)
+        return local_href(path, mount=mount, query=query, fragment=fragment)
 
     def href_for(
         self,
         name: str,
         *,
         request: Request | None = None,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
         **path_params: object,
     ) -> str:
         """Reverse a route name into a mount-aware local browser path."""
-        return self.href(str(self.url_path_for(name, **path_params)), request=request)
+        return self.href(
+            str(self.url_path_for(name, **path_params)),
+            request=request,
+            query=query,
+            fragment=fragment,
+        )
 
     def redirect(
         self,
@@ -328,12 +367,20 @@ class HedronPosit(Hedron):
         *,
         request: Request | None = None,
         status_code: int = 303,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
     ) -> Response:
         """Return a same-app redirect with automatic mount adaptation."""
         mount = str(self.state.hedron_mount_path or "")
         if request is not None:
             mount = browser_mount_from_request(request)
-        return mounted_redirect(path, mount=mount, status_code=status_code)
+        return mounted_redirect(
+            path,
+            mount=mount,
+            status_code=status_code,
+            query=query,
+            fragment=fragment,
+        )
 
     def redirect_for(
         self,
@@ -341,6 +388,8 @@ class HedronPosit(Hedron):
         *,
         request: Request | None = None,
         status_code: int = 303,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
         **path_params: object,
     ) -> Response:
         """Reverse a route and return a mount-aware same-app redirect."""
@@ -348,7 +397,22 @@ class HedronPosit(Hedron):
             str(self.url_path_for(name, **path_params)),
             request=request,
             status_code=status_code,
+            query=query,
+            fragment=fragment,
         )
+
+    def posit_for(self, request: Request) -> PositContext:
+        """Return a request-bound context for links, redirects, cookies, and capabilities."""
+        return PositContext(app=self, request=request)
+
+    @property
+    def hands_off(self) -> bool:
+        """Whether opt-in hands-off local URL adaptation is enabled."""
+        return bool(self._posit_config.hands_off)
+
+    def adapt_local_url(self, path: str, *, request: Request | None = None) -> str:
+        """Prefix a validated same-app path once when hands_off (or always via href)."""
+        return self.href(path, request=request)
 
     def deployment_capabilities(
         self,
@@ -399,3 +463,100 @@ class HedronPosit(Hedron):
             ephemeral_session=ephemeral,
             notes=tuple(notes),
         )
+
+
+@dataclass(frozen=True, slots=True)
+class PositContext:
+    """Request-bound HedronPosit helpers (links, redirects, cookies, capabilities)."""
+
+    app: HedronPosit
+    request: Request
+
+    def __post_init__(self) -> None:
+        bound = getattr(self.request, "app", None)
+        if bound is not None and bound is not self.app:
+            raise ValueError("request does not belong to the expected HedronPosit application")
+
+    def href(
+        self,
+        path: str,
+        *,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+    ) -> str:
+        return self.app.href(path, request=self.request, query=query, fragment=fragment)
+
+    def href_for(
+        self,
+        name: str,
+        *,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+        **path_params: object,
+    ) -> str:
+        return self.app.href_for(
+            name,
+            request=self.request,
+            query=query,
+            fragment=fragment,
+            **path_params,
+        )
+
+    def redirect(
+        self,
+        path: str,
+        *,
+        status_code: int = 303,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+    ) -> Response:
+        return self.app.redirect(
+            path,
+            request=self.request,
+            status_code=status_code,
+            query=query,
+            fragment=fragment,
+        )
+
+    def redirect_for(
+        self,
+        name: str,
+        *,
+        status_code: int = 303,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+        **path_params: object,
+    ) -> Response:
+        return self.app.redirect_for(
+            name,
+            request=self.request,
+            status_code=status_code,
+            query=query,
+            fragment=fragment,
+            **path_params,
+        )
+
+    def browser_url(
+        self,
+        path: str,
+        *,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+    ) -> str:
+        return self.app.browser_url(path, request=self.request, query=query, fragment=fragment)
+
+    def durable_url(
+        self,
+        path: str,
+        *,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+    ) -> str:
+        return self.app.durable_url(path, request=self.request, query=query, fragment=fragment)
+
+    def capabilities(self) -> DeploymentCapabilities:
+        return self.app.deployment_capabilities(request=self.request)
+
+    @property
+    def cookies(self) -> CookieRegistry:
+        return self.app.cookies

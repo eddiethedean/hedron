@@ -193,6 +193,35 @@ def compose_external_url(
     return result
 
 
+def compose_local_url(
+    path: str,
+    *,
+    mount: str = "",
+    query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+    fragment: str | None = None,
+) -> str:
+    """Mount-prefix a local path and optionally append query/fragment.
+
+    ``path`` must be a local absolute path without an embedded query or fragment;
+    pass those via ``query`` / ``fragment`` instead.
+    """
+    value = str(path)
+    parsed_path = urlsplit(value)
+    if not is_local_path(value) or parsed_path.query or parsed_path.fragment:
+        raise ValueError(
+            "local URL path must be a local absolute path without query/fragment; "
+            "pass query= and fragment= instead"
+        )
+    result = prefix_local_path(value, mount)
+    if query:
+        result += "?" + urlencode(query, doseq=True)
+    if fragment is not None:
+        if any(ord(char) < 32 for char in str(fragment)):
+            raise ValueError("local URL fragment contains control characters")
+        result += "#" + quote(str(fragment), safe="")
+    return result
+
+
 def browser_mount_from_request(request: Request) -> str:
     scope_mount = normalize_mount_path(str(request.scope.get("root_path") or ""))
     state = getattr(getattr(request, "app", None), "state", None)
@@ -201,8 +230,14 @@ def browser_mount_from_request(request: Request) -> str:
     return env_mount if env_mount or configured else scope_mount
 
 
-def local_href(path: str, *, mount: str) -> str:
-    return prefix_local_path(path, mount)
+def local_href(
+    path: str,
+    *,
+    mount: str,
+    query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+    fragment: str | None = None,
+) -> str:
+    return compose_local_url(path, mount=mount, query=query, fragment=fragment)
 
 
 def mounted_redirect(
@@ -211,6 +246,9 @@ def mounted_redirect(
     mount: str,
     status_code: int = 303,
     policy: Any | None = None,
+    query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+    fragment: str | None = None,
 ) -> Response:
     """Workbench-safe local redirect: mount-prefixed Location, never ``../`` depth."""
-    return redirect_local(url, status_code=status_code, policy=policy, mount=mount)
+    target = compose_local_url(url, mount=mount, query=query, fragment=fragment)
+    return redirect_local(target, status_code=status_code, policy=policy, mount=None)

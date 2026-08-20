@@ -218,19 +218,19 @@ def _check_versions(*, allow_planned: bool) -> None:
             )
         if not version.startswith("0.41."):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0 expects 0.41.x–0.51.x living tip"
+                f"unexpected workspace version {version!r}; Stage 0 expects 0.41.x–0.52.x living tip"
             )
         print(f"ok: living tip {version} / Published {published} (0.42 allow-planned)")
         return
     if version != RELEASE_CANDIDATE and not version.startswith(
-        ("0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.")
+        ("0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.")
     ):
         raise SystemExit(
             f"cut requires workspace version {RELEASE_CANDIDATE} or post-cut "
             f"0.43.x/0.44.x/0.45.x; found {version!r}"
         )
     if version.startswith(
-        ("0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.")
+        ("0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.")
     ):
         print(f"ok: post-cut living tip {version} (0.42 packet verified)")
         return
@@ -308,7 +308,7 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit("\n".join(errors))
         print("ok: release-gate-0.42.toml (planned shape)")
     elif _workspace_version().startswith(
-        ("0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.")
+        ("0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.")
     ):
         errors = gate.check_evidence_manifest(GATE)
         if errors:

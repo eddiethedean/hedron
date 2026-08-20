@@ -1,0 +1,123 @@
+# Phase 0.52 conformance capability inventory.
+# Verified in-tree cut (D-090). Portable subset lock; Stage 1 runtime shipped.
+
+schema_version = 1
+phase = "0.52"
+status = "Verified"
+planning_baseline = "v0.51.2"
+required_predecessor = "v0.51.2"
+target = "v0.52.0"
+decision = "D-089"
+contract_refine = "D-090"
+owning_rfc = "RFC-0079"
+implementation = "docs/implementation/CONFORMANCE_052.md"
+public_contract = "docs/api/CONFORMANCE.md"
+profile_lock = "docs/acceptance/conformance-profile-052.toml"
+posit_lock = "docs/acceptance/posit-lifecycle-052.toml"
+upgrade_fixtures = "docs/acceptance/upgrade-fixtures-052.md"
+tracking = "#522"
+companions = ["#508", "#509", "#510", "#511", "#512", "#513"]
+
+contract_version_seed = "hedron-portable-1"
+fixture_api_seed = "load_bundled_fixtures"
+capability_enum_seed = "Capability"
+full_non_python_ports = false
+fastapi_in_portable_subset = false
+browser_runtime_in_portable_subset = false
+supported_connect_bridge = "drop_supported"
+
+[[capability]]
+id = "CONF-PROTO-001"
+area = "protocol"
+gate = "PROTOCOL-052"
+state = "Verified"
+maturity = "authority-target"
+seams = ["CONTRACT_VERSION", "hedron-portable-1", "compat"]
+
+[[capability]]
+id = "CONF-PROF-001"
+area = "profiles"
+gate = "PROFILE-052"
+state = "Verified"
+maturity = "authority-target"
+profiles = ["core-render", "interaction", "manifest", "element", "package"]
+
+[[capability]]
+id = "CONF-FIX-001"
+area = "fixtures"
+gate = "FIXTURE-052"
+state = "Verified"
+maturity = "authority-target"
+seams = ["load_bundled_fixtures", "FIXTURE_VERSION"]
+
+[[capability]]
+id = "CONF-NEG-001"
+area = "negative-vectors"
+gate = "NEGATIVE-052"
+state = "Verified"
+maturity = "authority-target"
+
+[[capability]]
+id = "CONF-RT-001"
+area = "runtimes"
+gate = "RUNTIME-052"
+state = "Verified"
+maturity = "authority-target"
+runtimes = ["python", "node", "java"]
+
+[[capability]]
+id = "CONF-DIFF-001"
+area = "differential"
+gate = "DIFF-052"
+state = "Verified"
+maturity = "authority-target"
+
+[[capability]]
+id = "CONF-SEC-001"
+area = "security"
+gate = "SECURITY-052"
+state = "Verified"
+maturity = "authority-target"
+
+[[capability]]
+id = "CONF-SBOX-001"
+area = "sandbox"
+gate = "SANDBOX-052"
+state = "Verified"
+maturity = "authority-target"
+
+[[capability]]
+id = "CONF-RPT-001"
+area = "reporting"
+gate = "REPORT-052"
+state = "Verified"
+maturity = "authority-target"
+
+[[capability]]
+id = "CONF-CI-001"
+area = "ci"
+gate = "CI-052"
+state = "Verified"
+maturity = "authority-target"
+
+[[capability]]
+id = "CONF-COMPAT-001"
+area = "compat"
+gate = "COMPAT-052"
+state = "Verified"
+maturity = "authority-target"
+
+[[capability]]
+id = "CONF-PLAT-001"
+area = "platform"
+gate = "PLATFORM-052"
+state = "Verified"
+maturity = "authority-target"
+
+[[capability]]
+id = "CONF-AUTHOR-001"
+area = "author-kit"
+gate = "AUTHOR-052"
+state = "Verified"
+maturity = "authority-target"
+seams = ["Capability", "author_kit"]

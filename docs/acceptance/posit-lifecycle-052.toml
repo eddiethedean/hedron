@@ -1,0 +1,69 @@
+# Phase 0.52 HedronPosit deployment lifecycle lock.
+# Verified in-tree cut (D-090). Companions #508–#513. Stage 1 runtime shipped.
+
+schema_version = 1
+phase = "0.52"
+status = "Verified"
+planning_baseline = "v0.51.2"
+required_predecessor = "v0.51.2"
+target = "v0.52.0"
+decision = "D-090"
+owning_rfc = "RFC-0079"
+implementation = "docs/implementation/POSIT_LIFECYCLE_052.md"
+public_contract = "docs/api/POSIT_LIFECYCLE.md"
+tracking = "#522"
+supported_connect_bridge = "drop_supported"
+literal_path_auto = false
+log_cookie_values = false
+
+[[companion]]
+issue = "#508"
+gate = "COOKIE-052"
+state = "Verified"
+deliverable = "Cookie registry + set/delete lifecycle; matching create/delete paths"
+consumed_seams = ["cookie_path_for_mount", "workbenchify", "ConnectCookieMode.NATIVE"]
+
+[[companion]]
+issue = "#509"
+gate = "CONTEXT-052"
+state = "Verified"
+deliverable = "Request-bound PositContext / posit_for(request)"
+planned_symbols = ["PositContext", "posit_for"]
+
+[[companion]]
+issue = "#510"
+gate = "HANDSOFF-052"
+state = "Verified"
+deliverable = "Opt-in hands-off local URL / redirect adaptation"
+rewrite_scope = "validated-same-app-paths-only"
+
+[[companion]]
+issue = "#511"
+gate = "MATRIX-052"
+state = "Verified"
+deliverable = "Deployment-matrix fixtures + hedron-posit check --matrix"
+matrix_cases = ["root", "Workbench", "Connect", "external-base"]
+
+[[companion]]
+issue = "#512"
+gate = "PDIAG-052"
+state = "Verified"
+deliverable = "Proactive mount/redirect/cookie diagnostics with stable codes"
+redact_cookies = true
+
+[[companion]]
+issue = "#513"
+gate = "ROUTEURL-052"
+state = "Verified"
+deliverable = "Query/fragment/durable parity across href/redirect/browser_url/durable_url families"
+consumed_seams = [
+  "href",
+  "href_for",
+  "redirect",
+  "redirect_for",
+  "browser_url",
+  "browser_url_for",
+  "durable_url",
+  "durable_url_for",
+]
+asymmetry_to_close = "href_for/redirect_for lack query/fragment today"

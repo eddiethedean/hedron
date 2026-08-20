@@ -25,7 +25,7 @@ if version not in {
     "0.50.0",
     "0.51.0",
 } and not version.startswith(
-    ("0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.")
+    ("0.42.", "0.43.", "0.44.", "0.45.", "0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.")
 ):
-    raise SystemExit(f"workspace version must be 0.41.0 or post-cut 0.42.x–0.51.x, got {version}")
+    raise SystemExit(f"workspace version must be 0.41.0 or post-cut 0.42.x–0.52.x, got {version}")
 raise SystemExit(check("PKG-041"))

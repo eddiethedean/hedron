@@ -69,6 +69,7 @@ class PositConfig:
     product: PositProduct = PositProduct.AUTO
     workbench: WorkbenchConfig = field(default_factory=WorkbenchConfig)
     connect: ConnectConfig = field(default_factory=ConnectConfig)
+    hands_off: bool = False
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "product", PositProduct.parse(self.product))
@@ -76,6 +77,7 @@ class PositConfig:
             raise TypeError("workbench must be a WorkbenchConfig")
         if not isinstance(self.connect, ConnectConfig):
             raise TypeError("connect must be a ConnectConfig")
+        object.__setattr__(self, "hands_off", bool(self.hands_off))
 
 
 @dataclass(frozen=True, slots=True)

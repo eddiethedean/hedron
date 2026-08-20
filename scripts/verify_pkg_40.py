@@ -186,10 +186,11 @@ def _check_versions(*, allow_planned: bool) -> None:
                 "0.49.",
                 "0.50.",
                 "0.51.",
+                "0.52.",
             )
         ):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.39.x–0.51.x"
+                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.39.x–0.52.x"
             )
         print(f"ok: living tip {version} (0.40 allow-planned)")
         return
@@ -206,6 +207,7 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.49.",
             "0.50.",
             "0.51.",
+                "0.52.",
         )
     ):
         raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE}; found {version!r}")
@@ -222,6 +224,7 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.49.",
             "0.50.",
             "0.51.",
+                "0.52.",
         )
     ):
         print(f"ok: post-cut living tip {version} (0.40 packet verified)")
@@ -299,6 +302,7 @@ def main(argv: list[str] | None = None) -> int:
             "0.49.",
             "0.50.",
             "0.51.",
+                "0.52.",
         )
     ):
         errors = gate.check_evidence_manifest(GATE)

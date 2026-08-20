@@ -3,6 +3,21 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.52.0 — 2026-08-20
+
+In-tree Published cut for conformance authority and Posit lifecycle
+(RFC-0079 / D-089 / D-090). Pin `hedron>=0.51.0,<0.52` from PyPI until the 0.52
+wheel lands. [What’s new in 0.52](whats-new-0.52.md).
+[Installation](../getting-started/installation.md).
+
+- Cross-language portable-subset conformance authority (`hedron-conformance`) with
+  profiles, fixture compiler, differential/platform evidence, and Node/Java evaluators.
+- HedronPosit lifecycle companions: `CookieRegistry`, `PositContext`, `hands_off`,
+  deployment-matrix check, diagnostics, and named-route query/fragment parity
+  ([#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)).
+- Tracking [#522](https://github.com/eddiethedean/hedron/issues/522). Git tag / PyPI
+  upload deferred (`registry_status = "deferred"`).
+
 ## 0.51.2 — 2026-08-20
 
 Quality and typing patch on the 0.51 train. Pin `hedron>=0.51.0,<0.52` from PyPI until the

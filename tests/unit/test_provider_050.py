@@ -49,7 +49,7 @@ def test_context_stamps_plugin_name() -> None:
             name="third-party",
             version="1.0.0",
             distribution="third-party",
-            hedron_version=">=0.51,<0.52",
+            hedron_version=">=0.52,<0.53",
         )
     )
     ctx.register_explorer_provider(panel_id="tp", title="TP")

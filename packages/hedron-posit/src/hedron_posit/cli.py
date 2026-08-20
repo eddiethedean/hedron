@@ -73,6 +73,23 @@ def _emit(resolved: Any, *, fmt: str, posit_status: dict[str, object] | None = N
 def _cmd_check(args: argparse.Namespace) -> int:
     from hedron_posit.config import PositConfig, resolve_posit_deployment
 
+    if getattr(args, "matrix", False):
+        from hedron_posit.matrix import run_deployment_matrix
+
+        report = run_deployment_matrix()
+        if args.format == "json":
+            print(json.dumps(report, indent=2, sort_keys=True))
+        else:
+            print(f"matrix_ok: {report['ok']}")
+            for case in report["cases"]:
+                print(
+                    f"case {case['id']}: mount={case['mount']!r} "
+                    f"cookie_path={case['cookie_path']!r} ok={case['ok']}"
+                )
+            if report["failed"]:
+                print(f"failed: {', '.join(report['failed'])}", file=sys.stderr)
+        return 0 if report["ok"] else 1
+
     cfg = _config_from_args(args)
     discovered: str | None = None
     bound_port: int | None = None
@@ -305,6 +322,11 @@ def main(argv: list[str] | None = None) -> int:
         "--discover",
         action="store_true",
         help="Call rserver-url when RS_SERVER_URL is set (still no app import)",
+    )
+    check_p.add_argument(
+        "--matrix",
+        action="store_true",
+        help="Evaluate protocol-level deployment-matrix fixtures (no app import)",
     )
     check_p.add_argument("app", nargs="?", help="Ignored; check does not import the app")
 

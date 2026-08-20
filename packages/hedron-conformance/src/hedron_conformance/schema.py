@@ -12,6 +12,9 @@ from pydantic import BaseModel, ConfigDict
 
 FIXTURE_VERSION = "1.0.0"
 CONTRACT_VERSION = "hedron-portable-1"
+# Protocol negotiation aliases (COMPAT-052); do not replace CONTRACT_VERSION in place.
+PROTOCOL_CURRENT = CONTRACT_VERSION
+PROTOCOL_PREVIOUS = CONTRACT_VERSION
 
 
 class Capability(StrEnum):
