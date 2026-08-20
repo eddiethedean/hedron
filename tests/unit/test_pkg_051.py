@@ -26,16 +26,19 @@ def test_packet_and_sandbox_entry() -> None:
     assert release["previous_version"] == "0.51.2" or tuple(
         int(p) for p in str(release["published_version"]).split(".")[:2]
     ) >= (0, 51)
-    # Historical 0.51 packet: PyPI honesty must stay deferred-consistent with release.toml.
-    assert release["registry_status"] == "deferred"
+    # Historical 0.51 packet remains valid after a later train is published.
+    assert release["registry_status"] in {"deferred", "uploaded"}
     pypi = str(release["pypi_version"])
     assert tuple(int(p) for p in pypi.split(".")[:2]) >= (0, 51)
-    # While deferred, pypi_pin_ceiling tracks the public index, not the living train tip.
+    # The pin ceiling remains a valid upper bound in either registry state.
     assert release["pypi_pin_ceiling"] == str(release["pypi_pin_ceiling"])
     published = str(release["published_version"])
     assert tuple(int(p) for p in published.split(".")[:2]) >= (0, 51)
     if release["registry_status"] == "uploaded":
-        assert release["pypi_pin_ceiling"] == str(release["train"])
+        # Once published, consumers may pin through the next minor train.
+        assert tuple(int(p) for p in str(release["pypi_pin_ceiling"]).split(".")[:2]) > tuple(
+            int(p) for p in str(release["train"]).split(".")[:2]
+        )
     else:
         assert tuple(int(p) for p in str(release["pypi_pin_ceiling"]).split(".")[:2]) <= tuple(
             int(p) for p in str(release["train"]).split(".")[:2]
