@@ -329,6 +329,12 @@ HED_POSIT_0302 = "HED-POSIT-0302"  # Connect base path validation failed
 HED_POSIT_0303 = "HED-POSIT-0303"  # duplicate Connect base headers
 HED_POSIT_0304 = "HED-POSIT-0304"  # Connect base path does not match ASGI root_path
 HED_POSIT_0401 = "HED-POSIT-0401"  # authenticated_header_v1 not Supported in 0.33
+HED_POSIT_0508 = "HED-POSIT-0508"  # refusing literal cookie Path=auto via registry
+HED_POSIT_0512 = "HED-POSIT-0512"  # diagnostic: literal cookie Path=auto
+HED_POSIT_0513 = "HED-POSIT-0513"  # diagnostic: cookie Path does not match mount
+HED_POSIT_0514 = "HED-POSIT-0514"  # diagnostic: Location/redirect not mount-prefixed
+HED_POSIT_0515 = "HED-POSIT-0515"  # diagnostic: Location escapes app mount
+HED_POSIT_0516 = "HED-POSIT-0516"  # diagnostic: unregistered owned cookie name
 
 # Streamlit AST migrator (0.31 RFC-0061)
 HED_MIG_ST_0001 = "HED-MIG-ST-0001"  # unresolved / dynamic Streamlit symbol
