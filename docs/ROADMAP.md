@@ -49,8 +49,9 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
 | **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.1` on PyPI; in-tree `v0.50.3` tag deferred; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Published** (`v0.51.0` on PyPI; RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
-| **0.52** | Conformance kit and independent Node/Java runtime credibility; HedronPosit deployment lifecycle companion | **Planned** (package-quality audit; owning RFC/issue required before implementation; related [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
-| **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
+| **0.52** | Cross-language conformance authority; HedronPosit deployment lifecycle companions | **Planned** (Stage 0 refine against in-tree `v0.51.2`; owning RFC/decision required before Stage 1; [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
+| **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Planned** (owning RFC/issue required before implementation; related [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
+| **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -4158,13 +4159,13 @@ surface needs a durable ship/remove/quarantine decision.
 | `hedron-explorer` | Valuable and widely integrated, but most implementation remains concentrated in one large router module. Its broad inspection UI needs clearer service/view boundaries, browser workflows, extension isolation, and failure/performance evidence proportional to its role. | **Significant upgrade: 0.50** — see [0.50 M1 inventory](#050--explorer-architecture-and-operator-grade-development-tooling-v0500). |
 | `hedron-extras` | Useful breadth and correct optional-dependency quarantine, but the number of browser-backed components and workbenches exceeds the depth of package-owned lifecycle, accessibility, security, visual, and cross-browser evidence. Experimental UI also lacks a final product disposition. | **Significant upgrade: 0.51.** |
 | `hedron-conformance` + Node/Java evaluators | The Python kit is a sound seed, but the independent runtimes are explicitly experimental and the cross-language surface remains narrow. Version negotiation, negative vectors, streaming fixtures, packaging, and CI/runtime-skew evidence are not yet strong enough for ecosystem authority. | **Significant upgrade: 0.52.** |
-| `hedron-notebook` | Honest localhost-only scope and useful security checks, but still a small preview helper rather than a current package-workflow notebook tool; cleanup, kernel/frontend compatibility, and richer output evidence need work. | **Significant upgrade: 0.53.** |
-| `hedron-sim` | Good deterministic documentation utility, but its supported HTMX/browser subset and divergence behavior need a machine-readable contract, current interaction coverage, and parity tests against real server/browser execution. | **Significant upgrade: 0.53.** |
-| `hedron-sample-kit` | Correctly third-party-shaped, but still demonstrates the phase-0.4 era surface and is too small to prove the modern catalog, element, workflow, compatibility, and release-authoring story. | **Significant upgrade: 0.53.** |
+| `hedron-notebook` | Honest localhost-only scope and useful security checks, but still a small preview helper rather than a current package-workflow notebook tool; cleanup, kernel/frontend compatibility, and richer output evidence need work. | **Significant upgrade: 0.54.** |
+| `hedron-sim` | Good deterministic documentation utility, but its supported HTMX/browser subset and divergence behavior need a machine-readable contract, current interaction coverage, and parity tests against real server/browser execution. | **Significant upgrade: 0.54.** |
+| `hedron-sample-kit` | Correctly third-party-shaped, but still demonstrates the phase-0.4 era surface and is too small to prove the modern catalog, element, workflow, compatibility, and release-authoring story. | **Significant upgrade: 0.54.** |
 | `hedron-maps` | Strong typed grammar, offline modes, security limits, browser rendering/a11y checks, and bounded provider behavior for a young package. | Maintain in normal trains; no corrective phase. |
 | `hedron-mcp` | Deny-by-default Supported inventory has focused adversarial coverage and explicit mutation quarantine. Experimental mutations are a deliberate product boundary, not evidence of package neglect. | Maintain; require a separate RFC before any mutation promotion. |
 | `hedron-gradio` | Bounded client/workflow surface, explicit policy and artifact handling, migration support, and adversarial fixtures are proportionate to its interop role. | Maintain; add providers through ordinary feature phases. |
-| `hedron-posit`, `hedron-workbench`, `fastapi-workbench` | The deployment stack has detailed topology, trust, URL, cookie, isolation, upgrade, and real-host contracts. The compatibility wrapper is intentionally thin. | Maintain; avoid re-expanding the compatibility layer. |
+| `hedron-posit`, `hedron-workbench`, `fastapi-workbench` | The deployment stack has detailed topology, trust, URL, cookie, isolation, upgrade, and real-host contracts. The compatibility wrapper is intentionally thin. Cookie registry, `PositContext`, hands-off URL adaptation, matrix check, proactive diagnostics, and named-route query/fragment parity remain application-owned gaps. | **Maintain core topology;** companion lifecycle packet under **0.52** ([#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)). Do not re-expand the Supported Connect cookie bridge. |
 | `hedron-native` | Intentionally tiny optional acceleration with Python as the semantic fallback, parity/fuzz work, and wheel automation. Breadth is not a quality goal. | Maintain; expand only behind measured hotspots. |
 
 The audit does not treat Beta versioning, small code size, or an explicitly narrow Supported
@@ -4296,7 +4297,7 @@ M1–M7 are **Verified** on `v0.50.1` (on PyPI). Tracking
   operations, response/effect timelines, and redacted `AppScenario` export.
 - Add a read-only **package health** slice: entry-point discovery, version skew, missing
   optional dependencies, asset integrity/CSP, duplicate registrations, and conformance result
-  envelope ingestion — **not** the full `hedron package doctor` workflow (owned by 0.53).
+  envelope ingestion — **not** the full `hedron package doctor` workflow (owned by 0.54).
 - Add read-only adapters for Flask and Django registries plus portable Jinja, Elements, Data,
   Charts, Maps, MCP, Gradio, Posit/Workbench, Extras, and third-party package projections;
   unsupported host features must be labeled rather than omitted.
@@ -4333,7 +4334,7 @@ allowlists.
   0.50 may expose bounded historical render/simulate traces only.
 - `EXPLORER-019` / `ATAG-019` full accessibility review workspace — remains Deferred; 0.50
   covers shell/panel a11y only.
-- `hedron package doctor` (owned by **0.53**).
+- `hedron package doctor` (owned by **0.54**).
 - Conformance kit authority or packaged Node/Java evaluators (**0.52**); 0.50 may ingest
   conformance result envelopes only.
 - Making Explorer a production default, unauthenticated endpoint, or authority grant.
@@ -4543,80 +4544,103 @@ Artifacts (Stage 0 packet; Stage 1 blocked on [#507](https://github.com/eddiethe
 
 ## 0.52 — Cross-language conformance authority (`v0.52.0`)
 
-**Status:** Planned. This phase does not promise full Hedron ports; its RFC must lock the portable
-IR subset and independent runtime release model before either evaluator is promoted.
+**Status:** Planned. Stage 0 refine against Published in-tree **`v0.51.2`** (PyPI still
+serves `v0.51.0` until registry upload). This phase does **not** promise full Hedron ports,
+does **not** reopen the 0.24 `polling_only` disposition, and does **not** restore a Supported
+Connect cookie bridge (`BRIDGE_DECISION=drop_supported` from 0.33 remains in force).
 
-**Outcome:** `hedron-conformance` becomes a versioned compatibility authority, and the Node and Java
-evaluators become independently installable reference consumers for the declared portable subset
-rather than repository-only demonstrations. Companion HedronPosit deployment lifecycle work
-([#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513))
-ships under the same train so mounted Workbench/Connect cookie, URL, redirect, and matrix
-evidence is first-class rather than application-owned.
+**Planning baseline:** Published in-tree **`v0.51.2`**. Verified 0.31 tooling
+(`CONF-031`…`JAVA-031`) and Published 0.33 HedronPosit topology are inputs — not re-litigation.
+Owning RFC + phase decision must be **Accepted** before Stage 1 runtime work. Prefer one RFC with
+two locked workstreams (conformance authority; Posit deployment lifecycle) or sibling RFCs that
+share the same cut baseline and exit gate.
 
-### Companion tracking (HedronPosit deployment)
+**Outcome:** (1) `hedron-conformance` becomes a versioned compatibility **authority** for a
+declared portable subset, and Node/Java evaluators become independently installable reference
+consumers rather than repository-only demonstrations. (2) HedronPosit gains first-class cookie,
+context, hands-off URL, matrix, diagnostic, and named-route parity so mounted Workbench/Connect
+apps stop owning deployment cookie paths and redirect adaptation
+([#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)).
 
-| Issue | Topic |
-|---|---|
-| [#508](https://github.com/eddiethedean/hedron/issues/508) | Deployment-aware cookie lifecycle / registry (no literal `Path=auto`) |
-| [#509](https://github.com/eddiethedean/hedron/issues/509) | Request-bound `PositContext` for links, redirects, cookies, capabilities |
-| [#510](https://github.com/eddiethedean/hedron/issues/510) | Hands-off mode for automatic local URL / redirect adaptation |
-| [#511](https://github.com/eddiethedean/hedron/issues/511) | Workbench/Connect deployment-matrix fixtures and `hedron-posit check --matrix` |
-| [#512](https://github.com/eddiethedean/hedron/issues/512) | Proactive diagnostics for mount, redirect, and cookie mistakes |
-| [#513](https://github.com/eddiethedean/hedron/issues/513) | Named-route link/redirect APIs with query, fragment, and durable URL parity |
+### Entry criteria
 
-These companions must preserve Connect trust boundaries, never log cookie values, and keep
-application code from computing deployment cookie paths. They do not reopen the 0.24
-`polling_only` disposition or replace the conformance RFC gate plan below.
+- In-tree **`v0.51.2`** Verified as planning/cut baseline (do not block Stage 1 on a later 0.51.x
+  PyPI tip if the in-tree packet is Verified).
+- Owning RFC(s) and phase decision Accepted; Stage 0 packet files exist (capability inventories,
+  release-gate rows Planned, upgrade fixtures from 0.51).
+- Tracking issues bound: conformance authority issue (to be filed or named by the RFC) and Posit
+  companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513).
+- Portable subset locked: what Node/Java **do** evaluate vs explicitly **not** (no FastAPI, no
+  browser runtime, no complete Hedron).
+- Posit companions preserve Connect trust boundaries, never log cookie values, and never emit
+  literal `Set-Cookie` `Path=auto`.
 
-### Scope
+### Consumed seams (do not fork)
 
-- Publish a versioned conformance manifest with protocol/version negotiation, capabilities,
-  canonical encoding, limits, diagnostic codes, expected failures, and forward-unknown behavior.
-- Expand positive and negative vectors for escaping, URLs, attributes, nested components, forms,
-  interactions, TypeSchema v2, tagged unions, manifests, extensions, assets, size/depth limits, and
-  malformed or adversarial input.
+**Conformance / runtimes (0.31 seed on the 0.51 train):**
+
+- Python kit: `CONTRACT_VERSION = "hedron-portable-1"`, `FIXTURE_VERSION = "1.0.0"`,
+  `Capability` enum, `load_bundled_fixtures()`, CLI `run` / `list` / `schema`, `compat` negotiation,
+  `author_kit/` seed (`hedron-conformance` `0.51.2`).
+- Default bundled corpus is top-level `fixtures/*.json` only; subdirectory corpora
+  (`type_authoring_044`, `updates_043`, `element_abi`) stay opt-in until profiles admit them.
+- Node evaluator `hedron-runtime-node` `0.32.0` and Java `hedron-runtime-java` `0.32.0` remain
+  tooling-grade until `RUNTIME-052` / `PKG-052` promote independent install artifacts.
+
+**HedronPosit (0.33 facade on the 0.51 train):**
+
+- `HedronPosit` URL helpers: `href` / `href_for`, `redirect` / `redirect_for`, `browser_url` /
+  `browser_url_for`, `external_url` / `durable_url` (+ `_for` variants).
+- Construction-time `cookie_path_for_mount` and `workbenchify` owned-cookie Path repair
+  (`session`, `hedron_color_mode`, CSRF); `ConnectCookieMode.NATIVE` Supported;
+  `authenticated_header_v1` remains Experimental extension-point only.
+- CLI: `hedron-posit check` / `run` / `doctor` (including `--live` probe). No `--matrix` yet.
+- Asymmetry to close under [#513](https://github.com/eddiethedean/hedron/issues/513):
+  `browser_url_for` / `durable_url_for` accept `query`/`fragment`; `href_for` /
+  `redirect_for` do not.
+
+### Workstream A — Conformance authority
+
+- Publish a versioned conformance **manifest** with protocol/version negotiation, profile registry
+  (`core-render`, `interaction`, `manifest`, `element`, `package`, …), suite digests, waivers, and
+  forward-unknown behavior — extending `hedron-portable-1`, not replacing it without a negotiation
+  story.
+- Expand positive/negative/boundary/metamorphic/adversarial vectors; add a fixture compiler that
+  rejects contradictory expectations, undeclared capabilities, nondeterministic fields, and unsafe
+  paths before any runtime executes a suite.
 - Add deterministic streaming/JSON-lines execution, bounded memory, cancellation/timeouts, stable
-  exit codes, machine-readable reports, fixture provenance, and shardable CI operation.
-- Package the Node runtime with locked engine/dependency metadata and the Java runtime with a normal
-  build artifact, CLI, checksums, licenses, SBOM, and reproducible release instructions.
-- Run Python/Node/Java differential tests across supported runtime versions and operating systems;
-  minimize and retain any discovered disagreement as a regression vector.
-- Version and test the third-party author kit so external packages can run only the capabilities
-  they declare without importing the monorepo or executing untrusted plugin code.
+  exit codes, machine-readable reports, and signed result envelopes (attest the report artifact,
+  not application security).
+- Package Node with locked engine/dependency metadata and Java with a normal build artifact, CLI,
+  checksums, licenses, SBOM, and reproducible release instructions so clean consumers need no
+  monorepo checkout.
+- Run Python/Node/Java differential tests across CPython 3.11–3.14, active Node LTS, supported Java
+  LTS, and Linux/macOS/Windows; retain disagreements as regression vectors.
+- Version the third-party author kit so external packages run only declared capabilities without
+  importing the monorepo or executing untrusted plugin code.
+- Integrate with Explorer package health, `hedron check`, sample-kit rehearsal, and CI recipes
+  (JUnit/SARIF) without requiring GitHub.
 
-### Product and ecosystem workstreams
+### Workstream B — HedronPosit deployment lifecycle
 
-- Add a conformance profile registry (`core-render`, `interaction`, `manifest`, `element`,
-  `package`, and future profiles) with required/optional capabilities, semantic version ranges,
-  feature discovery, waiver metadata, and exact suite digests.
-- Add a fixture compiler and validator that catches contradictory expectations, undeclared
-  capabilities, nondeterministic fields, invalid limits, duplicate IDs, and unsafe fixture paths
-  before any runtime executes a suite.
-- Add differential and metamorphic testing: reordered maps, equivalent Unicode, split stream
-  chunks, unknown optional fields, boundary-size inputs, and canonical re-encoding must preserve or
-  intentionally reject semantics identically.
-- Add a signed result-envelope format with runtime identity, platform, profile, manifest digest,
-  timing/resource data, skips, waivers, failures, and redacted diagnostics; signing attests to the
-  report artifact, not to application security.
-- Provide GitHub Actions examples, generic CI shell recipes, JUnit/SARIF converters, badge guidance,
-  offline fixture bundles, and a compatibility dashboard input format without requiring GitHub.
-- Integrate conformance execution with Explorer package health, `hedron check`, sample-kit release
-  rehearsal, plugin discovery, Elements npm authoring, and Python wheel verification.
-- Publish protocol and fixture-author specifications, runtime implementer guide, profile reference,
-  failure-debugging handbook, version negotiation/migration guide, security model, and worked
-  external Node, Java, and Python consumer examples.
+| Issue | Deliverable (rebase onto seams above) |
+|---|---|
+| [#508](https://github.com/eddiethedean/hedron/issues/508) | Cookie registry + `set`/`delete` lifecycle; matching create/delete paths; stale duplicate cleanup; no literal `Path=auto`; Secure/HttpOnly/SameSite defaults. |
+| [#509](https://github.com/eddiethedean/hedron/issues/509) | Request-bound `PositContext` / `posit_for(request)` for links, redirects, cookies, capabilities; no `request.app` cast. |
+| [#510](https://github.com/eddiethedean/hedron/issues/510) | Opt-in hands-off mode adapting local Hedron/HTMX URLs, `Location`, assets, SSE/WS; rewrite only validated same-app paths. |
+| [#511](https://github.com/eddiethedean/hedron/issues/511) | Deployment-matrix fixtures + `hedron-posit check --matrix` (root / Workbench / Connect / external base). |
+| [#512](https://github.com/eddiethedean/hedron/issues/512) | Proactive diagnostics (Path=auto, path mismatch, unmounted Location, duplicate middleware, …) with stable codes; never log cookie values. |
+| [#513](https://github.com/eddiethedean/hedron/issues/513) | Query/fragment/durable parity across `href`/`redirect`/`browser_url`/`durable_url` families and named-route `_for` helpers. |
 
-### Hardening and compatibility matrix
+### Deliberate exclusions
 
-- Treat suites and result data as untrusted: prevent path traversal, decompression bombs, oversized
-  lines/documents, entity/network resolution, terminal escape injection, unsafe temp reuse, secret
-  capture, executable fixture hooks, and ambiguous Unicode/path normalization.
-- Require streaming parsers and explicit byte/depth/case/time/output limits; kill subprocess trees
-  on timeout/cancel; isolate working directories; and make partial/crashed runs unambiguously fail.
-- Test CPython 3.11–3.14, active Node LTS lines, supported Java LTS lines, Linux/macOS/Windows,
-  locale/timezone/line-ending differences, offline execution, and current/previous protocol pairs.
-- Reproducibly build npm/JAR/Python artifacts from clean checkouts and verify checksums, license
-  inventories, SBOMs, provenance, install/uninstall, and absence of source-tree assumptions.
+- Full non-Python Hedron ports or browser runtimes for Node/Java.
+- Restoring a Supported Connect authenticated-header cookie bridge.
+- Reopening `polling_only`, `MORPH-048`, `SR-021`, Explorer 0.50 gate IDs, or 0.51 extras gates.
+- Owning 0.53 Application DX (#514–#521) or 0.54 notebook/sim/sample-kit / external-author
+  `hedron package doctor`.
+- Treating subdirectory fixture trees as default authority before profiles admit them.
+- Marketing Node/Java as FastAPI, Workbench, or complete Hedron substitutes.
 
 ### Locked gate plan
 
@@ -4628,20 +4652,101 @@ application code from computing deployment cookie paths. They do not reopen the 
 | `SECURITY-052` / `SANDBOX-052` | Untrusted suites/results, files, archives, processes, terminals, temp state, network, and secret boundaries pass. |
 | `REPORT-052` / `CI-052` | Signed envelopes, JUnit/SARIF conversion, offline bundles, CI recipes, and Explorer/CLI ingestion preserve exact provenance. |
 | `COMPAT-052` / `PLATFORM-052` | Runtime/OS/locale/current-previous protocol matrix and explicit incompatible-version behavior pass. |
-| `DOCS-052` / `AUTHOR-052` | Protocol, author, implementer, debugging, migration, security, and three-language external examples pass doc tests. |
-| `PKG-052` / `SUPPLY-052` | Clean npm/JAR/wheel artifacts, reproducibility, checksums, licenses, SBOM/provenance, upgrade, rollback, and uninstall pass. |
+| `COOKIE-052` / `CONTEXT-052` | Cookie registry lifecycle and request-bound `PositContext` pass root/Workbench/Connect without app-owned path math ([#508](https://github.com/eddiethedean/hedron/issues/508)–[#509](https://github.com/eddiethedean/hedron/issues/509)). |
+| `HANDSOFF-052` / `MATRIX-052` | Hands-off URL adaptation and deployment-matrix check/fixtures pass without real Posit installs for protocol cases ([#510](https://github.com/eddiethedean/hedron/issues/510)–[#511](https://github.com/eddiethedean/hedron/issues/511)). |
+| `PDIAG-052` / `ROUTEURL-052` | Proactive Posit diagnostics and named-route query/fragment/durable parity pass ([#512](https://github.com/eddiethedean/hedron/issues/512)–[#513](https://github.com/eddiethedean/hedron/issues/513)). |
+| `DOCS-052` / `AUTHOR-052` | Protocol, author, implementer, Posit deployment, debugging, migration, security, and external consumer examples pass doc tests. |
+| `PKG-052` / `SUPPLY-052` / `REGRESS-052` | Clean npm/JAR/wheel artifacts, reproducibility, checksums, licenses, SBOM/provenance, 0.51 upgrade/rollback, and whole-fleet regression pass. |
 
 ### Exit gate
 
-- Clean consumers can install each evaluator from its intended ecosystem artifact and pass the same
+- Clean consumers install each evaluator from its intended ecosystem artifact and pass the same
   pinned manifest without a source checkout.
-- The negative/adversarial corpus, unknown-version behavior, resource budgets, differential matrix,
-  and at least one external-package fixture are Verified.
-- Capability claims identify the exact portable subset; Node and Java are not described as FastAPI,
+- Capability claims name the exact portable subset; Node and Java are not described as FastAPI,
   browser, or complete Hedron runtimes.
-- Upgrade and rollback evidence covers the prior Python kit and repository-only evaluator commands.
+- One application flow passes root, Workbench mount, and Connect mount using Posit lifecycle APIs
+  without computing cookie paths or manually adapting local redirects.
+- Diagnostics remain redacted; Connect trust boundaries hold; Supported bridge stays dropped.
+- Upgrade/rollback evidence covers prior Python kit commands and repository-only evaluator paths.
 
-## 0.53 — Notebook, simulation, and external-author reference tooling (`v0.53.0`)
+### Stage 0 artifacts (to create before Stage 1)
+
+- Owning RFC + phase decision (and Stage 0 contract refine decision if the living tip moves again).
+- `docs/acceptance/RELEASE_0_52.md` · `release-gate-0.52.toml` (all rows Planned until cut).
+- Conformance capability/profile inventory + Posit companion inventory locks.
+- Upgrade fixtures from in-tree `v0.51.2`.
+- Tracking issue for conformance authority gates (Posit companions already [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)).
+
+## 0.53 — Application DX contracts (`v0.53.0`)
+
+**Status:** Planned. This phase owns downstream application and operator tooling contracts. It does
+not replace the 0.54 external-author `hedron package doctor` sample-kit workflow, reopen the 0.24
+`polling_only` disposition, or schedule Hedron `1.0`.
+
+**Outcome:** Applications stop owning fragile asset injection, opaque diagnostics, hand-authored
+route/effect discovery, long-running-operation glue, repetitive interaction tests, undocumented
+theme surfaces, flat namespace hunting, and ad-hoc extras/fleet triage. Tracking
+[#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521).
+
+### Tracking
+
+| Issue | Topic |
+|---|---|
+| [#514](https://github.com/eddiethedean/hedron/issues/514) | Ordered application asset registry with dependency-aware script placement |
+| [#515](https://github.com/eddiethedean/hedron/issues/515) | Version-aware, suppressible, mechanically actionable diagnostics |
+| [#516](https://github.com/eddiethedean/hedron/issues/516) | Structured route contracts and effect graphs from the routes CLI |
+| [#517](https://github.com/eddiethedean/hedron/issues/517) | First-class long-running operation workflow over jobs, polling, and typed effects |
+| [#518](https://github.com/eddiethedean/hedron/issues/518) | Generated downstream interaction contract tests from the registered catalog |
+| [#519](https://github.com/eddiethedean/hedron/issues/519) | Stable semantic-only theming contract and visual conformance workflow |
+| [#520](https://github.com/eddiethedean/hedron/issues/520) | API-surface discovery tools and curated import guidance |
+| [#521](https://github.com/eddiethedean/hedron/issues/521) | Package-fleet doctor for extras, compatibility, assets, and capability recommendations |
+
+### Scope
+
+- Add a supported ordered application asset registry that participates in the same typed/CSP-aware
+  pipeline as framework assets, with explicit dependency ordering and no response-body rewrite
+  requirement for common app scripts.
+- Make `hedron check` / diagnostics version-aware for the living train, accept conventional severity
+  aliases, explain baseline relevance, and emit suppressible machine-actionable findings.
+- Emit structured JSON route contracts and effect graphs from the routes CLI (pages, commands,
+  refreshables, regions, security, assets) instead of stringified nested metadata.
+- Provide a first-class long-running operation workflow that composes start/monitor/cancel/retry,
+  terminal state, busy regions, and completion effects without duplicated polling after completion.
+- Generate reviewable interaction contract tests from the registered catalog for full-page, HTMX,
+  mounted, and error paths so declarations and runtime behavior cannot drift silently.
+- Publish a semantic-only theming compatibility contract for `default_styles=False` apps, plus a
+  reusable visual conformance workflow across component upgrades.
+- Add API-surface discovery and curated import guidance over the large public namespace without
+  forcing a hard rename of existing imports in this phase.
+- Ship a package-fleet doctor for installed packages/extras, train skew, activating assets/plugins,
+  and capability recommendations. This complements—does not replace—the 0.54 external-author
+  package-doctor reference workflow (`DOCTOR-054`).
+
+### Locked gate plan
+
+| Gate | Verified means |
+|---|---|
+| `ASSET-053` | Application asset registry ordering, CSP/integrity, dependency placement, and no-body-rewrite paths pass. |
+| `DIAG-053` | Version-aware diagnostics, severity aliases, suppressions, and machine-actionable output pass. |
+| `ROUTE-053` | Structured route/effect JSON contracts and graph consumers pass without stringified nested metadata. |
+| `WORKFLOW-053` | Long-running operation start/monitor/cancel/retry/terminal/busy/completion contracts pass. |
+| `TESTGEN-053` | Catalog-generated interaction tests cover full-page/HTMX/mounted/error paths and detect drift. |
+| `THEME-053` | Semantic-only theme contract and visual conformance workflow pass for custom-theme apps. |
+| `DISCOVER-053` | API discovery / curated import guidance reflects stability inventory without silent renames. |
+| `FLEET-053` | Fleet doctor reports extras, train skew, assets/plugins, and capability recommendations honestly. |
+| `DOCS-053` / `PKG-053` / `REGRESS-053` | Docs, packaging, upgrade/rollback, and whole-fleet regression pass. |
+
+### Exit gate
+
+- A downstream app can register ordered scripts, consume structured route/effect contracts, run a
+  long-running operation workflow, generate catalog interaction tests, theme against the semantic
+  contract, discover recommended imports, and triage the installed fleet without private Hedron
+  internals or response-body rewriting.
+- Diagnostics remain suppressible and version-honest; fleet doctor findings do not invent authority
+  or claim Supported maturity the inventories deny.
+- Owning RFC/issue gates are Accepted before Stage 1 runtime work begins.
+
+## 0.54 — Notebook, simulation, and external-author reference tooling (`v0.54.0`)
 
 **Status:** Planned. The three packages remain tooling-grade unless their own acceptance inventories
 justify a narrower Supported claim; this phase does not turn notebook preview into a production
@@ -4675,6 +4780,7 @@ third-party package without depending on private monorepo behavior.
 - Add a `hedron package doctor` reference workflow, implemented through public tooling contracts,
   that checks metadata, entry points, feature descriptors, assets, schema fingerprints, docs links,
   conformance profiles, optional dependencies, version ranges, and publishable artifacts.
+  Installed-fleet extras/train/asset triage for applications is owned by **0.53** ([#521](https://github.com/eddiethedean/hedron/issues/521)).
 - Add sample-kit variants for a pure-Python component, an asset-backed Web Component, a typed
   action/workflow, an HDJ binding, and an optional integration; each variant must be independently
   removable so authors can copy the smallest relevant pattern.
@@ -4712,14 +4818,14 @@ third-party package without depending on private monorepo behavior.
 
 | Gate | Verified means |
 |---|---|
-| `SAMPLE-053` / `DOCTOR-053` | Modular modern examples and package-doctor checks pass from a clean external repository using only public contracts. |
-| `SIM-053` / `PARITY-053` | Declared subset, divergence, recording/time control, deterministic scenarios, and real-server/browser differential tests pass. |
-| `NOTEBOOK-053` / `LIFECYCLE-053` | Display handles, saved fallbacks, repeated execution, interrupt/restart/stale/close, cleanup, and bounded sessions pass. |
-| `SECURITY-053` / `TOPOLOGY-053` | Token/origin/host/proxy/port/iframe/output/temp/browser-open and simulator input/URL/event/history boundaries pass. |
-| `ECOSYSTEM-053` | Explorer, HDJ, Elements, conformance, package workflows, adapters, examples, and release rehearsal interoperate without private imports. |
-| `COMPAT-053` / `PLATFORM-053` | Python, OS, kernel/frontend, saved-output, current-previous, missing-extra, and external-build matrices pass. |
-| `A11Y-053` / `DOCS-053` | Static/rich output accessibility plus author, simulator, notebook, security, migration, troubleshooting, and publishing docs pass. |
-| `PKG-053` / `REGRESS-053` | Clean artifacts, metadata, reproducibility, SBOM/provenance, 0.49 upgrade/rollback, and whole-fleet regression pass. |
+| `SAMPLE-054` / `DOCTOR-054` | Modular modern examples and package-doctor checks pass from a clean external repository using only public contracts. |
+| `SIM-054` / `PARITY-054` | Declared subset, divergence, recording/time control, deterministic scenarios, and real-server/browser differential tests pass. |
+| `NOTEBOOK-054` / `LIFECYCLE-054` | Display handles, saved fallbacks, repeated execution, interrupt/restart/stale/close, cleanup, and bounded sessions pass. |
+| `SECURITY-054` / `TOPOLOGY-054` | Token/origin/host/proxy/port/iframe/output/temp/browser-open and simulator input/URL/event/history boundaries pass. |
+| `ECOSYSTEM-054` | Explorer, HDJ, Elements, conformance, package workflows, adapters, examples, and release rehearsal interoperate without private imports. |
+| `COMPAT-054` / `PLATFORM-054` | Python, OS, kernel/frontend, saved-output, current-previous, missing-extra, and external-build matrices pass. |
+| `A11Y-054` / `DOCS-054` | Static/rich output accessibility plus author, simulator, notebook, security, migration, troubleshooting, and publishing docs pass. |
+| `PKG-054` / `REGRESS-054` | Clean artifacts, metadata, reproducibility, SBOM/provenance, 0.49 upgrade/rollback, and whole-fleet regression pass. |
 
 ### Exit gate
 
@@ -4815,8 +4921,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Durable Celery/RQ job status (or honest non-durable labeling) | 0.13 | Multi-worker status visibility matches production-gate claims ([#11](https://github.com/eddiethedean/hedron/issues/11)). |
 | Live-transport Supported vs experimental claim reconciliation | 0.13 | Aligns capability matrix and docs with deferred ops gates ([#13](https://github.com/eddiethedean/hedron/issues/13)). |
 | Published cross-language conformance-test kit | 0.14 | Versioned fixtures, negative cases, artifacts, and capability-level failure reports. |
-| Cross-language conformance profiles, fixture compiler, differential/metamorphic corpus, signed result envelopes, and packaged Node/Java evaluators | 0.52 | Establishes authority for a declared portable subset, not full non-Python Hedron runtimes. |
-| HedronPosit cookie lifecycle, `PositContext`, hands-off URL adaptation, deployment-matrix check, diagnostics, and named-route link/redirect parity | 0.52 | Companion packet [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513); apps stop owning mount cookie paths and redirect adaptation. |
+| Cross-language conformance profiles, fixture compiler, differential/metamorphic corpus, signed result envelopes, and packaged Node/Java evaluators | 0.52 | Establishes authority for a declared portable subset, not full non-Python Hedron runtimes. Baseline: in-tree `v0.51.2` / `hedron-portable-1`. |
+| HedronPosit cookie lifecycle, `PositContext`, hands-off URL adaptation, deployment-matrix check, diagnostics, and named-route link/redirect parity | 0.52 | Companion packet [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513); apps stop owning mount cookie paths and redirect adaptation. Does not restore Supported Connect bridge. |
 | HTTP-faithful `AppScenario` application-flow harness | 0.15 | Route, session, typed control/action, fragment, redirect, and response assertions; explicitly no whole-script rerun simulation. |
 | HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); Dialog/Tabs/Pagination/Lazy asserts deferred to 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
 | Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
@@ -4832,7 +4938,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Plugin discovery, compatibility, capabilities, lifecycle, rollback | 0.4 | Plugins are executable packages, not sandboxed data. |
 | Curated optional `hedron-extras` package and per-feature capability manifests | 0.16 | Built only on public package/plugin contracts; no privileged runtime or eager dependency bundle. |
 | Versioned Extras feature descriptors, bounded workbench primitives/providers, JSON/image intent workflows, lifecycle closure, and Experimental UI dispositions | 0.51 | Every admitted component requires fallback, browser/a11y/security/performance evidence and optional-dependency isolation. Companion authoring [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506) (password toggle, swap reveal, non-form busy). |
-| Modern sample-kit variants, package doctor, simulator recordings/parity, notebook display handles, and real-server handoff | 0.53 | One public-contract authoring loop with explicit simulation divergence and localhost-only notebook security defaults. |
+| Application asset registry, actionable diagnostics, structured route/effect graphs, long-running operation workflow, catalog test generation, semantic theming, API discovery, and fleet doctor | 0.53 | Downstream DX packet [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521); fleet doctor complements 0.54 external-author `DOCTOR-054`. |
+| Modern sample-kit variants, package doctor, simulator recordings/parity, notebook display handles, and real-server handoff | 0.54 | One public-contract authoring loop with explicit simulation divergence and localhost-only notebook security defaults. |
 | Dash migration inventory, notebook preview helper, and dashboard graph diagnostics | 0.17 | Migration is reviewable guidance, notebook previews are development-only, and Explorer shows graph timing/payload/failures. |
 | Gradio interoperability, migration inventory, interaction recorder, and inference/workflow diagnostics | 0.18 | Optional protocol adapter and reviewable guidance; credentials and sensitive values are never recorded. |
 | ATAG-oriented authoring assistance and Explorer accessibility review workspace | 0.19 | Source-mapped checking/repair guidance, accessibility tree, focus/live-region traces, visual modes, and manual status. |
@@ -5129,6 +5236,14 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#511](https://github.com/eddiethedean/hedron/issues/511) | Workbench/Connect deployment-matrix fixtures and checker | 0.52 |
 | [#512](https://github.com/eddiethedean/hedron/issues/512) | Proactive HedronPosit mount/redirect/cookie diagnostics | 0.52 |
 | [#513](https://github.com/eddiethedean/hedron/issues/513) | Named-route link/redirect APIs with query/fragment parity | 0.52 |
+| [#514](https://github.com/eddiethedean/hedron/issues/514) | Ordered application asset registry with dependency-aware placement | 0.53 |
+| [#515](https://github.com/eddiethedean/hedron/issues/515) | Version-aware, suppressible, mechanically actionable diagnostics | 0.53 |
+| [#516](https://github.com/eddiethedean/hedron/issues/516) | Structured route contracts and effect graphs from routes CLI | 0.53 |
+| [#517](https://github.com/eddiethedean/hedron/issues/517) | First-class long-running operation workflow | 0.53 |
+| [#518](https://github.com/eddiethedean/hedron/issues/518) | Generated interaction contract tests from registered catalog | 0.53 |
+| [#519](https://github.com/eddiethedean/hedron/issues/519) | Semantic-only theming contract and visual conformance workflow | 0.53 |
+| [#520](https://github.com/eddiethedean/hedron/issues/520) | API-surface discovery tools and curated import guidance | 0.53 |
+| [#521](https://github.com/eddiethedean/hedron/issues/521) | Package-fleet doctor for extras, compatibility, and assets | 0.53 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 

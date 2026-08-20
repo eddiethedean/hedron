@@ -20,7 +20,7 @@
 - Optional extras in `packages/hedron-extras/pyproject.toml`.
 - EXTRAS-025 quarantine
   ([extras-quarantine-025.toml](../acceptance/extras-quarantine-025.toml)).
-- Do **not** reopen `polling_only`, `MORPH-048`, Explorer 0.50, 0.52, 0.53,
+- Do **not** reopen `polling_only`, `MORPH-048`, Explorer 0.50, 0.52, 0.53, 0.54,
   or `SR-021`.
 
 ## Architecture

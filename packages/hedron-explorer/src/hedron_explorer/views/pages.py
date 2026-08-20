@@ -602,7 +602,7 @@ async def packages_view(request: Request) -> str:
             f"<h2>Packages / plugin panels</h2>"
             f"<ul>{''.join(items) or '<li>No plugin panels</li>'}</ul>"
             f"<h2>Package health (read-only)</h2>"
-            "<p>Not <code>hedron package doctor</code> (0.53). Entry points, version skew, "
+            "<p>Not <code>hedron package doctor</code> (0.54). Entry points, version skew, "
             "and duplicate registrations only.</p>"
             f"<pre>{health_pre}</pre>"
         ),

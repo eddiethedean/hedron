@@ -52,7 +52,7 @@ resilience, not production operations tooling. Explorer remains opt-in
   `diagnostics_to_sarif` rather than a second SARIF writer.
 - Add a bounded interaction laboratory over today's `/api/simulate`,
   `/api/click-preview`, and `/api/element-simulate` allowlists, plus a read-only package
-  health slice that is not `hedron package doctor` (0.53).
+  health slice that is not `hedron package doctor` (0.54).
 - Keep Flask/Django Explorer consumption labeled and read-only; do not mount
   `explorer_router` on WSGI hosts.
 
@@ -64,7 +64,7 @@ resilience, not production operations tooling. Explorer remains opt-in
 - Requiring application authors to install Node; requiring a durable cross-process
   audit store (`REV-026-003` stays accepted risk).
 - Graduating the `/a11y` panel into `EXPLORER-019` / ATAG review workspace.
-- Owning `hedron package doctor` (0.53) or conformance-kit / Node/Java evaluator
+- Owning `hedron package doctor` (0.54) or conformance-kit / Node/Java evaluator
   authority (0.52).
 - Mounting FastAPI `explorer_router` on Flask or Django.
 - Closing `SR-021`, scheduling `1.0`, or promoting Beta package maturity.
@@ -236,7 +236,7 @@ frozen routes is a `COMPAT-050` failure. `ExplorerPanelMeta` remains. Flask/Djan
 9. **What may the laboratory execute?** Only declared safe preview ops:
    `/api/simulate`, `/api/click-preview`, `/api/element-simulate`. No invented auth.
 10. **Is package health `hedron package doctor`?** No. Read-only slice only; doctor
-    stays 0.53.
+    stays 0.54.
 11. **Is `/a11y` the ATAG workspace?** No. Keep the panel; `EXPLORER-019` stays
     Deferred.
 12. **Reserve which diagnostics?** Reserve `HED-EXPLORER-*` in docs only at Stage 0.

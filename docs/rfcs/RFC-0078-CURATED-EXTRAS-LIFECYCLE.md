@@ -66,7 +66,7 @@ Experimental UI and does not own extras gate IDs.
 - Pulling Experimental surfaces into Supported `hedron[extras]` workflows.
 - Replacing `FeatureBundle`, `InteractionCatalog`, or `AccessibilityContract`.
 - Owning 0.52 conformance / Node / Java evaluators.
-- Owning 0.53 notebook / sim / sample-kit / `hedron package doctor`.
+- Owning 0.54 notebook / sim / sample-kit / `hedron package doctor`.
 - Reopening `polling_only`, `MORPH-048`, Explorer 0.50, `SR-021`, or
   scheduling Hedron `1.0`.
 - Inventing numeric limits, asset digests, or perf budgets in Stage 0.
@@ -223,7 +223,7 @@ adapters. Pin strings `>=0.50.1,<0.51` stay until a 0.51 cut.
    #504–#506 stay outside that matrix.
 2. **Does this refine change a later phase or the living tip?** No.
    Cut target stays `v0.51.0`. Living tip remains `v0.50.3`. Do not
-   reopen 0.50, `polling_only`, `MORPH-048`, `SR-021`, 0.52, 0.53, or
+   reopen 0.50, `polling_only`, `MORPH-048`, `SR-021`, 0.52, 0.53, 0.54, or
    schedule `1.0`.
 3. **Which shipped seams does 0.51 consume?** Listed under Consume
    shipped. Do not fork `feature_specs` names or browser tags.
@@ -260,5 +260,5 @@ Locks:
   Stage 1 may not start until Verified in-tree 0.50.3 and this tracking
   issue exist.
 - Experimental dispositions and sandbox honesty are named.
-- Deferred items (`polling_only`, `MORPH-048`, `SR-021`, 0.52, 0.53)
+- Deferred items (`polling_only`, `MORPH-048`, `SR-021`, 0.52, 0.53, 0.54)
   stay explicit.

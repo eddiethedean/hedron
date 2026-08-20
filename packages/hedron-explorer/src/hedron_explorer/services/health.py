@@ -1,4 +1,4 @@
-"""Read-only package-health slice. Not hedron package doctor (0.53)."""
+"""Read-only package-health slice. Not hedron package doctor (0.54)."""
 
 from __future__ import annotations
 

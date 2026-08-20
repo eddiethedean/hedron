@@ -66,7 +66,7 @@ Safe preview ops only: `POST /hedron-explorer/api/simulate`,
 `GET /hedron-explorer/api/click-preview`,
 `POST /hedron-explorer/api/element-simulate`. Mutations stay 403 by default.
 No invented auth. Package health is read-only (`GET /hedron-explorer/api/package-health`);
-`hedron package doctor` stays 0.53.
+`hedron package doctor` stays 0.54.
 
 ## Explicitly not in 0.50
 

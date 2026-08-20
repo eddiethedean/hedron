@@ -1,5 +1,5 @@
 # Phase 0.50 Explorer interaction lab and package-health lock (LAB-050).
-# Stage 0 contract artifact (D-086). No invented auth. Package doctor stays 0.53.
+# Stage 0 contract artifact (D-086). No invented auth. Package doctor stays 0.54.
 
 schema_version = 1
 phase = "0.50"
@@ -16,7 +16,7 @@ tracking = "#501"
 stacks_on_typeschema = "docs/acceptance/typeschema-v2-049.toml"
 invent_auth = false
 allow_mutations_default = false
-package_doctor_phase = "0.53"
+package_doctor_phase = "0.54"
 package_health_is_doctor = false
 
 [simulate_keys]

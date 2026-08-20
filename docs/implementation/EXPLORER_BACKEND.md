@@ -11,7 +11,7 @@ traces, diff, fs, query, provider, health, runtime) and `views/` (shell, pages).
 `REV-026-003` accepted risk) and `_TRACE` (maxlen 100) are not durable SIEM.
 
 **Not in 0.50:** live SSE/WS traces (`EXPLORER-10-001`), ATAG workspace, Flask/Django
-`explorer_router` mount, `hedron package doctor` (0.53). Contracts:
+`explorer_router` mount, `hedron package doctor` (0.54). Contracts:
 [RFC-0077](../rfcs/RFC-0077-EXPLORER-ARCHITECTURE.md), [EXPLORER_050](EXPLORER_050.md).
 
 ## Services

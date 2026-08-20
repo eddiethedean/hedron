@@ -100,7 +100,7 @@ hedron_explorer.services   catalog, simulation, traces, diff, view rendering
 - TypeSchema v2 inputs; `/api/simulate`, `/api/click-preview`,
   `/api/element-simulate` only.
 - Redacted `AppScenario` export; no invented auth.
-- Read-only package health slice — not `hedron package doctor` (0.53).
+- Read-only package health slice — not `hedron package doctor` (0.54).
 
 ### M7 — Evidence and docs
 
