@@ -1,3 +1,9 @@
+---
+description: Configure Hedron security profiles, CSRF, HTMX hardening, safe URLs, redirects, and headers.
+search:
+  boost: 1.6
+---
+
 # Security
 
 Hedron treats escaping, CSRF, cache policy, and redirects as framework boundaries—not

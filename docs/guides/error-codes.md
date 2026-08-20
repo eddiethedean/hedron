@@ -1,3 +1,9 @@
+---
+description: Look up stable HED diagnostic codes, severity, meaning, and remediation.
+search:
+  boost: 1.4
+---
+
 # Error codes
 
 Stable `HED-*` diagnostics from `hedron_core.codes`. Prefer these codes in CI and

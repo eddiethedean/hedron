@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+
+{% block content %}
+  <div class="hedron-not-found">
+    <p class="hedron-not-found__code">404</p>
+    <h1>This page isn’t here.</h1>
+    <p>
+      The link may be outdated, or the page may have moved. Search the docs or jump to
+      one of the paths below.
+    </p>
+    <div class="hedron-actions">
+      <p>
+        <a class="md-button md-button--primary" href="{{ config.site_url }}">Documentation home</a>
+        <a class="md-button" href="{{ config.site_url }}getting-started/quickstart/">Build your first app</a>
+      </p>
+    </div>
+    <nav class="hedron-not-found__links" aria-label="Helpful documentation links">
+      <a href="{{ config.site_url }}guides/cookbook/">Cookbook</a>
+      <a href="{{ config.site_url }}guides/troubleshooting/">Troubleshooting</a>
+      <a href="{{ config.site_url }}api/HEDRON/">API reference</a>
+      <a href="{{ config.site_url }}guides/support/">Support</a>
+    </nav>
+  </div>
+{% endblock %}

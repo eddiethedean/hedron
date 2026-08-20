@@ -1,3 +1,9 @@
+---
+description: Diagnose Hedron installation, interpreter, CSRF, HTMX, asset, proxy, and production failures.
+search:
+  boost: 1.8
+---
+
 # Troubleshooting
 
 ## Failure gallery (top 5)

@@ -1,3 +1,9 @@
+---
+description: Generated public Hedron signatures for exact parameter and member lookup.
+search:
+  boost: 0.2
+---
+
 # Autodoc — public signatures
 
 Generated signatures via **mkdocstrings** for the public surface used in Learn / Adopt

@@ -1,3 +1,9 @@
+---
+description: Choose the shortest path from an empty directory to a working Hedron application.
+search:
+  boost: 1.7
+---
+
 # Learn Hedron
 
 Get from an empty directory to a CSRF-protected form without introducing a frontend
@@ -30,6 +36,16 @@ Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md)
 Evaluating production use? [What’s ready](../guides/whats-ready.md) ·
 [Why Hedron](../guides/why-hedron.md) · [Evaluate Hedron](../guides/evaluate.md) ·
 [Maturity labels](how-to-read.md).
+
+## Use the docs by task
+
+| You need to… | Go to |
+|---|---|
+| Learn the page/fragment model | [Core concepts](core-concepts.md) |
+| Choose between `@app.refreshable` and `@app.fragment` | [Which interaction API?](interaction-apis.md) |
+| Paste one focused pattern into an existing app | [Cookbook](../guides/cookbook.md) |
+| Diagnose an error or unexpected response | [Troubleshooting](../guides/troubleshooting.md) |
+| Look up an exact component or signature | [Components](../components/index.md) · [API reference](../api/HEDRON.md) |
 
 ## Choose your path
 

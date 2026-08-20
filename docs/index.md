@@ -1,7 +1,10 @@
 ---
+description: Build typed, server-rendered Python applications with FastAPI and HTMX—without a frontend build chain.
 hide:
   - navigation
   - toc
+search:
+  boost: 2
 ---
 
 <div class="hedron-hero" markdown>
@@ -15,7 +18,21 @@ Routes return components; HTMX updates the page — no Node build.
 
 **In about 10 minutes after Python 3.11–3.14 and uv or pip:** install → `hedron new` →
 open localhost:8000 → click **Refresh status**.
-{ .hedron-lede }
+{ .hedron-proof }
+
+<div class="hedron-actions" markdown>
+[Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
+[Why Hedron](guides/why-hedron.md){ .md-button }
+[Evaluate](guides/evaluate.md){ .md-button }
+</div>
+
+<div class="hedron-signal-row">
+  <span>Python 3.11–3.14</span>
+  <span>FastAPI + HTMX</span>
+  <span>No Node build</span>
+</div>
+
+<div class="hedron-quickstart-label">Quick start</div>
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
@@ -26,18 +43,6 @@ cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 
 Pins and extras: [Installation](getting-started/installation.md). Before production:
 [What’s ready](guides/whats-ready.md).
-
-<div class="hedron-actions" markdown>
-[Get started](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Why Hedron](guides/why-hedron.md){ .md-button }
-[Evaluate](guides/evaluate.md){ .md-button }
-</div>
-
-<div class="hedron-signal-row">
-  <span>Python 3.11–3.14</span>
-  <span>FastAPI + HTMX</span>
-  <span>No Node build</span>
-</div>
 
 ![Hello from Hedron with Refresh status](assets/hello-refresh.jpg){ .hedron-hero-shot }
 
@@ -60,6 +65,8 @@ without assembling a hand-rolled Jinja stack.
 | Existing FastAPI app | [Add Hedron to FastAPI](guides/plain-fastapi.md) |
 | Flask or Django project | [Choose a host](getting-started/index.md#choose-your-path) |
 | Streamlit application | [Migration center](guides/streamlit-migration.md) |
+| Need one pasteable pattern | [Cookbook](guides/cookbook.md) |
+| Something is failing | [Troubleshooting](guides/troubleshooting.md) |
 | Production evaluation | [Evaluate Hedron](guides/evaluate.md) |
 
 ## A backend-native way to build UI
@@ -94,6 +101,9 @@ without assembling a hand-rolled Jinja stack.
 3. [HTMX interactions](guides/htmx-interactions.md) — add a second region
 4. [Minimal form POST](guides/minimal-form.md) — form updates the notes counter
 5. [Learning path](getting-started/learning-path.md)
+
+Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippets or
+[Troubleshooting](guides/troubleshooting.md) for symptom-first fixes.
 
 <details markdown>
 <summary>Package maturity and production pins</summary>

@@ -1,3 +1,9 @@
+---
+description: Scaffold, run, edit, and verify your first Hedron application in about ten minutes.
+search:
+  boost: 2
+---
+
 # Build your first app
 
 About 10 minutes after Python **3.11–3.14** and either

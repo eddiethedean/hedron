@@ -25,6 +25,19 @@ def test_beginner_guides_are_in_navigation_and_start_page() -> None:
         assert f"({filename})" in start
 
 
+def test_task_finding_pages_are_in_navigation() -> None:
+    nav = (ROOT / "mkdocs.yml").read_text(encoding="utf-8")
+
+    for path in (
+        "getting-started/core-concepts.md",
+        "getting-started/interaction-apis.md",
+        "guides/cookbook.md",
+        "guides/troubleshooting.md",
+        "guides/error-codes.md",
+    ):
+        assert path in nav
+
+
 def test_vscode_guide_uses_the_current_flagship_train_without_posit() -> None:
     guide = VSCODE_PATH.read_text(encoding="utf-8")
 

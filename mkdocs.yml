@@ -20,6 +20,7 @@ theme:
     - navigation.instant
     - navigation.instant.progress
     - navigation.tracking
+    - navigation.path
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.sections
@@ -31,7 +32,9 @@ theme:
     - search.highlight
     - search.share
     - content.code.copy
+    - content.code.select
     - content.code.annotate
+    - content.tabs.link
     - content.action.edit
     - content.action.view
   palette:
@@ -146,8 +149,13 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.highlight:
       anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.tabbed:
       alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
 
 extra_javascript:
   - javascript/readthedocs.js
@@ -187,6 +195,8 @@ nav:
     - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
     - What is HTMX?: getting-started/what-is-htmx.md
+    - Core concepts: getting-started/core-concepts.md
+    - Choose an interaction API: getting-started/interaction-apis.md
     - Next steps: getting-started/learning-path.md
     - Other hosts:
       - Flask: getting-started/flask.md
@@ -196,6 +206,7 @@ nav:
       - New developer — Posit Workbench: getting-started/first-app-posit-workbench.md
   - Guides:
     - Overview: guides/index.md
+    - Cookbook: guides/cookbook.md
     - Build interactions:
       - HTMX interactions: guides/htmx-interactions.md
       - Post a minimal form: guides/minimal-form.md
@@ -231,7 +242,10 @@ nav:
       - Author plugins: guides/plugin-authoring.md
       - Curated extras (0.51): api/EXTRAS.md
     - Migrate from Streamlit: guides/streamlit-migration.md
-    - FAQ: guides/faq.md
+    - Find answers:
+      - Troubleshooting: guides/troubleshooting.md
+      - Error codes: guides/error-codes.md
+      - FAQ: guides/faq.md
   - Examples:
     - Overview: examples/index.md
     - Recipe index: examples/recipes/index.md

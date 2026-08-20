@@ -144,6 +144,8 @@ validated proxy buffering, timeouts, and backpressure for your environment.
 Hosted docs: [hedron.readthedocs.io](https://hedron.readthedocs.io/en/latest/)
 
 - [Getting started](https://hedron.readthedocs.io/en/latest/getting-started/)
+- [Cookbook](https://hedron.readthedocs.io/en/latest/guides/cookbook/) — pasteable patterns
+- [Troubleshooting](https://hedron.readthedocs.io/en/latest/guides/troubleshooting/)
 - [Try with Codespaces](https://hedron.readthedocs.io/en/latest/examples/try-it/)
 - [What’s ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
 - [Guides](https://hedron.readthedocs.io/en/latest/guides/) · [API](https://hedron.readthedocs.io/en/latest/api/)

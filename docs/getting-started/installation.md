@@ -1,3 +1,9 @@
+---
+description: Install the supported Hedron release, optional extras, and Flask or Django adapters.
+search:
+  boost: 1.7
+---
+
 # Installation
 
 Prerequisites, extras, host adapters, and troubleshooting.

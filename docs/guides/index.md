@@ -1,3 +1,9 @@
+---
+description: Task-oriented Hedron guides for interactions, data, security, operations, and extensions.
+search:
+  boost: 1.4
+---
+
 # Guides
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
@@ -9,6 +15,16 @@ and ops.
 **Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md).
 Evaluating adoption? [What’s ready](whats-ready.md) · [Evaluate](evaluate.md).
 Shipping? [Ship](ship.md).
+
+## Find the shortest answer
+
+| If you need… | Use |
+|---|---|
+| One pasteable pattern | [Cookbook](cookbook.md) |
+| A fix organized by symptom | [Troubleshooting](troubleshooting.md) |
+| The meaning and remediation for `HED-*` | [Error codes](error-codes.md) |
+| An exact component prop or example | [Component reference](../components/index.md) |
+| An exact public API signature | [API reference](../api/HEDRON.md) |
 
 ## Build interactions
 

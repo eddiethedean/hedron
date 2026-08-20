@@ -110,6 +110,22 @@ essential install or safety information.
 - Label simulations as simulations. Never imply that static documentation is a hosted
   application or live backend.
 
+## Reader-experience quality bar
+
+- Keep **Start**, **Guides**, **Examples**, **Reference**, and **Project** task-oriented.
+  The golden path, Cookbook, troubleshooting, and error codes must remain in navigation.
+- Give primary landing, tutorial, and support pages a concise `description` and a gentle
+  search boost. Narrative answers should rank ahead of generated signatures; Autodoc is
+  for exact lookup after a reader knows the symbol they need.
+- Use the same labels for equivalent content tabs (`uv`, `pip`, operating systems) so a
+  reader's selection follows them across pages.
+- Preserve visible keyboard focus, meaningful link text, heading order, table headers,
+  screenshot alternatives, and a useful not-found page.
+- After navigation, template, or CSS changes, inspect the homepage, first-app tutorial,
+  search results, and 404 page at desktop and narrow-mobile widths in both color schemes.
+  Check for horizontal overflow and verify that the primary action appears before setup
+  detail on mobile.
+
 ## Local verification
 
 For a normal docs change:
