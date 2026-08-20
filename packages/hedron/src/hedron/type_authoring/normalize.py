@@ -99,7 +99,7 @@ class CompiledTypeHandler:
     schema: TypeSchema | None
     form_encoding: str | None = None
     fastapi_parameters: tuple[inspect.Parameter, ...] = ()
-    original: Callable[..., Any] | None = None
+    original: Callable[..., object] | None = None
     boundary_plan: BoundaryBindingPlan | None = None
 
     def reconstruct(self, values: Mapping[str, object]) -> BaseModel:
@@ -364,8 +364,8 @@ def inspect_handler(
     )
 
 
-def _safe_hints(fn: Callable[..., Any]) -> dict[str, Any]:
-    namespace: dict[str, Any] = dict(fn.__globals__)
+def _safe_hints(fn: Callable[..., object]) -> dict[str, object]:
+    namespace: dict[str, object] = dict(fn.__globals__)
     if fn.__closure__:
         for name, cell in zip(fn.__code__.co_freevars, fn.__closure__, strict=True):
             try:
@@ -399,7 +399,7 @@ def _is_model(annotation: object) -> TypeGuard[type[BaseModel]]:
     return isinstance(annotation, type) and issubclass(annotation, BaseModel)
 
 
-def _injected_names(signature: inspect.Signature, hints: Mapping[str, Any]) -> frozenset[str]:
+def _injected_names(signature: inspect.Signature, hints: Mapping[str, object]) -> frozenset[str]:
     names: set[str] = set()
     from fastapi.params import Depends as DependsParam
     from starlette.requests import Request
@@ -445,7 +445,7 @@ def _return_effects(annotation: object) -> tuple[Refreshes | None, Updates | Non
     return (refreshes[0] if refreshes else None, updates[0] if updates else None)
 
 
-def _class_effect_ids(fn: Callable[..., Any]) -> tuple[tuple[str, ...], tuple[str, ...]]:
+def _class_effect_ids(fn: Callable[..., object]) -> tuple[tuple[str, ...], tuple[str, ...]]:
     extra = getattr(fn, "__hedron_effects__", None)
     if extra is None:
         return (), ()

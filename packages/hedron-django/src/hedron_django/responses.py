@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -27,6 +28,8 @@ from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 from hedron_core.security_policy import SecurityPolicy
 from hedron_django.htmx import render_mode_for_request
+
+_logger = logging.getLogger("hedron.django")
 
 __all__ = [
     "component_response",
@@ -230,7 +233,8 @@ def _django_static_href(path: str) -> str:
         from django.urls import get_script_prefix
 
         script = get_script_prefix() or ""
-    except Exception:  # noqa: BLE001
+    except Exception:
+        _logger.debug("Django script prefix unavailable for static href", exc_info=True)
         script = ""
     mount = normalize_mount_path(str(script).rstrip("/") or "")
     return prefix_local_path(href, mount)

@@ -32,7 +32,7 @@ class RefreshableView(Generic[ParamsT, DataT]):
     cache: CacheHint | None = None
     fallback: str | None = None
 
-    def load(self, *args: Any, **kwargs: Any) -> DataT:
+    def load(self, *args: object, **kwargs: object) -> DataT:
         raise error(
             HED_TYPE_0008,
             title="RefreshableView.load is required",
@@ -56,7 +56,7 @@ class CommandHandler(Generic[InputT, ResultT]):
     fallback: str | None = None
     effects: Refreshes | Updates | tuple[Refreshes | Updates, ...] | None = None
 
-    def execute(self, *args: Any, **kwargs: Any) -> ResultT:
+    def execute(self, *args: object, **kwargs: object) -> ResultT:
         raise error(
             HED_TYPE_0008,
             title="CommandHandler.execute is required",
@@ -65,7 +65,7 @@ class CommandHandler(Generic[InputT, ResultT]):
         )
 
 
-def _reject_instance(target: object) -> type[Any]:
+def _reject_instance(target: object) -> type[object]:
     if inspect.isclass(target):
         return target
     raise error(
@@ -76,7 +76,7 @@ def _reject_instance(target: object) -> type[Any]:
     )
 
 
-def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., Any]:
+def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., object]:
     view_cls = _reject_instance(cls)
     if not issubclass(view_cls, RefreshableView):
         raise error(
@@ -95,7 +95,7 @@ def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., An
             remediation="Implement load(...) and render(data).",
         )
 
-    async def endpoint(*args: Any, **kwargs: Any) -> Any:
+    async def endpoint(*args: object, **kwargs: object) -> object:
         instance = view_cls()
         data = load(instance, *args, **kwargs)
         if inspect.isawaitable(data):
@@ -119,7 +119,7 @@ def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., An
     endpoint.__name__ = getattr(view_cls, "__name__", "refreshable_view")
     endpoint.__wrapped__ = load  # type: ignore[attr-defined]
     endpoint.__hedron_handler_class__ = view_cls  # type: ignore[attr-defined]
-    annotations: dict[str, Any] = {}
+    annotations: dict[str, object] = {}
     for name, param in load_sig.parameters.items():
         if name == "self":
             continue
@@ -129,7 +129,7 @@ def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., An
     return endpoint
 
 
-def compile_command_class(cls: type[CommandHandler[Any, Any]]) -> Callable[..., Any]:
+def compile_command_class(cls: type[CommandHandler[Any, Any]]) -> Callable[..., object]:
     command_cls = _reject_instance(cls)
     if not issubclass(command_cls, CommandHandler):
         raise error(
@@ -147,7 +147,7 @@ def compile_command_class(cls: type[CommandHandler[Any, Any]]) -> Callable[..., 
             remediation="Implement execute(...).",
         )
 
-    async def endpoint(*args: Any, **kwargs: Any) -> Any:
+    async def endpoint(*args: object, **kwargs: object) -> object:
         instance = command_cls()
         result = execute(instance, *args, **kwargs)
         if inspect.isawaitable(result):
@@ -160,7 +160,7 @@ def compile_command_class(cls: type[CommandHandler[Any, Any]]) -> Callable[..., 
     endpoint.__name__ = getattr(command_cls, "__name__", "command_handler")
     endpoint.__wrapped__ = execute  # type: ignore[attr-defined]
     endpoint.__hedron_handler_class__ = command_cls  # type: ignore[attr-defined]
-    annotations: dict[str, Any] = {}
+    annotations: dict[str, object] = {}
     for name, param in exec_sig.parameters.items():
         if name == "self":
             continue
@@ -186,7 +186,7 @@ def _is_empty_view_data(data: object) -> bool:
 
 
 def class_config_conflict(
-    cls: type[Any], *, decorator_fallback: str | None, decorator_path: str | None
+    cls: type[object], *, decorator_fallback: str | None, decorator_path: str | None
 ) -> None:
     class_fallback = getattr(cls, "fallback", None)
     if (

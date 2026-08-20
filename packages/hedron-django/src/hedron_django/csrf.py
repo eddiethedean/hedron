@@ -15,10 +15,13 @@ in Django settings (as the reference app does). Form posts may use either
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
+
+_logger = logging.getLogger("hedron.django")
 
 __all__ = [
     "DJANGO_CSRF_HEADER",
@@ -45,7 +48,8 @@ def csrf_header_name() -> str:
         from django.conf import settings
 
         raw = getattr(settings, "CSRF_HEADER_NAME", None)
-    except Exception:  # noqa: BLE001
+    except Exception:
+        _logger.debug("Django settings unavailable while resolving CSRF header name", exc_info=True)
         raw = None
     if raw == "HTTP_X_CSRF_TOKEN":
         return PORTABLE_CSRF_HEADER
@@ -112,7 +116,11 @@ def validate_csrf(request: HttpRequest) -> None:
         if portable:
             try:
                 mutable = request.POST.copy()
-            except Exception:  # noqa: BLE001
+            except Exception:
+                _logger.debug(
+                    "Could not copy Django POST to bridge portable csrf_token",
+                    exc_info=True,
+                )
                 mutable = None
             if mutable is not None:
                 mutable["csrfmiddlewaretoken"] = portable

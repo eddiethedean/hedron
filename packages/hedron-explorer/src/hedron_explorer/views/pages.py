@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html as html_lib
+import logging
 from pathlib import Path
 from typing import cast
 
@@ -42,6 +43,8 @@ from hedron_explorer.views.shell import (
     handle_graph_html,
     shell,
 )
+
+_logger = logging.getLogger("hedron.explorer")
 
 
 async def index(request: Request) -> str:
@@ -713,6 +716,7 @@ async def inventory_view(request: Request) -> str:
                         )
                     )
                 except Exception as exc:  # noqa: BLE001
+                    _logger.warning("HDJ inventory parse failed for %s: %s", path, exc)
                     reports.append({"name": str(path), "error": str(exc)})
         inv = build_production_inventory(
             template_reports=reports,
@@ -728,6 +732,7 @@ async def inventory_view(request: Request) -> str:
             )
         )
     except Exception as exc:  # noqa: BLE001
+        _logger.warning("Production inventory unavailable: %s", exc)
         payload = html_lib.escape(f"Inventory unavailable: {exc}")
     body = f"<h2>Production inventory</h2><pre>{payload}</pre>"
     return shell("Inventory", body, request=request, active="inventory")

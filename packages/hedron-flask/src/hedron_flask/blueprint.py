@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable, Sequence
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Protocol, TypeVar, cast
@@ -22,6 +23,8 @@ if TYPE_CHECKING:
 __all__ = ["HedronBlueprint", "convert_view_result", "wrap_hedron_view"]
 
 F = TypeVar("F", bound=Callable[..., Any])
+
+_logger = logging.getLogger("hedron.flask")
 
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
@@ -404,7 +407,11 @@ def attach_hedron_to_flask(
                     authenticated = bool(signal.authenticated)
                 else:
                     authenticated = bool(getattr(signal, "authenticated", False))
-            except Exception:  # noqa: BLE001
+            except Exception:
+                _logger.debug(
+                    "auth_signal failed; treating response as authenticated for headers",
+                    exc_info=True,
+                )
                 authenticated = True
         for key, value in policy.response_headers(authenticated=authenticated).items():
             # Authenticated responses must not remain publicly cacheable even if the

@@ -7,14 +7,15 @@ import inspect
 import json
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
-from typing import Any, Generic, Literal, TypeVar, cast, overload
+from typing import Generic, Literal, TypeVar, cast, overload
 from urllib.parse import urlencode
 
 from fastapi.params import Depends as DependsParam
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 from starlette.requests import Request
 
 from hedron.routing.reverse import ComponentRef
+from hedron.type_authoring.normalize import CompiledTypeHandler
 from hedron_core.codes import (
     HED_CMD_0001,
     HED_HOST_0001,
@@ -35,6 +36,7 @@ from hedron_core.typing_aliases import HtmlAttrValue, JsonValue
 from hedron_core.updates import (
     MAX_REFRESH_TARGETS,
     BaseHandleDescriptor,
+    BindingAdapter,
     BindingPlan,
     BoundValues,
     Patch,
@@ -176,7 +178,7 @@ def _bound_url(values: BoundValues) -> str:
 
 
 def _try_initial_render(
-    fn: Callable[..., Any], bound: Mapping[str, object] | None
+    fn: Callable[..., object], bound: Mapping[str, object] | None
 ) -> NodeLike | None:
     try:
         signature = inspect.signature(fn)
@@ -202,7 +204,7 @@ def _try_initial_render(
 
 
 def _try_initial_render_model(
-    fn: Callable[..., Any], param_name: str, model: object
+    fn: Callable[..., object], param_name: str, model: object
 ) -> NodeLike | None:
     try:
         result = fn(**{param_name: model})
@@ -235,20 +237,20 @@ class FragmentHandle(Generic[BindT, ContentT]):
     binding_plan: BindingPlan
     descriptor: BaseHandleDescriptor
     include_in_schema: bool = False
-    adapter: Any = field(default=None)
-    type_meta: Any = None
+    adapter: BindingAdapter | None = field(default=None)
+    type_meta: CompiledTypeHandler | None = None
     _bound: BoundValues | None = None
     __wrapped__: Callable[..., ContentT] | None = None
 
     @property
     def schema(self) -> object | None:
         meta = self.type_meta
-        return None if meta is None else getattr(meta, "schema", None)
+        return None if meta is None else meta.schema
 
     @property
     def parameter_model(self) -> object | None:
         meta = self.type_meta
-        return None if meta is None else getattr(meta, "model_type", None)
+        return None if meta is None else meta.model_type
 
     @property
     def bound(self) -> bool:
@@ -264,7 +266,7 @@ class FragmentHandle(Generic[BindT, ContentT]):
             )
         bound_map = dict(self._bound.parameters) if self._bound is not None else {}
         meta = self.type_meta
-        if meta is not None and getattr(meta, "modeled", False) and meta.param_name:
+        if meta is not None and meta.modeled and meta.param_name and meta.adapter is not None:
             try:
                 model = meta.adapter.validate(bound_map)
                 content = _try_initial_render_model(self.renderer, meta.param_name, model)
@@ -302,9 +304,10 @@ class FragmentHandle(Generic[BindT, ContentT]):
                     remediation="Use bind(model) or bind(**fields).",
                 )
             value = args[0]
-            if self.type_meta is not None and getattr(self.type_meta, "adapter", None):
-                model = self.type_meta.adapter.validate(value)  # type: ignore[union-attr]
-                parameters = self.type_meta.adapter.dump(model)
+            type_adapter = self.type_meta.adapter if self.type_meta is not None else None
+            if type_adapter is not None:
+                model = type_adapter.validate(cast(Mapping[str, object] | BaseModel, value))
+                parameters = type_adapter.dump(model)
             elif isinstance(value, Mapping):
                 parameters = dict(value)
             else:
@@ -553,7 +556,7 @@ class ActionHandle(Generic[InputT, ResultT]):
     app_id: str
     fallback: str | None
     descriptor: BaseHandleDescriptor
-    type_meta: Any = None
+    type_meta: CompiledTypeHandler | None = None
     __wrapped__: Callable[..., ResultT] | None = None
     _effect: object | None = None
     _after_load: str | None = None
@@ -563,12 +566,12 @@ class ActionHandle(Generic[InputT, ResultT]):
     @property
     def schema(self) -> object | None:
         meta = self.type_meta
-        return None if meta is None else getattr(meta, "schema", None)
+        return None if meta is None else meta.schema
 
     @property
     def input_model(self) -> object | None:
         meta = self.type_meta
-        return None if meta is None else getattr(meta, "model_type", None)
+        return None if meta is None else meta.model_type
 
     def form(
         self,
@@ -582,6 +585,7 @@ class ActionHandle(Generic[InputT, ResultT]):
         **safe_form_attrs: object,
     ) -> NodeLike:
         from hedron.type_authoring.forms import generate_form
+        from hedron.type_authoring.markers import Control
 
         if self.type_meta is None:
             raise error(
@@ -597,15 +601,21 @@ class ActionHandle(Generic[InputT, ResultT]):
             safe_form_attrs.setdefault("hx-trigger", trigger)
         if self._after_load:
             safe_form_attrs.setdefault("data-hedron-after-load", self._after_load)
+        enhance_mode: Literal["native", "elements"]
+        if enhance in ("native", "elements"):
+            enhance_mode = enhance
+        else:
+            # Preserve prior pass-through for unexpected values.
+            enhance_mode = cast(Literal["native", "elements"], enhance)
         return generate_form(
             self.type_meta,
             action=self,
             value=value,
             errors=errors,
             submit_label=submit_label,
-            controls=controls,  # type: ignore[arg-type]
+            controls=cast(Mapping[str, NodeLike | Control] | None, controls),
             fallback=fallback or self.fallback,
-            enhance=enhance,  # type: ignore[arg-type]
+            enhance=enhance_mode,
             **safe_form_attrs,
         )
 
@@ -681,7 +691,7 @@ class Refresh:
 
     def __init__(
         self,
-        target: FragmentHandle[Any, Any] | BoundFragment[Any],
+        target: FragmentHandle[BindT, ContentT] | BoundFragment[ContentT],
         *,
         label: str = "Refresh",
         **kwargs: object,
@@ -720,7 +730,7 @@ class Refresh:
 
 def apply_action_handle_effects(
     result: object,
-    handle: ActionHandle[Any, Any],
+    handle: ActionHandle[InputT, ResultT],
     *,
     app_id: str,
 ) -> object:
@@ -797,8 +807,8 @@ def apply_action_handle_effects(
     return compiled
 
 
-def refresh(*targets: FragmentHandle[Any, Any] | BoundFragment[Any]) -> RefreshIntent:
-    resolved: list[FragmentHandle[Any, Any] | BoundFragment[Any]] = []
+def refresh(*targets: FragmentHandle[BindT, ContentT] | BoundFragment[ContentT]) -> RefreshIntent:
+    resolved: list[FragmentHandle[BindT, ContentT] | BoundFragment[ContentT]] = []
     for item in targets:
         handle = item.handle if isinstance(item, BoundFragment) else item
         if not handle.bound:
@@ -822,22 +832,22 @@ def refresh(*targets: FragmentHandle[Any, Any] | BoundFragment[Any]) -> RefreshI
 
 
 def patches(
-    primary: Patch[Any],
-    *secondary: Patch[Any],
+    primary: Patch[ContentT],
+    *secondary: Patch[ContentT],
     toast: NodeLike | str | None = None,
     cache: CacheHint | None = "vary-htmx",
     status_code: int = 200,
 ) -> PatchSet:
     return PatchSet(
-        primary=primary,
-        secondary=secondary,
+        primary=cast(Patch[object], primary),
+        secondary=cast(tuple[Patch[object], ...], secondary),
         toast=toast,
         cache=cache,
         status_code=status_code,
     )
 
 
-def wrap_refreshable_result(handle: FragmentHandle[Any, Any], result: object) -> object:
+def wrap_refreshable_result(handle: FragmentHandle[BindT, ContentT], result: object) -> object:
     if isinstance(result, (InteractionResult, Patch, PatchSet, RefreshIntent)):
         return result
     url = _bound_url(handle._bound) if handle._bound is not None else handle.path
@@ -856,8 +866,10 @@ def wrap_refreshable_result(handle: FragmentHandle[Any, Any], result: object) ->
 
 
 def _call_arguments(
-    handle: FragmentHandle[Any, Any], args: tuple[Any, ...], kwargs: dict[str, Any]
-) -> dict[str, Any]:
+    handle: FragmentHandle[BindT, ContentT],
+    args: tuple[object, ...],
+    kwargs: Mapping[str, object],
+) -> dict[str, object]:
     try:
         bound = handle.renderer_signature.bind_partial(*args, **kwargs)
     except TypeError:
@@ -866,10 +878,10 @@ def _call_arguments(
 
 
 def _materialize_request_handle(
-    handle: FragmentHandle[Any, Any],
-    args: tuple[Any, ...],
-    kwargs: dict[str, Any],
-) -> FragmentHandle[Any, Any]:
+    handle: FragmentHandle[BindT, ContentT],
+    args: tuple[object, ...],
+    kwargs: Mapping[str, object],
+) -> FragmentHandle[BindT, ContentT]:
     """Bind GET path/query the same way ``handle.bind`` did on the page.
 
     FastAPI injects default query values even when the URL omitted them. Using those
@@ -894,7 +906,7 @@ def _materialize_request_handle(
             values[name] = arguments[name]
     if not values:
         return handle
-    return handle.bind(**values).handle
+    return cast(FragmentHandle[BindT, ContentT], handle.bind(**values).handle)
 
 
 def build_view_handle(
@@ -1051,15 +1063,15 @@ def build_command_handle(
     )
 
 
-def wrap_endpoint_result(handle: FragmentHandle[Any, Any]) -> Callable[..., Any]:
+def wrap_endpoint_result(handle: FragmentHandle[BindT, ContentT]) -> Callable[..., object]:
     from hedron.type_authoring import apply_modeled_signature, reconstruct_kwargs
 
     @functools.wraps(handle.renderer)
-    def wrapped(*args: Any, **kwargs: Any) -> object:
+    def wrapped(*args: object, **kwargs: object) -> object:
         resolved = _materialize_request_handle(handle, args, kwargs)
         render_kwargs = dict(kwargs)
         meta = handle.type_meta
-        if meta is not None and getattr(meta, "modeled", False):
+        if meta is not None and meta.modeled:
             render_kwargs = reconstruct_kwargs(meta, render_kwargs)
         result = handle.renderer(*args, **render_kwargs)
         if inspect.iscoroutine(result):

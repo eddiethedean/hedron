@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 
+from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_explorer.services.catalog import (
     components_json,
     dashboard_graph_json,
@@ -115,40 +116,41 @@ def explorer_router() -> APIRouter:
         include_in_schema=False,
     )
 
-    @router.get("/api/routes", include_in_schema=False)
-    async def api_routes(request: Request) -> Any:
+    # Precise return types are not Pydantic response fields; keep schema omitted.
+    @router.get("/api/routes", include_in_schema=False, response_model=None)
+    async def api_routes(request: Request) -> list[dict[str, object]] | Mapping[str, object]:
         return routes_json(request)
 
-    @router.get("/api/security", include_in_schema=False)
-    async def api_security(request: Request) -> dict[str, Any]:
+    @router.get("/api/security", include_in_schema=False, response_model=None)
+    async def api_security(request: Request) -> dict[str, JsonValue]:
         return security_json(request)
 
-    @router.get("/api/components", include_in_schema=False)
-    async def api_components(request: Request) -> Any:
+    @router.get("/api/components", include_in_schema=False, response_model=None)
+    async def api_components(request: Request) -> list[dict[str, object]] | Mapping[str, object]:
         return components_json(request)
 
-    @router.get("/api/graph", include_in_schema=False)
-    async def api_graph(request: Request) -> dict[str, Any]:
+    @router.get("/api/graph", include_in_schema=False, response_model=None)
+    async def api_graph(request: Request) -> dict[str, JsonValue]:
         return graph_json(request)
 
-    @router.get("/api/handle-graph", include_in_schema=False)
-    async def api_handle_graph(request: Request) -> dict[str, Any]:
+    @router.get("/api/handle-graph", include_in_schema=False, response_model=None)
+    async def api_handle_graph(request: Request) -> dict[str, JsonValue]:
         return handle_graph_json(request)
 
-    @router.get("/api/interactions", include_in_schema=False)
-    async def api_interactions(request: Request) -> dict[str, Any]:
+    @router.get("/api/interactions", include_in_schema=False, response_model=None)
+    async def api_interactions(request: Request) -> dict[str, JsonValue]:
         return interactions_json(request)
 
-    @router.get("/api/dashboard-graph", include_in_schema=False)
-    async def api_dashboard_graph(request: Request) -> dict[str, Any]:
+    @router.get("/api/dashboard-graph", include_in_schema=False, response_model=None)
+    async def api_dashboard_graph(request: Request) -> dict[str, JsonValue]:
         return dashboard_graph_json(request)
 
-    @router.get("/api/click-preview", include_in_schema=False)
-    async def api_click_preview(request: Request) -> Any:
+    @router.get("/api/click-preview", include_in_schema=False, response_model=None)
+    async def api_click_preview(request: Request) -> JSONResponse | JsonObject:
         return await click_preview(request)
 
-    @router.post("/api/simulate", include_in_schema=False)
-    async def api_simulate(request: Request) -> Any:
+    @router.post("/api/simulate", include_in_schema=False, response_model=None)
+    async def api_simulate(request: Request) -> JSONResponse | JsonObject:
         result = await simulate(request)
         if isinstance(result, JSONResponse):
             return result
@@ -158,16 +160,16 @@ def explorer_router() -> APIRouter:
             )
         return result
 
-    @router.post("/api/element-simulate", include_in_schema=False)
-    async def api_element_simulate(request: Request) -> Any:
+    @router.post("/api/element-simulate", include_in_schema=False, response_model=None)
+    async def api_element_simulate(request: Request) -> JSONResponse | JsonObject:
         return await element_simulate(request)
 
-    @router.get("/api/diff", include_in_schema=False)
-    async def api_diff(request: Request) -> dict[str, Any]:
+    @router.get("/api/diff", include_in_schema=False, response_model=None)
+    async def api_diff(request: Request) -> dict[str, JsonValue]:
         return explorer_diff_report(request.app)
 
-    @router.get("/api/package-health", include_in_schema=False)
-    async def api_package_health() -> dict[str, Any]:
+    @router.get("/api/package-health", include_in_schema=False, response_model=None)
+    async def api_package_health() -> Mapping[str, object]:
         from hedron_core.plugins import ExplorerProvider
 
         isolated = run_isolated(

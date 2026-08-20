@@ -106,7 +106,7 @@ def _wrap_endpoint(
     # Resolve annotations in the original function's globals so Depends survives wrapping.
     try:
         hints = typing.get_type_hints(fn, include_extras=True)
-    except Exception:  # noqa: BLE001
+    except (NameError, TypeError, AttributeError, RecursionError):
         # Nested locals / unresolved forward refs — FastAPI still gets a usable signature.
         hints = {}
     sig = inspect.signature(fn)
@@ -142,7 +142,7 @@ class HedronRouter(APIRouter):
         kwargs.setdefault("route_class", HedronRoute)
         super().__init__(*args, **kwargs)
         self.hedron_provenance = provenance or str(self.prefix or "")
-        self._hedron_host_app: Any | None = None
+        self._hedron_host_app: object | None = None
 
     def _fail_closed_late(self) -> None:
         from hedron.registration import fail_closed_late_registration

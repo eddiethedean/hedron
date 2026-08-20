@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from hedron_core.codes import HED_ASSET_MISSING
+from hedron_core.component import Component
 from hedron_core.diagnostics import error
 from hedron_core.identifiers import content_digest
 from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
@@ -57,7 +58,7 @@ PLUGIN_META = PluginMeta(
 _LIFECYCLE_REL = "assets/lifecycle/host.js"
 
 # relative path → (browser module logical id, custom element tag, component classes)
-_BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Any], ...]], ...] = (
+_BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Component[Any]], ...]], ...] = (
     (
         _LIFECYCLE_REL,
         "hedron-extras:image-tools",
@@ -98,7 +99,7 @@ _BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Any], ...]], ...] = (
     ),
 )
 
-_STATIC_COMPONENTS: tuple[type[Any], ...] = (
+_STATIC_COMPONENTS: tuple[type[Component[Any]], ...] = (
     AvatarProfile,
     BadgeLink,
     MetricCard,
@@ -140,7 +141,7 @@ def _register_module_asset(rel: str) -> tuple[str, Path]:
 
 
 def register(ctx: PluginContext) -> None:
-    module_by_cls: dict[type[Any], str] = {}
+    module_by_cls: dict[type[Component[Any]], str] = {}
     lifecycle_id, lifecycle_path = _register_module_asset(_LIFECYCLE_REL)
 
     for _rel, module_id, tag_name, classes in _BROWSER_HOSTS:
