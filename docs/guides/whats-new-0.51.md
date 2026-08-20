@@ -1,7 +1,15 @@
 # What's new in 0.51
 
-Published **0.51.0** on PyPI (in-tree tip **0.51.1**). Pin `hedron>=0.51.0,<0.52`.
+Published **0.51.0** on PyPI (in-tree tip **0.51.2**). Pin `hedron>=0.51.0,<0.52`.
 Tracking [#507](https://github.com/eddiethedean/hedron/issues/507).
+
+## 0.51.2
+
+In-tree quality patch (tag/PyPI deferred). Install from PyPI with `hedron>=0.51.0,<0.52`.
+
+- Replace runtime `assert` validation with explicit typed errors on chart adapters, Gradio client, hosts, and jobs.
+- Typing ratchet on charts/maps/MCP/Jinja/Redis and host-integration modules (`handles`, pages, Explorer router).
+- Fail-soft exception paths log at debug/warning; HDJ document-shape helpers extracted.
 
 ## 0.51.1
 

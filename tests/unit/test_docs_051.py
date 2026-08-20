@@ -14,4 +14,4 @@ def test_docs_name_sandbox_opt_in_and_companion() -> None:
         assert "hedron_extras_sandbox" in text or "HEDRON_EXTRAS_SANDBOX" in text
         assert "experimental" in text.lower()
     assert "#504" in whats or "password" in whats.lower()
-    assert "0.51.1" in whats or "0.51.0" in whats
+    assert "0.51.2" in whats or "0.51.1" in whats or "0.51.0" in whats

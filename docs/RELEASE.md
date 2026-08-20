@@ -27,7 +27,7 @@ Python metadata does not. Never move or replace a published tag.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.51.1
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.51.2
 bash scripts/ci_checks.sh browser --python 3.12
 uv run python scripts/check_release_gate.py 0.51.0
 uv run python scripts/verify_pkg_51.py
@@ -40,9 +40,9 @@ uv run python scripts/verify_pkg_50.py
 
 ```bash
 git fetch --tags origin
-git rev-parse v0.51.1 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
-git tag -a v0.51.1 -m "Hedron 0.51.1"
-git push origin v0.51.1
+git rev-parse v0.51.2 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
+git tag -a v0.51.2 -m "Hedron 0.51.2"
+git push origin v0.51.2
 ```
 
 Pushing `v0.51.0` runs `.github/workflows/release.yml`, which re-runs CI, publishes

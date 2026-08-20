@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.51.2] — 2026-08-20
+
+### Changed
+- Coordinated train tip `0.51.2` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Runtime asserts replaced with typed validation errors across adapters, Gradio, hosts, and jobs.
+- Host-integration typing tightened (`handles`, pages, router, Explorer); fail-soft exceptions log context.
+- HDJ document-shape helpers moved to `hedron_jinja._document_shape`.
+
 ## [0.51.1] — 2026-08-20
 
 ### Changed

@@ -49,7 +49,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.49** | FastAPI/Pydantic convergence: dependency lifetimes, native parameter models, dual schemas, tagged unions, router/OpenAPI/security projection, and bounded upstream adoption | **Published** (`v0.49.1`; in-tree cut, tag/PyPI deferred; D-081 / D-084 / RFC-0076; [#380](https://github.com/eddiethedean/hedron/issues/380); SETTINGS retain-custom-loader; RESEARCH Experimental) |
 | **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.1` on PyPI; in-tree `v0.50.3` tag deferred; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Published** (`v0.51.0` on PyPI; RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
-| **0.52** | Conformance kit and independent Node/Java runtime credibility | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
+| **0.52** | Conformance kit and independent Node/Java runtime credibility; HedronPosit deployment lifecycle companion | **Planned** (package-quality audit; owning RFC/issue required before implementation; related [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
 | **0.53** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
@@ -4548,7 +4548,25 @@ IR subset and independent runtime release model before either evaluator is promo
 
 **Outcome:** `hedron-conformance` becomes a versioned compatibility authority, and the Node and Java
 evaluators become independently installable reference consumers for the declared portable subset
-rather than repository-only demonstrations.
+rather than repository-only demonstrations. Companion HedronPosit deployment lifecycle work
+([#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513))
+ships under the same train so mounted Workbench/Connect cookie, URL, redirect, and matrix
+evidence is first-class rather than application-owned.
+
+### Companion tracking (HedronPosit deployment)
+
+| Issue | Topic |
+|---|---|
+| [#508](https://github.com/eddiethedean/hedron/issues/508) | Deployment-aware cookie lifecycle / registry (no literal `Path=auto`) |
+| [#509](https://github.com/eddiethedean/hedron/issues/509) | Request-bound `PositContext` for links, redirects, cookies, capabilities |
+| [#510](https://github.com/eddiethedean/hedron/issues/510) | Hands-off mode for automatic local URL / redirect adaptation |
+| [#511](https://github.com/eddiethedean/hedron/issues/511) | Workbench/Connect deployment-matrix fixtures and `hedron-posit check --matrix` |
+| [#512](https://github.com/eddiethedean/hedron/issues/512) | Proactive diagnostics for mount, redirect, and cookie mistakes |
+| [#513](https://github.com/eddiethedean/hedron/issues/513) | Named-route link/redirect APIs with query, fragment, and durable URL parity |
+
+These companions must preserve Connect trust boundaries, never log cookie values, and keep
+application code from computing deployment cookie paths. They do not reopen the 0.24
+`polling_only` disposition or replace the conformance RFC gate plan below.
 
 ### Scope
 
@@ -4798,6 +4816,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Live-transport Supported vs experimental claim reconciliation | 0.13 | Aligns capability matrix and docs with deferred ops gates ([#13](https://github.com/eddiethedean/hedron/issues/13)). |
 | Published cross-language conformance-test kit | 0.14 | Versioned fixtures, negative cases, artifacts, and capability-level failure reports. |
 | Cross-language conformance profiles, fixture compiler, differential/metamorphic corpus, signed result envelopes, and packaged Node/Java evaluators | 0.52 | Establishes authority for a declared portable subset, not full non-Python Hedron runtimes. |
+| HedronPosit cookie lifecycle, `PositContext`, hands-off URL adaptation, deployment-matrix check, diagnostics, and named-route link/redirect parity | 0.52 | Companion packet [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513); apps stop owning mount cookie paths and redirect adaptation. |
 | HTTP-faithful `AppScenario` application-flow harness | 0.15 | Route, session, typed control/action, fragment, redirect, and response assertions; explicitly no whole-script rerun simulation. |
 | HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); Dialog/Tabs/Pagination/Lazy asserts deferred to 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
 | Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
@@ -5104,6 +5123,12 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#504](https://github.com/eddiethedean/hedron/issues/504) | Built-in password visibility toggle (companion; not extras gates) | 0.51 |
 | [#505](https://github.com/eddiethedean/hedron/issues/505) | Declarative page reveal / swap transition helper | 0.51 |
 | [#506](https://github.com/eddiethedean/hedron/issues/506) | Framework-level busy fallback for generic HTMX requests | 0.51 |
+| [#508](https://github.com/eddiethedean/hedron/issues/508) | HedronPosit deployment-aware cookie lifecycle | 0.52 |
+| [#509](https://github.com/eddiethedean/hedron/issues/509) | Request-bound PositContext for links/redirects/cookies | 0.52 |
+| [#510](https://github.com/eddiethedean/hedron/issues/510) | HedronPosit hands-off local URL / redirect adaptation | 0.52 |
+| [#511](https://github.com/eddiethedean/hedron/issues/511) | Workbench/Connect deployment-matrix fixtures and checker | 0.52 |
+| [#512](https://github.com/eddiethedean/hedron/issues/512) | Proactive HedronPosit mount/redirect/cookie diagnostics | 0.52 |
+| [#513](https://github.com/eddiethedean/hedron/issues/513) | Named-route link/redirect APIs with query/fragment parity | 0.52 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 

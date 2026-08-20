@@ -3,7 +3,7 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
-## 0.51.1 — 2026-08-20
+## 0.51.2 — 2026-08-20
 
 In-tree bugfix patch on the 0.51 train. Git tag and PyPI upload are **deferred**; install
 from PyPI with `hedron>=0.51.0,<0.52`. [Installation](../getting-started/installation.md).
