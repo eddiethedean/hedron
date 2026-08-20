@@ -87,7 +87,8 @@ def evaluate_fixture(fixture: ConformanceFixture) -> ExpectedOutcome:
         version = (inp.artifact or {}).get("version", "")
         return ExpectedOutcome(artifact_version=str(version))
     if fixture.capability == Capability.RENDERING:
-        assert inp.tree is not None
+        if inp.tree is None:
+            raise ValueError("RENDERING fixture requires an input tree")
         return ExpectedOutcome(html=normalize_html(_render_node(inp.tree)))
     if fixture.capability == Capability.ACCESSIBILITY:
         tree = inp.tree or {}

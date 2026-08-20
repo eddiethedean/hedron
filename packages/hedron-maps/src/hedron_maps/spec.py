@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Any, Literal
+from typing import Annotated, Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from hedron_core.typing_aliases import JsonObject
 
 SCHEMA_VERSION = 1
 SCHEMA_ID = "hedron-map-spec/1"
@@ -60,8 +62,9 @@ class MapStyle(MapModel):
 
     version: int = 8
     name: str | None = None
-    sources: dict[str, dict[str, Any]] = Field(default_factory=dict)
-    layers: tuple[dict[str, Any], ...] = ()
+    # object (not hedron JsonValue): pydantic cannot resolve that recursive TypeAlias.
+    sources: dict[str, dict[str, object]] = Field(default_factory=dict)
+    layers: tuple[dict[str, object], ...] = ()
     glyphs: str | None = None
     sprite: str | None = None
 
@@ -113,7 +116,8 @@ class TileJSON(MapModel):
     kind: Literal["tilejson"] = "tilejson"
     attribution: str
     url: str | None = None
-    document: dict[str, Any] | None = None
+    # object (not hedron JsonValue): pydantic cannot resolve that recursive TypeAlias.
+    document: dict[str, object] | None = None
 
 
 class VectorTiles(MapModel):
@@ -168,7 +172,8 @@ class OfflineMapBundle(MapModel):
 
 class MarkerLayer(MapModel):
     kind: Literal["marker"] = "marker"
-    markers: tuple[dict[str, Any], ...] = ()
+    # object (not hedron JsonValue): pydantic cannot resolve that recursive TypeAlias.
+    markers: tuple[dict[str, object], ...] = ()
 
 
 class GeoJSONLayer(MapModel):
@@ -178,32 +183,33 @@ class GeoJSONLayer(MapModel):
     """
 
     kind: Literal["geojson"] = "geojson"
-    data: dict[str, Any]
-    paint: dict[str, Any] | None = None
+    # object (not hedron JsonValue): pydantic cannot resolve that recursive TypeAlias.
+    data: dict[str, object]
+    paint: dict[str, object] | None = None
 
 
 class LineLayer(MapModel):
     kind: Literal["line"] = "line"
-    data: dict[str, Any]
-    paint: dict[str, Any] | None = None
+    data: dict[str, object]
+    paint: dict[str, object] | None = None
 
 
 class PolygonLayer(MapModel):
     kind: Literal["polygon"] = "polygon"
-    data: dict[str, Any]
-    paint: dict[str, Any] | None = None
+    data: dict[str, object]
+    paint: dict[str, object] | None = None
 
 
 class CircleLayer(MapModel):
     kind: Literal["circle"] = "circle"
-    data: dict[str, Any]
-    paint: dict[str, Any] | None = None
+    data: dict[str, object]
+    paint: dict[str, object] | None = None
 
 
 class RasterLayer(MapModel):
     kind: Literal["raster"] = "raster"
     source: str
-    paint: dict[str, Any] | None = None
+    paint: dict[str, object] | None = None
 
 
 class AccessibilityDef(MapModel):
@@ -248,15 +254,15 @@ class MapSpec(MapModel):
     policy: MapPolicy | None = None
     interactions: tuple[str, ...] = ()
 
-    def to_json_dict(self) -> dict[str, Any]:
-        return self.model_dump(mode="json")
+    def to_json_dict(self) -> JsonObject:
+        return cast(JsonObject, self.model_dump(mode="json"))
 
 
 class AccessibilityPlan(MapModel):
     title: str
     description: str
     include_table: bool = True
-    table_rows: tuple[dict[str, Any], ...] = ()
+    table_rows: tuple[dict[str, object], ...] = ()
     decorative: bool = False
 
 
@@ -267,16 +273,17 @@ class MapPlan(MapModel):
     schema_version: int = SCHEMA_VERSION
     spec_fingerprint: str
     plan_fingerprint: str
-    renderer: dict[str, Any]
+    # object (not hedron JsonValue): pydantic cannot resolve that recursive TypeAlias.
+    renderer: dict[str, object]
     resources: tuple[str, ...] = ()
     origins: tuple[str, ...] = ()
     csp: dict[str, str] = Field(default_factory=dict)
     attribution: tuple[str, ...] = ()
-    fallback: dict[str, Any] = Field(default_factory=dict)
+    fallback: dict[str, object] = Field(default_factory=dict)
     bounds: Bounds | None = None
     view: ViewState = Field(default_factory=ViewState)
-    layers: tuple[dict[str, Any], ...] = ()
-    style: dict[str, Any] = Field(default_factory=dict)
+    layers: tuple[dict[str, object], ...] = ()
+    style: dict[str, object] = Field(default_factory=dict)
     limits: dict[str, int] = Field(default_factory=dict)
     warnings: tuple[str, ...] = ()
     accessibility: AccessibilityPlan
@@ -292,5 +299,5 @@ class MapPlan(MapModel):
     source_kind: SourceKind = "none"
     preset_id: str | None = None
 
-    def to_json_dict(self) -> dict[str, Any]:
-        return self.model_dump(mode="json")
+    def to_json_dict(self) -> JsonObject:
+        return cast(JsonObject, self.model_dump(mode="json"))

@@ -138,8 +138,8 @@ class GradioClientAdapter:
         self._require_enabled()
         self._validate_base_url()
         endpoint = self._resolve_endpoint(endpoint_name)
-        assert self._job_manager is not None
-        return self._job_manager.submit(
+        job_manager = self._require_job_manager()
+        return job_manager.submit(
             endpoint.name,
             payload,
             scope_key=self.scope_key,
@@ -147,9 +147,9 @@ class GradioClientAdapter:
 
     def job_status(self, job_id: str) -> dict[str, Any]:
         self._require_enabled()
-        assert self._job_manager is not None
+        job_manager = self._require_job_manager()
         if self._transport is not None:
-            self._job_manager.mark_running(job_id, scope_key=self.scope_key)
+            job_manager.mark_running(job_id, scope_key=self.scope_key)
             raw = self._transport(
                 "job_status",
                 job_id=job_id,
@@ -157,16 +157,16 @@ class GradioClientAdapter:
                 payload={},
             )
             if isinstance(raw, dict) and raw.get("status") == "complete":
-                status = self._job_manager.complete(
+                status = job_manager.complete(
                     job_id,
                     scope_key=self.scope_key,
                     result=dict(raw.get("result") or raw),
                 )
                 return status.as_dict()
-        status = self._job_manager.poll(job_id, scope_key=self.scope_key)
+        status = job_manager.poll(job_id, scope_key=self.scope_key)
         if status.status == "running" and self.endpoints:
-            record = self._job_manager._get_scoped(job_id, self.scope_key)
-            status = self._job_manager.complete(
+            record = job_manager._get_scoped(job_id, self.scope_key)
+            status = job_manager.complete(
                 job_id,
                 scope_key=self.scope_key,
                 result={
@@ -179,10 +179,10 @@ class GradioClientAdapter:
 
     def cancel_job(self, job_id: str) -> bool:
         self._require_enabled()
-        assert self._job_manager is not None
+        job_manager = self._require_job_manager()
         if self._transport is not None:
             self._transport("cancel", job_id=job_id, endpoint_name="", payload={})
-        return self._job_manager.cancel(job_id, scope_key=self.scope_key)
+        return job_manager.cancel(job_id, scope_key=self.scope_key)
 
     def stream_results(
         self, endpoint_name: str, payload: Mapping[str, Any]
@@ -206,15 +206,14 @@ class GradioClientAdapter:
     def upload_file(self, name: str, data: bytes) -> str:
         self._require_enabled()
         self._validate_base_url()
-        assert self._artifact_store is not None
+        artifact_store = self._require_artifact_store()
         if self.remote_config is not None and len(data) > self.remote_config.max_upload_bytes:
             raise GradioRemoteError("Upload exceeds configured max_upload_bytes")
-        return self._artifact_store.store(name, data, scope_key=self.scope_key)
+        return artifact_store.store(name, data, scope_key=self.scope_key)
 
     def download_artifact(self, artifact_id: str) -> bytes:
         self._require_enabled()
-        assert self._artifact_store is not None
-        return self._artifact_store.fetch(artifact_id, scope_key=self.scope_key)
+        return self._require_artifact_store().fetch(artifact_id, scope_key=self.scope_key)
 
     def close(self) -> None:
         if self._artifact_store is not None:
@@ -230,6 +229,23 @@ class GradioClientAdapter:
     def _require_enabled(self) -> None:
         if not self.enabled:
             raise GradioRemoteError("GradioClientAdapter is disabled")
+
+    def _require_job_manager(self) -> GradioJobManager:
+        """Return the job manager or raise when remote_config/_job_manager was never set."""
+        if self._job_manager is None:
+            raise GradioRemoteError(
+                "Gradio job manager is not configured; set remote_config or provide _job_manager"
+            )
+        return self._job_manager
+
+    def _require_artifact_store(self) -> ArtifactStore:
+        """Return the artifact store or raise when remote_config/_artifact_store was never set."""
+        if self._artifact_store is None:
+            raise GradioRemoteError(
+                "Gradio artifact store is not configured; "
+                "set remote_config or provide _artifact_store"
+            )
+        return self._artifact_store
 
     def _resolve_endpoint(self, endpoint_name: str) -> GradioEndpoint:
         for endpoint in self.endpoints:

@@ -56,7 +56,7 @@ html = render(Page(Text("ok"), title="Ok"), mode=RenderMode.PAGE).html
 assert "ok" in html
 try:
     importlib.import_module("hedron_jinja")
-except Exception:
+except ImportError:
     pass
 print("ok: adapter wheel smoke")
 """

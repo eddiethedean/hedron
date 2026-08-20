@@ -52,7 +52,8 @@ def job_status_response(
     if not job_authorized_http(job_status, auth_subject=auth_subject, tenant_id=tenant_id):
         raise HTTPException(status_code=404, detail="Job not found")
     result = job_status_interaction(job_status)
-    assert result.content is not None
+    if result.content is None:
+        raise RuntimeError("job_status_interaction returned no content for an authorized job")
     rendered = render(result.content, mode=RenderMode.FRAGMENT)
     headers = {
         "Retry-After": str(job_status.retry_after),

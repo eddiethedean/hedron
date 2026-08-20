@@ -523,7 +523,8 @@ def resolve_deployment(
         discovered = True
         active = True
         if public_origin:
-            assert public_parsed is not None
+            if public_parsed is None:
+                raise RuntimeError("public_origin set but public_parsed is None")
             external_origin = public_origin
         else:
             external_origin = origin

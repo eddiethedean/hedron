@@ -6,7 +6,6 @@ import re
 from collections.abc import Callable, Iterable, Iterator, Mapping
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from html.parser import HTMLParser
 from types import MappingProxyType
 from typing import Any, ClassVar, NoReturn, Protocol, cast
 from urllib.parse import urlsplit
@@ -41,6 +40,15 @@ from hedron_core import (
 from hedron_core.diagnostics import error, make_diagnostic
 from hedron_core.html import html
 from hedron_core.typing_aliases import RenderTrace
+from hedron_jinja._document_shape import (
+    document_tokens as _document_tokens,
+)
+from hedron_jinja._document_shape import (
+    fingerprint_policy as _fingerprint_policy,
+)
+from hedron_jinja._document_shape import (
+    valid_page_shape as _valid_page_shape,
+)
 from hedron_jinja.contracts import (
     HdjContext,
     TemplateCapabilities,
@@ -73,7 +81,6 @@ from hedron_jinja.source import (
 
 _ALIAS_RE = re.compile(r"^[A-Z][A-Za-z0-9_.-]*$")
 _LOGICAL_ID_RE = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._:/-]*$")
-_PAGE_DOCTYPE_RE = re.compile(r"^\s*<!doctype\s+html\b", re.IGNORECASE)
 _CONDITIONAL_ASSET_RE = re.compile(r"{%[-+]?\s*hedron_asset\b")
 
 
@@ -1516,54 +1523,3 @@ class HedronJinja:
                     "scheduled for phase 0.11."
                 ),
             )
-
-
-def _valid_page_shape(rendered: str) -> bool:
-    return _PAGE_DOCTYPE_RE.search(rendered) is not None and _document_tokens(rendered) == (
-        "html",
-        "head",
-        "/head",
-        "body",
-        "/body",
-        "/html",
-    )
-
-
-class _DocumentShapeParser(HTMLParser):
-    def __init__(self) -> None:
-        super().__init__(convert_charrefs=False)
-        self.tokens: list[str] = []
-
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        del attrs
-        lowered = tag.lower()
-        if lowered in {"html", "head", "body"}:
-            self.tokens.append(lowered)
-
-    def handle_endtag(self, tag: str) -> None:
-        lowered = tag.lower()
-        if lowered in {"html", "head", "body"}:
-            self.tokens.append(f"/{lowered}")
-
-    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        self.handle_starttag(tag, attrs)
-        self.handle_endtag(tag)
-
-
-def _document_tokens(rendered: str) -> tuple[str, ...]:
-    parser = _DocumentShapeParser()
-    parser.feed(rendered)
-    parser.close()
-    return tuple(parser.tokens)
-
-
-def _fingerprint_policy(value: object) -> object:
-    if isinstance(value, Mapping):
-        return tuple(sorted((str(key), _fingerprint_policy(item)) for key, item in value.items()))
-    if isinstance(value, (list, tuple)):
-        return tuple(_fingerprint_policy(item) for item in value)
-    if isinstance(value, (set, frozenset)):
-        return tuple(sorted(repr(_fingerprint_policy(item)) for item in value))
-    if isinstance(value, (str, int, float, bool, type(None))):
-        return value
-    return (type(value).__qualname__, id(value))

@@ -5,39 +5,55 @@ from __future__ import annotations
 import json
 import uuid
 from collections.abc import AsyncIterable, Callable, Mapping
-from typing import Any, cast
+from typing import Protocol, cast
 
+from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_mcp.bounds import BoundsError
 from hedron_mcp.compat import (
     UNSUPPORTED_CAPABILITY_BEHAVIOR,
     negotiate_protocol_version,
 )
-from hedron_mcp.server import InvalidParamsError
+from hedron_mcp.server import InvalidParamsError, McpProjection
 
-PrincipalResolver = Callable[[Any], str | None]
-# Starlette/FastAPI Request-like object.
+PrincipalResolver = Callable[[object], str | None]
+
+
+class McpHttpRequest(Protocol):
+    """Starlette/FastAPI Request-like object used by the MCP transport."""
+
+    @property
+    def headers(self) -> Mapping[str, str]: ...
+
+    @property
+    def method(self) -> str: ...
+
+    async def body(self) -> bytes: ...
 
 
 def _json_response(
-    payload: Mapping[str, Any],
+    payload: Mapping[str, JsonValue],
     *,
     status_code: int = 200,
     headers: Mapping[str, str] | None = None,
-) -> Any:
+) -> object:
     from starlette.responses import JSONResponse
 
     return JSONResponse(dict(payload), status_code=status_code, headers=dict(headers or {}))
 
 
-def _error(req_id: Any, code: int, message: str) -> dict[str, Any]:
-    return {"jsonrpc": "2.0", "id": req_id, "error": {"code": code, "message": message}}
+def _error(req_id: object, code: int, message: str) -> JsonObject:
+    return {
+        "jsonrpc": "2.0",
+        "id": cast(JsonValue, req_id),
+        "error": {"code": code, "message": message},
+    }
 
 
-def _result(req_id: Any, result: Mapping[str, Any] | list[Any] | None) -> dict[str, Any]:
-    return {"jsonrpc": "2.0", "id": req_id, "result": result}
+def _result(req_id: object, result: JsonValue) -> JsonObject:
+    return {"jsonrpc": "2.0", "id": cast(JsonValue, req_id), "result": result}
 
 
-def _cancel_key(req_id: Any) -> str | None:
+def _cancel_key(req_id: object) -> str | None:
     """Normalize JSON-RPC ids to the cancel-registry key clients know about (#171)."""
     if req_id is None:
         return None
@@ -54,7 +70,7 @@ def _cancel_owner(*, session_id: str | None, principal: str | None) -> str | Non
 
 
 def _raise_if_cancelled(
-    projection: Any,
+    projection: McpProjection,
     cancel_key: str | None,
     *,
     owner: str | None,
@@ -63,7 +79,7 @@ def _raise_if_cancelled(
         raise BoundsError("MCP request cancelled")
 
 
-def _origin_forbidden(request: Any, projection: Any) -> bool:
+def _origin_forbidden(request: McpHttpRequest, projection: McpProjection) -> bool:
     origin = request.headers.get("origin")
     if projection.allowed_origins is None:
         # Fail closed for browser-facing requests when no allowlist is configured (#232).
@@ -71,7 +87,7 @@ def _origin_forbidden(request: Any, projection: Any) -> bool:
     return origin is None or origin not in projection.allowed_origins
 
 
-async def _read_body_bounded(request: Any, max_bytes: int) -> bytes:
+async def _read_body_bounded(request: McpHttpRequest, max_bytes: int) -> bytes:
     """Read request body without buffering more than ``max_bytes`` (#233)."""
     chunks: list[bytes] = []
     total = 0
@@ -90,7 +106,7 @@ async def _read_body_bounded(request: Any, max_bytes: int) -> bytes:
 
 
 def _enforce_session_principal(
-    projection: Any,
+    projection: McpProjection,
     *,
     session_id: str | None,
     principal: str | None,
@@ -107,7 +123,7 @@ def _enforce_session_principal(
         raise PermissionError("MCP session principal mismatch")
 
 
-async def _handle_session_delete(request: Any, projection: Any) -> Any:
+async def _handle_session_delete(request: McpHttpRequest, projection: McpProjection) -> object:
     """Terminate the Streamable HTTP session identified by ``mcp-session-id``."""
     session_id = request.headers.get("mcp-session-id")
     if not session_id:
@@ -148,7 +164,7 @@ async def _handle_session_delete(request: Any, projection: Any) -> Any:
         projection.bounds.release()
 
 
-async def handle_mcp_http(request: Any, projection: Any) -> Any:
+async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) -> object:
     """Handle one Streamable HTTP MCP JSON-RPC request."""
     if not projection.enabled:
         return _json_response({"error": "MCP projection disabled"}, status_code=404)
@@ -173,10 +189,11 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
     if not isinstance(body, dict):
         return _json_response(_error(None, -32600, "invalid request"), status_code=400)
 
-    req_id = body.get("id")
-    method = str(body.get("method") or "")
-    raw_params = body.get("params")
-    params: dict[str, Any] = raw_params if isinstance(raw_params, dict) else {}
+    body_obj = cast(JsonObject, body)
+    req_id = body_obj.get("id")
+    method = str(body_obj.get("method") or "")
+    raw_params = body_obj.get("params")
+    params: JsonObject = cast(JsonObject, raw_params) if isinstance(raw_params, dict) else {}
 
     principal = projection.resolve_principal(request)
     # Cancel keys are the client-visible JSON-RPC id, not a private server UUID (#171).
@@ -202,7 +219,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
 
         if method in {"initialize", "notifications/initialized"}:
-            version = negotiate_protocol_version(params.get("protocolVersion"))
+            version = negotiate_protocol_version(cast(str | None, params.get("protocolVersion")))
             caps = (
                 params.get("capabilities") if isinstance(params.get("capabilities"), dict) else {}
             )
@@ -243,7 +260,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
         projection.authorize(
             principal=principal,
             action=method,
-            resource=params.get("uri") or params.get("name"),
+            resource=cast(str | None, params.get("uri") or params.get("name")),
             tenant_id=_tenant_from(request, params),
             scopes=_scopes_from(request),
         )
@@ -264,7 +281,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 principal=principal,
                 detail={"count": len(resources)},
             )
-            return _json_response(_result(req_id, {"resources": resources}))
+            return _json_response(_result(req_id, cast(JsonValue, {"resources": resources})))
 
         if method == "resources/read":
             _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
@@ -281,15 +298,18 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             return _json_response(
                 _result(
                     req_id,
-                    {
-                        "contents": [
-                            {
-                                "uri": uri,
-                                "mimeType": content.get("mimeType", "application/json"),
-                                "text": content.get("text", ""),
-                            }
-                        ]
-                    },
+                    cast(
+                        JsonValue,
+                        {
+                            "contents": [
+                                {
+                                    "uri": uri,
+                                    "mimeType": content.get("mimeType", "application/json"),
+                                    "text": content.get("text", ""),
+                                }
+                            ]
+                        },
+                    ),
                 )
             )
 
@@ -309,13 +329,13 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 principal=principal,
                 detail={"count": len(tools)},
             )
-            return _json_response(_result(req_id, {"tools": tools}))
+            return _json_response(_result(req_id, cast(JsonValue, {"tools": tools})))
 
         if method == "tools/call":
             _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
             name = str(params.get("name") or "")
             arguments = params.get("arguments") if isinstance(params.get("arguments"), dict) else {}
-            result = projection.call_tool(name, arguments, principal=principal)
+            result = projection.call_tool(name, cast(JsonObject, arguments), principal=principal)
             projection.audit.emit(
                 code="HED-MCP-CALL-TOOL",
                 kind="execution",
@@ -327,7 +347,13 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             return _json_response(
                 _result(
                     req_id,
-                    {"content": [{"type": "text", "text": json.dumps(result)}], "isError": False},
+                    cast(
+                        JsonValue,
+                        {
+                            "content": [{"type": "text", "text": json.dumps(result)}],
+                            "isError": False,
+                        },
+                    ),
                 )
             )
 
@@ -410,21 +436,21 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
         projection.bounds.release()
 
 
-def _tenant_from(request: Any, params: Mapping[str, Any]) -> str | None:
+def _tenant_from(request: McpHttpRequest, params: Mapping[str, JsonValue]) -> str | None:
     """Ignore client tenant claims; tenant is derived server-side (#287)."""
     del request, params
     return None
 
 
-def _scopes_from(request: Any) -> Mapping[str, Any] | None:
+def _scopes_from(request: McpHttpRequest) -> Mapping[str, JsonValue] | None:
     """Ignore client-supplied scope headers (#287)."""
     del request
     return None
 
 
 def mount_streamable_http(
-    app: Any,
-    projection: Any,
+    app: object,
+    projection: McpProjection,
     *,
     path: str = "/mcp",
 ) -> None:
@@ -432,15 +458,18 @@ def mount_streamable_http(
     from starlette.requests import Request
     from starlette.routing import Route
 
-    async def endpoint(request: Request) -> Any:
+    async def endpoint(request: Request) -> object:
         return await handle_mcp_http(request, projection)
 
     route = Route(path, endpoint=endpoint, methods=["POST", "DELETE"])
     # FastAPI / Starlette both expose .routes; prefer router include when present.
     router = getattr(app, "router", None)
-    if router is not None and hasattr(router, "routes"):
-        router.routes.append(route)
-    elif hasattr(app, "routes"):
-        app.routes.append(route)
-    else:
-        raise TypeError("mount_mcp requires a Starlette/FastAPI-like application")
+    router_routes = getattr(router, "routes", None) if router is not None else None
+    if isinstance(router_routes, list):
+        router_routes.append(route)
+        return
+    app_routes = getattr(app, "routes", None)
+    if isinstance(app_routes, list):
+        app_routes.append(route)
+        return
+    raise TypeError("mount_mcp requires a Starlette/FastAPI-like application")

@@ -480,7 +480,8 @@ class Map(Component[MapProps]):
         if self.props.height is not None:
             enhance_attrs["height"] = self.props.height
         data = enhance_attrs["data"]
-        assert isinstance(data, dict)
+        if not isinstance(data, dict):
+            raise TypeError("Map enhance attrs data must be a dict")
         if self.props.tiles is not None:
             data["tiles"] = self.props.tiles
         if self.props.attribution:

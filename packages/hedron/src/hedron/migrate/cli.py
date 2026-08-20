@@ -98,7 +98,8 @@ def run_migrate_streamlit(
         return 1
 
     if not analyze_only:
-        assert out is not None
+        if out is None:
+            raise RuntimeError("migration generate requires --out when not analyze-only")
         try:
             generated = generate_project(plan, out)
         except FileExistsError as exc:

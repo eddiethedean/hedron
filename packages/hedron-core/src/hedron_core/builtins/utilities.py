@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from typing import Any, ClassVar, Literal, cast
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
@@ -28,9 +28,9 @@ class Metric(Component[MetricProps]):
     def __init__(
         self,
         label: str,
-        value: Any,
+        value: object,
         *,
-        delta: Any = None,
+        delta: object = None,
         delta_tone: Literal["up", "down", "neutral"] = "neutral",
         **kwargs: Any,
     ) -> None:
@@ -91,13 +91,13 @@ class CodeViewer(Component[CodeViewerProps]):
         return html.pre(html.code(self.props.code, **attrs), class_="hedron-code-viewer")
 
 
-def _redact_json(value: Any, *, depth: int = 0) -> Any:
+def _redact_json(value: object, *, depth: int = 0) -> object:
     if depth > 20:
         return "[max-depth]"
     if isinstance(value, Secret):
         return "***"
-    if isinstance(value, dict):
-        out = {}
+    if isinstance(value, Mapping):
+        out: dict[str, object] = {}
         for k, v in value.items():
             key = str(k)
             if "secret" in key.lower() or "password" in key.lower() or "token" in key.lower():
@@ -119,7 +119,7 @@ class JSONViewer(Component[JSONViewerProps]):
     props_type = JSONViewerProps
     logical_name = "JSONViewer"
 
-    def __init__(self, value: Any, *, max_chars: int = 100_000, **kwargs: Any) -> None:
+    def __init__(self, value: object, *, max_chars: int = 100_000, **kwargs: Any) -> None:
         redacted = _redact_json(value)
         text = json.dumps(redacted, indent=2, default=str)
         if len(text) > max_chars:

@@ -7,6 +7,7 @@ import asyncio
 import json
 import os
 import sys
+from pathlib import Path
 from typing import Any, cast
 
 from fastapi_workbench import __version__
@@ -190,7 +191,8 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
             }
         )
         checks["rserver_url_binary"] = not rs_server_url() or (
-            os.path.isabs(resolved.rserver_url_bin) and os.access(resolved.rserver_url_bin, os.X_OK)
+            Path(resolved.rserver_url_bin).is_absolute()
+            and os.access(resolved.rserver_url_bin, os.X_OK)
         )
         if args.live:
             if not args.app:

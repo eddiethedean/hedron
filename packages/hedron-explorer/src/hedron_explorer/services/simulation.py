@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any, cast
 
 from fastapi import Request
@@ -10,6 +11,8 @@ from fastapi.responses import JSONResponse
 from hedron_core.registry import RouteMeta, get_registry
 from hedron_core.typing_aliases import JsonObject
 from hedron_explorer.services.runtime import TRACE
+
+_logger = logging.getLogger("hedron.explorer")
 
 SIMULATE_KEYS = frozenset(
     {
@@ -58,6 +61,7 @@ async def require_csrf(request: Request) -> JSONResponse | None:
         try:
             strategy = resolve()
         except Exception as exc:  # noqa: BLE001
+            _logger.warning("CSRF strategy resolve failed: %s", exc)
             return JSONResponse(
                 {"detail": f"CSRF strategy resolve failed: {exc}"},
                 status_code=403,
@@ -91,7 +95,8 @@ async def require_csrf(request: Request) -> JSONResponse | None:
             result = validator(request, policy)
             if hasattr(result, "__await__"):
                 result = await result  # type: ignore[misc]
-        except Exception:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001
+            _logger.warning("CSRF validation raised: %s", exc)
             return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
         if result is not None and not result:
             return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
@@ -125,7 +130,8 @@ def click_preview_payload(route: RouteMeta, *, target: str | None) -> dict[str, 
 async def simulate(request: Request) -> Any:
     try:
         payload = await request.json()
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
+        _logger.debug("simulate: invalid JSON body: %s", exc)
         return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
     if not isinstance(payload, dict):
         return JSONResponse({"detail": "JSON object required"}, status_code=400)
@@ -225,7 +231,8 @@ async def element_simulate(request: Request) -> Any:
         return csrf_error
     try:
         payload = await request.json()
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
+        _logger.debug("element_simulate: invalid JSON body: %s", exc)
         return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
     if not isinstance(payload, dict):
         return JSONResponse({"detail": "JSON object required"}, status_code=400)

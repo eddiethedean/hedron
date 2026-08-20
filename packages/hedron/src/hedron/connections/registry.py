@@ -95,6 +95,11 @@ async def _dispose_instance_async(instance: object) -> None:
                 if hasattr(result, "__await__"):
                     await result  # type: ignore[misc]  # duck-typed awaitable from host close()
             except Exception as exc:  # noqa: BLE001 — aggregate then fail closed
+                _logger.warning(
+                    "Connection dispose via %r failed: %s",
+                    attr,
+                    exc,
+                )
                 errors.append(exc)
             else:
                 return

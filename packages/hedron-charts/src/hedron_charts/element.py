@@ -35,7 +35,8 @@ def plan_payload_json(plan: ChartPlan) -> str:
     payload = plan.to_json_dict()
     if not plan.accessibility.include_table:
         payload = dict(payload)
-        acc = dict(payload.get("accessibility") or {})
+        raw_acc = payload.get("accessibility")
+        acc = dict(raw_acc) if isinstance(raw_acc, dict) else {}
         acc["table_rows"] = []
         payload["accessibility"] = acc
     return json.dumps(payload, separators=(",", ":"), default=str)

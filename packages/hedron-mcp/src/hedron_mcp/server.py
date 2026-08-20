@@ -6,9 +6,9 @@ import inspect
 import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
-from typing import Any
 from urllib.parse import unquote, urlparse
 
+from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_mcp.audit import McpAuditLog
 from hedron_mcp.bounds import BoundsError, McpBounds
 from hedron_mcp.compat import SDK_PIN, sdk_version
@@ -34,10 +34,10 @@ __all__ = [
     "mount_mcp",
 ]
 
-PrincipalResolver = Callable[[Any], str | None]
+PrincipalResolver = Callable[[object], str | None]
 AuthzHook = Callable[..., None]
 TenantHook = Callable[..., None]
-ResourceReader = Callable[[str, str | None], Mapping[str, Any] | str]
+ResourceReader = Callable[[str, str | None], Mapping[str, JsonValue] | str]
 
 # Deny-by-default: only the documented Hedron resource URI scheme is Supported.
 _ALLOWED_RESOURCE_URI_SCHEMES = frozenset({"hedron"})
@@ -81,7 +81,7 @@ class McpResource:
     name: str
     description: str = ""
     mime_type: str = "application/json"
-    metadata: Mapping[str, Any] = field(default_factory=dict)
+    metadata: Mapping[str, JsonValue] = field(default_factory=dict)
     reader: ResourceReader | None = None
     authorize: AuthzHook | None = None
 
@@ -91,9 +91,9 @@ class McpTool:
     """Opt-in MCP tool wrapping an explicit action or typed function."""
 
     name: str
-    schema: Mapping[str, Any]
+    schema: Mapping[str, JsonValue]
     mutate: bool
-    handler: Callable[..., Any]
+    handler: Callable[..., object]
     description: str = ""
     authorize: AuthzHook | None = None
 
@@ -161,7 +161,7 @@ class McpProjection:
     def unregister_tool(self, name: str) -> None:
         self._tools.pop(name, None)
 
-    def consume_catalog(self, catalog: Any) -> tuple[str, ...]:
+    def consume_catalog(self, catalog: object) -> tuple[str, ...]:
         """Read catalog logical ids. Does not enable MCP or register tools."""
         entries = getattr(catalog, "entries", {}) or {}
         ids = tuple(sorted(str(key) for key in entries))
@@ -185,7 +185,7 @@ class McpProjection:
             return []
         return list(self._tools.values())
 
-    def resolve_principal(self, request: Any) -> str | None:
+    def resolve_principal(self, request: object) -> str | None:
         """Reuse host authentication; never invent an IdP.
 
         Default identity comes only from an authenticated session when
@@ -200,7 +200,7 @@ class McpProjection:
         scope = getattr(request, "scope", None)
         if not isinstance(scope, Mapping) or "session" not in scope:
             return None
-        session = request.session
+        session = getattr(request, "session", None)
         if isinstance(session, Mapping):
             for key in ("user", "username", "principal", "sub"):
                 value = session.get(key)
@@ -214,7 +214,7 @@ class McpProjection:
         principal: str | None,
         action: str,
         resource: str | None = None,
-        scopes: Mapping[str, Any] | None = None,
+        scopes: Mapping[str, JsonValue] | None = None,
         tenant_id: str | None = None,
     ) -> None:
         """Principal-bounded authz: require a principal; never exceed it.
@@ -233,7 +233,7 @@ class McpProjection:
                     "MCP authorization never exceeds the authenticated principal."
                 )
             allowed = scopes.get("allowed_principals")
-            if allowed is not None and principal not in allowed:
+            if allowed is not None and principal not in allowed:  # type: ignore[operator]
                 raise AuthorizationError(
                     "MCP authorization never exceeds the authenticated principal."
                 )
@@ -285,7 +285,7 @@ class McpProjection:
         principal: str | None,
         action: str,
         resource: str | None = None,
-        scopes: Mapping[str, Any] | None = None,
+        scopes: Mapping[str, JsonValue] | None = None,
         tenant_id: str | None = None,
     ) -> None:
         self.check_authz(
@@ -296,7 +296,7 @@ class McpProjection:
             tenant_id=tenant_id,
         )
 
-    def read_resource(self, uri: str, *, principal: str | None) -> dict[str, Any]:
+    def read_resource(self, uri: str, *, principal: str | None) -> JsonObject:
         self.authorize(principal=principal, action="resources/read", resource=uri)
         self._assert_safe_uri(uri)
         if not self.enabled:
@@ -326,10 +326,10 @@ class McpProjection:
     def call_tool(
         self,
         name: str,
-        arguments: Mapping[str, Any],
+        arguments: Mapping[str, JsonValue],
         *,
         principal: str | None,
-    ) -> Any:
+    ) -> object:
         self.authorize(principal=principal, action="tools/call", resource=name)
         if not self.enabled:
             raise KeyError(name)
@@ -351,7 +351,9 @@ class McpProjection:
         return result
 
     @staticmethod
-    def _validate_tool_arguments(tool: McpTool, arguments: Mapping[str, Any]) -> dict[str, Any]:
+    def _validate_tool_arguments(
+        tool: McpTool, arguments: Mapping[str, JsonValue]
+    ) -> dict[str, JsonValue]:
         """Enforce the advertised ``inputSchema`` before invoking the handler (#177)."""
         payload = dict(arguments)
         schema = tool.schema
@@ -396,7 +398,7 @@ class McpProjection:
             )
 
 
-def mount_mcp(app: Any, projection: McpProjection, *, path: str = "/mcp") -> None:
+def mount_mcp(app: object, projection: McpProjection, *, path: str = "/mcp") -> None:
     """Mount Streamable HTTP MCP routes on ``app``.
 
     No-ops when ``projection.enabled`` is false so installing the package without

@@ -7,7 +7,7 @@ import json
 import math
 import statistics
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import Any, cast
 
 from hedron_charts.operators import (
     ALLOWED_OPERATORS,
@@ -83,7 +83,7 @@ def _reject_pollution(obj: object, path: str = "$") -> None:
             _reject_pollution(item, f"{path}[{i}]")
 
 
-def parse_chart_spec(value: Mapping[str, Any] | ChartSpec) -> ChartSpec:
+def parse_chart_spec(value: Mapping[str, object] | ChartSpec) -> ChartSpec:
     if isinstance(value, ChartSpec):
         return value
     _reject_pollution(value)
@@ -205,13 +205,13 @@ def _as_number(value: Any) -> float | None:
         return None
 
 
-def _apply_filter(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, Any]]:
+def _apply_filter(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
     field = tr.field
     if not field:
         return rows
     op = tr.params.get("compare", "is_not_null")
     target = tr.params.get("value")
-    out: list[dict[str, Any]] = []
+    out: list[dict[str, object]] = []
     for row in rows:
         val = row.get(field)
         keep = True
@@ -236,15 +236,15 @@ def _apply_filter(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str
             a, b = _as_number(val), _as_number(target)
             keep = a is not None and b is not None and a <= b
         elif op == "in":
-            keep = val in (target or ())
+            keep = val in cast(Any, target or ())
         elif op == "not_in":
-            keep = val not in (target or ())
+            keep = val not in cast(Any, target or ())
         if keep:
             out.append(row)
     return out
 
 
-def _apply_calculate(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, Any]]:
+def _apply_calculate(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
     op = tr.params.get("operator") or tr.op
     if op not in ALLOWED_OPERATORS:
         raise _chart_error(
@@ -254,20 +254,23 @@ def _apply_calculate(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[
             "Use only operators listed in CHART_SPEC.md.",
         )
     as_name = tr.as_ or f"{tr.field or 'value'}_{op}"
-    args = tr.params.get("args") or []
-    out: list[dict[str, Any]] = []
+    raw_args = tr.params.get("args") or []
+    args = cast(list[object], raw_args)
+    out: list[dict[str, object]] = []
     for row in rows:
-        values = [row.get(a) if isinstance(a, str) else a for a in args]
+        values: list[object] = [row.get(a) if isinstance(a, str) else a for a in args]
         if tr.field and not values:
             values = [row.get(tr.field)]
-        result: Any = None
+        result: object = None
         nums = [_as_number(v) for v in values]
         if op == "add" and all(n is not None for n in nums):
-            result = sum(nums)  # type: ignore[arg-type]
+            present: list[float] = [n for n in nums if n is not None]
+            result = sum(present)
         elif op == "subtract" and len(nums) >= 2 and nums[0] is not None and nums[1] is not None:
             result = nums[0] - nums[1]
         elif op == "multiply" and all(n is not None for n in nums):
-            result = math.prod(nums)  # type: ignore[arg-type]
+            present = [n for n in nums if n is not None]
+            result = math.prod(present)
         elif op == "divide" and len(nums) >= 2 and nums[0] is not None and nums[1]:
             result = nums[0] / nums[1]
         elif op == "negate" and nums and nums[0] is not None:
@@ -281,9 +284,11 @@ def _apply_calculate(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[
         elif op == "ceil" and nums and nums[0] is not None:
             result = math.ceil(nums[0])
         elif op == "min" and all(n is not None for n in nums):
-            result = min(nums)  # type: ignore[arg-type]
+            present = [n for n in nums if n is not None]
+            result = min(present)
         elif op == "max" and all(n is not None for n in nums):
-            result = max(nums)  # type: ignore[arg-type]
+            present = [n for n in nums if n is not None]
+            result = max(present)
         elif op == "coalesce":
             result = next((v for v in values if v is not None), None)
         elif op == "concat":
@@ -302,26 +307,29 @@ def _apply_calculate(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[
     return out
 
 
-def _apply_aggregate(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, Any]]:
-    group_by = list(tr.params.get("groupby") or [])
-    metrics = tr.params.get("metrics") or [{"op": "count", "as": "count"}]
-    buckets: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
+def _apply_aggregate(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
+    group_by = cast(list[str], list(cast(Any, tr.params.get("groupby") or [])))
+    metrics = cast(
+        list[dict[str, object]], tr.params.get("metrics") or [{"op": "count", "as": "count"}]
+    )
+    buckets: dict[tuple[object, ...], list[dict[str, object]]] = {}
     for row in rows:
         key = tuple(row.get(g) for g in group_by)
         buckets.setdefault(key, []).append(row)
-    out: list[dict[str, Any]] = []
+    out: list[dict[str, object]] = []
     for key, group in buckets.items():
-        item: dict[str, Any] = {g: key[i] for i, g in enumerate(group_by)}
+        item: dict[str, object] = {g: key[i] for i, g in enumerate(group_by)}
         for metric in metrics:
             mop = metric.get("op", "count")
             field = metric.get("field")
-            as_name = metric.get("as") or f"{mop}_{field or 'all'}"
-            vals = [_as_number(r.get(field)) for r in group] if field else []
+            as_name = cast(str, metric.get("as") or f"{mop}_{field or 'all'}")
+            field_name = field if isinstance(field, str) else None
+            vals = [_as_number(r.get(field_name)) for r in group] if field_name else []
             nums = [v for v in vals if v is not None]
             if mop == "count":
                 item[as_name] = len(group)
-            elif mop == "count_distinct" and field:
-                item[as_name] = len({r.get(field) for r in group})
+            elif mop == "count_distinct" and field_name:
+                item[as_name] = len({r.get(field_name) for r in group})
             elif mop == "sum":
                 item[as_name] = sum(nums)
             elif mop == "mean":
@@ -335,10 +343,8 @@ def _apply_aggregate(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[
             elif mop == "stdev":
                 item[as_name] = statistics.pstdev(nums) if len(nums) > 1 else 0.0
             elif mop == "first":
-                field_name = field if isinstance(field, str) else None
                 item[as_name] = group[0].get(field_name) if group and field_name else None
             elif mop == "last":
-                field_name = field if isinstance(field, str) else None
                 item[as_name] = group[-1].get(field_name) if group and field_name else None
             else:
                 raise _chart_error(
@@ -351,7 +357,7 @@ def _apply_aggregate(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[
     return out
 
 
-def _apply_sort(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, Any]]:
+def _apply_sort(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
     field = tr.field
     if not field:
         return rows
@@ -359,8 +365,8 @@ def _apply_sort(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, 
     return sorted(rows, key=lambda r: (r.get(field) is None, r.get(field)), reverse=reverse)
 
 
-def _apply_sample(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, Any]]:
-    n = int(tr.params.get("n") or MAX_ROWS)
+def _apply_sample(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
+    n = int(cast(Any, tr.params.get("n") or MAX_ROWS))
     if n < 1:
         raise _chart_error(
             "HED-CHART-0071",
@@ -374,16 +380,16 @@ def _apply_sample(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str
     return rows[::step][:n]
 
 
-def _apply_stack(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, Any]]:
+def _apply_stack(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
     field = tr.field or "y"
-    group = tr.params.get("groupby") or []
+    group = cast(list[str], list(cast(Any, tr.params.get("groupby") or [])))
     as_y0 = tr.as_ or f"{field}_y0"
-    as_y1 = tr.params.get("as_y1") or f"{field}_y1"
-    buckets: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
+    as_y1 = cast(str, tr.params.get("as_y1") or f"{field}_y1")
+    buckets: dict[tuple[object, ...], list[dict[str, object]]] = {}
     for row in rows:
         key = tuple(row.get(g) for g in group)
         buckets.setdefault(key, []).append(row)
-    out: list[dict[str, Any]] = []
+    out: list[dict[str, object]] = []
     for group_rows in buckets.values():
         running = 0.0
         for row in group_rows:
@@ -396,11 +402,11 @@ def _apply_stack(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str,
     return out
 
 
-def _apply_bin(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, Any]]:
+def _apply_bin(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
     field = tr.field
     if not field:
         return rows
-    bins = int(tr.params.get("bins") or 10)
+    bins = int(cast(Any, tr.params.get("bins") or 10))
     if bins < 1:
         raise _chart_error(
             "HED-CHART-0032",
@@ -415,7 +421,7 @@ def _apply_bin(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, A
     lo, hi = min(present), max(present)
     width = (hi - lo) / bins if hi > lo else 1.0
     as_name = tr.as_ or f"{field}_bin"
-    out: list[dict[str, Any]] = []
+    out: list[dict[str, object]] = []
     for row, num in zip(rows, nums, strict=True):
         cloned = dict(row)
         if num is None:
@@ -428,9 +434,9 @@ def _apply_bin(rows: list[dict[str, Any]], tr: TransformDef) -> list[dict[str, A
 
 
 def apply_transforms(
-    rows: Sequence[Mapping[str, Any]], transforms: Sequence[TransformDef]
-) -> list[dict[str, Any]]:
-    current = [dict(r) for r in rows]
+    rows: Sequence[Mapping[str, object]], transforms: Sequence[TransformDef]
+) -> list[dict[str, object]]:
+    current: list[dict[str, object]] = [dict(r) for r in rows]
     for tr in transforms:
         if tr.op == "filter":
             current = _apply_filter(current, tr)
@@ -445,10 +451,10 @@ def apply_transforms(
         elif tr.op == "bin":
             current = _apply_bin(current, tr)
         elif tr.op == "fold":
-            fields = list(tr.params.get("fields") or [])
-            as_key = tr.params.get("as_key") or "key"
-            as_value = tr.params.get("as_value") or "value"
-            folded: list[dict[str, Any]] = []
+            fields = cast(list[str], list(cast(Any, tr.params.get("fields") or [])))
+            as_key = cast(str, tr.params.get("as_key") or "key")
+            as_value = cast(str, tr.params.get("as_value") or "value")
+            folded: list[dict[str, object]] = []
             for row in current:
                 base = {k: v for k, v in row.items() if k not in fields}
                 for f in fields:
@@ -469,10 +475,12 @@ def apply_transforms(
     return current
 
 
-def _infer_domain(rows: Sequence[Mapping[str, Any]], field: str, scale_type: str) -> list[Any]:
+def _infer_domain(
+    rows: Sequence[Mapping[str, object]], field: str, scale_type: str
+) -> list[object]:
     values = [row.get(field) for row in rows]
     if scale_type in {"ordinal", "point", "band"}:
-        seen: list[Any] = []
+        seen: list[object] = []
         for v in values:
             if v not in seen:
                 seen.append(v)
@@ -508,7 +516,7 @@ def _encoding_explanation(spec: ChartSpec) -> str:
 
 
 def _interaction_help(interaction: InteractionDef) -> str:
-    enabled = []
+    enabled: list[str] = []
     if interaction.inspect:
         enabled.append("inspect")
     if interaction.focus_navigation:
@@ -550,13 +558,13 @@ def _choose_renderer(mark_count: int, preference: str) -> RendererDecision:
 
 
 def _build_mark_records(
-    rows: Sequence[Mapping[str, Any]], marks: Sequence[MarkDef]
-) -> list[dict[str, Any]]:
-    records: list[dict[str, Any]] = []
+    rows: Sequence[Mapping[str, object]], marks: Sequence[MarkDef]
+) -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
     for mi, mark in enumerate(marks):
         for ri, row in enumerate(rows):
             identity = mark.identity or f"m{mi}-r{ri}"
-            payload = {
+            payload: dict[str, object] = {
                 "identity": identity,
                 "type": mark.type,
                 "row_index": ri,
@@ -576,7 +584,7 @@ def _build_mark_records(
     return records
 
 
-def compile_chart(spec: ChartSpec | Mapping[str, Any]) -> ChartPlan:
+def compile_chart(spec: ChartSpec | Mapping[str, object]) -> ChartPlan:
     parsed = parse_chart_spec(spec)
     _validate_operators(parsed.transforms)
     _validate_marks(parsed.marks)
@@ -609,7 +617,7 @@ def compile_chart(spec: ChartSpec | Mapping[str, Any]) -> ChartPlan:
             "Reduce facets.",
         )
 
-    domains: dict[str, list[Any]] = {}
+    domains: dict[str, list[object]] = {}
     scales = list(parsed.scales)
     # Infer scales from encodings when authors omit them.
     for mark in parsed.marks:
@@ -663,16 +671,16 @@ def compile_chart(spec: ChartSpec | Mapping[str, Any]) -> ChartPlan:
         guides.append(GuideDef(kind="title", title=parsed.accessibility.title))
 
     density = parsed.theme.density
-    layout = {
+    layout: dict[str, object] = {
         "density": density,
         "margin": {"compact": 24, "ordinary": 40, "wide": 56}[density],
         "width_hint": {"compact": 320, "ordinary": 640, "wide": 960}[density],
         "height_hint": {"compact": 200, "ordinary": 360, "wide": 480}[density],
     }
 
-    redacted_rows = []
+    redacted_rows: list[dict[str, object]] = []
     for row in transformed:
-        cleaned = {}
+        cleaned: dict[str, object] = {}
         for k, v in row.items():
             if "secret" in str(k).lower() or "password" in str(k).lower():
                 cleaned[str(k)] = "***"
@@ -722,7 +730,7 @@ def compile_chart(spec: ChartSpec | Mapping[str, Any]) -> ChartPlan:
 def beginner_to_spec(
     *,
     kind: str,
-    data: Sequence[Mapping[str, Any]],
+    data: Sequence[Mapping[str, object]],
     x: str,
     y: str,
     title: str,

@@ -6,6 +6,7 @@ import asyncio
 import contextlib
 import functools
 import inspect
+import logging
 import time
 from collections.abc import Callable, Coroutine
 from typing import Any, Protocol, TypeAlias, runtime_checkable
@@ -28,6 +29,8 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import FragmentRegion, FragmentRegionError, InteractionResult
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
+
+_logger = logging.getLogger("hedron.routing.route")
 
 __all__ = ["HedronRoute", "HedronEndpointResult"]
 
@@ -313,7 +316,8 @@ async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
                     disconnect.set()
                     return
                 await asyncio.sleep(0.05)
-        except Exception:  # noqa: BLE001
+        except Exception:
+            _logger.debug("client disconnect watcher ended early", exc_info=True)
             return
 
     watcher = asyncio.create_task(_watch_disconnect())

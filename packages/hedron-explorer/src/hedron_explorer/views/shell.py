@@ -92,7 +92,8 @@ def component_detail_body(meta: object, request: Request) -> str:
     from hedron_core.registry import ComponentMeta
     from hedron_core.rendering import RenderMode, render
 
-    assert isinstance(meta, ComponentMeta)
+    if not isinstance(meta, ComponentMeta):
+        raise TypeError(f"component_detail_body expected ComponentMeta; got {type(meta).__name__}")
     styles = safe_read_text(meta.styles_path, meta, request)
     styles_block = (
         html_lib.escape(styles)

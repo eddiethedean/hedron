@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html as html_stdlib
+import logging
 from collections.abc import Mapping
 
 from hedron_core._html.policy import default_html_policy
@@ -30,6 +31,8 @@ from hedron_core.mount import prefix_local_path
 from hedron_core.security import SafeUrl, check_url_purpose_for_attribute
 from hedron_core.typing_aliases import HtmlAttrValue
 
+_logger = logging.getLogger("hedron.core.serializer")
+
 
 def _load_escape() -> tuple[object, object]:
     """Load optional hedron-native escape helpers (they honor HEDRON_NATIVE_DISABLE)."""
@@ -38,7 +41,9 @@ def _load_escape() -> tuple[object, object]:
         from hedron_native import escape_text as native_text
 
         return native_text, native_attr
-    except Exception:  # noqa: BLE001 — missing optional accel is Supported
+    except ImportError as exc:
+        # Missing optional accel is Supported — fall back to stdlib html.escape.
+        _logger.debug("hedron_native unavailable; using stdlib escape: %s", exc)
         return None, None
 
 

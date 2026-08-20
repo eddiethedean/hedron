@@ -43,7 +43,8 @@ def plan_payload_json(plan: MapPlan) -> str:
     payload = plan.to_json_dict()
     if not plan.accessibility.include_table:
         payload = dict(payload)
-        acc = dict(payload.get("accessibility") or {})
+        acc_raw = payload.get("accessibility")
+        acc = dict(acc_raw) if isinstance(acc_raw, dict) else {}
         acc["table_rows"] = []
         payload["accessibility"] = acc
     return json.dumps(payload, separators=(",", ":"), default=str)

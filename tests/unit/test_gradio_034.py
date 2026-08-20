@@ -218,3 +218,16 @@ def test_adapter_upload_respects_remote_config_limit() -> None:
     )
     with pytest.raises(GradioRemoteError, match="max_upload_bytes"):
         adapter.upload_file("sample.txt", b"012345")
+
+
+def test_submit_job_requires_configured_job_manager() -> None:
+    adapter = GradioClientAdapter(
+        "https://demo.example.invalid",
+        enabled=True,
+        endpoints=(
+            GradioEndpoint(name="predict", api_name="/predict", parameters={"text": "string"}),
+        ),
+    )
+    object.__setattr__(adapter, "_job_manager", None)
+    with pytest.raises(GradioRemoteError, match="job manager is not configured"):
+        adapter.submit_job("predict", {"text": "hi"})

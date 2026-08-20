@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -19,6 +20,8 @@ __all__ = [
     "register_content_renderers",
     "validate_email_address",
 ]
+
+_logger = logging.getLogger("hedron.content")
 
 
 class MarkdownProps(Props):
@@ -66,7 +69,9 @@ def highlight_code(code: str, *, lexer: str = "python") -> TrustedHtml:
         ) from exc
     try:
         lex = get_lexer_by_name(lexer)
-    except Exception:  # noqa: BLE001
+    except ValueError as exc:
+        # pygments.util.ClassNotFound (ValueError subclass) for unknown names
+        _logger.debug("Unknown pygments lexer %r; guessing: %s", lexer, exc)
         lex = guess_lexer(code)
     formatter = HtmlFormatter(nowrap=False)
     html_out = highlight(code, lex, formatter)

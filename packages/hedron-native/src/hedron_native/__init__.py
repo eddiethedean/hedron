@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html as html_stdlib
+import logging
 import os
 from collections.abc import Callable
 
@@ -10,6 +11,7 @@ __version__ = "0.1.2"
 
 # Ops / evidence disable (NATIVE-028). Honored on every escape / availability call.
 _DISABLE_ENV = "HEDRON_NATIVE_DISABLE"
+_logger = logging.getLogger("hedron.native")
 
 
 def _env_disables_native() -> bool:
@@ -31,7 +33,8 @@ def _load_extension() -> tuple[Callable[[str], str] | None, Callable[[str], str]
         from hedron_native._native import escape_text as native_text
 
         return native_text, native_attr
-    except Exception:  # noqa: BLE001
+    except (ImportError, OSError) as exc:
+        _logger.debug("hedron_native extension unavailable; using Python escape: %s", exc)
         return None, None
 
 

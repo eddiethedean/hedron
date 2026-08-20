@@ -113,8 +113,16 @@ def discover_rserver_url(*, binary: str, port: int) -> str:
                 remediation="Check permissions and that the binary is the official rserver-url.",
             )
         ) from exc
-    assert proc.stdout is not None
-    assert proc.stderr is not None
+    if proc.stdout is None or proc.stderr is None:
+        proc.kill()
+        raise WorkbenchError(
+            make_diagnostic(
+                FWB_0003,
+                title="rserver-url pipes unavailable",
+                explanation="subprocess.Popen did not provide stdout/stderr pipes.",
+                remediation="Ensure stdout=PIPE and stderr=PIPE are supported in this environment.",
+            )
+        )
     stdout_chunks: list[bytes] = []
     stderr_chunks: list[bytes] = []
     overflow = threading.Event()

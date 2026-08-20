@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import json
+import logging
 import re
 from collections.abc import Mapping, Sequence
 from typing import Any
@@ -52,6 +53,8 @@ __all__ = [
     "VegaTransformAdapter",
     "optional_adapters",
 ]
+
+_logger = logging.getLogger("hedron.charts")
 
 
 def _json_output(
@@ -138,7 +141,8 @@ class VegaTransformAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
-        assert isinstance(value, Mapping)
+        if not isinstance(value, Mapping):
+            raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         transforms = value.get("transform") or []
         if not isinstance(transforms, list):
             raise TypeError("transform must be a list")
@@ -215,7 +219,8 @@ class MapLibreAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
-        assert isinstance(value, Mapping)
+        if not isinstance(value, Mapping):
+            raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         body = dict(value)
         body.setdefault("coord_order", "lnglat")
         return _json_output(
@@ -282,7 +287,8 @@ class GeospatialLayerAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
-        assert isinstance(value, Mapping)
+        if not isinstance(value, Mapping):
+            raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         return _json_output(
             kind="maplibre",
             body={"geojson": dict(value)},
@@ -326,11 +332,13 @@ class GraphVizAdapter:
             rendered = src.pipe(format="svg")
             svg = rendered.decode("utf-8") if isinstance(rendered, bytes) else str(rendered)
             reject_active_svg(svg)
-        except ImportError:
+        except ImportError as exc:
+            _logger.debug("graphviz not installed; falling back to DOT text: %s", exc)
             svg = None
         except HedronError:
             raise
-        except Exception:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001 — graphviz/subprocess surfaces vary
+            _logger.warning("graphviz SVG render failed; falling back to DOT text: %s", exc)
             svg = None
         if svg is not None:
             return ChartOutput(
@@ -383,7 +391,8 @@ class MermaidAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
-        assert isinstance(value, str)
+        if not isinstance(value, str):
+            raise TypeError(f"{self.name} adapter expected a string; got {type(value).__name__}")
         ensure_limits(None, value, limits=limits)
         return _json_output(
             kind="mermaid",
@@ -418,7 +427,8 @@ class ChartJsAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
-        assert isinstance(value, Mapping)
+        if not isinstance(value, Mapping):
+            raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         return _json_output(
             kind="chartjs",
             body=dict(value),
@@ -560,7 +570,8 @@ class ThreeJsAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
-        assert isinstance(value, Mapping)
+        if not isinstance(value, Mapping):
+            raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         url = str(value.get("model_url") or "").strip()
         lower = url.lower()
         if not any(lower.endswith(ext) for ext in self._ALLOWED):
@@ -614,7 +625,8 @@ class EChartsAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
-        assert isinstance(value, Mapping)
+        if not isinstance(value, Mapping):
+            raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         return _json_output(
             kind="html",
             body=dict(value),
@@ -792,7 +804,8 @@ class PlotlyResamplingAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
-        assert isinstance(value, Mapping)
+        if not isinstance(value, Mapping):
+            raise TypeError(f"{self.name} adapter expected a mapping; got {type(value).__name__}")
         raw_max = value.get("max_points", 1000)
         try:
             max_points = int(raw_max)  # type: ignore[arg-type]

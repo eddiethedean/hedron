@@ -75,6 +75,7 @@ class PluginLoader:
                 try:
                     hook()
                 except Exception as exc:  # noqa: BLE001
+                    logger.warning("Plugin shutdown hook failed: %s", exc)
                     errors.append(exc)
         self._started = False
         if errors:

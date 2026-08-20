@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from datetime import UTC, datetime
+from pathlib import Path
 
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -13,9 +14,9 @@ from starlette.middleware.sessions import SessionMiddleware
 app = FastAPI(title="FastAPI Workbench reference")
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET", "replace-me"))
 
-static_dir = os.path.join(os.path.dirname(__file__), "static")
-if os.path.isdir(static_dir):
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+static_dir = Path(__file__).resolve().parent / "static"
+if static_dir.is_dir():
+    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 
 @app.get("/", response_class=HTMLResponse)

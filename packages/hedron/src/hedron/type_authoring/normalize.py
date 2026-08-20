@@ -380,10 +380,10 @@ def _safe_hints(fn: Callable[..., Any]) -> dict[str, Any]:
         depth += 1
     try:
         return get_type_hints(fn, globalns=namespace, localns=namespace, include_extras=True)
-    except Exception:  # noqa: BLE001
+    except (NameError, TypeError, AttributeError, RecursionError):
         try:
             return get_type_hints(fn, include_extras=True)
-        except Exception:  # noqa: BLE001
+        except (NameError, TypeError, AttributeError, RecursionError):
             return dict(getattr(fn, "__annotations__", {}) or {})
 
 

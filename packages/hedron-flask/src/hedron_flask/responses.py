@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -28,6 +29,8 @@ from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 from hedron_core.security_policy import SecurityPolicy
 from hedron_flask.htmx import render_mode_for_request
+
+_logger = logging.getLogger("hedron.flask")
 
 __all__ = [
     "component_response",
@@ -135,7 +138,8 @@ def _default_render_context() -> RenderContext:
     """Build RenderContext with CSRF material when a HedronFlask extension is bound."""
     try:
         from flask import current_app, has_request_context, request
-    except Exception:  # noqa: BLE001
+    except ImportError as exc:
+        _logger.debug("flask request helpers unavailable; using standalone RenderContext: %s", exc)
         return RenderContext.standalone()
     if not has_request_context():
         return RenderContext.standalone()

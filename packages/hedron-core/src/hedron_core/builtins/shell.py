@@ -298,9 +298,11 @@ class OobHost(Component[OobHostProps]):
         self._kids = _kids(*children)
 
     def render(self) -> NodeLike:
-        assert self.props.id is not None
+        host_id = self.props.id
+        if host_id is None:
+            raise ValueError("OobHost requires a non-None id")
         attrs: dict[str, HtmlAttrValue] = {
-            "id": self.props.id,
+            "id": host_id,
             "class_": class_names("hedron-oob-host", self.props.class_),
             "data": _merge_marker_data(
                 self.props.mark, self.props.data, **{"hedron-oob-host": "true"}
@@ -407,7 +409,9 @@ class AttrHost(Component[AttrHostProps]):
         self._kids = _kids(*children)
 
     def render(self) -> NodeLike:
-        assert self.props.id is not None
+        host_id = self.props.id
+        if host_id is None:
+            raise ValueError("AttrHost requires a non-None id")
         data = _merge_marker_data(self.props.mark, self.props.data, **{"hedron-attr-host": "true"})
         extra: dict[str, HtmlAttrValue] = dict(self.props.attrs or {})
         if self.props.lang:
@@ -424,7 +428,7 @@ class AttrHost(Component[AttrHostProps]):
             extra["hidden"] = True
         return getattr(html, self.props.tag)(
             *self._kids,
-            id=self.props.id,
+            id=host_id,
             class_=class_names("hedron-attr-host", self.props.class_),
             data=data,
             **extra,

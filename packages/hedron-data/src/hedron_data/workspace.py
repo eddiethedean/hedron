@@ -118,7 +118,7 @@ class DataWorkspace(Generic[ModelT]):
         self.edit_command: object | None = None
         search_fields = getattr(source, "_search_fields", None)
         if isinstance(search_fields, tuple) and not search_fields:
-            source._search_fields = tuple(fields)  # type: ignore[attr-defined]
+            object.__setattr__(source, "_search_fields", tuple(fields))
 
     def _request_kwargs(self) -> dict[str, object]:
         kwargs: dict[str, object] = {}
@@ -207,13 +207,11 @@ class DataWorkspace(Generic[ModelT]):
         target.form = form
 
     def _identity_model(self) -> type[BaseModel]:
-        return create_model(
-            f"{self.name.title()}Identity",
-            **{self.key_field: (str, ...)},  # type: ignore[arg-type]
-        )
+        fields: dict[str, Any] = {self.key_field: (str, ...)}
+        return create_model(f"{self.name.title()}Identity", **fields)
 
     def _list_query_model(self) -> type[BaseModel]:
-        fields: dict[str, tuple[object, object]] = {
+        fields: dict[str, Any] = {
             "offset": (int, Field(default=0, ge=0)),
             "limit": (int, Field(default=25, ge=1, le=HARD_MAX_PAGE_SIZE)),
             "sort": (str | None, None),
@@ -222,10 +220,7 @@ class DataWorkspace(Generic[ModelT]):
         for name in self._column_names():
             if name not in _LIST_RESERVED:
                 fields[name] = (str | None, None)
-        return create_model(
-            f"{self.name.title()}ListQuery",
-            **fields,  # type: ignore[arg-type]
-        )
+        return create_model(f"{self.name.title()}ListQuery", **fields)
 
     def _data_query_from_list_params(self, params: BaseModel | None) -> DataQuery:
         from hedron_data.sources import DEFAULT_MAX_PAGE_SIZE
@@ -411,10 +406,11 @@ class DataWorkspace(Generic[ModelT]):
                 pass
 
             if workspace.key_field not in getattr(workspace.edit_model, "model_fields", {}):
+                edit_fields: dict[str, Any] = {workspace.key_field: (str, ...)}
                 EditModel = create_model(
                     f"{workspace.name.title()}Edit",
                     __base__=workspace.edit_model,
-                    **{workspace.key_field: (str, ...)},  # type: ignore[arg-type]
+                    **edit_fields,
                 )
             else:
                 EditModel = workspace.edit_model

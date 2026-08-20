@@ -1,3 +1,5 @@
+import pytest
+
 from hedron.testing import render_html
 from hedron_charts.host_render import downsample_plotly_body, extract_folium_payload
 from hedron_charts.optional_adapters import (
@@ -11,6 +13,12 @@ from hedron_charts.optional_adapters import (
     optional_adapters,
 )
 from hedron_core.visualization import ChartAccessibility
+
+
+def test_chartjs_compile_rejects_non_mapping() -> None:
+    acc = ChartAccessibility(title="t", description="d")
+    with pytest.raises(TypeError, match="chartjs adapter expected a mapping"):
+        ChartJsAdapter().compile(["not", "a", "mapping"], accessibility=acc)
 
 
 def test_optional_adapters_compile_and_host_markup() -> None:

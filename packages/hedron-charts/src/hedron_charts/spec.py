@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from hedron_core.typing_aliases import JsonObject
 
 SCHEMA_VERSION = 1
 SCHEMA_ID = "hedron-chart-spec/1"
@@ -26,6 +28,7 @@ class FieldDef(ChartModel):
 
 class DataRef(ChartModel):
     name: str | None = None
+    # Any: hedron JsonValue is recursive and breaks pydantic schema generation.
     rows: tuple[dict[str, Any], ...] = ()
     fields: tuple[FieldDef, ...] = ()
 
@@ -144,8 +147,8 @@ class ChartSpec(ChartModel):
     renderer: RendererPref = "svg"
     accessibility: AccessibilityDef
 
-    def to_json_dict(self) -> dict[str, Any]:
-        return self.model_dump(mode="json", by_alias=True)
+    def to_json_dict(self) -> JsonObject:
+        return cast(JsonObject, self.model_dump(mode="json", by_alias=True))
 
 
 class RendererDecision(ChartModel):
@@ -187,5 +190,5 @@ class ChartPlan(ChartModel):
     layout: dict[str, Any] = Field(default_factory=dict)
     transformed_rows: tuple[dict[str, Any], ...] = ()
 
-    def to_json_dict(self) -> dict[str, Any]:
-        return self.model_dump(mode="json")
+    def to_json_dict(self) -> JsonObject:
+        return cast(JsonObject, self.model_dump(mode="json"))
