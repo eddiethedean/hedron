@@ -5,8 +5,20 @@ details remain in the [package changelogs](changelog.md).
 
 ## 0.51.2 — 2026-08-20
 
-In-tree bugfix patch on the 0.51 train. Git tag and PyPI upload are **deferred**; install
-from PyPI with `hedron>=0.51.0,<0.52`. [Installation](../getting-started/installation.md).
+Quality and typing patch on the 0.51 train. Pin `hedron>=0.51.0,<0.52` from PyPI until the
+0.51.2 wheel lands. [What’s new in 0.51](whats-new-0.51.md).
+[Installation](../getting-started/installation.md).
+
+- Replace runtime `assert` validation with explicit typed errors on chart adapters, Gradio
+  client, hosts, and jobs.
+- Typing ratchet on charts/maps/MCP/Jinja/Redis and host-integration modules (`handles`,
+  pages, Explorer router).
+- Fail-soft exception paths log at debug/warning; HDJ document-shape helpers extracted.
+
+## 0.51.1 — 2026-08-20
+
+Bugfix patch on the 0.51 train. Pin `hedron>=0.51.0,<0.52` from PyPI until a later
+0.51.x wheel lands. [Installation](../getting-started/installation.md).
 
 - Adaptive concurrency cancels in-flight siblings when any task returns `HED-CONC-0001` (#103).
 - FastAPI fragment render honors `allow_htmx_eval` on `InteractionPolicy` (#74).

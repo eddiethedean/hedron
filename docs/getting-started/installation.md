@@ -17,7 +17,8 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 ## Which version to install
 
 This documentation describes the **0.51.x** train. The living in-tree tip is **`v0.51.2`**;
-**`v0.51.0` is on PyPI today**. Git tag and PyPI upload for **0.51.2** are **deferred** —
+**`v0.51.0` is on PyPI today**. Git tag and PyPI upload for **0.51.2** remain **deferred**
+until the cut lands —
 use registry-resolvable pins below unless you are developing Hedron itself.
 
 | You are… | Install |
@@ -144,7 +145,7 @@ cd hedron
 uv sync
 ```
 
-This checkout is **0.51.0**. Application installs from PyPI use
+This checkout is **0.51.2**. Application installs from PyPI use
 `hedron>=0.51.0,<0.52`.
 
 See [Contributing](../CONTRIBUTING.md).

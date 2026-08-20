@@ -10,7 +10,7 @@ Install pins: [Installation](../getting-started/installation.md).
 
 | Topic | Disposition |
 |---|---|
-| Curated extras depth / experimental-UI (0.51) | **Published `v0.51.0` on PyPI** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507)); in-tree **`v0.51.2`** patch deferred |
+| Curated extras depth / experimental-UI (0.51) | **Published `v0.51.0` on PyPI** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507)); in-tree **`v0.51.2`** ready to cut |
 | Conformance kit and Node/Java runtime (0.52) | **Planned**; owning RFC required; companion HedronPosit deployment lifecycle [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513) |
 | Notebook / simulation / sample-kit refresh (0.53) | **Planned**; owning RFC required |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |

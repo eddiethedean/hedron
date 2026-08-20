@@ -1,7 +1,7 @@
 # Hedron `v0.51` curated extras acceptance
 
-**Status:** Verified in-tree `v0.51.2`. **`v0.51.0` on PyPI**; Git tag and PyPI upload for
-0.51.2 are **deferred** (`registry_status = "deferred"`). Does **not** close `SR-021`.<br>
+**Status:** Verified in-tree `v0.51.2` (cut-ready). **`v0.51.0` on PyPI** until upload
+(`registry_status = "deferred"`). Does **not** close `SR-021`.<br>
 **Planning baseline:** Published in-tree `v0.50.3`<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.50.3`<br>
 **Target:** Hedron `v0.51.0`<br>
@@ -53,4 +53,4 @@ Do not create `v0.51.0` until PyPI upload is intended.
 - [x] D-088 rebases the living/planning baseline to Published in-tree `v0.50.3`.
 - [x] Tracking [#507](https://github.com/eddiethedean/hedron/issues/507) bound.
 - [x] Stage 0 / contract refine makes no runtime/version/living-tip claim.
-- [ ] Stage 1 runtime (blocked until this packet and Verified in-tree 0.50.3).
+- [x] Stage 1 runtime shipped (Verified in-tree `v0.51.0`+; living tip `v0.51.2`).

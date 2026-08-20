@@ -3,7 +3,7 @@
 ## [0.51.2] — 2026-08-20
 
 ### Changed
-- Coordinated train tip `0.51.2` (in-tree patch; tag/PyPI deferred).
+- Coordinated train tip `0.51.2`.
 
 ### Fixed
 - Runtime asserts replaced with typed validation errors across adapters, Gradio, hosts, and jobs.

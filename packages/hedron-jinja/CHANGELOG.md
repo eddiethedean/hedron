@@ -3,7 +3,7 @@
 ## [0.51.2] — 2026-08-20
 
 ### Changed
-- Coordinated train tip `0.51.2` (in-tree patch; tag/PyPI deferred).
+- Coordinated train tip `0.51.2`.
 
 ### Fixed
 - See flagship `hedron` changelog for the full 0.51.2 quality/typing list.
