@@ -114,6 +114,49 @@ Emit JSON (or structured text) describing routes, components, dependency edges, 
 capability/package audit data. Prefer `--app` whenever importing the app is required to
 populate the registry.
 
+### `testgen`
+
+Generate reviewable interaction pytest stubs from a sealed interaction catalog
+(TESTGEN-053). Never evaluates catalog fields — only embeds redacted literals.
+
+```bash
+hedron --app app:app testgen
+hedron --app app:app testgen --profile ci --out tests/generated/test_interactions.py
+```
+
+| Flag | Description |
+|---|---|
+| `--profile` | Generator profile label embedded in the source (default `default`) |
+| `--generator-version` | Override embedded generator version |
+| `--out` | Write source to a file instead of stdout |
+
+### `discover`
+
+Print the curated public-API stability inventory (DISCOVER-053).
+
+```bash
+hedron discover
+hedron discover --format human
+```
+
+| Flag | Description |
+|---|---|
+| `--format` | `json` (default) or `human` |
+
+### `fleet`
+
+Diagnose the installed package fleet: extras, train skew, assets/plugins, and
+capability recommendations (FLEET-053).
+
+```bash
+hedron fleet
+hedron fleet --format json
+```
+
+| Flag | Description |
+|---|---|
+| `--format` | `json` (default) or `human` |
+
 ### `preview` / `inspect` / `eject`
 
 ```bash

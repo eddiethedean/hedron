@@ -1,7 +1,7 @@
 # Application DX API
 
 **Phase 0.53 application DX contract:** D-091 / D-092 /
-[RFC-0080](../rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md) /
+[RFC-0080](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md) /
 [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521).
 **Stage 1 Implemented** (living tip `v0.53.0`; Published in-tree; tag/PyPI deferred). Stage 1
 extends shipped 0.52 seams; it does **not** replace `inject_page_assets`,
@@ -35,5 +35,5 @@ Public Stage 1 surface (Verified gates; tip `v0.53.0`; Published in-tree; tag/Py
 Gates: `ASSET-053`, `DIAG-053`, `ROUTE-053`, `WORKFLOW-053`, `TESTGEN-053`,
 `THEME-053`, `DISCOVER-053`, `FLEET-053`, `DOCS-053`, `PKG-053`, `REGRESS-053`.
 
-See [APPLICATION_DX_053](../implementation/APPLICATION_DX_053.md) and
-[RFC-0080](../rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md) for Stage 0 locks.
+See [APPLICATION_DX_053](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/APPLICATION_DX_053.md) and
+[RFC-0080](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md) for Stage 0 locks.
