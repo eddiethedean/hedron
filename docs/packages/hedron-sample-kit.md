@@ -11,7 +11,7 @@ only — not an app framework.
 ## Install
 
 ```bash
-pip install "hedron-sample-kit>=0.1.10,<0.2"
+pip install "hedron-sample-kit>=0.2.0,<0.3"
 ```
 
 Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.10` floor. Details:

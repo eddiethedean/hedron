@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.53.x**)
+**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.54.x**)
 
 Day-to-day apps should start with [`@app.refreshable` / `@app.command`](../getting-started/interaction-apis.md).
 This page documents the explicit region / `InteractionResult` contracts those handles compile to.
@@ -373,4 +373,3 @@ Authors do not write `hx-on`. Both `hedron-ui.mjs` copies (`hedron-core` static 
 Frozen `#hedron-toast` OOB sink. Queue, TTL, and danger dismiss live in both
 `hedron-ui.mjs` copies. Danger toasts
 keep no TTL unless an author sets one.
-

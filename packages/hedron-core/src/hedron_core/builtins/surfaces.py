@@ -214,9 +214,7 @@ class StateView(Component[StateViewProps]):
         if self._children:
             parts.append(html.div(*self._children, class_="hedron-state-view-body"))
         if "actions" in self._slot_values:
-            parts.append(
-                html.div(self._slot_values["actions"], class_="hedron-state-view-actions")
-            )
+            parts.append(html.div(self._slot_values["actions"], class_="hedron-state-view-actions"))
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
             "class_": class_names(f"hedron-state-view hedron-state-{kind}", self.props.class_),

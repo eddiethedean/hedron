@@ -29,9 +29,7 @@ def test_stage1_modules_and_satellite_versions() -> None:
     tip = _living_tip()
     assert tip.startswith("0.54.")
     assert Path("packages/hedron/src/hedron/package_doctor.py").is_file()
-    assert Path(
-        "packages/hedron-conformance/src/hedron_conformance/authoring_loop.py"
-    ).is_file()
+    assert Path("packages/hedron-conformance/src/hedron_conformance/authoring_loop.py").is_file()
     assert Path("packages/hedron-sim/src/hedron_sim/manifest.py").is_file()
     assert Path("packages/hedron-notebook/src/hedron_notebook/handles.py").is_file()
 

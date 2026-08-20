@@ -160,7 +160,7 @@ Registry extras use the same PyPI pin as the flagship:
 ```bash
 pip install "hedron[data]>=0.52.0,<0.53"
 pip install "hedron[charts]>=0.52.0,<0.53"
-pip install "hedron-sample-kit>=0.1.10,<0.2"
+pip install "hedron-sample-kit>=0.2.0,<0.3"
 ```
 
 | Extra | When you need it | Package docs |

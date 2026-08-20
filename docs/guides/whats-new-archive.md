@@ -1,7 +1,7 @@
 # What’s new archive
 
 Read these only if you are upgrading from that line. Current train:
-[What’s new in 0.53](whats-new-0.53.md). Full chronology: [Release notes](release-notes.md).
+[What’s new in 0.54](whats-new-0.54.md). Full chronology: [Release notes](release-notes.md).
 
 | Train | Notes |
 |---|---|

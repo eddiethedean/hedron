@@ -28,7 +28,7 @@ Checkout tip `v0.54.0` uses the in-tree floor `>=0.54.0,<0.55`. From PyPI, keep
 # From PyPI until 0.53 uploads:
 python -m pip install -U "hedron>=0.52.0,<0.53"
 # In-tree / source checkout tip:
-# python -m pip install -U "hedron>=0.53.0,<0.54"
+# python -m pip install -U "hedron>=0.54.0,<0.55"
 ```
 
 ## 0.51 → 0.52

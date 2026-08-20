@@ -144,7 +144,11 @@ def test_flow_step_status_is_not_conveyed_by_color_alone() -> None:
 
 def test_flow_step_custom_status_text_replaces_the_default() -> None:
     html = render(
-        Page(ProcessFlow(FlowStep("Verify", status="blocked", status_text="Needs approval"), label="F"))
+        Page(
+            ProcessFlow(
+                FlowStep("Verify", status="blocked", status_text="Needs approval"), label="F"
+            )
+        )
     ).html
     assert "Needs approval" in html
     assert "Blocked" not in html

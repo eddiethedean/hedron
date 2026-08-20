@@ -84,9 +84,7 @@ class FlowStep(Component[FlowStepProps]):
             ),
         ]
         if self.props.description:
-            body.append(
-                html.p(self.props.description, class_="hedron-process-flow-description")
-            )
+            body.append(html.p(self.props.description, class_="hedron-process-flow-description"))
         if self._children:
             body.append(html.div(*self._children, class_="hedron-process-flow-body"))
         attrs: dict[str, HtmlAttrValue] = {

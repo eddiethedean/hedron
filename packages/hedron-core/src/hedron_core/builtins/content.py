@@ -345,9 +345,7 @@ class Table(Component[TableProps]):
         **kwargs: object,
     ) -> None:
         column_meta = tuple(columns or ())
-        resolved_headers = tuple(headers or ()) or tuple(
-            column.header for column in column_meta
-        )
+        resolved_headers = tuple(headers or ()) or tuple(column.header for column in column_meta)
         if column_meta and len(column_meta) != len(resolved_headers):
             raise ValueError(
                 "Table columns metadata must have one entry per header "

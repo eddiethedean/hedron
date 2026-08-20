@@ -49,7 +49,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes land on the current published train (`0.53.x`); see Supported versions above.
+4. Fixes land on the current published train (`0.54.x`); see Supported versions above.
 
 ### Alternate contact
 

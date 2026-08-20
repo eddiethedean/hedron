@@ -659,7 +659,9 @@ def _relative_luminance(color: str) -> float:
 
 def contrast_ratio(first: str, second: str) -> float:
     """Return the WCAG 2.1 contrast ratio between two hex colors."""
-    lighter, darker = sorted((_relative_luminance(first), _relative_luminance(second)), reverse=True)
+    lighter, darker = sorted(
+        (_relative_luminance(first), _relative_luminance(second)), reverse=True
+    )
     return (lighter + 0.05) / (darker + 0.05)
 
 
@@ -774,8 +776,6 @@ def contrast_diagnostics(theme: Theme | Mapping[str, str]) -> list[Diagnostic]:
         diagnostics = _contrast_diagnostics_for(theme.tokens, mode="light", theme_name=theme.name)
         for mode, overrides in sorted(theme.modes.items()):
             merged = {**dict(theme.tokens), **dict(overrides)}
-            diagnostics.extend(
-                _contrast_diagnostics_for(merged, mode=mode, theme_name=theme.name)
-            )
+            diagnostics.extend(_contrast_diagnostics_for(merged, mode=mode, theme_name=theme.name))
         return diagnostics
     return _contrast_diagnostics_for(theme, mode="light", theme_name="tokens")

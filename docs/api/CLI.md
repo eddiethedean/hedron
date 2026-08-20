@@ -157,6 +157,26 @@ hedron fleet --format json
 |---|---|
 | `--format` | `json` (default) or `human` |
 
+### `package doctor`
+
+Run read-only validation of an external Hedron plugin package source tree
+(DOCTOR-054). This checks package metadata, entry points, bundled assets, typing
+markers, compatibility declarations, and the package's conformance fixtures.
+
+```bash
+hedron package doctor ./my-plugin
+hedron package doctor ./my-plugin --format json
+```
+
+| Argument / flag | Description |
+|---|---|
+| `path` | Package source tree to inspect (default: current directory) |
+| `--format` | `human` (default) or `json` |
+
+The command exits `0` when every package-author check passes and `1` when the
+report contains failures. Unlike `hedron fleet`, it inspects a source tree rather
+than the currently installed package fleet.
+
 ### `preview` / `inspect` / `eject`
 
 ```bash

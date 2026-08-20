@@ -145,9 +145,7 @@ class RequestIndicator(Component[RequestIndicatorProps]):
             label_class = class_names(label_class, "hedron-visually-hidden")
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
-            "class_": class_names(
-                "hedron-request-indicator htmx-indicator", self.props.class_
-            ),
+            "class_": class_names("hedron-request-indicator htmx-indicator", self.props.class_),
             "role": "status",
             "aria": {"live": "polite"},
             "data": {

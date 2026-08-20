@@ -8,7 +8,7 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Living train **0.53.x** (**Published** as `v0.53.0` in-tree; `v0.52.0` on PyPI).
+**Status:** Living train **0.54.x** (**Published** as `v0.54.0` in-tree; `v0.52.0` on PyPI).
 Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below

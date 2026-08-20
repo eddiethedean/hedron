@@ -72,24 +72,24 @@ _ICONS: dict[str, tuple[str, str]] = {
         "Pipeline",
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
         'stroke-linecap="round"><path d="M4 7h6a4 4 0 0 1 4 4v6h6"/><circle cx="4" cy="7" r="1.6"/>'
-        '<circle cx="20" cy="17" r="1.6"/></svg>'
+        '<circle cx="20" cy="17" r="1.6"/></svg>',
     ),
     "team": (
         "Team",
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
         'stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/>'
-        '<path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 6.5a3 3 0 0 1 0 6"/></svg>'
+        '<path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 6.5a3 3 0 0 1 0 6"/></svg>',
     ),
     "settings": (
         "Settings",
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
         'stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/>'
-        '<path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21"/></svg>'
+        '<path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21"/></svg>',
     ),
     "audit": (
         "Audit log",
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
-        'stroke-linecap="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5"/></svg>'
+        'stroke-linecap="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5"/></svg>',
     ),
 }
 

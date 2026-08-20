@@ -272,9 +272,7 @@ def test_description_list_presentation_props_are_additive() -> None:
     plain = render(Page(DescriptionList(("Term", Text("Value"))))).html
     assert "hedron-description-list" not in plain
 
-    rich = render(
-        Page(DescriptionList(("Term", Text("Value")), columns=2, density="compact"))
-    ).html
+    rich = render(Page(DescriptionList(("Term", Text("Value")), columns=2, density="compact"))).html
     assert 'class="hedron-description-list"' in rich
     assert 'data-hedron-columns="2"' in rich
     assert 'data-hedron-density="compact"' in rich
