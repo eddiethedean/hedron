@@ -135,6 +135,21 @@ SATELLITE_REQUIREMENT = re.compile(
     re.I,
 )
 MATURITY_COLLISION = re.compile(r"Supported beta|Maturity SSOT|beachhead Supported", re.I)
+CURRENT_TRAIN_MENTION = re.compile(
+    r"\b(?:current(?:ly)?|living)(?:\s+published)?\s+(?:train|line)\b|"
+    rf"\b(?:current(?:ly)?|living){_MD_GAP}0\.\d+",
+    re.I,
+)
+PYPI_VERSION_CLAIM = re.compile(
+    r"(?:"
+    r"(?<!\blast published\s)"
+    r"(?:\*\*published\*\*|\bpublished\s+as\b|\bon pypi\b|\bpypi\b)[^\n]{0,80}?[`'\"*]*v?(0\.\d+\.\d+)"
+    r"|"
+    r"[`'\"*]*v?(0\.\d+\.\d+)[^\n]{0,40}?\bon pypi\b"
+    r")",
+    re.I,
+)
+TRAIN_LABEL = re.compile(r"\b(0\.\d+(?:\.\d+)?)\s+train\b", re.I)
 
 PUBLIC_DOC_EXCLUDES = {
     "archive",
@@ -183,6 +198,18 @@ def adopter_files() -> list[Path]:
 
 def _normalized_version(value: str) -> str:
     return value[:-2] if value.endswith(".x") else value
+
+
+def _train_minor(value: str) -> str:
+    normalized = _normalized_version(value)
+    parts = normalized.split(".")
+    return f"{parts[0]}.{parts[1]}" if len(parts) >= 2 else normalized
+
+
+def _is_inventory_page(path: Path) -> bool:
+    return (path.parts[:2] == ("docs", "packages")) or (
+        len(path.parts) == 2 and path.parts[0] == "packages" and path.name == "README.md"
+    )
 
 
 CANONICAL_INSTALL_PAGE = Path("docs/getting-started/installation.md")
@@ -241,19 +268,18 @@ def _version_matches_pypi(value: str, facts: ReleaseFacts) -> bool:
     return value in {facts.pypi_version, facts.pypi_version.rsplit(".", 1)[0]}
 
 
-def _line_allows_previous_support(line: str, facts: ReleaseFacts) -> bool:
-    lower = line.lower()
-    return facts.previous_train in line and any(
-        phrase in lower
-        for phrase in (
-            "previous",
-            "prior",
-            "best-effort",
-            "security triage",
-            "upgrade from",
-            "upgrading from",
-        )
-    )
+def _pypi_claim_versions(line: str) -> list[str]:
+    versions: list[str] = []
+    for claim in PYPI_VERSION_CLAIM.finditer(line):
+        pypi_value = next((group for group in claim.groups() if group), None)
+        if pypi_value is None:
+            continue
+        snippet = line[claim.start() : min(len(line), claim.end() + 20)].lower()
+        prefix = line[max(0, claim.start() - 25) : claim.start()].lower()
+        if "in-tree" in snippet or "last published" in prefix:
+            continue
+        versions.append(pypi_value)
+    return versions
 
 
 def _line_describes_pypi_latest(line: str) -> bool:
@@ -314,9 +340,7 @@ def check_text(
                     continue
                 if _line_describes_pypi_latest(scan) and _version_matches_pypi(value, facts):
                     continue
-                if not _version_matches_current(value, facts) and not _line_allows_previous_support(
-                    scan, facts
-                ):
+                if not _version_matches_current(value, facts):
                     failures.append(
                         f"{path}:{index}: current/living claim uses {value}; "
                         f"expected {facts.train_line} or v{facts.published_version}"
@@ -332,6 +356,27 @@ def check_text(
 
         if MATURITY_COLLISION.search(line):
             failures.append(f"{path}:{index}: ambiguous maturity phrase: {line.strip()}")
+
+        if not _is_historical(path) and CURRENT_TRAIN_MENTION.search(line):
+            for pypi_value in _pypi_claim_versions(line):
+                if not _version_matches_pypi(pypi_value, facts):
+                    failures.append(
+                        f"{path}:{index}: current/living train cites PyPI v{pypi_value}; "
+                        f"expected v{facts.pypi_version}"
+                    )
+
+        if (
+            not _is_historical(path)
+            and _is_inventory_page(path)
+            and not re.search(r"\b(?:current(?:ly)?|living)\b", line, re.I)
+        ):
+            for label in TRAIN_LABEL.finditer(line):
+                train = _train_minor(label.group(1))
+                if train != facts.train:
+                    failures.append(
+                        f"{path}:{index}: inventory train label {train} train; "
+                        f"expected {facts.train_line} or mark current/living"
+                    )
 
         if (
             not check_installs

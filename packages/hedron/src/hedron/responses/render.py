@@ -165,6 +165,15 @@ def render_component_response(
 ) -> ComponentResponse:
     from fastapi import HTTPException
 
+    if policy is None and request is not None:
+        app = request.scope.get("app")
+        if app is not None:
+            policy = getattr(
+                app.state, "hedron_security", SecurityPolicy.from_name("standard")
+            )
+        else:
+            policy = SecurityPolicy.from_name("standard")
+
     regions = _normalize_fragment_regions(fragment_regions)
     if request is not None:
         try:

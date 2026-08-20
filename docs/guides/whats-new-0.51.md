@@ -1,7 +1,24 @@
 # What's new in 0.51
 
-Published **0.51.0** on PyPI. Pin `hedron>=0.51.0,<0.52`. Tracking
-[#507](https://github.com/eddiethedean/hedron/issues/507).
+Published **0.51.0** on PyPI (in-tree tip **0.51.1**). Pin `hedron>=0.51.0,<0.52`.
+Tracking [#507](https://github.com/eddiethedean/hedron/issues/507).
+
+## 0.51.1
+
+In-tree bugfix patch (tag/PyPI deferred). Install from PyPI with `hedron>=0.51.0,<0.52`.
+
+- Adaptive concurrency cancels in-flight siblings when any task returns `HED-CONC-0001` (#103).
+- FastAPI fragment render honors `allow_htmx_eval` on `InteractionPolicy` (#74).
+- Job SSE no longer re-emits an acknowledged non-terminal snapshot (#207).
+- HTMX `select_oob` accepts comma-separated `#id` lists (#70); duplicate OOB element ids fail closed (#85).
+- WebSocket channel rejects valid non-object JSON without crashing (#98).
+- Connection registry single-flights concurrent first `get` (#106).
+- Adapter URL reversal uses boundary-safe mount-prefix matching (#202).
+- `SessionState` refreshes after direct session mutation and shares one cache across duplicate dependencies (#149, #150).
+- Workbench resolver preserves an extra public-base prefix; `check`/`run` skip mount rediscovery when Uvicorn set `root_path` (#135, #186).
+- TreeView rejects `javascript:` data sources; HTMX busy clears on send/response errors.
+- Login CSRF, auth rate limiting, Flask CSRF for non-POST unsafe methods, Workbench cookie Path checks (#138, #139, #187, #160).
+- Packaged asset paths cannot escape the static directory; simulator captions are HTML-escaped (#220, #204).
 
 ## 0.51.0
 

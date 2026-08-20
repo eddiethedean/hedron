@@ -16,7 +16,6 @@ from hedron_core.interaction import (
     InteractionPolicy,
     InteractionResult,
     OobUpdate,
-    materialize_interaction_nodes,
 )
 from hedron_elements import (
     BrowserTrace,
@@ -172,19 +171,21 @@ def test_draft_from_json_requires_camel_case_millisecond_envelope() -> None:
 def test_select_oob_parity_and_duplicate_oob_rejection() -> None:
     assert Hx(select_oob="#a, #b").as_html_attrs()["hx-select-oob"] == "#a, #b"
     assert HtmxLink("go", "/", select_oob="#a, #b").props.select_oob == "#a, #b"
-    result = InteractionResult(
-        content="main",
-        region_id="main",
-        policy=InteractionPolicy(
-            declared_regions=(
-                FragmentRegion(id="main", selector="#main"),
-                FragmentRegion(id="side", selector="#side"),
-            )
-        ),
-        oob=(OobUpdate(content="a", element_id="side"), OobUpdate(content="b", element_id="side")),
-    )
     with pytest.raises(ValueError, match="duplicate OobUpdate"):
-        materialize_interaction_nodes(result)
+        InteractionResult(
+            content="main",
+            region_id="main",
+            policy=InteractionPolicy(
+                declared_regions=(
+                    FragmentRegion(id="main", selector="#main"),
+                    FragmentRegion(id="side", selector="#side"),
+                )
+            ),
+            oob=(
+                OobUpdate(content="a", element_id="side"),
+                OobUpdate(content="b", element_id="side"),
+            ),
+        )
 
 
 class Settings(BaseModel):

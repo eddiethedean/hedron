@@ -104,3 +104,35 @@ async def test_opt_out_preserves_semantics() -> None:
     configure_concurrency(enabled=False, max_in_flight=1)
     results = await adaptive_gather(asyncio.sleep(0, result=1), asyncio.sleep(0, result=2))
     assert results == [1, 2]
+
+
+@pytest.mark.anyio
+async def test_issue_103_cancels_siblings_on_overload() -> None:
+    configure_concurrency(enabled=True, max_in_flight=2, degrade_at=1)
+    started = asyncio.Event()
+    release = asyncio.Event()
+    cancelled: list[int] = []
+
+    async def hold(n: int) -> int:
+        started.set()
+        try:
+            await release.wait()
+        except asyncio.CancelledError:
+            cancelled.append(n)
+            raise
+        return n
+
+    gather_task = asyncio.create_task(
+        adaptive_gather(hold(1), hold(2), return_exceptions=True)
+    )
+    await started.wait()
+    results = await gather_task
+
+    overloads = [
+        r
+        for r in results
+        if isinstance(r, HedronError) and r.diagnostic.code == "HED-CONC-0001"
+    ]
+    assert len(overloads) >= 1
+    assert 1 in cancelled
+    release.set()

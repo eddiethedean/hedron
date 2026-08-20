@@ -8,6 +8,7 @@ from hedron_core.htmx.oob import (
     bound_oob_element_id,
     conflicting_select_oob_targets,
     unparsed_select_oob_tokens,
+    validate_unique_oob_element_ids,
 )
 from hedron_core.htmx.policy import (
     OOB_ENVELOPE_TAGS,
@@ -71,17 +72,13 @@ def materialize_interaction_nodes(
     regions = result.policy.declared_regions if result.policy is not None else ()
     if not result.oob:
         return result.content
+    validate_unique_oob_element_ids(result.oob)
     nodes: list[NodeLike] = []
     if result.content is not None:
         nodes.append(result.content)
-    seen_oob_ids: set[str] = set()
     for update in result.oob:
         authorize_oob_update(update, regions=regions)
         bound_id = bound_oob_element_id(update, regions=regions)
-        if bound_id is not None and bound_id in seen_oob_ids:
-            raise ValueError(f"duplicate OobUpdate element_id: {bound_id!r}")
-        if bound_id is not None:
-            seen_oob_ids.add(bound_id)
         if bound_id is not None:
             # Always wrap to the authorized id so caller content cannot emit a
             # different hx-swap-oob target under declared regions.

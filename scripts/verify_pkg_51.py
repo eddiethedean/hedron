@@ -124,19 +124,27 @@ def _check_versions(*, allow_planned: bool) -> None:
         if published != PREDECESSOR:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
         return
-    if published != RELEASE_CANDIDATE or development != RELEASE_CANDIDATE:
+    if not published.startswith("0.51."):
+        raise SystemExit(f"cut published version must be on 0.51.x; found {published!r}")
+    if workspace != published or development != published:
         raise SystemExit(
-            f"cut published/development must be {RELEASE_CANDIDATE}; "
-            f"found {published}/{development}"
+            f"workspace/development must match published {published}; "
+            f"found {workspace}/{development}"
         )
-    if workspace != RELEASE_CANDIDATE:
-        raise SystemExit(f"workspace version must be {RELEASE_CANDIDATE}; found {workspace}")
-    if pypi != RELEASE_CANDIDATE:
-        raise SystemExit(
-            f"pypi_version must be {RELEASE_CANDIDATE} after upload; found {pypi!r}"
-        )
-    if status != "uploaded":
-        raise SystemExit(f"registry_status must be uploaded; found {status!r}")
+    if status == "uploaded":
+        if pypi != published:
+            raise SystemExit(
+                f"pypi_version must match published {published} after upload; found {pypi!r}"
+            )
+    elif status == "deferred":
+        if pypi == published:
+            raise SystemExit(
+                "deferred cut requires pypi_version != published_version until upload"
+            )
+        if not pypi.startswith("0.51."):
+            raise SystemExit(f"deferred pypi_version must stay on 0.51.x; found {pypi!r}")
+    else:
+        raise SystemExit(f"registry_status must be uploaded or deferred; found {status!r}")
     print(f"ok: version honesty (published {published}, pypi {pypi}, {status})")
 
 

@@ -1,6 +1,7 @@
 # Hedron `v0.51` curated extras acceptance
 
-**Status:** Verified in-tree `v0.51.0`. Git tag and PyPI upload deferred (`registry_status = "deferred"`; PyPI `v0.50.1`). Does **not** close `SR-021`.<br>
+**Status:** Verified in-tree `v0.51.1`. **`v0.51.0` on PyPI**; Git tag and PyPI upload for
+0.51.1 are **deferred** (`registry_status = "deferred"`). Does **not** close `SR-021`.<br>
 **Planning baseline:** Published in-tree `v0.50.3`<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.50.3`<br>
 **Target:** Hedron `v0.51.0`<br>

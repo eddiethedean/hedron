@@ -324,7 +324,15 @@ def test_wrap_browser_chrome_escapes_url_and_wraps_island() -> None:
     assert 'data-hedron-sim="unit-hello"' in wrapped
 
 
-def test_render_handler_html_page_vs_fragment() -> None:
+def test_issue_204_sim_caption_rejects_script_breakout() -> None:
+    """#204: browser chrome caption must be HTML-escaped (already fixed)."""
+    wrapped = wrap_browser_chrome(
+        "<div>x</div>",
+        caption="</figcaption><script>alert(1)</script>",
+    )
+    assert "<script>" not in wrapped
+    assert "&lt;/figcaption&gt;" in wrapped or "&lt;script&gt;" in wrapped
+
     page = Page(html.div("body-only", id="service-status"), title="Status")
     page_html = render_handler_html(page, mode=RenderMode.PAGE)
     frag_html = render_handler_html(page, mode=RenderMode.FRAGMENT)

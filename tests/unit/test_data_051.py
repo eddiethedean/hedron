@@ -37,3 +37,5 @@ def test_typeahead_page_abort_and_select_fallback() -> None:
         Typeahead("q", ["a"], source="javascript:alert(1)")
     with pytest.raises(ValueError, match="page_size"):
         Typeahead("q", ["a"], page_size=0)
+    with pytest.raises(ValueError, match="javascript"):
+        TreeView([], source="javascript:alert(1)")

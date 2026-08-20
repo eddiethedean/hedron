@@ -4,7 +4,7 @@ Typed first-class maps, offline geospatial presentation, and `MapInteraction` fo
 
 **Package maturity:** Beta · **Package version:** `0.1.0`
 
-Install with the 0.50 train extra `hedron[maps]` or independently:
+Install with the 0.51 train extra `hedron[maps]` or independently:
 
 ```bash
 pip install "hedron-maps>=0.1.0,<0.2"

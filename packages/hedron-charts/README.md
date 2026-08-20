@@ -42,7 +42,7 @@ pip install "hedron-charts>=0.2.0,<0.3"
 pip install "hedron-charts[matplotlib]>=0.2.0,<0.3"
 ```
 
-Pin the living charts line at `>=0.2.0,<0.3` on the 0.50 train.
+Pin the living charts line at `>=0.2.0,<0.3` on the 0.51 train.
 ### Optional backends
 
 | Extra | Backend |

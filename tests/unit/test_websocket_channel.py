@@ -116,6 +116,30 @@ def test_accept_replies_pong_and_runs_producer_concurrently() -> None:
     assert {"kind": "pong"} in sent
 
 
+def test_issue_98_rejects_non_object_json_frames() -> None:
+    """#98: scalar JSON frames must not crash the channel loop."""
+    channel = PageSessionChannel(
+        channel_id="c1",
+        declared_regions=frozenset({"status"}),
+        declared_client_reads=(),
+    )
+    websocket = MagicMock()
+    websocket.headers = {"origin": "https://example.com"}
+    websocket.url = type("U", (), {"hostname": "example.com", "scheme": "wss", "port": None})()
+    websocket.accept = AsyncMock()
+    websocket.close = AsyncMock()
+    websocket.send_text = AsyncMock()
+    websocket.receive_text = AsyncMock(side_effect=[json.dumps(["not", "an", "object"])])
+
+    async def _run() -> None:
+        await accept_page_session_channel(websocket, channel)  # type: ignore[arg-type]
+
+    asyncio.run(_run())
+    websocket.close.assert_awaited()
+    sent = [json.loads(call.args[0]) for call in websocket.send_text.await_args_list]
+    assert any(msg.get("detail") == "invalid json message" for msg in sent)
+
+
 def test_send_region_update_encodes_payload() -> None:
     channel = PageSessionChannel(
         channel_id="c1",

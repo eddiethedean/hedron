@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.51.1] — 2026-08-20
+
+### Changed
+- Coordinated train tip `0.51.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Adaptive concurrency cancels in-flight siblings when any task returns `HED-CONC-0001` (#103).
+- FastAPI fragment render honors `allow_htmx_eval` on `InteractionPolicy` (#74).
+- Job SSE no longer re-emits an acknowledged non-terminal snapshot (#207).
+- HTMX `select_oob` accepts comma-separated `#id` lists (#70); duplicate OOB element ids fail closed (#85).
+- WebSocket channel rejects valid non-object JSON without crashing (#98).
+- Connection registry single-flights concurrent first `get` (#106).
+- Adapter URL reversal uses boundary-safe mount-prefix matching (#202).
+- `SessionState` refreshes after direct session mutation and shares one cache across duplicate dependencies (#149, #150).
+- Workbench resolver preserves an extra public-base prefix; `check`/`run` skip mount rediscovery when Uvicorn set `root_path` (#135, #186).
+- TreeView rejects `javascript:` data sources; HTMX busy clears on send/response errors.
+- Login CSRF accepts a valid cookie when session state differs (#138); auth rate limiter evicts stale IP keys (#139).
+- Flask route CSRF covers non-POST unsafe methods (#187); Workbench cookie `Path` check rejects substring matches (#160).
+- Packaged asset paths cannot escape the static directory (#220); simulator browser captions are HTML-escaped (#204).
+
 ## [0.51.0] — 2026-08-19
 
 ### Changed

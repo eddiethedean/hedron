@@ -51,6 +51,27 @@ def unparsed_select_oob_tokens(select_oob: str | None) -> frozenset[str]:
     return frozenset(unparsed)
 
 
+def duplicate_oob_element_ids(oob: Sequence[OobUpdate] | None) -> frozenset[str]:
+    """Return ``element_id`` values that appear on more than one ``OobUpdate``."""
+    if not oob:
+        return frozenset()
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for update in oob:
+        bound = bound_oob_element_id(update, regions=())
+        if bound is not None:
+            if bound in seen:
+                duplicates.add(bound)
+            seen.add(bound)
+    return frozenset(duplicates)
+
+
+def validate_unique_oob_element_ids(oob: Sequence[OobUpdate] | None) -> None:
+    """Fail closed when multiple OOB updates bind the same ``element_id``."""
+    for bound_id in duplicate_oob_element_ids(oob):
+        raise ValueError(f"duplicate OobUpdate element_id: {bound_id!r}")
+
+
 def oob_update_element_ids(oob: Sequence[OobUpdate] | None) -> frozenset[str]:
     """Return element ids that ``OobUpdate`` values will bind for ``hx-swap-oob``."""
     if not oob:

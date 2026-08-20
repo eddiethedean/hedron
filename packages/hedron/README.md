@@ -15,7 +15,9 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-Requires Python 3.11–3.14. Pin `hedron>=0.51.0,<0.52`. The fastest path uses
+Requires Python 3.11–3.14. Pin `hedron>=0.51.0,<0.52` from PyPI. The living in-tree tip
+is **`v0.51.1`**; Git tag and PyPI upload for that patch are **deferred** until maintainers
+publish the next wheel. The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash

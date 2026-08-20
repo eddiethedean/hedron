@@ -108,3 +108,19 @@ def test_mcp_rejects_oversized_body() -> None:
         headers={"x-hedron-principal": "alice"},
     )
     assert oversized.status_code == 413
+
+
+def test_issue_220_packaged_asset_path_rejects_escape() -> None:
+    """#220: packaged static assets must stay under static/ (already fixed)."""
+    from hedron_elements.assets import asset_path as elements_asset_path
+    from hedron_sim.assets import asset_path as sim_asset_path
+
+    with pytest.raises(HedronError):
+        elements_asset_path("/etc/passwd")
+    with pytest.raises(HedronError):
+        elements_asset_path("../plugin.py")
+    with pytest.raises(HedronError):
+        sim_asset_path("/etc/passwd")
+    with pytest.raises(HedronError):
+        sim_asset_path("../embed.py")
+

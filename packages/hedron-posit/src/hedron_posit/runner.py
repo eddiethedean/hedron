@@ -104,8 +104,11 @@ def export_hedron_state(
         env["FASTAPI_WORKBENCH_ROOT_PATH"] = resolved.browser_mount
         env["FASTAPI_WORKBENCH_RESOLVED_MOUNT"] = resolved.browser_mount
     if resolved.active and resolved.external_origin:
-        env[HEDRON_PUBLIC_BASE] = resolved.external_origin
-        env["FASTAPI_WORKBENCH_RESOLVED_PUBLIC_BASE"] = resolved.external_origin
+        origin = resolved.external_origin.rstrip("/")
+        mount = resolved.browser_mount
+        public_base = f"{origin}{mount}" if mount and mount != "/" else origin
+        env[HEDRON_PUBLIC_BASE] = public_base
+        env["FASTAPI_WORKBENCH_RESOLVED_PUBLIC_BASE"] = public_base
     env[RESOLVED_MODE_ENV] = resolved.mode.value
     env[RESOLVED_SOURCE_ENV] = resolved.source
     env["FASTAPI_WORKBENCH_RESOLVED_MODE"] = resolved.mode.value

@@ -1,10 +1,38 @@
-# Upgrade to Hedron 0.50
+# Upgrade to Hedron 0.51
 
-This guide covers an application upgrade onto the **0.50.x** train
-(`v0.50.1` on PyPI; in-tree `v0.50.3`). Public-index notes: [Installation](../getting-started/installation.md).
-New applications should use [Build your first app](../getting-started/quickstart.md).
+This guide covers an application upgrade onto the **0.51.x** train
+(in-tree `v0.51.1`; **`v0.51.0` on PyPI**). Public-index notes:
+[Installation](../getting-started/installation.md). New applications should use
+[Build your first app](../getting-started/quickstart.md).
+
+## 0.50 → 0.51
+
+Pin `hedron>=0.51.0,<0.52` (or the in-tree floor when developing Hedron itself).
+See [What's new in 0.51](whats-new-0.51.md).
+
+1. **Curated extras depth (RFC-0078 / D-087 / D-088).** `ExtrasFeature` is the
+   `hedron-extras` inventory authority; shared extras HTMX hosts reconnect after swaps.
+   JSON/Data/Chart workbenches stay cancelable and revision-aware.
+2. **Sandbox stays opt-in.** Default plugin registration requires
+   `hedron_extras_sandbox` / `HEDRON_EXTRAS_SANDBOX=1`; `BrowserPythonSandbox` stays
+   Experimental.
+3. **Companion flagship authoring (#504–#506).** Password show/hide, opt-in `SwapReveal`,
+   and generic HTMX busy via `BusyRegion` / `Hx(busy=...)`.
+4. **0.50 Explorer and HTMX contracts remain.** No rollback required for apps that never
+   adopted `hedron[extras]`; add the extra when you want the new widgets.
+
+```bash
+python -m pip install -U "hedron>=0.51.0,<0.52"
+python -m pip install -U "hedron[extras]>=0.51.0,<0.52"
+```
 
 ## Summary
+
+Hedron 0.51.x ships curated extras and companion HTMX authoring on top of the 0.50
+Explorer architecture cut:
+
+- `ExtrasFeature`, shared extras HTMX lifecycle, workbench/image/input depth, sandbox opt-in
+- Accessible password toggle, swap reveal, and generic HTMX busy (#504–#506)
 
 Hedron 0.50.x ships Explorer architecture and companion HTMX authoring on top of the
 0.49 FastAPI/Pydantic convergence:
@@ -158,6 +186,7 @@ Hedron 0.46.x added opt-in package-native features that compile onto existing
 
 ## See also
 
+- [What's new in 0.51](whats-new-0.51.md)
 - [What's new in 0.50](whats-new-0.50.md)
 - [What's new in 0.49](whats-new-0.49.md)
 - [What's new in 0.48](whats-new-0.48.md)

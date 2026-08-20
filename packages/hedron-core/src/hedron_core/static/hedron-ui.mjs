@@ -172,13 +172,6 @@ document.body.addEventListener("htmx:afterSwap", (event) => {
   }
 });
 
-document.body.addEventListener("htmx:responseError", (event) => {
-  applyErrorTemplate(event.detail?.elt);
-});
-document.body.addEventListener("htmx:sendError", (event) => {
-  applyErrorTemplate(event.detail?.elt);
-});
-
 document.addEventListener("click", (event) => {
   if (!(event.target instanceof Element)) return;
   const toggle = event.target.closest("[data-hedron-password-toggle]");
@@ -225,6 +218,16 @@ document.body.addEventListener("htmx:beforeRequest", (event) => {
   if (marked) setBusy(marked, true);
 });
 document.body.addEventListener("htmx:afterRequest", (event) => {
+  const marked = busyMarked(event.detail?.elt);
+  if (marked) setBusy(marked, false);
+});
+document.body.addEventListener("htmx:responseError", (event) => {
+  applyErrorTemplate(event.detail?.elt);
+  const marked = busyMarked(event.detail?.elt);
+  if (marked) setBusy(marked, false);
+});
+document.body.addEventListener("htmx:sendError", (event) => {
+  applyErrorTemplate(event.detail?.elt);
   const marked = busyMarked(event.detail?.elt);
   if (marked) setBusy(marked, false);
 });

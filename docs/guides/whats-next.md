@@ -6,11 +6,11 @@ ledger (gate IDs, RFCs) lives on GitHub:
 Capability maturity for *this* train: [What’s ready](whats-ready.md).
 Install pins: [Installation](../getting-started/installation.md).
 
-## Planned after 0.50
+## Planned after 0.51
 
 | Topic | Disposition |
 |---|---|
-| Curated extras depth / experimental-UI (0.51) | **In-tree `v0.51.0`** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507)); companion [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506); tag/PyPI deferred |
+| Curated extras depth / experimental-UI (0.51) | **Published `v0.51.0` on PyPI** (RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507)); in-tree **`v0.51.1`** patch deferred |
 | Conformance kit and Node/Java runtime (0.52) | **Planned**; owning RFC required |
 | Notebook / simulation / sample-kit refresh (0.53) | **Planned**; owning RFC required |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |

@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.51.1] — 2026-08-20
+
+### Changed
+- Coordinated train tip `0.51.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- See flagship `hedron` changelog for the full 0.51.1 bugfix list.
+
 ## [0.51.0] — 2026-08-19
 
 ### Changed

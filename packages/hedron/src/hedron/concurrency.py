@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 from collections.abc import Awaitable
 from contextvars import ContextVar
 from dataclasses import dataclass
 from typing import Any
 
-from hedron_core.diagnostics import error
+from hedron_core.diagnostics import HedronError, error
 
 __all__ = [
     "ConcurrencyConfig",
@@ -151,10 +152,24 @@ async def adaptive_gather(
     if not limiter.config.enabled:
         return list(await asyncio.gather(*aws, return_exceptions=return_exceptions))
 
+    overload_event = asyncio.Event()
+
+    async def _cancel_siblings_on_overload() -> None:
+        await overload_event.wait()
+        for task in tasks:
+            if not task.done():
+                task.cancel()
+
     async def _wrapped(aw: Awaitable[Any]) -> Any:
-        return await limiter.run(aw)
+        try:
+            return await limiter.run(aw)
+        except HedronError as exc:
+            if exc.diagnostic.code == "HED-CONC-0001":
+                overload_event.set()
+            raise
 
     tasks = [asyncio.create_task(_wrapped(aw)) for aw in aws]
+    cancel_task = asyncio.create_task(_cancel_siblings_on_overload())
     try:
         return list(await asyncio.gather(*tasks, return_exceptions=return_exceptions))
     except BaseException:
@@ -163,3 +178,7 @@ async def adaptive_gather(
                 task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
         raise
+    finally:
+        cancel_task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await cancel_task

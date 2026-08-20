@@ -3,6 +3,24 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.51.1 — 2026-08-20
+
+In-tree bugfix patch on the 0.51 train. Git tag and PyPI upload are **deferred**; install
+from PyPI with `hedron>=0.51.0,<0.52`. [Installation](../getting-started/installation.md).
+
+- Adaptive concurrency cancels in-flight siblings when any task returns `HED-CONC-0001` (#103).
+- FastAPI fragment render honors `allow_htmx_eval` on `InteractionPolicy` (#74).
+- Job SSE no longer re-emits an acknowledged non-terminal snapshot (#207).
+- HTMX `select_oob` accepts comma-separated `#id` lists (#70); duplicate OOB element ids fail closed (#85).
+- WebSocket channel rejects valid non-object JSON without crashing (#98).
+- Connection registry single-flights concurrent first `get` (#106).
+- Adapter URL reversal uses boundary-safe mount-prefix matching (#202).
+- `SessionState` refreshes after direct session mutation and shares one cache across duplicate dependencies (#149, #150).
+- Workbench resolver preserves an extra public-base prefix; `check`/`run` skip mount rediscovery when Uvicorn set `root_path` (#135, #186).
+- TreeView rejects `javascript:` data sources; HTMX busy clears on send/response errors.
+- Login CSRF, auth rate limiting, Flask CSRF for non-POST unsafe methods, Workbench cookie Path checks (#138, #139, #187, #160).
+- Packaged asset paths cannot escape the static directory; simulator captions are HTML-escaped (#220, #204).
+
 ## 0.51.0 — 2026-08-19
 
 Published curated extras cut. Install from PyPI with `hedron>=0.51.0,<0.52`.
@@ -14,8 +32,8 @@ Published curated extras cut. Install from PyPI with `hedron>=0.51.0,<0.52`.
 
 ## 0.50.3 — 2026-08-19
 
-Bugfix patch on the 0.50 train. Pin `hedron>=0.51.0,<0.52` from PyPI until the
-0.50.3 wheel lands. [Installation](../getting-started/installation.md).
+Bugfix patch on the 0.50 train. Pin `hedron>=0.50.3,<0.51` for this in-tree tip.
+[Installation](../getting-started/installation.md).
 
 - `@command` no longer opts out of HTMX target authorization; compiled refresh/patch
   policies declare owned hosts and stay fail-closed.
@@ -31,8 +49,8 @@ Bugfix patch on the 0.50 train. Pin `hedron>=0.51.0,<0.52` from PyPI until the
 ## 0.50.2 — 2026-08-19
 
 In-tree correctness and security patch on the 0.50 train. Git tag and PyPI upload
-are **deferred**; install from PyPI with `hedron>=0.51.0,<0.52` until 0.50.2 is
-uploaded. [Installation](../getting-started/installation.md).
+are **deferred**; pin `hedron>=0.50.2,<0.51` for this tip.
+[Installation](../getting-started/installation.md).
 
 - Login CSRF and OIDC state/nonce compare never 500 on length mismatch.
 - OIDC `extra_params` cannot override protocol keys; logout redirect is allowlisted.
@@ -46,28 +64,20 @@ uploaded. [Installation](../getting-started/installation.md).
   `request`; Flask cache-on-auth-error is private; `process_image` path jail; Redis
   SET requires MULTI; plugin specifier parse is `HED-PLUGIN-FAILED`.
 
-```bash
-python -m pip install -U "hedron>=0.51.0,<0.52"
-```
-
 ## 0.50.1 — 2026-08-18
 
-Bugfix patch on the 0.50 train. Pin `hedron>=0.51.0,<0.52`.
+Bugfix patch on the 0.50 train. Pin `hedron>=0.50.1,<0.51`.
 This version is on PyPI: [Installation](../getting-started/installation.md).
 
 - Formula CSV/spreadsheet prefixes reject Unicode combining marks; `evaluate_formula` no longer coerces bool/junk to `0.0`.
 - HTMX `hx-target="this"` is a closed relative keyword; control `id=` is accepted on Button/LinkButton/IconButton.
 - Enabled TerminalView POST includes CSRF; Field*/Disclosure/Dialog frozen markup emit live attrs; ActionAsync accepts `hx-target`.
-- Charts: tabular fallback, negative-Y SVG domain, GreatTables `supports()`, missing-extra pin `hedron[charts]>=0.51.0,<0.52`.
+- Charts: tabular fallback, negative-Y SVG domain, GreatTables `supports()`, missing-extra pin `hedron[charts]>=0.50.1,<0.51`.
 - Explorer: dashboard graph from `app.state`, packages render Hedron nodes, maps `plan_facts`, security AUDIT list; `hedron-explorer[fastapi]` matches FastAPI 0.141+.
-
-```bash
-python -m pip install -U "hedron>=0.51.0,<0.52"
-```
 
 ## 0.50.0 — 2026-08-18
 
-Explorer architecture and HTMX authoring cut. Pin `hedron>=0.51.0,<0.52`.
+Explorer architecture and HTMX authoring cut. Pin `hedron>=0.50.0,<0.51`.
 [Installation](../getting-started/installation.md).
 
 - Command `effect` / `after`, history restore, Lazy error templates, dependent Select, and danger toast dismiss compile as documented.
@@ -80,16 +90,8 @@ Explorer architecture and HTMX authoring cut. Pin `hedron>=0.51.0,<0.52`.
 - Bounded interaction lab and read-only package health.
 - HTMX authoring primitives (#496–#500, #502, #503).
 
-Pin this docs tree with `hedron>=0.51.0,<0.52`. Charts remain on
+Pin this docs tree with `hedron>=0.50.0,<0.51`. Charts remain on
 `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
-
-```bash
-python -m pip install -U "hedron>=0.51.0,<0.52"
-python -m pip install "hedron[maps]>=0.51.0,<0.52"
-python -m pip install "hedron[data]>=0.51.0,<0.52"
-python -m pip install "hedron[charts]>=0.51.0,<0.52"
-python -m pip install "hedron-charts>=0.2.0,<0.3"
-```
 
 ## 0.49.1 — 2026-08-18
 

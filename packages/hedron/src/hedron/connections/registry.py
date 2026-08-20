@@ -114,6 +114,7 @@ class ConnectionRegistry:
         self._instances: dict[str, object] = {}
         self._secret_refs: dict[str, Mapping[str, str]] = {}
         self._lock = threading.RLock()
+        self._pending: dict[str, threading.Event] = {}
 
     def register(
         self,
@@ -173,9 +174,35 @@ class ConnectionRegistry:
         with self._lock:
             if name not in self._factories:
                 raise KeyError(f"unknown connection {name!r}")
-            if name not in self._instances:
-                self._instances[name] = self._factories[name]()
-            return self._instances[name]
+            if name in self._instances:
+                return self._instances[name]
+            pending = self._pending.get(name)
+            if pending is None:
+                pending = threading.Event()
+                self._pending[name] = pending
+                creator = True
+            else:
+                creator = False
+
+        if not creator:
+            pending.wait()
+            with self._lock:
+                return self._instances[name]
+
+        try:
+            instance = self._factories[name]()
+        except Exception:
+            with self._lock:
+                self._pending.pop(name, None)
+            pending.set()
+            raise
+
+        with self._lock:
+            self._instances.setdefault(name, instance)
+            self._pending.pop(name, None)
+            result = self._instances[name]
+        pending.set()
+        return result
 
     def health(self, name: str) -> bool:
         """Run the registered healthcheck (or ``True`` when none is configured).

@@ -68,6 +68,7 @@ Shipping? [Ship](ship.md).
 
 - [Use plugins](plugin-consumer.md)
 - [Author plugins](plugin-authoring.md)
+- [Curated extras (0.51)](../api/EXTRAS.md)
 
 ## Other
 

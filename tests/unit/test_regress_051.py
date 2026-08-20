@@ -38,3 +38,16 @@ def test_050_packet_remains() -> None:
     assert "prefers-reduced-motion" in ui
     assert "htmx:beforeRequest" in ui
     assert "busyCounts" in ui
+
+
+def test_send_error_handler_clears_busy() -> None:
+    for rel in (
+        "packages/hedron-core/src/hedron_core/static/hedron-ui.mjs",
+        "packages/hedron/src/hedron/static/hedron-ui.mjs",
+    ):
+        ui = Path(rel).read_text(encoding="utf-8")
+        for event in ("htmx:sendError", "htmx:responseError"):
+            idx = ui.index(event)
+            block = ui[idx : idx + 400]
+            assert "setBusy" in block, f"{rel} {event} must clear busy"
+            assert "false" in block, f"{rel} {event} must decrement busy"

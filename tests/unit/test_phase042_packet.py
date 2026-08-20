@@ -143,7 +143,7 @@ def test_phase042_living_tip_or_cut() -> None:
         assert version.startswith("0.50.")
     else:
         assert published.startswith("0.51.")
-        assert living_published_baseline() == "v0.51.0"
+        assert living_published_baseline() == f"v{published}"
         assert release["release"]["train"] == "0.51"
         assert version.startswith("0.51.")
 

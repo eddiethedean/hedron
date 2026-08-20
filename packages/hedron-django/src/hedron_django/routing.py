@@ -15,6 +15,7 @@ from django.urls import reverse
 from hedron_core.adapter import UrlReverseRequest
 from hedron_core.component import Component
 from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.mount import prefix_local_path
 from hedron_core.rendering import RenderResult
 from hedron_django.csrf import DjangoCsrfError, seed_csrf_cookie, validate_csrf
 from hedron_django.responses import component_response, interaction_response
@@ -36,13 +37,9 @@ class DjangoUrlReverser:
     def reverse(self, request: UrlReverseRequest) -> str:
         path = reverse(request.name, args=request.args, kwargs=dict(request.kwargs))
         if request.script_name:
-            prefix = request.script_name.rstrip("/")
-            if path != prefix and not path.startswith(prefix + "/"):
-                path = f"{prefix}{path}"
+            path = prefix_local_path(path, request.script_name)
         if request.root_path:
-            root = request.root_path.rstrip("/")
-            if path != root and not path.startswith(root + "/"):
-                path = f"{root}{path}"
+            path = prefix_local_path(path, request.root_path)
         return path
 
 

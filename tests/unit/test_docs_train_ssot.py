@@ -187,3 +187,40 @@ def test_security_policy_rejects_stale_support_rows() -> None:
         Path("SECURITY.md"),
         "Security fixes land on 0.38; 0.35 receives best-effort triage.",
     )
+
+
+def test_pypi_claim_on_current_train_must_match_pypi_version() -> None:
+    facts = ssot.FACTS
+    stale = (
+        f"Maintained for the current **{facts.train_line}** train "
+        f"(**Published** `v0.50.1` on PyPI).\n"
+    )
+    assert failures(stale)
+    ok = (
+        f"Living train: **{facts.train_line}** (published **v{facts.pypi_version}**).\n"
+    )
+    assert not failures(ok)
+    in_tree_ok = (
+        f"Living train **{facts.train_line}** (**Published** as `v{facts.published_version}` "
+        f"in-tree; `v{facts.pypi_version}` on PyPI).\n"
+    )
+    assert not failures(in_tree_ok)
+
+
+def test_living_train_prior_on_same_line_does_not_exempt_stale_minor() -> None:
+    prev = ssot.FACTS.previous_train
+    stale = (
+        f"**Status:** Living train **{prev}.x** (**Published** as `v{prev}.3`). "
+        f"Prior: 0.49 FastAPI/Pydantic.\n"
+    )
+    assert failures(stale)
+
+
+def test_inventory_train_label_requires_current_train_or_living() -> None:
+    facts = ssot.FACTS
+    stale = f"Charts adapters ship on the {facts.previous_train} train.\n"
+    assert ssot.check_text(Path("docs/packages/index.md"), stale)
+    ok = f"Charts adapters ship on the current {facts.train} train.\n"
+    assert not ssot.check_text(Path("docs/packages/index.md"), ok)
+    living = f"Pin charts on the living {facts.train} train.\n"
+    assert not ssot.check_text(Path("packages/hedron-charts/README.md"), living)

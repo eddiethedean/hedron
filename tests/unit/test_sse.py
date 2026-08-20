@@ -175,6 +175,46 @@ def test_poll_interval_clamps_non_positive_values() -> None:
     assert _poll_interval(0.2, retry_after=2.0) == 0.2
 
 
+def test_issue_207() -> None:
+    backend = InMemoryJobBackend()
+    set_job_backend(backend)
+    handle = backend.submit("demo", {}, auth_subject="alice")
+    status = backend.get(handle.job_id)
+    assert status is not None
+    assert status.state is JobState.QUEUED
+    event_id = f"{status.job_id}:{status.updated_at}"
+
+    gets = {"n": 0}
+    real_get = backend.get
+
+    def _get(job_id: str, **kwargs):
+        gets["n"] += 1
+        if gets["n"] >= 3:
+            backend.mark(job_id, JobState.SUCCEEDED, result={"ok": True})
+        return real_get(job_id)
+
+    backend.get = _get  # type: ignore[method-assign]
+
+    app = FastAPI()
+
+    @app.get("/sse")
+    def _endpoint(request: Request):
+        return job_status_sse_response(
+            handle.job_id,
+            backend=backend,
+            request=request,
+            auth_subject="alice",
+            poll_interval_seconds=0.01,
+        )
+
+    with TestClient(app) as client:
+        body = client.get("/sse", headers={"Last-Event-ID": event_id}).content.decode()
+
+    assert '"state":"queued"' not in body
+    assert "succeeded" in body
+    assert "hedron-close" in body
+
+
 def test_job_status_sse_zero_poll_interval_no_busy_loop(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

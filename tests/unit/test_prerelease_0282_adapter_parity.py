@@ -76,6 +76,32 @@ def test_async_connection_dispose_surfaces_errors() -> None:
         asyncio.run(_dispose_instance_async(Boom()))
 
 
+def test_fastapi_honors_allow_htmx_eval_policy() -> None:
+    from dataclasses import replace
+    from unittest.mock import patch
+
+    from hedron_core.htmx_eval import htmx_eval_allowed
+    from hedron_core.security_policy import SecurityPolicy
+
+    policy = replace(SecurityPolicy.from_name("standard"), allow_htmx_eval=True)
+    app = Hedron(title="t", security=policy, explorer="off", session_secret="test")
+    request = _request()
+    request.scope["app"] = app
+
+    captured: list[bool] = []
+
+    def _capture(*args: object, **kwargs: object):
+        captured.append(htmx_eval_allowed())
+        from hedron_core.rendering import render as real_render
+
+        return real_render(*args, **kwargs)
+
+    with patch("hedron.responses.render.render", side_effect=_capture):
+        render_component_response(Text("hello"), request=request)
+    assert captured == [True]
+    assert htmx_eval_allowed() is False
+
+
 def test_flask_honors_allow_htmx_eval_policy() -> None:
     pytest.importorskip("flask")
     from dataclasses import replace

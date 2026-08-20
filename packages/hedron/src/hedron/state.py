@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 from functools import lru_cache
 from typing import Any, Generic, TypeVar, get_origin
 
@@ -12,11 +13,13 @@ T = TypeVar("T")
 
 __all__ = ["SessionState", "session_state"]
 
+_STATE_CACHE = "_hedron_session_state"
+
 
 class SessionState(Generic[T]):
     """Thin typed facade over the host framework session."""
 
-    __slots__ = ("_request", "_key", "_adapter", "_value")
+    __slots__ = ("_request", "_key", "_adapter", "_value", "_snapshot")
 
     def __init__(self, request: Request, key: str, annotation: type[T]) -> None:
         self._request = request
@@ -27,6 +30,7 @@ class SessionState(Generic[T]):
             self._value = self._default(annotation)
         else:
             self._value = self._adapter.validate_python(raw)
+        self._snapshot = copy.deepcopy(raw)
 
     @staticmethod
     def _has_session(request: Request) -> bool:
@@ -36,6 +40,14 @@ class SessionState(Generic[T]):
 
     @property
     def value(self) -> T:
+        if self._has_session(self._request):
+            raw = self._request.session.get(self._key)
+            if raw != self._snapshot:
+                if raw is None:
+                    self._value = self._default(self._adapter._type)  # type: ignore[attr-defined]
+                else:
+                    self._value = self._adapter.validate_python(raw)
+                self._snapshot = copy.deepcopy(raw)
         return self._value
 
     @value.setter
@@ -52,6 +64,7 @@ class SessionState(Generic[T]):
             self._request.session[self._key] = validated.model_dump(mode="json")
         else:
             self._request.session[self._key] = validated
+        self._snapshot = copy.deepcopy(self._request.session.get(self._key))
 
     def clear(self) -> None:
         self._value = self._default(self._adapter._type)  # type: ignore[attr-defined]
@@ -60,6 +73,7 @@ class SessionState(Generic[T]):
                 "SessionState.clear requires SessionMiddleware (no 'session' in request scope)."
             )
         self._request.session.pop(self._key, None)
+        self._snapshot = None
 
     @staticmethod
     def _default(annotation: type[Any]) -> Any:
@@ -72,7 +86,18 @@ class SessionState(Generic[T]):
 @lru_cache(maxsize=256)
 def _session_dependency(key: str, annotation: type[T]) -> Any:
     async def dependency(request: Request) -> SessionState[T]:
-        return SessionState(request, key, annotation)
+        cache: dict[tuple[str, type[Any]], SessionState[Any]] | None = getattr(
+            request.state, _STATE_CACHE, None
+        )
+        if cache is None:
+            cache = {}
+            setattr(request.state, _STATE_CACHE, cache)
+        token = (key, annotation)
+        state = cache.get(token)
+        if state is None:
+            state = SessionState(request, key, annotation)
+            cache[token] = state
+        return state
 
     return dependency
 

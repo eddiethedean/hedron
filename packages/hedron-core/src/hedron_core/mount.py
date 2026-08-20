@@ -7,6 +7,7 @@ from urllib.parse import unquote
 __all__ = [
     "cookie_path_for_mount",
     "normalize_mount_path",
+    "path_has_mount_prefix",
     "prefix_local_path",
 ]
 
@@ -90,6 +91,16 @@ def cookie_path_for_mount(mount: str) -> str:
     return normalized if normalized else "/"
 
 
+def path_has_mount_prefix(path: str, mount: str) -> bool:
+    """Return True when ``path`` is exactly ``mount`` or a child of ``mount``."""
+    normalized = normalize_mount_path(mount)
+    if not normalized:
+        return False
+    suffix_at = min((index for token in "?#" if (index := path.find(token)) >= 0), default=len(path))
+    url_path = path[:suffix_at]
+    return url_path == normalized or url_path.startswith(normalized + "/")
+
+
 def prefix_local_path(url: str, mount: str) -> str:
     """Prefix a local absolute path with ``mount`` once (no double-prefix)."""
     from hedron_core.htmx_contract import is_local_path
@@ -101,9 +112,7 @@ def prefix_local_path(url: str, mount: str) -> str:
         return url
     if normalized.startswith("//") or "://" in normalized:
         return url
-    suffix_at = min((index for token in "?#" if (index := url.find(token)) >= 0), default=len(url))
-    url_path = url[:suffix_at]
-    if url_path == normalized or url_path.startswith(normalized + "/"):
+    if path_has_mount_prefix(url, normalized):
         return url
     prefixed = normalized + "/" if url == "/" else normalized + url
     if not is_local_path(prefixed):

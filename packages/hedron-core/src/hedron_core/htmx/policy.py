@@ -231,6 +231,9 @@ class InteractionResult:
                     "InteractionResult.oob items must be OobUpdate instances; "
                     f"got {[type(item).__name__ for item in bad]}"
                 )
+            from hedron_core.htmx.oob import validate_unique_oob_element_ids
+
+            validate_unique_oob_element_ids(self.oob)
         if self.select_oob is not None:
             from hedron_core.htmx.oob import unparsed_select_oob_tokens
 

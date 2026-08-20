@@ -1,6 +1,6 @@
 [project]
 name = "hedron-posit"
-version = "0.51.0"
+version = "0.51.1"
 description = "Unified Posit Workbench / Connect deployment adapter for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"

@@ -8,14 +8,16 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Living train **0.50.x** (**Published** as `v0.50.3`). Prior: 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
+**Status:** Living train **0.51.x** (**Published** as `v0.51.1` in-tree; `v0.51.0` on PyPI).
+Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
+live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
 (D-038: no calendar `1.0` scheduled; D-053 / RFC-0056; D-054 / RFC-0057).
-**Version:** `0.50.x` / catalog baseline
-`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`+`0.24`+`0.25`+`0.26`+`0.27`+`0.28`+`0.50`
+**Version:** `0.51.x` / catalog baseline
+`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`+`0.24`+`0.25`+`0.26`+`0.27`+`0.28`+`0.50`+`0.51`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`0.50.x` train on `main`. Levels apply to documented contracts; symbols not listed here are
+`0.51.x` train on `main`. Levels apply to documented contracts; symbols not listed here are
 **internal** unless a later phase explicitly promotes them.
 
 </details>
