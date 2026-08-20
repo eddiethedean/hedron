@@ -24,8 +24,24 @@ def _declared_selectors_for_routes() -> dict[str, set[str]]:
         for region in regions:
             selectors.add(region.selector)
         inference = dict(getattr(route, "htmx_inference", {}) or {})
-        raw = inference.get("fragment_regions") or ""
-        if isinstance(raw, str) and raw.startswith("{"):
+        raw = inference.get("fragment_regions")
+        if isinstance(raw, list):
+            for item in raw:
+                if isinstance(item, dict):
+                    selector = item.get("selector")
+                    if isinstance(selector, str) and selector:
+                        selectors.add(selector)
+        elif isinstance(raw, dict):
+            for _rid, value in raw.items():
+                if isinstance(value, dict):
+                    selector = value.get("selector")
+                    if isinstance(selector, str) and selector:
+                        selectors.add(selector)
+                else:
+                    selector = str(value).split("|", 1)[0]
+                    if selector:
+                        selectors.add(selector)
+        elif isinstance(raw, str) and raw.startswith("{"):
             import ast
 
             try:
@@ -652,10 +668,13 @@ def _compat_info_diagnostics(
 
 
 def _cmd_check(args: argparse.Namespace) -> int:
+    from hedron import __version__ as hedron_version
     from hedron_core import (
+        DiagnosticSeverity,
         diagnostics_to_json,
         diagnostics_to_sarif,
         diagnostics_to_text,
+        filter_by_applicability,
         meets_severity_threshold,
         normalize_severity_alias,
     )
@@ -813,6 +832,9 @@ def _cmd_check(args: argparse.Namespace) -> int:
             },
         )
 
+    check_version = getattr(args, "version", None) or hedron_version
+    diags = list(filter_by_applicability(diags, check_version))
+    info_diags = list(filter_by_applicability(info_diags, check_version))
     all_diags = [*diags, *info_diags]
 
     threshold = normalize_severity_alias(args.severity)

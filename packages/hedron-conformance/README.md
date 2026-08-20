@@ -20,6 +20,9 @@ Phase 0.52 authority contract:
 [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
 [#522](https://github.com/eddiethedean/hedron/issues/522).
 
+Phase 0.53 Application DX Stage 1 lives in the flagship package — see
+[Application DX API](https://hedron.readthedocs.io/en/latest/api/APPLICATION_DX/).
+
 ## Install
 
 ```bash

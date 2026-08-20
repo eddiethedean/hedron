@@ -18,9 +18,10 @@ wheel lands. [What’s new in 0.53](whats-new-0.53.md).
 
 ## 0.52.0 — 2026-08-20
 
-In-tree Published cut for conformance authority and Posit lifecycle
-(RFC-0079 / D-089 / D-090). Pin `hedron>=0.52.0,<0.53` from PyPI until the 0.52
-wheel lands. [What’s new in 0.52](whats-new-0.52.md).
+Published cut for conformance authority and Posit lifecycle
+(RFC-0079 / D-089 / D-090). **Git tag / PyPI LANDED** — `v0.52.0` is on PyPI.
+Pin `hedron>=0.52.0,<0.53` from the public index (0.53 remains deferred).
+[What’s new in 0.52](whats-new-0.52.md).
 [Installation](../getting-started/installation.md).
 
 - Cross-language portable-subset conformance authority (`hedron-conformance`) with
@@ -28,8 +29,8 @@ wheel lands. [What’s new in 0.52](whats-new-0.52.md).
 - HedronPosit lifecycle companions: `CookieRegistry`, `PositContext`, `hands_off`,
   deployment-matrix check, diagnostics, and named-route query/fragment parity
   ([#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)).
-- Tracking [#522](https://github.com/eddiethedean/hedron/issues/522). Git tag / PyPI
-  upload deferred (`registry_status = "deferred"`).
+- Tracking [#522](https://github.com/eddiethedean/hedron/issues/522).
+
 
 ## 0.51.2 — 2026-08-20
 

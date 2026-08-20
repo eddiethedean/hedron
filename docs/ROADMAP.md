@@ -4547,8 +4547,8 @@ Artifacts (Stage 0 packet; Stage 1 blocked on [#507](https://github.com/eddiethe
 **Status:** **Published** in-tree as **`v0.52.0`** (D-089 / D-090 /
 [RFC-0079](rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md); tracking
 [#522](https://github.com/eddiethedean/hedron/issues/522)). All
-`release-gate-0.52.toml` rows are **Verified**. Living tip is **`v0.52.0`**
-(PyPI still serves `v0.51.0` until registry upload; Git tag deferred). This phase does
+`release-gate-0.52.toml` rows are **Verified**. Living tip was superseded by
+**`v0.53.0`**; **`v0.52.0` remains on PyPI** while the 0.53 upload is deferred. This phase does
 **not** promise full Hedron ports, does **not** reopen the 0.24 `polling_only`
 disposition, and does **not** restore a Supported Connect cookie bridge
 (`BRIDGE_DECISION=drop_supported` from 0.33 remains in force).
@@ -4683,10 +4683,13 @@ apps stop owning deployment cookie paths and redirect adaptation
 
 ## 0.53 — Application DX contracts (`v0.53.0`)
 
-**Status:** Stage 0 Accepted; Stage 1 runtime gates Planned. [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md)
-and D-091/D-092 own and refine this phase against Published in-tree `v0.52.0`; tracking is the
-bound [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521) packet. This phase owns downstream application and operator tooling contracts. It does
-not replace the 0.54 external-author `hedron package doctor` sample-kit workflow, reopen the 0.24
+**Status:** **Published** in-tree as **`v0.53.0`** (D-091 / D-092 /
+[RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md); tracking
+[#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)).
+All `release-gate-0.53.toml` rows are **Verified**. Living tip is **`v0.53.0`**
+(PyPI still serves `v0.52.0` until registry upload; Git tag deferred). This phase owns
+downstream application and operator tooling contracts. It does not replace the 0.54
+external-author `hedron package doctor` sample-kit workflow, reopen the 0.24
 `polling_only` disposition, or schedule Hedron `1.0`.
 
 **Outcome:** Applications stop owning fragile asset injection, opaque diagnostics, hand-authored
@@ -4752,17 +4755,17 @@ theme surfaces, flat namespace hunting, and ad-hoc extras/fleet triage. Tracking
   or claim Supported maturity the inventories deny.
 - Owning RFC/issue gates are Accepted before Stage 1 runtime work begins.
 
-### Stage 0 artifacts (Accepted; Planned gates)
+### Stage 0 artifacts (Accepted; Stage 1 Verified)
 
 - Owning RFC + decisions: [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md) /
   D-091 / D-092; tracking [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521).
 - [Release acceptance](acceptance/RELEASE_0_53.md) and
-  [release gate](acceptance/release-gate-0.53.toml) (all rows Planned).
+  [release gate](acceptance/release-gate-0.53.toml) (all rows Verified).
 - [Application DX inventory](acceptance/application-dx-inventory-053.toml),
   [asset lock](acceptance/application-assets-053.toml),
   [contract lock](acceptance/application-contracts-053.toml), and
   [tooling lock](acceptance/application-tooling-053.toml).
-- Stage 0 keeps the living tip at `v0.52.0`; PKG-053 upgrade source is 0.52.
+- Living tip after cut is `v0.53.0` (PyPI deferred at `v0.52.0`); PKG-053 upgrade source is 0.52.
 
 ## 0.54 — Notebook, simulation, and external-author reference tooling (`v0.54.0`)
 

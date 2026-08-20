@@ -102,8 +102,8 @@ assert result.ok
 
 Experimental monorepo evaluators (not PyPI app servers):
 
-- [hedron-runtime-node](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-node) — Node ≥ 18 (`0.52.0`)
-- [hedron-runtime-java](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-java) — JDK 11+ (`0.52.0`)
+- [hedron-runtime-node](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-node) — Node ≥ 18 (`0.53.0`)
+- [hedron-runtime-java](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-java) — JDK 11+ (`0.53.0`)
 
 ## Related docs
 

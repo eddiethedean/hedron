@@ -1,14 +1,40 @@
-# Upgrade to Hedron 0.52
+# Upgrade to Hedron 0.53
 
-This guide covers an application upgrade onto the **0.52.x** train
-(in-tree `v0.52.0`; **`v0.52.0` on PyPI** until upload). Public-index notes:
+This guide covers an application upgrade onto the **0.53.x** tip
+(in-tree `v0.53.0`; Published in-tree; Git tag / PyPI upload deferred). PyPI still
+serves **`v0.52.0`** — keep `hedron>=0.52.0,<0.53` from the public index until the
+0.53 wheel lands. Public-index notes:
 [Installation](../getting-started/installation.md). New applications should use
 [Build your first app](../getting-started/quickstart.md).
 
+## 0.52 → 0.53
+
+Checkout tip `v0.53.0` uses the in-tree floor `>=0.53.0,<0.54`. From PyPI, keep
+`hedron>=0.52.0,<0.53` until the 0.53 wheel lands. See
+[What's new in 0.53](whats-new-0.53.md) and
+[Application DX API](../api/APPLICATION_DX.md).
+
+1. **Application DX Stage 1 (RFC-0080 / D-091 / D-092).** Prefer Stage 1 symbols
+   (`ApplicationAssetSpec` / `compile_application_asset_plan`,
+   `ApplicabilityInterval` / `RemediationAction` / `normalize_severity_alias`,
+   `export_routes_document` / `export_effect_graph`, `OperationWorkflow` /
+   `is_terminal_job_state`, `generate_interaction_tests`, `run_visual_conformance`,
+   `discover_public_api`, `diagnose_installed_fleet`) over ad-hoc forks of the
+   shipped 0.52 seams.
+2. **0.52 conformance and Posit contracts remain.** No rollback required for apps
+   that stay on the PyPI `0.52.x` pin until the deferred 0.53 upload lands.
+
+```bash
+# From PyPI until 0.53 uploads:
+python -m pip install -U "hedron>=0.52.0,<0.53"
+# In-tree / source checkout tip:
+# python -m pip install -U "hedron>=0.53.0,<0.54"
+```
+
 ## 0.51 → 0.52
 
-Pin `hedron>=0.52.0,<0.53` from PyPI until the 0.52 wheel lands (or use the in-tree
-floor when developing Hedron itself). See [What's new in 0.52](whats-new-0.52.md).
+Pin `hedron>=0.52.0,<0.53` from PyPI (`v0.52.0` LANDED). See
+[What's new in 0.52](whats-new-0.52.md).
 
 1. **Conformance authority (RFC-0079 / D-089 / D-090).** `hedron-conformance` is the
    portable-subset authority extending `hedron-portable-1`. Node/Java evaluators are
@@ -25,8 +51,8 @@ python -m pip install -U "hedron>=0.52.0,<0.53"
 
 ## 0.50 → 0.51
 
-Pin `hedron>=0.52.0,<0.53` (or the in-tree floor when developing Hedron itself).
-See [What's new in 0.51](whats-new-0.51.md).
+Pin `hedron>=0.52.0,<0.53` from PyPI (or the in-tree 0.53 tip when developing Hedron
+itself). See [What's new in 0.51](whats-new-0.51.md).
 
 1. **Curated extras depth (RFC-0078 / D-087 / D-088).** `ExtrasFeature` is the
    `hedron-extras` inventory authority; shared extras HTMX hosts reconnect after swaps.
@@ -46,9 +72,15 @@ python -m pip install -U "hedron[extras]>=0.52.0,<0.53"
 
 ## Summary
 
+Hedron 0.53.x tip ships Application DX Stage 1 contracts on top of the 0.52
+conformance/Posit train. From PyPI, keep using `hedron>=0.52.0,<0.53` until the
+0.53 wheel lands.
+
+- Application assets, diagnostics, routes, workflows, testgen, theming, discovery,
+  and fleet doctor ([Application DX API](../api/APPLICATION_DX.md))
+
 Hedron 0.52.x ships cross-language conformance authority and Posit lifecycle
-companions on top of the 0.51 extras train. From PyPI, keep using
-`hedron>=0.52.0,<0.53` until the 0.52 wheel lands.
+companions on top of the 0.51 extras train (`v0.52.0` on PyPI).
 
 - Portable-subset conformance authority + Node/Java evaluators
 - `CookieRegistry`, `PositContext`, `hands_off`, matrix check, diagnostics (#508–#513)

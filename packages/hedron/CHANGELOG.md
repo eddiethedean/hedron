@@ -5,13 +5,16 @@
 ### Added
 
 - Coordinated train tip `0.53.0` (in-tree Published; tag/PyPI deferred).
-- Application DX contracts (RFC-0080 / D-091 / D-092): assets, diagnostics, routes,
-  workflows, testgen, theming, discovery, and fleet doctor.
+- Application DX Stage 1 (RFC-0080 / D-091 / D-092): `ApplicationAssetSpec` /
+  `compile_application_asset_plan`, `ApplicabilityInterval` / `RemediationAction` /
+  `normalize_severity_alias`, `export_routes_document` / `export_effect_graph`,
+  `OperationWorkflow` / `is_terminal_job_state`, `generate_interaction_tests`,
+  `run_visual_conformance`, `discover_public_api`, `diagnose_installed_fleet`.
 
 ## [0.52.0] — 2026-08-20
 
 ### Changed
-- Coordinated train tip `0.52.0` (in-tree Published; tag/PyPI deferred).
+- Coordinated train tip `0.52.0` (Published; `v0.52.0` on PyPI).
 - Phase 0.52 conformance authority + Posit lifecycle (RFC-0079 / D-089 / D-090; #522).
 
 ## [0.51.2] — 2026-08-20

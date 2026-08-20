@@ -45,6 +45,20 @@ def _requires_csrf(methods: Sequence[str]) -> bool:
     return any(m.upper() not in _SAFE_METHODS for m in methods)
 
 
+def _fragment_regions_for_inference(
+    regions: Sequence[FragmentRegion],
+) -> list[dict[str, str]]:
+    """Typed nested metadata for route documents (ROUTE-053; never stringify)."""
+    return [
+        {
+            "id": region.id,
+            "selector": region.selector,
+            "description": region.description,
+        }
+        for region in regions
+    ]
+
+
 def _normalize_fragment_regions(
     fragment_regions: Sequence[FragmentRegion | str] | FragmentRegion | str | None,
 ) -> tuple[FragmentRegion, ...]:
@@ -219,7 +233,6 @@ class HedronRouter(APIRouter):
                 response_model=None,
                 **kwargs,
             )
-            region_meta = {r.id: f"{r.selector}|{r.description}" for r in regions}
             self._register_route_or_rollback(
                 kind="page",
                 logical_id=logical_id,
@@ -235,7 +248,7 @@ class HedronRouter(APIRouter):
                 htmx_inference={
                     "page_fragment": "HX-Request selects FRAGMENT vs PAGE",
                     "history": "browser history for full-page navigation",
-                    "fragment_regions": str(region_meta),
+                    "fragment_regions": _fragment_regions_for_inference(regions),
                     "boosted": "title/history/assets preserved; full-page fallback required",
                 },
             )
@@ -286,7 +299,6 @@ class HedronRouter(APIRouter):
                 response_model=None,
                 **kwargs,
             )
-            region_meta = {r.id: f"{r.selector}|{r.description}" for r in regions}
             self._register_route_or_rollback(
                 kind="component",
                 logical_id=logical_id,
@@ -303,7 +315,7 @@ class HedronRouter(APIRouter):
                     "default_mode": "fragment",
                     "target": "caller-provided hx-target",
                     "swap": "outerHTML",
-                    "fragment_regions": str(region_meta),
+                    "fragment_regions": _fragment_regions_for_inference(regions),
                     "csrf_required": str(_requires_csrf(verb_list)).lower(),
                 },
             )
@@ -360,7 +372,6 @@ class HedronRouter(APIRouter):
             route = self.routes[-1]
             if isinstance(route, HedronRoute):
                 route.hedron_kind = "action"  # type: ignore[attr-defined]
-            region_meta = tuple({"id": r.id, "selector": r.selector} for r in regions)
             self._register_route_or_rollback(
                 kind="action",
                 logical_id=logical_id,
@@ -377,7 +388,7 @@ class HedronRouter(APIRouter):
                     "csrf": "required for unsafe cookie-authenticated methods",
                     "swap": "innerHTML",
                     "validation_fragment": "form error components",
-                    "fragment_regions": str(region_meta),
+                    "fragment_regions": _fragment_regions_for_inference(regions),
                 },
             )
             return fn
@@ -441,7 +452,6 @@ class HedronRouter(APIRouter):
             response_model=None,
             **kwargs,
         )
-        region_meta = {r.id: f"{r.selector}|{r.description}" for r in regions}
         self._register_route_or_rollback(
             kind="component",
             logical_id=logical_id,
@@ -457,6 +467,6 @@ class HedronRouter(APIRouter):
             htmx_inference={
                 "default_mode": "fragment",
                 "exposure": "include_component",
-                "fragment_regions": str(region_meta),
+                "fragment_regions": _fragment_regions_for_inference(regions),
             },
         )

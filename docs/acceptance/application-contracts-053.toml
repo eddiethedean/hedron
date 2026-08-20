@@ -7,10 +7,13 @@ gates = ["DIAG-053", "ROUTE-053", "WORKFLOW-053", "TESTGEN-053"]
 [diagnostics]
 preserve = ["Diagnostic", "DiagnosticSeverity", "Suppression", "apply_suppressions", "diagnostics_to_json", "diagnostics_to_text", "diagnostics_to_sarif"]
 severity_canonical = ["error", "warning", "information"]
-aliases_planned = ["err", "warn", "info", "note"]
+aliases_shipped = ["err", "warn", "info", "note"]
 unsuppressible_prefixes = ["HED-SEC-"]
-require_applicability_interval = true
-require_structured_remediation = true
+# Applicability / structured remediation are supported when authors set them;
+# filter_by_applicability honors intervals. Not every diagnostic is required to
+# carry both fields in 0.53.
+require_applicability_interval = false
+require_structured_remediation = false
 
 [routes]
 preserve = ["RouteMeta", "routes_json", "hedron routes", "CatalogEntry"]

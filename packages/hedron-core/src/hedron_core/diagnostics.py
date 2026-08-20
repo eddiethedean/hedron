@@ -245,6 +245,8 @@ def error(
     component_id: str | None = None,
     context: Mapping[str, object] | None = None,
     span: SourceSpan | None = None,
+    applicability: ApplicabilityInterval | None = None,
+    actions: Sequence[RemediationAction] | None = None,
 ) -> HedronError:
     return HedronError(
         make_diagnostic(
@@ -257,8 +259,22 @@ def error(
             component_id=component_id,
             context=context,
             span=span,
+            applicability=applicability,
+            actions=actions,
         )
     )
+
+
+def filter_by_applicability(
+    diagnostics: Sequence[Diagnostic],
+    version: str,
+) -> tuple[Diagnostic, ...]:
+    """Keep diagnostics that lack an interval or whose interval applies to ``version``."""
+    kept: list[Diagnostic] = []
+    for diag in diagnostics:
+        if diag.applicability is None or diag.applicability.applies(version):
+            kept.append(diag)
+    return tuple(kept)
 
 
 def diagnostics_to_json(diagnostics: Sequence[Diagnostic]) -> list[DiagnosticDict]:
@@ -315,6 +331,13 @@ def diagnostics_to_sarif(
                     }
                 }
             ]
+        properties: JsonObject = {}
+        if diag.applicability is not None:
+            properties["applicability"] = diag.applicability.to_dict()
+        if diag.actions:
+            properties["actions"] = [action.to_dict() for action in diag.actions]
+        if properties:
+            result["properties"] = properties
         results.append(result)
     return cast(
         "JsonObject",

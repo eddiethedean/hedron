@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import html as html_lib
 import re
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
+from hedron_core.application_assets import is_remote_application_href
 from hedron_core.codes import HED_EXT_0011
 from hedron_core.diagnostics import error
 from hedron_core.htmx_contract import is_local_path
@@ -19,26 +20,38 @@ __all__ = [
 ]
 
 _SCRIPT_SRC = re.compile(r"<script\b[^>]*\bsrc=['\"]([^'\"]+)['\"][^>]*>", re.IGNORECASE)
+_LINK_HREF = re.compile(r"<link\b[^>]*\bhref=['\"]([^'\"]+)['\"][^>]*>", re.IGNORECASE)
 _INLINE_SCRIPT = re.compile(r"<script\b(?![^>]*\bsrc=)[^>]*>", re.IGNORECASE)
 _ON_HANDLER = re.compile(r"\son[a-z]+\s*=", re.IGNORECASE)
 _HTTP_ORIGIN = re.compile(r"^https?://", re.IGNORECASE)
 # Attribute/tag breakouts that is_local_path can still admit in query/fragment.
 _UNSAFE_HEAD_HREF_CHARS = frozenset("\"'<>`")
+_SAFE_PASSTHROUGH_ATTRS = frozenset({"integrity", "crossorigin"})
 
 
 def _require_local_head_href(href: str) -> str:
     text = href.strip()
     if not text:
         return ""
-    if _HTTP_ORIGIN.match(text) or text.startswith("//"):
+    if is_remote_application_href(text) or _HTTP_ORIGIN.match(text) or text.startswith("//"):
         raise error(
             HED_EXT_0011,
             title="Remote head asset rejected",
             explanation=f"Head AssetRef href {text!r} is not a local path.",
             remediation="Register same-origin AssetRef values only.",
         )
+    # Root-relative paths use the HTMX local-path contract; relative paths without
+    # a scheme are also local for ASSET-053 (vendor under the app origin).
+    relative_ok = (
+        not text.startswith("/")
+        and not text.startswith("\\")
+        and "://" not in text
+        and not any(ch in text for ch in _UNSAFE_HEAD_HREF_CHARS)
+        and not any(ch.isspace() for ch in text)
+        and ".." not in text.split("/")
+    )
     if (
-        not is_local_path(text)
+        not (is_local_path(text) or relative_ok)
         or any(ch in text for ch in _UNSAFE_HEAD_HREF_CHARS)
         or any(ch.isspace() for ch in text)
     ):
@@ -46,9 +59,19 @@ def _require_local_head_href(href: str) -> str:
             HED_EXT_0011,
             title="Unregistered head asset rejected",
             explanation=f"Head AssetRef href {text!r} is not an admitted local path.",
-            remediation="Use a root-relative AssetRef under the application origin.",
+            remediation="Use a root-relative or relative AssetRef under the application origin.",
         )
     return text
+
+def _attr_suffix(attributes: Mapping[str, str]) -> str:
+    parts: list[str] = []
+    for key in sorted(attributes):
+        lowered = key.lower()
+        if lowered not in _SAFE_PASSTHROUGH_ATTRS:
+            continue
+        value = attributes[key]
+        parts.append(f' {lowered}="{html_lib.escape(str(value), quote=True)}"')
+    return "".join(parts)
 
 
 def admit_head_assets(assets: Sequence[AssetRef]) -> tuple[AssetRef, ...]:
@@ -87,13 +110,20 @@ def head_tags_from_assets(assets: Sequence[AssetRef]) -> str:
     tags: list[str] = []
     for asset in admit_head_assets(assets):
         href = html_lib.escape(_require_local_head_href(asset.href), quote=True)
+        extra = _attr_suffix(asset.attributes)
         if asset.kind == "css":
-            tags.append(f'<link rel="stylesheet" href="{href}">')
+            tags.append(f'<link rel="stylesheet" href="{href}"{extra}>')
         elif asset.kind == "module":
-            tags.append(f'<script type="module" src="{href}"></script>')
+            tags.append(f'<script type="module" src="{href}"{extra}></script>')
         else:
-            tags.append(f'<script src="{href}" defer></script>')
+            tags.append(f'<script src="{href}" defer{extra}></script>')
     return "\n".join(tags)
+
+
+def _hrefs_already_in_html(html_text: str) -> set[str]:
+    found = {m.group(1) for m in _SCRIPT_SRC.finditer(html_text)}
+    found.update(m.group(1) for m in _LINK_HREF.finditer(html_text))
+    return found
 
 
 def merge_registered_head(
@@ -102,19 +132,22 @@ def merge_registered_head(
     *,
     enabled: bool,
 ) -> str:
-    """Merge admitted AssetRef tags into PAGE ``<head>`` when head-support is planned."""
+    """Merge admitted AssetRef tags into PAGE ``<head>`` when head-support is planned.
+
+    Dedupes by href/src so call-site inject and head-support merge cannot emit the
+    same script twice when tag strings differ (e.g. missing ``defer``).
+    """
     if not enabled or not assets:
         return html_text
-    tags = head_tags_from_assets(assets)
+    present = _hrefs_already_in_html(html_text)
+    missing_assets = tuple(a for a in assets if a.href.strip() not in present)
+    if not missing_assets:
+        return html_text
+    tags = head_tags_from_assets(missing_assets)
     if not tags:
         return html_text
     injection = tags + "\n"
     if "</head>" in html_text:
-        # Dedup: skip tags already present.
-        missing = [line for line in tags.split("\n") if line and line not in html_text]
-        if not missing:
-            return html_text
-        injection = "\n".join(missing) + "\n"
         return html_text.replace("</head>", f"{injection}</head>", 1)
     return html_text + injection
 

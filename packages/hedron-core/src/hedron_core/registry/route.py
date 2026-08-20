@@ -6,7 +6,13 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from typing import Literal
 
+from hedron_core.typing_aliases import JsonValue
+
 RouteKind = Literal["page", "component", "action"]
+
+
+def _empty_htmx_inference() -> dict[str, JsonValue]:
+    return {}
 
 
 @dataclass(frozen=True, slots=True)
@@ -24,7 +30,7 @@ class RouteMeta:
     tags: tuple[str, ...] = ()
     docs: str | None = None
     endpoint: Callable[..., object] | None = None
-    htmx_inference: Mapping[str, str] = field(default_factory=dict)
+    htmx_inference: Mapping[str, JsonValue] = field(default_factory=_empty_htmx_inference)
 
 
 def register_route(
@@ -40,7 +46,7 @@ def register_route(
     tags: tuple[str, ...] = (),
     docs: str | None = None,
     endpoint: Callable[..., object] | None = None,
-    htmx_inference: Mapping[str, str] | None = None,
+    htmx_inference: Mapping[str, JsonValue] | None = None,
 ) -> None:
     from hedron_core.registry.builder import active_builder
 

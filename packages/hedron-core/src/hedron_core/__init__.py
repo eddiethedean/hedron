@@ -10,6 +10,13 @@ from hedron_core.adapter import (
     capability_matrix,
 )
 from hedron_core.addressable import AddressableDescriptor, addressable
+from hedron_core.application_assets import (
+    ApplicationAssetPlan,
+    ApplicationAssetSpec,
+    application_spec_to_asset_ref,
+    compile_application_asset_plan,
+    ordered_registry_assets,
+)
 from hedron_core.audit import (
     SecurityAuditEvent,
     SecurityAuditEventType,
@@ -214,11 +221,6 @@ from hedron_core.dashboard_replay import (
     record_exchange,
     replay,
 )
-from hedron_core.application_assets import (
-    ApplicationAssetPlan,
-    ApplicationAssetSpec,
-    compile_application_asset_plan,
-)
 from hedron_core.diagnostics import (
     ApplicabilityInterval,
     Diagnostic,
@@ -231,6 +233,7 @@ from hedron_core.diagnostics import (
     diagnostics_to_json,
     diagnostics_to_sarif,
     diagnostics_to_text,
+    filter_by_applicability,
     meets_severity_threshold,
     normalize_severity_alias,
 )
@@ -355,12 +358,6 @@ from hedron_core.registry import (
     reset_registry_for_tests,
     seal_registry,
 )
-from hedron_core.route_document import (
-    EFFECT_GRAPH_SCHEMA,
-    ROUTE_DOCUMENT_SCHEMA,
-    export_effect_graph,
-    export_routes_document,
-)
 from hedron_core.rendering import (
     AssetRef,
     RenderContext,
@@ -368,6 +365,12 @@ from hedron_core.rendering import (
     RenderResult,
     RenderSession,
     render,
+)
+from hedron_core.route_document import (
+    EFFECT_GRAPH_SCHEMA,
+    ROUTE_DOCUMENT_SCHEMA,
+    export_effect_graph,
+    export_routes_document,
 )
 from hedron_core.scopes import RequiresScopes
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
@@ -452,6 +455,8 @@ __all__ = [
     "AssetMeta",
     "ApplicationAssetPlan",
     "ApplicationAssetSpec",
+    "application_spec_to_asset_ref",
+    "ordered_registry_assets",
     "Alert",
     "AppShell",
     "ApplicabilityInterval",
@@ -837,6 +842,7 @@ __all__ = [
     "get_registry",
     "html",
     "meets_severity_threshold",
+    "filter_by_applicability",
     "normalize_severity_alias",
     "PRIVATE_SELECTORS_SUPPORTED",
     "register_addressable",

@@ -126,10 +126,12 @@ def test_great_tables_supports_native_objects_only() -> None:
 
 
 def test_missing_extra_pin_matches_current_train() -> None:
+    from hedron.cli.discovery import _release_pin_bounds
     from hedron_charts.limits import missing_extra
 
+    floor, ceiling = _release_pin_bounds()
     err = missing_extra("plotly")
-    assert "hedron[charts]>=0.51.0,<0.52" in err.diagnostic.remediation
+    assert f"hedron[charts]>={floor},<{ceiling}" in err.diagnostic.remediation
     assert "0.38.0" not in err.diagnostic.remediation
 
 

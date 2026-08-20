@@ -136,6 +136,14 @@ def main(argv: list[str] | None = None) -> None:
         ),
     )
     check_p.add_argument(
+        "--version",
+        default=None,
+        help=(
+            "Living-train version for applicability filtering "
+            "(default: installed hedron package version)"
+        ),
+    )
+    check_p.add_argument(
         "--all-compat",
         action="store_true",
         help=(

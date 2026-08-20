@@ -89,6 +89,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.1` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
+| Application DX Stage 1 | **Supported** (API `beta`; tip `v0.53.0`, tag/PyPI deferred) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
 
 !!! note "Package train vs capability"
 

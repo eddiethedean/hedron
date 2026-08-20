@@ -2,13 +2,13 @@
 
 **Status:** Stage 0 Accepted; Stage 1 Implemented for all eight workstreams
 (`ASSET-053`–`FLEET-053` Verified; shared exit gates `DOCS-053` / `PKG-053` /
-`REGRESS-053` Verified). Living tip remains `v0.52.0` (D-092 Stage 0
-contract). No package-version bump until cut.<br>
+`REGRESS-053` Verified). Living tip is `v0.53.0` (Published in-tree; tag/PyPI
+deferred).<br>
 **Tracking:** [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)<br>
 **Decision/RFC:** D-091, refined by D-092 /
 [RFC-0080](../rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md)<br>
-**Planning baseline:** Published in-tree `v0.52.0`<br>
-**Target:** Hedron `v0.53.0` (in-tree cut; do not tag yet)
+**Planning baseline:** Published in-tree `v0.52.0` (D-092 Stage 0 contract)<br>
+**Target:** Hedron `v0.53.0` (in-tree Published; Git tag / PyPI upload deferred)
 
 ## Consume shipped, do not fork (D-092)
 

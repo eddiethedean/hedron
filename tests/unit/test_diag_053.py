@@ -14,9 +14,11 @@ from hedron_core import (
     SourceSpan,
     Suppression,
     apply_suppressions,
+    diagnostics_to_sarif,
+    filter_by_applicability,
     normalize_severity_alias,
 )
-from hedron_core.diagnostics import make_diagnostic
+from hedron_core.diagnostics import error, make_diagnostic
 
 
 def test_diag_053_packet_bound() -> None:
@@ -58,6 +60,31 @@ def test_applicability_interval() -> None:
     assert open_ended.applies("9.0.0")
 
 
+def test_filter_by_applicability_keeps_unscoped_and_matching() -> None:
+    always = make_diagnostic(
+        "HED-CONFIG-0003",
+        severity=DiagnosticSeverity.WARNING,
+        title="Empty registry",
+        explanation="No components found.",
+    )
+    in_window = make_diagnostic(
+        "HED-COMPAT-0001",
+        severity=DiagnosticSeverity.INFORMATION,
+        title="Baseline",
+        explanation="Applies on 0.53.",
+        applicability=ApplicabilityInterval(min_version="0.52.0", max_version="0.53.9"),
+    )
+    out_of_window = make_diagnostic(
+        "HED-COMPAT-0002",
+        severity=DiagnosticSeverity.INFORMATION,
+        title="Legacy",
+        explanation="Only older trains.",
+        applicability=ApplicabilityInterval(min_version="0.50.0", max_version="0.51.9"),
+    )
+    kept = filter_by_applicability((always, in_window, out_of_window), "0.53.0")
+    assert [d.code for d in kept] == ["HED-CONFIG-0003", "HED-COMPAT-0001"]
+
+
 def test_diagnostic_json_includes_applicability_and_actions() -> None:
     diag = make_diagnostic(
         "HED-CONFIG-0003",
@@ -84,6 +111,51 @@ def test_diagnostic_json_includes_applicability_and_actions() -> None:
             "message": "Provide an application import path.",
         }
     ]
+
+
+def test_diagnostics_to_sarif_includes_applicability_and_actions() -> None:
+    diag = make_diagnostic(
+        "HED-CONFIG-0003",
+        severity=DiagnosticSeverity.WARNING,
+        title="Empty registry",
+        explanation="No components found.",
+        remediation="Pass --app.",
+        applicability=ApplicabilityInterval(min_version="0.52.0", max_version="0.53.9"),
+        actions=(
+            RemediationAction(
+                kind="pass_flag",
+                target="--app",
+                message="Provide an application import path.",
+            ),
+        ),
+    )
+    result = diagnostics_to_sarif([diag])["runs"][0]["results"][0]
+    assert result["properties"]["applicability"] == {
+        "min_version": "0.52.0",
+        "max_version": "0.53.9",
+    }
+    assert result["properties"]["actions"] == [
+        {
+            "kind": "pass_flag",
+            "target": "--app",
+            "message": "Provide an application import path.",
+        }
+    ]
+
+
+def test_error_helper_forwards_applicability_and_actions() -> None:
+    action = RemediationAction(kind="docs", target="upgrade.md", message="See upgrade guide.")
+    interval = ApplicabilityInterval(min_version="0.53.0")
+    exc = error(
+        "HED-CONFIG-0003",
+        title="Empty registry",
+        explanation="No components found.",
+        applicability=interval,
+        actions=(action,),
+    )
+    diag = exc.diagnostic
+    assert diag.applicability == interval
+    assert diag.actions == (action,)
 
 
 def test_apply_suppressions_still_blocks_security() -> None:

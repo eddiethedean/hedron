@@ -3,13 +3,13 @@
 **Phase 0.53 application DX contract:** D-091 / D-092 /
 [RFC-0080](../rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md) /
 [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521).
-**Stage 1 Implemented** (living tip remains `v0.52.0` until cut). Stage 1
+**Stage 1 Implemented** (living tip `v0.53.0`; Published in-tree; tag/PyPI deferred). Stage 1
 extends shipped 0.52 seams; it does **not** replace `inject_page_assets`,
 `AssetRef`, `Diagnostic`, `Suppression`, `RouteMeta`, `routes_json`,
 `JobBackend`, `JobState`, `InteractionCatalog`, `Theme`,
 `REQUIRED_A11Y_TOKENS`, or `hedron.__all__` without negotiation.
 
-Public Stage 1 surface (Verified gates; tip still `0.52.0` until cut):
+Public Stage 1 surface (Verified gates; tip `v0.53.0`; Published in-tree; tag/PyPI deferred):
 
 | Symbol | Role | Gate |
 |---|---|---|

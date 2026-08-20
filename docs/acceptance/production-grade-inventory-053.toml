@@ -1,12 +1,12 @@
-# Phase 0.53 whole-fleet inventory (Verified; baseline v0.51.2).
+# Phase 0.53 whole-fleet inventory (Verified; baseline v0.52.0).
 # Machine-checked by check_package_docs_inventory / living train 0.53.
 # disposition: production_grade | incubator | fixture | eol
-# Extends the 0.51 fleet. Application DX contracts (D-091 / D-092 / RFC-0080).
+# Extends the 0.52 fleet. Application DX contracts (D-091 / D-092 / RFC-0080).
 # Owning decision: D-091 / D-092. RFC: RFC-0080.
 # PRESENT-034 deferred presentation audit is recorded under hedron-core (see present_034_status).
 # Tracking: #514–#521.
 # Channel honesty: registry_status=deferred — PyPI still serves v0.52.0; first-run pins stay
-# >=0.53.0,<0.54 until the Git tag / upload lands. In-tree tip / inventory pins use 0.53.0.
+# >=0.52.0,<0.53 while deferred. In-tree tip / inventory pins use 0.53.0.
 
 baseline = "v0.52.0"
 state = "verified"

@@ -72,8 +72,10 @@ def test_generate_interaction_tests_covers_kinds_without_exec() -> None:
     assert "__import__" in source  # embedded as a string literal inside quotes
     compiled = compile(source, "<testgen>", "exec")
     namespace: dict[str, object] = {}
-    exec(compiled, namespace)  # noqa: S102 — generated stubs are safe asserts
+    exec(compiled, namespace)
     assert namespace["CATALOG_FINGERPRINT"] == catalog.fingerprint
+    assert "test_catalog_fingerprint_matches_sealed" in namespace
+    namespace["test_catalog_fingerprint_matches_sealed"]()
     # Duck-typed catalog also works.
     duck = SimpleNamespace(entries=entries, fingerprint=catalog.fingerprint)
     assert generate_interaction_tests(duck, profile="ci") == source

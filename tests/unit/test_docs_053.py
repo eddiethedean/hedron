@@ -45,3 +45,13 @@ def test_packet_files_and_api_markers() -> None:
     ):
         assert marker in api, marker
     assert "Stage 1 Implemented" in api
+
+
+def test_roadmap_053_status_matches_cut() -> None:
+    roadmap = Path("docs/ROADMAP.md").read_text(encoding="utf-8")
+    section = roadmap.split("## 0.53 — Application DX contracts", 1)[1].split("## 0.54", 1)[0]
+    assert "Published" in section
+    assert "v0.53.0" in section
+    assert "Stage 1 runtime gates Planned" not in section
+    ref = Path("docs/examples/reference-app.md").read_text(encoding="utf-8")
+    assert "checkout tip is `0.53.0`" in ref

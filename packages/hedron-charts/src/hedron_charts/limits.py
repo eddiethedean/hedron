@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
+from functools import lru_cache
+from pathlib import Path
 
 from hedron_core.diagnostics import HedronError, error
 from hedron_core.typing_aliases import JsonObject, JsonValue
@@ -25,14 +27,35 @@ __all__ = [
 ]
 
 
+@lru_cache(maxsize=1)
+def _pypi_pin_bounds() -> tuple[str, str]:
+    """Read deferred-honesty pin from docs/release.toml when present in-tree."""
+    try:
+        import tomllib
+    except ModuleNotFoundError:  # pragma: no cover
+        import tomli as tomllib  # type: ignore[no-redef]
+    # packages/hedron-charts/src/hedron_charts/limits.py → repo root is parents[4]
+    path = Path(__file__).resolve().parents[4] / "docs" / "release.toml"
+    if not path.is_file():
+        return "0.52.0", "0.53"
+    data = tomllib.loads(path.read_text(encoding="utf-8"))
+    release = data.get("release") or {}
+    floor = str(release.get("pypi_pin_floor") or release.get("pin_floor") or "0.52.0").strip()
+    ceiling = str(
+        release.get("pypi_pin_ceiling") or release.get("pin_ceiling") or "0.53"
+    ).strip()
+    return floor, ceiling
+
+
 def missing_extra(extra: str, *, package: str = "hedron-charts") -> HedronError:
+    floor, ceiling = _pypi_pin_bounds()
     return error(
         "HED-CHART-0001",
         title=f"Missing optional dependency: {extra}",
         explanation=f"This chart adapter requires the {extra!r} extra.",
         remediation=(
             f'Install with: pip install "{package}[{extra}]>=0.2.0,<0.3" or '
-            f'pip install "hedron[charts]>=0.51.0,<0.52".'
+            f'pip install "hedron[charts]>={floor},<{ceiling}".'
         ),
     )
 

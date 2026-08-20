@@ -1,9 +1,16 @@
-"""Dependency-ordered application asset plans (ASSET-053)."""
+"""Dependency-ordered application asset plans (ASSET-053).
+
+Page emission honors placement / depends_on via :func:`ordered_registry_assets`
+and :func:`compile_application_asset_plan`. Live registry ``AssetMeta`` is the
+inject path for ordered scripts; build ``AssetEntry`` manifests remain
+fingerprint/content metadata (placement/depends_on live on the registry).
+"""
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from types import MappingProxyType
 
 from hedron_core.codes import (
     HED_ASSET_0531,
@@ -16,13 +23,19 @@ from hedron_core.codes import (
     HED_ASSET_0538,
 )
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, make_diagnostic
+from hedron_core.rendering import AssetRef
 
 __all__ = [
     "VALID_APPLICATION_ASSET_KINDS",
     "VALID_APPLICATION_ASSET_PLACEMENTS",
     "ApplicationAssetPlan",
     "ApplicationAssetSpec",
+    "application_spec_to_asset_ref",
     "compile_application_asset_plan",
+    "emit_safe_application_assets",
+    "is_remote_application_href",
+    "ordered_registry_assets",
+    "specs_from_asset_refs",
 ]
 
 VALID_APPLICATION_ASSET_KINDS = frozenset({"css", "js", "module"})
@@ -56,6 +69,89 @@ class ApplicationAssetPlan:
     diagnostics: tuple[Diagnostic, ...] = ()
     ok: bool = True
 
+
+def application_spec_to_asset_ref(spec: ApplicationAssetSpec) -> AssetRef:
+    """Convert a compiled plan entry into an :class:`AssetRef` for inject."""
+    attrs: dict[str, str] = {}
+    if spec.integrity:
+        attrs["integrity"] = spec.integrity
+        attrs.setdefault("crossorigin", "anonymous")
+    return AssetRef(
+        kind=spec.kind,
+        href=spec.href,
+        attributes=MappingProxyType(attrs),
+    )
+
+
+def ordered_registry_assets() -> tuple[ApplicationAssetSpec, ...]:
+    """Return dependency-ordered specs from the live asset registry.
+
+    Used by :func:`~hedron_core.page_assets.inject_page_assets` so
+    ``AssetMeta.depends_on`` / ``placement`` are honored at emit time.
+    Returns ``()`` when the registry is empty. Specs that fail compile
+    validation (missing deps, cycles, invalid SRI, remotes) are omitted.
+    """
+    from hedron_core.registry import get_registry
+
+    specs: list[ApplicationAssetSpec] = []
+    for meta in get_registry().assets():
+        if meta.kind not in VALID_APPLICATION_ASSET_KINDS:
+            continue
+        integrity = meta.attributes.get("integrity")
+        if integrity is None and meta.digest.startswith(_INTEGRITY_PREFIXES):
+            integrity = meta.digest
+        specs.append(
+            ApplicationAssetSpec(
+                logical_id=meta.logical_id,
+                kind=meta.kind,
+                href=meta.path,
+                depends_on=meta.depends_on,
+                placement=meta.placement,
+                integrity=integrity,
+            )
+        )
+    if not specs:
+        return ()
+    plan = compile_application_asset_plan(specs)
+    return emit_safe_application_assets(plan, fallback=())
+
+
+def _error_logical_ids(diagnostics: Sequence[Diagnostic]) -> frozenset[str]:
+    bad: set[str] = set()
+    for diag in diagnostics:
+        if diag.severity is not DiagnosticSeverity.ERROR:
+            continue
+        ctx = diag.context or {}
+        logical_id = ctx.get("logical_id")
+        if isinstance(logical_id, str) and logical_id:
+            bad.add(logical_id)
+    return frozenset(bad)
+
+
+def emit_safe_application_assets(
+    plan: ApplicationAssetPlan,
+    *,
+    fallback: tuple[ApplicationAssetSpec, ...] = (),
+) -> tuple[ApplicationAssetSpec, ...]:
+    """Return only assets safe to emit (drop ERROR-linked / invalid SRI specs)."""
+    candidates = plan.assets if plan.assets else fallback
+    if not candidates:
+        return ()
+    bad = _error_logical_ids(plan.diagnostics)
+    out: list[ApplicationAssetSpec] = []
+    for spec in candidates:
+        if spec.logical_id in bad:
+            continue
+        if spec.integrity is not None and not _valid_integrity(spec.integrity):
+            continue
+        if spec.kind not in VALID_APPLICATION_ASSET_KINDS:
+            continue
+        if spec.placement not in VALID_APPLICATION_ASSET_PLACEMENTS:
+            continue
+        if is_remote_application_href(spec.href):
+            continue
+        out.append(spec)
+    return tuple(out)
 
 def compile_application_asset_plan(
     specs: Sequence[ApplicationAssetSpec],
@@ -202,13 +298,27 @@ def _validate_spec(spec: ApplicationAssetSpec, diagnostics: list[Diagnostic]) ->
         )
 
 
+def is_remote_application_href(href: str) -> bool:
+    """True for protocol-relative or any alphabetic ``scheme:`` href.
+
+    Local assets are empty, root-relative (``/…``), or relative paths without a
+    scheme. ``file://``, ``data:``, ``http(s):``, and similar schemes fail closed.
+    """
+    text = href.strip()
+    if not text:
+        return False
+    if text.startswith("//"):
+        return True
+    # Root-relative same-origin paths are never remote.
+    if text.startswith("/"):
+        return False
+    scheme, sep, _rest = text.partition(":")
+    # Alphabetic scheme before the first path segment (file:, https:, data:, …).
+    return bool(sep and scheme.isalpha())
+
+
 def _is_remote_href(href: str) -> bool:
-    lowered = href.strip().lower()
-    return (
-        lowered.startswith("https://")
-        or lowered.startswith("http://")
-        or lowered.startswith("//")
-    )
+    return is_remote_application_href(href)
 
 
 def _is_fragment_or_inline_script(href: str) -> bool:
@@ -282,3 +392,38 @@ def _topo_order(by_id: dict[str, ApplicationAssetSpec]) -> list[ApplicationAsset
                     ready.append(other)
                     ready.sort()
     return [by_id[name] for name in ordered]
+
+
+def specs_from_asset_refs(
+    assets: Sequence[AssetRef],
+    *,
+    asset_attributes: Mapping[str, Mapping[str, str]] | None = None,
+    registry_by_path: Mapping[str, ApplicationAssetSpec] | None = None,
+) -> tuple[ApplicationAssetSpec, ...]:
+    """Build specs from call-site :class:`AssetRef` values, enriching from registry."""
+    out: list[ApplicationAssetSpec] = []
+    seen_href: set[str] = set()
+    for index, asset in enumerate(assets):
+        href = asset.href.strip()
+        if not href or href in seen_href:
+            continue
+        seen_href.add(href)
+        reg = (registry_by_path or {}).get(href)
+        attrs = dict(asset.attributes)
+        if asset_attributes and href in asset_attributes:
+            attrs.update(asset_attributes[href])
+        integrity = attrs.get("integrity")
+        if integrity is None and reg is not None:
+            integrity = reg.integrity
+        logical_id = reg.logical_id if reg is not None else f"callsite:{index}:{href}"
+        out.append(
+            ApplicationAssetSpec(
+                logical_id=logical_id,
+                kind=asset.kind,
+                href=href,
+                depends_on=reg.depends_on if reg is not None else (),
+                placement=reg.placement if reg is not None else "head",
+                integrity=integrity,
+            )
+        )
+    return tuple(out)

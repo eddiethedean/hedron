@@ -145,6 +145,15 @@ def generate_interaction_tests(
         f"GENERATOR_VERSION = {version_lit}",
         f"PROFILE = {profile_lit}",
         "",
+        "def test_catalog_fingerprint_matches_sealed() -> None:",
+        '    """Fail when the live sealed catalog drifts from generation-time fingerprint."""',
+        "    from hedron_core.catalog import get_sealed_catalog",
+        "",
+        f"    assert CATALOG_FINGERPRINT == {fp_lit}",
+        "    live = get_sealed_catalog()",
+        "    if live is not None:",
+        "        assert live.fingerprint == CATALOG_FINGERPRINT",
+        "",
     ]
 
     if not entries:

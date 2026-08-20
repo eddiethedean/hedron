@@ -160,18 +160,25 @@ def _plugins_snapshot() -> list[dict[str, Any]]:
     return rows
 
 
-def _assets_snapshot() -> list[dict[str, str]]:
+def _assets_snapshot() -> list[dict[str, Any]]:
     try:
         from hedron_core.registry import get_registry
 
-        return [
-            {
+        rows: list[dict[str, Any]] = []
+        for asset in get_registry().assets():
+            row: dict[str, Any] = {
                 "logical_id": asset.logical_id,
                 "kind": asset.kind,
                 "path": asset.path,
             }
-            for asset in get_registry().assets()
-        ]
+            placement = getattr(asset, "placement", None)
+            if placement:
+                row["placement"] = placement
+            depends_on = getattr(asset, "depends_on", None) or ()
+            if depends_on:
+                row["depends_on"] = list(depends_on)
+            rows.append(row)
+        return rows
     except Exception:  # noqa: BLE001 — best-effort
         return []
 

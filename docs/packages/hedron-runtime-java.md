@@ -3,10 +3,10 @@
 Tooling-grade Java evaluator for the Hedron portable conformance corpus.
 
 **Maturity:** Beta (tooling-grade evaluator — not an application server)  
-**Version:** `0.52.0` · **Runtime matrix:** JDK 11 / 17 / 21 (`--release 11` bytecode)  
-**Coordinates:** `io.hedron:hedron-runtime-java:0.52.0`
+**Version:** `0.53.0` · **Runtime matrix:** JDK 11 / 17 / 21 (`--release 11` bytecode)  
+**Coordinates:** `io.hedron:hedron-runtime-java:0.53.0`
 
-Living Hedron train `0.52.x` (checkout tip `v0.53.0`; PyPI Python packages still pin
+Living Hedron train `0.53.x` (checkout tip `v0.53.0`; PyPI Python packages still pin
 `>=0.52.0,<0.53` while deferred).
 
 ## Run
@@ -14,7 +14,7 @@ Living Hedron train `0.52.x` (checkout tip `v0.53.0`; PyPI Python packages still
 ```bash
 bash packages/hedron-runtime-java/scripts/run-conformance.sh
 # or after mvn package:
-java -jar target/hedron-runtime-java-0.52.0.jar path/to/portable_v1.json
+java -jar target/hedron-runtime-java-0.53.0.jar path/to/portable_v1.json
 ```
 
 ## Non-goals

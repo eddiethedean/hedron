@@ -128,3 +128,41 @@ def test_export_effect_graph_from_catalog_like_entries() -> None:
     kinds = {(e["from"], e["kind"], e["to"]) for e in graph["edges"]}
     assert ("cmd.refresh", "target", "region.main") in kinds
     assert ("view.home", "outcome", "ok") in kinds
+
+
+def test_live_router_registers_typed_fragment_regions() -> None:
+    """ROUTE-053: live HedronRouter must not stringify fragment_regions."""
+    from hedron.routing.router import HedronRouter
+    from hedron_core.interaction import FragmentRegion
+    from hedron_core.registry import get_registry, reset_registry_for_tests
+
+    reset_registry_for_tests()
+    try:
+        router = HedronRouter()
+        region = FragmentRegion(id="main", selector="#main", description="primary")
+
+        @router.page("/", fragment_regions=(region,))
+        def home() -> str:
+            return "ok"
+
+        routes = list(get_registry().routes())
+        assert routes, "expected registered page route"
+        inference = dict(routes[-1].htmx_inference)
+        regions = inference.get("fragment_regions")
+        assert isinstance(regions, list), type(regions)
+        assert regions[0]["id"] == "main"
+        assert regions[0]["selector"] == "#main"
+        doc = export_routes_document(
+            [
+                {
+                    "logical_id": routes[-1].logical_id,
+                    "name": routes[-1].name,
+                    "path": routes[-1].path,
+                    "htmx_inference": inference,
+                }
+            ]
+        )
+        assert isinstance(doc["routes"][0]["htmx_inference"]["fragment_regions"], list)
+        assert doc["routes"][0]["htmx_inference"]["fragment_regions"][0]["selector"] == "#main"
+    finally:
+        reset_registry_for_tests()
