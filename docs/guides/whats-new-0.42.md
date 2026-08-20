@@ -3,7 +3,7 @@
 **Published `v0.42.0`**. Owning decision: D-070.
 Tracking: [#97](https://github.com/eddiethedean/hedron/issues/97).
 
-For new apps, pin `hedron>=0.52.0,<0.53`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, pin `hedron>=0.54.0,<0.55`; see [What’s new in 0.51](whats-new-0.51.md).
 
 ## Highlights
 
@@ -26,6 +26,6 @@ For new apps, pin `hedron>=0.52.0,<0.53`; see [What’s new in 0.51](whats-new-0
 ## Upgrade
 
 Historical 0.42 pin was `hedron>=0.42.0,<0.43`. For new apps, pin
-`hedron>=0.52.0,<0.53` (and `hedron-elements` the same when used).
+`hedron>=0.54.0,<0.55` (and `hedron-elements` the same when used).
 Rollback of a 0.42-era app: pin `>=0.41.0,<0.42`. See [Upgrade](upgrade.md) · [What's ready](whats-ready.md) ·
 [Roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).

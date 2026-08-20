@@ -35,7 +35,7 @@ introduces the web concepts as they appear.
 
 | Item | Value |
 |---|---|
-| Version | **0.54.x** in-tree (`v0.54.0`); PyPI **0.52.0** (Beta) |
+| Version | **0.54.x** in-tree and on PyPI (`v0.54.0`, Beta) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |

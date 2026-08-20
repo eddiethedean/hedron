@@ -6,7 +6,7 @@
 # PRESENT-034 deferred presentation audit is recorded under hedron-core (see present_034_status).
 # Tracking: #514–#521.
 # Channel honesty: registry_status=deferred — PyPI still serves v0.52.0; first-run pins stay
-# >=0.52.0,<0.53 while deferred. In-tree tip / inventory pins use 0.53.0.
+# >=0.54.0,<0.55 while deferred. In-tree tip / inventory pins use 0.53.0.
 
 baseline = "v0.52.0"
 state = "verified"
@@ -53,7 +53,7 @@ disposition = "production_grade"
 supported = ["typed_pages", "htmx_fragments", "csrf_profiles", "polling_jobs", "inference_workflows"]
 experimental = ["live_sse_ws_streaming_preload"]
 excluded = ["hedron_1_0_or_sla", "polling_only_reopen_without_packet"]
-notes = "registry deferred: public index still v0.52.0; first-run pins >=0.52.0,<0.53"
+notes = "registry deferred: public index still v0.52.0; first-run pins >=0.54.0,<0.55"
 
 [hedron-core]
 owner = "hedron-core"

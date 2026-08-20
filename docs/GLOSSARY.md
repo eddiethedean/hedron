@@ -5,13 +5,13 @@ HTML `id` stays stable so HTMX can swap it.
 
 **Swap** — Replacing that region's HTML with a fragment the server returned.
 
-**Pin** — An install constraint with an upper bound, for example `hedron>=0.52.0,<0.53`.
+**Pin** — An install constraint with an upper bound, for example `hedron>=0.54.0,<0.55`.
 Use the pin the package index can resolve.
 
 **Train** — A minor version line (`0.46.x`). Compatible patches stay inside the pin;
 the next train is an intentional upgrade.
 
-**Published** — A cut that is on the current train (`v0.54.0` in-tree; `v0.52.0` on PyPI). Pin the matching
+**Published** — A cut that is on the current train (`v0.54.0` in-tree and on PyPI). Pin the matching
 upper-bounded install constraint.
 
 **Action** — A typed server operation with an HTTP method, input contract, dependencies, and response behavior.

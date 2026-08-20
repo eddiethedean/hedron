@@ -1,6 +1,6 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.54 **Published** in-tree as `v0.54.0` (2026-08-20; tag/PyPI deferred). Phase 0.53 remains Verified in-tree; PyPI still serves `v0.52.0`.
+**Roadmap position:** phase 0.54 **Published** as `v0.54.0` (2026-08-20; GitHub and PyPI). Phase 0.53 remains Verified in-tree.
 Living tip = `v0.54.0`.
 **Date:** 2026-08-20
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -23,8 +23,8 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 foundation (sample-kit, package doctor, simulator, notebook) and application chrome
 companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537);
 foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543).
-`release-gate-0.54.toml` Verified rows; living tip `v0.54.0` in-tree (`v0.52.0` on PyPI,
-`registry_status = "deferred"`).
+`release-gate-0.54.toml` Verified rows; living tip `v0.54.0` is published on GitHub and PyPI
+(`registry_status = "uploaded"`).
 Prior Published in-tree **0.53** application DX
 (D-091 / D-092 / RFC-0080; [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)).
 Prior Published in-tree **0.52** conformance authority and HedronPosit lifecycle

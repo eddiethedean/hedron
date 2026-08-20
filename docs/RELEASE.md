@@ -1,9 +1,8 @@
 # Cutting a Hedron release
 
 This is the living maintainer runbook for the `0.54.x` train. Historical cut records
-live under `docs/archive/`. The published in-tree train is `v0.54.0` (cut-ready;
-**do not tag yet**). PyPI currently serves `hedron` `0.52.0` until a deferred upload
-lands (`registry_status = deferred`).
+live under `docs/archive/`. The published train is `v0.54.0` and PyPI serves `hedron`
+`0.54.0` (`registry_status = uploaded`).
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag.
@@ -20,8 +19,8 @@ Python metadata does not. Never move or replace a published tag.
 4. The repository and PyPI trusted-publishing configuration are controlled by active
    maintainers; the release uses the GitHub Actions workflow.
 5. The tag `v0.54.0` does not already exist locally or on the remote.
-6. Keep `registry_status = "deferred"` and `pypi_version = "0.52.0"` until PyPI
-   actually serves the published tip. First-run copy-paste must keep using `pypi_pin_*`.
+6. For a completed upload, keep `registry_status = "uploaded"` and
+   `pypi_version = "0.54.0"` aligned with the published tip and its install pins.
 
 ## Local release candidate
 
@@ -39,7 +38,7 @@ uv run python scripts/verify_pkg_52.py
 
 ## Tag and publish
 
-For this in-tree cut, **do not tag yet**. When ready:
+For a future train, create and push its annotated version tag only after the gates pass:
 
 ```bash
 git fetch --tags origin

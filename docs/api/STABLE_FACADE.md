@@ -9,7 +9,7 @@ status: shipped
     This inventory is the **FACADE-023** artifact. Symbols listed under
     [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) remain
     compatibility-protected **`stable`** on the living **0.54** train. Pin
-    `hedron>=0.53.0,<0.54` from checkout (PyPI still `>=0.52.0,<0.53` while deferred).
+    `hedron>=0.53.0,<0.54` from checkout (PyPI still `>=0.54.0,<0.55` while deferred).
 
 **Owning gates:** `FACADE-023` (`python scripts/check_stable_facade.py`),
 `STABLE-023`, `INVENTORY-023`. Decision: **D-053** /

@@ -1,7 +1,7 @@
 # What's new in 0.49
 
 **Published** as `v0.49.1`. Historical pin: `hedron>=0.49.1,<0.50`.
-For new apps, use `hedron>=0.52.0,<0.53`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use `hedron>=0.54.0,<0.55`; see [What’s new in 0.51](whats-new-0.51.md).
 
 ## Highlights
 

@@ -7,8 +7,8 @@ upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately 
 minor (`0.53.x`) continues through approximately **2027-08-20** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-Until the Git tag / PyPI upload lands (`registry_status = deferred`), the public index still
-serves `v0.52.0` — first-run pins from PyPI stay `>=0.52.0,<0.53`. Checkout tip is `v0.54.0`.
+The Git tag and PyPI upload are complete (`registry_status = uploaded`), and the public index
+serves `v0.54.0` — first-run pins from PyPI use `>=0.54.0,<0.55`. Checkout tip is `v0.54.0`.
 
 | Version | Supported |
 |---|---|

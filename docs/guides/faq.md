@@ -2,13 +2,13 @@
 
 ## Which version should I install?
 
-Install from PyPI: `pip install "hedron>=0.52.0,<0.53"`. See
+Install from PyPI: `pip install "hedron>=0.54.0,<0.55"`. See
 [Installation](../getting-started/installation.md).
 
 ```bash
-pip install "hedron>=0.52.0,<0.53"
+pip install "hedron>=0.54.0,<0.55"
 # or
-uv add "hedron>=0.52.0,<0.53"
+uv add "hedron>=0.54.0,<0.55"
 ```
 
 Always use an upper bound so a future minor train cannot install by accident.
@@ -17,14 +17,14 @@ Packages are **Beta** (usable, no 1.0, no SLA). Capability detail:
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For DataTable/DataEditor, install `hedron[data]>=0.52.0,<0.53`. For charts, install
-`hedron[charts]>=0.52.0,<0.53`
+For DataTable/DataEditor, install `hedron[data]>=0.54.0,<0.55`. For charts, install
+`hedron[charts]>=0.54.0,<0.55`
 ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=0.52.0,<0.53"
-pip install "hedron-django>=0.52.0,<0.53"   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.54.0,<0.55"
+pip install "hedron-django>=0.54.0,<0.55"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -82,7 +82,7 @@ status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
 ## Is Hedron production-ready for internal admin?
 
 For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
-with eyes open: packages are **Beta**, pin `>=0.52.0,<0.53`, prefer polling
+with eyes open: packages are **Beta**, pin `>=0.54.0,<0.55`, prefer polling
 for live status, and read [What’s ready](whats-ready.md). There is no vendor SLA or
 scheduled 1.0. Use the [PoC checklist](evaluate.md#poc-checklist) on
 [Evaluate](evaluate.md).
@@ -104,8 +104,8 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then
-`uv add "hedron>=0.52.0,<0.53"`. Or use
-`hedron new my-app` after `pip install "hedron>=0.52.0,<0.53"`.
+`uv add "hedron>=0.54.0,<0.55"`. Or use
+`hedron new my-app` after `pip install "hedron>=0.54.0,<0.55"`.
 
 ## Should I use `uv init` or `hedron new`?
 
@@ -115,7 +115,7 @@ the same directory by accident.
 
 ## What do Beta, Supported, and Deferred mean?
 
-Short version for builders: **pin from PyPI** (`hedron>=0.52.0,<0.53`).
+Short version for builders: **pin from PyPI** (`hedron>=0.54.0,<0.55`).
 Packages are Beta; that does not mean “do not use” — it means expect
 occasional `0.x` churn and pin upper bounds.
 
@@ -132,7 +132,7 @@ Snapshot: [What’s ready today](whats-ready.md).
 ## Why pin with an upper bound?
 
 A lower bound without an upper bound allows a future minor train to install
-automatically. Use `hedron>=0.52.0,<0.53` so compatible patches are accepted while the
+automatically. Use `hedron>=0.54.0,<0.55` so compatible patches are accepted while the
 next minor train requires an intentional review. See [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
@@ -140,14 +140,14 @@ next minor train requires an intentional review. See [Compatibility](../COMPATIB
 **Auto** (built-in — no extra) and **DataTable/DataEditor** (`hedron[data]`) are
 **Supported**. Those packages are **Beta** on PyPI — pin versions.
 
-Charts install through `hedron[charts]>=0.52.0,<0.53`; the sample kit installs as
+Charts install through `hedron[charts]>=0.54.0,<0.55`; the sample kit installs as
 `hedron-sample-kit>=0.1.10,<0.2`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ```bash
-pip install "hedron[data]>=0.52.0,<0.53"     # DataTable, DataEditor (Auto is already in hedron)
-pip install "hedron[charts]>=0.52.0,<0.53"   # compatible chart satellite
+pip install "hedron[data]>=0.54.0,<0.55"     # DataTable, DataEditor (Auto is already in hedron)
+pip install "hedron[charts]>=0.54.0,<0.55"   # compatible chart satellite
 ```
 
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), and the
@@ -210,9 +210,9 @@ variables / your secret store. Constructor args override both when explicit.
 ## How do I install Jinja templates?
 
 ```bash
-pip install "hedron[jinja]>=0.52.0,<0.53"
+pip install "hedron[jinja]>=0.54.0,<0.55"
 # or
-uv add "hedron[jinja]>=0.52.0,<0.53"
+uv add "hedron[jinja]>=0.54.0,<0.55"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).

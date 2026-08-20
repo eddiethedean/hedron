@@ -2,7 +2,7 @@
 
 This guide covers an application upgrade onto the **0.53.x** tip
 (in-tree `v0.53.0`; Published in-tree; Git tag / PyPI upload deferred). PyPI still
-serves **`v0.52.0`** — keep `hedron>=0.52.0,<0.53` from the public index until the
+serves **`v0.52.0`** — keep `hedron>=0.54.0,<0.55` from the public index until the
 0.53 wheel lands. Public-index notes:
 [Installation](../getting-started/installation.md). New applications should use
 [Build your first app](../getting-started/quickstart.md).
@@ -10,7 +10,7 @@ serves **`v0.52.0`** — keep `hedron>=0.52.0,<0.53` from the public index until
 ## 0.52 → 0.53
 
 Checkout tip `v0.54.0` uses the in-tree floor `>=0.54.0,<0.55`. From PyPI, keep
-`hedron>=0.52.0,<0.53` until the 0.53 wheel lands. See
+`hedron>=0.54.0,<0.55` until the 0.53 wheel lands. See
 [What's new in 0.53](whats-new-0.53.md) and
 [Application DX API](../api/APPLICATION_DX.md).
 
@@ -26,14 +26,14 @@ Checkout tip `v0.54.0` uses the in-tree floor `>=0.54.0,<0.55`. From PyPI, keep
 
 ```bash
 # From PyPI until 0.53 uploads:
-python -m pip install -U "hedron>=0.52.0,<0.53"
+python -m pip install -U "hedron>=0.54.0,<0.55"
 # In-tree / source checkout tip:
 # python -m pip install -U "hedron>=0.54.0,<0.55"
 ```
 
 ## 0.51 → 0.52
 
-Pin `hedron>=0.52.0,<0.53` from PyPI (`v0.52.0` LANDED). See
+Pin `hedron>=0.54.0,<0.55` from PyPI (`v0.52.0` LANDED). See
 [What's new in 0.52](whats-new-0.52.md).
 
 1. **Conformance authority (RFC-0079 / D-089 / D-090).** `hedron-conformance` is the
@@ -46,12 +46,12 @@ Pin `hedron>=0.52.0,<0.53` from PyPI (`v0.52.0` LANDED). See
    Posit lifecycle helpers; add them when deploying under Workbench/Connect mounts.
 
 ```bash
-python -m pip install -U "hedron>=0.52.0,<0.53"
+python -m pip install -U "hedron>=0.54.0,<0.55"
 ```
 
 ## 0.50 → 0.51
 
-Pin `hedron>=0.52.0,<0.53` from PyPI (or the in-tree 0.53 tip when developing Hedron
+Pin `hedron>=0.54.0,<0.55` from PyPI (or the in-tree 0.53 tip when developing Hedron
 itself). See [What's new in 0.51](whats-new-0.51.md).
 
 1. **Curated extras depth (RFC-0078 / D-087 / D-088).** `ExtrasFeature` is the
@@ -66,14 +66,14 @@ itself). See [What's new in 0.51](whats-new-0.51.md).
    adopted `hedron[extras]`; add the extra when you want the new widgets.
 
 ```bash
-python -m pip install -U "hedron>=0.52.0,<0.53"
-python -m pip install -U "hedron[extras]>=0.52.0,<0.53"
+python -m pip install -U "hedron>=0.54.0,<0.55"
+python -m pip install -U "hedron[extras]>=0.54.0,<0.55"
 ```
 
 ## Summary
 
 Hedron 0.53.x tip ships Application DX Stage 1 contracts on top of the 0.52
-conformance/Posit train. From PyPI, keep using `hedron>=0.52.0,<0.53` until the
+conformance/Posit train. From PyPI, keep using `hedron>=0.54.0,<0.55` until the
 0.53 wheel lands.
 
 - Application assets, diagnostics, routes, workflows, testgen, theming, discovery,
@@ -137,7 +137,7 @@ preload remain experimental.
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.52.0,<0.53`,
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.54.0,<0.55`,
    or the tip pin already). Public-index notes: [Installation](../getting-started/installation.md).
 3. Existing 0.42–0.46 handlers and unused `include_feature` keep working.
 4. Adopt maps only via `hedron[maps]` / `from hedron_maps import …`.
@@ -148,14 +148,14 @@ preload remain experimental.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.52.0,<0.53"
-python -m pip install -U "hedron[data]>=0.52.0,<0.53"
-python -m pip install -U "hedron[charts]>=0.52.0,<0.53"
-python -m pip install -U "hedron[maps]>=0.52.0,<0.53"
+python -m pip install -U "hedron>=0.54.0,<0.55"
+python -m pip install -U "hedron[data]>=0.54.0,<0.55"
+python -m pip install -U "hedron[charts]>=0.54.0,<0.55"
+python -m pip install -U "hedron[maps]>=0.54.0,<0.55"
 # independent charts satellite:
 python -m pip install -U "hedron-charts>=0.2.0,<0.3"
 # optional production-grade elements inventory:
-python -m pip install -U "hedron[elements]>=0.52.0,<0.53"
+python -m pip install -U "hedron[elements]>=0.54.0,<0.55"
 ```
 
 Public-index notes: [Installation](../getting-started/installation.md).

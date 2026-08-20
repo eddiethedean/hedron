@@ -1,6 +1,6 @@
 # Hedron `v0.54` authoring loop and chrome acceptance
 
-**Status:** Published in-tree `v0.54.0` (all fifteen gates Verified; tag/PyPI deferred)<br>
+**Status:** Published as `v0.54.0` on GitHub and PyPI (all fifteen gates Verified)<br>
 **Planning baseline:** Published in-tree `v0.53.0`<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.53.0`<br>
 **Target:** Hedron `v0.54.0`<br>
@@ -52,7 +52,7 @@ in-tree tip to `v0.54.0`. **Do not tag yet.**
 ## Cut checklist
 
 - [x] Train packages + workspace bumped to `0.54.0`; notebook/sim/sample-kit to `0.2.0`.
-- [x] `docs/release.toml` deferred honesty (`pypi_version` unchanged until upload).
+- [x] `docs/release.toml` reflects the completed PyPI upload (`registry_status = "uploaded"`).
 - [x] CI `HEDRON_GATE_VERSION=0.54.0`.
 - [x] Docs / SECURITY / STATUS / ROADMAP tip honesty.
 - [ ] Git tag `v0.54.0` — **not yet** (deferred).
