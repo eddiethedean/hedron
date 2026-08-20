@@ -153,6 +153,7 @@ def emit_safe_application_assets(
         out.append(spec)
     return tuple(out)
 
+
 def compile_application_asset_plan(
     specs: Sequence[ApplicationAssetSpec],
 ) -> ApplicationAssetPlan:
@@ -190,8 +191,7 @@ def compile_application_asset_plan(
                         severity=DiagnosticSeverity.ERROR,
                         title="Missing application asset dependency",
                         explanation=(
-                            f"Asset {logical_id!r} depends on {dep!r}, "
-                            "which is not in the plan."
+                            f"Asset {logical_id!r} depends on {dep!r}, which is not in the plan."
                         ),
                         remediation="Add the missing dependency or remove the depends_on edge.",
                         context={"logical_id": logical_id, "missing": dep},
@@ -377,8 +377,7 @@ def _detect_cycles(by_id: dict[str, ApplicationAssetSpec]) -> set[str]:
 def _topo_order(by_id: dict[str, ApplicationAssetSpec]) -> list[ApplicationAssetSpec]:
     """Deterministic Kahn topo-sort (sorted ready queue)."""
     remaining: dict[str, set[str]] = {
-        name: {dep for dep in spec.depends_on if dep in by_id}
-        for name, spec in by_id.items()
+        name: {dep for dep in spec.depends_on if dep in by_id} for name, spec in by_id.items()
     }
     ready = sorted(name for name, deps in remaining.items() if not deps)
     ordered: list[str] = []

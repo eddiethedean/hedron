@@ -373,9 +373,7 @@ def inject_page_assets(
 
     # Call-site head assets when head-support is off were already emitted above.
     # When on, merge only head-placement refs (href-deduped inside merge).
-    merge_assets: Sequence[AssetRef] | None = (
-        tuple(head_merge_refs) if head_support_on else None
-    )
+    merge_assets: Sequence[AssetRef] | None = tuple(head_merge_refs) if head_support_on else None
     html_text = merge_registered_head(
         html_text,
         merge_assets,

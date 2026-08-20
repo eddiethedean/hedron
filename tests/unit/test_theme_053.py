@@ -30,7 +30,9 @@ def test_run_visual_conformance_reports_missing_token_sets() -> None:
     diagnostics = run_visual_conformance(incomplete)
     codes = {item.code for item in diagnostics}
     assert "HED-THEME-0002" in codes
-    missing_sets = {item.context.get("set") for item in diagnostics if item.code == "HED-THEME-0002"}
+    missing_sets = {
+        item.context.get("set") for item in diagnostics if item.code == "HED-THEME-0002"
+    }
     assert "accessibility" in missing_sets
     assert "forced-colors" in missing_sets
     assert "print-safe" in missing_sets

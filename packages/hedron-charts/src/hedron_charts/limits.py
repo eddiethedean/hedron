@@ -41,9 +41,7 @@ def _pypi_pin_bounds() -> tuple[str, str]:
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     release = data.get("release") or {}
     floor = str(release.get("pypi_pin_floor") or release.get("pin_floor") or "0.52.0").strip()
-    ceiling = str(
-        release.get("pypi_pin_ceiling") or release.get("pin_ceiling") or "0.53"
-    ).strip()
+    ceiling = str(release.get("pypi_pin_ceiling") or release.get("pin_ceiling") or "0.53").strip()
     return floor, ceiling
 
 

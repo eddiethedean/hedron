@@ -10,7 +10,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import fields, is_dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, cast
 
 __all__ = [
     "EFFECT_GRAPH_SCHEMA",
@@ -58,8 +58,9 @@ def _normalize_value(value: object) -> object:
                 if f.name not in _SKIP_ROUTE_KEYS
             }
         )
-    if hasattr(value, "as_mapping") and callable(value.as_mapping):
-        mapped = value.as_mapping()
+    as_mapping = getattr(value, "as_mapping", None)
+    if callable(as_mapping):
+        mapped = as_mapping()
         if isinstance(mapped, Mapping):
             return _normalize_mapping(mapped)
     return value
@@ -89,12 +90,14 @@ def _iter_routes(routes: Sequence[Mapping[Any, Any]] | object) -> list[Mapping[A
             items = [routes]
     elif isinstance(routes, Sequence) and not isinstance(routes, (str, bytes, bytearray)):
         items = list(routes)
-    elif hasattr(routes, "routes") and callable(routes.routes):
-        items = list(routes.routes())
-    elif isinstance(routes, Iterable) and not isinstance(routes, (str, bytes, bytearray)):
-        items = list(routes)
     else:
-        items = [routes]
+        routes_fn = getattr(routes, "routes", None)
+        if callable(routes_fn):
+            items = list(cast(Iterable[Any], routes_fn()))
+        elif isinstance(routes, Iterable) and not isinstance(routes, (str, bytes, bytearray)):
+            items = list(routes)
+        else:
+            items = [routes]
 
     out: list[Mapping[Any, Any]] = []
     for item in items:
@@ -155,27 +158,35 @@ def _iter_entries(entries: object) -> list[Mapping[Any, Any]]:
             items = [entries]
     elif isinstance(entries, Sequence) and not isinstance(entries, (str, bytes, bytearray)):
         items = list(entries)
-    elif hasattr(entries, "entries") and isinstance(getattr(entries, "entries"), Mapping):
-        items = list(entries.entries.values())
-    elif isinstance(entries, Iterable) and not isinstance(entries, (str, bytes, bytearray)):
-        items = list(entries)
     else:
-        items = [entries]
+        entries_map = getattr(entries, "entries", None)
+        if isinstance(entries_map, Mapping):
+            items = list(entries_map.values())
+        elif isinstance(entries, Iterable) and not isinstance(entries, (str, bytes, bytearray)):
+            items = list(entries)
+        else:
+            items = [entries]
 
     out: list[Mapping[Any, Any]] = []
     for item in items:
         if isinstance(item, Mapping):
             out.append(item)
-        elif hasattr(item, "as_mapping") and callable(item.as_mapping):
-            mapped = item.as_mapping()
-            if isinstance(mapped, Mapping):
-                out.append(mapped)
-            else:
-                raise TypeError(f"entry.as_mapping() must return a mapping, got {type(mapped)!r}")
-        elif is_dataclass(item) and not isinstance(item, type):
-            out.append({f.name: getattr(item, f.name) for f in fields(item)})
         else:
-            raise TypeError(f"export_effect_graph expected catalog-like entries, got {type(item)!r}")
+            as_mapping = getattr(item, "as_mapping", None)
+            if callable(as_mapping):
+                mapped = as_mapping()
+                if isinstance(mapped, Mapping):
+                    out.append(cast(Mapping[Any, Any], mapped))
+                else:
+                    raise TypeError(
+                        f"entry.as_mapping() must return a mapping, got {type(mapped)!r}"
+                    )
+            elif is_dataclass(item) and not isinstance(item, type):
+                out.append({f.name: getattr(item, f.name) for f in fields(item)})
+            else:
+                raise TypeError(
+                    f"export_effect_graph expected catalog-like entries, got {type(item)!r}"
+                )
     return out
 
 

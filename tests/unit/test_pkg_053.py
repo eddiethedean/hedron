@@ -27,9 +27,7 @@ def test_stage1_modules_exist_versions_unbumped() -> None:
     assert Path("packages/hedron/src/hedron/fleet.py").is_file()
     assert Path("packages/hedron/src/hedron/discover_api.py").is_file()
 
-    hedron_meta = tomllib.loads(
-        Path("packages/hedron/pyproject.toml").read_text(encoding="utf-8")
-    )
+    hedron_meta = tomllib.loads(Path("packages/hedron/pyproject.toml").read_text(encoding="utf-8"))
     assert hedron_meta["project"]["version"] == "0.53.0"
     core_meta = tomllib.loads(
         Path("packages/hedron-core/pyproject.toml").read_text(encoding="utf-8")

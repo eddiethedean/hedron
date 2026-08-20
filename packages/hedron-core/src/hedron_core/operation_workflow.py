@@ -118,9 +118,7 @@ class OperationWorkflow:
         tenant_id: str | None = None,
     ) -> bool:
         """Request cooperative cancellation."""
-        return self.backend.request_cancel(
-            job_id, auth_subject=auth_subject, tenant_id=tenant_id
-        )
+        return self.backend.request_cancel(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
 
     def retry(
         self,

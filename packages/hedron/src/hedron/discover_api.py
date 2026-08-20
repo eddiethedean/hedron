@@ -57,7 +57,7 @@ def _stability_for(name: str) -> Stability:
     return _STABILITY_OVERRIDES.get(name, "supported")
 
 
-def discover_public_api(*, format: str = "json") -> dict | str:
+def discover_public_api(*, format: str = "json") -> dict[str, object] | str:
     """Return the versioned stability inventory for the curated public API.
 
     Args:

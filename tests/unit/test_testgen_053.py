@@ -30,8 +30,7 @@ def test_generate_interaction_tests_placeholders_are_deterministic() -> None:
         assert f"test_placeholder_{path}" in first
     tree = ast.parse(first)
     assert any(
-        isinstance(node, ast.FunctionDef) and node.name.startswith("test_")
-        for node in tree.body
+        isinstance(node, ast.FunctionDef) and node.name.startswith("test_") for node in tree.body
     )
 
 

@@ -63,6 +63,7 @@ def _require_local_head_href(href: str) -> str:
         )
     return text
 
+
 def _attr_suffix(attributes: Mapping[str, str]) -> str:
     parts: list[str] = []
     for key in sorted(attributes):

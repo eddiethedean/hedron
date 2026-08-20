@@ -228,9 +228,7 @@ def test_inject_emits_integrity_attribute() -> None:
     asset = AssetRef(
         kind="js",
         href="/static/sri.js",
-        attributes=MappingProxyType(
-            {"integrity": "sha256-dGVzdA==", "crossorigin": "anonymous"}
-        ),
+        attributes=MappingProxyType({"integrity": "sha256-dGVzdA==", "crossorigin": "anonymous"}),
     )
     html = inject_page_assets(
         "<html><head></head><body></body></html>",

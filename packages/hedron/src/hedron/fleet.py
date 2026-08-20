@@ -211,8 +211,7 @@ def _recommendations(
                     f"vs release.toml expected={train_skew.get('expected_version')!s}"
                 ),
                 "message": (
-                    "Align installed train packages with docs/release.toml pins "
-                    "(no auto-install)."
+                    "Align installed train packages with docs/release.toml pins (no auto-install)."
                 ),
             }
         )
@@ -222,8 +221,7 @@ def _recommendations(
             {
                 "evidence": f"train packages report multiple versions: {versions}",
                 "message": (
-                    "Reconcile first-party hedron* package versions on the "
-                    "coordinated train."
+                    "Reconcile first-party hedron* package versions on the coordinated train."
                 ),
             }
         )

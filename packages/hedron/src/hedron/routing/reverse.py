@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from hedron_core.registry import get_registry
+from hedron_core.typing_aliases import JsonValue
 
 __all__ = ["ComponentRef", "resolve_route_path"]
 
@@ -21,7 +22,7 @@ class ComponentRef:
     target: str | None = None
     swap: str = "innerHTML"
     params: Mapping[str, Any] = field(default_factory=dict)
-    inference: Mapping[str, str] = field(default_factory=dict)
+    inference: Mapping[str, JsonValue] = field(default_factory=dict)
 
     def hx_attrs(self) -> dict[str, str]:
         from hedron.htmx import _safe_css_selector

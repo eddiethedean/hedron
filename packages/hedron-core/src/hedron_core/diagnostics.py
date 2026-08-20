@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, cast
 from packaging.version import InvalidVersion, Version
 
 if TYPE_CHECKING:
-    from hedron_core.typing_aliases import DiagnosticDict, JsonObject, SourceSpanDict
+    from hedron_core.typing_aliases import DiagnosticDict, JsonObject, JsonValue, SourceSpanDict
 
 
 class DiagnosticSeverity(StrEnum):
@@ -176,8 +176,7 @@ def normalize_severity_alias(value: str) -> DiagnosticSeverity:
         return _SEVERITY_ALIASES[key]
     except KeyError as exc:
         raise ValueError(
-            f"unknown severity {value!r}; expected one of "
-            f"{sorted(set(_SEVERITY_ALIASES))}."
+            f"unknown severity {value!r}; expected one of {sorted(set(_SEVERITY_ALIASES))}."
         ) from exc
 
 
@@ -333,9 +332,12 @@ def diagnostics_to_sarif(
             ]
         properties: JsonObject = {}
         if diag.applicability is not None:
-            properties["applicability"] = diag.applicability.to_dict()
+            properties["applicability"] = cast("JsonValue", diag.applicability.to_dict())
         if diag.actions:
-            properties["actions"] = [action.to_dict() for action in diag.actions]
+            properties["actions"] = cast(
+                "JsonValue",
+                [action.to_dict() for action in diag.actions],
+            )
         if properties:
             result["properties"] = properties
         results.append(result)
