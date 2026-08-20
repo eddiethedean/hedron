@@ -109,6 +109,8 @@ class DiagnosticDict(TypedDict):
     context: dict[str, object]
     docs_url: str | None
     span: NotRequired[SourceSpanDict]
+    applicability: NotRequired[dict[str, str | None]]
+    actions: NotRequired[list[dict[str, str]]]
 
 
 class AssetEntryDict(TypedDict):

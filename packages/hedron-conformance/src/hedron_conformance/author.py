@@ -19,7 +19,7 @@ from hedron_conformance.schema import (
     load_bundled_fixtures,
 )
 
-AUTHOR_KIT_VERSION = "0.52.0"
+AUTHOR_KIT_VERSION = "0.53.0"
 
 
 @dataclass(frozen=True, slots=True)

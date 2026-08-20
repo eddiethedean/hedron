@@ -25,7 +25,7 @@ def test_author_052_packet_bound() -> None:
 
 
 def test_author_kit_version_and_capability_declaration() -> None:
-    assert AUTHOR_KIT_VERSION == "0.52.0"
+    assert AUTHOR_KIT_VERSION == "0.53.0"
     readme = author_kit_readme()
     assert "Capability" in readme
     assert "monorepo" in readme.lower()
@@ -33,7 +33,7 @@ def test_author_kit_version_and_capability_declaration() -> None:
     caps = declared_capabilities()
     assert set(caps) == {c.value for c in Capability}
     summary = author_kit_summary()
-    assert summary["author_kit_version"] == "0.52.0"
+    assert summary["author_kit_version"] == "0.53.0"
     assert summary["declares_capability_without_monorepo"] is True
     assert summary["readme_present"] is True
     assert (author_kit_dir() / "README.md").is_file()

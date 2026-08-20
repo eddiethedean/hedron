@@ -10,12 +10,15 @@ from hedron.cli.commands.build import _cmd_build
 from hedron.cli.commands.check import _cmd_check
 from hedron.cli.commands.conformance import _cmd_conformance
 from hedron.cli.commands.dev import _cmd_dev
+from hedron.cli.commands.discover import _cmd_discover
 from hedron.cli.commands.eject import _cmd_eject
+from hedron.cli.commands.fleet import _cmd_fleet
 from hedron.cli.commands.graph import _cmd_graph
 from hedron.cli.commands.inspect import _cmd_inspect
 from hedron.cli.commands.new import _cmd_new
 from hedron.cli.commands.routes import _cmd_components, _cmd_preview, _cmd_routes
 from hedron.cli.commands.run import _cmd_run_app
+from hedron.cli.commands.testgen import _cmd_testgen
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -28,6 +31,11 @@ def main(argv: list[str] | None = None) -> None:
     sub = parser.add_subparsers(dest="command", required=True)
 
     routes_p = sub.add_parser("routes", help="List registered Hedron routes")
+    routes_p.add_argument(
+        "--document",
+        action="store_true",
+        help="Emit a versioned typed route document (hedron-route-document-1)",
+    )
     routes_p.set_defaults(func=_cmd_routes)
 
     components_p = sub.add_parser("components", help="List registered components")
@@ -36,6 +44,27 @@ def main(argv: list[str] | None = None) -> None:
     preview_p = sub.add_parser("preview", help="Inspect a route/component preview")
     preview_p.add_argument("logical_id", help="Route logical id or name")
     preview_p.set_defaults(func=_cmd_preview)
+
+    testgen_p = sub.add_parser(
+        "testgen",
+        help="Generate reviewable interaction pytest stubs from a sealed catalog",
+    )
+    testgen_p.add_argument(
+        "--profile",
+        default="default",
+        help="Generator profile label embedded in the source (default: default)",
+    )
+    testgen_p.add_argument(
+        "--generator-version",
+        default=None,
+        help="Override embedded generator version (default: package GENERATOR_VERSION)",
+    )
+    testgen_p.add_argument(
+        "--out",
+        default=None,
+        help="Write source to a file instead of stdout",
+    )
+    testgen_p.set_defaults(func=_cmd_testgen)
 
     inspect_p = sub.add_parser(
         "inspect",
@@ -100,9 +129,11 @@ def main(argv: list[str] | None = None) -> None:
     )
     check_p.add_argument(
         "--severity",
-        choices=("error", "warning", "information"),
         default="error",
-        help="Fail when diagnostics meet or exceed this severity",
+        help=(
+            "Fail when diagnostics meet or exceed this severity "
+            "(error|err, warning|warn, information|info|note)"
+        ),
     )
     check_p.add_argument(
         "--all-compat",
@@ -113,6 +144,30 @@ def main(argv: list[str] | None = None) -> None:
         ),
     )
     check_p.set_defaults(func=_cmd_check)
+
+    discover_p = sub.add_parser(
+        "discover",
+        help="List curated public API names with stability inventory tags",
+    )
+    discover_p.add_argument(
+        "--format",
+        choices=("human", "json"),
+        default="json",
+        help="Output format (default: json)",
+    )
+    discover_p.set_defaults(func=_cmd_discover)
+
+    fleet_p = sub.add_parser(
+        "fleet",
+        help="Read-only diagnosis of installed hedron train/extras/plugins/assets",
+    )
+    fleet_p.add_argument(
+        "--format",
+        choices=("json", "human"),
+        default="json",
+        help="Output format (default: json)",
+    )
+    fleet_p.set_defaults(func=_cmd_fleet)
 
     graph_p = sub.add_parser("graph", help="Component dependency graph")
     graph_p.set_defaults(func=_cmd_graph)

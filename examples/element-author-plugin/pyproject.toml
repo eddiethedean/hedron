@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "External Hedron element plugin consumer for PLUGIN-040"
 requires-python = ">=3.11,<3.15"
 dependencies = [
-    "hedron-core>=0.52.0,<0.53",
+    "hedron-core>=0.53.0,<0.54",
 ]
 
 [project.entry-points."hedron.plugins"]

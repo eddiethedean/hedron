@@ -90,7 +90,7 @@ still fails, stop here and use [Installation troubleshooting](installation.md#co
 Run this command in the terminal:
 
 ```bash
-uvx --from "hedron>=0.51.0,<0.52" hedron new my-hedron-app
+uvx --from "hedron>=0.52.0,<0.53" hedron new my-hedron-app
 ```
 
 This asks `uv` to run the bounded current-train Hedron project creator in a temporary environment.

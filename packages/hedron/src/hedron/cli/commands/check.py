@@ -653,11 +653,11 @@ def _compat_info_diagnostics(
 
 def _cmd_check(args: argparse.Namespace) -> int:
     from hedron_core import (
-        DiagnosticSeverity,
         diagnostics_to_json,
         diagnostics_to_sarif,
         diagnostics_to_text,
         meets_severity_threshold,
+        normalize_severity_alias,
     )
     from hedron_core.diagnostics import make_diagnostic
     from hedron_core.discovery import discover_component_folders
@@ -815,7 +815,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
 
     all_diags = [*diags, *info_diags]
 
-    threshold = DiagnosticSeverity(args.severity)
+    threshold = normalize_severity_alias(args.severity)
     fmt = args.format
     if fmt == "json":
         print(json.dumps(diagnostics_to_json(all_diags), indent=2))

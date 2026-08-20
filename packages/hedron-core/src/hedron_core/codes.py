@@ -23,6 +23,15 @@ HED_ASSET_SYMLINK = "HED-ASSET-0006"
 HED_ASSET_MIME = "HED-ASSET-0007"
 HED_BROWSER_DUPLICATE = "HED-ASSET-0010"
 HED_BROWSER_INVALID = "HED-ASSET-0011"
+# Application asset plan (0.53 / ASSET-053)
+HED_ASSET_0531 = "HED-ASSET-0531"  # duplicate application asset logical_id
+HED_ASSET_0532 = "HED-ASSET-0532"  # missing application asset dependency
+HED_ASSET_0533 = "HED-ASSET-0533"  # application asset dependency cycle
+HED_ASSET_0534 = "HED-ASSET-0534"  # invalid application asset placement
+HED_ASSET_0535 = "HED-ASSET-0535"  # invalid application asset kind
+HED_ASSET_0536 = "HED-ASSET-0536"  # remote CDN / non-local application asset
+HED_ASSET_0537 = "HED-ASSET-0537"  # fragment / inline script rejected
+HED_ASSET_0538 = "HED-ASSET-0538"  # invalid CSP integrity value
 
 # CSS
 HED_CSS_UNSUPPORTED_VERSION = "HED-CSS-0001"
@@ -39,6 +48,8 @@ HED_THEME_UNKNOWN = "HED-THEME-0001"
 HED_THEME_MISSING_TOKEN = "HED-THEME-0002"
 HED_THEME_INVALID = "HED-THEME-0003"
 HED_THEME_DUPLICATE = "HED-THEME-0004"
+HED_THEME_STYLE_CONTRACT = "HED-THEME-0005"
+HED_THEME_ELEMENT_TOKEN = "HED-THEME-0006"
 
 # Plugins
 HED_PLUGIN_MISSING = "HED-PLUGIN-0001"

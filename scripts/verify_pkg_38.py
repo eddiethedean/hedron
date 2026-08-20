@@ -169,7 +169,7 @@ def _check_versions(*, allow_planned: bool) -> None:
             or version.startswith("0.43.")
             or version.startswith("0.44.")
             or version.startswith("0.45.")
-            or version.startswith(("0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52."))
+            or version.startswith(("0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.", "0.53."))
         ):
             raise SystemExit(
                 f"unexpected workspace version {version!r}; Stage 0/history expects 0.37.x–0.52.x"
@@ -184,7 +184,7 @@ def _check_versions(*, allow_planned: bool) -> None:
         or version.startswith("0.43.")
         or version.startswith("0.44.")
         or version.startswith("0.45.")
-        or version.startswith(("0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52."))
+        or version.startswith(("0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.", "0.53."))
     ):
         raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE}; found {version!r}")
     if version.startswith(
@@ -203,6 +203,7 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.50.",
             "0.51.",
                 "0.52.",
+    "0.53.",
         )
     ):
         # Post-0.38 tip: packet already Verified; skip workspace pin equality.

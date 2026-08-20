@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.53"
-state = "Planned"
+state = "Verified"
 baseline = "v0.52.0"
 target = "v0.53.0"
 owning_rfc = "RFC-0080"

@@ -153,7 +153,7 @@ def _check_versions(*, allow_planned: bool) -> None:
         expected = PREDECESSOR
         if published != PREDECESSOR:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
-    elif published.startswith(("0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.")):
+    elif published.startswith(("0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.", "0.53.")):
         print(f"ok: 0.45 historical under living published {published}")
         return
     else:
@@ -187,7 +187,7 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit("\n".join(errors))
         print("ok: 0.45 planned gate shape")
     elif str(_load(PYPROJECT).get("project", {}).get("version", "")).startswith(
-        ("0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.")
+        ("0.46.", "0.47.", "0.48.", "0.49.", "0.50.", "0.51.", "0.52.", "0.53.")
     ):
         errors = release_gate.check_evidence_manifest(GATE)
         if errors:

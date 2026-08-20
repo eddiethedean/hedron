@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.53.0] — 2026-08-20
+
+### Added
+
+- Coordinated train tip `0.53.0` (in-tree Published; tag/PyPI deferred).
+- Application DX contracts (RFC-0080 / D-091 / D-092): assets, diagnostics, routes,
+  workflows, testgen, theming, discovery, and fleet doctor.
+
 ## [0.52.0] — 2026-08-20
 
 ### Changed

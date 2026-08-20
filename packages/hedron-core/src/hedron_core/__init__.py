@@ -214,10 +214,17 @@ from hedron_core.dashboard_replay import (
     record_exchange,
     replay,
 )
+from hedron_core.application_assets import (
+    ApplicationAssetPlan,
+    ApplicationAssetSpec,
+    compile_application_asset_plan,
+)
 from hedron_core.diagnostics import (
+    ApplicabilityInterval,
     Diagnostic,
     DiagnosticSeverity,
     HedronError,
+    RemediationAction,
     SourceSpan,
     Suppression,
     apply_suppressions,
@@ -225,6 +232,7 @@ from hedron_core.diagnostics import (
     diagnostics_to_sarif,
     diagnostics_to_text,
     meets_severity_threshold,
+    normalize_severity_alias,
 )
 from hedron_core.field import Field
 from hedron_core.hosts import FRAGMENT_HOST_TAGS, FragmentHost
@@ -301,6 +309,12 @@ from hedron_core.model_demo import (
     RegisteredCallableAdapter,
 )
 from hedron_core.models import EventPayload, FormModel, Model, Props
+from hedron_core.operation_workflow import (
+    TERMINAL_JOB_STATES,
+    OperationWorkflow,
+    is_terminal_job_state,
+    retry_operation,
+)
 from hedron_core.patches import (
     CollectionPatch,
     CollectionSelector,
@@ -341,6 +355,12 @@ from hedron_core.registry import (
     reset_registry_for_tests,
     seal_registry,
 )
+from hedron_core.route_document import (
+    EFFECT_GRAPH_SCHEMA,
+    ROUTE_DOCUMENT_SCHEMA,
+    export_effect_graph,
+    export_routes_document,
+)
 from hedron_core.rendering import (
     AssetRef,
     RenderContext,
@@ -360,15 +380,19 @@ from hedron_core.security_policy import (
 from hedron_core.sse_ext import SseRegion, SseTrigger
 from hedron_core.streaming import ChunkedList, StreamBudget, StreamedDocument, TokenStream
 from hedron_core.styles import StyleSymbols, styles_from_manifest
+from hedron_core.testgen import GENERATOR_VERSION, generate_interaction_tests
 from hedron_core.theme import (
     FORCED_COLOR_TOKENS,
     PRINT_SAFE_TOKENS,
+    PRIVATE_SELECTORS_SUPPORTED,
+    REQUIRED_A11Y_TOKENS,
     Theme,
     aurora_theme,
     builtin_themes,
     default_theme,
     emit_theme_css,
     ensure_builtin_themes_registered,
+    run_visual_conformance,
     theme_element_compatibility,
     validate_element_style_contract,
 )
@@ -419,15 +443,18 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.52.0"
+__version__ = "0.53.0"
 
 __all__ = [
     "ActionRegistry",
     "AddressableDescriptor",
     "AddressableMeta",
     "AssetMeta",
+    "ApplicationAssetPlan",
+    "ApplicationAssetSpec",
     "Alert",
     "AppShell",
+    "ApplicabilityInterval",
     "AuthSignal",
     "BatchWindow",
     "CachedExampleResult",
@@ -462,6 +489,7 @@ __all__ = [
     "ModelDemo",
     "ModelDemoError",
     "OobUpdate",
+    "OperationWorkflow",
     "Patch",
     "PatchSet",
     "PortableTarget",
@@ -475,6 +503,7 @@ __all__ = [
     "StructuralBindingAdapter",
     "TYPE_SCHEMA_NAMESPACE",
     "TYPE_SCHEMA_VERSION",
+    "TERMINAL_JOB_STATES",
     "RequiresScopes",
     "FeatureBundle",
     "FeatureConflictError",
@@ -489,6 +518,14 @@ __all__ = [
     "CatalogEntry",
     "CatalogVersionError",
     "compile_interaction_catalog",
+    "GENERATOR_VERSION",
+    "generate_interaction_tests",
+    "EFFECT_GRAPH_SCHEMA",
+    "ROUTE_DOCUMENT_SCHEMA",
+    "export_effect_graph",
+    "export_routes_document",
+    "is_terminal_job_state",
+    "retry_operation",
     "InteractionCatalog",
     "InteractionManifest",
     "PackageProjection",
@@ -625,6 +662,7 @@ __all__ = [
     "HedronError",
     "Help",
     "HelpInspector",
+    "RemediationAction",
     "HtmxLink",
     "HtmlAttrMap",
     "HtmlAttrValue",
@@ -787,6 +825,7 @@ __all__ = [
     "apply_suppressions",
     "aurora_theme",
     "builtin_themes",
+    "compile_application_asset_plan",
     "compile_css",
     "default_theme",
     "diagnostics_to_json",
@@ -798,6 +837,8 @@ __all__ = [
     "get_registry",
     "html",
     "meets_severity_threshold",
+    "normalize_severity_alias",
+    "PRIVATE_SELECTORS_SUPPORTED",
     "register_addressable",
     "register_asset",
     "register_browser_module",
@@ -806,8 +847,10 @@ __all__ = [
     "register_route",
     "register_theme",
     "render",
+    "REQUIRED_A11Y_TOKENS",
     "PRINT_SAFE_TOKENS",
     "reset_registry_for_tests",
+    "run_visual_conformance",
     "scoped_identifier",
     "seal_registry",
     "styles_from_manifest",

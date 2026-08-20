@@ -1,6 +1,6 @@
 # Curated extras depth and lifecycle closure (`v0.51`)
 
-**Status:** Verified `v0.51.0` on PyPI (D-088 Stage 0 preserved; Stage 1 shipped). Human AT (`SR-021`) stays open.<br>
+**Status:** Verified `v0.52.0` on PyPI (D-088 Stage 0 preserved; Stage 1 shipped). Human AT (`SR-021`) stays open.<br>
 **Tracking:** [#507](https://github.com/eddiethedean/hedron/issues/507)<br>
 **Related:** [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)<br>
 **Decision/RFC:** D-087, refined by D-088 / [RFC-0078](../rfcs/RFC-0078-CURATED-EXTRAS-LIFECYCLE.md)<br>

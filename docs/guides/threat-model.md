@@ -1,6 +1,6 @@
 # Threat model
 
-**Status:** Maintained for the current **0.52.x** train (**Published** `v0.51.0` on PyPI;
+**Status:** Maintained for the current **0.53.x** train (**Published** in-tree as `v0.53.0`; PyPI still `v0.52.0`;
 baseline established in 0.11 and extended through the 0.36
 Web Component ABI/lifecycle surface)
 

@@ -11,7 +11,7 @@ status: shipped
 **Status:** Accepted · **Shipped** (install `hedron[data]`)
 
 ```bash
-pip install "hedron[data]>=0.51.0,<0.52"
+pip install "hedron[data]>=0.52.0,<0.53"
 ```
 
 ```python

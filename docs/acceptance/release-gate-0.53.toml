@@ -1,6 +1,9 @@
+# Phase 0.53 application DX contracts release evidence index.
+# Verified in-tree cut (D-091 / D-092). Living tip v0.53.0; PyPI deferred at 0.52.0.
+
 schema_version = 1
 phase = "0.53"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.52.0"
 required_predecessor = "v0.52.0"
 target = "v0.53.0"
@@ -11,66 +14,77 @@ tracking = "#514-#521"
 
 [[evidence]]
 id = "ASSET-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_asset_053.py"
+ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "DIAG-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_diag_053.py"
+ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "ROUTE-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_route_053.py"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "WORKFLOW-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_workflow_053.py"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "TESTGEN-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_testgen_053.py"
+ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "THEME-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_theme_053.py"
+ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "DISCOVER-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_discover_053.py"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "FLEET-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_fleet_053.py"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "DOCS-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_docs_053.py"
+ci_job = "quality"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_pkg_053.py"
+ci_job = "quality"
 owner = "hedron"
 
 [[evidence]]
 id = "REGRESS-053"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_regress_053.py"
+ci_job = "test"
 owner = "hedron"

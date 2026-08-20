@@ -8,6 +8,8 @@ from enum import StrEnum
 from pathlib import PurePath
 from typing import TYPE_CHECKING, cast
 
+from packaging.version import InvalidVersion, Version
+
 if TYPE_CHECKING:
     from hedron_core.typing_aliases import DiagnosticDict, JsonObject, SourceSpanDict
 
@@ -22,6 +24,16 @@ _SEVERITY_RANK = {
     DiagnosticSeverity.INFORMATION: 0,
     DiagnosticSeverity.WARNING: 1,
     DiagnosticSeverity.ERROR: 2,
+}
+
+_SEVERITY_ALIASES: Mapping[str, DiagnosticSeverity] = {
+    "error": DiagnosticSeverity.ERROR,
+    "err": DiagnosticSeverity.ERROR,
+    "warning": DiagnosticSeverity.WARNING,
+    "warn": DiagnosticSeverity.WARNING,
+    "information": DiagnosticSeverity.INFORMATION,
+    "info": DiagnosticSeverity.INFORMATION,
+    "note": DiagnosticSeverity.INFORMATION,
 }
 
 # Security diagnostics cannot be suppressed. Documented in diagnostics contract.
@@ -62,6 +74,48 @@ class SourceSpan:
 
 
 @dataclass(frozen=True, slots=True)
+class ApplicabilityInterval:
+    """Inclusive version window where a diagnostic applies."""
+
+    min_version: str | None = None
+    max_version: str | None = None
+
+    def applies(self, version: str) -> bool:
+        try:
+            current = Version(version)
+        except InvalidVersion:
+            return False
+        if self.min_version is not None:
+            try:
+                if current < Version(self.min_version):
+                    return False
+            except InvalidVersion:
+                return False
+        if self.max_version is not None:
+            try:
+                if current > Version(self.max_version):
+                    return False
+            except InvalidVersion:
+                return False
+        return True
+
+    def to_dict(self) -> dict[str, str | None]:
+        return {"min_version": self.min_version, "max_version": self.max_version}
+
+
+@dataclass(frozen=True, slots=True)
+class RemediationAction:
+    """Machine-actionable remediation hint (kind + optional target/message)."""
+
+    kind: str
+    target: str = ""
+    message: str = ""
+
+    def to_dict(self) -> dict[str, str]:
+        return {"kind": self.kind, "target": self.target, "message": self.message}
+
+
+@dataclass(frozen=True, slots=True)
 class Diagnostic:
     """Immutable diagnostic record with a stable ``HED-<AREA>-<NNNN>`` code."""
 
@@ -75,6 +129,8 @@ class Diagnostic:
     context: Mapping[str, object] = field(default_factory=dict)
     docs_url: str | None = None
     span: SourceSpan | None = None
+    applicability: ApplicabilityInterval | None = None
+    actions: tuple[RemediationAction, ...] = ()
 
     def __post_init__(self) -> None:
         if not self.code.startswith("HED-"):
@@ -106,7 +162,23 @@ class Diagnostic:
         }
         if self.span is not None:
             payload["span"] = self.span.to_dict()
+        if self.applicability is not None:
+            payload["applicability"] = self.applicability.to_dict()
+        if self.actions:
+            payload["actions"] = [action.to_dict() for action in self.actions]
         return payload
+
+
+def normalize_severity_alias(value: str) -> DiagnosticSeverity:
+    """Map conventional aliases (``err``/``warn``/``info``/``note``) to severity."""
+    key = value.strip().lower()
+    try:
+        return _SEVERITY_ALIASES[key]
+    except KeyError as exc:
+        raise ValueError(
+            f"unknown severity {value!r}; expected one of "
+            f"{sorted(set(_SEVERITY_ALIASES))}."
+        ) from exc
 
 
 class HedronError(Exception):
@@ -145,6 +217,8 @@ def make_diagnostic(
     component_id: str | None = None,
     context: Mapping[str, object] | None = None,
     span: SourceSpan | None = None,
+    applicability: ApplicabilityInterval | None = None,
+    actions: Sequence[RemediationAction] | None = None,
 ) -> Diagnostic:
     return Diagnostic(
         code=code,
@@ -156,6 +230,8 @@ def make_diagnostic(
         component_id=component_id,
         context=dict(context or {}),
         span=span,
+        applicability=applicability,
+        actions=tuple(actions or ()),
     )
 
 

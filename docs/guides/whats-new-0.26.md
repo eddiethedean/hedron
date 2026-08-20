@@ -1,9 +1,9 @@
 # What’s new in Hedron 0.26
 
 
-!!! note "Current train is 0.52"
+!!! note "Current train is 0.53"
 
-    Pin `hedron>=0.52.0,<0.53` for new apps (checkout tip; PyPI still `>=0.51.0,<0.52` while deferred). The pin below is historical for this train only.
+    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; PyPI still `>=0.52.0,<0.53` while deferred). The pin below is historical for this train only.
     See [What’s new in 0.51](whats-new-0.51.md).
 
 **Published** as `v0.26.0`. Historical pin for this train: `hedron>=0.26.0,<0.27`.

@@ -166,7 +166,7 @@ Gate scripts `scripts/check_*_052.py` bind evidence. Stage 0 rows are
 ## Compatibility and migration
 
 Public 0.51.2 conformance and Posit imports stay. Pin strings
-`>=0.51.0,<0.52` stay until a 0.52 cut. Living tip remains `v0.51.2`
+`>=0.52.0,<0.53` stay until a 0.52 cut. Living tip remains `v0.51.2`
 through Stage 0.
 
 ## Resolved questions (D-089)

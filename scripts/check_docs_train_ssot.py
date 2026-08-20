@@ -245,6 +245,7 @@ BOILERPLATE_ALLOWED_PATHS = frozenset(
         Path("docs/guides/whats-new-0.50.md"),
         Path("docs/guides/whats-new-0.51.md"),
         Path("docs/guides/whats-new-0.52.md"),
+        Path("docs/guides/whats-new-0.53.md"),
         Path("docs/RELEASE.md"),
     }
 )

@@ -62,7 +62,7 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 [reference app](../examples/reference-app.md) is an optional kitchen sink after that.
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
-   (`hedron[charts]>=0.51.0,<0.52`; static Matplotlib is the conservative default)
+   (`hedron[charts]>=0.52.0,<0.53`; static Matplotlib is the conservative default)
 2. More recipes: [File upload](../examples/file-upload.md) ·
    [Jobs poll](../examples/jobs-poll.md)
 3. Optional: [Dashboards](../guides/dashboards.md) · [Model demos](../guides/model-demos.md) ·

@@ -23,7 +23,7 @@ Copy `app.py` into an empty directory, then:
 
 ```bash
 uv init
-uv add "hedron[data]>=0.51.0,<0.52" "uvicorn[standard]"
+uv add "hedron[data]>=0.52.0,<0.53" "uvicorn[standard]"
 uv run uvicorn app:app --reload
 ```
 

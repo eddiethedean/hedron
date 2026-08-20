@@ -3,18 +3,25 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import cast
 
-from hedron_core.codes import HED_THEME_DUPLICATE, HED_THEME_INVALID, HED_THEME_MISSING_TOKEN
-from hedron_core.diagnostics import error
+from hedron_core.codes import (
+    HED_THEME_DUPLICATE,
+    HED_THEME_ELEMENT_TOKEN,
+    HED_THEME_INVALID,
+    HED_THEME_MISSING_TOKEN,
+    HED_THEME_STYLE_CONTRACT,
+)
+from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, error, make_diagnostic
 from hedron_core.registry import ThemeMeta, get_registry, register_theme
 from hedron_core.typing_aliases import JsonValue
 
 __all__ = [
     "FORCED_COLOR_TOKENS",
     "PRINT_SAFE_TOKENS",
+    "PRIVATE_SELECTORS_SUPPORTED",
     "REQUIRED_A11Y_TOKENS",
     "Theme",
     "aurora_theme",
@@ -25,10 +32,14 @@ __all__ = [
     "ensure_default_theme_registered",
     "get_theme",
     "register_theme_instance",
+    "run_visual_conformance",
     "theme_element_compatibility",
     "validate_element_style_contract",
     "validate_theme_tokens",
 ]
+
+# Custom themes and visual conformance never authorize private CSS selectors.
+PRIVATE_SELECTORS_SUPPORTED = False
 
 REQUIRED_A11Y_TOKENS: tuple[str, ...] = (
     "color.bg",
@@ -109,6 +120,111 @@ def theme_element_compatibility(
     """Return element token names not supplied by a theme."""
     available = set(theme_tokens)
     return sorted(set(element_tokens) - available)
+
+
+def _theme_token_map(theme: object) -> Mapping[str, str] | None:
+    tokens = getattr(theme, "tokens", None)
+    if isinstance(tokens, Mapping):
+        return cast(Mapping[str, str], tokens)
+    return None
+
+
+def run_visual_conformance(
+    theme: object | None = None,
+    *,
+    element_ids: Sequence[str] | None = None,
+) -> list[Diagnostic]:
+    """Run reusable visual-conformance checks; empty list means ok.
+
+    When ``theme`` is provided, requires ``REQUIRED_A11Y_TOKENS``,
+    ``FORCED_COLOR_TOKENS``, and ``PRINT_SAFE_TOKENS``. Registered element
+    style contracts are validated when present. Private CSS selectors are
+    never claimed as supported (``PRIVATE_SELECTORS_SUPPORTED`` is False).
+    """
+    diagnostics: list[Diagnostic] = []
+    token_map = _theme_token_map(theme) if theme is not None else None
+    if token_map is not None:
+        for label, required in (
+            ("accessibility", REQUIRED_A11Y_TOKENS),
+            ("forced-colors", FORCED_COLOR_TOKENS),
+            ("print-safe", PRINT_SAFE_TOKENS),
+        ):
+            missing = [name for name in required if name not in token_map]
+            if missing:
+                diagnostics.append(
+                    make_diagnostic(
+                        HED_THEME_MISSING_TOKEN,
+                        severity=DiagnosticSeverity.ERROR,
+                        title=f"Theme missing {label} tokens",
+                        explanation=f"Missing tokens: {', '.join(missing)}.",
+                        remediation=(
+                            "Provide all required semantic tokens for custom themes "
+                            "(default_styles=False)."
+                        ),
+                        context={"missing": missing, "set": label},
+                    )
+                )
+
+    registry = get_registry()
+    elements = sorted(registry.element_definitions(), key=lambda item: item.logical_id)
+    if element_ids is not None:
+        wanted = set(element_ids)
+        present = {item.logical_id for item in elements}
+        for missing_id in sorted(wanted - present):
+            diagnostics.append(
+                make_diagnostic(
+                    HED_THEME_ELEMENT_TOKEN,
+                    severity=DiagnosticSeverity.WARNING,
+                    title="Element not registered for visual conformance",
+                    explanation=f"No element definition for {missing_id!r}.",
+                    remediation="Register the element definition before conformance.",
+                    component_id=missing_id,
+                )
+            )
+        elements = [item for item in elements if item.logical_id in wanted]
+
+    for element in elements:
+        if element.style_contract:
+            try:
+                validate_element_style_contract(
+                    element.style_contract,
+                    parts=element.parts,
+                    slots=element.slots,
+                    tokens=element.tokens,
+                )
+            except (TypeError, ValueError) as exc:
+                diagnostics.append(
+                    make_diagnostic(
+                        HED_THEME_STYLE_CONTRACT,
+                        severity=DiagnosticSeverity.ERROR,
+                        title="Element style contract failed",
+                        explanation=str(exc),
+                        remediation=(
+                            "Align style_contract parts/slots/tokens with the "
+                            "element ABI metadata. Private selectors are not supported."
+                        ),
+                        component_id=element.logical_id,
+                        context={"private_selectors_supported": False},
+                    )
+                )
+        if token_map is not None and element.tokens:
+            missing_tokens = theme_element_compatibility(token_map, element.tokens)
+            if missing_tokens:
+                diagnostics.append(
+                    make_diagnostic(
+                        HED_THEME_ELEMENT_TOKEN,
+                        severity=DiagnosticSeverity.WARNING,
+                        title="Theme missing element tokens",
+                        explanation=(
+                            f"Element {element.logical_id!r} requires tokens not "
+                            f"supplied by the theme: {', '.join(missing_tokens)}."
+                        ),
+                        remediation="Extend the theme with the missing semantic tokens.",
+                        component_id=element.logical_id,
+                        context={"missing": missing_tokens},
+                    )
+                )
+    return diagnostics
 
 
 @dataclass(frozen=True, slots=True)

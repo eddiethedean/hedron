@@ -20,7 +20,7 @@ status: beta
 
 ## Availability
 
-Install `hedron[charts]>=0.51.0,<0.52` (or `hedron-charts>=0.2.0,<0.3`). See
+Install `hedron[charts]>=0.52.0,<0.53` (or `hedron-charts>=0.2.0,<0.3`). See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## Public surface

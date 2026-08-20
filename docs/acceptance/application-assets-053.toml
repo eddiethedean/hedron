@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.53"
-state = "Planned"
+state = "Verified"
 baseline = "v0.52.0"
 gate = "ASSET-053"
 

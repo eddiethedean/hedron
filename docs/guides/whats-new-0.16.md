@@ -1,14 +1,14 @@
 # What’s new in 0.16
 
 
-!!! note "Current train is 0.52"
+!!! note "Current train is 0.53"
 
-    Pin `hedron>=0.52.0,<0.53` for new apps (checkout tip; PyPI still `>=0.51.0,<0.52` while deferred). The pin below is historical for this train only.
+    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; PyPI still `>=0.52.0,<0.53` while deferred). The pin below is historical for this train only.
     See [What’s new in 0.51](whats-new-0.51.md).
 
 !!! note "Historical phase"
 
-    This page describes **0.16**. The current published train is **0.52.x** (last `v0.52.0`). Pin `hedron>=0.52.0,<0.53` from checkout (PyPI still `>=0.51.0,<0.52` while deferred).
+    This page describes **0.16**. The current published train is **0.53.x** (last `v0.53.0`). Pin `hedron>=0.53.0,<0.54` from checkout (PyPI still `>=0.52.0,<0.53` while deferred).
 
 Phase **0.16** adds an optional `hedron-extras` toolkit for specialized data-app interactions and
 analysis workbenches — without expanding the core runtime or adopting Streamlit-style reruns or a

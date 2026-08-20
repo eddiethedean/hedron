@@ -3,7 +3,7 @@
 **Published `v0.46.0`.** Owning decisions: D-075 / D-079.
 Tracking: [#334](https://github.com/eddiethedean/hedron/issues/334).
 
-For new apps, pin `hedron>=0.51.0,<0.52`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, pin `hedron>=0.52.0,<0.53`; see [What’s new in 0.51](whats-new-0.51.md).
 
 Package-native typed workflows assemble ordinary 0.43–0.45 handles into opt-in features.
 Maintainer contracts (decisions / RFC) sit in GitHub, not this adopter page.
@@ -33,6 +33,6 @@ human AT claim.
 
 ## Compatibility
 
-Historical 0.46 pin was `hedron>=0.46.0,<0.47`. For new apps, pin `hedron>=0.51.0,<0.52`.
+Historical 0.46 pin was `hedron>=0.46.0,<0.47`. For new apps, pin `hedron>=0.52.0,<0.53`.
 Rollback of a 0.46-era app: pin `>=0.45.0,<0.46`. Apps that never call
 `include_feature` stay request-path identical to 0.45.

@@ -1,11 +1,11 @@
 # What's new in 0.51
 
-Published **0.51.0** on PyPI. Pin `hedron>=0.51.0,<0.52` until the 0.51.2 wheel lands.
+Published **0.51.0** on PyPI. Pin `hedron>=0.52.0,<0.53` until the 0.51.2 wheel lands.
 In-tree tip is **0.51.2**. Tracking [#507](https://github.com/eddiethedean/hedron/issues/507).
 
 ## 0.51.2
 
-Quality and typing patch on the 0.51 train. Install from PyPI with `hedron>=0.51.0,<0.52`
+Quality and typing patch on the 0.51 train. Install from PyPI with `hedron>=0.52.0,<0.53`
 while `registry_status` is deferred.
 
 - Replace runtime `assert` validation with explicit typed errors on chart adapters, Gradio client, hosts, and jobs.
@@ -14,7 +14,7 @@ while `registry_status` is deferred.
 
 ## 0.51.1
 
-Bugfix patch on the 0.51 train. Install from PyPI with `hedron>=0.51.0,<0.52`.
+Bugfix patch on the 0.51 train. Install from PyPI with `hedron>=0.52.0,<0.53`.
 
 - Adaptive concurrency cancels in-flight siblings when any task returns `HED-CONC-0001` (#103).
 - FastAPI fragment render honors `allow_htmx_eval` on `InteractionPolicy` (#74).

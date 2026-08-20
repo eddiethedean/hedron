@@ -1,8 +1,10 @@
 # What's new in 0.52
 
-In-tree tip is **0.52.0** (Published; Git tag and PyPI upload deferred). PyPI still
-serves **0.51.0** — pin `hedron>=0.51.0,<0.52` from the public index until the 0.52
-wheel lands. Tracking [#522](https://github.com/eddiethedean/hedron/issues/522).
+!!! note "Current train is 0.53"
+
+    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; PyPI still `>=0.52.0,<0.53` while deferred). See [What's new in 0.53](whats-new-0.53.md).
+
+Historical **0.52.0** in-tree Published cut (tag/PyPI may still be deferred relative to later trains). Tracking [#522](https://github.com/eddiethedean/hedron/issues/522).
 
 ## 0.52.0
 

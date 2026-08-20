@@ -1,6 +1,6 @@
 # HedronPosit deployment lifecycle (`v0.52`)
 
-**Status:** Stage 1 Implemented / Verified. Living tip `v0.52.0`
+**Status:** Stage 1 Implemented / Verified. Living tip `v0.53.0`
 (in-tree Published; tag/PyPI deferred).<br>
 **Tracking:** [#522](https://github.com/eddiethedean/hedron/issues/522)<br>
 **Related:** [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)<br>

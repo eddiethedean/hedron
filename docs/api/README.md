@@ -30,7 +30,7 @@ helpers) is compatibility-protected on the 0.x train. Everything else is `beta` 
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-**Published `v0.51.0`**. Pin `hedron>=0.51.0,<0.52`.
+**Published `v0.51.0`**. Pin `hedron>=0.52.0,<0.53`.
 
 !!! note "Contracts vs full reference"
 

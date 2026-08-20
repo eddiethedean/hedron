@@ -8,7 +8,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_notebook",
     version="0.1.0",
     distribution="hedron-notebook",
-    hedron_version=">=0.52,<0.53",
+    hedron_version=">=0.53,<0.54",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,

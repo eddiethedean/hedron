@@ -14,7 +14,7 @@ reference — without matching incidental CPython formatting.
 
 Also available as the flagship extra `hedron[conformance]`.
 
-**Package maturity:** Beta · **Train:** `0.52.x` (in-tree tip `v0.52.0`) · pin `>=0.52.0,<0.53` (PyPI still `>=0.51.0,<0.52` while deferred)
+**Package maturity:** Beta · **Train:** `0.53.x` (in-tree tip `v0.53.0`) · pin `>=0.53.0,<0.54` (PyPI still `>=0.52.0,<0.53` while deferred)
 
 Phase 0.52 authority contract:
 [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
@@ -23,14 +23,14 @@ Phase 0.52 authority contract:
 ## Install
 
 ```bash
-pip install "hedron-conformance>=0.51.0,<0.52"
+pip install "hedron-conformance>=0.52.0,<0.53"
 # or
-uv add "hedron-conformance>=0.51.0,<0.52"
+uv add "hedron-conformance>=0.52.0,<0.53"
 # via flagship:
-pip install "hedron[conformance]>=0.51.0,<0.52"
+pip install "hedron[conformance]>=0.52.0,<0.53"
 ```
 
-Checkout tip `v0.52.0` uses `>=0.52.0,<0.53` until the Git tag / PyPI upload lands.
+Checkout tip `v0.53.0` uses `>=0.53.0,<0.54` until the Git tag / PyPI upload lands.
 
 Requires Python 3.11–3.14.
 
@@ -79,8 +79,8 @@ assert result.ok
 
 Experimental evaluators in the monorepo (not published as PyPI apps):
 
-- [`hedron-runtime-node`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-node) — Node ≥ 18 (`0.52.0`)
-- [`hedron-runtime-java`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-java) — JDK 11+ (`0.52.0`)
+- [`hedron-runtime-node`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-node) — Node ≥ 18 (`0.53.0`)
+- [`hedron-runtime-java`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-java) — JDK 11+ (`0.53.0`)
 
 ## Links
 

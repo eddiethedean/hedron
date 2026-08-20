@@ -36,7 +36,7 @@ open localhost:8000 → click **Refresh status**.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "hedron>=0.51.0,<0.52" hedron new my-hedron-app
+uvx --from "hedron>=0.52.0,<0.53" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 # Open http://127.0.0.1:8000 and click Refresh status
 ```
@@ -108,7 +108,7 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.51.0,<0.52`.
+Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.52.0,<0.53`.
 For production adoption, continue with
 [What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
 </details>

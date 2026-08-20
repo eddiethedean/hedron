@@ -1,7 +1,7 @@
 # Hedron `v0.52` conformance authority and Posit lifecycle acceptance
 
 **Status:** Verified in-tree `v0.52.0` (cut-ready; **do not tag yet**).
-**`v0.51.0` on PyPI** until upload (`registry_status = "deferred"`).<br>
+**`v0.52.0` on PyPI** until upload (`registry_status = "deferred"`).<br>
 **Planning baseline:** Published in-tree `v0.51.2`<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.51.2`<br>
 **Target:** Hedron `v0.52.0`<br>
@@ -61,6 +61,6 @@ Do not create Git tag `v0.52.0` until a cut is intended.
 - [x] Tracking [#522](https://github.com/eddiethedean/hedron/issues/522) bound.
 - [x] Companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513) bound.
 - [x] Stage 0 / contract refine makes no runtime/version/living-tip claim.
-- [x] Stage 1 runtime shipped (Verified gates; living tip `v0.52.0` in-tree).
+- [x] Stage 1 runtime shipped (Verified gates; living tip `v0.53.0` in-tree).
 - [x] In-tree cut metadata flipped (`docs/release.toml`, package versions, CI gate).
 - [ ] Git tag `v0.52.0` / PyPI upload (deferred; do not tag yet).

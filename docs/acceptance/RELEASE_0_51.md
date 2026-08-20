@@ -1,6 +1,6 @@
 # Hedron `v0.51` curated extras acceptance
 
-**Status:** Verified in-tree `v0.51.2` (cut-ready). **`v0.51.0` on PyPI** until upload
+**Status:** Verified in-tree `v0.51.2` (cut-ready). **`v0.52.0` on PyPI** until upload
 (`registry_status = "deferred"`). Does **not** close `SR-021`.<br>
 **Planning baseline:** Published in-tree `v0.50.3`<br>
 **Required predecessor/cut baseline:** Verified in-tree `v0.50.3`<br>

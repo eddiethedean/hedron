@@ -8,11 +8,50 @@ import sys
 
 from hedron.cli.discovery import _load_app, _registry_empty_hint
 from hedron_core.registry import get_registry
+from hedron_core.route_document import export_routes_document
 from hedron_core.typing_aliases import JsonObject
+
+
+def _registry_route_rows() -> list[dict[str, object]]:
+    registry = get_registry()
+    return [
+        {
+            "kind": r.kind,
+            "logical_id": r.logical_id,
+            "name": r.name,
+            "path": r.path,
+            "methods": list(r.methods),
+            "operation_id": r.operation_id,
+            "include_in_schema": r.include_in_schema,
+            "module": r.module,
+            "tags": list(r.tags),
+            "docs": r.docs,
+            "htmx_inference": dict(r.htmx_inference),
+        }
+        for r in registry.routes()
+    ]
 
 
 def _cmd_routes(args: argparse.Namespace) -> int:
     _load_app(args.app)
+    document = bool(getattr(args, "document", False))
+    if document:
+        rows = _registry_route_rows()
+        if not rows:
+            try:
+                from hedron_explorer.services.catalog import routes_json
+
+                payload = routes_json()
+                if isinstance(payload, list):
+                    rows = [item for item in payload if isinstance(item, dict)]
+                elif isinstance(payload, dict) and isinstance(payload.get("items"), list):
+                    rows = [item for item in payload["items"] if isinstance(item, dict)]
+            except ImportError:
+                pass
+        if not rows:
+            _registry_empty_hint(app=args.app, what="routes")
+        print(json.dumps(export_routes_document(rows), indent=2, sort_keys=True))
+        return 0
     try:
         from hedron_explorer.services.catalog import routes_json
 
@@ -23,7 +62,6 @@ def _cmd_routes(args: argparse.Namespace) -> int:
         return 0
     except ImportError:
         print("hedron-explorer: skipped (not installed)", file=sys.stderr)
-    registry = get_registry()
     rows = [
         {
             "kind": r.kind,
@@ -34,7 +72,7 @@ def _cmd_routes(args: argparse.Namespace) -> int:
             "include_in_schema": r.include_in_schema,
             "htmx": dict(r.htmx_inference),
         }
-        for r in registry.routes()
+        for r in get_registry().routes()
     ]
     if not rows:
         _registry_empty_hint(app=args.app, what="routes")
