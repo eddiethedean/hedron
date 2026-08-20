@@ -1,0 +1,27 @@
+schema_version = 1
+phase = "0.53"
+state = "Planned"
+baseline = "v0.52.0"
+gates = ["THEME-053", "DISCOVER-053", "FLEET-053"]
+
+[theme]
+preserve = ["Theme", "REQUIRED_A11Y_TOKENS", "FORCED_COLOR_TOKENS", "PRINT_SAFE_TOKENS", "validate_element_style_contract"]
+custom_app_mode = "default_styles=False"
+contract_surface = ["semantic_tokens", "parts", "slots"]
+evidence = ["contrast", "focus", "forced_colors", "reduced_motion", "print", "visual_matrix"]
+private_selectors_supported = false
+
+[discovery]
+preserve_existing_imports = true
+source = "versioned stability inventory"
+outputs = ["human", "json"]
+silent_rename = false
+
+[fleet]
+mode = "read_only"
+scope = "installed_application"
+checks = ["distribution_versions", "train_skew", "selected_extras", "plugin_activation", "asset_activation", "capability_recommendations"]
+recommendations_require_evidence = true
+automatic_install_or_enable = false
+redact = ["credentials", "cookies", "package_manager_tokens", "environment_paths"]
+external_package_author_doctor = "0.54 DOCTOR-054"

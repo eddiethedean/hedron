@@ -50,7 +50,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.50** | Explorer architecture and operator-grade development tooling; declarative HTMX authoring primitives | **Published** (`v0.50.1` on PyPI; in-tree `v0.50.3` tag deferred; D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503)) |
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Published** (`v0.51.0` on PyPI; RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
 | **0.52** | Cross-language conformance authority; HedronPosit deployment lifecycle companions | **Published** in-tree (`v0.52.0`; Verified gates; tag/PyPI deferred; RFC-0079 / D-089 / D-090; [#522](https://github.com/eddiethedean/hedron/issues/522); companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
-| **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Planned** (owning RFC/issue required before implementation; related [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
+| **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Stage 0 Accepted** ([RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md), D-091/D-092, [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521); runtime gates Planned) |
 | **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh | **Planned** (package-quality audit; owning RFC/issue required before implementation) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
@@ -4683,7 +4683,9 @@ apps stop owning deployment cookie paths and redirect adaptation
 
 ## 0.53 — Application DX contracts (`v0.53.0`)
 
-**Status:** Planned. This phase owns downstream application and operator tooling contracts. It does
+**Status:** Stage 0 Accepted; Stage 1 runtime gates Planned. [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md)
+and D-091/D-092 own and refine this phase against Published in-tree `v0.52.0`; tracking is the
+bound [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521) packet. This phase owns downstream application and operator tooling contracts. It does
 not replace the 0.54 external-author `hedron package doctor` sample-kit workflow, reopen the 0.24
 `polling_only` disposition, or schedule Hedron `1.0`.
 
@@ -4749,6 +4751,18 @@ theme surfaces, flat namespace hunting, and ad-hoc extras/fleet triage. Tracking
 - Diagnostics remain suppressible and version-honest; fleet doctor findings do not invent authority
   or claim Supported maturity the inventories deny.
 - Owning RFC/issue gates are Accepted before Stage 1 runtime work begins.
+
+### Stage 0 artifacts (Accepted; Planned gates)
+
+- Owning RFC + decisions: [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md) /
+  D-091 / D-092; tracking [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521).
+- [Release acceptance](acceptance/RELEASE_0_53.md) and
+  [release gate](acceptance/release-gate-0.53.toml) (all rows Planned).
+- [Application DX inventory](acceptance/application-dx-inventory-053.toml),
+  [asset lock](acceptance/application-assets-053.toml),
+  [contract lock](acceptance/application-contracts-053.toml), and
+  [tooling lock](acceptance/application-tooling-053.toml).
+- Stage 0 keeps the living tip at `v0.52.0`; PKG-053 upgrade source is 0.52.
 
 ## 0.54 — Notebook, simulation, and external-author reference tooling (`v0.54.0`)
 

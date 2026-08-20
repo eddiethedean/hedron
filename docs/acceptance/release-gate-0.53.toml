@@ -1,0 +1,76 @@
+schema_version = 1
+phase = "0.53"
+status = "Planned"
+planning_baseline = "v0.52.0"
+required_predecessor = "v0.52.0"
+target = "v0.53.0"
+decision = "D-091"
+contract_refine = "D-092"
+owning_rfc = "RFC-0080"
+tracking = "#514-#521"
+
+[[evidence]]
+id = "ASSET-053"
+state = "Planned"
+command = "python scripts/check_asset_053.py"
+owner = "hedron-core"
+
+[[evidence]]
+id = "DIAG-053"
+state = "Planned"
+command = "python scripts/check_diag_053.py"
+owner = "hedron-core"
+
+[[evidence]]
+id = "ROUTE-053"
+state = "Planned"
+command = "python scripts/check_route_053.py"
+owner = "hedron"
+
+[[evidence]]
+id = "WORKFLOW-053"
+state = "Planned"
+command = "python scripts/check_workflow_053.py"
+owner = "hedron"
+
+[[evidence]]
+id = "TESTGEN-053"
+state = "Planned"
+command = "python scripts/check_testgen_053.py"
+owner = "hedron-core"
+
+[[evidence]]
+id = "THEME-053"
+state = "Planned"
+command = "python scripts/check_theme_053.py"
+owner = "hedron-core"
+
+[[evidence]]
+id = "DISCOVER-053"
+state = "Planned"
+command = "python scripts/check_discover_053.py"
+owner = "hedron"
+
+[[evidence]]
+id = "FLEET-053"
+state = "Planned"
+command = "python scripts/check_fleet_053.py"
+owner = "hedron"
+
+[[evidence]]
+id = "DOCS-053"
+state = "Planned"
+command = "python scripts/check_docs_053.py"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-053"
+state = "Planned"
+command = "python scripts/check_pkg_053.py"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-053"
+state = "Planned"
+command = "python scripts/check_regress_053.py"
+owner = "hedron"

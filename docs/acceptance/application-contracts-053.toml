@@ -1,0 +1,36 @@
+schema_version = 1
+phase = "0.53"
+state = "Planned"
+baseline = "v0.52.0"
+gates = ["DIAG-053", "ROUTE-053", "WORKFLOW-053", "TESTGEN-053"]
+
+[diagnostics]
+preserve = ["Diagnostic", "DiagnosticSeverity", "Suppression", "apply_suppressions", "diagnostics_to_json", "diagnostics_to_text", "diagnostics_to_sarif"]
+severity_canonical = ["error", "warning", "information"]
+aliases_planned = ["err", "warn", "info", "note"]
+unsuppressible_prefixes = ["HED-SEC-"]
+require_applicability_interval = true
+require_structured_remediation = true
+
+[routes]
+preserve = ["RouteMeta", "routes_json", "hedron routes", "CatalogEntry"]
+schema_versioned = true
+typed_nested_metadata = true
+deterministic = true
+redacted = true
+executes_handlers = false
+
+[workflow]
+preserve = ["JobBackend", "JobHandle", "JobStatus", "JobState", "job_status_interaction"]
+terminal_states = ["succeeded", "failed", "cancelled"]
+terminal_stops_monitoring = true
+cancel_is_cooperative = true
+retry_is_explicit = true
+reopens_polling_only = false
+
+[testgen]
+source = "sealed InteractionCatalog"
+outputs_reviewable_source = true
+catalog_executable_code_allowed = false
+determinism_inputs = ["catalog_fingerprint", "profile", "generator_version"]
+paths = ["page", "htmx", "mounted", "error"]

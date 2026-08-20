@@ -1,0 +1,71 @@
+schema_version = 1
+phase = "0.53"
+state = "Planned"
+baseline = "v0.52.0"
+target = "v0.53.0"
+owning_rfc = "RFC-0080"
+decision = "D-091"
+contract_refine = "D-092"
+
+[[workstream]]
+id = "assets"
+issue = "#514"
+gate = "ASSET-053"
+shipped_seams = ["inject_page_assets", "AssetRef", "AssetMeta", "register_asset"]
+planned_contract = "dependency-ordered application assets in the typed CSP-aware page plan"
+
+[[workstream]]
+id = "diagnostics"
+issue = "#515"
+gate = "DIAG-053"
+shipped_seams = ["Diagnostic", "DiagnosticSeverity", "Suppression", "diagnostics_to_sarif", "hedron check"]
+planned_contract = "version applicability, severity aliases, justified suppression, structured remediation"
+
+[[workstream]]
+id = "routes"
+issue = "#516"
+gate = "ROUTE-053"
+shipped_seams = ["RouteMeta", "routes_json", "hedron routes", "CatalogEntry"]
+planned_contract = "versioned typed route/effect documents and deterministic graph export"
+
+[[workstream]]
+id = "workflow"
+issue = "#517"
+gate = "WORKFLOW-053"
+shipped_seams = ["JobBackend", "JobHandle", "JobStatus", "JobState", "job_status_interaction"]
+planned_contract = "start, monitor, cancel, retry, busy, terminal, and completion composition"
+
+[[workstream]]
+id = "testgen"
+issue = "#518"
+gate = "TESTGEN-053"
+shipped_seams = ["InteractionCatalog", "compile_interaction_catalog", "seal_app_catalog"]
+planned_contract = "deterministic reviewable tests derived from redacted sealed catalogs"
+
+[[workstream]]
+id = "theme"
+issue = "#519"
+gate = "THEME-053"
+shipped_seams = ["Theme", "REQUIRED_A11Y_TOKENS", "validate_element_style_contract", "default_styles=False"]
+planned_contract = "semantic-token compatibility and reusable visual conformance"
+
+[[workstream]]
+id = "discovery"
+issue = "#520"
+gate = "DISCOVER-053"
+shipped_seams = ["hedron.__all__", "stable facade documentation"]
+planned_contract = "versioned curated imports and stability discovery without renames"
+
+[[workstream]]
+id = "fleet"
+issue = "#521"
+gate = "FLEET-053"
+shipped_seams = ["distribution metadata", "plugin registry", "asset registry", "Explorer package health"]
+planned_contract = "read-only installed-application train, extras, plugin, and asset diagnosis"
+
+[boundaries]
+runtime_changes = false
+version_changes = false
+reopen_polling_only = false
+replace_package_doctor_054 = false
+schedule_1_0 = false

@@ -1,0 +1,27 @@
+schema_version = 1
+phase = "0.53"
+state = "Planned"
+baseline = "v0.52.0"
+gate = "ASSET-053"
+
+[compatibility]
+preserve = ["inject_page_assets", "AssetRef", "AssetMeta", "register_asset", "ExtensionPlan", "AssetManifest"]
+placements = ["head", "after_htmx_core", "body_end"]
+kinds = ["css", "js", "module"]
+adapter_matrix = ["fastapi", "flask", "django"]
+
+[required]
+deterministic_order = true
+dependency_cycle_diagnostic = true
+missing_dependency_diagnostic = true
+duplicate_id_diagnostic = true
+csp_integrity_validation = true
+fragment_script_rejection = true
+common_path_without_body_rewrite = true
+
+[excluded]
+cdn_fetch = true
+arbitrary_inline_script = true
+implicit_remote_asset = true
+response_body_middleware_requirement = true
+stage0_runtime_symbol = true
