@@ -148,7 +148,7 @@ def _check_versions(*, allow_planned: bool) -> None:
             raise SystemExit(
                 "deferred cut requires pypi_version != published_version until upload"
             )
-        if not (pypi.startswith("0.54.") or pypi.startswith("0.55.")):
+        if not (pypi.startswith("0.54.") or pypi.startswith(("0.55.", "0.56."))):
             raise SystemExit(
                 f"deferred pypi_version must stay on prior public index; found {pypi!r}"
             )

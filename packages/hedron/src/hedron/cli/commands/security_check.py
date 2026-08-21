@@ -86,8 +86,7 @@ def collect_posture(
             ownership="hedron-core",
             remediation="Keep csrf_enabled=True for mutating endpoints",
             evidence=(
-                f"SecurityPolicy.profile={policy.profile.value} "
-                f"csrf_enabled={policy.csrf_enabled}"
+                f"SecurityPolicy.profile={policy.profile.value} csrf_enabled={policy.csrf_enabled}"
             ),
             fingerprint="csrf-enabled",
         ),
@@ -132,9 +131,7 @@ def collect_posture(
         baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
         baseline_fps = set(baseline.get("fingerprints", []))
         current_fps = {
-            finding.fingerprint
-            for finding in visible
-            if finding.severity in {"error", "warning"}
+            finding.fingerprint for finding in visible if finding.severity in {"error", "warning"}
         }
         drift = sorted(current_fps - baseline_fps)
     for row in expired:

@@ -34,7 +34,7 @@ class SecurityConformanceResult:
 
 DEFAULT_CASES: tuple[SecurityConformanceCase, ...] = (
     SecurityConformanceCase(
-        id = "csrf_before_handler",
+        id="csrf_before_handler",
         adapter="fastapi",
         invariant="csrf_before_handler",
         earliest_enforcement="ASGI receive / route wrap",

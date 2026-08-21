@@ -48,7 +48,10 @@ class SensitiveValue(Generic[T]):
         return self.value
 
     def redacted(self) -> str:
-        return redact_value(self.value)
+        redacted = redact_value(self.value)
+        if isinstance(redacted, str):
+            return redacted
+        return "[redacted]"
 
 
 @dataclass(frozen=True, slots=True)

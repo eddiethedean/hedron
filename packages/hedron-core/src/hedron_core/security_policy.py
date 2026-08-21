@@ -18,7 +18,6 @@ from hedron_core.request_budget import RequestBudgetLimits
 # Avoid circular import of EgressPolicy at type-check time by using Any for optional policy.
 
 
-
 def _policy_field_values_without_csrf(policy: SecurityPolicy) -> tuple[Any, ...]:
     """Field values for equality/hash excluding the ``csrf`` strategy object."""
     return tuple(

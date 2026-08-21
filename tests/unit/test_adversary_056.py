@@ -38,7 +38,9 @@ def test_adversary_056_shared_corpus() -> None:
     with pytest.raises(EgressError):
         policy.require("https://api.example@evil.example/")
     # Context confusion
-    ctx = SecurityContext(application_id="a", subject_id="s", tenant_id="t", scopes=frozenset({"r"}))
+    ctx = SecurityContext(
+        application_id="a", subject_id="s", tenant_id="t", scopes=frozenset({"r"})
+    )
     payload = ctx.to_serializable()
     with pytest.raises(SecurityContextError):
         SecurityContext.from_serializable({**payload, "fingerprint": "deadbeef" * 4})

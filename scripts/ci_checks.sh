@@ -425,6 +425,7 @@ quality_verify_pkgs() {
   run_py scripts/verify_pkg_53.py
   run_py scripts/verify_pkg_54.py
   run_py scripts/verify_pkg_55.py
+  run_py scripts/verify_pkg_56.py
 }
 
 quality_docs() {
@@ -584,6 +585,7 @@ evidence_verify_pkgs() {
   run_py scripts/verify_pkg_53.py
   run_py scripts/verify_pkg_54.py
   run_py scripts/verify_pkg_55.py
+  run_py scripts/verify_pkg_56.py
 }
 
 cmd_evidence() {
@@ -636,6 +638,7 @@ cmd_packaging() {
   run_py scripts/verify_pkg_53.py
   run_py scripts/verify_pkg_54.py
   run_py scripts/verify_pkg_55.py
+  run_py scripts/verify_pkg_56.py
 }
 
 cmd_all() {
