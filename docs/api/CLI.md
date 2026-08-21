@@ -101,6 +101,30 @@ Plotly/Altair status (`HED-COMPAT-0003`) appear only when the project references
 surfaces (or when `--all-compat` is set). The generic baseline notice (`HED-COMPAT-0001`)
 always remains available.
 
+### `security-check`
+
+Offline security posture report for the project tree. Read-only: does not probe
+production hosts or open network connections.
+
+```bash
+hedron security-check
+hedron security-check --format json
+hedron security-check --format sarif --policy strict --strict
+```
+
+| Flag | Description |
+|---|---|
+| `--project` | Project root (default: `.`) |
+| `--format` | `text` (default), `json`, or `sarif` |
+| `--policy` | `SecurityPolicy` preset: `development`, `standard` (default), or `strict` |
+| `--suppressions` | JSON suppressions file (expiring entries) |
+| `--baseline` | Reviewed baseline fingerprints JSON for drift detection |
+| `--strict` | Fail on proven warnings and baseline drift |
+
+Exit code is non-zero for proven errors, and in `--strict` mode also for proven warnings
+and baseline drift. Findings include evidence, ownership, and remediation; secrets are
+redacted in all formats.
+
 ### `routes` / `components` / `graph` / `audit-components`
 
 ```bash
