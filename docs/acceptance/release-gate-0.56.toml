@@ -1,5 +1,5 @@
 # Phase 0.56 security control plane release evidence index.
-# Verified in-tree cut (D-097 / D-098). Living tip v0.56.0; PyPI remains deferred.
+# Verified in-tree cut (D-097 / D-098). Living tip v0.56.1; PyPI serves 0.56.0 (0.56.1 deferred).
 
 schema_version = 1
 phase = "0.56"

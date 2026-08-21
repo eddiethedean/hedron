@@ -10,7 +10,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Current version | **v0.56.0** in the repository; **v0.56.0** is the latest PyPI release; application pin `hedron>=0.56.0,<0.57` |
+| Current version | **v0.56.1** in the repository; **v0.56.0** is the latest PyPI release; application pin `hedron>=0.56.0,<0.57` |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner |

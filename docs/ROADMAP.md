@@ -53,7 +53,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Verified** / **Published** in-tree (`v0.53.0`; Verified gates; tag/PyPI deferred; [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md), D-091/D-092, [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
 | **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Published** (`v0.56.0` on GitHub and PyPI; [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md), D-093/D-094, foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543); companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
 | **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Published** (`v0.55.0` tag; Verified gates; PyPI deferred; [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md), D-095/D-096, [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)) |
-| **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.0` in-tree; Verified gates; tag/PyPI deferred; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)) |
+| **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.1` in-tree; Verified gates; 0.56.1 tag/PyPI deferred; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -105,7 +105,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 
 ### Honest gaps on the current train (0.56.x)
 
-- Current **published** in-tree tip is **0.56.x** (`v0.56.0`; PyPI still `v0.56.0` deferred)
+- Current **published** in-tree tip is **0.56.x** (`v0.56.1`; PyPI still `v0.56.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -4779,7 +4779,7 @@ justify a narrower Supported claim; this phase does not turn notebook preview in
 server. Companion application chrome / design-system issues
 [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)
 are bound to this phase and do not reopen 0.53 Application DX gates or schedule `1.0`.
-Living tip is `v0.56.0`.
+Living tip is `v0.56.1`.
 
 **Outcome:** The notebook preview, offline simulator, and sample plugin form a coherent modern
 authoring loop: preview real package workflows, understand simulation limits, and copy a credible
@@ -5625,11 +5625,11 @@ pluggable hooks so applications and deployment platforms can own those concerns 
 
 ## 0.56 — Security control plane and adversarial assurance (`v0.56.0`)
 
-**Status:** Published in-tree as `v0.56.0` (D-097 / D-098 / RFC-0083; Verified gates; tag/PyPI deferred). Security-only phase tracking
+**Status:** Published in-tree as `v0.56.0` (D-097 / D-098 / RFC-0083; Verified gates). Living tip `v0.56.1` (tag/PyPI deferred). Security-only phase tracking
 [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557).
 0.56 composes and hardens existing security mechanisms; it does not reopen 0.55 application-
 workflow scope or promote experimental transports, hosts, or packages. Living tip is
-`v0.56.0` (PyPI remains deferred).
+`v0.56.1` (PyPI serves `v0.56.0`; 0.56.1 deferred).
 
 **Outcome:** Every Hedron-controlled request crosses one inspectable security control plane. Identity
 and sensitivity provenance survive supported boundaries; dangerous sinks and outbound access use

@@ -11,7 +11,7 @@ Use the pin the package index can resolve.
 **Train** — A minor version line (`0.46.x`). Compatible patches stay inside the pin;
 the next train is an intentional upgrade.
 
-**Published** — A cut that is on the current train (`v0.56.0` in-tree; PyPI serves `v0.56.0` ). Pin the matching
+**Published** — A cut that is on the current train (`v0.56.1` in-tree; PyPI serves `v0.56.0`). Pin the matching
 upper-bounded install constraint.
 
 **Action** — A typed server operation with an HTTP method, input contract, dependencies, and response behavior.

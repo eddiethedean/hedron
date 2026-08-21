@@ -1,6 +1,6 @@
 # hedron-elements
 
-**Package maturity:** Beta · **Train:** `0.56.x` (in-tree tip `v0.56.0`) · pin `>=0.56.0,<0.57` in-tree (PyPI `>=0.56.0,<0.57` ) (PyPI still `>=0.56.0,<0.57` )
+**Package maturity:** Beta · **Train:** `0.56.x` (in-tree tip `v0.56.1`) · pin `>=0.56.1,<0.57` in-tree (PyPI `>=0.56.0,<0.57` ) (PyPI still `>=0.56.0,<0.57` )
 
 Framework-neutral Web Component ABI and HTMX-safe bridge. The package includes the
 `hedron-example` ABI reference plus Beta form controls (`hedron-field-text`,

@@ -2,7 +2,7 @@
 
 Language-neutral Hedron conformance-test kit and capability runner.
 
-**Package maturity:** Beta · **Train:** `0.56.x` (in-tree tip `v0.56.0`) · pin `>=0.56.0,<0.57` in-tree (PyPI `>=0.56.0,<0.57` )
+**Package maturity:** Beta · **Train:** `0.56.x` (in-tree tip `v0.56.1`) · pin `>=0.56.1,<0.57` in-tree (PyPI `>=0.56.0,<0.57` )
 
 **Flagship extra:** `hedron[conformance]` · **Import:** `hedron_conformance`
 
@@ -19,7 +19,7 @@ pip install "hedron[conformance]>=0.56.0,<0.57"
 pip install "hedron-conformance>=0.56.0,<0.57"
 ```
 
-Checkout tip `v0.56.0` uses `>=0.56.0,<0.57` in-tree; PyPI first-run stays `>=0.56.0,<0.57` until the Git tag / PyPI upload lands.
+Checkout tip `v0.56.1` uses `>=0.56.1,<0.57` in-tree; PyPI first-run stays `>=0.56.0,<0.57` until the 0.56.1 upload lands.
 
 ## When to use
 

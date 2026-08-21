@@ -1,8 +1,16 @@
 # What’s new in 0.56
 
-Published in-tree **0.56.0** (PyPI still **0.56.0** while deferred). Pin
-`hedron>=0.56.0,<0.57` from PyPI until a newer wheel lands; checkout tip is
-`0.56.0`.
+Published **0.56.0** on PyPI (in-tree tip **0.56.1**). Pin
+`hedron>=0.56.0,<0.57` from PyPI until a newer wheel lands.
+
+## 0.56.1
+
+In-tree quality patch (tag/PyPI deferred). Install from PyPI with `hedron>=0.56.0,<0.57`.
+
+- Workspace Python quality upgrade: typing debt burn-down across routing, data, charts,
+  maps, and adapters; safer best-effort exception logging; ASYNC/PTH/DTZ/RET ruff rules;
+  maintainability refactors without public API breaks.
+- `fastapi-workbench` ships a `py.typed` marker.
 
 ## 0.56.0
 

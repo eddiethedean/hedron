@@ -8,12 +8,12 @@ upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately 
 minor (`0.55.x`) continues through approximately **2027-08-20** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The published train is **`v0.56.0`** and PyPI serves `0.56.0`. First-run pins use
-`>=0.56.0,<0.57`.
+The published train tip is **`v0.56.1`** (PyPI serves `0.56.0`; 0.56.1 deferred). First-run pins use
+`>=0.56.0,<0.57` from PyPI; in-tree floor is `>=0.56.1,<0.57`.
 
 | Version | Supported |
 |---|---|
-| `0.56.x` | Yes (current published train — pin `>=0.56.0,<0.57`; published `v0.56.0`) |
+| `0.56.x` | Yes (current published train — pin `>=0.56.1,<0.57`; published `v0.56.1`) |
 | `0.55.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` |
 | `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.56.x` |
 | `0.52.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.53.x` / `0.56.x` |

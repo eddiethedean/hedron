@@ -3,10 +3,21 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.56.1 — 2026-08-21
+
+In-tree quality patch on the 0.56 train. Git tag and PyPI upload are **deferred**; install
+from PyPI with `hedron>=0.56.0,<0.57`. [What’s new in 0.56](whats-new-0.56.md).
+[Installation](../getting-started/installation.md).
+
+- Workspace Python quality upgrade: typing debt burn-down, safer best-effort exception
+  logging, ASYNC/PTH/DTZ/RET ruff rules, and maintainability refactors without public API
+  breaks.
+- `fastapi-workbench` ships a `py.typed` marker.
+
 ## 0.56.0 — 2026-08-20
 
-Security control plane in-tree tip (RFC-0083 / D-097 / D-098). Pin
-`hedron>=0.56.0,<0.57` from PyPI until the 0.56 wheel lands.
+Security control plane tip (RFC-0083 / D-097 / D-098). **On PyPI** as `0.56.0`. Pin
+`hedron>=0.56.0,<0.57`.
 [What’s new in 0.56](whats-new-0.56.md).
 
 ## 0.55.0 — 2026-08-20

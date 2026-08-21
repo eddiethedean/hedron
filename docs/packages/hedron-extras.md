@@ -2,7 +2,7 @@
 
 Curated optional extras and analysis workbenches for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.56.x` (in-tree tip `v0.56.0`) · pin `>=0.56.0,<0.57` in-tree (PyPI `>=0.56.0,<0.57` ) (PyPI still `>=0.56.0,<0.57` )<br>
+**Package maturity:** Beta · **Train:** `0.56.x` (in-tree tip `v0.56.1`) · pin `>=0.56.1,<0.57` in-tree (PyPI `>=0.56.0,<0.57` ) (PyPI still `>=0.56.0,<0.57` )<br>
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`<br>
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 

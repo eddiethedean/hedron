@@ -1,11 +1,11 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.56 **Published** as `v0.56.0` (2026-08-20; in-tree tip; tag and PyPI published). Phase 0.55 remains Verified in-tree.
-Living tip = `v0.56.0` (PyPI serves `v0.56.0`; registry uploaded).
-**Date:** 2026-08-20
+**Roadmap position:** phase 0.56 **Published** as `v0.56.0` (2026-08-20) on PyPI. Living tip is in-tree `v0.56.1`. Phase 0.55 remains Verified in-tree.
+Living tip = `v0.56.1` (PyPI serves `v0.56.0`; registry deferred for 0.56.1).
+**Date:** 2026-08-21
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.56.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.56.1`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
@@ -21,8 +21,8 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 
 **Phase focus:** Living train is **0.56** (D-097 / D-098 / RFC-0083) — security control plane
 [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557).
-`release-gate-0.56.toml` Verified rows; living tip `v0.56.0` (tag and PyPI published; `v0.56.0` on PyPI;
-`registry_status = "uploaded"`). Prior Published **0.55** secure upgradeable workflows
+`release-gate-0.56.toml` Verified rows; living tip `v0.56.1` in-tree (`v0.56.0` on PyPI;
+`registry_status = "deferred"` for 0.56.1). Prior Published **0.55** secure upgradeable workflows
 (D-095 / D-096 / RFC-0082; [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)).
 Prior Published **0.54** authoring-loop / chrome (D-093 / D-094 / RFC-0081;
 [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543)).

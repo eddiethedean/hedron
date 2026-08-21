@@ -5,8 +5,8 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page describes the repository’s **0.56.x** train (in-tree tip **`v0.56.0`**). The
-latest installable PyPI release is **0.56.0**; the 0.56 upload is complete. Install
+This page describes the repository’s **0.56.x** train (in-tree tip **`v0.56.1`**). The
+latest installable PyPI release is **0.56.0**; the 0.56.1 upload is deferred. Install
 from PyPI with `hedron>=0.56.0,<0.57`. Release terminology and channel status:
 [Current release and support](current-release.md). Extras and public-index notes:
 [Installation](../getting-started/installation.md). Capability
@@ -90,8 +90,8 @@ sessions are not Supported yet** — do not market human AT as done.
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.1` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
-| Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.56.0`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
-| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (tip `v0.56.0`, tag/PyPI deferred) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
+| Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.56.1`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
+| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (tip `v0.56.1`, 0.56.1 tag/PyPI deferred) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
 
 !!! note "Package train vs capability"
 

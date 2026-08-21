@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.56.1] — 2026-08-21
+
+### Changed
+- Coordinated train tip `0.56.1` (in-tree patch; tag/PyPI deferred).
+
+### Fixed
+- Workspace Python quality upgrade: typing debt burn-down, safer best-effort exception logging, ASYNC/PTH/DTZ/RET ruff rules, and maintainability refactors without public API breaks.
+
+
 ## [0.56.0] — 2026-08-20
 
 ### Added

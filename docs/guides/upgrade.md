@@ -1,16 +1,15 @@
 # Upgrade to Hedron 0.56
 
 This guide covers an application upgrade onto the **0.56.x** tip
-(in-tree `v0.56.0`; repository train; Git tag / PyPI upload deferred). PyPI still
-serves **`v0.56.0`** — keep `hedron>=0.56.0,<0.57` from the public index until the
-0.56 wheel lands. Public-index notes:
-[Installation](../getting-started/installation.md). New applications should use
-[Build your first app](../getting-started/quickstart.md).
+(in-tree `v0.56.1`; **`v0.56.0` on PyPI**). Git tag / PyPI upload for **0.56.1** are
+deferred — keep `hedron>=0.56.0,<0.57` from the public index until a newer wheel lands.
+Public-index notes: [Installation](../getting-started/installation.md). New applications
+should use [Build your first app](../getting-started/quickstart.md).
 
 ## 0.55 → 0.56
 
-Checkout tip `v0.56.0` uses `uv sync`. From PyPI, keep
-`hedron>=0.56.0,<0.57` until the 0.56 wheel lands. See
+Checkout tip `v0.56.1` uses `uv sync`. From PyPI, keep
+`hedron>=0.56.0,<0.57` until a newer 0.56.x wheel lands. See
 [What's new in 0.56](whats-new-0.56.md) and
 [Security control plane](../api/SECURITY_PLANE.md).
 
@@ -20,7 +19,7 @@ Checkout tip `v0.56.0` uses `uv sync`. From PyPI, keep
 
 ## 0.52 → 0.53
 
-Checkout tip `v0.56.0` uses the in-tree floor `>=0.56.0,<0.57`. From PyPI, keep
+Checkout tip `v0.56.1` uses the in-tree floor `>=0.56.1,<0.57`. From PyPI, keep
 `hedron>=0.56.0,<0.57` until the 0.53 wheel lands. See
 [What's new in 0.53](whats-new-0.53.md) and
 [Application DX API](../api/APPLICATION_DX.md).
