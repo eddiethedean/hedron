@@ -60,7 +60,7 @@ _META = PluginMeta(
     name="{package_name}",
     version="0.1.0",
     distribution="{distribution}",
-    hedron_version=">=0.57,<0.58",
+    hedron_version=">=0.58,<0.59",
     capabilities=PluginCapabilities(browser_js=True, styles=True, assets=True),
 )
 

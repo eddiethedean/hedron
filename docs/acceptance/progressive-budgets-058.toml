@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 overflow_behavior = "reject_with_diagnostic"
 [counts]
 surfaces_per_feature = 32

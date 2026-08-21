@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 application = "DesignSystem.apply(recipe, component)"
 application_time = "before_render"
 clone = true

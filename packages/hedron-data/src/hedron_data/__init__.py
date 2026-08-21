@@ -91,9 +91,9 @@ from hedron_data.spreadsheet import (
 from hedron_data.sqlalchemy_source import SQLAlchemyDataSource
 from hedron_data.table import DataTable
 from hedron_data.views import SavedView
-from hedron_data.workspace import DataWorkspace, DataWorkspacePolicy
+from hedron_data.workspace import DataWorkspace, DataWorkspacePolicy, FeatureOverrides
 
-__version__ = "0.57.0"
+__version__ = "0.58.0"
 
 __all__ = [
     "ABI_VERSION",
@@ -120,6 +120,7 @@ __all__ = [
     "DataTable",
     "DataWorkspace",
     "DataWorkspacePolicy",
+    "FeatureOverrides",
     "DEFAULT_MAX_PAGE_SIZE",
     "DEFAULT_MAX_VIZ_PAYLOAD_BYTES",
     "DEFAULT_MAX_VIZ_ROWS",

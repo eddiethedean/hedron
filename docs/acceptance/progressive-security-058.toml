@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 [data_workspace]
 required = ["authorized source", "mutation policies", "transaction owner"]
 deny_default = ["create", "edit", "delete", "cross-tenant access"]

@@ -5,7 +5,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hedron.app import Hedron, mount_hedron_static
+from hedron.app.screens import ScreenHandle, ScreenLayout
 from hedron.async_utils import await_if_needed, gather, run_sync
+from hedron.auth import (
+    AuthDenied,
+    AuthResult,
+    AuthSuccess,
+    RateLimitPolicy,
+    SessionAuthFlow,
+    SessionRotationPolicy,
+)
 from hedron.browser import browser_context, browser_context_from_request
 from hedron.builtins import (
     AutoForm,
@@ -34,6 +43,8 @@ from hedron.color_mode import (
     read_color_mode_preference,
     resolved_theme_from_request,
 )
+from hedron.dashboard import CachePolicy, DashboardHistory, DashboardWorkspace
+from hedron.files import UploadFlow
 from hedron.handles import (
     ActionHandle,
     BoundFragment,
@@ -57,6 +68,13 @@ from hedron.interaction import (
     retarget,
     swap,
     swap_oob,
+)
+from hedron.jobs import (
+    JobScope,
+    JobScopeProvider,
+    PollPolicy,
+    TaskFlow,
+    TaskUnavailablePolicy,
 )
 from hedron.mount import (
     MountPath,
@@ -153,6 +171,7 @@ from hedron_core import (
     DateInput,
     DateTimeInput,
     DescriptionList,
+    DesignSystem,
     Dialog,
     Dialogue,
     DialogueTurn,
@@ -266,6 +285,8 @@ from hedron_core import (
     StateView,
     Status,
     StorageQuotaExceeded,
+    StyleRecipe,
+    StyleScope,
     StyleSymbols,
     SubmitButton,
     Surface,
@@ -419,7 +440,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.57.0"
+__version__ = "0.58.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -450,6 +471,9 @@ __all__ = [
     "Aside",
     "AttrHost",
     "Audio",
+    "AuthDenied",
+    "AuthResult",
+    "AuthSuccess",
     "Auto",
     "AutoForm",
     "await_if_needed",
@@ -466,6 +490,7 @@ __all__ = [
     "ByteRangeNotSatisfiable",
     "cache_component",
     "cache_data",
+    "CachePolicy",
     "CameraCapture",
     "Card",
     "Carousel",
@@ -501,6 +526,8 @@ __all__ = [
     "CsrfField",
     "CsrfStrategy",
     "CsrfValidationError",
+    "DashboardHistory",
+    "DashboardWorkspace",
     "DateInput",
     "DateTimeInput",
     "default_interaction_policy",
@@ -508,6 +535,7 @@ __all__ = [
     "DependencyPlan",
     "DependsOn",
     "DescriptionList",
+    "DesignSystem",
     "Dialog",
     "Dialogue",
     "DialogueTurn",
@@ -580,6 +608,8 @@ __all__ = [
     "InteractionRecorder",
     "InteractionResult",
     "invalidate_tags",
+    "JobScope",
+    "JobScopeProvider",
     "JSONViewer",
     "Label",
     "Lazy",
@@ -596,6 +626,15 @@ __all__ = [
     "MarkerSpec",
     "Math",
     "media_file_response",
+    "PollPolicy",
+    "RateLimitPolicy",
+    "SessionAuthFlow",
+    "SessionRotationPolicy",
+    "StyleRecipe",
+    "StyleScope",
+    "TaskFlow",
+    "TaskUnavailablePolicy",
+    "UploadFlow",
     "MenuButton",
     "merge_htmx_headers",
     "Metric",
@@ -672,6 +711,8 @@ __all__ = [
     "run_sync",
     "safe_download_response",
     "SafeUrl",
+    "ScreenHandle",
+    "ScreenLayout",
     "Secret",
     "Section",
     "SecurityHeadersPolicy",

@@ -2,30 +2,32 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.57 **Published** in-tree as `v0.57.0` (tag/PyPI deferred). Prior Published `v0.56.0` remains on PyPI.
-Living tip = `v0.57.0` (PyPI serves `v0.56.0`; registry deferred for 0.57.0).
+**Roadmap position:** phase 0.58 **Published** in-tree as `v0.58.0` (tag/PyPI deferred). Prior Published `v0.56.0` remains on PyPI.
+Living tip = `v0.58.0` (PyPI serves `v0.56.0`; registry deferred for 0.58.0).
 **Date:** 2026-08-21
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.57.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.58.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
 `hedron-sim` `0.2.0`, `hedron-mcp` `0.2.1`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.57.0`
+`0.58.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
-`hedron-runtime-node` / `hedron-runtime-java` `0.57.0`.
+`hedron-runtime-node` / `hedron-runtime-java` `0.58.0`.
 
-**Phase focus:** Living train is **0.57** (D-099 / D-100 / RFC-0084) — unified presentation /
-zero-application-CSS [#570](https://github.com/eddiethedean/hedron/issues/570)
-([#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
-`release-gate-0.57.toml` Verified rows; living tip `v0.57.0` in-tree (`v0.56.0` on PyPI;
-`registry_status = "deferred"` for 0.57.0). Prior Published **0.56** security control plane
+**Phase focus:** Living train is **0.58** (D-101 / D-102 / D-105 / RFC-0085) — progressive
+feature and styling authoring. `release-gate-0.58.toml` Verified rows; living tip `v0.58.0`
+in-tree (`v0.56.0` on PyPI; `registry_status = "deferred"` for 0.58.0). Prior Published
+in-tree **0.57** unified presentation / zero-application-CSS
+(D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
+[#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
+Prior Published **0.56** security control plane
 (D-097 / D-098 / RFC-0083; [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)).
 Prior Published **0.55** secure upgradeable workflows
 (D-095 / D-096 / RFC-0082; [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)).

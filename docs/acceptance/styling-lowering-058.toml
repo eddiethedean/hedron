@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 runtime_baseline = "v0.57.0"
 contract_baseline = ["D-102", "D-105"]
 required_predecessor = "v0.57.0"

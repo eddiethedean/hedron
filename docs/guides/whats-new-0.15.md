@@ -17,7 +17,7 @@ browser context, and scenario testing — without Streamlit-style whole-script r
 
 !!! note "Historical phase"
 
-    This page describes **0.15**. The current published train is **0.57.x** (last `v0.57.0`) —
+    This page describes **0.15**. The current published train is **0.58.x** (last `v0.58.0`) —
     see [What’s new in 0.28](whats-new-0.28.md) and the [upgrade guide](upgrade.md).
 
 Pin `hedron>=0.15.0,<0.16` when staying on the 0.15 line.

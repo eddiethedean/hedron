@@ -124,7 +124,7 @@ def _check_versions(*, allow_planned: bool) -> None:
         if published != PREDECESSOR:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
         return
-    if published.startswith(("0.54.", "0.55.", "0.56.", "0.57.")):
+    if published.startswith(("0.54.", "0.55.", "0.56.", "0.57.", "0.58.", "0.59.")):
         print(f"ok: 0.53 historical under living published {published}")
         return
     if not published.startswith("0.53."):
@@ -170,7 +170,7 @@ def main(argv: list[str] | None = None) -> int:
         print("ok: 0.53 planned gate shape")
     else:
         published = str(_load(RELEASE).get("release", {}).get("published_version", "")).strip()
-        if published.startswith(("0.54.", "0.55.", "0.56.", "0.57.")):
+        if published.startswith(("0.54.", "0.55.", "0.56.", "0.57.", "0.58.", "0.59.")):
             print(f"ok: 0.53 historical packet; skip execute-verified under living {published}")
         else:
             command = [

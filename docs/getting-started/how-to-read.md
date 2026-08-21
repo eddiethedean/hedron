@@ -37,10 +37,10 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current published train is **0.57.x**. Install from PyPI:
+The current published train is **0.58.x**. Install from PyPI:
 
 ```bash
-python -m pip install "hedron>=0.56.0,<0.58"
+python -m pip install "hedron>=0.56.0,<0.59"
 ```
 
 Pins: [Installation](installation.md).

@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 required_predecessor = "v0.57.0"
 predecessor_satisfied = true
 

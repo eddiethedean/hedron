@@ -124,6 +124,7 @@ from hedron_core.builtins.shell import (
     NavStatus,
     OobHost,
 )
+from hedron_core.builtins.style_scope import StyleScope
 from hedron_core.builtins.surfaces import Alert, Badge, Card, Skeleton, StateView, Surface
 from hedron_core.builtins.surfaces_chrome import (
     ActionDock,
@@ -284,6 +285,7 @@ __all__ = [
     "Stack",
     "StateView",
     "Status",
+    "StyleScope",
     "SubmitButton",
     "Surface",
     "SwapReveal",

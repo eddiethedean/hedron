@@ -44,6 +44,7 @@ hedron new my-django-app --django
 | `--force` | Allow writing into a non-empty destination |
 | `--flask` | Scaffold a Flask + `hedron-flask` app without FastAPI |
 | `--django` | Scaffold a Django + `hedron-django` app without FastAPI |
+| `--template` | FastAPI template: `minimal` (default), `crud`, `dashboard`, or `task` |
 
 Exit `0` on success. Refuses to overwrite protected files without `--force`.
 
@@ -224,12 +225,14 @@ hedron upgrade-report --from 0.56.0 --to 0.55.0 --manifest ./manifest.json --out
 Exit `0` when clean or heuristic-only (unless `--allow-definite` is unset and
 definite findings exist — then exit `2`). Exit `1` on malformed input.
 
-### `preview` / `inspect` / `eject`
+### `preview` / `inspect` / `explain` / `eject`
 
 ```bash
 hedron --app app:app preview home
 hedron --app app:app inspect UserCard
+hedron --app app:app explain features:notes --format json
 hedron eject UserCard --out ./ejected --force
+hedron --app app:app eject features:notes --surface list_view --out ./ejected --overwrite
 ```
 
 | Command | Purpose |
@@ -239,8 +242,9 @@ hedron eject UserCard --out ./ejected --force
 | `inspect interactions` | Read-only interaction catalog |
 | `inspect htmx-extensions` | Declared HTMX extension catalog |
 | `inspect features` | Included FeatureBundles |
+| `explain features:<id>` | Static redacted feature explanation (`--format human|json`) |
 | `eject <component>` | Write `accessibility_contract.json` plus an editable `styles.css` override (`--out`, `--force`) |
-| `eject features:<id>` | Write reviewable explicit-registration Python for a bundle |
+| `eject features:<id>` | Write reviewable explicit-registration Python for a bundle (`--surface`, `--out`, `--overwrite`) |
 
 ### `conformance`
 

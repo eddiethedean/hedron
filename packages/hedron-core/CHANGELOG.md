@@ -1,20 +1,12 @@
 # Changelog
 
-## [0.57.0] — 2026-08-21
+## [0.58.0] — 2026-08-21
 
 ### Added
-- Phase 0.57 unified presentation and zero-application-CSS (RFC-0084 / D-099 / D-100).
+- Phase 0.58 progressive feature and styling authoring (RFC-0085 / D-101 / D-102 / D-105).
 
 ### Changed
-- Coordinated train tip `0.57.0` (in-tree cut; tag/PyPI deferred).
-
-### Fixed
-- CSS compiler no longer rewrites class selectors inside `@import` URLs; rejects
-  `expression()` / `-moz-binding` / `behavior` values; validates `@import` URLs.
-- Active-markup scans NFKC-normalize so fullwidth banned tags cannot bypass checks.
-- Redis cache `invalidate` drops reverse tag memberships (`_tags:`) instead of
-  orphaning tag indexes.
-
+- Coordinated train tip `0.58.0` (in-tree cut; tag/PyPI deferred).
 
 ## [0.56.1] — 2026-08-21
 

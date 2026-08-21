@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import contextlib
 import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Generic, Literal, Protocol, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Generic, Literal, Protocol, Self, TypeVar, cast
 
 from pydantic import BaseModel, Field, TypeAdapter, create_model
 
@@ -38,7 +39,20 @@ AuthzHook = Callable[..., bool]
 _LIST_RESERVED = frozenset({"offset", "limit", "sort", "q"})
 RowMapping = dict[str, JsonValue]
 
-__all__ = ["DataWorkspace", "DataWorkspacePolicy"]
+__all__ = ["DataWorkspace", "DataWorkspacePolicy", "FeatureOverrides"]
+
+ScreenLayout = Literal["stack", "grid", "plain"]
+
+
+@dataclass(frozen=True, slots=True)
+class FeatureOverrides:
+    """Additive named-surface overrides for DataWorkspace screen composition."""
+
+    list_override: Callable[..., object] | None = None
+    detail_override: Callable[..., object] | None = None
+    create_override: Callable[..., object] | None = None
+    edit_override: Callable[..., object] | None = None
+    form_overrides: Mapping[str, object] | None = None
 
 
 class _WorkspaceApp(Protocol):
@@ -58,6 +72,22 @@ class _WorkspaceApp(Protocol):
         name: str | None = None,
         fallback: str | None = None,
     ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
+
+    def screen(
+        self,
+        path: str,
+        *,
+        title: str,
+        name: str | None = None,
+        layout: str = "stack",
+    ) -> Callable[[Callable[..., object]], object]: ...
+
+    def page(
+        self,
+        path: str,
+        *,
+        name: str | None = None,
+    ) -> Callable[[Callable[..., object]], object]: ...
 
 
 def _error(code: str, title: str, explanation: str, remediation: str) -> FeatureConflictError:
@@ -148,8 +178,65 @@ class DataWorkspace(Generic[ModelT]):
         self.detail_view: FragmentHandle[Any, Any] | None = None
         self.create_command: ActionHandle[Any, Any] | None = None
         self.edit_command: ActionHandle[Any, Any] | None = None
+        self.screen: object | None = None
+        self._screen_meta: dict[str, str] | None = None
         # Empty search_fields is deny-by-default on InMemoryDataSource; do not
         # rewrite it to all model fields (that would enable secret column search).
+
+    def with_screen(
+        self,
+        *,
+        path: str,
+        title: str,
+        name: str | None = None,
+        layout: ScreenLayout = "stack",
+        overrides: FeatureOverrides | None = None,
+    ) -> Self:
+        """Opt into complete page composition; metadata is used at materialization.
+
+        Returns ``self`` after storing screen metadata. When the workspace is
+        included on a FastAPI ``Hedron`` host, ``to_bundle()`` also registers a
+        screen/page at ``path`` when the host exposes ``app.screen``.
+        """
+        if not path or not str(path).startswith("/"):
+            raise _error(
+                HED_BUNDLE_0007,
+                "Invalid workspace screen path",
+                f"path={path!r} must be an absolute local path.",
+                "Pass path='/orders' (or similar).",
+            )
+        if not title or not str(title).strip():
+            raise _error(
+                HED_BUNDLE_0007,
+                "Workspace screen title required",
+                "title must be an explicit non-empty string.",
+                "Pass title=... to with_screen.",
+            )
+        if layout not in {"stack", "grid", "plain"}:
+            raise _error(
+                HED_BUNDLE_0007,
+                "Unsupported workspace screen layout",
+                f"layout={layout!r} is outside the closed inventory.",
+                "Use stack, grid, or plain.",
+            )
+        if overrides is not None:
+            if overrides.list_override is not None:
+                self.list_override = overrides.list_override
+            if overrides.detail_override is not None:
+                self.detail_override = overrides.detail_override
+            if overrides.create_override is not None:
+                self.create_override = overrides.create_override
+            if overrides.edit_override is not None:
+                self.edit_override = overrides.edit_override
+            if overrides.form_overrides is not None:
+                self.form_overrides = dict(overrides.form_overrides)
+        self._screen_meta = {
+            "path": path,
+            "title": title,
+            "name": name or self.name,
+            "layout": layout,
+        }
+        return self
 
     def _request_kwargs(self) -> dict[str, object]:
         kwargs: dict[str, object] = {}
@@ -497,7 +584,20 @@ class DataWorkspace(Generic[ModelT]):
             data={
                 "name": self.name,
                 "model_name": self.model.__name__,
-                "surfaces": ["list", "detail", "create", "edit"],
+                "surfaces": (
+                    [
+                        "screen",
+                        "list_view",
+                        "detail_view",
+                        "create_command",
+                        "edit_command",
+                        "create_form",
+                        "edit_form",
+                    ]
+                    if self._screen_meta is not None
+                    else ["list", "detail", "create", "edit"]
+                ),
+                "screen": dict(self._screen_meta) if self._screen_meta is not None else None,
                 "delete": "disabled" if self.policy.delete == "disabled" else "explicit",
                 "optimism": self.policy.optimism,
                 "direct_apis": True,
@@ -506,11 +606,66 @@ class DataWorkspace(Generic[ModelT]):
             },
             limitations=("opt-in; no inferred authz; delete disabled unless supplied",),
         )
+
+        def screen_factory(app: _WorkspaceApp) -> object:
+            meta = workspace._screen_meta
+            if meta is None:
+                tagged: Any = lambda: None  # noqa: E731
+                tagged.logical_id = f"{workspace.name}-screen-unset"
+                return tagged
+            if not callable(getattr(app, "screen", None)):
+                # Host without screen facade: fall back to page when available.
+                if not callable(getattr(app, "page", None)):
+                    tagged = lambda: None  # noqa: E731
+                    tagged.logical_id = f"{workspace.name}-screen"
+                    tagged.path = str(meta["path"])
+                    return tagged
+
+                @app.page(str(meta["path"]), name=str(meta["name"]))
+                def screen_page() -> object:
+                    from hedron import Text
+                    from hedron_core.builtins.document import Page
+                    from hedron_core.component import NodeLike
+
+                    nodes: list[NodeLike] = [Text(str(meta["title"]))]
+                    if workspace.list_view is not None:
+                        with contextlib.suppress(Exception):
+                            nodes.append(workspace.list_view())
+                    return Page(*nodes, title=str(meta["title"]))
+
+                workspace.screen = screen_page
+                return screen_page
+
+            @app.screen(
+                str(meta["path"]),
+                title=str(meta["title"]),
+                name=str(meta["name"]),
+                layout=str(meta["layout"]),  # type: ignore[arg-type]
+            )
+            def workspace_screen() -> object:
+                from hedron import Stack, Text
+                from hedron_core.component import NodeLike
+
+                nodes: list[NodeLike] = [Text(str(meta["title"]))]
+                if workspace.list_view is not None:
+                    with contextlib.suppress(Exception):
+                        nodes.append(workspace.list_view())
+                return Stack(*nodes)
+
+            workspace.screen = workspace_screen
+            return workspace_screen
+
+        views: tuple[object, ...]
+        if self._screen_meta is not None:
+            views = (screen_factory, list_factory, detail_factory)
+        else:
+            views = (list_factory, detail_factory)
+
         return FeatureBundle(
             logical_id=f"{self.provider}:{self.name}",
             provider=self.provider,
             provider_version=self.provider_version,
-            views=(list_factory, detail_factory),
+            views=views,
             commands=(create_factory, edit_factory),
             projections=(projection,),
             requirements=(FeatureRequirement(name="hedron-data", required=True),),

@@ -150,6 +150,7 @@ from hedron_core.builtins import (
     Stack,
     StateView,
     Status,
+    StyleScope,
     SubmitButton,
     Surface,
     SwapReveal,
@@ -245,6 +246,7 @@ from hedron_core.dashboard_replay import (
     record_exchange,
     replay,
 )
+from hedron_core.design_system import DesignSystem, StyleRecipe
 from hedron_core.diagnostics import (
     ApplicabilityInterval,
     Diagnostic,
@@ -260,6 +262,15 @@ from hedron_core.diagnostics import (
     filter_by_applicability,
     meets_severity_threshold,
     normalize_severity_alias,
+)
+from hedron_core.feature_explanation import (
+    EXPLANATION_SCHEMA,
+    SOURCE_MAP_SCHEMA,
+    FeatureExplanation,
+    FeatureSourceMap,
+    callable_ref,
+    explain_feature,
+    source_map_for,
 )
 from hedron_core.field import Field
 from hedron_core.hosts import FRAGMENT_HOST_TAGS, FragmentHost
@@ -476,7 +487,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.57.0"
+__version__ = "0.58.0"
 
 __all__ = [
     "__version__",
@@ -596,6 +607,7 @@ __all__ = [
     "DependencyLifetime",
     "DependencyPlan",
     "DescriptionList",
+    "DesignSystem",
     "descriptor_fingerprint",
     "design_system_vars",
     "Diagnostic",
@@ -627,10 +639,14 @@ __all__ = [
     "export_routes_document",
     "ExtensionAsset",
     "ExtensionSet",
+    "EXPLANATION_SCHEMA",
+    "explain_feature",
     "FeatureBundle",
     "FeatureConflictError",
+    "FeatureExplanation",
     "FeatureProvider",
     "FeatureRequirement",
+    "FeatureSourceMap",
     "FeedbackPolicy",
     "FeedbackRecord",
     "Field",
@@ -714,6 +730,9 @@ __all__ = [
     "JobStatusDict",
     "JsonObject",
     "JsonPrimitive",
+    "callable_ref",
+    "SOURCE_MAP_SCHEMA",
+    "source_map_for",
     "JsonValue",
     "JSONViewer",
     "known_extensions",
@@ -871,6 +890,8 @@ __all__ = [
     "StructuralBindingAdapter",
     "StructuredLogAuditSink",
     "styles_from_manifest",
+    "StyleRecipe",
+    "StyleScope",
     "StyleSymbols",
     "SubmitButton",
     "Suppression",

@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 algorithm_version = "hedron.brand-palette/1"
 input_formats = ["#rgb", "#rrggbb"]
 invalid_input = "HED-BRAND-0001"

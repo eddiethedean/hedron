@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 [explanation]
 schema_id = "hedron.feature-explanation/1"
 required = ["schema", "logical_id", "kind", "surfaces", "routes", "effects", "security", "limitations", "source"]

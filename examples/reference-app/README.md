@@ -43,7 +43,7 @@ production deploy.**
 Open the home page for CRUD + DataEditor (+ charts/Markdown when workspace charts are
 available). Chart interaction endpoints live under `/charts/*` (for example
 `/charts/fragment`, `/charts/search`). Outside the workspace, install
-`hedron[charts]>=0.56.0,<0.58` to obtain the compatible chart satellite.
+`hedron[charts]>=0.56.0,<0.59` to obtain the compatible chart satellite.
 
 ## Production compose (canonical archetype)
 
@@ -69,7 +69,7 @@ production posture. Generic packaging notes:
 - Typed create/update/delete actions with CSRF validation
 - Progressive-enhancement create/edit (no-JS 303) plus HTMX `#user-table` swaps
 - DataEditor, Auto, cache helpers, ColorMode
-- Charts via workspace `hedron-charts` or published `hedron[charts]>=0.56.0,<0.58`
+- Charts via workspace `hedron-charts` or published `hedron[charts]>=0.56.0,<0.59`
 - Optional `hedron[native]` acceleration
 
 ## Tests

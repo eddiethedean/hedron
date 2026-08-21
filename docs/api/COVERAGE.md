@@ -19,6 +19,17 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `swap`, `swap_oob`, `retarget`, `redirect_htmx` | [INTERACTION.md](INTERACTION.md) (day-1 ergonomics), Autodoc |
 | `action_attrs`, `oob_swap` | [BUILT_INS.md](BUILT_INS.md), [INTERACTION.md](INTERACTION.md) |
 
+## Progressive feature and styling authoring (0.58)
+
+| Export | Primary docs |
+|---|---|
+| `ScreenHandle`, `ScreenLayout` | [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
+| `DashboardWorkspace`, `DashboardHistory`, `CachePolicy` | [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
+| `TaskFlow`, `JobScope`, `JobScopeProvider`, `PollPolicy`, `TaskUnavailablePolicy` | [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
+| `SessionAuthFlow`, `AuthResult`, `AuthSuccess`, `AuthDenied`, `RateLimitPolicy`, `SessionRotationPolicy` | [AUTH.md](AUTH.md), [whats-new-0.58](../guides/whats-new-0.58.md) |
+| `UploadFlow` | [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
+| `DesignSystem`, `StyleRecipe`, `StyleScope` | [PRESENTATION.md](PRESENTATION.md), [StyleScope](../components/style-scope.md), [whats-new-0.58](../guides/whats-new-0.58.md) |
+
 ## Inference and model demos (0.18)
 
 | Export / package | Primary docs |

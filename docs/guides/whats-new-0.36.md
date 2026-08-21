@@ -1,7 +1,7 @@
 # What’s new in 0.36
 
 **Published** as `v0.36.0`. Historical pin: `hedron>=0.36.0,<0.37`.
-For new apps, use `hedron>=0.56.0,<0.58`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use `hedron>=0.56.0,<0.59`; see [What’s new in 0.51](whats-new-0.51.md).
 
 Phase 0.36 establishes the Web Component ABI foundation (RFC-0060 / D-064): a versioned
 element registry, SSR/HTMX lifecycle rules, and `ElementStateOwnership`. This is **not**

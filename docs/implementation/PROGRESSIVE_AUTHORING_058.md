@@ -1,10 +1,10 @@
 # Implementation plan: phase 0.58 progressive feature and styling authoring
 
-**Status:** Stage 0 Refined; implementation not started  
+**Status:** Published / Verified in-tree (`v0.58.0`; tag/PyPI deferred)  
 **Decision/RFC:** D-101 / D-102 / D-105 / [RFC-0085](../rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)
 
 **Target:** `v0.58.0`  
-**Runtime changes authorized now:** none
+**Runtime changes:** delivered (W1–W17)
 
 This document divides the unified RFC-0085 feature-and-styling design into cuttable implementation
 work. It is not the Stage 0 contract lock. Exact signatures, schemas, diagnostic codes, numeric

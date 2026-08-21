@@ -1,7 +1,7 @@
 # What's new in Hedron 0.37
 
 **Published** as `v0.37.0`. Historical pin: `hedron>=0.37.0,<0.38`.
-For new apps, use `hedron>=0.56.0,<0.58`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use `hedron>=0.56.0,<0.59`; see [What’s new in 0.51](whats-new-0.51.md).
 
 Phase **0.37** ships Alpha **hedron-elements 0.37.0** with form-associated reference controls, an `InteractionState` bridge, semantic primitives, and high-severity remediations #230–#237 plus follow-on #244.
 
@@ -16,7 +16,7 @@ Phase **0.37** ships Alpha **hedron-elements 0.37.0** with form-associated refer
 ## Train pin
 
 Install with `hedron-elements>=0.37.0,<0.38` for the historical 0.37 cut, or pin
-`hedron>=0.56.0,<0.58` / `hedron[elements]>=0.50.1,<0.51` for the living tip.
+`hedron>=0.56.0,<0.59` / `hedron[elements]>=0.50.1,<0.51` for the living tip.
 
 ## Not in 0.37
 

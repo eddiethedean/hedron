@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 policy = "highest_applicable_styling_abstraction_first"
 explicit_labels = ["Advanced", "Explicit", "Lower-level", "Under the hood"]
 historical_release_notes = "preserve"

@@ -6,7 +6,7 @@ description: Independent Beta first-class maps for Hedron.
 
 **Package maturity:** Beta · **Package version:** `0.1.0` (phase 0.47) · extra `hedron[maps]`  
 Living Hedron train `0.56.x` (checkout tip `v0.57.0`; PyPI flagship pins stay
-`>=0.56.0,<0.58` ).
+`>=0.56.0,<0.59` ).
 
 `hedron-maps` provides a typed map grammar, deterministic compilation, a pinned MapLibre
 5.6.1 strict-CSP host, custom raster/vector tile sources, and static/offline basemaps

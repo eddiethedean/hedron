@@ -447,6 +447,44 @@ HED_UPGRADE_0002 = "HED-UPGRADE-0002"  # stale/incompatible upgrade baseline sch
 HED_UPGRADE_1001 = "HED-UPGRADE-1001"  # heuristic: legacy workflow migration status
 HED_UPGRADE_1002 = "HED-UPGRADE-1002"  # heuristic: opt-in 0.55 workflow APIs
 
+# Progressive feature and styling authoring (0.58 RFC-0085 / D-101 / D-102 / D-105)
+HED_SCREEN_0001 = "HED-SCREEN-0001"  # conflicting Page metadata / empty screen
+HED_SCREEN_0002 = "HED-SCREEN-0002"  # duplicate screen name/path
+HED_SCREEN_0003 = "HED-SCREEN-0003"  # unbounded / unsupported screen return
+HED_FORMCMD_0001 = "HED-FORMCMD-0001"  # missing or ambiguous form model
+HED_FORMCMD_0002 = "HED-FORMCMD-0002"  # unsupported form encoding / control
+HED_FORMCMD_0003 = "HED-FORMCMD-0003"  # decorator effect conflict
+HED_FEATURE_0001 = "HED-FEATURE-0001"  # explanation / surface mismatch
+HED_FEATURE_0002 = "HED-FEATURE-0002"  # unmet optional capability
+HED_FEATURE_0003 = "HED-FEATURE-0003"  # ejection path / overwrite / safety
+HED_TASKFLOW_0001 = "HED-TASKFLOW-0001"  # missing scope / backend unavailable
+HED_TASKFLOW_0002 = "HED-TASKFLOW-0002"  # unauthorized job / scope mismatch
+HED_TASKFLOW_0003 = "HED-TASKFLOW-0003"  # terminal / cancel disposition
+HED_DASH_0001 = "HED-DASH-0001"  # invalid filters / history / panel config
+HED_DASH_0002 = "HED-DASH-0002"  # loader failure / stale fan-out
+HED_DASH_0003 = "HED-DASH-0003"  # sensitive filter in URL mode
+HED_AUTHFLOW_0001 = "HED-AUTHFLOW-0001"  # auth flow misconfiguration
+HED_AUTHFLOW_0002 = "HED-AUTHFLOW-0002"  # generic authentication failure
+HED_AUTHFLOW_0003 = "HED-AUTHFLOW-0003"  # session / principal load failure
+HED_UPLOADFLOW_0001 = "HED-UPLOADFLOW-0001"  # upload policy / budget failure
+HED_UPLOADFLOW_0002 = "HED-UPLOADFLOW-0002"  # store / scan rejection
+HED_UPLOADFLOW_0003 = "HED-UPLOADFLOW-0003"  # download / cleanup authorization
+HED_DESIGN_0001 = "HED-DESIGN-0001"  # invalid design system input
+HED_DESIGN_0002 = "HED-DESIGN-0002"  # recipe / group conflict
+HED_DESIGN_0003 = "HED-DESIGN-0003"  # theme bridge / normalization failure
+HED_BRAND_0001 = "HED-BRAND-0001"  # invalid brand accent format
+HED_BRAND_0002 = "HED-BRAND-0002"  # unsatisfied contrast after search
+HED_BRAND_0003 = "HED-BRAND-0003"  # brand palette adjusted (warning)
+HED_RECIPE_0001 = "HED-RECIPE-0001"  # unknown recipe / family
+HED_RECIPE_0002 = "HED-RECIPE-0002"  # incompatible component / field
+HED_RECIPE_0003 = "HED-RECIPE-0003"  # explicit component value wins
+HED_RECIPE_0004 = "HED-RECIPE-0004"  # unknown / deferred recipe family
+HED_STYLE_SCOPE_0001 = "HED-STYLE-SCOPE-0001"  # invalid style scope value
+HED_STYLE_SCOPE_0002 = "HED-STYLE-SCOPE-0002"  # unsupported scope recipe default
+HED_STYLE_EJECT_0001 = "HED-STYLE-EJECT-0001"  # style eject path / overwrite
+HED_STYLE_EJECT_0002 = "HED-STYLE-EJECT-0002"  # style eject unknown selection
+HED_STYLE_EJECT_0003 = "HED-STYLE-EJECT-0003"  # style eject parity failure
+
 
 def registered_codes() -> frozenset[str]:
     """Return every ``HED-*`` code constant defined in this module."""

@@ -1,8 +1,10 @@
-"""Flagship FastAPI FeatureBundle inclusion (phase 0.46)."""
+"""Flagship FastAPI FeatureBundle inclusion (phase 0.46+0.58)."""
 
 from __future__ import annotations
 
+import json
 from collections.abc import Callable, Mapping, Sequence
+from pathlib import Path
 
 from hedron_core.bundles import (
     FeatureBundle,
@@ -14,11 +16,19 @@ from hedron_core.bundles import (
     included_bundles,
     resolve_feature,
 )
-from hedron_core.codes import HED_BUNDLE_0006
+from hedron_core.codes import HED_BUNDLE_0006, HED_FEATURE_0001, HED_FEATURE_0003
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
+from hedron_core.feature_explanation import (
+    explain_feature as explain_feature_value,
+)
+from hedron_core.feature_explanation import (
+    source_map_for,
+)
 from hedron_core.updates import list_handle_descriptors, unregister_handle_descriptor
 
 __all__ = [
+    "eject_feature",
+    "explain_feature",
     "include_feature",
     "materialize_feature",
     "rollback_materialized",
@@ -266,10 +276,53 @@ def include_feature(
         ) from exc
 
 
-def eject_feature(app: object, logical_id: str, *, out: Callable[[str], None] | None = None) -> str:
+def explain_feature(app: object, logical_id: str) -> dict[str, object]:
+    """Return a redacted ``hedron.feature-explanation/1`` mapping for an included feature."""
+    app_id = str(getattr(app, "hedron_app_id", "") or "")
+    matches = [item for item in included_bundles(app_id=app_id) if item.logical_id == logical_id]
+    if not matches:
+        state = getattr(app, "state", None)
+        recorded = getattr(state, "hedron_bundles", None)
+        if isinstance(recorded, dict) and logical_id in recorded:
+            matches = [recorded[logical_id]]
+    if not matches:
+        raise FeatureConflictError(
+            make_diagnostic(
+                HED_FEATURE_0001,
+                severity=DiagnosticSeverity.ERROR,
+                title="Feature explanation target missing",
+                explanation=f"No included FeatureBundle with logical_id={logical_id!r}.",
+                remediation="include_feature(...) before explain_feature, or check the id.",
+            )
+        )
+    mapping = explain_feature_value(matches[0])
+    return dict(mapping)
+
+
+def eject_feature(
+    app: object,
+    logical_id: str,
+    *,
+    out: Callable[[str], None] | None = None,
+    surface: str | None = None,
+    output: str | Path | None = None,
+    overwrite: bool = False,
+) -> str:
+    """Eject a FeatureBundle to reviewable source; optionally write a source map.
+
+    Existing callers that only pass ``out=`` continue to receive the source string.
+    When ``output`` is set, writes ``explicit.py`` and ``source_map.json`` under that
+    project-local directory (schema ``hedron.feature-source-map/1``).
+    """
     app_id = str(getattr(app, "hedron_app_id", "") or "")
     bundle = eject_bundle(logical_id, app_id=app_id)
     source = eject_source(bundle)
+    if surface is not None:
+        source = (
+            f"{source}\n"
+            f"# Selected surface: {surface!r}\n"
+            f"# Remaining surfaces were omitted from this ejection selection.\n"
+        )
     state = getattr(app, "state", None)
     recorded = getattr(state, "hedron_bundles", None)
     if isinstance(recorded, dict):
@@ -286,6 +339,49 @@ def eject_feature(app: object, logical_id: str, *, out: Callable[[str], None] | 
             ident = getattr(item, "logical_id", None)
             if isinstance(ident, str):
                 handles.pop(ident, None)
+    if output is not None:
+        cwd = Path.cwd().resolve()
+        out_dir = Path(output).expanduser().resolve()
+        try:
+            out_dir.relative_to(cwd)
+        except ValueError as exc:
+            raise FeatureConflictError(
+                make_diagnostic(
+                    HED_FEATURE_0003,
+                    severity=DiagnosticSeverity.ERROR,
+                    title="Ejection path escapes project root",
+                    explanation=f"Refusing to write outside {cwd}: {out_dir}",
+                    remediation="Pass a project-relative output directory.",
+                )
+            ) from exc
+        out_dir.mkdir(parents=True, exist_ok=True)
+        dest = out_dir / "explicit.py"
+        map_path = out_dir / "source_map.json"
+        for path in (dest, map_path):
+            if path.exists() and not overwrite:
+                raise FeatureConflictError(
+                    make_diagnostic(
+                        HED_FEATURE_0003,
+                        severity=DiagnosticSeverity.ERROR,
+                        title="Ejection overwrite refused",
+                        explanation=f"{path} already exists and overwrite=False.",
+                        remediation="Pass overwrite=True or choose an empty output directory.",
+                    )
+                )
+        dest.write_text(source, encoding="utf-8")
+        rel_files = ["explicit.py", "source_map.json"]
+        source_map = source_map_for(
+            feature_id=logical_id,
+            selection=surface or "*",
+            files=rel_files,
+            facade_source=source,
+            catalog_payload=[item.namespace for item in bundle.projections],
+            scenario_payload=tuple(getattr(item, "name", repr(item)) for item in bundle.scenarios),
+        )
+        map_path.write_text(
+            json.dumps(source_map.to_mapping(), indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
     if out is not None:
         out(source)
     return source

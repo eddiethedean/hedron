@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 owner = "hedron"
 decision = "D-101"
 contract_refines = ["D-102", "D-105"]

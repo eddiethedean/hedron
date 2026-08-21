@@ -1,6 +1,6 @@
 # Hedron `v0.58` progressive feature and styling authoring acceptance
 
-**Status:** Stage 0 Refined; implementation Planned  
+**Status:** Published / Verified in-tree (`v0.58.0`; tag/PyPI deferred)  
 **Required predecessor:** Published and Verified in-tree `v0.57.0` (satisfied; tag/PyPI deferred)  
 **Target:** Hedron `v0.58.0`  
 **Decision/RFC:** D-101 / D-102 / D-105 / [RFC-0085](../rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)
@@ -90,29 +90,29 @@ Verified only when its executable/immutable evidence exists. The cut permits zer
 
 ## Stage 1 delivery checklist
 
-- [ ] W0: maintain the single unified contract and inventory packet.
-- [ ] W1: shared explanation, named surfaces, design plans, provenance, source maps, and safe
+- [x] W0: maintain the single unified contract and inventory packet.
+- [x] W1: shared explanation, named surfaces, design plans, provenance, source maps, and safe
       whole/partial ejection.
-- [ ] W2: `Hedron.screen` and `ScreenHandle`.
-- [ ] W3: `Hedron.form_command` through existing `FormBody`/`ActionHandle` authority.
-- [ ] W4: `DataWorkspace.with_screen` and complete CRUD scaffold.
-- [ ] W5: `TaskFlow` with exact request scope and terminal polling.
-- [ ] W6: `DashboardWorkspace` with typed URL filters and loader/panel split.
-- [ ] W7: bounded `SessionAuthFlow` around explicit application callbacks.
-- [ ] W8: bounded `UploadFlow` around explicit storage/scanning/result ownership.
-- [ ] W9: `DesignSystem` brand compiler, typed design groups, `Theme` bridge, and `Hedron(theme=...)`
+- [x] W2: `Hedron.screen` and `ScreenHandle`.
+- [x] W3: `Hedron.form_command` through existing `FormBody`/`ActionHandle` authority.
+- [x] W4: `DataWorkspace.with_screen` and complete CRUD scaffold.
+- [x] W5: `TaskFlow` with exact request scope and terminal polling.
+- [x] W6: `DashboardWorkspace` with typed URL filters and loader/panel split.
+- [x] W7: bounded `SessionAuthFlow` around explicit application callbacks.
+- [x] W8: bounded `UploadFlow` around explicit storage/scanning/result ownership.
+- [x] W9: `DesignSystem` brand compiler, typed design groups, `Theme` bridge, and `Hedron(theme=...)`
       normalization.
-- [ ] W10: semantic recipes, built-in generated-surface roles, `StyleScope`, and exact precedence.
-- [ ] W11: one CLI/Explorer explain, graph, preview, diff, check, override, and eject toolchain.
-- [ ] W12: feature↔styling integration, including shared IDs, override precedence, and both recipe-
+- [x] W10: semantic recipes, built-in generated-surface roles, `StyleScope`, and exact precedence.
+- [x] W11: one CLI/Explorer explain, graph, preview, diff, check, override, and eject toolchain.
+- [x] W12: feature↔styling integration, including shared IDs, override precedence, and both recipe-
       preserving and fully explicit ejection.
-- [ ] W13: minimal/CRUD/dashboard/task scaffolds, every starter migration, and one progressive
+- [x] W13: minimal/CRUD/dashboard/task scaffolds, every starter migration, and one progressive
       feature-and-styling learning path.
-- [ ] W14: adapter/conformance/sim/package capability dispositions and scenarios.
-- [ ] W15: security/CSP, accessibility, three-engine visual, and performance evidence.
-- [ ] W16: explicit API regression and unified `v0.57.0` upgrade evidence.
-- [ ] W17: packaging, documentation truth, and release rehearsal.
-- [ ] All twenty gates Verified with zero Deferred.
+- [x] W14: adapter/conformance/sim/package capability dispositions and scenarios.
+- [x] W15: security/CSP, accessibility, three-engine visual, and performance evidence.
+- [x] W16: explicit API regression and unified `v0.57.0` upgrade evidence.
+- [x] W17: packaging, documentation truth, and release rehearsal.
+- [x] All twenty gates Verified with zero Deferred.
 
 ## Required representative evidence
 
@@ -139,16 +139,16 @@ Verified only when its executable/immutable evidence exists. The cut permits zer
 
 ## Cut checklist
 
-- [ ] Train packages and workspace bumped to `0.58.0` only after all gates Verify.
-- [ ] New APIs documented as Beta; existing stable/explicit API classifications unchanged unless a
+- [x] Train packages and workspace bumped to `0.58.0` only after all gates Verify.
+- [x] New APIs documented as Beta; existing stable/explicit API classifications unchanged unless a
       separate accepted promotion says otherwise.
-- [ ] `docs/release.toml`, STATUS, ROADMAP, release notes, changelogs, compatibility, and registry
+- [x] `docs/release.toml`, STATUS, ROADMAP, release notes, changelogs, compatibility, and registry
       truth updated.
-- [ ] Clean wheels install every scaffold with optional packages both present and absent.
-- [ ] Every inventoried starter example uses the highest applicable 0.58 feature and styling
+- [x] Clean wheels install every scaffold with optional packages both present and absent.
+- [x] Every inventoried starter example uses the highest applicable 0.58 feature and styling
       abstractions; explicit primitive spellings appear only in clearly labeled advanced/lowered/
       under-the-hood sections.
-- [ ] Release rehearsal verifies no hidden runtime/asset/dependency cost when facades are unused.
+- [x] Release rehearsal verifies no hidden runtime/asset/dependency cost when facades are unused.
 - [ ] Git tag/PyPI action follows the repository's release authorization; this plan does not tag.
 
 ## Automatic cut blockers

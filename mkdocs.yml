@@ -294,6 +294,7 @@ nav:
     - Public 1.0 readiness: guides/one-point-zero-readiness.md
     - Production adoption checklist: guides/production-adoption.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.58: guides/whats-new-0.58.md
     - What's new in 0.57: guides/whats-new-0.57.md
     - What's new in 0.56: guides/whats-new-0.56.md
     - What's new in 0.55: guides/whats-new-0.55.md

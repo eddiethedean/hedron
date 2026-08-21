@@ -8,11 +8,22 @@ from typing import Any, ParamSpec, TypeVar, overload
 from fastapi import params
 from fastapi.routing import APIRouter
 
+from hedron.app.form_commands import (
+    FormEncoding,
+    SafeLocalPath,
+    Update,
+)
+from hedron.app.form_commands import (
+    form_command as _form_command,
+)
+from hedron.app.screens import PageOptions, ScreenHandle, ScreenLayout, ScreenResult
 from hedron.handles import ActionHandle, FragmentHandle, _as_node_like
 from hedron.routing.router import HedronRouter
 from hedron.type_authoring.classes import CommandHandler, RefreshableView
+from hedron.type_authoring.markers import Control
 from hedron.type_authoring.normalize import CompiledTypeHandler
 from hedron_core.addressable import AddressableDescriptor
+from hedron_core.builtins.shell import AppShell
 from hedron_core.bundles import FeatureBundle, FeatureProvider
 from hedron_core.component import NodeLike
 from hedron_core.hosts import FragmentHost
@@ -120,6 +131,158 @@ class HedronPagesMixin:
             return fn
 
         return wrap
+
+    def screen(
+        self,
+        path: str,
+        *,
+        title: str,
+        name: str | None = None,
+        layout: ScreenLayout = "stack",
+        shell: AppShell | None = None,
+        navigation: Sequence[ScreenHandle[Any]] = (),
+        dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
+        page_options: PageOptions | None = None,
+    ) -> Callable[[Callable[P, ScreenResult]], ScreenHandle[P]]:
+        """Register a beginner screen that lowers to ``Page`` + :meth:`page`.
+
+        Args:
+            path: URL path (FastAPI path syntax).
+            title: Required document title (never inferred).
+            name: Optional route/handle name; defaults to the handler name.
+            layout: Closed layout token (``stack`` / ``grid`` / ``plain``).
+            shell: Optional ``AppShell`` chrome without a pre-filled body.
+            navigation: Explicit ``ScreenHandle`` values for shell nav composition.
+            dependencies: FastAPI dependencies for the page route.
+            page_options: Extra ``Page`` constructor kwargs when wrapping nodes.
+
+        Returns:
+            Decorator that registers the page and returns a ``ScreenHandle``.
+        """
+        import functools
+        import inspect
+
+        from hedron.app.screens import normalize_screen_result, validate_screen_registration
+
+        def decorator(fn: Callable[P, ScreenResult]) -> ScreenHandle[P]:
+            resolved_name = name or fn.__name__
+            state = getattr(self, "state", None)
+            paths = getattr(state, "hedron_screen_paths", None)
+            names = getattr(state, "hedron_screen_names", None)
+            if paths is None and state is not None:
+                state.hedron_screen_paths = {}
+                paths = state.hedron_screen_paths
+            if names is None and state is not None:
+                state.hedron_screen_names = {}
+                names = state.hedron_screen_names
+            existing_paths = paths if isinstance(paths, dict) else {}
+            existing_names = names if isinstance(names, dict) else {}
+            resolved_layout = validate_screen_registration(
+                path=path,
+                name=resolved_name,
+                title=title,
+                layout=layout,
+                existing_paths=existing_paths,
+                existing_names=existing_names,
+            )
+            nav_tuple = tuple(navigation)
+
+            if inspect.iscoroutinefunction(fn):
+
+                @functools.wraps(fn)
+                async def async_endpoint(*args: Any, **kwargs: Any) -> Any:
+                    result = await fn(*args, **kwargs)
+                    return normalize_screen_result(
+                        result,
+                        title=title,
+                        layout=resolved_layout,
+                        shell=shell,
+                        navigation=nav_tuple,
+                        page_options=page_options,
+                    )
+
+                endpoint: Callable[..., Any] = async_endpoint
+            else:
+
+                @functools.wraps(fn)
+                def sync_endpoint(*args: Any, **kwargs: Any) -> Any:
+                    result = fn(*args, **kwargs)
+                    if inspect.iscoroutine(result):
+                        result.close()
+                        raise TypeError("Async screen handlers must be declared with async def")
+                    return normalize_screen_result(
+                        result,
+                        title=title,
+                        layout=resolved_layout,
+                        shell=shell,
+                        navigation=nav_tuple,
+                        page_options=page_options,
+                    )
+
+                endpoint = sync_endpoint
+
+            self.page(
+                path,
+                name=resolved_name,
+                dependencies=_route_dependencies(dependencies),
+            )(endpoint)
+            handle: ScreenHandle[P] = ScreenHandle(
+                path=path,
+                name=resolved_name,
+                title=title,
+                layout=resolved_layout,
+                handler=endpoint,
+                shell=shell,
+                navigation=nav_tuple,
+                page_options=dict(page_options or {}),
+                __wrapped__=fn,
+            )
+            if isinstance(paths, dict):
+                paths[path] = resolved_name
+            if isinstance(names, dict):
+                names[resolved_name] = path
+            handles = getattr(state, "hedron_handles", None)
+            if handles is None and state is not None:
+                state.hedron_handles = {}
+                handles = state.hedron_handles
+            if isinstance(handles, dict):
+                handles[f"screen:{resolved_name}"] = handle
+            return handle
+
+        return decorator
+
+    def form_command(
+        self,
+        path: str,
+        *,
+        name: str | None = None,
+        refreshes: Sequence[FragmentHandle[Any, Any]] = (),
+        updates: Sequence[Update] = (),
+        success: NodeLike | str | None = None,
+        outcomes: object | None = None,
+        fallback: SafeLocalPath,
+        encoding: FormEncoding = "urlencoded",
+        controls: Mapping[str, Control | NodeLike] | None = None,
+        dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
+    ) -> Callable[[Callable[P, R]], ActionHandle[Any, Any]]:
+        """Register a typed form command that lowers to ``FormBody`` + :meth:`command`.
+
+        Discovers exactly one Pydantic ``BaseModel`` parameter, injects ``FormBody``,
+        and returns the ordinary ``ActionHandle`` (including ``.form()`` / ``.button()``).
+        """
+        return _form_command(
+            self,
+            path,
+            name=name,
+            refreshes=refreshes,
+            updates=updates,
+            success=success,
+            outcomes=outcomes,
+            fallback=fallback,
+            encoding=encoding,
+            controls=controls,
+            dependencies=dependencies,
+        )
 
     def component(
         self,

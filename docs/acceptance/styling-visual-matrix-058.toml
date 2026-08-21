@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 fixture_version = "styling-gallery/1"
 engines = ["chromium", "firefox", "webkit"]
 modes = ["light", "dark", "forced-colors", "reduced-motion", "print"]

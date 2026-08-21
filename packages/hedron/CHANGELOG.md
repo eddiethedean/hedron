@@ -1,21 +1,12 @@
 # Changelog
 
-## [0.57.0] — 2026-08-21
+## [0.58.0] — 2026-08-21
 
 ### Added
-- Phase 0.57 unified presentation and zero-application-CSS (RFC-0084 / D-099 / D-100).
+- Phase 0.58 progressive feature and styling authoring (RFC-0085 / D-101 / D-102 / D-105).
 
 ### Changed
-- Coordinated train tip `0.57.0` (in-tree cut; tag/PyPI deferred).
-
-### Fixed
-- Idempotency claims abort on `BaseException` / cancel; streaming responses are not
-  cached as empty replays.
-- Connection registry propagates factory errors to waiters and locks reset/close.
-- History-restore fragment mode requires `HX-Request`; OIDC logout redirect schemes
-  must match; session CSRF helpers require a Request; auth rate limits honor trusted
-  `X-Forwarded-For`; Pagination rejects `page_size < 1`.
-
+- Coordinated train tip `0.58.0` (in-tree cut; tag/PyPI deferred).
 
 ## [0.56.1] — 2026-08-21
 

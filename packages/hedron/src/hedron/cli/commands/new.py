@@ -33,6 +33,13 @@ def _cmd_new(args: argparse.Namespace) -> int:
     if getattr(args, "flask", False) and getattr(args, "django", False):
         print("Choose at most one of --flask / --django", file=sys.stderr)
         return 1
+    template = str(getattr(args, "template", None) or "minimal")
+    if framework != "fastapi" and template != "minimal":
+        print(
+            f"--template {template!r} is only supported for the FastAPI scaffold",
+            file=sys.stderr,
+        )
+        return 2
 
     if framework == "fastapi" or framework == "flask":
         guarded = [dest / "app.py", dest / "pyproject.toml"]

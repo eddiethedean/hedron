@@ -408,9 +408,9 @@ PY
 
 quality_verify_pkgs() {
   # PR quality: tip train + two predecessors only. Older packets run on evidence.
-  run_py scripts/verify_pkg_54.py
-  run_py scripts/verify_pkg_55.py
+  run_py scripts/verify_pkg_56.py
   run_py scripts/verify_pkg_57.py
+  run_py scripts/verify_pkg_58.py
 }
 
 quality_docs() {
@@ -570,7 +570,9 @@ evidence_verify_pkgs() {
   run_py scripts/verify_pkg_53.py
   run_py scripts/verify_pkg_54.py
   run_py scripts/verify_pkg_55.py
+  run_py scripts/verify_pkg_56.py
   run_py scripts/verify_pkg_57.py
+  run_py scripts/verify_pkg_58.py
 }
 
 cmd_evidence() {
@@ -623,7 +625,9 @@ cmd_packaging() {
   run_py scripts/verify_pkg_53.py
   run_py scripts/verify_pkg_54.py
   run_py scripts/verify_pkg_55.py
+  run_py scripts/verify_pkg_56.py
   run_py scripts/verify_pkg_57.py
+  run_py scripts/verify_pkg_58.py
 }
 
 cmd_all() {

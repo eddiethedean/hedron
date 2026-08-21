@@ -26,11 +26,35 @@ from hedron.security.plane_middleware import SecurityPlaneMiddleware
 from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
 from hedron.static_mount import mount_build_assets, mount_hedron_static
 from hedron_core.compile_gate import is_production_env
-from hedron_core.theme import ensure_default_theme_registered
+from hedron_core.design_system import DesignSystem
+from hedron_core.theme import Theme, ensure_default_theme_registered, register_theme_instance
 
 logger = logging.getLogger("hedron")
 
 __all__ = ["Hedron"]
+
+
+def _normalize_theme_selection(
+    theme: str | Theme | DesignSystem | None,
+) -> str | None:
+    """Normalize ``str | Theme | DesignSystem | None`` to a registered theme name."""
+    if theme is None:
+        return None
+    if isinstance(theme, str):
+        return theme
+    from hedron_core.registry import get_registry
+
+    if isinstance(theme, DesignSystem):
+        theme_obj = theme.to_theme()
+    elif isinstance(theme, Theme):
+        theme_obj = theme
+    else:
+        raise TypeError(
+            f"theme must be str | Theme | DesignSystem | None; got {type(theme).__name__}"
+        )
+    if get_registry().get_theme(theme_obj.name) is None:
+        register_theme_instance(theme_obj)
+    return theme_obj.name
 
 
 class Hedron(HedronPagesMixin, FastAPI):
@@ -50,7 +74,8 @@ class Hedron(HedronPagesMixin, FastAPI):
             ``None`` is refused when ``enable_sessions`` is ``True``.
         enable_sessions: When ``True`` (default), install ``SessionMiddleware``.
         explorer_dependencies: FastAPI dependencies required for ``secured`` Explorer.
-        theme: Registered theme name (``default`` when unchanged).
+        theme: Registered theme name, ``Theme``, ``DesignSystem``, or ``None``
+            (no construction-time selection; lifespan may still default).
         default_styles: When ``True``, emit default theme styles on PAGE responses.
         build_dir: Optional precompiled asset manifest directory for production.
         production: Force production gate behavior; ``None`` follows ``HEDRON_ENV``.
@@ -75,7 +100,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         session_secret: str | None = DEFAULT_SESSION_SECRET,
         enable_sessions: bool = True,
         explorer_dependencies: Sequence[DependsParam] | None = None,
-        theme: str | None = "default",
+        theme: str | Theme | DesignSystem | None = "default",
         default_styles: bool = True,
         build_dir: str | Path | None = None,
         production: bool | None = None,
@@ -83,13 +108,14 @@ class Hedron(HedronPagesMixin, FastAPI):
         **kwargs: Any,
     ) -> None:
         user_lifespan = kwargs.pop("lifespan", None)
+        resolved_theme = _normalize_theme_selection(theme)
         kwargs.setdefault(
             "lifespan",
             compose_lifespan(
                 user_lifespan,
                 production=production,
                 build_dir=build_dir,
-                theme=theme,
+                theme=resolved_theme,
             ),
         )
         super().__init__(*args, **kwargs)
@@ -111,10 +137,10 @@ class Hedron(HedronPagesMixin, FastAPI):
             is_prod=is_prod,
         )
 
-        self.hedron_theme = theme
+        self.hedron_theme = resolved_theme
         self.hedron_default_styles = default_styles
         self.state.hedron_security = self.hedron_policy
-        self.state.hedron_theme = theme
+        self.state.hedron_theme = resolved_theme
         self.state.hedron_default_styles = default_styles
         self.state.hedron_production = production if production is not None else is_prod
         self._explorer_dependencies = list(explorer_dependencies or [])

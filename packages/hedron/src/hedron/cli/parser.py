@@ -13,6 +13,7 @@ from hedron.cli.commands.conformance import _cmd_conformance
 from hedron.cli.commands.dev import _cmd_dev
 from hedron.cli.commands.discover import _cmd_discover
 from hedron.cli.commands.eject import _cmd_eject
+from hedron.cli.commands.explain import _cmd_explain
 from hedron.cli.commands.fleet import _cmd_fleet
 from hedron.cli.commands.graph import _cmd_graph
 from hedron.cli.commands.inspect import _cmd_inspect
@@ -21,6 +22,12 @@ from hedron.cli.commands.package import _cmd_package_doctor
 from hedron.cli.commands.routes import _cmd_components, _cmd_preview, _cmd_routes
 from hedron.cli.commands.run import _cmd_run_app
 from hedron.cli.commands.security_check import _cmd_security_check
+from hedron.cli.commands.style import (
+    _cmd_style_diff,
+    _cmd_style_eject,
+    _cmd_style_explain,
+    _cmd_style_preview,
+)
 from hedron.cli.commands.testgen import _cmd_testgen
 from hedron.cli.commands.theme import _cmd_style_check, _cmd_theme_check
 from hedron.cli.commands.upgrade_report import _cmd_upgrade_report
@@ -124,9 +131,41 @@ def _register_inspect_commands(sub: Any) -> None:
         help="Eject accessibility_contract.json and editable local CSS overrides",
     )
     eject_p.add_argument("component", help="Component name, logical id, or 'features:<bundle-id>'")
-    eject_p.add_argument("--out", help="Output directory")
-    eject_p.add_argument("--force", action="store_true")
+    eject_p.add_argument(
+        "--out",
+        "--output",
+        dest="out",
+        help="Output directory (project-relative)",
+    )
+    eject_p.add_argument(
+        "--force",
+        "--overwrite",
+        dest="force",
+        action="store_true",
+        help="Overwrite existing ejected files",
+    )
+    eject_p.add_argument(
+        "--surface",
+        default=None,
+        help="Feature surface name to select when ejecting features:ID",
+    )
     eject_p.set_defaults(func=_cmd_eject)
+
+    explain_p = sub.add_parser(
+        "explain",
+        help="Explain an included feature (static redacted plan)",
+    )
+    explain_p.add_argument(
+        "target",
+        help="Explanation target (features:<logical-id>)",
+    )
+    explain_p.add_argument(
+        "--format",
+        choices=("human", "json"),
+        default="human",
+        help="Output format (default: human)",
+    )
+    explain_p.set_defaults(func=_cmd_explain)
 
 
 def _register_scaffold_commands(sub: Any) -> None:
@@ -150,6 +189,12 @@ def _register_scaffold_commands(sub: Any) -> None:
         "--django",
         action="store_true",
         help="Scaffold a Django + hedron-django app (no FastAPI dependency)",
+    )
+    new_p.add_argument(
+        "--template",
+        choices=("minimal", "crud", "dashboard", "task"),
+        default="minimal",
+        help="FastAPI scaffold template (default: minimal)",
     )
     new_p.set_defaults(func=_cmd_new)
 
@@ -355,7 +400,7 @@ def _register_theme_commands(sub: Any) -> None:
     )
     theme_check_p.set_defaults(func=_cmd_theme_check)
 
-    style_p = sub.add_parser("style", help="Application presentation audits")
+    style_p = sub.add_parser("style", help="Application presentation audits and design tooling")
     style_sub = style_p.add_subparsers(dest="style_command", required=True)
     style_check_p = style_sub.add_parser(
         "check",
@@ -369,6 +414,80 @@ def _register_theme_commands(sub: Any) -> None:
     )
     style_check_p.add_argument("--format", choices=("text", "json"), default="text")
     style_check_p.set_defaults(func=_cmd_style_check)
+
+    style_explain_p = style_sub.add_parser(
+        "explain",
+        help="Explain a DesignSystem / theme plan",
+    )
+    style_explain_p.add_argument(
+        "--design",
+        default=None,
+        help="Design or theme name (default: app theme or 'default')",
+    )
+    style_explain_p.add_argument(
+        "--format",
+        choices=("human", "json"),
+        default="human",
+    )
+    style_explain_p.set_defaults(func=_cmd_style_explain)
+
+    style_preview_p = style_sub.add_parser(
+        "preview",
+        help="Write a fixed data-free design gallery HTML file",
+    )
+    style_preview_p.add_argument(
+        "--design",
+        default=None,
+        help="Design or theme name (default: app theme or 'default')",
+    )
+    style_preview_p.add_argument(
+        "--output",
+        required=True,
+        help="Output HTML file or directory (project-relative)",
+    )
+    style_preview_p.add_argument(
+        "--mode",
+        choices=("all", "light", "dark"),
+        default="all",
+    )
+    style_preview_p.set_defaults(func=_cmd_style_preview)
+
+    style_diff_p = style_sub.add_parser(
+        "diff",
+        help="Semantically diff two designs or themes",
+    )
+    style_diff_p.add_argument("base", help="Base design/theme name")
+    style_diff_p.add_argument("candidate", help="Candidate design/theme name")
+    style_diff_p.add_argument(
+        "--format",
+        choices=("human", "json"),
+        default="human",
+    )
+    style_diff_p.set_defaults(func=_cmd_style_diff)
+
+    style_eject_p = style_sub.add_parser(
+        "eject",
+        help="Eject a design/theme (whole or partial) to reviewable Theme Python",
+    )
+    style_eject_p.add_argument("name", help="Design or theme name to eject")
+    style_eject_p.add_argument("--group", default=None, help="Eject one typed design group")
+    style_eject_p.add_argument("--recipe", default=None, help="Eject one named recipe")
+    style_eject_p.add_argument(
+        "--component",
+        default=None,
+        help="Eject selection annotated for one component id",
+    )
+    style_eject_p.add_argument(
+        "--output",
+        required=True,
+        help="Output directory (project-relative)",
+    )
+    style_eject_p.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Overwrite existing ejected files",
+    )
+    style_eject_p.set_defaults(func=_cmd_style_eject)
 
 
 def _register_migrate_commands(sub: Any) -> None:

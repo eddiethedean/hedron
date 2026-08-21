@@ -9,34 +9,39 @@ from pathlib import Path
 from hedron.cli.discovery import _scaffold_dep
 
 
-def _scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
-    (dest / "pyproject.toml").write_text(
-        f'''[project]
-name = "{args.name}"
+def _pyproject(*, name: str, extra_deps: list[str] | None = None) -> str:
+    deps = [
+        _scaffold_dep("hedron"),
+        "uvicorn[standard]>=0.30",
+        *(extra_deps or ()),
+    ]
+    dep_lines = ",\n".join(f'    "{dep}"' for dep in deps)
+    return f'''[project]
+name = "{name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "{_scaffold_dep("hedron")}",
-    "uvicorn[standard]>=0.30",
+{dep_lines},
 ]
 
 [tool.hedron]
 component_roots = ["components"]
 theme = "default"
 explorer = "off"
-''',
-        encoding="utf-8",
-    )
-    (dest / "app.py").write_text(
-        """import os
+'''
+
+
+def _app_minimal() -> str:
+    return """import os
 from datetime import UTC, datetime
 
-from hedron import Hedron, Page, Stack, Text, html
+from hedron import Hedron, Stack, Text, html
 
 app = Hedron(
     title="Hedron App",
     security="standard",
     explorer="off",
+    theme="default",
     session_secret=os.environ.get(
         # Convention only — Hedron does not load HEDRON_SESSION_SECRET itself.
         "HEDRON_SESSION_SECRET", "replace-in-production"
@@ -61,25 +66,236 @@ def ping():
     return refresh(status).toast("Refreshed")
 
 
-@app.page("/")
-def home() -> Page:
-    return Page(
-        Stack(
-            Text("Hello from hedron new"),
-            status(),
-            status.refresh_button("Refresh status"),
-            ping.button("Ping"),
-        ),
-        title="Home",
+@app.screen("/", title="Home")
+def home():
+    return Stack(
+        Text("Hello from hedron new"),
+        status(),
+        status.refresh_button("Refresh status"),
+        ping.button("Ping"),
     )
-""",
+"""
+
+
+def _app_crud() -> str:
+    return """import os
+
+from pydantic import BaseModel, Field
+
+from hedron import DesignSystem, Hedron, Stack, Text
+from hedron_data import DataWorkspace, DataWorkspacePolicy, InMemoryDataSource
+
+design = DesignSystem.brand("scaffold", accent="#2563eb")
+
+app = Hedron(
+    title="Hedron CRUD",
+    security="standard",
+    explorer="off",
+    theme=design,
+    session_secret=os.environ.get(
+        "HEDRON_SESSION_SECRET", "replace-in-production"
+    ),
+)
+
+
+class Order(BaseModel):
+    id: str
+    customer: str = "acme"
+    quantity: int = Field(gt=0, le=100)
+
+
+class QuickNote(BaseModel):
+    message: str = Field(min_length=1, max_length=200)
+
+
+# In-memory only — replace with an authorized durable DataEditorSource in production.
+_SOURCE = InMemoryDataSource(
+    [{"id": "1", "customer": "acme", "quantity": 2}],
+    key_field="id",
+    writable_fields=frozenset({"customer", "quantity"}),
+)
+
+orders = DataWorkspace(
+    name="orders",
+    model=Order,
+    source=_SOURCE,
+    policy=DataWorkspacePolicy(
+        can_read=lambda: True,
+        can_create=lambda: True,
+        can_edit=lambda: True,
+    ),
+).with_screen(path="/orders", title="Orders")
+app.include_feature(orders)
+
+
+@app.form_command("/notes", fallback="/", success="Saved note")
+def add_note(data: QuickNote):
+    return Text(data.message)
+
+
+@app.screen("/", title="Home")
+def home():
+    return Stack(
+        Text("CRUD scaffold — open /orders for the DataWorkspace screen."),
+        Text("Production replacements: persistence, authorization, transactions."),
+        add_note.form(),
+    )
+"""
+
+
+def _app_dashboard() -> str:
+    return """import os
+
+from pydantic import BaseModel, Field
+
+from hedron import DashboardWorkspace, DesignSystem, Hedron, Text
+
+design = DesignSystem.brand("scaffold", accent="#0f766e")
+
+app = Hedron(
+    title="Hedron Dashboard",
+    security="standard",
+    explorer="off",
+    theme=design,
+    session_secret=os.environ.get(
+        "HEDRON_SESSION_SECRET", "replace-in-production"
+    ),
+)
+
+
+class Filters(BaseModel):
+    region: str = "all"
+    limit: int = Field(default=5, ge=1, le=50)
+
+
+class DashData(BaseModel):
+    region: str
+    total: int
+
+
+def load_dashboard(filters: Filters) -> DashData:
+    # Synthetic loader — replace with authorized IO and caching policy in production.
+    base = 42 if filters.region == "all" else 7
+    return DashData(region=filters.region, total=base * filters.limit)
+
+
+def summary_panel(data: DashData) -> object:
+    return Text(f"{data.region}: {data.total}")
+
+
+dashboard = DashboardWorkspace(
+    name="sales",
+    path="/sales",
+    title="Sales",
+    filters=Filters,
+    load=load_dashboard,
+    panels={"summary": summary_panel},
+)
+app.include_feature(dashboard)
+
+
+@app.screen("/", title="Home")
+def home():
+    return Text(
+        "Dashboard scaffold — open /sales. "
+        "Replace loader/cache/authorization for production."
+    )
+"""
+
+
+def _app_task() -> str:
+    return '''import os
+
+from fastapi import Depends
+from pydantic import BaseModel, Field
+
+from hedron import DesignSystem, Hedron, JobScope, Stack, TaskFlow, Text
+from hedron_core.jobs import InMemoryJobBackend, set_job_backend
+
+design = DesignSystem.brand("scaffold", accent="#b45309")
+
+app = Hedron(
+    title="Hedron Task",
+    security="standard",
+    explorer="off",
+    theme=design,
+    session_secret=os.environ.get(
+        "HEDRON_SESSION_SECRET", "replace-in-production"
+    ),
+)
+
+# Development-only backend. Replace with a durable JobBackend, workers, and
+# retention policy before production (see hedron production gates).
+set_job_backend(InMemoryJobBackend())
+
+
+class ReportRequest(BaseModel):
+    label: str = Field(min_length=1, max_length=80)
+
+
+def report_payload(data: ReportRequest) -> dict[str, object]:
+    return {"label": data.label}
+
+
+def current_job_scope() -> JobScope:
+    return JobScope(auth_subject="dev", tenant_id="local")
+
+
+def allow_dev() -> None:
+    """Open development authorization — replace with real Depends authz."""
+    return None
+
+
+def report_result(result: object) -> object:
+    return Text(str(result))
+
+
+reports = TaskFlow(
+    name="report",
+    input_model=ReportRequest,
+    job_type="build-report",
+    payload=report_payload,
+    scope=current_job_scope,
+    authorize_submit=Depends(allow_dev),
+    result=report_result,
+)
+app.include_feature(reports)
+
+
+@app.screen("/", title="Tasks")
+def home():
+    submit = reports.submit_command
+    return Stack(
+        Text("TaskFlow scaffold (InMemoryJobBackend — replace for production)."),
+        submit.form() if submit is not None else Text("Submit surface pending include."),
+    )
+'''
+
+
+_TEMPLATES = {
+    "minimal": (_app_minimal, None),
+    "crud": (_app_crud, [_scaffold_dep("hedron-data")]),
+    "dashboard": (_app_dashboard, None),
+    "task": (_app_task, None),
+}
+
+
+def _scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
+    template = str(getattr(args, "template", None) or "minimal")
+    if template not in _TEMPLATES:
+        raise SystemExit(f"Unknown --template {template!r}")
+    app_factory, extra_deps = _TEMPLATES[template]
+    (dest / "pyproject.toml").write_text(
+        _pyproject(name=args.name, extra_deps=extra_deps),
         encoding="utf-8",
     )
+    (dest / "app.py").write_text(app_factory(), encoding="utf-8")
     print(
         json.dumps(
             {
                 "created": str(dest),
                 "framework": "fastapi",
+                "template": template,
                 "files": ["pyproject.toml", "app.py", "components/"],
             },
             indent=2,

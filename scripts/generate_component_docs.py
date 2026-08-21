@@ -968,6 +968,22 @@ COMPONENTS = (
         "Do not pass inline style or arbitrary CSS lengths; use the named token vocabularies.",
     ),
     ComponentDoc(
+        "StyleScope",
+        "surfaces",
+        "Bound a subtree to theme, color mode, and density markers only.",
+        "StyleScope(*nodes, *, theme=None, color_mode=None, density=None, id=None, class_=None, mark=None)",
+        "StyleScope(Text('Scoped panel'), theme='aurora', color_mode='dark', density='compact')",
+        (
+            p("nodes", "NodeLike", "StyleScope body content."),
+            p("theme", "str | None", "Optional registered theme name emitted as `data-hedron-theme`."),
+            p("color_mode", "light | dark | None", "Optional color-mode marker (`data-hedron-color-mode`)."),
+            p("density", "compact | comfortable | spacious | None", "Optional density marker (`data-hedron-density`)."),
+        ),
+        "StyleScope is a visible boundary for theme, color mode, and density only. Presentation is marker-driven (`data-hedron-*`) and styled by first-party CSS; recipe defaults are rejected.",
+        "Prefer StyleScope when a region must override theme, color mode, or density without application CSS.",
+        "Do not pass recipe defaults or other styling knobs; only theme, color_mode, and density are supported.",
+    ),
+    ComponentDoc(
         "Badge",
         "surfaces",
         "Display compact categorical metadata with a named tone.",
@@ -2780,6 +2796,8 @@ def static_demo(spec: ComponentDoc) -> str:
         return '<div class="hdc-grid"><span><small>Span 2</small><strong>Wide cell</strong><em>GridItem</em></span></div>'
     if name == "Surface":
         return '<div class="hdc-container"><strong>Raised surface</strong><p class="hdc-muted">Presentation tokens only — no application CSS.</p></div>'
+    if name == "StyleScope":
+        return '<div class="hdc-container" data-hedron-style-scope="true" data-hedron-theme="aurora" data-hedron-color-mode="dark" data-hedron-density="compact"><strong>Scoped panel</strong><p class="hdc-muted">Theme, color mode, and density markers only.</p></div>'
     if name == "Brand":
         return '<div class="hdc-inline"><strong>Hedron</strong><span class="hdc-muted">Brand mark</span></div>'
     if name == "AccountSummary":

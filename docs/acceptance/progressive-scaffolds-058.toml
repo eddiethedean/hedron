@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.58"
-state = "planned"
+state = "verified"
 command = "hedron new NAME --template TEMPLATE"
 [[template]]
 name = "minimal"

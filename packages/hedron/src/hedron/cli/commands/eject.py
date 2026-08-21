@@ -83,7 +83,7 @@ def _cmd_eject(args: argparse.Namespace) -> int:
 
 def _cmd_eject_feature(args: argparse.Namespace) -> int:
     from hedron.features import eject_feature
-    from hedron_core.bundles import eject_source, included_bundles
+    from hedron_core.bundles import FeatureConflictError, eject_source, included_bundles
 
     target = str(args.component or "")
     logical_id = target.split(":", 1)[1] if ":" in target else ""
@@ -102,23 +102,51 @@ def _cmd_eject_feature(args: argparse.Namespace) -> int:
     except ValueError:
         print(f"Refusing to eject outside the project root: {out_dir}", file=sys.stderr)
         return 1
+    surface = getattr(args, "surface", None)
+    overwrite = bool(getattr(args, "force", False))
+    if app is not None:
+        try:
+            source = eject_feature(
+                app,
+                logical_id,
+                surface=surface,
+                output=out_dir,
+                overwrite=overwrite,
+            )
+        except FeatureConflictError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
+        written = [str(out_dir / "explicit.py"), str(out_dir / "source_map.json")]
+        print(
+            json.dumps(
+                {"feature": logical_id, "surface": surface or "*", "written": written},
+                indent=2,
+            )
+        )
+        return 0
     dest = out_dir / "explicit.py"
-    if dest.exists() and not args.force:
-        print(f"Refusing to overwrite {dest} (use --force)", file=sys.stderr)
+    if dest.exists() and not overwrite:
+        print(f"Refusing to overwrite {dest} (use --overwrite)", file=sys.stderr)
         return 1
     out_dir.mkdir(parents=True, exist_ok=True)
-    if app is not None:
-        source = eject_feature(app, logical_id)
-    else:
-        matches = [
-            item
-            for item in included_bundles(app_id=app_id or None)
-            if item.logical_id == logical_id
-        ]
-        if not matches:
-            print(f"FeatureBundle {logical_id!r} not found", file=sys.stderr)
-            return 1
-        source = eject_source(matches[0])
+    matches = [
+        item for item in included_bundles(app_id=app_id or None) if item.logical_id == logical_id
+    ]
+    if not matches:
+        print(f"FeatureBundle {logical_id!r} not found", file=sys.stderr)
+        return 1
+    source = eject_source(matches[0])
+    if surface is not None:
+        source = (
+            f"{source}\n"
+            f"# Selected surface: {surface!r}\n"
+            f"# Remaining surfaces were omitted from this ejection selection.\n"
+        )
     dest.write_text(source, encoding="utf-8")
-    print(json.dumps({"feature": logical_id, "written": [str(dest)]}, indent=2))
+    print(
+        json.dumps(
+            {"feature": logical_id, "surface": surface or "*", "written": [str(dest)]},
+            indent=2,
+        )
+    )
     return 0
