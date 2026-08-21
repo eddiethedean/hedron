@@ -6,10 +6,10 @@ import pytest
 
 from hedron_core.security import Secret
 from hedron_core.security_plane import (
-    SensitivityClass,
     SensitiveLabel,
     SensitiveSinkError,
     SensitiveValue,
+    SensitivityClass,
     clear_declassification_records,
     declassification_records,
     declassify,

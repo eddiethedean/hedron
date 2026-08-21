@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from hedron.workflow import WorkflowBudget, WorkflowManifest
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
-from hedron_core.security_plane import SecurityPolicy, assert_ssrf_safe
+from hedron_core.security_plane import EgressError, SecurityPolicy, assert_ssrf_safe
 
 
 def test_regress_056_055_compatibility() -> None:
@@ -25,6 +25,6 @@ def test_regress_056_055_compatibility() -> None:
     try:
         assert_ssrf_safe("http://localhost/x")
         raised = False
-    except Exception:
+    except EgressError:
         raised = True
     assert raised
