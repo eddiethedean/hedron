@@ -2,8 +2,8 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.55 **Published** in-tree as `v0.55.0` (2026-08-20; tag/PyPI deferred). Phase 0.54 remains Verified in-tree.
-Living tip = `v0.55.0` (PyPI still `v0.54.0`; registry deferred).
+**Roadmap position:** phase 0.55 **Published** as `v0.55.0` (2026-08-20; Git tag published; PyPI deferred). Phase 0.54 remains Verified in-tree.
+Living tip = `v0.55.0` (PyPI still `v0.54.0`; registry deferred). Next Planned phase is **0.56** (security control plane; [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)).
 **Date:** 2026-08-20
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
@@ -23,8 +23,10 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 
 **Phase focus:** Living train is **0.55** (D-095 / D-096 / RFC-0082) — secure upgradeable
 workflows [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549).
-`release-gate-0.55.toml` Verified rows; living tip `v0.55.0` in-tree (`v0.54.0` on PyPI;
-`registry_status = "deferred"`).
+`release-gate-0.55.toml` Verified rows; living tip `v0.55.0` (Git tag published; `v0.54.0` on PyPI;
+`registry_status = "deferred"`). Planned **0.56** security control plane is contract-refined only
+([#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557));
+Stage 0 RFC/decision not yet Accepted.
 Prior Published **0.54** authoring-loop / chrome (D-093 / D-094 / RFC-0081;
 [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543)).
 Prior Published in-tree **0.53** application DX

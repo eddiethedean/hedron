@@ -52,8 +52,8 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.52** | Cross-language conformance authority; HedronPosit deployment lifecycle companions | **Published** in-tree (`v0.52.0`; Verified gates; tag/PyPI deferred; RFC-0079 / D-089 / D-090; [#522](https://github.com/eddiethedean/hedron/issues/522); companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
 | **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Verified** / **Published** in-tree (`v0.53.0`; Verified gates; tag/PyPI deferred; [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md), D-091/D-092, [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
 | **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Published** (`v0.54.0` on GitHub and PyPI; [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md), D-093/D-094, foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543); companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
-| **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Published** in-tree (`v0.55.0`; Verified gates; tag/PyPI deferred; [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md), D-095/D-096, [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)) |
-| **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Planned** (security issues [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557); tip remains `v0.54.0`) |
+| **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Published** (`v0.55.0` tag; Verified gates; PyPI deferred; [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md), D-095/D-096, [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)) |
+| **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Planned** (security issues [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557); living tip `v0.55.0`) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -5349,6 +5349,14 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#547](https://github.com/eddiethedean/hedron/issues/547) | Application-level upgrade compatibility reports | 0.55 |
 | [#548](https://github.com/eddiethedean/hedron/issues/548) | Idempotent and replay-safe action policies | 0.55 |
 | [#549](https://github.com/eddiethedean/hedron/issues/549) | First-class multipart and file-upload primitives | 0.55 |
+| [#550](https://github.com/eddiethedean/hedron/issues/550) | Permanent cross-adapter security conformance profile | 0.56 |
+| [#551](https://github.com/eddiethedean/hedron/issues/551) | Provenance-aware sensitive-data tracking and sink enforcement | 0.56 |
+| [#552](https://github.com/eddiethedean/hedron/issues/552) | Immutable request security-context propagation across async boundaries | 0.56 |
+| [#553](https://github.com/eddiethedean/hedron/issues/553) | Threat-oriented `hedron security-check` posture report | 0.56 |
+| [#554](https://github.com/eddiethedean/hedron/issues/554) | Unify dangerous sinks under purpose-specific trust-boundary types | 0.56 |
+| [#555](https://github.com/eddiethedean/hedron/issues/555) | Shared outbound egress and SSRF policy across packages | 0.56 |
+| [#556](https://github.com/eddiethedean/hedron/issues/556) | Signed action intents for high-risk mutations | 0.56 |
+| [#557](https://github.com/eddiethedean/hedron/issues/557) | Framework-wide request resource budgets and streaming enforcement | 0.56 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 
@@ -5450,7 +5458,7 @@ this medium/low packet; it was remediated on the 0.37 train (`HTMX-037`).
 
 ## 0.55 — Secure, upgradeable application workflows (`v0.55.0`)
 
-**Status:** Published in-tree `v0.55.0` (D-095 / D-096 / [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md)). This phase binds issues [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549) into one application-workflow contract. It extends the 0.54 application-composition work without reopening earlier release gates or taking ownership of application RBAC, final security policy, storage backends, or deployment infrastructure. Tag/PyPI deferred (`registry_status = "deferred"`; PyPI remains `v0.54.0`).
+**Status:** Published as `v0.55.0` (D-095 / D-096 / [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md)). This phase binds issues [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549) into one application-workflow contract. It extends the 0.54 application-composition work without reopening earlier release gates or taking ownership of application RBAC, final security policy, storage backends, or deployment infrastructure. Git tag is published; PyPI upload remains deferred (`registry_status = "deferred"`; PyPI remains `v0.54.0`).
 
 **Outcome:** Hedron provides secure, inspectable primitives for common application workflows: responsive master-detail composition, policy-aware affordances, replay-safe mutations, validated multipart actions, security-header reporting, and offline upgrade-impact reports.
 
@@ -5621,13 +5629,29 @@ pluggable hooks so applications and deployment platforms can own those concerns 
 [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557).
 0.56 composes and hardens existing security mechanisms; it does not reopen 0.55 application-
 workflow scope or promote experimental transports, hosts, or packages. Living tip remains
-`v0.54.0` until the 0.55 and 0.56 trains are cut in order.
+`v0.55.0` until the 0.56 train is cut.
 
 **Outcome:** Every Hedron-controlled request crosses one inspectable security control plane. Identity
 and sensitivity provenance survive supported boundaries; dangerous sinks and outbound access use
 purpose-specific deny-by-default policy; high-risk actions carry authorization-bound intent;
 resource limits apply while data is streaming; and every Supported host proves the same portable
 security invariants with threat-oriented evidence.
+
+### Stage 0: authority and contract freeze
+
+Implementation starts only after one phase RFC and release decision are Accepted. They must freeze
+the `SecurityProfile` composition object, `SecurityContext` serialization, sensitivity-label and
+sink-taxonomy schemas, event-code vocabulary, conformance profile version, signing/intent formats,
+request-budget ledger model, posture-report schema, compatibility modes, and the gate ledger below.
+Names and signatures in this Planned section are illustrative until that authority lands; issue
+bodies remain normative for feature acceptance.
+
+Stage 0 must also inventory the 0.22 `SecurityPolicy`/CSRF, 0.41 navigation trust boundaries, 0.45
+interaction-manifest security claims, 0.49 request-model/security projection, 0.52 conformance
+authority, and 0.55 capability/replay/upload/CSP contracts, plus existing `SafeUrl` /
+`TrustedHtml` / header helpers. The phase extends those authorities into one control plane rather
+than introducing parallel validators. A prototype may inform the RFC, but no prototype alone counts
+as a frozen public contract or release evidence.
 
 ### Security principles
 
@@ -5694,6 +5718,54 @@ surface:
    CSRF, idempotency, upload, and audit contracts without treating any one control as a substitute.
 4. **Fleet proof:** publish adapter/package inventories, run differential and adversarial suites,
    and expose effective posture through `hedron security-check`, Explorer, and release evidence.
+
+### Provisional release gates
+
+The Accepted Stage 0 authority may rename these identifiers, but it must retain one independently
+reviewable row for every responsibility. The 0.56 cut requires every final row Verified with zero
+Deferred; a partially migrated package inventory does not qualify for a release cut.
+
+| Provisional gate | Cut evidence |
+|---|---|
+| `CONTRACT-056` | Accepted RFC/decision; versioned `SecurityProfile`, schemas, event codes, keyring contract, compatibility modes, and fixtures |
+| `CONFORM-056` | #550 versioned security conformance profile, FastAPI/Flask/Django results, Posit/notebook unsupported claims, and differential fixtures |
+| `SENS-056` | #551 label propagation, sink enforcement, explicit declassification audit, nested/container coverage, and retention budgets |
+| `CTX-056` | #552 immutable `SecurityContext`, authority narrowing, serialization, async/job/cache isolation, and cross-tenant fail-closed tests |
+| `POSTURE-056` | #553 offline `hedron security-check` human/JSON/SARIF output, evidence/confidence/ownership, suppressions, and baseline drift |
+| `SINK-056` | #554 purpose-specific compiler coverage for URL/selector/markup/SVG/browser payloads and first-party sink inventory disposition |
+| `EGRESS-056` | #555 deny-by-default outbound policy, per-hop DNS/redirect validation, deadline/response budgets, and SSRF adversarial corpus |
+| `INTENT-056` | #556 signed intent bind/consume contract, atomic one-time use, key rotation window, and substitution fail-closed matrix |
+| `BUDGET-056` | #557 streaming `RequestBudget`, nested ledger charges, reject-before-buffer proofs, and disconnect/cleanup suites |
+| `ADVERSARY-056` | Shared adversarial/fuzz corpus across adapters and packages with recorded threat scenarios and performance ceilings |
+| `REGRESS-056` | 0.55 upgrade fixtures plus security, cancellation, retry, disconnect, worker-restart, and compatibility suites |
+| `PKG-056` | Wheel/install/import/API-surface checks, docs and migration notes, control inventory, acceptance ledger, and release metadata |
+
+### Normative ordering and failure semantics
+
+- Adapter ingress installs the active `SecurityProfile` and a request-local budget ledger before
+  body parsing expands. Oversized or over-count bodies fail while streaming; they never become
+  fully buffered application inputs.
+- CSRF, authentication, capability enforcement, and signed-intent validation precede protected
+  side effects. Intent minting requires prior application authorization; missing, stale, or
+  substituted intents fail closed without disclosing which bound field mismatched to the client.
+- `SecurityContext` may only narrow authority. Serialization across jobs, caches, fragments,
+  MCP, and background work preserves subject/tenant fingerprints; broadened or client-supplied
+  context is rejected.
+- Sensitivity labels are authoritative for framework-owned sinks. Key-name and pattern redaction
+  remain defense in depth for unlabeled external values and never authorize declassification.
+  Explicit declassification records reason and source and is audited.
+- Dangerous sinks compile through purpose-specific trust types. Cross-purpose reuse of a compiled
+  value (URL as selector, HTML as SVG, etc.) fails closed.
+- Outbound fetches validate DNS and redirects on every hop and resolved address; retries and
+  decompression charge the same request-local egress budget. Deny-by-default applies until an
+  application-owned allow policy is configured.
+- Idempotency/replay from 0.55 and signed intents compose: replay deduplicates requests; intents
+  prove authorization-bound integrity. Neither substitutes for CSRF or object-level authorization.
+- Posture reports and security events are redacted, cardinality-bounded, and offline-capable.
+  Heuristic findings, application-owned decisions, unsupported capabilities, and unverifiable
+  deployment facts remain distinguishable from proven contract breaks.
+- Package migrations to shared authorities require compatibility fixtures proving equivalent or
+  intentionally stricter behavior. Silent weakening of an existing public validator is prohibited.
 
 ### Hardening requirements
 
