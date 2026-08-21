@@ -38,8 +38,8 @@ if version not in {
         "0.51.",
         "0.52.",
         "0.53.",
-        "0.54.", "0.55.", "0.56.",
+        "0.54.", "0.55.", "0.56.", "0.57.",
     )
 ):
-    raise SystemExit(f"workspace version must be 0.41.0 or post-cut 0.42.x–0.56.x, got {version}")
+    raise SystemExit(f"workspace version must be 0.41.0 or post-cut 0.42.x–0.57.x, got {version}")
 raise SystemExit(check("PKG-041"))
