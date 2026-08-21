@@ -2,33 +2,80 @@ schema_version = 1
 phase = "0.58"
 state = "planned"
 owner = "hedron"
+decision = "D-101"
+contract_refines = ["D-102", "D-105"]
 external_issue_numbers = []
-note = "Authoritative Stage 0 workstream packet; external issue mirrors may be attached without changing scope."
+note = "Single authoritative 0.58 workstream packet for feature and styling abstractions. External issue mirrors may be attached without changing scope."
+
 [[workstream]]
 id = "W0"
 gates = ["CONTRACT-058"]
-title = "Contracts and inventories"
+title = "Unified contracts, inventories, schemas, precedence, and budgets"
 [[workstream]]
 id = "W1"
 gates = ["LOWER-058", "EXPLAIN-058"]
-title = "Explanation, surfaces, ejection"
+title = "Common explanation, named surfaces, design plans, provenance, and safe ejection"
 [[workstream]]
-id = "W2-W3"
-gates = ["SCREEN-058", "FORM-058"]
-title = "First vertical slice"
+id = "W2"
+gates = ["SCREEN-058"]
+title = "Screen facade and ScreenHandle"
 [[workstream]]
-id = "W4-W6"
-gates = ["RESOURCE-058", "TASK-058", "DASH-058"]
-title = "Workspace, task, dashboard"
+id = "W3"
+gates = ["FORM-058"]
+title = "Typed form command"
 [[workstream]]
-id = "W7-W8"
+id = "W4"
+gates = ["RESOURCE-058"]
+title = "Complete DataWorkspace screen"
+[[workstream]]
+id = "W5"
+gates = ["TASK-058"]
+title = "Durable TaskFlow"
+[[workstream]]
+id = "W6"
+gates = ["DASH-058"]
+title = "Typed DashboardWorkspace"
+[[workstream]]
+id = "W7"
 gates = ["FLOW-058"]
-title = "Session and upload flows"
+title = "SessionAuthFlow"
 [[workstream]]
-id = "W9-W10"
-gates = ["EXPLAIN-058", "DX-058"]
-title = "Tooling, scaffolds, learning"
+id = "W8"
+gates = ["FLOW-058"]
+title = "UploadFlow"
 [[workstream]]
-id = "W11-W12"
-gates = ["A11Y-058", "SECURITY-058", "ADAPTER-058", "REGRESS-058", "PKG-058"]
-title = "Parity and release closure"
+id = "W9"
+gates = ["BRAND-058", "THEME-058", "A11Y-058"]
+title = "DesignSystem brand compiler, typed design groups, and Theme bridge"
+[[workstream]]
+id = "W10"
+gates = ["RECIPE-058", "SCOPE-058"]
+title = "Semantic recipes, feature roles, explicit StyleScope, and precedence"
+[[workstream]]
+id = "W11"
+gates = ["EXPLAIN-058", "VISUAL-058"]
+title = "Unified CLI and Explorer explain, preview, diff, check, and eject"
+[[workstream]]
+id = "W12"
+gates = ["LOWER-058", "RECIPE-058", "REGRESS-058"]
+title = "Feature and styling lowering integration"
+[[workstream]]
+id = "W13"
+gates = ["DX-058"]
+title = "Four scaffolds, all starter migrations, and one progressive learning path"
+[[workstream]]
+id = "W14"
+gates = ["ADAPTER-058"]
+title = "Adapter, package, conformance, and simulation dispositions"
+[[workstream]]
+id = "W15"
+gates = ["A11Y-058", "SECURITY-058", "VISUAL-058"]
+title = "Security, CSP, accessibility, visual, browser, and performance evidence"
+[[workstream]]
+id = "W16"
+gates = ["REGRESS-058"]
+title = "Explicit API regression and unified 0.57 upgrade fixtures"
+[[workstream]]
+id = "W17"
+gates = ["PKG-058"]
+title = "Packaging, documentation truth, and release rehearsal"

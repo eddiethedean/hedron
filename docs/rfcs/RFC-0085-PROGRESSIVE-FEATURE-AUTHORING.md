@@ -1,34 +1,39 @@
-# RFC-0085: Progressive feature authoring and inspectable lowering
+# RFC-0085: Progressive feature and styling authoring with inspectable lowering
 
 **Status:** Accepted  
 **Target phase:** 0.58 (`v0.58.0`)  
 **Decision:** D-101  
-**Stage 0 contract refine:** D-102  
+**Stage 0 contract refine:** D-102 / D-105
+
 **Required predecessor:** Published and Verified in-tree `v0.57.0` (satisfied; tag/PyPI deferred)  
 **Planning baseline:** Published/Verified in-tree `v0.57.0`  
 **Tracking:** `docs/acceptance/progressive-tracking-058.toml`
 
-**Revision:** 2026-08-21 — D-102 Stage 0 refine accepted against the completed in-tree 0.57 cut.
-The acceptance packet freezes signatures, schemas, diagnostics, dispositions, budgets, scaffolds,
-starter adoption, tracking, gates, and upgrades without runtime or version changes.
+**Revision:** 2026-08-21 — D-105 integrates the progressive-styling exploration previously
+recorded by superseded D-103/D-104/RFC-0086 into the D-101/D-102 0.58 phase. The single acceptance
+packet freezes feature and styling signatures, schemas, precedence, diagnostics, dispositions,
+budgets, scaffolds, starter adoption, tracking, gates, and upgrades against the completed in-tree
+0.57 cut, without runtime or version changes.
 
 ## Summary
 
-Phase 0.58 adds a beginner-facing, feature-level authoring layer for common Hedron applications
-while preserving the existing explicit APIs as the runtime authority. The new layer covers screens,
-form commands, data workspaces, durable task UI, dashboards, session login plumbing, and upload
-flows. Each facade lowers to ordinary `Page`, `FragmentHandle`, `ActionHandle`, `FeatureBundle`,
-`InteractionCatalog`, security, job, upload, and presentation contracts already shipped in
-0.43–0.57.
+Phase 0.58 adds one beginner-facing authoring layer for both application features and presentation,
+while preserving the existing explicit APIs as the runtime authority. It covers screens, form
+commands, data workspaces, durable task UI, dashboards, session login plumbing, upload flows,
+built-in looks, generated brands, semantic style recipes, and explicit local style scopes. Feature
+facades lower to ordinary `Page`, handles, bundles, catalogs, security, job, upload, and
+presentation contracts; styling facades lower to the existing `Theme`, component props/markers,
+style contracts, CSS compiler, cascade, assets, and CSP authorities shipped in 0.43–0.57.
 
 This is progressive disclosure, not a second framework. An author can move down one rung at a time:
 
-1. start from a scaffold or feature facade;
-2. access and replace named generated surfaces;
-3. inspect the complete lowering and policy graph;
-4. eject reviewable explicit Python for one surface or a whole feature; or
-5. use `@app.page`, `@app.command`, `@app.refreshable`, native components, HTML, responses, and
-   FastAPI directly.
+1. start from a scaffold using a built-in theme and feature facade;
+2. add a generated brand or semantic recipe when distinct intent appears;
+3. access and replace a named feature surface or explicit style scope;
+4. inspect the complete feature, policy, design, asset, and provenance graph;
+5. eject one surface/recipe/group or the complete feature/design; or
+6. use explicit pages, commands, components, `Theme`, props, scoped CSS, style contracts, HTML,
+   responses, and FastAPI directly.
 
 Authorization, persistence, transactions, tenancy, destructive meaning, durable workers, storage,
 malware scanning, identity verification, and external exposure remain explicit application-owned
@@ -42,7 +47,11 @@ Pydantic `Annotated` metadata, `FormBody`, `Control`, generated form handles, re
 fallbacks, CSRF behavior, and route knowledge. Durable work adds backend submission, scope
 repetition, a status route, `ComponentRef`, polling, terminal behavior, and result presentation.
 Authenticated CRUD or dashboard assembly adds still more interaction and shell concepts before the
-application's domain behavior becomes visible.
+application's domain behavior becomes visible. Styling has the same problem: the first custom look
+currently exposes palette compilation, semantic token maps, modes, variants, shape/elevation/
+density/navigation groups, component appearance props, scoped selectors, style contracts, build
+manifests, cascade layers, and CSP policy before a beginner can express “use this brand accent” or
+“make this data region compact.”
 
 The repository already contains the required lowering architecture:
 
@@ -52,8 +61,12 @@ The repository already contains the required lowering architecture:
 - 0.46: `FeatureProvider`, atomic `FeatureBundle`, `DataWorkspace`, overrides, and feature ejection;
 - 0.54–0.57: application chrome, workflow security, upload controls, the security control plane,
   and a complete default presentation vocabulary.
+- 0.57 styling: built-in themes, `compile_palette`, semantic tokens, closed appearance markers,
+  `StyleSymbols`, scoped CSS/style contracts, the AST compiler, asset manifests, cascade layers,
+  visual checks, and zero-application-CSS evidence.
 
-0.58 composes those contracts into coherent user intentions. It does not replace or fork them.
+0.58 composes all of those contracts into coherent feature and design intentions. It does not
+replace or fork them.
 
 ## Design principles
 
@@ -73,16 +86,24 @@ The repository already contains the required lowering architecture:
    uploads, and descriptions consume existing limits or Stage 0 locks; no unbounded discovery.
 8. **No hidden I/O during render.** Feature loaders and mutation handlers remain explicit request
    boundaries. Rendering remains deterministic.
+9. **One styling authority.** `DesignSystem`, recipes, and scopes compile to the current `Theme`,
+   props, markers, style contracts, asset policy, and CSS build; they add no registry or cascade.
+10. **No semantic behavior from style.** Styling cannot grant authorization, expose a route, choose
+    destructive meaning, reorder DOM, hide an authoritative value, or infer application state.
+11. **Accessibility and CSP are compiler obligations.** Generated measurable color pairs meet the
+    locked targets, adjustments are disclosed, and output remains external/finite/strict-CSP-safe.
 
 ## Authoring ladder
 
 | Level | Author experience | Runtime representation |
 |---|---|---|
-| Scaffold | `hedron new --template minimal|crud|dashboard|task` | Ordinary checked-in Python |
-| Intent | `@app.screen`, `@app.form_command`, feature providers | Existing page/handle/bundle contracts |
-| Surface override | Replace a named screen/view/command/form/panel | Ordinary explicit handler/component |
-| Ejection | `hedron eject features:<id>` or a named surface | Reviewable Python plus source map/tests |
-| Primitive | Existing pages, handles, regions, components, responses, FastAPI | No facade dependency |
+| Scaffold | `hedron new --template minimal|crud|dashboard|task` with a built-in look | Ordinary checked-in Python plus registered `Theme` |
+| Intent | Feature facade plus optional `DesignSystem.brand(...)` | Existing page/handle/bundle and `Theme` contracts |
+| Reuse | Named semantic style recipe on a generated role or explicit component | Existing family-specific component props/markers |
+| Local override | Replace a named feature surface or add an explicit theme/mode/density scope | Explicit handler/component or marker boundary |
+| Inspect | Explain/preview/diff the feature and design lowering | Catalog, descriptors, plan, manifests, provenance |
+| Ejection | Eject a surface/feature or recipe/group/design | Reviewable Python/CSS/manifests/source maps/tests |
+| Primitive | Pages, handles, components, responses, `Theme`, props, style contracts, scoped CSS, FastAPI | No facade dependency |
 
 The high-level API remains valid indefinitely; ejection is not required for production and is not a
 deprecation path. The ladder exists so complexity can be adopted when it earns its place.
@@ -93,6 +114,13 @@ deprecation path. The ladder exists so complexity can be adopted when it earns i
 parallel workflow runtime, mutable graph, registry, or manifest. New providers compile into an
 ordinary atomic `FeatureBundle`; screen/form decorators compile directly into existing page and
 handle descriptors.
+
+`DesignSystem.to_theme()` is the styling compilation seam. It resolves to an ordinary registered
+`Theme`; recipes resolve before render to existing optional component props; `StyleScope` resolves
+to an explicit marker boundary; CSS and assets continue through the existing compiler/manifests.
+The design plan is read-only metadata, not a runtime styling registry. Feature surfaces link to
+design-plan targets through stable logical IDs so the two lowerings can be traversed without
+duplicating or merging their authorities.
 
 The catalog and descriptors remain authoritative. A new read-only explanation projection may make
 them approachable:
@@ -118,6 +146,8 @@ Conceptual rules:
 - sensitive values and callable representations follow 0.56 redaction/provenance contracts;
 - every facade-owned surface has a stable name suitable for override, scenario, explanation, and
   ejection;
+- every generated presentation node with a style default has a finite semantic role and provenance
+  link; explicit props and named-surface replacements remain stronger;
 - generated source records a source map back to the facade configuration and passes a behavioral
   parity scenario before it is presented as a successful ejection;
 - ejection never overwrites by default and writes only inside the selected project root.
@@ -129,6 +159,10 @@ hedron --app app:app explain features:orders
 hedron --app app:app graph --level feature
 hedron --app app:app eject features:orders --surface list
 hedron --app app:app check --features
+hedron --app app:app style explain --format human
+hedron --app app:app style preview --output .hedron/preview --mode all
+hedron --app app:app style diff BASE CANDIDATE --format human
+hedron --app app:app style eject NAME --recipe primary_action --output generated
 ```
 
 Exact command spelling and serialized schema are locked at Stage 0.
@@ -394,6 +428,156 @@ Contract:
 - download is a separate explicitly authorized result surface;
 - native multipart submission and useful validation/error pages remain available without HTMX.
 
+## Progressive styling abstractions
+
+The styling side uses the same rule as feature authoring: begin with a bounded expression of intent,
+show exactly how it lowers, and allow local graduation without an application-wide mode switch.
+`Theme`, semantic tokens, component props, appearance markers, `StyleSymbols`, scoped CSS, style
+contracts, the AST compiler, cascade layers, assets, and CSP remain authoritative.
+
+### Built-in looks and `DesignSystem.brand`
+
+The zero-config path remains an existing registered theme:
+
+```python
+app = Hedron(theme="aurora")
+```
+
+The smallest custom-design path is one trusted brand accent plus finite choices:
+
+```python
+design = DesignSystem.brand(
+    name="acme",
+    accent="#2f6fed",
+    density="comfortable",
+    geometry="soft",
+    typography="system-sans",
+)
+
+app = Hedron(theme=design)
+```
+
+`DesignSystem.brand`, `from_theme`, `to_theme`, `with_recipes`, `apply`, and `explain` live in
+`hedron_core.design_system`. `Hedron(theme=...)` accepts `str | Theme | DesignSystem | None`, but
+always normalizes to the existing registered theme-name authority before lifespan composition.
+There is no second app-state design authority or theme registry.
+
+The `hedron.brand-palette/1` compiler accepts only 3/6-digit hex in v1, compiles coordinated light
+and dark semantic sets together, validates locked foreground/background and focus pairs, and
+records seed, inherited, generated, preset, override, and adjustment provenance. An unsafe or
+unsatisfied result fails with remediation or uses a deterministic adjusted derivative and reports
+it; it never silently publishes a failing pair. Compilation performs no network, filesystem,
+request, platform-dependent color-engine, callback, or remote-asset work.
+
+Finite design groups replace raw maps only on the beginner path:
+
+| Group | Choices in 0.58 | Existing lowering target |
+|---|---|---|
+| Brand | 3/6-digit hex accent | `Theme.tokens`, `modes`, `palette` |
+| Typography | system sans/serif/mono | semantic font/size/line tokens |
+| Geometry | square/soft/rounded | `Theme.shape` |
+| Density | compact/comfortable/spacious | current density vocabulary/markers |
+| Elevation | flat/subtle/layered | current elevation/overlay tokens |
+| Motion | standard/calm/none | motion tokens plus reduced-motion behavior |
+| Navigation | compact/default/wide | validated `nav_width`/shell tokens |
+
+Unknown groups and combinations reject. Custom fonts, arbitrary token maps, and values outside the
+finite vocabulary remain explicit `Theme`/asset-policy work.
+
+### Semantic style recipes and generated feature roles
+
+Recipes capture repeated presentation intent without becoming a CSS language:
+
+```python
+design = DesignSystem.brand(name="acme", accent="#2f6fed").with_recipes(
+    StyleRecipe.control(
+        "primary_action",
+        emphasis="primary",
+        appearance="solid",
+        size="md",
+    ),
+    StyleRecipe.surface(
+        "data_surface",
+        appearance="raised",
+        density="compact",
+        padding="md",
+    ),
+)
+
+submit = design.apply("primary_action", Button("Save"))
+```
+
+Families are exactly control, surface, data, status, and content. A recipe is immutable, named,
+family-scoped, serializable, and contains only catalogued semantic values for existing optional
+component props whose default is `None`. Application occurs before render by cloning the same
+component type; the original is unchanged, explicit non-`None` component values win, and an
+incompatible family or unlisted field rejects. Inheritance is same-family, acyclic, and bounded to
+four levels. Recipes add no wrapper DOM, runtime lookup, selector, class, CSS declaration, URL,
+callback, authorization, semantic state, or destructive meaning.
+
+The ten built-in recipes are `primary_action`, `secondary_action`, `destructive_action`,
+`page_surface`, `form_surface`, `data_surface`, `dashboard_panel`, `dense_data`, `inline_status`,
+and `metadata`. Generated screen/form/workspace/dashboard/task/auth/upload surfaces declare the
+matching finite role. Those defaults remain weaker than explicit facade configuration,
+`FeatureOverrides`, component props, application CSS, and a complete named-surface replacement.
+Styling cannot add a route/effect, change authorization, infer state, or make an action destructive.
+
+### Explicit `StyleScope`
+
+`StyleScope` is a visible subtree boundary limited to theme, color mode, and density:
+
+```python
+StyleScope(
+    report_table,
+    theme="aurora",
+    color_mode="dark",
+    density="compact",
+)
+```
+
+It lowers to one explicit `div` plus stable current markers and inherited theme variables. The
+nearest explicit ancestor wins, with an explicit child marker stronger. Scope-wide recipe defaults,
+raw variables, ambient context, DOM reordering, content hiding, and lifecycle JavaScript are
+deferred because they would create hidden descendant mutation or specificity authority.
+
+### Unified precedence
+
+Strongest to weakest:
+
+1. explicit component prop, explicit named-feature-surface replacement, or application-owned
+   scoped CSS;
+2. the explicitly applied component recipe;
+3. nearest explicit scope theme/color-mode/density;
+4. application `DesignSystem` default;
+5. resolved existing `Theme`; and
+6. first-party baseline CSS.
+
+Equal-level conflicts reject unless an explicit replacement operation exists. Mapping/import order
+and accidental selector specificity are never authorities. Feature explanation records the winning
+source and the suppressed default.
+
+### Inspect, preview, diff, check, and eject
+
+`DesignSystem.explain()` returns canonical `hedron.design-system-plan/1`; CLI and Explorer consume
+the same plan. Companion schemas are `hedron.design-system-diff/1`,
+`hedron.design-system-preview/1`, and `hedron.design-system-source-map/1`. They contain canonical
+logical IDs, inputs, resolved themes/groups/recipes, provenance, adjustments, assets,
+compatibility, limitations, digests, and project-relative source maps—never request/user data,
+secrets, callback representations, absolute paths, or runtime values.
+
+Preview renders only the fixed versioned gallery with synthetic content. Diff is semantic across
+inputs/tokens/groups/recipes/components/assets/emitted output, not a minified CSS diff. Check
+combines theme, contrast, recipe, scope, style-contract, asset/CSP, budget, and zero-application-CSS
+diagnostics. Static tooling does not invoke routes, loaders, components, callbacks, network, or
+application data.
+
+Ejection targets the whole design or one group, recipe, or component and writes public `Theme`
+Python, explicit props/markers, public style-contract scoped CSS, manifests, source maps, and parity
+tests. It is project-root-only, no-overwrite by default, budgeted, deterministic, and rejects path
+traversal, symlink escape, hostile names, private selectors/markup, and captured runtime values.
+Feature ejection explicitly selects either preserved recipe references or fully resolved explicit
+props; both forms must preserve route/effect/security/accessibility/build and scenario parity.
+
 ## Scenarios, scaffolds, and teaching path
 
 Every 0.58 facade ships at least one deterministic `AppScenario` recipe covering its ordinary
@@ -416,34 +600,39 @@ project generator DSL. `minimal` teaches `screen` and one refreshable view; `cru
 with a visible production replacement note. Generated production startup remains governed by
 existing gates.
 
-The documentation learning path teaches one concept per step:
+The documentation learning path teaches one integrated concept per step:
 
-1. screen and static components;
-2. refreshable view;
-3. form command;
-4. workspace or dashboard;
-5. inspect a lowering;
-6. override one surface;
-7. eject and compare explicit code;
-8. production authorization, persistence, jobs, uploads, and deployment.
+1. built-in theme, screen, and static components;
+2. refreshable view and typed form command;
+3. optional generated brand when a distinct visual identity is needed;
+4. workspace/dashboard/task plus built-in semantic roles;
+5. a named recipe when presentation intent repeats;
+6. inspect/preview the unified lowering;
+7. override one feature surface or explicit style scope;
+8. eject and compare explicit feature/`Theme`/prop/CSS code; and
+9. production authorization, persistence, jobs, uploads, assets/CSP, and deployment.
 
 ### Starter-example adoption policy
 
 At the 0.58 cut, every maintained documentation example identified as **starter**,
-**beginner**, **quick start**, **golden path**, **minimal**, **first app**, or generated
-**scaffold** uses the highest applicable 0.58 abstraction. This includes the root and flagship
-README first-app examples, getting-started pages, beginner cookbook/recipe entries, starter
-single-file examples, scaffold snapshots, and package quick starts that demonstrate an affected
-workflow.
+**beginner**, **quick start**, **golden path**, **minimal**, **first app**, **theming**, or generated
+**scaffold** uses the highest applicable 0.58 feature and styling abstractions. This includes the
+root and flagship README first-app examples, getting-started pages, beginner cookbook/recipe
+entries, starter single-file examples, theme examples, scaffold snapshots, and package quick starts
+that demonstrate an affected workflow or styling path.
 
 The teaching order is normative:
 
-1. show `screen`, `form_command`, or the applicable workspace/flow facade first;
-2. show the compiled or ejected explicit equivalent afterward when it helps understanding; and
-3. link to the existing primitive API for customization.
+1. show the applicable feature facade with a built-in theme first;
+2. introduce `DesignSystem.brand` only when customization is relevant, then semantic recipes only
+   when intent repeats;
+3. show inspect/preview, an explicit scope/override, and the compiled/ejected equivalent afterward
+   when they help understanding; and
+4. link to existing feature primitives and advanced `Theme`/prop/style-contract/CSS APIs.
 
 A document whose purpose is specifically to teach `Page`, `FormBody`, handles, regions,
-`InteractionResult`, raw HTML, responses, or host-native integration may use the explicit API, but
+`InteractionResult`, raw HTML, responses, `Theme`, component appearance props, style contracts,
+scoped CSS, cascade/compiler internals, or host-native integration may use the explicit API, but
 it must be labeled **Advanced**, **Explicit**, **Lower-level**, or **Under the hood** and must not be
 presented as a starter path. Historical release notes and migration fixtures retain historically
 accurate code. Stage 0 freezes a machine-readable starter-example inventory; `DX-058` fails if an
@@ -463,6 +652,11 @@ and explanations remain framework-neutral where their existing authorities are p
 - optional packages remain package-local and add no imports/assets/startup cost when absent.
 - MCP/Gradio exposure stays separate and deny-by-default; including a facade never publishes it to
   another protocol.
+- portable `DesignSystem`/recipe/scope values live in `hedron-core`; FastAPI accepts them through
+  `Hedron`, while Flask/Django/Jinja/elements consume compiled themes/markers only through their
+  explicitly documented seams;
+- Explorer styling preview remains development/secured, sim covers only a fixed declared gallery,
+  and conformance owns schema/disposition fixtures rather than claiming a CSS renderer.
 
 ## Errors and diagnostics
 
@@ -474,7 +668,10 @@ Stage 0 reserves and locks diagnostic families without renumbering existing code
 - task scope/backend/status/result failures;
 - dashboard filter/panel/fan-out/stale-request failures;
 - auth configuration/session/result failures; and
-- upload storage/result/policy composition failures.
+- upload storage/result/policy composition failures;
+- design/brand input, contrast/adjustment, and theme-normalization failures;
+- recipe family/field/inheritance/collision and scope-marker failures; and
+- style plan/preview/diff/ejection/CSP/asset/budget failures.
 
 Diagnostics identify the high-level intent and the lowered primitive that failed, include a
 concrete advanced spelling or override when useful, and remain redacted under 0.56. Exceptions from
@@ -485,7 +682,7 @@ into facade-specific success states.
 
 | Package/module | 0.58 responsibility |
 |---|---|
-| `hedron-core` | Portable explanation schema derived from existing bundle/catalog facts; no FastAPI imports or second registry |
+| `hedron-core` | Portable feature/design schemas, `DesignSystem`, recipes, `StyleScope`, brand compiler; no FastAPI imports or second registry/cascade |
 | `hedron.app` | `screen`, `ScreenHandle`, `form_command`, page/form lowering |
 | `hedron.features` | Read-only explanation, stable named-surface/source-map helpers, ejection parity |
 | `hedron.jobs` | `TaskFlow`, task tickets, scoped status/cancel/result composition |
@@ -493,7 +690,7 @@ into facade-specific success states.
 | `hedron.auth` | `SessionAuthFlow` over existing session/security contracts |
 | `hedron.files` | `UploadFlow` over existing upload/download/security contracts |
 | `hedron-data` | `DataWorkspace.with_screen`, complete workspace composition and overrides |
-| CLI / Explorer | Explain, graph, check, preview, and eject the same catalog facts |
+| CLI / Explorer | Explain, graph, check, preview, diff, and eject the same feature/design plans |
 | adapters/conformance/sim | Explicit capability disposition and portable evidence only |
 
 No new distribution is authorized by this phase.
@@ -502,8 +699,8 @@ No new distribution is authorized by this phase.
 
 | Workstream | Deliverable | Depends on |
 |---|---|---|
-| W0 | Stage 0 contract, inventories, diagnostic families, host dispositions | Published/Verified 0.57 |
-| W1 | Shared explanation/named-surface/source-map projection | W0; 0.45/0.46 catalog/bundles |
+| W0 | Unified contracts, inventories, schemas, precedence, diagnostics, budgets | Published/Verified 0.57 |
+| W1 | Shared explanation/named-surface/design-plan/provenance/source-map substrate | W0; existing catalogs/build manifests |
 | W2 | `screen`, `ScreenHandle`, shell/navigation composition | W0; 0.54/0.57 presentation |
 | W3 | `form_command` and effect-conflict rules | W0; 0.43/0.44 handles/types |
 | W4 | `DataWorkspace.with_screen` and CRUD scaffold | W1–W3 |
@@ -511,14 +708,20 @@ No new distribution is authorized by this phase.
 | W6 | `DashboardWorkspace`, filters/load/panels/history | W1–W3; interaction graph |
 | W7 | `SessionAuthFlow` | W1–W3; 0.56 security |
 | W8 | `UploadFlow` | W1, W3, W5; 0.55/0.56 uploads |
-| W9 | CLI/Explorer explain, preview, per-surface override/ejection | W1–W8 |
-| W10 | Four scaffolds, all starter-example migrations, learning path, migration recipes | W2–W9 |
-| W11 | Adapter/conformance/sim dispositions and scenarios | W2–W10 |
-| W12 | Security, a11y, browser, performance, regression, packaging evidence | all |
+| W9 | `DesignSystem`, brand compiler, typed groups, `Theme` bridge | W0; 0.57 styling authorities |
+| W10 | Semantic recipes, generated-feature roles, `StyleScope`, precedence | W9; stable component props |
+| W11 | Unified CLI/Explorer explain, preview, diff, check, and eject | W1, W9–W10 |
+| W12 | Feature↔styling plan, precedence, role, and ejection integration | W2–W11 |
+| W13 | Four scaffolds, both starter inventories, one learning path | W11–W12 |
+| W14 | Adapter/package/conformance/sim dispositions and scenarios | W2–W13 |
+| W15 | Security/CSP, a11y, visual/browser, and performance evidence | all implementation work |
+| W16 | Explicit API regression and unified 0.57 upgrade evidence | W2–W15 |
+| W17 | Packaging, documentation truth, and release rehearsal | W16 |
 
-W2 and W3 are the minimum coherent vertical slice. W4–W8 may develop in parallel only after W1
-contracts are frozen. A facade that cannot satisfy its security, native fallback, explanation, and
-ejection requirements moves to a named later phase rather than weakening the common contract.
+W2/W3 are the minimum feature slice and W9 is the minimum styling slice. W4–W8 may develop in
+parallel after W1; W12 is mandatory before a generated feature claims styling support. A facade
+that cannot satisfy its security, native fallback, explanation, styling integration, and ejection
+requirements moves through an explicit decision revision rather than weakening the common contract.
 
 ## Gate plan
 
@@ -532,17 +735,22 @@ ejection requirements moves to a named later phase rather than weakening the com
 | `TASK-058` | Scoped durable submit/status/cancel/result UI, terminal polling, backend failures, and no enumeration |
 | `DASH-058` | Typed URL filters, loader/panel separation, bounded refresh/history, chart/table neutrality, stale/error behavior |
 | `FLOW-058` | Session auth and upload flows preserve explicit trust/storage/authorization ownership and native fallback |
-| `EXPLAIN-058` | Static redacted explain/graph/check plus safe source-mapped per-surface/feature ejection and parity |
-| `A11Y-058` | Keyboard, screen reader semantics, focus/error/status announcements, no-JS, zoom, motion/color, and 0.57 presentation adoption |
-| `SECURITY-058` | CSRF, auth/tenant scope, redirects, sensitive URL rejection, uploads, ejection paths, and exposure separation adversarial evidence |
+| `BRAND-058` | Deterministic coordinated light/dark brand output, locked contrast, and disclosed adjustment |
+| `THEME-058` | Typed groups, `Theme` round trip, constructor normalization, build parity, and no second registry |
+| `RECIPE-058` | Five families, ten feature roles, clone-before-render, exact precedence, and behavior neutrality |
+| `SCOPE-058` | Explicit theme/mode/density boundaries and exact marker/output parity |
+| `EXPLAIN-058` | Static redacted feature/design explain/graph/preview/diff/check plus safe unified ejection/source-map parity |
+| `VISUAL-058` | Fixed gallery across three engines, modes, viewports, direction, zoom, content, and reviewed deltas |
+| `A11Y-058` | Semantics, contrast, keyboard, announcements, no-JS, zoom, motion/color, and generated-design evidence |
+| `SECURITY-058` | Feature trust boundaries plus styling input/CSP/asset/tooling/ejection/exposure adversarial evidence |
 | `ADAPTER-058` | FastAPI Supported claims plus explicit Flask/Django/conformance/sim dispositions with no false parity |
-| `REGRESS-058` | Existing page/command/workspace/job/auth/upload APIs and 0.43–0.57 fixtures remain compatible |
-| `DX-058` | Four runnable scaffolds; every inventoried starter example uses the highest applicable 0.58 abstraction; labeled explicit equivalents and measured learning/ejection outcomes |
+| `REGRESS-058` | Existing feature and styling APIs plus 0.43–0.57 fixtures remain compatible |
+| `DX-058` | Four runnable scaffolds; every inventoried starter uses the highest applicable feature and styling abstractions; labeled explicit equivalents and measured learning/ejection outcomes |
 | `PKG-058` | Wheels, optional-dependency isolation, docs, exports, inventories, upgrade fixtures, metadata, and release rehearsal |
 
-Stage 0 creates machine-readable inventories for public symbols/surfaces, lowering/host
-dispositions, explanation/ejection formats, facade security requirements, scaffolds, and upgrade
-fixtures. D-101 does not claim those locks exist yet.
+The D-102/D-105 packet provides the machine-readable symbol/surface/recipe inventories,
+lowering/precedence/host dispositions, feature/design schemas, security requirements, scaffolds,
+starter migrations, budgets, tracking, unified upgrade fixtures, and exact twenty-gate commands.
 
 ## Security implications
 
@@ -561,6 +769,11 @@ includes:
   cleanup, and unauthorized download;
 - ejection outside the project, overwrite without opt-in, generated secret material, or generated
   code that widens policy;
+- CSS/selector/URL breakout through brand/recipe/scope names or values;
+- implicit remote fonts/images, network during compile/tooling, inline-style requirements, private
+  selectors/markup, source-map path disclosure, or runtime data capture;
+- styling that changes routes, effects, authorization, destructive meaning, DOM/reading order,
+  accessible names, authoritative values, interaction, or state; and
 - MCP/Gradio/browser exposure inferred from feature inclusion.
 
 Security controls reuse 0.55/0.56 policy, provenance, budgets, signed-intent, egress, redirect,
@@ -580,6 +793,10 @@ All facades inherit 0.19 accessibility and 0.57 presentation contracts. Release 
   poll noisily;
 - generic auth failure, login focus, logout, session timeout, and native redirect behavior;
 - upload selection/progress/error/result semantics and keyboard operation;
+- every generated light/dark pair meets the locked contrast/focus targets or emits a recorded
+  deterministic adjustment/failure; state is never communicated by color or motion alone;
+- recipe/scope/design changes preserve DOM order, accessible names, focus, semantics, forced-color
+  behavior, and static equivalents; and
 - native HTTP paths, failed-upgrade behavior, 200% zoom, narrow viewports, reduced motion, forced
   colors, RTL, long content, and fragment replacement.
 
@@ -588,9 +805,9 @@ terms only when they solve the current problem.
 
 ## Performance implications
 
-Facades add registration-time compilation and read-only metadata, not an application request
-runtime. Equivalent explicit and facade-generated paths have the same rendering/interaction
-authorities. Stage 0 sets representative budgets for:
+Facades add registration-time compilation and read-only metadata, not an application request or
+styling runtime. Equivalent explicit and facade-generated paths have the same rendering,
+interaction, CSS-build, and asset authorities. Stage 0 sets representative budgets for:
 
 - import and registration overhead with no optional features installed;
 - descriptor/explanation size and static inspection time;
@@ -598,7 +815,10 @@ authorities. Stage 0 sets representative budgets for:
 - dashboard load and bounded fan-out;
 - polling amplification and terminal shutdown;
 - ejection time/output size;
-- generated versus explicit render/response parity.
+- brand compilation, design plan/diff/static-preview time and output size;
+- design/recipe/scope count and inheritance limits, CSS/build ratios, and zero unused import/asset
+  delta; and
+- generated versus explicit render/response/markup/CSS parity.
 
 Optional packages remain lazy. Explanation may be cached from sealed descriptors but must
 invalidate under the existing catalog/registry lifecycle. No facade may perform data I/O during
@@ -648,6 +868,11 @@ storage, scanning, retention, and destructive intent remain visible inputs.
 - `Hedron`, `@app.page`, `@app.refreshable`, `@app.command`, `FormBody`, explicit forms, regions,
   interactions, `DataWorkspace`, jobs, auth helpers, and uploads keep their behavior.
 - No existing application is auto-rewritten or auto-opted into a facade.
+- Existing `Theme`, built-in theme, `Theme.extend`, `compile_palette`, registration, appearance
+  props, markers, `StyleSymbols`, component styles, style contracts, compiler/cascade/assets/CSP,
+  theme checks, and zero-application-CSS behavior remain accepted and authoritative.
+- No application is auto-opted into `DesignSystem`, a recipe, or `StyleScope`; a no-choice
+  `DesignSystem.from_theme(...).to_theme()` round trip has no semantic or emitted-CSS drift.
 - Existing `DataWorkspace` overrides remain accepted; any typed override API is additive.
 - Existing feature ejection remains accepted; 0.58 may add source maps, surface selection, and
   parity verification without changing the no-overwrite/project-root safety contract.
@@ -695,24 +920,50 @@ storage, scanning, retention, and destructive intent remain visible inputs.
 9. FastAPI owns Supported facade claims; Flask/Django use explicit native spelling or composition.
 10. `progressive-budgets-058.toml` locks reject-not-slice limits and benchmark targets.
 
+## Resolved questions (D-105)
+
+1. **Separate 0.59 styling phase?** No. D-103/D-104 and RFC-0086 are superseded; all styling scope,
+   artifacts, workstreams, starter adoption, and gates are integrated into 0.58.
+2. **Styling authority?** Existing `Theme`, props/markers, style contracts, CSS compiler/cascade,
+   assets, and CSP; never a second registry, cascade, compiler, or runtime injector.
+3. **Beginner custom look?** `DesignSystem.brand` with one 3/6-digit hex accent and finite typed
+   groups; coordinated light/dark output uses `hedron.brand-palette/1` and records adjustments.
+4. **App seam?** `Hedron(theme: str | Theme | DesignSystem | None)` normalizes to the existing
+   registered theme name before lifespan composition.
+5. **Recipe application?** Five finite families and ten built-in feature roles; clone before render,
+   fill eligible `None` defaults only, explicit values and named-surface overrides win.
+6. **Local defaults?** `StyleScope` only for explicit theme/color-mode/density boundaries. Scope
+   recipe defaults and field/layout recipe families remain deferred.
+7. **Inspection schemas?** `hedron.design-system-plan/1`, diff/preview/source-map `/1`, linked to
+   feature explanations by stable logical IDs and common provenance.
+8. **Unified ejection?** Feature ejection selects recipe-preserving or fully resolved output; style
+   ejection targets a whole design/group/recipe/component with shared safety and parity rules.
+9. **Starter policy?** Every starter example uses the highest applicable 0.58 feature and styling
+   abstractions. Advanced primitives appear afterward and are clearly labeled.
+10. **Release structure?** One RFC, implementation plan, acceptance checklist, tracking file,
+    upgrade corpus, and twenty-gate release file; no 0.59 predecessor audit or second cut.
+
 ## Acceptance criteria
 
 Phase 0.58 may cut only when:
 
 - Published and Verified in-tree `v0.57.0` is the frozen upgrade source;
-- a Stage 0 refine decision resolves every open question and locks finite inventories;
-- every facade lowers to existing public authorities with catalog/descriptor/explanation parity;
+- D-102/D-105 resolve every open question and lock the unified finite inventories;
+- every feature and styling facade lowers to existing public authorities with catalog/descriptor/
+  plan/build/explanation parity;
 - all generated surfaces are named, inspectable, replaceable, testable, and safely ejectable;
 - authorization, persistence, transactions, tenancy, durable workers, storage, scanning,
   destructive meaning, and external exposure remain explicit;
-- native HTTP, HTMX, failed-upgrade, accessibility, strict-CSP, security, adapter-disposition,
-  performance, and upgrade evidence pass;
+- coordinated light/dark compilation, recipe/feature-role precedence, explicit scopes, and combined
+  ejection preserve behavior, accessibility, security, and build authority;
+- native HTTP, HTMX, failed-upgrade, visual, accessibility, strict-CSP, security,
+  adapter-disposition, performance, and upgrade evidence pass;
 - `minimal`, `crud`, `dashboard`, and `task` scaffolds are runnable from clean wheels and teach the
   intended authoring ladder;
-- every inventoried starter/beginner/quick-start/golden-path/minimal/first-app documentation example
-  uses the highest applicable 0.58 abstraction, with lower-level spellings confined to clearly
-  labeled advanced/explicit/under-the-hood material;
+- every inventoried starter/beginner/quick-start/golden-path/minimal/first-app/theming/scaffold
+  example uses the highest applicable 0.58 feature and styling abstractions, with lower-level
+  spellings confined to clearly labeled advanced/explicit/under-the-hood material;
 - existing explicit APIs and 0.43–0.57 fixtures remain compatible;
-- all `*-058` release gates are Verified with zero Deferred; and
+- all twenty `*-058` release gates are Verified with zero Deferred; and
 - package/version/release metadata truthfully identifies new APIs as Beta and does not schedule
   1.0.
