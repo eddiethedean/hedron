@@ -14,7 +14,7 @@ from hedron_core.builtins.appearance import (
     responsive_data,
 )
 from hedron_core.component import Component, NodeLike
-from hedron_core.diagnostics import error
+from hedron_core.diagnostics import error as raise_error
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrValue
@@ -29,7 +29,7 @@ COLLAPSE_BREAKPOINTS: tuple[str, ...] = ("never", "sm", "md", "lg")
 
 def _validated_gap(gap: str) -> str:
     if not _GAP_RE.match(gap):
-        raise error(
+        raise raise_error(
             "HED-HTML-0006",
             title="Invalid layout gap",
             explanation=f"Gap {gap!r} is not a safe length token.",
@@ -143,7 +143,7 @@ class Grid(Component[GridProps]):
         **kwargs: Any,
     ) -> None:
         if columns < 1:
-            raise error(
+            raise raise_error(
                 "HED-HTML-0006",
                 title="Invalid grid columns",
                 explanation="columns must be >= 1.",
@@ -445,7 +445,7 @@ class MasterDetail(Component[MasterDetailProps]):
         require_choice(ratio, SPLIT_RATIOS, label="ratio")
         require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
         if state not in {"ready", "loading", "empty", "error", "permission"}:
-            raise error(
+            raise raise_error(
                 "HED-HTML-0006",
                 title="Invalid MasterDetail state",
                 explanation=f"State {state!r} is not supported.",
@@ -479,13 +479,14 @@ class MasterDetail(Component[MasterDetailProps]):
 
     def render(self) -> NodeLike:
         state = self.props.state
-        if state == "loading" and self._loading is not None:
-            detail_body: NodeLike = self._loading
-        elif state == "error" and self._error is not None:
-            detail_body = self._error
-        elif state == "permission" and self._permission is not None:
-            detail_body = self._permission
-        elif state in {"empty", "ready"} and self._detail is None or state == "empty":
+        if state == "loading":
+            detail_body: NodeLike = self._loading or html.p("Loading…")
+        elif state == "error":
+            detail_body = self._error or html.p("Unable to load detail")
+        elif state == "permission":
+            # Never fall through to detail — denied records must not leak content.
+            detail_body = self._permission or html.p("Not permitted")
+        elif state == "empty" or self._detail is None:
             detail_body = self._empty or html.p(self.props.empty_message)
         else:
             detail_body = self._detail

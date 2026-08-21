@@ -373,6 +373,23 @@ COMPONENTS = (
         "Do not pass arbitrary CSS grid templates; use the closed ratio set.",
     ),
     ComponentDoc(
+        "MasterDetail",
+        "layout",
+        "Responsive master-detail layout with named fragment regions.",
+        "MasterDetail(master, detail=None, *, ratio='1:2', collapse='md', master_id='master', detail_id='detail', state='ready', empty_message='Select an item')",
+        "MasterDetail(Text('Items'), Text('Detail'), master_id='master', detail_id='detail')",
+        (
+            p("master / detail", "NodeLike", "List pane and detail pane content."),
+            p("state", "str", "`ready` / `loading` / `empty` / `error` / `permission`."),
+            p("master_id / detail_id", "str", "Named fragment region ids for HTMX swaps."),
+            p("ratio", "str", "Closed split ratio such as `1:2` or `1:1`."),
+            p("collapse", "str", "Breakpoint where panes stack (`never` / `sm` / `md` / `lg`)."),
+        ),
+        "MasterDetail composes list/detail workspaces with theme-owned ratios and region ids for fragment updates.",
+        "Use permission/empty/error states so denied or missing selections never leak detail content.",
+        "Do not invent CSS escapes for pane sizing; stay on the closed ratio vocabulary.",
+    ),
+    ComponentDoc(
         "FormGrid",
         "layout",
         "Responsive field grid for forms and settings panels.",
@@ -2573,6 +2590,8 @@ def static_demo(spec: ComponentDoc) -> str:
         return '<header class="hdc-type"><span class="hdc-eyebrow">Operate</span><h2>Pipelines</h2><p class="hdc-muted">Source to destination jobs.</p><div class="hdc-inline"><button class="hdc-button hdc-primary" type="button">New</button></div></header>'
     if name == "SplitView":
         return '<div class="hdc-grid"><span><small>Source</small><strong>orders.csv</strong><em>Ready</em></span><span><small>Destination</small><strong>warehouse</strong><em>Connected</em></span></div>'
+    if name == "MasterDetail":
+        return '<div class="hdc-grid"><nav aria-label="Master list"><small>Items</small><strong>Alpha</strong><em>Selected</em></nav><section aria-label="Detail panel"><small>Detail</small><strong>Alpha</strong><em>Ready</em></section></div>'
     if name == "FormGrid":
         return '<div class="hdc-grid"><div class="hdc-form"><label for="demo-fg-name">Name</label><input id="demo-fg-name" type="text" value="Ada"></div><div class="hdc-form"><label for="demo-fg-email">Email</label><input id="demo-fg-email" type="email" value="ada@example.com"></div></div>'
     if name == "ActionGroup":

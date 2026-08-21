@@ -177,7 +177,7 @@ def _check_versions(*, allow_planned: bool) -> None:
         expected = PREDECESSOR
         if published != PREDECESSOR:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
-    elif published.startswith(("0.50.", "0.51.", "0.52.", "0.53.", "0.54.")):
+    elif published.startswith(("0.50.", "0.51.", "0.52.", "0.53.", "0.54.", "0.55.")):
         print(f"ok: 0.49 historical under living published {published}")
         return
     else:

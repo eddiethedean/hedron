@@ -436,6 +436,17 @@ HED_BUNDLE_0010 = "HED-BUNDLE-0010"  # third-party isolation / private API
 HED_SIM_ASSET_0001 = "HED-SIM-ASSET-0001"  # packaged sim asset name escapes static/
 HED_SIM_ASSET_0002 = "HED-SIM-ASSET-0002"  # packaged sim asset missing
 
+# Secure upgradeable workflows (0.55 RFC-0082 / D-095 / D-096)
+HED_CAP_0001 = "HED-CAP-0001"  # capability denied / missing provider fail-closed
+HED_REPLAY_0001 = "HED-REPLAY-0001"  # idempotency key required
+HED_REPLAY_0002 = "HED-REPLAY-0002"  # idempotency key conflict (fingerprint mismatch)
+HED_REPLAY_0003 = "HED-REPLAY-0003"  # idempotency key in flight / concurrent claim
+HED_REPLAY_0004 = "HED-REPLAY-0004"  # replay store explicitly misconfigured
+HED_UPGRADE_0001 = "HED-UPGRADE-0001"  # unsupported upgrade from_version
+HED_UPGRADE_0002 = "HED-UPGRADE-0002"  # stale/incompatible upgrade baseline schema
+HED_UPGRADE_1001 = "HED-UPGRADE-1001"  # heuristic: legacy workflow migration status
+HED_UPGRADE_1002 = "HED-UPGRADE-1002"  # heuristic: opt-in 0.55 workflow APIs
+
 
 def registered_codes() -> frozenset[str]:
     """Return every ``HED-*`` code constant defined in this module."""

@@ -127,6 +127,11 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 | `Table`, `Tabs`, `Text`, `TextArea`, `Theme`, `TimeInput` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Timeline`, `Title`, `ToggleSwitch`, `Tooltip` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `PageHeader`, `SplitView`, `MasterDetail`, `FormGrid`, `ActionGroup` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [WORKFLOW.md](WORKFLOW.md), [Components](../components/index.md) |
+| `Capability` / `CapabilityProvider` / `enforce_capability` | [WORKFLOW.md](WORKFLOW.md) |
+| `IdempotencyPolicy` / `MemoryReplayStore` | [WORKFLOW.md](WORKFLOW.md) |
+| `UploadField` / `UploadHandle` / `materialize_upload` | [WORKFLOW.md](WORKFLOW.md) |
+| `NonceContext` / `compose_csp` / `ingest_csp_report` | [WORKFLOW.md](WORKFLOW.md) |
+| `WorkflowManifest` / `hedron upgrade-report` | [WORKFLOW.md](WORKFLOW.md), [CLI.md](CLI.md) |
 | `SkipLink`, `RequestIndicator`, `ProcessFlow`, `FlowStep` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
 | `Icon`, `Typography`, `StateView`, `TableColumn` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
 

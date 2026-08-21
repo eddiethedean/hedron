@@ -185,7 +185,7 @@ heuristic warnings.
 
 ```bash
 hedron upgrade-report --from 0.54.0 --to 0.55.0
-hedron upgrade-report --from 0.54.0 --to 0.55.0 --baseline ./baseline.json --out report.json
+hedron upgrade-report --from 0.54.0 --to 0.55.0 --manifest ./manifest.json --out report.json
 ```
 
 | Flag | Description |
@@ -193,6 +193,7 @@ hedron upgrade-report --from 0.54.0 --to 0.55.0 --baseline ./baseline.json --out
 | `--from` | Current train tip |
 | `--to` | Target train tip |
 | `--baseline` | Reviewed baseline JSON (fail closed on schema mismatch) |
+| `--manifest` | Optional `WorkflowManifest` JSON for heuristic findings |
 | `--out` | Write JSON to a file instead of stdout |
 | `--allow-definite` | Exit `0` even when definite breaks are present |
 

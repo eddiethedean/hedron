@@ -48,7 +48,7 @@ Semantic regions that give a page its accessible structure. `Header`, `Main`, `N
 
 Explicit containers and one-dimensional or grid composition.
 
-[`Container`](container.md) · [`PageHeader`](page-header.md) · [`SplitView`](split-view.md) · [`FormGrid`](form-grid.md) · [`ActionGroup`](action-group.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`Divider`](divider.md) · [`MainPanel`](main-panel.md) · [`AppShell`](app-shell.md) · [`SkipLink`](skip-link.md) · [`ProcessFlow`](process-flow.md) · [`FlowStep`](flow-step.md) · [`ActionDock`](action-dock.md) · [`BottomDock`](bottom-dock.md) · [`Spacer`](spacer.md)
+[`Container`](container.md) · [`PageHeader`](page-header.md) · [`SplitView`](split-view.md) · [`MasterDetail`](master-detail.md) · [`FormGrid`](form-grid.md) · [`ActionGroup`](action-group.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`Divider`](divider.md) · [`MainPanel`](main-panel.md) · [`AppShell`](app-shell.md) · [`SkipLink`](skip-link.md) · [`ProcessFlow`](process-flow.md) · [`FlowStep`](flow-step.md) · [`ActionDock`](action-dock.md) · [`BottomDock`](bottom-dock.md) · [`Spacer`](spacer.md)
 
 ## Content
 

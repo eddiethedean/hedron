@@ -314,6 +314,11 @@ def main(argv: list[str] | None = None) -> None:
         default=None,
         help="Reviewed baseline JSON path (fail closed on schema mismatch)",
     )
+    upgrade_p.add_argument(
+        "--manifest",
+        default=None,
+        help="Application WorkflowManifest JSON for definite/heuristic findings",
+    )
     upgrade_p.add_argument("--out", default=None, help="Write JSON report to a file")
     upgrade_p.add_argument(
         "--allow-definite",

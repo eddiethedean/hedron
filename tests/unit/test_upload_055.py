@@ -31,3 +31,20 @@ def test_issue_549_limits_and_cleanup() -> None:
             content=b"x" * 10,
             budget=UploadBudget(maximum_size=5),
         )
+
+
+def test_issue_549_content_type_allowlist_requires_type() -> None:
+    with pytest.raises(ValueError, match="content type is required"):
+        materialize_upload(
+            filename="a.txt",
+            content=b"x",
+            content_type=None,
+            budget=UploadBudget(allowed_content_types=("text/plain",)),
+        )
+    handle = materialize_upload(
+        filename="a.txt",
+        content=b"x",
+        content_type="text/plain",
+        budget=UploadBudget(allowed_content_types=("text/plain",)),
+    )
+    handle.cleanup()

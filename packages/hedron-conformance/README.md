@@ -14,7 +14,7 @@ reference — without matching incidental CPython formatting.
 
 Also available as the flagship extra `hedron[conformance]`.
 
-**Package maturity:** Beta · **Train:** `0.54.x` (in-tree tip `v0.54.0`) · pin `>=0.54.0,<0.55` (PyPI `>=0.54.0,<0.55`)
+**Package maturity:** Beta · **Train:** `0.55.x` (in-tree tip `v0.55.0`; PyPI `0.54.0` deferred) · pin `>=0.55.0,<0.56` in-tree (PyPI `>=0.54.0,<0.55` while deferred)
 
 Phase 0.52 authority contract:
 [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
@@ -26,14 +26,14 @@ Phase 0.53 Application DX Stage 1 lives in the flagship package — see
 ## Install
 
 ```bash
-pip install "hedron-conformance>=0.54.0,<0.55"
+pip install "hedron-conformance>=0.55.0,<0.56"
 # or
-uv add "hedron-conformance>=0.54.0,<0.55"
+uv add "hedron-conformance>=0.55.0,<0.56"
 # via flagship:
-pip install "hedron[conformance]>=0.54.0,<0.55"
+pip install "hedron[conformance]>=0.55.0,<0.56"
 ```
 
-Checkout tip `v0.54.0` uses `>=0.54.0,<0.55` until the Git tag / PyPI upload lands.
+Checkout tip `v0.55.0` uses `>=0.55.0,<0.56` in-tree; PyPI first-run stays `>=0.54.0,<0.55` until the Git tag / PyPI upload lands.
 
 Requires Python 3.11–3.14.
 

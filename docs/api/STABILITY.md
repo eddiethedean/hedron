@@ -281,6 +281,17 @@ the package does not embed Gradio's UI runtime.
 | `Page(scripts=[SafeUrl…])` allowlisted PE scripts | `hedron-core` | `beta` | `SCRIPT-019` |
 | Evidence inventory / statement / waiver governance | `hedron-core` (`hedron_core.a11y`) | `beta` | RFC-0055 / `GOVERN-019` |
 
+### Phase 0.55 workflow surfaces (`beta`)
+
+| Contract | Package | Level | Notes |
+|---|---|---|---|
+| `MasterDetail` | `hedron-core` | `beta` | LAYOUT-055 |
+| `Capability` / `CapabilityProvider` / `enforce_capability` | `hedron` | `beta` | CAP-055; FastAPI action enforcement |
+| `IdempotencyPolicy` / `MemoryReplayStore` | `hedron` | `beta` | REPLAY-055; FastAPI action enforcement |
+| `UploadField` / `UploadHandle` / `materialize_upload` | `hedron` | `beta` | UPLOAD-055; buffered |
+| `NonceContext` / `compose_csp` / `ingest_csp_report` | `hedron` | `beta` | CSP-055 helpers (opt-in) |
+| `WorkflowManifest` / `hedron upgrade-report` | `hedron` | `beta` | CONTRACT/UPGRADE-055 |
+
 ### `hedron-native` (Beta, versioned independently as `0.1.x`) — Supported optional accel
 
 Optional Rust HTML-escape acceleration with pure-Python fallback. Absence never changes public

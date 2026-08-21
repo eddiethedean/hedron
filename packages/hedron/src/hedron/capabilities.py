@@ -104,7 +104,12 @@ def resolve_capability_provider(request: Any) -> CapabilityProvider | None:
     return provider
 
 
-def evaluate_capability(request: Any, capability: str | Capability | None) -> CapabilityDecision:
+def evaluate_capability(
+    request: Any,
+    capability: str | Capability | None,
+    *,
+    require_provider: bool = False,
+) -> CapabilityDecision:
     if capability is None:
         return CapabilityDecision(
             capability="",
@@ -115,6 +120,14 @@ def evaluate_capability(request: Any, capability: str | Capability | None) -> Ca
     name = capability.name if isinstance(capability, Capability) else str(capability)
     provider = resolve_capability_provider(request)
     if provider is None:
+        if require_provider:
+            return CapabilityDecision(
+                capability=name,
+                allowed=False,
+                reason="denied",
+                presentation="hide",
+                explanation="Capability provider is not configured",
+            )
         return CapabilityDecision(
             capability=name,
             allowed=True,
@@ -125,8 +138,11 @@ def evaluate_capability(request: Any, capability: str | Capability | None) -> Ca
 
 
 def enforce_capability(request: Any, capability: str | Capability | None) -> CapabilityDecision:
-    """Server-side enforcement immediately before a protected side effect."""
-    decision = evaluate_capability(request, capability)
+    """Server-side enforcement immediately before a protected side effect.
+
+    Declaring ``capability=`` on an action fails closed when no provider is installed.
+    """
+    decision = evaluate_capability(request, capability, require_provider=True)
     if not decision.allowed:
         from hedron_core.diagnostics import error
 
@@ -137,3 +153,17 @@ def enforce_capability(request: Any, capability: str | Capability | None) -> Cap
             remediation="Obtain authorization or remove the action.",
         )
     return decision
+
+
+__all__ = [
+    "AllowAllCapabilities",
+    "Capability",
+    "CapabilityDecision",
+    "CapabilityProvider",
+    "DenyAllCapabilities",
+    "MappingCapabilityProvider",
+    "ReasonCode",
+    "enforce_capability",
+    "evaluate_capability",
+    "resolve_capability_provider",
+]

@@ -1,5 +1,5 @@
 # Phase 0.55 secure upgradeable workflows release evidence index.
-# Verified in-tree cut (D-095 / D-096). Living tip remains v0.54.0.
+# Verified in-tree cut (D-095 / D-096). Living tip v0.55.0; PyPI remains v0.54.0 (deferred).
 
 schema_version = 1
 phase = "0.55"

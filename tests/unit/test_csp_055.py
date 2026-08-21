@@ -10,12 +10,13 @@ from hedron.csp import CspReporting, compose_csp, ingest_csp_report, new_nonce
 def test_issue_545_nonce_and_bounded_redacted_reports() -> None:
     nonce = new_nonce()
     enforcing, report_only = compose_csp(
-        "default-src 'self'",
+        "default-src 'self'; script-src 'self'",
         nonce=nonce.value,
         reporting=CspReporting(mode="enforcing", report_path="/hedron/csp-report"),
     )
     assert enforcing is not None
     assert f"nonce-{nonce.value}" in enforcing
+    assert enforcing.count("script-src") == 1
     assert report_only is None
 
     body = json.dumps(
@@ -24,6 +25,7 @@ def test_issue_545_nonce_and_bounded_redacted_reports() -> None:
                 "effective-directive": "script-src",
                 "document-uri": "https://example/secret",
                 "blocked-uri": "https://evil/x",
+                "status-code": "200",
             }
         }
     ).encode()
@@ -34,5 +36,18 @@ def test_issue_545_nonce_and_bounded_redacted_reports() -> None:
     )
     assert parsed is not None
     assert parsed["redacted"] is True
+    assert parsed["status_code"] == 200
     assert "document-uri" not in parsed
     assert ingest_csp_report(b"x" * 20_000, content_type="application/json") is None
+
+
+def test_issue_545_sample_rate_can_drop() -> None:
+    body = b'{"csp-report": {"effective-directive": "script-src"}}'
+    assert (
+        ingest_csp_report(
+            body,
+            content_type="application/csp-report",
+            reporting=CspReporting(sample_rate=0.0),
+        )
+        is None
+    )

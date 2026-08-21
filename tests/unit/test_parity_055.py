@@ -11,10 +11,13 @@ def test_parity_055_adapter_matrix() -> None:
         Path("docs/acceptance/workflow-parity-055.toml").read_text(encoding="utf-8")
     )
     adapters = {row["name"]: row for row in data["adapter"]}
-    assert adapters["fastapi"]["upload_streaming"] == "supported"
-    assert adapters["flask"]["upload_streaming"] == "degraded"
-    assert adapters["django"]["upload_streaming"] == "degraded"
+    assert adapters["fastapi"]["upload_streaming"] == "degraded"
+    assert adapters["fastapi"]["capabilities"] == "supported"
+    assert adapters["fastapi"]["replay"] == "supported"
+    assert adapters["flask"]["capabilities"] == "unsupported"
+    assert adapters["flask"]["replay"] == "unsupported"
+    assert adapters["django"]["capabilities"] == "unsupported"
+    assert adapters["django"]["replay"] == "unsupported"
     for name in ("fastapi", "flask", "django"):
         assert adapters[name]["layout"] == "supported"
-        assert adapters[name]["capabilities"] == "supported"
-        assert adapters[name]["replay"] == "supported"
+        assert adapters[name]["upload_streaming"] == "degraded"

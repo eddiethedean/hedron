@@ -6,8 +6,9 @@
 - Coordinated train tip `0.55.0` (in-tree cut; tag/PyPI deferred).
 
 ### Added
-- Secure upgradeable workflow primitives (master-detail, capabilities, replay,
-  uploads, CSP reporting, offline upgrade-report) under RFC-0082 / D-095 / D-096.
+- `MasterDetail` responsive master-detail layout with named fragment regions
+  (LAYOUT-055 / RFC-0082). FastAPI-owned capability, replay, upload, CSP, and
+  upgrade-report helpers live in the `hedron` package.
 
 ## [0.54.0] — 2026-08-20
 

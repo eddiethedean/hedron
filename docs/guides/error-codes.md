@@ -47,6 +47,13 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | `HED-EXPLORER-0001` | warning | Explorer table truncated | Use `cursor` / `limit` query params; HTML banners include Next/Previous |
 | `HED-EXPLORER-0002` | warning | Explorer provider timed out or crashed | Fix the panel callback; other `/packages` panels keep rendering |
 | `HED-EXPLORER-0003` | warning | Explorer provider payload too large | Reduce panel output under `max_payload_bytes` |
+| `HED-CAP-0001` | blocker | Capability denied / missing provider | Install a `CapabilityProvider` or remove `capability=` |
+| `HED-REPLAY-0001` | blocker | Idempotency key required | Send `Idempotency-Key` header or form field |
+| `HED-REPLAY-0002` | blocker | Idempotency key conflict | Use a new key for a distinct mutation |
+| `HED-REPLAY-0003` | warning | Idempotency key in flight | Retry after the first request completes |
+| `HED-REPLAY-0004` | blocker | Replay store misconfigured | Install a `ReplayStore` or omit `hedron_replay_store=None` |
+| `HED-UPGRADE-0001` | blocker | Unsupported upgrade from_version | Use a supported `0.x` from version |
+| `HED-UPGRADE-0002` | blocker | Stale upgrade baseline schema | Refresh the reviewed baseline |
 | CSRF **403** on POST | blocker | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | `HED-VIEW-0003` | blocker | Unbound parameterized handle mounted | Call `handle.bind(...)` before mount |
 | `HED-UPDATE-0001` | blocker | Mixed refresh and patch | Return `refresh(...)` or `patches(...)`, not both |
@@ -448,6 +455,30 @@ Phase 0.47 assigns the following families:
 | `HED-EXPLORER-0001` | `HED_EXPLORER_0001` |
 | `HED-EXPLORER-0002` | `HED_EXPLORER_0002` |
 | `HED-EXPLORER-0003` | `HED_EXPLORER_0003` |
+
+## HED-CAP
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-CAP-0001` | `HED_CAP_0001` |
+
+## HED-REPLAY
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-REPLAY-0001` | `HED_REPLAY_0001` |
+| `HED-REPLAY-0002` | `HED_REPLAY_0002` |
+| `HED-REPLAY-0003` | `HED_REPLAY_0003` |
+| `HED-REPLAY-0004` | `HED_REPLAY_0004` |
+
+## HED-UPGRADE
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-UPGRADE-0001` | `HED_UPGRADE_0001` |
+| `HED-UPGRADE-0002` | `HED_UPGRADE_0002` |
+| `HED-UPGRADE-1001` | `HED_UPGRADE_1001` |
+| `HED-UPGRADE-1002` | `HED_UPGRADE_1002` |
 
 ## HED-PREPARE
 

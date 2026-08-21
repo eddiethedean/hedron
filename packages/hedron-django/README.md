@@ -16,7 +16,7 @@ Also ships a first-party bounded QuerySet `DataSource` and Django forms bridge �
 supply an already-authorized base QuerySet; omitted sort/filter allowlists deny
 client refinements.
 
-**Package maturity:** Beta · **Train:** `0.54.x` (in-tree tip `v0.54.0`) · pin `>=0.54.0,<0.55` (PyPI `>=0.54.0,<0.55`)
+**Package maturity:** Beta · **Train:** `0.55.x` (in-tree tip `v0.55.0`; PyPI `0.54.0` deferred) · pin `>=0.55.0,<0.56` in-tree (PyPI `>=0.54.0,<0.55` while deferred)
 
 Adapter capability readiness is **Supported** when pinned — see
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
@@ -24,9 +24,9 @@ Adapter capability readiness is **Supported** when pinned — see
 ## Install
 
 ```bash
-pip install "hedron-django>=0.54.0,<0.55"
+pip install "hedron-django>=0.55.0,<0.56"
 # or
-uv add "hedron-django>=0.54.0,<0.55"
+uv add "hedron-django>=0.55.0,<0.56"
 ```
 
 Requires Python 3.11–3.14, `hedron-core`, and Django `>=5.2,<6`.

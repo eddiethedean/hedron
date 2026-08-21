@@ -118,19 +118,22 @@ def _wrap_endpoint(
         replay_store = None
         replay_key = None
         replay_fp = None
+        replay_scope_key = None
         if idempotency and idempotency != "off":
             from starlette.responses import Response as StarletteResponse
 
             from hedron.replay import (
                 IdempotencyPolicy,
                 ReplayState,
+                digest_bytes,
                 extract_idempotency_key,
                 fingerprint_request,
+                replay_scope,
                 resolve_replay_store,
             )
 
             replay_policy = IdempotencyPolicy(mode=idempotency)  # type: ignore[arg-type]
-            replay_key = extract_idempotency_key(request, replay_policy)
+            replay_key = await extract_idempotency_key(request, replay_policy)
             if replay_policy.mode == "required" and not replay_key:
                 from hedron_core.diagnostics import error
 
@@ -145,19 +148,42 @@ def _wrap_endpoint(
                     getattr(getattr(request, "user", None), "identity", "") or "anonymous"
                 )
                 tenant = str(getattr(request.state, "hedron_tenant", "") or "")
+                session = str(
+                    getattr(request.state, "session_id", None)
+                    or request.cookies.get("session")
+                    or request.cookies.get("hedron_session")
+                    or ""
+                )
+                body_digest = ""
+                try:
+                    raw_body = await request.body()
+                    body_digest = digest_bytes(raw_body or b"")
+                except (RuntimeError, OSError, ValueError, TypeError):
+                    body_digest = f"len:{request.headers.get('content-length', '')}"
                 replay_fp = fingerprint_request(
                     action_id=getattr(fn, "__name__", "action"),
                     subject=subject,
                     tenant=tenant,
-                    inputs={"path": str(request.url.path), "method": request.method},
+                    inputs={
+                        "path": str(request.url.path),
+                        "method": request.method,
+                        "query": str(request.url.query),
+                        "content_type": str(request.headers.get("content-type") or ""),
+                        "body_sha256": body_digest,
+                    },
                     policy_version=replay_policy.policy_version,
                 )
                 replay_store = resolve_replay_store(request)
-                scope = f"{tenant}:{subject}:{getattr(fn, '__name__', 'action')}"
+                replay_scope_key = replay_scope(
+                    tenant=tenant,
+                    subject=subject,
+                    action_id=getattr(fn, "__name__", "action"),
+                    session=session,
+                )
                 replay_claim = replay_store.claim(
                     key=replay_key,
                     fingerprint=replay_fp,
-                    scope=scope,
+                    scope=replay_scope_key,
                     retention_seconds=replay_policy.retention_seconds,
                 )
                 if replay_claim.state == ReplayState.CONFLICT:
@@ -169,49 +195,79 @@ def _wrap_endpoint(
                         explanation="The key was reused with a different request fingerprint.",
                         remediation="Use a new key for distinct mutations.",
                     )
+                if replay_claim.state == ReplayState.IN_FLIGHT:
+                    from hedron_core.diagnostics import error
+
+                    raise error(
+                        "HED-REPLAY-0003",
+                        title="Idempotency key in flight",
+                        explanation="A concurrent request already claimed this key.",
+                        remediation="Retry after the first request completes.",
+                    )
                 if replay_claim.state == ReplayState.REPLAYED:
                     return StarletteResponse(
                         content=replay_claim.cached_body or b"",
                         status_code=int(replay_claim.cached_status or 200),
-                        media_type="text/html",
+                        media_type=replay_claim.cached_media_type or "text/html",
                         headers={"Hedron-Replay": "true"},
                     )
-        result = fn(*args, **kwargs)
-        result = await await_if_needed(result)
-        response = await HedronRoute.convert_endpoint_result(
-            request,
-            result,  # type: ignore[arg-type]
-            mode=mode,
-            kind=kind,
-            fragment_regions=fragment_regions,
-            allow_undeclared_targets=allow_undeclared_targets,
-        )
+        try:
+            result = fn(*args, **kwargs)
+            result = await await_if_needed(result)
+            response = await HedronRoute.convert_endpoint_result(
+                request,
+                result,  # type: ignore[arg-type]
+                mode=mode,
+                kind=kind,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
+        except Exception:
+            if (
+                replay_claim is not None
+                and replay_store is not None
+                and replay_key is not None
+                and replay_fp is not None
+                and replay_scope_key is not None
+            ):
+                from hedron.replay import ReplayState
+
+                if replay_claim.state == ReplayState.FIRST:
+                    replay_store.abort(
+                        key=replay_key, scope=replay_scope_key, fingerprint=replay_fp
+                    )
+            raise
         if (
             replay_claim is not None
             and replay_store is not None
             and replay_key is not None
             and replay_fp is not None
-            and replay_policy is not None
+            and replay_scope_key is not None
         ):
             from hedron.replay import ReplayState
 
             if replay_claim.state == ReplayState.FIRST:
-                body = getattr(response, "body", b"") or b""
+                body = getattr(response, "body", None)
+                if body is None and hasattr(response, "render"):
+                    # Materialize Starlette Response body when not yet sent.
+                    try:
+                        body = response.render(getattr(response, "content", b""))
+                    except (AttributeError, TypeError, ValueError, RuntimeError):
+                        body = b""
+                if body is None:
+                    body = b""
                 if isinstance(body, memoryview):
                     body = body.tobytes()
                 if isinstance(body, str):
                     body = body.encode("utf-8")
-                subject = str(
-                    getattr(getattr(request, "user", None), "identity", "") or "anonymous"
-                )
-                tenant = str(getattr(request.state, "hedron_tenant", "") or "")
-                scope = f"{tenant}:{subject}:{getattr(fn, '__name__', 'action')}"
+                media_type = getattr(response, "media_type", None) or "text/html"
                 replay_store.complete(
                     key=replay_key,
-                    scope=scope,
+                    scope=replay_scope_key,
                     fingerprint=replay_fp,
                     status=int(getattr(response, "status_code", 200) or 200),
                     body=bytes(body),
+                    media_type=str(media_type),
                 )
         return response
 

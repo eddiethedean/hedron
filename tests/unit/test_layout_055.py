@@ -25,3 +25,16 @@ def test_issue_544_master_detail_named_regions_and_states() -> None:
     empty = MasterDetail(Text("list"), state="empty", empty_message="Pick one")
     empty_html = render(empty, mode=RenderMode.FRAGMENT).html
     assert "Pick one" in empty_html
+
+
+def test_issue_544_permission_state_does_not_leak_detail() -> None:
+    md = MasterDetail(
+        Text("list"),
+        Text("SECRET"),
+        state="permission",
+        master_id="master",
+        detail_id="detail",
+    )
+    html = render(md, mode=RenderMode.FRAGMENT).html
+    assert "SECRET" not in html
+    assert "Not permitted" in html

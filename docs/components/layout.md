@@ -5,6 +5,7 @@ Explicit containers and one-dimensional or grid composition.
 - [`Container`](container.md) — Constrain and center a readable block of page content.
 - [`PageHeader`](page-header.md) — Eyebrow/title/description header with optional status and actions.
 - [`SplitView`](split-view.md) — Two-pane layout with closed ratio and responsive collapse.
+- [`MasterDetail`](master-detail.md) — Responsive master-detail layout with named fragment regions.
 - [`FormGrid`](form-grid.md) — Responsive field grid for forms and settings panels.
 - [`ActionGroup`](action-group.md) — Aligned cluster of actions for headers and footers.
 - [`Stack`](stack.md) — Arrange children vertically with a validated, consistent gap.

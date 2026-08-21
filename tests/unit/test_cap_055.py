@@ -38,3 +38,9 @@ def test_capability_metadata_redacted() -> None:
     redacted = decision.redacted()
     assert redacted["allowed"] is True
     assert "policy" not in redacted
+
+
+def test_issue_546_enforce_fails_closed_without_provider() -> None:
+    request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace()))
+    with pytest.raises(HedronError):
+        enforce_capability(request, "items.edit")

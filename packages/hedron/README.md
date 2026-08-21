@@ -112,15 +112,15 @@ Coming from Streamlit? Start with the
 
 ## Install
 
-Pin from **PyPI**: `hedron>=0.54.0,<0.55`.
+Pin from **PyPI**: `hedron>=0.55.0,<0.56`.
 
 ```bash
-uv add "hedron>=0.54.0,<0.55" "uvicorn[standard]"
+uv add "hedron>=0.55.0,<0.56" "uvicorn[standard]"
 # or
-python -m pip install "hedron>=0.54.0,<0.55" "uvicorn[standard]"
+python -m pip install "hedron>=0.55.0,<0.56" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Train:** `0.55.x` (in-tree tip `v0.55.0`; tag/PyPI deferred) · pin from PyPI `>=0.54.0,<0.55`
+**Package maturity:** Beta · **Train:** `0.55.x` (in-tree tip `v0.55.0`; tag/PyPI deferred) · pin from PyPI `>=0.55.0,<0.56`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the
@@ -151,13 +151,13 @@ interactions, security profiles, and CLI. Integrations are optional:
 For example:
 
 ```bash
-uv add "hedron[data,dev]>=0.54.0,<0.55"
+uv add "hedron[data,dev]>=0.55.0,<0.56"
 ```
 
 Charts require the fixed compatible floor:
 
 ```bash
-uv add "hedron[charts]>=0.54.0,<0.55"
+uv add "hedron[charts]>=0.55.0,<0.56"
 ```
 
 See the full

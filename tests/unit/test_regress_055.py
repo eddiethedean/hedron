@@ -24,3 +24,6 @@ def test_regress_055_cleanup_and_replay_no_orphans() -> None:
     fp = fingerprint_request(action_id="x", subject="s", tenant="", inputs={}, policy_version="1")
     claim = store.claim(key="k", fingerprint=fp, scope=":s:x", retention_seconds=1)
     assert claim.state is ReplayState.FIRST
+    store.abort(key="k", scope=":s:x", fingerprint=fp)
+    again = store.claim(key="k", fingerprint=fp, scope=":s:x", retention_seconds=1)
+    assert again.state is ReplayState.FIRST

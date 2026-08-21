@@ -54,8 +54,8 @@ class WorkflowManifest:
     layout_regions: tuple[str, ...] = ()
     capabilities: tuple[str, ...] = ()
     action_safety: dict[str, str] = field(default_factory=dict)
-    upload_requirements: dict[str, Any] = field(default_factory=dict)
-    security_headers: dict[str, Any] = field(default_factory=dict)
+    upload_requirements: dict[str, object] = field(default_factory=dict)
+    security_headers: dict[str, object] = field(default_factory=dict)
     migration_status: str = "legacy"
     budgets: WorkflowBudget = field(default_factory=WorkflowBudget)
     reason_codes: tuple[ReasonCode, ...] = REASON_CODES
@@ -195,3 +195,17 @@ upgrade_report_schema = {
         },
     },
 }
+
+__all__ = [
+    "REASON_CODES",
+    "SCHEMA_VERSION",
+    "UPGRADE_SCHEMA_VERSION",
+    "ReasonCode",
+    "UpgradeFinding",
+    "UpgradeReport",
+    "WorkflowBudget",
+    "WorkflowManifest",
+    "build_upgrade_report",
+    "load_baseline",
+    "upgrade_report_schema",
+]

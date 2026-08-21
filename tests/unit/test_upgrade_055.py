@@ -25,6 +25,11 @@ def test_issue_547_offline_upgrade_report_json() -> None:
 
 def test_upgrade_report_cli_writes_json(tmp_path: Path) -> None:
     out = tmp_path / "report.json"
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        json.dumps({"app_id": "demo", "migration_status": "legacy"}),
+        encoding="utf-8",
+    )
     ns = type(
         "NS",
         (),
@@ -32,6 +37,7 @@ def test_upgrade_report_cli_writes_json(tmp_path: Path) -> None:
             "from_version": "0.54.0",
             "to_version": "0.55.0",
             "baseline": None,
+            "manifest": str(manifest),
             "out": str(out),
             "allow_definite": True,
         },
@@ -41,3 +47,4 @@ def test_upgrade_report_cli_writes_json(tmp_path: Path) -> None:
     assert exc.value.code == 0
     payload = json.loads(out.read_text(encoding="utf-8"))
     assert payload["offline"] is True
+    assert any(f["code"] == "HED-UPGRADE-1001" for f in payload["findings"])

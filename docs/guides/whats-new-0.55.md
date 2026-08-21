@@ -18,7 +18,8 @@ Secure, upgradeable application workflows (RFC-0082 / D-095 / D-096;
 - Workflow manifest, reason codes, and budgets under `hedron.workflow`.
 - Reference app: `examples/workflow-055/`.
 
-All new APIs are opt-in `beta`. Existing apps stay on legacy behavior until they
-declare `workflow_055`.
+All new APIs are opt-in `beta` (action kwargs, providers, and helpers). Existing apps
+stay on legacy behavior until they opt in; `WorkflowManifest.migration_status` is for
+inspection/upgrade reports, not a silent runtime switch.
 
 See [Release notes](release-notes.md) and [Installation](../getting-started/installation.md).

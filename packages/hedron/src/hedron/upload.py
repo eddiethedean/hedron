@@ -85,15 +85,12 @@ def materialize_upload(
         ext = Path(safe).suffix.lower()
         if ext not in allowed:
             raise ValueError("Upload extension is not allowed")
-    if (
-        limits.allowed_content_types
-        and content_type
-        and (
-            content_type.split(";", 1)[0].strip().lower()
-            not in {c.lower() for c in limits.allowed_content_types}
-        )
-    ):
-        raise ValueError("Upload content type is not allowed")
+    if limits.allowed_content_types:
+        if not content_type:
+            raise ValueError("Upload content type is required")
+        normalized = content_type.split(";", 1)[0].strip().lower()
+        if normalized not in {c.lower() for c in limits.allowed_content_types}:
+            raise ValueError("Upload content type is not allowed")
     fd, name = tempfile.mkstemp(prefix="hedron-upload-", suffix=Path(safe).suffix)
     path = Path(name)
     try:

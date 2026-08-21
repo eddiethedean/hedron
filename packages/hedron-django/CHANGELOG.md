@@ -5,9 +5,10 @@
 ### Changed
 - Coordinated train tip `0.55.0` (in-tree cut; tag/PyPI deferred).
 
-### Added
-- Secure upgradeable workflow primitives (master-detail, capabilities, replay,
-  uploads, CSP reporting, offline upgrade-report) under RFC-0082 / D-095 / D-096.
+### Notes
+- Capability/idempotency action enforcement remains FastAPI-owned in 0.55
+  (`PARITY-055`: Django capabilities/replay unsupported). Layout components such as
+  `MasterDetail` are available via `hedron-core`.
 
 ## [0.54.0] — 2026-08-20
 

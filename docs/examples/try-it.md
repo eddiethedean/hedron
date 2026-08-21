@@ -37,7 +37,7 @@ cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-Pin production installs with `hedron>=0.54.0,<0.55`.
+Pin production installs with `hedron>=0.55.0,<0.56`.
 See [Installation](../getting-started/installation.md).
 
 4. Forward port **8000** and open the URL. You should see **Hello from hedron new**.

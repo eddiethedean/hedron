@@ -272,6 +272,7 @@ nav:
     - Exceptions: api/EXCEPTIONS.md
     - CSRF: api/CSRF_COMPOSITION.md
     - CLI: api/CLI.md
+    - Workflow: api/WORKFLOW.md
     - Components: components/index.md
     - Configuration: CONFIGURATION.md
     - Compatibility: COMPATIBILITY.md
