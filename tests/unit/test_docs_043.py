@@ -1,4 +1,7 @@
-"""DOCS-043: three layers, error codes, what's new, scaffold, beta table."""
+"""Evidence-only: DOCS-043 inventory / substring presence — not product behavior.
+
+DOCS-043: three layers, error codes, what's new, scaffold, beta table.
+"""
 
 from __future__ import annotations
 

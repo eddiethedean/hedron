@@ -124,7 +124,12 @@ def test_ownership_passes_matching_app_id() -> None:
         region=FragmentRegion(id="h-view-status", selector="#h-view-status"),
     )
     compiled = compile_to_interaction(RefreshIntent(targets=(target,)), expected_app_id="app-a")
-    assert compiled is not None
+    assert isinstance(compiled, InteractionResult)
+    assert compiled.trigger == {refresh_event_name("h-view-status"): {}}
+    assert compiled.policy is not None
+    assert any(region.id == "h-view-status" for region in compiled.policy.declared_regions)
+    with pytest.raises(HedronError, match="HED-UPDATE-0003"):
+        compile_to_interaction(RefreshIntent(targets=(target,)), expected_app_id="app-b")
 
 
 def test_include_component_rolls_back_starlette_route() -> None:

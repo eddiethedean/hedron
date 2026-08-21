@@ -115,6 +115,58 @@ def test_plugin_loader_rolls_back_components_on_failure() -> None:
     assert not any(c.name == "Good" for c in get_registry().components())
 
 
+def test_plugin_loader_rolls_back_features_owners_and_bundles_on_failure() -> None:
+    from hedron_core.bundles import FeatureBundle, included_bundles, reset_bundles_for_tests
+    from hedron_core.plugins import get_diagnostic_owners, get_feature_manifests
+
+    reset_registry_for_tests()
+    reset_explorer_panels_for_tests()
+    reset_bundles_for_tests()
+
+    def good(ctx: PluginContext) -> None:
+        ctx.register_feature(name="good-feat", description="feature for rollback")
+        ctx.register_diagnostic_owner("HED-GOOD")
+        ctx.register_feature_bundle(
+            FeatureBundle(
+                logical_id="good:bundle",
+                provider="good",
+                provider_version="0.4.0",
+            )
+        )
+
+    good.PLUGIN_META = PluginMeta(  # type: ignore[attr-defined]
+        name="good",
+        version="0.4.0",
+        distribution="good",
+        capabilities=PluginCapabilities(python=True),
+        hedron_version=">=0.56,<0.57",
+    )
+
+    def bad(ctx: PluginContext) -> None:
+        raise RuntimeError("feature boom")
+
+    bad.PLUGIN_META = PluginMeta(  # type: ignore[attr-defined]
+        name="bad",
+        version="0.4.0",
+        distribution="bad",
+        hedron_version=">=0.56,<0.57",
+    )
+
+    class EP:
+        def __init__(self, name: str, fn: object) -> None:
+            self.name = name
+            self._fn = fn
+
+        def load(self) -> object:
+            return self._fn
+
+    with pytest.raises(RuntimeError, match="feature boom"):
+        load_plugins(entry_points=[EP("good", good), EP("bad", bad)])
+    assert get_feature_manifests() == ()
+    assert "HED-GOOD" not in get_diagnostic_owners()
+    assert included_bundles() == ()
+
+
 def test_plugin_enabled_empty_loads_none() -> None:
     reset_registry_for_tests()
     reset_explorer_panels_for_tests()

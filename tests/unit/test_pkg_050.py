@@ -1,4 +1,7 @@
-"""PKG-050 train versions and 0.50 packet files."""
+"""Evidence-only: package/release inventory — not product behavior.
+
+PKG-050 train versions and 0.50 packet files.
+"""
 
 from __future__ import annotations
 

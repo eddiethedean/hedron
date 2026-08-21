@@ -1,4 +1,7 @@
-"""DOCS-046: package workflow contract is current; what's-new; no SR-021 claim."""
+"""Evidence-only: DOCS-046 inventory / substring presence — not product behavior.
+
+DOCS-046: package workflow contract is current; what's-new; no SR-021 claim.
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""PKG-056 evidence."""
+"""Evidence-only: PKG-056 surface / inventory / hasattr checks — not product behavior."""
 
 from __future__ import annotations
 

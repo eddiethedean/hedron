@@ -1,4 +1,7 @@
-"""DOCS-044: contract current, what's new, layers, error codes, no SR-021 claim."""
+"""Evidence-only: DOCS-044 inventory / substring presence — not product behavior.
+
+DOCS-044: contract current, what's new, layers, error codes, no SR-021 claim.
+"""
 
 from __future__ import annotations
 

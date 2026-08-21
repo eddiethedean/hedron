@@ -177,7 +177,10 @@ async def _begin_replay(
     if not replay_key:
         return None
 
-    subject = str(getattr(getattr(request, "user", None), "identity", "") or "anonymous")
+    # Prefer scope["user"] so idempotency works without AuthenticationMiddleware.
+    # Accessing request.user asserts that middleware is installed.
+    user = request.scope.get("user")
+    subject = str(getattr(user, "identity", "") or "anonymous") if user is not None else "anonymous"
     tenant = str(getattr(request.state, "hedron_tenant", "") or "")
     session = str(
         getattr(request.state, "session_id", None)

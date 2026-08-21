@@ -1,4 +1,7 @@
-"""PKG-054 evidence."""
+"""Evidence-only: package/release inventory — not product behavior.
+
+PKG-054 evidence.
+"""
 
 from __future__ import annotations
 

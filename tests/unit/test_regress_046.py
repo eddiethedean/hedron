@@ -1,4 +1,7 @@
-"""REGRESS-046: 0.43/0.44/0.45 request paths remain after FeatureBundle attach."""
+"""REGRESS-046: 0.43/0.44/0.45 request paths remain after FeatureBundle attach.
+
+``PropertyPatch is not Patch`` lives in ``test_regress_045`` (shared tip assert).
+"""
 
 from __future__ import annotations
 
@@ -6,17 +9,10 @@ from fastapi.testclient import TestClient
 from tests.unit._helpers_046 import make_app, reset_046
 
 from hedron import Page, Text
-from hedron_core.patches import PropertyPatch
 
 
 def setup_function() -> None:
     reset_046()
-
-
-def test_property_patch_is_not_view_patch() -> None:
-    from hedron_core.updates import Patch
-
-    assert PropertyPatch is not Patch
 
 
 def test_unmodeled_refreshable_still_works_with_bundles() -> None:

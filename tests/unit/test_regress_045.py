@@ -1,4 +1,7 @@
-"""REGRESS-045: 0.42/0.43/0.44 request paths remain after catalog attach."""
+"""REGRESS-045: 0.42/0.43/0.44 request paths remain after catalog attach.
+
+Owns the shared ``PropertyPatch is not Patch`` tip assert (removed from regress-046).
+"""
 
 from __future__ import annotations
 

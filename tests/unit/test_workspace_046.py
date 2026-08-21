@@ -66,25 +66,57 @@ def test_workspace_create_edit_and_forbidden() -> None:
     orders = _workspace()
     app.include_feature(orders)
     assert orders.create_command is not None
+    assert orders.edit_command is not None
+    assert orders.list_view is not None
+
+    @app.page("/")
+    def home():
+        return Page(orders.list_view(), title="Orders")  # type: ignore[misc]
+
     client = TestClient(app)
-    headers = csrf_headers(client)
+
     created = client.post(
         orders.create_command.path,  # type: ignore[union-attr]
         data={"id": "2", "customer": "beta", "quantity": "3"},
-        headers=headers,
+        headers=csrf_headers(client),
     )
-    assert created.status_code in {200, 303, 422} or created.status_code < 500
-    denied = _workspace(can_create=False)
+    assert created.status_code in {200, 303}
+    listed = client.get(orders.list_view.path).text  # type: ignore[union-attr]
+    assert "beta" in listed and "2" in listed
+
+    edited = client.post(
+        orders.edit_command.path,  # type: ignore[union-attr]
+        data={"id": "2", "customer": "gamma", "quantity": "4"},
+        headers=csrf_headers(client),
+    )
+    assert edited.status_code in {200, 303}
+    assert "gamma" in client.get(orders.list_view.path).text  # type: ignore[union-attr]
+
+    denied = _workspace(can_create=False, can_edit=False)
     app2 = make_app()
     app2.include_feature(denied)
+
+    @app2.page("/")
+    def home_denied():
+        return Page(denied.list_view(), title="Denied")  # type: ignore[misc]
+
     client2 = TestClient(app2)
-    headers2 = csrf_headers(client2)
-    forbidden = client2.post(
-        denied.create_command.path,  # type: ignore[union-attr]
-        data={"id": "9", "customer": "x", "quantity": "1"},
-        headers=headers2,
+    assert (
+        client2.post(
+            denied.create_command.path,  # type: ignore[union-attr]
+            data={"id": "9", "customer": "x", "quantity": "1"},
+            headers=csrf_headers(client2),
+        ).status_code
+        == 403
     )
-    assert forbidden.status_code == 403
+    assert (
+        client2.post(
+            denied.edit_command.path,  # type: ignore[union-attr]
+            data={"id": "1", "customer": "nope", "quantity": "2"},
+            headers=csrf_headers(client2),
+        ).status_code
+        == 403
+    )
 
 
 def test_workspace_refuses_objects_all_and_untyped_source() -> None:

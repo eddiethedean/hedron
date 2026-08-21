@@ -28,9 +28,9 @@ Python metadata does not. Never move or replace a published tag.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.56.0
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.56.1
 bash scripts/ci_checks.sh browser --python 3.12
-uv run python scripts/check_release_gate.py 0.56.0
+uv run python scripts/check_release_gate.py 0.56.1
 uv run python scripts/verify_pkg_56.py
 uv run python scripts/verify_pkg_55.py
 uv run python scripts/verify_pkg_54.py
