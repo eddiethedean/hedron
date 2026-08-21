@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.51.x** train (**Published** as `v0.52.0` on PyPI)
+**Status:** Accepted for the **0.56.x** train (**Published** in-tree as `v0.56.0`; PyPI still `v0.54.0` deferred)
 **Reviewed:** 2026-08-18
 
 ## Current train (read this first)
@@ -20,7 +20,7 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`, `hedron-workbench`, `hedron-posit`, `hedron-elements`)
-stay on the `0.51.x` train (Published as `v0.52.0` on PyPI). Independent Beta packages
+stay on the living `0.56.x` train (Published in-tree as `v0.56.0`; PyPI still `v0.54.0` deferred). Independent Beta packages
 `hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
 lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
 also version independently. Independent `fastapi-workbench>=1.0.0,<2` is not on the

@@ -43,7 +43,7 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 pip install "hedron[data,dev,posit]>=0.54.0,<0.55"
 ```
 
-Checkout tip is `v0.53.0` (`>=0.53.0,<0.54` in-tree) until the Git tag / PyPI upload lands.
+Checkout tip is `v0.56.0` (`>=0.56.0,<0.57` in-tree); PyPI first-run stays `>=0.54.0,<0.55` until the Git tag / PyPI upload lands.
 
 ## Tooling-grade and independent Beta lines
 
@@ -66,7 +66,7 @@ pip install "hedron[charts]>=0.54.0,<0.55"
 pip install "hedron-sample-kit>=0.2.0,<0.3" "hedron-sim>=0.1.0,<0.2"
 ```
 
-Checkout tip is `v0.53.0` (`>=0.53.0,<0.54` in-tree) until the Git tag / PyPI upload lands.
+Checkout tip is `v0.56.0` (`>=0.56.0,<0.57` in-tree); PyPI first-run stays `>=0.54.0,<0.55` until the Git tag / PyPI upload lands.
 
 ## Authoring an extension
 

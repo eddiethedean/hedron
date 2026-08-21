@@ -12,7 +12,7 @@ application. `RS_SERVER_URL` is discovery-only and never grants trust.
 
 Also available as `hedron[workbench]`.
 
-**Package maturity:** Beta · **Train:** `0.55.x` (in-tree tip `v0.55.0`; PyPI `0.54.0` deferred) · pin `>=0.56.0,<0.57` in-tree (PyPI `>=0.54.0,<0.55` while deferred)
+**Package maturity:** Beta · **Train:** `0.56.x` (in-tree tip `v0.56.0`; PyPI `0.54.0` deferred) · pin `>=0.56.0,<0.57` in-tree (PyPI `>=0.54.0,<0.55` while deferred)
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
 

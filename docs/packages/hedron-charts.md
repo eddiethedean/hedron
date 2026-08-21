@@ -7,8 +7,8 @@ description: Typed first-party charts, deterministic exports, and optional plott
 `hedron-charts` provides Hedron's first-party declarative chart path, four beginner components,
 deterministic server exports, and explicit adapters for established Python plotting libraries.
 
-**Package maturity:** Beta · Compatible with living Hedron train `0.53.x` (in-tree tip
-`v0.53.0`; PyPI still `>=0.54.0,<0.55` while deferred) · **Package version:** `0.2.0`
+**Package maturity:** Beta · Compatible with living Hedron train `0.56.x` (in-tree tip
+`v0.56.0`; PyPI still `>=0.54.0,<0.55` while deferred) · **Package version:** `0.2.0`
 (pin `>=0.2.0,<0.3`)
 
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`

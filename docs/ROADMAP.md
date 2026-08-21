@@ -103,9 +103,9 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   visualization, element, remote, and workbench workflows that compile to the same stack. None of
   these programs is a blanket feature promotion or a scheduled `1.0`.
 
-### Honest gaps on the current train (0.51.x)
+### Honest gaps on the current train (0.56.x)
 
-- Current **published** train is **0.51.x** (`v0.52.0` on PyPI)
+- Current **published** in-tree tip is **0.56.x** (`v0.56.0`; PyPI still `v0.54.0` deferred)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`

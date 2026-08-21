@@ -1,11 +1,22 @@
-# Upgrade to Hedron 0.53
+# Upgrade to Hedron 0.56
 
-This guide covers an application upgrade onto the **0.53.x** tip
-(in-tree `v0.53.0`; Published in-tree; Git tag / PyPI upload deferred). PyPI still
-serves **`v0.52.0`** — keep `hedron>=0.54.0,<0.55` from the public index until the
-0.53 wheel lands. Public-index notes:
+This guide covers an application upgrade onto the **0.56.x** tip
+(in-tree `v0.56.0`; Published in-tree; Git tag / PyPI upload deferred). PyPI still
+serves **`v0.54.0`** — keep `hedron>=0.54.0,<0.55` from the public index until the
+0.56 wheel lands. Public-index notes:
 [Installation](../getting-started/installation.md). New applications should use
 [Build your first app](../getting-started/quickstart.md).
+
+## 0.55 → 0.56
+
+Checkout tip `v0.56.0` uses the in-tree floor `>=0.56.0,<0.57`. From PyPI, keep
+`hedron>=0.54.0,<0.55` until the 0.56 wheel lands. See
+[What's new in 0.56](whats-new-0.56.md) and
+[Security control plane](../api/SECURITY_PLANE.md).
+
+1. Upgrade the pin (in-tree) or keep the PyPI floor while deferred.
+2. Adopt `SecurityPolicy` presets and `hedron security-check` for posture baselines.
+3. Prefer shared egress / sensitivity / intent helpers over package-local copies.
 
 ## 0.52 → 0.53
 

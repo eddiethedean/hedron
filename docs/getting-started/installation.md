@@ -16,15 +16,15 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-This documentation describes the **0.55.x** train. The living in-tree tip is **`v0.55.0`**;
-**`v0.54.0` is on PyPI today**. Git tag and PyPI upload for **0.55.0** remain **deferred**
+This documentation describes the **0.56.x** train. The living in-tree tip is **`v0.56.0`**;
+**`v0.54.0` is on PyPI today**. Git tag and PyPI upload for **0.56.0** remain **deferred**
 until the cut lands —
 use registry-resolvable pins below unless you are developing Hedron itself.
 
 | You are… | Install |
 |---|---|
 | Building an app from PyPI | `hedron>=0.54.0,<0.55` |
-| Working in this repository | `uv sync` (editable **0.55.0**) |
+| Working in this repository | `uv sync` (editable **0.56.0**) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
 are **Beta** (usable, no 1.0, no SLA). Capability detail:

@@ -2,7 +2,7 @@
 
 DataTable, DataEditor, and data-source toolkit for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.54.x` (in-tree tip `v0.54.0`) · pin `>=0.54.0,<0.55` (PyPI still `>=0.54.0,<0.55` while deferred)
+**Package maturity:** Beta · **Train:** `0.56.x` (in-tree tip `v0.56.0`) · pin `>=0.56.0,<0.57` in-tree (PyPI `>=0.54.0,<0.55` while deferred) (PyPI still `>=0.54.0,<0.55` while deferred)
 **Flagship extra:** `hedron[data]` · **Import:** `hedron_data`  
 **Capability:** Supported for DataTable / DataEditor (ABI `hedron-data-editor`) and
 bounded `OptimisticMutation` when pinned — see [What’s ready](../guides/whats-ready.md)

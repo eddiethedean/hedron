@@ -6,7 +6,7 @@ Tooling-grade Node.js evaluator for the Hedron portable conformance corpus.
 **Version:** `0.53.0` · **Runtime matrix:** Node.js 18 / 20 / 22 LTS  
 **Install:** `npm install -g hedron-runtime-node` (published from the Hedron release workflow)
 
-Living Hedron train `0.54.x` (checkout tip `v0.54.0`; PyPI Python packages still pin
+Living Hedron train `0.56.x` (checkout tip `v0.56.0`; PyPI Python packages still pin
 `>=0.54.0,<0.55` while deferred).
 
 ## Run

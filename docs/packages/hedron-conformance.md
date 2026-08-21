@@ -2,7 +2,11 @@
 
 Language-neutral Hedron conformance-test kit and capability runner.
 
-**Package maturity:** Beta · **Train:** `0.54.x` (in-tree tip `v0.54.0`) · pin `>=0.54.0,<0.55`**Flagship extra:** `hedron[conformance]` · **Import:** `hedron_conformance`**CLI:** `hedron-conformance` · depends on pydantic only (no `hedron-core`)
+**Package maturity:** Beta · **Train:** `0.56.x` (in-tree tip `v0.56.0`) · pin `>=0.56.0,<0.57` in-tree (PyPI `>=0.54.0,<0.55` while deferred)
+
+**Flagship extra:** `hedron[conformance]` · **Import:** `hedron_conformance`
+
+**CLI:** `hedron-conformance` · depends on pydantic only (no `hedron-core`)
 
 Phase 0.52 authority contract: [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
 [#522](https://github.com/eddiethedean/hedron/issues/522).
@@ -15,7 +19,7 @@ pip install "hedron[conformance]>=0.54.0,<0.55"
 pip install "hedron-conformance>=0.54.0,<0.55"
 ```
 
-Checkout tip `v0.54.0` uses `>=0.54.0,<0.55` until the Git tag / PyPI upload lands.
+Checkout tip `v0.56.0` uses `>=0.56.0,<0.57` in-tree; PyPI first-run stays `>=0.54.0,<0.55` until the Git tag / PyPI upload lands.
 
 ## When to use
 

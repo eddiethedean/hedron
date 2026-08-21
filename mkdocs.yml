@@ -271,6 +271,7 @@ nav:
     - Jobs: api/JOBS.md
     - Exceptions: api/EXCEPTIONS.md
     - CSRF: api/CSRF_COMPOSITION.md
+    - Security control plane: api/SECURITY_PLANE.md
     - CLI: api/CLI.md
     - Workflow: api/WORKFLOW.md
     - Components: components/index.md
