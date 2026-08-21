@@ -74,9 +74,11 @@ def compile_trust(
         return CompiledTrust(purpose=purpose_enum, value=text, source=source)
     if purpose_enum is TrustPurpose.MARKUP_HTML:
         if isinstance(value, TrustedHtml):
-            return CompiledTrust(purpose=purpose_enum, value=str(value), source=source)
+            return CompiledTrust(
+                purpose=purpose_enum, value=value.value, source=value.source or source
+            )
         trusted = TrustedHtml.reviewed(text, source=source)
-        return CompiledTrust(purpose=purpose_enum, value=str(trusted), source=source)
+        return CompiledTrust(purpose=purpose_enum, value=trusted.value, source=trusted.source)
     if purpose_enum is TrustPurpose.MARKUP_SVG:
         if has_active_markup(text):
             raise TrustCompileError("active markup in SVG")
@@ -84,7 +86,15 @@ def compile_trust(
             raise TrustCompileError("dangerous scheme in SVG markup")
         return CompiledTrust(purpose=purpose_enum, value=text, source=source)
     if purpose_enum is TrustPurpose.BROWSER_PAYLOAD:
-        if contains_dangerous_scheme(text) or "<script" in text.lower():
+        lowered = text.lower()
+        if (
+            contains_dangerous_scheme(text)
+            or "<script" in lowered
+            or "onerror=" in lowered
+            or "onload=" in lowered
+            or "javascript:" in lowered
+            or has_active_markup(text)
+        ):
             raise TrustCompileError("dangerous browser payload")
         return CompiledTrust(purpose=purpose_enum, value=text, source=source)
     raise TrustCompileError(f"unsupported trust purpose: {purpose_enum}")

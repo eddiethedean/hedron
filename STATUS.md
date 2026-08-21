@@ -12,14 +12,14 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
 `hedron-sim` `0.2.0`, `hedron-mcp` `0.2.1`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.55.0`
+`0.56.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
-`hedron-runtime-node` / `hedron-runtime-java` `0.55.0`.
+`hedron-runtime-node` / `hedron-runtime-java` `0.56.0`.
 
 **Phase focus:** Living train is **0.56** (D-097 / D-098 / RFC-0083) — security control plane
 [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557).

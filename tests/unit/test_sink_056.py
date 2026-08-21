@@ -14,9 +14,12 @@ def test_sink_056_purpose_compiler() -> None:
     assert sel.value == "#panel"
     html = compile_trust("<b>ok</b>", TrustPurpose.MARKUP_HTML, source="review")
     assert html.purpose is TrustPurpose.MARKUP_HTML
+    assert html.value == "<b>ok</b>"
     with pytest.raises(TrustCompileError):
         compile_trust(nav, TrustPurpose.SELECTOR)
     with pytest.raises(TrustCompileError):
         compile_trust("javascript:alert(1)", TrustPurpose.URL_NAVIGATION)
     with pytest.raises(TrustCompileError):
         compile_trust("<script>x</script>", TrustPurpose.MARKUP_SVG)
+    with pytest.raises(TrustCompileError):
+        compile_trust('<img onerror="alert(1)">', TrustPurpose.BROWSER_PAYLOAD)

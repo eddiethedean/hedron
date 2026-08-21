@@ -26,6 +26,12 @@ def test_ctx_056_immutable_narrow_and_serialize() -> None:
     assert narrowed.scopes == frozenset({"read"})
     with pytest.raises(SecurityContextError):
         ctx.narrow(scopes=frozenset({"admin"}))
+    with pytest.raises(SecurityContextError):
+        SecurityContext(application_id="app-a").narrow(subject_id="user-x")
+    with pytest.raises(SecurityContextError):
+        SecurityContext.from_serializable({**ctx.to_serializable(), "fingerprint": ""})
+    with pytest.raises(SecurityContextError):
+        SecurityContext.from_serializable({**ctx.to_serializable(), "scopes": "rw"})
     payload = ctx.to_serializable()
     restored = SecurityContext.from_serializable(payload, expected_application_id="app-a")
     assert restored.fingerprint == ctx.fingerprint
@@ -33,6 +39,8 @@ def test_ctx_056_immutable_narrow_and_serialize() -> None:
         SecurityContext.from_serializable(payload, expected_application_id="other")
     with pytest.raises(SecurityContextError):
         SecurityContext.from_serializable({**payload, "extra": "nope"})
+    with pytest.raises(SecurityContextError):
+        SecurityContext.from_serializable({**payload, "auth_level": 99})
     token = set_security_context(ctx)
     try:
         assert get_security_context() is ctx

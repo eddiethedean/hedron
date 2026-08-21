@@ -10,26 +10,35 @@ from hedron_core.egress import (
     assert_ssrf_safe,
     decide_redirect_chain,
     policy_from_allowlist,
+    policy_from_security_policy,
 )
 from hedron_core.intent import (
     IntentError,
     IntentState,
+    KeyRecord,
     MemoryIntentStore,
     SecurityKeyring,
     SignedIntent,
     fingerprint_payload,
     mint_intent,
+    verify_and_consume,
     verify_intent,
 )
 from hedron_core.request_budget import (
     PERF_CEILINGS,
     BudgetExceeded,
+    BudgetMissing,
     RequestBudget,
     RequestBudgetLimits,
     get_request_budget,
     require_request_budget,
     reset_request_budget,
     set_request_budget,
+)
+from hedron_core.request_plane import (
+    RequestSecurityBinding,
+    bind_request_security,
+    unbind_request_security,
 )
 from hedron_core.security_context import (
     SecurityContext,
@@ -39,7 +48,13 @@ from hedron_core.security_context import (
     reset_security_context,
     set_security_context,
 )
-from hedron_core.security_events import EVENT_CODES, SecurityEvent
+from hedron_core.security_events import (
+    EVENT_CODES,
+    SecurityEvent,
+    clear_security_events,
+    emit_security_event,
+    recent_security_events,
+)
 from hedron_core.security_policy import SecurityPolicy, SecurityProfile
 from hedron_core.sensitive import (
     DeclassificationRecord,
@@ -61,6 +76,7 @@ CONTROL_PLANE_VERSION = 1
 
 __all__ = [
     "BudgetExceeded",
+    "BudgetMissing",
     "CONFORMANCE_PROFILE_VERSION",
     "CONTROL_PLANE_VERSION",
     "CompiledTrust",
@@ -72,10 +88,12 @@ __all__ = [
     "EgressPolicy",
     "IntentError",
     "IntentState",
+    "KeyRecord",
     "MemoryIntentStore",
     "PERF_CEILINGS",
     "RequestBudget",
     "RequestBudgetLimits",
+    "RequestSecurityBinding",
     "SecurityContext",
     "SecurityContextError",
     "SecurityEvent",
@@ -90,11 +108,14 @@ __all__ = [
     "TrustCompileError",
     "TrustPurpose",
     "assert_ssrf_safe",
+    "bind_request_security",
     "clear_declassification_records",
+    "clear_security_events",
     "compile_trust",
     "declassification_records",
     "declassify",
     "decide_redirect_chain",
+    "emit_security_event",
     "enforce_sink",
     "fingerprint_payload",
     "get_request_budget",
@@ -102,12 +123,16 @@ __all__ = [
     "label_for",
     "mint_intent",
     "policy_from_allowlist",
+    "policy_from_security_policy",
+    "recent_security_events",
     "require_request_budget",
     "require_security_context",
     "reset_request_budget",
     "reset_security_context",
     "set_request_budget",
     "set_security_context",
+    "unbind_request_security",
+    "verify_and_consume",
     "verify_intent",
     "walk_and_enforce",
 ]

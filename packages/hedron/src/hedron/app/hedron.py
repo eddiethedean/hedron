@@ -22,6 +22,7 @@ from hedron.lifespan import compose_lifespan
 from hedron.openapi import install_openapi
 from hedron.routing.router import HedronRouter
 from hedron.security.headers import SecurityHeadersMiddleware
+from hedron.security.plane_middleware import SecurityPlaneMiddleware
 from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
 from hedron.static_mount import mount_build_assets, mount_hedron_static
 from hedron_core.compile_gate import is_production_env
@@ -170,6 +171,11 @@ class Hedron(HedronPagesMixin, FastAPI):
             mount_cookie_path=mount_cookie_path,
         )
         self.add_middleware(SecurityHeadersMiddleware, policy=self.hedron_policy)
+        self.add_middleware(
+            SecurityPlaneMiddleware,
+            policy=self.hedron_policy,
+            application_id=getattr(self.state, "hedron_app_id", "hedron"),
+        )
 
         mount_hedron_static(self)
         mount_build_assets(self, build_dir)

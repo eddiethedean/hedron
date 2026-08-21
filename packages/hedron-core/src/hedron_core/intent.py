@@ -92,14 +92,27 @@ class SecurityKeyring:
                 not_after=current.not_after,
             )
 
-    def get_for_mint(self, purpose: str = "intent") -> KeyRecord:
+    def _window_ok(self, record: KeyRecord, *, now: float) -> bool:
+        if record.not_before and now < record.not_before:
+            return False
+        return not (record.not_after and now > record.not_after)
+
+    def get_for_mint(self, purpose: str = "intent", *, now: float | None = None) -> KeyRecord:
+        ts = time.time() if now is None else now
         with self._lock:
             for record in self._keys.values():
-                if record.purpose == purpose and record.status == "active":
+                if (
+                    record.purpose == purpose
+                    and record.status == "active"
+                    and self._window_ok(record, now=ts)
+                ):
                     return record
         raise IntentError(f"no active mint key for purpose {purpose!r}")
 
-    def get_for_verify(self, key_id: str, purpose: str = "intent") -> KeyRecord:
+    def get_for_verify(
+        self, key_id: str, purpose: str = "intent", *, now: float | None = None
+    ) -> KeyRecord:
+        ts = time.time() if now is None else now
         with self._lock:
             record = self._keys.get(key_id)
         if record is None:
@@ -110,6 +123,8 @@ class SecurityKeyring:
             raise IntentError("key revoked")
         if record.status not in {"active", "verify_only"}:
             raise IntentError("key not usable for verify")
+        if not self._window_ok(record, now=ts):
+            raise IntentError("key outside validity window")
         return record
 
 
@@ -169,9 +184,10 @@ def mint_intent(
     payload: Mapping[str, Any] | None = None,
     ttl_seconds: float = 300.0,
     now: float | None = None,
+    store: IntentStore | None = None,
 ) -> SignedIntent:
-    key = keyring.get_for_mint("intent")
     ts = time.time() if now is None else now
+    key = keyring.get_for_mint("intent", now=ts)
     intent_id = secrets.token_hex(16)
     payload_fp = fingerprint_payload(payload)
     expires_at = ts + ttl_seconds
@@ -190,7 +206,7 @@ def mint_intent(
         "expires_at": expires_at,
     }
     signature = _sign(key.secret, canonical)
-    return SignedIntent(
+    intent = SignedIntent(
         version=1,
         intent_id=intent_id,
         key_id=key.key_id,
@@ -205,6 +221,9 @@ def mint_intent(
         expires_at=expires_at,
         signature=signature,
     )
+    if store is not None:
+        store.put_minted(intent.intent_id)
+    return intent
 
 
 def verify_intent(
@@ -224,7 +243,7 @@ def verify_intent(
     ts = time.time() if now is None else now
     if ts > intent.expires_at:
         raise IntentError("intent expired")
-    key = keyring.get_for_verify(intent.key_id, "intent")
+    key = keyring.get_for_verify(intent.key_id, "intent", now=ts)
     expected_sig = _sign(key.secret, intent.canonical_payload())
     if not hmac.compare_digest(expected_sig, intent.signature):
         raise IntentError("intent signature invalid")
@@ -244,7 +263,41 @@ def verify_intent(
             raise IntentError("intent binding mismatch")
 
 
+def verify_and_consume(
+    intent: SignedIntent,
+    *,
+    keyring: SecurityKeyring,
+    store: IntentStore,
+    actor: str,
+    tenant: str,
+    action: str,
+    method: str,
+    resource: str,
+    revision: str,
+    target: str,
+    payload: Mapping[str, Any] | None = None,
+    now: float | None = None,
+) -> None:
+    """Verify bindings then atomically consume the intent (single-use)."""
+    verify_intent(
+        intent,
+        keyring=keyring,
+        actor=actor,
+        tenant=tenant,
+        action=action,
+        method=method,
+        resource=resource,
+        revision=revision,
+        target=target,
+        payload=payload,
+        now=now,
+    )
+    store.consume(intent.intent_id)
+
+
 class IntentStore(Protocol):
+    def put_minted(self, intent_id: str) -> None: ...
+
     def claim(self, intent_id: str) -> IntentState: ...
 
     def consume(self, intent_id: str) -> IntentState: ...

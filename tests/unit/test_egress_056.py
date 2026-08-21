@@ -13,20 +13,29 @@ from hedron_core.security_plane import (
 )
 
 
+def _public_resolver(_host: str) -> tuple[str, ...]:
+    return ("8.8.8.8",)
+
+
 def test_egress_056_deny_by_default_and_redirects() -> None:
     deny = EgressPolicy(allowed_hosts=frozenset())
     with pytest.raises(EgressError):
-        deny.require("https://evil.example/x")
+        deny.require("https://evil.example/x", resolver=_public_resolver)
     allow = policy_from_allowlist({"api.example"})
-    decision = allow.require("https://api.example/v1")
+    decision = allow.require("https://api.example/v1", resolver=_public_resolver)
     assert decision.reason == "allowed"
     with pytest.raises(EgressError):
-        allow.require("https://api.example:8443/v1")
+        allow.require("https://api.example:8443/v1", resolver=_public_resolver)
     chain = decide_redirect_chain(
         "https://api.example/a",
         ["https://api.example/b"],
         policy=allow,
+        resolver=_public_resolver,
     )
     assert len(chain) == 2
     with pytest.raises(EgressError):
         assert_ssrf_safe("http://127.0.0.1/admin")
+    with pytest.raises(EgressError):
+        allow.require("https://api.example/v1", resolver=lambda _h: ())
+    with pytest.raises(EgressError):
+        allow.require("https://api.example/v1", resolver=lambda _h: ("100.64.1.1",))

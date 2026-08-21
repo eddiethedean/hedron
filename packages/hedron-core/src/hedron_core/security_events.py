@@ -48,3 +48,22 @@ class SecurityEvent:
         data = asdict(self)
         data["detail"] = safe_detail
         return data
+
+
+_EVENT_SINK: list[SecurityEvent] = []
+_EVENT_SINK_LIMIT = 1_000
+
+
+def emit_security_event(event: SecurityEvent) -> None:
+    """Record a redacted security event (process-local bounded ring)."""
+    _EVENT_SINK.append(event)
+    if len(_EVENT_SINK) > _EVENT_SINK_LIMIT:
+        del _EVENT_SINK[: len(_EVENT_SINK) - _EVENT_SINK_LIMIT]
+
+
+def recent_security_events() -> tuple[SecurityEvent, ...]:
+    return tuple(_EVENT_SINK)
+
+
+def clear_security_events() -> None:
+    _EVENT_SINK.clear()

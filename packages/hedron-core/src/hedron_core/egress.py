@@ -78,7 +78,26 @@ class EgressPolicy:
             return EgressDecision(
                 kind=EgressDecisionKind.DENY, url=url, reason="userinfo_denied", hop=hop
             )
-        addresses = (resolver or default_resolve)(host) if host else ()
+        if not host:
+            return EgressDecision(
+                kind=EgressDecisionKind.DENY, url=url, reason="missing_host", hop=hop
+            )
+        try:
+            addresses = (resolver or default_resolve)(host)
+        except OSError:
+            return EgressDecision(
+                kind=EgressDecisionKind.DENY,
+                url=url,
+                reason="dns_resolution_failed",
+                hop=hop,
+            )
+        if not addresses:
+            return EgressDecision(
+                kind=EgressDecisionKind.DENY,
+                url=url,
+                reason="dns_unresolved",
+                hop=hop,
+            )
         for addr in addresses:
             if not self.allow_private_addresses and _is_blocked_address(addr):
                 return EgressDecision(
@@ -105,6 +124,14 @@ class EgressPolicy:
     ) -> EgressDecision:
         decision = self.decide(url, hop=hop, resolver=resolver)
         if decision.kind is EgressDecisionKind.DENY:
+            from hedron_core.security_events import SecurityEvent, emit_security_event
+
+            emit_security_event(
+                SecurityEvent(
+                    code="egress.denied",
+                    detail={"reason": decision.reason, "hop": hop},
+                )
+            )
             raise EgressError(f"egress denied: {decision.reason} for {url!r}")
         return decision
 
@@ -114,10 +141,8 @@ class EgressTransport(Protocol):
 
 
 def default_resolve(host: str) -> tuple[str, ...]:
-    try:
-        infos = socket.getaddrinfo(host, None)
-    except OSError:
-        return ()
+    """Resolve host addresses. Propagates ``OSError`` so callers fail closed."""
+    infos = socket.getaddrinfo(host, None)
     addresses: list[str] = []
     for info in infos:
         addr = info[4][0]
@@ -130,6 +155,12 @@ def _is_blocked_address(addr: str) -> bool:
     try:
         ip = ipaddress.ip_address(addr)
     except ValueError:
+        return True
+    mapped = getattr(ip, "ipv4_mapped", None)
+    if mapped is not None:
+        return _is_blocked_address(str(mapped))
+    # Align with maps proxy: block anything that is not globally routable (CGNAT, etc.).
+    if not ip.is_global:
         return True
     return bool(
         ip.is_private
@@ -173,11 +204,12 @@ def decide_redirect_chain(
     redirects: list[str],
     *,
     policy: EgressPolicy,
+    resolver: Callable[[str], tuple[str, ...]] | None = None,
 ) -> list[EgressDecision]:
     """Re-evaluate every redirect hop."""
-    decisions = [policy.require(start_url, hop=0)]
+    decisions = [policy.require(start_url, hop=0, resolver=resolver)]
     for idx, hop_url in enumerate(redirects, start=1):
-        decisions.append(policy.require(hop_url, hop=idx))
+        decisions.append(policy.require(hop_url, hop=idx, resolver=resolver))
     return decisions
 
 
@@ -196,3 +228,15 @@ def policy_from_allowlist(
     }
     base.update(kwargs)  # type: ignore[arg-type]
     return EgressPolicy(**base)  # type: ignore[arg-type]
+
+
+def policy_from_security_policy(policy: object) -> EgressPolicy:
+    """Build an ``EgressPolicy`` from ``SecurityPolicy`` composition knobs."""
+    hosts = getattr(policy, "egress_allow_hosts", frozenset()) or frozenset()
+    deny_by_default = bool(getattr(policy, "egress_deny_by_default", True))
+    return EgressPolicy(
+        allowed_hosts=frozenset(str(item).lower() for item in hosts),
+        allowed_schemes=frozenset({"https", "http"}),
+        deny_by_default=deny_by_default,
+        allow_private_addresses=False,
+    )

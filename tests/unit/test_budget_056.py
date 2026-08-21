@@ -20,16 +20,19 @@ def test_budget_056_nested_monotonic_ledger() -> None:
     try:
         assert get_request_budget() is budget
         budget.charge("body_bytes", 40)
-        child = budget.child()
+        child = budget.child(RequestBudgetLimits(body_bytes=100, concurrency=1))
         child.charge("body_bytes", 50)
         assert budget.used("body_bytes") == 90
         with pytest.raises(BudgetExceeded):
             child.charge("body_bytes", 20)
+        # Nested child cannot loosen concurrency above parent remaining semantics.
+        with pytest.raises(BudgetExceeded):
+            child.charge("concurrency", 2)
         budget.charge("concurrency", 2)
         with pytest.raises(BudgetExceeded):
             budget.charge("concurrency", 1)
         budget.close()
         with pytest.raises(BudgetExceeded):
-            budget.charge("form_fields", 1)
+            child.charge("form_fields", 1)
     finally:
         reset_request_budget(token)

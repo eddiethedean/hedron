@@ -1,4 +1,4 @@
-"""Django middleware applying portable Hedron security-profile headers."""
+"""Django middleware applying portable Hedron security-profile headers + request plane."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 
+from hedron_core.request_plane import bind_request_security, unbind_request_security
 from hedron_core.security_policy import SecurityHeadersPolicy, SecurityPolicy
 
 __all__ = ["HedronSecurityHeadersMiddleware", "security_policy_from_settings"]
@@ -59,24 +60,32 @@ def security_policy_from_settings(settings: Any | None = None) -> SecurityPolicy
 
 
 class HedronSecurityHeadersMiddleware:
-    """Apply ``SecurityPolicy.response_headers`` using Django auth when present."""
+    """Install request security plane, then apply ``SecurityPolicy.response_headers``."""
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
         self.policy = security_policy_from_settings()
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        response = self.get_response(request)
-        authenticated = False
-        user = getattr(request, "user", None)
-        if user is not None:
-            authenticated = bool(getattr(user, "is_authenticated", False))
-        for key, value in self.policy.response_headers(authenticated=authenticated).items():
-            existing = response.get(key)
-            if (authenticated and key in {"Cache-Control", "Pragma"}) or (key not in response):
-                response[key] = value
-            elif key == "Cache-Control" and isinstance(existing, str):
-                lowered = existing.lower()
-                if "public" in lowered or "s-maxage" in lowered:
+        binding = bind_request_security(
+            policy=self.policy,
+            application_id="hedron-django",
+            correlation_id=str(request.META.get("HTTP_X_REQUEST_ID", "") or ""),
+        )
+        try:
+            response = self.get_response(request)
+            authenticated = False
+            user = getattr(request, "user", None)
+            if user is not None:
+                authenticated = bool(getattr(user, "is_authenticated", False))
+            for key, value in self.policy.response_headers(authenticated=authenticated).items():
+                existing = response.get(key)
+                if (authenticated and key in {"Cache-Control", "Pragma"}) or (key not in response):
                     response[key] = value
-        return response
+                elif key == "Cache-Control" and isinstance(existing, str):
+                    lowered = existing.lower()
+                    if "public" in lowered or "s-maxage" in lowered:
+                        response[key] = value
+            return response
+        finally:
+            unbind_request_security(binding)

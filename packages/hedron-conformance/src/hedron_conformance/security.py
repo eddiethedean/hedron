@@ -8,6 +8,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from hedron_core.request_budget import (
+    RequestBudget,
+    get_request_budget,
+    reset_request_budget,
+    set_request_budget,
+)
+from hedron_core.request_plane import bind_request_security, unbind_request_security
+from hedron_core.security_context import get_security_context
 from hedron_core.security_plane import CONFORMANCE_PROFILE_VERSION, SecurityPolicy
 
 SECURITY_PROFILE_ID = "security-control-plane"
@@ -133,13 +141,78 @@ def security_profile_manifest() -> dict[str, Any]:
     }
 
 
+def _probe_context_isolation() -> bool:
+    policy = SecurityPolicy.from_name("standard")
+    binding = bind_request_security(policy=policy, application_id="conform-a")
+    try:
+        first = get_security_context()
+        if first is None or first.application_id != "conform-a":
+            return False
+        nested = bind_request_security(policy=policy, application_id="conform-b")
+        try:
+            second = get_security_context()
+            if second is None or second.application_id != "conform-b":
+                return False
+        finally:
+            unbind_request_security(nested)
+        restored = get_security_context()
+        return restored is not None and restored.application_id == "conform-a"
+    finally:
+        unbind_request_security(binding)
+
+
+def _probe_budget_before_body() -> bool:
+    policy = SecurityPolicy.from_name("standard")
+    if policy.request_budget_limits is None:
+        return False
+    budget = RequestBudget(limits=policy.request_budget_limits)
+    token = set_request_budget(budget)
+    try:
+        active = get_request_budget()
+        if active is not budget:
+            return False
+        budget.charge("body_bytes", 1)
+        return budget.used("body_bytes") == 1
+    finally:
+        budget.close()
+        reset_request_budget(token)
+
+
+def _adapter_wiring_present(adapter: str) -> bool:
+    if adapter == "fastapi":
+        from importlib import import_module
+
+        mod = import_module("hedron.security.plane_middleware")
+        return hasattr(mod, "SecurityPlaneMiddleware")
+    if adapter == "flask":
+        from importlib import import_module
+
+        mod = import_module("hedron_flask.blueprint")
+        source = Path(mod.__file__ or "").read_text(encoding="utf-8")
+        return "bind_request_security" in source
+    if adapter == "django":
+        from importlib import import_module
+
+        mod = import_module("hedron_django.middleware")
+        source = Path(mod.__file__ or "").read_text(encoding="utf-8")
+        return "bind_request_security" in source
+    return False
+
+
 def _default_evaluator(case: SecurityConformanceCase) -> SecurityConformanceResult:
-    # Portable floor evaluator: presets resolve and CSRF is enabled on standard/strict.
     policy = SecurityPolicy.from_name("standard")
     ok = policy.csrf_enabled and policy.conformance_profile_version == SECURITY_PROFILE_VERSION
-    if case.invariant == "request_budget_before_body":
-        ok = ok and policy.request_budget_limits is not None
-    return SecurityConformanceResult(case_id=case.id, adapter=case.adapter, ok=ok, detail="default")
+    detail = "csrf+profile"
+    if case.invariant == "csrf_before_handler":
+        ok = ok and _adapter_wiring_present(case.adapter)
+        detail = "csrf+wiring"
+    elif case.invariant == "security_context_isolation":
+        ok = _probe_context_isolation() and _adapter_wiring_present(case.adapter)
+        detail = "contextvar+wiring"
+    elif case.invariant == "request_budget_before_body":
+        ok = _probe_budget_before_body() and _adapter_wiring_present(case.adapter)
+        detail = "budget+wiring"
+    return SecurityConformanceResult(case_id=case.id, adapter=case.adapter, ok=ok, detail=detail)
 
 
 def run_security_profile(

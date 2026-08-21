@@ -16,6 +16,10 @@ class BudgetExceeded(ValueError):
         super().__init__(f"request budget exceeded: {dimension} used={used} limit={limit}")
 
 
+class BudgetMissing(RuntimeError):
+    """Raised when a request budget ledger is required but not installed."""
+
+
 @dataclass(frozen=True, slots=True)
 class RequestBudgetLimits:
     request_line_bytes: int = 8_192
@@ -57,27 +61,31 @@ class RequestBudget:
     def charge(self, dimension: str, amount: int = 1) -> None:
         if amount < 0:
             raise ValueError("budget charge amount must be non-negative")
-        if self._closed:
-            raise BudgetExceeded(dimension, 0, self.used(dimension))
         root = self._root()
+        if root._closed:
+            raise BudgetExceeded(dimension, 0, self.used(dimension))
         limit = int(getattr(self.limits, dimension))
         next_used = root._used.get(dimension, 0) + amount
         if next_used > limit:
             raise BudgetExceeded(dimension, limit, next_used)
         root._used[dimension] = next_used
 
-    def child(self) -> RequestBudget:
+    def child(self, limits: RequestBudgetLimits | None = None) -> RequestBudget:
         """Nested view that shares the parent ledger and cannot loosen limits."""
-        child_limits = RequestBudgetLimits(
-            **{
-                name: min(getattr(self.limits, name), getattr(self.limits, name))
-                for name in RequestBudgetLimits.__dataclass_fields__
-            }
-        )
+        parent_limits = self.limits
+        if limits is None:
+            child_limits = parent_limits
+        else:
+            child_limits = RequestBudgetLimits(
+                **{
+                    name: min(getattr(parent_limits, name), getattr(limits, name))
+                    for name in RequestBudgetLimits.__dataclass_fields__
+                }
+            )
         return RequestBudget(limits=child_limits, _parent=self._root())
 
     def close(self) -> None:
-        self._closed = True
+        self._root()._closed = True
 
     def snapshot(self) -> dict[str, int]:
         return dict(self._root()._used)
@@ -103,7 +111,7 @@ def reset_request_budget(token: contextvars.Token[RequestBudget | None]) -> None
 def require_request_budget() -> RequestBudget:
     budget = get_request_budget()
     if budget is None:
-        raise BudgetExceeded("ledger", 0, 0)
+        raise BudgetMissing("request budget ledger is not installed")
     return budget
 
 

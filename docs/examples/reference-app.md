@@ -13,7 +13,7 @@ Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README
 Click through the pattern demos below (docs simulations for CSRF, fragments, and chart
 **panel** refresh — not a live login), then run the full app locally or via production
 compose. Outside the workspace, install `hedron[charts]>=0.56.0,<0.57` from PyPI while
-registry upload is deferred (checkout tip is `0.55.0`; see
+registry upload is deferred (checkout tip is `0.56.0`; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 
 !!! warning "Credentials for this app"

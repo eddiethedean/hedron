@@ -36,5 +36,9 @@ def test_sens_056_label_enforcement_and_declassification() -> None:
     )
     assert public.label.classification is SensitivityClass.PUBLIC
     assert declassification_records()
+    with pytest.raises(SensitiveSinkError):
+        declassify(public, target=SensitivityClass.SECRET, reason="escalate")
     nested = walk_and_enforce({"a": Secret("x"), "b": [labeled]}, sink="log")
     assert "x" not in str(nested)
+    with pytest.raises(SensitiveSinkError):
+        walk_and_enforce({labeled}, sink="html")

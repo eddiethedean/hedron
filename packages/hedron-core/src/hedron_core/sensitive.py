@@ -33,7 +33,9 @@ class SensitiveLabel:
     reason: str = ""
 
     def allows_sink(self, sink: str, *, allow: frozenset[SensitivityClass] | None = None) -> bool:
-        permitted = allow or frozenset({SensitivityClass.PUBLIC, SensitivityClass.INTERNAL})
+        permitted = allow or _DEFAULT_SINK_ALLOW.get(
+            sink, frozenset({SensitivityClass.PUBLIC, SensitivityClass.INTERNAL})
+        )
         return self.classification in permitted
 
 
@@ -74,7 +76,16 @@ _DEFAULT_SINK_ALLOW: dict[str, frozenset[SensitivityClass]] = {
     "trusted_sink": frozenset(set(SensitivityClass)),
 }
 
+_CLASS_RANK = {
+    SensitivityClass.PUBLIC: 0,
+    SensitivityClass.INTERNAL: 1,
+    SensitivityClass.CONFIDENTIAL: 2,
+    SensitivityClass.SECRET: 3,
+    SensitivityClass.CREDENTIAL: 4,
+}
+
 _DECLASSIFICATION_LOG: list[DeclassificationRecord] = []
+_DECLASSIFICATION_LOG_LIMIT = 10_000
 
 
 def label_for(value: Any, *, source: str = "inferred", path: str = "") -> SensitiveLabel | None:
@@ -128,9 +139,11 @@ def declassify(
     reason: str,
     actor: str = "",
 ) -> SensitiveValue[T]:
-    """Explicit policy-authorized declassification with audit record."""
+    """Explicit declassification with audit record (monotonic downgrade only)."""
     if not reason.strip():
         raise SensitiveSinkError("declassification requires a non-empty reason")
+    if _CLASS_RANK[target] > _CLASS_RANK[value.label.classification]:
+        raise SensitiveSinkError("declassification cannot increase sensitivity")
     record = DeclassificationRecord(
         source_label=value.label,
         target_classification=target,
@@ -138,6 +151,8 @@ def declassify(
         actor=actor,
     )
     _DECLASSIFICATION_LOG.append(record)
+    if len(_DECLASSIFICATION_LOG) > _DECLASSIFICATION_LOG_LIMIT:
+        del _DECLASSIFICATION_LOG[: len(_DECLASSIFICATION_LOG) - _DECLASSIFICATION_LOG_LIMIT]
     return SensitiveValue(
         value.value,
         SensitiveLabel(
@@ -174,4 +189,7 @@ def walk_and_enforce(obj: Any, *, sink: str, path: str = "") -> Any:
         return tuple(
             walk_and_enforce(item, sink=sink, path=f"{path}[{idx}]") for idx, item in enumerate(obj)
         )
+    if isinstance(obj, (set, frozenset)):
+        items = [walk_and_enforce(item, sink=sink, path=f"{path}{{item}}") for item in obj]
+        return type(obj)(items)
     return obj

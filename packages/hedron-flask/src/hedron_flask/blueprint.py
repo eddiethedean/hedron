@@ -396,6 +396,26 @@ def attach_hedron_to_flask(
     _apply_flask_session_cookie_defaults(app, policy)
     _apply_flask_production_gates(app, policy)
 
+    from flask import g
+
+    from hedron_core.request_plane import bind_request_security, unbind_request_security
+
+    @app.before_request
+    def _hedron_bind_security_plane() -> None:
+        app_id = str(getattr(ext, "hedron_app_id", "") or "hedron-flask")
+        g.hedron_security_binding = bind_request_security(
+            policy=policy,
+            application_id=app_id,
+            correlation_id=request.headers.get("X-Request-Id", ""),
+        )
+
+    @app.teardown_request
+    def _hedron_unbind_security_plane(exc: BaseException | None) -> None:
+        binding = getattr(g, "hedron_security_binding", None)
+        if binding is not None:
+            unbind_request_security(binding)
+            g.hedron_security_binding = None
+
     @app.after_request
     def _hedron_after_request(response: Response) -> Response:
         authenticated = False
