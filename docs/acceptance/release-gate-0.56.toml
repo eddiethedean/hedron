@@ -1,0 +1,104 @@
+# Phase 0.56 security control plane release evidence index.
+# Verified in-tree cut (D-097 / D-098). Living tip v0.56.0; PyPI remains deferred.
+
+schema_version = 1
+phase = "0.56"
+status = "Verified"
+planning_baseline = "v0.55.0"
+required_predecessor = "v0.55.0"
+target = "v0.56.0"
+decision = "D-097"
+contract_refine = "D-098"
+owning_rfc = "RFC-0083"
+tracking = "#550-#557"
+
+[[evidence]]
+id = "CONTRACT-056"
+state = "Verified"
+command = "python scripts/check_contract_056.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "CONFORM-056"
+state = "Verified"
+command = "python scripts/check_conform_056.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "SENS-056"
+state = "Verified"
+command = "python scripts/check_sens_056.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "CTX-056"
+state = "Verified"
+command = "python scripts/check_ctx_056.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "POSTURE-056"
+state = "Verified"
+command = "python scripts/check_posture_056.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "SINK-056"
+state = "Verified"
+command = "python scripts/check_sink_056.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "EGRESS-056"
+state = "Verified"
+command = "python scripts/check_egress_056.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "INTENT-056"
+state = "Verified"
+command = "python scripts/check_intent_056.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "BUDGET-056"
+state = "Verified"
+command = "python scripts/check_budget_056.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "ADVERSARY-056"
+state = "Verified"
+command = "python scripts/check_adversary_056.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "PERF-056"
+state = "Verified"
+command = "python scripts/check_perf_056.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "REGRESS-056"
+state = "Verified"
+command = "python scripts/check_regress_056.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-056"
+state = "Verified"
+command = "python scripts/check_pkg_056.py"
+ci_job = "test"
+owner = "hedron"

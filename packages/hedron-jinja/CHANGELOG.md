@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.56.0] — 2026-08-20
+
+### Added
+
+- Security control plane composition under `hedron_core.security_plane` (context, sensitivity, sinks, egress, budgets, intents, posture).
+
 ## [0.55.0] — 2026-08-20
 
 ### Changed

@@ -1,8 +1,8 @@
 # What’s new in 0.55
 
-Published in-tree **0.55.0** (PyPI still **0.54.0** while deferred). Pin
-`hedron>=0.54.0,<0.55` from PyPI until the 0.55 wheel lands; checkout tip is
-`0.55.0`.
+Historical **0.55.0** in-tree Published cut (superseded by living tip **0.56.0**;
+PyPI may still show **0.54.0** while deferred). Prefer
+[What’s new in 0.56](whats-new-0.56.md) for the current train.
 
 ## 0.55.0
 

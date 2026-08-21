@@ -53,7 +53,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Verified** / **Published** in-tree (`v0.53.0`; Verified gates; tag/PyPI deferred; [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md), D-091/D-092, [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
 | **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Published** (`v0.54.0` on GitHub and PyPI; [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md), D-093/D-094, foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543); companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
 | **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Published** (`v0.55.0` tag; Verified gates; PyPI deferred; [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md), D-095/D-096, [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)) |
-| **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Planned** (security issues [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557); living tip `v0.55.0`) |
+| **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.0` in-tree; Verified gates; tag/PyPI deferred; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -5625,31 +5625,35 @@ pluggable hooks so applications and deployment platforms can own those concerns 
 
 ## 0.56 — Security control plane and adversarial assurance (`v0.56.0`)
 
-**Status:** Planned. Security-only phase tracking
+**Status:** Published in-tree as `v0.56.0` (D-097 / D-098 / RFC-0083; Verified gates; tag/PyPI deferred). Security-only phase tracking
 [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557).
 0.56 composes and hardens existing security mechanisms; it does not reopen 0.55 application-
-workflow scope or promote experimental transports, hosts, or packages. Living tip remains
-`v0.55.0` until the 0.56 train is cut.
+workflow scope or promote experimental transports, hosts, or packages. Living tip is
+`v0.56.0` (PyPI remains deferred).
 
 **Outcome:** Every Hedron-controlled request crosses one inspectable security control plane. Identity
 and sensitivity provenance survive supported boundaries; dangerous sinks and outbound access use
 purpose-specific deny-by-default policy; high-risk actions carry authorization-bound intent;
-resource limits apply while data is streaming; and every Supported host proves the same portable
-security invariants with threat-oriented evidence.
+resource limits apply at the earliest boundary each Supported host exposes; and every Supported
+host proves the same portable security invariants with threat-oriented evidence.
 
 ### Stage 0: authority and contract freeze
 
-Implementation starts only after one phase RFC and release decision are Accepted. They must freeze
-the `SecurityProfile` composition object, `SecurityContext` serialization, sensitivity-label and
-sink-taxonomy schemas, event-code vocabulary, conformance profile version, signing/intent formats,
-request-budget ledger model, posture-report schema, compatibility modes, and the gate ledger below.
-Names and signatures in this Planned section are illustrative until that authority lands; issue
-bodies remain normative for feature acceptance.
+Implementation starts only after one phase RFC, one ownership/release decision, and one Stage 0
+contract-refine decision are Accepted. They must freeze the threat model and trust-boundary map;
+the `SecurityProfile` composition object; `SecurityContext` serialization; sensitivity-label and
+sink-taxonomy schemas; event-code vocabulary; conformance profile version; signing/intent formats;
+request-budget ledger and precedence models; posture-report schema and exit codes; adapter
+capability matrix; compatibility modes; the method for selecting numeric defaults and performance
+ceilings; and the gate ledger below. Names and signatures in this Planned section are illustrative
+until that authority lands; issue bodies remain normative for feature acceptance.
 
 Stage 0 must also inventory the 0.22 `SecurityPolicy`/CSRF, 0.41 navigation trust boundaries, 0.45
 interaction-manifest security claims, 0.49 request-model/security projection, 0.52 conformance
 authority, and 0.55 capability/replay/upload/CSP contracts, plus existing `SafeUrl` /
-`TrustedHtml` / header helpers. The phase extends those authorities into one control plane rather
+`TrustedHtml` / header helpers. It must machine-inventory adapter ingress/body parsers, dangerous
+sinks, server-side HTTP clients, context-serialization boundaries, sensitive-data sinks, and
+business-effect/intent stores. The phase extends those authorities into one control plane rather
 than introducing parallel validators. A prototype may inform the RFC, but no prototype alone counts
 as a frozen public contract or release evidence.
 
@@ -5666,6 +5670,24 @@ as a frozen public contract or release evidence.
   verified offline.
 - **Bounded evidence:** diagnostics and audit records are stable, redacted, correlation-friendly,
   and subject to their own size, retention, and cardinality budgets.
+- **Portable floor, explicit host limits:** Supported hosts must prove every portable invariant.
+  A host that pre-buffers bodies or lacks disconnect/output control records the earliest enforceable
+  boundary and required deployment control; Hedron does not claim transport behavior it cannot see.
+
+### Threat model and trust-boundary map
+
+Stage 0 records protected assets (identity/tenant scope, sensitive values, signing keys, authorized
+side effects, service availability, and internal network reachability), entry points, trust
+transitions, and owners. The minimum adversary set covers an unauthenticated remote client, a
+malicious tenant, hostile upstream/network input, replay and concurrency races, and accidental
+application/operator misconfiguration. Application code or a plugin with arbitrary in-process
+memory, key, or socket access is outside the enforcement boundary and must be stated as such.
+
+Every release claim maps one threat to one enforcement boundary, failure outcome, owner, audit
+event, and executable fixture. The boundary map follows request bytes through host ingress, parsing,
+authentication/context creation, authorization and intent checks, handlers, framework-owned sinks,
+jobs/caches, and outbound transports. Browser-only policy declarations and deployment/WAF controls
+remain distinct from server-side enforcement.
 
 ### Issue workstreams
 
@@ -5680,6 +5702,22 @@ as a frozen public contract or release evidence.
 | [#556](https://github.com/eddiethedean/hedron/issues/556) | Short-lived signed action intents binding actor, tenant, action, resource revision, payload, and target |
 | [#557](https://github.com/eddiethedean/hedron/issues/557) | Framework-wide streaming `RequestBudget` and one nested request-local resource ledger |
 
+### Package ownership and dependency direction
+
+- `hedron-core` owns framework-neutral policy values, trust compilation, label/event vocabulary,
+  budget/keyring protocols, and transport-neutral egress decisions. It does not acquire FastAPI,
+  Flask, Django, an HTTP client, `hedron-conformance`, or Explorer as runtime dependencies.
+- `hedron` and the Flask/Django/Posit adapters own host ingress, request/task binding, typed failure
+  mapping, and action integration. Package-specific policies adapt to public core contracts and may
+  tighten them; they do not import another package's private validator.
+- `hedron-conformance` owns the portable profile schema, fixtures, result normalization, and
+  differential runner. Runtime packages emit/consume versioned records without depending on the
+  conformance package. `hedron security-check` and Explorer consume the same read-only inventories
+  and cannot become runtime enforcement dependencies.
+- Concrete HTTP transports, stores, and cryptographic implementations remain injected or live in
+  packages that already own the dependency. Tests must prove that injecting one cannot bypass the
+  core policy decision and that installing a minimal package does not pull in unrelated hosts/tools.
+
 ### Related phase-owned features
 
 The following supporting features round out the eight issues without creating unrelated product
@@ -5687,8 +5725,10 @@ surface:
 
 - **Versioned `SecurityProfile`:** one immutable composition object selects conformance version,
   trust policy, context propagation, sensitivity sinks, egress rules, intent requirements, request
-  budgets, and posture strictness. Named `development`, `test`, and `production` profiles may supply
-  reviewed defaults, but production never silently inherits permissive development settings.
+  budgets, and posture strictness. Stage 0 must define one compatibility mapping to the existing
+  `SecurityPolicy.from_name()` `development` / `standard` / `strict` presets rather than creating a
+  parallel preset namespace. Reviewed defaults may tighten those presets, but production never
+  silently inherits permissive development settings.
 - **Signing-key lifecycle:** a pluggable `SecurityKeyring` supports key IDs, purpose separation,
   bounded verification overlap, rotation, revocation, startup validation, and test-only deterministic
   keys. Hedron owns no hosted key-management service and never persists raw keys in diagnostics.
@@ -5707,13 +5747,31 @@ surface:
 - **Control inventory and exception registry:** every first-party dangerous sink, outbound fetch,
   security-context serialization, sensitive sink, and pre-handler budget hook has an owner and
   machine-readable disposition: `covered`, `tightened`, `unsupported`, or time-bounded `exception`.
+  Exceptions require rationale, compensating control, owner, expiry, and a follow-up destination;
+  an expired exception fails the release gate.
+
+### Dependency and proof strategy
+
+- `CONTRACT-056` and the portable `CONFORM-056` harness land first; package implementations cannot
+  define private substitutes for schemas that Stage 0 owns.
+- `CTX-056` and `SENS-056` establish context/label propagation before events, jobs, caches, posture,
+  or custom sinks can claim coverage. `SINK-056` establishes purpose compilation before first-party
+  renderers migrate, and `EGRESS-056` binds that URL decision to an actual network connection.
+- `BUDGET-056` supplies one monotonic ledger before egress, multipart, intent stores, and nested
+  features charge it. `INTENT-056` composes only after the capability, CSRF, replay, context, and
+  canonicalization ordering is executable.
+- Each authority proves one thin vertical slice through FastAPI, Flask, and Django before fleet
+  migration. `POSTURE-056` consumes the same inventories throughout delivery and remains read-only;
+  it cannot become a second policy authority.
 
 ### Delivery sequence
 
 1. **Authority foundation:** freeze the `SecurityProfile`, `SecurityContext`, sensitivity-label,
-   sink-taxonomy, event-code, and conformance schemas before package migrations begin.
+   sink-taxonomy, event-code, threat-map, budget, and conformance schemas before package migrations
+   begin; land executable portable fixtures with explicit Planned dispositions for known gaps.
 2. **Boundary enforcement:** migrate dangerous sinks and server fetches to shared authorities;
-   install streaming request budgets at adapter ingress and propagate one ledger through nested work.
+   install request budgets at each adapter's earliest enforceable ingress and propagate one ledger
+   through nested work; prove a cross-adapter vertical slice before expanding the inventory.
 3. **Mutation integrity:** add signed intents and key rotation, composing with 0.55 capability,
    CSRF, idempotency, upload, and audit contracts without treating any one control as a substitute.
 4. **Fleet proof:** publish adapter/package inventories, run differential and adversarial suites,
@@ -5723,47 +5781,57 @@ surface:
 
 The Accepted Stage 0 authority may rename these identifiers, but it must retain one independently
 reviewable row for every responsibility. The 0.56 cut requires every final row Verified with zero
-Deferred; a partially migrated package inventory does not qualify for a release cut.
+Deferred; a partially migrated package inventory does not qualify for a release cut. A tested
+`unsupported` host capability is an explicit inventory disposition, not a Deferred gate, and no
+Supported adapter may mark a portable security-floor invariant unsupported.
 
 | Provisional gate | Cut evidence |
 |---|---|
-| `CONTRACT-056` | Accepted RFC/decision; versioned `SecurityProfile`, schemas, event codes, keyring contract, compatibility modes, and fixtures |
-| `CONFORM-056` | #550 versioned security conformance profile, FastAPI/Flask/Django results, Posit/notebook unsupported claims, and differential fixtures |
+| `CONTRACT-056` | Accepted RFC/decisions; threat/boundary and package-dependency maps; versioned `SecurityProfile`, schemas, event codes, keyring contract, precedence, compatibility modes, and fixtures |
+| `CONFORM-056` | #550 machine-readable security profile, permanent CI fixtures, FastAPI/Flask/Django differential results and earliest-enforcement claims, plus explicit Posit/notebook/host capability dispositions |
 | `SENS-056` | #551 label propagation, sink enforcement, explicit declassification audit, nested/container coverage, and retention budgets |
-| `CTX-056` | #552 immutable `SecurityContext`, authority narrowing, serialization, async/job/cache isolation, and cross-tenant fail-closed tests |
-| `POSTURE-056` | #553 offline `hedron security-check` human/JSON/SARIF output, evidence/confidence/ownership, suppressions, and baseline drift |
-| `SINK-056` | #554 purpose-specific compiler coverage for URL/selector/markup/SVG/browser payloads and first-party sink inventory disposition |
-| `EGRESS-056` | #555 deny-by-default outbound policy, per-hop DNS/redirect validation, deadline/response budgets, and SSRF adversarial corpus |
-| `INTENT-056` | #556 signed intent bind/consume contract, atomic one-time use, key rotation window, and substitution fail-closed matrix |
-| `BUDGET-056` | #557 streaming `RequestBudget`, nested ledger charges, reject-before-buffer proofs, and disconnect/cleanup suites |
-| `ADVERSARY-056` | Shared adversarial/fuzz corpus across adapters and packages with recorded threat scenarios and performance ceilings |
+| `CTX-056` | #552 immutable non-global `SecurityContext`, explicit-field serialization, authority narrowing, async/job/cache isolation, and cross-subject/tenant/application fail-closed tests |
+| `POSTURE-056` | #553 offline `hedron security-check` human/JSON/SARIF output and exit semantics, evidence/confidence/ownership/remediation, unknowns, expiring suppressions, strict mode, and baseline drift |
+| `SINK-056` | #554 versioned purpose compiler for URL/selector/markup/SVG/browser payloads, Python/HDJ/Web Component equivalence, smuggling corpus, and complete sink dispositions |
+| `EGRESS-056` | #555 deny-by-default scheme/origin/host/port/content-type policy, connection-bound DNS and per-hop redirect validation, proxy mode, injected-transport enforcement, deadlines/response/decompression budgets, and SSRF corpus |
+| `INTENT-056` | #556 versioned bind/consume state machine, every required field substitution, atomic multi-worker one-time use, key rotation window, documented transaction boundary, and examples |
+| `BUDGET-056` | #557 request-line/header/body/decompression/multipart/JSON/form/concurrency/deadline/response/SSE/WebSocket budgets, monotonic nested charges, typed stable failures, adapter capability matrix, reject-before-Hedron-buffer proofs, and cleanup suites |
+| `ADVERSARY-056` | Shared adversarial/fuzz corpus across adapters and packages with traceable threat scenarios, deterministic reproduction, and parser/transport differentials |
+| `PERF-056` | Measured policy overhead, streaming peak memory, metadata retention, event cardinality, concurrency behavior, adversarial worst cases, and locked numeric ceilings/default-selection evidence |
 | `REGRESS-056` | 0.55 upgrade fixtures plus security, cancellation, retry, disconnect, worker-restart, and compatibility suites |
-| `PKG-056` | Wheel/install/import/API-surface checks, docs and migration notes, control inventory, acceptance ledger, and release metadata |
+| `PKG-056` | Wheel/install/import/API-surface checks, docs and migration notes, complete control/exception inventory, acceptance ledger, and release metadata |
 
 ### Normative ordering and failure semantics
 
 - Adapter ingress installs the active `SecurityProfile` and a request-local budget ledger before
-  body parsing expands. Oversized or over-count bodies fail while streaming; they never become
-  fully buffered application inputs.
+  Hedron-owned body parsing expands. Hosts with streaming ingress reject oversized or over-count
+  bodies while reading; a host/server that pre-buffers must report that limitation, reject before
+  the application handler or parser expansion, and name the deployment-layer limit that closes it.
 - CSRF, authentication, capability enforcement, and signed-intent validation precede protected
   side effects. Intent minting requires prior application authorization; missing, stale, or
   substituted intents fail closed without disclosing which bound field mismatched to the client.
-- `SecurityContext` may only narrow authority. Serialization across jobs, caches, fragments,
-  MCP, and background work preserves subject/tenant fingerprints; broadened or client-supplied
-  context is rejected.
+- `SecurityContext` is request-bound, never process-global authority, and may only narrow.
+  Serialization across jobs, caches, fragments, MCP, and background work captures only explicitly
+  allowed fields and preserves application/subject/tenant fingerprints; missing, stale, broadened,
+  foreign, or client-supplied context is rejected.
 - Sensitivity labels are authoritative for framework-owned sinks. Key-name and pattern redaction
   remain defense in depth for unlabeled external values and never authorize declassification.
-  Explicit declassification records reason and source and is audited.
+  Explicit policy-authorized declassification records reason and source and is audited; label
+  metadata and safe fingerprints never contain a reversible secret representation.
 - Dangerous sinks compile through purpose-specific trust types. Cross-purpose reuse of a compiled
   value (URL as selector, HTML as SVG, etc.) fails closed.
-- Outbound fetches validate DNS and redirects on every hop and resolved address; retries and
-  decompression charge the same request-local egress budget. Deny-by-default applies until an
+- Outbound fetches bind the connection to a policy-validated resolution (or revalidate at connect),
+  then re-evaluate every redirect hop and resolved address. Injected transports still execute policy;
+  retries and decompression charge the same request-local ledger. Deny-by-default applies until an
   application-owned allow policy is configured.
 - Idempotency/replay from 0.55 and signed intents compose: replay deduplicates requests; intents
   prove authorization-bound integrity. Neither substitutes for CSRF or object-level authorization.
+  The intent store specifies claim/consume/failure states and the limit of atomicity with the
+  application business transaction; Hedron does not imply atomic coupling it cannot provide.
 - Posture reports and security events are redacted, cardinality-bounded, and offline-capable.
   Heuristic findings, application-owned decisions, unsupported capabilities, and unverifiable
-  deployment facts remain distinguishable from proven contract breaks.
+  deployment facts remain distinguishable from proven contract breaks. Default CI fails only on
+  configured proven blockers; strict mode and suppression-expiry exit behavior are deterministic.
 - Package migrations to shared authorities require compatibility fixtures proving equivalent or
   intentionally stricter behavior. Silent weakening of an existing public validator is prohibited.
 
@@ -5771,14 +5839,20 @@ Deferred; a partially migrated package inventory does not qualify for a release 
 
 - Contexts, labels, compiled trust values, intents, and budget ledgers are immutable or
   monotonic; derived values may narrow authority or consume budget but never restore either.
+- Concurrent/nested tasks charge an atomic parent ledger; child views cannot reset counters,
+  double-refund reservations, or exceed the parent's remaining time/byte/concurrency allowance.
+- The keyring mints only with an active purpose-bound key, verifies only inside a bounded declared
+  overlap, and fails closed on unknown, revoked, retired-for-minting, or malformed key identifiers.
 - Canonicalization is versioned and single-pass. Ambiguous duplicate form/JSON values, mixed
   encodings, control characters, userinfo, alternate IP forms, and cross-purpose value reuse fail
   closed with stable public diagnostics.
-- DNS and redirect validation occurs for every hop and resolved address; retries, redirects, and
-  decompression charge the same request-local egress budget.
-- Oversized bodies are rejected while streaming, before full buffering or parser expansion;
-  cancellation, timeout, exception, disconnect, and worker-shutdown paths release temporary files,
-  concurrency permits, intent locks, and network responses.
+- DNS and redirect validation occurs for every hop and resolved address, and the transport connects
+  only to an address authorized for that decision. No Supported first-party API may construct an
+  unrestricted HTTP client; retries, redirects, and decompression charge the parent ledger.
+- Request and response limits cover encoded and decoded expansion, multipart and structured-parser
+  complexity, deadlines, and SSE/WebSocket output. Hedron rejects before its own full buffering or
+  parser expansion; cancellation, timeout, exception, disconnect, and worker-shutdown paths release
+  temporary files, concurrency permits, intent claims, and network responses.
 - Sensitive values remain protected through validation errors, interactions, jobs, caches, exports,
   recordings, telemetry, and custom sinks. Declassification requires explicit reason and source
   metadata and is itself audited.
@@ -5786,8 +5860,9 @@ Deferred; a partially migrated package inventory does not qualify for a release 
   capability, or audit metadata. Host-derived context and configured trust boundaries remain
   authoritative.
 - Performance gates measure policy overhead, streaming memory, metadata retention, event
-  cardinality, and adversarial worst cases; security limits cannot be disabled by an optional
-  dependency failing to import.
+  cardinality, concurrency, and adversarial worst cases against a recorded baseline. The Accepted
+  packet defines default-selection/override precedence and the final gate locks numeric ceilings;
+  security limits cannot be disabled by an optional dependency failing to import.
 
 ### Stability, migration, and ownership
 
@@ -5799,7 +5874,9 @@ Deferred; a partially migrated package inventory does not qualify for a release 
   final CSP/header policy, key custody, egress allowlists, security-event retention, and incident
   response. Hedron owns correct enforcement of the framework contracts supplied to it.
 - A supported adapter or package may declare a capability unsupported, but cannot silently omit a
-  required invariant or claim parity without conformance evidence.
+  required invariant or claim parity without conformance evidence. `unsupported` is permitted only
+  for a non-portable host capability with a documented deployment control or safe fallback; it is
+  neither a Deferred gate nor a waiver of the portable floor.
 
 ### Explicit non-goals
 
@@ -5807,14 +5884,18 @@ Deferred; a partially migrated package inventory does not qualify for a release 
 SIEM, compliance certification, vulnerability scanner, network proxy, or infrastructure sandbox.
 It does not implement arbitrary Python information-flow tracking, authorize remote access by
 default, inspect live production systems, or claim that framework controls replace deployment
-hardening and application-specific threat modeling.
+hardening and application-specific threat modeling. It does not defend against arbitrary trusted
+application/plugin code with process memory, signing-key, or raw-socket access, and it does not
+claim transport-level streaming enforcement from a host that exposes only pre-buffered bodies.
 
 ### Exit gate
 
 - FastAPI, Flask, and Django publish complete results for the portable security profile; Posit,
-  notebook, and other supported hosts publish applicable evidence plus explicit unsupported claims.
+  notebook, and other supported hosts publish applicable evidence plus explicit unsupported claims,
+  safe fallbacks/deployment controls, and the earliest boundary each host can enforce.
 - Every first-party dangerous sink and server-side fetch is inventoried and either migrated to the
-  shared authority, tightened by a package policy, or covered by a reviewed expiring exception.
+  shared authority, tightened by a package policy, or covered by a reviewed unexpired exception;
+  egress connections cannot bypass validated resolution through redirects or injected transports.
 - Cross-subject, cross-tenant, cross-application, stale, missing, broadened, or incorrectly
   serialized security contexts fail closed across actions, fragments, jobs, caches, idempotency,
   MCP, background work, and audit events.
@@ -5822,15 +5903,19 @@ hardening and application-specific threat modeling.
   declassification, custom trusted sinks, aliases, unions, nested containers, and validation errors
   have adversarial coverage and retention/performance budgets.
 - Signed intents reject actor, tenant, method, action, resource, revision, payload, target, expiry,
-  key, and canonicalization substitutions; one-time consumption is atomic across multiple workers.
-- Streaming request and egress limits reject before unbounded buffering, survive nested features,
-  and release every reserved resource on denial, cancellation, failure, timeout, or disconnect.
+  key, and canonicalization substitutions; one-time consumption is atomic across multiple workers,
+  and the documented store/business-transaction boundary has crash/retry fixtures.
+- Request, parser, response, streaming, and egress limits reject at the earliest enforceable boundary,
+  never reset across nested features, and release every reserved resource on denial, cancellation,
+  failure, timeout, disconnect, or worker shutdown.
 - `hedron security-check` emits redacted human, JSON, and SARIF-style output with evidence,
-  confidence, ownership, remediation, suppressions, unknowns, conformance status, and baseline drift.
+  confidence, ownership, remediation, suppressions, unknowns, conformance status, baseline drift,
+  and deterministic default/strict exit behavior without probing production endpoints.
 - Shared adversarial and differential suites pass across Python, HDJ, Web Components, adapters, and
   applicable packages; no security claim depends only on prose or a single-host happy path.
 - Release evidence records policy/schema versions, compatibility fixtures, control inventory,
-  threat scenarios, fuzz corpus results, performance budgets, and zero unexplained Deferred rows.
+  threat-to-boundary mappings, fuzz corpus results, numeric performance/resource budgets, no expired
+  exceptions, and zero Deferred rows.
 
 ## Later-phase policy
 

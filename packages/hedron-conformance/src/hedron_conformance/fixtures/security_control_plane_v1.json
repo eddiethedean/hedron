@@ -1,0 +1,87 @@
+{
+  "id": "security-control-plane",
+  "version": "hedron-security-1",
+  "policy_presets": [
+    "development",
+    "standard",
+    "strict"
+  ],
+  "composition": "SecurityPolicy",
+  "cases": [
+    {
+      "id": "csrf_before_handler",
+      "adapter": "fastapi",
+      "invariant": "csrf_before_handler",
+      "earliest_enforcement": "ASGI receive / route wrap",
+      "expect": "pass"
+    },
+    {
+      "id": "csrf_before_handler",
+      "adapter": "flask",
+      "invariant": "csrf_before_handler",
+      "earliest_enforcement": "WSGI before view",
+      "expect": "pass"
+    },
+    {
+      "id": "csrf_before_handler",
+      "adapter": "django",
+      "invariant": "csrf_before_handler",
+      "earliest_enforcement": "middleware before view",
+      "expect": "pass"
+    },
+    {
+      "id": "context_isolation",
+      "adapter": "fastapi",
+      "invariant": "security_context_isolation",
+      "earliest_enforcement": "request ContextVar",
+      "expect": "pass"
+    },
+    {
+      "id": "context_isolation",
+      "adapter": "flask",
+      "invariant": "security_context_isolation",
+      "earliest_enforcement": "request ContextVar",
+      "expect": "pass"
+    },
+    {
+      "id": "context_isolation",
+      "adapter": "django",
+      "invariant": "security_context_isolation",
+      "earliest_enforcement": "request ContextVar",
+      "expect": "pass"
+    },
+    {
+      "id": "budget_before_body",
+      "adapter": "fastapi",
+      "invariant": "request_budget_before_body",
+      "earliest_enforcement": "ASGI streaming",
+      "expect": "pass"
+    },
+    {
+      "id": "budget_before_body",
+      "adapter": "flask",
+      "invariant": "request_budget_before_body",
+      "earliest_enforcement": "WSGI environ; deployment body limit",
+      "expect": "pass"
+    },
+    {
+      "id": "budget_before_body",
+      "adapter": "django",
+      "invariant": "request_budget_before_body",
+      "earliest_enforcement": "middleware; deployment body limit",
+      "expect": "pass"
+    }
+  ],
+  "host_dispositions": {
+    "posit": {
+      "portable_floor": "supported",
+      "streaming_body": "unsupported",
+      "deployment_control": "Connect/Workbench body size limits"
+    },
+    "notebook": {
+      "portable_floor": "degraded",
+      "streaming_body": "unsupported",
+      "deployment_control": "localhost preview token gate"
+    }
+  }
+}

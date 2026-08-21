@@ -17,9 +17,10 @@ modules. See [RFC-0082](https://github.com/eddiethedean/hedron/blob/main/docs/rf
 - `hedron_core.builtins.MasterDetail`
 - CLI: `hedron upgrade-report`
 
-FastAPI owns action `capability=` / `idempotency=` enforcement in 0.55. Flask/Django
-layout components are portable; capability and replay action kwargs are `unsupported`
-on those adapters (`docs/acceptance/workflow-parity-055.toml`).
+FastAPI owns action `capability=` / `idempotency=` enforcement introduced in the
+0.55 workflow train. Flask/Django layout components are portable; capability and
+replay action kwargs remain `unsupported` on those adapters
+(`docs/acceptance/workflow-parity-055.toml`).
 
-Pin and maturity follow the living train; new symbols are `beta` for the first
-0.55 release.
+Pin and maturity follow the living **0.56** train; 0.55 workflow symbols remain
+`beta`.

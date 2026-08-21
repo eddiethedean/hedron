@@ -13,6 +13,10 @@ from hedron_core.csrf_strategy import (
     CsrfStrategy,
     DoubleSubmitCookieCsrf,
 )
+from hedron_core.request_budget import RequestBudgetLimits
+
+# Avoid circular import of EgressPolicy at type-check time by using Any for optional policy.
+
 
 
 def _policy_field_values_without_csrf(policy: SecurityPolicy) -> tuple[Any, ...]:
@@ -74,6 +78,14 @@ class SecurityPolicy:
     # EVAL-020 / HDJ htmx.eval: allow js: on hx-vals / hx-headers (default deny).
     allow_htmx_eval: bool = False
     findings: tuple[str, ...] = field(default_factory=tuple)
+    # 0.56 control-plane composition knobs (compat with SecurityPolicy.from_name presets).
+    control_plane_version: int = 1
+    conformance_profile_version: str = "hedron-security-1"
+    intent_required: bool = False
+    posture_strict: bool = False
+    request_budget_limits: RequestBudgetLimits | None = None
+    egress_allow_hosts: frozenset[str] = field(default_factory=frozenset)
+    egress_deny_by_default: bool = True
 
     @staticmethod
     def _csrf_identity(strategy: CsrfStrategy | None) -> tuple[object, ...]:
@@ -152,6 +164,9 @@ class SecurityPolicy:
                 allow_external_redirects=False,
                 htmx_browser_preset=True,
                 allow_htmx_eval=False,
+                intent_required=True,
+                posture_strict=True,
+                request_budget_limits=RequestBudgetLimits(),
                 findings=(
                     "strict profile: CSP, private caching, and HTMX history hardening enforced",
                 ),
@@ -167,6 +182,7 @@ class SecurityPolicy:
             explorer_enabled=False,
             htmx_browser_preset=True,
             allow_htmx_eval=False,
+            request_budget_limits=RequestBudgetLimits(),
             findings=(
                 "standard profile: CSRF, private authenticated caching, and HTMX browser "
                 "hardening enabled",

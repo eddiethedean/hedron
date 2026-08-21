@@ -1,0 +1,113 @@
+schema_version = 1
+phase = "0.56"
+state = "Verified"
+baseline = "v0.55.0"
+target = "v0.56.0"
+owning_rfc = "RFC-0083"
+decision = "D-097"
+contract_refine = "D-098"
+
+[[control]]
+id = "sink.safe_url"
+owner = "hedron-core"
+kind = "dangerous_sink"
+disposition = "tightened"
+notes = "Migrate through TrustPurpose compiler; retain SafeUrl public API"
+
+[[control]]
+id = "sink.trusted_html"
+owner = "hedron-core"
+kind = "dangerous_sink"
+disposition = "tightened"
+notes = "Migrate through markup purpose; retain TrustedHtml public API"
+
+[[control]]
+id = "sink.secret"
+owner = "hedron-core"
+kind = "sensitive_sink"
+disposition = "tightened"
+notes = "Compose with SensitiveLabel; heuristics remain defense in depth"
+
+[[control]]
+id = "sink.css_selector"
+owner = "hedron-core"
+kind = "dangerous_sink"
+disposition = "tightened"
+notes = "safe_css_selector delegates to purpose compiler"
+
+[[control]]
+id = "sink.active_markup_svg"
+owner = "hedron-core"
+kind = "dangerous_sink"
+disposition = "tightened"
+notes = "active_markup SVG/icon rejection under SVG purpose"
+
+[[control]]
+id = "csrf.double_submit"
+owner = "hedron-core"
+kind = "pre_handler"
+disposition = "covered"
+notes = "CSRF remains required before side effects; intents do not replace it"
+
+[[control]]
+id = "egress.maps_proxy"
+owner = "hedron-maps"
+kind = "outbound_fetch"
+disposition = "tightened"
+notes = "assert_ssrf_safe delegates to core EgressPolicy"
+
+[[control]]
+id = "egress.gradio_remote"
+owner = "hedron-gradio"
+kind = "outbound_fetch"
+disposition = "tightened"
+notes = "GradioRemoteConfig validates via core EgressPolicy"
+
+[[control]]
+id = "egress.mcp_transport"
+owner = "hedron-mcp"
+kind = "outbound_fetch"
+disposition = "tightened"
+notes = "MCP origin allowlist adapts core EgressPolicy"
+
+[[control]]
+id = "budget.upload"
+owner = "hedron"
+kind = "pre_handler_budget"
+disposition = "tightened"
+notes = "UploadBudget charges parent RequestBudget"
+
+[[control]]
+id = "budget.workflow"
+owner = "hedron"
+kind = "pre_handler_budget"
+disposition = "tightened"
+notes = "WorkflowBudget charges parent RequestBudget"
+
+[[control]]
+id = "budget.stream"
+owner = "hedron"
+kind = "pre_handler_budget"
+disposition = "tightened"
+notes = "StreamBudget charges parent RequestBudget"
+
+[[control]]
+id = "context.serialization"
+owner = "hedron-core"
+kind = "context_serialization"
+disposition = "covered"
+notes = "SecurityContext explicit-field serialization for jobs/caches/MCP"
+
+[[control]]
+id = "intent.store"
+owner = "hedron"
+kind = "business_effect_store"
+disposition = "covered"
+notes = "SignedIntent store with documented transaction boundary"
+
+[[control]]
+id = "replay.store"
+owner = "hedron"
+kind = "business_effect_store"
+disposition = "covered"
+notes = "0.55 ReplayStore composes with intents; not a substitute"

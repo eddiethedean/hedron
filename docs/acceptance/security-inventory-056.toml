@@ -1,0 +1,83 @@
+schema_version = 1
+phase = "0.56"
+state = "Verified"
+baseline = "v0.55.0"
+target = "v0.56.0"
+owning_rfc = "RFC-0083"
+decision = "D-097"
+contract_refine = "D-098"
+shared_schema_import = "hedron_core.security_plane"
+
+[[workstream]]
+id = "conformance"
+issue = "#550"
+gates = ["CONFORM-056"]
+shipped_seams = ["hedron-conformance profiles", "Capability.ESCAPING", "adapter CSRF parity"]
+planned_contract = "Versioned security conformance profile with differential fixtures"
+
+[[workstream]]
+id = "sensitive"
+issue = "#551"
+gates = ["SENS-056"]
+shipped_seams = ["Secret", "Sensitive", "TrustedHtml.source", "redact_secret_like"]
+planned_contract = "SensitiveLabel propagation, sink enforcement, audited declassification"
+
+[[workstream]]
+id = "context"
+issue = "#552"
+gates = ["CTX-056"]
+shipped_seams = ["AuthSignal", "RenderContext", "current_request ContextVar"]
+planned_contract = "Immutable request SecurityContext with serialization and narrowing"
+
+[[workstream]]
+id = "posture"
+issue = "#553"
+gates = ["POSTURE-056"]
+shipped_seams = ["hedron check SARIF", "WorkflowManifest", "upgrade-report"]
+planned_contract = "hedron security-check offline posture with suppressions and drift"
+
+[[workstream]]
+id = "sinks"
+issue = "#554"
+gates = ["SINK-056"]
+shipped_seams = ["SafeUrl", "UrlPurpose", "TrustedHtml", "safe_css_selector", "active_markup"]
+planned_contract = "Unified purpose compiler for URL/selector/markup/SVG/browser payloads"
+
+[[workstream]]
+id = "egress"
+issue = "#555"
+gates = ["EGRESS-056"]
+shipped_seams = ["assert_ssrf_safe", "GradioRemoteConfig", "MCP origin allowlist"]
+planned_contract = "Shared deny-by-default egress policy with injectable transport"
+
+[[workstream]]
+id = "intent"
+issue = "#556"
+gates = ["INTENT-056"]
+shipped_seams = ["CSRF strategies", "IdempotencyPolicy", "ReplayStore", "capabilities"]
+planned_contract = "SignedIntent bind/consume with SecurityKeyring"
+
+[[workstream]]
+id = "budget"
+issue = "#557"
+gates = ["BUDGET-056"]
+shipped_seams = ["UploadBudget", "WorkflowBudget", "StreamBudget", "RenderContext limits"]
+planned_contract = "RequestBudget nested monotonic ledger at earliest ingress"
+
+[[workstream]]
+id = "exit"
+issue = "#550"
+gates = ["CONTRACT-056", "ADVERSARY-056", "PERF-056", "REGRESS-056", "PKG-056"]
+shipped_seams = ["release-gate-0.55", "tests/security", "ci_checks.sh"]
+planned_contract = "Contract freeze, adversary corpus, perf ceilings, packaging"
+
+[boundaries]
+runtime_changes = false
+version_changes = false
+idp = false
+rbac_engine = false
+hosted_kms = false
+waf = false
+malware_scanner = false
+schedule_1_0 = false
+reopen_055_workflows = false

@@ -3,6 +3,12 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.56.0 — 2026-08-20
+
+Security control plane in-tree tip (RFC-0083 / D-097 / D-098). Pin
+`hedron>=0.54.0,<0.55` from PyPI until the 0.56 wheel lands.
+[What’s new in 0.56](whats-new-0.56.md).
+
 ## 0.55.0 — 2026-08-20
 
 In-tree Published cut for secure upgradeable application workflows

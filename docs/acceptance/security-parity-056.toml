@@ -1,0 +1,61 @@
+schema_version = 1
+phase = "0.56"
+state = "Verified"
+baseline = "v0.55.0"
+target = "v0.56.0"
+owning_rfc = "RFC-0083"
+
+[[adapter]]
+name = "fastapi"
+portable_floor = "supported"
+streaming_body = "supported"
+security_context = "supported"
+egress = "supported"
+signed_intent = "supported"
+request_budget = "supported"
+earliest_enforcement = "ASGI receive / Starlette request streaming"
+notes = "Primary reference adapter for portable security floor"
+
+[[adapter]]
+name = "flask"
+portable_floor = "supported"
+streaming_body = "degraded"
+security_context = "supported"
+egress = "supported"
+signed_intent = "supported"
+request_budget = "supported"
+earliest_enforcement = "WSGI environ before parser expansion; host may pre-buffer"
+notes = "Pre-buffer hosts record deployment-layer body limits"
+
+[[adapter]]
+name = "django"
+portable_floor = "supported"
+streaming_body = "degraded"
+security_context = "supported"
+egress = "supported"
+signed_intent = "supported"
+request_budget = "supported"
+earliest_enforcement = "middleware before view; host may pre-buffer"
+notes = "Pre-buffer hosts record deployment-layer body limits"
+
+[[adapter]]
+name = "posit"
+portable_floor = "supported"
+streaming_body = "unsupported"
+security_context = "supported"
+egress = "supported"
+signed_intent = "degraded"
+request_budget = "degraded"
+earliest_enforcement = "adapter wrapper; Connect/Workbench deployment controls required for body size"
+notes = "unsupported/degraded host capabilities require documented deployment controls"
+
+[[adapter]]
+name = "notebook"
+portable_floor = "degraded"
+streaming_body = "unsupported"
+security_context = "degraded"
+egress = "supported"
+signed_intent = "unsupported"
+request_budget = "unsupported"
+earliest_enforcement = "preview token gate / localhost defaults"
+notes = "Notebook preview is not a production host; portable floor claims are limited"

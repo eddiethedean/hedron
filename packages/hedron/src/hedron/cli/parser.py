@@ -19,6 +19,7 @@ from hedron.cli.commands.new import _cmd_new
 from hedron.cli.commands.package import _cmd_package_doctor
 from hedron.cli.commands.routes import _cmd_components, _cmd_preview, _cmd_routes
 from hedron.cli.commands.run import _cmd_run_app
+from hedron.cli.commands.security_check import _cmd_security_check
 from hedron.cli.commands.testgen import _cmd_testgen
 from hedron.cli.commands.theme import _cmd_style_check, _cmd_theme_check
 from hedron.cli.commands.upgrade_report import _cmd_upgrade_report
@@ -155,6 +156,34 @@ def main(argv: list[str] | None = None) -> None:
         ),
     )
     check_p.set_defaults(func=_cmd_check)
+
+    security_check_p = sub.add_parser(
+        "security-check",
+        help="Offline security posture report (read-only; does not probe production)",
+    )
+    security_check_p.add_argument("--project", default=None)
+    security_check_p.add_argument(
+        "--format",
+        choices=("text", "json", "sarif"),
+        default="text",
+    )
+    security_check_p.add_argument(
+        "--policy",
+        default="standard",
+        help="SecurityPolicy preset name (development|standard|strict)",
+    )
+    security_check_p.add_argument("--suppressions", default=None, help="JSON suppressions file")
+    security_check_p.add_argument(
+        "--baseline",
+        default=None,
+        help="Reviewed baseline fingerprints JSON",
+    )
+    security_check_p.add_argument(
+        "--strict",
+        action="store_true",
+        help="Fail on proven warnings and baseline drift",
+    )
+    security_check_p.set_defaults(func=_cmd_security_check)
 
     discover_p = sub.add_parser(
         "discover",

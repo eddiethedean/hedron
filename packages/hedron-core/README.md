@@ -18,9 +18,9 @@ framework.
 ## Install
 
 ```bash
-pip install "hedron-core>=0.55.0,<0.56"
+pip install "hedron-core>=0.56.0,<0.57"
 # or
-uv add "hedron-core>=0.55.0,<0.56"
+uv add "hedron-core>=0.56.0,<0.57"
 ```
 
 Requires Python 3.11–3.14.

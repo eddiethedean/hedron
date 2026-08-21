@@ -1,0 +1,14 @@
+schema_version = 1
+phase = "0.56"
+state = "Verified"
+baseline = "v0.55.0"
+target = "v0.56.0"
+owning_rfc = "RFC-0083"
+command = "hedron upgrade-report"
+offline = true
+source_train = "0.55"
+finding_kinds = ["definite", "heuristic"]
+baseline_mode = "reviewed"
+compatibility_modes = ["legacy", "control_plane_056"]
+exit_codes = { clean = 0, heuristic_only = 0, definite_break = 2, malformed = 1 }
+notes = "Upgrade fixtures prove 0.55 SecurityPolicy/CSRF/SafeUrl/TrustedHtml/Secret and workflow replay/capability/upload paths remain equivalent or intentionally stricter under 0.56 authorities"

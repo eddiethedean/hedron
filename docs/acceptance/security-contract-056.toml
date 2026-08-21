@@ -1,0 +1,32 @@
+schema_version = 1
+phase = "0.56"
+state = "Verified"
+baseline = "v0.55.0"
+target = "v0.56.0"
+owning_rfc = "RFC-0083"
+decision = "D-097"
+contract_refine = "D-098"
+composition_object = "SecurityPolicy"
+preset_enum = "SecurityProfile"
+shared_schema_import = "hedron_core.security_plane"
+context_type = "SecurityContext"
+label_type = "SensitiveLabel"
+budget_type = "RequestBudget"
+intent_type = "SignedIntent"
+keyring_type = "SecurityKeyring"
+event_type = "SecurityEvent"
+egress_type = "EgressPolicy"
+posture_command = "hedron security-check"
+compatibility_modes = ["legacy", "control_plane_056"]
+preset_names = ["development", "standard", "strict"]
+api_stability = "beta"
+conformance_profile_version = "hedron-security-1"
+event_codes = [
+  "ctx.rejected", "sens.denied", "sink.denied", "egress.denied",
+  "intent.rejected", "budget.exceeded", "policy.misconfigured"
+]
+budget_keys = [
+  "request_line_bytes", "header_bytes", "body_bytes", "decompressed_bytes",
+  "multipart_parts", "json_nodes", "form_fields", "concurrency",
+  "deadline_seconds", "response_bytes", "sse_events", "websocket_messages"
+]

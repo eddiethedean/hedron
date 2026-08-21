@@ -12,7 +12,7 @@ a second component runtime. Install as `hedron-extras` or via `hedron[extras]`.
 Absent extras add no core import, browser asset, startup, or transitive
 dependency cost.
 
-**Package maturity:** Beta · **Train:** `0.55.x` (in-tree tip `v0.55.0`; PyPI `0.54.0` deferred) · pin `>=0.55.0,<0.56` in-tree (PyPI `>=0.54.0,<0.55` while deferred)
+**Package maturity:** Beta · **Train:** `0.55.x` (in-tree tip `v0.55.0`; PyPI `0.54.0` deferred) · pin `>=0.56.0,<0.57` in-tree (PyPI `>=0.54.0,<0.55` while deferred)
 
 `CodeEditor`, `TerminalView`, and joystick/device bridges require the separate
 **`hedron[experimental-ui]`** opt-in (import `hedron_extras.experimental`) and are not
@@ -24,11 +24,11 @@ Experimental and is **not** registered by default `hedron[extras]`; enable
 ## Install
 
 ```bash
-pip install "hedron[extras]>=0.55.0,<0.56"
+pip install "hedron[extras]>=0.56.0,<0.57"
 # or
-pip install "hedron-extras>=0.55.0,<0.56"
+pip install "hedron-extras>=0.56.0,<0.57"
 # experimental UI (requires an explicit opt-in):
-pip install "hedron[experimental-ui]>=0.55.0,<0.56"
+pip install "hedron[experimental-ui]>=0.56.0,<0.57"
 ```
 
 Requires Python 3.11–3.14 and `hedron-core`.

@@ -5,7 +5,7 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page describes the living **0.55.x** train (in-tree tip **`v0.54.0`**). Git tag and
+This page describes the living **0.56.x** train (in-tree tip **`v0.54.0`**). Git tag and
 PyPI upload remain **deferred** — install from PyPI with `hedron>=0.54.0,<0.55` until the
 0.53 wheel lands. Extras and public-index notes:
 [Installation](../getting-started/installation.md). Capability
