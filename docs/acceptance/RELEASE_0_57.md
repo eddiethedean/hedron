@@ -54,4 +54,7 @@ a representative authenticated workspace.
 - [x] `docs/release.toml` tip honesty with `registry_status = "deferred"`.
 - [x] CI `HEDRON_GATE_VERSION=0.57.0`.
 - [x] Docs / SECURITY / STATUS / ROADMAP tip honesty.
+- [x] Tip hardening landed on `main` (top-20 fail-closed regressions + package Fixed
+  notes); local release-candidate suites green without tagging.
 - [ ] Git tag `v0.57.0` — **not yet**.
+- [ ] PyPI upload / `registry_status = "uploaded"` — **not yet**.

@@ -1,14 +1,5 @@
 # Changelog
 
-## [Unreleased]
-
-### Fixed
-
-- Remote URL / callback scanners NFKC-normalize so fullwidth or format-smuggled
-  ``javascript:`` schemes are rejected.
-- Transform compilation rejects non-boolean sort directions and reports invalid sample
-  or bin counts with chart diagnostics instead of leaking conversion errors.
-
 ## [0.43.0] — 2026-08-16
 
 ### Changed
@@ -37,6 +28,10 @@
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
 
 ### Fixed
+- Remote URL / callback scanners NFKC-normalize so fullwidth or format-smuggled
+  ``javascript:`` schemes are rejected.
+- Transform compilation rejects non-boolean sort directions and reports invalid sample
+  or bin counts with chart diagnostics instead of leaking conversion errors.
 - Host tabular fallback renders admitted rows instead of an empty caption.
 - SVG export and beginner fallback scale negative Y into the viewBox.
 - `GreatTablesAdapter.supports()` matches great_tables objects only, not bare lists.

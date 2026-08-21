@@ -21,3 +21,9 @@ See [PRESENTATION](../api/PRESENTATION.md) and
 
 Pin from PyPI remains `hedron>=0.56.0,<0.58` until the 0.57.0 wheel lands; the repository
 tip is `0.57.0`.
+
+## Hardening on the tip
+
+The in-tree tip also closes fail-closed regressions across maps policy, CSS/`@import`,
+Unicode scheme smuggling, MCP authz, workspace search allowlists, idempotency cancel,
+and related auth/cache edge cases. See [Release notes](release-notes.md).

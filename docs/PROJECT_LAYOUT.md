@@ -107,7 +107,7 @@ The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
 **Publish note:** the coordinated repository train tip is **`v0.57.0`**; PyPI currently
-serves **0.56.0** (`registry_status = deferred` for 0.56.1) — see
+serves **0.56.0** (`registry_status = deferred` for 0.57.0) — see
 [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.

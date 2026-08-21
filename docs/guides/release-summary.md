@@ -8,18 +8,19 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 
 | Item | Value |
 |---|---|
-| In-tree | **v0.52.0** (`hedron` / Beta train packages `0.52.0`) |
-| PyPI latest | **v0.56.0** (`hedron`; the repository train is `0.56.x` and its upload is deferred) |
+| In-tree | **v0.57.0** (`hedron` / Beta train packages `0.57.0`) |
+| PyPI latest | **v0.56.0** (`hedron`; 0.57.0 upload is deferred) |
 | Pin (PyPI) | `hedron>=0.56.0,<0.58` |
 | Charts satellite | `hedron-charts>=0.2.0,<0.3` |
-| Gate checker | `python scripts/check_release_gate.py 0.52.0` |
-| Packet verify | `python scripts/verify_pkg_52.py` |
+| Gate checker | `python scripts/check_release_gate.py 0.57.0` |
+| Packet verify | `python scripts/verify_pkg_57.py` |
 
-Adopter-facing notes: [What’s new in 0.52](whats-new-0.52.md) ·
+Adopter-facing notes: [What’s new in 0.57](whats-new-0.57.md) ·
 [Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 
-Tag `v0.52.0` only after CI on `main` is green (**do not tag yet** for this in-tree cut). Do not retag `v0.51.2`, `v0.51.1`, `v0.51.0`, `v0.50.3`, `v0.50.2`, `v0.50.1`, or `v0.50.0`.
+Tag `v0.57.0` only after CI on `main` is green (**do not tag yet** for this in-tree cut).
+Do not retag prior train tags.
 
 ## Contributor checklist (abbreviated)
 

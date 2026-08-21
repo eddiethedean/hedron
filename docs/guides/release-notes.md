@@ -10,10 +10,25 @@ D-099 / D-100). Git tag and PyPI upload are **deferred**; install from PyPI with
 `hedron>=0.56.0,<0.58`. [What’s new in 0.57](whats-new-0.57.md).
 [Installation](../getting-started/installation.md).
 
+### Added
 - Shared appearance vocabulary, CSP-safe gap tokens, Grid/GridItem tracks and spans,
   Surface and AppShell chrome, ResourceList/Identity, FileUpload composition, and
   authenticated zero-application-CSS evidence (#558–#570).
 - Shared gates `CONTRACT-057` … `PKG-057` Verified (`registry_status = "deferred"`).
+
+### Fixed
+- Map `tiles=` preserves restrictive `MapPolicy` fields; relative OSM tile URLs no longer
+  forge the public CDN origin.
+- Empty DataWorkspace `search_fields` stay deny-by-default; workspace identity reads
+  `user_id` / `_user_id` without touching Starlette `request.user` unless present.
+- CSS compiler excludes `@import` URLs from class rewrite and rejects `expression()` /
+  `-moz-binding`; active-markup and chart scanners NFKC-normalize scheme/tag smuggling.
+- Idempotency aborts on cancel and refuses empty streaming replay bodies; connection
+  registry shares factory errors and locks reset/close.
+- OIDC logout scheme matching, HTMX history-restore gating, Flask AuthSignal scope clear,
+  trusted-proxy auth rate-limit IP, session CSRF require Request, Redis tag cleanup,
+  Pagination `page_size >= 1`, MCP tool/resource authz fail-closed, and
+  `HED-DATA-0010` for missing in-memory keys.
 
 ## 0.56.1 — 2026-08-21
 

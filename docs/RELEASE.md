@@ -48,4 +48,7 @@ git push origin v0.57.0
 ```
 
 Pushing a future release tag runs `.github/workflows/release.yml`, which re-runs CI, publishes
-wheels, and creates the GitHub Release. **Do not tag yet** for the current deferred cut.
+wheels, and creates the GitHub Release. Release CI requires SBOM/evidence-bundle attach on train
+tags (SUPPLY-025 / phase 0.25) via `scripts/build_evidence_bundle.py` and
+`scripts/generate_sbom.py`. **Do not tag yet** for the current deferred cut. Do not retag
+prior train tags.
