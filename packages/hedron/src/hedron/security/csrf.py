@@ -118,9 +118,12 @@ def ensure_csrf_cookie(
 
     sets_cookie = bool(getattr(strategy, "sets_cookie", False))
     if not sets_cookie:
-        if request is not None:
-            return token or strategy.issue(request)
-        return token or generate_csrf_token()
+        if request is None:
+            raise ValueError(
+                "ensure_csrf_cookie requires a Request when the CSRF strategy "
+                "does not set a cookie (e.g. SessionTokenCsrf)"
+            )
+        return token or strategy.issue(request)
 
     cookie_name = getattr(strategy, "cookie_name", policy.csrf_cookie_name)
     if not isinstance(cookie_name, str) or not cookie_name:

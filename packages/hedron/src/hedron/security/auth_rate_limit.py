@@ -8,6 +8,7 @@ this helper for single-process demos and defense-in-depth near login routes.
 
 from __future__ import annotations
 
+import os
 import threading
 import time
 from collections import defaultdict, deque
@@ -23,6 +24,30 @@ __all__ = [
     "auth_rate_limit_exception",
     "auth_rate_limit_response",
 ]
+
+
+def _trusted_proxy_peers(request: Request) -> set[str]:
+    peers: set[str] = set()
+    raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
+    peers.update(part.strip() for part in raw_env.split(",") if part.strip())
+    scope = getattr(request, "scope", None)
+    app = scope.get("app") if isinstance(scope, dict) else None
+    state = getattr(app, "state", None) if app is not None else None
+    configured = getattr(state, "hedron_trusted_peers", None) if state is not None else None
+    if isinstance(configured, (list, tuple, set, frozenset)):
+        peers.update(str(item).strip() for item in configured if str(item).strip())
+    return peers
+
+
+def _client_ip_for_rate_limit(request: Request) -> str:
+    """Return the client IP, honoring ``X-Forwarded-For`` only from trusted peers."""
+    direct = request.client.host if request.client else "unknown"
+    peers = _trusted_proxy_peers(request)
+    if not peers or direct not in peers:
+        return direct
+    forwarded = request.headers.get("x-forwarded-for", "")
+    first = forwarded.split(",")[0].strip() if forwarded else ""
+    return first or direct
 
 
 def auth_rate_limit_exception(
@@ -105,7 +130,7 @@ class AuthRateLimiter:
         now: float | None = None,
     ) -> None:
         """Raise ``HTTPException`` 429 with ``Retry-After`` when limited."""
-        client = request.client.host if request.client else "unknown"
+        client = _client_ip_for_rate_limit(request)
         path = route if route is not None else request.url.path
         allowed, retry_after = self.check(client, path, now=now)
         if not allowed:

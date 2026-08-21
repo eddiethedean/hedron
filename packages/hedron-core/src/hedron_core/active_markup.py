@@ -6,6 +6,7 @@ import html as html_stdlib
 import re
 
 from hedron_core.security import contains_dangerous_scheme
+from hedron_core.security.urls import nfkc_strip_format
 
 __all__ = [
     "active_markup_reason",
@@ -81,21 +82,23 @@ def _scan_payload(payload: str) -> str | None:
     # #81: NUL bytes can split scanners; strip before matching.
     if "\x00" in payload:
         payload = payload.replace("\x00", "")
-    lowered = payload.lower()
+    # Fold fullwidth / compatibility characters so <ｓｃｒｉｐｔ> matches banned tags.
+    normalized = nfkc_strip_format(payload)
+    lowered = normalized.lower()
     if any(token in lowered for token in _BANNED_TAGS):
         return "banned active tag"
-    if contains_dangerous_scheme(payload):
+    if contains_dangerous_scheme(payload) or contains_dangerous_scheme(normalized):
         return "dangerous URL scheme"
     if re.search(r"(?:^|[\s\"'/])on[a-z]+\s*=", lowered):
         return "event handler attribute"
-    if _SMIL_ON_ATTR.search(payload) is not None:
+    if _SMIL_ON_ATTR.search(normalized) is not None:
         return "SMIL event handler attribute"
-    if _smil_remote_href_mutation(payload):
+    if _smil_remote_href_mutation(normalized):
         return "SMIL remote href mutation"
-    if _REMOTE_HREF.search(payload) is not None:
+    if _REMOTE_HREF.search(normalized) is not None:
         return "remote href"
     # #201: remote CSS @import
-    if _CSS_IMPORT.search(payload) is not None or "@import" in lowered and "//" in lowered:
+    if _CSS_IMPORT.search(normalized) is not None or "@import" in lowered and "//" in lowered:
         return "remote css import"
     return None
 

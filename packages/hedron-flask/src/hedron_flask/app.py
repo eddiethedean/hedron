@@ -369,6 +369,13 @@ class HedronFlask:
             if user_id is None:
                 user_id = flask_session.get("_user_id")
         authenticated = bool(user_id)
+        if not authenticated:
+            return AuthSignal(
+                authenticated=False,
+                subject_id=None,
+                scopes=(),
+                tenant_id=None,
+            )
         scopes_raw = flask_session.get("scopes", ())
         scopes = tuple(scopes_raw) if isinstance(scopes_raw, (list, tuple)) else ()
         tenant_id = flask_session.get("tenant_id")

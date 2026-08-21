@@ -266,9 +266,15 @@ def _abort_replay(guard: _ReplayGuard | None) -> None:
 def _complete_replay(guard: _ReplayGuard | None, response: Response) -> None:
     if guard is None:
         return
+    from starlette.responses import StreamingResponse
+
     from hedron.replay import ReplayState
 
     if guard.claim.state != ReplayState.FIRST:
+        return
+    # Streaming bodies are not materialized; refuse to cache an empty replay.
+    if isinstance(response, StreamingResponse):
+        _abort_replay(guard)
         return
     body = getattr(response, "body", None)
     if body is None and hasattr(response, "render"):
@@ -369,7 +375,8 @@ def _wrap_endpoint(
                 fragment_regions=fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
             )
-        except Exception:
+        except BaseException:
+            # CancelledError is BaseException — abort so claims do not stick IN_FLIGHT.
             _abort_replay(replay_guard)
             raise
         _complete_replay(replay_guard, response)

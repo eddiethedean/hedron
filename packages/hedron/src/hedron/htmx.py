@@ -51,7 +51,7 @@ def render_mode_for_request(
         policy = getattr(getattr(request.app, "state", None), "hedron_interaction_policy", None)
     if ctx.boosted:
         return RenderMode.PAGE
-    if ctx.history_restore:
+    if ctx.history_restore and ctx.is_htmx:
         restore = getattr(policy, "history_restore", None) or "page"
         if restore == "page":
             return RenderMode.PAGE

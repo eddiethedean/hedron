@@ -8,6 +8,11 @@
 ### Changed
 - Coordinated train tip `0.57.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``DataWorkspace`` no longer rewrites empty ``search_fields`` (deny-by-default) to all
+  model fields; identity helpers also read ``user_id`` / ``_user_id`` / ``request.user``.
+- ``InMemoryDataSource._row_key`` raises ``HED-DATA-0010`` instead of a raw ``KeyError``.
+
 
 ## [0.56.1] — 2026-08-21
 

@@ -120,6 +120,7 @@ class ConnectionRegistry:
         self._secret_refs: dict[str, Mapping[str, str]] = {}
         self._lock = threading.RLock()
         self._pending: dict[str, threading.Event] = {}
+        self._factory_errors: dict[str, BaseException] = {}
 
     def register(
         self,
@@ -155,6 +156,7 @@ class ConnectionRegistry:
         # Drop any cached instance from a prior registration of the same name.
         if name in self._instances:
             _dispose_instance(self._instances.pop(name))
+        self._factory_errors.pop(name, None)
         self._specs[name] = spec
         self._factories[name] = factory
         self._secret_refs[name] = dict(secret_refs or {})
@@ -192,17 +194,26 @@ class ConnectionRegistry:
         if not creator:
             pending.wait()
             with self._lock:
-                return self._instances[name]
+                if name in self._instances:
+                    return self._instances[name]
+                err = self._factory_errors.pop(name, None)
+            if err is not None:
+                raise err
+            # Creator failed without recording an error, or raced with reset —
+            # retry so a new creator can run.
+            return self.get(name)
 
         try:
             instance = self._factories[name]()
-        except Exception:
+        except Exception as exc:
             with self._lock:
                 self._pending.pop(name, None)
+                self._factory_errors[name] = exc
             pending.set()
             raise
 
         with self._lock:
+            self._factory_errors.pop(name, None)
             self._instances.setdefault(name, instance)
             self._pending.pop(name, None)
             result = self._instances[name]
@@ -233,20 +244,31 @@ class ConnectionRegistry:
 
     def reset(self, name: str) -> None:
         """Dispose the cached instance so the next ``get`` recreates it."""
-        if name not in self._factories:
-            raise KeyError(f"unknown connection {name!r}")
-        if name in self._instances:
-            _dispose_instance(self._instances.pop(name))
+        with self._lock:
+            if name not in self._factories:
+                raise KeyError(f"unknown connection {name!r}")
+            instance = self._instances.pop(name, None)
+            self._factory_errors.pop(name, None)
+        if instance is not None:
+            _dispose_instance(instance)
 
     def close_all(self) -> None:
         """Dispose every cached instance (typically from app lifespan shutdown)."""
-        for name in list(self._instances):
-            _dispose_instance(self._instances.pop(name))
+        with self._lock:
+            names = list(self._instances)
+            instances = [self._instances.pop(name) for name in names]
+            self._factory_errors.clear()
+        for instance in instances:
+            _dispose_instance(instance)
 
     async def close_all_async(self) -> None:
         """Awaitable dispose for async connection closes during lifespan shutdown."""
-        for name in list(self._instances):
-            await _dispose_instance_async(self._instances.pop(name))
+        with self._lock:
+            names = list(self._instances)
+            instances = [self._instances.pop(name) for name in names]
+            self._factory_errors.clear()
+        for instance in instances:
+            await _dispose_instance_async(instance)
 
 
 def install_connections(app: FastAPI, registry: ConnectionRegistry) -> ConnectionRegistry:

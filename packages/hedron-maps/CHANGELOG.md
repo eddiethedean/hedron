@@ -10,6 +10,9 @@
 
 ### Fixed
 
+- ``Map(tiles=)`` preserves existing ``MapPolicy`` fields when appending tile origins
+  (no longer resets ``remote_requests_permitted`` / ``allowed_source_kinds`` / ``allow_proxy``).
+- Relative ``OpenStreetMap.tile_url`` values no longer forge the public OSM CDN origin.
 - Custom ``OpenStreetMap.tile_url`` hosts must pass the same origin allowlist as raster
   tiles (#351).
 - ``Map(tiles=)`` uses exact-origin allowlisting instead of empty or host-prefix bypass

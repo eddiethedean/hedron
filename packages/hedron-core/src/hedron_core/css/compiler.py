@@ -34,6 +34,10 @@ CSS_COMPILER_FORMAT = 1
 _CLASS_RE = re.compile(r"\.([A-Za-z_][\w-]*)")
 _GLOBAL_RE = re.compile(r":global\(([^)]*)\)")
 _URL_RE = re.compile(r"url\(\s*(['\"]?)([^)'\"]+)\1\s*\)", re.IGNORECASE)
+_UNSAFE_VALUE_RE = re.compile(
+    r"(?:expression\s*\(|-moz-binding\s*:|behavior\s*:)",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -138,6 +142,9 @@ def _rewrite_rule(
         parts = prelude.split(None, 1)
         if len(parts) == 2 and parts[1].strip() in keyframe_map:
             prelude = f"@keyframes {keyframe_map[parts[1].strip()]}"
+    elif rule.kind == "at-rule" and prelude.lower().startswith("@import"):
+        # Do not rewrite class selectors inside @import URLs (``.com`` / ``.css``).
+        prelude = rule.prelude
     else:
         prelude = _rewrite_prelude(prelude, class_map)
 
@@ -163,6 +170,14 @@ def _check_urls_in_sheet(
     roots = tuple(Path(r).resolve() for r in registered_roots)
 
     def check_value(value: str) -> str:
+        if _UNSAFE_VALUE_RE.search(value):
+            raise error(
+                HED_CSS_UNSAFE_GLOBAL,
+                title="Unsafe CSS value rejected",
+                explanation=f"Declaration value {value!r} uses a banned CSS construct.",
+                remediation="Remove expression(), -moz-binding, and behavior declarations.",
+            )
+
         def repl(match: re.Match[str]) -> str:
             quote = match.group(1)
             url = match.group(2).strip()
@@ -242,9 +257,13 @@ def _check_urls_in_sheet(
         return _URL_RE.sub(repl, value)
 
     def walk(rule: CssRule) -> CssRule:
+        # Validate URLs in @import preludes (not only declaration values).
+        prelude = rule.prelude
+        if rule.kind == "at-rule" and prelude.lower().startswith("@import"):
+            prelude = check_value(prelude)
         decls = [CssDecl(d.prop, check_value(d.value)) for d in rule.decls]
         children = [walk(c) for c in rule.children]
-        return CssRule(prelude=rule.prelude, decls=decls, children=children, kind=rule.kind)
+        return CssRule(prelude=prelude, decls=decls, children=children, kind=rule.kind)
 
     return CssStylesheet(rules=[walk(r) for r in sheet.rules]), tuple(found)
 

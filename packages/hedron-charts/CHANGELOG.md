@@ -4,6 +4,8 @@
 
 ### Fixed
 
+- Remote URL / callback scanners NFKC-normalize so fullwidth or format-smuggled
+  ``javascript:`` schemes are rejected.
 - Transform compilation rejects non-boolean sort directions and reports invalid sample
   or bin counts with chart diagnostics instead of leaking conversion errors.
 

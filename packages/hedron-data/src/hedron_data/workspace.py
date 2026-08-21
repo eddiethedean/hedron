@@ -148,9 +148,8 @@ class DataWorkspace(Generic[ModelT]):
         self.detail_view: FragmentHandle[Any, Any] | None = None
         self.create_command: ActionHandle[Any, Any] | None = None
         self.edit_command: ActionHandle[Any, Any] | None = None
-        search_fields = getattr(source, "_search_fields", None)
-        if isinstance(search_fields, tuple) and not search_fields:
-            object.__setattr__(source, "_search_fields", tuple(fields))
+        # Empty search_fields is deny-by-default on InMemoryDataSource; do not
+        # rewrite it to all model fields (that would enable secret column search).
 
     def _request_kwargs(self) -> dict[str, object]:
         kwargs: dict[str, object] = {}
@@ -163,11 +162,17 @@ class DataWorkspace(Generic[ModelT]):
         if request is None:
             return kwargs
         scope = cast(object, getattr(request, "scope", None))
+        # Prefer scope["user"] — Request.user asserts AuthenticationMiddleware.
+        if isinstance(scope, Mapping) and "user" in scope:
+            user_attr = scope.get("user")
+            if user_attr is not None and user_attr not in (False, ""):
+                kwargs["user"] = user_attr
+                kwargs["principal"] = user_attr
         if isinstance(scope, Mapping) and "session" in scope:
             session = cast(object, request.session)
             if isinstance(session, Mapping):
                 session_map = cast(Mapping[str, object], session)
-                for key in ("user", "username", "principal", "sub"):
+                for key in ("user", "username", "principal", "sub", "user_id", "_user_id"):
                     value = session_map.get(key)
                     if value:
                         kwargs["user"] = value

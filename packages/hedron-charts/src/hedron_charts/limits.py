@@ -8,6 +8,8 @@ from functools import lru_cache
 from pathlib import Path
 
 from hedron_core.diagnostics import HedronError, error
+from hedron_core.security import contains_dangerous_scheme
+from hedron_core.security.urls import nfkc_strip_format
 from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_core.visualization import (
     DEFAULT_MAX_CHART_ROWS,
@@ -181,10 +183,11 @@ def _walk_callbacks(obj: object) -> bool:
 
 
 def _string_looks_executable(value: str) -> bool:
-    lowered = value.lower()
+    lowered = nfkc_strip_format(value).lower()
     return (
         "function(" in lowered
         or "javascript:" in lowered
+        or contains_dangerous_scheme(value)
         or any(token in lowered for token in _HTML_HANDLER)
     )
 
@@ -227,10 +230,10 @@ _UNSAFE_ASSET_SCHEMES = (
 
 
 def _is_remote_url(value: str) -> bool:
-    lowered = value.lower().strip()
+    lowered = nfkc_strip_format(value).lower().strip()
     # These schemes are unsafe in asset positions even though they do not all name
     # a remote host. Chart specifications must use registered local assets instead.
-    if lowered.startswith(_UNSAFE_ASSET_SCHEMES):
+    if lowered.startswith(_UNSAFE_ASSET_SCHEMES) or contains_dangerous_scheme(value):
         return True
     return (
         lowered.startswith("http://")

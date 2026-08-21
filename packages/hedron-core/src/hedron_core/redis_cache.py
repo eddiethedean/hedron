@@ -337,10 +337,15 @@ class RedisCacheBackend(CacheBackend):
                 decoded = self._decode(member)
                 if decoded is not None:
                     to_delete.add(decoded)
-            self._client.delete(self._tag_key(tag))
         for key in to_delete:
-            if self._client.delete(self._key(key)):
+            prior = self._prior_tags(key)
+            existed = self._client.get(self._key(key)) is not None or bool(prior)
+            self._drop_membership(key, prior)
+            if existed:
                 removed += 1
+        for tag in tags:
+            # Drop empty tag indexes after membership cleanup.
+            self._client.delete(self._tag_key(tag))
         return removed
 
     def ping(self) -> bool:

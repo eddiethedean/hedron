@@ -9,6 +9,10 @@ from starlette.testclient import TestClient
 from hedron_mcp import AuthorizationError, McpProjection, McpResource, McpTool, mount_mcp
 
 
+def _allow(**_kwargs: object) -> None:
+    return None
+
+
 def test_confused_deputy_cannot_widen_principal() -> None:
     projection = McpProjection(enabled=True)
     with pytest.raises(AuthorizationError, match="never exceeds"):
@@ -24,7 +28,7 @@ def test_cross_tenant_observation_denied() -> None:
         if kwargs.get("tenant_id") != "tenant-a":
             raise AuthorizationError("cross-tenant denied")
 
-    projection = McpProjection(enabled=True, tenant_hook=tenant_hook)
+    projection = McpProjection(enabled=True, authz_hook=_allow, tenant_hook=tenant_hook)
     projection.authorize(
         principal="alice",
         action="resources/read",
@@ -45,6 +49,7 @@ def test_identifier_enumeration_fails_closed_for_unknown_resource() -> None:
     projection = McpProjection(
         enabled=True,
         principal_resolver=lambda _r: "alice",
+        authz_hook=_allow,
     )
     projection.register_resource(McpResource(uri="hedron://page/home", name="home"))
     mount_mcp(app, projection)
@@ -84,7 +89,7 @@ def test_file_and_http_uri_schemes_rejected() -> None:
 )
 def test_executable_and_remote_uri_schemes_rejected(uri: str) -> None:
     """#282: deny-by-default URI policy rejects executable/remote schemes."""
-    projection = McpProjection(enabled=True)
+    projection = McpProjection(enabled=True, authz_hook=_allow)
     with pytest.raises(AuthorizationError, match="excluded"):
         projection.register_resource(McpResource(uri=uri, name="x"))
     with pytest.raises(AuthorizationError, match="excluded"):
@@ -107,7 +112,7 @@ def test_executable_and_remote_uri_schemes_rejected(uri: str) -> None:
 )
 def test_percent_encoded_uri_path_traversal_rejected(uri: str) -> None:
     """#282: decode percent-encoding before rejecting path traversal."""
-    projection = McpProjection(enabled=True)
+    projection = McpProjection(enabled=True, authz_hook=_allow)
     with pytest.raises(AuthorizationError, match="traversal"):
         projection.register_resource(McpResource(uri=uri, name="x"))
     with pytest.raises(AuthorizationError, match="traversal"):
@@ -115,7 +120,7 @@ def test_percent_encoded_uri_path_traversal_rejected(uri: str) -> None:
 
 
 def test_hedron_resource_uri_still_registers() -> None:
-    projection = McpProjection(enabled=True)
+    projection = McpProjection(enabled=True, authz_hook=_allow)
     projection.register_resource(McpResource(uri="hedron://page/home", name="home"))
     payload = projection.read_resource("hedron://page/home", principal="alice")
     assert "home" in payload["text"]
@@ -126,6 +131,7 @@ def test_origin_allowlist_blocks_exfiltration_origin() -> None:
     projection = McpProjection(
         enabled=True,
         principal_resolver=lambda _r: "alice",
+        authz_hook=_allow,
         allowed_origins=frozenset({"https://app.example"}),
     )
     mount_mcp(app, projection)
@@ -139,7 +145,7 @@ def test_origin_allowlist_blocks_exfiltration_origin() -> None:
 
 
 def test_mutating_tool_without_flag_is_not_ambient_authority() -> None:
-    projection = McpProjection(enabled=True, allow_mutations=False)
+    projection = McpProjection(enabled=True, allow_mutations=False, authz_hook=_allow)
     projection.register_tool(
         McpTool(
             name="wipe",
@@ -158,7 +164,7 @@ def test_default_resolver_rejects_forgeable_principal_headers() -> None:
 
     app = Starlette()
     app.add_middleware(SessionMiddleware, secret_key="test")
-    projection = McpProjection(enabled=True)  # no principal_resolver
+    projection = McpProjection(enabled=True, authz_hook=_allow)  # no principal_resolver
     projection.register_tool(
         McpTool(
             name="ping",
@@ -204,7 +210,7 @@ def test_default_resolver_accepts_authenticated_session_subject() -> None:
         return JSONResponse({"ok": True})
 
     app.add_route("/login", login, methods=["POST"])
-    projection = McpProjection(enabled=True)
+    projection = McpProjection(enabled=True, authz_hook=_allow)
     projection.register_tool(
         McpTool(
             name="ping",
@@ -234,6 +240,7 @@ def test_delete_terminates_server_minted_session() -> None:
     projection = McpProjection(
         enabled=True,
         principal_resolver=lambda _r: "alice",
+        authz_hook=_allow,
     )
     mount_mcp(app, projection)
     client = TestClient(app)
@@ -262,6 +269,7 @@ def test_session_principal_mismatch_is_rejected() -> None:
     projection = McpProjection(
         enabled=True,
         principal_resolver=lambda _r: current["principal"],
+        authz_hook=_allow,
     )
     projection.register_tool(
         McpTool(
@@ -313,6 +321,7 @@ def test_notifications_cancelled_blocks_matching_jsonrpc_request_id() -> None:
     projection = McpProjection(
         enabled=True,
         principal_resolver=lambda _r: "alice",
+        authz_hook=_allow,
     )
     projection.register_tool(
         McpTool(

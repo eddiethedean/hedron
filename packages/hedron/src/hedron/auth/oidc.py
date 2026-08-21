@@ -175,6 +175,8 @@ def _validate_post_logout_redirect_uri(uri: str, config: OidcClientConfig) -> No
     registered = urlparse(config.redirect_uri)
     if parsed.scheme.lower() not in {"http", "https"}:
         raise ValueError("Invalid post_logout_redirect_uri")
+    if parsed.scheme.lower() != (registered.scheme or "").lower():
+        raise ValueError("post_logout_redirect_uri scheme must match redirect_uri")
     if parsed.netloc.lower() != registered.netloc.lower():
         raise ValueError("post_logout_redirect_uri host must match redirect_uri")
 

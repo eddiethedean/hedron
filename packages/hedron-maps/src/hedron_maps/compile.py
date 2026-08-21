@@ -555,7 +555,22 @@ def _basemap_facts(
     if isinstance(basemap, OpenStreetMap):
         _validate_template(basemap.tile_url, scale=basemap.scale, subdomain=basemap.subdomain)
         _zoom_ok(basemap.min_zoom, basemap.max_zoom)
-        origin = _origin_of(basemap.tile_url) or OSM_STANDARD_ORIGIN
+        origin = _origin_of(basemap.tile_url)
+        if origin is None:
+            # Relative / local templates are not the public OSM CDN.
+            _policy_allows(None, policy, local=True)
+            resources.append(basemap.tile_url)
+            _set_basemap_raster(
+                style,
+                tiles=[basemap.tile_url],
+                attribution=attr,
+                extra={"tileSize": basemap.tile_size},
+            )
+            warnings.append(
+                "OSM-compatible local tile_url has no remote origin; "
+                "standard OSM CDN origin was not inferred."
+            )
+            return basemap.kind, OSM_STANDARD_ID, resources, origins, attribution, style, warnings
         if origin != OSM_STANDARD_ORIGIN or (
             policy.allowed_origins and origin not in policy.allowed_origins
         ):
@@ -942,7 +957,7 @@ def compile_map(
         )
     elif isinstance(parsed.basemap, OpenStreetMap) and not effective.allowed_origins:
         origin = _origin_of(parsed.basemap.tile_url)
-        if origin in {None, OSM_STANDARD_ORIGIN}:
+        if origin == OSM_STANDARD_ORIGIN:
             resolved_policy = MapPolicy(
                 allowed_origins=(OSM_STANDARD_ORIGIN,),
                 allowed_source_kinds=effective.allowed_source_kinds,
@@ -950,6 +965,7 @@ def compile_map(
                 allow_proxy=effective.allow_proxy,
             )
         else:
+            # Relative / custom hosts keep the caller's policy (no forged OSM origin).
             resolved_policy = effective
         kind, preset, resources, origins, attribution, style, warnings = _basemap_facts(
             parsed, resolved_policy

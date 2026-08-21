@@ -8,6 +8,10 @@
 ### Changed
 - Coordinated train tip `0.57.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- ``AuthSignal`` clears scopes and tenant when unauthenticated so leftover session
+  claims cannot authorize anonymously.
+
 
 ## [0.56.1] — 2026-08-21
 

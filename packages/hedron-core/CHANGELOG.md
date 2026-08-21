@@ -8,6 +8,13 @@
 ### Changed
 - Coordinated train tip `0.57.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- CSS compiler no longer rewrites class selectors inside `@import` URLs; rejects
+  `expression()` / `-moz-binding` / `behavior` values; validates `@import` URLs.
+- Active-markup scans NFKC-normalize so fullwidth banned tags cannot bypass checks.
+- Redis cache `invalidate` drops reverse tag memberships (`_tags:`) instead of
+  orphaning tag indexes.
+
 
 ## [0.56.1] — 2026-08-21
 

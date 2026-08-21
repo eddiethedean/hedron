@@ -164,9 +164,10 @@ class Map(Component[MapProps]):
                 parsed = urlparse(tiles)
                 origin = f"{parsed.scheme}://{parsed.netloc}"
             if origin:
-                existing = tuple(resolved_policy.allowed_origins) if resolved_policy else ()
-                resolved_policy = MapPolicy(
-                    allowed_origins=tuple(dict.fromkeys((*existing, origin)))
+                base = resolved_policy if resolved_policy is not None else MapPolicy()
+                existing = tuple(base.allowed_origins)
+                resolved_policy = base.model_copy(
+                    update={"allowed_origins": tuple(dict.fromkeys((*existing, origin)))}
                 )
         elif basemap is _UNSET:
             resolved_basemap = OpenStreetMap.standard()

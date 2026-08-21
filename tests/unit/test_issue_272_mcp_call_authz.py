@@ -7,8 +7,12 @@ import pytest
 from hedron_mcp import AuthorizationError, McpProjection, McpResource, McpTool
 
 
+def _allow(**_kwargs: object) -> None:
+    return None
+
+
 def test_call_tool_rejects_missing_principal() -> None:
-    projection = McpProjection(enabled=True)
+    projection = McpProjection(enabled=True, authz_hook=_allow)
     projection.register_tool(
         McpTool(name="t", schema={"type": "object"}, mutate=False, handler=lambda: {"ok": True})
     )
@@ -18,7 +22,7 @@ def test_call_tool_rejects_missing_principal() -> None:
 
 
 def test_read_resource_rejects_missing_principal() -> None:
-    projection = McpProjection(enabled=True)
+    projection = McpProjection(enabled=True, authz_hook=_allow)
     projection.register_resource(
         McpResource(uri="hedron://page/home", name="home", description="Home")
     )

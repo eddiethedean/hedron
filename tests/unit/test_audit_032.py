@@ -14,7 +14,11 @@ def test_redact_secrets_in_audit_payloads() -> None:
 
 def test_registration_and_authz_emit_redacted_events() -> None:
     sink: list[dict] = []
-    projection = McpProjection(enabled=True)
+
+    def _allow(**_kwargs: object) -> None:
+        return None
+
+    projection = McpProjection(enabled=True, authz_hook=_allow)
     projection.audit = McpAuditLog(sink=sink.append)
     projection.register_tool(
         McpTool(

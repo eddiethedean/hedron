@@ -163,7 +163,11 @@ def test_workspace_list_pages_sorts_filters_and_searches() -> None:
     ws = DataWorkspace(
         name="orders",
         model=Order,
-        source=InMemoryDataSource(rows, key_field="id"),
+        source=InMemoryDataSource(
+            rows,
+            key_field="id",
+            search_fields=("customer", "id"),
+        ),
         policy=DataWorkspacePolicy(can_read=lambda: True),
     )
     app.include_feature(ws)

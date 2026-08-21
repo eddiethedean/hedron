@@ -473,7 +473,10 @@ def test_177_mcp_validates_tool_arguments_against_schema() -> None:
     def typed(x: int) -> dict[str, int]:
         return {"x": x}
 
-    proj = McpProjection(enabled=True)
+    def _allow(**_kwargs: object) -> None:
+        return None
+
+    proj = McpProjection(enabled=True, authz_hook=_allow)
     proj.register_tool(
         McpTool(
             name="typed",
@@ -784,6 +787,7 @@ def test_217_mcp_cancel_is_bound_to_principal() -> None:
     projection = McpProjection(
         enabled=True,
         principal_resolver=lambda _r: principals["who"],
+        authz_hook=lambda **_kwargs: None,
     )
     projection.register_tool(
         McpTool(

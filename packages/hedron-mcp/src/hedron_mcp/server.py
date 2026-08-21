@@ -254,6 +254,15 @@ class McpProjection:
                 scopes=scopes,
                 tenant_id=tenant_id,
             )
+        if (
+            action in {"tools/call", "resources/read"}
+            and resource is not None
+            and self.authz_hook is None
+            and item_hook is None
+        ):
+            raise AuthorizationError(
+                "MCP authorization requires an authz_hook or per-item authorize; deny-by-default."
+            )
         if self.tenant_hook is not None:
             self.tenant_hook(
                 principal=principal,

@@ -238,6 +238,12 @@ class Pagination(Component[Props]):
         base_path: str,
         target: str | None = None,
     ) -> None:
+        if page < 1:
+            raise ValueError("page must be >= 1")
+        if page_size < 1:
+            raise ValueError("page_size must be >= 1")
+        if total < 0:
+            raise ValueError("total must be >= 0")
         super().__init__(Props())
         self.page = page
         self.page_size = page_size

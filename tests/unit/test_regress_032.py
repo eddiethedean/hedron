@@ -45,7 +45,10 @@ def test_enabled_zero_registration_empty_surface() -> None:
 
 
 def test_mutating_tool_requires_experimental_flag() -> None:
-    projection = McpProjection(enabled=True, allow_mutations=False)
+    def _allow(**_kwargs: object) -> None:
+        return None
+
+    projection = McpProjection(enabled=True, allow_mutations=False, authz_hook=_allow)
     projection.register_tool(
         McpTool(
             name="save",

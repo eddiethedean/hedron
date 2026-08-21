@@ -69,9 +69,14 @@ def test_streamable_http_initialize_and_empty_lists() -> None:
 
 def test_read_resource_and_read_only_tool() -> None:
     app = Starlette()
+
+    def _allow(**_kwargs: object) -> None:
+        return None
+
     projection = McpProjection(
         enabled=True,
         principal_resolver=lambda _req: "alice",
+        authz_hook=_allow,
     )
     projection.register_resource(
         McpResource(

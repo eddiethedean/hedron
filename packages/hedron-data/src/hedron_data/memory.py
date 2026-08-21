@@ -23,7 +23,12 @@ from hedron_data.sources import (
 
 def _row_key(row: Mapping[str, JsonValue], key_field: str) -> str:
     if key_field not in row:
-        raise KeyError(key_field)
+        raise error(
+            "HED-DATA-0010",
+            title="Row missing key field",
+            explanation=f"Row is missing required key field {key_field!r}.",
+            remediation="Ensure every row includes the configured key_field.",
+        )
     return str(row[key_field])
 
 

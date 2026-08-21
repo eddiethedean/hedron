@@ -3,6 +3,8 @@
 ## [0.2.1] — 2026-08-17
 
 ### Fixed
+- ``tools/call`` / ``resources/read`` fail closed unless ``authz_hook`` or per-item
+  ``authorize`` is configured (principal alone is not ambient authority).
 - ``McpExposure.apply`` stores authorize on the tool/resource instead of
   overwriting the projection ``authz_hook``, so a second exposure cannot steal
   the first tool's gate (#356).
