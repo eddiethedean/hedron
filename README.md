@@ -14,7 +14,7 @@ Routes return typed UI; HTMX swaps HTML fragments. No Node frontend.
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
 The latest installable PyPI release is `0.56.0`; the repository contains the living
-`0.56.x` tip (`0.56.1`, tag/PyPI deferred). Application pins and extras:
+`0.57.x` tip (`0.57.0`, tag/PyPI deferred). Application pins and extras:
 [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 ```bash

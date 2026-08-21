@@ -1,0 +1,50 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+fixture_version = "styling-gallery/1"
+engines = ["chromium", "firefox", "webkit"]
+modes = ["light", "dark", "forced-colors", "reduced-motion", "print"]
+directions = ["ltr", "rtl"]
+zoom = [1.0, 2.0]
+text_spacing = ["default", "wcag_override"]
+content = ["short", "long", "international", "unbroken"]
+
+[[viewport]]
+name = "narrow"
+width = 360
+height = 800
+[[viewport]]
+name = "tablet"
+width = 768
+height = 1024
+[[viewport]]
+name = "desktop"
+width = 1440
+height = 1000
+
+[themes]
+builtin = ["default", "aurora"]
+generated_seeds = ["#2f6fed", "#6d3ce7", "#0f766e", "#b45309", "#777777", "#ffffff", "#000000"]
+geometry = ["square", "soft", "rounded"]
+density = ["compact", "comfortable", "spacious"]
+typography = ["system-sans", "system-serif", "system-mono"]
+
+[fixtures]
+required = ["typography", "actions", "fields", "validation", "focus", "disabled", "destructive", "surfaces", "shell", "navigation", "overlay", "status", "table", "form", "recipes", "nested_scope", "explicit_override", "fragment_replacement"]
+application_data = false
+
+[delta_policy]
+pixel_only_is_sufficient = false
+require_dom_and_computed_facts = true
+unreviewed_threshold = 0.001
+review_required_threshold = 0.01
+above_review_threshold = "fail"
+baseline_change_requires = ["reason", "owner", "affected_fixtures", "a11y_confirmation"]
+
+[accessibility]
+keyboard = true
+screen_reader_semantics = true
+focus_visible = true
+non_color_state = true
+motion_static_equivalent = true
+no_horizontal_scroll_at_320_css_px_except_bounded_data_surfaces = true

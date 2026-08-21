@@ -1,0 +1,85 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+policy = "highest_applicable_styling_abstraction_first"
+explicit_labels = ["Advanced", "Explicit", "Lower-level", "Under the hood"]
+historical_release_notes = "preserve"
+migration_fixtures = "preserve"
+unrecorded_primitive_first_starter = false
+
+[[document]]
+path = "README.md"
+required = ["built-in theme first", "DesignSystem.brand when customization is introduced"]
+[[document]]
+path = "packages/hedron/README.md"
+required = ["built-in theme first", "DesignSystem.brand when customization is introduced"]
+[[document]]
+path = "docs/getting-started/quickstart.md"
+required = ["built-in theme", "DesignSystem.brand", "style explain"]
+[[document]]
+path = "docs/getting-started/first-app-vscode.md"
+required = ["built-in theme", "DesignSystem.brand"]
+[[document]]
+path = "docs/getting-started/first-app-posit-workbench.md"
+required = ["built-in theme", "DesignSystem.brand"]
+[[document]]
+path = "docs/examples/single-file.md"
+required = ["DesignSystem.brand"]
+[[document]]
+path = "docs/examples/crud-tutorial.md"
+required = ["DesignSystem.brand", "built-in semantic facade roles"]
+[[document]]
+path = "docs/api/THEME.md"
+required = ["DesignSystem beginner path before Theme maps", "style explain", "style eject"]
+[[document]]
+path = "docs/api/PRESENTATION.md"
+required = ["recipe and scope overview before repeated explicit prop bundles"]
+[[document]]
+path = "docs/components/theme.md"
+required = ["built-in and DesignSystem route", "explicit Theme section labeled Advanced"]
+[[document]]
+path = "examples/README.md"
+required = ["identify progressive styling examples"]
+[[document]]
+path = "examples/chrome-zero-css/README.md"
+required = ["DesignSystem.brand first", "resolved Theme example labeled Explicit"]
+[[document]]
+path = "examples/chrome-zero-css/app.py"
+required = ["DesignSystem.brand"]
+[[document]]
+path = "examples/theme-gallery/README.md"
+required = ["built-in themes", "generated brand", "recipe", "scope", "explain/preview"]
+[[document]]
+path = "examples/theme-gallery/app.py"
+required = ["generated brand", "recipe", "scope"]
+[[document]]
+path = "packages/hedron/src/hedron/cli/scaffold/fastapi.py"
+required = ["built-in theme default", "commented DesignSystem.brand graduation"]
+[[document]]
+path = "scaffold:0.58:minimal"
+required = ["built-in theme", "DesignSystem.brand optional graduation"]
+[[document]]
+path = "scaffold:0.58:crud"
+required = ["DesignSystem.brand", "data_surface roles"]
+[[document]]
+path = "scaffold:0.58:dashboard"
+required = ["DesignSystem.brand", "dashboard_panel roles"]
+[[document]]
+path = "scaffold:0.58:task"
+required = ["DesignSystem.brand", "inline_status and action roles"]
+
+[[advanced_document]]
+path = "docs/rfcs/RFC-0006-SCOPED-STYLES.md"
+reason = "historical primitive architecture"
+[[advanced_document]]
+path = "docs/rfcs/RFC-0022-THEMING.md"
+reason = "theme authority architecture"
+[[advanced_document]]
+path = "docs/implementation/CSS_COMPILER.md"
+reason = "compiler internals"
+[[advanced_document]]
+path = "docs/acceptance/SCOPED_STYLES.md"
+reason = "primitive acceptance contract"
+
+[teaching_order]
+steps = ["built-in theme", "DesignSystem.brand", "named recipe when intent repeats", "style explain and preview", "StyleScope or explicit override", "partial eject", "Theme and appearance props", "style contracts and scoped CSS", "cascade/compiler internals"]

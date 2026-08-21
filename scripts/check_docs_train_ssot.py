@@ -237,6 +237,21 @@ REGISTRY_HONESTY_PATHS = frozenset(
     }
 )
 
+# Tip / checkout language must match published_version on these living pages.
+TIP_HONESTY_PATHS = frozenset(
+    {
+        *REGISTRY_HONESTY_PATHS,
+        Path("README.md"),
+        Path("docs/guides/current-release.md"),
+        Path("docs/guides/whats-ready.md"),
+        Path("docs/guides/evaluate.md"),
+        Path("docs/guides/upgrade.md"),
+        Path("docs/guides/production-quality.md"),
+        Path("docs/STATUS.md"),
+        Path("STATUS.md"),
+    }
+)
+
 BOILERPLATE_ALLOWED_PATHS = frozenset(
     {
         *REGISTRY_HONESTY_PATHS,
@@ -504,6 +519,65 @@ def check_first_run_registry_honesty(
     return failures
 
 
+_LIVING_TIP_CLAIM = re.compile(
+    r"\b(?:living|checkout|in-tree)\s+tip\b[^\n]{0,40}?v?(0\.\d+\.\d+)",
+    re.IGNORECASE,
+)
+_EDITABLE_TIP_CLAIM = re.compile(
+    r"\beditable\s+\*?\*?v?(0\.\d+\.\d+)\*?\*?",
+    re.IGNORECASE,
+)
+_DEFERRED_UPLOAD_CLAIM = re.compile(
+    r"\b(?:for|upload(?:\s+for)?|tag(?:/pypi)?(?:\s+for)?)\s+\*?\*?v?(0\.\d+\.\d+)\*?\*?"
+    r"[^\n]{0,40}?\bdeferred\b"
+    r"|"
+    r"\b(0\.\d+\.\d+)\b[^\n]{0,20}?\b(?:tag/pypi\s+)?deferred\b",
+    re.IGNORECASE,
+)
+
+
+def check_tip_honesty(
+    files: dict[Path, str],
+    facts: ReleaseFacts = FACTS,
+) -> list[str]:
+    """Fail stale living/checkout tip and deferred-upload phrasing on honesty pages."""
+    failures: list[str] = []
+    expected_tip = facts.published_version
+    for relative in sorted(TIP_HONESTY_PATHS):
+        text = files.get(relative)
+        if text is None:
+            continue
+        for index, line in enumerate(text.splitlines(), start=1):
+            for match in _LIVING_TIP_CLAIM.finditer(line):
+                value = match.group(1)
+                if value != expected_tip:
+                    failures.append(
+                        f"{relative}:{index}: living/checkout tip claims {value}; "
+                        f"expected v{expected_tip}"
+                    )
+            for match in _EDITABLE_TIP_CLAIM.finditer(line):
+                value = match.group(1)
+                if value != expected_tip:
+                    failures.append(
+                        f"{relative}:{index}: editable tip claims {value}; "
+                        f"expected {expected_tip}"
+                    )
+            if facts.registry_deferred:
+                for match in _DEFERRED_UPLOAD_CLAIM.finditer(line):
+                    value = next((group for group in match.groups() if group), None)
+                    if value is None:
+                        continue
+                    if value in {facts.pypi_version, facts.previous_version}:
+                        # Historical "0.56.0 deferred" / prior train notes are fine.
+                        continue
+                    if value != expected_tip:
+                        failures.append(
+                            f"{relative}:{index}: deferred-upload claim names {value}; "
+                            f"expected deferred tip v{expected_tip}"
+                        )
+    return failures
+
+
 def check_in_tree_deferred_boilerplate(
     path: Path,
     text: str,
@@ -585,12 +659,15 @@ def check_security_policy(
 def main() -> int:
     failures = check_metadata()
     honesty_texts: dict[Path, str] = {}
+    tip_texts: dict[Path, str] = {}
     evaluate_text: str | None = None
     for path in adopter_files():
         relative = path.relative_to(ROOT)
         text = path.read_text(encoding="utf-8")
         if relative in REGISTRY_HONESTY_PATHS:
             honesty_texts[relative] = text
+        if relative in TIP_HONESTY_PATHS:
+            tip_texts[relative] = text
         if relative == Path("docs/guides/evaluate.md"):
             evaluate_text = text
         failures.extend(check_text(relative, text))
@@ -603,6 +680,7 @@ def main() -> int:
             check_text(relative, path.read_text(encoding="utf-8"), check_installs=False)
         )
     failures.extend(check_first_run_registry_honesty(honesty_texts))
+    failures.extend(check_tip_honesty(tip_texts))
     if evaluate_text is None:
         failures.append("docs/guides/evaluate.md: missing evaluate page")
     else:

@@ -42,5 +42,8 @@ fixture inventory.
 
 Preserve existing `variant`, `tone`, `gap`, AppShell slot, and upload-budget
 behavior. Shared appearance props are opt-in unless a theme/container default is
-selected. Unsupported layout lengths fail with a shared diagnostic rather than
-silently falling back.
+selected. Gap lengths are accepted only when they equal token CSS sizes exactly
+(`0.5rem`→`sm`, `1rem`→`md`, `1.5rem`→`lg`, `2rem`→`xl`); ambiguous lengths such as
+`0.75rem` or `12px` raise a shared diagnostic. When `overflow="truncate"` and
+`lines=` are both set, `lines` wins (multi-line clamp) and no implicit `title=`
+is invented.

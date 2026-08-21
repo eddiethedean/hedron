@@ -1,0 +1,116 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+runtime_baseline = "v0.57.0"
+contract_baseline = ["D-102", "D-105", "RFC-0085"]
+required_predecessor = "v0.57.0"
+predecessor_satisfied = true
+target = "v0.58.0"
+owning_rfc = "RFC-0085"
+decision = "D-101"
+contract_refine = "D-105"
+api_stability = "beta"
+
+[[symbol]]
+name = "DesignSystem"
+module = "hedron_core.design_system"
+signature = '''DesignSystem.brand(name: str, *, accent: str, base: Theme | None = None, density: Density = "comfortable", geometry: GeometryPreset = "soft", typography: TypographyPreset = "system-sans", elevation: ElevationPreset = "subtle", motion: MotionPreset = "standard", navigation: NavigationPreset = "default", recipes: Sequence[StyleRecipe] = ()) -> DesignSystem'''
+
+[[symbol]]
+name = "DesignSystem.from_theme"
+module = "hedron_core.design_system"
+signature = '''from_theme(theme: Theme, *, recipes: Sequence[StyleRecipe] = ()) -> DesignSystem'''
+
+[[symbol]]
+name = "DesignSystem.to_theme"
+module = "hedron_core.design_system"
+signature = '''to_theme() -> Theme'''
+
+[[symbol]]
+name = "DesignSystem.with_recipes"
+module = "hedron_core.design_system"
+signature = '''with_recipes(*recipes: StyleRecipe, replace: bool = False) -> DesignSystem'''
+
+[[symbol]]
+name = "DesignSystem.apply"
+module = "hedron_core.design_system"
+signature = '''apply(recipe: str | StyleRecipe, component: ComponentT, /) -> ComponentT'''
+
+[[symbol]]
+name = "DesignSystem.explain"
+module = "hedron_core.design_system"
+signature = '''explain() -> DesignSystemPlan'''
+
+[[symbol]]
+name = "StyleRecipe.control"
+module = "hedron_core.design_system"
+signature = '''control(name: str, *, extends: str | None = None, size: Size | None = None, appearance: Appearance | None = None, emphasis: Emphasis | None = None, width: Width | None = None) -> StyleRecipe'''
+
+[[symbol]]
+name = "StyleRecipe.surface"
+module = "hedron_core.design_system"
+signature = '''surface(name: str, *, extends: str | None = None, appearance: Appearance | None = None, density: Density | None = None, padding: Padding | None = None, elevation: Elevation | None = None) -> StyleRecipe'''
+
+[[symbol]]
+name = "StyleRecipe.data"
+module = "hedron_core.design_system"
+signature = '''data(name: str, *, extends: str | None = None, density: Density | None = None, responsive: ResponsivePolicy | None = None) -> StyleRecipe'''
+
+[[symbol]]
+name = "StyleRecipe.status"
+module = "hedron_core.design_system"
+signature = '''status(name: str, *, extends: str | None = None, size: Size | None = None, appearance: Appearance | None = None) -> StyleRecipe'''
+
+[[symbol]]
+name = "StyleRecipe.content"
+module = "hedron_core.design_system"
+signature = '''content(name: str, *, extends: str | None = None, role: TypographyRole | None = None, overflow: OverflowMode | None = None) -> StyleRecipe'''
+
+[[symbol]]
+name = "StyleScope"
+module = "hedron_core.builtins.style_scope"
+signature = '''StyleScope(*nodes: NodeLike, children: NodeLike = None, theme: str | None = None, color_mode: Literal["light", "dark"] | None = None, density: Density | None = None, id: str | None = None, class_: str | None = None, mark: str | None = None)'''
+
+[[symbol]]
+name = "Hedron.theme"
+module = "hedron"
+signature = '''Hedron(..., theme: str | Theme | DesignSystem | None = "default", ...)'''
+
+[types]
+style_family = ["control", "surface", "data", "status", "content"]
+geometry_preset = ["square", "soft", "rounded"]
+typography_preset = ["system-sans", "system-serif", "system-mono"]
+elevation_preset = ["flat", "subtle", "layered"]
+motion_preset = ["standard", "calm", "none"]
+navigation_preset = ["compact", "default", "wide"]
+color_mode = ["light", "dark"]
+
+[app_theme_normalization]
+string = "select_existing_registered_theme"
+theme_instance = "register_then_select_theme_name"
+design_system = "compile_register_then_select_theme_name"
+none = "preserve_existing_no_selection_behavior"
+config_and_environment = "string_names_only"
+constructor_wins = true
+
+[diagnostics]
+design = ["HED-DESIGN-0001", "HED-DESIGN-0002", "HED-DESIGN-0003"]
+brand = ["HED-BRAND-0001", "HED-BRAND-0002", "HED-BRAND-0003"]
+recipe = ["HED-RECIPE-0001", "HED-RECIPE-0002", "HED-RECIPE-0003", "HED-RECIPE-0004"]
+scope = ["HED-STYLE-SCOPE-0001", "HED-STYLE-SCOPE-0002"]
+eject = ["HED-STYLE-EJECT-0001", "HED-STYLE-EJECT-0002", "HED-STYLE-EJECT-0003"]
+reuse = ["HED-THEME-*", "HED-CSS-*", "HED-HTML-0006"]
+
+[cli]
+explain = "hedron --app APP style explain [--design NAME] --format human|json"
+preview = "hedron --app APP style preview [--design NAME] --output PATH --mode all|light|dark"
+diff = "hedron --app APP style diff BASE CANDIDATE --format human|json"
+check = "hedron --app APP style check [--design NAME] [--zero-app-css PATH] --format text|json|sarif"
+eject = "hedron --app APP style eject NAME [--group GROUP | --recipe RECIPE | --component ID] --output PATH [--overwrite]"
+
+[deferred]
+scope_recipe_defaults = "post_0.58_hidden_descendant_mutation_and_specificity_risk"
+field_recipe_family = "post_0.58_no_shared_optional_presentation_props_in_v0.57"
+layout_recipe_family = "post_0.58_legacy_non_none_gap_defaults_prevent_explicitness_detection"
+arbitrary_color_formats = "post_0.58_hex_only_for_algorithm_v1"
+remote_font_convenience = "post_0.58_explicit_asset_policy_remains_required"

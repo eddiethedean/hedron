@@ -48,6 +48,8 @@ class Surface(Component[SurfaceProps]):
         mark: str | None = None,
         **kwargs: Any,
     ) -> None:
+        if appearance is not None:
+            require_choice(appearance, ("plain", "raised"), label="appearance")
         super().__init__(
             SurfaceProps(
                 appearance=appearance,

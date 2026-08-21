@@ -1,6 +1,6 @@
 # hedron-elements
 
-**Package maturity:** Beta · **Train:** `0.57.x` (in-tree tip `v0.57.0`; PyPI `0.56.0`; 0.56.1 deferred) · application pin `>=0.56.0,<0.58`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Train:** `0.57.x` (in-tree tip `v0.57.0`; PyPI `0.56.0`; 0.57.0 deferred) · application pin `>=0.56.0,<0.58`; repository checkouts use `uv sync`
 
 Framework-neutral Web Component ABI and HTMX-safe bridge for Hedron. Includes the
 `hedron-example` reference plus Beta form controls (`hedron-field-text`,

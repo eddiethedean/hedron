@@ -5,6 +5,8 @@ from __future__ import annotations
 import tomllib
 from pathlib import Path
 
+import pytest
+
 from hedron_core import (
     AccountSummary,
     AppFooter,
@@ -15,6 +17,7 @@ from hedron_core import (
     Surface,
     Text,
 )
+from hedron_core.diagnostics import HedronError
 from hedron_core.rendering import RenderContext, RenderMode, render
 
 
@@ -42,12 +45,28 @@ def test_surface_card_and_typed_chrome() -> None:
     brand = render(Brand("Hedron", href="/"), context=ctx, mode=RenderMode.FRAGMENT).html
     assert 'data-hedron-brand="true"' in brand
     account = render(
-        AccountSummary("Ada", detail="Admin"), context=ctx, mode=RenderMode.FRAGMENT
+        AccountSummary("Ada", detail="Admin", href="/account"),
+        context=ctx,
+        mode=RenderMode.FRAGMENT,
     ).html
     assert 'data-hedron-account-summary="true"' in account
+    assert 'href="/account"' in account
     banner = render(EnvironmentBanner("Staging"), context=ctx, mode=RenderMode.FRAGMENT).html
     assert 'data-hedron-environment-banner="true"' in banner
     status = render(NavStatus("Connected"), context=ctx, mode=RenderMode.FRAGMENT).html
     assert 'data-hedron-nav-status="true"' in status
     footer = render(AppFooter("© Hedron"), context=ctx, mode=RenderMode.FRAGMENT).html
     assert 'data-hedron-app-footer="true"' in footer
+    with pytest.raises(HedronError):
+        Brand("   ")
+    with pytest.raises(HedronError):
+        AccountSummary("")
+    with pytest.raises(HedronError):
+        Surface(Text("x"), appearance="soft")
+    css = Path("packages/hedron-core/src/hedron_core/static/hedron-default.css").read_text(
+        encoding="utf-8"
+    )
+    assert '[data-hedron-content-width="full"]' in css
+    assert '[data-hedron-mobile-collapse="off"]' in css
+    assert '[data-hedron-padding="md"]' in css
+    assert '[data-hedron-elevation="none"]' in css

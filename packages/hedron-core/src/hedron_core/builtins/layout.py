@@ -118,7 +118,7 @@ class Inline(Component[InlineProps]):
 
 class GridProps(ElementProps):
     columns: dict[str, int]
-    tracks: dict[str, str]
+    tracks: dict[str, str] | None = None
     gap: str = "md"
 
 
@@ -132,14 +132,14 @@ class Grid(Component[GridProps]):
         *nodes: NodeLike,
         children: NodeLike = None,
         columns: int | Mapping[str, int] = 2,
-        tracks: str | Mapping[str, str] = "default",
+        tracks: str | Mapping[str, str] | None = None,
         gap: str = "1rem",
         id: str | None = None,
         class_: str | None = None,
         **kwargs: Any,
     ) -> None:
         resolved = normalize_responsive_int(columns, label="columns", maximum=6)
-        track_map = normalize_responsive_track(tracks, label="tracks")
+        track_map = None if tracks is None else normalize_responsive_track(tracks, label="tracks")
         super().__init__(
             GridProps(
                 columns=resolved,
@@ -157,8 +157,10 @@ class Grid(Component[GridProps]):
             "hedron-layout": "grid",
             **gap_data(self.props.gap),
             **responsive_data(self.props.columns, prefix="hedron-columns"),
-            **responsive_data(self.props.tracks, prefix="hedron-track"),
         }
+        # Emit tracks only when the author set them so column CSS is not overridden.
+        if self.props.tracks is not None:
+            data.update(responsive_data(self.props.tracks, prefix="hedron-track"))
         return html.div(
             *self._children,
             id=self.props.id,

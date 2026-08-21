@@ -3,10 +3,22 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.57.0 — 2026-08-21
+
+In-tree Published cut for unified presentation / zero-application-CSS (RFC-0084 /
+D-099 / D-100). Git tag and PyPI upload are **deferred**; install from PyPI with
+`hedron>=0.56.0,<0.58`. [What’s new in 0.57](whats-new-0.57.md).
+[Installation](../getting-started/installation.md).
+
+- Shared appearance vocabulary, CSP-safe gap tokens, Grid/GridItem tracks and spans,
+  Surface and AppShell chrome, ResourceList/Identity, FileUpload composition, and
+  authenticated zero-application-CSS evidence (#558–#570).
+- Shared gates `CONTRACT-057` … `PKG-057` Verified (`registry_status = "deferred"`).
+
 ## 0.56.1 — 2026-08-21
 
-In-tree quality patch on the 0.57 train. Git tag and PyPI upload are **deferred**; install
-from PyPI with `hedron>=0.56.0,<0.58`. [What’s new in 0.56](whats-new-0.56.md).
+Historical in-tree quality patch on the prior tip. Install from PyPI with
+`hedron>=0.56.0,<0.58`. [What’s new in 0.56](whats-new-0.56.md).
 [Installation](../getting-started/installation.md).
 
 - Workspace Python quality upgrade: typing debt burn-down, safer best-effort exception

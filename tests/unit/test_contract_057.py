@@ -72,5 +72,8 @@ def test_controls_adopt_appearance_markers() -> None:
 def test_normalize_gap_tokens_and_compat_lengths() -> None:
     assert normalize_gap("md") == ("md", None)
     assert normalize_gap("1rem") == ("md", "1rem")
+    assert normalize_gap("0.5rem") == ("sm", "0.5rem")
     with pytest.raises(HedronError):
         normalize_gap("12vw")
+    with pytest.raises(HedronError):
+        normalize_gap("0.75rem")

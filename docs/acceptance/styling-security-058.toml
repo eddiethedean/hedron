@@ -1,0 +1,62 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+
+[inputs]
+trusted_application_configuration_only = true
+request_values = false
+database_values = false
+user_content = false
+secrets = false
+callables = false
+arbitrary_object_repr = false
+
+[css]
+inline_style_required = false
+unsafe_inline_required = false
+runtime_rules = false
+arbitrary_declarations = false
+arbitrary_selectors = false
+private_selectors = false
+global_selector_expansion = false
+remote_import = false
+url_values = false
+
+[assets]
+implicit_remote_fonts = false
+implicit_remote_images = false
+network_during_compile_or_tooling = false
+registered_asset_policy_required = true
+egress_policy_required_for_remote = true
+fingerprinted_external_css = true
+
+[tooling]
+invoke_routes = false
+invoke_loaders = false
+invoke_component_callbacks = false
+load_application_data = false
+redacted = true
+production_preview_default = false
+
+[ejection]
+project_root_only = true
+absolute_output = false
+traversal = false
+symlink_escape = false
+overwrite_default = false
+private_markup = false
+runtime_capture = false
+source_paths = "project-relative-posix"
+parity_required = true
+
+[semantic_boundaries]
+authorization_inference = false
+route_exposure_change = false
+mutation_meaning_change = false
+accessible_name_change = false
+dom_order_change = false
+content_hiding_default = false
+state_from_color_or_motion_only = false
+
+[adversarial_corpus]
+required = ["css breakout", "selector injection", "prototype-like names", "path traversal", "symlink escape", "duplicate logical id", "deep recipe inheritance", "oversized plan", "remote font URL", "data URL", "javascript URL", "secret-like values", "absolute paths", "hostile hex strings"]

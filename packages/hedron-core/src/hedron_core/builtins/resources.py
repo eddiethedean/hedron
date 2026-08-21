@@ -15,6 +15,37 @@ from hedron_core.typing_aliases import HtmlAttrValue
 
 __all__ = ["ResourceList", "ResourceRow"]
 
+_INTERACTIVE_LOGICAL_NAMES = frozenset(
+    {
+        "Button",
+        "ConfirmButton",
+        "DownloadButton",
+        "HtmxLink",
+        "IconButton",
+        "Link",
+        "LinkButton",
+        "MenuButton",
+        "NavLink",
+        "SubmitButton",
+    }
+)
+
+
+def _node_is_interactive(node: NodeLike) -> bool:
+    if isinstance(node, Component):
+        name = getattr(node, "logical_name", None) or type(node).__name__
+        if name in _INTERACTIVE_LOGICAL_NAMES:
+            return True
+        slots = getattr(node, "_slot_values", None)
+        if isinstance(slots, dict) and any(_node_is_interactive(v) for v in slots.values()):
+            return True
+        children = getattr(node, "_children", None)
+        if isinstance(children, (list, tuple)) and any(_node_is_interactive(c) for c in children):
+            return True
+    if isinstance(node, (list, tuple)):
+        return any(_node_is_interactive(item) for item in node)
+    return False
+
 
 class ResourceRowProps(ElementProps):
     title: str
@@ -60,6 +91,16 @@ class ResourceRow(Component[ResourceRowProps]):
                     "Use either href= for navigation or actions= for controls."
                 ),
                 remediation="Pass href= alone, or actions= without href=.",
+            )
+        if href is not None and meta is not None and _node_is_interactive(meta):
+            raise error(
+                HED_HTML_0006,
+                title="Invalid ResourceRow composition",
+                explanation=(
+                    "A linked ResourceRow cannot nest interactive controls in meta=. "
+                    "Keep meta text-only when href= is set."
+                ),
+                remediation="Pass text or Badge/Status meta, or use actions= without href=.",
             )
         url = None
         if href is not None:

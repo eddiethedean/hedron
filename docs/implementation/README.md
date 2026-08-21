@@ -47,9 +47,13 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Explorer architecture](EXPLORER_050.md) — phase 0.50 **Published** `v0.50.1` on PyPI; in-tree `v0.50.3` (D-085 / D-086; 0.50.3 tag deferred)
 - [Curated extras depth](EXTRAS_051.md) — phase 0.51 **Verified** in-tree / **Published** on PyPI as `v0.51.0` (D-087 / D-088; RFC-0078; [#507](https://github.com/eddiethedean/hedron/issues/507))
 - [Conformance authority](CONFORMANCE_052.md) / [Posit lifecycle](POSIT_LIFECYCLE_052.md) — phase 0.52 **Verified** in-tree `v0.52.0` (D-089 / D-090; RFC-0079; [#522](https://github.com/eddiethedean/hedron/issues/522); PyPI `v0.51.0` until upload)
-- [Progressive feature authoring](PROGRESSIVE_AUTHORING_058.md) — phase 0.58 D-101 workstreams
+- [Progressive feature authoring](PROGRESSIVE_AUTHORING_058.md) — phase 0.58 D-101 / D-102 workstreams
   for screens, form commands, complete workspaces, task/dashboard/session/upload flows,
-  explanation, overrides, ejection, scaffolds, and release evidence (Stage 0 refine pending)
+  explanation, overrides, ejection, scaffolds, and release evidence (Stage 0 Refined)
+- [Progressive styling authoring](PROGRESSIVE_STYLING_059.md) — phase 0.59 D-103 / D-104 workstreams for
+  brand compilation, typed design groups, semantic recipes, scopes, inspection, preview, diff,
+  ejection, 0.58 integration, starter migration, and release evidence (D-104 conditional Stage 0
+  Refined; Stage 1 waits for the final 0.58 predecessor audit)
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

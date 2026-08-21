@@ -14,7 +14,7 @@ reference — without matching incidental CPython formatting.
 
 Also available as the flagship extra `hedron[conformance]`.
 
-**Package maturity:** Beta · **Train:** `0.57.x` (in-tree tip `v0.57.0`; PyPI `0.56.0`; 0.56.1 deferred) · application pin `>=0.56.0,<0.58`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Train:** `0.57.x` (in-tree tip `v0.57.0`; PyPI `0.56.0`; 0.57.0 deferred) · application pin `>=0.56.0,<0.58`; repository checkouts use `uv sync`
 
 Phase 0.52 authority contract:
 [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
@@ -33,7 +33,7 @@ uv add "hedron-conformance>=0.56.0,<0.58"
 pip install "hedron[conformance]>=0.56.0,<0.58"
 ```
 
-Checkout tip `v0.57.0` uses `uv sync`; PyPI first-run stays `>=0.56.0,<0.58` until the 0.56.1 upload lands.
+Checkout tip `v0.57.0` uses `uv sync`; PyPI first-run stays `>=0.56.0,<0.58` until the 0.57.0 upload lands.
 
 Requires Python 3.11–3.14.
 

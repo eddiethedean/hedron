@@ -9,6 +9,8 @@ The full authoritative table lives in the repository (not duplicated here):
 
 | ID | Topic |
 |---|---|
+| D-104 | Phase 0.59 conditional Stage 0 locks DesignSystem, palette v1, recipes/scopes, schemas, precedence, budgets, starter adoption, gates, and the final-0.58 audit blocker |
+| D-103 | Progressive styling authoring and inspectable design systems own phase 0.59, including brand/recipe/scope lowering and migration of every styling starter (RFC-0086) |
 | D-102 | Phase 0.58 Stage 0 locks signatures, lowering, schemas, security, host dispositions, budgets, scaffolds, starter adoption, tracking, gates, and upgrades |
 | D-101 | Progressive feature authoring and inspectable lowering own phase 0.58, including migration of every inventoried starter example to the highest applicable abstraction (RFC-0085) |
 | D-100 | Phase 0.57 Stage 0 locks finite presentation/CSP/semantics/parity/upgrade contracts without runtime or version changes |

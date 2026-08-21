@@ -86,24 +86,18 @@ ELEVATIONS: tuple[str, ...] = ("none", "sm", "md", "lg")
 SHAPES: tuple[str, ...] = ("square", "rounded", "pill")
 
 # Named gap tokens preferred under strict CSP. Length literals remain accepted
-# with a compatibility mapping into the nearest token marker.
+# only when they equal the token CSS size exactly (no silent remapping).
 GAP_TOKENS: tuple[str, ...] = ("none", "xs", "sm", "md", "lg", "xl")
 _GAP_TOKEN_LENGTHS: dict[str, str] = {
     "0": "none",
     "0rem": "none",
     "0px": "none",
-    "0.15rem": "xs",
     "0.25rem": "xs",
     "4px": "xs",
-    "0.45rem": "sm",
     "0.5rem": "sm",
     "8px": "sm",
-    "0.75rem": "md",
-    "0.8rem": "md",
     "1rem": "md",
-    "12px": "md",
     "16px": "md",
-    "1.25rem": "lg",
     "1.5rem": "lg",
     "24px": "lg",
     "2rem": "xl",
@@ -199,9 +193,13 @@ def normalize_gap(gap: str) -> tuple[str, str | None]:
         title="Unsupported layout gap",
         explanation=(
             f"Gap {gap!r} is not a supported presentation token. "
-            "Strict CSP layouts require named gap tokens."
+            "Strict CSP layouts require named gap tokens that match first-party CSS sizes."
         ),
-        remediation=f"Use one of: {', '.join(GAP_TOKENS)}.",
+        remediation=(
+            f"Use one of: {', '.join(GAP_TOKENS)}. "
+            "Exact length aliases: 0.25rem/4px→xs, 0.5rem/8px→sm, 1rem/16px→md, "
+            "1.5rem/24px→lg, 2rem/32px→xl."
+        ),
     )
 
 

@@ -1,0 +1,61 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+
+[[level]]
+rank = 1
+name = "explicit_component_or_owned_scoped_css"
+strongest = true
+[[level]]
+rank = 2
+name = "explicit_component_recipe"
+[[level]]
+rank = 3
+name = "nearest_style_scope_theme_or_density"
+[[level]]
+rank = 4
+name = "design_system_application_default"
+[[level]]
+rank = 5
+name = "resolved_theme"
+[[level]]
+rank = 6
+name = "first_party_baseline"
+
+[recipe_merge]
+parent_to_child = true
+explicit_component_none_means_unset = true
+explicit_component_non_none_wins = true
+legacy_non_none_default_fields_in_catalog = false
+mapping_order_authority = false
+
+[scope]
+nearest_ancestor_wins = true
+explicit_child_marker_wins = true
+theme_custom_properties_inherit = true
+density_first_party_selectors_apply_only_without_child_density_marker = true
+recipe_defaults = false
+ambient_state = false
+
+[theme_selection]
+constructor_object_or_name = 1
+environment_when_constructor_omitted = 2
+project_config_when_constructor_and_environment_omitted = 3
+builtin_default = 4
+page_or_scope_explicit_theme = "local_subtree_only"
+color_mode = "explicit_scope_or_document_then_system_preference"
+
+[same_level_conflict]
+duplicate_recipe_name = "reject_unless_replace_true"
+two_explicit_recipes = "not_representable_one_apply_call_at_a_time"
+invalid_scope_theme = "reject_before_render"
+design_name_collision = "existing_theme_duplicate_diagnostic"
+equal_mapping_order = "canonical_key_order_not_precedence"
+
+[invariants]
+selector_specificity_accident_is_authority = false
+dom_reorder = false
+tab_or_reading_order_change = false
+content_hiding_default = false
+accessible_name_change = false
+state_or_authorization_inference = false

@@ -1,0 +1,44 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+
+[plan]
+schema_id = "hedron.design-system-plan/1"
+required = ["schema", "logical_id", "name", "base_theme", "inputs", "theme", "groups", "recipes", "provenance", "adjustments", "assets", "compatibility", "limitations", "digest"]
+logical_id = "design:<normalized-name>"
+callable_values = false
+runtime_values = false
+secret_values = false
+absolute_paths = false
+unknown_fields = "reject"
+ordering = "canonical_lexicographic_except_declared_recipe_order"
+digest = "sha256_canonical_json_without_digest"
+
+[provenance]
+sources = ["builtin", "base_theme", "brand_input", "generated", "preset", "recipe", "scope", "explicit_override", "ejected"]
+required = ["target", "source", "source_id", "adjusted", "reason"]
+request_or_user_values = false
+
+[adjustment]
+required = ["target", "requested", "resolved", "reason", "measured_pairs"]
+silent = false
+
+[diff]
+schema_id = "hedron.design-system-diff/1"
+required = ["schema", "base_digest", "candidate_digest", "inputs", "tokens", "groups", "recipes", "components", "assets", "emitted_output"]
+equivalent_output = "empty_semantic_diff"
+minified_css_primary = false
+
+[source_map]
+schema_id = "hedron.design-system-source-map/1"
+required = ["schema", "design_id", "selection", "files", "plan_digest", "theme_digest", "css_digest", "parity_digest"]
+paths = "project-relative-posix"
+overwrite_default = false
+symlink_escape = false
+contains_runtime_values = false
+
+[preview]
+schema_id = "hedron.design-system-preview/1"
+required = ["schema", "plan_digest", "fixture_version", "modes", "viewports", "assets", "pages"]
+application_data = false
+production_route_default = false

@@ -103,3 +103,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0083](RFC-0083-SECURITY-CONTROL-PLANE.md) | Security control plane | Accepted (D-097; D-098; [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)) |
 | [0084](RFC-0084-UNIFIED-PRESENTATION.md) | Unified presentation and zero-application-CSS | Accepted (D-099; Stage 0 refined by D-100; [#558](https://github.com/eddiethedean/hedron/issues/558)–[#570](https://github.com/eddiethedean/hedron/issues/570)) |
 | [0085](RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md) | Progressive feature authoring and inspectable lowering | Accepted + Stage 0 Refined (D-101 / D-102; in-tree `v0.57.0` baseline) |
+| [0086](RFC-0086-PROGRESSIVE-STYLING-AUTHORING.md) | Progressive styling authoring and inspectable design systems | Accepted + conditional Stage 0 Refined (D-103 / D-104; Stage 1 waits for final `v0.58.0` audit) |

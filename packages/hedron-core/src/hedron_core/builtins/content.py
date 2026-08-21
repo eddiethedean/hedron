@@ -52,8 +52,12 @@ def _typography_attrs(
         data["hedron-type-role"] = role
     elif class_:
         attrs["class_"] = class_names(base, class_)
-    if overflow:
-        data.update(appearance_data(overflow=overflow))
+    # When both overflow=truncate and lines are set, lines win (multi-line clamp).
+    effective_overflow = overflow
+    if lines is not None and overflow == "truncate":
+        effective_overflow = None
+    if effective_overflow:
+        data.update(appearance_data(overflow=effective_overflow))
         if "class_" not in attrs:
             attrs["class_"] = base
     if lines is not None:
@@ -178,6 +182,8 @@ class TypographyProps(Props):
     content: str
     role: TypographyRole = "body"
     as_: Literal["p", "span", "div", "strong", "em", "small", "code"] = "p"
+    overflow: OverflowMode | None = None
+    lines: int | None = None
     class_: str | None = None
 
 
@@ -193,16 +199,33 @@ class Typography(Component[TypographyProps]):
         *,
         role: TypographyRole = "body",
         as_: Literal["p", "span", "div", "strong", "em", "small", "code"] = "p",
+        overflow: OverflowMode | None = None,
+        lines: int | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
         require_choice(role, TYPOGRAPHY_ROLES, label="role")
+        require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
         super().__init__(
-            TypographyProps(content=content, role=role, as_=as_, class_=class_, **kwargs)
+            TypographyProps(
+                content=content,
+                role=role,
+                as_=as_,
+                overflow=overflow,
+                lines=_validate_lines(lines),
+                class_=class_,
+                **kwargs,
+            )
         )
 
     def render(self) -> NodeLike:
-        attrs = _typography_attrs("hedron-text", self.props.role, self.props.class_)
+        attrs = _typography_attrs(
+            "hedron-text",
+            self.props.role,
+            self.props.class_,
+            overflow=self.props.overflow,
+            lines=self.props.lines,
+        )
         return getattr(html, self.props.as_)(self.props.content, **attrs)
 
 

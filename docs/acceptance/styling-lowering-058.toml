@@ -1,0 +1,51 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+runtime_baseline = "v0.57.0"
+contract_baseline = ["D-102", "D-105"]
+required_predecessor = "v0.57.0"
+predecessor_satisfied = true
+
+[design_system]
+lowers_to = ["Theme", "Theme.extend", "register_theme_instance", "existing build manifest"]
+forbidden = ["second theme registry", "runtime CSS", "network lookup", "request data"]
+
+[brand]
+lowers_to = ["algorithm hedron.brand-palette/1", "Theme.tokens", "Theme.modes", "Theme.palette", "contrast diagnostics"]
+forbidden = ["unreported adjustment", "unrelated inherited dark accent", "remote brand discovery"]
+
+[typed_groups]
+lowers_to = ["Theme.density", "Theme.shape", "Theme.elevation", "Theme.nav_width", "semantic tokens"]
+forbidden = ["arbitrary property mapping", "selectors", "URLs", "style declarations"]
+
+[recipe]
+lowers_to = ["Component.props model_copy", "existing appearance/family validation", "existing data-hedron markers"]
+application_time = "authoring_before_render"
+mutation = "returns_clone_original_unchanged"
+explicit_detection = "recipe_catalog_fields_have_none_default_only"
+forbidden = ["wrapper DOM", "browser lookup", "runtime registry lookup", "private props", "non-presentation semantics"]
+
+[scope]
+lowers_to = ["explicit div boundary", "data-hedron-style-scope", "data-hedron-theme", "data-theme", "data-hedron-density", "first-party CSS"]
+supported = ["theme", "color_mode", "density"]
+forbidden = ["recipe defaults", "ambient context", "DOM reorder", "content hiding", "lifecycle JavaScript", "raw variables"]
+
+[app]
+lowers_to = ["normalize to registered theme name before compose_lifespan", "existing app.state.hedron_theme"]
+forbidden = ["app.state.hedron_design as authority", "second lifespan field", "silent default_styles enable"]
+
+[tooling]
+lowers_to = ["hedron.design-system-plan/1", "theme diagnostics", "style-contract diagnostics", "asset manifest", "build manifest"]
+forbidden = ["route invocation", "loader invocation", "application data", "network", "private selectors"]
+
+[ejection]
+lowers_to = ["Theme Python", "explicit existing component props", "StyleScope markers", "public style-contract scoped CSS", "existing CSS build"]
+forbidden = ["overwrite by default", "project-root escape", "absolute paths", "captured runtime data", "private markup"]
+
+[parity]
+design_to_theme = "exact_semantic_and_css_output"
+recipe_to_explicit_props = "exact_rendered_markup"
+scope_to_explicit_markers = "exact_rendered_markup"
+tooling_views = "same_plan_digest"
+silent_slice = false
+callback_during_compile_explain_diff_preview_eject = false

@@ -25,7 +25,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ```python
 from hedron import Card, GridItem, Text
 
-component = GridItem(Card(Text('Wide')), column_span=2)
+component = GridItem(Card(Text('Wide')), span=2)
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -39,14 +39,14 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-GridItem(*nodes, *, column=None, row=None, column_span=None, row_span=None, id=None, class_=None)
+GridItem(*nodes, *, span=1, align='stretch', id=None, class_=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `nodes` | `NodeLike` | Cell content. |
-| `column / row` | `track token | None` | Named start track. |
-| `column_span / row_span` | `int | None` | Named span count. |
+| `span` | `int | breakpoint map` | Column span (1–6), optionally responsive. |
+| `align` | `start | center | end | stretch` | Cell alignment within the track. |
 
 ## Composition and backend behavior
 

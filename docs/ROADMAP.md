@@ -53,9 +53,10 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Verified** / **Published** in-tree (`v0.53.0`; Verified gates; tag/PyPI deferred; [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md), D-091/D-092, [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
 | **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Published** (`v0.56.0` on GitHub and PyPI; [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md), D-093/D-094, foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543); companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
 | **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Published** (`v0.55.0` tag; Verified gates; PyPI deferred; [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md), D-095/D-096, [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)) |
-| **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.1` in-tree; Verified gates; 0.56.1 tag/PyPI deferred; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)) |
+| **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.57.0` in-tree; Verified gates; 0.57.0 tag/PyPI deferred; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)) |
 | **0.57** | Unified styling and presentation: shared appearance adoption, CSP-safe responsive layout, overflow contracts, surfaces, application chrome, data/identity primitives, and zero-application-CSS evidence | **Published** in-tree (`v0.57.0`; Verified gates; tag/PyPI deferred; D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570); [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)) |
 | **0.58** | Progressive feature authoring: screens, form commands, complete data workspaces, durable task UI, dashboards, bounded session/upload flows, inspectable lowering, overrides, and safe ejection | **Refined** (D-101 / D-102 / [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md); predecessor `v0.57.0` Published/Verified in-tree) |
+| **0.59** | Progressive styling authoring: branded design systems, typed design groups, semantic recipes, explicit scopes, inspect/preview/diff, and safe ejection to Theme/props/scoped CSS | **Conditionally Refined; Stage 1 blocked** (D-103 / D-104 / [RFC-0086](rfcs/RFC-0086-PROGRESSIVE-STYLING-AUTHORING.md); final Published/Verified `v0.58.0` audit pending) |
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -5646,11 +5647,11 @@ pluggable hooks so applications and deployment platforms can own those concerns 
 
 ## 0.56 — Security control plane and adversarial assurance (`v0.56.0`)
 
-**Status:** Published in-tree as `v0.56.0` (D-097 / D-098 / RFC-0083; Verified gates). Living tip `v0.56.1` (tag/PyPI deferred). Security-only phase tracking
+**Status:** Published in-tree as `v0.56.0` (D-097 / D-098 / RFC-0083; Verified gates). Living tip `v0.57.0` (tag/PyPI deferred). Security-only phase tracking
 [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557).
 0.56 composes and hardens existing security mechanisms; it does not reopen 0.55 application-
 workflow scope or promote experimental transports, hosts, or packages. Living tip is
-`v0.56.1` (PyPI serves `v0.56.0`; 0.56.1 deferred).
+`v0.57.0` (PyPI serves `v0.56.0`; 0.57.0 deferred).
 
 **Outcome:** Every Hedron-controlled request crosses one inspectable security control plane. Identity
 and sensitivity provenance survive supported boundaries; dangerous sinks and outbound access use
@@ -6101,6 +6102,116 @@ inventoried starter example uses the highest applicable 0.58 abstraction while e
 available in labeled advanced material; explicit 0.57 APIs remain compatible; all fifteen 0.58
 gates are Verified with zero Deferred; and release
 metadata truthfully records Beta maturity and registry status.
+
+## 0.59 — Progressive styling authoring and inspectable design systems (`v0.59.0`)
+
+**Status:** Conditionally Stage 0 Refined (D-103 / D-104 / RFC-0086); Stage 1 blocked. D-104 locks
+the contract packet against the shipped 0.57 styling runtime plus D-102's exact 0.58 contracts.
+Published/Verified in-tree `v0.58.0` is not yet satisfied, so W0 must complete a no-drift
+predecessor audit—or an accepted D-104 amendment—before implementation begins.
+
+**Outcome:** A beginner can select a built-in look or compile a coherent accessible light/dark
+design from a small trusted brand input; reuse named semantic recipes; apply bounded local scope
+defaults; inspect, preview, diff, and check every generated decision; and eject one decision or the
+whole design to the existing explicit styling APIs. `Theme`, semantic tokens, shared appearance
+markers, component props, public style contracts, scoped CSS, the AST compiler, the asset build,
+cascade layers, and CSP policy remain authoritative.
+
+Normative planning is
+[RFC-0086](rfcs/RFC-0086-PROGRESSIVE-STYLING-AUTHORING.md), with
+[implementation workstreams](implementation/PROGRESSIVE_STYLING_059.md) and the
+[conditional Stage 0 acceptance plan](acceptance/RELEASE_0_59.md). D-104 freezes the
+`styling-*-059.toml`, `design-system-schema-059.toml`, `style-recipe-catalog-059.toml`,
+`styling-predecessor-audit-059.toml`, `release-gate-0.59.toml`, and
+`upgrade-fixtures-059.md` packet.
+
+### Progressive ladder
+
+| Level | User intent | Existing lowering |
+|---|---|---|
+| Built-in | Choose `default` or `aurora` | Registered first-party `Theme` |
+| Brand | Name + accent + finite design choices | Resolved ordinary `Theme` with coordinated modes |
+| Recipe | Reuse `primary_action`, `data_surface`, and other named roles | Existing family props and `data-hedron-*` markers |
+| Scope | Set theme, light/dark mode, or density for one explicit subtree | Existing inheritable markers/theme variables |
+| Inspect | Explain, preview, diff, and check | One static plan over theme/style/build manifests |
+| Eject | Materialize one group, recipe, scope, component, or whole design | Public Theme/props/style-contract/scoped-CSS source |
+| Primitive | Own tokens, props, classes, CSS, and layers directly | Existing 0.57 APIs and compiler |
+
+### Scope and delivery plan
+
+1. **Freeze one lowering and precedence contract:** branded/typed values compile to one existing
+   `Theme`; recipes compile to existing appearance/family props; scopes emit finite explicit
+   markers; current build and cascade remain the only CSS authority. Precedence is explicit
+   component/scoped CSS → component recipe → nearest scope → design default → Theme → baseline.
+2. **Compile a brand, not arbitrary CSS:** one trusted accent plus finite optional density,
+   geometry, typography, elevation, motion, and navigation choices produces coordinated light/dark
+   semantic tokens with contrast/focus validation, provenance, adjustment disclosure, and failure
+   remediation.
+3. **Add typed design groups and lossless Theme interop:** existing custom themes can be bases;
+   designs convert to and register as ordinary themes; built-in/default behavior and
+   `default_styles=False` remain honest.
+4. **Add named family-scoped recipes:** immutable acyclic recipes contain only existing semantic
+   props, validate against a locked component/style-contract catalog, add no wrapper DOM or browser
+   runtime, and always lose to explicit component values.
+5. **Add explicit local scopes:** one visible, semantically neutral `div` boundary may set only
+   registered theme, light/dark mode, or density without ambient state, recipe defaults, DOM
+   reordering, content hiding, or lifecycle JS.
+6. **Use one static tooling model:** Python, CLI, Explorer, conformance, and ejection consume a
+   versioned redacted plan for explain, preview, semantic diff, checks, provenance, affected
+   components, assets, limitations, and source maps. No callbacks, application data, or network.
+7. **Make graduation local and safe:** eject a whole design, typed group, recipe, scope, or owned
+   component override to reviewable public-API Python/scoped CSS with project-root safety and
+   generated parity.
+8. **Integrate rather than fork 0.58:** generated screens/forms/workspaces/tasks/dashboards/auth/
+   uploads expose stable semantic style roles, inherit the same recipe authority, and preserve all
+   behavior/security/named-surface overrides.
+9. **Migrate the learning surface:** every starter/beginner/quick-start/golden-path/minimal/first-
+   app/theming/scaffold example uses the highest applicable 0.59 abstraction, then teaches inspect
+   → override → eject → clearly labeled explicit Theme/props/scoped-CSS equivalents.
+10. **Prove production honesty:** strict CSP, hostile input, asset/egress, accessibility, three-
+    engine visual, no-JS/fragment, performance, adapter/ecosystem, regression, upgrade, optional-
+    dependency, clean-wheel, and release-rehearsal evidence.
+
+### Planned release gates
+
+| Gate | Required evidence |
+|---|---|
+| `CONTRACT-059` | Exact symbols, schemas, vocabularies, precedence, maturity, diagnostics, dispositions |
+| `LOWER-059` | Design→Theme/props/markers/build differential and no second styling runtime |
+| `BRAND-059` | Deterministic coordinated light/dark generation, failure/remediation, provenance |
+| `THEME-059` | Typed design groups, Theme bridge, registration, inheritance, compatibility |
+| `RECIPE-059` | Family validation, inheritance, explicit precedence, no wrapper/JS/runtime lookup |
+| `SCOPE-059` | Explicit boundaries, nesting, semantic/DOM-order/fragment safety |
+| `TOOLING-059` | Static redacted explain/preview/diff/check over one manifest |
+| `EJECT-059` | Whole/partial public-API ejection, source maps, parity, path/overwrite safety |
+| `A11Y-059` | Contrast, focus, non-color meaning, motion, zoom, text, media, RTL, keyboard/SR |
+| `CSP-059` | External deterministic CSS, hostile inputs, asset/egress policy, no inline requirement |
+| `VISUAL-059` | Three-engine locked gallery, computed facts, controlled visual-diff policy |
+| `ADAPTER-059` | Honest core/FastAPI/Flask/Django/Jinja/elements/sim/conformance dispositions |
+| `REGRESS-059` | Existing Theme/appearance/scoped-CSS/build and 0.53–0.58 compatibility |
+| `DX-059` | Beginner tasks, complete styling-starter migration, inspect-to-eject outcomes |
+| `PKG-059` | Clean wheels, exports, optional isolation, docs, upgrades, metadata, rehearsal |
+
+### Stability and non-goals
+
+New 0.59 APIs begin `beta`. The phase does not add a Tailwind-like utility surface, free-form
+CSS-in-Python property DSL, runtime atomic CSS, a second theme registry/cascade/compiler/renderer/
+asset pipeline, inline-style requirement, private-selector support, implicit remote fonts/assets,
+drag-and-drop editor, hosted design service, Figma synchronization, AI production-CSS generator,
+DOM reordering/content hiding, styling-derived semantics/authorization, or a claim that a generated
+palette alone makes an application accessible. Existing `Theme`, appearance props, `class_`, scoped
+CSS, override layers, ejection, and `default_styles=False` remain first-class.
+
+### Exit gate
+
+D-104 is audited against the final 0.58 runtime before Stage 1; one brand input compiles
+deterministically to an ordinary coordinated light/dark `Theme`; recipes and scopes lower only to existing semantic
+props/markers with locked precedence; explain/preview/diff/check are static and redacted; whole and
+partial ejection is safe and parity-checked; 0.58 surfaces use the same style roles; existing theme/
+appearance/scoped-CSS output remains compatible; every inventoried styling starter uses the highest
+applicable abstraction while explicit APIs remain in labeled advanced material; accessibility,
+strict-CSP, visual-browser, performance, adapter, upgrade, and packaging evidence passes; and all
+fifteen 0.59 gates are Verified with zero Deferred.
 
 ## Later-phase policy
 

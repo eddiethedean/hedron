@@ -33,3 +33,7 @@ def test_layout_gaps_emit_data_markers_without_inline_styles() -> None:
 def test_invalid_gap_fails_diagnostically() -> None:
     with pytest.raises(HedronError):
         Stack(Text("x"), gap="calc(100vh - 2rem)")
+    with pytest.raises(HedronError):
+        Stack(Text("x"), gap="0.75rem")
+    with pytest.raises(HedronError):
+        Stack(Text("x"), gap="12px")

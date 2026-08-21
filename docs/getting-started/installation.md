@@ -16,15 +16,15 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-The repository contains the **0.56.x** train (living tip **`v0.56.1`**), while the latest
-installable PyPI release is **0.56.0**. Git tag and PyPI upload for **0.56.1** are
+The repository contains the **0.57.x** train (living tip **`v0.57.0`**), while the latest
+installable PyPI release is **0.56.0**. Git tag and PyPI upload for **0.57.0** are
 **deferred**. Application commands on this page therefore use the registry-resolvable pin;
 contributors working in this checkout should use `uv sync`.
 
 | You are… | Install |
 |---|---|
 | Building an app from PyPI | `hedron>=0.56.0,<0.58` |
-| Working in this repository | `uv sync` (editable **0.56.1**) |
+| Working in this repository | `uv sync` (editable **0.57.0**) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
 are **Beta** (usable, no 1.0, no SLA). Capability detail:

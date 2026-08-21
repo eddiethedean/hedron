@@ -13,7 +13,7 @@ from hedron_core.builtins.landmarks import (
     _filter_landmark_kwargs,
     _landmark_attrs,
 )
-from hedron_core.codes import HED_EXT_0006
+from hedron_core.codes import HED_EXT_0006, HED_HTML_0006
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
@@ -715,6 +715,13 @@ class Brand(Component[BrandProps]):
         mark: str | None = None,
         **kwargs: object,
     ) -> None:
+        if not name.strip():
+            raise error(
+                HED_HTML_0006,
+                title="Brand name is required",
+                explanation="Brand chrome needs a discernible product name.",
+                remediation="Pass a non-empty name.",
+            )
         url = None
         if href is not None:
             url = href if isinstance(href, SafeUrl) else _coerce_nav_url(href)
@@ -758,6 +765,7 @@ class Brand(Component[BrandProps]):
 class AccountSummaryProps(ElementProps):
     name: str
     detail: str | None = None
+    href: SafeUrl | None = None
 
 
 class AccountSummary(Component[AccountSummaryProps]):
@@ -771,24 +779,52 @@ class AccountSummary(Component[AccountSummaryProps]):
         name: str,
         *,
         detail: str | None = None,
+        href: SafeUrl | str | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
         **kwargs: object,
     ) -> None:
+        if not name.strip():
+            raise error(
+                HED_HTML_0006,
+                title="AccountSummary name is required",
+                explanation="Account chrome needs a discernible display name.",
+                remediation="Pass a non-empty name.",
+            )
+        url = None
+        if href is not None:
+            url = href if isinstance(href, SafeUrl) else _coerce_nav_url(href)
         super().__init__(
-            AccountSummaryProps(name=name, detail=detail, id=id, class_=class_, mark=mark, **kwargs)
+            AccountSummaryProps(
+                name=name,
+                detail=detail,
+                href=url,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
         )
 
     def render(self) -> NodeLike:
         parts: list[NodeLike] = [html.span(self.props.name, class_="hedron-account-name")]
         if self.props.detail:
             parts.append(html.span(self.props.detail, class_="hedron-account-detail"))
+        data = {"hedron-account-summary": "true", **mark_data(self.props.mark)}
+        if self.props.href is not None:
+            return html.a(
+                *parts,
+                href=self.props.href,
+                id=self.props.id,
+                class_=class_names("hedron-account-summary", self.props.class_),
+                data=data,
+            )
         return html.div(
             *parts,
             id=self.props.id,
             class_=class_names("hedron-account-summary", self.props.class_),
-            data={"hedron-account-summary": "true", **mark_data(self.props.mark)},
+            data=data,
         )
 
 

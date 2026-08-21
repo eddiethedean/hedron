@@ -12,12 +12,18 @@ from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
 
 
-def _nav(href: str) -> SafeUrl:
-    return SafeUrl.parse(href, purpose=UrlPurpose.NAVIGATION)
+def _coerce_url(value: SafeUrl | str, *, purpose: UrlPurpose) -> SafeUrl:
+    if isinstance(value, SafeUrl):
+        return value
+    return SafeUrl.parse(value, purpose=purpose)
 
 
-def _asset(src: str) -> SafeUrl:
-    return SafeUrl.parse(src, purpose=UrlPurpose.ASSET)
+def _nav(href: SafeUrl | str) -> SafeUrl:
+    return _coerce_url(href, purpose=UrlPurpose.NAVIGATION)
+
+
+def _asset(src: SafeUrl | str) -> SafeUrl:
+    return _coerce_url(src, purpose=UrlPurpose.ASSET)
 
 
 class AvatarProfileProps(ElementProps):
@@ -36,9 +42,9 @@ class AvatarProfile(Component[AvatarProfileProps]):
         self,
         name: str,
         *,
-        image_src: str | None = None,
+        image_src: SafeUrl | str | None = None,
         caption: str | None = None,
-        href: str | None = None,
+        href: SafeUrl | str | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(

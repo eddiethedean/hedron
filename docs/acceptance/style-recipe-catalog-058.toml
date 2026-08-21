@@ -1,0 +1,127 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+application = "DesignSystem.apply(recipe, component)"
+application_time = "before_render"
+clone = true
+mutate_input = false
+wrapper_dom = false
+browser_runtime = false
+runtime_catalog_lookup = false
+unknown_component = "reject"
+unlisted_field = "reject"
+non_none_existing_value = "explicit_component_value_wins"
+eligible_recipe_field_default = "None_only"
+
+[[family]]
+name = "control"
+fields = ["size", "appearance", "emphasis", "width"]
+components = ["Button", "LinkButton", "IconButton"]
+note = "Per-component compatibility is the intersection of listed recipe fields and actual optional props; Button alone admits width in the v1 catalog."
+
+[[family]]
+name = "surface"
+fields = ["appearance", "density", "padding", "elevation"]
+components = ["Surface", "Card"]
+
+[[family]]
+name = "data"
+fields = ["density", "responsive"]
+components = ["Table", "DescriptionList", "PageHeader", "FormGrid"]
+note = "Only Table admits responsive; all listed components admit density."
+
+[[family]]
+name = "status"
+fields = ["size", "appearance"]
+components = ["Badge", "Alert", "Status"]
+note = "Tone and variant are excluded because they carry state/legacy non-None defaults."
+
+[[family]]
+name = "content"
+fields = ["role", "overflow"]
+components = ["Text", "Heading"]
+note = "Typography is excluded from role recipes because its role has a non-None legacy default."
+
+[[builtin_recipe]]
+name = "primary_action"
+family = "control"
+values = ["appearance=solid", "emphasis=primary", "size=md"]
+facade_roles = ["form.primary_action", "workspace.create_action", "auth.login_action", "upload.submit_action", "task.submit_action"]
+
+[[builtin_recipe]]
+name = "secondary_action"
+family = "control"
+values = ["appearance=outline", "emphasis=secondary", "size=md"]
+facade_roles = ["screen.secondary_action", "workspace.edit_action", "task.cancel_action"]
+
+[[builtin_recipe]]
+name = "destructive_action"
+family = "control"
+values = ["appearance=solid", "emphasis=danger", "size=md"]
+facade_roles = ["workspace.delete_action", "auth.logout_action"]
+requires_explicit_domain_authority = true
+
+[[builtin_recipe]]
+name = "page_surface"
+family = "surface"
+values = ["appearance=plain", "padding=md"]
+facade_roles = ["screen.surface"]
+
+[[builtin_recipe]]
+name = "form_surface"
+family = "surface"
+values = ["appearance=raised", "padding=md", "elevation=sm"]
+facade_roles = ["form.surface", "auth.form_surface", "upload.form_surface"]
+
+[[builtin_recipe]]
+name = "data_surface"
+family = "surface"
+values = ["appearance=plain", "padding=sm"]
+facade_roles = ["workspace.list_surface", "workspace.detail_surface"]
+
+[[builtin_recipe]]
+name = "dashboard_panel"
+family = "surface"
+values = ["appearance=raised", "padding=md", "elevation=sm"]
+facade_roles = ["dashboard.panel_surface"]
+
+[[builtin_recipe]]
+name = "dense_data"
+family = "data"
+values = ["density=compact", "responsive=scroll"]
+facade_roles = ["workspace.list_data", "dashboard.table_data"]
+
+[[builtin_recipe]]
+name = "inline_status"
+family = "status"
+values = ["appearance=soft", "size=sm"]
+facade_roles = ["task.status", "upload.status", "form.status"]
+
+[[builtin_recipe]]
+name = "metadata"
+family = "content"
+values = ["role=caption", "overflow=wrap"]
+facade_roles = ["screen.metadata", "workspace.metadata", "task.metadata"]
+
+[inheritance]
+same_family_only = true
+maximum_depth = 4
+cycle = "HED-RECIPE-0003"
+missing_parent = "HED-RECIPE-0001"
+duplicate_without_replace = "HED-RECIPE-0004"
+replace_builtin_requires = "with_recipes(..., replace=true)"
+
+[security]
+css_declarations = false
+selectors = false
+class_names = false
+urls = false
+html = false
+callbacks = false
+semantic_state = false
+authorization = false
+
+[deferred]
+families = ["field", "layout"]
+scope_defaults = true
+reason = "The 0.58 v1 contract cannot prove explicitness for legacy non-None fields or apply descendant recipes without hidden mutation/specificity."

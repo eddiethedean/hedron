@@ -25,7 +25,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ```python
 from hedron import Button, Inline, LinkButton
 
-component = Inline(Button('Save'), LinkButton('Cancel', '/account'), gap='0.75rem')
+component = Inline(Button('Save'), LinkButton('Cancel', '/account'), gap='md')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.

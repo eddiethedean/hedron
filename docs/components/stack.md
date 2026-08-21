@@ -25,7 +25,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ```python
 from hedron import Button, Heading, Stack, Text
 
-component = Stack(Heading('Settings', level=2), Text('Profile'), Button('Save'), gap='1.25rem')
+component = Stack(Heading('Settings', level=2), Text('Profile'), Button('Save'), gap='lg')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.

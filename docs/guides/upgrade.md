@@ -1,15 +1,26 @@
-# Upgrade to Hedron 0.56
+# Upgrade to Hedron 0.57
 
-This guide covers an application upgrade onto the **0.56.x** tip
-(in-tree `v0.56.1`; **`v0.56.0` on PyPI**). Git tag / PyPI upload for **0.56.1** are
+This guide covers an application upgrade onto the **0.57.x** tip
+(in-tree `v0.57.0`; **`v0.56.0` on PyPI**). Git tag / PyPI upload for **0.57.0** are
 deferred — keep `hedron>=0.56.0,<0.58` from the public index until a newer wheel lands.
 Public-index notes: [Installation](../getting-started/installation.md). New applications
 should use [Build your first app](../getting-started/quickstart.md).
 
+## 0.56 → 0.57
+
+Checkout tip `v0.57.0` uses `uv sync`. From PyPI, keep
+`hedron>=0.56.0,<0.58` until the 0.57.0 wheel lands. See
+[What's new in 0.57](whats-new-0.57.md) and
+[Presentation](../api/PRESENTATION.md).
+
+1. Upgrade the pin (in-tree) or keep the PyPI floor while deferred.
+2. Prefer named gap tokens (`sm`/`md`/`lg`) over ambiguous CSS lengths.
+3. Adopt Surface / chrome / ResourceList presentation markers instead of application CSS.
+
 ## 0.55 → 0.56
 
-Checkout tip `v0.56.1` uses `uv sync`. From PyPI, keep
-`hedron>=0.56.0,<0.58` until a newer 0.56.x wheel lands. See
+Checkout tip `v0.57.0` uses `uv sync`. From PyPI, keep
+`hedron>=0.56.0,<0.58` until a newer wheel lands. See
 [What's new in 0.56](whats-new-0.56.md) and
 [Security control plane](../api/SECURITY_PLANE.md).
 
@@ -19,7 +30,7 @@ Checkout tip `v0.56.1` uses `uv sync`. From PyPI, keep
 
 ## 0.52 → 0.53
 
-Checkout tip `v0.56.1` uses the in-tree floor `>=0.57.0,<0.58`. From PyPI, keep
+Checkout tip `v0.57.0` uses the in-tree floor `>=0.57.0,<0.58`. From PyPI, keep
 `hedron>=0.56.0,<0.58` until the 0.53 wheel lands. See
 [What's new in 0.53](whats-new-0.53.md) and
 [Application DX API](../api/APPLICATION_DX.md).

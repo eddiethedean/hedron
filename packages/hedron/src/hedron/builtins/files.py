@@ -132,10 +132,15 @@ class FileUpload(Component[FileUploadProps]):
     def render(self) -> Any:
         limit_text = f"Maximum size {_format_size(self.props.maximum_size)}"
         hint = self.props.hint or limit_text
+        hint_id = f"hedron-file-upload-hint-{self.props.name}"
+        status_id = f"hedron-file-upload-status-{self.props.name}"
+        described_by = [hint_id]
+        if self.props.status:
+            described_by.append(status_id)
         input_attrs: dict[str, Any] = {
             "type": "file",
             "name": self.props.name,
-            "aria": {"label": self.props.label, "describedby": None},
+            "aria": {"label": self.props.label, "describedby": " ".join(described_by)},
             "data": {"max-size": str(self.props.maximum_size)},
             "class_": "hedron-file-upload-input",
         }
@@ -146,12 +151,13 @@ class FileUpload(Component[FileUploadProps]):
         parts: list[Any] = [
             html.span(self.props.label, class_="hedron-file-upload-label"),
             html.input(**input_attrs),
-            html.span(hint, class_="hedron-file-upload-hint"),
+            html.span(hint, id=hint_id, class_="hedron-file-upload-hint"),
         ]
         if self.props.status:
             parts.append(
                 html.span(
                     self.props.status,
+                    id=status_id,
                     class_="hedron-file-upload-status",
                     role="status",
                 )

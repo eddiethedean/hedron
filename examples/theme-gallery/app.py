@@ -102,14 +102,14 @@ def _chrome(
         LinkButton("Aurora", _href(current, mode, "aurora")),
         LinkButton("Light", _href(current, "light", theme)),
         LinkButton("Dark", _href(current, "dark", theme)),
-        gap="0.45rem",
+        gap="sm",
     )
     return Page(
         Header(
             Stack(
                 Text("HEDRON / UI LAB", as_="small"),
                 Heading("Theme gallery", level=2),
-                gap="0.15rem",
+                gap="xs",
             ),
             mode_controls,
         ),
@@ -414,7 +414,7 @@ def support(mode: Mode = "light", theme: ThemeName = "default") -> Page:
                     placeholder="Reply to Maya…",
                     include_attachments=True,
                 ),
-                gap="0.8rem",
+                gap="md",
             ),
             Stack(
                 Card(

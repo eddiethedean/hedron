@@ -1,0 +1,63 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+required_predecessor = "v0.57.0"
+predecessor_satisfied = true
+
+[hedron_core]
+design_values = "supported"
+brand_compiler = "supported"
+theme_bridge = "supported"
+recipes = "supported"
+style_scope = "supported"
+plan_schema = "supported"
+
+[fastapi]
+theme_design_object = "supported"
+cli = "supported"
+build_and_ejection = "supported"
+preview = "development_or_static_only"
+
+[flask]
+portable_theme_and_markers = "supported_consumer"
+design_object_constructor = "explicit_adapter_spelling"
+cli_preview = "composition_only"
+
+[django]
+portable_theme_and_markers = "supported_consumer"
+design_object_constructor = "explicit_adapter_spelling"
+cli_preview = "composition_only"
+
+[jinja]
+compiled_theme_and_marker_consumption = "supported"
+recipe_application = "python_component_only"
+template_recipe_dsl = "deferred"
+
+[elements]
+theme_tokens_and_public_style_contracts = "supported_consumer"
+recipe_application = "unsupported_component_family_unless_catalogued"
+
+[data_charts_maps_extras]
+theme_token_consumer = "supported_existing_contract"
+recipe_catalog = "explicit_inventory_only"
+optional_import_when_unused = false
+
+[explorer]
+plan_visualization = "supported_development_or_secured"
+model_authority = false
+production_default = false
+
+[sim]
+portable_plan_and_fixed_gallery_subset = "declared_subset"
+production_parity_claim = false
+
+[conformance]
+schema_fixture_and_disposition_authority = "supported"
+css_renderer_authority = false
+
+[rules]
+false_parity = false
+private_selectors = false
+remote_assets_inferred = false
+runtime_css = false
+external_exposure_inferred = false

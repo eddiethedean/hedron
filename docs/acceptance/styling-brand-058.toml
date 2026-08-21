@@ -1,0 +1,83 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+algorithm_version = "hedron.brand-palette/1"
+input_formats = ["#rgb", "#rrggbb"]
+invalid_input = "HED-BRAND-0001"
+unsatisfied_output = "HED-BRAND-0002"
+adjusted_output = "HED-BRAND-0003-warning"
+overflow_behavior = "reject"
+
+[algorithm]
+color_space = "HSL derived from existing colorsys conversion"
+channel_rounding = "nearest 8-bit integer"
+search_step_lightness = 0.01
+search_order = "nearest_candidate_then_darker_for_light_mode_lighter_for_dark_mode"
+tie_break = "lower_8bit_hex_lexicographically"
+base_default = "default_theme()"
+preserve_seed_as = "Theme.palette['brand.seed']"
+light_compiler = "existing compile_palette(seed) output plus required inherited non-color tokens"
+dark_compiler = "same hue; saturation floor 0.35; dark surfaces fixed by hue-relative lightness ladder; solve semantic pairs by contrast search"
+mode_compilation = "light_and_dark_together"
+inherit_unrelated_brand_accent = false
+
+[required_tokens]
+light = ["color.bg", "color.surface", "color.surface-muted", "color.fg", "color.muted", "color.border", "color.accent", "color.accent-soft", "color.on-accent", "color.focus", "color.danger", "color.on-danger"]
+dark = ["color.bg", "color.surface", "color.surface-muted", "color.fg", "color.muted", "color.border", "color.accent", "color.accent-soft", "color.on-accent", "color.focus", "color.danger", "color.on-danger"]
+
+[[contrast_pair]]
+foreground = "color.fg"
+background = "color.bg"
+minimum = 4.5
+severity = "error"
+[[contrast_pair]]
+foreground = "color.muted"
+background = "color.bg"
+minimum = 4.5
+severity = "error"
+[[contrast_pair]]
+foreground = "color.on-accent"
+background = "color.accent"
+minimum = 4.5
+severity = "error"
+[[contrast_pair]]
+foreground = "color.on-danger"
+background = "color.danger"
+minimum = 4.5
+severity = "error"
+[[contrast_pair]]
+foreground = "color.accent"
+background = "color.bg"
+minimum = 3.0
+severity = "warning"
+[[contrast_pair]]
+foreground = "color.focus"
+background = "color.bg"
+minimum = 3.0
+severity = "error"
+
+[[seed_case]]
+seed = "#2f6fed"
+expected = "pass_or_adjust_with_provenance"
+[[seed_case]]
+seed = "#ffffff"
+expected = "adjust_with_provenance"
+[[seed_case]]
+seed = "#000000"
+expected = "adjust_with_provenance"
+[[seed_case]]
+seed = "#777777"
+expected = "pass_or_adjust_with_provenance"
+[[seed_case]]
+seed = "red"
+expected = "reject_invalid_format"
+[[seed_case]]
+seed = "#fff;url(x)"
+expected = "reject_invalid_format"
+
+[limits]
+adjustment_search_steps_per_token = 101
+mode_count = 2
+network = false
+filesystem = false
+platform_dependent_color_engine = false

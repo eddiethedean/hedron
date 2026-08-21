@@ -6,7 +6,7 @@ Tooling-grade Java evaluator for the Hedron portable conformance corpus.
 **Version:** `0.53.0` · **Runtime matrix:** JDK 11 / 17 / 21 (`--release 11` bytecode)  
 **Coordinates:** `io.hedron:hedron-runtime-java:0.53.0`
 
-Living Hedron train `0.56.x` (checkout tip `v0.56.1`; PyPI Python packages still pin
+Living Hedron train `0.56.x` (checkout tip `v0.57.0`; PyPI Python packages still pin
 `>=0.56.0,<0.58` ).
 
 ## Run

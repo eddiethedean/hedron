@@ -32,7 +32,8 @@ def test_table_resource_and_identity() -> None:
     text = render(
         Text("long", overflow="truncate", lines=2), context=ctx, mode=RenderMode.FRAGMENT
     ).html
-    assert 'data-hedron-overflow="truncate"' in text
+    # lines wins over truncate so multi-line clamp is not defeated by nowrap.
+    assert 'data-hedron-overflow="truncate"' not in text
     assert 'data-hedron-lines="2"' in text
     assert "title=" not in text
     table = render(
@@ -62,6 +63,8 @@ def test_table_resource_and_identity() -> None:
     assert 'href="/t/1"' in resources
     with pytest.raises(HedronError):
         ResourceRow("Bad", href="/x", actions=Button("Edit"))
+    with pytest.raises(HedronError):
+        ResourceRow("Bad", href="/x", meta=Button("x"))
     avatar = render(Avatar("Ada Lovelace"), context=ctx, mode=RenderMode.FRAGMENT).html
     assert "AL" in avatar
     identity = render(Identity("Ada", detail="owner"), context=ctx, mode=RenderMode.FRAGMENT).html

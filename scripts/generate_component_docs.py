@@ -423,7 +423,7 @@ COMPONENTS = (
         "layout",
         "Arrange children vertically with a validated, consistent gap.",
         "Stack(*nodes, children=None, gap='1rem', id=None, class_=None)",
-        "Stack(Heading('Settings', level=2), Text('Profile'), Button('Save'), gap='1.25rem')",
+        "Stack(Heading('Settings', level=2), Text('Profile'), Button('Save'), gap='lg')",
         (
             p("nodes", "NodeLike", "Positional items in visual and DOM order."),
             p(
@@ -444,7 +444,7 @@ COMPONENTS = (
         "layout",
         "Arrange related children in a wrapping horizontal row.",
         "Inline(*nodes, children=None, gap='0.5rem', id=None, class_=None)",
-        "Inline(Button('Save'), LinkButton('Cancel', '/account'), gap='0.75rem')",
+        "Inline(Button('Save'), LinkButton('Cancel', '/account'), gap='md')",
         (
             p("nodes", "NodeLike", "Positional inline items in DOM order."),
             p(
@@ -486,12 +486,12 @@ COMPONENTS = (
         "GridItem",
         "layout",
         "Place one cell with named track and span tokens inside Grid.",
-        "GridItem(*nodes, *, column=None, row=None, column_span=None, row_span=None, id=None, class_=None)",
-        "GridItem(Card(Text('Wide')), column_span=2)",
+        "GridItem(*nodes, *, span=1, align='stretch', id=None, class_=None)",
+        "GridItem(Card(Text('Wide')), span=2)",
         (
             p("nodes", "NodeLike", "Cell content."),
-            p("column / row", "track token | None", "Named start track."),
-            p("column_span / row_span", "int | None", "Named span count."),
+            p("span", "int | breakpoint map", "Column span (1–6), optionally responsive."),
+            p("align", "start | center | end | stretch", "Cell alignment within the track."),
         ),
         "GridItem uses presentation markers for CSP-safe placement without inline style.",
         "Keep reading order sensible when spans change the visual grid.",
@@ -2918,7 +2918,12 @@ def static_demo(spec: ComponentDoc) -> str:
     if name == "PageIcon":
         return '<div class="hdc-inline"><span class="hdc-file-icon" aria-hidden="true">★</span><span><strong>Favicon helper</strong><small>Emits link/image metadata for the document head.</small></span></div>'
     if name == "Spacer":
-        return '<div class="hdc-stack"><span>Above</span><div style="height:1.5rem;border-left:2px dashed currentColor;opacity:0.35" aria-hidden="true"></div><span>Below</span></div>'
+        return (
+            '<div class="hdc-stack"><span>Above</span>'
+            '<div class="hedron-spacer" data-hedron-layout="spacer" data-hedron-gap="lg" '
+            'data-hedron-spacer-axis="block" aria-hidden="true"></div>'
+            "<span>Below</span></div>"
+        )
     if name == "Pills":
         return '<div class="hdc-inline"><span class="hdc-chip">All</span><span class="hdc-chip">Active</span><span class="hdc-chip">Archived</span></div>'
     if name == "SegmentedControl":
