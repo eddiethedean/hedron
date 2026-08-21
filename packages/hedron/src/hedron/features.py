@@ -354,10 +354,35 @@ def eject_feature(
                     remediation="Pass a project-relative output directory.",
                 )
             ) from exc
+        cursor = out_dir
+        while True:
+            if cursor.exists() and cursor.is_symlink():
+                raise FeatureConflictError(
+                    make_diagnostic(
+                        HED_FEATURE_0003,
+                        severity=DiagnosticSeverity.ERROR,
+                        title="Ejection path is a symlink",
+                        explanation=f"Refusing to write through symlink: {cursor}",
+                        remediation="Pass a real project-relative output directory.",
+                    )
+                )
+            if cursor == cwd or cursor.parent == cursor:
+                break
+            cursor = cursor.parent
         out_dir.mkdir(parents=True, exist_ok=True)
         dest = out_dir / "explicit.py"
         map_path = out_dir / "source_map.json"
         for path in (dest, map_path):
+            if path.exists() and path.is_symlink():
+                raise FeatureConflictError(
+                    make_diagnostic(
+                        HED_FEATURE_0003,
+                        severity=DiagnosticSeverity.ERROR,
+                        title="Ejection path is a symlink",
+                        explanation=f"Refusing to write through symlink: {path}",
+                        remediation="Remove the symlink or choose another output path.",
+                    )
+                )
             if path.exists() and not overwrite:
                 raise FeatureConflictError(
                     make_diagnostic(

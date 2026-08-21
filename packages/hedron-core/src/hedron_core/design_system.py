@@ -9,7 +9,7 @@ import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from dataclasses import replace as dc_replace
-from typing import Any, Final, Literal, TypeVar
+from typing import Any, Final, Literal, TypeVar, cast
 
 from hedron_core.builtins.appearance import (
     APPEARANCES,
@@ -345,9 +345,14 @@ def _clone_component(component: ComponentT, props: object) -> ComponentT:
         if attr_name in {"_props", "_children", "_slot_values", "_key"}:
             continue
         setattr(bound, attr_name, attr_value)
-    bound._children = component._children
-    bound._slot_values = dict(component._slot_values)
-    bound._key = component._key
+    # Copy containers so DesignSystem.apply does not share mutable structure.
+    target = cast(Any, bound)
+    target._children = list(component._children)
+    target._slot_values = {
+        key: (list(value) if isinstance(value, list) else value)
+        for key, value in component._slot_values.items()
+    }
+    target._key = component._key
     return bound
 
 

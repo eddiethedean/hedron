@@ -19,7 +19,7 @@ Adopter-facing notes: [What’s new in 0.58](whats-new-0.58.md) ·
 [Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 
-Tag `v0.57.0` only after CI on `main` is green (**do not tag yet** for this in-tree cut).
+Tag `v0.58.0` only after CI on `main` is green (**do not tag yet** for this in-tree cut).
 Do not retag prior train tags.
 
 ## Contributor checklist (abbreviated)

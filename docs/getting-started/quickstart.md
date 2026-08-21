@@ -73,7 +73,7 @@ The generated `app.py` looks like this (you can paste it if scaffold is unavaila
 import os
 from datetime import UTC, datetime
 
-from hedron import Hedron, Page, Stack, Text, html
+from hedron import Hedron, Stack, Text, html
 
 app = Hedron(
     title="Hedron App",
@@ -100,18 +100,20 @@ def ping():
     return refresh(status).toast("Refreshed")
 
 
-@app.page("/")
-def home() -> Page:
-    return Page(
-        Stack(
-            Text("Hello from hedron new"),
-            status(),
-            status.refresh_button("Refresh status"),
-            ping.button("Ping"),
-        ),
-        title="Home",
+@app.screen("/", title="Home")
+def home():
+    return Stack(
+        Text("Hello from hedron new"),
+        status(),
+        status.refresh_button("Refresh status"),
+        ping.button("Ping"),
     )
 ```
+
+!!! note "Advanced — explicit `@app.page`"
+
+    `@app.screen` lowers to `Page` + `@app.page`. Prefer `screen` for new golden paths;
+    keep `@app.page` when you need full `Page` constructor control.
 
 Change:
 
@@ -126,6 +128,26 @@ Text("Hello from Ada")
 ```
 
 Save the file. Uvicorn reloads and the browser shows the new text.
+
+## 2b. Optional: typed form command
+
+For forms, prefer `@app.form_command` (discovers one Pydantic model and lowers to
+`FormBody` + `@app.command`):
+
+```python
+from pydantic import BaseModel, Field
+
+class QuickNote(BaseModel):
+    message: str = Field(min_length=1, max_length=200)
+
+@app.form_command("/notes", fallback="/", success="Saved note")
+def add_note(data: QuickNote):
+    return Text(data.message)
+
+# Inside home(): add_note.form()
+```
+
+Scaffolds: `hedron new NAME --template crud` (also shows `DataWorkspace.with_screen`).
 
 ## 3. Verify the project
 

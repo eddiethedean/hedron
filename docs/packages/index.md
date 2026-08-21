@@ -43,7 +43,7 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 pip install "hedron[data,dev,posit]>=0.56.0,<0.59"
 ```
 
-Checkout tip is `v0.57.0` (`>=0.58.0,<0.59` in-tree); PyPI first-run stays `>=0.56.0,<0.59` until the 0.58.0 upload lands.
+Checkout tip is `v0.58.0` (`>=0.58.0,<0.59` in-tree); PyPI first-run stays `>=0.56.0,<0.59` until the 0.58.0 upload lands.
 
 ## Tooling-grade and independent Beta lines
 
@@ -56,7 +56,7 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-notebook](hedron-notebook.md) | `hedron[notebook]` | Server-side notebook preview helper |
 | [hedron-mcp](hedron-mcp.md) | `hedron[mcp]` | Deny-by-default MCP projection |
 | [hedron-gradio](hedron-gradio.md) | `hedron[gradio]` | Gradio client interop |
-| [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.1.10,<0.2` |
+| [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.2.0,<0.3` |
 | [hedron-sim](hedron-sim.md) | — | Offline HTMX sims for static docs |
 | [hedron-runtime-node](hedron-runtime-node.md) | npm | Portable Node conformance evaluator |
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
@@ -66,7 +66,7 @@ pip install "hedron[charts]>=0.56.0,<0.59"
 pip install "hedron-sample-kit>=0.2.0,<0.3" "hedron-sim>=0.1.0,<0.2"
 ```
 
-Checkout tip is `v0.57.0` (`>=0.58.0,<0.59` in-tree); PyPI first-run stays `>=0.56.0,<0.59` until the 0.58.0 upload lands.
+Checkout tip is `v0.58.0` (`>=0.58.0,<0.59` in-tree); PyPI first-run stays `>=0.56.0,<0.59` until the 0.58.0 upload lands.
 
 ## Authoring an extension
 

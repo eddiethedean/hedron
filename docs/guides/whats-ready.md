@@ -81,7 +81,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Public element author kit | **Supported** contracts (`hedron new element`, plugin registration) | [Plugin authoring](plugin-authoring.md) · [What’s new in 0.41](whats-new-0.41.md) · [What’s new in 0.42](whats-new-0.42.md) |
 | ReactMigrationMatrix / island | Matrix **Supported** as guidance; island **Experimental** docs/reference only | [REACT_MIGRATION_MATRIX_040](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/REACT_MIGRATION_MATRIX_040.md) |
 | Table↔chart cross-filter | **Supported** via `compose_chartlink_039` on Published 0.38 `hedron-chart` | [Dashboards](dashboards.md) |
-| Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
+| Flask / Django host | **Supported** (host pages/fragments/CSRF; **not** FastAPI decorator-parity for progressive facades) | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronWorkbench` / `HedronPosit`; no import auto-wrap |
 | Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
@@ -90,8 +90,17 @@ sessions are not Supported yet** — do not market human AT as done.
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.1` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
-| Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.57.0`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
-| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (tip `v0.57.0`, 0.57.0 tag/PyPI deferred) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
+| Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.58.0`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
+| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (tip `v0.58.0`, 0.58.0 tag/PyPI deferred) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
+| Progressive screens (`Hedron.screen`) | **Supported** on FastAPI (API `beta`; tip `v0.58.0`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
+| Typed form commands (`form_command`) | **Supported** on FastAPI (API `beta`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
+| DataWorkspace screens (`with_screen`) | **Supported** on FastAPI + `hedron[data]` (API `beta`) | [DATA.md](../api/DATA.md) · [What’s new in 0.58](whats-new-0.58.md) |
+| TaskFlow | **Supported** on FastAPI (API `beta`; polling) | [JOBS.md](../api/JOBS.md) · [What’s new in 0.58](whats-new-0.58.md) |
+| DashboardWorkspace | **Supported** on FastAPI (API `beta`) | [Dashboards](dashboards.md) · [What’s new in 0.58](whats-new-0.58.md) |
+| SessionAuthFlow | **Supported** on FastAPI (API `beta`; not an IdP) | [AUTH.md](../api/AUTH.md) · [What’s new in 0.58](whats-new-0.58.md) |
+| UploadFlow | **Supported** on FastAPI (API `beta`) | [What’s new in 0.58](whats-new-0.58.md) · [File upload](../examples/file-upload.md) |
+| DesignSystem / StyleRecipe / StyleScope | **Supported** (API `beta`) | [PRESENTATION.md](../api/PRESENTATION.md) · [StyleScope](../components/style-scope.md) |
+| Explain / style CLI tooling | **Supported** tooling-grade | [CLI.md](../api/CLI.md) · `hedron explain` / `hedron style` |
 
 !!! note "Package train vs capability"
 

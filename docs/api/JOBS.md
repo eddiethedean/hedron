@@ -23,6 +23,7 @@ queue, worker fleet, scheduler, result database, or retry service.
 | `enqueue_durable` | `hedron.jobs` | Submit via the configured backend; returns `job_id` |
 | `job_status_response` | `hedron.jobs` | HTML **202** status fragment + `Retry-After` (Supported) |
 | `schedule_post_response` | `hedron.jobs` | FastAPI `BackgroundTasks` only — **not** durable |
+| `TaskFlow` / `JobScope` / `PollPolicy` | `hedron` | Progressive durable submit/status/cancel/result UI (0.58; API `beta`) |
 | `job_status_sse_response` | `hedron.experimental` | SSE observation until terminal (**experimental**) |
 
 Production recipe: [Celery / RQ + Redis](../guides/jobs-celery-rq.md).
@@ -95,6 +96,29 @@ Polling remains the Supported baseline on every host, including Flask/Django.
 
 `schedule_post_response` / host `BackgroundTasks` are for small post-response work only —
 they do **not** implement the durable protocol.
+
+## `TaskFlow` (0.58)
+
+Compose submit/status/cancel/result surfaces around an application-operated
+`JobBackend`. Does not run workers or become a scheduler.
+
+```python
+from fastapi import Depends
+from hedron import JobScope, TaskFlow, Text
+
+reports = TaskFlow(
+    name="report",
+    input_model=ReportRequest,
+    job_type="build-report",
+    payload=lambda data: {"label": data.label},
+    scope=lambda: JobScope(auth_subject="dev", tenant_id="local"),
+    authorize_submit=Depends(allow),
+    result=lambda result: Text(str(result)),
+)
+app.include_feature(reports)
+```
+
+Recipe: [Jobs poll](../examples/jobs-poll.md). Scaffold: `hedron new NAME --template task`.
 
 ## End-to-end example (polling — Supported)
 

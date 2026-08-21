@@ -12,14 +12,14 @@ regions), then embed them in static docs. A small JavaScript runtime intercepts
 `hx-*` attributes and serves pre-rendered fragment HTML — no FastAPI process
 required.
 
-**Package maturity:** Beta tooling-grade (`0.1.x`) · pin `>=0.1.0,<0.2`
+**Package maturity:** Beta tooling-grade (`0.2.x`) · pin `>=0.2.0,<0.3`
 
 ## Install
 
 ```bash
-pip install "hedron-sim>=0.1.0,<0.2"
+pip install "hedron-sim>=0.2.0,<0.3"
 # or
-uv add "hedron-sim>=0.1.0,<0.2"
+uv add "hedron-sim>=0.2.0,<0.3"
 ```
 
 Requires Python 3.11–3.14 and `hedron` (for component imports used in demos).

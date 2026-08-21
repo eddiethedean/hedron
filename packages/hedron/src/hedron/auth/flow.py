@@ -6,13 +6,14 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any, Generic, Literal, Protocol, TypeVar
 
+from fastapi import Depends, Request
 from pydantic import BaseModel
 
 from hedron.app.form_commands import SafeLocalPath
 from hedron.auth.session import mark_authenticated
 from hedron.handles import ActionHandle
 from hedron.security.auth_rate_limit import AuthRateLimiter, auth_rate_limit_dependency
-from hedron.security.login_csrf import validate_login_csrf
+from hedron.security.login_csrf import LOGIN_CSRF_KEY, validate_login_csrf
 from hedron.security.redirects import redirect_local
 from hedron_core.bundles import FeatureBundle, FeatureRequirement
 from hedron_core.catalog import PackageProjection, ProjectionCapability
@@ -151,59 +152,76 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
         self._limiter = rate_limit.to_limiter()
         self.login_screen: object | None = None
         self.login_command: object | None = None
+        self.login_form: object | None = None
         self.logout_command: object | None = None
+
+    def current_principal(self) -> Callable[..., PrincipalT | None]:
+        """FastAPI dependency that loads the principal from the session."""
+        flow = self
+
+        def _dependency(request: Request) -> PrincipalT | None:
+            session = getattr(request, "session", None)
+            if session is None:
+                return None
+            get = getattr(session, "get", None)
+            if not callable(get):
+                return None
+            stored = get(flow.session_key)
+            if stored is None:
+                return None
+            try:
+                return flow.load_principal(stored)  # type: ignore[arg-type]
+            except Exception:  # noqa: BLE001
+                return None
+
+        return _dependency
 
     def _rotate_session(self, request: object) -> None:
         if self.rotation != "on_login":
             return
         session = getattr(request, "session", None)
         if session is None:
-            return
+            raise error(
+                HED_AUTHFLOW_0003,
+                title="Session rotation unavailable",
+                explanation="rotation='on_login' requires a mutable request session.",
+                remediation="Enable Hedron sessions or set rotation='never'.",
+            )
         clear = getattr(session, "clear", None)
-        if callable(clear):
-            csrf = None
-            get = getattr(session, "get", None)
-            if callable(get):
-                csrf = get("hedron_login_csrf")
-            clear()
-            if csrf is not None and hasattr(session, "__setitem__"):
-                session["hedron_login_csrf"] = csrf
+        if not callable(clear):
+            raise error(
+                HED_AUTHFLOW_0003,
+                title="Session rotation unavailable",
+                explanation="rotation='on_login' requires session.clear().",
+                remediation="Use a session backend that supports clear(), or set rotation='never'.",
+            )
+        csrf = None
+        get = getattr(session, "get", None)
+        if callable(get):
+            csrf = get(LOGIN_CSRF_KEY)
+        clear()
+        if csrf is not None and hasattr(session, "__setitem__"):
+            session[LOGIN_CSRF_KEY] = csrf
 
     def to_bundle(self) -> FeatureBundle:
         flow = self
-        rate_dep = auth_rate_limit_dependency(flow._limiter)
+        rate_dep = Depends(auth_rate_limit_dependency(flow._limiter))
 
-        def login_screen_factory(app: _AuthFlowApp) -> object:
-            from hedron import Form, LoginCsrfField, Stack, Text
-
-            @app.screen(flow.login_path, title="Sign in", name=f"{flow.provider}-login")
-            def login_screen() -> object:
-                return Stack(
-                    Text("Sign in"),
-                    Form(
-                        LoginCsrfField(),
-                        action=flow.login_path,
-                        method="post",
-                    ),
-                )
-
-            flow.login_screen = login_screen
-            return login_screen
-
-        def login_command_factory(app: _AuthFlowApp) -> object:
-            from fastapi import Request
+        def _ensure_login_command(app: _AuthFlowApp) -> ActionHandle[Any, Any]:
+            if flow.login_command is not None:
+                return flow.login_command  # type: ignore[return-value]
 
             from hedron.app.form_commands import form_command
 
             credentials_model = flow.credentials
 
-            def login_command(data: CredentialsT, request: Request) -> object:
+            async def login_command(data: CredentialsT, request: Request) -> object:
                 session = request.session
-                token = getattr(data, "csrf_token", None) or getattr(
-                    data, "hedron_login_csrf", None
-                )
-                if token is not None:
-                    validate_login_csrf(str(token), session=session)
+                form = await request.form()
+                raw = form.get(LOGIN_CSRF_KEY)
+                token = str(raw) if isinstance(raw, str) else None
+                # Fail closed: login CSRF is required (router CSRF is separate).
+                validate_login_csrf(token, session=session)
                 try:
                     outcome = flow.authenticate(data)
                 except Exception as exc:
@@ -248,11 +266,37 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
             )(login_command)
 
             flow.login_command = login_handle
+            flow.login_form = login_handle.form
             return login_handle
 
-        def logout_command_factory(app: _AuthFlowApp) -> object:
-            from fastapi import Request
+        def login_screen_factory(app: _AuthFlowApp) -> object:
+            from hedron import Form, LoginCsrfField, Stack, Text
 
+            login_handle = _ensure_login_command(app)
+
+            @app.screen(flow.login_path, title="Sign in", name=f"{flow.provider}-login")
+            def login_screen(request: Request) -> object:
+                generated = login_handle.form(submit_label="Sign in")
+                children = list(getattr(generated, "_children", ()) or ())
+                html_attrs = dict(getattr(generated, "_html_attrs", {}) or {})
+                return Stack(
+                    Text("Sign in"),
+                    Form(
+                        LoginCsrfField(session=request.session),
+                        *children,
+                        action=login_handle,
+                        method="post",
+                        **html_attrs,
+                    ),
+                )
+
+            flow.login_screen = login_screen
+            return login_screen
+
+        def login_command_factory(app: _AuthFlowApp) -> object:
+            return _ensure_login_command(app)
+
+        def logout_command_factory(app: _AuthFlowApp) -> object:
             @app.command(flow.logout_path, name=f"{flow.provider}-logout", fallback="/")
             def logout_command(request: Request) -> object:
                 session = request.session

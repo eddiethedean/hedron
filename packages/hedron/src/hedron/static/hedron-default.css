@@ -2473,6 +2473,23 @@
     padding: 0.9rem 1.05rem;
   }
 
+  /* StyleScope density: ancestor markers drive descendant chrome. */
+  .hedron-style-scope[data-hedron-density="compact"] table.hedron-table :is(th, td) {
+    padding: 0.32rem 0.55rem;
+  }
+
+  .hedron-style-scope[data-hedron-density="spacious"] table.hedron-table :is(th, td) {
+    padding: 0.9rem 1.05rem;
+  }
+
+  .hedron-style-scope[data-hedron-density="compact"] .hedron-page-header {
+    gap: 0.35rem;
+  }
+
+  .hedron-style-scope[data-hedron-density="spacious"] .hedron-page-header {
+    gap: 1.25rem;
+  }
+
   table.hedron-table :is(th, td)[data-hedron-align="center"] {
     text-align: center;
   }

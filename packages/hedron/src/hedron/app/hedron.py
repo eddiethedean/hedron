@@ -36,15 +36,17 @@ __all__ = ["Hedron"]
 
 def _normalize_theme_selection(
     theme: str | Theme | DesignSystem | None,
-) -> str | None:
-    """Normalize ``str | Theme | DesignSystem | None`` to a registered theme name."""
+) -> tuple[str | None, DesignSystem | None]:
+    """Normalize ``str | Theme | DesignSystem | None`` to theme name + optional DesignSystem."""
     if theme is None:
-        return None
+        return None, None
     if isinstance(theme, str):
-        return theme
+        return theme, None
     from hedron_core.registry import get_registry
 
+    design: DesignSystem | None = None
     if isinstance(theme, DesignSystem):
+        design = theme
         theme_obj = theme.to_theme()
     elif isinstance(theme, Theme):
         theme_obj = theme
@@ -54,7 +56,7 @@ def _normalize_theme_selection(
         )
     if get_registry().get_theme(theme_obj.name) is None:
         register_theme_instance(theme_obj)
-    return theme_obj.name
+    return theme_obj.name, design
 
 
 class Hedron(HedronPagesMixin, FastAPI):
@@ -108,7 +110,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         **kwargs: Any,
     ) -> None:
         user_lifespan = kwargs.pop("lifespan", None)
-        resolved_theme = _normalize_theme_selection(theme)
+        resolved_theme, design_system = _normalize_theme_selection(theme)
         kwargs.setdefault(
             "lifespan",
             compose_lifespan(
@@ -138,9 +140,11 @@ class Hedron(HedronPagesMixin, FastAPI):
         )
 
         self.hedron_theme = resolved_theme
+        self.hedron_design_system = design_system
         self.hedron_default_styles = default_styles
         self.state.hedron_security = self.hedron_policy
         self.state.hedron_theme = resolved_theme
+        self.state.hedron_design_system = design_system
         self.state.hedron_default_styles = default_styles
         self.state.hedron_production = production if production is not None else is_prod
         self._explorer_dependencies = list(explorer_dependencies or [])

@@ -115,7 +115,7 @@ uv run python -c "import hedron, hedron_posit; print(hedron.__version__)"
 ```
 
 Expect the path to end in `my-workbench-app` and the PyPI version to be **`0.56.0`**.
-A repository checkout reports **`0.56.0`**.
+A repository checkout reports **`0.58.0`**.
 
 The project contains:
 
@@ -138,13 +138,13 @@ page, status region, and fragment intact.
 Change:
 
 ```python
-from hedron import Hedron, Page, Stack, Text, html
+from hedron import Hedron, Stack, Text, html
 ```
 
 to:
 
 ```python
-from hedron import Page, Stack, Text, html
+from hedron import Stack, Text, html
 from hedron_posit import HedronPosit
 ```
 

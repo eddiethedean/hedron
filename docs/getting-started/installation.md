@@ -130,7 +130,7 @@ Then create `app.py` from the complete listing on
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.56.0`** from PyPI. The repository checkout reports **`0.56.0`**.
+Expect **`0.56.0`** from PyPI. The repository checkout reports **`0.58.0`**.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
@@ -145,7 +145,7 @@ cd hedron
 uv sync
 ```
 
-This checkout is **0.56.0**. Application installs from PyPI use
+This checkout is **0.58.0**. Application installs from PyPI use
 `hedron>=0.56.0,<0.59`.
 
 See [Contributing](../CONTRIBUTING.md).

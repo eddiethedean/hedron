@@ -14,6 +14,31 @@ status: shipped
 pip install "hedron[data]>=0.56.0,<0.59"
 ```
 
+## `DataWorkspace.with_screen` (0.58)
+
+Opt into a complete list/detail/create/edit screen that lowers to existing
+bundle/handle authorities. Delete stays disabled unless destructive policy is
+supplied. Never discovers an ORM or ambient authorization.
+
+```python
+from hedron_data import DataWorkspace, DataWorkspacePolicy, InMemoryDataSource
+
+orders = DataWorkspace(
+    name="orders",
+    model=Order,
+    source=source,
+    policy=DataWorkspacePolicy(
+        can_read=lambda: True,
+        can_create=lambda: True,
+        can_edit=lambda: True,
+    ),
+).with_screen(path="/orders", title="Orders")
+app.include_feature(orders)
+```
+
+Recipe: [Notes CRUD](../examples/crud-tutorial.md). Scaffold:
+`hedron new NAME --template crud`.
+
 ```python
 from hedron_data import Column, DataTable
 

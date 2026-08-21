@@ -208,11 +208,12 @@ You do not need to memorize `app.py`. Its main pieces are:
 1. **Imports** make Hedron and Python names available.
 2. `app = Hedron(...)` creates the application object Uvicorn imports.
 3. `@app.refreshable("/status")` registers the status view and returns a handle.
-4. `@app.page("/")` connects the browser path `/` to the `home` Python function.
+4. `@app.screen("/", title="Home")` connects the browser path `/` to the `home` Python function
+   (it lowers to `Page` + `@app.page` under the hood).
 5. `status.refresh_button(...)` and `ping.button(...)` derive HTMX wiring from those handles.
 
-When a browser opens `/`, Hedron calls `home()` and renders its returned `Page`, including
-`status()`. When the button requests `/status`, Hedron reruns the refreshable view. This
+When a browser opens `/`, Hedron calls `home()` and renders a document from its returned body,
+including `status()`. When the button requests `/status`, Hedron reruns the refreshable view. This
 explicit view/command boundary is the core interaction model.
 
 Read [What is HTMX?](what-is-htmx.md) for a visual explanation after the application works.
@@ -224,16 +225,21 @@ At the end of `app.py`, add:
 ```python
 
 
-@app.page("/about")
-def about() -> Page:
-    return Page(Text("This is my second page."), title="About")
+@app.screen("/about", title="About")
+def about():
+    return Text("This is my second page.")
 ```
 
 Save the file, then open [http://127.0.0.1:8000/about](http://127.0.0.1:8000/about). The decorator
 connects the `/about` URL to the function immediately below it.
 
-If you get a 404 response, check that you saved `app.py`, the line begins with `@app.page`, and the
+If you get a 404 response, check that you saved `app.py`, the line begins with `@app.screen`, and the
 server reloaded without an error.
+
+!!! note "Advanced — explicit `@app.page`"
+
+    Prefer `@app.screen` for new pages. Use `@app.page` when you need the full `Page`
+    constructor (document metadata, custom layout options).
 
 ## 8. Ask Hedron to check the app
 

@@ -1,15 +1,31 @@
-# Upgrade to Hedron 0.57
+# Upgrade to Hedron 0.58
 
-This guide covers an application upgrade onto the **0.57.x** tip
-(in-tree `v0.57.0`; **`v0.56.0` on PyPI**). Git tag / PyPI upload for **0.57.0** are
+This guide covers an application upgrade onto the **0.58.x** tip
+(in-tree `v0.58.0`; **`v0.56.0` on PyPI**). Git tag / PyPI upload for **0.58.0** are
 deferred — keep `hedron>=0.56.0,<0.59` from the public index until a newer wheel lands.
 Public-index notes: [Installation](../getting-started/installation.md). New applications
 should use [Build your first app](../getting-started/quickstart.md).
 
+## 0.57 → 0.58
+
+Checkout tip `v0.58.0` uses `uv sync`. From PyPI, keep
+`hedron>=0.56.0,<0.59` until the 0.58.0 wheel lands. See
+[What's new in 0.58](whats-new-0.58.md),
+[Hedron API](../api/HEDRON.md), and
+[Presentation](../api/PRESENTATION.md).
+
+1. Upgrade the pin (in-tree) or keep the PyPI floor while deferred.
+2. Prefer progressive facades for new golden paths: `@app.screen`, `form_command`,
+   `DataWorkspace.with_screen`, `TaskFlow`, `DashboardWorkspace`, `SessionAuthFlow`,
+   `UploadFlow`, plus `DesignSystem` / `StyleRecipe` / `StyleScope` where styling applies.
+3. Keep labeled Advanced `@app.page` / explicit handle spellings when graduating or ejecting;
+   Flask/Django hosts remain Supported but are not decorator-parity Supported for these facades.
+4. Use `hedron explain` / `hedron style` for static redacted inspection of features and designs.
+
 ## 0.56 → 0.57
 
 Checkout tip `v0.58.0` uses `uv sync`. From PyPI, keep
-`hedron>=0.56.0,<0.59` until the 0.57.0 wheel lands. See
+`hedron>=0.56.0,<0.59` until a newer wheel lands. See
 [What's new in 0.57](whats-new-0.57.md) and
 [Presentation](../api/PRESENTATION.md).
 
@@ -92,6 +108,20 @@ python -m pip install -U "hedron[extras]>=0.56.0,<0.59"
 ```
 
 ## Summary
+
+Hedron **0.58.x** tip ships progressive feature and styling authoring on top of the 0.57
+presentation train (in-tree `v0.58.0`; PyPI still `v0.56.0`). From PyPI, keep
+`hedron>=0.56.0,<0.59` until the 0.58 wheel lands.
+
+- Screens, form commands, workspaces, TaskFlow, DashboardWorkspace, SessionAuthFlow,
+  UploadFlow, DesignSystem / StyleRecipe / StyleScope, explain/style CLI
+  ([Hedron API](../api/HEDRON.md) · [Presentation](../api/PRESENTATION.md))
+
+Hedron 0.57.x ships unified presentation / zero-application-CSS on top of the 0.56
+security control plane.
+
+- Shared appearance vocabulary, Surface/chrome/ResourceList, zero-app-CSS evidence
+  ([Presentation](../api/PRESENTATION.md))
 
 Hedron 0.53.x tip ships Application DX Stage 1 contracts on top of the 0.52
 conformance/Posit train. From PyPI, keep using `hedron>=0.56.0,<0.59` until the

@@ -23,11 +23,11 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 
 | Export | Primary docs |
 |---|---|
-| `ScreenHandle`, `ScreenLayout` | [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
-| `DashboardWorkspace`, `DashboardHistory`, `CachePolicy` | [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
-| `TaskFlow`, `JobScope`, `JobScopeProvider`, `PollPolicy`, `TaskUnavailablePolicy` | [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
+| `ScreenHandle`, `ScreenLayout` | [HEDRON.md](HEDRON.md), [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
+| `DashboardWorkspace`, `DashboardHistory`, `CachePolicy` | [dashboards](../guides/dashboards.md), [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
+| `TaskFlow`, `JobScope`, `JobScopeProvider`, `PollPolicy`, `TaskUnavailablePolicy` | [JOBS.md](JOBS.md), [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
 | `SessionAuthFlow`, `AuthResult`, `AuthSuccess`, `AuthDenied`, `RateLimitPolicy`, `SessionRotationPolicy` | [AUTH.md](AUTH.md), [whats-new-0.58](../guides/whats-new-0.58.md) |
-| `UploadFlow` | [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
+| `UploadFlow` | [file-upload](../examples/file-upload.md), [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
 | `DesignSystem`, `StyleRecipe`, `StyleScope` | [PRESENTATION.md](PRESENTATION.md), [StyleScope](../components/style-scope.md), [whats-new-0.58](../guides/whats-new-0.58.md) |
 
 ## Inference and model demos (0.18)

@@ -4,9 +4,12 @@ Use `hedron-flask` when your app is Flask-native. The **CLI** (`hedron new --fla
 comes from the `hedron` package; **runtime** is `hedron-flask` + `hedron-core`. The
 adapter does **not** install or require FastAPI in the app process.
 
-This documentation follows the current repository train **0.56.x**. Install the latest
-public PyPI release, `hedron-flask>=0.56.0,<0.59`, until the 0.56 upload lands.
-Pin from PyPI `hedron>=0.56.0,<0.59` (or `hedron-flask>=0.56.0,<0.59`).
+This documentation follows the current repository train **0.58.x** (living tip
+`v0.58.0`; tag/PyPI deferred). Install from the public index with
+`hedron-flask>=0.56.0,<0.59` (or `hedron>=0.56.0,<0.59`) until the 0.58.0 wheel lands.
+Flask hosts are Supported for pages/fragments/CSRF; they are **not** decorator-parity
+Supported for FastAPI-only progressive facades (`@app.screen`, `form_command`, and
+related 0.58 symbols).
 Public-index notes: [Installation](installation.md).
 
 ## Golden path (scaffold + Refresh)

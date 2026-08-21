@@ -1,6 +1,7 @@
 # File upload
 
-CSRF-safe multipart upload with size and type checks in the action handler.
+Secure upload composition with `UploadFlow`. Limits, cleanup, and authorization stay
+explicit — Hedron does not own storage or malware scanning.
 
 ### Try it (simulated)
 
@@ -79,7 +80,7 @@ curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/f
 uvicorn app:app --reload
 ```
 
-Or paste the Code tab above into `app.py` (same source as the curl URL).
+Or paste the Code tab above into `app.py`.
 
 ## Run (monorepo)
 
@@ -93,10 +94,13 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Upload a small `.txt` or `.
 
 ## What it shows
 
-- `FileUpload` control + `enctype="multipart/form-data"`
-- `@app.command` with `Form(action=upload)` and CSRF
-- Server-side `UploadFile` validation (type + size)
+- `UploadFlow` with explicit `authorize` / `store` / `result` callbacks
+- `UploadField` + `UploadBudget` (display and enforcement stay aligned)
+- Application-owned storage (no inferred filesystem layout)
+
+## Advanced — explicit `@app.command` / FileUpload
+
+Lower to `FileUpload`, `Form(enctype="multipart/form-data")`, and `@app.command` when
+ejecting. See [What’s new in 0.58](../guides/whats-new-0.58.md).
 
 Source: [`examples/file-upload`](https://github.com/eddiethedean/hedron/tree/main/examples/file-upload).
-Related: [Cookbook — file upload](../guides/cookbook.md) ·
-[Media downloads](../guides/media-downloads.md).

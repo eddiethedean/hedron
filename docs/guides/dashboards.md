@@ -1,24 +1,88 @@
 # Dashboards and interaction graphs
 
-Phase **0.17** shipped page-local dashboard bindings and finite interaction graphs for
-reactive admin / data UIs. Capability readiness is **Supported** on the living **0.58**
-train (feature introduced in 0.17); API compatibility remains **`beta`** — pin
-`hedron>=0.56.0,<0.59`.
+Prefer **`DashboardWorkspace`** for typed filters, one request-bound loader, and named
+render-only panels (phase **0.58**). Phase **0.17** `DashboardBinding` /
+`InteractionGraph` remain available as Advanced linked-interaction primitives.
+
+Capability readiness is **Supported** on the living **0.58** train; API compatibility
+remains **`beta`** — pin `hedron>=0.56.0,<0.59` from PyPI (tip `v0.58.0` in-tree;
+tag/PyPI deferred).
 
 ## Start here
 
 | Need | Where |
 |---|---|
-| What shipped and honesty limits | [What's new in 0.17](whats-new-0.17.md) |
+| Progressive dashboard facade | This page (`DashboardWorkspace`) |
+| What shipped in 0.58 | [What's new in 0.58](whats-new-0.58.md) |
+| What shipped in 0.17 | [What's new in 0.17](whats-new-0.17.md) |
 | Dash callback mapping | [Dash migration](dash-migration.md) |
 | NiceGUI refreshable mapping | [NiceGUI migration](nicegui-migration.md) |
-| Maintainer exit stub | [`examples/dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17) |
 | Generated signatures | [Autodoc — Dashboards](../api/AUTODOC.md#dashboards-017) |
+
+## Golden path — `DashboardWorkspace`
+
+```python
+import os
+
+from pydantic import BaseModel, Field
+
+from hedron import DashboardWorkspace, DesignSystem, Hedron, Text
+
+design = DesignSystem.brand("sales", accent="#0f766e")
+
+app = Hedron(
+    title="Sales dashboard",
+    security="standard",
+    explorer="off",
+    theme=design,
+    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
+)
+
+
+class Filters(BaseModel):
+    region: str = "all"
+    limit: int = Field(default=5, ge=1, le=50)
+
+
+class DashData(BaseModel):
+    region: str
+    total: int
+
+
+def load_dashboard(filters: Filters) -> DashData:
+    # Synthetic loader — replace with authorized IO and caching policy in production.
+    base = 42 if filters.region == "all" else 7
+    return DashData(region=filters.region, total=base * filters.limit)
+
+
+def summary_panel(data: DashData) -> object:
+    return Text(f"{data.region}: {data.total}")
+
+
+dashboard = DashboardWorkspace(
+    name="sales",
+    path="/sales",
+    title="Sales",
+    filters=Filters,
+    load=load_dashboard,
+    panels={"summary": summary_panel},
+)
+app.include_feature(dashboard)
+
+
+@app.screen("/", title="Home")
+def home():
+    return Text("Open /sales for the DashboardWorkspace. Replace loader/auth for production.")
+```
+
+Or scaffold with `hedron new NAME --template dashboard`.
 
 ## Mental model
 
-- Prefer **`DashboardBinding` / `InteractionGraph` / `TriggerContext`** over ad-hoc
-  multi-region wiring — graphs are page-local and fail closed on cycles / duplicate writers.
+- Prefer **`DashboardWorkspace`** for ordinary filter → load → panel composition.
+- Prefer **`DashboardBinding` / `InteractionGraph` / `TriggerContext`** (Advanced) for
+  multi-writer linked interactions — graphs are page-local and fail closed on cycles /
+  duplicate writers.
 - **`PropertyPatch` / `CollectionPatch`** provide versioned incremental updates with
   full-fragment fallback when a patch cannot apply.
 - Cross-filter and recorder/replay compose chart/grid/map viewport triggers; do not rely
@@ -119,7 +183,7 @@ checks, authorization, and the action that supplies the rows.
         return swap(table_panel("member"))
     ```
 
-## Minimal graph (runnable shape)
+## Advanced — interaction graph
 
 Register inputs and bindings before serving. Empty targets, duplicate ids, missing
 dependencies, and cycles raise `DashboardGraphError` (`HED-GRAPH-0001` … `0005`).
@@ -149,8 +213,8 @@ graph.register(
 )
 
 
-@app.page("/")
-def home() -> Text:
+@app.screen("/", title="Home")
+def home():
     order = ", ".join(graph.topological_order())
     return Text(f"Bindings in order: {order}")
 ```
@@ -176,4 +240,4 @@ tenant isolation in your host app ([multi-tenant](multi-tenant.md)).
 ## Next
 
 - [Compose built-ins](component-composition.md) · [Data apps](data-apps.md) ·
-  [0.17 dashboard release notes](whats-new-0.17.md#upgrade-notes)
+  [0.58 release notes](whats-new-0.58.md) · [0.17 dashboard notes](whats-new-0.17.md#upgrade-notes)

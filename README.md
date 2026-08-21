@@ -73,7 +73,8 @@ If `hedron` is not on your PATH, use `python -m hedron`
 
 CRUD, admin, dashboards, and forms as typed Python on FastAPI — when you want HTMX fragment
 regions, CSRF defaults, and multi-worker job status **without** assembling a hand-rolled
-Jinja+HTMX stack.
+Jinja+HTMX stack. New golden paths prefer `@app.screen` (and matching facades such as
+`form_command`, `TaskFlow`, and `DashboardWorkspace`) over hand-wired `@app.page` routes.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
@@ -90,7 +91,8 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new in 0.51](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.51/) ·
+[What’s new in 0.58](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.58/) ·
+[Current release](https://hedron.readthedocs.io/en/latest/guides/current-release/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).

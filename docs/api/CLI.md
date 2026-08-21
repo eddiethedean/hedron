@@ -243,6 +243,7 @@ hedron --app app:app eject features:notes --surface list_view --out ./ejected --
 | `inspect htmx-extensions` | Declared HTMX extension catalog |
 | `inspect features` | Included FeatureBundles |
 | `explain features:<id>` | Static redacted feature explanation (`--format human|json`) |
+| `explain design` / `style preview` / `style diff` | Static redacted DesignSystem plan, gallery preview, and design diff (0.58) |
 | `eject <component>` | Write `accessibility_contract.json` plus an editable `styles.css` override (`--out`, `--force`) |
 | `eject features:<id>` | Write reviewable explicit-registration Python for a bundle (`--surface`, `--out`, `--overwrite`) |
 
@@ -258,7 +259,7 @@ hedron conformance --json
 Without `hedron-conformance`, the command explains the required extra and exits `2`.
 Fixture failures return the conformance runner’s non-zero status.
 
-### `theme check` / `style check`
+### `theme check` / `style check` / `style preview`
 
 Validate a design system without running the application.
 
@@ -266,6 +267,8 @@ Validate a design system without running the application.
 hedron theme check
 hedron theme check --theme aurora --format json
 hedron style check --zero-app-css examples/chrome-zero-css
+hedron --app app:app style preview --modes light,dark
+hedron --app app:app style diff --base default --candidate acme
 ```
 
 `theme check` reports missing accessibility tokens, element token/style-contract
@@ -274,6 +277,9 @@ gaps, and contrast findings: text pairs (`color.fg`/`color.bg`,
 `color.on-danger`/`color.danger`) must clear 4.5:1 and `color.accent` on
 `color.bg` must clear 3:1. Non-literal token values such as `var(...)` are
 skipped because they cannot be measured statically.
+
+`style preview` / `style diff` are static redacted DesignSystem tooling (0.58); they
+do not execute application callbacks or emit secrets.
 
 `style check --zero-app-css PATH` fails when the path contains an
 application-authored stylesheet (`.css`, `.scss`, `.sass`, `.less`, `.styl`) or a

@@ -17,6 +17,7 @@ __all__ = [
     "UploadHandle",
     "cleanup_upload",
     "materialize_upload",
+    "read_upload_capped",
     "validate_upload_batch",
 ]
 
@@ -64,6 +65,39 @@ class UploadHandle:
 def cleanup_upload(handle: UploadHandle | None) -> None:
     if handle is not None:
         handle.cleanup()
+
+
+async def read_upload_capped(
+    file: object,
+    *,
+    maximum_size: int,
+    chunk_size: int = 64 * 1024,
+) -> bytes:
+    """Read an UploadFile-like object up to ``maximum_size`` bytes (fail closed).
+
+    Rejects before allocating the full body when the stream exceeds the budget.
+    """
+    import inspect
+
+    if maximum_size < 0:
+        raise ValueError("Upload size budget must be non-negative")
+    read = getattr(file, "read", None)
+    if not callable(read):
+        raise ValueError("Upload stream does not support read()")
+    chunks: list[bytes] = []
+    total = 0
+    while True:
+        raw = read(chunk_size)
+        piece = await raw if inspect.isawaitable(raw) else raw
+        if not piece:
+            break
+        if not isinstance(piece, (bytes, bytearray)):
+            raise ValueError("Upload stream returned non-bytes")
+        total += len(piece)
+        if total > maximum_size:
+            raise ValueError(f"Upload exceeds maximum size of {maximum_size} bytes")
+        chunks.append(bytes(piece))
+    return b"".join(chunks)
 
 
 def materialize_upload(

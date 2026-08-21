@@ -12,6 +12,22 @@ from hedron.cli.commands.inspect import _accessibility_contract_for
 from hedron.cli.discovery import _find_component, _load_app, _registry_empty_hint
 
 
+def _assert_project_write_path(path: Path, *, cwd: Path) -> Path:
+    resolved = path.expanduser().resolve()
+    try:
+        resolved.relative_to(cwd)
+    except ValueError as exc:
+        raise ValueError(f"Refusing to eject outside the project root: {resolved}") from exc
+    cursor = resolved
+    while True:
+        if cursor.exists() and cursor.is_symlink():
+            raise ValueError(f"Refusing to write through symlink: {cursor}")
+        if cursor == cwd or cursor.parent == cursor:
+            break
+        cursor = cursor.parent
+    return resolved
+
+
 def _cmd_eject(args: argparse.Namespace) -> int:
     target = str(args.component or "")
     if target == "features" or target.startswith("features:"):
@@ -32,17 +48,18 @@ def _cmd_eject(args: argparse.Namespace) -> int:
     # Never trust registry ``folder_path`` as a write root (same policy as Explorer reads).
     cwd = Path.cwd().resolve()
     if args.out:
-        out_dir = Path(args.out).expanduser().resolve()
         try:
-            out_dir.relative_to(cwd)
-        except ValueError:
-            print(
-                f"Refusing to eject outside the project root: {out_dir}",
-                file=sys.stderr,
-            )
+            out_dir = _assert_project_write_path(Path(args.out), cwd=cwd)
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
             return 1
     else:
         out_dir = cwd / "components" / meta.name
+        try:
+            _assert_project_write_path(out_dir, cwd=cwd)
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
     out_dir.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
     contract = _accessibility_contract_for(meta)
@@ -96,11 +113,14 @@ def _cmd_eject_feature(args: argparse.Namespace) -> int:
             return 1
         logical_id = bundles[0].logical_id
     cwd = Path.cwd().resolve()
-    out_dir = Path(args.out).expanduser().resolve() if args.out else cwd / "ejected" / logical_id
     try:
-        out_dir.relative_to(cwd)
-    except ValueError:
-        print(f"Refusing to eject outside the project root: {out_dir}", file=sys.stderr)
+        out_dir = (
+            _assert_project_write_path(Path(args.out), cwd=cwd)
+            if args.out
+            else _assert_project_write_path(cwd / "ejected" / logical_id, cwd=cwd)
+        )
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
         return 1
     surface = getattr(args, "surface", None)
     overwrite = bool(getattr(args, "force", False))

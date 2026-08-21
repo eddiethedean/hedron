@@ -37,7 +37,8 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current published train is **0.58.x**. Install from PyPI:
+The current published train is **0.58.x** (living tip `v0.58.0`; tag/PyPI deferred).
+Install from PyPI:
 
 ```bash
 python -m pip install "hedron>=0.56.0,<0.59"

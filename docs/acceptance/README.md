@@ -63,9 +63,9 @@ status commentary, not a satisfied release gate.
   [#507](https://github.com/eddiethedean/hedron/issues/507); related
   [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506);
   published `v0.51.0`)
-- [`v0.58` progressive feature and styling authoring](RELEASE_0_58.md) — **Stage 0 Refined;
-  implementation Planned** (D-101 / D-102 / D-105 / RFC-0085; one W0–W17 tracking packet,
-  twenty planned gates, predecessor `v0.57.0` Published/Verified in-tree)
+- [`v0.58` progressive feature and styling authoring](RELEASE_0_58.md) — **Published/Verified**
+  in-tree (`v0.58.0`; tag/PyPI deferred; D-101 / D-102 / D-105 / RFC-0085; twenty Verified
+  gates; predecessor `v0.57.0` Published/Verified in-tree)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

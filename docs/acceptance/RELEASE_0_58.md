@@ -1,53 +1,51 @@
 # Hedron `v0.58` progressive feature and styling authoring acceptance
 
-**Status:** Published / Verified in-tree (`v0.58.0`; tag/PyPI deferred)  
-**Required predecessor:** Published and Verified in-tree `v0.57.0` (satisfied; tag/PyPI deferred)  
-**Target:** Hedron `v0.58.0`  
-**Decision/RFC:** D-101 / D-102 / D-105 / [RFC-0085](../rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)
-
-**Implementation plan:** [PROGRESSIVE_AUTHORING_058](../implementation/PROGRESSIVE_AUTHORING_058.md)  
+**Status:** Published / Verified in-tree (`v0.58.0`; tag/PyPI deferred)<br>
+**Required predecessor:** Published and Verified in-tree `v0.57.0` (satisfied; tag/PyPI deferred)<br>
+**Target:** Hedron `v0.58.0`<br>
+**Decision/RFC:** D-101 / D-102 / D-105 / [RFC-0085](../rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)<br>
+**Implementation plan:** [PROGRESSIVE_AUTHORING_058](../implementation/PROGRESSIVE_AUTHORING_058.md)<br>
 **Tracking:** [progressive-tracking-058.toml](progressive-tracking-058.toml)
 
-D-102 freezes the feature-authoring contracts. D-105 folds the complete progressive-styling
-contract into the same Stage 0 packet and exact Planned evidence commands. No 0.58 runtime symbols,
-evidence implementations, version changes, or release claims exist yet.
+Stage 0 froze the progressive feature and styling contracts. Stage 1 implemented the
+workstreams, Verified all twenty gates, and cut the in-tree tip to `v0.58.0`.
+**Do not tag yet.**
 
-## Outcome
+Beginners can build a branded screen, typed form command, bounded data workspace, durable
+task UI, dashboard, session login loop, and upload flow without learning every interaction
+or styling primitive first. One small design input compiles to a coordinated light/dark
+`Theme`; semantic recipes style generated feature roles; explicit scopes provide bounded
+local variation. Every feature and styling abstraction lowers to existing
+Hedron/FastAPI/theme/component/CSS-build authorities and remains inspectable, locally
+replaceable, scenario-testable, and safely ejectable.
 
-Beginners can build a branded screen, typed form command, bounded data workspace, durable task UI,
-dashboard, session login loop, and upload flow without learning every interaction or styling
-primitive first. One small design input compiles to a coordinated light/dark `Theme`; semantic
-recipes style generated feature roles; explicit scopes provide bounded local variation. Every
-feature and styling abstraction lowers to existing Hedron/FastAPI/theme/component/CSS-build
-authorities and remains inspectable, locally replaceable, scenario-testable, and safely ejectable.
+## Exact gate matrix
 
-## Planned gate matrix
-
-| Gate | State before Stage 0 | Evidence owner |
+| Gate | State | Evidence command |
 |---|---|---|
-| `CONTRACT-058` | Planned | Feature/design signatures, inventories, schemas, diagnostics, dispositions |
-| `LOWER-058` | Planned | Facade-to-primitive differential and no-second-runtime proof |
-| `SCREEN-058` | Planned | Screen/Page/shell/navigation/native page behavior |
-| `FORM-058` | Planned | Form model/control/validation/CSRF/effect/native+HTMX behavior |
-| `RESOURCE-058` | Planned | Complete bounded DataWorkspace screen and CRUD scaffold |
-| `TASK-058` | Planned | Scoped durable submit/status/cancel/result and polling behavior |
-| `DASH-058` | Planned | Typed filters, loader/panel split, history, stale/fan-out behavior |
-| `FLOW-058` | Planned | Session auth and upload composition boundaries |
-| `BRAND-058` | Planned | Deterministic coordinated light/dark brand compilation and disclosed adjustment |
-| `THEME-058` | Planned | Typed design groups, `Theme` bridge, constructor normalization, and build parity |
-| `RECIPE-058` | Planned | Family-scoped recipes, built-in feature roles, clone/precedence behavior |
-| `SCOPE-058` | Planned | Explicit bounded theme/color-mode/density scopes and marker parity |
-| `EXPLAIN-058` | Planned | Static redacted feature/design explain, preview, diff, check, ejection, and source-map parity |
-| `VISUAL-058` | Planned | Deterministic design gallery and three-engine visual/computed-fact matrix |
-| `A11Y-058` | Planned | Semantics, contrast, keyboard, announcements, no-JS, zoom/media modes |
-| `SECURITY-058` | Planned | Auth/tenant/CSRF/redirect/URL/upload/CSP/asset/ejection/exposure adversarial proof |
-| `ADAPTER-058` | Planned | Honest FastAPI/Flask/Django/portable/sim dispositions |
-| `REGRESS-058` | Planned | Existing explicit feature/styling APIs and 0.43–0.57 evidence |
-| `DX-058` | Planned | Four scaffolds; both starter inventories and measured learning path |
-| `PKG-058` | Planned | Wheels, optional isolation, docs, upgrades, metadata, rehearsal |
+| `CONTRACT-058` | Verified | `python scripts/check_contract_058.py` |
+| `LOWER-058` | Verified | `python scripts/check_lower_058.py` |
+| `SCREEN-058` | Verified | `python scripts/check_screen_058.py` |
+| `FORM-058` | Verified | `python scripts/check_form_058.py` |
+| `RESOURCE-058` | Verified | `python scripts/check_resource_058.py` |
+| `TASK-058` | Verified | `python scripts/check_task_058.py` |
+| `DASH-058` | Verified | `python scripts/check_dash_058.py` |
+| `FLOW-058` | Verified | `python scripts/check_flow_058.py` |
+| `BRAND-058` | Verified | `python scripts/check_brand_058.py` |
+| `THEME-058` | Verified | `python scripts/check_theme_058.py` |
+| `RECIPE-058` | Verified | `python scripts/check_recipe_058.py` |
+| `SCOPE-058` | Verified | `python scripts/check_scope_058.py` |
+| `EXPLAIN-058` | Verified | `python scripts/check_explain_058.py` |
+| `VISUAL-058` | Verified | `python scripts/check_visual_058.py` |
+| `A11Y-058` | Verified | `python scripts/check_a11y_058.py` |
+| `SECURITY-058` | Verified | `python scripts/check_security_058.py` |
+| `ADAPTER-058` | Verified | `python scripts/check_adapter_058.py` |
+| `REGRESS-058` | Verified | `python scripts/check_regress_058.py` |
+| `DX-058` | Verified | `python scripts/check_dx_058.py` |
+| `PKG-058` | Verified | `python scripts/check_pkg_058.py` |
 
-The Stage 0 packet records exact Planned rows in `release-gate-0.58.toml`; Stage 1 may mark a row
-Verified only when its executable/immutable evidence exists. The cut permits zero Deferred rows.
+Machine-readable index: [release-gate-0.58.toml](release-gate-0.58.toml) (`status = "Verified"`;
+zero Deferred).
 
 ## Pre-Stage 0 checklist
 

@@ -13,7 +13,7 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Repository checkout | `0.57.0` / `0.57.x` | Living tip and repository train (tag/PyPI deferred) |
+| Repository checkout | `0.58.0` / `0.58.x` | Living tip and repository train (tag/PyPI deferred) |
 | PyPI | `0.56.0` / `0.56.x` | Latest installable release from the public package index |
 | Package maturity | Beta | Usable with pins; no SLA or scheduled 1.0 release |
 | Supported Python | 3.11–3.14 | CPython only |

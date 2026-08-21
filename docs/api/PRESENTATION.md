@@ -1,10 +1,14 @@
-# Presentation APIs (0.57)
+# Presentation APIs (0.57 + 0.58)
 
 Phase 0.57 makes Hedron's shared presentation vocabulary real across built-ins
-and closes remaining application-CSS gaps for a Data Mover-class workspace. See
-[RFC-0084](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0084-UNIFIED-PRESENTATION.md)
+and closes remaining application-CSS gaps for a Data Mover-class workspace. Phase
+0.58 adds progressive styling authoring (`DesignSystem`, `StyleRecipe`,
+`StyleScope`) on the same authorities. See
+[RFC-0084](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0084-UNIFIED-PRESENTATION.md),
+[RFC-0085](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md),
+[PRESENTATION_057](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PRESENTATION_057.md),
 and
-[PRESENTATION_057](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PRESENTATION_057.md).
+[PROGRESSIVE_AUTHORING_058](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PROGRESSIVE_AUTHORING_058.md).
 
 Shared authority: `hedron_core.builtins.appearance`. Values emit stable
 `data-hedron-*` markers styled by first-party CSS under strict CSP
@@ -30,6 +34,50 @@ Shared authority: `hedron_core.builtins.appearance`. Values emit stable
 - Data: Table responsive policies, `ResourceList` / `ResourceRow`
 - Identity: `Avatar`, `Identity`
 - Workflow: FileUpload composition, Status compact/activity, richer ProcessFlow
+
+## Progressive styling (0.58)
+
+### `DesignSystem`
+
+Compile a coordinated light/dark `Theme` from a small design input, or wrap an
+existing `Theme`:
+
+```python
+from hedron import DesignSystem, Hedron
+
+design = DesignSystem.brand("acme", accent="#2563eb")
+app = Hedron(title="App", theme=design, session_secret="replace-in-production")
+```
+
+`Hedron(theme=...)` accepts `str | Theme | DesignSystem | None`. Brand compilation
+discloses contrast adjustments; it does not invent a second theme registry or CSS
+compiler.
+
+### `StyleRecipe`
+
+Family-scoped semantic recipes (`control` / `surface` / `data` / `status` /
+`content`) style generated feature roles. Built-in roles cover ordinary progressive
+feature surfaces. Recipes never change authorization, routes, or reading order.
+
+```python
+from hedron import StyleRecipe
+
+recipe = StyleRecipe.control(emphasis="primary", appearance="solid")
+```
+
+### `StyleScope`
+
+Bound a subtree to theme, color mode, and density markers only:
+
+```python
+from hedron import StyleScope, Text
+
+StyleScope(Text("Scoped panel"), theme="aurora", color_mode="dark", density="compact")
+```
+
+Component page: [StyleScope](../components/style-scope.md).
+
+Inspect with `hedron explain` / `hedron style` ([CLI](CLI.md)).
 
 ## Zero-application-CSS
 

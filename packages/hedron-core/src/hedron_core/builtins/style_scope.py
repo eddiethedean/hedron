@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
@@ -12,6 +13,7 @@ from hedron_core.diagnostics import error
 from hedron_core.html import html
 
 _ColorMode = Literal["light", "dark"]
+_THEME_NAME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 _RECIPE_DEFAULT_KEYS = frozenset(
     {
         "recipe",
@@ -83,6 +85,13 @@ class StyleScope(Component[StyleScopeProps]):
                     remediation="Pass a registered theme name such as 'default' or 'aurora'.",
                 )
             theme = theme.strip()
+            if _THEME_NAME_RE.fullmatch(theme) is None:
+                raise error(
+                    HED_STYLE_SCOPE_0001,
+                    title="Invalid StyleScope theme",
+                    explanation=f"theme={theme!r} must match [A-Za-z0-9_-]+.",
+                    remediation="Pass a registered theme name such as 'default' or 'aurora'.",
+                )
         if color_mode is not None and color_mode not in ("light", "dark"):
             raise error(
                 HED_STYLE_SCOPE_0001,
@@ -112,6 +121,8 @@ class StyleScope(Component[StyleScopeProps]):
             data["hedron-theme"] = self.props.theme
         if self.props.color_mode is not None:
             data["hedron-color-mode"] = self.props.color_mode
+            # Align with page-level data-theme contract used by emit_theme_css.
+            data["theme"] = self.props.color_mode
         if self.props.density is not None:
             data["hedron-density"] = self.props.density
         data.update(mark_data(self.props.mark))

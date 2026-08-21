@@ -1,17 +1,104 @@
 # Notes list tutorial (create, list, delete)
 
-Build a small in-memory notes list with CSRF and HTMX fragment updates. This tutorial
-covers **create, list, and delete** — add [update](#add-update) below, or use the
-[reference app](reference-app.md) for authenticated create/**update**/delete admin.
+Build a small notes workspace with `DataWorkspace.with_screen`. This tutorial covers
+**create, list, and edit** surfaces (delete stays disabled unless you supply destructive
+policy). Prefer this facade over hand-wiring list/detail routes.
 
-Paste into a new project after the [quickstart](../getting-started/quickstart.md).
+Paste into a new project after the [quickstart](../getting-started/quickstart.md), or use
+`hedron new NAME --template crud`.
 
 ## Prerequisites
 
-- [Minimal form](../guides/minimal-form.md) (CSRF basics)
-- [Mutations](../guides/mutations.md) (`@component` POST vs `@action`)
+- [Build your first app](../getting-started/quickstart.md) (`@app.screen` + Refresh)
+- Optional: [Minimal form](../guides/minimal-form.md) for Advanced explicit `Form` / CSRF
 
-Warm up with the two prerequisite patterns (docs simulations — no server):
+## Golden path — `DataWorkspace.with_screen`
+
+```python title="app.py"
+import os
+
+from pydantic import BaseModel, Field
+
+from hedron import DesignSystem, Hedron, Stack, Text
+from hedron_data import DataWorkspace, DataWorkspacePolicy, InMemoryDataSource
+
+design = DesignSystem.brand("notes", accent="#2563eb")
+
+app = Hedron(
+    title="Notes",
+    security="standard",
+    explorer="off",
+    theme=design,
+    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+)
+
+
+class Note(BaseModel):
+    id: str
+    body: str = Field(min_length=1, max_length=500)
+
+
+# In-memory only — replace with an authorized durable DataEditorSource in production.
+_SOURCE = InMemoryDataSource(
+    [{"id": "1", "body": "Ship the docs demo"}],
+    key_field="id",
+    writable_fields=frozenset({"body"}),
+)
+
+notes = DataWorkspace(
+    name="notes",
+    model=Note,
+    source=_SOURCE,
+    policy=DataWorkspacePolicy(
+        can_read=lambda: True,
+        can_create=lambda: True,
+        can_edit=lambda: True,
+    ),
+).with_screen(path="/notes", title="Notes")
+app.include_feature(notes)
+
+
+class QuickNote(BaseModel):
+    message: str = Field(min_length=1, max_length=200)
+
+
+@app.form_command("/quick-note", fallback="/", success="Saved note")
+def add_quick_note(data: QuickNote):
+    return Text(data.message)
+
+
+@app.screen("/", title="Home")
+def home():
+    return Stack(
+        Text("Open /notes for the DataWorkspace screen."),
+        Text("Production replacements: persistence, authorization, transactions."),
+        add_quick_note.form(),
+    )
+```
+
+Install `hedron[data]` (or `hedron-data`) when running outside a scaffold that already
+declares it.
+
+## Run
+
+```bash
+python -m pip install "hedron[data]>=0.56.0,<0.59" "uvicorn[standard]"
+uvicorn app:app --reload
+```
+
+Open [http://127.0.0.1:8000/notes](http://127.0.0.1:8000/notes).
+
+## What it shows
+
+- `DataWorkspace.with_screen` for list/detail/create/edit composition
+- `@app.form_command` for a typed side form on the home screen
+- `DesignSystem.brand` as the ordinary theme input
+
+## Pattern warm-ups (simulated)
+
+Docs simulations for CSRF, HTMX fragment POST, and list refresh — no server required.
+These Advanced explicit `@app.page` listings match the Demo tabs; prefer the golden path
+above for new apps.
 
 ### Try CSRF form POST (simulated)
 
@@ -397,3 +484,14 @@ For a fuller admin surface (auth + create/update/delete on users), see the
 - Gate routes with [Authentication](../guides/authentication.md)
 - Study the full [reference app](reference-app.md) for sessions, multi-worker jobs, and packaging
 - [Live interaction](../guides/live-interaction.md) for poll / stream / SSE
+
+## Advanced — explicit `@app.page` / handles
+
+When you eject or need full `Page` control, lower to `@app.page`, `@app.refreshable`, and
+`@app.command` with explicit `FormBody` / regions. See [DATA.md](../api/DATA.md) and the
+[reference app](reference-app.md) for authenticated create/update/delete admin patterns.
+
+## Next
+
+- [Jobs poll](jobs-poll.md) (`TaskFlow`) · [Session auth](session-auth.md)
+  (`SessionAuthFlow`) · [Dashboards](../guides/dashboards.md) (`DashboardWorkspace`)

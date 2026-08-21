@@ -4,11 +4,17 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Awaitable, Callable, Sequence
-from typing import Any, Generic, Protocol, TypeVar
+from typing import Any, Generic, Protocol, TypeVar, cast
 
 from hedron.builtins.files import safe_download_response
 from hedron.handles import ActionHandle, FragmentHandle
-from hedron.upload import UploadField, UploadHandle, cleanup_upload, materialize_upload
+from hedron.upload import (
+    UploadField,
+    UploadHandle,
+    cleanup_upload,
+    materialize_upload,
+    read_upload_capped,
+)
 from hedron_core.bundles import FeatureBundle, FeatureRequirement
 from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_UPLOADFLOW_0001, HED_UPLOADFLOW_0002, HED_UPLOADFLOW_0003
@@ -18,6 +24,9 @@ __all__ = ["UploadFlow"]
 
 StoredT = TypeVar("StoredT")
 ResultT = TypeVar("ResultT")
+
+_SESSION_STORED_PREFIX = "hedron.upload.stored."
+_SESSION_RESULT_PREFIX = "hedron.upload.result."
 
 
 class _UploadFlowApp(Protocol):
@@ -79,6 +88,20 @@ class UploadFlow(Generic[StoredT, ResultT]):
                 explanation="field must be an UploadField policy value.",
                 remediation="Construct UploadField(name=..., budget=...).",
             )
+        if authorize is None:
+            raise error(
+                HED_UPLOADFLOW_0001,
+                title="UploadFlow authorize required",
+                explanation="authorize must be a FastAPI dependency (fail closed).",
+                remediation="Pass authorize=Depends(...).",
+            )
+        if process is not None and not callable(getattr(process, "to_bundle", None)):
+            raise error(
+                HED_UPLOADFLOW_0002,
+                title="Invalid process TaskFlow",
+                explanation="process must be a TaskFlow FeatureProvider.",
+                remediation="Pass process=TaskFlow(...) or None.",
+            )
         self.name = name
         self.field = field
         self.authorize = authorize
@@ -90,6 +113,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
         self.provider_version = provider_version
         self.upload_screen: object | None = None
         self.upload_command: object | None = None
+        self.upload_form: object | None = None
         self.status_view: object | None = None
         self.result_view: object | None = None
         self.download_view: object | None = None
@@ -100,50 +124,111 @@ class UploadFlow(Generic[StoredT, ResultT]):
             return await value
         return value
 
+    def _session_key_stored(self) -> str:
+        return f"{_SESSION_STORED_PREFIX}{self.name}"
+
+    def _session_key_result(self) -> str:
+        return f"{_SESSION_RESULT_PREFIX}{self.name}"
+
+    async def _enqueue_process(self, request: object, stored: StoredT) -> str | None:
+        process = self.process
+        if process is None:
+            return None
+        from collections.abc import Mapping
+        from typing import cast
+
+        from hedron.jobs.durable import enqueue_durable
+        from hedron.jobs.scope import JobScopeProvider, evaluate_job_scope
+        from hedron_core.typing_aliases import JsonValue
+
+        input_model = getattr(process, "input_model", None)
+        payload_fn = getattr(process, "payload", None)
+        job_type = getattr(process, "job_type", None)
+        scope_policy = getattr(process, "scope", None)
+        if input_model is None or not callable(payload_fn) or not isinstance(job_type, str):
+            raise error(
+                HED_UPLOADFLOW_0002,
+                title="Invalid process TaskFlow",
+                explanation="process TaskFlow is missing input_model/payload/job_type.",
+                remediation="Pass a complete TaskFlow(...) as process=.",
+            )
+        if scope_policy is None or not callable(scope_policy):
+            raise error(
+                HED_UPLOADFLOW_0002,
+                title="Invalid process TaskFlow scope",
+                explanation="process TaskFlow is missing a JobScopeProvider.",
+                remediation="Pass scope=... on the TaskFlow used as process=.",
+            )
+        fields = list(getattr(input_model, "model_fields", {}) or {})
+        if len(fields) != 1:
+            raise error(
+                HED_UPLOADFLOW_0002,
+                title="Invalid process TaskFlow input",
+                explanation=(
+                    "process TaskFlow input_model must declare exactly one field "
+                    "for the opaque stored reference."
+                ),
+                remediation="Use a single-field input model for UploadFlow process composition.",
+            )
+        opaque = stored if isinstance(stored, (str, int, float, bool)) else str(stored)
+        data = input_model.model_validate({fields[0]: opaque})
+        try:
+            body = payload_fn(data)
+        except Exception as exc:
+            raise error(
+                HED_UPLOADFLOW_0002,
+                title="Upload process payload failed",
+                explanation="process.payload() rejected the opaque stored reference.",
+                remediation="Accept a serializable stored id in the TaskFlow payload callback.",
+            ) from exc
+        if not isinstance(body, Mapping):
+            raise error(
+                HED_UPLOADFLOW_0002,
+                title="Invalid process payload",
+                explanation="process.payload() must return a JSON-compatible mapping.",
+                remediation="Return a dict payload for enqueue_durable.",
+            )
+        scope = evaluate_job_scope(cast(JobScopeProvider, scope_policy), request=request)
+        return enqueue_durable(
+            job_type,
+            cast(Mapping[str, JsonValue], body),
+            tenant_id=scope.tenant_id,
+            auth_subject=scope.auth_subject,
+        )
+
     def to_bundle(self) -> FeatureBundle:
         flow = self
 
-        def screen_factory(app: _UploadFlowApp) -> object:
-            from hedron import FileUpload, Form, Stack, Text
+        def _ensure_upload_command(app: _UploadFlowApp) -> ActionHandle[Any, Any]:
+            if flow.upload_command is not None:
+                return flow.upload_command  # type: ignore[return-value]
 
-            @app.screen(f"/{flow.name}/upload", title="Upload", name=f"{flow.name}-upload")
-            def upload_screen() -> object:
-                return Stack(
-                    Text("Upload"),
-                    Form(
-                        FileUpload(
-                            name=flow.field.name,
-                            maximum_size=flow.field.budget.maximum_size,
-                            accept=",".join(flow.field.budget.allowed_content_types) or None,
-                            multiple=flow.field.budget.maximum_count > 1,
-                        ),
-                        action=f"/{flow.name}/upload",
-                        method="post",
-                        enctype="multipart/form-data",
-                    ),
-                )
-
-            flow.upload_screen = upload_screen
-            return upload_screen
-
-        def upload_command_factory(app: _UploadFlowApp) -> object:
             from fastapi import File, Request, UploadFile
 
-            deps = (flow.authorize,) if flow.authorize is not None else ()
+            from hedron import FileUpload
+            from hedron.security import redirect_local
+            from hedron_core.builtins.forms import CsrfField, Form, SubmitButton
 
-            @app.command(
-                f"/{flow.name}/upload",
-                name=f"{flow.name}-upload-command",
-                fallback=f"/{flow.name}/upload",
-                dependencies=deps,
-            )
+            field_name = flow.field.name
+
             async def upload_command(
                 request: Request,
                 file: UploadFile = File(...),  # noqa: B008
             ) -> object:
                 handle: UploadHandle | None = None
                 try:
-                    content = await file.read()
+                    try:
+                        content = await read_upload_capped(
+                            file,
+                            maximum_size=flow.field.budget.maximum_size,
+                        )
+                    except ValueError as exc:
+                        raise error(
+                            HED_UPLOADFLOW_0001,
+                            title="Upload policy failure",
+                            explanation=str(exc),
+                            remediation="Respect UploadField budget and filename rules.",
+                        ) from exc
                     try:
                         handle = materialize_upload(
                             filename=file.filename or "upload.bin",
@@ -159,7 +244,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
                             remediation="Respect UploadField budget and filename rules.",
                         ) from exc
                     try:
-                        stored = await flow._call(flow.store, handle)
+                        stored = cast(StoredT, await flow._call(flow.store, handle))
                     except Exception as exc:
                         raise error(
                             HED_UPLOADFLOW_0002,
@@ -169,34 +254,124 @@ class UploadFlow(Generic[StoredT, ResultT]):
                         ) from exc
                     if handle is not None and handle.owned:
                         cleanup_upload(handle)
+                    opaque: str | int | float | bool = (
+                        stored if isinstance(stored, (str, int, float, bool)) else str(stored)
+                    )
+                    request.session[flow._session_key_stored()] = opaque
+                    job_id = await flow._enqueue_process(request, stored)
+                    if job_id is not None:
+                        process = flow.process
+                        assert process is not None
+                        process_name = getattr(process, "name", flow.name)
+                        return redirect_local(f"/{process_name}/status/{job_id}")
                     rendered = await flow._call(flow.result, stored)
-                    if flow.process is not None:
-                        # Optional TaskFlow composition: opaque stored reference only.
-                        to_bundle = getattr(flow.process, "to_bundle", None)
-                        if not callable(to_bundle):
-                            raise error(
-                                HED_UPLOADFLOW_0002,
-                                title="Invalid process TaskFlow",
-                                explanation="process must be a TaskFlow FeatureProvider.",
-                                remediation="Pass process=TaskFlow(...) or None.",
-                            )
-                    from hedron import Text
+                    if rendered is not None:
+                        # Persist a bounded display string for the result surface.
+                        request.session[flow._session_key_result()] = str(opaque)
+                        return rendered
+                    from hedron import Text as _Text
 
-                    return rendered if rendered is not None else Text("uploaded")
+                    return _Text("uploaded")
                 finally:
                     cleanup_upload(handle)
 
-            flow.upload_command = upload_command
-            return upload_command
+            # Concrete annotations so postponed-eval ForwardRefs resolve for FastAPI.
+            upload_command.__annotations__ = {
+                "request": Request,
+                "file": UploadFile,
+                "return": object,
+            }
+            # FastAPI File default must remain on the signature parameter.
+            upload_command.__signature__ = inspect.Signature(  # type: ignore[attr-defined]
+                parameters=[
+                    inspect.Parameter(
+                        "request",
+                        inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                        annotation=Request,
+                    ),
+                    inspect.Parameter(
+                        "file",
+                        inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                        annotation=UploadFile,
+                        default=File(...),
+                    ),
+                ],
+                return_annotation=object,
+            )
+
+            handle = app.command(
+                f"/{flow.name}/upload",
+                name=f"{flow.name}-upload-command",
+                fallback=f"/{flow.name}/upload",
+                dependencies=(flow.authorize,),
+            )(upload_command)
+
+            def upload_form(*, submit_label: str = "Upload") -> object:
+                return Form(
+                    CsrfField(),
+                    FileUpload(
+                        name=field_name,
+                        maximum_size=flow.field.budget.maximum_size,
+                        accept=",".join(flow.field.budget.allowed_content_types) or None,
+                        multiple=flow.field.budget.maximum_count > 1,
+                    ),
+                    SubmitButton(submit_label),
+                    action=handle,
+                    method="post",
+                    enctype="multipart/form-data",
+                )
+
+            flow.upload_command = handle
+            flow.upload_form = upload_form
+            return handle
+
+        def screen_factory(app: _UploadFlowApp) -> object:
+            from hedron import Stack, Text
+
+            upload_handle = _ensure_upload_command(app)
+
+            @app.screen(f"/{flow.name}/upload", title="Upload", name=f"{flow.name}-upload")
+            def upload_screen() -> object:
+                from typing import cast
+
+                from hedron_core.component import NodeLike
+
+                form = flow.upload_form
+                assert callable(form)
+                return Stack(Text("Upload"), cast(NodeLike, form()))
+
+            flow.upload_screen = upload_screen
+            # Keep handle referenced so type-checkers know materialization ran.
+            _ = upload_handle
+            return upload_screen
+
+        def upload_command_factory(app: _UploadFlowApp) -> object:
+            return _ensure_upload_command(app)
 
         def result_factory(app: _UploadFlowApp) -> object:
-            @app.refreshable(f"/{flow.name}/result", name=f"{flow.name}-result")
-            def result_view() -> object:
-                from hedron import Text
+            from fastapi import Request
 
-                return Text("result")
+            from hedron import Text
+
+            @app.refreshable(f"/{flow.name}/result", name=f"{flow.name}-result")
+            async def result_view(request: Request) -> object:
+                session = getattr(request, "session", None)
+                if session is None:
+                    return Text("No upload result")
+                get = getattr(session, "get", None)
+                if not callable(get):
+                    return Text("No upload result")
+                stored = get(flow._session_key_stored())
+                if stored is None:
+                    return Text("No upload result")
+                try:
+                    rendered = await flow._call(flow.result, stored)
+                except Exception:  # noqa: BLE001
+                    return Text("Upload result unavailable")
+                return rendered if rendered is not None else Text(str(stored))
 
             flow.result_view = result_view
+            flow.status_view = result_view
             return result_view
 
         def download_factory(app: _UploadFlowApp) -> object | None:

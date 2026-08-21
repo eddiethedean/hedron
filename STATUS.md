@@ -116,6 +116,21 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `MORPH-048` | Idiomorph / morph swap | **Deferred** (0.48) | Not vendored; keep innerHTML/outerHTML; later train, not 0.49 |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | **Not** re-homed to 0.24; stays on `0.10.x` |
 
+## Phase 0.58 evidence
+
+- Gate index: [release-gate-0.58.toml](docs/acceptance/release-gate-0.58.toml)
+  (all twenty `*-058` rows **Verified**; zero Deferred).
+- Acceptance: [RELEASE_0_58.md](docs/acceptance/RELEASE_0_58.md).
+- Contracts / inventories: [progressive-tracking-058.toml](docs/acceptance/progressive-tracking-058.toml) ·
+  [progressive-starter-docs-058.toml](docs/acceptance/progressive-starter-docs-058.toml) ·
+  [upgrade-fixtures-058.md](docs/acceptance/upgrade-fixtures-058.md).
+- Implementation: [PROGRESSIVE_AUTHORING_058](docs/implementation/PROGRESSIVE_AUTHORING_058.md).
+- What’s new: [guides/whats-new-0.58.md](docs/guides/whats-new-0.58.md).
+- Checker: `python scripts/check_release_gate.py 0.58.0`,
+  `python scripts/verify_pkg_58.py`.
+- Registry: living tip `v0.58.0` in-tree; PyPI remains `v0.56.0`
+  (`registry_status = "deferred"`).
+
 ## Phase 0.24 evidence
 
 - Gate index: [release-gate-0.24.toml](docs/acceptance/release-gate-0.24.toml)

@@ -62,6 +62,10 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
         )
     ```
 
+!!! note "Advanced — explicit `@app.page`"
+
+    `@app.screen` lowers to `Page` + `@app.page`. Prefer `screen` for new golden paths.
+
 ```bash
 pip install "hedron>=0.56.0,<0.59" "uvicorn[standard]"
 # paste the Code tab into app.py, then:
@@ -79,14 +83,14 @@ pip install "hedron>=0.56.0,<0.59" "uvicorn[standard]"
 Save as `app.py`:
 
 ```python
-from hedron import Hedron, Page, Text
+from hedron import Hedron, Text
 
 app = Hedron(title="Demo", security="standard", session_secret="replace-me")
 
 
-@app.page("/")
-def home() -> Page:
-    return Page(Text("Hello, Hedron"), title="Demo")
+@app.screen("/", title="Demo")
+def home():
+    return Text("Hello, Hedron")
 ```
 
 ```bash
@@ -97,7 +101,9 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 ## CSRF form
 
-Follow the pasteable app in [Minimal form POST](../guides/minimal-form.md).
+Prefer `@app.form_command` for typed forms (see [quickstart](../getting-started/quickstart.md)
+CRUD scaffold). Follow the pasteable advanced form in
+[Minimal form POST](../guides/minimal-form.md) when you need explicit `Form` / `CsrfField`.
 
 ## Live clock (polling)
 

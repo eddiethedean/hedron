@@ -95,7 +95,7 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`.
-Expect **`0.56.0`** in a PyPI-installed application or **`0.56.0`** in this repository.
+Expect **`0.56.0`** in a PyPI-installed application or **`0.58.0`** in this repository.
 Upgrade an application with `pip install -U "hedron>=0.56.0,<0.59"`; use `uv sync` only
 inside the repository.
 See [What's ready](whats-ready.md). If docs describe a feature missing from your

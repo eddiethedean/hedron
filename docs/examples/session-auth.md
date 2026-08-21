@@ -1,6 +1,7 @@
 # Session auth
 
-Minimal session login gate with CSRF. Demo credentials only — replace before any deploy.
+Bounded session login with `SessionAuthFlow`. Demo credentials only — replace before any
+deploy. Hedron is **not** an identity provider.
 
 ### Try it (simulated)
 
@@ -120,14 +121,17 @@ uv sync
 uv run uvicorn app:app --app-dir examples/session-auth --reload
 ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — unauthenticated visits **redirect to
-`/login`**. Sign in with `ada` / `correct-horse`.
+Open [http://127.0.0.1:8000/login](http://127.0.0.1:8000/login). Demo: `ada` / `correct-horse`.
 
 ## What it shows
 
-- Starlette session cookie via `Hedron(session_secret=...)`
-- Soft landing redirect (not a bare 401) when `/` is unauthenticated
-- `@app.command` login/logout with `Form(action=login)` and `logout.button()`
+- `SessionAuthFlow` login/logout composition around explicit `authenticate` callbacks
+- Required `RateLimitPolicy` and session rotation policy
+- Application-owned credential check (not an IdP)
+
+## Advanced — explicit `@app.page` / Form
+
+Lower to `@app.page("/login")`, `@app.command`, `CsrfField`, and manual redirects when
+ejecting. See [AUTH.md](../api/AUTH.md) and [Authentication](../guides/authentication.md).
 
 Source: [`examples/session-auth`](https://github.com/eddiethedean/hedron/tree/main/examples/session-auth).
-Full narrative: [Authentication](../guides/authentication.md).

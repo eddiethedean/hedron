@@ -19,7 +19,7 @@ pip install "hedron[conformance]>=0.56.0,<0.59"
 pip install "hedron-conformance>=0.56.0,<0.59"
 ```
 
-Checkout tip `v0.57.0` uses `>=0.58.0,<0.59` in-tree; PyPI first-run stays `>=0.56.0,<0.59` until the 0.58.0 upload lands.
+Checkout tip `v0.58.0` uses `>=0.58.0,<0.59` in-tree; PyPI first-run stays `>=0.56.0,<0.59` until the 0.58.0 upload lands.
 
 ## When to use
 

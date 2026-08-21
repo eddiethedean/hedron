@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import html as html_lib
 import json
 import sys
 from collections.abc import Mapping
@@ -83,6 +84,23 @@ def _resolve_design(args: argparse.Namespace, *, name: str | None = None) -> Des
     return DesignSystem.from_theme(_theme_from_meta(str(design_name)))
 
 
+def _assert_project_write_path(path: Path, *, cwd: Path) -> Path:
+    """Resolve ``path`` under ``cwd`` and refuse symlink write-through escapes."""
+    resolved = path.expanduser().resolve()
+    try:
+        resolved.relative_to(cwd)
+    except ValueError as exc:
+        raise ValueError(f"Refusing to write outside the project root: {resolved}") from exc
+    cursor = resolved
+    while True:
+        if cursor.exists() and cursor.is_symlink():
+            raise ValueError(f"Refusing to write through symlink: {cursor}")
+        if cursor == cwd or cursor.parent == cursor:
+            break
+        cursor = cursor.parent
+    return resolved
+
+
 def _plan_human(plan: DesignSystemPlan) -> str:
     lines = [
         f"Design {plan.logical_id}",
@@ -118,30 +136,35 @@ def _token_swatches(theme: Theme, *, mode: str) -> str:
     for key, value in sorted(tokens.items()):
         if not key.startswith("color.") and key not in {"focus.ring"}:
             continue
-        safe = value if value.startswith("#") else "#888888"
+        safe_bg = value if isinstance(value, str) and value.startswith("#") else "#888888"
         parts.append(
-            f'<div class="swatch"><span style="background:{safe}"></span>'
-            f"<code>{key}</code> <code>{value}</code></div>"
+            '<div class="swatch">'
+            f'<span style="background:{html_lib.escape(safe_bg, quote=True)}"></span>'
+            f"<code>{html_lib.escape(key)}</code> "
+            f"<code>{html_lib.escape(str(value))}</code></div>"
         )
     return "\n".join(parts)
 
 
 def _gallery_page(design: DesignSystem, *, modes: list[str]) -> str:
     theme = design.to_theme()
-    css = emit_theme_css(theme)
+    # Synthetic preview only: neutralize style-tag breakout from hostile token text.
+    css = emit_theme_css(theme).replace("</", "<\\/").replace("<", "\\3c ")
     sections: list[str] = []
     for mode in modes:
         sections.append(
-            f'<section data-mode="{mode}">'
-            f"<h2>{mode.title()} mode</h2>"
+            f'<section data-mode="{html_lib.escape(mode)}">'
+            f"<h2>{html_lib.escape(mode.title())} mode</h2>"
             f"{_token_swatches(theme, mode=mode)}"
             f"</section>"
         )
+    safe_name = html_lib.escape(design.name)
+    safe_theme = html_lib.escape(theme.name)
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Hedron design preview · {design.name}</title>
+  <title>Hedron design preview · {safe_name}</title>
   <style>
     body {{ font-family: system-ui, sans-serif; margin: 2rem; }}
     .swatch {{ display: flex; align-items: center; gap: 0.75rem; margin: 0.35rem 0; }}
@@ -150,9 +173,9 @@ def _gallery_page(design: DesignSystem, *, modes: list[str]) -> str:
     {css}
   </style>
 </head>
-<body data-hedron-theme="{theme.name}">
-  <h1>Design gallery: {design.name}</h1>
-  <p>Fixed synthetic preview ({PREVIEW_FIXTURE_VERSION}); no application data.</p>
+<body data-hedron-theme="{safe_theme}">
+  <h1>Design gallery: {safe_name}</h1>
+  <p>Fixed synthetic preview ({html_lib.escape(PREVIEW_FIXTURE_VERSION)}); no application data.</p>
   {"".join(sections)}
 </body>
 </html>
@@ -161,28 +184,34 @@ def _gallery_page(design: DesignSystem, *, modes: list[str]) -> str:
 
 def _cmd_style_preview(args: argparse.Namespace) -> int:
     design = _resolve_design(args)
-    out = Path(args.output).expanduser()
     cwd = Path.cwd().resolve()
-    out_resolved = out.resolve()
     try:
-        out_resolved.relative_to(cwd)
-    except ValueError:
-        print(
-            f"Refusing to write preview outside the project root: {out_resolved}", file=sys.stderr
-        )
+        out_resolved = _assert_project_write_path(Path(args.output), cwd=cwd)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
         return 1
     mode = str(args.mode)
     modes = ["light", "dark"] if mode == "all" else [mode]
     out_resolved.parent.mkdir(parents=True, exist_ok=True)
-    html = _gallery_page(design, modes=modes)
+    page = _gallery_page(design, modes=modes)
     if out_resolved.suffix.lower() in {".html", ".htm"}:
         dest = out_resolved
-        dest.write_text(html, encoding="utf-8")
+        try:
+            _assert_project_write_path(dest, cwd=cwd)
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
+        dest.write_text(page, encoding="utf-8")
         pages = [str(dest.relative_to(cwd))]
     else:
         out_resolved.mkdir(parents=True, exist_ok=True)
         dest = out_resolved / "index.html"
-        dest.write_text(html, encoding="utf-8")
+        try:
+            _assert_project_write_path(dest, cwd=cwd)
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
+        dest.write_text(page, encoding="utf-8")
         pages = [str(dest.relative_to(cwd))]
     plan = design.explain()
     meta = {
@@ -371,14 +400,13 @@ def _cmd_style_eject(args: argparse.Namespace) -> int:
     if getattr(args, "app", None):
         _require_app(args)
     ensure_builtin_themes_registered()
-    design = DesignSystem.from_theme(_theme_from_meta(args.name))
+    design = _resolve_design(args, name=args.name)
 
     cwd = Path.cwd().resolve()
-    out_dir = Path(args.output).expanduser().resolve()
     try:
-        out_dir.relative_to(cwd)
-    except ValueError:
-        print(f"Refusing to write outside the project root: {out_dir}", file=sys.stderr)
+        out_dir = _assert_project_write_path(Path(args.output), cwd=cwd)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
         return 1
     selection = _selection_label(args)
     if selection.startswith("group:"):
@@ -410,6 +438,11 @@ def _cmd_style_eject(args: argparse.Namespace) -> int:
                 f"Refusing to overwrite {path} (use --overwrite)",
                 file=sys.stderr,
             )
+            return 1
+        try:
+            _assert_project_write_path(path, cwd=cwd)
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
             return 1
     dest.write_text(source, encoding="utf-8")
     plan = design.explain()

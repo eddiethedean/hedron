@@ -16,7 +16,7 @@ behavior while installing Hedron route classes, response handling, lifespan comp
 assets, registry, security defaults, and optional development Explorer.
 
 ```python
-from hedron import Hedron, Page, Text
+from hedron import Hedron, Text
 
 app = Hedron(
     title="Example",
@@ -30,10 +30,14 @@ app = Hedron(
 )
 
 
-@app.page("/")
-def home() -> Page:
-    return Page(Text("ok"), title="Home")
+@app.screen("/", title="Home")
+def home():
+    return Text("ok")
 ```
+
+!!! note "Advanced — explicit `@app.page`"
+
+    `@app.screen` lowers to `Page` + `@app.page`. Prefer `screen` for new golden paths.
 
 ## Parameters
 
@@ -44,7 +48,7 @@ def home() -> Page:
 | `session_secret` | `str` \| `None` | development default | Required when `enable_sessions=True` (`None` is refused). Production rejects missing/weak values; `strict` refuses the built-in default |
 | `enable_sessions` | `bool` | `True` | Install Starlette `SessionMiddleware` |
 | `explorer_dependencies` | sequence of FastAPI dependencies | `()` | Applied to Explorer when `explorer="secured"` |
-| `theme` | `str` \| `None` | `"default"` | Registered theme name for lifespan/build |
+| `theme` | `str` \| `Theme` \| `DesignSystem` \| `None` | `"default"` | Registered theme name, `Theme`, or progressive `DesignSystem` for lifespan/build |
 | `default_styles` | `bool` | `True` | Include Hedron's responsive baseline presentation; set `False` for a fully custom canvas |
 | `build_dir` | `str` \| `Path` \| `None` | `None` | Build/manifest directory (else settings / `HEDRON_BUILD_DIR`) |
 | `production` | `bool` \| `None` | `None` | `None` uses `HEDRON_ENV`; `True` requires a build manifest and gates runtime compile |
@@ -86,24 +90,28 @@ parameters:
 
 | Method | Description |
 |---|---|
-| `page(path, **kwargs)` | Register a PAGE route (navigation HTML; fragment when `HX-Request`) |
+| `screen(path, *, title, **kwargs)` | Register a beginner screen that lowers to `Page` + `page` (returns `ScreenHandle`) |
+| `form_command(path, *, fallback, **kwargs)` | Typed form command that discovers one Pydantic model and lowers to `FormBody` + `command` |
+| `page(path, **kwargs)` | Register a PAGE route (navigation HTML; fragment when `HX-Request`) — Advanced when `screen` applies |
 | `refreshable(path, **kwargs)` | Register a GET fragment view; returns a `FragmentHandle` |
 | `command(path, **kwargs)` | Register a CSRF-backed mutation; returns an `ActionHandle` |
 | `component(path, **kwargs)` | Register a FRAGMENT route; use `methods=["POST"]` for HTMX form fragments with `fragment_regions` |
-| `action(path, **kwargs)` | Register an action route (CSRF on unsafe methods). Prefer `@command` for new forms; see [ACTION](ACTION.md) |
+| `action(path, **kwargs)` | Register an action route (CSRF on unsafe methods). Prefer `@command` / `form_command` for new forms; see [ACTION](ACTION.md) |
 | `region(id, selector=None, description="")` | Declare a `FragmentRegion` (default selector `#{id}`) for `RefreshButton.for_region` / allowlists |
 | `fragment(path, region=..., regions=..., **kwargs)` | Alias of `component` that merges `region` / `regions` into the allowlist |
 | `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
 | `include_feature(bundle, *, capabilities=None)` | Include one `FeatureBundle` / `FeatureProvider` before registry/catalog seal |
 | `include_router(...)` | Standard FastAPI router include |
 
-Golden-path HTMX uses `@app.refreshable` and `@app.command` (see
-[Refreshable views](REFRESHABLE_VIEWS.md) and
-[HTMX interactions](../guides/htmx-interactions.md)). `page` / `component` / `action`
-plus `fragment_regions` remain the lower-level allowlist API.
+Golden-path HTMX uses `@app.screen`, `@app.form_command`, `@app.refreshable`, and
+`@app.command` (see [What’s new in 0.58](../guides/whats-new-0.58.md) and
+[Refreshable views](REFRESHABLE_VIEWS.md)). Flask/Django hosts are Supported for
+pages/fragments but are **not** decorator-parity Supported for these FastAPI progressive
+facades. `page` / `component` / `action` plus `fragment_regions` remain the lower-level
+allowlist API.
 
 ```python
-from hedron import Hedron, Page, Stack, Text, html, refresh
+from hedron import Hedron, Stack, Text, html, refresh
 
 app = Hedron(title="Demo", security="standard", explorer="off", session_secret="replace-in-production")
 
@@ -113,14 +121,14 @@ def status():
     return html.div(Text("ok"), role="status")
 
 
-@app.command("/notes")
+@app.command("/notes", fallback="/")
 def save():
     return refresh(status)
 
 
-@app.page("/")
-def home() -> Page:
-    return Page(Stack(status(), status.refresh_button("Refresh"), save.form()), title="Home")
+@app.screen("/", title="Home")
+def home():
+    return Stack(status(), status.refresh_button("Refresh"), save.form())
 ```
 
 Also see module helpers `mount_hedron_static(app)` and `mount_build_assets(app, build_dir)`.

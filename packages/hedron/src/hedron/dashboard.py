@@ -68,7 +68,19 @@ class CachePolicy:
 
 
 _SENSITIVE_FILTER_MARKERS = frozenset(
-    {"password", "secret", "token", "credential", "ssn", "credit_card"}
+    {
+        "password",
+        "passwd",
+        "secret",
+        "token",
+        "credential",
+        "ssn",
+        "credit_card",
+        "api_key",
+        "apikey",
+        "access_key",
+        "private_key",
+    }
 )
 
 
@@ -228,27 +240,53 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
             filters_model = workspace.filters
 
             def filter_command(data: BaseModel) -> object:
-                from hedron.security import redirect_local
+                from urllib.parse import urlencode
 
-                query = data.model_dump(mode="json", exclude_none=True)
-                parts = [f"{key}={value}" for key, value in query.items()]
-                target = workspace.path if not parts else f"{workspace.path}?{'&'.join(parts)}"
-                return redirect_local(target)
+                from fastapi import HTTPException, status
+                from fastapi.responses import RedirectResponse
+
+                from hedron_core.htmx_contract import is_local_path
+
+                # Validate the path alone so encoded query values cannot trip traversal checks.
+                if not is_local_path(workspace.path):
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="External redirect rejected; use redirect_external explicitly",
+                    )
+                raw = data.model_dump(mode="json", exclude_none=True)
+                flat: dict[str, str] = {}
+                for key, value in raw.items():
+                    if isinstance(value, (list, tuple)):
+                        flat[str(key)] = ",".join(str(item) for item in value)
+                    else:
+                        flat[str(key)] = str(value)
+                qs = urlencode(flat)
+                target = workspace.path if not qs else f"{workspace.path}?{qs}"
+                response = RedirectResponse(url=target, status_code=303)
+                if workspace.history == "replace":
+                    response.headers["HX-Replace-Url"] = target
+                elif workspace.history == "push":
+                    response.headers["HX-Push-Url"] = target
+                return response
 
             filter_command.__annotations__ = {"data": filters_model, "return": object}
+            # No refreshes= here: RedirectResponse must remain a Starlette Response.
+            # Panels reload from the redirected URL query string on the next page GET.
             filter_handle = form_command(
                 app,
                 f"{workspace.path}/filters",
                 name=f"{workspace.name}-filters",
                 fallback=workspace.path,
-                refreshes=tuple(panel_handles.values()),
             )(filter_command)
 
             workspace.filter_form = filter_handle
 
             @app.screen(workspace.path, title=workspace.title, name=workspace.name)
             def dashboard_screen() -> object:
-                nodes: list[NodeLike] = [PageHeader(workspace.title)]
+                nodes: list[NodeLike] = [
+                    PageHeader(workspace.title),
+                    filter_handle.form(submit_label="Apply filters"),
+                ]
                 for pname, handle in panel_handles.items():
                     if callable(handle):
                         try:

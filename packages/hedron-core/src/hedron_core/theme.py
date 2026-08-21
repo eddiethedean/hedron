@@ -554,13 +554,34 @@ def emit_theme_css(theme: Theme) -> str:
         for key, value in sorted(dark.items()):
             lines.append(f"    {_token_to_css_var(key)}: {value};")
         lines.append("  }")
+        lines.append(
+            f'  [data-hedron-theme="{theme.name}"]:not([data-theme="light"])'
+            f':not([data-hedron-color-mode="light"]) {{'
+        )
+        for key, value in sorted(dark.items()):
+            lines.append(f"    {_token_to_css_var(key)}: {value};")
+        lines.append("  }")
         lines.append("}")
         lines.append(':root[data-theme="dark"] {')
         for key, value in sorted(dark.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
         lines.append("}")
+        lines.append(
+            f'[data-hedron-theme="{theme.name}"][data-theme="dark"], '
+            f'[data-hedron-theme="{theme.name}"][data-hedron-color-mode="dark"] {{'
+        )
+        for key, value in sorted(dark.items()):
+            lines.append(f"  {_token_to_css_var(key)}: {value};")
+        lines.append("}")
         # Explicit light preference must defeat system dark preference.
         lines.append(':root[data-theme="light"] {')
+        for key, value in sorted(theme.tokens.items()):
+            lines.append(f"  {_token_to_css_var(key)}: {value};")
+        lines.append("}")
+        lines.append(
+            f'[data-hedron-theme="{theme.name}"][data-theme="light"], '
+            f'[data-hedron-theme="{theme.name}"][data-hedron-color-mode="light"] {{'
+        )
         for key, value in sorted(theme.tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
         lines.append("}")

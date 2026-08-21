@@ -276,6 +276,7 @@ nav:
     - CLI: api/CLI.md
     - Workflow: api/WORKFLOW.md
     - Components: components/index.md
+    - StyleScope: components/style-scope.md
     - Configuration: CONFIGURATION.md
     - Compatibility: COMPATIBILITY.md
     - Glossary: GLOSSARY.md

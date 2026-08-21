@@ -126,6 +126,38 @@ def home(request: Request) -> Page:
 Applications remain responsible for login routes, session cookies, CSRF, and
 authorization decisions (`Depends`, Django/Flask auth, or your IdP).
 
+## `SessionAuthFlow` (0.58)
+
+Compose login/logout/session page plumbing around **explicit** application identity
+callbacks. Not an IdP, user database, password hasher, or authorization framework.
+
+```python
+from hedron import (
+    AuthDenied,
+    AuthSuccess,
+    Hedron,
+    RateLimitPolicy,
+    SessionAuthFlow,
+)
+
+# credentials: Pydantic model; authenticate returns AuthSuccess | AuthDenied
+auth = SessionAuthFlow(
+    credentials=Credentials,
+    authenticate=authenticate_user,
+    serialize_principal=lambda principal: principal,
+    load_principal=lambda stored: stored,
+    login_path="/login",
+    logout_path="/logout",
+    after_login="/",
+    rate_limit=RateLimitPolicy(limit=20, window_seconds=60.0),
+    rotation="on_login",
+)
+app.include_feature(auth)
+# Use Depends(auth.current_principal()) on protected screens/commands
+```
+
+Recipe: [Session auth](../examples/session-auth.md).
+
 ## Errors
 
 | Code / condition | Behavior |
@@ -133,6 +165,7 @@ authorization decisions (`Depends`, Django/Flask auth, or your IdP).
 | Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]>=0.56.0,<0.59"` |
 | Invalid `OidcClientConfig` | `ValueError` on empty issuer / client_id / redirect_uri |
 | Provider misconfiguration | Authlib/provider errors bubble to the route |
+| Unsafe `after_login` / missing rate limit | `SessionAuthFlow` fails closed (`HED-AUTHFLOW-*`) |
 
 ## See also
 
