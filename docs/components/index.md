@@ -48,19 +48,19 @@ Semantic regions that give a page its accessible structure. `Header`, `Main`, `N
 
 Explicit containers and one-dimensional or grid composition.
 
-[`Container`](container.md) · [`PageHeader`](page-header.md) · [`SplitView`](split-view.md) · [`MasterDetail`](master-detail.md) · [`FormGrid`](form-grid.md) · [`ActionGroup`](action-group.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`Divider`](divider.md) · [`MainPanel`](main-panel.md) · [`AppShell`](app-shell.md) · [`SkipLink`](skip-link.md) · [`ProcessFlow`](process-flow.md) · [`FlowStep`](flow-step.md) · [`ActionDock`](action-dock.md) · [`BottomDock`](bottom-dock.md) · [`Spacer`](spacer.md)
+[`Container`](container.md) · [`PageHeader`](page-header.md) · [`SplitView`](split-view.md) · [`MasterDetail`](master-detail.md) · [`FormGrid`](form-grid.md) · [`ActionGroup`](action-group.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`GridItem`](grid-item.md) · [`Divider`](divider.md) · [`MainPanel`](main-panel.md) · [`AppShell`](app-shell.md) · [`SkipLink`](skip-link.md) · [`ProcessFlow`](process-flow.md) · [`FlowStep`](flow-step.md) · [`ActionDock`](action-dock.md) · [`BottomDock`](bottom-dock.md) · [`Spacer`](spacer.md)
 
 ## Content
 
 Text, links, media, code, lists, tables, and Markdown.
 
-[`Heading`](heading.md) · [`Text`](text.md) · [`Link`](link.md) · [`Image`](image.md) · [`CodeBlock`](code-block.md) · [`List`](list.md) · [`DescriptionList`](description-list.md) · [`Table`](table.md) · [`Markdown`](markdown.md) · [`Typography`](typography.md) · [`Icon`](icon.md) · [`Audio`](audio.md) · [`PredictionLabel`](prediction-label.md) · [`ParameterViewer`](parameter-viewer.md) · [`Dialogue`](dialogue.md) · [`Gallery`](gallery.md) · [`GeoJSONLayer`](geo-json-layer.md) · [`GeolocationHint`](geolocation-hint.md) · [`IFrame`](i-frame.md) · [`Logo`](logo.md) · [`Map`](map.md) · [`Math`](math.md) · [`PageIcon`](page-icon.md) · [`PdfViewer`](pdf-viewer.md) · [`Video`](video.md)
+[`Heading`](heading.md) · [`Text`](text.md) · [`Link`](link.md) · [`Image`](image.md) · [`CodeBlock`](code-block.md) · [`List`](list.md) · [`DescriptionList`](description-list.md) · [`Table`](table.md) · [`Markdown`](markdown.md) · [`Typography`](typography.md) · [`Icon`](icon.md) · [`Avatar`](avatar.md) · [`Identity`](identity.md) · [`Audio`](audio.md) · [`PredictionLabel`](prediction-label.md) · [`ParameterViewer`](parameter-viewer.md) · [`Dialogue`](dialogue.md) · [`Gallery`](gallery.md) · [`GeoJSONLayer`](geo-json-layer.md) · [`GeolocationHint`](geolocation-hint.md) · [`IFrame`](i-frame.md) · [`Logo`](logo.md) · [`Map`](map.md) · [`Math`](math.md) · [`PageIcon`](page-icon.md) · [`PdfViewer`](pdf-viewer.md) · [`Video`](video.md)
 
 ## Surfaces and status
 
 Cards, labels, alerts, and loading placeholders.
 
-[`Card`](card.md) · [`Badge`](badge.md) · [`Alert`](alert.md) · [`Skeleton`](skeleton.md) · [`StateView`](state-view.md) · [`Carousel`](carousel.md) · [`ContextMenu`](context-menu.md) · [`Help`](help.md) · [`Popover`](popover.md) · [`Timeline`](timeline.md) · [`Tooltip`](tooltip.md)
+[`Card`](card.md) · [`Surface`](surface.md) · [`Badge`](badge.md) · [`Alert`](alert.md) · [`Skeleton`](skeleton.md) · [`StateView`](state-view.md) · [`Carousel`](carousel.md) · [`ContextMenu`](context-menu.md) · [`Help`](help.md) · [`Popover`](popover.md) · [`Timeline`](timeline.md) · [`Tooltip`](tooltip.md)
 
 ## Controls
 
@@ -84,13 +84,13 @@ FastAPI and HTMX-oriented request/response components.
 
 Automatic rendering, tabular display, and editable data.
 
-[`Auto`](auto.md) · [`DataTable`](data-table.md) · [`DataEditor`](data-editor.md)
+[`Auto`](auto.md) · [`DataTable`](data-table.md) · [`ResourceList`](resource-list.md) · [`ResourceRow`](resource-row.md) · [`DataEditor`](data-editor.md)
 
 ## Utilities
 
 Metrics, viewers, progress, status, disclosure, tabs, and files.
 
-[`Metric`](metric.md) · [`FileUpload`](file-upload.md) · [`DownloadButton`](download-button.md) · [`CodeViewer`](code-viewer.md) · [`JSONViewer`](json-viewer.md) · [`Progress`](progress.md) · [`Status`](status.md) · [`Toast`](toast.md) · [`ToastHost`](toast-host.md) · [`Expander`](expander.md) · [`Tabs`](tabs.md) · [`Sidebar`](sidebar.md) · [`CircularProgress`](circular-progress.md) · [`HelpInspector`](help-inspector.md)
+[`Brand`](brand.md) · [`AccountSummary`](account-summary.md) · [`EnvironmentBanner`](environment-banner.md) · [`NavStatus`](nav-status.md) · [`AppFooter`](app-footer.md) · [`Metric`](metric.md) · [`FileUpload`](file-upload.md) · [`DownloadButton`](download-button.md) · [`CodeViewer`](code-viewer.md) · [`JSONViewer`](json-viewer.md) · [`Progress`](progress.md) · [`Status`](status.md) · [`Toast`](toast.md) · [`ToastHost`](toast-host.md) · [`Expander`](expander.md) · [`Tabs`](tabs.md) · [`Sidebar`](sidebar.md) · [`CircularProgress`](circular-progress.md) · [`HelpInspector`](help-inspector.md)
 
 ## Theme
 

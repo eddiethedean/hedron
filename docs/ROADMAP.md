@@ -54,7 +54,8 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Published** (`v0.56.0` on GitHub and PyPI; [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md), D-093/D-094, foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543); companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
 | **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Published** (`v0.55.0` tag; Verified gates; PyPI deferred; [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md), D-095/D-096, [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)) |
 | **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.1` in-tree; Verified gates; 0.56.1 tag/PyPI deferred; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)) |
-| **0.57** | Unified styling and presentation: shared appearance adoption, CSP-safe responsive layout, overflow contracts, surfaces, application chrome, data/identity primitives, and zero-application-CSS evidence | **Refined** (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570); open styling work [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)) |
+| **0.57** | Unified styling and presentation: shared appearance adoption, CSP-safe responsive layout, overflow contracts, surfaces, application chrome, data/identity primitives, and zero-application-CSS evidence | **Published** in-tree (`v0.57.0`; Verified gates; tag/PyPI deferred; D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570); [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)) |
+| **0.58** | Progressive feature authoring: screens, form commands, complete data workspaces, durable task UI, dashboards, bounded session/upload flows, inspectable lowering, overrides, and safe ejection | **Refined** (D-101 / D-102 / [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md); predecessor `v0.57.0` Published/Verified in-tree) |
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -108,9 +109,9 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   visualization, element, remote, and workbench workflows that compile to the same stack. None of
   these programs is a blanket feature promotion or a scheduled `1.0`.
 
-### Honest gaps on the current train (0.56.x)
+### Honest gaps on the current train (0.57.x)
 
-- Current **published** in-tree tip is **0.56.x** (`v0.56.1`; PyPI still `v0.56.0`)
+- Current **published** in-tree tip is **0.57.x** (`v0.57.0`; PyPI still `v0.56.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -126,6 +127,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 - Human screen-reader / compensated AT evaluation — protocol Verified; sessions Planned
   (not Supported); tracked by [#86](https://github.com/eddiethedean/hedron/issues/86);
   `AT-019` is automated Playwright/axe only
+- New 0.57 presentation APIs begin `beta`; existing calls retain compatibility defaults
 - Prior live-browser / load Deferred IDs (`LIVE-011-BROWSER`, `BROWSER-10-001`,
   `PERF-10-001`) are **Superseded** by `DECIDE-024` `polling_only`
 - Explorer live traces → owned `0.10.x` Deferred (`EXPLORER-10-001`; **not** re-homed to 0.24)
@@ -4784,7 +4786,7 @@ justify a narrower Supported claim; this phase does not turn notebook preview in
 server. Companion application chrome / design-system issues
 [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)
 are bound to this phase and do not reopen 0.53 Application DX gates or schedule `1.0`.
-Living tip is `v0.56.1`.
+Living tip is `v0.57.0`.
 
 **Outcome:** The notebook preview, offline simulator, and sample plugin form a coherent modern
 authoring loop: preview real package workflows, understand simulation limits, and copy a credible
@@ -5938,10 +5940,10 @@ claim transport-level streaming enforcement from a host that exposes only pre-bu
 
 ## 0.57 — Unified styling, presentation, and zero-application-CSS (`v0.57.0`)
 
-**Status:** Refined (D-099 / D-100 / RFC-0084); implementation not started. Published predecessor
-is `v0.56.0`, the refine baseline is in-tree `0.56.1`, and the target is `v0.57.0`. Phase owner:
+**Status:** Published in-tree (`v0.57.0`; Verified gates; tag/PyPI deferred; D-099 / D-100 / RFC-0084); Published predecessor
+is `v0.56.0`, the refine baseline was in-tree `0.56.1`, and the cut target is `v0.57.0`. Phase owner:
 [#570](https://github.com/eddiethedean/hedron/issues/570). The phase
-consolidates open styling work [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)
+consolidates styling work [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)
 into one compatibility-oriented presentation train. It extends the 0.54 application-composition
 work and the 0.56 strict-CSP/security baseline; it does not require applications to weaken
 `style-src`, expose a free-form CSS DSL, or surrender domain/layout ownership.
@@ -6011,6 +6013,94 @@ is implemented or explicitly split with a documented owner and rationale; all re
 are Verified with zero Deferred; strict-CSP, compatibility, accessibility, and zero-application-CSS
 evidence is published; and the reference workspace passes light/dark, forced-colors, reduced-motion,
 RTL, print, narrow viewport, 200% zoom, long-content, keyboard, and fragment-swap checks.
+
+## 0.58 — Progressive feature authoring and inspectable lowering (`v0.58.0`)
+
+**Status:** Refined (D-101 / D-102 / RFC-0085); implementation not started. The required
+predecessor, in-tree `v0.57.0`, is Published with Verified gates (tag/PyPI deferred). Exact public
+signatures, machine-readable locks, tracking, and numeric budgets are frozen by Stage 0.
+
+**Outcome:** A beginner can build common Hedron screens, typed forms, bounded CRUD workspaces,
+durable task UI, dashboards, session login plumbing, and uploads from intention-level APIs, then
+inspect, override, or eject any generated surface without changing runtimes. Existing explicit
+pages, handles, components, interactions, responses, and FastAPI remain first-class.
+
+Normative planning is [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md), with
+[implementation workstreams](implementation/PROGRESSIVE_AUTHORING_058.md) and the
+[Stage 0 acceptance plan](acceptance/RELEASE_0_58.md). The `progressive-*-058.toml`,
+`feature-explanation-058.toml`, `release-gate-0.58.toml`, and `upgrade-fixtures-058.md` packet is the
+normative implementation boundary.
+
+### Scope and delivery plan
+
+1. **Freeze one progressive-lowering contract:** all facades use existing page/handle/type/catalog/
+   bundle/job/security/upload/presentation authorities; explanations derive from them and never
+   execute application callbacks.
+2. **Add the first-page/form vertical slice:** `Hedron.screen` wraps bounded content in an ordinary
+   `Page` and returns an inspectable `ScreenHandle`; `Hedron.form_command` marks exactly one
+   Pydantic model as the existing `FormBody` boundary and returns an ordinary `ActionHandle`.
+3. **Complete bounded CRUD composition:** evolve `DataWorkspace` with an optional full screen,
+   named list/detail/create/edit/form surfaces, existing deny-by-default mutation policy, typed
+   states, surface overrides, and a runnable CRUD scaffold. No ORM/tenant/transaction/delete
+   discovery.
+4. **Compose durable task UI:** `TaskFlow` generates typed submit/status/cancel/result surfaces
+   around the configured `JobBackend`, uses one exact request-scoped subject/tenant value, defaults
+   to terminal polling, and never ships a worker/scheduler.
+5. **Compose dashboards:** `DashboardWorkspace` uses explicit typed URL filters, a request/I/O
+   loader, deterministic named render-only panels, bounded refresh/history, and ordinary chart/
+   table/map components without an alternate callback or client-state runtime.
+6. **Bound auth and upload flows:** `SessionAuthFlow` owns login/logout/session page mechanics
+   around explicit identity callbacks; `UploadFlow` owns secure form/status/result mechanics around
+   explicit storage/scanning/retention callbacks. Neither becomes a provider/service.
+7. **Make graduation executable:** static redacted explain/graph/check, stable named overrides,
+   source-mapped whole/per-surface ejection, generated behavioral parity scenarios, and no-overwrite
+   project-root safety.
+8. **Ship the teaching path:** finite `minimal`, `crud`, `dashboard`, and `task` scaffolds; migrate
+   every maintained starter/beginner/quick-start/golden-path/minimal/first-app example to the
+   highest applicable 0.58 abstraction; then teach inspect → override → eject and clearly labeled
+   explicit equivalents.
+9. **Prove honesty:** host capability dispositions, native HTTP/HTMX/no-JS behavior, strict CSP,
+   accessibility, security, three-engine browser, performance, optional-dependency isolation,
+   upgrade, and clean-wheel evidence.
+
+### Planned release gates
+
+| Gate | Required evidence |
+|---|---|
+| `CONTRACT-058` | Exact symbols, named surfaces, maturity, diagnostics, schemas, host dispositions, and finite inventories |
+| `LOWER-058` | Differential facade→primitive/catalog/descriptor/explanation parity and no second runtime |
+| `SCREEN-058` | Screen wrapping, explicit Page escape, shell/navigation, native page and metadata conflict behavior |
+| `FORM-058` | One-model form boundary, controls, validation, CSRF, effects/outcomes, native and HTMX behavior |
+| `RESOURCE-058` | Complete authorized bounded DataWorkspace screen, deny-default mutation, overrides/ejection, CRUD scaffold |
+| `TASK-058` | Exact scoped durable submit/status/cancel/result, non-enumeration, terminal polling, backend failures |
+| `DASH-058` | Typed filters, loader/panel separation, history, bounded fan-out, stale/error/cache behavior |
+| `FLOW-058` | Session auth and upload flows preserve explicit identity/storage/scanning/authorization ownership |
+| `EXPLAIN-058` | Static redacted explain/graph/check and safe source-mapped parity-checked ejection |
+| `A11Y-058` | Semantics, keyboard, focus/announcement, native fallback, zoom/media/RTL/long-content evidence |
+| `SECURITY-058` | CSRF, auth/tenant, redirects, sensitive URL, upload, ejection, exposure adversarial evidence |
+| `ADAPTER-058` | Honest FastAPI/Flask/Django/portable/conformance/sim disposition and parity |
+| `REGRESS-058` | Existing explicit APIs and 0.43–0.57 fixtures stay compatible |
+| `DX-058` | Four runnable scaffolds, complete starter-example inventory/migration to 0.58 facades, labeled explicit equivalents, and measured learning/ejection outcomes |
+| `PKG-058` | Clean wheels, lazy optional deps, docs, exports, upgrades, metadata, and release rehearsal |
+
+### Stability and non-goals
+
+All new 0.58 APIs begin `beta`. The phase does not add `hedron.easy`, a global simple mode, a
+second workflow/request/render runtime, universal ORM CRUD, automatic addressability or MCP/Gradio
+exposure, hidden dashboard client state, workers/schedulers, an identity provider/user database,
+OIDC product, storage/scanning service, or inferred authorization/tenancy/transactions/destructive
+meaning. Optional packages remain package-local. Flask/Django receive only explicitly accepted
+host-native spellings, not nominal parity.
+
+### Exit gate
+
+The Stage 0 refine resolves RFC-0085's open questions against `v0.57.0`; every facade has named
+surfaces, static explanation, local override, safe ejection, attached scenarios, native fallback,
+and security/accessibility evidence; the four scaffolds install and run from clean wheels; every
+inventoried starter example uses the highest applicable 0.58 abstraction while explicit APIs remain
+available in labeled advanced material; explicit 0.57 APIs remain compatible; all fifteen 0.58
+gates are Verified with zero Deferred; and release
+metadata truthfully records Beta maturity and registry status.
 
 ## Later-phase policy
 

@@ -192,7 +192,7 @@ def test_responsive_columns_normalize_and_validate() -> None:
 def test_shared_appearance_vocabulary_matches_the_locked_contract() -> None:
     assert SIZES == ("sm", "md", "lg")
     assert DENSITIES == ("compact", "comfortable", "spacious")
-    assert APPEARANCES == ("solid", "outline", "soft", "ghost")
+    assert APPEARANCES == ("solid", "outline", "soft", "ghost", "plain", "raised")
     assert EMPHASES == ("primary", "secondary", "danger", "neutral")
     assert STATE_KINDS == ("loading", "empty", "error", "permission", "offline", "success")
     assert appearance_data(size="sm", density="compact") == {

@@ -93,7 +93,7 @@ from hedron_data.table import DataTable
 from hedron_data.views import SavedView
 from hedron_data.workspace import DataWorkspace, DataWorkspacePolicy
 
-__version__ = "0.56.1"
+__version__ = "0.57.0"
 
 __all__ = [
     "ABI_VERSION",

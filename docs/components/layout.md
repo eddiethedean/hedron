@@ -11,6 +11,7 @@ Explicit containers and one-dimensional or grid composition.
 - [`Stack`](stack.md) — Arrange children vertically with a validated, consistent gap.
 - [`Inline`](inline.md) — Arrange related children in a wrapping horizontal row.
 - [`Grid`](grid.md) — Lay out explicit child components in a responsive grid.
+- [`GridItem`](grid-item.md) — Place one cell with named track and span tokens inside Grid.
 - [`Divider`](divider.md) — Separate adjacent groups with a semantic horizontal or vertical rule.
 - [`MainPanel`](main-panel.md) — Primary HTMX swap region for AppShell document/fragment dual paths.
 - [`AppShell`](app-shell.md) — Document shell with optional side nav and a MainPanel body.

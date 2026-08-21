@@ -21,7 +21,7 @@ instead of repeating version numbers.
 Application documentation uses the published PyPI pin:
 
 ```text
-hedron>=0.56.0,<0.57
+hedron>=0.56.0,<0.58
 ```
 
 Contributors working from a checkout should use `uv sync` so local packages resolve

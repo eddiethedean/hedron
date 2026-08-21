@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.56.0,<0.57` from PyPI (in-tree tip `0.56.1`). Treat the **stable** tables below (minimal +
+**For adopters:** Pin `hedron>=0.56.0,<0.58` from PyPI (in-tree tip `0.56.1`). Treat the **stable** tables below (minimal +
 expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
 `experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
 lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -189,7 +189,7 @@ Schema acceptance is broader than specialized host painting in `hedron-charts 0.
 
 ### `hedron-workbench` (Beta) — `beta` optional Workbench adapter
 
-Install `hedron[workbench]` / `hedron-workbench>=0.56.0,<0.57`. Supported:
+Install `hedron[workbench]` / `hedron-workbench>=0.56.0,<0.58`. Supported:
 `HedronWorkbench`, pre-import launcher and resolved-state handoff,
 `HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic typed URL and safe
 response-header adaptation, Hedron-owned request-time cookie repair,

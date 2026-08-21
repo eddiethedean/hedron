@@ -1,0 +1,60 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+baseline = "v0.57.0"
+target = "v0.58.0"
+owning_rfc = "RFC-0085"
+decision = "D-101"
+contract_refine = "D-102"
+api_stability = "beta"
+
+[[symbol]]
+name = "Hedron.screen"
+module = "hedron"
+signature = "screen(path: str, *, title: str, name: str | None = None, layout: ScreenLayout = 'stack', shell: AppShell | None = None, navigation: Sequence[ScreenHandle[Any]] = (), dependencies: Sequence[Depends] = (), page_options: PageOptions | None = None) -> Callable[[Callable[P, ScreenResult | Awaitable[ScreenResult]]], ScreenHandle[P]]"
+surfaces = ["screen"]
+
+[[symbol]]
+name = "Hedron.form_command"
+module = "hedron"
+signature = "form_command(path: str, *, name: str | None = None, refreshes: Sequence[FragmentHandle[Any]] = (), updates: Sequence[Update] = (), success: NodeLike | str | None = None, outcomes: Mapping[str, Outcome] | None = None, fallback: SafeLocalPath, encoding: FormEncoding = 'urlencoded', controls: Mapping[str, Control] | None = None, dependencies: Sequence[Depends] = ()) -> Callable[[Callable[P, R | Awaitable[R]]], ActionHandle[P, R]]"
+surfaces = ["command", "form"]
+
+[[symbol]]
+name = "DataWorkspace.with_screen"
+module = "hedron_data"
+signature = "with_screen(*, path: str, title: str, name: str | None = None, layout: ScreenLayout = 'stack', overrides: FeatureOverrides | None = None) -> Self"
+surfaces = ["screen", "list_view", "detail_view", "create_command", "edit_command", "create_form", "edit_form"]
+
+[[symbol]]
+name = "TaskFlow"
+module = "hedron.jobs"
+signature = "TaskFlow[InputT, ResultT](name: str, input_model: type[InputT], job_type: str, payload: Callable[[InputT], Mapping[str, JsonValue]], scope: JobScopeProvider, authorize_submit: Dependency, result: Callable[[ResultT], NodeLike], *, authorize_cancel: Dependency | None = None, poll: PollPolicy = PollPolicy(), backend_unavailable: TaskUnavailablePolicy = 'fail_closed')"
+surfaces = ["submit_command", "submit_form", "status_view", "cancel_command", "result_view"]
+
+[[symbol]]
+name = "DashboardWorkspace"
+module = "hedron.dashboard"
+signature = "DashboardWorkspace[FiltersT, DataT](name: str, path: str, title: str, filters: type[FiltersT], load: Callable[[FiltersT], DataT | Awaitable[DataT]], panels: Mapping[str, Callable[[DataT], NodeLike]], *, history: DashboardHistory = 'replace', cache: CachePolicy | None = None)"
+surfaces = ["screen", "filter_form", "panel_views"]
+
+[[symbol]]
+name = "SessionAuthFlow"
+module = "hedron.auth"
+signature = "SessionAuthFlow[CredentialsT, PrincipalT, SessionT](credentials: type[CredentialsT], authenticate: Callable[[CredentialsT], AuthResult[PrincipalT]], serialize_principal: Callable[[PrincipalT], SessionT], load_principal: Callable[[SessionT], PrincipalT | None], *, login_path: str = '/login', logout_path: str = '/logout', after_login: SafeLocalPath = '/', rate_limit: RateLimitPolicy, rotation: SessionRotationPolicy = 'on_login')"
+surfaces = ["login_screen", "login_command", "login_form", "logout_command"]
+
+[[symbol]]
+name = "UploadFlow"
+module = "hedron.files"
+signature = "UploadFlow[StoredT, ResultT](name: str, field: UploadField, authorize: Dependency, store: Callable[[UploadHandle], StoredT | Awaitable[StoredT]], result: Callable[[StoredT], ResultT | Awaitable[ResultT]], *, process: TaskFlow[Any, Any] | None = None, authorize_download: Dependency | None = None)"
+surfaces = ["upload_screen", "upload_command", "upload_form", "status_view", "result_view", "download_view"]
+
+[diagnostics]
+screen = ["HED-SCREEN-0001", "HED-SCREEN-0002", "HED-SCREEN-0003"]
+form = ["HED-FORMCMD-0001", "HED-FORMCMD-0002", "HED-FORMCMD-0003"]
+feature = ["HED-FEATURE-0001", "HED-FEATURE-0002", "HED-FEATURE-0003"]
+task = ["HED-TASKFLOW-0001", "HED-TASKFLOW-0002", "HED-TASKFLOW-0003"]
+dashboard = ["HED-DASH-0001", "HED-DASH-0002", "HED-DASH-0003"]
+auth = ["HED-AUTHFLOW-0001", "HED-AUTHFLOW-0002", "HED-AUTHFLOW-0003"]
+upload = ["HED-UPLOADFLOW-0001", "HED-UPLOADFLOW-0002", "HED-UPLOADFLOW-0003"]

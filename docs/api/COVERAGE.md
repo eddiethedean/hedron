@@ -113,11 +113,13 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 | Export | Primary docs |
 |---|---|
 | `ActionDock`, `Alert`, `AppShell`, `Aside`, `AttrHost`, `Badge` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `AccountSummary`, `AppFooter`, `Avatar`, `Brand`, `EnvironmentBanner`, `NavStatus` | [Components](../components/index.md), [PRESENTATION.md](PRESENTATION.md) |
 | `BottomDock`, `Button`, `Card`, `Carousel`, `ChatMessage`, `Checkbox` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `ChipInput`, `CircularProgress`, `ClipboardCopy`, `CodeBlock`, `CodeViewer`, `ColorInput` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `ConfirmButton`, `Container`, `ContextMenu`, `DateInput`, `DateTimeInput`, `DescriptionList` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Dialog`, `Divider`, `Expander`, `Footer`, `FormErrors`, `FormField` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Fragment`, `Head`, `Header`, `Heading`, `Help`, `HelpInspector` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `GridItem`, `Identity`, `ResourceList`, `ResourceRow`, `Surface` | [Components](../components/index.md), [PRESENTATION.md](PRESENTATION.md) |
 | `HtmxLink`, `IconButton`, `Image`, `Inline`, `JSONViewer`, `Label` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Link`, `LinkButton`, `List`, `Logo`, `Main`, `MainPanel` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `MarkerSpec`, `Math`, `MenuButton`, `MultiSelect`, `Nav`, `NavLink` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |

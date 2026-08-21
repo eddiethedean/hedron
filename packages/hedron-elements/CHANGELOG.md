@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.57.0] — 2026-08-21
+
+### Added
+- Phase 0.57 unified presentation and zero-application-CSS (RFC-0084 / D-099 / D-100).
+
+### Changed
+- Coordinated train tip `0.57.0` (in-tree cut; tag/PyPI deferred).
+
+
 ## [0.56.1] — 2026-08-21
 
 ### Changed

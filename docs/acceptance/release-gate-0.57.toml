@@ -2,7 +2,7 @@
 
 schema_version = 1
 phase = "0.57"
-status = "Planned"
+status = "Verified"
 planning_baseline = "0.56.1"
 required_predecessor = "v0.56.0"
 target = "v0.57.0"
@@ -13,63 +13,63 @@ tracking = "#558-#570"
 
 [[evidence]]
 id = "CONTRACT-057"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_contract_057.py"
 ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "CSP-057"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_csp_057.py"
 ci_job = "browser"
 owner = "hedron-core"
 
 [[evidence]]
 id = "LAYOUT-057"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_layout_057.py"
 ci_job = "browser"
 owner = "hedron-core"
 
 [[evidence]]
 id = "SURFACE-057"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_surface_057.py"
 ci_job = "browser"
 owner = "hedron-core"
 
 [[evidence]]
 id = "DATA-057"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_data_057.py"
 ci_job = "browser"
 owner = "hedron-core"
 
 [[evidence]]
 id = "WORKFLOW-057"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_workflow_057.py"
 ci_job = "browser"
 owner = "hedron"
 
 [[evidence]]
 id = "REGRESS-057"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_regress_057.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "ZERO-CSS-057"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_zero_css_057.py"
 ci_job = "browser"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-057"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_pkg_057.py"
 ci_job = "packaging"
 owner = "hedron"

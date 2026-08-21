@@ -1,0 +1,31 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+baseline = "v0.57.0"
+
+[screen]
+lowers_to = ["Hedron.page", "Page", "AppShell", "route descriptor"]
+forbidden = ["second dispatcher", "implicit navigation", "nested addressability"]
+[form_command]
+lowers_to = ["Hedron.command", "FormBody", "TypeSchema", "Control", "ActionHandle", "effects"]
+forbidden = ["second parser", "implicit transaction", "Referer fallback", "effect guessing"]
+[data_workspace]
+lowers_to = ["DataWorkspace", "FeatureBundle", "bounded source/query", "screen", "form_command"]
+forbidden = ["ORM discovery", "tenant inference", "delete by default"]
+[task_flow]
+lowers_to = ["FeatureBundle", "JobBackend", "JobScope", "ActionHandle", "FragmentHandle", "Poll"]
+forbidden = ["worker", "scheduler", "unscoped lookup", "enumeration"]
+[dashboard]
+lowers_to = ["FeatureBundle", "TypeSchema", "refreshable views", "InteractionCatalog", "cache policy"]
+forbidden = ["client store", "callback runtime", "hidden panel I/O", "unbounded fan-out"]
+[session_auth]
+lowers_to = ["FeatureBundle", "session", "CSRF", "safe redirect", "SecurityPolicy"]
+forbidden = ["IdP", "user database", "password hashing", "role inference"]
+[upload]
+lowers_to = ["FeatureBundle", "UploadField", "UploadHandle", "RequestBudget", "safe response", "TaskFlow"]
+forbidden = ["storage service", "scanner", "retention inference", "public download"]
+[parity]
+descriptor_catalog_explanation = "exact"
+facade_explicit = "scenario-equivalent"
+silent_slice = false
+callback_during_compile_explain_eject = false

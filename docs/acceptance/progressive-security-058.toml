@@ -1,0 +1,25 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+[data_workspace]
+required = ["authorized source", "mutation policies", "transaction owner"]
+deny_default = ["create", "edit", "delete", "cross-tenant access"]
+[task_flow]
+required = ["JobBackend", "JobScopeProvider", "submit authorization", "result authorization"]
+deny_default = ["cancel", "download", "enumeration", "scope mismatch"]
+[dashboard]
+required = ["typed filters", "explicit loader"]
+deny_default = ["sensitive URL filter", "undeclared panel", "fan-out overflow"]
+[session_auth]
+required = ["authenticate", "bounded serializer", "principal loader", "rate limit", "rotation"]
+deny_default = ["open redirect", "production without rate limit", "arbitrary principal session"]
+[upload]
+required = ["UploadField", "authorization", "storage", "cleanup", "result authorization"]
+deny_default = ["download", "path disclosure", "limit drift", "budget reset"]
+[global]
+csrf_unsafe_methods = true
+request_scope_revalidated = true
+explanation_redacted = true
+ejection_project_root_only = true
+external_exposure_explicit = true
+policy_downgrade = false

@@ -9,12 +9,17 @@ from hedron_core.builtins._base import ElementProps, class_names
 from hedron_core.builtins.appearance import (
     TYPOGRAPHY_ROLES,
     Density,
+    OverflowMode,
+    ResponsivePolicy,
     TypographyRole,
+    appearance_data,
     normalize_responsive_int,
     require_choice,
     responsive_data,
 )
+from hedron_core.codes import HED_HTML_0006
 from hedron_core.component import Component, NodeLike
+from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Model, Props
 from hedron_core.security import SafeUrl, UrlPurpose
@@ -31,21 +36,54 @@ def _kids(*children: NodeLike) -> tuple[NodeLike, ...]:
     return children
 
 
-def _typography_attrs(base: str, role: str | None, class_: str | None) -> dict[str, HtmlAttrValue]:
+def _typography_attrs(
+    base: str,
+    role: str | None,
+    class_: str | None,
+    *,
+    overflow: str | None = None,
+    lines: int | None = None,
+) -> dict[str, HtmlAttrValue]:
     """Return class/data attributes for a semantic typography role."""
     attrs: dict[str, HtmlAttrValue] = {}
+    data: dict[str, str | bool | int | float | None] = {}
     if role:
         attrs["class_"] = class_names(f"{base} hedron-type-{role}", class_)
-        attrs["data"] = {"hedron-type-role": role}
+        data["hedron-type-role"] = role
     elif class_:
         attrs["class_"] = class_names(base, class_)
+    if overflow:
+        data.update(appearance_data(overflow=overflow))
+        if "class_" not in attrs:
+            attrs["class_"] = base
+    if lines is not None:
+        data["hedron-lines"] = str(lines)
+        if "class_" not in attrs:
+            attrs["class_"] = base
+    if data:
+        attrs["data"] = data
     return attrs
+
+
+def _validate_lines(lines: int | None) -> int | None:
+    if lines is None:
+        return None
+    if not isinstance(lines, int) or isinstance(lines, bool) or lines < 1 or lines > 6:
+        raise error(
+            HED_HTML_0006,
+            title="Invalid lines value",
+            explanation=f"lines={lines!r} must be an integer from 1 to 6.",
+            remediation="Pass lines=1..6 for bounded line clamp.",
+        )
+    return lines
 
 
 class TextProps(Props):
     content: str
     as_: Literal["p", "span", "strong", "em", "small"] = "p"
     role: TypographyRole | None = None
+    overflow: OverflowMode | None = None
+    lines: int | None = None
     class_: str | None = None
 
 
@@ -58,14 +96,33 @@ class Text(Component[TextProps]):
         *,
         as_: Literal["p", "span", "strong", "em", "small"] = "p",
         role: TypographyRole | None = None,
+        overflow: OverflowMode | None = None,
+        lines: int | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
         require_choice(role, TYPOGRAPHY_ROLES, label="role")
-        super().__init__(TextProps(content=content, as_=as_, role=role, class_=class_, **kwargs))
+        require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
+        super().__init__(
+            TextProps(
+                content=content,
+                as_=as_,
+                role=role,
+                overflow=overflow,
+                lines=_validate_lines(lines),
+                class_=class_,
+                **kwargs,
+            )
+        )
 
     def render(self) -> NodeLike:
-        attrs = _typography_attrs("hedron-text", self.props.role, self.props.class_)
+        attrs = _typography_attrs(
+            "hedron-text",
+            self.props.role,
+            self.props.class_,
+            overflow=self.props.overflow,
+            lines=self.props.lines,
+        )
         return getattr(html, self.props.as_)(self.props.content, **attrs)
 
 
@@ -73,6 +130,8 @@ class HeadingProps(Props):
     content: str
     level: Literal[1, 2, 3, 4, 5, 6] = 2
     role: TypographyRole | None = None
+    overflow: OverflowMode | None = None
+    lines: int | None = None
     class_: str | None = None
 
 
@@ -85,16 +144,33 @@ class Heading(Component[HeadingProps]):
         *,
         level: Literal[1, 2, 3, 4, 5, 6] = 2,
         role: TypographyRole | None = None,
+        overflow: OverflowMode | None = None,
+        lines: int | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
         require_choice(role, TYPOGRAPHY_ROLES, label="role")
+        require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
         super().__init__(
-            HeadingProps(content=content, level=level, role=role, class_=class_, **kwargs)
+            HeadingProps(
+                content=content,
+                level=level,
+                role=role,
+                overflow=overflow,
+                lines=_validate_lines(lines),
+                class_=class_,
+                **kwargs,
+            )
         )
 
     def render(self) -> NodeLike:
-        attrs = _typography_attrs("hedron-heading", self.props.role, self.props.class_)
+        attrs = _typography_attrs(
+            "hedron-heading",
+            self.props.role,
+            self.props.class_,
+            overflow=self.props.overflow,
+            lines=self.props.lines,
+        )
         return getattr(html, f"h{self.props.level}")(self.props.content, **attrs)
 
 
@@ -312,6 +388,9 @@ class TableColumn(Model):
     align: Literal["start", "center", "end"] = "start"
     numeric: bool = False
     size: Literal["auto", "narrow", "wide"] = "auto"
+    overflow: OverflowMode | None = None
+    priority: int | None = None
+    kind: Literal["text", "numeric", "action", "status"] | None = None
 
 
 class TableProps(Props):
@@ -320,6 +399,7 @@ class TableProps(Props):
     sticky_header: bool = False
     sticky_first_column: bool = False
     zebra: bool = False
+    responsive: ResponsivePolicy | None = None
 
 
 class Table(Component[TableProps]):
@@ -342,6 +422,8 @@ class Table(Component[TableProps]):
         sticky_header: bool = False,
         sticky_first_column: bool = False,
         zebra: bool = False,
+        responsive: ResponsivePolicy | None = None,
+        row_states: Sequence[str | None] | None = None,
         **kwargs: object,
     ) -> None:
         column_meta = tuple(columns or ())
@@ -351,6 +433,7 @@ class Table(Component[TableProps]):
                 "Table columns metadata must have one entry per header "
                 f"({len(column_meta)} columns, {len(resolved_headers)} headers)"
             )
+        require_choice(responsive, ("scroll", "stack", "priority"), label="responsive")
         super().__init__(
             TableProps(
                 caption=caption,
@@ -358,12 +441,16 @@ class Table(Component[TableProps]):
                 sticky_header=sticky_header,
                 sticky_first_column=sticky_first_column,
                 zebra=zebra,
+                responsive=responsive,
                 **kwargs,
             )
         )
+        self._row_states = tuple(row_states or ())
         self._headers = resolved_headers
         self._rows = tuple(tuple(r) for r in rows)
         self._columns = column_meta
+        if not hasattr(self, "_row_states"):
+            self._row_states = ()
 
     def _cell_data(self, index: int) -> dict[str, str | bool | int | float | None]:
         if index >= len(self._columns):
@@ -374,6 +461,12 @@ class Table(Component[TableProps]):
             data["hedron-numeric"] = "true"
         if column.size != "auto":
             data["hedron-col-size"] = column.size
+        if column.overflow:
+            data["hedron-overflow"] = column.overflow
+        if column.priority is not None:
+            data["hedron-priority"] = str(column.priority)
+        if column.kind:
+            data["hedron-col-kind"] = column.kind
         return data
 
     def render(self) -> NodeLike:
@@ -388,12 +481,15 @@ class Table(Component[TableProps]):
             )
         children.append(html.thead(html.tr(*header_cells)))
         body_rows: list[NodeLike] = []
-        for row in self._rows:
+        for row_index, row in enumerate(self._rows):
             cells: list[NodeLike] = []
             for index, cell in enumerate(row):
                 cell_data = self._cell_data(index)
                 cells.append(html.td(cell, **({"data": cell_data} if cell_data else {})))
-            body_rows.append(html.tr(*cells))
+            row_attrs: dict[str, HtmlAttrValue] = {}
+            if row_index < len(self._row_states) and self._row_states[row_index]:
+                row_attrs["data"] = {"hedron-row-state": self._row_states[row_index]}
+            body_rows.append(html.tr(*cells, **row_attrs))
         children.append(html.tbody(*body_rows))
 
         data: dict[str, str | bool | int | float | None] = {}
@@ -405,10 +501,15 @@ class Table(Component[TableProps]):
             data["hedron-sticky-column"] = "true"
         if self.props.zebra:
             data["hedron-zebra"] = "true"
+        if self.props.responsive:
+            data["hedron-responsive"] = self.props.responsive
         if not data:
             return html.table(*children)
         table = html.table(*children, class_="hedron-table", data=data)
-        if self.props.sticky_header or self.props.sticky_first_column:
-            # Sticky offsets need a scroll container; only add it when asked.
+        if (
+            self.props.sticky_header
+            or self.props.sticky_first_column
+            or self.props.responsive == "scroll"
+        ):
             return html.div(table, class_="hedron-table-scroll", data=dict(data))
         return table

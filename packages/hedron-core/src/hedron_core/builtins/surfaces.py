@@ -5,15 +5,88 @@ from __future__ import annotations
 from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
-from hedron_core.builtins.appearance import STATE_KINDS, StateKind, require_choice
+from hedron_core.builtins.appearance import (
+    STATE_KINDS,
+    Appearance,
+    Density,
+    Elevation,
+    Padding,
+    Size,
+    StateKind,
+    appearance_data,
+    require_choice,
+)
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrValue
 
 
+class SurfaceProps(ElementProps):
+    appearance: Appearance | None = None
+    density: Density | None = None
+    padding: Padding | None = None
+    elevation: Elevation | None = None
+
+
+class Surface(Component[SurfaceProps]):
+    """Visual grouping surface (not a landmark). Prefer Section for landmarks."""
+
+    props_type = SurfaceProps
+    logical_name = "Surface"
+
+    def __init__(
+        self,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        appearance: Appearance | None = None,
+        density: Density | None = None,
+        padding: Padding | None = None,
+        elevation: Elevation | None = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            SurfaceProps(
+                appearance=appearance,
+                density=density,
+                padding=padding,
+                elevation=elevation,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        data = {
+            "hedron-surface": "true",
+            **appearance_data(
+                appearance=self.props.appearance,
+                density=self.props.density,
+                padding=self.props.padding,
+                elevation=self.props.elevation,
+            ),
+            **mark_data(self.props.mark),
+        }
+        return html.div(
+            *self._children,
+            id=self.props.id,
+            class_=class_names("hedron-surface", self.props.class_),
+            data=data,
+        )
+
+
 class CardProps(ElementProps):
     title: str | None = None
+    appearance: Appearance | None = None
+    density: Density | None = None
+    padding: Padding | None = None
+    elevation: Elevation | None = None
 
 
 class Card(Component[CardProps]):
@@ -27,12 +100,28 @@ class Card(Component[CardProps]):
         title: str | None = None,
         header: NodeLike = None,
         footer: NodeLike = None,
+        appearance: Appearance | None = None,
+        density: Density | None = None,
+        padding: Padding | None = None,
+        elevation: Elevation | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(CardProps(title=title, id=id, class_=class_, mark=mark, **kwargs))
+        super().__init__(
+            CardProps(
+                title=title,
+                appearance=appearance,
+                density=density,
+                padding=padding,
+                elevation=elevation,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
         self._children = collect_children(*nodes, children=children)
         if header is not None:
             self._slot_values["header"] = header
@@ -48,11 +137,19 @@ class Card(Component[CardProps]):
         parts.append(html.div(*self._children, class_="hedron-card-body"))
         if "footer" in self._slot_values:
             parts.append(html.div(self._slot_values["footer"], class_="hedron-card-footer"))
+        data = {
+            **appearance_data(
+                appearance=self.props.appearance,
+                density=self.props.density,
+                padding=self.props.padding,
+                elevation=self.props.elevation,
+            ),
+            **mark_data(self.props.mark),
+        }
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
             "class_": class_names("hedron-card", self.props.class_),
         }
-        data = mark_data(self.props.mark)
         if data:
             attrs["data"] = data
         return html.article(*parts, **attrs)
@@ -61,6 +158,8 @@ class Card(Component[CardProps]):
 class BadgeProps(Props):
     text: str
     tone: Literal["neutral", "info", "success", "warning", "danger"] = "neutral"
+    size: Size | None = None
+    appearance: Appearance | None = None
     class_: str | None = None
 
 
@@ -72,15 +171,32 @@ class Badge(Component[BadgeProps]):
         text: str,
         *,
         tone: Literal["neutral", "info", "success", "warning", "danger"] = "neutral",
+        size: Size | None = None,
+        appearance: Appearance | None = None,
         class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(BadgeProps(text=text, tone=tone, class_=class_, **kwargs))
+        super().__init__(
+            BadgeProps(
+                text=text,
+                tone=tone,
+                size=size,
+                appearance=appearance,
+                class_=class_,
+                **kwargs,
+            )
+        )
 
     def render(self) -> NodeLike:
+        data = appearance_data(
+            size=self.props.size,
+            appearance=self.props.appearance,
+            tone=self.props.tone,
+        )
         return html.span(
             self.props.text,
             class_=class_names(f"hedron-badge hedron-badge-{self.props.tone}", self.props.class_),
+            data=data or None,
         )
 
 
@@ -88,6 +204,8 @@ class AlertProps(Props):
     message: str
     tone: Literal["info", "success", "warning", "danger"] = "info"
     title: str | None = None
+    size: Size | None = None
+    appearance: Appearance | None = None
     class_: str | None = None
 
 
@@ -100,11 +218,21 @@ class Alert(Component[AlertProps]):
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
         title: str | None = None,
+        size: Size | None = None,
+        appearance: Appearance | None = None,
         class_: str | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(
-            AlertProps(message=message, tone=tone, title=title, class_=class_, **kwargs)
+            AlertProps(
+                message=message,
+                tone=tone,
+                title=title,
+                size=size,
+                appearance=appearance,
+                class_=class_,
+                **kwargs,
+            )
         )
 
     def render(self) -> NodeLike:
@@ -113,10 +241,16 @@ class Alert(Component[AlertProps]):
         if self.props.title:
             parts.append(html.strong(self.props.title))
         parts.append(html.span(self.props.message))
+        data = appearance_data(
+            size=self.props.size,
+            appearance=self.props.appearance,
+            tone=self.props.tone,
+        )
         return html.div(
             *parts,
             class_=class_names(f"hedron-alert hedron-alert-{self.props.tone}", self.props.class_),
             role=role,
+            data=data or None,
         )
 
 

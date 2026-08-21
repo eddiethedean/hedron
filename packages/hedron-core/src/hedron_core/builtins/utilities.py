@@ -251,6 +251,9 @@ class StatusProps(Props):
     message: str
     tone: Literal["info", "success", "warning", "danger"] = "info"
     live: bool = True
+    size: str | None = None
+    appearance: str | None = None
+    variant: Literal["default", "compact", "activity"] = "default"
     class_: str | None = None
 
 
@@ -264,23 +267,53 @@ class Status(Component[StatusProps]):
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
         live: bool = True,
+        size: str | None = None,
+        appearance: str | None = None,
+        variant: Literal["default", "compact", "activity"] = "default",
         class_: str | None = None,
         **kwargs: Any,
     ) -> None:
+        from hedron_core.builtins.appearance import require_choice
+
+        require_choice(variant, ("default", "compact", "activity"), label="variant")
         super().__init__(
-            StatusProps(message=message, tone=tone, live=live, class_=class_, **kwargs)
+            StatusProps(
+                message=message,
+                tone=tone,
+                live=live,
+                size=size,
+                appearance=appearance,
+                variant=variant,
+                class_=class_,
+                **kwargs,
+            )
         )
 
     def render(self) -> NodeLike:
+        from hedron_core.builtins.appearance import appearance_data
+
+        parts: list[NodeLike] = []
+        if self.props.variant == "activity":
+            parts.append(html.span(class_="hedron-status-indicator", aria={"hidden": "true"}))
+        parts.append(html.span(self.props.message, class_="hedron-status-message"))
+        data = {
+            "hedron-status-variant": self.props.variant,
+            **appearance_data(
+                size=self.props.size,
+                appearance=self.props.appearance,
+                tone=self.props.tone,
+            ),
+        }
         attrs: dict[str, HtmlAttrValue] = {
             "class_": class_names(
                 f"hedron-status hedron-status-{self.props.tone}", self.props.class_
             ),
             "role": "status",
+            "data": data,
         }
         if self.props.live:
             attrs["aria"] = {"live": "polite"}
-        return html.div(self.props.message, **attrs)
+        return html.div(*parts, **attrs)
 
 
 class ToastProps(Props):

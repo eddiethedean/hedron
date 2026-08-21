@@ -1,0 +1,20 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+[explanation]
+schema_id = "hedron.feature-explanation/1"
+required = ["schema", "logical_id", "kind", "surfaces", "routes", "effects", "security", "limitations", "source"]
+callable_representation = "module_and_qualname_only"
+invoke_callbacks = false
+[source_map]
+schema_id = "hedron.feature-source-map/1"
+required = ["schema", "feature_id", "selection", "files", "facade_digest", "catalog_digest", "scenario_digest"]
+paths = "project-relative-posix"
+overwrite_default = false
+symlink_escape = false
+contains_runtime_values = false
+[cli]
+explain = "hedron --app APP explain features:ID --format human|json"
+graph = "hedron --app APP graph --level feature --format human|json|dot"
+check = "hedron --app APP check --features --format human|json|sarif"
+eject = "hedron --app APP eject features:ID [--surface NAME] --output PATH [--overwrite]"

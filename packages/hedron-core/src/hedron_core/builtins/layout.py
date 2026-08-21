@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
-import re
 from collections.abc import Mapping
 from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import (
     Density,
+    gap_data,
+    normalize_gap,
     normalize_responsive_int,
+    normalize_responsive_track,
     require_choice,
     responsive_data,
 )
@@ -19,23 +21,17 @@ from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrValue
 
-_GAP_RE = re.compile(r"^\d+(\.\d+)?(rem|em|px|%)$")
-
 # Split ratios are a closed set so the default stylesheet owns the grid math.
 SPLIT_RATIOS: tuple[str, ...] = ("1:1", "1:2", "2:1", "1:3", "3:1", "2:3", "3:2")
 ACTION_ALIGNMENTS: tuple[str, ...] = ("start", "center", "end", "between")
 COLLAPSE_BREAKPOINTS: tuple[str, ...] = ("never", "sm", "md", "lg")
+GRID_ALIGNS: tuple[str, ...] = ("start", "center", "end", "stretch")
 
 
 def _validated_gap(gap: str) -> str:
-    if not _GAP_RE.match(gap):
-        raise raise_error(
-            "HED-HTML-0006",
-            title="Invalid layout gap",
-            explanation=f"Gap {gap!r} is not a safe length token.",
-            remediation="Use values like '1rem', '8px', or '50%'.",
-        )
-    return gap
+    """Normalize gap to a named token (CSP-safe; no inline style required)."""
+    token, _compat = normalize_gap(gap)
+    return token
 
 
 class ContainerProps(ElementProps):
@@ -88,8 +84,7 @@ class Stack(Component[StackProps]):
             *self._children,
             id=self.props.id,
             class_=class_names("hedron-stack", self.props.class_),
-            style=f"--hedron-gap: {self.props.gap}",
-            data={"hedron-layout": "stack", "hedron-gap": self.props.gap},
+            data={"hedron-layout": "stack", **gap_data(self.props.gap)},
         )
 
 
@@ -117,14 +112,14 @@ class Inline(Component[InlineProps]):
             *self._children,
             id=self.props.id,
             class_=class_names("hedron-inline", self.props.class_),
-            style=f"--hedron-gap: {self.props.gap}",
-            data={"hedron-layout": "inline", "hedron-gap": self.props.gap},
+            data={"hedron-layout": "inline", **gap_data(self.props.gap)},
         )
 
 
 class GridProps(ElementProps):
-    columns: int = 2
-    gap: str = "1rem"
+    columns: dict[str, int]
+    tracks: dict[str, str]
+    gap: str = "md"
 
 
 class Grid(Component[GridProps]):
@@ -136,21 +131,19 @@ class Grid(Component[GridProps]):
         self,
         *nodes: NodeLike,
         children: NodeLike = None,
-        columns: int = 2,
+        columns: int | Mapping[str, int] = 2,
+        tracks: str | Mapping[str, str] = "default",
         gap: str = "1rem",
         id: str | None = None,
         class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        if columns < 1:
-            raise raise_error(
-                "HED-HTML-0006",
-                title="Invalid grid columns",
-                explanation="columns must be >= 1.",
-            )
+        resolved = normalize_responsive_int(columns, label="columns", maximum=6)
+        track_map = normalize_responsive_track(tracks, label="tracks")
         super().__init__(
             GridProps(
-                columns=columns,
+                columns=resolved,
+                tracks=track_map,
                 gap=_validated_gap(gap),
                 id=id,
                 class_=class_,
@@ -160,16 +153,68 @@ class Grid(Component[GridProps]):
         self._children = collect_children(*nodes, children=children)
 
     def render(self) -> NodeLike:
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-layout": "grid",
+            **gap_data(self.props.gap),
+            **responsive_data(self.props.columns, prefix="hedron-columns"),
+            **responsive_data(self.props.tracks, prefix="hedron-track"),
+        }
         return html.div(
             *self._children,
             id=self.props.id,
             class_=class_names("hedron-grid", self.props.class_),
-            style=f"--hedron-gap: {self.props.gap}",
-            data={
-                "hedron-layout": "grid",
-                "hedron-gap": self.props.gap,
-                "hedron-columns": str(self.props.columns),
-            },
+            data=data,
+        )
+
+
+class GridItemProps(ElementProps):
+    span: dict[str, int]
+    align: str = "stretch"
+
+
+class GridItem(Component[GridItemProps]):
+    """Grid child with bounded column span; never reorders DOM reading order."""
+
+    props_type = GridItemProps
+    logical_name = "GridItem"
+
+    def __init__(
+        self,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        span: int | Mapping[str, int] = 1,
+        align: str = "stretch",
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        require_choice(align, GRID_ALIGNS, label="align")
+        resolved = normalize_responsive_int(span, label="span", minimum=1, maximum=6)
+        super().__init__(
+            GridItemProps(
+                span=resolved,
+                align=align,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-layout": "grid-item",
+            "hedron-align": self.props.align,
+            **responsive_data(self.props.span, prefix="hedron-span"),
+            **mark_data(self.props.mark),
+        }
+        return html.div(
+            *self._children,
+            id=self.props.id,
+            class_=class_names("hedron-grid-item", self.props.class_),
+            data=data,
         )
 
 
@@ -226,14 +271,13 @@ class Spacer(Component[SpacerProps]):
     def render(self) -> NodeLike:
         data: dict[str, str | bool | int | float | None] = {
             "hedron-layout": "spacer",
-            "hedron-gap": self.props.size,
+            **gap_data(self.props.size),
             "hedron-spacer-axis": self.props.axis,
             **mark_data(self.props.mark),
         }
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
             "class_": class_names("hedron-spacer", self.props.class_),
-            "style": f"--hedron-gap: {self.props.size}",
             "aria": {"hidden": "true"},
             "data": data,
         }
@@ -374,7 +418,7 @@ class SplitView(Component[SplitViewProps]):
         ]
         data: dict[str, str | bool | int | float | None] = {
             "hedron-layout": "split",
-            "hedron-gap": self.props.gap,
+            **gap_data(self.props.gap),
             "hedron-split-ratio": self.props.ratio.replace(":", "-"),
             "hedron-split-collapse": self.props.collapse,
             **mark_data(self.props.mark),
@@ -385,7 +429,6 @@ class SplitView(Component[SplitViewProps]):
             *panes,
             id=self.props.id,
             class_=class_names("hedron-split", self.props.class_),
-            style=f"--hedron-gap: {self.props.gap}",
             data=data,
         )
 
@@ -492,7 +535,7 @@ class MasterDetail(Component[MasterDetailProps]):
             detail_body = self._detail
         data: dict[str, str | bool | int | float | None] = {
             "hedron-layout": "master-detail",
-            "hedron-gap": self.props.gap,
+            **gap_data(self.props.gap),
             "hedron-split-ratio": self.props.ratio.replace(":", "-"),
             "hedron-split-collapse": self.props.collapse,
             "hedron-master-id": self.props.master_id,
@@ -520,7 +563,6 @@ class MasterDetail(Component[MasterDetailProps]):
             ),
             id=self.props.id,
             class_=class_names("hedron-master-detail hedron-split", self.props.class_),
-            style=f"--hedron-gap: {self.props.gap}",
             data=data,
         )
 
@@ -566,7 +608,7 @@ class FormGrid(Component[FormGridProps]):
     def render(self) -> NodeLike:
         data: dict[str, str | bool | int | float | None] = {
             "hedron-layout": "form-grid",
-            "hedron-gap": self.props.gap,
+            **gap_data(self.props.gap),
             **responsive_data(self.props.columns, prefix="hedron-columns"),
             **mark_data(self.props.mark),
         }
@@ -576,7 +618,6 @@ class FormGrid(Component[FormGridProps]):
             *self._children,
             id=self.props.id,
             class_=class_names("hedron-form-grid", self.props.class_),
-            style=f"--hedron-gap: {self.props.gap}",
             data=data,
         )
 
@@ -630,11 +671,10 @@ class ActionGroup(Component[ActionGroupProps]):
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
             "class_": class_names("hedron-action-group", self.props.class_),
-            "style": f"--hedron-gap: {self.props.gap}",
             "role": "group",
             "data": {
                 "hedron-layout": "action-group",
-                "hedron-gap": self.props.gap,
+                **gap_data(self.props.gap),
                 "hedron-align": self.props.align,
                 "hedron-orientation": self.props.orientation,
                 "hedron-action-collapse": self.props.collapse,

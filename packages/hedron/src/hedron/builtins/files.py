@@ -8,6 +8,7 @@ from typing import Any
 
 from starlette.responses import FileResponse, Response
 
+from hedron_core.builtins.appearance import Appearance, Density, Size, appearance_data
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -71,12 +72,25 @@ def safe_download_response(
     )
 
 
+def _format_size(maximum_size: int) -> str:
+    if maximum_size >= 1_000_000:
+        return f"{maximum_size / 1_000_000:.1f} MB"
+    if maximum_size >= 1_000:
+        return f"{maximum_size / 1_000:.0f} KB"
+    return f"{maximum_size} B"
+
+
 class FileUploadProps(Props):
     name: str = "file"
     accept: str | None = None
     maximum_size: int = 5_000_000
     multiple: bool = False
     label: str = "Upload file"
+    hint: str | None = None
+    status: str | None = None
+    size: Size | None = None
+    appearance: Appearance | None = None
+    density: Density | None = None
 
 
 class FileUpload(Component[FileUploadProps]):
@@ -92,6 +106,11 @@ class FileUpload(Component[FileUploadProps]):
         maximum_size: int = 5_000_000,
         multiple: bool = False,
         label: str = "Upload file",
+        hint: str | None = None,
+        status: str | None = None,
+        size: Size | None = None,
+        appearance: Appearance | None = None,
+        density: Density | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -101,25 +120,55 @@ class FileUpload(Component[FileUploadProps]):
                 maximum_size=maximum_size,
                 multiple=multiple,
                 label=label,
+                hint=hint,
+                status=status,
+                size=size,
+                appearance=appearance,
+                density=density,
                 **kwargs,
             )
         )
 
     def render(self) -> Any:
-        attrs: dict[str, Any] = {
+        limit_text = f"Maximum size {_format_size(self.props.maximum_size)}"
+        hint = self.props.hint or limit_text
+        input_attrs: dict[str, Any] = {
             "type": "file",
             "name": self.props.name,
-            "aria": {"label": self.props.label},
+            "aria": {"label": self.props.label, "describedby": None},
             "data": {"max-size": str(self.props.maximum_size)},
+            "class_": "hedron-file-upload-input",
         }
         if self.props.accept:
-            attrs["accept"] = self.props.accept
+            input_attrs["accept"] = self.props.accept
         if self.props.multiple:
-            attrs["multiple"] = True
+            input_attrs["multiple"] = True
+        parts: list[Any] = [
+            html.span(self.props.label, class_="hedron-file-upload-label"),
+            html.input(**input_attrs),
+            html.span(hint, class_="hedron-file-upload-hint"),
+        ]
+        if self.props.status:
+            parts.append(
+                html.span(
+                    self.props.status,
+                    class_="hedron-file-upload-status",
+                    role="status",
+                )
+            )
+        data = {
+            "hedron-file-upload": "true",
+            "max-size": str(self.props.maximum_size),
+            **appearance_data(
+                size=self.props.size,
+                appearance=self.props.appearance,
+                density=self.props.density,
+            ),
+        }
         return html.label(
-            self.props.label,
-            html.input(**attrs),
+            *parts,
             class_="hedron-file-upload",
+            data=data,
         )
 
 

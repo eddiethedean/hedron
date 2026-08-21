@@ -1,0 +1,43 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+policy = "highest_applicable_facade_first"
+explicit_labels = ["Advanced", "Explicit", "Lower-level", "Under the hood"]
+[[document]]
+path = "README.md"
+required = ["screen"]
+[[document]]
+path = "docs/getting-started/quickstart.md"
+required = ["screen", "form_command"]
+[[document]]
+path = "docs/getting-started/first-app-vscode.md"
+required = ["screen"]
+[[document]]
+path = "docs/getting-started/first-app-posit-workbench.md"
+required = ["screen"]
+[[document]]
+path = "docs/examples/single-file.md"
+required = ["screen", "form_command"]
+[[document]]
+path = "docs/examples/crud-tutorial.md"
+required = ["DataWorkspace.with_screen"]
+[[document]]
+path = "docs/examples/jobs-poll.md"
+required = ["TaskFlow"]
+[[document]]
+path = "docs/examples/session-auth.md"
+required = ["SessionAuthFlow"]
+[[document]]
+path = "docs/examples/file-upload.md"
+required = ["UploadFlow"]
+[[document]]
+path = "docs/guides/dashboards.md"
+required = ["DashboardWorkspace"]
+[[document]]
+path = "scaffold:minimal|crud|dashboard|task"
+required = ["matching facade"]
+[exceptions]
+historical_release_notes = true
+migration_fixtures = true
+primitive_reference = true
+unrecorded_lower_level_starter = false

@@ -2,20 +2,21 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.56.x`).
+Security fixes land on the **current published train** (`0.57.x`).
 Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.55.x`) continues through approximately **2027-08-20** — after that, upgrade
+minor (`0.56.x`) continues through approximately **2027-08-20** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The published train tip is **`v0.56.1`** (PyPI serves `0.56.0`; 0.56.1 deferred). First-run pins use
-`>=0.56.0,<0.57` from PyPI; in-tree floor is `>=0.56.1,<0.57`.
+The published train tip is **`v0.57.0`** (PyPI serves `0.56.0`; 0.57.0 deferred). First-run pins use
+`>=0.56.0,<0.58` from PyPI; in-tree floor is `>=0.57.0,<0.58`.
 
 | Version | Supported |
 |---|---|
-| `0.56.x` | Yes (current published train — pin `>=0.56.1,<0.57`; published `v0.56.1`) |
-| `0.55.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` |
-| `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.56.x` |
+| `0.57.x` | Yes (current published train — pin `>=0.57.0,<0.58`; published `v0.57.0`) |
+| `0.56.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.57.x` |
+| `0.55.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
+| `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
 | `0.52.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.53.x` / `0.56.x` |
 | `0.51.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.52.x` / `0.53.x` |
 | `0.50.x` | Best-effort security triage through approximately 2027-08-19; upgrade to `0.51.x` / `0.52.x` |
@@ -48,7 +49,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes target the current published train (`0.56.x`); see Supported versions above.
+4. Fixes target the current published train (`0.57.x`); see Supported versions above.
 
 ### Alternate contact
 

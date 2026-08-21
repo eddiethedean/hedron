@@ -52,25 +52,16 @@ class AvatarProfile(Component[AvatarProfileProps]):
         )
 
     def render(self) -> NodeLike:
-        media: NodeLike
-        if self.props.image_src:
-            media = html.img(
-                src=self.props.image_src,
-                alt=self.props.name,
-                class_="hedron-avatar-img",
-                width="48",
-                height="48",
-            )
-        else:
-            media = html.span(self.props.name[:1].upper(), class_="hedron-avatar-fallback")
-        body: list[NodeLike] = [media, html.span(self.props.name, class_="hedron-avatar-name")]
-        if self.props.caption:
-            body.append(html.span(self.props.caption, class_="hedron-avatar-caption"))
-        inner = html.div(*body, class_="hedron-avatar-inner")
-        if self.props.href:
-            inner = html.a(inner, href=self.props.href, class_="hedron-avatar-link")
+        from hedron_core.builtins.identity import Identity
+
+        identity = Identity(
+            self.props.name,
+            detail=self.props.caption,
+            href=self.props.href,
+            image_src=self.props.image_src,
+        )
         return html.div(
-            inner,
+            identity,
             class_=class_names("hedron-avatar-profile", self.props.class_),
             id=self.props.id,
             data={**mark_data(self.props.mark), "hedron-recipe": "avatar"},

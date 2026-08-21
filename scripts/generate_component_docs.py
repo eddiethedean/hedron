@@ -483,6 +483,21 @@ COMPONENTS = (
         "Do not hold a column handle and mutate it later; construct every cell as a child.",
     ),
     ComponentDoc(
+        "GridItem",
+        "layout",
+        "Place one cell with named track and span tokens inside Grid.",
+        "GridItem(*nodes, *, column=None, row=None, column_span=None, row_span=None, id=None, class_=None)",
+        "GridItem(Card(Text('Wide')), column_span=2)",
+        (
+            p("nodes", "NodeLike", "Cell content."),
+            p("column / row", "track token | None", "Named start track."),
+            p("column_span / row_span", "int | None", "Named span count."),
+        ),
+        "GridItem uses presentation markers for CSP-safe placement without inline style.",
+        "Keep reading order sensible when spans change the visual grid.",
+        "Do not invent arbitrary CSS track names outside the supported token set.",
+    ),
+    ComponentDoc(
         "Divider",
         "layout",
         "Separate adjacent groups with a semantic horizontal or vertical rule.",
@@ -591,6 +606,78 @@ COMPONENTS = (
         "Use NavLink in primary navigation; use Link for ordinary content links without HTMX shell targets.",
         "Do not register both names as separate plugins—only one component class exists. "
         "Do not combine NavLink `select_oob` with a matching `OobUpdate` for the same shell host id.",
+    ),
+    ComponentDoc(
+        "Brand",
+        "utilities",
+        "Product mark for AppShell chrome without application CSS.",
+        "Brand(name, *, href=None, mark=None, id=None, class_=None)",
+        "Brand('Hedron', href='/')",
+        (
+            p("name", "str", "Product or workspace name."),
+            p("href", "SafeUrl | str | None", "Optional home navigation target."),
+            p("mark", "NodeLike | None", "Optional logo/mark slot."),
+        ),
+        "Brand emits a typed chrome mark with first-party presentation markers.",
+        "Keep brand text readable when an image mark is present.",
+        "Do not style Brand with application CSS; use presentation tokens.",
+    ),
+    ComponentDoc(
+        "AccountSummary",
+        "utilities",
+        "Compact signed-in account summary for shell chrome.",
+        "AccountSummary(name, *, detail=None, href=None, id=None, class_=None)",
+        "AccountSummary('Ada Lovelace', detail='Admin', href='/account')",
+        (
+            p("name", "str", "Display name."),
+            p("detail", "str | None", "Optional role or email line."),
+            p("href", "SafeUrl | str | None", "Optional account destination."),
+        ),
+        "AccountSummary is a compact chrome identity strip, not a full profile page.",
+        "Pair with Avatar/Identity when a face mark is required.",
+        "Do not nest interactive controls inside the summary link.",
+    ),
+    ComponentDoc(
+        "EnvironmentBanner",
+        "utilities",
+        "Non-production environment banner for shell chrome.",
+        "EnvironmentBanner(label, *, tone='warning', id=None, class_=None)",
+        "EnvironmentBanner('Staging', tone='warning')",
+        (
+            p("label", "str", "Environment label shown to operators."),
+            p("tone", "info | warning | danger", "Semantic urgency token."),
+        ),
+        "EnvironmentBanner keeps staging/canary honesty visible without custom CSS.",
+        "Prefer warning for non-prod and danger for break-glass hosts.",
+        "Do not use this banner for ordinary product marketing copy.",
+    ),
+    ComponentDoc(
+        "NavStatus",
+        "utilities",
+        "Compact navigation status chip for shell sidebars.",
+        "NavStatus(label, *, tone='neutral', id=None, class_=None)",
+        "NavStatus('3 updates', tone='info')",
+        (
+            p("label", "str", "Status text."),
+            p("tone", "neutral | info | success | warning | danger", "Semantic tone."),
+        ),
+        "NavStatus is a chrome status marker for nav regions.",
+        "Keep labels short so the chip remains scannable.",
+        "Do not use NavStatus as a live region for assertive errors.",
+    ),
+    ComponentDoc(
+        "AppFooter",
+        "utilities",
+        "Typed application footer region for AppShell chrome.",
+        "AppFooter(*nodes, *, width=None, id=None, class_=None)",
+        "AppFooter(Text('© Acme'), Text('Support'))",
+        (
+            p("nodes", "NodeLike", "Footer body content."),
+            p("width", "content | narrow | wide | full | None", "Optional content width token."),
+        ),
+        "AppFooter provides a presentation-token footer without application CSS.",
+        "Keep legal and support links keyboard-reachable.",
+        "Do not place primary navigation exclusively in the footer.",
     ),
     ComponentDoc(
         "OobHost",
@@ -862,6 +949,23 @@ COMPONENTS = (
         "Card emits an addressable article with distinct header, body, and optional footer wrappers. The convenience `title` becomes an h3; use the `header` slot when the surrounding document requires another heading level or richer content. Its body accepts ordinary nested components, including layouts and forms, through the same renderer pipeline.",
         "Choose a custom Heading in `header` when an automatic h3 would skip or repeat levels.",
         "Do not make an entire complex card clickable when it contains other interactive controls.",
+    ),
+    ComponentDoc(
+        "Surface",
+        "surfaces",
+        "Compose a presentation-token surface without application CSS.",
+        "Surface(*nodes, *, elevation='plain', padding='md', shape='rounded', width=None, id=None, class_=None)",
+        "Surface(Text('Workspace body'), elevation='raised', padding='lg')",
+        (
+            p("nodes", "NodeLike", "Surface body content."),
+            p("elevation", "plain | raised", "Named elevation token."),
+            p("padding", "none | xs | sm | md | lg | xl", "Named padding token."),
+            p("shape", "square | rounded | pill", "Named shape token."),
+            p("width", "content | narrow | wide | full | None", "Optional width token."),
+        ),
+        "Surface is the zero-application-CSS building block for panels. Presentation is marker-driven (`data-hedron-*`) and styled by first-party CSS.",
+        "Prefer Surface over ad-hoc div wrappers when you need a raised or padded region.",
+        "Do not pass inline style or arbitrary CSS lengths; use the named token vocabularies.",
     ),
     ComponentDoc(
         "Badge",
@@ -1555,6 +1659,70 @@ COMPONENTS = (
         "Do not render an unbounded query or assume `allow_download` creates an authorized download route.",
         package="hedron[data]",
         demo="data-table",
+    ),
+    ComponentDoc(
+        "ResourceList",
+        "data",
+        "List resources with first-party density and presentation tokens.",
+        "ResourceList(*rows, *, density=None, id=None, class_=None)",
+        "ResourceList(ResourceRow('Orders', description='Open work', href='/orders'), density='compact')",
+        (
+            p("rows", "ResourceRow | NodeLike", "Resource rows or compatible children."),
+            p("density", "comfortable | compact | None", "Optional density token."),
+        ),
+        "ResourceList is the zero-application-CSS list surface for navigable collections.",
+        "Prefer ResourceRow children so title/description/actions stay structured.",
+        "Do not nest a full interactive form inside every row.",
+    ),
+    ComponentDoc(
+        "ResourceRow",
+        "data",
+        "One resource entry with optional link, meta, and actions.",
+        "ResourceRow(title, *, description=None, href=None, actions=None, meta=None, density=None)",
+        "ResourceRow('North warehouse', description='Ready', href='/sites/north')",
+        (
+            p("title", "str", "Primary resource label."),
+            p("description", "str | None", "Supporting text."),
+            p("href", "SafeUrl | str | None", "Primary navigation target."),
+            p("actions", "NodeLike | None", "Trailing action slot when not using href."),
+            p("meta", "NodeLike | None", "Secondary metadata slot."),
+        ),
+        "ResourceRow keeps title/description structured and avoids nested interactive targets.",
+        "Use either a primary href or an actions slot—not both competing click targets.",
+        "Do not put a button inside a row that is already a link.",
+    ),
+    ComponentDoc(
+        "Avatar",
+        "content",
+        "Person or entity avatar with image or initials fallback.",
+        "Avatar(name, *, src=None, size=None, appearance=None, shape='circle')",
+        "Avatar('Ada Lovelace', size='md')",
+        (
+            p("name", "str", "Accessible name and initials source."),
+            p("src", "SafeUrl | str | None", "Optional image URL."),
+            p("size", "sm | md | lg | None", "Named size token."),
+            p("appearance", "plain | raised | None", "Optional appearance token."),
+            p("shape", "circle | rounded | square", "Avatar shape token."),
+        ),
+        "Avatar falls back to initials when no image is provided.",
+        "Always supply a real name so the accessible label and initials are meaningful.",
+        "Do not use decorative-only avatars without a name.",
+    ),
+    ComponentDoc(
+        "Identity",
+        "content",
+        "Compose avatar plus primary/secondary identity text.",
+        "Identity(name, *, detail=None, src=None, size=None, appearance=None)",
+        "Identity('Ada Lovelace', detail='Admin', size='md')",
+        (
+            p("name", "str", "Primary identity label."),
+            p("detail", "str | None", "Secondary line such as role or email."),
+            p("src", "SafeUrl | str | None", "Optional avatar image."),
+            p("size / appearance", "token | None", "Presentation tokens shared with Avatar."),
+        ),
+        "Identity is the typed person/entity strip used by chrome and resource rows.",
+        "Keep detail text supplementary; the name remains primary.",
+        "Do not nest a second interactive avatar link inside Identity.",
     ),
     ComponentDoc(
         "DataEditor",
@@ -2608,6 +2776,28 @@ def static_demo(spec: ComponentDoc) -> str:
         return '<div class="hdc-inline"><span class="hdc-chip">Python</span><span class="hdc-chip">HTMX</span><span class="hdc-chip">FastAPI</span></div>'
     if name == "Grid":
         return '<div class="hdc-grid"><span><small>Latency</small><strong>184 ms</strong><em>↓ 12%</em></span><span><small>Errors</small><strong>0.08%</strong><em>↓ 4%</em></span><span><small>Traffic</small><strong>28.4k</strong><em>↑ 9%</em></span></div>'
+    if name == "GridItem":
+        return '<div class="hdc-grid"><span><small>Span 2</small><strong>Wide cell</strong><em>GridItem</em></span></div>'
+    if name == "Surface":
+        return '<div class="hdc-container"><strong>Raised surface</strong><p class="hdc-muted">Presentation tokens only — no application CSS.</p></div>'
+    if name == "Brand":
+        return '<div class="hdc-inline"><strong>Hedron</strong><span class="hdc-muted">Brand mark</span></div>'
+    if name == "AccountSummary":
+        return '<div class="hdc-inline"><strong>Ada Lovelace</strong><span class="hdc-muted">Admin</span></div>'
+    if name == "EnvironmentBanner":
+        return '<div class="hdc-banner hdc-warning" role="status"><strong>Staging</strong></div>'
+    if name == "NavStatus":
+        return '<span class="hdc-chip">3 updates</span>'
+    if name == "AppFooter":
+        return '<footer class="hdc-muted"><span>© Acme</span> · <span>Support</span></footer>'
+    if name == "ResourceList":
+        return '<div class="hdc-stack"><span><b>Orders</b><small>Open work</small></span><span><b>Sites</b><small>Ready</small></span></div>'
+    if name == "ResourceRow":
+        return '<div class="hdc-stack"><span><b>North warehouse</b><small>Ready</small></span></div>'
+    if name == "Avatar":
+        return '<div class="hdc-inline"><span class="hdc-badge" aria-label="Ada Lovelace">AL</span></div>'
+    if name == "Identity":
+        return '<div class="hdc-inline"><span class="hdc-badge" aria-label="Ada Lovelace">AL</span><span><b>Ada Lovelace</b><small class="hdc-muted">Admin</small></span></div>'
     if name == "Divider":
         return '<div class="hdc-divider-demo"><span>Overview</span><i role="separator" aria-orientation="vertical"></i><span>Activity</span></div>'
     if name == "Heading":
@@ -3189,10 +3379,19 @@ def discover_builtin_components() -> set[str]:
         "BREAKPOINTS",
         "CONTENT_WIDTHS",
         "DENSITIES",
+        "ELEVATIONS",
         "EMPHASES",
+        "GAPS",
+        "GAP_TOKENS",
+        "OVERFLOW_MODES",
+        "PADDINGS",
+        "RESPONSIVE_POLICIES",
+        "SHAPES",
         "SIZES",
         "STATE_KINDS",
+        "TRACKS",
         "TYPOGRAPHY_ROLES",
+        "WIDTHS",
         "TableColumn",  # Pydantic model for Table metadata, not a Component
         "action_attrs",
         "oob_swap",

@@ -1,6 +1,6 @@
 # What's new in 0.50
 
-For new apps, pin `hedron>=0.56.0,<0.57`. The 0.50 train last uploaded on PyPI as
+For new apps, pin `hedron>=0.56.0,<0.58`. The 0.50 train last uploaded on PyPI as
 **0.50.1**; in-tree 0.50 patches remained **0.50.3**.
 
 ## 0.50.3 patch

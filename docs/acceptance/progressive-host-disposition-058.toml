@@ -1,0 +1,26 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+[fastapi]
+screen = "supported"
+form_command = "supported"
+data_workspace = "supported"
+task_flow = "supported"
+dashboard = "supported"
+session_auth = "supported"
+upload = "supported"
+[flask]
+screen = "explicit_adapter_spelling"
+form_command = "explicit_adapter_spelling"
+feature_providers = "composition_only"
+[django]
+screen = "explicit_adapter_spelling"
+form_command = "explicit_adapter_spelling"
+feature_providers = "composition_only"
+[portable]
+core = "explanation_schema"
+conformance = "schema_and_fixture_authority"
+sim = "declared_scenario_subset_no_production_claim"
+[rules]
+false_parity = false
+external_exposure_inferred = false

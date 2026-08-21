@@ -22,9 +22,9 @@ _ROOT = Path(__file__).resolve().parent
 
 PLUGIN_META = PluginMeta(
     name="hedron_extras_sandbox",
-    version="0.56.1",
+    version="0.57.0",
     distribution="hedron-extras",
-    hedron_version=">=0.56,<0.57",
+    hedron_version=">=0.57,<0.58",
     depends_on=("hedron_extras",),
     capabilities=PluginCapabilities(
         python=True,

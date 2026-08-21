@@ -1,0 +1,24 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+command = "hedron new NAME --template TEMPLATE"
+[[template]]
+name = "minimal"
+facades = ["screen", "refreshable"]
+[[template]]
+name = "crud"
+facades = ["screen", "form_command", "DataWorkspace.with_screen"]
+replacement_notes = ["persistence", "authorization", "transactions"]
+[[template]]
+name = "dashboard"
+facades = ["screen", "DashboardWorkspace"]
+replacement_notes = ["loader", "cache", "authorization"]
+[[template]]
+name = "task"
+facades = ["screen", "form_command", "TaskFlow"]
+replacement_notes = ["durable backend", "worker", "retention", "authorization"]
+[invariants]
+ordinary_python = true
+bounded_pins = true
+clean_wheel_runnable = true
+generator_dsl = false

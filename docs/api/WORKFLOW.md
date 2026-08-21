@@ -22,5 +22,5 @@ FastAPI owns action `capability=` / `idempotency=` enforcement introduced in the
 replay action kwargs remain `unsupported` on those adapters
 (`docs/acceptance/workflow-parity-055.toml`).
 
-Pin and maturity follow the living **0.56** train; 0.55 workflow symbols remain
+Pin and maturity follow the living **0.57** train; 0.55 workflow symbols remain
 `beta`.

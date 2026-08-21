@@ -36,7 +36,7 @@ open localhost:8000 → click **Refresh status**.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "hedron>=0.56.0,<0.57" hedron new my-hedron-app
+uvx --from "hedron>=0.56.0,<0.58" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 # Open http://127.0.0.1:8000 and click Refresh status
 ```
@@ -110,7 +110,7 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <summary>Package maturity and production pins</summary>
 
 Hedron’s flagship and host-adapter packages are Beta. The latest installable PyPI pin is
-`hedron>=0.56.0,<0.57`; the repository’s `0.56.x` train is available on PyPI.
+`hedron>=0.56.0,<0.58`; the repository’s `0.57.x` train is available on PyPI.
 For production adoption, continue with
 [What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
 </details>

@@ -1,0 +1,25 @@
+schema_version = 1
+phase = "0.58"
+state = "planned"
+overflow_behavior = "reject_with_diagnostic"
+[counts]
+surfaces_per_feature = 32
+routes_per_feature = 48
+form_fields = 64
+dashboard_panels = 16
+dashboard_refresh_fanout = 16
+ejection_files = 64
+[bytes]
+public_filter_query = 4096
+explanation_json = 262144
+ejection_output = 1048576
+[time_ms]
+minimum_poll_interval = 1000
+maximum_poll_interval = 60000
+explanation_p95 = 100
+ejection_p95 = 2000
+registration_p95_for_ten_features = 50
+[performance]
+representative_runtime_latency_ratio_max = 1.10
+hidden_io = false
+optional_imports_when_unused = false

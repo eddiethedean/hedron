@@ -690,3 +690,224 @@ class AppShell(Component[AppShellProps]):
     def as_fragment(self) -> NodeLike:
         """Return only the main panel subtree for HTMX fragment responses."""
         return MainPanel(*self._body, id=self.props.panel_id)
+
+
+class BrandProps(ElementProps):
+    name: str
+    href: SafeUrl | None = None
+    mark_text: str | None = None
+
+
+class Brand(Component[BrandProps]):
+    """Typed AppShell brand mark for zero-application-CSS chrome."""
+
+    props_type = BrandProps
+    logical_name = "Brand"
+
+    def __init__(
+        self,
+        name: str,
+        *,
+        href: SafeUrl | str | None = None,
+        mark_text: str | None = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: object,
+    ) -> None:
+        url = None
+        if href is not None:
+            url = href if isinstance(href, SafeUrl) else _coerce_nav_url(href)
+        super().__init__(
+            BrandProps(
+                name=name,
+                href=url,
+                mark_text=mark_text,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+
+    def render(self) -> NodeLike:
+        label = html.span(self.props.name, class_="hedron-brand-name")
+        mark = html.span(
+            self.props.mark_text or self.props.name[:1],
+            class_="hedron-brand-mark",
+            aria={"hidden": "true"},
+        )
+        data = {"hedron-brand": "true", **mark_data(self.props.mark)}
+        inner = (mark, label)
+        if self.props.href is not None:
+            return html.a(
+                *inner,
+                href=self.props.href,
+                id=self.props.id,
+                class_=class_names("hedron-brand", self.props.class_),
+                data=data,
+            )
+        return html.div(
+            *inner,
+            id=self.props.id,
+            class_=class_names("hedron-brand", self.props.class_),
+            data=data,
+        )
+
+
+class AccountSummaryProps(ElementProps):
+    name: str
+    detail: str | None = None
+
+
+class AccountSummary(Component[AccountSummaryProps]):
+    """Typed account chip for AppShell account slot."""
+
+    props_type = AccountSummaryProps
+    logical_name = "AccountSummary"
+
+    def __init__(
+        self,
+        name: str,
+        *,
+        detail: str | None = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: object,
+    ) -> None:
+        super().__init__(
+            AccountSummaryProps(name=name, detail=detail, id=id, class_=class_, mark=mark, **kwargs)
+        )
+
+    def render(self) -> NodeLike:
+        parts: list[NodeLike] = [html.span(self.props.name, class_="hedron-account-name")]
+        if self.props.detail:
+            parts.append(html.span(self.props.detail, class_="hedron-account-detail"))
+        return html.div(
+            *parts,
+            id=self.props.id,
+            class_=class_names("hedron-account-summary", self.props.class_),
+            data={"hedron-account-summary": "true", **mark_data(self.props.mark)},
+        )
+
+
+class EnvironmentBannerProps(ElementProps):
+    label: str
+    tone: Literal["info", "success", "warning", "danger"] = "warning"
+
+
+class EnvironmentBanner(Component[EnvironmentBannerProps]):
+    """Environment banner for non-production AppShell chrome."""
+
+    props_type = EnvironmentBannerProps
+    logical_name = "EnvironmentBanner"
+
+    def __init__(
+        self,
+        label: str,
+        *,
+        tone: Literal["info", "success", "warning", "danger"] = "warning",
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: object,
+    ) -> None:
+        super().__init__(
+            EnvironmentBannerProps(
+                label=label,
+                tone=tone,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+
+    def render(self) -> NodeLike:
+        return html.div(
+            self.props.label,
+            id=self.props.id,
+            class_=class_names("hedron-environment-banner", self.props.class_),
+            role="status",
+            data={
+                "hedron-environment-banner": "true",
+                "hedron-tone": self.props.tone,
+                **mark_data(self.props.mark),
+            },
+        )
+
+
+class NavStatusProps(ElementProps):
+    message: str
+    tone: Literal["info", "success", "warning", "danger"] = "info"
+
+
+class NavStatus(Component[NavStatusProps]):
+    """Compact navigation status line for AppShell nav footer/status."""
+
+    props_type = NavStatusProps
+    logical_name = "NavStatus"
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        tone: Literal["info", "success", "warning", "danger"] = "info",
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: object,
+    ) -> None:
+        super().__init__(
+            NavStatusProps(message=message, tone=tone, id=id, class_=class_, mark=mark, **kwargs)
+        )
+
+    def render(self) -> NodeLike:
+        return html.p(
+            self.props.message,
+            id=self.props.id,
+            class_=class_names("hedron-nav-status", self.props.class_),
+            data={
+                "hedron-nav-status": "true",
+                "hedron-tone": self.props.tone,
+                **mark_data(self.props.mark),
+            },
+        )
+
+
+class AppFooterProps(ElementProps):
+    text: str
+
+
+class AppFooter(Component[AppFooterProps]):
+    """Typed application footer composition for AppShell footer slot."""
+
+    props_type = AppFooterProps
+    logical_name = "AppFooter"
+
+    def __init__(
+        self,
+        text: str,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: object,
+    ) -> None:
+        from hedron_core.builtins._base import collect_children
+
+        super().__init__(AppFooterProps(text=text, id=id, class_=class_, mark=mark, **kwargs))
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        parts: list[NodeLike] = [html.span(self.props.text, class_="hedron-app-footer-text")]
+        if self._children:
+            parts.append(html.div(*self._children, class_="hedron-app-footer-actions"))
+        return html.footer(
+            *parts,
+            id=self.props.id,
+            class_=class_names("hedron-app-footer", self.props.class_),
+            data={"hedron-app-footer": "true", **mark_data(self.props.mark)},
+        )

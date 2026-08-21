@@ -2,6 +2,11 @@
 
 Metrics, viewers, progress, status, disclosure, tabs, and files.
 
+- [`Brand`](brand.md) — Product mark for AppShell chrome without application CSS.
+- [`AccountSummary`](account-summary.md) — Compact signed-in account summary for shell chrome.
+- [`EnvironmentBanner`](environment-banner.md) — Non-production environment banner for shell chrome.
+- [`NavStatus`](nav-status.md) — Compact navigation status chip for shell sidebars.
+- [`AppFooter`](app-footer.md) — Typed application footer region for AppShell chrome.
 - [`Metric`](metric.md) — Display a labelled value and optional directional change.
 - [`FileUpload`](file-upload.md) — Choose one or more local files with advisory browser constraints.
 - [`DownloadButton`](download-button.md) — Download an authorized same-origin resource with a safe filename.

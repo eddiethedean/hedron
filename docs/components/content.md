@@ -13,6 +13,8 @@ Text, links, media, code, lists, tables, and Markdown.
 - [`Markdown`](markdown.md) — Render Markdown through the optional, escaped content pipeline.
 - [`Typography`](typography.md) — Role-first text helper bound to the type scale.
 - [`Icon`](icon.md) — Trusted registry SVG with a bounded size vocabulary.
+- [`Avatar`](avatar.md) — Person or entity avatar with image or initials fallback.
+- [`Identity`](identity.md) — Compose avatar plus primary/secondary identity text.
 - [`Audio`](audio.md) — Accessible HTML audio player with SafeUrl source.
 - [`PredictionLabel`](prediction-label.md) — Ranked prediction labels with class identity and an accessible table encoding.
 - [`ParameterViewer`](parameter-viewer.md) — Schema-oriented parameter documentation with secret redaction.

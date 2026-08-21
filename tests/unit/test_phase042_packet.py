@@ -161,11 +161,15 @@ def test_phase042_living_tip_or_cut() -> None:
         assert living_published_baseline() == f"v{published}"
         assert release["release"]["train"] == "0.55"
         assert version.startswith("0.55.")
-    else:
-        assert published.startswith("0.56.")
+    elif published.startswith("0.56."):
         assert living_published_baseline() == f"v{published}"
         assert release["release"]["train"] == "0.56"
         assert version.startswith("0.56.")
+    else:
+        assert published.startswith("0.57.")
+        assert living_published_baseline() == f"v{published}"
+        assert release["release"]["train"] == "0.57"
+        assert version.startswith("0.57.")
 
 
 def test_phase042_decision_and_roadmap_agree() -> None:

@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.57"
-state = "planned"
+state = "verified"
 fixture = "authenticated-data-mover-workspace"
 application_component_css_files = 0
 application_layout_css_rules = 0

@@ -189,8 +189,9 @@ def test_radio_group_sets_root_fieldset_id() -> None:
 
 def test_layout_gap_emits_css_variable() -> None:
     html = render(Stack(Text("a"), Text("b"), gap="1.25rem")).html
-    assert "--hedron-gap: 1.25rem" in html
-    assert 'data-hedron-gap="1.25rem"' in html
+    # 0.57 maps accepted length gaps to named tokens (no inline --hedron-gap).
+    assert "--hedron-gap: 1.25rem" not in html
+    assert 'data-hedron-gap="lg"' in html
 
 
 def test_representative_application_tree_composes_without_diagnostics() -> None:

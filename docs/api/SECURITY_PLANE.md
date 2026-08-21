@@ -23,4 +23,4 @@ replay/capability/upload APIs retain documented paths and delegate to shared
 authorities where applicable.
 
 Pin and maturity follow the living train; new symbols are `beta` for the first
-0.56 release.
+0.57 release.

@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.57"
-state = "planned"
+state = "verified"
 authority = "hedron_core.builtins.appearance"
 marker_prefix = "data-hedron-"
 api_stability = "beta"

@@ -9,6 +9,8 @@ The full authoritative table lives in the repository (not duplicated here):
 
 | ID | Topic |
 |---|---|
+| D-102 | Phase 0.58 Stage 0 locks signatures, lowering, schemas, security, host dispositions, budgets, scaffolds, starter adoption, tracking, gates, and upgrades |
+| D-101 | Progressive feature authoring and inspectable lowering own phase 0.58, including migration of every inventoried starter example to the highest applicable abstraction (RFC-0085) |
 | D-100 | Phase 0.57 Stage 0 locks finite presentation/CSP/semantics/parity/upgrade contracts without runtime or version changes |
 | D-099 | Unified styling, presentation, and zero-application-CSS own phase 0.57 (RFC-0084; [#558](https://github.com/eddiethedean/hedron/issues/558)–[#570](https://github.com/eddiethedean/hedron/issues/570)) |
 | D-070 | Production-grade Web Component platform graduation owns 0.42 Stage 0 (RFC-0060; [#97](https://github.com/eddiethedean/hedron/issues/97)) |

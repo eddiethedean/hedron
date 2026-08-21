@@ -109,17 +109,21 @@ from hedron.type_authoring.depends import DependsOn
 
 # Re-export beginner core API.
 from hedron_core import (
+    AccountSummary,
     ActionDock,
     ActionGroup,
     ActionRegistry,
     Alert,
+    AppFooter,
     AppShell,
     Aside,
     AttrHost,
     Audio,
     Auto,
+    Avatar,
     Badge,
     BottomDock,
+    Brand,
     BrowserContext,
     BrowserStorage,
     BrowserStorageUnavailable,
@@ -155,6 +159,7 @@ from hedron_core import (
     DirectoryUpload,
     Divider,
     DoubleSubmitCookieCsrf,
+    EnvironmentBanner,
     ExampleItem,
     ExampleSet,
     Expander,
@@ -174,6 +179,7 @@ from hedron_core import (
     GeolocationButton,
     GeolocationHint,
     Grid,
+    GridItem,
     Head,
     Header,
     Heading,
@@ -183,6 +189,7 @@ from hedron_core import (
     Hx,
     Icon,
     IconButton,
+    Identity,
     IFrame,
     Image,
     InferenceInterface,
@@ -211,6 +218,7 @@ from hedron_core import (
     MultiSelect,
     Nav,
     NavLink,
+    NavStatus,
     NumberInput,
     OobHost,
     PackageProjection,
@@ -239,6 +247,8 @@ from hedron_core import (
     RenderMode,
     RenderResult,
     RequestIndicator,
+    ResourceList,
+    ResourceRow,
     SafeUrl,
     Secret,
     Section,
@@ -258,6 +268,7 @@ from hedron_core import (
     StorageQuotaExceeded,
     StyleSymbols,
     SubmitButton,
+    Surface,
     Table,
     TableColumn,
     Tabs,
@@ -408,7 +419,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.56.1"
+__version__ = "0.57.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -425,6 +436,17 @@ __all__ = [
     "apply_color_mode_cookie",
     "approved_headers",
     "AppShell",
+    "Surface",
+    "ResourceRow",
+    "ResourceList",
+    "NavStatus",
+    "Identity",
+    "GridItem",
+    "EnvironmentBanner",
+    "Brand",
+    "Avatar",
+    "AppFooter",
+    "AccountSummary",
     "Aside",
     "AttrHost",
     "Audio",

@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.57"
-state = "planned"
+state = "verified"
 baseline = "0.56.1"
 target = "v0.57.0"
 
