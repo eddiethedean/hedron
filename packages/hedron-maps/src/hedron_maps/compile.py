@@ -6,8 +6,9 @@ import hashlib
 import json
 import re
 from collections.abc import Mapping, Sequence
-from typing import cast
 from urllib.parse import urlparse
+
+from typing_extensions import TypeIs
 
 from hedron_core.builtins.map_geo import DEFAULT_MAX_FEATURES, MarkerSpec, sanitize_geojson
 from hedron_core.codes import (
@@ -263,8 +264,48 @@ def _policy_allows(origin: str | None, policy: MapPolicy, *, local: bool) -> Non
         )
 
 
+def _is_json_value(value: object) -> TypeIs[JsonValue]:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return True
+    if isinstance(value, list):
+        return all(_is_json_value(item) for item in value)
+    if isinstance(value, dict):
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+    return False
+
+
 def _as_json(value: object) -> JsonValue:
-    return cast(JsonValue, value)
+    if _is_json_value(value):
+        return value
+    # Compiler-internal dumps are JSON-shaped; stringify unknown leaves.
+    return str(value)
+
+
+def _as_json_object(value: object) -> JsonObject:
+    if isinstance(value, dict) and all(
+        isinstance(key, str) and _is_json_value(item) for key, item in value.items()
+    ):
+        return value
+    if isinstance(value, Mapping):
+        return {str(key): _as_json(item) for key, item in value.items()}
+    return {}
+
+
+def _as_object_dict(value: Mapping[str, object]) -> dict[str, object]:
+    return {str(key): item for key, item in value.items()}
+
+
+def _as_float(value: object) -> float | None:
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        try:
+            return float(value)
+        except ValueError:
+            return None
+    return None
 
 
 def _iter_json_array(value: object) -> Sequence[object]:
@@ -284,7 +325,7 @@ def _ensure_style_object(style: JsonObject, key: str, default: JsonValue) -> Jso
 def _style_sources(style: JsonObject) -> JsonObject:
     sources = _ensure_style_object(style, "sources", {})
     if isinstance(sources, dict):
-        return cast(JsonObject, sources)
+        return _as_json_object(sources)
     empty: JsonObject = {}
     style["sources"] = empty
     return empty
@@ -345,7 +386,7 @@ def _layer_geojson(layer: Layer) -> Mapping[str, object] | None:
 
 
 def _sanitize_layer(layer: Layer, *, max_features: int) -> JsonObject:
-    dumped = cast(JsonObject, layer.model_dump(mode="json"))
+    dumped = _as_json_object(layer.model_dump(mode="json"))
     geo = _layer_geojson(layer)
     if geo is not None:
         cleaned, features = sanitize_geojson(geo, max_features=max_features)
@@ -383,9 +424,9 @@ def _style_subset(
     if style is None:
         return {"version": 8, "sources": {}, "layers": []}
     dumped = (
-        cast(JsonObject, style.model_dump(mode="json"))
+        _as_json_object(style.model_dump(mode="json"))
         if isinstance(style, MapStyle)
-        else cast(JsonObject, dict(style))
+        else _as_json_object(dict(style))
     )
     _reject_pollution(dumped)
     if _byte_size(dumped) > MAX_STYLE_BYTES:
@@ -451,14 +492,14 @@ def _close_style_url(url: str, *, origins: list[str], policy: MapPolicy) -> str:
 
 def _close_style_source(source: object, *, origins: list[str], policy: MapPolicy) -> JsonValue:
     if not isinstance(source, Mapping):
-        return cast(JsonValue, source)
-    closed: JsonObject = {str(key): cast(JsonValue, value) for key, value in source.items()}
+        return _as_json(source)
+    closed: JsonObject = {str(key): _as_json(value) for key, value in source.items()}
     tiles = closed.get("tiles")
     if isinstance(tiles, Sequence) and not isinstance(tiles, (str, bytes)):
         closed["tiles"] = [
             _close_style_url(tile, origins=origins, policy=policy)
             if isinstance(tile, str)
-            else cast(JsonValue, tile)
+            else _as_json(tile)
             for tile in tiles
         ]
     for field in ("url", "data"):
@@ -470,7 +511,7 @@ def _close_style_source(source: object, *, origins: list[str], policy: MapPolicy
         closed["urls"] = [
             _close_style_url(item, origins=origins, policy=policy)
             if isinstance(item, str)
-            else cast(JsonValue, item)
+            else _as_json(item)
             for item in urls
         ]
     return closed
@@ -746,7 +787,8 @@ def _apply_overlay_style(
     layers_value = _ensure_style_object(style, "layers", [])
     if not isinstance(layers_value, list):
         return
-    layers = cast(list[JsonValue], layers_value)
+    layers: list[JsonValue] = [_as_json(item) for item in layers_value]
+    style["layers"] = layers
     for index, layer in enumerate(compiled_layers):
         kind = str(layer.get("kind") or "")
         source_id = f"overlay-{index}"
@@ -995,21 +1037,18 @@ def compile_map(
         decorative=parsed.accessibility.decorative,
         table_rows=rows,
     )
-    fallback = cast(
-        JsonObject,
-        {
-            "title": parsed.accessibility.title,
-            "description": parsed.accessibility.description,
-            "alternative_class": "hedron-map-alternative",
-            "table_rows": list(rows),
-            "actions": "ordinary links and buttons without JavaScript",
-        },
-    )
+    fallback: dict[str, object] = {
+        "title": parsed.accessibility.title,
+        "description": parsed.accessibility.description,
+        "alternative_class": "hedron-map-alternative",
+        "table_rows": list(rows),
+        "actions": "ordinary links and buttons without JavaScript",
+    }
     view = parsed.view
     bounds = None
     if view.fit == "layers" and rows:
-        lats = [float(cast(float, row["lat"])) for row in rows if row.get("lat") is not None]
-        lons = [float(cast(float, row["lon"])) for row in rows if row.get("lon") is not None]
+        lats = [lat for row in rows if (lat := _as_float(row.get("lat"))) is not None]
+        lons = [lon for row in rows if (lon := _as_float(row.get("lon"))) is not None]
         if lats and lons:
             bounds = Bounds(west=min(lons), south=min(lats), east=max(lons), north=max(lats))
     redacted: JsonObject = {
@@ -1019,12 +1058,12 @@ def compile_map(
         "resources": list(resources),
         "origins": list(origins),
         "attribution": list(attribution),
-        "view": cast(JsonValue, view.model_dump(mode="json")),
+        "view": _as_json(view.model_dump(mode="json")),
         "layers": list(compiled_layers),
         "style": style,
         "source_kind": kind,
         "preset_id": preset,
-        "accessibility": cast(JsonValue, accessibility.model_dump(mode="json")),
+        "accessibility": _as_json(accessibility.model_dump(mode="json")),
     }
     if _byte_size(redacted) > MAX_PLAN_BYTES:
         raise _map_error(
@@ -1036,16 +1075,16 @@ def compile_map(
     plan = MapPlan(
         spec_fingerprint=_fingerprint(parsed.to_json_dict()),
         plan_fingerprint=_fingerprint(redacted),
-        renderer=cast(dict[str, object], renderer),
+        renderer=_as_object_dict(renderer),
         resources=tuple(resources),
         origins=tuple(origins),
         csp=csp,
         attribution=tuple(dict.fromkeys(attribution)),
-        fallback=cast(dict[str, object], fallback),
+        fallback=fallback,
         bounds=bounds,
         view=view,
-        layers=cast(tuple[dict[str, object], ...], compiled_layers),
-        style=cast(dict[str, object], style),
+        layers=tuple(_as_object_dict(layer) for layer in compiled_layers),
+        style=_as_object_dict(style),
         limits=dict(LIMITS),
         warnings=tuple(warnings),
         accessibility=accessibility,

@@ -107,7 +107,7 @@ def _cmd_inspect_interactions(args: argparse.Namespace) -> int:
     manifest = getattr(args, "manifest", None)
     static_root = getattr(args, "static", None)
     if manifest:
-        payload = inspect_interactions_static(Path("."), manifest=Path(manifest))
+        payload = inspect_interactions_static(Path(), manifest=Path(manifest))
     elif static_root:
         payload = inspect_interactions_static(Path(static_root))
     elif getattr(args, "app", None):

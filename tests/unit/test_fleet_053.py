@@ -81,6 +81,23 @@ def test_diagnose_never_calls_installer() -> None:
     assert report["automatic_install"] is False
 
 
+def test_plugins_snapshot_failure_still_returns_report(caplog: pytest.LogCaptureFixture) -> None:
+    """Best-effort plugin collection must not fail the diagnosis (logs + continues)."""
+    import logging
+
+    with (
+        patch(
+            "hedron_core.plugins.get_explorer_panels",
+            side_effect=RuntimeError("boom"),
+        ),
+        caplog.at_level(logging.DEBUG, logger="hedron.fleet"),
+    ):
+        report = diagnose_installed_fleet()
+    assert isinstance(report["plugins"], list)
+    assert report["read_only"] is True
+    assert any("plugin registry snapshot failed" in r.message for r in caplog.records)
+
+
 def test_hedron_fleet_cli_json(capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit) as exited:
         main(["fleet", "--format", "json"])

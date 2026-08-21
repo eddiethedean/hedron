@@ -15,7 +15,7 @@ def test_core_version_is_at_least_050() -> None:
 
 
 def test_packet_files_exist() -> None:
-    root = Path(".")
+    root = Path()
     for rel in (
         "docs/acceptance/release-gate-0.50.toml",
         "docs/acceptance/explorer-architecture-050.toml",

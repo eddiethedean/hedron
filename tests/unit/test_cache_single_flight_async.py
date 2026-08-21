@@ -82,8 +82,7 @@ def test_single_flight_async_safe_across_event_loops() -> None:
 
     async def owner_loader() -> str:
         owner_started.set()
-        while not release_owner.is_set():
-            await asyncio.sleep(0.01)
+        await asyncio.to_thread(release_owner.wait, 5.0)
         return "owner-value"
 
     def run_owner() -> None:

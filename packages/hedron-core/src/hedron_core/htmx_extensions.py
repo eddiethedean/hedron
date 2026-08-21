@@ -348,7 +348,7 @@ def _normalize_id_tuple(ids: Iterable[str]) -> tuple[str, ...]:
     for item in ids:
         seen[normalize_public_id(item)] = None
     by_id = _assets_by_public_id()
-    ordered = tuple(
+    return tuple(
         public_id
         for public_id, _asset in sorted(
             ((pid, by_id.get(pid)) for pid in seen),
@@ -356,7 +356,6 @@ def _normalize_id_tuple(ids: Iterable[str]) -> tuple[str, ...]:
         )
         if public_id
     )
-    return ordered
 
 
 def parse_htmx_extensions(value: object) -> ExtensionSet:

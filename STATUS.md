@@ -2,8 +2,8 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.56 **Published** as `v0.56.0` (2026-08-20; in-tree tip; tag/PyPI deferred). Phase 0.55 remains Verified in-tree.
-Living tip = `v0.56.0` (PyPI still `v0.54.0`; registry deferred).
+**Roadmap position:** phase 0.56 **Published** as `v0.56.0` (2026-08-20; in-tree tip; tag and PyPI published). Phase 0.55 remains Verified in-tree.
+Living tip = `v0.56.0` (PyPI serves `v0.56.0`; registry uploaded).
 **Date:** 2026-08-20
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
@@ -23,8 +23,8 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 
 **Phase focus:** Living train is **0.56** (D-097 / D-098 / RFC-0083) — security control plane
 [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557).
-`release-gate-0.56.toml` Verified rows; living tip `v0.56.0` (tag/PyPI deferred; `v0.54.0` on PyPI;
-`registry_status = "deferred"`). Prior Published **0.55** secure upgradeable workflows
+`release-gate-0.56.toml` Verified rows; living tip `v0.56.0` (tag and PyPI published; `v0.56.0` on PyPI;
+`registry_status = "uploaded"`). Prior Published **0.55** secure upgradeable workflows
 (D-095 / D-096 / RFC-0082; [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)).
 Prior Published **0.54** authoring-loop / chrome (D-093 / D-094 / RFC-0081;
 [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543)).
@@ -369,7 +369,7 @@ Verified; [#318](https://github.com/eddiethedean/hedron/issues/318); see
 [implementation requirements](docs/implementation/TYPE_DRIVEN_AUTHORING_044.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_44.md)).
 Phase **0.45** typed interaction ecosystem convergence is **Published** as `v0.45.0` (in-tree cut,
-tag/PyPI deferred; D-074 / D-077 / [RFC-0072](docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md);
+tag and PyPI published; D-074 / D-077 / [RFC-0072](docs/rfcs/RFC-0072-TYPED-INTERACTION-ECOSYSTEM.md);
 `release-gate-0.45.toml` Verified; [#328](https://github.com/eddiethedean/hedron/issues/328); see
 [implementation requirements](docs/implementation/TYPED_INTERACTION_ECOSYSTEM_045.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_45.md)).
@@ -377,13 +377,13 @@ Phase **0.46** package-native typed workflows is **Published** as `v0.46.0` (D-0
 `release-gate-0.46.toml` Verified; [#334](https://github.com/eddiethedean/hedron/issues/334); see
 [implementation requirements](docs/implementation/PACKAGE_NATIVE_WORKFLOWS_046.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_46.md)).
-Phase **0.47** first-class maps is **Published** as in-tree `v0.47.0` (tag/PyPI deferred;
+Phase **0.47** first-class maps is **Published** as in-tree `v0.47.0` (tag and PyPI published;
 D-078 / D-082 / RFC-0074; `release-gate-0.47.toml` Verified;
 tracking [#350](https://github.com/eddiethedean/hedron/issues/350); see
 [implementation requirements](docs/implementation/HEDRON_MAPS_047.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_47.md)).
 Phase **0.48** first-class HTMX extension integration is **Published** as in-tree `v0.48.0`
-(tag/PyPI deferred; D-080 / D-083 / RFC-0075; `release-gate-0.48.toml` Verified except
+(tag and PyPI published; D-080 / D-083 / RFC-0075; `release-gate-0.48.toml` Verified except
 `MORPH-048` **Deferred**; tracking [#373](https://github.com/eddiethedean/hedron/issues/373); see
 [implementation requirements](docs/implementation/HTMX_EXTENSION_INTEGRATION_048.md) and
 [acceptance packet](docs/acceptance/RELEASE_0_48.md)).

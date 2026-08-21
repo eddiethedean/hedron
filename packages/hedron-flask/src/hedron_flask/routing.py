@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 from urllib.parse import urlsplit
 
 from flask import Flask, Response, current_app, request, url_for
 
 from hedron_core.adapter import UrlReverseRequest
-from hedron_core.component import Component
+from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.mount import prefix_local_path
 from hedron_core.rendering import RenderResult
@@ -25,6 +25,16 @@ __all__ = [
 F = TypeVar("F", bound=Callable[..., Any])
 
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
+
+
+def _as_node_like(value: object) -> NodeLike | Component[Any]:
+    if isinstance(value, Component):
+        return value
+    if isinstance(value, ComponentNode):
+        return value
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return cast(NodeLike, value)
 
 
 class FlaskUrlReverser:
@@ -120,15 +130,17 @@ def hedron_route(
                     fragment_regions=fragment_regions,
                     allow_undeclared_targets=allow_undeclared_targets,
                 )
-            if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
+            if isinstance(value, (Component, str, ComponentNode)) or hasattr(
+                value, "__hedron_component__"
+            ):
                 return component_response(
-                    value,  # type: ignore[arg-type]
+                    _as_node_like(value),
                     authenticated=authenticated,
                     fragment_regions=fragment_regions,
                     allow_undeclared_targets=allow_undeclared_targets,
                 )
             return value
 
-        return wrapped  # type: ignore[return-value]
+        return cast(F, wrapped)
 
     return decorator

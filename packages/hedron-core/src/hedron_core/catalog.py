@@ -3,6 +3,10 @@
 Values are framework-neutral. The catalog indexes 0.43 descriptors and optional
 0.44 TypeSchema extensions. It never routes, validates, authorizes, executes, or
 exposes anything.
+
+Process-global registry: ``seal_interaction_catalog`` / ``get_sealed_catalog`` store a
+single sealed ``InteractionCatalog`` for the process; reset only via
+``reset_catalog_for_tests``.
 """
 
 from __future__ import annotations

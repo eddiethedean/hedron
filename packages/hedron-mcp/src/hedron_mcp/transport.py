@@ -7,6 +7,8 @@ import uuid
 from collections.abc import AsyncIterable, Callable, Mapping
 from typing import Protocol, cast
 
+from typing_extensions import TypeIs
+
 from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_mcp.bounds import BoundsError
 from hedron_mcp.compat import (
@@ -29,6 +31,45 @@ class McpHttpRequest(Protocol):
 
     async def body(self) -> bytes: ...
 
+    def stream(self) -> AsyncIterable[bytes]: ...
+
+
+def _is_json_value(value: object) -> TypeIs[JsonValue]:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return True
+    if isinstance(value, list):
+        return all(_is_json_value(item) for item in value)
+    if isinstance(value, dict):
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+    return False
+
+
+def _rpc_id(value: object) -> JsonValue:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    return str(value)
+
+
+def _as_json_object(value: object) -> JsonObject:
+    if isinstance(value, dict) and all(
+        isinstance(key, str) and _is_json_value(item) for key, item in value.items()
+    ):
+        return value
+    if isinstance(value, Mapping):
+        out: JsonObject = {}
+        for key, item in value.items():
+            out[str(key)] = item if _is_json_value(item) else str(item)
+        return out
+    return {}
+
+
+def _optional_str(value: object) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return value
+    return str(value)
+
 
 def _json_response(
     payload: Mapping[str, JsonValue],
@@ -44,13 +85,13 @@ def _json_response(
 def _error(req_id: object, code: int, message: str) -> JsonObject:
     return {
         "jsonrpc": "2.0",
-        "id": cast(JsonValue, req_id),
+        "id": _rpc_id(req_id),
         "error": {"code": code, "message": message},
     }
 
 
 def _result(req_id: object, result: JsonValue) -> JsonObject:
-    return {"jsonrpc": "2.0", "id": cast(JsonValue, req_id), "result": result}
+    return {"jsonrpc": "2.0", "id": _rpc_id(req_id), "result": result}
 
 
 def _cancel_key(req_id: object) -> str | None:
@@ -93,7 +134,9 @@ async def _read_body_bounded(request: McpHttpRequest, max_bytes: int) -> bytes:
     total = 0
     stream = getattr(request, "stream", None)
     if callable(stream):
-        async for chunk in cast(AsyncIterable[bytes], stream()):
+        # Protocol declares stream(); getattr keeps stubs without it working at runtime.
+        chunk_stream = cast(Callable[[], AsyncIterable[bytes]], stream)
+        async for chunk in chunk_stream():
             total += len(chunk)
             if total > max_bytes:
                 raise BoundsError(f"MCP request exceeds max_request_bytes={max_bytes}")
@@ -189,11 +232,11 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
     if not isinstance(body, dict):
         return _json_response(_error(None, -32600, "invalid request"), status_code=400)
 
-    body_obj = cast(JsonObject, body)
+    body_obj = _as_json_object(body)
     req_id = body_obj.get("id")
     method = str(body_obj.get("method") or "")
     raw_params = body_obj.get("params")
-    params: JsonObject = cast(JsonObject, raw_params) if isinstance(raw_params, dict) else {}
+    params: JsonObject = _as_json_object(raw_params) if isinstance(raw_params, dict) else {}
 
     principal = projection.resolve_principal(request)
     # Cancel keys are the client-visible JSON-RPC id, not a private server UUID (#171).
@@ -219,7 +262,7 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
             _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
 
         if method in {"initialize", "notifications/initialized"}:
-            version = negotiate_protocol_version(cast(str | None, params.get("protocolVersion")))
+            version = negotiate_protocol_version(_optional_str(params.get("protocolVersion")))
             caps = (
                 params.get("capabilities") if isinstance(params.get("capabilities"), dict) else {}
             )
@@ -260,13 +303,13 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
         projection.authorize(
             principal=principal,
             action=method,
-            resource=cast(str | None, params.get("uri") or params.get("name")),
+            resource=_optional_str(params.get("uri") or params.get("name")),
             tenant_id=_tenant_from(request, params),
             scopes=_scopes_from(request),
         )
 
         if method == "resources/list":
-            resources = [
+            resources: list[JsonValue] = [
                 {
                     "uri": item.uri,
                     "name": item.name,
@@ -281,7 +324,8 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
                 principal=principal,
                 detail={"count": len(resources)},
             )
-            return _json_response(_result(req_id, cast(JsonValue, {"resources": resources})))
+            result_payload: JsonObject = {"resources": resources}
+            return _json_response(_result(req_id, result_payload))
 
         if method == "resources/read":
             _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
@@ -298,27 +342,24 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
             return _json_response(
                 _result(
                     req_id,
-                    cast(
-                        JsonValue,
-                        {
-                            "contents": [
-                                {
-                                    "uri": uri,
-                                    "mimeType": content.get("mimeType", "application/json"),
-                                    "text": content.get("text", ""),
-                                }
-                            ]
-                        },
-                    ),
+                    {
+                        "contents": [
+                            {
+                                "uri": uri,
+                                "mimeType": str(content.get("mimeType", "application/json")),
+                                "text": str(content.get("text", "")),
+                            }
+                        ]
+                    },
                 )
             )
 
         if method == "tools/list":
-            tools = [
+            tools: list[JsonValue] = [
                 {
                     "name": tool.name,
                     "description": tool.description,
-                    "inputSchema": dict(tool.schema),
+                    "inputSchema": _as_json_object(dict(tool.schema)),
                     "annotations": {"readOnlyHint": not tool.mutate},
                 }
                 for tool in projection.list_tools()
@@ -329,13 +370,15 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
                 principal=principal,
                 detail={"count": len(tools)},
             )
-            return _json_response(_result(req_id, cast(JsonValue, {"tools": tools})))
+            tools_payload: JsonObject = {"tools": tools}
+            return _json_response(_result(req_id, tools_payload))
 
         if method == "tools/call":
             _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
             name = str(params.get("name") or "")
-            arguments = params.get("arguments") if isinstance(params.get("arguments"), dict) else {}
-            result = projection.call_tool(name, cast(JsonObject, arguments), principal=principal)
+            raw_arguments = params.get("arguments")
+            arguments = _as_json_object(raw_arguments) if isinstance(raw_arguments, dict) else {}
+            result = projection.call_tool(name, arguments, principal=principal)
             projection.audit.emit(
                 code="HED-MCP-CALL-TOOL",
                 kind="execution",
@@ -347,13 +390,10 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
             return _json_response(
                 _result(
                     req_id,
-                    cast(
-                        JsonValue,
-                        {
-                            "content": [{"type": "text", "text": json.dumps(result)}],
-                            "isError": False,
-                        },
-                    ),
+                    {
+                        "content": [{"type": "text", "text": json.dumps(result)}],
+                        "isError": False,
+                    },
                 )
             )
 

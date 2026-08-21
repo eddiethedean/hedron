@@ -665,59 +665,69 @@ async def element_detail_view(request: Request, logical_id: str) -> str:
     return shell(meta.tag_name, body, request=request, active="elements")
 
 
+def _collect_hdj_inventory(
+    request: Request,
+) -> tuple[list[JsonObject], set[str], list[str]]:
+    """Scan project roots for ``*.hdj`` files and build inventory reports (sync I/O)."""
+    from hedron_jinja import reconcile_csp
+    from hedron_jinja.source import inferred_capabilities, parse_hdj_source
+
+    reports: list[JsonObject] = []
+    caps: set[str] = set()
+    mismatches: list[str] = []
+    project_root = getattr(request.app.state, "hedron_project_root", None)
+    roots = project_component_roots(request)
+    search_roots = list(roots)
+    if project_root:
+        search_roots.append(Path(project_root))
+    seen: set[Path] = set()
+    for root in search_roots:
+        root = Path(root).resolve()
+        if root in seen or not root.exists():
+            continue
+        seen.add(root)
+        for path in sorted(root.rglob("*.hdj")):
+            if any(part.startswith(".") for part in path.parts):
+                continue
+            source = hdj_text_under_root(path, root)
+            if source is None:
+                continue
+            try:
+                rel = str(path.relative_to(root))
+                parsed = parse_hdj_source(rel, source)
+                required = sorted(
+                    set(inferred_capabilities(parsed)) | set(parsed.declaration.requires)
+                )
+                caps.update(required)
+                reports.append(
+                    cast(
+                        JsonObject,
+                        {
+                            "name": rel,
+                            "kind": str(parsed.declaration.kind),
+                            "capabilities": required,
+                        },
+                    )
+                )
+                mismatches.extend(
+                    reconcile_csp(
+                        None,
+                        required_capabilities=required,
+                        source_name=rel,
+                    )
+                )
+            except Exception as exc:  # noqa: BLE001
+                _logger.warning("HDJ inventory parse failed for %s: %s", path, exc)
+                reports.append({"name": str(path), "error": str(exc)})
+    return reports, caps, mismatches
+
+
 async def inventory_view(request: Request) -> str:
     """Production / HDJ inventory panel (phase 0.11)."""
     try:
-        from hedron_jinja import build_production_inventory, reconcile_csp
-        from hedron_jinja.source import inferred_capabilities, parse_hdj_source
+        from hedron_jinja import build_production_inventory
 
-        reports: list[JsonObject] = []
-        caps: set[str] = set()
-        mismatches: list[str] = []
-        project_root = getattr(request.app.state, "hedron_project_root", None)
-        roots = project_component_roots(request)
-        search_roots = list(roots)
-        if project_root:
-            search_roots.append(Path(project_root))
-        seen: set[Path] = set()
-        for root in search_roots:
-            root = Path(root).resolve()
-            if root in seen or not root.exists():
-                continue
-            seen.add(root)
-            for path in sorted(root.rglob("*.hdj")):
-                if any(part.startswith(".") for part in path.parts):
-                    continue
-                source = hdj_text_under_root(path, root)
-                if source is None:
-                    continue
-                try:
-                    rel = str(path.relative_to(root))
-                    parsed = parse_hdj_source(rel, source)
-                    required = sorted(
-                        set(inferred_capabilities(parsed)) | set(parsed.declaration.requires)
-                    )
-                    caps.update(required)
-                    reports.append(
-                        cast(
-                            JsonObject,
-                            {
-                                "name": rel,
-                                "kind": str(parsed.declaration.kind),
-                                "capabilities": required,
-                            },
-                        )
-                    )
-                    mismatches.extend(
-                        reconcile_csp(
-                            None,
-                            required_capabilities=required,
-                            source_name=rel,
-                        )
-                    )
-                except Exception as exc:  # noqa: BLE001
-                    _logger.warning("HDJ inventory parse failed for %s: %s", path, exc)
-                    reports.append({"name": str(path), "error": str(exc)})
+        reports, caps, mismatches = _collect_hdj_inventory(request)
         inv = build_production_inventory(
             template_reports=reports,
             capabilities=sorted(caps) or ("web.html", "jinja.core"),

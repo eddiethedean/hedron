@@ -70,7 +70,7 @@ class Waiver:
             raise ValueError("Waiver requires rationale and affected_users")
         if not self.remediation.strip():
             raise ValueError("Waiver requires remediation")
-        check = today or date.today()
+        check = today or datetime.now(UTC).date()
         if self.expires < check:
             raise error(
                 "HED-A11Y-0010",
@@ -311,7 +311,7 @@ class AccessibilityStatement:
     alternatives: list[str] = field(default_factory=list)
     tested_environments: list[str] = field(default_factory=list)
     assessment_approach: str = "Hedron automation + human review"
-    assessment_date: str = field(default_factory=lambda: date.today().isoformat())
+    assessment_date: str = field(default_factory=lambda: datetime.now(UTC).date().isoformat())
     approved_by: str | None = None
 
     def export(self) -> dict[str, Any]:

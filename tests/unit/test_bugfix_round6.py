@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import UTC, datetime
 
 import pytest
 
@@ -54,7 +54,7 @@ def _human_record(**updates: object) -> dict[str, object]:
         "task_id": "login",
         "result": "pass",
         "owner": "a11y",
-        "retest_date": date.today().isoformat(),
+        "retest_date": datetime.now(UTC).date().isoformat(),
         "redacted": True,
     }
     row.update(updates)

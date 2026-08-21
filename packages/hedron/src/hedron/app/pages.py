@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, ParamSpec, TypeVar, cast
+from typing import Any, ParamSpec, TypeVar, overload
 
 from fastapi import params
 from fastapi.routing import APIRouter
 
-from hedron.handles import ActionHandle, FragmentHandle
+from hedron.handles import ActionHandle, FragmentHandle, _as_node_like
 from hedron.routing.router import HedronRouter
+from hedron.type_authoring.classes import CommandHandler, RefreshableView
 from hedron.type_authoring.normalize import CompiledTypeHandler
 from hedron_core.addressable import AddressableDescriptor
 from hedron_core.bundles import FeatureBundle, FeatureProvider
@@ -23,12 +24,27 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
+def _route_dependencies(
+    dependencies: Sequence[params.Depends] | Sequence[object] | None,
+) -> Sequence[params.Depends] | None:
+    """Router APIs accept Depends only; callers may pass a wider sequence type."""
+    if dependencies is None:
+        return None
+    return dependencies  # type: ignore[return-value]
+
+
+def _stamp(obj: object, **attrs: object) -> None:
+    """Attach dynamic handler metadata without Any-casts."""
+    for name, value in attrs.items():
+        setattr(obj, name, value)
+
+
 def _apply_mapped_outcome(
     mapped: object,
     status: int,
     case_effects: object,
     *,
-    meta: object,
+    meta: CompiledTypeHandler | None,
     app_id: str,
 ) -> object:
     from hedron.handles import refresh
@@ -40,7 +56,7 @@ def _apply_mapped_outcome(
     if isinstance(case_effects, Refreshes):
         effect_result = refresh(*case_effects.targets)
     assert_declared_effects(
-        cast(CompiledTypeHandler | None, meta),
+        meta,
         effect_result,
         app_id=app_id,
     )
@@ -53,7 +69,7 @@ def _apply_mapped_outcome(
                 else compiled.content
             )
             return InteractionResult(
-                content=cast(NodeLike | None, content),
+                content=_as_node_like(content) if content is not None else None,
                 status_code=status,
                 trigger=compiled.trigger,
                 oob=compiled.oob,
@@ -63,7 +79,7 @@ def _apply_mapped_outcome(
     if status != 200 and not isinstance(
         mapped, (RefreshIntent, Patch, PatchSet, InteractionResult)
     ):
-        return InteractionResult(content=cast(NodeLike, mapped), status_code=status)
+        return InteractionResult(content=_as_node_like(mapped), status_code=status)
     return mapped
 
 
@@ -234,9 +250,10 @@ class HedronPagesMixin:
 
         return _include(self, feature, capabilities=capabilities)
 
+    @overload
     def refreshable(
         self,
-        path: str | Callable[P, R] | None = None,
+        path: Callable[..., Any] | type[RefreshableView[Any, Any]],
         *,
         key: str | None = None,
         name: str | None = None,
@@ -249,64 +266,93 @@ class HedronPagesMixin:
         include_in_schema: bool = False,
         dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
         **kwargs: Any,
-    ) -> FragmentHandle[Any, Any] | Callable[[Callable[P, R]], FragmentHandle[Any, Any]]:
+    ) -> FragmentHandle[Any, Any]: ...
+
+    @overload
+    def refreshable(
+        self,
+        path: str | None = None,
+        *,
+        key: str | None = None,
+        name: str | None = None,
+        host: FragmentHost | None = None,
+        loading: NodeLike | None = None,
+        error: NodeLike | str | None = None,
+        empty: NodeLike | None = None,
+        cache: CacheHint | None = None,
+        fallback: str | None = None,
+        include_in_schema: bool = False,
+        dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]: ...
+
+    def refreshable(
+        self,
+        path: str | Callable[P, R] | type[RefreshableView[Any, Any]] | None = None,
+        *,
+        key: str | None = None,
+        name: str | None = None,
+        host: FragmentHost | None = None,
+        loading: NodeLike | None = None,
+        error: NodeLike | str | None = None,
+        empty: NodeLike | None = None,
+        cache: CacheHint | None = None,
+        fallback: str | None = None,
+        include_in_schema: bool = False,
+        dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
+        **kwargs: Any,
+    ) -> FragmentHandle[Any, Any] | Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]:
         """Register a GET renderer and return a ``FragmentHandle``."""
         import inspect
 
         if inspect.isclass(path):
             from hedron.type_authoring import (
-                RefreshableView,
                 class_config_conflict,
                 compile_view_class,
             )
 
-            view_cls = cast("type[RefreshableView[Any, Any]]", path)
+            # compile_view_class validates RefreshableView; keep that error path.
+            view_cls = path
             class_config_conflict(
                 view_cls,
                 decorator_fallback=fallback,
                 decorator_path=None,
             )
-            compiled = compile_view_class(view_cls)
-            register = cast(
-                Callable[[Callable[P, R]], FragmentHandle[Any, Any]],
-                self.refreshable(
-                    None,
-                    key=key,
-                    name=name or getattr(view_cls, "__name__", None),
-                    host=host or getattr(view_cls, "host", None),
-                    loading=loading if loading is not None else getattr(view_cls, "loading", None),
-                    error=error if error is not None else getattr(view_cls, "error", None),
-                    empty=empty if empty is not None else getattr(view_cls, "empty", None),
-                    cache=cache if cache is not None else getattr(view_cls, "cache", None),
-                    fallback=fallback or getattr(view_cls, "fallback", None),
-                    include_in_schema=include_in_schema,
-                    dependencies=dependencies,
-                    **kwargs,
-                ),
+            compiled = compile_view_class(view_cls)  # type: ignore[arg-type]
+            register = self.refreshable(
+                None,
+                key=key,
+                name=name or getattr(view_cls, "__name__", None),
+                host=host or getattr(view_cls, "host", None),
+                loading=loading if loading is not None else getattr(view_cls, "loading", None),
+                error=error if error is not None else getattr(view_cls, "error", None),
+                empty=empty if empty is not None else getattr(view_cls, "empty", None),
+                cache=cache if cache is not None else getattr(view_cls, "cache", None),
+                fallback=fallback or getattr(view_cls, "fallback", None),
+                include_in_schema=include_in_schema,
+                dependencies=dependencies,
+                **kwargs,
             )
-            return register(cast(Callable[P, R], compiled))
+            return register(compiled)
 
-        if callable(path) and not inspect.isclass(path):
-            register = cast(
-                Callable[[Callable[P, R]], FragmentHandle[Any, Any]],
-                self.refreshable(
-                    None,
-                    key=key,
-                    name=name,
-                    host=host,
-                    loading=loading,
-                    error=error,
-                    empty=empty,
-                    cache=cache,
-                    fallback=fallback,
-                    include_in_schema=include_in_schema,
-                    dependencies=dependencies,
-                    **kwargs,
-                ),
+        if callable(path):
+            register = self.refreshable(
+                None,
+                key=key,
+                name=name,
+                host=host,
+                loading=loading,
+                error=error,
+                empty=empty,
+                cache=cache,
+                fallback=fallback,
+                include_in_schema=include_in_schema,
+                dependencies=dependencies,
+                **kwargs,
             )
             return register(path)
 
-        def decorator(fn: Callable[P, R]) -> FragmentHandle[Any, Any]:
+        def decorator(fn: Callable[..., Any]) -> FragmentHandle[Any, Any]:
             import inspect
 
             from hedron.handles import build_view_handle, wrap_endpoint_result
@@ -318,6 +364,7 @@ class HedronPagesMixin:
             resolved_empty = empty
             resolved_cache = cache
             resolved_fallback = fallback
+            handler: Callable[..., Any] = fn
             if inspect.isclass(fn):
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
                 resolved_host = host or getattr(fn, "host", None)
@@ -326,7 +373,7 @@ class HedronPagesMixin:
                 resolved_empty = empty if empty is not None else getattr(fn, "empty", None)
                 resolved_cache = cache if cache is not None else getattr(fn, "cache", None)
                 resolved_fallback = fallback or getattr(fn, "fallback", None)
-                fn = cast(Callable[P, R], compile_view_class(fn))
+                handler = compile_view_class(fn)  # type: ignore[arg-type]
 
             app_id = str(getattr(self, "hedron_app_id", "") or "")
             mount = str(getattr(getattr(self, "state", None), "hedron_mount_path", "") or "")
@@ -340,7 +387,7 @@ class HedronPagesMixin:
             if resolved_cache is not None:
                 view_host._cache = resolved_cache
             handle = build_view_handle(
-                fn,
+                handler,
                 app_id=app_id,
                 path=path if isinstance(path, str) else None,
                 key=key,
@@ -350,13 +397,13 @@ class HedronPagesMixin:
                 include_in_schema=include_in_schema,
                 mount_path=mount,
             )
-            endpoint = wrap_endpoint_result(cast(FragmentHandle[object, object], handle))
+            endpoint = wrap_endpoint_result(handle)
             self._root_router.component(
                 handle.path,
                 fragment_regions=(handle.region,),
                 name=handle.name,
                 include_in_schema=include_in_schema,
-                dependencies=cast(Sequence[params.Depends] | None, dependencies),
+                dependencies=_route_dependencies(dependencies),
                 **kwargs,
             )(endpoint)
             self._sync_root_route()
@@ -371,9 +418,10 @@ class HedronPagesMixin:
 
         return decorator
 
+    @overload
     def command(
         self,
-        path: str | Callable[P, R] | None = None,
+        path: Callable[..., Any] | type[CommandHandler[Any, Any]],
         *,
         method: str = "POST",
         name: str | None = None,
@@ -382,59 +430,80 @@ class HedronPagesMixin:
         dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
         outcomes: object | None = None,
         **kwargs: Any,
-    ) -> ActionHandle[Any, Any] | Callable[[Callable[P, R]], ActionHandle[Any, Any]]:
+    ) -> ActionHandle[Any, Any]: ...
+
+    @overload
+    def command(
+        self,
+        path: str | None = None,
+        *,
+        method: str = "POST",
+        name: str | None = None,
+        fallback: str | None = None,
+        include_in_schema: bool = False,
+        dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
+        outcomes: object | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[..., Any]], ActionHandle[Any, Any]]: ...
+
+    def command(
+        self,
+        path: str | Callable[P, R] | type[CommandHandler[Any, Any]] | None = None,
+        *,
+        method: str = "POST",
+        name: str | None = None,
+        fallback: str | None = None,
+        include_in_schema: bool = False,
+        dependencies: Sequence[params.Depends] | Sequence[object] | None = None,
+        outcomes: object | None = None,
+        **kwargs: Any,
+    ) -> ActionHandle[Any, Any] | Callable[[Callable[..., Any]], ActionHandle[Any, Any]]:
         """Register a mutation and return an ``ActionHandle``."""
         import inspect
 
         authorization = kwargs.pop("authorization", None)
         if inspect.isclass(path):
             from hedron.type_authoring import (
-                CommandHandler,
                 class_config_conflict,
                 compile_command_class,
             )
 
-            command_cls = cast("type[CommandHandler[Any, Any]]", path)
+            command_cls = path
             class_config_conflict(command_cls, decorator_fallback=fallback, decorator_path=None)
-            compiled = compile_command_class(command_cls)
-            cast(Any, compiled).__hedron_outcomes__ = (
-                getattr(command_cls, "outcomes", None) or outcomes
+            compiled = compile_command_class(command_cls)  # type: ignore[arg-type]
+            _stamp(
+                compiled,
+                __hedron_outcomes__=getattr(command_cls, "outcomes", None) or outcomes,
+                __hedron_effects__=getattr(command_cls, "effects", None),
             )
-            cast(Any, compiled).__hedron_effects__ = getattr(command_cls, "effects", None)
-            register = cast(
-                Callable[[Callable[P, R]], ActionHandle[Any, Any]],
-                self.command(
-                    None,
-                    method=method,
-                    name=name or getattr(command_cls, "__name__", None),
-                    fallback=fallback or getattr(command_cls, "fallback", None),
-                    include_in_schema=include_in_schema,
-                    dependencies=dependencies,
-                    authorization=authorization,
-                    outcomes=outcomes,
-                    **kwargs,
-                ),
+            register = self.command(
+                None,
+                method=method,
+                name=name or getattr(command_cls, "__name__", None),
+                fallback=fallback or getattr(command_cls, "fallback", None),
+                include_in_schema=include_in_schema,
+                dependencies=dependencies,
+                authorization=authorization,
+                outcomes=outcomes,
+                **kwargs,
             )
-            return register(cast(Callable[P, R], compiled))
+            return register(compiled)
 
-        if callable(path) and not inspect.isclass(path):
-            register = cast(
-                Callable[[Callable[P, R]], ActionHandle[Any, Any]],
-                self.command(
-                    None,
-                    method=method,
-                    name=name,
-                    fallback=fallback,
-                    include_in_schema=include_in_schema,
-                    dependencies=dependencies,
-                    authorization=authorization,
-                    outcomes=outcomes,
-                    **kwargs,
-                ),
+        if callable(path):
+            register = self.command(
+                None,
+                method=method,
+                name=name,
+                fallback=fallback,
+                include_in_schema=include_in_schema,
+                dependencies=dependencies,
+                authorization=authorization,
+                outcomes=outcomes,
+                **kwargs,
             )
             return register(path)
 
-        def decorator(fn: Callable[P, R]) -> ActionHandle[Any, Any]:
+        def decorator(fn: Callable[..., Any]) -> ActionHandle[Any, Any]:
             import contextlib
             import functools
             import inspect
@@ -457,22 +526,24 @@ class HedronPagesMixin:
             from hedron_core.updates import Patch, PatchSet, RefreshIntent
 
             resolved_fallback = fallback
+            handler: Callable[..., Any] = fn
             if inspect.isclass(fn):
                 class_config_conflict(fn, decorator_fallback=fallback, decorator_path=path)
-                compiled_fn = compile_command_class(fn)
-                cast(Any, compiled_fn).__hedron_outcomes__ = (
-                    getattr(fn, "outcomes", None) or outcomes
+                compiled_fn = compile_command_class(fn)  # type: ignore[arg-type]
+                _stamp(
+                    compiled_fn,
+                    __hedron_outcomes__=getattr(fn, "outcomes", None) or outcomes,
+                    __hedron_effects__=getattr(fn, "effects", None),
                 )
-                cast(Any, compiled_fn).__hedron_effects__ = getattr(fn, "effects", None)
                 resolved_fallback = fallback or getattr(fn, "fallback", None)
-                fn = cast(Callable[P, R], compiled_fn)
+                handler = compiled_fn
             elif outcomes is not None and getattr(fn, "__hedron_outcomes__", None) is None:
-                cast(Any, fn).__hedron_outcomes__ = outcomes
+                _stamp(fn, __hedron_outcomes__=outcomes)
 
             app_id = str(getattr(self, "hedron_app_id", "") or "")
             mount = str(getattr(getattr(self, "state", None), "hedron_mount_path", "") or "")
             handle = build_command_handle(
-                fn,
+                handler,
                 app_id=app_id,
                 path=path if isinstance(path, str) else None,
                 method=method,
@@ -482,14 +553,14 @@ class HedronPagesMixin:
                 mount_path=mount,
             )
 
-            @functools.wraps(fn)
+            @functools.wraps(handler)
             async def endpoint(*args: Any, **kw: Any) -> Any:
                 call_kw = dict(kw)
                 meta = handle.type_meta
                 if meta is not None and getattr(meta, "modeled", False):
                     reject_json_formbody(meta, current_request.get())
                     call_kw = reconstruct_kwargs(meta, call_kw)
-                result = await await_if_needed(fn(*args, **call_kw))
+                result = await await_if_needed(handler(*args, **call_kw))
                 outcomes_map = getattr(meta, "outcomes", None) if meta is not None else None
                 if outcomes_map is not None:
                     mapped, status, case_effects = outcomes_map.map_result(result)
@@ -502,7 +573,7 @@ class HedronPagesMixin:
 
                 result = apply_action_handle_effects(
                     result,
-                    cast(ActionHandle[object, object], handle),
+                    handle,
                     app_id=app_id,
                 )
                 request = current_request.get()
@@ -518,20 +589,21 @@ class HedronPagesMixin:
                 return result
 
             if authorization is not None:
-                cast(Any, endpoint)._hedron_requires_scopes = authorization
+                _stamp(endpoint, _hedron_requires_scopes=authorization)
             meta = handle.type_meta
             if meta is not None:
                 media = formbody_media_types(meta)
                 if media:
-                    cast(Any, endpoint)._hedron_form_media = media
+                    _stamp(endpoint, _hedron_form_media=media)
             with contextlib.suppress(TypeError, ValueError):
                 if meta is not None:
-                    cast(Any, endpoint).__signature__ = apply_modeled_signature(fn, meta)
+                    _stamp(endpoint, __signature__=apply_modeled_signature(handler, meta))
                 else:
                     from hedron.type_authoring.signature import compile_injected_depends
 
-                    cast(Any, endpoint).__signature__ = compile_injected_depends(
-                        inspect.signature(fn)
+                    _stamp(
+                        endpoint,
+                        __signature__=compile_injected_depends(inspect.signature(handler)),
                     )
             from hedron.routing.router import _normalize_fragment_regions
 
@@ -542,7 +614,7 @@ class HedronPagesMixin:
                 method=handle.method,
                 name=handle.name,
                 include_in_schema=include_in_schema,
-                dependencies=cast(Sequence[params.Depends] | None, dependencies),
+                dependencies=_route_dependencies(dependencies),
                 fragment_regions=regions,
                 **kwargs,
             )(endpoint)

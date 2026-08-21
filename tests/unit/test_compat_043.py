@@ -105,8 +105,7 @@ def test_044_handoff_does_not_change_base_fingerprint_or_forms() -> None:
 
     class DummyModelAdapter(StructuralBindingAdapter):
         def bind(self, plan: BindingPlan, values, *, path: str):
-            bound = structural_bind(plan, values, path=path)
-            return bound
+            return structural_bind(plan, values, path=path)
 
     adapter = DummyModelAdapter()
     plan = BindingPlan(query_params=("q",))

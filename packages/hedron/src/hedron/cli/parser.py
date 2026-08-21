@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from typing import Any
 
 from hedron.cli.commands.accel_status import _cmd_accel_status
 from hedron.cli.commands.audit_components import _cmd_audit_components
@@ -26,6 +27,13 @@ from hedron.cli.commands.upgrade_report import _cmd_upgrade_report
 
 
 def main(argv: list[str] | None = None) -> None:
+    parser = _build_parser()
+    args = parser.parse_args(argv)
+    raise SystemExit(args.func(args))
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    """Assemble the root ``hedron`` CLI parser and all subcommands."""
     parser = argparse.ArgumentParser(prog="hedron", description="Hedron CLI")
     parser.add_argument(
         "--app",
@@ -33,7 +41,22 @@ def main(argv: list[str] | None = None) -> None:
         default=None,
     )
     sub = parser.add_subparsers(dest="command", required=True)
+    _register_catalog_commands(sub)
+    _register_inspect_commands(sub)
+    _register_scaffold_commands(sub)
+    _register_check_commands(sub)
+    _register_discovery_commands(sub)
+    _register_package_commands(sub)
+    _register_audit_commands(sub)
+    _register_runtime_commands(sub)
+    _register_theme_commands(sub)
+    _register_migrate_commands(sub)
+    _register_upgrade_commands(sub)
+    return parser
 
+
+def _register_catalog_commands(sub: Any) -> None:
+    """Register routes/components/preview/testgen subcommands."""
     routes_p = sub.add_parser("routes", help="List registered Hedron routes")
     routes_p.add_argument(
         "--document",
@@ -70,6 +93,9 @@ def main(argv: list[str] | None = None) -> None:
     )
     testgen_p.set_defaults(func=_cmd_testgen)
 
+
+def _register_inspect_commands(sub: Any) -> None:
+    """Register inspect and eject subcommands."""
     inspect_p = sub.add_parser(
         "inspect",
         help="Explain a component's styles, dependencies, and accessibility contract",
@@ -102,6 +128,9 @@ def main(argv: list[str] | None = None) -> None:
     eject_p.add_argument("--force", action="store_true")
     eject_p.set_defaults(func=_cmd_eject)
 
+
+def _register_scaffold_commands(sub: Any) -> None:
+    """Register build and new subcommands."""
     build_p = sub.add_parser("build", help="Compile CSS/assets into a build manifest")
     build_p.add_argument("--project", default=None)
     build_p.add_argument("--dev", action="store_true", help="Use readable development names")
@@ -124,6 +153,9 @@ def main(argv: list[str] | None = None) -> None:
     )
     new_p.set_defaults(func=_cmd_new)
 
+
+def _register_check_commands(sub: Any) -> None:
+    """Register check and security-check subcommands."""
     check_p = sub.add_parser("check", help="Run project diagnostics")
     check_p.add_argument("--project", default=None)
     check_p.add_argument(
@@ -185,6 +217,9 @@ def main(argv: list[str] | None = None) -> None:
     )
     security_check_p.set_defaults(func=_cmd_security_check)
 
+
+def _register_discovery_commands(sub: Any) -> None:
+    """Register discover and fleet subcommands."""
     discover_p = sub.add_parser(
         "discover",
         help="List curated public API names with stability inventory tags",
@@ -209,6 +244,9 @@ def main(argv: list[str] | None = None) -> None:
     )
     fleet_p.set_defaults(func=_cmd_fleet)
 
+
+def _register_package_commands(sub: Any) -> None:
+    """Register package doctor subcommands."""
     package_p = sub.add_parser(
         "package",
         help="External package-author tooling for Hedron plugin distributions",
@@ -232,6 +270,9 @@ def main(argv: list[str] | None = None) -> None:
     )
     package_doctor_p.set_defaults(func=_cmd_package_doctor)
 
+
+def _register_audit_commands(sub: Any) -> None:
+    """Register graph, audit-components, conformance, and accel-status."""
     graph_p = sub.add_parser("graph", help="Component dependency graph")
     graph_p.set_defaults(func=_cmd_graph)
 
@@ -251,6 +292,9 @@ def main(argv: list[str] | None = None) -> None:
     )
     accel_p.set_defaults(func=_cmd_accel_status)
 
+
+def _register_runtime_commands(sub: Any) -> None:
+    """Register dev and run subcommands."""
     dev_p = sub.add_parser("dev", help="Watch Python/Jinja/CSS/assets and rebuild atomically")
     dev_p.add_argument("--project", default=None)
     dev_p.add_argument("--interval", type=float, default=0.5)
@@ -288,6 +332,9 @@ def main(argv: list[str] | None = None) -> None:
     )
     run_p.set_defaults(func=_cmd_run_app)
 
+
+def _register_theme_commands(sub: Any) -> None:
+    """Register theme and style subcommands."""
     theme_p = sub.add_parser("theme", help="Theme token and contrast diagnostics")
     theme_sub = theme_p.add_subparsers(dest="theme_command", required=True)
     theme_check_p = theme_sub.add_parser(
@@ -323,6 +370,9 @@ def main(argv: list[str] | None = None) -> None:
     style_check_p.add_argument("--format", choices=("text", "json"), default="text")
     style_check_p.set_defaults(func=_cmd_style_check)
 
+
+def _register_migrate_commands(sub: Any) -> None:
+    """Register migrate assistants."""
     migrate_p = sub.add_parser(
         "migrate",
         help="Reviewable framework migration assistants (RFC-0061)",
@@ -332,6 +382,9 @@ def main(argv: list[str] | None = None) -> None:
 
     build_streamlit_parser(migrate_sub)
 
+
+def _register_upgrade_commands(sub: Any) -> None:
+    """Register upgrade-report."""
     upgrade_p = sub.add_parser(
         "upgrade-report",
         help="Offline application upgrade compatibility report (0.55)",
@@ -355,9 +408,6 @@ def main(argv: list[str] | None = None) -> None:
         help="Exit 0 even when definite breaks are present",
     )
     upgrade_p.set_defaults(func=_cmd_upgrade_report)
-
-    args = parser.parse_args(argv)
-    raise SystemExit(args.func(args))
 
 
 if __name__ == "__main__":

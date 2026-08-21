@@ -100,8 +100,7 @@ class MappingCapabilityProvider:
 def resolve_capability_provider(request: Any) -> CapabilityProvider | None:
     app = getattr(request, "app", None)
     state = getattr(app, "state", None) if app is not None else None
-    provider = getattr(state, "hedron_capabilities", None) if state is not None else None
-    return provider
+    return getattr(state, "hedron_capabilities", None) if state is not None else None
 
 
 def evaluate_capability(

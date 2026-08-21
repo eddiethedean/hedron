@@ -129,139 +129,47 @@ class TypeNormalizer:
         hints = _safe_hints(fn)
         signature = inspect.signature(fn)
         injected = _injected_names(signature, hints)
-        view_hits: list[tuple[str, type[BaseModel], ViewParams]] = []
-        form_hits: list[tuple[str, type[BaseModel], FormBody]] = []
-        extra_plain: list[str] = []
-        for name, parameter in signature.parameters.items():
-            annotation = hints.get(name, parameter.annotation)
-            base, metadata = _split_annotated(annotation)
-            sources = [item for item in metadata if isinstance(item, (ViewParams, FormBody))]
-            if len(sources) > 1:
-                raise error(
-                    HED_TYPE_0002,
-                    title="Conflicting Hedron source markers",
-                    explanation=f"Parameter {name!r} carries more than one source marker.",
-                    remediation="Keep ViewParams and FormBody on distinct parameters.",
-                )
-            if not sources:
-                if name not in injected and parameter.kind not in {
-                    inspect.Parameter.VAR_POSITIONAL,
-                    inspect.Parameter.VAR_KEYWORD,
-                }:
-                    extra_plain.append(name)
-                continue
-            if not _is_model(base):
-                raise error(
-                    HED_TYPE_0003,
-                    title="Source marker on a non-model type",
-                    explanation=f"Parameter {name!r} must be a Pydantic BaseModel.",
-                    remediation="Annotate a BaseModel (or Hedron Model/FormModel) subclass.",
-                )
-            marker = sources[0]
-            if isinstance(marker, ViewParams):
-                if kind != "view":
-                    raise error(
-                        HED_TYPE_0002,
-                        title="ViewParams on a command",
-                        explanation="ViewParams is only valid on refreshable handlers.",
-                        remediation="Use FormBody for command input.",
-                    )
-                view_hits.append((name, base, marker))
-            else:
-                if kind != "command":
-                    raise error(
-                        HED_TYPE_0002,
-                        title="FormBody on a view",
-                        explanation="FormBody is only valid on command handlers.",
-                        remediation="Use ViewParams for refreshable bind models.",
-                    )
-                form_hits.append((name, base, marker))
-        if len(view_hits) > 1 or len(form_hits) > 1:
-            raise error(
-                HED_TYPE_0002,
-                title="Duplicate boundary parameter",
-                explanation="A handler may have at most one ViewParams and one FormBody.",
-                remediation="Collapse extra boundary models.",
-            )
-        if (view_hits or form_hits) and extra_plain:
-            raise error(
-                HED_TYPE_0002,
-                title="Bindable parameter outside the boundary model",
-                explanation=(
-                    f"Parameters {extra_plain} are not injected and not part of the marked model."
-                ),
-                remediation="Move those fields onto the ViewParams/FormBody model.",
-            )
+        view_hits, form_hits, _extra_plain = _collect_boundary_hits(
+            signature, hints, kind=kind, injected=injected
+        )
         refreshes, updates = _return_effects(hints.get("return", signature.return_annotation))
         class_refresh, class_update = _class_effect_ids(fn)
-        if (
-            not view_hits
-            and not form_hits
-            and not refreshes
-            and not updates
-            and outcomes is None
-            and not class_refresh
-            and not class_update
+        if _is_unmodeled(
+            view_hits,
+            form_hits,
+            refreshes,
+            updates,
+            outcomes,
+            class_refresh,
+            class_update,
         ):
-            return CompiledTypeHandler(
-                modeled=False,
+            return _unmodeled_handler(
+                fn,
                 kind=kind,
-                param_name=None,
-                model_type=None,
-                source=None,
-                fields=(),
-                binding_plan=BindingPlan(),
-                injected_names=injected,
-                declared_refresh_ids=tuple(
-                    getattr(refreshes, "target_ids", ()) if refreshes else ()
-                ),
-                declared_update_ids=tuple(getattr(updates, "target_ids", ()) if updates else ()),
+                injected=injected,
+                refreshes=refreshes,
+                updates=updates,
                 outcomes=outcomes,
-                adapter=None,
-                schema=None,
-                original=fn,
             )
         hit = view_hits[0] if view_hits else (form_hits[0] if form_hits else None)
         model_type = hit[1] if hit else None
         source = hit[2] if hit else None
         param_name = hit[0] if hit else None
-        path_names = tuple(_PATH_PARAM_RE.findall(path or ""))
-        fields: tuple[FieldRecord, ...] = ()
-        disposition: dict[str, str] = {}
-        sensitive: list[str] = []
-        identity: list[str] = []
-        encoding: str | None = None
-        if model_type is not None:
-            fields, disposition, sensitive, identity = _walk_model(
-                model_type,
-                source=source,
-                path_names=path_names,
-            )
-            if isinstance(source, FormBody):
-                encoding = _resolve_encoding(source, fields)
-            plan = _plan_from_fields(fields)
-            for record in fields:
-                if record.sensitive and record.location in {"path", "query"}:
-                    raise error(
-                        HED_TYPE_0010,
-                        title="Sensitive value cannot enter a public URL",
-                        explanation=(
-                            f"Field {record.path!r} is Sensitive and would be "
-                            f"{record.location}-bound."
-                        ),
-                        remediation="Keep secrets on dependencies, not ViewParams URL fields.",
-                    )
-        else:
-            plan = BindingPlan()
-        adapter = None
-        schema = None
-        if model_type is not None:
-            adapter = PydanticBindingAdapter(
+        fields, disposition, sensitive, identity, encoding, plan = _bound_model_fields(
+            model_type,
+            source=source,
+            path=path,
+        )
+        adapter = (
+            PydanticBindingAdapter(
                 model_type,
                 injected_names=injected,
                 identity_fields=tuple(identity),
                 sensitive_fields=tuple(sensitive),
             )
+            if model_type is not None
+            else None
+        )
         declared_refresh = tuple(getattr(refreshes, "target_ids", ()) if refreshes else ()) + (
             class_refresh
         )
@@ -273,58 +181,24 @@ class TypeNormalizer:
             return_annotation = hints.get("return", signature.return_annotation)
             if return_annotation is not inspect.Parameter.empty:
                 outcomes.validate_union(return_annotation)
+        schema = None
         if model_type is not None or effect == "declared" or outcomes is not None:
-            field_paths: list[Mapping[str, JsonValue]] = [
-                {
-                    "path": item.path,
-                    "name": item.name,
-                    "alias": item.alias,
-                    "required": item.required,
-                    "location": item.location,
-                    "disposition": item.disposition,
-                    "sensitive": item.sensitive,
-                    "identity": item.identity,
-                    "control_kind": item.control_kind,
-                }
-                for item in fields
-            ]
-            input_proj, output_proj, shared, write_only, read_only = projections_from_model(
-                model_type,
-                sensitive=tuple(sensitive),
-            )
-            schema = TypeSchema(
-                handler_fingerprint=stable_fingerprint(
-                    {
-                        "name": handler_name or getattr(fn, "__name__", ""),
-                        "qualname": getattr(fn, "__qualname__", ""),
-                        "module": getattr(fn, "__module__", ""),
-                    }
-                ),
-                model_fingerprint=stable_fingerprint(
-                    _model_config(model_type) if model_type else {}
-                ),
-                handler_kind="command" if kind == "command" else "view",
-                boundary_sources=tuple(
-                    name
-                    for name in (
-                        "ViewParams" if view_hits else None,
-                        "FormBody" if form_hits else None,
-                    )
-                    if name
-                ),
-                field_paths=tuple(field_paths),
-                control_dispositions=disposition,
-                sensitivity_flags=tuple(sensitive),
-                identity_flags=tuple(identity),
-                effect_knowledge="declared" if effect == "declared" else "dynamic",
-                declared_target_ids=declared_refresh + declared_update,
-                outcome_variant_ids=outcomes.variant_ids if outcomes else (),
-                fallback_cache_projection={"fallback": fallback} if fallback else {},
-                input_projection=input_proj,
-                output_projection=output_proj,
-                shared_fields=shared,
-                write_only_fields=write_only,
-                read_only_fields=read_only,
+            schema = _build_type_schema(
+                fn,
+                kind=kind,
+                handler_name=handler_name,
+                fallback=fallback,
+                model_type=model_type,
+                view_hits=view_hits,
+                form_hits=form_hits,
+                fields=fields,
+                disposition=disposition,
+                sensitive=sensitive,
+                identity=identity,
+                effect=effect,
+                declared_refresh=declared_refresh,
+                declared_update=declared_update,
+                outcomes=outcomes,
             )
         return CompiledTypeHandler(
             modeled=model_type is not None,
@@ -343,6 +217,240 @@ class TypeNormalizer:
             form_encoding=encoding,
             original=fn,
         )
+
+
+def _collect_boundary_hits(
+    signature: inspect.Signature,
+    hints: Mapping[str, object],
+    *,
+    kind: str,
+    injected: frozenset[str],
+) -> tuple[
+    list[tuple[str, type[BaseModel], ViewParams]],
+    list[tuple[str, type[BaseModel], FormBody]],
+    list[str],
+]:
+    """Classify parameters into ViewParams/FormBody hits vs plain bindables."""
+    view_hits: list[tuple[str, type[BaseModel], ViewParams]] = []
+    form_hits: list[tuple[str, type[BaseModel], FormBody]] = []
+    extra_plain: list[str] = []
+    for name, parameter in signature.parameters.items():
+        annotation = hints.get(name, parameter.annotation)
+        base, metadata = _split_annotated(annotation)
+        sources = [item for item in metadata if isinstance(item, (ViewParams, FormBody))]
+        if len(sources) > 1:
+            raise error(
+                HED_TYPE_0002,
+                title="Conflicting Hedron source markers",
+                explanation=f"Parameter {name!r} carries more than one source marker.",
+                remediation="Keep ViewParams and FormBody on distinct parameters.",
+            )
+        if not sources:
+            if name not in injected and parameter.kind not in {
+                inspect.Parameter.VAR_POSITIONAL,
+                inspect.Parameter.VAR_KEYWORD,
+            }:
+                extra_plain.append(name)
+            continue
+        if not _is_model(base):
+            raise error(
+                HED_TYPE_0003,
+                title="Source marker on a non-model type",
+                explanation=f"Parameter {name!r} must be a Pydantic BaseModel.",
+                remediation="Annotate a BaseModel (or Hedron Model/FormModel) subclass.",
+            )
+        marker = sources[0]
+        if isinstance(marker, ViewParams):
+            if kind != "view":
+                raise error(
+                    HED_TYPE_0002,
+                    title="ViewParams on a command",
+                    explanation="ViewParams is only valid on refreshable handlers.",
+                    remediation="Use FormBody for command input.",
+                )
+            view_hits.append((name, base, marker))
+        else:
+            if kind != "command":
+                raise error(
+                    HED_TYPE_0002,
+                    title="FormBody on a view",
+                    explanation="FormBody is only valid on command handlers.",
+                    remediation="Use ViewParams for refreshable bind models.",
+                )
+            form_hits.append((name, base, marker))
+    if len(view_hits) > 1 or len(form_hits) > 1:
+        raise error(
+            HED_TYPE_0002,
+            title="Duplicate boundary parameter",
+            explanation="A handler may have at most one ViewParams and one FormBody.",
+            remediation="Collapse extra boundary models.",
+        )
+    if (view_hits or form_hits) and extra_plain:
+        raise error(
+            HED_TYPE_0002,
+            title="Bindable parameter outside the boundary model",
+            explanation=(
+                f"Parameters {extra_plain} are not injected and not part of the marked model."
+            ),
+            remediation="Move those fields onto the ViewParams/FormBody model.",
+        )
+    return view_hits, form_hits, extra_plain
+
+
+def _is_unmodeled(
+    view_hits: Sequence[object],
+    form_hits: Sequence[object],
+    refreshes: Refreshes | None,
+    updates: Updates | None,
+    outcomes: OutcomeMap[Any] | None,
+    class_refresh: tuple[str, ...],
+    class_update: tuple[str, ...],
+) -> bool:
+    return (
+        not view_hits
+        and not form_hits
+        and not refreshes
+        and not updates
+        and outcomes is None
+        and not class_refresh
+        and not class_update
+    )
+
+
+def _unmodeled_handler(
+    fn: Callable[..., object],
+    *,
+    kind: str,
+    injected: frozenset[str],
+    refreshes: Refreshes | None,
+    updates: Updates | None,
+    outcomes: OutcomeMap[Any] | None,
+) -> CompiledTypeHandler:
+    return CompiledTypeHandler(
+        modeled=False,
+        kind=kind,
+        param_name=None,
+        model_type=None,
+        source=None,
+        fields=(),
+        binding_plan=BindingPlan(),
+        injected_names=injected,
+        declared_refresh_ids=tuple(getattr(refreshes, "target_ids", ()) if refreshes else ()),
+        declared_update_ids=tuple(getattr(updates, "target_ids", ()) if updates else ()),
+        outcomes=outcomes,
+        adapter=None,
+        schema=None,
+        original=fn,
+    )
+
+
+def _bound_model_fields(
+    model_type: type[BaseModel] | None,
+    *,
+    source: ViewParams | FormBody | None,
+    path: str | None,
+) -> tuple[
+    tuple[FieldRecord, ...],
+    dict[str, str],
+    list[str],
+    list[str],
+    str | None,
+    BindingPlan,
+]:
+    """Walk the boundary model (if any) into field records and a binding plan."""
+    if model_type is None:
+        return (), {}, [], [], None, BindingPlan()
+    path_names = tuple(_PATH_PARAM_RE.findall(path or ""))
+    fields, disposition, sensitive, identity = _walk_model(
+        model_type,
+        source=source,
+        path_names=path_names,
+    )
+    encoding: str | None = None
+    if isinstance(source, FormBody):
+        encoding = _resolve_encoding(source, fields)
+    plan = _plan_from_fields(fields)
+    for record in fields:
+        if record.sensitive and record.location in {"path", "query"}:
+            raise error(
+                HED_TYPE_0010,
+                title="Sensitive value cannot enter a public URL",
+                explanation=(
+                    f"Field {record.path!r} is Sensitive and would be {record.location}-bound."
+                ),
+                remediation="Keep secrets on dependencies, not ViewParams URL fields.",
+            )
+    return fields, disposition, sensitive, identity, encoding, plan
+
+
+def _build_type_schema(
+    fn: Callable[..., object],
+    *,
+    kind: str,
+    handler_name: str,
+    fallback: str | None,
+    model_type: type[BaseModel] | None,
+    view_hits: Sequence[object],
+    form_hits: Sequence[object],
+    fields: Sequence[FieldRecord],
+    disposition: Mapping[str, str],
+    sensitive: Sequence[str],
+    identity: Sequence[str],
+    effect: str,
+    declared_refresh: tuple[str, ...],
+    declared_update: tuple[str, ...],
+    outcomes: OutcomeMap[Any] | None,
+) -> TypeSchema:
+    field_paths: list[Mapping[str, JsonValue]] = [
+        {
+            "path": item.path,
+            "name": item.name,
+            "alias": item.alias,
+            "required": item.required,
+            "location": item.location,
+            "disposition": item.disposition,
+            "sensitive": item.sensitive,
+            "identity": item.identity,
+            "control_kind": item.control_kind,
+        }
+        for item in fields
+    ]
+    input_proj, output_proj, shared, write_only, read_only = projections_from_model(
+        model_type,
+        sensitive=tuple(sensitive),
+    )
+    return TypeSchema(
+        handler_fingerprint=stable_fingerprint(
+            {
+                "name": handler_name or getattr(fn, "__name__", ""),
+                "qualname": getattr(fn, "__qualname__", ""),
+                "module": getattr(fn, "__module__", ""),
+            }
+        ),
+        model_fingerprint=stable_fingerprint(_model_config(model_type) if model_type else {}),
+        handler_kind="command" if kind == "command" else "view",
+        boundary_sources=tuple(
+            name
+            for name in (
+                "ViewParams" if view_hits else None,
+                "FormBody" if form_hits else None,
+            )
+            if name
+        ),
+        field_paths=tuple(field_paths),
+        control_dispositions=dict(disposition),
+        sensitivity_flags=tuple(sensitive),
+        identity_flags=tuple(identity),
+        effect_knowledge="declared" if effect == "declared" else "dynamic",
+        declared_target_ids=declared_refresh + declared_update,
+        outcome_variant_ids=outcomes.variant_ids if outcomes else (),
+        fallback_cache_projection={"fallback": fallback} if fallback else {},
+        input_projection=input_proj,
+        output_projection=output_proj,
+        shared_fields=shared,
+        write_only_fields=write_only,
+        read_only_fields=read_only,
+    )
 
 
 def inspect_handler(

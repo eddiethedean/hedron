@@ -9,7 +9,7 @@ import threading
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 R = TypeVar("R")
 
@@ -95,7 +95,7 @@ class InMemoryCacheBackend:
         with self._lock:
             hit, cached = self.lookup(key)
             if hit:
-                return cached  # type: ignore[return-value]
+                return cast(R, cached)
             if key in self._flights:
                 event = self._flights[key]
                 self._flight_waiters[key] = self._flight_waiters.get(key, 0) + 1
@@ -110,7 +110,7 @@ class InMemoryCacheBackend:
                 event.wait()
                 if key in self._flight_errors:
                     raise self._flight_errors[key]
-                return self._flight_results[key]  # type: ignore[return-value]
+                return cast(R, self._flight_results[key])
             finally:
                 with self._lock:
                     remaining = self._flight_waiters.get(key, 1) - 1

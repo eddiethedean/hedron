@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Sequence
-from typing import Generic, Protocol, TypeVar, cast, runtime_checkable
+from typing import Any, Generic, Protocol, TypeVar, cast, runtime_checkable
 
 from hedron_core.diagnostics import error
 from hedron_data.plans import TransformPlan, plan_from_query
@@ -75,6 +75,11 @@ class _HasScalarOne(Protocol):
     def scalar_one(self) -> object: ...
 
 
+@runtime_checkable
+class _ColumnElement(Protocol):
+    def ilike(self, other: object, escape: str | None = None) -> object: ...
+
+
 def require_sqlalchemy() -> _SQLAlchemyModule:
     try:
         import sqlalchemy
@@ -85,7 +90,8 @@ def require_sqlalchemy() -> _SQLAlchemyModule:
             explanation="SQLAlchemy adapters require SQLAlchemy.",
             remediation='Install with: pip install "hedron-data[sqlalchemy]"',
         ) from exc
-    return cast(_SQLAlchemyModule, sqlalchemy)
+    # Empty Protocol: any imported module structurally satisfies the presence check.
+    return sqlalchemy
 
 
 def _fetch_rows(result: object) -> list[object]:
@@ -107,10 +113,14 @@ def _fetch_rows(result: object) -> list[object]:
     return []
 
 
-def _column_from_selectable(statement: object, name: str) -> object:
+def _column_from_selectable(statement: object, name: str) -> _ColumnElement:
     columns = getattr(statement, "selected_columns", None)
     if columns is not None and name in columns:
-        return columns[name]
+        col = columns[name]
+        if isinstance(col, _ColumnElement):
+            return col
+        # Host-selected columns always expose comparison/ilike at runtime.
+        return cast(_ColumnElement, col)
     raise error(
         "HED-DATA-0013",
         title="SQLAlchemy column not on selectable",
@@ -120,10 +130,26 @@ def _column_from_selectable(statement: object, name: str) -> object:
 
 
 def _as_selectable(statement: object) -> _SelectableStatement:
-    if not isinstance(statement, _SelectableStatement):
-        # SQLAlchemy Select satisfies the protocol at runtime; keep a cast escape hatch.
-        return cast(_SelectableStatement, statement)
-    return statement
+    if isinstance(statement, _SelectableStatement):
+        return statement
+    raise error(
+        "HED-DATA-0011",
+        title="SQLAlchemy statement must be a Select",
+        explanation=f"Got {type(statement)!r}; bounded paging requires sqlalchemy.sql.Select.",
+        remediation="Pass select(Model) or an equivalent Select statement.",
+    )
+
+
+def _as_int(value: object) -> int:
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        return int(value)
+    if isinstance(value, str):
+        return int(value)
+    return int(str(value))
 
 
 class SQLAlchemyDataSource(Generic[T]):
@@ -164,7 +190,8 @@ class SQLAlchemyDataSource(Generic[T]):
         self._row_key = row_key
 
         def _identity(row: object) -> T:
-            return cast(T, row)  # default codec: row object is already T
+            # Default codec: row object is already T when the caller omits to_row.
+            return cast(T, row)
 
         self._to_row = to_row or _identity
         self._apply_changes = apply_changes
@@ -227,28 +254,24 @@ class SQLAlchemyDataSource(Generic[T]):
                 )
         stmt = _as_selectable(statement)
         for name, direction in q.sort:
-            col = _column_from_selectable(stmt, name)
-            # asc/desc expect SQLAlchemy ColumnElement; columns are host-selected objects.
-            stmt = stmt.order_by(
-                desc(cast(object, col)) if direction == "desc" else asc(cast(object, col))  # type: ignore[arg-type]
-            )
+            col: Any = _column_from_selectable(stmt, name)
+            stmt = stmt.order_by(desc(col) if direction == "desc" else asc(col))
         for name, value in q.filters.items():
-            col = _column_from_selectable(stmt, name)
+            col: Any = _column_from_selectable(stmt, name)
             stmt = stmt.where(col == value)
         if q.search:
-            clauses = []
+            clauses: list[Any] = []
             fields = self._search_fields
             # Escape LIKE metacharacters so user % / _ cannot broaden matches.
             escaped = q.search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
             pattern = f"%{escaped}%"
             for name in fields:
                 col = _column_from_selectable(stmt, name)
-                # ColumnElement.ilike is host-driver API beyond the selectable Protocol.
-                clauses.append(col.ilike(pattern, escape="\\"))  # type: ignore[attr-defined]
+                clauses.append(col.ilike(pattern, escape="\\"))
             if clauses:
                 stmt = stmt.where(or_(*clauses))
         if q.projection:
-            cols = [_column_from_selectable(stmt, name) for name in q.projection]
+            cols: list[Any] = [_column_from_selectable(stmt, name) for name in q.projection]
             stmt = stmt.with_only_columns(*cols)
         return stmt
 
@@ -263,16 +286,15 @@ class SQLAlchemyDataSource(Generic[T]):
             result = session.execute(paged)
             rows = _fetch_rows(result)
             mapped = [self._to_row(row) for row in rows]
-            # subquery() is a FromClause at runtime; SQLAlchemy stubs are stricter.
-            count_from = self._apply_query(self._statement, q).order_by(None).subquery()
-            count_stmt = select(func.count()).select_from(cast(object, count_from))  # type: ignore[arg-type]
+            # subquery() is a FromClause at runtime; accept via Any for select_from stubs.
+            count_from: Any = self._apply_query(self._statement, q).order_by(None).subquery()
+            count_stmt = select(func.count()).select_from(count_from)
             count_result = session.execute(count_stmt)
             if isinstance(count_result, _HasScalarOne):
-                # DB scalars are numeric; int() normalizes Decimal/str drivers.
-                total = int(cast(object, count_result.scalar_one()))  # type: ignore[arg-type]
+                total = _as_int(count_result.scalar_one())
             else:
                 scalar = getattr(count_result, "scalar_one", None)
-                total = int(cast(object, scalar())) if callable(scalar) else 0  # type: ignore[arg-type]
+                total = _as_int(scalar()) if callable(scalar) else 0
             next_offset = q.offset + q.limit if q.offset + q.limit < total else None
             return DataPage(
                 rows=mapped,

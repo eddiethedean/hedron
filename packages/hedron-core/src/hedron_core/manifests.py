@@ -6,7 +6,9 @@ import json
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import TypeVar, cast
+from typing import TypeVar
+
+from typing_extensions import TypeIs
 
 from hedron_core.identifiers import content_digest
 from hedron_core.typing_aliases import AssetEntryDict, JsonObject, JsonValue
@@ -37,16 +39,96 @@ def _as_str_map(value: JsonValue | None) -> dict[str, str]:
     return {str(k): str(v) for k, v in value.items()}
 
 
+def _is_json_value(value: object) -> TypeIs[JsonValue]:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return True
+    if isinstance(value, list):
+        return all(_is_json_value(item) for item in value)
+    if isinstance(value, dict):
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+    return False
+
+
+def _is_json_object(value: object) -> TypeIs[JsonObject]:
+    return isinstance(value, dict) and all(
+        isinstance(key, str) and _is_json_value(item) for key, item in value.items()
+    )
+
+
+def _as_json_object(value: object) -> JsonObject:
+    """Narrow a decoded / dataclass mapping to ``JsonObject`` without cast."""
+    if _is_json_object(value):
+        return value
+    if isinstance(value, Mapping):
+        out: JsonObject = {}
+        for key, item in value.items():
+            if _is_json_value(item):
+                out[str(key)] = item
+            else:
+                out[str(key)] = str(item)
+        return out
+    return {}
+
+
+def _as_object_mapping(value: object) -> Mapping[str, JsonValue]:
+    if _is_json_object(value):
+        return value
+    if isinstance(value, Mapping):
+        return _as_json_object(value)
+    return {}
+
+
+def _as_object_sequence(value: object) -> Sequence[object]:
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return tuple(value)
+    return ()
+
+
+def _as_format_version(value: JsonValue) -> int:
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        return int(value)
+    if isinstance(value, float):
+        return int(value)
+    return int(str(value))
+
+
+def _as_optional_str(value: JsonValue | None) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return value
+    return str(value)
+
+
 def canonical_json(value: JsonValue) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
 def load_json(path: Path) -> JsonValue:
-    return cast(JsonValue, json.loads(path.read_text(encoding="utf-8")))
+    # json.loads is untyped; narrow at the JSON boundary.
+    raw: object = json.loads(path.read_text(encoding="utf-8"))
+    if _is_json_value(raw):
+        return raw
+    return str(raw)
 
 
 def write_json_atomic(path: Path, value: JsonValue) -> str:
-    """Write deterministic JSON via a unique same-dir temp file and os.replace."""
+    """Write deterministic JSON via a unique same-dir temp file and atomic replace.
+
+    Args:
+        path: Destination path (parent directories are created as needed).
+        value: JSON-compatible value serialized with sorted keys.
+
+    Returns:
+        Content digest of the written payload (including trailing newline).
+
+    Raises:
+        OSError: If the temp write or atomic replace fails after cleanup.
+    """
     import os
     import tempfile
     from contextlib import suppress
@@ -59,15 +141,16 @@ def write_json_atomic(path: Path, value: JsonValue) -> str:
         suffix=".tmp",
         dir=str(path.parent),
     )
+    tmp_path = Path(tmp_name)
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as handle:
             handle.write(text)
             handle.flush()
             os.fsync(handle.fileno())
-        os.replace(tmp_name, path)
+        tmp_path.replace(path)
     except Exception:
         with suppress(OSError):
-            os.unlink(tmp_name)
+            tmp_path.unlink(missing_ok=True)
         raise
     return digest
 
@@ -110,24 +193,24 @@ class AssetManifest:
     digest: str = ""
 
     def to_dict(self) -> JsonObject:
-        payload = cast(
-            JsonObject,
-            {
-                "format_version": self.format_version,
-                "assets": [a.to_dict() for a in sorted(self.assets, key=lambda x: x.logical_id)],
-            },
-        )
+        assets: list[JsonValue] = [
+            _as_json_object(a.to_dict()) for a in sorted(self.assets, key=lambda x: x.logical_id)
+        ]
+        payload: JsonObject = {
+            "format_version": self.format_version,
+            "assets": assets,
+        }
         digest = self.digest or content_digest(canonical_json(payload))
         return {**payload, "digest": digest}
 
     @classmethod
     def from_dict(cls, data: Mapping[str, JsonValue]) -> AssetManifest:
         assets = tuple(
-            AssetEntry.from_dict(cast(Mapping[str, JsonValue], item))
-            for item in cast(Sequence[object], data.get("assets", ()))
+            AssetEntry.from_dict(_as_object_mapping(item))
+            for item in _as_object_sequence(data.get("assets", ()))
         )
         return cls(
-            format_version=int(cast(int | str, data["format_version"])),
+            format_version=_as_format_version(data["format_version"]),
             assets=assets,
             digest=str(data.get("digest") or ""),
         )
@@ -156,22 +239,19 @@ class CssSymbolManifest:
     digest: str = ""
 
     def to_dict(self) -> JsonObject:
-        payload = cast(
-            JsonObject,
-            {
-                "format_version": self.format_version,
-                "component_id": self.component_id,
-                "symbols": dict(sorted(self.symbols.items())),
-                "keyframes": dict(sorted(self.keyframes.items())),
-            },
-        )
+        payload: JsonObject = {
+            "format_version": self.format_version,
+            "component_id": self.component_id,
+            "symbols": dict(sorted(self.symbols.items())),
+            "keyframes": dict(sorted(self.keyframes.items())),
+        }
         digest = self.digest or content_digest(canonical_json(payload))
         return {**payload, "digest": digest}
 
     @classmethod
     def from_dict(cls, data: Mapping[str, JsonValue]) -> CssSymbolManifest:
         return cls(
-            format_version=int(cast(int | str, data["format_version"])),
+            format_version=_as_format_version(data["format_version"]),
             component_id=str(data["component_id"]),
             symbols=_as_str_map(data.get("symbols")),
             keyframes=_as_str_map(data.get("keyframes")),
@@ -204,31 +284,29 @@ class BuildManifest:
     digest: str = ""
 
     def to_dict(self) -> JsonObject:
-        payload = cast(
-            JsonObject,
-            {
-                "format_version": self.format_version,
-                "theme": self.theme,
-                "assets": self.assets.to_dict(),
-                "css_symbols": [
-                    m.to_dict() for m in sorted(self.css_symbols, key=lambda m: m.component_id)
-                ],
-                "tool_versions": dict(sorted(self.tool_versions.items())),
-                "config_digest": self.config_digest,
-            },
-        )
+        symbols: list[JsonValue] = [
+            m.to_dict() for m in sorted(self.css_symbols, key=lambda m: m.component_id)
+        ]
+        payload: JsonObject = {
+            "format_version": self.format_version,
+            "theme": self.theme,
+            "assets": self.assets.to_dict(),
+            "css_symbols": symbols,
+            "tool_versions": dict(sorted(self.tool_versions.items())),
+            "config_digest": self.config_digest,
+        }
         digest = self.digest or content_digest(canonical_json(payload))
         return {**payload, "digest": digest}
 
     @classmethod
     def from_dict(cls, data: Mapping[str, JsonValue]) -> BuildManifest:
         return cls(
-            format_version=int(cast(int | str, data["format_version"])),
-            theme=cast(str | None, data.get("theme")),
-            assets=AssetManifest.from_dict(cast(Mapping[str, JsonValue], data["assets"])),
+            format_version=_as_format_version(data["format_version"]),
+            theme=_as_optional_str(data.get("theme")),
+            assets=AssetManifest.from_dict(_as_object_mapping(data["assets"])),
             css_symbols=tuple(
-                CssSymbolManifest.from_dict(cast(Mapping[str, JsonValue], item))
-                for item in cast(Sequence[object], data.get("css_symbols", ()))
+                CssSymbolManifest.from_dict(_as_object_mapping(item))
+                for item in _as_object_sequence(data.get("css_symbols", ()))
             ),
             tool_versions=_as_str_map(data.get("tool_versions")),
             config_digest=str(data.get("config_digest") or ""),
@@ -257,9 +335,9 @@ def manifest_as_dict(obj: object) -> JsonObject:
     to_dict = getattr(obj, "to_dict", None)
     if callable(to_dict):
         # Host/dataclass to_dict may be untyped; JsonObject is the wire contract.
-        return cast(JsonObject, to_dict())
+        return _as_json_object(to_dict())
     # Fallback for plain dataclasses without to_dict.
-    return cast(JsonObject, asdict(obj))  # type: ignore[arg-type]  # dataclass-only fallback
+    return _as_json_object(asdict(obj))  # type: ignore[arg-type]  # dataclass-only fallback
 
 
 def ensure_sequence(items: Sequence[T]) -> tuple[T, ...]:

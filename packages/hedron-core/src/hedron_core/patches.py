@@ -271,7 +271,7 @@ def _apply_op(
     value: object | None,
 ) -> None:
     if not segments:
-        parent = root
+        parent: MutableMapping[str, object] | list[object] = root
         key: str | int | None = None
     else:
         parent, key, _current = _resolve_parent(root, segments)
@@ -280,184 +280,284 @@ def _apply_op(
         _set_at(parent, key, value)
         return
     if op is PatchOp.MERGE:
-        if not isinstance(value, Mapping):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "merge requires a mapping value.",
-                title="Invalid merge patch",
-                remediation="Pass a dict-like value for merge.",
-            )
-        target = _get_at(parent, key) if key is not None else parent
-        if target is None:
-            target = {}
-            _set_at(parent, key, target)
-        if not isinstance(target, MutableMapping):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "merge target must be a mapping.",
-                title="Invalid merge target",
-                remediation="Merge only into object properties.",
-            )
-        for mk, mv in value.items():
-            target[str(mk)] = copy.deepcopy(mv)
+        _op_merge(parent, key, value)
         return
     if op is PatchOp.APPEND:
-        seq = _require_list(parent, key, create=True)
-        seq.append(copy.deepcopy(value))
+        _op_append(parent, key, value)
         return
     if op is PatchOp.PREPEND:
-        seq = _require_list(parent, key, create=True)
-        seq.insert(0, copy.deepcopy(value))
+        _op_prepend(parent, key, value)
         return
     if op is PatchOp.EXTEND:
-        if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "extend requires a sequence value.",
-                title="Invalid extend patch",
-                remediation="Pass a list/tuple of items to extend.",
-            )
-        seq = _require_list(parent, key, create=True)
-        seq.extend(copy.deepcopy(list(value)))
+        _op_extend(parent, key, value)
         return
     if op is PatchOp.INSERT:
-        if not isinstance(value, Mapping) or "index" not in value or "item" not in value:
-            raise _patch_error(
-                HED_PATCH_0001,
-                "insert requires {'index': int, 'item': ...}.",
-                title="Invalid insert patch",
-                remediation="Provide index and item for insert.",
-            )
-        seq = _require_list(parent, key, create=True)
-        seq.insert(int(value["index"]), copy.deepcopy(value["item"]))
+        _op_insert(parent, key, value)
         return
     if op is PatchOp.REMOVE:
-        seq = _require_list(parent, key, create=False)
-        if value not in seq:
-            raise _patch_error(
-                HED_PATCH_0004,
-                "remove target is not present in the sequence.",
-                title="Patch remove missed",
-                remediation="Refresh the fragment; do not assume a missing member was removed.",
-            )
-        seq.remove(value)
+        _op_remove(parent, key, value)
         return
     if op is PatchOp.DELETE:
-        if key is None:
-            raise _patch_error(
-                HED_PATCH_0001,
-                "delete requires a non-empty path.",
-                title="Invalid delete patch",
-                remediation="Provide a property path to delete.",
-            )
-        if isinstance(parent, MutableMapping):
-            if str(key) not in parent:
-                raise _patch_error(
-                    HED_PATCH_0004,
-                    "delete target key is not present.",
-                    title="Patch delete missed",
-                    remediation="Refresh the fragment; do not assume a missing key was deleted.",
-                )
-            parent.pop(str(key))
-        elif isinstance(parent, list) and isinstance(key, int) and 0 <= key < len(parent):
-            del parent[key]
-        else:
-            raise _patch_error(
-                HED_PATCH_0004,
-                "delete target is not present.",
-                title="Patch delete missed",
-                remediation="Refresh the fragment; do not assume a missing member was deleted.",
-            )
+        _op_delete(parent, key)
         return
     if op is PatchOp.CLEAR:
-        target = _get_at(parent, key) if key is not None else parent
-        if isinstance(target, (MutableMapping, list)):
-            target.clear()
-        else:
-            _set_at(parent, key, {})
+        _op_clear(parent, key)
         return
     if op is PatchOp.REORDER:
-        seq = _require_list(parent, key, create=False)
-        if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "reorder requires a sequence of indices.",
-                title="Invalid reorder patch",
-                remediation="Pass the new index order as a list of ints.",
-            )
-        indices = [int(i) for i in value]
-        if sorted(indices) != list(range(len(seq))):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "reorder indices must be a permutation of the list.",
-                title="Invalid reorder indices",
-                remediation="Provide each index exactly once.",
-            )
-        reordered = [seq[i] for i in indices]
-        seq[:] = reordered
+        _op_reorder(parent, key, value)
         return
     if op is PatchOp.REVERSE:
-        seq = _require_list(parent, key, create=False)
-        seq.reverse()
+        _op_reverse(parent, key)
         return
     if op is PatchOp.INCREMENT:
-        current = _get_at(parent, key)
-        delta = 1 if value is None else value
-        if not _is_number(current) or not _is_number(delta):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "increment requires numeric current and delta.",
-                title="Invalid increment patch",
-                remediation="Target a numeric property.",
-            )
-        _set_at(parent, key, current + delta)
+        _op_increment(parent, key, value)
         return
     if op is PatchOp.DECREMENT:
-        current = _get_at(parent, key)
-        delta = 1 if value is None else value
-        if not _is_number(current) or not _is_number(delta):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "decrement requires numeric current and delta.",
-                title="Invalid decrement patch",
-                remediation="Target a numeric property.",
-            )
-        _set_at(parent, key, current - delta)
+        _op_decrement(parent, key, value)
         return
     if op is PatchOp.CLAMP:
-        current = _get_at(parent, key)
-        if not _is_number(current):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "clamp requires a numeric current value.",
-                title="Invalid clamp patch",
-                remediation="Target a numeric property.",
-            )
-        if not isinstance(value, Mapping):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "clamp requires {'min': ..., 'max': ...}.",
-                title="Invalid clamp bounds",
-                remediation="Pass min/max bounds as a mapping.",
-            )
-        lo = value.get("min", current)
-        hi = value.get("max", current)
-        if not _is_number(lo) or not _is_number(hi):
-            raise _patch_error(
-                HED_PATCH_0001,
-                "clamp min/max must be numeric.",
-                title="Invalid clamp bounds",
-                remediation="Pass numeric min and max.",
-            )
-        _set_at(parent, key, min(max(current, lo), hi))
+        _op_clamp(parent, key, value)
         return
-
     raise _patch_error(
         HED_PATCH_0001,
         f"Unsupported patch op {op!r}.",
         title="Unsupported patch operation",
         remediation="Use a documented PatchOp value.",
     )
+
+
+def _op_merge(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    if not isinstance(value, Mapping):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "merge requires a mapping value.",
+            title="Invalid merge patch",
+            remediation="Pass a dict-like value for merge.",
+        )
+    target = _get_at(parent, key) if key is not None else parent
+    if target is None:
+        target = {}
+        _set_at(parent, key, target)
+    if not isinstance(target, MutableMapping):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "merge target must be a mapping.",
+            title="Invalid merge target",
+            remediation="Merge only into object properties.",
+        )
+    for mk, mv in value.items():
+        target[str(mk)] = copy.deepcopy(mv)
+
+
+def _op_append(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    seq = _require_list(parent, key, create=True)
+    seq.append(copy.deepcopy(value))
+
+
+def _op_prepend(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    seq = _require_list(parent, key, create=True)
+    seq.insert(0, copy.deepcopy(value))
+
+
+def _op_extend(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "extend requires a sequence value.",
+            title="Invalid extend patch",
+            remediation="Pass a list/tuple of items to extend.",
+        )
+    seq = _require_list(parent, key, create=True)
+    seq.extend(copy.deepcopy(list(value)))
+
+
+def _op_insert(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    if not isinstance(value, Mapping) or "index" not in value or "item" not in value:
+        raise _patch_error(
+            HED_PATCH_0001,
+            "insert requires {'index': int, 'item': ...}.",
+            title="Invalid insert patch",
+            remediation="Provide index and item for insert.",
+        )
+    seq = _require_list(parent, key, create=True)
+    seq.insert(int(value["index"]), copy.deepcopy(value["item"]))
+
+
+def _op_remove(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    seq = _require_list(parent, key, create=False)
+    if value not in seq:
+        raise _patch_error(
+            HED_PATCH_0004,
+            "remove target is not present in the sequence.",
+            title="Patch remove missed",
+            remediation="Refresh the fragment; do not assume a missing member was removed.",
+        )
+    seq.remove(value)
+
+
+def _op_delete(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+) -> None:
+    if key is None:
+        raise _patch_error(
+            HED_PATCH_0001,
+            "delete requires a non-empty path.",
+            title="Invalid delete patch",
+            remediation="Provide a property path to delete.",
+        )
+    if isinstance(parent, MutableMapping):
+        if str(key) not in parent:
+            raise _patch_error(
+                HED_PATCH_0004,
+                "delete target key is not present.",
+                title="Patch delete missed",
+                remediation="Refresh the fragment; do not assume a missing key was deleted.",
+            )
+        parent.pop(str(key))
+    elif isinstance(parent, list) and isinstance(key, int) and 0 <= key < len(parent):
+        del parent[key]
+    else:
+        raise _patch_error(
+            HED_PATCH_0004,
+            "delete target is not present.",
+            title="Patch delete missed",
+            remediation="Refresh the fragment; do not assume a missing member was deleted.",
+        )
+
+
+def _op_clear(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+) -> None:
+    target = _get_at(parent, key) if key is not None else parent
+    if isinstance(target, (MutableMapping, list)):
+        target.clear()
+    else:
+        _set_at(parent, key, {})
+
+
+def _op_reorder(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    seq = _require_list(parent, key, create=False)
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "reorder requires a sequence of indices.",
+            title="Invalid reorder patch",
+            remediation="Pass the new index order as a list of ints.",
+        )
+    indices = [int(i) for i in value]
+    if sorted(indices) != list(range(len(seq))):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "reorder indices must be a permutation of the list.",
+            title="Invalid reorder indices",
+            remediation="Provide each index exactly once.",
+        )
+    reordered = [seq[i] for i in indices]
+    seq[:] = reordered
+
+
+def _op_reverse(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+) -> None:
+    seq = _require_list(parent, key, create=False)
+    seq.reverse()
+
+
+def _op_increment(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    current = _get_at(parent, key)
+    delta = 1 if value is None else value
+    if not _is_number(current) or not _is_number(delta):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "increment requires numeric current and delta.",
+            title="Invalid increment patch",
+            remediation="Target a numeric property.",
+        )
+    _set_at(parent, key, current + delta)
+
+
+def _op_decrement(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    current = _get_at(parent, key)
+    delta = 1 if value is None else value
+    if not _is_number(current) or not _is_number(delta):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "decrement requires numeric current and delta.",
+            title="Invalid decrement patch",
+            remediation="Target a numeric property.",
+        )
+    _set_at(parent, key, current - delta)
+
+
+def _op_clamp(
+    parent: MutableMapping[str, object] | list[object],
+    key: str | int | None,
+    value: object | None,
+) -> None:
+    current = _get_at(parent, key)
+    if not _is_number(current):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "clamp requires a numeric current value.",
+            title="Invalid clamp patch",
+            remediation="Target a numeric property.",
+        )
+    if not isinstance(value, Mapping):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "clamp requires {'min': ..., 'max': ...}.",
+            title="Invalid clamp bounds",
+            remediation="Pass min/max bounds as a mapping.",
+        )
+    lo = value.get("min", current)
+    hi = value.get("max", current)
+    if not _is_number(lo) or not _is_number(hi):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "clamp min/max must be numeric.",
+            title="Invalid clamp bounds",
+            remediation="Pass numeric min and max.",
+        )
+    _set_at(parent, key, min(max(current, lo), hi))
 
 
 def _resolve_parent(

@@ -6,14 +6,14 @@ import inspect
 import secrets
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from asgiref.sync import markcoroutinefunction
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 
 from hedron_core.adapter import UrlReverseRequest
-from hedron_core.component import Component
+from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.mount import prefix_local_path
 from hedron_core.rendering import RenderResult
@@ -41,6 +41,17 @@ class DjangoUrlReverser:
         if request.root_path:
             path = prefix_local_path(path, request.root_path)
         return path
+
+
+def _as_node_like(value: object) -> NodeLike | Component[Any]:
+    if isinstance(value, Component):
+        return value
+    if isinstance(value, ComponentNode):
+        return value
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    # Duck-typed host markers (``__hedron_component__``) are treated as nodes.
+    return cast(NodeLike, value)
 
 
 def _convert(
@@ -87,9 +98,9 @@ def _convert(
             allow_undeclared_targets=allow_undeclared_targets,
             skip_prepare=skip_prepare,
         )
-    if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
+    if isinstance(value, (Component, str, ComponentNode)) or hasattr(value, "__hedron_component__"):
         return component_response(
-            value,  # type: ignore[arg-type]
+            _as_node_like(value),
             request=request,
             authenticated=authenticated,
             fragment_regions=fragment_regions,
@@ -138,9 +149,9 @@ async def _convert_async(
         for update in value.oob:
             await prepare_tree(update.content)
     elif (
-        isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__")
+        isinstance(value, (Component, str, ComponentNode)) or hasattr(value, "__hedron_component__")
     ) and not isinstance(value, RenderResult):
-        await prepare_tree(value)  # type: ignore[arg-type]
+        await prepare_tree(_as_node_like(value))
     return _convert(
         value,
         request,
@@ -177,7 +188,7 @@ def hedron_view(
                 )
 
             markcoroutinefunction(async_wrapped)
-            return async_wrapped  # type: ignore[return-value]
+            return cast(F, async_wrapped)
 
         @wraps(fn)
         def wrapped(request: HttpRequest, *args: object, **kwargs: object) -> HttpResponse:
@@ -192,7 +203,7 @@ def hedron_view(
                 allow_undeclared_targets=allow_undeclared_targets,
             )
 
-        return wrapped  # type: ignore[return-value]
+        return cast(F, wrapped)
 
     if view is not None:
         return decorator(view)

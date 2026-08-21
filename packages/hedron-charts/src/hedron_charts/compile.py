@@ -7,7 +7,7 @@ import json
 import math
 import statistics
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import Any
 
 from hedron_charts.operators import (
     ALLOWED_OPERATORS,
@@ -205,6 +205,55 @@ def _as_number(value: Any) -> float | None:
         return None
 
 
+def _as_int(value: object, *, default: int = 0) -> int:
+    if isinstance(value, bool):
+        return default
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        return int(value)
+    if isinstance(value, str):
+        try:
+            return int(value)
+        except ValueError:
+            return default
+    return default
+
+
+def _as_str_list(value: object) -> list[str]:
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return [str(item) for item in value]
+    return []
+
+
+def _as_object_list(value: object) -> list[object]:
+    if isinstance(value, list):
+        return value
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return list(value)
+    return []
+
+
+def _as_metric_dicts(value: object) -> list[dict[str, object]]:
+    if not isinstance(value, list):
+        return [{"op": "count", "as": "count"}]
+    out: list[dict[str, object]] = []
+    for item in value:
+        if isinstance(item, dict):
+            out.append({str(key): val for key, val in item.items()})
+    return out or [{"op": "count", "as": "count"}]
+
+
+def _membership_container(value: object) -> Sequence[object] | set[object] | frozenset[object]:
+    if value is None:
+        return ()
+    if isinstance(value, (set, frozenset)):
+        return value
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return value
+    return ()
+
+
 def _apply_filter(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
     field = tr.field
     if not field:
@@ -236,9 +285,9 @@ def _apply_filter(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[
             a, b = _as_number(val), _as_number(target)
             keep = a is not None and b is not None and a <= b
         elif op == "in":
-            keep = val in cast(Any, target or ())
+            keep = val in _membership_container(target)
         elif op == "not_in":
-            keep = val not in cast(Any, target or ())
+            keep = val not in _membership_container(target)
         if keep:
             out.append(row)
     return out
@@ -254,8 +303,7 @@ def _apply_calculate(rows: list[dict[str, object]], tr: TransformDef) -> list[di
             "Use only operators listed in CHART_SPEC.md.",
         )
     as_name = tr.as_ or f"{tr.field or 'value'}_{op}"
-    raw_args = tr.params.get("args") or []
-    args = cast(list[object], raw_args)
+    args = _as_object_list(tr.params.get("args"))
     out: list[dict[str, object]] = []
     for row in rows:
         values: list[object] = [row.get(a) if isinstance(a, str) else a for a in args]
@@ -308,10 +356,8 @@ def _apply_calculate(rows: list[dict[str, object]], tr: TransformDef) -> list[di
 
 
 def _apply_aggregate(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
-    group_by = cast(list[str], list(cast(Any, tr.params.get("groupby") or [])))
-    metrics = cast(
-        list[dict[str, object]], tr.params.get("metrics") or [{"op": "count", "as": "count"}]
-    )
+    group_by = _as_str_list(tr.params.get("groupby"))
+    metrics = _as_metric_dicts(tr.params.get("metrics"))
     buckets: dict[tuple[object, ...], list[dict[str, object]]] = {}
     for row in rows:
         key = tuple(row.get(g) for g in group_by)
@@ -322,7 +368,8 @@ def _apply_aggregate(rows: list[dict[str, object]], tr: TransformDef) -> list[di
         for metric in metrics:
             mop = metric.get("op", "count")
             field = metric.get("field")
-            as_name = cast(str, metric.get("as") or f"{mop}_{field or 'all'}")
+            raw_as = metric.get("as")
+            as_name = raw_as if isinstance(raw_as, str) else f"{mop}_{field or 'all'}"
             field_name = field if isinstance(field, str) else None
             vals = [_as_number(r.get(field_name)) for r in group] if field_name else []
             nums = [v for v in vals if v is not None]
@@ -374,13 +421,7 @@ def _apply_sort(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[st
 
 
 def _apply_sample(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
-    raw_n = tr.params.get("n", MAX_ROWS)
-    if isinstance(raw_n, bool):
-        raw_n = 0
-    try:
-        n = int(cast(Any, raw_n))
-    except (TypeError, ValueError):
-        n = 0
+    n = _as_int(tr.params.get("n", MAX_ROWS))
     if n < 1:
         raise _chart_error(
             "HED-CHART-0071",
@@ -396,9 +437,10 @@ def _apply_sample(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[
 
 def _apply_stack(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
     field = tr.field or "y"
-    group = cast(list[str], list(cast(Any, tr.params.get("groupby") or [])))
+    group = _as_str_list(tr.params.get("groupby"))
     as_y0 = tr.as_ or f"{field}_y0"
-    as_y1 = cast(str, tr.params.get("as_y1") or f"{field}_y1")
+    raw_y1 = tr.params.get("as_y1")
+    as_y1 = raw_y1 if isinstance(raw_y1, str) else f"{field}_y1"
     buckets: dict[tuple[object, ...], list[dict[str, object]]] = {}
     for row in rows:
         key = tuple(row.get(g) for g in group)
@@ -420,13 +462,7 @@ def _apply_bin(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str
     field = tr.field
     if not field:
         return rows
-    raw_bins = tr.params.get("bins", 10)
-    if isinstance(raw_bins, bool):
-        raw_bins = 0
-    try:
-        bins = int(cast(Any, raw_bins))
-    except (TypeError, ValueError):
-        bins = 0
+    bins = _as_int(tr.params.get("bins", 10))
     if bins < 1:
         raise _chart_error(
             "HED-CHART-0032",
@@ -471,9 +507,11 @@ def apply_transforms(
         elif tr.op == "bin":
             current = _apply_bin(current, tr)
         elif tr.op == "fold":
-            fields = cast(list[str], list(cast(Any, tr.params.get("fields") or [])))
-            as_key = cast(str, tr.params.get("as_key") or "key")
-            as_value = cast(str, tr.params.get("as_value") or "value")
+            fields = _as_str_list(tr.params.get("fields"))
+            raw_key = tr.params.get("as_key")
+            raw_value = tr.params.get("as_value")
+            as_key = raw_key if isinstance(raw_key, str) else "key"
+            as_value = raw_value if isinstance(raw_value, str) else "value"
             folded: list[dict[str, object]] = []
             for row in current:
                 base = {k: v for k, v in row.items() if k not in fields}

@@ -13,8 +13,10 @@ from urllib.parse import urlencode
 from fastapi.params import Depends as DependsParam
 from pydantic import BaseModel, ValidationError
 from starlette.requests import Request
+from typing_extensions import TypeIs
 
 from hedron.routing.reverse import ComponentRef
+from hedron.type_authoring.markers import Control
 from hedron.type_authoring.normalize import CompiledTypeHandler
 from hedron_core.codes import (
     HED_CMD_0001,
@@ -23,7 +25,7 @@ from hedron_core.codes import (
     HED_VIEW_0003,
     HED_VIEW_0004,
 )
-from hedron_core.component import Component, NodeLike
+from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.hosts import FragmentHost
 from hedron_core.html import html
@@ -32,7 +34,7 @@ from hedron_core.interaction import InteractionResult
 from hedron_core.models import Props
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
-from hedron_core.typing_aliases import HtmlAttrValue, JsonValue
+from hedron_core.typing_aliases import HtmlAttrMap, HtmlAttrValue, JsonValue
 from hedron_core.updates import (
     MAX_REFRESH_TARGETS,
     BaseHandleDescriptor,
@@ -117,6 +119,62 @@ def binding_plan_for(fn: Callable[..., object]) -> BindingPlan:
     )
 
 
+def _as_json_value(value: object) -> JsonValue:
+    """Narrow trigger/header map values at the untyped mapping boundary."""
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, list):
+        return [_as_json_value(item) for item in value]
+    if isinstance(value, Mapping):
+        return {str(key): _as_json_value(item) for key, item in value.items()}
+    return str(value)
+
+
+def _json_object_from_mapping(mapping: Mapping[str, object]) -> dict[str, JsonValue]:
+    return {str(key): _as_json_value(value) for key, value in mapping.items()}
+
+
+def _is_html_attr_value(value: object) -> TypeIs[HtmlAttrValue]:
+    if value is None or isinstance(value, (str, bool, int, float, SafeUrl)):
+        return True
+    if isinstance(value, dict):
+        return all(
+            isinstance(key, str) and (item is None or isinstance(item, (str, bool, int, float)))
+            for key, item in value.items()
+        )
+    return False
+
+
+def _html_attr_map(attrs: Mapping[str, object]) -> HtmlAttrMap:
+    out: HtmlAttrMap = {}
+    for key, value in attrs.items():
+        if _is_html_attr_value(value):
+            out[key] = value
+        elif isinstance(value, dict):
+            nested: dict[str, str | bool | int | float | None] = {}
+            for nested_key, nested_value in value.items():
+                if nested_value is None or isinstance(nested_value, (str, bool, int, float)):
+                    nested[str(nested_key)] = nested_value
+                else:
+                    nested[str(nested_key)] = str(nested_value)
+            out[key] = nested
+        else:
+            out[key] = str(value)
+    return out
+
+
+def _as_node_like(value: object) -> NodeLike:
+    """Callable/host results are untyped; narrow to ``NodeLike`` for materialize."""
+    if value is None or isinstance(value, (str, int, float, bool, Component)):
+        return value
+    if isinstance(value, ComponentNode):
+        return value
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return value
+    # Opaque host objects (e.g. deferred nodes) still participate in render.
+    return cast(NodeLike, value)
+
+
 def _merge_trigger(
     left: str | Mapping[str, object] | None, right: str | Mapping[str, object] | None
 ) -> str | dict[str, JsonValue] | None:
@@ -127,15 +185,15 @@ def _merge_trigger(
             return right
         mapping = left if isinstance(left, Mapping) else right
         if isinstance(mapping, Mapping):
-            return {str(key): cast(JsonValue, value) for key, value in mapping.items()}
+            return _json_object_from_mapping(mapping)
         return None
     if not left and not right:
         return None
     merged: dict[str, JsonValue] = {}
     if isinstance(right, Mapping):
-        merged.update({str(key): cast(JsonValue, value) for key, value in right.items()})
+        merged.update(_json_object_from_mapping(right))
     if isinstance(left, Mapping):
-        merged.update({str(key): cast(JsonValue, value) for key, value in left.items()})
+        merged.update(_json_object_from_mapping(left))
     return merged
 
 
@@ -200,7 +258,7 @@ def _try_initial_render(
         if inspect.iscoroutine(result):
             result.close()
         return None
-    return cast(NodeLike, result)
+    return _as_node_like(result)
 
 
 def _try_initial_render_model(
@@ -214,7 +272,7 @@ def _try_initial_render_model(
         if inspect.iscoroutine(result):
             result.close()
         return None
-    return cast(NodeLike, result)
+    return _as_node_like(result)
 
 
 @dataclass(frozen=False)
@@ -240,6 +298,7 @@ class FragmentHandle(Generic[BindT, ContentT]):
     adapter: BindingAdapter | None = field(default=None)
     type_meta: CompiledTypeHandler | None = None
     _bound: BoundValues | None = None
+    bound: bool = False
     __wrapped__: Callable[..., ContentT] | None = None
 
     @property
@@ -252,9 +311,13 @@ class FragmentHandle(Generic[BindT, ContentT]):
         meta = self.type_meta
         return None if meta is None else meta.model_type
 
-    @property
-    def bound(self) -> bool:
-        return not self.binding_plan.required or self._bound is not None
+    def __post_init__(self) -> None:
+        # Keep ``bound`` a concrete bool field so FragmentHandle satisfies UpdateTarget.
+        object.__setattr__(
+            self,
+            "bound",
+            (not self.binding_plan.required) or self._bound is not None,
+        )
 
     def __call__(self) -> FragmentHost:
         if self.binding_plan.required and self._bound is None:
@@ -306,7 +369,11 @@ class FragmentHandle(Generic[BindT, ContentT]):
             value = args[0]
             type_adapter = self.type_meta.adapter if self.type_meta is not None else None
             if type_adapter is not None:
-                model = type_adapter.validate(cast(Mapping[str, object] | BaseModel, value))
+                if isinstance(value, (BaseModel, Mapping)):
+                    model = type_adapter.validate(value)
+                else:
+                    # Untyped bind value; adapter raises if the shape is wrong.
+                    model = type_adapter.validate(value)  # type: ignore[arg-type]
                 parameters = type_adapter.dump(model)
             elif isinstance(value, Mapping):
                 parameters = dict(value)
@@ -340,6 +407,7 @@ class FragmentHandle(Generic[BindT, ContentT]):
             adapter=self.adapter,
             type_meta=self.type_meta,
             _bound=values,
+            bound=True,
             __wrapped__=self.renderer,
         )
         object.__setattr__(nested, "selector", f"#{nested.dom_id}")
@@ -364,16 +432,15 @@ class FragmentHandle(Generic[BindT, ContentT]):
             )
         url = _bound_url(self._bound) if self._bound is not None else self.path
         wrapped = self.host.materialize(
-            cast(NodeLike, content),
+            _as_node_like(content),
             dom_id=self.dom_id,
             get_url=url,
             event_name=refresh_event_name(self.dom_id),
             logical_id=self.logical_id,
             fallback=self.fallback,
         )
-        return Patch(
-            target=cast(UpdateTarget, self), content=cast(ContentT, wrapped), swap="outerHTML"
-        )
+        target: UpdateTarget = self
+        return Patch(target=target, content=cast(ContentT, wrapped), swap="outerHTML")
 
     def update(self, content: ContentT, **kwargs: object) -> Patch[ContentT]:
         del kwargs
@@ -384,7 +451,8 @@ class FragmentHandle(Generic[BindT, ContentT]):
                 explanation=f"View {self.logical_id!r} must be bound before update().",
                 remediation="Call bind() first.",
             )
-        return Patch(target=cast(UpdateTarget, self), content=content, swap="innerHTML")
+        target: UpdateTarget = self
+        return Patch(target=target, content=content, swap="innerHTML")
 
 
 @dataclass(frozen=True)
@@ -539,7 +607,7 @@ class _CommandButton(Component[_CommandButtonProps]):
         if ctx is not None and ctx.csrf_token:
             attrs["hx-headers"] = json.dumps({"X-CSRF-Token": ctx.csrf_token})
         attrs = {key: value for key, value in attrs.items() if value is not None}
-        return html.button(self._label, **cast(dict[str, HtmlAttrValue], attrs))
+        return html.button(self._label, **_html_attr_map(attrs))
 
 
 @dataclass(frozen=False)
@@ -579,13 +647,12 @@ class ActionHandle(Generic[InputT, ResultT]):
         value: object | None = None,
         errors: Sequence[object] = (),
         submit_label: str = "Submit",
-        controls: Mapping[str, object] | None = None,
+        controls: Mapping[str, NodeLike | Control] | None = None,
         fallback: str | None = None,
         enhance: str = "native",
         **safe_form_attrs: object,
     ) -> NodeLike:
         from hedron.type_authoring.forms import generate_form
-        from hedron.type_authoring.markers import Control
 
         if self.type_meta is None:
             raise error(
@@ -602,10 +669,10 @@ class ActionHandle(Generic[InputT, ResultT]):
         if self._after_load:
             safe_form_attrs.setdefault("data-hedron-after-load", self._after_load)
         enhance_mode: Literal["native", "elements"]
-        if enhance in ("native", "elements"):
+        if enhance == "native" or enhance == "elements":
             enhance_mode = enhance
         else:
-            # Preserve prior pass-through for unexpected values.
+            # Preserve prior pass-through for unexpected values at the enhance boundary.
             enhance_mode = cast(Literal["native", "elements"], enhance)
         return generate_form(
             self.type_meta,
@@ -613,7 +680,7 @@ class ActionHandle(Generic[InputT, ResultT]):
             value=value,
             errors=errors,
             submit_label=submit_label,
-            controls=cast(Mapping[str, NodeLike | Control] | None, controls),
+            controls=controls,
             fallback=fallback or self.fallback,
             enhance=enhance_mode,
             **safe_form_attrs,
@@ -722,7 +789,7 @@ class Refresh:
         fallback = self._handle.fallback
         if fallback:
             attrs["data-hedron-fallback"] = fallback
-        return html.button(self._label, **cast(dict[str, HtmlAttrValue], attrs))
+        return html.button(self._label, **_html_attr_map(attrs))
 
     def __hedron_node__(self) -> NodeLike:
         return self.render()
@@ -783,7 +850,7 @@ def apply_action_handle_effects(
                 )
             else:
                 compiled = InteractionResult(
-                    content=cast(NodeLike | None, compiled),
+                    content=_as_node_like(compiled) if compiled is not None else None,
                     oob=effect_ir.oob,
                     trigger=effect_ir.trigger,
                     swap="none",
@@ -800,7 +867,7 @@ def apply_action_handle_effects(
             )
         else:
             compiled = InteractionResult(
-                content=cast(NodeLike | None, compiled),
+                content=_as_node_like(compiled) if compiled is not None else None,
                 swap="none",
                 trigger_after_swap=after_load,
             )
@@ -828,6 +895,8 @@ def refresh(*targets: FragmentHandle[BindT, ContentT] | BoundFragment[ContentT])
             ),
             remediation="Reduce fan-out; refresh is not atomic.",
         )
+    # BoundFragment / FragmentHandle satisfy UpdateTarget structurally at runtime;
+    # BoundFragment fields are properties so the checker needs an explicit boundary.
     return RefreshIntent(targets=cast(tuple[UpdateTarget, ...], tuple(resolved)))
 
 
@@ -838,9 +907,12 @@ def patches(
     cache: CacheHint | None = "vary-htmx",
     status_code: int = 200,
 ) -> PatchSet:
+    # Patch is invariant; PatchSet stores Patch[object] at the public boundary.
+    primary_obj: Patch[object] = primary  # type: ignore[assignment]
+    secondary_obj: tuple[Patch[object], ...] = secondary  # type: ignore[assignment]
     return PatchSet(
-        primary=cast(Patch[object], primary),
-        secondary=cast(tuple[Patch[object], ...], secondary),
+        primary=primary_obj,
+        secondary=secondary_obj,
         toast=toast,
         cache=cache,
         status_code=status_code,
@@ -852,7 +924,7 @@ def wrap_refreshable_result(handle: FragmentHandle[BindT, ContentT], result: obj
         return result
     url = _bound_url(handle._bound) if handle._bound is not None else handle.path
     hosted = handle.host.materialize(
-        cast(NodeLike, result),
+        _as_node_like(result),
         dom_id=handle.dom_id,
         get_url=url,
         event_name=refresh_event_name(handle.dom_id),
@@ -967,7 +1039,7 @@ def build_view_handle(
     if compiled.schema is not None:
         descriptor = attach_type_schema(descriptor, compiled.schema)
     register_handle_descriptor(descriptor, key=key)
-    handle = FragmentHandle(
+    return FragmentHandle(
         logical_id=logical,
         name=name or fn.__name__,
         path=route_path,
@@ -994,7 +1066,6 @@ def build_view_handle(
         type_meta=compiled if compiled.modeled or compiled.schema is not None else None,
         __wrapped__=fn,
     )
-    return handle
 
 
 def build_command_handle(

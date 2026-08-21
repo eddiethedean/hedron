@@ -88,7 +88,7 @@ class _RecordingSpan:
                 self._otel_span.__exit__(*args)
             except Exception:
                 logger.debug("span end failed", exc_info=True)
-        return None
+        return
 
     def set_attribute(self, key: str, value: Any) -> None:
         safe = redact_secret_like({key: value})

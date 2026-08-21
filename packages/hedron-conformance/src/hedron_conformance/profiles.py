@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 from collections.abc import Iterable
 from dataclasses import dataclass
 
@@ -18,6 +19,8 @@ from hedron_conformance.schema import (
     fixtures_dir,
     load_bundled_fixtures,
 )
+
+_LOG = logging.getLogger("hedron_conformance.profiles")
 
 PROFILE_IDS = (
     "core-render",
@@ -196,7 +199,12 @@ def _load_subdirectory_markers(names: frozenset[str]) -> list[ConformanceFixture
                     continue
                 try:
                     out.append(ConformanceFixture.model_validate(item))
-                except Exception:  # noqa: BLE001,S112 — skip non-portable shapes
+                except Exception:  # noqa: BLE001 — skip non-portable shapes
+                    _LOG.debug(
+                        "skipping non-portable conformance fixture in %s",
+                        path,
+                        exc_info=True,
+                    )
                     continue
     return out
 

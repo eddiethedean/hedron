@@ -20,10 +20,9 @@ def normalize_html(html: str) -> str:
     - Attribute order is fixed by the reference ATTR_ORDER contract; do not reorder here.
     """
     text = html.strip()
-    text = _WS_BETWEEN_TAGS.sub("><", text)
     # Do not collapse spaces inside attribute values or text content aggressively
     # beyond tag boundaries — goldens are already deterministic.
-    return text
+    return _WS_BETWEEN_TAGS.sub("><", text)
 
 
 def normalize_identity(value: str) -> str:

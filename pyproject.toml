@@ -134,7 +134,7 @@ src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explo
 extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B", "SIM", "RUF100", "RUF012", "S110", "S112", "BLE001"]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF100", "RUF012", "S110", "S112", "BLE001", "ASYNC", "PTH", "DTZ", "RET"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/**/*.py" = ["B008"]

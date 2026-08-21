@@ -8,6 +8,8 @@ import time
 from collections.abc import Iterable, Mapping
 from typing import Any, cast
 
+from typing_extensions import TypeIs
+
 from hedron_core.jobs.auth import job_authorized, job_authorized_http
 from hedron_core.jobs.backend import RedisClient, RedisPipeline
 from hedron_core.jobs.codec import (
@@ -17,7 +19,56 @@ from hedron_core.jobs.codec import (
     _status_to_dict,
 )
 from hedron_core.jobs.types import JobHandle, JobState, JobStatus
-from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_aliases import JsonObject, JsonValue
+
+
+def _is_json_value(value: object) -> TypeIs[JsonValue]:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return True
+    if isinstance(value, list):
+        return all(_is_json_value(item) for item in value)
+    if isinstance(value, dict):
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+    return False
+
+
+def _as_json_object(value: object) -> JsonObject:
+    if isinstance(value, dict) and all(
+        isinstance(key, str) and _is_json_value(item) for key, item in value.items()
+    ):
+        return value
+    if isinstance(value, Mapping):
+        return {
+            str(key): (item if _is_json_value(item) else str(item)) for key, item in value.items()
+        }
+    return {}
+
+
+def _loads_object(raw: str) -> dict[str, object]:
+    data = json.loads(raw)
+    if not isinstance(data, dict):
+        return {}
+    return {str(key): value for key, value in data.items()}
+
+
+def _as_float(value: object, default: float = 0.0) -> float:
+    if isinstance(value, bool):
+        return float(value)
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        try:
+            return float(value)
+        except ValueError:
+            return default
+    return default
+
+
+def _payload_mapping(value: object) -> Mapping[str, JsonValue] | None:
+    if isinstance(value, dict):
+        return _as_json_object(value)
+    return None
+
 
 __all__ = [
     "CELERY_ENQUEUE_FAILED",
@@ -52,13 +103,21 @@ def _decode_redis(raw: bytes | str | None) -> str | None:
 
 def _watch_error_type() -> type[BaseException]:
     try:
-        from redis.exceptions import WatchError as _WatchError  # type: ignore[import-not-found]
+        import importlib
+
+        redis_exc = importlib.import_module("redis.exceptions")
     except ImportError as exc:
         raise RuntimeError(
             "RedisStatusStore requires redis.exceptions.WatchError for CAS; "
             "install redis-py or use a client with WATCH support."
         ) from exc
-    return _WatchError
+    watch = getattr(redis_exc, "WatchError", None)
+    if not isinstance(watch, type) or not issubclass(watch, BaseException):
+        raise RuntimeError(
+            "RedisStatusStore requires redis.exceptions.WatchError for CAS; "
+            "install redis-py or use a client with WATCH support."
+        )
+    return watch
 
 
 def _is_watch_error(exc: BaseException) -> bool:
@@ -85,7 +144,7 @@ def _compare_and_delete_if_owner(client: RedisClient, key: str, expected: str) -
     pipeline_factory = getattr(client, "pipeline", None)
     if not callable(pipeline_factory):
         raise RuntimeError("idempotency compare-and-delete requires Redis EVAL or a WATCH pipeline")
-    pipe = cast(RedisPipeline, pipeline_factory())
+    pipe = client.pipeline()
     deleter = getattr(pipe, "delete", None)
     if not callable(deleter):
         raise RuntimeError(
@@ -168,7 +227,7 @@ class RedisStatusStore:
         raw = self._decode(self._client.get(self._key(job_id)))
         if raw is None:
             return None
-        return cast(dict[str, object], json.loads(raw))
+        return _loads_object(raw)
 
     def _store(self, data: Mapping[str, object]) -> None:
         self._client.set(
@@ -209,7 +268,7 @@ class RedisStatusStore:
                 "RedisStatusStore requires a client with pipeline()/WATCH for CAS; "
                 "blind overwrite is not allowed for production job state."
             )
-        pipe = cast(RedisPipeline, pipeline_factory())
+        pipe: RedisPipeline = self._client.pipeline()
         _watch_error_type()  # fail closed without redis-py WatchError
         for _ in range(8):
             try:
@@ -470,9 +529,7 @@ class RedisStatusStore:
             stored: dict[str, object] = dict(
                 _status_to_dict(
                     updated,
-                    payload=cast(Mapping[str, JsonValue], payload)
-                    if isinstance(payload, dict)
-                    else None,
+                    payload=_payload_mapping(payload),
                 )
             )
             scope = data.get("idempotency_scope_key")
@@ -527,9 +584,7 @@ class RedisStatusStore:
             stored = dict(
                 _status_to_dict(
                     updated,
-                    payload=cast(Mapping[str, JsonValue], payload)
-                    if isinstance(payload, dict)
-                    else None,
+                    payload=_payload_mapping(payload),
                 )
             )
             scope = data.get("idempotency_scope_key")
@@ -553,8 +608,8 @@ class RedisStatusStore:
             raw = self._decode(self._client.get(key_s))
             if raw is None:
                 continue
-            data = cast(dict[str, object], json.loads(raw))
-            updated_at = float(cast(float | int | str, data.get("updated_at", 0)))
+            data = _loads_object(raw)
+            updated_at = _as_float(data.get("updated_at", 0))
             state = str(data.get("state", ""))
             if updated_at < cutoff and state in {
                 JobState.SUCCEEDED.value,
@@ -574,17 +629,19 @@ def _iter_redis_keys(client: object, pattern: str) -> list[str]:
     """Prefer SCAN; fall back to KEYS only for test stubs without scan."""
     scan_fn = getattr(client, "scan_iter", None)
     if callable(scan_fn):
-        return [
-            (k.decode("utf-8") if isinstance(k, bytes) else str(k))
-            for k in cast(Iterable[Any], scan_fn(match=pattern))
-        ]
+        scanned = cast(Iterable[object], scan_fn(match=pattern))
+        return [(k.decode("utf-8") if isinstance(k, bytes) else str(k)) for k in scanned]
     scan = getattr(client, "scan", None)
     if callable(scan):
         keys: list[str] = []
-        cursor: int | bytes | str = 0
+        cursor: object = 0
         while True:
-            result = cast(tuple[Any, Iterable[Any]], scan(cursor=cursor, match=pattern, count=100))
-            cursor, batch = result
+            result = scan(cursor=cursor, match=pattern, count=100)
+            if not isinstance(result, tuple) or len(result) != 2:
+                break
+            cursor, batch = result[0], result[1]
+            if not isinstance(batch, Iterable) or isinstance(batch, (str, bytes)):
+                break
             for key in batch:
                 keys.append(key.decode("utf-8") if isinstance(key, bytes) else str(key))
             if cursor in {0, b"0", "0"}:
@@ -593,7 +650,14 @@ def _iter_redis_keys(client: object, pattern: str) -> list[str]:
     keys_fn = getattr(client, "keys", None)
     if not callable(keys_fn):
         return []
-    return [
-        (k.decode("utf-8") if isinstance(k, bytes) else str(k))
-        for k in cast(list[Any], keys_fn(pattern))
-    ]
+    found_raw = keys_fn(pattern)
+    found: Iterable[object]
+    if (
+        isinstance(found_raw, list)
+        or isinstance(found_raw, Iterable)
+        and not isinstance(found_raw, (str, bytes))
+    ):
+        found = found_raw
+    else:
+        found = ()
+    return [(k.decode("utf-8") if isinstance(k, bytes) else str(k)) for k in found]

@@ -249,7 +249,7 @@ def test_redis_cache_requires_pipeline() -> None:
     class _NoPipe:
         def get(self, key: str) -> None:
             del key
-            return None
+            return
 
     backend = RedisCacheBackend(_NoPipe())
     with pytest.raises(ValueError, match="pipeline"):

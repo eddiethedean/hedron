@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, Literal, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Generic, Literal, Protocol, TypeVar, cast
 
 from pydantic import BaseModel, Field, TypeAdapter, create_model
 
@@ -18,6 +18,8 @@ from hedron_core.bundles import (
 from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_BUNDLE_0005, HED_BUNDLE_0007
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
+from hedron_core.models import Model
+from hedron_core.typing_aliases import JsonValue
 from hedron_data.columns import Column
 from hedron_data.sources import (
     HARD_MAX_PAGE_SIZE,
@@ -28,11 +30,34 @@ from hedron_data.sources import (
 )
 from hedron_data.table import DataTable
 
+if TYPE_CHECKING:
+    from hedron.handles import ActionHandle, FragmentHandle
+
 ModelT = TypeVar("ModelT", bound=BaseModel)
 AuthzHook = Callable[..., bool]
 _LIST_RESERVED = frozenset({"offset", "limit", "sort", "q"})
+RowMapping = dict[str, JsonValue]
 
 __all__ = ["DataWorkspace", "DataWorkspacePolicy"]
+
+
+class _WorkspaceApp(Protocol):
+    """Minimal host surface used by workspace factories (Hedron.refreshable/command)."""
+
+    def refreshable(
+        self,
+        path: str,
+        *,
+        name: str | None = None,
+    ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
+
+    def command(
+        self,
+        path: str,
+        *,
+        name: str | None = None,
+        fallback: str | None = None,
+    ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
 
 
 def _error(code: str, title: str, explanation: str, remediation: str) -> FeatureConflictError:
@@ -45,6 +70,13 @@ def _error(code: str, title: str, explanation: str, remediation: str) -> Feature
             remediation=remediation,
         )
     )
+
+
+def _payload_mapping(data: object) -> RowMapping:
+    dumped = getattr(data, "model_dump", None)
+    if callable(dumped):
+        return cast(RowMapping, dumped())
+    return cast(RowMapping, dict(cast(Mapping[str, object], data)))
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,14 +98,14 @@ class DataWorkspace(Generic[ModelT]):
         name: str,
         *,
         model: type[ModelT],
-        source: DataEditorSource[Any],
+        source: DataEditorSource[RowMapping],
         policy: DataWorkspacePolicy,
         create_model: type[BaseModel] | None = None,
         edit_model: type[BaseModel] | None = None,
         key_field: str = "id",
         provider: str = "hedron-data",
         provider_version: str = "0.47.0",
-        columns: Sequence[object] = (),
+        columns: Sequence[Column | str] = (),
         form_overrides: Mapping[str, object] | None = None,
         list_override: Callable[..., object] | None = None,
         detail_override: Callable[..., object] | None = None,
@@ -112,10 +144,10 @@ class DataWorkspace(Generic[ModelT]):
         self.detail_override = detail_override
         self.create_override = create_override
         self.edit_override = edit_override
-        self.list_view: object | None = None
-        self.detail_view: object | None = None
-        self.create_command: object | None = None
-        self.edit_command: object | None = None
+        self.list_view: FragmentHandle[Any, Any] | None = None
+        self.detail_view: FragmentHandle[Any, Any] | None = None
+        self.create_command: ActionHandle[Any, Any] | None = None
+        self.edit_command: ActionHandle[Any, Any] | None = None
         search_fields = getattr(source, "_search_fields", None)
         if isinstance(search_fields, tuple) and not search_fields:
             object.__setattr__(source, "_search_fields", tuple(fields))
@@ -130,12 +162,13 @@ class DataWorkspace(Generic[ModelT]):
         kwargs["request"] = request
         if request is None:
             return kwargs
-        scope = getattr(request, "scope", None)
+        scope = cast(object, getattr(request, "scope", None))
         if isinstance(scope, Mapping) and "session" in scope:
-            session = request.session
+            session = cast(object, request.session)
             if isinstance(session, Mapping):
+                session_map = cast(Mapping[str, object], session)
                 for key in ("user", "username", "principal", "sub"):
-                    value = session.get(key)
+                    value = session_map.get(key)
                     if value:
                         kwargs["user"] = value
                         kwargs["principal"] = value
@@ -271,7 +304,7 @@ class DataWorkspace(Generic[ModelT]):
     def to_bundle(self) -> FeatureBundle:
         workspace = self
 
-        def list_factory(app: object) -> object:
+        def list_factory(app: _WorkspaceApp) -> FragmentHandle[Any, Any]:
             from typing import Annotated
 
             from starlette.exceptions import HTTPException
@@ -279,7 +312,7 @@ class DataWorkspace(Generic[ModelT]):
             from hedron import ViewParams
 
             if workspace.list_override is not None:
-                handle = app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")(  # type: ignore[union-attr]
+                handle = app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")(
                     workspace.list_override
                 )
                 workspace.list_view = handle
@@ -288,28 +321,30 @@ class DataWorkspace(Generic[ModelT]):
             list_query = workspace._list_query_model()
             list_defaults = list_query()
 
-            @app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")  # type: ignore[union-attr]
+            @app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")
             def list_view(
+                # Runtime pydantic model from create_model; not a static type expression.
                 params: Annotated[list_query, ViewParams(source="query")] = list_defaults,  # type: ignore[valid-type]
             ) -> object:
                 if not workspace._allowed(workspace.policy.can_read):
                     raise HTTPException(status_code=403, detail="forbidden")
                 try:
-                    query = workspace._data_query_from_list_params(params)
+                    query = workspace._data_query_from_list_params(cast(BaseModel, params))
                 except ValueError:
                     raise HTTPException(status_code=422, detail="invalid_query") from None
                 page = workspace.source.fetch(query)
+                # DataTable.row_model expects hedron Model; workspace uses BaseModel.
                 return DataTable(
                     page=page,
                     caption=workspace.name,
                     columns=workspace._column_objects(),
-                    row_model=workspace.model,  # type: ignore[arg-type]
+                    row_model=cast(type[Model], workspace.model),
                 )
 
             workspace.list_view = list_view
             return list_view
 
-        def detail_factory(app: object) -> object:
+        def detail_factory(app: _WorkspaceApp) -> FragmentHandle[Any, Any]:
             from typing import Annotated
 
             from starlette.exceptions import HTTPException
@@ -318,19 +353,22 @@ class DataWorkspace(Generic[ModelT]):
 
             identity = workspace._identity_model()
             if workspace.detail_override is not None:
-                handle = app.refreshable(  # type: ignore[union-attr]
+                handle = app.refreshable(
                     f"/{workspace.name}/{{{workspace.key_field}}}",
                     name=f"{workspace.name}-detail",
                 )(workspace.detail_override)
                 workspace.detail_view = handle
                 return handle
 
-            @app.refreshable(  # type: ignore[union-attr]
+            @app.refreshable(
                 f"/{workspace.name}/{{{workspace.key_field}}}",
                 name=f"{workspace.name}-detail",
             )
-            def detail_view(params: Annotated[identity, ViewParams()]):  # type: ignore[valid-type]
-                key = str(getattr(params, workspace.key_field))
+            def detail_view(
+                # Runtime pydantic model from create_model; not a static type expression.
+                params: Annotated[identity, ViewParams()],  # type: ignore[valid-type]
+            ) -> object:
+                key = str(getattr(cast(BaseModel, params), workspace.key_field))
                 page = workspace.source.fetch(
                     DataQuery(filters={workspace.key_field: key}, limit=1)
                 )
@@ -346,7 +384,7 @@ class DataWorkspace(Generic[ModelT]):
             workspace.detail_view = detail_view
             return detail_view
 
-        def create_factory(app: object) -> object:
+        def create_factory(app: _WorkspaceApp) -> ActionHandle[Any, Any]:
             from typing import Annotated
 
             from starlette.exceptions import HTTPException
@@ -354,7 +392,7 @@ class DataWorkspace(Generic[ModelT]):
             from hedron import FormBody, Text, refresh
 
             if workspace.create_override is not None:
-                handle = app.command(  # type: ignore[union-attr]
+                handle = app.command(
                     f"/{workspace.name}/create",
                     name=f"{workspace.name}-create",
                     fallback=f"/{workspace.name}",
@@ -363,13 +401,16 @@ class DataWorkspace(Generic[ModelT]):
                 workspace._attach_form_overrides(handle)
                 return handle
 
-            @app.command(  # type: ignore[union-attr]
+            @app.command(
                 f"/{workspace.name}/create",
                 name=f"{workspace.name}-create",
                 fallback=f"/{workspace.name}",
             )
-            def create_command(data: Annotated[workspace.create_model, FormBody()]):  # type: ignore[valid-type]
-                payload = data.model_dump() if hasattr(data, "model_dump") else dict(data)
+            def create_command(
+                # Instance attribute holds a runtime model type for FormBody binding.
+                data: Annotated[workspace.create_model, FormBody()],  # type: ignore[valid-type]
+            ) -> object:
+                payload = _payload_mapping(cast(object, data))
                 if not workspace._allowed(workspace.policy.can_create, data=payload):
                     raise HTTPException(status_code=403, detail="forbidden")
                 result = workspace.source.apply(DataChanges(inserts=(payload,)))
@@ -378,14 +419,14 @@ class DataWorkspace(Generic[ModelT]):
                 if not result.ok:
                     raise HTTPException(status_code=422, detail="validation")
                 if workspace.list_view is not None:
-                    return refresh(workspace.list_view)  # type: ignore[arg-type]
+                    return refresh(workspace.list_view)
                 return Text("created")
 
             workspace.create_command = create_command
             workspace._attach_form_overrides(create_command)
             return create_command
 
-        def edit_factory(app: object) -> object:
+        def edit_factory(app: _WorkspaceApp) -> ActionHandle[Any, Any]:
             from typing import Annotated
 
             from starlette.exceptions import HTTPException
@@ -393,7 +434,7 @@ class DataWorkspace(Generic[ModelT]):
             from hedron import FormBody, Text, refresh
 
             if workspace.edit_override is not None:
-                handle = app.command(  # type: ignore[union-attr]
+                handle = app.command(
                     f"/{workspace.name}/edit",
                     name=f"{workspace.name}-edit",
                     fallback=f"/{workspace.name}",
@@ -401,9 +442,6 @@ class DataWorkspace(Generic[ModelT]):
                 workspace.edit_command = handle
                 workspace._attach_form_overrides(handle)
                 return handle
-
-            class EditPayload(workspace.edit_model):  # type: ignore[valid-type,misc]
-                pass
 
             if workspace.key_field not in getattr(workspace.edit_model, "model_fields", {}):
                 edit_fields: dict[str, Any] = {workspace.key_field: (str, ...)}
@@ -415,13 +453,16 @@ class DataWorkspace(Generic[ModelT]):
             else:
                 EditModel = workspace.edit_model
 
-            @app.command(  # type: ignore[union-attr]
+            @app.command(
                 f"/{workspace.name}/edit",
                 name=f"{workspace.name}-edit",
                 fallback=f"/{workspace.name}",
             )
-            def edit_command(data: Annotated[EditModel, FormBody()]):  # type: ignore[valid-type]
-                payload = data.model_dump() if hasattr(data, "model_dump") else dict(data)
+            def edit_command(
+                # EditModel is a runtime type (create_model or edit_model attribute).
+                data: Annotated[EditModel, FormBody()],  # type: ignore[valid-type]
+            ) -> object:
+                payload = _payload_mapping(cast(object, data))
                 if not workspace._allowed(workspace.policy.can_edit, data=payload, row=payload):
                     raise HTTPException(status_code=403, detail="forbidden")
                 key = str(payload.get(workspace.key_field, ""))
@@ -436,7 +477,7 @@ class DataWorkspace(Generic[ModelT]):
                 if not result.ok:
                     raise HTTPException(status_code=422, detail="validation")
                 if workspace.list_view is not None:
-                    return refresh(workspace.list_view)  # type: ignore[arg-type]
+                    return refresh(workspace.list_view)
                 return Text("updated")
 
             workspace.edit_command = edit_command

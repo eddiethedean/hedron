@@ -176,7 +176,7 @@ def test_cache_data_caches_none_results() -> None:
     @cache_data(ttl=60, scope="public")
     def maybe_missing() -> None:
         calls["n"] += 1
-        return None
+        return
 
     assert maybe_missing() is None
     assert maybe_missing() is None
@@ -188,7 +188,7 @@ def test_cache_data_caches_none_results() -> None:
         @cache_data(ttl=60, scope="public")
         async def async_maybe_missing() -> None:
             calls["async"] += 1
-            return None
+            return
 
         assert await async_maybe_missing() is None
         assert await async_maybe_missing() is None

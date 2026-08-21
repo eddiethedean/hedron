@@ -21,7 +21,7 @@ def test_posture_056_security_check_outputs(tmp_path: Path) -> None:
     baseline = tmp_path / "baseline.json"
     baseline.write_text(json.dumps({"fingerprints": []}), encoding="utf-8")
     report = collect_posture(
-        project=Path("."),
+        project=Path(),
         policy_name="standard",
         suppressions_path=suppressions,
         baseline_path=baseline,

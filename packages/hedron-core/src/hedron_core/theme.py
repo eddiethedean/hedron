@@ -618,9 +618,7 @@ def ensure_builtin_themes_registered() -> tuple[Theme, ...]:
 
 def ensure_default_theme_registered() -> Theme:
     """Register built-in themes and return the backwards-compatible default."""
-    themes = ensure_builtin_themes_registered()
-    theme = themes[0]
-    return theme
+    return ensure_builtin_themes_registered()[0]
 
 
 def get_theme(name: str | None) -> ThemeMeta | None:

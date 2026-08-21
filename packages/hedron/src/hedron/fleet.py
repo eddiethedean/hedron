@@ -7,12 +7,15 @@ Never auto-installs packages or enables plugins.
 
 from __future__ import annotations
 
+import logging
 import re
 import tomllib
 from collections.abc import Mapping
 from importlib.metadata import PackageNotFoundError, distributions, entry_points, version
 from pathlib import Path
 from typing import Any
+
+_LOG = logging.getLogger("hedron.fleet")
 
 _SECRET_ENV_RE = re.compile(
     r"(secret|password|passwd|token|api[_-]?key|access[_-]?key|private[_-]?key|"
@@ -151,11 +154,13 @@ def _plugins_snapshot() -> list[dict[str, Any]]:
                 }
             )
     except Exception:  # noqa: BLE001 — best-effort registry read
+        _LOG.debug("fleet plugin registry snapshot failed", exc_info=True)
         return rows
     try:
         for ep in entry_points().select(group="hedron.plugins"):
             rows.append({"kind": "entry_point", "name": ep.name, "value": ep.value})
     except Exception:  # noqa: BLE001 — best-effort entry-point read
+        _LOG.debug("fleet entry-point snapshot failed", exc_info=True)
         return rows
     return rows
 
@@ -180,6 +185,7 @@ def _assets_snapshot() -> list[dict[str, Any]]:
             rows.append(row)
         return rows
     except Exception:  # noqa: BLE001 — best-effort
+        _LOG.debug("fleet asset registry snapshot failed", exc_info=True)
         return []
 
 
@@ -231,8 +237,15 @@ def _recommendations(
 def diagnose_installed_fleet() -> dict[str, Any]:
     """Return a read-only diagnosis of the installed application fleet.
 
-    Does not dump environment variables by default. Does not install or enable
-    anything. Recommendations always cite ``evidence``.
+    Collects distribution versions, train skew against ``docs/release.toml``
+    when present, selected extras, best-effort plugin/entry-point snapshots,
+    and asset registry rows. Plugin and asset collection failures are logged
+    at debug and omitted rather than raising.
+
+    Returns:
+        A JSON-serializable mapping. Does not dump environment variables
+        (use :func:`redact_env_mapping` when needed). Never installs packages
+        or enables plugins. Recommendations always cite ``evidence``.
     """
     dist_versions: dict[str, str] = {}
     for name in ("hedron", "hedron-core"):

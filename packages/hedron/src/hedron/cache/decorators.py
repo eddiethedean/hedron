@@ -5,8 +5,8 @@ from __future__ import annotations
 import functools
 import inspect
 import time
-from collections.abc import Callable, Mapping
-from typing import ParamSpec, TypeVar, overload
+from collections.abc import Awaitable, Callable, Mapping
+from typing import ParamSpec, TypeVar, cast, overload
 
 from hedron.cache.policy import _should_reject_cache
 from hedron_core.cache import (
@@ -60,6 +60,8 @@ def _decorate(
     is_async = inspect.iscoroutinefunction(fn)
 
     if is_async:
+        # iscoroutinefunction narrows runtime, not ParamSpec R; awaitable form is local.
+        async_fn = cast(Callable[P, Awaitable[R]], fn)
 
         @functools.wraps(fn)
         async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
@@ -76,7 +78,7 @@ def _decorate(
                         detail=reject,
                     )
                 )
-                return await fn(*args, **kwargs)  # type: ignore[misc]
+                return await async_fn(*args, **kwargs)
             key = build_cache_key(
                 identity=identity,
                 args=args,
@@ -94,11 +96,11 @@ def _decorate(
                 record_cache_trace(
                     CacheEvent(kind="hit", key_fingerprint=key, scope=scope, age_ms=age)
                 )
-                return cached  # type: ignore[return-value]
+                return cast(R, cached)
             record_cache_trace(CacheEvent(kind="miss", key_fingerprint=key, scope=scope))
 
             async def loader() -> R:
-                return await fn(*args, **kwargs)  # type: ignore[misc]
+                return await async_fn(*args, **kwargs)
 
             if isinstance(backend, InMemoryCacheBackend):
                 started = time.monotonic()
@@ -116,12 +118,12 @@ def _decorate(
                         tags=tags,
                     )
                 )
-                return value  # type: ignore[return-value]
+                return cast(R, value)
             value = await loader()
             backend.set(key, value, ttl=ttl, tags=tags)
             return value
 
-        return async_wrapper  # type: ignore[return-value]
+        return cast(Callable[P, R], async_wrapper)
 
     @functools.wraps(fn)
     def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
@@ -152,7 +154,7 @@ def _decorate(
         if hit:
             age = backend.age_ms(key) if isinstance(backend, InMemoryCacheBackend) else None
             record_cache_trace(CacheEvent(kind="hit", key_fingerprint=key, scope=scope, age_ms=age))
-            return cached  # type: ignore[return-value]
+            return cast(R, cached)
         record_cache_trace(CacheEvent(kind="miss", key_fingerprint=key, scope=scope))
 
         def loader() -> R:
@@ -172,7 +174,7 @@ def _decorate(
         backend.set(key, value, ttl=ttl, tags=tags)
         return value
 
-    return sync_wrapper  # type: ignore[return-value]
+    return sync_wrapper
 
 
 @overload

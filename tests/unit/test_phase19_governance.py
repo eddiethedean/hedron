@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -17,13 +17,14 @@ from hedron_core.diagnostics import HedronError
 
 
 def test_waiver_requires_fields_and_blocks_expired() -> None:
+    today = datetime.now(UTC).date()
     w = Waiver(
         id="W1",
         owner="a11y-owners",
         rationale="third-party chart",
         affected_users="color-blind users for legend",
         remediation="add tabular fallback",
-        expires=date.today() + timedelta(days=30),
+        expires=today + timedelta(days=30),
         component="Chart",
     )
     assert w.validated().id == "W1"
@@ -33,7 +34,7 @@ def test_waiver_requires_fields_and_blocks_expired() -> None:
         rationale="x",
         affected_users="y",
         remediation="z",
-        expires=date.today() - timedelta(days=1),
+        expires=today - timedelta(days=1),
     )
     with pytest.raises(HedronError) as exc:
         expired.validated()

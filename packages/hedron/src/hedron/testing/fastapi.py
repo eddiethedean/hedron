@@ -42,8 +42,7 @@ def assert_render_result(result: RenderResult, *, contains: str) -> None:
 def normalize_snapshot_html(html: str) -> str:
     """Normalize only documented nondeterminism (fingerprinted asset hashes)."""
     html = re.sub(r"/hedron-assets/[A-Za-z0-9._-]+", "/hedron-assets/<asset>", html)
-    html = re.sub(r"\bh-[a-z0-9]{6,}\b", "h-<scoped>", html)
-    return html
+    return re.sub(r"\bh-[a-z0-9]{6,}\b", "h-<scoped>", html)
 
 
 @contextmanager

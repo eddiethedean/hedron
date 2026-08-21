@@ -30,10 +30,8 @@ __all__ = [
 @lru_cache(maxsize=1)
 def _pypi_pin_bounds() -> tuple[str, str]:
     """Read deferred-honesty pin from docs/release.toml when present in-tree."""
-    try:
-        import tomllib
-    except ModuleNotFoundError:  # pragma: no cover
-        import tomli as tomllib  # type: ignore[no-redef]
+    import tomllib
+
     # packages/hedron-charts/src/hedron_charts/limits.py → repo root is parents[4]
     path = Path(__file__).resolve().parents[4] / "docs" / "release.toml"
     if not path.is_file():

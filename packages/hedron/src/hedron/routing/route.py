@@ -57,6 +57,7 @@ class HedronRoute(APIRoute):
     """APIRoute that converts component returns into HTML responses."""
 
     hedron_kind: str | None = None
+    hedron_provenance: str = ""
 
     def __init__(self, path: str, endpoint: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
         # Convert HTML/Component returns before FastAPI serializes them.

@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import importlib
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, Generic, TypeVar, cast
+from typing import Any, Generic, Protocol, TypeVar, cast
+
+from typing_extensions import TypeIs
 
 from hedron_core.diagnostics import error
+from hedron_core.typing_aliases import JsonValue
 from hedron_data.plans import TransformPlan, apply_plan_in_memory, plan_from_query
 from hedron_data.sources import (
     ColumnSchema,
@@ -22,6 +25,19 @@ T = TypeVar("T")
 __all__ = ["DaskDataSource", "require_dask"]
 
 
+class _DaskFrame(Protocol):
+    """Minimal Dask/pandas dataframe surface used by the adapter."""
+
+    def sort_values(self, *, by: list[str], ascending: list[bool]) -> _DaskFrame: ...
+
+    def __getitem__(self, key: object) -> _DaskFrame: ...
+
+    @property
+    def shape(self) -> tuple[Any, ...]: ...
+
+    def head(self, n: int | float, npartitions: int = ...) -> Any: ...
+
+
 def require_dask() -> Any:
     try:
         return importlib.import_module("dask.dataframe")
@@ -32,6 +48,24 @@ def require_dask() -> Any:
             explanation="DaskDataSource requires dask[dataframe].",
             remediation='Install with: pip install "hedron-data[dask]"',
         ) from exc
+
+
+def _is_json_value(value: object) -> TypeIs[JsonValue]:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return True
+    if isinstance(value, list):
+        return all(_is_json_value(item) for item in value)
+    if isinstance(value, dict):
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+    return False
+
+
+def _row_mapping(row: object) -> Mapping[str, JsonValue]:
+    if isinstance(row, Mapping):
+        return {
+            str(key): (value if _is_json_value(value) else str(value)) for key, value in row.items()
+        }
+    return {}
 
 
 class DaskDataSource(Generic[T]):
@@ -49,10 +83,11 @@ class DaskDataSource(Generic[T]):
         allowlisted_projection_fields: frozenset[str] | None = None,
     ) -> None:
         require_dask()
-        self._frame = frame
+        self._frame = cast(_DaskFrame, frame)
         self._schema = tuple(schema)
 
         def _default_row(row: Mapping[str, object]) -> T:
+            # Default codec treats each record mapping as T (caller opts into typed rows).
             return cast(T, dict(row))
 
         self._to_row = to_row or _default_row
@@ -106,26 +141,28 @@ class DaskDataSource(Generic[T]):
                 ),
                 remediation="Lower offset/page size or raise an explicit budget.",
             )
-        frame = self._frame
+        frame: _DaskFrame = self._frame
         if q.sort:
             by = [name for name, _ in q.sort]
             ascending = [direction == "asc" for _, direction in q.sort]
-            frame = frame.sort_values(by=by, ascending=ascending)  # type: ignore[union-attr]
+            frame = frame.sort_values(by=by, ascending=ascending)
         for name, value in q.filters.items():
-            frame = frame[frame[name] == value]  # type: ignore[index]
+            column: Any = frame[name]
+            frame = frame[column == value]
         if q.projection:
-            frame = frame[list(q.projection)]  # type: ignore[index]
-        total = int(frame.shape[0].compute())  # type: ignore[union-attr]
+            frame = frame[list(q.projection)]
+        shape0: Any = frame.shape[0]
+        total = int(shape0.compute() if hasattr(shape0, "compute") else shape0)
         # Dask DataFrame.iloc does not support positional row slices; take a bounded
         # head window then slice in pandas (still capped by max_compute_rows).
         window = min(q.offset + q.limit, self._max_compute_rows, total)
         if window <= 0:
             records: list[dict[str, object]] = []
         else:
-            head = frame.head(window, npartitions=-1)  # type: ignore[union-attr]
+            head: Any = frame.head(window, npartitions=-1)
             if hasattr(head, "compute"):
                 head = head.compute()
-            records = head.iloc[q.offset : q.offset + q.limit].to_dict(orient="records")  # type: ignore[union-attr]
+            records = head.iloc[q.offset : q.offset + q.limit].to_dict(orient="records")
         if len(records) > self._max_compute_rows:
             raise error(
                 "HED-DATA-0051",
@@ -171,5 +208,6 @@ class DaskDataSource(Generic[T]):
                 limit = max(1, int(step.value))
         window = min(offset + limit, self._max_compute_rows)
         sample = self.fetch(DataQuery(offset=0, limit=window))
-        rows = [cast(Mapping[str, object], row) for row in sample.rows]
-        return apply_plan_in_memory(rows, plan)  # type: ignore[arg-type]
+        mapped = [_row_mapping(row) for row in sample.rows]
+        planned = apply_plan_in_memory(mapped, plan)
+        return [{str(key): value for key, value in row.items()} for row in planned]

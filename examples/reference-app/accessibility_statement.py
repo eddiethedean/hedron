@@ -13,7 +13,7 @@ __all__ = ["build_evidence_inventory", "build_statement"]
 
 def build_evidence_inventory() -> EvidenceInventory:
     """Collect release-governance evidence placeholders for the reference app."""
-    inventory = EvidenceInventory(
+    return EvidenceInventory(
         profile_id=ACCESSIBILITY_PROFILE.profile_id,
         contracts=["Page", "Main", "Form", "DataTable", "DataEditor"],
         known_limitations=[
@@ -32,7 +32,6 @@ def build_evidence_inventory() -> EvidenceInventory:
         ],
         # human_at_results stays empty until SR-021 / PARTICIPANT-021 execute.
     )
-    return inventory
 
 
 def build_statement() -> AccessibilityStatement:
