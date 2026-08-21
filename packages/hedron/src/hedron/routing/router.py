@@ -84,6 +84,8 @@ def _wrap_endpoint(
     require_csrf: bool,
     fragment_regions: tuple[FragmentRegion, ...] = (),
     allow_undeclared_targets: bool = False,
+    capability: str | None = None,
+    idempotency: str | None = None,
 ) -> Callable[..., Response]:
     import typing
 
@@ -106,9 +108,77 @@ def _wrap_endpoint(
             )
             await prepare_csrf_from_request(request, policy)
             validate_csrf(request, policy)
+        # CAP-055: enforce capability after CSRF, before side effects.
+        if capability:
+            from hedron.capabilities import enforce_capability
+
+            enforce_capability(request, capability)
+        replay_claim = None
+        replay_policy = None
+        replay_store = None
+        replay_key = None
+        replay_fp = None
+        if idempotency and idempotency != "off":
+            from starlette.responses import Response as StarletteResponse
+
+            from hedron.replay import (
+                IdempotencyPolicy,
+                ReplayState,
+                extract_idempotency_key,
+                fingerprint_request,
+                resolve_replay_store,
+            )
+
+            replay_policy = IdempotencyPolicy(mode=idempotency)  # type: ignore[arg-type]
+            replay_key = extract_idempotency_key(request, replay_policy)
+            if replay_policy.mode == "required" and not replay_key:
+                from hedron_core.diagnostics import error
+
+                raise error(
+                    "HED-REPLAY-0001",
+                    title="Idempotency key required",
+                    explanation="This action requires an Idempotency-Key.",
+                    remediation="Send the Idempotency-Key header or form field.",
+                )
+            if replay_key:
+                subject = str(
+                    getattr(getattr(request, "user", None), "identity", "") or "anonymous"
+                )
+                tenant = str(getattr(request.state, "hedron_tenant", "") or "")
+                replay_fp = fingerprint_request(
+                    action_id=getattr(fn, "__name__", "action"),
+                    subject=subject,
+                    tenant=tenant,
+                    inputs={"path": str(request.url.path), "method": request.method},
+                    policy_version=replay_policy.policy_version,
+                )
+                replay_store = resolve_replay_store(request)
+                scope = f"{tenant}:{subject}:{getattr(fn, '__name__', 'action')}"
+                replay_claim = replay_store.claim(
+                    key=replay_key,
+                    fingerprint=replay_fp,
+                    scope=scope,
+                    retention_seconds=replay_policy.retention_seconds,
+                )
+                if replay_claim.state == ReplayState.CONFLICT:
+                    from hedron_core.diagnostics import error
+
+                    raise error(
+                        "HED-REPLAY-0002",
+                        title="Idempotency key conflict",
+                        explanation="The key was reused with a different request fingerprint.",
+                        remediation="Use a new key for distinct mutations.",
+                    )
+                if replay_claim.state == ReplayState.REPLAYED:
+                    return StarletteResponse(
+                        content=replay_claim.cached_body or b"",
+                        status_code=int(replay_claim.cached_status or 200),
+                        media_type="text/html",
+                        headers={"Hedron-Replay": "true"},
+                    )
         result = fn(*args, **kwargs)
         result = await await_if_needed(result)
-        return await HedronRoute.convert_endpoint_result(
+        response = await HedronRoute.convert_endpoint_result(
             request,
             result,  # type: ignore[arg-type]
             mode=mode,
@@ -116,6 +186,34 @@ def _wrap_endpoint(
             fragment_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
         )
+        if (
+            replay_claim is not None
+            and replay_store is not None
+            and replay_key is not None
+            and replay_fp is not None
+            and replay_policy is not None
+        ):
+            from hedron.replay import ReplayState
+
+            if replay_claim.state == ReplayState.FIRST:
+                body = getattr(response, "body", b"") or b""
+                if isinstance(body, memoryview):
+                    body = body.tobytes()
+                if isinstance(body, str):
+                    body = body.encode("utf-8")
+                subject = str(
+                    getattr(getattr(request, "user", None), "identity", "") or "anonymous"
+                )
+                tenant = str(getattr(request.state, "hedron_tenant", "") or "")
+                scope = f"{tenant}:{subject}:{getattr(fn, '__name__', 'action')}"
+                replay_store.complete(
+                    key=replay_key,
+                    scope=scope,
+                    fingerprint=replay_fp,
+                    status=int(getattr(response, "status_code", 200) or 200),
+                    body=bytes(body),
+                )
+        return response
 
     # Resolve annotations in the original function's globals so Depends survives wrapping.
     try:
@@ -143,6 +241,10 @@ def _wrap_endpoint(
         ),
     )
     endpoint._hedron_fragment_regions = fragment_regions  # type: ignore[attr-defined]
+    if capability:
+        endpoint._hedron_capability = capability  # type: ignore[attr-defined]
+    if idempotency:
+        endpoint._hedron_idempotency = idempotency  # type: ignore[attr-defined]
     logical = getattr(fn, "_hedron_view_logical_id", None)
     if logical:
         endpoint._hedron_view_logical_id = logical  # type: ignore[attr-defined]
@@ -335,6 +437,8 @@ class HedronRouter(APIRouter):
         tags: list[str | Enum] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
+        capability: str | None = None,
+        idempotency: str | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         verb_list = list(methods or [method])
@@ -348,6 +452,10 @@ class HedronRouter(APIRouter):
             op_id = operation_id_for("action", route_name, path, primary)
             regions = _normalize_fragment_regions(fragment_regions)
             fn._hedron_fragment_regions = regions  # type: ignore[attr-defined]
+            if capability:
+                fn._hedron_capability = capability  # type: ignore[attr-defined]
+            if idempotency:
+                fn._hedron_idempotency = idempotency  # type: ignore[attr-defined]
             wrapped = _wrap_endpoint(
                 fn,
                 kind="action",
@@ -355,6 +463,8 @@ class HedronRouter(APIRouter):
                 require_csrf=_requires_csrf(verb_list),
                 fragment_regions=regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                capability=capability,
+                idempotency=idempotency,
             )
             self.add_api_route(
                 path,
@@ -372,6 +482,9 @@ class HedronRouter(APIRouter):
             route = self.routes[-1]
             if isinstance(route, HedronRoute):
                 route.hedron_kind = "action"  # type: ignore[attr-defined]
+            safety = "legacy"
+            if idempotency and idempotency != "off":
+                safety = f"idempotent:{idempotency}"
             self._register_route_or_rollback(
                 kind="action",
                 logical_id=logical_id,
@@ -389,6 +502,8 @@ class HedronRouter(APIRouter):
                     "swap": "innerHTML",
                     "validation_fragment": "form error components",
                     "fragment_regions": _fragment_regions_for_inference(regions),
+                    "capability": capability or "",
+                    "action_safety": safety,
                 },
             )
             return fn

@@ -390,6 +390,140 @@ class SplitView(Component[SplitViewProps]):
         )
 
 
+class MasterDetailProps(ElementProps):
+    ratio: str = "1:2"
+    gap: str = "1.5rem"
+    collapse: str = "md"
+    master_id: str = "master"
+    detail_id: str = "detail"
+    selection: str | None = None
+    empty_message: str = "Select an item"
+    state: str = "ready"
+
+
+class MasterDetail(Component[MasterDetailProps]):
+    """Responsive master-detail layout with named fragment regions (LAYOUT-055).
+
+    Beta for the first 0.55 release. Selection is application-resolved; missing or
+    denied selections must converge to empty/not-found/permission without leaking
+    whether an inaccessible record exists.
+    """
+
+    props_type = MasterDetailProps
+    logical_name = "MasterDetail"
+    slots: ClassVar[dict[str, str]] = {
+        "master": "optional",
+        "detail": "optional",
+        "empty": "optional",
+        "loading": "optional",
+        "error": "optional",
+        "permission": "optional",
+    }
+
+    def __init__(
+        self,
+        master: NodeLike = None,
+        detail: NodeLike = None,
+        *,
+        empty: NodeLike = None,
+        loading: NodeLike = None,
+        error: NodeLike = None,
+        permission: NodeLike = None,
+        ratio: str = "1:2",
+        gap: str = "1.5rem",
+        collapse: str = "md",
+        master_id: str = "master",
+        detail_id: str = "detail",
+        selection: str | None = None,
+        empty_message: str = "Select an item",
+        state: Literal["ready", "loading", "empty", "error", "permission"] = "ready",
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        require_choice(ratio, SPLIT_RATIOS, label="ratio")
+        require_choice(collapse, COLLAPSE_BREAKPOINTS, label="collapse")
+        if state not in {"ready", "loading", "empty", "error", "permission"}:
+            raise error(
+                "HED-HTML-0006",
+                title="Invalid MasterDetail state",
+                explanation=f"State {state!r} is not supported.",
+                remediation="Use ready, loading, empty, error, or permission.",
+            )
+        super().__init__(
+            MasterDetailProps(
+                ratio=ratio,
+                gap=_validated_gap(gap),
+                collapse=collapse,
+                master_id=master_id.removeprefix("#"),
+                detail_id=detail_id.removeprefix("#"),
+                selection=selection,
+                empty_message=empty_message,
+                state=state,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._master = master
+        self._detail = detail
+        self._empty = empty
+        self._loading = loading
+        self._error = error
+        self._permission = permission
+
+    def fragment_regions(self) -> tuple[str, str]:
+        return (self.props.master_id, self.props.detail_id)
+
+    def render(self) -> NodeLike:
+        state = self.props.state
+        if state == "loading" and self._loading is not None:
+            detail_body: NodeLike = self._loading
+        elif state == "error" and self._error is not None:
+            detail_body = self._error
+        elif state == "permission" and self._permission is not None:
+            detail_body = self._permission
+        elif state in {"empty", "ready"} and self._detail is None or state == "empty":
+            detail_body = self._empty or html.p(self.props.empty_message)
+        else:
+            detail_body = self._detail
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-layout": "master-detail",
+            "hedron-gap": self.props.gap,
+            "hedron-split-ratio": self.props.ratio.replace(":", "-"),
+            "hedron-split-collapse": self.props.collapse,
+            "hedron-master-id": self.props.master_id,
+            "hedron-detail-id": self.props.detail_id,
+            "hedron-md-state": state,
+            **mark_data(self.props.mark),
+        }
+        if self.props.selection is not None:
+            data["hedron-selection"] = self.props.selection
+        return html.div(
+            html.div(
+                self._master,
+                id=self.props.master_id,
+                class_="hedron-master-pane",
+                role="navigation",
+                aria={"label": "Master list"},
+            ),
+            html.div(
+                detail_body,
+                id=self.props.detail_id,
+                class_="hedron-detail-pane",
+                role="region",
+                aria={"label": "Detail panel", "live": "polite"},
+                tabindex="0",
+            ),
+            id=self.props.id,
+            class_=class_names("hedron-master-detail hedron-split", self.props.class_),
+            style=f"--hedron-gap: {self.props.gap}",
+            data=data,
+        )
+
+
 class FormGridProps(ElementProps):
     columns: dict[str, int]
     gap: str = "1rem"

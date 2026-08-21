@@ -16,8 +16,8 @@ you do not need a Node.js toolchain or a full-script rerun model.
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
 Requires Python 3.11–3.14. Pin `hedron>=0.54.0,<0.55` from PyPI. The living in-tree tip
-is **`v0.53.0`** (Application DX Stage 1); Git tag and PyPI upload for that cut are
-**deferred** until maintainers publish the next wheel. The fastest path uses
+is **`v0.55.0`** (secure workflows Stage 1); Git tag and PyPI upload for that cut are
+**deferred** (PyPI remains **0.54.0**) until maintainers publish the next wheel. The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash
@@ -120,7 +120,7 @@ uv add "hedron>=0.54.0,<0.55" "uvicorn[standard]"
 python -m pip install "hedron>=0.54.0,<0.55" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Train:** `0.53.x` (in-tree tip `v0.53.0`; tag/PyPI deferred) · pin from PyPI `>=0.54.0,<0.55`
+**Package maturity:** Beta · **Train:** `0.55.x` (in-tree tip `v0.55.0`; tag/PyPI deferred) · pin from PyPI `>=0.54.0,<0.55`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the

@@ -1,0 +1,83 @@
+# Phase 0.55 secure upgradeable workflows release evidence index.
+# Verified in-tree cut (D-095 / D-096). Living tip remains v0.54.0.
+
+schema_version = 1
+phase = "0.55"
+status = "Verified"
+planning_baseline = "v0.54.0"
+required_predecessor = "v0.54.0"
+target = "v0.55.0"
+decision = "D-095"
+contract_refine = "D-096"
+owning_rfc = "RFC-0082"
+tracking = "#544-#549"
+
+[[evidence]]
+id = "CONTRACT-055"
+state = "Verified"
+command = "python scripts/check_contract_055.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "LAYOUT-055"
+state = "Verified"
+command = "python scripts/check_layout_055.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "CAP-055"
+state = "Verified"
+command = "python scripts/check_cap_055.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REPLAY-055"
+state = "Verified"
+command = "python scripts/check_replay_055.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "UPLOAD-055"
+state = "Verified"
+command = "python scripts/check_upload_055.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "CSP-055"
+state = "Verified"
+command = "python scripts/check_csp_055.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "UPGRADE-055"
+state = "Verified"
+command = "python scripts/check_upgrade_055.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PARITY-055"
+state = "Verified"
+command = "python scripts/check_parity_055.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "REGRESS-055"
+state = "Verified"
+command = "python scripts/check_regress_055.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-055"
+state = "Verified"
+command = "python scripts/check_pkg_055.py"
+ci_job = "test"
+owner = "hedron"

@@ -28,7 +28,7 @@ treat the Beta `hedron-elements` Supported inventory as still more volatile than
 pages. Charts require `hedron-charts>=0.2.0,<0.3`. The sample kit requires
 `hedron-sample-kit>=0.1.10,<0.2` — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current published train (`0.54.x`). The
+**Support window:** security fixes target the current published train (`0.55.x`). The
 previous `0.52.x` train receives best-effort security triage through approximately
 **2027-08-20**. Public-index notes: [Installation](../getting-started/installation.md).
 There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).

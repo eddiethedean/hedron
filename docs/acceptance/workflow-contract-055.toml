@@ -1,0 +1,18 @@
+schema_version = 1
+phase = "0.55"
+state = "Verified"
+baseline = "v0.54.0"
+target = "v0.55.0"
+owning_rfc = "RFC-0082"
+decision = "D-095"
+contract_refine = "D-096"
+manifest_module = "hedron.workflow"
+reason_codes = [
+  "allowed", "denied", "hidden", "disabled", "replayed", "rejected", "uploaded", "conflict"
+]
+budget_keys = [
+  "body_bytes", "field_count", "filename_bytes", "report_bytes", "replay_keys",
+  "concurrency", "retention_seconds", "cleanup_timeout_seconds"
+]
+compatibility_modes = ["legacy", "workflow_055"]
+api_stability = "beta"

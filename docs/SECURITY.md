@@ -2,19 +2,21 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.54.x`). Older `0.x` lines should
+Security fixes land on the **current published train** (`0.55.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.53.x`) continues through approximately **2027-08-20** — after that, upgrade
+minor (`0.54.x`) continues through approximately **2027-08-20** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The Git tag and PyPI upload are complete (`registry_status = uploaded`), and the public index
-serves `v0.54.0` — first-run pins from PyPI use `>=0.54.0,<0.55`. Checkout tip is `v0.54.0`.
+The living in-tree tip is **`v0.55.0`**; **`v0.54.0` remains on PyPI** while the Git tag and
+PyPI upload for 0.55.0 are **deferred** (`registry_status = deferred`). First-run pins from
+PyPI use `>=0.54.0,<0.55` until the 0.55 wheel lands. Checkout tip is `v0.55.0`.
 
 | Version | Supported |
 |---|---|
-| `0.54.x` | Yes (current published train — pin `>=0.54.0,<0.55`; published `v0.54.0`) |
-| `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.54.x` |
-| `0.52.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.53.x` / `0.54.x` |
+| `0.55.x` | Yes (current published train — pin `>=0.55.0,<0.56`; published `v0.55.0`) |
+| `0.54.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.55.x` |
+| `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.54.x` / `0.55.x` |
+| `0.52.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.53.x` / `0.55.x` |
 | `0.51.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.52.x` / `0.53.x` |
 | `0.50.x` | Best-effort security triage through approximately 2027-08-19; upgrade to `0.51.x` / `0.52.x` |
 | `0.49.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.50.x` |
@@ -28,9 +30,6 @@ serves `v0.54.0` — first-run pins from PyPI use `>=0.54.0,<0.55`. Checkout tip
 | `0.41.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.42.x` |
 | `0.40.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.41.x` |
 | `0.39.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.40.x` |
-| `0.9.x`–`0.38.x` | No; upgrade to `0.54.x` (`v0.54.0` in-tree) or `0.52.x` from PyPI |
-| `0.8.x` | No; final HDN-capable line, retained only for historical migration context |
-| `< 0.8` | No |
 
 ## Reporting a vulnerability
 
@@ -49,7 +48,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes land on the current published train (`0.54.x`); see Supported versions above.
+4. Fixes land on the current published train (`0.55.x`); see Supported versions above.
 
 ### Alternate contact
 

@@ -201,6 +201,7 @@ from hedron_core import (
     Main,
     MainPanel,
     Map,
+    MasterDetail,
     Math,
     MenuButton,
     Metric,
@@ -407,7 +408,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.54.0"
+__version__ = "0.55.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -666,6 +667,7 @@ __all__ = [
     "SkipLink",
     "Spacer",
     "SplitView",
+    "MasterDetail",
     "Stack",
     "StateView",
     "Status",

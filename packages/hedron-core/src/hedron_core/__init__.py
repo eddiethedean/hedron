@@ -104,6 +104,7 @@ from hedron_core.builtins import (
     Main,
     MainPanel,
     Map,
+    MasterDetail,
     Math,
     MenuButton,
     Metric,
@@ -464,7 +465,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.54.0"
+__version__ = "0.55.0"
 
 __all__ = [
     "__version__",
@@ -834,6 +835,7 @@ __all__ = [
     "SourceSpan",
     "Spacer",
     "SplitView",
+    "MasterDetail",
     "SseEvent",
     "SseRegion",
     "SseTrigger",

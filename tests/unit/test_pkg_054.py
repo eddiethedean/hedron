@@ -27,11 +27,25 @@ def test_upgrade_fixtures_and_verify_script() -> None:
 
 def test_stage1_modules_and_satellite_versions() -> None:
     tip = _living_tip()
-    assert tip.startswith("0.54.")
+    assert tip.startswith("0.54.") or tip.startswith("0.55.")
     assert Path("packages/hedron/src/hedron/package_doctor.py").is_file()
     assert Path("packages/hedron-conformance/src/hedron_conformance/authoring_loop.py").is_file()
     assert Path("packages/hedron-sim/src/hedron_sim/manifest.py").is_file()
     assert Path("packages/hedron-notebook/src/hedron_notebook/handles.py").is_file()
+
+    if tip.startswith("0.55."):
+        # Historical 0.54 packet under living 0.55 — satellite versions remain 0.2.0.
+        sample = tomllib.loads(
+            Path("packages/hedron-sample-kit/pyproject.toml").read_text(encoding="utf-8")
+        )
+        notebook = tomllib.loads(
+            Path("packages/hedron-notebook/pyproject.toml").read_text(encoding="utf-8")
+        )
+        sim = tomllib.loads(Path("packages/hedron-sim/pyproject.toml").read_text(encoding="utf-8"))
+        assert sample["project"]["version"] == "0.2.0"
+        assert notebook["project"]["version"] == "0.2.0"
+        assert sim["project"]["version"] == "0.2.0"
+        return
 
     workspace = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
     assert workspace["project"]["version"] == tip

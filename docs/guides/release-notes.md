@@ -3,6 +3,18 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.55.0 — 2026-08-20
+
+In-tree Published cut for secure upgradeable application workflows
+(RFC-0082 / D-095 / D-096). Pin `hedron>=0.54.0,<0.55` from PyPI until the 0.55
+wheel lands. [What’s new in 0.55](whats-new-0.55.md).
+[Installation](../getting-started/installation.md).
+
+- Master-detail layout, capabilities, replay-safe actions, multipart uploads,
+  CSP reporting helpers, and offline upgrade reports (#544–#549).
+- Shared gates `CONTRACT-055` … `PKG-055` Verified. Git tag / PyPI upload deferred
+  (`registry_status = "deferred"`).
+
 ## 0.53.0 — 2026-08-20
 
 In-tree Published cut for application DX contracts

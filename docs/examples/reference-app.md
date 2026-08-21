@@ -3,7 +3,7 @@
 Annotated tour of
 [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)—
 the FastAPI flagship CRUD sample and multi-worker production kitchen sink on the living
-**0.54** train. Prefer [session auth](session-auth.md) and
+**0.55** train. Prefer [session auth](session-auth.md) and
 [notes + SQLAlchemy](notes-sqlalchemy.md) for a shorter second-hour path; use this app
 when you want the full archetype in one tree.
 
@@ -13,7 +13,7 @@ Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README
 Click through the pattern demos below (docs simulations for CSRF, fragments, and chart
 **panel** refresh — not a live login), then run the full app locally or via production
 compose. Outside the workspace, install `hedron[charts]>=0.54.0,<0.55` from PyPI while
-registry upload is deferred (checkout tip is `0.54.0`; see
+registry upload is deferred (checkout tip is `0.55.0`; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 
 !!! warning "Credentials for this app"

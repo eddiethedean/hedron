@@ -287,6 +287,7 @@ nav:
     - Support: guides/support.md
     - Enterprise diligence: guides/enterprise-diligence.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.55: guides/whats-new-0.55.md
     - What's new in 0.54: guides/whats-new-0.54.md
     - What's new in 0.51: guides/whats-new-0.51.md
     - Releases: guides/release-notes.md

@@ -126,7 +126,7 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 | `SelectSlider`, `Sidebar`, `Skeleton`, `Spacer`, `Status`, `SubmitButton` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Table`, `Tabs`, `Text`, `TextArea`, `Theme`, `TimeInput` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Timeline`, `Title`, `ToggleSwitch`, `Tooltip` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
-| `PageHeader`, `SplitView`, `FormGrid`, `ActionGroup` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
+| `PageHeader`, `SplitView`, `MasterDetail`, `FormGrid`, `ActionGroup` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [WORKFLOW.md](WORKFLOW.md), [Components](../components/index.md) |
 | `SkipLink`, `RequestIndicator`, `ProcessFlow`, `FlowStep` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
 | `Icon`, `Typography`, `StateView`, `TableColumn` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
 

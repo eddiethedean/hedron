@@ -1,0 +1,12 @@
+schema_version = 1
+phase = "0.55"
+state = "Verified"
+baseline = "v0.54.0"
+target = "v0.55.0"
+owning_rfc = "RFC-0082"
+command = "hedron upgrade-report"
+offline = true
+json_schema = "hedron.workflow.upgrade_report_schema"
+finding_kinds = ["definite", "heuristic"]
+baseline_mode = "reviewed"
+exit_codes = { clean = 0, heuristic_only = 0, definite_break = 2, malformed = 1 }

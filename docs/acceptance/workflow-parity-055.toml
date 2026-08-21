@@ -1,0 +1,33 @@
+schema_version = 1
+phase = "0.55"
+state = "Verified"
+baseline = "v0.54.0"
+target = "v0.55.0"
+owning_rfc = "RFC-0082"
+
+[[adapter]]
+name = "fastapi"
+layout = "supported"
+capabilities = "supported"
+replay = "supported"
+upload_streaming = "supported"
+csp_nonce = "supported"
+notes = "Primary reference adapter"
+
+[[adapter]]
+name = "flask"
+layout = "supported"
+capabilities = "supported"
+replay = "supported"
+upload_streaming = "degraded"
+csp_nonce = "supported"
+notes = "Buffered multipart accepted; true streaming unsupported"
+
+[[adapter]]
+name = "django"
+layout = "supported"
+capabilities = "supported"
+replay = "supported"
+upload_streaming = "degraded"
+csp_nonce = "supported"
+notes = "Buffered multipart accepted; true streaming unsupported"

@@ -6,7 +6,7 @@ Compatibility Posit Workbench / RStudio Server deployment adapter.
 
 Prefer [`hedron-posit`](hedron-posit.md) / `HedronPosit` for new applications.
 This package retains `HedronWorkbench` as a thin subclass (supported on the current
-0.54 train; no 0.33 deprecation warning).
+0.55 train; no 0.33 deprecation warning).
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust.

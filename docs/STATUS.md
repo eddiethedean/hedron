@@ -1,30 +1,30 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.54 **Published** as `v0.54.0` (2026-08-20; GitHub and PyPI). Phase 0.53 remains Verified in-tree.
-Living tip = `v0.54.0`.
+**Roadmap position:** phase 0.55 **Published** in-tree as `v0.55.0` (2026-08-20; tag/PyPI deferred). Phase 0.54 remains Verified in-tree.
+Living tip = `v0.55.0` (PyPI still `v0.54.0`; registry deferred).
 **Date:** 2026-08-20
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.54.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.55.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
 `hedron-sim` `0.2.0`, `hedron-mcp` `0.2.1`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.54.0`
+`0.55.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
-`hedron-runtime-node` / `hedron-runtime-java` `0.54.0`.
+`hedron-runtime-node` / `hedron-runtime-java` `0.55.0`.
 
-**Phase focus:** Living train is **0.54** (D-093 / D-094 / RFC-0081) — authoring-loop
-foundation (sample-kit, package doctor, simulator, notebook) and application chrome
-companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537);
-foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543).
-`release-gate-0.54.toml` Verified rows; living tip `v0.54.0` is published on GitHub and PyPI
-(`registry_status = "uploaded"`).
+**Phase focus:** Living train is **0.55** (D-095 / D-096 / RFC-0082) — secure upgradeable
+workflows [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549).
+`release-gate-0.55.toml` Verified rows; living tip `v0.55.0` in-tree (`v0.54.0` on PyPI;
+`registry_status = "deferred"`).
+Prior Published **0.54** authoring-loop / chrome (D-093 / D-094 / RFC-0081;
+[#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543)).
 Prior Published in-tree **0.53** application DX
 (D-091 / D-092 / RFC-0080; [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)).
 Prior Published in-tree **0.52** conformance authority and HedronPosit lifecycle

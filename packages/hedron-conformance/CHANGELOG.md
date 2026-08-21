@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.55.0] — 2026-08-20
+
+### Changed
+- Coordinated train tip `0.55.0` (in-tree cut; tag/PyPI deferred).
+
+### Added
+- Secure upgradeable workflow primitives (master-detail, capabilities, replay,
+  uploads, CSP reporting, offline upgrade-report) under RFC-0082 / D-095 / D-096.
+
 ## [0.54.0] — 2026-08-20
 
 ### Changed

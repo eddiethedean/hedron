@@ -1,0 +1,66 @@
+schema_version = 1
+phase = "0.55"
+state = "Verified"
+baseline = "v0.54.0"
+target = "v0.55.0"
+owning_rfc = "RFC-0082"
+decision = "D-095"
+contract_refine = "D-096"
+shared_schema_import = "hedron.workflow"
+
+[[workstream]]
+id = "layout"
+issue = "#544"
+gates = ["LAYOUT-055"]
+shipped_seams = ["AppShell", "MainPanel", "SplitView", "FragmentRegion"]
+planned_contract = "MasterDetail with named regions, history/focus, mobile collapse"
+
+[[workstream]]
+id = "capabilities"
+issue = "#546"
+gates = ["CAP-055"]
+shipped_seams = ["AuthSignal", "Button", "@app.action", "_wrap_endpoint"]
+planned_contract = "CapabilityProvider, request-bound decisions, server enforcement"
+
+[[workstream]]
+id = "replay"
+issue = "#548"
+gates = ["REPLAY-055"]
+shipped_seams = ["JobBackend idempotency_key", "@app.action CSRF path"]
+planned_contract = "IdempotencyPolicy and ReplayStore for HTTP actions"
+
+[[workstream]]
+id = "upload"
+issue = "#549"
+gates = ["UPLOAD-055"]
+shipped_seams = ["FileUpload", "FormBody multipart", "validate_upload_filename"]
+planned_contract = "UploadField lifecycle with budgets and cleanup"
+
+[[workstream]]
+id = "csp"
+issue = "#545"
+gates = ["CSP-055"]
+shipped_seams = ["SecurityPolicy", "SecurityHeadersPolicy", "SecurityHeadersMiddleware"]
+planned_contract = "NonceContext, CspReporting, bounded ingest_csp_report"
+
+[[workstream]]
+id = "upgrade"
+issue = "#547"
+gates = ["UPGRADE-055"]
+shipped_seams = ["hedron package doctor", "hedron check", "migrate analyze-only"]
+planned_contract = "hedron upgrade-report offline JSON with baselines"
+
+[[workstream]]
+id = "exit"
+issue = "#544"
+gates = ["CONTRACT-055", "PARITY-055", "REGRESS-055", "PKG-055"]
+shipped_seams = ["release-gate-0.54", "adapter disposition", "ci_checks.sh"]
+planned_contract = "workflow manifest, parity matrix, packaging, regression"
+
+[boundaries]
+runtime_changes = false
+version_changes = false
+rbac_engine = false
+malware_scanner = false
+object_storage = false
+schedule_1_0 = false

@@ -1,6 +1,6 @@
 # Performance
 
-Application-oriented guidance for the living **0.54** train. CI soft ceilings live in
+Application-oriented guidance for the living **0.55** train. CI soft ceilings live in
 [PERFORMANCE_BUDGETS.md](https://github.com/eddiethedean/hedron/blob/main/docs/PERFORMANCE_BUDGETS.md)
 (maintainer evidence), not as product SLOs. Full load/proxy backpressure proof for SSE/WS
 remains incomplete — prefer polling when that proof is required before you rely on live

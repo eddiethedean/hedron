@@ -1,21 +1,23 @@
 [release]
 # Public release facts. Adopter-facing "current", "living", and install-pin claims
 # must agree with this file. The workspace may be preparing a later patch.
-train = "0.54"
-published_version = "0.54.0"
-development_version = "0.54.0"
+train = "0.55"
+published_version = "0.55.0"
+development_version = "0.55.0"
 published_date = "2026-08-20"
-pin_floor = "0.54.0"
-pin_ceiling = "0.55"
-previous_train = "0.53"
-previous_version = "0.53.0"
+pin_floor = "0.55.0"
+pin_ceiling = "0.56"
+previous_train = "0.54"
+previous_version = "0.54.0"
 previous_security_until = "2027-08-20"
 # Latest version actually on PyPI. Keep in sync with pypi.org (not workspace version).
-# The 0.54.0 train is published to the public index.
+# When registry_status is "deferred", first-run copy-paste must use this public-index
+# pin (never the unpublished in-tree pin). When "uploaded", pypi_version must equal
+# published_version and first-run commands use the same pin as Installation.
 pypi_version = "0.54.0"
 pypi_pin_floor = "0.54.0"
 pypi_pin_ceiling = "0.55"
-registry_status = "uploaded"
+registry_status = "deferred"
 
 [satellites]
 minimum_version = "0.2.0"

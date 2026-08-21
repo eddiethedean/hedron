@@ -177,6 +177,28 @@ The command exits `0` when every package-author check passes and `1` when the
 report contains failures. Unlike `hedron fleet`, it inspects a source tree rather
 than the currently installed package fleet.
 
+### `upgrade-report`
+
+Offline application upgrade compatibility report (UPGRADE-055). Never contacts
+external services. Emits CI-consumable JSON distinguishing definite breaks from
+heuristic warnings.
+
+```bash
+hedron upgrade-report --from 0.54.0 --to 0.55.0
+hedron upgrade-report --from 0.54.0 --to 0.55.0 --baseline ./baseline.json --out report.json
+```
+
+| Flag | Description |
+|---|---|
+| `--from` | Current train tip |
+| `--to` | Target train tip |
+| `--baseline` | Reviewed baseline JSON (fail closed on schema mismatch) |
+| `--out` | Write JSON to a file instead of stdout |
+| `--allow-definite` | Exit `0` even when definite breaks are present |
+
+Exit `0` when clean or heuristic-only (unless `--allow-definite` is unset and
+definite findings exist — then exit `2`). Exit `1` on malformed input.
+
 ### `preview` / `inspect` / `eject`
 
 ```bash

@@ -2,7 +2,7 @@
 
 First-party FastAPI demo for **phase 0.49** lifetimes, native/expanded binding, and
 non-granting scopes. Existing `ViewParams` / `FormBody` keep working. This example
-targets the current **0.54.x** train (phase 0.49 contracts still apply).
+targets the current **0.55.x** train (phase 0.49 contracts still apply).
 
 ## Run
 

@@ -21,6 +21,7 @@ from hedron.cli.commands.routes import _cmd_components, _cmd_preview, _cmd_route
 from hedron.cli.commands.run import _cmd_run_app
 from hedron.cli.commands.testgen import _cmd_testgen
 from hedron.cli.commands.theme import _cmd_style_check, _cmd_theme_check
+from hedron.cli.commands.upgrade_report import _cmd_upgrade_report
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -301,6 +302,25 @@ def main(argv: list[str] | None = None) -> None:
     from hedron.migrate.cli import build_streamlit_parser
 
     build_streamlit_parser(migrate_sub)
+
+    upgrade_p = sub.add_parser(
+        "upgrade-report",
+        help="Offline application upgrade compatibility report (0.55)",
+    )
+    upgrade_p.add_argument("--from", dest="from_version", required=True, help="Current train tip")
+    upgrade_p.add_argument("--to", dest="to_version", required=True, help="Target train tip")
+    upgrade_p.add_argument(
+        "--baseline",
+        default=None,
+        help="Reviewed baseline JSON path (fail closed on schema mismatch)",
+    )
+    upgrade_p.add_argument("--out", default=None, help="Write JSON report to a file")
+    upgrade_p.add_argument(
+        "--allow-definite",
+        action="store_true",
+        help="Exit 0 even when definite breaks are present",
+    )
+    upgrade_p.set_defaults(func=_cmd_upgrade_report)
 
     args = parser.parse_args(argv)
     raise SystemExit(args.func(args))
