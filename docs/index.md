@@ -9,7 +9,7 @@ search:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · Latest PyPI release 0.56.0 · Repository train 0.56.x</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · 0.56.0 on PyPI</div>
 
 # Build interactive web apps in Python.
 
