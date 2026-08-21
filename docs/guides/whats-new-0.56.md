@@ -1,7 +1,7 @@
 # What’s new in 0.56
 
-Published in-tree **0.56.0** (PyPI still **0.54.0** while deferred). Pin
-`hedron>=0.54.0,<0.55` from PyPI until a newer wheel lands; checkout tip is
+Published in-tree **0.56.0** (PyPI still **0.56.0** while deferred). Pin
+`hedron>=0.56.0,<0.57` from PyPI until a newer wheel lands; checkout tip is
 `0.56.0`.
 
 ## 0.56.0

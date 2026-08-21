@@ -1,6 +1,6 @@
 # Authoring loop and chrome API (`v0.54`)
 
-**Status:** Stage 1 Implemented (D-093 / D-094 / RFC-0081). Living tip `v0.54.0`
+**Status:** Stage 1 Implemented (D-093 / D-094 / RFC-0081). Living tip `v0.56.0`
 (tag/PyPI deferred).
 
 ## Shared schema

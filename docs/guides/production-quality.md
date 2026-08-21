@@ -3,8 +3,8 @@
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
 checklist in [Ship a Hedron app](ship.md).
 
-**Living published train:** in-tree pin `hedron>=0.54.0,<0.55` (tip `v0.54.0`); from PyPI
-pin `hedron>=0.54.0,<0.55` while the Git tag / upload is deferred. Capability maturity snapshot:
+**Living published train:** in-tree pin `hedron>=0.56.0,<0.57` (tip `v0.56.0`); from PyPI
+pin `hedron>=0.56.0,<0.57` while the Git tag / upload is deferred. Capability maturity snapshot:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 (maintainer corpus on GitHub).

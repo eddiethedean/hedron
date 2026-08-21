@@ -2,7 +2,7 @@
 
 **Published `v0.48.0`** (Git tag, GitHub Release, and PyPI). Owning decisions: D-080 / D-083.
 Tracking: [#373](https://github.com/eddiethedean/hedron/issues/373).
-For new apps, use `hedron>=0.54.0,<0.55`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, use `hedron>=0.56.0,<0.57`; see [What’s new in 0.51](whats-new-0.51.md).
 
 ## Highlights
 

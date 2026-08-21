@@ -1,8 +1,8 @@
 # Cutting a Hedron release
 
-This is the living maintainer runbook for the `0.54.x` train. Historical cut records
-live under `docs/archive/`. The published train is `v0.54.0` and PyPI serves `hedron`
-`0.54.0` (`registry_status = uploaded`).
+This is the maintainer runbook for the published `0.56.x` train. Historical cut records
+live under `docs/archive/`. The published train is `v0.56.0` and PyPI serves `hedron`
+`0.56.0` (`registry_status = uploaded`).
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag.
@@ -18,9 +18,9 @@ Python metadata does not. Never move or replace a published tag.
    `scripts/verify_pkg_52.py` also remains green.
 4. The repository and PyPI trusted-publishing configuration are controlled by active
    maintainers; the release uses the GitHub Actions workflow.
-5. The tag `v0.54.0` does not already exist locally or on the remote.
-6. For a completed upload, keep `registry_status = "uploaded"` and
-   `pypi_version = "0.54.0"` aligned with the published tip and its install pins.
+5. The tag for the release being cut does not already exist locally or on the remote.
+6. Keep `registry_status = "uploaded"`, retain `pypi_version = "0.56.0"`, and keep
+   application install pins on the PyPI version.
 
 ## Local release candidate
 
@@ -28,12 +28,12 @@ Python metadata does not. Never move or replace a published tag.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.54.0
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.56.0
 bash scripts/ci_checks.sh browser --python 3.12
-uv run python scripts/check_release_gate.py 0.54.0
+uv run python scripts/check_release_gate.py 0.56.0
+uv run python scripts/verify_pkg_56.py
+uv run python scripts/verify_pkg_55.py
 uv run python scripts/verify_pkg_54.py
-uv run python scripts/verify_pkg_53.py
-uv run python scripts/verify_pkg_52.py
 ```
 
 ## Tag and publish
@@ -42,12 +42,12 @@ For a future train, create and push its annotated version tag only after the gat
 
 ```bash
 git fetch --tags origin
-git rev-parse v0.54.0 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
-git tag -a v0.54.0 -m "Hedron 0.54.0"
-git push origin v0.54.0
+git rev-parse v0.56.0 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
+git tag -a v0.56.0 -m "Hedron 0.56.0"
+git push origin v0.56.0
 ```
 
-Pushing `v0.54.0` runs `.github/workflows/release.yml`, which re-runs CI, publishes
+Pushing a future release tag runs `.github/workflows/release.yml`, which re-runs CI, publishes
 coordinated wheels to PyPI (skipping satellite versions already on the index), and
 creates the GitHub Release. Release CI requires SBOM/evidence-bundle attach on train
 tags (SUPPLY-025) via `scripts/build_evidence_bundle.py` and `scripts/generate_sbom.py`.
@@ -55,6 +55,6 @@ Do not retag prior train tags.
 
 ## After a successful upload
 
-Confirm `docs/release.toml` has `pypi_version` equal to `published_version`, matching
-`pypi_pin_floor` / `pypi_pin_ceiling`, and `registry_status = "uploaded"`. Adopter
-first-run pages must not say the Git tag or PyPI upload is deferred.
+After a successful upload, set `registry_status = "uploaded"`, make `pypi_version` equal
+to `published_version`, update the public install pins, and run the full documentation
+suite.

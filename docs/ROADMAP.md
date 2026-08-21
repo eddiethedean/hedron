@@ -51,7 +51,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.51** | Curated extras depth, browser lifecycle, and experimental-UI disposition; companion busy/reveal/password-toggle authoring | **Published** (`v0.52.0` on PyPI; RFC-0078 / D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506)) |
 | **0.52** | Cross-language conformance authority; HedronPosit deployment lifecycle companions | **Published** in-tree (`v0.52.0`; Verified gates; tag/PyPI deferred; RFC-0079 / D-089 / D-090; [#522](https://github.com/eddiethedean/hedron/issues/522); companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513)) |
 | **0.53** | Application DX contracts: assets, diagnostics, workflows, theming, and fleet tooling | **Verified** / **Published** in-tree (`v0.53.0`; Verified gates; tag/PyPI deferred; [RFC-0080](rfcs/RFC-0080-APPLICATION-DX-CONTRACTS.md), D-091/D-092, [#514](https://github.com/eddiethedean/hedron/issues/514)–[#521](https://github.com/eddiethedean/hedron/issues/521)) |
-| **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Published** (`v0.54.0` on GitHub and PyPI; [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md), D-093/D-094, foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543); companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
+| **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Published** (`v0.56.0` on GitHub and PyPI; [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md), D-093/D-094, foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543); companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
 | **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Published** (`v0.55.0` tag; Verified gates; PyPI deferred; [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md), D-095/D-096, [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)) |
 | **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.0` in-tree; Verified gates; tag/PyPI deferred; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)) |
 
@@ -105,7 +105,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 
 ### Honest gaps on the current train (0.56.x)
 
-- Current **published** in-tree tip is **0.56.x** (`v0.56.0`; PyPI still `v0.54.0` deferred)
+- Current **published** in-tree tip is **0.56.x** (`v0.56.0`; PyPI still `v0.56.0` deferred)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -4769,9 +4769,9 @@ theme surfaces, flat namespace hunting, and ad-hoc extras/fleet triage. Tracking
   [tooling lock](acceptance/application-tooling-053.toml).
 - Living tip after cut is `v0.53.0` (PyPI deferred at `v0.52.0`); PKG-053 upgrade source is 0.52.
 
-## 0.54 — Notebook, simulation, and external-author reference tooling (`v0.54.0`)
+## 0.54 — Notebook, simulation, and external-author reference tooling (`v0.56.0`)
 
-**Status:** Published in-tree `v0.54.0` (D-093 / D-094 / [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md);
+**Status:** Published in-tree `v0.56.0` (D-093 / D-094 / [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md);
 all fifteen gates Verified; tag/PyPI deferred).
 Foundation tracking [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543).
 The three packages remain tooling-grade unless their own acceptance inventories
@@ -4779,7 +4779,7 @@ justify a narrower Supported claim; this phase does not turn notebook preview in
 server. Companion application chrome / design-system issues
 [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)
 are bound to this phase and do not reopen 0.53 Application DX gates or schedule `1.0`.
-Living tip is `v0.54.0`.
+Living tip is `v0.56.0`.
 
 **Outcome:** The notebook preview, offline simulator, and sample plugin form a coherent modern
 authoring loop: preview real package workflows, understand simulation limits, and copy a credible
@@ -5458,7 +5458,7 @@ this medium/low packet; it was remediated on the 0.37 train (`HTMX-037`).
 
 ## 0.55 — Secure, upgradeable application workflows (`v0.55.0`)
 
-**Status:** Published as `v0.55.0` (D-095 / D-096 / [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md)). This phase binds issues [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549) into one application-workflow contract. It extends the 0.54 application-composition work without reopening earlier release gates or taking ownership of application RBAC, final security policy, storage backends, or deployment infrastructure. Git tag is published; PyPI upload remains deferred (`registry_status = "deferred"`; PyPI remains `v0.54.0`).
+**Status:** Published as `v0.55.0` (D-095 / D-096 / [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md)). This phase binds issues [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549) into one application-workflow contract. It extends the 0.54 application-composition work without reopening earlier release gates or taking ownership of application RBAC, final security policy, storage backends, or deployment infrastructure. Git tag is published; PyPI upload remains deferred (`registry_status = "deferred"`; PyPI remains `v0.56.0`).
 
 **Outcome:** Hedron provides secure, inspectable primitives for common application workflows: responsive master-detail composition, policy-aware affordances, replay-safe mutations, validated multipart actions, security-header reporting, and offline upgrade-impact reports.
 

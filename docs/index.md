@@ -9,7 +9,7 @@ search:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · 0.51.0 on PyPI</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · Latest PyPI release 0.56.0 · Repository train 0.56.x</div>
 
 # Build interactive web apps in Python.
 
@@ -36,12 +36,13 @@ open localhost:8000 → click **Refresh status**.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "hedron>=0.54.0,<0.55" hedron new my-hedron-app
+uvx --from "hedron>=0.56.0,<0.57" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 # Open http://127.0.0.1:8000 and click Refresh status
 ```
 
-Pins and extras: [Installation](getting-started/installation.md). Before production:
+Release status: [Current release and support](guides/current-release.md). Pins and extras:
+[Installation](getting-started/installation.md). Before production:
 [What’s ready](guides/whats-ready.md).
 
 ![Hello from Hedron with Refresh status](assets/hello-refresh.jpg){ .hedron-hero-shot }
@@ -108,7 +109,8 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron’s flagship and host-adapter packages are Beta. Pin `hedron>=0.54.0,<0.55`.
+Hedron’s flagship and host-adapter packages are Beta. The latest installable PyPI pin is
+`hedron>=0.56.0,<0.57`; the repository’s `0.56.x` train is available on PyPI.
 For production adoption, continue with
 [What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
 </details>

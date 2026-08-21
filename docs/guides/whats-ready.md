@@ -5,9 +5,10 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page describes the living **0.56.x** train (in-tree tip **`v0.56.0`**). Git tag and
-PyPI upload remain **deferred** — install from PyPI with `hedron>=0.54.0,<0.55` until the
-0.56 wheel lands. Extras and public-index notes:
+This page describes the repository’s **0.56.x** train (in-tree tip **`v0.56.0`**). The
+latest installable PyPI release is **0.56.0**; the 0.56 upload is complete. Install
+from PyPI with `hedron>=0.56.0,<0.57`. Release terminology and channel status:
+[Current release and support](current-release.md). Extras and public-index notes:
 [Installation](../getting-started/installation.md). Capability
 readiness, API compatibility, and package maturity are three
 separate axes — [How labels work](#how-labels-work). Evaluators who need the cheat-sheet:
@@ -84,17 +85,17 @@ sessions are not Supported yet** — do not market human AT as done.
 | Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronWorkbench` / `HedronPosit`; no import auto-wrap |
 | Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.54.0,<0.55`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
+| Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.56.0,<0.57`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Runnable [model-demo example](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) — [Model demos](model-demos.md) · [Recipes](../examples/recipes/index.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.1` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
-| Application DX Stage 1 | **Supported** (API `beta`; tip `v0.54.0`, tag/PyPI deferred) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
+| Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.56.0`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
 | Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (tip `v0.56.0`, tag/PyPI deferred) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `hedron>=0.54.0,<0.55`. The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.56.0,<0.57`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
@@ -219,7 +220,7 @@ is a runnable classifier. Live interaction sample:
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.54.0,<0.55" hedron new my-app
+    uvx --from "hedron>=0.56.0,<0.57" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -227,21 +228,21 @@ is a runnable classifier. Live interaction sample:
 === "pip"
 
     ```bash
-    pip install "hedron>=0.54.0,<0.55" "uvicorn[standard]"
+    pip install "hedron>=0.56.0,<0.57" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.54.0,<0.55`. Public-index notes: [Installation](../getting-started/installation.md).
+Pin `hedron>=0.56.0,<0.57`. Public-index notes: [Installation](../getting-started/installation.md).
 
-Extras: `"hedron[data]>=0.54.0,<0.55"`, `"hedron[extras]>=0.54.0,<0.55"`,
-`"hedron[jinja]>=0.54.0,<0.55"`, `"hedron[dev]>=0.54.0,<0.55"`,
-`"hedron[notebook]>=0.54.0,<0.55"` (tooling / localhost),
-`"hedron[mcp]>=0.54.0,<0.55"` (Beta Supported inventory),
-`"hedron[gradio]>=0.54.0,<0.55"` (Beta satellite; pin `hedron-gradio>=0.2.0,<0.3`),
-`"hedron[charts]>=0.54.0,<0.55"`, `"hedron[maps]>=0.54.0,<0.55"`, `"hedron[workbench]>=0.54.0,<0.55"`,
-`"hedron[posit]>=0.54.0,<0.55"`,
+Extras: `"hedron[data]>=0.56.0,<0.57"`, `"hedron[extras]>=0.56.0,<0.57"`,
+`"hedron[jinja]>=0.56.0,<0.57"`, `"hedron[dev]>=0.56.0,<0.57"`,
+`"hedron[notebook]>=0.56.0,<0.57"` (tooling / localhost),
+`"hedron[mcp]>=0.56.0,<0.57"` (Beta Supported inventory),
+`"hedron[gradio]>=0.56.0,<0.57"` (Beta satellite; pin `hedron-gradio>=0.2.0,<0.3`),
+`"hedron[charts]>=0.56.0,<0.57"`, `"hedron[maps]>=0.56.0,<0.57"`, `"hedron[workbench]>=0.56.0,<0.57"`,
+`"hedron[posit]>=0.56.0,<0.57"`,
 and `"hedron-sample-kit>=0.1.10,<0.2"`.
 
 ## Role-specific wrappers

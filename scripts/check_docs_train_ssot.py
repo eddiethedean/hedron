@@ -622,7 +622,7 @@ def main() -> int:
         else f"PyPI {FACTS.pypi_version}"
     )
     print(
-        f"ok: adopter docs agree with published v{FACTS.published_version}, "
+        f"ok: adopter docs agree with repository train v{FACTS.published_version}, "
         f"train {FACTS.train_line}, pin {FACTS.pin}, {registry}, "
         f"charts floor {FACTS.charts_pin}, and sample-kit floor {FACTS.sample_kit_pin}"
     )

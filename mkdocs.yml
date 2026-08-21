@@ -281,6 +281,8 @@ nav:
     - Packages: packages/index.md
     - Autodoc: api/AUTODOC.md
   - Project:
+    - Documentation map: guides/documentation-map.md
+    - Current release and support: guides/current-release.md
     - Why Hedron: guides/why-hedron.md
     - What's ready today: guides/whats-ready.md
     - Evaluate Hedron: guides/evaluate.md
@@ -288,6 +290,7 @@ nav:
     - Security: SECURITY.md
     - Support: guides/support.md
     - Enterprise diligence: guides/enterprise-diligence.md
+    - Production adoption checklist: guides/production-adoption.md
     - Upgrade guide: guides/upgrade.md
     - What's new in 0.56: guides/whats-new-0.56.md
     - What's new in 0.55: guides/whats-new-0.55.md

@@ -3,6 +3,21 @@
 **Canonical first-contribution page.** The repository root `CONTRIBUTING.md` stub
 points here. Full detail: [Contributing](../CONTRIBUTING.md).
 
+## The shortest successful contribution
+
+For a documentation-only change, the expected first loop is:
+
+```bash
+git clone https://github.com/eddiethedean/hedron.git
+cd hedron
+uv sync --group docs
+uv run --group docs mkdocs build --strict
+```
+
+Edit one Markdown page, run the same build again, then run the checks listed below.
+Do not start with release gates, acceptance packets, or the full browser matrix unless
+your change requires them.
+
 ## Docs-only PR
 
 **Local work (~15 minutes):** edit markdown and build docs — **no Rust, no Playwright**.
@@ -65,6 +80,7 @@ required for native wheel smoke).
 ## Plugins and RFCs (second contribution)
 
 - Plugin sample / authoring: [Plugin authoring](plugin-authoring.md) ·
-  [Using plugins](plugin-consumer.md) (`hedron-sample-kit>=0.1.10,<0.2` on 0.51).
+  [Using plugins](plugin-consumer.md) (`hedron-sample-kit>=0.2.0,<0.3` on the current
+  repository train; use the public compatibility pin documented on the package page).
 - Public contract changes: [Changing public contracts](../CONTRIBUTING.md#changing-public-contracts)
   (RFC intake steps).

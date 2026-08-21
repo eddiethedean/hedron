@@ -30,7 +30,8 @@ helpers) is compatibility-protected on the 0.x train. Everything else is `beta` 
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-**Published `v0.51.0`**. Pin `hedron>=0.54.0,<0.55`.
+The repository train is **`v0.56.0`**. The latest installable PyPI release is **0.56.0**;
+application users should pin `hedron>=0.56.0,<0.57` until the 0.56 upload lands.
 
 !!! note "Contracts vs full reference"
 
@@ -127,6 +128,6 @@ These contracts compile onto the golden path. They are **not** required for Hell
 - [HTMX extension integration](HTMX_EXTENSIONS.md) — **0.48** Published in-tree (morph Deferred)
 - [FastAPI/Pydantic convergence](FASTAPI_PYDANTIC_CONVERGENCE.md) — **0.49** Published in-tree
 - [Explorer architecture](EXPLORER_ARCHITECTURE.md) — **0.50** Published in-tree (related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503))
-- [Curated extras](EXTRAS.md) — **0.51** Published on PyPI as `v0.51.0` (D-087 / D-088; [#507](https://github.com/eddiethedean/hedron/issues/507); related [#504](https://github.com/eddiethedean/hedron/issues/504)–[#506](https://github.com/eddiethedean/hedron/issues/506))
+- [Curated extras](EXTRAS.md) — historical 0.51 contract; see [Current release and support](../guides/current-release.md) for installable versions.
 
 Public exception types: [EXCEPTIONS.md](EXCEPTIONS.md).

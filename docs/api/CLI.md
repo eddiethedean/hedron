@@ -208,8 +208,8 @@ external services. Emits CI-consumable JSON distinguishing definite breaks from
 heuristic warnings.
 
 ```bash
-hedron upgrade-report --from 0.54.0 --to 0.55.0
-hedron upgrade-report --from 0.54.0 --to 0.55.0 --manifest ./manifest.json --out report.json
+hedron upgrade-report --from 0.56.0 --to 0.55.0
+hedron upgrade-report --from 0.56.0 --to 0.55.0 --manifest ./manifest.json --out report.json
 ```
 
 | Flag | Description |
