@@ -15,10 +15,14 @@ __all__ = [
     "DEFAULT_SESSION_SECRET_MARKERS",
     "MIN_SESSION_SECRET_LENGTH",
     "RISK_ACCEPTANCE_ENV",
+    "RISK_EXPERIMENTAL_LIVE",
+    "RISK_PLUGINS_DISCOVER_ALL",
     "assert_durable_backends",
+    "assert_experimental_live_allowed",
     "assert_production_security_config",
     "parsed_risk_acceptance",
     "refuse_in_memory_backends",
+    "resolve_production_plugins",
 ]
 
 RISK_ACCEPTANCE_ENV = "HEDRON_SECURITY_RISK_ACCEPTANCE"
@@ -46,6 +50,8 @@ RISK_DEVELOPMENT_PROFILE = "security-development"
 RISK_EXPLORER_DEVELOPMENT = "explorer-development"
 RISK_EXTERNAL_REDIRECTS = "external-redirects"
 RISK_NO_CSP = "missing-csp"
+RISK_EXPERIMENTAL_LIVE = "experimental-live"
+RISK_PLUGINS_DISCOVER_ALL = "plugins-discover-all"
 
 
 def parsed_risk_acceptance(raw: str | None = None) -> frozenset[str]:
@@ -104,6 +110,79 @@ def assert_durable_backends(
         )
 
 
+def resolve_production_plugins(
+    enabled: Iterable[str] | None,
+    *,
+    production: bool | None = None,
+    risk_acceptance: Iterable[str] | None = None,
+) -> list[str] | None:
+    """Map configured plugins for production: omit/None becomes deny-all.
+
+    Non-production keeps discover-all (``None``). Production requires an explicit
+    allowlist, ``plugins = []``, or risk acceptance ``plugins-discover-all``.
+    """
+    if not is_production_env(production=production):
+        return None if enabled is None else list(enabled)
+
+    if enabled is not None:
+        return list(enabled)
+
+    accepted = (
+        frozenset(code.strip().lower() for code in risk_acceptance if str(code).strip())
+        if risk_acceptance is not None
+        else parsed_risk_acceptance()
+    )
+    if RISK_PLUGINS_DISCOVER_ALL in accepted:
+        warnings.warn(
+            "Production plugin discover-all accepted via "
+            f"{RISK_ACCEPTANCE_ENV}={RISK_PLUGINS_DISCOVER_ALL}; "
+            "prefer an explicit [tool.hedron] plugins allowlist.",
+            UserWarning,
+            stacklevel=3,
+        )
+        return None
+
+    warnings.warn(
+        "Production: [tool.hedron] plugins omitted — loading none (deny-by-default). "
+        "Set an explicit allowlist, plugins = [], or "
+        f"{RISK_ACCEPTANCE_ENV}={RISK_PLUGINS_DISCOVER_ALL}.",
+        UserWarning,
+        stacklevel=3,
+    )
+    return []
+
+
+def assert_experimental_live_allowed(
+    *,
+    production: bool | None = None,
+    risk_acceptance: Iterable[str] | None = None,
+) -> None:
+    """Refuse experimental SSE/WS/streaming helpers under production unless accepted."""
+    if not is_production_env(production=production):
+        return
+    accepted = (
+        frozenset(code.strip().lower() for code in risk_acceptance if str(code).strip())
+        if risk_acceptance is not None
+        else parsed_risk_acceptance()
+    )
+    if RISK_EXPERIMENTAL_LIVE in accepted:
+        return
+
+    from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+    emit_security_audit(
+        SecurityAuditEventType.PRODUCTION_GATE_FAILED,
+        "Experimental live transport refused in production",
+        attributes={"risk": RISK_EXPERIMENTAL_LIVE},
+    )
+    raise RuntimeError(
+        "Experimental live transports (SSE/WebSocket/streaming/preload) are not "
+        "allowed under HEDRON_ENV=production without explicit risk acceptance. "
+        "Prefer polling, or set "
+        f"{RISK_ACCEPTANCE_ENV}={RISK_EXPERIMENTAL_LIVE}."
+    )
+
+
 def _is_weak_secret(secret: str) -> bool:
     lowered = secret.strip().lower()
     if not lowered:
@@ -147,7 +226,8 @@ def assert_production_security_config(
 
     Accepted risks are listed in ``HEDRON_SECURITY_RISK_ACCEPTANCE`` (or ``risk_acceptance``)
     as comma-separated codes: ``weak-session-secret``, ``security-development``,
-    ``explorer-development``, ``external-redirects``, ``missing-csp``.
+    ``explorer-development``, ``external-redirects``, ``missing-csp``,
+    ``experimental-live``, ``plugins-discover-all``.
 
     Pass ``sessions_enabled=False`` when the app will not install session middleware
     so a missing ``session_secret`` is not treated as a weak secret (#260).

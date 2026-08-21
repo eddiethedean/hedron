@@ -1,7 +1,8 @@
 # Engineering baseline
 
-**Status:** Living contributor baseline (CI/toolchain contract for the published **0.25**
-train). Detailed acceptance evidence maps live on GitHub under
+**Status:** Living contributor baseline (CI/toolchain contract for the published **0.56.x**
+train; tip `v0.56.1`, PyPI `0.56.0` while 0.56.1 upload is deferred). Detailed acceptance
+evidence maps live on GitHub under
 [`docs/acceptance/`](https://github.com/eddiethedean/hedron/tree/main/docs/acceptance).
 
 ## Toolchain
@@ -28,7 +29,7 @@ the PR is classified **docs-only** by the allowlist in `.github/workflows/ci.yml
 
 | Job | Coverage |
 |---|---|
-| `quality` | ruff format + check, pyright, `verify_pkg_*`, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
+| `quality` | ruff format + check, pyright, tip+2 `verify_pkg_*` (older packets on evidence), satellite import + symbol-tier gates, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
 | `quality` (docs-only) | `docs` suite: train SSOT / recipe / sim checks, relative links, `mkdocs build --strict` — **no** Rust toolchain, **no** `uv build --all-packages` |
 | `test` | `pytest` with pytest-xdist (`-n auto`) on Ubuntu for Python **3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
 | `browser` | Playwright HTMX suite — **Chromium on PRs**; Chromium + Firefox + WebKit on `main` / workflow_dispatch (skipped when docs-only) |

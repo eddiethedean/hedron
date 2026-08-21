@@ -1,0 +1,37 @@
+schema_version = 1
+phase = "0.57"
+state = "planned"
+baseline = "0.56.1"
+target = "v0.57.0"
+
+engines = ["chromium", "firefox", "webkit"]
+viewports = ["narrow", "desktop", "zoom-200"]
+directions = ["ltr", "rtl"]
+media = ["light", "dark", "forced-colors", "reduced-motion", "print"]
+content = ["empty", "ordinary", "long", "unbroken-unicode", "localized"]
+lifecycles = ["initial", "fragment-replacement", "validation-error", "busy", "disabled"]
+
+[[surface]]
+name = "python-ssr"
+level = "reference"
+required = true
+
+[[surface]]
+name = "hedron-elements"
+level = "applicable-client-lifecycle"
+required = true
+
+[[surface]]
+name = "hedron-sim"
+level = "declared-subset"
+required = true
+
+[[surface]]
+name = "hdj"
+level = "public-component-binding"
+required = true
+
+[[surface]]
+name = "flask-django"
+level = "portable-rendering"
+required = true

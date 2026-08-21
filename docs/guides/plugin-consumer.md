@@ -8,11 +8,13 @@ To *write* a plugin, see [Plugin authoring](plugin-authoring.md) and the
 
 | `[tool.hedron].plugins` | Behavior |
 |---|---|
-| omit / unset | Discover and load **all** `hedron.plugins` entry points |
-| `[]` | Load **none** (deny-by-default) |
+| omit / unset (non-production) | Discover and load **all** `hedron.plugins` entry points |
+| omit / unset (`HEDRON_ENV=production`) | **Deny-by-default** — load none (warn). Set an allowlist, `[]`, or accept `plugins-discover-all` |
+| `[]` | Load **none** |
 | `["name", …]` | Load **only** those plugin names; missing names raise `HED-PLUGIN-MISSING` |
 
 Production apps that do not intentionally use plugins should set `plugins = []`.
+Under production, omitting the key is no longer discover-all.
 
 ```toml title="pyproject.toml"
 [tool.hedron]

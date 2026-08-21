@@ -43,7 +43,8 @@ Everything else remains `beta` / `experimental` unless listed in the
 [expanded 0.23 tier](#expanded-stable-tier-023) below. Package maturity on PyPI remains
 **Beta** — pin versions. Maturity source of truth for product claims:
 [What’s ready](../guides/whats-ready.md). Beginner import inventory:
-[STABLE_FACADE.md](STABLE_FACADE.md).
+[STABLE_FACADE.md](STABLE_FACADE.md). Full root `__all__` tier map:
+[SYMBOL_TIERS.md](SYMBOL_TIERS.md).
 
 | Symbol / contract | Package |
 |---|---|

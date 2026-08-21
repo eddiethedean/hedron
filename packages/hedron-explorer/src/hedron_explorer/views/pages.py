@@ -669,8 +669,12 @@ def _collect_hdj_inventory(
     request: Request,
 ) -> tuple[list[JsonObject], set[str], list[str]]:
     """Scan project roots for ``*.hdj`` files and build inventory reports (sync I/O)."""
-    from hedron_jinja import reconcile_csp
-    from hedron_jinja.source import inferred_capabilities, parse_hdj_source
+    try:
+        from hedron_jinja import reconcile_csp
+        from hedron_jinja.source import inferred_capabilities, parse_hdj_source
+    except ImportError:
+        _logger.info("HDJ inventory skipped: hedron-jinja is not installed")
+        return [], set(), []
 
     reports: list[JsonObject] = []
     caps: set[str] = set()
@@ -726,7 +730,16 @@ async def inventory_view(request: Request) -> str:
     """Production / HDJ inventory panel (phase 0.11)."""
     try:
         from hedron_jinja import build_production_inventory
+    except ImportError:
+        return shell(
+            "Inventory",
+            "<p>Install <code>hedron-jinja</code> (or <code>hedron[jinja]</code>) "
+            "to enable HDJ production inventory.</p>",
+            request=request,
+            active="inventory",
+        )
 
+    try:
         reports, caps, mismatches = _collect_hdj_inventory(request)
         inv = build_production_inventory(
             template_reports=reports,

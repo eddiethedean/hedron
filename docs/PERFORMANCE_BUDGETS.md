@@ -7,8 +7,12 @@ have runnable CI evidence under `tests/performance/test_w025_*.py`.
 **Evidence:** `PERF-08-001`, `PERF-08-002`, `tests/performance/`; `BUDGET-025` /
 `W-025-*`.
 
-Budgets are soft CI ceilings sized for GitHub-hosted runners. They catch gross regressions;
-they are not marketing latency claims. Measure with `tests/performance/`.
+!!! warning "Not product SLOs"
+
+    These numbers are **soft CI ceilings** sized for GitHub-hosted runners. They catch
+    gross regressions. They are **not** marketing latency claims, contractual SLOs, or
+    1.0 performance guarantees. Do not quote them in adopter SLAs. Measure with
+    `tests/performance/`.
 
 Live SSE/WebSocket load/proxy backpressure IDs (`PERF-10-001` and related) were
 **Superseded** in **0.24** under disposition `polling_only` — prefer

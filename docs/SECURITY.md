@@ -89,9 +89,25 @@ operators disable documented secure defaults.
 
 - Keep CSRF, TrustedHost, and redirect allowlists enabled.
 - Do not disable escaping or pass untrusted HTML into trusted-HTML APIs.
-- Prefer polling for job status unless you accept the experimental SSE/WebSocket posture.
+- Prefer polling for job status unless you accept the experimental SSE/WebSocket posture
+  (`HEDRON_SECURITY_RISK_ACCEPTANCE=experimental-live` under production).
+- Under production, omit `[tool.hedron] plugins` to load none, or set an explicit allowlist.
 - Treat session secrets and worker shared state as production requirements — see
   [Secrets and workers](https://github.com/eddiethedean/hedron/blob/main/docs/guides/secrets-and-workers.md).
+
+## Accepted residuals (honest gaps)
+
+These remain **accepted** residuals on the current train — document them; do not market them away:
+
+- Plugin / Explorer abuse corpus beyond default guards
+- Explorer live traces (`EXPLORER-10-001`, Deferred on `0.10.x`)
+- Idiomorph / morphing (`MORPH-048`, Deferred)
+- Human AT sessions (protocol Verified; compensated sessions Planned — [#86](https://github.com/eddiethedean/hedron/issues/86))
+- Application-owned authz / multi-tenant isolation (out of framework scope)
+- `TrustedHtml.reviewed` / trusted HDJ as explicit trust sinks
+- Soft CI performance budgets are not product SLOs
+
+See [Public 1.0 readiness](https://github.com/eddiethedean/hedron/blob/main/docs/guides/one-point-zero-readiness.md).
 
 ## Language
 

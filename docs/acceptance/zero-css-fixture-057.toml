@@ -1,0 +1,16 @@
+schema_version = 1
+phase = "0.57"
+state = "planned"
+fixture = "authenticated-data-mover-workspace"
+application_component_css_files = 0
+application_layout_css_rules = 0
+custom_classes_for_presentation = 0
+
+required_surfaces = [
+  "environment-banner", "brand", "account-summary", "grouped-navigation", "nav-status",
+  "responsive-form", "static-table", "resource-list", "file-upload", "identity",
+  "compact-status", "process-flow", "footer"
+]
+
+allowed_application_ownership = ["domain-copy", "brand-assets", "authorization", "content-selection"]
+forbidden_evidence_shortcuts = ["unsafe-inline", "raw-style-attributes", "fixture-only-global-selectors", "color-only-state", "visual-dom-reorder"]

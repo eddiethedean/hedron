@@ -1194,11 +1194,15 @@ name = "hedron-conformance"
 version = "0.56.1"
 source = { editable = "packages/hedron-conformance" }
 dependencies = [
+    { name = "hedron-core" },
     { name = "pydantic" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pydantic", specifier = ">=2.13.4,<2.15" }]
+requires-dist = [
+    { name = "hedron-core", editable = "packages/hedron-core" },
+    { name = "pydantic", specifier = ">=2.13.4,<2.15" },
+]
 
 [[package]]
 name = "hedron-core"

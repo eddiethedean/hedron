@@ -38,7 +38,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-code_editor = []
+# Several empty extras are deprecated stubs (install nothing / quarantine markers).
+# Prefer hedron[extras] / hedron[experimental-ui] and named satellite extras; do not
+# add new empty keys. Tracked for 1.0 extras-matrix freeze.
+code_editor = []  # deprecated empty stub (CodeEditor remains host textarea)
 json_editor = []
 data_explorer = ["hedron-data>=0.56.0,<0.57"]
 chart_workbench = ["hedron-data>=0.56.0,<0.57", "hedron-charts>=0.2.0,<0.3"]

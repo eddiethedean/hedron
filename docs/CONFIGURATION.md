@@ -30,7 +30,7 @@ point discovery; `plugins=[]` disables it.
 | `component_roots` | `list[str]` | `[]` | Relative dirs searched for component folders |
 | `build_dir` | `str` | `".hedron/build"` | Build/manifest output directory |
 | `theme` | `str` \| omit | `"default"` | Registered theme name (`"default"` or built-in `"aurora"`) |
-| `plugins` | `list[str]` \| omit | unset (`null`) | `null`/omit = discover all entry points; `[]` = load none; names = exact enable list |
+| `plugins` | `list[str]` \| omit | unset (`null`) | Non-production: `null`/omit = discover all entry points. Production: omit = load none (deny-by-default) unless `HEDRON_SECURITY_RISK_ACCEPTANCE` includes `plugins-discover-all`. `[]` = load none; names = exact enable list |
 | `explorer` | `str` | `"off"` | `"off"` \| `"development"` \| `"secured"` (constructor may override) |
 | `compiler_checks` | `bool` | `true` | Enable compiler diagnostics in check/build |
 | `diagnostic_severities` | `table[str, str]` | `{}` | Override severity by diagnostic code |

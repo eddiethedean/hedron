@@ -54,9 +54,14 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.54** | Notebook, simulation, and third-party sample-kit tooling refresh; Python-native application chrome / design-system companions | **Published** (`v0.56.0` on GitHub and PyPI; [RFC-0081](rfcs/RFC-0081-AUTHORING-LOOP-AND-CHROME.md), D-093/D-094, foundation [#538](https://github.com/eddiethedean/hedron/issues/538)–[#543](https://github.com/eddiethedean/hedron/issues/543); companions [#523](https://github.com/eddiethedean/hedron/issues/523)–[#537](https://github.com/eddiethedean/hedron/issues/537)) |
 | **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Published** (`v0.55.0` tag; Verified gates; PyPI deferred; [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md), D-095/D-096, [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)) |
 | **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.1` in-tree; Verified gates; 0.56.1 tag/PyPI deferred; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)) |
+| **0.57** | Unified styling and presentation: shared appearance adoption, CSP-safe responsive layout, overflow contracts, surfaces, application chrome, data/identity primitives, and zero-application-CSS evidence | **Refined** (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570); open styling work [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)) |
 
-Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
-8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
+Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
+phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
+**Published**; the snapshot table below is an **audit ledger**, not a claim that the issues
+remain open on GitHub. For live open work, use GitHub issues and [STATUS](STATUS.md)
+(notably human AT sessions on [#86](https://github.com/eddiethedean/hedron/issues/86)).
+Historical ownership:
 [Open medium/low remediation ownership](#open-mediumlow-remediation-ownership-2026-08-14-snapshot).
 
 ### Cross-cutting default presentation plan (0.33+)
@@ -5357,14 +5362,28 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#555](https://github.com/eddiethedean/hedron/issues/555) | Shared outbound egress and SSRF policy across packages | 0.56 |
 | [#556](https://github.com/eddiethedean/hedron/issues/556) | Signed action intents for high-risk mutations | 0.56 |
 | [#557](https://github.com/eddiethedean/hedron/issues/557) | Framework-wide request resource budgets and streaming enforcement | 0.56 |
+| [#570](https://github.com/eddiethedean/hedron/issues/570) | Unified styling, presentation, and zero-application-CSS phase | 0.57 |
+| [#558](https://github.com/eddiethedean/hedron/issues/558) | CSP-safe layout spacing | 0.57 |
+| [#559](https://github.com/eddiethedean/hedron/issues/559) | Responsive Grid/FormGrid tracks and item spans | 0.57 |
+| [#560](https://github.com/eddiethedean/hedron/issues/560) | Card/Section surface appearance and spacing | 0.57 |
+| [#561](https://github.com/eddiethedean/hedron/issues/561) | Production-grade FileUpload composition and appearance hooks | 0.57 |
+| [#562](https://github.com/eddiethedean/hedron/issues/562) | Bounded text overflow, wrapping, and line clamp | 0.57 |
+| [#563](https://github.com/eddiethedean/hedron/issues/563) | Compact and activity Status presentation variants | 0.57 |
+| [#564](https://github.com/eddiethedean/hedron/issues/564) | Typed AppShell chrome presentation components | 0.57 |
+| [#565](https://github.com/eddiethedean/hedron/issues/565) | Rich ProcessFlow step kinds, slots, and connector states | 0.57 |
+| [#566](https://github.com/eddiethedean/hedron/issues/566) | Responsive static Table, row-state, and action presentation APIs | 0.57 |
+| [#567](https://github.com/eddiethedean/hedron/issues/567) | Semantic ResourceList and ResourceRow primitives | 0.57 |
+| [#568](https://github.com/eddiethedean/hedron/issues/568) | Shared appearance vocabulary adoption across built-ins | 0.57 |
+| [#569](https://github.com/eddiethedean/hedron/issues/569) | Core Avatar and Identity presentation primitives | 0.57 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 
-The following index assigns every currently open issue whose body declares **Medium** or **Low**
-severity to a planned phase at or after 0.38. Issue bodies remain normative for acceptance criteria.
-Closure is part of the owning phase's regression gate; moving an issue requires an explicit roadmap
-update rather than silently dropping it. Closed high-severity follow-on #244 is outside
-this medium/low packet; it was remediated on the 0.37 train (`HTMX-037`).
+**Historical ledger only.** This index recorded Medium/Low issues as of 2026-08-14 and
+assigned them to phases 0.38–0.42. Those phases have since **Published**; do **not** treat
+row presence here as “still open on GitHub.” Prefer GitHub + [STATUS](STATUS.md) for live
+work. Issue bodies remain normative for the acceptance criteria that were gated. Closed
+high-severity follow-on #244 is outside this medium/low packet; it was remediated on the
+0.37 train (`HTMX-037`).
 
 | Issue | Severity | Title | Owning phase |
 |---:|:---:|---|---:|
@@ -5916,6 +5935,82 @@ claim transport-level streaming enforcement from a host that exposes only pre-bu
 - Release evidence records policy/schema versions, compatibility fixtures, control inventory,
   threat-to-boundary mappings, fuzz corpus results, numeric performance/resource budgets, no expired
   exceptions, and zero Deferred rows.
+
+## 0.57 — Unified styling, presentation, and zero-application-CSS (`v0.57.0`)
+
+**Status:** Refined (D-099 / D-100 / RFC-0084); implementation not started. Published predecessor
+is `v0.56.0`, the refine baseline is in-tree `0.56.1`, and the target is `v0.57.0`. Phase owner:
+[#570](https://github.com/eddiethedean/hedron/issues/570). The phase
+consolidates open styling work [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)
+into one compatibility-oriented presentation train. It extends the 0.54 application-composition
+work and the 0.56 strict-CSP/security baseline; it does not require applications to weaken
+`style-src`, expose a free-form CSS DSL, or surrender domain/layout ownership.
+
+Normative Stage 0 locks are [RFC-0084](rfcs/RFC-0084-UNIFIED-PRESENTATION.md),
+[presentation-inventory-057.toml](acceptance/presentation-inventory-057.toml),
+[presentation-contract-057.toml](acceptance/presentation-contract-057.toml),
+[presentation-parity-057.toml](acceptance/presentation-parity-057.toml),
+[zero-css-fixture-057.toml](acceptance/zero-css-fixture-057.toml), and
+[upgrade-fixtures-057.md](acceptance/upgrade-fixtures-057.md). Stage 0 does not add runtime APIs or
+change package versions.
+
+**Outcome:** Hedron provides one bounded, theme-token-driven presentation contract across its
+built-ins and enough responsive, overflow-safe, semantic primitives to reproduce a production
+Data Mover-class workspace without application-owned component or layout CSS.
+
+### Scope and delivery plan
+
+1. **Freeze the shared presentation authority** (#568): define and document `size`, `density`,
+   `appearance`, `emphasis`, `tone`, `width`, `padding`, `shape`, and `elevation`; emit stable
+   `data-hedron-*` markers; add shared diagnostics; preserve existing defaults.
+2. **Land CSP-safe layout and content foundations** (#558, #559, #562): compile bounded spacing,
+   responsive tracks, item spans, alignment, minimum sizing, overflow modes, truncation, wrapping,
+   and line clamping into first-party CSS/data selectors; unsupported values fail clearly.
+3. **Migrate the built-in fleet** (#568): buttons, inputs, fields, badges, alerts, status, and
+   navigation consume the same tokens and state behavior across light/dark, focus, disabled,
+   busy, forced-colors, print, and zoom modes.
+4. **Complete surfaces and shell chrome** (#560, #564): add bounded Card/Section or Surface
+   presentation and typed Brand, AccountSummary, EnvironmentBanner, NavStatus, and footer
+   compositions with intentional wrapping/truncation and nested-surface rules.
+5. **Add semantic data and identity primitives** (#566, #567, #569): finish static Table policies,
+   ResourceList/ResourceRow, Avatar, and Identity with valid link/action semantics, accessible
+   reading order, responsive strategies, and full-content paths.
+6. **Finish operational workflow presentation** (#561, #563, #565): compose FileUpload with its
+   secure upload contract, add compact/activity Status variants, and expand ProcessFlow with typed
+   step kinds, slots, connector states, and reduced-motion behavior.
+7. **Publish evidence and migration guidance:** update extras, samples, API documentation, theme
+   guidance, and zero-application-CSS fixtures; run browser, accessibility, CSP, RTL, forced-color,
+   reduced-motion, print, long-content, 200% zoom, and fragment-swap coverage.
+
+### Release gates
+
+| Gate | Required evidence |
+|---|---|
+| `CONTRACT-057` | Accepted presentation vocabulary, token mapping, marker schema, diagnostics, compatibility defaults, and component-family adoption matrix |
+| `CSP-057` | Strict `style-src 'self'` browser tests prove requested and computed spacing/layout values without `unsafe-inline`; invalid values fail diagnostically |
+| `LAYOUT-057` | Responsive Grid/FormGrid tracks, spans, minimum sizing, overflow, RTL, narrow viewport, zoom, and print evidence |
+| `SURFACE-057` | Card/Section/Surface and AppShell chrome snapshots with theme defaults, local overrides, nested elevation, forced-colors, and focus-within coverage |
+| `DATA-057` | Table, ResourceList/ResourceRow, Avatar, and Identity semantics, responsive behavior, truncation disclosure, keyboard, and long-content evidence |
+| `WORKFLOW-057` | FileUpload, Status, and ProcessFlow keyboard, state, fragment-replacement, reduced-motion, and non-color-only status evidence |
+| `REGRESS-057` | Existing calls remain compatible; 0.56 security/CSP behavior and 0.54–0.55 workflow fixtures remain green |
+| `ZERO-CSS-057` | Representative authenticated workspace reproduces shell, forms, tables, uploads, identity, statuses, and workflow surfaces without application-owned component/layout CSS |
+| `PKG-057` | Clean wheels, public exports, API/docs coverage, upgrade fixtures, inventories, release metadata, and packaging rehearsal |
+
+### Stability and non-goals
+
+New 0.57 presentation APIs begin `beta`. Existing calls retain their behavior unless an explicit
+migration diagnostic and compatibility path are supplied. Applications continue to own domain
+semantics, authentication/authorization, content decisions, and genuinely bespoke layout. The
+phase does not expose arbitrary CSS/property values as the public API, make animation or color the
+sole source of meaning, or turn responsive hiding/truncation into inaccessible content.
+
+### Exit gate
+
+Every issue in [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)
+is implemented or explicitly split with a documented owner and rationale; all release-gate rows
+are Verified with zero Deferred; strict-CSP, compatibility, accessibility, and zero-application-CSS
+evidence is published; and the reference workspace passes light/dark, forced-colors, reduced-motion,
+RTL, print, narrow viewport, 200% zoom, long-content, keyboard, and fragment-swap checks.
 
 ## Later-phase policy
 

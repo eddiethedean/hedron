@@ -1,0 +1,61 @@
+schema_version = 1
+phase = "0.57"
+state = "planned"
+published_predecessor = "v0.56.0"
+refine_baseline = "0.56.1"
+target = "v0.57.0"
+owning_rfc = "RFC-0084"
+decision = "D-099"
+contract_refine = "D-100"
+shared_authority = "hedron_core.builtins.appearance"
+
+[[workstream]]
+id = "shared-controls"
+issues = ["#568"]
+gates = ["CONTRACT-057", "REGRESS-057"]
+components = ["Button", "LinkButton", "SubmitButton", "IconButton", "TextInput", "TextArea", "Select", "FormField", "Badge", "Alert", "Status", "NavLink"]
+contract = "meaningful subset of shared size/density/appearance/emphasis/width markers"
+
+[[workstream]]
+id = "layout-content"
+issues = ["#558", "#559", "#562"]
+gates = ["CSP-057", "LAYOUT-057"]
+components = ["Stack", "Inline", "Grid", "GridItem", "FormGrid", "SplitView", "ActionGroup", "Text", "Typography", "Heading"]
+contract = "first-party CSS selectors, responsive tracks/spans, min sizing, wrapping and disclosure-safe overflow"
+
+[[workstream]]
+id = "surfaces-chrome"
+issues = ["#560", "#564"]
+gates = ["SURFACE-057"]
+components = ["Surface", "Card", "Section", "AppShell", "Brand", "AccountSummary", "EnvironmentBanner", "NavStatus", "AppFooter"]
+contract = "bounded hierarchy and typed chrome without application selectors"
+
+[[workstream]]
+id = "data-identity"
+issues = ["#566", "#567", "#569"]
+gates = ["DATA-057"]
+components = ["Table", "TableColumn", "ResourceList", "ResourceRow", "Avatar", "Identity"]
+contract = "semantic rows, responsive/full-content policy, valid actions and identity fallback"
+
+[[workstream]]
+id = "workflow"
+issues = ["#561", "#563", "#565"]
+gates = ["WORKFLOW-057"]
+components = ["FileUpload", "Status", "ProcessFlow", "FlowStep"]
+contract = "secure upload composition and non-color/non-motion workflow state"
+
+[[workstream]]
+id = "integration"
+issues = ["#570"]
+gates = ["ZERO-CSS-057", "PKG-057"]
+components = ["authenticated-reference-workspace"]
+contract = "shell, forms, tables, uploads, identity, statuses and flows with zero app component/layout CSS"
+
+[boundaries]
+runtime_changes = false
+version_changes = false
+free_form_css_dsl = false
+unsafe_inline_required = false
+visual_dom_reordering = false
+data_editor_replacement = false
+schedule_1_0 = false

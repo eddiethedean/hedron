@@ -27,6 +27,8 @@ hedron/
 │   │   └── src/hedron_data/
 │   ├── hedron-charts/
 │   │   └── src/hedron_charts/
+│   ├── hedron-maps/                 # Typed maps / MapLibre (Beta 0.1.x satellite)
+│   │   └── src/hedron_maps/
 │   ├── hedron-jinja/              # Optional .hdj format and Jinja/HTML/HTMX integration
 │   │   └── src/hedron_jinja/
 │   ├── hedron-flask/              # Flask adapter (Supported capability; Beta package)
@@ -50,7 +52,8 @@ hedron/
 │   │   └── src/hedron_posit/
 │   ├── hedron-native/             # Optional Rust acceleration (Beta 0.1.x)
 │   │   └── src/hedron_native/
-│   ├── hedron-elements/           # Alpha 0.36 Web Component ABI (D-064)
+│   ├── hedron-elements/           # Beta Web Component ABI (D-070 Supported inventory)
+│   ├── fastapi-workbench/         # Independent plain-FastAPI Workbench adapter (1.x)
 │   ├── hedron-runtime-node/       # Beta tooling-grade Node evaluator (outside uv workspace)
 │   └── hedron-runtime-java/       # Beta tooling-grade Java evaluator (outside uv workspace)
 ├── tests/
@@ -82,10 +85,11 @@ hedron/
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
 | `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | Beta line `0.2.x`, tip `0.2.0` (Published with Hedron `v0.38.0`) |
+| `hedron-maps` | `hedron_maps` | `hedron-core`; MapLibre enhancement remains extras; also `hedron[maps]` | Beta line `0.1.x` (Published with Hedron `v0.47.0`) |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Supported capability; Beta package) |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Supported; Beta package) |
 | `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.25.x` |
-| `hedron-conformance` | `hedron_conformance` | Fixture schema + runner (stdlib + pydantic) | `v0.16.0` |
+| `hedron-conformance` | `hedron_conformance` | Fixture schema + runner; `hedron-core` for security-plane profile | `v0.16.0` |
 | `hedron-extras` | `hedron_extras` | Optional curated extras / workbenches; also `hedron[extras]` | `v0.16.0` |
 | `hedron-notebook` | `hedron_notebook` | Beta tooling-grade localhost preview; also `hedron[notebook]` | `v0.1.0` |
 | `hedron-mcp` | `hedron_mcp` | Optional MCP projection (Beta Supported inventory; deny-by-default); also `hedron[mcp]` | `v0.2.1` |
@@ -102,8 +106,8 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated repository train tip is **`v0.56.0`**; PyPI currently
-serves **0.56.0** — see
+**Publish note:** the coordinated repository train tip is **`v0.56.1`**; PyPI currently
+serves **0.56.0** (`registry_status = deferred` for 0.56.1) — see
 [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
@@ -113,6 +117,9 @@ Experimental Java/Node runtimes live under
 - Packages depend only toward `hedron-core`; optional subsystems do not become core dependencies.
 - `hedron-core` imports no FastAPI, Starlette, ASGI, WSGI, Flask, or Django types.
 - Flask and Django packages do not depend on `hedron` or install FastAPI.
+- Satellites that declare only `hedron-core` must not import the FastAPI `hedron` package
+  (enforced by `scripts/check_satellite_imports.py`; known interaction helpers are allowlisted
+  debt until handles/refresh move into core).
 - Adapter-neutral request/interaction values, reverse-URL and asset/build protocols, lifecycle
   descriptions, and sanitized registry/diagnostic views live in `hedron-core`; raw host-framework
   objects never cross that boundary.

@@ -20,13 +20,15 @@ not interchangeable.
 ## If you are evaluating adoption
 
 Read [What's ready today](whats-ready.md), [Evaluate Hedron](evaluate.md),
-[Enterprise diligence](enterprise-diligence.md), [Security](../SECURITY.md), and the
+[Enterprise diligence](enterprise-diligence.md), [Public 1.0 readiness](one-point-zero-readiness.md),
+[Security](../SECURITY.md), and the
 [production adoption checklist](production-adoption.md).
 
 ## If you are looking up an API
 
-Start at the [API reference](../api/README.md). Use [Stability](../api/STABILITY.md) to
-check whether a symbol is stable, beta, or experimental, and use [Error codes](error-codes.md)
+Start at the [API reference](../api/README.md). Use [Stability](../api/STABILITY.md) and
+[Symbol tiers](../api/SYMBOL_TIERS.md) to check whether a symbol is stable, beta, or
+experimental, and use [Error codes](error-codes.md)
 for diagnostic remediation.
 
 ## If you are contributing

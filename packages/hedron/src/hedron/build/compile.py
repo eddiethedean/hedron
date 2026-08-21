@@ -197,9 +197,13 @@ def _run_build_locked(
         apply_discovery_to_registry(discovered)
 
         from hedron.plugins import load_plugins
+        from hedron_core.production_gate import resolve_production_plugins
 
-        # Match runtime lifespan: None = discover-all; empty = load none.
-        enabled = None if settings.plugins is None else list(settings.plugins)
+        # Match runtime lifespan: production deny-by-default when plugins omitted.
+        enabled = resolve_production_plugins(
+            None if settings.plugins is None else list(settings.plugins),
+            production=production,
+        )
         load_plugins(enabled=enabled)
 
         return _execute_build(

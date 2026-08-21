@@ -9,6 +9,8 @@ The full authoritative table lives in the repository (not duplicated here):
 
 | ID | Topic |
 |---|---|
+| D-100 | Phase 0.57 Stage 0 locks finite presentation/CSP/semantics/parity/upgrade contracts without runtime or version changes |
+| D-099 | Unified styling, presentation, and zero-application-CSS own phase 0.57 (RFC-0084; [#558](https://github.com/eddiethedean/hedron/issues/558)–[#570](https://github.com/eddiethedean/hedron/issues/570)) |
 | D-070 | Production-grade Web Component platform graduation owns 0.42 Stage 0 (RFC-0060; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
 | D-069 | Typed browser composition, draft transfer, and navigation own Published 0.41 (RFC-0060; [#96](https://github.com/eddiethedean/hedron/issues/96)) |
 | D-068 | Web Component authoring / React migration matrix own Published 0.40 (RFC-0060; [#95](https://github.com/eddiethedean/hedron/issues/95)) |

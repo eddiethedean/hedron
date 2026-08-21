@@ -1,0 +1,26 @@
+schema_version = 1
+phase = "0.57"
+state = "planned"
+authority = "hedron_core.builtins.appearance"
+marker_prefix = "data-hedron-"
+api_stability = "beta"
+
+size = ["sm", "md", "lg"]
+density = ["compact", "comfortable", "spacious"]
+appearance = ["solid", "outline", "soft", "ghost", "plain", "raised"]
+emphasis = ["primary", "secondary", "neutral", "danger"]
+width = ["content", "field", "full"]
+overflow = ["wrap", "break", "truncate", "clip"]
+responsive = ["scroll", "stack", "priority"]
+track = ["narrow", "default", "wide", "fluid"]
+
+[invariants]
+closed_values = true
+first_party_css = true
+inline_style_required = false
+dom_order_authoritative = true
+full_content_path_required = true
+implicit_title_disclosure = false
+color_only_state = false
+motion_only_state = false
+existing_defaults_preserved = true

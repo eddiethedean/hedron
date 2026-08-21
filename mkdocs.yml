@@ -290,6 +290,7 @@ nav:
     - Security: SECURITY.md
     - Support: guides/support.md
     - Enterprise diligence: guides/enterprise-diligence.md
+    - Public 1.0 readiness: guides/one-point-zero-readiness.md
     - Production adoption checklist: guides/production-adoption.md
     - Upgrade guide: guides/upgrade.md
     - What's new in 0.56: guides/whats-new-0.56.md

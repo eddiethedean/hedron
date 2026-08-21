@@ -113,6 +113,7 @@ def _configure_startup(
 
     from hedron.config import HedronSettings, load_hedron_settings
     from hedron.plugins import load_plugins
+    from hedron_core.production_gate import resolve_production_plugins
 
     settings_root = _settings_root(app, resolved_build)
     app.state.hedron_project_root = str(settings_root)
@@ -121,7 +122,10 @@ def _configure_startup(
     else:
         settings = HedronSettings()
     app.state.hedron_component_roots = [str(p) for p in settings.resolved_roots(base=settings_root)]
-    enabled = None if settings.plugins is None else list(settings.plugins)
+    enabled = resolve_production_plugins(
+        None if settings.plugins is None else list(settings.plugins),
+        production=is_production,
+    )
     plugin_loader = load_plugins(enabled=enabled)
     app.state.hedron_plugin_loader = plugin_loader
     try:

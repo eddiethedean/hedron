@@ -402,27 +402,12 @@ PY
   test ! -f package.json
   test ! -d node_modules
   echo "ok: no Node package tooling in repo"
+  run_py scripts/check_satellite_imports.py
+  run_py scripts/check_symbol_tiers.py
 }
 
 quality_verify_pkgs() {
-  run_py scripts/verify_pkg_36.py --allow-planned
-  run_py scripts/verify_pkg_37.py --allow-planned
-  run_py scripts/verify_pkg_38.py --allow-planned
-  run_py scripts/verify_pkg_39.py --allow-planned
-  run_py scripts/verify_pkg_40.py --allow-planned
-  run_py scripts/verify_pkg_41.py
-  run_py scripts/verify_pkg_42.py
-  run_py scripts/verify_pkg_43.py
-  run_py scripts/verify_pkg_44.py
-  run_py scripts/verify_pkg_45.py
-  run_py scripts/verify_pkg_46.py
-  run_py scripts/verify_pkg_47.py
-  run_py scripts/verify_pkg_48.py
-  run_py scripts/verify_pkg_49.py
-  run_py scripts/verify_pkg_50.py
-  run_py scripts/verify_pkg_51.py
-  run_py scripts/verify_pkg_52.py
-  run_py scripts/verify_pkg_53.py
+  # PR quality: tip train + two predecessors only. Older packets run on evidence.
   run_py scripts/verify_pkg_54.py
   run_py scripts/verify_pkg_55.py
   run_py scripts/verify_pkg_56.py

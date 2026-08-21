@@ -92,4 +92,5 @@ Use [What’s ready](whats-ready.md) as the sole capability list for this PoC pa
 5. [Runnable examples](../examples/runnable.md)
 
 Then: [Ship a Hedron app](ship.md) · [Enterprise diligence](enterprise-diligence.md) ·
+[Public 1.0 readiness](one-point-zero-readiness.md) ·
 [Support](support.md).
