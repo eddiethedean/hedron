@@ -13,15 +13,15 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Repository checkout | `0.58.0` / `0.58.x` | Living tip and repository train (tag/PyPI deferred) |
-| PyPI | `0.56.0` / `0.56.x` | Latest installable release from the public package index |
+| Repository checkout | `0.58.0` / `0.58.x` | Living tip and repository train |
+| PyPI | `0.58.0` / `0.58.x` | Latest installable release from the public package index |
 | Package maturity | Beta | Usable with pins; no SLA or scheduled 1.0 release |
 | Supported Python | 3.11–3.14 | CPython only |
 
 Application documentation uses the published PyPI pin:
 
 ```text
-hedron>=0.56.0,<0.59
+hedron>=0.58.0,<0.59
 ```
 
 Contributors working from a checkout should use `uv sync` so local packages resolve

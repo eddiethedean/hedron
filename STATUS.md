@@ -2,8 +2,8 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.58 **Published** in-tree as `v0.58.0` (tag/PyPI deferred). Prior Published `v0.56.0` remains on PyPI.
-Living tip = `v0.58.0` (PyPI serves `v0.56.0`; registry deferred for 0.58.0).
+**Roadmap position:** phase 0.58 **Published** as `v0.58.0`; PyPI serves `0.58.0`.
+Living tip = published `v0.58.0` (`registry_status = "uploaded"`).
 **Date:** 2026-08-21
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
@@ -23,7 +23,7 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 
 **Phase focus:** Living train is **0.58** (D-101 / D-102 / D-105 / RFC-0085) — progressive
 feature and styling authoring. `release-gate-0.58.toml` Verified rows; living tip `v0.58.0`
-in-tree (`v0.56.0` on PyPI; `registry_status = "deferred"` for 0.58.0). Prior Published
+is on PyPI (`registry_status = "uploaded"`). Prior Published
 in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
@@ -128,8 +128,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - What’s new: [guides/whats-new-0.58.md](docs/guides/whats-new-0.58.md).
 - Checker: `python scripts/check_release_gate.py 0.58.0`,
   `python scripts/verify_pkg_58.py`.
-- Registry: living tip `v0.58.0` in-tree; PyPI remains `v0.56.0`
-  (`registry_status = "deferred"`).
+- Registry: PyPI serves `v0.58.0` (`registry_status = "uploaded"`).
 
 ## Phase 0.24 evidence
 

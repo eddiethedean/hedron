@@ -2,8 +2,8 @@
 
 The canonical release history now lives on [Releases](release-notes.md).
 
-Current release: **v0.58.0** in-tree (**v0.56.0** on PyPI; 0.58.0 deferred). Recommended constraint:
-`hedron>=0.56.0,<0.59` until the 0.58.0 wheel lands. Public-index notes: [Installation](../getting-started/installation.md).
+Current release: **v0.58.0** on PyPI. Recommended constraint:
+`hedron>=0.58.0,<0.59`. Public-index notes: [Installation](../getting-started/installation.md).
 
 Continue with:
 

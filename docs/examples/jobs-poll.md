@@ -93,7 +93,7 @@ job helpers are Experimental — prefer this recipe.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.56.0,<0.59" "uvicorn[standard]"
+pip install "hedron>=0.58.0,<0.59" "uvicorn[standard]"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/jobs-poll/app.py -o app.py
 uvicorn app:app --reload
 ```

@@ -1,6 +1,6 @@
 # Hedron `v0.58` progressive feature and styling authoring acceptance
 
-**Status:** Published / Verified in-tree (`v0.58.0`; tag/PyPI deferred)<br>
+**Status:** Published / Verified (`v0.58.0` on PyPI)<br>
 **Required predecessor:** Published and Verified in-tree `v0.57.0` (satisfied; tag/PyPI deferred)<br>
 **Target:** Hedron `v0.58.0`<br>
 **Decision/RFC:** D-101 / D-102 / D-105 / [RFC-0085](../rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)<br>
@@ -147,7 +147,8 @@ zero Deferred).
       abstractions; explicit primitive spellings appear only in clearly labeled advanced/lowered/
       under-the-hood sections.
 - [x] Release rehearsal verifies no hidden runtime/asset/dependency cost when facades are unused.
-- [ ] Git tag/PyPI action follows the repository's release authorization; this plan does not tag.
+- [x] PyPI publication is recorded in `docs/release.toml`; Git tagging remains a separately
+  authorized maintainer action.
 
 ## Automatic cut blockers
 

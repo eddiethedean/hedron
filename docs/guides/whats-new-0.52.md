@@ -2,7 +2,7 @@
 
 !!! note "Current train is 0.58"
 
-    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; PyPI still `>=0.56.0,<0.59` while deferred). See [What's new in 0.53](whats-new-0.53.md).
+    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; current PyPI pin `>=0.58.0,<0.59`). See [What's new in 0.53](whats-new-0.53.md).
 
 Historical **0.52.0** in-tree Published cut (tag/PyPI may still be deferred relative to later trains). Tracking [#522](https://github.com/eddiethedean/hedron/issues/522).
 

@@ -1,6 +1,6 @@
 # Implementation plan: phase 0.58 progressive feature and styling authoring
 
-**Status:** Published / Verified in-tree (`v0.58.0`; tag/PyPI deferred)  
+**Status:** Published / Verified (`v0.58.0` on PyPI)
 **Decision/RFC:** D-101 / D-102 / D-105 / [RFC-0085](../rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)
 
 **Target:** `v0.58.0`  

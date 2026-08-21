@@ -6,7 +6,7 @@
 - Phase 0.58 progressive feature and styling authoring (RFC-0085 / D-101 / D-102 / D-105).
 
 ### Changed
-- Coordinated train tip `0.58.0` (in-tree cut; tag/PyPI deferred).
+- Coordinated train tip `0.58.0`, published on PyPI.
 
 ## [0.57.0] — 2026-08-21
 

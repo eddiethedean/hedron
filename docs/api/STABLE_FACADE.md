@@ -10,7 +10,7 @@ status: shipped
     [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) remain
     compatibility-protected **`stable`** on the living **0.58** train. Pin
     `uv sync` from a checkout. Application users should install
-    `hedron>=0.56.0,<0.59` from PyPI while the 0.56 upload is deferred.
+    `hedron>=0.58.0,<0.59` from PyPI.
 
 **Owning gates:** `FACADE-023` (`python scripts/check_stable_facade.py`),
 `STABLE-023`, `INVENTORY-023`. Decision: **D-053** /

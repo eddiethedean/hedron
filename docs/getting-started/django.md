@@ -6,8 +6,8 @@ The **CLI** (`hedron new --django`) comes from the `hedron` package; **runtime**
 It mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
 
 This documentation follows the current repository train **0.58.x** (living tip
-`v0.58.0`; tag/PyPI deferred). Install from the public index with
-`hedron-django>=0.56.0,<0.59` (or `hedron>=0.56.0,<0.59`) until the 0.58.0 wheel lands.
+`v0.58.0` on PyPI). Install from the public index with
+`hedron-django>=0.58.0,<0.59` (or `hedron>=0.58.0,<0.59`) until the 0.58.0 wheel lands.
 Django hosts are Supported for AppConfig/forms/QuerySet DataSource; they are **not**
 decorator-parity Supported for FastAPI-only progressive facades (`@app.screen`,
 `form_command`, and related 0.58 symbols).
@@ -21,7 +21,7 @@ and raw `hx-*` attributes, not FastAPI `status.refresh_button(...)`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.56.0,<0.59" hedron new my-django-app --django
+uvx --from "hedron>=0.58.0,<0.59" hedron new my-django-app --django
 cd my-django-app && uv sync
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```
@@ -60,7 +60,7 @@ ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
 ## Existing Django project (add a Refresh page)
 
 ```bash
-pip install "hedron-django>=0.56.0,<0.59" "django>=5.2,<6"
+pip install "hedron-django>=0.58.0,<0.59" "django>=5.2,<6"
 ```
 
 Add `hedron_django` to `INSTALLED_APPS` when you need forms/QuerySet helpers.

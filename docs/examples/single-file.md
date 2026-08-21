@@ -67,7 +67,7 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
     `@app.screen` lowers to `Page` + `@app.page`. Prefer `screen` for new golden paths.
 
 ```bash
-pip install "hedron>=0.56.0,<0.59" "uvicorn[standard]"
+pip install "hedron>=0.58.0,<0.59" "uvicorn[standard]"
 # paste the Code tab into app.py, then:
 uvicorn app:app --reload
 ```
@@ -77,7 +77,7 @@ uvicorn app:app --reload
 Minimal page with **no** HTMX Refresh — use only if you want the smallest possible file.
 
 ```bash
-pip install "hedron>=0.56.0,<0.59" "uvicorn[standard]"
+pip install "hedron>=0.58.0,<0.59" "uvicorn[standard]"
 ```
 
 Save as `app.py`:

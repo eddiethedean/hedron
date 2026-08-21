@@ -1,7 +1,7 @@
 # Threat model
 
 **Status:** Maintained for the current **0.56.x** repository train (**not yet uploaded**;
-the latest public PyPI release is `v0.56.0`;
+the latest public PyPI release is `v0.58.0`;
 baseline established in 0.11 and extended through the 0.36
 Web Component ABI/lifecycle surface)
 

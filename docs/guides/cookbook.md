@@ -273,7 +273,7 @@ download-all budgets, see [Media downloads](media-downloads.md).
 
 ## Charts as fragments
 
-Install `hedron[charts]>=0.56.0,<0.59`, then return charts through the same declared
+Install `hedron[charts]>=0.58.0,<0.59`, then return charts through the same declared
 fragment regions used by `Metric` / `Table` / `DataTable`. See
 [Charts and HTMX](charts-and-htmx.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).

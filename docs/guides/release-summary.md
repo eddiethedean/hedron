@@ -9,8 +9,8 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 | Item | Value |
 |---|---|
 | In-tree | **v0.58.0** (`hedron` / Beta train packages `0.58.0`) |
-| PyPI latest | **v0.56.0** (`hedron`; 0.58.0 upload is deferred) |
-| Pin (PyPI) | `hedron>=0.56.0,<0.59` |
+| PyPI latest | **v0.58.0** (`hedron`; coordinated Beta train `0.58.0`) |
+| Pin (PyPI) | `hedron>=0.58.0,<0.59` |
 | Charts satellite | `hedron-charts>=0.2.0,<0.3` |
 | Gate checker | `python scripts/check_release_gate.py 0.58.0` |
 | Packet verify | `python scripts/verify_pkg_58.py` |
@@ -19,7 +19,7 @@ Adopter-facing notes: [What’s new in 0.58](whats-new-0.58.md) ·
 [Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 
-Tag `v0.58.0` only after CI on `main` is green (**do not tag yet** for this in-tree cut).
+Future tags require green CI on `main` and explicit maintainer authorization.
 Do not retag prior train tags.
 
 ## Contributor checklist (abbreviated)

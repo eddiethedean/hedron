@@ -90,7 +90,7 @@ still fails, stop here and use [Installation troubleshooting](installation.md#co
 Run this command in the terminal:
 
 ```bash
-uvx --from "hedron>=0.56.0,<0.59" hedron new my-hedron-app
+uvx --from "hedron>=0.58.0,<0.59" hedron new my-hedron-app
 ```
 
 This asks `uv` to run the bounded current-train Hedron project creator in a temporary environment.
@@ -137,7 +137,7 @@ Confirm that the project environment can import Hedron:
 uv run python -c "import hedron; print(hedron.__version__)"
 ```
 
-Expect **`0.56.0`**. The words `uv run` mean “run the
+Expect **`0.58.0`**. The words `uv run` mean “run the
 following command using this project's environment.” They prevent the common mistake of using a
 different Python from the one where the packages were installed.
 

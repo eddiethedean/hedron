@@ -5,8 +5,8 @@
 # Owning decision: D-099 / D-100. RFC: RFC-0084 (presentation) + 0.58 progressive/styling packets.
 # PRESENT-034 deferred presentation audit is recorded under hedron-core (see present_034_status).
 # Tracking: progressive / styling 0.58 acceptance.
-# Channel honesty: registry_status=deferred — PyPI still serves v0.56.0; first-run pins stay
-# >=0.56.0,<0.59 while deferred. In-tree tip / inventory pins use 0.58.0.
+# Channel honesty: registry_status=uploaded — PyPI serves v0.58.0 and first-run pins use
+# >=0.58.0,<0.59.
 
 baseline = "v0.56.0"
 state = "verified"
@@ -53,7 +53,7 @@ disposition = "production_grade"
 supported = ["typed_pages", "htmx_fragments", "csrf_profiles", "polling_jobs", "inference_workflows"]
 experimental = ["live_sse_ws_streaming_preload"]
 excluded = ["hedron_1_0_or_sla", "polling_only_reopen_without_packet"]
-notes = "registry deferred: public index still v0.56.0; first-run pins >=0.56.0,<0.59; tip 0.58.0"
+notes = "registry uploaded: public index and repository tip are 0.58.0; first-run pins >=0.58.0,<0.59"
 
 [hedron-core]
 owner = "hedron-core"
@@ -161,7 +161,7 @@ supported = [
 ]
 experimental = []
 excluded = ["application_production_server"]
-notes = "0.53 authority + prior 0.52: profiles/compile/report/sandbox; PyPI pin lag while registry deferred"
+notes = "0.53 authority + prior 0.52: profiles/compile/report/sandbox; published with the 0.58 train"
 
 [hedron-charts]
 owner = "hedron-charts"
@@ -287,7 +287,7 @@ supported = [
 ]
 experimental = ["authenticated_header_v1_extension_point"]
 excluded = ["supported_cookie_bridge"]
-notes = "0.52 lifecycle companions (prior); 0.53 DX train #508–#513; PyPI pin lag while registry deferred"
+notes = "0.52 lifecycle companions (prior); 0.53 DX train #508–#513; published with the 0.58 train"
 
 [fastapi-workbench]
 owner = "fastapi-workbench"

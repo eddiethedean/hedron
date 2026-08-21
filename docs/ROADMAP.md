@@ -55,7 +55,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.55** | Secure, upgradeable application workflows: responsive master-detail layouts, security reporting, capabilities, replay-safe actions, and uploads | **Published** (`v0.55.0` tag; Verified gates; [RFC-0082](rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md), D-095/D-096, [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)) |
 | **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.0` on PyPI; Verified gates; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557); living tip advanced through 0.57 to 0.58) |
 | **0.57** | Unified styling and presentation: shared appearance adoption, CSP-safe responsive layout, overflow contracts, surfaces, application chrome, data/identity primitives, and zero-application-CSS evidence | **Published** in-tree (`v0.57.0`; Verified gates; tag/PyPI deferred; D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570); [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569); living tip advanced to 0.58) |
-| **0.58** | Progressive feature and styling authoring: screens/forms/workspaces/flows, branded design systems, semantic recipes/roles, explicit scopes, unified inspect/preview/diff/override/ejection, and starter-first adoption | **Published** in-tree (`v0.58.0`; Verified gates; tag/PyPI deferred; D-101 / D-102 / D-105 / [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)) |
+| **0.58** | Progressive feature and styling authoring: screens/forms/workspaces/flows, branded design systems, semantic recipes/roles, explicit scopes, unified inspect/preview/diff/override/ejection, and starter-first adoption | **Published** (`v0.58.0` on PyPI; Verified gates; D-101 / D-102 / D-105 / [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)) |
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -111,7 +111,7 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 
 ### Honest gaps on the current train (0.58.x)
 
-- Current **published** in-tree tip is **0.58.x** (`v0.58.0`; PyPI still `v0.56.0`; tag/PyPI deferred)
+- Current **published** tip is **0.58.x** (`v0.58.0` on PyPI)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
@@ -5649,11 +5649,11 @@ pluggable hooks so applications and deployment platforms can own those concerns 
 
 ## 0.56 — Security control plane and adversarial assurance (`v0.56.0`)
 
-**Status:** Published in-tree as `v0.56.0` (D-097 / D-098 / RFC-0083; Verified gates). Living tip `v0.58.0` (tag/PyPI deferred). Security-only phase tracking
+**Status:** Published in-tree as `v0.56.0` (D-097 / D-098 / RFC-0083; Verified gates). Living tip `v0.58.0` is published on PyPI. Security-only phase tracking
 [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557).
 0.56 composes and hardens existing security mechanisms; it does not reopen 0.55 application-
 workflow scope or promote experimental transports, hosts, or packages. Living tip is
-`v0.58.0` (PyPI serves `v0.56.0`; 0.58.0 deferred).
+`v0.58.0` (published on PyPI).
 
 **Outcome:** Every Hedron-controlled request crosses one inspectable security control plane. Identity
 and sensitivity provenance survive supported boundaries; dangerous sinks and outbound access use
@@ -6019,7 +6019,7 @@ RTL, print, narrow viewport, 200% zoom, long-content, keyboard, and fragment-swa
 
 ## 0.58 — Progressive feature and styling authoring with inspectable lowering (`v0.58.0`)
 
-**Status:** Published / Verified in-tree (`v0.58.0`; tag/PyPI deferred; D-101 / D-102 / D-105 / RFC-0085). The required
+**Status:** Published / Verified (`v0.58.0` on PyPI; D-101 / D-102 / D-105 / RFC-0085). The required
 predecessor, in-tree `v0.57.0`, is Published with Verified gates (tag/PyPI deferred). Exact public
 signatures, machine-readable locks, tracking, and numeric budgets are frozen by Stage 0.
 

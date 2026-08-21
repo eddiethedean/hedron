@@ -19,7 +19,7 @@ zero-application-CSS evidence under
 See [PRESENTATION](../api/PRESENTATION.md) and
 [RELEASE_0_57](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_57.md).
 
-Pin from PyPI remains `hedron>=0.56.0,<0.59` until the 0.57.0 wheel lands; the repository
+Pin from PyPI remains `hedron>=0.58.0,<0.59` until the 0.57.0 wheel lands; the repository
 tip is `0.57.0`.
 
 ## Hardening on the tip

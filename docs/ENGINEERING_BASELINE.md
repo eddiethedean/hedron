@@ -1,7 +1,7 @@
 # Engineering baseline
 
 **Status:** Living contributor baseline (CI/toolchain contract for the published **0.58.x**
-train; tip `v0.58.0`, PyPI `0.56.0` while 0.58.0 upload is deferred). Detailed acceptance
+train; published tip `v0.58.0` on PyPI). Detailed acceptance
 evidence maps live on GitHub under
 [`docs/acceptance/`](https://github.com/eddiethedean/hedron/tree/main/docs/acceptance).
 

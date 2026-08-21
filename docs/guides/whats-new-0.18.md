@@ -3,12 +3,12 @@
 
 !!! note "Current train is 0.58"
 
-    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; PyPI still `>=0.56.0,<0.59` while deferred). The pin below is historical for this train only.
+    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; current PyPI pin `>=0.58.0,<0.59`). The pin below is historical for this train only.
     See [What’s new in 0.51](whats-new-0.51.md).
 
 !!! note "Historical phase"
 
-    This page describes **0.18**. The current published train is **0.58.x** (last `v0.58.0`). Pin `hedron>=0.56.0,<0.59` from checkout (PyPI still `>=0.56.0,<0.59` while deferred).
+    This page describes **0.18**. The current published train is **0.58.x** (last `v0.58.0`). Pin `hedron>=0.58.0,<0.59` from PyPI.
 
 Phase **0.18** adds model demos and inference workflows — fail-closed demo composition,
 governed feedback, inference scheduling over `JobBackend`, an interaction recorder, typed

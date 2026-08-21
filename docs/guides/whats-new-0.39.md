@@ -2,7 +2,7 @@
 
 !!! note "Current train is 0.58"
 
-    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; PyPI still `>=0.56.0,<0.59` while deferred). See [What's new in 0.51](whats-new-0.51.md).
+    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; current PyPI pin `>=0.58.0,<0.59`). See [What's new in 0.51](whats-new-0.51.md).
 
 **Published** as `v0.39.0` on 2026-08-14. Historical pin: `hedron>=0.39.0,<0.40`. Charts remain on the
 Published 0.2 line: `hedron-charts>=0.2.0,<0.3`.
@@ -34,7 +34,7 @@ optimistic edits ([RFC-0060](https://github.com/eddiethedean/hedron/blob/main/do
 
 ## Pins
 
-Historical 0.39 pin below. For new apps, use `hedron>=0.56.0,<0.59`; see [What’s new in 0.51](whats-new-0.51.md).
+Historical 0.39 pin below. For new apps, use `hedron>=0.58.0,<0.59`; see [What’s new in 0.51](whats-new-0.51.md).
 
 ```bash
 pip install "hedron>=0.39.0,<0.40"

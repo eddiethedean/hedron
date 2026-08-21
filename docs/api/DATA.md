@@ -11,7 +11,7 @@ status: shipped
 **Status:** Accepted · **Shipped** (install `hedron[data]`)
 
 ```bash
-pip install "hedron[data]>=0.56.0,<0.59"
+pip install "hedron[data]>=0.58.0,<0.59"
 ```
 
 ## `DataWorkspace.with_screen` (0.58)

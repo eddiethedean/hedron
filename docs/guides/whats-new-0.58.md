@@ -1,6 +1,6 @@
 # What's new in 0.58
 
-Phase **0.58** (`v0.58.0` in-tree; tag/PyPI deferred) lands progressive feature and styling
+Phase **0.58** (`v0.58.0` on PyPI) lands progressive feature and styling
 authoring under
 [RFC-0085](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)
 (D-101 / D-102 / D-105).
@@ -21,5 +21,4 @@ See [RELEASE_0_58](https://github.com/eddiethedean/hedron/blob/main/docs/accepta
 and
 [PROGRESSIVE_AUTHORING_058](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PROGRESSIVE_AUTHORING_058.md).
 
-Pin from PyPI remains `hedron>=0.56.0,<0.59` until the 0.58.0 wheel lands; the repository
-tip is `0.58.0`.
+Install from PyPI with `hedron>=0.58.0,<0.59`; the repository tip is `0.58.0`.

@@ -15,12 +15,12 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-Requires Python 3.11–3.14. Pin the published `hedron>=0.56.0,<0.59` release from PyPI.
-The repository checkout tip is `v0.58.0` (PyPI still `0.56.0`; Git tag/PyPI upload for 0.58.0 is deferred). The fastest path uses
+Requires Python 3.11–3.14. Pin the published `hedron>=0.58.0,<0.59` release from PyPI.
+The repository checkout and PyPI both provide `v0.58.0`. The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash
-uvx --from "hedron>=0.56.0,<0.59" hedron new my-hedron-app
+uvx --from "hedron>=0.58.0,<0.59" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run uvicorn app:app --reload
@@ -111,16 +111,16 @@ Coming from Streamlit? Start with the
 
 ## Install
 
-The latest installable PyPI release is `hedron>=0.56.0,<0.59`. The repository contains
+The latest installable PyPI release is `hedron>=0.58.0,<0.59`. The repository contains
 the published `0.56.x` train; use `uv sync` when working from a checkout.
 
 ```bash
-uv add "hedron>=0.56.0,<0.59" "uvicorn[standard]"
+uv add "hedron>=0.58.0,<0.59" "uvicorn[standard]"
 # or
-python -m pip install "hedron>=0.56.0,<0.59" "uvicorn[standard]"
+python -m pip install "hedron>=0.58.0,<0.59" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Repository train:** `0.56.x` · **Latest PyPI release:** `0.56.0` · **Application pin:** `>=0.56.0,<0.59`
+**Package maturity:** Beta · **Repository train:** `0.58.x` · **Latest PyPI release:** `0.58.0` · **Application pin:** `>=0.58.0,<0.59`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the
@@ -151,13 +151,13 @@ interactions, security profiles, and CLI. Integrations are optional:
 For example:
 
 ```bash
-uv add "hedron[data,dev]>=0.56.0,<0.59"
+uv add "hedron[data,dev]>=0.58.0,<0.59"
 ```
 
 Charts require the fixed compatible floor:
 
 ```bash
-uv add "hedron[charts]>=0.56.0,<0.59"
+uv add "hedron[charts]>=0.58.0,<0.59"
 ```
 
 See the full
