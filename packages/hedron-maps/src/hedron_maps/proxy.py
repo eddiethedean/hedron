@@ -32,7 +32,16 @@ def _block_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
 
 def assert_ssrf_safe(url: str, policy: MapPolicy, *, resolve_dns: bool = True) -> str:
     """Validate a proxy candidate. Does not fetch."""
-    parsed = urlparse(url)
+    try:
+        parsed = urlparse(url)
+        parsed.port  # Force deferred malformed-port validation.
+    except ValueError as exc:
+        raise error(
+            HED_MAP_POLICY_0002,
+            title="Malformed proxy URL",
+            explanation=f"Could not parse the proxy URL: {exc}",
+            remediation="Use a valid HTTPS URL with a port from 0 through 65535.",
+        ) from exc
     if parsed.scheme != "https":
         raise error(
             HED_MAP_POLICY_0002,
@@ -48,12 +57,13 @@ def assert_ssrf_safe(url: str, policy: MapPolicy, *, resolve_dns: bool = True) -
             remediation="Strip credentials; keep exact HTTPS origins.",
         )
     origin = f"{parsed.scheme}://{parsed.netloc.split('@')[-1]}"
-    if parsed.port:
+    port = parsed.port
+    if port:
         host = parsed.hostname or ""
         origin = f"{parsed.scheme}://{host}"
         # keep host:port when non-default
-        if parsed.port not in {443, 80}:
-            origin = f"{parsed.scheme}://{host}:{parsed.port}"
+        if port not in {443, 80}:
+            origin = f"{parsed.scheme}://{host}:{port}"
     if not policy.remote_requests_permitted:
         raise error(
             HED_MAP_POLICY_0001,
@@ -91,7 +101,7 @@ def assert_ssrf_safe(url: str, policy: MapPolicy, *, resolve_dns: bool = True) -
         )
     if resolve_dns and literal is None:
         try:
-            infos = socket.getaddrinfo(host, parsed.port or 443, type=socket.SOCK_STREAM)
+            infos = socket.getaddrinfo(host, port or 443, type=socket.SOCK_STREAM)
         except OSError as exc:
             raise error(
                 HED_MAP_POLICY_0002,

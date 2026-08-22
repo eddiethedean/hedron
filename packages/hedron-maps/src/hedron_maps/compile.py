@@ -146,7 +146,16 @@ def _require_title(spec: MapSpec) -> None:
 
 
 def _origin_of(url: str) -> str | None:
-    parsed = urlparse(url)
+    try:
+        parsed = urlparse(url)
+        parsed.port  # Force deferred malformed-port validation.
+    except ValueError as exc:
+        raise _map_error(
+            HED_MAP_POLICY_0002,
+            "Malformed URL host or port",
+            f"Could not parse {url!r}: {exc}",
+            "Use a valid HTTPS URL with a port from 0 through 65535.",
+        ) from exc
     if parsed.scheme in {"http", "https"} and parsed.netloc:
         return f"{parsed.scheme}://{parsed.netloc}"
     return None

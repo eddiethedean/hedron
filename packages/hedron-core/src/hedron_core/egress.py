@@ -57,10 +57,19 @@ class EgressPolicy:
                 reason="max_redirects_exceeded",
                 hop=hop,
             )
-        parsed = urlparse(url)
+        try:
+            parsed = urlparse(url)
+            # urllib defers malformed-port validation until ``.port`` is read.
+            port = parsed.port
+        except ValueError:
+            return EgressDecision(
+                kind=EgressDecisionKind.DENY,
+                url=url,
+                reason="invalid_url",
+                hop=hop,
+            )
         scheme = (parsed.scheme or "").lower()
         host = (parsed.hostname or "").lower()
-        port = parsed.port
         if scheme not in self.allowed_schemes:
             return EgressDecision(
                 kind=EgressDecisionKind.DENY, url=url, reason="scheme_denied", hop=hop
@@ -176,14 +185,19 @@ def _looks_private_host(host: str) -> bool:
     if host in {"localhost"} or host.endswith(".local"):
         return True
     try:
-        return _is_blocked_address(host)
+        ipaddress.ip_address(host)
     except ValueError:
         return False
+    return _is_blocked_address(host)
 
 
 def assert_ssrf_safe(url: str, *, policy: EgressPolicy | None = None) -> str:
     """Compatibility helper used by package adapters (public-host SSRF floor)."""
-    parsed = urlparse(url)
+    try:
+        parsed = urlparse(url)
+        parsed.port  # Force deferred malformed-port validation.
+    except ValueError as exc:
+        raise EgressError(f"egress denied: invalid_url for {url!r}") from exc
     host = (parsed.hostname or "").lower()
     if not host:
         raise EgressError(f"egress denied: missing_host for {url!r}")
