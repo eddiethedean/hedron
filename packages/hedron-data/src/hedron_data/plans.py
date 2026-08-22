@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
+from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
 from hedron_data.sources import DataQuery
 
@@ -17,6 +19,38 @@ __all__ = [
 ]
 
 _ALLOWED_OPS = frozenset({"filter", "sort", "project", "aggregate", "sample", "search", "offset"})
+
+
+def _sort_key(value: JsonValue) -> tuple[int, str, float | str]:
+    if value is None:
+        return (0, "", "")
+    if isinstance(value, bool):
+        return (1, "bool", "1" if value else "0")
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return (2, "number", float(value))
+    if isinstance(value, str):
+        return (3, "str", value)
+    return (4, type(value).__name__, str(value))
+
+
+def _enforce_budgets(rows: Sequence[Mapping[str, JsonValue]], plan: TransformPlan) -> None:
+    if len(rows) > plan.max_rows:
+        raise error(
+            "HED-DATA-0051",
+            title="Transform row budget exceeded",
+            explanation=f"Transform produced {len(rows)} rows; max_rows is {plan.max_rows}.",
+            remediation="Lower the input or raise the explicit transform row budget.",
+        )
+    encoded = json.dumps(rows, default=str, separators=(",", ":")).encode("utf-8")
+    if len(encoded) > plan.max_bytes:
+        raise error(
+            "HED-DATA-0051",
+            title="Transform byte budget exceeded",
+            explanation=(
+                f"Transform produced {len(encoded)} bytes; max_bytes is {plan.max_bytes}."
+            ),
+            remediation="Lower the input or raise the explicit transform byte budget.",
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -120,7 +154,7 @@ def apply_plan_in_memory(
             field_name = step.field
             result = sorted(
                 result,
-                key=lambda r, f=field_name: (r.get(f) is None, r.get(f)),
+                key=lambda r, f=field_name: _sort_key(r.get(f)),
                 reverse=reverse,
             )
         elif step.op == "project" and step.field is not None:
@@ -147,8 +181,9 @@ def apply_plan_in_memory(
             else:
                 raise ValueError(f"Unsupported aggregate {agg!r}")
             result = [{step.field: total}]
+        _enforce_budgets(result, plan)
     if project_fields:
         result = [{k: row.get(k) for k in project_fields} for row in result]
-    if len(result) > plan.max_rows:
-        raise ValueError("TransformPlan max_rows exceeded")
+        _enforce_budgets(result, plan)
+    _enforce_budgets(result, plan)
     return result
