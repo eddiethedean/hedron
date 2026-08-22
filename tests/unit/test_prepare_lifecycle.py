@@ -92,3 +92,25 @@ async def test_cache_handoff() -> None:
     ctx = PrepareContext()
     await prepare_tree(card, context=ctx)
     assert "label" in ctx.cache
+
+
+@pytest.mark.anyio
+async def test_cached_is_single_flight_under_concurrent_await() -> None:
+    """#577: concurrent ctx.cached misses must share one factory invocation."""
+    import asyncio
+
+    ctx = PrepareContext()
+    calls = {"n": 0}
+
+    async def factory() -> int:
+        calls["n"] += 1
+        await asyncio.sleep(0.05)
+        return calls["n"]
+
+    async def one() -> int:
+        return await ctx.cached("k", factory)
+
+    values = await asyncio.gather(one(), one(), one())
+    assert values == [1, 1, 1]
+    assert calls["n"] == 1
+    assert ctx.cache["k"] == 1

@@ -66,6 +66,7 @@ class PrepareContext:
     # Injectable clock for ControllableClock / scenario tests (ASYNC-TEST-013).
     clock: Callable[[], float] = field(default_factory=lambda: time.monotonic)
     _cancelled: bool = field(default=False, init=False, repr=False)
+    _inflight: dict[str, asyncio.Future[Any]] = field(default_factory=dict, init=False, repr=False)
 
     def remaining(self, *, now: float | None = None) -> float | None:
         if self.deadline is None:
@@ -104,11 +105,26 @@ class PrepareContext:
             self.check()
             if key in self.cache:
                 return self.cache[key]  # type: ignore[no-any-return]
-            value = factory()
-            if inspect.isawaitable(value):
-                value = await value  # type: ignore[assignment]
-            self.cache[key] = value
-            return value  # type: ignore[return-value]
+            loop = asyncio.get_running_loop()
+            fut: asyncio.Future[Any] = loop.create_future()
+            existing = self._inflight.setdefault(key, fut)
+            if existing is not fut:
+                return await asyncio.shield(existing)  # type: ignore[no-any-return]
+            try:
+                value = factory()
+                if inspect.isawaitable(value):
+                    value = await value  # type: ignore[assignment]
+                self.cache[key] = value
+                if not fut.done():
+                    fut.set_result(value)
+                return value  # type: ignore[return-value]
+            except BaseException as exc:
+                if not fut.done():
+                    fut.set_exception(exc)
+                raise
+            finally:
+                if self._inflight.get(key) is fut:
+                    self._inflight.pop(key, None)
 
         return _resolve()
 
