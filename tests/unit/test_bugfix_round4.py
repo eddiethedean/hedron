@@ -268,10 +268,16 @@ def test_flask_django_auth_cache_overwrites_public() -> None:
         assert headers["Cache-Control"] == "private, no-store"
 
 
-def test_hdj_rejects_autoescape_off() -> None:
+@pytest.mark.parametrize(
+    "tag",
+    ["off", "false", "False", "FALSE", "0", "{%- autoescape False -%}"],
+)
+def test_hdj_rejects_autoescape_off(tag: str) -> None:
+    """#571: reject Jinja autoescape-disable forms, not only lowercase off/false."""
+    open_tag = tag if tag.startswith("{%") else f"{{% autoescape {tag} %}}"
     source = (
         '---hdj\nversion = 1\nkind = "fragment"\nprofile = "standard"\n---\n'
-        "{% autoescape off %}{{ x }}{% endautoescape %}\n"
+        f"{open_tag}{{{{ x }}}}{{% endautoescape %}}\n"
     )
     parsed = parse_hdj_source("frag.hdj", source)
     diags = generic_safety_escape_diagnostics(parsed)

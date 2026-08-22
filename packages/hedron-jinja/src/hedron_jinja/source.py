@@ -718,11 +718,15 @@ def inferred_capabilities(parsed: ParsedHdjSource) -> frozenset[str]:
 
 
 def generic_safety_escape_diagnostics(parsed: ParsedHdjSource) -> tuple[Diagnostic, ...]:
-    """Reject ``|safe`` and ``{% autoescape false|off %}`` in every HDJ mode."""
+    """Reject ``|safe`` and any autoescape-disable form in every HDJ mode.
+
+    Jinja treats ``false``, ``off``, ``False``, and ``0`` as disabling escape; the
+    lint must reject all of them (#571), not only lowercase ``false``/``off``.
+    """
     original_body = parsed.body
     body = _mask_raw_expressions(_mask_jinja_comments(original_body))
     unsafe_escape = re.search(
-        r"\|\s*safe\b|{%[-+]?\s*autoescape\s+(?:false|off)\b",
+        r"\|\s*safe\b|{%[-+]?\s*autoescape\s+(?:false|off|False|FALSE|0)\b",
         body,
     )
     if unsafe_escape is None:
