@@ -1,5 +1,12 @@
 # Learning path
 
+## Do this next (5 minutes)
+
+After Hello + Refresh, build a [minimal form](../guides/minimal-form.md).
+Everything else (HTMX deep dive, auth, Flask/Django, evaluate) can wait.
+
+---
+
 A suggested order from first page to production-minded apps. Start with
 [Build your first app](quickstart.md), then [What is HTMX?](what-is-htmx.md). If you know Python
 but are new to editors, terminals, environments, servers, or tests, begin with

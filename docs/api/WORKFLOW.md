@@ -5,9 +5,9 @@ modules. See [RFC-0082](https://github.com/eddiethedean/hedron/blob/main/docs/rf
 
 ## Public entry points
 
-- `hedron.workflow.WorkflowManifest`
-- `hedron.workflow.ReasonCode`
-- `hedron.workflow.WorkflowBudget` (declared budgets for inspection; not all limits are
+- `hedron.workflow.WorkflowManifest` — redacted inspection model for Explorer/CLI/upgrade
+- `hedron.workflow.ReasonCode` — `Literal` of allowed reason strings (not a constructor)
+- `hedron.workflow.WorkflowBudget` — declared budgets for inspection (not all limits are
   auto-enforced on every request path)
 - `hedron.capabilities.Capability` / `CapabilityProvider`
 - `hedron.replay.IdempotencyPolicy` / `MemoryReplayStore`
@@ -24,3 +24,29 @@ replay action kwargs remain `unsupported` on those adapters
 
 Pin and maturity follow the living **0.58** train; 0.55 workflow symbols remain
 `beta`.
+
+## Example
+
+```python
+from hedron import Hedron, Stack, Text
+from hedron.workflow import WorkflowManifest
+
+app = Hedron(title="Workflows", security="standard", session_secret="replace-me", explorer="off")
+
+manifest = WorkflowManifest(
+    app_id="order-approve",
+    reason_codes=("allowed", "denied", "rejected"),
+)
+
+
+@app.screen("/", title="Home")
+def home():
+    return Stack(
+        Text(f"Workflow: {manifest.app_id}"),
+        Text("Use workflow helpers for upgradeable, capability-aware actions."),
+    )
+```
+
+See the [secure upgradeable workflows](../guides/upgrade.md) notes and the RFC for
+enforcement details. FastAPI owns capability/idempotency action kwargs; Flask/Django
+layout pieces are portable but those kwargs remain unsupported on adapter hosts.

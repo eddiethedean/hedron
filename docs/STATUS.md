@@ -1,5 +1,9 @@
 # Specification and implementation status
 
+> **Adopters:** this file is a **maintainer ledger** (gate IDs, phase evidence). For
+> product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
+> [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
+
 **Roadmap position:** phase 0.58 **Published** as `v0.58.0`; PyPI serves `0.58.0`.
 Living tip = published `v0.58.0` (`registry_status = "uploaded"`).
 **Date:** 2026-08-21

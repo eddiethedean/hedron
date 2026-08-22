@@ -213,11 +213,13 @@ Leave Explorer off in production.
 
 | Symptom | Fix |
 |---|---|
+| Python older than 3.11 | Hedron requires **3.11–3.14**. Check with `python3 --version`, then install a supported interpreter (see Prerequisites above). |
 | `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.58.0,<0.59" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
 | `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
-| FastAPI / pip resolver conflict | Empty venv recommended; see [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
+| FastAPI / pip resolver conflict | **Use a clean venv.** Shared data-science envs with older FastAPI often fail. See [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
 | Wrong / old version | Upgrade: `pip install -U "hedron>=0.58.0,<0.59"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
+| Port 8000 already in use | Pick another port: `uvicorn app:app --reload --port 8001`, or stop the other process. |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
 | Need charts | Install `hedron[charts]>=0.58.0,<0.59` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |

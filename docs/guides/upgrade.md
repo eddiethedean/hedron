@@ -46,7 +46,7 @@ Checkout tip `v0.58.0` uses `uv sync`. From PyPI, install
 ## 0.52 → 0.53
 
 Checkout tip `v0.58.0` uses the in-tree floor `>=0.58.0,<0.59`. From PyPI, keep
-`hedron>=0.58.0,<0.59` until the 0.53 wheel lands. See
+`hedron>=0.58.0,<0.59` (use the current published train `hedron>=0.58.0,<0.59`). See
 [What's new in 0.53](whats-new-0.53.md) and
 [Application DX API](../api/APPLICATION_DX.md).
 

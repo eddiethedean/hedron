@@ -52,6 +52,16 @@ screen-reader sessions are not Supported yet**.
 | Live SSE / WebSocket | **Experimental** | Prefer [polling](live-interaction.md) |
 | Human screen-reader AT | **Not Supported** yet | Protocol engineering only — [evidence](whats-ready-evidence.md) |
 
+### Host capability cheat sheet
+
+| Capability | FastAPI (`hedron`) | Flask (`hedron-flask`) | Django (`hedron-django`) |
+|---|---|---|---|
+| Pages + HTMX fragments + CSRF | Supported | Supported | Supported |
+| `@app.screen` / `form_command` facades | Supported (API `beta`) | Not on this host | Not on this host |
+| Polling job status | Supported | Supported | Supported |
+| Live SSE / WebSocket helpers | Experimental | Prefer polling | Prefer polling |
+| DataTable / charts extras | Supported with pins | Supported with pins | Supported with pins |
+
 Need the long inventory (MCP, Gradio, Workbench, Application DX, Deferred rows)?
 Use [What’s ready — evidence](whats-ready-evidence.md).
 

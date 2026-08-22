@@ -1,17 +1,16 @@
 # Django — greenfield or existing project
 
 Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
-The **CLI** (`hedron new --django`) comes from the `hedron` package; **runtime** is
-`hedron-django` + `hedron-core`. The adapter does **not** install FastAPI.
-It mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
+Scaffold with the `hedron` CLI (`hedron new --django`); runtime is
+`hedron-django` + `hedron-core` (no FastAPI in the app process). The adapter
+mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
 
-This documentation follows the current repository train **0.58.x** (living tip
-`v0.58.0` on PyPI). Install from the public index with
-`hedron-django>=0.58.0,<0.59` (or `hedron>=0.58.0,<0.59`) until the 0.58.0 wheel lands.
-Django hosts are Supported for AppConfig/forms/QuerySet DataSource; they are **not**
-decorator-parity Supported for FastAPI-only progressive facades (`@app.screen`,
-`form_command`, and related 0.58 symbols).
-Public-index notes: [Installation](installation.md).
+**Install:** `pip install "hedron-django>=0.58.0,<0.59"` (or `uv add "hedron-django>=0.58.0,<0.59"`).
+Requires Python 3.11–3.14. See [Installation](installation.md).
+
+Django supports AppConfig, forms, and QuerySet DataSource. Progressive FastAPI
+facades (`@app.screen`, `form_command`, and related symbols) are FastAPI-only —
+see the host matrix on [What’s ready](../guides/whats-ready.md).
 
 ## Golden path (scaffold + Refresh)
 

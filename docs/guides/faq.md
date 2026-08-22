@@ -133,6 +133,18 @@ Evaluators (three axes — skip if you are just building):
 Full cheat-sheet: [Maturity labels (evaluators)](../getting-started/how-to-read.md).
 Snapshot: [What’s ready today](whats-ready.md).
 
+## What is a “train”? Why these version pins?
+
+A **train** is a minor release line (for example `0.58.x`). Patch releases inside the
+train are meant to be compatible; the next minor (`0.59`) may add breaking changes.
+
+Install with an upper bound — `hedron>=0.58.0,<0.59` — so you get patches automatically
+but do not jump to the next train by accident. That is ordinary Python packaging, not a
+second registry. Contributors working from a git checkout use `uv sync`; application
+installs use PyPI.
+
+See [Current release](current-release.md) and [Compatibility](../COMPATIBILITY.md).
+
 ## Why pin with an upper bound?
 
 A lower bound without an upper bound allows a future minor train to install

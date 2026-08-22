@@ -59,3 +59,17 @@ CRUD/admin flows. Add complexity only when measurements justify it
 ## See also
 
 - [Deployment](deployment.md) · [Best practices](best-practices.md) · [Live interaction](live-interaction.md) · [Observability](observability.md)
+
+## Anti-patterns
+
+- Returning a full `Page` for every HTMX click when a fragment region would do.
+- Open-ended SSE/WebSocket streams without a stop condition or HTTP polling fallback.
+- Marking authenticated HTML `public` or omitting tenant/user from cache keys.
+- Shipping Plotly/Altair-heavy dashboards without pagination or server-side aggregation.
+- Enabling Explorer or verbose diagnostics in production.
+
+## Before you ship
+
+Use the [Ship checklist](ship.md) and [Deployment](deployment.md). Treat CI performance
+budgets as engineering signals, not customer SLOs.
+

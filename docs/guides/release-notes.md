@@ -16,7 +16,6 @@ D-101 / D-102 / D-105). Published on PyPI; install with
 - `DesignSystem` brand/theme bridge, semantic `StyleRecipe` families, `StyleScope`,
   and unified `hedron explain` / `hedron style` tooling.
 - FastAPI scaffolds `--template minimal|crud|dashboard|task`.
-- Shared gates `CONTRACT-058` … `PKG-058` Verified (`registry_status = "uploaded"`).
 
 ## 0.57.0 — 2026-08-21
 
@@ -29,7 +28,6 @@ D-099 / D-100). Git tag and PyPI upload are **deferred**; install from PyPI with
 - Shared appearance vocabulary, CSP-safe gap tokens, Grid/GridItem tracks and spans,
   Surface and AppShell chrome, ResourceList/Identity, FileUpload composition, and
   authenticated zero-application-CSS evidence (#558–#570).
-- Shared gates `CONTRACT-057` … `PKG-057` Verified (`registry_status = "deferred"`).
 
 ### Fixed
 - Map `tiles=` preserves restrictive `MapPolicy` fields; relative OSM tile URLs no longer
@@ -71,8 +69,6 @@ wheel lands. [What’s new in 0.55](whats-new-0.55.md).
 
 - Master-detail layout, capabilities, replay-safe actions, multipart uploads,
   CSP reporting helpers, and offline upgrade reports (#544–#549).
-- Shared gates `CONTRACT-055` … `PKG-055` Verified. Git tag / PyPI upload deferred
-  (`registry_status = "deferred"`).
 
 ## 0.53.0 — 2026-08-20
 
@@ -84,8 +80,6 @@ wheel lands. [What’s new in 0.53](whats-new-0.53.md).
 - Ordered application assets, version-aware diagnostics, structured route export,
   operation workflows, catalog testgen, semantic theming, API discovery, and
   installed-fleet doctor.
-- Shared exit gates `DOCS-053` / `PKG-053` / `REGRESS-053` Verified. Git tag / PyPI
-  upload deferred (`registry_status = "deferred"`).
 
 ## 0.52.0 — 2026-08-20
 
@@ -149,7 +143,6 @@ Bugfix patch on the 0.50 train. Pin `hedron>=0.50.3,<0.51` for this in-tree tip.
 
 - `@command` no longer opts out of HTMX target authorization; compiled refresh/patch
   policies declare owned hosts and stay fail-closed.
-- `hedron new` scaffolds pin the PyPI floor while `registry_status` is deferred.
 - Secrets stay redacted in tabular normalize and secret columns; draft-transfer names
   tokenize forbidden fields; `redact_secret_like` no longer substring-matches.
 - In-memory sort/filter/search deny-by-default; SQLAlchemy search uses `search_fields`;

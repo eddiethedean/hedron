@@ -73,14 +73,13 @@ Pins and support status: [Current release](https://hedron.readthedocs.io/en/late
 
 CRUD, admin, dashboards, and forms as typed Python on FastAPI — when you want HTMX fragment
 regions, CSRF defaults, and multi-worker job status **without** assembling a hand-rolled
-Jinja+HTMX stack. New golden paths prefer `@app.screen` (and matching facades such as
-`form_command`, `TaskFlow`, and `DashboardWorkspace`) over hand-wired `@app.page` routes.
+Jinja+HTMX stack. Prefer `@app.screen` for new apps.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
-Packages are **Beta** (no SLA, no scheduled 1.0). Before production, read
-[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
-[Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
+Packages are **Beta** — pin a minor range (`>=0.58.0,<0.59`). For production fit, read
+[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/); for Hello,
+keep going below.
 
 Coming from Streamlit? Use the
 [Streamlit migration center](https://hedron.readthedocs.io/en/latest/guides/streamlit-migration/).

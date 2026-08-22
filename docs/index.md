@@ -46,7 +46,9 @@ React frontend. Build the interface, interactions, and application structure in 
   </a>
 </div>
 
-<div class="hedron-quickstart-label">Create an app in minutes</div>
+<div class="hedron-quickstart-label">Create an app in about 10 minutes</div>
+
+About 10 minutes after Python 3.11+ and uv (or pip) are ready:
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/

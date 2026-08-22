@@ -66,3 +66,15 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 
 See also [Security](security.md), [HTMX interactions](htmx-interactions.md),
 [Deployment](deployment.md), [Enterprise diligence](enterprise-diligence.md).
+
+## Day-one defaults
+
+1. Prefer `@app.screen` and documented facades over hand-wired `@app.page` unless you need
+   full `Page` control.
+2. Pin `hedron>=0.58.0,<0.59` (and matching host packages) in every environment.
+3. Keep Explorer off and `session_secret` from the environment in production.
+4. Declare HTMX regions; undeclared targets fail closed — treat 403s as configuration bugs.
+5. Prefer polling for job UIs until you have proxy/load evidence for SSE/WebSocket.
+
+See also [Ship](ship.md), [Security](security.md), and [What’s ready](whats-ready.md).
+

@@ -110,10 +110,8 @@ def home():
     )
 ```
 
-!!! note "Advanced — explicit `@app.page`"
-
-    `@app.screen` lowers to `Page` + `@app.page`. Prefer `screen` for new golden paths;
-    keep `@app.page` when you need full `Page` constructor control.
+Prefer `@app.screen` for new apps. Use explicit `Page` + `@app.page` only when you need
+full `Page` constructor control — see the [Hedron API](../api/HEDRON.md).
 
 Change:
 
