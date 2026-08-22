@@ -265,11 +265,11 @@ def test_mark_authenticated_and_session_install() -> None:
     assert body["user"] == "ada"
     assert body["auth"] is True
 
-    # Truthy non-string session values must not flip authentication.
+    # Non-string serialized principals also restore authentication.
     @app.post("/login-dict")
     def login_dict(req: Request) -> dict:
         req.session["user"] = {"id": "ada"}
         return {"ok": True}
 
     assert client.post("/login-dict").status_code == 200
-    assert client.get("/who").json()["auth"] is False
+    assert client.get("/who").json()["auth"] is True

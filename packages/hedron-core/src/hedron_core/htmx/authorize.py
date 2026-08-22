@@ -50,6 +50,10 @@ def _target_matches_region_selector(selector: str, target: str) -> bool:
     return target in {f"#{host_id}{_LAZY_INNER_BODY_SUFFIX}", f"{host_id}{_LAZY_INNER_BODY_SUFFIX}"}
 
 
+def _canonical_selector(value: str) -> str:
+    return value if value.startswith("#") else f"#{value}"
+
+
 def _ids_agree_for_auth(client_id: str, handler_id: str) -> bool:
     """True when client HX-Target id is the handler region or its Lazy inner body."""
     return client_id == handler_id or client_id == f"{handler_id}{_LAZY_INNER_BODY_SUFFIX}"
@@ -81,6 +85,10 @@ def resolve_fragment_region(
             requested=target,
             declared=declared,
         )
+    # Prefer an exact declared selector over Lazy's broader ``-body`` alias.
+    for region in policy.declared_regions:
+        if _canonical_selector(region.selector) == _canonical_selector(target):
+            return region
     for region in policy.declared_regions:
         if _target_matches_region_selector(region.selector, target):
             return region

@@ -37,9 +37,11 @@ class _AuthenticatedFromSessionMiddleware(BaseHTTPMiddleware):
             session = request.session
             if isinstance(session, Mapping):
                 subject = session.get(self.session_key)
-                # Require a non-empty string subject — truthy placeholders must not
-                # flip hedron_authenticated (cache / Explorer secured defaults).
-                if isinstance(subject, str) and subject.strip():
+                # SessionAuthFlow is generic over its serialized principal. Any
+                # non-empty application-owned session value represents a login;
+                # strings receive whitespace validation for compatibility.
+                authenticated = bool(subject.strip()) if isinstance(subject, str) else bool(subject)
+                if authenticated:
                     mark_authenticated(request, value=True)
         return await call_next(request)
 
@@ -54,7 +56,7 @@ def install_authenticated_from_session(
     ``request.session``. Applications still own login and authorization; this only
     aligns cache/Explorer private defaults with an existing session user.
 
-    The session value for ``session_key`` must be a non-empty string subject id.
+    The session value for ``session_key`` must be a non-empty serialized principal.
     """
 
     app.user_middleware.append(
