@@ -182,6 +182,27 @@ class DataWorkspace(Generic[ModelT]):
         self._screen_meta: dict[str, str] | None = None
         # Empty search_fields is deny-by-default on InMemoryDataSource; do not
         # rewrite it to all model fields (that would enable secret column search).
+        self._configure_inmemory_allowlists()
+
+    def _configure_inmemory_allowlists(self) -> None:
+        """Bind InMemoryDataSource sort/filter/projection allowlists to column names.
+
+        InMemoryDataSource treats omitted allowlists as deny-all and ignores query-level
+        allowlists that would widen them (#573). DataWorkspace builds trusted query
+        allowlists, so the source must carry the same column allowlist.
+        """
+        from hedron_data.memory import InMemoryDataSource
+
+        source = self.source
+        if not isinstance(source, InMemoryDataSource):
+            return
+        names = frozenset(self._column_names())
+        if not source._sort_allow:
+            source._sort_allow = names
+        if not source._filter_allow:
+            source._filter_allow = names
+        if not source._projection_allow:
+            source._projection_allow = names - source._secret_fields
 
     def with_screen(
         self,

@@ -147,8 +147,13 @@ class InMemoryDataSource:
 
     def _fetch_unlocked(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
         # Secrets are never projection-allowlisted (#574).
-        projection_allow = self._effective_allow(
-            query.allowlisted_projection_fields, self._projection_allow - self._secret_fields
+        projection_allow = (
+            self._effective_allow(
+                query.allowlisted_projection_fields,
+                self._projection_allow - self._secret_fields,
+            )
+            if query.projection is not None
+            else None
         )
         q = DataQuery(
             offset=query.offset,
