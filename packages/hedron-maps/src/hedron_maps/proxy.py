@@ -34,7 +34,7 @@ def assert_ssrf_safe(url: str, policy: MapPolicy, *, resolve_dns: bool = True) -
     """Validate a proxy candidate. Does not fetch."""
     try:
         parsed = urlparse(url)
-        parsed.port  # Force deferred malformed-port validation.
+        _port = parsed.port  # Force deferred malformed-port validation.
     except ValueError as exc:
         raise error(
             HED_MAP_POLICY_0002,

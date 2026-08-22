@@ -195,7 +195,7 @@ def assert_ssrf_safe(url: str, *, policy: EgressPolicy | None = None) -> str:
     """Compatibility helper used by package adapters (public-host SSRF floor)."""
     try:
         parsed = urlparse(url)
-        parsed.port  # Force deferred malformed-port validation.
+        parsed.port  # noqa: B018  # Force deferred malformed-port validation.
     except ValueError as exc:
         raise EgressError(f"egress denied: invalid_url for {url!r}") from exc
     host = (parsed.hostname or "").lower()

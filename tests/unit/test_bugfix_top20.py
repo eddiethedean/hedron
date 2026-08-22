@@ -15,8 +15,8 @@ from hedron.security.policy import SecurityPolicy
 from hedron.security.redirects import redirect_local
 from hedron.state import SessionState
 from hedron_core import Text, render
-from hedron_core.diagnostics import HedronError
 from hedron_core.auto import Auto
+from hedron_core.diagnostics import HedronError
 from hedron_core.html import html
 from hedron_core.live import SseEvent, encode_sse
 from hedron_core.models import Model

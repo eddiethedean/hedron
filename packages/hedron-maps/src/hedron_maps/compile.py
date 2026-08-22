@@ -148,7 +148,7 @@ def _require_title(spec: MapSpec) -> None:
 def _origin_of(url: str) -> str | None:
     try:
         parsed = urlparse(url)
-        parsed.port  # Force deferred malformed-port validation.
+        _port = parsed.port  # Force deferred malformed-port validation.
     except ValueError as exc:
         raise _map_error(
             HED_MAP_POLICY_0002,
@@ -179,7 +179,7 @@ def _validate_url(url: str, *, allow_relative: bool = True) -> str:
     try:
         parsed = urlparse(url)
         # urllib defers malformed-port validation until ``.port`` is read.
-        parsed.port
+        _port = parsed.port
     except ValueError as exc:
         raise _map_error(
             HED_MAP_POLICY_0002,

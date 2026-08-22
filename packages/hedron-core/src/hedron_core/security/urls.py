@@ -224,7 +224,7 @@ class SafeUrl:
         try:
             parts = urlsplit(raw)
             # ``urlsplit`` defers malformed-port validation until ``.port`` is read.
-            parts.port
+            _port = parts.port
         except ValueError as exc:
             raise _url_error("Malformed URL host or port", purpose) from exc
         scheme = parts.scheme.lower()
