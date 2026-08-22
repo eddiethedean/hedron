@@ -292,8 +292,6 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
                 },
             )
             session_headers = {"mcp-session-id": session_id}
-            if method == "notifications/initialized":
-                return _json_response({"ok": True}, headers=session_headers)
             return _json_response(
                 _result(
                     req_id,
