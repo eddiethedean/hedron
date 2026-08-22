@@ -51,6 +51,10 @@ def test_snowflake_bounded_fetch() -> None:
         "SELECT * FROM t INTO TEMPORARY TABLE u",
         "WITH x AS (SELECT 1 AS n) SELECT * FROM x INTO TABLE y",
         "select id from customers\ninto\ttable attacker_copy",
+        "WITH x AS (SELECT 1 AS n)/**/DELETE FROM t",
+        "WITH x AS (SELECT 1 AS n)/**/UPDATE t SET a=1",
+        "WITH x AS (SELECT 1 AS n)/**/DROP TABLE t",
+        "WITH x AS (SELECT 1 AS n)/**/INSERT INTO t VALUES (1)",
     ],
 )
 def test_snowflake_rejects_mutating_sql(statement: str) -> None:
