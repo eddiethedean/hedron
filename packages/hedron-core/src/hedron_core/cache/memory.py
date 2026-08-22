@@ -27,16 +27,24 @@ class _Entry:
     size: int = 0
 
 
+@dataclass
+class _SyncFlight:
+    """Per-generation single-flight state shared by owner and waiters (#576)."""
+
+    event: threading.Event = field(default_factory=threading.Event)
+    waiters: int = 0
+    result: object | None = None
+    error: BaseException | None = None
+    has_result: bool = False
+
+
 class InMemoryCacheBackend:
     process_local = True
 
     def __init__(self) -> None:
         self._store: dict[str, _Entry] = {}
         self._lock = threading.RLock()
-        self._flights: dict[str, threading.Event] = {}
-        self._flight_results: dict[str, object] = {}
-        self._flight_errors: dict[str, BaseException] = {}
-        self._flight_waiters: dict[str, int] = {}
+        self._flights: dict[str, _SyncFlight] = {}
         # Keyed by (cache key, event-loop id) so Futures are never shared across loops.
         self._async_flights: dict[tuple[str, int], asyncio.Future[Any]] = {}
 
@@ -96,46 +104,39 @@ class InMemoryCacheBackend:
             hit, cached = self.lookup(key)
             if hit:
                 return cast(R, cached)
-            if key in self._flights:
-                event = self._flights[key]
-                self._flight_waiters[key] = self._flight_waiters.get(key, 0) + 1
+            flight = self._flights.get(key)
+            if flight is not None:
+                flight.waiters += 1
                 waiter = True
             else:
-                event = threading.Event()
-                self._flights[key] = event
-                self._flight_waiters[key] = 0
+                flight = _SyncFlight()
+                self._flights[key] = flight
                 waiter = False
         if waiter:
             try:
-                event.wait()
-                if key in self._flight_errors:
-                    raise self._flight_errors[key]
-                return cast(R, self._flight_results[key])
+                flight.event.wait()
+                if flight.error is not None:
+                    raise flight.error
+                if not flight.has_result:
+                    raise KeyError(key)
+                return cast(R, flight.result)
             finally:
                 with self._lock:
-                    remaining = self._flight_waiters.get(key, 1) - 1
-                    if remaining <= 0:
-                        self._flight_waiters.pop(key, None)
-                        self._flight_results.pop(key, None)
-                        self._flight_errors.pop(key, None)
-                    else:
-                        self._flight_waiters[key] = remaining
+                    flight.waiters -= 1
         try:
             value = loader()
-            self._flight_results[key] = value
+            flight.result = value
+            flight.has_result = True
             return value
         except BaseException as exc:
-            self._flight_errors[key] = exc
+            flight.error = exc
             raise
         finally:
             with self._lock:
-                event.set()
-                self._flights.pop(key, None)
-                # Owner keeps results until waiters drain (or none were registered).
-                if self._flight_waiters.get(key, 0) <= 0:
-                    self._flight_waiters.pop(key, None)
-                    self._flight_results.pop(key, None)
-                    self._flight_errors.pop(key, None)
+                flight.event.set()
+                # Drop the map entry so a new generation gets its own _SyncFlight.
+                if self._flights.get(key) is flight:
+                    self._flights.pop(key, None)
 
     async def single_flight_async(self, key: str, loader: Callable[[], Any]) -> Any:
         while True:
