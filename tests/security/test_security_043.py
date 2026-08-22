@@ -125,6 +125,44 @@ def test_foreign_handle_refresh_is_403() -> None:
     )
 
 
+def test_plain_fastapi_mints_app_id_and_rejects_foreign_refresh() -> None:
+    """#575: bare FastAPI + HedronRouter must enforce ownership (auto-mint app id)."""
+    from fastapi import FastAPI
+    from starlette.middleware.sessions import SessionMiddleware
+
+    from hedron import HedronRouter
+    from hedron.security.policy import SecurityPolicy
+
+    api = FastAPI()
+    api.add_middleware(SessionMiddleware, secret_key="test-secret")
+    api.state.hedron_security = SecurityPolicy.from_name("standard")
+    # Deliberately omit hedron_app_id — route conversion must mint one.
+    assert getattr(api.state, "hedron_app_id", None) is None
+    ui = HedronRouter()
+
+    @ui.page("/")
+    def home():
+        return Page(Text("home"), title="Home")
+
+    @ui.action("/ping", methods=["POST"])
+    def ping():
+        foreign = PortableTarget(
+            logical_id="status",
+            dom_id=safe_dom_id("status"),
+            path="/status",
+            app_id="forged",
+            region=FragmentRegion(id=safe_dom_id("status"), selector="#h-view-status"),
+        )
+        return RefreshIntent(targets=(foreign,))
+
+    api.include_router(ui)
+    client = TestClient(api)
+    client.get("/")
+    assert getattr(api.state, "hedron_app_id", None)
+    response = client.post("/ping", headers=csrf_headers(client))
+    assert response.status_code == 403
+
+
 def test_bound_secrets_redacted_from_descriptor() -> None:
     app = make_app()
 
