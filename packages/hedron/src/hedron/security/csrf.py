@@ -178,8 +178,12 @@ async def prepare_csrf_from_request(request: Request, policy: SecurityPolicy) ->
     strategy = resolve_strategy(policy)
     if strategy is None:
         return
-    form_field, header_name, _cookie = _strategy_names(strategy)
+    form_field, header_name, cookie_name = _strategy_names(strategy)
     if request.headers.get(header_name):
+        return
+    if cookie_name is not None and not request.cookies.get(cookie_name):
+        # A cookie-backed strategy can reject without parsing an attacker-sized
+        # multipart body when the required double-submit cookie is absent.
         return
     content_type = request.headers.get("content-type", "")
     if (

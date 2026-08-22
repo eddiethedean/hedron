@@ -123,6 +123,14 @@ def test_lazy_inner_body_is_authorized_as_host_region() -> None:
     with pytest.raises(FragmentRegionError):
         select_htmx_auth_target(client_target="#lazy-box-body", region_id="other")
 
+    exact_policy = InteractionPolicy(
+        declared_regions=(
+            FragmentRegion(id="panel", selector="#panel"),
+            FragmentRegion(id="panel-body", selector="#panel-body"),
+        )
+    )
+    assert resolve_fragment_region(exact_policy, "#panel-body").id == "panel-body"
+
     app = make_app(security="standard")
 
     @app.page("/", fragment_regions=("#lazy-box",))

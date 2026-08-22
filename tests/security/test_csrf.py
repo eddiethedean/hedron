@@ -122,6 +122,23 @@ async def test_prepare_csrf_ignores_json_body_token() -> None:
 
 
 @pytest.mark.security
+@pytest.mark.anyio
+async def test_prepare_csrf_skips_body_without_cookie() -> None:
+    policy = _policy()
+    request = _request(cookie=None)
+    parsed = False
+
+    async def fail_form():
+        nonlocal parsed
+        parsed = True
+        raise AssertionError("form parsing should be skipped")
+
+    request.form = fail_form  # type: ignore[method-assign]
+    await prepare_csrf_from_request(request, policy)
+    assert parsed is False
+
+
+@pytest.mark.security
 def test_action_csrf_multipart_and_header_mismatch() -> None:
     app = Hedron(title="csrf", security="standard", session_secret="secret", explorer="off")
 

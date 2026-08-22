@@ -81,6 +81,10 @@ def resolve_fragment_region(
             requested=target,
             declared=declared,
         )
+    # Prefer an exact declared selector over Lazy's broader ``-body`` alias.
+    for region in policy.declared_regions:
+        if region.selector == target:
+            return region
     for region in policy.declared_regions:
         if _target_matches_region_selector(region.selector, target):
             return region
