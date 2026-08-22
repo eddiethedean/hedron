@@ -672,11 +672,11 @@ class HedronPagesMixin:
             import inspect
 
             from starlette.responses import PlainTextResponse
-            from hedron.security.redirects import redirect_local
 
             from hedron.async_utils import await_if_needed
             from hedron.handles import build_command_handle
             from hedron.routing.router import current_request
+            from hedron.security.redirects import redirect_local
             from hedron.type_authoring import (
                 apply_modeled_signature,
                 assert_declared_effects,

@@ -213,7 +213,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
             field_name = flow.field.name
             allow_multiple = flow.field.budget.maximum_count > 1
             # Alias must match FileUpload(name=...); default param name "file" alone 422s (#591).
-            file_param = File(..., alias=field_name)  # noqa: B008
+            file_param = File(..., alias=field_name)
             file_annotation: type[UploadFile] | type[list[UploadFile]] = (
                 list[UploadFile] if allow_multiple else UploadFile
             )
