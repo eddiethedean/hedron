@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Callable
-from typing import Annotated, Any, get_args, get_origin
+from types import UnionType
+from typing import Annotated, Any, Union, get_args, get_origin
 
 from fastapi import Cookie, File, Form, Header, HTTPException, Path, Query, status
 
@@ -25,6 +26,18 @@ _FORM_MEDIA = {
     "urlencoded": "application/x-www-form-urlencoded",
     "multipart": "multipart/form-data",
 }
+
+
+def _is_bool_annotation(annotation: object) -> bool:
+    if annotation is bool:
+        return True
+    origin = get_origin(annotation)
+    if origin is Annotated:
+        args = get_args(annotation)
+        return bool(args) and _is_bool_annotation(args[0])
+    if origin in {Union, UnionType}:
+        return any(item is bool for item in get_args(annotation))
+    return False
 
 
 def formbody_media_types(compiled: CompiledTypeHandler) -> tuple[str, ...]:
@@ -83,7 +96,9 @@ def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) ->
             value = kwargs.pop(field.name)
         else:
             continue
-        if value is None and not field.required:
+        # FastAPI represents omitted non-nullable fields with ``None`` while
+        # explicit null is meaningful for annotations that accept None.
+        if value is None and not field.required and type(None) not in get_args(field.annotation):
             continue
         raw[field.name] = value
     kwargs[compiled.param_name] = compiled.adapter.validate(raw)
@@ -226,6 +241,10 @@ def _fastapi_parameter(field: FieldRecord) -> inspect.Parameter:
         )
     default: object
     default = None if field.default is inspect.Parameter.empty else field.default
+    # An unchecked HTML checkbox omits its field. A true model default would
+    # therefore make an omitted checkbox come back as true through FastAPI.
+    if field.location == "form" and _is_bool_annotation(annotation) and default is True:
+        default = False
     return inspect.Parameter(
         param_name,
         inspect.Parameter.POSITIONAL_OR_KEYWORD,

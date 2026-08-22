@@ -76,6 +76,8 @@ def merge_changes(
     remote_inserts = {_insert_key(row) for row in remote.inserts if isinstance(row, Mapping)}
     local_deletes = set(local.deletes)
     remote_deletes = set(remote.deletes)
+    local_update_rows = {u.row_key for u in local.updates}
+    remote_update_rows = {u.row_key for u in remote.updates}
     overlap = (
         (local_inserts & remote_inserts)
         | (local_inserts & remote_deletes)
@@ -91,6 +93,21 @@ def merge_changes(
                 server_value=None,
                 client_value=None,
                 message="Concurrent insert/delete",
+                local_actor=local_actor,
+                remote_actor=remote_actor,
+            )
+        )
+    update_delete_overlap = (local_update_rows & remote_deletes) | (
+        remote_update_rows & local_deletes
+    )
+    for key in sorted(update_delete_overlap):
+        conflicts.append(
+            CollaborativeConflict(
+                row_key=key,
+                field=None,
+                server_value=None,
+                client_value=None,
+                message="Concurrent update/delete",
                 local_actor=local_actor,
                 remote_actor=remote_actor,
             )

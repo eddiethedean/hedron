@@ -80,6 +80,7 @@ def infinite_block_request(query: DataQuery, *, block_size: int, start_row: int)
         locale=query.locale,
         allowlisted_sort_fields=query.allowlisted_sort_fields,
         allowlisted_filter_fields=query.allowlisted_filter_fields,
+        allowlisted_projection_fields=query.allowlisted_projection_fields,
     ).validated(max_page_size=max(block_size, 1))
 
 
