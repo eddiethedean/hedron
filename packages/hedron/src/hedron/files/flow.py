@@ -14,6 +14,7 @@ from hedron.upload import (
     cleanup_upload,
     materialize_upload,
     read_upload_capped,
+    validate_upload_batch,
 )
 from hedron_core.bundles import FeatureBundle, FeatureRequirement
 from hedron_core.catalog import PackageProjection, ProjectionCapability
@@ -210,18 +211,51 @@ class UploadFlow(Generic[StoredT, ResultT]):
             from hedron_core.builtins.forms import CsrfField, Form, SubmitButton
 
             field_name = flow.field.name
+            allow_multiple = flow.field.budget.maximum_count > 1
+            # Alias must match FileUpload(name=...); default param name "file" alone 422s (#591).
+            file_param = File(..., alias=field_name)  # noqa: B008
+            file_annotation: type[UploadFile] | type[list[UploadFile]] = (
+                list[UploadFile] if allow_multiple else UploadFile
+            )
 
             async def upload_command(
                 request: Request,
-                file: UploadFile = File(...),  # noqa: B008
+                file: UploadFile | list[UploadFile] = file_param,
             ) -> object:
-                handle: UploadHandle | None = None
+                uploads: list[UploadFile] = file if isinstance(file, list) else [file]
+                handles: list[UploadHandle] = []
                 try:
+                    for upload in uploads:
+                        try:
+                            content = await read_upload_capped(
+                                upload,
+                                maximum_size=flow.field.budget.maximum_size,
+                            )
+                        except ValueError as exc:
+                            raise error(
+                                HED_UPLOADFLOW_0001,
+                                title="Upload policy failure",
+                                explanation=str(exc),
+                                remediation="Respect UploadField budget and filename rules.",
+                            ) from exc
+                        try:
+                            handles.append(
+                                materialize_upload(
+                                    filename=upload.filename or "upload.bin",
+                                    content=content,
+                                    content_type=upload.content_type,
+                                    budget=flow.field.budget,
+                                )
+                            )
+                        except ValueError as exc:
+                            raise error(
+                                HED_UPLOADFLOW_0001,
+                                title="Upload policy failure",
+                                explanation=str(exc),
+                                remediation="Respect UploadField budget and filename rules.",
+                            ) from exc
                     try:
-                        content = await read_upload_capped(
-                            file,
-                            maximum_size=flow.field.budget.maximum_size,
-                        )
+                        validate_upload_batch(handles, flow.field.budget)
                     except ValueError as exc:
                         raise error(
                             HED_UPLOADFLOW_0001,
@@ -229,31 +263,21 @@ class UploadFlow(Generic[StoredT, ResultT]):
                             explanation=str(exc),
                             remediation="Respect UploadField budget and filename rules.",
                         ) from exc
-                    try:
-                        handle = materialize_upload(
-                            filename=file.filename or "upload.bin",
-                            content=content,
-                            content_type=file.content_type,
-                            budget=flow.field.budget,
-                        )
-                    except ValueError as exc:
-                        raise error(
-                            HED_UPLOADFLOW_0001,
-                            title="Upload policy failure",
-                            explanation=str(exc),
-                            remediation="Respect UploadField budget and filename rules.",
-                        ) from exc
-                    try:
-                        stored = cast(StoredT, await flow._call(flow.store, handle))
-                    except Exception as exc:
-                        raise error(
-                            HED_UPLOADFLOW_0002,
-                            title="Upload store rejected",
-                            explanation="store() failed; paths are not disclosed.",
-                            remediation="Fix storage/quarantine callback.",
-                        ) from exc
-                    if handle is not None and handle.owned:
-                        cleanup_upload(handle)
+
+                    stored: StoredT | None = None
+                    for handle in handles:
+                        try:
+                            stored = cast(StoredT, await flow._call(flow.store, handle))
+                        except Exception as exc:
+                            raise error(
+                                HED_UPLOADFLOW_0002,
+                                title="Upload store rejected",
+                                explanation="store() failed; paths are not disclosed.",
+                                remediation="Fix storage/quarantine callback.",
+                            ) from exc
+                        if handle.owned:
+                            cleanup_upload(handle)
+                    assert stored is not None
                     opaque: str | int | float | bool = (
                         stored if isinstance(stored, (str, int, float, bool)) else str(stored)
                     )
@@ -273,12 +297,13 @@ class UploadFlow(Generic[StoredT, ResultT]):
 
                     return _Text("uploaded")
                 finally:
-                    cleanup_upload(handle)
+                    for handle in handles:
+                        cleanup_upload(handle)
 
             # Concrete annotations so postponed-eval ForwardRefs resolve for FastAPI.
             upload_command.__annotations__ = {
                 "request": Request,
-                "file": UploadFile,
+                "file": file_annotation,
                 "return": object,
             }
             # FastAPI File default must remain on the signature parameter.
@@ -292,8 +317,8 @@ class UploadFlow(Generic[StoredT, ResultT]):
                     inspect.Parameter(
                         "file",
                         inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                        annotation=UploadFile,
-                        default=File(...),
+                        annotation=file_annotation,
+                        default=file_param,
                     ),
                 ],
                 return_annotation=object,
