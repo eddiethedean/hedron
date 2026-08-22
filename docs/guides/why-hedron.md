@@ -1,6 +1,21 @@
 # Why Hedron
 
-Short positioning for evaluators.
+Python teams often face a false choice: keep Streamlit's fast Python workflow and accept
+its application model, or add React and operate a separate frontend stack. Hedron is for
+teams that want Python-first development **and** explicit, composable application structure.
+
+<div class="hedron-choice-grid">
+  <div class="hedron-choice">
+    <span>If Streamlit is becoming limiting</span>
+    <strong>Keep the Python workflow.</strong>
+    <p>Replace implicit reruns with typed state, actions, routes, and independently testable interfaces.</p>
+  </div>
+  <div class="hedron-choice">
+    <span>If React feels like too much stack</span>
+    <strong>Keep component composition.</strong>
+    <p>Build reusable interfaces without creating and operating a separate frontend application.</p>
+  </div>
+</div>
 
 ## What Hedron optimizes for
 
@@ -55,6 +70,25 @@ Streamlit optimizes for the fastest notebook-style dashboard loop.
 Forms and CSRF are a short next step after Hello — see
 [HTMX interactions](htmx-interactions.md) then [Minimal form POST](minimal-form.md).
 Streamlit users should start with the [migration center](streamlit-migration.md).
+
+## Concrete contrast: React vs Hedron
+
+React is the right choice when a product needs a client-owned application runtime, deep
+offline behavior, or an ecosystem that assumes JavaScript components. Hedron makes a
+different trade: the server owns application state and renders targeted updates, while the
+developer composes the experience in typed Python.
+
+| Concern | React application | Hedron application |
+|---|---|---|
+| Primary UI language | JavaScript or TypeScript | Python |
+| Application shape | Client runtime plus backend APIs | Server-rendered FastAPI application |
+| Composition | Client components | Typed Python components and screens |
+| Interaction updates | Client state and API calls | Explicit actions, fragments, and server responses |
+| Build and deployment | Frontend build plus backend coordination | Python package and application deployment |
+| Best fit | Client-heavy products and offline-first experiences | Python-owned data, operations, and internal products |
+
+The point is not that one model wins every time. The point is that Python teams should be
+able to choose composability without automatically choosing a second application stack.
 
 ## Compared to nearby tools
 

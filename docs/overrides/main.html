@@ -2,15 +2,14 @@
 
 {% block announce %}
   {% if config.extra.hedron_docs.is_development and config.extra.hedron_docs.development_version != config.extra.hedron_docs.published_version %}
-    <strong>Hedron {{ config.extra.hedron_docs.development_version }}</strong> · development docs.
-    Stable: v{{ config.extra.hedron_docs.published_version }}.
+    <strong>Hedron {{ config.extra.hedron_docs.development_version }}</strong> development docs ·
+    <a href="{{ config.site_url }}guides/current-release/">stable v{{ config.extra.hedron_docs.published_version }}</a>
   {% elif config.extra.hedron_docs.is_development %}
-    <strong>Hedron {{ config.extra.hedron_docs.published_version }}</strong>
-    · stable docs.
+    <strong>v{{ config.extra.hedron_docs.published_version }} is live</strong> ·
+    <a href="{{ config.site_url }}guides/whats-new-{{ config.extra.hedron_docs.published_minor }}/">what’s new</a> ·
+    <a href="{{ config.site_url }}guides/upgrade/">upgrade</a>
   {% else %}
-    Docs: <strong>v{{ config.extra.hedron_docs.version }}</strong> ·
-    stable: v{{ config.extra.hedron_docs.published_version }}.
+    <strong>Docs v{{ config.extra.hedron_docs.version }}</strong> ·
+    <a href="{{ config.site_url }}guides/current-release/">stable v{{ config.extra.hedron_docs.published_version }}</a>
   {% endif %}
-  <a href="{{ config.site_url }}guides/versions/">versions</a>
-  · <a href="{{ config.site_url }}guides/whats-ready/">readiness</a>
 {% endblock %}

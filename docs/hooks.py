@@ -27,6 +27,7 @@ def on_config(config):  # noqa: ANN001
     config.extra["hedron_docs"] = {
         "version": version,
         "published_version": release["published_version"],
+        "published_minor": ".".join(release["published_version"].split(".")[:2]),
         "development_version": release["development_version"],
         "is_development": version in {"local", "latest", "main"}
         or version_type == "branch",

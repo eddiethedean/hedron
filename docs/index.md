@@ -9,30 +9,44 @@ search:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · 0.58.0 on PyPI</div>
+<div class="hedron-eyebrow">Python-first application platform · 0.58.0</div>
 
-# Build interactive web apps in Python.
+# Stay in Python. Build beyond the prototype.
 
-Routes return components; HTMX updates the page — no Node build.
+Keep the development speed teams love in Streamlit. Gain typed composition and
+FastAPI structure for applications that need to grow.
 { .hedron-lede }
-
-**In about 10 minutes after Python 3.11–3.14 and uv or pip:** install → `hedron new` →
-open localhost:8000 → click **Refresh status**.
-{ .hedron-proof }
 
 <div class="hedron-actions" markdown>
 [Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Why Hedron](guides/why-hedron.md){ .md-button }
-[Evaluate](guides/evaluate.md){ .md-button }
+[Migrate from Streamlit](guides/streamlit-migration.md){ .md-button }
+[Evaluate Hedron](guides/evaluate.md){ .md-button }
 </div>
+
+Hedron gives Python teams another path between a rerun-based app model and a separate
+React frontend. Build the interface, interactions, and application structure in typed Python.
+{ .hedron-proof }
 
 <div class="hedron-signal-row">
-  <span>Python 3.11–3.14</span>
-  <span>FastAPI + HTMX</span>
-  <span>No Node build</span>
+  <span>Typed Python UI</span>
+  <span>FastAPI foundation</span>
+  <span>Server-driven interactions</span>
 </div>
 
-<div class="hedron-quickstart-label">Quick start</div>
+<div class="hedron-choice-grid">
+  <a class="hedron-choice" href="guides/streamlit-migration/">
+    <span>Coming from Streamlit</span>
+    <strong>Keep Python. Gain application structure.</strong>
+    <p>Move one workflow at a time from script reruns to explicit state, actions, and routes.</p>
+  </a>
+  <a class="hedron-choice" href="guides/why-hedron/">
+    <span>Considering React</span>
+    <strong>Keep composability. Skip the split stack.</strong>
+    <p>Build reusable interfaces without creating a second frontend application and toolchain.</p>
+  </a>
+</div>
+
+<div class="hedron-quickstart-label">Create an app in minutes</div>
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
@@ -49,49 +63,54 @@ Release status: [Current release and support](guides/current-release.md). Pins a
 
 </div>
 
-## Start here
+## Choose your starting point
 
-[Build your first app (~10 minutes)](getting-started/quickstart.md) — the only full
-Hello walkthrough (scaffold, Refresh, edit).
+Start with the path that matches the application you have today.
 
-Hedron is for FastAPI teams who want typed components and HTMX fragment regions
-without assembling a hand-rolled Jinja stack.
+<div class="hedron-path">
+  <a href="getting-started/quickstart/">
+    <strong>Start a new application</strong>
+    Scaffold a working FastAPI app, run it, and change your first screen.
+  </a>
+  <a href="guides/streamlit-migration/">
+    <strong>Move beyond Streamlit</strong>
+    Check fit, map state, convert a workflow, and plan an incremental cutover.
+  </a>
+  <a href="guides/plain-fastapi/">
+    <strong>Add Hedron to FastAPI</strong>
+    Mount typed pages and interactions beside routes you already operate.
+  </a>
+  <a href="guides/evaluate/">
+    <strong>Evaluate for production</strong>
+    Review maturity, security, ownership, deployment, and upgrade expectations.
+  </a>
+</div>
 
-**You only need the `hedron` package** (+ uvicorn). Optional adapters and extras:
-[Installation](getting-started/installation.md).
+Using Flask, Django, VS Code, or Posit Workbench? [Choose your host and environment](getting-started/index.md#choose-your-path).
+Need a focused pattern or fix? Open the [Cookbook](guides/cookbook.md) or [Troubleshooting](guides/troubleshooting.md).
 
-| Your starting point | Best next page |
-|---|---|
-| New Python/FastAPI app | [Build your first app](getting-started/quickstart.md) |
-| Existing FastAPI app | [Add Hedron to FastAPI](guides/plain-fastapi.md) |
-| Flask or Django project | [Choose a host](getting-started/index.md#choose-your-path) |
-| Streamlit application | [Migration center](guides/streamlit-migration.md) |
-| Need one pasteable pattern | [Cookbook](guides/cookbook.md) |
-| Something is failing | [Troubleshooting](guides/troubleshooting.md) |
-| Production evaluation | [Evaluate Hedron](guides/evaluate.md) |
-
-## A backend-native way to build UI
+## Python velocity, application architecture
 
 <div class="hedron-grid">
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">ϟ</span>
-    <strong>FastAPI + HTMX</strong>
-    <p>Return full pages or targeted fragments from ordinary routes. Keep dependency injection, OpenAPI, and async I/O.</p>
+    <strong>FastAPI-native foundation</strong>
+    <p>Keep dependency injection, OpenAPI, async I/O, ordinary routes, and explicit request boundaries.</p>
   </div>
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">⌁</span>
-    <strong>Typed composition</strong>
-    <p>Compose pages from Python components and validated props. Your editor, type checker, and tests stay in the loop.</p>
+    <strong>Composable Python UI</strong>
+    <p>Build screens from typed components and validated props. Your editor, type checker, and tests stay in the loop.</p>
   </div>
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">◇</span>
-    <strong>Secure-by-default boundaries</strong>
+    <strong>Production-minded boundaries</strong>
     <p>Contextual escaping, CSRF validation, safe URL types, and conservative cache behavior.</p>
   </div>
   <a class="hedron-card" href="guides/streamlit-migration/">
     <span class="hedron-card__icon" aria-hidden="true">→</span>
-    <strong>Migrate from Streamlit</strong>
-    <p>Convert one workflow, redesign state safely, map components, test, and cut over.</p>
+    <strong>Grow without a rewrite</strong>
+    <p>Convert one Streamlit workflow at a time or start with a structure designed to grow from day one.</p>
   </a>
 </div>
 
