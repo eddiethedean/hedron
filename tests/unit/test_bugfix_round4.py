@@ -270,10 +270,26 @@ def test_flask_django_auth_cache_overwrites_public() -> None:
 
 @pytest.mark.parametrize(
     "tag",
-    ["off", "false", "False", "FALSE", "0", "{%- autoescape False -%}"],
+    [
+        "off",
+        "false",
+        "False",
+        "FALSE",
+        "0",
+        "none",
+        "None",
+        "1-1",
+        "not true",
+        "[]",
+        "{}",
+        '""',
+        "''",
+        "{%- autoescape False -%}",
+        "{%- autoescape none -%}",
+    ],
 )
 def test_hdj_rejects_autoescape_off(tag: str) -> None:
-    """#571: reject Jinja autoescape-disable forms, not only lowercase off/false."""
+    """#571/#590: reject any non-enabling autoescape form (allowlist true/on only)."""
     open_tag = tag if tag.startswith("{%") else f"{{% autoescape {tag} %}}"
     source = (
         '---hdj\nversion = 1\nkind = "fragment"\nprofile = "standard"\n---\n'
@@ -282,6 +298,17 @@ def test_hdj_rejects_autoescape_off(tag: str) -> None:
     parsed = parse_hdj_source("frag.hdj", source)
     diags = generic_safety_escape_diagnostics(parsed)
     assert diags
+
+
+@pytest.mark.parametrize("tag", ["true", "True", "TRUE", "on"])
+def test_hdj_allows_autoescape_enable(tag: str) -> None:
+    """#590: explicit enable tokens remain allowed (redundant but safe)."""
+    source = (
+        '---hdj\nversion = 1\nkind = "fragment"\nprofile = "standard"\n---\n'
+        f"{{% autoescape {tag} %}}{{{{ x }}}}{{% endautoescape %}}\n"
+    )
+    parsed = parse_hdj_source("frag.hdj", source)
+    assert not generic_safety_escape_diagnostics(parsed)
 
 
 def test_projection_allowlist_membership() -> None:

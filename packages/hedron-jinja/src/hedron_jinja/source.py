@@ -717,29 +717,42 @@ def inferred_capabilities(parsed: ParsedHdjSource) -> frozenset[str]:
     return frozenset(parser.capabilities)
 
 
-def generic_safety_escape_diagnostics(parsed: ParsedHdjSource) -> tuple[Diagnostic, ...]:
-    """Reject ``|safe`` and any autoescape-disable form in every HDJ mode.
+_AUTOESCAPE_ENABLE = frozenset({"true", "True", "TRUE", "on"})
 
-    Jinja treats ``false``, ``off``, ``False``, and ``0`` as disabling escape; the
-    lint must reject all of them (#571), not only lowercase ``false``/``off``.
+
+def generic_safety_escape_diagnostics(parsed: ParsedHdjSource) -> tuple[Diagnostic, ...]:
+    """Reject ``|safe`` and any non-enabling ``{% autoescape %}`` form.
+
+    Jinja evaluates the autoescape argument as an expression; many falsy values
+    (``none``, ``1-1``, ``[]``, …) disable escaping. Only explicit enable tokens
+    are permitted (#571 / #590) — denylist matching cannot keep up.
     """
     original_body = parsed.body
     body = _mask_raw_expressions(_mask_jinja_comments(original_body))
-    unsafe_escape = re.search(
-        r"\|\s*safe\b|{%[-+]?\s*autoescape\s+(?:false|off|False|FALSE|0)\b",
-        body,
-    )
-    if unsafe_escape is None:
-        return ()
-    return (
-        _context_diag(
-            parsed,
-            original_body,
-            unsafe_escape.start(),
-            "Generic Jinja safety escape is not allowed",
-            "Use a context-specific HDJ bridge.",
-        ),
-    )
+    unsafe = re.search(r"\|\s*safe\b", body)
+    if unsafe is not None:
+        return (
+            _context_diag(
+                parsed,
+                original_body,
+                unsafe.start(),
+                "Generic Jinja safety escape is not allowed",
+                "Use a context-specific HDJ bridge.",
+            ),
+        )
+    for match in re.finditer(r"{%[-+]?\s*autoescape\s+(.+?)\s*[-+]?%}", body):
+        arg = match.group(1).strip()
+        if arg not in _AUTOESCAPE_ENABLE:
+            return (
+                _context_diag(
+                    parsed,
+                    original_body,
+                    match.start(),
+                    "Generic Jinja safety escape is not allowed",
+                    "Use a context-specific HDJ bridge.",
+                ),
+            )
+    return ()
 
 
 def contextual_diagnostics(parsed: ParsedHdjSource) -> tuple[Diagnostic, ...]:
