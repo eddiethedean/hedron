@@ -1,9 +1,18 @@
 # Migrate a Streamlit app
 
-If you know Streamlit, start here. You can keep your Python data, models, SQL, and domain
-logic. The part you will redesign is the interface boundary: Streamlit widgets participate
-in script execution; Hedron controls submit HTTP requests to explicit page, fragment, and
-action routes.
+Use this guide to move one Streamlit workflow to Hedron, verify that it still produces the
+same user outcome, and decide whether to continue. You can usually keep your Python data,
+models, SQL, and domain logic. You will redesign the interface boundary: Streamlit widgets
+participate in script execution; Hedron controls submit HTTP requests to explicit page,
+fragment, and action routes.
+
+The shortest safe path is:
+
+1. run the non-executing migration analyzer;
+2. extract framework-free calculations and data access;
+3. make a read-only Hedron page work;
+4. turn filters into typed GET parameters and writes into POST actions;
+5. compare outcomes, not generated HTML.
 
 !!! info "Modern Streamlit has more than full-script reruns"
 
@@ -21,6 +30,7 @@ action routes.
 | Your question | Start here |
 |---|---|
 | Is Hedron a good fit for this app? | [Should you migrate?](#should-you-migrate) |
+| How do I inventory or scaffold my app? | [Start with the migration assistant](#start-with-the-migration-assistant) |
 | Can I convert one small app end to end? | [Worked migration: sales dashboard](#worked-migration-sales-dashboard) |
 | What replaces reruns, callbacks, and `st.session_state`? | [Execution and state](streamlit-execution-state.md) |
 | What replaces a specific `st.*` API? | [Component migration matrix](streamlit-migration-matrix.md) |
@@ -44,17 +54,89 @@ the notebook-style top-to-bottom loop is the main benefit, Streamlit Community C
 an essential managed dependency, or the app relies heavily on Streamlit-only components
 that have no acceptable Hedron replacement. Hedron is not a drop-in compatibility layer.
 
-## A low-risk migration plan
+## Start with the migration assistant
 
-Do not begin by translating every `st.*` call. Migrate one user workflow:
+Hedron can inventory a Streamlit entrypoint or project without importing or executing it.
+Start with analysis so you can see the migration surface before writing Hedron code:
 
-1. **Record current behavior.** List pages, inputs, outputs, callbacks, session keys,
+```bash
+uvx --from "hedron>=0.58.0,<0.59" hedron migrate streamlit \
+  streamlit_app.py \
+  --analyze-only \
+  --format text
+```
+
+Point the command at a project directory for a multipage app. Use `--project-root` when
+local-module discovery must stop at a boundary other than the nearest `pyproject.toml`.
+You do not need Streamlit, pandas, database drivers, or the app's secrets for static
+analysis.
+
+The report inventories proven `st.*` call sites and labels each one with a migration
+disposition. Read the labels as follows:
+
+| Disposition | What to do |
+|---|---|
+| `translated` | A bounded component translation exists; confirm its props, labels, accessibility, and resulting data. |
+| `scaffolded` | The assistant emitted a safe starting shape; finish the route, form, action, cache, or state design. |
+| `report_only` | Inspect the call site and its surrounding domain logic before choosing a replacement. |
+| `unsupported` | Keep the current workflow, replace the dependency, or accept a deliberate product change. |
+
+The analyzer is intentionally conservative. It does not execute imports, infer runtime
+data, recover hidden callback behavior, move secrets, or prove that a generated app is
+equivalent. A clean report means the recognized syntax was mapped; it is not acceptance
+evidence.
+
+### Generate a reviewable scaffold
+
+When the inventory is useful, generate into a new or empty directory:
+
+```bash
+uvx --from "hedron>=0.58.0,<0.59" hedron migrate streamlit \
+  streamlit_app.py \
+  --out migrated-app
+```
+
+The command refuses to overwrite a non-empty destination and never edits the Streamlit
+source. Review these files in this order:
+
+| Generated file | What to review |
+|---|---|
+| `migration/REVIEW.md` | Findings that require a developer decision. |
+| `migration/report.json` | Discovered files, calls, mappings, extras, and diagnostics. |
+| `migration/source-map.json` | Links from generated boundaries back to Streamlit source spans. |
+| `app.py` | Typed route inputs, state ownership, cache scope, and intentional behavior changes. |
+| `tests/test_migration_smoke.py` | The minimal generated check; replace it with outcome tests for your workflow. |
+
+Then run the scaffold:
+
+```bash
+cd migrated-app
+uv sync
+uv add --dev pytest
+uv run pytest
+uv run uvicorn app:app --reload
+```
+
+Exit code `0` means the command completed below the configured finding threshold. Exit
+code `2` means the scaffold or report was still produced but findings met `--fail-on`;
+review them before continuing. Exit code `1` means analysis or generation failed. JSON
+and SARIF output are available for CI, but generation should remain a reviewed developer
+workflow rather than an automatic source rewrite. The default threshold is `error`, so a
+report can say `REVIEW REQUIRED` and still exit `0` when it contains warnings. Use
+`--fail-on warning` for a stricter CI gate.
+
+## Migrate one workflow at a time
+
+Do not begin by translating every `st.*` call. Pick one useful read path—one page, its
+filters, and its result—and carry it through this loop:
+
+1. **Record current behavior.** List inputs, outputs, callbacks, session keys,
    cache entries, secrets, data writes, and external components. Add a small Streamlit
    `AppTest` suite around the critical workflow before changing it.
 2. **Extract framework-free logic.** Move data loading, filtering, calculations, and
    writes into ordinary functions or services with no `streamlit` imports.
 3. **Port the read-only result.** Return a Hedron `Page` containing headings, metrics,
-   tables, and layout components.
+   tables, and layout components. Do not add fragments yet.
 4. **Port filters as a GET form.** Use typed query parameters first. The result works
    without JavaScript and the URL becomes shareable.
 5. **Port writes as actions.** Turn `if st.button(...):` side effects into explicit POST
@@ -63,7 +145,7 @@ Do not begin by translating every `st.*` call. Migrate one user workflow:
    cache, or browser preference deliberately; do not copy `st.session_state` wholesale.
 7. **Add fragments only where useful.** Once the full-page flow works, use HTMX to update
    expensive or frequently changing regions independently.
-8. **Run both apps during acceptance.** Compare the same fixtures and user outcomes,
+8. **Run both apps during acceptance.** Compare the same fixtures, roles, and user outcomes,
    then follow the [production cutover checklist](streamlit-cutover.md).
 
 ## Can I migrate incrementally?
@@ -111,11 +193,13 @@ services, multiple contributors, or conventional production operations.
 
 ## Worked migration: sales dashboard
 
-This guide rewrites a small sales dashboard with filters, metrics, and a table. Install
-`hedron[charts]>=0.58.0,<0.59` for first-party or Matplotlib charts; or keep
-`Metric` + `DataTable` when charts are optional.
+This example migrates a read-only sales dashboard with two filters, two metrics, a chart,
+and a table. It deliberately starts with a submitted GET form and a table in place of the
+chart. That produces a complete no-JavaScript workflow before optional presentation
+features are added. A tested copy lives in
+[`examples/streamlit-migration`](https://github.com/eddiethedean/hedron/tree/main/examples/streamlit-migration).
 
-## The Streamlit version
+### 1. Record the Streamlit behavior
 
 A typical single-file Streamlit app might look like this:
 
@@ -160,7 +244,29 @@ st.dataframe(filtered, width="stretch")
 The controls are declarations embedded in top-to-bottom execution. When either control
 changes, Streamlit reruns the file and reconstructs the page.
 
-## Rewrite it in Hedron
+Before translating it, record three acceptance cases:
+
+| Kind | Case | Expected outcome |
+|---|---|---|
+| Existing behavior | Default filters | Revenue `$22,600`; orders `213`. |
+| Existing behavior | North, minimum 4000 | Revenue `$8,700`; orders `79`. |
+| New HTTP boundary | Minimum 9000 in the URL | Rejected because the declared maximum is 5000. |
+
+### 2. Analyze and scaffold it
+
+Save the source as `streamlit_app.py`, then run:
+
+```bash
+uvx --from "hedron>=0.58.0,<0.59" hedron migrate streamlit \
+  streamlit_app.py \
+  --out sales-hedron
+cd sales-hedron
+```
+
+The generated scaffold is a starting point. The version below shows the important reviewed
+decisions explicitly.
+
+### 3. Rewrite the interface boundary
 
 Install Hedron with the data extra, plus an ASGI server:
 
@@ -315,7 +421,45 @@ query parameters, and the route returns a new component tree. A production appli
 should load `session_secret` from its environment rather than using the development
 literal shown above.
 
-### Add a chart
+### 4. Verify outcomes
+
+Test the HTTP contract before adding live updates or charts:
+
+```python title="test_app.py"
+from fastapi.testclient import TestClient
+
+from app import app
+
+
+def test_default_dashboard() -> None:
+    with TestClient(app) as client:
+        response = client.get("/")
+
+    assert response.status_code == 200
+    assert "$22,600" in response.text
+    assert ">213<" in response.text
+
+
+def test_bookmarkable_filters() -> None:
+    with TestClient(app) as client:
+        response = client.get("/?region=North&minimum=4000")
+
+    assert response.status_code == 200
+    assert "$8,700" in response.text
+    assert ">79<" in response.text
+
+
+def test_invalid_filter_is_rejected() -> None:
+    with TestClient(app) as client:
+        response = client.get("/?minimum=9000")
+
+    assert response.status_code == 422
+```
+
+These checks preserve the dashboard's data outcomes and its new typed URL contract. They
+do not couple the migration to exact HTML or screenshot identity.
+
+### 5. Add a chart only after the workflow passes
 
 After installing the charts extra, you can replace the month `Table` with `LineChart`:
 
@@ -339,7 +483,7 @@ Details: [Charts and HTMX](charts-and-htmx.md).
 |---|---|---|
 | `st.title`, `st.write` | `Heading`, `Text`, `Markdown`, or `Auto` | Return components from a page route instead of emitting them as side effects. |
 | `st.sidebar` | `Sidebar` | A sidebar is an explicit child in the page layout. |
-| `st.selectbox`, `st.slider` | `Select` or native controls inside `Form` | Bind submitted values to typed FastAPI query or form parameters. |
+| `st.selectbox`, `st.slider` | `Select`, `RangeInput`, or native controls inside `Form` | Bind submitted values to typed FastAPI query or form parameters. |
 | `st.columns` | `Grid` or `Inline` | Compose child components explicitly. |
 | `st.metric` | `Metric` | Pass the label, formatted value, and optional delta. |
 | `st.dataframe` | `DataTable` | Declare a `Model` when stable column types matter. Use `DataEditor` for edits. |
@@ -376,7 +520,7 @@ without a browser. Continue with [Test your UI](testing.md), [Security](security
 | Fragment request returns 403 | `HX-Target` does not match the route's declared region | Use `app.region(...)` and region-aware controls; check the id/selector |
 | POST returns a CSRF error | The form did not carry the token seeded by the page GET | Start with [Minimal form POST](minimal-form.md); do not disable CSRF to imitate a callback |
 | Query returns 422 | FastAPI rejected an invalid typed value or bound | Correct the form value and render friendly validation guidance for the workflow |
-| `DataTable` cannot be imported | The data extra is not installed | Install `hedron[data]` at the same 0.25 version as `hedron` |
+| `DataTable` cannot be imported | The data extra is not installed | Install `hedron[data]>=0.58.0,<0.59` in the same environment as the app |
 | A private cache never hits | Sensitive scopes require concrete `vary_on` dimensions | Pass the user/tenant/session key as a function argument and include its name in `vary_on` |
 | Chart installation resolves an older core | The lower bound allowed a satellite before `0.1.6` | Install `hedron[charts]>=0.58.0,<0.59` in a clean environment |
 | State disappears after deployment/restart | Process/session memory was treated as durable storage | Move durable state to a database or shared service and review the multi-worker model |
