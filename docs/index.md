@@ -11,10 +11,10 @@ search:
 
 <div class="hedron-eyebrow">Python-first application platform · 0.58.0</div>
 
-# Stay in Python. Build beyond the prototype.
+# Stay in Python. Build the whole application.
 
-Keep the development speed teams love in Streamlit. Gain typed composition and
-FastAPI structure for applications that need to grow.
+Move with the speed of Streamlit. Get the structure and composability teams reach for
+React to provide—without creating a separate frontend stack.
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
@@ -23,8 +23,8 @@ FastAPI structure for applications that need to grow.
 [Evaluate Hedron](guides/evaluate.md){ .md-button }
 </div>
 
-Hedron gives Python teams another path between a rerun-based app model and a separate
-React frontend. Build the interface, interactions, and application structure in typed Python.
+Typed interfaces. Explicit interactions. Production-ready application architecture.
+All in Python.
 { .hedron-proof }
 
 <div class="hedron-signal-row">
