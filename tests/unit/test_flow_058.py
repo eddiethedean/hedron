@@ -64,6 +64,46 @@ def test_upload_flow_to_bundle() -> None:
     assert bundle.logical_id
 
 
+def test_upload_flow_custom_field_name_http_round_trip() -> None:
+    """#591: FileUpload name must match FastAPI File alias."""
+
+    def allow() -> None:
+        return None
+
+    app = Hedron(title="upload", security="development", explorer="off", session_secret="x" * 32)
+    flow = UploadFlow(
+        name="docs",
+        field=UploadField(
+            name="document",
+            budget=UploadBudget(maximum_size=10_000, maximum_count=3),
+        ),
+        authorize=Depends(allow),
+        store=lambda handle: "stored-id",
+        result=lambda stored: Text(str(stored)),
+    )
+    app.include_feature(flow)
+    client = TestClient(app)
+    page = client.get("/docs/upload")
+    assert page.status_code == 200
+    assert 'name="document"' in page.text
+    assert re.search(r"\bmultiple\b", page.text)
+    csrf = client.cookies.get("hedron_csrf")
+    assert csrf
+    missing = client.post(
+        "/docs/upload",
+        data={"csrf_token": csrf},
+        files={"file": ("a.txt", b"hello", "text/plain")},
+    )
+    assert missing.status_code == 422
+    ok = client.post(
+        "/docs/upload",
+        data={"csrf_token": csrf},
+        files={"document": ("a.txt", b"hello", "text/plain")},
+    )
+    assert ok.status_code == 200
+    assert "stored-id" in ok.text
+
+
 def test_upload_flow_rejects_missing_authorize() -> None:
     with pytest.raises(HedronError):
         UploadFlow(
