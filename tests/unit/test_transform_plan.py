@@ -61,3 +61,13 @@ def test_plan_enforces_max_bytes() -> None:
             [{"value": "x" * 100}],
             TransformPlan(max_bytes=10),
         )
+
+
+def test_plan_budget_measures_projected_rows() -> None:
+    rows = [{"keep": "ok", "discard": "x" * 1000}]
+    plan = TransformPlan(
+        steps=(TransformStep(op="project", field="keep"),),
+        max_bytes=20,
+    )
+
+    assert apply_plan_in_memory(rows, plan) == [{"keep": "ok"}]
