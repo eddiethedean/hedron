@@ -140,3 +140,53 @@ def test_396_default_factory_list_is_optional() -> None:
     )
     assert posted.status_code == 200
     assert "hello:0" in posted.text
+
+
+def test_pep604_optional_fields_get_native_controls() -> None:
+    from hedron.type_authoring.forms import _default_kind
+    from hedron.type_authoring.normalize import TypeNormalizer
+
+    class OptionalFields(BaseModel):
+        enabled: bool | None = None
+        count: int | None = None
+        label: str | None = None
+
+    def endpoint(data: Annotated[OptionalFields, FormBody()]):
+        return Text(data.label or "")
+
+    contract = TypeNormalizer().inspect(endpoint, kind="command", path="/x")
+    kinds = {field.name: _default_kind(field) for field in contract.fields}
+    assert kinds == {"enabled": "checkbox", "count": "number", "label": "text"}
+
+
+def test_repeated_sibling_models_are_not_recursive() -> None:
+    from hedron import ViewParams
+    from hedron.type_authoring.normalize import TypeNormalizer
+
+    class Child(BaseModel):
+        x: int
+
+    class Parent(BaseModel):
+        a: Child
+        b: Child
+
+    def endpoint(data: Annotated[Parent, ViewParams()]):
+        return Text(str(data.a.x + data.b.x))
+
+    contract = TypeNormalizer().inspect(endpoint, kind="view", path="/x")
+    assert [field.path for field in contract.fields] == ["a", "b"]
+
+
+def test_explicit_none_survives_reconstruction() -> None:
+    from hedron.type_authoring.normalize import TypeNormalizer
+    from hedron.type_authoring.signature import reconstruct_kwargs
+
+    class Payload(BaseModel):
+        value: int | None = 5
+
+    def endpoint(data: Annotated[Payload, FormBody()]):
+        return Text(str(data.value))
+
+    contract = TypeNormalizer().inspect(endpoint, kind="command", path="/x")
+    rebuilt = reconstruct_kwargs(contract, {"value": None})
+    assert rebuilt["data"].value is None

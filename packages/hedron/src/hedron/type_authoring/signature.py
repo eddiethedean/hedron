@@ -83,7 +83,9 @@ def reconstruct_kwargs(compiled: CompiledTypeHandler, kwargs: dict[str, Any]) ->
             value = kwargs.pop(field.name)
         else:
             continue
-        if value is None and not field.required:
+        # FastAPI represents omitted non-nullable fields with ``None`` while
+        # explicit null is meaningful for annotations that accept None.
+        if value is None and not field.required and type(None) not in get_args(field.annotation):
             continue
         raw[field.name] = value
     kwargs[compiled.param_name] = compiled.adapter.validate(raw)

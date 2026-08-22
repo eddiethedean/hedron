@@ -585,7 +585,9 @@ def _walk_model(
             explanation=f"Nested models exceeded {MAX_SCHEMA_DEPTH} levels.",
             remediation="Flatten the boundary model.",
         )
-    seen = set() if seen is None else seen
+    # Each walk receives its own active-stack copy. A shared global visited set
+    # incorrectly rejects the same acyclic child model reused by siblings.
+    seen = set() if seen is None else set(seen)
     ident = id(model_type)
     if ident in seen:
         raise error(
