@@ -202,12 +202,30 @@ def reject_remote_urls(obj: object) -> None:
         )
 
 
+_REMOTE_ASSET_KEYS = frozenset(
+    {
+        "url",
+        "href",
+        "src",
+        "source",
+        "image",
+        # Plotly Mapbox / media asset keys that commonly hold remote URLs (#592).
+        "style",
+        "icon",
+        "logo",
+        "poster",
+        "tiles",
+        "tilejson",
+    }
+)
+
+
 def _walk_remote(obj: object) -> bool:
     if isinstance(obj, Mapping):
         for key, value in obj.items():
             key_l = str(key).lower()
             if (
-                key_l in {"url", "href", "src", "source", "image"}
+                key_l in _REMOTE_ASSET_KEYS
                 and isinstance(value, str)
                 and _is_remote_url(value)
             ):

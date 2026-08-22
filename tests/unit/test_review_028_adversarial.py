@@ -23,6 +23,13 @@ def test_cdn_remote_url_rejected_for_charts() -> None:
     assert exc.value.diagnostic.code == "HED-CHART-0005"
 
 
+def test_mapbox_style_remote_url_rejected() -> None:
+    """#592: Plotly layout.mapbox.style is a remote asset key."""
+    with pytest.raises(HedronError) as exc:
+        reject_remote_urls({"layout": {"mapbox": {"style": "https://evil.example/style.json"}}})
+    assert exc.value.diagnostic.code == "HED-CHART-0005"
+
+
 @pytest.mark.parametrize("url", ["file:///tmp/model.gltf", "javascript:alert(1)"])
 def test_dangerous_asset_schemes_rejected_for_charts(url: str) -> None:
     with pytest.raises(HedronError) as exc:
