@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from hedron_data.aggrid import aggrid_column_defs, ensure_aggrid_assets, infinite_block_request
 from hedron_data.sources import ColumnSchema, DataQuery
 
@@ -12,6 +14,17 @@ def test_aggrid_client_and_infinite() -> None:
     q = infinite_block_request(DataQuery(limit=25), block_size=50, start_row=100)
     assert q.offset == 100
     assert q.limit == 50
+
+    with pytest.raises(ValueError, match="secret.*not allowlisted"):
+        infinite_block_request(
+            DataQuery(
+                projection=("secret",),
+                allowlisted_projection_fields=frozenset({"public"}),
+            ),
+            block_size=50,
+            start_row=0,
+        )
+
     meta = ensure_aggrid_assets(row_model="infinite")
     assert meta["rowModel"] == "infinite"
     assert meta["runtime"] == "hedron-data:aggrid.community.js"

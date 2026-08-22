@@ -221,7 +221,48 @@ def test_orm_max_page_size_and_projection(person_model) -> None:
         ),
         max_page_size=2,
         allowlisted_sort_fields=frozenset({"name", "pk"}),
+        allowlisted_projection_fields=frozenset({"name"}),
     )
     page = source.fetch(DataQuery(limit=100, projection=("name",)))
     assert len(page.rows) == 2
     assert all(set(r.keys()) == {"name"} for r in page.rows)
+
+
+def test_orm_secret_schema_fields_are_not_projectable(person_model) -> None:
+    Person = person_model
+    Person.objects.create(name="Ada", tenant_id="secret")
+    source = DjangoQuerySetDataSource(
+        Person.objects.all(),
+        schema=(
+            ColumnSchema(name="name", label="Name"),
+            ColumnSchema(name="tenant_id", label="Tenant", secret=True),
+        ),
+        allowlisted_projection_fields=frozenset({"name", "tenant_id"}),
+    )
+
+    page = source.fetch(DataQuery(limit=10, projection=("name",)))
+    assert page.rows == [{"name": "Ada"}]
+    with pytest.raises(ValueError, match="tenant_id.*not allowlisted"):
+        source.fetch(DataQuery(limit=10, projection=("tenant_id",)))
+
+
+def test_orm_request_projection_allowlist_cannot_widen_source_policy(person_model) -> None:
+    Person = person_model
+    Person.objects.create(name="Ada", tenant_id="t1")
+    source = DjangoQuerySetDataSource(
+        Person.objects.all(),
+        schema=(
+            ColumnSchema(name="name", label="Name"),
+            ColumnSchema(name="tenant_id", label="Tenant"),
+        ),
+        allowlisted_projection_fields=frozenset({"name", "tenant_id"}),
+    )
+
+    with pytest.raises(ValueError, match="tenant_id.*not allowlisted"):
+        source.fetch(
+            DataQuery(
+                limit=10,
+                projection=("tenant_id",),
+                allowlisted_projection_fields=frozenset({"name"}),
+            )
+        )

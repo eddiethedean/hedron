@@ -69,6 +69,7 @@ class DjangoQuerySetDataSource:
         schema: Sequence[ColumnSchema] = (),
         allowlisted_sort_fields: frozenset[str] | None = None,
         allowlisted_filter_fields: frozenset[str] | None = None,
+        allowlisted_projection_fields: frozenset[str] | None = None,
         search_fields: Sequence[str] = (),
         max_page_size: int = 100,
         query_budget: int = 25,
@@ -96,6 +97,13 @@ class DjangoQuerySetDataSource:
         self._filter_allow = (
             frozenset[str]() if allowlisted_filter_fields is None else allowlisted_filter_fields
         )
+        secret_fields = frozenset(col.name for col in self._schema if col.secret)
+        requested_projection_allow = (
+            frozenset[str]()
+            if allowlisted_projection_fields is None
+            else frozenset(allowlisted_projection_fields)
+        )
+        self._projection_allow = requested_projection_allow - secret_fields
         self._search_fields = tuple(search_fields)
         self._max_page_size = max_page_size
         self._query_budget = query_budget
@@ -108,6 +116,8 @@ class DjangoQuerySetDataSource:
         data: dict[str, JsonValue] = {}
         if self._schema:
             for col in self._schema:
+                if col.secret:
+                    continue
                 data[col.name] = cast(JsonValue, getattr(obj, col.name, None))
         else:
             data[self._key_field] = cast(
@@ -134,6 +144,16 @@ class DjangoQuerySetDataSource:
         """Return schema without evaluating the QuerySet."""
         return self._schema
 
+    @staticmethod
+    def _effective_allow(
+        query_allow: frozenset[str] | None,
+        source_allow: frozenset[str],
+    ) -> frozenset[str]:
+        # A request-specific allowlist may narrow the source policy, never widen it.
+        if query_allow is None:
+            return source_allow
+        return query_allow & source_allow
+
     def fetch(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
         q = DataQuery(
             offset=query.offset,
@@ -144,8 +164,15 @@ class DjangoQuerySetDataSource:
             projection=query.projection,
             search=query.search,
             locale=query.locale,
-            allowlisted_sort_fields=self._sort_allow,
-            allowlisted_filter_fields=self._filter_allow,
+            allowlisted_sort_fields=self._effective_allow(
+                query.allowlisted_sort_fields, self._sort_allow
+            ),
+            allowlisted_filter_fields=self._effective_allow(
+                query.allowlisted_filter_fields, self._filter_allow
+            ),
+            allowlisted_projection_fields=self._effective_allow(
+                query.allowlisted_projection_fields, self._projection_allow
+            ),
         ).validated(max_page_size=self._max_page_size)
 
         diag = QueryDiagnostics(budget=self._query_budget)
