@@ -144,6 +144,16 @@ class DjangoQuerySetDataSource:
         """Return schema without evaluating the QuerySet."""
         return self._schema
 
+    @staticmethod
+    def _effective_allow(
+        query_allow: frozenset[str] | None,
+        source_allow: frozenset[str],
+    ) -> frozenset[str]:
+        # A request-specific allowlist may narrow the source policy, never widen it.
+        if query_allow is None:
+            return source_allow
+        return query_allow & source_allow
+
     def fetch(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
         q = DataQuery(
             offset=query.offset,
@@ -154,9 +164,15 @@ class DjangoQuerySetDataSource:
             projection=query.projection,
             search=query.search,
             locale=query.locale,
-            allowlisted_sort_fields=self._sort_allow,
-            allowlisted_filter_fields=self._filter_allow,
-            allowlisted_projection_fields=self._projection_allow,
+            allowlisted_sort_fields=self._effective_allow(
+                query.allowlisted_sort_fields, self._sort_allow
+            ),
+            allowlisted_filter_fields=self._effective_allow(
+                query.allowlisted_filter_fields, self._filter_allow
+            ),
+            allowlisted_projection_fields=self._effective_allow(
+                query.allowlisted_projection_fields, self._projection_allow
+            ),
         ).validated(max_page_size=self._max_page_size)
 
         diag = QueryDiagnostics(budget=self._query_budget)

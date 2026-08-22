@@ -244,3 +244,25 @@ def test_orm_secret_schema_fields_are_not_projectable(person_model) -> None:
     assert page.rows == [{"name": "Ada"}]
     with pytest.raises(ValueError, match="tenant_id.*not allowlisted"):
         source.fetch(DataQuery(limit=10, projection=("tenant_id",)))
+
+
+def test_orm_request_projection_allowlist_cannot_widen_source_policy(person_model) -> None:
+    Person = person_model
+    Person.objects.create(name="Ada", tenant_id="t1")
+    source = DjangoQuerySetDataSource(
+        Person.objects.all(),
+        schema=(
+            ColumnSchema(name="name", label="Name"),
+            ColumnSchema(name="tenant_id", label="Tenant"),
+        ),
+        allowlisted_projection_fields=frozenset({"name", "tenant_id"}),
+    )
+
+    with pytest.raises(ValueError, match="tenant_id.*not allowlisted"):
+        source.fetch(
+            DataQuery(
+                limit=10,
+                projection=("tenant_id",),
+                allowlisted_projection_fields=frozenset({"name"}),
+            )
+        )
