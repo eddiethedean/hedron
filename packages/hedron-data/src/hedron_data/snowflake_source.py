@@ -172,6 +172,29 @@ def _without_sql_string_literals(statement: str) -> str:
 
 
 _INTO_TOKEN = re.compile(r"\binto\b", re.IGNORECASE)
+# After comment strip, `)/**/DELETE` becomes `)DELETE` — do not require a space (#572).
+_MUTATING_AFTER_PAREN = re.compile(
+    r"\)\s*(?:insert|update|delete|merge|drop|alter|create|truncate|call|grant|"
+    r"revoke|copy|put|remove|undrop)\b",
+    re.IGNORECASE,
+)
+_MUTATING_STATEMENT_PREFIXES = (
+    "insert ",
+    "update ",
+    "delete ",
+    "merge ",
+    "drop ",
+    "alter ",
+    "create ",
+    "truncate ",
+    "call ",
+    "grant ",
+    "revoke ",
+    "copy ",
+    "put ",
+    "remove ",
+    "undrop ",
+)
 
 
 def assert_select_only(statement: str) -> str:
@@ -202,37 +225,18 @@ def assert_select_only(statement: str) -> str:
             explanation="Mutating SQL is not accepted through the data source.",
             remediation="Pass a SELECT and apply mutations through an app-owned bridge.",
         )
-    # Reject DML/DDL keywords that appear as statement prefixes after WITH/CTE separators.
-    forbidden_prefixes = (
-        "insert ",
-        "update ",
-        "delete ",
-        "merge ",
-        "drop ",
-        "alter ",
-        "create ",
-        "truncate ",
-        "call ",
-        "grant ",
-        "revoke ",
-        "copy ",
-        "put ",
-        "remove ",
-        "undrop ",
-    )
-    # If the whole statement is INSERT...SELECT etc., first token already failed above
-    # unless someone embeds mutating verbs after WITH ... ; we already reject ';'.
-    # Also reject leading mutating forms that start with WITH but contain ") insert".
+    # Reject DML/DDL that follows a CTE/paren close, including comment-glued forms (#572).
+    scan = _without_sql_string_literals(cleaned)
     compact = " ".join(lowered.split())
-    for bad in forbidden_prefixes:
-        needle = ") " + bad.strip()
-        if needle in compact or compact.startswith(bad):
-            raise error(
-                "HED-DATA-0061",
-                title="Snowflake statement must be a SELECT",
-                explanation="Mutating SQL is not accepted through the data source.",
-                remediation="Pass a SELECT and apply mutations through an app-owned bridge.",
-            )
+    if _MUTATING_AFTER_PAREN.search(scan) or any(
+        compact.startswith(bad) for bad in _MUTATING_STATEMENT_PREFIXES
+    ):
+        raise error(
+            "HED-DATA-0061",
+            title="Snowflake statement must be a SELECT",
+            explanation="Mutating SQL is not accepted through the data source.",
+            remediation="Pass a SELECT and apply mutations through an app-owned bridge.",
+        )
     # SELECT … INTO [TEMP[ORARY]] TABLE is a mutation in Snowflake (#197).
     if _INTO_TOKEN.search(_without_sql_string_literals(cleaned)):
         raise error(
