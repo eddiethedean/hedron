@@ -35,6 +35,11 @@ Shipping? [Ship](ship.md).
 - [Live updates (polling)](live-interaction.md) — `Poll` is Supported; SSE/WS experimental
 - [HTMX extensions](htmx-extensions.md) — declared SSE, head-support, preload
 
+## Style an interface
+
+- [Comprehensive styling](styling.md) — visual tour of presentation tokens, layout,
+  themes, recipes, scoped CSS, and styling checks
+
 ## Add data and visuals
 
 - [Data applications](data-apps.md)

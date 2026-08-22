@@ -166,6 +166,7 @@ extra_javascript:
 extra_css:
   - stylesheets/extra.css
   - stylesheets/component-demos.css
+  - stylesheets/styling-guide.css
   - stylesheets/hello-refresh.css
   - stylesheets/hedron-sim.css
 
@@ -208,6 +209,7 @@ nav:
   - Guides:
     - Overview: guides/index.md
     - Cookbook: guides/cookbook.md
+    - Comprehensive styling: guides/styling.md
     - Build interactions:
       - HTMX interactions: guides/htmx-interactions.md
       - Post a minimal form: guides/minimal-form.md
