@@ -28,3 +28,20 @@ def test_collab_same_value_does_not_duplicate() -> None:
     assert result.ok is True
     assert result.accepted is not None
     assert len(result.accepted.updates) == 1
+
+
+def test_collab_update_delete_is_a_conflict() -> None:
+    cases = (
+        (
+            DataChanges(updates=(CellUpdate(row_key="1", field="v", value=1),)),
+            DataChanges(deletes=("1",)),
+        ),
+        (
+            DataChanges(deletes=("1",)),
+            DataChanges(updates=(CellUpdate(row_key="1", field="v", value=1),)),
+        ),
+    )
+    for local, remote in cases:
+        result = merge_changes("v1", local, remote)
+        assert result.ok is False
+        assert result.conflicts[0].message == "Concurrent update/delete"
