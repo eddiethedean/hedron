@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, Sequence
 from typing import Protocol, cast
 
+from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
 from hedron_data.sources import (
     ColumnSchema,
@@ -184,7 +185,14 @@ class DjangoQuerySetDataSource:
             qs = qs.filter(**{field_name: expected})
             diag.record()
 
-        if q.search and self._search_fields:
+        if q.search and not self._search_fields:
+            raise error(
+                "HED-DATA-0012",
+                title="Django search requires an allowlist",
+                explanation="Deny-by-default: searchable fields must be allowlisted.",
+                remediation="Set DjangoQuerySetDataSource.search_fields.",
+            )
+        if q.search:
             from django.db.models import Q
 
             # Build OR of icontains lookups without relying on django-stubs Q| typing.

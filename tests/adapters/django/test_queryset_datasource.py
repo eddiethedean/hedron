@@ -7,6 +7,7 @@ from typing import Any
 
 import pytest
 
+from hedron_core.diagnostics import HedronError
 from hedron_data import ColumnSchema, DataQuery, DjangoQuerySetDataSource, QueryBudgetExceeded
 
 
@@ -208,6 +209,14 @@ def test_orm_deny_unallowlisted_filter(person_model) -> None:
     )
     with pytest.raises(ValueError):
         source.fetch(DataQuery(limit=10, filters={"tenant_id": "t2"}))
+
+
+def test_orm_search_without_fields_fails_closed(person_model) -> None:
+    Person = person_model
+    Person.objects.create(name="Ada", tenant_id="t1")
+    source = DjangoQuerySetDataSource(Person.objects.all())
+    with pytest.raises(HedronError, match="HED-DATA-0012"):
+        source.fetch(DataQuery(limit=10, search="Ada"))
 
 
 def test_orm_max_page_size_and_projection(person_model) -> None:
