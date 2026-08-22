@@ -11,6 +11,7 @@ from hedron_mcp import (
     SDK_PIN,
     SUPPORTED_CLIENTS,
     SUPPORTED_PROTOCOL_VERSIONS,
+    McpBounds,
     McpProjection,
     McpResource,
     McpTool,
@@ -65,6 +66,32 @@ def test_streamable_http_initialize_and_empty_lists() -> None:
     )
     assert listed.status_code == 200
     assert listed.json()["result"]["tools"] == []
+
+
+def test_initialized_notification_keeps_initialize_session() -> None:
+    app = Starlette()
+    projection = McpProjection(
+        enabled=True,
+        principal_resolver=lambda _req: "alice",
+        bounds=McpBounds(max_sessions=1),
+    )
+    mount_mcp(app, projection, path="/mcp")
+    client = TestClient(app)
+    headers = {"x-hedron-principal": "alice"}
+    init = client.post(
+        "/mcp",
+        json={"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+        headers=headers,
+    )
+    session_id = init.headers["mcp-session-id"]
+    ready = client.post(
+        "/mcp",
+        json={"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
+        headers={**headers, "mcp-session-id": session_id},
+    )
+    assert ready.status_code == 200
+    assert ready.headers.get("mcp-session-id") is None
+    assert projection.bounds.session(session_id) is not None
 
 
 def test_read_resource_and_read_only_tool() -> None:

@@ -45,6 +45,10 @@ class McpBounds:
         default_factory=OrderedDict, init=False, repr=False
     )
 
+    def __post_init__(self) -> None:
+        if self.max_rate_principals < 1:
+            raise ValueError("max_rate_principals must be >= 1")
+
     def new_request_id(self) -> str:
         return f"{self.shared_prefix}:{uuid.uuid4().hex}"
 
