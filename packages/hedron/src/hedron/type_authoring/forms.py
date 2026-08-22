@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from enum import Enum
-from typing import Any, Literal, cast, get_args, get_origin
+from types import UnionType
+from typing import Any, Literal, Union, cast, get_args, get_origin
 
 from hedron.type_authoring.markers import CONTROL_KINDS, Control
 from hedron.type_authoring.normalize import CompiledTypeHandler, FieldRecord
@@ -285,7 +286,7 @@ def _default_kind(record: FieldRecord) -> str:
     annotation = record.annotation
     origin = get_origin(annotation)
     args = get_args(annotation)
-    if origin is not None and str(origin).endswith("Union"):
+    if origin in {Union, UnionType}:
         non_none = [item for item in args if item is not type(None)]
         annotation = non_none[0] if len(non_none) == 1 else annotation
     if annotation is bool:

@@ -60,7 +60,7 @@ def _refuse_lazy(obj: object) -> None:
             )
 
 
-def _from_narwhals(obj: object) -> list[dict[str, JsonValue]]:
+def _from_narwhals(obj: object, *, max_rows: int) -> list[dict[str, JsonValue]]:
     try:
         import narwhals as nw  # type: ignore[import-not-found]
     except ImportError as exc:
@@ -76,11 +76,11 @@ def _from_narwhals(obj: object) -> list[dict[str, JsonValue]]:
         return []
     keys = list(native.keys())
     length = len(next(iter(native.values())))
-    if length > _MAX_INLINE_ROWS:
+    if length > max_rows:
         raise error(
             "HED-DATA-0004",
             title="Inline dataset too large",
-            explanation=f"Refusing to inline {length} rows (max {_MAX_INLINE_ROWS}).",
+            explanation=f"Refusing to inline {length} rows (max {max_rows}).",
             remediation="Use a paged DataEditorSource instead of passing the full frame.",
         )
     return [{k: cast(JsonValue, native[k][i]) for k in keys} for i in range(length)]
@@ -96,7 +96,7 @@ def normalize_rows(data: object, *, max_rows: int = _MAX_INLINE_ROWS) -> list[di
     if type_name == "DataFrame" or (
         module.startswith(("pandas.", "polars.", "pyarrow.")) and hasattr(data, "columns")
     ):
-        return _from_narwhals(data)
+        return _from_narwhals(data, max_rows=max_rows)
     if isinstance(data, Mapping) and not isinstance(data, Model):
         if not data:
             return []

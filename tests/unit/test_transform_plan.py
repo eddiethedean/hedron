@@ -1,3 +1,6 @@
+import pytest
+
+from hedron_core.diagnostics import HedronError
 from hedron_data.plans import TransformPlan, TransformStep, apply_plan_in_memory, plan_from_query
 from hedron_data.plugin import PLUGIN_META
 from hedron_data.sources import DataQuery
@@ -42,3 +45,19 @@ def test_plan_encodes_offset_and_explorer_visibility() -> None:
     # Explorer advertises a data panel for TransformPlan visibility.
     assert PLUGIN_META.capabilities.explorer_panels is True
     assert PLUGIN_META.name == "hedron_data"
+
+
+def test_plan_sorts_mixed_json_values_deterministically() -> None:
+    rows = apply_plan_in_memory(
+        [{"value": 1}, {"value": "2"}, {"value": None}],
+        TransformPlan(steps=(TransformStep(op="sort", field="value", direction="asc"),)),
+    )
+    assert [row["value"] for row in rows] == [None, 1, "2"]
+
+
+def test_plan_enforces_max_bytes() -> None:
+    with pytest.raises(HedronError, match="max_bytes"):
+        apply_plan_in_memory(
+            [{"value": "x" * 100}],
+            TransformPlan(max_bytes=10),
+        )
