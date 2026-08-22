@@ -176,7 +176,17 @@ def _validate_url(url: str, *, allow_relative: bool = True) -> str:
             f"Refused {url!r}.",
             "Use a canonical HTTPS or same-origin path.",
         )
-    parsed = urlparse(url)
+    try:
+        parsed = urlparse(url)
+        # urllib defers malformed-port validation until ``.port`` is read.
+        parsed.port
+    except ValueError as exc:
+        raise _map_error(
+            HED_MAP_POLICY_0002,
+            "Malformed URL host or port",
+            f"Could not parse {url!r}: {exc}",
+            "Use a valid HTTPS URL with a port from 0 through 65535.",
+        ) from exc
     if parsed.username or parsed.password:
         raise _map_error(
             HED_MAP_POLICY_0002,
