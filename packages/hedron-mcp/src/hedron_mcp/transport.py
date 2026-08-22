@@ -261,7 +261,17 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
         if method not in {"notifications/cancelled"}:
             _raise_if_cancelled(projection, cancel_key, owner=cancel_owner)
 
-        if method in {"initialize", "notifications/initialized"}:
+        if method == "notifications/initialized":
+            # This notification completes the existing initialize handshake; it
+            # must never mint a replacement session or evict the active one.
+            _enforce_session_principal(
+                projection,
+                session_id=client_session_id,
+                principal=principal,
+            )
+            return _json_response({"ok": True})
+
+        if method == "initialize":
             version = negotiate_protocol_version(_optional_str(params.get("protocolVersion")))
             caps = (
                 params.get("capabilities") if isinstance(params.get("capabilities"), dict) else {}
@@ -282,8 +292,6 @@ async def handle_mcp_http(request: McpHttpRequest, projection: McpProjection) ->
                 },
             )
             session_headers = {"mcp-session-id": session_id}
-            if method == "notifications/initialized":
-                return _json_response({"ok": True}, headers=session_headers)
             return _json_response(
                 _result(
                     req_id,

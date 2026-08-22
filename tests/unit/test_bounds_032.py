@@ -80,3 +80,10 @@ def test_rate_buckets_delete_empty_and_cap_principals() -> None:
     assert "user-1" not in bounds._rate_buckets
     assert "user-2" not in bounds._rate_buckets
     assert set(bounds._rate_buckets) == {"user-3"}
+
+
+def test_rate_principal_capacity_must_be_positive() -> None:
+    with pytest.raises(ValueError, match="max_rate_principals"):
+        McpBounds(max_rate_principals=0)
+    with pytest.raises(ValueError, match="max_rate_principals"):
+        McpBounds(max_rate_principals=-1)
