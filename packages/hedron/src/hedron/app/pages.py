@@ -671,7 +671,8 @@ class HedronPagesMixin:
             import functools
             import inspect
 
-            from starlette.responses import PlainTextResponse, RedirectResponse
+            from starlette.responses import PlainTextResponse
+            from hedron.security.redirects import redirect_local
 
             from hedron.async_utils import await_if_needed
             from hedron.handles import build_command_handle
@@ -747,7 +748,7 @@ class HedronPagesMixin:
                 update = isinstance(result, (RefreshIntent, Patch, PatchSet, InteractionResult))
                 if not is_htmx and update and isinstance(result, (RefreshIntent, Patch, PatchSet)):
                     if handle.fallback:
-                        return RedirectResponse(handle.fallback, status_code=303)
+                        return redirect_local(handle.fallback, status_code=303)
                     return PlainTextResponse(HED_CMD_0002, status_code=400)
                 return result
 

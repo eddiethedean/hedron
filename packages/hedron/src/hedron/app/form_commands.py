@@ -22,11 +22,11 @@ from pydantic import BaseModel
 
 from hedron.handles import ActionHandle, BoundFragment, FragmentHandle, refresh
 from hedron.type_authoring.markers import Control, FormBody, Refreshes, Updates
-from hedron_core.codes import HED_FORMCMD_0001, HED_FORMCMD_0002, HED_FORMCMD_0003
+from hedron_core.codes import HED_FORMCMD_0001, HED_FORMCMD_0002, HED_FORMCMD_0003, HED_SEC_0001
 from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
+from hedron_core.htmx_contract import is_local_path
 from hedron_core.interaction import InteractionResult, OobUpdate
-from hedron_core.security import SafeUrl, UrlPurpose
 
 __all__ = [
     "FormEncoding",
@@ -183,7 +183,13 @@ def form_command(
     dependencies: Sequence[object] | None = None,
 ) -> Callable[[Callable[P, R]], ActionHandle[Any, Any]]:
     """Decorator factory that discovers a form model and registers via ``app.command``."""
-    SafeUrl.parse(str(fallback), purpose=UrlPurpose.NAVIGATION)
+    if not is_local_path(str(fallback)):
+        raise error(
+            HED_SEC_0001,
+            title="Unsafe fallback path",
+            explanation=f"fallback={fallback!r} is not a safe local path.",
+            remediation="Use a path starting with '/' and no scheme/host (same as redirect_local).",
+        )
 
     def decorator(fn: Callable[P, R]) -> ActionHandle[Any, Any]:
         _reject_effect_conflicts(

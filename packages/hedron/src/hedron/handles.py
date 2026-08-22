@@ -21,6 +21,7 @@ from hedron.type_authoring.normalize import CompiledTypeHandler
 from hedron_core.codes import (
     HED_CMD_0001,
     HED_HOST_0001,
+    HED_SEC_0001,
     HED_TYPE_0005,
     HED_VIEW_0003,
     HED_VIEW_0004,
@@ -30,10 +31,11 @@ from hedron_core.diagnostics import error
 from hedron_core.hosts import FragmentHost
 from hedron_core.html import html
 from hedron_core.htmx.policy import CacheHint, FragmentRegion, InteractionPolicy
+from hedron_core.htmx_contract import is_local_path
 from hedron_core.interaction import InteractionResult
 from hedron_core.models import Props
 from hedron_core.rendering import active_render_context
-from hedron_core.security import SafeUrl, UrlPurpose
+from hedron_core.security import SafeUrl
 from hedron_core.typing_aliases import HtmlAttrMap, HtmlAttrValue, JsonValue
 from hedron_core.updates import (
     MAX_REFRESH_TARGETS,
@@ -74,6 +76,17 @@ _REQUEST_NAMES = frozenset({"request", "websocket"})
 _UNSET = object()
 _DISPATCH_EFFECTS: dict[str, object] = {}
 _DISPATCH_AFTER_LOAD: dict[str, str] = {}
+
+
+def _require_local_fallback(fallback: str) -> None:
+    """Command/view fallback must be a local path (same rules as redirect_local) (#593)."""
+    if not is_local_path(fallback):
+        raise error(
+            HED_SEC_0001,
+            title="Unsafe fallback path",
+            explanation=f"fallback={fallback!r} is not a safe local path.",
+            remediation="Use a path starting with '/' and no scheme/host (same as redirect_local).",
+        )
 
 
 def _is_injected(parameter: inspect.Parameter) -> bool:
@@ -1018,7 +1031,7 @@ def build_view_handle(
     if fallback is None and (include_in_schema or (path is not None)):
         pass
     if fallback is not None:
-        SafeUrl.parse(fallback, purpose=UrlPurpose.NAVIGATION)
+        _require_local_fallback(fallback)
     region = FragmentRegion(
         id=safe_dom_id(logical), selector=f"#{safe_dom_id(logical)}", description=fn.__name__
     )
@@ -1102,7 +1115,7 @@ def build_command_handle(
     plan = compiled.binding_plan if compiled.modeled else binding_plan_for(fn)
     route_path = path or generated_command_path(logical, plan.path_params, mount_path=mount_path)
     if fallback is not None:
-        SafeUrl.parse(fallback, purpose=UrlPurpose.NAVIGATION)
+        _require_local_fallback(fallback)
     descriptor = BaseHandleDescriptor(
         kind="command",
         app_id=app_id,
