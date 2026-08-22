@@ -26,6 +26,12 @@ def test_039_normalize_rows_column_length_mismatch() -> None:
     ]
 
 
+def test_039_normalize_dataframe_respects_explicit_max_rows() -> None:
+    pandas = pytest.importorskip("pandas")
+    with pytest.raises(HedronError, match="HED-DATA-0004"):
+        normalize_rows(pandas.DataFrame({"a": [1, 2]}), max_rows=1)
+
+
 def test_039_inmemory_rejects_duplicate_and_missing_keys() -> None:
     with pytest.raises(HedronError, match="HED-DATA-0011"):
         InMemoryDataSource([{"id": "1", "value": "first"}, {"id": "1", "value": "second"}])
