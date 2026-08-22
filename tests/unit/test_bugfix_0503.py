@@ -165,6 +165,50 @@ def test_inmemory_filters_deny_by_default() -> None:
         src.fetch(DataQuery(filters={"name": "Ada"}))
 
 
+def test_inmemory_client_allowlist_cannot_widen_empty_source() -> None:
+    """#573: forged query allowlists must not unlock empty (deny-all) source allowlists."""
+    src = InMemoryDataSource(
+        rows=[{"id": "1", "tenant": "A"}, {"id": "2", "tenant": "B"}],
+        key_field="id",
+    )
+    with pytest.raises(ValueError, match="not allowlisted"):
+        src.fetch(
+            DataQuery(
+                filters={"tenant": "A"},
+                allowlisted_filter_fields=frozenset({"tenant"}),
+            )
+        )
+    with pytest.raises(ValueError, match="not allowlisted"):
+        src.fetch(
+            DataQuery(
+                sort=(("tenant", "asc"),),
+                allowlisted_sort_fields=frozenset({"tenant"}),
+            )
+        )
+
+
+def test_inmemory_projection_deny_by_default_and_blocks_secrets() -> None:
+    """#574: projection is deny-by-default; secret columns cannot be projected."""
+    src = InMemoryDataSource(
+        rows=[{"id": "1", "password": "hunter2", "name": "alice"}],
+        key_field="id",
+        schema=(
+            ColumnSchema(name="password", label="password", secret=True),
+            ColumnSchema(name="name", label="name"),
+        ),
+        allowlisted_projection_fields=frozenset({"password", "name"}),
+    )
+    with pytest.raises(ValueError, match="not allowlisted"):
+        src.fetch(DataQuery(projection=("password",)))
+    with pytest.raises(ValueError, match="not allowlisted"):
+        InMemoryDataSource(
+            rows=[{"id": "1", "name": "alice"}],
+            key_field="id",
+        ).fetch(DataQuery(projection=("name",)))
+    page = src.fetch(DataQuery(projection=("name",)))
+    assert page.rows == [{"name": "alice"}]
+
+
 def test_threejs_requires_size_when_bytes_omitted() -> None:
     from hedron_core.visualization import ChartAccessibility
 

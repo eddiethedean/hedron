@@ -62,6 +62,7 @@ class InMemoryDataSource:
         writable_fields: frozenset[str] | None = None,
         allowlisted_sort_fields: frozenset[str] | None = None,
         allowlisted_filter_fields: frozenset[str] | None = None,
+        allowlisted_projection_fields: frozenset[str] | None = None,
         search_fields: Sequence[str] = (),
         version: str = "1",
         audit_hook: Callable[[DataChanges[dict[str, JsonValue]]], None] | None = None,
@@ -108,6 +109,12 @@ class InMemoryDataSource:
         self._filter_allow = (
             frozenset[str]() if allowlisted_filter_fields is None else allowlisted_filter_fields
         )
+        self._projection_allow = (
+            frozenset[str]()
+            if allowlisted_projection_fields is None
+            else allowlisted_projection_fields
+        )
+        self._secret_fields = frozenset(c.name for c in self._schema if c.secret)
         self._search_fields = tuple(search_fields)
         self._dataset_version = version
         self._audit_hook = audit_hook
@@ -131,13 +138,23 @@ class InMemoryDataSource:
     def _effective_allow(
         self, query_allow: frozenset[str] | None, source_allow: frozenset[str]
     ) -> frozenset[str]:
+        # Empty source allowlist is deny-all; clients must not widen it (#573).
+        if not source_allow:
+            return source_allow
         if query_allow is None:
             return source_allow
-        if source_allow:
-            return query_allow & source_allow
-        return query_allow
+        return query_allow & source_allow
 
     def _fetch_unlocked(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
+        # Secrets are never projection-allowlisted (#574).
+        projection_allow = (
+            self._effective_allow(
+                query.allowlisted_projection_fields,
+                self._projection_allow - self._secret_fields,
+            )
+            if query.projection is not None
+            else None
+        )
         q = DataQuery(
             offset=query.offset,
             limit=query.limit,
@@ -153,6 +170,7 @@ class InMemoryDataSource:
             allowlisted_filter_fields=self._effective_allow(
                 query.allowlisted_filter_fields, self._filter_allow
             ),
+            allowlisted_projection_fields=projection_allow,
         ).validated()
         items = list(self._rows.values())
         for field_name, expected in q.filters.items():
@@ -183,6 +201,16 @@ class InMemoryDataSource:
         total = len(items)
         page = items[q.offset : q.offset + q.limit]
         if q.projection:
+            if self._secret_fields.intersection(q.projection):
+                raise error(
+                    "HED-DATA-0012",
+                    title="Secret columns cannot be projected",
+                    explanation=(
+                        "ColumnSchema(secret=True) fields are not readable through "
+                        "DataQuery.projection."
+                    ),
+                    remediation="Omit secret fields from projection or use an app-owned bridge.",
+                )
             page = [{k: r.get(k) for k in q.projection} for r in page]
         next_offset = q.offset + q.limit if q.offset + q.limit < total else None
         return DataPage(
