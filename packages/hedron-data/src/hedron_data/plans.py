@@ -53,6 +53,12 @@ def _enforce_budgets(rows: Sequence[Mapping[str, JsonValue]], plan: TransformPla
         )
 
 
+def _project_rows(
+    rows: Sequence[Mapping[str, JsonValue]], fields: Sequence[str]
+) -> list[dict[str, JsonValue]]:
+    return [{key: row.get(key) for key in fields} for row in rows]
+
+
 @dataclass(frozen=True, slots=True)
 class TransformStep:
     op: str
@@ -181,9 +187,9 @@ def apply_plan_in_memory(
             else:
                 raise ValueError(f"Unsupported aggregate {agg!r}")
             result = [{step.field: total}]
-        _enforce_budgets(result, plan)
+        budget_rows = _project_rows(result, project_fields) if project_fields else result
+        _enforce_budgets(budget_rows, plan)
     if project_fields:
-        result = [{k: row.get(k) for k in project_fields} for row in result]
-        _enforce_budgets(result, plan)
+        result = _project_rows(result, project_fields)
     _enforce_budgets(result, plan)
     return result
