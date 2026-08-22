@@ -208,6 +208,7 @@ def test_inmemory_projection_deny_by_default_and_blocks_secrets() -> None:
     page = src.fetch(DataQuery(projection=("name",)))
     assert page.rows == [{"name": "alice"}]
 
+
 def test_threejs_requires_size_when_bytes_omitted() -> None:
     from hedron_core.visualization import ChartAccessibility
 
