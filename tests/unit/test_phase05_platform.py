@@ -401,6 +401,7 @@ def test_cache_single_flight_cross_generation_isolation() -> None:
 
     def waiter() -> None:
         assert owner_in_loader.wait(2)
+
         # Ensure we are counted as a waiter on gen-1 before releasing the owner loader.
         def mark_joined() -> None:
             deadline = __import__("time").monotonic() + 2
