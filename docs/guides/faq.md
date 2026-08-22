@@ -2,10 +2,10 @@
 
 ## Which version should I install?
 
-Install the published train from
-[Current release and support](current-release.md):
+Install from the public PyPI index:
 `pip install "hedron>=0.58.0,<0.59"`. Contributors working from a git checkout use
-`uv sync` (workspace packages), not a separate unuploaded public train. See
+`uv sync` (workspace packages); the repository contains the deferred 0.58.1 patch cut.
+The Git tag/PyPI upload for 0.58.1 is deferred. See
 [Installation](../getting-started/installation.md).
 
 ```bash

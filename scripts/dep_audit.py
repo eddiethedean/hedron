@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Dependency vulnerability audit wrapper for the 0.10 release gate."""
+"""Dependency vulnerability audit wrapper for the release gate."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -15,25 +16,71 @@ OUT = ROOT / "dist" / "evidence-bundle"
 
 
 def _run_pip_audit() -> subprocess.CompletedProcess[str]:
-    # Prefer an already-available pip-audit module (e.g. `uv run --with pip-audit`).
-    module = subprocess.run(
-        [sys.executable, "-m", "pip_audit", "-f", "json"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if module.returncode != 2 and "No module named" not in (module.stderr or ""):
-        return module
-    if shutil.which("uv") is None:
-        return module
-    return subprocess.run(
-        ["uv", "run", "--with", "pip-audit", "pip-audit", "-f", "json"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    """Audit the repository lock export, never the caller's ambient environment."""
+    uv = shutil.which("uv")
+    if uv is None:
+        return subprocess.CompletedProcess(
+            args=["uv", "export"],
+            returncode=2,
+            stdout="",
+            stderr="uv is not installed; cannot export uv.lock",
+        )
+
+    with tempfile.TemporaryDirectory(prefix="hedron-dep-audit-") as temp_dir:
+        requirements = Path(temp_dir) / "requirements.txt"
+        exported = subprocess.run(
+            [
+                uv,
+                "export",
+                "--locked",
+                "--all-groups",
+                "--format",
+                "requirements.txt",
+                "--no-annotate",
+                "--no-header",
+                "--no-editable",
+                "--no-hashes",
+                "--output-file",
+                str(requirements),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if exported.returncode != 0:
+            return subprocess.CompletedProcess(
+                args=exported.args,
+                returncode=3,
+                stdout=exported.stdout,
+                stderr=exported.stderr,
+            )
+
+        audit_args = [
+            "--requirement",
+            str(requirements),
+            "--no-deps",
+            "--disable-pip",
+            "--format",
+            "json",
+        ]
+        # Prefer an already-available pip-audit module (e.g. CI's injected tool).
+        module = subprocess.run(
+            [sys.executable, "-m", "pip_audit", *audit_args],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if module.returncode != 2 and "No module named" not in (module.stderr or ""):
+            return module
+        return subprocess.run(
+            [uv, "run", "--no-project", "--with", "pip-audit", "pip-audit", *audit_args],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
 
 
 def _vuln_entries(payload: Any) -> list[dict[str, Any]]:

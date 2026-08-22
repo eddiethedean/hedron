@@ -2,7 +2,7 @@
 
 The canonical release history now lives on [Releases](release-notes.md).
 
-Current release: **v0.58.0** on PyPI. Recommended constraint:
+Current repository cut: **v0.58.1**; PyPI serves **v0.58.0**. Recommended constraint:
 `hedron>=0.58.0,<0.59`. Public-index notes: [Installation](../getting-started/installation.md).
 
 Continue with:

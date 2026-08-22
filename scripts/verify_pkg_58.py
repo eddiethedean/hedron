@@ -145,12 +145,14 @@ def _check_versions(*, allow_planned: bool) -> None:
             )
     elif status == "deferred":
         if pypi == published:
+            raise SystemExit("deferred cut requires pypi_version != published_version until upload")
+        if not (
+            pypi.startswith("0.56.")
+            or pypi.startswith("0.57.")
+            or (pypi.startswith("0.58.") and pypi != published)
+        ):
             raise SystemExit(
-                "deferred cut requires pypi_version != published_version until upload"
-            )
-        if not (pypi.startswith("0.56.") or pypi.startswith("0.57.")):
-            raise SystemExit(
-                f"deferred pypi_version must stay on prior public index; found {pypi!r}"
+                f"deferred pypi_version must stay on an earlier public cut; found {pypi!r}"
             )
     else:
         raise SystemExit(f"registry_status must be uploaded or deferred; found {status!r}")

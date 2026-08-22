@@ -6,28 +6,28 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.58 **Published** as `v0.58.0`; PyPI serves `0.58.0`.
-Living tip = published `v0.58.0` (`registry_status = "uploaded"`).
-**Date:** 2026-08-21
+**Roadmap position:** phase 0.58 **Published** in-tree as `v0.58.1`; PyPI serves `0.58.0`.
+Living tip = in-tree `v0.58.1` (`registry_status = "deferred"`).
+**Date:** 2026-08-22
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.58.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.58.1`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
 `hedron-sim` `0.2.0`, `hedron-mcp` `0.2.1`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.58.0`
+`0.58.1`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
-`hedron-runtime-node` / `hedron-runtime-java` `0.58.0`.
+`hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
 **Phase focus:** Living train is **0.58** (D-101 / D-102 / D-105 / RFC-0085) — progressive
-feature and styling authoring. `release-gate-0.58.toml` Verified rows; living tip `v0.58.0`
-is on PyPI (`registry_status = "uploaded"`). Prior Published
+feature and styling authoring. `release-gate-0.58.toml` Verified rows; living tip `v0.58.1`
+is in-tree (`registry_status = "deferred"`; PyPI serves `v0.58.0`). Prior Published
 in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
@@ -130,9 +130,9 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
   [upgrade-fixtures-058.md](docs/acceptance/upgrade-fixtures-058.md).
 - Implementation: [PROGRESSIVE_AUTHORING_058](docs/implementation/PROGRESSIVE_AUTHORING_058.md).
 - What’s new: [guides/whats-new-0.58.md](docs/guides/whats-new-0.58.md).
-- Checker: `python scripts/check_release_gate.py 0.58.0`,
+- Checker: `python scripts/check_release_gate.py 0.58.1`,
   `python scripts/verify_pkg_58.py`.
-- Registry: PyPI serves `v0.58.0` (`registry_status = "uploaded"`).
+- Registry: PyPI serves `v0.58.0` (`registry_status = "deferred"` for 0.58.1).
 
 ## Phase 0.24 evidence
 

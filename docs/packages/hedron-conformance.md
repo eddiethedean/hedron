@@ -19,7 +19,7 @@ pip install "hedron[conformance]>=0.58.0,<0.59"
 pip install "hedron-conformance>=0.58.0,<0.59"
 ```
 
-Checkout tip `v0.58.0` uses `uv sync`; applications install `>=0.58.0,<0.59` from PyPI.
+Checkout tip `v0.58.1` uses `uv sync`; applications install `>=0.58.0,<0.59` from PyPI.
 
 ## When to use
 

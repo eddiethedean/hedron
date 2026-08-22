@@ -3,6 +3,11 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.58.1 — 2026-08-22
+
+In-tree patch cut for the 0.58 train. Git tag and PyPI upload are **deferred**; install
+from PyPI with `hedron>=0.58.0,<0.59` until publication.
+
 ## 0.58.0 — 2026-08-21
 
 Published cut for progressive feature and styling authoring (RFC-0085 /

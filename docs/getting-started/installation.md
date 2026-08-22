@@ -16,14 +16,15 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-The repository and PyPI both contain the **0.58.x** train (published tip **`v0.58.0`**).
+The repository contains the **0.58.1** in-tree patch cut; PyPI serves **`v0.58.0`**.
+The Git tag/PyPI upload for 0.58.1 is deferred.
 Application commands on this page use the registry-resolvable pin;
 contributors working in this checkout should use `uv sync`.
 
 | You are… | Install |
 |---|---|
 | Building an app from PyPI | `hedron>=0.58.0,<0.59` |
-| Working in this repository | `uv sync` (editable **0.58.0**) |
+| Working in this repository | `uv sync` (editable **0.58.1**) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
 are **Beta** (usable, no 1.0, no SLA). Capability detail:
@@ -129,7 +130,7 @@ Then create `app.py` from the complete listing on
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.58.0`** from PyPI and from the repository checkout.
+Expect **`0.58.0`** from PyPI and **`0.58.1`** from the repository checkout.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
@@ -144,7 +145,7 @@ cd hedron
 uv sync
 ```
 
-This checkout is **0.58.0**. Application installs from PyPI use
+This checkout is **0.58.1**. Application installs from PyPI use
 `hedron>=0.58.0,<0.59`.
 
 See [Contributing](../CONTRIBUTING.md).

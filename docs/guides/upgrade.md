@@ -1,13 +1,13 @@
 # Upgrade to Hedron 0.58
 
 This guide covers an application upgrade onto the published **0.58.x** tip
-(`v0.58.0` on PyPI). Pin `hedron>=0.58.0,<0.59` from the public index.
+(`v0.58.1` in-tree; `v0.58.0` on PyPI). Pin `hedron>=0.58.0,<0.59` from the public index.
 Public-index notes: [Installation](../getting-started/installation.md). New applications
 should use [Build your first app](../getting-started/quickstart.md).
 
 ## 0.57 → 0.58
 
-Checkout tip `v0.58.0` uses `uv sync`. From PyPI, install
+Checkout tip `v0.58.1` uses `uv sync`. From PyPI, install
 `hedron>=0.58.0,<0.59`. See
 [What's new in 0.58](whats-new-0.58.md),
 [Hedron API](../api/HEDRON.md), and
@@ -23,7 +23,7 @@ Checkout tip `v0.58.0` uses `uv sync`. From PyPI, install
 
 ## 0.56 → 0.57
 
-Checkout tip `v0.58.0` uses `uv sync`. From PyPI, install
+Checkout tip `v0.58.1` uses `uv sync`. From PyPI, install
 `hedron>=0.58.0,<0.59`. See
 [What's new in 0.57](whats-new-0.57.md) and
 [Presentation](../api/PRESENTATION.md).
@@ -34,7 +34,7 @@ Checkout tip `v0.58.0` uses `uv sync`. From PyPI, install
 
 ## 0.55 → 0.56
 
-Checkout tip `v0.58.0` uses `uv sync`. From PyPI, install
+Checkout tip `v0.58.1` uses `uv sync`. From PyPI, install
 `hedron>=0.58.0,<0.59`. See
 [What's new in 0.56](whats-new-0.56.md) and
 [Security control plane](../api/SECURITY_PLANE.md).
@@ -45,8 +45,9 @@ Checkout tip `v0.58.0` uses `uv sync`. From PyPI, install
 
 ## 0.52 → 0.53
 
-Checkout tip `v0.58.0` uses the in-tree floor `>=0.58.0,<0.59`. From PyPI, keep
-`hedron>=0.58.0,<0.59` (use the current published train `hedron>=0.58.0,<0.59`). See
+Checkout tip `v0.58.1` uses the in-tree floor `>=0.58.1,<0.59`; the Git tag/PyPI upload
+is deferred. From PyPI, keep
+`hedron>=0.58.0,<0.59` (the latest public PyPI release). See
 [What's new in 0.53](whats-new-0.53.md) and
 [Application DX API](../api/APPLICATION_DX.md).
 

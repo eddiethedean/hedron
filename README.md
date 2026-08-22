@@ -13,8 +13,8 @@ Routes return typed UI; HTMX swaps HTML fragments. No Node frontend.
 **Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
-The latest installable PyPI release is `0.58.0`; the repository contains the published
-`0.58.x` train. Application pins and extras:
+The latest installable PyPI release is `0.58.0`; the repository contains the in-tree
+`0.58.1` patch on the `0.58.x` train. Application pins and extras:
 [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 ```bash

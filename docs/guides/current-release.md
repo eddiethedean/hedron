@@ -13,7 +13,7 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Repository checkout | `0.58.0` / `0.58.x` | Living tip and repository train |
+| Repository checkout | `0.58.1` / `0.58.x` | Living tip and repository train |
 | PyPI | `0.58.0` / `0.58.x` | Latest installable release from the public package index |
 | Package maturity | Beta | Usable with pins; no SLA or scheduled 1.0 release |
 | Supported Python | 3.11–3.14 | CPython only |
@@ -36,8 +36,9 @@ from the workspace.
 | Know security support window | Current train `0.58.x` — [SECURITY.md](../SECURITY.md) |
 | Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |
 
-There is no separate “unuploaded public train” for adopters when
-`registry_status = "uploaded"` in [`docs/release.toml`](../release.toml).
+The repository contains an in-tree patch cut (`0.58.1`) while
+`registry_status = "deferred"` in [`docs/release.toml`](../release.toml); application
+installs should continue using the PyPI-resolvable `0.58.0` pin until upload.
 
 ## What should I install?
 
