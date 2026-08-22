@@ -16,6 +16,7 @@ from hedron.security.redirects import redirect_local
 from hedron.state import SessionState
 from hedron_core import Text, render
 from hedron_core.auto import Auto
+from hedron_core.diagnostics import HedronError
 from hedron_core.html import html
 from hedron_core.live import SseEvent, encode_sse
 from hedron_core.models import Model
@@ -47,6 +48,12 @@ def test_redirect_local_rejects_encoded_open_redirects() -> None:
 def test_safe_url_allows_colon_in_path() -> None:
     url = SafeUrl.parse("/api/data:export", purpose=UrlPurpose.NAVIGATION)
     assert url.value == "/api/data:export"
+
+
+def test_safe_url_rejects_malformed_external_hosts_and_ports() -> None:
+    for raw in ("https://example.com:abc/x", "https://example.com:99999/x", "https://[::1/x"):
+        with pytest.raises(HedronError):
+            SafeUrl.parse(raw, purpose=UrlPurpose.NAVIGATION, allow_external=True)
 
 
 def test_hx_push_url_bool_serializes() -> None:

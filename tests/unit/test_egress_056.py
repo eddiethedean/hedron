@@ -39,3 +39,18 @@ def test_egress_056_deny_by_default_and_redirects() -> None:
         allow.require("https://api.example/v1", resolver=lambda _h: ())
     with pytest.raises(EgressError):
         allow.require("https://api.example/v1", resolver=lambda _h: ("100.64.1.1",))
+
+
+def test_egress_rejects_malformed_urls_and_allows_public_hostnames(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    policy = EgressPolicy(allowed_hosts=frozenset({"api.example"}))
+    monkeypatch.setattr("hedron_core.egress.default_resolve", _public_resolver)
+    decision = policy.require("https://api.example/v1", resolver=_public_resolver)
+    assert decision.reason == "allowed"
+    for raw in ("https://api.example:abc/x", "https://api.example:99999/x", "https://[::1/x"):
+        with pytest.raises(EgressError):
+            policy.require(raw, resolver=_public_resolver)
+
+    with pytest.raises(EgressError):
+        assert_ssrf_safe("https://api.example:abc/x", policy=policy)

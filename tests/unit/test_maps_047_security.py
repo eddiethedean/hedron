@@ -44,6 +44,35 @@ def test_proxy_blocks_loopback() -> None:
         assert_ssrf_safe("https://127.0.0.1/tiles", policy, resolve_dns=False)
 
 
+def test_proxy_rejects_malformed_ports_and_brackets() -> None:
+    policy = MapPolicy(
+        remote_requests_permitted=True,
+        allowed_origins=("https://example.com",),
+    )
+    for raw in (
+        "https://example.com:abc/tiles",
+        "https://example.com:99999/tiles",
+        "https://[::1/tiles",
+    ):
+        with pytest.raises(HedronError):
+            assert_ssrf_safe(raw, policy, resolve_dns=False)
+
+
+def test_compile_rejects_malformed_ports_and_brackets() -> None:
+    for raw in (
+        "https://example.com:abc/{z}/{x}/{y}",
+        "https://example.com:99999/{z}/{x}/{y}",
+        "https://[::1/{z}/{x}/{y}",
+    ):
+        with pytest.raises(HedronError):
+            compile_map(
+                MapSpec(
+                    basemap=RasterTiles(url=raw, attribution="x"),
+                    accessibility=AccessibilityDef(title="T", description="D"),
+                )
+            )
+
+
 def test_threat_review_packet_present() -> None:
     from pathlib import Path
 

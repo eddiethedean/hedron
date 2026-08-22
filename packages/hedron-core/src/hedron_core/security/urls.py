@@ -221,7 +221,12 @@ class SafeUrl:
             if scanned.startswith(f"{scheme}:"):
                 raise _url_error(f"Disallowed URL scheme for {purpose.value}", purpose)
 
-        parts = urlsplit(raw)
+        try:
+            parts = urlsplit(raw)
+            # ``urlsplit`` defers malformed-port validation until ``.port`` is read.
+            _port = parts.port
+        except ValueError as exc:
+            raise _url_error("Malformed URL host or port", purpose) from exc
         scheme = parts.scheme.lower()
         if scheme in _DANGEROUS_SCHEMES:
             raise _url_error(f"Disallowed URL scheme for {purpose.value}", purpose)
