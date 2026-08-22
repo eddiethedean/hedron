@@ -142,6 +142,37 @@ def test_396_default_factory_list_is_optional() -> None:
     assert "hello:0" in posted.text
 
 
+def test_true_default_checkbox_can_be_unchecked() -> None:
+    from fastapi.testclient import TestClient
+
+    app = make_app()
+    seen: dict[str, bool] = {}
+
+    class Payload(BaseModel):
+        urgent: bool = True
+
+    @app.command("/save", fallback="/")
+    def save(data: Annotated[Payload, FormBody()]):
+        seen["urgent"] = data.urgent
+        return Text("ok")
+
+    @app.page("/")
+    def home():
+        return Page(Text("h"), title="H")
+
+    client = TestClient(app)
+    posted = client.post(
+        save.path,
+        data={},
+        headers={
+            **csrf_headers(client),
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+    )
+    assert posted.status_code == 200
+    assert seen["urgent"] is False
+
+
 def test_pep604_optional_fields_get_native_controls() -> None:
     from hedron.type_authoring.forms import _default_kind
     from hedron.type_authoring.normalize import TypeNormalizer
