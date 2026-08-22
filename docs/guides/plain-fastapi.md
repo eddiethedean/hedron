@@ -35,6 +35,8 @@ api.include_router(ui)
 Full listing with CSRF and sessions:
 
 ```python title="app.py"
+import secrets
+
 from fastapi import FastAPI, Form, Request
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -49,6 +51,8 @@ from hedron.security.csrf import ensure_csrf_cookie
 api = FastAPI(title="Existing API")
 policy = SecurityPolicy.from_name("standard")
 api.state.hedron_security = policy
+# Required for handle ownership on refresh/patch responses (same as Hedron()).
+api.state.hedron_app_id = secrets.token_hex(8)
 
 api.add_middleware(SessionMiddleware, secret_key="replace-in-production")
 api.add_middleware(SecurityHeadersMiddleware, policy=policy)
@@ -110,6 +114,7 @@ the way `Hedron()` does.
 | Session middleware | `SessionMiddleware` with a real secret |
 | Security headers | `SecurityHeadersMiddleware` |
 | Security policy on `app.state` | Set `hedron_security` |
+| Handle ownership id on `app.state` | Set `hedron_app_id` (auto-minted on first HedronRoute response if omitted) |
 | CSRF cookie seeding | Safe-GET middleware or equivalent (see above) |
 | Static HTMX / assets | `mount_hedron_static` / build asset mounts |
 | Explorer | Mount `hedron-explorer` only if you need it |

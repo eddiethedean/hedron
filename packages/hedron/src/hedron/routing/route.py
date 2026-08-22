@@ -7,6 +7,7 @@ import contextlib
 import functools
 import inspect
 import logging
+import secrets
 import time
 from collections.abc import Callable, Coroutine
 from typing import Any, Protocol, TypeAlias, runtime_checkable
@@ -156,7 +157,12 @@ class HedronRoute(APIRoute):
         from hedron_core.diagnostics import HedronError
         from hedron_core.updates import compile_to_interaction
 
-        app_id = getattr(getattr(request.app, "state", None), "hedron_app_id", None)
+        # Plain FastAPI + HedronRouter must not skip ownership (#575).
+        state = getattr(request.app, "state", None)
+        app_id = getattr(state, "hedron_app_id", None) if state is not None else None
+        if not app_id and state is not None:
+            app_id = secrets.token_hex(8)
+            state.hedron_app_id = app_id
         try:
             compiled = compile_to_interaction(result, expected_app_id=app_id)
         except HedronError as exc:
