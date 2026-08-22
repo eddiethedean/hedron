@@ -224,11 +224,7 @@ def _walk_remote(obj: object) -> bool:
     if isinstance(obj, Mapping):
         for key, value in obj.items():
             key_l = str(key).lower()
-            if (
-                key_l in _REMOTE_ASSET_KEYS
-                and isinstance(value, str)
-                and _is_remote_url(value)
-            ):
+            if key_l in _REMOTE_ASSET_KEYS and isinstance(value, str) and _is_remote_url(value):
                 return True
             if _walk_remote(value):
                 return True

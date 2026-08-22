@@ -164,7 +164,9 @@ def test_command_generic_arity() -> None:
     assert len(ActionHandle.__parameters__) == 2
 
 
-@pytest.mark.parametrize("bad", ["mailto:attacker@evil.com", "/ok%0aSet-Cookie:x=1", "//evil.example"])
+@pytest.mark.parametrize(
+    "bad", ["mailto:attacker@evil.com", "/ok%0aSet-Cookie:x=1", "//evil.example"]
+)
 def test_command_fallback_rejects_non_local_paths(bad: str) -> None:
     """#593: fallback must use is_local_path (same as redirect_local), not SafeUrl alone."""
     app = make_app(security="development")
@@ -199,6 +201,8 @@ def test_command_fallback_redirect_uses_local_path() -> None:
     client.get("/")
     headers = csrf_headers(client)
     # Non-HTMX progressive enhancement redirect
-    response = client.post("/cmd", headers={k: v for k, v in headers.items() if k.lower() != "hx-request"})
+    response = client.post(
+        "/cmd", headers={k: v for k, v in headers.items() if k.lower() != "hx-request"}
+    )
     assert response.status_code == 303
     assert response.headers.get("location") == "/home"
