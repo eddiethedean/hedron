@@ -56,6 +56,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
   refined workstreams for the scoped compiler, cascade/tokens, modern color/type, container layout,
   media/overlay/motion, control/AppShell/pipeline consumer slices, tooling, fleet adoption, and
   23-gate release evidence (Stage 1 blocked on probes and issue mirrors)
+- [Phase 0.59 execution plan](EXECUTION_0_59.md) — ordered E0–E9 implementation milestones,
+  dependencies, evidence, stop conditions, and release handoff
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

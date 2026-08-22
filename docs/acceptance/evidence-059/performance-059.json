@@ -1,0 +1,22 @@
+{
+  "additional_required_stylesheet_requests": 0,
+  "baseline": {
+    "compiler_cold_ms": 2.342,
+    "gzip_9_bytes": 11832,
+    "raw_bytes": 85136,
+    "representative_render_ms": 3.943
+  },
+  "budgets": {
+    "compiler_ratio_pass": true,
+    "gzip_9_bytes_pass": true,
+    "raw_bytes_pass": true,
+    "render_ratio_pass": true
+  },
+  "compiler_cold_ms_median": 0.026,
+  "gzip_9_bytes": 12582,
+  "raw_bytes": 89085,
+  "representative_render_ms_median": 1.998,
+  "required_styling_javascript_bytes": 0,
+  "schema": "hedron.css-performance/1",
+  "stylesheet_sha256": "70872fa881d9e26a8f61a8e4a52752835846ea17d51df85663d641b013d043df"
+}

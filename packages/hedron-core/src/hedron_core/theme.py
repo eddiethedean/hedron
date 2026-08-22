@@ -321,6 +321,18 @@ class Theme:
                 remediation="Use a simple alphanumeric theme name.",
             )
         validate_theme_tokens(self.tokens)
+        for variant, values in self.variants.items():
+            _validated_token_key("variant", variant)
+            if not re.fullmatch(r"[A-Za-z0-9_-]+", variant):
+                raise error(
+                    HED_THEME_INVALID,
+                    title="Invalid theme variant name",
+                    explanation=f"variant={variant!r} is not a safe finite variant name.",
+                    remediation="Use letters, numbers, underscores, and hyphens only.",
+                )
+            for key, value in values.items():
+                _validated_token_key(f"variant.{variant}", key)
+                _validated_css_value(f"variant.{variant}", key, value)
         for field_name, mapping in (
             ("palette", self.palette),
             ("shape", self.shape),
@@ -541,6 +553,11 @@ def emit_theme_css(theme: Theme) -> str:
     for key in design:
         lines.append(f"  {key}: {design[key]};")
     lines.append("}")
+    for variant, values in sorted(theme.variants.items()):
+        lines.append(f'[data-hedron-theme="{theme.name}"][data-hedron-variant="{variant}"] {{')
+        for key, value in sorted(values.items()):
+            lines.append(f"  {_token_to_css_var(key)}: {value};")
+        lines.append("}")
     lines.append(f'[data-hedron-theme="{theme.name}"] {{')
     for key, value in sorted(theme.tokens.items()):
         lines.append(f"  {_token_to_css_var(key)}: {value};")

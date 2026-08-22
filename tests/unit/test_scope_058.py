@@ -14,7 +14,13 @@ from hedron_core.theme import Theme, emit_theme_css
 
 def test_style_scope_emits_data_hedron_markers() -> None:
     html = render(
-        StyleScope(Text("scoped"), theme="default", color_mode="dark", density="compact"),
+        StyleScope(
+            Text("scoped"),
+            theme="default",
+            color_mode="dark",
+            density="compact",
+            variant="dense",
+        ),
         context=RenderContext.standalone(),
         mode=RenderMode.FRAGMENT,
     ).html
@@ -22,6 +28,7 @@ def test_style_scope_emits_data_hedron_markers() -> None:
     assert 'data-hedron-theme="default"' in html
     assert 'data-hedron-color-mode="dark"' in html
     assert 'data-hedron-density="compact"' in html
+    assert 'data-hedron-variant="dense"' in html
     assert 'data-theme="dark"' in html
 
 
@@ -56,3 +63,18 @@ def test_style_scope_css_contract_present() -> None:
         )
     )
     assert '[data-hedron-theme="scoped"][data-hedron-color-mode="dark"]' in theme_css
+
+
+def test_theme_variants_emit_only_with_explicit_marker() -> None:
+    from hedron_core.theme import default_theme
+
+    meta = default_theme()
+    theme = Theme(
+        name="variant059",
+        tokens=dict(meta.tokens),
+        modes={k: dict(v) for k, v in meta.modes.items()},
+        variants={"dense": {"space.unit": "0.25rem"}},
+    )
+    css = emit_theme_css(theme)
+    assert '[data-hedron-theme="variant059"][data-hedron-variant="dense"]' in css
+    assert "--hedron-space-unit: 0.25rem" in css

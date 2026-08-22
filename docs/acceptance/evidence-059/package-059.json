@@ -1,0 +1,119 @@
+{
+  "errors": [],
+  "packages": [
+    {
+      "bytes": 30727,
+      "name": "fastapi_workbench-1.0.0-py3-none-any.whl",
+      "sha256": "7a92fbf906b16a037323fb74238cf8328724ca9048434d9c17c73342e0265c1b"
+    },
+    {
+      "bytes": 344070,
+      "name": "hedron-0.58.1-py3-none-any.whl",
+      "sha256": "5c85b187a35dcc328a363ae059bde7679dec8cbdd0c8d330112b5118a0790a0a"
+    },
+    {
+      "bytes": 2942182,
+      "name": "hedron_charts-0.2.0-py3-none-any.whl",
+      "sha256": "df1552c6f40773c6a60747e18984c36d1b5ecd029e60e8b32f303d380c5b3840"
+    },
+    {
+      "bytes": 33529,
+      "name": "hedron_conformance-0.58.1-py3-none-any.whl",
+      "sha256": "3626eb6492f48eb73a01f58ae74a98ce60e4145861b8b40fc50710e8412f0b54"
+    },
+    {
+      "bytes": 466926,
+      "name": "hedron_core-0.58.1-py3-none-any.whl",
+      "sha256": "059acc9e2436e165932b55feb0b01f49cf22e8724fd520b642a95f50fb738c17"
+    },
+    {
+      "bytes": 419979,
+      "name": "hedron_data-0.58.1-py3-none-any.whl",
+      "sha256": "2931d08144ec6cb88cbddd89fa14e68b49012cdaf3fee40aad5a1d08ad065781"
+    },
+    {
+      "bytes": 25194,
+      "name": "hedron_django-0.58.1-py3-none-any.whl",
+      "sha256": "c9515a7b9e75f1cd0a69c24b6ee688af796cf483d610da1c26e69e6057c7cb00"
+    },
+    {
+      "bytes": 38746,
+      "name": "hedron_elements-0.58.1-py3-none-any.whl",
+      "sha256": "4222d6fa1d7fad0a8b5c8854a975de3f22eafbf335d67b09d4c3c388dc4008a8"
+    },
+    {
+      "bytes": 33044,
+      "name": "hedron_explorer-0.58.1-py3-none-any.whl",
+      "sha256": "a64adb2a38a971c12dc89d35ff18d8f4169307599d0d8aceff710f6593042e32"
+    },
+    {
+      "bytes": 38375,
+      "name": "hedron_extras-0.58.1-py3-none-any.whl",
+      "sha256": "70de02fed26076861dcec96a0a9397bad54730a502f820efc1ebc2e0cec1ac75"
+    },
+    {
+      "bytes": 26189,
+      "name": "hedron_flask-0.58.1-py3-none-any.whl",
+      "sha256": "11a79da2fbbad0cf745b01e3e8452fcabe2386d3693507e45015c67e7e886bd7"
+    },
+    {
+      "bytes": 18507,
+      "name": "hedron_gradio-0.2.0-py3-none-any.whl",
+      "sha256": "4f4db4eb5e0fa6a6e4375c456bc7f2dc2e4bb30a1b4b819674e5adb71ed1f5d5"
+    },
+    {
+      "bytes": 44128,
+      "name": "hedron_jinja-0.58.1-py3-none-any.whl",
+      "sha256": "fb9609a607f4aa30d5c02d6078457a6cc3c1fd3fffbadba88823c8608aa92e9f"
+    },
+    {
+      "bytes": 376262,
+      "name": "hedron_maps-0.1.0-py3-none-any.whl",
+      "sha256": "4b8091a93f77502550fa3c6596b8a79cbd2aac3d35b262e5862f185c3b7940a7"
+    },
+    {
+      "bytes": 19786,
+      "name": "hedron_mcp-0.2.1-py3-none-any.whl",
+      "sha256": "2c4e21d32d6072c6ab3315f57ce928fd2797608232a4ca1294159b653c5ac5b7"
+    },
+    {
+      "bytes": 206889,
+      "name": "hedron_native-0.1.2-cp311-cp311-macosx_11_0_arm64.whl",
+      "sha256": "53c236b26a5785408dfe2966ab09d1014d6804f55c9cdabcabc7aa3e0c6ef1c3"
+    },
+    {
+      "bytes": 214062,
+      "name": "hedron_native-0.1.2-cp312-cp312-macosx_11_0_arm64.whl",
+      "sha256": "7357a4fd8d2a64499f6c46f11f9924e5e35ee53f12634bd6f499ecab34a8e9ae"
+    },
+    {
+      "bytes": 15663,
+      "name": "hedron_notebook-0.2.0-py3-none-any.whl",
+      "sha256": "d30e2e4bac30ef4d3c4b1ac6e23ab5f20675f63b49e2aa84a752778c206aec36"
+    },
+    {
+      "bytes": 33527,
+      "name": "hedron_posit-0.58.1-py3-none-any.whl",
+      "sha256": "1b0fef4a41f750e6d6d5bfb60bee5abb285652193dc5a66cd6a29162f44a140d"
+    },
+    {
+      "bytes": 15626,
+      "name": "hedron_sample_kit-0.2.0-py3-none-any.whl",
+      "sha256": "e9206c9dee3ef48130b93833ae85e13eef7c6efe93e592e52a1134c354247be4"
+    },
+    {
+      "bytes": 29207,
+      "name": "hedron_sim-0.2.0-py3-none-any.whl",
+      "sha256": "2b3d0f68aec00149a5cd199e1b8af3dab75d3f1c453ed81eafd9f2b5231accaa"
+    },
+    {
+      "bytes": 11337,
+      "name": "hedron_workbench-0.58.1-py3-none-any.whl",
+      "sha256": "ebfc5e2dd21f7557efb36d2a16fd871bd86dfd3fccfe64f00c667b09c9fd7ac2"
+    }
+  ],
+  "pass": true,
+  "schema": "hedron.package-evidence/1",
+  "sdist_count": 21,
+  "wheel_count": 22
+}

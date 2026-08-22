@@ -24,6 +24,7 @@ scripts here when you add them.
 | `check_changelog_structure.py` | Require one package changelog title, a current-version section, and non-empty release sections. CI: quality job |
 | `check_external_links.py` | Check public HTTP links. Runs weekly in `docs-health.yml` to avoid network flakes on ordinary PRs |
 | `check_recipe_code_sync.py` | Fail when a guide's recipe Code tab drifts from its marked runnable source. CI: quality job |
+| `probe_css_059.py` | Capture the phase 0.59 parser, explicit-recipe, and pinned-browser capability evidence bundle |
 
 Documentation source ownership and review rules:
 [Documentation standards](../docs/guides/documentation-standards.md).
@@ -63,6 +64,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_49.py` | Phase **0.49** FastAPI/Pydantic packet (Published in-tree `v0.49.1`; omit `--allow-planned` after cut) |
 | `verify_pkg_50.py` | Phase **0.50** Explorer architecture packet (living in-tree `v0.50.3`; omit `--allow-planned` after cut) |
 | `check_*_050.py` | Phase 0.50 architecture/provider/consume/query/diff/lab/headless/ecosystem/security/privacy/a11y/browser/perf/resilience/docs/compat/pkg/regress gate entry points |
+| `check_*_059.py` / `verify_pkg_59.py` | Phase 0.59 modern-CSS gate entry points; Planned gates validate packet wiring and Verified gates run focused evidence tests |
 | `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Published `v0.42.0`) |
 | `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |
 | `verify_pkg_39.py` | Phase **0.39** rich data / OptimisticMutation packet (Published `v0.39.0`) |

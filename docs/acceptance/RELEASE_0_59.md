@@ -1,11 +1,11 @@
 # Phase 0.59 acceptance plan — modern CSS platform
 
-**State:** Stage 0 contract refined by D-107; Stage 1 implementation is blocked on probes and
-issue mirrors.
+**State:** Stage 1 entry packet locked; runtime implementation and release gates remain in progress.
 **Baseline:** Published/Verified in-tree `v0.58.1`; public upgrade source PyPI `v0.58.0`.
 **Target:** `v0.59.0`.
 **Authority:** RFC-0087 / D-106 / D-107 / `modern-css-*-059.toml` /
 `modern-css-contract-059.toml` / `release-gate-0.59.toml`.
+**Execution plan:** [`../implementation/EXECUTION_0_59.md`](../implementation/EXECUTION_0_59.md).
 
 ## Outcome
 

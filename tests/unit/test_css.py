@@ -82,3 +82,41 @@ def test_scoped_identifier_stable_across_paths() -> None:
     a = scoped_identifier("dist:mod.Name", "root")
     b = scoped_identifier("dist:mod.Name", "root")
     assert a == b
+
+
+def test_css_v2_does_not_discover_import_extensions_or_rewrite_literals() -> None:
+    result = compile_css(
+        '@import "theme.css";\n'
+        "/* .comment must remain */\n"
+        '.root:where(.title) { content: ".literal"; background: url(data:image/svg+xml,.svg); }',
+        component_id="app:imports",
+    )
+    assert "css" not in result.manifest.symbols
+    assert "svg" not in result.manifest.symbols
+    assert '@import "theme.css";' in result.css
+    assert "/* .comment must remain */" in result.css
+    assert 'content: ".literal"' in result.css
+    assert result.manifest.symbols["root"] in result.css
+    assert result.manifest.symbols["title"] in result.css
+    assert result.manifest.format_version == 2
+
+
+def test_css_v2_rewrites_animation_names_grammar_aware() -> None:
+    result = compile_css(
+        "@keyframes fade { from { opacity: 0; } to { opacity: 1; } }\n"
+        ".root { animation: fade 200ms ease-in, other 1s; }",
+        component_id="app:animation",
+    )
+    scoped = result.manifest.keyframes["fade"]
+    assert f"animation: {scoped} 200ms ease-in, other 1s" in result.css
+
+
+def test_v1_css_symbol_manifest_remains_readable() -> None:
+    from hedron_core.manifests import CssSymbolManifest
+
+    CssSymbolManifest(
+        format_version=1,
+        component_id="app:v1",
+        symbols={"root": "h-root-legacy"},
+        keyframes={},
+    ).validate_format()

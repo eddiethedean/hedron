@@ -30,7 +30,8 @@ __all__ = [
 
 BUILD_MANIFEST_FORMAT = 2
 ASSET_MANIFEST_FORMAT = 1
-CSS_SYMBOL_MANIFEST_FORMAT = 1
+CSS_SYMBOL_MANIFEST_FORMAT = 2
+SUPPORTED_CSS_SYMBOL_MANIFEST_FORMATS = frozenset({1, 2})
 
 
 def _as_str_map(value: JsonValue | None) -> dict[str, str]:
@@ -259,7 +260,7 @@ class CssSymbolManifest:
         )
 
     def validate_format(self) -> None:
-        if self.format_version != CSS_SYMBOL_MANIFEST_FORMAT:
+        if self.format_version not in SUPPORTED_CSS_SYMBOL_MANIFEST_FORMATS:
             from hedron_core.diagnostics import error
 
             raise error(
@@ -267,7 +268,7 @@ class CssSymbolManifest:
                 title="Unsupported CSS symbol manifest version",
                 explanation=(
                     f"CSS symbol manifest format {self.format_version} is not supported "
-                    f"(expected {CSS_SYMBOL_MANIFEST_FORMAT})."
+                    f"(expected one of {sorted(SUPPORTED_CSS_SYMBOL_MANIFEST_FORMATS)})."
                 ),
                 remediation="Rebuild with a compatible Hedron release.",
             )

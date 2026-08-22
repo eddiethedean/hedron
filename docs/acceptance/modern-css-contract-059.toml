@@ -111,10 +111,10 @@ representative_style_layout_ratio_max_vs_0581 = 1.10
 
 [issue_mirrors]
 status = "required before Stage 1"
-umbrella = "hedron#HED-059-000"
-controls = "hedron#HED-059-001 mirrors user-token-management-app#4 and #5"
-shell = "hedron#HED-059-002 mirrors user-token-management-app#6"
-workflow = "hedron#HED-059-003 mirrors user-token-management-app#7"
+umbrella = "hedron#623"
+controls = "hedron#624 mirrors user-token-management-app#4 and #5"
+shell = "hedron#625 mirrors user-token-management-app#6"
+workflow = "hedron#626 mirrors user-token-management-app#7"
 backlinks_required = true
 source_issue_closure_required_at_cut = true
 

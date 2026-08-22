@@ -9,16 +9,16 @@ contract = "modern-css-contract-059.toml"
 owning_rfc = "RFC-0087"
 planning_baseline = "v0.58.1"
 target = "v0.59.0"
-hedron_umbrella_issue = "unfiled"
+hedron_umbrella_issue = "hedron#623"
 stage_1_requires_hedron_issue_mirrors = true
 
 [live_issue_summary]
 hedron_repository = "eddiethedean/hedron"
 hedron_open_issue_numbers = [86, 192]
-hedron_open_styling_enhancement_issue_numbers = []
+hedron_open_styling_enhancement_issue_numbers = [623, 624, 625, 626]
 consumer_repository = "eddiethedean/user-token-management-app"
 consumer_open_styling_enhancement_issue_numbers = [4, 5, 6, 7]
-note = "The Hedron-local styling set is empty; all four current open styling/presentation inputs are consumer-repository issues and are phase-owned below."
+note = "Hedron mirrors #623-#626 now track the four consumer-repository inputs; consumer issues remain authoritative and open."
 
 [[repository_open_issue]]
 repository = "eddiethedean/hedron"
@@ -168,13 +168,13 @@ external_issues = []
 
 [stage_1_entry]
 accepted_contract_refine = true
-hedron_umbrella_issue_filed = false
-hedron_workstream_issue_mirrors_filed = false
-consumer_issue_backlinks_added = false
-browser_capability_probe_locked = false
-parser_implementation_probe_locked = false
-explicit_set_recipe_probe_locked = false
-live_issue_audit_refreshed = false
+hedron_umbrella_issue_filed = true
+hedron_workstream_issue_mirrors_filed = true
+consumer_issue_backlinks_added = true
+browser_capability_probe_locked = true
+parser_implementation_probe_locked = true
+explicit_set_recipe_probe_locked = true
+live_issue_audit_refreshed = true
 
 [release_issue_policy]
 all_consumer_issues_closed = true

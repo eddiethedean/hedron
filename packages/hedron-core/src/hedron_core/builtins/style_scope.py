@@ -30,6 +30,7 @@ class StyleScopeProps(ElementProps):
     theme: str | None = None
     color_mode: _ColorMode | None = None
     density: Density | None = None
+    variant: str | None = None
 
 
 class StyleScope(Component[StyleScopeProps]):
@@ -49,6 +50,7 @@ class StyleScope(Component[StyleScopeProps]):
         theme: str | None = None,
         color_mode: _ColorMode | None = None,
         density: Density | None = None,
+        variant: str | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -74,7 +76,7 @@ class StyleScope(Component[StyleScopeProps]):
                 HED_STYLE_SCOPE_0001,
                 title="Invalid StyleScope value",
                 explanation=f"Unsupported StyleScope keyword(s): {unknown}.",
-                remediation="Pass only theme, color_mode, density, id, class_, and mark.",
+                remediation="Pass only theme, color_mode, density, variant, id, class_, and mark.",
             )
         if theme is not None:
             if not isinstance(theme, str) or not theme.strip():
@@ -101,11 +103,28 @@ class StyleScope(Component[StyleScopeProps]):
             )
         if density is not None:
             require_choice(density, DENSITIES, label="density")
+        if variant is not None:
+            if not isinstance(variant, str) or not variant.strip():
+                raise error(
+                    HED_STYLE_SCOPE_0001,
+                    title="Invalid StyleScope variant",
+                    explanation=f"variant={variant!r} must be a non-empty variant name.",
+                    remediation="Pass a registered finite theme variant name.",
+                )
+            variant = variant.strip()
+            if _THEME_NAME_RE.fullmatch(variant) is None:
+                raise error(
+                    HED_STYLE_SCOPE_0001,
+                    title="Invalid StyleScope variant",
+                    explanation=f"variant={variant!r} must match [A-Za-z0-9_-]+.",
+                    remediation="Pass a registered finite theme variant name.",
+                )
         super().__init__(
             StyleScopeProps(
                 theme=theme,
                 color_mode=color_mode,
                 density=density,
+                variant=variant,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -125,6 +144,8 @@ class StyleScope(Component[StyleScopeProps]):
             data["theme"] = self.props.color_mode
         if self.props.density is not None:
             data["hedron-density"] = self.props.density
+        if self.props.variant is not None:
+            data["hedron-variant"] = self.props.variant
         data.update(mark_data(self.props.mark))
         return html.div(
             *self._children,

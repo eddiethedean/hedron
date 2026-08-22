@@ -16,7 +16,7 @@ class CssRule:
     prelude: str
     decls: list[CssDecl] = field(default_factory=list)
     children: list[CssRule] = field(default_factory=list)
-    kind: str = "style"  # style | at-rule
+    kind: str = "style"  # style | at-rule | statement | comment
 
 
 @dataclass
@@ -64,6 +64,12 @@ def parse_stylesheet(source: str) -> CssStylesheet:
             skip_ws()
             if i < n and source[i] == "}":
                 break
+            if source.startswith("/*", i):
+                end = source.find("*/", i + 2)
+                end = n if end < 0 else end + 2
+                children.append(CssRule(prelude=source[i:end], kind="comment"))
+                i = end
+                continue
             # Peek prelude until { or ;
             start = i
             depth = 0
@@ -118,14 +124,22 @@ def parse_stylesheet(source: str) -> CssStylesheet:
             break
         if source.startswith("/*", i):
             end = source.find("*/", i + 2)
-            i = n if end < 0 else end + 2
+            end = n if end < 0 else end + 2
+            rules.append(CssRule(prelude=source[i:end], kind="comment"))
+            i = end
             continue
         start = i
-        while i < n and source[i] != "{":
+        while i < n and source[i] not in "{;":
             if source.startswith("/*", i):
                 break
             i += 1
         prelude = source[start:i].strip()
+        if i < n and source[i] == ";":
+            i += 1
+            if prelude:
+                rules.append(CssRule(prelude=prelude, kind="statement"))
+            skip_ws()
+            continue
         if i >= n:
             break
         i += 1  # {
@@ -143,6 +157,10 @@ def emit_stylesheet(sheet: CssStylesheet) -> str:
     def emit_rule(rule: CssRule, indent: int = 0) -> str:
         pad = "  " * indent
         inner_pad = "  " * (indent + 1)
+        if rule.kind == "statement":
+            return f"{pad}{rule.prelude};"
+        if rule.kind == "comment":
+            return f"{pad}{rule.prelude}"
         lines = [f"{pad}{rule.prelude} {{"]
         for decl in rule.decls:
             lines.append(f"{inner_pad}{decl.prop}: {decl.value};")

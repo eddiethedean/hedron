@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping
 from typing import Any, ClassVar, Literal
 
@@ -15,6 +16,7 @@ from hedron_core.builtins.appearance import (
     require_choice,
     responsive_data,
 )
+from hedron_core.codes import HED_HTML_0006
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error as raise_error
 from hedron_core.html import html
@@ -35,7 +37,8 @@ def _validated_gap(gap: str) -> str:
 
 
 class ContainerProps(ElementProps):
-    pass
+    query: Literal["none", "inline-size"] = "none"
+    name: str | None = None
 
 
 class Container(Component[ContainerProps]):
@@ -47,15 +50,44 @@ class Container(Component[ContainerProps]):
         children: NodeLike = None,
         id: str | None = None,
         class_: str | None = None,
+        query: Literal["none", "inline-size"] = "none",
+        name: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(ContainerProps(id=id, class_=class_, **kwargs))
+        if query not in {"none", "inline-size"}:
+            raise raise_error(
+                HED_HTML_0006,
+                title="Invalid container query mode",
+                explanation=f"query={query!r} is not supported.",
+                remediation="Use query='none' or query='inline-size'.",
+            )
+        if name is not None and re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", name) is None:
+            raise raise_error(
+                HED_HTML_0006,
+                title="Invalid container query name",
+                explanation=f"name={name!r} is not a safe container name.",
+                remediation="Use letters, numbers, underscores, and hyphens only.",
+            )
+        if query == "none" and name is not None:
+            raise raise_error(
+                HED_HTML_0006,
+                title="Container name requires query mode",
+                explanation="A named container must use query='inline-size'.",
+                remediation="Pass query='inline-size' or omit name.",
+            )
+        super().__init__(ContainerProps(query=query, name=name, id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
     def render(self) -> NodeLike:
+        data: dict[str, str | bool | int | float | None] = {}
+        if self.props.query == "inline-size":
+            data["hedron-container-query"] = "inline-size"
+            if self.props.name is not None:
+                data["hedron-container-name"] = self.props.name
         attrs = {
             "class_": class_names("hedron-container", self.props.class_),
             "id": self.props.id,
+            "data": data or None,
         }
         return html.div(*self._children, **attrs)
 

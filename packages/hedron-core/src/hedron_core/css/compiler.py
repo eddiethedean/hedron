@@ -29,7 +29,11 @@ from hedron_core.manifests import CSS_SYMBOL_MANIFEST_FORMAT, CssSymbolManifest
 
 __all__ = ["CssCompileResult", "compile_css", "scoped_identifier"]
 
-CSS_COMPILER_FORMAT = 1
+CSS_COMPILER_FORMAT = 2
+# The compiler format may advance without invalidating public symbols.  The
+# 0.59 contract requires v1 symbol hashes to remain stable unless a separately
+# recorded collision/security migration changes them.
+SYMBOL_HASH_FORMAT = 1
 
 _CLASS_RE = re.compile(r"\.([A-Za-z_][\w-]*)")
 _GLOBAL_RE = re.compile(r":global\(([^)]*)\)")
@@ -49,7 +53,7 @@ class CssCompileResult:
 
 
 def scoped_identifier(component_id: str, symbol: str, *, kind: str = "class") -> str:
-    digest = content_digest(f"v{CSS_COMPILER_FORMAT}|{kind}|{component_id}|{symbol}")
+    digest = content_digest(f"v{SYMBOL_HASH_FORMAT}|{kind}|{component_id}|{symbol}")
     safe_symbol = re.sub(r"[^A-Za-z0-9_-]", "_", symbol)
     return f"h-{safe_symbol}-{digest[:10]}"
 
@@ -69,10 +73,15 @@ def _discover(sheet: CssStylesheet) -> tuple[dict[str, str], dict[str, str], lis
 
     for rule in _iter_rules(sheet.rules):
         prelude = rule.prelude
-        # Mask globals for class discovery
-        masked = _GLOBAL_RE.sub(lambda m: ":global()", prelude)
-        for match in _CLASS_RE.finditer(masked):
-            classes[match.group(1)] = match.group(1)
+        masked = ""
+        # A class-like token in an at-rule prelude is not a selector.  In
+        # particular, ``@import \"theme.css\"`` must never create a symbol
+        # named ``css``.  Selector discovery is intentionally limited to style
+        # rules; selector-bearing feature tests are handled during rewriting.
+        if rule.kind == "style":
+            masked = _GLOBAL_RE.sub(lambda m: ":global()", prelude)
+            for match in _CLASS_RE.finditer(masked):
+                classes[match.group(1)] = match.group(1)
         if rule.kind == "at-rule" and prelude.lower().startswith("@keyframes"):
             parts = prelude.split(None, 1)
             if len(parts) == 2:
@@ -114,22 +123,119 @@ def _rewrite_prelude(prelude: str, class_map: Mapping[str, str]) -> str:
 
 
 def _rewrite_classes(chunk: str, class_map: Mapping[str, str]) -> str:
-    def repl(match: re.Match[str]) -> str:
-        name = match.group(1)
-        return f".{class_map.get(name, name)}"
-
-    return _CLASS_RE.sub(repl, chunk)
+    # Rewrite only selector identifiers.  Regex replacement is unsafe here:
+    # class-looking text inside strings, comments, URLs, decimals, and CSS
+    # escapes is not a selector symbol.
+    out: list[str] = []
+    i = 0
+    n = len(chunk)
+    while i < n:
+        if chunk.startswith("/*", i):
+            end = chunk.find("*/", i + 2)
+            end = n if end < 0 else end + 2
+            out.append(chunk[i:end])
+            i = end
+            continue
+        ch = chunk[i]
+        if ch in {"'", '"'}:
+            quote = ch
+            start = i
+            i += 1
+            while i < n:
+                if chunk[i] == "\\":
+                    i += 2
+                    continue
+                i += 1
+                if chunk[i - 1] == quote:
+                    break
+            out.append(chunk[start:i])
+            continue
+        if chunk.startswith(":global(", i):
+            start = i
+            depth = 0
+            while i < n:
+                if chunk[i] == "(":
+                    depth += 1
+                elif chunk[i] == ")":
+                    depth -= 1
+                    if depth == 0:
+                        i += 1
+                        break
+                i += 1
+            out.append(chunk[start:i])
+            continue
+        if ch == "." and i + 1 < n and (chunk[i + 1].isalpha() or chunk[i + 1] in "_-"):
+            j = i + 2
+            while j < n and (chunk[j].isalnum() or chunk[j] in "_-\\"):
+                j += 1
+            name = chunk[i + 1 : j]
+            out.append("." + class_map.get(name, name))
+            i = j
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
 
 
 def _rewrite_animation_value(value: str, keyframe_map: Mapping[str, str]) -> str:
-    tokens: list[str] = []
-    for tok in re.split(r"(\s+|,)", value):
-        stripped = tok.strip()
-        if stripped in keyframe_map:
-            tokens.append(keyframe_map[stripped])
-        else:
-            tokens.append(tok)
-    return "".join(tokens)
+    # Animation names are identifiers embedded in a shorthand grammar.  Walk
+    # identifiers while preserving strings/comments/functions and only replace
+    # names discovered in @keyframes; timing functions and CSS-wide keywords
+    # therefore remain untouched.
+    reserved = {
+        "none",
+        "initial",
+        "inherit",
+        "unset",
+        "revert",
+        "revert-layer",
+        "linear",
+        "ease",
+        "ease-in",
+        "ease-out",
+        "ease-in-out",
+        "step-start",
+        "step-end",
+    }
+    out: list[str] = []
+    i = 0
+    n = len(value)
+    while i < n:
+        if value.startswith("/*", i):
+            end = value.find("*/", i + 2)
+            end = n if end < 0 else end + 2
+            out.append(value[i:end])
+            i = end
+            continue
+        if value[i] in {"'", '"'}:
+            quote = value[i]
+            start = i
+            i += 1
+            while i < n:
+                if value[i] == "\\":
+                    i += 2
+                    continue
+                i += 1
+                if value[i - 1] == quote:
+                    break
+            out.append(value[start:i])
+            continue
+        if value[i].isalpha() or value[i] in "_-":
+            start = i
+            i += 1
+            while i < n and (value[i].isalnum() or value[i] in "_-\\"):
+                i += 1
+            token = value[start:i]
+            if i < n and value[i] == "(":
+                out.append(token)
+            elif token not in reserved:
+                out.append(keyframe_map.get(token, token))
+            else:
+                out.append(token)
+            continue
+        out.append(value[i])
+        i += 1
+    return "".join(out)
 
 
 def _rewrite_rule(
@@ -145,8 +251,19 @@ def _rewrite_rule(
     elif rule.kind == "at-rule" and prelude.lower().startswith("@import"):
         # Do not rewrite class selectors inside @import URLs (``.com`` / ``.css``).
         prelude = rule.prelude
+    elif rule.kind == "at-rule" and prelude.lower().startswith("@supports"):
+        # The selector() feature test is selector grammar; other supports
+        # declarations must remain byte-for-byte authored values.
+        prelude = re.sub(
+            r"(selector\()([^)]*)(\))",
+            lambda match: (
+                match.group(1) + _rewrite_classes(match.group(2), class_map) + match.group(3)
+            ),
+            prelude,
+            flags=re.IGNORECASE,
+        )
     else:
-        prelude = _rewrite_prelude(prelude, class_map)
+        prelude = _rewrite_prelude(prelude, class_map) if rule.kind == "style" else rule.prelude
 
     decls: list[CssDecl] = []
     for decl in rule.decls:
@@ -259,7 +376,7 @@ def _check_urls_in_sheet(
     def walk(rule: CssRule) -> CssRule:
         # Validate URLs in @import preludes (not only declaration values).
         prelude = rule.prelude
-        if rule.kind == "at-rule" and prelude.lower().startswith("@import"):
+        if prelude.lower().startswith("@import"):
             prelude = check_value(prelude)
         decls = [CssDecl(d.prop, check_value(d.value)) for d in rule.decls]
         children = [walk(c) for c in rule.children]

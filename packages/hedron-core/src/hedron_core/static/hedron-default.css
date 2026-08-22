@@ -246,7 +246,11 @@
 
   body {
     min-height: 100vh;
+    min-height: 100svh;
     padding: clamp(1.25rem, 4vw, 3.5rem);
+    padding-block-end: max(clamp(1.25rem, 4vw, 3.5rem), env(safe-area-inset-bottom));
+    padding-inline-start: max(clamp(1.25rem, 4vw, 3.5rem), env(safe-area-inset-left));
+    padding-inline-end: max(clamp(1.25rem, 4vw, 3.5rem), env(safe-area-inset-right));
     background:
       radial-gradient(
         circle at 12% 0%,
@@ -668,6 +672,21 @@
   .hedron-container {
     width: min(100%, var(--hedron-default-content-width));
     margin-inline: auto;
+    max-inline-size: 100%;
+    padding-inline: max(0px, env(safe-area-inset-left));
+    padding-inline-end: max(0px, env(safe-area-inset-right));
+  }
+
+  @supports (container-type: inline-size) {
+    .hedron-container[data-hedron-container-query="inline-size"] {
+      container-type: inline-size;
+    }
+
+    @supports (container-name: attr(data-hedron-container-name type(<custom-ident>))) {
+      .hedron-container[data-hedron-container-query="inline-size"][data-hedron-container-name] {
+      container-name: attr(data-hedron-container-name type(<custom-ident>));
+      }
+    }
   }
 
   .hedron-stack {
@@ -1620,6 +1639,58 @@
     background: var(--hedron-default-surface);
     color: var(--hedron-color-fg, var(--hedron-default-fg));
     box-shadow: var(--hedron-default-shadow-raised);
+  }
+
+  .hedron-popover[data-hedron-popover-placement="block-start"] .hedron-popover-panel {
+    margin-block-end: 0.5rem;
+  }
+
+  .hedron-popover[data-hedron-popover-placement="block-end"] .hedron-popover-panel {
+    margin-block-start: 0.5rem;
+  }
+
+  .hedron-popover[data-hedron-popover-placement="inline-start"] .hedron-popover-panel {
+    margin-inline-end: 0.5rem;
+  }
+
+  .hedron-popover[data-hedron-popover-placement="inline-end"] .hedron-popover-panel {
+    margin-inline-start: 0.5rem;
+  }
+
+  @supports (anchor-name: --hedron-popover) and (position-anchor: --hedron-popover) {
+    .hedron-popover-trigger {
+      anchor-name: --hedron-popover;
+    }
+
+    .hedron-popover[data-hedron-popover-collision="flip"] .hedron-popover-panel {
+      position-anchor: --hedron-popover;
+      position-try-fallbacks: flip-block, flip-inline;
+    }
+
+    .hedron-popover[data-hedron-popover-collision="shift"] .hedron-popover-panel {
+      position-anchor: --hedron-popover;
+      position-try-fallbacks: --hedron-shift-inline;
+    }
+
+    @position-try --hedron-shift-inline {
+      inset-area: inline-end;
+      margin-inline: 0.5rem;
+    }
+  }
+
+  @supports (transition-behavior: allow-discrete) {
+    .hedron-popover-panel:popover-open {
+      transition: opacity var(--hedron-motion-duration, 160ms) ease,
+        display var(--hedron-motion-duration, 160ms) allow-discrete,
+        overlay var(--hedron-motion-duration, 160ms) allow-discrete;
+      transition-behavior: allow-discrete;
+    }
+
+    @starting-style {
+      .hedron-popover-panel:popover-open {
+        opacity: 0;
+      }
+    }
   }
 
   .hedron-context-menu-panel,
@@ -2807,6 +2878,90 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+    }
+  }
+
+  @media print {
+    html,
+    body {
+      min-width: 0;
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    body {
+      padding: 0;
+    }
+
+    .hedron-app-shell-nav,
+    .hedron-action-dock,
+    .hedron-context-menu,
+    .hedron-popover-trigger,
+    .hedron-tooltip,
+    button,
+    [aria-busy="true"] {
+      display: none !important;
+    }
+
+    .hedron-app-shell,
+    .hedron-grid,
+    .hedron-split,
+    .hedron-master-detail {
+      display: block !important;
+    }
+
+    .hedron-main-panel,
+    .hedron-sidebar,
+    .hedron-card,
+    .hedron-surface,
+    .hedron-dialog,
+    .hedron-popover-panel {
+      width: auto !important;
+      max-width: none !important;
+      overflow: visible !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    .hedron-dialog[open],
+    .hedron-popover-panel:popover-open {
+      display: block !important;
+      position: static !important;
+      margin: 0 0 1rem !important;
+    }
+
+    .hedron-dialog::backdrop {
+      background: transparent;
+    }
+
+    a[href]::after {
+      content: " (" attr(href) ")";
+      overflow-wrap: anywhere;
+      font-size: 0.8em;
+    }
+
+    table,
+    figure,
+    .hedron-card,
+    .hedron-status,
+    .hedron-dialog,
+    .hedron-popover-panel {
+      break-inside: avoid;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      break-after: avoid;
+    }
+
+    @page {
+      margin: 1.5cm;
     }
   }
 

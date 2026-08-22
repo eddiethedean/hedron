@@ -12,6 +12,7 @@ from hedron_core.builtins._base import (
     dom_id_part,
     mark_data,
 )
+from hedron_core.builtins.appearance import require_choice
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -230,6 +231,10 @@ class ContextMenu(Component[ContextMenuProps]):
 class PopoverProps(ElementProps):
     label: str = "Open"
     mode: Literal["popover", "details"] = "popover"
+    placement: Literal["block-start", "block-end", "inline-start", "inline-end", "center"] = (
+        "block-end"
+    )
+    collision: Literal["flip", "shift", "static"] = "flip"
 
 
 class Popover(Component[PopoverProps]):
@@ -244,13 +249,32 @@ class Popover(Component[PopoverProps]):
         children: NodeLike = None,
         label: str = "Open",
         mode: Literal["popover", "details"] = "popover",
+        placement: Literal[
+            "block-start", "block-end", "inline-start", "inline-end", "center"
+        ] = "block-end",
+        collision: Literal["flip", "shift", "static"] = "flip",
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
         **kwargs: Any,
     ) -> None:
+        require_choice(
+            placement,
+            ("block-start", "block-end", "inline-start", "inline-end", "center"),
+            label="placement",
+        )
+        require_choice(collision, ("flip", "shift", "static"), label="collision")
         super().__init__(
-            PopoverProps(label=label, mode=mode, id=id, class_=class_, mark=mark, **kwargs)
+            PopoverProps(
+                label=label,
+                mode=mode,
+                placement=placement,
+                collision=collision,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
         )
         self._children = collect_children(*nodes, children=children)
 
@@ -259,6 +283,8 @@ class Popover(Component[PopoverProps]):
         panel_id = f"{root_id}-panel"
         data: dict[str, str | bool | int | float | None] = {
             "hedron-popover": "true",
+            "hedron-popover-placement": self.props.placement,
+            "hedron-popover-collision": self.props.collision,
             **mark_data(self.props.mark),
         }
         if self.props.mode == "details":

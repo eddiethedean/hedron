@@ -6153,7 +6153,8 @@ and inspection path. Required behavior passes the three-engine floor; newer enha
 independently usable feature-off and reduced-motion fallbacks.
 
 Normative planning is [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md), the
-[implementation plan](implementation/MODERN_CSS_059.md), and the
+[implementation plan](implementation/MODERN_CSS_059.md), the
+[execution plan](implementation/EXECUTION_0_59.md), and the
 [Stage 0 acceptance plan](acceptance/RELEASE_0_59.md). Machine locks are
 [modern-css-inventory-059.toml](acceptance/modern-css-inventory-059.toml),
 [modern-css-contract-059.toml](acceptance/modern-css-contract-059.toml),

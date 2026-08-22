@@ -39,7 +39,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Popover(*nodes: 'NodeLike', children: 'NodeLike' = None, label: 'str' = 'Open', mode: "Literal['popover', 'details']" = 'popover', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+Popover(*nodes: 'NodeLike', children: 'NodeLike' = None, label: 'str' = 'Open', mode: "Literal['popover', 'details']" = 'popover', placement: "Literal['block-start', 'block-end', 'inline-start', 'inline-end', 'center']" = 'block-end', collision: "Literal['flip', 'shift', 'static']" = 'flip', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
@@ -48,6 +48,8 @@ Popover(*nodes: 'NodeLike', children: 'NodeLike' = None, label: 'str' = 'Open', 
 | `children` | `NodeLike` | Keyword alternative for child nodes; combines with positional children. Default: `None`. |
 | `label` | `str` | Accessible label text shown to users. Default: `'Open'`. |
 | `mode` | `Literal['popover', 'details']` | Presentation mode for the disclosure surface. Default: `'popover'`. |
+| `placement` | `Literal['block-start', 'block-end', 'inline-start', 'inline-end', 'center']` | Layout placement for the dock. Default: `'block-end'`. |
+| `collision` | `Literal['flip', 'shift', 'static']` | Constructor parameter. Default: `'flip'`. |
 | `id` | `str | None` | Optional DOM `id`. Default: `None`. |
 | `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
 | `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |

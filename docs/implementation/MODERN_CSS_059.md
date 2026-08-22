@@ -1,9 +1,9 @@
 # Modern CSS platform implementation plan (phase 0.59)
 
-**Status:** Stage 0 contract refined by D-107; Stage 1 runtime work remains blocked on probes and
-issue mirrors.
+**Status:** Stage 1 entry packet locked; runtime work and release evidence are in progress.
 **Authority:** RFC-0087 / D-106 / D-107 / `docs/acceptance/RELEASE_0_59.md` /
 `docs/acceptance/modern-css-contract-059.toml`.
+**Execution sequence:** [`EXECUTION_0_59.md`](EXECUTION_0_59.md).
 **Baseline:** in-tree `v0.58.1`; public upgrade source `v0.58.0`.
 **Target:** `v0.59.0`.
 
