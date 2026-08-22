@@ -38,3 +38,15 @@ def test_pivot_tree_merge() -> None:
                 {"id": "b", "parent_id": "a"},
             ]
         )
+
+
+def test_pivot_validates_aggregate_and_grouping_keys() -> None:
+    with pytest.raises(ValueError, match="Unsupported pivot aggregate"):
+        pivot_rows([], index="i", columns="c", values="v", agg="bogus")
+    with pytest.raises(ValueError, match="hashable"):
+        pivot_rows(
+            [{"i": ["a"], "c": "b", "v": 1}],
+            index="i",
+            columns="c",
+            values="v",
+        )

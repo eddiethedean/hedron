@@ -319,8 +319,9 @@ def _apply_calculate(rows: list[dict[str, object]], tr: TransformDef) -> list[di
         elif op == "multiply" and all(n is not None for n in nums):
             present = [n for n in nums if n is not None]
             result = math.prod(present)
-        elif op == "divide" and len(nums) >= 2 and nums[0] is not None and nums[1]:
-            result = nums[0] / nums[1]
+        elif op == "divide" and len(nums) >= 2:
+            if nums[0] is not None and nums[1] is not None:
+                result = None if nums[1] == 0 else nums[0] / nums[1]
         elif op == "negate" and nums and nums[0] is not None:
             result = -nums[0]
         elif op == "abs" and nums and nums[0] is not None:
