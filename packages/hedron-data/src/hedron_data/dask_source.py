@@ -161,7 +161,8 @@ class DaskDataSource(Generic[T]):
         if q.search:
             mask: Any = None
             for name in self._search_fields:
-                candidate = frame[name].astype(str).str.contains(
+                column: Any = frame[name]
+                candidate = column.astype(str).str.contains(
                     q.search, case=False, na=False, regex=False
                 )
                 mask = candidate if mask is None else mask | candidate
