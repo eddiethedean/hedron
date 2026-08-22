@@ -10,6 +10,7 @@ import pytest
 from flask.testing import FlaskClient
 
 from hedron_core import Heading, Page, Text
+from hedron_core.htmx.policy import InteractionPolicy
 from hedron_core.interaction import InteractionResult
 from hedron_core.rendering import RenderMode
 from hedron_flask import HedronFlask, component_response, interaction_response
@@ -167,6 +168,22 @@ def test_render_mode_for_request() -> None:
     assert (
         render_mode_for_request({"HX-Request": "true", "HX-History-Restore-Request": "true"})
         is RenderMode.PAGE
+    )
+
+
+def test_history_restore_without_hx_request_stays_page() -> None:
+    """#578: forged HX-History-Restore-Request alone must not select FRAGMENT."""
+    policy = InteractionPolicy(history_restore="primary")
+    assert (
+        render_mode_for_request({"HX-History-Restore-Request": "true"}, policy=policy)
+        is RenderMode.PAGE
+    )
+    assert (
+        render_mode_for_request(
+            {"HX-Request": "true", "HX-History-Restore-Request": "true"},
+            policy=policy,
+        )
+        is RenderMode.FRAGMENT
     )
 
 

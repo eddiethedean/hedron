@@ -7,6 +7,7 @@ from pathlib import Path
 
 from django.test import Client
 
+from hedron_core.htmx.policy import InteractionPolicy
 from hedron_core.rendering import RenderMode
 from hedron_django import HedronDjango
 from hedron_django.htmx import render_mode_for_request
@@ -115,6 +116,22 @@ def test_render_mode_history_restore() -> None:
     assert (
         render_mode_for_request({"HX-Request": "true", "HX-History-Restore-Request": "true"})
         is RenderMode.PAGE
+    )
+
+
+def test_history_restore_without_hx_request_stays_page() -> None:
+    """#578: forged HX-History-Restore-Request alone must not select FRAGMENT."""
+    policy = InteractionPolicy(history_restore="primary")
+    assert (
+        render_mode_for_request({"HX-History-Restore-Request": "true"}, policy=policy)
+        is RenderMode.PAGE
+    )
+    assert (
+        render_mode_for_request(
+            {"HX-Request": "true", "HX-History-Restore-Request": "true"},
+            policy=policy,
+        )
+        is RenderMode.FRAGMENT
     )
 
 
