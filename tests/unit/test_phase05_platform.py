@@ -374,6 +374,81 @@ def test_cache_single_flight_concurrent_waiters() -> None:
     assert calls["n"] == 1
 
 
+def test_cache_single_flight_cross_generation_isolation() -> None:
+    """#576: waiters keep a per-generation flight object; gen-2 cannot overwrite gen-1."""
+    import threading
+
+    from hedron_core.cache import InMemoryCacheBackend
+    from hedron_core.cache.memory import _SyncFlight
+
+    backend = InMemoryCacheBackend()
+    results: list[tuple[str, str]] = []
+    owner_in_loader = threading.Event()
+    waiter_joined = threading.Event()
+    release_loader = threading.Event()
+    gen1_flight: list[_SyncFlight] = []
+
+    def owner() -> None:
+        def loader() -> str:
+            with backend._lock:
+                gen1_flight.append(backend._flights["k"])
+            owner_in_loader.set()
+            assert waiter_joined.wait(2)
+            release_loader.wait(2)
+            return "v1"
+
+        results.append(("o1", backend.single_flight("k", loader)))
+
+    def waiter() -> None:
+        assert owner_in_loader.wait(2)
+
+        # Ensure we are counted as a waiter on gen-1 before releasing the owner loader.
+        def mark_joined() -> None:
+            deadline = __import__("time").monotonic() + 2
+            while __import__("time").monotonic() < deadline:
+                with backend._lock:
+                    flight = backend._flights.get("k")
+                    if flight is not None and flight.waiters >= 1:
+                        waiter_joined.set()
+                        return
+                __import__("time").sleep(0.001)
+            waiter_joined.set()
+
+        __import__("threading").Thread(target=mark_joined, daemon=True).start()
+        results.append(("w1", backend.single_flight("k", lambda: "bad")))
+
+    t_owner = threading.Thread(target=owner)
+    t_waiter = threading.Thread(target=waiter)
+    t_owner.start()
+    t_waiter.start()
+    assert waiter_joined.wait(2)
+    # Start gen-2 while gen-1 waiters still exist: clear store and begin a new flight.
+    with backend._lock:
+        backend._store.clear()
+        # gen-1 should still be the mapped flight until owner finishes
+        assert backend._flights.get("k") is gen1_flight[0]
+
+    def owner2() -> None:
+        # Block until gen-1 owner releases the map slot by finishing.
+        release_loader.set()
+        deadline = __import__("time").monotonic() + 2
+        while __import__("time").monotonic() < deadline:
+            with backend._lock:
+                if "k" not in backend._flights:
+                    break
+            __import__("time").sleep(0.001)
+        results.append(("o2", backend.single_flight("k", lambda: "v2")))
+
+    t2 = threading.Thread(target=owner2)
+    t2.start()
+    for t in (t_owner, t_waiter, t2):
+        t.join(5)
+
+    assert dict(results) == {"o1": "v1", "w1": "v1", "o2": "v2"}
+    assert gen1_flight[0].result == "v1"
+    assert gen1_flight[0].has_result is True
+
+
 def test_upload_filename_validation() -> None:
     from hedron.builtins.files import validate_upload_size
 
