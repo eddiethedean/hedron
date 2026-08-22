@@ -10,12 +10,13 @@ not interchangeable.
 
 ## If you are building an application
 
-1. [Current release and support](current-release.md)
-2. [Installation](../getting-started/installation.md)
-3. [Build your first app](../getting-started/quickstart.md)
+1. [Build your first app](../getting-started/quickstart.md)
+2. [Minimal form POST](minimal-form.md)
+3. [What is HTMX?](../getting-started/what-is-htmx.md)
 4. [Core concepts](../getting-started/core-concepts.md)
 5. [Learning path](../getting-started/learning-path.md)
-6. [Deployment](deployment.md) and [Troubleshooting](troubleshooting.md)
+6. [Current release and support](current-release.md) — when pinning for production
+7. [Deployment](deployment.md) and [Troubleshooting](troubleshooting.md)
 
 ## If you are evaluating adoption
 

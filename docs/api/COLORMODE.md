@@ -30,6 +30,23 @@ stored preference with the system `prefers-color-scheme` when the preference is
 `system`. The resolved value is applied as `data-theme` on the document root and
 works with theme token modes shipped in phase 0.3.
 
+## Parameters
+
+| Symbol | Key inputs | Role |
+|---|---|---|
+| `ColorMode` | enum members `LIGHT` / `DARK` / `SYSTEM` | Preference values |
+| `resolve_color_mode(preference, system_dark=…)` | preference + system signal | Resolved `"light"` / `"dark"` string |
+| `ColorModeToggle` | `preference`, `action` | Control that POSTs the new preference |
+| `read_color_mode_preference` / `apply_color_mode_cookie` | request / response | Cookie helpers |
+
+## Returns
+
+| Symbol | Returns |
+|---|---|
+| `resolve_color_mode(...)` | `"light"` or `"dark"` |
+| `ColorModeToggle(...)` | Component node for page composition |
+| Cookie helpers | Preference string or updated response cookies |
+
 ## Persistence
 
 FastAPI helpers read and write a `hedron_color_mode` cookie and optional session
@@ -43,7 +60,7 @@ and session as first-party helpers.
 - Switching modes must preserve scoped style identifiers and contrast tokens.
 - Forced-colors and reduced-motion contracts from the theme remain in force.
 
-## Errors / failure modes
+## Errors
 
 | Situation | Behavior |
 |---|---|
@@ -51,4 +68,7 @@ and session as first-party helpers.
 | Cookie write failure | Preference falls back to default / session when configured |
 | Missing toggle action route | Browser GET/POST fails normally — app-owned |
 
-See also: [Theme](THEME.md) · [Autodoc](AUTODOC.md#color-mode).
+## See also
+
+[Theme](THEME.md) · [Autodoc — Color mode](AUTODOC.md#color-mode) ·
+[`ColorModeToggle`](../components/color-mode-toggle.md)

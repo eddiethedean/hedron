@@ -1,9 +1,10 @@
 # Enterprise diligence
 
 Short diligence sheet for security, procurement, and architecture reviewers.
-**Capability maturity:** [What’s ready](whats-ready.md) (sole source of truth).
+**Capability maturity:** [What’s ready](whats-ready.md) (summary) ·
+[What’s ready — evidence](whats-ready-evidence.md) (matrices).
 **Fit:** [Evaluate Hedron](evaluate.md) · **Ops:** [Ship a Hedron app](ship.md) ·
-[Design principles](design-principles.md).
+[Design principles](design-principles.md) · [Non-goals](../foundations/04_NON_GOALS.md).
 
 ## Project facts
 
@@ -13,7 +14,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Current version | **v0.58.0** in the repository and on PyPI; application pin `hedron>=0.58.0,<0.59` |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
-| Primary maintainer contact | Package author metadata / GitHub org owner |
+| Primary maintainer contact | Package author metadata / GitHub org owner (bus factor: small OSS project — pin versions and follow [Support](support.md)) |
 | Security disclosure | GitHub [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new) (preferred); alternate email in [SECURITY.md](../SECURITY.md) |
 | Conduct reports | **Not** security advisories — see [Code of Conduct](../CODE_OF_CONDUCT.md) |
 

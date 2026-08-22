@@ -12,7 +12,7 @@ response time, or paid support contract.
 
 Before filing an issue, check [FAQ](faq.md), [Troubleshooting](troubleshooting.md),
 [Error codes](error-codes.md), and [Ship a Hedron app](ship.md).
-Known Deferred rows: [What's ready](whats-ready.md).
+Known Deferred rows: [What's ready — evidence](whats-ready-evidence.md).
 
 ## Security
 
@@ -26,14 +26,13 @@ may still land on the `0.x` line under the [compatibility policy](../COMPATIBILI
 Pin versions in production, read [upgrade](upgrade.md) notes before bumping trains, and
 treat the Beta `hedron-elements` Supported inventory as still more volatile than CRUD
 pages. Charts require `hedron-charts>=0.2.0,<0.3`. The sample kit requires
-`hedron-sample-kit>=0.1.10,<0.2` — see [Compatibility](../COMPATIBILITY.md).
+`hedron-sample-kit>=0.2.0,<0.3` — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current repository train (`0.56.x`) once
-published. Until then, the latest installable public train is `0.56.x`. The
-previous `0.52.x` train receives best-effort security triage through approximately
-**2027-08-20**. Public-index notes: [Installation](../getting-started/installation.md).
-There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).
-Community GitHub support only;
+**Support window:** security fixes target the current published train (`0.58.x`).
+Previous minors receive best-effort triage as documented in
+[SECURITY.md](../SECURITY.md) (no multi-year LTS). Version and pin SoT:
+[Current release and support](current-release.md). Public-index notes:
+[Installation](../getting-started/installation.md). Community GitHub support only;
 [Ship a Hedron app](ship.md) for ops.
 
 ## Maintainer expectations

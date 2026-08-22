@@ -34,9 +34,9 @@ are **Beta** (usable, no 1.0, no SLA). Capability detail:
 ### Prerequisites
 
 - CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
-- Use a **clean virtual environment**. Prefer **CI-supported** pins for first apps:
-  FastAPI `>=0.141.1,<0.142`, Pydantic `>=2.13.4,<2.14`. Declared install ranges are
-  wider (FastAPI `<0.150`, Pydantic `<2.15`) — see [Compatibility](../COMPATIBILITY.md)
+- A **clean virtual environment** (shared data-science envs with older FastAPI often fail
+  to resolve — see [Compatibility](../COMPATIBILITY.md) for declared vs CI-supported
+  FastAPI/Pydantic bands)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 

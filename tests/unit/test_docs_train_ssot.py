@@ -156,6 +156,21 @@ def test_satellite_floors_come_from_release_metadata() -> None:
     )
 
 
+def test_sample_kit_pin_in_prose_must_match_release_metadata() -> None:
+    sample = ssot.FACTS.sample_kit_pin
+    assert not failures(f"Install `hedron-sample-kit{sample}` for plugins.")
+    assert failures("Install `hedron-sample-kit>=0.1.10,<0.2` for plugins.")
+
+
+def test_stale_deferred_upload_phrasing_rejected_when_uploaded() -> None:
+    if ssot.FACTS.registry_deferred:
+        return
+    assert failures("The repository's 0.56.x train is for contributors until its PyPI upload.")
+    assert failures("Maintained for 0.56.x (**not yet uploaded**; PyPI is newer).")
+    assert failures("Until then, the latest installable public train is `0.56.x`.")
+    assert failures("The repository contains the published `0.56.x` train.")
+
+
 def test_unbounded_fixed_charts_floor_is_rejected() -> None:
     floor = ssot.FACTS.charts_minimum
     assert ssot.UNBOUNDED_CHARTS_PKG.search(f"hedron-charts>={floor}")

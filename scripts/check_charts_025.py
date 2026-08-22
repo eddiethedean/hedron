@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SSOT = ROOT / "docs" / "api" / "PRODUCTION_ARCHETYPE.md"
 WHATS_READY = ROOT / "docs" / "guides" / "whats-ready.md"
+WHATS_READY_EVIDENCE = ROOT / "docs" / "guides" / "whats-ready-evidence.md"
 GRAD_HEADING = "### Graduation checklist (Plotly / Altair)"
 FENCE_RE = re.compile(r"```text\n(.*?)```", re.S)
 REQUIRED_GRAD = (
@@ -25,7 +26,7 @@ REQUIRED_GRAD = (
 
 def main() -> int:
     errors: list[str] = []
-    for path in (SSOT, WHATS_READY):
+    for path in (SSOT, WHATS_READY, WHATS_READY_EVIDENCE):
         if not path.is_file():
             errors.append(f"missing {path.relative_to(ROOT)}")
     if errors:
@@ -34,7 +35,8 @@ def main() -> int:
 
     ssot = SSOT.read_text(encoding="utf-8")
     whats = WHATS_READY.read_text(encoding="utf-8")
-    corpus = f"{ssot}\n{whats}"
+    evidence = WHATS_READY_EVIDENCE.read_text(encoding="utf-8")
+    corpus = f"{ssot}\n{whats}\n{evidence}"
 
     for needle in (
         "Matplotlib",

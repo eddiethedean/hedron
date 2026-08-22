@@ -20,8 +20,9 @@ Server:  <html> ... the complete document ... </html>
 Browser: replaces the current document
 ```
 
-That model remains available in Hedron. An `@app.page` route returns a `Page`, which
-Hedron renders as a complete HTML document.
+That model remains available in Hedron. An `@app.screen` route returns page content,
+which Hedron wraps as a complete HTML document (`@app.page` + `Page` is the Advanced
+form of the same idea).
 
 HTMX adds a second, smaller interaction model:
 
@@ -39,7 +40,7 @@ page it replaces is a **region** (the view’s host). Replacing it is a **swap**
 | Browser requests | A page URL | A fragment URL |
 | Server returns | A complete HTML document | HTML for one region |
 | Browser updates | The whole document | The chosen region only |
-| Hedron API | `@app.page` + `Page` | `@app.refreshable` + `status.refresh_button(...)` |
+| Hedron API | `@app.screen` (or Advanced `@app.page` + `Page`) | `@app.refreshable` + `status.refresh_button(...)` |
 
 ## The Hedron + HTMX request cycle
 
@@ -72,7 +73,7 @@ includes `Hedron(...)` and `session_secret`, copy the listing on
 ```python
 from datetime import UTC, datetime
 
-from hedron import Hedron, Page, Stack, Text, html
+from hedron import Hedron, Stack, Text, html
 
 app = Hedron(
     title="Hedron App",
@@ -92,16 +93,18 @@ def status():
     )
 
 
-@app.page("/")
-def home() -> Page:
-    return Page(
-        Stack(
-            status(),
-            status.refresh_button("Refresh status"),
-        ),
-        title="Home",
+@app.screen("/", title="Home")
+def home():
+    return Stack(
+        status(),
+        status.refresh_button("Refresh status"),
     )
 ```
+
+!!! note "Advanced — explicit `@app.page`"
+
+    `@app.screen` lowers to `Page` + `@app.page`. Prefer `screen` for new golden paths;
+    keep `@app.page` when you need full `Page` constructor control.
 
 `status.refresh_button(...)` renders the browser wiring for you. Its relevant output
 is equivalent to:
@@ -216,7 +219,8 @@ region. See [Troubleshooting](../guides/troubleshooting.md#htmx-403-on-fragment-
 
 ## Continue learning
 
-1. [Build your first app](quickstart.md) — run this exact Refresh interaction.
+1. [Minimal form POST](../guides/minimal-form.md) — mutate server state with CSRF protection.
 2. [HTMX interactions](../guides/htmx-interactions.md) — add a second declared region and test the request.
-3. [Minimal form POST](../guides/minimal-form.md) — mutate server state with CSRF protection and refresh the page region.
-4. [Interaction API](../api/INTERACTION.md) — redirects, response events, out-of-band updates, and advanced policies.
+3. [Interaction API](../api/INTERACTION.md) — redirects, response events, out-of-band updates, and advanced policies.
+
+If you have not scaffolded yet, start with [Build your first app](quickstart.md).

@@ -254,7 +254,7 @@ CI/toolchain contract: [`ENGINEERING_BASELINE.md`](https://github.com/eddiethede
 | Topic | Edit here | Notes |
 |---|---|---|
 | STATUS / ROADMAP | `docs/STATUS.md`, `docs/ROADMAP.md` (roadmap has no generated copies) | STATUS: `uv run python scripts/sync_status_roadmap.py` (CI `--check`) |
-| Adopter maturity | `docs/guides/whats-ready.md` | Public SSOT — do not send adopters to STATUS |
+| Adopter maturity | `docs/guides/whats-ready.md` (+ `whats-ready-evidence.md`) | Public SSOT — do not send adopters to STATUS |
 | Documentation conventions | `docs/guides/documentation-standards.md` | Audience, source ownership, generation, review checklist |
 | Contributing | `docs/CONTRIBUTING.md` | Root `CONTRIBUTING.md` is a stub pointer |
 | Security policy | `docs/SECURITY.md` | Root `SECURITY.md` is a short pointer |
@@ -289,7 +289,7 @@ questions. Accepted behavior is changed through an explicit decision entry and R
 revision or superseding RFC.
 
 Plugin authors: start from [Plugin authoring](guides/plugin-authoring.md) and the
-sample kit (`hedron-sample-kit>=0.1.10,<0.2` on Hedron 0.30).
+sample kit (`hedron-sample-kit>=0.2.0,<0.3` on Hedron 0.58).
 
 ### Implementation changes
 

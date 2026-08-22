@@ -1,12 +1,14 @@
 # Evaluate Hedron
 
 Start here if you are deciding whether Hedron fits. Pick the page that matches your role —
-**capability maturity lives only on [What’s ready today](whats-ready.md).**
+**adopter maturity summary:** [What’s ready today](whats-ready.md); **full matrices:**
+[What’s ready — evidence](whats-ready-evidence.md).
 
 | Role | Read |
 |---|---|
 | Product / eng fit | This page (below) · [Why Hedron](why-hedron.md) |
-| Capability maturity (authoritative page) | [What’s ready today](whats-ready.md) |
+| Capability maturity (summary) | [What’s ready today](whats-ready.md) |
+| Capability matrices (evidence) | [What’s ready — evidence](whats-ready-evidence.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 | Ops / ship checklist | [Ship a Hedron app](ship.md) |
 | Maturity vocabulary | [Maturity labels](../getting-started/how-to-read.md) |
@@ -60,7 +62,8 @@ human AT evidence as Supported; team will not own FastAPI+HTMX literacy.
 
 ## Capability matrix
 
-Use [What’s ready](whats-ready.md) as the sole capability list for this PoC page.
+Use [What’s ready today](whats-ready.md) for the PoC summary, then
+[What’s ready — evidence](whats-ready-evidence.md) when you need the full inventory.
 
 ## What not to depend on yet
 
@@ -85,11 +88,12 @@ Use [What’s ready](whats-ready.md) as the sole capability list for this PoC pa
 
 ## Try it
 
-1. [What is HTMX?](../getting-started/what-is-htmx.md) — browser / fragment / region mental model
-2. [Build your first app](../getting-started/quickstart.md) — Hello → Refresh
-3. [HTMX interactions](htmx-interactions.md) → [Minimal form](minimal-form.md)
-4. [Try with Codespaces](../examples/try-it.md) (real server in a container — not a playground)
-5. [Runnable examples](../examples/runnable.md)
+1. [Build your first app](../getting-started/quickstart.md) — Hello → Refresh
+2. [Minimal form POST](minimal-form.md) — CSRF-safe POST on the same app
+3. [What is HTMX?](../getting-started/what-is-htmx.md) — fragment / region mental model
+4. [HTMX interactions](htmx-interactions.md) — add a second region
+5. [Try with Codespaces](../examples/try-it.md) (real server in a container — not a playground)
+6. [Runnable examples](../examples/runnable.md)
 
 Then: [Ship a Hedron app](ship.md) · [Enterprise diligence](enterprise-diligence.md) ·
 [Public 1.0 readiness](one-point-zero-readiness.md) ·

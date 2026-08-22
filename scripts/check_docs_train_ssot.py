@@ -244,6 +244,7 @@ TIP_HONESTY_PATHS = frozenset(
         Path("README.md"),
         Path("docs/guides/current-release.md"),
         Path("docs/guides/whats-ready.md"),
+        Path("docs/guides/whats-ready-evidence.md"),
         Path("docs/guides/evaluate.md"),
         Path("docs/guides/upgrade.md"),
         Path("docs/guides/production-quality.md"),
@@ -271,6 +272,25 @@ FIRST_RUN_PATHS = REGISTRY_HONESTY_PATHS
 IN_TREE_DEFERRED_BOILERPLATE = re.compile(
     r"published in-tree\s+`?v?0\.\d+(?:\.\d+)?`?\.?\*?\*?\s*"
     r"git tag and pypi upload are",
+    re.IGNORECASE,
+)
+
+# Stale deferred-upload / wrong-public-train phrasing that must not appear on
+# adopter pages when registry_status is "uploaded".
+STALE_DEFERRED_PHRASE = re.compile(
+    r"(?:"
+    r"\bnot yet uploaded\b|"
+    r"\buntil its (?:PyPI|pypi) upload\b|"
+    r"\blatest installable public train is\b|"
+    r"\brepository(?:'s|’s)?\s+(?:\*\*)?0\.\d+\.x(?:\*\*)?\s+train is for contributors\b|"
+    r"\brepository contains the published\s+(?:\*\*|`)?0\.\d+\.x"
+    r")",
+    re.IGNORECASE,
+)
+
+# Any hedron-sample-kit pin in adopter prose must match release.toml satellites.
+SAMPLE_KIT_PIN_ANYWHERE = re.compile(
+    r"(?<![\w-])hedron-sample-kit(?P<constraint>>=[0-9.]+(?:,<[0-9.]+)?)",
     re.IGNORECASE,
 )
 
@@ -373,6 +393,25 @@ def check_text(
 
         if MATURITY_COLLISION.search(line):
             failures.append(f"{path}:{index}: ambiguous maturity phrase: {line.strip()}")
+
+        if (
+            not _is_historical(path)
+            and not facts.registry_deferred
+            and STALE_DEFERRED_PHRASE.search(line)
+        ):
+            failures.append(
+                f"{path}:{index}: stale deferred-upload / wrong-public-train phrasing "
+                f"while registry_status is uploaded: {line.strip()}"
+            )
+
+        if not _is_historical(path):
+            for match in SAMPLE_KIT_PIN_ANYWHERE.finditer(line):
+                constraint = match.group("constraint") or ""
+                if constraint != facts.sample_kit_pin:
+                    failures.append(
+                        f"{path}:{index}: hedron-sample-kit pin must be "
+                        f"{facts.sample_kit_pin}; found {constraint}"
+                    )
 
         if not _is_historical(path) and CURRENT_TRAIN_MENTION.search(line):
             for pypi_value in _pypi_claim_versions(line):

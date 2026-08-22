@@ -35,7 +35,7 @@ The generated app (from `hedron new`) is ordinary Python:
 import os
 from datetime import UTC, datetime
 
-from hedron import Hedron, Page, Stack, Text, html
+from hedron import Hedron, Stack, Text, html
 
 app = Hedron(
     title="Hedron App",
@@ -62,18 +62,20 @@ def ping():
     return refresh(status).toast("Refreshed")
 
 
-@app.page("/")
-def home() -> Page:
-    return Page(
-        Stack(
-            Text("Hello from hedron new"),
-            status(),
-            status.refresh_button("Refresh status"),
-            ping.button("Ping"),
-        ),
-        title="Home",
+@app.screen("/", title="Home")
+def home():
+    return Stack(
+        Text("Hello from hedron new"),
+        status(),
+        status.refresh_button("Refresh status"),
+        ping.button("Ping"),
     )
 ```
+
+!!! note "Advanced — explicit `@app.page`"
+
+    `@app.screen` lowers to `Page` + `@app.page`. Prefer `screen` for new golden paths;
+    keep `@app.page` when you need full `Page` constructor control.
 
 Undeclared HTMX targets fail closed.
 
@@ -111,8 +113,8 @@ Coming from Streamlit? Start with the
 
 ## Install
 
-The latest installable PyPI release is `hedron>=0.58.0,<0.59`. The repository contains
-the published `0.56.x` train; use `uv sync` when working from a checkout.
+The latest installable PyPI release is `hedron>=0.58.0,<0.59`. The repository checkout
+and PyPI both provide the `0.58.x` train; use `uv sync` when working from a checkout.
 
 ```bash
 uv add "hedron>=0.58.0,<0.59" "uvicorn[standard]"

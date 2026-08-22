@@ -40,8 +40,14 @@ def preferences(
 | `key` | `str` | Session key under which the model is stored |
 | `annotation` | `type[T]` | Pydantic/`Model` type to validate |
 
-Returns a FastAPI `Depends` factory. Bare `SessionState[T]` annotations alone are **not**
-enough for injection.
+## Returns
+
+| Symbol | Returns |
+|---|---|
+| `session_state(...)` | A FastAPI `Depends` factory that injects `SessionState[T]` |
+| `SessionState[T].value` | Current validated model instance |
+
+Bare `SessionState[T]` annotations alone are **not** enough for injection.
 
 ### `SessionState[T]`
 
@@ -86,3 +92,8 @@ authenticated caching.
 | Invalid stored payload | Validation error from the model type |
 | Missing `session_secret` in strict/production | Application refuses to start / rejects default |
 | Using `SessionState` without `session_state(...)` | Dependency not injected; runtime/type errors |
+
+## See also
+
+[Authentication](AUTH.md) · [Security types](SECURITY_TYPES.md) ·
+[Configuration](../CONFIGURATION.md) · [Session auth example](../examples/session-auth.md)

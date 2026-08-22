@@ -30,7 +30,7 @@ PLUGIN_META = PluginMeta(
     name="sample_kit",
     version="0.1.0",
     distribution="hedron-sample-kit",
-    hedron_version=">=0.51,<0.52",
+    hedron_version=">=0.58,<0.59",
     capabilities=PluginCapabilities(python=True, styles=True, explorer_panels=True),
 )
 
@@ -54,6 +54,21 @@ def register(ctx: PluginContext) -> None:
 
 register.PLUGIN_META = PLUGIN_META
 ```
+
+## Parameters
+
+| Symbol | Key inputs | Role |
+|---|---|---|
+| `PluginMeta` | `name`, `version`, `distribution`, `hedron_version`, `capabilities` | Declares plugin identity and train pin |
+| `PluginContext` | (injected) | Registration surface for components, assets, panels, hooks |
+| `[tool.hedron].plugins` | omit / `[]` / name list | Discovery enablement |
+
+Field-level tables for each `PluginContext` helper are below.
+
+## Returns
+
+Plugin `register(ctx)` callables return `None`. Registration mutates the application
+registry for the current load; failed loads roll back contributions (see Errors).
 
 ## `PluginContext` helpers
 
@@ -177,4 +192,7 @@ Adopter walkthrough (install / review / deny-by-default):
 | Duplicate entry point / invalid contribution | `HED-PLUGIN-0004` + rollback |
 | `start()` hook failure | `HED-PLUGIN-0005`; contributions rolled back |
 
-See `hedron-sample-kit` for a complete third-party-shaped example.
+## See also
+
+[Plugin authoring](../guides/plugin-authoring.md) · [Using plugins](../guides/plugin-consumer.md) ·
+[`hedron-sample-kit`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)

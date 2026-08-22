@@ -10,7 +10,8 @@
 | Docs voice / Diátaxis | [Documentation standards](docs/guides/documentation-standards.md) |
 | Code of Conduct | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
 | Status / freeze | [docs/STATUS.md](docs/STATUS.md) (root `STATUS.md` is a mirror) |
-| Roadmap | [docs/ROADMAP.md](docs/ROADMAP.md) (only roadmap file in the repo) |
+| Roadmap (adopters) | [What’s next](docs/guides/whats-next.md) |
+| Roadmap (maintainer ledger) | [docs/ROADMAP.md](docs/ROADMAP.md) |
 | Cutting a release | [docs/RELEASE.md](docs/RELEASE.md) |
 
 Edit `docs/STATUS.md` / `docs/ROADMAP.md`. Sync STATUS with `uv run python scripts/sync_status_roadmap.py`
@@ -19,20 +20,18 @@ only when a maintainer asked — syncing root mirrors is **not** docs-only CI (s
 
 ## Docs-only (preferred first PR)
 
+**Minimal verify** (open the PR with this):
+
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync --group docs
 uv run --group docs mkdocs build --strict
 uv run python scripts/check_docs_train_ssot.py
-uv run python scripts/check_package_docs_inventory.py
-uv run python scripts/check_documentation_ownership.py
-uv run python scripts/check_api_docs_coverage.py
-uv run python scripts/check_package_readme_links.py
-uv run python scripts/check_recipe_code_sync.py
-uv run python scripts/generate_component_docs.py --check
-uv run python scripts/generate_sim_demos.py --check
 ```
+
+**Full docs wall** (before maintainers merge / when CI fails): see
+[Contributor day-one](docs/guides/contributor-day-one.md).
 
 **Local verify does not need Rust or Playwright.** Docs-only PRs run the **`docs`**
 CI suite (mkdocs + SSOT + recipe/sim checks) and **skip** the Rust toolchain and
@@ -40,7 +39,6 @@ package wheel builds. Packet scripts (`verify_pkg_*`) belong on full `quality` r
 see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md). Default `pytest` uses xdist `-n auto`;
 browser tests need `HEDRON_BROWSER=1 uv run pytest -q -m browser -n 0`. Details:
 [Contributor day-one](docs/guides/contributor-day-one.md).
-
 ## Code / bug fix
 
 ```bash

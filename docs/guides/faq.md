@@ -2,9 +2,10 @@
 
 ## Which version should I install?
 
-The latest installable PyPI release is 0.58.0. Install it with
-`pip install "hedron>=0.58.0,<0.59"`. The repository’s 0.56.x train is for contributors
-until its PyPI upload. See
+Install the published train from
+[Current release and support](current-release.md):
+`pip install "hedron>=0.58.0,<0.59"`. Contributors working from a git checkout use
+`uv sync` (workspace packages), not a separate unuploaded public train. See
 [Installation](../getting-started/installation.md).
 
 ```bash
@@ -144,7 +145,7 @@ next minor train requires an intentional review. See [Compatibility](../COMPATIB
 **Supported**. Those packages are **Beta** on PyPI — pin versions.
 
 Charts install through `hedron[charts]>=0.58.0,<0.59`; the sample kit installs as
-`hedron-sample-kit>=0.1.10,<0.2`. Earlier satellite versions target older cores. See
+`hedron-sample-kit>=0.2.0,<0.3`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

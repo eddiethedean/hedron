@@ -12,22 +12,28 @@ git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync --group docs
 uv run --group docs mkdocs build --strict
+uv run python scripts/check_docs_train_ssot.py
 ```
 
-Edit one Markdown page, run the same build again, then run the checks listed below.
-Do not start with release gates, acceptance packets, or the full browser matrix unless
-your change requires them.
+Edit one Markdown page, run the same two commands again, open a PR with **“docs-only”**
+in the title. Do not start with release gates, acceptance packets, or the full browser
+matrix unless your change requires them.
 
 ## Docs-only PR
 
 **Local work (~15 minutes):** edit markdown and build docs — **no Rust, no Playwright**.
 
+### Minimal verify (before you open the PR)
+
 ```bash
-git clone https://github.com/eddiethedean/hedron.git
-cd hedron
 uv sync --group docs
 uv run --group docs mkdocs build --strict
 uv run python scripts/check_docs_train_ssot.py
+```
+
+### Full docs wall (before maintainers merge / when CI fails)
+
+```bash
 uv run python scripts/check_package_docs_inventory.py
 uv run python scripts/check_documentation_ownership.py
 uv run python scripts/check_api_docs_coverage.py
@@ -55,9 +61,9 @@ from other projects.
 ### STATUS sync
 
 Canonical STATUS lives under `docs/STATUS.md`; root `STATUS.md` is a generated mirror.
-The roadmap is only `docs/ROADMAP.md`. Leave the root STATUS mirror untouched unless a
-maintainer asked for a STATUS sync.
-
+The roadmap is only `docs/ROADMAP.md` (maintainer ledger). Adopters should read
+[What’s next](whats-next.md), not the full ROADMAP. Leave the root STATUS mirror
+untouched unless a maintainer asked for a STATUS sync.
 ## Good first issues
 
 Browse GitHub issues labeled

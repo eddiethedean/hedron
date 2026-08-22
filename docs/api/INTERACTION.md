@@ -373,3 +373,9 @@ Authors do not write `hx-on`. Both `hedron-ui.mjs` copies (`hedron-core` static 
 Frozen `#hedron-toast` OOB sink. Queue, TTL, and danger dismiss live in both
 `hedron-ui.mjs` copies. Danger toasts
 keep no TTL unless an author sets one.
+
+## See also
+
+[Which interaction API?](../getting-started/interaction-apis.md) ·
+[Refreshable views](REFRESHABLE_VIEWS.md) · [HTMX interactions](../guides/htmx-interactions.md) ·
+[Cookbook](../guides/cookbook.md)

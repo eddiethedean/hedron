@@ -46,10 +46,15 @@ unit tests fast.
 
 ## Pages and routes
 
-`@app.page` declares a navigable HTML route. A `Page` carries document metadata and page
-content. Day-to-day fragment updates use `@app.refreshable` (what `hedron new` generates).
-The explicit `app.region` / `@app.fragment` API remains for custom allowlists —
-[Which interaction API?](interaction-apis.md).
+`@app.screen` declares a navigable HTML route for new golden paths. It returns page
+content (for example a `Stack`); Hedron wraps it as a document. Day-to-day fragment
+updates use `@app.refreshable` (what `hedron new` generates).
+
+!!! note "Advanced — explicit `@app.page`"
+
+    `@app.screen` lowers to `Page` + `@app.page`. Keep `@app.page` when you need full
+    `Page` constructor control. The explicit `app.region` / `@app.fragment` API remains
+    for custom allowlists — [Which interaction API?](interaction-apis.md).
 
 That separation matters: rendering a component never silently makes it reachable over
 HTTP, and reachability never grants authorization.

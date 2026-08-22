@@ -1,7 +1,14 @@
 # Capability roadmap
 
-This is the **single** Hedron roadmap (adopter phase table and maintainer detail). Pin
-`hedron` for production; see [What's ready today](guides/whats-ready.md) for capability maturity.
+!!! warning "Adopters: read What’s next instead"
+
+    This file is the **maintainer** phase ledger (thousands of lines of gate IDs and
+    historical cuts). For a short public list of planned vs not-Supported topics, use
+    [What’s next](guides/whats-next.md). Capability maturity:
+    [What’s ready today](guides/whats-ready.md).
+
+This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
+[What's ready today](guides/whats-ready.md) for capability maturity.
 
 ## Phase status (current train)
 

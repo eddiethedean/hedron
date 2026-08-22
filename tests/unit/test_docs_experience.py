@@ -60,6 +60,7 @@ def test_current_release_banner_and_not_found_page_are_helpful() -> None:
     not_found = (DOCS / "overrides" / "404.html").read_text(encoding="utf-8")
 
     assert "development_version != config.extra.hedron_docs.published_version" in main
-    assert "stable docs" in main
+    assert "stable v" in main
+    assert "guides/current-release/" in main
     for destination in ("quickstart", "cookbook", "troubleshooting", "support"):
         assert destination in not_found

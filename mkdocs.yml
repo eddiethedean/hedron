@@ -240,9 +240,9 @@ nav:
     - Extend Hedron:
       - Use plugins: guides/plugin-consumer.md
       - Author plugins: guides/plugin-authoring.md
-      - Package author handbook (0.54): guides/package-author-handbook.md
-      - Simulator semantics (0.54): guides/simulator-semantics.md
-      - Notebook preview (0.54): guides/notebook-preview.md
+      - Package author handbook: guides/package-author-handbook.md
+      - Simulator semantics: guides/simulator-semantics.md
+      - Notebook preview: guides/notebook-preview.md
       - Curated extras (0.51): api/EXTRAS.md
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Find answers:
@@ -287,6 +287,7 @@ nav:
     - Current release and support: guides/current-release.md
     - Why Hedron: guides/why-hedron.md
     - What's ready today: guides/whats-ready.md
+    - What's ready — evidence: guides/whats-ready-evidence.md
     - Evaluate Hedron: guides/evaluate.md
     - Architecture: ARCHITECTURE.md
     - Security: SECURITY.md
@@ -296,11 +297,7 @@ nav:
     - Production adoption checklist: guides/production-adoption.md
     - Upgrade guide: guides/upgrade.md
     - What's new in 0.58: guides/whats-new-0.58.md
-    - What's new in 0.57: guides/whats-new-0.57.md
-    - What's new in 0.56: guides/whats-new-0.56.md
-    - What's new in 0.55: guides/whats-new-0.55.md
-    - What's new in 0.54: guides/whats-new-0.54.md
-    - What's new in 0.51: guides/whats-new-0.51.md
     - Releases: guides/release-notes.md
     - Earlier releases: guides/whats-new-archive.md
     - Contributor day one: guides/contributor-day-one.md
+    - What's next: guides/whats-next.md

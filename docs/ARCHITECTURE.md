@@ -5,7 +5,9 @@ extends FastAPI; `hedron-core` renders portable components; Flask/Django adapter
 the same renderer without FastAPI.
 
 **Diligence entry:** [Enterprise diligence](guides/enterprise-diligence.md) · maturity:
-[What’s ready](guides/whats-ready.md). This page is the system overview.
+[What’s ready](guides/whats-ready.md) · product constraints:
+[Design principles](guides/design-principles.md) ·
+[Non-goals](foundations/04_NON_GOALS.md). This page is the system overview.
 
 ## Request lifecycle (FastAPI)
 

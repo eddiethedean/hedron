@@ -27,6 +27,18 @@ hedron>=0.58.0,<0.59
 Contributors working from a checkout should use `uv sync` so local packages resolve
 from the workspace.
 
+## PyPI vs checkout (one screen)
+
+| You want… | Do this |
+|---|---|
+| Build an application | Install from PyPI: `hedron>=0.58.0,<0.59` |
+| Contribute / hack on Hedron | Clone the repo and `uv sync` (editable workspace) |
+| Know security support window | Current train `0.58.x` — [SECURITY.md](../SECURITY.md) |
+| Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |
+
+There is no separate “unuploaded public train” for adopters when
+`registry_status = "uploaded"` in [`docs/release.toml`](../release.toml).
+
 ## What should I install?
 
 - Building an application: follow [Installation](../getting-started/installation.md).

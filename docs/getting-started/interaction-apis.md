@@ -13,6 +13,11 @@ Both compile to the same fail-closed fragment/OOB stack. Neither is deprecated.
 ## Default: refreshable and command
 
 ```python
+from hedron import Hedron, Stack, Text, html
+
+app = Hedron(title="Demo", security="standard", session_secret="dev", explorer="off")
+
+
 @app.refreshable("/status")
 def status():
     return html.div(Text("ok"), role="status")
@@ -25,13 +30,15 @@ def ping():
     return refresh(status).toast("Refreshed")
 
 
-@app.page("/")
-def home() -> Page:
-    return Page(
-        Stack(status(), status.refresh_button("Refresh"), ping.button("Ping")),
-        title="Home",
-    )
+@app.screen("/", title="Home")
+def home():
+    return Stack(status(), status.refresh_button("Refresh"), ping.button("Ping"))
 ```
+
+!!! note "Advanced — explicit `@app.page`"
+
+    Prefer `@app.screen` for new golden paths. Use `@app.page` + `Page(...)` when you need
+    full document constructor control.
 
 Continue: [Build your first app](quickstart.md) →
 [HTMX interactions](../guides/htmx-interactions.md) →

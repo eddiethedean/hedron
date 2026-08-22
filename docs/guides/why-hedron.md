@@ -43,26 +43,23 @@ explicit HTTP request, and it may swap a **typed HTML fragment** into a declared
 
 === "Hedron"
 
-    ```python
-    from datetime import UTC, datetime
-    from hedron import Hedron, Page, Stack, Text, html
+```python
+from datetime import UTC, datetime
+from hedron import Hedron, Stack, Text, html
 
-    app = Hedron(title="Demo", security="standard", session_secret="dev", explorer="off")
-
-
-    @app.refreshable("/status")
-    def status():
-        stamp = datetime.now(UTC).strftime("%H:%M:%S")
-        return html.div(Text(f"ok · {stamp}"), role="status")
+app = Hedron(title="Demo", security="standard", session_secret="dev", explorer="off")
 
 
-    @app.page("/")
-    def home() -> Page:
-        return Page(
-            Stack(Text("Hello"), status(), status.refresh_button("Refresh")),
-            title="Demo",
-        )
-    ```
+@app.refreshable("/status")
+def status():
+    stamp = datetime.now(UTC).strftime("%H:%M:%S")
+    return html.div(Text(f"ok · {stamp}"), role="status")
+
+
+@app.screen("/", title="Demo")
+def home():
+    return Stack(Text("Hello"), status(), status.refresh_button("Refresh"))
+```
 
 Hedron keeps FastAPI dependency injection, OpenAPI, and CSRF-ready forms.
 Streamlit optimizes for the fastest notebook-style dashboard loop.

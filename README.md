@@ -62,12 +62,12 @@ If PowerShell reports that running scripts is disabled, use
 If `hedron` is not on your PATH, use `python -m hedron`
 ([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).
 
-**Next:** [Current release and support](https://hedron.readthedocs.io/en/latest/guides/current-release/) →
-[First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
-[What is HTMX?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-htmx/) →
-[HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
+**Next:** [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
+[What is HTMX?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-htmx/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
+
+Pins and support status: [Current release](https://hedron.readthedocs.io/en/latest/guides/current-release/).
 
 ## Who it’s for
 
@@ -121,7 +121,7 @@ Web Components, Workbench, and Posit):
 
 Charts: `pip install "hedron[charts]>=0.58.0,<0.59"`.
 Maps: `pip install "hedron[maps]>=0.58.0,<0.59"`.
-Plugin authors can install `hedron-sample-kit>=0.1.10,<0.2`. Older satellite releases target
+Plugin authors can install `hedron-sample-kit>=0.2.0,<0.3`. Older satellite releases target
 older cores; see [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 
 Prefer not to install locally? Use a **full cloud environment** (not a hosted playground) —
