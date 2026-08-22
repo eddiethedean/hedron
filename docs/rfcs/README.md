@@ -104,3 +104,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0084](RFC-0084-UNIFIED-PRESENTATION.md) | Unified presentation and zero-application-CSS | Accepted (D-099; Stage 0 refined by D-100; [#558](https://github.com/eddiethedean/hedron/issues/558)–[#570](https://github.com/eddiethedean/hedron/issues/570)) |
 | [0085](RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md) | Progressive feature and styling authoring with inspectable lowering | Accepted + Stage 0 Refined (D-101 / D-102 / D-105; in-tree `v0.57.0` baseline) |
 | [0086](RFC-0086-PROGRESSIVE-STYLING-AUTHORING.md) | Progressive styling authoring standalone-phase proposal | Superseded by D-105; integrated into RFC-0085 / phase 0.58 |
+| [0087](RFC-0087-MODERN-CSS-PLATFORM.md) | Modern CSS platform and intuitive built-in styling | Accepted; Stage 0 refined by D-107 (Stage 1 probes and issue mirrors pending) |

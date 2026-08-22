@@ -1,0 +1,184 @@
+schema_version = 1
+phase = "0.59"
+state = "planned"
+audit_date = "2026-08-22"
+owner = "hedron"
+decision = "D-106"
+contract_refine = "D-107"
+contract = "modern-css-contract-059.toml"
+owning_rfc = "RFC-0087"
+planning_baseline = "v0.58.1"
+target = "v0.59.0"
+hedron_umbrella_issue = "unfiled"
+stage_1_requires_hedron_issue_mirrors = true
+
+[live_issue_summary]
+hedron_repository = "eddiethedean/hedron"
+hedron_open_issue_numbers = [86, 192]
+hedron_open_styling_enhancement_issue_numbers = []
+consumer_repository = "eddiethedean/user-token-management-app"
+consumer_open_styling_enhancement_issue_numbers = [4, 5, 6, 7]
+note = "The Hedron-local styling set is empty; all four current open styling/presentation inputs are consumer-repository issues and are phase-owned below."
+
+[[repository_open_issue]]
+repository = "eddiethedean/hedron"
+number = 86
+url = "https://github.com/eddiethedean/hedron/issues/86"
+classification = "accessibility evidence"
+styling_enhancement = false
+owned_by_059 = false
+relationship = "cross-cutting claim limitation; human AT remains not Supported until SR-021 companions close"
+
+[[repository_open_issue]]
+repository = "eddiethedean/hedron"
+number = 192
+url = "https://github.com/eddiethedean/hedron/issues/192"
+classification = "chart redaction bug"
+styling_enhancement = false
+owned_by_059 = false
+relationship = "unrelated; remains with chart/security regression owner"
+
+[[consumer_open_issue]]
+repository = "eddiethedean/user-token-management-app"
+number = 4
+url = "https://github.com/eddiethedean/user-token-management-app/issues/4"
+title = "[Hedron enhancement] Allow safe attribute passthrough on typed Button and LinkButton"
+phase_ownership = "required consumer vertical slice"
+workstream = "W6"
+gates = ["CONTROL-059", "SECURITY-059", "COMPAT-059", "CONSUMER-059"]
+source_validation = "Data Mover HTMX and dialog controls use typed Button/LinkButton without native-element fallback"
+close_policy = "keep open until Hedron fixture and source-app migration satisfy the issue acceptance criteria"
+
+[[consumer_open_issue]]
+repository = "eddiethedean/user-token-management-app"
+number = 5
+url = "https://github.com/eddiethedean/user-token-management-app/issues/5"
+title = "[Hedron enhancement] Complete Button and LinkButton size and width styling"
+phase_ownership = "required consumer vertical slice"
+workstream = "W6"
+gates = ["CONTROL-059", "CASCADE-059", "VISUAL-059", "CONSUMER-059"]
+source_validation = "Data Mover removes custom small-button and full-width link-action selectors"
+close_policy = "keep open until semantic size/width, focus, disabled, icon, and responsive evidence passes"
+
+[[consumer_open_issue]]
+repository = "eddiethedean/user-token-management-app"
+number = 6
+url = "https://github.com/eddiethedean/user-token-management-app/issues/6"
+title = "[Hedron enhancement] Add composable themed AppShell chrome slots"
+phase_ownership = "required consumer vertical slice"
+workstream = "W7"
+gates = ["CHROME-059", "CONTAINER-059", "A11Y-059", "VISUAL-059", "CONSUMER-059"]
+source_validation = "Data Mover uses typed brand/account-action/footer composition on authenticated and unauthenticated surfaces"
+close_policy = "keep open until form action, landmark, responsive, and complete composition evidence passes"
+
+[[consumer_open_issue]]
+repository = "eddiethedean/user-token-management-app"
+number = 7
+url = "https://github.com/eddiethedean/user-token-management-app/issues/7"
+title = "[Hedron enhancement] Add themed pipeline, connector-node, and run-status primitives"
+phase_ownership = "required consumer vertical slice"
+workstream = "W8"
+gates = ["WORKFLOW-059", "MOTION-059", "A11Y-059", "VISUAL-059", "CONSUMER-059"]
+source_validation = "Data Mover pipeline, operational panel, and compact history no longer require bespoke node/connector/state CSS"
+close_policy = "keep open until desktop/mobile, all states, reduced-motion, logs/history, and provider-neutral slots pass"
+
+[inherited_closed_hedron_issues]
+numbers = [27, 29, 505, 519, 523, 524, 525, 528, 530, 532, 534, 535, 544, 558, 559, 560, 566, 570]
+relationship = "closed historical styling/presentation contracts remain regression inputs; their closure does not imply the 0.59 modern-CSS capabilities already exist"
+phase_057_range = "#558-#570 presentation work is inherited through RFC-0084/D-099/D-100"
+phase_058_authority = "RFC-0085/D-101/D-102/D-105 DesignSystem, recipes, StyleScope, tooling, and zero-app-CSS contracts remain authoritative"
+
+[[workstream]]
+id = "W0"
+title = "Stage 0 contracts, live issue mirrors, baseline probes, feature tiers, and browser floors"
+gates = ["CONTRACT-059"]
+external_issues = []
+
+[[workstream]]
+id = "W1"
+title = "Standards-capable scoped compiler, imports/assets, manifests, source maps, and fuzzing"
+gates = ["COMPILER-059", "SECURITY-059", "COMPAT-059"]
+external_issues = []
+
+[[workstream]]
+id = "W2"
+title = "Canonical cascade layers, selector ABI, modular source, and generated default asset"
+gates = ["CASCADE-059", "PERF-059", "REGRESS-059"]
+external_issues = []
+
+[[workstream]]
+id = "W3"
+title = "Token namespace, Theme variants, modern color, typed properties, and local typography assets"
+gates = ["TOKENS-059", "COLOR-059", "TYPE-059"]
+external_issues = []
+
+[[workstream]]
+id = "W4"
+title = "Container-aware and intrinsic layout, subgrid fallback, and logical writing modes"
+gates = ["CONTAINER-059", "LAYOUT-059", "MEDIA-059"]
+external_issues = []
+
+[[workstream]]
+id = "W5"
+title = "Native overlay placement, entry/exit motion, view transitions, and static fallbacks"
+gates = ["OVERLAY-059", "MOTION-059", "A11Y-059"]
+external_issues = []
+
+[[workstream]]
+id = "W6"
+title = "Typed-control safe attributes and complete Button/LinkButton size/width styling"
+gates = ["CONTROL-059", "SECURITY-059", "COMPAT-059", "VISUAL-059", "CONSUMER-059"]
+external_issues = ["user-token-management-app#4", "user-token-management-app#5"]
+
+[[workstream]]
+id = "W7"
+title = "Composable branded/account/footer AppShell chrome across auth states"
+gates = ["CHROME-059", "CONTAINER-059", "A11Y-059", "VISUAL-059", "CONSUMER-059"]
+external_issues = ["user-token-management-app#6"]
+
+[[workstream]]
+id = "W8"
+title = "Provider-neutral pipeline, connector, run-state, log, and compact-history presentation"
+gates = ["WORKFLOW-059", "MOTION-059", "A11Y-059", "VISUAL-059", "CONSUMER-059"]
+external_issues = ["user-token-management-app#7"]
+
+[[workstream]]
+id = "W9"
+title = "Explicit style-context and field/layout recipe feasibility without hidden mutation"
+gates = ["CONTRACT-059", "TOKENS-059", "DX-059", "COMPAT-059"]
+external_issues = []
+
+[[workstream]]
+id = "W10"
+title = "Print, preference media, RTL/vertical writing, content, zoom, and no-script evidence"
+gates = ["MEDIA-059", "A11Y-059", "VISUAL-059"]
+external_issues = []
+
+[[workstream]]
+id = "W11"
+title = "Style explain/check/preview/diff/eject, Explorer inspection, migration, and learning path"
+gates = ["DX-059", "COMPAT-059"]
+external_issues = []
+
+[[workstream]]
+id = "W12"
+title = "Whole-fleet adoption, zero-application-CSS gallery, performance, packaging, and release rehearsal"
+gates = ["VISUAL-059", "PERF-059", "REGRESS-059", "PKG-059"]
+external_issues = []
+
+[stage_1_entry]
+accepted_contract_refine = true
+hedron_umbrella_issue_filed = false
+hedron_workstream_issue_mirrors_filed = false
+consumer_issue_backlinks_added = false
+browser_capability_probe_locked = false
+parser_implementation_probe_locked = false
+explicit_set_recipe_probe_locked = false
+live_issue_audit_refreshed = false
+
+[release_issue_policy]
+all_consumer_issues_closed = true
+new_relevant_open_issues_must_be_owned_or_excluded = true
+exclusion_requires = ["reason", "owner", "destination", "stability_impact"]
+issue_closure_alone_is_not_gate_evidence = true
+gate_verification_alone_does_not_close_external_issue_without_source_validation = true

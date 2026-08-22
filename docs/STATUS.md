@@ -6,6 +6,9 @@
 
 **Roadmap position:** phase 0.58 **Published** in-tree as `v0.58.1`; PyPI serves `0.58.0`.
 Living tip = in-tree `v0.58.1` (`registry_status = "deferred"`).
+**Next planned phase:** 0.59 modern CSS platform and intuitive built-in styling (D-106 / D-107 /
+RFC-0087). Stage 0 is contract-refined; Stage 1 is blocked on probes and Hedron tracking-issue mirrors; no 0.59
+runtime or release claim exists.
 **Date:** 2026-08-22
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
@@ -25,7 +28,9 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 
 **Phase focus:** Living train is **0.58** (D-101 / D-102 / D-105 / RFC-0085) — progressive
 feature and styling authoring. `release-gate-0.58.toml` Verified rows; living tip `v0.58.1`
-is in-tree (`registry_status = "deferred"`; PyPI serves `v0.58.0`). Prior Published
+is in-tree (`registry_status = "deferred"`; PyPI serves `v0.58.0`). Next Planned **0.59**
+(D-106 / D-107 / RFC-0087) owns the modern CSS overhaul; every `release-gate-0.59.toml` row is Planned and
+Stage 1 has not begun. Prior Published
 in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
@@ -79,6 +84,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `PARTICIPANT-021` | Compensated participant floor | **Planned** (0.21) | sessions outstanding; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `ARTIFACT-021` | Redacted ledger + statement update | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
+| `*-059` | Modern CSS platform and intuitive built-in styling | **Planned** (0.59) | D-106 / D-107 / RFC-0087; Stage 1 probes and issue mirrors pending; includes [consumer #4–#7](https://github.com/eddiethedean/user-token-management-app/issues) |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
 | `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |
@@ -117,6 +123,28 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `PERF-10-001` | Load/proxy backpressure evidence | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `PERF-024` |
 | `MORPH-048` | Idiomorph / morph swap | **Deferred** (0.48) | Not vendored; keep innerHTML/outerHTML; later train, not 0.49 |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | **Not** re-homed to 0.24; stays on `0.10.x` |
+
+## Phase 0.59 planning (not implemented)
+
+- Ownership: [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md) / D-106.
+- Plan: [MODERN_CSS_059](implementation/MODERN_CSS_059.md) ·
+  [RELEASE_0_59](acceptance/RELEASE_0_59.md).
+- Locks: [modern-css-inventory-059.toml](acceptance/modern-css-inventory-059.toml) ·
+  [modern-css-tracking-059.toml](acceptance/modern-css-tracking-059.toml) ·
+  [modern-css-compatibility-059.toml](acceptance/modern-css-compatibility-059.toml) ·
+  [upgrade-fixtures-059.md](acceptance/upgrade-fixtures-059.md).
+- Gate index: [release-gate-0.59.toml](acceptance/release-gate-0.59.toml)
+  (all 23 rows **Planned**; zero release evidence claimed).
+- Open styling inputs: Hedron-local set empty as of 2026-08-22; required consumer inputs are
+  [user-token-management-app #4](https://github.com/eddiethedean/user-token-management-app/issues/4),
+  [#5](https://github.com/eddiethedean/user-token-management-app/issues/5),
+  [#6](https://github.com/eddiethedean/user-token-management-app/issues/6), and
+  [#7](https://github.com/eddiethedean/user-token-management-app/issues/7).
+- Unrelated/open dependencies: Hedron [#86](https://github.com/eddiethedean/hedron/issues/86)
+  continues to limit human-AT claims; [#192](https://github.com/eddiethedean/hedron/issues/192)
+  remains an unrelated chart bug.
+- Stage 1 blockers: parser/browser/recipe probes, Hedron umbrella/workstream issue mirrors,
+  consumer backlinks, and refreshed live issue audit.
 
 ## Phase 0.58 evidence
 

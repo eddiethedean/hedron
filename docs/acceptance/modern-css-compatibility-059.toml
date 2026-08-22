@@ -1,0 +1,152 @@
+schema_version = 1
+phase = "0.59"
+state = "planned"
+planning_baseline = "v0.58.1"
+published_upgrade_source = "v0.58.0"
+target = "v0.59.0"
+owning_rfc = "RFC-0087"
+decision = "D-106"
+contract_refine = "D-107"
+contract = "modern-css-contract-059.toml"
+
+[browser_policy]
+engines = ["chromium", "firefox", "webkit"]
+playwright = "1.62.0"
+exact_versions = { chromium = "151.0.7922.34 (revision 1234)", firefox = "153.0 (revision 1538)", webkit = "26.5 (revision 2336)" }
+user_agent_sniffing = false
+required_capability_rule = "native_or_static_fallback_passes_every_supported_engine"
+progressive_capability_rule = "feature_detected_enhancement_plus_independently_verified_fallback"
+experimental_capability_rule = "opt_in_labeled_and_excluded_from_supported_claims"
+feature_detection = ["@supports", "CSS.supports only when behavior cannot be selected in CSS", "native HTML capability checks"]
+
+[public_api]
+existing_058_signatures_remain_valid = true
+existing_default_behavior_remains_default = true
+new_container_responsiveness_is_opt_in = true
+existing_responsive_maps_keep_viewport_semantics = true
+default_styles_false_remains_supported = true
+application_css_override_authority_remains_strongest = true
+automatic_application_source_rewrite = false
+codemods_are_reviewable_and_no_overwrite_by_default = true
+
+[dom_and_semantics]
+public_classes_remain_valid = true
+data_hedron_markers_remain_valid = true
+document_order_changes = false
+landmark_nesting_regressions = false
+accessible_name_changes_without_explicit_api = false
+styling_can_change_route_effect_auth_state = false
+complete_content_path_required = true
+
+[tokens]
+canonical_namespace_locked_at_refine = true
+emit_058_public_aliases_through_059 = true
+alias_use_diagnostic_only = true
+alias_removal_in_059 = false
+future_removal_requires_separate_decision = true
+theme_names_preserved = ["default", "aurora"]
+theme_variant_output_is_additive_and_explicit = true
+
+[compiler]
+target_compiler_format = 2
+target_manifest_format = 2
+read_manifest_formats = [1, 2]
+preserve_v1_symbol_hashes_by_default = true
+hash_change_requires = ["recorded_collision_or_security_reason", "migration_map", "upgrade_fixture", "release_note"]
+v1_style_symbols_reader = true
+production_runtime_compile_remains_forbidden = true
+unknown_safe_at_rules_preserved = true
+ambiguous_or_unsafe_rewrite_rejects = true
+
+[cascade]
+layer_order = ["reset", "tokens", "base", "components", "utilities", "overrides"]
+application_overrides_layer_preserved = true
+authored_owning_layer_collapses = true
+authored_sublayers_are_deterministic = true
+filesystem_order_is_not_authority = true
+private_selector_abi = false
+
+[[fallback_pair]]
+feature = "@scope"
+enhancement = "native scoped cascade boundary"
+fallback = "compiler-expanded public-marker selectors"
+gates = ["COMPILER-059", "CASCADE-059"]
+
+[[fallback_pair]]
+feature = "container queries"
+enhancement = "component-width adaptation"
+fallback = "base layout; existing viewport mapping retained for compatibility"
+gates = ["CONTAINER-059", "LAYOUT-059"]
+
+[[fallback_pair]]
+feature = "subgrid"
+enhancement = "nested track alignment"
+fallback = "ordinary Grid/FormGrid tracks"
+gates = ["LAYOUT-059", "VISUAL-059"]
+
+[[fallback_pair]]
+feature = "wide-gamut and OKLCH output"
+enhancement = "higher-fidelity color declaration"
+fallback = "canonical tested sRGB declaration"
+gates = ["COLOR-059", "A11Y-059"]
+
+[[fallback_pair]]
+feature = "light-dark()"
+enhancement = "compact native mode selection"
+fallback = "existing explicit/system light-dark token selectors"
+gates = ["TOKENS-059", "COLOR-059"]
+
+[[fallback_pair]]
+feature = "@property"
+enhancement = "typed interpolation for selected prefixed tokens"
+fallback = "ordinary custom property plus explicit declaration fallback"
+gates = ["TOKENS-059", "MOTION-059"]
+
+[[fallback_pair]]
+feature = "anchor positioning"
+enhancement = "logical anchored placement and collision tries"
+fallback = "usable logical document-flow or bounded existing placement"
+gates = ["OVERLAY-059", "A11Y-059"]
+
+[[fallback_pair]]
+feature = "@starting-style and discrete transitions"
+enhancement = "entry/exit animation"
+fallback = "immediate stable open/closed state"
+gates = ["MOTION-059", "A11Y-059"]
+
+[[fallback_pair]]
+feature = "view transitions"
+enhancement = "declared page/surface visual continuity"
+fallback = "ordinary navigation or HTMX swap with canonical focus/history"
+gates = ["MOTION-059", "COMPAT-059"]
+
+[[fallback_pair]]
+feature = "content-visibility"
+enhancement = "off-screen rendering reduction"
+fallback = "fully rendered content"
+gates = ["PERF-059", "A11Y-059", "MEDIA-059"]
+
+[upgrade_sources]
+public = "v0.58.0"
+living_in_tree = "v0.58.1"
+both_required = true
+fixture_document = "upgrade-fixtures-059.md"
+
+[visual_change_policy]
+pixel_only_is_sufficient = false
+requires = ["reason", "owner", "dom_facts", "computed_style_facts", "a11y_confirmation", "before_after_artifacts"]
+material_documented_layout_change_prefers_compat_mode = true
+silent_breaking_reflow = false
+
+[deprecation_policy]
+diagnostic_before_removal = true
+one_minor_alias_floor = true
+exact_removal_version_must_be_separately_accepted = true
+beta_status_does_not_waive_upgrade_fixture = true
+
+[host_and_package_policy]
+capability_labeled_not_nominal_parity = true
+core_token_and_marker_authority = "hedron-core"
+host_adapters_do_not_fork_css = true
+optional_packages_remain_lazy = true
+consumer_node_toolchain_required = false

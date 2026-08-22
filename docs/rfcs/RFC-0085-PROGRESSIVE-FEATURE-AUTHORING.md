@@ -943,6 +943,11 @@ storage, scanning, retention, and destructive intent remain visible inputs.
 10. **Release structure?** One RFC, implementation plan, acceptance checklist, tracking file,
     upgrade corpus, and twenty-gate release file; no 0.59 predecessor audit or second cut.
 
+> **Post-cut scheduling note (D-106):** this answer rejected the standalone design-system delivery
+> proposed by RFC-0086; that scope shipped in 0.58. D-106/RFC-0087 later assign a distinct 0.59
+> modern-CSS platform and whole-fleet overhaul on top of the shipped 0.58 authority. It does not
+> revive RFC-0086, D-103, or D-104.
+
 ## Acceptance criteria
 
 Phase 0.58 may cut only when:

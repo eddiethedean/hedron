@@ -66,6 +66,9 @@ status commentary, not a satisfied release gate.
 - [`v0.58` progressive feature and styling authoring](RELEASE_0_58.md) — **Published/Verified**
   as `v0.58.0` on PyPI (D-101 / D-102 / D-105 / RFC-0085; twenty Verified
   gates; predecessor `v0.57.0` Published/Verified in-tree)
+- [`v0.59` modern CSS platform and intuitive built-in styling](RELEASE_0_59.md) — **Planned**
+  (D-106 / D-107 / RFC-0087; contract refined; all 23 gates Planned; Stage 1 probes and Hedron
+  issue mirrors required; includes user-token-management-app #4–#7)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

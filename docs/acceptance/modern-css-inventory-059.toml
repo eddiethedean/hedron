@@ -1,0 +1,376 @@
+schema_version = 1
+phase = "0.59"
+state = "planned"
+snapshot_date = "2026-08-22"
+planning_baseline = "v0.58.1"
+published_upgrade_source = "v0.58.0"
+target = "v0.59.0"
+owning_rfc = "RFC-0087"
+decision = "D-106"
+contract_refine = "D-107"
+contract_refine_required = false
+contract = "modern-css-contract-059.toml"
+single_styling_authority = true
+
+[baseline]
+default_css = "packages/hedron-core/src/hedron_core/static/hedron-default.css"
+lines = 3165
+raw_bytes = 85136
+gzip_9_bytes = 11851
+lexical_hedron_classes = 228
+lexical_data_hedron_attributes = 47
+lexical_hedron_custom_properties = 49
+compiler_format = 1
+css_symbol_manifest_format = 1
+theme_variants_emitted = false
+default_print_rules_present = false
+container_query_api_present = false
+
+[dispositions]
+required = "Supported path; native/fallback behavior passes the pinned Chromium, Firefox, and WebKit floors"
+progressive = "Feature-detected enhancement whose independent fallback passes all Supported floors"
+experimental = "Opt-in and excluded from unqualified Supported claims"
+deferred = "Outside phase 0.59 with an explicit rationale and destination"
+
+[[capability]]
+id = "compiler-grammar"
+area = "compiler"
+css = ["selectors", "declarations", "descriptors", "strings", "comments", "urls", "custom identifiers"]
+baseline = "focused parser plus regex symbol discovery/rewrite"
+disposition = "required"
+fallback = "not applicable; invalid or unsupported unsafe syntax rejects diagnostically"
+hedron_surface = "component styles.css, compile_css, StyleSymbols, compiler manifest/source map"
+gates = ["COMPILER-059", "SECURITY-059", "COMPAT-059"]
+
+[[capability]]
+id = "nesting"
+area = "compiler"
+css = ["CSS Nesting Level 1", "&", "nested conditional rules"]
+baseline = "can be structurally preserved but has no scoping conformance contract"
+disposition = "required"
+fallback = "compiler emits browser-valid scoped CSS for the pinned floor"
+hedron_surface = "advanced component styles.css"
+gates = ["COMPILER-059", "CASCADE-059"]
+
+[[capability]]
+id = "conditional-and-future-at-rules"
+area = "compiler"
+css = ["@media", "@supports", "@container", "@scope", "@starting-style", "unknown safe at-rules"]
+baseline = "generic structural preservation"
+disposition = "required"
+fallback = "safe unknown syntax is preserved when no rewrite is needed; unsafe/ambiguous forms reject"
+hedron_surface = "component styles.css and deterministic build output"
+gates = ["COMPILER-059", "SECURITY-059"]
+
+[[capability]]
+id = "imports-and-assets"
+area = "compiler"
+css = ["quoted @import", "url() @import", "@font-face src", "image-set() and nested URL tokens"]
+baseline = "url() validation exists; quoted import/scoping semantics are incomplete"
+disposition = "required"
+fallback = "bounded local imports resolve at build or reject; remote imports are not Supported"
+hedron_surface = "registered asset roots and strict-CSP build"
+gates = ["COMPILER-059", "SECURITY-059", "PKG-059"]
+
+[[capability]]
+id = "cascade-layers"
+area = "cascade"
+css = ["@layer", ":where()", ":is()", "specificity"]
+baseline = "fixed public order; authored owning layer can double-nest"
+disposition = "required"
+fallback = "one deterministic flattened/sublayered output"
+hedron_surface = "reset, tokens, base, components, utilities, overrides"
+gates = ["CASCADE-059", "COMPAT-059"]
+
+[[capability]]
+id = "native-scope"
+area = "cascade"
+css = ["@scope", ":scope"]
+baseline = "no @scope contract; Hedron StyleScope is marker/token based"
+disposition = "progressive"
+fallback = "compiler-expanded public-marker selector boundary"
+hedron_surface = "built-in specificity containment and advanced component styles.css"
+gates = ["COMPILER-059", "CASCADE-059", "VISUAL-059"]
+
+[[capability]]
+id = "size-container-queries"
+area = "layout"
+css = ["container-type: inline-size", "@container", "cqi", "cqb", "cqmin", "cqmax"]
+baseline = "viewport breakpoint maps only"
+disposition = "required"
+fallback = "base layout plus existing viewport behavior where compatibility requires it"
+hedron_surface = "Container query boundary; Grid/FormGrid/shell/workflow responsive context"
+gates = ["CONTAINER-059", "LAYOUT-059", "COMPAT-059"]
+
+[[capability]]
+id = "style-container-queries"
+area = "layout"
+css = ["@container style()"]
+baseline = "none"
+disposition = "progressive"
+fallback = "public semantic data markers and inherited tokens"
+hedron_surface = "internal token/variant adaptation only; no behavior state"
+gates = ["CONTAINER-059", "TOKENS-059"]
+
+[[capability]]
+id = "subgrid"
+area = "layout"
+css = ["grid-template-columns: subgrid", "grid-template-rows: subgrid"]
+baseline = "ordinary independent grids"
+disposition = "progressive"
+fallback = "existing explicit Grid/FormGrid tracks"
+hedron_surface = "field, metadata, card, and data-row alignment"
+gates = ["LAYOUT-059", "VISUAL-059", "A11Y-059"]
+
+[[capability]]
+id = "logical-layout"
+area = "layout"
+css = ["logical properties", "logical values", "writing-mode", "direction"]
+baseline = "logical properties used selectively; RTL is an evidence mode"
+disposition = "required"
+fallback = "documented physical exceptions only"
+hedron_surface = "whole-fleet LTR, RTL, mixed-direction, and selected vertical writing"
+gates = ["LAYOUT-059", "MEDIA-059", "A11Y-059"]
+
+[[capability]]
+id = "intrinsic-and-viewport-sizing"
+area = "layout"
+css = ["min()", "max()", "clamp()", "minmax()", "fit-content", "svh", "lvh", "dvh", "aspect-ratio"]
+baseline = "minmax/clamp and intrinsic tracks used selectively"
+disposition = "required"
+fallback = "ordinary rem/percent/min-height values before enhanced declarations"
+hedron_surface = "finite layout, shell, media, split, and typography intent"
+gates = ["LAYOUT-059", "TYPE-059", "VISUAL-059"]
+
+[[capability]]
+id = "relational-and-functional-selectors"
+area = "cascade"
+css = [":is()", ":where()", ":not()", ":has()"]
+baseline = "used by the default stylesheet"
+disposition = "required"
+fallback = "public state markers where a browser capability probe requires it"
+hedron_surface = "low-specificity composition and parent visual state only"
+gates = ["COMPILER-059", "CASCADE-059", "A11Y-059"]
+
+[[capability]]
+id = "modern-color"
+area = "theme"
+css = ["color-mix()", "hwb()", "lab()", "lch()", "oklab()", "oklch()", "wide-gamut color()"]
+baseline = "color-mix used; DesignSystem.brand accepts 3/6-digit hex"
+disposition = "required"
+fallback = "tested canonical sRGB declaration precedes every enhanced gamut declaration"
+hedron_surface = "absolute parsed brand input and hedron.brand-palette/2 provenance"
+gates = ["COLOR-059", "TOKENS-059", "A11Y-059"]
+
+[[capability]]
+id = "theme-variants"
+area = "theme"
+css = ["custom properties", "explicit variant markers"]
+baseline = "Theme.variants is stored/registered but emit_theme_css does not emit it"
+disposition = "required"
+fallback = "base theme tokens when no explicit variant is selected"
+hedron_surface = "StyleScope/component finite variant selection"
+gates = ["TOKENS-059", "COLOR-059", "COMPAT-059"]
+
+[[capability]]
+id = "light-dark-and-color-scheme"
+area = "theme"
+css = ["light-dark()", "color-scheme"]
+baseline = "explicit/system dark selectors and token duplication"
+disposition = "progressive"
+fallback = "existing explicit light/dark token selectors and precedence"
+hedron_surface = "Theme emission and native control appearance"
+gates = ["TOKENS-059", "COLOR-059", "VISUAL-059"]
+
+[[capability]]
+id = "typed-custom-properties"
+area = "theme"
+css = ["@property", "CSS Properties and Values API"]
+baseline = "unregistered custom properties"
+disposition = "progressive"
+fallback = "ordinary prefixed custom properties with explicit fallback values"
+hedron_surface = "selected bounded animatable color/length/number tokens"
+gates = ["TOKENS-059", "MOTION-059", "COMPILER-059"]
+
+[[capability]]
+id = "modern-typography"
+area = "content"
+css = ["text-wrap: balance", "text-wrap: pretty", "hyphens", "overflow-wrap", "font-size-adjust", "variable fonts"]
+baseline = "basic semantic typography and local font assets"
+disposition = "required"
+fallback = "ordinary wrapping, explicit overflow, and system fallback stacks"
+hedron_surface = "finite typography/content roles and explicit local font declarations"
+gates = ["TYPE-059", "MEDIA-059", "A11Y-059"]
+
+[[capability]]
+id = "popover-and-top-layer"
+area = "overlay"
+css = [":popover-open", "::backdrop", "top layer"]
+baseline = "native dialog/popover with details/static fallbacks"
+disposition = "required"
+fallback = "existing details/static/native document-flow surfaces"
+hedron_surface = "Popover, context menu, dialog, help, shell, and workflow overlays"
+gates = ["OVERLAY-059", "A11Y-059", "REGRESS-059"]
+
+[[capability]]
+id = "anchor-positioning"
+area = "overlay"
+css = ["anchor-name", "position-anchor", "position-area", "position-try-fallbacks"]
+baseline = "none"
+disposition = "progressive"
+fallback = "logical document-flow or existing bounded absolute placement"
+hedron_surface = "finite logical overlay placement and collision fallback"
+gates = ["OVERLAY-059", "VISUAL-059", "A11Y-059"]
+
+[[capability]]
+id = "entry-exit-transitions"
+area = "motion"
+css = ["@starting-style", "transition-behavior: allow-discrete"]
+baseline = "ordinary transitions and reduced-motion rules"
+disposition = "progressive"
+fallback = "immediate stable open/closed state"
+hedron_surface = "motion preset for overlay, disclosure, status, and shell presentation"
+gates = ["MOTION-059", "OVERLAY-059", "A11Y-059"]
+
+[[capability]]
+id = "view-transitions"
+area = "motion"
+css = ["View Transitions Level 1", "view-transition-name", "view-transition-class"]
+baseline = "narrow opt-in navigation enhancement"
+disposition = "progressive"
+fallback = "ordinary full-page navigation or HTMX swap with canonical focus/history"
+hedron_surface = "declared logical page/surface transition roles"
+gates = ["MOTION-059", "COMPAT-059", "A11Y-059"]
+
+[[capability]]
+id = "scroll-driven-animation"
+area = "motion"
+css = ["animation-timeline", "scroll()", "view()", "timeline-scope"]
+baseline = "none"
+disposition = "experimental"
+fallback = "static complete presentation"
+hedron_surface = "decorative examples only; never task/validation/authorization state"
+gates = ["MOTION-059", "A11Y-059"]
+
+[[capability]]
+id = "preference-media"
+area = "media"
+css = ["prefers-reduced-motion", "forced-colors", "prefers-contrast", "prefers-reduced-transparency", "hover", "pointer"]
+baseline = "reduced motion and forced colors partly covered"
+disposition = "required"
+fallback = "base non-color, non-motion, keyboard-usable presentation"
+hedron_surface = "whole-fleet preference matrix; newer media features remain Progressive within the row"
+gates = ["MEDIA-059", "A11Y-059", "VISUAL-059"]
+
+[[capability]]
+id = "print"
+area = "media"
+css = ["@media print", "break-*", "print-color-adjust"]
+baseline = "print named in visual matrix; no first-party default print rule"
+disposition = "required"
+fallback = "semantic document source order"
+hedron_surface = "shell, links, forms, data, status, workflow, disclosure, and page-break policy"
+gates = ["MEDIA-059", "A11Y-059", "VISUAL-059"]
+
+[[capability]]
+id = "content-containment"
+area = "performance"
+css = ["contain", "content-visibility", "contain-intrinsic-size"]
+baseline = "no public styling contract"
+disposition = "progressive"
+fallback = "fully rendered content"
+hedron_surface = "narrow benchmarked gallery/list use only"
+gates = ["PERF-059", "A11Y-059", "MEDIA-059"]
+
+[[capability]]
+id = "typed-control-safe-attributes"
+area = "consumer-slice"
+css = ["global attributes", "aria-*", "data-*", "approved hx-*", "dialog trigger markers"]
+baseline = "Button/LinkButton reject required Data Mover interaction attributes"
+disposition = "required"
+fallback = "explicit native element remains available during migration"
+hedron_surface = "validated shared Button and LinkButton passthrough"
+source_issue = "https://github.com/eddiethedean/user-token-management-app/issues/4"
+gates = ["CONTROL-059", "SECURITY-059", "COMPAT-059"]
+
+[[capability]]
+id = "control-size-width"
+area = "consumer-slice"
+css = ["size", "width", "line-height", "padding", "focus", "disabled", "icon alignment"]
+baseline = "small Button and full-width LinkButton need application CSS/API workarounds"
+disposition = "required"
+fallback = "existing default-sized controls"
+hedron_surface = "shared Button and LinkButton semantic size/width contract"
+source_issue = "https://github.com/eddiethedean/user-token-management-app/issues/5"
+gates = ["CONTROL-059", "CASCADE-059", "VISUAL-059"]
+
+[[capability]]
+id = "composable-shell-chrome"
+area = "consumer-slice"
+css = ["brand slots", "account action", "footer content", "responsive shell states"]
+baseline = "Data Mover hand-builds remaining brand/account/footer/login shell composition"
+disposition = "required"
+fallback = "existing AppShell, Brand, AccountSummary, AppFooter, and semantic native forms"
+hedron_surface = "typed authenticated/unauthenticated AppShell composition"
+source_issue = "https://github.com/eddiethedean/user-token-management-app/issues/6"
+gates = ["CHROME-059", "CONTAINER-059", "A11Y-059"]
+
+[[capability]]
+id = "pipeline-operational-presentation"
+area = "consumer-slice"
+css = ["connector nodes", "responsive flow connectors", "run states", "progress motion", "logs", "compact history"]
+baseline = "Data Mover owns bespoke pipeline/status/history CSS"
+disposition = "required"
+fallback = "existing ProcessFlow/FlowStep/Status/Table/Card vertical static composition"
+hedron_surface = "provider-neutral pipeline and operational presentation primitives/recipes"
+source_issue = "https://github.com/eddiethedean/user-token-management-app/issues/7"
+gates = ["WORKFLOW-059", "MOTION-059", "A11Y-059", "VISUAL-059"]
+
+[candidate_api]
+note = "Intent is resolved by modern-css-contract-059.toml; this table retains capability-to-gate mapping."
+container_query_boundary = "additive finite option on Container with optional validated name"
+responsive_context = "viewport|container on responsive built-ins; existing viewport default preserved"
+theme_variant = "explicit finite variant on StyleScope or supported component surface"
+field_recipe = "conditional on explicit-set tracking proof"
+layout_recipe = "conditional on explicit-set tracking proof"
+scope_defaults = "explicit serializable role-bounded style context only"
+safe_attributes = "shared validated Button/LinkButton global/ARIA/data/HTMX/dialog attribute seam"
+overlay_placement = "finite logical placement and collision strategy"
+
+[deferred_from_058]
+scope_recipe_defaults = "re-evaluate in 0.59; graduate only with explicit role impact and no hidden mutation"
+field_recipe_family = "re-evaluate in 0.59 after explicit-versus-default tracking prototype"
+layout_recipe_family = "re-evaluate in 0.59 after preserving legacy non-None layout defaults"
+arbitrary_color_formats = "promote only parsed absolute CSS Color 4 inputs with canonical fallback"
+remote_font_convenience = "remains Deferred; explicit local asset and license policy is required"
+template_recipe_dsl = "remains Deferred; Python/HDJ consume the same public styling contracts"
+
+[deferred]
+css_masonry = "interoperability/specification risk; ordinary Grid remains Supported"
+customizable_native_select = "platform/interoperability and accessibility evidence not sufficient for a 0.59 dependency"
+paint_and_layout_worklets = "would add a browser execution/runtime boundary without a required product use case"
+free_form_css_in_python = "duplicates CSS and expands validation/injection surface"
+remote_font_auto_fetch = "network, license, privacy, CSP, and reproducibility boundary"
+mandatory_node_pipeline = "Supported Python consumption must not require Node"
+
+[budgets]
+default_css_raw_bytes_max = 90000
+default_css_gzip_9_bytes_max = 13000
+required_styling_javascript_bytes = 0
+additional_required_stylesheet_requests = 0
+compiler_cold_time_ratio_max_vs_0581 = 1.25
+representative_style_layout_ratio_max_vs_0581 = 1.10
+runtime_css_compilation = false
+runtime_style_injection = false
+
+[boundaries]
+second_theme_registry = false
+second_cascade = false
+second_css_compiler = false
+css_property_dsl = false
+private_selector_theming = false
+implicit_remote_assets = false
+visual_dom_reordering = false
+authoritative_content_hiding = false
+styling_owned_behavior_or_state = false
+schedule_1_0 = false

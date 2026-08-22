@@ -63,6 +63,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.0` on PyPI; Verified gates; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557); living tip advanced through 0.57 to 0.58) |
 | **0.57** | Unified styling and presentation: shared appearance adoption, CSP-safe responsive layout, overflow contracts, surfaces, application chrome, data/identity primitives, and zero-application-CSS evidence | **Published** in-tree (`v0.57.0`; Verified gates; tag/PyPI deferred; D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570); [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569); living tip advanced to 0.58) |
 | **0.58** | Progressive feature and styling authoring: screens/forms/workspaces/flows, branded design systems, semantic recipes/roles, explicit scopes, unified inspect/preview/diff/override/ejection, and starter-first adoption | **Published** in-tree (`v0.58.1`; PyPI `v0.58.0`; Verified gates; D-101 / D-102 / D-105 / [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)) |
+| **0.59** | Modern CSS platform and intuitive built-in styling: standards-capable scoped compilation, canonical cascade/tokens, container-aware layout, modern color/type/media/overlay/motion, whole-fleet zero-CSS polish, and consumer vertical slices | **Planned** (D-106 / D-107 / [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md); Stage 0 refined, Stage 1 probes and Hedron issue mirrors pending; includes [user-token-management-app #4](https://github.com/eddiethedean/user-token-management-app/issues/4)–[#7](https://github.com/eddiethedean/user-token-management-app/issues/7)) |
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -6043,7 +6044,8 @@ Normative planning is [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)
 `styling-*-058.toml`, `feature-explanation-058.toml`, `design-system-schema-058.toml`,
 `style-recipe-catalog-058.toml`, `release-gate-0.58.toml`, and `upgrade-fixtures-058.md` packet is
 the normative implementation boundary. RFC-0086 and D-103/D-104 are superseded historical records;
-there is no separate 0.59 delivery or predecessor audit.
+there was no separate 0.59 delivery for that design-system proposal. D-106/RFC-0087 later assign a
+distinct modern-CSS platform phase without reviving the removed RFC-0086 packet.
 
 ### Scope and delivery plan
 
@@ -6136,12 +6138,145 @@ available in labeled advanced material; explicit 0.57 APIs remain compatible; al
 gates are Verified with zero Deferred; and release
 metadata truthfully records Beta maturity and registry status.
 
+## 0.59 — Modern CSS platform and intuitive built-in styling (`v0.59.0` target)
+
+**Status:** Planned (D-106 / D-107 / RFC-0087). Required predecessor Published/Verified in-tree
+`v0.58.1` is satisfied; the public upgrade source is PyPI `v0.58.0`. Stage 0 has refined the
+signatures, schemas, diagnostics, parser/browser choices, feature tiers, budgets, package
+dispositions, and reserved issue-mirror IDs. Stage 1 remains blocked on feasibility probes and
+filed Hedron issue mirrors. Planning does not add 0.59
+runtime symbols, change versions, close issues, or claim a release.
+
+**Outcome:** Common Hedron product UI needs no application CSS, while advanced component authors
+can use modern standards-based CSS through the same scoped compiler, cascade, assets, CSP, tokens,
+and inspection path. Required behavior passes the three-engine floor; newer enhancements have
+independently usable feature-off and reduced-motion fallbacks.
+
+Normative planning is [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md), the
+[implementation plan](implementation/MODERN_CSS_059.md), and the
+[Stage 0 acceptance plan](acceptance/RELEASE_0_59.md). Machine locks are
+[modern-css-inventory-059.toml](acceptance/modern-css-inventory-059.toml),
+[modern-css-contract-059.toml](acceptance/modern-css-contract-059.toml),
+[modern-css-tracking-059.toml](acceptance/modern-css-tracking-059.toml),
+[modern-css-compatibility-059.toml](acceptance/modern-css-compatibility-059.toml),
+[release-gate-0.59.toml](acceptance/release-gate-0.59.toml), and
+[upgrade-fixtures-059.md](acceptance/upgrade-fixtures-059.md).
+
+### Scope and delivery plan
+
+1. **Make scoped CSS standards-capable:** replace context-blind symbol rewriting with a grammar-
+   aware transform for nesting, functional selectors, declarations/descriptors, keyframes,
+   modern/unknown safe at-rules, bounded local imports/assets, source locations, v2 manifests, and
+   v1 compatibility. Fix the quoted `.css` import, owning-layer double nesting, and animation-
+   shorthand probes.
+2. **Normalize the cascade:** retain `reset, tokens, base, components, utilities, overrides`,
+   modularize source, generate one deterministic default asset, cap specificity, deduplicate
+   responsive selector matrices, and keep public markers/tokens/parts as the only selector ABI.
+3. **Modernize themes and type:** canonicalize semantic tokens with 0.58 aliases, emit explicit
+   Theme variants, accept parsed absolute modern colors with tested sRGB fallbacks/provenance, use
+   bounded typed properties/light-dark/wide-gamut enhancement, and complete local variable-font,
+   wrapping, code, and international typography contracts.
+4. **Move component responsiveness to component width:** evolve existing Container/Grid/FormGrid/
+   shell/workflow APIs with opt-in query boundaries and viewport/container context; add intrinsic
+   sizing, subgrid fallback, dynamic viewport/safe-area handling, logical properties, RTL, mixed
+   direction, and selected vertical-writing evidence without DOM reorder or inaccessible hiding.
+5. **Complete native overlays and motion:** preserve native dialog/popover/top-layer semantics,
+   add finite logical placement with anchor-position fallback, starting/discrete/view-transition
+   enhancement, and immediate static/reduced-motion equivalence. Scroll-driven animation stays
+   opt-in Experimental and never owns semantic state.
+6. **Close control gaps:** give typed Button/LinkButton a shared validated safe-attribute seam and
+   complete small/full-width/focus/disabled/icon/responsive styling, satisfying Data Mover
+   [#4](https://github.com/eddiethedean/user-token-management-app/issues/4) and
+   [#5](https://github.com/eddiethedean/user-token-management-app/issues/5).
+7. **Close shell composition gaps:** add typed brand/account-action/footer and shared authenticated/
+   unauthenticated AppShell composition with correct forms/landmarks and responsive theme recipes,
+   satisfying [#6](https://github.com/eddiethedean/user-token-management-app/issues/6).
+8. **Close workflow-presentation gaps:** compose provider-neutral pipeline nodes/connectors,
+   explicit run states, optional reduced-motion-aware progress, run logs/status, and compact history
+   from existing workflow/data/surface authorities, satisfying
+   [#7](https://github.com/eddiethedean/user-token-management-app/issues/7).
+9. **Re-evaluate 0.58 deferrals safely:** field/layout recipes require proof of explicit-versus-
+   default tracking; scope defaults require an explicit serializable role-bounded context with
+   static impact explanation and no hidden mutation. Remote font convenience and template recipe
+   DSL remain Deferred.
+10. **Finish media and access:** add real print rules and cross forced colors, reduced motion,
+    contrast/transparency, no script, direction/writing mode, zoom/text spacing, and long/
+    international/unbroken content with feature-on/off tests. Open Hedron #86 continues to limit
+    human-AT claims.
+11. **Make the system understandable:** extend style explain/check/preview/diff/eject and Explorer
+    with source spans, active container/variant, token/layer/specificity/fallback/alias/budget
+    provenance, reviewable no-overwrite migration, and one built-in → brand → intent → recipe/
+    scope → container → inspect → CSS → eject learning path.
+12. **Prove the fleet and consumer:** expand the zero-application-CSS gallery, migrate every package
+    to canonical tokens/markers/layers or an explicit not-applicable disposition, validate the
+    source Data Mover app, enforce CSS/compile/layout/security/package budgets, refresh live issues,
+    and rehearse the cut from both 0.58 upgrade sources.
+
+### Open styling enhancement inputs
+
+The 2026-08-22 live audit found **zero open Hedron-local styling enhancement issues**. The only
+open Hedron issues were [#86](https://github.com/eddiethedean/hedron/issues/86) (human AT sessions;
+cross-cutting claim limitation) and [#192](https://github.com/eddiethedean/hedron/issues/192)
+(unrelated chart redaction bug). The current open styling/presentation inputs are all four issues in
+`eddiethedean/user-token-management-app`:
+
+| Issue | 0.59 ownership | Gates |
+|---|---|---|
+| [#4 — safe typed-control attributes](https://github.com/eddiethedean/user-token-management-app/issues/4) | Button/LinkButton safe global/ARIA/data/approved-HTMX/dialog passthrough | `CONTROL-059`, `SECURITY-059`, `COMPAT-059`, `CONSUMER-059` |
+| [#5 — Button/LinkButton size and width](https://github.com/eddiethedean/user-token-management-app/issues/5) | Compact/small and full-width visual/API parity | `CONTROL-059`, `CASCADE-059`, `VISUAL-059`, `CONSUMER-059` |
+| [#6 — composable AppShell chrome](https://github.com/eddiethedean/user-token-management-app/issues/6) | Brand, account action/form, footer, auth-state shell, responsive recipes | `CHROME-059`, `CONTAINER-059`, `A11Y-059`, `CONSUMER-059` |
+| [#7 — pipeline/run presentation](https://github.com/eddiethedean/user-token-management-app/issues/7) | Provider-neutral connector nodes, states, motion, logs, compact history | `WORKFLOW-059`, `MOTION-059`, `A11Y-059`, `VISUAL-059`, `CONSUMER-059` |
+
+The source issues remain open until both Hedron fixtures and the application migration pass. Before
+Stage 1, a Hedron umbrella and workstream mirrors must backlink them without replacing their source
+acceptance criteria.
+
+### Planned release gates
+
+| Area | Gates |
+|---|---|
+| Contract/compiler/cascade | `CONTRACT-059`, `COMPILER-059`, `CASCADE-059` |
+| Theme/content | `TOKENS-059`, `COLOR-059`, `TYPE-059` |
+| Responsive platform | `CONTAINER-059`, `LAYOUT-059`, `MEDIA-059` |
+| Consumer components | `CONTROL-059`, `CHROME-059`, `WORKFLOW-059`, `CONSUMER-059` |
+| Interaction presentation | `OVERLAY-059`, `MOTION-059` |
+| Cross-cutting proof | `A11Y-059`, `DX-059`, `VISUAL-059`, `PERF-059`, `SECURITY-059`, `COMPAT-059`, `REGRESS-059`, `PKG-059` |
+
+The default CSS baseline is 85,136 raw / 11,851 gzip bytes at `v0.58.1`; initial cut ceilings are
+90,000 raw / 13,000 gzip, zero required styling JavaScript, and no extra Required stylesheet
+request. Compiler cold time is capped at 1.25× and representative style/layout work at 1.10× the
+reproducible 0.58.1 corpus baseline unless an accepted measured amendment changes the contract.
+
+### Stability and non-goals
+
+Existing 0.58 calls, defaults, DOM order, public classes/markers/tokens, themes, DesignSystem,
+recipes/scopes, style contracts, component stylesheets, StyleSymbols, manifests, and
+`default_styles=False` remain valid. Existing responsive maps keep viewport semantics; container
+behavior and variants are opt-in. Token aliases remain through 0.59, and compiler v2 reads v1.
+
+The phase does not add a free-form CSS-in-Python or utility-string framework, second theme/cascade/
+compiler/runtime, client style injection, mandatory Node consumption, implicit remote assets,
+private-selector theming, closed Shadow-DOM rewrite, visual DOM reorder/content hiding,
+styling-owned routes/effects/auth/state, unstable CSS masonry/worklet dependency, human-AT
+Supported claim, or 1.0 schedule.
+
+### Entry and exit gates
+
+Stage 1 requires the locked parser/browser/explicitness probes, filed issue mirrors, and refreshed
+audit. Release requires all 23 `*-059` rows
+Verified with zero Deferred, all four consumer issues validated and closed, three-engine feature-
+on/off/media/direction/content evidence, passing security/accessibility/performance/upgrade/fleet/
+package checks, and honest Required/Progressive/Experimental/Deferred release documentation.
+
 
 ## Later-phase policy
 
 The roadmap remains open-ended. New phases are added when a coherent capability packet has an
 accepted design, demonstrated demand, explicit non-goals, and testable exit evidence. A version
 number is never used as a reason to freeze unrelated work or to promote beta/experimental behavior.
+Phase **0.59** is assigned to the modern CSS platform and intuitive built-in styling overhaul under
+D-106/D-107/RFC-0087; it remains Planned until its Stage 1 evidence is verified and does not
+revive the superseded RFC-0086 design-system proposal.
 Scope may move between future `0.x` phases through an accepted roadmap revision, but deferred work
 must always retain an owner, rationale, destination, and public stability impact. Phase **0.20**
 owns the post-0.11 host-security and adapter-parity packet (D-051). Phase **0.22** owns the CSRF /

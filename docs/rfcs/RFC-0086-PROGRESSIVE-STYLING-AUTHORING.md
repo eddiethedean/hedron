@@ -11,6 +11,8 @@ references. D-105 moved the full progressive-styling design into phase 0.58 so f
 semantic style roles, `DesignSystem`, recipes, scopes, explanation, ejection, starter examples,
 tracking, upgrade evidence, and release gates are designed and shipped as one system.
 
-There is no phase 0.59 plan, predecessor audit, implementation packet, acceptance checklist, or
-release gate. The authoritative contracts are the `*-058` artifacts linked from RFC-0085 and
-[`RELEASE_0_58.md`](../acceptance/RELEASE_0_58.md).
+There is no standalone 0.59 delivery, predecessor audit, or release packet for **this proposal**.
+Its authoritative contracts are the `*-058` artifacts linked from RFC-0085 and
+[`RELEASE_0_58.md`](../acceptance/RELEASE_0_58.md). D-106 later assigns phase 0.59 to the distinct
+[modern CSS platform overhaul](RFC-0087-MODERN-CSS-PLATFORM.md); that work builds on the shipped
+0.58 authority and does not revive RFC-0086 or D-103/D-104.

@@ -52,6 +52,10 @@ These documents describe how accepted RFC behavior will be implemented. They def
   upload flows, `DesignSystem`, brand compilation, recipes/feature roles, scopes, unified
   explanation/preview/diff/ejection, all starter migrations, and twenty-gate release evidence
   (Stage 0 Refined)
+- [Modern CSS platform and intuitive built-in styling](MODERN_CSS_059.md) — phase 0.59 D-106 / D-107
+  refined workstreams for the scoped compiler, cascade/tokens, modern color/type, container layout,
+  media/overlay/motion, control/AppShell/pipeline consumer slices, tooling, fleet adoption, and
+  23-gate release evidence (Stage 1 blocked on probes and issue mirrors)
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

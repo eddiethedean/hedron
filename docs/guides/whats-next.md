@@ -20,6 +20,18 @@ Install pins: [Current release](current-release.md) ·
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |
 
+## Planned 0.59 — modern CSS platform
+
+Phase 0.59 has a refined Stage 0 contract, but is not shipped behavior. Stage 1 still requires the
+locked browser/parser/recipe probes and tracking-issue mirrors.
+
+| Topic | Disposition |
+|---|---|
+| Scoped CSS compiler, cascade, tokens, Theme variants, modern color/type | **Planned** — [RFC-0087](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0087-MODERN-CSS-PLATFORM.md) |
+| Container-aware layout, print/RTL/preferences, overlays and motion fallbacks | **Planned**; Required/Progressive browser tiers will be locked before implementation |
+| Typed control attributes/sizing, AppShell chrome, pipeline/run presentation | **Planned** from [consumer issues #4–#7](https://github.com/eddiethedean/user-token-management-app/issues) |
+| Free-form CSS-in-Python, mandatory Node, automatic remote fonts | **Not planned**; use finite semantic APIs plus component `styles.css` and explicit local assets |
+
 ## Not a current production default
 
 | Topic | Use instead |

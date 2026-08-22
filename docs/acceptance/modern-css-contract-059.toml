@@ -1,0 +1,132 @@
+schema_version = 1
+phase = "0.59"
+state = "refined"
+planning_baseline = "v0.58.1"
+published_upgrade_source = "v0.58.0"
+target = "v0.59.0"
+decision = "D-107"
+owning_rfc = "RFC-0087"
+
+# D-107 freezes the Stage 1 contract. It does not add these names to the
+# runtime; implementation must prove the schemas and compatibility fixtures
+# before the release gate can move from Planned.
+
+[browser_floor]
+playwright = "1.62.0"
+chromium = "151.0.7922.34"
+chromium_revision = "1234"
+firefox = "153.0"
+firefox_revision = "1538"
+webkit = "26.5"
+webkit_revision = "2336"
+engine_identity = "Playwright package plus browser revision; do not infer support from user-agent strings"
+ci_python = "3.12"
+feature_detection = "CSS @supports or native HTML capability; never user-agent sniffing"
+
+[compiler]
+implementation_authority = "hedron_core.css.ast and hedron_core.css.compiler"
+parser_policy = "extend the in-tree pure-Python tokenizer/AST; third-party parser and Node are optional accelerators only"
+source_span_unit = "UTF-8 source byte offset plus 1-based line and UTF-16 column"
+manifest_format = 2
+accepted_manifest_readers = [1, 2]
+v1_symbol_hash_compatibility = true
+hash_change_requires = ["collision_or_security_reason", "migration_map", "upgrade_fixture", "release_note"]
+runtime_compile = false
+unknown_safe_at_rules = "preserve when no semantic rewrite is required"
+ambiguous_rewrite = "reject with HED-CSS diagnostics"
+local_imports = "quoted and url() imports only; registered roots, cycle/depth/byte budgets"
+remote_imports = "reject in Supported strict-CSP builds"
+
+[compiler.budgets]
+max_import_depth = 8
+max_import_bytes = 1048576
+max_diagnostic_count = 100
+
+[apis.container]
+query = "Literal['none', 'inline-size']"
+query_default = "none"
+name = "str | None"
+name_default = "None"
+responsive_context = "Literal['viewport', 'container']"
+responsive_context_default = "viewport"
+named_thresholds = ["base", "sm", "md", "lg"]
+existing_viewport_behavior_preserved = true
+
+[apis.theme]
+variant = "str | None"
+variant_selection = "explicit data-hedron-variant marker"
+variant_default = "None"
+unknown_variant = "diagnostic error"
+variant_effect = "presentation tokens only; no recipe, behavior, state, route, or content changes"
+
+[apis.controls]
+safe_attribute_seam = "Mapping[str, str | int | bool | None] | None"
+safe_attribute_keyword = "attrs"
+allowed_families = ["global", "aria-*", "data-*", "approved hx-*", "hedron dialog-trigger"]
+rejected_families = ["on*", "style", "unsafe href/src", "malformed aria", "non-allowlisted hx-*"]
+destination = "the native button or anchor element, never a wrapper"
+size_values = ["sm", "md", "lg"]
+width_values = ["content", "field", "full"]
+
+[apis.overlay]
+placement_values = ["block-start", "block-end", "inline-start", "inline-end", "center"]
+collision_values = ["flip", "shift", "static"]
+feature_off_behavior = "bounded document-flow or existing placement"
+
+[apis.workflow]
+status_values = ["ready", "blocked", "running", "succeeded", "failed"]
+direction_values = ["horizontal", "vertical"]
+state_authority = "explicit application input; presentation never executes or transitions state"
+
+[serialization]
+brand_palette_schema = "hedron.brand-palette/2"
+compiler_manifest_schema = "hedron.css-manifest/2"
+source_map_schema = "hedron.css-source-map/2"
+diagnostic_schema = "hedron.css-diagnostic/1"
+explanation_fields = ["source_span", "component", "layer", "specificity", "token", "alias", "fallback", "capability", "budget"]
+json_encoding = "UTF-8, sorted object keys, compact separators, trailing newline"
+production_redaction = ["absolute_paths", "environment_values", "secrets", "unapproved_source_contents"]
+
+[diagnostics]
+code_prefix = "HED-CSS-"
+required_codes = [
+  "HED-CSS-0001",
+  "HED-CSS-0002",
+  "HED-CSS-0003",
+  "HED-CSS-0004",
+  "HED-CSS-0005",
+  "HED-CSS-0006",
+]
+location = "source span when available; otherwise file plus line 1 column 1"
+ordering = "source offset, then diagnostic code"
+unsafe_input = "fail closed"
+
+[budgets]
+default_css_raw_bytes_max = 90000
+default_css_gzip_9_bytes_max = 13000
+required_styling_javascript_bytes = 0
+additional_required_stylesheet_requests = 0
+compiler_cold_time_ratio_max_vs_0581 = 1.25
+representative_style_layout_ratio_max_vs_0581 = 1.10
+
+[issue_mirrors]
+status = "required before Stage 1"
+umbrella = "hedron#HED-059-000"
+controls = "hedron#HED-059-001 mirrors user-token-management-app#4 and #5"
+shell = "hedron#HED-059-002 mirrors user-token-management-app#6"
+workflow = "hedron#HED-059-003 mirrors user-token-management-app#7"
+backlinks_required = true
+source_issue_closure_required_at_cut = true
+
+[package_dispositions]
+core_authority = "hedron-core"
+host_adapters = "consume shared markers/tokens/compiler output; do not fork CSS"
+conformance = "owns browser, media, accessibility, security, and differential fixtures"
+optional_assets = "lazy and locally licensed"
+consumer_node_required = false
+
+[entry_lock]
+stage_0_runtime_changes = false
+stage_0_version_changes = false
+stage_0_issue_closure = false
+requires = ["D-107 accepted", "browser capability probes", "parser corpus probe", "recipe explicitness probe", "Hedron issue mirrors", "consumer backlinks"]
