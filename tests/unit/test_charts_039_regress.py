@@ -83,3 +83,17 @@ def test_039_threejs_rejects_path_traversal() -> None:
         )
     # Simple local asset names remain allowed.
     ThreeJsAdapter().compile({"model_url": "model.glb", "bytes": 10}, accessibility=acc)
+
+
+def test_039_chart_divide_zero_is_null() -> None:
+    from hedron_charts.compile import compile_chart
+
+    plan = compile_chart(
+        {
+            "data": {"rows": ({"a": 10, "b": 0},)},
+            "marks": ({"type": "point"},),
+            "transforms": ({"op": "divide", "as": "q", "params": {"args": ["a", "b"]}},),
+            "accessibility": {"title": "T", "description": "D"},
+        }
+    )
+    assert plan.transformed_rows[0]["q"] is None

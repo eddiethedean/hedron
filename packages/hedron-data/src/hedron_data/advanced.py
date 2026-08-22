@@ -199,10 +199,17 @@ def pivot_rows(
     values: str,
     agg: str = "sum",
 ) -> list[dict[str, JsonValue]]:
+    if agg not in {"sum", "count", "avg"}:
+        raise ValueError(f"Unsupported pivot aggregate {agg!r}")
     buckets: dict[JsonValue, dict[JsonValue, list[float]]] = {}
     for row in rows:
         idx = row.get(index)
         col = row.get(columns)
+        try:
+            hash(idx)
+            hash(col)
+        except TypeError as exc:
+            raise ValueError("Pivot index and column values must be hashable") from exc
         raw = row.get(values)
         try:
             num = float(raw)  # type: ignore[arg-type]
@@ -220,8 +227,6 @@ def pivot_rows(
                 item[key] = len(nums)
             elif agg == "avg":
                 item[key] = sum(nums) / len(nums) if nums else 0.0
-            else:
-                raise ValueError(f"Unsupported pivot aggregate {agg!r}")
         out.append(item)
     return out
 
