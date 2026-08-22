@@ -81,6 +81,7 @@ class DaskDataSource(Generic[T]):
         allowlisted_sort_fields: frozenset[str] | None = None,
         allowlisted_filter_fields: frozenset[str] | None = None,
         allowlisted_projection_fields: frozenset[str] | None = None,
+        search_fields: Sequence[str] = (),
     ) -> None:
         require_dask()
         self._frame = cast(_DaskFrame, frame)
@@ -106,6 +107,7 @@ class DaskDataSource(Generic[T]):
             if allowlisted_projection_fields is None
             else frozenset(allowlisted_projection_fields)
         )
+        self._search_fields = tuple(search_fields)
 
     def plan_for(self, query: DataQuery) -> TransformPlan:
         return plan_from_query(query, max_rows=self._max_compute_rows)
@@ -141,6 +143,13 @@ class DaskDataSource(Generic[T]):
                 ),
                 remediation="Lower offset/page size or raise an explicit budget.",
             )
+        if q.search and not self._search_fields:
+            raise error(
+                "HED-DATA-0012",
+                title="Dask search requires an allowlist",
+                explanation="Deny-by-default: searchable fields must be allowlisted.",
+                remediation="Set DaskDataSource.search_fields.",
+            )
         frame: _DaskFrame = self._frame
         if q.sort:
             by = [name for name, _ in q.sort]
@@ -149,6 +158,15 @@ class DaskDataSource(Generic[T]):
         for name, value in q.filters.items():
             column: Any = frame[name]
             frame = frame[column == value]
+        if q.search:
+            mask: Any = None
+            for name in self._search_fields:
+                candidate = frame[name].astype(str).str.contains(
+                    q.search, case=False, na=False, regex=False
+                )
+                mask = candidate if mask is None else mask | candidate
+            if mask is not None:
+                frame = frame[mask]
         if q.projection:
             frame = frame[list(q.projection)]
         shape0: Any = frame.shape[0]
