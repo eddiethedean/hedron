@@ -130,6 +130,7 @@ def test_lazy_inner_body_is_authorized_as_host_region() -> None:
         )
     )
     assert resolve_fragment_region(exact_policy, "#panel-body").id == "panel-body"
+    assert resolve_fragment_region(exact_policy, "panel-body").id == "panel-body"
 
     app = make_app(security="standard")
 

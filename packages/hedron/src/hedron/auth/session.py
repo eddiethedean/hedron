@@ -40,9 +40,7 @@ class _AuthenticatedFromSessionMiddleware(BaseHTTPMiddleware):
                 # SessionAuthFlow is generic over its serialized principal. Any
                 # non-empty application-owned session value represents a login;
                 # strings receive whitespace validation for compatibility.
-                authenticated = (
-                    bool(subject.strip()) if isinstance(subject, str) else bool(subject)
-                )
+                authenticated = bool(subject.strip()) if isinstance(subject, str) else bool(subject)
                 if authenticated:
                     mark_authenticated(request, value=True)
         return await call_next(request)
