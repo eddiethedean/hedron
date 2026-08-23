@@ -361,10 +361,51 @@ class Toast(Component[ToastProps]):
         return html.div(*children, **attrs)
 
 
-class ToastHost(Component[Props]):
-    """Frozen OOB toast sink ``#hedron-toast``."""
+class ToastHostProps(Props):
+    placement: Literal["top-start", "top-end", "bottom-start", "bottom-end", "center"] = "top-end"
+    width: Literal["content", "field", "full"] = "content"
+    max_width: Literal["sm", "md", "lg"] = "md"
+    gap: Literal["xs", "sm", "md"] = "sm"
 
+
+class ToastHost(Component[ToastHostProps]):
+    """Stable OOB toast sink with bounded viewport placement."""
+
+    props_type = ToastHostProps
     logical_name = "ToastHost"
+
+    def __init__(
+        self,
+        *,
+        placement: Literal[
+            "top-start", "top-end", "bottom-start", "bottom-end", "center"
+        ] = "top-end",
+        width: Literal["content", "field", "full"] = "content",
+        max_width: Literal["sm", "md", "lg"] = "md",
+        gap: Literal["xs", "sm", "md"] = "sm",
+        **kwargs: Any,
+    ) -> None:
+        for label, value, allowed in (
+            (
+                "toast placement",
+                placement,
+                ("top-start", "top-end", "bottom-start", "bottom-end", "center"),
+            ),
+            ("toast width", width, ("content", "field", "full")),
+            ("toast max_width", max_width, ("sm", "md", "lg")),
+            ("toast gap", gap, ("xs", "sm", "md")),
+        ):
+            if value not in allowed:
+                raise ValueError(f"{label} must be one of: {', '.join(allowed)}")
+        super().__init__(
+            ToastHostProps(
+                placement=placement,
+                width=width,
+                max_width=max_width,
+                gap=gap,
+                **kwargs,
+            )
+        )
 
     def render(self) -> NodeLike:
         return html.div(
@@ -372,7 +413,13 @@ class ToastHost(Component[Props]):
             class_="hedron-toast-host",
             role="status",
             aria={"live": "polite"},
-            data={"hedron-toast-host": "true"},
+            data={
+                "hedron-toast-host": "true",
+                "hedron-toast-placement": self.props.placement,
+                "hedron-toast-width": self.props.width,
+                "hedron-toast-max-width": self.props.max_width,
+                "hedron-toast-gap": self.props.gap,
+            },
         )
 
 

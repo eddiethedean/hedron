@@ -1,0 +1,39 @@
+{
+  "phase": "0.60",
+  "schema": "hedron.release-evidence/1",
+  "summary": {
+    "total": 27,
+    "planned": 27,
+    "implemented": 0,
+    "verified": 0
+  },
+  "gates": [
+    {"id": "CONTRACT-060", "state": "Planned"},
+    {"id": "RECONCILE-060", "state": "Planned"},
+    {"id": "COLOR-060", "state": "Planned"},
+    {"id": "PALETTE-060", "state": "Planned"},
+    {"id": "THEME-060", "state": "Planned"},
+    {"id": "VALIDATE-060", "state": "Planned"},
+    {"id": "PACKAGE-060", "state": "Planned"},
+    {"id": "A11Y-MODE-060", "state": "Planned"},
+    {"id": "RECIPE-060", "state": "Planned"},
+    {"id": "SCOPE-060", "state": "Planned"},
+    {"id": "PREFERENCE-060", "state": "Planned"},
+    {"id": "BRAND-060", "state": "Planned"},
+    {"id": "FEEDBACK-060", "state": "Planned"},
+    {"id": "WORKFLOW-060", "state": "Planned"},
+    {"id": "SCROLL-060", "state": "Planned"},
+    {"id": "CATALOG-060", "state": "Planned"},
+    {"id": "TOOLING-060", "state": "Planned"},
+    {"id": "EXPLORER-060", "state": "Planned"},
+    {"id": "CONFORMANCE-060", "state": "Planned"},
+    {"id": "DOCS-060", "state": "Planned"},
+    {"id": "VISUAL-060", "state": "Planned"},
+    {"id": "A11Y-060", "state": "Planned"},
+    {"id": "SECURITY-060", "state": "Planned"},
+    {"id": "PERF-060", "state": "Planned"},
+    {"id": "COMPAT-060", "state": "Planned"},
+    {"id": "REGRESS-060", "state": "Planned"},
+    {"id": "PKG-060", "state": "Planned"}
+  ]
+}

@@ -21,6 +21,7 @@ Explicit containers and one-dimensional or grid composition.
 - [`ConnectorNode`](connector-node.md) — Provider-neutral source or destination node for data-movement workflows.
 - [`ConnectorFlow`](connector-flow.md) — Responsive connector canvas for source, track, and destination workflow nodes.
 - [`ConnectorTrack`](connector-track.md) — Accessible visual link between provider-neutral workflow nodes.
+- [`ScrollRegion`](scroll-region.md) — Bound a semantic list, log, or arbitrary child region without changing its children.
 - [`ActionDock`](action-dock.md) — Sticky action dock for primary controls.
 - [`BottomDock`](bottom-dock.md) — Bottom sticky dock alias for chat or actions.
 - [`Spacer`](spacer.md) — Semantic spacing primitive.

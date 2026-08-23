@@ -55,6 +55,12 @@ from hedron_core.theme import (
     contrast_ratio,
     default_theme,
 )
+from hedron_core.theme_platform import (
+    Color,
+    RecipeFamily,
+    register_recipe_family,
+    registered_recipe_families,
+)
 
 __all__ = [
     "BUILTIN_RECIPES",
@@ -69,9 +75,12 @@ __all__ = [
     "MotionPreset",
     "NavigationPreset",
     "StyleFamily",
+    "RecipeFamily",
+    "register_recipe_family",
+    "registered_recipe_families",
 ]
 
-StyleFamily = Literal["control", "surface", "data", "status", "content"]
+StyleFamily = str
 GeometryPreset = Literal["square", "soft", "rounded"]
 TypographyPreset = Literal["system-sans", "system-serif", "system-mono"]
 ElevationPreset = Literal["flat", "subtle", "layered"]
@@ -174,6 +183,38 @@ _FIELD_VOCABULARIES: Final[Mapping[str, tuple[str, ...]]] = {
 }
 
 
+def _family_fields(family: str) -> frozenset[str]:
+    builtin = _FAMILY_FIELDS.get(family)  # type: ignore[arg-type]
+    if builtin is not None:
+        return builtin
+    for candidate in registered_recipe_families():
+        if candidate.name == family:
+            return frozenset(candidate.fields)
+    return frozenset()
+
+
+def _family_components(family: str) -> frozenset[str]:
+    builtin = _FAMILY_COMPONENTS.get(family)  # type: ignore[arg-type]
+    if builtin is not None:
+        return builtin
+    for candidate in registered_recipe_families():
+        if candidate.name == family:
+            return frozenset(candidate.components)
+    return frozenset()
+
+
+def _family_vocabularies(family: str) -> Mapping[str, tuple[str, ...]]:
+    values: dict[str, tuple[str, ...]] = {
+        key: _FIELD_VOCABULARIES[key]
+        for key in _family_fields(family)
+        if key in _FIELD_VOCABULARIES
+    }
+    for candidate in registered_recipe_families():
+        if candidate.name == family:
+            values.update(candidate.fields)
+    return values
+
+
 def _canonical_json(value: object) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), default=str)
 
@@ -197,8 +238,10 @@ def _normalize_name(name: str, *, label: str) -> str:
     return normalized
 
 
-def _normalize_hex(value: str) -> str:
-    """Accept only ``#rgb`` / ``#rrggbb``; reject named colors and CSS injection."""
+def _normalize_hex(value: str | Color) -> str:
+    """Normalize legacy hex and safe 0.60 absolute colors to sRGB hex."""
+    if isinstance(value, Color):
+        return value.to_hex()[:7]
     if not isinstance(value, str) or not _HEX_COLOR.match(value.strip()):
         raise error(
             HED_BRAND_0001,
@@ -329,6 +372,10 @@ def _theme_summary(theme: Theme) -> dict[str, object]:
         "modes": {
             mode: dict(sorted(values.items())) for mode, values in sorted(theme.modes.items())
         },
+        "accessibility_modes": {
+            mode: dict(sorted(values.items()))
+            for mode, values in sorted(theme.accessibility_modes.items())
+        },
         "palette": dict(sorted(theme.palette.items())),
         "density": theme.density,
         "shape": dict(sorted(theme.shape.items())),
@@ -369,14 +416,15 @@ class StyleRecipe:
         normalized = _normalize_name(self.name, label="recipe")
         if normalized != self.name:
             object.__setattr__(self, "name", normalized)
-        if self.family not in RECIPE_FAMILIES:
+        if self.family not in RECIPE_FAMILIES and not _family_fields(self.family):
             raise error(
                 HED_RECIPE_0004,
                 title="Unknown recipe family",
-                explanation=f"Family {self.family!r} is not part of the 0.58 recipe catalog.",
-                remediation=f"Use one of: {', '.join(RECIPE_FAMILIES)}.",
+                explanation=f"Family {self.family!r} is not registered in the recipe catalog.",
+                remediation="Register a bounded RecipeFamily or use a built-in family.",
             )
-        allowed = _FAMILY_FIELDS[self.family]
+        allowed = _family_fields(self.family)
+        vocabularies = _family_vocabularies(self.family)
         cleaned: dict[str, str] = {}
         for key, value in self.values.items():
             if key not in allowed:
@@ -386,7 +434,16 @@ class StyleRecipe:
                     explanation=(f"Field {key!r} is not catalogued for family {self.family!r}."),
                     remediation=f"Use one of: {', '.join(sorted(allowed))}.",
                 )
-            vocab = _FIELD_VOCABULARIES[key]
+            vocab = vocabularies.get(key)
+            if vocab is None:
+                raise error(
+                    HED_RECIPE_0002,
+                    title="Recipe field vocabulary missing",
+                    explanation=(
+                        f"Field {key!r} has no bounded vocabulary in family {self.family!r}."
+                    ),
+                    remediation="Declare a finite field vocabulary on RecipeFamily.",
+                )
             require_choice(value, vocab, label=key)
             cleaned[key] = value
         object.__setattr__(self, "values", dict(sorted(cleaned.items())))
@@ -678,7 +735,7 @@ class DesignSystem:
         cls,
         name: str,
         *,
-        accent: str,
+        accent: str | Color,
         base: Theme | None = None,
         density: Density = "comfortable",
         geometry: GeometryPreset = "soft",
@@ -689,7 +746,21 @@ class DesignSystem:
         recipes: Sequence[StyleRecipe] = (),
     ) -> DesignSystem:
         design_name = _normalize_name(name, label="design")
-        seed = _normalize_hex(accent)
+        try:
+            requested_color = Color.parse(accent)
+            if requested_color.alpha != 1.0:
+                raise ValueError("brand accents must be opaque")
+            seed = requested_color.to_hex()[:7]
+        except (TypeError, ValueError) as exc:
+            raise error(
+                HED_BRAND_0001,
+                title="Invalid brand accent",
+                explanation=(
+                    f"Accent {accent!r} is not a supported absolute color. "
+                    "Use hex, rgb(), hsl(), or OKLCH input."
+                ),
+                remediation="Pass a safe absolute color such as '#2f6fed' or Color.oklch(...).",
+            ) from exc
         require_choice(density, DENSITIES, label="density")
         if geometry not in _GEOMETRY_SHAPE:
             raise error(
@@ -865,6 +936,8 @@ class DesignSystem:
             base_theme=base_theme.name,
             inputs={
                 "accent": seed,
+                "accent_requested": requested_color.to_css(fallback=False),
+                "accent_space": requested_color.space,
                 "algorithm": BRAND_ALGORITHM,
                 "density": density,
                 "geometry": geometry,
@@ -877,7 +950,7 @@ class DesignSystem:
             provenance=tuple(provenance),
             adjustments=tuple(adjustments),
             limitations=(
-                "hex_only_brand_accent",
+                "absolute_color_brand_accent",
                 "finite_typed_groups",
                 "no_remote_fonts",
                 "no_scope_recipe_defaults",
@@ -1046,19 +1119,23 @@ class DesignSystem:
             )
         resolved = self._resolve_recipe(recipe)
         component_name = component.logical_name or component.__class__.__name__
-        if component_name not in _FAMILY_COMPONENTS[resolved.family]:
+        compatible_components = _family_components(resolved.family)
+        if component_name not in compatible_components:
             raise error(
                 HED_RECIPE_0002,
                 title="Incompatible recipe component",
                 explanation=(
                     f"Recipe family {resolved.family!r} cannot apply to {component_name!r}."
                 ),
-                remediation=(
-                    "Use one of: " + ", ".join(sorted(_FAMILY_COMPONENTS[resolved.family])) + "."
-                ),
+                remediation=("Use one of: " + ", ".join(sorted(compatible_components)) + "."),
             )
-        eligible = _COMPONENT_FIELDS.get(component_name, frozenset())
         props = component.props
+        eligible = set(_COMPONENT_FIELDS.get(component_name, frozenset()))
+        # Registered extension families may target first-party or application
+        # components whose optional props are not in the built-in map. The
+        # family remains the authority for fields; the props model is the
+        # second boundary that prevents arbitrary mutation.
+        eligible.update(key for key in resolved.values if key in props.__class__.model_fields)
         fields = props.__class__.model_fields
         updates: dict[str, object] = {}
         for key, value in resolved.values.items():

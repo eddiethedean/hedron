@@ -697,6 +697,7 @@ class BrandProps(ElementProps):
     href: SafeUrl | None = None
     mark_text: str | None = None
     subtitle: str | None = None
+    subtitle_overflow: Literal["wrap", "truncate", "clip"] = "truncate"
     attrs: dict[str, HtmlAttrValue] | None = None
     aria: dict[str, str | bool | int | float | None] | None = None
     data: dict[str, str | bool | int | float | None] | None = None
@@ -715,6 +716,7 @@ class Brand(Component[BrandProps]):
         href: SafeUrl | str | None = None,
         mark_text: str | None = None,
         subtitle: str | None = None,
+        subtitle_overflow: Literal["wrap", "truncate", "clip"] = "truncate",
         attrs: dict[str, HtmlAttrValue] | None = None,
         aria: dict[str, str | bool | int | float | None] | None = None,
         data: dict[str, str | bool | int | float | None] | None = None,
@@ -730,6 +732,7 @@ class Brand(Component[BrandProps]):
                 explanation="Brand chrome needs a discernible product name.",
                 remediation="Pass a non-empty name.",
             )
+        require_choice(subtitle_overflow, ("wrap", "truncate", "clip"), label="subtitle_overflow")
         url = None
         if href is not None:
             url = href if isinstance(href, SafeUrl) else _coerce_nav_url(href)
@@ -739,6 +742,7 @@ class Brand(Component[BrandProps]):
                 href=url,
                 mark_text=mark_text,
                 subtitle=subtitle,
+                subtitle_overflow=subtitle_overflow,
                 attrs=attrs,
                 aria=aria,
                 data=data,
@@ -760,7 +764,13 @@ class Brand(Component[BrandProps]):
             aria={"hidden": "true"},
         )
         data = dict(self.props.data or {})
-        data.update({"hedron-brand": "true", **mark_data(self.props.mark)})
+        data.update(
+            {
+                "hedron-brand": "true",
+                "hedron-brand-subtitle-overflow": self.props.subtitle_overflow,
+                **mark_data(self.props.mark),
+            }
+        )
         extra: dict[str, HtmlAttrValue] = dict(self.props.attrs or {})
         if self.props.aria:
             extra["aria"] = self.props.aria

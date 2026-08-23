@@ -117,6 +117,7 @@ from hedron_core.builtins.process_flow import (
     ProcessFlow,
 )
 from hedron_core.builtins.resources import ResourceList, ResourceRow
+from hedron_core.builtins.scroll_region import ScrollRegion
 from hedron_core.builtins.shell import (
     AccountSummary,
     AppFooter,
@@ -143,6 +144,13 @@ from hedron_core.builtins.surfaces_chrome import (
     Popover,
     Timeline,
     Tooltip,
+)
+from hedron_core.builtins.theme_preference import (
+    ThemePicker,
+    ThemePreference,
+    resolve_theme_preference,
+    theme_boot_asset,
+    theme_markers,
 )
 from hedron_core.builtins.utilities import (
     CircularProgress,
@@ -279,6 +287,7 @@ __all__ = [
     "RequestIndicator",
     "ResourceList",
     "ResourceRow",
+    "ScrollRegion",
     "Section",
     "SegmentedControl",
     "Select",
@@ -295,6 +304,11 @@ __all__ = [
     "StateView",
     "Status",
     "StyleScope",
+    "ThemePicker",
+    "ThemePreference",
+    "resolve_theme_preference",
+    "theme_boot_asset",
+    "theme_markers",
     "SubmitButton",
     "Surface",
     "SwapReveal",

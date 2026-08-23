@@ -5,12 +5,15 @@ from __future__ import annotations
 import re
 from typing import Any, Literal
 
+from pydantic import Field
+
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import DENSITIES, Density, require_choice
 from hedron_core.codes import HED_STYLE_SCOPE_0001, HED_STYLE_SCOPE_0002
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.theme_platform import StyleContext
 
 _ColorMode = Literal["light", "dark"]
 _THEME_NAME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
@@ -31,14 +34,12 @@ class StyleScopeProps(ElementProps):
     color_mode: _ColorMode | None = None
     density: Density | None = None
     variant: str | None = None
+    design: str | None = None
+    recipe_defaults: dict[str, str] = Field(default_factory=dict)
 
 
 class StyleScope(Component[StyleScopeProps]):
-    """Visible subtree boundary for theme, color mode, and density only.
-
-    V1 intentionally rejects scope-wide recipe defaults to avoid hidden
-    descendant mutation and specificity authority.
-    """
+    """Visible theme boundary with explicit, presentation-only recipe defaults."""
 
     props_type = StyleScopeProps
     logical_name = "StyleScope"
@@ -51,6 +52,8 @@ class StyleScope(Component[StyleScopeProps]):
         color_mode: _ColorMode | None = None,
         density: Density | None = None,
         variant: str | None = None,
+        design: str | None = None,
+        recipe_defaults: dict[str, str] | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -63,8 +66,7 @@ class StyleScope(Component[StyleScopeProps]):
                 title="StyleScope recipe defaults unsupported",
                 explanation=(
                     "StyleScope rejects recipe defaults "
-                    f"({', '.join(rejected)}). Only theme, color_mode, and density "
-                    "are supported in 0.58."
+                    f"({', '.join(rejected)}). Pass recipe_defaults explicitly in 0.60."
                 ),
                 remediation="Apply recipes with DesignSystem.apply on components instead.",
             )
@@ -119,18 +121,44 @@ class StyleScope(Component[StyleScopeProps]):
                     explanation=f"variant={variant!r} must match [A-Za-z0-9_-]+.",
                     remediation="Pass a registered finite theme variant name.",
                 )
+        if design is not None and _THEME_NAME_RE.fullmatch(design.strip()) is None:
+            raise error(
+                HED_STYLE_SCOPE_0001,
+                title="Invalid StyleScope design",
+                explanation=f"design={design!r} must be a safe registered design name.",
+                remediation="Use a registered DesignSystem name.",
+            )
+        defaults = dict(recipe_defaults or {})
+        if any(
+            _THEME_NAME_RE.fullmatch(str(key)) is None
+            or _THEME_NAME_RE.fullmatch(str(value)) is None
+            for key, value in defaults.items()
+        ):
+            raise error(
+                HED_STYLE_SCOPE_0001,
+                title="Invalid StyleScope recipe defaults",
+                explanation="Recipe family and recipe names must be safe registered identifiers.",
+                remediation="Use recipe_defaults={'surface': 'panel'} with registered recipes.",
+            )
         super().__init__(
             StyleScopeProps(
                 theme=theme,
                 color_mode=color_mode,
                 density=density,
                 variant=variant,
+                design=design,
+                recipe_defaults=defaults,
                 id=id,
                 class_=class_,
                 mark=mark,
             )
         )
         self._children = collect_children(*nodes, children=children)
+        self._style_context = StyleContext(recipes=defaults)
+
+    @property
+    def style_context(self) -> StyleContext:
+        return self._style_context
 
     def render(self) -> NodeLike:
         data: dict[str, str | bool | int | float | None] = {
@@ -146,6 +174,12 @@ class StyleScope(Component[StyleScopeProps]):
             data["hedron-density"] = self.props.density
         if self.props.variant is not None:
             data["hedron-variant"] = self.props.variant
+        if self.props.design is not None:
+            data["hedron-design"] = self.props.design
+        if self.props.recipe_defaults:
+            data["hedron-recipe-context"] = ";".join(
+                f"{key}={value}" for key, value in sorted(self.props.recipe_defaults.items())
+            )
         data.update(mark_data(self.props.mark))
         return html.div(
             *self._children,

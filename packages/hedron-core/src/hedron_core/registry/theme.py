@@ -13,6 +13,7 @@ class ThemeMeta:
     tokens: Mapping[str, str]
     modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
+    accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
 
 
 def register_theme(
@@ -22,6 +23,7 @@ def register_theme(
     tokens: Mapping[str, str],
     modes: Mapping[str, Mapping[str, str]] | None = None,
     variants: Mapping[str, Mapping[str, str]] | None = None,
+    accessibility_modes: Mapping[str, Mapping[str, str]] | None = None,
 ) -> None:
     from hedron_core.registry.builder import active_builder
 
@@ -32,5 +34,6 @@ def register_theme(
             tokens=dict(tokens),
             modes={k: dict(v) for k, v in (modes or {}).items()},
             variants={k: dict(v) for k, v in (variants or {}).items()},
+            accessibility_modes={k: dict(v) for k, v in (accessibility_modes or {}).items()},
         )
     )

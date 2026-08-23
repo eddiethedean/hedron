@@ -32,6 +32,19 @@ boundaries remain explicit in the [Modern CSS guide](modern-css-0.59.md).
 | Typed control attributes/sizing, AppShell chrome, pipeline/run presentation | **Published in 0.59** from the [consumer issue fixtures](https://github.com/eddiethedean/user-token-management-app/issues) |
 | Free-form CSS-in-Python, mandatory Node, automatic remote fonts | **Not planned**; use finite semantic APIs plus component `styles.css` and explicit local assets |
 
+## Proposed 0.60 — custom themes and styling completion
+
+Phase 0.60 is draft planning, not a Supported or shipped claim.
+
+| Topic | Disposition |
+|---|---|
+| Typed modern color, canonical ThemeSpec/ThemePatch, registry-derived contracts/profiles, fingerprints, data-only packages | **Proposed for 0.60** — [RFC-0089](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md) |
+| Forced-color/contrast modes, extensible recipes, explicit scoped defaults | **Proposed for 0.60**, gated by accessibility and explicit-value proofs |
+| Persisted no-flash theme picker and reviewed built-in theme families | **Proposed for 0.60** with server/application authority retained |
+| Theme Lab and third-party declared-profile conformance kit | **Proposed for 0.60** through shared read-only validation services |
+| Brand, ToastHost, ConnectorFlow, and semantic ScrollRegion gaps | **Proposed for 0.60** through Hedron #627–#630 |
+| Runtime visual editor, remote theme marketplace, round-trip token interchange, health score, arbitrary CSS-in-Python | **Not planned for 0.60** |
+
 ## Not a current production default
 
 | Topic | Use instead |

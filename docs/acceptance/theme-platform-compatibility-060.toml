@@ -1,0 +1,97 @@
+schema_version = 1
+phase = "0.60"
+state = "draft"
+owning_rfc = "RFC-0089"
+planning_baseline = "v0.59.0"
+public_upgrade_source = "v0.59.0"
+both_sources_required = true
+
+[public_api]
+theme_constructor_remains = true
+design_system_brand_hex_remains = true
+design_system_from_theme_remains = true
+design_system_apply_remains = true
+style_recipe_builtin_families_remain = true
+style_scope_existing_keywords_remain = true
+color_mode_toggle_remains = true
+component_styles_css_remains = true
+default_styles_false_remains = true
+
+[themes]
+preserved_names = ["default", "aurora"]
+preserve_default_snapshots = true
+material_fix_requires = ["issue", "reviewed before/after", "computed style facts", "release note"]
+unknown_theme_fails_closed = true
+new_builtin_names_require_W0_lock = true
+new_builtin_additions_max = 3
+platform_completeness_precedes_catalog_breadth = true
+
+[theme_authoring]
+theme_spec_is_canonical_input = true
+theme_builder_is_facade = true
+direct_theme_path_remains = true
+theme_patch_requires_compatible_base = true
+theme_patch_revalidates_complete_result = true
+structured_alias_cycles_fail = true
+
+[coverage]
+profiles = ["core", "forms", "data", "workflow", "complete"]
+profile_membership_locked_in_W0 = true
+package_claim_matches_validated_profile = true
+first_party_builtins_require_complete = true
+silent_profile_upgrade = false
+
+[dom]
+public_classes_preserved = true
+data_hedron_markers_preserved = true
+dom_order_change = false
+semantic_element_change_without_explicit_contract = false
+stable_toast_host_id = "hedron-toast"
+app_shell_brand_accepts_nodelike = true
+scroll_region_preserves_child_semantics = true
+
+[recipes]
+builtin_family_names_preserved = ["control", "surface", "data", "status", "content"]
+builtin_recipe_names_preserved = true
+existing_apply_precedence_preserved = true
+new_family_registration_additive = true
+explicit_component_values_win = true
+behavior_or_state_fields_forbidden = true
+
+[schemas]
+read_brand_palette_versions = [1, 2]
+write_brand_palette_version = 2
+read_design_system_plan_versions = [1, 2]
+write_design_system_plan_version = "locked in W0"
+theme_validation_version = 1
+theme_package_version = 1
+css_manifest_read_versions = [1, 2]
+theme_spec_version = "locked in W0"
+theme_patch_version = "locked in W0"
+
+[lifecycle]
+token_component_and_profile_changes_require = ["additive warning", "migration or rename map", "compatibility window", "announced error boundary"]
+strict_and_compatibility_validation = true
+unexpected_fingerprint_drift_fails = true
+conformance_report_inventory_must_match_package = true
+
+[preferences]
+color_mode_cookie_compatibility_required = true
+server_rendered_marker_authoritative = true
+application_storage_authoritative = true
+no_javascript_path_required = true
+optional_boot_failure_falls_back_to_server = true
+
+[assets_and_packages]
+default_theme_extra_stylesheet_requests = 0
+theme_package_assets_are_local = true
+clean_uninstall_leaves_application_data_untouched = true
+package_conflict_fails_closed = true
+remote_code_or_assets = false
+
+[upgrade]
+fixture = "upgrade-fixtures-060.md"
+automatic_source_rewrite = false
+codemod_no_overwrite = true
+diagnostic_before_future_removal = true
+rollback = "remove new package/context/preference usage and retain 0.59 Theme/DesignSystem path"

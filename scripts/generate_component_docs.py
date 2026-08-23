@@ -1964,6 +1964,28 @@ COMPONENTS = (
         "Do not invent a second toast host id or attach `hx-on` handlers for queueing.",
     ),
     ComponentDoc(
+        "ScrollRegion",
+        "layout",
+        "Bound a semantic list, log, or arbitrary child region without changing its children.",
+        "ScrollRegion(*nodes, children=None, axis='block', size='md', affordance='auto', label=None, id=None, class_=None, mark=None)",
+        "ScrollRegion(Text('Recent events'), axis='block', size='md', label='Recent events')",
+        (),
+        "ScrollRegion owns bounded overflow markers while preserving the child tree and its semantics. Use `label=` when the region needs an accessible name.",
+        "Use a meaningful label for multiple scrollable regions and keep keyboard focus on the actual interactive children.",
+        "Do not use ScrollRegion to hide required content in print or to replace semantic list/table elements.",
+    ),
+    ComponentDoc(
+        "ThemePicker",
+        "theme",
+        "Render an accessible no-JavaScript form for an allowlisted theme and color-mode preference.",
+        "ThemePicker(*, themes=('default', 'aurora'), color_modes=('system', 'light', 'dark'), selected=None, action='/preferences/theme', csrf_token=None)",
+        "ThemePicker(selected=ThemePreference(theme='aurora', color_mode='dark'))",
+        (),
+        "ThemePicker emits a native POST form. The application owns persistence and authorization; optional client boot helpers are bounded and do not replace the server-rendered selection.",
+        "Keep the labels, native submit path, and selected server state available when JavaScript is disabled.",
+        "Do not pass unregistered theme names, remote actions, CSS, or identity-bearing preference values into the picker.",
+    ),
+    ComponentDoc(
         "Expander",
         "utilities",
         "Reveal optional content with native details/summary behavior.",
@@ -3494,8 +3516,12 @@ def discover_builtin_components() -> set[str]:
         "TYPOGRAPHY_ROLES",
         "WIDTHS",
         "TableColumn",  # Pydantic model for Table metadata, not a Component
+        "ThemePreference",
         "action_attrs",
         "oob_swap",
+        "resolve_theme_preference",
+        "theme_boot_asset",
+        "theme_markers",
     }
     names = _literal_all("packages/hedron-core/src/hedron_core/builtins/__init__.py")
     names |= {

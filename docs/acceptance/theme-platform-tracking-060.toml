@@ -1,0 +1,179 @@
+schema_version = 1
+phase = "0.60"
+state = "draft"
+audit_date = "2026-08-23"
+owner = "hedron"
+decision = "D-108-proposed"
+owning_rfc = "RFC-0089"
+contract = "theme-platform-contract-060.toml"
+inventory = "theme-platform-inventory-060.toml"
+planning_baseline = "v0.59.0"
+target = "v0.60.0"
+
+[live_issue_summary]
+repository = "eddiethedean/hedron"
+open_issue_numbers = [86, 192, 627, 628, 629, 630, 631, 632, 633, 634, 635]
+owned_styling_issue_numbers = [627, 628, 629, 630, 631, 632, 633, 634, 635]
+cross_cutting_issue_numbers = [86]
+unrelated_issue_numbers = [192]
+note = "#627-#635 are all owned by 0.60; #86 limits human-AT claims; #192 retains its existing bug owner."
+
+[[issue]]
+number = 627
+title = "Brand should natively stack and constrain subtitle content"
+workstream = "W7"
+gates = ["BRAND-060", "A11Y-060", "VISUAL-060", "COMPAT-060"]
+classification = "correctness and component polish"
+
+[[issue]]
+number = 628
+title = "Give ToastHost native placement and error-host composition"
+workstream = "W7"
+gates = ["FEEDBACK-060", "A11Y-060", "SECURITY-060", "COMPAT-060"]
+classification = "component enhancement with announcement semantics"
+
+[[issue]]
+number = 629
+title = "Add native themed canvas presentation to ConnectorFlow"
+workstream = "W8"
+gates = ["WORKFLOW-060", "A11Y-MODE-060", "VISUAL-060"]
+classification = "component enhancement"
+
+[[issue]]
+number = 630
+title = "Add a native bounded ScrollRegion for logs and semantic lists"
+workstream = "W8"
+gates = ["SCROLL-060", "A11Y-060", "VISUAL-060"]
+classification = "new semantic layout primitive"
+
+[[issue]]
+number = 631
+title = "Allow explicit scoped recipe defaults in StyleScope"
+workstream = "W5"
+gates = ["SCOPE-060", "RECIPE-060", "COMPAT-060"]
+classification = "architecture gated by explicit-value proof"
+
+[[issue]]
+number = 632
+title = "Support extensible typed recipe families for custom themes"
+workstream = "W5"
+gates = ["RECIPE-060", "PACKAGE-060", "SECURITY-060"]
+classification = "architecture; presentation-only fields"
+
+[[issue]]
+number = 633
+title = "Accept modern color spaces in DesignSystem.brand"
+workstream = "W2"
+gates = ["RECONCILE-060", "COLOR-060", "PALETTE-060", "COMPAT-060"]
+classification = "published-contract correctness debt"
+
+[[issue]]
+number = 634
+title = "Add forced-colors and contrast-preference theme modes"
+workstream = "W4"
+gates = ["A11Y-MODE-060", "VALIDATE-060", "A11Y-060"]
+classification = "theme accessibility enhancement"
+
+[[issue]]
+number = 635
+title = "Add a native persisted theme picker with no-flash boot"
+workstream = "W6"
+gates = ["PREFERENCE-060", "SECURITY-060", "A11Y-060", "COMPAT-060"]
+classification = "preference and theme-selection enhancement"
+
+[[workstream]]
+id = "W0"
+title = "Baseline, component-contract/profile map, capped theme brief, budgets, and issue ownership"
+gates = ["CONTRACT-060"]
+issues = []
+
+[[workstream]]
+id = "W1"
+title = "0.59 claim/runtime reconciliation and evidence repair"
+gates = ["RECONCILE-060", "REGRESS-060"]
+issues = [633]
+
+[[workstream]]
+id = "W2"
+title = "Typed modern color and palette-v2 compilation"
+gates = ["COLOR-060", "PALETTE-060", "SECURITY-060", "COMPAT-060"]
+issues = [633]
+
+[[workstream]]
+id = "W3"
+title = "ThemeSpec, builder, token graph, patches, contracts/profiles, fingerprints, validation, and packages"
+gates = ["THEME-060", "VALIDATE-060", "PACKAGE-060", "CONFORMANCE-060"]
+issues = []
+
+[[workstream]]
+id = "W4"
+title = "Forced-colors and more-contrast theme authoring"
+gates = ["A11Y-MODE-060", "VALIDATE-060", "A11Y-060"]
+issues = [634]
+
+[[workstream]]
+id = "W5"
+title = "Extensible recipe families, explicit-value tracking, and StyleContext"
+gates = ["RECIPE-060", "SCOPE-060", "SECURITY-060", "COMPAT-060"]
+issues = [631, 632]
+
+[[workstream]]
+id = "W6"
+title = "Theme preference, picker, persistence boundary, and no-flash boot"
+gates = ["PREFERENCE-060", "SECURITY-060", "A11Y-060"]
+issues = [635]
+
+[[workstream]]
+id = "W7"
+title = "Brand and feedback-host zero-CSS completion"
+gates = ["BRAND-060", "FEEDBACK-060", "A11Y-060", "VISUAL-060"]
+issues = [627, 628]
+
+[[workstream]]
+id = "W8"
+title = "Workflow canvas and semantic ScrollRegion"
+gates = ["WORKFLOW-060", "SCROLL-060", "A11Y-060", "VISUAL-060"]
+issues = [629, 630]
+
+[[workstream]]
+id = "W9"
+title = "Capped reviewed built-in theme catalog and whole-fleet adoption"
+gates = ["CATALOG-060", "VISUAL-060", "PKG-060"]
+issues = []
+
+[[workstream]]
+id = "W10"
+title = "CLI, Theme Lab, conformance kit, lifecycle docs, starters, and upgrade workflow"
+gates = ["TOOLING-060", "EXPLORER-060", "CONFORMANCE-060", "DOCS-060"]
+issues = []
+
+[[workstream]]
+id = "W11"
+title = "Security, accessibility, compatibility, visual, performance, and regression hardening"
+gates = ["SECURITY-060", "A11Y-060", "VISUAL-060", "PERF-060", "COMPAT-060", "REGRESS-060"]
+issues = []
+
+[[workstream]]
+id = "W12"
+title = "Issue closure, packaging, release rehearsal, and cut"
+gates = ["PKG-060"]
+issues = [627, 628, 629, 630, 631, 632, 633, 634, 635]
+
+[stage_1_entry]
+decision_accepted = false
+exact_contract_reviewed = false
+component_contract_and_profile_map_locked = false
+reconciliation_probe_recorded = false
+issue_milestone_and_backlinks = false
+browser_matrix_locked = false
+explicit_value_prototype_passed = false
+package_security_prototype_passed = false
+fingerprint_reproducibility_prototype_passed = false
+budgets_reproduced = false
+
+[release_issue_policy]
+owned_issue_numbers = [627, 628, 629, 630, 631, 632, 633, 634, 635]
+all_owned_issues_must_close_from_evidence = true
+new_styling_issue_must_be_owned_or_excluded = true
+exclusion_requires = ["reason", "owner", "destination", "stability impact"]
+issue_closure_alone_is_not_gate_evidence = true

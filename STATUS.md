@@ -26,9 +26,11 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
-**Phase focus:** Living train is **0.59** (D-106 / D-107 / RFC-0087) — the modern CSS
-overhaul. `release-gate-0.59.toml` is the active evidence packet. Prior Published
-in-tree **0.57** unified presentation / zero-application-CSS
+**Phase focus:** Published train is **0.59** (D-106 / D-107 / RFC-0087). Phase **0.60** (proposed
+D-108 / RFC-0089) has an in-progress additive runtime slice and executable Stage 0 packet for the
+custom theme platform, full theme validation, and styling issues #627–#635; all release gates remain
+Planned and no 0.60 release claim is made. Prior
+Published in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
 Prior Published **0.58** progressive feature and styling authoring (D-101 / D-102 / D-105 /
@@ -82,7 +84,8 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `PARTICIPANT-021` | Compensated participant floor | **Planned** (0.21) | sessions outstanding; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `ARTIFACT-021` | Redacted ledger + statement update | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
-| `*-059` | Modern CSS platform and intuitive built-in styling | **Planned** (0.59) | D-106 / D-107 / RFC-0087; Stage 1 probes and issue mirrors pending; includes [consumer #4–#7](https://github.com/eddiethedean/user-token-management-app/issues) |
+| `*-059` | Modern CSS platform and intuitive built-in styling | **Verified/Published** (0.59) | D-106 / D-107 / RFC-0087; `v0.59.0` |
+| `*-060` | Custom theme platform and styling completion | **In progress / Planned gates** (0.60) | Proposed D-108 / RFC-0089; additive runtime slice; owns #627–#635 |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
 | `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |

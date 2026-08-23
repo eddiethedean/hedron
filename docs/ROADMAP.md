@@ -63,7 +63,8 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.56** | Security control plane: cross-adapter conformance, sensitive-data provenance, immutable context, trust-boundary sinks, egress, signed intents, request budgets, and posture reporting | **Published** (`v0.56.0` on PyPI; Verified gates; [RFC-0083](rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md), D-097/D-098, [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557); living tip advanced through 0.57 to 0.58) |
 | **0.57** | Unified styling and presentation: shared appearance adoption, CSP-safe responsive layout, overflow contracts, surfaces, application chrome, data/identity primitives, and zero-application-CSS evidence | **Published** in-tree (`v0.57.0`; Verified gates; tag/PyPI deferred; D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570); [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569); living tip advanced to 0.58) |
 | **0.58** | Progressive feature and styling authoring: screens/forms/workspaces/flows, branded design systems, semantic recipes/roles, explicit scopes, unified inspect/preview/diff/override/ejection, and starter-first adoption | **Published** in-tree (`v0.58.1`; PyPI `v0.58.0`; Verified gates; D-101 / D-102 / D-105 / [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)) |
-| **0.59** | Modern CSS platform and intuitive built-in styling: standards-capable scoped compilation, canonical cascade/tokens, container-aware layout, modern color/type/media/overlay/motion, whole-fleet zero-CSS polish, and consumer vertical slices | **Engineering implementation** (`v0.59.0`; 23-gate evidence packet in progress; D-106 / D-107 / [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md); includes [user-token-management-app #4](https://github.com/eddiethedean/user-token-management-app/issues/4)–[#7](https://github.com/eddiethedean/user-token-management-app/issues/7)) |
+| **0.59** | Modern CSS platform and intuitive built-in styling: standards-capable scoped compilation, canonical cascade/tokens, container-aware layout, modern color/type/media/overlay/motion, whole-fleet zero-CSS polish, and consumer vertical slices | **Published** (`v0.59.0` on PyPI; D-106 / D-107 / [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md)) |
+| **0.60** | Custom theme platform and styling completion: modern color, ThemeSpec/ThemePatch, registry-derived profiles/validation, fingerprints/conformance, packages, accessibility modes, recipes/scopes, persisted selection, capped built-ins, and #627–#635 | **Draft planning** (`v0.60.0` target; proposed D-108 / [RFC-0089](rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md)) |
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -6140,12 +6141,8 @@ metadata truthfully records Beta maturity and registry status.
 
 ## 0.59 — Modern CSS platform and intuitive built-in styling (`v0.59.0` target)
 
-**Status:** Planned (D-106 / D-107 / RFC-0087). Required predecessor Published/Verified in-tree
-`v0.58.1` is satisfied; the public upgrade source is PyPI `v0.58.0`. Stage 0 has refined the
-signatures, schemas, diagnostics, parser/browser choices, feature tiers, budgets, package
-dispositions, and reserved issue-mirror IDs. Stage 1 remains blocked on feasibility probes and
-filed Hedron issue mirrors. Planning does not add 0.59
-runtime symbols, change versions, close issues, or claim a release.
+**Status:** Published (`v0.59.0`; D-106 / D-107 / RFC-0087). This section retains the phase's
+normative scope and evidence boundaries; post-cut custom-theme and zero-CSS gaps are owned by 0.60.
 
 **Outcome:** Common Hedron product UI needs no application CSS, while advanced component authors
 can use modern standards-based CSS through the same scoped compiler, cascade, assets, CSP, tokens,
@@ -6270,14 +6267,105 @@ on/off/media/direction/content evidence, passing security/accessibility/performa
 package checks, and honest Required/Progressive/Experimental/Deferred release documentation.
 
 
+## 0.60 — Custom theme platform and styling completion (`v0.60.0` target)
+
+**Status:** Draft planning (proposed D-108 / RFC-0089). Required predecessor Published/Verified
+`v0.59.0` is satisfied in-tree and on PyPI. Planning does not add runtime symbols, change versions,
+close issues, or claim a release. Stage 1 requires accepted D-108 and the entry conditions in the
+0.60 contract.
+
+**Outcome:** Theme authors can create canonical ThemeSpecs, compose bounded ThemePatches, validate
+truthful profiles against registry-derived component contracts, package/register them, verify
+reproducible fingerprints, run a third-party conformance kit, preview/diff/explain them, and select
+them through one typed lifecycle. Modern color and accessibility modes have deterministic
+fallbacks; recipes/scopes remain presentation-only and explicitly ordered; reviewed built-in themes
+cover the complete fleet; and remaining consumer presentation gaps need no application CSS.
+
+Normative planning is [RFC-0089](rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md), the
+[implementation plan](implementation/THEME_PLATFORM_060.md), the
+[execution plan](implementation/EXECUTION_0_60.md), and the
+[acceptance plan](acceptance/RELEASE_0_60.md). Machine-readable locks are the
+[contract](acceptance/theme-platform-contract-060.toml),
+[inventory](acceptance/theme-platform-inventory-060.toml),
+[tracking](acceptance/theme-platform-tracking-060.toml),
+[compatibility policy](acceptance/theme-platform-compatibility-060.toml),
+[release gate](acceptance/release-gate-0.60.toml), and
+[upgrade fixtures](acceptance/upgrade-fixtures-060.md).
+
+### Scope and workstreams
+
+1. Reconcile 0.59 styling claims with executable runtime/computed-style evidence so marker-only
+   tests cannot verify color, layout, announcement, fallback, or no-flash claims.
+2. Add safe absolute CSS Color 4 input, deterministic conversion/gamut mapping, canonical sRGB
+   fallback, optional wide-gamut output, contrast/focus adjustment, and palette-v2 provenance.
+3. Add canonical immutable ThemeSpec, ThemeBuilder facade, structured token graph, bounded
+   ThemePatch overlays, registry-derived ComponentThemeContracts, truthful coverage profiles,
+   relationship-based validation, reproducible fingerprints, and deterministic data-only packages.
+4. Add reviewed forced-colors and more-contrast theme mappings while keeping user-agent system
+   colors and Hedron's media/`forced-color-adjust` policy authoritative.
+5. Add registered presentation-only recipe families and serializable StyleContext only after
+   explicit-versus-omitted component values can be proven without behavior or mutation drift.
+6. Add server-first ThemePreference and an accessible ThemePicker with application-owned
+   persistence, no-JS/HTMX paths, and an optional external CSP-safe no-flash helper.
+7. Close Brand and ToastHost gaps (#627/#628), including narrow/RTL/zoom/media layout and one
+   effective announcement strategy.
+8. Close ConnectorFlow canvas and semantic ScrollRegion gaps (#629/#630) without moving workflow
+   state or child semantics into styling.
+9. Ship no more than three reviewed built-in additions beyond preserved `default`/`aurora`, placing
+   platform completeness before catalog breadth; every addition covers modes, states, fleet,
+   fallbacks, assets, and licenses.
+10. Expose shared init/check/preview/diff/package/explain/conform services through CLI, a read-only
+    Theme Lab, CI, third-party conformance fixtures, starters, lifecycle docs, and upgrade workflows.
+11. Cross the full browser/theme/mode/direction/zoom/content/no-JS/feature-off matrix, fuzz every
+    new trust boundary, enforce performance/package budgets, and preserve both 0.59 upgrade sources.
+12. Close all owned issues only from behavior evidence, require zero unowned styling issues, build
+    clean wheels, verify release truth, and rehearse rollback.
+
+### Styling issue ownership
+
+| Issue | 0.60 result | Workstream / gates |
+|---|---|---|
+| [#627](https://github.com/eddiethedean/hedron/issues/627) | Native stacked/constrained Brand subtitle | W7 / `BRAND-060` |
+| [#628](https://github.com/eddiethedean/hedron/issues/628) | Positioned safe-area ToastHost and coherent error/announcement composition | W7 / `FEEDBACK-060` |
+| [#629](https://github.com/eddiethedean/hedron/issues/629) | Themed bounded ConnectorFlow canvas | W8 / `WORKFLOW-060` |
+| [#630](https://github.com/eddiethedean/hedron/issues/630) | Semantic-preserving bounded ScrollRegion | W8 / `SCROLL-060` |
+| [#631](https://github.com/eddiethedean/hedron/issues/631) | Explicit StyleContext recipe defaults with exact precedence | W5 / `SCOPE-060` |
+| [#632](https://github.com/eddiethedean/hedron/issues/632) | Extensible presentation-only RecipeFamily registration | W5 / `RECIPE-060` |
+| [#633](https://github.com/eddiethedean/hedron/issues/633) | Modern color input and corrected release evidence | W1–W2 / `RECONCILE-060`, `COLOR-060`, `PALETTE-060` |
+| [#634](https://github.com/eddiethedean/hedron/issues/634) | Forced-colors/more-contrast theme authoring and validation | W4 / `A11Y-MODE-060` |
+| [#635](https://github.com/eddiethedean/hedron/issues/635) | Allowlisted persisted ThemePicker and no-flash boot | W6 / `PREFERENCE-060` |
+
+Open #86 continues to bound human-AT claims; unrelated #192 retains its existing owner. New styling
+issues discovered before the cut must be owned by a 0.60 gate or excluded through an accepted
+reason, owner, destination, and stability-impact record.
+
+### Stability and non-goals
+
+Existing Theme/DesignSystem/hex/recipe/scope/component/public-marker/token/compiler/cascade/assets
+and `default_styles=False` paths remain valid. The phase adds no CSS-in-Python DSL, arbitrary
+selectors/properties, executable or remotely fetched theme package, second styling authority,
+runtime design editor, mandatory Node, styling-owned behavior/state/security, Hedron-owned user or
+preference store, aggregate health score, silent aesthetic/accessibility fixes, round-trip external
+token interchange, automatic accessibility certification, human-AT Supported claim, or 1.0 schedule.
+
+### Entry and exit
+
+Stage 1 requires accepted D-108, exact contract, component-contract/profile map, capped design
+review, 0.59 reconciliation, issue milestone/backlinks, locked browser matrix, passing explicit-
+value/package-security/fingerprint prototypes, and reproducible budgets. Release requires all 27
+`*-060` gates Verified with zero Deferred among
+Required rows, #627–#635 closed from evidence, no unowned styling issues, passing built-in/custom
+theme validation, both 0.59 upgrades, clean packages, and honest release/accessibility claims.
+
+
 ## Later-phase policy
 
 The roadmap remains open-ended. New phases are added when a coherent capability packet has an
 accepted design, demonstrated demand, explicit non-goals, and testable exit evidence. A version
 number is never used as a reason to freeze unrelated work or to promote beta/experimental behavior.
-Phase **0.59** is assigned to the modern CSS platform and intuitive built-in styling overhaul under
-D-106/D-107/RFC-0087; it remains Planned until its Stage 1 evidence is verified and does not
-revive the superseded RFC-0086 design-system proposal.
+Phase **0.60** is proposed for the custom theme platform and styling completion under
+D-108/RFC-0089. It builds on the published 0.59 compiler/cascade authority and does not revive the
+superseded RFC-0086 standalone proposal or authorize a second styling system.
 Scope may move between future `0.x` phases through an accepted roadmap revision, but deferred work
 must always retain an owner, rationale, destination, and public stability impact. Phase **0.20**
 owns the post-0.11 host-security and adapter-parity packet (D-051). Phase **0.22** owns the CSRF /

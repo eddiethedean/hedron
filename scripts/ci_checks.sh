@@ -411,6 +411,8 @@ quality_verify_pkgs() {
   run_py scripts/verify_pkg_56.py
   run_py scripts/verify_pkg_57.py
   run_py scripts/verify_pkg_58.py
+  run_py scripts/verify_pkg_59.py
+  run_py scripts/verify_pkg_60.py --allow-planned
 }
 
 quality_docs() {
@@ -573,6 +575,8 @@ evidence_verify_pkgs() {
   run_py scripts/verify_pkg_56.py
   run_py scripts/verify_pkg_57.py
   run_py scripts/verify_pkg_58.py
+  run_py scripts/verify_pkg_59.py
+  run_py scripts/verify_pkg_60.py --allow-planned
 }
 
 cmd_evidence() {

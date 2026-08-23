@@ -18,6 +18,7 @@ from hedron_core.codes import (
 )
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, error, make_diagnostic
 from hedron_core.registry import ThemeMeta, get_registry, register_theme
+from hedron_core.theme_platform import Color
 from hedron_core.typing_aliases import JsonValue
 
 __all__ = [
@@ -311,6 +312,7 @@ class Theme:
     nav_width: str | None = None
     elevation: Mapping[str, str] = field(default_factory=dict)
     parent: str | None = None
+    accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not self.name or not self.name.replace("-", "").replace("_", "").isalnum():
@@ -364,6 +366,17 @@ class Theme:
                 explanation=f"parent={self.parent!r} is not a valid theme identifier.",
                 remediation="Use the name of an existing theme, or None.",
             )
+        for mode, values in self.accessibility_modes.items():
+            if mode not in {"forced-colors", "more-contrast"}:
+                raise error(
+                    HED_THEME_INVALID,
+                    title="Invalid accessibility theme mode",
+                    explanation=f"accessibility mode {mode!r} is not supported.",
+                    remediation="Use 'forced-colors' or 'more-contrast'.",
+                )
+            for key, value in values.items():
+                _validated_token_key(f"accessibility.{mode}", key)
+                _validated_css_value(f"accessibility.{mode}", key, value)
 
     def extend(
         self,
@@ -377,6 +390,7 @@ class Theme:
         shape: Mapping[str, str] | None = None,
         nav_width: str | None = None,
         elevation: Mapping[str, str] | None = None,
+        accessibility_modes: Mapping[str, Mapping[str, str]] | None = None,
     ) -> Theme:
         """Return a new theme that inherits this theme's values by name.
 
@@ -395,6 +409,14 @@ class Theme:
         }
         for variant, values in (variants or {}).items():
             merged_variants[variant] = {**dict(merged_variants.get(variant, {})), **dict(values)}
+        merged_accessibility: dict[str, Mapping[str, str]] = {
+            mode: dict(values) for mode, values in self.accessibility_modes.items()
+        }
+        for mode, values in (accessibility_modes or {}).items():
+            merged_accessibility[mode] = {
+                **dict(merged_accessibility.get(mode, {})),
+                **dict(values),
+            }
         return replace(
             self,
             name=name,
@@ -407,6 +429,7 @@ class Theme:
             nav_width=self.nav_width if nav_width is None else nav_width,
             elevation={**dict(self.elevation), **dict(elevation or {})},
             parent=self.name,
+            accessibility_modes=merged_accessibility,
         )
 
 
@@ -602,6 +625,18 @@ def emit_theme_css(theme: Theme) -> str:
         for key, value in sorted(theme.tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
         lines.append("}")
+    for mode, values in sorted(theme.accessibility_modes.items()):
+        if mode == "forced-colors":
+            lines.append("@media (forced-colors: active) {")
+            lines.append("  :root {")
+            lines.append("    forced-color-adjust: auto;")
+        else:
+            lines.append("@media (prefers-contrast: more) {")
+            lines.append("  :root {")
+        for key, value in sorted(values.items()):
+            lines.append(f"    {_token_to_css_var(key)}: {value};")
+        lines.append("  }")
+        lines.append("}")
     lines.append("@media (prefers-reduced-motion: reduce) {")
     lines.append("  :root {")
     lines.append(f"    {_token_to_css_var('motion.duration')}: 0ms;")
@@ -619,6 +654,7 @@ def register_theme_instance(theme: Theme) -> None:
             tokens=theme.tokens,
             modes=theme.modes,
             variants=theme.variants,
+            accessibility_modes=theme.accessibility_modes,
         )
     except Exception as exc:
         # Re-raise duplicates with theme code if already mapped.
@@ -665,7 +701,9 @@ def get_theme(name: str | None) -> ThemeMeta | None:
     return get_registry().get_theme(name)
 
 
-def _parse_hex(value: str) -> tuple[float, float, float]:
+def _parse_hex(value: str | Color) -> tuple[float, float, float]:
+    if isinstance(value, Color):
+        return value.to_srgb()
     raw = value.strip()
     if not _HEX_COLOR.match(raw):
         raise error(
@@ -716,7 +754,7 @@ def _darken_until(hue: float, saturation: float, against: str, target: float, st
     return "#000000"
 
 
-def compile_palette(seed: str) -> dict[str, str]:
+def compile_palette(seed: str | Color) -> dict[str, str]:
     """Compile an accessible semantic palette from a single seed color.
 
     The result is a ``Theme.tokens``-compatible mapping whose text pairs meet

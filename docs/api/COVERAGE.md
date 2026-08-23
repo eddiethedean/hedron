@@ -29,6 +29,10 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `SessionAuthFlow`, `AuthResult`, `AuthSuccess`, `AuthDenied`, `RateLimitPolicy`, `SessionRotationPolicy` | [AUTH.md](AUTH.md), [whats-new-0.58](../guides/whats-new-0.58.md) |
 | `UploadFlow` | [file-upload](../examples/file-upload.md), [whats-new-0.58](../guides/whats-new-0.58.md), Autodoc |
 | `DesignSystem`, `StyleRecipe`, `StyleScope` | [PRESENTATION.md](PRESENTATION.md), [StyleScope](../components/style-scope.md), [whats-new-0.58](../guides/whats-new-0.58.md) |
+| `Color`, `ThemeSpec`, `ThemeBuilder`, `ThemePatch`, `ThemePackage`, `ThemeValidationReport` | [Theme platform](THEME.md), [phase 0.60 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/THEME_PLATFORM_060.md) |
+| `ComponentThemeContract`, `CoverageProfile`, `RecipeFamily`, `StyleContext` | [Theme platform](THEME.md), [phase 0.60 contract](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/theme-platform-contract-060.toml) |
+| `ScrollRegion`, `ThemePicker`, `ThemePreference` | [Component demos](../components/index.md), [phase 0.60 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_60.md) |
+| `package_theme`, `validate_theme_spec`, `register_component_theme_contract`, `registered_component_theme_contracts`, `register_recipe_family`, `registered_recipe_families`, `resolve_theme_preference`, `theme_boot_asset`, `theme_markers` | [Theme platform](THEME.md), [phase 0.60 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/THEME_PLATFORM_060.md) |
 
 ## Inference and model demos (0.18)
 

@@ -1,0 +1,241 @@
+schema_version = 1
+phase = "0.60"
+state = "draft"
+planning_baseline = "v0.59.0"
+public_upgrade_source = "v0.59.0"
+target = "v0.60.0"
+decision = "D-108-proposed"
+owning_rfc = "RFC-0089"
+single_styling_authority = true
+
+[existing_authority]
+theme = "hedron_core.theme.Theme"
+design_system = "hedron_core.design_system.DesignSystem"
+recipe = "hedron_core.design_system.StyleRecipe"
+scope = "hedron_core.builtins.style_scope.StyleScope"
+registry = "existing Hedron registry lifecycle"
+compiler = "0.59 hedron_core CSS compiler and manifest v2"
+cascade = ["reset", "tokens", "base", "components", "utilities", "overrides"]
+second_runtime_allowed = false
+
+[apis.color]
+type = "Color"
+constructors = ["parse", "rgb", "hsl", "hwb", "lab", "lch", "oklab", "oklch"]
+accepted_absolute_spaces = ["hex", "rgb", "hsl", "hwb", "lab", "lch", "oklab", "oklch"]
+rejected = ["var", "url", "currentColor", "system colors as brand seeds", "relative colors", "selectors", "declarations", "remote profiles"]
+working_representation = "documented deterministic normalized color with explicit white point"
+required_fallback = "canonical sRGB"
+wide_gamut = "additive progressive enhancement"
+
+[apis.brand]
+accent = "str | Color"
+legacy_hex_accepted = true
+palette_schema = "hedron.brand-palette/2"
+adjustments_disclosed = true
+explicit_palette_path = "ThemeSpec, Theme, or ThemeBuilder.tokens"
+
+[apis.theme_spec]
+type = "ThemeSpec"
+canonical_authoring_input = true
+immutable = true
+serializable = true
+contents = ["finite groups", "semantic tokens", "structured aliases", "accessibility modes", "coverage profile", "source provenance"]
+alias_graph = "bounded, acyclic, missing-reference checked, inspectable"
+arbitrary_var_expressions = false
+normalizes_to_existing_theme_authority = true
+
+[apis.theme_builder]
+type = "ThemeBuilder"
+operations = ["base", "brand", "groups", "tokens", "accessibility_mode", "recipes", "build_spec", "build"]
+mutable = false
+canonical_output = "ThemeSpec"
+compatibility_output = "Theme"
+field_provenance = true
+arbitrary_css_properties = false
+
+[apis.theme_patch]
+type = "ThemePatch"
+uses = ["tenant", "product", "sub-brand", "event"]
+overrides = "registered ThemeSpec fields and semantic tokens only"
+ordered = true
+base_fingerprint_checked = true
+layer_provenance = true
+full_revalidation = true
+arbitrary_css = false
+
+[apis.component_theme_contract]
+type = "ComponentThemeContract"
+registration = "existing registry before seal"
+declares = ["semantic roles", "public parts", "states", "variants", "contrast relationships", "accessibility behavior", "fallback policy"]
+inventory_source = "registered contracts"
+unregistered_public_themeable_component = "error"
+
+[apis.coverage_profiles]
+ids = ["core", "forms", "data", "workflow", "complete"]
+membership = "reviewed, monotonic, locked in W0"
+claims_match_validated_profile = true
+first_party_builtins_require = "complete"
+silent_profile_upgrade = false
+
+[apis.theme_fingerprint]
+inputs = ["canonical ThemeSpec", "ordered ThemePatches", "color and compiler algorithm revisions", "component-contract inventory", "Hedron compatibility identity"]
+deterministic = true
+unexpected_drift = "CI error"
+equal_inputs_equal_outputs = ["resolved graph", "CSS", "reports", "package digests"]
+
+[apis.accessibility_modes]
+theme_field = "accessibility_modes"
+mode_ids = ["forced-colors", "more-contrast"]
+separate_from_color_mode = true
+values = "bounded semantic token and reviewed component-state mappings"
+media_queries_framework_owned = true
+forced_color_adjust_framework_owned = true
+user_agent_system_colors_preferred = true
+
+[apis.validation]
+function = "validate_theme"
+service = "ThemeValidator"
+report = "ThemeValidationReport"
+schema = "hedron.theme-validation/1"
+layers = ["structure", "semantic token graph", "recipes", "component contracts and coverage profiles", "contrast relationships and focus", "component states and modes", "assets and CSP", "package and compatibility", "browser and visual evidence"]
+diagnostic_context = ["theme", "profile", "token", "component", "state", "mode", "requested", "resolved", "graph and patch provenance", "remediation"]
+deterministic_order = true
+relationship_checks = ["text/surface", "selected foreground/background", "focus/surroundings", "border/surface", "status foreground/background", "disabled state cues"]
+remediation_preview = true
+fix_scope = "canonical formatting only"
+aggregate_health_score = false
+
+[apis.theme_package]
+type = "ThemePackage"
+schema = "hedron.theme-package/1"
+contents = ["metadata", "ThemeSpecs", "optional ThemePatches", "coverage profiles", "design plans", "recipe families", "recipes", "local asset declarations", "validation and fingerprint digests", "migration metadata", "preview metadata"]
+executable_hooks = false
+remote_assets = false
+registry_conflicts = "fail closed"
+requires_hashes_and_licenses = true
+
+[apis.conformance_kit]
+command = "hedron style theme conform"
+fixture = "zero-application-CSS declared-profile matrix"
+outputs = ["portable JSON", "human-readable artifacts", "registry inventory digest", "theme fingerprint verification"]
+fresh_report_required_for_package_publication = true
+
+[apis.theme_lab]
+authority = "read-only shared resolver and validator"
+views = ["side-by-side modes", "token and state inspection", "ThemeSpec and ThemePatch diff", "gamut and fallback warnings", "keyboard focus and zoom exercises", "report export"]
+executes_package_code = false
+writes_target_project = false
+
+[theme_lifecycle]
+compatibility_ranges = true
+change_sequence = ["additive warning", "stable migration or rename map", "compatibility window", "announced error boundary"]
+validation_modes = ["strict", "compatibility"]
+silent_profile_upgrade = false
+
+[apis.recipe_family]
+type = "RecipeFamily"
+safe_identifiers = true
+finite_field_vocabularies = true
+per_component_field_bindings = true
+presentation_fields_only = true
+authoritative_state_fields = false
+arbitrary_css = false
+registration = "deterministic before registry seal"
+inheritance = "same family, acyclic, depth bounded"
+
+[apis.style_context]
+type = "StyleContext"
+scope_keyword = "context"
+serializable = true
+targets = "registered public family and semantic roles"
+precedence = ["explicit component value", "inner StyleContext", "outer StyleContext", "DesignSystem role", "component default"]
+process_global_mutation = false
+detached_host_policy = "explicit context reference or host binding"
+static_impact_explanation = true
+
+[apis.preference]
+type = "ThemePreference"
+component = "ThemePicker"
+theme_value = "allowlisted registered theme name"
+color_modes = ["system", "light", "dark"]
+persistence = "application-owned adapter"
+canonical_boot = "server-rendered html markers"
+optional_boot_asset = "external CSP-safe bounded helper"
+no_javascript_form = true
+invalid_value = "fail to application-selected safe default"
+
+[apis.brand_component]
+subtitle_overflow = ["wrap", "break", "truncate", "clip"]
+density = ["compact", "comfortable", "spacious"]
+existing_constructor_compatible = true
+app_shell_brand_nodelike_compatible = true
+
+[apis.toast_host]
+placement_candidates = ["block-start-inline-end", "block-start-inline-start", "block-end-inline-end", "block-end-inline-start"]
+position_candidates = ["fixed", "sticky", "flow"]
+width = ["content", "field", "full"]
+max_width = ["sm", "md", "lg"]
+gap = ["xs", "sm", "md"]
+stable_id = "hedron-toast"
+announcement_owner = "exactly one effective live-region strategy"
+
+[apis.connector_flow]
+appearance = ["plain", "soft", "raised"]
+density = ["compact", "comfortable", "spacious"]
+background = ["none", "grid", "dots"]
+overflow = ["visible", "auto", "scroll"]
+min_size = ["none", "sm", "md", "lg"]
+decoration_semantic = false
+
+[apis.scroll_region]
+type = "ScrollRegion"
+axis = ["block", "inline", "both"]
+size = ["sm", "md", "lg"]
+affordance = ["auto", "always"]
+accessible_name = "label or explicit aria mapping when needed"
+focusability = "conditional and evidence-backed"
+child_semantics_preserved = true
+print_clipping = false
+
+[serialization]
+palette = "hedron.brand-palette/2"
+theme_spec = "schema locked in W0"
+theme_patch = "schema locked in W0"
+validation = "hedron.theme-validation/1"
+theme_package = "hedron.theme-package/1"
+design_plan = "hedron.design-system-plan/2 or additive compatible revision locked in W0"
+json = "UTF-8, sorted keys, compact separators, trailing newline"
+redact = ["absolute paths", "environment values", "secrets", "unapproved source", "preference values tied to identity"]
+
+[diagnostics]
+prefixes = ["HED-COLOR-", "HED-THEME-", "HED-CONTRACT-", "HED-PROFILE-", "HED-RECIPE-", "HED-SCOPE-", "HED-PREFERENCE-"]
+stable = true
+source_location_when_available = true
+unsafe_input = "fail closed"
+unsupported_capability = "actionable diagnostic, never silent drop"
+
+[browser_matrix]
+engines = ["chromium", "firefox", "webkit"]
+modes = ["light", "dark", "forced-colors", "more-contrast", "reduced-motion", "print"]
+directions = ["ltr", "rtl"]
+zoom_percent = [200, 400]
+content = ["short", "long", "unbroken", "international", "mixed-direction"]
+javascript = ["enabled", "disabled"]
+progressive_features = ["on", "off"]
+
+[budgets]
+default_css_raw_bytes_max = 95000
+default_css_gzip_9_bytes_max = 13500
+per_builtin_theme_css_raw_bytes_max = 24000
+per_builtin_theme_css_gzip_9_bytes_max = 4500
+optional_preference_js_gzip_bytes_max = 3000
+additional_required_stylesheet_requests_default_theme = 0
+additional_theme_asset_requests_max = 1
+theme_validation_cold_ratio_max_vs_baseline = 1.25
+representative_style_layout_ratio_max_vs_0590 = 1.10
+
+[entry_lock]
+stage_0_runtime_changes = false
+stage_0_version_changes = false
+stage_0_issue_closure = false
+requires = ["D-108 accepted", "0.59 reconciliation", "exact API review", "component contract and coverage profile map", "capped theme design brief", "explicitness prototype", "package security prototype", "fingerprint reproducibility prototype", "browser matrix", "reproducible budgets", "#627-#635 milestone and backlinks"]

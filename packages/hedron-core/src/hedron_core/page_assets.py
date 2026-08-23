@@ -47,6 +47,7 @@ DEFAULT_STATIC_PREFIX = "/hedron-static"
 _THEME_NAME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 _HTML_TAG_RE = re.compile(r"<html\b", re.IGNORECASE)
 _THEME_ATTR_RE = re.compile(r"\bdata-hedron-theme\s*=", re.IGNORECASE)
+_COLOR_MODE_ATTR_RE = re.compile(r"\bdata-theme\s*=", re.IGNORECASE)
 _SAFE_PASSTHROUGH_ATTRS = frozenset({"integrity", "crossorigin"})
 
 
@@ -83,9 +84,28 @@ def _prefix_href(path: str, *, static_href: Callable[[str], str] | None) -> str:
     return static_href(href)
 
 
-def inject_page_theme(html_text: str, mode: RenderMode, theme: str | None) -> str:
-    """Apply a validated named theme to PAGE HTML unless the page chose one explicitly."""
-    if mode is not RenderMode.PAGE or not theme or _THEME_ATTR_RE.search(html_text):
+def inject_page_theme(
+    html_text: str,
+    mode: RenderMode,
+    theme: str | None,
+    *,
+    preference: object | None = None,
+) -> str:
+    """Apply server-first theme markers to PAGE HTML unless the page chose them."""
+    if mode is not RenderMode.PAGE:
+        return html_text
+    color_mode: str | None = None
+    if preference is not None:
+        from hedron_core.builtins.theme_preference import ThemePreference, theme_markers
+
+        if not isinstance(preference, ThemePreference):
+            raise TypeError("preference must be a ThemePreference")
+        theme = preference.theme
+        color_mode = preference.color_mode
+        markers = theme_markers(preference)
+    else:
+        markers = {}
+    if not theme or _THEME_ATTR_RE.search(html_text):
         return html_text
     if _THEME_NAME_RE.fullmatch(theme) is None:
         return html_text
@@ -93,9 +113,11 @@ def inject_page_theme(html_text: str, mode: RenderMode, theme: str | None) -> st
     if match is None:
         return html_text
     safe_theme = html_lib.escape(theme, quote=True)
-    return (
-        html_text[: match.end()] + f' data-hedron-theme="{safe_theme}"' + html_text[match.end() :]
-    )
+    suffix = f' data-hedron-theme="{safe_theme}"'
+    if color_mode is not None and not _COLOR_MODE_ATTR_RE.search(html_text):
+        suffix += f' data-hedron-color-mode="{html_lib.escape(color_mode, quote=True)}"'
+        suffix += f' data-theme="{html_lib.escape(markers["data-theme"], quote=True)}"'
+    return html_text[: match.end()] + suffix + html_text[match.end() :]
 
 
 def inject_htmx_core(
@@ -282,6 +304,7 @@ def inject_page_assets(
     assets: Sequence[AssetRef] | None = None,
     asset_attributes: Mapping[str, Mapping[str, str]] | None = None,
     theme: str | None = None,
+    theme_preference: object | None = None,
     plan: ExtensionPlan | None = None,
 ) -> str:
     """Inject HTMX core, default CSS/UI modules, build assets, then extensions.
@@ -294,7 +317,7 @@ def inject_page_assets(
     When head-support is planned, head-placement assets are merged via
     :func:`merge_registered_head` (not also emitted here) to avoid double scripts.
     """
-    html_text = inject_page_theme(html_text, mode, theme)
+    html_text = inject_page_theme(html_text, mode, theme, preference=theme_preference)
     html_text = inject_htmx_core(html_text, mode, policy=policy, static_href=static_href)
     if mode is not RenderMode.PAGE:
         reject_invented_fragment_scripts(html_text)

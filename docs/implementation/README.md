@@ -58,6 +58,15 @@ These documents describe how accepted RFC behavior will be implemented. They def
   23-gate release evidence (Stage 1 blocked on probes and issue mirrors)
 - [Phase 0.59 execution plan](EXECUTION_0_59.md) — ordered E0–E9 implementation milestones,
   dependencies, evidence, stop conditions, and release handoff
+- [Custom theme platform and styling completion](THEME_PLATFORM_060.md) — proposed phase 0.60
+  W0–W12 workstreams for typed modern color, ThemeSpec/ThemePatch, registry-derived validation
+  profiles, packages/conformance, accessibility modes, recipes/scopes, preference selection,
+  built-in themes, and #627–#635 closure
+- [Phase 0.60 execution plan](EXECUTION_0_60.md) — ordered E0–E10 milestones, dependency rules,
+  pull-request sequence, stop conditions, and release handoff
+- [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
+  workstreams for compiling the Markdown corpus into native Hedron component trees, building the
+  docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

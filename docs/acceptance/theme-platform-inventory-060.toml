@@ -1,0 +1,197 @@
+schema_version = 1
+phase = "0.60"
+state = "draft"
+owning_rfc = "RFC-0089"
+
+[[capability]]
+id = "modern-color-input"
+disposition = "required"
+baseline = "DesignSystem.brand is hex-only despite 0.59 documentation"
+result = "typed absolute CSS Color 4 input, deterministic sRGB fallback, palette-v2 provenance"
+issues = [633]
+gates = ["RECONCILE-060", "COLOR-060", "PALETTE-060"]
+
+[[capability]]
+id = "custom-theme-authoring"
+disposition = "required"
+baseline = "Theme and DesignSystem exist; no unified immutable builder/provenance lifecycle"
+result = "canonical immutable ThemeSpec plus ThemeBuilder facade produces the existing Theme authority from finite groups/tokens/colors"
+issues = []
+gates = ["THEME-060", "VALIDATE-060"]
+
+[[capability]]
+id = "semantic-token-graph"
+disposition = "required"
+baseline = "theme token provenance has no structured alias graph"
+result = "bounded aliases with cycle/missing-reference checks and resolved source provenance"
+issues = []
+gates = ["THEME-060", "VALIDATE-060"]
+
+[[capability]]
+id = "theme-patches"
+disposition = "required"
+baseline = "small tenant or sub-brand changes require cloning a complete theme"
+result = "ordered bounded ThemePatch overlays retain provenance and trigger full revalidation"
+issues = []
+gates = ["THEME-060", "VALIDATE-060", "PACKAGE-060"]
+
+[[capability]]
+id = "component-theme-contracts"
+disposition = "required"
+baseline = "validation coverage is maintained separately from the component registry"
+result = "registry-derived ComponentThemeContracts declare parts/states/roles/relationships/fallbacks"
+issues = []
+gates = ["CONTRACT-060", "VALIDATE-060", "CONFORMANCE-060"]
+
+[[capability]]
+id = "coverage-profiles"
+disposition = "required"
+baseline = "custom themes either imply whole-fleet support or have no truthful coverage claim"
+result = "reviewed core/forms/data/workflow/complete profiles bind validation and package claims"
+issues = []
+gates = ["CONTRACT-060", "VALIDATE-060", "PACKAGE-060", "CONFORMANCE-060"]
+
+[[capability]]
+id = "theme-validation"
+disposition = "required"
+baseline = "token and contrast checks do not cover complete state/package/browser matrices"
+result = "shared deterministic profile-aware report using registered state/contrast relationships"
+issues = [634]
+gates = ["VALIDATE-060", "A11Y-MODE-060", "A11Y-060"]
+
+[[capability]]
+id = "theme-fingerprints"
+disposition = "required"
+baseline = "theme compilation and packaged validation have no complete reproducibility identity"
+result = "canonical input/algorithm/registry/Hedron fingerprints detect CI and package drift"
+issues = []
+gates = ["THEME-060", "PACKAGE-060", "COMPAT-060"]
+
+[[capability]]
+id = "third-party-conformance-kit"
+disposition = "required"
+baseline = "external authors lack a portable profile fixture and publication report"
+result = "generated zero-CSS state/mode fixture plus portable reports and digest verification"
+issues = []
+gates = ["CONFORMANCE-060", "VALIDATE-060", "PACKAGE-060"]
+
+[[capability]]
+id = "theme-packages"
+disposition = "required"
+baseline = "registered themes lack a data-only distribution/compatibility/assets manifest"
+result = "deterministic data-only theme packages with hashes, licenses, compatibility and reports"
+issues = [632, 635]
+gates = ["PACKAGE-060", "SECURITY-060", "PKG-060"]
+
+[[capability]]
+id = "accessibility-theme-modes"
+disposition = "required"
+baseline = "global fixed preference CSS; Theme emission only consumes dark mode"
+result = "bounded forced-colors and more-contrast semantic/state mappings"
+issues = [634]
+gates = ["A11Y-MODE-060", "VALIDATE-060", "A11Y-060"]
+
+[[capability]]
+id = "extensible-recipe-families"
+disposition = "required"
+baseline = "five closed global families and fixed component maps"
+result = "registered finite presentation-only families with per-component bindings"
+issues = [632]
+gates = ["RECIPE-060", "PACKAGE-060", "SECURITY-060"]
+
+[[capability]]
+id = "scoped-recipe-defaults"
+disposition = "required_if_explicitness_proof_passes"
+baseline = "StyleScope explicitly rejects recipe defaults"
+result = "serializable StyleContext with exact precedence and static impact explanation"
+issues = [631]
+gates = ["SCOPE-060", "RECIPE-060", "COMPAT-060"]
+stop_condition = "amend the phase rather than weakening explicit-value or mutation rules"
+
+[[capability]]
+id = "theme-preference"
+disposition = "required"
+baseline = "ColorModeToggle exists; custom theme allowlisting/persistence/no-flash does not"
+result = "server-first ThemePreference and accessible ThemePicker with optional CSP boot"
+issues = [635]
+gates = ["PREFERENCE-060", "SECURITY-060", "A11Y-060"]
+
+[[capability]]
+id = "brand-subtitle"
+disposition = "required"
+baseline = "subtitle markup exists but copy/subtitle layout styling does not"
+result = "native stacked, constrained, themeable brand copy"
+issues = [627]
+gates = ["BRAND-060", "VISUAL-060", "COMPAT-060"]
+
+[[capability]]
+id = "feedback-host"
+disposition = "required"
+baseline = "ToastHost is an unpositioned empty live-region target"
+result = "logical safe-area placement, stacking, width and one announcement strategy"
+issues = [628]
+gates = ["FEEDBACK-060", "A11Y-060", "COMPAT-060"]
+
+[[capability]]
+id = "workflow-canvas"
+disposition = "required"
+baseline = "ConnectorFlow has direction/collapse but no canvas presentation"
+result = "themed finite surface/background/overflow/min-size intent"
+issues = [629]
+gates = ["WORKFLOW-060", "A11Y-MODE-060", "VISUAL-060"]
+
+[[capability]]
+id = "scroll-region"
+disposition = "required"
+baseline = "only table-specific bounded scrolling exists"
+result = "semantic-preserving bounded ScrollRegion for lists/logs/arbitrary children"
+issues = [630]
+gates = ["SCROLL-060", "A11Y-060", "VISUAL-060"]
+
+[[capability]]
+id = "built-in-theme-catalog"
+disposition = "required"
+baseline = "default and aurora are compatibility themes; no reviewed theme-family gallery"
+result = "no more than three reviewed additions with complete state/mode/fleet validation"
+issues = []
+gates = ["CATALOG-060", "VISUAL-060", "PKG-060"]
+
+[[capability]]
+id = "theme-editor"
+disposition = "deferred"
+baseline = "none"
+result = "no drag-and-drop or runtime design editor in 0.60"
+issues = []
+gates = []
+
+[[capability]]
+id = "external-token-import"
+disposition = "stretch_deferred"
+baseline = "none"
+result = "future import is one-way and experimental; no 0.60 round-trip claim"
+issues = []
+gates = []
+
+[[capability]]
+id = "automatic-palette-suggestions"
+disposition = "deferred"
+baseline = "none"
+result = "0.60 diagnostics may preview bounded candidates but do not make aesthetic decisions"
+issues = []
+gates = []
+
+[[capability]]
+id = "aggregate-theme-health-score"
+disposition = "excluded"
+baseline = "none"
+result = "categorical failures, warnings, coverage and modes remain visible without one masking score"
+issues = []
+gates = ["VALIDATE-060"]
+
+[[capability]]
+id = "remote-theme-marketplace"
+disposition = "excluded"
+baseline = "none"
+result = "packages remain explicit local/install-time data with no remote fetch/execute"
+issues = []
+gates = ["SECURITY-060"]

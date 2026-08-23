@@ -126,6 +126,11 @@ class ConnectorNode(Component[ConnectorNodeProps]):
 class ConnectorFlowProps(ElementProps):
     direction: Literal["horizontal", "vertical"] = "horizontal"
     collapse: Literal["never", "sm", "md", "lg"] = "md"
+    appearance: Literal["plain", "soft", "raised"] = "plain"
+    density: Density = "comfortable"
+    background: Literal["none", "grid", "dots"] = "none"
+    overflow: Literal["visible", "auto", "scroll"] = "auto"
+    min_size: Literal["none", "sm", "md", "lg"] = "none"
 
 
 class ConnectorFlow(Component[ConnectorFlowProps]):
@@ -140,6 +145,11 @@ class ConnectorFlow(Component[ConnectorFlowProps]):
         children: NodeLike = None,
         direction: Literal["horizontal", "vertical"] = "horizontal",
         collapse: Literal["never", "sm", "md", "lg"] = "md",
+        appearance: Literal["plain", "soft", "raised"] = "plain",
+        density: Density = "comfortable",
+        background: Literal["none", "grid", "dots"] = "none",
+        overflow: Literal["visible", "auto", "scroll"] = "auto",
+        min_size: Literal["none", "sm", "md", "lg"] = "none",
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -147,10 +157,20 @@ class ConnectorFlow(Component[ConnectorFlowProps]):
     ) -> None:
         require_choice(direction, ("horizontal", "vertical"), label="connector direction")
         require_choice(collapse, ("never", "sm", "md", "lg"), label="connector collapse")
+        require_choice(appearance, ("plain", "soft", "raised"), label="connector appearance")
+        require_choice(density, ("compact", "comfortable", "spacious"), label="connector density")
+        require_choice(background, ("none", "grid", "dots"), label="connector background")
+        require_choice(overflow, ("visible", "auto", "scroll"), label="connector overflow")
+        require_choice(min_size, ("none", "sm", "md", "lg"), label="connector min_size")
         super().__init__(
             ConnectorFlowProps(
                 direction=direction,
                 collapse=collapse,
+                appearance=appearance,
+                density=density,
+                background=background,
+                overflow=overflow,
+                min_size=min_size,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -170,6 +190,11 @@ class ConnectorFlow(Component[ConnectorFlowProps]):
                 "hedron-connector-collapse": self.props.collapse,
                 "hedron-direction": self.props.direction,
                 "hedron-flow-collapse": self.props.collapse,
+                "hedron-appearance": self.props.appearance,
+                "hedron-density": self.props.density,
+                "hedron-connector-background": self.props.background,
+                "hedron-connector-overflow": self.props.overflow,
+                "hedron-connector-min-size": self.props.min_size,
                 **mark_data(self.props.mark),
             },
         )

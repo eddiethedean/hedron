@@ -31,6 +31,9 @@ from hedron_core.builtins import (
     CodeViewer,
     ColorInput,
     ConfirmButton,
+    ConnectorFlow,
+    ConnectorNode,
+    ConnectorTrack,
     Container,
     ContextMenu,
     CsrfField,
@@ -103,6 +106,7 @@ from hedron_core.builtins import (
     RequestIndicator,
     ResourceList,
     ResourceRow,
+    ScrollRegion,
     Section,
     SegmentedControl,
     Select,
@@ -126,10 +130,12 @@ from hedron_core.builtins import (
     Text,
     TextArea,
     TextInput,
+    ThemePicker,
     TimeInput,
     Timeline,
     Title,
     Toast,
+    ToastHost,
     ToggleSwitch,
     Tooltip,
     Typography,
@@ -137,6 +143,7 @@ from hedron_core.builtins import (
 )
 from hedron_core.color_mode import ColorModeToggle
 from hedron_core.registry import register_component
+from hedron_core.theme_platform import ComponentThemeContract, register_component_theme_contract
 
 
 def register_builtins() -> None:
@@ -270,6 +277,12 @@ def register_builtins() -> None:
         SkipLink,
         RequestIndicator,
         ProcessFlow,
+        ConnectorFlow,
+        ConnectorNode,
+        ConnectorTrack,
+        ScrollRegion,
+        ToastHost,
+        ThemePicker,
         FlowStep,
         Icon,
         Typography,
@@ -298,3 +311,33 @@ def register_builtins() -> None:
         slots={},
         accessibility_notes="Alias of HtmxLink for shell navigation.",
     )
+    for contract in (
+        ComponentThemeContract(
+            "Brand",
+            parts=("mark", "copy", "name", "subtitle"),
+            required_tokens=("color.fg", "color.muted"),
+            profile="core",
+        ),
+        ComponentThemeContract(
+            "ToastHost",
+            parts=("host",),
+            states=("placement",),
+            required_tokens=("color.bg", "color.fg", "color.focus"),
+            profile="core",
+        ),
+        ComponentThemeContract(
+            "ConnectorFlow",
+            parts=("canvas",),
+            states=("background", "overflow"),
+            required_tokens=("color.bg", "color.surface", "color.accent"),
+            profile="workflow",
+        ),
+        ComponentThemeContract(
+            "ScrollRegion",
+            parts=("region",),
+            states=("axis", "size"),
+            required_tokens=("color.fg", "color.focus"),
+            profile="core",
+        ),
+    ):
+        register_component_theme_contract(contract)
