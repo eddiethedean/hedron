@@ -18,6 +18,9 @@ Explicit containers and one-dimensional or grid composition.
 - [`SkipLink`](skip-link.md) — Keyboard bypass link to the shell main panel.
 - [`ProcessFlow`](process-flow.md) — Accessible ordered workflow rendered as a process list.
 - [`FlowStep`](flow-step.md) — One stage of a ProcessFlow with explicit status text.
+- [`ConnectorNode`](connector-node.md) — Provider-neutral source or destination node for data-movement workflows.
+- [`ConnectorFlow`](connector-flow.md) — Responsive connector canvas for source, track, and destination workflow nodes.
+- [`ConnectorTrack`](connector-track.md) — Accessible visual link between provider-neutral workflow nodes.
 - [`ActionDock`](action-dock.md) — Sticky action dock for primary controls.
 - [`BottomDock`](bottom-dock.md) — Bottom sticky dock alias for chat or actions.
 - [`Spacer`](spacer.md) — Semantic spacing primitive.

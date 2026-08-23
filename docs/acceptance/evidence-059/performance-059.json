@@ -12,11 +12,11 @@
     "raw_bytes_pass": true,
     "render_ratio_pass": true
   },
-  "compiler_cold_ms_median": 0.02,
-  "gzip_9_bytes": 12746,
-  "raw_bytes": 89717,
-  "representative_render_ms_median": 1.932,
+  "compiler_cold_ms_median": 0.027,
+  "gzip_9_bytes": 12796,
+  "raw_bytes": 89958,
+  "representative_render_ms_median": 1.926,
   "required_styling_javascript_bytes": 0,
   "schema": "hedron.css-performance/1",
-  "stylesheet_sha256": "eb0ad61a1c442792515742465d9774a1a3d9e68f7ce24b48dd86c0e022164f10"
+  "stylesheet_sha256": "bce4b38771ea4d12e46f2309174157621e0779e0b4e2e374a050020e20943842"
 }

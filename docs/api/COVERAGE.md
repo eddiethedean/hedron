@@ -145,7 +145,7 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 | `UploadField` / `UploadHandle` / `materialize_upload` | [WORKFLOW.md](WORKFLOW.md) |
 | `NonceContext` / `compose_csp` / `ingest_csp_report` | [WORKFLOW.md](WORKFLOW.md) |
 | `WorkflowManifest` / `hedron upgrade-report` | [WORKFLOW.md](WORKFLOW.md), [CLI.md](CLI.md) |
-| `SkipLink`, `RequestIndicator`, `ProcessFlow`, `FlowStep` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
+| `SkipLink`, `RequestIndicator`, `ProcessFlow`, `FlowStep`, `ConnectorFlow`, `ConnectorNode`, `ConnectorTrack` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
 | `Icon`, `Typography`, `StateView`, `TableColumn` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [Components](../components/index.md) |
 
 ## Data and charts (extras)

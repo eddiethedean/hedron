@@ -1,26 +1,26 @@
 {
   "schema": "hedron.release-gate-results/1",
   "phase": "0.59",
-  "generated_at": "2026-08-23T00:30:00Z",
+  "generated_at": "2026-08-23T02:00:00Z",
   "release_gate": "docs/acceptance/release-gate-0.59.toml",
   "summary": {
     "total": 23,
-    "verified": 22,
+    "verified": 23,
     "implemented": 0,
-    "deferred": 1,
-    "release_ready": false,
-    "reason": "Executable evidence is complete for 22 gates; CONSUMER-059 remains Deferred because the frozen contract requires closure of open source issue mirrors at cut."
+    "deferred": 0,
+    "release_ready": true,
+    "reason": "All 23 executable and consumer evidence gates are Verified; source issues and Hedron mirrors are closed."
   },
   "execution": {
-    "release_evidence_corpus": "tests/unit/test_phase059_release_evidence.py: 19 passed",
+    "release_evidence_corpus": "tests/unit/test_phase059_release_evidence.py: 22 passed",
     "browser_matrix": "Chromium 151.0.7922.34/revision 1234, Firefox 153.0/revision 1538, WebKit 26.5/revision 2336",
-    "browser_fixture": "tests/browser/test_phase059_browser.py passed across Chromium, Firefox, and WebKit",
+    "browser_fixture": "110 browser tests passed, 48 skipped across Chromium, Firefox, and WebKit",
     "performance": "docs/acceptance/evidence-059/performance-059.json passed raw/gzip/compiler/render budgets",
     "packaging": "docs/acceptance/evidence-059/package-059.json passed 22 wheel / 21 sdist inventory and CSS asset checks",
-    "consumer": "docs/acceptance/evidence-059/consumer-059.json passed the full consumer suite: 213 collected, 213 passed against local 0.59 source",
-    "full_suite": "3421 passed, 162 skipped, 64 warnings in canonical CI",
-    "canonical_ci": "scripts/ci_checks.sh all --python 3.12 --all-browsers --gate-version 0.59.0 --jobs 1 passed implementation, bounds, quality, docs, packaging, browser, and Connect evidence",
-    "issue_audit": "Hedron issues #623, #624, #625, and #626 are OPEN; external closure is not inferred from executable tests",
+    "consumer": "docs/acceptance/evidence-059/consumer-059.json passed the full consumer suite: 213 collected, 213 passed against consumer commit cc64dbf9ad2ac0b7ad113fd1f8adc6ff9e4443cb against local 0.59 source; worktree clean",
+    "full_suite": "3441 passed, 162 skipped, 64 warnings in the Python 3.12 canonical test run",
+    "canonical_ci": "Python 3.12 test, workbench bounds (132/132 in minimum and latest), quality, docs, browser, evidence, dependency audit, and packaging gates passed for 0.59.0",
+    "issue_audit": "Source issues #4, #5, #6, and #7 and Hedron issues #623, #624, #625, and #626 are CLOSED; closure comments reference Hedron 8e468694 and consumer cc64dbf9",
     "docs": "scripts/ci_checks.sh docs --python 3.12 passed"
   },
   "gates": [
@@ -44,7 +44,7 @@
     {"id": "PERF-059", "state": "Verified", "evidence": ["scripts/check_css_perf_059.py", "tests/unit/test_theme_assets_build.py", "tests/unit/test_phase059_release_evidence.py", "docs/acceptance/evidence-059/performance-059.json", "docs/acceptance/evidence-059/release-matrix-059.json"], "gap": null},
     {"id": "SECURITY-059", "state": "Verified", "evidence": ["scripts/check_css_security_059.py", "tests/unit/test_security_058.py", "tests/unit/test_css.py", "tests/unit/test_phase059_release_evidence.py", "docs/acceptance/evidence-059/release-matrix-059.json"], "gap": null},
     {"id": "COMPAT-059", "state": "Verified", "evidence": ["scripts/check_css_compat_059.py", "tests/unit/test_css.py", "tests/unit/test_regress_058.py", "tests/unit/test_phase059_release_evidence.py", "docs/acceptance/evidence-059/release-matrix-059.json"], "gap": null},
-    {"id": "CONSUMER-059", "state": "Deferred", "evidence": ["scripts/check_consumer_css_059.py", "scripts/measure_consumer_059.py", "docs/acceptance/evidence-059/consumer-059.json", "docs/acceptance/evidence-059/consumer-migration-059.patch", "docs/acceptance/evidence-059/release-matrix-059.json", "hedron#623", "hedron#624", "hedron#625", "hedron#626"], "gap": "Executable evidence is complete (213/213 consumer tests pass), but source issue closure is required at cut and issues #623–#626 are open."},
+    {"id": "CONSUMER-059", "state": "Verified", "evidence": ["scripts/check_consumer_css_059.py", "scripts/measure_consumer_059.py", "docs/acceptance/evidence-059/consumer-059.json", "docs/acceptance/evidence-059/consumer-migration-059.patch", "docs/acceptance/evidence-059/release-matrix-059.json", "user-token-management-app#4", "user-token-management-app#5", "user-token-management-app#6", "user-token-management-app#7", "hedron#623", "hedron#624", "hedron#625", "hedron#626"], "gap": null},
     {"id": "REGRESS-059", "state": "Verified", "evidence": ["scripts/check_css_compat_059.py", "tests/unit/test_regress_058.py", "tests/browser/test_phase059_browser.py", "scripts/ci_checks.sh all --python 3.12 --all-browsers --gate-version 0.59.0 --jobs 1", "tests/unit/test_phase059_release_evidence.py"], "gap": null},
     {"id": "PKG-059", "state": "Verified", "evidence": ["scripts/verify_pkg_59.py", "docs/acceptance/evidence-059/package-059.json", "docs/acceptance/production-grade-inventory-059.toml", "uv.lock", "tests/unit/test_phase059_release_evidence.py"], "gap": null}
   ]

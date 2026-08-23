@@ -13,7 +13,7 @@ tracking = "modern-css-tracking-059.toml"
 inventory = "modern-css-inventory-059.toml"
 compatibility = "modern-css-compatibility-059.toml"
 stage_1_entry_satisfied = true
-zero_deferred_at_cut = false
+zero_deferred_at_cut = true
 contract = "modern-css-contract-059.toml"
 evidence_report = "gate-results-059.json"
 
@@ -159,12 +159,10 @@ owner = "hedron-conformance"
 
 [[evidence]]
 id = "CONSUMER-059"
-state = "Deferred"
+state = "Verified"
 command = "python scripts/check_consumer_css_059.py"
 ci_job = "evidence"
 owner = "hedron"
-rationale = "Executable consumer evidence is complete (213/213 tests against local 0.59 source), but the frozen contract requires source issue closure at cut; Hedron issues #623, #624, #625, and #626 remain open."
-destination = "0.60"
 
 [[evidence]]
 id = "REGRESS-059"

@@ -216,7 +216,9 @@ class ConnectorTrack(Component[ConnectorTrackProps]):
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
-            "class_": class_names("hedron-connector-track hedron-process-flow-step", self.props.class_),
+            "class_": class_names(
+                "hedron-connector-track hedron-process-flow-step", self.props.class_
+            ),
             "data": {
                 "hedron-connector-track": "true",
                 "hedron-connector-active": self.props.active,

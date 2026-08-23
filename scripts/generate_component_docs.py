@@ -838,6 +838,54 @@ COMPONENTS = (
         "Do not communicate status with icons alone; keep the status text.",
     ),
     ComponentDoc(
+        "ConnectorNode",
+        "layout",
+        "Provider-neutral source or destination node for data-movement workflows.",
+        "ConnectorNode(label, *nodes, children=None, kind='source', state='ready', detail=None, runtime=None, leading=None, id=None, class_=None)",
+        "ConnectorNode('Warehouse', kind='target', state='ready', detail='Destination', runtime='Postgres')",
+        (
+            p("label", "str", "Discernible source or destination name."),
+            p("nodes / children", "NodeLike", "Optional metadata content rendered inside the node."),
+            p("kind", "source | target", "Connector role in the workflow."),
+            p("state", "ready | blocked | running | succeeded | failed", "Explicit operational state."),
+            p("detail / runtime", "str | None", "Supporting context such as object or runtime."),
+            p("leading", "NodeLike | None", "Optional provider mark or identity content."),
+        ),
+        "ConnectorNode owns provider-neutral semantic markers and the baseline responsive node treatment. Applications supply provider identity and metadata as content, so workflow styling does not depend on private application selectors.",
+        "Keep the label and state text visible; state is never communicated by color alone.",
+        "Do not encode a provider name into the component type or replace the state text with an icon-only indicator.",
+    ),
+    ComponentDoc(
+        "ConnectorFlow",
+        "layout",
+        "Responsive connector canvas for source, track, and destination workflow nodes.",
+        "ConnectorFlow(*nodes, children=None, direction='horizontal', collapse='md', id=None, class_=None)",
+        "ConnectorFlow(ConnectorNode('CSV', kind='source'), ConnectorTrack(label='Transfer'), ConnectorNode('Warehouse', kind='target'), direction='horizontal')",
+        (
+            p("nodes / children", "NodeLike", "ConnectorNode and ConnectorTrack children in reading order."),
+            p("direction", "horizontal | vertical", "Primary flow orientation."),
+            p("collapse", "never | sm | md | lg", "Breakpoint where a horizontal flow stacks."),
+        ),
+        "ConnectorFlow provides a responsive, semantic canvas while preserving source order for fallback and reduced-motion rendering. It reuses the process-flow layout contract so applications do not need bespoke connector CSS.",
+        "Choose an orientation that remains understandable when the flow collapses, and keep node state text in each node.",
+        "Do not use ConnectorFlow as primary navigation or rely on JavaScript to make the workflow legible.",
+    ),
+    ComponentDoc(
+        "ConnectorTrack",
+        "layout",
+        "Accessible visual link between provider-neutral workflow nodes.",
+        "ConnectorTrack(*nodes, children=None, active=False, label=None, id=None, class_=None)",
+        "ConnectorTrack(Text('TLS 1.3 · Encrypted in transit'), label='Transfer stages', active=True)",
+        (
+            p("nodes / children", "NodeLike", "Track annotation or process content."),
+            p("active", "bool", "Opt-in active motion hook; the static track remains present."),
+            p("label", "str | None", "Accessible label for the track when needed."),
+        ),
+        "ConnectorTrack keeps the line and annotations useful without motion. Active animation is progressive enhancement and is disabled under reduced-motion preferences.",
+        "Give the track a concise label when its annotation is not otherwise clear from the adjacent nodes.",
+        "Do not make the animated state the only indication that a transfer is running.",
+    ),
+    ComponentDoc(
         "Image",
         "content",
         "Render an image with a validated source and required alternative text.",
@@ -2788,6 +2836,12 @@ def static_demo(spec: ComponentDoc) -> str:
         return '<ol class="hdc-list" aria-label="Release pipeline"><li><span>Ingest</span><small>Complete</small></li><li><span>Validate</span><small>In progress</small></li><li><span>Publish</span><small>Not started</small></li></ol>'
     if name == "FlowStep":
         return '<div class="hdc-stack"><span><b>Validate schemas</b><small>In progress · Checking required columns</small></span></div>'
+    if name == "ConnectorNode":
+        return '<article class="hdc-connector-node"><div class="hdc-inline"><span class="hdc-badge">CSV</span><strong>Source</strong></div><small>Ready · Local upload</small><em>orders.csv</em></article>'
+    if name == "ConnectorFlow":
+        return '<div class="hdc-connector-flow"><article class="hdc-connector-node"><strong>CSV source</strong><small>Ready</small></article><div class="hdc-connector-track" aria-label="Transfer stages"><span>Transfer</span></div><article class="hdc-connector-node"><strong>Warehouse target</strong><small>Running</small></article></div>'
+    if name == "ConnectorTrack":
+        return '<div class="hdc-connector-track" aria-label="Transfer stages"><span>Transfer stages</span><small>TLS 1.3 · Encrypted in transit</small></div>'
     if name == "Inline":
         return '<div class="hdc-inline"><span class="hdc-chip">Python</span><span class="hdc-chip">HTMX</span><span class="hdc-chip">FastAPI</span></div>'
     if name == "Grid":

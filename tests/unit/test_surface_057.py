@@ -51,7 +51,9 @@ def test_surface_card_and_typed_chrome() -> None:
     assert 'class="hedron-brand-copy"' in brand
     assert 'class="hedron-brand-subtitle"' in brand
     account = render(
-        AccountSummary("Ada", detail="Admin", href="/account", mark_text="A", action=Text("Sign out")),
+        AccountSummary(
+            "Ada", detail="Admin", href="/account", mark_text="A", action=Text("Sign out")
+        ),
         context=ctx,
         mode=RenderMode.FRAGMENT,
     ).html

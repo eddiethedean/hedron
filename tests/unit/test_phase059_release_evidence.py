@@ -17,10 +17,10 @@ from hedron import (
     AppShell,
     Brand,
     Button,
-    Container,
     ConnectorFlow,
     ConnectorNode,
     ConnectorTrack,
+    Container,
     Dialog,
     EnvironmentBanner,
     FlowStep,
@@ -39,8 +39,7 @@ from hedron_core.bundles import FeatureBundle, eject_source
 from hedron_core.codes import HED_CSS_REMOTE
 from hedron_core.diagnostics import HedronError
 from hedron_core.manifests import CssSymbolManifest, canonical_json
-from hedron_core.theme import contrast_diagnostics, emit_theme_css, default_theme, compile_palette
-
+from hedron_core.theme import compile_palette, contrast_diagnostics, default_theme, emit_theme_css
 
 ROOT = Path(__file__).parents[2]
 CSS = ROOT / "packages/hedron-core/src/hedron_core/static/hedron-default.css"
@@ -53,7 +52,7 @@ def test_compiler_release_corpus_covers_import_assets_and_versioned_manifests(
     (tmp_path / "icon.svg").write_text("<svg></svg>\n", encoding="utf-8")
     source = (
         '@import "theme.css"; '
-        '@keyframes pulse { from { opacity: 0; } to { opacity: 1; } } '
+        "@keyframes pulse { from { opacity: 0; } to { opacity: 1; } } "
         '.root { background: url("icon.svg"); animation: pulse 1s; }'
     )
     result = compile_css(
@@ -66,12 +65,15 @@ def test_compiler_release_corpus_covers_import_assets_and_versioned_manifests(
     assert result.asset_urls == ("icon.svg",)
     assert result.manifest.keyframes["pulse"].startswith("h-")
     assert "theme.css" in result.css and "@layer components" in result.css
-    assert result.css == compile_css(
-        source,
-        component_id="release059",
-        registered_roots=[tmp_path],
-        component_dir=tmp_path,
-    ).css
+    assert (
+        result.css
+        == compile_css(
+            source,
+            component_id="release059",
+            registered_roots=[tmp_path],
+            component_dir=tmp_path,
+        ).css
+    )
     legacy = CssSymbolManifest(
         format_version=1,
         component_id="release059",
@@ -179,8 +181,8 @@ def test_control_and_security_release_matrix_uses_native_safe_attribute_seam() -
             LinkButton("Open", "/open", size="sm", width="content", attrs={"data-test": "x"}),
         )
     ).html
-    assert '<button ' in rendered and 'aria-describedby="hint"' in rendered
-    assert '<a ' in rendered and 'data-test="x"' in rendered
+    assert "<button " in rendered and 'aria-describedby="hint"' in rendered
+    assert "<a " in rendered and 'data-test="x"' in rendered
     with pytest.raises(ValueError, match="unsafe typed control"):
         render(Button("Bad", attrs={"onclick": "alert(1)"}))
     with pytest.raises(ValueError, match="owned by the component"):
@@ -212,13 +214,15 @@ def test_shell_workflow_and_accessibility_release_matrix_is_semantic() -> None:
         'data-hedron-process-flow="true"',
         'aria-current="step"',
         'data-hedron-nav-status="true"',
-        '<main',
-        '<nav',
+        "<main",
+        "<nav",
     ):
         assert marker in rendered
 
 
-@pytest.mark.parametrize("placement", ("block-start", "block-end", "inline-start", "inline-end", "center"))
+@pytest.mark.parametrize(
+    "placement", ("block-start", "block-end", "inline-start", "inline-end", "center")
+)
 @pytest.mark.parametrize("mode", ("popover", "details"))
 def test_overlay_release_matrix_has_native_and_document_flow_fallbacks(
     placement: str, mode: str
@@ -235,7 +239,7 @@ def test_overlay_release_matrix_has_native_and_document_flow_fallbacks(
     assert 'data-hedron-popover-collision="static"' in rendered
     assert ("<details" in rendered) is (mode == "details")
     dialog = render(Dialog("Confirm", Text("Continue"), open=True, id="confirm")).html
-    assert '<dialog ' in dialog and 'aria-labelledby="confirm-title"' in dialog
+    assert "<dialog " in dialog and 'aria-labelledby="confirm-title"' in dialog
     assert 'formmethod="dialog"' in dialog
 
 

@@ -37,15 +37,15 @@
     "PERF-059": "pass",
     "SECURITY-059": "pass",
     "COMPAT-059": "pass",
-    "CONSUMER-059": "executable-pass-external-closure-pending",
+    "CONSUMER-059": "pass",
     "REGRESS-059": "pass",
     "PKG-059": "pass"
   },
   "external_requirements": [
     {
       "condition": "source_issue_closure_required_at_cut",
-      "status": "blocked",
-      "issues": [623, 624, 625, 626]
+      "status": "closed",
+      "issues": [4, 5, 6, 7, 623, 624, 625, 626]
     }
   ]
 }
