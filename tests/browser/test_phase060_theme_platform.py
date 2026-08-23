@@ -37,7 +37,8 @@ def test_phase060_component_layout_and_media_contract(engine: str) -> None:
     )
     with sync_playwright() as pw:
         browser = getattr(pw, engine).launch(headless=True)
-        page = browser.new_page(viewport={"width": 480, "height": 320})
+        context = browser.new_context(viewport={"width": 480, "height": 320})
+        page = context.new_page()
         page.set_content(f"<style>{css}</style>{markup}")
 
         assert page.locator(".hedron-brand-copy").count() == 1
@@ -59,4 +60,5 @@ def test_phase060_component_layout_and_media_contract(engine: str) -> None:
         assert page.evaluate(
             "getComputedStyle(document.documentElement).getPropertyValue('--hedron-motion-duration')"
         ) in {"0ms", ""}
+        context.close()
         browser.close()
