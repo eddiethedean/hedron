@@ -101,3 +101,34 @@ Runtime user data cannot become raw CSS. Dynamic presentation uses declared vari
 remote font and asset fetching remains outside the Supported path.
 
 Applications override packaged presentation through semantic props, extra classes, custom properties, cascade override layers, or ejected component styles.
+
+## Custom theme platform (0.60)
+
+The canonical 0.60 authoring path is an immutable `ThemeSpec`; `ThemeBuilder` is only a
+convenience facade. Absolute CSS Color 4 inputs are accepted through `Color.parse()` or the
+typed constructors and always have a deterministic sRGB fallback.
+
+```python
+from hedron import Color, ThemeBuilder, package_theme, validate_theme_spec
+
+spec = (
+    ThemeBuilder("acme")
+    .token("color.bg", "#ffffff")
+    .token("color.fg", "#111827")
+    .token("color.muted", "#4b5563")
+    .token("color.focus", Color.oklch(0.62, 0.16, 260))
+    .token("font.family", "system-ui")
+    .token("font.size", "1rem")
+    .token("space.unit", "0.25rem")
+    .accessibility("forced-colors", **{"color.focus": "Highlight"})
+    .build()
+)
+report = validate_theme_spec(spec)
+package = package_theme(spec, licenses=("MIT",))
+```
+
+`load_theme_package()` verifies the archive contents, hashes, fingerprint, and validation digest
+before `register_theme_package()` bridges the data-only spec to the existing `Theme` registry.
+`diff_theme_specs()`, `explain_theme_spec()`, and `conformance_report()` are read-only deterministic
+services shared by tooling and package checks. The CLI exposes the same path through
+`hedron style init`, `hedron style conform`, and `hedron style package`.

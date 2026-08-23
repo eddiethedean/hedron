@@ -73,7 +73,11 @@ def theme_markers(preference: ThemePreference) -> dict[str, str]:
     }
 
 
-def theme_boot_asset(allowed_themes: tuple[str, ...]) -> str:
+def theme_boot_asset(
+    allowed_themes: tuple[str, ...],
+    *,
+    allowed_color_modes: tuple[ColorMode, ...] = ("system", "light", "dark"),
+) -> str:
     """Return a bounded CSP-compatible helper for local preference storage.
 
     The helper only reads an allowlisted local value and updates framework-owned
@@ -82,12 +86,22 @@ def theme_boot_asset(allowed_themes: tuple[str, ...]) -> str:
     allowed = tuple(dict.fromkeys(allowed_themes))
     if any(not _THEME.fullmatch(name) for name in allowed):
         raise ValueError("allowed theme names must be safe identifiers")
+    if not allowed_color_modes or any(
+        mode not in ("system", "light", "dark") for mode in allowed_color_modes
+    ):
+        raise ValueError("allowed color modes must use system, light, and/or dark")
     encoded = json.dumps(allowed, separators=(",", ":"))
+    encoded_modes = json.dumps(tuple(dict.fromkeys(allowed_color_modes)), separators=(",", ":"))
     return (
         "(() => {"
         f"const allowed={encoded};"
+        f"const modes={encoded_modes};"
         "const value=localStorage.getItem('hedron-theme');"
+        "const mode=localStorage.getItem('hedron-color-mode');"
         "if(value && allowed.includes(value)){document.documentElement.dataset.hedronTheme=value;}"
+        "if(mode && modes.includes(mode)){document.documentElement.dataset.hedronColorMode=mode;"
+        "document.documentElement.dataset.theme=mode;"
+        "document.documentElement.style.colorScheme=mode==='system'?'light dark':mode;}"
         "})();"
     )
 

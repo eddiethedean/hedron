@@ -31,11 +31,16 @@ __all__ = [
     "ThemePatch",
     "ThemeSpec",
     "ThemeValidationReport",
+    "conformance_report",
+    "diff_theme_specs",
+    "explain_theme_spec",
+    "load_theme_package",
     "package_theme",
     "register_component_theme_contract",
     "registered_component_theme_contracts",
     "register_recipe_family",
     "registered_recipe_families",
+    "register_theme_package",
     "validate_theme_spec",
 ]
 
@@ -183,6 +188,32 @@ class Color:
         return cls.srgb(red, green, blue, alpha=alpha)
 
     @classmethod
+    def hsl(cls, hue: float, saturation: float, lightness: float, *, alpha: float = 1.0) -> Color:
+        if not 0.0 <= saturation <= 1.0 or not 0.0 <= lightness <= 1.0:
+            raise ValueError("hsl saturation and lightness must be between 0 and 1")
+        return cls("hsl", (hue % 360.0, saturation, lightness), alpha)
+
+    @classmethod
+    def hwb(cls, hue: float, whiteness: float, blackness: float, *, alpha: float = 1.0) -> Color:
+        if not 0.0 <= whiteness <= 1.0 or not 0.0 <= blackness <= 1.0:
+            raise ValueError("hwb whiteness and blackness must be between 0 and 1")
+        if whiteness + blackness > 1.0:
+            raise ValueError("hwb whiteness plus blackness cannot exceed 1")
+        return cls("hwb", (hue % 360.0, whiteness, blackness), alpha)
+
+    @classmethod
+    def lab(cls, lightness: float, a: float, b: float, *, alpha: float = 1.0) -> Color:
+        return cls("lab", (lightness, a, b), alpha)
+
+    @classmethod
+    def lch(cls, lightness: float, chroma: float, hue: float, *, alpha: float = 1.0) -> Color:
+        return cls("lch", (lightness, chroma, hue % 360.0), alpha)
+
+    @classmethod
+    def oklab(cls, lightness: float, a: float, b: float, *, alpha: float = 1.0) -> Color:
+        return cls("oklab", (lightness, a, b), alpha)
+
+    @classmethod
     def hex(cls, value: str) -> Color:
         if not isinstance(value, str) or not _HEX.fullmatch(value.strip()):
             raise ValueError(f"invalid hex color: {value!r}")
@@ -283,6 +314,11 @@ class Color:
             digits += f"{round(self.alpha * 255):02x}"
         return f"#{digits}"
 
+    def gamut_map(self) -> Color:
+        """Return the deterministic clipped sRGB representation of this color."""
+        red, green, blue = (_clamp(channel) for channel in self.to_srgb())
+        return Color.srgb(red, green, blue, alpha=self.alpha)
+
     def to_css(self, *, fallback: bool = True) -> str:
         if fallback:
             return self.to_hex()
@@ -304,10 +340,14 @@ class ThemeSpec:
     aliases: Mapping[str, str] = field(default_factory=dict)
     metadata: Mapping[str, Any] = field(default_factory=dict)
     schema: str = "hedron.theme-spec/1"
+    profile: str = "core"
+    provenance: tuple[Mapping[str, Any], ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.name, str) or not _NAME.fullmatch(self.name):
             raise ValueError("theme spec name must be a safe identifier")
+        if self.profile not in THEME_COVERAGE_PROFILES:
+            raise ValueError(f"unknown theme coverage profile: {self.profile}")
         for field_name, mapping in (("tokens", self.tokens), ("aliases", self.aliases)):
             for key, value in mapping.items():
                 if not isinstance(key, str) or not _NAME.fullmatch(key):
@@ -321,6 +361,11 @@ class ThemeSpec:
         object.__setattr__(self, "accessibility_modes", _freeze_mapping(self.accessibility_modes))
         object.__setattr__(self, "aliases", _freeze_mapping(self.aliases))
         object.__setattr__(self, "metadata", _freeze_mapping(self.metadata))
+        object.__setattr__(
+            self,
+            "provenance",
+            tuple(_freeze_mapping(item) for item in self.provenance),
+        )
         # Resolve all aliases during construction so invalid graphs cannot sit
         # in a registry or package waiting for a later render.
         for key in self.aliases:
@@ -350,6 +395,29 @@ class ThemeSpec:
     def resolved_tokens(self) -> Mapping[str, str]:
         return MappingProxyType({key: self.resolve_token(key) for key in sorted(self.tokens)})
 
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> ThemeSpec:
+        """Rehydrate a package payload while checking its canonical fingerprint."""
+        if not isinstance(data, Mapping):
+            raise ValueError("theme spec payload must be an object")
+        spec = cls(
+            name=str(data.get("name", "")),
+            tokens=cast(Mapping[str, str], data.get("tokens", {})),
+            modes=cast(Mapping[str, Mapping[str, str]], data.get("modes", {})),
+            accessibility_modes=cast(
+                Mapping[str, Mapping[str, str]], data.get("accessibility_modes", {})
+            ),
+            aliases=cast(Mapping[str, str], data.get("aliases", {})),
+            metadata=cast(Mapping[str, Any], data.get("metadata", {})),
+            schema=str(data.get("schema", "hedron.theme-spec/1")),
+            profile=str(data.get("profile", "core")),
+            provenance=tuple(cast(Iterable[Mapping[str, Any]], data.get("provenance", ()))),
+        )
+        fingerprint = data.get("fingerprint")
+        if fingerprint is not None and str(fingerprint) != spec.fingerprint:
+            raise ValueError("theme spec fingerprint does not match canonical payload")
+        return spec
+
     @property
     def fingerprint(self) -> str:
         payload = self.to_dict(include_fingerprint=False)
@@ -366,6 +434,8 @@ class ThemeSpec:
             },
             "aliases": dict(self.aliases),
             "metadata": dict(self.metadata),
+            "profile": self.profile,
+            "provenance": [dict(item) for item in self.provenance],
         }
         if include_fingerprint:
             data["fingerprint"] = self.fingerprint
@@ -379,6 +449,8 @@ class ThemeSpec:
         modes: Mapping[str, Mapping[str, str]] | None = None,
         accessibility_modes: Mapping[str, Mapping[str, str]] | None = None,
         aliases: Mapping[str, str] | None = None,
+        base_fingerprint: str | None = None,
+        provenance: Iterable[Mapping[str, Any]] = (),
     ) -> ThemeSpec:
         """Apply one bounded immutable patch and return a new specification."""
         return ThemePatch(
@@ -387,7 +459,16 @@ class ThemeSpec:
             modes=modes or {},
             accessibility_modes=accessibility_modes or {},
             aliases=aliases or {},
+            base_fingerprint=base_fingerprint,
+            provenance=tuple(provenance),
         ).apply(self)
+
+    def apply_patches(self, *patches: ThemePatch) -> ThemeSpec:
+        """Apply ordered patches without mutating the original specification."""
+        result = self
+        for patch in patches:
+            result = patch.apply(result)
+        return result
 
     def to_theme(self) -> Any:
         """Bridge to the compatible 0.59 ``Theme`` object."""
@@ -413,10 +494,14 @@ class ThemePatch:
     modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     aliases: Mapping[str, str] = field(default_factory=dict)
+    base_fingerprint: str | None = None
+    provenance: tuple[Mapping[str, Any], ...] = ()
 
     def apply(self, spec: ThemeSpec) -> ThemeSpec:
         if self.base is not None and self.base not in {spec.name, spec.fingerprint}:
             raise ValueError(f"patch {self.name!r} is incompatible with theme {spec.name!r}")
+        if self.base_fingerprint is not None and self.base_fingerprint != spec.fingerprint:
+            raise ValueError(f"patch {self.name!r} base fingerprint does not match theme")
         modes = {key: dict(value) for key, value in spec.modes.items()}
         for mode, values in self.modes.items():
             modes[mode] = {**modes.get(mode, {}), **dict(values)}
@@ -430,7 +515,24 @@ class ThemePatch:
             accessibility_modes=a11y,
             aliases={**dict(spec.aliases), **dict(self.aliases)},
             metadata={**dict(spec.metadata), "last_patch": self.name},
+            profile=spec.profile,
+            provenance=(*spec.provenance, *self.provenance, {"patch": self.name}),
         )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema": "hedron.theme-patch/1",
+            "name": self.name,
+            "base": self.base,
+            "base_fingerprint": self.base_fingerprint,
+            "tokens": dict(self.tokens),
+            "modes": {key: dict(value) for key, value in self.modes.items()},
+            "accessibility_modes": {
+                key: dict(value) for key, value in self.accessibility_modes.items()
+            },
+            "aliases": dict(self.aliases),
+            "provenance": [dict(item) for item in self.provenance],
+        }
 
 
 class ThemeBuilder:
@@ -444,6 +546,8 @@ class ThemeBuilder:
         self._a11y = {key: dict(value) for key, value in source.accessibility_modes.items()}
         self._aliases = dict(source.aliases)
         self._metadata = dict(source.metadata)
+        self._profile = source.profile
+        self._provenance = list(source.provenance)
 
     @classmethod
     def from_spec(cls, spec: ThemeSpec) -> ThemeBuilder:
@@ -493,6 +597,16 @@ class ThemeBuilder:
         self._metadata.update(values)
         return self
 
+    def profile(self, profile: str) -> ThemeBuilder:
+        if profile not in THEME_COVERAGE_PROFILES:
+            raise ValueError(f"unknown theme coverage profile: {profile}")
+        self._profile = profile
+        return self
+
+    def provenance(self, **entry: Any) -> ThemeBuilder:
+        self._provenance.append(dict(entry))
+        return self
+
     def build(self) -> ThemeSpec:
         return ThemeSpec(
             name=self._name,
@@ -501,6 +615,8 @@ class ThemeBuilder:
             accessibility_modes=self._a11y,
             aliases=self._aliases,
             metadata=self._metadata,
+            profile=self._profile,
+            provenance=tuple(self._provenance),
         )
 
 
@@ -516,6 +632,8 @@ class RecipeFamily:
     def __post_init__(self) -> None:
         if not _NAME.fullmatch(self.name):
             raise ValueError("recipe family name must be a safe identifier")
+        if self.extends == self.name:
+            raise ValueError("recipe family cannot extend itself")
         if not self.components or any(not _NAME.fullmatch(item) for item in self.components):
             raise ValueError("recipe family components must be safe logical names")
         normalized: dict[str, tuple[str, ...]] = {}
@@ -526,15 +644,41 @@ class RecipeFamily:
                 or any(not _NAME.fullmatch(value) for value in values)
             ):
                 raise ValueError("recipe family fields and values must be bounded identifiers")
+            if key.lower() in {
+                "behavior",
+                "callback",
+                "event",
+                "handler",
+                "href",
+                "route",
+                "state",
+                "permission",
+                "authorization",
+            }:
+                raise ValueError(f"recipe family field {key!r} is not presentation-only")
             normalized[key] = tuple(dict.fromkeys(values))
         object.__setattr__(self, "fields", MappingProxyType(normalized))
         object.__setattr__(self, "components", tuple(dict.fromkeys(self.components)))
+        if self.extends is not None and not _NAME.fullmatch(self.extends):
+            raise ValueError("recipe family parent must be a safe identifier")
 
 
 _RECIPE_FAMILIES: dict[str, RecipeFamily] = {}
 
 
 def register_recipe_family(family: RecipeFamily) -> None:
+    if family.extends is not None:
+        parent = _RECIPE_FAMILIES.get(family.extends)
+        if parent is None:
+            raise ValueError(f"recipe family parent is not registered: {family.extends}")
+        if family.extends == family.name:
+            raise ValueError("recipe family inheritance cycle")
+        unknown = set(family.fields) - set(parent.fields)
+        if unknown:
+            raise ValueError(
+                f"recipe family {family.name!r} adds fields outside its parent vocabulary: "
+                + ", ".join(sorted(unknown))
+            )
     previous = _RECIPE_FAMILIES.get(family.name)
     if previous is not None and previous != family:
         raise ValueError(
@@ -693,6 +837,30 @@ def validate_theme_spec(
             errors.append({"code": "THEME-ACCESSIBILITY-MODE", "mode": mode_name})
         if "color.focus" not in values:
             warnings.append({"code": "THEME-ACCESSIBILITY-FOCUS", "mode": mode_name})
+    for mapping_name, mapping in (
+        ("mode", spec.modes),
+        ("accessibility", spec.accessibility_modes),
+    ):
+        for mode, values in mapping.items():
+            for token, value in values.items():
+                if token not in spec.tokens and token not in spec.aliases:
+                    warnings.append(
+                        {
+                            "code": "THEME-UNKNOWN-OVERRIDE",
+                            "mapping": mapping_name,
+                            "mode": mode,
+                            "token": token,
+                        }
+                    )
+                if not isinstance(value, str) or not value.strip():
+                    errors.append(
+                        {
+                            "code": "THEME-EMPTY-VALUE",
+                            "mapping": mapping_name,
+                            "mode": mode,
+                            "token": token,
+                        }
+                    )
     return ThemeValidationReport(
         schema="hedron.theme-validation/1",
         theme=spec.name,
@@ -710,6 +878,9 @@ class ThemePackage:
     @property
     def fingerprint(self) -> str:
         return str(self.manifest["fingerprint"])
+
+    def load(self) -> ThemeSpec:
+        return load_theme_package(self.archive)
 
 
 def package_theme(
@@ -742,3 +913,113 @@ def package_theme(
             info.external_attr = 0o644 << 16
             archive.writestr(info, content)
     return ThemePackage(manifest=MappingProxyType(manifest), archive=output.getvalue())
+
+
+def load_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
+    """Load and verify a data-only theme package without executing package code."""
+    raw = archive.archive if isinstance(archive, ThemePackage) else archive
+    if not isinstance(raw, bytes):
+        raise ValueError("theme package must be bytes or ThemePackage")
+    try:
+        with zipfile.ZipFile(BytesIO(raw)) as bundle:
+            names = set(bundle.namelist())
+            if names != {"manifest.json", "theme.json"}:
+                raise ValueError("theme package contains unexpected or missing files")
+            manifest = json.loads(bundle.read("manifest.json"))
+            payload = bundle.read("theme.json")
+    except (OSError, KeyError, ValueError, json.JSONDecodeError) as exc:
+        raise ValueError("invalid theme package archive") from exc
+    if not isinstance(manifest, dict) or manifest.get("schema") != "hedron.theme-package/1":
+        raise ValueError("unsupported theme package manifest")
+    files = manifest.get("files")
+    if (
+        not isinstance(files, dict)
+        or files.get("theme.json") != hashlib.sha256(payload).hexdigest()
+    ):
+        raise ValueError("theme package theme.json hash does not match manifest")
+    spec = ThemeSpec.from_dict(cast(Mapping[str, Any], json.loads(payload)))
+    if manifest.get("fingerprint") != spec.fingerprint:
+        raise ValueError("theme package fingerprint does not match theme.json")
+    profile = str(manifest.get("profile", "core"))
+    if profile not in THEME_COVERAGE_PROFILES:
+        raise ValueError(f"theme package uses unknown coverage profile: {profile}")
+    report = validate_theme_spec(spec, profile=profile)
+    if manifest.get("validation") != report.digest or not report.ok:
+        raise ValueError("theme package validation digest or result does not match")
+    return spec
+
+
+def register_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
+    """Verify a package, then register its compatibility ``Theme`` instance."""
+    spec = load_theme_package(archive)
+    from hedron_core.theme import register_theme_instance
+
+    register_theme_instance(spec.to_theme())
+    return spec
+
+
+def diff_theme_specs(left: ThemeSpec, right: ThemeSpec) -> dict[str, Any]:
+    """Return a deterministic, read-only semantic diff for two theme specs."""
+
+    def changes(a: Mapping[str, Any], b: Mapping[str, Any]) -> dict[str, Any]:
+        added = {key: b[key] for key in sorted(set(b) - set(a))}
+        removed = {key: a[key] for key in sorted(set(a) - set(b))}
+        changed = {
+            key: {"from": a[key], "to": b[key]}
+            for key in sorted(set(a) & set(b))
+            if a[key] != b[key]
+        }
+        return {"added": added, "removed": removed, "changed": changed}
+
+    return {
+        "schema": "hedron.theme-diff/1",
+        "left": {"name": left.name, "fingerprint": left.fingerprint},
+        "right": {"name": right.name, "fingerprint": right.fingerprint},
+        "tokens": changes(left.tokens, right.tokens),
+        "aliases": changes(left.aliases, right.aliases),
+        "modes": changes(left.modes, right.modes),
+        "accessibility_modes": changes(left.accessibility_modes, right.accessibility_modes),
+    }
+
+
+def explain_theme_spec(spec: ThemeSpec) -> dict[str, Any]:
+    """Return source/provenance and resolved-token facts for diagnostics and tooling."""
+    return {
+        "schema": "hedron.theme-explanation/1",
+        "name": spec.name,
+        "profile": spec.profile,
+        "fingerprint": spec.fingerprint,
+        "tokens": dict(spec.resolved_tokens),
+        "aliases": dict(spec.aliases),
+        "modes": {key: dict(value) for key, value in spec.modes.items()},
+        "accessibility_modes": {
+            key: dict(value) for key, value in spec.accessibility_modes.items()
+        },
+        "provenance": [dict(item) for item in spec.provenance],
+    }
+
+
+def conformance_report(spec: ThemeSpec, *, profile: str | None = None) -> dict[str, Any]:
+    """Build the portable declared-profile conformance result."""
+    selected = profile or spec.profile
+    report = validate_theme_spec(spec, profile=selected)
+    return {
+        "schema": "hedron.theme-conformance/1",
+        "theme": spec.name,
+        "profile": selected,
+        "fingerprint": spec.fingerprint,
+        "inventory_digest": hashlib.sha256(
+            _canonical(
+                [
+                    {
+                        "logical_id": item.logical_id,
+                        "profile": item.profile,
+                        "tokens": list(item.required_tokens),
+                    }
+                    for item in registered_component_theme_contracts()
+                ]
+            ).encode()
+        ).hexdigest(),
+        "validation": report.to_dict(),
+        "ok": report.ok,
+    }

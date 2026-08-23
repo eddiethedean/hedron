@@ -1,6 +1,6 @@
 # Phase 0.60 execution plan
 
-**Status:** In progress — Stage 0 packet and additive runtime slice implemented; release gates remain Planned
+**Status:** Runtime platform/tooling slice implemented; release gates remain Planned pending full evidence
 **Authority:** RFC-0089 / proposed D-108 / `THEME_PLATFORM_060.md`
 **Target:** `v0.60.0`
 

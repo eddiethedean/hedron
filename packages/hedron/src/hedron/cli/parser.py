@@ -23,9 +23,12 @@ from hedron.cli.commands.routes import _cmd_components, _cmd_preview, _cmd_route
 from hedron.cli.commands.run import _cmd_run_app
 from hedron.cli.commands.security_check import _cmd_security_check
 from hedron.cli.commands.style import (
+    _cmd_style_conform,
     _cmd_style_diff,
     _cmd_style_eject,
     _cmd_style_explain,
+    _cmd_style_init,
+    _cmd_style_package,
     _cmd_style_preview,
 )
 from hedron.cli.commands.testgen import _cmd_testgen
@@ -488,6 +491,41 @@ def _register_theme_commands(sub: Any) -> None:
         help="Overwrite existing ejected files",
     )
     style_eject_p.set_defaults(func=_cmd_style_eject)
+
+    style_init_p = style_sub.add_parser(
+        "init",
+        help="Write a non-overwriting starter ThemeSpec JSON",
+    )
+    style_init_p.add_argument("--name", default="custom")
+    style_init_p.add_argument("--output", required=True)
+    style_init_p.set_defaults(func=_cmd_style_init)
+
+    style_package_p = style_sub.add_parser(
+        "package",
+        help="Validate and package a ThemeSpec as data-only JSON/ZIP",
+    )
+    style_package_p.add_argument("--spec", required=True)
+    style_package_p.add_argument("--output", required=True)
+    style_package_p.add_argument(
+        "--profile",
+        choices=("core", "forms", "data", "workflow", "complete"),
+        default="core",
+    )
+    style_package_p.add_argument("--license", action="append", default=None)
+    style_package_p.add_argument("--overwrite", action="store_true")
+    style_package_p.set_defaults(func=_cmd_style_package)
+
+    style_conform_p = style_sub.add_parser(
+        "conform",
+        help="Emit the portable declared-profile ThemeSpec conformance report",
+    )
+    style_conform_p.add_argument("--spec", required=True)
+    style_conform_p.add_argument(
+        "--profile",
+        choices=("core", "forms", "data", "workflow", "complete"),
+        default=None,
+    )
+    style_conform_p.set_defaults(func=_cmd_style_conform)
 
 
 def _register_migrate_commands(sub: Any) -> None:

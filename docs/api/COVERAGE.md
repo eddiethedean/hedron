@@ -32,7 +32,7 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `Color`, `ThemeSpec`, `ThemeBuilder`, `ThemePatch`, `ThemePackage`, `ThemeValidationReport` | [Theme platform](THEME.md), [phase 0.60 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/THEME_PLATFORM_060.md) |
 | `ComponentThemeContract`, `CoverageProfile`, `RecipeFamily`, `StyleContext` | [Theme platform](THEME.md), [phase 0.60 contract](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/theme-platform-contract-060.toml) |
 | `ScrollRegion`, `ThemePicker`, `ThemePreference` | [Component demos](../components/index.md), [phase 0.60 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_60.md) |
-| `package_theme`, `validate_theme_spec`, `register_component_theme_contract`, `registered_component_theme_contracts`, `register_recipe_family`, `registered_recipe_families`, `resolve_theme_preference`, `theme_boot_asset`, `theme_markers` | [Theme platform](THEME.md), [phase 0.60 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/THEME_PLATFORM_060.md) |
+| `package_theme`, `load_theme_package`, `register_theme_package`, `conformance_report`, `diff_theme_specs`, `explain_theme_spec`, `validate_theme_spec`, `register_component_theme_contract`, `registered_component_theme_contracts`, `register_recipe_family`, `registered_recipe_families`, `resolve_theme_preference`, `theme_boot_asset`, `theme_markers` | [Theme platform](THEME.md), [phase 0.60 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/THEME_PLATFORM_060.md) |
 
 ## Inference and model demos (0.18)
 

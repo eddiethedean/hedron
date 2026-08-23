@@ -22,6 +22,7 @@ from hedron_core.theme import (
     ensure_builtin_themes_registered,
     get_theme,
 )
+from hedron_core.theme_platform import ThemeSpec, conformance_report, package_theme
 
 DIFF_SCHEMA = "hedron.design-system-diff/1"
 PREVIEW_SCHEMA = "hedron.design-system-preview/1"
@@ -471,3 +472,73 @@ def _cmd_style_eject(args: argparse.Namespace) -> int:
         )
     )
     return 0
+
+
+def _read_theme_spec(path: Path) -> ThemeSpec:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"could not read theme spec {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError("theme spec JSON must contain an object")
+    return ThemeSpec.from_dict(payload)
+
+
+def _cmd_style_init(args: argparse.Namespace) -> int:
+    cwd = Path.cwd().resolve()
+    try:
+        dest = _assert_project_write_path(Path(args.output), cwd=cwd)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    if dest.exists():
+        print(f"Refusing to overwrite {dest} (choose a new path)", file=sys.stderr)
+        return 1
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    starter = ThemeSpec(
+        name=args.name,
+        tokens={
+            "color.bg": "#ffffff",
+            "color.fg": "#111827",
+            "color.muted": "#4b5563",
+            "color.focus": "#1d4ed8",
+            "font.family": "system-ui",
+            "font.size": "1rem",
+            "space.unit": "0.25rem",
+        },
+        metadata={"starter": True},
+    )
+    dest.write_text(
+        json.dumps(starter.to_dict(), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(json.dumps({"written": str(dest), "fingerprint": starter.fingerprint}, indent=2))
+    return 0
+
+
+def _cmd_style_package(args: argparse.Namespace) -> int:
+    try:
+        spec = _read_theme_spec(Path(args.spec))
+        packaged = package_theme(spec, profile=args.profile, licenses=tuple(args.license or ()))
+        dest = _assert_project_write_path(Path(args.output), cwd=Path.cwd().resolve())
+    except (ValueError, OSError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    if dest.exists() and not args.overwrite:
+        print(f"Refusing to overwrite {dest} (use --overwrite)", file=sys.stderr)
+        return 1
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_bytes(packaged.archive)
+    print(json.dumps({"written": str(dest), "manifest": dict(packaged.manifest)}, indent=2))
+    return 0
+
+
+def _cmd_style_conform(args: argparse.Namespace) -> int:
+    try:
+        spec = _read_theme_spec(Path(args.spec))
+        report = conformance_report(spec, profile=args.profile)
+    except (ValueError, OSError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report["ok"] else 1

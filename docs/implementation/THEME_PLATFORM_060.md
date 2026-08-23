@@ -1,6 +1,6 @@
 # Custom theme platform implementation plan (phase 0.60)
 
-**Status:** In progress — additive runtime slices landed; full matrix and release evidence remain open
+**Status:** Runtime platform and tooling slices implemented; full matrix and release evidence remain open
 **Authority:** RFC-0089 / proposed D-108 / `docs/acceptance/theme-platform-contract-060.toml`
 **Baseline:** Published/Verified in-tree and PyPI `v0.59.0`
 **Target:** `v0.60.0`

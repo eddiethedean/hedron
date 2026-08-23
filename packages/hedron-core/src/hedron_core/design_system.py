@@ -90,7 +90,7 @@ NavigationPreset = Literal["compact", "default", "wide"]
 ComponentT = TypeVar("ComponentT", bound=Component[Any])
 
 PLAN_SCHEMA_ID: Final = "hedron.design-system-plan/1"
-BRAND_ALGORITHM: Final = "hedron.brand-palette/1"
+BRAND_ALGORITHM: Final = "hedron.brand-palette/2"
 RECIPE_FAMILIES: Final[tuple[StyleFamily, ...]] = (
     "control",
     "surface",
@@ -876,7 +876,7 @@ class DesignSystem:
                 "source": "brand_input",
                 "source_id": seed,
                 "adjusted": bool(adjustments),
-                "reason": "hedron.brand-palette/1",
+                "reason": "hedron.brand-palette/2",
             },
             {
                 "target": "tokens.light",
@@ -938,6 +938,7 @@ class DesignSystem:
                 "accent": seed,
                 "accent_requested": requested_color.to_css(fallback=False),
                 "accent_space": requested_color.space,
+                "palette_schema": "hedron.brand-palette/2",
                 "algorithm": BRAND_ALGORITHM,
                 "density": density,
                 "geometry": geometry,

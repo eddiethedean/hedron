@@ -19,6 +19,10 @@ from hedron import (
     ThemePreference,
     ThemeSpec,
     ToastHost,
+    conformance_report,
+    diff_theme_specs,
+    explain_theme_spec,
+    load_theme_package,
     package_theme,
     register_recipe_family,
     render,
@@ -61,6 +65,12 @@ def test_absolute_modern_colors_have_deterministic_srgb_fallbacks() -> None:
     assert lab.coords[0] == 65.0
     with pytest.raises(ValueError, match="unsafe absolute color"):
         Color.parse("url(https://example.test/color.svg)")
+
+    assert Color.hsl(220, 0.7, 0.5).to_hex().startswith("#")
+    assert Color.hwb(220, 0.1, 0.1).gamut_map().space == "srgb"
+    assert Color.lab(65, 20, 30).to_hex().startswith("#")
+    assert Color.lch(65, 30, 275).to_hex().startswith("#")
+    assert Color.oklab(0.65, 0.1, -0.1).to_hex().startswith("#")
 
 
 def test_brand_accepts_absolute_color_and_records_provenance() -> None:
@@ -112,6 +122,9 @@ def test_theme_validation_and_package_are_reproducible() -> None:
     assert first.archive == second.archive
     assert first.fingerprint == spec.fingerprint
     assert first.manifest["validation"] == report.digest
+    loaded = load_theme_package(first)
+    assert loaded.fingerprint == spec.fingerprint
+    assert conformance_report(loaded, profile="complete")["ok"]
 
 
 def test_recipe_family_and_style_context_preserve_bounded_precedence() -> None:
@@ -163,8 +176,26 @@ def test_theme_preference_is_allowlisted_and_server_first() -> None:
 
     assert markers["data-hedron-theme"] == "aurora"
     assert "localStorage.getItem" in boot
+    assert "hedron-color-mode" in boot
+    assert "colorScheme" in boot
     assert "aurora" in picker
     assert "color_mode" in picker
+
+
+def test_theme_services_are_deterministic_and_explain_provenance() -> None:
+    base = ThemeBuilder("services").token("color.bg", "#fff").token("color.fg", "#111")
+    left = base.token("color.focus", "#06f").build()
+    right = (
+        ThemeBuilder.from_spec(left)
+        .token("space.unit", "0.25rem")
+        .provenance(source="test", reason="phase-060")
+        .build()
+    )
+
+    delta = diff_theme_specs(left, right)
+    explanation = explain_theme_spec(right)
+    assert delta["tokens"]["added"] == {"space.unit": "0.25rem"}
+    assert explanation["provenance"][-1]["source"] == "test"
 
 
 def test_page_assets_can_emit_server_first_theme_preference_markers() -> None:
