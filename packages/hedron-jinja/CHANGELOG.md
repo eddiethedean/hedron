@@ -6,7 +6,7 @@
 - Phase 0.59 modern CSS platform, typed controls, responsive containers, shell/workflow primitives, and release evidence (RFC-0087 / D-106 / D-107).
 
 ### Changed
-- Coordinated train tip `0.59.0` (in-tree release; registry publication deferred).
+- Coordinated train release `0.59.0` (published on PyPI).
 
 
 ## [0.58.1] — 2026-08-22

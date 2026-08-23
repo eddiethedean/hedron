@@ -1,8 +1,8 @@
 # What's new in 0.53
 
-In-tree tip is **0.53.0** (Published; Git tag and PyPI upload deferred). PyPI still
-serves **0.52.0** — pin `hedron>=0.58.0,<0.59` from the public index until the 0.53
-wheel lands.
+In-tree tip is **0.53.0** (Published; Git tag and PyPI upload deferred). This
+historical cut was superseded by later published trains; current applications
+should use `hedron>=0.59.0,<0.60` from the public index.
 
 ## 0.53.0
 

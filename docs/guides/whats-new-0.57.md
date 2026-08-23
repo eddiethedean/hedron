@@ -19,8 +19,8 @@ zero-application-CSS evidence under
 See [PRESENTATION](../api/PRESENTATION.md) and
 [RELEASE_0_57](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_57.md).
 
-Pin from PyPI remains `hedron>=0.58.0,<0.59` until the 0.57.0 wheel lands; the repository
-tip is `0.57.0`.
+The 0.57.0 PyPI upload remained deferred. Current applications should use
+`hedron>=0.59.0,<0.60` from PyPI; the historical repository tip is `0.57.0`.
 
 ## Hardening on the tip
 

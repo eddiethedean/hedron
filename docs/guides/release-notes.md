@@ -18,7 +18,8 @@ Published release for the 0.59 train. Install from PyPI with
 ## 0.58.0 — 2026-08-21
 
 Published cut for progressive feature and styling authoring (RFC-0085 /
-D-101 / D-102 / D-105). Published on PyPI; install with
+D-101 / D-102 / D-105). The 0.58 train is available on PyPI; reproduce this
+historical train with `hedron>=0.58.0,<0.59`. For current applications, use
 `hedron>=0.59.0,<0.60`. [What’s new in 0.58](whats-new-0.58.md).
 [Installation](../getting-started/installation.md).
 
@@ -32,7 +33,8 @@ D-101 / D-102 / D-105). Published on PyPI; install with
 ## 0.57.0 — 2026-08-21
 
 In-tree Published cut for unified presentation / zero-application-CSS (RFC-0084 /
-D-099 / D-100). Git tag and PyPI upload are **deferred**; install from PyPI with
+D-099 / D-100). The 0.57 PyPI upload remained **deferred**; the subsequent 0.58
+train carried the public release. For current applications, use
 `hedron>=0.59.0,<0.60`. [What’s new in 0.57](whats-new-0.57.md).
 [Installation](../getting-started/installation.md).
 

@@ -1,8 +1,8 @@
 # What’s new in 0.55
 
-Historical **0.55.0** in-tree Published cut (superseded by living tip **0.56.0**;
-PyPI may still show **0.56.0** while deferred). Prefer
-[What’s new in 0.56](whats-new-0.56.md) for the current train.
+Historical **0.55.0** in-tree Published cut (the 0.55 PyPI upload was deferred;
+the cut was superseded by later published trains). Prefer
+[What’s new in 0.59](whats-new-0.59.md) for the current train.
 
 ## 0.55.0
 

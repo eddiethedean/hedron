@@ -1,8 +1,8 @@
 # What's new in 0.54
 
-**Status:** Published in-tree as `v0.56.0` (tag/PyPI deferred). Pin
-`hedron>=0.58.0,<0.59` from checkout; first-run PyPI pins remain on the public
-index until upload.
+**Status:** Published in-tree as `v0.56.0` (tag/PyPI deferred). This historical
+cut was superseded by later published trains; current applications should use
+`hedron>=0.59.0,<0.60` from the public index.
 
 Phase 0.54 ships one external-author loop and Python-native application chrome.
 

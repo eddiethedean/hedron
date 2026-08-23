@@ -5,7 +5,7 @@
 Install from the public PyPI index:
 `pip install "hedron>=0.59.0,<0.60"`. Contributors working from a git checkout use
 `uv sync` (workspace packages); the published 0.59.0 release is also available from PyPI.
-The Git tag/PyPI upload for 0.59.0 is deferred. See
+The Git tag and PyPI upload for 0.59.0 are complete. See
 [Installation](../getting-started/installation.md).
 
 ```bash

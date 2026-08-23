@@ -1,7 +1,7 @@
 # Authoring loop and chrome API (`v0.54`)
 
-**Status:** Stage 1 Implemented (D-093 / D-094 / RFC-0081). Living tip `v0.59.0`
-(tag/PyPI deferred).
+**Status:** Stage 1 Implemented (D-093 / D-094 / RFC-0081). The current package
+train is `0.59.x` (`v0.59.0` on PyPI).
 
 ## Shared schema
 
