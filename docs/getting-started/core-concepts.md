@@ -3,6 +3,19 @@
 Hedron adds a typed interface layer to FastAPI without replacing its application model or
 hiding the web platform. Five concepts explain most of the framework.
 
+## You will learn
+
+By the end of this page, you should be able to explain:
+
+- where application configuration and routes live;
+- how typed components become HTML without hidden I/O;
+- why a page response and a fragment response are different;
+- how HTMX requests map to declared regions;
+- where security, assets, and production compilation fit in the boundary.
+
+If you have not run an app yet, complete the [quickstart](quickstart.md) first. The
+examples below are easier to understand after you have clicked **Refresh status** once.
+
 ## Application
 
 `Hedron` is the flagship FastAPI application. It owns security policy, component and
@@ -117,6 +130,17 @@ and cache/`Vary` hints instead of assembling `HX-*` headers by hand. See
 Use `SafeUrl`, `TrustedHtml` (including `TrustedHtml.nh3`), and `Secret` only at deliberate
 trust boundaries. Plain text remains escaped, redirects use explicit local or external
 policies, and authenticated fragments receive conservative cache behavior.
+
+### Remember this loop
+
+Most Hedron interactions can be read as one inspectable loop:
+
+```text
+Python intent → typed route → HTML page or fragment → browser request → declared target
+```
+
+If you are unsure which API to choose, start with [API by task](../api/by-task.md) and
+return here when you need the underlying model.
 
 ## The build boundary
 

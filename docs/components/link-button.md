@@ -25,27 +25,32 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ```python
 from hedron import LinkButton
 
-component = LinkButton('Create account', '/signup')
+component = LinkButton('Create account', '/signup', size='sm', width='full')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
 
 ## How it works
 
-Despite its appearance, LinkButton is an anchor and preserves open-in-new-tab, copy-link, and no-JavaScript navigation behavior.
+Despite its appearance, LinkButton is an anchor and preserves open-in-new-tab, copy-link, and no-JavaScript navigation behavior. Its 0.59 `size`, `width`, `appearance`, `emphasis`, and `attrs=` contract is aligned with `Button`.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
 ## Constructor and parameters
 
 ```python
-LinkButton(label, href)
+LinkButton(label, href, *, size=None, width=None, appearance=None, emphasis=None, id=None, class_=None, attrs=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `label` | `str` | Visible navigation label. |
 | `href` | `SafeUrl | str` | Validated destination. |
+| `size` | `sm | md | lg | None` | Shared control size marker. |
+| `width` | `content | field | full | None` | Shared width intent. |
+| `appearance` | `solid | outline | soft | ghost | plain | raised | None` | Treatment independent of meaning. |
+| `emphasis` | `primary | secondary | danger | neutral | None` | Semantic meaning independent of treatment. |
+| `attrs` | `Mapping[str, HtmlAttrValue] | None` | Validated global, ARIA, data, approved HTMX, and popover/dialog-trigger attributes. |
 
 ## Composition and backend behavior
 
@@ -66,7 +71,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Never use LinkButton to submit a form or mutate data.
+- Never use LinkButton to submit a form or mutate data. Its `attrs=` seam remains validated and cannot override the owned destination or structural attributes.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

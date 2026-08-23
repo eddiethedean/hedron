@@ -243,7 +243,7 @@ hedron --app app:app eject features:notes --surface list_view --out ./ejected --
 | `inspect htmx-extensions` | Declared HTMX extension catalog |
 | `inspect features` | Included FeatureBundles |
 | `explain features:<id>` | Static redacted feature explanation (`--format human|json`) |
-| `explain design` / `style preview` / `style diff` | Static redacted DesignSystem plan, gallery preview, and design diff (0.58) |
+| `explain design` / `style explain` / `style preview` / `style diff` | Static redacted DesignSystem plan, styling explanation, gallery preview, and design diff (0.59) |
 | `eject <component>` | Write `accessibility_contract.json` plus an editable `styles.css` override (`--out`, `--force`) |
 | `eject features:<id>` | Write reviewable explicit-registration Python for a bundle (`--surface`, `--out`, `--overwrite`) |
 
@@ -267,7 +267,7 @@ Validate a design system without running the application.
 hedron theme check
 hedron theme check --theme aurora --format json
 hedron style check --zero-app-css examples/chrome-zero-css
-hedron --app app:app style preview --modes light,dark
+hedron --app app:app style preview --mode all
 hedron --app app:app style diff --base default --candidate acme
 ```
 
@@ -278,7 +278,7 @@ gaps, and contrast findings: text pairs (`color.fg`/`color.bg`,
 `color.bg` must clear 3:1. Non-literal token values such as `var(...)` are
 skipped because they cannot be measured statically.
 
-`style preview` / `style diff` are static redacted DesignSystem tooling (0.58); they
+`style explain`, `style preview`, and `style diff` are static redacted styling tooling (0.59); they
 do not execute application callbacks or emit secrets.
 
 `style check --zero-app-css PATH` fails when the path contains an

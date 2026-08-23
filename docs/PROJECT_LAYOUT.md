@@ -1,7 +1,7 @@
 # Project and package layout
 
 **Status:** Maintainer reference for the **0.59.x** repository train; the latest PyPI
-release is **0.58.0**
+release is **0.59.0**
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -107,8 +107,7 @@ The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
 **Publish note:** the coordinated repository train tip is **`v0.59.0`**, and PyPI serves
-**0.58.0** (`registry_status = deferred` for 0.59.0) — see
-[STATUS](STATUS.md).
+**0.59.0** (`registry_status = uploaded`) — see [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
 

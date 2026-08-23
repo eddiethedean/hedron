@@ -37,9 +37,11 @@ second project.
 
 ## 2. First interaction (~20–30 minutes)
 
-1. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
+1. [Core concepts](core-concepts.md) — page, component, render mode, fragment, and
+   security boundaries (same scaffold; about 10 minutes)
+2. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
    (edit the scaffold; browser click)
-2. [Minimal form POST](../guides/minimal-form.md) — `CsrfField` form that increments
+3. [Minimal form POST](../guides/minimal-form.md) — `CsrfField` form that increments
    the notes counter (same scaffold)
 
 Then read [Core concepts](core-concepts.md) if you want the page/fragment model explained
@@ -63,13 +65,17 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 
 ## 5. Internal admin path, then data / live updates
 
+For one continuous project instead of separate examples, follow
+[Build a notes app](../examples/build-notes-app.md). It joins the first five checkpoints
+below and identifies what should be durable before deployment.
+
 **Recommended second hour:** [Session auth](../examples/session-auth.md) →
 [Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) →
 [Ship a Hedron app](../guides/ship.md). The
 [reference app](../examples/reference-app.md) is an optional kitchen sink after that.
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
-   (`hedron[charts]>=0.58.0,<0.59`; static Matplotlib is the conservative default)
+   (`hedron[charts]>=0.59.0,<0.60`; static Matplotlib is the conservative default)
 2. More recipes: [File upload](../examples/file-upload.md) ·
    [Jobs poll](../examples/jobs-poll.md)
 3. Optional: [Dashboards](../guides/dashboards.md) · [Model demos](../guides/model-demos.md) ·

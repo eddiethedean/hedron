@@ -37,7 +37,7 @@ introduces the web concepts as they appear.
 
 | Item | Value |
 |---|---|
-| Version | Published **0.58.x** tip `v0.58.0` on PyPI (Beta) |
+| Version | Published **0.59.x** tip `v0.59.0` on PyPI (Beta) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |

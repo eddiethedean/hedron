@@ -1,6 +1,6 @@
 [release]
 # Public release facts. Adopter-facing "current", "living", and install-pin claims
-# must agree with this file. The workspace may be preparing a later patch.
+# must agree with this file. The workspace is aligned with the published train.
 train = "0.59"
 published_version = "0.59.0"
 development_version = "0.59.0"
@@ -11,13 +11,13 @@ previous_train = "0.58"
 previous_version = "0.58.1"
 previous_security_until = "2027-08-20"
 # Latest version actually on PyPI. Keep in sync with pypi.org (not workspace version).
-# When registry_status is "deferred", first-run copy-paste must use this public-index
-# pin (never the unpublished in-tree pin). When "uploaded", pypi_version must equal
+# When registry_status is "deferred", first-run copy-paste must use the public-index
+# pin rather than an unpublished in-tree pin. When "uploaded", pypi_version must equal
 # published_version and first-run commands use the same pin as Installation.
-pypi_version = "0.58.0"
-pypi_pin_floor = "0.58.0"
+pypi_version = "0.59.0"
+pypi_pin_floor = "0.59.0"
 pypi_pin_ceiling = "0.60"
-registry_status = "deferred"
+registry_status = "uploaded"
 
 [satellites]
 minimum_version = "0.2.0"

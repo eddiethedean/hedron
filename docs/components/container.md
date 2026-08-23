@@ -25,21 +25,21 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ```python
 from hedron import Container, Heading, Text
 
-component = Container(Heading('Profile', level=1), Text('Manage your public details.'), id='profile')
+component = Container(Heading('Profile', level=1), Text('Manage your public details.'), query='inline-size', name='profile')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
 
 ## How it works
 
-The component emits an addressable div and always retains the `hedron-container` theme hook. Positional nodes and `children=` use the same normalization rules, and an application class augments rather than disables the built-in layout. Width, gutters, and breakpoints remain theme CSS concerns.
+The component emits an addressable div and always retains the `hedron-container` theme hook. In 0.59, `query='inline-size'` opts the boundary into container-aware responsive styling and `name=` adds a validated named-container marker. Positional nodes and `children=` use the same normalization rules, and an application class augments rather than disables the built-in layout. Width, gutters, and breakpoints remain theme CSS concerns.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
 ## Constructor and parameters
 
 ```python
-Container(*nodes, children=None, id=None, class_=None)
+Container(*nodes, children=None, id=None, class_=None, query='none', name=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -48,6 +48,8 @@ Container(*nodes, children=None, id=None, class_=None)
 | `children` | `NodeLike | sequence | None` | Keyword alternative for generated or declarative child lists; combines with positional nodes. |
 | `id` | `str | None` | Stable DOM target for links, tests, and HTMX swaps. |
 | `class_` | `str | None` | Application class appended after `hedron-container`; the built-in theme hook is retained. |
+| `query` | `Literal['none', 'inline-size']` | Opt into an inline-size query boundary. Default: `'none'` (existing viewport behavior). |
+| `name` | `str | None` | Validated container name, valid only with `query='inline-size'`. |
 
 ## Composition and backend behavior
 
@@ -68,7 +70,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Do not use Container as a substitute for Main or Section.
+- Do not use Container as a substitute for Main or Section. Do not assume `query='inline-size'` is a viewport breakpoint; use the existing responsive maps when viewport semantics are intended.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

@@ -20,6 +20,14 @@ brand-wide decisions, and scoped CSS when a component genuinely owns a visual de
 
 </div>
 
+!!! note "What is new in 0.59"
+
+    The 0.59 styling contract adds compiler format 2, opt-in container-query boundaries,
+    finite theme variants, modern color and typography fallbacks, logical overlay placement,
+    print and preference media, and validated typed-control attributes. The complete capability
+    matrix—including Progressive, Experimental, and Deferred CSS features—is in
+    [Modern CSS in 0.59](modern-css-0.59.md).
+
 ## The styling stack
 
 There are four layers. Start at the top and move down only when the layer above cannot
@@ -548,6 +556,7 @@ Use this sequence when a screen is ready for review:
 ## Reference map
 
 - [Presentation API](../api/PRESENTATION.md) — shared vocabulary and progressive styling APIs
+- [Modern CSS in 0.59](modern-css-0.59.md) — complete feature tiers and fallbacks
 - [Themes and scoped styles](../api/THEME.md) — themes, CSS layers, and `styles.css`
 - [StyleScope](../components/style-scope.md) — subtree theme/mode/density boundaries
 - [Component demos](../components/index.md) — visual pages for every built-in

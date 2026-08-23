@@ -5,7 +5,7 @@ render-only panels (phase **0.59**). Phase **0.17** `DashboardBinding` /
 `InteractionGraph` remain available as Advanced linked-interaction primitives.
 
 Capability readiness is **Supported** on the living **0.59** train; API compatibility
-remains **`beta`** — pin `hedron>=0.58.0,<0.60` from PyPI (published tip `v0.58.0`).
+remains **`beta`** — pin `hedron>=0.59.0,<0.60` from PyPI (published tip `v0.59.0`).
 
 ## Start here
 

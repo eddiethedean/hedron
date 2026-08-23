@@ -90,7 +90,7 @@ still fails, stop here and use [Installation troubleshooting](installation.md#co
 Run this command in the terminal:
 
 ```bash
-uvx --from "hedron>=0.58.0,<0.60" hedron new my-hedron-app
+uvx --from "hedron>=0.59.0,<0.60" hedron new my-hedron-app
 ```
 
 This asks `uv` to run the bounded current-train Hedron project creator in a temporary environment.
@@ -108,13 +108,13 @@ You should see these entries in VS Code's Explorer panel:
 ```text
 my-hedron-app/
 ├── app.py
-├── components/
 └── pyproject.toml
 ```
 
 - `app.py` is your application code.
 - `pyproject.toml` names the project, supported Python version, and dependencies.
-- `components/` is where project-owned reusable interface components can go later.
+- `components/` is the configured root for project-owned reusable interface components.
+  Create it when you add your first component.
 
 If your terminal is still in the parent `python-projects` folder, enter `cd my-hedron-app`.
 Running commands from the wrong folder is one of the most common beginner problems.
@@ -137,7 +137,7 @@ Confirm that the project environment can import Hedron:
 uv run python -c "import hedron; print(hedron.__version__)"
 ```
 
-Expect **`0.58.0`**. The words `uv run` mean “run the
+Expect **`0.59.0`**. The words `uv run` mean “run the
 following command using this project's environment.” They prevent the common mistake of using a
 different Python from the one where the packages were installed.
 
@@ -333,8 +333,8 @@ git commit -m "Create first Hedron app"
 
 If Git asks for your name or email, follow the exact configuration commands it prints. Do not use
 `git add .` until you understand which files `git status` says will be recorded. Never commit
-passwords, API keys, session secrets, `.env`, or `.venv`. Git does not record the empty
-`components/` directory; it will appear in a later commit after you add a component file.
+passwords, API keys, session secrets, `.env`, or `.venv`. The configured `components/`
+root is optional until you add a component file.
 
 ## Common problems
 

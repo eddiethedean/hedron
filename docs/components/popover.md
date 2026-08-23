@@ -25,34 +25,34 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ```python
 from hedron import Popover, Text
 
-component = Popover('Info', Text('Details'))
+component = Popover(Text('Details'), label='Info', placement='inline-end', collision='shift')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
 
 ## How it works
 
-Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.
+Phase 0.15 surface with the 0.59 logical placement and collision contract. Prefer native HTML semantics and ordinary HTTP actions. `placement` is expressed in logical block/inline terms so RTL and writing-mode layouts do not need physical left/right assumptions. `collision` selects the finite fallback strategy: `flip`, `shift`, or `static`.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
 ## Constructor and parameters
 
 ```python
-Popover(*nodes: 'NodeLike', children: 'NodeLike' = None, label: 'str' = 'Open', mode: "Literal['popover', 'details']" = 'popover', placement: "Literal['block-start', 'block-end', 'inline-start', 'inline-end', 'center']" = 'block-end', collision: "Literal['flip', 'shift', 'static']" = 'flip', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
+Popover(*nodes, children=None, label='Open', mode='popover', placement='block-end', collision='flip', id=None, class_=None, mark=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `*nodes` | `NodeLike` | Positional child nodes. |
-| `children` | `NodeLike` | Keyword alternative for child nodes; combines with positional children. Default: `None`. |
+| `nodes` | `NodeLike` | Popover body content. |
+| `children` | `NodeLike | sequence | None` | Keyword alternative for generated or declarative child lists. |
 | `label` | `str` | Accessible label text shown to users. Default: `'Open'`. |
 | `mode` | `Literal['popover', 'details']` | Presentation mode for the disclosure surface. Default: `'popover'`. |
-| `placement` | `Literal['block-start', 'block-end', 'inline-start', 'inline-end', 'center']` | Layout placement for the dock. Default: `'block-end'`. |
-| `collision` | `Literal['flip', 'shift', 'static']` | Constructor parameter. Default: `'flip'`. |
+| `placement` | `Literal['block-start', 'block-end', 'inline-start', 'inline-end', 'center']` | Logical placement. Default: `'block-end'`. |
+| `collision` | `Literal['flip', 'shift', 'static']` | Finite collision fallback. Default: `'flip'`. |
 | `id` | `str | None` | Optional DOM `id`. Default: `None`. |
-| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
+| `class_` | `str | None` | Optional CSS class string. Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
 
 ## Composition and backend behavior
 
@@ -73,7 +73,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Do not treat client-only hints (geolocation, browser storage) as authorization.
+- Do not require anchor-positioning support; the static/native placement path remains the contract.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

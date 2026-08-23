@@ -8,8 +8,8 @@ upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately 
 minor (`0.58.x`) continues through approximately **2027-08-20** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The in-tree train tip is **`v0.59.0`**, and PyPI serves `0.58.0`. First-run pins use
-`>=0.58.0,<0.60`.
+The published train tip is **`v0.59.0`** on PyPI. First-run pins use
+`>=0.59.0,<0.60`.
 
 | Version | Supported |
 |---|---|

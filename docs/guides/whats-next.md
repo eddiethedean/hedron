@@ -15,21 +15,21 @@ Install pins: [Current release](current-release.md) ·
 
 | Topic | Disposition |
 |---|---|
-| Progressive screens / form commands / TaskFlow / DashboardWorkspace | **Published** on PyPI (`v0.58.0`) — [What’s new in 0.59](whats-new-0.59.md) |
+| Progressive screens / form commands / TaskFlow / DashboardWorkspace | **Published** on PyPI (`v0.59.0`) — [What’s new in 0.59](whats-new-0.59.md) |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |
 
-## Planned 0.59 — modern CSS platform
+## Published 0.59 — modern CSS platform
 
-Phase 0.59 has a refined Stage 0 contract, but is not shipped behavior. Stage 1 still requires the
-locked browser/parser/recipe probes and tracking-issue mirrors.
+Phase 0.59 is published. Capability-specific Required, Progressive, Experimental, and Deferred
+boundaries remain explicit in the [Modern CSS guide](modern-css-0.59.md).
 
 | Topic | Disposition |
 |---|---|
-| Scoped CSS compiler, cascade, tokens, Theme variants, modern color/type | **Planned** — [RFC-0087](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0087-MODERN-CSS-PLATFORM.md) |
-| Container-aware layout, print/RTL/preferences, overlays and motion fallbacks | **Planned**; Required/Progressive browser tiers will be locked before implementation |
-| Typed control attributes/sizing, AppShell chrome, pipeline/run presentation | **Planned** from [consumer issues #4–#7](https://github.com/eddiethedean/user-token-management-app/issues) |
+| Scoped CSS compiler, cascade, tokens, Theme variants, modern color/type | **Published in 0.59** — [Modern CSS in 0.59](modern-css-0.59.md) |
+| Container-aware layout, print/RTL/preferences, overlays and motion fallbacks | **Published in 0.59** with Required/Progressive/Experimental tiers and tested fallbacks |
+| Typed control attributes/sizing, AppShell chrome, pipeline/run presentation | **Published in 0.59** from the [consumer issue fixtures](https://github.com/eddiethedean/user-token-management-app/issues) |
 | Free-form CSS-in-Python, mandatory Node, automatic remote fonts | **Not planned**; use finite semantic APIs plus component `styles.css` and explicit local assets |
 
 ## Not a current production default

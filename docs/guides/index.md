@@ -39,6 +39,8 @@ Shipping? [Ship](ship.md).
 
 - [Comprehensive styling](styling.md) — visual tour of presentation tokens, layout,
   themes, recipes, scoped CSS, and styling checks
+- [Modern CSS in 0.59](modern-css-0.59.md) — compiler v2, container layout, variants,
+  progressive CSS tiers, overlays, media, controls, and fallbacks
 
 ## Add data and visuals
 

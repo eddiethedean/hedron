@@ -4,8 +4,8 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.59 **Engineering implementation** in-tree as `v0.59.0`; public
-registry publication remains deferred. The 23-gate evidence packet is active, with implemented
+**Roadmap position:** phase 0.59 **Published** as `v0.59.0` on PyPI. The 23-gate evidence
+packet is active, with implemented
 scope and remaining full-contract gaps recorded in `docs/acceptance/evidence-059/`.
 **Date:** 2026-08-22
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -24,15 +24,13 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
-**Phase focus:** Living train is **0.58** (D-101 / D-102 / D-105 / RFC-0085) — progressive
-feature and styling authoring. `release-gate-0.58.toml` Verified rows; living tip `v0.58.1`
-is in-tree (`registry_status = "deferred"`; PyPI serves `v0.58.0`). Next Planned **0.59**
-(D-106 / D-107 / RFC-0087) owns the modern CSS overhaul; every `release-gate-0.59.toml` row is Planned and
-Stage 1 has not begun. Prior Published
+**Phase focus:** Living train is **0.59** (D-106 / D-107 / RFC-0087) — the modern CSS
+overhaul. `release-gate-0.59.toml` is the active evidence packet. Prior Published
 in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
-Prior Published **0.56** security control plane
+Prior Published **0.58** progressive feature and styling authoring (D-101 / D-102 / D-105 /
+RFC-0085). Prior Published **0.56** security control plane
 (D-097 / D-098 / RFC-0083; [#550](https://github.com/eddiethedean/hedron/issues/550)–[#557](https://github.com/eddiethedean/hedron/issues/557)).
 Prior Published **0.55** secure upgradeable workflows
 (D-095 / D-096 / RFC-0082; [#544](https://github.com/eddiethedean/hedron/issues/544)–[#549](https://github.com/eddiethedean/hedron/issues/549)).
@@ -156,7 +154,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - What’s new: [guides/whats-new-0.58.md](guides/whats-new-0.58.md).
 - Checker: `python scripts/check_release_gate.py 0.58.1`,
   `python scripts/verify_pkg_58.py`.
-- Registry: PyPI serves `v0.58.0` (`registry_status = "deferred"` for 0.58.1).
+- Registry: PyPI serves `v0.59.0` (`registry_status = "uploaded"`).
 
 ## Phase 0.24 evidence
 

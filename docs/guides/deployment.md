@@ -92,12 +92,11 @@ A fresh scaffold is typically `pyproject.toml`, `README.md`, and `app.py` — no
 FROM python:3.12-slim
 WORKDIR /app
 COPY pyproject.toml README.md app.py ./
-RUN pip install --no-cache-dir "hedron>=0.58.0,<0.60" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=0.59.0,<0.60" "uvicorn[standard]" \
     && pip install --no-cache-dir -e . \
     && hedron build
 ENV HEDRON_ENV=production
-# Read in app.py via Hedron(session_secret=os.environ["HEDRON_SESSION_SECRET"])
-ENV HEDRON_SESSION_SECRET=replace-me-at-deploy-time
+# Inject HEDRON_SESSION_SECRET at runtime through your deployment platform.
 EXPOSE 8000
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
@@ -131,7 +130,9 @@ EXPOSE 8000
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-Keep `manifest.json` (from `hedron build`) in the runtime image. Compose under
+Keep `manifest.json` (from `hedron build`) in the runtime image. Inject the session secret
+at runtime through your platform secret store; never bake a real secret or a known
+placeholder into the image. Compose under
 `examples/reference-app/` is **maintainer-experimental** — prefer this sketch or local
 `uvicorn` for learning. Monorepo reference Dockerfile:
 [`examples/reference-app/Dockerfile`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/Dockerfile).
@@ -142,7 +143,7 @@ Single-stage sketch when you already vendor a lockfile:
 FROM python:3.12-slim
 WORKDIR /app
 COPY . .
-RUN pip install --no-cache-dir "hedron>=0.58.0,<0.60" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=0.59.0,<0.60" "uvicorn[standard]" \
  && hedron build
 ENV HEDRON_ENV=production
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -7,16 +7,18 @@ There is **no hosted playground**. Use Codespaces / Dev Container, a local clone
 
 1. **[Build your first app](../getting-started/quickstart.md)** — **canonical fastest path:**
    `hedron new` → Hello → **Refresh status** (no monorepo clone required).
-2. **[Try with Codespaces / Dev Container](try-it.md)** — remote path with no local Python
+2. **[Build a notes app](build-notes-app.md)** — progressive path from Hello through a form,
+   persistence, authentication, and deployment checks.
+3. **[Try with Codespaces / Dev Container](try-it.md)** — remote path with no local Python
    (needs GitHub Codespaces or VS Code / Cursor Dev Container).
-3. **[Recipes](recipes/index.md)** — notes + SQLAlchemy, session auth, file upload, jobs poll.
-4. **[Runnable examples](runnable.md)** — clone the repo for the reference app, live
+4. **[Recipes](recipes/index.md)** — notes + SQLAlchemy, session auth, file upload, jobs poll.
+5. **[Runnable examples](runnable.md)** — clone the repo for the reference app, live
    interaction sample, Flask/Django adapters, and HDJ sample.
-5. **[Notes list tutorial](crud-tutorial.md)** — in-memory create/list/delete (+ optional update);
+6. **[Notes list tutorial](crud-tutorial.md)** — in-memory create/list/delete (+ optional update);
    for full admin CRUD see the [reference app](reference-app.md).
-6. **[Single-file apps](single-file.md)** — alternate paste-an-`app.py` path with Hello +
+7. **[Single-file apps](single-file.md)** — alternate paste-an-`app.py` path with Hello +
    Refresh. Prefer `hedron new` when you want the scaffold and learning-path deltas.
-7. **[Simulated UI patterns](gallery.md)** — in-browser **simulations** on Read the Docs
+8. **[Simulated UI patterns](gallery.md)** — in-browser **simulations** on Read the Docs
    (not a live Hedron process). Prefer [runnable examples](runnable.md) for real HTMX/CSRF.
 
 After Hello + Refresh, prefer [recipes](recipes/index.md) before the kitchen-sink

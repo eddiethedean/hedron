@@ -1,14 +1,17 @@
-# Presentation APIs (0.57 + 0.58)
+# Presentation APIs (0.57–0.59)
 
 Phase 0.57 makes Hedron's shared presentation vocabulary real across built-ins
 and closes remaining application-CSS gaps for a Data Mover-class workspace. Phase
 0.58 adds progressive styling authoring (`DesignSystem`, `StyleRecipe`,
-`StyleScope`) on the same authorities. See
+`StyleScope`) and 0.59 adds the modern CSS platform on the same authorities. See
 [RFC-0084](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0084-UNIFIED-PRESENTATION.md),
 [RFC-0085](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md),
 [PRESENTATION_057](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PRESENTATION_057.md),
 and
 [PROGRESSIVE_AUTHORING_058](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PROGRESSIVE_AUTHORING_058.md).
+For the complete 0.59 capability tiers and fallback contract, see
+[Modern CSS in 0.59](../guides/modern-css-0.59.md) and
+[RFC-0087](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0087-MODERN-CSS-PLATFORM.md).
 
 Shared authority: `hedron_core.builtins.appearance`. Values emit stable
 `data-hedron-*` markers styled by first-party CSS under strict CSP
@@ -79,11 +82,49 @@ Component page: [StyleScope](../components/style-scope.md).
 
 Inspect with `hedron explain` / `hedron style` ([CLI](CLI.md)).
 
+## Modern CSS platform (0.59)
+
+The 0.59 platform evolves the existing presentation ABI instead of replacing it:
+
+| Surface | 0.59 contract |
+|---|---|
+| Scoped CSS | Compiler format 2, v1 manifest reader, stable symbol hashes, grammar-aware nesting/at-rules/imports, deterministic source maps and layers |
+| Responsive layout | Opt-in `Container(query="inline-size", name=...)`, container/viewport fallbacks, intrinsic sizing, logical layout, RTL/writing-mode coverage, Progressive subgrid |
+| Theme and tokens | Explicit finite variants, modern color with sRGB fallback, typography/content roles, Progressive `light-dark()` and selected `@property` tokens |
+| Overlays and motion | Native popover/top-layer semantics, finite logical placement/collision, Progressive anchor/entry/exit/View Transitions, reduced-motion equivalence |
+| Media | Print, forced colors, contrast, reduced transparency, hover/pointer, safe-area and dynamic viewport fallbacks |
+| Controls and product surfaces | Validated `Button`/`LinkButton attrs=`, shared size/width, responsive shell chrome, provider-neutral pipeline/status presentation |
+
+Required behavior has a static or native fallback. Progressive enhancements are feature-detected;
+Experimental scroll-driven animation is decorative only. Styling never changes behavior, state,
+authorization, DOM order, accessible names, or complete-content paths.
+
+### 0.59 public additions
+
+```python
+from hedron import Button, Container, LinkButton, Popover, StyleScope, Text
+
+panel = Container(
+    Text("Workspace activity"),
+    query="inline-size",
+    name="workspace-panel",
+)
+scoped = StyleScope(Text("Compact dark preview"), variant="dense", color_mode="dark")
+save = Button("Save", size="sm", width="full", attrs={"hx-post": "/save"})
+review = LinkButton("Review", "/review", size="sm", width="full")
+menu = Popover(Text("Actions"), placement="block-end", collision="flip")
+```
+
+`attrs=` accepts validated global, `aria-*`, `data-*`, approved HTMX, and popover/dialog-trigger
+attributes. It rejects component-owned structural attributes, inline `style`, event handlers,
+malformed ARIA/data names, and non-allowlisted HTMX attributes. See the component pages for exact
+signatures.
+
 ## Zero-application-CSS
 
 Representative authenticated workspaces must compose shell, forms, tables,
 uploads, identity, statuses, and flows without application-owned component or
-layout CSS. Use `hedron style check --zero-app-css` and the 0.57 zero-CSS
+layout CSS. Use `hedron style check --zero-app-css` and the 0.59 zero-CSS
 fixture inventory.
 
 ## Compatibility

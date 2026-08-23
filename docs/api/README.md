@@ -3,6 +3,9 @@
 Start with the contracts that match Hello / Refresh / a CSRF form. Autodoc signatures
 and the full export map sit below that path.
 
+If you know the outcome but not the symbol, use [API by task](by-task.md). It points from
+common application jobs to the appropriate guide and contract page.
+
 After [First app → What is HTMX → HTMX interactions → Minimal form](../getting-started/index.md):
 
 1. [Hedron](HEDRON.md) — FastAPI application facade
@@ -30,8 +33,8 @@ helpers) is compatibility-protected on the 0.x train. Everything else is `beta` 
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-The repository train tip and latest installable PyPI release are **`v0.58.0`**;
-application users should pin `hedron>=0.58.0,<0.59`.
+The repository train tip and latest installable PyPI release are **`v0.59.0`**;
+application users should pin `hedron>=0.59.0,<0.60`.
 
 !!! note "Contracts vs full reference"
 

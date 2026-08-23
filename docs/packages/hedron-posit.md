@@ -2,7 +2,7 @@
 
 Unified Posit Workbench / Connect deployment adapter for Hedron.
 
-**Package maturity:** Beta (`0.59.x`, `v0.58.0` on PyPI) · extra `hedron[posit]` · pin `>=0.58.0,<0.60`
+**Package maturity:** Beta (`0.59.x`, `v0.59.0` on PyPI) · extra `hedron[posit]` · pin `>=0.59.0,<0.60`
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust. Connect credential

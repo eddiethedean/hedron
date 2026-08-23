@@ -1,11 +1,11 @@
 ---
 title: StyleScope
-description: Bound a subtree to theme, color mode, and density markers only.
+description: Bound a subtree to theme, finite variant, color mode, and density markers only.
 ---
 
 # `StyleScope`
 
-Bound a subtree to theme, color mode, and density markers only.
+Bound a subtree to theme, finite variant, color mode, and density markers only.
 
 | | |
 |---|---|
@@ -25,27 +25,28 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 ```python
 from hedron import StyleScope, Text
 
-component = StyleScope(Text('Scoped panel'), theme='aurora', color_mode='dark', density='compact')
+component = StyleScope(Text('Scoped panel'), theme='aurora', variant='dense', color_mode='dark', density='compact')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
 
 ## How it works
 
-StyleScope is a visible boundary for theme, color mode, and density only. Presentation is marker-driven (`data-hedron-*`) and styled by first-party CSS; recipe defaults are rejected.
+StyleScope is a visible boundary for theme, finite variant, color mode, and density only. Presentation is marker-driven (`data-hedron-*`) and styled by first-party CSS; recipe defaults are rejected.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
 ## Constructor and parameters
 
 ```python
-StyleScope(*nodes, *, theme=None, color_mode=None, density=None, id=None, class_=None, mark=None)
+StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, id=None, class_=None, mark=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `nodes` | `NodeLike` | StyleScope body content. |
 | `theme` | `str | None` | Optional registered theme name emitted as `data-hedron-theme`. |
+| `variant` | `str | None` | Optional finite registered variant emitted as `data-hedron-variant`. Unknown names fail closed. |
 | `color_mode` | `light | dark | None` | Optional color-mode marker (`data-hedron-color-mode`). |
 | `density` | `compact | comfortable | spacious | None` | Optional density marker (`data-hedron-density`). |
 
@@ -59,7 +60,7 @@ loading, and error responses.
 
 ## Accessibility
 
-Prefer StyleScope when a region must override theme, color mode, or density without application CSS.
+Prefer StyleScope when a region must override theme, finite variant, color mode, or density without application CSS.
 
 ## Security
 
@@ -68,7 +69,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Do not pass recipe defaults or other styling knobs; only theme, color_mode, and density are supported.
+- Do not pass recipe defaults or arbitrary CSS; only theme, finite variant, color_mode, and density are supported.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

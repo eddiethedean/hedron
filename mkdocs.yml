@@ -210,6 +210,7 @@ nav:
     - Overview: guides/index.md
     - Cookbook: guides/cookbook.md
     - Comprehensive styling: guides/styling.md
+    - Modern CSS in 0.59: guides/modern-css-0.59.md
     - Build interactions:
       - HTMX interactions: guides/htmx-interactions.md
       - Post a minimal form: guides/minimal-form.md
@@ -259,6 +260,7 @@ nav:
       - FAQ: guides/faq.md
   - Examples:
     - Overview: examples/index.md
+    - Build a notes app: examples/build-notes-app.md
     - Recipe index: examples/recipes/index.md
     - Notes with SQLAlchemy: examples/notes-sqlalchemy.md
     - Session authentication: examples/session-auth.md
@@ -269,6 +271,7 @@ nav:
     - Simulation gallery: examples/gallery.md
     - Reference app walkthrough: examples/reference-app.md
   - Reference:
+    - API by task: api/by-task.md
     - Hedron: api/HEDRON.md
     - Router: api/ROUTER.md
     - Page: api/PAGE.md
@@ -301,6 +304,7 @@ nav:
       - Production adoption checklist: guides/production-adoption.md
     - What's ready today: guides/whats-ready.md
     - Current release and support: guides/current-release.md
+    - What's new in 0.59: guides/whats-new-0.59.md
     - What's new in 0.58: guides/whats-new-0.58.md
     - Releases: guides/release-notes.md
     - Earlier releases: guides/whats-new-archive.md

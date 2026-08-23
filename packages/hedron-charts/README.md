@@ -35,7 +35,7 @@ and the
 
 ```bash
 # flagship extra:
-pip install "hedron[charts]>=0.58.0,<0.60"
+pip install "hedron[charts]>=0.59.0,<0.60"
 # independent satellite:
 pip install "hedron-charts>=0.2.0,<0.3"
 # Add a backend when needed:

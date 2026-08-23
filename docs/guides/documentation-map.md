@@ -11,12 +11,13 @@ not interchangeable.
 ## If you are building an application
 
 1. [Build your first app](../getting-started/quickstart.md)
-2. [Minimal form POST](minimal-form.md)
-3. [What is HTMX?](../getting-started/what-is-htmx.md)
-4. [Core concepts](../getting-started/core-concepts.md)
-5. [Learning path](../getting-started/learning-path.md)
-6. [Current release and support](current-release.md) — when pinning for production
-7. [Deployment](deployment.md) and [Troubleshooting](troubleshooting.md)
+2. [Build a notes app](../examples/build-notes-app.md) — one continuous learning path
+3. [Core concepts](../getting-started/core-concepts.md)
+4. [Minimal form POST](minimal-form.md)
+5. [What is HTMX?](../getting-started/what-is-htmx.md)
+6. [Learning path](../getting-started/learning-path.md)
+7. [Current release and support](current-release.md) — when pinning for production
+8. [Deployment](deployment.md) and [Troubleshooting](troubleshooting.md)
 
 ## If you are evaluating adoption
 
@@ -27,7 +28,8 @@ Read [What's ready today](whats-ready.md), [Evaluate Hedron](evaluate.md),
 
 ## If you are looking up an API
 
-Start at the [API reference](../api/README.md). Use [Stability](../api/STABILITY.md) and
+Start with [API by task](../api/by-task.md) if you know the outcome. Use the full
+[API reference](../api/README.md) for exact contracts, then check [Stability](../api/STABILITY.md) and
 [Symbol tiers](../api/SYMBOL_TIERS.md) to check whether a symbol is stable, beta, or
 experimental, and use [Error codes](error-codes.md)
 for diagnostic remediation.

@@ -14,15 +14,25 @@ If terms such as project folder, terminal, virtual environment, or development s
 use [Your first application with VS Code](first-app-vscode.md). In Posit Workbench, use the
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
-Install from PyPI: `hedron>=0.58.0,<0.60`. Other pins and extras:
+Install from PyPI: `hedron>=0.59.0,<0.60`. Other pins and extras:
 [Installation](installation.md).
+
+## You will learn
+
+- how `hedron new` creates an ordinary Python application;
+- how a typed screen becomes a complete HTML page;
+- how `@app.refreshable` returns a targeted HTML fragment;
+- how to make one edit, run a diagnostic check, and choose the next tutorial step.
+
+You do not need prior HTMX or JavaScript knowledge. The [core concepts](core-concepts.md)
+page explains the model after you have seen it work.
 
 ## 1. Scaffold and run
 
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.58.0,<0.60" hedron new my-hedron-app
+    uvx --from "hedron>=0.59.0,<0.60" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -36,7 +46,7 @@ Install from PyPI: `hedron>=0.58.0,<0.60`. Other pins and extras:
     `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or `activate.bat`.
 
     ```bash
-    python -m pip install "hedron>=0.58.0,<0.60" "uvicorn[standard]"
+    python -m pip install "hedron>=0.59.0,<0.60" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .
@@ -127,7 +137,7 @@ Text("Hello from Ada")
 
 Save the file. Uvicorn reloads and the browser shows the new text.
 
-## 2b. Optional: typed form command
+## Optional: typed form command
 
 For forms, prefer `@app.form_command` (discovers one Pydantic model and lowers to
 `FormBody` + `@app.command`):
@@ -172,15 +182,18 @@ For Python installation, Windows commands, optional extras, proxies, and adapter
 
 ## What was generated?
 
-`hedron new` writes an ordinary `app.py`, a `pyproject.toml` with a bounded Hedron pin,
-and a `components/` directory. The generated page declares a region and returns a small
-fragment for that region.
+`hedron new` writes an ordinary `app.py` and a `pyproject.toml` with a bounded Hedron pin.
+The project configuration reserves `components/` as the component root; create that
+directory when you add your first project-owned component. The generated page declares a
+refreshable view and returns a small fragment for that view.
 
 ```text
 my-hedron-app/
-├── app.py           # application, page route, and status fragment
-├── pyproject.toml   # dependencies and bounded Hedron pin
-└── components/      # project-owned reusable UI components
+├── app.py           # application, screen, command, and refreshable view
+└── pyproject.toml   # dependencies and bounded Hedron pin
+
+# Created later when you add project-owned components:
+components/
 ```
 
 These are normal Python project files. Hedron does not generate a separate JavaScript
@@ -194,3 +207,7 @@ application or require Node.js for the production build.
 | Add another independently updating region | [HTMX interactions](../guides/htmx-interactions.md) |
 | Submit data safely | [Minimal form POST](../guides/minimal-form.md) |
 | See the full beginner-to-production sequence | [Learning path](learning-path.md) |
+
+The recommended next project is [Build a notes app](../examples/build-notes-app.md),
+which carries this same application through a form, persistence, authentication, and
+deployment checks.
