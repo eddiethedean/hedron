@@ -22,11 +22,28 @@ brand-wide decisions, and scoped CSS when a component genuinely owns a visual de
 
 !!! note "What is new in 0.60"
 
-    The 0.60 styling contract adds compiler format 2, opt-in container-query boundaries,
-    finite theme variants, modern color and typography fallbacks, logical overlay placement,
-    print and preference media, and validated typed-control attributes. The complete capability
-    matrix—including Progressive, Experimental, and Deferred CSS features—is in
-    [Modern CSS in 0.60](modern-css-0.60.md).
+    0.60 completes the custom-theme platform on top of the 0.59 CSS foundation: typed absolute
+    colors with deterministic sRGB fallbacks, immutable `ThemeSpec` / `ThemePatch` authoring,
+    registry-derived validation profiles, accessibility-mode mappings, bounded recipe families,
+    server-first theme preferences, and zero-application-CSS contracts for the remaining product
+    surfaces. The complete capability matrix—including the 0.59 CSS foundation and its
+    Progressive, Experimental, and Deferred tiers—is in [Modern CSS in 0.60](modern-css-0.60.md).
+
+### The 0.60 styling upgrade in one view
+
+| Need | 0.60 path | What remains application-owned |
+|---|---|---|
+| Use a brand palette | `DesignSystem.brand()` or a registered `Theme` | Product identity and content |
+| Author a reusable theme | Immutable `ThemeSpec` through `ThemeBuilder` | Which tokens and visual decisions to publish |
+| Layer a bounded change | `ThemePatch` / `ThemeSpec.apply_patches()` | Review and approval of the change |
+| Validate a theme | `validate_theme_spec()` or `style conform` | The profile that matches the package surface |
+| Ship a theme | Data-only `package_theme()` archive | License metadata and distribution |
+| Select a preference | `ThemePreference` + `ThemePicker` | Persistence, authorization, and the POST route |
+| Style product chrome and workflows | `Brand`, `ToastHost`, `ConnectorFlow`, `ScrollRegion` | Content, state, and actions |
+
+The rule is simple: use the smallest bounded contract that expresses the intent. A custom theme
+may add tokens, modes, accessibility mappings, and presentation recipes; it may not add behavior,
+private selector APIs, remote assets, or arbitrary CSS values.
 
 ## The styling stack
 
@@ -367,10 +384,11 @@ app = Hedron(
 )
 ```
 
-The accent is a hex seed, not arbitrary CSS. Hedron can adjust a generated value when
-needed to satisfy the required contrast pairs and records that adjustment in the design
-plan. `DesignSystem` also accepts an existing `Theme` through `from_theme()` when your
-organization already owns the token contract.
+The accent is a safe color seed, not arbitrary CSS. Hedron can adjust a generated value when
+needed to satisfy the required contrast pairs and records that adjustment in the design plan.
+In 0.60 the accent may be a hex string or a typed absolute `Color`; variables, gradients, URLs,
+and other arbitrary CSS are rejected. `DesignSystem` also accepts an existing `Theme` through
+`from_theme()` when your organization already owns the token contract.
 
 <div class="sg-demo">
   <div class="sg-demo__bar"><span>One brand input, many surfaces</span><code>DesignSystem.brand(...)</code></div>
@@ -389,14 +407,94 @@ organization already owns the token contract.
 
 ```bash
 hedron theme check
-hedron theme check --theme northstar --format json
+hedron theme check --theme aurora --format json
 hedron --app app:app style explain --format human
 hedron --app app:app style preview --output .artifacts/northstar-gallery --mode all
-hedron --app app:app style diff --base default --candidate northstar
+hedron --app app:app style diff default northstar
 ```
 
 `style preview` writes a deterministic, data-free gallery. It is useful in design review
 and CI artifacts; it does not execute application callbacks or expose application data.
+
+### The canonical 0.60 custom-theme path
+
+Use `ThemeBuilder` for fluent authoring, but treat the immutable `ThemeSpec` it produces as the
+source of truth. Start with the narrowest validation profile that covers the package or app; move
+to `forms`, `data`, `workflow`, or `complete` when the theme intentionally covers those surfaces.
+
+```python
+from hedron import Hedron, ThemeBuilder, validate_theme_spec
+
+spec = (
+    ThemeBuilder("northstar")
+    .tokens(
+        {
+            "color.bg": "#ffffff",
+            "color.fg": "#111827",
+            "color.muted": "#4b5563",
+            "color.border": "#d1d5db",
+            "color.accent": "#2563eb",
+            "color.focus": "#1d4ed8",
+            "color.danger": "#b91c1c",
+            "font.family": "system-ui",
+            "font.size": "1rem",
+            "space.unit": "0.25rem",
+            "motion.duration": "160ms",
+            "focus.ring": "3px solid #1d4ed8",
+        }
+    )
+    .mode("dark", **{"color.bg": "#111827", "color.fg": "#f9fafb"})
+    .accessibility_mode("forced-colors", {"color.focus": "Highlight"})
+    .profile("core")
+    .build()
+)
+
+report = validate_theme_spec(spec, profile="core")
+if not report.ok:
+    raise RuntimeError(report.to_dict())
+
+app = Hedron(title="Northstar", theme=spec.to_theme(), session_secret="replace-in-production")
+```
+
+`Color` accepts safe absolute CSS colors such as `Color.oklch(0.68, 0.18, 275)` and records a
+deterministic sRGB fallback. It does not accept variables, gradients, URLs, relative colors, or
+arbitrary CSS. `ThemeSpec` is immutable and serializable, so fingerprints, reports, and generated
+assets can be reproduced in CI.
+
+For a reviewed variation, apply an explicit, bounded patch. The base fingerprint prevents a patch
+from silently landing on the wrong theme revision:
+
+```python
+from hedron import Color, ThemePatch
+
+review_patch = ThemePatch(
+    name="review-accent",
+    base=spec.name,
+    base_fingerprint=spec.fingerprint,
+    tokens={"color.accent": Color.oklch(0.62, 0.16, 285).to_hex()},
+)
+review_spec = spec.apply_patches(review_patch)
+```
+
+To distribute a theme, use the data-only package format. Packages contain no executable hooks,
+remote assets, or runtime CSS injection:
+
+```python
+from hedron import conformance_report, load_theme_package, package_theme
+
+package = package_theme(spec, profile="core", licenses=("MIT",))
+loaded = load_theme_package(package)
+assert conformance_report(loaded, profile="core")["ok"]
+```
+
+The equivalent file-oriented workflow is:
+
+```bash
+hedron style init --name northstar --output themes/northstar.json
+hedron style conform --spec themes/northstar.json --profile core
+hedron style package --spec themes/northstar.json --profile core \
+  --license MIT --output dist/northstar.hdt
+```
 
 ## 8. Apply semantic style recipes
 
@@ -478,7 +576,94 @@ StyleScope(
 Use the smallest meaningful boundary. A page-level theme belongs on `Hedron`; a preview,
 embedded report, or mounted surface may justify a `StyleScope`.
 
-## 10. Add CSS only where the component owns the detail
+## 10. Use the 0.60 product-surface contracts
+
+0.60 finishes four commonly hand-styled surfaces. They expose finite presentation props and
+framework-owned fallback behavior, so they remain legible in print, forced colors, reduced motion,
+narrow layouts, and no-JavaScript rendering.
+
+```python
+from hedron import (
+    Brand,
+    ConnectorFlow,
+    ConnectorNode,
+    ConnectorTrack,
+    ScrollRegion,
+    ToastHost,
+)
+
+brand = Brand(
+    "Northstar",
+    href="/",
+    subtitle="Operations workspace",
+    subtitle_overflow="break",
+)
+
+toast_host = ToastHost(
+    placement="bottom-end",
+    position="fixed",
+    width="field",
+    max_width="md",
+    gap="sm",
+)
+
+flow = ConnectorFlow(
+    ConnectorNode("Source", kind="source", state="ready"),
+    ConnectorTrack(label="Transfer"),
+    ConnectorNode("Warehouse", kind="target", state="running"),
+    appearance="soft",
+    background="dots",
+    overflow="auto",
+    min_size="md",
+)
+
+events = ScrollRegion(
+    "Recent events",
+    axis="block",
+    size="md",
+    affordance="always",
+    label="Recent events",
+)
+```
+
+Keep `Brand` and `ToastHost` in the document shell so fragment swaps do not remove product
+identity or the reserved `#hedron-toast` target. Keep `ConnectorFlow` children in reading order;
+its visual direction and collapse behavior must never be the only way to understand the workflow.
+Use `ScrollRegion` to bound overflow without replacing the semantics of a list, table, timeline,
+or log. See the focused component pages for the complete finite prop sets:
+[Brand](../components/brand.md), [ToastHost](../components/toast-host.md),
+[ConnectorFlow](../components/connector-flow.md), and [ScrollRegion](../components/scroll-region.md).
+
+### Server-first theme preferences
+
+`ThemePreference` is an allowlisted value, not a user-provided CSS string. Resolve it at the
+server boundary, render `ThemePicker` as a native form, and let the application own persistence,
+authorization, and the POST route. The optional boot helper only reads bounded local values to
+reduce a preference flash; it does not replace server-rendered state.
+
+```python
+from hedron import ThemePicker, ThemePreference, resolve_theme_preference
+
+preference = resolve_theme_preference(
+    request.cookies.get("hedron-theme"),
+    request.cookies.get("hedron-color-mode"),
+    allowed_themes=("default", "aurora"),
+)
+
+picker = ThemePicker(
+    themes=("default", "aurora"),
+    selected=preference,
+    action="/preferences/theme",
+    csrf_token=csrf_token,
+)
+```
+
+For custom hosts, pass the resolved preference through page asset injection so the framework emits
+theme and color-mode markers before page content. Invalid or stale values fall back to the
+allowlisted default; never construct a selector, CSS declaration, or persistence key from raw
+request input.
+
+## 11. Add CSS only where the component owns the detail
 
 For a custom component, colocate `styles.css` beside the component and use the typed
 style-symbol binding. Hedron rewrites local classes and keyframes to collision-free
