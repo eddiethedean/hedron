@@ -31,7 +31,12 @@ def test_upgrade_fixtures_and_verify_script() -> None:
 
 def test_stage1_modules_and_versions() -> None:
     tip = _living_tip()
-    if tip.startswith("0.56.") or tip.startswith("0.57.") or tip.startswith("0.58."):
+    if (
+        tip.startswith("0.56.")
+        or tip.startswith("0.57.")
+        or tip.startswith("0.58.")
+        or tip.startswith("0.59.")
+    ):
         # Historical 0.55 packet under a later living tip.
         assert Path("packages/hedron/src/hedron/workflow.py").is_file()
         assert Path("packages/hedron/src/hedron/capabilities.py").is_file()

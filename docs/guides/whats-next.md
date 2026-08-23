@@ -11,11 +11,11 @@ Capability maturity for *this* train: [What’s ready](whats-ready.md) ·
 Install pins: [Current release](current-release.md) ·
 [Installation](../getting-started/installation.md).
 
-## On the living 0.58 train
+## On the living 0.59 train
 
 | Topic | Disposition |
 |---|---|
-| Progressive screens / form commands / TaskFlow / DashboardWorkspace | **Published** on PyPI (`v0.58.0`) — [What’s new in 0.58](whats-new-0.58.md) |
+| Progressive screens / form commands / TaskFlow / DashboardWorkspace | **Published** on PyPI (`v0.58.0`) — [What’s new in 0.59](whats-new-0.59.md) |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |

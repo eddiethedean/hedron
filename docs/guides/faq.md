@@ -3,15 +3,15 @@
 ## Which version should I install?
 
 Install from the public PyPI index:
-`pip install "hedron>=0.58.0,<0.59"`. Contributors working from a git checkout use
-`uv sync` (workspace packages); the repository contains the deferred 0.58.1 patch cut.
-The Git tag/PyPI upload for 0.58.1 is deferred. See
+`pip install "hedron>=0.58.0,<0.60"`. Contributors working from a git checkout use
+`uv sync` (workspace packages); the repository contains the deferred 0.59.0 patch cut.
+The Git tag/PyPI upload for 0.59.0 is deferred. See
 [Installation](../getting-started/installation.md).
 
 ```bash
-pip install "hedron>=0.58.0,<0.59"
+pip install "hedron>=0.58.0,<0.60"
 # or
-uv add "hedron>=0.58.0,<0.59"
+uv add "hedron>=0.58.0,<0.60"
 ```
 
 Always use an upper bound so a future minor train cannot install by accident.
@@ -20,14 +20,14 @@ Packages are **Beta** (usable, no 1.0, no SLA). Capability detail:
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For DataTable/DataEditor, install `hedron[data]>=0.58.0,<0.59`. For charts, install
-`hedron[charts]>=0.58.0,<0.59`
+For DataTable/DataEditor, install `hedron[data]>=0.58.0,<0.60`. For charts, install
+`hedron[charts]>=0.58.0,<0.60`
 ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=0.58.0,<0.59"
-pip install "hedron-django>=0.58.0,<0.59"   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.58.0,<0.60"
+pip install "hedron-django>=0.58.0,<0.60"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -85,7 +85,7 @@ status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
 ## Is Hedron production-ready for internal admin?
 
 For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
-with eyes open: packages are **Beta**, pin `>=0.58.0,<0.59`, prefer polling
+with eyes open: packages are **Beta**, pin `>=0.58.0,<0.60`, prefer polling
 for live status, and read [What’s ready](whats-ready.md). There is no vendor SLA or
 scheduled 1.0. Use the [PoC checklist](evaluate.md#poc-checklist) on
 [Evaluate](evaluate.md).
@@ -107,8 +107,8 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then
-`uv add "hedron>=0.58.0,<0.59"`. Or use
-`hedron new my-app` after `pip install "hedron>=0.58.0,<0.59"`.
+`uv add "hedron>=0.58.0,<0.60"`. Or use
+`hedron new my-app` after `pip install "hedron>=0.58.0,<0.60"`.
 
 ## Should I use `uv init` or `hedron new`?
 
@@ -118,7 +118,7 @@ the same directory by accident.
 
 ## What do Beta, Supported, and Deferred mean?
 
-Short version for builders: **pin from PyPI** (`hedron>=0.58.0,<0.59`). The repository
+Short version for builders: **pin from PyPI** (`hedron>=0.58.0,<0.60`). The repository
 train is for contributors and is not an application install source.
 Packages are Beta; that does not mean “do not use” — it means expect
 occasional `0.x` churn and pin upper bounds.
@@ -135,10 +135,10 @@ Snapshot: [What’s ready today](whats-ready.md).
 
 ## What is a “train”? Why these version pins?
 
-A **train** is a minor release line (for example `0.58.x`). Patch releases inside the
+A **train** is a minor release line (for example `0.59.x`). Patch releases inside the
 train are meant to be compatible; the next minor (`0.59`) may add breaking changes.
 
-Install with an upper bound — `hedron>=0.58.0,<0.59` — so you get patches automatically
+Install with an upper bound — `hedron>=0.58.0,<0.60` — so you get patches automatically
 but do not jump to the next train by accident. That is ordinary Python packaging, not a
 second registry. Contributors working from a git checkout use `uv sync`; application
 installs use PyPI.
@@ -148,7 +148,7 @@ See [Current release](current-release.md) and [Compatibility](../COMPATIBILITY.m
 ## Why pin with an upper bound?
 
 A lower bound without an upper bound allows a future minor train to install
-automatically. Use `hedron>=0.58.0,<0.59` so compatible patches are accepted while the
+automatically. Use `hedron>=0.58.0,<0.60` so compatible patches are accepted while the
 next minor train requires an intentional review. See [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
@@ -156,14 +156,14 @@ next minor train requires an intentional review. See [Compatibility](../COMPATIB
 **Auto** (built-in — no extra) and **DataTable/DataEditor** (`hedron[data]`) are
 **Supported**. Those packages are **Beta** on PyPI — pin versions.
 
-Charts install through `hedron[charts]>=0.58.0,<0.59`; the sample kit installs as
+Charts install through `hedron[charts]>=0.58.0,<0.60`; the sample kit installs as
 `hedron-sample-kit>=0.2.0,<0.3`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ```bash
-pip install "hedron[data]>=0.58.0,<0.59"     # DataTable, DataEditor (Auto is already in hedron)
-pip install "hedron[charts]>=0.58.0,<0.59"   # compatible chart satellite
+pip install "hedron[data]>=0.58.0,<0.60"     # DataTable, DataEditor (Auto is already in hedron)
+pip install "hedron[charts]>=0.58.0,<0.60"   # compatible chart satellite
 ```
 
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), and the
@@ -226,9 +226,9 @@ variables / your secret store. Constructor args override both when explicit.
 ## How do I install Jinja templates?
 
 ```bash
-pip install "hedron[jinja]>=0.58.0,<0.59"
+pip install "hedron[jinja]>=0.58.0,<0.60"
 # or
-uv add "hedron[jinja]>=0.58.0,<0.59"
+uv add "hedron[jinja]>=0.58.0,<0.60"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).

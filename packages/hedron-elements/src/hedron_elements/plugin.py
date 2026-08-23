@@ -39,9 +39,9 @@ _STATIC = _ROOT / "static"
 
 PLUGIN_META = PluginMeta(
     name="hedron_elements",
-    version="0.58.1",
+    version="0.59.0",
     distribution="hedron-elements",
-    hedron_version=">=0.58,<0.59",
+    hedron_version=">=0.59,<0.60",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,

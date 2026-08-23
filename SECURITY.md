@@ -2,20 +2,20 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.58.x`).
+Security fixes land on the **current published train** (`0.59.x`).
 Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.57.x`) continues through approximately **2027-08-20** — after that, upgrade
+minor (`0.58.x`) continues through approximately **2027-08-20** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The in-tree train tip is **`v0.58.1`**, and PyPI serves `0.58.0`. First-run pins use
-`>=0.58.0,<0.59`.
+The in-tree train tip is **`v0.59.0`**, and PyPI serves `0.58.0`. First-run pins use
+`>=0.58.0,<0.60`.
 
 | Version | Supported |
 |---|---|
-| `0.58.x` | Yes (current published train — pin `>=0.58.1,<0.59`; published `v0.58.1`) |
-| `0.57.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.58.x` |
-| `0.56.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.58.x` |
+| `0.59.x` | Yes (current published train — pin `>=0.59.0,<0.60`; published `v0.59.0`) |
+| `0.58.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.59.x` |
+| `0.56.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.59.x` |
 | `0.55.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
 | `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
 | `0.52.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.53.x` / `0.56.x` |
@@ -50,7 +50,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes target the current published train (`0.58.x`); see Supported versions above.
+4. Fixes target the current published train (`0.59.x`); see Supported versions above.
 
 ### Alternate contact
 

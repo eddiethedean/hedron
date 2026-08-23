@@ -13,7 +13,7 @@ tracking = "modern-css-tracking-059.toml"
 inventory = "modern-css-inventory-059.toml"
 compatibility = "modern-css-compatibility-059.toml"
 stage_1_entry_satisfied = true
-zero_deferred_at_cut = true
+zero_deferred_at_cut = false
 contract = "modern-css-contract-059.toml"
 evidence_report = "gate-results-059.json"
 
@@ -26,154 +26,196 @@ owner = "hedron-core"
 
 [[evidence]]
 id = "COMPILER-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_css_compiler_059.py"
 ci_job = "test"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "CASCADE-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_css_cascade_059.py"
 ci_job = "test"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "TOKENS-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_tokens_059.py"
 ci_job = "test"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "COLOR-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_color_059.py"
 ci_job = "test"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "CONTAINER-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_container_059.py"
 ci_job = "browser"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "LAYOUT-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_layout_059.py"
 ci_job = "browser"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "TYPE-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_typography_059.py"
 ci_job = "browser"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "CONTROL-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_controls_059.py"
 ci_job = "browser"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "CHROME-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_chrome_059.py"
 ci_job = "browser"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "WORKFLOW-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_workflow_presentation_059.py"
 ci_job = "browser"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "OVERLAY-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_overlay_059.py"
 ci_job = "browser"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "MOTION-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_motion_059.py"
 ci_job = "browser"
 owner = "hedron-core"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "MEDIA-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_media_059.py"
 ci_job = "browser"
 owner = "hedron-conformance"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "A11Y-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_a11y_059.py"
 ci_job = "browser"
 owner = "hedron-conformance"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "DX-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_style_dx_059.py"
 ci_job = "test"
 owner = "hedron"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "VISUAL-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_visual_059.py"
 ci_job = "browser"
 owner = "hedron"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "PERF-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_css_perf_059.py"
 ci_job = "evidence"
 owner = "hedron-conformance"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "SECURITY-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_css_security_059.py"
 ci_job = "test"
 owner = "hedron-conformance"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "COMPAT-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_css_compat_059.py"
 ci_job = "test"
 owner = "hedron-conformance"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "CONSUMER-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/check_consumer_css_059.py"
 ci_job = "evidence"
 owner = "hedron"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"
 
 [[evidence]]
 id = "REGRESS-059"
-state = "Implemented"
+state = "Verified"
 command = "bash scripts/ci_checks.sh all --python 3.12 --all-browsers --gate-version 0.59.0 --jobs 1"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-059"
-state = "Implemented"
+state = "Deferred"
 command = "python scripts/verify_pkg_59.py"
 ci_job = "packaging"
 owner = "hedron"
+rationale = "Implementation is in-tree and the executable checks pass, but the gate-specific refined corpus is not yet complete for release closure."
+destination = "0.60"

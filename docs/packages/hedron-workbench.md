@@ -2,11 +2,11 @@
 
 Compatibility Posit Workbench / RStudio Server deployment adapter.
 
-**Package maturity:** Beta (`0.58.x`, `v0.58.0` on PyPI) · extra `hedron[workbench]` · pin `>=0.58.0,<0.59`
+**Package maturity:** Beta (`0.59.x`, `v0.58.0` on PyPI) · extra `hedron[workbench]` · pin `>=0.58.0,<0.60`
 
 Prefer [`hedron-posit`](hedron-posit.md) / `HedronPosit` for new applications.
 This package retains `HedronWorkbench` as a thin subclass (supported on the current
-0.58 train; no 0.33 deprecation warning).
+0.59 train; no 0.33 deprecation warning).
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust.

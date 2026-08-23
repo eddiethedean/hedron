@@ -14,6 +14,9 @@ release-ready while any gate remains `Implemented`.
   and WebKit `26.5`/revision `2336`.
 - `performance-059.json` records the current stylesheet/compiler/render budget measurements.
 - `package-059.json` records the built wheel/sdist inventory and package metadata checks.
+- `consumer-059.json` records the Data Mover migration slice, dependency pins, removed legacy
+  selectors, and focused UI/interaction/pipeline test result.
+- `consumer-migration-059.patch` is the reviewable consumer diff used by that migration slice.
 
 Regenerate the probe artifacts with:
 

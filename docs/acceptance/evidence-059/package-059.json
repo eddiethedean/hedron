@@ -7,79 +7,79 @@
       "sha256": "7a92fbf906b16a037323fb74238cf8328724ca9048434d9c17c73342e0265c1b"
     },
     {
-      "bytes": 344070,
-      "name": "hedron-0.58.1-py3-none-any.whl",
-      "sha256": "5c85b187a35dcc328a363ae059bde7679dec8cbdd0c8d330112b5118a0790a0a"
+      "bytes": 344231,
+      "name": "hedron-0.59.0-py3-none-any.whl",
+      "sha256": "310ce93bac52285d79bac2d0e1c71250555fcd4f405dd856c1af93b1b2894b53"
     },
     {
-      "bytes": 2942182,
+      "bytes": 2942188,
       "name": "hedron_charts-0.2.0-py3-none-any.whl",
-      "sha256": "df1552c6f40773c6a60747e18984c36d1b5ecd029e60e8b32f303d380c5b3840"
+      "sha256": "de9a62b3232678194bc0eede60b39a585a28828526b3d307db3552a6b368635f"
     },
     {
-      "bytes": 33529,
-      "name": "hedron_conformance-0.58.1-py3-none-any.whl",
-      "sha256": "3626eb6492f48eb73a01f58ae74a98ce60e4145861b8b40fc50710e8412f0b54"
+      "bytes": 33532,
+      "name": "hedron_conformance-0.59.0-py3-none-any.whl",
+      "sha256": "ce5f76f1f46caba33df9d5ce0fef1f19ff6c240562d61590b6722019b783f79f"
     },
     {
-      "bytes": 466926,
-      "name": "hedron_core-0.58.1-py3-none-any.whl",
-      "sha256": "059acc9e2436e165932b55feb0b01f49cf22e8724fd520b642a95f50fb738c17"
+      "bytes": 467131,
+      "name": "hedron_core-0.59.0-py3-none-any.whl",
+      "sha256": "912050c296154e63537e59ae7672f3256d7e6a2deef85076c3bb93b87321c6c5"
     },
     {
-      "bytes": 419979,
-      "name": "hedron_data-0.58.1-py3-none-any.whl",
-      "sha256": "2931d08144ec6cb88cbddd89fa14e68b49012cdaf3fee40aad5a1d08ad065781"
+      "bytes": 419986,
+      "name": "hedron_data-0.59.0-py3-none-any.whl",
+      "sha256": "5b176462fa0f6dbd7edfb2faf9088c8beeb32c966e1aa3047f5456ead21f996e"
     },
     {
-      "bytes": 25194,
-      "name": "hedron_django-0.58.1-py3-none-any.whl",
-      "sha256": "c9515a7b9e75f1cd0a69c24b6ee688af796cf483d610da1c26e69e6057c7cb00"
+      "bytes": 25199,
+      "name": "hedron_django-0.59.0-py3-none-any.whl",
+      "sha256": "b9107050ec027ef839320e1e3e1f23dadbdf322a93fba55c07c320f192c7af6e"
     },
     {
-      "bytes": 38746,
-      "name": "hedron_elements-0.58.1-py3-none-any.whl",
-      "sha256": "4222d6fa1d7fad0a8b5c8854a975de3f22eafbf335d67b09d4c3c388dc4008a8"
+      "bytes": 38745,
+      "name": "hedron_elements-0.59.0-py3-none-any.whl",
+      "sha256": "0ac309a74d9735b14b7670933bafaaeed754c730b4c409af9da50a1f1a341536"
     },
     {
-      "bytes": 33044,
-      "name": "hedron_explorer-0.58.1-py3-none-any.whl",
-      "sha256": "a64adb2a38a971c12dc89d35ff18d8f4169307599d0d8aceff710f6593042e32"
+      "bytes": 33045,
+      "name": "hedron_explorer-0.59.0-py3-none-any.whl",
+      "sha256": "f7bf5035ca6561ad74c1ef079a63aa7d1b5ea9d931cfaeac3ce203957cd85f93"
     },
     {
-      "bytes": 38375,
-      "name": "hedron_extras-0.58.1-py3-none-any.whl",
-      "sha256": "70de02fed26076861dcec96a0a9397bad54730a502f820efc1ebc2e0cec1ac75"
+      "bytes": 38384,
+      "name": "hedron_extras-0.59.0-py3-none-any.whl",
+      "sha256": "dc916ce0919d19efae59915752559b9bf1ec6550bfc710958c1c168b05323961"
     },
     {
-      "bytes": 26189,
-      "name": "hedron_flask-0.58.1-py3-none-any.whl",
-      "sha256": "11a79da2fbbad0cf745b01e3e8452fcabe2386d3693507e45015c67e7e886bd7"
+      "bytes": 26194,
+      "name": "hedron_flask-0.59.0-py3-none-any.whl",
+      "sha256": "daa242334beedf2aae84483120381667956bd65b95695b3e5f6b3900d762b082"
     },
     {
-      "bytes": 18507,
+      "bytes": 18510,
       "name": "hedron_gradio-0.2.0-py3-none-any.whl",
-      "sha256": "4f4db4eb5e0fa6a6e4375c456bc7f2dc2e4bb30a1b4b819674e5adb71ed1f5d5"
+      "sha256": "54e8f99b64e69263de6ffd147cd2bfafadd8ee23d61b845847e5f5e0f7c981c9"
     },
     {
-      "bytes": 44128,
-      "name": "hedron_jinja-0.58.1-py3-none-any.whl",
-      "sha256": "fb9609a607f4aa30d5c02d6078457a6cc3c1fd3fffbadba88823c8608aa92e9f"
+      "bytes": 44133,
+      "name": "hedron_jinja-0.59.0-py3-none-any.whl",
+      "sha256": "0637482ee705c4a35905aa04f7495533266eb8d62c9502b9c39f245634c27577"
     },
     {
-      "bytes": 376262,
+      "bytes": 376263,
       "name": "hedron_maps-0.1.0-py3-none-any.whl",
-      "sha256": "4b8091a93f77502550fa3c6596b8a79cbd2aac3d35b262e5862f185c3b7940a7"
+      "sha256": "f9af71ca83c929ca6f8aafc33aff62278b4725fd7feefa75ea0271ce979f4379"
     },
     {
-      "bytes": 19786,
+      "bytes": 19785,
       "name": "hedron_mcp-0.2.1-py3-none-any.whl",
-      "sha256": "2c4e21d32d6072c6ab3315f57ce928fd2797608232a4ca1294159b653c5ac5b7"
+      "sha256": "8705957443cd8c850723a7c44194026199118c741c2f306c9a25414af90901e3"
     },
     {
-      "bytes": 206889,
+      "bytes": 206888,
       "name": "hedron_native-0.1.2-cp311-cp311-macosx_11_0_arm64.whl",
-      "sha256": "53c236b26a5785408dfe2966ab09d1014d6804f55c9cdabcabc7aa3e0c6ef1c3"
+      "sha256": "5db096276b344ce73f2e6c03c01425e85eedee1b210ebece6c9bc6776d48ae07"
     },
     {
       "bytes": 214062,
@@ -87,29 +87,29 @@
       "sha256": "7357a4fd8d2a64499f6c46f11f9924e5e35ee53f12634bd6f499ecab34a8e9ae"
     },
     {
-      "bytes": 15663,
+      "bytes": 15665,
       "name": "hedron_notebook-0.2.0-py3-none-any.whl",
-      "sha256": "d30e2e4bac30ef4d3c4b1ac6e23ab5f20675f63b49e2aa84a752778c206aec36"
+      "sha256": "e87f1858c48fa5ac9e962a2386e10c6378310780d06d273dd85149b5a1d88e99"
     },
     {
-      "bytes": 33527,
-      "name": "hedron_posit-0.58.1-py3-none-any.whl",
-      "sha256": "1b0fef4a41f750e6d6d5bfb60bee5abb285652193dc5a66cd6a29162f44a140d"
+      "bytes": 33531,
+      "name": "hedron_posit-0.59.0-py3-none-any.whl",
+      "sha256": "980ec3fed4c0445251cde5ca7d09f7ee6adcb2a1322bf3b8b05a7eb192782b65"
     },
     {
-      "bytes": 15626,
+      "bytes": 15627,
       "name": "hedron_sample_kit-0.2.0-py3-none-any.whl",
-      "sha256": "e9206c9dee3ef48130b93833ae85e13eef7c6efe93e592e52a1134c354247be4"
+      "sha256": "e9b1f9861a2113c4b91415224317490f1c1ce336e95def8467872f117832a229"
     },
     {
-      "bytes": 29207,
+      "bytes": 29208,
       "name": "hedron_sim-0.2.0-py3-none-any.whl",
-      "sha256": "2b3d0f68aec00149a5cd199e1b8af3dab75d3f1c453ed81eafd9f2b5231accaa"
+      "sha256": "6c5af1aab38d65029692f77fef93b38365dacfe0452bcd09e2970d22b9a39440"
     },
     {
-      "bytes": 11337,
-      "name": "hedron_workbench-0.58.1-py3-none-any.whl",
-      "sha256": "ebfc5e2dd21f7557efb36d2a16fd871bd86dfd3fccfe64f00c667b09c9fd7ac2"
+      "bytes": 11341,
+      "name": "hedron_workbench-0.59.0-py3-none-any.whl",
+      "sha256": "ebd1146ff190e0504b4c7c324af9e61e2026ba6917d32cee9bcb0cfa09830fed"
     }
   ],
   "pass": true,

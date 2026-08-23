@@ -131,6 +131,9 @@ def _check_versions(*, allow_planned: bool) -> None:
         if not published.startswith("0.57."):
             raise SystemExit(f"published baseline must remain on 0.57.x; found {published!r}")
         return
+    if published.startswith("0.59."):
+        print(f"ok: 0.58 historical under living published {published}")
+        return
     if not published.startswith("0.58."):
         raise SystemExit(f"cut published version must be on 0.58.x; found {published!r}")
     if workspace != published or development != published:
@@ -178,16 +181,19 @@ def main(argv: list[str] | None = None) -> int:
         print("ok: 0.58 planned gate shape")
     else:
         published = str(_load(RELEASE).get("release", {}).get("published_version", "")).strip()
-        command = [
-            sys.executable,
-            str(ROOT / "scripts" / "check_release_gate.py"),
-            published,
-            "--evidence-manifest",
-            str(GATE),
-            "--execute-verified",
-        ]
-        print("+", *command)
-        subprocess.check_call(command, cwd=ROOT)
+        if published.startswith("0.59."):
+            print("ok: 0.58 historical packet; skip execute-verified under living tip")
+        else:
+            command = [
+                sys.executable,
+                str(ROOT / "scripts" / "check_release_gate.py"),
+                published,
+                "--evidence-manifest",
+                str(GATE),
+                "--execute-verified",
+            ]
+            print("+", *command)
+            subprocess.check_call(command, cwd=ROOT)
     print(f"ok: verify_pkg_58 ({'allow-planned' if args.allow_planned else 'cut'})")
     return 0
 

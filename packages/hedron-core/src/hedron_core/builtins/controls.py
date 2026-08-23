@@ -239,6 +239,7 @@ class LinkButtonProps(Props):
     label: str
     href: SafeUrl
     size: Size | None = None
+    width: Width | None = None
     appearance: Appearance | None = None
     emphasis: Emphasis | None = None
     id: str | None = None
@@ -255,6 +256,7 @@ class LinkButton(Component[LinkButtonProps]):
         href: SafeUrl | str,
         *,
         size: Size | None = None,
+        width: Width | None = None,
         appearance: Appearance | None = None,
         emphasis: Emphasis | None = None,
         id: str | None = None,
@@ -272,6 +274,7 @@ class LinkButton(Component[LinkButtonProps]):
                 label=label,
                 href=url,
                 size=size,
+                width=width,
                 appearance=appearance,
                 emphasis=emphasis,
                 id=id,
@@ -284,6 +287,7 @@ class LinkButton(Component[LinkButtonProps]):
     def render(self) -> NodeLike:
         data = appearance_data(
             size=self.props.size,
+            width=self.props.width,
             appearance=self.props.appearance or "outline",
             emphasis=self.props.emphasis or "secondary",
         )

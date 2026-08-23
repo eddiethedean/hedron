@@ -1,6 +1,6 @@
 # hedron-elements
 
-**Package maturity:** Beta · **Train:** `0.58.x` (published `v0.58.0` on PyPI) · application pin `>=0.58.0,<0.59`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Train:** `0.59.x` (published `v0.58.0` on PyPI) · application pin `>=0.58.0,<0.60`; repository checkouts use `uv sync`
 
 Framework-neutral Web Component ABI and HTMX-safe bridge for Hedron. Includes the
 `hedron-example` reference plus Beta form controls (`hedron-field-text`,
@@ -9,9 +9,9 @@ Framework-neutral Web Component ABI and HTMX-safe bridge for Hedron. Includes th
 D-064 / D-065).
 
 ```bash
-pip install "hedron[elements]>=0.58.0,<0.59"
+pip install "hedron[elements]>=0.58.0,<0.60"
 # or
-pip install "hedron-elements>=0.58.0,<0.59"
+pip install "hedron-elements>=0.58.0,<0.60"
 ```
 
 Depends on `hedron-core` only. Host applications do not need Node.js.

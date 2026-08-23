@@ -1,0 +1,20 @@
+{
+  "collected": 52,
+  "consumer": "/Volumes/T7/coding/user-token-managment-app",
+  "consumer_commit": "3a866cf9139b0ad4f2e41fe4703b52ee8e678ce3",
+  "consumer_worktree_dirty": true,
+  "dependency_contract": "hedron>=0.59.0,<0.60; hedron-posit>=0.59.0,<0.60",
+  "errors": [],
+  "generated_at": "2026-08-22T23:49:30.761996+00:00",
+  "legacy_selectors": [],
+  "passed": 52,
+  "phase": "0.59",
+  "returncode": 0,
+  "schema": "hedron.consumer-evidence/1",
+  "test_output_tail": "1/site-packages/mirakuru/base.py\", line 78, in cleanup_subprocesses\n    pids = processes_with_env(ENV_UUID, str(os.getpid()))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Volumes/T7/coding/user-token-managment-app/.venv/lib/python3.11/site-packages/mirakuru/base_env.py\", line 52, in processes_with_env_psutil\n    for proc in psutil.process_iter():\n  File \"/Volumes/T7/coding/user-token-managment-app/.venv/lib/python3.11/site-packages/psutil/__init__.py\", line 1541, in process_iter\n    a = set(pids())\n            ^^^^^^\n  File \"/Volumes/T7/coding/user-token-managment-app/.venv/lib/python3.11/site-packages/psutil/__init__.py\", line 1485, in pids\n    ret = sorted(_psplatform.pids())\n                 ^^^^^^^^^^^^^^^^^^\n  File \"/Volumes/T7/coding/user-token-managment-app/.venv/lib/python3.11/site-packages/psutil/_psosx.py\", line 320, in pids\n    ls = cext.pids()\n         ^^^^^^^^^^^\nPermissionError: [Errno 1] Operation not permitted (originated from sysctl() malloc 1/3)\n",
+  "tests": [
+    "tests/test_ui_shell.py",
+    "tests/test_ui_interactions.py",
+    "tests/test_pipeline_runs.py"
+  ]
+}

@@ -201,6 +201,35 @@
   }
 }
 
+@media (prefers-contrast: more) {
+  .hedron-button,
+  .hedron-input,
+  .hedron-select,
+  .hedron-textarea,
+  .hedron-card,
+  .hedron-surface { border-width: 2px; }
+}
+
+@media (forced-colors: active) {
+  .hedron-button,
+  .hedron-card,
+  .hedron-surface,
+  .hedron-popover,
+  .hedron-dialog { forced-color-adjust: auto; border-color: ButtonText; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .hedron-card,
+  .hedron-surface,
+  .hedron-popover,
+  .hedron-dialog { background: Canvas; backdrop-filter: none; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .hedron-button,
+  .hedron-link-button { min-block-size: 2.75rem; }
+}
+
 @layer reset {
   *,
   *::before,

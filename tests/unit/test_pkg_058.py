@@ -52,7 +52,7 @@ def test_pin_docs_and_public_exports() -> None:
     assert release.is_file()
     data = tomllib.loads(release.read_text(encoding="utf-8"))
     pin_ceiling = str(data.get("release", {}).get("pin_ceiling", ""))
-    assert pin_ceiling.startswith("0.59") or "0.58" in pin_ceiling or "0.59" in pin_ceiling
+    assert pin_ceiling.startswith("0.60") or "0.58" in pin_ceiling or "0.59" in pin_ceiling
 
     for symbol in (DesignSystem, StyleRecipe, StyleScope, explain_feature):
         assert symbol is not None

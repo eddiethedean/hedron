@@ -5,7 +5,7 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page is the **adopter** maturity summary for the **0.58.x** train
+This page is the **adopter** maturity summary for the **0.59.x** train
 ([Current release and support](current-release.md)). Full capability matrices and
 maintainer gate notes:
 [What’s ready — evidence](whats-ready-evidence.md).
@@ -43,7 +43,7 @@ screen-reader sessions are not Supported yet**.
 | Job | Status | Start here |
 |---|---|---|
 | CRUD / admin / forms | **Supported** | [First app](../getting-started/quickstart.md) |
-| Progressive screens (`@app.screen`) | **Supported** (FastAPI; API `beta`) | [What’s new in 0.58](whats-new-0.58.md) |
+| Progressive screens (`@app.screen`) | **Supported** (FastAPI; API `beta`) | [What’s new in 0.59](whats-new-0.59.md) |
 | HTMX refreshable views / commands (`@app.refreshable`) | **Supported** | [Which interaction API?](../getting-started/interaction-apis.md) |
 | Multi-worker durable jobs (polling) | **Supported** with shared Redis | [Jobs](../api/JOBS.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
@@ -70,7 +70,7 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.58.0,<0.59" hedron new my-app
+    uvx --from "hedron>=0.58.0,<0.60" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -78,13 +78,13 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "pip"
 
     ```bash
-    pip install "hedron>=0.58.0,<0.59" "uvicorn[standard]"
+    pip install "hedron>=0.58.0,<0.60" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.58.0,<0.59`. Extras and public-index notes:
+Pin `hedron>=0.58.0,<0.60`. Extras and public-index notes:
 [Installation](../getting-started/installation.md). Sample kit:
 `hedron-sample-kit>=0.2.0,<0.3`.
 

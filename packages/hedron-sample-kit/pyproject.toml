@@ -7,7 +7,7 @@ requires-python = ">=3.11,<3.15"
 license = "MIT"
 license-files = ["LICENSE"]
 dependencies = [
-    "hedron-core>=0.58.0,<0.59",
+    "hedron-core>=0.59.0,<0.60",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -16,7 +16,7 @@ classifiers = [
 
 [project.optional-dependencies]
 authoring = [
-    "hedron-conformance>=0.58.0,<0.59",
+    "hedron-conformance>=0.59.0,<0.60",
 ]
 
 [project.entry-points."hedron.plugins"]

@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.58.x**)
+**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.59.x**)
 
 `Hedron` is the batteries-included FastAPI application. It preserves normal FastAPI
 behavior while installing Hedron route classes, response handling, lifespan composition,
@@ -104,7 +104,7 @@ parameters:
 | `include_router(...)` | Standard FastAPI router include |
 
 Golden-path HTMX uses `@app.screen`, `@app.form_command`, `@app.refreshable`, and
-`@app.command` (see [What’s new in 0.58](../guides/whats-new-0.58.md) and
+`@app.command` (see [What’s new in 0.59](../guides/whats-new-0.59.md) and
 [Refreshable views](REFRESHABLE_VIEWS.md)). Flask/Django hosts are Supported for
 pages/fragments but are **not** decorator-parity Supported for these FastAPI progressive
 facades. `page` / `component` / `action` plus `fragment_regions` remain the lower-level

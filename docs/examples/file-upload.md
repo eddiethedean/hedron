@@ -75,7 +75,7 @@ explicit — Hedron does not own storage or malware scanning.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.58.0,<0.59" "uvicorn[standard]"
+pip install "hedron>=0.58.0,<0.60" "uvicorn[standard]"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/file-upload/app.py -o app.py
 uvicorn app:app --reload
 ```
@@ -101,6 +101,6 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Upload a small `.txt` or `.
 ## Advanced — explicit `@app.command` / FileUpload
 
 Lower to `FileUpload`, `Form(enctype="multipart/form-data")`, and `@app.command` when
-ejecting. See [What’s new in 0.58](../guides/whats-new-0.58.md).
+ejecting. See [What’s new in 0.59](../guides/whats-new-0.59.md).
 
 Source: [`examples/file-upload`](https://github.com/eddiethedean/hedron/tree/main/examples/file-upload).

@@ -6,15 +6,13 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.58 **Published** in-tree as `v0.58.1`; PyPI serves `0.58.0`.
-Living tip = in-tree `v0.58.1` (`registry_status = "deferred"`).
-**Next planned phase:** 0.59 modern CSS platform and intuitive built-in styling (D-106 / D-107 /
-RFC-0087). Stage 0 is contract-refined; Stage 1 is blocked on probes and Hedron tracking-issue mirrors; no 0.59
-runtime or release claim exists.
+**Roadmap position:** phase 0.59 **Engineering implementation** in-tree as `v0.59.0`; public
+registry publication remains deferred. The 23-gate evidence packet is active, with implemented
+scope and remaining full-contract gaps recorded in `docs/acceptance/evidence-059/`.
 **Date:** 2026-08-22
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.58.1`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.59.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /

@@ -8,7 +8,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_mcp",
     version="0.2.1",
     distribution="hedron-mcp",
-    hedron_version=">=0.58,<0.59",
+    hedron_version=">=0.59,<0.60",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,

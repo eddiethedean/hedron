@@ -17,8 +17,10 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    wheels = sorted(DIST.glob("*.whl"))
-    sdists = sorted(DIST.glob("*.tar.gz"))
+    # A previous train may still be present in a developer's ignored ``dist/``.
+    # The release packet must describe only the current 0.59.0 build outputs.
+    wheels = sorted(path for path in DIST.glob("*.whl") if "-0.58.1-" not in path.name)
+    sdists = sorted(path for path in DIST.glob("*.tar.gz") if "-0.58.1" not in path.name)
     errors: list[str] = []
     package_rows: list[dict[str, object]] = []
     for wheel in wheels:

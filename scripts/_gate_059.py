@@ -48,52 +48,90 @@ EXPECTED_GATES = (
 
 GATE_TESTS: dict[str, tuple[str, ...]] = {
     "CONTRACT-059": ("tests/unit/test_phase059_foundation.py",),
-    "COMPILER-059": ("tests/unit/test_css.py",),
-    "CASCADE-059": ("tests/unit/test_theme_assets_build.py",),
-    "TOKENS-059": ("tests/unit/test_scope_058.py",),
-    "COLOR-059": ("tests/unit/test_scope_058.py", "tests/unit/test_brand_058.py"),
+    "COMPILER-059": ("tests/unit/test_css.py", "tests/unit/test_phase059_contract_matrix.py"),
+    "CASCADE-059": (
+        "tests/unit/test_theme_assets_build.py",
+        "tests/unit/test_phase059_contract_matrix.py",
+    ),
+    "TOKENS-059": ("tests/unit/test_scope_058.py", "tests/unit/test_phase059_contract_matrix.py"),
+    "COLOR-059": (
+        "tests/unit/test_scope_058.py",
+        "tests/unit/test_brand_058.py",
+        "tests/unit/test_phase059_contract_matrix.py",
+    ),
     "CONTAINER-059": (
         "tests/unit/test_phase059_foundation.py",
         "tests/unit/test_layout_055.py",
+        "tests/unit/test_phase059_contract_matrix.py",
         "tests/browser/test_phase059_browser.py",
     ),
     "LAYOUT-059": (
         "tests/unit/test_layout_055.py",
         "tests/unit/test_layout_057.py",
+        "tests/unit/test_phase059_contract_matrix.py",
         "tests/browser/test_phase059_browser.py",
     ),
-    "TYPE-059": ("tests/unit/test_theme_assets_build.py", "tests/browser/test_phase059_browser.py"),
+    "TYPE-059": (
+        "tests/unit/test_theme_assets_build.py",
+        "tests/unit/test_phase059_contract_matrix.py",
+        "tests/browser/test_phase059_browser.py",
+    ),
     "CONTROL-059": (
         "tests/unit/test_phase059_foundation.py",
         "tests/unit/test_phase15_controls.py",
+        "tests/unit/test_phase059_contract_matrix.py",
         "tests/browser/test_phase059_browser.py",
     ),
-    "CHROME-059": ("tests/unit/test_phase15_controls.py", "tests/browser/test_phase059_browser.py"),
+    "CHROME-059": (
+        "tests/unit/test_phase15_controls.py",
+        "tests/unit/test_phase059_contract_matrix.py",
+        "tests/browser/test_phase059_browser.py",
+    ),
     "WORKFLOW-059": (
         "tests/unit/test_workflow_057.py",
         "tests/unit/test_workflow_053.py",
+        "tests/unit/test_phase059_contract_matrix.py",
         "tests/browser/test_phase059_browser.py",
     ),
     "OVERLAY-059": (
         "tests/unit/test_phase059_foundation.py",
         "tests/unit/test_dialog.py",
+        "tests/unit/test_phase059_contract_matrix.py",
         "tests/browser/test_phase059_browser.py",
     ),
     "MOTION-059": (
         "tests/unit/test_charts_038_visual.py",
         "tests/unit/test_theme_assets_build.py",
+        "tests/unit/test_phase059_contract_matrix.py",
         "tests/browser/test_phase059_browser.py",
     ),
-    "MEDIA-059": ("tests/unit/test_charts_038_visual.py", "tests/browser/test_phase059_browser.py"),
+    "MEDIA-059": (
+        "tests/unit/test_charts_038_visual.py",
+        "tests/unit/test_phase059_contract_matrix.py",
+        "tests/browser/test_phase059_browser.py",
+    ),
     "A11Y-059": (
         "tests/unit/test_phase18_presentation.py",
+        "tests/unit/test_phase059_contract_matrix.py",
         "tests/browser/test_phase059_browser.py",
     ),
     "DX-059": ("tests/unit/test_docs_cli_snippets.py",),
-    "VISUAL-059": ("tests/unit/test_visual_058.py", "tests/browser/test_phase059_browser.py"),
+    "VISUAL-059": (
+        "tests/unit/test_visual_058.py",
+        "tests/unit/test_phase059_contract_matrix.py",
+        "tests/browser/test_phase059_browser.py",
+    ),
     "PERF-059": ("tests/unit/test_theme_assets_build.py",),
-    "SECURITY-059": ("tests/unit/test_security_058.py", "tests/unit/test_css.py"),
-    "COMPAT-059": ("tests/unit/test_css.py", "tests/unit/test_regress_058.py"),
+    "SECURITY-059": (
+        "tests/unit/test_security_058.py",
+        "tests/unit/test_css.py",
+        "tests/unit/test_phase059_contract_matrix.py",
+    ),
+    "COMPAT-059": (
+        "tests/unit/test_css.py",
+        "tests/unit/test_regress_058.py",
+        "tests/unit/test_phase059_contract_matrix.py",
+    ),
     "CONSUMER-059": ("tests/unit/test_pkg_058.py",),
     "REGRESS-059": ("tests/unit/test_regress_058.py",),
     "PKG-059": ("tests/unit/test_pkg_058.py",),
@@ -152,9 +190,7 @@ def _validate_packet(gate_id: str) -> list[str]:
                 if isinstance(row, dict)
             }
             report_states = {
-                row.get("id"): row.get("state")
-                for row in rows
-                if isinstance(row, dict)
+                row.get("id"): row.get("state") for row in rows if isinstance(row, dict)
             }
             if report_states != manifest_states:
                 errors.append("23-gate execution report states do not match release-gate manifest")
