@@ -1,14 +1,14 @@
-# Phase 0.60 whole-fleet inventory (Engineering implementation; registry publication deferred).
+# Phase 0.60 whole-fleet inventory (published release evidence).
 # Machine-checked by check_package_docs_inventory / living train 0.60.
 # disposition: production_grade | incubator | fixture | eol
 
 baseline = "v0.58.1"
-state = "engineering"
+state = "published"
 hedron_cut = "v0.60.0"
 charts_cut = "0.2.0"
 extends = "docs/acceptance/production-grade-inventory-058.toml"
 tracking = "phase-0.60"
-registry_status = "deferred"
+registry_status = "uploaded"
 
 packages = [
   "hedron",

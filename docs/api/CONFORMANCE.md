@@ -5,7 +5,7 @@ Package: [`hedron-conformance`](https://pypi.org/project/hedron-conformance/).
 **Phase 0.52 authority contract:** D-089 / D-090 /
 [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
 [#522](https://github.com/eddiethedean/hedron/issues/522). Introduced in
-`v0.52.0`; the current package train is `0.60.x` (`v0.60.0` in-tree; PyPI `v0.59.0` until upload).
+`v0.52.0`; the current package train is `0.60.x` (`v0.60.0` in-tree and on PyPI).
 Workstream A Stage 1 extends the portable-subset authority; it does
 **not** replace `CONTRACT_VERSION` / `hedron-portable-1` without negotiation.
 

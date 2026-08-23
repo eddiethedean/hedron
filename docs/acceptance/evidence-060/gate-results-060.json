@@ -14,8 +14,8 @@
   "target": "v0.60.0",
   "execution": {
     "focused_unit_tests": "15 passed (ThemeSpec, release packet, and Explorer Theme Lab)",
-    "hosted_ci_run": "https://github.com/eddiethedean/hedron/actions/runs/32669354821",
-    "hosted_ci_commit": "11f8b879",
+    "hosted_ci_run": "https://github.com/eddiethedean/hedron/actions/runs/32669664770",
+    "hosted_ci_commit": "e2852ec7",
     "browser_matrix": ["Chromium", "Firefox", "WebKit"],
     "python_matrix": ["3.11", "3.12", "3.13", "3.14"],
     "package_rehearsal": "PKG-033 passed in hosted CI",

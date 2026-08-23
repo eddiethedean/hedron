@@ -1,8 +1,7 @@
 # Upgrade to Hedron 0.60
 
-This guide covers an application upgrade onto the **0.60.x** engineering train
-(`v0.60.0` in-tree; PyPI `v0.59.0` until upload). Pin `hedron>=0.60.0,<0.61`
-when the 0.60 package is available from the configured registry.
+This guide covers an application upgrade onto the published **0.60.x** train
+(`v0.60.0` in-tree and on PyPI). Pin `hedron>=0.60.0,<0.61`.
 Public-index notes: [Installation](../getting-started/installation.md). New applications
 should use [Build your first app](../getting-started/quickstart.md).
 
@@ -18,8 +17,7 @@ Checkout tip `v0.60.0` uses `uv sync`. See [What's new in 0.60](whats-new-0.60.m
    for existing pages.
 4. Replace app-owned button sizing/forwarding selectors with `Button` / `LinkButton` `size`,
    `width`, and validated `attrs`.
-5. Run the compiler, browser, consumer, performance, and package evidence commands before the
-   public release cut.
+5. Run the compiler, browser, consumer, performance, and package checks after the upgrade.
 
 ## 0.57 → 0.58
 
@@ -59,9 +57,8 @@ Checkout tip `v0.60.0` uses `uv sync`. From PyPI, install
 
 ## 0.52 → 0.53
 
-Checkout tip `v0.60.0` uses the in-tree floor `>=0.60.0,<0.61`; the Git tag/PyPI upload
-is deferred. From PyPI, keep
-`hedron>=0.60.0,<0.61` (the latest public PyPI release). See
+The published `v0.60.0` train supersedes the older 0.52/0.53 pins. Keep
+`hedron>=0.60.0,<0.61`. See
 [What's new in 0.53](whats-new-0.53.md) and
 [Application DX API](../api/APPLICATION_DX.md).
 
@@ -72,11 +69,11 @@ is deferred. From PyPI, keep
    `is_terminal_job_state`, `generate_interaction_tests`, `run_visual_conformance`,
    `discover_public_api`, `diagnose_installed_fleet`) over ad-hoc forks of the
    shipped 0.52 seams.
-2. **0.52 conformance and Posit contracts remain.** No rollback required for apps
-   that stay on the PyPI `0.52.x` pin until the deferred 0.53 upload lands.
+2. **0.52 conformance and Posit contracts remain.** No rollback is required for apps
+   upgrading from those historical pins.
 
 ```bash
-# From PyPI until 0.53 uploads:
+# From the published PyPI train:
 python -m pip install -U "hedron>=0.60.0,<0.61"
 # In-tree / source checkout tip:
 # python -m pip install -U "hedron>=0.60.0,<0.61"

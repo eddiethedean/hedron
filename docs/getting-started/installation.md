@@ -16,8 +16,8 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-The latest published PyPI release is **`0.59.0`**; the repository checkout is **`0.60.0`**.
-The `v0.60.0` Git tag and PyPI upload remain deferred until the final release cut.
+The latest published PyPI release and repository checkout are **`0.60.0`**.
+The `v0.60.0` Git tag and PyPI publication are complete.
 Application commands on this page use the published pin; contributors working in this
 checkout should use `uv sync`.
 
@@ -130,7 +130,7 @@ Then create `app.py` from the complete listing on
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.59.0`** when installed from PyPI; source checkouts report `0.60.0`.
+Expect **`0.60.0`** when installed from PyPI or from the source checkout.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).

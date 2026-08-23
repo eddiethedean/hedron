@@ -5,8 +5,8 @@ details remain in the [package changelogs](changelog.md).
 
 ## 0.60.0 — 2026-08-22
 
-Verified in-tree release for the 0.60 train. PyPI publication is deferred; the latest public
-install remains `hedron>=0.60.0,<0.61`.
+Verified and published release for the 0.60 train. The latest public install is
+`hedron>=0.60.0,<0.61`.
 
 ### Custom theme platform
 

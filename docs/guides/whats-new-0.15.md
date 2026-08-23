@@ -17,7 +17,7 @@ browser context, and scenario testing — without Streamlit-style whole-script r
 
 !!! note "Historical phase"
 
-    This page describes **0.15**. The current repository train is **0.60.x** (`v0.60.0` in-tree; PyPI `v0.59.0` until upload) —
+    This page describes **0.15**. The current repository train is **0.60.x** (`v0.60.0` in-tree and on PyPI) —
     see [What’s new in 0.28](whats-new-0.28.md) and the [upgrade guide](upgrade.md).
 
 Pin `hedron>=0.15.0,<0.16` when staying on the 0.15 line.

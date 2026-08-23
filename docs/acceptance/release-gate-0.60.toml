@@ -15,7 +15,7 @@ compatibility = "theme-platform-compatibility-060.toml"
 upgrade_fixture = "upgrade-fixtures-060.md"
 stage_1_entry_satisfied = true
 evidence_report = "evidence-060/gate-results-060.json"
-release_commit = "11f8b879"
+release_commit = "e2852ec7"
 zero_deferred_at_cut = true
 
 [[evidence]]

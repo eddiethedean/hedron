@@ -65,7 +65,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
 | Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.60.0`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
-| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (in-tree tip `v0.60.0`; PyPI `v0.59.0` until upload) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
+| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (in-tree tip and PyPI release `v0.60.0`) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
 | Progressive screens (`Hedron.screen`) | **Supported** on FastAPI (API `beta`; tip `v0.60.0`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | Typed form commands (`form_command`) | **Supported** on FastAPI (API `beta`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | DataWorkspace screens (`with_screen`) | **Supported** on FastAPI + `hedron[data]` (API `beta`) | [DATA.md](../api/DATA.md) · [What’s new in 0.58](whats-new-0.58.md) |

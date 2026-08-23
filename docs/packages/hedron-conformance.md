@@ -2,7 +2,7 @@
 
 Language-neutral Hedron conformance-test kit and capability runner.
 
-**Package maturity:** Beta · **Train:** `0.60.x` (`v0.60.0` in-tree; PyPI `v0.59.0` until upload) · pin `>=0.60.0,<0.61`
+**Package maturity:** Beta · **Train:** `0.60.x` (`v0.60.0` in-tree and on PyPI) · pin `>=0.60.0,<0.61`
 
 **Flagship extra:** `hedron[conformance]` · **Import:** `hedron_conformance`
 

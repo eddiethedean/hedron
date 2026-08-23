@@ -68,8 +68,8 @@ status commentary, not a satisfied release gate.
   gates; predecessor `v0.57.0` Published/Verified in-tree)
 - [`v0.59` modern CSS platform and intuitive built-in styling](RELEASE_0_59.md) — **Published**
   as `v0.59.0` on PyPI (D-106 / D-107 / RFC-0087)
-- [`v0.60` custom theme platform and styling completion](RELEASE_0_60.md) — **Implemented and verified in-tree**
-  (D-108 / RFC-0089; 27 gates Verified; PyPI publication deferred; owns Hedron #627–#635)
+- [`v0.60` custom theme platform and styling completion](RELEASE_0_60.md) — **Implemented, verified,
+  tagged, and published** as `v0.60.0` (D-108 / RFC-0089; 27 gates Verified; owns Hedron #627–#635)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

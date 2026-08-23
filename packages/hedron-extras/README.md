@@ -12,7 +12,7 @@ a second component runtime. Install as `hedron-extras` or via `hedron[extras]`.
 Absent extras add no core import, browser asset, startup, or transitive
 dependency cost.
 
-**Package maturity:** Beta · **Train:** `0.60.x` (published `v0.60.0` in-tree; PyPI `v0.59.0` until upload) · application pin `>=0.60.0,<0.61`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Train:** `0.60.x` (published `v0.60.0` in-tree and on PyPI) · application pin `>=0.60.0,<0.61`; repository checkouts use `uv sync`
 
 `CodeEditor`, `TerminalView`, and joystick/device bridges require the separate
 **`hedron[experimental-ui]`** opt-in (import `hedron_extras.experimental`) and are not

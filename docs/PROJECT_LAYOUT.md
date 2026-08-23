@@ -106,8 +106,8 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated repository train tip is **`v0.60.0`**, and PyPI serves
-**0.59.0** (`registry_status = deferred` for the in-tree 0.60.0 train) — see [STATUS](STATUS.md).
+**Publish note:** the coordinated repository train tip and PyPI release are **`v0.60.0`**
+(`registry_status = uploaded`) — see [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
 

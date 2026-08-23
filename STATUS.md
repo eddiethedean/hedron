@@ -8,11 +8,11 @@
 
 **Roadmap position:** phase 0.60 **Published** as `v0.60.0` on PyPI. The 27-gate evidence
 packet is active, with implemented
-scope and remaining full-contract gaps recorded in `docs/acceptance/evidence-059/`.
+scope and release evidence recorded in `docs/acceptance/evidence-060/`.
 **Date:** 2026-08-22
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.59.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.60.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
@@ -85,7 +85,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `ARTIFACT-021` | Redacted ledger + statement update | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `*-059` | Modern CSS platform and intuitive built-in styling | **Verified/Published** (0.59) | D-106 / D-107 / RFC-0087; `v0.59.0` |
-| `*-060` | Custom theme platform and styling completion | **In progress / Planned gates** (0.60) | Proposed D-108 / RFC-0089; additive runtime slice; owns #627–#635 |
+| `*-060` | Custom theme platform and styling completion | **Verified/Published** (0.60) | D-108 / RFC-0089; `v0.60.0`; owns #627–#635 |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
 | `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |
@@ -125,27 +125,22 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `MORPH-048` | Idiomorph / morph swap | **Deferred** (0.48) | Not vendored; keep innerHTML/outerHTML; later train, not 0.49 |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | **Not** re-homed to 0.24; stays on `0.10.x` |
 
-## Phase 0.59 planning (not implemented)
+## Phase 0.60 evidence
 
-- Ownership: [RFC-0087](docs/rfcs/RFC-0087-MODERN-CSS-PLATFORM.md) / D-106.
-- Plan: [MODERN_CSS_059](docs/implementation/MODERN_CSS_059.md) ·
-  [RELEASE_0_59](docs/acceptance/RELEASE_0_59.md).
-- Locks: [modern-css-inventory-059.toml](docs/acceptance/modern-css-inventory-059.toml) ·
-  [modern-css-tracking-059.toml](docs/acceptance/modern-css-tracking-059.toml) ·
-  [modern-css-compatibility-059.toml](docs/acceptance/modern-css-compatibility-059.toml) ·
-  [upgrade-fixtures-059.md](docs/acceptance/upgrade-fixtures-059.md).
-- Gate index: [release-gate-0.59.toml](docs/acceptance/release-gate-0.59.toml)
-  (all 23 rows **Planned**; zero release evidence claimed).
-- Open styling inputs: Hedron-local set empty as of 2026-08-22; required consumer inputs are
-  [user-token-management-app #4](https://github.com/eddiethedean/user-token-management-app/issues/4),
-  [#5](https://github.com/eddiethedean/user-token-management-app/issues/5),
-  [#6](https://github.com/eddiethedean/user-token-management-app/issues/6), and
-  [#7](https://github.com/eddiethedean/user-token-management-app/issues/7).
-- Unrelated/open dependencies: Hedron [#86](https://github.com/eddiethedean/hedron/issues/86)
-  continues to limit human-AT claims; [#192](https://github.com/eddiethedean/hedron/issues/192)
-  remains an unrelated chart bug.
-- Stage 1 blockers: parser/browser/recipe probes, Hedron umbrella/workstream issue mirrors,
-  consumer backlinks, and refreshed live issue audit.
+- Ownership: [RFC-0089](docs/rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md) / D-108.
+- Plan: [THEME_PLATFORM_060](docs/implementation/THEME_PLATFORM_060.md) ·
+  [EXECUTION_0_60](docs/implementation/EXECUTION_0_60.md) · [RELEASE_0_60](docs/acceptance/RELEASE_0_60.md).
+- Locks: [theme-platform-contract-060.toml](docs/acceptance/theme-platform-contract-060.toml) ·
+  [theme-platform-inventory-060.toml](docs/acceptance/theme-platform-inventory-060.toml) ·
+  [theme-platform-tracking-060.toml](docs/acceptance/theme-platform-tracking-060.toml) ·
+  [theme-platform-compatibility-060.toml](docs/acceptance/theme-platform-compatibility-060.toml) ·
+  [upgrade-fixtures-060.md](docs/acceptance/upgrade-fixtures-060.md).
+- Gate index: [release-gate-0.60.toml](docs/acceptance/release-gate-0.60.toml)
+  (all 27 rows **Verified**; zero Deferred).
+- Release evidence: [gate-results-060.json](docs/acceptance/evidence-060/gate-results-060.json),
+  tag `v0.60.0`, GitHub Release, and PyPI publication completed.
+- Human AT remains bounded by the open [#86](https://github.com/eddiethedean/hedron/issues/86);
+  this does not change the verified protocol and browser evidence for the 0.60 product claims.
 
 ## Phase 0.58 evidence
 
@@ -159,7 +154,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - What’s new: [guides/whats-new-0.58.md](docs/guides/whats-new-0.58.md).
 - Checker: `python scripts/check_release_gate.py 0.58.1`,
   `python scripts/verify_pkg_58.py`.
-- Registry: PyPI serves `v0.60.0` (`registry_status = "uploaded"`).
+- Historical registry note: the 0.58 packet predates the current 0.60.0 public release.
 
 ## Phase 0.24 evidence
 

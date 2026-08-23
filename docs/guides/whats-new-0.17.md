@@ -8,7 +8,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.17**. The current repository train is **0.60.x** (`v0.60.0` in-tree; PyPI `v0.59.0` until upload). Pin `hedron>=0.60.0,<0.61` from PyPI.
+    This page describes **0.17**. The current repository train is **0.60.x** (`v0.60.0` in-tree and on PyPI). Pin `hedron>=0.60.0,<0.61` from PyPI.
 
 Phase **0.17** adds reactive dashboards and agent interfaces — finite interaction graphs,
 bounded patches, optional notebook preview and deny-by-default MCP — plus HTMX shell authoring

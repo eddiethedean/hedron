@@ -36,8 +36,8 @@ from the workspace.
 | Know security support window | Current train `0.60.x` — [SECURITY.md](../SECURITY.md) |
 | Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |
 
-The `0.60.0` release is represented by the verified repository checkout. PyPI publication is
-deferred; `registry_status = "deferred"` in [`docs/release.toml`](../release.toml).
+The `0.60.0` release is represented by the verified repository checkout and is available from
+PyPI; `registry_status = "uploaded"` in [`docs/release.toml`](../release.toml).
 
 ## What should I install?
 

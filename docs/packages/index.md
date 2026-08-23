@@ -63,7 +63,7 @@ deny-by-default, and Gradio allows only declared remote destinations.
 
 ```bash
 pip install "hedron[charts]>=0.60.0,<0.61"
-pip install "hedron-sample-kit>=0.2.0,<0.3" "hedron-sim>=0.1.0,<0.2"
+pip install "hedron-sample-kit>=0.2.0,<0.3" "hedron-sim>=0.2.0,<0.3"
 ```
 
 Checkout tip is `v0.60.0`; applications install `>=0.60.0,<0.61` from PyPI.
