@@ -13,16 +13,16 @@ features, settings, and interaction simulation — plus sanitized JSON APIs
 (`/api/diff`, `/api/package-health`) with rate limiting and audit hooks. Installed
 through `hedron[dev]`; **not required** in production.
 
-**Package maturity:** Beta · **Train:** `0.60.x` (published `v0.60.0` in-tree; PyPI `v0.59.0` until upload) · application pin `>=0.59.0,<0.60`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Train:** `0.60.x` (published `v0.60.0` in-tree; PyPI `v0.59.0` until upload) · application pin `>=0.60.0,<0.61`; repository checkouts use `uv sync`
 
 ## Install
 
 ```bash
-pip install "hedron[dev]>=0.59.0,<0.60"
+pip install "hedron[dev]>=0.60.0,<0.61"
 # or install the package directly:
-pip install "hedron-explorer>=0.59.0,<0.60"
+pip install "hedron-explorer>=0.60.0,<0.61"
 # or
-uv add "hedron[dev]>=0.59.0,<0.60"
+uv add "hedron[dev]>=0.60.0,<0.61"
 ```
 
 Requires Python 3.11–3.14 and [`hedron`](https://pypi.org/project/hedron/).

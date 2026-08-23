@@ -5,7 +5,7 @@ Server-side notebook preview helper for Hedron.
 **Package maturity:** Beta (tooling-grade; localhost-only) (`0.1.x`) · pin `>=0.1.0,<0.2`  
 **Flagship extra:** `hedron[notebook]` · **Import:** `hedron_notebook`  
 Living Hedron train `0.60.x` (checkout tip `v0.60.0`; flagship extra install from PyPI
-stays `>=0.59.0,<0.60` ). **Not** a Supported production server. The
+stays `>=0.60.0,<0.61` ). **Not** a Supported production server. The
 Supported preview API is **localhost-only**.
 
 Distinct from the browser-Python / JupyterLite sandbox in
@@ -14,7 +14,7 @@ Distinct from the browser-Python / JupyterLite sandbox in
 ## Install
 
 ```bash
-pip install "hedron[notebook]>=0.59.0,<0.60"
+pip install "hedron[notebook]>=0.60.0,<0.61"
 # or
 pip install "hedron-notebook>=0.1.0,<0.2"
 ```

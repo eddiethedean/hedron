@@ -10,7 +10,7 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 |---|---|
 | In-tree | **v0.60.0** (`hedron` / coordinated Beta train packages `0.60.0`) |
 | PyPI latest | **v0.59.0** (`hedron`; the 0.60 upload is deferred) |
-| Pin (PyPI) | `hedron>=0.59.0,<0.60` |
+| Pin (PyPI) | `hedron>=0.60.0,<0.61` |
 | Charts satellite | `hedron-charts>=0.2.0,<0.3` |
 | Gate checker | `python scripts/check_release_gate.py 0.60.0` |
 | Packet verify | `python scripts/verify_pkg_59.py` |

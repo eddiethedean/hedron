@@ -8,7 +8,7 @@ Participants finish with a migrated sales dashboard that has typed URL filters, 
 server-rendered component tree, an allowlisted HTMX fragment, HTTP-level tests, and one
 application object that adapts to local, Workbench, and Connect environments.
 
-This workshop targets Hedron **0.50.x** (`hedron>=0.59.0,<0.60`) and Python **3.11–3.14**. Before scheduling it,
+This workshop targets Hedron **0.50.x** (`hedron>=0.60.0,<0.61`) and Python **3.11–3.14**. Before scheduling it,
 check the current [capability matrix](whats-ready.md) and [compatibility guide](../COMPATIBILITY.md)
 against your Posit versions and internal package mirror.
 
@@ -61,7 +61,7 @@ explicit response. See [Should you migrate?](streamlit-migration.md#should-you-m
 Complete this checklist several days before the session.
 
 - Verify Python 3.11–3.14 and `uv` are available in every participant environment.
-- Confirm that the environment can install `hedron>=0.59.0,<0.60` and optional packages
+- Confirm that the environment can install `hedron>=0.60.0,<0.61` and optional packages
   from PyPI or your approved internal package index.
 - On Workbench, verify that `RS_SERVER_URL` is present and `rserver-url` is executable.
 - Run the complete workshop once from the same Workbench IDE participants will use.
@@ -90,7 +90,7 @@ Send participants these commands before the workshop:
 ```bash
 python3 --version
 uv --version
-uvx --from "hedron>=0.59.0,<0.60" hedron --version
+uvx --from "hedron>=0.60.0,<0.61" hedron --version
 ```
 
 Expected results:
@@ -166,7 +166,7 @@ mkdir hedron-training
 cd hedron-training
 python3 --version
 uv --version
-uvx --from "hedron>=0.59.0,<0.60" hedron --version
+uvx --from "hedron>=0.60.0,<0.61" hedron --version
 ```
 
 On Workbench, also run:
@@ -191,7 +191,7 @@ the facilitator records the infrastructure issue.
 From `hedron-training/`:
 
 ```bash
-uvx --from "hedron>=0.59.0,<0.60" hedron new hello-hedron
+uvx --from "hedron>=0.60.0,<0.61" hedron new hello-hedron
 cd hello-hedron
 uv sync
 uv add "hedron[posit]>=0.60.0,<0.61"
@@ -314,7 +314,7 @@ You do not need to install Streamlit or pandas for the analyzer.
 From `hedron-training/`:
 
 ```bash
-uvx --from "hedron>=0.59.0,<0.60" hedron migrate streamlit \
+uvx --from "hedron>=0.60.0,<0.61" hedron migrate streamlit \
   streamlit-source/streamlit_app.py \
   --analyze-only \
   --format text
@@ -326,7 +326,7 @@ Ask which mappings are direct components and which require an architectural deci
 ### 3. Generate into a new directory
 
 ```bash
-uvx --from "hedron>=0.59.0,<0.60" hedron migrate streamlit \
+uvx --from "hedron>=0.60.0,<0.61" hedron migrate streamlit \
   streamlit-source/streamlit_app.py \
   --out sales-hedron
 cd sales-hedron

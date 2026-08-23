@@ -38,7 +38,7 @@ typed control attributes, logical overlay placement, print, and preference-aware
 Existing 0.58 classes, `data-hedron-*` markers, default theme behavior, viewport-responsive maps,
 and `default_styles=False` remain valid. New container behavior and theme variants are opt-in.
 Applications should review the [upgrade guide](upgrade.md) and pin the published train with
-`hedron>=0.59.0,<0.60`.
+`hedron>=0.60.0,<0.61`.
 
 The release packet remains truthful about evidence status in
 [release-gate-0.59.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.59.toml).

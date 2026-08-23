@@ -15,13 +15,13 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-Requires Python 3.11–3.14. Pin the published `hedron>=0.59.0,<0.60` release from PyPI.
-The in-tree `v0.60.0` cut is ready; the latest public PyPI release remains `v0.59.0`.
+Requires Python 3.11–3.14. Pin the published `hedron>=0.60.0,<0.61` release from PyPI.
+The in-tree `v0.60.0` cut is ready and is published on PyPI.
 The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash
-uvx --from "hedron>=0.59.0,<0.60" hedron new my-hedron-app
+uvx --from "hedron>=0.60.0,<0.61" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run uvicorn app:app --reload
@@ -113,16 +113,16 @@ Coming from Streamlit? Start with the
 
 ## Install
 
-The latest installable PyPI release is `hedron>=0.59.0,<0.60`. The repository checkout
-and the repository provides the `0.60.x` train; PyPI currently provides `0.59.0` while the upload is deferred. Use `uv sync` when working from a checkout.
+The latest installable PyPI release is `hedron>=0.60.0,<0.61`. The repository checkout
+and the repository provides the published `0.60.x` train. Use `uv sync` when working from a checkout.
 
 ```bash
-uv add "hedron>=0.59.0,<0.60" "uvicorn[standard]"
+uv add "hedron>=0.60.0,<0.61" "uvicorn[standard]"
 # or
-python -m pip install "hedron>=0.59.0,<0.60" "uvicorn[standard]"
+python -m pip install "hedron>=0.60.0,<0.61" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Repository train:** `0.60.x` · **Repository tip:** `0.60.0` · **Latest PyPI release:** `0.59.0` · **Application pin:** `>=0.59.0,<0.60`
+**Package maturity:** Beta · **Repository train:** `0.60.x` · **Repository tip:** `0.60.0` · **Latest PyPI release:** `0.60.0` · **Application pin:** `>=0.60.0,<0.61`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the
@@ -153,13 +153,13 @@ interactions, security profiles, and CLI. Integrations are optional:
 For example:
 
 ```bash
-uv add "hedron[data,dev]>=0.59.0,<0.60"
+uv add "hedron[data,dev]>=0.60.0,<0.61"
 ```
 
 Charts require the fixed compatible floor:
 
 ```bash
-uv add "hedron[charts]>=0.59.0,<0.60"
+uv add "hedron[charts]>=0.60.0,<0.61"
 ```
 
 See the full

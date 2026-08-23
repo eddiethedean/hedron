@@ -60,7 +60,7 @@ Hedron can inventory a Streamlit entrypoint or project without importing or exec
 Start with analysis so you can see the migration surface before writing Hedron code:
 
 ```bash
-uvx --from "hedron>=0.59.0,<0.60" hedron migrate streamlit \
+uvx --from "hedron>=0.60.0,<0.61" hedron migrate streamlit \
   streamlit_app.py \
   --analyze-only \
   --format text
@@ -91,7 +91,7 @@ evidence.
 When the inventory is useful, generate into a new or empty directory:
 
 ```bash
-uvx --from "hedron>=0.59.0,<0.60" hedron migrate streamlit \
+uvx --from "hedron>=0.60.0,<0.61" hedron migrate streamlit \
   streamlit_app.py \
   --out migrated-app
 ```
@@ -257,7 +257,7 @@ Before translating it, record three acceptance cases:
 Save the source as `streamlit_app.py`, then run:
 
 ```bash
-uvx --from "hedron>=0.59.0,<0.60" hedron migrate streamlit \
+uvx --from "hedron>=0.60.0,<0.61" hedron migrate streamlit \
   streamlit_app.py \
   --out sales-hedron
 cd sales-hedron

@@ -3,12 +3,12 @@
 
 !!! note "Current train is 0.60"
 
-    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; current PyPI pin `>=0.59.0,<0.60`). The pin below is historical for this train only.
+    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; current PyPI pin `>=0.60.0,<0.61`). The pin below is historical for this train only.
     See [What’s new in 0.51](whats-new-0.51.md).
 
 **Published as `v0.19.0`** (2026-08-07). Current published train is **0.60.x** (`v0.60.0`).
 Historical installs for this phase used a 0.19 upper-bound pin; the current pin is
-`hedron>=0.59.0,<0.60`.
+`hedron>=0.60.0,<0.61`.
 
 Phase 0.19 delivers accessibility engineering and inclusive authoring without automatic
 WCAG / legal / VPAT claims (D-050).

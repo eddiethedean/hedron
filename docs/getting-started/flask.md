@@ -19,7 +19,7 @@ blueprints and raw `hx-*` attributes, not FastAPI `status.refresh_button(...)`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.59.0,<0.60" hedron new my-flask-app --flask
+uvx --from "hedron>=0.60.0,<0.61" hedron new my-flask-app --flask
 cd my-flask-app && uv sync && uv run flask --app app run --port 8000
 ```
 

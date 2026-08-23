@@ -3,7 +3,7 @@
 **Status:** Implemented and verified in-tree; hosted release CI and coordinated publication remain
 release-cut activities
 **Authority:** RFC-0089 / proposed D-108 / `docs/acceptance/theme-platform-contract-060.toml`
-**Baseline:** Published/Verified in-tree and PyPI `v0.59.0`
+**Baseline:** Published/Verified predecessor `v0.59.0`
 **Target:** `v0.60.0`
 
 ## Delivery strategy

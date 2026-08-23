@@ -78,7 +78,7 @@ sessions are not Supported yet** — do not market human AT as done.
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `hedron>=0.59.0,<0.60`. The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.60.0,<0.61`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 ## Supported capabilities
@@ -195,7 +195,7 @@ is a runnable classifier. Live interaction sample:
 
 ## Recommended install extras
 
-Pin `hedron>=0.59.0,<0.60`. Public-index notes: [Installation](../getting-started/installation.md).
+Pin `hedron>=0.60.0,<0.61`. Public-index notes: [Installation](../getting-started/installation.md).
 
 Extras: `"hedron[data]>=0.60.0,<0.61"`, `"hedron[extras]>=0.60.0,<0.61"`,
 `"hedron[jinja]>=0.60.0,<0.61"`, `"hedron[dev]>=0.60.0,<0.61"`,

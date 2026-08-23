@@ -14,14 +14,14 @@ instead of repeating version numbers.
 | Channel | Version | Meaning |
 |---|---|---|
 | Repository checkout | `0.60.0` / `0.60.x` | Implemented and verified in-tree train |
-| PyPI | `0.59.0` / `0.59.x` | Latest installable release from the public package index |
+| PyPI | `0.60.0` / `0.60.x` | Latest installable release from the public package index |
 | Package maturity | Beta | Usable with pins; no SLA or scheduled 1.0 release |
 | Supported Python | 3.11–3.14 | CPython only |
 
 Application documentation uses the published PyPI pin:
 
 ```text
-hedron>=0.59.0,<0.60
+hedron>=0.60.0,<0.61
 ```
 
 Contributors working from a checkout should use `uv sync` so local packages resolve
@@ -31,7 +31,7 @@ from the workspace.
 
 | You want… | Do this |
 |---|---|
-| Build an application | Install from PyPI: `hedron>=0.59.0,<0.60` |
+| Build an application | Install from PyPI: `hedron>=0.60.0,<0.61` |
 | Contribute / hack on Hedron | Clone the repo and `uv sync` (editable workspace) |
 | Know security support window | Current train `0.60.x` — [SECURITY.md](../SECURITY.md) |
 | Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |

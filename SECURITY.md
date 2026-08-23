@@ -2,18 +2,18 @@
 
 ## Supported versions
 
-Security fixes land on the **current repository train** (`0.60.x`); PyPI publication of this train is deferred.
+Security fixes land on the **current published train** (`0.60.x`).
 Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
 minor (`0.59.x`) continues through approximately **2027-08-20** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The in-tree train tip is **`v0.60.0`**; the latest public PyPI release is **`v0.59.0`**. First-run pins use
-`>=0.59.0,<0.60`.
+The current train tip is **`v0.60.0`** on PyPI. First-run pins use
+`>=0.60.0,<0.61`.
 
 | Version | Supported |
 |---|---|
-| `0.60.x` | Yes (current repository train — public PyPI pin remains `>=0.59.0,<0.60`; upload deferred) |
+| `0.60.x` | Yes (current published train — pin `>=0.60.0,<0.61`; published `v0.60.0`) |
 | `0.59.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.60.x` |
 | `0.56.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.60.x` |
 | `0.55.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |

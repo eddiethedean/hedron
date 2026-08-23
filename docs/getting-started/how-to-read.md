@@ -41,7 +41,7 @@ The current in-tree train is **0.60.x** (`v0.60.0`); the latest public PyPI rele
 Install from PyPI:
 
 ```bash
-python -m pip install "hedron>=0.59.0,<0.60"
+python -m pip install "hedron>=0.60.0,<0.61"
 ```
 
 Pins: [Installation](installation.md).

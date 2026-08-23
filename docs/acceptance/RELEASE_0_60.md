@@ -1,7 +1,7 @@
 # Phase 0.60 acceptance plan — custom theme platform and styling completion
 
-**State:** Implemented and verified in-tree as `v0.60.0`; PyPI publication remains deferred
-**Baseline:** Published/Verified in-tree and PyPI `v0.59.0`
+**State:** Implemented, verified, tagged, and published as `v0.60.0`
+**Baseline:** Published/Verified predecessor `v0.59.0`
 **Target:** `v0.60.0`
 **Authority:** RFC-0089 / D-108 / `theme-platform-*-060.toml`
 

@@ -98,9 +98,9 @@ Choose a private project location approved by your organization. The following u
 ```bash
 mkdir -p ~/projects
 cd ~/projects
-uvx --from "hedron>=0.59.0,<0.60" hedron new my-workbench-app
+uvx --from "hedron>=0.60.0,<0.61" hedron new my-workbench-app
 cd my-workbench-app
-uv add "hedron-posit>=0.59.0,<0.60"
+uv add "hedron-posit>=0.60.0,<0.61"
 ```
 
 These commands create the project, make its isolated `.venv`, install the declared dependencies,
@@ -302,7 +302,7 @@ mkdir -p ~/projects/my-workbench-app
 cd ~/projects/my-workbench-app
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install "hedron>=0.59.0,<0.60" "hedron-posit>=0.60.0,<0.61" "uvicorn[standard]>=0.30"
+python -m pip install "hedron>=0.60.0,<0.61" "hedron-posit>=0.60.0,<0.61" "uvicorn[standard]>=0.30"
 python -m hedron new my-workbench-app --path .
 ```
 

@@ -1,8 +1,7 @@
 # Cutting a Hedron release
 
 This is the maintainer runbook for the published `0.60.x` train. Historical cut records
-live under `docs/archive/`. The verified repository release is `v0.60.0`; PyPI publication is
-deferred until the coordinated upload.
+live under `docs/archive/`. The verified repository release is `v0.60.0`, published on PyPI.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag.
@@ -18,8 +17,8 @@ Python metadata does not. Never move or replace a published tag.
 4. The repository and PyPI trusted-publishing configuration are controlled by active
    maintainers; the release uses the GitHub Actions workflow.
 5. The tag for the release being cut does not already exist locally or on the remote.
-6. After a successful upload, verify the PyPI artifact, trusted-publishing record, and
-   install smoke before changing `registry_status` or publishing release notes.
+6. After a successful upload, verify the PyPI artifact, trusted-publishing record, install
+   smoke, and `registry_status = "uploaded"` before publishing release notes.
 
 ## Local release candidate
 

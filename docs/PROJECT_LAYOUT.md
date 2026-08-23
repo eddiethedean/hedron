@@ -1,7 +1,7 @@
 # Project and package layout
 
-**Status:** Maintainer reference for the **0.60.x** repository train; the latest PyPI
-release is **0.59.0** and the verified repository tip is **0.60.0**.
+**Status:** Maintainer reference for the published **0.60.x** train; PyPI and the
+verified repository tip are **0.60.0**.
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package

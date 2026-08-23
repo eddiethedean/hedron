@@ -6,7 +6,7 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.59 **Published** as `v0.59.0` on PyPI. The 23-gate evidence
+**Roadmap position:** phase 0.60 **Published** as `v0.60.0` on PyPI. The 27-gate evidence
 packet is active, with implemented
 scope and remaining full-contract gaps recorded in `docs/acceptance/evidence-059/`.
 **Date:** 2026-08-22
@@ -26,9 +26,9 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
-**Phase focus:** Published train is **0.59** (D-106 / D-107 / RFC-0087). Phase **0.60** (accepted
+**Phase focus:** Published train is **0.60** (D-108 / RFC-0089). Phase **0.60** (accepted
 D-108 / RFC-0089) is implemented and verified in-tree as `v0.60.0`, with the 27-gate packet and
-executable browser/unit coverage for styling issues #627–#635; PyPI publication remains deferred and
+executable browser/unit coverage for styling issues #627–#635; PyPI publication is complete and
 human assistive-technology sign-off remains bounded by open #86. Prior
 Published in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
@@ -159,7 +159,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - What’s new: [guides/whats-new-0.58.md](docs/guides/whats-new-0.58.md).
 - Checker: `python scripts/check_release_gate.py 0.58.1`,
   `python scripts/verify_pkg_58.py`.
-- Registry: PyPI serves `v0.59.0` (`registry_status = "uploaded"`).
+- Registry: PyPI serves `v0.60.0` (`registry_status = "uploaded"`).
 
 ## Phase 0.24 evidence
 
