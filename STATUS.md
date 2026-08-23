@@ -26,10 +26,10 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
-**Phase focus:** Published train is **0.59** (D-106 / D-107 / RFC-0087). Phase **0.60** (proposed
-D-108 / RFC-0089) has an implemented custom-theme runtime/tooling slice and executable browser/unit
-coverage for styling issues #627–#635; release acceptance gates remain Planned pending the locked
-cross-engine, package, issue-closure, and human-review evidence, and no 0.60 release claim is made. Prior
+**Phase focus:** Published train is **0.59** (D-106 / D-107 / RFC-0087). Phase **0.60** (accepted
+D-108 / RFC-0089) is implemented and verified in-tree as `v0.60.0`, with the 27-gate packet and
+executable browser/unit coverage for styling issues #627–#635; PyPI publication remains deferred and
+human assistive-technology sign-off remains bounded by open #86. Prior
 Published in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).

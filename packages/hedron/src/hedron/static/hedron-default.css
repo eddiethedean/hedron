@@ -1038,6 +1038,8 @@
     box-shadow: var(--hedron-default-shadow-raised);
   }
   .hedron-toast-host { position: fixed; z-index: var(--hedron-layer-toast, 1000); display: grid; gap: var(--hedron-toast-gap, 0.5rem); inline-size: min(100% - 2rem, 28rem); max-block-size: calc(100svh - 2rem); overflow: auto; pointer-events: none; }
+  .hedron-toast-host[data-hedron-toast-position="sticky"] { position: sticky; }
+  .hedron-toast-host[data-hedron-toast-position="flow"] { position: static; max-block-size: none; }
   .hedron-toast-host > * { pointer-events: auto; }
   .hedron-toast-host[data-hedron-toast-placement="top-start"] { inset-block-start: 1rem; inset-inline-start: 1rem; }
   .hedron-toast-host[data-hedron-toast-placement="top-end"] { inset-block-start: 1rem; inset-inline-end: 1rem; }
@@ -3115,6 +3117,7 @@
   }
   .hedron-brand-copy { display: inline-grid; min-inline-size: 0; gap: 0.1rem; }
   .hedron-brand-subtitle { display: block; min-inline-size: 0; color: var(--hedron-default-muted, GrayText); font-size: 0.8em; }
+  .hedron-brand[data-hedron-brand-subtitle-overflow="break"] .hedron-brand-subtitle { overflow-wrap: anywhere; word-break: break-word; }
   .hedron-brand[data-hedron-brand-subtitle-overflow="truncate"] .hedron-brand-subtitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hedron-brand[data-hedron-brand-subtitle-overflow="clip"] .hedron-brand-subtitle { overflow: hidden; white-space: nowrap; }
   .hedron-brand-name,

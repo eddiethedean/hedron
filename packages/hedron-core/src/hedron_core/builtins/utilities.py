@@ -363,6 +363,7 @@ class Toast(Component[ToastProps]):
 
 class ToastHostProps(Props):
     placement: Literal["top-start", "top-end", "bottom-start", "bottom-end", "center"] = "top-end"
+    position: Literal["fixed", "sticky", "flow"] = "fixed"
     width: Literal["content", "field", "full"] = "content"
     max_width: Literal["sm", "md", "lg"] = "md"
     gap: Literal["xs", "sm", "md"] = "sm"
@@ -380,6 +381,7 @@ class ToastHost(Component[ToastHostProps]):
         placement: Literal[
             "top-start", "top-end", "bottom-start", "bottom-end", "center"
         ] = "top-end",
+        position: Literal["fixed", "sticky", "flow"] = "fixed",
         width: Literal["content", "field", "full"] = "content",
         max_width: Literal["sm", "md", "lg"] = "md",
         gap: Literal["xs", "sm", "md"] = "sm",
@@ -391,6 +393,7 @@ class ToastHost(Component[ToastHostProps]):
                 placement,
                 ("top-start", "top-end", "bottom-start", "bottom-end", "center"),
             ),
+            ("toast position", position, ("fixed", "sticky", "flow")),
             ("toast width", width, ("content", "field", "full")),
             ("toast max_width", max_width, ("sm", "md", "lg")),
             ("toast gap", gap, ("xs", "sm", "md")),
@@ -400,6 +403,7 @@ class ToastHost(Component[ToastHostProps]):
         super().__init__(
             ToastHostProps(
                 placement=placement,
+                position=position,
                 width=width,
                 max_width=max_width,
                 gap=gap,
@@ -416,6 +420,7 @@ class ToastHost(Component[ToastHostProps]):
             data={
                 "hedron-toast-host": "true",
                 "hedron-toast-placement": self.props.placement,
+                "hedron-toast-position": self.props.position,
                 "hedron-toast-width": self.props.width,
                 "hedron-toast-max-width": self.props.max_width,
                 "hedron-toast-gap": self.props.gap,

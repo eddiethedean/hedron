@@ -4,11 +4,11 @@ status: shipped
 
 # Beginner / stable facade inventory
 
-!!! note "Facade inventory from 0.23; living train is 0.59.x"
+!!! note "Facade inventory from 0.23; living train is 0.60.x"
 
     This inventory is the **FACADE-023** artifact. Symbols listed under
     [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) remain
-    compatibility-protected **`stable`** on the living **0.59** train. Pin
+    compatibility-protected **`stable`** on the living **0.60** train. Pin
     `uv sync` from a checkout. Application users should install
     `hedron>=0.59.0,<0.60` from PyPI.
 

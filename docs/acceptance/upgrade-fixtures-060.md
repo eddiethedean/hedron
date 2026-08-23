@@ -1,7 +1,7 @@
 # Phase 0.60 upgrade fixtures
 
 Run every fixture from both the PyPI `v0.59.0` environment and the tagged/in-tree `v0.59.0`
-baseline, then against the 0.60 candidate. Record Python API, rendered DOM, public markers, emitted
+baseline, then against the verified in-tree `v0.60.0` candidate. Record Python API, rendered DOM, public markers, emitted
 CSS, computed-style facts, validation reports, package manifests, diagnostics, and browser behavior.
 
 ## Existing behavior

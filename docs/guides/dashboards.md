@@ -1,18 +1,18 @@
 # Dashboards and interaction graphs
 
 Prefer **`DashboardWorkspace`** for typed filters, one request-bound loader, and named
-render-only panels (phase **0.59**). Phase **0.17** `DashboardBinding` /
+render-only panels (phase **0.60**). Phase **0.17** `DashboardBinding` /
 `InteractionGraph` remain available as Advanced linked-interaction primitives.
 
-Capability readiness is **Supported** on the living **0.59** train; API compatibility
-remains **`beta`** — pin `hedron>=0.59.0,<0.60` from PyPI (published tip `v0.59.0`).
+Capability readiness is **Supported** on the living **0.60** train; API compatibility
+remains **`beta`** — pin `hedron>=0.59.0,<0.60` from PyPI (in-tree tip `v0.60.0`; PyPI `v0.59.0` until upload).
 
 ## Start here
 
 | Need | Where |
 |---|---|
 | Progressive dashboard facade | This page (`DashboardWorkspace`) |
-| What shipped in 0.59 | [What's new in 0.59](whats-new-0.59.md) |
+| What shipped in 0.60 | [What's new in 0.60](whats-new-0.60.md) |
 | What shipped in 0.17 | [What's new in 0.17](whats-new-0.17.md) |
 | Dash callback mapping | [Dash migration](dash-migration.md) |
 | NiceGUI refreshable mapping | [NiceGUI migration](nicegui-migration.md) |
@@ -239,4 +239,4 @@ tenant isolation in your host app ([multi-tenant](multi-tenant.md)).
 ## Next
 
 - [Compose built-ins](component-composition.md) · [Data apps](data-apps.md) ·
-  [0.59 release notes](whats-new-0.59.md) · [0.17 dashboard notes](whats-new-0.17.md#upgrade-notes)
+  [0.60 release notes](whats-new-0.60.md) · [0.17 dashboard notes](whats-new-0.17.md#upgrade-notes)

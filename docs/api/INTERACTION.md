@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.59.x**)
+**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.60.x**)
 
 Day-to-day apps should start with [`@app.refreshable` / `@app.command`](../getting-started/interaction-apis.md).
 This page documents the explicit region / `InteractionResult` contracts those handles compile to.

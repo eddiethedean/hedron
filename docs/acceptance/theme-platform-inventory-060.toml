@@ -1,7 +1,8 @@
 schema_version = 1
 phase = "0.60"
-state = "draft"
+state = "verified"
 owning_rfc = "RFC-0089"
+decision = "D-108"
 
 [[capability]]
 id = "modern-color-input"

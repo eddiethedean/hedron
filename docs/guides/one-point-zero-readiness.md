@@ -1,6 +1,6 @@
 # Public 1.0 readiness (architectural review)
 
-**Status:** Maintainer assessment of the living **0.59.x** train against an honest
+**Status:** Maintainer assessment of the living **0.60.x** train against an honest
 public major. This is **not** a scheduled release plan.
 [D-038](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md)
 still removes any calendar `1.0` terminus until a superseding RFC is Accepted.

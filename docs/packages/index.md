@@ -15,7 +15,7 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 
 Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). `hedron-sim`
 and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` on the
-0.59 train.
+0.60 train.
 
 !!! note "Maturity"
 
@@ -32,7 +32,7 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 | [hedron-explorer](hedron-explorer.md) | `hedron[dev]` | Development Component Explorer |
 | [hedron-extras](hedron-extras.md) | `hedron[extras]` | Curated toolkit (specialty widgets may be Experimental/stub) |
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=0.2.0,<0.3` on the 0.59 train |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=0.2.0,<0.3` on the 0.60 train |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-workbench](hedron-workbench.md) | `hedron[workbench]` | Posit Workbench compatibility facade (`HedronWorkbench`) |
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
@@ -43,7 +43,7 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 pip install "hedron[data,dev,posit]>=0.59.0,<0.60"
 ```
 
-Checkout tip is `v0.59.0`; applications install `>=0.59.0,<0.60` from PyPI.
+Checkout tip is `v0.60.0`; applications install `>=0.59.0,<0.60` from PyPI.
 
 ## Tooling-grade and independent Beta lines
 
@@ -66,7 +66,7 @@ pip install "hedron[charts]>=0.59.0,<0.60"
 pip install "hedron-sample-kit>=0.2.0,<0.3" "hedron-sim>=0.1.0,<0.2"
 ```
 
-Checkout tip is `v0.59.0`; applications install `>=0.59.0,<0.60` from PyPI.
+Checkout tip is `v0.60.0`; applications install `>=0.59.0,<0.60` from PyPI.
 
 ## Authoring an extension
 

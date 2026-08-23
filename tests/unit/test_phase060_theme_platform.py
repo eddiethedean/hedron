@@ -55,12 +55,14 @@ def _valid_tokens() -> dict[str, str]:
 def test_absolute_modern_colors_have_deterministic_srgb_fallbacks() -> None:
     oklch = Color.parse("oklch(65% 0.18 275)")
     rgb = Color.parse("rgb(37 99 235)")
+    rgb_percent = Color.parse("rgb(50% 0% 100%)")
     lab = Color.parse("lab(65% 20 30)")
 
     assert oklch.space == "oklch"
     assert oklch.to_css(fallback=False).startswith("oklch(")
     assert oklch.to_hex().startswith("#")
     assert rgb.to_hex() == "#2563eb"
+    assert rgb_percent.to_hex() == "#8000ff"
     assert Color.rgb(37 / 255, 99 / 255, 235 / 255).to_hex() == "#2563eb"
     assert lab.coords[0] == 65.0
     with pytest.raises(ValueError, match="unsafe absolute color"):
@@ -79,6 +81,24 @@ def test_brand_accepts_absolute_color_and_records_provenance() -> None:
     assert design.inputs["accent_space"] == "oklch"
     assert design.inputs["accent_requested"].startswith("oklch(")
     assert design.to_theme().palette["brand.seed"].startswith("#")
+
+
+def test_theme_builder_supports_contract_authoring_ladder() -> None:
+    spec = (
+        ThemeBuilder("acme")
+        .brand(accent=Color.oklch(0.68, 0.18, 275))
+        .groups(density="comfortable", geometry="soft", typography="system-sans")
+        .tokens({"color.info": "#2563eb"})
+        .accessibility_mode("more-contrast", {"color.focus": "CanvasText"})
+        .recipe("button", {"appearance": "raised"})
+        .build_spec()
+    )
+
+    assert spec.groups["density"] == "comfortable"
+    assert spec.recipes["button"]["appearance"] == "raised"
+    assert spec.accessibility_modes["more-contrast"]["color.focus"] == "CanvasText"
+    assert spec.metadata["brand"]["space"] == "oklch"
+    assert ThemeSpec.from_dict(spec.to_dict()).fingerprint == spec.fingerprint
 
 
 def test_theme_spec_aliases_patches_and_accessibility_bridge_are_immutable() -> None:
@@ -153,15 +173,18 @@ def test_recipe_family_and_style_context_preserve_bounded_precedence() -> None:
 
 
 def test_phase060_components_emit_only_bounded_contract_markers() -> None:
-    brand = render(Brand("Hedron", subtitle="Framework", subtitle_overflow="wrap")).html
-    toast = render(ToastHost(placement="bottom-start", width="field", gap="md")).html
+    brand = render(Brand("Hedron", subtitle="Framework", subtitle_overflow="break")).html
+    toast = render(
+        ToastHost(placement="bottom-start", position="sticky", width="field", gap="md")
+    ).html
     flow = render(ConnectorFlow(background="dots", overflow="scroll", min_size="lg")).html
     scroll = render(
         ScrollRegion("log", axis="both", size="sm", affordance="always", label="Events")
     ).html
 
-    assert 'data-hedron-brand-subtitle-overflow="wrap"' in brand
+    assert 'data-hedron-brand-subtitle-overflow="break"' in brand
     assert 'data-hedron-toast-placement="bottom-start"' in toast
+    assert 'data-hedron-toast-position="sticky"' in toast
     assert 'data-hedron-connector-background="dots"' in flow
     assert 'data-hedron-scroll-axis="both"' in scroll
     assert 'role="region"' in scroll

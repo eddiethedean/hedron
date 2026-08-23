@@ -143,7 +143,8 @@ CURRENT_TRAIN_MENTION = re.compile(
 PYPI_VERSION_CLAIM = re.compile(
     r"(?:"
     r"(?<!\blast published\s)"
-    r"(?:\*\*published\*\*|\bpublished\s+as\b|\bon pypi\b|\bpypi\b)[^\n]{0,80}?[`'\"*]*v?(0\.\d+\.\d+)"
+    r"(?:\*\*published\*\*|\bpublished\s+as\b|\bon pypi\b|\bpypi\b)"
+    r"[^\n]{0,80}?[`'\"*]*v?(0\.\d+\.\d+)"
     r"|"
     r"[`'\"*]*v?(0\.\d+\.\d+)[^\n]{0,40}?\bon pypi\b"
     r")",
@@ -387,8 +388,7 @@ def check_text(
                 if constraint not in _allowed_install_pins(facts, path):
                     expected = " or ".join(sorted(_allowed_install_pins(facts, path)))
                     failures.append(
-                        f"{path}:{index}: current/living pin uses {constraint}; "
-                        f"expected {expected}"
+                        f"{path}:{index}: current/living pin uses {constraint}; expected {expected}"
                     )
 
         if MATURITY_COLLISION.search(line):
@@ -598,8 +598,7 @@ def check_tip_honesty(
                 value = match.group(1)
                 if value != expected_tip:
                     failures.append(
-                        f"{relative}:{index}: editable tip claims {value}; "
-                        f"expected {expected_tip}"
+                        f"{relative}:{index}: editable tip claims {value}; expected {expected_tip}"
                     )
             if facts.registry_deferred:
                 for match in _DEFERRED_UPLOAD_CLAIM.finditer(line):
@@ -680,14 +679,24 @@ def check_security_policy(
 ) -> list[str]:
     """Require the support matrix to follow release metadata exactly."""
     normalized = " ".join(text.split())
-    required = (
-        f"current published train** (`{facts.train_line}`)",
-        f"immediately previous minor (`{facts.previous_train}.x`)",
-        f"| `{facts.train_line}` | Yes (current published train — pin "
-        f"`{facts.pin}`; published `v{facts.published_version}`) |",
-        f"| `{facts.previous_train}.x` | Best-effort security triage through "
-        f"approximately {facts.previous_security_until}; upgrade to `{facts.train_line}` |",
-    )
+    if facts.registry_deferred:
+        required = (
+            f"current repository train** (`{facts.train_line}`)",
+            f"immediately previous minor (`{facts.previous_train}.x`)",
+            f"| `{facts.train_line}` | Yes (current repository train — public PyPI pin remains "
+            f"`{facts.pypi_pin}`; upload deferred) |",
+            f"| `{facts.previous_train}.x` | Best-effort security triage through "
+            f"approximately {facts.previous_security_until}; upgrade to `{facts.train_line}` |",
+        )
+    else:
+        required = (
+            f"current published train** (`{facts.train_line}`)",
+            f"immediately previous minor (`{facts.previous_train}.x`)",
+            f"| `{facts.train_line}` | Yes (current published train — pin "
+            f"`{facts.pin}`; published `v{facts.published_version}`) |",
+            f"| `{facts.previous_train}.x` | Best-effort security triage through "
+            f"approximately {facts.previous_security_until}; upgrade to `{facts.train_line}` |",
+        )
     return [
         f"{path}: security policy is missing release-derived text: {marker}"
         for marker in required

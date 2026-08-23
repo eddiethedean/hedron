@@ -4,8 +4,8 @@
 
 Install from the public PyPI index:
 `pip install "hedron>=0.59.0,<0.60"`. Contributors working from a git checkout use
-`uv sync` (workspace packages); the published 0.59.0 release is also available from PyPI.
-The Git tag and PyPI upload for 0.59.0 are complete. See
+`uv sync` (workspace packages); the verified 0.60.0 checkout is not yet on PyPI.
+The Git tag is cut only after hosted CI is green; PyPI upload remains a separate coordinated step. See
 [Installation](../getting-started/installation.md).
 
 ```bash
@@ -135,8 +135,8 @@ Snapshot: [What’s ready today](whats-ready.md).
 
 ## What is a “train”? Why these version pins?
 
-A **train** is a minor release line (for example `0.59.x`). Patch releases inside the
-train are meant to be compatible; the next minor (`0.59`) may add breaking changes.
+A **train** is a minor release line (for example `0.60.x`). Patch releases inside the
+train are meant to be compatible; the next minor (`0.60`) may add breaking changes.
 
 Install with an upper bound — `hedron>=0.59.0,<0.60` — so you get patches automatically
 but do not jump to the next train by accident. That is ordinary Python packaging, not a

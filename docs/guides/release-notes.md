@@ -3,10 +3,19 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
-## 0.59.0 — 2026-08-22
+## 0.60.0 — 2026-08-22
 
-Published release for the 0.59 train. Install from PyPI with
-`hedron>=0.59.0,<0.60`.
+Verified in-tree release for the 0.60 train. PyPI publication is deferred; the latest public
+install remains `hedron>=0.59.0,<0.60`.
+
+### Custom theme platform
+
+- Added typed absolute Color input, canonical immutable ThemeSpec/ThemePatch authoring, bounded
+  recipe families, registry-derived validation, deterministic data-only packages, accessibility
+  modes, server-first ThemePicker, and the read-only Explorer Theme Lab.
+- Completed zero-application-CSS Brand, ToastHost, ConnectorFlow, and ScrollRegion contracts with
+  narrow, print, reduced-motion, forced-color, and fallback behavior.
+- Added the 27-gate release evidence packet and third-party conformance/reporting surfaces.
 
 ### Added
 
@@ -19,7 +28,7 @@ Published release for the 0.59 train. Install from PyPI with
 
 Published cut for progressive feature and styling authoring (RFC-0085 /
 D-101 / D-102 / D-105). The 0.58 train is available on PyPI; reproduce this
-historical train with `hedron>=0.58.0,<0.59`. For current applications, use
+historical train with `hedron>=0.58.0,<0.60`. For current applications, use
 `hedron>=0.59.0,<0.60`. [What’s new in 0.58](whats-new-0.58.md).
 [Installation](../getting-started/installation.md).
 

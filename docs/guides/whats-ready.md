@@ -5,7 +5,7 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page is the **adopter** maturity summary for the **0.59.x** train
+This page is the **adopter** maturity summary for the **0.60.x** train
 ([Current release and support](current-release.md)). Full capability matrices and
 maintainer gate notes:
 [What’s ready — evidence](whats-ready-evidence.md).
@@ -43,7 +43,7 @@ screen-reader sessions are not Supported yet**.
 | Job | Status | Start here |
 |---|---|---|
 | CRUD / admin / forms | **Supported** | [First app](../getting-started/quickstart.md) |
-| Progressive screens (`@app.screen`) | **Supported** (FastAPI; API `beta`) | [What’s new in 0.59](whats-new-0.59.md) |
+| Progressive screens (`@app.screen`) | **Supported** (FastAPI; API `beta`) | [What’s new in 0.60](whats-new-0.60.md) |
 | HTMX refreshable views / commands (`@app.refreshable`) | **Supported** | [Which interaction API?](../getting-started/interaction-apis.md) |
 | Multi-worker durable jobs (polling) | **Supported** with shared Redis | [Jobs](../api/JOBS.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |

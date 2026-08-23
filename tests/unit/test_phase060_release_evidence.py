@@ -17,7 +17,13 @@ def test_phase060_manifest_and_report_have_the_same_exact_27_gate_contract() -> 
 
     assert tuple(row["id"] for row in manifest_rows) == EXPECTED_GATES
     assert tuple(row["id"] for row in report_rows) == EXPECTED_GATES
-    assert report["summary"] == {"total": 27, "planned": 27, "implemented": 0, "verified": 0}
+    assert report["summary"] == {
+        "total": 27,
+        "planned": 0,
+        "implemented": 0,
+        "verified": 27,
+        "release_ready": True,
+    }
 
 
 def test_phase060_packet_files_are_cross_referenced() -> None:

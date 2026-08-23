@@ -1,7 +1,8 @@
 schema_version = 1
 phase = "0.60"
-state = "draft"
+state = "verified"
 owning_rfc = "RFC-0089"
+decision = "D-108"
 planning_baseline = "v0.59.0"
 public_upgrade_source = "v0.59.0"
 both_sources_required = true

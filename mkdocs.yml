@@ -304,6 +304,7 @@ nav:
       - Production adoption checklist: guides/production-adoption.md
     - What's ready today: guides/whats-ready.md
     - Current release and support: guides/current-release.md
+    - What's new in 0.60: guides/whats-new-0.60.md
     - What's new in 0.59: guides/whats-new-0.59.md
     - What's new in 0.58: guides/whats-new-0.58.md
     - Releases: guides/release-notes.md

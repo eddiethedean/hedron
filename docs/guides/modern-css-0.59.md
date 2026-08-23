@@ -1,13 +1,13 @@
 ---
-title: Modern CSS in 0.59
-description: The 0.59 styling contract, capability tiers, fallbacks, and authoring patterns.
+title: Modern CSS in 0.60
+description: The 0.60 styling contract, capability tiers, fallbacks, and authoring patterns.
 search:
   boost: 1.5
 ---
 
-# Modern CSS in 0.59
+# Modern CSS in 0.60
 
-Hedron 0.59 upgrades the styling path without adding a second theme registry, CSS runtime,
+Hedron 0.60 upgrades the styling path without adding a second theme registry, CSS runtime,
 client-side style injector, or mandatory Node toolchain. Python expresses finite semantic intent;
 component `styles.css` remains the escape hatch for standards-based CSS.
 
@@ -18,7 +18,7 @@ Theme / DesignSystem → semantic markers and tokens → default CSS + scoped CS
 ```
 
 Existing 0.58 constructors, classes, `data-hedron-*` markers, theme names, token aliases, and
-`default_styles=False` remain valid. New 0.59 behavior is opt-in where it changes responsive
+`default_styles=False` remain valid. New 0.60 behavior is opt-in where it changes responsive
 context or presentation scope.
 
 ## Capability tiers
@@ -31,9 +31,9 @@ capability a tier:
 | **Required** | Supported path with a tested native or static fallback | Safe for ordinary product UI |
 | **Progressive** | Feature-detected enhancement with an independently usable fallback | Treat the fallback as the contract |
 | **Experimental** | Opt-in, decorative, and excluded from unqualified support claims | Label it in product documentation |
-| **Deferred** | Outside the 0.59 styling contract | Do not build adoption guidance around it |
+| **Deferred** | Outside the 0.60 styling contract | Do not build adoption guidance around it |
 
-## What changed in 0.59
+## What changed in 0.60
 
 ### Scoped CSS compiler and cascade
 
@@ -89,7 +89,7 @@ panel = Container(
 ```
 
 The component emits validated `data-hedron-container-query` and
-`data-hedron-container-name` markers. The 0.59 layout contract covers:
+`data-hedron-container-name` markers. The 0.60 layout contract covers:
 
 - `@container`, `cqi`, `cqb`, `cqmin`, and `cqmax` with viewport/static fallbacks;
 - intrinsic sizing through `min()`, `max()`, `clamp()`, `minmax()`, `fit-content()`, and
@@ -104,7 +104,7 @@ application state or change DOM order.
 
 ### Tokens, themes, variants, color, and typography
 
-`Theme` and `DesignSystem` remain the source of semantic values. 0.59 adds explicit finite theme
+`Theme` and `DesignSystem` remain the source of semantic values. 0.60 adds explicit finite theme
 variants, additive output, modern color fallbacks, and stronger typography guidance.
 
 ```python
@@ -178,7 +178,7 @@ cannot hide authoritative content or change semantics.
 
 ### Typed controls and product surfaces
 
-`Button` and `LinkButton` share the 0.59 `size` and `width` vocabulary and accept a bounded
+`Button` and `LinkButton` share the 0.60 `size` and `width` vocabulary and accept a bounded
 `attrs=` seam for global, `aria-*`, `data-*`, approved HTMX, and popover/dialog-trigger
 attributes:
 
@@ -203,7 +203,7 @@ brand/account/footer/auth states, responsive pipeline connectors, explicit run s
 compact history. These surfaces do not own authentication, transfer execution, polling, logs, or
 authorization; they render typed state supplied by the application.
 
-## 0.59 feature matrix
+## 0.60 feature matrix
 
 | Area | Capability | Tier | Fallback or boundary |
 |---|---|---|---|
@@ -246,12 +246,12 @@ hedron style check --zero-app-css PATH
 `eject` is reviewable and no-overwrite by default. Inspect source locations, winning layers,
 variants, aliases, fallbacks, assets, and budgets before accepting a visual change.
 
-For upgrades, run the 0.58-to-0.59 fixtures before changing a pin. Existing application CSS is
+For upgrades, run the 0.58-to-0.60 fixtures before changing a pin. Existing application CSS is
 not silently rewritten. See [the upgrade guide](upgrade.md), [Presentation APIs](../api/PRESENTATION.md),
 and [Themes](../api/THEME.md).
 
 ## Explicit non-goals
 
-0.59 does not add free-form CSS-in-Python, a utility-string framework, a second compiler/cascade/
+0.60 does not add free-form CSS-in-Python, a utility-string framework, a second compiler/cascade/
 theme registry, runtime style injection, mandatory Node, remote font auto-fetch, CSS masonry,
 paint/layout worklets, private-selector theming, visual DOM reordering, or styling-owned behavior.

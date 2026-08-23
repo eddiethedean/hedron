@@ -2,7 +2,7 @@
 
 Historical **0.55.0** in-tree Published cut (the 0.55 PyPI upload was deferred;
 the cut was superseded by later published trains). Prefer
-[What’s new in 0.59](whats-new-0.59.md) for the current train.
+[What’s new in 0.60](whats-new-0.60.md) for the current train.
 
 ## 0.55.0
 

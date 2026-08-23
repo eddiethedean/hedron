@@ -101,6 +101,6 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Upload a small `.txt` or `.
 ## Advanced — explicit `@app.command` / FileUpload
 
 Lower to `FileUpload`, `Form(enctype="multipart/form-data")`, and `@app.command` when
-ejecting. See [What’s new in 0.59](../guides/whats-new-0.59.md).
+ejecting. See [What’s new in 0.60](../guides/whats-new-0.60.md).
 
 Source: [`examples/file-upload`](https://github.com/eddiethedean/hedron/tree/main/examples/file-upload).

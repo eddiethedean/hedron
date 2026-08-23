@@ -36,6 +36,7 @@ from hedron_explorer.services.query import (
     parse_limit,
     truncation_banner,
 )
+from hedron_explorer.services.theme_lab import theme_lab_report
 from hedron_explorer.views.shell import (
     component_detail_body,
     component_href,
@@ -776,6 +777,51 @@ async def settings_view(request: Request) -> str:
     {diff_html}
     """
     return shell("Settings", body, request=request, active="settings")
+
+
+async def theme_lab_view(request: Request) -> str:
+    """Read-only visual inspection surface for registered themes."""
+    report = theme_lab_report(
+        left=request.query_params.get("left") or "default",
+        right=request.query_params.get("right") or "aurora",
+        profile=request.query_params.get("profile") or "core",
+    )
+    cards = []
+    for theme in report["themes"]:
+        validation = theme["validation"]
+        tokens = theme["spec"]["tokens"]
+        rows = "".join(
+            f"<tr><th>{html_lib.escape(str(key))}</th><td><code>{html_lib.escape(str(value))}</code></td></tr>"
+            for key, value in sorted(tokens.items())
+        )
+        cards.append(
+            "<article class='theme-lab-card' "
+            f"data-theme-lab-theme='{html_lib.escape(str(theme['name']))}'>"
+            f"<h3>{html_lib.escape(str(theme['name']))}</h3>"
+            f"<p>Validation: <strong>{'pass' if validation['ok'] else 'review'}</strong></p>"
+            f"<p>Modes: {html_lib.escape(', '.join(theme['modes']))}</p>"
+            "<table><thead><tr><th>Token</th><th>Resolved value</th></tr></thead>"
+            f"<tbody>{rows}</tbody></table>"
+            "</article>"
+        )
+    exercises = "".join(
+        f"<li><strong>{html_lib.escape(str(item['label']))}</strong>: "
+        f"{html_lib.escape('; '.join(item['assertions']))}</li>"
+        for item in report["exercises"]
+    )
+    body = (
+        "<h2>Theme Lab</h2>"
+        "<p>Read-only inspection backed by the shared resolver and validator. "
+        "It never executes theme packages or writes the target project.</p>"
+        f"<div class='theme-lab-grid'>{''.join(cards)}</div>"
+        f"<h3>Spec diff</h3><pre>{html_lib.escape(str(report['diff']))}</pre>"
+        f"<h3>Fallback and gamut warnings</h3><pre>{html_lib.escape(str(report['warnings']))}</pre>"
+        f"<h3>Exercises</h3><ul>{exercises}</ul>"
+        "<p><a href='"
+        f"{request.url.path.replace('theme-lab', 'api/theme-lab')}"
+        "'>Export report as JSON</a></p>"
+    )
+    return shell("Theme Lab", body, request=request, active="theme-lab")
 
 
 async def interactions_view(request: Request) -> str:

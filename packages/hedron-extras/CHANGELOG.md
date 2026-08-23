@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.60.0] — 2026-08-23
+
+### Added
+- Custom theme platform, typed modern colors, deterministic ThemeSpec packages, accessibility modes, scoped recipes, preference selection, and zero-application-CSS component evidence (RFC-0089 / D-108).
+
+### Changed
+- Coordinated train release 0.60.0 (tag and PyPI publication tracked separately).
+
+
 ## [0.59.0] — 2026-08-22
 
 ### Added

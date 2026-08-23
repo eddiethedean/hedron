@@ -34,6 +34,7 @@ from hedron_explorer.services.simulation import (
     redacted_app_scenario,
     simulate,
 )
+from hedron_explorer.services.theme_lab import theme_lab_report
 from hedron_explorer.views import pages
 
 __all__ = [
@@ -96,6 +97,7 @@ def explorer_router() -> APIRouter:
         ("/settings", pages.settings_view),
         ("/interactions", pages.interactions_view),
         ("/features", pages.features_view),
+        ("/theme-lab", pages.theme_lab_view),
     )
     for path, handler in html_pages:
         router.add_api_route(
@@ -184,5 +186,13 @@ def explorer_router() -> APIRouter:
             return isolated
         result = isolated.get("result")
         return result if isinstance(result, dict) else {"result": result}
+
+    @router.get("/api/theme-lab", include_in_schema=False, response_model=None)
+    async def api_theme_lab(request: Request) -> dict[str, object]:
+        return theme_lab_report(
+            left=request.query_params.get("left") or "default",
+            right=request.query_params.get("right") or "aurora",
+            profile=request.query_params.get("profile") or "core",
+        )
 
     return router

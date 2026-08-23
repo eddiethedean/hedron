@@ -75,7 +75,7 @@ from hedron_conformance.schema import (
     load_bundled_fixtures,
 )
 
-__version__ = "0.59.0"
+__version__ = "0.60.0"
 
 __all__ = [
     "AUTHORING_LOOP_SCHEMA_VERSION",

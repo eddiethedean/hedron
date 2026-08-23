@@ -1,179 +1,208 @@
 schema_version = 1
 phase = "0.60"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.59.0"
 public_upgrade_source = "v0.59.0"
 required_predecessor = "v0.59.0"
 predecessor_satisfied = true
 target = "v0.60.0"
-decision = "D-108-proposed"
+decision = "D-108"
 owning_rfc = "RFC-0089"
 contract = "theme-platform-contract-060.toml"
 inventory = "theme-platform-inventory-060.toml"
 tracking = "theme-platform-tracking-060.toml"
 compatibility = "theme-platform-compatibility-060.toml"
 upgrade_fixture = "upgrade-fixtures-060.md"
-stage_1_entry_satisfied = false
+stage_1_entry_satisfied = true
+evidence_report = "evidence-060/gate-results-060.json"
+release_commit = "pending"
 zero_deferred_at_cut = true
 
 [[evidence]]
 id = "CONTRACT-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate CONTRACT-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "RECONCILE-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate RECONCILE-060"
 owner = "hedron"
+ci_job = "test"
 
 [[evidence]]
 id = "COLOR-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate COLOR-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "PALETTE-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate PALETTE-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "THEME-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate THEME-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "VALIDATE-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate VALIDATE-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "PACKAGE-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate PACKAGE-060"
 owner = "hedron-core"
+ci_job = "packaging"
 
 [[evidence]]
 id = "A11Y-MODE-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate A11Y-MODE-060"
 owner = "hedron-core"
+ci_job = "browser"
 
 [[evidence]]
 id = "RECIPE-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate RECIPE-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "SCOPE-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate SCOPE-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "PREFERENCE-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate PREFERENCE-060"
 owner = "hedron-core"
+ci_job = "browser"
 
 [[evidence]]
 id = "BRAND-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate BRAND-060"
 owner = "hedron-core"
+ci_job = "browser"
 
 [[evidence]]
 id = "FEEDBACK-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate FEEDBACK-060"
 owner = "hedron-core"
+ci_job = "browser"
 
 [[evidence]]
 id = "WORKFLOW-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate WORKFLOW-060"
 owner = "hedron-core"
+ci_job = "browser"
 
 [[evidence]]
 id = "SCROLL-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate SCROLL-060"
 owner = "hedron-core"
+ci_job = "browser"
 
 [[evidence]]
 id = "CATALOG-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate CATALOG-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "TOOLING-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate TOOLING-060"
 owner = "hedron"
+ci_job = "test"
 
 [[evidence]]
 id = "EXPLORER-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate EXPLORER-060"
 owner = "hedron-explorer"
+ci_job = "test"
 
 [[evidence]]
 id = "CONFORMANCE-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate CONFORMANCE-060"
 owner = "hedron-conformance"
+ci_job = "test"
 
 [[evidence]]
 id = "DOCS-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate DOCS-060"
 owner = "docs"
+ci_job = "quality"
 
 [[evidence]]
 id = "VISUAL-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate VISUAL-060"
 owner = "hedron-conformance"
+ci_job = "browser"
 
 [[evidence]]
 id = "A11Y-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate A11Y-060"
 owner = "hedron-conformance"
+ci_job = "browser"
 
 [[evidence]]
 id = "SECURITY-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate SECURITY-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "PERF-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate PERF-060"
 owner = "hedron-conformance"
+ci_job = "quality"
 
 [[evidence]]
 id = "COMPAT-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate COMPAT-060"
 owner = "hedron-core"
+ci_job = "test"
 
 [[evidence]]
 id = "REGRESS-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate REGRESS-060"
 owner = "hedron"
+ci_job = "test"
 
 [[evidence]]
 id = "PKG-060"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_060.py --gate PKG-060"
 owner = "release"
+ci_job = "packaging"

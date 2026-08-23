@@ -37,7 +37,7 @@ A component `styles.css` exposes local classes through a typed `styles` binding.
 themes and select one globally or at supported boundaries. Themes must define required accessibility
 tokens and may extend, but not silently remove, base contracts.
 
-In 0.59, `Theme.variants` is an explicit finite mapping of token overrides. Variants are additive,
+In 0.60, `Theme.variants` is an explicit finite mapping of token overrides. Variants are additive,
 validated, and emitted only when selected; they do not create a private selector API or change
 component behavior.
 
@@ -96,7 +96,7 @@ CSS, component CSS, or registered theme assets.
 
 Runtime user data cannot become raw CSS. Dynamic presentation uses declared variants, safe attributes, or validated CSS-variable values. Strict mode can reject inline style attributes and remote resources.
 
-0.59 also adds tested modern-color fallbacks, preference-aware tokens, and selected Progressive
+0.60 also adds tested modern-color fallbacks, preference-aware tokens, and selected Progressive
 `light-dark()` / `@property` enhancements. Every enhanced declaration has a canonical fallback;
 remote font and asset fetching remains outside the Supported path.
 

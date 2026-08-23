@@ -1,6 +1,6 @@
 # What's new in Hedron 0.39
 
-!!! note "Current train is 0.59"
+!!! note "Current train is 0.60"
 
     Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.59.0,<0.60`). See [What’s new in 0.51](whats-new-0.51.md).
 
@@ -34,7 +34,7 @@ optimistic edits ([RFC-0060](https://github.com/eddiethedean/hedron/blob/main/do
 
 ## Pins
 
-Historical 0.39 pin below. For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
+Historical 0.39 pin below. For new apps, use `hedron>=0.58.0,<0.61`; see [What’s new in 0.51](whats-new-0.51.md).
 
 ```bash
 pip install "hedron>=0.39.0,<0.40"

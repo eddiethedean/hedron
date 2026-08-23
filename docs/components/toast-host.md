@@ -39,12 +39,13 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-ToastHost(*, placement: "Literal['top-start', 'top-end', 'bottom-start', 'bottom-end', 'center']" = 'top-end', width: "Literal['content', 'field', 'full']" = 'content', max_width: "Literal['sm', 'md', 'lg']" = 'md', gap: "Literal['xs', 'sm', 'md']" = 'sm', **kwargs: 'Any') -> 'None'
+ToastHost(*, placement: "Literal['top-start', 'top-end', 'bottom-start', 'bottom-end', 'center']" = 'top-end', position: "Literal['fixed', 'sticky', 'flow']" = 'fixed', width: "Literal['content', 'field', 'full']" = 'content', max_width: "Literal['sm', 'md', 'lg']" = 'md', gap: "Literal['xs', 'sm', 'md']" = 'sm', **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `placement` | `Literal['top-start', 'top-end', 'bottom-start', 'bottom-end', 'center']` | Layout placement for the dock. Default: `'top-end'`. |
+| `position` | `Literal['fixed', 'sticky', 'flow']` | Constructor parameter. Default: `'fixed'`. |
 | `width` | `Literal['content', 'field', 'full']` | Optional width hint (CSS length or pixels). Default: `'content'`. |
 | `max_width` | `Literal['sm', 'md', 'lg']` | Constructor parameter. Default: `'md'`. |
 | `gap` | `Literal['xs', 'sm', 'md']` | Constructor parameter. Default: `'sm'`. |

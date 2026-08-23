@@ -82,7 +82,7 @@ declares it.
 ## Run
 
 ```bash
-python -m pip install "hedron[data]>=0.59.0,<0.60" "uvicorn[standard]"
+python -m pip install "hedron[data]>=0.60.0,<0.61" "uvicorn[standard]"
 uvicorn app:app --reload
 ```
 

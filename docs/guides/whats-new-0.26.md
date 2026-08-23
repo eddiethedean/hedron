@@ -1,7 +1,7 @@
 # What’s new in Hedron 0.26
 
 
-!!! note "Current train is 0.59"
+!!! note "Current train is 0.60"
 
     Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.59.0,<0.60`). The pin below is historical for this train only.
     See [What’s new in 0.51](whats-new-0.51.md).

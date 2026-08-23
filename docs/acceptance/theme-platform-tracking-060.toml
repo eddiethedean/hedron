@@ -1,9 +1,9 @@
 schema_version = 1
 phase = "0.60"
-state = "draft"
+state = "verified"
 audit_date = "2026-08-23"
 owner = "hedron"
-decision = "D-108-proposed"
+decision = "D-108"
 owning_rfc = "RFC-0089"
 contract = "theme-platform-contract-060.toml"
 inventory = "theme-platform-inventory-060.toml"
@@ -160,16 +160,23 @@ gates = ["PKG-060"]
 issues = [627, 628, 629, 630, 631, 632, 633, 634, 635]
 
 [stage_1_entry]
-decision_accepted = false
-exact_contract_reviewed = false
-component_contract_and_profile_map_locked = false
-reconciliation_probe_recorded = false
-issue_milestone_and_backlinks = false
-browser_matrix_locked = false
-explicit_value_prototype_passed = false
-package_security_prototype_passed = false
-fingerprint_reproducibility_prototype_passed = false
-budgets_reproduced = false
+decision_accepted = true
+exact_contract_reviewed = true
+component_contract_and_profile_map_locked = true
+reconciliation_probe_recorded = true
+issue_milestone_and_backlinks = true
+browser_matrix_locked = true
+explicit_value_prototype_passed = true
+package_security_prototype_passed = true
+fingerprint_reproducibility_prototype_passed = true
+budgets_reproduced = true
+
+[release]
+status = "release_candidate"
+evidence_report = "evidence-060/gate-results-060.json"
+hosted_ci_run = "32665813362"
+hosted_ci_url = "https://github.com/eddiethedean/hedron/actions/runs/32665813362"
+manual_at_limit = "Issue #86 remains open; no human assistive-technology sign-off is claimed by automation."
 
 [release_issue_policy]
 owned_issue_numbers = [627, 628, 629, 630, 631, 632, 633, 634, 635]

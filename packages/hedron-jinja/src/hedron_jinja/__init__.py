@@ -54,7 +54,7 @@ from hedron_jinja.providers import (
 )
 from hedron_jinja.source import validate_element_declarations
 
-__version__ = "0.59.0"
+__version__ = "0.60.0"
 
 __all__ = [
     "AsyncIoBudget",

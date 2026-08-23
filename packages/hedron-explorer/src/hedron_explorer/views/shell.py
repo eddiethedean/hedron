@@ -26,6 +26,7 @@ NAV = (
     ("inventory", "Inventory", "/hedron-explorer/inventory"),
     ("interactions", "Interactions", "/hedron-explorer/interactions"),
     ("features", "Features", "/hedron-explorer/features"),
+    ("theme-lab", "Theme Lab", "/hedron-explorer/theme-lab"),
     ("settings", "Settings", "/hedron-explorer/settings"),
 )
 

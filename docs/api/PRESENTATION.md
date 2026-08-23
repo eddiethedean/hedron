@@ -1,16 +1,16 @@
-# Presentation APIs (0.57–0.59)
+# Presentation APIs (0.57–0.60)
 
 Phase 0.57 makes Hedron's shared presentation vocabulary real across built-ins
 and closes remaining application-CSS gaps for a Data Mover-class workspace. Phase
 0.58 adds progressive styling authoring (`DesignSystem`, `StyleRecipe`,
-`StyleScope`) and 0.59 adds the modern CSS platform on the same authorities. See
+`StyleScope`) and 0.60 adds the modern CSS platform on the same authorities. See
 [RFC-0084](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0084-UNIFIED-PRESENTATION.md),
 [RFC-0085](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md),
 [PRESENTATION_057](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PRESENTATION_057.md),
 and
 [PROGRESSIVE_AUTHORING_058](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/PROGRESSIVE_AUTHORING_058.md).
-For the complete 0.59 capability tiers and fallback contract, see
-[Modern CSS in 0.59](../guides/modern-css-0.59.md) and
+For the complete 0.60 capability tiers and fallback contract, see
+[Modern CSS in 0.60](../guides/modern-css-0.60.md) and
 [RFC-0087](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0087-MODERN-CSS-PLATFORM.md).
 
 Shared authority: `hedron_core.builtins.appearance`. Values emit stable
@@ -82,11 +82,11 @@ Component page: [StyleScope](../components/style-scope.md).
 
 Inspect with `hedron explain` / `hedron style` ([CLI](CLI.md)).
 
-## Modern CSS platform (0.59)
+## Modern CSS platform (0.60)
 
-The 0.59 platform evolves the existing presentation ABI instead of replacing it:
+The 0.60 platform evolves the existing presentation ABI instead of replacing it:
 
-| Surface | 0.59 contract |
+| Surface | 0.60 contract |
 |---|---|
 | Scoped CSS | Compiler format 2, v1 manifest reader, stable symbol hashes, grammar-aware nesting/at-rules/imports, deterministic source maps and layers |
 | Responsive layout | Opt-in `Container(query="inline-size", name=...)`, container/viewport fallbacks, intrinsic sizing, logical layout, RTL/writing-mode coverage, Progressive subgrid |
@@ -99,7 +99,7 @@ Required behavior has a static or native fallback. Progressive enhancements are 
 Experimental scroll-driven animation is decorative only. Styling never changes behavior, state,
 authorization, DOM order, accessible names, or complete-content paths.
 
-### 0.59 public additions
+### 0.60 public additions
 
 ```python
 from hedron import Button, Container, LinkButton, Popover, StyleScope, Text
@@ -124,7 +124,7 @@ signatures.
 
 Representative authenticated workspaces must compose shell, forms, tables,
 uploads, identity, statuses, and flows without application-owned component or
-layout CSS. Use `hedron style check --zero-app-css` and the 0.59 zero-CSS
+layout CSS. Use `hedron style check --zero-app-css` and the 0.60 zero-CSS
 fixture inventory.
 
 ## Compatibility

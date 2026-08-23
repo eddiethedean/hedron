@@ -1,14 +1,14 @@
-# Upgrade to Hedron 0.59
+# Upgrade to Hedron 0.60
 
-This guide covers an application upgrade onto the **0.59.x** engineering train
-(`v0.59.0` on PyPI). Pin `hedron>=0.59.0,<0.60`
-when the 0.59 package is available from the configured registry.
+This guide covers an application upgrade onto the **0.60.x** engineering train
+(`v0.60.0` in-tree; PyPI `v0.59.0` until upload). Pin `hedron>=0.59.0,<0.60`
+when the 0.60 package is available from the configured registry.
 Public-index notes: [Installation](../getting-started/installation.md). New applications
 should use [Build your first app](../getting-started/quickstart.md).
 
-## 0.58 → 0.59
+## 0.58 → 0.60
 
-Checkout tip `v0.59.0` uses `uv sync`. See [What's new in 0.59](whats-new-0.59.md),
+Checkout tip `v0.60.0` uses `uv sync`. See [What's new in 0.60](whats-new-0.60.md),
 [Hedron API](../api/HEDRON.md), and [Presentation](../api/PRESENTATION.md).
 
 1. Upgrade the application pin to `hedron>=0.59.0,<0.60`.
@@ -23,7 +23,7 @@ Checkout tip `v0.59.0` uses `uv sync`. See [What's new in 0.59](whats-new-0.59.m
 
 ## 0.57 → 0.58
 
-Checkout tip `v0.59.0` uses `uv sync`. From the public index, install
+Checkout tip `v0.60.0` uses `uv sync`. From the public index, install
 `hedron>=0.59.0,<0.60`. See [What's new in 0.58](whats-new-0.58.md),
 [Hedron API](../api/HEDRON.md), and [Presentation](../api/PRESENTATION.md).
 
@@ -37,7 +37,7 @@ Checkout tip `v0.59.0` uses `uv sync`. From the public index, install
 
 ## 0.56 → 0.57
 
-Checkout tip `v0.59.0` uses `uv sync`. From PyPI, install
+Checkout tip `v0.60.0` uses `uv sync`. From PyPI, install
 `hedron>=0.59.0,<0.60`. See
 [What's new in 0.57](whats-new-0.57.md) and
 [Presentation](../api/PRESENTATION.md).
@@ -48,7 +48,7 @@ Checkout tip `v0.59.0` uses `uv sync`. From PyPI, install
 
 ## 0.55 → 0.56
 
-Checkout tip `v0.59.0` uses `uv sync`. From PyPI, install
+Checkout tip `v0.60.0` uses `uv sync`. From PyPI, install
 `hedron>=0.59.0,<0.60`. See
 [What's new in 0.56](whats-new-0.56.md) and
 [Security control plane](../api/SECURITY_PLANE.md).
@@ -59,7 +59,7 @@ Checkout tip `v0.59.0` uses `uv sync`. From PyPI, install
 
 ## 0.52 → 0.53
 
-Checkout tip `v0.59.0` uses the in-tree floor `>=0.59.0,<0.60`; the Git tag/PyPI upload
+Checkout tip `v0.60.0` uses the in-tree floor `>=0.59.0,<0.60`; the Git tag/PyPI upload
 is deferred. From PyPI, keep
 `hedron>=0.59.0,<0.60` (the latest public PyPI release). See
 [What's new in 0.53](whats-new-0.53.md) and
@@ -118,12 +118,12 @@ itself). See [What's new in 0.51](whats-new-0.51.md).
 
 ```bash
 python -m pip install -U "hedron>=0.59.0,<0.60"
-python -m pip install -U "hedron[extras]>=0.59.0,<0.60"
+python -m pip install -U "hedron[extras]>=0.60.0,<0.61"
 ```
 
 ## Summary
 
-Hedron **0.59.x** ships progressive feature and styling authoring on top of the 0.57
+Hedron **0.60.x** ships progressive feature and styling authoring on top of the 0.57
 presentation train. Install `hedron>=0.59.0,<0.60` from PyPI.
 
 - Screens, form commands, workspaces, TaskFlow, DashboardWorkspace, SessionAuthFlow,
@@ -213,13 +213,13 @@ preload remain experimental.
 
 ```bash
 python -m pip install -U "hedron>=0.59.0,<0.60"
-python -m pip install -U "hedron[data]>=0.59.0,<0.60"
-python -m pip install -U "hedron[charts]>=0.59.0,<0.60"
-python -m pip install -U "hedron[maps]>=0.59.0,<0.60"
+python -m pip install -U "hedron[data]>=0.60.0,<0.61"
+python -m pip install -U "hedron[charts]>=0.60.0,<0.61"
+python -m pip install -U "hedron[maps]>=0.60.0,<0.61"
 # independent charts satellite:
 python -m pip install -U "hedron-charts>=0.2.0,<0.3"
 # optional production-grade elements inventory:
-python -m pip install -U "hedron[elements]>=0.59.0,<0.60"
+python -m pip install -U "hedron[elements]>=0.60.0,<0.61"
 ```
 
 Public-index notes: [Installation](../getting-started/installation.md).

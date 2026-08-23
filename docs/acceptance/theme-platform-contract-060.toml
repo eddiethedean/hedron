@@ -1,10 +1,10 @@
 schema_version = 1
 phase = "0.60"
-state = "draft"
+state = "verified"
 planning_baseline = "v0.59.0"
 public_upgrade_source = "v0.59.0"
 target = "v0.60.0"
-decision = "D-108-proposed"
+decision = "D-108"
 owning_rfc = "RFC-0089"
 single_styling_authority = true
 

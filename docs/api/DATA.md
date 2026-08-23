@@ -11,10 +11,10 @@ status: shipped
 **Status:** Accepted · **Shipped** (install `hedron[data]`)
 
 ```bash
-pip install "hedron[data]>=0.59.0,<0.60"
+pip install "hedron[data]>=0.60.0,<0.61"
 ```
 
-## `DataWorkspace.with_screen` (0.59)
+## `DataWorkspace.with_screen` (0.60)
 
 Opt into a complete list/detail/create/edit screen that lowers to existing
 bundle/handle authorities. Delete stays disabled unless destructive policy is

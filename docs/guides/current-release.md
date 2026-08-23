@@ -13,7 +13,7 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Repository checkout | `0.59.0` / `0.59.x` | Published train and repository checkout |
+| Repository checkout | `0.60.0` / `0.60.x` | Implemented and verified in-tree train |
 | PyPI | `0.59.0` / `0.59.x` | Latest installable release from the public package index |
 | Package maturity | Beta | Usable with pins; no SLA or scheduled 1.0 release |
 | Supported Python | 3.11–3.14 | CPython only |
@@ -33,11 +33,11 @@ from the workspace.
 |---|---|
 | Build an application | Install from PyPI: `hedron>=0.59.0,<0.60` |
 | Contribute / hack on Hedron | Clone the repo and `uv sync` (editable workspace) |
-| Know security support window | Current train `0.59.x` — [SECURITY.md](../SECURITY.md) |
+| Know security support window | Current train `0.60.x` — [SECURITY.md](../SECURITY.md) |
 | Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |
 
-The published `0.59.0` release is represented by the repository checkout and
-`registry_status = "uploaded"` in [`docs/release.toml`](../release.toml).
+The `0.60.0` release is represented by the verified repository checkout. PyPI publication is
+deferred; `registry_status = "deferred"` in [`docs/release.toml`](../release.toml).
 
 ## What should I install?
 

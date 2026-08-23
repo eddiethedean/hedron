@@ -1,7 +1,7 @@
 # Symbol tiers (1.0 API honesty foundation)
 
 **Status:** Living machine-checked inventory for the flagship root facade on the
-**0.59.x** train. This is a foundation for an honest 1.0 freeze — it does **not**
+**0.60.x** train. This is a foundation for an honest 1.0 freeze — it does **not**
 schedule `1.0`
 ([D-038](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md)).
 

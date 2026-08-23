@@ -13,7 +13,8 @@ Routes return typed UI; HTMX swaps HTML fragments. No Node frontend.
 **Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
-The latest installable PyPI release is `0.59.0`. Application pins and extras:
+The latest installable PyPI release is `0.59.0`; the repository train is `0.60.x`.
+Application pins and extras:
 [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 ```bash
@@ -89,7 +90,7 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new in 0.59](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.59/) ·
+[What’s new in 0.60](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.60/) ·
 [Current release](https://hedron.readthedocs.io/en/latest/guides/current-release/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 

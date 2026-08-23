@@ -4,7 +4,7 @@ Use `hedron-flask` for Flask-native apps. Scaffold with the `hedron` CLI
 (`hedron new --flask`); runtime is `hedron-flask` + `hedron-core` (no FastAPI in
 the app process).
 
-**Install:** `pip install "hedron-flask>=0.59.0,<0.60"` (or `uv add "hedron-flask>=0.59.0,<0.60"`).
+**Install:** `pip install "hedron-flask>=0.60.0,<0.61"` (or `uv add "hedron-flask>=0.60.0,<0.61"`).
 Requires Python 3.11–3.14. See [Installation](installation.md).
 
 Flask supports pages, fragments, and CSRF. Progressive FastAPI facades
@@ -52,7 +52,7 @@ Set `HEDRON_SESSION_SECRET` before production.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron-flask>=0.59.0,<0.60"
+python -m pip install "hedron-flask>=0.60.0,<0.61"
 ```
 
 Save as `app.py`:

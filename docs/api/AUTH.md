@@ -27,7 +27,7 @@ Prefer the session-login pattern in [Authentication](../guides/authentication.md
 unless you need an external provider.
 
 ```bash
-pip install "hedron[auth]>=0.59.0,<0.60"
+pip install "hedron[auth]>=0.60.0,<0.61"
 ```
 
 ## OIDC helpers (`hedron.oidc`)
@@ -126,7 +126,7 @@ def home(request: Request) -> Page:
 Applications remain responsible for login routes, session cookies, CSRF, and
 authorization decisions (`Depends`, Django/Flask auth, or your IdP).
 
-## `SessionAuthFlow` (0.59)
+## `SessionAuthFlow` (0.60)
 
 Compose login/logout/session page plumbing around **explicit** application identity
 callbacks. Not an IdP, user database, password hasher, or authorization framework.
@@ -162,7 +162,7 @@ Recipe: [Session auth](../examples/session-auth.md).
 
 | Code / condition | Behavior |
 |---|---|
-| Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]>=0.59.0,<0.60"` |
+| Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]>=0.60.0,<0.61"` |
 | Invalid `OidcClientConfig` | `ValueError` on empty issuer / client_id / redirect_uri |
 | Provider misconfiguration | Authlib/provider errors bubble to the route |
 | Unsafe `after_login` / missing rate limit | `SessionAuthFlow` fails closed (`HED-AUTHFLOW-*`) |

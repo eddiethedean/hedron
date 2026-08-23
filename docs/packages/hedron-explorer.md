@@ -2,7 +2,7 @@
 
 Development Component Explorer for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.59.x` (`v0.59.0` on PyPI) · pin `>=0.59.0,<0.60`
+**Package maturity:** Beta · **Train:** `0.60.x` (`v0.60.0` in-tree; PyPI `v0.59.0` until upload) · pin `>=0.59.0,<0.60`
 **Flagship extra:** `hedron[dev]` · **Import:** `hedron_explorer`  
 **Mount:** `/hedron-explorer/` when enabled · **not required in production**  
 **Shipped:** phase [0.50](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#050--explorer-architecture-and-operator-grade-development-tooling-v0500) — modular architecture, provider API, headless parity, large-app resilience (D-085 / D-086 / RFC-0077; [#501](https://github.com/eddiethedean/hedron/issues/501); in-tree `v0.50.3`).

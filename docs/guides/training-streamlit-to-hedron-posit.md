@@ -194,7 +194,7 @@ From `hedron-training/`:
 uvx --from "hedron>=0.59.0,<0.60" hedron new hello-hedron
 cd hello-hedron
 uv sync
-uv add "hedron[posit]>=0.59.0,<0.60"
+uv add "hedron[posit]>=0.60.0,<0.61"
 ```
 
 Open `app.py`. Replace `Hedron` in the import and constructor with `HedronPosit`:
@@ -377,7 +377,7 @@ Use the [component matrix](streamlit-migration-matrix.md) for API lookup and
 Stop the server. Install the adapter:
 
 ```bash
-uv add "hedron[posit]>=0.59.0,<0.60"
+uv add "hedron[posit]>=0.60.0,<0.61"
 ```
 
 In `app.py`, replace the imported `Hedron` class and constructor:
@@ -697,7 +697,7 @@ traffic.
 | Symptom | Likely cause | Action |
 |---|---|---|
 | `hedron` is not found | CLI is not installed on PATH | Use `uvx --from ... hedron` or `uv run hedron` in a synced project |
-| `ModuleNotFoundError: hedron_posit` | Posit extra was not added | Run `uv add "hedron[posit]>=0.59.0,<0.60"` |
+| `ModuleNotFoundError: hedron_posit` | Posit extra was not added | Run `uv add "hedron[posit]>=0.60.0,<0.61"` |
 | Workbench page loads without styles or links break | App was started without prefix discovery | Use `hedron-posit run`; do not hard-code the session URL |
 | `rserver-url` diagnostic fails | Workbench binary/path or session environment is unavailable | Confirm `RS_SERVER_URL`, the binary path, and platform configuration with the administrator |
 | Port 8000 is busy | A previous server is still running | Stop it or choose another port |

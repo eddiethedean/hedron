@@ -122,7 +122,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
         history: DashboardHistory = "replace",
         cache: CachePolicy | None = None,
         provider: str = "hedron",
-        provider_version: str = "0.59.0",
+        provider_version: str = "0.60.0",
     ) -> None:
         if not name or not str(name).strip():
             raise error(

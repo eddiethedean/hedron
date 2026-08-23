@@ -3,7 +3,7 @@
 **Published `v0.43.0`**. Owning decisions: D-071 / D-073.
 Tracking: [#311](https://github.com/eddiethedean/hedron/issues/311).
 
-For new apps, pin `hedron>=0.58.0,<0.59`; see [What’s new in 0.51](whats-new-0.51.md).
+For new apps, pin `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
 
 ## Highlights
 
@@ -33,7 +33,7 @@ Authoring model: views render, commands do work, commands refresh views.
 
 ## Upgrade
 
-Historical 0.43 pin was `hedron>=0.43.0,<0.44`. For new apps, pin `hedron>=0.58.0,<0.59`.
+Historical 0.43 pin was `hedron>=0.43.0,<0.44`. For new apps, pin `hedron>=0.58.0,<0.60`.
 Rollback of a 0.43-era app: pin `>=0.42.0,<0.43`. Generated view/command ids
 are not rollback-stable. See [Upgrade](upgrade.md) · [Refreshable views](../api/REFRESHABLE_VIEWS.md)
 · [Roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).

@@ -75,3 +75,18 @@ def test_explorer_element_simulate_failure_modes() -> None:
         assert response.status_code == 200
         payload = response.json()
         assert payload["fallback"] == "retain server content"
+
+
+def test_theme_lab_is_read_only_and_exports_shared_report() -> None:
+    client = _client()
+    page = client.get("/hedron-explorer/theme-lab")
+    assert page.status_code == 200
+    assert "Theme Lab" in page.text
+    assert "Read-only" in page.text
+    report = client.get("/hedron-explorer/api/theme-lab")
+    assert report.status_code == 200
+    payload = report.json()
+    assert payload["schema"] == "hedron.theme-lab/1"
+    assert payload["read_only"] is True
+    assert {item["name"] for item in payload["themes"]} == {"default", "aurora"}
+    assert payload["exercises"]

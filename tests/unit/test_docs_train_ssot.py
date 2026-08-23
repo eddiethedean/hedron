@@ -185,15 +185,26 @@ def test_metadata_matches_workspace_and_changelog() -> None:
 
 def test_security_policy_is_derived_from_release_metadata() -> None:
     facts = ssot.FACTS
-    text = (
-        f"Security fixes land on the **current published train** (`{facts.train_line}`).\n"
-        "Best-effort triage for the immediately previous minor "
-        f"(`{facts.previous_train}.x`).\n"
-        f"| `{facts.train_line}` | Yes (current published train — pin `{facts.pin}`; "
-        f"published `v{facts.published_version}`) |\n"
-        f"| `{facts.previous_train}.x` | Best-effort security triage through "
-        f"approximately {facts.previous_security_until}; upgrade to `{facts.train_line}` |\n"
-    )
+    if facts.registry_deferred:
+        text = (
+            f"Security fixes land on the **current repository train** (`{facts.train_line}`).\n"
+            "Best-effort triage for the immediately previous minor "
+            f"(`{facts.previous_train}.x`).\n"
+            f"| `{facts.train_line}` | Yes (current repository train — public PyPI pin remains "
+            f"`{facts.pypi_pin}`; upload deferred) |\n"
+            f"| `{facts.previous_train}.x` | Best-effort security triage through "
+            f"approximately {facts.previous_security_until}; upgrade to `{facts.train_line}` |\n"
+        )
+    else:
+        text = (
+            f"Security fixes land on the **current published train** (`{facts.train_line}`).\n"
+            "Best-effort triage for the immediately previous minor "
+            f"(`{facts.previous_train}.x`).\n"
+            f"| `{facts.train_line}` | Yes (current published train — pin `{facts.pin}`; "
+            f"published `v{facts.published_version}`) |\n"
+            f"| `{facts.previous_train}.x` | Best-effort security triage through "
+            f"approximately {facts.previous_security_until}; upgrade to `{facts.train_line}` |\n"
+        )
     assert not ssot.check_security_policy(Path("SECURITY.md"), text)
 
 

@@ -51,7 +51,94 @@ EXPECTED_GATES = (
     "PKG-060",
 )
 
-GATE_TESTS = {gate: ("tests/unit/test_phase060_theme_platform.py",) for gate in EXPECTED_GATES}
+GATE_TESTS = {
+    "CONTRACT-060": ("tests/unit/test_phase060_release_evidence.py",),
+    "RECONCILE-060": (
+        "tests/unit/test_phase059_contract_matrix.py",
+        "tests/unit/test_phase060_theme_platform.py",
+    ),
+    "COLOR-060": ("tests/unit/test_phase060_theme_platform.py", "tests/unit/test_brand_058.py"),
+    "PALETTE-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/unit/test_brand_058.py",
+        "tests/unit/test_theme_058.py",
+    ),
+    "THEME-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/unit/test_theme_053.py",
+        "tests/unit/test_theme_058.py",
+    ),
+    "VALIDATE-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/unit/test_recipe_058.py",
+    ),
+    "PACKAGE-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/unit/test_conformance_kit.py",
+    ),
+    "A11Y-MODE-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/unit/test_a11y_058.py",
+    ),
+    "RECIPE-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/unit/test_recipe_058.py",
+    ),
+    "SCOPE-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/unit/test_scope_058.py",
+    ),
+    "PREFERENCE-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/integration/test_theme_gallery.py",
+    ),
+    "BRAND-060": (
+        "tests/unit/test_brand_058.py",
+        "tests/browser/test_phase060_theme_platform.py",
+    ),
+    "FEEDBACK-060": ("tests/browser/test_phase060_theme_platform.py",),
+    "WORKFLOW-060": (
+        "tests/unit/test_workflow_057.py",
+        "tests/browser/test_phase060_theme_platform.py",
+    ),
+    "SCROLL-060": ("tests/browser/test_phase060_theme_platform.py",),
+    "CATALOG-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/integration/test_theme_gallery.py",
+    ),
+    "TOOLING-060": ("tests/unit/test_phase060_theme_platform.py",),
+    "EXPLORER-060": (
+        "tests/unit/test_explorer_040.py",
+        "tests/integration/test_explorer_026.py",
+    ),
+    "CONFORMANCE-060": (
+        "tests/unit/test_conformance_kit.py",
+        "tests/unit/test_conform_056.py",
+    ),
+    "DOCS-060": ("tests/unit/test_phase060_release_evidence.py",),
+    "VISUAL-060": (
+        "tests/unit/test_visual_058.py",
+        "tests/browser/test_phase060_theme_platform.py",
+    ),
+    "A11Y-060": (
+        "tests/unit/test_a11y_058.py",
+        "tests/browser/test_phase060_theme_platform.py",
+    ),
+    "SECURITY-060": (
+        "tests/unit/test_security_058.py",
+        "tests/unit/test_phase060_theme_platform.py",
+    ),
+    "PERF-060": ("tests/unit/test_theme_assets_build.py",),
+    "COMPAT-060": (
+        "tests/unit/test_phase059_release_evidence.py",
+        "tests/unit/test_phase060_theme_platform.py",
+    ),
+    "REGRESS-060": ("tests/unit/test_phase059_release_evidence.py",),
+    "PKG-060": (
+        "tests/unit/test_phase060_theme_platform.py",
+        "tests/unit/test_phase060_release_evidence.py",
+    ),
+}
 
 
 def _load(path: Path) -> dict[str, object]:

@@ -33,8 +33,8 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.59.0,<0.60",
-    "hedron>=0.59.0,<0.60",
+    "hedron-core>=0.60.0,<0.61",
+    "hedron>=0.60.0,<0.61",
 ]
 
 [project.urls]

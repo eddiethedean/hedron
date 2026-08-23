@@ -16,7 +16,7 @@ you do not need a Node.js toolchain or a full-script rerun model.
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
 Requires Python 3.11–3.14. Pin the published `hedron>=0.59.0,<0.60` release from PyPI.
-The published `v0.59.0` release is available on PyPI.
+The in-tree `v0.60.0` cut is ready; the latest public PyPI release remains `v0.59.0`.
 The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
@@ -114,7 +114,7 @@ Coming from Streamlit? Start with the
 ## Install
 
 The latest installable PyPI release is `hedron>=0.59.0,<0.60`. The repository checkout
-and PyPI both provide the `0.59.x` train; use `uv sync` when working from a checkout.
+and the repository provides the `0.60.x` train; PyPI currently provides `0.59.0` while the upload is deferred. Use `uv sync` when working from a checkout.
 
 ```bash
 uv add "hedron>=0.59.0,<0.60" "uvicorn[standard]"
@@ -122,7 +122,7 @@ uv add "hedron>=0.59.0,<0.60" "uvicorn[standard]"
 python -m pip install "hedron>=0.59.0,<0.60" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Repository train:** `0.59.x` · **Repository tip:** `0.59.0` · **Latest PyPI release:** `0.59.0` · **Application pin:** `>=0.59.0,<0.60`
+**Package maturity:** Beta · **Repository train:** `0.60.x` · **Repository tip:** `0.60.0` · **Latest PyPI release:** `0.59.0` · **Application pin:** `>=0.59.0,<0.60`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the

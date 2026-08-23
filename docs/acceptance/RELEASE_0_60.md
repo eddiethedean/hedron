@@ -1,9 +1,9 @@
 # Phase 0.60 acceptance plan — custom theme platform and styling completion
 
-**State:** In progress; additive runtime and Stage 0 evidence wiring present, with no release claim
+**State:** Implemented and verified in-tree as `v0.60.0`; PyPI publication remains deferred
 **Baseline:** Published/Verified in-tree and PyPI `v0.59.0`
 **Target:** `v0.60.0`
-**Authority:** RFC-0089 / proposed D-108 / `theme-platform-*-060.toml`
+**Authority:** RFC-0089 / D-108 / `theme-platform-*-060.toml`
 
 ## Outcome
 
@@ -34,7 +34,7 @@ inputs, recipes, scopes, public markers/tokens, component CSS, and host behavior
 Issue closure alone is not evidence. A gate cannot become Verified until the issue's acceptance
 criteria, the relevant source fixture, and the phase compatibility matrix all pass.
 
-## Planned release gates
+## Verified release gates
 
 | Gate | Required evidence |
 |---|---|
@@ -81,9 +81,9 @@ criteria, the relevant source fixture, and the phase compatibility matrix all pa
 - Validation remains categorical: no aggregate score may hide a critical failure, and suggested
   color/accessibility changes require explicit author choice.
 
-## Stage 1 entry
+## Stage 1 entry (satisfied)
 
-Runtime work begins only after proposed D-108 is accepted, the exact contract, component-contract/
+Runtime work began after D-108 was accepted, the exact contract, component-contract/
 profile map, and capped theme design brief are reviewed, the 0.59 reconciliation probe is recorded,
 #627–#635 carry the 0.60 milestone and backlinks, browser floors and validation matrix are locked,
 explicit-value, package-security, and fingerprint-reproducibility prototypes pass, and all numeric

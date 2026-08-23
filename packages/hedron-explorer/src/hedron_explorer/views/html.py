@@ -20,6 +20,7 @@ from hedron_explorer.views.pages import (
     routes_view,
     security_view,
     settings_view,
+    theme_lab_view,
 )
 
 __all__ = [
@@ -42,4 +43,5 @@ __all__ = [
     "routes_view",
     "security_view",
     "settings_view",
+    "theme_lab_view",
 ]

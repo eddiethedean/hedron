@@ -9,7 +9,7 @@ search:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first application platform · 0.59.0</div>
+<div class="hedron-eyebrow">Python-first application platform · 0.60.0</div>
 
 # Stay in Python. Build the whole application.
 
@@ -131,7 +131,7 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <summary>Package maturity and production pins</summary>
 
 Hedron’s flagship and host-adapter packages are Beta. The latest installable PyPI pin is
-`hedron>=0.59.0,<0.60`; the published train is `0.59.x`.
+`hedron>=0.59.0,<0.60`; the published train is `0.60.x`.
 For production adoption, continue with
 [What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
 </details>

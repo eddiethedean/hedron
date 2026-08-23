@@ -10,8 +10,8 @@ The full authoritative table lives in the repository (not duplicated here):
 | ID | Topic |
 |---|---|
 | D-105 | Unifies progressive feature and styling authoring in phase 0.58: one RFC/plan/acceptance/tracking/upgrade packet, W0–W17, twenty gates, integrated roles/ejection, and all starter migrations |
-| D-104 | Superseded by D-105; historical conditional 0.59 styling refine |
-| D-103 | Superseded by D-105; historical standalone 0.59 styling ownership |
+| D-104 | Superseded by D-105; historical conditional 0.60 styling refine |
+| D-103 | Superseded by D-105; historical standalone 0.60 styling ownership |
 | D-102 | Phase 0.58 Stage 0 locks signatures, lowering, schemas, security, host dispositions, budgets, scaffolds, starter adoption, tracking, gates, and upgrades |
 | D-101 | Progressive feature authoring and inspectable lowering own phase 0.58, including migration of every inventoried starter example to the highest applicable abstraction (RFC-0085) |
 | D-100 | Phase 0.57 Stage 0 locks finite presentation/CSP/semantics/parity/upgrade contracts without runtime or version changes |

@@ -137,7 +137,7 @@ Confirm that the project environment can import Hedron:
 uv run python -c "import hedron; print(hedron.__version__)"
 ```
 
-Expect **`0.59.0`**. The words `uv run` mean “run the
+Expect **`0.60.0`**. The words `uv run` mean “run the
 following command using this project's environment.” They prevent the common mistake of using a
 different Python from the one where the packages were installed.
 

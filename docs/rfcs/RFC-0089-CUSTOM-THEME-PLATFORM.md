@@ -1,11 +1,11 @@
 # RFC-0089: Custom theme platform and styling completion
 
-**Status:** Draft
+**Status:** Implemented
 **Phase:** 0.60
 **Planning baseline:** Published/Verified in-tree `v0.59.0`
 **Public upgrade source:** PyPI `v0.59.0`
 **Target:** `v0.60.0`
-**Decision:** Proposed D-108
+**Decision:** D-108
 **Contract:** [`theme-platform-contract-060.toml`](../acceptance/theme-platform-contract-060.toml)
 
 ## Summary

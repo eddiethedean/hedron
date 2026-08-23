@@ -1,6 +1,6 @@
 # What’s ready — evidence
 
-Maintainer and evaluator **capability matrices** for the **0.59.x** train. For the
+Maintainer and evaluator **capability matrices** for the **0.60.x** train. For the
 one-screen adopter summary, start at [What’s ready today](whats-ready.md).
 
 Release channel status: [Current release and support](current-release.md).
@@ -59,14 +59,14 @@ sessions are not Supported yet** — do not market human AT as done.
 | Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronWorkbench` / `HedronPosit`; no import auto-wrap |
 | Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.59.0,<0.60`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
+| Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.60.0,<0.61`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Runnable [model-demo example](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) — [Model demos](model-demos.md) · [Recipes](../examples/recipes/index.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.1` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
-| Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.59.0`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
-| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (published tip `v0.59.0`) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
-| Progressive screens (`Hedron.screen`) | **Supported** on FastAPI (API `beta`; tip `v0.59.0`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
+| Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.60.0`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
+| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (in-tree tip `v0.60.0`; PyPI `v0.59.0` until upload) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
+| Progressive screens (`Hedron.screen`) | **Supported** on FastAPI (API `beta`; tip `v0.60.0`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | Typed form commands (`form_command`) | **Supported** on FastAPI (API `beta`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | DataWorkspace screens (`with_screen`) | **Supported** on FastAPI + `hedron[data]` (API `beta`) | [DATA.md](../api/DATA.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | TaskFlow | **Supported** on FastAPI (API `beta`; polling) | [JOBS.md](../api/JOBS.md) · [What’s new in 0.58](whats-new-0.58.md) |
@@ -197,11 +197,11 @@ is a runnable classifier. Live interaction sample:
 
 Pin `hedron>=0.59.0,<0.60`. Public-index notes: [Installation](../getting-started/installation.md).
 
-Extras: `"hedron[data]>=0.59.0,<0.60"`, `"hedron[extras]>=0.59.0,<0.60"`,
-`"hedron[jinja]>=0.59.0,<0.60"`, `"hedron[dev]>=0.59.0,<0.60"`,
-`"hedron[notebook]>=0.59.0,<0.60"` (tooling / localhost),
-`"hedron[mcp]>=0.59.0,<0.60"` (Beta Supported inventory),
-`"hedron[gradio]>=0.59.0,<0.60"` (Beta satellite; pin `hedron-gradio>=0.2.0,<0.3`),
-`"hedron[charts]>=0.59.0,<0.60"`, `"hedron[maps]>=0.59.0,<0.60"`, `"hedron[workbench]>=0.59.0,<0.60"`,
-`"hedron[posit]>=0.59.0,<0.60"`,
+Extras: `"hedron[data]>=0.60.0,<0.61"`, `"hedron[extras]>=0.60.0,<0.61"`,
+`"hedron[jinja]>=0.60.0,<0.61"`, `"hedron[dev]>=0.60.0,<0.61"`,
+`"hedron[notebook]>=0.60.0,<0.61"` (tooling / localhost),
+`"hedron[mcp]>=0.60.0,<0.61"` (Beta Supported inventory),
+`"hedron[gradio]>=0.60.0,<0.61"` (Beta satellite; pin `hedron-gradio>=0.2.0,<0.3`),
+`"hedron[charts]>=0.60.0,<0.61"`, `"hedron[maps]>=0.60.0,<0.61"`, `"hedron[workbench]>=0.60.0,<0.61"`,
+`"hedron[posit]>=0.60.0,<0.61"`,
 and `"hedron-sample-kit>=0.2.0,<0.3"`.

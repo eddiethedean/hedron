@@ -64,7 +64,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.57** | Unified styling and presentation: shared appearance adoption, CSP-safe responsive layout, overflow contracts, surfaces, application chrome, data/identity primitives, and zero-application-CSS evidence | **Published** in-tree (`v0.57.0`; Verified gates; tag/PyPI deferred; D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570); [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569); living tip advanced to 0.58) |
 | **0.58** | Progressive feature and styling authoring: screens/forms/workspaces/flows, branded design systems, semantic recipes/roles, explicit scopes, unified inspect/preview/diff/override/ejection, and starter-first adoption | **Published** in-tree (`v0.58.1`; PyPI `v0.58.0`; Verified gates; D-101 / D-102 / D-105 / [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)) |
 | **0.59** | Modern CSS platform and intuitive built-in styling: standards-capable scoped compilation, canonical cascade/tokens, container-aware layout, modern color/type/media/overlay/motion, whole-fleet zero-CSS polish, and consumer vertical slices | **Published** (`v0.59.0` on PyPI; D-106 / D-107 / [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md)) |
-| **0.60** | Custom theme platform and styling completion: modern color, ThemeSpec/ThemePatch, registry-derived profiles/validation, fingerprints/conformance, packages, accessibility modes, recipes/scopes, persisted selection, capped built-ins, and #627–#635 | **Draft planning** (`v0.60.0` target; proposed D-108 / [RFC-0089](rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md)) |
+| **0.60** | Custom theme platform and styling completion: modern color, ThemeSpec/ThemePatch, registry-derived profiles/validation, fingerprints/conformance, packages, accessibility modes, recipes/scopes, persisted selection, capped built-ins, and #627–#635 | **Implemented and verified in-tree** (`v0.60.0`; D-108 / [RFC-0089](rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md); PyPI deferred) |
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -6269,7 +6269,7 @@ package checks, and honest Required/Progressive/Experimental/Deferred release do
 
 ## 0.60 — Custom theme platform and styling completion (`v0.60.0` target)
 
-**Status:** Draft planning (proposed D-108 / RFC-0089). Required predecessor Published/Verified
+**Status:** Implemented and verified in-tree (D-108 / RFC-0089). Required predecessor Published/Verified
 `v0.59.0` is satisfied in-tree and on PyPI. Planning does not add runtime symbols, change versions,
 close issues, or claim a release. Stage 1 requires accepted D-108 and the entry conditions in the
 0.60 contract.

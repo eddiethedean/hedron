@@ -51,7 +51,14 @@ _FUNCTION = re.compile(r"^(?P<name>[A-Za-z][A-Za-z0-9-]*)\((?P<body>.*)\)$", re.
 
 
 def _canonical(value: object) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    def thaw(item: Any) -> Any:
+        if isinstance(item, Mapping):
+            return {str(key): thaw(child) for key, child in item.items()}
+        if isinstance(item, (tuple, list, set, frozenset)):
+            return [thaw(child) for child in item]
+        return item
+
+    return json.dumps(thaw(value), sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 
 def _freeze_mapping(value: Mapping[str, Any] | None) -> Mapping[str, Any]:
@@ -244,7 +251,14 @@ class Color:
         if name in {"rgb", "rgba"}:
             if len(raw) not in (3, 4) or (len(raw) == 4 and alpha_raw is not None):
                 raise ValueError("rgb() requires three channels and optional alpha")
-            channels = tuple(_number(item, scale=255.0, percent=True) for item in raw[:3])
+            channels = tuple(
+                float(item.strip()[:-1]) / 100.0
+                if item.strip().endswith("%")
+                else float(item.strip()) / 255.0
+                for item in raw[:3]
+            )
+            if not all(0.0 <= channel <= 1.0 for channel in channels):
+                raise ValueError("rgb channels must be between 0 and 255 or 0% and 100%")
             alpha = _alpha(raw[3]) if len(raw) == 4 else (_alpha(alpha_raw) if alpha_raw else 1.0)
             return cls("srgb", (channels[0], channels[1], channels[2]), alpha)
         if name in {"hsl", "hsla"}:
@@ -338,6 +352,8 @@ class ThemeSpec:
     modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     aliases: Mapping[str, str] = field(default_factory=dict)
+    groups: Mapping[str, str] = field(default_factory=dict)
+    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     metadata: Mapping[str, Any] = field(default_factory=dict)
     schema: str = "hedron.theme-spec/1"
     profile: str = "core"
@@ -356,10 +372,29 @@ class ThemeSpec:
                     raise ValueError(f"{field_name}[{key!r}] must be a non-empty string")
                 if any(char in value for char in ";{}<>") or "url(" in value.lower():
                     raise ValueError(f"unsafe theme value for {field_name}[{key!r}]")
+        for key, value in self.groups.items():
+            if (
+                not _NAME.fullmatch(str(key))
+                or not isinstance(value, str)
+                or not _NAME.fullmatch(value)
+            ):
+                raise ValueError("theme groups must use safe identifiers")
+        for family, values in self.recipes.items():
+            if not _NAME.fullmatch(str(family)) or not isinstance(values, Mapping):
+                raise ValueError("theme recipe families must use safe identifiers")
+            for key, value in values.items():
+                if (
+                    not _NAME.fullmatch(str(key))
+                    or not isinstance(value, str)
+                    or not _NAME.fullmatch(value)
+                ):
+                    raise ValueError("theme recipe values must use safe identifiers")
         object.__setattr__(self, "tokens", _freeze_mapping(self.tokens))
         object.__setattr__(self, "modes", _freeze_mapping(self.modes))
         object.__setattr__(self, "accessibility_modes", _freeze_mapping(self.accessibility_modes))
         object.__setattr__(self, "aliases", _freeze_mapping(self.aliases))
+        object.__setattr__(self, "groups", _freeze_mapping(self.groups))
+        object.__setattr__(self, "recipes", _freeze_mapping(self.recipes))
         object.__setattr__(self, "metadata", _freeze_mapping(self.metadata))
         object.__setattr__(
             self,
@@ -408,6 +443,8 @@ class ThemeSpec:
                 Mapping[str, Mapping[str, str]], data.get("accessibility_modes", {})
             ),
             aliases=cast(Mapping[str, str], data.get("aliases", {})),
+            groups=cast(Mapping[str, str], data.get("groups", {})),
+            recipes=cast(Mapping[str, Mapping[str, str]], data.get("recipes", {})),
             metadata=cast(Mapping[str, Any], data.get("metadata", {})),
             schema=str(data.get("schema", "hedron.theme-spec/1")),
             profile=str(data.get("profile", "core")),
@@ -433,6 +470,8 @@ class ThemeSpec:
                 key: dict(value) for key, value in self.accessibility_modes.items()
             },
             "aliases": dict(self.aliases),
+            "groups": dict(self.groups),
+            "recipes": {key: dict(value) for key, value in self.recipes.items()},
             "metadata": dict(self.metadata),
             "profile": self.profile,
             "provenance": [dict(item) for item in self.provenance],
@@ -449,6 +488,8 @@ class ThemeSpec:
         modes: Mapping[str, Mapping[str, str]] | None = None,
         accessibility_modes: Mapping[str, Mapping[str, str]] | None = None,
         aliases: Mapping[str, str] | None = None,
+        groups: Mapping[str, str] | None = None,
+        recipes: Mapping[str, Mapping[str, str]] | None = None,
         base_fingerprint: str | None = None,
         provenance: Iterable[Mapping[str, Any]] = (),
     ) -> ThemeSpec:
@@ -459,6 +500,8 @@ class ThemeSpec:
             modes=modes or {},
             accessibility_modes=accessibility_modes or {},
             aliases=aliases or {},
+            groups=groups or {},
+            recipes=recipes or {},
             base_fingerprint=base_fingerprint,
             provenance=tuple(provenance),
         ).apply(self)
@@ -494,6 +537,8 @@ class ThemePatch:
     modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     aliases: Mapping[str, str] = field(default_factory=dict)
+    groups: Mapping[str, str] = field(default_factory=dict)
+    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     base_fingerprint: str | None = None
     provenance: tuple[Mapping[str, Any], ...] = ()
 
@@ -514,6 +559,8 @@ class ThemePatch:
             modes=modes,
             accessibility_modes=a11y,
             aliases={**dict(spec.aliases), **dict(self.aliases)},
+            groups={**dict(spec.groups), **dict(self.groups)},
+            recipes={**dict(spec.recipes), **dict(self.recipes)},
             metadata={**dict(spec.metadata), "last_patch": self.name},
             profile=spec.profile,
             provenance=(*spec.provenance, *self.provenance, {"patch": self.name}),
@@ -531,23 +578,56 @@ class ThemePatch:
                 key: dict(value) for key, value in self.accessibility_modes.items()
             },
             "aliases": dict(self.aliases),
+            "groups": dict(self.groups),
+            "recipes": {key: dict(value) for key, value in self.recipes.items()},
             "provenance": [dict(item) for item in self.provenance],
         }
 
 
 class ThemeBuilder:
-    """Mutable convenience facade that emits one immutable ``ThemeSpec``."""
+    """Pure convenience facade that emits one immutable ``ThemeSpec``.
 
-    def __init__(self, name: str, *, base: ThemeSpec | None = None) -> None:
-        source = base or ThemeSpec(name=name, tokens={})
+    Each authoring operation returns a new builder.  This keeps the fluent API
+    pleasant while making a builder safe to retain as a reusable base.
+    """
+
+    def __init__(self, name: str, *, base: ThemeSpec | Any | None = None) -> None:
+        if isinstance(base, ThemeSpec):
+            source = base
+        elif base is not None:
+            source = ThemeSpec(
+                name=name,
+                tokens=dict(getattr(base, "tokens", {})),
+                modes=dict(getattr(base, "modes", {})),
+                accessibility_modes=dict(getattr(base, "accessibility_modes", {})),
+                metadata=dict(getattr(base, "metadata", {})),
+            )
+        else:
+            source = ThemeSpec(name=name, tokens={})
         self._name = name
         self._tokens = dict(source.tokens)
         self._modes = {key: dict(value) for key, value in source.modes.items()}
         self._a11y = {key: dict(value) for key, value in source.accessibility_modes.items()}
         self._aliases = dict(source.aliases)
+        self._groups = dict(getattr(source, "groups", {}))
+        self._recipes = {key: dict(value) for key, value in getattr(source, "recipes", {}).items()}
         self._metadata = dict(source.metadata)
         self._profile = source.profile
         self._provenance = list(source.provenance)
+
+    def _clone(self) -> ThemeBuilder:
+        clone = object.__new__(type(self))
+        clone._name = self._name
+        clone._tokens = dict(self._tokens)
+        clone._modes = {key: dict(value) for key, value in self._modes.items()}
+        clone._a11y = {key: dict(value) for key, value in self._a11y.items()}
+        clone._aliases = dict(self._aliases)
+        clone._groups = dict(self._groups)
+        clone._recipes = {key: dict(value) for key, value in self._recipes.items()}
+        clone._metadata = dict(self._metadata)
+        clone._profile = self._profile
+        clone._provenance = list(self._provenance)
+        return clone
 
     @classmethod
     def from_spec(cls, spec: ThemeSpec) -> ThemeBuilder:
@@ -566,46 +646,105 @@ class ThemeBuilder:
         )
 
     def token(self, name: str, value: str | Color) -> ThemeBuilder:
-        self._tokens[name] = value.to_hex() if isinstance(value, Color) else value
-        return self
+        builder = self._clone()
+        builder._tokens[name] = value.to_hex() if isinstance(value, Color) else value
+        return builder
+
+    def tokens(self, values: Mapping[str, str | Color]) -> ThemeBuilder:
+        builder = self._clone()
+        for name, value in values.items():
+            builder._tokens[name] = value.to_hex() if isinstance(value, Color) else value
+        return builder
+
+    def brand(self, *, accent: str | Color, **values: str | Color) -> ThemeBuilder:
+        color = Color.parse(accent)
+        builder = self._clone()
+        builder._tokens["color.accent"] = color.to_hex()
+        builder._metadata["brand"] = {
+            "requested": color.to_css(fallback=False),
+            "space": color.space,
+            "fallback": color.to_hex(),
+            **{
+                key: value.to_hex() if isinstance(value, Color) else value
+                for key, value in values.items()
+            },
+        }
+        return builder
+
+    def groups(self, **groups: str) -> ThemeBuilder:
+        builder = self._clone()
+        for name, value in groups.items():
+            if (
+                not _NAME.fullmatch(name)
+                or not isinstance(value, str)
+                or not _NAME.fullmatch(value)
+            ):
+                raise ValueError("theme groups must use safe identifiers")
+            builder._groups[name] = value
+        return builder
+
+    def accessibility_mode(
+        self,
+        name: str,
+        values: Mapping[str, str | Color] | None = None,
+        **tokens: str | Color,
+    ) -> ThemeBuilder:
+        merged = dict(values or {})
+        merged.update(tokens)
+        return self.accessibility(name, **merged)
+
+    def recipe(self, name: str, values: Mapping[str, str]) -> ThemeBuilder:
+        if not _NAME.fullmatch(name) or any(
+            not _NAME.fullmatch(key) or not _NAME.fullmatch(value) for key, value in values.items()
+        ):
+            raise ValueError("theme recipes must use safe identifiers")
+        builder = self._clone()
+        builder._recipes[name] = dict(values)
+        return builder
 
     def alias(self, name: str, target: str) -> ThemeBuilder:
+        builder = self._clone()
         reference = target if target.startswith("@") else f"@{target}"
-        self._aliases[name] = reference
-        self._tokens[name] = reference
-        return self
+        builder._aliases[name] = reference
+        builder._tokens[name] = reference
+        return builder
 
     def mode(self, name: str, **tokens: str | Color) -> ThemeBuilder:
-        self._modes.setdefault(name, {}).update(
+        builder = self._clone()
+        builder._modes.setdefault(name, {}).update(
             {
                 key: value.to_hex() if isinstance(value, Color) else value
                 for key, value in tokens.items()
             }
         )
-        return self
+        return builder
 
     def accessibility(self, name: str, **tokens: str | Color) -> ThemeBuilder:
-        self._a11y.setdefault(name, {}).update(
+        builder = self._clone()
+        builder._a11y.setdefault(name, {}).update(
             {
                 key: value.to_hex() if isinstance(value, Color) else value
                 for key, value in tokens.items()
             }
         )
-        return self
+        return builder
 
     def metadata(self, **values: Any) -> ThemeBuilder:
-        self._metadata.update(values)
-        return self
+        builder = self._clone()
+        builder._metadata.update(values)
+        return builder
 
     def profile(self, profile: str) -> ThemeBuilder:
         if profile not in THEME_COVERAGE_PROFILES:
             raise ValueError(f"unknown theme coverage profile: {profile}")
-        self._profile = profile
-        return self
+        builder = self._clone()
+        builder._profile = profile
+        return builder
 
     def provenance(self, **entry: Any) -> ThemeBuilder:
-        self._provenance.append(dict(entry))
-        return self
+        builder = self._clone()
+        builder._provenance.append(dict(entry))
+        return builder
 
     def build(self) -> ThemeSpec:
         return ThemeSpec(
@@ -614,10 +753,15 @@ class ThemeBuilder:
             modes=self._modes,
             accessibility_modes=self._a11y,
             aliases=self._aliases,
+            groups=self._groups,
+            recipes=self._recipes,
             metadata=self._metadata,
             profile=self._profile,
             provenance=tuple(self._provenance),
         )
+
+    def build_spec(self) -> ThemeSpec:
+        return self.build()
 
 
 @dataclass(frozen=True, slots=True)
@@ -735,6 +879,10 @@ class ComponentThemeContract:
     states: tuple[str, ...] = ()
     variants: tuple[str, ...] = ()
     required_tokens: tuple[str, ...] = ()
+    roles: tuple[str, ...] = ()
+    contrast_relationships: tuple[Mapping[str, str], ...] = ()
+    accessibility_behavior: Mapping[str, str] = field(default_factory=dict)
+    fallback_policy: Mapping[str, str] = field(default_factory=dict)
     profile: str = "core"
 
     def __post_init__(self) -> None:
@@ -742,6 +890,41 @@ class ComponentThemeContract:
             raise ValueError("component contract id must be a safe identifier")
         if self.profile not in THEME_COVERAGE_PROFILES:
             raise ValueError(f"unknown theme coverage profile: {self.profile}")
+        for field_name, values in (
+            ("parts", self.parts),
+            ("states", self.states),
+            ("variants", self.variants),
+            ("required_tokens", self.required_tokens),
+            ("roles", self.roles),
+        ):
+            if any(not isinstance(value, str) or not _NAME.fullmatch(value) for value in values):
+                raise ValueError(f"component contract {field_name} must use safe identifiers")
+        relationships: list[Mapping[str, str]] = []
+        for relationship in self.contrast_relationships:
+            if not isinstance(relationship, Mapping) or not relationship:
+                raise ValueError("contrast relationships must be non-empty mappings")
+            normalized = {str(key): str(value) for key, value in relationship.items()}
+            if any(
+                not _NAME.fullmatch(key) or not _NAME.fullmatch(value)
+                for key, value in normalized.items()
+            ):
+                raise ValueError("contrast relationships must use safe identifiers")
+            relationships.append(MappingProxyType(dict(sorted(normalized.items()))))
+        object.__setattr__(self, "parts", tuple(dict.fromkeys(self.parts)))
+        object.__setattr__(self, "states", tuple(dict.fromkeys(self.states)))
+        object.__setattr__(self, "variants", tuple(dict.fromkeys(self.variants)))
+        object.__setattr__(self, "required_tokens", tuple(dict.fromkeys(self.required_tokens)))
+        object.__setattr__(self, "roles", tuple(dict.fromkeys(self.roles)))
+        object.__setattr__(self, "contrast_relationships", tuple(relationships))
+        object.__setattr__(
+            self, "accessibility_behavior", _freeze_mapping(self.accessibility_behavior)
+        )
+        object.__setattr__(self, "fallback_policy", _freeze_mapping(self.fallback_policy))
+
+    @property
+    def semantic_roles(self) -> tuple[str, ...]:
+        """Compatibility spelling used by contract and inventory tooling."""
+        return self.roles
 
 
 @dataclass(frozen=True, slots=True)
@@ -832,6 +1015,19 @@ def validate_theme_spec(
                 "tokens": absent,
             }
             (errors if strict else warnings).append(finding)
+        for relationship in contract.contrast_relationships:
+            relationship_tokens = {
+                value for value in relationship.values() if value.startswith("color.")
+            }
+            missing_relationship_tokens = sorted(relationship_tokens - set(spec.tokens))
+            if missing_relationship_tokens:
+                finding = {
+                    "code": "THEME-CONTRACT-RELATIONSHIP",
+                    "component": contract.logical_id,
+                    "tokens": missing_relationship_tokens,
+                    "relationship": dict(relationship),
+                }
+                (errors if strict else warnings).append(finding)
     for mode_name, values in spec.accessibility_modes.items():
         if mode_name not in {"forced-colors", "more-contrast"}:
             errors.append({"code": "THEME-ACCESSIBILITY-MODE", "mode": mode_name})
@@ -890,6 +1086,9 @@ def package_theme(
     licenses: Iterable[str] = (),
     migrations: Mapping[str, str] | None = None,
 ) -> ThemePackage:
+    normalized_licenses = tuple(sorted(set(licenses)))
+    if not normalized_licenses:
+        raise ValueError("theme packages require at least one declared license")
     report = validate_theme_spec(spec, profile=profile)
     if not report.ok:
         raise ValueError(f"theme validation failed: {report.to_dict()}")
@@ -897,12 +1096,17 @@ def package_theme(
     manifest = {
         "schema": "hedron.theme-package/1",
         "name": spec.name,
+        "version": "1",
         "profile": profile,
+        "compatibility": {"hedron": ">=0.60,<0.61", "theme_schema": spec.schema},
+        "specs": ["theme.json"],
         "fingerprint": spec.fingerprint,
         "files": {"theme.json": hashlib.sha256(payload).hexdigest()},
-        "licenses": sorted(set(licenses)),
+        "licenses": normalized_licenses,
         "migrations": dict(sorted((migrations or {}).items())),
         "validation": report.digest,
+        "assets": {},
+        "hooks": [],
     }
     manifest_bytes = _canonical(manifest).encode()
     output = BytesIO()
@@ -931,6 +1135,21 @@ def load_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
         raise ValueError("invalid theme package archive") from exc
     if not isinstance(manifest, dict) or manifest.get("schema") != "hedron.theme-package/1":
         raise ValueError("unsupported theme package manifest")
+    if manifest.get("version") != "1":
+        raise ValueError("unsupported theme package version")
+    if not isinstance(manifest.get("name"), str) or not _NAME.fullmatch(manifest["name"]):
+        raise ValueError("theme package name is missing or unsafe")
+    if not isinstance(manifest.get("specs"), list) or manifest["specs"] != ["theme.json"]:
+        raise ValueError("theme package must declare exactly theme.json")
+    compatibility = manifest.get("compatibility")
+    if not isinstance(compatibility, dict) or compatibility.get("hedron") != ">=0.60,<0.61":
+        raise ValueError("theme package Hedron compatibility is unsupported")
+    if not isinstance(manifest.get("licenses"), list) or not manifest["licenses"]:
+        raise ValueError("theme package must declare at least one license")
+    if not all(isinstance(item, str) and item.strip() for item in manifest["licenses"]):
+        raise ValueError("theme package licenses must be non-empty strings")
+    if manifest.get("hooks") != [] or manifest.get("assets") != {}:
+        raise ValueError("theme packages cannot contain executable hooks or remote assets")
     files = manifest.get("files")
     if (
         not isinstance(files, dict)
@@ -938,6 +1157,8 @@ def load_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
     ):
         raise ValueError("theme package theme.json hash does not match manifest")
     spec = ThemeSpec.from_dict(cast(Mapping[str, Any], json.loads(payload)))
+    if manifest.get("name") != spec.name:
+        raise ValueError("theme package name does not match theme.json")
     if manifest.get("fingerprint") != spec.fingerprint:
         raise ValueError("theme package fingerprint does not match theme.json")
     profile = str(manifest.get("profile", "core"))
@@ -979,6 +1200,8 @@ def diff_theme_specs(left: ThemeSpec, right: ThemeSpec) -> dict[str, Any]:
         "aliases": changes(left.aliases, right.aliases),
         "modes": changes(left.modes, right.modes),
         "accessibility_modes": changes(left.accessibility_modes, right.accessibility_modes),
+        "groups": changes(left.groups, right.groups),
+        "recipes": changes(left.recipes, right.recipes),
     }
 
 
@@ -995,6 +1218,8 @@ def explain_theme_spec(spec: ThemeSpec) -> dict[str, Any]:
         "accessibility_modes": {
             key: dict(value) for key, value in spec.accessibility_modes.items()
         },
+        "groups": dict(spec.groups),
+        "recipes": {key: dict(value) for key, value in spec.recipes.items()},
         "provenance": [dict(item) for item in spec.provenance],
     }
 
