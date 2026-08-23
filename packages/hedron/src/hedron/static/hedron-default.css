@@ -2443,6 +2443,8 @@
     padding: 0;
     list-style: none;
   }
+  .hedron-connector-track[data-hedron-connector-active="true"] { animation: hedron-status-pulse 1.2s infinite; }
+  @media (prefers-reduced-motion: reduce) { .hedron-connector-track[data-hedron-connector-active="true"] { animation: none; } }
 
   .hedron-process-flow[data-hedron-direction="horizontal"][data-hedron-flow-collapse="never"] {
     grid-auto-flow: column;

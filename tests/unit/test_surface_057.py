@@ -42,15 +42,23 @@ def test_surface_card_and_typed_chrome() -> None:
         mode=RenderMode.FRAGMENT,
     ).html
     assert 'data-hedron-appearance="plain"' in card
-    brand = render(Brand("Hedron", href="/"), context=ctx, mode=RenderMode.FRAGMENT).html
+    brand = render(
+        Brand("Hedron", href="/", mark_text="H", subtitle="Typed UI"),
+        context=ctx,
+        mode=RenderMode.FRAGMENT,
+    ).html
     assert 'data-hedron-brand="true"' in brand
+    assert 'class="hedron-brand-copy"' in brand
+    assert 'class="hedron-brand-subtitle"' in brand
     account = render(
-        AccountSummary("Ada", detail="Admin", href="/account"),
+        AccountSummary("Ada", detail="Admin", href="/account", mark_text="A", action=Text("Sign out")),
         context=ctx,
         mode=RenderMode.FRAGMENT,
     ).html
     assert 'data-hedron-account-summary="true"' in account
     assert 'href="/account"' in account
+    assert 'class="hedron-account-copy"' in account
+    assert "Sign out" in account
     banner = render(EnvironmentBanner("Staging"), context=ctx, mode=RenderMode.FRAGMENT).html
     assert 'data-hedron-environment-banner="true"' in banner
     status = render(NavStatus("Connected"), context=ctx, mode=RenderMode.FRAGMENT).html

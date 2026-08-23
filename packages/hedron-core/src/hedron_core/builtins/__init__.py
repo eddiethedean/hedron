@@ -109,7 +109,13 @@ from hedron_core.builtins.model_demo import (
     ParameterViewer,
     PredictionLabel,
 )
-from hedron_core.builtins.process_flow import FlowStep, ProcessFlow
+from hedron_core.builtins.process_flow import (
+    ConnectorFlow,
+    ConnectorNode,
+    ConnectorTrack,
+    FlowStep,
+    ProcessFlow,
+)
 from hedron_core.builtins.resources import ResourceList, ResourceRow
 from hedron_core.builtins.shell import (
     AccountSummary,
@@ -198,6 +204,9 @@ __all__ = [
     "ColorInput",
     "ConfirmButton",
     "Container",
+    "ConnectorFlow",
+    "ConnectorNode",
+    "ConnectorTrack",
     "ContextMenu",
     "CsrfField",
     "DateInput",

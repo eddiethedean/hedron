@@ -18,6 +18,9 @@ from hedron import (
     Brand,
     Button,
     Container,
+    ConnectorFlow,
+    ConnectorNode,
+    ConnectorTrack,
     Dialog,
     EnvironmentBanner,
     FlowStep,
@@ -143,6 +146,30 @@ def test_container_layout_and_intrinsic_content_release_matrix() -> None:
         "overflow-wrap: anywhere",
     ):
         assert marker in css
+
+
+def test_workflow_connector_release_matrix_is_provider_neutral_and_reduced_motion_safe() -> None:
+    rendered = render(
+        ConnectorFlow(
+            ConnectorNode("Source", kind="source", state="ready", detail="MSS"),
+            ConnectorTrack(Text("Extract"), label="Transfer stages", active=True),
+            ConnectorNode("Destination", kind="target", state="blocked", detail="Postgres"),
+            direction="vertical",
+        )
+    ).html
+    for marker in (
+        'data-hedron-connector-flow="true"',
+        'data-hedron-connector-direction="vertical"',
+        'data-hedron-connector-node="true"',
+        'data-hedron-connector-kind="source"',
+        'data-hedron-connector-state="blocked"',
+        'data-hedron-connector-track="true"',
+        'data-hedron-connector-active="true"',
+    ):
+        assert marker in rendered
+    css = CSS.read_text(encoding="utf-8")
+    assert ".hedron-connector-track" in css
+    assert "prefers-reduced-motion" in css
 
 
 def test_control_and_security_release_matrix_uses_native_safe_attribute_seam() -> None:

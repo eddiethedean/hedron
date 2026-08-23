@@ -12,10 +12,22 @@ from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.typing_aliases import HtmlAttrValue
 
-__all__ = ["FLOW_KINDS", "FLOW_STATUSES", "FlowStep", "ProcessFlow"]
+__all__ = [
+    "CONNECTOR_KINDS",
+    "CONNECTOR_STATES",
+    "FLOW_KINDS",
+    "FLOW_STATUSES",
+    "ConnectorFlow",
+    "ConnectorNode",
+    "ConnectorTrack",
+    "FlowStep",
+    "ProcessFlow",
+]
 
 FLOW_STATUSES: tuple[str, ...] = ("complete", "current", "pending", "blocked", "skipped")
 FLOW_KINDS: tuple[str, ...] = ("step", "milestone", "decision", "end")
+CONNECTOR_KINDS: tuple[str, ...] = ("source", "target")
+CONNECTOR_STATES: tuple[str, ...] = ("ready", "blocked", "running", "succeeded", "failed")
 
 # Status is never communicated by color alone; each step renders this text.
 _STATUS_TEXT: dict[str, str] = {
@@ -25,6 +37,194 @@ _STATUS_TEXT: dict[str, str] = {
     "blocked": "Blocked",
     "skipped": "Skipped",
 }
+
+
+class ConnectorNodeProps(ElementProps):
+    label: str
+    kind: Literal["source", "target"] = "source"
+    state: Literal["ready", "blocked", "running", "succeeded", "failed"] = "ready"
+    detail: str | None = None
+    runtime: str | None = None
+
+
+class ConnectorNode(Component[ConnectorNodeProps]):
+    """Provider-neutral source/destination node for data movement workflows.
+
+    The component owns the semantic markers and the baseline responsive card
+    treatment. Applications provide provider identity and metadata as content,
+    so connector styling does not require private application selectors.
+    """
+
+    props_type = ConnectorNodeProps
+    logical_name = "ConnectorNode"
+
+    def __init__(
+        self,
+        label: str,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        kind: Literal["source", "target"] = "source",
+        state: Literal["ready", "blocked", "running", "succeeded", "failed"] = "ready",
+        detail: str | None = None,
+        runtime: str | None = None,
+        leading: NodeLike = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        require_choice(kind, CONNECTOR_KINDS, label="connector kind")
+        require_choice(state, CONNECTOR_STATES, label="connector state")
+        if not label.strip():
+            raise error(
+                HED_HTML_0006,
+                title="ConnectorNode label is required",
+                explanation="A connector node needs a discernible provider label.",
+                remediation="Pass a non-empty label.",
+            )
+        super().__init__(
+            ConnectorNodeProps(
+                label=label,
+                kind=kind,
+                state=state,
+                detail=detail,
+                runtime=runtime,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._children = collect_children(*nodes, children=children)
+        self._leading = leading
+
+    def render(self) -> NodeLike:
+        heading: list[NodeLike] = []
+        if self._leading is not None:
+            heading.append(self._leading)
+        heading.append(html.h3(self.props.label, class_="hedron-connector-node-label"))
+        body: list[NodeLike] = [html.div(*heading, class_="hedron-connector-node-heading")]
+        if self.props.detail:
+            body.append(html.p(self.props.detail, class_="hedron-connector-node-detail"))
+        if self.props.runtime:
+            body.append(html.p(self.props.runtime, class_="hedron-connector-node-runtime"))
+        body.extend(self._children)
+        return html.article(
+            *body,
+            id=self.props.id,
+            class_=class_names("hedron-connector-node hedron-process-flow-step", self.props.class_),
+            data={
+                "hedron-connector-node": "true",
+                "hedron-connector-kind": self.props.kind,
+                "hedron-connector-state": self.props.state,
+                "hedron-flow-status": "blocked" if self.props.state == "blocked" else "pending",
+                **mark_data(self.props.mark),
+            },
+        )
+
+
+class ConnectorFlowProps(ElementProps):
+    direction: Literal["horizontal", "vertical"] = "horizontal"
+    collapse: Literal["never", "sm", "md", "lg"] = "md"
+
+
+class ConnectorFlow(Component[ConnectorFlowProps]):
+    """Responsive connector-node canvas with a documented fallback layout."""
+
+    props_type = ConnectorFlowProps
+    logical_name = "ConnectorFlow"
+
+    def __init__(
+        self,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        direction: Literal["horizontal", "vertical"] = "horizontal",
+        collapse: Literal["never", "sm", "md", "lg"] = "md",
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        require_choice(direction, ("horizontal", "vertical"), label="connector direction")
+        require_choice(collapse, ("never", "sm", "md", "lg"), label="connector collapse")
+        super().__init__(
+            ConnectorFlowProps(
+                direction=direction,
+                collapse=collapse,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        return html.div(
+            *self._children,
+            id=self.props.id,
+            class_=class_names("hedron-connector-flow hedron-process-flow", self.props.class_),
+            data={
+                "hedron-connector-flow": "true",
+                "hedron-connector-direction": self.props.direction,
+                "hedron-connector-collapse": self.props.collapse,
+                "hedron-direction": self.props.direction,
+                "hedron-flow-collapse": self.props.collapse,
+                **mark_data(self.props.mark),
+            },
+        )
+
+
+class ConnectorTrackProps(ElementProps):
+    active: bool = False
+    label: str | None = None
+
+
+class ConnectorTrack(Component[ConnectorTrackProps]):
+    """Accessible visual link between connector nodes.
+
+    Motion is opt-in and the static line/arrow remains usable when motion is
+    disabled, unsupported, or reduced by user preference.
+    """
+
+    props_type = ConnectorTrackProps
+    logical_name = "ConnectorTrack"
+
+    def __init__(
+        self,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        active: bool = False,
+        label: str | None = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            ConnectorTrackProps(
+                active=active,
+                label=label,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
+            "id": self.props.id,
+            "class_": class_names("hedron-connector-track hedron-process-flow-step", self.props.class_),
+            "data": {
+                "hedron-connector-track": "true",
+                "hedron-connector-active": self.props.active,
+                **mark_data(self.props.mark),
+            },
+            "aria": {"label": self.props.label} if self.props.label else None,
+        }
+        return html.div(*self._children, **attrs)
 
 
 class FlowStepProps(ElementProps):

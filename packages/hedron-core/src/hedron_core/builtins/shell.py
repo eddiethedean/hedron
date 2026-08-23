@@ -696,6 +696,10 @@ class BrandProps(ElementProps):
     name: str
     href: SafeUrl | None = None
     mark_text: str | None = None
+    subtitle: str | None = None
+    attrs: dict[str, HtmlAttrValue] | None = None
+    aria: dict[str, str | bool | int | float | None] | None = None
+    data: dict[str, str | bool | int | float | None] | None = None
 
 
 class Brand(Component[BrandProps]):
@@ -710,6 +714,10 @@ class Brand(Component[BrandProps]):
         *,
         href: SafeUrl | str | None = None,
         mark_text: str | None = None,
+        subtitle: str | None = None,
+        attrs: dict[str, HtmlAttrValue] | None = None,
+        aria: dict[str, str | bool | int | float | None] | None = None,
+        data: dict[str, str | bool | int | float | None] | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -730,6 +738,10 @@ class Brand(Component[BrandProps]):
                 name=name,
                 href=url,
                 mark_text=mark_text,
+                subtitle=subtitle,
+                attrs=attrs,
+                aria=aria,
+                data=data,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -738,13 +750,20 @@ class Brand(Component[BrandProps]):
         )
 
     def render(self) -> NodeLike:
-        label = html.span(self.props.name, class_="hedron-brand-name")
+        label_parts: list[NodeLike] = [html.strong(self.props.name, class_="hedron-brand-name")]
+        if self.props.subtitle:
+            label_parts.append(html.small(self.props.subtitle, class_="hedron-brand-subtitle"))
+        label = html.span(*label_parts, class_="hedron-brand-copy")
         mark = html.span(
             self.props.mark_text or self.props.name[:1],
             class_="hedron-brand-mark",
             aria={"hidden": "true"},
         )
-        data = {"hedron-brand": "true", **mark_data(self.props.mark)}
+        data = dict(self.props.data or {})
+        data.update({"hedron-brand": "true", **mark_data(self.props.mark)})
+        extra: dict[str, HtmlAttrValue] = dict(self.props.attrs or {})
+        if self.props.aria:
+            extra["aria"] = self.props.aria
         inner = (mark, label)
         if self.props.href is not None:
             return html.a(
@@ -753,12 +772,14 @@ class Brand(Component[BrandProps]):
                 id=self.props.id,
                 class_=class_names("hedron-brand", self.props.class_),
                 data=data,
+                **extra,
             )
         return html.div(
             *inner,
             id=self.props.id,
             class_=class_names("hedron-brand", self.props.class_),
             data=data,
+            **extra,
         )
 
 
@@ -766,6 +787,10 @@ class AccountSummaryProps(ElementProps):
     name: str
     detail: str | None = None
     href: SafeUrl | None = None
+    mark_text: str | None = None
+    attrs: dict[str, HtmlAttrValue] | None = None
+    aria: dict[str, str | bool | int | float | None] | None = None
+    data: dict[str, str | bool | int | float | None] | None = None
 
 
 class AccountSummary(Component[AccountSummaryProps]):
@@ -777,9 +802,14 @@ class AccountSummary(Component[AccountSummaryProps]):
     def __init__(
         self,
         name: str,
-        *,
+        *nodes: NodeLike,
         detail: str | None = None,
         href: SafeUrl | str | None = None,
+        mark_text: str | None = None,
+        action: NodeLike = None,
+        attrs: dict[str, HtmlAttrValue] | None = None,
+        aria: dict[str, str | bool | int | float | None] | None = None,
+        data: dict[str, str | bool | int | float | None] | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -800,18 +830,36 @@ class AccountSummary(Component[AccountSummaryProps]):
                 name=name,
                 detail=detail,
                 href=url,
+                mark_text=mark_text,
+                attrs=attrs,
+                aria=aria,
+                data=data,
                 id=id,
                 class_=class_,
                 mark=mark,
                 **kwargs,
             )
         )
+        self._actions = collect_children(*nodes, children=action)
 
     def render(self) -> NodeLike:
-        parts: list[NodeLike] = [html.span(self.props.name, class_="hedron-account-name")]
+        account_copy: list[NodeLike] = [html.span(self.props.name, class_="hedron-account-name")]
         if self.props.detail:
-            parts.append(html.span(self.props.detail, class_="hedron-account-detail"))
-        data = {"hedron-account-summary": "true", **mark_data(self.props.mark)}
+            account_copy.append(html.span(self.props.detail, class_="hedron-account-detail"))
+        parts: list[NodeLike] = [
+            html.span(
+                self.props.mark_text or self.props.name[:1],
+                class_="hedron-brand-mark hedron-account-mark",
+                aria={"hidden": "true"},
+            ),
+            html.span(*account_copy, class_="hedron-account-copy"),
+        ]
+        parts.extend(self._actions)
+        data = dict(self.props.data or {})
+        data.update({"hedron-account-summary": "true", **mark_data(self.props.mark)})
+        extra: dict[str, HtmlAttrValue] = dict(self.props.attrs or {})
+        if self.props.aria:
+            extra["aria"] = self.props.aria
         if self.props.href is not None:
             return html.a(
                 *parts,
@@ -819,12 +867,14 @@ class AccountSummary(Component[AccountSummaryProps]):
                 id=self.props.id,
                 class_=class_names("hedron-account-summary", self.props.class_),
                 data=data,
+                **extra,
             )
         return html.div(
             *parts,
             id=self.props.id,
             class_=class_names("hedron-account-summary", self.props.class_),
             data=data,
+            **extra,
         )
 
 
