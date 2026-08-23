@@ -3387,6 +3387,7 @@
   }
   @media print {
     .hedron-toast-host, .hedron-scroll-region { position: static; max-block-size: none; overflow: visible; }
+    .hedron-scroll-region[data-hedron-scroll-axis="both"] { overflow: visible; }
     .hedron-connector-flow { background-image: none !important; min-block-size: auto; }
   }
   @media (forced-colors: active) {
