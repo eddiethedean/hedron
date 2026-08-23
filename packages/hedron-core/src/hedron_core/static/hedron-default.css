@@ -30,6 +30,10 @@
     color-scheme: light;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    :root { --hedron-motion-duration: 0ms; }
+  }
+
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --hedron-default-bg: #0d121c;
