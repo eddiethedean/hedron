@@ -13,7 +13,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONSUMER = ROOT.parent / "user-token-managment-app"
 OUTPUT = ROOT / "docs/acceptance/evidence-059/consumer-059.json"
-TESTS = ("tests/test_ui_shell.py", "tests/test_ui_interactions.py", "tests/test_pipeline_runs.py")
+FOCUSED_TESTS = (
+    "tests/test_ui_shell.py",
+    "tests/test_ui_interactions.py",
+    "tests/test_pipeline_runs.py",
+)
 
 
 def _run(
@@ -62,6 +66,12 @@ def main() -> int:
     consumer_commit = git.stdout.strip() if git.returncode == 0 else None
     python = consumer / ".venv/bin/python"
     collected_total = 0
+    full_suite = os.environ.get("HEDRON_CONSUMER_FULL", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+    tests = () if full_suite else FOCUSED_TESTS
     if not python.is_file():
         errors.append(f"consumer virtualenv is missing: {python}")
         result = None
@@ -77,13 +87,13 @@ def main() -> int:
             + os.pathsep
             + env.get("PYTHONPATH", "")
         )
-        collect_command = [str(python), "-m", "pytest", "--collect-only", "-q", *TESTS]
+        collect_command = [str(python), "-m", "pytest", "--collect-only", "-q", *tests]
         collected = _run(collect_command, cwd=consumer, env=env)
         collected_counts = [
             int(value) for value in re.findall(r":\s+(\d+)\s*$", collected.stdout, re.M)
         ]
         collected_total = sum(collected_counts)
-        command = [str(python), "-m", "pytest", "-q", "--tb=short", *TESTS]
+        command = [str(python), "-m", "pytest", "-q", "--tb=short", *tests]
         result = _run(command, cwd=consumer, env=env)
         if result.returncode != 0:
             errors.append("consumer migration test slice failed")
@@ -99,7 +109,8 @@ def main() -> int:
         != "",
         "dependency_contract": "hedron>=0.59.0,<0.60; hedron-posit>=0.59.0,<0.60",
         "legacy_selectors": [],
-        "tests": list(TESTS),
+        "suite": "full" if full_suite else "focused",
+        "tests": list(tests) if tests else ["<consumer test suite>"],
         "collected": collected_total,
         "passed": int(passed_match.group("count"))
         if passed_match

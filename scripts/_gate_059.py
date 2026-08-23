@@ -19,6 +19,7 @@ CONTRACT = ROOT / "docs" / "acceptance" / "modern-css-contract-059.toml"
 GATE = ROOT / "docs" / "acceptance" / "release-gate-0.59.toml"
 TRACKING = ROOT / "docs" / "acceptance" / "modern-css-tracking-059.toml"
 EVIDENCE = ROOT / "docs" / "acceptance" / "evidence-059"
+RELEASE_EVIDENCE_TEST = "tests/unit/test_phase059_release_evidence.py"
 
 EXPECTED_GATES = (
     "CONTRACT-059",
@@ -215,6 +216,7 @@ def _validate_packet(gate_id: str) -> list[str]:
         "capability-chromium-059.json",
         "capability-firefox-059.json",
         "capability-webkit-059.json",
+        "release-matrix-059.json",
     )
     for artifact in required_artifacts:
         if not (EVIDENCE / artifact).is_file():
@@ -245,11 +247,16 @@ def check_gate(gate_id: str) -> int:
     for path in GATE_TESTS.get(gate_id, ()):
         if not (ROOT / path).is_file():
             errors.append(f"missing evidence test: {path}")
+    if not (ROOT / RELEASE_EVIDENCE_TEST).is_file():
+        errors.append(f"missing release evidence corpus: {RELEASE_EVIDENCE_TEST}")
     if errors:
         for error in errors:
             print(f"{gate_id}: {error}", flush=True)
         return 1
     if state == "Verified" or os.environ.get("HEDRON_GATE_VERIFY") == "1":
-        return _run_tests(GATE_TESTS[gate_id])
+        paths = GATE_TESTS[gate_id]
+        if RELEASE_EVIDENCE_TEST not in paths:
+            paths = (*paths, RELEASE_EVIDENCE_TEST)
+        return _run_tests(paths)
     print(f"ok: {gate_id} ({state}; executable evidence is not yet claimed)")
     return 0

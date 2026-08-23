@@ -1,0 +1,50 @@
+{
+  "schema": "hedron.release-evidence-matrix/1",
+  "phase": "0.59",
+  "test_module": "tests/unit/test_phase059_release_evidence.py",
+  "collected_cases": 19,
+  "cases": [
+    "test_compiler_release_corpus_covers_import_assets_and_versioned_manifests",
+    "test_compiler_release_corpus_fails_closed_and_redacts_unsafe_inputs",
+    "test_cascade_tokens_and_color_release_matrix_is_deterministic",
+    "test_container_layout_and_intrinsic_content_release_matrix",
+    "test_control_and_security_release_matrix_uses_native_safe_attribute_seam",
+    "test_shell_workflow_and_accessibility_release_matrix_is_semantic",
+    "test_overlay_release_matrix_has_native_and_document_flow_fallbacks",
+    "test_motion_media_typography_and_a11y_release_matrix_is_static_css_complete",
+    "test_dx_ejection_and_visual_serialization_are_reviewable",
+    "test_release_evidence_artifacts_are_present_and_machine_readable"
+  ],
+  "gates": {
+    "CONTRACT-059": "pass",
+    "COMPILER-059": "pass",
+    "CASCADE-059": "pass",
+    "TOKENS-059": "pass",
+    "COLOR-059": "pass",
+    "CONTAINER-059": "pass",
+    "LAYOUT-059": "pass",
+    "TYPE-059": "pass",
+    "CONTROL-059": "pass",
+    "CHROME-059": "pass",
+    "WORKFLOW-059": "pass",
+    "OVERLAY-059": "pass",
+    "MOTION-059": "pass",
+    "MEDIA-059": "pass",
+    "A11Y-059": "pass",
+    "DX-059": "pass",
+    "VISUAL-059": "pass",
+    "PERF-059": "pass",
+    "SECURITY-059": "pass",
+    "COMPAT-059": "pass",
+    "CONSUMER-059": "executable-pass-external-closure-pending",
+    "REGRESS-059": "pass",
+    "PKG-059": "pass"
+  },
+  "external_requirements": [
+    {
+      "condition": "source_issue_closure_required_at_cut",
+      "status": "blocked",
+      "issues": [623, 624, 625, 626]
+    }
+  ]
+}

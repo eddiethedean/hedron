@@ -4,8 +4,8 @@ These artifacts are the reproducible Stage 1 entry packet for the 0.59 modern-CS
 contract. They contain no secrets, absolute paths, or application data.
 
 `gate-results-059.json` is the current 23-gate execution ledger. It records the distinction
-between a passing implemented-scope check and a `Verified` release claim; the packet is not
-release-ready while any gate remains `Implemented`.
+between executable evidence and a `Verified` release claim; the packet is not release-ready
+while any gate remains `Deferred`.
 
 - `baseline-0581.json` records the stylesheet baseline from commit `d399f25b`.
 - `parser-recipe-059.json` records the in-tree parser corpus and explicit recipe probe.
@@ -15,8 +15,10 @@ release-ready while any gate remains `Implemented`.
 - `performance-059.json` records the current stylesheet/compiler/render budget measurements.
 - `package-059.json` records the built wheel/sdist inventory and package metadata checks.
 - `consumer-059.json` records the Data Mover migration slice, dependency pins, removed legacy
-  selectors, and focused UI/interaction/pipeline test result.
+  selectors, and full consumer-suite test result against the local 0.59 source.
 - `consumer-migration-059.patch` is the reviewable consumer diff used by that migration slice.
+- `release-matrix-059.json` maps the 19-case executable release corpus to all 23 gates and
+  records the external issue-closure conditions that remain outside executable evidence.
 
 Regenerate the probe artifacts with:
 
