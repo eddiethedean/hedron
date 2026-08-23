@@ -131,7 +131,12 @@ def _check_versions(*, allow_planned: bool) -> None:
         if published != PREDECESSOR:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
         return
-    if published.startswith("0.57.") or published.startswith("0.58.") or published.startswith("0.59."):
+    if (
+        published.startswith("0.57.")
+        or published.startswith("0.58.")
+        or published.startswith("0.59.")
+        or published.startswith("0.60.")
+    ):
         print(f"ok: 0.56 historical under living published {published}")
         return
     if not published.startswith("0.56."):
@@ -148,9 +153,7 @@ def _check_versions(*, allow_planned: bool) -> None:
             )
     elif status == "deferred":
         if pypi == published:
-            raise SystemExit(
-                "deferred cut requires pypi_version != published_version until upload"
-            )
+            raise SystemExit("deferred cut requires pypi_version != published_version until upload")
         if not (pypi.startswith("0.54.") or pypi.startswith(("0.55.", "0.56.", "0.57."))):
             raise SystemExit(
                 f"deferred pypi_version must stay on prior public index; found {pypi!r}"
@@ -183,6 +186,7 @@ def main(argv: list[str] | None = None) -> int:
             published.startswith("0.57.")
             or published.startswith("0.58.")
             or published.startswith("0.59.")
+            or published.startswith("0.60.")
         ):
             print("ok: 0.56 historical packet; skip execute-verified under living tip")
         else:

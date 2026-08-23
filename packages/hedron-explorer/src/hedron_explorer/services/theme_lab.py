@@ -21,10 +21,10 @@ def _theme_specs() -> dict[str, Any]:
     return {theme.name: ThemeBuilder.from_theme(theme).build_spec() for theme in builtin_themes()}
 
 
-def _selected_names(names: Iterable[str] | None, available: dict[str, Any]) -> tuple[str, ...]:
+def _selected_names(names: Iterable[str] | None, available: dict[str, Any]) -> list[str]:
     requested = tuple(dict.fromkeys(str(name) for name in (names or ("default", "aurora"))))
-    selected = tuple(name for name in requested if name in available)
-    return selected or ("default",)
+    selected = [name for name in requested if name in available]
+    return selected or ["default"]
 
 
 def theme_lab_report(

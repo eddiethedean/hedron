@@ -21,7 +21,6 @@ from _gate_054 import (  # noqa: E402
     PACKET_FILES,
     PYPROJECT,
     RELEASE,
-    RFC,
     ROADMAP,
     STATUS,
     TRACKING_ISSUE,
@@ -124,7 +123,7 @@ def _check_versions(*, allow_planned: bool) -> None:
         if published != PREDECESSOR:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
         return
-    if published.startswith(("0.55.", "0.56.", "0.57.", "0.58.", "0.59.")):
+    if published.startswith(("0.55.", "0.56.", "0.57.", "0.58.", "0.59.", "0.60.")):
         print(f"ok: 0.54 historical under living published {published}")
         return
     if not published.startswith("0.54."):
@@ -141,17 +140,9 @@ def _check_versions(*, allow_planned: bool) -> None:
             )
     elif status == "deferred":
         if pypi == published:
-            raise SystemExit(
-                "deferred cut requires pypi_version != published_version until upload"
-            )
-        if not (
-            pypi.startswith("0.51.")
-            or pypi.startswith("0.52.")
-            or pypi.startswith("0.53.")
-        ):
-            raise SystemExit(
-                f"deferred pypi_version must stay on 0.51.x–0.53.x; found {pypi!r}"
-            )
+            raise SystemExit("deferred cut requires pypi_version != published_version until upload")
+        if not (pypi.startswith("0.51.") or pypi.startswith("0.52.") or pypi.startswith("0.53.")):
+            raise SystemExit(f"deferred pypi_version must stay on 0.51.x–0.53.x; found {pypi!r}")
     else:
         raise SystemExit(f"registry_status must be uploaded or deferred; found {status!r}")
     print(f"ok: version honesty (published {published}, pypi {pypi}, {status})")
@@ -176,7 +167,7 @@ def main(argv: list[str] | None = None) -> int:
         print("ok: 0.54 planned gate shape")
     else:
         published = str(_load(RELEASE).get("release", {}).get("published_version", "")).strip()
-        if published.startswith(("0.55.", "0.56.", "0.57.", "0.58.", "0.59.")):
+        if published.startswith(("0.55.", "0.56.", "0.57.", "0.58.", "0.59.", "0.60.")):
             print("ok: 0.54 historical packet; skip execute-verified under living tip")
         else:
             command = [
