@@ -64,6 +64,14 @@ These documents describe how accepted RFC behavior will be implemented. They def
   built-in themes, and #627–#635 closure
 - [Phase 0.60 execution plan](EXECUTION_0_60.md) — ordered E0–E10 milestones, dependency rules,
   pull-request sequence, stop conditions, and release handoff
+- [Reactive interaction platform](REACTIVE_INTERACTION_PLATFORM_061_063.md) — proposed phases
+  0.61–0.63 program invariants, ownership, stage sequence, reference journeys, and stop conditions
+- [Phase 0.61 action state and async boundaries](ACTION_STATE_ASYNC_061.md) — W0–W11 contract,
+  lifecycle/race, boundary lowering, host/element, trace, budget, compatibility, and release plan
+- [Phase 0.62 navigation, optimism, and failure isolation](NAVIGATION_OPTIMISM_062.md) — W0–W12
+  navigation, prefetch/transition, optimistic risk, failure, identity, dashboard, and browser plan
+- [Phase 0.63 interaction tooling and interoperability](INTERACTION_TOOLING_063.md) — W0–W12
+  trace/profiler, static checks, metadata ABI, migration dispositions, conformance, and interop plan
 - [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
   workstreams for compiling the Markdown corpus into native Hedron component trees, building the
   docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud

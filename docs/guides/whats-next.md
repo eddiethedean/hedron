@@ -20,6 +20,22 @@ Install pins: [Current release](current-release.md) ·
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |
 
+## Proposed phases after 0.60
+
+| Phase | Focus | Status |
+|---|---|---|
+| **0.61** | Unified action state and server-first async boundaries | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
+| **0.62** | Responsive navigation, bounded optimistic UX, and localized failure isolation | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/NAVIGATION_OPTIMISM_062.md) |
+| **0.63** | Interaction profiling, static checks, and component interoperability | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
+
+These are planning proposals, not current Supported capabilities. Their shared purpose is to make
+Hedron's existing forms, actions, jobs, fragments, Web Components, optimistic mutations, and
+Explorer feel like one interaction platform while preserving server authority, progressive
+enhancement, and no-Node Python consumption. See the [implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/REACTIVE_INTERACTION_PLATFORM_061_063.md)
+and [acceptance rules](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/REACTIVE_INTERACTION_PHASES_061_063.md).
+Every phase now has an independent entry gate, workstreams, compatibility/rollback rules, budget
+categories, and release plan; none of those planned contracts is currently available or Supported.
+
 ## Verified 0.60 — custom theme platform and styling completion
 
 Phase 0.60 is implemented and verified in-tree. Capability-specific Required, Progressive,

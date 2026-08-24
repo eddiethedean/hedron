@@ -65,6 +65,9 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.58** | Progressive feature and styling authoring: screens/forms/workspaces/flows, branded design systems, semantic recipes/roles, explicit scopes, unified inspect/preview/diff/override/ejection, and starter-first adoption | **Published** in-tree (`v0.58.1`; PyPI `v0.58.0`; Verified gates; D-101 / D-102 / D-105 / [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)) |
 | **0.59** | Modern CSS platform and intuitive built-in styling: standards-capable scoped compilation, canonical cascade/tokens, container-aware layout, modern color/type/media/overlay/motion, whole-fleet zero-CSS polish, and consumer vertical slices | **Published** (`v0.59.0` on PyPI; D-106 / D-107 / [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md)) |
 | **0.60** | Custom theme platform and styling completion: modern color, ThemeSpec/ThemePatch, registry-derived profiles/validation, fingerprints/conformance, packages, accessibility modes, recipes/scopes, persisted selection, capped built-ins, and #627–#635 | **Implemented, verified, tagged, and published** (`v0.60.0`; D-108 / [RFC-0089](rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md)) |
+| **0.61** | Unified action state and server-first async boundaries | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
+| **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
+| **0.63** | Interaction profiling, static checks, and component ecosystem interoperability | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md)) |
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -6407,3 +6410,52 @@ authoring/interoperability, typed browser composition, and a production-grade Su
 The program is governed by Accepted RFC-0060 and RFC-0069. It preserves server-rendered HTML, HTMX, native
 form/navigation, polling, and server validation as canonical fallbacks; it does not turn Hedron into
 an SPA runtime or require Node.js in consuming Python applications.
+
+## Proposed phases 0.61–0.63 — reactive interaction platform
+
+RFC-0090 proposes the next coherent capability packet after the 0.60 theme platform. The phases
+learn from React's strongest application ideas—uniform action state, async boundaries, optimistic
+updates, stable identity, transition-aware navigation, localized failures, and developer tooling—
+without adopting a React runtime or changing Hedron's server-authoritative architecture.
+
+### 0.61 — Unified action state and async boundaries
+
+Every supported asynchronous interaction gets one typed lifecycle: idle, pending, success, error,
+cancelled, stale, and conflict. Forms, HTMX actions, jobs, lazy fragments, and Web Components use
+adapters over the same contract. A server-first `AsyncRegion` boundary owns pending fallback,
+retry, timeout, cancellation, errors, and full-page/full-fragment fallback. The phase now has a
+W0–W11 delivery plan covering predecessor reconciliation, operation generations, concurrency,
+stale-result rejection, forms/jobs/elements, one redacted trace, budgets, fleet adoption, upgrade,
+and packaging. See the [0.61 implementation plan](implementation/ACTION_STATE_ASYNC_061.md) and
+[release acceptance](acceptance/RELEASE_0_61.md).
+
+### 0.62 — Navigation, optimism, and failure isolation
+
+Safe navigation gains explicit prefetch, pending retention, focus/title/history behavior, stale
+response rejection, reduced-motion-aware View Transition enhancement, and full-navigation fallback.
+Bounded optimistic mutation expands from DataEditor/collection edits to approved toggles, inline
+edits, ordering, bulk actions, and dashboard filters. Localized failure boundaries and stable-
+identity diagnostics prevent one failing or late-updating region from damaging unrelated UI. The
+phase now requires an explicit optimistic risk inventory: authorization, tenant, payment, secret,
+irreversible destruction, and cross-tenant mutations stay server-confirmed. Its W0–W12 plan and
+browser/race/resource gates are in the [0.62 implementation plan](implementation/NAVIGATION_OPTIMISM_062.md)
+and [release acceptance](acceptance/RELEASE_0_62.md).
+
+### 0.63 — Developer tooling and ecosystem interoperability
+
+Explorer gains an interaction profiler and timeline. CLI checks detect hidden render I/O, mutable
+global state, unstable identities, missing fragment declarations, unsafe trust-boundary values,
+duplicate writers, missing fallbacks, and unbounded payloads. Supported Web Components publish
+typed TypeScript metadata. React migration guidance becomes evidence-backed and automated where
+possible; isolated React islands remain experimental and cannot own HTMX server regions. The phase
+now locks one cross-tool trace, a non-executing deterministic check catalog, registry-derived
+metadata identity, migration dispositions with honest non-fits, and an explicit omit-or-Experimental
+decision for the island recipe. See the [0.63 implementation plan](implementation/INTERACTION_TOOLING_063.md)
+and [release acceptance](acceptance/RELEASE_0_63.md).
+
+The phases are governed by [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md), the
+[program implementation plan](implementation/REACTIVE_INTERACTION_PLATFORM_061_063.md), and the
+[shared acceptance rules](acceptance/REACTIVE_INTERACTION_PHASES_061_063.md). They remain Proposed until
+their public contracts and release gates are accepted. They do not promote SSE/WebSockets,
+View Transitions, preload, or React islands to Supported defaults, and they do not create a
+mandatory client store, hydration layer, JSX requirement, or Node dependency.

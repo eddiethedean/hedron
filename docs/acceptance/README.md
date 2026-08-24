@@ -70,6 +70,14 @@ status commentary, not a satisfied release gate.
   as `v0.59.0` on PyPI (D-106 / D-107 / RFC-0087)
 - [`v0.60` custom theme platform and styling completion](RELEASE_0_60.md) — **Implemented, verified,
   tagged, and published** as `v0.60.0` (D-108 / RFC-0089; 27 gates Verified; owns Hedron #627–#635)
+- [Reactive interaction shared acceptance rules](REACTIVE_INTERACTION_PHASES_061_063.md) — Proposed
+  maturity, artifact, evidence, fallback, and cross-phase rules; no availability claim
+- [`v0.61` action state and async boundaries](RELEASE_0_61.md) — Proposed release plan with 16
+  Planned contract, lifecycle, race, host, trace, security, a11y, budget, upgrade, and package gates
+- [`v0.62` navigation, optimism, and failure isolation](RELEASE_0_62.md) — Proposed release plan with
+  17 Planned navigation, fallback, risk, conflict, identity, browser, budget, and package gates
+- [`v0.63` interaction tooling and interoperability](RELEASE_0_63.md) — Proposed release plan with
+  18 Planned trace, profiler, static-check, metadata, migration, conformance, and package gates
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
