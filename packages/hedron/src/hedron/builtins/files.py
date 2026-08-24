@@ -26,6 +26,8 @@ _UNSAFE_FILENAME = re.compile(r"[^A-Za-z0-9._-]+")
 
 
 def validate_upload_filename(name: str) -> str:
+    if "\x00" in name:
+        raise ValueError("Unsafe upload filename")
     base = Path(name).name
     if not base or base in {".", ".."} or "/" in name or "\\" in name:
         raise ValueError("Unsafe upload filename")

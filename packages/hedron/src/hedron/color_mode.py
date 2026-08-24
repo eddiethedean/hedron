@@ -7,6 +7,7 @@ from typing import Literal
 from starlette.requests import Request
 from starlette.responses import Response
 
+from hedron.security.csrf import _forwarded_proto_https_trusted
 from hedron_core.color_mode import ColorMode, resolve_color_mode
 from hedron_core.csrf_secure import csrf_cookie_should_be_secure
 
@@ -69,6 +70,9 @@ def apply_color_mode_cookie(
         secure = csrf_cookie_should_be_secure(
             force_secure=force_secure,
             request_is_secure=request_is_secure,
+            forwarded_proto_https_trusted=(
+                bool(_forwarded_proto_https_trusted(request)) if request is not None else False
+            ),
         )
     response.set_cookie(
         COOKIE_NAME,

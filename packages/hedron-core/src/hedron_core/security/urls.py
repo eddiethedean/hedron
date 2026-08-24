@@ -88,8 +88,8 @@ def reject_asset_path_traversal(raw: str, *, purpose: UrlPurpose = UrlPurpose.AS
     if (
         normalized != decoded_path
         or cleaned_norm != cleaned
-        or any(seg == ".." or ".." in seg for seg in segments)
-        or any(seg == ".." or ".." in seg for seg in cleaned.split("/"))
+        or any(seg == ".." for seg in segments)
+        or any(seg == ".." for seg in cleaned.split("/"))
     ):
         label = "Asset path" if purpose is UrlPurpose.ASSET else "Relative URL path"
         raise _url_error(

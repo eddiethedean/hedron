@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import unicodedata
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import PurePosixPath
@@ -33,7 +34,7 @@ def _as_upload_file(
 def _reject_traversal(path: str) -> None:
     if "\x00" in path:
         raise ValueError(f"Unsafe directory upload path: {path!r}")
-    raw = path.replace("\\", "/")
+    raw = unicodedata.normalize("NFKC", path.replace("\\", "/"))
     if "\x00" in raw:
         raise ValueError(f"Unsafe directory upload path: {path!r}")
     if not raw or raw.strip() != raw:
