@@ -66,7 +66,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.59** | Modern CSS platform and intuitive built-in styling: standards-capable scoped compilation, canonical cascade/tokens, container-aware layout, modern color/type/media/overlay/motion, whole-fleet zero-CSS polish, and consumer vertical slices | **Published** (`v0.59.0` on PyPI; D-106 / D-107 / [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md)) |
 | **0.60** | Custom theme platform and styling completion: modern color, ThemeSpec/ThemePatch, registry-derived profiles/validation, fingerprints/conformance, packages, accessibility modes, recipes/scopes, persisted selection, capped built-ins, and #627–#635 | **Implemented, verified, tagged, and published** (`v0.60.0`; D-108 / [RFC-0089](rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md)) |
 | **0.61** | Unified action state and server-first async boundaries | **Implemented, verified, tagged, and published** (`v0.61.0`; RFC-0090; [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
-| **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
+| **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Proposed / Stage 0 refinement** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Interaction profiling, static checks, and component ecosystem interoperability | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md)) |
 | **0.64** | First-party Hedron HTMX extension: lifecycle state, accessibility, concurrency presentation, cleanup, and browser traces | **Proposed / Stage 0 planned** ([RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md)) |
 
@@ -6419,9 +6419,8 @@ an SPA runtime or require Node.js in consuming Python applications.
 
 ## Reactive interaction platform: 0.61 implementation baseline and proposed 0.62–0.63
 
-RFC-0090 defines the next coherent capability packet after the 0.60 theme platform. Phase 0.61 has
-an implementation baseline in this repository; its release evidence is still pending. Phases 0.62
-and 0.63 remain proposals. The phases
+RFC-0090 defines the next coherent capability packet after the 0.60 theme platform. Phase 0.61 is
+verified and published as `v0.61.0`; phases 0.62 and 0.63 remain proposals. The phases
 learn from React's strongest application ideas—uniform action state, async boundaries, optimistic
 updates, stable identity, transition-aware navigation, localized failures, and developer tooling—
 without adopting a React runtime or changing Hedron's server-authoritative architecture.
@@ -6493,15 +6492,13 @@ The 0.61 exit packet must show all of the following across the surface track and
 
 ### 0.62 — Navigation, optimism, and failure isolation
 
-Safe navigation gains explicit prefetch, pending retention, focus/title/history behavior, stale
-response rejection, reduced-motion-aware View Transition enhancement, and full-navigation fallback.
-Bounded optimistic mutation expands from DataEditor/collection edits to approved toggles, inline
-edits, ordering, bulk actions, and dashboard filters. Localized failure boundaries and stable-
-identity diagnostics prevent one failing or late-updating region from damaging unrelated UI. The
-phase now requires an explicit optimistic risk inventory: authorization, tenant, payment, secret,
-irreversible destruction, and cross-tenant mutations stay server-confirmed. Its W0–W12 plan and
-browser/race/resource gates are in the [0.62 implementation plan](implementation/NAVIGATION_OPTIMISM_062.md)
-and [release acceptance](acceptance/RELEASE_0_62.md).
+Phase 0.62's Required cut is narrower: canonical navigation generations and full-navigation
+fallback, localized failure boundaries, stable identity/target diagnostics, and revisioned optimism
+for reversible toggles plus scalar/DataEditor edits. Prefetch, View Transitions, reordering, bulk
+actions, and dashboard fan-out remain Progressive and cannot become Supported by prototype alone.
+The explicit risk inventory keeps authorization, tenant, payment, secret, irreversible-destruction,
+offline, and cross-tenant work server-confirmed or excluded. See the refined [0.62 implementation
+plan](implementation/NAVIGATION_OPTIMISM_062.md) and [release acceptance](acceptance/RELEASE_0_62.md).
 
 ### 0.63 — Developer tooling and ecosystem interoperability
 
