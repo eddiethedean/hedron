@@ -497,6 +497,7 @@ from hedron_core.theme_contract import (
     ThemeResolution,
     build_state_matrix,
     component_contract_manifest,
+    element_metadata_manifest,
     export_theme,
     inspect_theme_css,
     resolve_theme,
@@ -525,6 +526,12 @@ from hedron_core.theme_platform import (
     registered_component_theme_contracts,
     registered_recipe_families,
     validate_theme_spec,
+)
+from hedron_core.trace_contract import (
+    TRACE_CONTRACT_SCHEMA,
+    decode_interaction_trace,
+    encode_interaction_trace,
+    profile_interaction_trace,
 )
 from hedron_core.type_schema import (
     TYPE_SCHEMA_NAMESPACE,
@@ -686,6 +693,7 @@ __all__ = [
     "compile_to_interaction",
     "compatibility_theme_vars",
     "component_contract_manifest",
+    "element_metadata_manifest",
     "Component",
     "ComponentNode",
     "compose_cross_filter",
@@ -747,6 +755,10 @@ __all__ = [
     "build_state_matrix",
     "inspect_theme_css",
     "theme_contract_report",
+    "TRACE_CONTRACT_SCHEMA",
+    "decode_interaction_trace",
+    "encode_interaction_trace",
+    "profile_interaction_trace",
     "validate_theme_spec",
     "descriptor_fingerprint",
     "design_system_vars",

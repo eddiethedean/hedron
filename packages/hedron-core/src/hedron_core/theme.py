@@ -573,13 +573,9 @@ def derived_theme_tokens(theme: Theme) -> dict[str, str]:
     if "color.link" not in tokens and "color.accent" in tokens:
         derived["color.link"] = tokens["color.accent"]
     if "color.accent-hover" not in tokens:
-        derived["color.accent-hover"] = palette.get(
-            "accent-hover", tokens.get("color.accent", "")
-        )
+        derived["color.accent-hover"] = palette.get("accent-hover", tokens.get("color.accent", ""))
     if "color.selection-bg" not in tokens and "color.accent" in tokens:
-        derived["color.selection-bg"] = palette.get(
-            "selection-bg", tokens["color.accent"]
-        )
+        derived["color.selection-bg"] = palette.get("selection-bg", tokens["color.accent"])
     if "color.selection-fg" not in tokens and "color.fg" in tokens:
         derived["color.selection-fg"] = tokens["color.fg"]
     return {key: value for key, value in derived.items() if value}
@@ -633,6 +629,7 @@ def compatibility_theme_vars(theme: Theme) -> dict[str, str]:
         return f"var({token}, {fallback})"
 
     values: dict[str, str] = {}
+    palette = {key.replace(".", "-"): value for key, value in theme.palette.items()}
     token_names = {
         "bg": "color-bg",
         "surface": "color-surface",
@@ -642,31 +639,25 @@ def compatibility_theme_vars(theme: Theme) -> dict[str, str]:
         "accent": "color-accent",
         "link": "color-link",
         "accent-hover": "color-accent-hover",
+        "border": "color-border",
+        "border-strong": "color-border-strong",
+        "accent-soft": "color-accent-soft",
         "on-accent": "color-on-accent",
         "danger": "color-danger",
+        "danger-soft": "color-danger-soft",
         "on-danger": "color-on-danger",
+        "success": "color-success",
+        "success-soft": "color-success-soft",
+        "warning": "color-warning",
+        "warning-soft": "color-warning-soft",
+        "info-soft": "color-info-soft",
         "selection-bg": "color-selection-bg",
         "selection-fg": "color-selection-fg",
     }
     for suffix, token in token_names.items():
         values[f"--hedron-default-{suffix}"] = canonical(
-            token, _DEFAULT_COMPATIBILITY_FALLBACKS[suffix]
+            token, palette.get(suffix, _DEFAULT_COMPATIBILITY_FALLBACKS[suffix])
         )
-
-    palette = {key.replace(".", "-"): value for key, value in theme.palette.items()}
-    for suffix in (
-        "border",
-        "border-strong",
-        "accent-soft",
-        "danger-soft",
-        "success",
-        "success-soft",
-        "warning",
-        "warning-soft",
-        "info-soft",
-    ):
-        value = palette.get(suffix, _DEFAULT_COMPATIBILITY_FALLBACKS[suffix])
-        values[f"--hedron-default-{suffix}"] = value
 
     shape = {key.replace(".", "-"): value for key, value in theme.shape.items()}
     for suffix in ("radius-sm", "radius", "radius-lg"):
@@ -716,28 +707,32 @@ def emit_theme_css(theme: Theme) -> str:
     lines.append("}")
     dark = theme.modes.get("dark")
     if dark:
+        dark_tokens = {
+            **derived_theme_tokens(replace(theme, tokens={**dict(theme.tokens), **dict(dark)})),
+            **dict(dark),
+        }
         lines.append("@media (prefers-color-scheme: dark) {")
         lines.append('  :root:not([data-theme="light"]) {')
-        for key, value in sorted(dark.items()):
+        for key, value in sorted(dark_tokens.items()):
             lines.append(f"    {_token_to_css_var(key)}: {value};")
         lines.append("  }")
         lines.append(
             f'  [data-hedron-theme="{theme.name}"]:not([data-theme="light"])'
             f':not([data-hedron-color-mode="light"]) {{'
         )
-        for key, value in sorted(dark.items()):
+        for key, value in sorted(dark_tokens.items()):
             lines.append(f"    {_token_to_css_var(key)}: {value};")
         lines.append("  }")
         lines.append("}")
         lines.append(':root[data-theme="dark"] {')
-        for key, value in sorted(dark.items()):
+        for key, value in sorted(dark_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
         lines.append("}")
         lines.append(
             f'[data-hedron-theme="{theme.name}"][data-theme="dark"], '
             f'[data-hedron-theme="{theme.name}"][data-hedron-color-mode="dark"] {{'
         )
-        for key, value in sorted(dark.items()):
+        for key, value in sorted(dark_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
         lines.append("}")
         # Explicit light preference must defeat system dark preference.

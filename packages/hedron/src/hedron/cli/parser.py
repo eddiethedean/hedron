@@ -40,6 +40,7 @@ from hedron.cli.commands.theme import (
     _cmd_theme_inspect,
     _cmd_theme_manifest,
     _cmd_theme_matrix,
+    _cmd_theme_metadata,
 )
 from hedron.cli.commands.upgrade_report import _cmd_upgrade_report
 
@@ -431,6 +432,12 @@ def _register_theme_commands(sub: Any) -> None:
     )
     theme_manifest_p.add_argument("--output", default=None)
     theme_manifest_p.set_defaults(func=_cmd_theme_manifest)
+
+    theme_metadata_p = theme_sub.add_parser(
+        "metadata", help="Emit registry-derived custom-element metadata"
+    )
+    theme_metadata_p.add_argument("--output", default=None)
+    theme_metadata_p.set_defaults(func=_cmd_theme_metadata)
 
     theme_matrix_p = theme_sub.add_parser("matrix", help="Emit the bounded component state matrix")
     theme_matrix_p.add_argument("--component", action="append", default=None)

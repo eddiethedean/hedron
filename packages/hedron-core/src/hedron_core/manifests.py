@@ -282,6 +282,8 @@ class BuildManifest:
     css_symbols: tuple[CssSymbolManifest, ...]
     tool_versions: Mapping[str, str]
     config_digest: str
+    theme_resolution_digest: str = ""
+    component_manifest_digest: str = ""
     digest: str = ""
 
     def to_dict(self) -> JsonObject:
@@ -295,6 +297,8 @@ class BuildManifest:
             "css_symbols": symbols,
             "tool_versions": dict(sorted(self.tool_versions.items())),
             "config_digest": self.config_digest,
+            "theme_resolution_digest": self.theme_resolution_digest,
+            "component_manifest_digest": self.component_manifest_digest,
         }
         digest = self.digest or content_digest(canonical_json(payload))
         return {**payload, "digest": digest}
@@ -311,6 +315,8 @@ class BuildManifest:
             ),
             tool_versions=_as_str_map(data.get("tool_versions")),
             config_digest=str(data.get("config_digest") or ""),
+            theme_resolution_digest=str(data.get("theme_resolution_digest") or ""),
+            component_manifest_digest=str(data.get("component_manifest_digest") or ""),
             digest=str(data.get("digest") or ""),
         )
 

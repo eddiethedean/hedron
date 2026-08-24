@@ -413,10 +413,17 @@ from hedron_core.theme_contract import (
     ThemeResolution,
     build_state_matrix,
     component_contract_manifest,
+    element_metadata_manifest,
     export_theme,
     inspect_theme_css,
     resolve_theme,
     theme_contract_report,
+)
+from hedron_core.trace_contract import (
+    TRACE_CONTRACT_SCHEMA,
+    decode_interaction_trace,
+    encode_interaction_trace,
+    profile_interaction_trace,
 )
 
 if TYPE_CHECKING:
@@ -617,6 +624,7 @@ __all__ = [
     "compile_palette",
     "compatibility_theme_vars",
     "component_contract_manifest",
+    "element_metadata_manifest",
     "derived_theme_tokens",
     "Component",
     "ComponentRef",
@@ -914,6 +922,10 @@ __all__ = [
     "build_state_matrix",
     "inspect_theme_css",
     "theme_contract_report",
+    "TRACE_CONTRACT_SCHEMA",
+    "decode_interaction_trace",
+    "encode_interaction_trace",
+    "profile_interaction_trace",
     "validate_theme_spec",
     "TimeInput",
     "Timeline",

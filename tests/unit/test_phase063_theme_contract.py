@@ -10,6 +10,7 @@ from hedron_core import (
     build_state_matrix,
     component_contract_manifest,
     default_theme,
+    element_metadata_manifest,
     emit_theme_css,
     export_theme,
     inspect_theme_css,
@@ -45,6 +46,7 @@ def test_component_manifest_and_matrix_are_registry_derived() -> None:
     assert matrix.to_dict()["schema"] == "hedron.component-state-matrix/1"
     assert matrix.to_dict()["count"] == 1
     assert matrix.entries[0].case_id == "Brand:default:default:light:390"
+    assert element_metadata_manifest()["schema"] == "hedron.element-metadata/1"
 
 
 def test_theme_export_is_deterministic_and_round_trippable() -> None:

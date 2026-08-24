@@ -36,6 +36,7 @@ __all__ = [
     "ThemeResolution",
     "build_state_matrix",
     "component_contract_manifest",
+    "element_metadata_manifest",
     "export_theme",
     "inspect_theme_css",
     "resolve_theme",
@@ -140,9 +141,7 @@ def resolve_theme(theme: Theme | ThemeSpec) -> ThemeResolution:
         },
         aliases=dict(getattr(source, "aliases", {})),
         groups=dict(getattr(source, "groups", {})),
-        recipes={
-            key: dict(value) for key, value in getattr(source, "recipes", {}).items()
-        },
+        recipes={key: dict(value) for key, value in getattr(source, "recipes", {}).items()},
         provenance=provenance,
         source_schema=source_schema,
     )
@@ -215,6 +214,22 @@ def component_contract_manifest() -> dict[str, Any]:
         "version": 1,
         "components": entries,
         "digest": _digest(entries),
+    }
+
+
+def element_metadata_manifest() -> dict[str, Any]:
+    """Return the element-only projection used by custom-element consumers."""
+
+    elements = [
+        item
+        for item in component_contract_manifest()["components"]
+        if item.get("kind") == "element"
+    ]
+    return {
+        "schema": "hedron.element-metadata/1",
+        "version": 1,
+        "elements": elements,
+        "digest": _digest(elements),
     }
 
 

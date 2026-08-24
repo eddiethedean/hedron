@@ -23,6 +23,11 @@ def test_cli_run_exits_zero() -> None:
     assert main(["run"]) == 0
 
 
+def test_cli_theme_contract_exits_zero(capsys) -> None:
+    assert main(["theme", "--name", "default"]) == 0
+    assert '"schema": "hedron.theme-contract/1"' in capsys.readouterr().out
+
+
 def test_load_fixtures_have_contract_version() -> None:
     fixtures = load_bundled_fixtures()
     assert fixtures

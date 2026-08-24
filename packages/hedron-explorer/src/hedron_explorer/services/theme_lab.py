@@ -6,6 +6,7 @@ from collections.abc import Iterable
 from typing import Any
 
 from hedron_core.theme import builtin_themes, ensure_builtin_themes_registered
+from hedron_core.theme_contract import theme_contract_report
 from hedron_core.theme_platform import (
     ThemeBuilder,
     conformance_report,
@@ -42,12 +43,19 @@ def theme_lab_report(
     for name in names:
         spec = available[name]
         validation = validate_theme_spec(spec, profile=profile, strict=False)
+        contract = theme_contract_report(spec)
         themes.append(
             {
                 "name": name,
                 "spec": explain_theme_spec(spec),
                 "validation": validation.to_dict(),
                 "conformance": conformance_report(spec, profile=profile),
+                "resolution": contract["theme"],
+                "component_manifest_digest": contract["component_manifest"]["digest"],
+                "state_matrix": {
+                    "count": contract["state_matrix"]["count"],
+                    "digest": contract["state_matrix"]["digest"],
+                },
                 "modes": ["light", "dark", "more-contrast", "forced-colors"],
             }
         )

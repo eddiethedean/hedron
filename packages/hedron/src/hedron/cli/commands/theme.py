@@ -28,6 +28,7 @@ from hedron_core.theme import (
 from hedron_core.theme_contract import (
     build_state_matrix,
     component_contract_manifest,
+    element_metadata_manifest,
     export_theme,
     inspect_theme_css,
     theme_contract_report,
@@ -151,6 +152,12 @@ def _cmd_theme_export(args: argparse.Namespace) -> int:
 
 def _cmd_theme_manifest(args: argparse.Namespace) -> int:
     value = json.dumps(component_contract_manifest(), indent=2, sort_keys=True) + "\n"
+    _write_or_print(value, args.output)
+    return 0
+
+
+def _cmd_theme_metadata(args: argparse.Namespace) -> int:
+    value = json.dumps(element_metadata_manifest(), indent=2, sort_keys=True) + "\n"
     _write_or_print(value, args.output)
     return 0
 
