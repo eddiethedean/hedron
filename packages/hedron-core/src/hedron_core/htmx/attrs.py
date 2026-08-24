@@ -86,10 +86,7 @@ class Hx:
             import hedron_core.htmx_extensions as htmx_extensions
             from hedron_core.diagnostics import error
 
-            preload_modes = cast(
-                frozenset[str],
-                htmx_extensions.PRELOAD_INITIATION_MODES,  # pyright: ignore[reportAttributeAccessIssue]
-            )
+            preload_modes = htmx_extensions.PRELOAD_INITIATION_MODES
             diagnostic_code = cast(
                 str,
                 codes.HED_EXT_0006,  # pyright: ignore[reportAttributeAccessIssue]

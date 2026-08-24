@@ -168,6 +168,31 @@ include = [
     "packages/fastapi-workbench/src",
 ]
 pythonVersion = "3.11"
+venvPath = "."
+venv = ".venv"
+extraPaths = [
+    "packages/hedron-core/src",
+    "packages/hedron/src",
+    "packages/hedron-explorer/src",
+    "packages/hedron-sample-kit/src",
+    "packages/hedron-data/src",
+    "packages/hedron-charts/src",
+    "packages/hedron-maps/src",
+    "packages/hedron-flask/src",
+    "packages/hedron-django/src",
+    "packages/hedron-jinja/src",
+    "packages/hedron-conformance/src",
+    "packages/hedron-native/src",
+    "packages/hedron-extras/src",
+    "packages/hedron-notebook/src",
+    "packages/hedron-mcp/src",
+    "packages/hedron-gradio/src",
+    "packages/hedron-sim/src",
+    "packages/hedron-workbench/src",
+    "packages/hedron-posit/src",
+    "packages/hedron-elements/src",
+    "packages/fastapi-workbench/src",
+]
 typeCheckingMode = "strict"
 reportMissingTypeStubs = "none"
 reportPrivateUsage = "warning"
