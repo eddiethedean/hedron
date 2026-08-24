@@ -67,7 +67,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.60** | Custom theme platform and styling completion: modern color, ThemeSpec/ThemePatch, registry-derived profiles/validation, fingerprints/conformance, packages, accessibility modes, recipes/scopes, persisted selection, capped built-ins, and #627–#635 | **Implemented, verified, tagged, and published** (`v0.60.0`; D-108 / [RFC-0089](rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md)) |
 | **0.61** | Unified action state and server-first async boundaries | **Implemented, verified, tagged, and published** (`v0.61.0`; RFC-0090; [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
 | **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Verified release candidate; progressive dashboard fan-out explicitly omitted** (`v0.62.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
-| **0.63** | Interaction profiling, static checks, and component ecosystem interoperability | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md)) |
+| **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); open issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
 | **0.64** | First-party Hedron HTMX extension: lifecycle state, accessibility, concurrency presentation, cleanup, and browser traces | **Proposed / Stage 0 planned** ([RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md)) |
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
@@ -5398,6 +5398,20 @@ acceptance criteria; this table is the roadmap owner index.
 | [#670](https://github.com/eddiethedean/hedron/issues/670) | Standalone NavGroup for fragment rendering | 0.61 |
 | [#671](https://github.com/eddiethedean/hedron/issues/671) | Theme-aware ambient backdrop presets | 0.61 |
 | [#672](https://github.com/eddiethedean/hedron/issues/672) | Identity name and detail concatenate in the default theme | 0.61 |
+| [#676](https://github.com/eddiethedean/hedron/issues/676) | Custom theme tokens do not reach the default component stylesheet | 0.63 |
+| [#677](https://github.com/eddiethedean/hedron/issues/677) | Add a typed, themeable identity-mark contract for Brand and AccountSummary | 0.63 |
+| [#678](https://github.com/eddiethedean/hedron/issues/678) | Add public theme hooks for global selection and link-state chrome | 0.63 |
+| [#679](https://github.com/eddiethedean/hedron/issues/679) | Add responsive conditions to StyleRecipe and StyleScope | 0.63 |
+| [#680](https://github.com/eddiethedean/hedron/issues/680) | Expand semantic palette derivation for interactive states | 0.63 |
+| [#681](https://github.com/eddiethedean/hedron/issues/681) | Make theme conformance checking a standalone CI gate | 0.63 |
+| [#682](https://github.com/eddiethedean/hedron/issues/682) | Export resolved themes as CSS and design-token JSON | 0.63 |
+| [#683](https://github.com/eddiethedean/hedron/issues/683) | Standardize typed leading and trailing slots across built-ins | 0.63 |
+| [#684](https://github.com/eddiethedean/hedron/issues/684) | Add per-component default-style bundles | 0.63 |
+| [#685](https://github.com/eddiethedean/hedron/issues/685) | Add theme-aware accessible visualization presentation primitives | 0.63 |
+| [#686](https://github.com/eddiethedean/hedron/issues/686) | Add runtime theme-token inspection and fallback diagnostics | 0.63 |
+| [#687](https://github.com/eddiethedean/hedron/issues/687) | Publish a stable component parts and state-hooks manifest | 0.63 |
+| [#688](https://github.com/eddiethedean/hedron/issues/688) | Add a portable component state-matrix visual test command | 0.63 |
+| [#689](https://github.com/eddiethedean/hedron/issues/689) | Add bounded translucent and glass surface appearances | 0.63 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 
@@ -6501,17 +6515,39 @@ The explicit risk inventory keeps authorization, tenant, payment, secret, irreve
 offline, and cross-tenant work server-confirmed or excluded. See the refined [0.62 implementation
 plan](implementation/NAVIGATION_OPTIMISM_062.md) and [release acceptance](acceptance/RELEASE_0_62.md).
 
-### 0.63 — Developer tooling and ecosystem interoperability
+### 0.63 — Theme contract, developer tooling, and ecosystem interoperability
 
-Explorer gains an interaction profiler and timeline. CLI checks detect hidden render I/O, mutable
-global state, unstable identities, missing fragment declarations, unsafe trust-boundary values,
-duplicate writers, missing fallbacks, and unbounded payloads. Supported Web Components publish
-typed TypeScript metadata. React migration guidance becomes evidence-backed and automated where
-possible; isolated React islands remain experimental and cannot own HTMX server regions. The phase
-now locks one cross-tool trace, a non-executing deterministic check catalog, registry-derived
-metadata identity, migration dispositions with honest non-fits, and an explicit omit-or-Experimental
-decision for the island recipe. See the [0.63 implementation plan](implementation/INTERACTION_TOOLING_063.md)
-and [release acceptance](acceptance/RELEASE_0_63.md).
+Phase 0.63 first closes the public theme contract: custom themes reach the default component
+stylesheet, interactive states and responsive recipe conditions are derived deterministically, and
+identity marks, slots, parts, and state hooks are registry-derived and typed. The resolved theme is
+then exportable, inspectable, conformance-checkable, and renderable through a portable state matrix.
+Component bundles, accessible visualization primitives, and bounded translucent/glass appearances
+remain Progressive extensions with explicit fallbacks.
+
+On that foundation, Explorer gains an interaction profiler and timeline. CLI checks detect hidden
+render I/O, mutable global state, unstable identities, missing fragment declarations, unsafe
+trust-boundary values, duplicate writers, missing fallbacks, and unbounded payloads. React migration
+guidance becomes evidence-backed and automated where possible; isolated React islands remain
+experimental and cannot own HTMX server regions. The phase locks one cross-tool trace, a
+non-executing deterministic check catalog, registry-derived metadata identity, migration dispositions
+with honest non-fits, and an explicit omit-or-Experimental decision for the island recipe. See the
+[0.63 implementation plan](implementation/INTERACTION_TOOLING_063.md) and [release acceptance](acceptance/RELEASE_0_63.md).
+
+#### 0.63 open issue packet
+
+The following issues were open on GitHub when this roadmap was updated and are owned by Phase 0.63:
+
+| Track | Issues | Disposition |
+|---|---|---|
+| Theme foundation | [#676](https://github.com/eddiethedean/hedron/issues/676), [#678](https://github.com/eddiethedean/hedron/issues/678), [#679](https://github.com/eddiethedean/hedron/issues/679), [#680](https://github.com/eddiethedean/hedron/issues/680) | Required |
+| Component contract | [#677](https://github.com/eddiethedean/hedron/issues/677), [#683](https://github.com/eddiethedean/hedron/issues/683), [#687](https://github.com/eddiethedean/hedron/issues/687) | Required |
+| Theme evidence | [#681](https://github.com/eddiethedean/hedron/issues/681), [#682](https://github.com/eddiethedean/hedron/issues/682), [#686](https://github.com/eddiethedean/hedron/issues/686), [#688](https://github.com/eddiethedean/hedron/issues/688) | Required |
+| Presentation extensions | [#684](https://github.com/eddiethedean/hedron/issues/684), [#685](https://github.com/eddiethedean/hedron/issues/685), [#689](https://github.com/eddiethedean/hedron/issues/689) | Progressive |
+
+The issue titles and links remain in the ownership index above; this table defines sequencing and
+maturity. Theme foundation and component-contract work precede theme evidence, state-matrix, and
+interaction-tooling adoption. Progressive presentation extensions cannot introduce arbitrary CSS,
+unsafe selectors, or a new runtime dependency.
 
 The phases are governed by [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md), the
 [program implementation plan](implementation/REACTIVE_INTERACTION_PLATFORM_061_063.md), and the

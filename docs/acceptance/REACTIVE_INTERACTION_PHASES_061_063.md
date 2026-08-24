@@ -32,6 +32,7 @@ Each release produces versioned, deterministic artifacts for:
 
 - capability/disposition inventory;
 - public contract/schema lock;
+- resolved theme/component-contract inventory for any phase that consumes the 0.60 theme authority;
 - host, transport, package, and browser dispositions;
 - diagnostic catalog and suppression rules;
 - security/redaction and accessibility matrices;
@@ -60,16 +61,16 @@ to satisfy a filename.
    operation behavior.
 8. Multi-worker/process evidence proves no correctness dependence on in-memory affinity unless that
    limitation is an explicit non-Supported disposition.
-9. Public docs, generated metadata, Explorer, CLI, package manifests, and runtime report the same
-   maturity and version facts.
+9. Public docs, generated metadata, theme exports/inspection, Explorer, CLI, package manifests, and
+   runtime report the same maturity, version, and component-contract facts.
 10. Every Progressive/Experimental path is disabled during fallback evidence.
 
 ## Cross-phase release rule
 
 0.62 cannot release against an unverified or locally reinterpreted 0.61 schema. 0.63 cannot release
-with a trace, identity, or outcome interpretation that differs from 0.61/0.62. Compatibility
-fixtures for the immediately preceding release are Required even if all three phases are developed
-on one branch.
+with a trace, identity, outcome, theme, or component-contract interpretation that differs from the
+accepted 0.60/0.61/0.62 authorities. Compatibility fixtures for the immediately preceding release
+are Required even if all three phases are developed on one branch.
 
 ## Supported-claim exclusions
 

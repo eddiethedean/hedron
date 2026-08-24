@@ -32,7 +32,7 @@ client-runtime architecture.
 |---|---|---|
 | 0.61 | Action state, async boundaries, and composed surfaces | Every supported asynchronous interaction projects one typed lifecycle, operation identity, fallback, and trace model; the five 0.60 surface seams share additive finite contracts. |
 | 0.62 | Navigation, optimism, and failure isolation | Supported pages remain understandable and recoverable during navigation, mutation, stale responses, conflicts, and partial failure. |
-| 0.63 | Tooling and ecosystem interoperability | Developers can inspect, check, profile, test, migrate, and extend the platform without adopting React. |
+| 0.63 | Theme contract, tooling, and ecosystem interoperability | Developers can theme, inspect, check, profile, test, migrate, and extend the platform without adopting React. |
 
 Each phase has its own implementation plan and release gate. Phase 0.62 cannot redefine the 0.61
 lifecycle, and phase 0.63 cannot create a second trace or metadata authority.
@@ -72,6 +72,9 @@ claim. `Excluded` capabilities are deliberate non-goals.
 | Revisioned optimistic mutations for approved risk classes | — | Required | Check/profile |
 | Localized failure boundary | — | Required | Check/profile |
 | Portable interaction trace and deterministic diagnostics | Schema Required | Consume | Required tooling |
+| Canonical theme resolution, export, and public component contract | — | Consume 0.60 authority | Required foundation |
+| Theme conformance, inspection, and portable state matrix | — | — | Required evidence |
+| Progressive component bundles, visualization primitives, and translucent/glass presets | — | — | Progressive only |
 | TypeScript element metadata | — | — | Required for Supported elements |
 | React migration dispositions | — | — | Required documentation/tool output |
 | Isolated React-island recipe | — | — | Experimental only |
@@ -120,10 +123,18 @@ changes, irreversible destruction, and cross-tenant movement cannot be optimisti
 
 ### Tooling and interoperability
 
-Phase 0.63 defines one portable, versioned, redacted trace consumed by pytest, browser tests,
+Phase 0.63 completes the 0.60 theme contract at the default stylesheet and component-ecosystem
+boundaries. A custom theme resolves through canonical public tokens, derived interactive states,
+bounded responsive conditions, typed identity marks, semantic slots, stable parts/state hooks, and
+registry-derived metadata. The same resolved theme can be exported, inspected, conformance-checked,
+and exercised through a portable state matrix. Progressive component bundles, visualization
+primitives, and translucent/glass presets must preserve safe fallbacks and cannot weaken the
+Required contract.
+
+Phase 0.63 also defines one portable, versioned, redacted trace consumed by pytest, browser tests,
 Explorer, CLI output, and conformance. Static checks are deterministic and source-linked. Supported
 Web Components publish generated metadata for properties, events, state ownership, lifecycle,
-fallback, and compatibility.
+fallback, parts, slots, state hooks, and compatibility.
 
 Migration tooling produces dispositions—native mapping, bounded adapter, manual redesign, or
 unsupported—instead of claiming semantic React conversion. Any React island remains isolated,

@@ -70,8 +70,9 @@ These documents describe how accepted RFC behavior will be implemented. They def
   lifecycle/race, boundary lowering, host/element, trace, budget, compatibility, and release plan
 - [Phase 0.62 navigation, optimism, and failure isolation](NAVIGATION_OPTIMISM_062.md) — W0–W12
   navigation, prefetch/transition, optimistic risk, failure, identity, dashboard, and browser plan
-- [Phase 0.63 interaction tooling and interoperability](INTERACTION_TOOLING_063.md) — W0–W12
-  trace/profiler, static checks, metadata ABI, migration dispositions, conformance, and interop plan
+- [Phase 0.63 theme contract, interaction tooling, and interoperability](INTERACTION_TOOLING_063.md) — W0–W15
+  theme resolution/evidence, trace/profiler, static checks, metadata ABI, migration dispositions,
+  conformance, and interop plan
 - [Phase 0.64 Hedron HTMX interaction extension](HTMX_HEDRON_EXTENSION_064.md) — W0–W10
   pinned extension asset, lifecycle state, accessibility, concurrency presentation, CSP-safe
   cleanup, browser traces, Hedron integration, and release plan

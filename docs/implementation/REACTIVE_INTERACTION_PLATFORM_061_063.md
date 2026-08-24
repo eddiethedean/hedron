@@ -16,7 +16,7 @@ or making browser state authoritative.
 |---|---|---|---|
 | 0.61 | Lifecycle, operation identity, async-region lowering, trace schema | [Action state and async boundaries](ACTION_STATE_ASYNC_061.md) | [Release 0.61](../acceptance/RELEASE_0_61.md) |
 | 0.62 | Navigation, failure isolation, optimistic risk classes, identity transfer | [Navigation, optimism, and failure isolation](NAVIGATION_OPTIMISM_062.md) | [Release 0.62](../acceptance/RELEASE_0_62.md) |
-| 0.63 | Profiler, checks, metadata ABI, migration dispositions | [Interaction tooling and interoperability](INTERACTION_TOOLING_063.md) | [Release 0.63](../acceptance/RELEASE_0_63.md) |
+| 0.63 | Theme contract completion, profiler, checks, metadata ABI, migration dispositions | [Theme contract, interaction tooling, and interoperability](INTERACTION_TOOLING_063.md) | [Release 0.63](../acceptance/RELEASE_0_63.md) |
 
 The shared [acceptance rules](../acceptance/REACTIVE_INTERACTION_PHASES_061_063.md) define maturity
 and evidence semantics for all three releases.
@@ -34,12 +34,14 @@ existing handles / forms / jobs / fragments / InteractionState / OptimisticMutat
                    |                              |
                    +------------------------------+
                                   v
-0.63 profiler + static checks + conformance + metadata + migration dispositions
+0.63 theme resolution + conformance + profiler + static checks + metadata + migration dispositions
 ```
 
 0.61 owns vocabulary and serialization. 0.62 consumes that vocabulary for browser behavior. 0.63
-consumes both phases for tooling. Parallel implementation may prototype downstream consumers, but
-no downstream phase may freeze a conflicting contract.
+consumes both phases for tooling while completing the 0.60 theme contract at the stylesheet,
+component-manifest, export, and evidence boundaries. Parallel implementation may prototype
+downstream consumers, but no downstream phase may freeze a conflicting contract or create a second
+theme/metadata authority.
 
 ## Cross-phase invariants
 
@@ -64,7 +66,7 @@ no downstream phase may freeze a conflicting contract.
 | P1 | Contract and disposition locks | Each | Public schema, host/package matrix, maturity, diagnostics, and budgets are machine-readable. |
 | P2 | Core and host implementation | 0.61–0.62 | FastAPI flagship and required host paths share semantics without copied business logic. |
 | P3 | Elements and browser behavior | 0.61–0.62 | Native, HTMX, and element paths pass the same lifecycle, a11y, race, and fallback corpus. |
-| P4 | Trace and tooling convergence | 0.61–0.63 | One trace feeds tests, Explorer, CLI, profiler, and conformance. |
+| P4 | Trace, theme, and tooling convergence | 0.61–0.63 | One trace and one resolved theme/metadata authority feed tests, Explorer, CLI, profiler, exports, and conformance. |
 | P5 | Fleet adoption | Each | Reference app and inventoried first-party consumers adopt or record an explicit disposition. |
 | P6 | Upgrade and packaging | Each | Before/after fixtures, package parity, rollback, release notes, and clean-wheel tests pass. |
 
@@ -72,12 +74,13 @@ no downstream phase may freeze a conflicting contract.
 
 | Package/area | 0.61 | 0.62 | 0.63 |
 |---|---|---|---|
-| `hedron-core` | Lifecycle, identity, boundary/trace schemas | Navigation/failure/optimistic policy schemas | Diagnostic and metadata schemas |
-| `hedron` | FastAPI adapters and response lowering | Navigation/failure host integration | CLI checks and trace export |
-| `hedron-elements` | Lifecycle and async projections | Browser navigation, failure, and optimistic projections | TypeScript/custom-element metadata |
+| `hedron-core` | Lifecycle, identity, boundary/trace schemas | Navigation/failure/optimistic policy schemas | Theme resolution/export, diagnostic, manifest, and metadata schemas |
+| `hedron` | FastAPI adapters and response lowering | Navigation/failure host integration | Theme CSS/bundles, CLI checks, inspection, and trace export |
+| `hedron-elements` | Lifecycle and async projections | Browser navigation, failure, and optimistic projections | Typed parts/slots/state hooks and custom-element metadata |
 | `hedron-data` | Existing mutation adapter | Approved optimistic data workflows | Data diagnostics and migration facts |
-| `hedron-explorer` | Read-only lifecycle view | Race/identity/failure explanations | Profiler and source-linked reports |
-| `hedron-conformance` | Portable lifecycle/trace fixtures | Browser/failure/optimism fixtures | Trace/check/metadata conformance |
+| `hedron-explorer` | Read-only lifecycle view | Race/identity/failure explanations | Profiler, theme inspector, state matrix, and source-linked reports |
+| `hedron-charts` / visualization adapters | Existing chart contracts | — | Theme-aware palettes, non-color encodings, and accessible fallback facts |
+| `hedron-conformance` | Portable lifecycle/trace fixtures | Browser/failure/optimism fixtures | Theme/trace/check/metadata/state-matrix conformance |
 | Flask/Django adapters | Stage 0 disposition | Required or documented retained behavior | Conformance/report consumption |
 
 The exact Required/Progressive/Experimental disposition is locked independently in each phase; this
@@ -94,6 +97,8 @@ Every phase extends the same journeys so evidence accumulates instead of creatin
 5. A coordinated dashboard with bounded fan-out, cancellation, cache variation, and one failed panel.
 6. Explorer and CLI explanations generated without executing application callbacks.
 7. A React migration example showing native mapping, manual redesign, and an honest unsupported case.
+8. A custom-theme fixture that exercises built-in components, exported tokens, conformance, and the
+   portable state matrix without application-authored CSS.
 
 ## Stage sequence
 
@@ -119,7 +124,10 @@ frozen upstream state or trace field.
   element paths.
 - Stale/duplicate/cancelled response tests have zero state-corruption escapes.
 - Every optimistic Supported row has a recorded risk class and rollback/conflict proof.
-- Explorer, CLI, browser tests, and conformance agree on trace identifiers and outcomes.
+- Explorer, CLI, browser tests, and conformance agree on trace identifiers, outcomes, resolved theme
+  values, and component contract identity.
+- A supported custom theme reaches built-in component states through public contracts, with any
+  Progressive visual extension explicitly labeled and safely degradable.
 - Existing applications retain ordinary server behavior without adopting the new APIs.
 
 Numeric latency, size, memory, retention, and fan-out budgets are intentionally not guessed in this

@@ -26,7 +26,7 @@ Install pins: [Current release](current-release.md) ·
 |---|---|---|
 | **0.61** | Unified action state and server-first async boundaries | **Verified and published in 0.61.0**; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
 | **0.62** | Responsive navigation, bounded optimistic UX, and localized failure isolation | Verified release candidate for `v0.62.0`; dashboard fan-out omitted; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/NAVIGATION_OPTIMISM_062.md) |
-| **0.63** | Interaction profiling, static checks, and component interoperability | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
+| **0.63** | Theme contract completion, interaction profiling, static checks, and component interoperability | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
 | **0.64** | First-party Hedron HTMX extension for lifecycle state, accessibility, cleanup, and traces | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_HEDRON_EXTENSION_064.md) |
 
 Phase 0.62 is a current published capability train. Phase 0.62 is a verified release candidate;

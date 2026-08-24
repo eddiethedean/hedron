@@ -1,4 +1,4 @@
-# Phase 0.63: interaction tooling and ecosystem interoperability
+# Phase 0.63: theme contract, interaction tooling, and ecosystem interoperability
 
 **Status:** Proposed / Stage 0 planning  
 **Predecessor:** verified 0.61 lifecycle/trace and 0.62 navigation/optimism/failure contracts  
@@ -8,15 +8,20 @@
 ## Outcome
 
 Developers can explain, profile, statically check, test, and migrate Hedron interactions through one
-portable contract. Supported Web Components expose typed interoperability metadata. React migration
-guidance is automated where facts are knowable and honest where architectural redesign is required.
+portable contract. A registered custom theme reaches the supported default component stylesheet and
+can be exported, inspected, conformance-checked, and exercised through a deterministic state matrix.
+Supported Web Components expose typed interoperability metadata, parts, slots, and state hooks.
+React migration guidance is automated where facts are knowable and honest where architectural
+redesign is required.
 
 ## Entry gate
 
-Stage 1 requires frozen upstream schemas plus Stage 0 locks for trace compatibility, profiler
-sampling/retention, diagnostic catalog and suppressions, source provenance, metadata ABI and package
-identity, migration dispositions, security/redaction, performance budgets, and the fate of the
-Experimental React-island recipe.
+Stage 1 requires frozen upstream schemas plus Stage 0 locks for canonical theme consumption, derived
+state provenance, responsive presentation bounds, component parts/slots/state hooks, theme export
+identity, conformance and state-matrix coverage, trace compatibility, profiler sampling/retention,
+diagnostic catalog and suppressions, source provenance, metadata ABI and package identity, migration
+dispositions, security/redaction, performance budgets, and the fate of the Experimental React-island
+recipe.
 
 ## Candidate public artifacts
 
@@ -25,8 +30,31 @@ Experimental React-island recipe.
 | `InteractionTrace` v1 | pytest, browser tests, CLI, Explorer, conformance | Ordered redacted events, stable ids, truncation/missing-data markers. |
 | Interaction profile | Explorer/headless export | Component/action/request/target/state/cache/focus/failure timeline with timing provenance. |
 | Diagnostic catalog | CLI/CI/Explorer | Stable code, severity, source, explanation, remediation, suppression rules. |
+| `Theme resolution` v1 | Runtime/CSS/CLI/Explorer | Canonical tokens, derived values, variants, accessibility modes, fallbacks, and provenance. |
+| `Theme export` v1 | Design tools/docs/CI | Versioned CSS and design-token JSON with matching resolved values and safe rejection. |
+| `Component contract manifest` v1 | Python/TypeScript/docs/CI | Stable parts, slots, state hooks, accessibility requirements, and supported theme surfaces. |
+| `Theme conformance report` v1 | CLI/CI/Explorer | Missing coverage, fallback use, contrast, selector coupling, and remediation. |
+| `Component state matrix` v1 | Browser/visual CI | Deterministic component/state/viewport/mode cases with stable machine-readable ids. |
 | Element metadata v1 | TypeScript/custom-elements consumers | Properties, events, slots, state owner, lifecycle, fallback, compatibility, maturity. |
 | Migration report v1 | CLI/docs/CI | Native/adapter/redesign/unsupported disposition with confidence and source spans. |
+
+## Phase packet and maturity
+
+The fourteen open issues assigned to 0.63 are one packet with two coupled tracks. Theme resolution
+and public component contracts are upstream of inspection, conformance, visual coverage, and the
+existing interaction tools.
+
+| Track | Issues | 0.63 disposition | Required outcome |
+|---|---|---|---|
+| Theme foundation | #676, #678, #679, #680 | Required | Canonical token consumption, interactive-state derivation, global link/selection hooks, and bounded responsive recipe conditions. |
+| Component contract | #677, #683, #687 | Required | Typed identity marks, semantic slots, stable parts/state hooks, and registry-derived manifest/metadata. |
+| Theme evidence | #681, #682, #686, #688 | Required | Conformance, export, development inspection, and deterministic state-matrix evidence. |
+| Presentation extensions | #684, #685, #689 | Progressive | Component bundles, accessible visualization primitives, and bounded translucent/glass presets with safe fallbacks. |
+| Interaction tooling | Existing 0.63 tooling scope | Required | One trace, profiler, static checks, explanations, migration dispositions, and package conformance. |
+
+Progressive presentation extensions cannot weaken the Required theme contract. Each issue remains
+open for its own acceptance criteria, but release status follows the disposition above rather than
+issue order alone.
 
 ## Static-check inventory
 
@@ -41,6 +69,9 @@ The Required candidate set includes:
 - unsafe trust-boundary values, redirects, cache variation, or trace fields;
 - optimistic mutation without approved risk/revision/idempotency/rollback/conflict behavior;
 - unbounded payload, trace, retention, fan-out, retry, polling, or prefetch;
+- default stylesheet declarations that bypass public theme tokens or rely on unstable selectors;
+- missing component parts, slots, state hooks, theme coverage, fallback provenance, or export parity;
+- unsafe CSS values, URLs, selectors, bundle dependencies, or Progressive features used as correctness;
 - package metadata/runtime identity mismatch; and
 - Progressive capability used as a correctness dependency.
 
@@ -61,23 +92,26 @@ The Required candidate set includes:
 Automated output never executes source, silently rewrites an application, or claims behavioral
 equivalence from syntax alone.
 
-## Workstreams
+## Theme and tooling workstreams
 
 | ID | Workstream | Deliverables |
 |---|---|---|
-| W0 | Reconciliation and locks | Upstream schema audit, profiler/check/metadata/migration locks, budgets, dispositions, issue mirrors. |
-| W1 | Trace conformance | Canonical encoder/decoder, schema fixtures, unknown-version behavior, redaction/truncation, cross-tool parity. |
-| W2 | Interaction profiler | Explorer timeline, filters, timing provenance, payload/cache/focus/failure facts, headless export. |
-| W3 | Static analysis core | Non-executing analyzers, stable findings, source maps, deterministic ordering, bounded work/caching. |
-| W4 | Check catalog | Required candidate checks, positive/negative/adversarial corpus, remediation and suppression policy. |
-| W5 | Source explanations | Explain lifecycle inference, boundary lowering, navigation, optimism, identity transfer, and fallbacks. |
-| W6 | Element metadata | Registry-derived schema, TypeScript/custom-elements output, wheel/npm identity, maturity and fallback facts. |
-| W7 | Migration analyzer | React pattern inventory, dispositions/confidence, source-linked report, worked native/manual/non-fit examples. |
-| W8 | Interop recipe | Decide omit versus Experimental island; if retained, pin assets and prove isolation/cleanup/SSR fallback/CSP. |
-| W9 | CI and conformance | JSON/SARIF/headless outputs, pytest/browser adapters, package fixtures, reproducibility checks. |
-| W10 | Fleet adoption | First-party packages publish/consume facts; reference app demonstrates end-to-end diagnosis. |
-| W11 | Adversarial closure | Malformed traces/source, secrets, huge trees, cyclic metadata, plugin isolation, browser/tool cleanup. |
-| W12 | Upgrade and release | Schema compatibility, before/after fixtures, docs, rollback, package parity, clean-wheel evidence. |
+| W0 | Reconciliation and locks | Upstream schema audit, theme/tooling locks, budgets, dispositions, issue mirrors, and source-of-truth inventory. |
+| W1 | Canonical theme resolution | Route every default component declaration through public tokens or validated compatibility aliases; preserve variants and accessibility modes. |
+| W2 | Derived states and responsive presentation | Implement deterministic interactive-state derivation, global link/selection hooks, bounded recipe conditions, and provenance. |
+| W3 | Component contract surface | Define identity marks, semantic slots, stable parts/state hooks, manifest schema, and generated metadata projections. |
+| W4 | Theme exports and bundles | Export resolved CSS/JSON, split base/component bundles with deterministic dependencies, and prove runtime/export parity. |
+| W5 | Theme inspection and conformance | Provide development-only inspection, fallback diagnostics, CI conformance, exceptions, contrast checks, and remediation output. |
+| W6 | State-matrix and visual extensions | Generate deterministic state matrices; add accessible visualization roles and Progressive translucent/glass presets. |
+| W7 | Trace conformance | Canonical encoder/decoder, schema fixtures, unknown-version behavior, redaction/truncation, cross-tool parity. |
+| W8 | Interaction profiler | Explorer timeline, filters, timing provenance, payload/cache/focus/failure facts, headless export. |
+| W9 | Static analysis core | Non-executing analyzers, stable findings, source maps, deterministic ordering, bounded work/caching. |
+| W10 | Check catalog and explanations | Required check corpus, remediation/suppressions, and explanations for lifecycle, boundaries, navigation, optimism, identity, and fallbacks. |
+| W11 | Element metadata | Registry-derived schema, TypeScript/custom-elements output, wheel/npm identity, maturity and fallback facts. |
+| W12 | Migration and interop | React dispositions, worked native/manual/non-fit examples, and explicit omit versus Experimental island decision. |
+| W13 | CI, fleet, and conformance | JSON/SARIF/headless outputs, pytest/browser adapters, package fixtures, first-party adoption, and reference-app diagnosis. |
+| W14 | Adversarial closure | Malformed traces/source, unsafe CSS, secrets, huge trees, cyclic metadata, plugin isolation, browser/tool cleanup. |
+| W15 | Upgrade and release | Schema/theme compatibility, before/after fixtures, docs, rollback, package parity, and clean-wheel evidence. |
 
 ## Profiler invariants
 
@@ -97,15 +131,20 @@ equivalence from syntax alone.
 
 ## Diagnostics and budgets
 
-Phase 0.63 consolidates upstream diagnostic families and adds `HED-CHECK-*`, `HED-PROFILE-*`,
-`HED-METADATA-*`, and `HED-MIGRATE-*`. Stage 0 locks source-tree/check complexity, trace/profile
-events and bytes, retention, export size, metadata growth, migration file size, analysis time,
-memory, cache, concurrency, and CI overhead. Exact-limit and one-over-limit tests are required.
+Phase 0.63 consolidates upstream diagnostic families and adds `HED-THEME-*`, `HED-CHECK-*`,
+`HED-PROFILE-*`, `HED-METADATA-*`, and `HED-MIGRATE-*`. Stage 0 locks token/manifest growth,
+stylesheet and export size, state-matrix cardinality, source-tree/check complexity, trace/profile
+events and bytes, retention, migration file size, analysis time, memory, cache, concurrency, and CI
+overhead. Exact-limit and one-over-limit tests are required. No budget may be bypassed by moving
+values into generated CSS, JSON, screenshots, or browser-only diagnostics.
 
 ## Compatibility and rollback
 
-- Tooling consumes upstream public facts; it does not change runtime behavior.
-- Trace/profile/metadata/migration formats are independently versioned with golden fixtures.
+- Theme resolution may change generated CSS/assets only through validated public inputs; it does not
+  execute application code or change server authority.
+- Profiler, checks, inspection, exports, and migration tooling consume public facts and do not execute
+  application callbacks or silently rewrite runtime behavior.
+- Theme/trace/profile/metadata/migration formats are independently versioned with golden fixtures.
 - Static checks begin with explicit maturity/severity and cannot silently become release-blocking.
 - Disabling profiler/checks restores pre-0.63 operation without altering application output.
 - Core Python users retain a no-Node path; TypeScript metadata generation is a release artifact task,
@@ -113,20 +152,20 @@ memory, cache, concurrency, and CI overhead. Exact-limit and one-over-limit test
 
 ## Execution order
 
-1. **E0:** W0 locks and upstream schema compatibility fixtures.
-2. **E1:** W1 canonical trace conformance across existing consumers.
-3. **E2:** W2 profiler vertical slice with headless export.
-4. **E3:** W3–W4 static core and Required check corpus.
-5. **E4:** W5 source-linked explanations.
-6. **E5:** W6 metadata ABI and package identity proof.
-7. **E6:** W7 migration analyzer and worked examples.
-8. **E7:** W8 explicit omit/Experimental interop decision.
-9. **E8:** W9–W10 CI, conformance, fleet, and reference-app adoption.
-10. **E9:** W11–W12 adversarial closure, packaging, rollback, and release gate.
+1. **E0:** W0 locks and upstream/theme compatibility fixtures.
+2. **E1:** W1–W3 canonical theme resolution, derived states, and component contract vertical slice.
+3. **E2:** W4–W6 export, inspection, conformance, state-matrix, and Progressive presentation proofs.
+4. **E3:** W7 trace conformance across existing consumers.
+5. **E4:** W8–W10 profiler, static core, Required checks, and source-linked explanations.
+6. **E5:** W11 metadata ABI, package identity, and theme manifest projections.
+7. **E6:** W12 migration analyzer and explicit omit/Experimental interop decision.
+8. **E7:** W13 CI, fleet, conformance, and reference-app adoption.
+9. **E8:** W14–W15 adversarial closure, packaging, rollback, upgrade, and release gate.
 
 ## Exit gate
 
-0.63 ships only when all Required `*-063` rows are Verified; every tool agrees on trace identity and
-outcome; checks are deterministic, bounded, source-linked, and non-executing; metadata matches
-packaged runtime identity; migration reports include honest non-fits; secrets remain redacted; and no
-Supported path requires React, npm, Node, or a persistent client runtime.
+0.63 ships only when all Required `*-063` rows are Verified; every default component declaration is
+covered by the public theme contract; runtime, CSS, export, inspector, conformance, state-matrix,
+and metadata facts agree; checks are deterministic, bounded, source-linked, and non-executing;
+metadata matches packaged runtime identity; migration reports include honest non-fits; secrets
+remain redacted; and no Supported path requires React, npm, Node, or a persistent client runtime.
