@@ -137,6 +137,7 @@ from hedron.type_authoring.depends import DependsOn
 
 # Re-export beginner core API.
 from hedron_core import (
+    THEME_PACKAGE_COMPATIBILITY,
     AccountSummary,
     ActionDock,
     ActionGroup,
@@ -364,6 +365,7 @@ from hedron_core import (
     ViewportHint,
     addressable,
     begin_operation,
+    compatibility_theme_vars,
     compile_css,
     compile_palette,
     complete_operation,
@@ -403,6 +405,18 @@ from hedron_core.builtins.map_geo import MarkerSpec
 from hedron_core.builtins.media import GalleryItem
 from hedron_core.lifetime import DependencyLifetime, DependencyPlan
 from hedron_core.scopes import RequiresScopes
+from hedron_core.theme_contract import (
+    ComponentStateMatrix,
+    StateMatrixEntry,
+    ThemeExport,
+    ThemeResolution,
+    build_state_matrix,
+    component_contract_manifest,
+    export_theme,
+    inspect_theme_css,
+    resolve_theme,
+    theme_contract_report,
+)
 
 if TYPE_CHECKING:
     from hedron.auth import OAuthHelper as OAuthHelper
@@ -600,6 +614,8 @@ __all__ = [
     "CommandResult",
     "compile_css",
     "compile_palette",
+    "compatibility_theme_vars",
+    "component_contract_manifest",
     "Component",
     "ComponentRef",
     "ComponentResponse",
@@ -628,10 +644,12 @@ __all__ = [
     "DescriptionList",
     "DesignSystem",
     "Color",
+    "ComponentStateMatrix",
     "ComponentThemeContract",
     "CoverageProfile",
     "RecipeFamily",
     "StyleContext",
+    "THEME_PACKAGE_COMPATIBILITY",
     "Dialog",
     "Dialogue",
     "DialogueTurn",
@@ -879,6 +897,7 @@ __all__ = [
     "conformance_report",
     "diff_theme_specs",
     "explain_theme_spec",
+    "export_theme",
     "load_theme_package",
     "package_theme",
     "register_component_theme_contract",
@@ -886,6 +905,13 @@ __all__ = [
     "register_recipe_family",
     "registered_recipe_families",
     "register_theme_package",
+    "resolve_theme",
+    "StateMatrixEntry",
+    "ThemeExport",
+    "ThemeResolution",
+    "build_state_matrix",
+    "inspect_theme_css",
+    "theme_contract_report",
     "validate_theme_spec",
     "TimeInput",
     "Timeline",

@@ -25,6 +25,14 @@ from hedron_core.theme import (
     contrast_diagnostics,
     run_visual_conformance,
 )
+from hedron_core.theme_contract import (
+    build_state_matrix,
+    component_contract_manifest,
+    export_theme,
+    inspect_theme_css,
+    theme_contract_report,
+)
+from hedron_core.theme_platform import ThemeSpec
 
 # Directories that never hold hand-authored application presentation.
 _SKIP_DIRS = frozenset(
@@ -105,6 +113,77 @@ def _cmd_theme_check(args: argparse.Namespace) -> int:
         print(f"Checked themes: {checked}")
         print(diagnostics_to_text(diagnostics) or "No diagnostics.")
     return 1 if meets_severity_threshold(diagnostics, threshold) else 0
+
+
+def _theme_input(args: argparse.Namespace) -> Theme | ThemeSpec:
+    spec_path = getattr(args, "spec", None)
+    if spec_path:
+        try:
+            payload = json.loads(Path(spec_path).read_text(encoding="utf-8"))
+            return ThemeSpec.from_dict(payload)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            raise SystemExit(f"hedron theme: invalid spec {spec_path}: {exc}") from exc
+    name = getattr(args, "theme_name", None) or "default"
+    available = {theme.name: theme for theme in builtin_themes()}
+    if name not in available:
+        raise SystemExit(f"hedron theme: unknown theme {name!r}")
+    return available[name]
+
+
+def _write_or_print(value: str, output: str | None) -> None:
+    if output:
+        Path(output).write_text(value, encoding="utf-8")
+    else:
+        print(value, end="")
+
+
+def _cmd_theme_export(args: argparse.Namespace) -> int:
+    exported = export_theme(_theme_input(args), profile=args.profile)
+    if args.format == "css":
+        value = exported.css
+    elif args.format == "json":
+        value = exported.json
+    else:
+        value = json.dumps(exported.to_dict(), indent=2, sort_keys=True) + "\n"
+    _write_or_print(value, args.output)
+    return 0
+
+
+def _cmd_theme_manifest(args: argparse.Namespace) -> int:
+    value = json.dumps(component_contract_manifest(), indent=2, sort_keys=True) + "\n"
+    _write_or_print(value, args.output)
+    return 0
+
+
+def _cmd_theme_matrix(args: argparse.Namespace) -> int:
+    matrix = build_state_matrix(
+        components=args.component or None,
+        viewports=args.viewport or ("320", "390", "1440"),
+        modes=args.mode or ("light", "dark"),
+    )
+    value = json.dumps(matrix.to_dict(), indent=2, sort_keys=True) + "\n"
+    _write_or_print(value, args.output)
+    return 0
+
+
+def _cmd_theme_contract(args: argparse.Namespace) -> int:
+    theme = _theme_input(args)
+    stylesheet = Path(args.stylesheet).read_text(encoding="utf-8") if args.stylesheet else None
+    value = (
+        json.dumps(theme_contract_report(theme, css=stylesheet), indent=2, sort_keys=True) + "\n"
+    )
+    _write_or_print(value, args.output)
+    return 0
+
+
+def _cmd_theme_inspect(args: argparse.Namespace) -> int:
+    try:
+        stylesheet = Path(args.stylesheet).read_text(encoding="utf-8")
+    except OSError as exc:
+        raise SystemExit(f"hedron theme inspect: cannot read {args.stylesheet}: {exc}") from exc
+    value = json.dumps(inspect_theme_css(stylesheet), indent=2, sort_keys=True) + "\n"
+    _write_or_print(value, args.output)
+    return 0
 
 
 def _iter_candidate_files(root: Path) -> Iterable[Path]:

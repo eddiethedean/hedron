@@ -32,6 +32,7 @@ __all__ = [
     "aurora_theme",
     "builtin_themes",
     "compile_palette",
+    "compatibility_theme_vars",
     "design_system_vars",
     "contrast_diagnostics",
     "contrast_ratio",
@@ -571,6 +572,7 @@ _DEFAULT_COMPATIBILITY_FALLBACKS: Mapping[str, str] = {
     "border": "#dce2eb",
     "border-strong": "#c7d0dd",
     "accent": "#2563eb",
+    "link": "#2563eb",
     "accent-hover": "#1d4ed8",
     "accent-soft": "#e8f0ff",
     "on-accent": "#ffffff",
@@ -582,6 +584,8 @@ _DEFAULT_COMPATIBILITY_FALLBACKS: Mapping[str, str] = {
     "warning": "#9a6200",
     "warning-soft": "#fff6dd",
     "info-soft": "#eaf3ff",
+    "selection-bg": "#cfe0ff",
+    "selection-fg": "#172033",
     "shadow": "0 1px 2px rgb(15 23 42 / 6%), 0 8px 24px rgb(15 23 42 / 7%)",
     "shadow-raised": "0 14px 38px rgb(15 23 42 / 13%)",
     "radius-sm": "0.5rem",
@@ -614,9 +618,13 @@ def compatibility_theme_vars(theme: Theme) -> dict[str, str]:
         "fg": "color-fg",
         "muted": "color-muted",
         "accent": "color-accent",
+        "link": "color-link",
+        "accent-hover": "color-accent-hover",
         "on-accent": "color-on-accent",
         "danger": "color-danger",
         "on-danger": "color-on-danger",
+        "selection-bg": "color-selection-bg",
+        "selection-fg": "color-selection-fg",
     }
     for suffix, token in token_names.items():
         values[f"--hedron-default-{suffix}"] = canonical(
@@ -627,7 +635,6 @@ def compatibility_theme_vars(theme: Theme) -> dict[str, str]:
     for suffix in (
         "border",
         "border-strong",
-        "accent-hover",
         "accent-soft",
         "danger-soft",
         "success",
@@ -641,17 +648,16 @@ def compatibility_theme_vars(theme: Theme) -> dict[str, str]:
 
     shape = {key.replace(".", "-"): value for key, value in theme.shape.items()}
     for suffix in ("radius-sm", "radius", "radius-lg"):
-        values[f"--hedron-default-{suffix}"] = f"var(--hedron-shape-{suffix}, {shape.get(suffix, _DEFAULT_COMPATIBILITY_FALLBACKS[suffix])})"
+        fallback = shape.get(suffix, _DEFAULT_COMPATIBILITY_FALLBACKS[suffix])
+        values[f"--hedron-default-{suffix}"] = f"var(--hedron-shape-{suffix}, {fallback})"
     elevation = {key.replace(".", "-"): value for key, value in theme.elevation.items()}
-    values["--hedron-default-shadow"] = (
-        f"var(--hedron-elevation-raised, {elevation.get('raised', _DEFAULT_COMPATIBILITY_FALLBACKS['shadow'])})"
+    shadow_fallback = elevation.get("raised", _DEFAULT_COMPATIBILITY_FALLBACKS["shadow"])
+    raised_fallback = elevation.get("raised", _DEFAULT_COMPATIBILITY_FALLBACKS["shadow-raised"])
+    values["--hedron-default-shadow"] = f"var(--hedron-elevation-raised, {shadow_fallback})"
+    values["--hedron-default-shadow-raised"] = f"var(--hedron-elevation-raised, {raised_fallback})"
+    values["--hedron-default-content-width"] = (
+        theme.nav_width or _DEFAULT_COMPATIBILITY_FALLBACKS["content-width"]
     )
-    values["--hedron-default-shadow-raised"] = (
-        f"var(--hedron-elevation-raised, {elevation.get('raised', _DEFAULT_COMPATIBILITY_FALLBACKS['shadow-raised'])})"
-    )
-    values["--hedron-default-content-width"] = theme.nav_width or _DEFAULT_COMPATIBILITY_FALLBACKS[
-        "content-width"
-    ]
     return values
 
 

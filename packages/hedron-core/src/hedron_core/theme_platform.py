@@ -25,6 +25,7 @@ __all__ = [
     "CoverageProfile",
     "RecipeFamily",
     "StyleContext",
+    "THEME_PACKAGE_COMPATIBILITY",
     "THEME_COVERAGE_PROFILES",
     "ThemeBuilder",
     "ThemePackage",
@@ -48,6 +49,7 @@ __all__ = [
 _NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]*$")
 _HEX = re.compile(r"^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
 _FUNCTION = re.compile(r"^(?P<name>[A-Za-z][A-Za-z0-9-]*)\((?P<body>.*)\)$", re.S)
+THEME_PACKAGE_COMPATIBILITY = ">=0.60,<0.64"
 
 
 def _canonical(value: object) -> str:
@@ -1098,7 +1100,7 @@ def package_theme(
         "name": spec.name,
         "version": "1",
         "profile": profile,
-        "compatibility": {"hedron": ">=0.60,<0.61", "theme_schema": spec.schema},
+        "compatibility": {"hedron": THEME_PACKAGE_COMPATIBILITY, "theme_schema": spec.schema},
         "specs": ["theme.json"],
         "fingerprint": spec.fingerprint,
         "files": {"theme.json": hashlib.sha256(payload).hexdigest()},
@@ -1142,7 +1144,10 @@ def load_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
     if not isinstance(manifest.get("specs"), list) or manifest["specs"] != ["theme.json"]:
         raise ValueError("theme package must declare exactly theme.json")
     compatibility = manifest.get("compatibility")
-    if not isinstance(compatibility, dict) or compatibility.get("hedron") != ">=0.60,<0.61":
+    if (
+        not isinstance(compatibility, dict)
+        or compatibility.get("hedron") != THEME_PACKAGE_COMPATIBILITY
+    ):
         raise ValueError("theme package Hedron compatibility is unsupported")
     if not isinstance(manifest.get("licenses"), list) or not manifest["licenses"]:
         raise ValueError("theme package must declare at least one license")

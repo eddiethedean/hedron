@@ -36,6 +36,8 @@ class ElementDefinitionMeta:
     parts: tuple[str, ...] = ()
     slots: Mapping[str, str] = field(default_factory=dict)
     tokens: tuple[str, ...] = ()
+    maturity: str = "Supported"
+    compatibility: Mapping[str, str] = field(default_factory=dict)
     first_party: bool = True
 
 
@@ -62,6 +64,8 @@ def register_element_definition(
     parts: Iterable[str] = (),
     slots: Mapping[str, str] | None = None,
     tokens: Iterable[str] = (),
+    maturity: str = "Supported",
+    compatibility: Mapping[str, str] | None = None,
     first_party: bool = True,
 ) -> None:
     from hedron_core.registry.builder import active_builder
@@ -89,6 +93,8 @@ def register_element_definition(
             parts=tuple(parts),
             slots=dict(slots or {}),
             tokens=tuple(tokens),
+            maturity=maturity,
+            compatibility=dict(compatibility or {}),
             first_party=first_party,
         )
     )

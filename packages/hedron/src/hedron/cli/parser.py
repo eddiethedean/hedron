@@ -32,7 +32,15 @@ from hedron.cli.commands.style import (
     _cmd_style_preview,
 )
 from hedron.cli.commands.testgen import _cmd_testgen
-from hedron.cli.commands.theme import _cmd_style_check, _cmd_theme_check
+from hedron.cli.commands.theme import (
+    _cmd_style_check,
+    _cmd_theme_check,
+    _cmd_theme_contract,
+    _cmd_theme_export,
+    _cmd_theme_inspect,
+    _cmd_theme_manifest,
+    _cmd_theme_matrix,
+)
 from hedron.cli.commands.upgrade_report import _cmd_upgrade_report
 
 
@@ -402,6 +410,50 @@ def _register_theme_commands(sub: Any) -> None:
         help="Fail when diagnostics meet or exceed this severity (error|warning|info)",
     )
     theme_check_p.set_defaults(func=_cmd_theme_check)
+
+    theme_export_p = theme_sub.add_parser(
+        "export",
+        help="Export a resolved theme as CSS, design-token JSON, or a full report",
+    )
+    theme_export_p.add_argument("--theme", dest="theme_name", default="default")
+    theme_export_p.add_argument("--spec", default=None, help="ThemeSpec JSON input")
+    theme_export_p.add_argument(
+        "--profile",
+        choices=("core", "forms", "data", "workflow", "complete"),
+        default="core",
+    )
+    theme_export_p.add_argument("--format", choices=("css", "json", "report"), default="json")
+    theme_export_p.add_argument("--output", default=None)
+    theme_export_p.set_defaults(func=_cmd_theme_export)
+
+    theme_manifest_p = theme_sub.add_parser(
+        "manifest", help="Emit the registry-derived component theme manifest"
+    )
+    theme_manifest_p.add_argument("--output", default=None)
+    theme_manifest_p.set_defaults(func=_cmd_theme_manifest)
+
+    theme_matrix_p = theme_sub.add_parser("matrix", help="Emit the bounded component state matrix")
+    theme_matrix_p.add_argument("--component", action="append", default=None)
+    theme_matrix_p.add_argument("--viewport", action="append", default=None)
+    theme_matrix_p.add_argument("--mode", action="append", default=None)
+    theme_matrix_p.add_argument("--output", default=None)
+    theme_matrix_p.set_defaults(func=_cmd_theme_matrix)
+
+    theme_contract_p = theme_sub.add_parser(
+        "contract", help="Emit the complete theme-contract evidence report"
+    )
+    theme_contract_p.add_argument("--theme", dest="theme_name", default="default")
+    theme_contract_p.add_argument("--spec", default=None, help="ThemeSpec JSON input")
+    theme_contract_p.add_argument("--stylesheet", default=None)
+    theme_contract_p.add_argument("--output", default=None)
+    theme_contract_p.set_defaults(func=_cmd_theme_contract)
+
+    theme_inspect_p = theme_sub.add_parser(
+        "inspect", help="Inspect stylesheet compatibility consumers"
+    )
+    theme_inspect_p.add_argument("--stylesheet", required=True)
+    theme_inspect_p.add_argument("--output", default=None)
+    theme_inspect_p.set_defaults(func=_cmd_theme_inspect)
 
     style_p = sub.add_parser("style", help="Application presentation audits and design tooling")
     style_sub = style_p.add_subparsers(dest="style_command", required=True)

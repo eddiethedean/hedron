@@ -10,6 +10,7 @@
     --hedron-default-border: #dce2eb;
     --hedron-default-border-strong: #c7d0dd;
     --hedron-default-accent: #2563eb;
+    --hedron-default-link: #2563eb;
     --hedron-default-accent-hover: #1d4ed8;
     --hedron-default-accent-soft: #e8f0ff;
     --hedron-default-on-accent: #ffffff;
@@ -21,6 +22,8 @@
     --hedron-default-warning: #9a6200;
     --hedron-default-warning-soft: #fff6dd;
     --hedron-default-info-soft: #eaf3ff;
+    --hedron-default-selection-bg: #cfe0ff;
+    --hedron-default-selection-fg: #172033;
     --hedron-default-shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 8px 24px rgb(15 23 42 / 7%);
     --hedron-default-shadow-raised: 0 14px 38px rgb(15 23 42 / 13%);
     --hedron-default-radius-sm: 0.5rem;
@@ -368,13 +371,18 @@
   }
 
   a {
-    color: var(--hedron-color-accent, var(--hedron-default-accent));
+    color: var(--hedron-color-link, var(--hedron-color-accent, var(--hedron-default-link)));
     font-weight: 600;
     text-underline-offset: 0.18em;
   }
 
   a:hover {
     color: var(--hedron-default-accent-hover);
+  }
+
+  ::selection {
+    background: var(--hedron-color-selection-bg, var(--hedron-default-selection-bg));
+    color: var(--hedron-color-selection-fg, var(--hedron-default-selection-fg));
   }
 
   :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
