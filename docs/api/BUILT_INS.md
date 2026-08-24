@@ -39,6 +39,7 @@ manual.
 [`Container`](../components/container.md) · [`Stack`](../components/stack.md) ·
 [`Inline`](../components/inline.md) · [`Grid`](../components/grid.md) ·
 [`Divider`](../components/divider.md) · [`Spacer`](../components/spacer.md)
+· [`AppShell`](../components/app-shell.md) · [`NavGroup`](../components/nav-group.md)
 
 ## Content and media
 
@@ -53,7 +54,8 @@ manual.
 
 ## Surfaces, controls, forms
 
-[`Card`](../components/card.md) · [`Badge`](../components/badge.md) ·
+[`Card`](../components/card.md) · [`Surface`](../components/surface.md) ·
+[`AmbientBackdrop`](../components/ambient-backdrop.md) · [`Badge`](../components/badge.md) ·
 [`Alert`](../components/alert.md) · [`Skeleton`](../components/skeleton.md) ·
 [`Button`](../components/button.md) · [`ConfirmButton`](../components/confirm-button.md) ·
 [`Form`](../components/form.md) · [`Hx`](../components/hx.md) ·
@@ -75,6 +77,9 @@ manual.
 [`Pagination`](../components/pagination.md) · [`Loading`](../components/loading.md) ·
 [`ErrorState`](../components/error-state.md) · [`ChatInput`](../components/chat-input.md) ·
 [`ChatMessage`](../components/chat-message.md) · [`Dialog`](../components/dialog.md)
+
+[`AsyncRegion`](../components/async-region.md) is the phase 0.61 server-authored lifecycle
+boundary for action, form, job, and refreshable-region presentations.
 
 Helpers: `action_attrs`, `oob_swap` — see [Interaction](INTERACTION.md).
 

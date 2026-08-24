@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal
 
+from hedron_core.action_state import ActionState, ActionTrace
 from hedron_core.component import NodeLike
 from hedron_core.htmx_contract import HtmxContext, safe_hx_swap
 from hedron_core.typing_aliases import HxLocation, JsonValue
@@ -204,6 +205,8 @@ class InteractionResult:
     history: HistoryMode = "none"
     cache: CacheHint | None = "vary-htmx"
     concurrency: str | None = None
+    action_state: ActionState | None = None
+    action_trace: ActionTrace | None = None
     region_id: str | None = None
     policy: InteractionPolicy | None = None
     headers: Mapping[str, str] = field(default_factory=dict)

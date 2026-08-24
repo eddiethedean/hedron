@@ -1,6 +1,6 @@
 # Phase 0.61: unified action state and server-first async boundaries
 
-**Status:** Proposed / Stage 0 planning  
+**Status:** Implementation baseline complete / release evidence pending
 **Predecessor:** published 0.60 baseline  
 **Authority:** [RFC-0090](../rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md)  
 **Acceptance:** [RELEASE_0_61](../acceptance/RELEASE_0_61.md)
@@ -11,6 +11,10 @@ Forms, action handles, jobs, refreshable fragments, and supported Web Components
 versioned lifecycle and one server-first boundary model. Applications can render pending and failure
 states consistently, reject stale work, and inspect transitions without adding application
 JavaScript.
+
+Phase 0.61 also closes the small-surface consistency packet tracked by issues #668–#672: Tabs,
+bounded Container layout, standalone NavGroup, AmbientBackdrop, and default-theme Identity text
+layout. These are additive presentation contracts and do not create a competing interaction store.
 
 ## Entry gate
 
@@ -40,6 +44,19 @@ Names are provisional until Stage 0. Behavior is the contract.
 `ActionState` adapts existing `InteractionState`; it does not replace element state ownership.
 `AsyncRegion` lowers through existing render/fragment/job/action mechanisms and always has an
 ordinary HTTP or full-fragment result.
+
+### Surface consistency packet
+
+| Issue | Implemented contract | No-JavaScript / compatibility rule |
+|---|---|---|
+| #668 | `Tabs(appearance=..., density=..., responsive=...)` with closed tokens and scroll-safe overflow. | Existing markup and keyboard enhancement remain the default when tokens are omitted. |
+| #669 | `Container(max_width=..., align=..., padding=...)` with finite theme markers. | Existing query/name behavior and default layout remain unchanged. |
+| #670 | Public `NavGroup`, reused by `AppShell(nav_groups=...)`. | Group markup is ordinary semantic HTML and can be returned in a fragment/OOB response. |
+| #671 | `AmbientBackdrop` with finite pattern/tone/intensity tokens and an inert decoration layer. | Content stays in document order; print, forced-colors, and reduced-transparency hide decoration. |
+| #672 | Default theme stacks and constrains Identity primary/detail text. | Long identity content remains readable without application CSS. |
+
+The surface packet is verified by `tests/unit/test_phase061_action_state.py`, import-surface
+checks, CSS parity checks, and the existing shell, a11y, and component composition suites.
 
 ## Required transition invariants
 

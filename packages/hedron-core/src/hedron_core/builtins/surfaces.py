@@ -83,6 +83,64 @@ class Surface(Component[SurfaceProps]):
         )
 
 
+class AmbientBackdropProps(ElementProps):
+    pattern: Literal["radial", "dots", "grid", "mesh"] = "radial"
+    tone: Literal["accent", "muted", "neutral"] = "accent"
+    intensity: Literal["subtle", "soft"] = "subtle"
+
+
+class AmbientBackdrop(Component[AmbientBackdropProps]):
+    """Finite, decorative page/surface treatment with semantic content above it."""
+
+    props_type = AmbientBackdropProps
+    logical_name = "AmbientBackdrop"
+
+    def __init__(
+        self,
+        *nodes: NodeLike,
+        children: NodeLike = None,
+        pattern: Literal["radial", "dots", "grid", "mesh"] = "radial",
+        tone: Literal["accent", "muted", "neutral"] = "accent",
+        intensity: Literal["subtle", "soft"] = "subtle",
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        require_choice(pattern, ("radial", "dots", "grid", "mesh"), label="pattern")
+        require_choice(tone, ("accent", "muted", "neutral"), label="tone")
+        require_choice(intensity, ("subtle", "soft"), label="intensity")
+        super().__init__(
+            AmbientBackdropProps(
+                pattern=pattern,
+                tone=tone,
+                intensity=intensity,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._children = collect_children(*nodes, children=children)
+
+    def render(self) -> NodeLike:
+        return html.div(
+            html.div(
+                aria={"hidden": "true"},
+                class_="hedron-ambient-backdrop-decoration",
+                data={
+                    "hedron-ambient-pattern": self.props.pattern,
+                    "hedron-ambient-tone": self.props.tone,
+                    "hedron-ambient-intensity": self.props.intensity,
+                },
+            ),
+            *self._children,
+            id=self.props.id,
+            class_=class_names("hedron-ambient-backdrop", self.props.class_),
+            data={"hedron-ambient-backdrop": "true", "hedron-mark": self.props.mark},
+        )
+
+
 class CardProps(ElementProps):
     title: str | None = None
     appearance: Appearance | None = None

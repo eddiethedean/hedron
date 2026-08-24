@@ -34,12 +34,16 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 The component emits an addressable div and always retains the `hedron-container` theme hook. In 0.59, `query='inline-size'` opts the boundary into container-aware responsive styling and `name=` adds a validated named-container marker. Positional nodes and `children=` use the same normalization rules, and an application class augments rather than disables the built-in layout. Width, gutters, and breakpoints remain theme CSS concerns.
 
+Phase 0.61 adds finite width, alignment, and spacing markers without changing the default
+viewport behavior. These tokens are theme hooks, not arbitrary CSS values.
+
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
 ## Constructor and parameters
 
 ```python
-Container(*nodes, children=None, id=None, class_=None, query='none', name=None)
+Container(*nodes, children=None, id=None, class_=None, query='none', name=None,
+          max_width=None, align=None, padding=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -50,6 +54,9 @@ Container(*nodes, children=None, id=None, class_=None, query='none', name=None)
 | `class_` | `str | None` | Application class appended after `hedron-container`; the built-in theme hook is retained. |
 | `query` | `Literal['none', 'inline-size']` | Opt into an inline-size query boundary. Default: `'none'` (existing viewport behavior). |
 | `name` | `str | None` | Validated container name, valid only with `query='inline-size'`. |
+| `max_width` | `'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full' | None` | Finite readable-width token. |
+| `align` | `'start' | 'center' | 'end' | None` | Inline alignment inside the containing block. |
+| `padding` | `str | None` | Theme spacing token such as `sm`, `md`, or `lg`. |
 
 ## Composition and backend behavior
 

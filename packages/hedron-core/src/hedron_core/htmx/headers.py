@@ -156,7 +156,7 @@ def _authorize_outbound_selectors(
 
 
 def interaction_trace(result: InteractionResult) -> InteractionTrace:
-    return {
+    trace: InteractionTrace = {
         "status_code": result.status_code,
         "target": result.target or result.retarget,
         "swap": result.swap or result.reswap,
@@ -166,6 +166,14 @@ def interaction_trace(result: InteractionResult) -> InteractionTrace:
         "region_id": result.region_id,
         "explanation": result.explanation,
     }
+    if result.action_state is not None:
+        trace["action_phase"] = result.action_state.phase.value
+        if result.action_state.operation is not None:
+            trace["operation_id"] = result.action_state.operation.operation_id
+            trace["generation"] = result.action_state.operation.generation
+    if result.action_trace is not None:
+        trace["action_trace"] = result.action_trace.to_dict()
+    return trace
 
 
 _STATUS_DEFAULTS: dict[int, StatusPolicy] = {

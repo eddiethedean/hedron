@@ -1,0 +1,8 @@
+schema = "hedron.interaction-trace.v1"
+phase = "0.61"
+status = "implemented"
+max_events_default = 128
+max_events_limit = 10000
+redaction = "secret-like facts are redacted before truncation"
+unknown_fields = "ignored by forward-compatible readers"
+required_event_fields = ["phase", "operation_id", "generation", "target", "status", "facts"]

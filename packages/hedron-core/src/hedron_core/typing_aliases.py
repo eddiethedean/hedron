@@ -62,6 +62,10 @@ class InteractionTrace(TypedDict):
     cache: str | None
     region_id: str | None
     explanation: str
+    action_phase: NotRequired[str]
+    operation_id: NotRequired[str]
+    generation: NotRequired[int]
+    action_trace: NotRequired[dict[str, object]]
 
 
 class JobStatusDict(TypedDict):

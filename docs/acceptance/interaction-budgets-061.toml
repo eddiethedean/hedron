@@ -1,0 +1,10 @@
+phase = "0.61"
+status = "implemented"
+message_chars = 512
+operation_id_chars = 128
+target_chars = 512
+trace_events_default = 128
+trace_events_max = 10000
+trace_fact_chars = 512
+max_nested_async_regions = 8
+retry_requires_idempotency = true

@@ -30,7 +30,7 @@ client-runtime architecture.
 
 | Phase | Theme | Required outcome |
 |---|---|---|
-| 0.61 | Action state and async boundaries | Every supported asynchronous interaction projects one typed lifecycle, operation identity, fallback, and trace model. |
+| 0.61 | Action state, async boundaries, and composed surfaces | Every supported asynchronous interaction projects one typed lifecycle, operation identity, fallback, and trace model; the five 0.60 surface seams share additive finite contracts. |
 | 0.62 | Navigation, optimism, and failure isolation | Supported pages remain understandable and recoverable during navigation, mutation, stale responses, conflicts, and partial failure. |
 | 0.63 | Tooling and ecosystem interoperability | Developers can inspect, check, profile, test, migrate, and extend the platform without adopting React. |
 
@@ -85,6 +85,11 @@ Phase 0.61 defines a versioned envelope that can represent `idle`, `pending`, `s
 `cancelled`, `stale`, and `conflict`. It is a projection over existing action/form/job/fragment
 authorities, not a new durable store. The envelope carries bounded public status, operation and
 target identity, revision/correlation facts where applicable, retryability, and redacted diagnostics.
+
+The same phase includes a bounded surface consistency packet: Tabs appearance/overflow tokens,
+finite Container width/alignment/spacing, standalone NavGroup, inert AmbientBackdrop presets, and
+constrained Identity text layout. These contracts consume the 0.60 theme authority and remain
+server-rendered, additive, and safe when omitted.
 
 State transitions must be monotonic for one operation. A late response cannot overwrite a newer
 operation, a cancelled operation cannot re-enter `success`, and browser-provided status is never

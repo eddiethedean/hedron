@@ -710,6 +710,20 @@
     padding-inline-end: max(0px, env(safe-area-inset-right));
   }
 
+  .hedron-container[data-hedron-max-width="xs"] { width: min(100%, 24rem); }
+  .hedron-container[data-hedron-max-width="sm"] { width: min(100%, 32rem); }
+  .hedron-container[data-hedron-max-width="md"] { width: min(100%, 48rem); }
+  .hedron-container[data-hedron-max-width="lg"] { width: min(100%, 64rem); }
+  .hedron-container[data-hedron-max-width="xl"] { width: min(100%, 80rem); }
+  .hedron-container[data-hedron-max-width="full"] { width: 100%; }
+  .hedron-container[data-hedron-align="start"] { margin-inline-start: 0; margin-inline-end: auto; }
+  .hedron-container[data-hedron-align="center"] { margin-inline: auto; }
+  .hedron-container[data-hedron-align="end"] { margin-inline-start: auto; margin-inline-end: 0; }
+  .hedron-container[data-hedron-padding="none"] { padding-block: 0; }
+  .hedron-container[data-hedron-padding="sm"] { padding-block: 0.5rem; }
+  .hedron-container[data-hedron-padding="md"] { padding-block: 1rem; }
+  .hedron-container[data-hedron-padding="lg"] { padding-block: 1.5rem; }
+
   @supports (container-type: inline-size) {
     .hedron-container[data-hedron-container-query="inline-size"] {
       container-type: inline-size;
@@ -1278,6 +1292,53 @@
     padding-bottom: 0.55rem;
     overflow-x: auto;
     border-bottom: 1px solid var(--hedron-default-border);
+  }
+
+  .hedron-tablist > [role="tab"] {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .hedron-tabs[data-hedron-responsive="scroll"] .hedron-tablist {
+    overscroll-behavior-inline: contain;
+    scroll-padding-inline: 1rem;
+    scrollbar-gutter: stable;
+  }
+  .hedron-tabs[data-hedron-responsive="stretch"] .hedron-tablist > [role="tab"] {
+    min-inline-size: 0;
+    flex: 1 1 0;
+  }
+  .hedron-tabs[data-hedron-responsive="compact"] .hedron-tablist > [role="tab"] {
+    padding-inline: 0.65rem;
+  }
+  .hedron-tabs[data-hedron-density="compact"] .hedron-tablist { gap: 0.2rem; padding-block-end: 0.35rem; }
+  .hedron-tabs[data-hedron-density="spacious"] .hedron-tablist { gap: 0.55rem; padding-block-end: 0.75rem; }
+  .hedron-tabs[data-hedron-appearance="underline"] .hedron-tablist { gap: 0.1rem; }
+  .hedron-tabs[data-hedron-appearance="underline"] .hedron-tablist > [role="tab"] {
+    border-color: transparent;
+    border-width: 0 0 2px;
+    border-radius: 0;
+    background: transparent;
+    color: var(--hedron-default-muted, GrayText);
+    box-shadow: none;
+  }
+  .hedron-tabs[data-hedron-appearance="underline"] [role="tab"][aria-selected="true"] {
+    border-color: var(--hedron-color-accent, var(--hedron-default-accent));
+    background: transparent;
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+  .hedron-tabs[data-hedron-appearance="pills"] .hedron-tablist {
+    padding: 0.25rem;
+    border: 0;
+    border-radius: 999rem;
+    background: var(--hedron-default-surface-muted);
+  }
+  .hedron-tabs[data-hedron-appearance="pills"] .hedron-tablist > [role="tab"] {
+    border-radius: 999rem;
+    background: transparent;
+    box-shadow: none;
+  }
+  .hedron-tabs[data-hedron-appearance="pills"] [role="tab"][aria-selected="true"] {
+    background: var(--hedron-default-surface);
   }
 
   [role="tab"][aria-selected="true"] {
@@ -3097,6 +3158,51 @@
   .hedron-surface[data-hedron-padding="lg"],
   .hedron-card[data-hedron-padding="lg"] { padding: 1.5rem; }
 
+  .hedron-ambient-backdrop {
+    position: relative;
+    isolation: isolate;
+    min-width: 0;
+  }
+  .hedron-ambient-backdrop > :not(.hedron-ambient-backdrop-decoration) {
+    position: relative;
+    z-index: 1;
+  }
+  .hedron-ambient-backdrop-decoration {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: 0.55;
+  }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-tone="accent"] {
+    --hedron-ambient-color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-tone="muted"] {
+    --hedron-ambient-color: var(--hedron-default-muted);
+  }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-tone="neutral"] {
+    --hedron-ambient-color: CanvasText;
+  }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-intensity="soft"] { opacity: 0.8; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-pattern="radial"] {
+    background: radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--hedron-ambient-color) 18%, transparent), transparent 55%);
+  }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-pattern="dots"] {
+    background-image: radial-gradient(color-mix(in srgb, var(--hedron-ambient-color) 24%, transparent) 1px, transparent 1px);
+    background-size: 0.75rem 0.75rem;
+  }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-pattern="grid"] {
+    background-image: linear-gradient(color-mix(in srgb, var(--hedron-ambient-color) 12%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--hedron-ambient-color) 12%, transparent) 1px, transparent 1px);
+    background-size: 1.25rem 1.25rem;
+  }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-pattern="mesh"] {
+    background: radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--hedron-ambient-color) 15%, transparent), transparent 48%), radial-gradient(circle at 90% 100%, color-mix(in srgb, var(--hedron-ambient-color) 10%, transparent), transparent 44%);
+  }
+  @media print, (forced-colors: active), (prefers-reduced-transparency: reduce) {
+    .hedron-ambient-backdrop-decoration { display: none; }
+  }
+
   .hedron-brand {
     display: inline-flex;
     min-width: 0;
@@ -3134,10 +3240,21 @@
     align-items: center;
     gap: 0.65rem;
   }
+  .hedron-identity-text {
+    display: grid;
+    min-inline-size: 0;
+    gap: 0.12rem;
+  }
   .hedron-account-detail,
   .hedron-identity-detail {
     color: var(--hedron-default-muted, GrayText);
     font-size: 0.875rem;
+  }
+  .hedron-identity-detail {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .hedron-environment-banner {
     padding: 0.45rem 0.85rem;

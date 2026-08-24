@@ -1,0 +1,11 @@
+schema = "hedron.action-state.v1"
+phase = "0.61"
+status = "implemented"
+authority = "server"
+closed_phases = ["idle", "pending", "success", "error", "cancelled", "stale", "conflict"]
+async_region_states = ["idle", "pending", "empty", "success", "error", "timeout", "cancelled", "retry", "conflict"]
+terminal_phases = ["success", "error", "cancelled", "stale", "conflict"]
+max_message_chars = 512
+progress = "integer 0..100 or null"
+retry_rule = "explicit and idempotent only"
+stale_rule = "operation id and generation must match before presentation update"

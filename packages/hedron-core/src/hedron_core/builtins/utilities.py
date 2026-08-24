@@ -7,6 +7,7 @@ from collections.abc import Mapping, Sequence
 from typing import Any, ClassVar, Literal, cast
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
+from hedron_core.builtins.appearance import DENSITIES, require_choice
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -466,6 +467,9 @@ class Expander(Component[ExpanderProps]):
 
 class TabsProps(ElementProps):
     active: str | None = None
+    appearance: Literal["contained", "underline", "pills"] | None = None
+    density: Literal["compact", "comfortable", "spacious"] | None = None
+    responsive: Literal["scroll", "stretch", "compact"] | None = None
 
 
 class Tabs(Component[TabsProps]):
@@ -477,11 +481,27 @@ class Tabs(Component[TabsProps]):
         *items: tuple[str, NodeLike] | list[tuple[str, NodeLike]],
         panels: Sequence[tuple[str, NodeLike]] | None = None,
         active: str | None = None,
+        appearance: Literal["contained", "underline", "pills"] | None = None,
+        density: Literal["compact", "comfortable", "spacious"] | None = None,
+        responsive: Literal["scroll", "stretch", "compact"] | None = None,
         id: str | None = None,
         class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(TabsProps(active=active, id=id, class_=class_, **kwargs))
+        require_choice(appearance, ("contained", "underline", "pills"), label="appearance")
+        require_choice(density, DENSITIES, label="density")
+        require_choice(responsive, ("scroll", "stretch", "compact"), label="responsive")
+        super().__init__(
+            TabsProps(
+                active=active,
+                appearance=appearance,
+                density=density,
+                responsive=responsive,
+                id=id,
+                class_=class_,
+                **kwargs,
+            )
+        )
         if panels is not None:
             normalized: tuple[tuple[str, NodeLike], ...] = (
                 *cast(tuple[tuple[str, NodeLike], ...], items),
@@ -539,6 +559,12 @@ class Tabs(Component[TabsProps]):
             *panels,
             id=tabs_id,
             class_=class_names("hedron-tabs", self.props.class_),
+            data={
+                "hedron-tabs": "true",
+                "hedron-appearance": self.props.appearance,
+                "hedron-density": self.props.density,
+                "hedron-responsive": self.props.responsive,
+            },
         )
 
 

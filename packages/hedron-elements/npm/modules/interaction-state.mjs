@@ -1,10 +1,13 @@
-/** InteractionState machine (phase 0.37 / ACTIONSTATE-037). */
+/** InteractionState machine (phase 0.61 / ACTIONSTATE-061). */
 export const InteractionStates = Object.freeze([
   "idle",
   "pending",
   "success",
   "error",
+  "cancelled",
   "canceled",
+  "stale",
+  "conflict",
 ]);
 
 export class InteractionState {
@@ -13,6 +16,7 @@ export class InteractionState {
   #progress = 0;
   #updatedAt = 0;
   #policy = "drop";
+  #generation = 0;
 
   constructor({ policy = "drop" } = {}) {
     this.#policy = policy;
@@ -30,6 +34,10 @@ export class InteractionState {
     return this.#progress;
   }
 
+  get generation() {
+    return this.#generation;
+  }
+
   begin(operationId) {
     if (this.#state === "pending") {
       if (this.#policy === "drop") return false;
@@ -37,6 +45,7 @@ export class InteractionState {
       else return false;
     }
     this.#operationId = operationId || crypto.randomUUID?.() || String(Date.now());
+    this.#generation += 1;
     this.#state = "pending";
     this.#progress = 0;
     this.#updatedAt = Date.now();
@@ -50,34 +59,48 @@ export class InteractionState {
   }
 
   succeed() {
-    if (this.#state !== "pending") return;
-    this.#state = "success";
-    this.#progress = 100;
-    this.#updatedAt = Date.now();
+    return this.complete("success");
   }
 
   fail() {
-    if (this.#state !== "pending") return;
-    this.#state = "error";
-    this.#updatedAt = Date.now();
+    return this.complete("error");
   }
 
   cancel() {
-    if (this.#state !== "pending") return;
-    this.#state = "canceled";
+    return this.complete("cancelled");
+  }
+
+  stale() {
+    return this.complete("stale");
+  }
+
+  conflict() {
+    return this.complete("conflict");
+  }
+
+  complete(phase, { operationId = this.#operationId, generation = this.#generation } = {}) {
+    if (this.#state !== "pending") return false;
+    if (operationId !== this.#operationId || generation !== this.#generation) return false;
+    if (!["success", "error", "cancelled", "stale", "conflict"].includes(phase)) return false;
+    this.#state = phase;
+    if (phase === "success") this.#progress = 100;
     this.#updatedAt = Date.now();
+    return true;
   }
 
   reset() {
     this.#state = "idle";
     this.#operationId = null;
     this.#progress = 0;
+    this.#generation = 0;
     this.#updatedAt = Date.now();
   }
 
   applyAria(el) {
     if (!el) return;
     el.setAttribute("aria-busy", this.#state === "pending" ? "true" : "false");
+    el.setAttribute("data-hedron-action-phase", this.#state);
+    el.setAttribute("data-hedron-action-generation", String(this.#generation));
   }
 }
 

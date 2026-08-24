@@ -80,9 +80,13 @@ Document shell with optional side nav and a MainPanel body.
 ## Basic use
 
 ```python
-from hedron import AppShell, Heading, Nav, NavLink
+from hedron import AppShell, Heading, Nav, NavGroup, NavLink
 
-component = AppShell(Heading('Home', level=1), nav=Nav(NavLink('Home', '/'), NavLink('Reports', '/reports')), panel_id='main-panel')
+component = AppShell(
+    Heading('Home', level=1),
+    nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/'))),
+    panel_id='main-panel',
+)
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
@@ -96,13 +100,14 @@ This component can initiate or represent a backend interaction. The live documen
 ## Constructor and parameters
 
 ```python
-AppShell(*body, *, nav=None, panel_id='main-panel', class_=None, id=None)
+AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', class_=None, id=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `body` | `NodeLike` | Primary content placed inside MainPanel. |
 | `nav` | `NodeLike | None` | Optional side navigation (often Nav of NavLinks). |
+| `nav_groups` | `Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]] | None` | Ordered grouped navigation lowered through `NavGroup`. |
 | `panel_id` | `str` | Id forwarded to the composed MainPanel. |
 
 ## Composition and backend behavior

@@ -1,0 +1,22 @@
+phase = "0.61"
+status = "implemented"
+
+[[diagnostic]]
+code = "HED-ACTION-TRANSITION"
+severity = "error"
+meaning = "requested lifecycle transition is not valid"
+
+[[diagnostic]]
+code = "HED-ACTION-STALE"
+severity = "info"
+meaning = "operation result did not match the current generation"
+
+[[diagnostic]]
+code = "HED-ASYNC-FALLBACK"
+severity = "error"
+meaning = "async boundary did not declare an ordinary fallback"
+
+[[diagnostic]]
+code = "HED-TRACE-REDACTION"
+severity = "error"
+meaning = "trace facts failed the public redaction boundary"

@@ -1,0 +1,43 @@
+schema = "hedron.phase061.surface.v1"
+phase = "0.61"
+status = "implemented"
+fallback = "server-rendered ordinary HTML"
+
+[[surface]]
+issue = 668
+symbol = "Tabs"
+tokens = ["appearance", "density", "responsive"]
+responsive_default = "existing theme behavior"
+overflow_rule = "responsive scroll preserves all tab labels"
+
+[[surface]]
+issue = 669
+symbol = "Container"
+tokens = ["max_width", "align", "padding"]
+finite_widths = ["xs", "sm", "md", "lg", "xl", "full"]
+default_compatibility = "query/name behavior unchanged"
+
+[[surface]]
+issue = 670
+symbol = "NavGroup"
+shared_with = "AppShell.nav_groups"
+semantic_rule = "labelled groups expose role=group and aria-label"
+
+[[surface]]
+issue = 671
+symbol = "AmbientBackdrop"
+patterns = ["radial", "dots", "grid", "mesh"]
+tones = ["accent", "muted", "neutral"]
+decoration_rule = "aria-hidden and pointer-events-none"
+
+[[surface]]
+issue = 672
+symbol = "Identity"
+theme_rule = "primary and detail text form a constrained two-line stack"
+
+[css]
+authoritative_files = [
+  "packages/hedron-core/src/hedron_core/static/hedron-default.css",
+  "packages/hedron/src/hedron/static/hedron-default.css",
+]
+must_match = true

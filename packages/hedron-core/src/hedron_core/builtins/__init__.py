@@ -21,6 +21,7 @@ from hedron_core.builtins.appearance import (
     TYPOGRAPHY_ROLES,
     WIDTHS,
 )
+from hedron_core.builtins.async_region import AsyncRegion
 from hedron_core.builtins.content import (
     CodeBlock,
     DescriptionList,
@@ -127,12 +128,21 @@ from hedron_core.builtins.shell import (
     EnvironmentBanner,
     HtmxLink,
     MainPanel,
+    NavGroup,
     NavLink,
     NavStatus,
     OobHost,
 )
 from hedron_core.builtins.style_scope import StyleScope
-from hedron_core.builtins.surfaces import Alert, Badge, Card, Skeleton, StateView, Surface
+from hedron_core.builtins.surfaces import (
+    Alert,
+    AmbientBackdrop,
+    Badge,
+    Card,
+    Skeleton,
+    StateView,
+    Surface,
+)
 from hedron_core.builtins.surfaces_chrome import (
     ActionDock,
     BottomDock,
@@ -185,9 +195,11 @@ __all__ = [
     "TYPOGRAPHY_ROLES",
     "WIDTHS",
     "AccountSummary",
+    "AsyncRegion",
     "ActionDock",
     "ActionGroup",
     "Alert",
+    "AmbientBackdrop",
     "AppFooter",
     "AppShell",
     "Aside",
@@ -267,6 +279,7 @@ __all__ = [
     "MultiSelect",
     "Nav",
     "NavLink",
+    "NavGroup",
     "NavStatus",
     "EnvironmentBanner",
     "NumberInput",

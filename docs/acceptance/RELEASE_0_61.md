@@ -1,6 +1,6 @@
 # Release acceptance: 0.61 action state and async boundaries
 
-**Status:** Proposed / Planned gates  
+**Status:** Implementation baseline complete / release evidence pending
 **Implementation:** [ACTION_STATE_ASYNC_061](../implementation/ACTION_STATE_ASYNC_061.md)
 
 ## Planned contract artifacts
@@ -14,6 +14,7 @@
 - `interaction-budgets-061.toml`
 - `interaction-security-a11y-061.toml`
 - `interaction-upgrade-fixtures-061.md`
+- `phase061-surface-contract.toml`
 
 Names and schemas become authoritative only after Stage 0 acceptance.
 
@@ -25,6 +26,8 @@ Names and schemas become authoritative only after Stage 0 acceptance.
 | `ACTIONSTATE-061` | All Required adapters project the same typed lifecycle without replacing existing state authority. | Core transition corpus and cross-adapter golden fixtures | Planned |
 | `OPERATION-061` | Operation identity, generation, target, correlation, and revision rules are stable and non-authoritative. | Identity/property tests and spoofing cases | Planned |
 | `ASYNC-061` | Async regions cover initial, pending, empty, success, timeout, cancelled, error, retry, and ordinary fallback. | Render, HTTP, fragment, polling/HTMX, and browser journeys | Planned |
+| `SURFACE-061` | #668–#672 expose additive, finite, server-rendered surface contracts with shared CSS parity. | Public import, render marker, CSS parity, responsive/a11y regression corpus | Planned |
+| `VISUAL-061` | Tabs, containers, navigation groups, backdrops, and Identity remain readable across narrow, forced-colors, print, and reduced-transparency modes. | Browser screenshots/DOM assertions and static theme checks | Planned |
 | `CONCURRENCY-061` | Concurrency, retry, timeout, cancellation, and idempotency policies are explicit and safe. | Duplicate/retry/cancel/replay corpus | Planned |
 | `STALE-061` | Late, duplicate, cancelled, revision-incompatible, or unauthorized results cannot update current state. | Deterministic race and permission-change tests | Planned |
 | `FORM-061` | Native, HTMX, and Required element forms agree on validation, busy, focus, duplicate submit, and retry. | Host/browser/keyboard matrix | Planned |

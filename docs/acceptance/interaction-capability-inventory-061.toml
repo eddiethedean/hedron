@@ -1,0 +1,26 @@
+phase = "0.61"
+status = "implemented"
+
+[[capability]]
+id = "ACTIONSTATE-061"
+name = "unified action lifecycle"
+disposition = "required"
+authority = "hedron_core.action_state"
+
+[[capability]]
+id = "ASYNC-061"
+name = "server-authored async region"
+disposition = "required"
+authority = "hedron_core.builtins.async_region"
+
+[[capability]]
+id = "SURFACE-061"
+name = "composed application surfaces"
+disposition = "required"
+issues = [668, 669, 670, 671, 672]
+
+[[capability]]
+id = "ELEMENT-061"
+name = "canonical element interaction markers"
+disposition = "required"
+authority = "hedron-elements InteractionState"

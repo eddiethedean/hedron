@@ -32,7 +32,9 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-Identity is the typed person/entity strip used by chrome and resource rows.
+Identity is the typed person/entity strip used by chrome and resource rows. The default theme
+keeps the name and detail in a constrained two-line text stack, so long names do not concatenate
+with the secondary detail or push the surrounding chrome out of bounds.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 

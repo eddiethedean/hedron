@@ -1,0 +1,16 @@
+phase = "0.61"
+status = "implemented"
+
+[security]
+operation_identity_authority = "non-authoritative metadata"
+trace_redaction = true
+csrf_auth_tenant = "existing interaction policy remains authoritative"
+cache_default = "existing private/vary-htmx policy"
+
+[accessibility]
+pending_aria_busy = true
+ambient_backdrop_aria_hidden = true
+ambient_backdrop_pointer_events = "none"
+tabs_preserve_roving_tabindex = true
+identity_detail_constrained = true
+forced_colors_and_print_decoration = "hidden"

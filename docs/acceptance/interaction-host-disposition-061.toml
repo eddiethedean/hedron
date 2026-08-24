@@ -1,0 +1,26 @@
+phase = "0.61"
+status = "implemented"
+
+[hosts.fastapi]
+disposition = "required"
+reason = "native server-first path"
+
+[hosts.html]
+disposition = "required"
+reason = "ordinary full-page or fragment fallback"
+
+[hosts.htmx]
+disposition = "progressive"
+reason = "headers and swaps project the same server outcome"
+
+[hosts.hedron_elements]
+disposition = "required"
+reason = "existing InteractionState authority gains canonical lifecycle markers"
+
+[hosts.flask]
+disposition = "deferred"
+reason = "retained legacy adapter until host parity evidence is complete"
+
+[hosts.django]
+disposition = "deferred"
+reason = "retained legacy adapter until host parity evidence is complete"

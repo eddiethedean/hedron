@@ -43,6 +43,64 @@ def _normalize_nav_groups(
     return tuple(normalized)
 
 
+class NavGroupProps(ElementProps):
+    label: str | None = None
+
+
+class NavGroup(Component[NavGroupProps]):
+    """Standalone grouped navigation that can also render in an OOB fragment."""
+
+    props_type = NavGroupProps
+    logical_name = "NavGroup"
+
+    def __init__(
+        self,
+        label: str | None = None,
+        *items: NodeLike,
+        children: NodeLike = None,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        normalized_label = None if label is None or not str(label).strip() else str(label).strip()
+        super().__init__(
+            NavGroupProps(
+                label=normalized_label,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+        self._items = collect_children(*items, children=children)
+
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
+            "id": self.props.id,
+            "class_": class_names("hedron-nav-group", self.props.class_),
+            "data": {
+                "hedron-nav-group": "true",
+                "hedron-mark": self.props.mark,
+            },
+        }
+        if self.props.label is not None:
+            attrs.update(
+                {
+                    "role": "group",
+                    "aria": {"label": self.props.label},
+                }
+            )
+            label: NodeLike = html.p(self.props.label, class_="hedron-nav-group-label")
+        else:
+            label = None
+        return html.div(
+            label,
+            html.div(*self._items, class_="hedron-nav-group-items"),
+            **attrs,
+        )
+
+
 def _coerce_nav_url(href: SafeUrl | str, *, allow_external: bool = False) -> SafeUrl:
     if isinstance(href, SafeUrl):
         return href
@@ -590,16 +648,7 @@ class AppShell(Component[AppShellProps]):
     def _nav_element(self) -> NodeLike:
         extras: list[NodeLike] = []
         for label, items in self._nav_groups:
-            extras.append(
-                html.div(
-                    html.p(label, class_="hedron-nav-group-label"),
-                    html.div(*items, class_="hedron-nav-group-items"),
-                    class_="hedron-nav-group",
-                    role="group",
-                    aria={"label": label},
-                    data={"hedron-nav-group": "true"},
-                )
-            )
+            extras.append(NavGroup(label, items))
         if self._nav_footer is not None:
             extras.append(html.div(self._nav_footer, class_="hedron-app-shell-nav-footer"))
         if len(self._nav) == 1 and isinstance(self._nav[0], Nav):

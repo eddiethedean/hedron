@@ -60,6 +60,9 @@ class ActionAsync(Component[ActionAsyncProps]):
         tag_attrs: HtmlAttrMap = {
             "data-hedron-abi": str(ABI_VERSION),
             "data-hedron-element": ELEMENT_ID,
+            "data-hedron-action-phase": "idle",
+            "data-hedron-action-generation": "0",
+            "aria-busy": "false",
         }
         if self.props.hx_post is not None:
             posted = str(self.props.hx_post)
@@ -95,6 +98,11 @@ ACTION_ASYNC_META = {
     "abi_version": ABI_VERSION,
     "module_asset_id": "hedron-elements:action-async.mjs",
     "attributes": ("label", "hx-post", "hx-target"),
+    "action_state": {
+        "phase_attribute": "data-hedron-action-phase",
+        "generation_attribute": "data-hedron-action-generation",
+        "canonical_cancelled": "cancelled",
+    },
     "state_ownership": ACTION_ASYNC_OWNERSHIP,
     "events": ("hedron-action-change",),
     "form_contract": None,

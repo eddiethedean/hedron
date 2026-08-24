@@ -28,6 +28,8 @@ SPLIT_RATIOS: tuple[str, ...] = ("1:1", "1:2", "2:1", "1:3", "3:1", "2:3", "3:2"
 ACTION_ALIGNMENTS: tuple[str, ...] = ("start", "center", "end", "between")
 COLLAPSE_BREAKPOINTS: tuple[str, ...] = ("never", "sm", "md", "lg")
 GRID_ALIGNS: tuple[str, ...] = ("start", "center", "end", "stretch")
+BOUNDED_WIDTHS: tuple[str, ...] = ("xs", "sm", "md", "lg", "xl", "full")
+CONTAINER_ALIGNMENTS: tuple[str, ...] = ("start", "center", "end")
 
 
 def _validated_gap(gap: str) -> str:
@@ -39,6 +41,9 @@ def _validated_gap(gap: str) -> str:
 class ContainerProps(ElementProps):
     query: Literal["none", "inline-size"] = "none"
     name: str | None = None
+    max_width: Literal["xs", "sm", "md", "lg", "xl", "full"] | None = None
+    align: Literal["start", "center", "end"] | None = None
+    padding: str | None = None
 
 
 class Container(Component[ContainerProps]):
@@ -52,6 +57,9 @@ class Container(Component[ContainerProps]):
         class_: str | None = None,
         query: Literal["none", "inline-size"] = "none",
         name: str | None = None,
+        max_width: Literal["xs", "sm", "md", "lg", "xl", "full"] | None = None,
+        align: Literal["start", "center", "end"] | None = None,
+        padding: str | None = None,
         **kwargs: Any,
     ) -> None:
         if query not in {"none", "inline-size"}:
@@ -75,7 +83,21 @@ class Container(Component[ContainerProps]):
                 explanation="A named container must use query='inline-size'.",
                 remediation="Pass query='inline-size' or omit name.",
             )
-        super().__init__(ContainerProps(query=query, name=name, id=id, class_=class_, **kwargs))
+        require_choice(max_width, BOUNDED_WIDTHS, label="max_width")
+        require_choice(align, CONTAINER_ALIGNMENTS, label="align")
+        require_choice(padding, ("none", "sm", "md", "lg"), label="padding")
+        super().__init__(
+            ContainerProps(
+                query=query,
+                name=name,
+                max_width=max_width,
+                align=align,
+                padding=padding,
+                id=id,
+                class_=class_,
+                **kwargs,
+            )
+        )
         self._children = collect_children(*nodes, children=children)
 
     def render(self) -> NodeLike:
@@ -84,6 +106,12 @@ class Container(Component[ContainerProps]):
             data["hedron-container-query"] = "inline-size"
             if self.props.name is not None:
                 data["hedron-container-name"] = self.props.name
+        if self.props.max_width is not None:
+            data["hedron-max-width"] = self.props.max_width
+        if self.props.align is not None:
+            data["hedron-align"] = self.props.align
+        if self.props.padding is not None:
+            data["hedron-padding"] = self.props.padding
         attrs = {
             "class_": class_names("hedron-container", self.props.class_),
             "id": self.props.id,
