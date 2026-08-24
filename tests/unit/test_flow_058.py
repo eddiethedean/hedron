@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 import pytest
 from fastapi import Depends
@@ -108,7 +109,9 @@ def test_upload_flow_result_is_request_injected_and_authorized() -> None:
     def allow() -> None:
         return None
 
-    app = Hedron(title="upload-result", security="development", explorer="off", session_secret="r" * 32)
+    app = Hedron(
+        title="upload-result", security="development", explorer="off", session_secret="r" * 32
+    )
     app.include_feature(
         UploadFlow(
             name="result-check",
@@ -118,7 +121,9 @@ def test_upload_flow_result_is_request_injected_and_authorized() -> None:
             result=lambda stored: Text(str(stored)),
         )
     )
-    result_routes = [route for route in app.routes if getattr(route, "path", "") == "/result-check/result"]
+    result_routes = [
+        route for route in app.routes if getattr(route, "path", "") == "/result-check/result"
+    ]
     assert len(result_routes) == 1
     assert len(result_routes[0].dependant.dependencies) == 1
 
@@ -140,7 +145,9 @@ def test_upload_flow_supports_multiple_instances_and_preserves_all_stores() -> N
     def allow() -> None:
         return None
 
-    app = Hedron(title="upload-multi", security="development", explorer="off", session_secret="m" * 32)
+    app = Hedron(
+        title="upload-multi", security="development", explorer="off", session_secret="m" * 32
+    )
     for name in ("avatars", "documents"):
         app.include_feature(
             UploadFlow(
@@ -153,13 +160,15 @@ def test_upload_flow_supports_multiple_instances_and_preserves_all_stores() -> N
         )
     assert {route.path for route in app.routes}.issuperset({"/avatars/upload", "/documents/upload"})
 
-    batch_app = Hedron(title="upload-batch", security="development", explorer="off", session_secret="b" * 32)
+    batch_app = Hedron(
+        title="upload-batch", security="development", explorer="off", session_secret="b" * 32
+    )
     batch_app.include_feature(
         UploadFlow(
             name="batch",
             field=UploadField(budget=UploadBudget(maximum_size=10_000, maximum_count=3)),
             authorize=Depends(allow),
-            store=lambda handle: handle.filename,
+            store=lambda handle: Path(handle.filename),
             result=lambda stored: Text(str(stored)),
         )
     )
@@ -176,6 +185,9 @@ def test_upload_flow_supports_multiple_instances_and_preserves_all_stores() -> N
     )
     assert response.status_code == 200
     assert "a.txt" in response.text and "b.txt" in response.text
+    result = client.get("/batch/result")
+    assert result.status_code == 200
+    assert "a.txt" in result.text and "b.txt" in result.text
 
 
 def test_upload_flow_rejects_missing_authorize() -> None:

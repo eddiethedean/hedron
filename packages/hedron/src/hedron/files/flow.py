@@ -133,6 +133,14 @@ class UploadFlow(Generic[StoredT, ResultT]):
     def _session_key_result(self) -> str:
         return f"{_SESSION_RESULT_PREFIX}{self.name}"
 
+    @staticmethod
+    def _opaque_stored(stored: object) -> object:
+        """Return a session/payload-safe opaque representation."""
+        scalar_types = (str, int, float, bool)
+        if isinstance(stored, list):
+            return [item if isinstance(item, scalar_types) else str(item) for item in stored]
+        return stored if isinstance(stored, scalar_types) else str(stored)
+
     async def _enqueue_process(self, request: object, stored: object) -> str | None:
         process = self.process
         if process is None:
@@ -173,7 +181,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
                 ),
                 remediation="Use a single-field input model for UploadFlow process composition.",
             )
-        opaque: object = stored if isinstance(stored, (str, int, float, bool, list)) else str(stored)
+        opaque = self._opaque_stored(stored)
         data = input_model.model_validate({fields[0]: opaque})
         try:
             body = payload_fn(data)
@@ -283,9 +291,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
                     stored: StoredT | list[StoredT] = (
                         stored_items[0] if len(stored_items) == 1 else stored_items
                     )
-                    opaque: object = (
-                        stored if isinstance(stored, (str, int, float, bool, list)) else str(stored)
-                    )
+                    opaque = flow._opaque_stored(stored)
                     request.session[flow._session_key_stored()] = opaque
                     job_id = await flow._enqueue_process(request, stored)
                     if job_id is not None:
