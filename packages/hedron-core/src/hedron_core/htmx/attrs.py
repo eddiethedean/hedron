@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, cast
 
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.security import SafeUrl, UrlPurpose
@@ -81,14 +82,26 @@ class Hx:
         if indicator:
             attrs["hx-indicator"] = indicator
         if self.preload:
-            from hedron_core.codes import HED_EXT_0006
+            import hedron_core.codes as codes
+            import hedron_core.htmx_extensions as htmx_extensions
             from hedron_core.diagnostics import error
-            from hedron_core.htmx_extensions import PRELOAD_INITIATION_MODES, require_htmx_extension
 
+            preload_modes = cast(
+                frozenset[str],
+                htmx_extensions.PRELOAD_INITIATION_MODES,  # pyright: ignore[reportAttributeAccessIssue]
+            )
+            diagnostic_code = cast(
+                str,
+                codes.HED_EXT_0006,  # pyright: ignore[reportAttributeAccessIssue]
+            )
+            require_extension = cast(
+                Callable[[str], None],
+                htmx_extensions.require_htmx_extension,  # pyright: ignore[reportAttributeAccessIssue]
+            )
             mode = str(self.preload).strip().lower()
-            if mode not in PRELOAD_INITIATION_MODES:
+            if mode not in preload_modes:
                 raise error(
-                    HED_EXT_0006,
+                    diagnostic_code,
                     title="Invalid preload initiation mode",
                     explanation=f"preload={self.preload!r} is not a closed GET initiation mode.",
                     remediation="Use mousedown, mouseover, or touchstart.",
@@ -96,12 +109,12 @@ class Hx:
             method = (self.method or "get").lower()
             if method != "get":
                 raise error(
-                    HED_EXT_0006,
+                    diagnostic_code,
                     title="Preload requires a cacheable GET",
                     explanation=f"Cannot preload {method.upper()} controls.",
                     remediation="Attach preload only to GET links and hx-get controls.",
                 )
-            require_htmx_extension("preload")
+            require_extension("preload")
             attrs["preload"] = mode
         if self.trigger:
             attrs["hx-trigger"] = self.trigger
@@ -123,6 +136,8 @@ class Hx:
         if self.busy in {"region", "document"}:
             attrs["data-hedron-busy"] = self.busy
             attrs["aria-busy"] = "false"
+            attrs["data-hedron-action-phase"] = "idle"
+            attrs["data-hedron-action-generation"] = "0"
             if indicator and _BUSY_INDICATOR_ID.fullmatch(indicator):
                 attrs["data-hedron-busy-indicator"] = indicator
         return attrs

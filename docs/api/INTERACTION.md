@@ -11,6 +11,12 @@ status: shipped
 
 **Status:** Shipped (fragment regions + `InteractionResult`; living train **0.60.x**)
 
+!!! note "Phase 0.61 in-tree preview"
+
+    The unified lifecycle contracts below are implemented in-tree but are not part of the
+    published 0.60.x Supported surface. Their release status is tracked in
+    [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md).
+
 Day-to-day apps should start with [`@app.refreshable` / `@app.command`](../getting-started/interaction-apis.md).
 This page documents the explicit region / `InteractionResult` contracts those handles compile to.
 
@@ -48,6 +54,28 @@ Field-level detail for `InteractionResult` is below. Autodoc signatures: [AUTODO
 | CSRF failure on POST (host profile) | HTTP **403** | Seed CSRF on GET; include token on POST — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 
 See also [HTMX interactions](../guides/htmx-interactions.md) and [Error codes](../guides/error-codes.md).
+
+## Phase 0.61 lifecycle contracts
+
+Phase 0.61 adds a server-first lifecycle projection over existing action, form, job, fragment,
+HTMX, and element authorities. It does not create a durable browser store or replace the existing
+element `InteractionState` owner.
+
+| Symbol | Role | Primary reference |
+|---|---|---|
+| `ActionPhase` | Closed lifecycle vocabulary: `idle`, `pending`, `success`, `error`, `cancelled`, `stale`, `conflict`. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#candidate-public-contracts) |
+| `AsyncPhase` | Async-region vocabulary including `empty` and `timeout` presentation states. | [`AsyncRegion` component](../components/async-region.md) |
+| `ActionState` | Immutable bounded projection of one operation's current lifecycle. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#candidate-public-contracts) |
+| `OperationIdentity` | Operation id, generation, target, correlation, and optional revision. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#candidate-public-contracts) |
+| `ActionPolicy` | Explicit concurrency, retry, timeout, cancellation, stale-result, and idempotency policy. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#candidate-public-contracts) |
+| `AsyncRegion` | Server-authored state slots with ordinary fragment/page fallback. | [`AsyncRegion` component](../components/async-region.md) |
+| `ActionTrace` / `TraceEvent` | Bounded, redacted lifecycle facts for tools and tests. | [Trace schema](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/interaction-trace-schema-061.toml) |
+| `begin_operation` / `complete_operation` / `transition_action` | Pure transition helpers that enforce identity, policy, and terminal-state rules. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#required-transition-invariants) |
+| `ActionTransitionError` | Deterministic validation error for invalid lifecycle transitions or mismatched operations. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#required-transition-invariants) |
+
+The machine-readable contract set is linked from [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md).
+Adapters must preserve target, correlation, revision, cancellation, and stale-result checks; late
+or unauthorized responses cannot mutate the current presentation.
 
 ## `HtmxRequest`
 

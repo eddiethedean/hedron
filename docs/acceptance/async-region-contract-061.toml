@@ -1,0 +1,10 @@
+schema = "hedron.async-region.v1"
+phase = "0.61"
+status = "implemented"
+authority = "server-rendered component"
+fallbacks = ["fragment", "page"]
+states = ["idle", "pending", "empty", "success", "error", "timeout", "cancelled", "stale", "conflict"]
+slots = ["initial", "pending", "empty", "success", "error", "timeout", "cancelled", "stale", "retry", "conflict"]
+pending_aria_busy = true
+requires_hydration = false
+decoration_owns_focus = false

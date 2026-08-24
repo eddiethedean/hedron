@@ -17,7 +17,7 @@ Metrics, viewers, progress, status, disclosure, tabs, and files.
 - [`Toast`](toast.md) — Render a polite, transient-looking status message.
 - [`ToastHost`](toast-host.md) — Frozen out-of-band toast sink at `#hedron-toast`.
 - [`Expander`](expander.md) — Reveal optional content with native details/summary behavior.
-- [`Tabs`](tabs.md) — Render a small ARIA tablist with one initially active labelled panel.
+- [`Tabs`](tabs.md) — Render a small ARIA tablist with one initially active labelled panel and optional responsive appearance tokens.
 - [`Sidebar`](sidebar.md) — Render complementary page content with an accessible label.
 - [`CircularProgress`](circular-progress.md) — Circular determinate/indeterminate progress with status text.
 - [`HelpInspector`](help-inspector.md) — Bounded details/summary object or help inspector.

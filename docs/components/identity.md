@@ -6,6 +6,10 @@ description: Compose avatar plus primary/secondary identity text.
 # `Identity`
 
 Compose avatar plus primary/secondary identity text.
+!!! note "Phase 0.61 in-tree preview"
+
+    This additive contract is implemented in-tree for Phase 0.61. It is not part of the published 0.60.x Supported surface until [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) is signed off.
+
 
 | | |
 |---|---|
@@ -32,9 +36,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-Identity is the typed person/entity strip used by chrome and resource rows. The default theme
-keeps the name and detail in a constrained two-line text stack, so long names do not concatenate
-with the secondary detail or push the surrounding chrome out of bounds.
+Identity is the typed person/entity strip used by chrome and resource rows. The default theme keeps the name and detail in a constrained two-line text stack, so long names do not concatenate with the secondary detail or push surrounding chrome out of bounds.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 

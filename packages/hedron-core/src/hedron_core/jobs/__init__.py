@@ -13,7 +13,7 @@ from hedron_core.jobs.codec import _status_to_dict as _status_to_dict
 from hedron_core.jobs.gate import get_job_backend, reset_jobs_for_tests, set_job_backend
 from hedron_core.jobs.memory import InMemoryJobBackend
 from hedron_core.jobs.redis import RedisJobBackend
-from hedron_core.jobs.status_ui import job_status_interaction
+from hedron_core.jobs.status_ui import action_state_for_job, job_status_interaction
 from hedron_core.jobs.types import JobHandle, JobState, JobStatus
 
 __all__ = [
@@ -23,6 +23,7 @@ __all__ = [
     "JobState",
     "JobStatus",
     "RedisJobBackend",
+    "action_state_for_job",
     "get_job_backend",
     "job_authorized",
     "job_authorized_http",

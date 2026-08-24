@@ -17,3 +17,4 @@ FastAPI and HTMX-oriented request/response components.
 - [`Dialog`](dialog.md) — Present focused content in a native dialog with an explicit title and close path.
 - [`ChatMessage`](chat-message.md) — Render one typed, escaped item in an application-owned chat transcript.
 - [`ChatInput`](chat-input.md) — Submit an explicit chat message and optionally an attachment to a typed HTMX target.
+- [`AsyncRegion`](async-region.md) — Server-authored lifecycle boundary with ordinary fragment or page fallback.

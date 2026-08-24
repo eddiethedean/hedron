@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import shutil
+import subprocess
+from pathlib import Path
+
 import pytest
 
 from hedron_core import (
@@ -12,6 +16,8 @@ from hedron_core import (
     AmbientBackdrop,
     AsyncRegion,
     Container,
+    Form,
+    Hx,
     InteractionResult,
     NavGroup,
     OperationIdentity,
@@ -21,6 +27,7 @@ from hedron_core import (
 )
 from hedron_core.action_state import ActionTransitionError, begin_operation, transition_action
 from hedron_core.htmx.headers import interaction_trace
+from hedron_core.jobs import JobState, JobStatus, action_state_for_job, job_status_interaction
 from hedron_elements.action_async import ActionAsync
 
 
@@ -48,6 +55,42 @@ def test_action_state_lifecycle_and_explicit_retry_policy() -> None:
     retry, accepted = begin_operation(state, operation.next_generation(), policy=retry_policy)
     assert accepted and retry.phase is ActionPhase.PENDING
     assert retry.operation is not None and retry.operation.generation == 1
+
+
+def test_retry_policy_is_enforced_and_identity_mismatches_are_stale() -> None:
+    operation = OperationIdentity("save-1", target="#editor", revision=4)
+    failed, accepted = complete_operation(
+        begin_operation(ActionState(), operation)[0],
+        ActionPhase.ERROR,
+        operation,
+        retryable=True,
+    )
+    assert accepted
+    unchanged, accepted = begin_operation(failed, operation.next_generation())
+    assert not accepted and unchanged == failed
+
+    retry_policy = ActionPolicy(allow_retry=True, max_attempts=2, idempotent=True)
+    pending, accepted = begin_operation(
+        failed,
+        operation.next_generation(),
+        policy=retry_policy,
+    )
+    assert accepted
+    wrong_target = OperationIdentity("save-1", generation=1, target="#other", revision=4)
+    unchanged, accepted = complete_operation(pending, ActionPhase.SUCCESS, wrong_target)
+    assert not accepted and unchanged == pending
+    wrong_revision = OperationIdentity("save-1", generation=1, target="#editor", revision=3)
+    unchanged, accepted = complete_operation(pending, ActionPhase.SUCCESS, wrong_revision)
+    assert not accepted and unchanged == pending
+
+    no_cancel = ActionPolicy(allow_cancellation=False)
+    unchanged, accepted = complete_operation(
+        pending,
+        ActionPhase.CANCELLED,
+        pending.operation,
+        policy=no_cancel,
+    )
+    assert not accepted and unchanged == pending
 
 
 def test_stale_operation_result_cannot_replace_current_presentation() -> None:
@@ -87,6 +130,34 @@ def test_interaction_result_projects_action_state_and_trace() -> None:
     assert trace["action_trace"]["schema"] == "hedron.interaction-trace.v1"
 
 
+@pytest.mark.parametrize(
+    "job_state,phase",
+    (
+        (JobState.QUEUED, ActionPhase.PENDING),
+        (JobState.RUNNING, ActionPhase.PENDING),
+        (JobState.SUCCEEDED, ActionPhase.SUCCESS),
+        (JobState.FAILED, ActionPhase.ERROR),
+        (JobState.CANCELLED, ActionPhase.CANCELLED),
+    ),
+)
+def test_job_status_projects_the_unified_lifecycle(
+    job_state: JobState,
+    phase: ActionPhase,
+) -> None:
+    status = JobStatus(
+        job_id="job-1",
+        state=job_state,
+        job_type="report",
+        error="failed" if job_state is JobState.FAILED else None,
+    )
+    state = action_state_for_job(status)
+    assert state.phase is phase
+    result = job_status_interaction(status)
+    assert result.action_state == state
+    assert result.action_trace is not None
+    assert 'data-hedron-action-phase="' + phase.value + '"' in render(result.content).html
+
+
 def test_async_region_selects_state_slot_and_fallback_markers() -> None:
     output = render(
         AsyncRegion(
@@ -102,6 +173,73 @@ def test_async_region_selects_state_slot_and_fallback_markers() -> None:
     assert 'aria-busy="true"' in output
     assert "Loading" in output
     assert "content" not in output
+
+
+@pytest.mark.parametrize(
+    "state,slot",
+    (
+        ("idle", "initial"),
+        ("pending", "pending"),
+        ("empty", "empty"),
+        ("success", "success"),
+        ("error", "error"),
+        ("timeout", "timeout"),
+        ("cancelled", "cancelled"),
+        ("stale", "stale"),
+        ("conflict", "conflict"),
+    ),
+)
+def test_async_region_covers_each_declared_state(state: str, slot: str | None) -> None:
+    kwargs = {
+        name: name
+        for name in (
+            "initial",
+            "pending",
+            "empty",
+            "success",
+            "error",
+            "timeout",
+            "cancelled",
+            "stale",
+            "retry",
+            "conflict",
+        )
+    }
+    output = render(AsyncRegion("ordinary", state=state, **kwargs)).html
+    assert f'data-hedron-action-phase="{state}"' in output
+    assert (slot if slot is not None else "ordinary") in output
+
+
+def test_element_state_machine_rejects_late_replaced_result() -> None:
+    node = shutil.which("node")
+    if node is None:
+        pytest.skip("node is not installed")
+    module = (
+        Path(__file__).resolve().parents[2]
+        / "packages/hedron-elements/src/hedron_elements/static/interaction-state.mjs"
+    )
+    script = f"""
+const {{ InteractionState }} = await import({module.as_uri()!r});
+const machine = new InteractionState({{ policy: "replace" }});
+if (!machine.begin("first")) throw new Error("first operation was dropped");
+const firstGeneration = machine.generation;
+if (!machine.begin("second")) throw new Error("replacement was dropped");
+if (machine.complete("success", {{
+  operationId: "first",
+  generation: firstGeneration,
+}})) throw new Error("stale result accepted");
+if (!machine.complete("success", {{
+  operationId: "second",
+  generation: machine.generation,
+}})) throw new Error("current result rejected");
+if (machine.state !== "success") throw new Error("wrong terminal state");
+"""
+    result = subprocess.run(
+        [node, "--input-type=module", "-e", script],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def test_phase061_surface_contracts_render_closed_markers() -> None:
@@ -132,9 +270,24 @@ def test_phase061_surface_contracts_render_closed_markers() -> None:
     assert 'data-hedron-ambient-tone="muted"' in ambient
     assert 'aria-hidden="true"' in ambient
 
+    for stylesheet in (
+        "packages/hedron-core/src/hedron_core/static/hedron-default.css",
+        "packages/hedron/src/hedron/static/hedron-default.css",
+    ):
+        css = Path(stylesheet).read_text(encoding="utf-8")
+        assert ".hedron-identity-text" in css
+        assert "forced-colors: active" in css
+
 
 def test_element_markup_starts_with_canonical_action_markers() -> None:
     output = render(ActionAsync("Run")).html
     assert 'data-hedron-action-phase="idle"' in output
     assert 'data-hedron-action-generation="0"' in output
     assert 'aria-busy="false"' in output
+
+
+def test_htmx_form_busy_boundary_starts_with_action_lifecycle_markers() -> None:
+    output = render(Form("fields", action="/save", hx=Hx(busy="region"))).html
+    assert 'data-hedron-busy="region"' in output
+    assert 'data-hedron-action-phase="idle"' in output
+    assert 'data-hedron-action-generation="0"' in output

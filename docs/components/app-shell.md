@@ -6,6 +6,10 @@ description: Document shell with optional side nav and a MainPanel body.
 # `AppShell`
 
 Document shell with optional side nav and a MainPanel body.
+!!! note "Phase 0.61 in-tree preview"
+
+    This additive contract is implemented in-tree for Phase 0.61. It is not part of the published 0.60.x Supported surface until [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) is signed off.
+
 
 | | |
 |---|---|
@@ -82,11 +86,7 @@ Document shell with optional side nav and a MainPanel body.
 ```python
 from hedron import AppShell, Heading, Nav, NavGroup, NavLink
 
-component = AppShell(
-    Heading('Home', level=1),
-    nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/'))),
-    panel_id='main-panel',
-)
+component = AppShell(Heading('Home', level=1), nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/reports'))), panel_id='main-panel')
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.

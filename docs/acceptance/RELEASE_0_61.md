@@ -3,20 +3,21 @@
 **Status:** Implementation baseline complete / release evidence pending
 **Implementation:** [ACTION_STATE_ASYNC_061](../implementation/ACTION_STATE_ASYNC_061.md)
 
-## Planned contract artifacts
+## Contract artifacts
 
-- `interaction-capability-inventory-061.toml`
-- `action-state-contract-061.toml`
-- `async-region-contract-061.toml`
-- `interaction-host-disposition-061.toml`
-- `interaction-trace-schema-061.toml`
-- `interaction-diagnostics-061.toml`
-- `interaction-budgets-061.toml`
-- `interaction-security-a11y-061.toml`
-- `interaction-upgrade-fixtures-061.md`
-- `phase061-surface-contract.toml`
+- [`interaction-capability-inventory-061.toml`](interaction-capability-inventory-061.toml)
+- [`action-state-contract-061.toml`](action-state-contract-061.toml)
+- [`async-region-contract-061.toml`](async-region-contract-061.toml)
+- [`interaction-host-disposition-061.toml`](interaction-host-disposition-061.toml)
+- [`interaction-trace-schema-061.toml`](interaction-trace-schema-061.toml)
+- [`interaction-diagnostics-061.toml`](interaction-diagnostics-061.toml)
+- [`interaction-budgets-061.toml`](interaction-budgets-061.toml)
+- [`interaction-security-a11y-061.toml`](interaction-security-a11y-061.toml)
+- [`interaction-upgrade-fixtures-061.md`](interaction-upgrade-fixtures-061.md)
+- [`phase061-surface-contract.toml`](phase061-surface-contract.toml)
 
-Names and schemas become authoritative only after Stage 0 acceptance.
+The implementation artifacts are present and validated locally. Gate rows remain `Planned` until
+the complete release evidence packet, clean-package checks, and locked browser matrix are signed off.
 
 ## Planned gates
 

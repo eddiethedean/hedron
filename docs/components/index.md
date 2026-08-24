@@ -48,7 +48,7 @@ Semantic regions that give a page its accessible structure. `Header`, `Main`, `N
 
 Explicit containers and one-dimensional or grid composition.
 
-[`Container`](container.md) · [`PageHeader`](page-header.md) · [`SplitView`](split-view.md) · [`MasterDetail`](master-detail.md) · [`FormGrid`](form-grid.md) · [`ActionGroup`](action-group.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`GridItem`](grid-item.md) · [`Divider`](divider.md) · [`MainPanel`](main-panel.md) · [`AppShell`](app-shell.md) · [`NavGroup`](nav-group.md) · [`AsyncRegion`](async-region.md) · [`SkipLink`](skip-link.md) · [`ProcessFlow`](process-flow.md) · [`FlowStep`](flow-step.md) · [`ConnectorNode`](connector-node.md) · [`ConnectorFlow`](connector-flow.md) · [`ConnectorTrack`](connector-track.md) · [`ScrollRegion`](scroll-region.md) · [`ActionDock`](action-dock.md) · [`BottomDock`](bottom-dock.md) · [`Spacer`](spacer.md)
+[`Container`](container.md) · [`PageHeader`](page-header.md) · [`SplitView`](split-view.md) · [`MasterDetail`](master-detail.md) · [`FormGrid`](form-grid.md) · [`ActionGroup`](action-group.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`GridItem`](grid-item.md) · [`Divider`](divider.md) · [`MainPanel`](main-panel.md) · [`AppShell`](app-shell.md) · [`SkipLink`](skip-link.md) · [`ProcessFlow`](process-flow.md) · [`FlowStep`](flow-step.md) · [`ConnectorNode`](connector-node.md) · [`ConnectorFlow`](connector-flow.md) · [`ConnectorTrack`](connector-track.md) · [`ScrollRegion`](scroll-region.md) · [`ActionDock`](action-dock.md) · [`BottomDock`](bottom-dock.md) · [`Spacer`](spacer.md) · [`NavGroup`](nav-group.md)
 
 ## Content
 
@@ -60,7 +60,7 @@ Text, links, media, code, lists, tables, and Markdown.
 
 Cards, labels, alerts, and loading placeholders.
 
-[`Card`](card.md) · [`Surface`](surface.md) · [`AmbientBackdrop`](ambient-backdrop.md) · [`StyleScope`](style-scope.md) · [`Badge`](badge.md) · [`Alert`](alert.md) · [`Skeleton`](skeleton.md) · [`StateView`](state-view.md) · [`Carousel`](carousel.md) · [`ContextMenu`](context-menu.md) · [`Help`](help.md) · [`Popover`](popover.md) · [`Timeline`](timeline.md) · [`Tooltip`](tooltip.md)
+[`Card`](card.md) · [`Surface`](surface.md) · [`StyleScope`](style-scope.md) · [`Badge`](badge.md) · [`Alert`](alert.md) · [`Skeleton`](skeleton.md) · [`StateView`](state-view.md) · [`Carousel`](carousel.md) · [`ContextMenu`](context-menu.md) · [`Help`](help.md) · [`Popover`](popover.md) · [`Timeline`](timeline.md) · [`Tooltip`](tooltip.md) · [`AmbientBackdrop`](ambient-backdrop.md)
 
 ## Controls
 
@@ -78,7 +78,7 @@ Typed, labelled controls and validation presentation.
 
 FastAPI and HTMX-oriented request/response components.
 
-[`OobHost`](oob-host.md) · [`AttrHost`](attr-host.md) · [`SseRegion`](sse-region.md) · [`SseTrigger`](sse-trigger.md) · [`RequestIndicator`](request-indicator.md) · [`RefreshButton`](refresh-button.md) · [`Lazy`](lazy.md) · [`Poll`](poll.md) · [`InfiniteScroll`](infinite-scroll.md) · [`Pagination`](pagination.md) · [`Loading`](loading.md) · [`ErrorState`](error-state.md) · [`Dialog`](dialog.md) · [`ChatMessage`](chat-message.md) · [`ChatInput`](chat-input.md)
+[`OobHost`](oob-host.md) · [`AttrHost`](attr-host.md) · [`SseRegion`](sse-region.md) · [`SseTrigger`](sse-trigger.md) · [`RequestIndicator`](request-indicator.md) · [`RefreshButton`](refresh-button.md) · [`Lazy`](lazy.md) · [`Poll`](poll.md) · [`InfiniteScroll`](infinite-scroll.md) · [`Pagination`](pagination.md) · [`Loading`](loading.md) · [`ErrorState`](error-state.md) · [`Dialog`](dialog.md) · [`ChatMessage`](chat-message.md) · [`ChatInput`](chat-input.md) · [`AsyncRegion`](async-region.md)
 
 ## Data
 

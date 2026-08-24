@@ -189,6 +189,7 @@ document.addEventListener("click", (event) => {
 });
 
 const busyCounts = new WeakMap();
+const actionGenerations = new WeakMap();
 
 function busyMarked(elt) {
   if (!(elt instanceof Element)) return null;
@@ -213,24 +214,46 @@ function setBusy(marked, busy) {
   }
 }
 
+function setActionPhase(elt, phase) {
+  const marked = busyMarked(elt);
+  if (!(marked instanceof HTMLElement)) return;
+  if (phase === "pending") {
+    const generation = (actionGenerations.get(marked) || 0) + 1;
+    actionGenerations.set(marked, generation);
+    marked.setAttribute("data-hedron-action-generation", String(generation));
+  }
+  marked.setAttribute("data-hedron-action-phase", phase);
+}
+
 document.body.addEventListener("htmx:beforeRequest", (event) => {
   const marked = busyMarked(event.detail?.elt);
-  if (marked) setBusy(marked, true);
+  if (marked) {
+    setActionPhase(event.detail?.elt, "pending");
+    setBusy(marked, true);
+  }
 });
 document.body.addEventListener("htmx:afterRequest", (event) => {
   const marked = busyMarked(event.detail?.elt);
-  if (marked) setBusy(marked, false);
+  if (marked) {
+    const status = event.detail?.xhr?.status || 0;
+    setActionPhase(event.detail?.elt, status >= 200 && status < 400 ? "success" : "error");
+    setBusy(marked, false);
+  }
 });
 document.body.addEventListener("htmx:responseError", (event) => {
+  setActionPhase(event.detail?.elt, "error");
   applyErrorTemplate(event.detail?.elt);
   const marked = busyMarked(event.detail?.elt);
   if (marked) setBusy(marked, false);
 });
 document.body.addEventListener("htmx:sendError", (event) => {
+  setActionPhase(event.detail?.elt, "error");
   applyErrorTemplate(event.detail?.elt);
   const marked = busyMarked(event.detail?.elt);
   if (marked) setBusy(marked, false);
 });
+document.body.addEventListener("htmx:sendAbort", (event) => setActionPhase(event.detail?.elt, "cancelled"));
+document.body.addEventListener("htmx:timeout", (event) => setActionPhase(event.detail?.elt, "error"));
 document.body.addEventListener("htmx:afterSwap", (event) => {
   const root = event.target instanceof Element ? event.target : document;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -247,5 +270,4 @@ document.body.addEventListener("htmx:afterSwap", (event) => {
     requestAnimationFrame(() => node.classList.add("is-revealed"));
   }
 });
-
 

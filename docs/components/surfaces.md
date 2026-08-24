@@ -15,3 +15,4 @@ Cards, labels, alerts, and loading placeholders.
 - [`Popover`](popover.md) — Native popover or details/summary disclosure.
 - [`Timeline`](timeline.md) — Semantic ordered timeline of events.
 - [`Tooltip`](tooltip.md) — Accessible tooltip / title help.
+- [`AmbientBackdrop`](ambient-backdrop.md) — Finite decorative backdrop that remains inert and outside content semantics.

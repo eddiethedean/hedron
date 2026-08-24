@@ -248,6 +248,15 @@ def begin_operation(
     resolved_policy = policy or ActionPolicy()
     if state.busy and resolved_policy.concurrency in {"drop", "queue"}:
         return state, False
+    same_operation = (
+        state.operation is not None and operation.operation_id == state.operation.operation_id
+    )
+    if state.phase is ActionPhase.ERROR and same_operation:
+        if not resolved_policy.allow_retry:
+            return state, False
+        current_attempt = state.operation.attempt if state.operation else 0
+        if current_attempt + 1 >= resolved_policy.max_attempts:
+            return state, False
     if (
         state.operation is not None
         and operation.operation_id == state.operation.operation_id
@@ -269,6 +278,7 @@ def complete_operation(
     phase: ActionPhase | str,
     operation: OperationIdentity,
     *,
+    policy: ActionPolicy | None = None,
     message: str | None = None,
     retryable: bool = False,
     progress: int | None = None,
@@ -283,6 +293,15 @@ def complete_operation(
     if state.operation is None or state.operation.operation_id != operation.operation_id:
         return state, False
     if operation.generation != state.operation.generation:
+        return state, False
+    if operation.target != state.operation.target:
+        return state, False
+    if operation.correlation_id != state.operation.correlation_id:
+        return state, False
+    if operation.revision != state.operation.revision:
+        return state, False
+    next_phase = ActionPhase(phase)
+    if next_phase is ActionPhase.CANCELLED and policy is not None and not policy.allow_cancellation:
         return state, False
     try:
         return (

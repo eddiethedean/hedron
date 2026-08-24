@@ -17,7 +17,15 @@ manual.
     maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` /
     `deferred`).
 
-**Status:** Accepted · current train **0.60.x**
+**Status:** Accepted · current published train **0.60.x**
+
+!!! note "Phase 0.61 in-tree preview"
+
+    `ActionState`, `ActionPhase`, `ActionPolicy`, `OperationIdentity`, `ActionTrace`, and
+    `AsyncRegion`, together with the additive surface updates for `Tabs`, `Container`,
+    `NavGroup`, `AmbientBackdrop`, and `Identity`, are implemented in-tree for Phase 0.61.
+    They remain beta and are not part of the published 0.60.x Supported surface until
+    [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) is signed off.
 
 ## How to use this index
 
@@ -45,6 +53,7 @@ manual.
 
 [`Heading`](../components/heading.md) · [`Text`](../components/text.md) ·
 [`Link`](../components/link.md) · [`Image`](../components/image.md) ·
+[`Identity`](../components/identity.md) ·
 [`Audio`](../components/audio.md) · [`Video`](../components/video.md) ·
 [`IFrame`](../components/i-frame.md) · [`PdfViewer`](../components/pdf-viewer.md) ·
 [`CodeBlock`](../components/code-block.md) · [`List`](../components/list.md) ·
@@ -80,6 +89,9 @@ manual.
 
 [`AsyncRegion`](../components/async-region.md) is the phase 0.61 server-authored lifecycle
 boundary for action, form, job, and refreshable-region presentations.
+
+[`Tabs`](../components/tabs.md) is the phase 0.61 surface contract for finite appearance,
+density, and responsive overflow tokens.
 
 Helpers: `action_attrs`, `oob_swap` — see [Interaction](INTERACTION.md).
 

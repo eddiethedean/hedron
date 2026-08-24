@@ -25,3 +25,4 @@ Explicit containers and one-dimensional or grid composition.
 - [`ActionDock`](action-dock.md) — Sticky action dock for primary controls.
 - [`BottomDock`](bottom-dock.md) — Bottom sticky dock alias for chat or actions.
 - [`Spacer`](spacer.md) — Semantic spacing primitive.
+- [`NavGroup`](nav-group.md) — Standalone labelled navigation group shared by AppShell and fragment responses.

@@ -131,6 +131,10 @@ GROUPS = {
     "charts": ("Charts", "Accessible visualization components and optional plotting adapters."),
 }
 
+_PHASE_061_COMPONENTS = frozenset(
+    {"Tabs", "Container", "NavGroup", "AmbientBackdrop", "Identity", "AsyncRegion", "AppShell"}
+)
+
 
 def p(name: str, type_: str, meaning: str) -> tuple[str, str, str]:
     return name, type_, meaning
@@ -320,7 +324,7 @@ COMPONENTS = (
         "Container",
         "layout",
         "Constrain and center a readable block of page content.",
-        "Container(*nodes, children=None, id=None, class_=None, query='none', name=None)",
+        "Container(*nodes, children=None, id=None, class_=None, query='none', name=None, max_width=None, align=None, padding=None)",
         "Container(Heading('Profile', level=1), Text('Manage your public details.'), query='inline-size', name='profile')",
         (
             p("nodes", "NodeLike", "Positional content inside the width constraint."),
@@ -337,8 +341,11 @@ COMPONENTS = (
             ),
             p("query", "Literal['none', 'inline-size']", "Opt into an inline-size query boundary. Default: `'none'` (existing viewport behavior)."),
             p("name", "str | None", "Validated container name, valid only with `query='inline-size'`."),
+            p("max_width", "xs | sm | md | lg | xl | full | None", "Finite readable-width token."),
+            p("align", "start | center | end | None", "Inline alignment inside the containing block."),
+            p("padding", "none | sm | md | lg | None", "Theme-owned block spacing token."),
         ),
-        "The component emits an addressable div and always retains the `hedron-container` theme hook. In 0.59, `query='inline-size'` opts the boundary into container-aware responsive styling and `name=` adds a validated named-container marker. Positional nodes and `children=` use the same normalization rules, and an application class augments rather than disables the built-in layout. Width, gutters, and breakpoints remain theme CSS concerns.",
+        "The component emits an addressable div and always retains the `hedron-container` theme hook. In 0.59, `query='inline-size'` opts the boundary into container-aware responsive styling and `name=` adds a validated named-container marker. Phase 0.61 adds finite width, alignment, and spacing markers without changing the default viewport behavior. Positional nodes and `children=` use the same normalization rules, and an application class augments rather than disables the built-in layout.",
         "A container has no semantics of its own, so keep headings and landmarks inside it.",
         "Do not use Container as a substitute for Main or Section. Do not assume `query='inline-size'` is a viewport breakpoint; use the existing responsive maps when viewport semantics are intended.",
     ),
@@ -762,11 +769,12 @@ COMPONENTS = (
         "AppShell",
         "layout",
         "Document shell with optional side nav and a MainPanel body.",
-        "AppShell(*body, *, nav=None, panel_id='main-panel', class_=None, id=None)",
-        "AppShell(Heading('Home', level=1), nav=Nav(NavLink('Home', '/'), NavLink('Reports', '/reports')), panel_id='main-panel')",
+        "AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', class_=None, id=None)",
+        "AppShell(Heading('Home', level=1), nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/reports'))), panel_id='main-panel')",
         (
             p("body", "NodeLike", "Primary content placed inside MainPanel."),
             p("nav", "NodeLike | None", "Optional side navigation (often Nav of NavLinks)."),
+            p("nav_groups", "Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]] | None", "Ordered grouped navigation lowered through `NavGroup`."),
             p("panel_id", "str", "Id forwarded to the composed MainPanel."),
         ),
         "AppShell composes landmark-friendly chrome with a swappable MainPanel so full page loads and HTMX fragment swaps share one layout. "
@@ -1798,7 +1806,7 @@ COMPONENTS = (
             p("src", "SafeUrl | str | None", "Optional avatar image."),
             p("size / appearance", "token | None", "Presentation tokens shared with Avatar."),
         ),
-        "Identity is the typed person/entity strip used by chrome and resource rows.",
+        "Identity is the typed person/entity strip used by chrome and resource rows. The default theme keeps the name and detail in a constrained two-line text stack, so long names do not concatenate with the secondary detail or push surrounding chrome out of bounds.",
         "Keep detail text supplementary; the name remains primary.",
         "Do not nest a second interactive avatar link inside Identity.",
     ),
@@ -2010,8 +2018,8 @@ COMPONENTS = (
     ComponentDoc(
         "Tabs",
         "utilities",
-        "Render a small ARIA tablist with one initially active labelled panel.",
-        "Tabs(*items, panels=None, active=None, id=None, class_=None)",
+        "Render a small ARIA tablist with one initially active labelled panel and optional responsive appearance tokens.",
+        "Tabs(*items, panels=None, active=None, appearance=None, density=None, responsive=None, id=None, class_=None)",
         "Tabs(('Overview', Text('Current health')), ('History', Table(['Run'], [['Today']])), active='Overview')",
         (
             p("items", "tuple[str, NodeLike]", "Positional tab label and panel-content pairs."),
@@ -2021,6 +2029,9 @@ COMPONENTS = (
                 "Keyword alternative for a generated panel list.",
             ),
             p("active", "str | None", "Active panel label; defaults to the first label."),
+            p("appearance", "contained | underline | pills | None", "Optional visual treatment."),
+            p("density", "compact | comfortable | spacious | None", "Optional tab hit-area density."),
+            p("responsive", "scroll | stretch | compact | None", "Narrow-width behavior; `scroll` preserves all tabs."),
             p(
                 "id",
                 "str | None",
@@ -2028,7 +2039,7 @@ COMPONENTS = (
             ),
             p("class_", "str | None", "Application class appended to `hedron-tabs`."),
         ),
-        "Tabs validates unique labels and the requested active label, then emits tab buttons with selected state, collision-free control relationships, roving-tabindex values, and corresponding tabpanels. Multiple and nested tab sets can therefore share a page safely. Switching panels requires a browser enhancement; the docs JavaScript demonstrates click plus Left/Right/Home/End keyboard behavior.",
+        "Tabs validates unique labels and the requested active label, then emits tab buttons with selected state, collision-free control relationships, roving-tabindex values, and corresponding tabpanels. Multiple and nested tab sets can therefore share a page safely. Phase 0.61 adds finite appearance, density, and responsive markers; `responsive='scroll'` preserves all labels when they do not fit. Switching panels requires a browser enhancement; the docs JavaScript demonstrates click plus Left/Right/Home/End keyboard behavior.",
         "Ship equivalent click and arrow-key behavior in the application browser module, and retain correct focus and selected state after server swaps.",
         "Do not repeat panel labels or use `selected=`; pass pairs positionally (or with `panels=`) and select by label with `active=`.",
         demo="tabs",
@@ -2756,6 +2767,52 @@ COMPONENTS = (
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
     ),
+    ComponentDoc(
+        "AmbientBackdrop",
+        "surfaces",
+        "Finite decorative backdrop that remains inert and outside content semantics.",
+        "AmbientBackdrop(*nodes, pattern='radial', tone='accent', intensity='subtle', id=None, class_=None, mark=None)",
+        "AmbientBackdrop(Container(Text('Dashboard'), max_width='lg'), pattern='mesh', tone='accent')",
+        (
+            p("nodes / children", "NodeLike", "Semantic page or surface content above the decoration."),
+            p("pattern", "radial | dots | grid | mesh", "Finite deterministic decoration preset."),
+            p("tone", "accent | muted | neutral", "Theme-owned decoration tone."),
+            p("intensity", "subtle | soft", "Bounded contrast treatment."),
+        ),
+        "AmbientBackdrop emits an aria-hidden decoration layer with pointer-events disabled, so child content remains in document order. Print, forced-colors, and reduced-transparency styles hide the decoration.",
+        "Keep meaningful headings, status, and focusable controls in the child content; the backdrop is never the source of contrast or information.",
+        "Do not pass arbitrary gradients, CSS strings, or interactive content as decoration.",
+    ),
+    ComponentDoc(
+        "AsyncRegion",
+        "interaction",
+        "Server-authored lifecycle boundary with ordinary fragment or page fallback.",
+        "AsyncRegion(*nodes, state='idle', initial=None, pending=None, empty=None, success=None, error=None, timeout=None, cancelled=None, stale=None, retry=None, conflict=None, fallback='fragment', label=None)",
+        "AsyncRegion(Text('Report ready'), state='success', pending=Text('Loading report…'), error=Text('Try again'))",
+        (
+            p("state", "idle | pending | empty | success | error | timeout | cancelled | stale | conflict", "Closed server-authored presentation state."),
+            p("state slots", "NodeLike | None", "Optional initial, pending, empty, success, error, timeout, cancelled, stale, retry, and conflict content."),
+            p("fallback", "fragment | page", "Ordinary enhancement-free response boundary."),
+            p("label", "str | None", "Accessible label for the region and polite live status."),
+        ),
+        "AsyncRegion selects one state slot while rendering ordinary semantic HTML. It does not suspend Python, require hydration, or create a browser state store.",
+        "Pending state exposes aria-busy; provide visible status text and keep recovery controls keyboard accessible.",
+        "Do not use client state as authorization or omit an ordinary full-fragment/full-page fallback.",
+    ),
+    ComponentDoc(
+        "NavGroup",
+        "layout",
+        "Standalone labelled navigation group shared by AppShell and fragment responses.",
+        "NavGroup(label=None, *items, children=None, id=None, class_=None, mark=None)",
+        "NavGroup('Workspace', NavLink('Overview', '/'), NavLink('Reports', '/reports'))",
+        (
+            p("label", "str | None", "Visible and accessible group label; omit when the surrounding nav owns the name."),
+            p("items / children", "NodeLike", "Links or other already-authorized navigation items."),
+        ),
+        "A labelled NavGroup emits role=group, aria-label, a visible group label, and stable CSS/data hooks. AppShell nav_groups lowers through the same component.",
+        "Keep the surrounding nav landmark labelled and preserve each item’s native focus and link behavior.",
+        "Do not use NavGroup to bypass route authorization or nest competing nav landmarks.",
+    ),
 )
 
 
@@ -3322,6 +3379,14 @@ def page_text(spec: ComponentDoc) -> str:
         if is_charts
         else "[All component demos](index.md) · [Built-in API](../api/BUILT_INS.md) · [Testing](../guides/testing.md)"
     )
+    phase_note = (
+        "\n!!! note \"Phase 0.61 in-tree preview\"\n\n"
+        "    This additive contract is implemented in-tree for Phase 0.61. It is not part of "
+        "the published 0.60.x Supported surface until "
+        "[RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) is signed off.\n"
+        if spec.name in _PHASE_061_COMPONENTS
+        else ""
+    )
     return f"""---
 title: {spec.name}
 description: {spec.summary}
@@ -3329,7 +3394,7 @@ description: {spec.summary}
 
 # `{spec.name}`
 
-{spec.summary}
+{spec.summary}{phase_note}
 
 | | |
 |---|---|

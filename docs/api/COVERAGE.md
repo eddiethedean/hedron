@@ -12,6 +12,9 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `MountPath`, `resolve_mount_path`, `resolve_mount_path_from_environ`, `normalize_mount_path`, `cookie_path_for_mount`, `mount_from_request`, `prefix_local_path` | [MOUNT.md](MOUNT.md), [deployment](../guides/deployment.md) |
 | `HedronRouter`, `HedronRoute`, `ComponentRef`, `resolve_route_path` | [ROUTER.md](ROUTER.md), [ADDRESSABLE.md](ADDRESSABLE.md) |
 | `InteractionResult`, `FragmentRegion`, `InteractionPolicy`, `HtmxRequest`, `OobUpdate` | [INTERACTION.md](INTERACTION.md), Autodoc |
+| `ActionPhase`, `AsyncPhase`, `ActionState`, `ActionPolicy`, `OperationIdentity`, `ActionTrace`, `TraceEvent`, `ActionTransitionError` | [INTERACTION.md](INTERACTION.md#phase-061-lifecycle-contracts), [0.61 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md), [0.61 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) |
+| `begin_operation`, `complete_operation`, `transition_action` | [INTERACTION.md](INTERACTION.md#phase-061-lifecycle-contracts), [0.61 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
+| `AsyncRegion` | [INTERACTION.md](INTERACTION.md#phase-061-lifecycle-contracts), [component page](../components/async-region.md), [0.61 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) |
 | `FragmentHandle`, `BoundFragment`, `ActionHandle`, `Refresh`, `refresh`, `patches`, `FragmentHost`, `Patch`, `PatchSet`, `RefreshIntent` | [REFRESHABLE_VIEWS.md](REFRESHABLE_VIEWS.md) |
 | `ViewParams`, `FormBody`, `Control`, `Refreshes`, `Updates`, `OutcomeMap`, `case`, `CommandResult`, `RefreshableView`, `CommandHandler`, `Sensitive`, `InstanceKey`, `TypeSchema`, `DependsOn`, `DependencyLifetime`, `DependencyPlan`, `BoundaryBindingPlan`, `RequiresScopes` | [TYPE_DRIVEN_AUTHORING.md](TYPE_DRIVEN_AUTHORING.md), [FASTAPI_PYDANTIC_CONVERGENCE.md](FASTAPI_PYDANTIC_CONVERGENCE.md) |
 | `CatalogEntry`, `InteractionCatalog`, `InteractionManifest`, `PackageProjection`, `ProjectionCapability`, `CatalogVersionError` | [INTERACTION_CATALOG.md](INTERACTION_CATALOG.md) |
@@ -127,21 +130,21 @@ Constructor/props live on the [component catalog](../components/index.md). Index
 
 | Export | Primary docs |
 |---|---|
-| `ActionDock`, `Alert`, `AppShell`, `Aside`, `AttrHost`, `Badge` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `ActionDock`, `Alert`, `AmbientBackdrop`, `AppShell`, `Aside`, `AttrHost`, `Badge` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `AccountSummary`, `AppFooter`, `Avatar`, `Brand`, `EnvironmentBanner`, `NavStatus` | [Components](../components/index.md), [PRESENTATION.md](PRESENTATION.md) |
 | `BottomDock`, `Button`, `Card`, `Carousel`, `ChatMessage`, `Checkbox` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `ChipInput`, `CircularProgress`, `ClipboardCopy`, `CodeBlock`, `CodeViewer`, `ColorInput` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `ConfirmButton`, `Container`, `ContextMenu`, `DateInput`, `DateTimeInput`, `DescriptionList` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Dialog`, `Divider`, `Expander`, `Footer`, `FormErrors`, `FormField` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Fragment`, `Head`, `Header`, `Heading`, `Help`, `HelpInspector` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
-| `GridItem`, `Identity`, `ResourceList`, `ResourceRow`, `Surface` | [Components](../components/index.md), [PRESENTATION.md](PRESENTATION.md) |
+| `GridItem`, `Identity`, `ResourceList`, `ResourceRow`, `Surface` | [Components](../components/index.md), [Identity](../components/identity.md), [PRESENTATION.md](PRESENTATION.md) |
 | `HtmxLink`, `IconButton`, `Image`, `Inline`, `JSONViewer`, `Label` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Link`, `LinkButton`, `List`, `Logo`, `Main`, `MainPanel` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
-| `MarkerSpec`, `Math`, `MenuButton`, `MultiSelect`, `Nav`, `NavLink` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `MarkerSpec`, `Math`, `MenuButton`, `MultiSelect`, `Nav`, `NavGroup`, `NavLink` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `NumberInput`, `OobHost`, `PageIcon`, `Pills`, `Popover`, `Progress` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `RadioGroup`, `RangeInput`, `RatingInput`, `Section`, `SegmentedControl`, `Select` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `SelectSlider`, `Sidebar`, `Skeleton`, `Spacer`, `Status`, `SubmitButton` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
-| `Table`, `Tabs`, `Text`, `TextArea`, `Theme`, `TimeInput` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `Table`, `Tabs`, `Text`, `TextArea`, `Theme`, `TimeInput` | [Components](../components/index.md), [Tabs](../components/tabs.md), [BUILT_INS.md](BUILT_INS.md) |
 | `Timeline`, `Title`, `ToggleSwitch`, `Tooltip` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 | `PageHeader`, `SplitView`, `MasterDetail`, `FormGrid`, `ActionGroup` | [AUTHORING_LOOP.md](AUTHORING_LOOP.md), [WORKFLOW.md](WORKFLOW.md), [Components](../components/index.md) |
 | `Capability` / `CapabilityProvider` / `enforce_capability` | [WORKFLOW.md](WORKFLOW.md) |

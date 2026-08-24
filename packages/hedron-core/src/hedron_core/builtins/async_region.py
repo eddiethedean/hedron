@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Literal
+from typing import Any, ClassVar, Literal, cast
 
 from hedron_core.action_state import ActionPhase, AsyncPhase
 from hedron_core.builtins._base import ElementProps, class_names, collect_children
@@ -36,6 +36,7 @@ class AsyncRegion(Component[AsyncRegionProps]):
         "error": "optional",
         "timeout": "optional",
         "cancelled": "optional",
+        "stale": "optional",
         "retry": "optional",
         "conflict": "optional",
     }
@@ -52,6 +53,7 @@ class AsyncRegion(Component[AsyncRegionProps]):
         error: NodeLike = None,
         timeout: NodeLike = None,
         cancelled: NodeLike = None,
+        stale: NodeLike = None,
         retry: NodeLike = None,
         conflict: NodeLike = None,
         label: str | None = None,
@@ -61,19 +63,31 @@ class AsyncRegion(Component[AsyncRegionProps]):
         mark: str | None = None,
         **kwargs: Any,
     ) -> None:
-        normalized_state = (
-            ActionPhase(state).value if isinstance(state, ActionPhase) else str(state)
+        normalized_state = cast(
+            AsyncPhase, ActionPhase(state).value if isinstance(state, ActionPhase) else str(state)
         )
         allowed = {
-            "idle", "pending", "success", "error", "cancelled", "stale", "conflict",
-            "empty", "timeout",
+            "idle",
+            "pending",
+            "success",
+            "error",
+            "cancelled",
+            "stale",
+            "conflict",
+            "empty",
+            "timeout",
         }
         if normalized_state not in allowed:
             raise ValueError(f"Unsupported async region state: {normalized_state!r}")
         super().__init__(
             AsyncRegionProps(
-                state=normalized_state, label=label, fallback=fallback,
-                id=id, class_=class_, mark=mark, **kwargs,
+                state=normalized_state,
+                label=label,
+                fallback=fallback,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
             )
         )
         self._content = collect_children(*nodes, children=children)
@@ -85,6 +99,7 @@ class AsyncRegion(Component[AsyncRegionProps]):
             "error": error,
             "timeout": timeout,
             "cancelled": cancelled,
+            "stale": stale,
             "retry": retry,
             "conflict": conflict,
         }.items():
@@ -97,11 +112,11 @@ class AsyncRegion(Component[AsyncRegionProps]):
         content = self._slot_values.get(slot_name)
         if content is None:
             content = self._content
-        if content is None:
-            content = ()
         if not isinstance(content, tuple):
             content = (content,)
-        aria: dict[str, str] = {"busy": "true" if state == "pending" else "false"}
+        aria: dict[str, str | bool | int | float | None] = {
+            "busy": "true" if state == "pending" else "false"
+        }
         if self.props.label:
             aria.update({"label": self.props.label, "live": "polite"})
         return html.div(
