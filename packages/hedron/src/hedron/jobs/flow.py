@@ -89,7 +89,7 @@ class TaskFlow(Generic[InputT, ResultT]):
         poll: PollPolicy | None = None,
         backend_unavailable: TaskUnavailablePolicy = "fail_closed",
         provider: str = "hedron",
-        provider_version: str = "0.60.0",
+        provider_version: str = "0.60.1",
     ) -> None:
         if not name or not str(name).strip():
             raise error(

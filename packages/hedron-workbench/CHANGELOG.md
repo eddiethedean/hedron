@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.60.1] — 2026-08-23
+
+### Fixed
+- Bug fixes from the 0.60.1 maintenance release.
+
+### Changed
+- Coordinated train tip `0.60.1` (in-tree patch; tag/PyPI deferred).
+
 ## [0.60.0] — 2026-08-23
 
 ### Added

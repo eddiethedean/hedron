@@ -11,7 +11,7 @@ fixtures. **Not** a FastAPI port — only the portable IR capabilities required 
 the kit. Lives outside the uv Python workspace and publishes independently to npm.
 
 **Maturity:** Beta tooling-grade · monorepo package for portable Node conformance
-**Version:** `0.60.0` · install with `npm install -g hedron-runtime-node`
+**Version:** `0.60.1` · install with `npm install -g hedron-runtime-node`
 
 ## Requirements
 

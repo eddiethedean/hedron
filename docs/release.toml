@@ -1,9 +1,9 @@
 [release]
 # Public release facts. Adopter-facing "current", "living", and install-pin claims
-# must agree with this file. The workspace is aligned with the published train.
+# must agree with this file. The workspace may be preparing a later patch.
 train = "0.60"
 published_version = "0.60.0"
-development_version = "0.60.0"
+development_version = "0.60.1"
 published_date = "2026-08-22"
 pin_floor = "0.60.0"
 pin_ceiling = "0.61"
