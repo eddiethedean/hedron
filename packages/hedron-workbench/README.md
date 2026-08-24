@@ -4,7 +4,13 @@
 [![Python](https://img.shields.io/pypi/pyversions/hedron-workbench.svg)](https://pypi.org/project/hedron-workbench/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Optional Posit Workbench / RStudio Server deployment adapter for Hedron.
+> **Final release notice:** `hedron-workbench` `0.60.2` is the final planned
+> publication of this package. It remains available as a compatibility shim for
+> existing applications, but new applications should use [`hedron-posit`](https://pypi.org/project/hedron-posit/)
+> and `HedronPosit`. The Workbench implementation and future documentation live
+> in `hedron-posit`; no further `hedron-workbench` feature releases are planned.
+
+Compatibility Posit Workbench / RStudio Server deployment adapter for Hedron.
 
 An existing FastAPI Hedron app can run unchanged behind Workbench by switching
 the launch command. Installing or importing this package does **not** wrap your

@@ -4,6 +4,11 @@ Compatibility Posit Workbench / RStudio Server deployment adapter.
 
 **Package maturity:** Beta (`0.60.x`, `v0.60.0` in-tree and on PyPI) · extra `hedron[workbench]` · pin `>=0.60.0,<0.61`
 
+**Final release notice:** `0.60.2` is the final planned publication of
+`hedron-workbench`. It remains a compatibility shim for existing applications;
+new applications should use `hedron-posit` and `HedronPosit`. No further
+`hedron-workbench` feature releases are planned.
+
 Prefer [`hedron-posit`](hedron-posit.md) / `HedronPosit` for new applications.
 This package retains `HedronWorkbench` as a thin subclass (supported on the current
 0.60 train; no 0.33 deprecation warning).

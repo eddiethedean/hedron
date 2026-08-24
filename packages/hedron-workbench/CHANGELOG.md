@@ -7,6 +7,9 @@
 
 ### Changed
 - Coordinated train tip `0.60.2` (in-tree patch; tag/PyPI deferred).
+- Final planned `hedron-workbench` publication: existing applications remain
+  supported through this compatibility surface; new applications should use
+  `hedron-posit` and `HedronPosit`.
 
 ## [0.60.1] — 2026-08-23
 
