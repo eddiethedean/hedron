@@ -66,7 +66,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.59** | Modern CSS platform and intuitive built-in styling: standards-capable scoped compilation, canonical cascade/tokens, container-aware layout, modern color/type/media/overlay/motion, whole-fleet zero-CSS polish, and consumer vertical slices | **Published** (`v0.59.0` on PyPI; D-106 / D-107 / [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md)) |
 | **0.60** | Custom theme platform and styling completion: modern color, ThemeSpec/ThemePatch, registry-derived profiles/validation, fingerprints/conformance, packages, accessibility modes, recipes/scopes, persisted selection, capped built-ins, and #627–#635 | **Implemented, verified, tagged, and published** (`v0.60.0`; D-108 / [RFC-0089](rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md)) |
 | **0.61** | Unified action state and server-first async boundaries | **Implemented, verified, tagged, and published** (`v0.61.0`; RFC-0090; [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
-| **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Published** (`v0.63.0`; progressive dashboard fan-out explicitly omitted; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
+| **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Published** (`v0.62.0`; progressive dashboard fan-out explicitly omitted; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Published** (`v0.63.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
 | **0.64** | First-party Hedron HTMX extension: lifecycle state, accessibility, concurrency presentation, cleanup, and browser traces | **Proposed / Stage 0 planned** ([RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md)) |
 
@@ -6431,11 +6431,11 @@ The program is governed by Accepted RFC-0060 and RFC-0069. It preserves server-r
 form/navigation, polling, and server validation as canonical fallbacks; it does not turn Hedron into
 an SPA runtime or require Node.js in consuming Python applications.
 
-## Reactive interaction platform: 0.61 implementation baseline and proposed 0.62–0.63
+## Reactive interaction platform: 0.61–0.63 published implementation baseline
 
 RFC-0090 defines the next coherent capability packet after the 0.60 theme platform. Phase 0.61 is
-verified and published as `v0.61.0`; phase 0.62 is published as `v0.63.0`,
-with dashboard fan-out explicitly omitted, while 0.63 remains a proposal. The phases
+verified and published as `v0.61.0`; phase 0.62 is published as `v0.62.0`,
+with dashboard fan-out explicitly omitted; phase 0.63 is published as `v0.63.0`. The phases
 learn from React's strongest application ideas—uniform action state, async boundaries, optimistic
 updates, stable identity, transition-aware navigation, localized failures, and developer tooling—
 without adopting a React runtime or changing Hedron's server-authoritative architecture.

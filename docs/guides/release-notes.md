@@ -3,7 +3,7 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
-## 0.62.0 — 2026-08-24
+## 0.63.0 — 2026-08-24
 
 Published release for Phase 0.63: theme contract completion, deterministic theme
 export/inspection/conformance checks, portable state matrices, interaction profiling, static
@@ -11,9 +11,10 @@ safety checks, and bounded component interoperability. Progressive bundles, visu
 and React islands remain opt-in extensions with explicit fallbacks.
 
 For maintainers, the release gate is `python scripts/check_release_gate.py 0.63.0` and the phase
-packet check is `python scripts/check_063.py --gate CONTRACT-063 --verify`.
+packet check is `python scripts/check_063.py --gate CONTRACT-063 --verify`. The [GitHub Release](https://github.com/eddiethedean/hedron/releases/tag/v0.63.0)
+and [release CI](https://github.com/eddiethedean/hedron/actions/runs/32785419240) are complete.
 
-## 0.63.0 — 2026-08-24
+## 0.62.0 — 2026-08-24
 
 Published release for responsive navigation, bounded optimism, and localized failure isolation.
 The coordinated packages are versioned `0.62.0` in the repository and available on PyPI.

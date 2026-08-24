@@ -25,12 +25,12 @@ Install pins: [Current release](current-release.md) ·
 | Phase | Focus | Status |
 |---|---|---|
 | **0.61** | Unified action state and server-first async boundaries | **Verified and published in 0.61.0**; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
-| **0.62** | Responsive navigation, bounded optimistic UX, and localized failure isolation | **Published** as `v0.63.0`; dashboard fan-out omitted; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/NAVIGATION_OPTIMISM_062.md) |
-| **0.63** | Theme contract completion, interaction profiling, static checks, and component interoperability | Required implementation landed; Progressive bundles/visuals/React island deferred; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
+| **0.62** | Responsive navigation, bounded optimistic UX, and localized failure isolation | **Published** as `v0.62.0`; dashboard fan-out omitted; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/NAVIGATION_OPTIMISM_062.md) |
+| **0.63** | Theme contract completion, interaction profiling, static checks, and component interoperability | **Published** as `v0.63.0`; Progressive bundles/visuals/React island deferred; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
 | **0.64** | First-party Hedron HTMX extension for lifecycle state, accessibility, cleanup, and traces | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_HEDRON_EXTENSION_064.md) |
 
-Phase 0.62 remains the current published capability train; 0.63 Required implementation is landed
-in-tree with its acceptance packet, while 0.64 remains a planning proposal.
+Phase 0.63 is the current published capability train; its Required implementation is landed in-tree
+and published on PyPI with its acceptance packet, while 0.64 remains a planning proposal.
 For 0.62, canonical navigation, fallback, localized failure, identity safety, and a small approved
 optimistic core are the proposed Required cut; prefetch, transitions, bulk actions, and dashboard
 fan-out remain optional Progressive work.

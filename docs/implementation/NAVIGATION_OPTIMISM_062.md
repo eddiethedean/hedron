@@ -1,6 +1,6 @@
 # Phase 0.62: responsive navigation, bounded optimism, and failure isolation
 
-**Status:** Verified release candidate for `v0.62.0`; dashboard fan-out explicitly omitted
+**Status:** Verified and published as `v0.62.0`; dashboard fan-out explicitly omitted
 **Predecessor:** verified 0.61 lifecycle and trace contracts  
 **Authority:** [RFC-0090](../rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md)  
 **Acceptance:** [RELEASE_0_62](../acceptance/RELEASE_0_62.md)

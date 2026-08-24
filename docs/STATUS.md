@@ -6,7 +6,8 @@
 
 **Roadmap position:** phase 0.63 is **Published** as `v0.63.0` on PyPI. The 27-gate evidence
 packet is active, with implemented scope and release evidence recorded in
-`docs/acceptance/evidence-063/`.
+`docs/acceptance/evidence-063/`. The [GitHub Release](https://github.com/eddiethedean/hedron/releases/tag/v0.63.0)
+and [release CI run](https://github.com/eddiethedean/hedron/actions/runs/32785419240) completed successfully.
 **Date:** 2026-08-24
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /

@@ -1,6 +1,6 @@
 # Phase 0.63: theme contract, interaction tooling, and ecosystem interoperability
 
-**Status:** Required implementation and release evidence landed; presentation and interoperability extensions verified
+**Status:** Required implementation and release evidence verified and published as `v0.63.0`; presentation and interoperability extensions verified
 **Predecessor:** verified 0.61 lifecycle/trace and 0.62 navigation/optimism/failure contracts  
 **Authority:** [RFC-0090](../rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md)  
 **Execution:** [EXECUTION_0_63](EXECUTION_0_63.md)

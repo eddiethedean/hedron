@@ -4,8 +4,9 @@
 
 Install the latest public release from PyPI:
 `pip install "hedron>=0.63.0,<0.64"`. Contributors working from a git checkout use
-`uv sync` (workspace packages); the verified 0.63.0 checkout is not yet on PyPI.
-The Git tag is cut only after hosted CI is green; PyPI upload remains a separate coordinated step. See
+`uv sync` (workspace packages). The verified `v0.63.0` release is published on PyPI and has a
+[GitHub Release](https://github.com/eddiethedean/hedron/releases/tag/v0.63.0); its [release CI](https://github.com/eddiethedean/hedron/actions/runs/32785419240)
+passed all gates. See
 [Installation](../getting-started/installation.md).
 
 ```bash
