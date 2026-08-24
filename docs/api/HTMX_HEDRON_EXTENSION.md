@@ -3,8 +3,9 @@
 **Status:** Proposed phase 0.64 contract  
 **RFC:** [RFC-0091](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md)
 
-Phase 0.64 proposes the explicit `hedron` HTMX extension id, backed by the locally served and
-pinned `htmx-ext-hedron` asset.
+Phase 0.64 combines bounded presentation contracts with an explicit `hedron` HTMX extension id,
+backed by the locally served and pinned `htmx-ext-hedron` asset. The complete issue inventory and
+track boundary are recorded in the [phase 0.64 roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#phase-064-refined-scope).
 
 ```python
 Page(content, htmx_extensions={"hedron"})

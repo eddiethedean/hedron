@@ -27,7 +27,7 @@ Install pins: [Current release](current-release.md) ·
 | **0.61** | Unified action state and server-first async boundaries | **Verified and published in 0.61.0**; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
 | **0.62** | Responsive navigation, bounded optimistic UX, and localized failure isolation | **Published** as `v0.62.0`; dashboard fan-out omitted; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/NAVIGATION_OPTIMISM_062.md) |
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component interoperability | **Published** as `v0.63.0`; Progressive bundles/visuals/React island deferred; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
-| **0.64** | First-party Hedron HTMX extension for lifecycle state, accessibility, cleanup, and traces | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_HEDRON_EXTENSION_064.md) |
+| **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability | Proposed / Stage 0 planned; [22 open enhancement issues](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#phase-064-open-enhancement-inventory); [refined phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_HEDRON_EXTENSION_064.md) |
 
 Phase 0.63 is the current published capability train; its Required implementation is landed in-tree
 and published on PyPI with its acceptance packet, while 0.64 remains a planning proposal.
@@ -42,10 +42,12 @@ and [acceptance rules](https://github.com/eddiethedean/hedron/blob/main/docs/acc
 Every phase has an independent entry gate, workstreams, compatibility/rollback rules, budget
 categories, and release plan.
 
-Phase 0.64 extends that program with an explicitly declared, locally served `htmx-ext-hedron` asset.
-It adds Hedron-specific browser lifecycle and accessibility projection while keeping ordinary HTMX
-and full-page/full-fragment behavior as the fallback. It does not introduce a client store,
-hydration, a virtual DOM, or a Node requirement.
+Phase 0.64 extends that program with bounded presentation contracts and an explicitly declared,
+locally served `htmx-ext-hedron` asset. It adds theme scales, public parts/states, responsive and
+inclusive presentation, safe custom-component styling, and Hedron-specific browser lifecycle
+projection while keeping ordinary HTMX and full-page/full-fragment behavior as the fallback. It
+does not introduce a client store, hydration, a virtual DOM, arbitrary CSS/script execution, or a
+Node requirement.
 
 ## Verified 0.60 — custom theme platform and styling completion
 

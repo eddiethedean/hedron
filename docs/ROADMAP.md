@@ -68,7 +68,61 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.61** | Unified action state and server-first async boundaries | **Implemented, verified, tagged, and published** (`v0.61.0`; RFC-0090; [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
 | **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Published** (`v0.62.0`; progressive dashboard fan-out explicitly omitted; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Published** (`v0.63.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
-| **0.64** | First-party Hedron HTMX extension: lifecycle state, accessibility, concurrency presentation, cleanup, and browser traces | **Proposed / Stage 0 planned** ([RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md)) |
+| **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Proposed / Stage 0 planned** ([RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [22 open enhancement issues](#phase-064-open-enhancement-inventory)) |
+
+### Phase 0.64 open enhancement inventory
+
+GitHub reports the following **22 open issues** with the `enhancement` label for phase 0.64
+(queried 2026-08-24). All listed issues are tracked in phase 0.64 per the current planning
+decision. The source tags are retained so the 0.62 carry-forward work remains distinguishable
+from the issues originally opened for 0.64. Issue #86 remains owned by phase 0.21 and is not part
+of this inventory.
+
+| Issue | Original scope | Enhancement |
+|---|---|---|
+| [#677](https://github.com/eddiethedean/hedron/issues/677) | 0.62 carry-forward | Add a typed, themeable identity-mark contract for Brand and AccountSummary |
+| [#678](https://github.com/eddiethedean/hedron/issues/678) | 0.62 carry-forward | Add public theme hooks for global selection and link-state chrome |
+| [#679](https://github.com/eddiethedean/hedron/issues/679) | 0.62 carry-forward | Add responsive conditions to StyleRecipe and StyleScope |
+| [#680](https://github.com/eddiethedean/hedron/issues/680) | 0.62 carry-forward | Expand semantic palette derivation for interactive states |
+| [#681](https://github.com/eddiethedean/hedron/issues/681) | 0.62 carry-forward | Make theme conformance checking a standalone CI gate |
+| [#682](https://github.com/eddiethedean/hedron/issues/682) | 0.62 carry-forward | Export resolved themes as CSS and design-token JSON |
+| [#683](https://github.com/eddiethedean/hedron/issues/683) | 0.62 carry-forward | Standardize typed leading and trailing slots across built-ins |
+| [#684](https://github.com/eddiethedean/hedron/issues/684) | 0.62 carry-forward | Add per-component default-style bundles |
+| [#685](https://github.com/eddiethedean/hedron/issues/685) | 0.62 carry-forward | Add theme-aware accessible visualization presentation primitives |
+| [#686](https://github.com/eddiethedean/hedron/issues/686) | 0.62 carry-forward | Add runtime theme-token inspection and fallback diagnostics |
+| [#687](https://github.com/eddiethedean/hedron/issues/687) | 0.62 carry-forward | Publish a stable component parts and state-hooks manifest |
+| [#688](https://github.com/eddiethedean/hedron/issues/688) | 0.62 carry-forward | Add a portable component state-matrix visual test command |
+| [#689](https://github.com/eddiethedean/hedron/issues/689) | 0.62 carry-forward | Add bounded translucent and glass surface appearances |
+| [#690](https://github.com/eddiethedean/hedron/issues/690) | 0.62 carry-forward | Add named motion recipes with reduced-motion fallbacks |
+| [#692](https://github.com/eddiethedean/hedron/issues/692) | 0.64 | Add semantic typography roles and component text tokens |
+| [#693](https://github.com/eddiethedean/hedron/issues/693) | 0.64 | Add bounded component-part and state-style recipes |
+| [#694](https://github.com/eddiethedean/hedron/issues/694) | 0.64 | Add semantic data-view and table chrome theme tokens |
+| [#695](https://github.com/eddiethedean/hedron/issues/695) | 0.64 | Add container-query-aware responsive recipes |
+| [#696](https://github.com/eddiethedean/hedron/issues/696) | 0.64 | Add first-class RTL and writing-mode theme support |
+| [#697](https://github.com/eddiethedean/hedron/issues/697) | 0.64 | Add semantic spacing and geometry scales to themes |
+| [#698](https://github.com/eddiethedean/hedron/issues/698) | 0.64 | Add a native form-control appearance and state theme contract |
+| [#699](https://github.com/eddiethedean/hedron/issues/699) | 0.64 | Add a safe scoped style DSL for application-defined components |
+
+### Phase 0.64 refined scope
+
+Phase 0.64 now has two coordinated tracks. The presentation track closes the bounded theme and
+component-authoring gaps represented by the 22 phase-owned enhancements; the browser track delivers
+the opt-in `htmx-ext-hedron` projection from RFC-0091. Neither track creates a client-side source of
+truth, arbitrary CSS/script execution, or a mandatory browser runtime.
+
+| Track | Refined responsibility | Issue/gate grouping |
+|---|---|---|
+| Presentation foundation | Semantic palette derivation, conformance gate, theme export/inspection, and stable parts/state metadata | #680, #681, #682, #686, #687 → `THEME-064`, `MANIFEST-064` |
+| Semantic authoring | Identity, global theme hooks, typography, spacing, geometry, slots, and motion | #677, #678, #683, #690, #692, #697 → `TYPOGEOM-064`, `MOTION-064`, `MANIFEST-064` |
+| Responsive and inclusive presentation | Viewport/container conditions, RTL/writing modes, native control states, reduced-motion, forced-colors, and high-contrast fallbacks | #679, #695, #696, #698 → `RESPONSIVE-064`, `CONTROLS-064`, `A11Y-064` |
+| Component verticals | Bounded parts/state recipes, component bundles, data/table chrome, visualization presentation, and glass surfaces | #684, #685, #688, #689, #693, #694 → `MANIFEST-064`, `CONTROLS-064`, `VISUAL-064` |
+| Application-defined styling | Safe scoped style DSL with token/value allowlists, deterministic layering, and bundle inclusion | #699 → `CUSTOM-064` |
+| HTMX browser projection | Explicit local asset, lifecycle state, accessibility behavior, stale/concurrency presentation, cleanup, and traces | RFC-0091 → existing `ASSET-064` through `PKG-064` gates |
+
+Stage 0 must produce an issue disposition matrix for every listed enhancement: **Required**,
+**Progressive**, **Experimental**, or **Excluded**. A phase release may not silently defer an issue;
+Progressive and Experimental outcomes must retain their labels in the public contract and package
+metadata, while every Required outcome must satisfy its mapped gate.
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -5399,19 +5453,28 @@ acceptance criteria; this table is the roadmap owner index.
 | [#671](https://github.com/eddiethedean/hedron/issues/671) | Theme-aware ambient backdrop presets | 0.61 |
 | [#672](https://github.com/eddiethedean/hedron/issues/672) | Identity name and detail concatenate in the default theme | 0.61 |
 | [#676](https://github.com/eddiethedean/hedron/issues/676) | Custom theme tokens do not reach the default component stylesheet | 0.63 |
-| [#677](https://github.com/eddiethedean/hedron/issues/677) | Add a typed, themeable identity-mark contract for Brand and AccountSummary | 0.63 |
-| [#678](https://github.com/eddiethedean/hedron/issues/678) | Add public theme hooks for global selection and link-state chrome | 0.63 |
-| [#679](https://github.com/eddiethedean/hedron/issues/679) | Add responsive conditions to StyleRecipe and StyleScope | 0.63 |
-| [#680](https://github.com/eddiethedean/hedron/issues/680) | Expand semantic palette derivation for interactive states | 0.63 |
-| [#681](https://github.com/eddiethedean/hedron/issues/681) | Make theme conformance checking a standalone CI gate | 0.63 |
-| [#682](https://github.com/eddiethedean/hedron/issues/682) | Export resolved themes as CSS and design-token JSON | 0.63 |
-| [#683](https://github.com/eddiethedean/hedron/issues/683) | Standardize typed leading and trailing slots across built-ins | 0.63 |
-| [#684](https://github.com/eddiethedean/hedron/issues/684) | Add per-component default-style bundles | 0.63 |
-| [#685](https://github.com/eddiethedean/hedron/issues/685) | Add theme-aware accessible visualization presentation primitives | 0.63 |
-| [#686](https://github.com/eddiethedean/hedron/issues/686) | Add runtime theme-token inspection and fallback diagnostics | 0.63 |
-| [#687](https://github.com/eddiethedean/hedron/issues/687) | Publish a stable component parts and state-hooks manifest | 0.63 |
-| [#688](https://github.com/eddiethedean/hedron/issues/688) | Add a portable component state-matrix visual test command | 0.63 |
-| [#689](https://github.com/eddiethedean/hedron/issues/689) | Add bounded translucent and glass surface appearances | 0.63 |
+| [#677](https://github.com/eddiethedean/hedron/issues/677) | Add a typed, themeable identity-mark contract for Brand and AccountSummary | 0.64 |
+| [#678](https://github.com/eddiethedean/hedron/issues/678) | Add public theme hooks for global selection and link-state chrome | 0.64 |
+| [#679](https://github.com/eddiethedean/hedron/issues/679) | Add responsive conditions to StyleRecipe and StyleScope | 0.64 |
+| [#680](https://github.com/eddiethedean/hedron/issues/680) | Expand semantic palette derivation for interactive states | 0.64 |
+| [#681](https://github.com/eddiethedean/hedron/issues/681) | Make theme conformance checking a standalone CI gate | 0.64 |
+| [#682](https://github.com/eddiethedean/hedron/issues/682) | Export resolved themes as CSS and design-token JSON | 0.64 |
+| [#683](https://github.com/eddiethedean/hedron/issues/683) | Standardize typed leading and trailing slots across built-ins | 0.64 |
+| [#684](https://github.com/eddiethedean/hedron/issues/684) | Add per-component default-style bundles | 0.64 |
+| [#685](https://github.com/eddiethedean/hedron/issues/685) | Add theme-aware accessible visualization presentation primitives | 0.64 |
+| [#686](https://github.com/eddiethedean/hedron/issues/686) | Add runtime theme-token inspection and fallback diagnostics | 0.64 |
+| [#687](https://github.com/eddiethedean/hedron/issues/687) | Publish a stable component parts and state-hooks manifest | 0.64 |
+| [#688](https://github.com/eddiethedean/hedron/issues/688) | Add a portable component state-matrix visual test command | 0.64 |
+| [#689](https://github.com/eddiethedean/hedron/issues/689) | Add bounded translucent and glass surface appearances | 0.64 |
+| [#690](https://github.com/eddiethedean/hedron/issues/690) | Add named motion recipes with reduced-motion fallbacks | 0.64 |
+| [#692](https://github.com/eddiethedean/hedron/issues/692) | Add semantic typography roles and component text tokens | 0.64 |
+| [#693](https://github.com/eddiethedean/hedron/issues/693) | Add bounded component-part and state-style recipes | 0.64 |
+| [#694](https://github.com/eddiethedean/hedron/issues/694) | Add semantic data-view and table chrome theme tokens | 0.64 |
+| [#695](https://github.com/eddiethedean/hedron/issues/695) | Add container-query-aware responsive recipes | 0.64 |
+| [#696](https://github.com/eddiethedean/hedron/issues/696) | Add first-class RTL and writing-mode theme support | 0.64 |
+| [#697](https://github.com/eddiethedean/hedron/issues/697) | Add semantic spacing and geometry scales to themes | 0.64 |
+| [#698](https://github.com/eddiethedean/hedron/issues/698) | Add a native form-control appearance and state theme contract | 0.64 |
+| [#699](https://github.com/eddiethedean/hedron/issues/699) | Add a safe scoped style DSL for application-defined components | 0.64 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 
@@ -6533,9 +6596,10 @@ non-executing deterministic check catalog, registry-derived metadata identity, m
 with honest non-fits, and an explicit omit-or-Experimental decision for the island recipe. See the
 [0.63 implementation plan](implementation/INTERACTION_TOOLING_063.md), [execution plan](implementation/EXECUTION_0_63.md), and [release acceptance](acceptance/RELEASE_0_63.md).
 
-#### 0.63 open issue packet
+#### 0.63 historical open issue packet
 
-The following issues were open on GitHub when this roadmap was updated and are owned by Phase 0.63:
+The following issues were open on GitHub when the 0.63 roadmap packet was written and were originally
+owned by Phase 0.63. Open carry-forward items are now owned by Phase 0.64 in the live inventory above.
 
 | Track | Issues | Disposition |
 |---|---|---|
@@ -6544,10 +6608,10 @@ The following issues were open on GitHub when this roadmap was updated and are o
 | Theme evidence | [#681](https://github.com/eddiethedean/hedron/issues/681), [#682](https://github.com/eddiethedean/hedron/issues/682), [#686](https://github.com/eddiethedean/hedron/issues/686), [#688](https://github.com/eddiethedean/hedron/issues/688) | Required |
 | Presentation extensions | [#684](https://github.com/eddiethedean/hedron/issues/684), [#685](https://github.com/eddiethedean/hedron/issues/685), [#689](https://github.com/eddiethedean/hedron/issues/689) | Verified |
 
-The issue titles and links remain in the ownership index above; this table defines sequencing and
-maturity. Theme foundation and component-contract work precede theme evidence, state-matrix, and
-interaction-tooling adoption. Verified presentation extensions cannot introduce arbitrary CSS,
-unsafe selectors, or a new runtime dependency.
+The issue titles and links remain in the ownership index above; this historical table records the
+original sequencing and maturity. Theme foundation and component-contract work preceded theme
+evidence, state-matrix, and interaction-tooling adoption. Verified presentation extensions could
+not introduce arbitrary CSS, unsafe selectors, or a new runtime dependency.
 
 The phases are governed by [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md), the
 [program implementation plan](implementation/REACTIVE_INTERACTION_PLATFORM_061_063.md), and the
@@ -6556,18 +6620,21 @@ their public contracts and release gates are accepted. They do not promote SSE/W
 View Transitions, preload, or React islands to Supported defaults, and they do not create a
 mandatory client store, hydration layer, JSX requirement, or Node dependency.
 
-## Proposed phase 0.64 — Hedron HTMX interaction extension
+## Proposed phase 0.64 — bounded presentation and HTMX lifecycle interoperability
 
-RFC-0091 follows the 0.61–0.63 reactive interaction platform and turns its server-authored
-lifecycle, operation identity, accessibility, and trace contracts into an explicit browser
-projection. The phase proposes a small, locally served `htmx-ext-hedron` asset declared with
-`Page(htmx_extensions={"hedron"})`.
+Phase 0.64 closes the bounded presentation gaps left after the 0.63 theme and interoperability
+work, then turns the 0.61–0.63 server-authored lifecycle, operation identity, accessibility, and
+trace contracts into an explicit browser projection. The presentation track covers semantic scales,
+public parts/states/slots, responsive and direction policy, native control appearance, data and
+visualization chrome, and a safe application-defined style DSL. The browser track proposes a small,
+locally served `htmx-ext-hedron` asset declared with `Page(htmx_extensions={"hedron"})`.
 
+The presentation contracts remain finite, token-backed, metadata-derived, and conformance-checkable.
 The extension owns pending/terminal state markers, busy and disabled presentation, announcements,
 focus policy, stale/superseded presentation, CSP-safe lifecycle registration, and browser trace
 hooks. HTMX remains the request/swap authority; Hedron remains the server, authorization, target,
 mutation, and HTML authority. Native HTML and full-page/full-fragment responses remain Required
-fallbacks.
+fallbacks for both tracks.
 
 The phase explicitly excludes a global client store, hydration, a virtual DOM, response-script
 execution, a new morph engine, and promotion of SSE/WebSockets. See the [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md),
