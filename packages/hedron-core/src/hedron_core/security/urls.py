@@ -76,6 +76,24 @@ def contains_dangerous_scheme(value: str) -> bool:
     return any(f"{dangerous}:" in scanned for dangerous in _DANGEROUS_SCHEMES)
 
 
+def _contains_encoded_dot_pair(value: str) -> bool:
+    """Detect encoded ``..`` while retaining provenance lost after decoding."""
+    current = nfkc_strip_format(value)
+    for _ in range(_DECODE_ROUNDS):
+        unescaped = html_stdlib.unescape(current)
+        lowered = unescaped.lower()
+        if any(token in lowered for token in ("%2e%2e", "%2e.", ".%2e")):
+            return True
+        try:
+            decoded = unquote(unescaped, errors="strict")
+        except Exception:  # noqa: BLE001
+            decoded = unquote(unescaped)
+        if decoded == current:
+            break
+        current = nfkc_strip_format(decoded)
+    return False
+
+
 def reject_asset_path_traversal(raw: str, *, purpose: UrlPurpose = UrlPurpose.ASSET) -> None:
     """Reject literal or percent-encoded ``..`` segments in root-relative paths."""
     path_only = raw.split("?", 1)[0].split("#", 1)[0]
@@ -88,6 +106,7 @@ def reject_asset_path_traversal(raw: str, *, purpose: UrlPurpose = UrlPurpose.AS
     if (
         normalized != decoded_path
         or cleaned_norm != cleaned
+        or _contains_encoded_dot_pair(path_only)
         or any(seg == ".." for seg in segments)
         or any(seg == ".." for seg in cleaned.split("/"))
     ):

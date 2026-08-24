@@ -20,6 +20,12 @@ def test_path_guards_normalize_unicode_and_allow_benign_double_dots() -> None:
         SafeUrl.parse("/assets/foo..bar.png", purpose=UrlPurpose.ASSET).value
         == "/assets/foo..bar.png"
     )
+    assert (
+        SafeUrl.parse("/assets/foo%2ebar.png", purpose=UrlPurpose.ASSET).value
+        == "/assets/foo%2ebar.png"
+    )
+    with pytest.raises(HedronError):
+        SafeUrl.parse("/assets/app.js%252e%252e/x", purpose=UrlPurpose.ASSET)
     with pytest.raises(ValueError):
         validate_directory_upload([("．．/etc/passwd", 1)], max_files=5, max_total_size=100)
     with pytest.raises(AuthorizationError):
