@@ -4,8 +4,8 @@
 [![Python](https://img.shields.io/pypi/pyversions/hedron-workbench.svg)](https://pypi.org/project/hedron-workbench/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-> **Final release notice:** `hedron-workbench` `0.60.2` is the final planned
-> publication of this package. It remains available as a compatibility shim for
+> **Final release notice:** `hedron-workbench` `0.60.2` is the final published
+> compatibility release of this package. It remains available as a compatibility shim for
 > existing applications, but new applications should use [`hedron-posit`](https://pypi.org/project/hedron-posit/)
 > and `HedronPosit`. The Workbench implementation and future documentation live
 > in `hedron-posit`; no further `hedron-workbench` feature releases are planned.
@@ -18,7 +18,7 @@ application. `RS_SERVER_URL` is discovery-only and never grants trust.
 
 Also available as `hedron[workbench]`.
 
-**Package maturity:** Beta · **Train:** `0.60.x` (published `v0.60.0` in-tree and on PyPI) · application pin `>=0.60.0,<0.61`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Train:** `0.60.x` (published `v0.60.2` in-tree and on PyPI) · application pin `>=0.60.2,<0.61`; repository checkouts use `uv sync`
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
 
@@ -30,9 +30,9 @@ depends on `fastapi-workbench>=1.0.0,<2.0`.
 ## Install
 
 ```bash
-pip install "hedron-workbench>=0.60.0,<0.61"
+pip install "hedron-workbench>=0.60.2,<0.61"
 # or
-uv add "hedron[workbench]>=0.60.0,<0.61"
+uv add "hedron[workbench]>=0.60.2,<0.61"
 ```
 
 ## Hedron application facade

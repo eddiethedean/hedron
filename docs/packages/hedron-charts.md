@@ -8,7 +8,7 @@ description: First-party charts, deterministic exports, and optional plotting-li
 deterministic server exports, and explicit adapters for established Python plotting libraries.
 
 **Package maturity:** Beta · Compatible with published Hedron train `0.60.x`
-(`v0.60.0` in-tree and on PyPI) · **Package version:** `0.2.0`
+(`v0.60.2` in-tree and on PyPI) · **Package version:** `0.2.0`
 (pin `>=0.2.0,<0.3`)
 
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`
@@ -20,7 +20,7 @@ Experimental explicit opt-ins.
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.60.0,<0.61"
+pip install "hedron[charts]>=0.60.2,<0.61"
 
 # Or install the independently versioned satellite:
 pip install "hedron-charts>=0.2.0,<0.3"

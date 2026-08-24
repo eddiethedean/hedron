@@ -4,13 +4,13 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.60 **Published** as `v0.60.0` on PyPI. The 27-gate evidence
+**Roadmap position:** phase 0.60 **Published** as `v0.60.2` on PyPI. The 27-gate evidence
 packet is active, with implemented
 scope and release evidence recorded in `docs/acceptance/evidence-060/`.
 **Date:** 2026-08-22
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.60.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.60.2`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
@@ -25,7 +25,7 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 `hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
 **Phase focus:** Published train is **0.60** (D-108 / RFC-0089). Phase **0.60** (accepted
-D-108 / RFC-0089) is implemented and verified in-tree as `v0.60.0`, with the 27-gate packet and
+D-108 / RFC-0089) is implemented and verified in-tree as `v0.60.2`, with the 27-gate packet and
 executable browser/unit coverage for styling issues #627–#635; PyPI publication is complete and
 human assistive-technology sign-off remains bounded by open #86. Prior
 Published in-tree **0.57** unified presentation / zero-application-CSS
@@ -83,7 +83,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `ARTIFACT-021` | Redacted ledger + statement update | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `*-059` | Modern CSS platform and intuitive built-in styling | **Verified/Published** (0.59) | D-106 / D-107 / RFC-0087; `v0.59.0` |
-| `*-060` | Custom theme platform and styling completion | **Verified/Published** (0.60) | D-108 / RFC-0089; `v0.60.0`; owns #627–#635 |
+| `*-060` | Custom theme platform and styling completion | **Verified/Published** (0.60) | D-108 / RFC-0089; `v0.60.2`; owns #627–#635 |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
 | `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |
@@ -136,7 +136,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - Gate index: [release-gate-0.60.toml](acceptance/release-gate-0.60.toml)
   (all 27 rows **Verified**; zero Deferred).
 - Release evidence: [gate-results-060.json](acceptance/evidence-060/gate-results-060.json),
-  tag `v0.60.0`, GitHub Release, and PyPI publication completed.
+  tag `v0.60.2`, GitHub Release, and PyPI publication completed.
 - Human AT remains bounded by the open [#86](https://github.com/eddiethedean/hedron/issues/86);
   this does not change the verified protocol and browser evidence for the 0.60 product claims.
 
@@ -152,7 +152,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - What’s new: [guides/whats-new-0.58.md](guides/whats-new-0.58.md).
 - Checker: `python scripts/check_release_gate.py 0.58.1`,
   `python scripts/verify_pkg_58.py`.
-- Historical registry note: the 0.58 packet predates the current 0.60.0 public release.
+- Historical registry note: the 0.58 packet predates the current 0.60.2 public release.
 
 ## Phase 0.24 evidence
 

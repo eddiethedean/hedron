@@ -2,7 +2,7 @@
 
 **Status:** Published in-tree as `v0.56.0` (tag/PyPI deferred). This historical
 cut was superseded by later published trains; current applications should use
-`hedron>=0.60.0,<0.61` from the public index.
+`hedron>=0.60.2,<0.61` from the public index.
 
 Phase 0.54 ships one external-author loop and Python-native application chrome.
 

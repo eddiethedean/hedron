@@ -12,8 +12,8 @@ Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README
 
 Click through the pattern demos below (docs simulations for CSRF, fragments, and chart
 **panel** refresh — not a live login), then run the full app locally or via production
-compose. Outside the workspace, install `hedron[charts]>=0.60.0,<0.61` from PyPI
-(the verified repository tip is `0.60.0`, and the public PyPI release is also `0.60.0`; see
+compose. Outside the workspace, install `hedron[charts]>=0.60.2,<0.61` from PyPI
+(the verified repository tip is `0.60.2`, and the public PyPI release is also `0.60.2`; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 
 !!! warning "Credentials for this app"
@@ -340,7 +340,7 @@ Prefer this path when validating production posture —
 | CSRF on forms | `csrf_token_for_request` + hidden field / `hx-headers` in `_create_form` | CSRF on forms |
 | Create user POST | `@users.action("", method="POST")` | Fragment list refresh |
 | Fragment table refresh | `@users.component("/table")`, addressable `user_table` | Fragment list refresh |
-| DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=0.60.0,<0.61` or the monorepo source) | Chart panel refresh (sim) |
+| DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=0.60.2,<0.61` or the monorepo source) | Chart panel refresh (sim) |
 | Color mode | `ColorModeToggle` + preference cookie helpers | — |
 | Production archetype | compose + `requirements-prod.txt` + README ingredient table | — |
 

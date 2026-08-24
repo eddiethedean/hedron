@@ -2,7 +2,7 @@
 
 In-tree tip is **0.53.0** (Published; Git tag and PyPI upload deferred). This
 historical cut was superseded by later published trains; current applications
-should use `hedron>=0.60.0,<0.61` from the public index.
+should use `hedron>=0.60.2,<0.61` from the public index.
 
 ## 0.53.0
 

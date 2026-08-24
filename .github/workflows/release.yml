@@ -18,6 +18,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
@@ -37,6 +41,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           version: ${{ env.UV_VERSION }}
@@ -45,7 +51,7 @@ jobs:
       - name: Set up Python
         run: uv python install ${{ matrix.python-version }}
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
       - name: Sync
         run: uv sync --locked --python ${{ matrix.python-version }}
       - name: Run test suite
@@ -58,6 +64,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           version: ${{ env.UV_VERSION }}
@@ -66,7 +74,7 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
       - name: Install all dependency groups
         run: uv sync --locked --all-groups --python 3.12
       - name: Run quality suite
@@ -85,6 +93,8 @@ jobs:
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           version: ${{ env.UV_VERSION }}
@@ -117,6 +127,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           version: ${{ env.UV_VERSION }}
@@ -125,17 +137,17 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
       - name: Install dependencies
         # Docs group required: the living packet's DOCS/REGRESS gates run strict MkDocs.
         run: uv sync --locked --python 3.12 --group docs
       - name: Set up Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
           java-version: "17"
       - name: Set up Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "20"
       - name: Resolve gate version
@@ -196,6 +208,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ steps.ref.outputs.tag }}
+          persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           version: ${{ env.UV_VERSION }}
@@ -229,6 +242,10 @@ jobs:
           mkdir -p dist
           for pyproject in packages/*/pyproject.toml; do
             pkg="$(basename "$(dirname "$pyproject")")"
+            if [[ "$pkg" == "hedron-workbench" ]]; then
+              echo "Skipping retired compatibility distribution $pkg"
+              continue
+            fi
             echo "Building $pkg"
             uv build --package "$pkg"
           done
@@ -265,6 +282,12 @@ jobs:
           existing_names=()
           new_names=()
           for pyproject in packages/*/pyproject.toml; do
+            pkg_dir="$(dirname "$pyproject")"
+            pkg="$(basename "$pkg_dir")"
+            if [[ "$pkg" == "hedron-workbench" ]]; then
+              echo "Skipping retired compatibility distribution $pkg"
+              continue
+            fi
             read -r name pkg_version <<<"$(uv run --python 3.11 python - <<PY
           import tomllib
           from pathlib import Path
@@ -467,7 +490,7 @@ jobs:
           fi
           echo "publish_failed=0" >> "$GITHUB_OUTPUT"
       - name: Install Rust for crates.io publish
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
       - name: Publish hedron-native to crates.io
         id: crates
         env:

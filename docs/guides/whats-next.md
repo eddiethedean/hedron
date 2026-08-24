@@ -15,7 +15,7 @@ Install pins: [Current release](current-release.md) ·
 
 | Topic | Disposition |
 |---|---|
-| Progressive screens / form commands / TaskFlow / DashboardWorkspace | **Available in published 0.60.0** — [What’s new in 0.60](whats-new-0.60.md) |
+| Progressive screens / form commands / TaskFlow / DashboardWorkspace | **Available in published 0.60.2** — [What’s new in 0.60](whats-new-0.60.md) |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
 | Hedron 1.0 / commercial SLA | **None scheduled** |
@@ -49,7 +49,7 @@ Experimental, and Deferred boundaries remain explicit in the [release notes](rel
 
 | Topic | Disposition |
 |---|---|
-| ThemeSpec/ThemePatch, color handling, profiles, packages, accessibility modes, ThemePicker, and Theme Lab | **Verified and published in 0.60.0** |
+| ThemeSpec/ThemePatch, color handling, profiles, packages, accessibility modes, ThemePicker, and Theme Lab | **Verified and published in 0.60.2** |
 | Scoped CSS compiler, cascade, tokens, Theme variants, modern color/type/media | **Verified in 0.60 checkout** with bounded fallback behavior |
 | Brand, ToastHost, ConnectorFlow, and ScrollRegion zero-application-CSS contracts | **Verified in 0.60 checkout** from the phase gate fixtures |
 | Free-form CSS-in-Python, mandatory Node, automatic remote fonts | **Not planned**; use finite semantic APIs plus component `styles.css` and explicit local assets |

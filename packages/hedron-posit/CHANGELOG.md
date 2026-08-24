@@ -7,7 +7,7 @@
 - Preserved resolved Connect runtime evidence when validating native app base URLs.
 
 ### Changed
-- Coordinated train tip `0.60.2` (in-tree patch; tag/PyPI deferred).
+- Coordinated train tip `0.60.2` (in-tree patch; tag/PyPI published).
 
 ## [0.60.1] — 2026-08-23
 
