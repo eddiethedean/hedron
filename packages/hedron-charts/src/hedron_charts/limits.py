@@ -115,6 +115,16 @@ _SENSITIVE_KEYS = frozenset(
 
 
 def redact_rows(rows: Sequence[Mapping[str, JsonValue]]) -> list[JsonObject]:
+    def redact(value: JsonValue) -> JsonValue:
+        if isinstance(value, Mapping):
+            return {
+                str(key): "***" if str(key).lower() in _SENSITIVE_KEYS else redact(nested)
+                for key, nested in value.items()
+            }
+        if isinstance(value, list):
+            return [redact(item) for item in value]
+        return value
+
     out: list[JsonObject] = []
     for row in rows:
         cleaned: JsonObject = {}
@@ -122,7 +132,7 @@ def redact_rows(rows: Sequence[Mapping[str, JsonValue]]) -> list[JsonObject]:
             if str(key).lower() in _SENSITIVE_KEYS:
                 cleaned[str(key)] = "***"
             else:
-                cleaned[str(key)] = value  # JsonValue from input mapping
+                cleaned[str(key)] = redact(value)
         out.append(cleaned)
     return out
 

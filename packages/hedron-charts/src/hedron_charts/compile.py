@@ -205,6 +205,27 @@ def _as_number(value: Any) -> float | None:
         return None
 
 
+def _sort_key(value: object) -> tuple[int, str, object]:
+    """Order heterogeneous JSON cells without relying on Python cross-types."""
+    if value is None:
+        return (0, "", "")
+    if isinstance(value, bool):
+        return (1, "bool", "1" if value else "0")
+    if isinstance(value, (int, float)):
+        return (2, "number", float(value))
+    if isinstance(value, str):
+        return (3, "str", value)
+    return (4, type(value).__name__, json.dumps(value, sort_keys=True, default=str))
+
+
+def _distinct_key(value: object) -> tuple[str, object]:
+    try:
+        hash(value)
+    except TypeError:
+        return (type(value).__name__, json.dumps(value, sort_keys=True, default=str))
+    return (type(value).__name__, value)
+
+
 def _as_int(value: object, *, default: int = 0) -> int:
     if isinstance(value, bool):
         return default
@@ -377,7 +398,7 @@ def _apply_aggregate(rows: list[dict[str, object]], tr: TransformDef) -> list[di
             if mop == "count":
                 item[as_name] = len(group)
             elif mop == "count_distinct" and field_name:
-                item[as_name] = len({r.get(field_name) for r in group})
+                item[as_name] = len({_distinct_key(r.get(field_name)) for r in group})
             elif mop == "sum":
                 item[as_name] = sum(nums)
             elif mop == "mean":
@@ -418,7 +439,7 @@ def _apply_sort(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[st
             "Pass true or false for descending.",
         )
     reverse = descending
-    return sorted(rows, key=lambda r: (r.get(field) is None, r.get(field)), reverse=reverse)
+    return sorted(rows, key=lambda r: _sort_key(r.get(field)), reverse=reverse)
 
 
 def _apply_sample(rows: list[dict[str, object]], tr: TransformDef) -> list[dict[str, object]]:
