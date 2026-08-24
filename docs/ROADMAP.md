@@ -5261,8 +5261,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 
 ## Open GitHub issue ownership (0.13+)
 
-Tracked issues filed 2026-08-05 and 2026-08-06 are owned by capability phases as follows.
-Issue bodies remain normative for acceptance criteria; this table is the roadmap owner index.
+Tracked GitHub issues are owned by capability phases as follows. Issue bodies remain normative for
+acceptance criteria; this table is the roadmap owner index.
 
 | Issue | Title | Owning phase |
 |---:|---|---:|
@@ -5393,6 +5393,11 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#567](https://github.com/eddiethedean/hedron/issues/567) | Semantic ResourceList and ResourceRow primitives | 0.57 |
 | [#568](https://github.com/eddiethedean/hedron/issues/568) | Shared appearance vocabulary adoption across built-ins | 0.57 |
 | [#569](https://github.com/eddiethedean/hedron/issues/569) | Core Avatar and Identity presentation primitives | 0.57 |
+| [#668](https://github.com/eddiethedean/hedron/issues/668) | Native navigation and underline appearances for Tabs | 0.61 |
+| [#669](https://github.com/eddiethedean/hedron/issues/669) | Centered, bounded content layout primitive | 0.61 |
+| [#670](https://github.com/eddiethedean/hedron/issues/670) | Standalone NavGroup for fragment rendering | 0.61 |
+| [#671](https://github.com/eddiethedean/hedron/issues/671) | Theme-aware ambient backdrop presets | 0.61 |
+| [#672](https://github.com/eddiethedean/hedron/issues/672) | Identity name and detail concatenate in the default theme | 0.61 |
 
 ### Open medium/low remediation ownership (2026-08-14 snapshot)
 
@@ -6419,16 +6424,66 @@ learn from React's strongest application ideas—uniform action state, async bou
 updates, stable identity, transition-aware navigation, localized failures, and developer tooling—
 without adopting a React runtime or changing Hedron's server-authoritative architecture.
 
-### 0.61 — Unified action state and async boundaries
+### 0.61 — Unified interaction state, async boundaries, and composed application surfaces
 
-Every supported asynchronous interaction gets one typed lifecycle: idle, pending, success, error,
-cancelled, stale, and conflict. Forms, HTMX actions, jobs, lazy fragments, and Web Components use
-adapters over the same contract. A server-first `AsyncRegion` boundary owns pending fallback,
-retry, timeout, cancellation, errors, and full-page/full-fragment fallback. The phase now has a
-W0–W11 delivery plan covering predecessor reconciliation, operation generations, concurrency,
-stale-result rejection, forms/jobs/elements, one redacted trace, budgets, fleet adoption, upgrade,
-and packaging. See the [0.61 implementation plan](implementation/ACTION_STATE_ASYNC_061.md) and
+Phase 0.61 has two coordinated tracks. The interaction track gives every supported asynchronous
+interaction one typed lifecycle—idle, pending, success, error, cancelled, stale, and conflict.
+Forms, HTMX actions, jobs, lazy fragments, and Web Components use adapters over the same contract;
+a server-first `AsyncRegion` boundary owns pending fallback, retry, timeout, cancellation, errors,
+and full-page/full-fragment fallback. The surface track turns the 0.60 styling baseline into a
+small, composable vocabulary for the places where those states are authored: navigation, tabs,
+bounded content, identity text, and restrained page/surface decoration.
+
+The phase retains the W0–W11 delivery plan covering predecessor reconciliation, operation
+generations, concurrency, stale-result rejection, forms/jobs/elements, one redacted trace, budgets,
+fleet adoption, upgrade, and packaging, with the surface track adding its own reference journeys
+and evidence packet. See the [0.61 implementation plan](implementation/ACTION_STATE_ASYNC_061.md) and
 [release acceptance](acceptance/RELEASE_0_61.md).
+
+#### 0.61 surface track
+
+The following open issues form one bounded, zero-application-CSS surface packet rather than five
+independent styling requests. Their issue bodies remain normative for detailed acceptance criteria:
+
+| Issue | 0.61 scope |
+|---|---|
+| [#668](https://github.com/eddiethedean/hedron/issues/668) | Native Tabs navigation/underline appearances and responsive overflow behavior |
+| [#669](https://github.com/eddiethedean/hedron/issues/669) | Centered, bounded content layout with finite width/alignment tokens |
+| [#670](https://github.com/eddiethedean/hedron/issues/670) | Public standalone `NavGroup` shared by `AppShell` and fragment rendering |
+| [#671](https://github.com/eddiethedean/hedron/issues/671) | Curated theme-aware ambient backdrop presets for pages and surfaces |
+| [#672](https://github.com/eddiethedean/hedron/issues/672) | Default-theme Identity name/detail separation and constrained-text behavior |
+
+The surface track follows these contracts:
+
+- 0.60 remains the authority for themes, tokens, cascade, recipes, and stylesheet packaging; 0.61
+  consumes those primitives and adds only the component contracts needed by the five issues.
+- Presentation values are finite and design-system-owned. Arbitrary CSS, gradient strings, selector
+  escape hatches, and application-owned private Hedron classes remain out of scope.
+- Tabs and navigation preserve existing semantics, keyboard behavior, server rendering, and HTMX/OOB
+  fallback. New appearance, density, overflow, and composition options are additive and default-safe.
+- Async, pending, empty, error, and retry states can be placed inside the new bounded surfaces
+  without requiring application JavaScript or decorative spacer DOM.
+- Ambient decoration is theme-aware, non-interactive, hidden from assistive technology, deterministic
+  in print/forced-colors, and reduced-motion-safe. It never owns application state or focus.
+
+#### 0.61 sequencing and exit evidence
+
+Stage 0 locks the shared appearance/layout vocabulary, marker and fallback contracts, and the
+relationship between surface primitives and the unified lifecycle. Stage 1 delivers the Identity
+fix and the smallest composable vertical slices: a centered auth form, an OOB-renderable grouped
+side navigation, a responsive account tab strip, and a themed surface with optional ambient
+decoration. Later stages apply the same contracts across the reference app and package fleet.
+
+The 0.61 exit packet must show all of the following across the surface track and lifecycle track:
+
+- zero-application-CSS examples for all five issues, with existing defaults preserved;
+- 320px, 390px, and 1440px coverage plus zoom, RTL, long-content, and container-width cases;
+- light, dark, high-contrast, forced-colors, print, reduced-motion, keyboard, and focus-visible
+  behavior where applicable;
+- async state placement and stale-result protection inside bounded content, tabs, navigation
+  fragments, and identity/resource contexts; and
+- no new product-wide Supported human assistive-technology claim. Issue [#86](https://github.com/eddiethedean/hedron/issues/86)
+  remains owned by Phase 0.21 for the human assistive-technology session gates.
 
 ### 0.62 — Navigation, optimism, and failure isolation
 
