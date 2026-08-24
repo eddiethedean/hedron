@@ -13,6 +13,7 @@ from typing import Any, Final, Literal, TypeVar, cast
 
 from hedron_core.builtins.appearance import (
     APPEARANCES,
+    BREAKPOINTS,
     DENSITIES,
     ELEVATIONS,
     EMPHASES,
@@ -180,6 +181,17 @@ _FIELD_VOCABULARIES: Final[Mapping[str, tuple[str, ...]]] = {
     "responsive": RESPONSIVE_POLICIES,
     "role": TYPOGRAPHY_ROLES,
     "overflow": OVERFLOW_MODES,
+}
+
+_RESPONSIVE_RECIPE_FIELDS: Final[Mapping[str, tuple[str, ...]]] = {
+    "density": DENSITIES,
+    "size": SIZES,
+    "appearance": APPEARANCES,
+    "emphasis": EMPHASES,
+    "width": WIDTHS,
+    "padding": PADDINGS,
+    "elevation": ELEVATIONS,
+    "responsive": RESPONSIVE_POLICIES,
 }
 
 
@@ -411,11 +423,12 @@ class StyleRecipe:
     family: StyleFamily
     extends: str | None = None
     values: Mapping[str, str] = field(default_factory=dict)
+    responsive: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        normalized = _normalize_name(self.name, label="recipe")
-        if normalized != self.name:
-            object.__setattr__(self, "name", normalized)
+        normalized_name = _normalize_name(self.name, label="recipe")
+        if normalized_name != self.name:
+            object.__setattr__(self, "name", normalized_name)
         if self.family not in RECIPE_FAMILIES and not _family_fields(self.family):
             raise error(
                 HED_RECIPE_0004,
@@ -447,6 +460,41 @@ class StyleRecipe:
             require_choice(value, vocab, label=key)
             cleaned[key] = value
         object.__setattr__(self, "values", dict(sorted(cleaned.items())))
+        normalized_responsive: dict[str, dict[str, str]] = {}
+        for field_name, conditions in self.responsive.items():
+            if field_name not in _RESPONSIVE_RECIPE_FIELDS or field_name not in allowed:
+                raise error(
+                    HED_RECIPE_0002,
+                    title="Unlisted responsive recipe field",
+                    explanation=(
+                        f"Field {field_name!r} is not supported for family {self.family!r}."
+                    ),
+                    remediation=f"Use one of: {', '.join(sorted(allowed))}.",
+                )
+            if not conditions:
+                raise error(
+                    HED_RECIPE_0002,
+                    title="Empty responsive recipe field",
+                    explanation=f"Responsive field {field_name!r} must declare a condition.",
+                    remediation="Use base, sm, md, lg, or xl presentation conditions.",
+                )
+            normalized_conditions: dict[str, str] = {}
+            for breakpoint, value in conditions.items():
+                if breakpoint not in BREAKPOINTS:
+                    raise error(
+                        HED_RECIPE_0002,
+                        title="Unknown responsive recipe breakpoint",
+                        explanation=f"Breakpoint {breakpoint!r} is not supported.",
+                        remediation=f"Use one of: {', '.join(BREAKPOINTS)}.",
+                    )
+                require_choice(value, _RESPONSIVE_RECIPE_FIELDS[field_name], label=field_name)
+                normalized_conditions[breakpoint] = value
+            normalized_responsive[field_name] = {
+                key: normalized_conditions[key]
+                for key in BREAKPOINTS
+                if key in normalized_conditions
+            }
+        object.__setattr__(self, "responsive", dict(sorted(normalized_responsive.items())))
         if self.extends is not None:
             object.__setattr__(
                 self, "extends", _normalize_name(self.extends, label="recipe parent")
@@ -462,6 +510,7 @@ class StyleRecipe:
         appearance: Appearance | None = None,
         emphasis: Emphasis | None = None,
         width: Width | None = None,
+        responsive: Mapping[str, Mapping[str, str]] | None = None,
     ) -> StyleRecipe:
         values = {
             key: value
@@ -473,7 +522,9 @@ class StyleRecipe:
             )
             if value is not None
         }
-        return cls(name=name, family="control", extends=extends, values=values)
+        return cls(
+            name=name, family="control", extends=extends, values=values, responsive=responsive or {}
+        )
 
     @classmethod
     def surface(
@@ -485,6 +536,7 @@ class StyleRecipe:
         density: Density | None = None,
         padding: Padding | None = None,
         elevation: Elevation | None = None,
+        responsive: Mapping[str, Mapping[str, str]] | None = None,
     ) -> StyleRecipe:
         values = {
             key: value
@@ -496,7 +548,9 @@ class StyleRecipe:
             )
             if value is not None
         }
-        return cls(name=name, family="surface", extends=extends, values=values)
+        return cls(
+            name=name, family="surface", extends=extends, values=values, responsive=responsive or {}
+        )
 
     @classmethod
     def data(
@@ -506,13 +560,16 @@ class StyleRecipe:
         extends: str | None = None,
         density: Density | None = None,
         responsive: ResponsivePolicy | None = None,
+        conditions: Mapping[str, Mapping[str, str]] | None = None,
     ) -> StyleRecipe:
         values = {
             key: value
             for key, value in (("density", density), ("responsive", responsive))
             if value is not None
         }
-        return cls(name=name, family="data", extends=extends, values=values)
+        return cls(
+            name=name, family="data", extends=extends, values=values, responsive=conditions or {}
+        )
 
     @classmethod
     def status(
@@ -552,6 +609,16 @@ class StyleRecipe:
             "family": self.family,
             "extends": self.extends,
             "values": dict(self.values),
+            "responsive": {key: dict(value) for key, value in sorted(self.responsive.items())},
+        }
+
+    def responsive_markers(self) -> dict[str, str]:
+        """Return stable data markers for provider-neutral responsive adapters."""
+
+        return {
+            f"hedron-recipe-{field_name}-{breakpoint}": value
+            for field_name, conditions in sorted(self.responsive.items())
+            for breakpoint, value in conditions.items()
         }
 
 
@@ -1101,13 +1168,17 @@ class DesignSystem:
             current = parent
 
         merged: dict[str, str] = {}
+        responsive: dict[str, dict[str, str]] = {}
         for item in reversed(chain):
             merged.update(item.values)
+            for field_name, conditions in item.responsive.items():
+                responsive.setdefault(field_name, {}).update(conditions)
         return StyleRecipe(
             name=leaf.name,
             family=leaf.family,
             extends=leaf.extends,
             values=merged,
+            responsive=responsive,
         )
 
     def apply(self, recipe: str | StyleRecipe, component: ComponentT, /) -> ComponentT:

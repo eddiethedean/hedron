@@ -78,12 +78,44 @@ def decode_interaction_trace(payload: bytes | str | Mapping[str, Any]) -> dict[s
 
 
 def profile_interaction_trace(payload: bytes | str | Mapping[str, Any]) -> dict[str, Any]:
-    """Return a bounded read-only timeline summary with no payload retention."""
+    """Return a bounded read-only timeline summary with no payload retention.
+
+    The trace envelope intentionally carries facts rather than a second
+    profiler schema.  This projection recognizes only the public timeline
+    fields and reports missing timing data explicitly; it never executes
+    callbacks or retains arbitrary fact payloads.
+    """
 
     data = decode_interaction_trace(payload)
     events = data["events"]
     phases = Counter(str(event.get("phase", "unknown")) for event in events)
     statuses = Counter(str(event["status"]) for event in events if event.get("status") is not None)
+    timeline: list[dict[str, Any]] = []
+    timing_samples = 0
+    public_fact_keys = frozenset(
+        {"component", "action", "request", "state", "cache", "focus", "failure"}
+    )
+    for index, event in enumerate(events):
+        facts = event.get("facts") if isinstance(event.get("facts"), dict) else {}
+        timing = facts.get("duration_ms")
+        if isinstance(timing, (int, float)) and not isinstance(timing, bool):
+            timing_samples += 1
+        timeline.append(
+            {
+                "index": index,
+                "phase": str(event.get("phase", "unknown")),
+                "operation_id": event.get("operation_id"),
+                "generation": event.get("generation"),
+                "target": event.get("target"),
+                "status": event.get("status"),
+                "facts": {
+                    key: facts[key]
+                    for key in sorted(public_fact_keys & set(facts))
+                    if isinstance(facts[key], (str, int, float, bool)) or facts[key] is None
+                },
+                "timing": timing if isinstance(timing, (int, float)) else None,
+            }
+        )
     return {
         "schema": "hedron.interaction-profile/1",
         "trace_schema": TRACE_CONTRACT_SCHEMA,
@@ -91,5 +123,11 @@ def profile_interaction_trace(payload: bytes | str | Mapping[str, Any]) -> dict[
         "truncated": bool(data.get("truncated", False)),
         "phases": dict(sorted(phases.items())),
         "statuses": dict(sorted(statuses.items())),
+        "timing": {
+            "clock": "event-fact-or-unavailable",
+            "samples": timing_samples,
+            "complete": timing_samples == len(events) if events else True,
+        },
+        "timeline": timeline,
         "payloads_retained": False,
     }

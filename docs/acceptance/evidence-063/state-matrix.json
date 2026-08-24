@@ -1,0 +1,64 @@
+{
+  "count": 6624,
+  "digest": "f3f55a60fe7a39b4c6d57c75e57568eeaddb46a61bcea1dbfe83ac4a5eaac75d",
+  "sample": [
+    {
+      "accessibility_mode": "forced-colors",
+      "component": "AccountSummary",
+      "id": "AccountSummary:overflow:default:dark:320:forced-colors",
+      "mode": "dark",
+      "state": "overflow",
+      "variant": "default",
+      "viewport": "320"
+    },
+    {
+      "accessibility_mode": "forced-colors",
+      "component": "AccountSummary",
+      "id": "AccountSummary:overflow:default:dark:390:forced-colors",
+      "mode": "dark",
+      "state": "overflow",
+      "variant": "default",
+      "viewport": "390"
+    },
+    {
+      "accessibility_mode": "forced-colors",
+      "component": "AccountSummary",
+      "id": "AccountSummary:overflow:default:dark:1440:forced-colors",
+      "mode": "dark",
+      "state": "overflow",
+      "variant": "default",
+      "viewport": "1440"
+    }
+  ],
+  "schema": "hedron.component-state-matrix/1",
+  "tail": [
+    {
+      "accessibility_mode": "reduced-transparency",
+      "component": "hedron-core:hedron_core.sse_ext.SseTrigger",
+      "id": "hedron-core:hedron_core.sse_ext.SseTrigger:default:default:light:320:reduced-transparency",
+      "mode": "light",
+      "state": "default",
+      "variant": "default",
+      "viewport": "320"
+    },
+    {
+      "accessibility_mode": "reduced-transparency",
+      "component": "hedron-core:hedron_core.sse_ext.SseTrigger",
+      "id": "hedron-core:hedron_core.sse_ext.SseTrigger:default:default:light:390:reduced-transparency",
+      "mode": "light",
+      "state": "default",
+      "variant": "default",
+      "viewport": "390"
+    },
+    {
+      "accessibility_mode": "reduced-transparency",
+      "component": "hedron-core:hedron_core.sse_ext.SseTrigger",
+      "id": "hedron-core:hedron_core.sse_ext.SseTrigger:default:default:light:1440:reduced-transparency",
+      "mode": "light",
+      "state": "default",
+      "variant": "default",
+      "viewport": "1440"
+    }
+  ],
+  "version": 1
+}

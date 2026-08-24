@@ -35,7 +35,11 @@ from hedron_core.theme import (
     ensure_default_theme_registered,
     get_theme,
 )
-from hedron_core.theme_contract import component_contract_manifest, resolve_theme
+from hedron_core.theme_contract import (
+    component_contract_manifest,
+    package_identity_manifest,
+    resolve_theme,
+)
 
 try:
     from importlib.metadata import version as _pkg_version
@@ -403,6 +407,7 @@ def _execute_build(
             config_digest=settings_digest(settings),
             theme_resolution_digest=resolve_theme(theme).fingerprint,
             component_manifest_digest=component_contract_manifest()["digest"],
+            package_identity_digest=package_identity_manifest()["digest"],
         )
 
         _write_build_manifest(

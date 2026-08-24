@@ -572,6 +572,16 @@ def derived_theme_tokens(theme: Theme) -> dict[str, str]:
     derived: dict[str, str] = {}
     if "color.link" not in tokens and "color.accent" in tokens:
         derived["color.link"] = tokens["color.accent"]
+    if "color.link-hover" not in tokens:
+        derived["color.link-hover"] = palette.get(
+            "accent-hover", tokens.get("color.accent-hover", tokens.get("color.accent", ""))
+        )
+    if "color.link-active" not in tokens:
+        derived["color.link-active"] = derived.get(
+            "color.link-hover", tokens.get("color.accent", "")
+        )
+    if "color.link-visited" not in tokens:
+        derived["color.link-visited"] = tokens.get("color.link", tokens.get("color.accent", ""))
     if "color.accent-hover" not in tokens:
         derived["color.accent-hover"] = palette.get("accent-hover", tokens.get("color.accent", ""))
     if "color.selection-bg" not in tokens and "color.accent" in tokens:
@@ -591,6 +601,9 @@ _DEFAULT_COMPATIBILITY_FALLBACKS: Mapping[str, str] = {
     "border-strong": "#c7d0dd",
     "accent": "#2563eb",
     "link": "#2563eb",
+    "link-hover": "#1d4ed8",
+    "link-active": "#1d4ed8",
+    "link-visited": "#2563eb",
     "accent-hover": "#1d4ed8",
     "accent-soft": "#e8f0ff",
     "on-accent": "#ffffff",
@@ -638,6 +651,9 @@ def compatibility_theme_vars(theme: Theme) -> dict[str, str]:
         "muted": "color-muted",
         "accent": "color-accent",
         "link": "color-link",
+        "link-hover": "color-link-hover",
+        "link-active": "color-link-active",
+        "link-visited": "color-link-visited",
         "accent-hover": "color-accent-hover",
         "border": "color-border",
         "border-strong": "color-border-strong",

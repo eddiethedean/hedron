@@ -1,0 +1,6 @@
+schema_version = 1
+phase = "0.63"
+status = "Progressive deferred"
+roles = ["series", "axis", "legend", "selection", "status"]
+fallbacks = ["semantic HTML", "tabular data", "patterns/strokes/labels", "solid surface", "print", "forced-colors", "reduced-transparency"]
+correctness_dependency = false

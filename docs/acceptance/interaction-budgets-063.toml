@@ -1,0 +1,11 @@
+schema_version = 1
+phase = "0.63"
+max_trace_events = 10000
+max_trace_bytes = 65536
+max_source_files = 1000
+max_source_file_bytes = 524288
+max_matrix_cases = 100000
+max_migration_files = 500
+max_migration_file_bytes = 524288
+exact_limit_tests = true
+one_over_limit_tests = true

@@ -167,6 +167,15 @@ def _cmd_theme_matrix(args: argparse.Namespace) -> int:
         components=args.component or None,
         viewports=args.viewport or ("320", "390", "1440"),
         modes=args.mode or ("light", "dark"),
+        accessibility_modes=args.accessibility_mode
+        or (
+            "none",
+            "forced-colors",
+            "high-contrast",
+            "reduced-motion",
+            "reduced-transparency",
+            "print",
+        ),
     )
     value = json.dumps(matrix.to_dict(), indent=2, sort_keys=True) + "\n"
     _write_or_print(value, args.output)

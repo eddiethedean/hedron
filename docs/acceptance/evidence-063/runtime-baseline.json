@@ -1,0 +1,8 @@
+{
+  "component_manifest_entries": 142,
+  "element_metadata_entries": 0,
+  "runtime": "python-no-node",
+  "schema": "hedron.phase063-baseline/1",
+  "state_matrix_cases": 6624,
+  "theme_css_bytes": 101519
+}

@@ -416,6 +416,7 @@ from hedron_core.theme_contract import (
     element_metadata_manifest,
     export_theme,
     inspect_theme_css,
+    package_identity_manifest,
     resolve_theme,
     theme_contract_report,
 )
@@ -625,6 +626,7 @@ __all__ = [
     "compatibility_theme_vars",
     "component_contract_manifest",
     "element_metadata_manifest",
+    "package_identity_manifest",
     "derived_theme_tokens",
     "Component",
     "ComponentRef",

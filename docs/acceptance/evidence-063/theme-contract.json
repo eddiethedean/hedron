@@ -1,0 +1,73 @@
+{
+  "conformance": {
+    "fingerprint": "a3581a59261fe34a61244b49d133b00be848fd66dec1a0d82a0c0789904bf250",
+    "inventory_digest": "32f5e998c2cef7bab82887e33da41df1892ab7ba3486e6a221483e2ef893c9b9",
+    "ok": true,
+    "schema": "hedron.theme-conformance/1"
+  },
+  "digest": "5561a7cb45dfc4e7d15719fbfa47d9026bf83b11b0d9418e5d8255bc50feb278",
+  "schema": "hedron.theme-contract/1",
+  "stylesheet": {
+    "bridged": true,
+    "consumer_count": 31,
+    "legacy_consumers": [
+      "--hedron-default-accent",
+      "--hedron-default-accent-hover",
+      "--hedron-default-accent-soft",
+      "--hedron-default-bg",
+      "--hedron-default-border",
+      "--hedron-default-border-strong",
+      "--hedron-default-content-width",
+      "--hedron-default-danger",
+      "--hedron-default-danger-soft",
+      "--hedron-default-fg",
+      "--hedron-default-info-soft",
+      "--hedron-default-link",
+      "--hedron-default-link-active",
+      "--hedron-default-link-hover",
+      "--hedron-default-link-visited",
+      "--hedron-default-muted",
+      "--hedron-default-on-accent",
+      "--hedron-default-on-danger",
+      "--hedron-default-radius",
+      "--hedron-default-radius-lg",
+      "--hedron-default-radius-sm",
+      "--hedron-default-selection-bg",
+      "--hedron-default-selection-fg",
+      "--hedron-default-shadow",
+      "--hedron-default-shadow-raised",
+      "--hedron-default-success",
+      "--hedron-default-success-soft",
+      "--hedron-default-surface",
+      "--hedron-default-surface-muted",
+      "--hedron-default-warning",
+      "--hedron-default-warning-soft"
+    ],
+    "schema": "hedron.theme-inspection/1",
+    "unbridged": []
+  },
+  "theme": {
+    "accessibility_modes": {},
+    "derived_token_count": 31,
+    "fingerprint": "88c841e47f990286a71d0e3f18c092e73a5b81aaf0d3a2d13197d4be3c6b06d6",
+    "modes": {
+      "dark": {
+        "color.accent": "#7ca7ff",
+        "color.bg": "#0d121c",
+        "color.danger": "#ff8585",
+        "color.fg": "#eef3fa",
+        "color.focus": "#7ca7ff",
+        "color.muted": "#9ba8ba",
+        "color.on-accent": "#071a3c",
+        "color.on-danger": "#321214",
+        "color.surface": "#151c28",
+        "color.surface-muted": "#1b2432"
+      }
+    },
+    "name": "default",
+    "recipe_count": 0,
+    "schema": "hedron.theme-resolution/1",
+    "token_count": 22,
+    "variants": {}
+  }
+}

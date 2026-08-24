@@ -1,0 +1,31 @@
+{
+  "event_count": 1,
+  "payloads_retained": false,
+  "phases": {
+    "pending": 1
+  },
+  "schema": "hedron.interaction-profile/1",
+  "statuses": {},
+  "timeline": [
+    {
+      "facts": {
+        "action": "save",
+        "component": "Button"
+      },
+      "generation": null,
+      "index": 0,
+      "operation_id": null,
+      "phase": "pending",
+      "status": null,
+      "target": null,
+      "timing": null
+    }
+  ],
+  "timing": {
+    "clock": "event-fact-or-unavailable",
+    "complete": false,
+    "samples": 0
+  },
+  "trace_schema": "hedron.interaction-trace.v1",
+  "truncated": false
+}

@@ -1,0 +1,27 @@
+{
+  "bytes_scanned": 71,
+  "digest": "41489f797461f0859a39d6d1a24465206f4409295ac19b7ca489ec302d4b9fda",
+  "files_scanned": 1,
+  "findings": [
+    {
+      "code": "HED-CHECK-0003",
+      "evidence": "eval(",
+      "kind": "callback-execution",
+      "message": "callback-execution pattern detected",
+      "severity": "error",
+      "span": {
+        "path": "app.tsx",
+        "start_column": 16,
+        "start_line": 2
+      },
+      "suppressed": false
+    }
+  ],
+  "limits": {
+    "max_bytes_per_file": 524288,
+    "max_files": 1000
+  },
+  "non_executing": true,
+  "schema": "hedron.interaction-checks/1",
+  "suppressions": []
+}

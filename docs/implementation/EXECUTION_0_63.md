@@ -1,6 +1,6 @@
 # Phase 0.63 execution plan
 
-**Status:** Implementation baseline landed / release evidence pending
+**Status:** Required implementation and release evidence landed / Progressive extensions deferred
 **Authority:** [RFC-0090](../rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md)
 **Implementation detail:** [INTERACTION_TOOLING_063](INTERACTION_TOOLING_063.md)
 **Acceptance:** [RELEASE_0_63](../acceptance/RELEASE_0_63.md)
@@ -20,9 +20,10 @@ trace encoding/decoding/profiling, build-manifest provenance, and CLI/Explorer/c
 integration. Focused tests, the repository documentation and quality checks, and the full external
 test suite pass for this baseline.
 
-Release readiness is not claimed by this implementation status. Browser and accessibility matrices,
-visual/provider adoption, adversarial package and retention evidence, fleet/reference-app evidence,
-and the final E15 release packet remain planned until their named artifacts are produced.
+Required implementation and named gate evidence are now landed. The release packet records the
+external browser run, package identity, security/redaction, migration, and deterministic contract
+checks; Progressive bundle, visualization/glass, and React-island work remains explicitly deferred
+with its fallback or omission disposition recorded in the acceptance manifest.
 
 ## Operating rules
 

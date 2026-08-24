@@ -1,0 +1,6 @@
+schema_version = "hedron.theme-conformance/1"
+phase = "0.63"
+command = "hedron theme contract"
+coverage = ["light", "dark", "forced-colors", "high-contrast", "reduced-motion", "reduced-transparency", "print", "responsive"]
+findings = ["missing-token", "fallback", "unbridged-stylesheet-consumer", "contrast", "manifest-drift"]
+exit_status = "non-zero on errors; JSON remains machine-readable"

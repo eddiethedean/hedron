@@ -1,0 +1,50 @@
+{
+  "schema": "hedron.release-evidence/1",
+  "phase": "0.63",
+  "target": "v0.63.0",
+  "generated_by": "scripts/check_063.py",
+  "browser_evidence": "UV_CACHE_DIR=/tmp/uv-cache bash scripts/ci_checks.sh browser --python 3.12 (111 passed, 50 skipped, 3535 deselected, 1 warning)",
+  "gates": [
+    {"id": "CONTRACT-063", "state": "Verified"},
+    {"id": "THEME-063", "state": "Verified"},
+    {"id": "PALETTE-063", "state": "Verified"},
+    {"id": "PARTS-063", "state": "Verified"},
+    {"id": "EXPORT-063", "state": "Verified"},
+    {"id": "BUNDLE-063", "state": "Deferred"},
+    {"id": "INSPECT-063", "state": "Verified"},
+    {"id": "THEME-CHECK-063", "state": "Verified"},
+    {"id": "MATRIX-063", "state": "Verified"},
+    {"id": "VISUAL-063", "state": "Deferred"},
+    {"id": "TRACE-063", "state": "Verified"},
+    {"id": "PROFILER-063", "state": "Verified"},
+    {"id": "PROFILE-SAFE-063", "state": "Verified"},
+    {"id": "CHECK-063", "state": "Verified"},
+    {"id": "CHECK-SAFE-063", "state": "Verified"},
+    {"id": "SOURCE-063", "state": "Verified"},
+    {"id": "METADATA-063", "state": "Verified"},
+    {"id": "IDENTITY-063", "state": "Verified"},
+    {"id": "MIGRATE-063", "state": "Verified"},
+    {"id": "INTEROP-063", "state": "Deferred"},
+    {"id": "SECURITY-063", "state": "Verified"},
+    {"id": "A11Y-063", "state": "Verified"},
+    {"id": "PERF-063", "state": "Verified"},
+    {"id": "CONFORMANCE-063", "state": "Verified"},
+    {"id": "DOCS-063", "state": "Verified"},
+    {"id": "UPGRADE-063", "state": "Verified"},
+    {"id": "PKG-063", "state": "Verified"}
+  ],
+  "summary": {
+    "total": 27,
+    "planned": 0,
+    "implemented": 0,
+    "verified": 24,
+    "deferred": 3,
+    "release_ready": true
+  },
+  "required_gates_verified": true,
+  "progressive_dispositions": [
+    {"gate": "BUNDLE-063", "issue": 684, "disposition": "Deferred", "fallback": "complete stylesheet"},
+    {"gate": "VISUAL-063", "issue": 685, "disposition": "Deferred", "fallback": "semantic/table visualization"},
+    {"gate": "INTEROP-063", "issue": null, "disposition": "Deferred", "fallback": "no React island"}
+  ]
+}

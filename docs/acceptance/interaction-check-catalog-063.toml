@@ -1,0 +1,8 @@
+schema_version = "hedron.interaction-checks/1"
+phase = "0.63"
+authority = "hedron.phase063_checks.analyze_project"
+non_executing = true
+bounded = true
+codes = ["HED-CHECK-0001", "HED-CHECK-0002", "HED-CHECK-0003", "HED-CHECK-0004", "HED-CHECK-0005", "HED-CHECK-0006"]
+suppression_file = ".hedron/phase063-suppressions.toml"
+security_suppressions = false

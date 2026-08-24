@@ -745,6 +745,9 @@ class BrandProps(ElementProps):
     name: str
     href: SafeUrl | None = None
     mark_text: str | None = None
+    mark_size: Literal["sm", "md", "lg"] = "md"
+    mark_shape: Literal["square", "rounded", "circle"] = "rounded"
+    mark_tone: Literal["accent", "neutral", "muted"] = "accent"
     subtitle: str | None = None
     subtitle_overflow: Literal["wrap", "break", "truncate", "clip"] = "truncate"
     attrs: dict[str, HtmlAttrValue] | None = None
@@ -757,6 +760,7 @@ class Brand(Component[BrandProps]):
 
     props_type = BrandProps
     logical_name = "Brand"
+    slots: ClassVar[dict[str, str]] = {"mark": "optional"}
 
     def __init__(
         self,
@@ -764,6 +768,10 @@ class Brand(Component[BrandProps]):
         *,
         href: SafeUrl | str | None = None,
         mark_text: str | None = None,
+        mark_content: NodeLike = None,
+        mark_size: Literal["sm", "md", "lg"] = "md",
+        mark_shape: Literal["square", "rounded", "circle"] = "rounded",
+        mark_tone: Literal["accent", "neutral", "muted"] = "accent",
         subtitle: str | None = None,
         subtitle_overflow: Literal["wrap", "break", "truncate", "clip"] = "truncate",
         attrs: dict[str, HtmlAttrValue] | None = None,
@@ -786,6 +794,9 @@ class Brand(Component[BrandProps]):
             ("wrap", "break", "truncate", "clip"),
             label="subtitle_overflow",
         )
+        require_choice(mark_size, ("sm", "md", "lg"), label="mark_size")
+        require_choice(mark_shape, ("square", "rounded", "circle"), label="mark_shape")
+        require_choice(mark_tone, ("accent", "neutral", "muted"), label="mark_tone")
         url = None
         if href is not None:
             url = href if isinstance(href, SafeUrl) else _coerce_nav_url(href)
@@ -794,6 +805,9 @@ class Brand(Component[BrandProps]):
                 name=name,
                 href=url,
                 mark_text=mark_text,
+                mark_size=mark_size,
+                mark_shape=mark_shape,
+                mark_tone=mark_tone,
                 subtitle=subtitle,
                 subtitle_overflow=subtitle_overflow,
                 attrs=attrs,
@@ -805,6 +819,7 @@ class Brand(Component[BrandProps]):
                 **kwargs,
             )
         )
+        self._mark_content = mark_content
 
     def render(self) -> NodeLike:
         label_parts: list[NodeLike] = [html.strong(self.props.name, class_="hedron-brand-name")]
@@ -812,9 +827,14 @@ class Brand(Component[BrandProps]):
             label_parts.append(html.small(self.props.subtitle, class_="hedron-brand-subtitle"))
         label = html.span(*label_parts, class_="hedron-brand-copy")
         mark = html.span(
-            self.props.mark_text or self.props.name[:1],
+            self._mark_content or self.props.mark_text or self.props.name[:1],
             class_="hedron-brand-mark",
             aria={"hidden": "true"},
+            data={
+                "hedron-mark-size": self.props.mark_size,
+                "hedron-mark-shape": self.props.mark_shape,
+                "hedron-mark-tone": self.props.mark_tone,
+            },
         )
         data = dict(self.props.data or {})
         data.update(
@@ -851,6 +871,9 @@ class AccountSummaryProps(ElementProps):
     detail: str | None = None
     href: SafeUrl | None = None
     mark_text: str | None = None
+    mark_size: Literal["sm", "md", "lg"] = "md"
+    mark_shape: Literal["square", "rounded", "circle"] = "rounded"
+    mark_tone: Literal["accent", "neutral", "muted"] = "accent"
     attrs: dict[str, HtmlAttrValue] | None = None
     aria: dict[str, str | bool | int | float | None] | None = None
     data: dict[str, str | bool | int | float | None] | None = None
@@ -861,6 +884,7 @@ class AccountSummary(Component[AccountSummaryProps]):
 
     props_type = AccountSummaryProps
     logical_name = "AccountSummary"
+    slots: ClassVar[dict[str, str]] = {"mark": "optional", "actions": "optional"}
 
     def __init__(
         self,
@@ -869,6 +893,10 @@ class AccountSummary(Component[AccountSummaryProps]):
         detail: str | None = None,
         href: SafeUrl | str | None = None,
         mark_text: str | None = None,
+        mark_content: NodeLike = None,
+        mark_size: Literal["sm", "md", "lg"] = "md",
+        mark_shape: Literal["square", "rounded", "circle"] = "rounded",
+        mark_tone: Literal["accent", "neutral", "muted"] = "accent",
         action: NodeLike = None,
         attrs: dict[str, HtmlAttrValue] | None = None,
         aria: dict[str, str | bool | int | float | None] | None = None,
@@ -885,6 +913,9 @@ class AccountSummary(Component[AccountSummaryProps]):
                 explanation="Account chrome needs a discernible display name.",
                 remediation="Pass a non-empty name.",
             )
+        require_choice(mark_size, ("sm", "md", "lg"), label="mark_size")
+        require_choice(mark_shape, ("square", "rounded", "circle"), label="mark_shape")
+        require_choice(mark_tone, ("accent", "neutral", "muted"), label="mark_tone")
         url = None
         if href is not None:
             url = href if isinstance(href, SafeUrl) else _coerce_nav_url(href)
@@ -894,6 +925,9 @@ class AccountSummary(Component[AccountSummaryProps]):
                 detail=detail,
                 href=url,
                 mark_text=mark_text,
+                mark_size=mark_size,
+                mark_shape=mark_shape,
+                mark_tone=mark_tone,
                 attrs=attrs,
                 aria=aria,
                 data=data,
@@ -903,6 +937,7 @@ class AccountSummary(Component[AccountSummaryProps]):
                 **kwargs,
             )
         )
+        self._mark_content = mark_content
         self._actions = collect_children(*nodes, children=action)
 
     def render(self) -> NodeLike:
@@ -911,9 +946,14 @@ class AccountSummary(Component[AccountSummaryProps]):
             account_copy.append(html.span(self.props.detail, class_="hedron-account-detail"))
         parts: list[NodeLike] = [
             html.span(
-                self.props.mark_text or self.props.name[:1],
+                self._mark_content or self.props.mark_text or self.props.name[:1],
                 class_="hedron-brand-mark hedron-account-mark",
                 aria={"hidden": "true"},
+                data={
+                    "hedron-mark-size": self.props.mark_size,
+                    "hedron-mark-shape": self.props.mark_shape,
+                    "hedron-mark-tone": self.props.mark_tone,
+                },
             ),
             html.span(*account_copy, class_="hedron-account-copy"),
         ]

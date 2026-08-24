@@ -1,0 +1,89 @@
+schema_version = 1
+phase = "0.63"
+authority = "hedron-core registry, theme resolution, and interaction trace contracts"
+required = ["theme", "palette", "component-contract", "export", "inspect", "matrix", "trace", "profiler", "checks", "metadata", "migration", "package-identity"]
+progressive = ["bundles", "visualization", "translucent-surfaces", "react-island"]
+
+[[issue]]
+number = 676
+work_package = "WP-01"
+disposition = "Required"
+acceptance = "default stylesheet consumes canonical public tokens or validated compatibility aliases"
+
+[[issue]]
+number = 677
+work_package = "WP-03"
+disposition = "Required"
+acceptance = "identity component contract remains bounded, themeable, and accessible"
+
+[[issue]]
+number = 678
+work_package = "WP-02"
+disposition = "Required"
+acceptance = "global link and selection hooks are canonical and mode-safe"
+
+[[issue]]
+number = 679
+work_package = "WP-02"
+disposition = "Required"
+acceptance = "responsive presentation conditions use a finite vocabulary"
+
+[[issue]]
+number = 680
+work_package = "WP-02"
+disposition = "Required"
+acceptance = "interactive palette derivation is deterministic and provenance-visible"
+
+[[issue]]
+number = 681
+work_package = "WP-05"
+disposition = "Required"
+acceptance = "theme conformance runs without Explorer or application execution"
+
+[[issue]]
+number = 682
+work_package = "WP-04"
+disposition = "Required"
+acceptance = "CSS and design-token JSON exports share one resolution"
+
+[[issue]]
+number = 683
+work_package = "WP-03"
+disposition = "Required"
+acceptance = "slot vocabulary is registry-visible and semantic"
+
+[[issue]]
+number = 684
+work_package = "WP-04"
+disposition = "Progressive"
+acceptance = "per-component bundles are deferred; complete stylesheet remains Supported"
+
+[[issue]]
+number = 685
+work_package = "WP-06"
+disposition = "Progressive"
+acceptance = "visualization extensions are deferred with semantic/table fallback"
+
+[[issue]]
+number = 686
+work_package = "WP-05"
+disposition = "Required"
+acceptance = "development inspection is read-only, JSON-capable, and production-inert"
+
+[[issue]]
+number = 687
+work_package = "WP-03"
+disposition = "Required"
+acceptance = "parts and state hooks are registry-derived"
+
+[[issue]]
+number = 688
+work_package = "WP-06"
+disposition = "Required"
+acceptance = "state matrix is portable, deterministic, and accessibility-mode aware"
+
+[[issue]]
+number = 689
+work_package = "WP-06"
+disposition = "Progressive"
+acceptance = "translucent/glass presets are deferred with solid fallback"

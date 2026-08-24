@@ -1,0 +1,7 @@
+schema_version = "hedron.interaction-profile/1"
+phase = "0.63"
+authority = "hedron_core.trace_contract.profile_interaction_trace"
+timeline = ["component", "action", "request", "target", "state", "cache", "focus", "failure"]
+timing = "event-fact-or-unavailable"
+sampling = "explicit in timing.complete and trace truncation"
+read_only = true

@@ -284,6 +284,7 @@ class BuildManifest:
     config_digest: str
     theme_resolution_digest: str = ""
     component_manifest_digest: str = ""
+    package_identity_digest: str = ""
     digest: str = ""
 
     def to_dict(self) -> JsonObject:
@@ -299,6 +300,7 @@ class BuildManifest:
             "config_digest": self.config_digest,
             "theme_resolution_digest": self.theme_resolution_digest,
             "component_manifest_digest": self.component_manifest_digest,
+            "package_identity_digest": self.package_identity_digest,
         }
         digest = self.digest or content_digest(canonical_json(payload))
         return {**payload, "digest": digest}
@@ -317,6 +319,7 @@ class BuildManifest:
             config_digest=str(data.get("config_digest") or ""),
             theme_resolution_digest=str(data.get("theme_resolution_digest") or ""),
             component_manifest_digest=str(data.get("component_manifest_digest") or ""),
+            package_identity_digest=str(data.get("package_identity_digest") or ""),
             digest=str(data.get("digest") or ""),
         )
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -56,6 +57,49 @@ def build_streamlit_parser(
     )
     parser.set_defaults(func=run_migrate_streamlit_args)
     return parser
+
+
+def build_react_parser(
+    subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+) -> argparse.ArgumentParser:
+    """Register the non-executing React disposition analyzer."""
+    parser = subparsers.add_parser(
+        "react",
+        help="Statically report React migration dispositions (phase 0.63)",
+    )
+    parser.add_argument("source", help="React/TypeScript source file or directory")
+    parser.add_argument("--format", choices=("text", "json"), default="text")
+    parser.set_defaults(func=run_migrate_react_args)
+    return parser
+
+
+def run_migrate_react_args(args: argparse.Namespace) -> int:
+    return run_migrate_react(source=Path(args.source), fmt=str(args.format))
+
+
+def run_migrate_react(*, source: Path, fmt: str = "text") -> int:
+    from hedron.migrate.react import analyze_react_source
+
+    try:
+        payload = analyze_react_source(source)
+    except (OSError, UnicodeDecodeError, ValueError) as exc:
+        print(f"React migration analysis failed: {exc}", file=sys.stderr)
+        return 1
+    if fmt == "json":
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"React source: {payload['source']}")
+        print(f"Non-executing: {payload['non_executing']}")
+        print(f"Files: {payload['files_seen']}  Bytes: {payload['bytes_seen']}")
+        for disposition, count in payload["disposition_counts"].items():
+            print(f"{disposition}: {count}")
+        for finding in payload["findings"]:
+            span = finding.get("span", {})
+            print(
+                f"- {finding['disposition']} {finding['kind']} "
+                f"({span.get('path')}:{span.get('start_line')}:{span.get('start_column')})"
+            )
+    return 0
 
 
 def run_migrate_streamlit_args(args: argparse.Namespace) -> int:

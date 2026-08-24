@@ -1,10 +1,15 @@
 # Phase 0.63: theme contract, interaction tooling, and ecosystem interoperability
 
-**Status:** Proposed / Stage 0 planning  
+**Status:** Required implementation and release evidence landed; Progressive extensions deferred
 **Predecessor:** verified 0.61 lifecycle/trace and 0.62 navigation/optimism/failure contracts  
 **Authority:** [RFC-0090](../rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md)  
 **Execution:** [EXECUTION_0_63](EXECUTION_0_63.md)
 **Acceptance:** [RELEASE_0_63](../acceptance/RELEASE_0_63.md)
+
+The executable packet is [release-gate-0.63.toml](../acceptance/release-gate-0.63.toml), with
+machine-readable results in [evidence-063/gate-results-063.json](../acceptance/evidence-063/gate-results-063.json).
+Required gates are Verified; per-component bundles, visualization/glass extensions, and the React
+island are explicitly Deferred with Supported fallbacks or an accepted omission.
 
 ## Outcome
 
@@ -92,6 +97,11 @@ The Required candidate set includes:
 
 Automated output never executes source, silently rewrites an application, or claims behavioral
 equivalence from syntax alone.
+
+The bounded analyzer is available through `hedron migrate react <path> --format json`; it reports
+native, adapter, redesign, and unsupported dispositions with confidence and source spans. The
+phase-specific source audit is available through `hedron check --phase-063`, with stable findings,
+bounded traversal, deterministic ordering, and repository-local suppressions.
 
 ## Theme and tooling workstreams
 

@@ -1,0 +1,8 @@
+schema_version = "hedron.element-metadata/1"
+identity_schema = "hedron.package-identity/1"
+phase = "0.63"
+authority = "hedron_core.registry and theme_contract manifests"
+fields = ["properties", "events", "slots", "state_ownership", "lifecycle", "fallback", "maturity", "compatibility"]
+generated = true
+handwritten_manifest = false
+runtime = "python-no-node"

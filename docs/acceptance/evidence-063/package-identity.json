@@ -1,0 +1,865 @@
+{
+  "component_manifest_digest": "d1084e39548c3bf04e414dc77ab5f46ad5dabbdb7618fba56efb5022fb1399ff",
+  "components": [
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "AccountSummary",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "Brand",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "Button",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "Card",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "ConnectorFlow",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "Dialog",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "ScrollRegion",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "Tabs",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "ToastHost",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.auto.widget.Auto",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.a11y_shell.RequestIndicator",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.a11y_shell.SkipLink",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.async_region.AsyncRegion",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content.CodeBlock",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content.DescriptionList",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content.Heading",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content.Image",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content.Link",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content.List",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content.Table",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content.Text",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content.Typography",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content_extra.GeolocationButton",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content_extra.GeolocationHint",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content_extra.HelpInspector",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content_extra.IFrame",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.content_extra.Math",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.controls.IconButton",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.controls.LinkButton",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.document.Fragment",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.document.Head",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.document.Page",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.document.Title",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.BusyRegion",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.Checkbox",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.CsrfField",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.Form",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.FormErrors",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.FormField",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.Label",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.RadioGroup",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.Select",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.SubmitButton",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.SwapReveal",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.TextArea",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms.TextInput",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.ChipInput",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.ColorInput",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.DateInput",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.DateTimeInput",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.DirectoryUpload",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.MenuButton",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.MultiSelect",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.NumberInput",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.Pills",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.RangeInput",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.RatingInput",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.SegmentedControl",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.SelectSlider",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.TimeInput",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.forms_extra.ToggleSwitch",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.icon.Icon",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.identity.Avatar",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.identity.Identity",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.landmarks.Aside",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.landmarks.Footer",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.landmarks.Header",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.landmarks.Main",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.landmarks.Nav",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.landmarks.Section",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.ActionGroup",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.Container",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.Divider",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.FormGrid",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.Grid",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.GridItem",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.Inline",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.MasterDetail",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.PageHeader",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.Spacer",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.SplitView",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.layout.Stack",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.live_ui.ChatMessage",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.map_geo.Map",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.media.Audio",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.media.CameraCapture",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.media.Gallery",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.media.Logo",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.media.MicrophoneCapture",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.media.PageIcon",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.media.PdfViewer",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.media.Video",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.model_demo.Dialogue",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.model_demo.ParameterViewer",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.model_demo.PredictionLabel",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.process_flow.ConnectorNode",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.process_flow.ConnectorTrack",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.process_flow.FlowStep",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.process_flow.ProcessFlow",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.resources.ResourceList",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.resources.ResourceRow",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.AppFooter",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.AppShell",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.AttrHost",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.EnvironmentBanner",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.HtmxLink",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.MainPanel",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.NavGroup",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.NavLink",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.NavStatus",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.shell.OobHost",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.style_scope.StyleScope",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces.Alert",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces.AmbientBackdrop",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces.Badge",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces.Skeleton",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces.StateView",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces.Surface",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.ActionDock",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.BottomDock",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.Carousel",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.ClipboardCopy",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.ConfirmButton",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.ContextMenu",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.Help",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.Popover",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.Timeline",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.surfaces_chrome.Tooltip",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.theme_preference.ThemePicker",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.utilities.CircularProgress",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.utilities.CodeViewer",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.utilities.Expander",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.utilities.JSONViewer",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.utilities.Metric",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.utilities.Progress",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.utilities.Sidebar",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.utilities.Status",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.builtins.utilities.Toast",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.color_mode.ColorModeToggle",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.htmx.attrs.Hx",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.sse_ext.SseRegion",
+      "maturity": "Supported"
+    },
+    {
+      "compatibility": {},
+      "distribution": "hedron-core",
+      "logical_id": "hedron-core:hedron_core.sse_ext.SseTrigger",
+      "maturity": "Supported"
+    }
+  ],
+  "digest": "77a63fa283044bd862d8f5151d18ce2e13f93bb084302c1a1d9e9e78058c5035",
+  "distributions": {
+    "hedron": "0.62.0",
+    "hedron-core": "0.62.0"
+  },
+  "metadata_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "runtime": "python-no-node",
+  "schema": "hedron.package-identity/1"
+}

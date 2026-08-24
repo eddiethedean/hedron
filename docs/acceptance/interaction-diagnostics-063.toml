@@ -1,0 +1,7 @@
+schema_version = 1
+phase = "0.63"
+families = ["HED-THEME-*", "HED-CHECK-*", "HED-PROFILE-*", "HED-METADATA-*", "HED-MIGRATE-*"]
+source_provenance = true
+stable_ordering = true
+security_suppression = false
+justification_required = true

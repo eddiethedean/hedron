@@ -728,6 +728,32 @@ def _cmd_check(args: argparse.Namespace) -> int:
     diags.extend(_check_043_handles(base))
     diags.extend(_check_044_type_authoring(base))
 
+    if bool(getattr(args, "phase063", False)):
+        from hedron.phase063_checks import analyze_project
+
+        for finding in analyze_project(base)["findings"]:
+            span_data = finding.get("span") or {}
+            from hedron_core.diagnostics import SourceSpan
+
+            diags.append(
+                make_diagnostic(
+                    str(finding["code"]),
+                    severity=DiagnosticSeverity(str(finding["severity"])),
+                    title=str(finding["kind"]),
+                    explanation=str(finding["message"]),
+                    remediation=(
+                        "Move the behavior into a typed Hedron contract or document "
+                        "a bounded exception."
+                    ),
+                    context={"evidence": finding.get("evidence"), "phase": "0.63"},
+                    span=SourceSpan(
+                        str(span_data.get("path", "")),
+                        int(span_data.get("start_line", 1)),
+                        int(span_data.get("start_column", 1)),
+                    ),
+                )
+            )
+
     # Security / a11y / compatibility-boundary informational findings (excluded from exit code).
     # Adapter/extra COMPAT notices are scoped to the project under check unless --all-compat (#54).
     info_diags = _compat_info_diagnostics(

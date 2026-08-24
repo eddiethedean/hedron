@@ -216,6 +216,12 @@ def _register_check_commands(sub: Any) -> None:
     check_p = sub.add_parser("check", help="Run project diagnostics")
     check_p.add_argument("--project", default=None)
     check_p.add_argument(
+        "--phase-063",
+        dest="phase063",
+        action="store_true",
+        help="Run bounded non-executing phase 0.63 interaction/theme checks",
+    )
+    check_p.add_argument(
         "--format",
         choices=("text", "json", "sarif"),
         default="text",
@@ -443,6 +449,7 @@ def _register_theme_commands(sub: Any) -> None:
     theme_matrix_p.add_argument("--component", action="append", default=None)
     theme_matrix_p.add_argument("--viewport", action="append", default=None)
     theme_matrix_p.add_argument("--mode", action="append", default=None)
+    theme_matrix_p.add_argument("--accessibility-mode", action="append", default=None)
     theme_matrix_p.add_argument("--output", default=None)
     theme_matrix_p.set_defaults(func=_cmd_theme_matrix)
 
@@ -594,9 +601,10 @@ def _register_migrate_commands(sub: Any) -> None:
         help="Reviewable framework migration assistants (RFC-0061)",
     )
     migrate_sub = migrate_p.add_subparsers(dest="migrate_command", required=True)
-    from hedron.migrate.cli import build_streamlit_parser
+    from hedron.migrate.cli import build_react_parser, build_streamlit_parser
 
     build_streamlit_parser(migrate_sub)
+    build_react_parser(migrate_sub)
 
 
 def _register_upgrade_commands(sub: Any) -> None:

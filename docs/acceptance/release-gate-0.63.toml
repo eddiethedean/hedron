@@ -1,0 +1,217 @@
+schema_version = 1
+phase = "0.63"
+status = "Implemented with Required gates Verified"
+planning_baseline = "v0.62.0"
+public_upgrade_source = "v0.62.0"
+required_predecessor = "v0.62.0"
+predecessor_satisfied = true
+target = "v0.63.0"
+owning_rfc = "RFC-0090"
+capability_inventory = "interaction-capability-inventory-063.toml"
+theme_resolution = "theme-resolution-contract-063.toml"
+theme_export = "theme-export-contract-063.toml"
+component_manifest = "component-parts-manifest-063.json"
+theme_conformance = "theme-conformance-contract-063.toml"
+state_matrix = "component-state-matrix-063.toml"
+visualization = "visualization-theme-contract-063.toml"
+trace = "interaction-trace-conformance-063.toml"
+profiler = "interaction-profiler-contract-063.toml"
+checks = "interaction-check-catalog-063.toml"
+metadata = "element-metadata-abi-063.toml"
+migration = "react-migration-disposition-063.toml"
+diagnostics = "interaction-diagnostics-063.toml"
+budgets = "interaction-budgets-063.toml"
+upgrade_fixture = "interaction-upgrade-fixtures-063.md"
+evidence_report = "evidence-063/gate-results-063.json"
+stage_1_entry_satisfied = true
+zero_deferred_at_cut = false
+progressive_omissions = ["BUNDLE-063", "VISUAL-063", "INTEROP-063"]
+
+[[evidence]]
+id = "CONTRACT-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate CONTRACT-063 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "THEME-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate THEME-063 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "PALETTE-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate PALETTE-063 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "PARTS-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate PARTS-063 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "EXPORT-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate EXPORT-063 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "BUNDLE-063"
+state = "Deferred"
+command = "documented Progressive omission; complete stylesheet remains Supported"
+owner = "release"
+ci_job = "progressive"
+
+[[evidence]]
+id = "INSPECT-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate INSPECT-063 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "THEME-CHECK-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate THEME-CHECK-063 --verify"
+owner = "hedron-core"
+ci_job = "quality"
+
+[[evidence]]
+id = "MATRIX-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate MATRIX-063 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "VISUAL-063"
+state = "Deferred"
+command = "documented Progressive omission; semantic and tabular fallbacks remain Supported"
+owner = "hedron-charts"
+ci_job = "progressive"
+
+[[evidence]]
+id = "TRACE-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate TRACE-063 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "PROFILER-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate PROFILER-063 --verify"
+owner = "hedron-explorer"
+ci_job = "test"
+
+[[evidence]]
+id = "PROFILE-SAFE-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate PROFILE-SAFE-063 --verify"
+owner = "hedron-explorer"
+ci_job = "quality"
+
+[[evidence]]
+id = "CHECK-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate CHECK-063 --verify"
+owner = "hedron"
+ci_job = "quality"
+
+[[evidence]]
+id = "CHECK-SAFE-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate CHECK-SAFE-063 --verify"
+owner = "hedron"
+ci_job = "quality"
+
+[[evidence]]
+id = "SOURCE-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate SOURCE-063 --verify"
+owner = "hedron"
+ci_job = "test"
+
+[[evidence]]
+id = "METADATA-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate METADATA-063 --verify"
+owner = "hedron-elements"
+ci_job = "test"
+
+[[evidence]]
+id = "IDENTITY-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate IDENTITY-063 --verify"
+owner = "release"
+ci_job = "packaging"
+
+[[evidence]]
+id = "MIGRATE-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate MIGRATE-063 --verify"
+owner = "hedron"
+ci_job = "test"
+
+[[evidence]]
+id = "INTEROP-063"
+state = "Deferred"
+command = "accepted omission; no React island is shipped or required"
+owner = "hedron"
+ci_job = "progressive"
+
+[[evidence]]
+id = "SECURITY-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate SECURITY-063 --verify"
+owner = "security"
+ci_job = "quality"
+
+[[evidence]]
+id = "A11Y-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate A11Y-063 --verify"
+owner = "hedron-elements"
+ci_job = "browser"
+
+[[evidence]]
+id = "PERF-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate PERF-063 --verify"
+owner = "release"
+ci_job = "quality"
+
+[[evidence]]
+id = "CONFORMANCE-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate CONFORMANCE-063 --verify"
+owner = "hedron-conformance"
+ci_job = "test"
+
+[[evidence]]
+id = "DOCS-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate DOCS-063 --verify"
+owner = "docs"
+ci_job = "quality"
+
+[[evidence]]
+id = "UPGRADE-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate UPGRADE-063 --verify"
+owner = "release"
+ci_job = "packaging"
+
+[[evidence]]
+id = "PKG-063"
+state = "Verified"
+command = "python scripts/check_063.py --gate PKG-063 --verify"
+owner = "release"
+ci_job = "packaging"

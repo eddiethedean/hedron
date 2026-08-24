@@ -1,0 +1,7 @@
+schema_version = "hedron.theme-resolution/1"
+phase = "0.63"
+authority = "hedron_core.theme_contract.resolve_theme"
+inputs = ["Theme", "ThemeSpec"]
+outputs = ["tokens", "derived", "modes", "variants", "accessibility_modes", "aliases", "provenance", "fingerprint"]
+compatibility_aliases = "validated compatibility_theme_vars bridge for published 0.60-0.62 consumers"
+non_executing = true

@@ -1,0 +1,6 @@
+schema_version = "hedron.interaction-trace.v1"
+phase = "0.63"
+authority = "hedron_core.trace_contract"
+producers = ["pytest", "browser", "CLI", "Explorer", "conformance"]
+requirements = ["stable ordering", "identity preservation", "redaction", "bounded truncation", "unknown-version fail-closed"]
+payload_retention = false

@@ -1,0 +1,7 @@
+schema_version = "hedron.react-migration-disposition/1"
+phase = "0.63"
+authority = "hedron.migrate.react"
+dispositions = ["native", "adapter", "redesign", "unsupported"]
+source_spans = true
+non_executing = true
+react_island = "omitted; no Experimental island is required for Supported paths"

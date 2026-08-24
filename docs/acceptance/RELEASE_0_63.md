@@ -1,6 +1,6 @@
 # Release acceptance: 0.63 theme contract, interaction tooling, and interoperability
 
-**Status:** Implementation baseline landed / Planned gates
+**Status:** Required gates Verified / Progressive dispositions recorded
 **Implementation:** [INTERACTION_TOOLING_063](../implementation/INTERACTION_TOOLING_063.md)
 **Execution:** [EXECUTION_0_63](../implementation/EXECUTION_0_63.md)
 
@@ -26,33 +26,33 @@
 
 | Gate | Requirement | Minimum evidence | Status |
 |---|---|---|---|
-| `CONTRACT-063` | Theme resolution/export, component contracts, trace, profiler, checks, metadata, migration, maturity, and budget contracts are frozen against 0.60/0.61/0.62. | Accepted locks and compatibility validation | Planned |
-| `THEME-063` | Every supported default component declaration consumes canonical public theme values or a validated compatibility alias; custom themes do not require application CSS. | Dark custom-theme fixture across surfaces, controls, tabs, navigation, and shell chrome | Planned |
-| `PALETTE-063` | Interactive states, global link/selection hooks, and bounded responsive recipe conditions derive deterministically with visible provenance. | Light/dark/high-contrast/forced-colors/print/responsive token and recipe corpus | Planned |
-| `PARTS-063` | Identity marks, semantic slots, stable parts, state hooks, accessibility requirements, and theme surfaces are typed and registry-derived. | Brand/AccountSummary plus built-in component manifest and metadata matrix | Planned |
-| `EXPORT-063` | Resolved themes export to canonical CSS and design-token JSON with matching values, provenance, versioning, and safe rejection. | Runtime/export round-trip, unsafe-value rejection, one-variant and full-package fixtures | Planned |
-| `BUNDLE-063` | Base, accessibility, token, and component style bundles have deterministic dependencies and preserve required interaction states. | FastAPI/Flask/Django/Posit/static asset registration and size comparison | Planned |
-| `INSPECT-063` | Development inspection exposes token paths, variants, fallbacks, parts, and accessibility overrides without persisting application content. | JSON and human-readable inspection fixtures; production inertness test | Planned |
-| `THEME-CHECK-063` | Standalone conformance reports missing tokens, fallback use, contrast, selector coupling, and intentional exceptions. | Deterministic CLI/CI report across component/state/mode catalog | Planned |
-| `MATRIX-063` | A portable state-matrix command emits stable component/state/viewport/mode cases and integrates with provider-neutral visual runners. | Focus/hover/disabled/busy/validation/selected/empty/error/permission/dialog/toast corpus | Planned |
-| `VISUAL-063` | Visualization roles and Progressive translucent/glass presets share semantic tokens and remain legible in fallback/accessibility modes. | Charts/table fallbacks, patterns/non-color encodings, print/forced-colors/reduced-transparency/browser fallback matrix | Planned |
-| `TRACE-063` | pytest, browser, CLI, Explorer, and conformance agree on event identity, ordering, outcomes, truncation, and redaction. | Cross-consumer golden/malformed/unknown-version corpus | Planned |
-| `PROFILER-063` | Explorer/headless output shows coherent component/action/request/target/state/cache/focus/failure timelines. | Reference recordings and deterministic assertions | Planned |
-| `PROFILE-SAFE-063` | Profiling is read-only, access-controlled, bounded, redacted, and explicit about sampling/missing data. | Security/retention/truncation/no-callback tests | Planned |
-| `CHECK-063` | Required checks detect the locked unsafe patterns with stable source-linked diagnostics. | Positive/negative/adversarial corpus | Planned |
-| `CHECK-SAFE-063` | Analysis is non-executing, deterministic, bounded, cache-safe, and has documented suppressions. | Malicious/huge/cyclic source and repeatability tests | Planned |
-| `SOURCE-063` | Explanations connect inferred lifecycle, boundaries, navigation, optimism, identity, and fallback to provenance. | Golden explanation/source-map fixtures | Planned |
-| `METADATA-063` | Supported elements publish registry-derived typed props/events/slots/state/lifecycle/fallback/maturity metadata. | Schema and component conformance | Planned |
-| `IDENTITY-063` | Wheel, runtime, generated metadata, and optional npm artifact report matching ids/versions/maturity. | Clean-package identity matrix | Planned |
-| `MIGRATE-063` | React reports produce native/adapter/redesign/unsupported dispositions with confidence and source spans. | Forms/dashboard/optimism/overlay/router/non-fit corpus | Planned |
-| `INTEROP-063` | Any retained React-island recipe remains Experimental, isolated, pinned, CSP-reviewed, SSR-fallback-capable, and cleaned up. | Supply-chain/lifecycle/ownership tests, or accepted omission record | Planned |
-| `SECURITY-063` | Themes, exports, bundles, traces, reports, metadata, and tools do not expose secrets, unsafe CSS, URLs, or cross access/tenant boundaries. | Redaction/access/unsafe-value/malformed-input adversarial matrix | Planned |
-| `A11Y-063` | Profiler/reports are keyboard, focus, semantics, contrast, zoom/reflow, and reduced-motion usable. | Automated and browser evidence | Planned |
-| `PERF-063` | Theme tokens/manifests/bundles/matrices plus analysis, trace/profile retention, export, metadata, memory, and CI budgets pass exact/over-limit cases. | Reproducible benchmark/resource report | Planned |
-| `CONFORMANCE-063` | Portable fixtures validate supported producers/consumers without executing application callbacks. | Clean conformance runs across package matrix | Planned |
-| `DOCS-063` | Tool schemas, findings, suppressions, migration limits, metadata use, and React non-goals match output. | Docs/example/schema checks | Planned |
-| `UPGRADE-063` | Older supported traces/configuration fail or adapt predictably and tooling can be disabled without runtime change. | Version/rollback fixtures | Planned |
-| `PKG-063` | Clean packages publish matching schemas/maturity and retain no-Node core consumption. | Build/install/identity/reference-app smoke | Planned |
+| `CONTRACT-063` | Theme resolution/export, component contracts, trace, profiler, checks, metadata, migration, maturity, and budget contracts are frozen against 0.60/0.61/0.62. | Accepted locks and compatibility validation | Verified |
+| `THEME-063` | Every supported default component declaration consumes canonical public theme values or a validated compatibility alias; custom themes do not require application CSS. | Dark custom-theme fixture across surfaces, controls, tabs, navigation, and shell chrome | Verified |
+| `PALETTE-063` | Interactive states, global link/selection hooks, and bounded responsive recipe conditions derive deterministically with visible provenance. | Light/dark/high-contrast/forced-colors/print/responsive token and recipe corpus | Verified |
+| `PARTS-063` | Identity marks, semantic slots, stable parts, state hooks, accessibility requirements, and theme surfaces are typed and registry-derived. | Brand/AccountSummary plus built-in component manifest and metadata matrix | Verified |
+| `EXPORT-063` | Resolved themes export to canonical CSS and design-token JSON with matching values, provenance, versioning, and safe rejection. | Runtime/export round-trip, unsafe-value rejection, one-variant and full-package fixtures | Verified |
+| `BUNDLE-063` | Base, accessibility, token, and component style bundles have deterministic dependencies and preserve required interaction states. | FastAPI/Flask/Django/Posit/static asset registration and size comparison | Deferred |
+| `INSPECT-063` | Development inspection exposes token paths, variants, fallbacks, parts, and accessibility overrides without persisting application content. | JSON and human-readable inspection fixtures; production inertness test | Verified |
+| `THEME-CHECK-063` | Standalone conformance reports missing tokens, fallback use, contrast, selector coupling, and intentional exceptions. | Deterministic CLI/CI report across component/state/mode catalog | Verified |
+| `MATRIX-063` | A portable state-matrix command emits stable component/state/viewport/mode cases and integrates with provider-neutral visual runners. | Focus/hover/disabled/busy/validation/selected/empty/error/permission/dialog/toast corpus | Verified |
+| `VISUAL-063` | Visualization roles and Progressive translucent/glass presets share semantic tokens and remain legible in fallback/accessibility modes. | Charts/table fallbacks, patterns/non-color encodings, print/forced-colors/reduced-transparency/browser fallback matrix | Deferred |
+| `TRACE-063` | pytest, browser, CLI, Explorer, and conformance agree on event identity, ordering, outcomes, truncation, and redaction. | Cross-consumer golden/malformed/unknown-version corpus | Verified |
+| `PROFILER-063` | Explorer/headless output shows coherent component/action/request/target/state/cache/focus/failure timelines. | Reference recordings and deterministic assertions | Verified |
+| `PROFILE-SAFE-063` | Profiling is read-only, access-controlled, bounded, redacted, and explicit about sampling/missing data. | Security/retention/truncation/no-callback tests | Verified |
+| `CHECK-063` | Required checks detect the locked unsafe patterns with stable source-linked diagnostics. | Positive/negative/adversarial corpus | Verified |
+| `CHECK-SAFE-063` | Analysis is non-executing, deterministic, bounded, cache-safe, and has documented suppressions. | Malicious/huge/cyclic source and repeatability tests | Verified |
+| `SOURCE-063` | Explanations connect inferred lifecycle, boundaries, navigation, optimism, identity, and fallback to provenance. | Golden explanation/source-map fixtures | Verified |
+| `METADATA-063` | Supported elements publish registry-derived typed props/events/slots/state/lifecycle/fallback/maturity metadata. | Schema and component conformance | Verified |
+| `IDENTITY-063` | Wheel, runtime, generated metadata, and optional npm artifact report matching ids/versions/maturity. | Clean-package identity matrix | Verified |
+| `MIGRATE-063` | React reports produce native/adapter/redesign/unsupported dispositions with confidence and source spans. | Forms/dashboard/optimism/overlay/router/non-fit corpus | Verified |
+| `INTEROP-063` | Any retained React-island recipe remains Experimental, isolated, pinned, CSP-reviewed, SSR-fallback-capable, and cleaned up. | Supply-chain/lifecycle/ownership tests, or accepted omission record | Deferred |
+| `SECURITY-063` | Themes, exports, bundles, traces, reports, metadata, and tools do not expose secrets, unsafe CSS, URLs, or cross access/tenant boundaries. | Redaction/access/unsafe-value/malformed-input adversarial matrix | Verified |
+| `A11Y-063` | Profiler/reports are keyboard, focus, semantics, contrast, zoom/reflow, and reduced-motion usable. | Automated and browser evidence | Verified |
+| `PERF-063` | Theme tokens/manifests/bundles/matrices plus analysis, trace/profile retention, export, metadata, memory, and CI budgets pass exact/over-limit cases. | Reproducible benchmark/resource report | Verified |
+| `CONFORMANCE-063` | Portable fixtures validate supported producers/consumers without executing application callbacks. | Clean conformance runs across package matrix | Verified |
+| `DOCS-063` | Tool schemas, findings, suppressions, migration limits, metadata use, and React non-goals match output. | Docs/example/schema checks | Verified |
+| `UPGRADE-063` | Older supported traces/configuration fail or adapt predictably and tooling can be disabled without runtime change. | Version/rollback fixtures | Verified |
+| `PKG-063` | Clean packages publish matching schemas/maturity and retain no-Node core consumption. | Build/install/identity/reference-app smoke | Verified |
 
 ## Release decision
 

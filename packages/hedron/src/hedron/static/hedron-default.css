@@ -11,6 +11,9 @@
     --hedron-default-border-strong: #c7d0dd;
     --hedron-default-accent: #2563eb;
     --hedron-default-link: #2563eb;
+    --hedron-default-link-hover: #1d4ed8;
+    --hedron-default-link-active: #1d4ed8;
+    --hedron-default-link-visited: #2563eb;
     --hedron-default-accent-hover: #1d4ed8;
     --hedron-default-accent-soft: #e8f0ff;
     --hedron-default-on-accent: #ffffff;
@@ -376,8 +379,16 @@
     text-underline-offset: 0.18em;
   }
 
+  a:visited {
+    color: var(--hedron-color-link-visited, var(--hedron-default-link-visited));
+  }
+
   a:hover {
-    color: var(--hedron-default-accent-hover);
+    color: var(--hedron-color-link-hover, var(--hedron-default-link-hover));
+  }
+
+  a:active {
+    color: var(--hedron-color-link-active, var(--hedron-default-link-active));
   }
 
   ::selection {
@@ -3225,9 +3236,21 @@
     inline-size: 1.75rem;
     block-size: 1.75rem;
     border-radius: 0.35rem;
-    background: var(--hedron-default-accent, CanvasText);
+    background: var(--hedron-color-accent, var(--hedron-default-accent, CanvasText));
     color: Canvas;
     font-weight: 700;
+  }
+  .hedron-brand-mark[data-hedron-mark-size="sm"] { inline-size: 1.5rem; block-size: 1.5rem; font-size: 0.8em; }
+  .hedron-brand-mark[data-hedron-mark-size="lg"] { inline-size: 2.25rem; block-size: 2.25rem; font-size: 1.1em; }
+  .hedron-brand-mark[data-hedron-mark-shape="square"] { border-radius: 0; }
+  .hedron-brand-mark[data-hedron-mark-shape="circle"] { border-radius: 50%; }
+  .hedron-brand-mark[data-hedron-mark-tone="neutral"] {
+    background: var(--hedron-color-surface-muted, var(--hedron-default-surface-muted));
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+  }
+  .hedron-brand-mark[data-hedron-mark-tone="muted"] {
+    background: var(--hedron-color-muted, var(--hedron-default-muted));
+    color: var(--hedron-color-bg, var(--hedron-default-bg));
   }
   .hedron-brand-copy { display: inline-grid; min-inline-size: 0; gap: 0.1rem; }
   .hedron-brand-subtitle { display: block; min-inline-size: 0; color: var(--hedron-default-muted, GrayText); font-size: 0.8em; }

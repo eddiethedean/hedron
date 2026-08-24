@@ -1,0 +1,9 @@
+schema_version = "hedron.component-state-matrix/1"
+phase = "0.63"
+authority = "hedron_core.theme_contract.build_state_matrix"
+viewports = ["320", "390", "1440"]
+modes = ["light", "dark"]
+accessibility_modes = ["none", "forced-colors", "high-contrast", "reduced-motion", "reduced-transparency", "print"]
+states = ["focus", "hover", "disabled", "busy", "validation", "selected", "empty", "error", "permission", "dialog", "toast"]
+provider_neutral = true
+bounded = true

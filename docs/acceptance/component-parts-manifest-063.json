@@ -1,0 +1,8 @@
+{
+  "schema": "hedron.component-theme-manifest/1",
+  "source": "hedron_core.theme_contract.component_contract_manifest",
+  "required_parts": ["Brand.mark", "AccountSummary.avatar", "Button.label", "Card.body", "Tabs.tab", "Dialog.body"],
+  "required_states": ["focus", "hover", "disabled", "busy", "selected", "open"],
+  "registry_derived": true,
+  "handwritten_entries": false
+}

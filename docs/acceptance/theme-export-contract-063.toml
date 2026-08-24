@@ -1,0 +1,7 @@
+schema_version = "hedron.theme-export/1"
+phase = "0.63"
+authority = "hedron_core.theme_contract.export_theme"
+formats = ["css", "design-token-json", "report"]
+parity = "runtime CSS and JSON derive from one ThemeResolution"
+rejection = ["unsafe CSS", "URLs", "arbitrary selectors", "invalid ThemeSpec"]
+deterministic = true
