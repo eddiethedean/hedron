@@ -218,7 +218,8 @@ def _check_versions(*, allow_planned: bool) -> None:
             )
         if not version.startswith("0.41."):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0 expects 0.41.x–0.52.x living tip"
+                f"unexpected workspace version {version!r}; "
+                "Stage 0 expects 0.41.x–0.52.x living tip"
             )
         print(f"ok: living tip {version} / Published {published} (0.42 allow-planned)")
         return
@@ -242,7 +243,9 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.58.",
             "0.59.",
             "0.60.",
-            "0.61.", "0.62.",
+            "0.61.",
+            "0.62.",
+            "0.63.",
         )
     ):
         raise SystemExit(
@@ -269,7 +272,9 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.58.",
             "0.59.",
             "0.60.",
-            "0.61.", "0.62.",
+            "0.61.",
+            "0.62.",
+            "0.63.",
         )
     ):
         print(f"ok: post-cut living tip {version} (0.42 packet verified)")
@@ -367,7 +372,9 @@ def main(argv: list[str] | None = None) -> int:
             "0.58.",
             "0.59.",
             "0.60.",
-            "0.61.", "0.62.",
+            "0.61.",
+            "0.62.",
+            "0.63.",
         )
     ):
         errors = gate.check_evidence_manifest(GATE)

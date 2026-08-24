@@ -45,7 +45,9 @@ if version not in {
         "0.58.",
         "0.59.",
         "0.60.",
-        "0.61.", "0.62.",
+        "0.61.",
+        "0.62.",
+        "0.63.",
     )
 ):
     raise SystemExit(f"workspace version must be 0.41.0 or post-cut 0.42.x–0.60.x, got {version}")
