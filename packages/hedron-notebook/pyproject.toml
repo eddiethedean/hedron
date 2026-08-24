@@ -1,6 +1,6 @@
 [project]
 name = "hedron-notebook"
-version = "0.2.0"
+version = "0.2.1"
 description = "Beta tooling-grade localhost notebook preview helper for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -34,8 +34,8 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.60.0,<0.61",
-    "hedron>=0.60.0,<0.61",
+    "hedron-core>=0.61.0,<0.62",
+    "hedron>=0.61.0,<0.62",
 ]
 
 [project.optional-dependencies]

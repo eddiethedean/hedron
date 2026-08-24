@@ -14,7 +14,7 @@ If terms such as project folder, terminal, virtual environment, or development s
 use [Your first application with VS Code](first-app-vscode.md). In Posit Workbench, use the
 [`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
 
-Install from PyPI: `hedron>=0.60.2,<0.61`. Other pins and extras:
+Install from PyPI: `hedron>=0.61.0,<0.62`. Other pins and extras:
 [Installation](installation.md).
 
 ## You will learn
@@ -32,7 +32,7 @@ page explains the model after you have seen it work.
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.60.2,<0.61" hedron new my-hedron-app
+    uvx --from "hedron>=0.61.0,<0.62" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -46,7 +46,7 @@ page explains the model after you have seen it work.
     `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or `activate.bat`.
 
     ```bash
-    python -m pip install "hedron>=0.60.2,<0.61" "uvicorn[standard]"
+    python -m pip install "hedron>=0.61.0,<0.62" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .

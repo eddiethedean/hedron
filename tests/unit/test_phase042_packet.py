@@ -180,10 +180,10 @@ def test_phase042_living_tip_or_cut() -> None:
         assert release["release"]["train"] == "0.59"
         assert version.startswith("0.59.")
     else:
-        assert published.startswith("0.60.")
+        assert published.startswith("0.61.")
         assert living_published_baseline() == f"v{published}"
-        assert release["release"]["train"] == "0.60"
-        assert version.startswith("0.60.")
+        assert release["release"]["train"] == "0.61"
+        assert version.startswith("0.61.")
 
 
 def test_phase042_decision_and_roadmap_agree() -> None:

@@ -38,6 +38,7 @@ def test_stage1_modules_and_satellite_versions() -> None:
         or tip.startswith("0.58.")
         or tip.startswith("0.59.")
         or tip.startswith("0.60.")
+        or tip.startswith("0.61.")
     )
     assert Path("packages/hedron/src/hedron/package_doctor.py").is_file()
     assert Path("packages/hedron-conformance/src/hedron_conformance/authoring_loop.py").is_file()
@@ -51,8 +52,9 @@ def test_stage1_modules_and_satellite_versions() -> None:
         or tip.startswith("0.58.")
         or tip.startswith("0.59.")
         or tip.startswith("0.60.")
+        or tip.startswith("0.61.")
     ):
-        # Historical 0.54 packet under later living tip — satellite versions remain 0.2.0.
+        # Historical 0.54 packet under later living tip — satellite versions remain on the 0.2 line.
         sample = tomllib.loads(
             Path("packages/hedron-sample-kit/pyproject.toml").read_text(encoding="utf-8")
         )
@@ -60,9 +62,9 @@ def test_stage1_modules_and_satellite_versions() -> None:
             Path("packages/hedron-notebook/pyproject.toml").read_text(encoding="utf-8")
         )
         sim = tomllib.loads(Path("packages/hedron-sim/pyproject.toml").read_text(encoding="utf-8"))
-        assert sample["project"]["version"] == "0.2.0"
-        assert notebook["project"]["version"] == "0.2.0"
-        assert sim["project"]["version"] == "0.2.0"
+        assert sample["project"]["version"] == "0.2.1"
+        assert notebook["project"]["version"] == "0.2.1"
+        assert sim["project"]["version"] == "0.2.1"
         return
 
     workspace = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
@@ -77,6 +79,6 @@ def test_stage1_modules_and_satellite_versions() -> None:
         Path("packages/hedron-notebook/pyproject.toml").read_text(encoding="utf-8")
     )
     sim = tomllib.loads(Path("packages/hedron-sim/pyproject.toml").read_text(encoding="utf-8"))
-    assert sample["project"]["version"] == "0.2.0"
-    assert notebook["project"]["version"] == "0.2.0"
-    assert sim["project"]["version"] == "0.2.0"
+    assert sample["project"]["version"] == "0.2.1"
+    assert notebook["project"]["version"] == "0.2.1"
+    assert sim["project"]["version"] == "0.2.1"

@@ -535,7 +535,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.60.2"
+__version__ = "0.61.0"
 
 __all__ = [
     "__version__",

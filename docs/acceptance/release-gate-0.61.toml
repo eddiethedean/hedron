@@ -1,0 +1,148 @@
+# Phase 0.61 action-state and async-boundary release evidence index.
+schema_version = 1
+phase = "0.61"
+status = "Verified"
+planning_baseline = "v0.60.2"
+public_upgrade_source = "v0.60.2"
+required_predecessor = "v0.60.2"
+predecessor_satisfied = true
+target = "v0.61.0"
+owning_rfc = "RFC-0090"
+contract = "action-state-contract-061.toml"
+inventory = "interaction-capability-inventory-061.toml"
+host_disposition = "interaction-host-disposition-061.toml"
+trace_schema = "interaction-trace-schema-061.toml"
+diagnostics = "interaction-diagnostics-061.toml"
+budgets = "interaction-budgets-061.toml"
+security_a11y = "interaction-security-a11y-061.toml"
+surface_contract = "phase061-surface-contract.toml"
+upgrade_fixture = "interaction-upgrade-fixtures-061.md"
+evidence_report = "evidence-061/gate-results-061.json"
+stage_1_entry_satisfied = true
+zero_deferred_at_cut = true
+
+[[evidence]]
+id = "CONTRACT-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate CONTRACT-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "ACTIONSTATE-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate ACTIONSTATE-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "OPERATION-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate OPERATION-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "ASYNC-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate ASYNC-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "SURFACE-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate SURFACE-061"
+owner = "hedron"
+ci_job = "test"
+
+[[evidence]]
+id = "VISUAL-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate VISUAL-061"
+owner = "hedron"
+ci_job = "browser"
+
+[[evidence]]
+id = "CONCURRENCY-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate CONCURRENCY-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "STALE-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate STALE-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "FORM-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate FORM-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "JOB-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate JOB-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "HOST-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate HOST-061"
+owner = "hedron"
+ci_job = "test"
+
+[[evidence]]
+id = "TRACE-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate TRACE-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "SECURITY-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate SECURITY-061"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "A11Y-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate A11Y-061"
+owner = "hedron-elements"
+ci_job = "browser"
+
+[[evidence]]
+id = "PERF-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate PERF-061"
+owner = "hedron-core"
+ci_job = "quality"
+
+[[evidence]]
+id = "DOCS-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate DOCS-061"
+owner = "docs"
+ci_job = "quality"
+
+[[evidence]]
+id = "UPGRADE-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate UPGRADE-061"
+owner = "release"
+ci_job = "packaging"
+
+[[evidence]]
+id = "PKG-061"
+state = "Verified"
+command = "python scripts/check_061.py --gate PKG-061"
+owner = "release"
+ci_job = "packaging"

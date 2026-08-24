@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "phase": "0.61",
+  "release_version": "0.61.0",
+  "source": "tests/unit/test_phase061_action_state.py",
+  "summary": {
+    "total": 18,
+    "verified": 18,
+    "deferred": 0,
+    "blocked": 0
+  },
+  "gates": [
+    {"id": "CONTRACT-061", "state": "Verified"},
+    {"id": "ACTIONSTATE-061", "state": "Verified"},
+    {"id": "OPERATION-061", "state": "Verified"},
+    {"id": "ASYNC-061", "state": "Verified"},
+    {"id": "SURFACE-061", "state": "Verified"},
+    {"id": "VISUAL-061", "state": "Verified"},
+    {"id": "CONCURRENCY-061", "state": "Verified"},
+    {"id": "STALE-061", "state": "Verified"},
+    {"id": "FORM-061", "state": "Verified"},
+    {"id": "JOB-061", "state": "Verified"},
+    {"id": "HOST-061", "state": "Verified"},
+    {"id": "TRACE-061", "state": "Verified"},
+    {"id": "SECURITY-061", "state": "Verified"},
+    {"id": "A11Y-061", "state": "Verified"},
+    {"id": "PERF-061", "state": "Verified"},
+    {"id": "DOCS-061", "state": "Verified"},
+    {"id": "UPGRADE-061", "state": "Verified"},
+    {"id": "PKG-061", "state": "Verified"}
+  ]
+}

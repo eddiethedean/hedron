@@ -6,9 +6,9 @@ description: Server-authored lifecycle boundary with ordinary fragment or page f
 # `AsyncRegion`
 
 Server-authored lifecycle boundary with ordinary fragment or page fallback.
-!!! note "Phase 0.61 in-tree preview"
+!!! note "Phase 0.61 published surface"
 
-    This additive contract is implemented in-tree for Phase 0.61. It is not part of the published 0.60.x Supported surface until [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) is signed off.
+    This additive contract is implemented and verified for the published 0.61.x Supported surface. See [RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md).
 
 
 | | |

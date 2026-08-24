@@ -1,11 +1,11 @@
-!!! note "Current train is 0.60"
+!!! note "Current train is 0.61"
 
-    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.60.2,<0.61`). See [What’s new in 0.51](whats-new-0.51.md).
+    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.61.0,<0.62`). See [What’s new in 0.51](whats-new-0.51.md).
 
 # What's new in Hedron 0.40
 
 **Published** as `v0.40.0` on 2026-08-14. Historical pin: `hedron>=0.40.0,<0.41`. Charts remain on the
-Published 0.2 line: `hedron-charts>=0.2.0,<0.3`.
+Published 0.2 line: `hedron-charts>=0.2.1,<0.3`.
 
 Phase **0.40** enables third-party authors to build portable Hedron elements without private
 APIs and aligns plugins, HDJ, Explorer, themes, and conformance on shared element metadata

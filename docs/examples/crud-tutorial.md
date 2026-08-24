@@ -82,7 +82,7 @@ declares it.
 ## Run
 
 ```bash
-python -m pip install "hedron[data]>=0.60.2,<0.61" "uvicorn[standard]"
+python -m pip install "hedron[data]>=0.61.0,<0.62" "uvicorn[standard]"
 uvicorn app:app --reload
 ```
 
@@ -354,7 +354,7 @@ This tutorial **replaces** the generated `app.py` with a complete notes app. Tha
 deliberate — not the golden-path “edit the Hello string” flow.
 
 ```bash
-python -m pip install "hedron>=0.60.2,<0.61" "uvicorn[standard]"
+python -m pip install "hedron>=0.61.0,<0.62" "uvicorn[standard]"
 python -m hedron new crud-notes
 cd crud-notes
 python -m pip install -e .

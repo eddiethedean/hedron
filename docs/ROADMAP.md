@@ -65,7 +65,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.58** | Progressive feature and styling authoring: screens/forms/workspaces/flows, branded design systems, semantic recipes/roles, explicit scopes, unified inspect/preview/diff/override/ejection, and starter-first adoption | **Published** in-tree (`v0.58.1`; PyPI `v0.58.0`; Verified gates; D-101 / D-102 / D-105 / [RFC-0085](rfcs/RFC-0085-PROGRESSIVE-FEATURE-AUTHORING.md)) |
 | **0.59** | Modern CSS platform and intuitive built-in styling: standards-capable scoped compilation, canonical cascade/tokens, container-aware layout, modern color/type/media/overlay/motion, whole-fleet zero-CSS polish, and consumer vertical slices | **Published** (`v0.59.0` on PyPI; D-106 / D-107 / [RFC-0087](rfcs/RFC-0087-MODERN-CSS-PLATFORM.md)) |
 | **0.60** | Custom theme platform and styling completion: modern color, ThemeSpec/ThemePatch, registry-derived profiles/validation, fingerprints/conformance, packages, accessibility modes, recipes/scopes, persisted selection, capped built-ins, and #627–#635 | **Implemented, verified, tagged, and published** (`v0.60.0`; D-108 / [RFC-0089](rfcs/RFC-0089-CUSTOM-THEME-PLATFORM.md)) |
-| **0.61** | Unified action state and server-first async boundaries | **Implementation baseline complete in-tree / release evidence pending; not published or Supported** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
+| **0.61** | Unified action state and server-first async boundaries | **Implemented, verified, tagged, and published** (`v0.61.0`; RFC-0090; [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
 | **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Interaction profiling, static checks, and component ecosystem interoperability | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md)) |
 | **0.64** | First-party Hedron HTMX extension: lifecycle state, accessibility, concurrency presentation, cleanup, and browser traces | **Proposed / Stage 0 planned** ([RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md)) |
@@ -6428,8 +6428,8 @@ without adopting a React runtime or changing Hedron's server-authoritative archi
 
 ### 0.61 — Unified interaction state, async boundaries, and composed application surfaces
 
-**Status:** Implementation baseline complete in-tree; release evidence pending. The 0.61 symbols and
-surface components are not part of the published 0.60.x train and must not be treated as current
+**Status:** Implemented, verified, tagged, and published as `v0.61.0`. The 0.61 symbols and
+surface components are part of the published 0.61.x train and must be used within their documented
 Supported capabilities until [RELEASE_0_61](acceptance/RELEASE_0_61.md) is signed off.
 
 Phase 0.61 has two coordinated tracks. The interaction track gives every supported asynchronous

@@ -13,15 +13,15 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Repository checkout | `0.60.2` / `0.60.x` | Prepared and verified in-tree release candidate |
-| PyPI | `0.60.2` / `0.60.x` | Latest installable release from the public package index |
+| Repository checkout | `0.61.0` / `0.61.x` | Prepared and verified in-tree release candidate |
+| PyPI | `0.61.0` / `0.61.x` | Latest installable release from the public package index |
 | Package maturity | Beta | Usable with pins; no SLA or scheduled 1.0 release |
 | Supported Python | 3.11–3.14 | CPython only |
 
 Application documentation uses the published PyPI pin:
 
 ```text
-hedron>=0.60.2,<0.61
+hedron>=0.61.0,<0.62
 ```
 
 Contributors working from a checkout should use `uv sync` so local packages resolve
@@ -31,15 +31,13 @@ from the workspace.
 
 | You want… | Do this |
 |---|---|
-| Build an application | Install from PyPI: `hedron>=0.60.2,<0.61` |
+| Build an application | Install from PyPI: `hedron>=0.61.0,<0.62` |
 | Contribute / hack on Hedron | Clone the repo and `uv sync` (editable workspace) |
-| Know security support window | Current train `0.60.x` — [SECURITY.md](../SECURITY.md) |
+| Know security support window | Current train `0.61.x` — [SECURITY.md](../SECURITY.md) |
 | Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |
 
-The `0.60.2` release is represented by the latest verified public release and is available
-from PyPI; `registry_status = "uploaded"` in [`docs/release.toml`](../release.toml). The
-repository's coordinated package metadata is prepared for the `0.60.2` patch candidate;
-the public install pin remains unchanged until that candidate is uploaded and verified.
+The `0.61.0` release is represented by the latest verified public release and is available from
+PyPI; `registry_status = "uploaded"` in [`docs/release.toml`](../release.toml).
 
 ## What should I install?
 

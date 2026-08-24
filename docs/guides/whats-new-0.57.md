@@ -20,7 +20,7 @@ See [PRESENTATION](../api/PRESENTATION.md) and
 [RELEASE_0_57](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_57.md).
 
 The 0.57.0 PyPI upload remained deferred. Current applications should use
-`hedron>=0.60.2,<0.61` from PyPI; the historical repository tip is `0.57.0`.
+`hedron>=0.61.0,<0.62` from PyPI; the historical repository tip is `0.57.0`.
 
 ## Hardening on the tip
 

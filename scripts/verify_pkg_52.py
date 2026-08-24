@@ -129,7 +129,19 @@ def _check_versions(*, allow_planned: bool) -> None:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
         return
     if published.startswith(
-        ("0.53.", "0.54.", "0.55.", "0.56.", "0.57.", "0.58.", "0.59.", "0.60.", "0.58.", "0.59.")
+        (
+            "0.53.",
+            "0.54.",
+            "0.55.",
+            "0.56.",
+            "0.57.",
+            "0.58.",
+            "0.59.",
+            "0.60.",
+            "0.61.",
+            "0.58.",
+            "0.59.",
+        )
     ):
         print(f"ok: 0.52 historical under living published {published}")
         return
@@ -184,6 +196,7 @@ def main(argv: list[str] | None = None) -> int:
                 "0.58.",
                 "0.59.",
                 "0.60.",
+                "0.61.",
                 "0.58.",
                 "0.59.",
             )

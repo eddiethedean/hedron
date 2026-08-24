@@ -1,6 +1,6 @@
 [project]
 name = "hedron-maps"
-version = "0.1.0"
+version = "0.1.1"
 description = "First-class maps, offline geospatial presentation, and map interactions for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -38,7 +38,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.60.0,<0.61",
+    "hedron-core>=0.61.0,<0.62",
 ]
 
 [project.entry-points."hedron.plugins"]

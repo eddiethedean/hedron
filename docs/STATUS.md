@@ -4,17 +4,17 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.60 **Published** as `v0.60.2` on PyPI. The 27-gate evidence
+**Roadmap position:** phase 0.61 **Published** as `v0.61.0` on PyPI. The 18-gate evidence
 packet is active, with implemented
-scope and release evidence recorded in `docs/acceptance/evidence-060/`.
-**Date:** 2026-08-22
+scope and release evidence recorded in `docs/acceptance/evidence-061/`.
+**Date:** 2026-08-24
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.60.2`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.61.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
-`0.1.0`, `hedron-charts`
-`0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
-`hedron-sim` `0.2.0`, `hedron-mcp` `0.2.1`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
+`0.1.1`, `hedron-charts`
+`0.2.1`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
+`hedron-sim` `0.2.1`, `hedron-mcp` `0.2.2`, `hedron-gradio` `0.2.1`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.58.1`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
@@ -24,10 +24,10 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
-**Phase focus:** Published train is **0.60** (D-108 / RFC-0089). Phase **0.60** (accepted
-D-108 / RFC-0089) is implemented and verified in-tree as `v0.60.2`, with the 27-gate packet and
-executable browser/unit coverage for styling issues #627–#635; PyPI publication is complete and
-human assistive-technology sign-off remains bounded by open #86. Prior
+**Phase focus:** Published train is **0.61** (RFC-0090). Phase **0.61** (verified
+RFC-0090) is implemented and verified in-tree as `v0.61.0`, with the 18-gate packet and
+executable browser/unit coverage for action-state/async and surface issues #668–#672; PyPI
+publication is complete and human assistive-technology sign-off remains bounded by open #86. Prior
 Published in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
@@ -84,6 +84,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `*-059` | Modern CSS platform and intuitive built-in styling | **Verified/Published** (0.59) | D-106 / D-107 / RFC-0087; `v0.59.0` |
 | `*-060` | Custom theme platform and styling completion | **Verified/Published** (0.60) | D-108 / RFC-0089; `v0.60.2`; owns #627–#635 |
+| `*-061` | Unified action state and server-first async boundaries | **Verified/Published** (0.61) | RFC-0090; `v0.61.0`; owns #668–#672 |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
 | `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |
@@ -152,7 +153,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - What’s new: [guides/whats-new-0.58.md](guides/whats-new-0.58.md).
 - Checker: `python scripts/check_release_gate.py 0.58.1`,
   `python scripts/verify_pkg_58.py`.
-- Historical registry note: the 0.58 packet predates the current 0.60.2 public release.
+- Historical registry note: the 0.58 packet predates the current 0.61.0 public release.
 
 ## Phase 0.24 evidence
 

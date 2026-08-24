@@ -70,7 +70,7 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.60.2,<0.61" hedron new my-app
+    uvx --from "hedron>=0.61.0,<0.62" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -78,15 +78,15 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "pip"
 
     ```bash
-    pip install "hedron>=0.60.2,<0.61" "uvicorn[standard]"
+    pip install "hedron>=0.61.0,<0.62" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.60.2,<0.61`. Extras and public-index notes:
+Pin `hedron>=0.61.0,<0.62`. Extras and public-index notes:
 [Installation](../getting-started/installation.md). Sample kit:
-`hedron-sample-kit>=0.2.0,<0.3`.
+`hedron-sample-kit>=0.2.1,<0.3`.
 
 ## Next
 

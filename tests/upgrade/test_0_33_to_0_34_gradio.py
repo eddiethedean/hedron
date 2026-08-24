@@ -11,7 +11,7 @@ GOLDEN = Path(__file__).resolve().parents[1] / "goldens_0_33_0" / "gradio_adapte
 
 
 def test_gradio_version_bumped() -> None:
-    assert __version__ == "0.2.0"
+    assert __version__ == "0.2.1"
 
 
 def test_disabled_adapter_snapshot_stable() -> None:

@@ -14,8 +14,8 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 | [`fastapi-workbench`](https://pypi.org/project/fastapi-workbench/) | Independent 1.x Posit Workbench adapter for plain FastAPI/ASGI apps | [FastAPI Workbench](../guides/fastapi-workbench.md) |
 
 Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). `hedron-sim`
-and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` on the
-0.60 train.
+and the sample kit install directly. Charts require `hedron-charts>=0.2.1,<0.3` on the
+0.61 train.
 
 !!! note "Maturity"
 
@@ -32,7 +32,7 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 | [hedron-explorer](hedron-explorer.md) | `hedron[dev]` | Development Component Explorer |
 | [hedron-extras](hedron-extras.md) | `hedron[extras]` | Curated toolkit (specialty widgets may be Experimental/stub) |
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=0.2.0,<0.3` on the 0.60 train |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=0.2.1,<0.3` on the 0.61 train |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-workbench](hedron-workbench.md) | `hedron[workbench]` | Posit Workbench compatibility facade (`HedronWorkbench`) |
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
@@ -40,10 +40,10 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.0,<0.3` 
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |
 
 ```bash
-pip install "hedron[data,dev,posit]>=0.60.2,<0.61"
+pip install "hedron[data,dev,posit]>=0.61.0,<0.62"
 ```
 
-Checkout tip is `v0.60.2`; applications install `>=0.60.2,<0.61` from PyPI.
+Checkout tip is `v0.60.2`; applications install `>=0.61.0,<0.62` from PyPI.
 
 ## Tooling-grade and independent Beta lines
 
@@ -62,11 +62,11 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 
 ```bash
-pip install "hedron[charts]>=0.60.2,<0.61"
-pip install "hedron-sample-kit>=0.2.0,<0.3" "hedron-sim>=0.2.0,<0.3"
+pip install "hedron[charts]>=0.61.0,<0.62"
+pip install "hedron-sample-kit>=0.2.1,<0.3" "hedron-sim>=0.2.0,<0.3"
 ```
 
-Checkout tip is `v0.60.2`; applications install `>=0.60.2,<0.61` from PyPI.
+Checkout tip is `v0.60.2`; applications install `>=0.61.0,<0.62` from PyPI.
 
 ## Authoring an extension
 

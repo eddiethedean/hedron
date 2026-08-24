@@ -65,6 +65,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_50.py` | Phase **0.50** Explorer architecture packet (living in-tree `v0.50.3`; omit `--allow-planned` after cut) |
 | `check_*_050.py` | Phase 0.50 architecture/provider/consume/query/diff/lab/headless/ecosystem/security/privacy/a11y/browser/perf/resilience/docs/compat/pkg/regress gate entry points |
 | `check_*_059.py` / `verify_pkg_59.py` | Phase 0.59 modern-CSS gate entry points; Planned gates validate packet wiring and Verified gates run focused evidence tests |
+| `check_061.py` / `verify_pkg_61.py` | Phase 0.61 action-state, async-boundary, surface, compatibility, and package evidence |
 | `verify_pkg_42.py` | Phase **0.42** production-grade Web Component platform packet (Published `v0.42.0`) |
 | `check_*_042.py` | Phase 0.42 stable/compat/review/at/perf/supply/regress gate entry points |
 | `verify_pkg_39.py` | Phase **0.39** rich data / OptimisticMutation packet (Published `v0.39.0`) |

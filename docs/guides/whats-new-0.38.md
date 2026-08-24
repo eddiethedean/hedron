@@ -1,6 +1,6 @@
 # What's new in Hedron 0.38
 
-**Published** as `v0.38.0` on 2026-08-14. Historical pin: `hedron>=0.38.0,<0.39` and `hedron-charts>=0.2.0,<0.3`.
+**Published** as `v0.38.0` on 2026-08-14. Historical pin: `hedron>=0.38.0,<0.39` and `hedron-charts>=0.2.1,<0.3`.
 For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
 
 Phase **0.38** ships Hedron's first-party high-fidelity chart system
@@ -19,7 +19,7 @@ Phase **0.38** ships Hedron's first-party high-fidelity chart system
 ```bash
 pip install "hedron>=0.38.0,<0.39" "hedron[charts]>=0.38.0,<0.39"
 # independent charts line:
-pip install "hedron-charts>=0.2.0,<0.3"
+pip install "hedron-charts>=0.2.1,<0.3"
 ```
 
 ## See also

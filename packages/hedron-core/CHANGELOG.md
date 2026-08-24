@@ -1,12 +1,17 @@
 # Changelog
 
+## [0.61.0] — 2026-08-24
+
+### Added
+- Unified action lifecycle, operation identity, bounded traces, server-authored async regions, and phase 0.61 surface contracts.
+
 ## [0.60.2] — 2026-08-24
 
 ### Fixed
 - Coordinated Workbench and Connect integration fixes from the 0.60.2 maintenance release.
 
 ### Changed
-- Coordinated train tip `0.60.2` (in-tree patch; tag/PyPI published).
+- Coordinated train tip `0.61.0` (in-tree patch; tag/PyPI published).
 
 ## [0.60.1] — 2026-08-23
 
@@ -15,7 +20,7 @@
 - Hardened serializer, URL, secret, upload, and path validation boundaries.
 
 ### Changed
-- Coordinated train tip `0.60.1` (in-tree patch; tag/PyPI deferred).
+- Coordinated train tip `0.61.1` (in-tree patch; tag/PyPI deferred).
 
 ## [0.60.0] — 2026-08-23
 

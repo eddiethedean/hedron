@@ -12,7 +12,7 @@ renderer used by FastAPI, map portable `InteractionResult` values to native Flas
 responses, and integrate CSRF double-submit cookies with Flask sessions. Does **not**
 install FastAPI.
 
-**Package maturity:** Beta · **Train:** `0.60.x` (published `v0.60.2` in-tree and on PyPI) · application pin `>=0.60.2,<0.61`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Train:** `0.61.x` (published `v0.61.0` in-tree and on PyPI) · application pin `>=0.61.0,<0.62`; repository checkouts use `uv sync`
 
 Adapter capability readiness is **Supported** when pinned — see
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
@@ -20,9 +20,9 @@ Adapter capability readiness is **Supported** when pinned — see
 ## Install
 
 ```bash
-pip install "hedron-flask>=0.60.2,<0.61"
+pip install "hedron-flask>=0.61.0,<0.62"
 # or
-uv add "hedron-flask>=0.60.2,<0.61"
+uv add "hedron-flask>=0.61.0,<0.62"
 ```
 
 Requires Python 3.11–3.14, `hedron-core`, and Flask 3.x.
@@ -30,7 +30,7 @@ Requires Python 3.11–3.14, `hedron-core`, and Flask 3.x.
 Scaffold a new Flask app:
 
 ```bash
-uvx --from "hedron>=0.60.2,<0.61" hedron new --flask my-flask-app
+uvx --from "hedron>=0.61.0,<0.62" hedron new --flask my-flask-app
 ```
 
 ## Quick start

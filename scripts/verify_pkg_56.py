@@ -136,6 +136,7 @@ def _check_versions(*, allow_planned: bool) -> None:
         or published.startswith("0.58.")
         or published.startswith("0.59.")
         or published.startswith("0.60.")
+        or published.startswith("0.61.")
     ):
         print(f"ok: 0.56 historical under living published {published}")
         return

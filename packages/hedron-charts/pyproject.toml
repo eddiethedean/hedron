@@ -1,6 +1,6 @@
 [project]
 name = "hedron-charts"
-version = "0.2.0"
+version = "0.2.1"
 description = "Visualization adapters and chart components for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -36,7 +36,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.60.0,<0.61",
+    "hedron-core>=0.61.0,<0.62",
 ]
 
 [project.optional-dependencies]

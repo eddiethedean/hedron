@@ -56,7 +56,7 @@ _PIN_CEILING = (
 )
 _TRAIN_PIN = f">={_PIN_FLOOR},<{_PIN_CEILING}"
 _ALPHA_PIN = ">=0.1.0,<0.2"
-_CHARTS_PIN = ">=0.2.0,<0.3"
+_CHARTS_PIN = ">=0.2.1,<0.3"
 _CHARTS_FLAGSHIP_PIN = _TRAIN_PIN
 _NATIVE_PIN = ">=0.1.2,<0.2"
 
@@ -3380,10 +3380,10 @@ def page_text(spec: ComponentDoc) -> str:
         else "[All component demos](index.md) · [Built-in API](../api/BUILT_INS.md) · [Testing](../guides/testing.md)"
     )
     phase_note = (
-        "\n!!! note \"Phase 0.61 in-tree preview\"\n\n"
-        "    This additive contract is implemented in-tree for Phase 0.61. It is not part of "
-        "the published 0.60.x Supported surface until "
-        "[RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md) is signed off.\n"
+        "\n!!! note \"Phase 0.61 published surface\"\n\n"
+        "    This additive contract is implemented and verified for the published 0.61.x Supported "
+        "surface. See "
+        "[RELEASE_0_61](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_61.md).\n"
         if spec.name in _PHASE_061_COMPONENTS
         else ""
     )

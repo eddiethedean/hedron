@@ -1,8 +1,8 @@
 # What’s new in 0.28
 
-!!! note "Current train is 0.60"
+!!! note "Current train is 0.61"
 
-    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.60.2,<0.61`). The pin below is historical for the 0.28 train only.
+    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.61.0,<0.62`). The pin below is historical for the 0.28 train only.
     See [What’s new in 0.51](whats-new-0.51.md).
 
 **Published** as `v0.28.2`. Historical pin: `hedron>=0.28.2,<0.29`.
@@ -27,7 +27,7 @@ From `0.27.x`:
 
 ```bash
 python -m pip install -U "hedron>=0.28.2,<0.29"
-python -m pip install -U "hedron-charts>=0.2.0,<0.3" "hedron-native>=0.1.2,<0.2"
+python -m pip install -U "hedron-charts>=0.2.1,<0.3" "hedron-native>=0.1.2,<0.2"
 ```
 
 Details: [RELEASE_0_28](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_28.md) · [upgrade guide](upgrade.md).

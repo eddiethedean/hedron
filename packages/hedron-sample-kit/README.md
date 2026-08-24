@@ -16,7 +16,7 @@ reference when authoring your own plugin distribution.
 ## Install
 
 ```bash
-pip install "hedron-sample-kit>=0.2.0,<0.3"
+pip install "hedron-sample-kit>=0.2.1,<0.3"
 ```
 
 Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.10` floor. See

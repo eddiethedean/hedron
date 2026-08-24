@@ -11,7 +11,7 @@ Capability maturity for *this* train: [What’s ready](whats-ready.md) ·
 Install pins: [Current release](current-release.md) ·
 [Installation](../getting-started/installation.md).
 
-## On the living 0.60 train
+## On the living 0.61 train
 
 | Topic | Disposition |
 |---|---|
@@ -24,13 +24,12 @@ Install pins: [Current release](current-release.md) ·
 
 | Phase | Focus | Status |
 |---|---|---|
-| **0.61** | Unified action state and server-first async boundaries | Implementation baseline complete in-tree; release evidence pending; not published or Supported; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
+| **0.61** | Unified action state and server-first async boundaries | **Verified and published in 0.61.0**; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
 | **0.62** | Responsive navigation, bounded optimistic UX, and localized failure isolation | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/NAVIGATION_OPTIMISM_062.md) |
 | **0.63** | Interaction profiling, static checks, and component interoperability | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
 | **0.64** | First-party Hedron HTMX extension for lifecycle state, accessibility, cleanup, and traces | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_HEDRON_EXTENSION_064.md) |
 
-These are not current published Supported capabilities. Phase 0.61 has an implementation baseline
-in the repository, but its release evidence is pending; 0.62–0.64 remain planning proposals.
+Phase 0.61 is a current published capability train. Phase 0.62–0.64 remain planning proposals.
 Their shared purpose is to make Hedron's existing forms, actions, jobs, fragments, Web Components,
 optimistic mutations, and Explorer feel like one interaction platform while preserving server
 authority, progressive enhancement, and no-Node Python consumption. See the [implementation
@@ -46,14 +45,14 @@ hydration, a virtual DOM, or a Node requirement.
 
 ## Verified 0.60 — custom theme platform and styling completion
 
-Phase 0.60 is implemented and verified in-tree. Capability-specific Required, Progressive,
+Phase 0.61 is implemented and verified in-tree. Capability-specific Required, Progressive,
 Experimental, and Deferred boundaries remain explicit in the [release notes](release-notes.md).
 
 | Topic | Disposition |
 |---|---|
 | ThemeSpec/ThemePatch, color handling, profiles, packages, accessibility modes, ThemePicker, and Theme Lab | **Verified and published in 0.60.2** |
-| Scoped CSS compiler, cascade, tokens, Theme variants, modern color/type/media | **Verified in 0.60 checkout** with bounded fallback behavior |
-| Brand, ToastHost, ConnectorFlow, and ScrollRegion zero-application-CSS contracts | **Verified in 0.60 checkout** from the phase gate fixtures |
+| Scoped CSS compiler, cascade, tokens, Theme variants, modern color/type/media | **Verified in 0.61 checkout** with bounded fallback behavior |
+| Brand, ToastHost, ConnectorFlow, and ScrollRegion zero-application-CSS contracts | **Verified in 0.61 checkout** from the phase gate fixtures |
 | Free-form CSS-in-Python, mandatory Node, automatic remote fonts | **Not planned**; use finite semantic APIs plus component `styles.css` and explicit local assets |
 
 ## Deferred and excluded

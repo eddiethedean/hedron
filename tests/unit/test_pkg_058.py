@@ -53,7 +53,7 @@ def test_pin_docs_and_public_exports() -> None:
     data = tomllib.loads(release.read_text(encoding="utf-8"))
     pin_ceiling = str(data.get("release", {}).get("pin_ceiling", ""))
     assert (
-        pin_ceiling.startswith("0.61")
+        pin_ceiling.startswith("0.62")
         or pin_ceiling.startswith("0.60")
         or "0.58" in pin_ceiling
         or "0.59" in pin_ceiling

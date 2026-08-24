@@ -1,12 +1,18 @@
 # Changelog
 
+## [0.61.0] — 2026-08-24
+
+### Added
+- Unified action state and server-first async boundaries across forms, jobs, fragments, supported elements, and composed surfaces.
+- Added bounded operation identity, stale-result rejection, explicit retry policy, trace projection, and ordinary HTML fallback.
+
 ## [0.60.2] — 2026-08-24
 
 ### Fixed
 - Corrected Workbench mount handoff for full `rserver-url` URLs and mismatched listener ports.
 
 ### Changed
-- Coordinated train tip `0.60.2` (in-tree patch; tag/PyPI published).
+- Coordinated train tip `0.61.0` (in-tree patch; tag/PyPI published).
 
 ## [0.60.1] — 2026-08-23
 
@@ -17,7 +23,7 @@
   multi-file result aggregation.
 
 ### Changed
-- Coordinated train tip `0.60.1` (in-tree patch; tag/PyPI deferred).
+- Coordinated train tip `0.61.1` (in-tree patch; tag/PyPI deferred).
 
 ## [0.60.0] — 2026-08-23
 
@@ -435,7 +441,7 @@
 ### Changed
 
 - Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).
-- Charts floor for `hedron[charts]` raised to `hedron-charts>=0.2.0,<0.3` (Plotly/Vega
+- Charts floor for `hedron[charts]` raised to `hedron-charts>=0.2.1,<0.3` (Plotly/Vega
   destroy-before-remount; tip charts `0.1.11` for OOB lifecycle).
 
 ## [0.28.1] — 2026-08-10

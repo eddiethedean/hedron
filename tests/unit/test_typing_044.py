@@ -34,6 +34,8 @@ def test_pyright_fixtures() -> None:
     assert good.is_file()
     assert bad.is_file()
     assert "hedron.plugin" not in good.read_text(encoding="utf-8")
-    cmd = ["uv", "run", "pyright", str(good)]
+    # Invoke the locked test interpreter directly so this check cannot rewrite the
+    # shared workspace environment while xdist workers are running.
+    cmd = [sys.executable, "-m", "pyright", str(good)]
     result = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
     assert result.returncode == 0, result.stdout + result.stderr

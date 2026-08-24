@@ -1,12 +1,17 @@
 # Changelog
 
+## [0.61.0] — 2026-08-24
+
+### Changed
+- Retained the compatibility facade on the 0.61 coordinated train; new features remain owned by `hedron-posit`.
+
 ## [0.60.2] — 2026-08-24
 
 ### Fixed
 - Corrected Workbench mount handoff for full `rserver-url` URLs and mismatched listener ports.
 
 ### Changed
-- Coordinated train tip `0.60.2` (in-tree patch; tag/PyPI published).
+- Coordinated train tip `0.61.0` (in-tree patch; tag/PyPI published).
 - Final published `hedron-workbench` compatibility release: existing
   applications remain supported through this compatibility surface; new
   applications should use `hedron-posit` and `HedronPosit`. Future release
@@ -18,7 +23,7 @@
 - Bug fixes from the 0.60.1 maintenance release.
 
 ### Changed
-- Coordinated train tip `0.60.1` (in-tree patch; tag/PyPI deferred).
+- Coordinated train tip `0.61.1` (in-tree patch; tag/PyPI deferred).
 
 ## [0.60.0] — 2026-08-23
 

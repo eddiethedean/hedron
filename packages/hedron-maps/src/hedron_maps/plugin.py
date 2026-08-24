@@ -24,9 +24,9 @@ _ASSETS = _ROOT / "assets" / "maplibre"
 
 PLUGIN_META = PluginMeta(
     name="hedron_maps",
-    version="0.1.0",
+    version="0.1.1",
     distribution="hedron-maps",
-    hedron_version=">=0.60,<0.61",
+    hedron_version=">=0.61,<0.62",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,

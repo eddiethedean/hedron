@@ -1,6 +1,6 @@
 # Phase 0.61: unified action state and server-first async boundaries
 
-**Status:** Implementation baseline complete / release evidence pending
+**Status:** Implemented, verified, tagged, and published as `v0.61.0`
 **Predecessor:** published 0.60 baseline  
 **Authority:** [RFC-0090](../rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md)  
 **Acceptance:** [RELEASE_0_61](../acceptance/RELEASE_0_61.md)

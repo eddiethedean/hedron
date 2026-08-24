@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.61.0] — 2026-08-24
+
+### Changed
+- Adopted the 0.61 coordinated train for Posit deployment boundaries and action-state metadata.
+
 ## [0.60.2] — 2026-08-24
 
 ### Fixed
@@ -7,7 +12,7 @@
 - Preserved resolved Connect runtime evidence when validating native app base URLs.
 
 ### Changed
-- Coordinated train tip `0.60.2` (in-tree patch; tag/PyPI published).
+- Coordinated train tip `0.61.0` (in-tree patch; tag/PyPI published).
 
 ## [0.60.1] — 2026-08-23
 
@@ -15,7 +20,7 @@
 - Bug fixes from the 0.60.1 maintenance release.
 
 ### Changed
-- Coordinated train tip `0.60.1` (in-tree patch; tag/PyPI deferred).
+- Coordinated train tip `0.61.1` (in-tree patch; tag/PyPI deferred).
 
 ## [0.60.0] — 2026-08-23
 

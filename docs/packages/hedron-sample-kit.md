@@ -4,14 +4,14 @@ Third-party-shaped sample Hedron plugin package.
 
 **Package maturity:** Beta tooling-grade · **Current compatible release:** `0.2.0`
 **Flagship extra:** none — install directly · **Import:** `hedron_sample_kit`  
-The repository source targets living Hedron train `0.60.x` (in-tree tip and PyPI release `v0.60.2`;
-PyPI consumers use `hedron-core>=0.60.2,<0.61` ). Reference / demo
+The repository source targets living Hedron train `0.61.x` (in-tree tip and PyPI release `v0.61.0`;
+PyPI consumers use `hedron-core>=0.61.0,<0.62` ). Reference / demo
 only — not an app framework.
 
 ## Install
 
 ```bash
-pip install "hedron-sample-kit>=0.2.0,<0.3"
+pip install "hedron-sample-kit>=0.2.1,<0.3"
 ```
 
 Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.10` floor. Details:

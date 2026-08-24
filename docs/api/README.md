@@ -34,7 +34,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
 The repository train tip and latest installable PyPI release are **`v0.60.2`**;
-application users should pin `hedron>=0.60.2,<0.61`.
+application users should pin `hedron>=0.61.0,<0.62`.
 
 !!! note "Contracts vs full reference"
 

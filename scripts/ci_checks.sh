@@ -58,7 +58,7 @@ cd "$ROOT"
 export UV_NO_PROGRESS="${UV_NO_PROGRESS:-1}"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.60.2}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.61.0}"
 CI_PYTHONS=(3.11 3.12 3.13 3.14)
 PYTHON_EXPLICIT=0
 ALL_PYTHONS=0
@@ -413,6 +413,7 @@ quality_verify_pkgs() {
   run_py scripts/verify_pkg_58.py
   run_py scripts/verify_pkg_59.py
   run_py scripts/verify_pkg_60.py
+  run_py scripts/verify_pkg_61.py
 }
 
 quality_docs() {
@@ -577,6 +578,7 @@ evidence_verify_pkgs() {
   run_py scripts/verify_pkg_58.py
   run_py scripts/verify_pkg_59.py
   run_py scripts/verify_pkg_60.py
+  run_py scripts/verify_pkg_61.py
 }
 
 cmd_evidence() {

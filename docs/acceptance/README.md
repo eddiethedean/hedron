@@ -72,8 +72,8 @@ status commentary, not a satisfied release gate.
   tagged, and published** as `v0.60.0` (D-108 / RFC-0089; 27 gates Verified; owns Hedron #627–#635)
 - [Reactive interaction shared acceptance rules](REACTIVE_INTERACTION_PHASES_061_063.md) — Proposed
   maturity, artifact, evidence, fallback, and cross-phase rules; no availability claim
-- [`v0.61` action state and async boundaries](RELEASE_0_61.md) — Proposed release plan with 16
-  Planned contract, lifecycle, race, host, trace, security, a11y, budget, upgrade, and package gates
+- [`v0.61` action state and async boundaries](RELEASE_0_61.md) — **Verified** release packet with
+  18 Verified contract, lifecycle, race, host, trace, security, a11y, budget, upgrade, and package gates
 - [`v0.62` navigation, optimism, and failure isolation](RELEASE_0_62.md) — Proposed release plan with
   17 Planned navigation, fallback, risk, conflict, identity, browser, budget, and package gates
 - [`v0.63` interaction tooling and interoperability](RELEASE_0_63.md) — Proposed release plan with

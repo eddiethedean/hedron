@@ -103,7 +103,7 @@ def test_version_is_synchronized() -> None:
         if classifier.startswith("Development Status ::")
     ]
     assert gradio_status == ["Development Status :: 4 - Beta"]
-    assert gradio["version"] == "0.2.0"
+    assert gradio["version"] == "0.2.1"
 
 
 def test_public_metadata_fields() -> None:
