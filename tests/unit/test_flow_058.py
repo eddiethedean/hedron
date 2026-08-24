@@ -104,6 +104,80 @@ def test_upload_flow_custom_field_name_http_round_trip() -> None:
     assert "stored-id" in ok.text
 
 
+def test_upload_flow_result_is_request_injected_and_authorized() -> None:
+    def allow() -> None:
+        return None
+
+    app = Hedron(title="upload-result", security="development", explorer="off", session_secret="r" * 32)
+    app.include_feature(
+        UploadFlow(
+            name="result-check",
+            field=UploadField(),
+            authorize=Depends(allow),
+            store=lambda handle: "stored-id",
+            result=lambda stored: Text(str(stored)),
+        )
+    )
+    result_routes = [route for route in app.routes if getattr(route, "path", "") == "/result-check/result"]
+    assert len(result_routes) == 1
+    assert len(result_routes[0].dependant.dependencies) == 1
+
+    client = TestClient(app)
+    csrf = client.get("/result-check/upload").cookies.get("hedron_csrf")
+    assert csrf
+    uploaded = client.post(
+        "/result-check/upload",
+        data={"csrf_token": csrf},
+        files={"file": ("a.txt", b"hello", "text/plain")},
+    )
+    assert uploaded.status_code == 200
+    result = client.get("/result-check/result")
+    assert result.status_code == 200
+    assert "stored-id" in result.text
+
+
+def test_upload_flow_supports_multiple_instances_and_preserves_all_stores() -> None:
+    def allow() -> None:
+        return None
+
+    app = Hedron(title="upload-multi", security="development", explorer="off", session_secret="m" * 32)
+    for name in ("avatars", "documents"):
+        app.include_feature(
+            UploadFlow(
+                name=name,
+                field=UploadField(),
+                authorize=Depends(allow),
+                store=lambda handle, prefix=name: f"{prefix}:{handle.filename}",
+                result=lambda stored: Text(str(stored)),
+            )
+        )
+    assert {route.path for route in app.routes}.issuperset({"/avatars/upload", "/documents/upload"})
+
+    batch_app = Hedron(title="upload-batch", security="development", explorer="off", session_secret="b" * 32)
+    batch_app.include_feature(
+        UploadFlow(
+            name="batch",
+            field=UploadField(budget=UploadBudget(maximum_size=10_000, maximum_count=3)),
+            authorize=Depends(allow),
+            store=lambda handle: handle.filename,
+            result=lambda stored: Text(str(stored)),
+        )
+    )
+    client = TestClient(batch_app)
+    csrf = client.get("/batch/upload").cookies.get("hedron_csrf")
+    assert csrf
+    response = client.post(
+        "/batch/upload",
+        data={"csrf_token": csrf},
+        files=[
+            ("file", ("a.txt", b"a", "text/plain")),
+            ("file", ("b.txt", b"b", "text/plain")),
+        ],
+    )
+    assert response.status_code == 200
+    assert "a.txt" in response.text and "b.txt" in response.text
+
+
 def test_upload_flow_rejects_missing_authorize() -> None:
     with pytest.raises(HedronError):
         UploadFlow(

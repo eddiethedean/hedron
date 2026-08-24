@@ -6,6 +6,8 @@ import inspect
 from collections.abc import Awaitable, Callable, Sequence
 from typing import Any, Generic, Protocol, TypeVar, cast
 
+from fastapi import Request
+
 from hedron.builtins.files import safe_download_response
 from hedron.handles import ActionHandle, FragmentHandle
 from hedron.upload import (
@@ -68,7 +70,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
         field: UploadField,
         authorize: object,
         store: Callable[[UploadHandle], StoredT | Awaitable[StoredT]],
-        result: Callable[[StoredT], ResultT | Awaitable[ResultT]],
+        result: Callable[[StoredT | list[StoredT]], ResultT | Awaitable[ResultT]],
         *,
         process: object | None = None,
         authorize_download: object | None = None,
@@ -131,7 +133,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
     def _session_key_result(self) -> str:
         return f"{_SESSION_RESULT_PREFIX}{self.name}"
 
-    async def _enqueue_process(self, request: object, stored: StoredT) -> str | None:
+    async def _enqueue_process(self, request: object, stored: object) -> str | None:
         process = self.process
         if process is None:
             return None
@@ -171,7 +173,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
                 ),
                 remediation="Use a single-field input model for UploadFlow process composition.",
             )
-        opaque = stored if isinstance(stored, (str, int, float, bool)) else str(stored)
+        opaque: object = stored if isinstance(stored, (str, int, float, bool, list)) else str(stored)
         data = input_model.model_validate({fields[0]: opaque})
         try:
             body = payload_fn(data)
@@ -264,10 +266,10 @@ class UploadFlow(Generic[StoredT, ResultT]):
                             remediation="Respect UploadField budget and filename rules.",
                         ) from exc
 
-                    stored: StoredT | None = None
+                    stored_items: list[StoredT] = []
                     for handle in handles:
                         try:
-                            stored = cast(StoredT, await flow._call(flow.store, handle))
+                            stored_items.append(cast(StoredT, await flow._call(flow.store, handle)))
                         except Exception as exc:
                             raise error(
                                 HED_UPLOADFLOW_0002,
@@ -277,9 +279,12 @@ class UploadFlow(Generic[StoredT, ResultT]):
                             ) from exc
                         if handle.owned:
                             cleanup_upload(handle)
-                    assert stored is not None
-                    opaque: str | int | float | bool = (
-                        stored if isinstance(stored, (str, int, float, bool)) else str(stored)
+                    assert stored_items
+                    stored: StoredT | list[StoredT] = (
+                        stored_items[0] if len(stored_items) == 1 else stored_items
+                    )
+                    opaque: object = (
+                        stored if isinstance(stored, (str, int, float, bool, list)) else str(stored)
                     )
                     request.session[flow._session_key_stored()] = opaque
                     job_id = await flow._enqueue_process(request, stored)
@@ -323,6 +328,11 @@ class UploadFlow(Generic[StoredT, ResultT]):
                 ],
                 return_annotation=object,
             )
+            # Route logical IDs are derived from the callable name. Each flow
+            # must therefore expose a distinct callable identity even though
+            # the implementation is a nested function.
+            upload_command.__name__ = f"upload_command_{flow.name}"
+            upload_command.__qualname__ = upload_command.__name__
 
             handle = app.command(
                 f"/{flow.name}/upload",
@@ -355,7 +365,6 @@ class UploadFlow(Generic[StoredT, ResultT]):
 
             upload_handle = _ensure_upload_command(app)
 
-            @app.screen(f"/{flow.name}/upload", title="Upload", name=f"{flow.name}-upload")
             def upload_screen() -> object:
                 from typing import cast
 
@@ -365,20 +374,21 @@ class UploadFlow(Generic[StoredT, ResultT]):
                 assert callable(form)
                 return Stack(Text("Upload"), cast(NodeLike, form()))
 
-            flow.upload_screen = upload_screen
+            upload_screen.__name__ = f"upload_screen_{flow.name}"
+            upload_screen.__qualname__ = upload_screen.__name__
+            flow.upload_screen = app.screen(
+                f"/{flow.name}/upload", title="Upload", name=f"{flow.name}-upload"
+            )(upload_screen)
             # Keep handle referenced so type-checkers know materialization ran.
             _ = upload_handle
-            return upload_screen
+            return flow.upload_screen
 
         def upload_command_factory(app: _UploadFlowApp) -> object:
             return _ensure_upload_command(app)
 
         def result_factory(app: _UploadFlowApp) -> object:
-            from fastapi import Request
-
             from hedron import Text
 
-            @app.refreshable(f"/{flow.name}/result", name=f"{flow.name}-result")
             async def result_view(request: Request) -> object:
                 session = getattr(request, "session", None)
                 if session is None:
@@ -395,9 +405,16 @@ class UploadFlow(Generic[StoredT, ResultT]):
                     return Text("Upload result unavailable")
                 return rendered if rendered is not None else Text(str(stored))
 
-            flow.result_view = result_view
-            flow.status_view = result_view
-            return result_view
+            result_view.__name__ = f"result_view_{flow.name}"
+            result_view.__qualname__ = result_view.__name__
+            registered = app.refreshable(
+                f"/{flow.name}/result",
+                name=f"{flow.name}-result",
+                dependencies=(flow.authorize,),
+            )(result_view)
+            flow.result_view = registered
+            flow.status_view = registered
+            return registered
 
         def download_factory(app: _UploadFlowApp) -> object | None:
             if flow.authorize_download is None:
