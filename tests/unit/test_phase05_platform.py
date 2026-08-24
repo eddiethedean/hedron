@@ -168,6 +168,18 @@ def test_cache_data_hit_miss_and_scope_isolation() -> None:
     assert "miss" in kinds and "hit" in kinds
 
 
+def test_cache_data_returns_isolated_mutable_values() -> None:
+    reset_cache_for_tests()
+
+    @cache_data(ttl=60, scope="tenant", vary_on=("tenant_id",))
+    def load(tenant_id: int) -> list[int]:
+        return [tenant_id]
+
+    first = load(tenant_id=1)
+    first.append(99)
+    assert load(tenant_id=1) == [1]
+
+
 def test_cache_data_caches_none_results() -> None:
     """#100: cached ``None`` must be a hit, not treated as a miss."""
     reset_cache_for_tests()

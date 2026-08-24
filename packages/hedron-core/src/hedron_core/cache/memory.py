@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import copy
 import inspect
 import json
 import threading
@@ -60,7 +61,7 @@ class InMemoryCacheBackend:
             if entry.expires_at is not None and time.monotonic() >= entry.expires_at:
                 del self._store[key]
                 return False, None
-            return True, entry.value
+            return True, copy.deepcopy(entry.value)
 
     def age_ms(self, key: str) -> float | None:
         with self._lock:
@@ -83,7 +84,9 @@ class InMemoryCacheBackend:
         except TypeError:
             size = 0
         with self._lock:
-            self._store[key] = _Entry(value=value, expires_at=expires, tags=tags, size=size)
+            self._store[key] = _Entry(
+                value=copy.deepcopy(value), expires_at=expires, tags=tags, size=size
+            )
 
     def invalidate(self, *, tags: tuple[str, ...] = (), keys: tuple[str, ...] = ()) -> int:
         removed = 0
