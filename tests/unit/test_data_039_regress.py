@@ -86,6 +86,14 @@ def test_open_bug_inmemory_fetch_and_nested_secret_are_isolated() -> None:
     rows = normalize_rows([{"nested": {"token": Secret("secret")}}])
     assert rows == [{"nested": {"token": "***"}}]
 
+    columns = normalize_rows(
+        {
+            "token": [Secret("column-secret")],
+            "nested": [{"password": Secret("nested-column-secret")}],
+        }
+    )
+    assert columns == [{"token": "***", "nested": {"password": "***"}}]
+
 
 def test_039_rows_to_tree_rejects_duplicate_ids() -> None:
     with pytest.raises(HedronError, match="HED-DATA-0034"):

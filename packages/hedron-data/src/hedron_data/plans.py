@@ -74,9 +74,10 @@ class TransformStep:
             raise ValueError(f"Invalid sort direction {self.direction!r}")
         if self.op in {"filter", "sort", "project", "aggregate"} and not self.field:
             raise ValueError(f"Transform op {self.op!r} requires field")
-        if self.op in {"offset", "sample"}:
-            if isinstance(self.value, bool) or not isinstance(self.value, int) or self.value < 0:
-                raise ValueError(f"Transform op {self.op!r} requires a non-negative integer")
+        if self.op in {"offset", "sample"} and (
+            isinstance(self.value, bool) or not isinstance(self.value, int) or self.value < 0
+        ):
+            raise ValueError(f"Transform op {self.op!r} requires a non-negative integer")
         return self
 
 

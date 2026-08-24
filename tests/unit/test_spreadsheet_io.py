@@ -123,11 +123,12 @@ def test_importers_skip_blank_separator_rows() -> None:
     ns_text = "urn:oasis:names:tc:opendocument:xmlns:text:1.0"
     ods_xml = (
         '<?xml version="1.0" encoding="UTF-8"?>'
-        f'<office:document-content xmlns:office="{ns_office}" xmlns:table="{ns_table}" xmlns:text="{ns_text}">'
+        f'<office:document-content xmlns:office="{ns_office}"'
+        f' xmlns:table="{ns_table}" xmlns:text="{ns_text}">'
         '<office:body><office:spreadsheet><table:table table:name="Sheet1">'
-        '<table:table-row><table:table-cell><text:p>a</text:p></table:table-cell></table:table-row>'
-        '<table:table-row/>'
-        '<table:table-row><table:table-cell><text:p>x</text:p></table:table-cell></table:table-row>'
+        "<table:table-row><table:table-cell><text:p>a</text:p></table:table-cell></table:table-row>"
+        "<table:table-row/>"
+        "<table:table-row><table:table-cell><text:p>x</text:p></table:table-cell></table:table-row>"
         "</table:table></office:spreadsheet></office:body></office:document-content>"
     )
     ods = BytesIO()
