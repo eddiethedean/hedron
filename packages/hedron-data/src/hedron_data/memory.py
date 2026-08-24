@@ -199,7 +199,7 @@ class InMemoryDataSource:
                 reverse=direction == "desc",
             )
         total = len(items)
-        page = items[q.offset : q.offset + q.limit]
+        page = [copy.deepcopy(row) for row in items[q.offset : q.offset + q.limit]]
         if q.projection:
             if self._secret_fields.intersection(q.projection):
                 raise error(

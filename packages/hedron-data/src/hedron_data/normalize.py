@@ -7,16 +7,14 @@ from typing import cast
 
 from hedron_core.diagnostics import error
 from hedron_core.models import Model
-from hedron_core.security import Secret
+from hedron_core.security import redact_value
 from hedron_core.typing_aliases import JsonValue
 
 _MAX_INLINE_ROWS = 10_000
 
 
 def _cell(value: object) -> JsonValue:
-    if isinstance(value, Secret):
-        return "***"
-    return cast(JsonValue, value)
+    return cast(JsonValue, redact_value(value))
 
 
 def _row_to_mapping(row: object) -> dict[str, JsonValue]:
@@ -126,7 +124,7 @@ def normalize_rows(data: object, *, max_rows: int = _MAX_INLINE_ROWS) -> list[di
                 )
             if length == 0:
                 return []
-            return [{str(k): cast(JsonValue, data[k][i]) for k in keys} for i in range(length)]
+            return [{str(k): _cell(data[k][i]) for k in keys} for i in range(length)]
         return [_row_to_mapping(data)]
     if isinstance(data, Sequence) and not isinstance(data, (str, bytes)):
         if len(data) > max_rows:

@@ -45,3 +45,21 @@ def test_collab_update_delete_is_a_conflict() -> None:
         result = merge_changes("v1", local, remote)
         assert result.ok is False
         assert result.conflicts[0].message == "Concurrent update/delete"
+
+
+def test_collab_insert_update_and_empty_insert_are_conflicts() -> None:
+    result = merge_changes(
+        "v1",
+        DataChanges(inserts=({"id": "2", "v": "local"},)),
+        DataChanges(updates=(CellUpdate(row_key="2", field="v", value="remote"),)),
+    )
+    assert result.ok is False
+    assert result.conflicts[0].message == "Concurrent insert/update"
+
+    empty = merge_changes(
+        "v1",
+        DataChanges(inserts=({},), dataset_version="v1"),
+        DataChanges(inserts=({},), dataset_version="v1"),
+    )
+    assert empty.ok is False
+    assert empty.conflicts

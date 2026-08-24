@@ -367,6 +367,8 @@ def import_rows_xlsx(
     headers = [h or f"col_{i}" for i, h in enumerate(matrix[0])]
     out: list[dict[str, JsonValue]] = []
     for row in matrix[1:]:
+        if not row or not any(row):
+            continue
         item: dict[str, JsonValue] = {
             headers[i]: (row[i] if i < len(row) else "") for i in range(len(headers))
         }
@@ -511,6 +513,7 @@ def import_rows_ods(
             return [
                 {headers[i]: (row[i] if i < len(row) else "") for i in range(len(headers))}
                 for row in matrix[1:]
+                if row and any(row)
             ]
         # Legacy hedron CSV-in-zip ODS from earlier 0.12 drafts.
         raw = _read_zip_member(

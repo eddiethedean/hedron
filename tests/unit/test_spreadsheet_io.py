@@ -103,3 +103,36 @@ def test_xlsx_export_import_rejects_spaced_formula_payload() -> None:
             _ods_with_cell(' =HYPERLINK("http://evil","x")'),
             formula_policy="reject",
         )
+
+
+def test_importers_skip_blank_separator_rows() -> None:
+    xlsx = export_rows_xlsx([{"a": "x", "b": "y"}], ["a", "b"])
+    with zipfile.ZipFile(BytesIO(xlsx), "r") as source:
+        sheet = source.read("xl/worksheets/sheet1.xml").decode("utf-8")
+        members = {item.filename: source.read(item) for item in source.infolist()}
+    sheet = sheet.replace('</row><row r="2">', '</row><row r="2"/><row r="3">', 1)
+    members["xl/worksheets/sheet1.xml"] = sheet.encode("utf-8")
+    rebuilt = BytesIO()
+    with zipfile.ZipFile(rebuilt, "w", compression=zipfile.ZIP_DEFLATED) as target:
+        for name, payload in members.items():
+            target.writestr(name, payload)
+    assert import_rows_xlsx(rebuilt.getvalue()) == [{"a": "x", "b": "y"}]
+
+    ns_office = "urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+    ns_table = "urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+    ns_text = "urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+    ods_xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        f'<office:document-content xmlns:office="{ns_office}"'
+        f' xmlns:table="{ns_table}" xmlns:text="{ns_text}">'
+        '<office:body><office:spreadsheet><table:table table:name="Sheet1">'
+        "<table:table-row><table:table-cell><text:p>a</text:p></table:table-cell></table:table-row>"
+        "<table:table-row/>"
+        "<table:table-row><table:table-cell><text:p>x</text:p></table:table-cell></table:table-row>"
+        "</table:table></office:spreadsheet></office:body></office:document-content>"
+    )
+    ods = BytesIO()
+    with zipfile.ZipFile(ods, "w", compression=zipfile.ZIP_DEFLATED) as target:
+        target.writestr("mimetype", "application/vnd.oasis.opendocument.spreadsheet")
+        target.writestr("content.xml", ods_xml)
+    assert import_rows_ods(ods.getvalue()) == [{"a": "x"}]
