@@ -28,6 +28,8 @@ def test_custom_theme_controls_legacy_stylesheet_consumers() -> None:
     css = emit_theme_css(theme)
 
     assert "--hedron-color-accent: #9b2c8c;" in css
+    assert "--hedron-color-link: #9b2c8c;" in css
+    assert "--hedron-color-selection-bg: #9b2c8c;" in css
     assert "--hedron-default-accent: var(--hedron-color-accent, #2563eb);" in css
     assert "--hedron-default-radius: var(--hedron-shape-radius, 0.2rem);" in css
     assert "--hedron-default-shadow: var(--hedron-elevation-raised, none);" in css

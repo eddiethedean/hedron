@@ -19,6 +19,7 @@ from hedron_core.theme import (
     Theme,
     compatibility_theme_vars,
     default_theme,
+    derived_theme_tokens,
     emit_theme_css,
 )
 from hedron_core.theme_platform import (
@@ -74,6 +75,9 @@ class ThemeResolution:
     modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
+    aliases: Mapping[str, str] = field(default_factory=dict)
+    groups: Mapping[str, str] = field(default_factory=dict)
+    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     provenance: tuple[Mapping[str, Any], ...] = ()
     source_schema: str = "hedron.theme/1"
 
@@ -96,6 +100,11 @@ class ThemeResolution:
             "accessibility_modes": {
                 key: dict(sorted(value.items()))
                 for key, value in sorted(self.accessibility_modes.items())
+            },
+            "aliases": dict(sorted(self.aliases.items())),
+            "groups": dict(sorted(self.groups.items())),
+            "recipes": {
+                key: dict(sorted(value.items())) for key, value in sorted(self.recipes.items())
             },
             "provenance": [dict(item) for item in self.provenance],
             "source_schema": self.source_schema,
@@ -122,12 +131,17 @@ def resolve_theme(theme: Theme | ThemeSpec) -> ThemeResolution:
         source_schema = "hedron.theme/1"
     return ThemeResolution(
         name=resolved.name,
-        tokens=dict(resolved.tokens),
+        tokens={**derived_theme_tokens(resolved), **dict(resolved.tokens)},
         derived={key.removeprefix("--hedron-"): value for key, value in compatibility.items()},
         modes={key: dict(value) for key, value in resolved.modes.items()},
         variants={key: dict(value) for key, value in resolved.variants.items()},
         accessibility_modes={
             key: dict(value) for key, value in resolved.accessibility_modes.items()
+        },
+        aliases=dict(getattr(source, "aliases", {})),
+        groups=dict(getattr(source, "groups", {})),
+        recipes={
+            key: dict(value) for key, value in getattr(source, "recipes", {}).items()
         },
         provenance=provenance,
         source_schema=source_schema,
@@ -154,6 +168,26 @@ def component_contract_manifest() -> dict[str, Any]:
     """Project theme contracts and element ABI metadata into one stable manifest."""
 
     entries = [_contract_dict(item) for item in registered_component_theme_contracts()]
+    contract_names = {item["logical_id"] for item in entries}
+    for component in get_registry().components():
+        if component.name in contract_names:
+            continue
+        entries.append(
+            {
+                "logical_id": component.logical_id,
+                "name": component.name,
+                "kind": "registered-component",
+                "parts": [],
+                "slots": dict(sorted(component.slots.items())),
+                "states": ["default"],
+                "variants": ["default"],
+                "required_tokens": [],
+                "roles": [],
+                "accessibility_notes": component.accessibility_notes,
+                "style_symbols": dict(sorted(component.style_symbols.items())),
+                "distribution": component.distribution,
+            }
+        )
     for element in get_registry().element_definitions():
         entries.append(
             {
@@ -165,7 +199,7 @@ def component_contract_manifest() -> dict[str, Any]:
                 "parts": list(element.parts),
                 "slots": dict(sorted(element.slots.items())),
                 "required_tokens": list(element.tokens),
-                "states": list(element.state_ownership),
+                "states": [field.name for field in element.state_ownership],
                 "events": list(element.events),
                 "a11y_contract": dict(element.a11y_contract),
                 "style_contract": dict(element.style_contract),
@@ -233,6 +267,10 @@ def build_state_matrix(
     """Build a deterministic, bounded state matrix from the registry manifest."""
 
     wanted = set(components) if components is not None else None
+
+    def viewport_key(value: str) -> tuple[int, str]:
+        return (0, f"{int(value):08d}") if value.isdigit() else (1, value)
+
     entries: list[StateMatrixEntry] = []
     for item in component_contract_manifest()["components"]:
         component = str(item["logical_id"])
@@ -243,7 +281,9 @@ def build_state_matrix(
         for state in sorted(set(states)):
             for variant in sorted(set(variants)):
                 for mode in sorted(set(str(value) for value in modes)):
-                    for viewport in sorted(set(str(value) for value in viewports), key=int):
+                    for viewport in sorted(
+                        set(str(value) for value in viewports), key=viewport_key
+                    ):
                         case_id = ":".join((component, state, variant, mode, viewport))
                         entries.append(
                             StateMatrixEntry(case_id, component, state, variant, mode, viewport)

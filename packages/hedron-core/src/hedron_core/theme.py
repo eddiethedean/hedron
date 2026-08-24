@@ -34,6 +34,7 @@ __all__ = [
     "compile_palette",
     "compatibility_theme_vars",
     "design_system_vars",
+    "derived_theme_tokens",
     "contrast_diagnostics",
     "contrast_ratio",
     "default_theme",
@@ -563,6 +564,27 @@ def design_system_vars(theme: Theme) -> dict[str, str]:
     return variables
 
 
+def derived_theme_tokens(theme: Theme) -> dict[str, str]:
+    """Derive bounded interactive tokens from canonical theme inputs."""
+
+    tokens = dict(theme.tokens)
+    palette = {key.replace(".", "-"): value for key, value in theme.palette.items()}
+    derived: dict[str, str] = {}
+    if "color.link" not in tokens and "color.accent" in tokens:
+        derived["color.link"] = tokens["color.accent"]
+    if "color.accent-hover" not in tokens:
+        derived["color.accent-hover"] = palette.get(
+            "accent-hover", tokens.get("color.accent", "")
+        )
+    if "color.selection-bg" not in tokens and "color.accent" in tokens:
+        derived["color.selection-bg"] = palette.get(
+            "selection-bg", tokens["color.accent"]
+        )
+    if "color.selection-fg" not in tokens and "color.fg" in tokens:
+        derived["color.selection-fg"] = tokens["color.fg"]
+    return {key: value for key, value in derived.items() if value}
+
+
 _DEFAULT_COMPATIBILITY_FALLBACKS: Mapping[str, str] = {
     "bg": "#f6f8fb",
     "surface": "#ffffff",
@@ -670,8 +692,9 @@ def emit_theme_css(theme: Theme) -> str:
     """
     design = design_system_vars(theme)
     compatibility = compatibility_theme_vars(theme)
+    emitted_tokens = {**derived_theme_tokens(theme), **dict(theme.tokens)}
     lines = ["@layer tokens {", ":root {"]
-    for key, value in sorted(theme.tokens.items()):
+    for key, value in sorted(emitted_tokens.items()):
         lines.append(f"  {_token_to_css_var(key)}: {value};")
     for key in design:
         lines.append(f"  {key}: {design[key]};")
@@ -684,7 +707,7 @@ def emit_theme_css(theme: Theme) -> str:
             lines.append(f"  {_token_to_css_var(key)}: {value};")
         lines.append("}")
     lines.append(f'[data-hedron-theme="{theme.name}"] {{')
-    for key, value in sorted(theme.tokens.items()):
+    for key, value in sorted(emitted_tokens.items()):
         lines.append(f"  {_token_to_css_var(key)}: {value};")
     for key in design:
         lines.append(f"  {key}: {design[key]};")
@@ -719,14 +742,14 @@ def emit_theme_css(theme: Theme) -> str:
         lines.append("}")
         # Explicit light preference must defeat system dark preference.
         lines.append(':root[data-theme="light"] {')
-        for key, value in sorted(theme.tokens.items()):
+        for key, value in sorted(emitted_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
         lines.append("}")
         lines.append(
             f'[data-hedron-theme="{theme.name}"][data-theme="light"], '
             f'[data-hedron-theme="{theme.name}"][data-hedron-color-mode="light"] {{'
         )
-        for key, value in sorted(theme.tokens.items()):
+        for key, value in sorted(emitted_tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
         lines.append("}")
     for mode, values in sorted(theme.accessibility_modes.items()):
