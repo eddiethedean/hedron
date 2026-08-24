@@ -78,14 +78,14 @@ def _format_attr(name: str, value: HtmlAttrValue, *, mount_path: str = "") -> st
     if value is None:
         return None
     _require_safe_attr_name(name)
-    if name.startswith("on"):
+    lower = name.lower()
+    if lower.startswith("on"):
         raise error(
             "HED-SEC-0002",
             title="Inline event handler rejected",
             explanation=f"Attribute {name!r} is an inline event handler.",
             remediation="Use HTMX attributes or registered Web Components instead.",
         )
-    lower = name.lower()
     reject_hx_eval_value(lower, value)
     if lower == "style":
         if default_html_policy.is_safe_layout_style(value):

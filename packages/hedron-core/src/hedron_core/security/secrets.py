@@ -111,6 +111,10 @@ def redact_value(value: object) -> object:
         return tuple(redact_value(v) for v in value)
     if isinstance(value, dict):
         return {k: redact_value(v) for k, v in value.items()}
+    if isinstance(value, set):
+        return {redact_value(v) for v in value}
+    if isinstance(value, frozenset):
+        return frozenset(redact_value(v) for v in value)
     return value
 
 

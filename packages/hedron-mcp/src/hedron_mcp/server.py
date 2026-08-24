@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import inspect
 import json
+import unicodedata
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from urllib.parse import unquote, urlparse
@@ -55,6 +56,7 @@ def _percent_decode_uri(uri: str) -> str:
 
 
 def _uri_has_traversal(candidate: str) -> bool:
+    candidate = unicodedata.normalize("NFKC", candidate)
     lowered = candidate.lower()
     if "%2e%2e" in lowered or "%2e." in lowered or ".%2e" in lowered:
         return True
