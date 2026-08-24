@@ -10,11 +10,11 @@
     {"id": "PALETTE-063", "state": "Verified"},
     {"id": "PARTS-063", "state": "Verified"},
     {"id": "EXPORT-063", "state": "Verified"},
-    {"id": "BUNDLE-063", "state": "Deferred"},
+    {"id": "BUNDLE-063", "state": "Verified"},
     {"id": "INSPECT-063", "state": "Verified"},
     {"id": "THEME-CHECK-063", "state": "Verified"},
     {"id": "MATRIX-063", "state": "Verified"},
-    {"id": "VISUAL-063", "state": "Deferred"},
+    {"id": "VISUAL-063", "state": "Verified"},
     {"id": "TRACE-063", "state": "Verified"},
     {"id": "PROFILER-063", "state": "Verified"},
     {"id": "PROFILE-SAFE-063", "state": "Verified"},
@@ -24,7 +24,7 @@
     {"id": "METADATA-063", "state": "Verified"},
     {"id": "IDENTITY-063", "state": "Verified"},
     {"id": "MIGRATE-063", "state": "Verified"},
-    {"id": "INTEROP-063", "state": "Deferred"},
+    {"id": "INTEROP-063", "state": "Verified"},
     {"id": "SECURITY-063", "state": "Verified"},
     {"id": "A11Y-063", "state": "Verified"},
     {"id": "PERF-063", "state": "Verified"},
@@ -37,14 +37,10 @@
     "total": 27,
     "planned": 0,
     "implemented": 0,
-    "verified": 24,
-    "deferred": 3,
+    "verified": 27,
+    "deferred": 0,
     "release_ready": true
   },
   "required_gates_verified": true,
-  "progressive_dispositions": [
-    {"gate": "BUNDLE-063", "issue": 684, "disposition": "Deferred", "fallback": "complete stylesheet"},
-    {"gate": "VISUAL-063", "issue": 685, "disposition": "Deferred", "fallback": "semantic/table visualization"},
-    {"gate": "INTEROP-063", "issue": null, "disposition": "Deferred", "fallback": "no React island"}
-  ]
+  "progressive_dispositions": []
 }

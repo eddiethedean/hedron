@@ -1,0 +1,15 @@
+@layer reset, tokens, base, components, utilities, overrides;
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { min-width: 20rem; text-size-adjust: 100%; }
+  body { margin: 0; }
+  button, input, select, textarea { font: inherit; }
+}
+@layer base {
+  :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+    outline: 3px solid var(--hedron-color-focus, #2563eb);
+    outline-offset: 2px;
+  }
+  :where([aria-busy="true"], .hedron-is-busy) { cursor: progress; }
+  :where([aria-invalid="true"], .hedron-has-error) { border-color: var(--hedron-color-danger, #c73939); }
+}

@@ -1,0 +1,23 @@
+@layer utilities {
+  @media (forced-colors: active) {
+    :where(.hedron-button, .hedron-card, .hedron-surface, .hedron-dialog, .hedron-popover) {
+      forced-color-adjust: auto;
+      border-color: ButtonText;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(*, *::before, *::after) {
+      animation-duration: 0ms !important;
+      transition-duration: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  @media (prefers-reduced-transparency: reduce), print {
+    :where(.hedron-surface--translucent, .hedron-surface--glass, .hedron-card--translucent,
+      .hedron-card--glass, .hedron-dialog--glass, .hedron-popover--glass) {
+      background: var(--hedron-color-surface, #fff);
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+  }
+}

@@ -423,6 +423,12 @@ from hedron_core.prepare import (
     PrepareTiming,
     prepare_tree,
 )
+from hedron_core.react_island import (
+    REACT_ISLAND_RECIPE,
+    ReactIslandRecipe,
+    react_island_host,
+    react_island_recipe,
+)
 from hedron_core.registry import (
     AddressableMeta,
     AssetMeta,
@@ -465,6 +471,14 @@ from hedron_core.security_policy import (
 )
 from hedron_core.sse_ext import SseRegion, SseTrigger
 from hedron_core.streaming import ChunkedList, StreamBudget, StreamedDocument, TokenStream
+from hedron_core.style_bundles import (
+    STYLE_BUNDLE_COMPONENTS,
+    StyleBundle,
+    compare_style_bundle_sizes,
+    compile_style_bundle,
+    style_bundle_asset_refs,
+    style_bundle_manifest,
+)
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.testgen import GENERATOR_VERSION, generate_interaction_tests
 from hedron_core.theme import (
@@ -579,6 +593,13 @@ from hedron_core.visualization import (
     authorized_chart_event,
     validate_annotation,
     validate_chart_event,
+)
+from hedron_core.visualization_theme import (
+    VISUALIZATION_ROLES,
+    VisualizationPalette,
+    VisualizationSeries,
+    emit_visualization_theme_css,
+    resolve_visualization_theme,
 )
 
 __version__ = "0.62.0"
@@ -1000,6 +1021,8 @@ __all__ = [
     "RenderContext",
     "RenderMode",
     "RenderResult",
+    "REACT_ISLAND_RECIPE",
+    "ReactIslandRecipe",
     "RenderSession",
     "RenderTrace",
     "replay",
@@ -1058,6 +1081,12 @@ __all__ = [
     "StructuralBindingAdapter",
     "StructuredLogAuditSink",
     "styles_from_manifest",
+    "STYLE_BUNDLE_COMPONENTS",
+    "StyleBundle",
+    "compare_style_bundle_sizes",
+    "compile_style_bundle",
+    "style_bundle_asset_refs",
+    "style_bundle_manifest",
     "StyleRecipe",
     "StyleScope",
     "ThemePicker",
@@ -1065,6 +1094,8 @@ __all__ = [
     "resolve_theme_preference",
     "theme_boot_asset",
     "theme_markers",
+    "react_island_host",
+    "react_island_recipe",
     "StyleSymbols",
     "SubmitButton",
     "Suppression",
@@ -1103,11 +1134,16 @@ __all__ = [
     "validate_chart_event",
     "validate_directory_upload",
     "validate_element_style_contract",
+    "emit_visualization_theme_css",
+    "resolve_visualization_theme",
     "Video",
     "is_safe_navigation_url",
     "ViewportHint",
+    "VISUALIZATION_ROLES",
     "VisualizationAdapter",
+    "VisualizationPalette",
     "VisualizationLimits",
+    "VisualizationSeries",
     "WorkflowEditorView",
     "WorkflowError",
     "WorkflowNode",

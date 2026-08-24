@@ -1,0 +1,122 @@
+{
+  "comparison": {
+    "complete_bytes": 116223,
+    "selected_bytes": 17030,
+    "selected_is_smaller": true
+  },
+  "manifest": [
+    {
+      "byte_size": 16770,
+      "components": [
+        "app-shell"
+      ],
+      "dependencies": [
+        "hedron:styles:tokens",
+        "hedron:styles:base",
+        "hedron:styles:a11y"
+      ],
+      "digest": "sha256-5eb6e233fe1773e04c33a9bb430e6992912c73918019b3921df731eec868e808",
+      "href": "/hedron-static/bundles/app-shell.css",
+      "logical_id": "hedron:styles:app-shell"
+    },
+    {
+      "byte_size": 17030,
+      "components": [
+        "button"
+      ],
+      "dependencies": [
+        "hedron:styles:tokens",
+        "hedron:styles:base",
+        "hedron:styles:a11y"
+      ],
+      "digest": "sha256-4ad08cb3e2ff88746537bcbbfc232c36b022ee3bab9f290382986d72d3a15e85",
+      "href": "/hedron-static/bundles/button.css",
+      "logical_id": "hedron:styles:button"
+    },
+    {
+      "byte_size": 16933,
+      "components": [
+        "card"
+      ],
+      "dependencies": [
+        "hedron:styles:tokens",
+        "hedron:styles:base",
+        "hedron:styles:a11y"
+      ],
+      "digest": "sha256-3da35c62c5e5a2d0c2c235b5b2ed16724eba73b0e4bfb94830a2d67b00da72b2",
+      "href": "/hedron-static/bundles/card.css",
+      "logical_id": "hedron:styles:card"
+    },
+    {
+      "byte_size": 16815,
+      "components": [
+        "chart"
+      ],
+      "dependencies": [
+        "hedron:styles:tokens",
+        "hedron:styles:base",
+        "hedron:styles:a11y"
+      ],
+      "digest": "sha256-4fd490ecb03d7a0af67bdddcc37bcc11a0c5b333b2a4b7a8619e310b1fdcb139",
+      "href": "/hedron-static/bundles/chart.css",
+      "logical_id": "hedron:styles:chart"
+    },
+    {
+      "byte_size": 16808,
+      "components": [
+        "dialog"
+      ],
+      "dependencies": [
+        "hedron:styles:tokens",
+        "hedron:styles:base",
+        "hedron:styles:a11y"
+      ],
+      "digest": "sha256-b91f580cb38b8e92c8937ce3fcb7a1675b2284d6b2f92a1dec5462a42abf27cc",
+      "href": "/hedron-static/bundles/dialog.css",
+      "logical_id": "hedron:styles:dialog"
+    },
+    {
+      "byte_size": 16804,
+      "components": [
+        "form"
+      ],
+      "dependencies": [
+        "hedron:styles:tokens",
+        "hedron:styles:base",
+        "hedron:styles:a11y"
+      ],
+      "digest": "sha256-d62e26b420e96e8f4592536791476f7bc67088bf0754350509dbd841b6d9d4a6",
+      "href": "/hedron-static/bundles/form.css",
+      "logical_id": "hedron:styles:form"
+    },
+    {
+      "byte_size": 16752,
+      "components": [
+        "popover"
+      ],
+      "dependencies": [
+        "hedron:styles:tokens",
+        "hedron:styles:base",
+        "hedron:styles:a11y"
+      ],
+      "digest": "sha256-1803c1e1631f217d7e85a0ce52f8b85551574072a128051260c20778c26c40db",
+      "href": "/hedron-static/bundles/popover.css",
+      "logical_id": "hedron:styles:popover"
+    },
+    {
+      "byte_size": 17439,
+      "components": [
+        "surface"
+      ],
+      "dependencies": [
+        "hedron:styles:tokens",
+        "hedron:styles:base",
+        "hedron:styles:a11y"
+      ],
+      "digest": "sha256-3504623c830ce450464d2f5ebe904a2b1df81b94ca38ae44fa177a889d530b03",
+      "href": "/hedron-static/bundles/surface.css",
+      "logical_id": "hedron:styles:surface"
+    }
+  ],
+  "schema": "hedron.style-bundles/1"
+}

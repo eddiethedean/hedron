@@ -1,6 +1,6 @@
 # Phase 0.63: theme contract, interaction tooling, and ecosystem interoperability
 
-**Status:** Required implementation and release evidence landed; Progressive extensions deferred
+**Status:** Required implementation and release evidence landed; presentation and interoperability extensions verified
 **Predecessor:** verified 0.61 lifecycle/trace and 0.62 navigation/optimism/failure contracts  
 **Authority:** [RFC-0090](../rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md)  
 **Execution:** [EXECUTION_0_63](EXECUTION_0_63.md)
@@ -8,8 +8,8 @@
 
 The executable packet is [release-gate-0.63.toml](../acceptance/release-gate-0.63.toml), with
 machine-readable results in [evidence-063/gate-results-063.json](../acceptance/evidence-063/gate-results-063.json).
-Required gates are Verified; per-component bundles, visualization/glass extensions, and the React
-island are explicitly Deferred with Supported fallbacks or an accepted omission.
+All phase gates are Verified; per-component bundles, visualization/glass extensions, and the React
+island host are implemented as bounded opt-in contracts with Supported fallbacks.
 
 ## Outcome
 
@@ -55,10 +55,10 @@ existing interaction tools.
 | Theme foundation | #676, #678, #679, #680 | Required | Canonical token consumption, interactive-state derivation, global link/selection hooks, and bounded responsive recipe conditions. |
 | Component contract | #677, #683, #687 | Required | Typed identity marks, semantic slots, stable parts/state hooks, and registry-derived manifest/metadata. |
 | Theme evidence | #681, #682, #686, #688 | Required | Conformance, export, development inspection, and deterministic state-matrix evidence. |
-| Presentation extensions | #684, #685, #689 | Progressive | Component bundles, accessible visualization primitives, and bounded translucent/glass presets with safe fallbacks. |
+| Presentation extensions | #684, #685, #689 | Verified | Component bundles, accessible visualization primitives, and bounded translucent/glass presets with safe fallbacks. |
 | Interaction tooling | Existing 0.63 tooling scope | Required | One trace, profiler, static checks, explanations, migration dispositions, and package conformance. |
 
-Progressive presentation extensions cannot weaken the Required theme contract. Each issue remains
+Presentation extensions cannot weaken the Required theme contract. Each issue remains
 open for its own acceptance criteria, but release status follows the disposition above rather than
 issue order alone.
 

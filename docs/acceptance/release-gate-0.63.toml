@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.63"
-status = "Implemented with Required gates Verified"
+status = "Implemented with All gates Verified"
 planning_baseline = "v0.62.0"
 public_upgrade_source = "v0.62.0"
 required_predecessor = "v0.62.0"
@@ -24,8 +24,8 @@ budgets = "interaction-budgets-063.toml"
 upgrade_fixture = "interaction-upgrade-fixtures-063.md"
 evidence_report = "evidence-063/gate-results-063.json"
 stage_1_entry_satisfied = true
-zero_deferred_at_cut = false
-progressive_omissions = ["BUNDLE-063", "VISUAL-063", "INTEROP-063"]
+zero_deferred_at_cut = true
+progressive_omissions = []
 
 [[evidence]]
 id = "CONTRACT-063"
@@ -64,10 +64,10 @@ ci_job = "test"
 
 [[evidence]]
 id = "BUNDLE-063"
-state = "Deferred"
-command = "documented Progressive omission; complete stylesheet remains Supported"
-owner = "release"
-ci_job = "progressive"
+state = "Verified"
+command = "python scripts/check_063.py --gate BUNDLE-063 --verify"
+owner = "hedron-core"
+ci_job = "quality"
 
 [[evidence]]
 id = "INSPECT-063"
@@ -92,10 +92,10 @@ ci_job = "test"
 
 [[evidence]]
 id = "VISUAL-063"
-state = "Deferred"
-command = "documented Progressive omission; semantic and tabular fallbacks remain Supported"
+state = "Verified"
+command = "python scripts/check_063.py --gate VISUAL-063 --verify"
 owner = "hedron-charts"
-ci_job = "progressive"
+ci_job = "test"
 
 [[evidence]]
 id = "TRACE-063"
@@ -162,10 +162,10 @@ ci_job = "test"
 
 [[evidence]]
 id = "INTEROP-063"
-state = "Deferred"
-command = "accepted omission; no React island is shipped or required"
+state = "Verified"
+command = "python scripts/check_063.py --gate INTEROP-063 --verify"
 owner = "hedron"
-ci_job = "progressive"
+ci_job = "test"
 
 [[evidence]]
 id = "SECURITY-063"

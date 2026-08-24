@@ -107,7 +107,7 @@ def export_svg(plan: ChartPlan, *, authorized: bool = True, width: int | None = 
         f'<title id="title">{_escape(title)}</title>'
         f'<desc id="desc">{_escape(desc)}</desc>'
         f'<rect x="0" y="0" width="{w}" height="{h}" fill="var(--hedron-chart-empty, #fff)"/>'
-        f'<polyline fill="none" stroke="var(--hedron-chart-color-1, #2563eb)" '
+        f'<polyline fill="none" stroke="var(--hedron-chart-series-1, #2563eb)" '
         f'stroke-width="2" points="{poly}"/>'
         f"</svg>"
     )

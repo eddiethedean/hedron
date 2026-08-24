@@ -16,9 +16,13 @@ from hedron.migrate.react import analyze_react_source
 from hedron.phase063_checks import analyze_project
 from hedron_core import (
     ActionTrace,
+    compare_style_bundle_sizes,
+    compile_style_bundle,
     default_theme,
     encode_interaction_trace,
     profile_interaction_trace,
+    react_island_recipe,
+    resolve_visualization_theme,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -119,6 +123,28 @@ def main() -> None:
     _write("interaction-profile.json", profile_interaction_trace(encode_interaction_trace(trace)))
     _write("react-migration.json", analyze_react_source(ROOT / "tests/fixtures/phase063/react"))
     _write("interaction-checks.json", analyze_project(ROOT / "tests/fixtures/phase063/project"))
+    _write(
+        "style-bundles.json",
+        {
+            "schema": "hedron.style-bundles/1",
+            "manifest": [
+                compile_style_bundle(components=(component,)).to_dict()
+                for component in (
+                    "app-shell",
+                    "button",
+                    "card",
+                    "chart",
+                    "dialog",
+                    "form",
+                    "popover",
+                    "surface",
+                )
+            ],
+            "comparison": compare_style_bundle_sizes(),
+        },
+    )
+    _write("visualization-theme.json", resolve_visualization_theme(default_theme()).to_dict())
+    _write("react-island.json", react_island_recipe().to_dict())
     _write(
         "runtime-baseline.json",
         {

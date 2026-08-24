@@ -1,0 +1,11 @@
+{
+  "cleanup": true,
+  "csp_safe": true,
+  "entrypoint": "./island.mjs",
+  "logical_id": "legacy-chart-island",
+  "maturity": "Experimental",
+  "package": "react",
+  "schema": "hedron.react-island/1",
+  "ssr_fallback": true,
+  "version": "18.3.1"
+}

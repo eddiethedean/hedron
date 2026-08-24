@@ -1,7 +1,7 @@
 {
   "bytes_seen": 128,
   "catalog": "95e2c36b7446797a1c4d9c7a416cda18f576af75d1d2a1e14ef39980f940b4d6",
-  "digest": "8ee35cf5bbf37328d82105df195f6f9a8ef197e4187252a427e6f92a2d1c820d",
+  "digest": "0e8dee6ce1fc1d3369a60f9035229c3b238c5f2371da70351244b5c448ea7414",
   "disposition_counts": {
     "adapter": 1,
     "unsupported": 1
@@ -9,7 +9,7 @@
   "files_seen": 1,
   "findings": [
     {
-      "code": "HED-MIGRATE-OPTIMISTIC_UPDATE",
+      "code": "HED-MIGRATE-0004",
       "confidence": "ambiguous",
       "disposition": "adapter",
       "evidence": "useOptimistic",
@@ -22,7 +22,7 @@
       "target": "approved optimistic risk class or explicit adapter"
     },
     {
-      "code": "HED-MIGRATE-CLIENT_RUNTIME",
+      "code": "HED-MIGRATE-0007",
       "confidence": "exact",
       "disposition": "unsupported",
       "evidence": "canvas",

@@ -102,7 +102,7 @@ function renderSvg(el, plan) {
       rect.setAttribute("y", String(py));
       rect.setAttribute("width", String(bw));
       rect.setAttribute("height", String(box.margin + plotH - py));
-      rect.setAttribute("fill", "var(--hedron-chart-color-1, #2563eb)");
+      rect.setAttribute("fill", "var(--hedron-chart-series-1, #2563eb)");
       rect.setAttribute("tabindex", "0");
       rect.setAttribute("data-hedron-mark", id);
       rect.addEventListener("focus", () =>
@@ -119,7 +119,7 @@ function renderSvg(el, plan) {
       c.setAttribute("cx", String(x));
       c.setAttribute("cy", String(py));
       c.setAttribute("r", "4");
-      c.setAttribute("fill", "var(--hedron-chart-color-1, #2563eb)");
+      c.setAttribute("fill", "var(--hedron-chart-series-1, #2563eb)");
       c.setAttribute("tabindex", "0");
       c.setAttribute("data-hedron-mark", id);
       c.addEventListener("focus", () => emit(el, "focus", { identity: id, values: vals }));
@@ -135,13 +135,13 @@ function renderSvg(el, plan) {
         .concat([`${points[points.length - 1][0]},${baseY}`, `${points[0][0]},${baseY}`])
         .join(" ");
       area.setAttribute("points", pts);
-      area.setAttribute("fill", "var(--hedron-chart-color-1, #2563eb)");
+      area.setAttribute("fill", "var(--hedron-chart-series-1, #2563eb)");
       area.setAttribute("fill-opacity", "0.25");
       g.appendChild(area);
     }
     const poly = document.createElementNS(ns, "polyline");
     poly.setAttribute("fill", "none");
-    poly.setAttribute("stroke", "var(--hedron-chart-color-1, #2563eb)");
+    poly.setAttribute("stroke", "var(--hedron-chart-series-1, #2563eb)");
     poly.setAttribute("stroke-width", "2");
     poly.setAttribute("points", points.map(([x, py]) => `${x},${py}`).join(" "));
     g.appendChild(poly);
@@ -150,7 +150,7 @@ function renderSvg(el, plan) {
       c.setAttribute("cx", String(x));
       c.setAttribute("cy", String(py));
       c.setAttribute("r", "3");
-      c.setAttribute("fill", "var(--hedron-chart-color-1, #2563eb)");
+      c.setAttribute("fill", "var(--hedron-chart-series-1, #2563eb)");
       c.setAttribute("tabindex", "0");
       c.setAttribute("data-hedron-mark", id);
       c.addEventListener("mouseenter", () =>

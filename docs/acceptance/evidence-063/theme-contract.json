@@ -1,11 +1,11 @@
 {
   "conformance": {
-    "fingerprint": "a3581a59261fe34a61244b49d133b00be848fd66dec1a0d82a0c0789904bf250",
+    "fingerprint": "5883909fc4aab4543e9d2f547fbd9bbe702d4c271c441aeab6b5ab3fdf0e987c",
     "inventory_digest": "32f5e998c2cef7bab82887e33da41df1892ab7ba3486e6a221483e2ef893c9b9",
     "ok": true,
     "schema": "hedron.theme-conformance/1"
   },
-  "digest": "5561a7cb45dfc4e7d15719fbfa47d9026bf83b11b0d9418e5d8255bc50feb278",
+  "digest": "9bf7883388c7ff661be87010f341df4cecc528ff9dcf8dd6a60a9a29fd84f123",
   "schema": "hedron.theme-contract/1",
   "stylesheet": {
     "bridged": true,
@@ -49,9 +49,17 @@
   "theme": {
     "accessibility_modes": {},
     "derived_token_count": 31,
-    "fingerprint": "88c841e47f990286a71d0e3f18c092e73a5b81aaf0d3a2d13197d4be3c6b06d6",
+    "fingerprint": "8e45b68ba621211765cd4ee9d075570950b2635f65d092f851478557a04763ef",
     "modes": {
       "dark": {
+        "chart.axis": "#9ba8ba",
+        "chart.focus": "#7ca7ff",
+        "chart.grid": "#475569",
+        "chart.label": "#eef3fa",
+        "chart.selection": "#7ca7ff",
+        "chart.surface": "#151c28",
+        "chart.tooltip-bg": "#eef3fa",
+        "chart.tooltip-fg": "#0d121c",
         "color.accent": "#7ca7ff",
         "color.bg": "#0d121c",
         "color.danger": "#ff8585",
@@ -61,13 +69,14 @@
         "color.on-accent": "#071a3c",
         "color.on-danger": "#321214",
         "color.surface": "#151c28",
-        "color.surface-muted": "#1b2432"
+        "color.surface-muted": "#1b2432",
+        "surface.glass.border": "rgb(255 255 255 / 20%)"
       }
     },
     "name": "default",
     "recipe_count": 0,
     "schema": "hedron.theme-resolution/1",
-    "token_count": 22,
+    "token_count": 35,
     "variants": {}
   }
 }

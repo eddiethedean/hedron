@@ -1,0 +1,6 @@
+@layer components {
+  .hedron-button, button.hedron-button { border: 1px solid var(--hedron-color-accent, #2563eb); border-radius: var(--hedron-shape-radius, .8rem); background: var(--hedron-color-accent, #2563eb); color: var(--hedron-color-on-accent, #fff); padding: .55rem .85rem; }
+  .hedron-button:hover { background: var(--hedron-color-accent-hover, var(--hedron-color-accent, #2563eb)); }
+  .hedron-button:disabled, .hedron-button[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+  .hedron-button[aria-busy="true"] { cursor: progress; }
+}

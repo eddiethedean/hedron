@@ -1,0 +1,4 @@
+@layer components {
+  .hedron-app-shell { min-block-size: 100dvh; background: var(--hedron-color-bg, #f6f8fb); color: var(--hedron-color-fg, #172033); }
+  .hedron-app-shell-nav { background: var(--hedron-color-surface, #fff); border-inline-end: 1px solid var(--hedron-color-border, #dce2eb); }
+}

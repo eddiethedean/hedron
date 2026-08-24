@@ -1,0 +1,81 @@
+{
+  "accessibility_mode": "none",
+  "mode": "light",
+  "roles": {
+    "axis": "#64748b",
+    "focus": "#2563eb",
+    "grid": "#cbd5e1",
+    "label": "#172033",
+    "selection": "#2563eb",
+    "series-1": "#2563eb",
+    "series-2": "#dc2626",
+    "series-3": "#15803d",
+    "series-4": "#a16207",
+    "series-5": "#7e22ce",
+    "series-6": "#0e7490",
+    "series-7": "#be185d",
+    "series-8": "#475569",
+    "surface": "#ffffff",
+    "tooltip-bg": "#172033",
+    "tooltip-fg": "#ffffff"
+  },
+  "schema": "hedron.visualization-theme/1",
+  "series": [
+    {
+      "color": "#2563eb",
+      "index": 1,
+      "marker": "circle",
+      "pattern": "solid",
+      "role": "series-1"
+    },
+    {
+      "color": "#dc2626",
+      "index": 2,
+      "marker": "square",
+      "pattern": "dash",
+      "role": "series-2"
+    },
+    {
+      "color": "#15803d",
+      "index": 3,
+      "marker": "triangle",
+      "pattern": "dot",
+      "role": "series-3"
+    },
+    {
+      "color": "#a16207",
+      "index": 4,
+      "marker": "diamond",
+      "pattern": "dash-dot",
+      "role": "series-4"
+    },
+    {
+      "color": "#7e22ce",
+      "index": 5,
+      "marker": "cross",
+      "pattern": "long-dash",
+      "role": "series-5"
+    },
+    {
+      "color": "#0e7490",
+      "index": 6,
+      "marker": "plus",
+      "pattern": "dense-dot",
+      "role": "series-6"
+    },
+    {
+      "color": "#be185d",
+      "index": 7,
+      "marker": "star",
+      "pattern": "wide-dot",
+      "role": "series-7"
+    },
+    {
+      "color": "#475569",
+      "index": 8,
+      "marker": "hexagon",
+      "pattern": "double",
+      "role": "series-8"
+    }
+  ]
+}

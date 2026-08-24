@@ -1,0 +1,5 @@
+@layer components {
+  .hedron-form-field { display: grid; gap: .35rem; }
+  .hedron-form-field[aria-invalid="true"] input, .hedron-form-field[aria-invalid="true"] select, .hedron-form-field[aria-invalid="true"] textarea { border-color: var(--hedron-color-danger, #c73939); }
+  .hedron-form-field:has(:disabled) { opacity: .72; }
+}

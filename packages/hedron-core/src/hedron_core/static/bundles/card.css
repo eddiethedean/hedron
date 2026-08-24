@@ -1,0 +1,5 @@
+@layer components {
+  .hedron-card { background: var(--hedron-color-surface, #fff); color: var(--hedron-color-fg, #172033); border: 1px solid var(--hedron-color-border, #dce2eb); border-radius: var(--hedron-shape-radius, .8rem); box-shadow: var(--hedron-elevation-raised, none); }
+  .hedron-card[aria-busy="true"] { opacity: .75; }
+  .hedron-card[aria-invalid="true"], .hedron-card[data-state="error"] { border-color: var(--hedron-color-danger, #c73939); }
+}

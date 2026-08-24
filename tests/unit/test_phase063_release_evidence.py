@@ -19,8 +19,8 @@ def test_phase063_packet_has_exact_gate_contract_and_required_verification() -> 
         "total": 27,
         "planned": 0,
         "implemented": 0,
-        "verified": 24,
-        "deferred": 3,
+        "verified": 27,
+        "deferred": 0,
         "release_ready": True,
     }
 
@@ -36,9 +36,8 @@ def test_phase063_packet_files_are_cross_referenced() -> None:
     assert manifest["handwritten_entries"] is False
 
 
-def test_phase063_progressive_omissions_have_fallbacks() -> None:
+def test_phase063_progressive_gates_are_implemented() -> None:
     report = json.loads(REPORT.read_text(encoding="utf-8"))
-    omissions = {item["gate"]: item for item in report["progressive_dispositions"]}
-    assert omissions["BUNDLE-063"]["fallback"] == "complete stylesheet"
-    assert omissions["VISUAL-063"]["fallback"] == "semantic/table visualization"
-    assert omissions["INTEROP-063"]["fallback"] == "no React island"
+    states = {item["id"]: item["state"] for item in report["gates"]}
+    assert all(states[gate] == "Verified" for gate in ("BUNDLE-063", "VISUAL-063", "INTEROP-063"))
+    assert report["progressive_dispositions"] == []

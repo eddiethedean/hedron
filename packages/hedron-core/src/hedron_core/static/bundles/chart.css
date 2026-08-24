@@ -1,0 +1,4 @@
+@layer components {
+  .hedron-chart { color: var(--hedron-chart-label, var(--hedron-color-fg, #172033)); background: var(--hedron-chart-surface, var(--hedron-color-surface, #fff)); }
+  .hedron-chart [data-hedron-mark]:focus-visible { outline: 2px solid var(--hedron-chart-focus, var(--hedron-color-focus, #2563eb)); outline-offset: 2px; }
+}

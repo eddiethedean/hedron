@@ -1,22 +1,33 @@
-/* Public chart tokens (CHART_SPEC.md) — light defaults; dark/forced-colors via media. */
+/* Public chart tokens (CHART_SPEC.md / VISUAL-063).  All renderers and
+   semantic fallbacks consume these same role variables. */
 :root {
-  --hedron-chart-color-1: #2563eb;
-  --hedron-chart-color-2: #dc2626;
-  --hedron-chart-color-3: #16a34a;
-  --hedron-chart-color-4: #ca8a04;
-  --hedron-chart-color-5: #9333ea;
-  --hedron-chart-color-6: #0891b2;
-  --hedron-chart-color-7: #db2777;
-  --hedron-chart-color-8: #4b5563;
-  --hedron-chart-sequential: #2563eb;
-  --hedron-chart-diverging: #dc2626;
+  --hedron-chart-series-1: #2563eb;
+  --hedron-chart-series-2: #dc2626;
+  --hedron-chart-series-3: #15803d;
+  --hedron-chart-series-4: #a16207;
+  --hedron-chart-series-5: #7e22ce;
+  --hedron-chart-series-6: #0e7490;
+  --hedron-chart-series-7: #be185d;
+  --hedron-chart-series-8: #475569;
+  /* Compatibility aliases for 0.38 consumers; role variables are canonical. */
+  --hedron-chart-color-1: var(--hedron-chart-series-1);
+  --hedron-chart-color-2: var(--hedron-chart-series-2);
+  --hedron-chart-color-3: var(--hedron-chart-series-3);
+  --hedron-chart-color-4: var(--hedron-chart-series-4);
+  --hedron-chart-color-5: var(--hedron-chart-series-5);
+  --hedron-chart-color-6: var(--hedron-chart-series-6);
+  --hedron-chart-color-7: var(--hedron-chart-series-7);
+  --hedron-chart-color-8: var(--hedron-chart-series-8);
   --hedron-chart-axis: #64748b;
-  --hedron-chart-grid: #e2e8f0;
-  --hedron-chart-label: #0f172a;
+  --hedron-chart-grid: #cbd5e1;
+  --hedron-chart-label: #172033;
+  --hedron-chart-selection: #2563eb;
+  --hedron-chart-focus: #2563eb;
+  --hedron-chart-focus-ring: 2px solid var(--hedron-chart-focus);
+  --hedron-chart-surface: #ffffff;
   --hedron-chart-font: system-ui, sans-serif;
-  --hedron-chart-focus-ring: #2563eb;
-  --hedron-chart-tooltip-bg: #0f172a;
-  --hedron-chart-tooltip-fg: #f8fafc;
+  --hedron-chart-tooltip-bg: #172033;
+  --hedron-chart-tooltip-fg: #ffffff;
   --hedron-chart-empty: #f8fafc;
   --hedron-chart-loading: #94a3b8;
   --hedron-chart-error: #b91c1c;
@@ -27,9 +38,20 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --hedron-chart-label: #f8fafc;
+    --hedron-chart-series-1: #7ca7ff;
+    --hedron-chart-series-2: #ff8585;
+    --hedron-chart-series-3: #65d5aa;
+    --hedron-chart-series-4: #f3c86b;
+    --hedron-chart-series-5: #c4a7ff;
+    --hedron-chart-series-6: #67e8f9;
+    --hedron-chart-series-7: #f9a8d4;
+    --hedron-chart-series-8: #9ba8ba;
+    --hedron-chart-label: #eef3fa;
     --hedron-chart-axis: #94a3b8;
     --hedron-chart-grid: #334155;
+    --hedron-chart-selection: #7ca7ff;
+    --hedron-chart-focus: #7ca7ff;
+    --hedron-chart-surface: #151c28;
     --hedron-chart-empty: #0f172a;
     --hedron-chart-tooltip-bg: #f8fafc;
     --hedron-chart-tooltip-fg: #0f172a;
@@ -38,10 +60,21 @@
 
 @media (forced-colors: active) {
   :root {
-    --hedron-chart-color-1: CanvasText;
+    --hedron-chart-series-1: CanvasText;
+    --hedron-chart-series-2: CanvasText;
+    --hedron-chart-series-3: CanvasText;
+    --hedron-chart-series-4: CanvasText;
+    --hedron-chart-series-5: CanvasText;
+    --hedron-chart-series-6: CanvasText;
+    --hedron-chart-series-7: CanvasText;
+    --hedron-chart-series-8: CanvasText;
     --hedron-chart-axis: CanvasText;
     --hedron-chart-grid: GrayText;
-    --hedron-chart-focus-ring: Highlight;
+    --hedron-chart-selection: Highlight;
+    --hedron-chart-focus: Highlight;
+    --hedron-chart-surface: Canvas;
+    --hedron-chart-tooltip-bg: CanvasText;
+    --hedron-chart-tooltip-fg: Canvas;
   }
 }
 
@@ -54,19 +87,37 @@
 
 @media print {
   :root {
+    --hedron-chart-series-1: #000000;
+    --hedron-chart-series-2: #000000;
+    --hedron-chart-series-3: #000000;
+    --hedron-chart-series-4: #000000;
+    --hedron-chart-series-5: #000000;
+    --hedron-chart-series-6: #000000;
+    --hedron-chart-series-7: #000000;
+    --hedron-chart-series-8: #000000;
+    --hedron-chart-axis: #000000;
+    --hedron-chart-grid: #666666;
     --hedron-chart-empty: #ffffff;
     --hedron-chart-label: #000000;
+    --hedron-chart-selection: #000000;
+    --hedron-chart-focus: #000000;
+    --hedron-chart-surface: #ffffff;
   }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  hedron-chart { background: var(--hedron-chart-surface, Canvas); backdrop-filter: none; }
 }
 
 hedron-chart {
   display: block;
   font-family: var(--hedron-chart-font);
   color: var(--hedron-chart-label);
+  background: var(--hedron-chart-surface);
 }
 
 hedron-chart [data-hedron-mark]:focus {
-  outline: 2px solid var(--hedron-chart-focus-ring);
+  outline: 2px solid var(--hedron-chart-focus);
   outline-offset: 2px;
 }
 

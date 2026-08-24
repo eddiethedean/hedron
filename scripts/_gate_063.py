@@ -42,7 +42,7 @@ EXPECTED_GATES = (
     "UPGRADE-063",
     "PKG-063",
 )
-PROGRESSIVE = frozenset({"BUNDLE-063", "VISUAL-063", "INTEROP-063"})
+PROGRESSIVE = frozenset()
 PACKET_FILES = (
     "interaction-capability-inventory-063.toml",
     "theme-resolution-contract-063.toml",
@@ -105,10 +105,8 @@ def validate_packet(*, allow_planned: bool = False) -> list[str]:
         errors.append("implemented packet cannot contain Planned gates")
     if set(states) != set(EXPECTED_GATES):
         errors.append("release gate states do not cover the exact gate set")
-    if any(states[gate_id] != "Deferred" for gate_id in PROGRESSIVE):
-        errors.append("all Progressive omissions must be explicitly Deferred")
-    if any(states[gate_id] != "Verified" for gate_id in set(EXPECTED_GATES) - PROGRESSIVE):
-        errors.append("all Required gates must be Verified")
+    if any(state != "Verified" for state in states.values()):
+        errors.append("all phase 0.63 gates must be Verified")
     report = _load(REPORT)
     report_rows = report.get("gates", [])
     report_ids = tuple(row.get("id") for row in report_rows if isinstance(row, dict))
@@ -120,9 +118,7 @@ def validate_packet(*, allow_planned: bool = False) -> list[str]:
     summary = report.get("summary") or {}
     if summary.get("total") != len(EXPECTED_GATES):
         errors.append("0.63 evidence report total is incorrect")
-    if summary.get("planned") != 0 or summary.get("verified") != len(EXPECTED_GATES) - len(
-        PROGRESSIVE
-    ):
+    if summary.get("planned") != 0 or summary.get("verified") != len(EXPECTED_GATES):
         errors.append("0.63 evidence report summary does not match gate states")
     return errors
 
@@ -162,9 +158,6 @@ def check_gate(gate_id: str, *, verify: bool = False, allow_planned: bool = Fals
             print(f"{gate_id}: {message}", flush=True)
         return 1
     state = next(str(row.get("state")) for row in _rows() if row.get("id") == gate_id)
-    if state == "Deferred":
-        print(f"ok: {gate_id} (explicit Progressive omission)")
-        return 0
     if verify or os.environ.get("HEDRON_GATE_VERIFY") == "1":
         return _run_tests()
     print(f"ok: {gate_id} ({state}; executable evidence is available with --verify)")

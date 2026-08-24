@@ -35,7 +35,9 @@ from hedron_charts.spec import (
     TransformDef,
 )
 from hedron_core.diagnostics import HedronError, error
+from hedron_core.theme import default_theme
 from hedron_core.visualization import DEFAULT_MAX_CHART_ROWS, DEFAULT_MAX_PAYLOAD_BYTES
+from hedron_core.visualization_theme import resolve_visualization_theme
 
 # Stage 1 locked Canvas threshold (marks).
 CANVAS_MARK_THRESHOLD = 2500
@@ -775,6 +777,27 @@ def compile_chart(spec: ChartSpec | Mapping[str, object]) -> ChartPlan:
         "hedron-charts:hedron-chart.css",
     )
 
+    # Charts consume the same semantic theme authority as ordinary components.
+    # Keep the chart payload self-contained so SVG, Canvas, table, print, and
+    # adapter hosts cannot drift into separate palette implementations.
+    theme_source = default_theme().extend("chart", tokens=parsed.theme.tokens)
+    palette = resolve_visualization_theme(
+        theme_source,
+        mode=parsed.theme.mode if parsed.theme.mode != "forced-colors" else "light",
+        accessibility_mode=(
+            "forced-colors"
+            if parsed.theme.mode == "forced-colors"
+            else "print"
+            if parsed.theme.mode == "print"
+            else "none"
+        ),
+    )
+    chart_tokens = {f"chart.{role}": color for role, color in palette.roles.items()}
+    chart_tokens.update({f"chart.pattern.{item.role}": item.pattern for item in palette.series})
+    planned_theme = parsed.theme.model_copy(
+        update={"tokens": {**dict(parsed.theme.tokens), **chart_tokens}}
+    )
+
     return ChartPlan(
         schema_id=SCHEMA_ID,
         schema_version=SCHEMA_VERSION,
@@ -800,7 +823,7 @@ def compile_chart(spec: ChartSpec | Mapping[str, object]) -> ChartPlan:
             "max_export_px": MAX_EXPORT_PX,
             "canvas_mark_threshold": CANVAS_MARK_THRESHOLD,
         },
-        theme=parsed.theme,
+        theme=planned_theme,
         interaction=parsed.interaction,
         layout=layout,
         transformed_rows=tuple(redacted_rows),

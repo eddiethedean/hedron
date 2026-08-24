@@ -1,6 +1,8 @@
 schema_version = 1
 phase = "0.63"
-status = "Progressive deferred"
+status = "Verified"
+implementation = "hedron_core.visualization_theme.resolve_visualization_theme"
+accessibility_modes = ["forced-colors", "print", "reduced-transparency"]
 roles = ["series", "axis", "legend", "selection", "status"]
 fallbacks = ["semantic HTML", "tabular data", "patterns/strokes/labels", "solid surface", "print", "forced-colors", "reduced-transparency"]
 correctness_dependency = false

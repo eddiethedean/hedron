@@ -6542,11 +6542,11 @@ The following issues were open on GitHub when this roadmap was updated and are o
 | Theme foundation | [#676](https://github.com/eddiethedean/hedron/issues/676), [#678](https://github.com/eddiethedean/hedron/issues/678), [#679](https://github.com/eddiethedean/hedron/issues/679), [#680](https://github.com/eddiethedean/hedron/issues/680) | Required |
 | Component contract | [#677](https://github.com/eddiethedean/hedron/issues/677), [#683](https://github.com/eddiethedean/hedron/issues/683), [#687](https://github.com/eddiethedean/hedron/issues/687) | Required |
 | Theme evidence | [#681](https://github.com/eddiethedean/hedron/issues/681), [#682](https://github.com/eddiethedean/hedron/issues/682), [#686](https://github.com/eddiethedean/hedron/issues/686), [#688](https://github.com/eddiethedean/hedron/issues/688) | Required |
-| Presentation extensions | [#684](https://github.com/eddiethedean/hedron/issues/684), [#685](https://github.com/eddiethedean/hedron/issues/685), [#689](https://github.com/eddiethedean/hedron/issues/689) | Progressive |
+| Presentation extensions | [#684](https://github.com/eddiethedean/hedron/issues/684), [#685](https://github.com/eddiethedean/hedron/issues/685), [#689](https://github.com/eddiethedean/hedron/issues/689) | Verified |
 
 The issue titles and links remain in the ownership index above; this table defines sequencing and
 maturity. Theme foundation and component-contract work precede theme evidence, state-matrix, and
-interaction-tooling adoption. Progressive presentation extensions cannot introduce arbitrary CSS,
+interaction-tooling adoption. Verified presentation extensions cannot introduce arbitrary CSS,
 unsafe selectors, or a new runtime dependency.
 
 The phases are governed by [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md), the

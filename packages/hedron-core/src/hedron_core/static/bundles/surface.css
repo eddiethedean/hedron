@@ -1,0 +1,5 @@
+@layer components {
+  .hedron-surface { background: var(--hedron-color-surface, #fff); color: var(--hedron-color-fg, #172033); border: 1px solid var(--hedron-color-border, #dce2eb); border-radius: var(--hedron-shape-radius, .8rem); }
+  :where(.hedron-surface--translucent, .hedron-card--translucent) { background: color-mix(in srgb, var(--hedron-color-surface, #fff) var(--hedron-surface-opacity, 78%), transparent); backdrop-filter: blur(var(--hedron-surface-blur, 8px)); }
+  :where(.hedron-surface--glass, .hedron-card--glass, .hedron-dialog--glass, .hedron-popover--glass) { background: color-mix(in srgb, var(--hedron-color-surface, #fff) var(--hedron-glass-opacity, 72%), transparent); border-color: var(--hedron-glass-border, var(--hedron-color-border, #dce2eb)); box-shadow: var(--hedron-glass-shadow, var(--hedron-elevation-raised, none)); backdrop-filter: blur(var(--hedron-glass-blur, 14px)); }
+}

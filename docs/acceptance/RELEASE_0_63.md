@@ -1,6 +1,6 @@
 # Release acceptance: 0.63 theme contract, interaction tooling, and interoperability
 
-**Status:** Required gates Verified / Progressive dispositions recorded
+**Status:** All gates Verified
 **Implementation:** [INTERACTION_TOOLING_063](../implementation/INTERACTION_TOOLING_063.md)
 **Execution:** [EXECUTION_0_63](../implementation/EXECUTION_0_63.md)
 
@@ -31,11 +31,11 @@
 | `PALETTE-063` | Interactive states, global link/selection hooks, and bounded responsive recipe conditions derive deterministically with visible provenance. | Light/dark/high-contrast/forced-colors/print/responsive token and recipe corpus | Verified |
 | `PARTS-063` | Identity marks, semantic slots, stable parts, state hooks, accessibility requirements, and theme surfaces are typed and registry-derived. | Brand/AccountSummary plus built-in component manifest and metadata matrix | Verified |
 | `EXPORT-063` | Resolved themes export to canonical CSS and design-token JSON with matching values, provenance, versioning, and safe rejection. | Runtime/export round-trip, unsafe-value rejection, one-variant and full-package fixtures | Verified |
-| `BUNDLE-063` | Base, accessibility, token, and component style bundles have deterministic dependencies and preserve required interaction states. | FastAPI/Flask/Django/Posit/static asset registration and size comparison | Deferred |
+| `BUNDLE-063` | Base, accessibility, token, and component style bundles have deterministic dependencies and preserve required interaction states. | FastAPI/Flask/Django/Posit/static asset registration and size comparison | Verified |
 | `INSPECT-063` | Development inspection exposes token paths, variants, fallbacks, parts, and accessibility overrides without persisting application content. | JSON and human-readable inspection fixtures; production inertness test | Verified |
 | `THEME-CHECK-063` | Standalone conformance reports missing tokens, fallback use, contrast, selector coupling, and intentional exceptions. | Deterministic CLI/CI report across component/state/mode catalog | Verified |
 | `MATRIX-063` | A portable state-matrix command emits stable component/state/viewport/mode cases and integrates with provider-neutral visual runners. | Focus/hover/disabled/busy/validation/selected/empty/error/permission/dialog/toast corpus | Verified |
-| `VISUAL-063` | Visualization roles and Progressive translucent/glass presets share semantic tokens and remain legible in fallback/accessibility modes. | Charts/table fallbacks, patterns/non-color encodings, print/forced-colors/reduced-transparency/browser fallback matrix | Deferred |
+| `VISUAL-063` | Visualization roles and Progressive translucent/glass presets share semantic tokens and remain legible in fallback/accessibility modes. | Charts/table fallbacks, patterns/non-color encodings, print/forced-colors/reduced-transparency/browser fallback matrix | Verified |
 | `TRACE-063` | pytest, browser, CLI, Explorer, and conformance agree on event identity, ordering, outcomes, truncation, and redaction. | Cross-consumer golden/malformed/unknown-version corpus | Verified |
 | `PROFILER-063` | Explorer/headless output shows coherent component/action/request/target/state/cache/focus/failure timelines. | Reference recordings and deterministic assertions | Verified |
 | `PROFILE-SAFE-063` | Profiling is read-only, access-controlled, bounded, redacted, and explicit about sampling/missing data. | Security/retention/truncation/no-callback tests | Verified |
@@ -45,7 +45,7 @@
 | `METADATA-063` | Supported elements publish registry-derived typed props/events/slots/state/lifecycle/fallback/maturity metadata. | Schema and component conformance | Verified |
 | `IDENTITY-063` | Wheel, runtime, generated metadata, and optional npm artifact report matching ids/versions/maturity. | Clean-package identity matrix | Verified |
 | `MIGRATE-063` | React reports produce native/adapter/redesign/unsupported dispositions with confidence and source spans. | Forms/dashboard/optimism/overlay/router/non-fit corpus | Verified |
-| `INTEROP-063` | Any retained React-island recipe remains Experimental, isolated, pinned, CSP-reviewed, SSR-fallback-capable, and cleaned up. | Supply-chain/lifecycle/ownership tests, or accepted omission record | Deferred |
+| `INTEROP-063` | Any retained React-island recipe remains Experimental, isolated, pinned, CSP-reviewed, SSR-fallback-capable, and cleaned up. | Pinned recipe, SSR host, CSP markers, lifecycle metadata, and no-React-runtime test | Verified |
 | `SECURITY-063` | Themes, exports, bundles, traces, reports, metadata, and tools do not expose secrets, unsafe CSS, URLs, or cross access/tenant boundaries. | Redaction/access/unsafe-value/malformed-input adversarial matrix | Verified |
 | `A11Y-063` | Profiler/reports are keyboard, focus, semantics, contrast, zoom/reflow, and reduced-motion usable. | Automated and browser evidence | Verified |
 | `PERF-063` | Theme tokens/manifests/bundles/matrices plus analysis, trace/profile retention, export, metadata, memory, and CI budgets pass exact/over-limit cases. | Reproducible benchmark/resource report | Verified |
@@ -56,9 +56,9 @@
 
 ## Release decision
 
-Release requires every Required row Verified, complete public theme coverage for supported default
+Release requires every row Verified, complete public theme coverage for supported default
 components, runtime/export/inspection/conformance/matrix agreement, cross-tool trace agreement,
 deterministic bounded non-executing analysis, package metadata identity, honest unsupported migration
-cases, and no secret or unsafe-CSS leaks. Progressive visualization, bundle, and translucent/glass
-extensions may be deferred with an explicit disposition; an Experimental React-island recipe may be
-omitted. Neither can redefine the Supported release.
+cases, and no secret or unsafe-CSS leaks. The bundle, visualization, surface, and isolated
+React-island contracts are implemented as bounded opt-in extensions and do not redefine the
+Supported release.

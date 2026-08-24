@@ -1,0 +1,23 @@
+@layer tokens {
+  :root {
+    --hedron-color-bg: #f6f8fb;
+    --hedron-color-fg: #172033;
+    --hedron-color-surface: #ffffff;
+    --hedron-color-border: #dce2eb;
+    --hedron-color-accent: #2563eb;
+    --hedron-color-focus: #2563eb;
+    --hedron-color-danger: #c73939;
+    --hedron-shape-radius: .8rem;
+    --hedron-surface-opacity: 78%;
+    --hedron-surface-blur: 8px;
+    --hedron-glass-opacity: 72%;
+    --hedron-glass-blur: 14px;
+    --hedron-glass-border: color-mix(in srgb, var(--hedron-color-border) 72%, transparent);
+    --hedron-chart-axis: #64748b;
+    --hedron-chart-grid: #cbd5e1;
+    --hedron-chart-label: var(--hedron-color-fg);
+    --hedron-chart-selection: var(--hedron-color-accent);
+    --hedron-chart-focus: var(--hedron-color-focus);
+    --hedron-chart-surface: var(--hedron-color-surface);
+  }
+}
