@@ -74,6 +74,9 @@ class TransformStep:
             raise ValueError(f"Invalid sort direction {self.direction!r}")
         if self.op in {"filter", "sort", "project", "aggregate"} and not self.field:
             raise ValueError(f"Transform op {self.op!r} requires field")
+        if self.op in {"offset", "sample"}:
+            if isinstance(self.value, bool) or not isinstance(self.value, int) or self.value < 0:
+                raise ValueError(f"Transform op {self.op!r} requires a non-negative integer")
         return self
 
 
@@ -127,7 +130,7 @@ class TransformPlan:
 def plan_from_query(query: DataQuery, *, max_rows: int = 10_000) -> TransformPlan:
     q = query.validated()
     steps: list[TransformStep] = []
-    for name, direction in q.sort:
+    for name, direction in reversed(q.sort):
         steps.append(TransformStep(op="sort", field=name, direction=direction))
     for name, value in q.filters.items():
         steps.append(TransformStep(op="filter", field=name, value=value))
@@ -166,16 +169,17 @@ def apply_plan_in_memory(
         elif step.op == "project" and step.field is not None:
             project_fields.append(step.field)
         elif step.op == "offset":
-            start = int(step.value) if isinstance(step.value, (int, float, str)) else 0
+            start = step.value if isinstance(step.value, int) else 0
             result = result[max(0, start) :]
         elif step.op == "sample":
-            limit = int(step.value) if isinstance(step.value, (int, float, str)) else plan.max_rows
-            result = result[: max(0, min(int(limit), plan.max_rows))]
+            limit = step.value if isinstance(step.value, int) else plan.max_rows
+            result = result[: max(0, min(limit, plan.max_rows))]
         elif step.op == "aggregate" and step.field is not None:
             values = [
                 row.get(step.field)
                 for row in result
                 if isinstance(row.get(step.field), (int, float))
+                and not isinstance(row.get(step.field), bool)
             ]
             agg = step.agg or "sum"
             if agg == "sum":

@@ -55,6 +55,30 @@ def test_plan_sorts_mixed_json_values_deterministically() -> None:
     assert [row["value"] for row in rows] == [None, 1, "2"]
 
 
+def test_plan_multi_sort_matches_query_order_and_rejects_bool_paging() -> None:
+    rows = [
+        {"id": "1", "a": 1, "b": 10},
+        {"id": "2", "a": 2, "b": 1},
+        {"id": "3", "a": 1, "b": 5},
+        {"id": "4", "a": 2, "b": 20},
+    ]
+    query = DataQuery(sort=(("a", "asc"), ("b", "desc")))
+    result = apply_plan_in_memory(rows, plan_from_query(query))
+    assert [row["id"] for row in result] == ["1", "3", "4", "2"]
+    with pytest.raises(ValueError, match="non-negative integer"):
+        TransformPlan(steps=(TransformStep(op="offset", value=True),)).validated()
+    with pytest.raises(ValueError, match="non-negative integer"):
+        TransformPlan(steps=(TransformStep(op="sample", value=True),)).validated()
+
+
+def test_plan_aggregate_skips_bool_cells() -> None:
+    rows = apply_plan_in_memory(
+        [{"value": True}, {"value": False}, {"value": 10}],
+        TransformPlan(steps=(TransformStep(op="aggregate", field="value", agg="sum"),)),
+    )
+    assert rows == [{"value": 10.0}]
+
+
 def test_plan_enforces_max_bytes() -> None:
     with pytest.raises(HedronError, match="max_bytes"):
         apply_plan_in_memory(

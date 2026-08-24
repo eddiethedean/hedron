@@ -140,7 +140,11 @@ def evaluate_formula(
     def _eval(node: ast.AST) -> float:
         if isinstance(node, ast.Expression):
             return _eval(node.body)
-        if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+        if (
+            isinstance(node, ast.Constant)
+            and isinstance(node.value, (int, float))
+            and not isinstance(node.value, bool)
+        ):
             return float(node.value)
         if isinstance(node, ast.Name):
             if node.id not in env:
@@ -201,26 +205,43 @@ def pivot_rows(
 ) -> list[dict[str, JsonValue]]:
     if agg not in {"sum", "count", "avg"}:
         raise ValueError(f"Unsupported pivot aggregate {agg!r}")
-    buckets: dict[JsonValue, dict[JsonValue, list[float]]] = {}
+    buckets: dict[tuple[tuple[str, JsonValue], tuple[str, JsonValue]], list[float]] = {}
+
+    def _typed_key(value: JsonValue) -> tuple[str, JsonValue]:
+        try:
+            hash(value)
+        except TypeError as exc:
+            raise ValueError("Pivot index and column values must be hashable") from exc
+        return (type(value).__name__, value)
+
     for row in rows:
         idx = row.get(index)
         col = row.get(columns)
-        try:
-            hash(idx)
-            hash(col)
-        except TypeError as exc:
-            raise ValueError("Pivot index and column values must be hashable") from exc
+        bucket_key = (_typed_key(idx), _typed_key(col))
         raw = row.get(values)
+        if agg == "count":
+            buckets.setdefault(bucket_key, []).append(1.0)
+            continue
+        if isinstance(raw, bool):
+            continue
         try:
             num = float(raw)  # type: ignore[arg-type]
         except (TypeError, ValueError):
             continue
-        buckets.setdefault(idx, {}).setdefault(col, []).append(num)
+        buckets.setdefault(bucket_key, []).append(num)
     out: list[dict[str, JsonValue]] = []
-    for idx, cols in buckets.items():
-        item: dict[str, JsonValue] = {index: idx}
-        for col, nums in cols.items():
-            key = str(col)
+    by_index: dict[tuple[str, JsonValue], dict[tuple[str, JsonValue], list[float]]] = {}
+    for (idx_key, col_key), nums in buckets.items():
+        by_index.setdefault(idx_key, {})[col_key] = nums
+    for idx_key, cols in by_index.items():
+        item: dict[str, JsonValue] = {index: idx_key[1]}
+        emitted: dict[str, tuple[str, JsonValue]] = {}
+        for col_key, nums in cols.items():
+            key = str(col_key[1])
+            previous = emitted.get(key)
+            if previous is not None and previous != col_key:
+                raise ValueError(f"Pivot column values {previous[1]!r} and {col_key[1]!r} collide")
+            emitted[key] = col_key
             if agg == "sum":
                 item[key] = sum(nums)
             elif agg == "count":
@@ -285,7 +306,16 @@ def rows_to_tree(
             explanation="Parent/child relationships form a cycle with no roots.",
             remediation="Ensure id/parent_id relationships form a forest.",
         )
-    return [build(key) for key in roots]
+    result = [build(key) for key in roots]
+    if len(visited) != len(nodes):
+        unreachable = sorted(set(nodes) - visited)
+        raise error(
+            "HED-DATA-0033",
+            title="Unreachable tree node",
+            explanation=f"Tree nodes are not reachable from a root: {unreachable!r}.",
+            remediation="Ensure every parent_id refers to a reachable id or is null.",
+        )
+    return result
 
 
 def flatten_tree(nodes: Sequence[TreeNode], *, depth: int = 0) -> list[dict[str, JsonValue]]:

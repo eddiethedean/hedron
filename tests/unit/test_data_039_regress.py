@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from hedron_core.diagnostics import HedronError
+from hedron_core.security import Secret
 from hedron_data.advanced import evaluate_formula, rows_to_tree
 from hedron_data.memory import InMemoryDataSource
 from hedron_data.normalize import normalize_rows
@@ -74,6 +75,16 @@ def test_039_inmemory_multi_field_batch_same_row_version() -> None:
     assert page.rows[0]["first"] == "Augusta"
     assert page.rows[0]["last"] == "King"
     assert source._row_versions["1"] == "2"  # one bump for the whole row
+
+
+def test_open_bug_inmemory_fetch_and_nested_secret_are_isolated() -> None:
+    source = InMemoryDataSource([{"id": "1", "payload": {"name": "Ada"}}])
+    page = source.fetch(DataQuery())
+    page.rows[0]["payload"]["name"] = "Eve"  # type: ignore[index]
+    assert source.fetch(DataQuery()).rows[0]["payload"] == {"name": "Ada"}
+
+    rows = normalize_rows([{"nested": {"token": Secret("secret")}}])
+    assert rows == [{"nested": {"token": "***"}}]
 
 
 def test_039_rows_to_tree_rejects_duplicate_ids() -> None:

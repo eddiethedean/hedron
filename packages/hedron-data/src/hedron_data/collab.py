@@ -78,14 +78,15 @@ def merge_changes(
     remote_deletes = set(remote.deletes)
     local_update_rows = {u.row_key for u in local.updates}
     remote_update_rows = {u.row_key for u in remote.updates}
-    overlap = (
+    insert_delete_overlap = (
         (local_inserts & remote_inserts)
         | (local_inserts & remote_deletes)
         | (remote_inserts & local_deletes)
     )
-    for key in sorted(overlap):
-        if not key:
-            continue
+    insert_update_overlap = (local_inserts & remote_update_rows) | (
+        remote_inserts & local_update_rows
+    )
+    for key in sorted(insert_delete_overlap):
         conflicts.append(
             CollaborativeConflict(
                 row_key=key,
@@ -93,6 +94,18 @@ def merge_changes(
                 server_value=None,
                 client_value=None,
                 message="Concurrent insert/delete",
+                local_actor=local_actor,
+                remote_actor=remote_actor,
+            )
+        )
+    for key in sorted(insert_update_overlap):
+        conflicts.append(
+            CollaborativeConflict(
+                row_key=key,
+                field=None,
+                server_value=None,
+                client_value=None,
+                message="Concurrent insert/update",
                 local_actor=local_actor,
                 remote_actor=remote_actor,
             )
