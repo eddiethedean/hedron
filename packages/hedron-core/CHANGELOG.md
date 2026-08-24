@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.62.0] — 2026-08-24
+
+### Added
+- Generation-safe navigation, bounded safe-prefetch policy, localized failure boundaries, and
+  stable identity/state-transfer contracts.
+
 ## [0.61.0] — 2026-08-24
 
 ### Added

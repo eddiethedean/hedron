@@ -1,0 +1,13 @@
+schema = "hedron.navigation-policy.v1"
+phase = "0.62"
+status = "implemented"
+authority = "server"
+enhancement_default = "disabled"
+terminal_phases = ["committed", "rejected", "cancelled", "stale"]
+stale_diagnostic = "HED-NAV-0005"
+target_diagnostic = "HED-NAV-0006"
+fallback = "ordinary full-page navigation"
+prefetch_methods = ["GET", "HEAD", "OPTIONS"]
+prefetch_max_concurrent = 2
+prefetch_max_bytes = 262144
+prefetch_cache_default = "private, max-age=0"

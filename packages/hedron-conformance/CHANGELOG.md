@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.62.0] — 2026-08-24
+
+### Changed
+- Coordinated train cut for phase 0.62 navigation, optimism, failure isolation, and identity contracts.
+
 ## [0.61.0] — 2026-08-24
 
 ### Added

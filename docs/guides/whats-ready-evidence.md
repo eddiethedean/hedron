@@ -1,6 +1,6 @@
 # What’s ready — evidence
 
-Maintainer and evaluator **capability matrices** for the **0.61.x** train. For the
+Maintainer and evaluator **capability matrices** for the **0.62.x** train. For the
 one-screen adopter summary, start at [What’s ready today](whats-ready.md).
 
 Release channel status: [Current release and support](current-release.md).
@@ -65,7 +65,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.1` | Declared allowlisted destinations; pin `>=0.2.1,<0.3`; [Gradio migration](gradio-migration.md) |
 | Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.60.2`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
-| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (in-tree tip and PyPI release `v0.61.0`) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
+| Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (in-tree tip `v0.62.0`; latest public PyPI release `v0.61.0`) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
 | Progressive screens (`Hedron.screen`) | **Supported** on FastAPI (API `beta`; tip `v0.60.2`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | Form commands (`form_command`) | **Supported** on FastAPI (API `beta`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | DataWorkspace screens (`with_screen`) | **Supported** on FastAPI + `hedron[data]` (API `beta`) | [DATA.md](../api/DATA.md) · [What’s new in 0.58](whats-new-0.58.md) |
@@ -200,7 +200,7 @@ Pin `hedron>=0.61.0,<0.62`. Public-index notes: [Installation](../getting-starte
 Extras: `"hedron[data]>=0.61.0,<0.62"`, `"hedron[extras]>=0.61.0,<0.62"`,
 `"hedron[jinja]>=0.61.0,<0.62"`, `"hedron[dev]>=0.61.0,<0.62"`,
 `"hedron[notebook]>=0.61.0,<0.62"` (tooling / localhost),
-`"hedron[mcp]>=0.61.0,<0.62"` (Beta Supported inventory),
+`"hedron[mcp]>=0.62.0,<0.62"` (Beta Supported inventory),
 `"hedron[gradio]>=0.61.0,<0.62"` (Beta satellite; pin `hedron-gradio>=0.2.1,<0.3`),
 `"hedron[charts]>=0.61.0,<0.62"`, `"hedron[maps]>=0.61.0,<0.62"`, `"hedron[workbench]>=0.61.0,<0.62"`,
 `"hedron[posit]>=0.61.0,<0.62"`,

@@ -2,7 +2,7 @@
 
 **Audience:** production kitchen-sink / archetype evidence — not a second-hour tutorial. Prefer the shorter recipes linked below for day-two learning.
 
-Multi-worker production kitchen-sink sample for the current Hedron train (**0.61**).
+Multi-worker production kitchen-sink sample for the current Hedron train (**0.62**).
 Authenticated team-administration demo with CRUD, DataEditor, optional charts (workspace
 `hedron-charts` or the published `hedron[charts]` extra), and the production-archetype checklist
 (reverse-proxy subpath, Redis, CSP, Explorer off).

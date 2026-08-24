@@ -1,0 +1,9 @@
+schema = "hedron.failure-identity.v1"
+phase = "0.62"
+status = "implemented"
+failure_states = ["healthy", "pending", "retryable_error", "degraded", "fatal"]
+failure_dispositions = ["local", "reconcile", "propagate"]
+identity_requirements = ["stable_key", "declared_target", "single_writer", "schema_match", "bounded_json_transfer"]
+missing_fallback = "HED-FAILURE-0001"
+stale_or_duplicate = "HED-FAILURE-0005"
+unknown_outcome = "HED-FAILURE-0004"

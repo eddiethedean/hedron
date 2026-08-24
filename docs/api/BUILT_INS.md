@@ -17,7 +17,7 @@ manual.
     maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` /
     `deferred`).
 
-**Status:** Accepted · current published train **0.61.x**
+**Status:** Accepted · current published train **0.62.x**
 
 !!! note "Phase 0.61 in-tree preview"
 

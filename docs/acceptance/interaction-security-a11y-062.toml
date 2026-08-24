@@ -1,0 +1,7 @@
+schema = "hedron.interaction-security-a11y.v1"
+phase = "0.62"
+status = "locked"
+navigation = ["same-origin validation", "credential-free URLs", "native fallback"]
+optimism = ["never grants authorization", "never crosses tenant boundary", "unknown is reconcile-required"]
+identity = ["single writer", "schema match", "bounded JSON"]
+accessibility = ["focus target is explicit", "error remains visible", "reduced motion is respected", "keyboard/native fallback retained"]

@@ -1,0 +1,45 @@
+schema = "hedron.interaction-capability.v1"
+phase = "0.62"
+status = "implemented"
+
+[[capability]]
+id = "NAV-062"
+name = "generation-safe navigation"
+disposition = "required"
+authority = "hedron_core.navigation.NavigationMachine"
+
+[[capability]]
+id = "FALLBACK-062"
+name = "ordinary navigation fallback"
+disposition = "required"
+authority = "native HTML navigation"
+
+[[capability]]
+id = "OPTIMISM-062"
+name = "bounded optimistic mutation core"
+disposition = "required"
+authority = "hedron_data.optimistic.OptimisticMutation"
+
+[[capability]]
+id = "FAILURE-062"
+name = "localized failure boundaries"
+disposition = "required"
+authority = "hedron_core.failure.FailureBoundary"
+
+[[capability]]
+id = "IDENTITY-062"
+name = "bounded state transfer and single writers"
+disposition = "required"
+authority = "hedron_core.identity.IdentityRegistry"
+
+[[capability]]
+id = "PREFETCH-062"
+name = "safe prefetch"
+disposition = "progressive"
+authority = "hedron_core.navigation.decide_prefetch"
+
+[[capability]]
+id = "TRANSITION-062"
+name = "capability-detected view transitions"
+disposition = "progressive"
+authority = "hedron_elements.navigation-062.mjs"

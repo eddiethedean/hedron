@@ -26,7 +26,7 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
-**Phase focus:** Published train is **0.61** (RFC-0090). Phase **0.61** (verified
+**Phase focus:** Published train is **0.62** (RFC-0090). Phase **0.62** (verified
 RFC-0090) is implemented and verified in-tree as `v0.61.0`, with the 18-gate packet and
 executable browser/unit coverage for action-state/async and surface issues #668–#672; PyPI
 publication is complete and human assistive-technology sign-off remains bounded by open #86. Prior
@@ -155,7 +155,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - What’s new: [guides/whats-new-0.58.md](docs/guides/whats-new-0.58.md).
 - Checker: `python scripts/check_release_gate.py 0.58.1`,
   `python scripts/verify_pkg_58.py`.
-- Historical registry note: the 0.58 packet predates the current 0.61.0 public release.
+- Historical registry note: the 0.58 packet predates the current 0.62.0 public release.
 
 ## Phase 0.24 evidence
 

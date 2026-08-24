@@ -71,7 +71,7 @@ Browse GitHub issues labeled
 when the queue has open items. **If the label is empty**, prefer:
 
 - Typos, dead links, and Install/FAQ/Troubleshooting clarity
-- Example README fixes that match the living `0.61` train pins
+- Example README fixes that match the living `0.62` train pins
 - Small test coverage for an existing bug you hit
 
 Avoid starting with release-gate TOMLs, STATUS ledgers, or phase packets unless a

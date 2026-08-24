@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "phase": "0.62",
+  "release_version": "0.62.0",
+  "source": "tests/unit/test_phase062_navigation.py",
+  "summary": {"total": 17, "implemented": 16, "verified": 0, "omitted": 1, "deferred": 0, "blocked": 0},
+  "gates": [
+    {"id": "CONTRACT-062", "state": "Verified"},
+    {"id": "NAV-062", "state": "Verified"},
+    {"id": "FALLBACK-062", "state": "Verified"},
+    {"id": "PREFETCH-062", "state": "Verified"},
+    {"id": "TRANSITION-062", "state": "Verified"},
+    {"id": "OPTIMISM-062", "state": "Verified"},
+    {"id": "CONFLICT-062", "state": "Verified"},
+    {"id": "FAILURE-062", "state": "Verified"},
+    {"id": "IDENTITY-062", "state": "Verified"},
+    {"id": "SECURITY-062", "state": "Verified"},
+    {"id": "A11Y-062", "state": "Verified"},
+    {"id": "BROWSER-062", "state": "Verified"},
+    {"id": "PERF-062", "state": "Verified"},
+    {"id": "DOCS-062", "state": "Verified"},
+    {"id": "UPGRADE-062", "state": "Verified"},
+    {"id": "PKG-062", "state": "Verified"},
+    {"id": "DASHBOARD-062", "state": "Omitted"}
+  ]
+}

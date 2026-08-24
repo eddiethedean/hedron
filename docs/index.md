@@ -131,7 +131,7 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <summary>Package maturity and production pins</summary>
 
 Hedron’s flagship and host-adapter packages are Beta. The latest installable PyPI pin is
-`hedron>=0.61.0,<0.62`; the published train is `0.60.x`.
+`hedron>=0.62.0,<0.62`; the published train is `0.60.x`.
 For production adoption, continue with
 [What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
 </details>

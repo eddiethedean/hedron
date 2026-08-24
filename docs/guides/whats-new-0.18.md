@@ -1,7 +1,7 @@
 # What’s new in 0.18
 
 
-!!! note "Current train is 0.61"
+!!! note "Current train is 0.62"
 
     Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; current PyPI pin `>=0.61.0,<0.62`). The pin below is historical for this train only.
     See [What’s new in 0.51](whats-new-0.51.md).
@@ -40,6 +40,6 @@ workflows, and optional Gradio interop. See
 
 ## Upgrade notes
 
-Prefer the current 0.61 train for new apps; stay on a historical upper-bound pin
+Prefer the current 0.62 train for new apps; stay on a historical upper-bound pin
 only when you must freeze this phase. Install `hedron[gradio]` only when needed.
 See [Gradio migration](gradio-migration.md).

@@ -26,7 +26,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_maps",
     version="0.1.1",
     distribution="hedron-maps",
-    hedron_version=">=0.61,<0.62",
+    hedron_version=">=0.62,<0.63",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,

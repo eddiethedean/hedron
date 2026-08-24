@@ -55,11 +55,13 @@ from hedron_data.events import (
 from hedron_data.memory import AsyncInMemoryDataSource, InMemoryDataSource
 from hedron_data.normalize import normalize_rows
 from hedron_data.optimistic import (
+    APPROVED_PHASE062_RISKS,
     DENY_BY_DEFAULT_RISKS,
     OptimisticMutation,
     OptimisticMutationState,
     OptimisticPatch,
     assert_optimism_allowed,
+    assert_phase062_optimism_allowed,
     new_idempotency_key,
 )
 from hedron_data.plans import TransformPlan, TransformStep, apply_plan_in_memory, plan_from_query
@@ -93,11 +95,12 @@ from hedron_data.table import DataTable
 from hedron_data.views import SavedView
 from hedron_data.workspace import DataWorkspace, DataWorkspacePolicy, FeatureOverrides
 
-__version__ = "0.61.0"
+__version__ = "0.62.0"
 
 __all__ = [
     "ABI_VERSION",
     "AG_GRID_BACKEND",
+    "APPROVED_PHASE062_RISKS",
     "AGGridRowModel",
     "AsyncDataEditorSource",
     "AsyncInMemoryDataSource",
@@ -156,6 +159,7 @@ __all__ = [
     "aggrid_column_defs",
     "apply_plan_in_memory",
     "assert_optimism_allowed",
+    "assert_phase062_optimism_allowed",
     "authorized_grid_event",
     "columns_from_model",
     "conflict_actions",

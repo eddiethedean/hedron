@@ -1,0 +1,6 @@
+schema = "hedron.interaction-diagnostics.v1"
+phase = "0.62"
+status = "implemented"
+families = ["HED-NAV-*", "HED-PREFETCH-*", "HED-OPTIMISTIC-*", "HED-FAILURE-*", "HED-IDENTITY-*"]
+stable_codes = ["HED-NAV-0005", "HED-NAV-0006", "HED-FAILURE-0001", "HED-FAILURE-0004", "HED-FAILURE-0005", "HED-IDENTITY-0002", "HED-IDENTITY-0003", "HED-IDENTITY-0005", "HED-OPTIMISTIC-0001", "HED-OPTIMISTIC-0002"]
+redaction = "diagnostic context excludes credentials and request bodies"

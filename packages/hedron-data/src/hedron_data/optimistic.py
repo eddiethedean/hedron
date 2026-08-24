@@ -1,4 +1,4 @@
-"""Typed OptimisticMutation contract (phase 0.39 / OPTIMISTIC-039).
+"""Typed OptimisticMutation contract (phases 0.39 and 0.62).
 
 First proven inventory: bounded DataEditor / collection cell edits only.
 """
@@ -20,7 +20,9 @@ __all__ = [
     "OptimisticMutationState",
     "OptimisticPatch",
     "OptimisticRiskClass",
+    "APPROVED_PHASE062_RISKS",
     "assert_optimism_allowed",
+    "assert_phase062_optimism_allowed",
     "new_idempotency_key",
 ]
 
@@ -33,11 +35,14 @@ class OptimisticMutationState(StrEnum):
     REJECTED = "rejected"
     ROLLED_BACK = "rolled_back"
     CONFLICTED = "conflicted"
+    UNKNOWN = "unknown"
     REFETCHED = "refetched"
 
 
 OptimisticRiskClass = Literal[
     "collection_edit",
+    "reversible_toggle",
+    "scalar_edit",
     "authentication",
     "authorization",
     "irreversible_destruction",
@@ -46,6 +51,10 @@ OptimisticRiskClass = Literal[
     "file_publication",
     "cross_tenant",
 ]
+
+APPROVED_PHASE062_RISKS: frozenset[str] = frozenset(
+    {"collection_edit", "reversible_toggle", "scalar_edit"}
+)
 
 DENY_BY_DEFAULT_RISKS: frozenset[str] = frozenset(
     {
@@ -99,6 +108,16 @@ def assert_optimism_allowed(risk_class: str) -> None:
         )
 
 
+def assert_phase062_optimism_allowed(risk_class: str) -> None:
+    """Enforce the deliberately small 0.62 optimistic risk inventory."""
+    assert_optimism_allowed(risk_class)
+    if risk_class not in APPROVED_PHASE062_RISKS:
+        raise ValueError(
+            f"HED-OPTIMISTIC-0001: risk class {risk_class!r} is not approved for phase 0.62; "
+            "use a server-confirmed mutation or an explicit Progressive disposition."
+        )
+
+
 @dataclass(slots=True)
 class OptimisticMutation:
     """Explicit optimistic mutation with revision + idempotency + state machine."""
@@ -110,7 +129,7 @@ class OptimisticMutation:
     risk_class: OptimisticRiskClass = "collection_edit"
     refetch: bool = False
     state: OptimisticMutationState = OptimisticMutationState.CANONICAL
-    allowed_fields: frozenset[str] = field(default_factory=frozenset)
+    allowed_fields: frozenset[str] = field(default_factory=lambda: frozenset[str]())
 
     def __post_init__(self) -> None:
         assert_optimism_allowed(self.risk_class)
@@ -127,6 +146,23 @@ class OptimisticMutation:
                 "<" in patch.value or contains_dangerous_scheme(patch.value)
             ):
                 raise ValueError("Optimistic patches cannot contain HTML or executable URLs")
+
+    def validate_phase062(self) -> OptimisticMutation:
+        """Validate revision/idempotency/risk requirements for a 0.62 adapter."""
+        assert_phase062_optimism_allowed(self.risk_class)
+        if self.base_revision is None:
+            raise ValueError("HED-OPTIMISTIC-0002: phase 0.62 mutations require a base revision")
+        if not self.idempotency_key:
+            raise ValueError("HED-OPTIMISTIC-0002: phase 0.62 mutations require idempotency")
+        return self
+
+    @property
+    def phase062_ready(self) -> bool:
+        try:
+            self.validate_phase062()
+        except ValueError:
+            return False
+        return True
 
     def propose(self) -> OptimisticMutation:
         if self.state not in {
@@ -180,8 +216,20 @@ class OptimisticMutation:
         self.state = OptimisticMutationState.CONFLICTED
         return self
 
+    def unknown(self) -> OptimisticMutation:
+        if self.state not in {
+            OptimisticMutationState.PROPOSED,
+            OptimisticMutationState.SUBMITTED,
+        }:
+            raise ValueError(f"cannot mark unknown from state {self.state}")
+        self.state = OptimisticMutationState.UNKNOWN
+        return self
+
     def resolve_with_refetch(self, *, server_revision: str | int | None) -> OptimisticMutation:
-        if self.state != OptimisticMutationState.CONFLICTED:
+        if self.state not in {
+            OptimisticMutationState.CONFLICTED,
+            OptimisticMutationState.UNKNOWN,
+        }:
             raise ValueError(f"cannot refetch-resolve from state {self.state}")
         self.state = OptimisticMutationState.REFETCHED
         if server_revision is not None:
@@ -221,3 +269,47 @@ class OptimisticMutation:
             risk_class="collection_edit",
             allowed_fields=allowed_fields or frozenset(),
         )
+
+    @classmethod
+    def from_reversible_toggle(
+        cls,
+        *,
+        action_id: str,
+        row_key: str,
+        field: str,
+        value: JsonValue,
+        previous: JsonValue | None,
+        base_revision: str | int,
+        idempotency_key: str | None = None,
+    ) -> OptimisticMutation:
+        mutation = cls(
+            action_id=action_id,
+            base_revision=base_revision,
+            patches=(OptimisticPatch(row_key, field, value, previous),),
+            idempotency_key=idempotency_key or new_idempotency_key(),
+            risk_class="reversible_toggle",
+        )
+        return mutation.validate_phase062()
+
+    @classmethod
+    def from_scalar_edit(
+        cls,
+        *,
+        action_id: str,
+        row_key: str,
+        field: str,
+        value: JsonValue,
+        previous: JsonValue | None,
+        base_revision: str | int,
+        allowed_fields: frozenset[str] | None = None,
+        idempotency_key: str | None = None,
+    ) -> OptimisticMutation:
+        mutation = cls(
+            action_id=action_id,
+            base_revision=base_revision,
+            patches=(OptimisticPatch(row_key, field, value, previous),),
+            idempotency_key=idempotency_key or new_idempotency_key(),
+            risk_class="scalar_edit",
+            allowed_fields=allowed_fields or frozenset(),
+        )
+        return mutation.validate_phase062()

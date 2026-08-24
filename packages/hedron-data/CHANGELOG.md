@@ -1,9 +1,15 @@
 # Changelog
 
+## [0.62.0] — 2026-08-24
+
+### Added
+- Revisioned reversible-toggle and scalar-edit optimistic adapters with explicit unknown/reconcile
+  handling and a locked risk inventory.
+
 ## [0.61.0] — 2026-08-24
 
 ### Changed
-- Adopted the 0.61 coordinated core train and its server-first interaction lifecycle markers.
+- Adopted the 0.62 coordinated core train and its server-first interaction lifecycle markers.
 
 ## [0.60.2] — 2026-08-24
 

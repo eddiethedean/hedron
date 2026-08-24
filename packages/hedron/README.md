@@ -15,8 +15,8 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-Requires Python 3.11–3.14. Pin the published `hedron>=0.61.0,<0.62` release from PyPI.
-The in-tree `v0.61.0` cut is published on PyPI.
+Requires Python 3.11–3.14. Pin the latest public `hedron>=0.61.0,<0.62` release from PyPI.
+The in-tree `v0.62.0` cut is verified; Git tag and PyPI upload remain deferred.
 The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
@@ -114,7 +114,7 @@ Coming from Streamlit? Start with the
 ## Install
 
 The latest installable PyPI release is `hedron>=0.61.0,<0.62`. The repository checkout
-and the repository provides the published `0.61.x` train. Use `uv sync` when working from a checkout.
+and the repository provides the published `0.62.x` train. Use `uv sync` when working from a checkout.
 
 ```bash
 uv add "hedron>=0.61.0,<0.62" "uvicorn[standard]"

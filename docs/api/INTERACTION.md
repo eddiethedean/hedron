@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.61.x**)
+**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.62.x**)
 
 !!! note "Phase 0.61 in-tree preview"
 
@@ -65,7 +65,7 @@ element `InteractionState` owner.
 |---|---|---|
 | `ActionPhase` | Closed lifecycle vocabulary: `idle`, `pending`, `success`, `error`, `cancelled`, `stale`, `conflict`. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#candidate-public-contracts) |
 | `AsyncPhase` | Async-region vocabulary including `empty` and `timeout` presentation states. | [`AsyncRegion` component](../components/async-region.md) |
-| `ActionState` | Immutable bounded projection of one operation's current lifecycle. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#candidate-public-contracts) |
+| `ActionState` | Immutable bounded projection of one operation's current lifecycle. | [0.62 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#candidate-public-contracts) |
 | `OperationIdentity` | Operation id, generation, target, correlation, and optional revision. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#candidate-public-contracts) |
 | `ActionPolicy` | Explicit concurrency, retry, timeout, cancellation, stale-result, and idempotency policy. | [0.61 implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md#candidate-public-contracts) |
 | `AsyncRegion` | Server-authored state slots with ordinary fragment/page fallback. | [`AsyncRegion` component](../components/async-region.md) |

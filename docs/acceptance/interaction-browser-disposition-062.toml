@@ -1,0 +1,8 @@
+schema = "hedron.interaction-browser.v1"
+phase = "0.62"
+status = "implemented"
+required_fallback = "full-page navigation"
+required_engines = ["chromium", "firefox", "webkit"]
+feature_absent_behavior = "ordinary navigation and semantic server-rendered states"
+reduced_motion = "skip visual transitions"
+cleanup = ["listeners", "retained_snapshots", "pending_requests"]

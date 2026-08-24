@@ -37,7 +37,7 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current train is **0.61.x** (`v0.61.0` in-tree and on PyPI).
+The current repository train is **0.62.x** (`v0.62.0` in-tree); the latest public PyPI release is `v0.61.0`.
 Install from PyPI:
 
 ```bash

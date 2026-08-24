@@ -288,6 +288,12 @@ from hedron_core.diagnostics import (
     meets_severity_threshold,
     normalize_severity_alias,
 )
+from hedron_core.failure import (
+    BoundaryDecision,
+    BoundaryPhase,
+    FailureBoundary,
+    FailureDisposition,
+)
 from hedron_core.feature_explanation import (
     EXPLANATION_SCHEMA,
     SOURCE_MAP_SCHEMA,
@@ -310,6 +316,12 @@ from hedron_core.htmx_extensions import (
     known_extensions,
 )
 from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
+from hedron_core.identity import (
+    IdentityRegistry,
+    IdentityTarget,
+    StateTransfer,
+    StateTransferPolicy,
+)
 from hedron_core.inference import (
     BatchWindow,
     ConcurrencyGroup,
@@ -372,6 +384,17 @@ from hedron_core.model_demo import (
     RegisteredCallableAdapter,
 )
 from hedron_core.models import EventPayload, FormModel, Model, Props
+from hedron_core.navigation import (
+    NavigationDecision,
+    NavigationIdentity,
+    NavigationMachine,
+    NavigationPhase,
+    NavigationPolicy,
+    NavigationState,
+    PrefetchDecision,
+    decide_prefetch,
+    is_safe_navigation_url,
+)
 from hedron_core.operation_workflow import (
     TERMINAL_JOB_STATES,
     OperationWorkflow,
@@ -535,7 +558,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.61.0"
+__version__ = "0.62.0"
 
 __all__ = [
     "__version__",
@@ -547,6 +570,8 @@ __all__ = [
     "ActionTransitionError",
     "ActionGroup",
     "ActionRegistry",
+    "BoundaryDecision",
+    "BoundaryPhase",
     "addressable",
     "AddressableDescriptor",
     "AddressableMeta",
@@ -610,6 +635,8 @@ __all__ = [
     "ResourceList",
     "ScrollRegion",
     "Identity",
+    "IdentityRegistry",
+    "IdentityTarget",
     "Avatar",
     "Carousel",
     "catalog_facts",
@@ -664,6 +691,7 @@ __all__ = [
     "DateInput",
     "DateTimeInput",
     "decide_preload",
+    "decide_prefetch",
     "default_interaction_policy",
     "default_theme",
     "DependencyLifetime",
@@ -735,6 +763,8 @@ __all__ = [
     "FeedbackPolicy",
     "FeedbackRecord",
     "Field",
+    "FailureBoundary",
+    "FailureDisposition",
     "filter_by_applicability",
     "FlowStep",
     "Footer",
@@ -851,7 +881,13 @@ __all__ = [
     "ModelDemoError",
     "MultiSelect",
     "Nav",
+    "NavigationDecision",
+    "NavigationIdentity",
+    "NavigationMachine",
+    "NavigationPhase",
+    "NavigationPolicy",
     "NavigationPreloadPolicy",
+    "NavigationState",
     "NavLink",
     "NavGroup",
     "NodeLike",
@@ -860,6 +896,7 @@ __all__ = [
     "OobHost",
     "OobUpdate",
     "OperationIdentity",
+    "PrefetchDecision",
     "OperationWorkflow",
     "ordered_registry_assets",
     "OVERLAY_ELEVATION_TOKENS",
@@ -961,6 +998,8 @@ __all__ = [
     "Skeleton",
     "SkipLink",
     "SourceSpan",
+    "StateTransfer",
+    "StateTransferPolicy",
     "Spacer",
     "SplitView",
     "MasterDetail",
@@ -1023,6 +1062,7 @@ __all__ = [
     "validate_directory_upload",
     "validate_element_style_contract",
     "Video",
+    "is_safe_navigation_url",
     "ViewportHint",
     "VisualizationAdapter",
     "VisualizationLimits",

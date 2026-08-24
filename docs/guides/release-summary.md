@@ -8,7 +8,7 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 
 | Item | Value |
 |---|---|
-| In-tree release | **v0.61.0** (`hedron` / coordinated Beta train packages `0.61.0`) |
+| In-tree release | **v0.62.0** (`hedron` / coordinated Beta train packages `0.62.0`) |
 | PyPI latest | **v0.61.0** (`hedron`; published 2026-08-24) |
 | Pin (PyPI) | `hedron>=0.61.0,<0.62` |
 | Charts satellite | `hedron-charts>=0.2.1,<0.3` |

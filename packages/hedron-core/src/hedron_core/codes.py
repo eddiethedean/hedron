@@ -233,6 +233,27 @@ HED_JOB_0001 = "HED-JOB-0001"
 HED_HTMX_0001 = "HED-HTMX-0001"
 HED_HTMX_0002 = "HED-HTMX-0002"  # select_oob + OobUpdate same-target conflict
 
+# Navigation, optimistic policy, failure boundaries, and identity transfer (0.62)
+HED_NAV_0001 = "HED-NAV-0001"  # unsafe or non-canonical navigation URL
+HED_NAV_0005 = "HED-NAV-0005"  # stale navigation generation
+HED_NAV_0006 = "HED-NAV-0006"  # navigation target or terminal-state mismatch
+HED_PREFETCH_0001 = "HED-PREFETCH-0001"  # prefetch policy violation
+HED_OPTIMISTIC_0001 = "HED-OPTIMISTIC-0001"  # unapproved optimistic risk
+HED_OPTIMISTIC_0002 = "HED-OPTIMISTIC-0002"  # optimistic revision or idempotency mismatch
+HED_FAILURE_0001 = "HED-FAILURE-0001"  # missing declared fallback
+HED_FAILURE_0002 = "HED-FAILURE-0002"  # localized retryable failure
+HED_FAILURE_0003 = "HED-FAILURE-0003"  # fatal failure requiring propagation
+HED_FAILURE_0004 = "HED-FAILURE-0004"  # uncertain outcome requiring reconciliation
+HED_FAILURE_0005 = "HED-FAILURE-0005"  # stale or duplicate boundary result
+HED_FAILURE_0006 = "HED-FAILURE-0006"  # retry not allowed
+HED_FAILURE_0007 = "HED-FAILURE-0007"  # retry limit exceeded
+HED_IDENTITY_0001 = "HED-IDENTITY-0001"  # unknown identity target
+HED_IDENTITY_0002 = "HED-IDENTITY-0002"  # duplicate or conflicting state writer
+HED_IDENTITY_0003 = "HED-IDENTITY-0003"  # target mismatch
+HED_IDENTITY_0004 = "HED-IDENTITY-0004"  # schema mismatch
+HED_IDENTITY_0005 = "HED-IDENTITY-0005"  # state transfer bound exceeded
+HED_IDENTITY_0006 = "HED-IDENTITY-0006"  # non-JSON-compatible state transfer
+
 # First-class HTMX extension integration (0.48 RFC-0075 / D-083)
 HED_EXT_0001 = "HED-EXT-0001"  # compatibility-default injection (sse + head-support)
 HED_EXT_0002 = "HED-EXT-0002"  # unknown or excluded public id

@@ -1,6 +1,6 @@
 # Cutting a Hedron release
 
-This is the maintainer runbook for the `0.61.x` train. Historical cut records live under
+This is the maintainer runbook for the `0.62.x` train. Historical cut records live under
 `docs/archive/`. The current repository release is `v0.61.0`, published on PyPI.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;

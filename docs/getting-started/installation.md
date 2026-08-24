@@ -16,15 +16,15 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-The latest published PyPI release and repository checkout are **`0.61.0`**.
-The `v0.61.0` Git tag and PyPI publication are complete.
+The latest published PyPI release is **`0.61.0`**. The repository checkout is the verified
+`0.62.0` candidate; its Git tag and PyPI upload are deferred until hosted CI completes.
 Application commands on this page use the published pin; contributors working in this
 checkout should use `uv sync`.
 
 | You are… | Install |
 |---|---|
 | Building an app from PyPI | `hedron>=0.61.0,<0.62` |
-| Working in this repository | `uv sync` (editable **0.61.0**) |
+| Working in this repository | `uv sync` (editable **0.62.0**) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
 are **Beta** (usable, no 1.0, no SLA). Capability detail:
@@ -145,7 +145,7 @@ cd hedron
 uv sync
 ```
 
-This checkout and public application installs are **`0.61.0`**. Use
+This checkout and public application installs are **`0.62.0`**. Use
 `hedron>=0.61.0,<0.62` for applications.
 
 See [Contributing](../CONTRIBUTING.md).

@@ -1,7 +1,7 @@
 # What’s new in 0.56
 
 Published **0.56.0** on PyPI. This is a historical train; the current published
-train is **0.61.x** — see [What’s new in 0.61](whats-new-0.61.md). Pin
+train is **0.62.x** — see [What’s new in 0.62](whats-new-0.61.md). Pin
 `hedron>=0.61.0,<0.62` from PyPI for current applications.
 
 ## 0.56.1

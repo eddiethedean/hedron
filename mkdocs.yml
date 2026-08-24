@@ -286,6 +286,7 @@ nav:
     - Presentation: api/PRESENTATION.md
     - CLI: api/CLI.md
     - Workflow: api/WORKFLOW.md
+    - Phase 0.62 interaction contracts: api/INTERACTION_062.md
     - Components: components/index.md
     - StyleScope: components/style-scope.md
     - Configuration: CONFIGURATION.md

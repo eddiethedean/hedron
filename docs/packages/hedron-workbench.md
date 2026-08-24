@@ -11,7 +11,7 @@ new applications should use `hedron-posit` and `HedronPosit`. No further
 
 Prefer [`hedron-posit`](hedron-posit.md) / `HedronPosit` for new applications.
 This package retains `HedronWorkbench` as a thin subclass (supported on the current
-0.61 train; no 0.33 deprecation warning).
+0.62 train; no 0.33 deprecation warning).
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust.

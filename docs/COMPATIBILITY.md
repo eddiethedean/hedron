@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.61.x** train, with in-tree tip `v0.61.0`; latest PyPI `v0.61.0`.
+**Status:** Accepted for the **0.62.x** train, with in-tree tip `v0.62.0`; latest PyPI `v0.61.0`.
 **Reviewed:** 2026-08-18
 
 ## Current train (read this first)
@@ -20,7 +20,7 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`, `hedron-workbench`, `hedron-posit`, `hedron-elements`)
-stay on the living `0.61.x` train (in-tree tip `v0.61.0`; latest PyPI `v0.61.0`). Independent Beta packages
+stay on the living `0.62.x` train (in-tree tip `v0.62.0`; latest PyPI `v0.61.0`). Independent Beta packages
 `hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
 lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
 also version independently. Independent `fastapi-workbench>=1.0.0,<2` is not on the
@@ -30,7 +30,7 @@ inventory only.
 ### Charts and sample-kit compatibility floor
 
 `hedron-charts>=0.2.1,<0.3` and `hedron-sample-kit>=0.2.1,<0.3` are compatible with
-`hedron-core>=0.61.0,<0.62`. The flagship `hedron[charts]>=0.61.0,<0.62` extra enforces
+`hedron-core>=0.62.0,<0.63`. The flagship `hedron[charts]>=0.62.0,<0.63` extra enforces
 that chart floor.
 
 !!! warning "Exclude older satellite wheels"

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.62.0] — 2026-08-24
+
+### Added
+- Opt-in generation-safe navigation enhancement with ordinary-link fallback, safe prefetch, and
+  capability-detected View Transitions.
+
 ## [0.61.0] — 2026-08-24
 
 ### Added

@@ -65,7 +65,7 @@ def _plugin(name: str, logical_id: str, tag_name: str):
         name=name,
         version="0.1.0",
         distribution=name,
-        hedron_version=">=0.61,<0.62",
+        hedron_version=">=0.62,<0.63",
     )
     return register
 

@@ -14,7 +14,7 @@ The coordinated packages are versioned `0.61.0` in the repository and available 
 - Server-authored `AsyncRegion` states with ordinary full-page and fragment fallbacks.
 - Bounded redacted interaction traces, stale-result rejection, explicit retry policy, and closed
   surface contracts for Tabs, Container, NavGroup, AmbientBackdrop, and Identity.
-- An 18-gate release evidence packet and clean-package verification for the 0.61 train.
+- An 18-gate release evidence packet and clean-package verification for the 0.62 train.
 
 For maintainers, the release gate is `python scripts/check_release_gate.py 0.61.0` and the
 package packet check is `python scripts/verify_pkg_61.py`.

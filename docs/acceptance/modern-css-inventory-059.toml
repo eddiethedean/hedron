@@ -1,10 +1,12 @@
 schema_version = 1
 phase = "0.59"
-state = "planned"
+state = "published"
 snapshot_date = "2026-08-22"
 planning_baseline = "v0.58.1"
 published_upgrade_source = "v0.58.0"
 target = "v0.59.0"
+published_version = "v0.59.0"
+verification = "release-gate-0.59.toml (23 Verified gates)"
 owning_rfc = "RFC-0087"
 decision = "D-106"
 contract_refine = "D-107"

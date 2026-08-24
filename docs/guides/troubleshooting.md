@@ -235,8 +235,8 @@ with auth in rare cases; keep production off.
 
 **Cause:** An old CLI wrote `hedron>=0.4.0` (or another pre-0.11 floor).
 
-**Fix:** Edit `pyproject.toml` to `hedron>=0.61.0,<0.62` and `uvicorn[standard]>=0.30`, then
-reinstall. Current `hedron new` scaffolds `hedron>=0.61.0,<0.62` automatically.
+**Fix:** Edit `pyproject.toml` to `hedron>=0.62.0,<0.63` and `uvicorn[standard]>=0.30`, then
+reinstall. Current `hedron new` scaffolds `hedron>=0.62.0,<0.63` automatically.
 
 ## SSE / WebSocket / preload not working
 

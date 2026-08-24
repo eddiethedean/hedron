@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.62.0] — 2026-08-24
+
+### Added
+- Starlette navigation identity/response headers and safe-prefetch evaluation helpers.
+
 ## [0.61.0] — 2026-08-24
 
 ### Added

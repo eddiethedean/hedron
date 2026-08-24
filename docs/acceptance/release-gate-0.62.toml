@@ -1,0 +1,141 @@
+schema_version = 1
+phase = "0.62"
+status = "Verified"
+planning_baseline = "v0.61.0"
+public_upgrade_source = "v0.61.0"
+required_predecessor = "v0.61.0"
+predecessor_satisfied = true
+target = "v0.62.0"
+owning_rfc = "RFC-0090"
+contract = "navigation-policy-contract-062.toml"
+inventory = "interaction-capability-inventory-062.toml"
+diagnostics = "interaction-diagnostics-062.toml"
+budgets = "interaction-budgets-062.toml"
+security_a11y = "interaction-security-a11y-062.toml"
+browser_disposition = "interaction-browser-disposition-062.toml"
+failure_identity = "failure-identity-contract-062.toml"
+optimistic_inventory = "optimistic-risk-inventory-062.toml"
+upgrade_fixture = "interaction-upgrade-fixtures-062.md"
+evidence_report = "evidence-062/gate-results-062.json"
+stage_1_entry_satisfied = true
+zero_deferred_at_cut = true
+progressive_omissions = ["reordering", "bulk_action", "dashboard_fan_out"]
+
+[[evidence]]
+id = "CONTRACT-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate CONTRACT-062 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "NAV-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate NAV-062 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "FALLBACK-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate FALLBACK-062 --verify"
+owner = "hedron-elements"
+ci_job = "browser"
+
+[[evidence]]
+id = "PREFETCH-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate PREFETCH-062 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "TRANSITION-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate TRANSITION-062 --verify"
+owner = "hedron-elements"
+ci_job = "browser"
+
+[[evidence]]
+id = "OPTIMISM-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate OPTIMISM-062 --verify"
+owner = "hedron-data"
+ci_job = "test"
+
+[[evidence]]
+id = "CONFLICT-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate CONFLICT-062 --verify"
+owner = "hedron-data"
+ci_job = "test"
+
+[[evidence]]
+id = "FAILURE-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate FAILURE-062 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "IDENTITY-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate IDENTITY-062 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "SECURITY-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate SECURITY-062 --verify"
+owner = "hedron-core"
+ci_job = "quality"
+
+[[evidence]]
+id = "A11Y-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate A11Y-062 --verify"
+owner = "hedron-elements"
+ci_job = "browser"
+
+[[evidence]]
+id = "BROWSER-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate BROWSER-062 --verify"
+owner = "hedron-elements"
+ci_job = "browser"
+
+[[evidence]]
+id = "PERF-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate PERF-062 --verify"
+owner = "release"
+ci_job = "quality"
+
+[[evidence]]
+id = "DOCS-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate DOCS-062 --verify"
+owner = "docs"
+ci_job = "quality"
+
+[[evidence]]
+id = "UPGRADE-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate UPGRADE-062 --verify"
+owner = "release"
+ci_job = "packaging"
+
+[[evidence]]
+id = "PKG-062"
+state = "Verified"
+command = "python scripts/check_062.py --gate PKG-062 --verify"
+owner = "release"
+ci_job = "packaging"
+
+[[evidence]]
+id = "DASHBOARD-062"
+state = "Omitted"
+command = "documented omission; no 0.62 Supported claim"
+owner = "hedron"
+ci_job = "progressive"

@@ -115,7 +115,7 @@ uv run python -c "import hedron, hedron_posit; print(hedron.__version__)"
 ```
 
 Expect the path to end in `my-workbench-app` and the PyPI version to be **`0.60.2`**.
-A repository checkout reports **`0.61.0`**.
+A repository checkout reports **`0.62.0`**.
 
 The project contains:
 

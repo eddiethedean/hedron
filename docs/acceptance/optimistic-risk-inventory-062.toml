@@ -1,0 +1,29 @@
+schema = "hedron.optimistic-risk.v1"
+phase = "0.62"
+status = "locked"
+authority = "server"
+default_disposition = "server_confirmed"
+approved_required = ["collection_edit", "reversible_toggle", "scalar_edit"]
+excluded = ["authentication", "authorization", "irreversible_destruction", "payment", "secret", "file_publication", "cross_tenant"]
+
+[[risk]]
+class = "reversible_toggle"
+disposition = "required"
+proof = ["base_revision", "idempotency_key", "confirmation", "rollback", "unknown_reconcile"]
+
+[[risk]]
+class = "scalar_edit"
+disposition = "required"
+proof = ["base_revision", "idempotency_key", "allowlisted_field", "conflict_presentation"]
+
+[[risk]]
+class = "collection_edit"
+disposition = "required"
+proof = ["base_revision", "idempotency_key", "bounded_patch", "conflict_presentation"]
+
+[[risk]]
+class = "reordering"
+disposition = "progressive"
+[[risk]]
+class = "bulk_action"
+disposition = "progressive"

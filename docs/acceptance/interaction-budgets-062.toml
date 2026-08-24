@@ -1,0 +1,10 @@
+schema = "hedron.interaction-budgets.v1"
+phase = "0.62"
+status = "locked"
+navigation_max_snapshots = 3
+prefetch_max_concurrent = 2
+prefetch_max_bytes = 262144
+identity_max_fields = 64
+identity_max_bytes = 32768
+optimistic_patch_authority = "allowlisted fields only"
+progressive_transition_timeout_ms = 1000

@@ -16,7 +16,7 @@ Phase **0.37** ships Alpha **hedron-elements 0.37.0** with form-associated refer
 ## Train pin
 
 Install with `hedron-elements>=0.37.0,<0.38` for the historical 0.37 cut, or pin
-`hedron>=0.58.0,<0.61` / `hedron[elements]>=0.50.1,<0.51` for the living tip.
+`hedron>=0.58.0,<0.62` / `hedron[elements]>=0.50.1,<0.51` for the living tip.
 
 ## Not in 0.37
 

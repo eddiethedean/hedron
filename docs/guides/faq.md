@@ -2,9 +2,9 @@
 
 ## Which version should I install?
 
-Install from the public PyPI index:
+Install the latest public release from PyPI:
 `pip install "hedron>=0.61.0,<0.62"`. Contributors working from a git checkout use
-`uv sync` (workspace packages); the verified 0.61.0 checkout is not yet on PyPI.
+`uv sync` (workspace packages); the verified 0.62.0 checkout is not yet on PyPI.
 The Git tag is cut only after hosted CI is green; PyPI upload remains a separate coordinated step. See
 [Installation](../getting-started/installation.md).
 

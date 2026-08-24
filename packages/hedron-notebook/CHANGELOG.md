@@ -3,7 +3,7 @@
 ## [0.2.1] — 2026-08-24
 
 ### Changed
-- Updated the Hedron core and flagship compatibility floors for the 0.61 interaction train.
+- Updated the Hedron core and flagship compatibility floors for the 0.62 interaction train.
 
 ## [0.2.0] — 2026-08-20
 

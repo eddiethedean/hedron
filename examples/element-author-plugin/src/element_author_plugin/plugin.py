@@ -11,7 +11,7 @@ PLUGIN_META = PluginMeta(
     name="element_author_plugin",
     version="0.1.0",
     distribution="element-author-plugin",
-    hedron_version=">=0.61,<0.62",
+    hedron_version=">=0.62,<0.63",
     capabilities=PluginCapabilities(browser_js=True, styles=True, assets=True),
 )
 

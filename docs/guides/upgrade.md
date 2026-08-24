@@ -7,7 +7,7 @@ should use [Build your first app](../getting-started/quickstart.md).
 
 ## 0.58 → 0.60
 
-Checkout tip `v0.61.0` uses `uv sync`. See [What's new in 0.61](whats-new-0.61.md),
+Checkout tip `v0.62.0` uses `uv sync`. See [What's new in 0.62](whats-new-0.61.md),
 [Hedron API](../api/HEDRON.md), and [Presentation](../api/PRESENTATION.md).
 
 1. Upgrade the application pin to `hedron>=0.61.0,<0.62`.
@@ -21,7 +21,7 @@ Checkout tip `v0.61.0` uses `uv sync`. See [What's new in 0.61](whats-new-0.61.m
 
 ## 0.57 → 0.58
 
-Checkout tip `v0.61.0` uses `uv sync`. From the public index, install
+Checkout tip `v0.62.0` uses `uv sync`. From the public index, install
 `hedron>=0.61.0,<0.62`. See [What's new in 0.58](whats-new-0.58.md),
 [Hedron API](../api/HEDRON.md), and [Presentation](../api/PRESENTATION.md).
 
@@ -35,7 +35,7 @@ Checkout tip `v0.61.0` uses `uv sync`. From the public index, install
 
 ## 0.56 → 0.57
 
-Checkout tip `v0.61.0` uses `uv sync`. From PyPI, install
+Checkout tip `v0.62.0` uses `uv sync`. From PyPI, install
 `hedron>=0.61.0,<0.62`. See
 [What's new in 0.57](whats-new-0.57.md) and
 [Presentation](../api/PRESENTATION.md).
@@ -46,7 +46,7 @@ Checkout tip `v0.61.0` uses `uv sync`. From PyPI, install
 
 ## 0.55 → 0.56
 
-Checkout tip `v0.61.0` uses `uv sync`. From PyPI, install
+Checkout tip `v0.62.0` uses `uv sync`. From PyPI, install
 `hedron>=0.61.0,<0.62`. See
 [What's new in 0.56](whats-new-0.56.md) and
 [Security control plane](../api/SECURITY_PLANE.md).
