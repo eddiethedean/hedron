@@ -52,6 +52,8 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+        with:
+          toolchain: stable
       - name: Sync
         run: uv sync --locked --python ${{ matrix.python-version }}
       - name: Run test suite
@@ -75,6 +77,8 @@ jobs:
         run: uv python install 3.12
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+        with:
+          toolchain: stable
       - name: Install all dependency groups
         run: uv sync --locked --all-groups --python 3.12
       - name: Run quality suite
@@ -138,6 +142,8 @@ jobs:
         run: uv python install 3.12
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+        with:
+          toolchain: stable
       - name: Install dependencies
         # Docs group required: the living packet's DOCS/REGRESS gates run strict MkDocs.
         run: uv sync --locked --python 3.12 --group docs
@@ -491,6 +497,8 @@ jobs:
           echo "publish_failed=0" >> "$GITHUB_OUTPUT"
       - name: Install Rust for crates.io publish
         uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+        with:
+          toolchain: stable
       - name: Publish hedron-native to crates.io
         id: crates
         env:
