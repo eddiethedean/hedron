@@ -562,6 +562,99 @@ def design_system_vars(theme: Theme) -> dict[str, str]:
     return variables
 
 
+_DEFAULT_COMPATIBILITY_FALLBACKS: Mapping[str, str] = {
+    "bg": "#f6f8fb",
+    "surface": "#ffffff",
+    "surface-muted": "#f0f3f8",
+    "fg": "#172033",
+    "muted": "#647084",
+    "border": "#dce2eb",
+    "border-strong": "#c7d0dd",
+    "accent": "#2563eb",
+    "accent-hover": "#1d4ed8",
+    "accent-soft": "#e8f0ff",
+    "on-accent": "#ffffff",
+    "danger": "#c73939",
+    "danger-soft": "#fff0f0",
+    "on-danger": "#ffffff",
+    "success": "#15805f",
+    "success-soft": "#e9f8f1",
+    "warning": "#9a6200",
+    "warning-soft": "#fff6dd",
+    "info-soft": "#eaf3ff",
+    "shadow": "0 1px 2px rgb(15 23 42 / 6%), 0 8px 24px rgb(15 23 42 / 7%)",
+    "shadow-raised": "0 14px 38px rgb(15 23 42 / 13%)",
+    "radius-sm": "0.5rem",
+    "radius": "0.8rem",
+    "radius-lg": "1.1rem",
+    "content-width": "74rem",
+}
+
+
+def compatibility_theme_vars(theme: Theme) -> dict[str, str]:
+    """Return the documented bridge for bundled stylesheet compatibility.
+
+    The default stylesheet is intentionally distributed as a stable asset and
+    still contains legacy ``--hedron-default-*`` consumers.  The bridge keeps
+    that asset compatible with custom themes without creating a second token
+    authority: every semantic value resolves through the canonical
+    ``--hedron-*`` property, while shape/elevation fields retain their typed
+    design-system values.
+    """
+
+    def canonical(name: str, fallback: str) -> str:
+        token = f"--hedron-{name}"
+        return f"var({token}, {fallback})"
+
+    values: dict[str, str] = {}
+    token_names = {
+        "bg": "color-bg",
+        "surface": "color-surface",
+        "surface-muted": "color-surface-muted",
+        "fg": "color-fg",
+        "muted": "color-muted",
+        "accent": "color-accent",
+        "on-accent": "color-on-accent",
+        "danger": "color-danger",
+        "on-danger": "color-on-danger",
+    }
+    for suffix, token in token_names.items():
+        values[f"--hedron-default-{suffix}"] = canonical(
+            token, _DEFAULT_COMPATIBILITY_FALLBACKS[suffix]
+        )
+
+    palette = {key.replace(".", "-"): value for key, value in theme.palette.items()}
+    for suffix in (
+        "border",
+        "border-strong",
+        "accent-hover",
+        "accent-soft",
+        "danger-soft",
+        "success",
+        "success-soft",
+        "warning",
+        "warning-soft",
+        "info-soft",
+    ):
+        value = palette.get(suffix, _DEFAULT_COMPATIBILITY_FALLBACKS[suffix])
+        values[f"--hedron-default-{suffix}"] = value
+
+    shape = {key.replace(".", "-"): value for key, value in theme.shape.items()}
+    for suffix in ("radius-sm", "radius", "radius-lg"):
+        values[f"--hedron-default-{suffix}"] = f"var(--hedron-shape-{suffix}, {shape.get(suffix, _DEFAULT_COMPATIBILITY_FALLBACKS[suffix])})"
+    elevation = {key.replace(".", "-"): value for key, value in theme.elevation.items()}
+    values["--hedron-default-shadow"] = (
+        f"var(--hedron-elevation-raised, {elevation.get('raised', _DEFAULT_COMPATIBILITY_FALLBACKS['shadow'])})"
+    )
+    values["--hedron-default-shadow-raised"] = (
+        f"var(--hedron-elevation-raised, {elevation.get('raised', _DEFAULT_COMPATIBILITY_FALLBACKS['shadow-raised'])})"
+    )
+    values["--hedron-default-content-width"] = theme.nav_width or _DEFAULT_COMPATIBILITY_FALLBACKS[
+        "content-width"
+    ]
+    return values
+
+
 def emit_theme_css(theme: Theme) -> str:
     """Emit cascade-layer tokens CSS for a theme.
 
@@ -570,11 +663,14 @@ def emit_theme_css(theme: Theme) -> str:
     a named theme without application CSS.
     """
     design = design_system_vars(theme)
+    compatibility = compatibility_theme_vars(theme)
     lines = ["@layer tokens {", ":root {"]
     for key, value in sorted(theme.tokens.items()):
         lines.append(f"  {_token_to_css_var(key)}: {value};")
     for key in design:
         lines.append(f"  {key}: {design[key]};")
+    for key in compatibility:
+        lines.append(f"  {key}: {compatibility[key]};")
     lines.append("}")
     for variant, values in sorted(theme.variants.items()):
         lines.append(f'[data-hedron-theme="{theme.name}"][data-hedron-variant="{variant}"] {{')
@@ -586,6 +682,8 @@ def emit_theme_css(theme: Theme) -> str:
         lines.append(f"  {_token_to_css_var(key)}: {value};")
     for key in design:
         lines.append(f"  {key}: {design[key]};")
+    for key in compatibility:
+        lines.append(f"  {key}: {compatibility[key]};")
     lines.append("}")
     dark = theme.modes.get("dark")
     if dark:
