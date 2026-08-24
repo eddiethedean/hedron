@@ -16,14 +16,12 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-The latest published PyPI release is **`0.61.0`**. The repository checkout is the verified
-`0.62.0` candidate; its Git tag and PyPI upload are deferred until hosted CI completes.
-Application commands on this page use the published pin; contributors working in this
-checkout should use `uv sync`.
+The latest published PyPI release is **`0.62.0`**. The repository checkout and public package
+index are aligned on the published 0.62 train.
 
 | You are… | Install |
 |---|---|
-| Building an app from PyPI | `hedron>=0.61.0,<0.62` |
+| Building an app from PyPI | `hedron>=0.62.0,<0.63` |
 | Working in this repository | `uv sync` (editable **0.62.0**) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
@@ -59,8 +57,8 @@ interpreter for `pip` / `uv` / `uvicorn` (`which python3`, `py -0p` on Windows).
 
     Point `pip` / `uv` at your internal index (`PIP_INDEX_URL`, `UV_INDEX_URL`, or
     `--index-url`). Mirror **PyPI** wheels for `hedron`, `hedron-core`, and matching
-    extras onto that index; pin `hedron>=0.61.0,<0.62`.
-    Offline: download wheels on a connected host (`pip download "hedron>=0.61.0,<0.62"`)
+    extras onto that index; pin `hedron>=0.62.0,<0.63`.
+    Offline: download wheels on a connected host (`pip download "hedron>=0.62.0,<0.63"`)
     and `pip install --no-index --find-links=...`. TLS / corporate MITM: install your
     org’s CA into the env (`REQUESTS_CA_BUNDLE` / `SSL_CERT_FILE`, or `pip`/`uv`
     trust-store docs). Codespaces still needs a GitHub account and billed minutes — it is
@@ -87,7 +85,7 @@ Then follow [Build your first app](quickstart.md), or install into an existing p
     ```bash
     uv init my-hedron-app
     cd my-hedron-app
-    uv add "hedron>=0.61.0,<0.62" "uvicorn[standard]"
+    uv add "hedron>=0.62.0,<0.63" "uvicorn[standard]"
     ```
 
 === "pip (macOS/Linux)"
@@ -96,7 +94,7 @@ Then follow [Build your first app](quickstart.md), or install into an existing p
     mkdir my-hedron-app && cd my-hedron-app
     python -m venv .venv
     source .venv/bin/activate
-    python -m pip install "hedron>=0.61.0,<0.62" "uvicorn[standard]"
+    python -m pip install "hedron>=0.62.0,<0.63" "uvicorn[standard]"
     ```
 
 === "pip (Windows PowerShell)"
@@ -105,7 +103,7 @@ Then follow [Build your first app](quickstart.md), or install into an existing p
     mkdir my-hedron-app; cd my-hedron-app
     python -m venv .venv
     .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=0.61.0,<0.62" "uvicorn[standard]"
+    python -m pip install "hedron>=0.62.0,<0.63" "uvicorn[standard]"
     ```
 
     If PowerShell reports that running scripts is disabled, use
@@ -130,7 +128,7 @@ Then create `app.py` from the complete listing on
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.61.0`** when installed from PyPI or from the source checkout.
+Expect **`0.62.0`** when installed from PyPI or from the source checkout.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
@@ -146,7 +144,7 @@ uv sync
 ```
 
 This checkout and public application installs are **`0.62.0`**. Use
-`hedron>=0.61.0,<0.62` for applications.
+`hedron>=0.62.0,<0.63` for applications.
 
 See [Contributing](../CONTRIBUTING.md).
 
@@ -158,8 +156,8 @@ extras only when you need them. Full catalog: [Optional packages](../packages/in
 Registry extras use the same PyPI pin as the flagship:
 
 ```bash
-pip install "hedron[data]>=0.61.0,<0.62"
-pip install "hedron[charts]>=0.61.0,<0.62"
+pip install "hedron[data]>=0.62.0,<0.63"
+pip install "hedron[charts]>=0.62.0,<0.63"
 pip install "hedron-sample-kit>=0.2.1,<0.3"
 ```
 
@@ -186,7 +184,7 @@ Charts and the sample plugin have explicit compatibility floors. Versions throug
     download browser binaries once per environment:
 
     ```bash
-    pip install "hedron[browser]>=0.61.0,<0.62"
+    pip install "hedron[browser]>=0.62.0,<0.63"
     playwright install chromium
     ```
 
@@ -215,15 +213,15 @@ Leave Explorer off in production.
 | Symptom | Fix |
 |---|---|
 | Python older than 3.11 | Hedron requires **3.11–3.14**. Check with `python3 --version`, then install a supported interpreter (see Prerequisites above). |
-| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.61.0,<0.62" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
+| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.62.0,<0.63" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
 | `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
 | FastAPI / pip resolver conflict | **Use a clean venv.** Shared data-science envs with older FastAPI often fail. See [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
-| Wrong / old version | Upgrade: `pip install -U "hedron>=0.61.0,<0.62"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
+| Wrong / old version | Upgrade: `pip install -U "hedron>=0.62.0,<0.63"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | Port 8000 already in use | Pick another port: `uvicorn app:app --reload --port 8001`, or stop the other process. |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
-| Need charts | Install `hedron[charts]>=0.61.0,<0.62` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
+| Need charts | Install `hedron[charts]>=0.62.0,<0.63` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
 | Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
 | Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
 

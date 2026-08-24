@@ -3,12 +3,12 @@
 
 !!! note "Current train is 0.62"
 
-    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; current PyPI pin `>=0.61.0,<0.62`). The pin below is historical for this train only.
+    Pin `hedron>=0.53.0,<0.54` for new apps (checkout tip; current PyPI pin `>=0.62.0,<0.63`). The pin below is historical for this train only.
     See [What’s new in 0.51](whats-new-0.51.md).
 
 !!! note "Historical phase"
 
-    This page describes **0.17**. The current repository train is **0.61.x** (`v0.61.0` in-tree and on PyPI). Pin `hedron>=0.61.0,<0.62` from PyPI.
+    This page describes **0.17**. The current repository train is **0.62.x** (`v0.62.0` in-tree and on PyPI). Pin `hedron>=0.62.0,<0.63` from PyPI.
 
 Phase **0.17** adds reactive dashboards and agent interfaces — finite interaction graphs,
 bounded patches, optional notebook preview and deny-by-default MCP — plus HTMX shell authoring

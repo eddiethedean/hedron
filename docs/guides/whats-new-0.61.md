@@ -7,7 +7,7 @@ search:
 # What's new in 0.61
 
 Hedron 0.61 is verified, tagged, and published on PyPI. Applications use
-`hedron>=0.61.0,<0.62`.
+`hedron>=0.62.0,<0.63`.
 
 ## Highlights
 

@@ -24,7 +24,7 @@ pip install "hedron-gradio>=0.2.0,<0.3"
 # or
 uv add "hedron-gradio>=0.2.0,<0.3"
 # via flagship extra:
-pip install "hedron[gradio]>=0.61.0,<0.62"
+pip install "hedron[gradio]>=0.62.0,<0.63"
 ```
 
 Requires Python 3.11–3.14.

@@ -2,7 +2,7 @@
 
 Curated optional extras and analysis workbenches for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.61.x` (`v0.61.0` in-tree and on PyPI) · pin `>=0.61.0,<0.62`<br>
+**Package maturity:** Beta · **Train:** `0.62.x` (`v0.62.0` in-tree and on PyPI) · pin `>=0.62.0,<0.63`<br>
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`<br>
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 
@@ -22,13 +22,13 @@ or an explicit plugin list). Import remains ``from hedron_extras.sandbox import 
 ## Install
 
 ```bash
-pip install "hedron[extras]>=0.61.0,<0.62"
+pip install "hedron[extras]>=0.62.0,<0.63"
 # or
-pip install "hedron-extras>=0.61.0,<0.62"
+pip install "hedron-extras>=0.62.0,<0.63"
 # feature-scoped:
-pip install "hedron-extras[data_explorer]>=0.61.0,<0.62"
+pip install "hedron-extras[data_explorer]>=0.62.0,<0.63"
 # experimental UI (requires an explicit opt-in):
-pip install "hedron[experimental-ui]>=0.61.0,<0.62"
+pip install "hedron[experimental-ui]>=0.62.0,<0.63"
 # then set HEDRON_EXPERIMENTAL_UI=1 or enable plugin hedron_extras_experimental
 # sandbox (Experimental; not in Supported extras):
 #   HEDRON_EXTRAS_SANDBOX=1  or enable plugin hedron_extras_sandbox

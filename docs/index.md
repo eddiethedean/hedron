@@ -9,7 +9,7 @@ search:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first application platform · 0.60.2</div>
+<div class="hedron-eyebrow">Python-first application platform · 0.62.0</div>
 
 # Stay in Python. Build the whole application.
 
@@ -52,7 +52,7 @@ About 10 minutes after Python 3.11+ and uv (or pip) are ready:
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "hedron>=0.61.0,<0.62" hedron new my-hedron-app
+uvx --from "hedron>=0.62.0,<0.63" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 # Open http://127.0.0.1:8000 and click Refresh status
 ```

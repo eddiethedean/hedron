@@ -1,6 +1,6 @@
 # Release acceptance: 0.62 navigation, optimism, and failure isolation
 
-**Status:** Verified in tree; release candidate ready for `v0.62.0`
+**Status:** Published as `v0.62.0` on PyPI
 **Implementation:** [NAVIGATION_OPTIMISM_062](../implementation/NAVIGATION_OPTIMISM_062.md)
 
 ## Contract artifacts

@@ -73,6 +73,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Phase 0.63 theme contract, interaction tooling, and interoperability](INTERACTION_TOOLING_063.md) — W0–W15
   theme resolution/evidence, trace/profiler, static checks, metadata ABI, migration dispositions,
   conformance, and interop plan
+- [Phase 0.63 execution plan](EXECUTION_0_63.md) — E0–E15 implementation order, issue work packages,
+  dependencies, verification sequence, stop conditions, and release handoff
 - [Phase 0.64 Hedron HTMX interaction extension](HTMX_HEDRON_EXTENSION_064.md) — W0–W10
   pinned extension asset, lifecycle state, accessibility, concurrency presentation, CSP-safe
   cleanup, browser traces, Hedron integration, and release plan

@@ -3,6 +3,7 @@
 **Status:** Proposed / Stage 0 planning  
 **Predecessor:** verified 0.61 lifecycle/trace and 0.62 navigation/optimism/failure contracts  
 **Authority:** [RFC-0090](../rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md)  
+**Execution:** [EXECUTION_0_63](EXECUTION_0_63.md)
 **Acceptance:** [RELEASE_0_63](../acceptance/RELEASE_0_63.md)
 
 ## Outcome

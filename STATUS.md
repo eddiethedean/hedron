@@ -6,13 +6,13 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.61 **Published** as `v0.61.0` on PyPI. The 18-gate evidence
-packet is active, with implemented
-scope and release evidence recorded in `docs/acceptance/evidence-061/`.
+**Roadmap position:** phase 0.62 **Published** as `v0.62.0` on PyPI. The 17-gate evidence
+packet is active, with implemented scope and release evidence recorded in
+`docs/acceptance/evidence-062/`.
 **Date:** 2026-08-24
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.61.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.62.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.1`, `hedron-charts`
 `0.2.1`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
@@ -27,9 +27,10 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 `hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
 **Phase focus:** Published train is **0.62** (RFC-0090). Phase **0.62** (verified
-RFC-0090) is implemented and verified in-tree as `v0.61.0`, with the 18-gate packet and
-executable browser/unit coverage for action-state/async and surface issues #668–#672; PyPI
-publication is complete and human assistive-technology sign-off remains bounded by open #86. Prior
+RFC-0090) is implemented and verified in-tree as `v0.62.0`, with the 17-gate packet and
+executable browser/unit coverage for navigation, optimism, failure isolation, and identity; PyPI
+publication is complete, dashboard fan-out remains explicitly omitted, and human assistive-technology
+sign-off remains bounded by open #86. Prior
 Published in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
@@ -87,6 +88,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `*-059` | Modern CSS platform and intuitive built-in styling | **Verified/Published** (0.59) | D-106 / D-107 / RFC-0087; `v0.59.0` |
 | `*-060` | Custom theme platform and styling completion | **Verified/Published** (0.60) | D-108 / RFC-0089; `v0.60.2`; owns #627–#635 |
 | `*-061` | Unified action state and server-first async boundaries | **Verified/Published** (0.61) | RFC-0090; `v0.61.0`; owns #668–#672 |
+| `*-062` | Responsive navigation, bounded optimism, and localized failure isolation | **Verified/Published** (0.62) | RFC-0090; `v0.62.0`; dashboard fan-out omitted |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
 | `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |

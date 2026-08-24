@@ -1,4 +1,4 @@
-# Phase 0.62 whole-fleet inventory (verified release-candidate evidence).
+# Phase 0.62 whole-fleet inventory (verified published-release evidence).
 # Machine-checked by check_package_docs_inventory / living train 0.62.
 # disposition: production_grade | incubator | fixture | eol
 
@@ -8,7 +8,7 @@ hedron_cut = "v0.62.0"
 charts_cut = "0.2.1"
 extends = "docs/acceptance/production-grade-inventory-061.toml"
 tracking = "phase-0.62"
-registry_status = "deferred"
+registry_status = "uploaded"
 
 packages = [
   "hedron",
