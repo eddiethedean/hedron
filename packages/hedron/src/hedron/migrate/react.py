@@ -12,6 +12,17 @@ import re
 from pathlib import Path
 from typing import Any
 
+from hedron_core.codes import (
+    HED_MIGRATE_0001,
+    HED_MIGRATE_0002,
+    HED_MIGRATE_0003,
+    HED_MIGRATE_0004,
+    HED_MIGRATE_0005,
+    HED_MIGRATE_0006,
+    HED_MIGRATE_0007,
+    HED_MIGRATE_0008,
+)
+
 SCHEMA = "hedron.react-migration/1"
 MAX_FILES = 500
 MAX_BYTES = 512 * 1024
@@ -20,6 +31,7 @@ _RULES: tuple[dict[str, Any], ...] = (
     {
         "pattern": r"\b(useActionState|useFormState|<form\b|<Form\b)",
         "kind": "form-lifecycle",
+        "code": HED_MIGRATE_0002,
         "disposition": "native",
         "confidence": "bounded",
         "target": "form command + lifecycle boundary",
@@ -27,6 +39,7 @@ _RULES: tuple[dict[str, Any], ...] = (
     {
         "pattern": r"\b(useQuery|useSWR|isLoading|isPending|loading|<Suspense\b)",
         "kind": "async-region",
+        "code": HED_MIGRATE_0003,
         "disposition": "native",
         "confidence": "bounded",
         "target": "refreshable view/job/async region",
@@ -34,6 +47,7 @@ _RULES: tuple[dict[str, Any], ...] = (
     {
         "pattern": r"\b(useOptimistic|optimistic|startTransition)\b",
         "kind": "optimistic-update",
+        "code": HED_MIGRATE_0004,
         "disposition": "adapter",
         "confidence": "ambiguous",
         "target": "approved optimistic risk class or explicit adapter",
@@ -41,6 +55,7 @@ _RULES: tuple[dict[str, Any], ...] = (
     {
         "pattern": r"\b(ErrorBoundary|componentDidCatch|getDerivedStateFromError)\b",
         "kind": "error-boundary",
+        "code": HED_MIGRATE_0005,
         "disposition": "redesign",
         "confidence": "bounded",
         "target": "declared server/element boundary",
@@ -48,6 +63,7 @@ _RULES: tuple[dict[str, Any], ...] = (
     {
         "pattern": r"\b(createPortal|useNavigate|BrowserRouter|MemoryRouter|react-router)\b",
         "kind": "client-routing-or-portal",
+        "code": HED_MIGRATE_0006,
         "disposition": "redesign",
         "confidence": "bounded",
         "target": "server routes + navigation/overlay ownership",
@@ -55,6 +71,7 @@ _RULES: tuple[dict[str, Any], ...] = (
     {
         "pattern": r"\b(WebSocket|SharedWorker|ServiceWorker|offline|IndexedDB|canvas\b|<canvas\b)",
         "kind": "client-runtime",
+        "code": HED_MIGRATE_0007,
         "disposition": "unsupported",
         "confidence": "exact",
         "target": "retain isolated custom frontend or redesign",
@@ -62,6 +79,7 @@ _RULES: tuple[dict[str, Any], ...] = (
     {
         "pattern": r"\b(ThirdParty|ReactWidget|ReactSelect|ReactTable)\b",
         "kind": "react-only-widget",
+        "code": HED_MIGRATE_0008,
         "disposition": "adapter",
         "confidence": "ambiguous",
         "target": "bounded adapter or Experimental island review",
@@ -124,7 +142,7 @@ def analyze_react_source(source: Path) -> dict[str, Any]:
         if path.stat().st_size > MAX_BYTES:
             findings.append(
                 {
-                    "code": "HED-MIGRATE-0001",
+                    "code": HED_MIGRATE_0001,
                     "kind": "analysis-limit",
                     "disposition": "unsupported",
                     "confidence": "exact",
@@ -146,7 +164,7 @@ def analyze_react_source(source: Path) -> dict[str, Any]:
                 span = _span(text, match.start())
                 findings.append(
                     {
-                        "code": f"HED-MIGRATE-{str(rule['kind']).upper().replace('-', '_')}",
+                        "code": str(rule["code"]),
                         "kind": rule["kind"],
                         "disposition": rule["disposition"],
                         "confidence": rule["confidence"],

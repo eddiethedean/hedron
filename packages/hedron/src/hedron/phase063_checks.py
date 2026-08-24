@@ -8,22 +8,31 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
+from hedron_core.codes import (
+    HED_CHECK_0001,
+    HED_CHECK_0002,
+    HED_CHECK_0003,
+    HED_CHECK_0004,
+    HED_CHECK_0005,
+    HED_CHECK_0006,
+)
+
 SCHEMA = "hedron.interaction-checks/1"
 MAX_FILES = 1_000
 MAX_BYTES = 512 * 1024
 _SKIP = frozenset({".git", ".venv", "node_modules", "dist", "build", "site", "__pycache__"})
 _RULES: tuple[tuple[str, str, str, str], ...] = (
-    ("HED-CHECK-0001", "error", "application-css", r"\.(css|scss|sass|less)$"),
-    ("HED-CHECK-0002", "error", "unsafe-css-url", r"url\(\s*['\"]?(https?:|//|\.\.)"),
-    ("HED-CHECK-0003", "error", "callback-execution", r"\b(eval|exec|Function)\s*\("),
+    (HED_CHECK_0001, "error", "application-css", r"\.(css|scss|sass|less)$"),
+    (HED_CHECK_0002, "error", "unsafe-css-url", r"url\(\s*['\"]?(https?:|//|\.\.)"),
+    (HED_CHECK_0003, "error", "callback-execution", r"\b(eval|exec|Function)\s*\("),
     (
-        "HED-CHECK-0004",
+        HED_CHECK_0004,
         "warning",
         "unbounded-client-runtime",
         r"\b(WebSocket|setInterval|localStorage)\b",
     ),
-    ("HED-CHECK-0005", "warning", "raw-html-sink", r"\b(dangerouslySetInnerHTML|innerHTML)\b"),
-    ("HED-CHECK-0006", "warning", "inline-style", r"\bstyle\s*=\s*['\"]"),
+    (HED_CHECK_0005, "warning", "raw-html-sink", r"\b(dangerouslySetInnerHTML|innerHTML)\b"),
+    (HED_CHECK_0006, "warning", "inline-style", r"\bstyle\s*=\s*['\"]"),
 )
 
 

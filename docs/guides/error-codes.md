@@ -209,6 +209,19 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-CSS-0008` | `HED_CSS_UNUSED` |
 | `HED-CSS-0009` | `HED_CSS_APPLICATION_AUTHORED` |
 
+## HED-CHECK
+
+Phase 0.63 bounded source-check findings.
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-CHECK-0001` | `HED_CHECK_0001` |
+| `HED-CHECK-0002` | `HED_CHECK_0002` |
+| `HED-CHECK-0003` | `HED_CHECK_0003` |
+| `HED-CHECK-0004` | `HED_CHECK_0004` |
+| `HED-CHECK-0005` | `HED_CHECK_0005` |
+| `HED-CHECK-0006` | `HED_CHECK_0006` |
+
 ## HED-DATA
 
 | Code | Catalog symbol |
@@ -679,6 +692,21 @@ Streamlit AST migrator findings (RFC-0061 / `MIGRATE-031`).
 | `HED-MIG-ST-0012` | `HED_MIG_ST_0012` |
 | `HED-MIG-ST-0013` | `HED_MIG_ST_0013` |
 | `HED-MIG-ST-0014` | `HED_MIG_ST_0014` |
+
+## HED-MIGRATE
+
+Phase 0.63 React migration analyzer findings.
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-MIGRATE-0001` | `HED_MIGRATE_0001` |
+| `HED-MIGRATE-0002` | `HED_MIGRATE_0002` |
+| `HED-MIGRATE-0003` | `HED_MIGRATE_0003` |
+| `HED-MIGRATE-0004` | `HED_MIGRATE_0004` |
+| `HED-MIGRATE-0005` | `HED_MIGRATE_0005` |
+| `HED-MIGRATE-0006` | `HED_MIGRATE_0006` |
+| `HED-MIGRATE-0007` | `HED_MIGRATE_0007` |
+| `HED-MIGRATE-0008` | `HED_MIGRATE_0008` |
 
 ## HED-TYPE (0.44)
 

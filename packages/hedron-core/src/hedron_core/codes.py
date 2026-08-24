@@ -506,6 +506,22 @@ HED_STYLE_EJECT_0001 = "HED-STYLE-EJECT-0001"  # style eject path / overwrite
 HED_STYLE_EJECT_0002 = "HED-STYLE-EJECT-0002"  # style eject unknown selection
 HED_STYLE_EJECT_0003 = "HED-STYLE-EJECT-0003"  # style eject parity failure
 
+# Interaction tooling (0.63)
+HED_CHECK_0001 = "HED-CHECK-0001"  # application-authored CSS detected
+HED_CHECK_0002 = "HED-CHECK-0002"  # unsafe CSS URL detected
+HED_CHECK_0003 = "HED-CHECK-0003"  # callback execution detected
+HED_CHECK_0004 = "HED-CHECK-0004"  # unbounded client runtime detected
+HED_CHECK_0005 = "HED-CHECK-0005"  # raw HTML sink detected
+HED_CHECK_0006 = "HED-CHECK-0006"  # inline style detected
+HED_MIGRATE_0001 = "HED-MIGRATE-0001"  # migration analysis limit exceeded
+HED_MIGRATE_0002 = "HED-MIGRATE-0002"  # form/lifecycle migration candidate
+HED_MIGRATE_0003 = "HED-MIGRATE-0003"  # async-region migration candidate
+HED_MIGRATE_0004 = "HED-MIGRATE-0004"  # optimistic-update migration candidate
+HED_MIGRATE_0005 = "HED-MIGRATE-0005"  # error-boundary migration candidate
+HED_MIGRATE_0006 = "HED-MIGRATE-0006"  # routing/portal migration candidate
+HED_MIGRATE_0007 = "HED-MIGRATE-0007"  # client-runtime migration candidate
+HED_MIGRATE_0008 = "HED-MIGRATE-0008"  # React-only widget migration candidate
+
 
 def registered_codes() -> frozenset[str]:
     """Return every ``HED-*`` code constant defined in this module."""
