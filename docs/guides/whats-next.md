@@ -27,6 +27,7 @@ Install pins: [Current release](current-release.md) ·
 | **0.61** | Unified action state and server-first async boundaries | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
 | **0.62** | Responsive navigation, bounded optimistic UX, and localized failure isolation | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/NAVIGATION_OPTIMISM_062.md) |
 | **0.63** | Interaction profiling, static checks, and component interoperability | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
+| **0.64** | First-party Hedron HTMX extension for lifecycle state, accessibility, cleanup, and traces | Proposed / Stage 0 planned; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_HEDRON_EXTENSION_064.md) |
 
 These are planning proposals, not current Supported capabilities. Their shared purpose is to make
 Hedron's existing forms, actions, jobs, fragments, Web Components, optimistic mutations, and
@@ -35,6 +36,11 @@ enhancement, and no-Node Python consumption. See the [implementation plan](https
 and [acceptance rules](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/REACTIVE_INTERACTION_PHASES_061_063.md).
 Every phase now has an independent entry gate, workstreams, compatibility/rollback rules, budget
 categories, and release plan; none of those planned contracts is currently available or Supported.
+
+Phase 0.64 extends that program with an explicitly declared, locally served `htmx-ext-hedron` asset.
+It adds Hedron-specific browser lifecycle and accessibility projection while keeping ordinary HTMX
+and full-page/full-fragment behavior as the fallback. It does not introduce a client store,
+hydration, a virtual DOM, or a Node requirement.
 
 ## Verified 0.60 — custom theme platform and styling completion
 

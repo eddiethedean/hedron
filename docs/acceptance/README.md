@@ -78,6 +78,8 @@ status commentary, not a satisfied release gate.
   17 Planned navigation, fallback, risk, conflict, identity, browser, budget, and package gates
 - [`v0.63` interaction tooling and interoperability](RELEASE_0_63.md) — Proposed release plan with
   18 Planned trace, profiler, static-check, metadata, migration, conformance, and package gates
+- [`v0.64` Hedron HTMX interaction extension](RELEASE_0_64.md) — Proposed release plan with
+  14 Planned contract, asset, lifecycle, accessibility, race, trace, browser, integration, and package gates
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

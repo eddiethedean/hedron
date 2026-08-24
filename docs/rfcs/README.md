@@ -108,3 +108,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0088](RFC-0088-HEDRON-NATIVE-DOCUMENTATION.md) | Hedron-native documentation application | Draft; phase unassigned |
 | [0089](RFC-0089-CUSTOM-THEME-PLATFORM.md) | Custom theme platform and styling completion | Draft; proposed phase 0.60 / D-108 |
 | [0090](RFC-0090-REACTIVE-INTERACTION-PLATFORM.md) | Reactive interaction platform without a client runtime | Proposed; phases 0.61–0.63 |
+| [0091](RFC-0091-HTMX-HEDRON-EXTENSION.md) | Hedron HTMX interaction extension | Proposed; phase 0.64 |

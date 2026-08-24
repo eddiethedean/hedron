@@ -68,6 +68,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.61** | Unified action state and server-first async boundaries | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
 | **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Interaction profiling, static checks, and component ecosystem interoperability | **Proposed / Stage 0 planned** ([RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md)) |
+| **0.64** | First-party Hedron HTMX extension: lifecycle state, accessibility, concurrency presentation, cleanup, and browser traces | **Proposed / Stage 0 planned** ([RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md)) |
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -6459,3 +6460,21 @@ The phases are governed by [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFOR
 their public contracts and release gates are accepted. They do not promote SSE/WebSockets,
 View Transitions, preload, or React islands to Supported defaults, and they do not create a
 mandatory client store, hydration layer, JSX requirement, or Node dependency.
+
+## Proposed phase 0.64 — Hedron HTMX interaction extension
+
+RFC-0091 follows the 0.61–0.63 reactive interaction platform and turns its server-authored
+lifecycle, operation identity, accessibility, and trace contracts into an explicit browser
+projection. The phase proposes a small, locally served `htmx-ext-hedron` asset declared with
+`Page(htmx_extensions={"hedron"})`.
+
+The extension owns pending/terminal state markers, busy and disabled presentation, announcements,
+focus policy, stale/superseded presentation, CSP-safe lifecycle registration, and browser trace
+hooks. HTMX remains the request/swap authority; Hedron remains the server, authorization, target,
+mutation, and HTML authority. Native HTML and full-page/full-fragment responses remain Required
+fallbacks.
+
+The phase explicitly excludes a global client store, hydration, a virtual DOM, response-script
+execution, a new morph engine, and promotion of SSE/WebSockets. See the [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md),
+[implementation plan](implementation/HTMX_HEDRON_EXTENSION_064.md), [public contract](api/HTMX_HEDRON_EXTENSION.md),
+and [release acceptance](acceptance/RELEASE_0_64.md).
