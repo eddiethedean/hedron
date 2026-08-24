@@ -152,7 +152,7 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.58.",
             "0.59.",
             "0.60.",
-            "0.61.",
+            "0.61.", "0.62.",
         )
     ):
         print(f"ok: 0.43 historical under living published {published}")
@@ -206,7 +206,7 @@ def main(argv: list[str] | None = None) -> int:
             "0.58.",
             "0.59.",
             "0.60.",
-            "0.61.",
+            "0.61.", "0.62.",
         )
     ):
         errors = release_gate.check_evidence_manifest(GATE)
