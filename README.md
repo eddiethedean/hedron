@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/releases/latest)
 
 Hedron lets you build admin tools, CRUD apps, and dashboards in Python on FastAPI.
-Routes return typed UI; HTMX swaps HTML fragments. No Node frontend.
+Routes return Python components; HTMX swaps HTML fragments. No Node frontend.
 
 **Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
@@ -71,7 +71,7 @@ Pins and support status: [Current release](https://hedron.readthedocs.io/en/late
 
 ## Who it’s for
 
-CRUD, admin, dashboards, and forms as typed Python on FastAPI — when you want HTMX fragment
+CRUD, admin, dashboards, and forms as Python components on FastAPI — when you want HTMX fragment
 regions, CSRF defaults, and multi-worker job status **without** assembling a hand-rolled
 Jinja+HTMX stack. Prefer `@app.screen` for new apps.
 
@@ -132,10 +132,10 @@ Prefer not to install locally? Use a **full cloud environment** (not a hosted pl
 
 | Need | Hedron provides |
 |---|---|
-| Server-rendered UI | Typed pages, layouts, forms, tables, and status components rendered as HTML |
+| Server-rendered UI | Pages, layouts, forms, tables, and status components rendered as HTML |
 | Partial-page interaction | Declared HTMX regions and fragments with target allowlists and progressive-enhancement paths |
 | FastAPI integration | Ordinary routes, dependency injection, middleware, lifespan, and JSON endpoints alongside UI routes |
-| Safer defaults | Contextual escaping, CSRF profiles, typed URL/HTML trust boundaries, and conservative caching |
+| Safer defaults | Contextual escaping, CSRF profiles, explicit URL/HTML trust boundaries, and conservative caching |
 | Production building blocks | Testing helpers, diagnostics, polling jobs, deployment guidance, and Flask/Django adapters |
 
 Hedron is **not** an ORM, identity provider, hosted service, or client-side SPA runtime.

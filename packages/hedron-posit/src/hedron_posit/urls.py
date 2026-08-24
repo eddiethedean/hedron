@@ -145,6 +145,7 @@ def connect_external_base_from_request(
     request: Request,
     *,
     trusted_peers: Sequence[str] = _DEFAULT_CONNECT_PROXY_PEERS,
+    environ: Mapping[str, str] | None = None,
 ) -> ExternalBase | None:
     """Return a validated Posit Connect base, or ``None`` when absent.
 
@@ -159,7 +160,8 @@ def connect_external_base_from_request(
     if len(values) != 1:
         raise ValueError("multiple Posit Connect app base headers were rejected")
     peer = _scope_peer(request)
-    connect_runtime = os.environ.get("POSIT_PRODUCT", "").strip().upper() == "CONNECT"
+    env = os.environ if environ is None else environ
+    connect_runtime = str(env.get("POSIT_PRODUCT") or "").strip().upper() == "CONNECT"
     if not connect_runtime and not _trusted_peer(peer, trusted_peers):
         raise ValueError("Posit Connect app base header lacked trusted runtime evidence")
 

@@ -61,7 +61,7 @@ behavior. Capture representative input fixtures and expected domain outputs outs
 Build the Hedron suite in layers:
 
 1. ordinary unit tests for extracted data and business functions;
-2. `TestClient` tests for pages, typed query validation, actions, redirects, and fragments;
+2. `TestClient` tests for pages, query validation, actions, redirects, and fragments;
 3. `AppScenario` tests for cookie-retaining multi-step workflows;
 4. a small browser suite for JavaScript swaps, focus, uploads, and accessibility;
 5. smoke tests against the deployed proxy, not only localhost.

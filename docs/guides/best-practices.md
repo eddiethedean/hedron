@@ -19,7 +19,7 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 ## URLs and redirects
 
 - Pass navigation/asset URLs through `SafeUrl.parse(..., purpose=...)`.
-- Prefer `redirect_local` / typed interaction redirects; avoid open redirects via raw headers.
+- Prefer `redirect_local` / interaction redirects; avoid open redirects via raw headers.
 - Adapter `extra_headers` cannot overwrite validated `HX-*` URL/selector fields or weaken
   `Cache-Control` to `public`.
 
@@ -31,7 +31,7 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 
 ## Templates
 
-- Prefer typed Python components for reusable behavior and authorization. Install `hedron-jinja`
+- Prefer Python components for reusable behavior and authorization. Install `hedron-jinja`
   when trusted authors need standards-first control over HTML, CSS, JavaScript, Jinja, and HTMX;
   bind every callable component alias explicitly and keep dynamic trust crossings visible. HDN is
   not available on the 0.9+ train.
@@ -60,7 +60,7 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 | `Cache-Control: public` on authenticated HTML | `private` / `no-store` / `vary-htmx` |
 | Explorer (`development`) in production | `explorer="off"` or `secured` with real auth |
 | Unbounded `Auto` on huge objects | Bound depth / explicit tables |
-| Raw `HX-*` headers that bypass typed fields | `InteractionResult` typed fields |
+| Raw `HX-*` headers that bypass validated fields | `InteractionResult` fields |
 | Assuming SSE/WS survive every proxy | Polling fallback + proxy buffering off |
 | One in-memory job backend across workers | Sticky sessions or shared `JobBackend` |
 

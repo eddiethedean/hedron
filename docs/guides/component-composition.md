@@ -113,7 +113,7 @@ workspace = Container(
 
 `Container`, `Stack`, `Inline`, `Grid`, `Card`, `Form`, `Fragment`, landmarks,
 `Dialog`, `Expander`, and `Sidebar` accept positional nodes or a `children=` value.
-Use positional children for a small, readable tree and `children=` when a typed model or
+Use positional children for a small, readable tree and `children=` when a model or
 loop already produced a sequence. If both are supplied, positional nodes render first.
 Strings are always one text node; they are never split as a sequence.
 

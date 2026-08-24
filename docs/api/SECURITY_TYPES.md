@@ -23,7 +23,7 @@ body = TrustedHtml.reviewed(sanitized_html, source="application-sanitizer:v1")
 
 ## `Secret[T]`
 
-`Secret(value)` stores a typed sensitive value. When used in Hedron/Pydantic models as `Secret[T]`, the inner value is validated against `T` (for example `Secret[str]` rejects an `int`). Its string conversion, representation, serialization, examples, diagnostics, traces, identities, and Explorer display are redacted. `reveal()` is the explicit application-only access operation; Hedron never reveals a secret implicitly to props, markup, URLs, cache-key text, logs, or browser metadata.
+`Secret(value)` stores a sensitive value with an explicit inner type. When used in Hedron/Pydantic models as `Secret[T]`, the inner value is validated against `T` (for example `Secret[str]` rejects an `int`). Its string conversion, representation, serialization, examples, diagnostics, traces, identities, and Explorer display are redacted. `reveal()` is the explicit application-only access operation; Hedron never reveals a secret implicitly to props, markup, URLs, cache-key text, logs, or browser metadata.
 
 ## `TrustedHtml`
 

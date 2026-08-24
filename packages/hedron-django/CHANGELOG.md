@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.60.2] — 2026-08-24
+
+### Fixed
+- Coordinated Workbench and Connect integration fixes from the 0.60.2 maintenance release.
+
+### Changed
+- Coordinated train tip `0.60.2` (in-tree patch; tag/PyPI deferred).
+
 ## [0.60.1] — 2026-08-23
 
 ### Fixed

@@ -7,7 +7,7 @@
 
 DataTable, DataEditor, and data-source toolkit for Hedron.
 
-Typed data-source protocols, optional dataframe normalization, and a
+Data-source protocols, optional dataframe normalization, and a
 Tabulator-backed grid Web Component — registered through the public Hedron
 plugin contract. Install as `hedron-data` or via the flagship extra `hedron[data]`.
 
@@ -53,7 +53,7 @@ rows = [
 table = DataTable(rows, caption="Employees", page_size=25)
 ```
 
-Use inside a Hedron `Page` (FastAPI / Flask / Django). Prefer a typed
+Use inside a Hedron `Page` (FastAPI / Flask / Django). Prefer a validated
 `row_model` when you want validated columns:
 
 ```python
@@ -73,7 +73,7 @@ table = DataTable(rows, row_model=EmployeeRow, caption="Employees")
 
 - `DataTable` — paginated, sortable grid with HTMX-friendly refresh
 - `DataEditor` — editable grid workflows
-- Typed `DataSource` protocols and dataframe normalization helpers
+- `DataSource` protocols and dataframe normalization helpers
 - Tabulator-backed Web Component assets (plugin-registered)
 
 ## Links

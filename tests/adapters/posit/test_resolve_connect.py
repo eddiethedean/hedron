@@ -179,3 +179,25 @@ def test_native_connect_accepts_matching_base(monkeypatch: pytest.MonkeyPatch) -
     )
     assert base is not None
     assert base.mount == mount
+
+
+def test_native_connect_uses_supplied_runtime_environment() -> None:
+    mount = "/content/00000000-0000-4000-8000-000000000001"
+    req = _request(
+        headers=[
+            (
+                b"rstudio-connect-app-base-url",
+                f"https://connect.example{mount}".encode(),
+            )
+        ],
+        root_path=mount,
+        client="203.0.113.8",
+    )
+    base = native_connect_base_from_request(
+        req,
+        product=PositProduct.CONNECT,
+        trusted_peers=("127.0.0.1",),
+        environ={"POSIT_PRODUCT": "CONNECT"},
+    )
+    assert base is not None
+    assert base.mount == mount

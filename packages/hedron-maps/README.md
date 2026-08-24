@@ -1,6 +1,6 @@
 # hedron-maps
 
-Typed first-class maps, offline geospatial presentation, and `MapInteraction` for Hedron.
+First-class maps, offline geospatial presentation, and `MapInteraction` for Hedron.
 
 **Package maturity:** Beta · **Package version:** `0.1.0`
 

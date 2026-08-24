@@ -16,7 +16,7 @@ application runtime or auto-publish arbitrary callables as HTTP/MCP endpoints.
 | Type | Role |
 |---|---|
 | `ActionRegistry` | Explicit registry of `RegisteredAction` / `RegisteredCallableAdapter` |
-| `RegisteredAction` | Typed action with schemas, policies, optional `handler` |
+| `RegisteredAction` | Action with schemas, policies, optional `handler` |
 | `ModelDemo` | Builds reviewable `InferenceInterface` only from the registry |
 | `InferenceInterface` | Input/result surface metadata (never implies a public route) |
 

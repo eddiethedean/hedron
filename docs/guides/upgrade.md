@@ -166,14 +166,14 @@ Hedron 0.49.x compiles existing handle, TypeSchema, and catalog plans onto FastA
 - `BoundaryBindingPlan` chooses native-model or expanded-fields; `BindingPlan` stays URL identity
 - Additive TypeSchema v2 input/output projections; v1 readers remain
 - Tagged public-wire `kind` unions and cached TypeAdapter on non-FormBody candidates
-- Router provenance, typed OpenAPI, and non-granting `RequiresScopes`
+- Router provenance, OpenAPI projection, and non-granting `RequiresScopes`
 - Workbench/Posit keep custom loaders. FailFast / Pydantic `MISSING` stay research-only
 
 0.48 HTMX extensions remain:
 
 - Closed `Page.htmx_extensions` / `HtmxExtension` / `ExtensionSet` with demand-driven pinned local `sse`, `head-support`, and `preload` assets
 - Unset pages keep the 0.47 `sse` + `head-support` compatibility default; `htmx_extensions=()` loads zero extension bytes
-- Typed `SseRegion` / `SseTrigger` over experimental SSE helpers; polling remains the Supported fallback
+- `SseRegion` / `SseTrigger` over experimental SSE helpers; polling remains the Supported fallback
 - Idiomorph / morph swap is **Deferred** and is not a Supported capability
 
 Maps from 0.47 remain:
@@ -181,12 +181,12 @@ Maps from 0.47 remain:
 - `MapSpec` / `MapPlan` / `compile_map` compile a closed, redacted map grammar
 - `hedron_maps.Map` defaults to attributed `OpenStreetMap.standard()`; core `hedron.Map` is unchanged
 - Custom XYZ / TileJSON / vector sources, static images, PMTiles, bounded MBTiles, and blank maps
-- Pinned strict-CSP MapLibre behind `hedron-map`; `MapInteraction` binds typed events
+- Pinned strict-CSP MapLibre behind `hedron-map`; `MapInteraction` binds declared events
 - Semantic table alternatives survive no JavaScript / WebGL / CSP / network failure
 
 Apps that never install `hedron-maps` stay request-path identical to 0.46. Direct
 `hedron.Map` and explicit chart map adapters remain. Prior trains remain in force:
-package-native workflows (0.46), typed interaction catalog (0.45), type-driven authoring (0.44),
+package-native workflows (0.46), interaction catalog (0.45), type-driven authoring (0.44),
 refreshable views and commands (0.43), production-grade
 Web Component inventory (0.42), browser composition / draft transfer / navigation (0.41),
 authoring kit (0.40), rich data / OptimisticMutation (0.39), high-fidelity charts
@@ -312,7 +312,7 @@ Hedron 0.46.x added opt-in package-native features that compile onto existing
 - [What's new in 0.45](whats-new-0.45.md)
 - [What's new in 0.44](whats-new-0.44.md)
 - [What's new in 0.43](whats-new-0.43.md)
-- [Package-native typed workflows](../api/PACKAGE_WORKFLOWS.md)
+- [Package-native workflows](../api/PACKAGE_WORKFLOWS.md)
 - [Interaction catalog](../api/INTERACTION_CATALOG.md)
 - [Type-driven authoring](../api/TYPE_DRIVEN_AUTHORING.md)
 - [Release notes](release-notes.md)

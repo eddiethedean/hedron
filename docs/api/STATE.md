@@ -11,7 +11,7 @@ status: shipped
 
 **Status:** Shipped · FastAPI flagship; adapters keep host-native sessions
 
-`SessionState` is a typed adapter over the host framework’s configured session mechanism. It is not a global Hedron store.
+`SessionState` is an adapter over the host framework’s configured session mechanism. It is not a global Hedron store.
 
 ## FastAPI usage
 

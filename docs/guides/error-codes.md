@@ -732,7 +732,7 @@ grant remote exposure.
 ## HED-BUNDLE (0.46)
 
 Atomic FeatureBundle inclusion diagnostics (D-075 / D-079 / RFC-0073). Public
-contract: [Package-native typed workflows](../api/PACKAGE_WORKFLOWS.md). Never reuse
+contract: [Package-native workflows](../api/PACKAGE_WORKFLOWS.md). Never reuse
 `HED-WORKFLOW-*`, `HED-CATALOG-*`, or `HED-PROJECTION-*` for bundle failures.
 
 | Code | Catalog symbol |

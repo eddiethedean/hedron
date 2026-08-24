@@ -91,7 +91,7 @@ parameters:
 | Method | Description |
 |---|---|
 | `screen(path, *, title, **kwargs)` | Register a beginner screen that lowers to `Page` + `page` (returns `ScreenHandle`) |
-| `form_command(path, *, fallback, **kwargs)` | Typed form command that discovers one Pydantic model and lowers to `FormBody` + `command` |
+| `form_command(path, *, fallback, **kwargs)` | Form command that discovers one Pydantic model and lowers to `FormBody` + `command` |
 | `page(path, **kwargs)` | Register a PAGE route (navigation HTML; fragment when `HX-Request`) — Advanced when `screen` applies |
 | `refreshable(path, **kwargs)` | Register a GET fragment view; returns a `FragmentHandle` |
 | `command(path, **kwargs)` | Register a CSRF-backed mutation; returns an `ActionHandle` |

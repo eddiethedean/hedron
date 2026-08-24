@@ -54,5 +54,5 @@ def test_workbench_guide_uses_the_preferred_hedron_posit_surface() -> None:
     assert "from hedron_posit import HedronPosit" in guide
     assert "app = HedronPosit(" in guide
     assert "uv run hedron-posit check" in guide
-    assert "uv run hedron-posit run app:app --reload" in guide
+    assert "uv run hedron-posit run app:app --port 8000 --reload" in guide
     assert "from hedron_workbench import HedronWorkbench" not in guide

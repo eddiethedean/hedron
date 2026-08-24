@@ -4,7 +4,8 @@ Production-grade Gradio client interoperability for Hedron.
 
 **Package maturity:** Beta (`0.2.0`) · pin `>=0.2.0,<0.3`  
 **Flagship extra:** `hedron[gradio]` · **Import:** `hedron_gradio`  
-Provides allowlisted remote endpoint discovery, typed predict / job / stream helpers, bounded
+Provides allowlisted remote endpoint discovery, predict / job / stream helpers with explicit
+schemas, bounded
 file transport, and Hugging Face vendor-node adapters — **without** embedding Gradio’s UI runtime
 in core.
 
@@ -25,7 +26,7 @@ stub-friendly status payloads.
 ## When to use
 
 - Calling remote Gradio apps / HF Spaces from Hedron workflows with explicit allowlists
-- Typed predict / job / stream helpers without pulling Gradio UI into core
+- Predict / job / stream helpers with explicit schemas without pulling Gradio UI into core
 
 This is **not** production parity with Gradio’s full UI. Prefer Hedron-native inference / jobs
 surfaces when you control the model server — [Model demos](../guides/model-demos.md).

@@ -35,7 +35,7 @@ def user_table(user_id: int):
 | `tags` | `tuple[str, …]` | Invalidation tags (see `invalidate_tags`) |
 | `vary_on` | `tuple[str, …]` | **Required** for sensitive scopes — argument names included in the cache key |
 
-`cache_data` caches typed derived data. `cache_component` caches a prepared component or
+`cache_data` caches validated derived data. `cache_component` caches a prepared component or
 rendered result only when the component and security policy permit deterministic reuse.
 
 ### Sensitive scopes require `vary_on`

@@ -24,6 +24,7 @@ from fastapi_workbench.mount import cookie_path_for_mount, normalize_mount_path
 from fastapi_workbench.urls import normalize_http_origin
 
 _PROXY_ROOT = re.compile(r"^/proxy/(?P<port>\d+)(?P<rest>/.*)$")
+_WORKBENCH_SESSION_PORT = re.compile(r"^/s/[^/]+/p/(?P<port>\d+)(?:/|$)")
 _MAX_RSERVER_OUTPUT = 4096
 _ALIAS_USED = FWB_0008
 
@@ -92,6 +93,7 @@ def explicit_mount_hint(
     *,
     compatibility_aliases: bool = True,
     warnings: list[str] | None = None,
+    bound_port: int | None = None,
 ) -> str | None:
     """Return a non-empty mount when ``discover_rserver_url`` can be skipped.
 
@@ -112,8 +114,28 @@ def explicit_mount_hint(
     if mount_explicit is None and rs_server_url(env) and not is_workbench_job(env):
         uvicorn_root = env.get(_UVICORN_ROOT_PATH)
         if uvicorn_root is not None and str(uvicorn_root).strip():
-            mount_explicit = str(uvicorn_root).strip()
-            if warnings is not None:
+            # Posit Workbench versions may expose the value returned by
+            # ``rserver-url`` here, which is a full URL rather than only its
+            # path.  Keep the origin out of the mount handoff, but validate it
+            # with the same URL/path rules used for public bases.
+            candidate = _uvicorn_root_path_mount(uvicorn_root)
+            candidate_port = _workbench_session_port(candidate)
+            if (
+                bound_port is not None
+                and candidate_port is not None
+                and candidate_port != bound_port
+            ):
+                # Workbench commonly exports the root path for its default
+                # port (8000). A launcher that binds another port must call
+                # rserver-url for that actual listener instead.
+                mount_explicit = None
+                if warnings is not None:
+                    warnings.append(
+                        "ignoring UVICORN_ROOT_PATH because it targets a different bound port"
+                    )
+            else:
+                mount_explicit = candidate
+            if mount_explicit is not None and warnings is not None:
                 warnings.append("using UVICORN_ROOT_PATH supplied by the Posit Workbench runtime")
     return mount_explicit
 
@@ -206,6 +228,30 @@ def _validated_public_base(raw: str) -> tuple[str | None, str, SplitResult | Non
             remediation="Set a valid http(s) origin and optional local mount path.",
         ) from exc
     return origin, mount, parsed
+
+
+def _uvicorn_root_path_mount(raw: str) -> str:
+    """Return the local mount represented by Workbench's root-path variable.
+
+    Posit documents ``UVICORN_ROOT_PATH`` as the value produced by
+    ``rserver-url -l``.  That command returns a full URL on some Workbench
+    versions and only a path on others, so accept both forms while retaining
+    the resolver's path and URL safety checks.
+    """
+    text = str(raw).strip()
+    parsed = urlsplit(text)
+    looks_like_url = bool(parsed.scheme or parsed.netloc or text.startswith("//") or "://" in text)
+    if not looks_like_url:
+        return text
+    _, mount, _ = _validated_public_base(text)
+    return mount or "/"
+
+
+def _workbench_session_port(mount: str) -> int | None:
+    match = _WORKBENCH_SESSION_PORT.match(normalize_mount_path(mount))
+    if match is None:
+        return None
+    return int(match.group("port"))
 
 
 def _local_origin(host: str, port: int | None = None) -> str:
@@ -441,6 +487,7 @@ def resolve_deployment(
         env,
         compatibility_aliases=compatibility_aliases,
         warnings=warnings,
+        bound_port=bound_port,
     )
     public_explicit = _first_str(
         explicit=cfg.public_base_url,

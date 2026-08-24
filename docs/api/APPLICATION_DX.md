@@ -13,9 +13,9 @@ Public Stage 1 surface (Verified gates; introduced in published `v0.53.0`; curre
 
 | Symbol | Role | Gate |
 |---|---|---|
-| `ApplicationAssetSpec` / `ApplicationAssetPlan` / `compile_application_asset_plan` | Dependency-ordered CSS/JS/module emission in the typed CSP-aware pipeline | `ASSET-053` |
+| `ApplicationAssetSpec` / `ApplicationAssetPlan` / `compile_application_asset_plan` | Dependency-ordered CSS/JS/module emission in the CSP-aware pipeline | `ASSET-053` |
 | `ApplicabilityInterval` / `RemediationAction` / `normalize_severity_alias` | Version applicability, severity aliases, structured remediation | `DIAG-053` |
-| `export_routes_document` / `export_effect_graph` / `ROUTE_DOCUMENT_SCHEMA` / `hedron routes --document` | Versioned typed route and effect graphs (non-executing) | `ROUTE-053` |
+| `export_routes_document` / `export_effect_graph` / `ROUTE_DOCUMENT_SCHEMA` / `hedron routes --document` | Versioned route and effect graphs (non-executing) | `ROUTE-053` |
 | `OperationWorkflow` / `is_terminal_job_state` / `retry_operation` / `TERMINAL_JOB_STATES` | Start/monitor/cancel/retry/busy/terminal/completion over `JobBackend` | `WORKFLOW-053` |
 | `generate_interaction_tests` / `GENERATOR_VERSION` (+ `hedron testgen`) | Deterministic reviewable tests from sealed `InteractionCatalog` | `TESTGEN-053` |
 | `run_visual_conformance` / `PRIVATE_SELECTORS_SUPPORTED` | Semantic-token compatibility for `default_styles=False` apps | `THEME-053` |

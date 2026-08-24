@@ -1,5 +1,5 @@
 ---
-description: Typed first-party charts, deterministic exports, and optional plotting-library adapters.
+description: First-party charts, deterministic exports, and optional plotting-library adapters.
 ---
 
 # `hedron-charts`

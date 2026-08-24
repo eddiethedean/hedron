@@ -8,11 +8,11 @@ security) lives in the [HDJ (Jinja) API](../api/JINJA.md).
 
 ## When to use HDJ
 
-- You want ordinary Jinja inheritance/includes with typed Hedron components in the same
+- You want ordinary Jinja inheritance/includes with Hedron components in the same
   template.
 - You are migrating HTML/Jinja apps and want progressive adoption.
 
-Prefer typed Python components (`Page`, `Stack`, …) for new FastAPI apps unless you
+Prefer Python components (`Page`, `Stack`, …) for new FastAPI apps unless you
 already have a Jinja codebase.
 
 ## Quick install

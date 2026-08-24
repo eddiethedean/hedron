@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] — 2026-08-24
+
+### Fixed
+- Accept full Workbench `rserver-url` values in `UVICORN_ROOT_PATH` and rediscover
+  the mount when an inherited hint targets a different bound listener port.
+
 ## [0.43.0] — 2026-08-16
 
 ### Changed

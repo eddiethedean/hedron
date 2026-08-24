@@ -7,7 +7,8 @@
 
 Production-grade Gradio client interoperability for Hedron.
 
-Endpoint discovery, allowlisted remote calls, typed predict / job / stream helpers,
+Endpoint discovery, allowlisted remote calls, predict / job / stream helpers with explicit
+schemas,
 bounded file transport, and Hugging Face vendor-node adapters — without embedding
 Gradio’s UI runtime in core. Disabled by default; absence of this package adds no core
 dependency or startup cost.

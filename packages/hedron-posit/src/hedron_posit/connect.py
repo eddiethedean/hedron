@@ -41,7 +41,11 @@ def native_connect_base_from_request(
         # Inactive / Workbench: still reject spoofed singular headers from untrusted peers
         # via the shared helper, but do not require Connect product mode.
         try:
-            return connect_external_base_from_request(request, trusted_peers=trusted_peers)
+            return connect_external_base_from_request(
+                request,
+                trusted_peers=trusted_peers,
+                environ=environ,
+            )
         except ValueError as exc:
             raise _connect_error(
                 "HED-POSIT-0301",
@@ -51,7 +55,16 @@ def native_connect_base_from_request(
             ) from exc
 
     try:
-        base = connect_external_base_from_request(request, trusted_peers=trusted_peers)
+        runtime_environ = dict(environ or {})
+        if product is PositProduct.CONNECT:
+            # Explicit product configuration is itself the resolved trust
+            # decision; do not require the process environment to repeat it.
+            runtime_environ["POSIT_PRODUCT"] = "CONNECT"
+        base = connect_external_base_from_request(
+            request,
+            trusted_peers=trusted_peers,
+            environ=runtime_environ or None,
+        )
     except ValueError as exc:
         message = str(exc)
         code = "HED-POSIT-0302"

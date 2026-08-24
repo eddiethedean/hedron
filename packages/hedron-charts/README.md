@@ -5,7 +5,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Typed first-party charts, deterministic exports, and optional plotting-library adapters for
+First-party charts, deterministic exports, and optional plotting-library adapters for
 Hedron.
 
 Beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart`, Matplotlib static
@@ -21,7 +21,7 @@ production Auto defaults.
 
 ## Phase 0.38 first-party charts
 
-Phase **0.38** ships `hedron-charts` **`0.2.0`** with typed `ChartSpec` / `ChartPlan`, an
+Phase **0.38** ships `hedron-charts` **`0.2.0`** with schema-driven `ChartSpec` / `ChartPlan`, an
 ABI-conforming `hedron-chart` Web Component, semantic server fallbacks, SVG by default, Canvas for
 dense series, core inspect/focus/select/reset events, deterministic server exports, and bounded
 payloads. The current host has dedicated paint behavior for line, area, bar, and point; broader

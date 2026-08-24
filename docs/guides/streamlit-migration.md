@@ -11,14 +11,14 @@ The shortest safe path is:
 1. run the non-executing migration analyzer;
 2. extract framework-free calculations and data access;
 3. make a read-only Hedron page work;
-4. turn filters into typed GET parameters and writes into POST actions;
+4. turn filters into validated GET parameters and writes into POST actions;
 5. compare outcomes, not generated HTML.
 
 !!! info "Modern Streamlit has more than full-script reruns"
 
     By default, Streamlit reruns the script when a user changes a widget. Streamlit forms
     batch changes into one rerun, and `st.fragment` can rerun only a portion. Hedron still
-    uses a different model: every interaction is an ordinary HTTP request with typed
+    uses a different model: every interaction is an ordinary HTTP request with validated
     inputs and an explicit response. See Streamlit's official
     [execution-flow](https://docs.streamlit.io/develop/api-reference/execution-flow),
     [forms](https://docs.streamlit.io/develop/concepts/architecture/forms), and
@@ -45,7 +45,7 @@ Hedron is a strong candidate when the app is becoming a maintained web applicati
 - filters should have shareable, bookmarkable URLs;
 - writes need explicit authorization, validation, CSRF protection, and audit boundaries;
 - the team wants FastAPI dependencies, middleware, JSON routes, or OpenAPI beside the UI;
-- multiple developers need reusable typed components and ordinary pytest coverage;
+- multiple developers need reusable components and ordinary pytest coverage;
 - deployment must fit an existing ASGI, container, proxy, or enterprise platform;
 - whole-script work is becoming slow, hard to reason about, or difficult to isolate.
 
@@ -104,7 +104,7 @@ source. Review these files in this order:
 | `migration/REVIEW.md` | Findings that require a developer decision. |
 | `migration/report.json` | Discovered files, calls, mappings, extras, and diagnostics. |
 | `migration/source-map.json` | Links from generated boundaries back to Streamlit source spans. |
-| `app.py` | Typed route inputs, state ownership, cache scope, and intentional behavior changes. |
+| `app.py` | Validated route inputs, state ownership, cache scope, and intentional behavior changes. |
 | `tests/test_migration_smoke.py` | The minimal generated check; replace it with outcome tests for your workflow. |
 
 Then run the scaffold:
@@ -137,7 +137,7 @@ filters, and its result—and carry it through this loop:
    writes into ordinary functions or services with no `streamlit` imports.
 3. **Port the read-only result.** Return a Hedron `Page` containing headings, metrics,
    tables, and layout components. Do not add fragments yet.
-4. **Port filters as a GET form.** Use typed query parameters first. The result works
+4. **Port filters as a GET form.** Use validated query parameters first. The result works
    without JavaScript and the URL becomes shareable.
 5. **Port writes as actions.** Turn `if st.button(...):` side effects into explicit POST
    actions with validation, authorization, and CSRF.
@@ -179,7 +179,7 @@ domain logic and the UI at the same time creates unnecessary risk.
 
 | Streamlit habit | Hedron habit |
 |---|---|
-| Read a value from a widget call | Receive a typed value in a route/action parameter |
+| Read a value from a widget call | Receive a validated value in a route/action parameter |
 | Let an interaction rerun code | Send a GET or POST to the route that owns the operation |
 | Emit UI as the script executes | Return an explicit component tree |
 | Keep unrelated values in Session State | Give URL, request, session, database, cache, and browser state separate owners |
@@ -456,7 +456,7 @@ def test_invalid_filter_is_rejected() -> None:
     assert response.status_code == 422
 ```
 
-These checks preserve the dashboard's data outcomes and its new typed URL contract. They
+These checks preserve the dashboard's data outcomes and its new validated URL contract. They
 do not couple the migration to exact HTML or screenshot identity.
 
 ### 5. Add a chart only after the workflow passes
@@ -483,7 +483,7 @@ Details: [Charts and HTMX](charts-and-htmx.md).
 |---|---|---|
 | `st.title`, `st.write` | `Heading`, `Text`, `Markdown`, or `Auto` | Return components from a page route instead of emitting them as side effects. |
 | `st.sidebar` | `Sidebar` | A sidebar is an explicit child in the page layout. |
-| `st.selectbox`, `st.slider` | `Select`, `RangeInput`, or native controls inside `Form` | Bind submitted values to typed FastAPI query or form parameters. |
+| `st.selectbox`, `st.slider` | `Select`, `RangeInput`, or native controls inside `Form` | Bind submitted values to validated FastAPI query or form parameters. |
 | `st.columns` | `Grid` or `Inline` | Compose child components explicitly. |
 | `st.metric` | `Metric` | Pass the label, formatted value, and optional delta. |
 | `st.dataframe` | `DataTable` | Declare a `Model` when stable column types matter. Use `DataEditor` for edits. |
@@ -519,7 +519,7 @@ without a browser. Continue with [Test your UI](testing.md), [Security](security
 | A filter does nothing until **Apply** is selected | Hedron controls submit; they do not return live Python values | Keep the deliberate form submit, or add a GET fragment for justified immediate updates |
 | Fragment request returns 403 | `HX-Target` does not match the route's declared region | Use `app.region(...)` and region-aware controls; check the id/selector |
 | POST returns a CSRF error | The form did not carry the token seeded by the page GET | Start with [Minimal form POST](minimal-form.md); do not disable CSRF to imitate a callback |
-| Query returns 422 | FastAPI rejected an invalid typed value or bound | Correct the form value and render friendly validation guidance for the workflow |
+| Query returns 422 | FastAPI rejected an invalid value or binding | Correct the form value and render friendly validation guidance for the workflow |
 | `DataTable` cannot be imported | The data extra is not installed | Install `hedron[data]>=0.60.0,<0.61` in the same environment as the app |
 | A private cache never hits | Sensitive scopes require concrete `vary_on` dimensions | Pass the user/tenant/session key as a function argument and include its name in `vary_on` |
 | Chart installation resolves an older core | The lower bound allowed a satellite before `0.1.6` | Install `hedron[charts]>=0.60.0,<0.61` in a clean environment |

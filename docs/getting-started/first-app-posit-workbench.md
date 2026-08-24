@@ -176,15 +176,17 @@ uv run hedron-posit check
 ```
 
 The result should identify Workbench evidence and a safe loopback bind. The check is deliberately
-secret-free and does not start a server. A `HED-POSIT-*` or `HED-WB-*` error includes a remediation;
-do not work around it by hard-coding a session path.
+secret-free and does not start a server. Posit Workbench may provide `UVICORN_ROOT_PATH` as the
+full URL returned by `rserver-url`; Hedron extracts and validates its local path automatically.
+A `HED-POSIT-*` or `HED-WB-*` error includes a remediation; do not work around it by hard-coding
+a session path.
 
 ## 6. Run the application
 
 Start the Workbench-aware development launcher:
 
 ```bash
-uv run hedron-posit run app:app --reload
+uv run hedron-posit run app:app --port 8000 --reload
 ```
 
 Leave the terminal running. The launcher binds a loopback port, asks Workbench for this session's
@@ -287,7 +289,7 @@ On later days:
 2. Open `my-workbench-app` and confirm the terminal location with `pwd`.
 3. Run `uv sync` after dependency or lockfile changes.
 4. Run `uv run hedron-posit check` when the session environment or launch topology changes.
-5. Run `uv run hedron-posit run app:app --reload`.
+5. Run `uv run hedron-posit run app:app --port 8000 --reload`.
 6. Open the current entry under **Posit → Proxied Servers**.
 7. Edit, test, and check the app.
 8. Stop the server with Ctrl+C before exiting the Workbench session.
@@ -317,7 +319,7 @@ Then install the declared project and run it:
 
 ```bash
 python -m pip install -e .
-hedron-posit run app:app --reload
+hedron-posit run app:app --port 8000 --reload
 ```
 
 The prompt normally begins with `(.venv)` while the environment is active. In a new terminal, run
@@ -333,8 +335,8 @@ The application and commands are the same. In an RStudio Pro session:
 2. Use the **Files** pane to open `app.py` and `pyproject.toml`.
 3. Run the `uv` or pip commands in Terminal, not the R Console (the R Console prompt begins with
    `>` and does not accept shell commands).
-4. Start with `hedron-posit run app:app --reload` so the Workbench mount is discovered before the
-   app is imported.
+4. Start with `hedron-posit run app:app --port 8000 --reload` so the Workbench mount is discovered
+   before the app is imported.
 
 How a running server is opened from RStudio Pro varies with Workbench configuration. Use the URL
 or viewer integration your administrator provides; do not replace the launcher with a hard-coded
@@ -350,7 +352,7 @@ above provides the clearest **Proxied Servers** workflow.
 | `uv` / pip cannot download packages | Workbench uses an internal index or blocks outbound traffic | Ask for `UV_INDEX_URL` / `PIP_INDEX_URL` or mirrored current-train Hedron wheels |
 | Proxied Servers is empty | Server did not start, stopped on import, or extension is unavailable | Read the terminal; confirm a listening process; ask whether the Workbench extension is installed |
 | `HED-WB-0003` | `rserver-url` is missing or unusable | Ask the administrator to repair Workbench discovery; do not guess the mount |
-| Page is unstyled or links lose `/s/.../p/...` | App started without the Workbench-aware path handoff | Stop it and use `hedron-posit run app:app --reload` |
+| Page is unstyled or links lose `/s/.../p/...` | App started without the Workbench-aware path handoff | Stop it and use `hedron-posit run app:app --port 8000 --reload` |
 | URL contains the mount twice | Application code manually prepended the Workbench path | Return ordinary local paths and let `hedron-posit` prefix them once |
 | Another user cannot open your copied URL | Workbench development URLs are session-scoped and authenticated | Publish through an approved deployment target such as Posit Connect |
 | Session ended and work vanished | Files were written to temporary storage or were not saved | Use the approved durable project directory; never keep source under `/tmp` |

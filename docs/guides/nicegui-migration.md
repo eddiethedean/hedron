@@ -2,7 +2,7 @@
 
 NiceGUI and Hedron both target backend-first Python UIs on FastAPI/Starlette hosts, but
 NiceGUI’s Vue/Quasar client, WebSocket outbox, and imperative element mutation are
-**deliberate non-parity** for Hedron. Map user-visible outcomes to typed components and
+**deliberate non-parity** for Hedron. Map user-visible outcomes to reusable components and
 ordinary HTTP/HTMX instead of translating `ui.*` calls one-for-one. Full audit:
 [NiceGUI feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/NICEGUI_FEATURE_CROSSCHECK.md).
 
@@ -14,7 +14,7 @@ ordinary HTTP/HTMX instead of translating `ui.*` calls one-for-one. Full audit:
 | `ui.download` / file responses | `DownloadButton`, `media_file_response`, `download_all_zip`, Range helpers | RFC-0034 |
 | `ui.carousel` | `Carousel` | Surface chrome (RFC-0035) |
 | `ui.timeline` | `Timeline` | Surface chrome |
-| `ui.chip` / chip inputs | `ChipInput`, `Pills`, `Badge` | Typed submitted values |
+| `ui.chip` / chip inputs | `ChipInput`, `Pills`, `Badge` | Validated submitted values |
 | `ui.date` / `ui.time` / `ui.number` | `DateInput`, `TimeInput`, `DateTimeInput`, `NumberInput`, `RangeInput` | Native controls |
 | `ui.toggle` / `ui.radio` / selects | `ToggleSwitch`, `SegmentedControl`, `MultiSelect`, `Select` | |
 | `ui.color_input` | `ColorInput` | |
@@ -48,7 +48,7 @@ Do not expect first-party equivalents for:
 - SPA `sub_pages` as a client router replacing ordinary HTTP navigation
 - Single-worker WebSocket UI sync as the Supported multi-worker path (prefer HTMX + polling)
 
-When NiceGUI relies on those mechanisms, redesign around typed routes, fragments, and
+When NiceGUI relies on those mechanisms, redesign around explicit routes, fragments, and
 explicit state scopes. See also [Streamlit migration matrix](streamlit-migration-matrix.md)
 for overlapping data-app control families.
 

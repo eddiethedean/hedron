@@ -2,7 +2,7 @@
 
 ## Server-native components
 
-React makes components the unit of composition. HTMX makes HTTP resources the unit of interaction. Hedron joins these ideas: a component may be a pure rendering primitive or, when explicitly declared addressable, a typed HTTP resource.
+React makes components the unit of composition. HTMX makes HTTP resources the unit of interaction. Hedron joins these ideas: a component may be a pure rendering primitive or, when explicitly declared addressable, an HTTP resource with an explicit contract.
 
 ## Familiarity without imitation
 

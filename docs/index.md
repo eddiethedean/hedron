@@ -1,5 +1,5 @@
 ---
-description: Build typed, server-rendered Python applications with FastAPI and HTMX—without a frontend build chain.
+description: Build server-rendered Python applications with FastAPI and HTMX—without a frontend build chain.
 hide:
   - navigation
   - toc
@@ -23,12 +23,12 @@ React to provide—without creating a separate frontend stack.
 [Evaluate Hedron](guides/evaluate.md){ .md-button }
 </div>
 
-Typed interfaces. Explicit interactions. Production-minded application architecture.
+Composable interfaces. Explicit interactions. Production-minded application architecture.
 All in Python.
 { .hedron-proof }
 
 <div class="hedron-signal-row">
-  <span>Typed Python UI</span>
+  <span>Python UI</span>
   <span>FastAPI foundation</span>
   <span>Server-driven interactions</span>
 </div>
@@ -80,7 +80,7 @@ Start with the path that matches the application you have today.
   </a>
   <a href="guides/plain-fastapi/">
     <strong>Add Hedron to FastAPI</strong>
-    Mount typed pages and interactions beside routes you already operate.
+    Mount Python pages and interactions beside routes you already operate.
   </a>
   <a href="guides/evaluate/">
     <strong>Evaluate for production</strong>
@@ -102,7 +102,7 @@ Need a focused pattern or fix? Open the [Cookbook](guides/cookbook.md) or [Troub
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">⌁</span>
     <strong>Composable Python UI</strong>
-    <p>Build screens from typed components and validated props. Your editor, type checker, and tests stay in the loop.</p>
+    <p>Build screens from reusable components and validated props. Your editor, type checker, and tests stay in the loop.</p>
   </div>
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">◇</span>
@@ -138,13 +138,13 @@ For production adoption, continue with
 
 ## What you get (after Hello)
 
-Typed pages and HTMX fragment regions on FastAPI, with CSRF profiles, dependency
+Python pages and HTMX fragment regions on FastAPI, with CSRF profiles, dependency
 injection, and multi-worker job status — without assembling a hand-rolled Jinja+HTMX
 stack. See [Architecture](ARCHITECTURE.md).
 
 ## Designed for inspectability
 
-Hedron does not hide the web platform. It gives Python applications a typed component
+Hedron does not hide the web platform. It gives Python applications a component
 model while preserving ordinary HTML, CSS, HTTP, and FastAPI boundaries. Automatic
 choices (cache, Explorer, assets) are inspectable and overrideable; components become
 HTTP endpoints only when you address them explicitly.

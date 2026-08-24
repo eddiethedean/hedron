@@ -176,7 +176,7 @@ The default stylesheet includes first-party rules for print and preference condi
 The non-enhanced path must remain complete, keyboard-usable, and non-color-dependent. Styling
 cannot hide authoritative content or change semantics.
 
-### Typed controls and product surfaces
+### Controls and product surfaces
 
 `Button` and `LinkButton` share the 0.60 `size` and `width` vocabulary and accept a bounded
 `attrs=` seam for global, `aria-*`, `data-*`, approved HTMX, and popover/dialog-trigger
@@ -201,7 +201,7 @@ malformed ARIA/data names, and non-allowlisted HTMX attributes. The component st
 The same tokens power composable AppShell chrome and provider-neutral workflow presentation:
 brand/account/footer/auth states, responsive pipeline connectors, explicit run states, logs, and
 compact history. These surfaces do not own authentication, transfer execution, polling, logs, or
-authorization; they render typed state supplied by the application.
+authorization; they render state supplied by the application.
 
 ## 0.60 feature matrix
 
@@ -224,7 +224,7 @@ authorization; they render typed state supplied by the application.
 | Motion | Scroll-driven animation | Experimental | Static complete presentation |
 | Media | Preference media and print | Required | Non-motion, non-color, semantic source-order presentation |
 | Performance | `content-visibility` and containment | Progressive | Fully rendered content |
-| Product surfaces | Typed controls, shell chrome, pipeline presentation | Required | Existing native/built-in compositions |
+| Product surfaces | Controls, shell chrome, pipeline presentation | Required | Existing native/built-in compositions |
 
 The machine-readable source of truth is
 [`modern-css-inventory-059.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/modern-css-inventory-059.toml). It records the

@@ -29,7 +29,7 @@ Do not translate “rerun” literally. Identify why the rerun happened.
 | Poll job progress | Repeated GET from `Poll` | Status fragment |
 | Navigate to another screen | GET `@app.page` route | Full `Page` at a stable URL |
 | Abort because input is invalid | Validate before work; return an error response/component | 4xx or validation fragment |
-| Recompute derived data | Ordinary function, optionally `cache_data` | Typed Python value |
+| Recompute derived data | Ordinary function, optionally `cache_data` | Validated Python value |
 
 ## Filters: widget values → query parameters
 
@@ -40,7 +40,7 @@ region = st.selectbox("Region", ["All", "North", "South"])
 minimum = st.slider("Minimum revenue", 0, 5000, 0)
 ```
 
-In Hedron, a GET form submits values to a typed page route:
+In Hedron, a GET form submits values to a page route with validation:
 
 ```python
 from typing import Annotated, Literal
@@ -151,7 +151,7 @@ each key by lifetime, authority, and sharing requirements.
 | State | Best owner in Hedron | Examples |
 |---|---|---|
 | Shareable navigation/filter state | Path or query parameter | report id, region, date range, sort |
-| One submitted operation | Typed query/form/body input | search form, create/update command |
+| One submitted operation | Validated query/form/body input | search form, create/update command |
 | Small per-session workflow state | `SessionState[T]` / host session | wizard step, temporary preference |
 | Durable business state | Database or application service | orders, annotations, chat history |
 | Expensive derived result | `cache_data` with explicit TTL and scope | aggregate, API response, transform |
@@ -159,7 +159,7 @@ each key by lifetime, authority, and sharing requirements.
 | Non-secret browser preference | `BrowserStorage` / cookie where appropriate | density, dismissed hint, color choice |
 | Job progress | Job backend; poll a status route | export, inference, batch import |
 
-### Typed session state
+### Session state with an explicit contract
 
 For the small subset that truly is session-scoped, use the dependency factory:
 
@@ -178,7 +178,7 @@ def preferences(
     return Page(Text(f"Density: {state.value.density}"), title="Preferences")
 ```
 
-`SessionState` is a typed facade over the configured host session, not a global store.
+`SessionState` is an explicit facade over the configured host session, not a global store.
 Keep values bounded and serializable. Do not put database connections, request objects,
 component trees, large dataframes, or durable records in it. See the [State API](../api/STATE.md).
 
@@ -217,11 +217,11 @@ cached authenticated queries.
 | `st.rerun()` after a write | Return a fragment, or redirect with 303 after POST |
 | `st.stop()` after validation | Return early with a validation component/response; raise an HTTP error when appropriate |
 | `on_change=` callback | Submit to a GET fragment/page or POST action based on whether it mutates state |
-| `st.query_params` | Typed path/query parameters owned by the route |
+| `st.query_params` | Path/query parameters owned by the route |
 | `st.Page` / `st.navigation` / `pages/` | Explicit `@app.page("/stable-url")` routes plus navigation components |
 | `st.secrets` | Environment variables or your deployment platform's secret manager |
 | `st.connection` | FastAPI lifespan, dependency injection, or Hedron's connection registry where appropriate |
-| `st.context` | FastAPI `Request` plus typed browser context for client-reported hints |
+| `st.context` | FastAPI `Request` plus browser context for client-reported hints |
 
 Streamlit's preferred multipage API uses `st.Page` and `st.navigation`; Hedron routes make
 the same page boundaries explicit in HTTP. Preserve stable public URLs during migration,

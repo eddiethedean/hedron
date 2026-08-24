@@ -9,7 +9,7 @@ Phase 0.54 ships one external-author loop and Python-native application chrome.
 ## Authoring loop
 
 - Modular `hedron-sample-kit` variants (pure Python, Web Component + SSR fallback,
-  typed workflow, HDJ binding, optional integration).
+  workflow, HDJ binding, optional integration).
 - `hedron package doctor` for external package-author validation (distinct from
   `hedron fleet`).
 - `hedron-sim` machine-readable subset/divergence, recording/time control, and

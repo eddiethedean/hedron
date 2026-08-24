@@ -13,7 +13,7 @@ For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0
 - Additive TypeSchema v2 dual projections with v1 readers still accepted.
 - Tagged public-wire `kind` unions for locked families. Cached `TypeAdapter` is measured on
   non-FormBody candidates only.
-- Router provenance, typed OpenAPI projection, and non-granting `RequiresScopes`.
+- Router provenance, OpenAPI projection, and non-granting `RequiresScopes`.
 - Workbench/Posit settings stay on custom loaders. FailFast / Pydantic `MISSING` / partial
   validation remain experimental and are not Supported.
 

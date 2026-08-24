@@ -28,7 +28,7 @@ for community packages.
 | Streamlit | Closest Hedron path | Fit | Migration note |
 |---|---|---|---|
 | `st.title`, `st.header`, `st.subheader` | `Heading` | **Direct** | Choose the explicit heading level; preserve one logical page `h1`. |
-| `st.write`, magic | `Auto`, `Text`, `Markdown`, or a typed component | **Equivalent** | Return components; Hedron does not emit UI as a global side effect. |
+| `st.write`, magic | `Auto`, `Text`, `Markdown`, or a reusable component | **Equivalent** | Return components; Hedron does not emit UI as a global side effect. |
 | `st.markdown` | `Markdown` | **Direct** | Use trusted HTML only at an explicit trust boundary. |
 | `st.code`, `st.json` | `CodeBlock`/`CodeViewer`, `JSONViewer` | **Direct** | Keep size and secret-redaction limits explicit. |
 | `st.sidebar` | `Sidebar` | **Direct** | Compose it into the page; there is no implicit global sidebar slot. |
@@ -45,7 +45,7 @@ for community packages.
 |---|---|---|---|
 | `st.button` | `SubmitButton`/button inside `Form` + `@app.action` | **Equivalent** | Put side effects in POST handlers, not page rendering. |
 | `st.form`, `st.form_submit_button` | `Form`, `FormField`, `SubmitButton` | **Direct** | Use GET for safe filters and POST for writes; CSRF applies to unsafe methods. |
-| `st.text_input`, `st.text_area` | `TextInput`, `TextArea` | **Direct** | Bind submitted values to typed route/form models. |
+| `st.text_input`, `st.text_area` | `TextInput`, `TextArea` | **Direct** | Bind submitted values to validated route/form models. |
 | `st.number_input` | `NumberInput` | **Direct** | Repeat bounds in server-side validation. |
 | `st.slider` | `RangeInput` | **Direct** | A submitted control; add HTMX if immediate refresh is valuable. |
 | `st.select_slider` | `SelectSlider` | **Direct** | Values arrive through a request rather than a widget return value. |
@@ -101,12 +101,12 @@ for community packages.
 | `st.stop` | Validation/early return/HTTP exception | **No parity** | Make the response state explicit. |
 | Widget `on_change` / `on_click` | GET fragment/page or POST action | **Equivalent** | Choose method based on whether it is safe or mutating. |
 | `st.session_state` | Query params, `SessionState[T]`, database, cache, or browser preference | **Equivalent** | Classify every key; do not copy the dictionary wholesale. |
-| `st.query_params` | Typed FastAPI path/query parameters | **Direct** | Inputs become addressable and validated. |
+| `st.query_params` | FastAPI path/query parameters | **Direct** | Inputs become addressable and validated. |
 | `st.cache_data` | `cache_data` | **Equivalent** | Re-evaluate TTL, scope, copy/mutation assumptions, keys, and invalidation. |
 | `st.cache_resource` | FastAPI lifespan + dependency injection | **Equivalent** | Long-lived clients/models need concurrency-safe lifecycle management. |
-| `st.connection` | Host DI/lifespan or typed connection registry | **Equivalent** | No implicit global service locator. |
+| `st.connection` | Host DI/lifespan or connection registry | **Equivalent** | No implicit global service locator. |
 | `st.secrets` | Environment variables / platform secret manager | **Equivalent** | Never commit or bake secrets into an image. |
-| `st.context` | FastAPI `Request` + typed browser context | **Equivalent** | Treat browser-reported values as spoofable input. |
+| `st.context` | FastAPI `Request` + browser context | **Equivalent** | Treat browser-reported values as spoofable input. |
 
 ## Authentication, extensions, testing, and deployment
 
@@ -123,7 +123,7 @@ for community packages.
 
 1. Extract calculations, data access, and mutations from `st.*` calls.
 2. Port the read-only page and compare outputs against fixed fixtures.
-3. Move shareable filters to typed GET parameters and a GET form.
+3. Move shareable filters to validated GET parameters and a GET form.
 4. Move writes to authorized, CSRF-protected POST actions.
 5. Assign former Session State keys to URL, request, session, database, cache, or browser storage.
 6. Replace tables and only then evaluate chart/package constraints.

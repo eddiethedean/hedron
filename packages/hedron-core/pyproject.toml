@@ -1,7 +1,7 @@
 [project]
 name = "hedron-core"
-version = "0.60.1"
-description = "Framework-neutral typed rendering core for Hedron"
+version = "0.60.2"
+description = "Framework-neutral rendering core for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
 license = "MIT"
@@ -19,7 +19,6 @@ keywords = [
     "pydantic",
     "rendering",
     "server-rendered",
-    "typed",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",

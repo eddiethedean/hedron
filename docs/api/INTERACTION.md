@@ -14,7 +14,7 @@ status: shipped
 Day-to-day apps should start with [`@app.refreshable` / `@app.command`](../getting-started/interaction-apis.md).
 This page documents the explicit region / `InteractionResult` contracts those handles compile to.
 
-Typed FastAPI/HTMX request and result contracts live in `hedron.interaction` and are
+FastAPI/HTMX request and result contracts live in `hedron.interaction` and are
 re-exported from `hedron`.
 
 HDJ templates may use HTMX's native `hx-*` and `hx-on:*` attributes directly. These Python APIs
@@ -28,7 +28,7 @@ cache policy, and diagnostics; they are not a reduced client-side HTMX dialect. 
 |---|---|---|
 | `FragmentRegion` | `id`, `selector`, `description` | Declared HTMX target allowlist entry |
 | `InteractionPolicy` | `declared_regions`, `allow_undeclared_targets`, `hx_sync`, `vary_on_target`, `embed_csrf`, `indicator`, … | Route/fragment authorization + sync policy |
-| `InteractionResult` | `content`, `region_id`, `oob`, `status_code`, `cache`, `refresh`, `concurrency`, HTMX overrides | Typed fragment response + headers |
+| `InteractionResult` | `content`, `region_id`, `oob`, `status_code`, `cache`, `refresh`, `concurrency`, HTMX overrides | Fragment response + headers |
 | `htmx_request(request)` | Starlette/FastAPI `Request` | Read HTMX request context |
 | `swap` / `retarget` / `redirect_htmx` | content / target / local URL | Day-1 ergonomics over `InteractionResult` |
 
@@ -41,10 +41,10 @@ Field-level detail for `InteractionResult` is below. Autodoc signatures: [AUTODO
 | HTMX request with `HX-Target` but no route `fragment_regions` | HTTP **403** | Declare `FragmentRegion`s on `@app.component` / `@app.page`, or opt out only with `InteractionPolicy(allow_undeclared_targets=True)` |
 | HTMX request with declared regions but missing `HX-Target` | HTTP **403** / `FragmentRegionError` | Send a matching `HX-Target` (no implicit first-region authorization). Exception: `HX-History-Restore-Request` may omit `HX-Target` (full-page restore). |
 | `HX-Target` / `region_id` outside the declared allowlist | HTTP **403** / `FragmentRegionError` | Match `region_id` and HTMX target to a declared `FragmentRegion.id` / selector |
-| Unsafe selector or external redirect in typed fields | Rejected before emit | Use local paths and Hedron's safe selector subset |
+| Unsafe selector or external redirect in declared fields | Rejected before emit | Use local paths and Hedron's safe selector subset |
 | Unauthorized OOB `select` / `element_id` | Rejected | Point OOB at declared region ids, or use reserved `hedron-toast` |
 | OOB updates on HTTP **204** | HTTP **403** (all hosts) | Do not combine `status_code=204` with `oob=` |
-| `Cache-Control: public` (or `s-maxage`) via `headers` | Rejected | Use typed `cache=` (`private` / `no-store` / `vary-htmx`) |
+| `Cache-Control: public` (or `s-maxage`) via `headers` | Rejected | Use `cache=` (`private` / `no-store` / `vary-htmx`) |
 | CSRF failure on POST (host profile) | HTTP **403** | Seed CSRF on GET; include token on POST — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 
 See also [HTMX interactions](../guides/htmx-interactions.md) and [Error codes](../guides/error-codes.md).
@@ -131,7 +131,7 @@ For lower-level use, `authorize_htmx_target(policy, target, is_htmx=...)` /
 |---|---|
 | `FragmentRegion(...)` | Frozen region descriptor (`id`, `selector`, `description`) |
 | `InteractionPolicy(...)` | Frozen HTMX/cache/aria policy for a result |
-| `InteractionResult(...)` | Typed fragment result consumed by `HedronRoute` / adapters |
+| `InteractionResult(...)` | Fragment result consumed by `HedronRoute` / adapters |
 | `htmx_request(request)` | `HtmxRequest` view over HTMX headers |
 | `swap` / `swap_oob` / `retarget` / `redirect_htmx` | `InteractionResult` (or redirect response for `redirect_htmx`) |
 | `authorize_htmx_target` / `resolve_fragment_region` | Authorization / region lookup; raises `FragmentRegionError` when denied |
@@ -212,7 +212,7 @@ Walkthrough: [HTMX interactions](../guides/htmx-interactions.md).
 
 ## `InteractionResult`
 
-`InteractionResult` keeps fragment mechanics typed and inspectable.
+`InteractionResult` keeps fragment mechanics explicit and inspectable.
 
 ### Constructor fields
 
@@ -294,7 +294,7 @@ Optional `OobUpdate(tag="nav")` (allowlisted: `div`, `section`, `aside`, `main`,
 **defense in depth** if an envelope must match a landmark host—it is not a substitute for
 avoiding the conflict.
 
-`Cache-Control: public` / `s-maxage` in `headers` extras is rejected. Typed `cache=`
+`Cache-Control: public` / `s-maxage` in `headers` extras is rejected. `cache=`
 policy owns private/no-store behavior.
 
 ## `status_policy_for`

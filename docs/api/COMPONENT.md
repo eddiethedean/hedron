@@ -42,7 +42,7 @@ Subclass and constructor surface (concrete components declare their own props kw
 | Member | Type | Description |
 |---|---|---|
 | `props_type` | `type[Props]` | Declared props model (required on concrete subclasses) |
-| `__init__(props)` / typed kwargs | — | Validates props via the declared model |
+| `__init__(props)` / declared kwargs | — | Validates props via the declared model |
 | `props` | `Props` | Immutable validated props for this instance |
 | `render()` | `-> NodeLike` | Pure render; **no hidden I/O** |
 

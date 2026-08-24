@@ -8,7 +8,7 @@
 Explicit standards-first `.hdj` templates over Jinja, HTML, and HTMX for Hedron.
 
 HDJ lets advanced applications write ordinary HTML, CSS, JavaScript, Web
-Components, Jinja, and HTMX directly while preserving typed Hedron components and
+Components, Jinja, and HTMX directly while preserving Hedron components and
 render metadata. Install as `hedron-jinja` or via the flagship extra `hedron[jinja]`.
 
 **Package maturity:** Beta · **Train:** `0.60.x` (published `v0.60.0` in-tree and on PyPI) · application pin `>=0.60.0,<0.61`; repository checkouts use `uv sync`

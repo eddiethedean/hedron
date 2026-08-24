@@ -13,7 +13,7 @@ and `sanitize_geojson` from the 0.46 train stay compatible.
 `ActionHandle`. `OpenStreetMap.standard()` is the `hedron_maps.Map` default only;
 core `Map` keeps no OSM default.
 
-Qualify GeoJSON types: **`hedron_maps.GeoJSONLayer`** is the typed overlay layer.
+Qualify GeoJSON types: **`hedron_maps.GeoJSONLayer`** is the presentation overlay layer.
 **`hedron_core.GeoJSONLayer`** remains the sanitizer wrapper around core `Map`.
 
 ## Beginner map

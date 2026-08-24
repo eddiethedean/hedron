@@ -1,6 +1,6 @@
 # Core concepts
 
-Hedron adds a typed interface layer to FastAPI without replacing its application model or
+Hedron adds an explicit interface layer to FastAPI without replacing its application model or
 hiding the web platform. Five concepts explain most of the framework.
 
 ## You will learn
@@ -8,7 +8,7 @@ hiding the web platform. Five concepts explain most of the framework.
 By the end of this page, you should be able to explain:
 
 - where application configuration and routes live;
-- how typed components become HTML without hidden I/O;
+- how components become HTML without hidden I/O;
 - why a page response and a fragment response are different;
 - how HTMX requests map to declared regions;
 - where security, assets, and production compilation fit in the boundary.
@@ -36,7 +36,7 @@ Hedron page, component, and action routes.
 
 ## Components
 
-A component is a typed, reusable description of UI. Components return node-like values;
+A component is a reusable description of UI. Components return node-like values;
 only the top-level renderer produces HTML.
 
 ```python
@@ -123,7 +123,7 @@ headers, and applies CSRF policy to unsafe cookie-authenticated requests. Durabl
 browser-local behavior belongs in standards-based Web Components rather than a hidden
 client runtime.
 
-Handlers may return `InteractionResult` for typed primary content, OOB updates, history,
+Handlers may return `InteractionResult` for validated primary content, OOB updates, history,
 and cache/`Vary` hints instead of assembling `HX-*` headers by hand. See
 [Responses](../api/RESPONSES.md) and [Charts and HTMX](../guides/charts-and-htmx.md).
 
@@ -136,7 +136,7 @@ policies, and authenticated fragments receive conservative cache behavior.
 Most Hedron interactions can be read as one inspectable loop:
 
 ```text
-Python intent → typed route → HTML page or fragment → browser request → declared target
+Python intent → declared route → HTML page or fragment → browser request → declared target
 ```
 
 If you are unsure which API to choose, start with [API by task](../api/by-task.md) and
@@ -146,8 +146,8 @@ return here when you need the underlying model.
 
 Development can discover component folders, scoped CSS, and assets. A production build fingerprints
 those artifacts and seals the registry. Production does not silently compile mutable source at
-request time. Typed Python remains the canonical component model. Optional HDJ (`.hdj`) templates
-via `hedron[jinja]` are available when you need native HTML/Jinja plus typed Hedron bridges — see
+request time. Python components remain the canonical model. Optional HDJ (`.hdj`) templates
+via `hedron[jinja]` are available when you need native HTML/Jinja plus Hedron bridges — see
 [HDJ authoring](../guides/hdj-authoring.md).
 
 The [project workflow](../guides/project-workflow.md) shows the CLI commands for this

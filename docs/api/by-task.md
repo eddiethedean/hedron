@@ -20,7 +20,7 @@ organized by intent.
 | Add a second interaction | `@app.refreshable`, `@app.command` | [HTMX interactions](../guides/htmx-interactions.md) |
 | Accept a form safely | `@app.form_command`, `FormBody`, `CsrfField` | [Minimal form POST](../guides/minimal-form.md) |
 | Choose a lower-level interaction API | `region`, `@app.fragment`, `InteractionResult` | [Which interaction API?](../getting-started/interaction-apis.md) |
-| Build a reusable typed component | `Component`, `Props`, `NodeLike` | [Component demos](../components/index.md) |
+| Build a reusable component | `Component`, `Props`, `NodeLike` | [Component demos](../components/index.md) |
 | Style a product surface | `DesignSystem`, `StyleRecipe`, `StyleScope` | [Presentation](PRESENTATION.md) · [Modern CSS in 0.60](../guides/modern-css-0.60.md) |
 | Add data and tables | `DataWorkspace`, `DataTable`, `Auto` | [Data applications](../guides/data-apps.md) · [Data API](DATA.md) |
 | Add authentication | `SessionAuthFlow`, `AuthResult` | [Authentication](../guides/authentication.md) · [Auth API](AUTH.md) |

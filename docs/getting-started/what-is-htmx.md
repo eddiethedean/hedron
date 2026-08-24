@@ -153,7 +153,7 @@ repeating a target string by hand.
 
 ## Why Hedron uses HTMX
 
-Hedron is a server-rendered Python framework. Its routes return typed components that
+Hedron is a server-rendered Python framework. Its routes return components that
 serialize to HTML, so returning HTML fragments is a natural extension of the same model.
 HTMX gives those fragments browser-side interaction without requiring a second frontend
 codebase.

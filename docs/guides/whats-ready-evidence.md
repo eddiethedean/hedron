@@ -67,7 +67,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Application DX Stage 1 | **Supported** (API `beta`; repository train `v0.60.0`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
 | Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` (in-tree tip and PyPI release `v0.60.0`) | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
 | Progressive screens (`Hedron.screen`) | **Supported** on FastAPI (API `beta`; tip `v0.60.0`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
-| Typed form commands (`form_command`) | **Supported** on FastAPI (API `beta`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
+| Form commands (`form_command`) | **Supported** on FastAPI (API `beta`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | DataWorkspace screens (`with_screen`) | **Supported** on FastAPI + `hedron[data]` (API `beta`) | [DATA.md](../api/DATA.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | TaskFlow | **Supported** on FastAPI (API `beta`; polling) | [JOBS.md](../api/JOBS.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | DashboardWorkspace | **Supported** on FastAPI (API `beta`) | [Dashboards](dashboards.md) · [What’s new in 0.58](whats-new-0.58.md) |
@@ -85,7 +85,7 @@ sessions are not Supported yet** — do not market human AT as done.
 
 | Capability | Package / surface | Status |
 |---|---|---|
-| Typed pages, fragments, built-ins | `hedron` + `hedron-core` | Supported |
+| Pages, fragments, built-ins | `hedron` + `hedron-core` | Supported |
 | FastAPI routing, CSRF profiles, CLI, testing helpers | `hedron` | Supported |
 | HTMX fragment loops, `InteractionResult` | `hedron` | Supported |
 | `@app.refreshable` / `@app.command` / `refresh()` / `PatchSet` | `hedron` / `hedron-core` | Supported; API `beta`; compiles into the existing region / OOB stack |
@@ -109,7 +109,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | HDJ loop/macro budgets, a11y static checks | `hedron[jinja]` | Supported |
 | AppScenario + HTMX InteractionResult asserts | `hedron.testing` | Supported |
 | `region` / `@fragment` / `swap` ergonomics | `hedron` | Supported |
-| Typed controls, surface chrome, Map, media Range | `hedron` / `hedron-core` | Supported |
+| Controls, surface chrome, Map, media Range | `hedron` / `hedron-core` | Supported |
 | CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported with permission/retention policy |
 | BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported |
 | OIDC / session helpers + connection registry | `hedron` | Supported **helpers** (API `beta`); host auth/DI authoritative — **not** an IdP product |

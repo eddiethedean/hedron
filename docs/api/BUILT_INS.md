@@ -140,7 +140,7 @@ classes (for example
 `Button("Save", variant="primary", class_="button button-primary")`).
 
 Use `class_` only as a design-system bridge. Do **not** use it to bypass security
-attributes, CSRF wiring, SafeUrl constraints, or other typed props — those remain
+attributes, CSRF wiring, SafeUrl constraints, or other declared props — those remain
 enforced on the component API.
 
 ## Historical phase notes

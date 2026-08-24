@@ -1,7 +1,7 @@
 # Cutting a Hedron release
 
 This is the maintainer runbook for the `0.60.x` train. Historical cut records live under
-`docs/archive/`. The current repository release candidate is `v0.60.1`; PyPI remains at
+`docs/archive/`. The current repository release candidate is `v0.60.2`; PyPI remains at
 `v0.60.0` until the publication steps below are completed and verified.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
@@ -28,9 +28,9 @@ Python metadata does not. Never move or replace a published tag.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.60.1
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.60.2
 bash scripts/ci_checks.sh browser --python 3.12
-uv run python scripts/check_release_gate.py 0.60.1
+uv run python scripts/check_release_gate.py 0.60.2
 uv run python scripts/verify_pkg_60.py
 uv run python scripts/verify_pkg_59.py
 uv run python scripts/verify_pkg_58.py

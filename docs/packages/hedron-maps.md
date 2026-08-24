@@ -8,7 +8,7 @@ description: Independent Beta first-class maps for Hedron.
 Living Hedron train `0.60.x` (in-tree tip and PyPI release `v0.60.0`; PyPI flagship pins use
 `>=0.60.0,<0.61` ).
 
-`hedron-maps` provides a typed map grammar, deterministic compilation, a pinned MapLibre
+`hedron-maps` provides an explicit map grammar, deterministic compilation, a pinned MapLibre
 5.6.1 strict-CSP host, custom raster/vector tile sources, and static/offline basemaps
 while preserving Hedron's semantic fallback and application-owned security policy.
 
@@ -18,9 +18,9 @@ The Supported inventory is deliberately bounded:
 - custom XYZ raster, TileJSON, and MVT/vector sources;
 - static georeferenced images, PMTiles, bounded MBTiles, and blank maps;
 - markers and bounded GeoJSON/line/polygon/circle/raster overlays;
-- `hedron_maps.GeoJSONLayer` typed overlays vs `hedron_core.GeoJSONLayer` sanitizer;
+- `hedron_maps.GeoJSONLayer` overlays vs `hedron_core.GeoJSONLayer` sanitizer;
 - safe local styles, exact-origin policy, attribution, and resource manifests;
-- typed feature/viewport events through ordinary Hedron commands; and
+- feature/viewport events through ordinary Hedron commands; and
 - no-JavaScript, WebGL-failure, source-failure, and air-gapped behavior.
 
 Leaflet/OpenLayers, deck.gl, WMS/WMTS/WFS, arbitrary projections, drawing, terrain, globe, routing,

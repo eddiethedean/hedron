@@ -8,7 +8,7 @@ In-tree tip is **0.51.2**. Tracking [#507](https://github.com/eddiethedean/hedro
 Quality and typing patch on the 0.51 train. Install from PyPI with `hedron>=0.58.0,<0.60`
 while `registry_status` is deferred.
 
-- Replace runtime `assert` validation with explicit typed errors on chart adapters, Gradio client, hosts, and jobs.
+- Replace runtime `assert` validation with explicit errors on chart adapters, Gradio client, hosts, and jobs.
 - Typing ratchet on charts/maps/MCP/Jinja/Redis and host-integration modules (`handles`, pages, Explorer router).
 - Fail-soft exception paths log at debug/warning; HDJ document-shape helpers extracted.
 

@@ -57,7 +57,7 @@ These 0.43 handles shipped on the 0.42 Web Component platform predecessor (D-071
 | `FragmentHandle` | `hedron` | Callable mounted-view, route, target, control, patch, and inspection handle. |
 | `BoundFragment` | `hedron` | Parameter-bound fragment instance with a stable instance identity. |
 | `FragmentHost` | `hedron-core` / `hedron` | Stable semantic wrapper for initial and refreshed content. |
-| `ActionHandle` | `hedron` | Typed command reference for buttons, forms, tests, and inspection. |
+| `ActionHandle` | `hedron` | Command reference for buttons, forms, tests, and inspection. |
 | `Refresh` | `hedron` | Native control targeting a fragment handle. |
 | `refresh` | `hedron` | Build a bounded refresh intent for one or more views. |
 | `Patch` | `hedron-core` / `hedron` | Direct update for one registered target. |
@@ -269,7 +269,7 @@ return refresh(status)
 return refresh(notes, note_count).toast("Saved")
 ```
 
-`refresh` returns a typed refresh-intent result. After a successful enhanced command response, each
+`refresh` returns a refresh-intent result. After a successful enhanced command response, each
 mounted target performs its normal GET route. This preserves route dependencies and avoids invoking
 FastAPI dependency injection from application code.
 
@@ -317,7 +317,7 @@ class PatchSet:
     cache: CacheHint | None = "vary-htmx"
 ```
 
-Additional typed `InteractionResult` fields may be exposed where they retain identical validation.
+Additional `InteractionResult` fields may be exposed where they retain identical validation.
 Arbitrary `headers`, selector strings, and untyped event JavaScript stay on the advanced API.
 
 ### Patch errors
@@ -357,7 +357,7 @@ fragment, header, OOB, and selector assertions remain supported.
 | Refresh control | `RefreshButton`/native control with derived target and route |
 | Direct patch | `InteractionResult` primary content and canonical `region_id`/retarget |
 | Secondary patch | Authorized `OobUpdate` |
-| Refresh intent | Typed bounded HTMX trigger consumed by registered hosts |
+| Refresh intent | Bounded HTMX trigger consumed by registered hosts |
 | Command | Existing action route, CSRF policy, and response conversion |
 
 ## Base handle descriptor and 0.44 extensions

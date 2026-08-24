@@ -67,7 +67,7 @@ See [Explorer API](../api/EXPLORER.md).
 | Gate | What to do |
 |---|---|
 | `PE-019` | Critical forms/mutations succeed **without** `HX-Request` — full `Page` or redirect. HTMX is optional enhancement. |
-| `LANDMARK-019` | Use typed `Header` / `Main` / `Nav` / `Aside` / `Footer` / `Section` with allowlisted safe attrs. |
+| `LANDMARK-019` | Use `Header` / `Main` / `Nav` / `Aside` / `Footer` / `Section` with allowlisted safe attrs. |
 | `SCRIPT-019` | Attach same-origin PE scripts via `Page(scripts=[SafeUrl.parse(..., purpose=UrlPurpose.ASSET)])` — no free-form `<script>` in the tree. |
 
 Details: [Forms and actions](forms-and-actions.md) · [Page](../components/page.md) ·

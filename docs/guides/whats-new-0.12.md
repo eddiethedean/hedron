@@ -4,12 +4,12 @@ Phase **0.12** ships data and visualization scale (D-047) with **zero Deferred**
 
 ## Highlights
 
-- Shared typed column catalog with display-versus-write policy.
-- Typed grid and chart events, saved views, and explicit `TransformPlan` budgets.
+- Shared column catalog with display-versus-write policy.
+- Grid and chart events, saved views, and explicit `TransformPlan` budgets.
 - Advanced DataEditor: formulas, merges, pivots, tree grids, collaborative merge/recovery,
   spreadsheet import/export beyond CSV, AG Grid Community client + infinite row models.
 - Dask and Snowflake bounded sources; SQLAlchemy allowlisted pushdown.
-- Beginner `AreaChart` / `BarChart` / `ScatterChart`; Plotly typed events; annotation overlays.
+- Beginner `AreaChart` / `BarChart` / `ScatterChart`; Plotly events; annotation overlays.
 - Optional adapters: Vega-Lite, PyDeck, MapLibre, Folium, GraphViz, Mermaid, Chart.js,
   Great Tables, Sigma/NetworkX, Three.js, ECharts, Datashader, Bokeh, HoloViews, Pygal,
   Plotly resampling — each with local-asset/CSP/payload/fallback contracts.

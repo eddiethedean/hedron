@@ -112,7 +112,7 @@ profile expansion, feature IDs, and prologue schema are defined by RFC-0031.
 | `HEDRON_WORKBENCH_ALLOW_EXTERNAL_BIND` | Explicit opt-in for a non-loopback listener; default is false |
 | `HEDRON_WORKBENCH_WORKERS` / `HEDRON_WORKBENCH_RELOAD` | Parent discovers once then execs Uvicorn workers or reload; the two modes are mutually exclusive |
 | `HEDRON_WORKBENCH_TOPOLOGY` | `auto`, `local`, `launcher-local`, `launcher-kubernetes`, `launcher-slurm`, or `reverse-proxy` diagnostics/defaults |
-| `UVICORN_ROOT_PATH` | Consumed as a validated default-port mount only when paired with `RS_SERVER_URL` Workbench evidence |
+| `UVICORN_ROOT_PATH` | Consumed as a validated path or full `http(s)` URL mount only when paired with `RS_SERVER_URL` Workbench evidence; a session path for a different bound port is ignored and rediscovered |
 | `HEDRON_WORKBENCH_JOB` | Mark a non-interactive inherited environment so auto mode does not advertise a browser proxy URL; audited jobs are detected from Posit's `AUDIT_DETAILS_PATH` contract |
 | `RS_SERVER_URL` | Discovery trigger only — never wraps or grants trust |
 | `WORKBENCH_FORCE` / `BASE_PATH` / `PUBLIC_BASE_URL` / `HOST` / `PORT` | Launcher compatibility aliases; warn (`HED-WB-0008`); namespaced vars win. Inactive `HedronWorkbench` ignores broad aliases to preserve ordinary-host behavior |

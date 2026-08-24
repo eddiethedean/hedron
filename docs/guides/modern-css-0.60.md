@@ -11,7 +11,7 @@ existing compiler, cascade, token markers, and `default_styles=False` behavior r
 
 ## Styling completion
 
-0.60 adds typed absolute colors with deterministic sRGB fallbacks, immutable `ThemeSpec` and
+0.60 adds absolute colors with deterministic sRGB fallbacks, immutable `ThemeSpec` and
 `ThemePatch` authoring, registry-derived validation profiles, accessibility mappings, bounded recipe
 families, server-first theme preference markers, and a read-only Explorer Theme Lab. `Brand`,
 `ToastHost`, `ConnectorFlow`, and `ScrollRegion` expose finite presentation contracts that work

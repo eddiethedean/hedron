@@ -26,7 +26,7 @@ companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](ht
 | `hands_off` (`PositConfig.hands_off`) | Opt-in same-app URL / redirect / asset adaptation (#510) |
 | `DEFAULT_MATRIX` / `run_deployment_matrix` | Deployment-matrix fixtures (#511) |
 | `PositDiagnostic` | Proactive mount/redirect/cookie diagnostics (#512) |
-| `PositStatus` / `app.posit_status()` | Typed, secret-free diagnostics |
+| `PositStatus` / `app.posit_status()` | Secret-free diagnostics with an explicit schema |
 | `resolve_posit_deployment` / `resolve_product` | Pure product + Workbench resolution |
 | `WorkbenchConfig` / Workbench helpers | Delegated Workbench surface |
 | `hedron-posit run` / `check` / `check --matrix` / `doctor` | Pre-import launcher, matrix, and diagnostics |

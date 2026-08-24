@@ -8,7 +8,7 @@
 **Build admin tools, CRUD apps, and dashboards in Python—without building a separate
 frontend.**
 
-Hedron is a typed, server-rendered UI framework for FastAPI. Routes return Python
+Hedron is a server-rendered UI framework for FastAPI. Routes return Python
 components, Hedron renders safe HTML, and HTMX updates just the part of the page that
 changed. You keep FastAPI's routing, dependency injection, middleware, and JSON APIs;
 you do not need a Node.js toolchain or a full-script rerun model.
@@ -87,10 +87,10 @@ or browse the
 
 | Need | Hedron provides |
 |---|---|
-| Server-rendered UI | Typed pages, layouts, forms, tables, dialogs, status views, and media components |
+| Server-rendered UI | Pages, layouts, forms, tables, dialogs, status views, and media components |
 | Partial-page interaction | Declared HTMX fragments, out-of-band updates, progressive-enhancement paths, and target allowlists |
 | FastAPI integration | Normal routes, dependencies, middleware, lifespan hooks, responses, and OpenAPI alongside UI routes |
-| Safer defaults | Contextual escaping, typed URL/HTML trust boundaries, CSRF profiles, and conservative caching |
+| Safer defaults | Contextual escaping, explicit URL/HTML trust boundaries, CSRF profiles, and conservative caching |
 | Production building blocks | Polling jobs, diagnostics, testing helpers, build manifests, deployment guidance, and Flask/Django adapters |
 
 Your application still owns authentication, authorization, persistence, tenancy, and
@@ -100,7 +100,7 @@ runtime.
 ## When it fits
 
 Choose Hedron when you want to build forms, internal tools, admin surfaces, or dashboards
-as a conventional web application while keeping most UI code in typed Python. It is
+as a conventional web application while keeping most UI code in Python components. It is
 especially useful when raw FastAPI plus Jinja plus HTMX would leave you assembling the
 same rendering, fragment, CSRF, asset, and component conventions yourself.
 
@@ -131,7 +131,7 @@ supported production status-update path; SSE and WebSocket helpers remain experi
 
 ## Add only what you need
 
-The base package includes the FastAPI application, typed UI, HTML renderer, HTMX
+The base package includes the FastAPI application, Python UI components, HTML renderer, HTMX
 interactions, security profiles, and CLI. Integrations are optional:
 
 | Install | Adds |

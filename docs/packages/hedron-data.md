@@ -40,7 +40,7 @@ pip install "hedron-data[sqlalchemy]>=0.60.0,<0.61"
 - Paginated, sortable tables inside Hedron pages (FastAPI / Flask / Django)
 - Editable grids with server-side save handlers and optional bounded optimistic cell edits
 - Table↔chart cross-filter via `compose_chartlink_039` (Published 0.38 `hedron-chart` events)
-- Typed `DataSource` backends (in-memory, SQLAlchemy, Django QuerySet, …)
+- `DataSource` backends with explicit query and result contracts (in-memory, SQLAlchemy, Django QuerySet, …)
 
 Prefer ordinary built-ins (`Table`, forms) for tiny static lists. Install this package
 only when you need the grid toolkit.
@@ -58,7 +58,7 @@ table = DataTable(
 )
 ```
 
-Typed rows:
+Validated rows:
 
 ```python
 from pydantic import BaseModel

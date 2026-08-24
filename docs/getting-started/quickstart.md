@@ -20,7 +20,7 @@ Install from PyPI: `hedron>=0.60.0,<0.61`. Other pins and extras:
 ## You will learn
 
 - how `hedron new` creates an ordinary Python application;
-- how a typed screen becomes a complete HTML page;
+- how a component screen becomes a complete HTML page;
 - how `@app.refreshable` returns a targeted HTML fragment;
 - how to make one edit, run a diagnostic check, and choose the next tutorial step.
 
@@ -67,7 +67,7 @@ HTMX replaced only the status region.
 
 | Browser action | Server behavior | Visible result |
 |---|---|---|
-| Open `/` | The page route returns a typed `Page` and Hedron renders a full document | The Hello page loads |
+| Open `/` | The page route returns a `Page` and Hedron renders a full document | The Hello page loads |
 | Click **Refresh status** | HTMX requests `/status` for the declared region | Only the status timestamp changes |
 | Send the wrong target | Hedron rejects a target outside the route’s region policy | The request fails closed with HTTP 403 |
 
@@ -137,7 +137,7 @@ Text("Hello from Ada")
 
 Save the file. Uvicorn reloads and the browser shows the new text.
 
-## Optional: typed form command
+## Optional: form command with validation
 
 For forms, prefer `@app.form_command` (discovers one Pydantic model and lowers to
 `FormBody` + `@app.command`):

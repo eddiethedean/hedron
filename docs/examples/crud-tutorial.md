@@ -91,7 +91,7 @@ Open [http://127.0.0.1:8000/notes](http://127.0.0.1:8000/notes).
 ## What it shows
 
 - `DataWorkspace.with_screen` for list/detail/create/edit composition
-- `@app.form_command` for a typed side form on the home screen
+- `@app.form_command` for a validated side form on the home screen
 - `DesignSystem.brand` as the ordinary theme input
 
 ## Pattern warm-ups (simulated)

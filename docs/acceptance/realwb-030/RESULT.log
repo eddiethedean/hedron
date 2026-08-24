@@ -55,3 +55,10 @@ RESULT=pass
 REALWB-030 end 2026-08-19T19:22:09Z
 LICENSE_DEACTIVATE=begin timeout=120s
 LICENSE_DEACTIVATE=end
+REALWB-030 start 2026-08-24T13:28:25Z
+image=posit/workbench@sha256:***
+docker_platform=linux/amd64
+python=Python 3.12.13
+REALWB-030 skip reason=license_unset PWB_LICENSE is unset (load .env or export it)
+RESULT=skip
+REALWB-030 end 2026-08-24T13:28:25Z

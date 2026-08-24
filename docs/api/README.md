@@ -126,7 +126,7 @@ These contracts compile onto the golden path. They are **not** required for Hell
 - [Refreshable views](REFRESHABLE_VIEWS.md)
 - [Type-driven authoring](TYPE_DRIVEN_AUTHORING.md)
 - [Interaction catalog](INTERACTION_CATALOG.md)
-- [Package-native typed workflows](PACKAGE_WORKFLOWS.md)
+- [Package-native workflows](PACKAGE_WORKFLOWS.md)
 - [Maps](MAPS.md)
 - [HTMX extension integration](HTMX_EXTENSIONS.md) — **0.48** Published in-tree (morph Deferred)
 - [Hedron HTMX interaction extension](HTMX_HEDRON_EXTENSION.md) — proposed **0.64** contract

@@ -34,7 +34,7 @@ class CreateUser(FormModel):
 | `Model` | Portable domain data used by UI contracts |
 | `Props` | Component construction input; never automatically exposed as HTTP input |
 | `FormModel` | Client-submitted form or action input with field presentation metadata |
-| `EventPayload` | Typed custom-event data crossing a browser/server boundary |
+| `EventPayload` | Custom-event data crossing a browser/server boundary |
 
 ```python
 from hedron import Field

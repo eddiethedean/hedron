@@ -101,7 +101,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 ## CSRF form
 
-Prefer `@app.form_command` for typed forms (see [quickstart](../getting-started/quickstart.md)
+Prefer `@app.form_command` for validated forms (see [quickstart](../getting-started/quickstart.md)
 CRUD scaffold). Follow the pasteable advanced form in
 [Minimal form POST](../guides/minimal-form.md) when you need explicit `Form` / `CsrfField`.
 

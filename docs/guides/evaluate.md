@@ -25,7 +25,7 @@ Maintainer trust-program depth (not required for a PoC):
 
 ## What it is
 
-Hedron is a typed, server-rendered Python UI layer for **FastAPI + HTMX** (with Flask and
+Hedron is a server-rendered Python UI layer for **FastAPI + HTMX** (with Flask and
 Django adapters). It is not a notebook-style rerun engine, SPA framework, ORM, or IdP.
 Compare positioning: [Why Hedron](why-hedron.md).
 

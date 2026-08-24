@@ -37,4 +37,4 @@ def test_coordinated_train_tracks_living_tip() -> None:
 def test_fastapi_workbench_independent_version() -> None:
     pyproject = ROOT / "packages" / "fastapi-workbench" / "pyproject.toml"
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
-    assert data["project"]["version"] == "1.0.0"
+    assert data["project"]["version"] == "1.0.1"

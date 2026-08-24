@@ -444,7 +444,7 @@ def run_target(
         if (
             rs_server_url(env)
             and not is_workbench_job(env)
-            and explicit_mount_hint(cfg, env) is None
+            and explicit_mount_hint(cfg, env, bound_port=bound_port) is None
         ):
             discovered = discover_rserver_url(
                 binary=resolve_deployment(cfg, environ=env).rserver_url_bin,

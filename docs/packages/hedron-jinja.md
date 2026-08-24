@@ -19,9 +19,9 @@ Requires `hedron-core` and Jinja2.
 ## When to use
 
 - Migrating HTML / Jinja apps with progressive Hedron adoption
-- Ordinary Jinja inheritance/includes alongside typed Hedron components
+- Ordinary Jinja inheritance/includes alongside Hedron components
 
-Prefer typed Python components (`Page`, `Stack`, …) for new FastAPI apps unless you
+Prefer Python components (`Page`, `Stack`, …) for new FastAPI apps unless you
 already have a Jinja codebase. See [HDJ authoring](../guides/hdj-authoring.md).
 
 ## Quick start
@@ -50,7 +50,7 @@ regions = ["main"]
 <main id="main" hx-history-elt>{{ view.heading }}</main>
 ```
 
-Register typed components when templates need them:
+Register components when templates need them:
 
 ```python
 from hedron_core import Badge

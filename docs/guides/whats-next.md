@@ -49,7 +49,7 @@ Experimental, and Deferred boundaries remain explicit in the [release notes](rel
 
 | Topic | Disposition |
 |---|---|
-| ThemeSpec/ThemePatch, typed colors, profiles, packages, accessibility modes, ThemePicker, and Theme Lab | **Verified and published in 0.60.0** |
+| ThemeSpec/ThemePatch, color handling, profiles, packages, accessibility modes, ThemePicker, and Theme Lab | **Verified and published in 0.60.0** |
 | Scoped CSS compiler, cascade, tokens, Theme variants, modern color/type/media | **Verified in 0.60 checkout** with bounded fallback behavior |
 | Brand, ToastHost, ConnectorFlow, and ScrollRegion zero-application-CSS contracts | **Verified in 0.60 checkout** from the phase gate fixtures |
 | Free-form CSS-in-Python, mandatory Node, automatic remote fonts | **Not planned**; use finite semantic APIs plus component `styles.css` and explicit local assets |

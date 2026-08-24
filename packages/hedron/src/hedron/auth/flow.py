@@ -121,7 +121,7 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
         rotation: SessionRotationPolicy = "on_login",
         session_key: str = "user",
         provider: str = "hedron",
-        provider_version: str = "0.60.1",
+        provider_version: str = "0.60.2",
     ) -> None:
         if not is_local_path(after_login):
             raise error(

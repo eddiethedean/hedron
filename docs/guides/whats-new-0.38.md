@@ -8,11 +8,11 @@ Phase **0.38** ships Hedron's first-party high-fidelity chart system
 
 ## Highlights
 
-- Typed, schema-versioned **`ChartSpec`** compiles to a deterministic **`ChartPlan`**
+- Schema-versioned **`ChartSpec`** compiles to a deterministic **`ChartPlan`**
 - ABI-conforming **`hedron-chart`** Web Component with SVG default and Canvas for dense marks
 - Beginner **`LineChart` / `AreaChart` / `BarChart` / `ScatterChart`** keep their call shapes and compile to the new grammar
 - **`MatplotlibChart`** remains Supported; Plotly/Altair stay explicit Experimental adapters
-- Public chart tokens, typed keyboard/pointer interactions, accessible summary/table fallbacks, and deterministic SVG/CSV/JSON/print export
+- Public chart tokens, keyboard/pointer interactions, accessible summary/table fallbacks, and deterministic SVG/CSV/JSON/print export
 
 ## Pins
 

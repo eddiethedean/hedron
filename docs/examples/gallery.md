@@ -108,7 +108,7 @@ change to assistive technology.
 ## Component Explorer
 
 Hedron Explorer explains what the framework registered and why it will render a given
-response. Switch between the preview, typed props, and request contract below.
+response. Switch between the preview, declared props, and request contract below.
 
 <section class="hedron-demo hedron-explorer-demo" data-hedron-demo="explorer" aria-label="Interactive Component Explorer example">
   <div class="hedron-demo__chrome" aria-hidden="true">
@@ -176,7 +176,7 @@ cd examples/django-reference && uv run uvicorn asgi:application --port 8000
 ```
 
 FastAPI reference credentials: `admin` / `secret`. That server exercises strict security
-headers, CSRF-protected actions, lazy HTMX resources, typed Python composition, scoped styles, and the
+headers, CSRF-protected actions, lazy HTMX resources, Python composition, scoped styles, and the
 sealed asset build.
 
 [Reference app walkthrough](reference-app.md){ .md-button }

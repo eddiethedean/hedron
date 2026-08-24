@@ -7,7 +7,7 @@ For new apps, pin `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0
 
 ## Highlights
 
-Typed interaction ecosystem convergence is a sealed, read-only index over shipped 0.43/0.44
+Interaction ecosystem convergence is a sealed, read-only index over shipped 0.43/0.44
 artifacts:
 
 - **`InteractionCatalog` / `CatalogEntry`** index `BaseHandleDescriptor` fingerprints and optional

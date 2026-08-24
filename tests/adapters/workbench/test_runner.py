@@ -21,6 +21,14 @@ def test_explicit_mount_hint_includes_uvicorn_root_path_on_workbench() -> None:
     assert explicit_mount_hint(WorkbenchConfig(), env) == "/s/session/p/12345"
 
 
+def test_explicit_mount_hint_extracts_uvicorn_root_path_from_full_url() -> None:
+    env = {
+        "RS_SERVER_URL": "https://wb.example/s/session/",
+        "UVICORN_ROOT_PATH": "https://wb.example/s/session/p/8000/",
+    }
+    assert explicit_mount_hint(WorkbenchConfig(), env) == "/s/session/p/8000"
+
+
 def test_explicit_mount_hint_includes_hedron_resolved_mount_env() -> None:
     env = {
         "RS_SERVER_URL": "https://wb.example/",
@@ -59,7 +67,7 @@ def test_run_target_skips_discovery_when_uvicorn_root_path_set(
 
     class FakeSock:
         def getsockname(self) -> tuple[str, int]:
-            return ("127.0.0.1", 54321)
+            return ("127.0.0.1", 12345)
 
         def close(self) -> None:
             return None
@@ -99,6 +107,59 @@ def test_run_target_skips_discovery_when_uvicorn_root_path_set(
     assert discover_calls == []
     assert len(served) == 1
     assert served[0].browser_mount == "/s/session/p/12345"
+
+
+def test_run_target_discovers_mount_for_port_different_from_uvicorn_root(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    discovery_calls: list[int] = []
+
+    def discover(**kwargs: object) -> str:
+        discovery_calls.append(int(kwargs["port"]))
+        return "https://wb.example/s/session/p/54321/"
+
+    monkeypatch.setattr("hedron_posit.runner.discover_rserver_url", discover)
+
+    class FakeSock:
+        def getsockname(self) -> tuple[str, int]:
+            return ("127.0.0.1", 54321)
+
+        def close(self) -> None:
+            return None
+
+        def fileno(self) -> int:
+            return 3
+
+    monkeypatch.setattr("hedron_posit.runner.bind_loopback", lambda _h, _p: FakeSock())
+    served: list[ResolvedDeployment] = []
+
+    def fake_prepare_app(**kwargs: object) -> tuple[object, object]:
+        resolved = resolve_deployment(
+            kwargs["config"],  # type: ignore[arg-type]
+            environ=kwargs["environ"],  # type: ignore[arg-type]
+            bound_port=kwargs["bound_port"],  # type: ignore[arg-type]
+            discovered_raw=kwargs["discovered_raw"],  # type: ignore[arg-type]
+        )
+        return object(), resolved
+
+    monkeypatch.setattr("hedron_posit.runner.prepare_app", fake_prepare_app)
+    monkeypatch.setattr(
+        "hedron_posit.runner.serve",
+        lambda _app, resolved, sock=None: served.append(resolved),
+    )
+
+    run_target(
+        "tests.integration._workbench_sample:app",
+        config=WorkbenchConfig(mode=WorkbenchMode.ON),
+        environ={
+            "RS_SERVER_URL": "https://wb.example/s/session/",
+            "UVICORN_ROOT_PATH": "https://wb.example/s/session/p/8000/",
+        },
+    )
+
+    assert discovery_calls == [54321]
+    assert len(served) == 1
+    assert served[0].browser_mount == "/s/session/p/54321"
 
 
 def test_run_target_skips_discovery_when_hedron_resolved_mount_env_set(

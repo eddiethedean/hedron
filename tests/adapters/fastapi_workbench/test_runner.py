@@ -21,6 +21,14 @@ def test_explicit_mount_hint_includes_uvicorn_root_path_on_workbench() -> None:
     assert explicit_mount_hint(WorkbenchConfig(), env) == "/s/session/p/12345"
 
 
+def test_explicit_mount_hint_extracts_uvicorn_root_path_from_full_url() -> None:
+    env = {
+        "RS_SERVER_URL": "https://wb.example/s/session/",
+        "UVICORN_ROOT_PATH": "https://wb.example/s/session/p/8000/",
+    }
+    assert explicit_mount_hint(WorkbenchConfig(), env) == "/s/session/p/8000"
+
+
 def test_explicit_mount_hint_includes_resolved_mount_env() -> None:
     env = {
         "RS_SERVER_URL": "https://wb.example/",
@@ -59,7 +67,7 @@ def test_run_target_skips_discovery_when_uvicorn_root_path_set(
 
     class FakeSock:
         def getsockname(self) -> tuple[str, int]:
-            return ("127.0.0.1", 54321)
+            return ("127.0.0.1", 12345)
 
         def close(self) -> None:
             return None

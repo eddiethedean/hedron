@@ -66,10 +66,10 @@ transactions, retry safety, accessible semantics, or hidden data dependencies.
 | `Control` | `hedron` | Give conservative presentation metadata for a generated native control. |
 | `Refreshes` | `hedron` | Declare the registered handles a command may refresh. |
 | `Updates` | `hedron` | Declare the registered handles a command may patch directly. |
-| `CommandResult` | `hedron` | Common typed command-result protocol/union accepted by the response converter. |
+| `CommandResult` | `hedron` | Common command-result protocol/union accepted by the response converter. |
 | `RefreshableView` | `hedron` | Optional class-based load/render lifecycle. |
 | `CommandHandler` | `hedron` | Optional class-based execute/outcome lifecycle. |
-| `OutcomeMap` | `hedron` | Closed mapping from typed outcome variants to response behavior. |
+| `OutcomeMap` | `hedron` | Closed mapping from outcome variants to response behavior. |
 | `TypeSchema` | `hedron-core` | Versioned normalized, redacted extension attached to a 0.43 base handle descriptor. |
 
 Final import placement is locked by D-076: portable markers and `TypeSchema` in
@@ -144,7 +144,7 @@ All entry paths use the same compiled adapter and configuration:
 - `FragmentHandle.bind(**fields)`;
 - path/query reconstruction of a bound view;
 - command form parsing;
-- `AppScenario` typed submission;
+- `AppScenario` schema-validated submission;
 - Explorer preview validation.
 
 Field aliases, strictness, defaults, extra-field behavior, discriminators, validators, and
@@ -385,7 +385,7 @@ Decorator overloads preserve sync/async callable parameter and return informatio
 implementation may use `ParamSpec`, `TypeVar`, protocols, and overloads, but public type-checker
 fixtures define the contract. Basic usage cannot require a Hedron-specific mypy/pyright plugin.
 
-## Typed outcomes and `OutcomeMap`
+## Outcomes and `OutcomeMap`
 
 `OutcomeMap` accepts a discriminated Pydantic union and one mapping per variant.
 The frozen builder spelling is:
@@ -512,7 +512,7 @@ runtime diagnostics on the 0.44 train.
 | Dependency submitted as input | Value is ignored/rejected; dependency injection remains authoritative. |
 | Sensitive default/example in tooling schema | Registration/schema check fails; value is not emitted. |
 | Actual effect outside `Refreshes`/`Updates` | Response conversion fails safely before output. |
-| Unmapped/wrong typed outcome | Safe server error plus stable diagnostic; no model repr/value leak. |
+| Unmapped/wrong outcome | Safe server error plus stable diagnostic; no model repr/value leak. |
 | Mutable shared class handler state | Registration/check failure or explicit documented factory requirement. |
 | Recursive/excessive schema | Generation fails within bounds; explicit manual handler/form remains available. |
 | Static scan needs import/evaluation | Finding is marked unknown; no import/evaluation occurs. |

@@ -98,7 +98,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
         if (
             getattr(args, "discover", False)
             and rs_server_url()
-            and explicit_mount_hint(cfg) is None
+            and explicit_mount_hint(cfg, bound_port=cfg.port) is None
         ):
             # Match doctor --live: bind first, then pass the listening port to rserver-url.
             # ``--port 0`` / unset means ephemeral (``or 0``), not a hard-coded 8000.
@@ -230,7 +230,7 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
         if args.live:
             sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
             bound_port = int(sock.getsockname()[1])
-            if rs_server_url() and explicit_mount_hint(cfg) is None:
+            if rs_server_url() and explicit_mount_hint(cfg, bound_port=bound_port) is None:
                 discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=bound_port)
         resolved = resolve_deployment(
             cfg,

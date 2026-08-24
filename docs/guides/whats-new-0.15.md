@@ -1,6 +1,6 @@
 # What’s new in 0.15
 
-Phase **0.15** completes the high-value data-app surface — typed controls, media, maps,
+Phase **0.15** completes the high-value data-app surface — controls, media, maps,
 browser context, and scenario testing — without Streamlit-style whole-script reruns.
 
 ## Highlights

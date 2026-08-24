@@ -1,10 +1,10 @@
 # Hands-on training: Streamlit to Hedron on Posit
 
 Use this instructor-ready guide to run a **3.5-hour workshop** for Python developers who
-currently build Streamlit apps and want to build typed Hedron applications in Posit
+currently build Streamlit apps and want to build Hedron applications in Posit
 Workbench and publish them to Posit Connect.
 
-Participants finish with a migrated sales dashboard that has typed URL filters, a
+Participants finish with a migrated sales dashboard that has validated URL filters, a
 server-rendered component tree, an allowlisted HTMX fragment, HTTP-level tests, and one
 application object that adapts to local, Workbench, and Connect environments.
 
@@ -35,16 +35,16 @@ By the end of the workshop, participants can:
 
 1. explain how Hedron's request/response model differs from Streamlit's execution model;
 2. decide whether a Streamlit workflow is a good Hedron migration candidate;
-3. turn Streamlit widgets and callbacks into typed page, fragment, and action boundaries;
+3. turn Streamlit widgets and callbacks into explicit page, fragment, and action boundaries;
 4. choose an owner for URL, request, session, durable, cached, and browser state;
 5. run one `HedronPosit` app locally and through Posit Workbench's path prefix;
-6. test full pages, typed validation, HTMX fragments, and target rejection;
+6. test full pages, input validation, HTMX fragments, and target rejection;
 7. prepare and publish a FastAPI/ASGI bundle to Posit Connect without putting secrets in
    source control.
 
 ## Scope and expectations
 
-Hedron is a typed, server-rendered component framework on FastAPI. HTMX requests replace
+Hedron is a server-rendered component framework on FastAPI. HTMX requests replace
 declared HTML regions without a Node frontend or a full application-script rerun. It is a
 strong fit for maintained CRUD tools, admin applications, forms, and dashboards that need
 stable URLs, explicit write boundaries, FastAPI integration, and conventional tests.
@@ -53,7 +53,7 @@ Hedron is not a call-for-call Streamlit compatibility layer, an ORM, an identity
 or a hosted service. Streamlit remains a good choice when the notebook-style execution loop
 is the primary benefit or the app depends on Streamlit-specific components with no suitable
 replacement. Modern Streamlit also supports forms and fragments; the meaningful difference
-is that a Hedron interaction is always an explicit HTTP request with a typed input and an
+is that a Hedron interaction is always an explicit HTTP request with a validated input and an
 explicit response. See [Should you migrate?](streamlit-migration.md#should-you-migrate).
 
 ## Facilitator preparation
@@ -124,7 +124,7 @@ only after the HTTP flow is clear.
 
 | Streamlit habit | Hedron design |
 |---|---|
-| A widget call returns its current value | A typed route parameter receives a query or form value |
+| A widget call returns its current value | A validated route parameter receives a query or form value |
 | An interaction reruns code | A browser sends a GET or an unsafe-method request to one route |
 | UI appears as the script executes | A route returns an explicit component tree |
 | `if st.button(...)` performs a write | A CSRF-protected POST action authorizes and performs the write |
@@ -138,7 +138,7 @@ Use this request sequence during the demonstration:
 ```text
 Browser GET /?region=North
   -> FastAPI validates region
-  -> @app.page builds typed components
+  -> @app.page builds Python components
   -> Hedron renders a full HTML document
 
 Browser HTMX GET /freshness, HX-Target: #freshness
@@ -341,7 +341,7 @@ running the app:
 | `migration/REVIEW.md` | Which findings need a developer decision? |
 | `migration/report.json` | What did the analyzer inventory? |
 | `migration/source-map.json` | Which generated boundary came from each source call? |
-| `app.py` | Where did widget values become typed route parameters? |
+| `app.py` | Where did widget values become validated route parameters? |
 | `tests/test_migration_smoke.py` | Which generated behavior is already checked? |
 
 ### 4. Run and compare outcomes
@@ -362,7 +362,7 @@ Verify these outcomes:
 ### Debrief
 
 The important migration is not `st.selectbox` to `Select`. It is the move from an implicit
-widget value to a typed, bookmarkable GET contract. The same principle applies to writes:
+widget value to a validated, bookmarkable GET contract. The same principle applies to writes:
 the target is an explicit POST action, not a translated button callback.
 
 Use the [component matrix](streamlit-migration-matrix.md) for API lookup and
@@ -542,7 +542,7 @@ write once, and assert a 303 redirect or allowed fragment response.
 
 ### Checkpoint
 
-The suite proves a user outcome, typed input rejection, a successful partial response, and
+The suite proves a user outcome, invalid-input rejection, a successful partial response, and
 fail-closed target authorization. It does not assert the entire generated HTML document.
 
 ## Lab 5 — Prepare and publish to Posit Connect
@@ -664,7 +664,7 @@ independently at **8/10**, provided they earn both security points.
 | Point | Evidence |
 |---:|---|
 | 1 | Explains page versus fragment responses |
-| 1 | Maps a safe filter to a typed GET parameter |
+| 1 | Maps a safe filter to a validated GET parameter |
 | 1 | Maps a write to a POST action rather than a GET/render side effect |
 | 1 | Assigns a former Session State key to a deliberate owner |
 | 1 | Runs the app through `hedron-posit` without a hard-coded Workbench prefix |
@@ -702,7 +702,7 @@ traffic.
 | `rserver-url` diagnostic fails | Workbench binary/path or session environment is unavailable | Confirm `RS_SERVER_URL`, the binary path, and platform configuration with the administrator |
 | Port 8000 is busy | A previous server is still running | Stop it or choose another port |
 | Fragment returns 403 | `HX-Target` differs from the route's declared region | Compare the region id, selector, control, and decorator |
-| Query returns 422 | Typed query validation rejected the value | Correct the control or bounds; keep server-side validation |
+| Query returns 422 | Query validation rejected the value | Correct the control or bounds; keep server-side validation |
 | POST returns 403 | CSRF cookie/token pair is missing or mismatched | Start from a safe page GET and use `CsrfField`; do not disable CSRF |
 | Migrator refuses output | Destination is non-empty | Choose a fresh directory; the refusal protects existing work |
 | Connect cannot import `app:app` | Entrypoint, dependencies, or Python version differ | Check the bundle, requirements, server Python, and deployment logs |

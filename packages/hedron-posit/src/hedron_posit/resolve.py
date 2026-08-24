@@ -90,6 +90,7 @@ def explicit_mount_hint(
     *,
     compatibility_aliases: bool = True,
     warnings: list[str] | None = None,
+    bound_port: int | None = None,
 ) -> str | None:
     """Return a non-empty mount when ``discover_rserver_url`` can be skipped.
 
@@ -103,6 +104,7 @@ def explicit_mount_hint(
         _merge_environ(env),
         compatibility_aliases=compatibility_aliases,
         warnings=warnings,
+        bound_port=bound_port,
     )
 
 

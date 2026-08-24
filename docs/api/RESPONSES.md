@@ -69,7 +69,7 @@ framework's explicit `StreamingResponse`.
 
 ## `InteractionResult`
 
-Handlers may return `InteractionResult` for typed primary content, out-of-band (OOB) updates,
+Handlers may return `InteractionResult` for validated primary content, out-of-band (OOB) updates,
 status, history, and cache/`Vary` hints. HTML and `HX-*` headers remain visible via
 `interaction_headers` / `approved_headers`.
 
@@ -132,7 +132,7 @@ FastAPI request-validation failures use semantic **422** handling:
 | Situation | Behavior |
 |---|---|
 | Unauthorized `HX-Target` / OOB region | HTTP `403` on fragment routes |
-| Unsafe selector or external redirect in typed fields | Rejected before headers emit |
+| Unsafe selector or external redirect in declared fields | Rejected before headers emit |
 | `Cache-Control: public` via raw `headers` / `extra_headers` | Rejected |
 | Production without build manifest | Startup refuses (`HED-BUILD-0003`) |
 | HTMX request validation failure | HTTP `422` HTML fragment (not JSON) |

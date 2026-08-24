@@ -10,7 +10,7 @@ For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0
   `hedron_maps.Map`, OSM preset, custom/offline sources, `hedron-map` + MapLibre 5.6.1
   strict-CSP, and `MapInteraction`.
 - Core `hedron.Map` and charts MapLibre/Folium/PyDeck stay explicit and optional.
-- `hedron_maps.GeoJSONLayer` is the typed overlay; `hedron_core.GeoJSONLayer` is the sanitizer.
+- `hedron_maps.GeoJSONLayer` is the presentation overlay; `hedron_core.GeoJSONLayer` is the sanitizer.
 
 Git tag `v0.47.0`, GitHub Release, and PyPI `hedron` `0.47.0`.
 

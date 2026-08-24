@@ -96,6 +96,12 @@ Off-host Connect and live vanity-URL expansion remain **Experimental**.
 
 Reference app: `examples/connect-reference/`.
 
+Deploy the reference app as a FastAPI/ASGI content item with Posit's
+`rsconnect deploy fastapi` workflow and install `hedron-posit` into the content
+environment. Running `uvicorn` or `hedron-posit run` on the Connect host is a
+local-process test, not a Connect deployment, so it does not reproduce Connect's
+content base URL, worker, or cookie behavior.
+
 ## Bridge extension point (not Supported in 0.33)
 
 `ConnectCookieMode.authenticated_header_v1` is retained only as a documented
@@ -122,7 +128,7 @@ supported.
 
 ## Operations and diagnostics
 
-- `app.posit_status()` — typed product / cookie / bridge / capability record
+- `app.posit_status()` — product / cookie / bridge / capability record
 - `app.workbench_status()` — redacted Workbench deployment record
 - CLI `check` / `doctor` emit `posit_status` fields in text and JSON
 - Secrets, cookies, GUID-shaped paths, and credential headers are redacted

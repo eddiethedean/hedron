@@ -32,7 +32,7 @@ every click inflate HTML, CSS, and HTMX processing cost.
 
 ## Cache consciously
 
-Use typed `InteractionResult(cache=...)` (`private`, `no-store`, `vary-htmx`). Prefer
+Use `InteractionResult(cache=...)` (`private`, `no-store`, `vary-htmx`). Prefer
 `vary-htmx` when one URL serves both documents and fragments. Do not mark authenticated
 HTML `public`. Multi-tenant pages must include tenant (and usually user) dimensions in
 cache keys — see [Threat model](threat-model.md).
@@ -72,4 +72,3 @@ CRUD/admin flows. Add complexity only when measurements justify it
 
 Use the [Ship checklist](ship.md) and [Deployment](deployment.md). Treat CI performance
 budgets as engineering signals, not customer SLOs.
-

@@ -5,7 +5,7 @@ Tracking: [#334](https://github.com/eddiethedean/hedron/issues/334).
 
 For new apps, pin `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
 
-Package-native typed workflows assemble ordinary 0.43–0.45 handles into opt-in features.
+Package-native workflows assemble ordinary 0.43–0.45 handles into opt-in features.
 Maintainer contracts (decisions / RFC) sit in GitHub, not this adopter page.
 
 ## Highlights

@@ -22,8 +22,8 @@ brand-wide decisions, and scoped CSS when a component genuinely owns a visual de
 
 !!! note "What is new in 0.60"
 
-    0.60 completes the custom-theme platform on top of the 0.59 CSS foundation: typed absolute
-    colors with deterministic sRGB fallbacks, immutable `ThemeSpec` / `ThemePatch` authoring,
+    0.60 completes the custom-theme platform on top of the 0.59 CSS foundation: absolute CSS Color
+    4 values with deterministic sRGB fallbacks, immutable `ThemeSpec` / `ThemePatch` authoring,
     registry-derived validation profiles, accessibility-mode mappings, bounded recipe families,
     server-first theme preferences, and zero-application-CSS contracts for the remaining product
     surfaces. The complete capability matrix—including the 0.59 CSS foundation and its
@@ -118,7 +118,7 @@ application stylesheet can safely use it.
 | Theme | Brand geometry, density, elevation, motion, and navigation presets | `border-radius`, spacing variables, `box-shadow`, `transition-duration`, width variables | **Supported** | Presets compile to bounded tokens, not arbitrary CSS declarations. |
 | Theme | Modern absolute colors and generated palettes | `color-mix()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()` | **Supported** | A canonical sRGB fallback precedes enhanced wide-gamut output. |
 | Theme | Accessibility theme modes | `@media (forced-colors: active)`, `prefers-contrast`, `prefers-reduced-transparency` | **Supported** | Semantic focus, contrast, print, and non-color fallbacks remain required. |
-| Compiler | Component `styles.css` and typed `StyleSymbols` | Local class/keyframe names, `:global(...)`, deterministic source maps | **Supported** | Local symbols are rewritten; remote resources and unsafe globals are rejected. |
+| Compiler | Component `styles.css` and `StyleSymbols` | Local class/keyframe names, `:global(...)`, deterministic source maps | **Supported** | Local symbols are rewritten; remote resources and unsafe globals are rejected. |
 | Compiler | CSS grammar-aware compilation | Selectors, declarations, descriptors, strings, comments, URLs, custom identifiers | **Supported** | Malformed or ambiguous syntax fails during the build, not at runtime. |
 | Compiler | Nested component CSS | CSS Nesting Level 1, `&`, nested conditional rules | **Supported** | Hedron emits browser-valid scoped CSS. |
 | Compiler | Conditional and future at-rules | `@media`, `@supports`, `@container`, `@scope`, `@starting-style` | **Supported** | Safe syntax is preserved; unsafe or ambiguous rewrites are rejected. |
@@ -128,7 +128,7 @@ application stylesheet can safely use it.
 | Cascade | Native scope enhancement | `@scope`, `:scope` | **Progressive** | Hedron's marker/token boundary is the compatibility fallback. |
 | Overlay | `Dialog`, `Popover`, `ContextMenu`, `Tooltip`, `ToastHost` | `<dialog>`, Popover API, `:popover-open`, `::backdrop`, top layer, z-index tokens | **Supported** | Native/details/static flow remains usable when enhanced APIs are unavailable. |
 | Overlay | Logical overlay placement and collision | `inset-*`, `position-area`, `position-try-fallbacks` | **Progressive** | Hedron's finite placement vocabulary falls back to logical flow or bounded positioning. |
-| Product surfaces | `AppShell`, `Brand`, `AppFooter`, `ConnectorFlow`, and workflow chrome | Grid/flex shell layout, logical positioning, overflow, status and connector selectors | **Supported** | Components render typed presentation state; they do not own auth, execution, polling, or authorization. |
+| Product surfaces | `AppShell`, `Brand`, `AppFooter`, `ConnectorFlow`, and workflow chrome | Grid/flex shell layout, logical positioning, overflow, status and connector selectors | **Supported** | Components render presentation state supplied by the application; they do not own auth, execution, polling, or authorization. |
 | Motion | Built-in motion presets and reduced motion | `transition`, `animation`, `@media (prefers-reduced-motion: reduce)` | **Supported** | `motion="none"` and preference media produce a stable, immediate presentation. |
 | Motion | Entry/exit transitions | `@starting-style`, `transition-behavior: allow-discrete` | **Progressive** | Open/closed state changes remain correct without the enhancement. |
 | Motion | View-transition enhancement | `view-transition-name`, `view-transition-class`, View Transitions API | **Progressive** | Ordinary navigation or HTMX swaps preserve focus, history, and server state. |
@@ -430,7 +430,7 @@ HTMX swaps should not turn a polished screen into an unstyled fragment.
 
 ## 7. Create a brand with `DesignSystem`
 
-`DesignSystem.brand()` turns a small, typed set of inputs into a coordinated `Theme`
+`DesignSystem.brand()` turns a small set of inputs into a coordinated `Theme`
 with light/dark palettes, accessibility checks, geometry, density, typography, motion,
 elevation, and navigation width.
 
@@ -457,7 +457,7 @@ app = Hedron(
 
 The accent is a safe color seed, not arbitrary CSS. Hedron can adjust a generated value when
 needed to satisfy the required contrast pairs and records that adjustment in the design plan.
-In 0.60 the accent may be a hex string or a typed absolute `Color`; variables, gradients, URLs,
+In 0.60 the accent may be a hex string or an absolute `Color`; variables, gradients, URLs,
 and other arbitrary CSS are rejected. `DesignSystem` also accepts an existing `Theme` through
 `from_theme()` when your organization already owns the token contract.
 
@@ -736,7 +736,7 @@ request input.
 
 ## 11. Add CSS only where the component owns the detail
 
-For a custom component, colocate `styles.css` beside the component and use the typed
+For a custom component, colocate `styles.css` beside the component and use the documented
 style-symbol binding. Hedron rewrites local classes and keyframes to collision-free
 identifiers; `:global(...)` is explicit when you intentionally target the host.
 

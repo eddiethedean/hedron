@@ -16,7 +16,7 @@ status: shipped
     and [What’s ready](../guides/whats-ready.md).
 
 HDJ is the optional HTML-first authoring surface for advanced Hedron applications. It combines
-normal Jinja and HTMX with typed Hedron components and preserves `RenderResult` metadata.
+normal Jinja and HTMX with Hedron components and preserves `RenderResult` metadata.
 
 ## What HDJ does—and does not do
 
@@ -25,7 +25,7 @@ HDJ does:
 - let you write native HTML, CSS, JavaScript, custom elements, and HTMX directly;
 - preserve static Jinja inheritance/includes, macros, filters, tests, loops, explicitly configured
   i18n, and core async rendering;
-- render explicitly bound Hedron components with typed props and slots;
+- render explicitly bound Hedron components with declared props and slots;
 - merge component assets, approved headers, identity, diagnostics, and traces; and
 - check the format-v1 dynamic sink matrix, static dependencies, assets, and locally inferable
   deployment capabilities.
@@ -302,7 +302,7 @@ Advanced applications may enable either explicitly. Registered ES modules listen
 `htmx:load`, `htmx:afterSwap`, `htmx:beforeCleanupElement`, and `htmx:beforeHistorySave` are the
 recommended lifecycle path for durable client behavior.
 
-Response-side interaction remains typed through `HtmxRequestFacts`, `InteractionResult`, status
+Response-side interaction remains explicit through `HtmxRequestFacts`, `InteractionResult`, status
 policies, approved `HX-*` response headers, fragment regions, OOB updates, and cache variation.
 Templates cannot authorize a response target or action merely by spelling it.
 

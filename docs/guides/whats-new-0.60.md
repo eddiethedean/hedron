@@ -11,7 +11,7 @@ Hedron 0.60 is implemented, verified, tagged, and published on PyPI. Application
 
 ## Highlights
 
-- Typed absolute CSS Color 4 input with deterministic conversion, gamut mapping, and sRGB fallback.
+- Absolute CSS Color 4 input with deterministic conversion, gamut mapping, and sRGB fallback.
 - Immutable `ThemeSpec`, copy-on-write `ThemeBuilder`, ordered `ThemePatch`, provenance, aliases,
   coverage profiles, relationship-aware validation, fingerprints, and deterministic data-only packages.
 - Registry-derived component contracts with semantic roles, contrast relationships, accessibility

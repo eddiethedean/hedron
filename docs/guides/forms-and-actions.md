@@ -5,7 +5,7 @@ For the golden-path form (`@app.command` + `CsrfField` + `save.form()`), start w
 [Minimal form POST](minimal-form.md) and the
 [Notes + SQLAlchemy recipe](../examples/notes-sqlalchemy.md).
 
-Deep dive: typed form that POSTs with HTMX, validates CSRF, and returns either a
+Deep dive: a form that POSTs with HTMX, validates CSRF, and returns either a
 validation fragment or a success update—without a client-side SPA.
 
 ## What you will build
@@ -142,11 +142,11 @@ errors; submit a longer email to see the success region.
 
 | Piece | Role |
 |---|---|
-| `FormModel` | Typed, validated input shape for the form |
+| `FormModel` | Validated input shape for the form |
 | `Form` / `FormField` | Native progressive-enhancement form with optional HTMX attrs |
 | `@app.component(..., methods=["POST"])` | Mutation fragment route; CSRF validated by the security profile |
 | `FragmentRegion` | Allowlisted HTMX target for the response |
-| `InteractionResult` | Typed fragment content plus validated HTMX metadata |
+| `InteractionResult` | Fragment content plus validated HTMX metadata |
 | `csrf_token_for_request` | Stable token matching the cookie for this request |
 
 Rendering a form never grants authorization. Persistence, permission checks, and

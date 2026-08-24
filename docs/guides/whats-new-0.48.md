@@ -11,7 +11,7 @@ For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0
 - Demand-driven pinned local assets (`sse`, `head-support`, `preload`) after HTMX core.
 - Unset pages keep the 0.47 `sse` + `head-support` compatibility default; `htmx_extensions=()`
   loads zero extension bytes.
-- Typed `SseRegion` / `SseTrigger`. Polling remains the Supported fallback. SSE and preload
+- `SseRegion` / `SseTrigger`. Polling remains the Supported fallback. SSE and preload
   APIs stay experimental.
 - GET-only preload authoring on `HtmxLink` (`mousedown` / `mouseover` / `touchstart`).
 - Idiomorph / morph swap is **Deferred** and is not a Supported capability.

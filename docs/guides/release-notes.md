@@ -3,6 +3,26 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.60.2 — 2026-08-24
+
+Release candidate for the 0.60 maintenance train. The coordinated packages are
+versioned `0.60.2` in the repository; PyPI remains at `0.60.0` until the upload is
+authorized and verified.
+
+### Fixed
+
+- Workbench accepts `UVICORN_ROOT_PATH` values returned as full `rserver-url` URLs and
+  extracts only the validated local mount path.
+- Launchers ignore inherited Workbench mounts for a different bound port and rediscover
+  the mount for the actual listener.
+- Native Connect validation preserves the resolved runtime environment when validating
+  the singular app-base header and ASGI `root_path` match.
+- Added regression coverage and beginner-guide diagnostics for these Workbench and Connect
+  deployment behaviors.
+
+For maintainers, the release gate is `python scripts/check_release_gate.py 0.60.2`
+and the package packet check is `python scripts/verify_pkg_60.py`.
+
 ## 0.60.1 — 2026-08-23
 
 Release candidate for the 0.60 maintenance train. The coordinated packages are
@@ -30,7 +50,7 @@ Verified and published release for the 0.60 train. The latest public install is
 
 ### Custom theme platform
 
-- Added typed absolute Color input, canonical immutable ThemeSpec/ThemePatch authoring, bounded
+- Added absolute Color input, canonical immutable ThemeSpec/ThemePatch authoring, bounded
   recipe families, registry-derived validation, deterministic data-only packages, accessibility
   modes, server-first ThemePicker, and the read-only Explorer Theme Lab.
 - Completed zero-application-CSS Brand, ToastHost, ConnectorFlow, and ScrollRegion contracts with
@@ -39,7 +59,7 @@ Verified and published release for the 0.60 train. The latest public install is
 
 ### Added
 
-- CSS compiler format 2 compatibility, explicit container queries, theme variants, typed controls,
+- CSS compiler format 2 compatibility, explicit container queries, theme variants, controls,
   bounded overlay placement, and preference-aware default CSS.
 - Three-engine capability probes, contract fixtures, performance/package measurements, and a
   reviewable Data Mover migration evidence packet.
@@ -146,7 +166,7 @@ Quality and typing patch on the 0.51 train. Pin `hedron>=0.60.0,<0.61` from PyPI
 0.51.2 wheel lands. [What’s new in 0.51](whats-new-0.51.md).
 [Installation](../getting-started/installation.md).
 
-- Replace runtime `assert` validation with explicit typed errors on chart adapters, Gradio
+- Replace runtime `assert` validation with explicit errors on chart adapters, Gradio
   client, hosts, and jobs.
 - Typing ratchet on charts/maps/MCP/Jinja/Redis and host-integration modules (`handles`,
   pages, Explorer router).
@@ -272,7 +292,7 @@ from PyPI `hedron>=0.60.0,<0.61` — [Installation](../getting-started/installat
 - FastAPI `Depends` compiles from Hedron `DependsOn` for handler and response scopes.
 - Query, header, cookie, and non-file form models can bind as native Pydantic parameter models.
 - TypeSchema v2 dual projections; v1 readers still work.
-- Router provenance and typed OpenAPI projection; `RequiresScopes` remains non-granting.
+- Router provenance and OpenAPI projection; `RequiresScopes` remains non-granting.
 - Workbench/Posit settings keep custom loaders.
 - Bugfixes: query-only GET no longer 422s as JSON (#381); late registration fails closed (#382); required FormBody JSON is HTTP 415 (#383); TypeSchema sanitizer fail-closes unknown keys (#384).
 
@@ -303,7 +323,7 @@ Coordinated Beta cut for first-class HTMX extension integration (D-080 / D-083 /
 
 - Closed `HtmxExtension` / `ExtensionSet` / `Page.htmx_extensions` with demand-driven pinned local `sse`, `head-support`, and `preload` assets after HTMX core.
 - Unset pages keep the 0.47 `sse` + `head-support` pair; `htmx_extensions=()` loads zero extension bytes. `preload` never rides the default.
-- Typed `SseRegion` / `SseTrigger`. Polling remains the Supported fallback. SSE and preload helpers stay experimental.
+- `SseRegion` / `SseTrigger`. Polling remains the Supported fallback. SSE and preload helpers stay experimental.
 - Registered `AssetRef` head merge; GET-only preload on `HtmxLink`. Idiomorph / morph swap is **Deferred**.
 - New symbols begin Beta. `SR-021` stays open. Live-transport maturity is unchanged (`polling_only`).
 - Pin the living tip with the 0.50.0 install block above. Charts remain on `hedron-charts>=0.2.0,<0.3`. Maps: `hedron[maps]` / `hedron-maps>=0.1.0,<0.2`.
@@ -333,7 +353,7 @@ python -m pip install "hedron-charts>=0.2.0,<0.3"
 
 ## 0.46.0 — 2026-08-16
 
-Coordinated Beta train cut for package-native typed workflows (D-075 / D-079 / RFC-0073).
+Coordinated Beta train cut for package-native workflows (D-075 / D-079 / RFC-0073).
 
 - Immutable `FeatureBundle` / `Hedron.include_feature` atomically register ordinary handles, components, scenarios, and stacked projections. Bundles are not executors.
 - `DataWorkspace` / `DataWorkspacePolicy` compile list/detail/create/edit onto explicit authorized `DataEditorSource` surfaces. Never `.objects.all()`.
@@ -355,7 +375,7 @@ python -m pip install "hedron-charts>=0.2.0,<0.3"
 
 ## 0.45.0 — 2026-08-16
 
-Coordinated Beta train cut for the typed interaction ecosystem (D-074 / D-077 / RFC-0072).
+Coordinated Beta train cut for the interaction ecosystem (D-074 / D-077 / RFC-0072).
 
 - One sealed `InteractionCatalog` indexes 0.43 descriptors and optional 0.44 `TypeSchema` extensions.
 - `hedron build` emits redacted sibling `interactions.json`; production validates it fail-closed when the catalog has entries.
@@ -378,7 +398,7 @@ python -m pip install "hedron-charts>=0.2.0,<0.3"
 ## 0.44.0 — 2026-08-16
 
 Coordinated Beta train cut for type-driven authoring, schema-derived forms, declared
-effects, typed outcomes, and optional class handlers (D-072 / D-076 / RFC-0071).
+effects, explicit outcomes, and optional class handlers (D-072 / D-076 / RFC-0071).
 
 - `ViewParams` / `FormBody` opt existing 0.43 handles into one Pydantic validator.
 - `ActionHandle.form()` generates native forms for the closed field inventory.
@@ -400,7 +420,7 @@ python -m pip install "hedron-charts>=0.2.0,<0.3"
 
 ## 0.43.0 — 2026-08-16
 
-Coordinated Beta train cut for refreshable views, command handles, and typed updates
+Coordinated Beta train cut for refreshable views, command handles, and updates
 (D-071 / RFC-0070).
 
 - `@app.refreshable` / `@app.command` return handles that own routes, hosts, and controls.
@@ -421,7 +441,7 @@ python -m pip install "hedron-charts>=0.2.0,<0.3"
 Coordinated Beta train cut for browser composition, state, and navigation
 (D-069 / RFC-0060).
 
-- Ships allowlisted typed composition, subject-bound draft transfer, progressive
+- Ships allowlisted composition, subject-bound draft transfer, progressive
   navigation/restoration, content-free traces, and element/region failure isolation.
 - Server and ordinary links/forms remain authoritative; optional preload/View Transitions
   never affect correctness.
@@ -463,7 +483,7 @@ Coordinated Beta train cut for rich data surfaces and OptimisticMutation
 (D-067 / RFC-0060).
 
 - Ships ABI-conforming `<hedron-data-editor>` with retained SSR fallback after
-  upgrade, typed `OptimisticMutation` on bounded collection edits, and
+  upgrade, `OptimisticMutation` on bounded collection edits, and
   `compose_chartlink_039` so DataTable/DataEditor consume Published 0.38
   `hedron-chart` events without a parallel renderer.
 - Records owned Experimental exceptions for map / media / code-editor /
@@ -485,7 +505,7 @@ python -m pip install "hedron-charts>=0.2.0,<0.3"
 Coordinated Beta train cut for first-party high-fidelity charts
 (D-066 / RFC-0069).
 
-- Ships Beta `hedron-charts` `0.2.0` with typed `ChartSpec` / `ChartPlan`, ABI
+- Ships Beta `hedron-charts` `0.2.0` with `ChartSpec` / `ChartPlan`, ABI
   `hedron-chart` (SVG default, Canvas for dense marks), and beginner
   `LineChart` / `AreaChart` / `BarChart` / `ScatterChart` compiled to the grammar.
 - `MatplotlibChart` remains Supported; Plotly/Altair stay Experimental.

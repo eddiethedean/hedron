@@ -4,7 +4,7 @@ Hedron enables Python developers to build maintainable, modern web interfaces wi
 
 ## Product promise
 
-> Build typed, component-based FastAPI interfaces with HTML and HTMX, without requiring Node.js.
+> Build component-based FastAPI interfaces with HTML and HTMX, without requiring Node.js.
 > Start with familiar Python objects and built-in components; adopt browser components or a future
 > evidence-backed declarative format only when additional control is needed.
 

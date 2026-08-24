@@ -129,7 +129,7 @@ redaction is for logs/diagnostics — never treat client hints as authorization.
 
 ### Inference presentation types
 
-Typed rows used by inference UI components (not raised errors):
+Structured rows used by inference UI components (not raised errors):
 
 | Type | Used by |
 |---|---|

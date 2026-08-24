@@ -13,7 +13,7 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Repository checkout | `0.60.1` / `0.60.x` | Prepared and verified in-tree release candidate |
+| Repository checkout | `0.60.2` / `0.60.x` | Prepared and verified in-tree release candidate |
 | PyPI | `0.60.0` / `0.60.x` | Latest installable release from the public package index |
 | Package maturity | Beta | Usable with pins; no SLA or scheduled 1.0 release |
 | Supported Python | 3.11–3.14 | CPython only |
@@ -38,7 +38,7 @@ from the workspace.
 
 The `0.60.0` release is represented by the latest verified public release and is available
 from PyPI; `registry_status = "uploaded"` in [`docs/release.toml`](../release.toml). The
-repository's coordinated package metadata is prepared for the `0.60.1` patch candidate;
+repository's coordinated package metadata is prepared for the `0.60.2` patch candidate;
 the public install pin remains unchanged until that candidate is uploaded and verified.
 
 ## What should I install?

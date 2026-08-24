@@ -53,7 +53,7 @@ The authority hierarchy and no-execution semantics are compatibility requirement
 ```text
 0.43 base descriptor (runtime authority)
              │
-             ├── optional 0.44 TypeSchema (typed extension)
+             ├── optional 0.44 TypeSchema (schema extension)
              │
              ▼
       0.45 CatalogEntry (index/reference)

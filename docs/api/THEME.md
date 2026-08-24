@@ -29,7 +29,7 @@ return Article(
 
 ## Scoped style symbols
 
-A component `styles.css` exposes local classes through a typed `styles` binding. Unknown names fail before production. Local classes and keyframes compile to stable identifiers; `:global(...)` is explicit.
+A component `styles.css` exposes local classes through a declared `styles` binding. Unknown names fail before production. Local classes and keyframes compile to stable identifiers; `:global(...)` is explicit.
 
 ## Themes
 
@@ -106,7 +106,7 @@ Applications override packaged presentation through semantic props, extra classe
 
 The canonical 0.60 authoring path is an immutable `ThemeSpec`; `ThemeBuilder` is only a
 convenience facade. Absolute CSS Color 4 inputs are accepted through `Color.parse()` or the
-typed constructors and always have a deterministic sRGB fallback.
+declared constructors and always have a deterministic sRGB fallback.
 
 ```python
 from hedron import Color, ThemeBuilder, package_theme, validate_theme_spec

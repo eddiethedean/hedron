@@ -10,7 +10,7 @@ status: shipped
 
 **Status:** Accepted · **Shipped**
 
-An action is a typed server operation bound to UI controls and normal FastAPI request
+An action is a server operation with an explicit contract, bound to UI controls and normal FastAPI request
 processing.
 
 ```python
@@ -50,7 +50,7 @@ Returns are rendered as fragments by default.
 | `Page` | Page document when the route/render mode expects a page |
 | FastAPI `Response` | Passed through |
 
-Prefer `InteractionResult` when you need typed HTMX metadata. `@action`, `@component`,
+Prefer `InteractionResult` when you need validated HTMX metadata. `@action`, `@component`,
 and `@page` all accept `fragment_regions=` so HTMX `HX-Target` allowlists work on
 mutation routes ([forms guide](../guides/forms-and-actions.md),
 [Mutations](../guides/mutations.md)).

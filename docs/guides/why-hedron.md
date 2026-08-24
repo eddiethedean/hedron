@@ -8,7 +8,7 @@ teams that want Python-first development **and** explicit, composable applicatio
   <div class="hedron-choice">
     <span>If Streamlit is becoming limiting</span>
     <strong>Keep the Python workflow.</strong>
-    <p>Replace implicit reruns with typed state, actions, routes, and independently testable interfaces.</p>
+    <p>Replace implicit reruns with explicit state, actions, routes, and independently testable interfaces.</p>
   </div>
   <div class="hedron-choice">
     <span>If React feels like too much stack</span>
@@ -19,7 +19,7 @@ teams that want Python-first development **and** explicit, composable applicatio
 
 ## What Hedron optimizes for
 
-- **Typed components on FastAPI** (Flask/Django adapters available) with HTMX fragments
+- **Reusable Python components on FastAPI** (Flask/Django adapters available) with HTMX fragments
 - **Secure defaults**: contextual escaping, CSRF profiles, SafeUrl, conservative caches
 - **Contracts you would otherwise assemble**: fragment regions, interaction results, job polling
 - **Inspectability**: Explorer, CLI, and diagnostics for automatic choices
@@ -28,7 +28,7 @@ teams that want Python-first development **and** explicit, composable applicatio
 
 By default, Streamlit reruns the script on widget interaction; forms batch inputs and
 `st.fragment` can rerun a portion. Hedron keeps FastAPI routing: each interaction is an
-explicit HTTP request, and it may swap a **typed HTML fragment** into a declared region
+explicit HTTP request, and it may swap an **HTML fragment** into a declared region
 (the Hello “Refresh status” demo).
 
 === "Streamlit"
@@ -73,13 +73,13 @@ Streamlit users should start with the [migration center](streamlit-migration.md)
 React is the right choice when a product needs a client-owned application runtime, deep
 offline behavior, or an ecosystem that assumes JavaScript components. Hedron makes a
 different trade: the server owns application state and renders targeted updates, while the
-developer composes the experience in typed Python.
+developer composes the experience in Python.
 
 | Concern | React application | Hedron application |
 |---|---|---|
 | Primary UI language | JavaScript or TypeScript | Python |
 | Application shape | Client runtime plus backend APIs | Server-rendered FastAPI application |
-| Composition | Client components | Typed Python components and screens |
+| Composition | Client components | Python components and screens |
 | Interaction updates | Client state and API calls | Explicit actions, fragments, and server responses |
 | Build and deployment | Frontend build plus backend coordination | Python package and application deployment |
 | Best fit | Client-heavy products and offline-first experiences | Python-owned data, operations, and internal products |
@@ -92,13 +92,13 @@ able to choose composability without automatically choosing a second application
 | If you want… | Prefer | Tradeoff |
 |---|---|---|
 | Fastest notebook-style dashboards | Streamlit | Rerun model; less FastAPI-native routing/DI |
-| Minimal HTML/HTMX apps with little framework | FastHTML | Fewer typed-component / CSRF / fragment contracts out of the box |
+| Minimal HTML/HTMX apps with little framework | FastHTML | Fewer component / CSRF / fragment contracts out of the box |
 | Plotly-centric reactive apps | Dash | Callback graph; different security/HTML story |
 | Model demos and ML UIs | Gradio | Different product shape; less CRUD/admin focus |
 | Full control with templates | Jinja + HTMX by hand | **You** own CSRF, fragment allowlists, interaction headers, and contracts |
 | Event-loop UI widgets in pure Python | NiceGUI | Different interaction model; less HTMX/fragment-first / FastAPI-native |
 | Full-stack Python with a React compiler | Reflex | Generates a JS client stack; Hedron stays server-rendered HTML |
-| Typed components + HTMX on FastAPI | **Hedron** | Learning the component + fragment contracts |
+| Python components + HTMX on FastAPI | **Hedron** | Learning the component + fragment contracts |
 
 ### What hand-rolled FastAPI+HTMX still means you maintain
 

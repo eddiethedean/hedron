@@ -1,6 +1,6 @@
 # Dashboards and interaction graphs
 
-Prefer **`DashboardWorkspace`** for typed filters, one request-bound loader, and named
+Prefer **`DashboardWorkspace`** for validated filters, one request-bound loader, and named
 render-only panels (phase **0.60**). Phase **0.17** `DashboardBinding` /
 `InteractionGraph` remain available as Advanced linked-interaction primitives.
 

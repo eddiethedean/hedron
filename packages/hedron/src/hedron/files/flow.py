@@ -75,7 +75,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
         process: object | None = None,
         authorize_download: object | None = None,
         provider: str = "hedron",
-        provider_version: str = "0.60.1",
+        provider_version: str = "0.60.2",
     ) -> None:
         if not name or not str(name).strip():
             raise error(

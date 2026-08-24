@@ -77,6 +77,14 @@ The launcher:
 3. Exports `HEDRON_ROOT_PATH` **before** importing the app
 4. Wraps once and serves the pre-bound socket
 
+Some Workbench versions expose `UVICORN_ROOT_PATH` as the full URL returned by
+`rserver-url`, while others expose only its path. Hedron accepts either form but
+keeps only the validated local mount. The mount must also belong to the listener
+that was actually bound: if an inherited hint names another session port, the
+launcher calls `rserver-url` again for the bound port. This is why application
+code should not copy a `/s/.../p/...` value from an earlier session or hard-code
+port `8000`.
+
 Session and CSRF cookies are then scoped to the browser mount. Hedron component
 URLs, safe redirects, HTMX headers, assets, OpenAPI, and browser runtime helpers
 are prefixed exactly once without application-side `local_href` calls.
@@ -143,7 +151,7 @@ and never derives an origin from the inbound `Host` header.
 | HTMX 403 | Declare fragment regions; mount stripping is fail-closed |
 | `HED-WB-0003` | `rserver-url` missing or non-absolute; pass `--mount` for local repro |
 | `HED-WB-0009` | Reload and multiple workers were combined; select one supervisor mode |
-| Double-prefixed URLs | Return ordinary local paths; Hedron prefixes typed components and safe response headers once |
+| Double-prefixed URLs | Return ordinary local paths; Hedron prefixes components and safe response headers once |
 
 ## Non-goals
 

@@ -322,6 +322,6 @@ reference app’s HTTP Basic pattern.
 **Cause:** Hyphenated HTMX attribute names (`hx-post`, …) must be passed via a `dict`
 unpacked into `Form(...)`.
 
-**Fix:** Build a typed `dict[str, str]` (see [Forms and actions](forms-and-actions.md))
+**Fix:** Build a `dict[str, str]` with the required values (see [Forms and actions](forms-and-actions.md))
 or use `html.form(...)` as in [minimal form](minimal-form.md). A `# type: ignore` on the
 unpack is rarely needed when the dict is annotated.

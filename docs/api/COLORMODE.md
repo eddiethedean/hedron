@@ -64,7 +64,7 @@ and session as first-party helpers.
 
 | Situation | Behavior |
 |---|---|
-| Unknown preference string | Treat as `system` (or reject at typed boundary) |
+| Unknown preference string | Treat as `system` (or reject at the validation boundary) |
 | Cookie write failure | Preference falls back to default / session when configured |
 | Missing toggle action route | Browser GET/POST fails normally — app-owned |
 

@@ -232,6 +232,32 @@ def test_workbench_uvicorn_root_path_is_consumed_only_with_runtime_evidence() ->
     assert ordinary.browser_mount == ""
 
 
+def test_workbench_uvicorn_root_path_accepts_rserver_url_full_url() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(),
+        environ={
+            "RS_SERVER_URL": "https://wb.example/s/session/",
+            "UVICORN_ROOT_PATH": "https://wb.example/s/session/p/8000/",
+        },
+    )
+    assert resolved.active is True
+    assert resolved.browser_mount == "/s/session/p/8000"
+    assert resolved.discovered is False
+
+
+def test_workbench_uvicorn_root_path_is_ignored_for_different_bound_port() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(),
+        environ={
+            "RS_SERVER_URL": "https://wb.example/s/session/",
+            "UVICORN_ROOT_PATH": "https://wb.example/s/session/p/8000/",
+        },
+        bound_port=8050,
+    )
+    assert resolved.browser_mount == ""
+    assert resolved.active is False
+
+
 def test_operator_public_origin_may_differ_from_discovery_origin() -> None:
     resolved = resolve_deployment(
         WorkbenchConfig(public_base_url="https://canonical.example/s/x/p/1"),

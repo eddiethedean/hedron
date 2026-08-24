@@ -195,10 +195,10 @@ Without the header, expect **403**. Safe GETs alone do not require the token.
 - HTMX target and reselect values must use Hedron's safe selector subset.
 - Route `fragment_regions` allowlists reject an unauthorized `HX-Target` with `403`.
 - `InteractionResult.headers` cannot introduce arbitrary response headers; approved names
-  are re-validated through the same URL and selector checks as typed fields.
+  are re-validated through the same URL and selector checks as declared fields.
 
 Use `InteractionResult(redirect=..., retarget=..., cache=...)` instead of constructing
-raw `HX-*` headers when a typed field exists. See the
+raw `HX-*` headers when a declared field exists. See the
 [HTMX interaction guide](htmx-interactions.md).
 
 ## Explorer modes

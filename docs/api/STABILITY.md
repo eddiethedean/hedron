@@ -131,7 +131,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   `hedron.testing` `AppScenario` + listed HTMX asserts.
 - **beta:** remaining built-ins, session state, cache decorators, testing helpers not in the
   0.23 allowlist (Dialog/Tabs/Pagination/Lazy #24 markup asserts stay beta), CLI core commands,
-  typed controls / surface chrome beyond the beginner set, media Range
+  controls / surface chrome beyond the beginner set, media Range
   helpers, Map/GeoJSON, `BrowserContext` / `BrowserStorage`, Math, IFrame, optional identity
   helpers (`hedron.oidc`, session hardening), named connection registry, capture UI, shell
   primitives (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`, `AppShell`/`MainPanel`), public
@@ -172,7 +172,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 
 ### `hedron-data` (Beta) — `beta`
 
-- `DataTable` / `DataEditor`, column catalog, saved views, `TransformPlan`, typed grid events: **beta**
+- `DataTable` / `DataEditor`, column catalog, saved views, `TransformPlan`, grid events: **beta**
 - Dask/Snowflake sources, AG Grid Community host: **beta**
 - Spreadsheet I/O / collab helpers: **beta**
 
@@ -191,7 +191,7 @@ Schema acceptance is broader than specialized host painting in `hedron-charts 0.
 
 Install `hedron[workbench]` / `hedron-workbench>=0.60.0,<0.61`. Supported:
 `HedronWorkbench`, pre-import launcher and resolved-state handoff,
-`HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic typed URL and safe
+`HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic URL and safe
 response-header adaptation, Hedron-owned request-time cookie repair,
 browser/durable URL separation, explicit-mount routing, topology diagnostics,
 and ordinary local Uvicorn/generic-root-path parity. Posit Connect trusted-header

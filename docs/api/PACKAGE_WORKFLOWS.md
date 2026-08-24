@@ -3,7 +3,7 @@ status: current
 phase: "0.46"
 ---
 
-# Package-native typed workflows
+# Package-native workflows
 
 !!! note "Published 0.46 contract"
 
@@ -45,9 +45,9 @@ Sources are shipped `DataEditorSource` adapters. After include, handles appear i
 | `FeatureConflictError` | `hedron-core` | Atomic registration failure for id/route/projection/dependency conflicts. |
 | `FeatureProvider` | `hedron-core` | Protocol that compiles package configuration into a `FeatureBundle`; not on the `hedron` facade. |
 | `Hedron.include_feature` | `hedron` | Include one validated bundle before registry/catalog seal. |
-| `DataWorkspace` | `hedron-data` | Opt-in typed list/detail/create/edit feature over an explicit authorized source and policy. |
+| `DataWorkspace` | `hedron-data` | Opt-in list/detail/create/edit feature over an explicit authorized source and policy. |
 | `DataWorkspacePolicy` | `hedron-data` | Explicit read/create/edit/delete/auth/optimism behavior; defaults deny mutation. |
-| `ChartInteraction` | `hedron-charts` | Explicit typed chart event → command/effect binding. |
+| `ChartInteraction` | `hedron-charts` | Explicit chart event → command/effect binding. |
 | `McpExposure` | `hedron-mcp` | Separate deny-by-default view/resource or command/tool exposure policy. |
 | `RemoteWorkflow` | `hedron-gradio` | Allowlisted Gradio endpoint → Hedron feature adapter. |
 
@@ -127,7 +127,7 @@ Supported initial surfaces:
 - `orders.detail_view` — explicit validated identity;
 - `orders.create_command` and generated/overridden form;
 - `orders.edit_command` and generated/overridden form;
-- typed success, validation, not-found, forbidden, and conflict outcomes; and
+- explicit success, validation, not-found, forbidden, and conflict outcomes; and
 - explicit refresh/update relationships among its registered surfaces.
 
 The source is already authorized and supplies documented query/mutation methods. A workspace does
@@ -151,14 +151,14 @@ sales_selection = ChartInteraction(
 )
 ```
 
-The event becomes an untrusted typed command input. The command and returned effect remain
+The event becomes an untrusted command input. The command and returned effect remain
 authoritative. Chart interaction configuration cannot contain callbacks or executable expressions.
 Cycles, fan-out, frequency, payload bytes, selection cardinality, refresh requests, and export size
 are bounded.
 
 Initial Supported `event` values are host-emitted first-party `hedron-chart` kinds plus equivalent
 keyboard/tabular commands: `select`, `inspect`, `focus`, and `reset`. Export is an `ActionHandle`,
-never a `ChartSpec` callback. `legend_filter`, `brush`, and `drill_intent` stay typed but
+never a `ChartSpec` callback. `legend_filter`, `brush`, and `drill_intent` stay explicitly modeled but
 Experimental until host emission and accessibility evidence. Optional chart adapters retain their
 existing Experimental classifications.
 
@@ -238,7 +238,7 @@ user input.
 - Notebook labs are loopback-only and use synthetic/examples or explicit application inputs.
 - Sim executes a documented offline subset and refuses unsupported dependencies, remote calls,
   files, live transports, or browser authority.
-- `AppScenario` and conformance fixtures exercise every typed outcome, authorization denial,
+- `AppScenario` and conformance fixtures exercise every modeled outcome, authorization denial,
   native/HTMX/no-JavaScript path, effects, and adapter limitation.
 
 ## Errors

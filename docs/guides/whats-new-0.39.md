@@ -7,14 +7,14 @@
 **Published** as `v0.39.0` on 2026-08-14. Historical pin: `hedron>=0.39.0,<0.40`. Charts remain on the
 Published 0.2 line: `hedron-charts>=0.2.0,<0.3`.
 
-Phase **0.39** converges rich data surfaces onto the public Web Component ABI and proves typed
+Phase **0.39** converges rich data surfaces onto the public Web Component ABI and proves explicit
 optimistic edits ([RFC-0060](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) / D-067).
 
 ## Highlights
 
 - ABI-conforming **`<hedron-data-editor>`** with SSR fallback retained after upgrade
   (`data-hedron-fallback` / `aria-hidden`)
-- Typed **`OptimisticMutation`** state machine (`proposed` → `submitted` → `confirmed`) with
+- **`OptimisticMutation`** state machine (`proposed` → `submitted` → `confirmed`) with
   idempotency keys, conflict rebase, and deny-by-default risk classes outside bounded collection
   edits
 - **`compose_chartlink_039`** binds Published 0.38 `hedron-chart` events to DataTable/DataEditor

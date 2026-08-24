@@ -12,7 +12,7 @@ Application DX contracts (RFC-0080 / D-091 / D-092), Stage 1 Verified:
 
 - `ApplicationAssetSpec` / `ApplicationAssetPlan` /
   `compile_application_asset_plan` for dependency-ordered CSS/JS/module emission
-  in the typed CSP-aware pipeline.
+  in the CSP-aware pipeline.
 - Extends shipped `inject_page_assets` / `AssetRef` seams; does not authorize
   arbitrary response rewriting.
 
@@ -25,7 +25,7 @@ Application DX contracts (RFC-0080 / D-091 / D-092), Stage 1 Verified:
 ### Structured routes (`ROUTE-053`)
 
 - `export_routes_document` / `export_effect_graph` (and `hedron routes --document`)
-  for versioned typed route and effect graphs.
+  for versioned route and effect graphs.
 - Metadata-only export — never executes handlers.
 
 ### Operation workflows (`WORKFLOW-053`)

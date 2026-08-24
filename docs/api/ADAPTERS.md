@@ -51,7 +51,7 @@ mappings cannot bypass redirect, selector, cache, or security policy.
 | Surface | Role |
 |---|---|
 | `Hedron` / `HedronRouter` | Application + route registration |
-| `interaction_headers` / `InteractionResult` | Typed HTMX responses |
+| `interaction_headers` / `InteractionResult` | HTMX responses with validated metadata |
 | CSRF cookie + `X-CSRF-Token` | Double-submit on unsafe methods |
 
 Full constructor contract: [Hedron](HEDRON.md).

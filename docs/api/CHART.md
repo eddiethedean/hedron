@@ -13,7 +13,7 @@ status: beta
 
 !!! info "Phase 0.38 first-party charts"
 
-    [RFC-0069](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066: typed `ChartSpec` / `ChartPlan`,
+    [RFC-0069](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066: `ChartSpec` / `ChartPlan`,
     ABI-conforming `hedron-chart`, SVG/Canvas rendering, accessible fallbacks, and deterministic
     export. Beginner `LineChart` / `AreaChart` / `BarChart` / `ScatterChart` compile to the new
     grammar. `MatplotlibChart` remains Supported; Plotly/Altair stay Experimental.
@@ -31,7 +31,7 @@ versioned charts package, not the Hedron flagship version.
 | Surface | Purpose | Stability |
 |---|---|---|
 | `Chart`, `ChartSpec`, `ChartPlan` | Advanced schema-versioned authoring and deterministic compilation result | Beta |
-| `ChartInteraction` | Opt-in typed chart event → `ActionHandle` / effects (`select`/`inspect`/`focus`/`reset`) | Beta |
+| `ChartInteraction` | Opt-in chart event → `ActionHandle` / effects (`select`/`inspect`/`focus`/`reset`) | Beta |
 | `LineChart`, `AreaChart`, `BarChart`, `ScatterChart` | Beginner row-mapping components compiled to `ChartSpec` | Beta |
 | `MatplotlibChart`, `MatplotlibAdapter` | Static Matplotlib SVG/PNG path | Beta / Supported capability |
 | `PlotlyChart`, `PlotlyAdapter`, `AltairChart`, `AltairAdapter` | Familiar-library adapters; full browser runtimes remain opt-in | Experimental capability |
@@ -79,7 +79,7 @@ page_chart = Chart(spec)
 | `marks` | one or more mark definitions | Accepts `line`, `area`, `bar`, `point`, `rect`, `rule`, `box`, `arc`, `ohlc`, or `candlestick`; paint coverage is narrower (below) |
 | `scales`, `guides`, `transforms` | tuples, empty by default | The compiler resolves domains/guides and applies the implemented transform subset; unknown values fail closed |
 | `composition`, `annotations` | mappings / tuples | Only a list in `composition.facet` is currently bounded; annotations validate at the schema boundary but are not copied into `ChartPlan` in `0.2.0` |
-| `interaction` | typed interaction flags | Flags are recorded in the plan; the current host directly implements a subset (below) |
+| `interaction` | interaction flags | Flags are recorded in the plan; the current host directly implements a subset (below) |
 | `theme` | light, dark, forced-colors, or print | Density, locale, timezone, and tokens are carried in the plan; host styling uses public `--hedron-chart-*` CSS variables |
 | `export` | SVG/PNG/CSV/JSON/print enabled by default | Each server export still requires an authorized caller |
 | `renderer` | `svg` (or `canvas`) | The compiler can choose Canvas for dense marks and records the reason |
@@ -123,7 +123,7 @@ browser host. Use this matrix when deciding whether the first-party host is suff
 | Annotations | Schema validation only | Not represented in the current plan or painted |
 | SVG | Default below 2,500 marks | Family-specific behavior for line/area/bar/point |
 | Canvas | Selected at 2,500 marks or by request | Dense-series painter plus an HTML navigation list; verify non-series output |
-| Interaction | All typed flags are preserved | Directly emits `inspect`, `focus`, `select`, and `reset`; other event names are registered for forward compatibility |
+| Interaction | All declared flags are preserved | Directly emits `inspect`, `focus`, `select`, and `reset`; other event names are registered for forward compatibility |
 
 Use `MatplotlibChart` for a reviewed static figure when an advanced family needs painting that the
 first-party host does not yet implement. Plotly and Altair are available as Experimental explicit

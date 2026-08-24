@@ -5,7 +5,7 @@ status: mixed
 # HTMX extension integration
 
 Phase 0.48 (D-080 / D-083 / RFC-0075) makes HTMX extensions a declared Hedron
-capability. Pages and typed components name what they need; rendering injects
+capability. Pages and components name what they need; rendering injects
 only pinned local assets, emits `hx-ext`, and exposes the same facts to CSP,
 manifests, adapters, and tests. SSE and preload **helpers** remain experimental
 under `polling_only`; declared extension **assets** are Supported when pinned.

@@ -1,6 +1,6 @@
 [project]
 name = "fastapi-workbench"
-version = "1.0.0"
+version = "1.0.1"
 description = "Generic Posit Workbench / RStudio Server deployment adapter for FastAPI ASGI apps"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"

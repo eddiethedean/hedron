@@ -1,6 +1,6 @@
 # Migrate from plain FastAPI / Jinja + HTMX
 
-Path for teams that already ship FastAPI (or Jinja templates) with HTMX and want typed
+Path for teams that already ship FastAPI (or Jinja templates) with HTMX and want reusable
 Hedron components. For Streamlit, see [Migrate from Streamlit](streamlit-migration.md).
 
 ## What you keep
@@ -11,7 +11,7 @@ Hedron components. For Streamlit, see [Migrate from Streamlit](streamlit-migrati
 
 ## What Hedron adds
 
-- Typed `Page` / component trees instead of ad-hoc template strings for UI structure
+- `Page` / component trees instead of ad-hoc template strings for UI structure
 - Fragment vs page rendering from explicit HTMX headers
 - CSRF profiles, SafeUrl / TrustedHtml boundaries, and validated `InteractionResult` headers
 - Optional CLI (`check`, `routes`, `build`) and Explorer for inspectability

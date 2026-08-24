@@ -1,5 +1,5 @@
 ---
-description: What's new in Hedron 0.59 modern CSS and typed presentation.
+description: What's new in Hedron 0.59 modern CSS and presentation.
 search:
   boost: 1.4
 ---
@@ -8,7 +8,7 @@ search:
 
 Hedron 0.59 is the modern CSS platform release. It keeps the 0.58 public markers and responsive
 defaults while adding explicit, opt-in capabilities for component-width layouts, theme variants,
-typed control attributes, logical overlay placement, print, and preference-aware presentation.
+control attributes, logical overlay placement, print, and preference-aware presentation.
 
 ## Highlights
 
@@ -21,7 +21,7 @@ typed control attributes, logical overlay placement, print, and preference-aware
 - Theme variants through `StyleScope(variant=...)`, with additive output and validation.
 - Modern absolute-color parsing with canonical sRGB fallback, typography/content roles, and
   Progressive `light-dark()` / selected `@property` enhancements.
-- Typed `Button` / `LinkButton` size and width contracts plus safe ARIA/data/HTMX attributes.
+- `Button` / `LinkButton` size and width contracts plus safe ARIA/data/HTMX attributes.
 - Bounded popover placement/collision markers and CSS anchor-positioning enhancement hooks.
 - Native top-layer semantics, Progressive entry/exit and View Transitions, and Experimental
   decorative scroll-driven animation kept outside semantic state.

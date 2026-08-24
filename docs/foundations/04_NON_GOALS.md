@@ -13,7 +13,7 @@ Hedron is not:
 - a Streamlit-style whole-script rerun engine;
 - a visual application builder in the initial product;
 - a guarantee that arbitrary React applications can be transpiled to a Hedron declarative format;
-- ownership of a custom template language without demonstrated advantage over typed Python or an
+- ownership of a custom template language without demonstrated advantage over ordinary Python or an
   established optional engine;
 - a cross-language *application* runtime that replaces Python as the Supported flagship (experimental
   Java/Node conformance runtimes may participate under D-048 without fragmenting contracts);

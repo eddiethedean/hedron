@@ -11,7 +11,7 @@ zero-application-CSS evidence under
 - Layout gaps no longer require inline `--hedron-gap` styles under strict CSP.
 - `Grid` / `GridItem` responsive tracks and spans; Text overflow/line-clamp without
   implicit `title` disclosure.
-- `Surface`, typed AppShell chrome (`Brand`, `AccountSummary`, `EnvironmentBanner`,
+- `Surface`, AppShell chrome (`Brand`, `AccountSummary`, `EnvironmentBanner`,
   `NavStatus`, `AppFooter`), `ResourceList` / `ResourceRow`, core `Avatar` / `Identity`.
 - FileUpload composition, Status compact/activity variants, richer ProcessFlow steps.
 - Authenticated Data Mover chrome fixture with zero application CSS.

@@ -56,7 +56,7 @@ Read-only accessible table with paging metadata and optional CSV download.
 | Parameter | Type | Default | Description |
 |---|---|---|---|
 | `rows` | sequence / mappings | `None` | In-memory rows when `page` is omitted |
-| `row_model` | `type[Model] \| None` | `None` | Optional typed row model for column inference |
+| `row_model` | `type[Model] \| None` | `None` | Optional row model for column inference |
 | `columns` | sequence of `Column` | `None` | Explicit columns |
 | `page` | `DataPage \| None` | `None` | Pre-paged data from a source |
 | `query` | `DataQuery \| None` | `None` | Sort/filter/page query metadata |
@@ -79,7 +79,7 @@ never part of the serializable props contract. Prefer an explicit
 |---|---|---|---|
 | `rows` | sequence / mappings | `None` | Initial rows when `page` / `source` omitted |
 | `key` | `str` | `"editor"` | Stable browser editor identity |
-| `row_model` | `type[Model] \| None` | `None` | Typed row model |
+| `row_model` | `type[Model] \| None` | `None` | Row model |
 | `columns` | sequence of `Column` | `None` | Explicit columns |
 | `key_field` | `str` | `"id"` | Stable row identity field |
 | `on_save` | callable \| `None` | `None` | Server-only save handler `(DataChanges) -> DataSaveResult` |
@@ -105,7 +105,7 @@ instead of iterating or discarding them silently. Sort directions remain limited
 
 ## `OptimisticMutation` (0.39)
 
-Typed optimistic edit contract for **bounded DataEditor / collection cell edits**.
+Optimistic edit contract for **bounded DataEditor / collection cell edits**.
 Import from `hedron_data`:
 
 ```python
