@@ -77,6 +77,77 @@ express the intent.
     component and has no useful semantic vocabulary, colocate scoped CSS with that
     component.
 
+## Hedron styling and CSS: the crosswalk
+
+The table below maps Hedron's public styling features to the CSS concepts they compile to
+or intentionally stand in for. It describes the Hedron 0.60 contract, not the support level
+of a particular browser. **Not implemented** means that Hedron does not currently own a
+public API or styling contract for the CSS feature; it is not a promise that an arbitrary
+application stylesheet can safely use it.
+
+| Area | Hedron feature | Equivalent CSS feature(s) | Hedron status | Boundary or fallback |
+|---|---|---|---|---|
+| Foundation | `default_styles=True` | Bundled reset, base rules, component selectors, custom properties | **Supported** | Disable with `default_styles=False`; application and component CSS remain separate. |
+| Foundation | Shared presentation props: `size`, `density`, `appearance`, `emphasis`, `width`, `shape` | `data-hedron-*` selectors; `color`, `background`, `border`, `border-radius`, `box-shadow`, sizing | **Supported** | Closed vocabularies keep themes and components interoperable. |
+| Foundation | Controls: `Button`, `LinkButton`, `IconButton` | `inline-flex`, padding, `line-height`, `:hover`, `:focus-visible`, `:disabled` | **Supported** | Native control semantics and focus behavior remain authoritative. |
+| Foundation | Form controls and validation states | `appearance`, field sizing, `:focus-visible`, `:invalid`, error/help selectors | **Supported** | Labels, errors, and native keyboard behavior are not styling concerns. |
+| Foundation | `Surface` and `Card` | `background`, `border`, `border-radius`, `box-shadow`, padding | **Supported** | `appearance`, `padding`, `density`, and `elevation` are finite props. |
+| Foundation | `Alert`, `Badge`, `Status`, `StateView` | Semantic color/border/background plus non-color state indicators | **Supported** | Tone never relies on color alone; loading/error/empty branches stay complete. |
+| Foundation | Typography roles on `Text`, `Heading`, and `Typography` | `font-family`, `font-size`, `font-weight`, `line-height`, `letter-spacing` | **Supported** | Use roles instead of arbitrary per-element font sizes. |
+| Foundation | Modern typography and local font assets | `text-wrap: balance`, `text-wrap: pretty`, `hyphens`, `overflow-wrap`, `font-size-adjust`, variable fonts | **Supported** | System fallback stacks and ordinary wrapping remain the compatibility path. |
+| Foundation | `overflow` and `lines=` | `overflow`, `overflow-wrap`, `word-break`, `text-overflow`, line clamping | **Supported** | `wrap`, `break`, `truncate`, and `clip` are explicit; clamping never invents content. |
+| Layout | `Stack` and `Inline` | Flexbox: `display: flex`, `flex-direction`, `align-items`, `gap` | **Supported** | Named gap tokens are CSP-safe. |
+| Layout | `Grid`, `FormGrid`, and `GridItem` | CSS Grid: `grid-template-columns`, `grid-column`, `gap` | **Supported** | Breakpoint maps are mobile-first and preserve DOM/read order. |
+| Layout | `Container` with `query="inline-size"` | `container-type: inline-size`, `container-name`, `@container` | **Supported** | Viewport/static layout remains the fallback. |
+| Layout | Responsive maps: `base`, `sm`, `md`, `lg`, `xl` | `@media (min-width: ...)` | **Supported** | Breakpoints are finite; arbitrary media-query strings are not a Python API. |
+| Layout | `gap`, `padding`, `track`, `width`, and content-width tokens | `gap`, `padding`, `max-inline-size`, `inline-size`, `minmax()` | **Supported** | Unsupported lengths fail diagnostically instead of silently remapping. |
+| Layout | `SplitView`, `MasterDetail`, `PageHeader`, `ActionGroup` | Grid/flex tracks, `minmax()`, `clamp()`, `align-*`, `justify-*` | **Supported** | Components own responsive collapse and preserve source order. |
+| Layout | Responsive `Table` policies | `overflow`, responsive table wrappers, `@media` layout adjustments | **Supported** | `scroll`, `stack`, and `priority` are bounded policies; table semantics remain intact. |
+| Layout | `ScrollRegion` | `overflow: auto`, logical overflow, scrollbar affordance | **Supported** | Bounded scrolling must not replace list, table, log, or timeline semantics. |
+| Layout | Intrinsic and fluid sizing | `min()`, `max()`, `clamp()`, `minmax()`, `fit-content()`, `aspect-ratio` | **Supported** | Ordinary lengths and static layout provide the compatibility path. |
+| Layout | Dynamic viewport and safe-area behavior | `svh`, `lvh`, `dvh`, `env(safe-area-inset-*)` | **Supported** | Static viewport and zero-inset fallbacks remain usable. |
+| Layout | Logical and bidirectional layout | Logical properties/values, `direction`, `writing-mode`, `margin-inline`, `inset-block` | **Supported** | Physical properties are limited to documented exceptions. |
+| Layout | Grid alignment enhancement | `subgrid` for `grid-template-columns` / `grid-template-rows` | **Progressive** | Ordinary independent `Grid`/`FormGrid` tracks are the fallback. |
+| Theme | `Theme` and `DesignSystem` tokens | CSS custom properties such as `--color-*`, `--space-*`, `--font-*` | **Supported** | Tokens are the dynamic theming path; values are validated and emitted deterministically. |
+| Theme | `ThemeBuilder`, immutable `ThemeSpec`, `ThemePatch` | Canonical custom-property declarations and finite token overrides | **Supported** | Theme packages are data-only; no executable hooks or runtime CSS injection. |
+| Theme | Light/dark modes and `ColorMode` | `[data-theme]`, explicit mode selectors, `@media (prefers-color-scheme: dark)` | **Supported** | Explicit markers and duplicated token rules are the baseline. |
+| Theme | Finite theme variants | `[data-hedron-variant="..."]` and additive custom-property overrides | **Supported** | Variant names are validated; arbitrary selectors are not generated from user input. |
+| Theme | `StyleScope` | Inherited custom properties and scoped `data-hedron-*` markers | **Supported** | Scope changes presentation only; it does not change behavior or DOM order. |
+| Theme | `StyleRecipe` | Reusable selector/property combinations resolved before rendering | **Supported** | Recipes are family-scoped and explicit component props win. |
+| Theme | Server-first `ThemePreference` and `ThemePicker` | Theme/color-mode markers, custom-property selection, `color-scheme` hints | **Supported** | The server owns allowlisting, persistence, and authorization; the optional boot helper only reduces flash. |
+| Theme | Brand geometry, density, elevation, motion, and navigation presets | `border-radius`, spacing variables, `box-shadow`, `transition-duration`, width variables | **Supported** | Presets compile to bounded tokens, not arbitrary CSS declarations. |
+| Theme | Modern absolute colors and generated palettes | `color-mix()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()` | **Supported** | A canonical sRGB fallback precedes enhanced wide-gamut output. |
+| Theme | Accessibility theme modes | `@media (forced-colors: active)`, `prefers-contrast`, `prefers-reduced-transparency` | **Supported** | Semantic focus, contrast, print, and non-color fallbacks remain required. |
+| Compiler | Component `styles.css` and typed `StyleSymbols` | Local class/keyframe names, `:global(...)`, deterministic source maps | **Supported** | Local symbols are rewritten; remote resources and unsafe globals are rejected. |
+| Compiler | CSS grammar-aware compilation | Selectors, declarations, descriptors, strings, comments, URLs, custom identifiers | **Supported** | Malformed or ambiguous syntax fails during the build, not at runtime. |
+| Compiler | Nested component CSS | CSS Nesting Level 1, `&`, nested conditional rules | **Supported** | Hedron emits browser-valid scoped CSS. |
+| Compiler | Conditional and future at-rules | `@media`, `@supports`, `@container`, `@scope`, `@starting-style` | **Supported** | Safe syntax is preserved; unsafe or ambiguous rewrites are rejected. |
+| Compiler | Local styles and assets | `@import`, `url()`, `@font-face`, `image-set()` | **Supported** | Registered local assets resolve at build time; remote imports do not. |
+| Cascade | Hedron layer order | `@layer reset, tokens, base, components, utilities, overrides` | **Supported** | One deterministic cascade authority prevents competing theme registries. |
+| Cascade | Specificity containment and relational selectors | `:where()`, `:is()`, `:not()`, `:has()`, specificity normalization | **Supported** | Public semantic markers are preferred over private selector theming. |
+| Cascade | Native scope enhancement | `@scope`, `:scope` | **Progressive** | Hedron's marker/token boundary is the compatibility fallback. |
+| Overlay | `Dialog`, `Popover`, `ContextMenu`, `Tooltip`, `ToastHost` | `<dialog>`, Popover API, `:popover-open`, `::backdrop`, top layer, z-index tokens | **Supported** | Native/details/static flow remains usable when enhanced APIs are unavailable. |
+| Overlay | Logical overlay placement and collision | `inset-*`, `position-area`, `position-try-fallbacks` | **Progressive** | Hedron's finite placement vocabulary falls back to logical flow or bounded positioning. |
+| Product surfaces | `AppShell`, `Brand`, `AppFooter`, `ConnectorFlow`, and workflow chrome | Grid/flex shell layout, logical positioning, overflow, status and connector selectors | **Supported** | Components render typed presentation state; they do not own auth, execution, polling, or authorization. |
+| Motion | Built-in motion presets and reduced motion | `transition`, `animation`, `@media (prefers-reduced-motion: reduce)` | **Supported** | `motion="none"` and preference media produce a stable, immediate presentation. |
+| Motion | Entry/exit transitions | `@starting-style`, `transition-behavior: allow-discrete` | **Progressive** | Open/closed state changes remain correct without the enhancement. |
+| Motion | View-transition enhancement | `view-transition-name`, `view-transition-class`, View Transitions API | **Progressive** | Ordinary navigation or HTMX swaps preserve focus, history, and server state. |
+| Motion | Scroll-driven animation | `animation-timeline`, `scroll()`, `view()`, `timeline-scope` | **Experimental** | Decorative only; static complete presentation is the fallback. |
+| Media | Interaction preferences | `prefers-reduced-motion`, `forced-colors`, `prefers-contrast`, `hover`, `pointer` | **Supported** | The non-enhanced path remains keyboard-usable and non-color-dependent. |
+| Media | Print presentation | `@media print`, `break-*`, `print-color-adjust` | **Supported** | Source order, links, forms, data, statuses, and page breaks remain readable. |
+| Performance | Containment and deferred rendering | `contain`, `content-visibility`, `contain-intrinsic-size` | **Progressive** | Fully rendered content is the fallback; use only in benchmarked surfaces. |
+| Unimplemented CSS | Style queries | `@container style(...)` | **Progressive** | No public Hedron style-query API; internal adaptation is bounded, with semantic markers and inherited tokens as the fallback. |
+| Unimplemented CSS | CSS masonry | `masonry` track sizing / masonry layout | **Not implemented** | Use ordinary Grid; masonry is outside the 0.60 contract. |
+| Unimplemented CSS | Houdini worklets | `paint()`, `layout()`, Paint/Layout Worklets | **Not implemented** | Hedron does not add a browser-execution boundary for styling. |
+| Unimplemented CSS | Free-form styling from Python | Arbitrary inline `style`, property-value DSLs, utility-string classes | **Not implemented** | Use semantic props, tokens, recipes, or component `styles.css`. |
+| Unimplemented CSS | Runtime style injection | Client-side `<style>` injection or runtime CSS compilation | **Not implemented** | Production CSS is built, fingerprinted, and served as an asset. |
+| Unimplemented CSS | Remote style dependencies | Remote `@import`, automatic remote fonts, implicit remote assets | **Not implemented** | Register and fingerprint local assets explicitly. |
+| Unimplemented CSS | Private selector theming | Arbitrary descendant/private selectors as a theme API | **Not implemented** | Use public parts, slots, tokens, markers, and documented component contracts. |
+
+For the machine-readable capability inventory, including gates and exact fallback language, see
+[`modern-css-inventory-059.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/modern-css-inventory-059.toml)
+and the [Modern CSS in 0.60](modern-css-0.60.md) guide.
+
 ## 1. Start with the shared vocabulary
 
 The presentation vocabulary is intentionally finite. That gives themes one predictable
