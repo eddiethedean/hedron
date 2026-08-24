@@ -55,7 +55,9 @@ def test_roadmap_053_status_matches_cut() -> None:
     assert "Stage 1 runtime gates Planned" not in section
     ref = Path("docs/examples/reference-app.md").read_text(encoding="utf-8")
     assert (
-        "living tip is `0.62.0`" in ref
+        "verified repository tip is `0.63.0`" in ref
+        or "living 0.63 train" in ref
+        or "living tip is `0.62.0`" in ref
         or "checkout tip is `0.62.0`" in ref
         or "verified repository tip is `0.62.0`" in ref
         or "living tip is `0.61.0`" in ref

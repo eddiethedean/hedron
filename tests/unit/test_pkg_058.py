@@ -54,6 +54,7 @@ def test_pin_docs_and_public_exports() -> None:
     pin_ceiling = str(data.get("release", {}).get("pin_ceiling", ""))
     assert (
         pin_ceiling.startswith("0.63")
+        or pin_ceiling.startswith("0.64")
         or pin_ceiling.startswith("0.62")
         or pin_ceiling.startswith("0.60")
         or "0.58" in pin_ceiling

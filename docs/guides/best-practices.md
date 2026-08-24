@@ -71,7 +71,7 @@ See also [Security](security.md), [HTMX interactions](htmx-interactions.md),
 
 1. Prefer `@app.screen` and documented facades over hand-wired `@app.page` unless you need
    full `Page` control.
-2. Pin `hedron>=0.62.0,<0.63` (and matching host packages) in every environment.
+2. Pin `hedron>=0.63.0,<0.64` (and matching host packages) in every environment.
 3. Keep Explorer off and `session_secret` from the environment in production.
 4. Declare HTMX regions; undeclared targets fail closed — treat 403s as configuration bugs.
 5. Prefer polling for job UIs until you have proxy/load evidence for SSE/WebSocket.

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.63.0] — 2026-08-24
+
+### Added
+- Theme resolution/export/inspection, deterministic conformance checks, component state matrices,
+  style bundles, visualization themes, and bounded React-island interoperability.
+
 ## [0.62.0] — 2026-08-24
 
 ### Added

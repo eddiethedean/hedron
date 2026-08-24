@@ -9,7 +9,7 @@ status: shipped
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
     Package maturity (Beta/Alpha) is separate from API level.
 
-**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.62.x**)
+**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.63.x**)
 
 `Component` is the base class for reusable server-rendered UI.
 

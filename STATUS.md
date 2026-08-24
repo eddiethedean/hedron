@@ -6,13 +6,13 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.62 **Published** as `v0.62.0` on PyPI. The 17-gate evidence
+**Roadmap position:** phase 0.63 is **Published** as `v0.63.0` on PyPI. The 27-gate evidence
 packet is active, with implemented scope and release evidence recorded in
-`docs/acceptance/evidence-062/`.
+`docs/acceptance/evidence-063/`.
 **Date:** 2026-08-24
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.62.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.63.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.1`, `hedron-charts`
 `0.2.1`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
@@ -26,11 +26,10 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
 
-**Phase focus:** Published train is **0.62** (RFC-0090). Phase **0.62** (verified
-RFC-0090) is implemented and verified in-tree as `v0.62.0`, with the 17-gate packet and
-executable browser/unit coverage for navigation, optimism, failure isolation, and identity; PyPI
-publication is complete, dashboard fan-out remains explicitly omitted, and human assistive-technology
-sign-off remains bounded by open #86. Prior
+**Phase focus:** Published train is **0.63** (RFC-0090). Phase **0.63** (verified
+RFC-0090) is implemented and published in-tree as `v0.63.0`, with the 27-gate packet and
+executable browser/unit coverage for theme contracts, tooling, and interoperability; human
+assistive-technology sign-off remains bounded by open #86. Prior
 Published in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
@@ -157,7 +156,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - What’s new: [guides/whats-new-0.58.md](docs/guides/whats-new-0.58.md).
 - Checker: `python scripts/check_release_gate.py 0.58.1`,
   `python scripts/verify_pkg_58.py`.
-- Historical registry note: the 0.58 packet predates the current 0.62.0 public release.
+- Historical registry note: the 0.58 packet predates the current 0.63.0 public release.
 
 ## Phase 0.24 evidence
 

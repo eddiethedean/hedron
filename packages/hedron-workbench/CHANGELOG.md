@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.63.0] — 2026-08-24
+
+### Changed
+- Coordinated Phase 0.63 release metadata and theme bundle integration.
+
 ## [0.62.0] — 2026-08-24
 
 ### Changed

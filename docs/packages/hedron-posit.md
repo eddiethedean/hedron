@@ -2,7 +2,7 @@
 
 Unified Posit Workbench / Connect deployment adapter for Hedron.
 
-**Package maturity:** Beta (`0.62.x`, `v0.62.0` in-tree and on PyPI) · extra `hedron[posit]` · pin `>=0.62.0,<0.63`
+**Package maturity:** Beta (`0.63.x`, `v0.63.0` in-tree and on PyPI) · extra `hedron[posit]` · pin `>=0.63.0,<0.64`
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust. Connect credential
@@ -38,6 +38,6 @@ hedron-workbench -> hedron-posit -> hedron + fastapi-workbench
 ```
 
 `hedron-workbench` remains a Supported compatibility package on the current
-0.62 train (`HedronWorkbench` subclass; no 0.33 deprecation warning).
+0.63 train (`HedronWorkbench` subclass; no 0.33 deprecation warning).
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.

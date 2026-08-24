@@ -1,14 +1,14 @@
 # What’s new in 0.16
 
 
-!!! note "Current train is 0.62"
+!!! note "Current train is 0.63"
 
-    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.62.0,<0.63`). The pin below is historical for this train only.
+    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.63.0,<0.64`). The pin below is historical for this train only.
     See [What’s new in 0.51](whats-new-0.51.md).
 
 !!! note "Historical phase"
 
-    This page describes **0.16**. The current repository train is **0.62.x** (`v0.62.0` in-tree and on PyPI). Pin `hedron>=0.62.0,<0.63` from PyPI.
+    This page describes **0.16**. The current repository train is **0.63.x** (`v0.63.0` in-tree and on PyPI). Pin `hedron>=0.63.0,<0.64` from PyPI.
 
 Phase **0.16** adds an optional `hedron-extras` toolkit for specialized data-app interactions and
 analysis workbenches — without expanding the core runtime or adopting Streamlit-style reruns or a

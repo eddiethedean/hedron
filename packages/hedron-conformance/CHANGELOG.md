@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.63.0] — 2026-08-24
+
+### Added
+- Phase 0.63 cross-tool theme, component, trace, and interoperability conformance fixtures.
+
 ## [0.62.0] — 2026-08-24
 
 ### Changed

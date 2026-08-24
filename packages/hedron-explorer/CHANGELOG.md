@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.63.0] — 2026-08-24
+
+### Added
+- Read-only interaction profiling and bounded, redacted timeline evidence.
+
 ## [0.62.0] — 2026-08-24
 
 ### Changed

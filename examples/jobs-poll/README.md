@@ -11,7 +11,7 @@ production, use Redis / Celery / RQ — see
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.62.0,<0.63" "uvicorn[standard]"
+pip install "hedron>=0.63.0,<0.64" "uvicorn[standard]"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/jobs-poll/app.py -o app.py
 uvicorn app:app --reload
 ```

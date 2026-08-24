@@ -856,8 +856,8 @@
   ],
   "digest": "77a63fa283044bd862d8f5151d18ce2e13f93bb084302c1a1d9e9e78058c5035",
   "distributions": {
-    "hedron": "0.62.0",
-    "hedron-core": "0.62.0"
+    "hedron": "0.63.0",
+    "hedron-core": "0.63.0"
   },
   "metadata_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
   "runtime": "python-no-node",

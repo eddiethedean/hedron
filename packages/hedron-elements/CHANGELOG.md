@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.63.0] — 2026-08-24
+
+### Added
+- Registry-derived component parts, slots, state hooks, metadata, and state-matrix evidence.
+
 ## [0.62.0] — 2026-08-24
 
 ### Added

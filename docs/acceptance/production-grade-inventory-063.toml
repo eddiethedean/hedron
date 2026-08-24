@@ -1,0 +1,84 @@
+# Phase 0.63 whole-fleet inventory (verified published-release evidence).
+# Machine-checked by check_package_docs_inventory / living train 0.63.
+# disposition: production_grade | incubator | fixture | eol
+
+baseline = "v0.62.0"
+state = "verified"
+hedron_cut = "v0.63.0"
+charts_cut = "0.2.1"
+extends = "docs/acceptance/production-grade-inventory-062.toml"
+tracking = "phase-0.63"
+registry_status = "uploaded"
+
+packages = [
+  "hedron",
+  "hedron-core",
+  "hedron-explorer",
+  "hedron-data",
+  "hedron-flask",
+  "hedron-django",
+  "hedron-jinja",
+  "hedron-extras",
+  "hedron-conformance",
+  "hedron-charts",
+  "hedron-maps",
+  "hedron-native",
+  "hedron-sample-kit",
+  "hedron-sim",
+  "hedron-notebook",
+  "hedron-mcp",
+  "hedron-gradio",
+  "hedron-workbench",
+  "hedron-posit",
+  "hedron-elements",
+  "fastapi-workbench",
+  "hedron-runtime-node",
+  "hedron-runtime-java",
+]
+
+[hedron]
+maturity = "beta"
+[hedron-core]
+maturity = "beta"
+[hedron-explorer]
+maturity = "beta"
+[hedron-data]
+maturity = "beta"
+[hedron-flask]
+maturity = "beta"
+[hedron-django]
+maturity = "beta"
+[hedron-jinja]
+maturity = "beta"
+[hedron-extras]
+maturity = "beta"
+[hedron-conformance]
+maturity = "beta"
+[hedron-charts]
+maturity = "beta"
+[hedron-maps]
+maturity = "beta"
+[hedron-native]
+maturity = "beta"
+[hedron-sample-kit]
+maturity = "beta"
+[hedron-sim]
+maturity = "beta"
+[hedron-notebook]
+maturity = "beta"
+[hedron-mcp]
+maturity = "beta"
+[hedron-gradio]
+maturity = "beta"
+[hedron-workbench]
+maturity = "beta"
+[hedron-posit]
+maturity = "beta"
+[hedron-elements]
+maturity = "beta"
+[fastapi-workbench]
+maturity = "stable"
+[hedron-runtime-node]
+maturity = "beta"
+[hedron-runtime-java]
+maturity = "beta"

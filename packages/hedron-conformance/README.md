@@ -14,7 +14,7 @@ reference — without matching incidental CPython formatting.
 
 Also available as the flagship extra `hedron[conformance]`.
 
-**Package maturity:** Beta · **Train:** `0.62.x` (published `v0.62.0` in-tree and on PyPI) · application pin `>=0.62.0,<0.63`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Train:** `0.63.x` (published `v0.63.0` in-tree and on PyPI) · application pin `>=0.63.0,<0.64`; repository checkouts use `uv sync`
 
 Phase 0.52 authority contract:
 [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
@@ -26,14 +26,14 @@ Phase 0.53 Application DX Stage 1 lives in the flagship package — see
 ## Install
 
 ```bash
-pip install "hedron-conformance>=0.62.0,<0.63"
+pip install "hedron-conformance>=0.63.0,<0.64"
 # or
-uv add "hedron-conformance>=0.62.0,<0.63"
+uv add "hedron-conformance>=0.63.0,<0.64"
 # via flagship:
-pip install "hedron[conformance]>=0.62.0,<0.63"
+pip install "hedron[conformance]>=0.63.0,<0.64"
 ```
 
-Checkout tip `v0.62.0` uses `uv sync`; applications install `>=0.62.0,<0.63` from PyPI.
+Checkout tip `v0.63.0` uses `uv sync`; applications install `>=0.63.0,<0.64` from PyPI.
 
 Requires Python 3.11–3.14.
 

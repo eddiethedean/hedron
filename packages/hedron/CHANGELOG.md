@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.63.0] — 2026-08-24
+
+### Added
+- Theme contract completion, deterministic theme export/inspection/conformance checks, portable
+  component state matrices, interaction profiling, static safety checks, and bounded component
+  interoperability from Phase 0.63.
+
+### Changed
+- Coordinated train cut for Phase 0.63; Progressive bundle, visualization, and React-island
+  extensions remain explicitly bounded and opt-in.
+
 ## [0.62.0] — 2026-08-24
 
 ### Added

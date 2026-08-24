@@ -1,8 +1,8 @@
 # What's new in 0.52
 
-!!! note "Current train is 0.62"
+!!! note "Current train is 0.63"
 
-    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.62.0,<0.63`). See [What’s new in 0.53](whats-new-0.53.md).
+    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.63.0,<0.64`). See [What’s new in 0.53](whats-new-0.53.md).
 
 Historical **0.52.0** in-tree Published cut (tag/PyPI may still be deferred relative to later trains). Tracking [#522](https://github.com/eddiethedean/hedron/issues/522).
 

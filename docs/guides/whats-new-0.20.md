@@ -1,7 +1,7 @@
 # What's new in 0.20
 
 **Published** as `v0.20.0`. Historical installs for this phase used a 0.20 upper-bound
-pin; prefer the current `hedron>=0.62.0,<0.63` (PyPI) or `>=0.62.0,<0.63` (tip) train for new apps.
+pin; prefer the current `hedron>=0.63.0,<0.64` (PyPI) or `>=0.63.0,<0.64` (tip) train for new apps.
 
 Phase 0.20 (D-051) is the production security floor and adapter-parity packet.
 
