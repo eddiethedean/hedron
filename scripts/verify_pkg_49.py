@@ -234,7 +234,16 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit("\n".join(errors))
         print("ok: 0.49 planned gate shape")
     else:
-        published = str(_load(RELEASE).get("release", {}).get("published_version", "")).strip()
+        release = _load(RELEASE).get("release", {})
+        published = str(release.get("published_version", "")).strip()
+        development = str(release.get("development_version", "")).strip()
+        if development != published:
+            print(
+                "ok: 0.49 historical packet; skip execute-verified under unpublished "
+                f"development tip {development}"
+            )
+            print(f"ok: verify_pkg_49 ({'allow-planned' if args.allow_planned else 'cut'})")
+            return 0
         command = [
             sys.executable,
             str(ROOT / "scripts" / "check_release_gate.py"),

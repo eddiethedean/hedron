@@ -31,7 +31,7 @@ def test_stage1_modules_exist_versions_unbumped() -> None:
     assert Path("packages/hedron/src/hedron/discover_api.py").is_file()
 
     tip = tomllib.loads(Path("docs/release.toml").read_text(encoding="utf-8"))["release"][
-        "published_version"
+        "development_version"
     ]
     # Living tip may advance after 0.53; Stage 1 modules must remain present.
     assert str(tip).startswith("0.")

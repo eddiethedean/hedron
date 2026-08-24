@@ -3,7 +3,10 @@
 ## [0.60.1] — 2026-08-23
 
 ### Fixed
-- Bug fixes from the 0.60.1 maintenance release.
+- Hardened path, URL, secret, serializer, upload, and MCP boundaries against traversal,
+  scheme-smuggling, state pollution, and authorization regressions.
+- Fixed `UploadFlow` route identity and authorization handling, including reliable
+  multi-file result aggregation.
 
 ### Changed
 - Coordinated train tip `0.60.1` (in-tree patch; tag/PyPI deferred).

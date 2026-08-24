@@ -65,10 +65,9 @@ def test_release_gate_0_23_manifest_passes_strict_checks() -> None:
 
 
 def test_current_patch_package_metadata_passes() -> None:
-    published = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))[
-        "release"
-    ]["published_version"]
-    assert gate.check_packages(str(published)) == []
+    release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
+    # The workspace may be preparing a patch that is not on PyPI yet.
+    assert gate.check_packages(str(release["development_version"])) == []
 
 
 def test_github_release_requires_successful_pypi_publish() -> None:

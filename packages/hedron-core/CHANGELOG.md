@@ -3,7 +3,8 @@
 ## [0.60.1] — 2026-08-23
 
 ### Fixed
-- Bug fixes from the 0.60.1 maintenance release.
+- Isolated cache values and preserved native prepare-tree lifecycle semantics.
+- Hardened serializer, URL, secret, upload, and path validation boundaries.
 
 ### Changed
 - Coordinated train tip `0.60.1` (in-tree patch; tag/PyPI deferred).

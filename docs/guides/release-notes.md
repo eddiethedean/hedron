@@ -3,6 +3,26 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.60.1 — 2026-08-23
+
+Release candidate for the 0.60 maintenance train. The coordinated packages are
+versioned `0.60.1` in the repository and have passed the release gate and package
+verification; PyPI remains at `0.60.0` until the upload is authorized and verified.
+
+### Fixed
+
+- Hardened path, URL, secret, serializer, upload, and MCP boundaries against traversal,
+  scheme-smuggling, state pollution, and authorization regressions.
+- Fixed `UploadFlow` route identity and authorization handling, including reliable
+  multi-file result aggregation.
+- Repaired data-source, transform, tree, pivot, import, spreadsheet, and collaboration
+  integrity edge cases.
+- Hardened chart transforms, limits, and redaction behavior.
+- Isolated cache values and preserved native prepare-tree lifecycle semantics.
+
+For maintainers, the release gate is `python scripts/check_release_gate.py 0.60.1`
+and the package packet check is `python scripts/verify_pkg_60.py`.
+
 ## 0.60.0 — 2026-08-22
 
 Verified and published release for the 0.60 train. The latest public install is

@@ -11,7 +11,7 @@ from hedron_conformance import run_kit
 
 def _living_tip() -> str:
     release = tomllib.loads(Path("docs/release.toml").read_text(encoding="utf-8"))["release"]
-    return str(release["published_version"])
+    return str(release["development_version"])
 
 
 def test_runtime_052_packet_bound() -> None:

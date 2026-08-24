@@ -11,7 +11,7 @@ from pathlib import Path
 
 def _living_tip() -> str:
     release = tomllib.loads(Path("docs/release.toml").read_text(encoding="utf-8"))["release"]
-    return str(release["published_version"])
+    return str(release["development_version"])
 
 
 def test_pkg_055_packet_bound() -> None:
