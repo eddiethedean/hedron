@@ -1,6 +1,6 @@
 # Release acceptance: 0.63 theme contract, interaction tooling, and interoperability
 
-**Status:** Proposed / Planned gates  
+**Status:** Implementation baseline landed / Planned gates
 **Implementation:** [INTERACTION_TOOLING_063](../implementation/INTERACTION_TOOLING_063.md)
 **Execution:** [EXECUTION_0_63](../implementation/EXECUTION_0_63.md)
 

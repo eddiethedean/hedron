@@ -1,6 +1,6 @@
 # Phase 0.63 execution plan
 
-**Status:** Proposed / Stage 0 planning
+**Status:** Implementation baseline landed / release evidence pending
 **Authority:** [RFC-0090](../rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md)
 **Implementation detail:** [INTERACTION_TOOLING_063](INTERACTION_TOOLING_063.md)
 **Acceptance:** [RELEASE_0_63](../acceptance/RELEASE_0_63.md)
@@ -10,6 +10,19 @@ This is the implementation sequence for the complete Phase 0.63 scope. A milesto
 only when its code, tests, fallback behavior, documentation, and named gate evidence land together.
 The Required theme contract is the critical path; Progressive presentation extensions cannot delay
 or weaken it.
+
+## Current implementation status
+
+The implementation baseline now includes the shared theme-resolution authority, compatibility
+aliases, derived interactive tokens, registry-derived component and element contracts, deterministic
+CSS/JSON/report exports, stylesheet inspection, bounded state-matrix output, portable interaction
+trace encoding/decoding/profiling, build-manifest provenance, and CLI/Explorer/conformance
+integration. Focused tests, the repository documentation and quality checks, and the full external
+test suite pass for this baseline.
+
+Release readiness is not claimed by this implementation status. Browser and accessibility matrices,
+visual/provider adoption, adversarial package and retention evidence, fleet/reference-app evidence,
+and the final E15 release packet remain planned until their named artifacts are produced.
 
 ## Operating rules
 
