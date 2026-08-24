@@ -13,6 +13,7 @@ from typing import Any, TypeVar
 
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
+from hedron_core.html import _NativeElement
 
 __all__ = [
     "PartialFailurePolicy",
@@ -161,6 +162,10 @@ def collect_prepare_targets(
     if isinstance(value, (list, tuple)):
         for item in value:
             targets.extend(collect_prepare_targets(item, _seen=seen))
+        return targets
+    if isinstance(value, _NativeElement):
+        for child in value.children:
+            targets.extend(collect_prepare_targets(child, _seen=seen))
     return targets
 
 

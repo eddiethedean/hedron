@@ -8,6 +8,7 @@ from hedron_core.builtins.content import Text
 from hedron_core.builtins.document import Page
 from hedron_core.component import Component
 from hedron_core.diagnostics import HedronError
+from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.prepare import (
     PartialFailurePolicy,
@@ -56,6 +57,13 @@ async def test_prepare_runs_before_render() -> None:
     assert ctx.timings
     html = render(Page(card), mode=RenderMode.FRAGMENT).html
     assert "hello" in html
+
+
+@pytest.mark.anyio
+async def test_prepare_reaches_components_inside_native_html_elements() -> None:
+    card = FetchCard(label="wrapped")
+    await prepare_tree(html.div(card))
+    assert card.prepared == "wrapped"
 
 
 @pytest.mark.anyio
