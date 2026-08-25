@@ -25,12 +25,13 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.64.0`.
 
-**Phase focus:** The published train is **0.64** (RFC-0091). Phase **0.63** (verified
+**Phase focus:** The published train is **0.64** (RFC-0091). Phase **0.65** is implemented and
+verified in-tree against the `v0.64.1` baseline; the coordinated packages are at `0.65.0` and the
+release candidate is awaiting final tag publication. Phase **0.63** (verified
 RFC-0090) remains implemented and published as `v0.63.0`, with its 27-gate packet and
 executable browser/unit coverage for theme contracts, tooling, and interoperability; human
 assistive-technology evidence remains Planned under phase 0.21; tracking issue #86 is closed,
-but the evidence packet is not yet Verified. The next planned phase is **0.65** (RFC-0092),
-which remains proposal-only and does not change the current Supported surface. Prior
+but the evidence packet is not yet Verified. Prior
 Published in-tree **0.57** unified presentation / zero-application-CSS
 (D-099 / D-100 / RFC-0084; [#570](https://github.com/eddiethedean/hedron/issues/570);
 [#558](https://github.com/eddiethedean/hedron/issues/558)–[#569](https://github.com/eddiethedean/hedron/issues/569)).
@@ -89,7 +90,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `*-060` | Custom theme platform and styling completion | **Verified/Published** (0.60) | D-108 / RFC-0089; `v0.60.2`; owns #627–#635 |
 | `*-061` | Unified action state and server-first async boundaries | **Verified/Published** (0.61) | RFC-0090; `v0.61.0`; owns #668–#672 |
 | `*-062` | Responsive navigation, bounded optimism, and localized failure isolation | **Verified/Published** (0.62) | RFC-0090; `v0.62.0`; dashboard fan-out omitted |
-| `*-065` | Integrated styling platform and application CSS | **Planned** (0.65) | RFC-0092 / D-109 / D-110; open #690, #693, #694, #698; no runtime claim |
+| `*-065` | Integrated styling platform and application CSS | **Verified** (0.65) | RFC-0092 / D-109 / D-110; required issue slices and application CSS runtime are covered |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
 | `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |
