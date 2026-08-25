@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from tests.unit.charts_038_helpers import sample_spec
 
 from hedron_charts.compile import compile_chart
@@ -77,3 +79,9 @@ def test_react_island_recipe_is_pinned_and_fallback_safe() -> None:
     assert "Accessible fallback" in rendered
     assert 'data-hedron-react-island="legacy-chart-island"' in rendered
     assert 'data-hedron-react-ssr-fallback="true"' in rendered
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_react_island_rejects_non_finite_props(value: float) -> None:
+    with pytest.raises(ValueError, match="finite JSON-serializable"):
+        react_island_host("chart", html.span("Accessible fallback"), props={"value": value})
