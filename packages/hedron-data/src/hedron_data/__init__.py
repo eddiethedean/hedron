@@ -95,7 +95,7 @@ from hedron_data.table import DataTable
 from hedron_data.views import SavedView
 from hedron_data.workspace import DataWorkspace, DataWorkspacePolicy, FeatureOverrides
 
-__version__ = "0.64.0"
+__version__ = "0.64.1"
 
 __all__ = [
     "ABI_VERSION",

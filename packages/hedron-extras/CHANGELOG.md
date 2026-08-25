@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.64.1] — 2026-08-25
+
+### Fixed
+- Maintenance fixes for the 0.64.x release train.
+
 ## [0.64.0] — 2026-08-24
 
 ### Added

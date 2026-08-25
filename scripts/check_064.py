@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Verify the bounded 0.64.0 presentation/lifecycle release slice.
+"""Verify the bounded 0.64 presentation/lifecycle release slice.
 
-This checker deliberately verifies only the contracts shipped in the 0.64.0
+This checker deliberately verifies only the contracts shipped in the 0.64
 cut. Broader phase work remains explicitly Deferred in the release manifest.
 """
 
@@ -247,10 +247,11 @@ def check_docs() -> None:
 
 def check_pkg() -> None:
     release = tomllib.loads((ROOT / "docs/release.toml").read_text(encoding="utf-8"))["release"]
-    assert release["development_version"] == "0.64.0"
+    expected_version = release["development_version"]
+    assert expected_version.startswith("0.64.")
     assert release["registry_status"] in {"deferred", "uploaded"}
     if release["registry_status"] == "uploaded":
-        assert release["pypi_version"] == release["development_version"]
+        assert release["pypi_version"] == release["published_version"]
     package_files = [ROOT / "pyproject.toml", *sorted((ROOT / "packages").glob("*/pyproject.toml"))]
     coordinated = {
         "hedron",
@@ -269,7 +270,7 @@ def check_pkg() -> None:
     for path in package_files:
         project = tomllib.loads(path.read_text(encoding="utf-8")).get("project", {})
         if project.get("name") in coordinated:
-            assert project.get("version") == "0.64.0", path
+            assert project.get("version") == expected_version, path
 
 
 CHECKS = {

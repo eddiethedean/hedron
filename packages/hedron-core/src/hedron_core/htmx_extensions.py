@@ -157,7 +157,7 @@ def known_extensions() -> tuple[ExtensionAsset, ...]:
         ),
         ExtensionAsset(
             name="htmx-ext-hedron",
-            version="0.64.0",
+            version="0.64.1",
             digest="sha256-02166a5a484eae08baa56215d9255077b0fc5fcd0eead28b13a178c62c31f23f",
             path="/hedron-static/ext/hedron.js",
             csp="script-src 'self'",
