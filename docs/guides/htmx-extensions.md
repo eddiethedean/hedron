@@ -1,7 +1,7 @@
 # HTMX extensions
 
 Phase 0.48 makes official HTMX 2 extension **assets** a declared Hedron capability.
-Pinned local `sse` / `head-support` / `preload` files are Supported when declared.
+Pinned local `hedron` / `sse` / `head-support` / `preload` files are Supported when declared.
 SSE/WebSocket **helpers** (`SseRegion` and friends) remain experimental on
 `hedron.experimental`; polling is the Supported production status path.
 
@@ -9,7 +9,7 @@ Pages name what they need; rendering injects only pinned local assets.
 
 ## Declare
 
-Closed public ids: `sse`, `head-support`, `preload`. Morph is Deferred.
+Closed public ids: `hedron`, `sse`, `head-support`, `preload`. Morph is Deferred.
 
 ```python
 from hedron_core.builtins import Page

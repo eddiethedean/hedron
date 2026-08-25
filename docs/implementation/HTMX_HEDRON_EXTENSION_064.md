@@ -1,9 +1,10 @@
 # Phase 0.64: bounded presentation and Hedron HTMX lifecycle interoperability
 
-**Status:** Proposed / Stage 0 planning  
+**Status:** Implemented core slice / Stage 0 evidence in progress
 **Predecessor:** phases 0.61–0.63 and published HTMX 2 extension contracts  
 **Authority:** [RFC-0091](../rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md)  
 **Acceptance:** [RELEASE_0_64](../acceptance/RELEASE_0_64.md)
+**Execution:** [EXECUTION_0_64](EXECUTION_0_64.md)
 
 **Issue inventory:** Stage 0 tracks all 22 phase-owned open `enhancement` issues in the
 [phase 0.64 roadmap inventory](../ROADMAP.md#phase-064-open-enhancement-inventory), including

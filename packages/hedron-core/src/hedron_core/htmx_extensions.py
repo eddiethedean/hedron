@@ -79,10 +79,11 @@ class HtmxExtension(StrEnum):
     HEAD_SUPPORT = "head-support"
     PRELOAD = "preload"
     MORPH = "morph"
+    HEDRON = "hedron"
 
 
 CLOSED_PUBLIC_IDS = frozenset(
-    {HtmxExtension.SSE, HtmxExtension.HEAD_SUPPORT, HtmxExtension.PRELOAD}
+    {HtmxExtension.SSE, HtmxExtension.HEAD_SUPPORT, HtmxExtension.PRELOAD, HtmxExtension.HEDRON}
 )
 CONDITIONAL_PUBLIC_IDS = frozenset({HtmxExtension.MORPH})
 ALL_PUBLIC_IDS = CLOSED_PUBLIC_IDS | CONDITIONAL_PUBLIC_IDS
@@ -93,6 +94,7 @@ ASSET_NAME_BY_PUBLIC_ID: Mapping[str, str] = MappingProxyType(
         "head-support": "htmx-ext-head-support",
         "preload": "htmx-ext-preload",
         "morph": "htmx-ext-idiomorph",
+        "hedron": "htmx-ext-hedron",
     }
 )
 PUBLIC_ID_BY_ASSET_NAME: Mapping[str, str] = MappingProxyType(
@@ -152,6 +154,17 @@ def known_extensions() -> tuple[ExtensionAsset, ...]:
             deferred=False,
             notes="Official SSE extension; polling remains Supported fallback (D-044).",
             public_id="sse",
+        ),
+        ExtensionAsset(
+            name="htmx-ext-hedron",
+            version="0.64.0",
+            digest="sha256-02166a5a484eae08baa56215d9255077b0fc5fcd0eead28b13a178c62c31f23f",
+            path="/hedron-static/ext/hedron.js",
+            csp="script-src 'self'",
+            load_order=60,
+            deferred=False,
+            notes="Opt-in Hedron lifecycle projection; no eval, network, or DOM ownership.",
+            public_id="hedron",
         ),
     )
 
@@ -338,7 +351,7 @@ def normalize_public_id(value: str, *, allow_morph: bool = MORPH_ADMITTED) -> st
             HED_EXT_0002,
             title="Unknown HTMX extension id",
             explanation=f"{raw!r} is not a closed public id.",
-            remediation="Declare sse, head-support, or preload.",
+            remediation="Declare hedron, sse, head-support, or preload.",
         )
     return mapped
 

@@ -306,6 +306,15 @@ from hedron_core.feature_explanation import (
 from hedron_core.field import Field
 from hedron_core.hosts import FRAGMENT_HOST_TAGS, FragmentHost
 from hedron_core.html import html
+from hedron_core.htmx_064 import (
+    HEDRON_LIFECYCLE_SCHEMA,
+    HedronLifecycleEvent,
+    LifecycleFact,
+    LifecyclePolicy,
+    LifecycleState,
+    lifecycle_attributes,
+    transition_lifecycle,
+)
 from hedron_core.htmx_contract import HtmxContext, approved_headers
 from hedron_core.htmx_eval import allow_htmx_eval, htmx_eval_allowed
 from hedron_core.htmx_extensions import (
@@ -422,6 +431,18 @@ from hedron_core.prepare import (
     PrepareContext,
     PrepareTiming,
     prepare_tree,
+)
+from hedron_core.presentation_064 import (
+    PRESENTATION_SCHEMA,
+    PresentationContract,
+    PresentationError,
+    ResponsiveCondition,
+    ScopedStyleBundle,
+    ScopedStyleRecipe,
+    compile_scoped_styles,
+    component_presentation_manifest,
+    presentation_contract,
+    presentation_tokens,
 )
 from hedron_core.react_island import (
     REACT_ISLAND_RECIPE,
@@ -1152,6 +1173,23 @@ __all__ = [
     "WorkflowPermission",
     "WorkflowPort",
     "WorkflowRunResult",
+    "PRESENTATION_SCHEMA",
+    "PresentationContract",
+    "PresentationError",
+    "ResponsiveCondition",
+    "ScopedStyleBundle",
+    "ScopedStyleRecipe",
+    "component_presentation_manifest",
+    "compile_scoped_styles",
+    "presentation_contract",
+    "presentation_tokens",
+    "HEDRON_LIFECYCLE_SCHEMA",
+    "HedronLifecycleEvent",
+    "LifecycleFact",
+    "LifecyclePolicy",
+    "LifecycleState",
+    "lifecycle_attributes",
+    "transition_lifecycle",
 ]
 
 

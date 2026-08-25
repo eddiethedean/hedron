@@ -744,6 +744,11 @@ def emit_theme_css(theme: Theme) -> str:
     design = design_system_vars(theme)
     compatibility = compatibility_theme_vars(theme)
     emitted_tokens = {**derived_theme_tokens(theme), **dict(theme.tokens)}
+    # Phase 0.64 presentation scales share this theme authority.  Keep the
+    # import local so the data-only scale module can reference Theme safely.
+    from hedron_core.presentation_064 import presentation_tokens
+
+    presentation = presentation_tokens(theme)
     lines = ["@layer tokens {", ":root {"]
     for key, value in sorted(emitted_tokens.items()):
         lines.append(f"  {_token_to_css_var(key)}: {value};")
@@ -751,6 +756,8 @@ def emit_theme_css(theme: Theme) -> str:
         lines.append(f"  {key}: {design[key]};")
     for key in compatibility:
         lines.append(f"  {key}: {compatibility[key]};")
+    for key, value in presentation.items():
+        lines.append(f"  --hedron-{key.replace('.', '-')}: {value};")
     lines.append("}")
     for variant, values in sorted(theme.variants.items()):
         lines.append(f'[data-hedron-theme="{theme.name}"][data-hedron-variant="{variant}"] {{')
@@ -764,6 +771,8 @@ def emit_theme_css(theme: Theme) -> str:
         lines.append(f"  {key}: {design[key]};")
     for key in compatibility:
         lines.append(f"  {key}: {compatibility[key]};")
+    for key, value in presentation.items():
+        lines.append(f"  --hedron-{key.replace('.', '-')}: {value};")
     lines.append("}")
     dark = theme.modes.get("dark")
     if dark:

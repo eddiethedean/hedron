@@ -12,7 +12,7 @@ under `polling_only`; declared extension **assets** are Supported when pinned.
 
 ## Declaration
 
-Closed public ids: `sse`, `head-support`, `preload`, and conditionally
+Closed public ids: `hedron`, `sse`, `head-support`, `preload`, and conditionally
 `morph`. Asset files stay named `htmx-ext-*`. `hx-ext` uses the public id.
 
 ```python

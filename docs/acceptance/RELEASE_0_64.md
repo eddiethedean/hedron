@@ -3,6 +3,7 @@
 **Status:** Proposed / Planned gates  
 **Implementation:** [HTMX_HEDRON_EXTENSION_064](../implementation/HTMX_HEDRON_EXTENSION_064.md)  
 **RFC:** [RFC-0091](../rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md)
+**Execution:** [EXECUTION_0_64](../implementation/EXECUTION_0_64.md)
 
 **Issue inventory:** 22 phase-owned open `enhancement` issues are tracked in the
 [phase 0.64 roadmap inventory](../ROADMAP.md#phase-064-open-enhancement-inventory), including
@@ -47,6 +48,7 @@ Names and schemas become authoritative only after Stage 0 acceptance.
 | `TRACE-064` | Browser events, Explorer output, and tests project one bounded redacted trace. | Golden trace parity, truncation, malformed-input, and redaction tests | Planned |
 | `INTEGRATE-064` | Hedron page planning, component markers, route metadata, simulator, and package exports agree. | Cross-package render/simulation/integration suite | Planned |
 | `CSP-064` | Strict CSP works without inline handlers or response scripts; registry is explicit and scoped. | CSP browser matrix and negative executable-content tests | Planned |
+| `SECURITY-064` | Theme values, selectors, response facts, traces, assets, registrations, and retained metadata stay within declared trust boundaries. | Malformed-input, unsafe-value, spoofing, privacy, cache, and retention corpus | Planned |
 | `BROWSER-064` | Core journeys pass in Chromium, Firefox, and WebKit. | Form, refresh, polling, navigation, focus, OOB, cleanup, and history matrix | Planned |
 | `PERF-064` | Extension overhead, metadata, event count, and retained registrations stay within frozen budgets. | Reproducible browser/resource benchmark | Planned |
 | `UPGRADE-064` | Pages without the declaration retain pre-extension behavior and rollback is documented. | Before/after fixtures, absent-asset tests, migration/rollback docs | Planned |
