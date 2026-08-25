@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 from collections.abc import Mapping
 from dataclasses import dataclass, field
@@ -239,6 +240,8 @@ def _sanitize_location_values(values: Mapping[str, JsonValue]) -> dict[str, Json
             cleaned[key] = raw_value
             continue
         if isinstance(raw_value, float):
+            if not math.isfinite(raw_value):
+                raise ValueError("HX-Location values must contain finite numbers")
             cleaned[key] = raw_value
             continue
         if isinstance(raw_value, str):
@@ -251,6 +254,14 @@ def _sanitize_location_values(values: Mapping[str, JsonValue]) -> dict[str, Json
             continue
         raise ValueError("HX-Location values must be scalars")
     return cleaned
+
+
+def _strict_json(value: object, *, header_name: str) -> str:
+    """Serialize a structured HTMX header as standards-compliant JSON."""
+    try:
+        return json.dumps(value, allow_nan=False)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{header_name} must contain standards-compliant JSON values") from exc
 
 
 def _validate_location_mapping(
@@ -303,18 +314,20 @@ def approved_headers(
 ) -> dict[str, str]:
     headers: dict[str, str] = {}
     if trigger is not None:
-        headers["HX-Trigger"] = trigger if isinstance(trigger, str) else json.dumps(trigger)
+        headers["HX-Trigger"] = (
+            trigger if isinstance(trigger, str) else _strict_json(trigger, header_name="HX-Trigger")
+        )
     if trigger_after_swap is not None:
         headers["HX-Trigger-After-Swap"] = (
             trigger_after_swap
             if isinstance(trigger_after_swap, str)
-            else json.dumps(trigger_after_swap)
+            else _strict_json(trigger_after_swap, header_name="HX-Trigger-After-Swap")
         )
     if trigger_after_settle is not None:
         headers["HX-Trigger-After-Settle"] = (
             trigger_after_settle
             if isinstance(trigger_after_settle, str)
-            else json.dumps(trigger_after_settle)
+            else _strict_json(trigger_after_settle, header_name="HX-Trigger-After-Settle")
         )
     if redirect is not None:
         headers["HX-Redirect"] = _require_local_path(redirect, "HX-Redirect")
@@ -350,7 +363,9 @@ def approved_headers(
         if isinstance(location, str):
             headers["HX-Location"] = _require_local_path(location, "HX-Location")
         else:
-            headers["HX-Location"] = json.dumps(_validate_location_mapping(location))
+            headers["HX-Location"] = _strict_json(
+                _validate_location_mapping(location), header_name="HX-Location"
+            )
     unknown = set(headers) - APPROVED_RESPONSE_HEADERS
     if unknown:
         raise ValueError(f"Unapproved HTMX response headers: {sorted(unknown)}")

@@ -32,17 +32,17 @@
 
 ## Expanded issue work packages
 
-The phase intake added every unresolved repository issue. These packages remain Planned and block
-the 0.66 cut; their authoritative per-issue rows live in
+The phase intake added every unresolved repository issue. These packages are now implemented and
+Verified; their authoritative per-issue rows live in
 [`open-issues-066.toml`](../acceptance/open-issues-066.toml).
 
 | Work package | Issues | Outcome | Gates |
 |---|---|---|---|
-| W8 strict JSON boundaries | #719, #720, #723, #724 | finite inputs and standards-valid HTMX/map/chart payloads | `HTMX-JSON-066`, `MAP-NUMERIC-066`, `ALTAIR-JSON-066`, `PLOTLY-JSON-066` |
-| W9 transactional/lifecycle behavior | #718, #726 | audit-hook atomicity and producer-failure propagation | `DATA-AUDIT-066`, `WS-PRODUCER-066` |
-| W10 input and security bounds | #721, #722, #727 | null-safe claims, bounded archives, finite rate windows | `CLAIM-REDACT-066`, `THEME-ARCHIVE-066`, `AUTH-RATE-066` |
-| W11 packaging ceilings | #725 | valid major-version dependency range generation | `PIN-CEILING-066` |
-| W12 typography presentation | #728, #729, #730 | bounded measure, safe effects, contextual variants | `TYPE-MEASURE-066`, `TYPE-EFFECT-066`, `CONTEXT-PRESENT-066` |
+| W8 strict JSON boundaries | #719, #720, #723, #724 | finite inputs and standards-valid HTMX/map/chart payloads | `HTMX-JSON-066`, `MAP-NUMERIC-066`, `ALTAIR-JSON-066`, `PLOTLY-JSON-066` (Verified) |
+| W9 transactional/lifecycle behavior | #718, #726 | audit-hook atomicity and producer-failure propagation | `DATA-AUDIT-066`, `WS-PRODUCER-066` (Verified) |
+| W10 input and security bounds | #721, #722, #727 | null-safe claims, bounded archives, finite rate windows | `CLAIM-REDACT-066`, `THEME-ARCHIVE-066`, `AUTH-RATE-066` (Verified) |
+| W11 packaging ceilings | #725 | valid major-version dependency range generation | `PIN-CEILING-066` (Verified) |
+| W12 typography presentation | #728, #729, #730 | bounded measure, safe effects, contextual variants | `TYPE-MEASURE-066`, `TYPE-EFFECT-066`, `CONTEXT-PRESENT-066` (Verified) |
 
 ## Deferred boundaries
 
@@ -54,5 +54,5 @@ HDJ v2 source contract. They are not counted as 0.66 capabilities.
 
 Focused HDJ evidence lives in `tests/jinja/test_hdj_0_66.py`. The gate runner also executes the complete
 Jinja suite, Ruff, Pyright, package metadata checks, and the existing adapter/component regression
-paths. Those checks verify W0–W7 only. W8–W12 need focused regression tests and Verified issue gates
-before release; a coordinated train changelog may claim only behavior linked from this document.
+paths, plus `tests/unit/test_phase066_issue_gates.py`, verify W0–W12. A coordinated train changelog
+may claim only behavior linked from this document.

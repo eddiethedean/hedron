@@ -47,7 +47,7 @@ def plan_payload_json(plan: MapPlan) -> str:
         acc = dict(acc_raw) if isinstance(acc_raw, dict) else {}
         acc["table_rows"] = []
         payload["accessibility"] = acc
-    return json.dumps(payload, separators=(",", ":"), default=str)
+    return json.dumps(payload, separators=(",", ":"), allow_nan=False, default=str)
 
 
 def fallback_nodes(plan: MapPlan) -> list[NodeLike]:

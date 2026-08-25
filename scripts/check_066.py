@@ -72,8 +72,14 @@ def _contract() -> None:
             f"number = {number}" in issues,
             f"open issue #{number} missing from 0.66 inventory",
         )
-    _require("open_issue_count = 13" in issues, "0.66 open issue count is not locked to 13")
+    _require('status = "Verified"' in issues, "0.66 issue inventory is not Verified")
+    _require("open_issue_count = 0" in issues, "0.66 open issue count is not zero")
     _require("closed_as_implemented = [613, 140]" in issues, "implemented issue audit is missing")
+    for number in range(718, 731):
+        _require(
+            f"number = {number}" in issues and 'state = "Verified"' in issues,
+            f"issue gate #{number} is not Verified",
+        )
 
 
 def _docs() -> None:
@@ -155,7 +161,7 @@ def main() -> int:
     elif args.gate == "PKG-066":
         _package()
     elif args.gate == "REGRESS-066":
-        _pytest("tests/jinja")
+        _pytest("tests/jinja", "tests/unit/test_phase066_issue_gates.py")
     return 0
 
 

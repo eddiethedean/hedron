@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import io
 import json
+import math
 from collections.abc import Mapping, Sequence
 
 from hedron_charts.limits import (
@@ -36,6 +37,33 @@ __all__ = [
     "adapter_for",
     "compile_figure",
 ]
+
+
+def _json_safe(value: object) -> object:
+    """Normalize array/scalar adapters and non-finite numbers to JSON values."""
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, Mapping):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(item) for item in value]
+    tolist = getattr(value, "tolist", None)
+    if callable(tolist):
+        try:
+            return _json_safe(tolist())
+        except (TypeError, ValueError):
+            pass
+    item = getattr(value, "item", None)
+    if callable(item):
+        try:
+            return _json_safe(item())
+        except (TypeError, ValueError):
+            pass
+    return value
+
+
+def _strict_payload(value: object) -> str:
+    return json.dumps(_json_safe(value), separators=(",", ":"), allow_nan=False, default=str)
 
 
 class MatplotlibAdapter:
@@ -158,7 +186,17 @@ class PlotlyAdapter:
         fig_dict = to_json() if callable(to_json) else value
         reject_callbacks(fig_dict)
         reject_remote_urls(fig_dict)
-        body = json.dumps(fig_dict, separators=(",", ":"), default=str)
+        try:
+            from plotly.utils import PlotlyJSONEncoder
+
+            body = json.dumps(
+                fig_dict,
+                separators=(",", ":"),
+                allow_nan=False,
+                cls=PlotlyJSONEncoder,
+            )
+        except (ImportError, TypeError, ValueError):
+            body = _strict_payload(fig_dict)
         ensure_limits(None, body, limits=limits)
         return ChartOutput(
             kind="plotly-json",
@@ -231,7 +269,7 @@ class AltairAdapter:
         spec.pop("$schema", None)
         reject_callbacks(spec)
         reject_remote_urls(spec)
-        body = json.dumps(spec, separators=(",", ":"), default=str)
+        body = _strict_payload(spec)
         ensure_limits(None, body, limits=limits)
         return ChartOutput(
             kind="vega-lite",

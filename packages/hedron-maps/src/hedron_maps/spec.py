@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated, Literal, cast
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from hedron_core.typing_aliases import JsonObject
 
@@ -42,6 +42,15 @@ class Bounds(MapModel):
     east: float
     north: float
 
+    @field_validator("west", "south", "east", "north")
+    @classmethod
+    def finite_coordinate(cls, value: float) -> float:
+        import math
+
+        if not math.isfinite(value):
+            raise ValueError("map bounds coordinates must be finite")
+        return value
+
 
 class ViewState(MapModel):
     center: tuple[float, float] = (0.0, 0.0)
@@ -50,6 +59,24 @@ class ViewState(MapModel):
     pitch: float = 0.0
     fit: FitPolicy = "none"
     padding: float = 0.0
+
+    @field_validator("center")
+    @classmethod
+    def finite_center(cls, value: tuple[float, float]) -> tuple[float, float]:
+        import math
+
+        if any(not math.isfinite(item) for item in value):
+            raise ValueError("map center coordinates must be finite")
+        return value
+
+    @field_validator("zoom", "bearing", "pitch", "padding")
+    @classmethod
+    def finite_view_value(cls, value: float) -> float:
+        import math
+
+        if not math.isfinite(value):
+            raise ValueError("map view values must be finite")
+        return value
 
 
 class MapTheme(MapModel):

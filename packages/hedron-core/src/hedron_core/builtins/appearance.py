@@ -30,6 +30,8 @@ __all__ = [
     "STATE_KINDS",
     "TRACKS",
     "TYPOGRAPHY_ROLES",
+    "TYPE_EFFECTS",
+    "TYPE_MEASURES",
     "WIDTHS",
     "Appearance",
     "ContentWidth",
@@ -45,6 +47,8 @@ __all__ = [
     "StateKind",
     "Track",
     "TypographyRole",
+    "TypographyEffect",
+    "TypographyMeasure",
     "Width",
     "appearance_data",
     "gap_data",
@@ -68,6 +72,8 @@ TYPOGRAPHY_ROLES: tuple[str, ...] = (
     "caption",
     "mono",
 )
+TYPE_MEASURES: tuple[str, ...] = ("narrow", "default", "wide")
+TYPE_EFFECTS: tuple[str, ...] = ("none", "subtle", "display")
 STATE_KINDS: tuple[str, ...] = (
     "loading",
     "empty",
@@ -113,6 +119,8 @@ Density = Literal["compact", "comfortable", "spacious"]
 Appearance = Literal["solid", "outline", "soft", "ghost", "plain", "raised"]
 Emphasis = Literal["primary", "secondary", "danger", "neutral"]
 TypographyRole = Literal["display", "eyebrow", "title", "body", "label", "caption", "mono"]
+TypographyMeasure = Literal["narrow", "default", "wide"]
+TypographyEffect = Literal["none", "subtle", "display"]
 StateKind = Literal["loading", "empty", "error", "permission", "offline", "success"]
 ContentWidth = Literal["narrow", "default", "wide", "full"]
 Width = Literal["content", "field", "full"]

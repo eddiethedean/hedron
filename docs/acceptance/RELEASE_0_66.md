@@ -18,26 +18,26 @@ D-111, and D-112. The predecessor is `v0.65.0`.
 - [x] `PKG-066` — coordinated metadata, typed facade, and clean package checks pass.
 - [x] `REGRESS-066` — full Jinja and relevant adapter/component regressions pass.
 
-## Planned open-issue gates
+## Verified open-issue gates
 
-- [ ] `DATA-AUDIT-066` — #718 mutations remain atomic when the audit hook fails.
-- [ ] `HTMX-JSON-066` — #719 approved HTMX headers never emit non-standard JSON.
-- [ ] `MAP-NUMERIC-066` — #720 map view state rejects non-finite browser payload values.
-- [ ] `CLAIM-REDACT-066` — #721 null raw claims redact safely.
-- [ ] `THEME-ARCHIVE-066` — #722 theme package extraction enforces archive budgets.
-- [ ] `ALTAIR-JSON-066` — #723 Altair payloads remain standards-valid with non-finite input.
-- [ ] `PLOTLY-JSON-066` — #724 Plotly ndarray values serialize as JSON arrays.
-- [ ] `PIN-CEILING-066` — #725 generated future-major dependency ceilings are valid.
-- [ ] `WS-PRODUCER-066` — #726 producer failures propagate without idle-timeout misreporting.
-- [ ] `AUTH-RATE-066` — #727 non-finite rate-limit windows fail validation.
-- [ ] `TYPE-MEASURE-066` — #728 bounded measure props and recipes pass presentation evidence.
-- [ ] `TYPE-EFFECT-066` — #729 safe editorial effects pass fallback and accessibility evidence.
-- [ ] `CONTEXT-PRESENT-066` — #730 contextual typography variants pass component coverage.
+- [x] `DATA-AUDIT-066` — #718 mutations remain atomic when the audit hook fails.
+- [x] `HTMX-JSON-066` — #719 approved HTMX headers never emit non-standard JSON.
+- [x] `MAP-NUMERIC-066` — #720 map view state rejects non-finite browser payload values.
+- [x] `CLAIM-REDACT-066` — #721 null raw claims redact safely.
+- [x] `THEME-ARCHIVE-066` — #722 theme package extraction enforces archive budgets.
+- [x] `ALTAIR-JSON-066` — #723 Altair payloads remain standards-valid with non-finite input.
+- [x] `PLOTLY-JSON-066` — #724 Plotly ndarray values serialize as JSON arrays.
+- [x] `PIN-CEILING-066` — #725 generated future-major dependency ceilings are valid.
+- [x] `WS-PRODUCER-066` — #726 producer failures propagate without idle-timeout misreporting.
+- [x] `AUTH-RATE-066` — #727 non-finite rate-limit windows fail validation.
+- [x] `TYPE-MEASURE-066` — #728 bounded measure props and recipes pass presentation evidence.
+- [x] `TYPE-EFFECT-066` — #729 safe editorial effects pass fallback and accessibility evidence.
+- [x] `CONTEXT-PRESENT-066` — #730 contextual typography variants pass component coverage.
 
 The machine-readable ownership and status source is
 [`open-issues-066.toml`](open-issues-066.toml). During intake, #613 and #140 were closed because their
-fixes and focused regressions were already present on `main`. The 0.66 phase is not release-ready
-until all thirteen unchecked rows are Verified and their issues are closed with evidence.
+fixes and focused regressions were already present on `main`. All thirteen issue gates are now Verified;
+their GitHub issues are closed with linked regression evidence and the phase is release-ready.
 
 ## Explicitly Deferred
 

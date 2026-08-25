@@ -370,19 +370,21 @@ class InMemoryDataSource:
             accepted_deletes.append(key)
 
         ok = not errors and not conflicts
+        accepted = DataChanges(
+            updates=tuple(accepted_updates),
+            inserts=tuple(accepted_inserts),
+            deletes=tuple(accepted_deletes),
+            dataset_version=dataset_version,
+        )
+        if ok and self._audit_hook is not None:
+            # Audit is part of the transaction boundary. Do not publish the
+            # working copies until the callback has succeeded.
+            self._audit_hook(accepted)
         if ok:
             self._rows = rows
             self._row_versions = row_versions
             self._version_counter = version_counter
             self._dataset_version = dataset_version
-        accepted = DataChanges(
-            updates=tuple(accepted_updates),
-            inserts=tuple(accepted_inserts),
-            deletes=tuple(accepted_deletes),
-            dataset_version=self._dataset_version,
-        )
-        if ok and self._audit_hook is not None:
-            self._audit_hook(accepted)
         return DataSaveResult(
             ok=ok,
             accepted=accepted if ok else None,

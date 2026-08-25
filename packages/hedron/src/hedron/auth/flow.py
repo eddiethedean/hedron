@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any, Generic, Literal, Protocol, TypeVar
@@ -73,6 +74,13 @@ class RateLimitPolicy:
                 title="Invalid rate limit",
                 explanation="limit must be >= 1.",
                 remediation="Pass RateLimitPolicy(limit=..., window_seconds=...).",
+            )
+        if isinstance(self.window_seconds, bool) or not math.isfinite(float(self.window_seconds)):
+            raise error(
+                HED_AUTHFLOW_0001,
+                title="Invalid rate limit window",
+                explanation="window_seconds must be finite.",
+                remediation="Pass a finite positive window_seconds.",
             )
         if self.window_seconds <= 0:
             raise error(

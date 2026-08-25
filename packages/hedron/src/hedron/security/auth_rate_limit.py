@@ -8,6 +8,7 @@ this helper for single-process demos and defense-in-depth near login routes.
 
 from __future__ import annotations
 
+import math
 import os
 import threading
 import time
@@ -86,6 +87,8 @@ class AuthRateLimiter:
     def __init__(self, *, limit: int = 10, window_seconds: float = 60.0) -> None:
         if limit < 1:
             raise ValueError("limit must be >= 1")
+        if isinstance(window_seconds, bool) or not math.isfinite(float(window_seconds)):
+            raise ValueError("window_seconds must be finite")
         if window_seconds <= 0:
             raise ValueError("window_seconds must be > 0")
         self.limit = int(limit)

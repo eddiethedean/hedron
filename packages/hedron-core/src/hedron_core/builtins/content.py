@@ -7,10 +7,14 @@ from typing import Literal
 
 from hedron_core.builtins._base import ElementProps, class_names
 from hedron_core.builtins.appearance import (
+    TYPE_EFFECTS,
+    TYPE_MEASURES,
     TYPOGRAPHY_ROLES,
     Density,
     OverflowMode,
     ResponsivePolicy,
+    TypographyEffect,
+    TypographyMeasure,
     TypographyRole,
     appearance_data,
     normalize_responsive_int,
@@ -43,6 +47,8 @@ def _typography_attrs(
     *,
     overflow: str | None = None,
     lines: int | None = None,
+    measure: str | None = None,
+    effect: str | None = None,
 ) -> dict[str, HtmlAttrValue]:
     """Return class/data attributes for a semantic typography role."""
     attrs: dict[str, HtmlAttrValue] = {}
@@ -64,6 +70,10 @@ def _typography_attrs(
         data["hedron-lines"] = str(lines)
         if "class_" not in attrs:
             attrs["class_"] = base
+    if measure is not None:
+        data["hedron-type-measure"] = measure
+    if effect is not None:
+        data["hedron-type-effect"] = effect
     if data:
         attrs["data"] = data
     return attrs
@@ -88,6 +98,8 @@ class TextProps(Props):
     role: TypographyRole | None = None
     overflow: OverflowMode | None = None
     lines: int | None = None
+    measure: TypographyMeasure | None = None
+    effect: TypographyEffect | None = None
     class_: str | None = None
 
 
@@ -102,11 +114,15 @@ class Text(Component[TextProps]):
         role: TypographyRole | None = None,
         overflow: OverflowMode | None = None,
         lines: int | None = None,
+        measure: TypographyMeasure | None = None,
+        effect: TypographyEffect | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
         require_choice(role, TYPOGRAPHY_ROLES, label="role")
         require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
+        require_choice(measure, TYPE_MEASURES, label="measure")
+        require_choice(effect, TYPE_EFFECTS, label="effect")
         super().__init__(
             TextProps(
                 content=content,
@@ -114,6 +130,8 @@ class Text(Component[TextProps]):
                 role=role,
                 overflow=overflow,
                 lines=_validate_lines(lines),
+                measure=measure,
+                effect=effect,
                 class_=class_,
                 **kwargs,
             )
@@ -126,6 +144,8 @@ class Text(Component[TextProps]):
             self.props.class_,
             overflow=self.props.overflow,
             lines=self.props.lines,
+            measure=self.props.measure,
+            effect=self.props.effect,
         )
         return getattr(html, self.props.as_)(self.props.content, **attrs)
 
@@ -136,6 +156,8 @@ class HeadingProps(Props):
     role: TypographyRole | None = None
     overflow: OverflowMode | None = None
     lines: int | None = None
+    measure: TypographyMeasure | None = None
+    effect: TypographyEffect | None = None
     class_: str | None = None
 
 
@@ -150,11 +172,15 @@ class Heading(Component[HeadingProps]):
         role: TypographyRole | None = None,
         overflow: OverflowMode | None = None,
         lines: int | None = None,
+        measure: TypographyMeasure | None = None,
+        effect: TypographyEffect | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
         require_choice(role, TYPOGRAPHY_ROLES, label="role")
         require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
+        require_choice(measure, TYPE_MEASURES, label="measure")
+        require_choice(effect, TYPE_EFFECTS, label="effect")
         super().__init__(
             HeadingProps(
                 content=content,
@@ -162,6 +188,8 @@ class Heading(Component[HeadingProps]):
                 role=role,
                 overflow=overflow,
                 lines=_validate_lines(lines),
+                measure=measure,
+                effect=effect,
                 class_=class_,
                 **kwargs,
             )
@@ -174,6 +202,8 @@ class Heading(Component[HeadingProps]):
             self.props.class_,
             overflow=self.props.overflow,
             lines=self.props.lines,
+            measure=self.props.measure,
+            effect=self.props.effect,
         )
         return getattr(html, f"h{self.props.level}")(self.props.content, **attrs)
 
@@ -184,6 +214,8 @@ class TypographyProps(Props):
     as_: Literal["p", "span", "div", "strong", "em", "small", "code"] = "p"
     overflow: OverflowMode | None = None
     lines: int | None = None
+    measure: TypographyMeasure | None = None
+    effect: TypographyEffect | None = None
     class_: str | None = None
 
 
@@ -201,11 +233,15 @@ class Typography(Component[TypographyProps]):
         as_: Literal["p", "span", "div", "strong", "em", "small", "code"] = "p",
         overflow: OverflowMode | None = None,
         lines: int | None = None,
+        measure: TypographyMeasure | None = None,
+        effect: TypographyEffect | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
         require_choice(role, TYPOGRAPHY_ROLES, label="role")
         require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
+        require_choice(measure, TYPE_MEASURES, label="measure")
+        require_choice(effect, TYPE_EFFECTS, label="effect")
         super().__init__(
             TypographyProps(
                 content=content,
@@ -213,6 +249,8 @@ class Typography(Component[TypographyProps]):
                 as_=as_,
                 overflow=overflow,
                 lines=_validate_lines(lines),
+                measure=measure,
+                effect=effect,
                 class_=class_,
                 **kwargs,
             )
@@ -225,6 +263,8 @@ class Typography(Component[TypographyProps]):
             self.props.class_,
             overflow=self.props.overflow,
             lines=self.props.lines,
+            measure=self.props.measure,
+            effect=self.props.effect,
         )
         return getattr(html, self.props.as_)(self.props.content, **attrs)
 

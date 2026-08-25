@@ -27,6 +27,18 @@ _RECIPE_DEFAULT_KEYS = frozenset(
         "style_recipes",
     }
 )
+PRESENTATION_SLOTS: tuple[str, ...] = (
+    "PageHeader.title",
+    "PageHeader.description",
+    "Heading",
+    "Text",
+    "Card.heading",
+    "Card.supporting-copy",
+    "Card.metadata",
+    "FormField.control",
+    "ProcessFlow.step",
+)
+_PRESENTATION_SLOT_SET = frozenset(PRESENTATION_SLOTS)
 
 
 class StyleScopeProps(ElementProps):
@@ -37,6 +49,7 @@ class StyleScopeProps(ElementProps):
     variant: str | None = None
     design: str | None = None
     recipe_defaults: dict[str, str] = Field(default_factory=dict)
+    presentation: dict[str, str] = Field(default_factory=dict)
 
 
 class StyleScope(Component[StyleScopeProps]):
@@ -56,6 +69,7 @@ class StyleScope(Component[StyleScopeProps]):
         variant: str | None = None,
         design: str | None = None,
         recipe_defaults: dict[str, str] | None = None,
+        presentation: dict[str, str] | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -151,6 +165,25 @@ class StyleScope(Component[StyleScopeProps]):
                 explanation="Recipe family and recipe names must be safe registered identifiers.",
                 remediation="Use recipe_defaults={'surface': 'panel'} with registered recipes.",
             )
+        presentation_values = dict(presentation or {})
+        if any(key not in _PRESENTATION_SLOT_SET for key in presentation_values):
+            invalid = sorted(set(presentation_values) - _PRESENTATION_SLOT_SET)
+            raise error(
+                HED_STYLE_SCOPE_0001,
+                title="Invalid StyleScope presentation slot",
+                explanation=f"Unsupported presentation slot(s): {', '.join(invalid)}.",
+                remediation=f"Use one of: {', '.join(PRESENTATION_SLOTS)}.",
+            )
+        if any(
+            _THEME_NAME_RE.fullmatch(str(value)) is None
+            for value in presentation_values.values()
+        ):
+            raise error(
+                HED_STYLE_SCOPE_0001,
+                title="Invalid StyleScope presentation mapping",
+                explanation="Presentation recipe names must be safe registered identifiers.",
+                remediation="Use presentation={'PageHeader.title': 'auth-display'}.",
+            )
         super().__init__(
             StyleScopeProps(
                 scope=scope,
@@ -160,13 +193,14 @@ class StyleScope(Component[StyleScopeProps]):
                 variant=variant,
                 design=design,
                 recipe_defaults=defaults,
+                presentation=presentation_values,
                 id=id,
                 class_=class_,
                 mark=mark,
             )
         )
         self._children = collect_children(*nodes, children=children)
-        self._style_context = StyleContext(recipes=defaults)
+        self._style_context = StyleContext(recipes=defaults, presentation=presentation_values)
 
     @property
     def style_context(self) -> StyleContext:
@@ -193,6 +227,10 @@ class StyleScope(Component[StyleScopeProps]):
         if self.props.recipe_defaults:
             data["hedron-recipe-context"] = ";".join(
                 f"{key}={value}" for key, value in sorted(self.props.recipe_defaults.items())
+            )
+        if self.props.presentation:
+            data["hedron-presentation"] = ";".join(
+                f"{key}={value}" for key, value in sorted(self.props.presentation.items())
             )
         data.update(mark_data(self.props.mark))
         return html.div(

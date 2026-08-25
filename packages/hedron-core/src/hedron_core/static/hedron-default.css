@@ -33,6 +33,12 @@
     --hedron-default-radius: 0.8rem;
     --hedron-default-radius-lg: 1.1rem;
     --hedron-default-content-width: 74rem;
+    --hedron-type-measure-narrow: 32ch;
+    --hedron-type-measure-default: 60ch;
+    --hedron-type-measure-wide: 75ch;
+    --hedron-type-effect-none: none;
+    --hedron-type-effect-subtle: 0 1px 1px rgb(15 23 42 / 10%);
+    --hedron-type-effect-display: 0 2px 12px rgb(15 23 42 / 14%);
     color-scheme: light;
   }
 
@@ -2953,6 +2959,36 @@
   .hedron-type-mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.9rem;
+  }
+
+  :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description)[data-hedron-type-measure="narrow"] {
+    max-inline-size: var(--hedron-type-measure-narrow, 32ch);
+  }
+
+  :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description)[data-hedron-type-measure="default"] {
+    max-inline-size: var(--hedron-type-measure-default, 60ch);
+  }
+
+  :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description)[data-hedron-type-measure="wide"] {
+    max-inline-size: var(--hedron-type-measure-wide, 75ch);
+  }
+
+  :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description)[data-hedron-type-effect="none"] {
+    text-shadow: var(--hedron-type-effect-none, none);
+  }
+
+  :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description)[data-hedron-type-effect="subtle"] {
+    text-shadow: var(--hedron-type-effect-subtle, 0 1px 1px rgb(15 23 42 / 10%));
+  }
+
+  :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description)[data-hedron-type-effect="display"] {
+    text-shadow: var(--hedron-type-effect-display, 0 2px 12px rgb(15 23 42 / 14%));
+  }
+
+  @media (forced-colors: active), print, (prefers-reduced-transparency: reduce) {
+    :where(.hedron-text, .hedron-heading, .hedron-page-header-title, .hedron-page-header-description)[data-hedron-type-effect] {
+      text-shadow: none !important;
+    }
   }
 
   @media (min-width: 36rem) {

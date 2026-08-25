@@ -8,7 +8,11 @@ from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import (
+    TYPE_EFFECTS,
+    TYPE_MEASURES,
     Density,
+    TypographyEffect,
+    TypographyMeasure,
     gap_data,
     normalize_gap,
     normalize_responsive_int,
@@ -353,6 +357,12 @@ class PageHeaderProps(ElementProps):
     description: str | None = None
     level: Literal[1, 2, 3, 4, 5, 6] = 1
     density: Density | None = None
+    title_measure: TypographyMeasure | None = None
+    description_measure: TypographyMeasure | None = None
+    title_effect: TypographyEffect | None = None
+    description_effect: TypographyEffect | None = None
+    measure: TypographyMeasure | None = None
+    effect: TypographyEffect | None = None
 
 
 class PageHeader(Component[PageHeaderProps]):
@@ -370,6 +380,12 @@ class PageHeader(Component[PageHeaderProps]):
         description: str | None = None,
         level: Literal[1, 2, 3, 4, 5, 6] = 1,
         density: Density | None = None,
+        title_measure: TypographyMeasure | None = None,
+        description_measure: TypographyMeasure | None = None,
+        title_effect: TypographyEffect | None = None,
+        description_effect: TypographyEffect | None = None,
+        measure: TypographyMeasure | None = None,
+        effect: TypographyEffect | None = None,
         actions: NodeLike = None,
         meta: NodeLike = None,
         id: str | None = None,
@@ -377,6 +393,12 @@ class PageHeader(Component[PageHeaderProps]):
         mark: str | None = None,
         **kwargs: Any,
     ) -> None:
+        require_choice(title_measure, TYPE_MEASURES, label="title_measure")
+        require_choice(description_measure, TYPE_MEASURES, label="description_measure")
+        require_choice(title_effect, TYPE_EFFECTS, label="title_effect")
+        require_choice(description_effect, TYPE_EFFECTS, label="description_effect")
+        require_choice(measure, TYPE_MEASURES, label="measure")
+        require_choice(effect, TYPE_EFFECTS, label="effect")
         super().__init__(
             PageHeaderProps(
                 title=title,
@@ -384,6 +406,12 @@ class PageHeader(Component[PageHeaderProps]):
                 description=description,
                 level=level,
                 density=density,
+                title_measure=title_measure,
+                description_measure=description_measure,
+                title_effect=title_effect,
+                description_effect=description_effect,
+                measure=measure,
+                effect=effect,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -406,9 +434,29 @@ class PageHeader(Component[PageHeaderProps]):
                 )
             )
         heading = getattr(html, f"h{self.props.level}")
-        text.append(heading(self.props.title, class_="hedron-page-header-title"))
+        title_data: dict[str, str | bool | int | float | None] = {}
+        title_measure = self.props.title_measure or self.props.measure
+        title_effect = self.props.title_effect or self.props.effect
+        if title_measure is not None:
+            title_data["hedron-type-measure"] = title_measure
+        if title_effect is not None:
+            title_data["hedron-type-effect"] = title_effect
+        text.append(heading(self.props.title, class_="hedron-page-header-title", data=title_data))
         if self.props.description:
-            text.append(html.p(self.props.description, class_="hedron-page-header-description"))
+            description_data: dict[str, str | bool | int | float | None] = {}
+            description_measure = self.props.description_measure or self.props.measure
+            description_effect = self.props.description_effect or self.props.effect
+            if description_measure is not None:
+                description_data["hedron-type-measure"] = description_measure
+            if description_effect is not None:
+                description_data["hedron-type-effect"] = description_effect
+            text.append(
+                html.p(
+                    self.props.description,
+                    class_="hedron-page-header-description",
+                    data=description_data,
+                )
+            )
         if "meta" in self._slot_values:
             text.append(html.div(self._slot_values["meta"], class_="hedron-page-header-meta"))
         parts: list[NodeLike] = [html.div(*text, class_="hedron-page-header-text")]

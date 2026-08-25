@@ -70,6 +70,50 @@ async def accept_page_session_channel(
     await websocket.accept()
     producer_task: asyncio.Task[None] | None = None
     message_count = 0
+
+    async def receive_with_lifecycle() -> str:
+        """Race client input against a background producer failure."""
+        if producer_task is None or producer_task.done():
+            if producer_task is not None and not producer_task.cancelled():
+                producer_error = producer_task.exception()
+                if producer_error is not None:
+                    raise producer_error
+            return await asyncio.wait_for(
+                websocket.receive_text(),
+                timeout=channel.budget.idle_timeout_seconds,
+            )
+
+        receive_task = asyncio.create_task(websocket.receive_text())
+        done, _pending = await asyncio.wait(
+            {receive_task, producer_task},
+            timeout=channel.budget.idle_timeout_seconds,
+            return_when=asyncio.FIRST_COMPLETED,
+        )
+        if not done:
+            receive_task.cancel()
+            with contextlib.suppress(asyncio.CancelledError):
+                await receive_task
+            raise TimeoutError
+        if producer_task in done:
+            if producer_task.cancelled():
+                receive_task.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await receive_task
+                raise asyncio.CancelledError
+            producer_error = producer_task.exception()
+            if producer_error is not None:
+                receive_task.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await receive_task
+                raise producer_error
+            # A normally completed producer does not close the client channel;
+            # continue waiting for client frames under the ordinary idle bound.
+            return await asyncio.wait_for(
+                receive_task,
+                timeout=channel.budget.idle_timeout_seconds,
+            )
+        return await receive_task
+
     try:
         if producer is not None:
             run_producer = producer
@@ -82,10 +126,7 @@ async def accept_page_session_channel(
             await asyncio.sleep(0)
         while True:
             try:
-                raw = await asyncio.wait_for(
-                    websocket.receive_text(),
-                    timeout=channel.budget.idle_timeout_seconds,
-                )
+                raw = await receive_with_lifecycle()
             except TimeoutError:
                 await websocket.send_text(json.dumps({"kind": "error", "detail": "idle timeout"}))
                 await websocket.close(code=1008)
@@ -146,8 +187,9 @@ async def accept_page_session_channel(
         return
     finally:
         if producer_task is not None:
-            producer_task.cancel()
-            with contextlib.suppress(asyncio.CancelledError, Exception):
+            if not producer_task.done():
+                producer_task.cancel()
+            with contextlib.suppress(asyncio.CancelledError):
                 await producer_task
         with contextlib.suppress(Exception):
             await websocket.close()

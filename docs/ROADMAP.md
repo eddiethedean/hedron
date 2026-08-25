@@ -6712,8 +6712,8 @@ and [upgrade fixtures](acceptance/application-styling-upgrade-fixtures-065.md).
 
 ## Phase 0.66 — HDJ parity and registry integration
 
-**Status:** In progress. The HDJ foundation is implemented and Verified; thirteen imported issue
-gates remain Planned and block the 0.66 cut.
+**Status:** Implemented and Verified. The HDJ foundation and all thirteen imported issue gates are
+closed with regression evidence; the 0.66 cut is release-ready.
 
 Phase 0.66 restores `hedron-jinja` as an evidence-backed consumer of the post-0.46 core platform.
 One immutable `JinjaBinding` carries application identity, trusted component and asset projections,
@@ -6732,11 +6732,11 @@ explicitly Deferred rather than being described as shipped by inventory-only typ
 
 | Issues | Required outcome | Gates |
 |---|---|---|
-| #718, #726 | Transactional data auditing and truthful WebSocket producer failure propagation | `DATA-AUDIT-066`, `WS-PRODUCER-066` |
-| #719, #720, #723, #724 | Finite, standards-valid HTMX/map/chart JSON boundaries | `HTMX-JSON-066`, `MAP-NUMERIC-066`, `ALTAIR-JSON-066`, `PLOTLY-JSON-066` |
-| #721, #722, #727 | Null-safe claim handling, bounded theme archives, and finite rate-limit windows | `CLAIM-REDACT-066`, `THEME-ARCHIVE-066`, `AUTH-RATE-066` |
-| #725 | Valid future-major scaffold dependency ceilings | `PIN-CEILING-066` |
-| #728–#730 | Bounded typography measure, safe effects, and contextual presentation variants | `TYPE-MEASURE-066`, `TYPE-EFFECT-066`, `CONTEXT-PRESENT-066` |
+| #718, #726 | Transactional data auditing and truthful WebSocket producer failure propagation | `DATA-AUDIT-066`, `WS-PRODUCER-066` Verified |
+| #719, #720, #723, #724 | Finite, standards-valid HTMX/map/chart JSON boundaries | `HTMX-JSON-066`, `MAP-NUMERIC-066`, `ALTAIR-JSON-066`, `PLOTLY-JSON-066` Verified |
+| #721, #722, #727 | Null-safe claim handling, bounded theme archives, and finite rate-limit windows | `CLAIM-REDACT-066`, `THEME-ARCHIVE-066`, `AUTH-RATE-066` Verified |
+| #725 | Valid future-major scaffold dependency ceilings | `PIN-CEILING-066` Verified |
+| #728–#730 | Bounded typography measure, safe effects, and contextual presentation variants | `TYPE-MEASURE-066`, `TYPE-EFFECT-066`, `CONTEXT-PRESENT-066` Verified |
 
 The authoritative itemized ledger is
 [`open-issues-066.toml`](acceptance/open-issues-066.toml). Intake also closed #613 and #140 after

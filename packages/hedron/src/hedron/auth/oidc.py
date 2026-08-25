@@ -236,11 +236,13 @@ def redact_claims(claims: OidcUserClaims | Mapping[str, Any]) -> dict[str, Any]:
     if isinstance(claims, OidcUserClaims):
         data = claims.as_dict()
     else:
+        raw_candidate = claims.get("raw", claims)
+        raw = dict(raw_candidate) if isinstance(raw_candidate, Mapping) else {}
         data = {
             "sub": claims.get("sub"),
             "email": claims.get("email"),
             "name": claims.get("name"),
-            "raw": dict(claims.get("raw", claims)),  # type: ignore[arg-type]
+            "raw": raw,
         }
     email = data.get("email")
     raw = data.get("raw") if isinstance(data.get("raw"), dict) else {}

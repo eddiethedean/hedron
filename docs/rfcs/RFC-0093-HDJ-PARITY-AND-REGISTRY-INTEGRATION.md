@@ -1,6 +1,6 @@
 # RFC-0093: HDJ parity and registry integration
 
-**Status:** Accepted / implementation in progress  
+**Status:** Accepted / implemented and verified
 **Phase:** 0.66  
 **Decision:** D-111  
 **Contract refine:** D-112  
@@ -18,8 +18,8 @@ This phase corrects coordinated-train drift: a package version bump is not evide
 implements a core feature. Every 0.66 claim requires an HDJ render-path test or an explicit
 Progressive/Deferred disposition.
 
-The HDJ foundation is implemented and verified in-tree. The phase is not release-ready: thirteen
-issue-owned gates remain Planned in the [open-issue inventory](../acceptance/open-issues-066.toml).
+The HDJ foundation and all thirteen issue-owned gates are implemented and verified in-tree. The
+[open-issue inventory](../acceptance/open-issues-066.toml) records the completed evidence.
 
 ## Problem
 
@@ -105,7 +105,7 @@ inventory-only manifest types are a loader implementation.
 Phase intake audited every open repository issue. [#613](https://github.com/eddiethedean/hedron/issues/613)
 and [#140](https://github.com/eddiethedean/hedron/issues/140) already had implementation and focused
 regression evidence on `main`, so they were closed rather than assigned new phase work. The remaining
-open issues are required 0.66 work:
+issue ownership was required 0.66 work and is now closed with regression evidence:
 
 | Issues | Outcome | Gates |
 |---|---|---|
@@ -119,6 +119,5 @@ open issues are required 0.66 work:
 
 `CONTRACT-066`, `BINDING-066`, `REGISTRY-066`, `INTERACTION-066`, `CONTEXT-066`, `PROVIDER-066`,
 `STYLE-066`, `SECURITY-066`, `COMPAT-066`, `DOCS-066`, `PKG-066`, and `REGRESS-066` establish the
-verified HDJ foundation. Every gate in `open-issues-066.toml` must also be Verified, every listed
-issue must be closed with regression evidence, and there must be zero undocumented Deferred rows
-before the phase cut.
+verified HDJ foundation. Every gate in `open-issues-066.toml` is also Verified, every listed issue
+is closed with regression evidence, and there are zero undocumented Deferred rows for the phase cut.

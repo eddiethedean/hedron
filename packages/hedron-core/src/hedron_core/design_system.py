@@ -21,6 +21,8 @@ from hedron_core.builtins.appearance import (
     PADDINGS,
     RESPONSIVE_POLICIES,
     SIZES,
+    TYPE_EFFECTS,
+    TYPE_MEASURES,
     TYPOGRAPHY_ROLES,
     WIDTHS,
     Appearance,
@@ -31,6 +33,8 @@ from hedron_core.builtins.appearance import (
     Padding,
     ResponsivePolicy,
     Size,
+    TypographyEffect,
+    TypographyMeasure,
     TypographyRole,
     Width,
     require_choice,
@@ -109,7 +113,7 @@ _FAMILY_FIELDS: Final[Mapping[StyleFamily, frozenset[str]]] = {
     "surface": frozenset({"appearance", "density", "padding", "elevation"}),
     "data": frozenset({"density", "responsive"}),
     "status": frozenset({"size", "appearance"}),
-    "content": frozenset({"role", "overflow"}),
+    "content": frozenset({"role", "overflow", "measure", "effect"}),
 }
 
 _FAMILY_COMPONENTS: Final[Mapping[StyleFamily, frozenset[str]]] = {
@@ -117,7 +121,7 @@ _FAMILY_COMPONENTS: Final[Mapping[StyleFamily, frozenset[str]]] = {
     "surface": frozenset({"Surface", "Card"}),
     "data": frozenset({"Table", "DescriptionList", "PageHeader", "FormGrid"}),
     "status": frozenset({"Badge", "Alert", "Status"}),
-    "content": frozenset({"Text", "Heading"}),
+    "content": frozenset({"Text", "Heading", "PageHeader"}),
 }
 
 # Intersection of family fields and optional props that default to None.
@@ -129,13 +133,13 @@ _COMPONENT_FIELDS: Final[Mapping[str, frozenset[str]]] = {
     "Card": frozenset({"appearance", "density", "padding", "elevation"}),
     "Table": frozenset({"density", "responsive"}),
     "DescriptionList": frozenset({"density"}),
-    "PageHeader": frozenset({"density"}),
+    "PageHeader": frozenset({"density", "measure", "effect"}),
     "FormGrid": frozenset({"density"}),
     "Badge": frozenset({"size", "appearance"}),
     "Alert": frozenset({"size", "appearance"}),
     "Status": frozenset({"size", "appearance"}),
-    "Text": frozenset({"role", "overflow"}),
-    "Heading": frozenset({"role", "overflow"}),
+    "Text": frozenset({"role", "overflow", "measure", "effect"}),
+    "Heading": frozenset({"role", "overflow", "measure", "effect"}),
 }
 
 _GEOMETRY_SHAPE: Final[Mapping[GeometryPreset, Mapping[str, str]]] = {
@@ -181,6 +185,8 @@ _FIELD_VOCABULARIES: Final[Mapping[str, tuple[str, ...]]] = {
     "responsive": RESPONSIVE_POLICIES,
     "role": TYPOGRAPHY_ROLES,
     "overflow": OVERFLOW_MODES,
+    "measure": TYPE_MEASURES,
+    "effect": TYPE_EFFECTS,
 }
 
 _RESPONSIVE_RECIPE_FIELDS: Final[Mapping[str, tuple[str, ...]]] = {
@@ -595,10 +601,17 @@ class StyleRecipe:
         extends: str | None = None,
         role: TypographyRole | None = None,
         overflow: OverflowMode | None = None,
+        measure: TypographyMeasure | None = None,
+        effect: TypographyEffect | None = None,
     ) -> StyleRecipe:
         values = {
             key: value
-            for key, value in (("role", role), ("overflow", overflow))
+            for key, value in (
+                ("role", role),
+                ("overflow", overflow),
+                ("measure", measure),
+                ("effect", effect),
+            )
             if value is not None
         }
         return cls(name=name, family="content", extends=extends, values=values)

@@ -22,10 +22,16 @@ def release_pin_bounds() -> tuple[str, str]:
             return floor, ceiling
     from hedron import __version__ as package_version
 
+    return package_version, _next_minor_ceiling(package_version)
+
+
+def _next_minor_ceiling(package_version: str) -> str:
     parts = package_version.split(".")
     if len(parts) < 2 or not parts[1].isdigit():
         raise RuntimeError(f"cannot derive scaffold pin from version {package_version!r}")
-    return package_version, f"0.{int(parts[1]) + 1}"
+    major = int(parts[0])
+    minor = int(parts[1])
+    return f"{major}.{minor + 1}"
 
 
 def scaffold_dep(package: str, *, extras: str = "") -> str:

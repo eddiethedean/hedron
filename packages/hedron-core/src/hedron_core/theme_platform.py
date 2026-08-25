@@ -52,6 +52,11 @@ _HEX = re.compile(r"^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
 _FUNCTION = re.compile(r"^(?P<name>[A-Za-z][A-Za-z0-9-]*)\((?P<body>.*)\)$", re.S)
 _UNSAFE_CSS_VALUE = re.compile(r"[;{}<>@\\]|url\s*\(|/\*", re.IGNORECASE)
 THEME_PACKAGE_COMPATIBILITY = ">=0.60,<0.64"
+MAX_THEME_ARCHIVE_BYTES = 8 * 1024 * 1024
+MAX_THEME_MEMBER_COUNT = 2
+MAX_THEME_MEMBER_BYTES = 2 * 1024 * 1024
+MAX_THEME_TOTAL_BYTES = 4 * 1024 * 1024
+MAX_THEME_COMPRESSION_RATIO = 200.0
 
 
 def _canonical(value: object) -> str:
@@ -871,6 +876,7 @@ class StyleContext:
     """Serializable recipe context with explicit-component precedence."""
 
     recipes: Mapping[str, str] = field(default_factory=dict)
+    presentation: Mapping[str, str] = field(default_factory=dict)
     parent: StyleContext | None = None
 
     def __post_init__(self) -> None:
@@ -880,6 +886,15 @@ class StyleContext:
         ):
             raise ValueError("style context recipe names must be safe identifiers")
         object.__setattr__(self, "recipes", MappingProxyType(dict(sorted(cleaned.items()))))
+        presentation = {str(key): str(value) for key, value in self.presentation.items()}
+        if any(
+            not _NAME.fullmatch(key.split(".", 1)[-1]) or not _NAME.fullmatch(value)
+            for key, value in presentation.items()
+        ):
+            raise ValueError("style context presentation names must be safe identifiers")
+        object.__setattr__(
+            self, "presentation", MappingProxyType(dict(sorted(presentation.items())))
+        )
 
     def resolve(self, family: str, explicit: str | None = None) -> str | None:
         if explicit is not None:
@@ -899,8 +914,24 @@ class StyleContext:
     def to_dict(self) -> dict[str, Any]:
         return {
             "recipes": dict(self.recipes),
+            "presentation": dict(self.presentation),
             "parent": self.parent.to_dict() if self.parent is not None else None,
         }
+
+    def resolve_presentation(self, slot: str, explicit: str | None = None) -> str | None:
+        if explicit is not None:
+            return explicit
+        current: StyleContext | None = self
+        seen: set[int] = set()
+        while current is not None:
+            marker = id(current)
+            if marker in seen:
+                raise ValueError("style context parent cycle")
+            seen.add(marker)
+            if slot in current.presentation:
+                return current.presentation[slot]
+            current = current.parent
+        return None
 
 
 @dataclass(frozen=True, slots=True)
@@ -1155,13 +1186,47 @@ def load_theme_package(archive: bytes | ThemePackage) -> ThemeSpec:
     raw = archive.archive if isinstance(archive, ThemePackage) else archive
     if not isinstance(raw, bytes):
         raise ValueError("theme package must be bytes or ThemePackage")
+    if len(raw) > MAX_THEME_ARCHIVE_BYTES:
+        raise ValueError("theme package archive exceeds the compressed-size limit")
+
+    def read_bounded(bundle: zipfile.ZipFile, name: str) -> bytes:
+        """Read a member in bounded chunks even when ZIP metadata is dishonest."""
+        output = BytesIO()
+        with bundle.open(name, "r") as member:
+            while True:
+                chunk = member.read(min(64 * 1024, MAX_THEME_MEMBER_BYTES + 1))
+                if not chunk:
+                    break
+                output.write(chunk)
+                if output.tell() > MAX_THEME_MEMBER_BYTES:
+                    raise ValueError("theme package member exceeds the decompressed-size limit")
+        return output.getvalue()
+
     try:
         with zipfile.ZipFile(BytesIO(raw)) as bundle:
-            names = set(bundle.namelist())
+            infos = bundle.infolist()
+            if len(infos) != MAX_THEME_MEMBER_COUNT:
+                raise ValueError("theme package has an invalid member count")
+            if len({info.filename for info in infos}) != len(infos):
+                raise ValueError("theme package contains duplicate members")
+            total_size = 0
+            for info in infos:
+                if info.file_size > MAX_THEME_MEMBER_BYTES:
+                    raise ValueError("theme package member exceeds the decompressed-size limit")
+                total_size += info.file_size
+                if total_size > MAX_THEME_TOTAL_BYTES:
+                    raise ValueError("theme package exceeds the total decompressed-size limit")
+                if info.file_size and info.compress_size:
+                    ratio = info.file_size / info.compress_size
+                    if ratio > MAX_THEME_COMPRESSION_RATIO:
+                        raise ValueError("theme package member exceeds the compression-ratio limit")
+            names = {info.filename for info in infos}
             if names != {"manifest.json", "theme.json"}:
                 raise ValueError("theme package contains unexpected or missing files")
-            manifest = json.loads(bundle.read("manifest.json"))
-            payload = bundle.read("theme.json")
+            manifest = json.loads(read_bounded(bundle, "manifest.json"))
+            payload = read_bounded(bundle, "theme.json")
+            if len(payload) + len(json.dumps(manifest).encode()) > MAX_THEME_TOTAL_BYTES:
+                raise ValueError("theme package exceeds the total decompressed-size limit")
     except (OSError, KeyError, ValueError, json.JSONDecodeError) as exc:
         raise ValueError("invalid theme package archive") from exc
     if not isinstance(manifest, dict) or manifest.get("schema") != "hedron.theme-package/1":
