@@ -1,6 +1,6 @@
 # Phase 0.65 refined scope and definition of done
 
-Status: **Stage 0 refined; proposal remains unaccepted**. This document narrows the release cut
+Status: **Implemented; release candidate**. This document records the bounded release cut
 so implementation can proceed without turning every missing styling idea into an unbounded theme
 project.
 
@@ -14,7 +14,7 @@ The Required 0.65 cut has three layers of responsibility:
 
 1. **Integration foundation:** declared local CSS assets, the `application` cascade layer,
    public hook metadata, namespaced tokens, static diagnostics, and provenance-preserving ejection.
-2. **Four open-issue verticals:** the exact motion, public parts/state, data-view, and native
+2. **Four issue verticals:** the exact motion, public parts/state, data-view, and native
    control slices listed below.
 3. **Cross-cutting safety:** every touched surface has keyboard/focus, forced-colors/high-contrast,
    reduced-motion, print, responsive/RTL where applicable, native/no-JS, and semantic fallbacks.

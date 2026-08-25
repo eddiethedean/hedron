@@ -323,6 +323,14 @@
     accent-color: var(--hedron-control-accent, var(--hedron-color-accent, #2563eb));
   }
 
+  :where(input[type="checkbox"]:checked, input[type="radio"]:checked, [aria-checked="true"]) {
+    accent-color: var(--hedron-control-checked, var(--hedron-control-accent, var(--hedron-color-accent)));
+  }
+
+  :where(input[type="checkbox"]:indeterminate, [aria-checked="mixed"]) {
+    accent-color: var(--hedron-control-indeterminate, var(--hedron-control-accent, var(--hedron-color-accent)));
+  }
+
   :where(input, select, textarea, button):disabled {
     cursor: not-allowed;
   }
@@ -2839,20 +2847,24 @@
   }
 
   table.hedron-table[data-hedron-density="compact"] :is(th, td) {
-    padding: 0.32rem 0.55rem;
+    padding-block: calc(0.32rem * var(--hedron-data-table-density, 1));
+    padding-inline: 0.55rem;
   }
 
   table.hedron-table[data-hedron-density="spacious"] :is(th, td) {
-    padding: 0.9rem 1.05rem;
+    padding-block: calc(0.9rem * var(--hedron-data-table-density, 1));
+    padding-inline: 1.05rem;
   }
 
   /* StyleScope density: ancestor markers drive descendant chrome. */
   .hedron-style-scope[data-hedron-density="compact"] table.hedron-table :is(th, td) {
-    padding: 0.32rem 0.55rem;
+    padding-block: calc(0.32rem * var(--hedron-data-table-density, 1));
+    padding-inline: 0.55rem;
   }
 
   .hedron-style-scope[data-hedron-density="spacious"] table.hedron-table :is(th, td) {
-    padding: 0.9rem 1.05rem;
+    padding-block: calc(0.9rem * var(--hedron-data-table-density, 1));
+    padding-inline: 1.05rem;
   }
 
   .hedron-style-scope[data-hedron-density="compact"] .hedron-page-header {
@@ -2872,7 +2884,7 @@
   }
 
   table.hedron-table :is(th, td)[data-hedron-numeric="true"] {
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: var(--hedron-data-table-numeric, tabular-nums);
     text-align: end;
   }
 
@@ -2892,13 +2904,13 @@
     position: sticky;
     inset-block-start: 0;
     z-index: var(--hedron-layer-sticky, 700);
-    background: var(--hedron-default-surface);
+    background: var(--hedron-data-table-sticky-surface, var(--hedron-default-surface));
   }
 
   table.hedron-table[data-hedron-sticky-column="true"] :is(th, td):first-child {
     position: sticky;
     inset-inline-start: 0;
-    background: var(--hedron-default-surface);
+    background: var(--hedron-data-table-sticky-surface, var(--hedron-default-surface));
   }
 
   .hedron-type-display {

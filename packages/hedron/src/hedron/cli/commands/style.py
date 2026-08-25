@@ -6,7 +6,9 @@ import argparse
 import hashlib
 import html as html_lib
 import json
+import os
 import sys
+import tempfile
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
@@ -93,19 +95,49 @@ def _resolve_design(args: argparse.Namespace, *, name: str | None = None) -> Des
 
 def _assert_project_write_path(path: Path, *, cwd: Path) -> Path:
     """Resolve ``path`` under ``cwd`` and refuse symlink write-through escapes."""
-    resolved = path.expanduser().resolve()
+    cwd = cwd.expanduser().absolute()
+    resolved = path.expanduser().absolute()
     try:
         resolved.relative_to(cwd)
     except ValueError as exc:
-        raise ValueError(f"Refusing to write outside the project root: {resolved}") from exc
+        raise ValueError(
+            f"Refusing to write outside the project root: {_redacted_path(resolved, root=cwd)}"
+        ) from exc
     cursor = resolved
     while True:
         if cursor.exists() and cursor.is_symlink():
-            raise ValueError(f"Refusing to write through symlink: {cursor}")
+            raise ValueError(
+                f"Refusing to write through symlink: {_redacted_path(cursor, root=cwd)}"
+            )
         if cursor == cwd or cursor.parent == cursor:
             break
         cursor = cursor.parent
     return resolved
+
+
+def _redacted_path(path: Path, *, root: Path | None = None) -> str:
+    """Return a stable user-facing path without exposing unrelated absolutes."""
+    root = (root or Path.cwd()).expanduser().absolute()
+    candidate = path.expanduser().absolute()
+    try:
+        return str(candidate.relative_to(root)) or "."
+    except ValueError:
+        return f"<external>/{candidate.name}"
+
+
+def _safe_write_text(path: Path, content: str, *, cwd: Path) -> None:
+    """Atomically replace a project file after validating existing parents."""
+    target = _assert_project_write_path(path, cwd=cwd)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{target.name}.", dir=target.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            stream.write(content)
+        temporary.replace(target)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
 
 
 def _plan_human(plan: DesignSystemPlan) -> str:
@@ -206,12 +238,12 @@ def _cmd_style_custom_css_check(args: argparse.Namespace) -> int:
                 rewrite_selectors=False,
             )
         except HedronError as exc:
-            findings.append({"path": str(path), "diagnostic": str(exc)})
+            findings.append({"path": _redacted_path(path), "diagnostic": str(exc)})
         except (OSError, UnicodeDecodeError, ValueError) as exc:
-            findings.append({"path": str(path), "diagnostic": str(exc)})
+            findings.append({"path": _redacted_path(path), "diagnostic": str(exc)})
     payload = {
         "schema": "hedron.style-diagnostics/1",
-        "path": str(target),
+        "path": _redacted_path(target),
         "files": len(paths),
         "ok": not findings,
         "diagnostics": findings,
@@ -243,7 +275,11 @@ def _cmd_style_eject_application(args: argparse.Namespace) -> int:
     css_path = out_dir / "application-styles.css"
     map_path = out_dir / "source_map.json"
     if not args.overwrite and (css_path.exists() or map_path.exists()):
-        print(f"Refusing to overwrite files under {out_dir} (use --overwrite)", file=sys.stderr)
+        print(
+            f"Refusing to overwrite files under {_redacted_path(out_dir, root=cwd)} "
+            "(use --overwrite)",
+            file=sys.stderr,
+        )
         return 1
     chunks: list[str] = []
     sources: list[JsonObject] = []
@@ -257,22 +293,46 @@ def _cmd_style_eject_application(args: argparse.Namespace) -> int:
             + "\n"
         )
         sources.append(style_data)
-    css_path.write_text("\n".join(chunks), encoding="utf-8")
-    map_path.write_text(
+    css_text = "\n".join(chunks)
+    blocks = [
+        {
+            "logical_id": source["logical_id"],
+            "source_digest": source["digest"],
+            "block_digest": "sha256-" + hashlib.sha256(chunk.encode()).hexdigest(),
+        }
+        for source, chunk in zip(sources, chunks, strict=True)
+    ]
+    manifest_text = json.dumps(
+        {
+            "schema": APPLICATION_STYLE_EJECTION_SCHEMA,
+            "files": [css_path.name, map_path.name],
+            "styles": sources,
+            "blocks": blocks,
+            "css_digest": "sha256-" + hashlib.sha256(css_text.encode()).hexdigest(),
+            "cascade_layers": list(CASCADE_LAYERS),
+        },
+        indent=2,
+        sort_keys=True,
+    ) + "\n"
+    try:
+        _assert_project_write_path(css_path, cwd=cwd)
+        _assert_project_write_path(map_path, cwd=cwd)
+        _safe_write_text(css_path, css_text, cwd=cwd)
+        _safe_write_text(map_path, manifest_text, cwd=cwd)
+    except (OSError, ValueError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    print(
         json.dumps(
             {
-                "schema": APPLICATION_STYLE_EJECTION_SCHEMA,
-                "files": [css_path.name, map_path.name],
-                "styles": sources,
-                "cascade_layers": list(CASCADE_LAYERS),
+                "written": [
+                    _redacted_path(css_path, root=cwd),
+                    _redacted_path(map_path, root=cwd),
+                ]
             },
             indent=2,
-            sort_keys=True,
         )
-        + "\n",
-        encoding="utf-8",
     )
-    print(json.dumps({"written": [str(css_path), str(map_path)]}, indent=2))
     return 0
 
 
@@ -281,7 +341,7 @@ def _application_style_manifest_path(path: str | None) -> Path:
     if candidate.is_dir():
         candidate = candidate / "source_map.json"
     if not candidate.is_file():
-        raise SystemExit(f"Application style manifest not found: {candidate}")
+        raise SystemExit(f"Application style manifest not found: {_redacted_path(candidate)}")
     return candidate
 
 
@@ -304,13 +364,25 @@ def _application_style_drift(manifest_path: Path) -> dict[str, Any]:
         for logical_id in set(expected) & set(actual)
         if expected[logical_id] != actual[logical_id]
     )
+    files = payload.get("files")
+    ejected_changed = False
+    ejected_missing = False
+    if isinstance(files, list) and files and isinstance(files[0], str):
+        css_path = (manifest_path.parent / files[0]).absolute()
+        if css_path.exists() and css_path.is_file() and not css_path.is_symlink():
+            actual_css_digest = "sha256-" + hashlib.sha256(css_path.read_bytes()).hexdigest()
+            ejected_changed = actual_css_digest != payload.get("css_digest")
+        else:
+            ejected_missing = True
     return {
         "schema": "hedron.style-drift/1",
-        "manifest": str(manifest_path),
+        "manifest": _redacted_path(manifest_path),
         "added": added,
         "removed": removed,
         "changed": changed,
-        "clean": not (added or removed or changed),
+        "ejected_changed": ejected_changed,
+        "ejected_missing": ejected_missing,
+        "clean": not (added or removed or changed or ejected_changed or ejected_missing),
     }
 
 

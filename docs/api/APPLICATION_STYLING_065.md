@@ -17,6 +17,8 @@ app.styles(
     layer: Literal["application", "overrides"] = "application",
     global_: bool = False,
     media: tuple[str, ...] = (),
+    allowed_roots: Sequence[str | Path] | None = None,
+    allowed_roots: Sequence[str | Path] | None = None,
 )
 ```
 
@@ -24,6 +26,10 @@ This is the implemented Stage 0 signature. `source` must resolve to a local,
 package-owned asset. `scope` emits a stable root hook such as `data-hedron-style-scope="app"`;
 `global_` is an explicit opt-in and is rejected when the source violates the global-CSS policy.
 `media` is a finite, manifest-recorded list rather than an arbitrary response-time condition.
+`allowed_roots` explicitly authorizes an installed package or workspace root when the source is
+outside the current working directory; it defaults to the current project root.
+`allowed_roots` explicitly authorizes an installed package or workspace root when the source is
+outside the current working directory; it defaults to the current project root.
 
 The registration API must accept only local, package-owned assets and produce a stylesheet manifest
 with source path, fingerprint, layer, scope, CSP disposition, and provenance. A stylesheet is not

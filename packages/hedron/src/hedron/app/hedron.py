@@ -242,6 +242,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         layer: Literal["application", "overrides"] = "application",
         global_: bool = False,
         media: tuple[str, ...] = (),
+        allowed_roots: Sequence[str | Path] | None = None,
     ) -> object:
         """Register one explicit local application stylesheet before the build seal."""
         from hedron.registration import fail_closed_late_registration
@@ -263,7 +264,7 @@ class Hedron(HedronPagesMixin, FastAPI):
             media=media,
             owner="application",
             provenance=f"{type(self).__module__}.{type(self).__name__}",
-            allowed_roots=(Path.cwd(),),
+            allowed_roots=tuple(allowed_roots or (Path.cwd(),)),
         )
         existing = tuple(getattr(self.state, "hedron_application_styles", ()))
         self.state.hedron_application_styles = (*existing, meta.logical_id)

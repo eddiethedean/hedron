@@ -4,10 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import subprocess
 import sys
 import tempfile
+import time
 import uuid
+import zipfile
 from pathlib import Path
 
 from hedron_core.diagnostics import HedronError
@@ -223,10 +227,50 @@ def _check_recipe() -> None:
 
 
 def _check_ejection() -> None:
-    parser = _text(FACADE / "cli/parser.py")
-    style = _text(FACADE / "cli/commands/style.py")
-    for needle in ("_cmd_style_update_check", "hedron.style-drift/1", "style-ejection/1"):
-        _require(needle in parser or needle in style, f"ejection workflow missing: {needle}")
+    from hedron.cli.commands.style import _application_style_drift
+    from hedron_core.registry import get_registry
+    from hedron_core.registry.application_style import register_application_style
+
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        source = root / "app.css"
+        source.write_text(".card { color: red; }", encoding="utf-8")
+        meta = register_application_style(
+            name=f"gate-eject-{uuid.uuid4().hex[:8]}",
+            source=source,
+            scope="gate",
+            allowed_roots=(root,),
+        )
+        css = root / "application-styles.css"
+        style_data = meta.to_dict(source_root=root)
+        css.write_text(
+            f"/* hedron: {meta.logical_id} source={style_data['source']} "
+            f"digest={style_data['digest']} */\n"
+            + source.read_text(encoding="utf-8").rstrip()
+            + "\n",
+            encoding="utf-8",
+        )
+        manifest = root / "source_map.json"
+        manifest.write_text(
+            json.dumps(
+                {
+                    "schema": "hedron.style-ejection/1",
+                    "files": [css.name, manifest.name],
+                    "styles": [
+                        {"logical_id": item.logical_id, "digest": item.source_digest}
+                        for item in get_registry().application_styles()
+                    ],
+                    "css_digest": "sha256-"
+                    + hashlib.sha256(css.read_bytes()).hexdigest(),
+                }
+            ),
+            encoding="utf-8",
+        )
+        _require(_application_style_drift(manifest)["clean"], "fresh ejection is not clean")
+        css.write_text(css.read_text(encoding="utf-8") + "/* edited */\n", encoding="utf-8")
+        drift = _application_style_drift(manifest)
+        _require(drift["ejected_changed"], "edited ejection was not detected")
+        _require(not drift["clean"], "edited ejection incorrectly remained clean")
 
 
 def _check_manifest_redaction() -> None:
@@ -237,6 +281,8 @@ def _check_manifest_redaction() -> None:
 
 
 def _check_release_documents() -> None:
+    import tomllib
+
     gate = _text(ROOT / "docs/acceptance/release-gate-0.65.toml")
     inventory = _text(ROOT / "docs/acceptance/application-styling-inventory-065.toml")
     contract = _text(ROOT / "docs/acceptance/application-styling-contract-065.toml")
@@ -247,6 +293,46 @@ def _check_release_documents() -> None:
         "no runtime claim" not in _text(ROOT / "docs/STATUS.md"),
         "status still denies runtime claim",
     )
+    parsed = tomllib.loads(gate)
+    _require(parsed["predecessor_satisfied"] is True, "predecessor audit is not satisfied")
+    _require(parsed["zero_deferred_at_cut"] is False, "deferred policy is misstated")
+    _require(parsed.get("deferred_policy"), "deferred policy is undocumented")
+
+
+def _check_fleet() -> None:
+    import tomllib
+
+    inventory = tomllib.loads(
+        _text(ROOT / "docs/acceptance/application-styling-inventory-065.toml")
+    )
+    capabilities = inventory.get("capability", [])
+    _require(capabilities, "capability inventory is empty")
+    for capability in capabilities:
+        disposition = capability.get("disposition")
+        expected_state = "Verified" if disposition == "Required" else "Planned"
+        _require(
+            capability.get("state") == expected_state,
+            f"invalid capability state: {capability.get('id')}",
+        )
+        if disposition in {"Progressive", "Deferred"}:
+            _require(
+                capability.get("owner"),
+                f"unowned progressive capability: {capability.get('id')}",
+            )
+            _require(
+                capability.get("fallback"),
+                f"progressive capability lacks fallback: {capability.get('id')}",
+            )
+
+
+def _check_upgrade() -> None:
+    fixture = _text(ROOT / "docs/acceptance/application-styling-upgrade-fixtures-065.md")
+    for needle in ("v0.64.1", "v0.65.0", "source_map.json", "application-styles.css"):
+        _require(needle in fixture, f"upgrade fixture missing: {needle}")
+    _require(
+        "allowed_roots" in _text(FACADE / "app/hedron.py"),
+        "package-root upgrade path missing",
+    )
 
 
 def _check_full_regression() -> None:
@@ -256,9 +342,7 @@ def _check_full_regression() -> None:
             "-m",
             "pytest",
             "-q",
-            "tests/unit/test_phase064_presentation.py",
-            "tests/unit/test_phase065_styling.py",
-            "tests/unit/test_phase065_issues_712_715.py",
+            "tests",
         ],
         cwd=ROOT,
         check=False,
@@ -292,17 +376,49 @@ def _check_motion() -> None:
         _require(name in source, f"motion recipe API missing: {name}")
 
 
+def _check_performance() -> None:
+    from hedron_core.css.compiler import compile_css
+
+    stylesheet = ".card { color: red; } .card:hover { color: blue; }"
+    started = time.perf_counter()
+    for _ in range(100):
+        compile_css(
+            stylesheet,
+            component_id="application:performance",
+            layer="application",
+            rewrite_selectors=False,
+        )
+    elapsed = time.perf_counter() - started
+    _require(elapsed < 2.0, f"CSS compile regression exceeded 2s budget: {elapsed:.3f}s")
+
+
 def _check_security() -> None:
     _check_css()
     _check_asset()
 
 
 def _check_package() -> None:
-    _check_asset()
     _require(
         (ROOT / "packages/hedron-core/pyproject.toml").is_file(),
         "core package metadata missing",
     )
+    with tempfile.TemporaryDirectory() as directory:
+        result = subprocess.run(
+            ["uv", "build", "--package", "hedron-core", "--wheel", "--out-dir", directory],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        _require(result.returncode == 0, result.stdout[-1000:] + result.stderr[-1000:])
+        wheels = sorted(Path(directory).glob("*.whl"))
+        _require(wheels, "hedron-core wheel was not produced")
+        with zipfile.ZipFile(wheels[0]) as wheel:
+            names = set(wheel.namelist())
+        _require(
+            "hedron_core/static/hedron-default.css" in names,
+            "core static stylesheet is missing from the wheel",
+        )
 
 
 CHECKS = {
@@ -321,9 +437,9 @@ CHECKS = {
     "PRESENT-065": _check_presentation,
     "A11Y-065": _check_accessibility,
     "SECURITY-065": _check_security,
-    "PERF-065": _check_manifest_redaction,
-    "FLEET-065": _check_release_documents,
-    "UPGRADE-065": _check_release_documents,
+    "PERF-065": _check_performance,
+    "FLEET-065": _check_fleet,
+    "UPGRADE-065": _check_upgrade,
     "REGRESS-065": _check_full_regression,
     "DOCS-065": _check_release_documents,
     "PKG-065": _check_package,

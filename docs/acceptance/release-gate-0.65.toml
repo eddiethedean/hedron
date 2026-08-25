@@ -19,6 +19,7 @@ budgets = "application-styling-budgets-065.toml"
 upgrade_fixture = "application-styling-upgrade-fixtures-065.md"
 stage_1_entry_satisfied = true
 zero_deferred_at_cut = false
+deferred_policy = "Explicit Deferred rows are outside the Required 0.65 cut and retain an owner, fallback, and follow-up phase."
 
 progressive_omissions = [
   "typed selector helper generation",

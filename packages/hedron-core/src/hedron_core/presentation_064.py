@@ -42,6 +42,7 @@ __all__ = [
 PRESENTATION_SCHEMA: Final = "hedron.presentation-contract/1"
 
 _IDENTIFIER = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
+_PART_IDENTIFIER = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]*$")
 _TOKEN = re.compile(r"^var\(--hedron-[A-Za-z0-9-]+(?:,\s*[^()]*)?\)$")
 _SAFE_VALUE = re.compile(r"^[A-Za-z0-9_ .,#%()/'\"+*/:-]+$")
 _BREAKPOINTS: Final = {"sm": "40rem", "md": "56rem", "lg": "72rem", "xl": "90rem"}
@@ -260,6 +261,12 @@ def _identifier(value: str, label: str) -> str:
     return value
 
 
+def _part_identifier(value: str) -> str:
+    if not isinstance(value, str) or _PART_IDENTIFIER.fullmatch(value) is None:
+        raise PresentationError("part must be a safe identifier")
+    return value
+
+
 def _css_value(value: str, *, label: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise PresentationError(f"{label} must be a non-empty CSS value")
@@ -432,7 +439,7 @@ class ScopedStyleRecipe:
 
     def __post_init__(self) -> None:
         _identifier(self.component, "component")
-        _identifier(self.part, "part")
+        _part_identifier(self.part)
         public_parts = _APPLICATION_STYLE_HOOKS.get(self.component)
         if public_parts is None or self.part not in public_parts:
             raise PresentationError(
@@ -552,7 +559,10 @@ def compile_scoped_styles(recipes: Sequence[ScopedStyleRecipe]) -> ScopedStyleBu
     for recipe in ordered:
         selector = f".{recipe.class_name}"
         if recipe.states:
-            selector += "".join(f'[data-hedron-state~="{state}"]' for state in recipe.states)
+            state_selectors = ", ".join(
+                f'[data-hedron-state~="{state}"]' for state in recipe.states
+            )
+            selector += f":is({state_selectors})"
         at_rules: list[str] = []
         selector_prefixes: list[str] = []
         for condition in sorted(
@@ -712,9 +722,9 @@ def presentation_token_manifest(theme: Theme | None = None) -> dict[str, object]
         css = bundled_css.read_text(encoding="utf-8")
         unconsumed = [key for key in declared if f"--hedron-{key.replace('.', '-')}" not in css]
     except (FileNotFoundError, ModuleNotFoundError, OSError):
-        # Source-only environments can still inspect the declared contract;
-        # packaged builds and release checks must include the bundle.
-        unconsumed = []
+        # A missing packaged bundle is evidence of an incomplete package, not
+        # evidence that all declared tokens are consumed.
+        unconsumed = list(declared)
     return {
         "schema": "hedron.presentation-token-manifest/1",
         "declared": list(declared),

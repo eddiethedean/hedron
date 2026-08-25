@@ -24,11 +24,11 @@ The implementation extends the existing asset graph, CSS compiler, theme graph, 
 manifest formats, and `hedron style` CLI. It does not create a second stylesheet registry, CSS
 language, cascade/compiler, client runtime, or behavior authority.
 
-## Readiness conditions (satisfied)
+## Readiness conditions (satisfied for the Required cut)
 
 The completed implementation records all of the following:
 
-- D-110 is accepted with the exact signature, schemas, precedence, safety policy, and Required /
+- D-110 is accepted and implemented with the exact signature, schemas, precedence, safety policy, and Required /
   Progressive boundary from the [refined scope](../acceptance/application-styling-scope-065.md).
 - The `v0.64.1` build, unit, browser, docs, and package checks are green.
 - Issue bodies for #690, #693, #694, and #698 are mapped into the issue-to-gate matrix with

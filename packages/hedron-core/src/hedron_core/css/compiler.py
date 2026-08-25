@@ -50,6 +50,16 @@ _PRIVATE_SELECTOR_RE = re.compile(r"\.(?:hedron|h)-[A-Za-z0-9_-]+")
 _BEHAVIOR_PROPERTIES = frozenset({"content", "pointer-events", "user-select"})
 
 
+def _decode_css_url(value: str) -> str:
+    """Decode CSS escapes used to disguise a URL scheme in an import string."""
+    def replace_hex(match: re.Match[str]) -> str:
+        codepoint = int(match.group(1), 16)
+        return chr(codepoint) if codepoint else "�"
+
+    value = re.sub(r"\\([0-9a-fA-F]{1,6})(?:\r\n|[ \t\r\n\f])?", replace_hex, value)
+    return re.sub(r"\\([^\r\n])", r"\1", value)
+
+
 @dataclass(frozen=True, slots=True)
 class CssCompileResult:
     css: str
@@ -423,9 +433,10 @@ def _check_urls_in_sheet(
             prelude = check_value(prelude)
             match = _IMPORT_TARGET_RE.match(prelude.strip())
             if match:
-                url = match.group(2) or match.group(4) or ""
-                parsed = urlparse(url.strip())
-                if parsed.scheme in {"http", "https"} or url.startswith("//"):
+                url = _decode_css_url((match.group(2) or match.group(4) or "").strip())
+                parsed = urlparse(url)
+                remote = parsed.scheme in {"http", "https"} or url.startswith("//")
+                if remote and not allow_remote:
                     raise error(
                         HED_CSS_REMOTE,
                         title="Remote CSS import rejected",

@@ -116,6 +116,35 @@ def test_phase065_rejects_quoted_remote_imports() -> None:
         )
 
 
+def test_phase065_rejects_escaped_remote_imports_and_honors_remote_opt_in() -> None:
+    with pytest.raises(HedronError, match="Remote CSS import rejected"):
+        compile_css(
+            '@import "h\\74 tps://example.com/theme.css";',
+            component_id="application:workspace",
+            layer="application",
+            rewrite_selectors=False,
+        )
+    result = compile_css(
+        '@import "https://example.com/theme.css";',
+        component_id="component:workspace",
+        layer="components",
+        allow_remote=True,
+        rewrite_selectors=False,
+    )
+    assert "https://example.com/theme.css" in result.css
+
+
+def test_phase065_ejection_write_path_rejects_symlinked_destinations(tmp_path) -> None:
+    from hedron.cli.commands.style import _assert_project_write_path
+
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    link = tmp_path / "output"
+    link.symlink_to(outside, target_is_directory=True)
+    with pytest.raises(ValueError, match="symlink"):
+        _assert_project_write_path(link / "application-styles.css", cwd=tmp_path)
+
+
 def test_phase065_rejects_private_and_behavior_application_css() -> None:
     with pytest.raises(HedronError, match="Private Hedron selector rejected"):
         compile_css(
@@ -196,3 +225,18 @@ def test_phase065_hook_data_rejects_private_or_unknown_states() -> None:
         assert "unknown application style hook" in str(exc)
     else:  # pragma: no cover - assertion clarity
         raise AssertionError("private hooks must be rejected")
+
+
+def test_phase065_dotted_public_hook_compiles_as_an_or_state_selector() -> None:
+    from hedron_core import ScopedStyleRecipe, compile_scoped_styles
+
+    recipe = ScopedStyleRecipe(
+        component="AppShell",
+        part="nav.link",
+        states=("current", "disabled"),
+        declarations={"opacity": "0.5"},
+    )
+    css = compile_scoped_styles((recipe,)).css
+    assert "nav.link" in css
+    assert '[data-hedron-state~="current"]' in css
+    assert '[data-hedron-state~="disabled"]' in css

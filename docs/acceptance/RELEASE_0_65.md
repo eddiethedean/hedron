@@ -1,7 +1,8 @@
 # Release acceptance — phase 0.65 integrated styling platform
 
-Status: **Release ready for v0.65.0**. The implementation and evidence commands pass against the
-current `v0.64.1` baseline, and the coordinated package metadata is cut to `v0.65.0`.
+Status: **Release candidate for v0.65.0**. The implementation and evidence commands pass against
+the current `v0.64.1` baseline. Explicit Progressive/Deferred breadth remains outside the Required
+cut and is tracked with owners and fallbacks.
 
 - RFC: [RFC-0092](../rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md)
 - Implementation: [APPLICATION_STYLING_065](../implementation/APPLICATION_STYLING_065.md)

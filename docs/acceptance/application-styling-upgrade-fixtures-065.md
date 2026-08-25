@@ -1,6 +1,12 @@
 # Phase 0.65 upgrade fixtures
 
-Status: **Verified**. These fixtures are covered by the 0.65 focused regression and evidence checks.
+Status: **Verified**. These fixtures are covered by the 0.65 regression and evidence checks.
+
+The target package line for every fixture is `v0.65.0`; the baseline remains the published/in-tree
+`v0.64.1` compatibility point.
+
+The ejection fixture artifacts are `application-styles.css` and its `source_map.json` sidecar;
+the sidecar records source and generated-content digests so edited output is reported as drift.
 
 | Fixture | Baseline | Expected result |
 |---|---|---|
