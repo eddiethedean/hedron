@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.65"
-status = "Planned"
+status = "Verified"
 planning_baseline = "v0.64.1"
 public_upgrade_source = "v0.64.0"
 required_predecessor = "v0.64.1"
@@ -17,7 +17,7 @@ inventory = "application-styling-inventory-065.toml"
 contract = "application-styling-contract-065.toml"
 budgets = "application-styling-budgets-065.toml"
 upgrade_fixture = "application-styling-upgrade-fixtures-065.md"
-stage_1_entry_satisfied = false
+stage_1_entry_satisfied = true
 zero_deferred_at_cut = false
 
 progressive_omissions = [
@@ -37,147 +37,147 @@ progressive_omissions = [
 
 [[evidence]]
 id = "CONTRACT-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate CONTRACT-065 --verify"
 owner = "core-styling"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "ASSET-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate ASSET-065 --verify"
 owner = "assets"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "LAYER-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate LAYER-065 --verify"
 owner = "core-styling"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "TOKEN-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate TOKEN-065 --verify"
 owner = "theme"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "HOOKS-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate HOOKS-065 --verify"
 owner = "components"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "RECIPE-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate RECIPE-065 --verify"
 owner = "core-styling"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "CSS-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate CSS-065 --verify"
 owner = "compiler"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "INSPECT-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate INSPECT-065 --verify"
 owner = "tooling"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "EJECT-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate EJECT-065 --verify"
 owner = "tooling"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "MOTION-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate MOTION-065 --verify"
 owner = "presentation"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "CONTROLS-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate CONTROLS-065 --verify"
 owner = "components"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "DATA-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate DATA-065 --verify"
 owner = "data"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "PRESENT-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate PRESENT-065 --verify"
 owner = "presentation"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "A11Y-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate A11Y-065 --verify"
 owner = "a11y"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "SECURITY-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate SECURITY-065 --verify"
 owner = "security"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "PERF-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate PERF-065 --verify"
 owner = "performance"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "FLEET-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate FLEET-065 --verify"
 owner = "fleet"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "UPGRADE-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate UPGRADE-065 --verify"
 owner = "release"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "REGRESS-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate REGRESS-065 --verify"
 owner = "release"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "DOCS-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate DOCS-065 --verify"
 owner = "docs"
-ci_job = "planned"
+ci_job = "evidence"
 
 [[evidence]]
 id = "PKG-065"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_065.py --gate PKG-065 --verify"
 owner = "packaging"
-ci_job = "planned"
+ci_job = "evidence"

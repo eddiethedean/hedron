@@ -55,8 +55,11 @@ from hedron_core.builtins import (
     ActionGroup,
     Alert,
     AmbientBackdrop,
+    AmbientCanvas,
+    AmbientLayer,
     AppFooter,
     AppShell,
+    AppShellChrome,
     Aside,
     AsyncRegion,
     AttrHost,
@@ -434,6 +437,7 @@ from hedron_core.prepare import (
 )
 from hedron_core.presentation_064 import (
     PRESENTATION_SCHEMA,
+    PRESENTATION_TOKEN_MANIFEST,
     PresentationContract,
     PresentationError,
     ResponsiveCondition,
@@ -442,6 +446,7 @@ from hedron_core.presentation_064 import (
     compile_scoped_styles,
     component_presentation_manifest,
     presentation_contract,
+    presentation_token_manifest,
     presentation_tokens,
 )
 from hedron_core.react_island import (
@@ -625,7 +630,7 @@ from hedron_core.visualization_theme import (
     resolve_visualization_theme,
 )
 
-__version__ = "0.64.1"
+__version__ = "0.65.0"
 
 __all__ = [
     "__version__",
@@ -643,7 +648,9 @@ __all__ = [
     "AddressableDescriptor",
     "AddressableMeta",
     "Alert",
+    "AmbientCanvas",
     "AmbientBackdrop",
+    "AmbientLayer",
     "allow_htmx_eval",
     "ApplicabilityInterval",
     "application_spec_to_asset_ref",
@@ -654,6 +661,7 @@ __all__ = [
     "approved_headers",
     "begin_operation",
     "AppShell",
+    "AppShellChrome",
     "NavStatus",
     "EnvironmentBanner",
     "Brand",
@@ -1178,6 +1186,7 @@ __all__ = [
     "WorkflowPort",
     "WorkflowRunResult",
     "PRESENTATION_SCHEMA",
+    "PRESENTATION_TOKEN_MANIFEST",
     "PresentationContract",
     "PresentationError",
     "ResponsiveCondition",
@@ -1186,6 +1195,7 @@ __all__ = [
     "component_presentation_manifest",
     "compile_scoped_styles",
     "presentation_contract",
+    "presentation_token_manifest",
     "presentation_tokens",
     "HEDRON_LIFECYCLE_SCHEMA",
     "HedronLifecycleEvent",

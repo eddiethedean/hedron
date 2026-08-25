@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
+from dataclasses import dataclass
 from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
@@ -84,6 +86,38 @@ class Surface(Component[SurfaceProps]):
         )
 
 
+@dataclass(frozen=True, slots=True)
+class AmbientLayer:
+    """A bounded, decorative layer for an :class:`AmbientCanvas`.
+
+    Layers are data-only and are always rendered behind semantic children. The
+    finite vocabulary keeps the resulting CSS token-addressable and exportable.
+    """
+
+    pattern: Literal["radial", "dots", "grid", "mesh"] = "radial"
+    tone: Literal["accent", "muted", "neutral"] = "accent"
+    intensity: Literal["subtle", "soft"] = "subtle"
+    placement: Literal["flow", "surface", "fixed-canvas"] = "surface"
+    order: int = 0
+    scale: Literal["sm", "md", "lg"] = "md"
+
+    def __post_init__(self) -> None:
+        for value, choices, label in (
+            (self.pattern, ("radial", "dots", "grid", "mesh"), "pattern"),
+            (self.tone, ("accent", "muted", "neutral"), "tone"),
+            (self.intensity, ("subtle", "soft"), "intensity"),
+            (self.placement, ("flow", "surface", "fixed-canvas"), "placement"),
+            (self.scale, ("sm", "md", "lg"), "scale"),
+        ):
+            require_choice(value, choices, label=label)
+        if (
+            isinstance(self.order, bool)
+            or not isinstance(self.order, int)
+            or not 0 <= self.order <= 8
+        ):
+            raise ValueError("AmbientLayer order must be an integer between 0 and 8")
+
+
 class AmbientBackdropProps(ElementProps):
     pattern: Literal["radial", "dots", "grid", "mesh"] = "radial"
     tone: Literal["accent", "muted", "neutral"] = "accent"
@@ -103,6 +137,7 @@ class AmbientBackdrop(Component[AmbientBackdropProps]):
         pattern: Literal["radial", "dots", "grid", "mesh"] = "radial",
         tone: Literal["accent", "muted", "neutral"] = "accent",
         intensity: Literal["subtle", "soft"] = "subtle",
+        layers: Sequence[AmbientLayer] | None = None,
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -111,6 +146,12 @@ class AmbientBackdrop(Component[AmbientBackdropProps]):
         require_choice(pattern, ("radial", "dots", "grid", "mesh"), label="pattern")
         require_choice(tone, ("accent", "muted", "neutral"), label="tone")
         require_choice(intensity, ("subtle", "soft"), label="intensity")
+        resolved_layers = tuple(layers or ())
+        for layer in resolved_layers:
+            if not isinstance(layer, AmbientLayer):
+                raise TypeError("AmbientBackdrop layers must contain AmbientLayer values")
+        if not resolved_layers:
+            resolved_layers = (AmbientLayer(pattern=pattern, tone=tone, intensity=intensity),)
         super().__init__(
             AmbientBackdropProps(
                 pattern=pattern,
@@ -122,24 +163,39 @@ class AmbientBackdrop(Component[AmbientBackdropProps]):
                 **kwargs,
             )
         )
+        self._layers = tuple(sorted(resolved_layers, key=lambda layer: layer.order))
         self._children = collect_children(*nodes, children=children)
 
     def render(self) -> NodeLike:
-        return html.div(
+        decorations = tuple(
             html.div(
                 aria={"hidden": "true"},
                 class_="hedron-ambient-backdrop-decoration",
                 data={
-                    "hedron-ambient-pattern": self.props.pattern,
-                    "hedron-ambient-tone": self.props.tone,
-                    "hedron-ambient-intensity": self.props.intensity,
+                    "hedron-ambient-layer": str(index),
+                    "hedron-ambient-pattern": layer.pattern,
+                    "hedron-ambient-tone": layer.tone,
+                    "hedron-ambient-intensity": layer.intensity,
+                    "hedron-ambient-placement": layer.placement,
+                    "hedron-ambient-order": layer.order,
+                    "hedron-ambient-scale": layer.scale,
                 },
-            ),
+            )
+            for index, layer in enumerate(self._layers)
+        )
+        return html.div(
+            *decorations,
             *self._children,
             id=self.props.id,
             class_=class_names("hedron-ambient-backdrop", self.props.class_),
             data={"hedron-ambient-backdrop": "true", "hedron-mark": self.props.mark},
         )
+
+
+class AmbientCanvas(AmbientBackdrop):
+    """Document-level alias for composing ordered ambient layers."""
+
+    logical_name = "AmbientCanvas"
 
 
 class CardProps(ElementProps):

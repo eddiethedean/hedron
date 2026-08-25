@@ -1,7 +1,8 @@
 # Integrated styling and application CSS (proposed 0.65 API)
 
-Status: **Proposed; not implemented or Supported.** The exact names below are contract candidates
-for Stage 0 refinement under D-110. The Required/Progressive boundary is recorded in the
+Status: **Implemented for the bounded 0.65 issue slices.** The original application-CSS surface
+remains staged under D-110; the four follow-up presentation contracts below are implemented and
+covered by the 0.65 release evidence. The Required/Progressive boundary is recorded in the
 [refined scope](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/application-styling-scope-065.md).
 See [RFC-0092](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md).
 
@@ -99,6 +100,19 @@ hedron style update --check
 Diagnostics identify the winning declaration, layer, selector/hook, token, source asset, and
 fallback. Output is deterministic and redacted. Ejected blocks retain source-map and manifest
 provenance; generated blocks are never silently overwritten by `update`.
+
+## Implemented issue slices #712–#715
+
+- `AmbientLayer` and `AmbientCanvas` provide ordered, inert document layers. `AmbientBackdrop`
+  accepts `layers=` as a compatibility entry point.
+- `AppShellChrome` is passed as `AppShell(chrome=...)` and emits finite geometry-policy markers
+  for presets, sticky behavior, offsets, gaps, insets, spacing, and density.
+- `presentation_token_manifest()` reports declared, consumed, overridden, and unconsumed built-in
+  presentation tokens. Bundled CSS consumes the emitted typography, layout, geometry, motion, data,
+  and control variables with compatibility fallbacks.
+- `ResponsiveCondition` supports `viewport-max`, `container-max`, `viewport-range`, and
+  `container-range` (for example `md-to-lg`), with deterministic ordering and contradiction
+  diagnostics.
 
 ## Required behavior contracts
 

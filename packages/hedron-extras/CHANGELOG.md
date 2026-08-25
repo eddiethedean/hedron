@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.65.0] — 2026-08-25
+
+### Added
+- Integrated application styling platform: registered custom CSS, cascade layers, stable hooks, bounded recipes, diagnostics, and provenance-preserving ejection.
+
+### Changed
+- Coordinated train cut for Phase 0.65.
+
 ## [0.64.1] — 2026-08-25
 
 ### Fixed

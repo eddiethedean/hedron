@@ -26,7 +26,7 @@ from hedron_elements.state import (
 )
 from hedron_elements.transfer import DraftTransferEnvelope, subject_fingerprint
 
-__version__ = "0.64.1"
+__version__ = "0.65.0"
 
 __all__ = [
     "AUTHOR_SURFACES",

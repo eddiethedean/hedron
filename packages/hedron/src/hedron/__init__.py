@@ -149,8 +149,11 @@ from hedron_core import (
     ActionTransitionError,
     Alert,
     AmbientBackdrop,
+    AmbientCanvas,
+    AmbientLayer,
     AppFooter,
     AppShell,
+    AppShellChrome,
     Aside,
     AsyncPhase,
     AsyncRegion,
@@ -534,7 +537,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.64.1"
+__version__ = "0.65.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -559,11 +562,14 @@ __all__ = [
     "ActionRegistry",
     "addressable",
     "Alert",
+    "AmbientCanvas",
     "AmbientBackdrop",
+    "AmbientLayer",
     "apply_color_mode_cookie",
     "approved_headers",
     "apply_navigation_headers",
     "AppShell",
+    "AppShellChrome",
     "AsyncRegion",
     "Surface",
     "ResourceRow",

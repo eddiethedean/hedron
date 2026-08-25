@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
@@ -579,12 +580,59 @@ class MainPanel(Component[MainPanelProps]):
         return html.main(*self._kids, **attrs)
 
 
+@dataclass(frozen=True, slots=True)
+class AppShellChrome:
+    """Finite geometry policy for AppShell chrome.
+
+    The policy is expressed as data attributes so themes can change shell
+    geometry without reaching into Hedron's private selectors.
+    """
+
+    preset: Literal["compact", "standard", "editorial"] = "standard"
+    header_behavior: Literal["flow", "sticky", "static"] = "flow"
+    nav_behavior: Literal["flow", "sticky"] = "sticky"
+    nav_offset: Literal["none", "banner", "header"] = "header"
+    shell_gap: Literal["compact", "standard", "editorial"] = "standard"
+    content_inset: Literal["none", "compact", "standard", "wide"] = "standard"
+    banner_spacing: Literal["tight", "standard", "loose"] = "standard"
+    header_density: Literal["compact", "standard", "spacious"] = "standard"
+    footer_density: Literal["compact", "standard", "spacious"] = "standard"
+
+    def __post_init__(self) -> None:
+        choices = {
+            "preset": ("compact", "standard", "editorial"),
+            "header_behavior": ("flow", "sticky", "static"),
+            "nav_behavior": ("flow", "sticky"),
+            "nav_offset": ("none", "banner", "header"),
+            "shell_gap": ("compact", "standard", "editorial"),
+            "content_inset": ("none", "compact", "standard", "wide"),
+            "banner_spacing": ("tight", "standard", "loose"),
+            "header_density": ("compact", "standard", "spacious"),
+            "footer_density": ("compact", "standard", "spacious"),
+        }
+        for name, allowed in choices.items():
+            require_choice(getattr(self, name), allowed, label=f"chrome.{name}")
+        if self.preset == "compact" and (
+            self.header_density == "spacious" or self.footer_density == "spacious"
+        ):
+            raise ValueError("compact AppShell chrome cannot use spacious density")
+
+
 class AppShellProps(Props):
     panel_id: str = "main-panel"
     class_: str | None = None
     id: str | None = None
     content_width: str = "default"
     mobile_collapse: bool = True
+    chrome_preset: str = "standard"
+    chrome_header_behavior: str = "flow"
+    chrome_nav_behavior: str = "sticky"
+    chrome_nav_offset: str = "header"
+    chrome_shell_gap: str = "standard"
+    chrome_content_inset: str = "standard"
+    chrome_banner_spacing: str = "standard"
+    chrome_header_density: str = "standard"
+    chrome_footer_density: str = "standard"
 
 
 NavGroups = Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]]
@@ -626,11 +674,13 @@ class AppShell(Component[AppShellProps]):
         app_footer: NodeLike = None,
         content_width: str = "default",
         mobile_collapse: bool = True,
+        chrome: AppShellChrome | None = None,
         class_: str | None = None,
         id: str | None = None,
         **kwargs: object,
     ) -> None:
         require_choice(content_width, CONTENT_WIDTHS, label="content_width")
+        resolved_chrome = chrome or AppShellChrome()
         super().__init__(
             AppShellProps(
                 panel_id=panel_id,
@@ -638,6 +688,15 @@ class AppShell(Component[AppShellProps]):
                 id=id,
                 content_width=content_width,
                 mobile_collapse=mobile_collapse,
+                chrome_preset=resolved_chrome.preset,
+                chrome_header_behavior=resolved_chrome.header_behavior,
+                chrome_nav_behavior=resolved_chrome.nav_behavior,
+                chrome_nav_offset=resolved_chrome.nav_offset,
+                chrome_shell_gap=resolved_chrome.shell_gap,
+                chrome_content_inset=resolved_chrome.content_inset,
+                chrome_banner_spacing=resolved_chrome.banner_spacing,
+                chrome_header_density=resolved_chrome.header_density,
+                chrome_footer_density=resolved_chrome.footer_density,
                 **kwargs,
             )
         )
@@ -706,6 +765,17 @@ class AppShell(Component[AppShellProps]):
 
     def render(self) -> NodeLike:
         panel = MainPanel(*self._body, id=self.props.panel_id)
+        chrome = AppShellChrome(
+            preset=self.props.chrome_preset,  # type: ignore[arg-type]
+            header_behavior=self.props.chrome_header_behavior,  # type: ignore[arg-type]
+            nav_behavior=self.props.chrome_nav_behavior,  # type: ignore[arg-type]
+            nav_offset=self.props.chrome_nav_offset,  # type: ignore[arg-type]
+            shell_gap=self.props.chrome_shell_gap,  # type: ignore[arg-type]
+            content_inset=self.props.chrome_content_inset,  # type: ignore[arg-type]
+            banner_spacing=self.props.chrome_banner_spacing,  # type: ignore[arg-type]
+            header_density=self.props.chrome_header_density,  # type: ignore[arg-type]
+            footer_density=self.props.chrome_footer_density,  # type: ignore[arg-type]
+        )
         children: list[NodeLike] = []
         if self._banner is not None:
             children.append(
@@ -731,6 +801,15 @@ class AppShell(Component[AppShellProps]):
         data: dict[str, str | bool | int | float | None] = {
             "hedron-app-shell": "true",
             "hedron-content-width": self.props.content_width,
+            "hedron-shell-preset": chrome.preset,
+            "hedron-shell-header": chrome.header_behavior,
+            "hedron-shell-nav": chrome.nav_behavior,
+            "hedron-shell-nav-offset": chrome.nav_offset,
+            "hedron-shell-gap": chrome.shell_gap,
+            "hedron-shell-content-inset": chrome.content_inset,
+            "hedron-shell-banner-spacing": chrome.banner_spacing,
+            "hedron-shell-header-density": chrome.header_density,
+            "hedron-shell-footer-density": chrome.footer_density,
         }
         if not self.props.mobile_collapse:
             data["hedron-mobile-collapse"] = "off"

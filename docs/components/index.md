@@ -60,7 +60,7 @@ Text, links, media, code, lists, tables, and Markdown.
 
 Cards, labels, alerts, and loading placeholders.
 
-[`Card`](card.md) · [`Surface`](surface.md) · [`StyleScope`](style-scope.md) · [`Badge`](badge.md) · [`Alert`](alert.md) · [`Skeleton`](skeleton.md) · [`StateView`](state-view.md) · [`Carousel`](carousel.md) · [`ContextMenu`](context-menu.md) · [`Help`](help.md) · [`Popover`](popover.md) · [`Timeline`](timeline.md) · [`Tooltip`](tooltip.md) · [`AmbientBackdrop`](ambient-backdrop.md)
+[`Card`](card.md) · [`Surface`](surface.md) · [`StyleScope`](style-scope.md) · [`Badge`](badge.md) · [`Alert`](alert.md) · [`Skeleton`](skeleton.md) · [`StateView`](state-view.md) · [`Carousel`](carousel.md) · [`ContextMenu`](context-menu.md) · [`Help`](help.md) · [`Popover`](popover.md) · [`Timeline`](timeline.md) · [`Tooltip`](tooltip.md) · [`AmbientCanvas`](ambient-canvas.md) · [`AmbientBackdrop`](ambient-backdrop.md)
 
 ## Controls
 

@@ -1,6 +1,6 @@
 [project]
 name = "hedron-core"
-version = "0.64.1"
+version = "0.65.0"
 description = "Framework-neutral rendering core for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"

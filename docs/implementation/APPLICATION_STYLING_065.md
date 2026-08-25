@@ -1,8 +1,8 @@
 # Phase 0.65 implementation — integrated styling platform and application CSS
 
-Status: **Implemented; pre-cut release readiness validated**. Runtime, build, CLI, issue slices,
-tests, and evidence checks are present. The package version remains `0.64.1`; this packet does not
-authorize a version bump or publication.
+Status: **Implemented; release readiness validated for v0.65.0**. Runtime, build, CLI, issue
+slices, tests, evidence checks, and coordinated package metadata are complete. Publication remains
+owned by the release workflow.
 
 - Authority: [RFC-0092](../rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md)
 - Proposed decisions: D-109 (phase scope), D-110 (Stage 0 contract refinement)

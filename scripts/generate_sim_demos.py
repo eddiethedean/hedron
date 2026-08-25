@@ -14,6 +14,16 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 INCLUDES = DOCS / "includes" / "sim"
 
+# Make the generator source-first when invoked from a checkout. CI and local
+# test runners may have an older installed Hedron distribution on sys.path.
+for _source in (
+    ROOT / "packages/hedron-core/src",
+    ROOT / "packages/hedron/src",
+    ROOT / "packages/hedron-sim/src",
+    ROOT / "packages/hedron-maps/src",
+):
+    sys.path.insert(0, str(_source))
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)

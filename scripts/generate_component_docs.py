@@ -15,6 +15,7 @@ import ast
 import difflib
 import inspect
 import re
+import sys
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,6 +23,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs" / "components"
 DEMOS = ROOT / "docs"
+
+# Resolve signatures and examples from the checkout, not a stale installed
+# release, when this script is run directly.
+for _source in (
+    ROOT / "packages/hedron-core/src",
+    ROOT / "packages/hedron/src",
+    ROOT / "packages/hedron-data/src",
+    ROOT / "packages/hedron-charts/src",
+):
+    sys.path.insert(0, str(_source))
 
 
 def _format_sim_live_demo(sim_name: str) -> str:
@@ -2768,6 +2779,20 @@ COMPONENTS = (
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
     ),
     ComponentDoc(
+        "AmbientCanvas",
+        "surfaces",
+        "Document-level inert canvas for composing ordered decorative layers.",
+        "AmbientCanvas(*nodes, layers=(), id=None, class_=None, mark=None)",
+        "AmbientCanvas(Text('Dashboard'), layers=(AmbientLayer(pattern='mesh', order=1),))",
+        (
+            p("nodes / children", "NodeLike", "Semantic page content rendered above the canvas."),
+            p("layers", "Sequence[AmbientLayer]", "Ordered bounded ambient layer policies."),
+        ),
+        "AmbientCanvas is the document-level composition name for AmbientBackdrop. Its layers are aria-hidden, pointer-inert, theme-tokenized, and removed for print, forced colors, and reduced transparency.",
+        "Keep meaningful content outside the decorative layers and ensure contrast does not depend on the canvas.",
+        "Do not pass arbitrary gradients, CSS, or interactive content as a layer.",
+    ),
+    ComponentDoc(
         "AmbientBackdrop",
         "surfaces",
         "Finite decorative backdrop that remains inert and outside content semantics.",
@@ -3581,6 +3606,8 @@ def discover_builtin_components() -> set[str]:
         "TYPOGRAPHY_ROLES",
         "WIDTHS",
         "TableColumn",  # Pydantic model for Table metadata, not a Component
+        "AmbientLayer",  # Data-only ambient canvas policy, not a Component
+        "AppShellChrome",  # Data-only shell geometry policy, not a Component
         "ThemePreference",
         "action_attrs",
         "oob_swap",

@@ -38,6 +38,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     :root { --hedron-motion-duration: 0ms; }
+    :where(button, input, select, textarea, .hedron-swap-reveal, .hedron-process-flow) {
+      transition-duration: var(--hedron-motion-instant, 0ms) !important;
+      animation-duration: var(--hedron-motion-instant, 0ms) !important;
+    }
   }
 
   @media (prefers-color-scheme: dark) {
@@ -574,13 +578,13 @@
 
   form {
     display: grid;
-    gap: 1rem;
+    gap: var(--hedron-space-4, 1rem);
   }
 
   label,
   legend {
     color: var(--hedron-color-fg, var(--hedron-default-fg));
-    font-size: 0.9rem;
+    font-size: var(--hedron-type-label-size, 0.9rem);
     font-weight: 650;
   }
 
@@ -588,16 +592,17 @@
   select,
   textarea {
     width: 100%;
-    min-height: 2.65rem;
-    padding: 0.62rem 0.75rem;
+    min-height: var(--hedron-geometry-control-height, 2.65rem);
+    padding: var(--hedron-space-2, 0.5rem) var(--hedron-space-3, 0.75rem);
     border: 1px solid var(--hedron-default-border-strong);
-    border-radius: var(--hedron-default-radius-sm);
+    border-radius: var(--hedron-geometry-radius-sm, var(--hedron-default-radius-sm));
+    appearance: var(--hedron-control-appearance, auto);
     background: var(--hedron-default-surface);
     color: var(--hedron-color-fg, var(--hedron-default-fg));
     box-shadow: inset 0 1px 2px rgb(15 23 42 / 4%);
     transition:
-      border-color var(--hedron-motion-duration, 150ms),
-      box-shadow var(--hedron-motion-duration, 150ms);
+      border-color var(--hedron-motion-standard, var(--hedron-motion-duration, 150ms)) var(--hedron-motion-easing-standard, ease-out),
+      box-shadow var(--hedron-motion-standard, var(--hedron-motion-duration, 150ms)) var(--hedron-motion-easing-standard, ease-out);
   }
 
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):hover,
@@ -651,13 +656,13 @@
   .hedron-button,
   .hedron-download-button {
     display: inline-flex;
-    min-height: 2.55rem;
+    min-height: var(--hedron-geometry-hit-target, 2.55rem);
     align-items: center;
     justify-content: center;
-    gap: 0.45rem;
-    padding: 0.58rem 0.95rem;
+    gap: var(--hedron-space-2, 0.5rem);
+    padding: var(--hedron-space-2, 0.5rem) var(--hedron-space-4, 1rem);
     border: 1px solid transparent;
-    border-radius: var(--hedron-default-radius-sm);
+    border-radius: var(--hedron-geometry-radius-sm, var(--hedron-default-radius-sm));
     background: var(--hedron-color-accent, var(--hedron-default-accent));
     color: var(--hedron-color-on-accent, var(--hedron-default-on-accent));
     font-weight: 680;
@@ -666,9 +671,9 @@
     cursor: pointer;
     box-shadow: 0 1px 2px rgb(15 23 42 / 12%);
     transition:
-      transform var(--hedron-motion-duration, 150ms),
-      background var(--hedron-motion-duration, 150ms),
-      border-color var(--hedron-motion-duration, 150ms);
+      transform var(--hedron-motion-elevate, var(--hedron-motion-duration, 150ms)),
+      background var(--hedron-motion-standard, var(--hedron-motion-duration, 150ms)),
+      border-color var(--hedron-motion-standard, var(--hedron-motion-duration, 150ms));
   }
 
   button:hover,
@@ -750,23 +755,45 @@
     display: grid;
     grid-template-columns: minmax(12.5rem, var(--hedron-nav-width, 15rem)) minmax(0, 1fr);
     align-items: start;
-    gap: clamp(1.5rem, 4vw, 3.25rem);
+    gap: var(--hedron-app-shell-gap, var(--hedron-space-6, clamp(1.5rem, 4vw, 3.25rem)));
   }
+
+  .hedron-app-shell[data-hedron-shell-preset="compact"] { --hedron-app-shell-gap: var(--hedron-space-4, 1rem); }
+  .hedron-app-shell[data-hedron-shell-preset="editorial"] { --hedron-app-shell-gap: var(--hedron-space-6, 2rem); }
+  .hedron-app-shell[data-hedron-shell-gap="compact"] { --hedron-app-shell-gap: var(--hedron-space-4, 1rem); }
+  .hedron-app-shell[data-hedron-shell-gap="standard"] { --hedron-app-shell-gap: var(--hedron-space-5, 1.5rem); }
+  .hedron-app-shell[data-hedron-shell-gap="editorial"] { --hedron-app-shell-gap: var(--hedron-space-6, 2rem); }
+  .hedron-app-shell[data-hedron-shell-content-inset="none"] { --hedron-shell-content-inset: 0; }
+  .hedron-app-shell[data-hedron-shell-content-inset="compact"] { --hedron-shell-content-inset: var(--hedron-space-3, 0.75rem); }
+  .hedron-app-shell[data-hedron-shell-content-inset="standard"] { --hedron-shell-content-inset: var(--hedron-space-4, 1rem); }
+  .hedron-app-shell[data-hedron-shell-content-inset="wide"] { --hedron-shell-content-inset: var(--hedron-space-6, 2rem); }
 
   .hedron-app-shell-nav {
     position: sticky;
-    top: 1.25rem;
+    top: var(--hedron-app-shell-nav-offset, 1.25rem);
     display: flex;
     min-width: 0;
     flex-direction: column;
-    gap: 0.3rem;
-    padding: 0.65rem;
+    gap: var(--hedron-space-1, 0.25rem);
+    padding: var(--hedron-space-3, 0.75rem);
     border: 1px solid var(--hedron-default-border);
-    border-radius: var(--hedron-default-radius-lg);
-    background: color-mix(in srgb, var(--hedron-default-surface) 94%, transparent);
+    border-radius: var(--hedron-geometry-radius-lg, var(--hedron-default-radius-lg));
+    background: color-mix(in srgb, var(--hedron-default-surface) var(--hedron-surface-glass-opacity, 72%), transparent);
     box-shadow: var(--hedron-default-shadow);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(var(--hedron-surface-glass-blur, 12px));
   }
+
+  .hedron-app-shell[data-hedron-shell-nav="flow"] .hedron-app-shell-nav { position: static; }
+  .hedron-app-shell[data-hedron-shell-nav-offset="none"] { --hedron-app-shell-nav-offset: 0; }
+  .hedron-app-shell[data-hedron-shell-nav-offset="banner"] { --hedron-app-shell-nav-offset: var(--hedron-shell-banner-offset, 1.25rem); }
+  .hedron-app-shell[data-hedron-shell-nav-offset="header"] { --hedron-app-shell-nav-offset: var(--hedron-shell-header-offset, 1.25rem); }
+  .hedron-app-shell[data-hedron-shell-header="sticky"] .hedron-app-shell-header {
+    position: sticky;
+    z-index: 2;
+    inset-block-start: 0;
+    background: var(--hedron-default-bg);
+  }
+  .hedron-app-shell[data-hedron-shell-header="static"] .hedron-app-shell-header { position: static; }
 
   .hedron-nav-link {
     display: flex;
@@ -1130,7 +1157,7 @@
     padding: 0.85rem 1rem;
     border: 1px solid var(--hedron-default-border);
     border-radius: var(--hedron-default-radius);
-    background: var(--hedron-default-info-soft);
+    background: color-mix(in srgb, var(--hedron-default-info-soft) var(--hedron-surface-translucent-opacity, 78%), transparent);
   }
 
   .hedron-alert-success,
@@ -1221,7 +1248,7 @@
       var(--hedron-default-surface-muted)
     );
     background-size: 200% 100%;
-    animation: hedron-default-shimmer 1.5s ease-in-out infinite;
+    animation: hedron-default-shimmer var(--hedron-motion-emphasized, 1.5s) ease-in-out infinite;
   }
 
   details {
@@ -1896,9 +1923,9 @@
 
   @supports (transition-behavior: allow-discrete) {
     .hedron-popover-panel:popover-open {
-      transition: opacity var(--hedron-motion-duration, 160ms) ease,
-        display var(--hedron-motion-duration, 160ms) allow-discrete,
-        overlay var(--hedron-motion-duration, 160ms) allow-discrete;
+      transition: opacity var(--hedron-motion-reveal, var(--hedron-motion-duration, 160ms)) ease,
+        display var(--hedron-motion-reveal, var(--hedron-motion-duration, 160ms)) allow-discrete,
+        overlay var(--hedron-motion-reveal, var(--hedron-motion-duration, 160ms)) allow-discrete;
       transition-behavior: allow-discrete;
     }
 
@@ -1943,9 +1970,9 @@
     padding: 0.75rem;
     border: 1px solid var(--hedron-default-border);
     border-radius: var(--hedron-default-radius-lg);
-    background: color-mix(in srgb, var(--hedron-default-surface) 92%, transparent);
+    background: color-mix(in srgb, var(--hedron-default-surface) var(--hedron-surface-glass-opacity, 72%), transparent);
     box-shadow: var(--hedron-default-shadow-raised);
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(var(--hedron-surface-glass-blur, 14px));
   }
 
   .hedron-bottom-dock {
@@ -2534,9 +2561,9 @@
   }
 
   .hedron-app-shell-banner {
-    padding: 0.65rem 0.95rem;
+    padding: var(--hedron-space-3, 0.75rem) var(--hedron-space-4, 1rem);
     border: 1px solid var(--hedron-default-border);
-    border-radius: var(--hedron-default-radius);
+    border-radius: var(--hedron-geometry-radius-md, var(--hedron-default-radius));
     background: var(--hedron-default-accent-soft);
   }
 
@@ -2544,15 +2571,15 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem;
-    padding-block-end: 0.65rem;
+    gap: var(--hedron-space-3, 0.75rem);
+    padding-block-end: var(--hedron-space-3, 0.75rem);
     border-block-end: 1px solid var(--hedron-default-border);
   }
 
   .hedron-app-shell-brand {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--hedron-space-2, 0.5rem);
     font-size: 1.02rem;
     font-weight: 800;
   }
@@ -2579,10 +2606,23 @@
   }
 
   .hedron-app-shell-footer {
-    padding-block-start: 0.9rem;
-    border-block-start: 1px solid var(--hedron-default-border);
+    padding-block-start: var(--hedron-space-4, 1rem);
+    border-block-start: var(--hedron-geometry-separator, 1px) solid var(--hedron-default-border);
     color: var(--hedron-color-muted, var(--hedron-default-muted));
     font-size: 0.88rem;
+  }
+  .hedron-app-shell[data-hedron-shell-header-density="compact"] .hedron-app-shell-header { padding-block-end: var(--hedron-space-2, 0.5rem); }
+  .hedron-app-shell[data-hedron-shell-header-density="spacious"] .hedron-app-shell-header { padding-block: var(--hedron-space-5, 1.5rem); }
+  .hedron-app-shell[data-hedron-shell-footer-density="compact"] .hedron-app-shell-footer { padding-block-start: var(--hedron-space-2, 0.5rem); }
+  .hedron-app-shell[data-hedron-shell-footer-density="spacious"] .hedron-app-shell-footer { padding-block-start: var(--hedron-space-6, 2rem); }
+  .hedron-app-shell[data-hedron-shell-banner-spacing="tight"] .hedron-app-shell-banner { margin-block-end: var(--hedron-space-2, 0.5rem); }
+  .hedron-app-shell[data-hedron-shell-banner-spacing="standard"] .hedron-app-shell-banner { margin-block-end: var(--hedron-space-3, 0.75rem); }
+  .hedron-app-shell[data-hedron-shell-banner-spacing="loose"] .hedron-app-shell-banner { margin-block-end: var(--hedron-space-5, 1.5rem); }
+
+  @media print {
+    .hedron-app-shell[data-hedron-shell-header="sticky"] .hedron-app-shell-header,
+    .hedron-app-shell .hedron-app-shell-nav { position: static; }
+    .hedron-app-shell { display: block; }
   }
 
   .hedron-nav-group {
@@ -2832,10 +2872,10 @@
   }
 
   .hedron-type-display {
-    font-size: clamp(1.9rem, 4vw, 2.75rem);
+    font-size: var(--hedron-type-display-size, clamp(1.9rem, 4vw, 2.75rem));
     font-weight: 820;
     letter-spacing: -0.02em;
-    line-height: 1.1;
+    line-height: var(--hedron-type-heading-line-height, 1.1);
   }
 
   .hedron-type-eyebrow {
@@ -2847,24 +2887,25 @@
   }
 
   .hedron-type-title {
-    font-size: 1.25rem;
+    font-size: var(--hedron-type-heading-size, 1.25rem);
     font-weight: 760;
     letter-spacing: -0.01em;
+    line-height: var(--hedron-type-heading-line-height, 1.2);
   }
 
   .hedron-type-body {
-    font-size: 1rem;
-    line-height: 1.65;
+    font-size: var(--hedron-type-body-size, 1rem);
+    line-height: var(--hedron-type-body-line-height, 1.65);
   }
 
   .hedron-type-label {
-    font-size: 0.86rem;
+    font-size: var(--hedron-type-label-size, 0.86rem);
     font-weight: 700;
   }
 
   .hedron-type-caption {
     color: var(--hedron-color-muted, var(--hedron-default-muted));
-    font-size: 0.8rem;
+    font-size: var(--hedron-type-supporting-size, 0.8rem);
   }
 
   .hedron-type-mono {
@@ -3090,7 +3131,7 @@
 
   .hedron-swap-reveal {
     opacity: 1;
-    transition: opacity 0.18s ease;
+    transition: opacity var(--hedron-motion-crossfade, 0.18s) ease;
   }
 
   .hedron-swap-reveal:not(.is-revealed) {
@@ -3285,8 +3326,27 @@
     inset: 0;
     pointer-events: none;
     border-radius: inherit;
-    opacity: 0.55;
+    opacity: var(--hedron-ambient-opacity, 0.55);
+    color: var(--hedron-ambient-color, var(--hedron-color-accent, var(--hedron-default-accent)));
+    forced-color-adjust: none;
   }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-placement="flow"] { position: relative; inset: auto; order: var(--hedron-ambient-order, 0); }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-placement="fixed-canvas"] {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    min-block-size: 100dvh;
+  }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-order="0"] { z-index: 0; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-order="1"] { z-index: 1; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-order="2"] { z-index: 2; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-order="3"] { z-index: 3; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-order="4"] { z-index: 4; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-order="5"] { z-index: 5; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-order="6"] { z-index: 6; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-order="7"] { z-index: 7; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-order="8"] { z-index: 8; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-placement="fixed-canvas"] { z-index: -1; }
   .hedron-ambient-backdrop-decoration[data-hedron-ambient-tone="accent"] {
     --hedron-ambient-color: var(--hedron-color-accent, var(--hedron-default-accent));
   }
@@ -3296,7 +3356,8 @@
   .hedron-ambient-backdrop-decoration[data-hedron-ambient-tone="neutral"] {
     --hedron-ambient-color: CanvasText;
   }
-  .hedron-ambient-backdrop-decoration[data-hedron-ambient-intensity="soft"] { opacity: 0.8; }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-intensity="soft"] { --hedron-ambient-opacity: var(--hedron-ambient-opacity-soft, 0.8); }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-intensity="subtle"] { --hedron-ambient-opacity: var(--hedron-ambient-opacity-subtle, 0.55); }
   .hedron-ambient-backdrop-decoration[data-hedron-ambient-pattern="radial"] {
     background: radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--hedron-ambient-color) 18%, transparent), transparent 55%);
   }
@@ -3306,8 +3367,11 @@
   }
   .hedron-ambient-backdrop-decoration[data-hedron-ambient-pattern="grid"] {
     background-image: linear-gradient(color-mix(in srgb, var(--hedron-ambient-color) 12%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--hedron-ambient-color) 12%, transparent) 1px, transparent 1px);
-    background-size: 1.25rem 1.25rem;
+    background-size: var(--hedron-ambient-grid-size, var(--hedron-space-5, 1.25rem)) var(--hedron-ambient-grid-size, var(--hedron-space-5, 1.25rem));
   }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-scale="sm"] { --hedron-ambient-grid-size: var(--hedron-space-4, 1rem); }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-scale="md"] { --hedron-ambient-grid-size: var(--hedron-space-5, 1.25rem); }
+  .hedron-ambient-backdrop-decoration[data-hedron-ambient-scale="lg"] { --hedron-ambient-grid-size: var(--hedron-space-6, 2rem); }
   .hedron-ambient-backdrop-decoration[data-hedron-ambient-pattern="mesh"] {
     background: radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--hedron-ambient-color) 15%, transparent), transparent 48%), radial-gradient(circle at 90% 100%, color-mix(in srgb, var(--hedron-ambient-color) 10%, transparent), transparent 44%);
   }
@@ -3473,7 +3537,7 @@
     background: currentColor;
   }
   .hedron-status[data-hedron-status-variant="activity"] .hedron-status-indicator {
-    animation: hedron-status-pulse 1.2s ease-in-out infinite;
+    animation: hedron-status-pulse var(--hedron-motion-emphasized, 1.2s) ease-in-out infinite;
   }
   @keyframes hedron-status-pulse {
     50% { opacity: 0.35; }

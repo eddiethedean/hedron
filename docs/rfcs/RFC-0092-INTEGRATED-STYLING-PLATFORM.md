@@ -83,6 +83,14 @@ than styling defaults; application CSS may override presentation but not behavio
 
 ## Refined 0.65 boundary
 
+The release boundary also includes the four follow-up styling issues #712,
+#713, #714, and #715. They are implemented through the same authorities: the
+document ambient canvas and AppShell chrome are typed built-in policies,
+presentation-token consumption is manifest-backed, and responsive maxima/ranges
+are compiled only from the bounded `ResponsiveCondition` vocabulary. Their
+acceptance mapping is recorded in
+[the 0.65 refined scope](../acceptance/application-styling-scope-065.md).
+
 The Required cut is deliberately three-part:
 
 1. the integration foundation: declared local CSS assets, the `application` layer, public

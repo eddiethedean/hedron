@@ -22,4 +22,4 @@ def test_sample_kit_registers_explorer_panel() -> None:
 def test_sample_kit_meta_pins_living_train() -> None:
     # Compatibility floor for the exemplar plugin.
     release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
-    assert str(release["train"]) in PLUGIN_META.hedron_version
+    assert str(release["development_version"]).rsplit(".", 1)[0] in PLUGIN_META.hedron_version

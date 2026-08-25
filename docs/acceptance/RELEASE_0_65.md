@@ -1,8 +1,7 @@
 # Release acceptance — phase 0.65 integrated styling platform
 
-Status: **Pre-cut release readiness validated**. The implementation and evidence commands pass
-against the current `v0.64.1` baseline. Gate rows remain the auditable cut checklist until the
-`v0.65.0` version/tag decision is made.
+Status: **Release ready for v0.65.0**. The implementation and evidence commands pass against the
+current `v0.64.1` baseline, and the coordinated package metadata is cut to `v0.65.0`.
 
 - RFC: [RFC-0092](../rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md)
 - Implementation: [APPLICATION_STYLING_065](../implementation/APPLICATION_STYLING_065.md)
@@ -23,6 +22,10 @@ The cut must integrate all four currently open styling issues, with the exact sl
 | [#693](https://github.com/eddiethedean/hedron/issues/693) | bounded public component-part/state recipe hooks | `HOOKS-065`, `RECIPE-065` |
 | [#694](https://github.com/eddiethedean/hedron/issues/694) | semantic data-view/table chrome tokens | `DATA-065` |
 | [#698](https://github.com/eddiethedean/hedron/issues/698) | native form-control appearance/state contract | `CONTROLS-065` |
+| [#712](https://github.com/eddiethedean/hedron/issues/712) | document-level ambient canvas and composable decorative layers | `PRESENT-065`, `A11Y-065` |
+| [#713](https://github.com/eddiethedean/hedron/issues/713) | bounded AppShell chrome layout recipes | `PRESENT-065`, `REGRESS-065` |
+| [#714](https://github.com/eddiethedean/hedron/issues/714) | authoritative presentation-token consumption in built-in bundles | `TOKEN-065`, `PRESENT-065` |
+| [#715](https://github.com/eddiethedean/hedron/issues/715) | bounded maximum and between-range presentation conditions | `RECIPE-065`, `A11Y-065` |
 
 The cut also requires first-class local application CSS registration, the explicit application
 cascade layer, namespaced theme tokens, stable public hooks, deterministic style diagnostics, and
@@ -67,7 +70,7 @@ for every gate. Exit requires no unexplained private-selector dependency, no sil
 no unowned token or asset, no accessibility regression, and no new Supported claim for a
 Progressive/Deferred surface.
 
-## Pre-cut validation record
+## Release validation record
 
 The locked Python 3.12 environment passes:
 
@@ -80,6 +83,5 @@ pytest -q --strict-config --strict-markers
 ```
 
 Observed results: all 21 phase gates pass; full tests pass (`3568 passed, 166 skipped`); Ruff
-passes; and pyright reports zero errors. The release-gate command passes with `--allow-planned`
-against this packet and `0.64.1`, intentionally verifying implementation readiness without
-pretending that the `v0.65.0` package cut has occurred.
+passes; and pyright reports zero errors. The release-gate command passes against this packet and
+`0.65.0`; the coordinated package and runtime metadata now report `v0.65.0`.

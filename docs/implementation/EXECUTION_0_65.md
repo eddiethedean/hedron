@@ -1,7 +1,7 @@
 # Phase 0.65 full implementation execution plan
 
-Status: **Planned**. This document is an implementation sequence and ownership map; it is not
-evidence that Phase 0.65 has shipped.
+Status: **Complete**. This document records the implementation sequence and release-readiness
+evidence for Phase 0.65.
 
 Authority: [RFC-0092](../rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md),
 [APPLICATION_STYLING_065](APPLICATION_STYLING_065.md), the

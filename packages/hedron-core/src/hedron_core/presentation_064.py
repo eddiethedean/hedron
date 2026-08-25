@@ -23,6 +23,7 @@ __all__ = [
     "PRESENTATION_SCHEMA",
     "PresentationContract",
     "PresentationError",
+    "PRESENTATION_TOKEN_MANIFEST",
     "ResponsiveCondition",
     "ScopedStyleBundle",
     "ScopedStyleRecipe",
@@ -31,6 +32,7 @@ __all__ = [
     "component_presentation_manifest",
     "compile_scoped_styles",
     "presentation_contract",
+    "presentation_token_manifest",
     "presentation_tokens",
 ]
 
@@ -46,6 +48,17 @@ _WRITING_MODES: Final = frozenset({"horizontal-tb", "vertical-rl", "vertical-lr"
 _ACCESSIBILITY: Final = frozenset(
     {"forced-colors", "more-contrast", "reduced-motion", "reduced-transparency", "print"}
 )
+_CONDITION_ORDER: Final = {
+    "viewport": 0,
+    "viewport-range": 1,
+    "viewport-max": 2,
+    "container": 3,
+    "container-range": 4,
+    "container-max": 5,
+    "direction": 6,
+    "writing-mode": 7,
+    "accessibility": 8,
+}
 _LAYERS: Final = frozenset({"components", "utilities", "overrides"})
 _PROPERTIES: Final = frozenset(
     {
@@ -184,28 +197,70 @@ def _thaw_public(value: object) -> object:
 
 @dataclass(frozen=True, slots=True)
 class ResponsiveCondition:
-    """One finite viewport, container, direction, or accessibility condition."""
+    """One finite viewport, container, range, direction, or accessibility condition.
 
-    kind: Literal["viewport", "container", "direction", "writing-mode", "accessibility"]
+    ``viewport`` and ``container`` are lower bounds for compatibility.  The
+    ``*-max`` and ``*-range`` forms add an upper bound without exposing raw
+    media queries.  Ranges use names such as ``md-to-lg``.
+    """
+
+    kind: Literal[
+        "viewport",
+        "viewport-max",
+        "viewport-range",
+        "container",
+        "container-max",
+        "container-range",
+        "direction",
+        "writing-mode",
+        "accessibility",
+    ]
     value: str
 
     def __post_init__(self) -> None:
+        # Accept compact values for integrations that want to keep the axis
+        # in ``kind``: ``viewport/max-lg`` and ``viewport/md-to-lg``.
+        if self.kind == "viewport" and isinstance(self.value, str):
+            if self.value.startswith("max-"):
+                object.__setattr__(self, "kind", "viewport-max")
+                object.__setattr__(self, "value", self.value.removeprefix("max-"))
+            elif "-to-" in self.value:
+                object.__setattr__(self, "kind", "viewport-range")
+        elif self.kind == "container" and isinstance(self.value, str):
+            if self.value.startswith("max-"):
+                object.__setattr__(self, "kind", "container-max")
+                object.__setattr__(self, "value", self.value.removeprefix("max-"))
+            elif "-to-" in self.value:
+                object.__setattr__(self, "kind", "container-range")
         if not isinstance(self.kind, str) or self.kind not in (
             "viewport",
+            "viewport-max",
+            "viewport-range",
             "container",
+            "container-max",
+            "container-range",
             "direction",
             "writing-mode",
             "accessibility",
         ):
             raise PresentationError(f"unknown responsive condition kind: {self.kind!r}")
-        if self.kind == "viewport" and (
+        if self.kind in ("viewport", "viewport-max") and (
             not isinstance(self.value, str) or self.value not in _BREAKPOINTS
         ):
             raise PresentationError(f"unknown viewport condition: {self.value!r}")
-        if self.kind == "container" and (
+        if self.kind in ("container", "container-max") and (
             not isinstance(self.value, str) or self.value not in _CONTAINER_SIZES
         ):
             raise PresentationError(f"unknown container condition: {self.value!r}")
+        if self.kind in ("viewport-range", "container-range"):
+            names = _BREAKPOINTS if self.kind == "viewport-range" else _CONTAINER_SIZES
+            parts = self.value.split("-to-") if isinstance(self.value, str) else []
+            if (
+                len(parts) != 2
+                or any(item not in names for item in parts)
+                or (len(parts) == 2 and list(names).index(parts[0]) >= list(names).index(parts[1]))
+            ):
+                raise PresentationError(f"unknown {self.kind} condition: {self.value!r}")
         if self.kind == "direction" and (
             not isinstance(self.value, str) or self.value not in _DIRECTIONS
         ):
@@ -219,11 +274,42 @@ class ResponsiveCondition:
         ):
             raise PresentationError(f"unknown accessibility condition: {self.value!r}")
 
+    @classmethod
+    def viewport_max(cls, breakpoint: str) -> ResponsiveCondition:
+        return cls("viewport-max", breakpoint)
+
+    @classmethod
+    def container_max(cls, size: str) -> ResponsiveCondition:
+        return cls("container-max", size)
+
+    @classmethod
+    def viewport_range(cls, lower: str, upper: str) -> ResponsiveCondition:
+        return cls("viewport-range", f"{lower}-to-{upper}")
+
+    @classmethod
+    def container_range(cls, lower: str, upper: str) -> ResponsiveCondition:
+        return cls("container-range", f"{lower}-to-{upper}")
+
     def media_prefix(self) -> str:
         if self.kind == "viewport":
             return f"@media (min-width: {_BREAKPOINTS[self.value]})"
+        if self.kind == "viewport-max":
+            return f"@media (max-width: {_BREAKPOINTS[self.value]})"
+        if self.kind == "viewport-range":
+            lower, upper = self.value.split("-to-")
+            return (
+                f"@media (min-width: {_BREAKPOINTS[lower]}) and (max-width: {_BREAKPOINTS[upper]})"
+            )
         if self.kind == "container":
             return f"@container (min-width: {_CONTAINER_SIZES[self.value]})"
+        if self.kind == "container-max":
+            return f"@container (max-width: {_CONTAINER_SIZES[self.value]})"
+        if self.kind == "container-range":
+            lower, upper = self.value.split("-to-")
+            return (
+                f"@container (min-width: {_CONTAINER_SIZES[lower]}) "
+                f"and (max-width: {_CONTAINER_SIZES[upper]})"
+            )
         if self.kind == "direction":
             return f'[dir="{self.value}"]'
         if self.kind == "writing-mode":
@@ -258,6 +344,7 @@ class ScopedStyleRecipe:
             raise PresentationError(f"unknown style layer: {self.layer!r}")
         states = tuple(self.states)
         conditions = tuple(self.conditions)
+        self._validate_conditions(conditions)
         for state in states:
             _identifier(state, "state")
         normalized = dict(self.declarations)
@@ -274,9 +361,47 @@ class ScopedStyleRecipe:
 
     @property
     def class_name(self) -> str:
-        raw = f"{self.component}:{self.part}:{','.join(self.states)}:{self.layer}"
+        raw = json.dumps(
+            {
+                "component": self.component,
+                "part": self.part,
+                "states": self.states,
+                "conditions": sorted((item.kind, item.value) for item in self.conditions),
+                "declarations": sorted(self.declarations.items()),
+                "layer": self.layer,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
         digest = hashlib.sha256(raw.encode()).hexdigest()[:10]
         return f"hedron-scope-{self.component.lower()}-{self.part.lower()}-{digest}"
+
+    @staticmethod
+    def _validate_conditions(conditions: tuple[ResponsiveCondition, ...]) -> None:
+        bounds: dict[str, tuple[int | None, int | None]] = {
+            "viewport": (None, None),
+            "container": (None, None),
+        }
+        for condition in conditions:
+            if condition.kind in ("direction", "writing-mode", "accessibility"):
+                continue
+            axis = "viewport" if condition.kind.startswith("viewport") else "container"
+            names = _BREAKPOINTS if axis == "viewport" else _CONTAINER_SIZES
+            lower, upper = bounds[axis]
+            if condition.kind == axis:
+                value = list(names).index(condition.value)
+                lower = value if lower is None else max(lower, value)
+            elif condition.kind == f"{axis}-max":
+                value = list(names).index(condition.value)
+                upper = value if upper is None else min(upper, value)
+            else:
+                lower_name, upper_name = condition.value.split("-to-")
+                low_value, high_value = list(names).index(lower_name), list(names).index(upper_name)
+                lower = low_value if lower is None else max(lower, low_value)
+                upper = high_value if upper is None else min(upper, high_value)
+            if lower is not None and upper is not None and lower > upper:
+                raise PresentationError(f"contradictory {axis} responsive conditions")
+            bounds[axis] = (lower, upper)
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -324,7 +449,9 @@ def compile_scoped_styles(recipes: Sequence[ScopedStyleRecipe]) -> ScopedStyleBu
             selector += "".join(f'[data-hedron-state~="{state}"]' for state in recipe.states)
         at_rules: list[str] = []
         selector_prefixes: list[str] = []
-        for condition in sorted(recipe.conditions, key=lambda item: (item.kind, item.value)):
+        for condition in sorted(
+            recipe.conditions, key=lambda item: (_CONDITION_ORDER[item.kind], item.value)
+        ):
             prefix = condition.media_prefix()
             if prefix.startswith("@"):
                 at_rules.append(prefix)
@@ -387,6 +514,72 @@ def presentation_tokens(theme: Theme | None = None) -> dict[str, str]:
     return dict(sorted(values.items()))
 
 
+_PRESENTATION_TOKEN_CONSUMERS: Final[dict[str, tuple[str, ...]]] = {
+    "type.display.size": ("typography",),
+    "type.heading.size": ("typography",),
+    "type.body.size": ("typography",),
+    "type.supporting.size": ("typography",),
+    "type.label.size": ("typography",),
+    "type.metadata.size": ("Card.metadata",),
+    "type.body.line-height": ("typography",),
+    "type.heading.line-height": ("typography",),
+    "space.1": ("layout",),
+    "space.2": ("layout",),
+    "space.3": ("layout",),
+    "space.4": ("layout",),
+    "space.5": ("layout",),
+    "space.6": ("layout",),
+    "geometry.control-height": ("controls",),
+    "geometry.hit-target": ("controls",),
+    "geometry.radius-sm": ("surfaces",),
+    "geometry.radius-md": ("surfaces",),
+    "geometry.radius-lg": ("surfaces",),
+    "geometry.separator": ("data",),
+    "motion.instant": ("motion",),
+    "motion.standard": ("motion",),
+    "motion.emphasized": ("motion",),
+    "motion.reveal": ("motion",),
+    "motion.elevate": ("motion",),
+    "motion.crossfade": ("motion",),
+    "motion.easing.standard": ("motion",),
+    "surface.translucent.opacity": ("surfaces",),
+    "surface.glass.opacity": ("surfaces",),
+    "surface.glass.blur": ("surfaces",),
+    "data.row.hover": ("data",),
+    "data.row.selected": ("data",),
+    "control.appearance": ("controls",),
+    "control.accent": ("controls",),
+    "data.table.border": ("data",),
+    "data.table.header.background": ("data",),
+    "data.table.row.separator": ("data",),
+}
+
+PRESENTATION_TOKEN_MANIFEST: Final[dict[str, object]] = {
+    "schema": "hedron.presentation-token-manifest/1",
+    "declared": tuple(sorted(_PRESENTATION_DEFAULTS)),
+    "consumed": {key: value for key, value in sorted(_PRESENTATION_TOKEN_CONSUMERS.items())},
+}
+
+
+def presentation_token_manifest(theme: Theme | None = None) -> dict[str, object]:
+    """Return declared, consumed, and theme-overridden presentation tokens."""
+    resolved = theme or default_theme()
+    declared = tuple(sorted(_PRESENTATION_DEFAULTS))
+    consumed = {key: list(_PRESENTATION_TOKEN_CONSUMERS[key]) for key in declared}
+    overridden = {
+        key: resolved.tokens[key]
+        for key in declared
+        if key in resolved.tokens and resolved.tokens[key] != _PRESENTATION_DEFAULTS[key]
+    }
+    return {
+        "schema": "hedron.presentation-token-manifest/1",
+        "declared": list(declared),
+        "consumed": consumed,
+        "overridden": dict(sorted(overridden.items())),
+        "unconsumed": [key for key in declared if not consumed.get(key)],
+    }
+
+
 def presentation_contract(theme: Theme | None = None) -> PresentationContract:
     resolved = theme or default_theme()
     tokens = presentation_tokens(resolved)
@@ -437,6 +630,7 @@ def component_presentation_manifest() -> dict[str, object]:
         },
     }
     payload["application_style_hooks"] = application_style_hook_manifest()
+    payload["presentation_tokens"] = presentation_token_manifest()
     return payload
 
 

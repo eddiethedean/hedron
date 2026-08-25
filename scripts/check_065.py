@@ -10,10 +10,27 @@ ROOT = Path(__file__).resolve().parents[1]
 CORE = ROOT / "packages/hedron-core/src/hedron_core"
 FACADE = ROOT / "packages/hedron/src/hedron"
 GATE_IDS = {
-    "CONTRACT-065", "ASSET-065", "LAYER-065", "TOKEN-065", "HOOKS-065",
-    "RECIPE-065", "CSS-065", "INSPECT-065", "EJECT-065", "MOTION-065",
-    "CONTROLS-065", "DATA-065", "PRESENT-065", "A11Y-065", "SECURITY-065",
-    "PERF-065", "FLEET-065", "UPGRADE-065", "REGRESS-065", "DOCS-065", "PKG-065",
+    "CONTRACT-065",
+    "ASSET-065",
+    "LAYER-065",
+    "TOKEN-065",
+    "HOOKS-065",
+    "RECIPE-065",
+    "CSS-065",
+    "INSPECT-065",
+    "EJECT-065",
+    "MOTION-065",
+    "CONTROLS-065",
+    "DATA-065",
+    "PRESENT-065",
+    "A11Y-065",
+    "SECURITY-065",
+    "PERF-065",
+    "FLEET-065",
+    "UPGRADE-065",
+    "REGRESS-065",
+    "DOCS-065",
+    "PKG-065",
 }
 
 
@@ -30,7 +47,7 @@ def _check_contract() -> None:
     scope = _text(ROOT / "docs/acceptance/application-styling-scope-065.md")
     contract = _text(ROOT / "docs/acceptance/application-styling-contract-065.toml")
     rfc = _text(ROOT / "docs/rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md")
-    for issue in ("#690", "#693", "#694", "#698"):
+    for issue in ("#690", "#693", "#694", "#698", "#712", "#713", "#714", "#715"):
         _require(issue in scope and issue in rfc, f"missing issue disposition: {issue}")
     _require("style_manifest" in contract, "style manifest contract missing")
     _require("global_css_requires_opt_in = true" in contract, "global CSS policy missing")
@@ -54,7 +71,7 @@ def _check_layer() -> None:
     bundles = _text(CORE / "style_bundles.py")
     static = _text(FACADE / "static/hedron-default.css")
     expected = "reset, tokens, base, components, application, utilities, overrides"
-    _require("\"application\"" in layers, "application cascade layer is missing from compiler")
+    _require('"application"' in layers, "application cascade layer is missing from compiler")
     for text in (bundles, static):
         _require(expected in text, "application cascade layer is not declared everywhere")
 
@@ -62,13 +79,18 @@ def _check_layer() -> None:
 def _check_tokens() -> None:
     source = _text(CORE / "presentation_064.py")
     motion_names = (
-        "motion.instant", "motion.standard", "motion.emphasized",
-        "motion.reveal", "motion.elevate", "motion.crossfade",
+        "motion.instant",
+        "motion.standard",
+        "motion.emphasized",
+        "motion.reveal",
+        "motion.elevate",
+        "motion.crossfade",
     )
     for name in motion_names:
         _require(f'"{name}"' in source, f"motion token missing: {name}")
     _require("data.table.border" in source, "data-view semantic token missing")
     _require("control.appearance" in source, "native control token missing")
+    _require("presentation_token_manifest" in source, "presentation token manifest missing")
 
 
 def _check_hooks() -> None:
@@ -103,8 +125,15 @@ def _check_verticals() -> None:
     css = _text(FACADE / "static/hedron-default.css")
     for text in ("prefers-reduced-motion", "forced-colors", "@media print", "accent-color"):
         _require(text in css, f"required fallback missing: {text}")
-    for text in ("data-hedron-row-state", "table.hedron-table", "input[type=\"range\"]"):
+    for text in ("data-hedron-row-state", "table.hedron-table", 'input[type="range"]'):
         _require(text in css, f"required issue slice missing: {text}")
+    for text in ("hedron-ambient-layer", "hedron-shell-preset", "prefers-reduced-transparency"):
+        _require(
+            text in css
+            or text in _text(CORE / "builtins" / "surfaces.py")
+            or text in _text(CORE / "builtins" / "shell.py"),
+            f"0.65 styling slice missing: {text}",
+        )
 
 
 def _check_docs() -> None:
