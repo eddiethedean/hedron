@@ -154,15 +154,25 @@ class ResponsiveCondition:
             "accessibility",
         ):
             raise PresentationError(f"unknown responsive condition kind: {self.kind!r}")
-        if self.kind == "viewport" and self.value not in _BREAKPOINTS:
+        if self.kind == "viewport" and (
+            not isinstance(self.value, str) or self.value not in _BREAKPOINTS
+        ):
             raise PresentationError(f"unknown viewport condition: {self.value!r}")
-        if self.kind == "container" and self.value not in _CONTAINER_SIZES:
+        if self.kind == "container" and (
+            not isinstance(self.value, str) or self.value not in _CONTAINER_SIZES
+        ):
             raise PresentationError(f"unknown container condition: {self.value!r}")
-        if self.kind == "direction" and self.value not in _DIRECTIONS:
+        if self.kind == "direction" and (
+            not isinstance(self.value, str) or self.value not in _DIRECTIONS
+        ):
             raise PresentationError(f"unknown direction: {self.value!r}")
-        if self.kind == "writing-mode" and self.value not in _WRITING_MODES:
+        if self.kind == "writing-mode" and (
+            not isinstance(self.value, str) or self.value not in _WRITING_MODES
+        ):
             raise PresentationError(f"unknown writing mode: {self.value!r}")
-        if self.kind == "accessibility" and self.value not in _ACCESSIBILITY:
+        if self.kind == "accessibility" and (
+            not isinstance(self.value, str) or self.value not in _ACCESSIBILITY
+        ):
             raise PresentationError(f"unknown accessibility condition: {self.value!r}")
 
     def media_prefix(self) -> str:

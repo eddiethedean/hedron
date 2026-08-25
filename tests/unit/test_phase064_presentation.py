@@ -97,6 +97,22 @@ def test_responsive_condition_rejects_unknown_kind(kind: str) -> None:
         ResponsiveCondition(kind, "x")  # type: ignore[arg-type]
 
 
+@pytest.mark.parametrize(
+    ("kind", "value"),
+    [
+        ("viewport", "xxl"),
+        ("container", "xxl"),
+        ("direction", "auto"),
+        ("writing-mode", "sideways-rl"),
+        ("accessibility", "high-contrast"),
+        ("viewport", []),
+    ],
+)
+def test_responsive_condition_rejects_malformed_value(kind: str, value: object) -> None:
+    with pytest.raises(PresentationError, match="unknown"):
+        ResponsiveCondition(kind, value)  # type: ignore[arg-type]
+
+
 def test_manifest_and_asset_are_portable() -> None:
     manifest = component_presentation_manifest()
     asset = next(item for item in known_extensions() if item.public_id == "hedron")
