@@ -8,7 +8,7 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Verified repository train **0.64.x** (`v0.64.0` in-tree; public PyPI remains `v0.63.0`). The latest
+**Status:** Verified published train **0.64.x** (`v0.64.0` on PyPI). The latest
 installable public release is `v0.64.0`.
 Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.

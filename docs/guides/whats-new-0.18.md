@@ -8,7 +8,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.18**. The current repository train is **0.64.x** (`v0.64.0` in-tree; public PyPI remains `v0.63.0`). Pin `hedron>=0.64.0,<0.65` from PyPI.
+    This page describes **0.18**. The current published train is **0.64.x** (`v0.64.0` on PyPI). Pin `hedron>=0.64.0,<0.65` from PyPI.
 
 Phase **0.18** adds model demos and inference workflows — fail-closed demo composition,
 governed feedback, inference scheduling over `JobBackend`, an interaction recorder, explicit

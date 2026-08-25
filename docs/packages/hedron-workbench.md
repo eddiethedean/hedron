@@ -2,7 +2,7 @@
 
 Compatibility Posit Workbench / RStudio Server deployment adapter.
 
-**Package maturity:** Beta (`0.64.x`, `v0.64.0` in-tree; PyPI upload deferred) · extra `hedron[workbench]` · pin `>=0.64.0,<0.65`
+**Package maturity:** Beta (`0.64.x`, `v0.64.0` published on PyPI) · extra `hedron[workbench]` · pin `>=0.64.0,<0.65`
 
 **Final release notice:** `0.60.2` is the final published compatibility release of
 `hedron-workbench`. It remains a compatibility shim for existing applications;

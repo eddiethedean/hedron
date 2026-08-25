@@ -16,12 +16,11 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-The in-tree repository train is **`0.64.0`**. The latest published PyPI release remains
-**`0.63.0`** while the `v0.64.0` tag and PyPI upload are deferred.
+The current published release is **`0.64.0`** on PyPI and the repository tag is `v0.64.0`.
 
 | You are… | Install |
 |---|---|
-| Building an app from PyPI | `hedron>=0.63.0,<0.64` |
+| Building an app from PyPI | `hedron>=0.64.0,<0.65` |
 | Working in this repository | `uv sync` (editable **0.64.0**) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
@@ -143,7 +142,7 @@ cd hedron
 uv sync
 ```
 
-This checkout is **`0.64.0`**; public application installs remain **`0.64.0`**. Use
+This checkout is **`0.64.0`**, matching public application installs. Use
 `hedron>=0.64.0,<0.65` for applications.
 
 See [Contributing](../CONTRIBUTING.md).

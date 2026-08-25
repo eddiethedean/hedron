@@ -98,9 +98,9 @@ Choose a private project location approved by your organization. The following u
 ```bash
 mkdir -p ~/projects
 cd ~/projects
-uvx --from "hedron>=0.63.0,<0.64" hedron new my-workbench-app
+uvx --from "hedron>=0.64.0,<0.65" hedron new my-workbench-app
 cd my-workbench-app
-uv add "hedron-posit>=0.63.0,<0.64"
+uv add "hedron-posit>=0.64.0,<0.65"
 ```
 
 These commands create the project, make its isolated `.venv`, install the declared dependencies,

@@ -68,7 +68,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.61** | Unified action state and server-first async boundaries | **Implemented, verified, tagged, and published** (`v0.61.0`; RFC-0090; [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
 | **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Published** (`v0.62.0`; progressive dashboard fan-out explicitly omitted; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Published** (`v0.63.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
-| **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Implementation in progress / Stage 0 evidence in progress** ([RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [22 open enhancement issues](#phase-064-open-enhancement-inventory)) |
+| **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Published** (`v0.64.0`; [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [22 open enhancement issues](#phase-064-open-enhancement-inventory)) |
 
 ### Phase 0.64 open enhancement inventory
 
@@ -6620,7 +6620,7 @@ their public contracts and release gates are accepted. They do not promote SSE/W
 View Transitions, preload, or React islands to Supported defaults, and they do not create a
 mandatory client store, hydration layer, JSX requirement, or Node dependency.
 
-## Proposed phase 0.64 — bounded presentation and HTMX lifecycle interoperability
+## Phase 0.64 — bounded presentation and HTMX lifecycle interoperability
 
 Phase 0.64 closes the bounded presentation gaps left after the 0.63 theme and interoperability
 work, then turns the 0.61–0.63 server-authored lifecycle, operation identity, accessibility, and

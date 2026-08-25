@@ -1,8 +1,7 @@
 # Upgrade to Hedron 0.64
 
-This guide covers preparing an application for the in-tree **0.64.x** train
-(`v0.64.0`). The latest public PyPI release remains `v0.63.0`; use the 0.64 pin only from a
-checkout until the upload is authorized.
+This guide covers upgrading an application to the published **0.64.x** train
+(`v0.64.0`) from PyPI or a source checkout.
 Public-index notes: [Installation](../getting-started/installation.md). New applications
 should use [Build your first app](../getting-started/quickstart.md).
 
@@ -58,7 +57,7 @@ Checkout tip `v0.64.0` uses `uv sync`. From PyPI, install
 
 ## 0.52 → 0.53
 
-The in-tree `v0.64.0`; PyPI upload deferred train supersedes the older 0.52/0.53 pins. Keep
+The published `v0.64.0` train supersedes the older 0.52/0.53 pins. Keep
 `hedron>=0.64.0,<0.65`. See
 [What's new in 0.53](whats-new-0.53.md) and
 [Application DX API](../api/APPLICATION_DX.md).

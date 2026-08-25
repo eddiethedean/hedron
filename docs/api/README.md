@@ -33,9 +33,8 @@ helpers) is compatibility-protected on the 0.x train. Everything else is `beta` 
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-The repository train tip is **`v0.64.0`**; the latest installable PyPI release remains
-`v0.63.0` while the 0.64 upload is deferred. Application users should pin
-`hedron>=0.63.0,<0.64` from the public index.
+The repository train tip and latest installable PyPI release are **`v0.64.0`**. Application
+users should pin `hedron>=0.64.0,<0.65` from the public index.
 
 !!! note "Contracts vs full reference"
 

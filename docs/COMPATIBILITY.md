@@ -1,7 +1,7 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.64.x** in-tree train; the latest public PyPI release is
-`v0.63.0`.
+**Status:** Accepted for the published **0.64.x** train; the latest public PyPI release is
+`v0.64.0`.
 **Reviewed:** 2026-08-18
 
 ## Current train (read this first)

@@ -8,7 +8,7 @@ description: First-party charts, deterministic exports, and optional plotting-li
 deterministic server exports, and explicit adapters for established Python plotting libraries.
 
 **Package maturity:** Beta · Compatible with published Hedron train `0.60.x`
-(`v0.64.0` in-tree; public PyPI remains `v0.63.0`) · **Package version:** `0.2.0`
+(`v0.64.0` published on PyPI) · **Package version:** `0.2.0`
 (pin `>=0.2.0,<0.3`)
 
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`

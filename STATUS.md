@@ -6,9 +6,8 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.64 is the in-tree development train at `v0.64.0`; PyPI still
-carries the published `v0.63.0` predecessor. The 0.64 acceptance packet is being completed
-before the tag and package publication.
+**Roadmap position:** phase 0.64 is the published release train at `v0.64.0` on PyPI. The
+0.64 acceptance packet, tag, and package publication are complete.
 **Date:** 2026-08-24
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
@@ -17,16 +16,16 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.1`, `hedron-charts`
 `0.2.1`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
 `hedron-sim` `0.2.1`, `hedron-mcp` `0.2.2`, `hedron-gradio` `0.2.1`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.58.1`
+`0.64.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
-`hedron-runtime-node` / `hedron-runtime-java` `0.58.1`.
+`hedron-runtime-node` / `hedron-runtime-java` `0.64.0`.
 
-**Phase focus:** The development train is **0.64** (RFC-0091). Phase **0.63** (verified
+**Phase focus:** The published train is **0.64** (RFC-0091). Phase **0.63** (verified
 RFC-0090) remains implemented and published as `v0.63.0`, with its 27-gate packet and
 executable browser/unit coverage for theme contracts, tooling, and interoperability; human
 assistive-technology sign-off remains bounded by open #86. Prior

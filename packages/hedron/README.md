@@ -15,8 +15,8 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-Requires Python 3.11–3.14. The latest public PyPI release is `hedron>=0.63.0,<0.64`.
-The in-tree `v0.64.0` cut is being prepared; its Git tag and PyPI upload are deferred.
+Requires Python 3.11–3.14. The latest public PyPI release is `hedron>=0.64.0,<0.65`
+(`v0.64.0`).
 The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 

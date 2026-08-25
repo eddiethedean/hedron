@@ -40,10 +40,10 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.1,<0.3` 
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |
 
 ```bash
-pip install "hedron[data,dev,posit]>=0.63.0,<0.64"
+pip install "hedron[data,dev,posit]>=0.64.0,<0.65"
 ```
 
-Checkout tip is `v0.64.0`; latest PyPI release is `v0.63.0` while the 0.64 upload is deferred.
+Checkout tip and latest PyPI release are `v0.64.0`.
 
 ## Tooling-grade and independent Beta lines
 
@@ -66,7 +66,7 @@ pip install "hedron[charts]>=0.64.0,<0.65"
 pip install "hedron-sample-kit>=0.2.1,<0.3" "hedron-sim>=0.2.0,<0.3"
 ```
 
-Checkout tip is `v0.64.0`; latest PyPI release is `v0.63.0` while the 0.64 upload is deferred.
+Checkout tip and latest PyPI release are `v0.64.0`.
 
 ## Authoring an extension
 

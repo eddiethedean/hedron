@@ -11,13 +11,12 @@ previous_train = "0.63"
 previous_version = "0.63.0"
 previous_security_until = "2027-08-20"
 # Latest version actually on PyPI. Keep in sync with pypi.org (not workspace version).
-# When registry_status is "deferred", first-run copy-paste must use the public-index
-# pin rather than an unpublished in-tree pin. When "uploaded", pypi_version must equal
-# published_version and first-run commands use the same pin as Installation.
-pypi_version = "0.63.0"
-pypi_pin_floor = "0.63.0"
-pypi_pin_ceiling = "0.64"
-registry_status = "deferred"
+# When "uploaded", pypi_version must equal published_version and first-run commands
+# use the same pin as Installation.
+pypi_version = "0.64.0"
+pypi_pin_floor = "0.64.0"
+pypi_pin_ceiling = "0.65"
+registry_status = "uploaded"
 
 [satellites]
 minimum_version = "0.2.1"
