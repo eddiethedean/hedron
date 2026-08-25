@@ -325,6 +325,17 @@ class Theme:
                 remediation="Use a simple alphanumeric theme name.",
             )
         validate_theme_tokens(self.tokens)
+        for mode, values in self.modes.items():
+            if not isinstance(mode, str) or not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", mode):
+                raise error(
+                    HED_THEME_INVALID,
+                    title="Invalid theme mode name",
+                    explanation=f"mode={mode!r} is not a safe finite mode name.",
+                    remediation="Use letters, numbers, underscores, and hyphens only.",
+                )
+            for key, value in values.items():
+                _validated_token_key(f"mode.{mode}", key)
+                _validated_css_value(f"mode.{mode}", key, value)
         for variant, values in self.variants.items():
             _validated_token_key("variant", variant)
             if not re.fullmatch(r"[A-Za-z0-9_-]+", variant):
