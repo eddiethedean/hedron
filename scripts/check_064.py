@@ -248,7 +248,9 @@ def check_docs() -> None:
 def check_pkg() -> None:
     release = tomllib.loads((ROOT / "docs/release.toml").read_text(encoding="utf-8"))["release"]
     assert release["development_version"] == "0.64.0"
-    assert release["registry_status"] == "deferred"
+    assert release["registry_status"] in {"deferred", "uploaded"}
+    if release["registry_status"] == "uploaded":
+        assert release["pypi_version"] == release["development_version"]
     package_files = [ROOT / "pyproject.toml", *sorted((ROOT / "packages").glob("*/pyproject.toml"))]
     coordinated = {
         "hedron",
