@@ -72,7 +72,15 @@ def react_island_host(
         raise ValueError("island_id must contain only lowercase letters, digits, and hyphens")
     if not recipe.ssr_fallback or not recipe.csp_safe or not recipe.cleanup:
         raise ValueError("React island recipe must provide SSR, CSP, and cleanup guarantees")
-    encoded_props = json.dumps(dict(props or {}), sort_keys=True, separators=(",", ":"))
+    try:
+        encoded_props = json.dumps(
+            dict(props or {}),
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    except (TypeError, ValueError) as exc:
+        raise ValueError("React island props must be finite JSON-serializable values") from exc
     return html.div(
         fallback,
         id=f"hedron-island-{island_id}",
