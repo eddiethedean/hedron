@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from tests.unit.charts_038_helpers import sample_spec
 
 from hedron_charts.compile import compile_chart
