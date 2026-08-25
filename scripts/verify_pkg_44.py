@@ -258,6 +258,7 @@ def main(argv: list[str] | None = None) -> int:
     elif str(_load(PYPROJECT).get("project", {}).get("version", "")).startswith(
         (
             "0.65.",
+            "0.66.",
             "0.64.",
             "0.45.",
             "0.46.",
