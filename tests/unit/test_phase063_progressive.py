@@ -80,7 +80,15 @@ def test_react_island_recipe_is_pinned_and_fallback_safe() -> None:
     assert 'data-hedron-react-ssr-fallback="true"' in rendered
 
 
-@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
-def test_react_island_rejects_non_finite_props(value: float) -> None:
+@pytest.mark.parametrize(
+    "props",
+    [
+        {"value": float("nan")},
+        {"value": float("inf")},
+        {"value": float("-inf")},
+        {"series": [{"value": float("nan")}]},
+    ],
+)
+def test_react_island_rejects_non_finite_props(props: dict[str, object]) -> None:
     with pytest.raises(ValueError, match="finite JSON-serializable"):
-        react_island_host("chart", html.span("Accessible fallback"), props={"value": value})
+        react_island_host("chart", html.span("Accessible fallback"), props=props)
