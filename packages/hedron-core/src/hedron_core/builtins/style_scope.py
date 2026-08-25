@@ -175,8 +175,7 @@ class StyleScope(Component[StyleScopeProps]):
                 remediation=f"Use one of: {', '.join(PRESENTATION_SLOTS)}.",
             )
         if any(
-            _THEME_NAME_RE.fullmatch(str(value)) is None
-            for value in presentation_values.values()
+            _THEME_NAME_RE.fullmatch(str(value)) is None for value in presentation_values.values()
         ):
             raise error(
                 HED_STYLE_SCOPE_0001,

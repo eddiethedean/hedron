@@ -187,7 +187,7 @@ class PlotlyAdapter:
         reject_callbacks(fig_dict)
         reject_remote_urls(fig_dict)
         try:
-            from plotly.utils import PlotlyJSONEncoder
+            from plotly.utils import PlotlyJSONEncoder  # type: ignore[reportMissingImports]
 
             body = json.dumps(
                 fig_dict,

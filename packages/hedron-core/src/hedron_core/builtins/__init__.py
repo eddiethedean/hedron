@@ -19,8 +19,6 @@ from hedron_core.builtins.appearance import (
     STATE_KINDS,
     TRACKS,
     TYPOGRAPHY_ROLES,
-    TYPE_EFFECTS,
-    TYPE_MEASURES,
     WIDTHS,
 )
 from hedron_core.builtins.async_region import AsyncRegion
@@ -198,8 +196,6 @@ __all__ = [
     "STATE_KINDS",
     "TRACKS",
     "TYPOGRAPHY_ROLES",
-    "TYPE_EFFECTS",
-    "TYPE_MEASURES",
     "WIDTHS",
     "AccountSummary",
     "AsyncRegion",

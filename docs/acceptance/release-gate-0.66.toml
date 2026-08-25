@@ -100,7 +100,7 @@ ci_job = "evidence"
 id = "DATA-AUDIT-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron/src:packages/hedron-core/src:packages/hedron-data/src:packages/hedron-maps/src:packages/hedron-charts/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "hedron-data"
 issue = 718
 
@@ -108,7 +108,7 @@ issue = 718
 id = "HTMX-JSON-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron-core/src python -m pytest -q tests/integration/test_security_and_builtins.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "hedron-core"
 issue = 719
 
@@ -116,7 +116,7 @@ issue = 719
 id = "MAP-NUMERIC-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron-maps/src:packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "hedron-maps"
 issue = 720
 
@@ -124,7 +124,7 @@ issue = 720
 id = "CLAIM-REDACT-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron/src:packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "security"
 issue = 721
 
@@ -132,7 +132,7 @@ issue = 721
 id = "THEME-ARCHIVE-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "security"
 issue = 722
 
@@ -140,7 +140,7 @@ issue = 722
 id = "ALTAIR-JSON-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron-charts/src:packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "hedron-charts"
 issue = 723
 
@@ -148,7 +148,7 @@ issue = 723
 id = "PLOTLY-JSON-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron-charts/src:packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "hedron-charts"
 issue = 724
 
@@ -156,7 +156,7 @@ issue = 724
 id = "PIN-CEILING-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron/src:packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "packaging"
 issue = 725
 
@@ -164,7 +164,7 @@ issue = 725
 id = "WS-PRODUCER-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron/src:packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "live-transport"
 issue = 726
 
@@ -172,7 +172,7 @@ issue = 726
 id = "AUTH-RATE-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron/src:packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "security"
 issue = 727
 
@@ -180,7 +180,7 @@ issue = 727
 id = "TYPE-MEASURE-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "presentation"
 issue = 728
 
@@ -188,7 +188,7 @@ issue = 728
 id = "TYPE-EFFECT-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "presentation"
 issue = 729
 
@@ -196,6 +196,6 @@ issue = 729
 id = "CONTEXT-PRESENT-066"
 state = "Verified"
 command = "PYTHONPATH=packages/hedron-core/src python -m pytest -q tests/unit/test_phase066_issue_gates.py"
-ci_job = "issue-regressions"
+ci_job = "test"
 owner = "presentation"
 issue = 730

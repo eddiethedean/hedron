@@ -25,10 +25,9 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.0`.
 
-**Phase focus:** The published train is **0.64** (RFC-0091). Phase **0.66** is in progress against
-the `v0.65.0` baseline; the coordinated packages are at `0.66.0`. Its HDJ foundation is implemented
-and Verified through an app-scoped registry/interaction binding, while thirteen imported issue
-gates remain Planned and block release. Dynamic, foreign, and installed-package template execution
+**Phase focus:** The published train is **0.64** (RFC-0091). Phase **0.66** is verified against
+the `v0.65.0` baseline; the coordinated packages are at `0.66.0`. Its HDJ foundation and all
+thirteen imported issue gates are implemented and Verified. Dynamic, foreign, and installed-package template execution
 remain explicitly Deferred. Phase **0.65** remains the
 verified in-tree predecessor awaiting final tag publication. Phase **0.63** (verified
 RFC-0090) remains implemented and published as `v0.63.0`, with its 27-gate packet and
@@ -143,7 +142,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
   [release-gate-0.66.toml](docs/acceptance/release-gate-0.66.toml) ·
   [capability inventory](docs/acceptance/hdj-parity-capability-inventory-066.toml) ·
   [open-issue inventory](docs/acceptance/open-issues-066.toml).
-- Intake result: issues #718–#730 remain Planned except no gaps in that range; #613 and #140 were
+- Intake result: issues #718–#730 are implemented, Verified, and closed; #613 and #140 were
   closed after their existing fixes and focused regressions were verified on `main`.
 - Explicit deferral: dynamic dependencies, foreign Jinja, and installed-package HDJ namespaces
   remain unsupported in the format-v1 render path.

@@ -121,12 +121,11 @@ def test_websocket_producer_failure_is_propagated_immediately() -> None:
 
 
 def test_typography_measure_effect_and_presentation_scope_are_bounded() -> None:
-    assert 'data-hedron-type-measure="narrow"' in render(
-        Heading("Title", measure="narrow", effect="subtle")
-    ).html
-    assert 'data-hedron-type-effect="display"' in render(
-        Text("Body", effect="display")
-    ).html
+    assert (
+        'data-hedron-type-measure="narrow"'
+        in render(Heading("Title", measure="narrow", effect="subtle")).html
+    )
+    assert 'data-hedron-type-effect="display"' in render(Text("Body", effect="display")).html
     rendered = render(
         PageHeader(
             "Title",

@@ -43,6 +43,7 @@ def test_stage1_modules_and_satellite_versions() -> None:
         or tip.startswith("0.63.")
         or tip.startswith("0.64.")
         or tip.startswith("0.65.")
+        or tip.startswith("0.66.")
     )
     assert Path("packages/hedron/src/hedron/package_doctor.py").is_file()
     assert Path("packages/hedron-conformance/src/hedron_conformance/authoring_loop.py").is_file()
