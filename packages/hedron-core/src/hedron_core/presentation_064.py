@@ -256,7 +256,8 @@ def compile_scoped_styles(recipes: Sequence[ScopedStyleRecipe]) -> ScopedStyleBu
                 at_rules.append(prefix)
             else:
                 selector_prefixes.append(prefix)
-        selector = "".join(selector_prefixes) + selector
+        if selector_prefixes:
+            selector = " ".join((*selector_prefixes, selector))
         body = "".join(f"  {key}: {value};\n" for key, value in sorted(recipe.declarations.items()))
         rule = f"@layer {recipe.layer} {{\n{selector} {{\n{body}}}\n}}\n"
         for at_rule in reversed(at_rules):
