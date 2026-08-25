@@ -11,6 +11,8 @@
 
 ### Changed
 - Coordinated train cut for Phase 0.65.
+- Moved the Workbench resolver, middleware, and launcher implementation into
+  `hedron-posit`; the package no longer depends on `fastapi-workbench`.
 
 ## [0.64.1] — 2026-08-25
 

@@ -5,8 +5,6 @@
 ### Fixed
 - Accept full Workbench `rserver-url` values in `UVICORN_ROOT_PATH` and rediscover
   the mount when an inherited hint targets a different bound listener port.
-- Support opt-in scheme-absolute response redirects from a trusted Workbench
-  origin so outer proxies do not rewrite path-absolute `Location` headers.
 
 ## [0.43.0] — 2026-08-16
 

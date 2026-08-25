@@ -253,25 +253,15 @@ class HedronPosit(Hedron):
     def _workbench_absolute_redirect_origin(self) -> str | None:
         """Return a trusted origin for Workbench-safe absolute redirects.
 
-        Workbench discovery and an explicitly configured public base are trusted
-        deployment inputs. A loopback origin is intentionally still rejected by
-        ``browser_url`` for public-link generation, but it is valid here: the
-        redirect is scoped to the Workbench deployment and must be absolute before
-        the outer proxy sees it.
+        Workbench discovery and explicit configuration are trusted deployment
+        inputs. A loopback origin is intentionally still rejected by ``browser_url``
+        for public-link generation, but it is valid here: the redirect is scoped to
+        the active Workbench deployment and must be absolute before the outer proxy
+        sees it.
         """
         if not self.hedron_workbench.active:
             return None
-        configured_public_base = self._posit_config.workbench.public_base_url
-        origin = self.hedron_workbench.external_origin
-        if configured_public_base is None:
-            hostname = urlsplit(origin).hostname or ""
-            try:
-                is_loopback = ipaddress.ip_address(hostname).is_loopback
-            except ValueError:
-                is_loopback = hostname.lower() == "localhost"
-            if is_loopback:
-                return None
-        return origin
+        return self.hedron_workbench.external_origin
 
     def _external_base(self, *, request: Request | None = None) -> ExternalBase:
         if self._hedron_external_base is not None:

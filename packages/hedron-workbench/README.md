@@ -22,10 +22,10 @@ Also available as `hedron[workbench]`.
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
 
-Behavior is reimplemented from observed
+Behavior originated from observed
 [fastapi-workbench 0.3.4](https://github.com/eddiethedean/jwt-user-management/tree/main/fastapi_workbench)
-(MIT) with attribution. `hedron-workbench` depends on `hedron-posit`, which
-depends on `fastapi-workbench>=1.0.0,<2.0`.
+(MIT) with attribution. `hedron-workbench` now depends only on `hedron-posit`,
+which owns the Hedron Workbench runtime directly.
 
 ## Install
 

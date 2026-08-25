@@ -438,6 +438,32 @@ def test_absolute_redirect_helper_uses_trusted_workbench_base() -> None:
     assert response.headers["location"] == f"http://127.0.0.1:8787{mount}/login"
 
 
+def test_launcher_resolved_loopback_base_emits_absolute_location(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mount = "/s/docker-session/p/8000"
+    monkeypatch.setenv("HEDRON_WORKBENCH_RESOLVED_MOUNT", mount)
+    monkeypatch.setenv(
+        "HEDRON_WORKBENCH_RESOLVED_PUBLIC_BASE",
+        f"http://127.0.0.1:8787{mount}",
+    )
+    monkeypatch.setenv("HEDRON_WORKBENCH_RESOLVED_MODE", "on")
+    monkeypatch.setenv("HEDRON_WORKBENCH_RESOLVED_SOURCE", "rserver-url")
+    app = HedronWorkbench(
+        title="resolved-absolute-location",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+    )
+
+    @app.page("/go")
+    def go():
+        return redirect_local("/login")
+
+    response = TestClient(app).get(f"{mount}/go", follow_redirects=False)
+    assert response.headers["location"] == f"http://127.0.0.1:8787{mount}/login"
+
+
 def test_prefix_assets_once() -> None:
     assert prefix_local_path("/hedron-static/htmx.js", "/s/demo/p/9") == (
         "/s/demo/p/9/hedron-static/htmx.js"

@@ -10,7 +10,8 @@ returning here for the deployment contract.
 
 **Requires:** `hedron-posit>=0.64.0,<0.65` (or `hedron[posit]>=0.64.0,<0.65`).
 Compatibility package: `hedron-workbench>=0.64.0,<0.65` (or `hedron[workbench]`).
-Generic Workbench ASGI behavior remains in `fastapi-workbench>=1.0.0,<2.0`.
+Hedron's Workbench ASGI behavior is owned by `hedron-posit`; no standalone
+`fastapi-workbench` installation is required.
 
 ## Preferred facade
 
@@ -64,7 +65,7 @@ hedron-posit run app:app
 hedron-workbench run app:app   # compatibility CLI
 ```
 
-Workbench mode delegates discovery and path normalization to `fastapi-workbench`
+Workbench mode uses the discovery and path normalization owned by `hedron-posit`
 through `hedron-posit`. Session URLs remain ephemeral — use
 `external_base_url` or Connect for durable email/OAuth callbacks.
 

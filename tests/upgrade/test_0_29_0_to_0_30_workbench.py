@@ -1,7 +1,8 @@
 """Upgrade fixtures: hedron-workbench 0.29.0 → 0.30.0 dependency inversion.
 
-After 0.33, ``hedron-workbench`` depends on ``hedron-posit``, which owns the
-``fastapi-workbench`` dependency (one-way graph).
+After 0.33, ``hedron-workbench`` depends on ``hedron-posit``. At the 0.65 tip,
+``hedron-posit`` owns its Workbench implementation and no longer depends on the
+standalone package.
 """
 
 from __future__ import annotations
@@ -12,11 +13,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def test_hedron_posit_declares_fastapi_workbench_dependency() -> None:
+def test_hedron_posit_has_no_fastapi_workbench_dependency() -> None:
     pyproject = ROOT / "packages" / "hedron-posit" / "pyproject.toml"
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
     deps = data["project"]["dependencies"]
-    assert any("fastapi-workbench>=1.0.0,<2.0" in dep for dep in deps)
+    assert not any(dep.startswith("fastapi-workbench") for dep in deps)
 
 
 def test_workbench_depends_on_posit() -> None:

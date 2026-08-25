@@ -257,6 +257,7 @@ def main(argv: list[str] | None = None) -> int:
         print("ok: 0.44 planned gate shape")
     elif str(_load(PYPROJECT).get("project", {}).get("version", "")).startswith(
         (
+            "0.65.",
             "0.64.",
             "0.45.",
             "0.46.",

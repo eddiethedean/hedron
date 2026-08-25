@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig, WorkbenchMode
+from hedron_workbench.config import ResolvedDeployment, WorkbenchConfig, WorkbenchMode
 from hedron_workbench.resolve import (
     RESOLVED_MOUNT_ENV,
     explicit_mount_hint,

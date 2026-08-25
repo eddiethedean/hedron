@@ -258,7 +258,7 @@ def test_open_browser_uses_docs_url(monkeypatch: pytest.MonkeyPatch) -> None:
     import uvicorn
 
     opened: list[str] = []
-    monkeypatch.setattr("fastapi_workbench.runner.webbrowser.open", opened.append)
+    monkeypatch.setattr("hedron_posit._workbench.runner.webbrowser.open", opened.append)
     monkeypatch.setattr(uvicorn, "run", lambda *args, **kwargs: None)
     resolved = resolve_deployment(
         WorkbenchConfig(mount="/s/demo/p/9", open_browser=True, port=8050),

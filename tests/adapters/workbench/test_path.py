@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from urllib.parse import quote
 
+import pytest
 from starlette._utils import get_route_path
 from starlette.types import Scope
 
@@ -137,6 +138,40 @@ def test_workbenchify_wrap_once() -> None:
     twice = workbenchify(once)
     assert twice is once
     assert isinstance(once, WorkbenchPathMiddleware)
+
+
+def test_absolute_redirect_rewrite_is_bounded_to_location() -> None:
+    mw = WorkbenchPathMiddleware(
+        _NullApp(),
+        mode=WorkbenchMode.ON,
+        absolute_redirects=True,
+        absolute_origin="https://workbench.example",
+    )
+    message = {
+        "type": "http.response.start",
+        "status": 303,
+        "headers": [
+            (b"location", b"/login"),
+            (b"hx-redirect", b"/next"),
+            (b"hx-push-url", b"/history"),
+            (b"hx-replace-url", b"/replace"),
+        ],
+    }
+    rewritten = mw._rewrite_response_start(message, "/s/session/p/1")
+    headers = dict(rewritten["headers"])
+    assert headers[b"location"] == b"https://workbench.example/s/session/p/1/login"
+    assert headers[b"hx-redirect"] == b"/s/session/p/1/next"
+    assert headers[b"hx-push-url"] == b"/s/session/p/1/history"
+    assert headers[b"hx-replace-url"] == b"/s/session/p/1/replace"
+
+
+def test_absolute_redirect_rewrite_requires_trusted_origin() -> None:
+    with pytest.raises(ValueError, match="absolute_origin"):
+        WorkbenchPathMiddleware(
+            _NullApp(),
+            mode=WorkbenchMode.ON,
+            absolute_redirects=True,
+        )
 
 
 def test_path_corpus_remains_idempotent() -> None:

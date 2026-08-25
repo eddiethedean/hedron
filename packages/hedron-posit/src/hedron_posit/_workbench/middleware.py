@@ -12,23 +12,23 @@ from urllib.parse import quote, unquote, urlsplit
 from starlette.responses import PlainTextResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
-from fastapi_workbench.codes import FWB_0006
-from fastapi_workbench.config import WorkbenchConfig, WorkbenchMode
-from fastapi_workbench.detect import (
+from hedron_posit._workbench.codes import FWB_0006
+from hedron_posit._workbench.config import WorkbenchConfig, WorkbenchMode
+from hedron_posit._workbench.detect import (
     is_posit_connect_scope,
     is_workbench_scope,
     path_has_encoded_absolute_url,
 )
-from fastapi_workbench.mount import (
+from hedron_posit._workbench.mount import (
     _path_has_traversal,
     is_local_path,
     normalize_mount_path,
     prefix_local_path,
 )
-from fastapi_workbench.redact import redact_scope_for_log
-from fastapi_workbench.urls import normalize_http_origin
+from hedron_posit._workbench.redact import redact_scope_for_log
+from hedron_posit._workbench.urls import normalize_http_origin
 
-log = logging.getLogger("fastapi_workbench")
+log = logging.getLogger("hedron_posit.workbench")
 _PROXY_PREFIX = re.compile(r"^/proxy/\d+(?P<rest>/.*)$")
 _MAX_TARGET = 8192
 _DECODE_ROUNDS = 3
@@ -38,6 +38,7 @@ _LOCAL_RESPONSE_HEADERS = {
     b"hx-push-url",
     b"hx-replace-url",
 }
+_ABSOLUTE_REDIRECT_HEADERS = {b"location"}
 _COOKIE_PATH_ROOT = re.compile(rb"(?i)(;[ \t]*path=)/(?=;|$)")
 _COOKIE_PATH = re.compile(rb"(?i)(;[ \t]*path=)([^;]*)")
 
@@ -98,6 +99,8 @@ class WorkbenchPathMiddleware:
         expected_origins: tuple[str, ...] = (),
         runtime_mounts: bool = False,
         mounted_response_headers: bool = True,
+        absolute_redirects: bool = False,
+        absolute_origin: str | None = None,
         owned_cookie_names: tuple[str, ...] = (),
     ) -> None:
         self.app = app
@@ -116,6 +119,12 @@ class WorkbenchPathMiddleware:
         self.expected_origins = frozenset(origins)
         self.runtime_mounts = runtime_mounts
         self.mounted_response_headers = mounted_response_headers
+        if absolute_redirects and not absolute_origin:
+            raise ValueError("absolute_redirects requires an absolute_origin")
+        self.absolute_redirects = bool(absolute_redirects)
+        self.absolute_origin = (
+            normalize_http_origin(absolute_origin) if absolute_origin is not None else None
+        )
         self.owned_cookie_names = frozenset(owned_cookie_names)
 
     def _should_normalize(self, scope: Scope) -> bool:
@@ -279,7 +288,9 @@ class WorkbenchPathMiddleware:
     def _rewrite_response_start(
         self, message: Message, mount: str, *, connect_proxy: bool = False
     ) -> Message:
-        if message.get("type") != "http.response.start" or not mount:
+        if message.get("type") != "http.response.start" or (
+            not mount and not self.absolute_redirects
+        ):
             return message
         headers = cast(list[tuple[bytes, bytes]], message.get("headers") or [])
         changed = False
@@ -290,7 +301,15 @@ class WorkbenchPathMiddleware:
             if lower in _LOCAL_RESPONSE_HEADERS:
                 text = value.decode("latin-1")
                 if text.lower() not in {"true", "false"} and is_local_path(text):
-                    new_value = prefix_local_path(text, mount).encode("latin-1")
+                    mounted = prefix_local_path(text, mount)
+                    if (
+                        self.absolute_redirects
+                        and self.absolute_origin is not None
+                        and lower in _ABSOLUTE_REDIRECT_HEADERS
+                    ):
+                        new_value = f"{self.absolute_origin}{mounted}".encode("latin-1")
+                    else:
+                        new_value = mounted.encode("latin-1")
             elif lower == b"hx-location":
                 new_value = self._rewrite_hx_location(value, mount)
             elif lower == b"set-cookie":
@@ -383,6 +402,8 @@ def workbenchify(
     owned_cookie_names: tuple[str, ...] = (),
     environ: Mapping[str, str] | None = None,
     expected_origins: tuple[str, ...] | None = None,
+    absolute_redirects: bool = False,
+    absolute_origin: str | None = None,
 ) -> ASGIApp:
     """Wrap ``app`` at most once. Cookie Path must still be set before construction."""
     if is_workbenchified(app):
@@ -396,15 +417,16 @@ def workbenchify(
             raise ValueError(
                 "cannot activate an already-constructed inactive Workbench wrapper; "
                 "construct it with workbench_mode='on'/workbench_mount=..., or use "
-                "fastapi-workbench run so cookie and asset paths are configured before import"
+                "hedron-posit run so cookie and asset paths are configured before import"
             )
         return app
     resolved_mode = mode
     resolved_debug = debug
     resolved_mount = expected_mount
+    resolved_absolute_origin = absolute_origin
     origins: tuple[str, ...] = expected_origins if expected_origins is not None else ()
     if config is not None:
-        from fastapi_workbench.resolve import resolve_deployment
+        from hedron_posit._workbench.resolve import resolve_deployment
 
         resolved = resolve_deployment(config, environ=environ)
         resolved_mode = resolved_mode or resolved.mode
@@ -412,6 +434,8 @@ def workbenchify(
         resolved_mount = resolved_mount if resolved_mount is not None else resolved.browser_mount
         if expected_origins is None:
             origins = (resolved.external_origin,)
+        if absolute_redirects and resolved_absolute_origin is None:
+            resolved_absolute_origin = resolved.external_origin
     return WorkbenchPathMiddleware(
         app,
         mode=resolved_mode or WorkbenchMode.AUTO,
@@ -423,6 +447,8 @@ def workbenchify(
         expected_origins=origins,
         runtime_mounts=True,
         mounted_response_headers=True,
+        absolute_redirects=absolute_redirects,
+        absolute_origin=resolved_absolute_origin,
         owned_cookie_names=owned_cookie_names,
     )
 

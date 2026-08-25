@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from collections.abc import Mapping
 
-from fastapi_workbench.detect import (
+from hedron_posit._workbench.detect import (
     is_posit_connect_scope,
     is_workbench_env,
     is_workbench_job,

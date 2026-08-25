@@ -34,7 +34,7 @@ companions [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](ht
 Dependency graph (one-way):
 
 ```text
-hedron-workbench -> hedron-posit -> hedron + fastapi-workbench
+hedron-workbench -> hedron-posit -> hedron
 ```
 
 `hedron-workbench` remains a Supported compatibility package on the current

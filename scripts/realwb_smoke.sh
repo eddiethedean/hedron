@@ -543,13 +543,11 @@ redirect_headers="$SMOKE_DIR/redirect.headers"
 redirect_code="$(curl -sS -o /dev/null -D "$redirect_headers" -w '%{http_code}' --max-time 5 \
   "http://127.0.0.1:${APP_PORT}${MOUNT}/go")"
 redirect_location="$(awk 'tolower($1)=="location:" {gsub(/\r/, ""); print $2; exit}' "$redirect_headers")"
-if [[ "$redirect_code" != "303" || "$redirect_location" != "${MOUNT}/login" ]]; then
+expected_redirect="https://wb.example${MOUNT}/login"
+if [[ "$redirect_code" != "303" || "$redirect_location" != "$expected_redirect" ]]; then
   fail "HED-WB-0006" "mounted redirect failed status=$redirect_code location=$redirect_location"
 fi
-if [[ "${redirect_location#"$MOUNT"}" == *"$MOUNT"* ]]; then
-  fail "HED-WB-0006" "mounted redirect duplicated the Workbench prefix"
-fi
-log "REDIRECT=ok mount_once=ok"
+log "REDIRECT=ok scheme_absolute=ok mount_once=ok"
 
 encoded_target="/https%3A%2F%2Fwb.example%2Fs%2Fdemo%2Fp%2F9%2Fencoded"
 encoded_body="$(curl -fsS --path-as-is --max-time 5 \
@@ -742,7 +740,8 @@ posit_redirect_code="$(curl -sS -o /dev/null -D "$posit_redirect_headers" \
   -w '%{http_code}' --max-time 5 "http://127.0.0.1:${POSIT_PORT}${MOUNT}/go")"
 posit_redirect_location="$(awk 'tolower($1)=="location:" {gsub(/\r/, ""); print $2; exit}' \
   "$posit_redirect_headers")"
-if [[ "$posit_redirect_code" != "303" || "$posit_redirect_location" != "${MOUNT}/login" ]]; then
+expected_posit_redirect="https://wb.example${MOUNT}/login"
+if [[ "$posit_redirect_code" != "303" || "$posit_redirect_location" != "$expected_posit_redirect" ]]; then
   fail "HED-WB-0006" "hedron-posit mounted redirect failed status=$posit_redirect_code location=$posit_redirect_location"
 fi
 posit_status="$(curl -fsS --max-time 5 "http://127.0.0.1:${POSIT_PORT}${MOUNT}/posit-status")"

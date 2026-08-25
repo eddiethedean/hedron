@@ -9,8 +9,8 @@ step.
 **Preferred for new apps:** `hedron-posit>=0.64.0,<0.65` (or
 `hedron[posit]>=0.64.0,<0.65`). **Compatibility surface:**
 `hedron-workbench>=0.64.0,<0.65` (or `hedron[workbench]>=0.64.0,<0.65`).
-Generic Workbench behavior is provided by `fastapi-workbench>=1.0.0,<2.0`; see
-[FastAPI Workbench](fastapi-workbench.md) for plain FastAPI apps.
+`hedron-posit` owns Hedron's Workbench runtime directly and does not require the
+standalone `fastapi-workbench` package.
 
 Supported Workbench floor is **2025.05.1** (linux/amd64). Current verified lane is
 Workbench **2026.07.0**. Prefer `HedronPosit` / `hedron-posit run` for new apps;
@@ -139,8 +139,10 @@ For a response redirect that must survive a Workbench proxy rewriting
 path-absolute `Location` headers, use `app.redirect(path, absolute=True)` or
 `app.browser_redirect(path)`. Named routes and request-bound `posit_for(request)`
 contexts provide the corresponding `*_for` helpers. The absolute target is built
-only from the resolved Workbench/Connect base or an explicit `external_base_url`;
-ordinary `app.redirect(...)` remains a mounted path redirect.
+only from the resolved Workbench/Connect base or an explicit `external_base_url`.
+In an active Workbench deployment, Hedron also normalizes safe local `Location`
+headers to that absolute form automatically; HTMX navigation headers remain
+mounted paths.
 
 - Listener binds are loopback-only unless `--allow-external-bind` is explicit.
 - Forwarded proxy trust accepts exact IPs or bounded CIDRs shared by Uvicorn and
