@@ -81,6 +81,23 @@ the same public metadata that powers recipes and built-in styles.
 No lane silently changes the authority of another lane. Explicit component props remain stronger
 than styling defaults; application CSS may override presentation but not behavior or semantics.
 
+## Refined 0.65 boundary
+
+The Required cut is deliberately three-part:
+
+1. the integration foundation: declared local CSS assets, the `application` layer, public
+   component hooks, namespaced tokens, static diagnostics, and provenance-preserving ejection;
+2. the exact open-issue slices: six named motion presets, five public-part/state surfaces,
+   semantic data-view chrome, and native control families; and
+3. cross-cutting fallback evidence on every touched surface: keyboard/focus, forced-colors/high
+   contrast, reduced motion, print, responsive/RTL where applicable, semantic/no-JS fallback, and
+   readable overflow.
+
+The phase does not promise a complete styling redesign of every Hedron component. New navigation,
+overlay, container/density, typography, media, icon, visualization, export, and full preference
+catalogs are Progressive unless a touched surface needs one to satisfy its fallback contract. Each
+Progressive item has an owner and fallback in the [refined scope packet](../acceptance/application-styling-scope-065.md).
+
 ## Proposed contract
 
 The exact Python names are frozen by D-110. The intended contract is:
@@ -109,6 +126,12 @@ Registration metadata declares:
 - whether global selectors are permitted; and
 - package/source provenance.
 
+The candidate Stage 0 signature is `app.styles(name, source, *, scope=None,
+layer="application", global_=False, media=())`. `source` is a local package-owned path;
+`global_=True` is an explicit compatibility decision, not a default. A named scope emits a stable
+application scope root and the compiler rejects selectors that escape that root or a documented
+public hook.
+
 The phase does not require a Node or npm build. Hedron's existing CSS compiler and asset
 pipeline remain the pure-Python reference authority.
 
@@ -126,6 +149,10 @@ The manifest records component identity, public parts, public states, slots, req
 behavior, maturity, and the owning package. Private descendants and generated classes are not
 promoted by observation alone.
 
+The first Required public surfaces are `AppShell.nav.link`, `ProcessFlow.step`, `Card` content
+roles, `FormField` control states, and `SplitView` separator/collapse. The manifest must record
+their states, slots, finite style properties, fallback behavior, owning package, and stability.
+
 ### Application tokens
 
 Applications may register namespaced semantic tokens in the existing theme graph:
@@ -139,6 +166,10 @@ ThemeBuilder("acme") \
 Application tokens receive deterministic names, light/dark and accessibility overrides where
 declared, fallback values, provenance, export entries, and conformance checks. Runtime data
 cannot become CSS; dynamic values still require validated, bounded CSS-variable paths.
+
+Each token record includes `namespace/name`, type, default, declared modes, fallback, source, and
+provenance. Core-name collisions reject at compile time; application tokens do not become a second
+theme registry.
 
 ### Cascade layers
 
@@ -178,22 +209,32 @@ hedron style update --check
 An ejection report identifies changed hooks, removed tokens, altered defaults, and manual merge
 points. Ejection never claims automatic semantic migration.
 
+Ejection applies to Hedron-generated CSS blocks. Application-authored source remains in its
+registered source file; the ejection report identifies the source manifest hash and the manual
+merge boundary rather than copying user CSS into an opaque generated file.
+
 ## Styling feature inventory
 
 ### Required
 
-- #690 named motion recipes, reduced-motion equivalence, and print behavior;
-- #693 public component parts/state recipes backed by the manifest;
-- #694 semantic table/data-view chrome and row/selection states;
-- #698 native form-control appearance, focus, validation, disabled, and high-contrast states;
+- #690 six named motion presets (`instant`, `standard`, `emphasized`, `reveal`, `elevate`, and
+  `crossfade`), bounded duration/easing/distance/opacity, reduced-motion equivalence, and print
+  behavior;
+- #693 public component parts/state recipes for `AppShell.nav.link`, `ProcessFlow.step`, `Card`,
+  `FormField`, and `SplitView`, backed by the manifest;
+- #694 semantic table/data-view chrome for borders, headers, row states, numeric/code cells,
+  sticky headers, and compact/spacious density;
+- #698 native-first checkbox/radio, select, range, file, date/time, and number control appearance,
+  focus/validation/busy/disabled/read-only/checked/selected/indeterminate states, and platform
+  fallbacks;
 - first-class local application stylesheet registration and asset planning;
 - documented `application` cascade layer and deterministic layer order;
 - public component hooks for parts/states/slots across the supported built-in inventory;
 - namespaced application tokens with provenance and export/conformance support;
 - style explanation, private-hook diagnostics, and custom-CSS checks;
 - provenance-preserving ejection and upgrade-diff metadata;
-- focus, navigation, overlay, layout, typography, media, icon, density, print, RTL, and
-  preference-state coverage where the existing component inventory exposes those surfaces;
+- focus, preference, print, responsive/RTL, semantic/no-JS, and overflow fallback coverage on
+  every touched surface;
 - browser, adapter, package, CSP, accessibility, performance, and no-JavaScript fallback evidence.
 
 ### Progressive
@@ -204,6 +245,10 @@ points. Ejection never claims automatic semantic migration.
 - richer overlay placement and native anchor-positioning enhancements;
 - visual regression capture for application-owned CSS;
 - automatic suggestions that translate repeated CSS into a semantic recipe.
+
+The broader missing-style catalog is Progressive: full navigation/overlay placement, container and
+density scales, product-wide typography/media/icon contracts, visualization/export themes, and
+complete preference-mode expansion.
 
 ### Experimental
 

@@ -69,7 +69,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Published** (`v0.62.0`; progressive dashboard fan-out explicitly omitted; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Published** (`v0.63.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
 | **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Published** (`v0.64.0`; [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [18 completed and 4 open enhancement issues](#phase-064-enhancement-inventory)) |
-| **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, and complete styling follow-up | **Proposed** (`v0.65.0`; [RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [acceptance](acceptance/RELEASE_0_65.md); open issues [#690](https://github.com/eddiethedean/hedron/issues/690), [#693](https://github.com/eddiethedean/hedron/issues/693), [#694](https://github.com/eddiethedean/hedron/issues/694), [#698](https://github.com/eddiethedean/hedron/issues/698)) |
+| **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, four bounded issue slices, and touched-surface fallback evidence | **Proposed** (`v0.65.0`; [RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [scope](acceptance/application-styling-scope-065.md); [acceptance](acceptance/RELEASE_0_65.md); open issues [#690](https://github.com/eddiethedean/hedron/issues/690), [#693](https://github.com/eddiethedean/hedron/issues/693), [#694](https://github.com/eddiethedean/hedron/issues/694), [#698](https://github.com/eddiethedean/hedron/issues/698)) |
 
 ### Phase 0.64 enhancement inventory
 
@@ -6675,9 +6675,11 @@ asset, cascade, CSP, and diagnostic authorities.
   rejection;
 - provide static `style explain`, `style inspect`, and `style check --custom-css` diagnostics;
 - preserve provenance through CSS ejection and provide safe `style diff` / `style update --check`;
-- cover focus/interaction states, navigation, overlays, layout/density/touch, typography, media,
-  icons, visualization chrome, print/export, RTL/writing modes, forced-colors, contrast,
-  reduced-motion, and reduced-transparency preferences; and
+- cover the required touched-surface fallback matrix: focus/interaction states, forced-colors,
+  contrast, reduced-motion, reduced-transparency, print, responsive overflow, RTL where
+  applicable, semantic/no-JS behavior; broader navigation, overlays, layout/density/touch,
+  typography, media, icons, visualization chrome, and export work remains explicitly Progressive
+  or Deferred in the [refined scope](acceptance/application-styling-scope-065.md); and
 - migrate the flagship app, starters, component packages, and adapters without private-selector
   dependencies.
 
@@ -6696,6 +6698,7 @@ The complete packet is [RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md),
 [EXECUTION_0_65](implementation/EXECUTION_0_65.md),
 [public API](api/APPLICATION_STYLING_065.md), and
 [RELEASE_0_65](acceptance/RELEASE_0_65.md) with its machine-readable
+[refined scope](acceptance/application-styling-scope-065.md),
 [gate](acceptance/release-gate-0.65.toml), [inventory](acceptance/application-styling-inventory-065.toml),
 [contract](acceptance/application-styling-contract-065.toml), [budgets](acceptance/application-styling-budgets-065.toml),
 and [upgrade fixtures](acceptance/application-styling-upgrade-fixtures-065.md).

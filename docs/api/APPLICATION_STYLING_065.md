@@ -1,18 +1,28 @@
 # Integrated styling and application CSS (proposed 0.65 API)
 
 Status: **Proposed; not implemented or Supported.** The exact names below are contract candidates
-for Stage 0 refinement under D-110. See [RFC-0092](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md).
+for Stage 0 refinement under D-110. The Required/Progressive boundary is recorded in the
+[refined scope](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/application-styling-scope-065.md).
+See [RFC-0092](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md).
 
 ## Authoring model
 
 ```python
 app.styles(
-    "application",
-    "styles/app.css",
-    layer="application",
-    scope="app",
+    name: str,
+    source: str | Path,
+    *,
+    scope: str | None = None,
+    layer: Literal["application", "overrides"] = "application",
+    global_: bool = False,
+    media: tuple[str, ...] = (),
 )
 ```
+
+This is a candidate Stage 0 signature, not an implemented API. `source` must resolve to a local,
+package-owned asset. `scope` emits a stable root hook such as `data-hedron-style-scope="app"`;
+`global_` is an explicit opt-in and is rejected when the source violates the global-CSS policy.
+`media` is a finite, manifest-recorded list rather than an arbitrary response-time condition.
 
 The registration API must accept only local, package-owned assets and produce a stylesheet manifest
 with source path, fingerprint, layer, scope, CSP disposition, and provenance. A stylesheet is not
@@ -21,6 +31,11 @@ implicitly loaded because a file happens to exist.
 The supported authoring ladder is semantic props → theme/recipes → registered application CSS →
 explicit scoped/global CSS → ejected CSS. Ordinary CSS remains ordinary CSS; Hedron adds ownership,
 ordering, diagnostics, and stable hooks around it.
+
+The precedence contract is generated reset/tokens/base/components, then registered application CSS,
+then explicit utility and override layers. Existing semantic behavior, interaction ownership, route
+state, and accessibility semantics are not style override points. An application stylesheet may
+change presentation only within the public hook and token contracts.
 
 ## Public hooks
 
@@ -38,6 +53,17 @@ manifest. Generated class names and DOM shapes not listed in that manifest are p
 change in a patch release. Typed selector helpers are Progressive until their generated metadata
 and compatibility rules are frozen.
 
+The first Required public part/state inventory is deliberately finite:
+
+- `AppShell.nav.link`: default, hover, current, disabled;
+- `ProcessFlow.step`: current, complete, blocked, skipped;
+- `Card`: heading, supporting copy, metadata;
+- `FormField`: control, focus, invalid, disabled;
+- `SplitView`: separator and responsive collapse.
+
+Additional component parts, slots, and state names require a later manifest decision; private
+descendant selectors and user-supplied selector values are rejected by the contract.
+
 ## Tokens and cascade
 
 Application tokens use a namespace owned by the registering package or application. They compose
@@ -50,6 +76,12 @@ without an explicit compatibility error. The proposed layer order is:
 
 The `application` layer is explicit and inspectable. Global CSS requires an explicit opt-in and
 cannot bypass CSP, source maps, unsafe-at-rule checks, or the public-hook policy.
+
+Required issue slices are bounded to six named motion recipes (`instant`, `standard`, `emphasized`,
+`reveal`, `elevate`, `crossfade`), semantic data-view/table chrome tokens, and native-first control
+families for checkbox/radio, select, range, file, date/time, and number inputs. These slices must
+provide the states and fallbacks listed in the acceptance contract; they do not imply a product-wide
+restyling of every component.
 
 ## Diagnostics and ejection
 
@@ -70,9 +102,11 @@ provenance; generated blocks are never silently overwritten by `update`.
 
 ## Required behavior contracts
 
-- focus-visible, invalid, disabled, busy, and reduced-motion behavior remains accessible;
+- focus-visible, invalid, disabled, busy, and reduced-motion behavior remains accessible on every
+  touched surface;
 - native controls retain usable browser fallback when appearance customization is unsupported;
 - data views expose semantic header/body/empty/loading/error chrome rather than visual-only states;
-- print, forced-colors, contrast, reduced-transparency, RTL, and no-JS paths are explicit;
+- print, forced-colors/high-contrast, reduced-transparency, RTL where applicable, responsive
+  overflow, and no-JS paths are explicit on every touched surface;
 - CSS cannot change route, effect, authorization, interaction state ownership, or semantic markup;
 - package and adapter support is declared per surface, with no universal compatibility claim.

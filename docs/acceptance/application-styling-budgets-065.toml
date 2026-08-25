@@ -3,6 +3,13 @@ phase = "0.65"
 status = "Proposed bounds; freeze during D-110"
 authority = "RFC-0092"
 policy = "reject-not-slice"
+measurement_protocol = [
+  "Measure feature-off and feature-on builds from the same clean dependency lock and reference app.",
+  "Record raw and compressed bytes, wall-clock compile/diagnostic time, request count, and hook count.",
+  "Run three cold repetitions, retain all outputs, and use the maximum for gate comparison.",
+  "Reject the slice when a proposed maximum is exceeded; do not silently omit application CSS.",
+]
+baseline_comparison = "v0.64.1 feature-off reference app"
 
 [[budget]]
 id = "manifest-bytes"

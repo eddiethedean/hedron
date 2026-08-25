@@ -10,6 +10,7 @@ owning_rfc = "RFC-0092"
 decision = "D-109"
 contract_refine = "D-110"
 acceptance_packet = "RELEASE_0_65.md"
+scope = "application-styling-scope-065.md"
 implementation = "../implementation/APPLICATION_STYLING_065.md"
 execution = "../implementation/EXECUTION_0_65.md"
 inventory = "application-styling-inventory-065.toml"
@@ -26,6 +27,12 @@ progressive_omissions = [
   "CSS anchor positioning",
   "visual regression automation",
   "recipe suggestions",
+  "navigation and overlay expansion",
+  "container, density, and touch layout scales",
+  "product-wide typography roles",
+  "media, icon, and asset styling contracts",
+  "visualization and export chrome themes",
+  "full preference expansion beyond touched-surface fallbacks",
 ]
 
 [[evidence]]

@@ -8,6 +8,7 @@ generated assets, a version bump, or a release claim.
 - Predecessor: published/in-tree `v0.64.1` (`v0.64.0` remains the public PyPI baseline)
 - Target: `v0.65.0`
 - Acceptance: [RELEASE_0_65](../acceptance/RELEASE_0_65.md)
+- Refined scope: [application-styling-scope-065](../acceptance/application-styling-scope-065.md)
 - Execution: [EXECUTION_0_65](EXECUTION_0_65.md)
 
 ## Outcome
@@ -58,11 +59,13 @@ and diagnostics. A stronger lane cannot silently change behavior, state, securit
 
 ### Presentation coverage
 
-The required consumer matrix covers focus-visible and disabled/busy/invalid states; navigation,
-tabs, overlays, and dialogs; container/density/touch layout; typography and truncation; media,
-icons, and visualization chrome; print/export; RTL and logical properties; forced-colors,
-contrast, reduced-motion, and reduced-transparency preferences. Each vertical must either use the
-new contract or record a named Progressive/Deferred disposition with a fallback.
+The required cross-cutting matrix applies to every surface touched by the four open issues: focus-
+visible and disabled/busy/invalid states; forced-colors/high contrast; reduced motion and print;
+responsive behavior, RTL/logical properties, touch targets, semantic/no-JS fallback, and readable
+overflow. The broader catalog—new navigation, tabs, overlays, container/density/touch scales,
+typography, media, icons, visualization chrome, export themes, and full preference-mode expansion—
+is Progressive unless a touched surface needs it to satisfy its fallback contract. Each Progressive
+row has an owner and fallback; none becomes Supported by inclusion in a roadmap table.
 
 ## Workstreams
 
@@ -75,8 +78,8 @@ new contract or record a named Progressive/Deferred disposition with a fallback.
 | W4 | Cascade and scope | `application` layer, scoped/global policy, source maps, specificity and reset protections |
 | W5 | Diagnostics | deterministic explain/inspect/check findings and redacted output |
 | W6 | Ejection | named generated blocks, provenance markers, diff/update/check, rollback fixture |
-| W7 | Open issue verticals | motion, form controls, data-view chrome, with fallbacks and browser evidence |
-| W8 | Styling breadth | focus, navigation, overlay, layout, type, media, icon, visualization, print, RTL, preferences |
+| W7 | Open issue verticals | six motion presets; five public-part/state slices; data-view chrome; native controls, with fallbacks and browser evidence |
+| W8 | Cross-cutting fallbacks and Progressive catalog | required focus/preference/print/RTL/no-JS checks on touched surfaces; explicitly owned Progressive breadth |
 | W9 | Fleet and packages | flagship app, starters, adapters, component packages, asset/CSP/package ownership |
 | W10 | Hardening | security, accessibility, no-JS, browser matrix, performance, regression and upgrade fixtures |
 | W11 | Documentation and release | API, guides, migration, examples, acceptance evidence, release and rollback handoff |
@@ -102,5 +105,6 @@ editor, arbitrary private selectors, and behavior-changing CSS are Deferred or e
 in the RFC and acceptance inventory.
 
 No Stage 1 implementation starts until D-110 is accepted, all four open issues have a named owner
-and issue-to-gate mapping, and the packet can be evaluated without inventing unspecified runtime
+and issue-to-gate mapping, the [refined scope](../acceptance/application-styling-scope-065.md)
+checklist is complete, and the packet can be evaluated without inventing unspecified runtime
 behavior.

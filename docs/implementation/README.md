@@ -81,7 +81,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Integrated styling platform and application CSS](APPLICATION_STYLING_065.md) — proposed phase
   0.65 W0–W11 workstreams for first-class local stylesheet assets, public hooks, namespaced tokens,
   an explicit application layer, diagnostics, provenance-preserving ejection, the four open styling
-  issues, and broader preference/responsive/presentation coverage
+  issues, and the touched-surface fallback matrix; see the [refined scope](../acceptance/application-styling-scope-065.md)
 - [Phase 0.65 execution plan](EXECUTION_0_65.md) — ordered E0–E11 milestones, dependencies,
   pull-request sequence, stop conditions, and release handoff
 - [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned

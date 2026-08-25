@@ -23,7 +23,20 @@ state = "Planned"
 owner = "components"
 gate = "HOOKS-065"
 issues = [693]
+required_slices = ["AppShell.nav.link", "ProcessFlow.step", "Card", "FormField", "SplitView"]
 fallback = "Use semantic props or documented component defaults; private classes are unsupported."
+maturity = "Required"
+
+[[capability]]
+id = "RECIPE-065"
+title = "Bounded component-part and state recipe properties"
+disposition = "Required"
+state = "Planned"
+owner = "components"
+gate = "RECIPE-065"
+issues = [693]
+required_slices = ["default-hover-current-disabled", "current-complete-blocked-skipped", "heading-supporting-copy-metadata", "control-focus-invalid-disabled", "separator-responsive-collapse"]
+fallback = "Expose only documented semantic props and preserve component-owned state behavior."
 maturity = "Required"
 
 [[capability]]
@@ -78,6 +91,7 @@ state = "Planned"
 owner = "presentation"
 gate = "MOTION-065"
 issues = [690]
+required_slices = ["instant", "standard", "emphasized", "reveal", "elevate", "crossfade"]
 fallback = "No mandatory motion; preserve state and content without animation."
 maturity = "Required"
 
@@ -89,6 +103,7 @@ state = "Planned"
 owner = "components"
 gate = "CONTROLS-065"
 issues = [698]
+required_slices = ["checkbox-radio", "select", "range", "file", "date-time", "number"]
 fallback = "Retain usable native appearance and browser validation behavior."
 maturity = "Required"
 
@@ -100,19 +115,32 @@ state = "Planned"
 owner = "data"
 gate = "DATA-065"
 issues = [694]
+required_slices = ["border-radius", "header", "row-separator-hover-selected", "numeric-code", "sticky", "density"]
 fallback = "Semantic markup and readable unthemed table/data-view output."
 maturity = "Required"
 
 [[capability]]
 id = "PRESENT-065"
-title = "Focus, navigation, overlays, layout, type, media, icons, visualization, print, RTL, preferences"
+title = "Cross-cutting fallback matrix on touched surfaces"
 disposition = "Required"
 state = "Planned"
 owner = "presentation"
 gate = "PRESENT-065"
 issues = []
-fallback = "Each surface records a bounded fallback or a named Progressive/Deferred disposition."
+required_slices = ["focus-visible", "forced-colors-high-contrast", "reduced-motion", "print", "responsive-overflow", "rtl-where-applicable", "no-js", "reduced-transparency"]
+fallback = "Each touched surface records the required fallback evidence; untouched breadth remains explicitly Progressive or Deferred."
 maturity = "Required"
+
+[[capability]]
+id = "BREADTH-065"
+title = "Navigation, overlays, layout, typography, media, visualization, and preference expansion"
+disposition = "Progressive"
+state = "Planned"
+owner = "presentation"
+gate = "PRESENT-065"
+issues = []
+fallback = "Use existing component defaults and document the surface as Progressive until its own hook, token, and fallback contract is accepted."
+maturity = "Progressive"
 
 [[capability]]
 id = "SELECTORS-065"

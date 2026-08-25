@@ -15,6 +15,10 @@ layer_order = ["reset", "tokens", "base", "components", "application", "utilitie
 application_layer_explicit = true
 global_css_requires_opt_in = true
 private_generated_selectors_public = false
+application_overrides_defaults_and_recipes = true
+explicit_props_use = "utilities"
+explicit_override_use = "overrides"
+behavior_and_semantics_immutable = true
 
 [registration]
 local_assets_only = true
@@ -24,6 +28,12 @@ source_mapped = true
 csp_checked = true
 htmx_fragment_safe = true
 no_js_fallback_required = true
+source_local_package_owned = true
+fragment_deduplicated = true
+global_opt_in_field = "global_"
+scope_root_attribute = "data-hedron-style-scope"
+scope_root_required = true
+no_response_style_tags = true
 
 [tokens]
 namespaced = true
@@ -39,6 +49,30 @@ state_attribute = "data-hedron-state"
 slot_attribute = "data-hedron-slot"
 manifest_backed_only = true
 private_class_names_stable = false
+public_component_surfaces = ["AppShell.nav.link", "ProcessFlow.step", "Card", "FormField", "SplitView"]
+private_descendant_selectors = "reject"
+user_data_selector_values = "reject"
+
+[motion]
+presets = ["instant", "standard", "emphasized", "reveal", "elevate", "crossfade"]
+arbitrary_animation_strings = "reject"
+reduced_motion_required = true
+print_fallback_required = true
+
+[parts_state]
+required_surfaces = ["AppShell.nav.link", "ProcessFlow.step", "Card", "FormField", "SplitView"]
+finite_properties_only = true
+state_ownership_unchanged = true
+
+[data_view]
+required_tokens = ["table.border", "table.radius", "table.header", "table.row.separator", "table.row.hover", "table.row.selected", "table.numeric", "table.code", "table.sticky.surface", "table.sticky.elevation", "table.density"]
+semantic_states_required = ["header", "body", "empty", "loading", "error"]
+
+[controls]
+required_families = ["checkbox-radio", "select", "range", "file", "date-time", "number"]
+required_states = ["focus", "invalid", "busy", "disabled", "read-only", "checked", "selected", "indeterminate"]
+native_first = true
+custom_paint_only_where_supported = true
 
 [safety]
 unsafe_at_rules = "reject"
@@ -55,3 +89,5 @@ forced_colors_path_required = true
 print_path_required = true
 rtl_logical_properties_required = true
 native_control_fallback_required = true
+responsive_overflow_path_required = true
+reduced_transparency_path_required = true
