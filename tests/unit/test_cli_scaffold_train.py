@@ -89,6 +89,23 @@ def test_published_quickstart_pin_matches_scaffold_and_release_toml() -> None:
         assert in_tree != f">={train}.0,<{RELEASE['pin_ceiling']}"
 
 
+def test_published_quickstart_accepts_development_patch_pin(tmp_path: Path) -> None:
+    """A just-published development patch falls back to its wheel version."""
+    module = _load_published_quickstart()
+    release = tmp_path / "release.toml"
+    release.write_text(
+        """[release]
+published_version = "0.64.0"
+development_version = "0.64.1"
+pin_floor = "0.64.0"
+pin_ceiling = "0.65"
+""",
+        encoding="utf-8",
+    )
+
+    assert module.expected_hedron_scaffold_pin("0.64.1", release_toml=release) == ">=0.64.1,<0.65"
+
+
 def test_hedron_run_auto_delegates_to_workbench_launcher(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

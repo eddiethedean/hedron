@@ -28,6 +28,13 @@ def expected_hedron_scaffold_pin(version: str, *, release_toml: Path = RELEASE_T
         release = tomllib.loads(release_toml.read_text(encoding="utf-8"))["release"]
         floor = str(release["pin_floor"]).strip()
         ceiling = str(release["pin_ceiling"]).strip()
+        # A release tag can be the development version while the checkout's
+        # public-release facts still describe the preceding published patch.
+        # Published wheels do not ship the monorepo's docs/release.toml, so
+        # their scaffold helper falls back to the wheel version in that window.
+        development = str(release.get("development_version", "")).strip()
+        if version == development and floor != version:
+            floor = version
         if floor != version:
             raise ValueError(
                 f"release.toml pin_floor {floor!r} does not match published version {version!r}"
