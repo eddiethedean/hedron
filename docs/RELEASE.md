@@ -23,6 +23,9 @@ authorized corrective retag after a failed publication.
    metadata and workflow have been fixed.
 6. After a successful upload, verify the PyPI artifact, trusted-publishing record, install
    smoke, and `registry_status = "uploaded"` before publishing release notes.
+7. Ordinary quality CI and the release workflow must pass the built-wheel quick-start gate
+   before a tag or first PyPI upload. The post-upload quick-start remains an independent
+   registry verification.
 
 ## Local release candidate
 
@@ -33,6 +36,7 @@ bash scripts/ci_checks.sh quality --python 3.12
 bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.64.0
 bash scripts/ci_checks.sh browser --python 3.12
 uv run python scripts/check_release_gate.py 0.64.0
+uv run python scripts/check_published_quickstart.py 0.64.0 --dist-dir dist --attempts 1
 uv run python scripts/check_063.py --gate CONTRACT-063 --verify
 uv run python scripts/verify_pkg_60.py
 uv run python scripts/verify_pkg_59.py

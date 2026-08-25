@@ -377,6 +377,15 @@ assert issubclass(hedron_workbench.HedronWorkbench, Hedron)
 assert "Content-Security-Policy" in SecurityPolicy.from_name("standard").response_headers()
 print("ok: all workspace wheels install and import cleanly")
 PY
+
+  # Exercise the exact standalone-wheel scaffold contract on ordinary main/PR
+  # CI. Release CI repeats this against its independently built artifacts before
+  # the first immutable upload.
+  local workspace_version
+  workspace_version="$($HEDRON_PYTHON_EXE -c \
+    'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+  run_py scripts/check_published_quickstart.py \
+    "$workspace_version" --dist-dir dist --attempts 1
 }
 
 quality_core_neutral() {

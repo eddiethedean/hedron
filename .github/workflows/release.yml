@@ -252,6 +252,10 @@ jobs:
             uv build --package "$pkg"
           done
           ls -la dist
+      - name: Verify built quick start before publication
+        run: >
+          uv run --python 3.11 python scripts/check_published_quickstart.py
+          "${{ steps.ref.outputs.version }}" --dist-dir dist --attempts 1
       - name: Write release checksum manifest
         run: >
           uv run --python 3.11 python scripts/write_release_manifest.py

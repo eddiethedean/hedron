@@ -89,38 +89,37 @@ def test_published_quickstart_pin_matches_scaffold_and_release_toml() -> None:
         assert in_tree != f">={train}.0,<{RELEASE['pin_ceiling']}"
 
 
-def test_published_quickstart_accepts_development_patch_pin(tmp_path: Path) -> None:
-    """A just-published development patch falls back to its wheel version."""
+@pytest.mark.parametrize(
+    ("version", "expected"),
+    [
+        ("0.64.1", ">=0.64.1,<0.65"),
+        ("0.65.0", ">=0.65.0,<0.66"),
+        ("1.2.3", ">=1.2.3,<1.3"),
+    ],
+)
+def test_published_quickstart_pin_is_derived_from_artifact_version(
+    version: str, expected: str
+) -> None:
+    """Patch, minor, and future major releases do not depend on stale docs metadata."""
     module = _load_published_quickstart()
-    release = tmp_path / "release.toml"
-    release.write_text(
-        """[release]
-published_version = "0.64.0"
-development_version = "0.64.1"
-pin_floor = "0.64.0"
-pin_ceiling = "0.65"
-""",
-        encoding="utf-8",
-    )
-
-    assert module.expected_hedron_scaffold_pin("0.64.1", release_toml=release) == ">=0.64.1,<0.65"
+    assert module.expected_hedron_scaffold_pin(version) == expected
 
 
-def test_published_quickstart_advances_development_minor_window(tmp_path: Path) -> None:
-    """A new-minor release must advance the stale public ceiling as well as its floor."""
+def test_published_quickstart_matches_current_development_artifact() -> None:
+    """The next tag's verifier contract is exercised on every ordinary test run."""
     module = _load_published_quickstart()
-    release = tmp_path / "release.toml"
-    release.write_text(
-        """[release]
-published_version = "0.64.0"
-development_version = "0.65.0"
-pin_floor = "0.64.0"
-pin_ceiling = "0.65"
-""",
-        encoding="utf-8",
-    )
+    version = str(RELEASE["development_version"])
+    major, minor, _patch = (int(part) for part in version.split("."))
+    assert module.expected_hedron_scaffold_pin(version) == f">={version},<{major}.{minor + 1}"
 
-    assert module.expected_hedron_scaffold_pin("0.65.0", release_toml=release) == ">=0.65.0,<0.66"
+
+def test_published_quickstart_finds_exact_local_wheels(tmp_path: Path) -> None:
+    module = _load_published_quickstart()
+    expected = tmp_path / "hedron_core-0.65.0-py3-none-any.whl"
+    expected.touch()
+    (tmp_path / "hedron_core-0.64.1-py3-none-any.whl").touch()
+
+    assert module.find_wheel(tmp_path, "hedron-core", "0.65.0") == expected.resolve()
 
 
 def test_hedron_run_auto_delegates_to_workbench_launcher(

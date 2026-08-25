@@ -92,7 +92,7 @@ Documentation source ownership and review rules:
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
-| `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
+| `check_published_quickstart.py` | Install an exact PyPI version or local release wheels, scaffold an app, and import it; quality CI tests wheels before tagging, and release CI repeats before and after upload |
 | `verify_pkg_46.py` / `verify_pkg_45.py` / `verify_pkg_44.py` / `verify_pkg_43.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living tip cut: **`verify_pkg_50.py`**; `verify_pkg_49.py` remains the previous living cut) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
