@@ -30,8 +30,10 @@ from hedron import (
     theme_markers,
     validate_theme_spec,
 )
+from hedron_core import HedronError
 from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderMode
+from hedron_core.theme import Theme
 
 
 def _valid_tokens() -> dict[str, str]:
@@ -125,6 +127,33 @@ def test_theme_spec_aliases_patches_and_accessibility_bridge_are_immutable() -> 
     assert spec.fingerprint != spec.patch().fingerprint
     with pytest.raises(TypeError):
         spec.tokens["new"] = "#000000"  # type: ignore[index]
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "red; background: url(https://attacker.test/x)",
+        "red; } body { color: red",
+        "url(https://attacker.test/x)",
+        "@import url(https://attacker.test/x)",
+    ],
+)
+def test_theme_mode_values_cannot_inject_css(value: str) -> None:
+    with pytest.raises(ValueError):
+        ThemeSpec("unsafe", tokens=_valid_tokens(), modes={"dark": {"color.fg": value}})
+    with pytest.raises(HedronError):
+        Theme(name="unsafe", tokens=_valid_tokens(), modes={"dark": {"color.fg": value}})
+
+
+def test_theme_mode_safe_aliases_are_resolved_before_css_emission() -> None:
+    spec = ThemeSpec(
+        "aliases",
+        tokens=_valid_tokens(),
+        modes={"dark": {"color.fg": "@color.accent"}},
+    )
+
+    assert spec.resolve_token("color.fg", mode="dark") == "#1d4ed8"
+    assert spec.to_theme().modes["dark"]["color.fg"] == "#1d4ed8"
 
 
 def test_theme_validation_and_package_are_reproducible() -> None:

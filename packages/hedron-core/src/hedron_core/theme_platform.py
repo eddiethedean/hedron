@@ -47,8 +47,10 @@ __all__ = [
 
 
 _NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]*$")
+_MODE_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
 _HEX = re.compile(r"^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
 _FUNCTION = re.compile(r"^(?P<name>[A-Za-z][A-Za-z0-9-]*)\((?P<body>.*)\)$", re.S)
+_UNSAFE_CSS_VALUE = re.compile(r"[;{}<>@\\]|url\s*\(|/\*", re.IGNORECASE)
 THEME_PACKAGE_COMPATIBILITY = ">=0.60,<0.64"
 
 
@@ -75,6 +77,28 @@ def _freeze_value(value: Any) -> Any:
     if isinstance(value, (list, tuple, set, frozenset)):
         return tuple(_freeze_value(item) for item in value)
     return value
+
+
+def _validate_mode_values(
+    modes: Mapping[str, Mapping[str, str]],
+    *,
+    allow_aliases: bool = False,
+    field_name: str,
+) -> None:
+    for mode, values in modes.items():
+        if not isinstance(mode, str) or not _MODE_NAME.fullmatch(mode):
+            raise ValueError(f"{field_name} name must be a safe identifier: {mode!r}")
+        if not isinstance(values, Mapping):
+            raise ValueError(f"{field_name}[{mode!r}] must be a mapping")
+        for key, value in values.items():
+            if not isinstance(key, str) or not _NAME.fullmatch(key):
+                raise ValueError(f"invalid {field_name}[{mode!r}] token key: {key!r}")
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(f"{field_name}[{mode!r}][{key!r}] must be a non-empty string")
+            if allow_aliases and value.startswith("@") and _NAME.fullmatch(value[1:]):
+                continue
+            if _UNSAFE_CSS_VALUE.search(value):
+                raise ValueError(f"unsafe theme value for {field_name}[{mode!r}][{key!r}]")
 
 
 def _number(raw: str, *, scale: float = 1.0, percent: bool = False) -> float:
@@ -374,6 +398,8 @@ class ThemeSpec:
                     raise ValueError(f"{field_name}[{key!r}] must be a non-empty string")
                 if any(char in value for char in ";{}<>") or "url(" in value.lower():
                     raise ValueError(f"unsafe theme value for {field_name}[{key!r}]")
+        _validate_mode_values(self.modes, allow_aliases=True, field_name="mode")
+        _validate_mode_values(self.accessibility_modes, field_name="accessibility mode")
         for key, value in self.groups.items():
             if (
                 not _NAME.fullmatch(str(key))
@@ -522,7 +548,10 @@ class ThemeSpec:
         return Theme(
             name=self.name,
             tokens=self.resolved_tokens,
-            modes={mode: dict(values) for mode, values in self.modes.items()},
+            modes={
+                mode: {key: self.resolve_token(key, mode=mode) for key in values}
+                for mode, values in self.modes.items()
+            },
             accessibility_modes={
                 mode: dict(values) for mode, values in self.accessibility_modes.items()
             },
