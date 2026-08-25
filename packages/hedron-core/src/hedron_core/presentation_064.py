@@ -210,7 +210,9 @@ class ScopedStyleRecipe:
         _identifier(self.part, "part")
         if self.layer not in _LAYERS:
             raise PresentationError(f"unknown style layer: {self.layer!r}")
-        for state in self.states:
+        states = tuple(self.states)
+        conditions = tuple(self.conditions)
+        for state in states:
             _identifier(state, "state")
         normalized = dict(self.declarations)
         for property_name, value in self.declarations.items():
@@ -221,6 +223,8 @@ class ScopedStyleRecipe:
                 raise PresentationError("theme references must use a single --hedron token")
             normalized[property_name] = value
         object.__setattr__(self, "declarations", MappingProxyType(normalized))
+        object.__setattr__(self, "states", states)
+        object.__setattr__(self, "conditions", conditions)
 
     @property
     def class_name(self) -> str:
@@ -298,6 +302,8 @@ class PresentationContract:
     def __post_init__(self) -> None:
         for field_name in ("tokens", "breakpoints", "container_sizes", "motion"):
             object.__setattr__(self, field_name, _freeze_public(getattr(self, field_name)))
+        object.__setattr__(self, "native_controls", tuple(self.native_controls))
+        object.__setattr__(self, "data_chrome", tuple(self.data_chrome))
 
     def to_dict(self) -> dict[str, object]:
         payload: dict[str, object] = {
