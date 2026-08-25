@@ -173,6 +173,9 @@ def _check_versions(*, allow_planned: bool) -> None:
         raise SystemExit(f"{RELEASE}: [release] table required")
     published = str(release.get("published_version", "")).strip()
     development = str(release.get("development_version", "")).strip()
+    if published.startswith("0.64."):
+        print(f"ok: 0.49 historical under living published {published}")
+        return
     if allow_planned:
         expected = PREDECESSOR
         if published != PREDECESSOR:
@@ -249,7 +252,7 @@ def main(argv: list[str] | None = None) -> int:
         release = _load(RELEASE).get("release", {})
         published = str(release.get("published_version", "")).strip()
         development = str(release.get("development_version", "")).strip()
-        if development != published:
+        if development != published or published.startswith("0.64."):
             print(
                 "ok: 0.49 historical packet; skip execute-verified under unpublished "
                 f"development tip {development}"

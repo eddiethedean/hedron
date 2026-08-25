@@ -139,6 +139,7 @@ def _check_versions(*, allow_planned: bool) -> None:
         or published.startswith("0.61.")
         or published.startswith("0.62.")
             or published.startswith("0.63.")
+            or published.startswith("0.64.")
     ):
         print(f"ok: 0.56 historical under living published {published}")
         return
@@ -190,6 +191,10 @@ def main(argv: list[str] | None = None) -> int:
             or published.startswith("0.58.")
             or published.startswith("0.59.")
             or published.startswith("0.60.")
+            or published.startswith("0.61.")
+            or published.startswith("0.62.")
+            or published.startswith("0.63.")
+            or published.startswith("0.64.")
         ):
             print("ok: 0.56 historical packet; skip execute-verified under living tip")
         else:

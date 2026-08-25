@@ -41,6 +41,7 @@ def test_stage1_modules_and_satellite_versions() -> None:
         or tip.startswith("0.61.")
         or tip.startswith("0.62.")
         or tip.startswith("0.63.")
+        or tip.startswith("0.64.")
     )
     assert Path("packages/hedron/src/hedron/package_doctor.py").is_file()
     assert Path("packages/hedron-conformance/src/hedron_conformance/authoring_loop.py").is_file()
@@ -57,6 +58,7 @@ def test_stage1_modules_and_satellite_versions() -> None:
         or tip.startswith("0.61.")
         or tip.startswith("0.62.")
         or tip.startswith("0.63.")
+        or tip.startswith("0.64.")
     ):
         # Historical 0.54 packet under later living tip — satellite versions remain on the 0.2 line.
         sample = tomllib.loads(

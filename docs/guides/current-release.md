@@ -13,12 +13,12 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Repository checkout | `0.63.0` / `0.63.x` | Published release |
+| Repository checkout | `0.64.0` / `0.64.x` | In-tree development train |
 | PyPI | `0.63.0` / `0.63.x` | Latest installable release from the public package index |
 | Package maturity | Beta | Usable with pins; no SLA or scheduled 1.0 release |
 | Supported Python | 3.11–3.14 | CPython only |
 
-Application documentation uses the published PyPI pin:
+Application documentation uses the latest public PyPI pin while the 0.64 upload is deferred:
 
 ```text
 hedron>=0.63.0,<0.64
@@ -33,10 +33,10 @@ from the workspace.
 |---|---|
 | Build an application | Install from PyPI: `hedron>=0.63.0,<0.64` |
 | Contribute / hack on Hedron | Clone the repo and `uv sync` (editable workspace) |
-| Know security support window | Current published train `0.63.x` — [SECURITY.md](../SECURITY.md) |
+| Know security support window | Current published train `0.64.x` — [SECURITY.md](../SECURITY.md) |
 | Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |
 
-The `0.63.0` release is the latest verified public release and is available from PyPI. See
+The `0.64.0` release is the latest verified public release and is available from PyPI. See
 `docs/release.toml` for the public registry facts.
 
 ## What should I install?

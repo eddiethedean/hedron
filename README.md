@@ -13,9 +13,9 @@ Routes return Python components; HTMX swaps HTML fragments. No Node frontend.
 **Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
-The latest installable PyPI release is `0.63.0`; the repository train is the verified and
-published `0.63.0` release. See the [GitHub Release](https://github.com/eddiethedean/hedron/releases/tag/v0.63.0)
-and [release CI](https://github.com/eddiethedean/hedron/actions/runs/32785419240).
+The repository is preparing the in-tree `0.64.0` development train; the latest installable
+PyPI release remains `0.63.0`. See the [installation guide](https://hedron.readthedocs.io/en/latest/getting-started/installation/)
+for the supported registry pins.
 Application pins and extras:
 [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
@@ -79,7 +79,8 @@ Jinja+HTMX stack. Prefer `@app.screen` for new apps.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
-Packages are **Beta** — pin a minor range (`>=0.63.0,<0.64`). For production fit, read
+Packages are **Beta** — pin a minor range (`>=0.63.0,<0.64`) until the 0.64.0 train is
+published. For production fit, read
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/); for Hello,
 keep going below.
 
@@ -92,7 +93,7 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new in 0.63](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.63/) ·
+[What’s new in 0.64](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.64/) ·
 [Current release](https://hedron.readthedocs.io/en/latest/guides/current-release/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 

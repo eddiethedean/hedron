@@ -5,13 +5,14 @@ HTML `id` stays stable so HTMX can swap it.
 
 **Swap** — Replacing that region's HTML with a fragment the server returned.
 
-**Pin** — An install constraint with an upper bound, for example `hedron>=0.63.0,<0.62`.
+**Pin** — An install constraint with an upper bound, for example `hedron>=0.64.0,<0.65`.
 Use the pin the package index can resolve.
 
 **Train** — A minor version line (`0.46.x`). Compatible patches stay inside the pin;
 the next train is an intentional upgrade.
 
-**Published** — A cut available on the current train (`v0.63.0` in-tree and on PyPI). Pin
+**Published** — A cut available on the current train. The repository’s in-tree cut is
+`v0.64.0`; public PyPI remains `v0.63.0`. Pin
 the latest public upper-bounded install constraint for reproducible installs.
 
 **Action** — A typed server operation with an HTTP method, input contract, dependencies, and response behavior.
@@ -74,7 +75,7 @@ sandbox for hostile authors.
 ## Maturity vocabulary
 
 **Train** — A coordinated package version line (for example `0.25.x` / tag `v0.25.0`) that
-adopters pin together. “Living train” means the current published line (`0.63.x`).
+adopters pin together. “Living train” means the current published line (`0.64.x`).
 
 **Package maturity (Beta / Alpha)** — PyPI packaging readiness. **Beta** flagship packages
 are pin-for-production; **Alpha** packages expect more churn. Not the same as capability

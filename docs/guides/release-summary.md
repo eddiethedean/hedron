@@ -8,11 +8,11 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 
 | Item | Value |
 |---|---|
-| In-tree release | **v0.63.0** (`hedron` / coordinated Beta train packages `0.63.0`) |
-| PyPI latest | **v0.63.0** (`hedron`; published 2026-08-24) |
-| Pin (PyPI) | `hedron>=0.63.0,<0.64` |
+| In-tree release | **v0.64.0** (`hedron` / coordinated Beta train packages `0.64.0`) |
+| PyPI latest | **v0.64.0** (`hedron`; published 2026-08-24) |
+| Pin (PyPI) | `hedron>=0.64.0,<0.65` |
 | Charts satellite | `hedron-charts>=0.2.1,<0.3` |
-| Gate checker | `python scripts/check_release_gate.py 0.63.0` |
+| Gate checker | `python scripts/check_release_gate.py 0.64.0` |
 | Packet verify | `python scripts/check_063.py --gate CONTRACT-063 --verify` |
 
 Adopter-facing notes: [What’s new in 0.63](whats-new-0.63.md) ·

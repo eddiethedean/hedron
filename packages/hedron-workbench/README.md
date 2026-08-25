@@ -18,7 +18,7 @@ application. `RS_SERVER_URL` is discovery-only and never grants trust.
 
 Also available as `hedron[workbench]`.
 
-**Package maturity:** Beta · **Train:** `0.63.x` (published `v0.63.0` in-tree and on PyPI) · application pin `>=0.63.0,<0.64`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Train:** `0.64.x` (in-tree `v0.64.0`; PyPI upload deferred in-tree; public PyPI remains `v0.63.0`) · application pin `>=0.64.0,<0.65`; repository checkouts use `uv sync`
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
 
@@ -30,9 +30,9 @@ depends on `fastapi-workbench>=1.0.0,<2.0`.
 ## Install
 
 ```bash
-pip install "hedron-workbench>=0.63.0,<0.64"
+pip install "hedron-workbench>=0.64.0,<0.65"
 # or
-uv add "hedron[workbench]>=0.63.0,<0.64"
+uv add "hedron[workbench]>=0.64.0,<0.65"
 ```
 
 ## Hedron application facade

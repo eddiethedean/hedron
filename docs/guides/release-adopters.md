@@ -2,9 +2,8 @@
 
 The canonical release history now lives on [Releases](release-notes.md).
 
-Latest public PyPI release: **v0.63.0**. The repository contains the published **v0.63.0
-release**. Use
-`hedron>=0.63.0,<0.64` for public-index installs. See
+Latest public PyPI release: **v0.63.0**. The repository contains the in-tree **v0.64.0
+development train**. Use `hedron>=0.63.0,<0.64` for public-index installs. See
 [Installation](../getting-started/installation.md).
 
 Continue with:

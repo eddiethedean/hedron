@@ -2,19 +2,19 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.63.x`).
+Security fixes land on the **current repository train** (`0.64.x`).
 Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.62.x`) continues through approximately **2027-08-20** — after that, upgrade
+minor (`0.63.x`) continues through approximately **2027-08-20** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The current published train is **`v0.63.0`** on PyPI. First-run pins use
-`>=0.63.0,<0.64`.
+The current repository train is **`0.64.x`**; the public PyPI pin remains
+`>=0.63.0,<0.64` while the 0.64.0 upload is deferred.
 
 | Version | Supported |
 |---|---|
-| `0.63.x` | Yes (current published train — pin `>=0.63.0,<0.64`; published `v0.63.0`) |
-| `0.62.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.63.x` |
+| `0.64.x` | Yes (current repository train — public PyPI pin remains `>=0.63.0,<0.64`; upload deferred) |
+| `0.63.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.64.x` |
 | `0.56.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.60.x` |
 | `0.55.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
 | `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
@@ -50,7 +50,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes target the current repository train (`0.63.x`); see Supported versions above.
+4. Fixes target the current repository train (`0.64.x`); see Supported versions above.
 
 ### Alternate contact
 

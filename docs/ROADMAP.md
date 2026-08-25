@@ -6506,7 +6506,7 @@ without adopting a React runtime or changing Hedron's server-authoritative archi
 ### 0.61 — Unified interaction state, async boundaries, and composed application surfaces
 
 **Status:** Implemented, verified, tagged, and published as `v0.61.0`. The 0.61 symbols and
-surface components are part of the published 0.63.x train and must be used within their documented
+surface components are part of the published 0.64.x train and must be used within their documented
 Supported capabilities until [RELEASE_0_61](acceptance/RELEASE_0_61.md) is signed off.
 
 Phase 0.61 has two coordinated tracks. The interaction track gives every supported asynchronous

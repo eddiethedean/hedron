@@ -11,7 +11,7 @@ Capability maturity for *this* train: [What’s ready](whats-ready.md) ·
 Install pins: [Current release](current-release.md) ·
 [Installation](../getting-started/installation.md).
 
-## On the living 0.63.x train
+## On the living 0.64.x train
 
 | Topic | Disposition |
 |---|---|
@@ -26,7 +26,7 @@ Install pins: [Current release](current-release.md) ·
 |---|---|---|
 | **0.61** | Unified action state and server-first async boundaries | **Verified and published in 0.61.0**; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ACTION_STATE_ASYNC_061.md) |
 | **0.62** | Responsive navigation, bounded optimistic UX, and localized failure isolation | **Published** as `v0.62.0`; dashboard fan-out omitted; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/NAVIGATION_OPTIMISM_062.md) |
-| **0.63** | Theme contract completion, interaction profiling, static checks, and component interoperability | **Published** as `v0.63.0`; Progressive bundles/visuals/React island deferred; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
+| **0.63** | Theme contract completion, interaction profiling, static checks, and component interoperability | **Published** as `v0.64.0`; Progressive bundles/visuals/React island deferred; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
 | **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability | Proposed / Stage 0 planned; [22 open enhancement issues](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#phase-064-open-enhancement-inventory); [refined phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_HEDRON_EXTENSION_064.md) |
 
 Phase 0.63 is the current published capability train; its Required implementation is landed in-tree

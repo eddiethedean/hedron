@@ -145,6 +145,9 @@ def _check_versions(*, allow_planned: bool) -> None:
         raise SystemExit(f"{RELEASE}: [release] table required")
     published = str(release.get("published_version", "")).strip()
     development = str(release.get("development_version", "")).strip()
+    if published.startswith("0.64."):
+        print(f"ok: 0.48 historical under living published {published}")
+        return
     if allow_planned:
         expected = PREDECESSOR
         if published != PREDECESSOR:
@@ -228,6 +231,7 @@ def main(argv: list[str] | None = None) -> int:
         print("ok: 0.48 planned gate shape")
     elif str(_load(PYPROJECT).get("project", {}).get("version", "")).startswith(
         (
+            "0.64.",
             "0.49.",
             "0.50.",
             "0.51.",

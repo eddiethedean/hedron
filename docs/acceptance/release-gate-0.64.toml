@@ -1,0 +1,192 @@
+schema_version = 1
+phase = "0.64"
+status = "Verified bounded 0.64.0 release slice; broader phase follow-up remains"
+planning_baseline = "v0.63.0"
+public_upgrade_source = "v0.63.0"
+required_predecessor = "v0.63.0"
+predecessor_satisfied = true
+target = "v0.64.0"
+owning_rfc = "RFC-0091"
+acceptance_packet = "RELEASE_0_64.md"
+implementation = "../implementation/HTMX_HEDRON_EXTENSION_064.md"
+inventory = "production-grade-inventory-064.toml"
+stage_1_entry_satisfied = false
+zero_deferred_at_cut = false
+progressive_omissions = []
+
+[[evidence]]
+id = "THEME-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate THEME-064 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "MANIFEST-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate MANIFEST-064 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "TYPOGEOM-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate TYPOGEOM-064 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "RESPONSIVE-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate RESPONSIVE-064 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "CONTROLS-064"
+state = "Deferred"
+command = "python scripts/check_064.py --gate CONTROLS-064 --verify"
+owner = "hedron"
+ci_job = "test"
+rationale = "The 0.64.0 cut does not yet ship the full native-control appearance contract across all first-party controls."
+destination = "Phase 0.64 follow-up"
+
+[[evidence]]
+id = "MOTION-064"
+state = "Deferred"
+command = "python scripts/check_064.py --gate MOTION-064 --verify"
+owner = "hedron-core"
+ci_job = "quality"
+rationale = "The cut exposes bounded motion tokens but not the complete named motion-recipe and reduced-motion browser packet."
+destination = "Phase 0.64 follow-up"
+
+[[evidence]]
+id = "VISUAL-064"
+state = "Deferred"
+command = "python scripts/check_064.py --gate VISUAL-064 --verify"
+owner = "hedron-elements"
+ci_job = "browser"
+rationale = "The portable component state-matrix and cross-engine visual report are not part of this bounded cut."
+destination = "Phase 0.64 follow-up"
+
+[[evidence]]
+id = "CUSTOM-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate CUSTOM-064 --verify"
+owner = "hedron-core"
+ci_job = "quality"
+
+[[evidence]]
+id = "CONTRACT-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate CONTRACT-064 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "ASSET-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate ASSET-064 --verify"
+owner = "hedron-core"
+ci_job = "quality"
+
+[[evidence]]
+id = "STATE-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate STATE-064 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "A11Y-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate A11Y-064 --verify"
+owner = "hedron-elements"
+ci_job = "browser"
+
+[[evidence]]
+id = "RACE-064"
+state = "Deferred"
+command = "python scripts/check_064.py --gate RACE-064 --verify"
+owner = "hedron-core"
+ci_job = "browser"
+rationale = "The current asset projects bounded lifecycle state but does not yet implement the complete stale/cancelled/superseded race corpus."
+destination = "Phase 0.64 follow-up"
+
+[[evidence]]
+id = "LIFE-064"
+state = "Deferred"
+command = "python scripts/check_064.py --gate LIFE-064 --verify"
+owner = "hedron-core"
+ci_job = "browser"
+rationale = "A full first-party module registry with initialize/teardown leak evidence remains outside the 0.64.0 slice."
+destination = "Phase 0.64 follow-up"
+
+[[evidence]]
+id = "TRACE-064"
+state = "Deferred"
+command = "python scripts/check_064.py --gate TRACE-064 --verify"
+owner = "hedron-explorer"
+ci_job = "quality"
+rationale = "Cross-surface browser, Explorer, and redacted trace parity is not yet implemented."
+destination = "Phase 0.64 follow-up"
+
+[[evidence]]
+id = "INTEGRATE-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate INTEGRATE-064 --verify"
+owner = "hedron"
+ci_job = "test"
+
+[[evidence]]
+id = "CSP-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate CSP-064 --verify"
+owner = "security"
+ci_job = "browser"
+
+[[evidence]]
+id = "SECURITY-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate SECURITY-064 --verify"
+owner = "security"
+ci_job = "quality"
+
+[[evidence]]
+id = "BROWSER-064"
+state = "Deferred"
+command = "python scripts/check_064.py --gate BROWSER-064 --verify"
+owner = "release"
+ci_job = "browser"
+rationale = "The full 0.64 browser journey matrix is not yet available; the bounded asset and injection contracts are covered by executable checks."
+destination = "Phase 0.64 follow-up"
+
+[[evidence]]
+id = "PERF-064"
+state = "Deferred"
+command = "python scripts/check_064.py --gate PERF-064 --verify"
+owner = "release"
+ci_job = "quality"
+rationale = "The dedicated extension overhead and retained-registration benchmark has not been frozen for this cut."
+destination = "Phase 0.64 follow-up"
+
+[[evidence]]
+id = "UPGRADE-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate UPGRADE-064 --verify"
+owner = "release"
+ci_job = "packaging"
+
+[[evidence]]
+id = "DOCS-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate DOCS-064 --verify"
+owner = "docs"
+ci_job = "quality"
+
+[[evidence]]
+id = "PKG-064"
+state = "Verified"
+command = "python scripts/check_064.py --gate PKG-064 --verify"
+owner = "release"
+ci_job = "packaging"

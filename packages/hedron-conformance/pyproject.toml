@@ -1,6 +1,6 @@
 [project]
 name = "hedron-conformance"
-version = "0.63.0"
+version = "0.64.0"
 description = "Language-neutral Hedron conformance-test kit and capability runner"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -32,7 +32,7 @@ classifiers = [
 ]
 dependencies = [
     "pydantic>=2.13.4,<2.15",
-    "hedron-core>=0.63.0,<0.64",
+    "hedron-core>=0.64.0,<0.65",
 ]
 
 [project.urls]

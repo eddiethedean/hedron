@@ -119,6 +119,9 @@ def _check_versions(*, allow_planned: bool) -> None:
     development = str(release.get("development_version", "")).strip()
     pypi = str(release.get("pypi_version", "")).strip()
     status = str(release.get("registry_status", "")).strip()
+    if published.startswith("0.64."):
+        print(f"ok: 0.53 historical under living published {published}")
+        return
     if allow_planned:
         if published != PREDECESSOR:
             raise SystemExit(f"published baseline must remain {PREDECESSOR}; found {published!r}")
@@ -170,7 +173,19 @@ def main(argv: list[str] | None = None) -> int:
     else:
         published = str(_load(RELEASE).get("release", {}).get("published_version", "")).strip()
         if published.startswith(
-            ("0.54.", "0.55.", "0.56.", "0.57.", "0.58.", "0.59.", "0.60.", "0.61.", "0.62.", "0.63.")
+            (
+                "0.64.",
+                "0.54.",
+                "0.55.",
+                "0.56.",
+                "0.57.",
+                "0.58.",
+                "0.59.",
+                "0.60.",
+                "0.61.",
+                "0.62.",
+                "0.63.",
+            )
         ):
             print(f"ok: 0.53 historical packet; skip execute-verified under living {published}")
         else:

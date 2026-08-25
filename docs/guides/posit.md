@@ -8,8 +8,8 @@ New to application development or Workbench? Start with
 installs `hedron-posit`, constructs `HedronPosit`, and uses the Workbench-aware launcher before
 returning here for the deployment contract.
 
-**Requires:** `hedron-posit>=0.63.0,<0.64` (or `hedron[posit]>=0.63.0,<0.64`).
-Compatibility package: `hedron-workbench>=0.63.0,<0.64` (or `hedron[workbench]`).
+**Requires:** `hedron-posit>=0.64.0,<0.65` (or `hedron[posit]>=0.64.0,<0.65`).
+Compatibility package: `hedron-workbench>=0.64.0,<0.65` (or `hedron[workbench]`).
 Generic Workbench ASGI behavior remains in `fastapi-workbench>=1.0.0,<2.0`.
 
 ## Preferred facade

@@ -114,8 +114,8 @@ pwd
 uv run python -c "import hedron, hedron_posit; print(hedron.__version__)"
 ```
 
-Expect the path to end in `my-workbench-app` and the PyPI version to be **`0.63.0`**.
-A repository checkout reports **`0.63.0`**.
+Expect the path to end in `my-workbench-app` and the PyPI version to be **`0.64.0`**.
+A repository checkout reports **`0.64.0`**.
 
 The project contains:
 
@@ -304,7 +304,7 @@ mkdir -p ~/projects/my-workbench-app
 cd ~/projects/my-workbench-app
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install "hedron>=0.63.0,<0.64" "hedron-posit>=0.63.0,<0.64" "uvicorn[standard]>=0.30"
+python -m pip install "hedron>=0.64.0,<0.65" "hedron-posit>=0.64.0,<0.65" "uvicorn[standard]>=0.30"
 python -m hedron new my-workbench-app --path .
 ```
 
@@ -312,7 +312,7 @@ Open `pyproject.toml` and add the adapter to the `dependencies` list so another 
 reproduce the app:
 
 ```toml
-"hedron-posit>=0.63.0,<0.64",
+"hedron-posit>=0.64.0,<0.65",
 ```
 
 Then install the declared project and run it:

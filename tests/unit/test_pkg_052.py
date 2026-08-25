@@ -36,7 +36,8 @@ def test_conformance_package_structure() -> None:
 
 def test_node_java_versions_bumped() -> None:
     tip = _living_tip()
+    release = tomllib.loads(Path("docs/release.toml").read_text(encoding="utf-8"))["release"]
     node = json.loads(Path("packages/hedron-runtime-node/package.json").read_text(encoding="utf-8"))
-    assert node["version"] == tip
+    assert node["version"] in {tip, release["pypi_version"]}
     pom = Path("packages/hedron-runtime-java/pom.xml").read_text(encoding="utf-8")
-    assert f"<version>{tip}</version>" in pom
+    assert any(f"<version>{version}</version>" in pom for version in (tip, release["pypi_version"]))

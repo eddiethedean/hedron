@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.64.0] — 2026-08-24
+
+### Added
+- Bounded presentation and lifecycle contracts for the 0.64 train.
+
 ## [0.63.0] — 2026-08-24
 
 ### Added

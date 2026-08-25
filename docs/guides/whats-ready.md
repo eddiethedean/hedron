@@ -5,7 +5,7 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
 screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
 
-This page is the **adopter** maturity summary for the **0.60.x** train
+This page is the **adopter** maturity summary for the **0.64.x** in-tree train
 ([Current release and support](current-release.md)). Full capability matrices and
 maintainer gate notes:
 [What’s ready — evidence](whats-ready-evidence.md).
@@ -70,7 +70,7 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.63.0,<0.64" hedron new my-app
+    uvx --from "hedron>=0.64.0,<0.65" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -78,13 +78,13 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "pip"
 
     ```bash
-    pip install "hedron>=0.63.0,<0.64" "uvicorn[standard]"
+    pip install "hedron>=0.64.0,<0.65" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.63.0,<0.64`. Extras and public-index notes:
+Pin `hedron>=0.64.0,<0.65`. Extras and public-index notes:
 [Installation](../getting-started/installation.md). Sample kit:
 `hedron-sample-kit>=0.2.1,<0.3`.
 

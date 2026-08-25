@@ -67,7 +67,7 @@ full `Page` constructor control — see the
 [Hedron API](../api/HEDRON.md).
 
 ```bash
-pip install "hedron>=0.63.0,<0.64" "uvicorn[standard]"
+pip install "hedron>=0.64.0,<0.65" "uvicorn[standard]"
 # paste the Code tab into app.py, then:
 uvicorn app:app --reload
 ```
@@ -77,7 +77,7 @@ uvicorn app:app --reload
 Minimal page with **no** HTMX Refresh — use only if you want the smallest possible file.
 
 ```bash
-pip install "hedron>=0.63.0,<0.64" "uvicorn[standard]"
+pip install "hedron>=0.64.0,<0.65" "uvicorn[standard]"
 ```
 
 Save as `app.py`:

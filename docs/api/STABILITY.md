@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.63.0,<0.64` from PyPI (published tip `0.63.0`). Treat the **stable** tables below (minimal +
+**For adopters:** Pin `hedron>=0.64.0,<0.65` from PyPI (published tip `0.64.0`). Treat the **stable** tables below (minimal +
 expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
 `experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
 lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -8,8 +8,8 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Verified repository train **0.63.x** (`v0.63.0` in-tree and on PyPI). The latest
-installable public release is `v0.63.0`.
+**Status:** Verified repository train **0.64.x** (`v0.64.0` in-tree; public PyPI remains `v0.63.0`). The latest
+installable public release is `v0.64.0`.
 Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
@@ -189,7 +189,7 @@ Schema acceptance is broader than specialized host painting in `hedron-charts 0.
 
 ### `hedron-workbench` (Beta) — `beta` optional Workbench adapter
 
-Install `hedron[workbench]` / `hedron-workbench>=0.63.0,<0.64`. Supported:
+Install `hedron[workbench]` / `hedron-workbench>=0.64.0,<0.65`. Supported:
 `HedronWorkbench`, pre-import launcher and resolved-state handoff,
 `HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic URL and safe
 response-header adaptation, Hedron-owned request-time cookie repair,

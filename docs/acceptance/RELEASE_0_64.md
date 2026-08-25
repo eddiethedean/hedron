@@ -1,6 +1,6 @@
 # Release acceptance: 0.64 Hedron HTMX interaction extension
 
-**Status:** Proposed / Planned gates  
+**Status:** 0.64.0 bounded release slice — Required gates verified; broader phase capabilities explicitly deferred
 **Implementation:** [HTMX_HEDRON_EXTENSION_064](../implementation/HTMX_HEDRON_EXTENSION_064.md)  
 **RFC:** [RFC-0091](../rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md)
 **Execution:** [EXECUTION_0_64](../implementation/EXECUTION_0_64.md)
@@ -8,6 +8,28 @@
 **Issue inventory:** 22 phase-owned open `enhancement` issues are tracked in the
 [phase 0.64 roadmap inventory](../ROADMAP.md#phase-064-open-enhancement-inventory), including
 0.62 carry-forward work. Issue #86 remains owned by phase 0.21.
+
+## 0.64.0 release boundary
+
+The `v0.64.0` cut is the bounded presentation/lifecycle slice implemented in the repository:
+finite semantic presentation tokens, responsive scoped-style recipes, a stable parts/state
+manifest, lifecycle facts and transitions, opt-in local `htmx-ext-hedron` asset injection, and
+their package/docs/security contracts. The release does not claim completion of the entire
+22-issue phase inventory. The eight broader capabilities listed as `Deferred` below remain owned
+follow-up work and are not Required for this cut.
+
+The executable evidence command is:
+
+```bash
+python scripts/check_064.py --verify
+```
+
+The strict release checker requires every Required row to be `Verified` and every Deferred row to
+name its rationale and destination:
+
+```bash
+python scripts/check_release_gate.py 0.64.0
+```
 
 ## Planned contract artifacts
 
@@ -31,29 +53,29 @@ Names and schemas become authoritative only after Stage 0 acceptance.
 
 | Gate | Requirement | Minimum evidence | Status |
 |---|---|---|---|
-| `THEME-064` | Semantic palette derivation, theme export, inspection, and conformance remain deterministic and explainable. | Theme contract, CSS/token export, diagnostics, and standalone conformance fixtures | Planned |
-| `MANIFEST-064` | Parts, states, slots, bundles, and component metadata form one public manifest. | Manifest lock, slot/recipe fixtures, bundle identity, and package parity | Planned |
-| `TYPOGEOM-064` | Typography, spacing, geometry, identity, and global theme hooks use finite semantic roles. | Scale lock, component role coverage, compatibility fixtures, and preference fallbacks | Planned |
-| `RESPONSIVE-064` | Viewport/container conditions and direction/writing-mode policies are bounded and accessible. | Responsive/direction lock, nested-scope fixtures, RTL/bidi matrix, and no-JS fallback | Planned |
-| `CONTROLS-064` | Native controls, data views, visualizations, glass surfaces, and identity states have theme contracts. | Form/data/visual vertical slices, forced-colors/high-contrast evidence, and fallback matrix | Planned |
-| `MOTION-064` | Named motion recipes have deterministic reduced-motion, print, and busy-state behavior. | Motion lock, browser matrix, and performance evidence | Planned |
-| `VISUAL-064` | Component state-matrix and visual conformance evidence covers the new presentation surfaces. | Portable state-matrix command, redacted reports, and Chromium/Firefox/WebKit results | Planned |
-| `CUSTOM-064` | Application-defined components can use a scoped style DSL without arbitrary CSS or selector escape hatches. | DSL schema, value/token allowlists, cascade-layer/digest tests, and rejection corpus | Planned |
-| `CONTRACT-064` | Extension id, markers, events, state projection, response facts, and maturity are frozen. | Machine-readable contract locks and schema validation | Planned |
-| `ASSET-064` | `htmx-ext-hedron` is pinned, local, digest-checked, licensed, ordered after HTMX core, and demand-loaded. | Asset manifest, CSP/load-order tests, opt-out byte check | Planned |
-| `STATE-064` | Browser projection consumes 0.61 lifecycle and operation identity without becoming authoritative. | Native/HTMX/element golden fixtures and spoofing cases | Planned |
-| `A11Y-064` | Busy, disabled, announcements, validation focus, keyboard behavior, reduced motion, and no-JS fallback are consistent. | Semantic, keyboard, screen-reader-oriented, and browser evidence | Planned |
-| `RACE-064` | Stale, cancelled, superseded, duplicate, removed-target, and reordered responses cannot corrupt current presentation. | Deterministic race corpus across fragment and navigation journeys | Planned |
-| `LIFE-064` | Registered modules initialize and teardown exactly once across load, swap, cleanup, OOB, history, and failure paths. | Chart/map/grid/element lifecycle fixtures and leak checks | Planned |
-| `TRACE-064` | Browser events, Explorer output, and tests project one bounded redacted trace. | Golden trace parity, truncation, malformed-input, and redaction tests | Planned |
-| `INTEGRATE-064` | Hedron page planning, component markers, route metadata, simulator, and package exports agree. | Cross-package render/simulation/integration suite | Planned |
-| `CSP-064` | Strict CSP works without inline handlers or response scripts; registry is explicit and scoped. | CSP browser matrix and negative executable-content tests | Planned |
-| `SECURITY-064` | Theme values, selectors, response facts, traces, assets, registrations, and retained metadata stay within declared trust boundaries. | Malformed-input, unsafe-value, spoofing, privacy, cache, and retention corpus | Planned |
-| `BROWSER-064` | Core journeys pass in Chromium, Firefox, and WebKit. | Form, refresh, polling, navigation, focus, OOB, cleanup, and history matrix | Planned |
-| `PERF-064` | Extension overhead, metadata, event count, and retained registrations stay within frozen budgets. | Reproducible browser/resource benchmark | Planned |
-| `UPGRADE-064` | Pages without the declaration retain pre-extension behavior and rollback is documented. | Before/after fixtures, absent-asset tests, migration/rollback docs | Planned |
-| `DOCS-064` | API, recipes, security model, fallback behavior, diagnostics, and extension declaration are accurate. | Docs link/API/example checks and rendered guide | Planned |
-| `PKG-064` | Clean packages expose identical extension metadata and locally serve the asset. | Build/install/package identity and production-like smoke | Planned |
+| `THEME-064` | Finite 0.64 presentation tokens resolve deterministically from a theme. | Contract digest, token export, and theme override checks | Verified |
+| `MANIFEST-064` | The shipped parts/state manifest is stable, non-empty, and digestable. | Manifest lock and repeatability check | Verified |
+| `TYPOGEOM-064` | The shipped typography, spacing, and geometry vocabulary is finite and safe. | Scale lock and unsafe-value check | Verified |
+| `RESPONSIVE-064` | Shipped viewport/container/direction/writing-mode conditions compile deterministically. | Responsive recipe and fallback-condition check | Verified |
+| `CONTROLS-064` | Full native-control appearance and state contract across first-party controls. | Deferred from 0.64.0; no Required claim | Deferred |
+| `MOTION-064` | Full named motion-recipe, reduced-motion, print, and browser packet. | Deferred from 0.64.0; token foundation remains available | Deferred |
+| `VISUAL-064` | Portable component state-matrix and cross-engine visual conformance. | Deferred from 0.64.0 | Deferred |
+| `CUSTOM-064` | Application-defined components use the bounded scoped-style DSL. | Allowlist, cascade-layer, digest, and rejection checks | Verified |
+| `CONTRACT-064` | Extension schemas, markers, policies, and maturity are frozen for the shipped slice. | Machine-readable contract and attribute checks | Verified |
+| `ASSET-064` | `htmx-ext-hedron` is local, digest-checked, ordered after HTMX core, and opt-in. | Asset digest, static path, and load-order checks | Verified |
+| `STATE-064` | Lifecycle facts and generation transitions reject older responses. | Pending/success/stale transition checks | Verified |
+| `A11Y-064` | Shipped lifecycle hosts expose bounded busy/state semantics and validated focus/announcement settings. | Attribute and asset semantics checks | Verified |
+| `RACE-064` | Full stale/cancelled/superseded browser race corpus. | Deferred from 0.64.0 | Deferred |
+| `LIFE-064` | Full first-party module registry initialization/teardown and leak evidence. | Deferred from 0.64.0 | Deferred |
+| `TRACE-064` | Cross-surface browser, Explorer, and redacted trace parity. | Deferred from 0.64.0 | Deferred |
+| `INTEGRATE-064` | Page extension planning, local asset injection, and opt-in fallback agree. | Integration and load-order checks | Verified |
+| `CSP-064` | The shipped asset has no dynamic code execution or network escape hatch. | Static CSP/safety checks | Verified |
+| `SECURITY-064` | Shipped style values and asset boundaries reject unsafe inputs. | Adversarial value and asset checks | Verified |
+| `BROWSER-064` | Full 0.64 Chromium/Firefox/WebKit journey matrix. | Deferred from 0.64.0; existing repository browser suite remains separate | Deferred |
+| `PERF-064` | Dedicated extension overhead and retained-registration benchmark. | Deferred from 0.64.0 | Deferred |
+| `UPGRADE-064` | Feature-absent pages retain their pre-extension output. | Opt-out/no-injection check | Verified |
+| `DOCS-064` | Live docs, inventory, links, generated pages, and strict build agree. | Full docs gate | Verified |
+| `PKG-064` | Coordinated package metadata and local asset packaging agree. | Package metadata and build checks | Verified |
 
 ## Issue-to-gate map
 

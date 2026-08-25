@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.64.0] — 2026-08-24
+
+### Added
+- 0.64 presentation and HTMX lifecycle compatibility for Posit hosts.
+
 ## [0.63.0] — 2026-08-24
 
 ### Changed

@@ -3,7 +3,7 @@
 Annotated tour of
 [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)—
 the FastAPI flagship CRUD sample and multi-worker production kitchen sink on the living
-**0.63** train. Prefer [session auth](session-auth.md) and
+**0.64.x** train. Prefer [session auth](session-auth.md) and
 [notes + SQLAlchemy](notes-sqlalchemy.md) for a shorter second-hour path; use this app
 when you want the full archetype in one tree.
 
@@ -13,7 +13,7 @@ Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README
 Click through the pattern demos below (docs simulations for CSRF, fragments, and chart
 **panel** refresh — not a live login), then run the full app locally or via production
 compose. Outside the workspace, install `hedron[charts]>=0.63.0,<0.64` from PyPI
-(the verified repository tip is `0.63.0`, and the public PyPI release is also `0.63.0`; see
+(the repository tip is `0.64.0`, while the public PyPI release remains `0.63.0`; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 
 !!! warning "Credentials for this app"
@@ -340,7 +340,7 @@ Prefer this path when validating production posture —
 | CSRF on forms | `csrf_token_for_request` + hidden field / `hx-headers` in `_create_form` | CSRF on forms |
 | Create user POST | `@users.action("", method="POST")` | Fragment list refresh |
 | Fragment table refresh | `@users.component("/table")`, addressable `user_table` | Fragment list refresh |
-| DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=0.63.0,<0.64` or the monorepo source) | Chart panel refresh (sim) |
+| DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=0.64.0,<0.65` or the monorepo source) | Chart panel refresh (sim) |
 | Color mode | `ColorModeToggle` + preference cookie helpers | — |
 | Production archetype | compose + `requirements-prod.txt` + README ingredient table | — |
 
