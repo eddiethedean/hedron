@@ -48,35 +48,17 @@ def test_packet_files_and_api_markers() -> None:
 
 
 def test_roadmap_053_status_matches_cut() -> None:
+    release = tomllib.loads(Path("docs/release.toml").read_text(encoding="utf-8"))["release"]
     roadmap = Path("docs/ROADMAP.md").read_text(encoding="utf-8")
     section = roadmap.split("## 0.53 — Application DX contracts", 1)[1].split("## 0.54", 1)[0]
     assert "Published" in section
     assert "v0.53.0" in section
     assert "Stage 1 runtime gates Planned" not in section
     ref = Path("docs/examples/reference-app.md").read_text(encoding="utf-8")
+    ref_one_line = " ".join(ref.split())
+    train = str(release["train"])
+    published_version = str(release["published_version"])
     assert (
-        "repository tip is `0.64.0`" in ref
-        or "living 0.64 train" in ref
-        or "verified repository tip is `0.63.0`" in ref
-        or "living 0.63 train" in ref
-        or "living tip is `0.62.0`" in ref
-        or "checkout tip is `0.62.0`" in ref
-        or "verified repository tip is `0.62.0`" in ref
-        or "living tip is `0.61.0`" in ref
-        or "checkout tip is `0.61.0`" in ref
-        or "verified repository tip is `0.61.0`" in ref
-        or "living tip is `0.60.2`" in ref
-        or "checkout tip is `0.60.2`" in ref
-        or "verified repository tip is `0.60.2`" in ref
-        or "living tip is `0.60.0`" in ref
-        or "checkout tip is `0.60.0`" in ref
-        or "verified repository tip is `0.60.0`" in ref
-        or "living tip is `0.59.0`" in ref
-        or "checkout tip is `0.59.0`" in ref
-        or "living tip is `0.58.0`" in ref
-        or "checkout tip is `0.58.0`" in ref
-        or "checkout tip is `0.56.0`" in ref
-        or "checkout tip is `0.55.0`" in ref
-        or "checkout tip is `0.54.0`" in ref
-        or "checkout tip is `0.53.0`" in ref
+        f"living **{train}.x** train" in ref_one_line
+        or f"repository tip is `{published_version}`" in ref_one_line
     )
