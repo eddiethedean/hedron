@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from starlette.types import ASGIApp
 
-from fastapi_workbench.config import WorkbenchConfig, WorkbenchMode
-from fastapi_workbench.middleware import WorkbenchPathMiddleware as _WorkbenchPathMiddleware
-from fastapi_workbench.middleware import apply_root_path, encode_raw_path
-from fastapi_workbench.middleware import is_workbenchified as _is_workbenchified
+from hedron_posit._workbench.config import WorkbenchConfig, WorkbenchMode
+from hedron_posit._workbench.middleware import WorkbenchPathMiddleware as _WorkbenchPathMiddleware
+from hedron_posit._workbench.middleware import apply_root_path, encode_raw_path
+from hedron_posit._workbench.middleware import is_workbenchified as _is_workbenchified
 
 __all__ = [
     "WorkbenchPathMiddleware",
@@ -41,6 +41,8 @@ def workbenchify(
     decode_absolute_url_path: bool = True,
     strip_root_path_from_path: bool = True,
     debug: bool = False,
+    absolute_redirects: bool = False,
+    absolute_origin: str | None = None,
 ) -> ASGIApp:
     """Wrap ``app`` at most once with Hedron-owned cookie repair."""
     if getattr(app, "__hedron_posit__", False) or getattr(app, "__hedron_workbench__", False):
@@ -62,6 +64,7 @@ def workbenchify(
     resolved_mode = mode
     resolved_debug = debug
     resolved_mount = expected_mount
+    resolved_absolute_origin = absolute_origin
     expected_origins: tuple[str, ...] = ()
     if config is not None:
         from hedron_posit.resolve import resolve_deployment
@@ -71,6 +74,8 @@ def workbenchify(
         resolved_debug = debug or resolved.debug
         resolved_mount = resolved_mount if resolved_mount is not None else resolved.browser_mount
         expected_origins = (resolved.external_origin,)
+        if absolute_redirects and resolved_absolute_origin is None:
+            resolved_absolute_origin = resolved.external_origin
     state = getattr(app, "state", None)
     owned = {"session", "hedron_color_mode"}
     policy = getattr(state, "hedron_security", None)
@@ -88,5 +93,7 @@ def workbenchify(
         expected_origins=expected_origins,
         runtime_mounts=True,
         mounted_response_headers=True,
+        absolute_redirects=absolute_redirects,
+        absolute_origin=resolved_absolute_origin,
         owned_cookie_names=tuple(sorted(owned)),
     )

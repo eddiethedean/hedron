@@ -8,14 +8,14 @@ import sys
 from collections.abc import Mapping
 from typing import Any
 
-from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig
-from fastapi_workbench.diagnostics import WorkbenchError
-from fastapi_workbench.runner import bind_loopback as _bind_loopback
-from fastapi_workbench.runner import discover_rserver_url as _discover_rserver_url
-from fastapi_workbench.runner import load_app as _load_app
-from fastapi_workbench.runner import serve as _serve
 from hedron_core.codes import HED_WB_0009
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
+from hedron_posit._workbench.config import ResolvedDeployment, WorkbenchConfig
+from hedron_posit._workbench.diagnostics import WorkbenchError
+from hedron_posit._workbench.runner import bind_loopback as _bind_loopback
+from hedron_posit._workbench.runner import discover_rserver_url as _discover_rserver_url
+from hedron_posit._workbench.runner import load_app as _load_app
+from hedron_posit._workbench.runner import serve as _serve
 from hedron_posit.detect import is_workbench_job, rs_server_url
 from hedron_posit.middleware import workbenchify
 from hedron_posit.resolve import (

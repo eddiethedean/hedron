@@ -13,7 +13,7 @@ def test_hedron_posit_package_exists() -> None:
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
     assert data["project"]["name"] == "hedron-posit"
     deps = data["project"]["dependencies"]
-    assert any(dep.startswith("fastapi-workbench") for dep in deps)
+    assert not any(dep.startswith("fastapi-workbench") for dep in deps)
     assert any(dep.startswith("hedron") for dep in deps)
     assert not any("hedron-workbench" in dep for dep in deps)
 

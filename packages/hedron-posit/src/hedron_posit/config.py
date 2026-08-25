@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 
-from fastapi_workbench.config import (
+from hedron_posit._workbench.config import (
     DEFAULT_FORWARDED_ALLOW_IPS,
     DEFAULT_HOST,
     DEFAULT_RSERVER_URL,

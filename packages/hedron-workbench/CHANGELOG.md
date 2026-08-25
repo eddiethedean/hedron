@@ -5,6 +5,10 @@
 ### Added
 - Integrated application styling platform: registered custom CSS, cascade layers, stable hooks, bounded recipes, diagnostics, and provenance-preserving ejection.
 
+### Fixed
+- Added trusted scheme-absolute Workbench redirects for proxy deployments that
+  rewrite path-absolute `Location` headers.
+
 ### Changed
 - Coordinated train cut for Phase 0.65.
 

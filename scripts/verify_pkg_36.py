@@ -150,6 +150,7 @@ def _check_living_tip(*, allow_planned: bool) -> None:
                 "0.62.",
                 "0.63.",
                 "0.64.",
+                "0.65.",
             )
         ):
             raise SystemExit(f"unexpected workspace version {version!r}")

@@ -28,9 +28,14 @@ def main() -> int:
     release = tomllib.loads(RELEASE_METADATA.read_text(encoding="utf-8"))["release"]
     version = args.version or release["development_version"]
     phase = ".".join(version.split(".")[:2])
-    if phase != release["train"]:
+    configured_phases = {
+        str(release["train"]),
+        ".".join(str(release["development_version"]).split(".")[:2]),
+    }
+    if phase not in configured_phases:
         raise SystemExit(
-            f"evidence version {version} is outside configured train {release['train']}"
+            f"evidence version {version} is outside configured trains "
+            f"{', '.join(sorted(configured_phases))}"
         )
     gate_manifest = f"docs/acceptance/release-gate-{phase}.toml"
     if not (ROOT / gate_manifest).is_file():

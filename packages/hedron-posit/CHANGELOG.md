@@ -5,8 +5,14 @@
 ### Added
 - Integrated application styling platform: registered custom CSS, cascade layers, stable hooks, bounded recipes, diagnostics, and provenance-preserving ejection.
 
+### Fixed
+- Added trusted scheme-absolute Workbench redirects for proxy deployments that
+  rewrite path-absolute `Location` headers.
+
 ### Changed
 - Coordinated train cut for Phase 0.65.
+- Moved the Workbench resolver, middleware, and launcher implementation into
+  `hedron-posit`; the package no longer depends on `fastapi-workbench`.
 
 ## [0.64.1] — 2026-08-25
 
