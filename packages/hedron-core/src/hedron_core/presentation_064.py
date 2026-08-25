@@ -24,6 +24,7 @@ __all__ = [
     "PresentationContract",
     "PresentationError",
     "PRESENTATION_TOKEN_MANIFEST",
+    "MotionRecipe",
     "ResponsiveCondition",
     "ScopedStyleBundle",
     "ScopedStyleRecipe",
@@ -34,6 +35,8 @@ __all__ = [
     "presentation_contract",
     "presentation_token_manifest",
     "presentation_tokens",
+    "motion_recipe",
+    "motion_recipes",
 ]
 
 PRESENTATION_SCHEMA: Final = "hedron.presentation-contract/1"
@@ -133,8 +136,27 @@ _PRESENTATION_DEFAULTS: Final[dict[str, str]] = {
     "control.appearance": "auto",
     "control.accent": "var(--hedron-color-accent)",
     "data.table.border": "var(--hedron-color-border)",
+    "data.table.radius": "var(--hedron-default-radius)",
     "data.table.header.background": "var(--hedron-color-surface-subtle)",
+    "data.table.header.foreground": "var(--hedron-color-fg)",
+    "data.table.header.weight": "600",
+    "data.table.header.tracking": "0.01em",
     "data.table.row.separator": "var(--hedron-color-border)",
+    "data.table.numeric": "tabular-nums",
+    "data.table.code": "ui-monospace, SFMono-Regular, Menlo, monospace",
+    "data.table.sticky.surface": "var(--hedron-color-surface)",
+    "data.table.sticky.elevation": (
+        "var(--hedron-elevation-raised, 0 0.25rem 0.75rem rgb(0 0 0 / 12%))"
+    ),
+    "data.table.density": "1",
+    "control.focus": "var(--hedron-color-focus, var(--hedron-color-accent))",
+    "control.invalid": "var(--hedron-color-danger, #b42318)",
+    "control.busy": "var(--hedron-color-muted, currentColor)",
+    "control.disabled": "var(--hedron-color-muted, currentColor)",
+    "control.read-only": "var(--hedron-color-muted, currentColor)",
+    "control.checked": "var(--hedron-control-accent, var(--hedron-color-accent))",
+    "control.selected": "var(--hedron-control-accent, var(--hedron-color-accent))",
+    "control.indeterminate": "var(--hedron-control-accent, var(--hedron-color-accent))",
 }
 
 _APPLICATION_STYLE_HOOKS: Final[dict[str, dict[str, tuple[str, ...] | tuple[str, ...]]]] = {
@@ -145,12 +167,23 @@ _APPLICATION_STYLE_HOOKS: Final[dict[str, dict[str, tuple[str, ...] | tuple[str,
         "step": ("current", "complete", "blocked", "skipped"),
     },
     "Card": {
+        "body": ("default", "invalid", "busy"),
         "heading": ("default",),
         "supporting-copy": ("default",),
         "metadata": ("default",),
     },
     "FormField": {
-        "control": ("default", "focus", "invalid", "disabled"),
+        "control": (
+            "default",
+            "focus",
+            "invalid",
+            "busy",
+            "disabled",
+            "read-only",
+            "checked",
+            "selected",
+            "indeterminate",
+        ),
     },
     "SplitView": {
         "separator": ("default", "responsive-collapse"),
@@ -160,6 +193,65 @@ _APPLICATION_STYLE_HOOKS: Final[dict[str, dict[str, tuple[str, ...] | tuple[str,
 
 class PresentationError(ValueError):
     """Raised when a 0.64 presentation contract leaves the closed vocabulary."""
+
+
+@dataclass(frozen=True, slots=True)
+class MotionRecipe:
+    """One named motion preset with deterministic no-motion fallbacks."""
+
+    name: str
+    duration_token: str
+    easing_token: str
+    distance: str
+    opacity: str
+    reduced_motion: str
+    print_fallback: str
+
+    def to_dict(self) -> dict[str, str]:
+        return {
+            "name": self.name,
+            "duration_token": self.duration_token,
+            "easing_token": self.easing_token,
+            "distance": self.distance,
+            "opacity": self.opacity,
+            "reduced_motion": self.reduced_motion,
+            "print_fallback": self.print_fallback,
+        }
+
+
+_MOTION_RECIPES: Final[dict[str, MotionRecipe]] = {
+    name: MotionRecipe(
+        name=name,
+        duration_token=f"motion.{name}",
+        easing_token="motion.easing.standard",
+        distance=distance,
+        opacity=opacity,
+        reduced_motion="preserve-state",
+        print_fallback="none",
+    )
+    for name, distance, opacity in (
+        ("instant", "0px", "1"),
+        ("standard", "0.25rem", "1"),
+        ("emphasized", "0.5rem", "1"),
+        ("reveal", "0px", "0"),
+        ("elevate", "0.25rem", "1"),
+        ("crossfade", "0px", "0"),
+    )
+}
+
+
+def motion_recipes() -> dict[str, dict[str, str]]:
+    """Return the finite named motion recipe catalog."""
+    return {name: recipe.to_dict() for name, recipe in sorted(_MOTION_RECIPES.items())}
+
+
+def motion_recipe(name: str) -> MotionRecipe:
+    try:
+        return _MOTION_RECIPES[name]
+    except KeyError as exc:
+        raise PresentationError(
+            f"unknown motion recipe: {name!r}; use {', '.join(sorted(_MOTION_RECIPES))}"
+        ) from exc
 
 
 def _identifier(value: str, label: str) -> str:
@@ -335,18 +427,30 @@ class ScopedStyleRecipe:
     declarations: Mapping[str, str]
     states: tuple[str, ...] = ()
     conditions: tuple[ResponsiveCondition, ...] = ()
+    motion: str | None = None
     layer: Literal["components", "utilities", "overrides"] = "components"
 
     def __post_init__(self) -> None:
         _identifier(self.component, "component")
         _identifier(self.part, "part")
+        public_parts = _APPLICATION_STYLE_HOOKS.get(self.component)
+        if public_parts is None or self.part not in public_parts:
+            raise PresentationError(
+                f"unknown public application style hook: {self.component}.{self.part}"
+            )
         if self.layer not in _LAYERS:
             raise PresentationError(f"unknown style layer: {self.layer!r}")
         states = tuple(self.states)
         conditions = tuple(self.conditions)
         self._validate_conditions(conditions)
+        if self.motion is not None:
+            motion_recipe(self.motion)
         for state in states:
             _identifier(state, "state")
+            if state not in public_parts[self.part]:
+                raise PresentationError(
+                    f"unknown public state for {self.component}.{self.part}: {state!r}"
+                )
         normalized = dict(self.declarations)
         for property_name, value in self.declarations.items():
             if property_name not in _PROPERTIES:
@@ -367,6 +471,7 @@ class ScopedStyleRecipe:
                 "part": self.part,
                 "states": self.states,
                 "conditions": sorted((item.kind, item.value) for item in self.conditions),
+                "motion": self.motion,
                 "declarations": sorted(self.declarations.items()),
                 "layer": self.layer,
             },
@@ -410,6 +515,7 @@ class ScopedStyleRecipe:
             "class_name": self.class_name,
             "states": list(self.states),
             "conditions": [{"kind": item.kind, "value": item.value} for item in self.conditions],
+            "motion": self.motion,
             "declarations": dict(sorted(self.declarations.items())),
             "layer": self.layer,
         }
@@ -459,7 +565,18 @@ def compile_scoped_styles(recipes: Sequence[ScopedStyleRecipe]) -> ScopedStyleBu
                 selector_prefixes.append(prefix)
         if selector_prefixes:
             selector = " ".join((*selector_prefixes, selector))
-        body = "".join(f"  {key}: {value};\n" for key, value in sorted(recipe.declarations.items()))
+        declarations = dict(recipe.declarations)
+        if recipe.motion is not None:
+            preset = motion_recipe(recipe.motion)
+            declarations.setdefault(
+                "transition-duration",
+                f"var(--hedron-{preset.duration_token.replace('.', '-')})",
+            )
+            declarations.setdefault(
+                "transition-timing-function",
+                f"var(--hedron-{preset.easing_token.replace('.', '-')})",
+            )
+        body = "".join(f"  {key}: {value};\n" for key, value in sorted(declarations.items()))
         rule = f"@layer {recipe.layer} {{\n{selector} {{\n{body}}}\n}}\n"
         for at_rule in reversed(at_rules):
             rule = f"{at_rule} {{\n{rule}}}\n"
@@ -550,8 +667,25 @@ _PRESENTATION_TOKEN_CONSUMERS: Final[dict[str, tuple[str, ...]]] = {
     "control.appearance": ("controls",),
     "control.accent": ("controls",),
     "data.table.border": ("data",),
+    "data.table.radius": ("data",),
     "data.table.header.background": ("data",),
+    "data.table.header.foreground": ("data",),
+    "data.table.header.weight": ("data",),
+    "data.table.header.tracking": ("data",),
     "data.table.row.separator": ("data",),
+    "data.table.numeric": ("data",),
+    "data.table.code": ("data",),
+    "data.table.sticky.surface": ("data",),
+    "data.table.sticky.elevation": ("data",),
+    "data.table.density": ("data",),
+    "control.focus": ("controls",),
+    "control.invalid": ("controls",),
+    "control.busy": ("controls",),
+    "control.disabled": ("controls",),
+    "control.read-only": ("controls",),
+    "control.checked": ("controls",),
+    "control.selected": ("controls",),
+    "control.indeterminate": ("controls",),
 }
 
 PRESENTATION_TOKEN_MANIFEST: Final[dict[str, object]] = {
@@ -571,12 +705,22 @@ def presentation_token_manifest(theme: Theme | None = None) -> dict[str, object]
         for key in declared
         if key in resolved.tokens and resolved.tokens[key] != _PRESENTATION_DEFAULTS[key]
     }
+    try:
+        from importlib import resources
+
+        bundled_css = resources.files("hedron_core").joinpath("static/hedron-default.css")
+        css = bundled_css.read_text(encoding="utf-8")
+        unconsumed = [key for key in declared if f"--hedron-{key.replace('.', '-')}" not in css]
+    except (FileNotFoundError, ModuleNotFoundError, OSError):
+        # Source-only environments can still inspect the declared contract;
+        # packaged builds and release checks must include the bundle.
+        unconsumed = []
     return {
         "schema": "hedron.presentation-token-manifest/1",
         "declared": list(declared),
         "consumed": consumed,
         "overridden": dict(sorted(overridden.items())),
-        "unconsumed": [key for key in declared if not consumed.get(key)],
+        "unconsumed": unconsumed,
     }
 
 

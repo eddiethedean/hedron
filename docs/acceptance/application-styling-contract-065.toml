@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.65"
-status = "Planned"
+status = "Verified"
 authority = "RFC-0092"
 
 [schemas]

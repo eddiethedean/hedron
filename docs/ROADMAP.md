@@ -69,14 +69,14 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Published** (`v0.62.0`; progressive dashboard fan-out explicitly omitted; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Published** (`v0.63.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
 | **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Published** (`v0.64.0`; [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [18 completed and 4 open enhancement issues](#phase-064-enhancement-inventory)) |
-| **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, eight bounded issue slices, and touched-surface fallback evidence | **Proposed** (`v0.65.0`; [RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [scope](acceptance/application-styling-scope-065.md); [acceptance](acceptance/RELEASE_0_65.md); open issues [#690](https://github.com/eddiethedean/hedron/issues/690), [#693](https://github.com/eddiethedean/hedron/issues/693), [#694](https://github.com/eddiethedean/hedron/issues/694), [#698](https://github.com/eddiethedean/hedron/issues/698), [#712](https://github.com/eddiethedean/hedron/issues/712), [#713](https://github.com/eddiethedean/hedron/issues/713), [#714](https://github.com/eddiethedean/hedron/issues/714), [#715](https://github.com/eddiethedean/hedron/issues/715)) |
+| **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, eight bounded issue slices, and touched-surface fallback evidence | **Implemented and verified in-tree; release candidate `v0.65.0`** ([RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [scope](acceptance/application-styling-scope-065.md); [acceptance](acceptance/RELEASE_0_65.md)) |
 
 ### Phase 0.64 enhancement inventory
 
 The phase 0.64 inventory contains **22 enhancement issues** (queried 2026-08-24): **18 are
 implemented and closed**, and **4 remain open** for deferred follow-up. The completed issue
-inventory remains historical 0.64 evidence; the four open styling issues are assigned to proposed
-phase 0.65 below. The source tags are retained so the 0.62 carry-forward work remains
+inventory remains historical 0.64 evidence; the four styling issues are implemented in phase 0.65.
+The source tags are retained so the 0.62 carry-forward work remains
 distinguishable from the issues originally opened for 0.64. Issue #86 remains owned by phase 0.21
 and is not part of this inventory.
 
@@ -109,7 +109,7 @@ and is not part of this inventory.
 
 Phase 0.64 had two coordinated tracks. The presentation track delivered the completed portion of
 the 22-issue inventory; the browser track delivered the opt-in `htmx-ext-hedron` projection from
-RFC-0091. The four unresolved styling rows are now explicitly rehomed to proposed phase 0.65.
+RFC-0091. The four styling rows were explicitly rehomed to phase 0.65 and are now implemented.
 Neither phase creates a client-side source of truth, arbitrary CSS/script execution, or a mandatory
 browser runtime.
 
@@ -127,8 +127,8 @@ Stage 0 must produce an issue disposition matrix for every listed enhancement: *
 Progressive and Experimental outcomes must retain their labels in the public contract and package
 metadata, while every Required outcome must satisfy its mapped gate.
 
-The original 0.64 gate mapping is retained as historical planning evidence. Unresolved #690, #693,
-#694, and #698 are owned by the 0.65 packet and are not treated as silently completed 0.64 work.
+The original 0.64 gate mapping is retained as historical planning evidence. #690, #693, #694,
+and #698 were completed by the 0.65 packet and are not treated as silently completed 0.64 work.
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -6649,12 +6649,14 @@ and [release acceptance](acceptance/RELEASE_0_64.md).
 
 ## Phase 0.65 — integrated styling platform and application CSS
 
-Phase 0.65 is the proposed successor to the published `v0.64.1` in-tree baseline. It closes the
+Phase 0.65 is the verified successor to the published `v0.64.1` in-tree baseline. It closes the
 remaining styling follow-up as one contract rather than four isolated component features, and it
 makes ordinary application CSS a first-class participant in Hedron's existing theme, compiler,
 asset, cascade, CSP, and diagnostic authorities.
 
-### Open issue ownership
+### Issue ownership (implemented in 0.65)
+
+The eight owned issue slices are implemented and covered by the 0.65 runtime and evidence packet.
 
 | Issue | Required 0.65 work | Gate |
 |---|---|---|

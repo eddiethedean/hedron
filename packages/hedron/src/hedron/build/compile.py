@@ -347,6 +347,7 @@ def _execute_build(
                 production_names=production,
                 scope_root=scope_root,
                 rewrite_selectors=False,
+                allow_global=style.global_,
             )
             if any(d.severity.value == "error" for d in result.diagnostics):
                 from hedron_core.diagnostics import HedronError
@@ -371,13 +372,13 @@ def _execute_build(
             css_parts.append(css_text)
             for media in style.media:
                 css_parts[-1] = f"@media {media} {{\n{css_parts[-1]}\n}}\n"
-            style_entry = style.to_dict()
+            style_entry = style.to_dict(source_root=base)
             style_entry.update(
                 {
                     "compiled_digest": content_digest(css_text),
                     "symbols": result.manifest.to_dict(),
                     "source_map": {
-                        "source": style.source,
+                        "source": style_entry["source"],
                         "line_count": source.read_text(encoding="utf-8").count("\n") + 1,
                     },
                 }

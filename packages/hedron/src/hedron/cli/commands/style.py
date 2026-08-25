@@ -33,6 +33,7 @@ DIFF_SCHEMA = "hedron.design-system-diff/1"
 PREVIEW_SCHEMA = "hedron.design-system-preview/1"
 SOURCE_MAP_SCHEMA = "hedron.design-system-source-map/1"
 PREVIEW_FIXTURE_VERSION = "hedron.design-gallery/1"
+APPLICATION_STYLE_EJECTION_SCHEMA = "hedron.style-ejection/1"
 
 
 def _require_app(args: argparse.Namespace) -> object:
@@ -124,6 +125,34 @@ def _plan_human(plan: DesignSystemPlan) -> str:
 
 
 def _cmd_style_explain(args: argparse.Namespace) -> int:
+    surface = getattr(args, "surface", None)
+    if surface:
+        if getattr(args, "app", None):
+            _require_app(args)
+        parts = surface.split(".", 1)
+        hooks = application_style_hook_manifest()
+        component = parts[0]
+        part = parts[1] if len(parts) == 2 else None
+        hook = hooks.get(component)
+        part_map = hook.get("parts") if isinstance(hook, Mapping) else None
+        known = isinstance(part_map, Mapping) and (part is None or part in part_map)
+        payload = {
+            "schema": "hedron.style-explanation/1",
+            "surface": surface,
+            "property": getattr(args, "property", None),
+            "known_public_hook": known,
+            "cascade_layers": list(CASCADE_LAYERS),
+            "diagnostics": [] if known else [f"Unknown public style hook: {surface}"],
+        }
+        if args.format == "json":
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print(f"Surface: {surface}")
+            print(f"Public hook: {'yes' if known else 'no'}")
+            print("Cascade: " + " < ".join(CASCADE_LAYERS))
+            if not known:
+                print(f"Unknown public style hook: {surface}", file=sys.stderr)
+        return 0 if known else 1
     design = _resolve_design(args)
     plan = design.explain()
     if args.format == "json":
@@ -220,17 +249,19 @@ def _cmd_style_eject_application(args: argparse.Namespace) -> int:
     sources: list[JsonObject] = []
     for style in styles:
         source = Path(style.source)
+        style_data = style.to_dict(source_root=cwd)
         chunks.append(
-            f"/* hedron: {style.logical_id} source={source} digest={style.source_digest} */\n"
+            f"/* hedron: {style.logical_id} source={style_data['source']} "
+            f"digest={style_data['digest']} */\n"
             + source.read_text(encoding="utf-8").rstrip()
             + "\n"
         )
-        sources.append(style.to_dict())
+        sources.append(style_data)
     css_path.write_text("\n".join(chunks), encoding="utf-8")
     map_path.write_text(
         json.dumps(
             {
-                "schema": "hedron.style-ejection/1",
+                "schema": APPLICATION_STYLE_EJECTION_SCHEMA,
                 "files": [css_path.name, map_path.name],
                 "styles": sources,
                 "cascade_layers": list(CASCADE_LAYERS),
@@ -243,6 +274,61 @@ def _cmd_style_eject_application(args: argparse.Namespace) -> int:
     )
     print(json.dumps({"written": [str(css_path), str(map_path)]}, indent=2))
     return 0
+
+
+def _application_style_manifest_path(path: str | None) -> Path:
+    candidate = Path(path or "source_map.json").expanduser().resolve()
+    if candidate.is_dir():
+        candidate = candidate / "source_map.json"
+    if not candidate.is_file():
+        raise SystemExit(f"Application style manifest not found: {candidate}")
+    return candidate
+
+
+def _application_style_drift(manifest_path: Path) -> dict[str, Any]:
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if payload.get("schema") != APPLICATION_STYLE_EJECTION_SCHEMA:
+        raise SystemExit(f"Unsupported application style manifest: {manifest_path}")
+    expected = {
+        str(item["logical_id"]): str(item.get("digest") or "")
+        for item in payload.get("styles", [])
+        if isinstance(item, Mapping) and item.get("logical_id")
+    }
+    actual = {
+        style.logical_id: style.source_digest for style in get_registry().application_styles()
+    }
+    added = sorted(set(actual) - set(expected))
+    removed = sorted(set(expected) - set(actual))
+    changed = sorted(
+        logical_id
+        for logical_id in set(expected) & set(actual)
+        if expected[logical_id] != actual[logical_id]
+    )
+    return {
+        "schema": "hedron.style-drift/1",
+        "manifest": str(manifest_path),
+        "added": added,
+        "removed": removed,
+        "changed": changed,
+        "clean": not (added or removed or changed),
+    }
+
+
+def _cmd_style_update_check(args: argparse.Namespace) -> int:
+    """Check an ejected application stylesheet for source drift without overwriting it."""
+    _require_app(args)
+    try:
+        payload = _application_style_drift(_application_style_manifest_path(args.manifest))
+    except (OSError, json.JSONDecodeError, TypeError, ValueError) as exc:
+        raise SystemExit(f"Could not read application style manifest: {exc}") from exc
+    if args.format == "json":
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print("clean" if payload["clean"] else "drift detected")
+        for key in ("added", "removed", "changed"):
+            if payload[key]:
+                print(f"{key}: {', '.join(payload[key])}")
+    return 0 if payload["clean"] else 1
 
 
 def _token_swatches(theme: Theme, *, mode: str) -> str:
@@ -429,6 +515,19 @@ def _diff_human(payload: dict[str, Any]) -> str:
 
 
 def _cmd_style_diff(args: argparse.Namespace) -> int:
+    if getattr(args, "ejected_path", None):
+        _require_app(args)
+        payload = _application_style_drift(
+            _application_style_manifest_path(args.manifest or args.ejected_path)
+        )
+        if args.format == "json":
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print("clean" if payload["clean"] else "drift detected")
+            for key in ("added", "removed", "changed"):
+                if payload[key]:
+                    print(f"{key}: {', '.join(payload[key])}")
+        return 0 if payload["clean"] else 1
     # Ensure app/themes are loaded when --app is provided.
     if getattr(args, "app", None):
         _require_app(args)

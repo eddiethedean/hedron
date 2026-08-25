@@ -262,19 +262,19 @@
   }
 
   :where(table.hedron-table) {
-    border-color: var(--hedron-table-border, var(--hedron-default-border));
-    border-radius: var(--hedron-table-radius, var(--hedron-default-radius));
+    border-color: var(--hedron-data-table-border, var(--hedron-default-border));
+    border-radius: var(--hedron-data-table-radius, var(--hedron-default-radius));
   }
 
   :where(table.hedron-table thead) {
-    background: var(--hedron-table-header-background, var(--hedron-default-surface-muted));
-    color: var(--hedron-table-header-foreground, var(--hedron-default-fg));
-    font-weight: var(--hedron-table-header-weight, 700);
-    letter-spacing: var(--hedron-table-header-tracking, normal);
+    background: var(--hedron-data-table-header-background, var(--hedron-default-surface-muted));
+    color: var(--hedron-data-table-header-foreground, var(--hedron-default-fg));
+    font-weight: var(--hedron-data-table-header-weight, 700);
+    letter-spacing: var(--hedron-data-table-header-tracking, normal);
   }
 
   :where(table.hedron-table tbody tr) {
-    border-block-end: var(--hedron-table-row-separator, 1px) solid var(--hedron-default-border);
+    border-block-end: var(--hedron-data-table-row-separator, 1px) solid var(--hedron-default-border);
   }
 
   :where(table.hedron-table tbody tr:hover) {
@@ -286,7 +286,37 @@
   }
 
   :where(table.hedron-table [data-hedron-numeric="true"]) {
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: var(--hedron-data-table-numeric, tabular-nums);
+  }
+
+  :where(table.hedron-table [data-hedron-code="true"]) {
+    font-family: var(--hedron-data-table-code, ui-monospace, SFMono-Regular, Menlo, monospace);
+  }
+
+  :where(table.hedron-table[data-hedron-sticky-header="true"] thead th) {
+    background: var(--hedron-data-table-sticky-surface, var(--hedron-default-surface));
+    box-shadow: var(--hedron-data-table-sticky-elevation, 0 0.25rem 0.75rem rgb(0 0 0 / 12%));
+  }
+
+  :where(table.hedron-table[data-hedron-density="compact"] :is(th, td)) {
+    padding-block: calc(0.55rem * var(--hedron-data-table-density, 1));
+  }
+
+  :where([data-hedron-busy="true"], [aria-busy="true"]) {
+    color: var(--hedron-control-busy, currentColor);
+    transition-duration: var(--hedron-motion-emphasized, 300ms);
+  }
+
+  :where(input[readonly], textarea[readonly], [aria-readonly="true"]) {
+    color: var(--hedron-control-read-only, var(--hedron-color-muted, currentColor));
+  }
+
+  :where(input[type="checkbox"]:checked, input[type="radio"]:checked, [aria-checked="true"]) {
+    accent-color: var(--hedron-control-checked, var(--hedron-control-accent, var(--hedron-color-accent)));
+  }
+
+  :where([aria-selected="true"], [aria-checked="mixed"]) {
+    accent-color: var(--hedron-control-selected, var(--hedron-control-indeterminate, var(--hedron-control-accent)));
   }
 
   :where(input[type="checkbox"], input[type="radio"], input[type="range"], select, input[type="file"], input[type="date"], input[type="time"], input[type="number"]) {
@@ -298,7 +328,7 @@
   }
 
   :where([data-hedron-component="FormField"][data-hedron-part="control"]:focus-within) {
-    outline: var(--hedron-focus-ring, 3px solid var(--hedron-color-focus, #2563eb));
+    outline: 3px solid var(--hedron-control-focus, var(--hedron-color-focus, #2563eb));
     outline-offset: 2px;
   }
 }
@@ -613,28 +643,28 @@
 
   input[type="range"] {
     width: 100%;
-    accent-color: var(--hedron-color-accent, var(--hedron-default-accent));
+    accent-color: var(--hedron-control-accent, var(--hedron-color-accent, var(--hedron-default-accent)));
   }
 
   input[type="checkbox"],
   input[type="radio"] {
     inline-size: 1.05rem;
     block-size: 1.05rem;
-    accent-color: var(--hedron-color-accent, var(--hedron-default-accent));
+    accent-color: var(--hedron-control-accent, var(--hedron-color-accent, var(--hedron-default-accent)));
   }
 
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"])[aria-invalid="true"],
   select[aria-invalid="true"],
   textarea[aria-invalid="true"] {
-    border-color: var(--hedron-color-danger, var(--hedron-default-danger));
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hedron-color-danger, var(--hedron-default-danger)) 12%, transparent);
+    border-color: var(--hedron-control-invalid, var(--hedron-color-danger, var(--hedron-default-danger)));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hedron-control-invalid, var(--hedron-color-danger, var(--hedron-default-danger))) 12%, transparent);
   }
 
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):disabled,
   select:disabled,
   textarea:disabled {
     background: var(--hedron-default-surface-muted);
-    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    color: var(--hedron-control-disabled, var(--hedron-color-muted, var(--hedron-default-muted)));
     cursor: not-allowed;
     opacity: 0.72;
   }
@@ -1248,7 +1278,7 @@
       var(--hedron-default-surface-muted)
     );
     background-size: 200% 100%;
-    animation: hedron-default-shimmer var(--hedron-motion-emphasized, 1.5s) ease-in-out infinite;
+    animation: hedron-default-shimmer 1.5s ease-in-out infinite;
   }
 
   details {
@@ -3537,7 +3567,7 @@
     background: currentColor;
   }
   .hedron-status[data-hedron-status-variant="activity"] .hedron-status-indicator {
-    animation: hedron-status-pulse var(--hedron-motion-emphasized, 1.2s) ease-in-out infinite;
+    animation: hedron-status-pulse 1.2s ease-in-out infinite;
   }
   @keyframes hedron-status-pulse {
     50% { opacity: 0.35; }

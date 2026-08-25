@@ -7,6 +7,7 @@ module while giving integrations a phase-specific import path.
 from hedron_core.presentation_064 import (
     PRESENTATION_SCHEMA,
     PRESENTATION_TOKEN_MANIFEST,
+    MotionRecipe,
     PresentationContract,
     PresentationError,
     ResponsiveCondition,
@@ -16,6 +17,8 @@ from hedron_core.presentation_064 import (
     application_style_hook_manifest,
     compile_scoped_styles,
     component_presentation_manifest,
+    motion_recipe,
+    motion_recipes,
     presentation_contract,
     presentation_token_manifest,
     presentation_tokens,
@@ -24,6 +27,7 @@ from hedron_core.presentation_064 import (
 __all__ = [
     "PRESENTATION_SCHEMA",
     "PRESENTATION_TOKEN_MANIFEST",
+    "MotionRecipe",
     "PresentationContract",
     "PresentationError",
     "ResponsiveCondition",
@@ -36,4 +40,6 @@ __all__ = [
     "presentation_contract",
     "presentation_token_manifest",
     "presentation_tokens",
+    "motion_recipe",
+    "motion_recipes",
 ]

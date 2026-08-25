@@ -1,6 +1,6 @@
 # Phase 0.65 upgrade fixtures
 
-Status: **Planned**. These fixtures must be executable before a `v0.65.0` claim.
+Status: **Verified**. These fixtures are covered by the 0.65 focused regression and evidence checks.
 
 | Fixture | Baseline | Expected result |
 |---|---|---|

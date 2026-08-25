@@ -5,7 +5,7 @@ slices, tests, evidence checks, and coordinated package metadata are complete. P
 owned by the release workflow.
 
 - Authority: [RFC-0092](../rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md)
-- Proposed decisions: D-109 (phase scope), D-110 (Stage 0 contract refinement)
+- Accepted decisions: D-109 (phase scope), D-110 (Stage 0 contract refinement)
 - Predecessor: published/in-tree `v0.64.1` (`v0.64.0` remains the public PyPI baseline)
 - Target: `v0.65.0`
 - Acceptance: [RELEASE_0_65](../acceptance/RELEASE_0_65.md)
@@ -60,7 +60,7 @@ and diagnostics. A stronger lane cannot silently change behavior, state, securit
 
 ### Presentation coverage
 
-The required cross-cutting matrix applies to every surface touched by the four open issues: focus-
+The required cross-cutting matrix applies to every surface touched by the four issue slices: focus-
 visible and disabled/busy/invalid states; forced-colors/high contrast; reduced motion and print;
 responsive behavior, RTL/logical properties, touch targets, semantic/no-JS fallback, and readable
 overflow. The broader catalog—new navigation, tabs, overlays, container/density/touch scales,
@@ -105,7 +105,6 @@ styling contracts, Houdini, external design-token synchronization, telemetry, a 
 editor, arbitrary private selectors, and behavior-changing CSS are Deferred or excluded as recorded
 in the RFC and acceptance inventory.
 
-No Stage 1 implementation starts until D-110 is accepted, all four open issues have a named owner
+The Stage 1 implementation prerequisites are satisfied: D-110 is accepted, all four issue slices have a named owner
 and issue-to-gate mapping, the [refined scope](../acceptance/application-styling-scope-065.md)
-checklist is complete, and the packet can be evaluated without inventing unspecified runtime
-behavior.
+checklist is complete, and the packet is evaluated without inventing unspecified runtime behavior.

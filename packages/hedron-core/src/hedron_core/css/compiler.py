@@ -38,10 +38,16 @@ SYMBOL_HASH_FORMAT = 1
 _CLASS_RE = re.compile(r"\.([A-Za-z_][\w-]*)")
 _GLOBAL_RE = re.compile(r":global\(([^)]*)\)")
 _URL_RE = re.compile(r"url\(\s*(['\"]?)([^)'\"]+)\1\s*\)", re.IGNORECASE)
+_IMPORT_TARGET_RE = re.compile(
+    r"^@import\s+(?:url\(\s*(['\"]?)([^)'\"]+)\1\s*\)|(['\"])(.*?)\3)",
+    re.IGNORECASE,
+)
 _UNSAFE_VALUE_RE = re.compile(
     r"(?:expression\s*\(|-moz-binding\s*:|behavior\s*:)",
     re.IGNORECASE,
 )
+_PRIVATE_SELECTOR_RE = re.compile(r"\.(?:hedron|h)-[A-Za-z0-9_-]+")
+_BEHAVIOR_PROPERTIES = frozenset({"content", "pointer-events", "user-select"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,7 +72,11 @@ def _iter_rules(rules: Sequence[CssRule]) -> list[CssRule]:
     return out
 
 
-def _discover(sheet: CssStylesheet) -> tuple[dict[str, str], dict[str, str], list[Diagnostic]]:
+def _discover(
+    sheet: CssStylesheet,
+    *,
+    allow_global: bool = False,
+) -> tuple[dict[str, str], dict[str, str], list[Diagnostic]]:
     diagnostics: list[Diagnostic] = []
     classes: dict[str, str] = {}
     keyframes: dict[str, str] = {}
@@ -97,7 +107,7 @@ def _discover(sheet: CssStylesheet) -> tuple[dict[str, str], dict[str, str], lis
                         )
                     )
                 keyframes[name] = name
-        if re.search(r"(?<![:\w-])(html|body)(\s|,|$)", masked):
+        if not allow_global and re.search(r"(?<![:\w-])(html|body)(\s|,|$)", masked):
             diagnostics.append(
                 make_diagnostic(
                     HED_CSS_UNSAFE_GLOBAL,
@@ -126,7 +136,30 @@ def _scope_prelude(prelude: str, scope_root: str) -> str:
     """Prefix ordinary selectors with a stable application scope root."""
     if not scope_root or prelude.startswith("@"):
         return prelude
-    selectors = [item.strip() for item in prelude.split(",")]
+    selectors: list[str] = []
+    start = 0
+    depth = 0
+    quote: str | None = None
+    escaped = False
+    for index, char in enumerate(prelude):
+        if quote is not None:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = None
+            continue
+        if char in {"'", '"'}:
+            quote = char
+        elif char in "([":
+            depth += 1
+        elif char in ")]":
+            depth = max(0, depth - 1)
+        elif char == "," and depth == 0:
+            selectors.append(prelude[start:index].strip())
+            start = index + 1
+    selectors.append(prelude[start:].strip())
     return ", ".join(
         f"{scope_root} {selector}" if selector else scope_root for selector in selectors
     )
@@ -388,11 +421,64 @@ def _check_urls_in_sheet(
         prelude = rule.prelude
         if prelude.lower().startswith("@import"):
             prelude = check_value(prelude)
+            match = _IMPORT_TARGET_RE.match(prelude.strip())
+            if match:
+                url = match.group(2) or match.group(4) or ""
+                parsed = urlparse(url.strip())
+                if parsed.scheme in {"http", "https"} or url.startswith("//"):
+                    raise error(
+                        HED_CSS_REMOTE,
+                        title="Remote CSS import rejected",
+                        explanation=f"Remote import {url!r} is not allowed by asset policy.",
+                        remediation="Use a component-relative stylesheet under a registered root.",
+                    )
         decls = [CssDecl(d.prop, check_value(d.value)) for d in rule.decls]
         children = [walk(c) for c in rule.children]
         return CssRule(prelude=prelude, decls=decls, children=children, kind=rule.kind)
 
     return CssStylesheet(rules=[walk(r) for r in sheet.rules]), tuple(found)
+
+
+def _check_application_policy(
+    sheet: CssStylesheet,
+    *,
+    component_id: str,
+    allow_global: bool,
+) -> None:
+    if not component_id.startswith("application:"):
+        return
+    for rule in _iter_rules(sheet.rules):
+        if rule.kind == "style":
+            if _PRIVATE_SELECTOR_RE.search(rule.prelude):
+                raise error(
+                    HED_CSS_UNSAFE_GLOBAL,
+                    title="Private Hedron selector rejected",
+                    explanation=(
+                        f"Application CSS cannot target generated selector {rule.prelude!r}."
+                    ),
+                    remediation="Use a manifest-backed data-hedron component/part/state hook.",
+                    component_id=component_id,
+                )
+            if not allow_global and ":global(" in rule.prelude:
+                raise error(
+                    HED_CSS_UNSAFE_GLOBAL,
+                    title="Global selector requires explicit opt-in",
+                    explanation="Application CSS may not escape its scope without global_=True.",
+                    remediation="Register the stylesheet with global_=True only when required.",
+                    component_id=component_id,
+                )
+        for declaration in rule.decls:
+            if declaration.prop.strip().lower() in _BEHAVIOR_PROPERTIES:
+                raise error(
+                    HED_CSS_UNSAFE_GLOBAL,
+                    title="Behavior-changing CSS rejected",
+                    explanation=(
+                        f"Application CSS property {declaration.prop!r} is not a "
+                        "presentation-only override."
+                    ),
+                    remediation="Use a semantic component prop or a public presentation token.",
+                    component_id=component_id,
+                )
 
 
 def _braces_balanced_outside_literals(source: str) -> bool:
@@ -450,6 +536,7 @@ def compile_css(
     production_names: bool = False,
     scope_root: str | None = None,
     rewrite_selectors: bool = True,
+    allow_global: bool = False,
 ) -> CssCompileResult:
     """Compile component CSS into scoped output + symbol manifest via AST rewrite."""
     from hedron_core.compile_gate import assert_runtime_compile_allowed
@@ -477,7 +564,8 @@ def compile_css(
             component_id=component_id,
         )
 
-    classes, keyframes, diagnostics = _discover(sheet)
+    _check_application_policy(sheet, component_id=component_id, allow_global=allow_global)
+    classes, keyframes, diagnostics = _discover(sheet, allow_global=allow_global)
     errors = [d for d in diagnostics if d.severity is DiagnosticSeverity.ERROR]
     if errors:
         raise HedronError(*errors)

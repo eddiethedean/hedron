@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.65"
-status = "Proposed bounds; freeze during D-110"
+status = "Verified bounds for the 0.65 release candidate"
 authority = "RFC-0092"
 policy = "reject-not-slice"
 measurement_protocol = [

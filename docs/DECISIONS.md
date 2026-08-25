@@ -152,3 +152,11 @@ Entry blockers for adapter implementation (COMPATIBILITY ranges, evidence ledger
 Explorer acyclic deps) are closed for the `v0.7.0` train. Remaining work is staged gates 0.7A–0.7F.
 
 Changes to accepted decisions require an explicit superseding decision and affected RFC/API updates.
+
+## Phase 0.65 implementation amendment
+
+D-109 and D-110 were planning decisions at authoring time. The 0.65 implementation is now
+present in-tree and verified by `scripts/check_065.py --verify`, focused phase 0.64/0.65
+regression tests, and the full regression suite. The implementation does not introduce a
+second styling authority or depend on `fastapi-workbench`; the release remains a candidate
+until the version bump, final CI run, and tag are explicitly completed.

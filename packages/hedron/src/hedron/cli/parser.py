@@ -33,6 +33,7 @@ from hedron.cli.commands.style import (
     _cmd_style_inspect,
     _cmd_style_package,
     _cmd_style_preview,
+    _cmd_style_update_check,
 )
 from hedron.cli.commands.testgen import _cmd_testgen
 from hedron.cli.commands.theme import (
@@ -509,6 +510,8 @@ def _register_theme_commands(sub: Any) -> None:
         "explain",
         help="Explain a DesignSystem / theme plan",
     )
+    style_explain_p.add_argument("surface", nargs="?", help="Public component.part surface")
+    style_explain_p.add_argument("--property", default=None)
     style_explain_p.add_argument(
         "--design",
         default=None,
@@ -544,16 +547,35 @@ def _register_theme_commands(sub: Any) -> None:
 
     style_diff_p = style_sub.add_parser(
         "diff",
-        help="Semantically diff two designs or themes",
+        help="Diff two designs/themes or an ejected application stylesheet",
     )
-    style_diff_p.add_argument("base", help="Base design/theme name")
-    style_diff_p.add_argument("candidate", help="Candidate design/theme name")
+    style_diff_p.add_argument("base", nargs="?", help="Base design/theme name")
+    style_diff_p.add_argument("candidate", nargs="?", help="Candidate design/theme name")
+    style_diff_p.add_argument(
+        "--ejected-path",
+        default=None,
+        help="Ejected application stylesheet directory or source map",
+    )
+    style_diff_p.add_argument(
+        "--manifest",
+        default=None,
+        help="Application ejection source map (defaults beside --ejected-path)",
+    )
     style_diff_p.add_argument(
         "--format",
         choices=("human", "json"),
         default="human",
     )
     style_diff_p.set_defaults(func=_cmd_style_diff)
+
+    style_update_p = style_sub.add_parser(
+        "update",
+        help="Check ejected application CSS for source drift",
+    )
+    style_update_p.add_argument("--check", action="store_true", required=True)
+    style_update_p.add_argument("--manifest", default=None)
+    style_update_p.add_argument("--format", choices=("human", "json"), default="human")
+    style_update_p.set_defaults(func=_cmd_style_update_check)
 
     style_eject_p = style_sub.add_parser(
         "eject",

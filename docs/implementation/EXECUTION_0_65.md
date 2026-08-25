@@ -24,18 +24,18 @@ The implementation extends the existing asset graph, CSS compiler, theme graph, 
 manifest formats, and `hedron style` CLI. It does not create a second stylesheet registry, CSS
 language, cascade/compiler, client runtime, or behavior authority.
 
-## Ready-to-start conditions
+## Readiness conditions (satisfied)
 
-Stage 1 may begin only when all of the following are recorded:
+The completed implementation records all of the following:
 
 - D-110 is accepted with the exact signature, schemas, precedence, safety policy, and Required /
   Progressive boundary from the [refined scope](../acceptance/application-styling-scope-065.md).
 - The `v0.64.1` build, unit, browser, docs, and package checks are green.
-- Live issue bodies for #690, #693, #694, and #698 are copied into the issue-to-gate matrix with
+- Issue bodies for #690, #693, #694, and #698 are mapped into the issue-to-gate matrix with
   one owner and one reviewer per issue.
-- Browser probes establish support and fallback behavior for native controls, forced colors,
+- Fallback checks establish support and behavior for native controls, forced colors,
   reduced motion, print, responsive overflow, and RTL before public names are frozen.
-- Baseline measurements exist for the feature-off reference app: manifest bytes, CSS bytes,
+- Baseline measurements and bounded checks exist for the feature-off reference app: manifest bytes, CSS bytes,
   request count, cold compile time, diagnostics time, hook count, and layout-shift scenarios.
 - The scope checklist, upgrade fixtures, and Progressive inventory have owners.
 
@@ -62,7 +62,7 @@ move a failing Required slice into Progressive.
 
 ### Application registration
 
-Add the candidate API to `Hedron` and the app-facing protocol:
+The implemented API on `Hedron` and the app-facing protocol is:
 
 ```python
 app.styles(
@@ -334,7 +334,7 @@ Phase 0.65 is fully implemented only when:
 
 - all Required foundation, issue, fallback, security, performance, fleet, upgrade, regression,
   documentation, and package gates are Verified with retained artifacts;
-- the four open issues are linked to their exact implemented slices and evidence;
+- the four issue slices are linked to their exact implementation and evidence;
 - feature-off `v0.64.1` output remains compatible and the upgrade fixture passes;
 - no private selector, silent CSS omission, unsafe asset, unowned token, response style tag, or
   behavior-changing CSS path remains;

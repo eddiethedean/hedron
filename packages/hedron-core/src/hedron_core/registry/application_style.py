@@ -20,6 +20,16 @@ def _digest_file(path: Path) -> str:
     return "sha256-" + hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _redacted_source(path: Path, *, root: Path | None = None) -> str:
+    """Return a stable project-relative source label without leaking host paths."""
+    candidate = path.resolve()
+    base = (root or Path.cwd()).resolve()
+    try:
+        return candidate.relative_to(base).as_posix()
+    except ValueError:
+        return f"<external>/{candidate.name}"
+
+
 @dataclass(frozen=True, slots=True)
 class ApplicationStyleMeta:
     """One explicit, local application stylesheet."""
@@ -58,15 +68,13 @@ class ApplicationStyleMeta:
 
     @property
     def source_digest(self) -> str:
-        if self.digest:
-            return self.digest
         return _digest_file(self.path) if self.path.is_file() else ""
 
-    def to_dict(self) -> JsonObject:
+    def to_dict(self, *, source_root: Path | None = None) -> JsonObject:
         return {
             "logical_id": self.logical_id,
             "name": self.name,
-            "source": self.source,
+            "source": _redacted_source(self.path, root=source_root),
             "owner": self.owner,
             "scope": self.scope,
             "layer": self.layer,
@@ -87,13 +95,18 @@ def register_application_style(
     media: Sequence[str] = (),
     owner: str = "application",
     provenance: str = "",
+    allowed_roots: Sequence[str | Path] | None = None,
 ) -> ApplicationStyleMeta:
     """Validate and register a local stylesheet in the existing registry."""
-    path = Path(source).expanduser().resolve()
-    if path.is_symlink():
+    input_path = Path(source).expanduser()
+    if input_path.is_symlink():
         raise ValueError("application stylesheet symlinks are not allowed")
+    path = input_path.resolve()
     if not path.is_file():
         raise FileNotFoundError(f"application stylesheet does not exist: {path}")
+    roots = tuple(Path(root).expanduser().resolve() for root in (allowed_roots or (Path.cwd(),)))
+    if not any(path == root or root in path.parents for root in roots):
+        raise ValueError("application stylesheet must be inside an allowed local package root")
     meta = ApplicationStyleMeta(
         logical_id=f"{owner}:style:{name}",
         name=name,

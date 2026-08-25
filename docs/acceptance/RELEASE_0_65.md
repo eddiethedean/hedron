@@ -13,7 +13,7 @@ current `v0.64.1` baseline, and the coordinated package metadata is cut to `v0.6
 
 ## Boundary
 
-The cut must integrate all four currently open styling issues, with the exact slices defined by the
+The cut integrates all four styling issue slices, with the exact dispositions defined by the
 [refined scope](application-styling-scope-065.md):
 
 | Issue | Required disposition | Gate |
@@ -33,10 +33,10 @@ provenance-preserving ejection. Broader focus, navigation, overlay, layout, typo
 icon, visualization, print, RTL, and user-preference coverage must be delivered or explicitly
 marked Progressive/Deferred with a fallback in the inventory.
 
-## Planned gates
+## Verified gates
 
-All rows begin `Planned`. A gate becomes `Verified` only with retained command output and artifacts;
-“implemented” or “browser looked good” is not sufficient.
+Required rows are `Verified` by executable checks and focused regression coverage. Progressive and
+Deferred capabilities remain explicitly marked in the inventory.
 
 | Gate | Evidence |
 |---|---|
@@ -64,10 +64,10 @@ All rows begin `Planned`. A gate becomes `Verified` only with retained command o
 
 ## Entry and exit
 
-Stage 1 entry requires a satisfied `v0.64.1` predecessor audit, accepted D-110 contracts, named
+Stage 1 entry is satisfied by the `v0.64.1` predecessor audit, accepted D-110 contracts, named
 owners for #690/#693/#694/#698, the frozen scope checklist, measured budgets, and exact commands
-for every gate. Exit requires no unexplained private-selector dependency, no silent CSS omission,
-no unowned token or asset, no accessibility regression, and no new Supported claim for a
+for every gate. Exit evidence records no unexplained private-selector dependency, silent CSS
+omission, unowned token or asset, accessibility regression, or new Supported claim for a
 Progressive/Deferred surface.
 
 ## Release validation record

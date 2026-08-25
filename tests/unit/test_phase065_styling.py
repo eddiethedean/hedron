@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from hedron_core.builtins import (
     AppShell,
     Card,
@@ -12,6 +14,7 @@ from hedron_core.builtins import (
     TextInput,
 )
 from hedron_core.css.compiler import compile_css
+from hedron_core.diagnostics import HedronError
 from hedron_core.manifests import ApplicationStyleManifest
 from hedron_core.presentation_064 import (
     application_style_hook_data,
@@ -85,6 +88,90 @@ def test_phase065_css_scope_rewrite_and_manifest() -> None:
     assert ".card" in result.css
     assert "@layer application" in result.css
     assert result.manifest.component_id == "application:workspace"
+
+
+def test_phase065_scope_preserves_nested_selector_commas() -> None:
+    result = compile_css(
+        '.card:is(.primary, .secondary), .card:not([data-kind="a,b"]) { color: red; }',
+        component_id="application:workspace",
+        layer="application",
+        scope_root=':where([data-hedron-style-scope="workspace"])',
+        rewrite_selectors=False,
+    )
+    assert (
+        ':where([data-hedron-style-scope="workspace"]) .card:is(.primary, .secondary)' in result.css
+    )
+    assert (
+        ':where([data-hedron-style-scope="workspace"]) .card:not([data-kind="a,b"])' in result.css
+    )
+
+
+def test_phase065_rejects_quoted_remote_imports() -> None:
+    with pytest.raises(HedronError, match="Remote CSS import rejected"):
+        compile_css(
+            '@import "https://example.com/theme.css"; .card { color: red; }',
+            component_id="application:workspace",
+            layer="application",
+            rewrite_selectors=False,
+        )
+
+
+def test_phase065_rejects_private_and_behavior_application_css() -> None:
+    with pytest.raises(HedronError, match="Private Hedron selector rejected"):
+        compile_css(
+            ".hedron-card .internal { color: red; }",
+            component_id="application:workspace",
+            layer="application",
+            rewrite_selectors=False,
+        )
+    with pytest.raises(HedronError, match="Behavior-changing CSS rejected"):
+        compile_css(
+            ".card { pointer-events: none; }",
+            component_id="application:workspace",
+            layer="application",
+            rewrite_selectors=False,
+        )
+
+
+def test_phase065_requires_explicit_global_css_opt_in() -> None:
+    with pytest.raises(HedronError, match="Global selector requires explicit opt-in"):
+        compile_css(
+            ":global(body) { color: red; }",
+            component_id="application:workspace",
+            layer="application",
+            rewrite_selectors=False,
+        )
+    result = compile_css(
+        "body { color: red; }",
+        component_id="application:workspace",
+        layer="application",
+        rewrite_selectors=False,
+        allow_global=True,
+    )
+    assert "body" in result.css
+
+
+def test_phase065_application_style_source_policy_rejects_symlink_and_escape(tmp_path) -> None:
+    from hedron_core.registry.application_style import register_application_style
+
+    source = tmp_path / "app.css"
+    source.write_text(".card { color: red; }", encoding="utf-8")
+    link = tmp_path / "link.css"
+    link.symlink_to(source)
+    with pytest.raises(ValueError, match="symlinks"):
+        register_application_style(
+            name="symlink-policy",
+            source=link,
+            scope="workspace",
+            allowed_roots=(tmp_path,),
+        )
+    with pytest.raises(ValueError, match="allowed local package root"):
+        register_application_style(
+            name="root-policy",
+            source=source,
+            scope="workspace",
+            allowed_roots=(tmp_path / "other",),
+        )
 
 
 def test_phase065_application_style_manifest_round_trip() -> None:

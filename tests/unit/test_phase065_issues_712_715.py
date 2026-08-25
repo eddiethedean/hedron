@@ -99,3 +99,21 @@ def test_max_and_range_conditions_compile_deterministically() -> None:
                 ResponsiveCondition("viewport-max", "md"),
             ),
         )
+
+
+def test_public_style_recipes_reject_private_hooks_and_accept_named_motion() -> None:
+    with pytest.raises(PresentationError, match="unknown public application style hook"):
+        ScopedStyleRecipe(
+            component="PrivateWidget",
+            part="internal",
+            declarations={"color": "red"},
+        )
+    recipe = ScopedStyleRecipe(
+        component="Card",
+        part="heading",
+        declarations={"opacity": "1"},
+        motion="crossfade",
+    )
+    css = compile_scoped_styles((recipe,)).css
+    assert "transition-duration: var(--hedron-motion-crossfade);" in css
+    assert "transition-timing-function: var(--hedron-motion-easing-standard);" in css

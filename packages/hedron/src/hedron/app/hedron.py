@@ -263,6 +263,7 @@ class Hedron(HedronPagesMixin, FastAPI):
             media=media,
             owner="application",
             provenance=f"{type(self).__module__}.{type(self).__name__}",
+            allowed_roots=(Path.cwd(),),
         )
         existing = tuple(getattr(self.state, "hedron_application_styles", ()))
         self.state.hedron_application_styles = (*existing, meta.logical_id)

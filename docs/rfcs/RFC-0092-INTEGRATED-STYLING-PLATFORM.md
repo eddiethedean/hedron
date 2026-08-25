@@ -1,7 +1,7 @@
 # RFC-0092: Integrated styling platform and application CSS
 
-**Status:** Proposed  
-**Proposed phase:** 0.65  
+**Status:** Accepted
+**Phase:** 0.65
 **Decision:** D-109  
 **Stage 0 contract refine:** D-110  
 **Depends on:** RFC-0006, RFC-0022, RFC-0023, RFC-0024, RFC-0057, RFC-0084, RFC-0085,
@@ -106,7 +106,7 @@ overlay, container/density, typography, media, icon, visualization, export, and 
 catalogs are Progressive unless a touched surface needs one to satisfy its fallback contract. Each
 Progressive item has an owner and fallback in the [refined scope packet](../acceptance/application-styling-scope-065.md).
 
-## Proposed contract
+## Accepted contract
 
 The exact Python names are frozen by D-110. The intended contract is:
 
@@ -134,7 +134,7 @@ Registration metadata declares:
 - whether global selectors are permitted; and
 - package/source provenance.
 
-The candidate Stage 0 signature is `app.styles(name, source, *, scope=None,
+The implemented Stage 0 signature is `app.styles(name, source, *, scope=None,
 layer="application", global_=False, media=())`. `source` is a local package-owned path;
 `global_=True` is an explicit compatibility decision, not a default. A named scope emits a stable
 application scope root and the compiler rejects selectors that escape that root or a documented

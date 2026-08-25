@@ -1,8 +1,8 @@
-# Integrated styling and application CSS (proposed 0.65 API)
+# Integrated styling and application CSS (0.65 API)
 
-Status: **Implemented for the bounded 0.65 issue slices.** The original application-CSS surface
-remains staged under D-110; the four follow-up presentation contracts below are implemented and
-covered by the 0.65 release evidence. The Required/Progressive boundary is recorded in the
+Status: **Implemented for the bounded 0.65 issue slices.** The application-CSS surface and the
+four follow-up presentation contracts are implemented and covered by the 0.65 release evidence.
+The Required/Progressive boundary is recorded in the
 [refined scope](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/application-styling-scope-065.md).
 See [RFC-0092](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md).
 
@@ -20,7 +20,7 @@ app.styles(
 )
 ```
 
-This is a candidate Stage 0 signature, not an implemented API. `source` must resolve to a local,
+This is the implemented Stage 0 signature. `source` must resolve to a local,
 package-owned asset. `scope` emits a stable root hook such as `data-hedron-style-scope="app"`;
 `global_` is an explicit opt-in and is rejected when the source violates the global-CSS policy.
 `media` is a finite, manifest-recorded list rather than an arbitrary response-time condition.
@@ -69,7 +69,7 @@ descendant selectors and user-supplied selector values are rejected by the contr
 
 Application tokens use a namespace owned by the registering package or application. They compose
 with the existing ThemeSpec/ThemePatch graph, carry provenance, and cannot overwrite a core token
-without an explicit compatibility error. The proposed layer order is:
+without an explicit compatibility error. The layer order is:
 
 ```css
 @layer reset, tokens, base, components, application, utilities, overrides;
@@ -86,15 +86,15 @@ restyling of every component.
 
 ## Diagnostics and ejection
 
-Candidate static commands:
+Static commands:
 
 ```text
 hedron style explain <surface> [--property <name>]
-hedron style inspect <manifest-or-source>
-hedron style check --custom-css
-hedron style eject <surface> [--output <path>]
-hedron style diff <ejected-path>
-hedron style update --check
+hedron --app <module:attr> style inspect
+hedron style check --custom-css <path>
+hedron --app <module:attr> style eject-css --output <path>
+hedron --app <module:attr> style diff --ejected-path <path>
+hedron --app <module:attr> style update --check --manifest <path>
 ```
 
 Diagnostics identify the winning declaration, layer, selector/hook, token, source asset, and
