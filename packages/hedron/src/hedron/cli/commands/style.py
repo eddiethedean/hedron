@@ -7,6 +7,7 @@ import hashlib
 import html as html_lib
 import json
 import os
+import re
 import sys
 import tempfile
 from collections.abc import Mapping
@@ -36,6 +37,7 @@ PREVIEW_SCHEMA = "hedron.design-system-preview/1"
 SOURCE_MAP_SCHEMA = "hedron.design-system-source-map/1"
 PREVIEW_FIXTURE_VERSION = "hedron.design-gallery/1"
 APPLICATION_STYLE_EJECTION_SCHEMA = "hedron.style-ejection/1"
+_SHA256_DIGEST = re.compile(r"^sha256-[0-9a-f]{64}$")
 
 
 def _require_app(args: argparse.Namespace) -> object:
@@ -93,10 +95,18 @@ def _resolve_design(args: argparse.Namespace, *, name: str | None = None) -> Des
     return DesignSystem.from_theme(_theme_from_meta(str(design_name)))
 
 
+def _normalized_absolute(path: Path) -> Path:
+    """Normalize dot segments without following symlinks."""
+    candidate = path.expanduser()
+    if not candidate.is_absolute():
+        candidate = Path.cwd() / candidate
+    return Path(os.path.normpath(os.fspath(candidate)))
+
+
 def _assert_project_write_path(path: Path, *, cwd: Path) -> Path:
     """Resolve ``path`` under ``cwd`` and refuse symlink write-through escapes."""
-    cwd = cwd.expanduser().absolute()
-    resolved = path.expanduser().absolute()
+    cwd = _normalized_absolute(cwd)
+    resolved = _normalized_absolute(path)
     try:
         resolved.relative_to(cwd)
     except ValueError as exc:
@@ -117,8 +127,8 @@ def _assert_project_write_path(path: Path, *, cwd: Path) -> Path:
 
 def _redacted_path(path: Path, *, root: Path | None = None) -> str:
     """Return a stable user-facing path without exposing unrelated absolutes."""
-    root = (root or Path.cwd()).expanduser().absolute()
-    candidate = path.expanduser().absolute()
+    root = _normalized_absolute(root or Path.cwd())
+    candidate = _normalized_absolute(path)
     try:
         return str(candidate.relative_to(root)) or "."
     except ValueError:
@@ -302,18 +312,21 @@ def _cmd_style_eject_application(args: argparse.Namespace) -> int:
         }
         for source, chunk in zip(sources, chunks, strict=True)
     ]
-    manifest_text = json.dumps(
-        {
-            "schema": APPLICATION_STYLE_EJECTION_SCHEMA,
-            "files": [css_path.name, map_path.name],
-            "styles": sources,
-            "blocks": blocks,
-            "css_digest": "sha256-" + hashlib.sha256(css_text.encode()).hexdigest(),
-            "cascade_layers": list(CASCADE_LAYERS),
-        },
-        indent=2,
-        sort_keys=True,
-    ) + "\n"
+    manifest_text = (
+        json.dumps(
+            {
+                "schema": APPLICATION_STYLE_EJECTION_SCHEMA,
+                "files": [css_path.name, map_path.name],
+                "styles": sources,
+                "blocks": blocks,
+                "css_digest": "sha256-" + hashlib.sha256(css_text.encode()).hexdigest(),
+                "cascade_layers": list(CASCADE_LAYERS),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )
     try:
         _assert_project_write_path(css_path, cwd=cwd)
         _assert_project_write_path(map_path, cwd=cwd)
@@ -345,10 +358,53 @@ def _application_style_manifest_path(path: str | None) -> Path:
     return candidate
 
 
-def _application_style_drift(manifest_path: Path) -> dict[str, Any]:
-    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+def _application_style_ejection_payload(manifest_path: Path) -> dict[str, Any]:
+    """Load and strictly validate an application-style ejection sidecar."""
+    raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(raw, Mapping):
+        raise ValueError("application style manifest must be a JSON object")
+    payload = dict(raw)
     if payload.get("schema") != APPLICATION_STYLE_EJECTION_SCHEMA:
-        raise SystemExit(f"Unsupported application style manifest: {manifest_path}")
+        raise ValueError("unsupported application style manifest schema")
+
+    files = payload.get("files")
+    if (
+        not isinstance(files, list)
+        or len(files) != 2
+        or any(not isinstance(item, str) or not item or Path(item).name != item for item in files)
+    ):
+        raise ValueError("application style manifest requires two local file names")
+    if not _SHA256_DIGEST.fullmatch(str(payload.get("css_digest") or "")):
+        raise ValueError("application style manifest has an invalid CSS digest")
+
+    styles = payload.get("styles")
+    blocks = payload.get("blocks")
+    if not isinstance(styles, list) or not isinstance(blocks, list) or len(blocks) != len(styles):
+        raise ValueError("application style manifest styles and blocks must align")
+    for label, entries in (("style", styles), ("block", blocks)):
+        for entry in entries:
+            if (
+                not isinstance(entry, Mapping)
+                or not isinstance(entry.get("logical_id"), str)
+                or not entry.get("logical_id")
+            ):
+                raise ValueError(f"application style manifest has an invalid {label} entry")
+            digest_key = "digest" if label == "style" else "block_digest"
+            if not _SHA256_DIGEST.fullmatch(str(entry.get(digest_key) or "")):
+                raise ValueError(f"application style manifest has an invalid {label} digest")
+            if label == "block" and not _SHA256_DIGEST.fullmatch(
+                str(entry.get("source_digest") or "")
+            ):
+                raise ValueError("application style manifest has an invalid source digest")
+    style_digests = {str(entry["logical_id"]): str(entry["digest"]) for entry in styles}
+    block_sources = {str(entry["logical_id"]): str(entry["source_digest"]) for entry in blocks}
+    if style_digests != block_sources:
+        raise ValueError("application style manifest block provenance does not match styles")
+    return payload
+
+
+def _application_style_drift(manifest_path: Path) -> dict[str, Any]:
+    payload = _application_style_ejection_payload(manifest_path)
     expected = {
         str(item["logical_id"]): str(item.get("digest") or "")
         for item in payload.get("styles", [])
@@ -364,16 +420,15 @@ def _application_style_drift(manifest_path: Path) -> dict[str, Any]:
         for logical_id in set(expected) & set(actual)
         if expected[logical_id] != actual[logical_id]
     )
-    files = payload.get("files")
+    files = payload["files"]
     ejected_changed = False
     ejected_missing = False
-    if isinstance(files, list) and files and isinstance(files[0], str):
-        css_path = (manifest_path.parent / files[0]).absolute()
-        if css_path.exists() and css_path.is_file() and not css_path.is_symlink():
-            actual_css_digest = "sha256-" + hashlib.sha256(css_path.read_bytes()).hexdigest()
-            ejected_changed = actual_css_digest != payload.get("css_digest")
-        else:
-            ejected_missing = True
+    css_path = _assert_project_write_path(manifest_path.parent / files[0], cwd=manifest_path.parent)
+    if css_path.exists() and css_path.is_file():
+        actual_css_digest = "sha256-" + hashlib.sha256(css_path.read_bytes()).hexdigest()
+        ejected_changed = actual_css_digest != payload["css_digest"]
+    else:
+        ejected_missing = True
     return {
         "schema": "hedron.style-drift/1",
         "manifest": _redacted_path(manifest_path),
@@ -400,6 +455,10 @@ def _cmd_style_update_check(args: argparse.Namespace) -> int:
         for key in ("added", "removed", "changed"):
             if payload[key]:
                 print(f"{key}: {', '.join(payload[key])}")
+        if payload["ejected_changed"]:
+            print("ejected CSS changed")
+        if payload["ejected_missing"]:
+            print("ejected CSS missing")
     return 0 if payload["clean"] else 1
 
 

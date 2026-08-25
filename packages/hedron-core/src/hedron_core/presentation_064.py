@@ -267,6 +267,11 @@ def _part_identifier(value: str) -> str:
     return value
 
 
+def _class_fragment(value: str) -> str:
+    """Lower one validated public identifier into a single CSS class fragment."""
+    return re.sub(r"[^a-z0-9_-]", "-", value.lower())
+
+
 def _css_value(value: str, *, label: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise PresentationError(f"{label} must be a non-empty CSS value")
@@ -486,7 +491,9 @@ class ScopedStyleRecipe:
             separators=(",", ":"),
         )
         digest = hashlib.sha256(raw.encode()).hexdigest()[:10]
-        return f"hedron-scope-{self.component.lower()}-{self.part.lower()}-{digest}"
+        return (
+            f"hedron-scope-{_class_fragment(self.component)}-{_class_fragment(self.part)}-{digest}"
+        )
 
     @staticmethod
     def _validate_conditions(conditions: tuple[ResponsiveCondition, ...]) -> None:

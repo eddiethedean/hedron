@@ -116,12 +116,32 @@ def test_phase065_rejects_quoted_remote_imports() -> None:
         )
 
 
-def test_phase065_rejects_escaped_remote_imports_and_honors_remote_opt_in() -> None:
+def test_phase065_rejects_escaped_remote_imports_and_honors_remote_opt_in(tmp_path) -> None:
     with pytest.raises(HedronError, match="Remote CSS import rejected"):
         compile_css(
             '@import "h\\74 tps://example.com/theme.css";',
             component_id="application:workspace",
             layer="application",
+            rewrite_selectors=False,
+        )
+    with pytest.raises(HedronError, match="Remote CSS import rejected"):
+        compile_css(
+            '@import "ht\\\ntps://example.com/theme.css";',
+            component_id="application:workspace",
+            layer="application",
+            rewrite_selectors=False,
+        )
+
+    decoy = tmp_path / r"h\74 tps:" / "example.com"
+    decoy.mkdir(parents=True)
+    (decoy / "image.png").write_bytes(b"local decoy")
+    with pytest.raises(HedronError, match="Remote CSS URL rejected"):
+        compile_css(
+            r".card { background-image: url(h\74 tps://example.com/image.png); }",
+            component_id="application:workspace",
+            layer="application",
+            registered_roots=(tmp_path,),
+            component_dir=tmp_path,
             rewrite_selectors=False,
         )
     result = compile_css(
@@ -137,12 +157,36 @@ def test_phase065_rejects_escaped_remote_imports_and_honors_remote_opt_in() -> N
 def test_phase065_ejection_write_path_rejects_symlinked_destinations(tmp_path) -> None:
     from hedron.cli.commands.style import _assert_project_write_path
 
+    project = tmp_path / "project"
     outside = tmp_path / "outside"
+    project.mkdir()
     outside.mkdir()
-    link = tmp_path / "output"
+    with pytest.raises(ValueError, match="outside the project root"):
+        _assert_project_write_path(
+            project / ".." / "outside" / "application-styles.css",
+            cwd=project,
+        )
+
+    link = project / "output"
     link.symlink_to(outside, target_is_directory=True)
     with pytest.raises(ValueError, match="symlink"):
-        _assert_project_write_path(link / "application-styles.css", cwd=tmp_path)
+        _assert_project_write_path(link / "application-styles.css", cwd=project)
+
+
+def test_phase065_ejection_manifest_fails_closed_when_integrity_fields_are_missing(
+    tmp_path,
+) -> None:
+    import json
+
+    from hedron.cli.commands.style import _application_style_drift
+
+    manifest = tmp_path / "source_map.json"
+    manifest.write_text(
+        json.dumps({"schema": "hedron.style-ejection/1", "styles": []}),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="requires two local file names"):
+        _application_style_drift(manifest)
 
 
 def test_phase065_rejects_private_and_behavior_application_css() -> None:
@@ -237,6 +281,7 @@ def test_phase065_dotted_public_hook_compiles_as_an_or_state_selector() -> None:
         declarations={"opacity": "0.5"},
     )
     css = compile_scoped_styles((recipe,)).css
-    assert "nav.link" in css
+    assert "nav.link" not in recipe.class_name
+    assert f".{recipe.class_name}:is(" in css
     assert '[data-hedron-state~="current"]' in css
     assert '[data-hedron-state~="disabled"]' in css

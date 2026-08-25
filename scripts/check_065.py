@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
+import contextlib
+import io
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -13,6 +15,7 @@ import time
 import uuid
 import zipfile
 from pathlib import Path
+from unittest.mock import patch
 
 from hedron_core.diagnostics import HedronError
 
@@ -227,50 +230,80 @@ def _check_recipe() -> None:
 
 
 def _check_ejection() -> None:
-    from hedron.cli.commands.style import _application_style_drift
-    from hedron_core.registry import get_registry
+    from hedron.cli.commands.style import (
+        _application_style_drift,
+        _cmd_style_eject_application,
+    )
     from hedron_core.registry.application_style import register_application_style
+    from hedron_core.registry.builder import (
+        reset_registry_for_tests,
+        restore_registry_builder,
+        snapshot_registry_builder,
+    )
 
-    with tempfile.TemporaryDirectory() as directory:
-        root = Path(directory)
-        source = root / "app.css"
-        source.write_text(".card { color: red; }", encoding="utf-8")
-        meta = register_application_style(
-            name=f"gate-eject-{uuid.uuid4().hex[:8]}",
-            source=source,
-            scope="gate",
-            allowed_roots=(root,),
-        )
-        css = root / "application-styles.css"
-        style_data = meta.to_dict(source_root=root)
-        css.write_text(
-            f"/* hedron: {meta.logical_id} source={style_data['source']} "
-            f"digest={style_data['digest']} */\n"
-            + source.read_text(encoding="utf-8").rstrip()
-            + "\n",
-            encoding="utf-8",
-        )
-        manifest = root / "source_map.json"
-        manifest.write_text(
-            json.dumps(
-                {
-                    "schema": "hedron.style-ejection/1",
-                    "files": [css.name, manifest.name],
-                    "styles": [
-                        {"logical_id": item.logical_id, "digest": item.source_digest}
-                        for item in get_registry().application_styles()
-                    ],
-                    "css_digest": "sha256-"
-                    + hashlib.sha256(css.read_bytes()).hexdigest(),
-                }
-            ),
-            encoding="utf-8",
-        )
-        _require(_application_style_drift(manifest)["clean"], "fresh ejection is not clean")
-        css.write_text(css.read_text(encoding="utf-8") + "/* edited */\n", encoding="utf-8")
-        drift = _application_style_drift(manifest)
-        _require(drift["ejected_changed"], "edited ejection was not detected")
-        _require(not drift["clean"], "edited ejection incorrectly remained clean")
+    snapshot = snapshot_registry_builder()
+    original_cwd = Path.cwd()
+    reset_registry_for_tests()
+    try:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            project = root / "project"
+            outside = root / "outside"
+            project.mkdir()
+            outside.mkdir()
+            source = project / "app.css"
+            source.write_text(".card { color: red; }", encoding="utf-8")
+            register_application_style(
+                name=f"gate-eject-{uuid.uuid4().hex[:8]}",
+                source=source,
+                scope="gate",
+                allowed_roots=(project,),
+            )
+            os.chdir(project)
+            output = io.StringIO()
+            with patch("hedron.cli.commands.style._require_app", return_value=object()):
+                with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
+                    result = _cmd_style_eject_application(
+                        argparse.Namespace(app="gate:app", output="ejected", overwrite=False)
+                    )
+                _require(result == 0, f"real ejection failed: {output.getvalue()}")
+
+                ejected = project / "ejected"
+                css = ejected / "application-styles.css"
+                manifest = ejected / "source_map.json"
+                payload = json.loads(manifest.read_text(encoding="utf-8"))
+                _require(payload.get("blocks"), "ejection block digests are missing")
+                _require(payload.get("css_digest"), "ejection CSS digest is missing")
+                _require(_application_style_drift(manifest)["clean"], "fresh ejection is not clean")
+                css.write_text(
+                    css.read_text(encoding="utf-8") + "/* edited */\n",
+                    encoding="utf-8",
+                )
+                drift = _application_style_drift(manifest)
+                _require(drift["ejected_changed"], "edited ejection was not detected")
+
+                for unsafe_output in ("../outside", "linked"):
+                    if unsafe_output == "linked":
+                        (project / "linked").symlink_to(outside, target_is_directory=True)
+                    output.seek(0)
+                    output.truncate(0)
+                    with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
+                        result = _cmd_style_eject_application(
+                            argparse.Namespace(
+                                app="gate:app",
+                                output=unsafe_output,
+                                overwrite=True,
+                            )
+                        )
+                    _require(result == 1, f"unsafe ejection was accepted: {unsafe_output}")
+                _require(
+                    not (outside / "application-styles.css").exists(),
+                    "ejection escaped the project root",
+                )
+    finally:
+        os.chdir(original_cwd)
+        reset_registry_for_tests()
+        restore_registry_builder(snapshot)
 
 
 def _check_manifest_redaction() -> None:
@@ -395,30 +428,50 @@ def _check_performance() -> None:
 def _check_security() -> None:
     _check_css()
     _check_asset()
+    _check_manifest_redaction()
 
 
 def _check_package() -> None:
-    _require(
-        (ROOT / "packages/hedron-core/pyproject.toml").is_file(),
-        "core package metadata missing",
-    )
     with tempfile.TemporaryDirectory() as directory:
-        result = subprocess.run(
-            ["uv", "build", "--package", "hedron-core", "--wheel", "--out-dir", directory],
-            cwd=ROOT,
-            check=False,
-            capture_output=True,
-            text=True,
-        )
-        _require(result.returncode == 0, result.stdout[-1000:] + result.stderr[-1000:])
-        wheels = sorted(Path(directory).glob("*.whl"))
-        _require(wheels, "hedron-core wheel was not produced")
-        with zipfile.ZipFile(wheels[0]) as wheel:
-            names = set(wheel.namelist())
-        _require(
-            "hedron_core/static/hedron-default.css" in names,
-            "core static stylesheet is missing from the wheel",
-        )
+        requirements = {
+            "hedron-core": {
+                "hedron_core/static/hedron-default.css",
+                "hedron_core/css/compiler.py",
+            },
+            "hedron": {
+                "hedron/static/hedron-default.css",
+                "hedron/cli/commands/style.py",
+            },
+        }
+        for package, required_files in requirements.items():
+            _require(
+                (ROOT / f"packages/{package}/pyproject.toml").is_file(),
+                f"{package} package metadata missing",
+            )
+            destination = Path(directory) / package
+            destination.mkdir()
+            result = subprocess.run(
+                [
+                    "uv",
+                    "build",
+                    "--package",
+                    package,
+                    "--wheel",
+                    "--out-dir",
+                    str(destination),
+                ],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            _require(result.returncode == 0, result.stdout[-1000:] + result.stderr[-1000:])
+            wheels = sorted(destination.glob("*.whl"))
+            _require(wheels, f"{package} wheel was not produced")
+            with zipfile.ZipFile(wheels[0]) as wheel:
+                names = set(wheel.namelist())
+            missing = sorted(required_files - names)
+            _require(not missing, f"{package} wheel is missing files: {missing}")
 
 
 CHECKS = {

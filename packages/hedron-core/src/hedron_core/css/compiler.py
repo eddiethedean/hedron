@@ -40,7 +40,7 @@ _GLOBAL_RE = re.compile(r":global\(([^)]*)\)")
 _URL_RE = re.compile(r"url\(\s*(['\"]?)([^)'\"]+)\1\s*\)", re.IGNORECASE)
 _IMPORT_TARGET_RE = re.compile(
     r"^@import\s+(?:url\(\s*(['\"]?)([^)'\"]+)\1\s*\)|(['\"])(.*?)\3)",
-    re.IGNORECASE,
+    re.IGNORECASE | re.DOTALL,
 )
 _UNSAFE_VALUE_RE = re.compile(
     r"(?:expression\s*\(|-moz-binding\s*:|behavior\s*:)",
@@ -52,10 +52,14 @@ _BEHAVIOR_PROPERTIES = frozenset({"content", "pointer-events", "user-select"})
 
 def _decode_css_url(value: str) -> str:
     """Decode CSS escapes used to disguise a URL scheme in an import string."""
+
     def replace_hex(match: re.Match[str]) -> str:
         codepoint = int(match.group(1), 16)
-        return chr(codepoint) if codepoint else "�"
+        if codepoint == 0 or codepoint > 0x10FFFF or 0xD800 <= codepoint <= 0xDFFF:
+            return "�"
+        return chr(codepoint)
 
+    value = re.sub(r"\\(?:\r\n|[\n\r\f])", "", value)
     value = re.sub(r"\\([0-9a-fA-F]{1,6})(?:\r\n|[ \t\r\n\f])?", replace_hex, value)
     return re.sub(r"\\([^\r\n])", r"\1", value)
 
@@ -350,7 +354,7 @@ def _check_urls_in_sheet(
 
         def repl(match: re.Match[str]) -> str:
             quote = match.group(1)
-            url = match.group(2).strip()
+            url = _decode_css_url(match.group(2)).strip()
             if url.startswith("data:"):
                 found.append(url)
                 return match.group(0)
