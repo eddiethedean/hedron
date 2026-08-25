@@ -505,6 +505,8 @@ HED_STYLE_SCOPE_0002 = "HED-STYLE-SCOPE-0002"  # unsupported scope recipe defaul
 HED_STYLE_EJECT_0001 = "HED-STYLE-EJECT-0001"  # style eject path / overwrite
 HED_STYLE_EJECT_0002 = "HED-STYLE-EJECT-0002"  # style eject unknown selection
 HED_STYLE_EJECT_0003 = "HED-STYLE-EJECT-0003"  # style eject parity failure
+HED_STYLE_APP_0001 = "HED-STYLE-APP-0001"  # duplicate application stylesheet
+HED_STYLE_APP_0002 = "HED-STYLE-APP-0002"  # unsupported application style manifest
 
 # Interaction tooling (0.63)
 HED_CHECK_0001 = "HED-CHECK-0001"  # application-authored CSS detected
