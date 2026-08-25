@@ -14,6 +14,7 @@ import json
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from types import MappingProxyType
 from typing import Final, Literal
 
 from hedron_core.theme import Theme, default_theme
@@ -138,6 +139,22 @@ def _css_value(value: str, *, label: str) -> str:
     return value
 
 
+def _freeze_public(value: object) -> object:
+    if isinstance(value, Mapping):
+        return MappingProxyType({key: _freeze_public(item) for key, item in value.items()})
+    if isinstance(value, (list, tuple)):
+        return tuple(_freeze_public(item) for item in value)
+    return value
+
+
+def _thaw_public(value: object) -> object:
+    if isinstance(value, Mapping):
+        return {key: _thaw_public(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return [_thaw_public(item) for item in value]
+    return value
+
+
 @dataclass(frozen=True, slots=True)
 class ResponsiveCondition:
     """One finite viewport, container, direction, or accessibility condition."""
@@ -203,7 +220,7 @@ class ScopedStyleRecipe:
             if "var(--hedron-" in value and not _TOKEN.search(value):
                 raise PresentationError("theme references must use a single --hedron token")
             normalized[property_name] = value
-        object.__setattr__(self, "declarations", normalized)
+        object.__setattr__(self, "declarations", MappingProxyType(normalized))
 
     @property
     def class_name(self) -> str:
@@ -226,7 +243,14 @@ class ScopedStyleRecipe:
 @dataclass(frozen=True, slots=True)
 class ScopedStyleBundle:
     css: str
-    recipes: tuple[dict[str, object], ...]
+    recipes: tuple[Mapping[str, object], ...]
+
+    def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "recipes",
+            tuple(_freeze_public(recipe) for recipe in self.recipes),
+        )
 
     @property
     def digest(self) -> str:
@@ -236,7 +260,7 @@ class ScopedStyleBundle:
         return {
             "schema": "hedron.scoped-style-bundle/1",
             "digest": self.digest,
-            "recipes": self.recipes,
+            "recipes": tuple(_thaw_public(recipe) for recipe in self.recipes),
         }
 
 
@@ -270,6 +294,10 @@ class PresentationContract:
     motion: Mapping[str, str]
     native_controls: tuple[str, ...]
     data_chrome: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        for field_name in ("tokens", "breakpoints", "container_sizes", "motion"):
+            object.__setattr__(self, field_name, _freeze_public(getattr(self, field_name)))
 
     def to_dict(self) -> dict[str, object]:
         payload: dict[str, object] = {

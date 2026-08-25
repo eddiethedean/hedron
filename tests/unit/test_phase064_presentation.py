@@ -91,6 +91,25 @@ def test_scoped_recipe_rejects_unsafe_selector_or_css(kwargs: dict[str, object])
         ScopedStyleRecipe(**kwargs)  # type: ignore[arg-type]
 
 
+def test_presentation_contract_mappings_are_immutable() -> None:
+    recipe = ScopedStyleRecipe(
+        component="Card",
+        part="body",
+        declarations={"color": "red"},
+    )
+    bundle = compile_scoped_styles((recipe,))
+    contract = presentation_contract()
+
+    with pytest.raises(TypeError):
+        recipe.declarations["color"] = "red; background: url(https://attacker.test/x)"  # type: ignore[index]
+    with pytest.raises(TypeError):
+        bundle.recipes[0]["declarations"]["color"] = "blue"  # type: ignore[index]
+    with pytest.raises(TypeError):
+        contract.breakpoints["sm"] = "0px"  # type: ignore[index]
+
+    assert presentation_contract().breakpoints["sm"] == "40rem"
+
+
 def test_manifest_and_asset_are_portable() -> None:
     manifest = component_presentation_manifest()
     asset = next(item for item in known_extensions() if item.public_id == "hedron")
