@@ -78,6 +78,12 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Phase 0.64 Hedron HTMX interaction extension](HTMX_HEDRON_EXTENSION_064.md) — W0–W10
   pinned extension asset, lifecycle state, accessibility, concurrency presentation, CSP-safe
   cleanup, browser traces, Hedron integration, and release plan
+- [Integrated styling platform and application CSS](APPLICATION_STYLING_065.md) — proposed phase
+  0.65 W0–W11 workstreams for first-class local stylesheet assets, public hooks, namespaced tokens,
+  an explicit application layer, diagnostics, provenance-preserving ejection, the four open styling
+  issues, and broader preference/responsive/presentation coverage
+- [Phase 0.65 execution plan](EXECUTION_0_65.md) — ordered E0–E11 milestones, dependencies,
+  pull-request sequence, stop conditions, and release handoff
 - [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
   workstreams for compiling the Markdown corpus into native Hedron component trees, building the
   docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud

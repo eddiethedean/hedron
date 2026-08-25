@@ -1,0 +1,148 @@
+schema_version = 1
+phase = "0.65"
+status = "Planned"
+authority = "RFC-0092"
+baseline = "v0.64.1"
+
+[[capability]]
+id = "ASSET-065"
+title = "First-class local application stylesheet registration"
+disposition = "Required"
+state = "Planned"
+owner = "assets"
+gate = "ASSET-065"
+issues = []
+fallback = "No stylesheet is loaded unless explicitly registered."
+maturity = "Required"
+
+[[capability]]
+id = "HOOKS-065"
+title = "Stable public component, part, slot, and state hooks"
+disposition = "Required"
+state = "Planned"
+owner = "components"
+gate = "HOOKS-065"
+issues = [693]
+fallback = "Use semantic props or documented component defaults; private classes are unsupported."
+maturity = "Required"
+
+[[capability]]
+id = "TOKEN-065"
+title = "Namespaced application tokens in the existing theme graph"
+disposition = "Required"
+state = "Planned"
+owner = "theme"
+gate = "TOKEN-065"
+issues = []
+fallback = "Use existing core theme tokens and component props."
+maturity = "Required"
+
+[[capability]]
+id = "LAYER-065"
+title = "Explicit application cascade layer"
+disposition = "Required"
+state = "Planned"
+owner = "core-styling"
+gate = "LAYER-065"
+issues = []
+fallback = "Existing layers remain unchanged when application CSS is unused."
+maturity = "Required"
+
+[[capability]]
+id = "INSPECT-065"
+title = "Style explain, inspect, and custom-CSS checks"
+disposition = "Required"
+state = "Planned"
+owner = "tooling"
+gate = "INSPECT-065"
+issues = []
+fallback = "Static manifest and compiler diagnostics remain available."
+maturity = "Required"
+
+[[capability]]
+id = "EJECT-065"
+title = "Provenance-preserving CSS ejection and update workflow"
+disposition = "Required"
+state = "Planned"
+owner = "tooling"
+gate = "EJECT-065"
+issues = []
+fallback = "Keep generated CSS managed by Hedron; never partially eject silently."
+maturity = "Required"
+
+[[capability]]
+id = "MOTION-065"
+title = "Named motion recipes with reduced-motion fallbacks"
+disposition = "Required"
+state = "Planned"
+owner = "presentation"
+gate = "MOTION-065"
+issues = [690]
+fallback = "No mandatory motion; preserve state and content without animation."
+maturity = "Required"
+
+[[capability]]
+id = "CONTROLS-065"
+title = "Native form-control appearance and state contract"
+disposition = "Required"
+state = "Planned"
+owner = "components"
+gate = "CONTROLS-065"
+issues = [698]
+fallback = "Retain usable native appearance and browser validation behavior."
+maturity = "Required"
+
+[[capability]]
+id = "DATA-065"
+title = "Semantic data-view and table chrome tokens"
+disposition = "Required"
+state = "Planned"
+owner = "data"
+gate = "DATA-065"
+issues = [694]
+fallback = "Semantic markup and readable unthemed table/data-view output."
+maturity = "Required"
+
+[[capability]]
+id = "PRESENT-065"
+title = "Focus, navigation, overlays, layout, type, media, icons, visualization, print, RTL, preferences"
+disposition = "Required"
+state = "Planned"
+owner = "presentation"
+gate = "PRESENT-065"
+issues = []
+fallback = "Each surface records a bounded fallback or a named Progressive/Deferred disposition."
+maturity = "Required"
+
+[[capability]]
+id = "SELECTORS-065"
+title = "Typed selector helpers and Explorer cascade view"
+disposition = "Progressive"
+state = "Planned"
+owner = "tooling"
+gate = "INSPECT-065"
+issues = []
+fallback = "Use versioned public data attributes and static diagnostics."
+maturity = "Progressive"
+
+[[capability]]
+id = "TOKEN-PACKAGES-065"
+title = "Third-party token package exchange and conformance"
+disposition = "Progressive"
+state = "Planned"
+owner = "theme"
+gate = "TOKEN-065"
+issues = []
+fallback = "Application-local namespaced tokens only."
+maturity = "Progressive"
+
+[[capability]]
+id = "STYLE-EDITOR-065"
+title = "Browser style editor, telemetry, Houdini, and behavior-changing CSS"
+disposition = "Deferred"
+state = "Planned"
+owner = "architecture"
+gate = "CONTRACT-065"
+issues = []
+fallback = "Static, reviewable source files and explicit manifests."
+maturity = "Deferred"

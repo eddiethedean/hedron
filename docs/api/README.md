@@ -130,6 +130,7 @@ These contracts compile onto the golden path. They are **not** required for Hell
 - [Maps](MAPS.md)
 - [HTMX extension integration](HTMX_EXTENSIONS.md) — **0.48** Published in-tree (morph Deferred)
 - [Hedron HTMX interaction extension](HTMX_HEDRON_EXTENSION.md) — proposed **0.64** contract
+- [Integrated styling and application CSS](APPLICATION_STYLING_065.md) — proposed **0.65** contract
 - [FastAPI/Pydantic convergence](FASTAPI_PYDANTIC_CONVERGENCE.md) — **0.49** Published in-tree
 - [Explorer architecture](EXPLORER_ARCHITECTURE.md) — **0.50** Published in-tree (related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503))
 - [Curated extras](EXTRAS.md) — historical 0.51 contract; see [Current release and support](../guides/current-release.md) for installable versions.

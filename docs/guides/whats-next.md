@@ -28,9 +28,11 @@ Install pins: [Current release](current-release.md) ·
 | **0.62** | Responsive navigation, bounded optimistic UX, and localized failure isolation | **Published** as `v0.62.0`; dashboard fan-out omitted; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/NAVIGATION_OPTIMISM_062.md) |
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component interoperability | **Published** as `v0.64.0`; Progressive bundles/visuals/React island deferred; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
 | **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability | Published `v0.64.0`; 18 enhancement issues completed, 4 remain open for deferred follow-up; [phase inventory](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#phase-064-enhancement-inventory); [refined phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_HEDRON_EXTENSION_064.md) |
+| **0.65** | Integrated styling platform and first-class application CSS | **Proposed; not a current release**; four open styling issues plus public hooks, app assets, tokens, diagnostics, and ejection; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/APPLICATION_STYLING_065.md) |
 
-Phase 0.63 is the current published capability train; its Required implementation is landed in-tree
-and published on PyPI with its acceptance packet, while 0.64 remains a planning proposal.
+Phase 0.64 is the current published capability train; its Required implementation is landed in-tree
+and published on PyPI with its acceptance packet. Phase 0.65 is a planning proposal and does not
+change the current Supported surface.
 For 0.62, canonical navigation, fallback, localized failure, identity safety, and a small approved
 optimistic core are the proposed Required cut; prefetch, transitions, bulk actions, and dashboard
 fan-out remain optional Progressive work.
@@ -48,6 +50,12 @@ inclusive presentation, safe custom-component styling, and Hedron-specific brows
 projection while keeping ordinary HTMX and full-page/full-fragment behavior as the fallback. It
 does not introduce a client store, hydration, a virtual DOM, arbitrary CSS/script execution, or a
 Node requirement.
+
+Phase 0.65 continues the same styling authority instead of creating a second CSS language. It makes
+local application CSS a declared asset, adds an explicit application cascade layer and namespaced
+tokens, stabilizes public component hooks, and provides explain/check/eject workflows. Its four
+open issues are required inputs; unsupported surfaces retain explicit fallbacks and honest maturity
+labels.
 
 ## Verified 0.60 — custom theme platform and styling completion
 

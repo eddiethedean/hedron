@@ -1,0 +1,176 @@
+schema_version = 1
+phase = "0.65"
+status = "Planned"
+planning_baseline = "v0.64.1"
+public_upgrade_source = "v0.64.0"
+required_predecessor = "v0.64.1"
+predecessor_satisfied = true
+target = "v0.65.0"
+owning_rfc = "RFC-0092"
+decision = "D-109"
+contract_refine = "D-110"
+acceptance_packet = "RELEASE_0_65.md"
+implementation = "../implementation/APPLICATION_STYLING_065.md"
+execution = "../implementation/EXECUTION_0_65.md"
+inventory = "application-styling-inventory-065.toml"
+contract = "application-styling-contract-065.toml"
+budgets = "application-styling-budgets-065.toml"
+upgrade_fixture = "application-styling-upgrade-fixtures-065.md"
+stage_1_entry_satisfied = false
+zero_deferred_at_cut = false
+
+progressive_omissions = [
+  "typed selector helper generation",
+  "Explorer computed-cascade UI",
+  "token package exchange",
+  "CSS anchor positioning",
+  "visual regression automation",
+  "recipe suggestions",
+]
+
+[[evidence]]
+id = "CONTRACT-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate CONTRACT-065 --verify"
+owner = "core-styling"
+ci_job = "planned"
+
+[[evidence]]
+id = "ASSET-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate ASSET-065 --verify"
+owner = "assets"
+ci_job = "planned"
+
+[[evidence]]
+id = "LAYER-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate LAYER-065 --verify"
+owner = "core-styling"
+ci_job = "planned"
+
+[[evidence]]
+id = "TOKEN-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate TOKEN-065 --verify"
+owner = "theme"
+ci_job = "planned"
+
+[[evidence]]
+id = "HOOKS-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate HOOKS-065 --verify"
+owner = "components"
+ci_job = "planned"
+
+[[evidence]]
+id = "RECIPE-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate RECIPE-065 --verify"
+owner = "core-styling"
+ci_job = "planned"
+
+[[evidence]]
+id = "CSS-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate CSS-065 --verify"
+owner = "compiler"
+ci_job = "planned"
+
+[[evidence]]
+id = "INSPECT-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate INSPECT-065 --verify"
+owner = "tooling"
+ci_job = "planned"
+
+[[evidence]]
+id = "EJECT-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate EJECT-065 --verify"
+owner = "tooling"
+ci_job = "planned"
+
+[[evidence]]
+id = "MOTION-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate MOTION-065 --verify"
+owner = "presentation"
+ci_job = "planned"
+
+[[evidence]]
+id = "CONTROLS-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate CONTROLS-065 --verify"
+owner = "components"
+ci_job = "planned"
+
+[[evidence]]
+id = "DATA-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate DATA-065 --verify"
+owner = "data"
+ci_job = "planned"
+
+[[evidence]]
+id = "PRESENT-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate PRESENT-065 --verify"
+owner = "presentation"
+ci_job = "planned"
+
+[[evidence]]
+id = "A11Y-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate A11Y-065 --verify"
+owner = "a11y"
+ci_job = "planned"
+
+[[evidence]]
+id = "SECURITY-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate SECURITY-065 --verify"
+owner = "security"
+ci_job = "planned"
+
+[[evidence]]
+id = "PERF-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate PERF-065 --verify"
+owner = "performance"
+ci_job = "planned"
+
+[[evidence]]
+id = "FLEET-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate FLEET-065 --verify"
+owner = "fleet"
+ci_job = "planned"
+
+[[evidence]]
+id = "UPGRADE-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate UPGRADE-065 --verify"
+owner = "release"
+ci_job = "planned"
+
+[[evidence]]
+id = "REGRESS-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate REGRESS-065 --verify"
+owner = "release"
+ci_job = "planned"
+
+[[evidence]]
+id = "DOCS-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate DOCS-065 --verify"
+owner = "docs"
+ci_job = "planned"
+
+[[evidence]]
+id = "PKG-065"
+state = "Planned"
+command = "python scripts/check_065.py --gate PKG-065 --verify"
+owner = "packaging"
+ci_job = "planned"

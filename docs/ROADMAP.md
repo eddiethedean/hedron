@@ -69,14 +69,16 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Published** (`v0.62.0`; progressive dashboard fan-out explicitly omitted; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Published** (`v0.63.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
 | **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Published** (`v0.64.0`; [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [18 completed and 4 open enhancement issues](#phase-064-enhancement-inventory)) |
+| **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, and complete styling follow-up | **Proposed** (`v0.65.0`; [RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [acceptance](acceptance/RELEASE_0_65.md); open issues [#690](https://github.com/eddiethedean/hedron/issues/690), [#693](https://github.com/eddiethedean/hedron/issues/693), [#694](https://github.com/eddiethedean/hedron/issues/694), [#698](https://github.com/eddiethedean/hedron/issues/698)) |
 
 ### Phase 0.64 enhancement inventory
 
 The phase 0.64 inventory contains **22 enhancement issues** (queried 2026-08-24): **18 are
-implemented and closed**, and **4 remain open** for deferred follow-up. All listed issues remain
-tracked in phase 0.64 per the current planning decision. The source tags are retained so the 0.62
-carry-forward work remains distinguishable from the issues originally opened for 0.64. Issue #86
-remains owned by phase 0.21 and is not part of this inventory.
+implemented and closed**, and **4 remain open** for deferred follow-up. The completed issue
+inventory remains historical 0.64 evidence; the four open styling issues are assigned to proposed
+phase 0.65 below. The source tags are retained so the 0.62 carry-forward work remains
+distinguishable from the issues originally opened for 0.64. Issue #86 remains owned by phase 0.21
+and is not part of this inventory.
 
 | Issue | Original scope | Enhancement |
 |---|---|---|
@@ -105,10 +107,11 @@ remains owned by phase 0.21 and is not part of this inventory.
 
 ### Phase 0.64 refined scope
 
-Phase 0.64 now has two coordinated tracks. The presentation track closes the bounded theme and
-component-authoring gaps represented by the 22 phase-owned enhancements; the browser track delivers
-the opt-in `htmx-ext-hedron` projection from RFC-0091. Neither track creates a client-side source of
-truth, arbitrary CSS/script execution, or a mandatory browser runtime.
+Phase 0.64 had two coordinated tracks. The presentation track delivered the completed portion of
+the 22-issue inventory; the browser track delivered the opt-in `htmx-ext-hedron` projection from
+RFC-0091. The four unresolved styling rows are now explicitly rehomed to proposed phase 0.65.
+Neither phase creates a client-side source of truth, arbitrary CSS/script execution, or a mandatory
+browser runtime.
 
 | Track | Refined responsibility | Issue/gate grouping |
 |---|---|---|
@@ -123,6 +126,9 @@ Stage 0 must produce an issue disposition matrix for every listed enhancement: *
 **Progressive**, **Experimental**, or **Excluded**. A phase release may not silently defer an issue;
 Progressive and Experimental outcomes must retain their labels in the public contract and package
 metadata, while every Required outcome must satisfy its mapped gate.
+
+The original 0.64 gate mapping is retained as historical planning evidence. Unresolved #690, #693,
+#694, and #698 are owned by the 0.65 packet and are not treated as silently completed 0.64 work.
 
 Medium/low remediations from the **2026-08-14 historical snapshot** were locked into
 phases **0.38–0.42** regression gates (8 + 27 + 6 + 14 + 32 rows). Those owning phases are
@@ -6640,3 +6646,56 @@ The phase explicitly excludes a global client store, hydration, a virtual DOM, r
 execution, a new morph engine, and promotion of SSE/WebSockets. See the [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md),
 [implementation plan](implementation/HTMX_HEDRON_EXTENSION_064.md), [execution plan](implementation/EXECUTION_0_64.md), [public contract](api/HTMX_HEDRON_EXTENSION.md),
 and [release acceptance](acceptance/RELEASE_0_64.md).
+
+## Phase 0.65 — integrated styling platform and application CSS
+
+Phase 0.65 is the proposed successor to the published `v0.64.1` in-tree baseline. It closes the
+remaining styling follow-up as one contract rather than four isolated component features, and it
+makes ordinary application CSS a first-class participant in Hedron's existing theme, compiler,
+asset, cascade, CSP, and diagnostic authorities.
+
+### Open issue ownership
+
+| Issue | Required 0.65 work | Gate |
+|---|---|---|
+| [#690](https://github.com/eddiethedean/hedron/issues/690) | Named motion recipes with reduced-motion and print fallbacks | `MOTION-065` |
+| [#693](https://github.com/eddiethedean/hedron/issues/693) | Bounded component-part and state-style recipes backed by public hooks | `HOOKS-065`, `RECIPE-065` |
+| [#694](https://github.com/eddiethedean/hedron/issues/694) | Semantic data-view/table chrome tokens and loading/empty/error states | `DATA-065` |
+| [#698](https://github.com/eddiethedean/hedron/issues/698) | Native form-control appearance, focus, invalid, disabled, and fallback contract | `CONTROLS-065` |
+
+### Required integration
+
+- register local application stylesheets in the asset graph with fingerprints, CSP checks, HTMX
+  head/fragment behavior, and explicit ownership;
+- add an inspectable `application` cascade layer between `components` and `utilities`;
+- expose versioned component/part/slot/state hooks while keeping generated class names private;
+- bring namespaced application tokens through the existing ThemeSpec/ThemePatch graph with
+  provenance and collision rejection;
+- support explicit scoped or global ordinary CSS with deterministic source maps and unsafe-syntax
+  rejection;
+- provide static `style explain`, `style inspect`, and `style check --custom-css` diagnostics;
+- preserve provenance through CSS ejection and provide safe `style diff` / `style update --check`;
+- cover focus/interaction states, navigation, overlays, layout/density/touch, typography, media,
+  icons, visualization chrome, print/export, RTL/writing modes, forced-colors, contrast,
+  reduced-motion, and reduced-transparency preferences; and
+- migrate the flagship app, starters, component packages, and adapters without private-selector
+  dependencies.
+
+### Phase boundary
+
+The phase preserves server authority, semantic markup, progressive enhancement, and no-JS fallbacks.
+CSS cannot change routes, effects, authorization, interaction state ownership, or CSP policy. A
+stylesheet is never discovered implicitly, a budget overrun is never silently sliced, and a feature
+that lacks browser or accessibility evidence retains a Progressive/Deferred label. Typed selector
+helpers, Explorer cascade views, token package exchange, anchor positioning, visual regression,
+and recipe suggestions are Progressive; browser editors, Houdini, telemetry, remote imports, and a
+second CSS-in-Python runtime are excluded or Deferred.
+
+The complete packet is [RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md),
+[APPLICATION_STYLING_065](implementation/APPLICATION_STYLING_065.md),
+[EXECUTION_0_65](implementation/EXECUTION_0_65.md),
+[public API](api/APPLICATION_STYLING_065.md), and
+[RELEASE_0_65](acceptance/RELEASE_0_65.md) with its machine-readable
+[gate](acceptance/release-gate-0.65.toml), [inventory](acceptance/application-styling-inventory-065.toml),
+[contract](acceptance/application-styling-contract-065.toml), [budgets](acceptance/application-styling-budgets-065.toml),
+and [upgrade fixtures](acceptance/application-styling-upgrade-fixtures-065.md).

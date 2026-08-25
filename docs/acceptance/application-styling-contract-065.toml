@@ -1,0 +1,57 @@
+schema_version = 1
+phase = "0.65"
+status = "Planned"
+authority = "RFC-0092"
+
+[schemas]
+style_manifest = "hedron.application-styles/1"
+component_hooks = "hedron.component-hooks/1"
+application_tokens = "hedron.application-tokens/1"
+style_diagnostics = "hedron.style-diagnostics/1"
+style_ejection = "hedron.style-ejection/1"
+
+[cascade]
+layer_order = ["reset", "tokens", "base", "components", "application", "utilities", "overrides"]
+application_layer_explicit = true
+global_css_requires_opt_in = true
+private_generated_selectors_public = false
+
+[registration]
+local_assets_only = true
+implicit_file_discovery = false
+fingerprinted = true
+source_mapped = true
+csp_checked = true
+htmx_fragment_safe = true
+no_js_fallback_required = true
+
+[tokens]
+namespaced = true
+theme_graph_authoritative = true
+provenance_required = true
+core_overwrite = "reject"
+remote_resolution = "reject"
+
+[hooks]
+component_attribute = "data-hedron-component"
+part_attribute = "data-hedron-part"
+state_attribute = "data-hedron-state"
+slot_attribute = "data-hedron-slot"
+manifest_backed_only = true
+private_class_names_stable = false
+
+[safety]
+unsafe_at_rules = "reject"
+remote_imports = "reject"
+inline_response_css = "reject"
+behavior_changes = "reject"
+diagnostics_redacted = true
+reject_not_slice = true
+
+[accessibility]
+focus_visible_required = true
+reduced_motion_fallback_required = true
+forced_colors_path_required = true
+print_path_required = true
+rtl_logical_properties_required = true
+native_control_fallback_required = true

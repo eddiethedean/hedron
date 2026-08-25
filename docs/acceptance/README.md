@@ -81,6 +81,9 @@ status commentary, not a satisfied release gate.
   conformance, and package gates
 - [`v0.64` Hedron HTMX interaction extension](RELEASE_0_64.md) — Proposed release plan with
   14 Planned contract, asset, lifecycle, accessibility, race, trace, browser, integration, and package gates
+- [`v0.65` integrated styling platform and application CSS](RELEASE_0_65.md) — Planned release
+  packet with public-hook, asset, layer, token, diagnostics, ejection, open-issue, accessibility,
+  performance, upgrade, fleet, documentation, and package gates
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

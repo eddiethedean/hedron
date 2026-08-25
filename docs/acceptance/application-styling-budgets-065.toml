@@ -1,0 +1,41 @@
+schema_version = 1
+phase = "0.65"
+status = "Proposed bounds; freeze during D-110"
+authority = "RFC-0092"
+policy = "reject-not-slice"
+
+[[budget]]
+id = "manifest-bytes"
+scope = "application stylesheet manifest"
+proposed_max = 65536
+unit = "bytes"
+
+[[budget]]
+id = "hook-entries"
+scope = "public hook manifest per package"
+proposed_max = 512
+unit = "entries"
+
+[[budget]]
+id = "initial-css-gzip"
+scope = "one registered application stylesheet"
+proposed_max = 81920
+unit = "bytes"
+
+[[budget]]
+id = "compile-seconds"
+scope = "cold deterministic style compilation"
+proposed_max = 5
+unit = "seconds"
+
+[[budget]]
+id = "diagnostic-seconds"
+scope = "static inspect/check on the reference app"
+proposed_max = 5
+unit = "seconds"
+
+[[budget]]
+id = "request-count"
+scope = "registered application CSS in a full-page response"
+proposed_max = 1
+unit = "request"
