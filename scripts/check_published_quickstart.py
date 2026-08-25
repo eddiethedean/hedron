@@ -35,6 +35,11 @@ def expected_hedron_scaffold_pin(version: str, *, release_toml: Path = RELEASE_T
         development = str(release.get("development_version", "")).strip()
         if version == development and floor != version:
             floor = version
+            # The development release may advance to a new minor while the
+            # public-release facts still describe the preceding train. In
+            # that case both sides of the scaffold window must advance.
+            major, minor, _patch = (int(part) for part in version.split("."))
+            ceiling = f"{major}.{minor + 1}"
         if floor != version:
             raise ValueError(
                 f"release.toml pin_floor {floor!r} does not match published version {version!r}"

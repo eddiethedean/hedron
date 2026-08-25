@@ -106,6 +106,23 @@ pin_ceiling = "0.65"
     assert module.expected_hedron_scaffold_pin("0.64.1", release_toml=release) == ">=0.64.1,<0.65"
 
 
+def test_published_quickstart_advances_development_minor_window(tmp_path: Path) -> None:
+    """A new-minor release must advance the stale public ceiling as well as its floor."""
+    module = _load_published_quickstart()
+    release = tmp_path / "release.toml"
+    release.write_text(
+        """[release]
+published_version = "0.64.0"
+development_version = "0.65.0"
+pin_floor = "0.64.0"
+pin_ceiling = "0.65"
+""",
+        encoding="utf-8",
+    )
+
+    assert module.expected_hedron_scaffold_pin("0.65.0", release_toml=release) == ">=0.65.0,<0.66"
+
+
 def test_hedron_run_auto_delegates_to_workbench_launcher(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
