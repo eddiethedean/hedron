@@ -135,6 +135,13 @@ can be suspended, killed, or replaced; use a stable `external_base_url`, usually
 a Posit Connect deployment. Link generation rejects implicit loopback origins
 and never derives an origin from the inbound `Host` header.
 
+For a response redirect that must survive a Workbench proxy rewriting
+path-absolute `Location` headers, use `app.redirect(path, absolute=True)` or
+`app.browser_redirect(path)`. Named routes and request-bound `posit_for(request)`
+contexts provide the corresponding `*_for` helpers. The absolute target is built
+only from the resolved Workbench/Connect base or an explicit `external_base_url`;
+ordinary `app.redirect(...)` remains a mounted path redirect.
+
 - Listener binds are loopback-only unless `--allow-external-bind` is explicit.
 - Forwarded proxy trust accepts exact IPs or bounded CIDRs shared by Uvicorn and
   Hedron; wildcard trust is rejected.

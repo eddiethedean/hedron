@@ -98,6 +98,8 @@ class WorkbenchPathMiddleware:
         expected_origins: tuple[str, ...] = (),
         runtime_mounts: bool = False,
         mounted_response_headers: bool = True,
+        absolute_redirects: bool = False,
+        absolute_origin: str | None = None,
         owned_cookie_names: tuple[str, ...] = (),
     ) -> None:
         self.app = app
@@ -116,6 +118,12 @@ class WorkbenchPathMiddleware:
         self.expected_origins = frozenset(origins)
         self.runtime_mounts = runtime_mounts
         self.mounted_response_headers = mounted_response_headers
+        if absolute_redirects and not absolute_origin:
+            raise ValueError("absolute_redirects requires an absolute_origin")
+        self.absolute_redirects = bool(absolute_redirects)
+        self.absolute_origin = (
+            normalize_http_origin(absolute_origin) if absolute_origin is not None else None
+        )
         self.owned_cookie_names = frozenset(owned_cookie_names)
 
     def _should_normalize(self, scope: Scope) -> bool:
@@ -279,7 +287,9 @@ class WorkbenchPathMiddleware:
     def _rewrite_response_start(
         self, message: Message, mount: str, *, connect_proxy: bool = False
     ) -> Message:
-        if message.get("type") != "http.response.start" or not mount:
+        if message.get("type") != "http.response.start" or (
+            not mount and not self.absolute_redirects
+        ):
             return message
         headers = cast(list[tuple[bytes, bytes]], message.get("headers") or [])
         changed = False
@@ -290,7 +300,11 @@ class WorkbenchPathMiddleware:
             if lower in _LOCAL_RESPONSE_HEADERS:
                 text = value.decode("latin-1")
                 if text.lower() not in {"true", "false"} and is_local_path(text):
-                    new_value = prefix_local_path(text, mount).encode("latin-1")
+                    mounted = prefix_local_path(text, mount)
+                    if self.absolute_redirects and self.absolute_origin is not None:
+                        new_value = f"{self.absolute_origin}{mounted}".encode("latin-1")
+                    else:
+                        new_value = mounted.encode("latin-1")
             elif lower == b"hx-location":
                 new_value = self._rewrite_hx_location(value, mount)
             elif lower == b"set-cookie":
@@ -383,6 +397,8 @@ def workbenchify(
     owned_cookie_names: tuple[str, ...] = (),
     environ: Mapping[str, str] | None = None,
     expected_origins: tuple[str, ...] | None = None,
+    absolute_redirects: bool = False,
+    absolute_origin: str | None = None,
 ) -> ASGIApp:
     """Wrap ``app`` at most once. Cookie Path must still be set before construction."""
     if is_workbenchified(app):
@@ -423,6 +439,8 @@ def workbenchify(
         expected_origins=origins,
         runtime_mounts=True,
         mounted_response_headers=True,
+        absolute_redirects=absolute_redirects,
+        absolute_origin=absolute_origin,
         owned_cookie_names=owned_cookie_names,
     )
 

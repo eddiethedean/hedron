@@ -20,6 +20,7 @@ deployment lifecycle symbols below.
 | `href` / `href_for` | App-relative links (query/fragment/durable parity) |
 | `redirect` / `redirect_for` | Redirect helpers (query/fragment/durable parity) |
 | `browser_url` / `browser_url_for` | Browser-facing URLs |
+| `browser_redirect` / `browser_redirect_for` | Scheme-absolute browser redirects |
 | `external_url` / `durable_url` (+ `_for`) | External / durable URL helpers |
 | `cookie_path_for_mount` | Construction-time cookie Path for mounts |
 | `workbenchify` | Owned-cookie Path repair (`session`, `hedron_color_mode`, CSRF) |

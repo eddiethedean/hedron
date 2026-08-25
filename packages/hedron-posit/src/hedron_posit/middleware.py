@@ -41,6 +41,8 @@ def workbenchify(
     decode_absolute_url_path: bool = True,
     strip_root_path_from_path: bool = True,
     debug: bool = False,
+    absolute_redirects: bool = False,
+    absolute_origin: str | None = None,
 ) -> ASGIApp:
     """Wrap ``app`` at most once with Hedron-owned cookie repair."""
     if getattr(app, "__hedron_posit__", False) or getattr(app, "__hedron_workbench__", False):
@@ -88,5 +90,7 @@ def workbenchify(
         expected_origins=expected_origins,
         runtime_mounts=True,
         mounted_response_headers=True,
+        absolute_redirects=absolute_redirects,
+        absolute_origin=absolute_origin,
         owned_cookie_names=tuple(sorted(owned)),
     )

@@ -150,7 +150,10 @@ before Connect's outer rewrite and still mounts local response headers itself.
 Mounted pages expose `window.Hedron.href()`, `.fetch()`, `.eventSource()`,
 `.websocketUrl()`, and `.websocket()` for application JavaScript. Python code can
 use `app.href_for()`, `app.redirect_for()`, `app.browser_url_for()`, and
-`app.external_url_for()`. `app.external_base(request=...)` captures a validated,
+`app.external_url_for()`. When a Workbench proxy rewrites path-absolute
+`Location` headers, use `app.redirect(..., absolute=True)` or
+`app.browser_redirect(...)` (and their `_for` variants) to emit a trusted
+scheme-absolute redirect. `app.external_base(request=...)` captures a validated,
 immutable base for a background job; `app.deployment_capabilities()` explains
 whether that base is browser-only or durable.
 

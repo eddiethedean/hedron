@@ -9,7 +9,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from starlette.requests import Request
-from starlette.responses import Response
+from starlette.responses import RedirectResponse, Response
 from starlette.types import Receive, Scope, Send
 
 from hedron import Hedron
@@ -163,6 +163,7 @@ class HedronPosit(Hedron):
         middleware_mode = self.hedron_workbench.mode
         if hands_off and expected_mount and middleware_mode is WorkbenchMode.OFF:
             middleware_mode = WorkbenchMode.AUTO
+        absolute_origin = self._workbench_absolute_redirect_origin()
         self._workbench_asgi = WorkbenchPathMiddleware(
             super().__call__,
             mode=middleware_mode,
@@ -172,6 +173,8 @@ class HedronPosit(Hedron):
             expected_origins=(self.hedron_workbench.external_origin,),
             runtime_mounts=True,
             mounted_response_headers=True,
+            absolute_redirects=absolute_origin is not None,
+            absolute_origin=absolute_origin,
             owned_cookie_names=self._owned_cookie_names(),
         )
 
@@ -247,6 +250,29 @@ class HedronPosit(Hedron):
             trusted_peers=self._posit_config.connect.trusted_peers,
         )
 
+    def _workbench_absolute_redirect_origin(self) -> str | None:
+        """Return a trusted origin for Workbench-safe absolute redirects.
+
+        Workbench discovery and an explicitly configured public base are trusted
+        deployment inputs. A loopback origin is intentionally still rejected by
+        ``browser_url`` for public-link generation, but it is valid here: the
+        redirect is scoped to the Workbench deployment and must be absolute before
+        the outer proxy sees it.
+        """
+        if not self.hedron_workbench.active:
+            return None
+        configured_public_base = self._posit_config.workbench.public_base_url
+        origin = self.hedron_workbench.external_origin
+        if configured_public_base is None:
+            hostname = urlsplit(origin).hostname or ""
+            try:
+                is_loopback = ipaddress.ip_address(hostname).is_loopback
+            except ValueError:
+                is_loopback = hostname.lower() == "localhost"
+            if is_loopback:
+                return None
+        return origin
+
     def _external_base(self, *, request: Request | None = None) -> ExternalBase:
         if self._hedron_external_base is not None:
             return self._hedron_external_base
@@ -278,6 +304,26 @@ class HedronPosit(Hedron):
     def external_base(self, *, request: Request | None = None) -> ExternalBase:
         """Capture the validated immutable browser base for later/background use."""
         return self._external_base(request=request)
+
+    def _absolute_redirect_base(self, *, request: Request | None = None) -> ExternalBase:
+        """Return the trusted deployment base used by scheme-absolute redirects."""
+        if self._hedron_external_base is not None:
+            return self._hedron_external_base
+        if self.hedron_workbench.active:
+            return ExternalBase(
+                origin=self.hedron_workbench.external_origin,
+                mount=self.hedron_workbench.browser_mount,
+                source=self.hedron_workbench.source,
+            )
+        if request is not None:
+            connect_base = self._connect_base(request)
+            if connect_base is not None:
+                return connect_base
+        raise ValueError(
+            "no trusted public base URL is available for an absolute redirect; "
+            "configure external_base_url, run in Workbench, or pass a validated "
+            "Posit Connect request"
+        )
 
     def _durable_external_base(self, *, request: Request | None = None) -> ExternalBase:
         base = self._external_base(request=request)
@@ -389,8 +435,22 @@ class HedronPosit(Hedron):
         status_code: int = 303,
         query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
         fragment: str | None = None,
+        absolute: bool = False,
     ) -> Response:
-        """Return a same-app redirect with automatic mount adaptation."""
+        """Return a same-app redirect with automatic mount adaptation.
+
+        Set ``absolute=True`` for a scheme-absolute ``Location`` built from the
+        trusted Workbench / Connect / configured deployment base. This is useful
+        when an outer Workbench proxy rewrites path-absolute Location headers.
+        """
+        if absolute:
+            target = compose_external_url(
+                path,
+                base=self._absolute_redirect_base(request=request),
+                query=query,
+                fragment=fragment,
+            )
+            return RedirectResponse(url=target, status_code=status_code)
         mount = str(self.state.hedron_mount_path or "")
         if request is not None:
             mount = browser_mount_from_request(request)
@@ -410,6 +470,7 @@ class HedronPosit(Hedron):
         status_code: int = 303,
         query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
         fragment: str | None = None,
+        absolute: bool = False,
         **path_params: object,
     ) -> Response:
         """Reverse a route and return a mount-aware same-app redirect."""
@@ -419,6 +480,47 @@ class HedronPosit(Hedron):
             status_code=status_code,
             query=query,
             fragment=fragment,
+            absolute=absolute,
+        )
+
+    def browser_redirect(
+        self,
+        path: str,
+        *,
+        request: Request | None = None,
+        status_code: int = 303,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+    ) -> Response:
+        """Return a scheme-absolute redirect for the current deployment."""
+        return self.redirect(
+            path,
+            request=request,
+            status_code=status_code,
+            query=query,
+            fragment=fragment,
+            absolute=True,
+        )
+
+    def browser_redirect_for(
+        self,
+        name: str,
+        *,
+        request: Request | None = None,
+        status_code: int = 303,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+        **path_params: object,
+    ) -> Response:
+        """Reverse a route into a scheme-absolute current-deployment redirect."""
+        return self.redirect_for(
+            name,
+            request=request,
+            status_code=status_code,
+            query=query,
+            fragment=fragment,
+            absolute=True,
+            **path_params,
         )
 
     def posit_for(self, request: Request) -> PositContext:
@@ -534,6 +636,7 @@ class PositContext:
         status_code: int = 303,
         query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
         fragment: str | None = None,
+        absolute: bool = False,
     ) -> Response:
         return self.app.redirect(
             path,
@@ -541,6 +644,7 @@ class PositContext:
             status_code=status_code,
             query=query,
             fragment=fragment,
+            absolute=absolute,
         )
 
     def redirect_for(
@@ -550,9 +654,45 @@ class PositContext:
         status_code: int = 303,
         query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
         fragment: str | None = None,
+        absolute: bool = False,
         **path_params: object,
     ) -> Response:
         return self.app.redirect_for(
+            name,
+            request=self.request,
+            status_code=status_code,
+            query=query,
+            fragment=fragment,
+            absolute=absolute,
+            **path_params,
+        )
+
+    def browser_redirect(
+        self,
+        path: str,
+        *,
+        status_code: int = 303,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+    ) -> Response:
+        return self.app.browser_redirect(
+            path,
+            request=self.request,
+            status_code=status_code,
+            query=query,
+            fragment=fragment,
+        )
+
+    def browser_redirect_for(
+        self,
+        name: str,
+        *,
+        status_code: int = 303,
+        query: Mapping[str, object] | Sequence[tuple[str, object]] | None = None,
+        fragment: str | None = None,
+        **path_params: object,
+    ) -> Response:
+        return self.app.browser_redirect_for(
             name,
             request=self.request,
             status_code=status_code,
