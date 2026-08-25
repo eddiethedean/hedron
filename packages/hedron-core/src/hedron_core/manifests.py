@@ -18,6 +18,8 @@ T = TypeVar("T")
 __all__ = [
     "ASSET_MANIFEST_FORMAT",
     "BUILD_MANIFEST_FORMAT",
+    "APPLICATION_STYLE_MANIFEST_FORMAT",
+    "ApplicationStyleManifest",
     "CSS_SYMBOL_MANIFEST_FORMAT",
     "AssetEntry",
     "AssetManifest",
@@ -29,6 +31,8 @@ __all__ = [
 ]
 
 BUILD_MANIFEST_FORMAT = 2
+SUPPORTED_BUILD_MANIFEST_FORMATS = frozenset({2, 3})
+APPLICATION_STYLE_MANIFEST_FORMAT = 1
 ASSET_MANIFEST_FORMAT = 1
 CSS_SYMBOL_MANIFEST_FORMAT = 2
 SUPPORTED_CSS_SYMBOL_MANIFEST_FORMATS = frozenset({1, 2})
@@ -275,6 +279,56 @@ class CssSymbolManifest:
 
 
 @dataclass(frozen=True, slots=True)
+class ApplicationStyleManifest:
+    """Versioned application stylesheet entries and source-map metadata."""
+
+    format_version: int
+    entries: tuple[JsonObject, ...] = ()
+    source_map: JsonObject = field(default_factory=dict)
+    digest: str = ""
+    schema: str = "hedron.application-styles/1"
+
+    def to_dict(self) -> JsonObject:
+        payload: JsonObject = {
+            "schema": self.schema,
+            "format_version": self.format_version,
+            "entries": list(self.entries),
+            "source_map": self.source_map,
+        }
+        digest = self.digest or content_digest(canonical_json(payload))
+        return {**payload, "digest": digest}
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, JsonValue]) -> ApplicationStyleManifest:
+        entries = tuple(
+            _as_json_object(_as_object_mapping(item))
+            for item in _as_object_sequence(data.get("entries", ()))
+        )
+        source_map = _as_object_mapping(data.get("source_map", {}))
+        return cls(
+            format_version=_as_format_version(data.get("format_version", 0)),
+            entries=entries,
+            source_map=_as_json_object(source_map),
+            digest=str(data.get("digest") or ""),
+            schema=str(data.get("schema") or "hedron.application-styles/1"),
+        )
+
+    def validate_format(self) -> None:
+        if self.format_version != APPLICATION_STYLE_MANIFEST_FORMAT:
+            from hedron_core.diagnostics import error
+
+            raise error(
+                "HED-STYLE-APP-0002",
+                title="Unsupported application style manifest version",
+                explanation=(
+                    f"Application style manifest format {self.format_version} is not supported "
+                    f"(expected {APPLICATION_STYLE_MANIFEST_FORMAT})."
+                ),
+                remediation="Rebuild with a compatible Hedron release.",
+            )
+
+
+@dataclass(frozen=True, slots=True)
 class BuildManifest:
     format_version: int
     theme: str | None
@@ -285,6 +339,7 @@ class BuildManifest:
     theme_resolution_digest: str = ""
     component_manifest_digest: str = ""
     package_identity_digest: str = ""
+    application_styles: ApplicationStyleManifest | None = None
     digest: str = ""
 
     def to_dict(self) -> JsonObject:
@@ -301,6 +356,9 @@ class BuildManifest:
             "theme_resolution_digest": self.theme_resolution_digest,
             "component_manifest_digest": self.component_manifest_digest,
             "package_identity_digest": self.package_identity_digest,
+            "application_styles": (
+                self.application_styles.to_dict() if self.application_styles is not None else None
+            ),
         }
         digest = self.digest or content_digest(canonical_json(payload))
         return {**payload, "digest": digest}
@@ -320,11 +378,16 @@ class BuildManifest:
             theme_resolution_digest=str(data.get("theme_resolution_digest") or ""),
             component_manifest_digest=str(data.get("component_manifest_digest") or ""),
             package_identity_digest=str(data.get("package_identity_digest") or ""),
+            application_styles=(
+                ApplicationStyleManifest.from_dict(_as_object_mapping(data["application_styles"]))
+                if isinstance(data.get("application_styles"), Mapping)
+                else None
+            ),
             digest=str(data.get("digest") or ""),
         )
 
     def validate_format(self) -> None:
-        if self.format_version != BUILD_MANIFEST_FORMAT:
+        if self.format_version not in SUPPORTED_BUILD_MANIFEST_FORMATS:
             from hedron_core.diagnostics import error
 
             raise error(
@@ -332,13 +395,15 @@ class BuildManifest:
                 title="Unsupported build manifest version",
                 explanation=(
                     f"Build manifest format {self.format_version} is not supported "
-                    f"(expected {BUILD_MANIFEST_FORMAT})."
+                    f"(expected one of {sorted(SUPPORTED_BUILD_MANIFEST_FORMATS)})."
                 ),
                 remediation="Rebuild with a compatible Hedron release.",
             )
         self.assets.validate_format()
         for sym in self.css_symbols:
             sym.validate_format()
+        if self.application_styles is not None:
+            self.application_styles.validate_format()
 
 
 def manifest_as_dict(obj: object) -> JsonObject:

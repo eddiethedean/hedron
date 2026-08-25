@@ -12,6 +12,7 @@ from hedron_core.html import html
 from hedron_core.htmx.attrs import Hx as Hx
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.models import Props
+from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
@@ -268,7 +269,18 @@ class FormField(Component[FormFieldProps]):
             parts.append(Label(self.props.label, for_=field_id))
         # Keep the bound component in the tree so it receives normal validation,
         # identity tracking, cycle detection, and renderer diagnostics.
-        parts.append(control)
+        control_state: str = "invalid" if self.props.error else "default"
+        if not self.props.error and bool(
+            getattr(getattr(control, "props", None), "disabled", False)
+        ):
+            control_state = "disabled"
+        parts.append(
+            html.div(
+                control,
+                class_="hedron-form-field-control",
+                data=application_style_hook_data("FormField", "control", state=control_state),
+            )
+        )
         if self.props.help:
             parts.append(html.p(self.props.help, id=help_id, class_="hedron-field-help"))
         if self.props.error:

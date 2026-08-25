@@ -13,8 +13,12 @@ from typing import Any
 
 from hedron.cli.discovery import _load_app
 from hedron_core.codes import HED_STYLE_EJECT_0002
+from hedron_core.css.compiler import compile_css
+from hedron_core.css.layers import CASCADE_LAYERS
 from hedron_core.design_system import BUILTIN_RECIPES, DesignSystem, DesignSystemPlan
-from hedron_core.diagnostics import error
+from hedron_core.diagnostics import HedronError, error
+from hedron_core.presentation_064 import application_style_hook_manifest
+from hedron_core.registry import get_registry
 from hedron_core.theme import (
     Theme,
     builtin_themes,
@@ -23,6 +27,7 @@ from hedron_core.theme import (
     get_theme,
 )
 from hedron_core.theme_platform import ThemeSpec, conformance_report, package_theme
+from hedron_core.typing_aliases import JsonObject
 
 DIFF_SCHEMA = "hedron.design-system-diff/1"
 PREVIEW_SCHEMA = "hedron.design-system-preview/1"
@@ -125,6 +130,118 @@ def _cmd_style_explain(args: argparse.Namespace) -> int:
         print(json.dumps(plan.to_dict(), indent=2, sort_keys=True))
     else:
         print(_plan_human(plan))
+    return 0
+
+
+def _cmd_style_inspect(args: argparse.Namespace) -> int:
+    """Emit the resolved application-style catalog and public hook contract."""
+    if getattr(args, "app", None):
+        _require_app(args)
+    registry = get_registry()
+    styles = [style.to_dict() for style in registry.application_styles()]
+    payload = {
+        "schema": "hedron.style-inspection/1",
+        "cascade_layers": list(CASCADE_LAYERS),
+        "application_styles": styles,
+        "application_style_hooks": application_style_hook_manifest(),
+        "diagnostics": [],
+    }
+    if args.format == "json":
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print("Cascade: " + " < ".join(CASCADE_LAYERS))
+        print(f"Application styles: {len(styles)}")
+        for style in styles:
+            scope = style.get("scope") or "global"
+            print(f"- {style['logical_id']} ({scope}, {style['layer']}) {style['digest']}")
+        print("Public hooks: " + ", ".join(sorted(application_style_hook_manifest())))
+    return 0
+
+
+def _cmd_style_custom_css_check(args: argparse.Namespace) -> int:
+    """Validate explicitly registered-style CSS without rejecting CSS outright."""
+    target = Path(args.custom_css).resolve()
+    if not target.exists():
+        raise SystemExit(f"hedron style check: path not found: {args.custom_css}")
+    paths = [target] if target.is_file() else sorted(target.rglob("*.css"))
+    findings: list[dict[str, str]] = []
+    for path in paths:
+        try:
+            compile_css(
+                path.read_text(encoding="utf-8"),
+                component_id=f"application:{path.stem}",
+                layer="application",
+                allow_remote=False,
+                registered_roots=(path.parent,),
+                component_dir=path.parent,
+                rewrite_selectors=False,
+            )
+        except HedronError as exc:
+            findings.append({"path": str(path), "diagnostic": str(exc)})
+        except (OSError, UnicodeDecodeError, ValueError) as exc:
+            findings.append({"path": str(path), "diagnostic": str(exc)})
+    payload = {
+        "schema": "hedron.style-diagnostics/1",
+        "path": str(target),
+        "files": len(paths),
+        "ok": not findings,
+        "diagnostics": findings,
+    }
+    if args.format == "json":
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    elif findings:
+        for finding in findings:
+            print(f"{finding['path']}: {finding['diagnostic']}", file=sys.stderr)
+    else:
+        print(f"ok: validated {len(paths)} custom stylesheet(s)")
+    return 1 if findings else 0
+
+
+def _cmd_style_eject_application(args: argparse.Namespace) -> int:
+    """Eject registered application CSS with a provenance sidecar."""
+    _require_app(args)
+    styles = get_registry().application_styles()
+    if not styles:
+        print("No registered application styles.", file=sys.stderr)
+        return 1
+    cwd = Path.cwd().resolve()
+    try:
+        out_dir = _assert_project_write_path(Path(args.output), cwd=cwd)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    out_dir.mkdir(parents=True, exist_ok=True)
+    css_path = out_dir / "application-styles.css"
+    map_path = out_dir / "source_map.json"
+    if not args.overwrite and (css_path.exists() or map_path.exists()):
+        print(f"Refusing to overwrite files under {out_dir} (use --overwrite)", file=sys.stderr)
+        return 1
+    chunks: list[str] = []
+    sources: list[JsonObject] = []
+    for style in styles:
+        source = Path(style.source)
+        chunks.append(
+            f"/* hedron: {style.logical_id} source={source} digest={style.source_digest} */\n"
+            + source.read_text(encoding="utf-8").rstrip()
+            + "\n"
+        )
+        sources.append(style.to_dict())
+    css_path.write_text("\n".join(chunks), encoding="utf-8")
+    map_path.write_text(
+        json.dumps(
+            {
+                "schema": "hedron.style-ejection/1",
+                "files": [css_path.name, map_path.name],
+                "styles": sources,
+                "cascade_layers": list(CASCADE_LAYERS),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    print(json.dumps({"written": [str(css_path), str(map_path)]}, indent=2))
     return 0
 
 

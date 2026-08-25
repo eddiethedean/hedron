@@ -11,6 +11,7 @@ from hedron_core.element_form import validate_form_contract
 from hedron_core.element_types import validate_field_ownership
 from hedron_core.identifiers import registry_resource_id
 from hedron_core.registry.addressable import AddressableMeta
+from hedron_core.registry.application_style import ApplicationStyleMeta
 from hedron_core.registry.asset import AssetMeta
 from hedron_core.registry.browser_module import BrowserModuleMeta
 from hedron_core.registry.component import _COMPONENT_UPDATE_KEYS, ComponentMeta
@@ -41,6 +42,7 @@ class RegistryBuilderSnapshot(TypedDict):
     assets: dict[str, AssetMeta]
     browser_modules: dict[str, BrowserModuleMeta]
     element_definitions: dict[str, ElementDefinitionMeta]
+    application_styles: dict[str, ApplicationStyleMeta]
 
 
 @dataclass
@@ -52,6 +54,7 @@ class RegistryBuilder:
     _assets: dict[str, AssetMeta] = field(default_factory=dict)
     _browser_modules: dict[str, BrowserModuleMeta] = field(default_factory=dict)
     _element_definitions: dict[str, ElementDefinitionMeta] = field(default_factory=dict)
+    _application_styles: dict[str, ApplicationStyleMeta] = field(default_factory=dict)
     _sealed: bool = False
 
     def register(self, meta: ComponentMeta) -> None:
@@ -118,6 +121,18 @@ class RegistryBuilder:
                 remediation="Use unique asset logical identifiers.",
             )
         self._assets[key] = meta
+
+    def register_application_style(self, meta: ApplicationStyleMeta) -> None:
+        self._ensure_open()
+        key = registry_resource_id("application-style", meta.logical_id)
+        if key in self._application_styles:
+            raise error(
+                "HED-STYLE-APP-0001",
+                title="Duplicate application stylesheet",
+                explanation=f"Application stylesheet {meta.name!r} is already registered.",
+                remediation="Use one registration per stylesheet name.",
+            )
+        self._application_styles[key] = meta
 
     def register_browser_module(self, meta: BrowserModuleMeta) -> None:
         self._ensure_open()
@@ -232,6 +247,7 @@ class RegistryBuilder:
             dict(self._assets),
             dict(self._browser_modules),
             dict(self._element_definitions),
+            dict(self._application_styles),
         )
 
     def _ensure_open(self) -> None:
@@ -253,6 +269,7 @@ class Registry:
     _assets: Mapping[str, AssetMeta] = field(default_factory=dict)
     _browser_modules: Mapping[str, BrowserModuleMeta] = field(default_factory=dict)
     _element_definitions: Mapping[str, ElementDefinitionMeta] = field(default_factory=dict)
+    _application_styles: Mapping[str, ApplicationStyleMeta] = field(default_factory=dict)
 
     def get(self, logical_id: str) -> ComponentMeta | None:
         return self._components.get(registry_resource_id("component", logical_id))
@@ -296,6 +313,9 @@ class Registry:
     def element_definitions(self) -> Iterable[ElementDefinitionMeta]:
         return tuple(sorted(self._element_definitions.values(), key=lambda m: m.logical_id))
 
+    def application_styles(self) -> Iterable[ApplicationStyleMeta]:
+        return tuple(sorted(self._application_styles.values(), key=lambda m: m.logical_id))
+
 
 _builder = RegistryBuilder()
 _active: Registry | None = None
@@ -327,6 +347,7 @@ def get_registry() -> Registry:
         dict(_builder._assets),
         dict(_builder._browser_modules),
         dict(_builder._element_definitions),
+        dict(_builder._application_styles),
     )
 
 
@@ -340,6 +361,7 @@ def snapshot_registry_builder() -> RegistryBuilderSnapshot:
         "assets": dict(_builder._assets),
         "browser_modules": dict(_builder._browser_modules),
         "element_definitions": dict(_builder._element_definitions),
+        "application_styles": dict(_builder._application_styles),
     }
 
 
@@ -359,6 +381,7 @@ def restore_registry_builder(snapshot: RegistryBuilderSnapshot) -> None:
     _builder._assets = dict(snapshot["assets"])
     _builder._browser_modules = dict(snapshot["browser_modules"])
     _builder._element_definitions = dict(snapshot.get("element_definitions", {}))
+    _builder._application_styles = dict(snapshot.get("application_styles", {}))
 
 
 def reset_registry_for_tests() -> None:

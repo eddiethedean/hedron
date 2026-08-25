@@ -20,6 +20,7 @@ from hedron_core.html import html
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.htmx_extensions import PRELOAD_INITIATION_MODES, require_htmx_extension
 from hedron_core.models import Props
+from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
 
@@ -307,6 +308,11 @@ class HtmxLink(Component[HtmxLinkProps]):
         attrs["class_"] = class_names(base, self.props.class_)
         data = mark_data(self.props.mark)
         data["hedron-nav-link"] = "true"
+        data.update(
+            application_style_hook_data(
+                "AppShell", "nav.link", state="current" if self.props.active else "default"
+            )
+        )
         if self.props.active:
             data["hedron-nav-active"] = "true"
         attrs["data"] = data

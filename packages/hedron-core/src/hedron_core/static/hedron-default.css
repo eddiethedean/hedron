@@ -1,4 +1,4 @@
-@layer reset, tokens, base, components, utilities, overrides;
+@layer reset, tokens, base, components, application, utilities, overrides;
 
 @layer tokens {
   :root {
@@ -208,6 +208,94 @@
     --hedron-focus-ring: 3px solid #c4a7ff;
     --hedron-aurora-glow: #ec4899;
     color-scheme: dark;
+  }
+}
+
+@layer application {
+  :where([data-hedron-component="AppShell"][data-hedron-part="nav.link"]) {
+    min-block-size: var(--hedron-hit-target, 2.75rem);
+  }
+
+  :where([data-hedron-component="AppShell"][data-hedron-part="nav.link"][data-hedron-state="current"]) {
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+    font-weight: 700;
+  }
+
+  :where([data-hedron-component="ProcessFlow"][data-hedron-part="step"]) {
+    transition: opacity var(--hedron-motion-standard, 150ms) var(--hedron-motion-easing, ease-out),
+      transform var(--hedron-motion-standard, 150ms) var(--hedron-motion-easing, ease-out);
+  }
+
+  :where([data-hedron-component="ProcessFlow"][data-hedron-part="step"][data-hedron-state="blocked"]) {
+    border-color: var(--hedron-color-danger, var(--hedron-default-danger));
+  }
+
+  :where([data-hedron-component="Card"][data-hedron-part="heading"]) {
+    font-weight: 700;
+  }
+
+  :where([data-hedron-component="Card"][data-hedron-part="supporting-copy"]) {
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+  }
+
+  :where([data-hedron-component="Card"][data-hedron-part="metadata"]) {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: var(--hedron-type-metadata-size, 0.75rem);
+  }
+
+  :where([data-hedron-component="FormField"][data-hedron-part="control"]) {
+    min-inline-size: 0;
+  }
+
+  :where([data-hedron-component="FormField"][data-hedron-part="control"][data-hedron-state="invalid"]) {
+    color: var(--hedron-color-danger, var(--hedron-default-danger));
+  }
+
+  :where([data-hedron-component="SplitView"][data-hedron-part="separator"]) {
+    background: var(--hedron-color-border, var(--hedron-default-border));
+    min-block-size: var(--hedron-separator-size, 1px);
+    min-inline-size: var(--hedron-separator-size, 1px);
+  }
+
+  :where(table.hedron-table) {
+    border-color: var(--hedron-table-border, var(--hedron-default-border));
+    border-radius: var(--hedron-table-radius, var(--hedron-default-radius));
+  }
+
+  :where(table.hedron-table thead) {
+    background: var(--hedron-table-header-background, var(--hedron-default-surface-muted));
+    color: var(--hedron-table-header-foreground, var(--hedron-default-fg));
+    font-weight: var(--hedron-table-header-weight, 700);
+    letter-spacing: var(--hedron-table-header-tracking, normal);
+  }
+
+  :where(table.hedron-table tbody tr) {
+    border-block-end: var(--hedron-table-row-separator, 1px) solid var(--hedron-default-border);
+  }
+
+  :where(table.hedron-table tbody tr:hover) {
+    background: var(--hedron-data-row-hover, color-mix(in srgb, var(--hedron-color-accent) 8%, transparent));
+  }
+
+  :where(table.hedron-table tbody tr[data-hedron-row-state="selected"]) {
+    background: var(--hedron-data-row-selected, color-mix(in srgb, var(--hedron-color-accent) 14%, transparent));
+  }
+
+  :where(table.hedron-table [data-hedron-numeric="true"]) {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :where(input[type="checkbox"], input[type="radio"], input[type="range"], select, input[type="file"], input[type="date"], input[type="time"], input[type="number"]) {
+    accent-color: var(--hedron-control-accent, var(--hedron-color-accent, #2563eb));
+  }
+
+  :where(input, select, textarea, button):disabled {
+    cursor: not-allowed;
+  }
+
+  :where([data-hedron-component="FormField"][data-hedron-part="control"]:focus-within) {
+    outline: var(--hedron-focus-ring, 3px solid var(--hedron-color-focus, #2563eb));
+    outline-offset: 2px;
   }
 }
 
@@ -2340,35 +2428,40 @@
   }
 
   .hedron-split[data-hedron-split-ratio="1-1"] {
-    --hedron-split-columns: minmax(0, 1fr) minmax(0, 1fr);
+    --hedron-split-columns: minmax(0, 1fr) var(--hedron-separator-size, 1px) minmax(0, 1fr);
   }
 
   .hedron-split[data-hedron-split-ratio="1-2"] {
-    --hedron-split-columns: minmax(0, 1fr) minmax(0, 2fr);
+    --hedron-split-columns: minmax(0, 1fr) var(--hedron-separator-size, 1px) minmax(0, 2fr);
   }
 
   .hedron-split[data-hedron-split-ratio="2-1"] {
-    --hedron-split-columns: minmax(0, 2fr) minmax(0, 1fr);
+    --hedron-split-columns: minmax(0, 2fr) var(--hedron-separator-size, 1px) minmax(0, 1fr);
   }
 
   .hedron-split[data-hedron-split-ratio="1-3"] {
-    --hedron-split-columns: minmax(0, 1fr) minmax(0, 3fr);
+    --hedron-split-columns: minmax(0, 1fr) var(--hedron-separator-size, 1px) minmax(0, 3fr);
   }
 
   .hedron-split[data-hedron-split-ratio="3-1"] {
-    --hedron-split-columns: minmax(0, 3fr) minmax(0, 1fr);
+    --hedron-split-columns: minmax(0, 3fr) var(--hedron-separator-size, 1px) minmax(0, 1fr);
   }
 
   .hedron-split[data-hedron-split-ratio="2-3"] {
-    --hedron-split-columns: minmax(0, 2fr) minmax(0, 3fr);
+    --hedron-split-columns: minmax(0, 2fr) var(--hedron-separator-size, 1px) minmax(0, 3fr);
   }
 
   .hedron-split[data-hedron-split-ratio="3-2"] {
-    --hedron-split-columns: minmax(0, 3fr) minmax(0, 2fr);
+    --hedron-split-columns: minmax(0, 3fr) var(--hedron-separator-size, 1px) minmax(0, 2fr);
   }
 
   .hedron-split[data-hedron-split-collapse="never"] {
     grid-template-columns: var(--hedron-split-columns);
+  }
+
+  .hedron-split-divider {
+    align-self: stretch;
+    background: var(--hedron-default-border);
   }
 
   .hedron-split[data-hedron-split-reverse="true"] > .hedron-split-primary {

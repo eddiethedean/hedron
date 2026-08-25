@@ -7,6 +7,7 @@ CASCADE_LAYERS: tuple[str, ...] = (
     "tokens",
     "base",
     "components",
+    "application",
     "utilities",
     "overrides",
 )

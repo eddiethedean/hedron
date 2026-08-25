@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 from hedron_core.registry.addressable import AddressableMeta, register_addressable
+from hedron_core.registry.application_style import (
+    ApplicationStyleMeta,
+    register_application_style,
+)
 from hedron_core.registry.asset import AssetMeta, register_asset
 from hedron_core.registry.browser_module import BrowserModuleMeta, register_browser_module
 from hedron_core.registry.builder import (
@@ -29,6 +33,7 @@ from hedron_core.registry.theme import ThemeMeta, register_theme
 __all__ = [
     "AddressableMeta",
     "AssetMeta",
+    "ApplicationStyleMeta",
     "BrowserModuleMeta",
     "ElementDefinitionMeta",
     "ElementFieldOwnership",
@@ -42,6 +47,7 @@ __all__ = [
     "get_registry",
     "register_addressable",
     "register_asset",
+    "register_application_style",
     "register_browser_module",
     "register_element_definition",
     "register_component",

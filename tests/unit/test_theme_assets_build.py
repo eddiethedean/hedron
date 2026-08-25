@@ -108,7 +108,9 @@ def test_default_stylesheet_is_local_layered_and_customizable() -> None:
         / "hedron-default.css"
     ).read_text(encoding="utf-8")
 
-    assert "@layer reset, tokens, base, components, utilities, overrides;" in stylesheet
+    assert (
+        "@layer reset, tokens, base, components, application, utilities, overrides;" in stylesheet
+    )
     assert ".hedron-card" in stylesheet
     assert ".hedron-form-field" in stylesheet
     assert ".hedron-dialog" in stylesheet

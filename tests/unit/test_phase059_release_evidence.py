@@ -106,7 +106,9 @@ def test_compiler_release_corpus_fails_closed_and_redacts_unsafe_inputs(tmp_path
 
 def test_cascade_tokens_and_color_release_matrix_is_deterministic() -> None:
     css = CSS.read_text(encoding="utf-8")
-    assert css.startswith("@layer reset, tokens, base, components, utilities, overrides;")
+    assert css.startswith(
+        "@layer reset, tokens, base, components, application, utilities, overrides;"
+    )
     theme = default_theme()
     emitted = emit_theme_css(theme)
     assert emitted.startswith("@layer tokens {")

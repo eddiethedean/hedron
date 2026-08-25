@@ -22,8 +22,11 @@ from hedron_core.codes import HED_THEME_UNKNOWN
 from hedron_core.css import compile_css
 from hedron_core.diagnostics import error
 from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
+from hedron_core.identifiers import content_digest
 from hedron_core.manifests import (
+    APPLICATION_STYLE_MANIFEST_FORMAT,
     BUILD_MANIFEST_FORMAT,
+    ApplicationStyleManifest,
     BuildManifest,
     CssSymbolManifest,
 )
@@ -40,6 +43,7 @@ from hedron_core.theme_contract import (
     package_identity_manifest,
     resolve_theme,
 )
+from hedron_core.typing_aliases import JsonObject
 
 try:
     from importlib.metadata import version as _pkg_version
@@ -240,7 +244,10 @@ def _execute_build(
     try:
         assets_dir = tmp_root / "assets"
         assets_dir.mkdir(parents=True, exist_ok=True)
-        css_parts: list[str] = ["@layer reset {\n}\n"]
+        css_parts: list[str] = [
+            "@layer reset, tokens, base, components, application, utilities, overrides;\n",
+            "@layer reset {\n}\n",
+        ]
 
         theme_name = settings.theme or "default"
         theme_meta = get_theme(theme_name)
@@ -264,6 +271,8 @@ def _execute_build(
         css_parts.append("@layer base {\n}\n")
 
         css_symbols: list[CssSymbolManifest] = []
+        application_style_entries: list[JsonObject] = []
+        application_style_source_map: JsonObject = {}
         asset_entries = []
         module_basename_by_path: dict[str, str] = {}
 
@@ -321,6 +330,60 @@ def _execute_build(
                 )
                 asset_entries.append(entry)
                 module_basename_by_path[entry.path] = path.name
+
+        for style in registry.application_styles():
+            source = Path(style.source)
+            roots_for_css = registered or [source.parent]
+            scope_root = (
+                f':where([data-hedron-style-scope="{style.scope}"])' if style.scope else None
+            )
+            result = compile_css(
+                source.read_text(encoding="utf-8"),
+                component_id=style.logical_id,
+                layer=style.layer,
+                allow_remote=False,
+                registered_roots=roots_for_css,
+                component_dir=source.parent,
+                production_names=production,
+                scope_root=scope_root,
+                rewrite_selectors=False,
+            )
+            if any(d.severity.value == "error" for d in result.diagnostics):
+                from hedron_core.diagnostics import HedronError
+
+                raise HedronError(*result.diagnostics)
+            css_text = result.css
+            local_rewrites: dict[str, str] = {}
+            for rel in result.asset_urls:
+                if rel.startswith(("http://", "https://", "//", "data:", "/")):
+                    continue
+                asset_path = (source.parent / rel).resolve()
+                entry = fingerprint_file(
+                    asset_path,
+                    output_dir=assets_dir,
+                    logical_id=f"{style.logical_id}:{rel}",
+                    kind="media",
+                )
+                asset_entries.append(entry)
+                local_rewrites[rel] = f"{assets_url_prefix.rstrip('/')}/{entry.path}"
+            if local_rewrites:
+                css_text = _rewrite_css_urls(css_text, local_rewrites)
+            css_parts.append(css_text)
+            for media in style.media:
+                css_parts[-1] = f"@media {media} {{\n{css_parts[-1]}\n}}\n"
+            style_entry = style.to_dict()
+            style_entry.update(
+                {
+                    "compiled_digest": content_digest(css_text),
+                    "symbols": result.manifest.to_dict(),
+                    "source_map": {
+                        "source": style.source,
+                        "line_count": source.read_text(encoding="utf-8").count("\n") + 1,
+                    },
+                }
+            )
+            application_style_entries.append(style_entry)
+            application_style_source_map[style.logical_id] = style_entry["source_map"]
 
         # Plugin/package assets registered via register_asset (e.g. DataEditor CSS).
         component_browser_paths = {
@@ -408,6 +471,11 @@ def _execute_build(
             theme_resolution_digest=resolve_theme(theme).fingerprint,
             component_manifest_digest=component_contract_manifest()["digest"],
             package_identity_digest=package_identity_manifest()["digest"],
+            application_styles=ApplicationStyleManifest(
+                format_version=APPLICATION_STYLE_MANIFEST_FORMAT,
+                entries=tuple(application_style_entries),
+                source_map=application_style_source_map,
+            ),
         )
 
         _write_build_manifest(

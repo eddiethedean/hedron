@@ -68,7 +68,7 @@ class StyleBundle:
         }
 
 
-_BASE_CSS = """@layer reset, tokens, base, components, utilities, overrides;
+_BASE_CSS = """@layer reset, tokens, base, components, application, utilities, overrides;
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
   html { min-width: 20rem; text-size-adjust: 100%; }
@@ -200,7 +200,7 @@ def compile_style_bundle(
         bundle_components = STYLE_BUNDLE_COMPONENTS
     else:
         parts = [
-            "@layer reset, tokens, base, components, utilities, overrides;\n",
+            "@layer reset, tokens, base, components, application, utilities, overrides;\n",
             emit_theme_css(resolved_theme),
             _BASE_CSS,
             _ACCESSIBILITY_CSS,

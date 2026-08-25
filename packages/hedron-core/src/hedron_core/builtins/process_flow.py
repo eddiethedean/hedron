@@ -10,6 +10,7 @@ from hedron_core.codes import HED_HTML_0006
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.typing_aliases import HtmlAttrValue
 
 __all__ = [
@@ -332,6 +333,13 @@ class FlowStep(Component[FlowStepProps]):
                 "hedron-flow-kind": self.props.kind,
                 "hedron-flow-connector": self.props.connector,
                 **mark_data(self.props.mark),
+                **application_style_hook_data(
+                    "ProcessFlow",
+                    "step",
+                    state=(
+                        status if status in {"current", "complete", "blocked", "skipped"} else None
+                    ),
+                ),
             },
         }
         if status == "current":

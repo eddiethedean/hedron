@@ -24,10 +24,13 @@ from hedron.cli.commands.run import _cmd_run_app
 from hedron.cli.commands.security_check import _cmd_security_check
 from hedron.cli.commands.style import (
     _cmd_style_conform,
+    _cmd_style_custom_css_check,
     _cmd_style_diff,
     _cmd_style_eject,
+    _cmd_style_eject_application,
     _cmd_style_explain,
     _cmd_style_init,
+    _cmd_style_inspect,
     _cmd_style_package,
     _cmd_style_preview,
 )
@@ -43,6 +46,12 @@ from hedron.cli.commands.theme import (
     _cmd_theme_metadata,
 )
 from hedron.cli.commands.upgrade_report import _cmd_upgrade_report
+
+
+def _cmd_style_check_dispatch(args: Any) -> int:
+    if args.custom_css:
+        return _cmd_style_custom_css_check(args)
+    return _cmd_style_check(args)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -475,14 +484,26 @@ def _register_theme_commands(sub: Any) -> None:
         "check",
         help="Audit a path for application-authored CSS",
     )
-    style_check_p.add_argument(
+    style_check_group = style_check_p.add_mutually_exclusive_group(required=True)
+    style_check_group.add_argument(
         "--zero-app-css",
         dest="zero_app_css",
-        required=True,
         help="Fail when stylesheets or inline style blocks exist under this path",
     )
+    style_check_group.add_argument(
+        "--custom-css",
+        dest="custom_css",
+        help="Validate explicitly registered-style CSS under this path",
+    )
     style_check_p.add_argument("--format", choices=("text", "json"), default="text")
-    style_check_p.set_defaults(func=_cmd_style_check)
+    style_check_p.set_defaults(func=_cmd_style_check_dispatch)
+
+    style_inspect_p = style_sub.add_parser(
+        "inspect",
+        help="Inspect registered application styles, cascade order, and public hooks",
+    )
+    style_inspect_p.add_argument("--format", choices=("human", "json"), default="human")
+    style_inspect_p.set_defaults(func=_cmd_style_inspect)
 
     style_explain_p = style_sub.add_parser(
         "explain",
@@ -557,6 +578,14 @@ def _register_theme_commands(sub: Any) -> None:
         help="Overwrite existing ejected files",
     )
     style_eject_p.set_defaults(func=_cmd_style_eject)
+
+    style_eject_app_p = style_sub.add_parser(
+        "eject-css",
+        help="Eject registered application CSS with a provenance source map",
+    )
+    style_eject_app_p.add_argument("--output", required=True)
+    style_eject_app_p.add_argument("--overwrite", action="store_true")
+    style_eject_app_p.set_defaults(func=_cmd_style_eject_application)
 
     style_init_p = style_sub.add_parser(
         "init",

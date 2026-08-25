@@ -122,8 +122,16 @@ def test_explicit_body_named_slot_and_escaping() -> None:
 
     result = templates.render("card.hdj", _view())
 
-    assert '<div class="hedron-card-body"><p>Ada</p></div>' in result.html
-    assert '<div class="hedron-card-footer"><a href="/account">Open</a></div>' in result.html
+    assert (
+        '<div class="hedron-card-body" data-hedron-component="Card" '
+        'data-hedron-part="supporting-copy" data-hedron-state="default"><p>Ada</p></div>'
+        in result.html
+    )
+    assert (
+        '<div class="hedron-card-footer" data-hedron-component="Card" '
+        'data-hedron-part="metadata" data-hedron-state="default"><a href="/account">Open</a></div>'
+        in result.html
+    )
 
 
 def test_trusted_html_is_limited_to_body_content() -> None:

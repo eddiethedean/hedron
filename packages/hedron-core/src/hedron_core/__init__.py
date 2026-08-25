@@ -452,6 +452,7 @@ from hedron_core.react_island import (
 )
 from hedron_core.registry import (
     AddressableMeta,
+    ApplicationStyleMeta,
     AssetMeta,
     BrowserModuleMeta,
     ElementDefinitionMeta,
@@ -459,6 +460,7 @@ from hedron_core.registry import (
     RouteMeta,
     get_registry,
     register_addressable,
+    register_application_style,
     register_asset,
     register_browser_module,
     register_component,
@@ -1027,6 +1029,7 @@ __all__ = [
     "RegionUpdate",
     "register_addressable",
     "register_asset",
+    "register_application_style",
     "register_browser_module",
     "register_component",
     "register_element_definition",
@@ -1118,6 +1121,7 @@ __all__ = [
     "react_island_host",
     "react_island_recipe",
     "StyleSymbols",
+    "ApplicationStyleMeta",
     "SubmitButton",
     "Suppression",
     "SurfaceProjectionProvider",

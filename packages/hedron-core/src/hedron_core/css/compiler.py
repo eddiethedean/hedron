@@ -122,6 +122,16 @@ def _rewrite_prelude(prelude: str, class_map: Mapping[str, str]) -> str:
     return "".join(parts)
 
 
+def _scope_prelude(prelude: str, scope_root: str) -> str:
+    """Prefix ordinary selectors with a stable application scope root."""
+    if not scope_root or prelude.startswith("@"):
+        return prelude
+    selectors = [item.strip() for item in prelude.split(",")]
+    return ", ".join(
+        f"{scope_root} {selector}" if selector else scope_root for selector in selectors
+    )
+
+
 def _rewrite_classes(chunk: str, class_map: Mapping[str, str]) -> str:
     # Rewrite only selector identifiers.  Regex replacement is unsafe here:
     # class-looking text inside strings, comments, URLs, decimals, and CSS
@@ -438,6 +448,8 @@ def compile_css(
     registered_roots: Sequence[Path] | None = None,
     component_dir: Path | None = None,
     production_names: bool = False,
+    scope_root: str | None = None,
+    rewrite_selectors: bool = True,
 ) -> CssCompileResult:
     """Compile component CSS into scoped output + symbol manifest via AST rewrite."""
     from hedron_core.compile_gate import assert_runtime_compile_allowed
@@ -471,16 +483,32 @@ def compile_css(
         raise HedronError(*errors)
 
     class_map: dict[str, str] = {}
-    for name in classes:
-        scoped = scoped_identifier(component_id, name, kind="class")
-        class_map[name] = f"h-{content_digest(scoped)[:8]}" if production_names else scoped
-
     keyframe_map: dict[str, str] = {}
-    for name in keyframes:
-        scoped = scoped_identifier(component_id, name, kind="keyframes")
-        keyframe_map[name] = f"h-kf-{content_digest(scoped)[:8]}" if production_names else scoped
+    if rewrite_selectors:
+        for name in classes:
+            scoped = scoped_identifier(component_id, name, kind="class")
+            class_map[name] = f"h-{content_digest(scoped)[:8]}" if production_names else scoped
+        for name in keyframes:
+            scoped = scoped_identifier(component_id, name, kind="keyframes")
+            keyframe_map[name] = (
+                f"h-kf-{content_digest(scoped)[:8]}" if production_names else scoped
+            )
 
     rewritten_rules = [_rewrite_rule(r, class_map, keyframe_map) for r in sheet.rules]
+    if scope_root:
+
+        def scope_rule(rule: CssRule) -> CssRule:
+            prelude = (
+                _scope_prelude(rule.prelude, scope_root) if rule.kind == "style" else rule.prelude
+            )
+            return CssRule(
+                prelude=prelude,
+                decls=list(rule.decls),
+                children=[scope_rule(child) for child in rule.children],
+                kind=rule.kind,
+            )
+
+        rewritten_rules = [scope_rule(rule) for rule in rewritten_rules]
     rewritten_sheet = CssStylesheet(rules=rewritten_rules)
     rewritten_sheet, asset_urls = _check_urls_in_sheet(
         rewritten_sheet,

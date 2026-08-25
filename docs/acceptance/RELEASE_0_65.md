@@ -1,7 +1,8 @@
 # Release acceptance — phase 0.65 integrated styling platform
 
-Status: **Planned**. This packet defines the evidence required for a future `v0.65.0`; it is not
-release evidence.
+Status: **Pre-cut release readiness validated**. The implementation and evidence commands pass
+against the current `v0.64.1` baseline. Gate rows remain the auditable cut checklist until the
+`v0.65.0` version/tag decision is made.
 
 - RFC: [RFC-0092](../rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md)
 - Implementation: [APPLICATION_STYLING_065](../implementation/APPLICATION_STYLING_065.md)
@@ -65,3 +66,20 @@ owners for #690/#693/#694/#698, the frozen scope checklist, measured budgets, an
 for every gate. Exit requires no unexplained private-selector dependency, no silent CSS omission,
 no unowned token or asset, no accessibility regression, and no new Supported claim for a
 Progressive/Deferred surface.
+
+## Pre-cut validation record
+
+The locked Python 3.12 environment passes:
+
+```text
+python scripts/check_065.py --verify
+ruff format --check packages tests examples
+ruff check packages tests examples
+pyright
+pytest -q --strict-config --strict-markers
+```
+
+Observed results: all 21 phase gates pass; full tests pass (`3568 passed, 166 skipped`); Ruff
+passes; and pyright reports zero errors. The release-gate command passes with `--allow-planned`
+against this packet and `0.64.1`, intentionally verifying implementation readiness without
+pretending that the `v0.65.0` package cut has occurred.

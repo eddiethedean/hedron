@@ -26,6 +26,8 @@ __all__ = [
     "ResponsiveCondition",
     "ScopedStyleBundle",
     "ScopedStyleRecipe",
+    "application_style_hook_data",
+    "application_style_hook_manifest",
     "component_presentation_manifest",
     "compile_scoped_styles",
     "presentation_contract",
@@ -107,6 +109,8 @@ _PRESENTATION_DEFAULTS: Final[dict[str, str]] = {
     "motion.standard": "150ms",
     "motion.emphasized": "300ms",
     "motion.reveal": "220ms",
+    "motion.elevate": "180ms",
+    "motion.crossfade": "200ms",
     "motion.easing.standard": "cubic-bezier(0.2, 0, 0, 1)",
     "surface.translucent.opacity": "78%",
     "surface.glass.opacity": "72%",
@@ -115,6 +119,29 @@ _PRESENTATION_DEFAULTS: Final[dict[str, str]] = {
     "data.row.selected": "color-mix(in srgb, var(--hedron-color-accent) 14%, transparent)",
     "control.appearance": "auto",
     "control.accent": "var(--hedron-color-accent)",
+    "data.table.border": "var(--hedron-color-border)",
+    "data.table.header.background": "var(--hedron-color-surface-subtle)",
+    "data.table.row.separator": "var(--hedron-color-border)",
+}
+
+_APPLICATION_STYLE_HOOKS: Final[dict[str, dict[str, tuple[str, ...] | tuple[str, ...]]]] = {
+    "AppShell": {
+        "nav.link": ("default", "hover", "current", "disabled"),
+    },
+    "ProcessFlow": {
+        "step": ("current", "complete", "blocked", "skipped"),
+    },
+    "Card": {
+        "heading": ("default",),
+        "supporting-copy": ("default",),
+        "metadata": ("default",),
+    },
+    "FormField": {
+        "control": ("default", "focus", "invalid", "disabled"),
+    },
+    "SplitView": {
+        "separator": ("default", "responsive-collapse"),
+    },
 }
 
 
@@ -409,4 +436,36 @@ def component_presentation_manifest() -> dict[str, object]:
             "states": ["current", "complete", "blocked"],
         },
     }
+    payload["application_style_hooks"] = application_style_hook_manifest()
     return payload
+
+
+def application_style_hook_manifest() -> dict[str, object]:
+    """Return the finite public hook vocabulary for application-owned CSS."""
+    return {
+        component: {
+            "parts": {part: {"states": list(states)} for part, states in sorted(parts.items())}
+        }
+        for component, parts in sorted(_APPLICATION_STYLE_HOOKS.items())
+    }
+
+
+def application_style_hook_data(
+    component: str,
+    part: str,
+    *,
+    state: str | None = None,
+) -> dict[str, str | bool | int | float | None]:
+    """Return validated data attributes for a public application style hook."""
+    parts = _APPLICATION_STYLE_HOOKS.get(component)
+    if parts is None or part not in parts:
+        raise PresentationError(f"unknown application style hook: {component}.{part}")
+    if state is not None and state not in parts[part]:
+        raise PresentationError(f"unknown state for {component}.{part}: {state!r}")
+    data: dict[str, str | bool | int | float | None] = {
+        "hedron-component": component,
+        "hedron-part": part,
+    }
+    if state is not None:
+        data["hedron-state"] = state
+    return data

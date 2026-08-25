@@ -21,6 +21,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error as raise_error
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.typing_aliases import HtmlAttrValue
 
 # Split ratios are a closed set so the default stylesheet owns the grid math.
@@ -474,8 +475,14 @@ class SplitView(Component[SplitViewProps]):
         self._secondary = secondary
 
     def render(self) -> NodeLike:
-        panes: list[NodeLike] = [
+        panes = [
             html.div(self._primary, class_="hedron-split-primary"),
+            html.div(
+                class_="hedron-split-divider",
+                role="separator",
+                aria={"orientation": "vertical", "hidden": "true"},
+                data=application_style_hook_data("SplitView", "separator", state="default"),
+            ),
             html.div(self._secondary, class_="hedron-split-secondary"),
         ]
         data: dict[str, str | bool | int | float | None] = {

@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import FastAPI
 from fastapi.params import Depends as DependsParam
@@ -232,6 +232,41 @@ class Hedron(HedronPagesMixin, FastAPI):
         from hedron.interactions import app_interactions
 
         return app_interactions(self)
+
+    def styles(
+        self,
+        name: str,
+        source: str | Path,
+        *,
+        scope: str | None = None,
+        layer: Literal["application", "overrides"] = "application",
+        global_: bool = False,
+        media: tuple[str, ...] = (),
+    ) -> object:
+        """Register one explicit local application stylesheet before the build seal."""
+        from hedron.registration import fail_closed_late_registration
+        from hedron_core.catalog import get_sealed_catalog
+        from hedron_core.registry import register_application_style
+        from hedron_core.registry.builder import active_builder
+
+        fail_closed_late_registration(
+            registry_sealed=active_builder()._sealed,
+            catalog_sealed=get_sealed_catalog() is not None,
+            openapi_cached=self.openapi_schema is not None,
+        )
+        meta = register_application_style(
+            name=name,
+            source=source,
+            scope=scope,
+            layer=layer,
+            global_=global_,
+            media=media,
+            owner="application",
+            provenance=f"{type(self).__module__}.{type(self).__name__}",
+        )
+        existing = tuple(getattr(self.state, "hedron_application_styles", ()))
+        self.state.hedron_application_styles = (*existing, meta.logical_id)
+        return meta
 
     def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
         from hedron.registration import fail_closed_late_registration

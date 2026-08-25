@@ -30,6 +30,7 @@ _RECIPE_DEFAULT_KEYS = frozenset(
 
 
 class StyleScopeProps(ElementProps):
+    scope: str | None = None
     theme: str | None = None
     color_mode: _ColorMode | None = None
     density: Density | None = None
@@ -48,6 +49,7 @@ class StyleScope(Component[StyleScopeProps]):
         self,
         *nodes: NodeLike,
         children: NodeLike = None,
+        scope: str | None = None,
         theme: str | None = None,
         color_mode: _ColorMode | None = None,
         density: Density | None = None,
@@ -80,6 +82,15 @@ class StyleScope(Component[StyleScopeProps]):
                 explanation=f"Unsupported StyleScope keyword(s): {unknown}.",
                 remediation="Pass only theme, color_mode, density, variant, id, class_, and mark.",
             )
+        if scope is not None:
+            if not isinstance(scope, str) or _THEME_NAME_RE.fullmatch(scope.strip()) is None:
+                raise error(
+                    HED_STYLE_SCOPE_0001,
+                    title="Invalid application style scope",
+                    explanation=f"scope={scope!r} must match [A-Za-z0-9_-]+.",
+                    remediation="Use the same scope name passed to app.styles(scope=...).",
+                )
+            scope = scope.strip()
         if theme is not None:
             if not isinstance(theme, str) or not theme.strip():
                 raise error(
@@ -142,6 +153,7 @@ class StyleScope(Component[StyleScopeProps]):
             )
         super().__init__(
             StyleScopeProps(
+                scope=scope,
                 theme=theme,
                 color_mode=color_mode,
                 density=density,
@@ -164,6 +176,8 @@ class StyleScope(Component[StyleScopeProps]):
         data: dict[str, str | bool | int | float | None] = {
             "hedron-style-scope": "true",
         }
+        if self.props.scope is not None:
+            data["hedron-style-scope"] = self.props.scope
         if self.props.theme is not None:
             data["hedron-theme"] = self.props.theme
         if self.props.color_mode is not None:
