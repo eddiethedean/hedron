@@ -9,6 +9,7 @@ from hedron_jinja.async_io import (
     async_io_session,
     run_declared_async_io,
 )
+from hedron_jinja.binding import ApplicationStyleFact, JinjaBinding
 from hedron_jinja.contracts import (
     HdjContext,
     TemplateCapabilities,
@@ -50,16 +51,21 @@ from hedron_jinja.providers import (
     ProviderManifest,
     charts_provider_manifest,
     data_provider_manifest,
+    elements_provider_manifest,
+    extras_provider_manifest,
+    maps_provider_manifest,
     provider_available,
 )
 from hedron_jinja.source import validate_element_declarations
+from hedron_jinja.type_authoring import refuse_annotation_evaluation, registered_type_schema
 
-__version__ = "0.65.0"
+__version__ = "0.66.0"
 
 __all__ = [
     "AsyncIoBudget",
     "AsyncIoDeclaration",
     "AsyncIoRegistry",
+    "ApplicationStyleFact",
     "DynamicDependency",
     "DynamicDependencyManifest",
     "ExtensionEvidence",
@@ -68,6 +74,7 @@ __all__ = [
     "HedronJinja",
     "HedronJinjaExtension",
     "HdjContext",
+    "JinjaBinding",
     "LoopMacroBudget",
     "LoopMacroCounters",
     "ProductionInventory",
@@ -88,15 +95,20 @@ __all__ = [
     "checker_fixture_from_diagnostics",
     "coerce_interaction_target",
     "data_provider_manifest",
+    "elements_provider_manifest",
+    "extras_provider_manifest",
     "instrumentation_session",
     "list_feature_bundles",
+    "maps_provider_manifest",
     "portable_checker_json",
     "provider_available",
+    "refuse_annotation_evaluation",
     "reconcile_csp",
     "record_loop_iteration",
     "resolve_registered_handle",
     "record_macro_call",
     "register_htmx_catalog",
+    "registered_type_schema",
     "run_declared_async_io",
     "validate_element_declarations",
 ]

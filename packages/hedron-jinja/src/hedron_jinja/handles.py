@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from hedron_core.catalog import compile_interaction_catalog
 from hedron_core.codes import HED_PROJECTION_0005, HED_UPDATE_0003
 from hedron_core.diagnostics import error
 from hedron_core.updates import BaseHandleDescriptor, list_handle_descriptors
+
+if TYPE_CHECKING:
+    from hedron_jinja.binding import JinjaBinding
 
 __all__ = [
     "catalog_command_form",
@@ -55,7 +58,12 @@ def resolve_registered_handle(
     return matches[0]
 
 
-def coerce_interaction_target(target: Any, *, app_id: str | None = None) -> Any:
+def coerce_interaction_target(
+    target: Any,
+    *,
+    app_id: str | None = None,
+    binding: JinjaBinding | None = None,
+) -> Any:
     """Accept a handle, BoundFragment, or catalog logical id. Never execute a manifest dict."""
     if isinstance(target, Mapping):
         raise error(
@@ -65,9 +73,21 @@ def coerce_interaction_target(target: Any, *, app_id: str | None = None) -> Any:
             remediation="Pass a registered handle, BoundFragment, or logical id.",
         )
     if isinstance(target, str):
+        if binding is not None:
+            return binding.resolve_handle(target)
         catalog = compile_interaction_catalog(app_id=app_id)
         catalog.require(target)
         return resolve_registered_handle(target, app_id=app_id)
+    if binding is not None:
+        logical_id = getattr(target, "logical_id", None)
+        if not isinstance(logical_id, str):
+            raise error(
+                HED_UPDATE_0003,
+                title="HDJ app-bound interaction target is not registered",
+                explanation="An app-bound target has no canonical logical_id.",
+                remediation="Pass a logical ID present in JinjaBinding.handles.",
+            )
+        return binding.resolve_handle(logical_id)
     if hasattr(target, "handle") and hasattr(target, "logical_id"):
         return target
     if hasattr(target, "bind") or hasattr(target, "form") or hasattr(target, "logical_id"):
@@ -80,19 +100,28 @@ def coerce_interaction_target(target: Any, *, app_id: str | None = None) -> Any:
     )
 
 
-def catalog_view(target: Any, **bind_kwargs: Any) -> Any:
+def catalog_view(
+    target: Any,
+    *,
+    binding: JinjaBinding | None = None,
+    app_id: str | None = None,
+    **bind_kwargs: Any,
+) -> Any:
     """Bind a view through FragmentHandle.bind. Does not evaluate annotations."""
-    handle = coerce_interaction_target(target)
+    handle = coerce_interaction_target(target, app_id=app_id, binding=binding)
     bind = getattr(handle, "bind", None)
     if callable(bind) and bind_kwargs:
         return bind(**bind_kwargs)
     if hasattr(handle, "handle") and not bind_kwargs:
         return handle
+    binding_plan = getattr(handle, "binding_plan", None)
+    if callable(handle) and not bind_kwargs and not getattr(binding_plan, "required", ()):
+        return handle
     raise error(
         HED_PROJECTION_0005,
         title="Jinja view helper requires a FragmentHandle or BoundFragment",
-        explanation="Logical ids resolve to descriptors, which cannot reconstruct bind kwargs.",
-        remediation="Pass user_card.bind(user_id=...) from Python into the template.",
+        explanation="The selected view requires explicit binding parameters.",
+        remediation="Pass the required named parameters to h_view(...).",
     )
 
 
@@ -100,10 +129,12 @@ def catalog_command_form(
     target: Any,
     *,
     fields: Sequence[Any] | None = None,
+    binding: JinjaBinding | None = None,
+    app_id: str | None = None,
     **form_kwargs: Any,
 ) -> Any:
     """Opt-in ActionHandle.form() or explicit Form(action=handle)."""
-    handle = coerce_interaction_target(target)
+    handle = coerce_interaction_target(target, app_id=app_id, binding=binding)
     form_fn = getattr(handle, "form", None)
     if callable(form_fn):
         if fields is not None:

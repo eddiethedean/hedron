@@ -17,6 +17,14 @@ _LOGICAL_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]*$")
 _REGION_ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]*$")
 
 
+def _deep_freeze(value: object) -> object:
+    if isinstance(value, Mapping):
+        return MappingProxyType({str(key): _deep_freeze(item) for key, item in value.items()})
+    if isinstance(value, (list, tuple)):
+        return tuple(_deep_freeze(item) for item in value)
+    return value
+
+
 class TemplateSource(StrEnum):
     APPLICATION = "application"
     PACKAGE = "package"
@@ -149,17 +157,39 @@ class HdjContext:
     mode: RenderMode
     locale: str
     theme: str | None
-    htmx: Mapping[str, JsonValue] = field(default_factory=lambda: MappingProxyType({}))
+    htmx: Mapping[str, object] = field(default_factory=lambda: MappingProxyType({}))
+    app_id: str | None = None
+    binding_fingerprint: str | None = None
+    themes: tuple[str, ...] = ()
+    application_styles: tuple[Mapping[str, object], ...] = ()
+    providers: Mapping[str, Mapping[str, object]] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
     _url_builder: Callable[..., SafeUrl] | None = field(default=None, repr=False, compare=False)
     _asset_builder: Callable[[str], SafeUrl] | None = field(default=None, repr=False, compare=False)
     _csrf_builder: Callable[[], TrustedHtml] | None = field(default=None, repr=False, compare=False)
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "htmx", MappingProxyType(dict(self.htmx)))
+        object.__setattr__(self, "htmx", _deep_freeze(self.htmx))
+        object.__setattr__(self, "themes", tuple(self.themes))
+        object.__setattr__(
+            self,
+            "application_styles",
+            tuple(_deep_freeze(item) for item in self.application_styles),
+        )
+        object.__setattr__(
+            self,
+            "providers",
+            _deep_freeze(self.providers),
+        )
 
     @property
     def is_fragment(self) -> bool:
         return self.mode is RenderMode.FRAGMENT
+
+    def has_provider(self, feature_id: str) -> bool:
+        """Return whether the frozen app binding includes a provider feature."""
+        return feature_id in self.providers
 
     def url(self, ref: object, **params: JsonValue) -> SafeUrl:
         if self._url_builder is None:

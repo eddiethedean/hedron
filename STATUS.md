@@ -8,26 +8,29 @@
 
 **Roadmap position:** phase 0.64 is the published release train at `v0.64.0` on PyPI. The
 0.64 acceptance packet, tag, and package publication are complete.
-**Date:** 2026-08-24
+**Date:** 2026-08-25
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.64.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.66.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.1`, `hedron-charts`
 `0.2.1`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
 `hedron-sim` `0.2.1`, `hedron-mcp` `0.2.2`, `hedron-gradio` `0.2.1`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.64.0`
+`0.66.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
-`hedron-runtime-node` / `hedron-runtime-java` `0.64.0`.
+`hedron-runtime-node` / `hedron-runtime-java` `0.66.0`.
 
-**Phase focus:** The published train is **0.64** (RFC-0091). Phase **0.65** is implemented and
-verified in-tree against the `v0.64.1` baseline; the coordinated packages are at `0.65.0` and the
-release candidate is awaiting final tag publication. Phase **0.63** (verified
+**Phase focus:** The published train is **0.64** (RFC-0091). Phase **0.66** is in progress against
+the `v0.65.0` baseline; the coordinated packages are at `0.66.0`. Its HDJ foundation is implemented
+and Verified through an app-scoped registry/interaction binding, while thirteen imported issue
+gates remain Planned and block release. Dynamic, foreign, and installed-package template execution
+remain explicitly Deferred. Phase **0.65** remains the
+verified in-tree predecessor awaiting final tag publication. Phase **0.63** (verified
 RFC-0090) remains implemented and published as `v0.63.0`, with its 27-gate packet and
 executable browser/unit coverage for theme contracts, tooling, and interoperability; human
 assistive-technology evidence remains Planned under phase 0.21; tracking issue #86 is closed,
@@ -91,6 +94,7 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `*-061` | Unified action state and server-first async boundaries | **Verified/Published** (0.61) | RFC-0090; `v0.61.0`; owns #668–#672 |
 | `*-062` | Responsive navigation, bounded optimism, and localized failure isolation | **Verified/Published** (0.62) | RFC-0090; `v0.62.0`; dashboard fan-out omitted |
 | `*-065` | Integrated styling platform and application CSS | **Verified** (0.65) | RFC-0092 / D-109 / D-110; required issue slices and application CSS runtime are covered |
+| `*-066` | HDJ parity, registry integration, and open-issue closure | **In progress** (0.66) | RFC-0093 / D-111 / D-112; HDJ foundation Verified, 13 issue gates Planned |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
 | `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |
@@ -129,6 +133,20 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `PERF-10-001` | Load/proxy backpressure evidence | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `PERF-024` |
 | `MORPH-048` | Idiomorph / morph swap | **Deferred** (0.48) | Not vendored; keep innerHTML/outerHTML; later train, not 0.49 |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | **Not** re-homed to 0.24; stays on `0.10.x` |
+
+## Phase 0.66 evidence
+
+- Ownership: [RFC-0093](docs/rfcs/RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md) / D-111 / D-112.
+- Plan and public contract: [HDJ_PARITY_066](docs/implementation/HDJ_PARITY_066.md) ·
+  [App-scoped HDJ binding](docs/api/HDJ_PARITY_066.md).
+- Acceptance: [RELEASE_0_66](docs/acceptance/RELEASE_0_66.md) ·
+  [release-gate-0.66.toml](docs/acceptance/release-gate-0.66.toml) ·
+  [capability inventory](docs/acceptance/hdj-parity-capability-inventory-066.toml) ·
+  [open-issue inventory](docs/acceptance/open-issues-066.toml).
+- Intake result: issues #718–#730 remain Planned except no gaps in that range; #613 and #140 were
+  closed after their existing fixes and focused regressions were verified on `main`.
+- Explicit deferral: dynamic dependencies, foreign Jinja, and installed-package HDJ namespaces
+  remain unsupported in the format-v1 render path.
 
 ## Phase 0.60 evidence
 

@@ -633,7 +633,7 @@ from hedron_core.visualization_theme import (
     resolve_visualization_theme,
 )
 
-__version__ = "0.65.0"
+__version__ = "0.66.0"
 
 __all__ = [
     "__version__",

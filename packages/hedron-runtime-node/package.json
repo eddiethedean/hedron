@@ -1,6 +1,6 @@
 {
   "name": "hedron-runtime-node",
-  "version": "0.65.0",
+  "version": "0.66.0",
   "description": "Hedron portable conformance evaluator for Node.js (tooling-grade)",
   "type": "module",
   "license": "MIT",

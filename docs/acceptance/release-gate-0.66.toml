@@ -1,0 +1,175 @@
+schema_version = 1
+phase = "0.66"
+status = "Implemented"
+owning_rfc = "RFC-0093"
+decision = "D-111"
+contract_refine = "D-112"
+planning_baseline = "v0.65.0"
+target = "v0.66.0"
+predecessor_satisfied = true
+zero_undocumented_deferred = true
+issue_inventory = "open-issues-066.toml"
+open_issue_count = 13
+release_ready = false
+
+[[evidence]]
+id = "CONTRACT-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate CONTRACT-066 --verify"
+owner = "hedron-jinja"
+ci_job = "evidence"
+
+[[evidence]]
+id = "BINDING-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate BINDING-066 --verify"
+owner = "hedron-jinja"
+ci_job = "evidence"
+
+[[evidence]]
+id = "REGISTRY-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate REGISTRY-066 --verify"
+owner = "hedron-jinja"
+ci_job = "evidence"
+
+[[evidence]]
+id = "INTERACTION-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate INTERACTION-066 --verify"
+owner = "hedron-jinja"
+ci_job = "evidence"
+
+[[evidence]]
+id = "CONTEXT-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate CONTEXT-066 --verify"
+owner = "hedron-jinja"
+ci_job = "evidence"
+
+[[evidence]]
+id = "PROVIDER-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate PROVIDER-066 --verify"
+owner = "hedron-jinja"
+ci_job = "evidence"
+
+[[evidence]]
+id = "STYLE-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate STYLE-066 --verify"
+owner = "hedron-jinja"
+ci_job = "evidence"
+
+[[evidence]]
+id = "SECURITY-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate SECURITY-066 --verify"
+owner = "security"
+ci_job = "evidence"
+
+[[evidence]]
+id = "COMPAT-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate COMPAT-066 --verify"
+owner = "hedron-jinja"
+ci_job = "evidence"
+
+[[evidence]]
+id = "DOCS-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate DOCS-066 --verify"
+owner = "docs"
+ci_job = "evidence"
+
+[[evidence]]
+id = "PKG-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate PKG-066 --verify"
+owner = "packaging"
+ci_job = "evidence"
+
+[[evidence]]
+id = "REGRESS-066"
+state = "Verified"
+command = "python scripts/check_066.py --gate REGRESS-066 --verify"
+owner = "release"
+ci_job = "evidence"
+
+[[evidence]]
+id = "DATA-AUDIT-066"
+state = "Planned"
+owner = "hedron-data"
+issue = 718
+
+[[evidence]]
+id = "HTMX-JSON-066"
+state = "Planned"
+owner = "hedron-core"
+issue = 719
+
+[[evidence]]
+id = "MAP-NUMERIC-066"
+state = "Planned"
+owner = "hedron-maps"
+issue = 720
+
+[[evidence]]
+id = "CLAIM-REDACT-066"
+state = "Planned"
+owner = "security"
+issue = 721
+
+[[evidence]]
+id = "THEME-ARCHIVE-066"
+state = "Planned"
+owner = "security"
+issue = 722
+
+[[evidence]]
+id = "ALTAIR-JSON-066"
+state = "Planned"
+owner = "hedron-charts"
+issue = 723
+
+[[evidence]]
+id = "PLOTLY-JSON-066"
+state = "Planned"
+owner = "hedron-charts"
+issue = 724
+
+[[evidence]]
+id = "PIN-CEILING-066"
+state = "Planned"
+owner = "packaging"
+issue = 725
+
+[[evidence]]
+id = "WS-PRODUCER-066"
+state = "Planned"
+owner = "live-transport"
+issue = 726
+
+[[evidence]]
+id = "AUTH-RATE-066"
+state = "Planned"
+owner = "security"
+issue = 727
+
+[[evidence]]
+id = "TYPE-MEASURE-066"
+state = "Planned"
+owner = "presentation"
+issue = 728
+
+[[evidence]]
+id = "TYPE-EFFECT-066"
+state = "Planned"
+owner = "presentation"
+issue = 729
+
+[[evidence]]
+id = "CONTEXT-PRESENT-066"
+state = "Planned"
+owner = "presentation"
+issue = 730

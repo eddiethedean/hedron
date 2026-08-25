@@ -11,7 +11,7 @@ HDJ lets advanced applications write ordinary HTML, CSS, JavaScript, Web
 Components, Jinja, and HTMX directly while preserving Hedron components and
 render metadata. Install as `hedron-jinja` or via the flagship extra `hedron[jinja]`.
 
-**Package maturity:** Beta · **Train:** `0.64.x` (published as `v0.64.0` on PyPI) · application pin `>=0.64.0,<0.65`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Published train:** `0.64.x` · **Repository train:** `0.66.0` · application pin `>=0.64.0,<0.65`; repository checkouts use `uv sync`
 
 ## Install
 
@@ -38,6 +38,23 @@ result = templates.render(
 )
 print(result.html)
 ```
+
+For registered interaction handles and registry facts, use a frozen app binding:
+
+```python
+from hedron_jinja import HedronJinja, JinjaBinding
+
+binding = JinjaBinding.from_registry(
+    app_id=app.hedron_app_id,
+    handles={orders.logical_id: orders},
+    asset_hrefs={"application:css": "/static/application.css"},
+)
+templates = HedronJinja(environment, binding=binding)
+```
+
+This adds app-scoped `h_view`, `h_command_form`, catalog, TypeSchema, feature-bundle, provider,
+theme, application-style, and portable HTMX request facts without exposing registry source paths or
+raw framework requests.
 
 Example `templates/dashboard.hdj`:
 

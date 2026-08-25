@@ -24,6 +24,7 @@ from hedron_core import (
     Diagnostic,
     DiagnosticSeverity,
     HedronError,
+    HtmxContext,
     Model,
     RenderContext,
     RenderMode,
@@ -39,7 +40,7 @@ from hedron_core import (
 )
 from hedron_core.diagnostics import error, make_diagnostic
 from hedron_core.html import html
-from hedron_core.typing_aliases import RenderTrace
+from hedron_core.typing_aliases import JsonValue, RenderTrace
 from hedron_jinja._document_shape import (
     document_tokens as _document_tokens,
 )
@@ -49,6 +50,7 @@ from hedron_jinja._document_shape import (
 from hedron_jinja._document_shape import (
     valid_page_shape as _valid_page_shape,
 )
+from hedron_jinja.binding import JinjaBinding
 from hedron_jinja.contracts import (
     HdjContext,
     TemplateCapabilities,
@@ -140,6 +142,7 @@ class _RenderSession:
     context: RenderContext
     mode: RenderMode
     core: CoreRenderSession
+    htmx: Mapping[str, object]
     static_asset_ids: frozenset[str]
     max_component_invocations: int
     max_output_chars: int
@@ -308,6 +311,8 @@ class HedronJinja:
         *,
         components: Mapping[str, type[Component[Any]]] | None = None,
         assets: Mapping[str, AssetRef] | None = None,
+        binding: JinjaBinding | None = None,
+        app_id: str | None = None,
         strict: bool = True,
         allowed_capabilities: Iterable[str] = (),
         max_component_invocations: int = 10_000,
@@ -321,6 +326,8 @@ class HedronJinja:
         async_io_registry: Any | None = None,
         extension_registry: ExtensionRegistry | None = None,
     ) -> None:
+        if binding is not None and app_id is not None and binding.app_id != app_id:
+            raise ValueError("binding.app_id and app_id must match")
         limits = {
             "max_component_invocations": max_component_invocations,
             "max_output_chars": max_output_chars,
@@ -391,6 +398,7 @@ class HedronJinja:
         self.csrf_builder = csrf_builder
         self.async_io_registry = async_io_registry
         self.extension_registry = extension_registry or ExtensionRegistry()
+        self.app_binding = binding or (JinjaBinding(app_id=app_id) if app_id is not None else None)
         self._components: dict[str, type[Component[Any]]] = {}
         self._assets: dict[str, AssetRef] = {}
         self._frozen = False
@@ -404,8 +412,15 @@ class HedronJinja:
             jinja_globals["hedron_record_macro"] = lambda n=1: record_macro_call(int(n))
         from hedron_jinja.handles import catalog_command_form, catalog_view
 
-        jinja_globals.setdefault("h_view", catalog_view)
-        jinja_globals.setdefault("h_command_form", catalog_command_form)
+        if self.app_binding is not None:
+            jinja_globals.setdefault("h_view", self._render_registered_view)
+            jinja_globals.setdefault("h_command_form", self._render_registered_command_form)
+            jinja_globals.setdefault("h_catalog_facts", self.app_binding.catalog_facts)
+            jinja_globals.setdefault("h_type_schema", self.app_binding.type_schema)
+            jinja_globals.setdefault("h_feature_bundles", self.app_binding.feature_bundles)
+        else:
+            jinja_globals.setdefault("h_view", catalog_view)
+            jinja_globals.setdefault("h_command_form", catalog_command_form)
 
         environment.loader = HdjLoader(environment.loader)
         environment.template_class = _hdj_template_class(environment.template_class)
@@ -452,8 +467,16 @@ class HedronJinja:
         environment.filters["hedron_asset_url"] = self._asset_url_filter
         _BINDINGS[environment] = ref(self)
 
+        for alias, factory in (
+            self.app_binding.components.items() if self.app_binding is not None else ()
+        ):
+            self.register_component(alias, factory)
         for alias, factory in (components or {}).items():
             self.register_component(alias, factory)
+        for logical_id, asset in (
+            self.app_binding.assets.items() if self.app_binding is not None else ()
+        ):
+            self.register_asset(logical_id, asset)
         for logical_id, asset in (assets or {}).items():
             self.register_asset(logical_id, asset)
         self._environment_fingerprint = self._fingerprint_environment()
@@ -631,6 +654,7 @@ class HedronJinja:
         *,
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
+        htmx: HtmxContext | Mapping[str, JsonValue] | None = None,
     ) -> RenderResult:
         if self.environment.is_async:
             raise error(
@@ -640,7 +664,7 @@ class HedronJinja:
                 remediation="Await HedronJinja.render_async() for an async environment.",
             )
         name, spec, graph, diagnostics, render_mode = self._prepare_render(spec_or_name, view, mode)
-        session = self._new_session(name, graph, context, render_mode, diagnostics, spec)
+        session = self._new_session(name, graph, context, render_mode, diagnostics, spec, htmx)
         hdj = self._hdj_context(session)
         token = _ACTIVE_SESSION.set(session)
         chunks: list[str] = []
@@ -663,10 +687,11 @@ class HedronJinja:
         *,
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
+        htmx: HtmxContext | Mapping[str, JsonValue] | None = None,
         body_chunk_size: int = 4096,
     ) -> TwoPhaseStream:
         """Render atomically, then expose body chunks for focused streaming (RFC-0032)."""
-        result = self.render(spec_or_name, view, context=context, mode=mode)
+        result = self.render(spec_or_name, view, context=context, mode=mode, htmx=htmx)
         body = result.html
         if body_chunk_size < 1:
             raise ValueError("body_chunk_size must be >= 1")
@@ -682,6 +707,7 @@ class HedronJinja:
         *,
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
+        htmx: HtmxContext | Mapping[str, JsonValue] | None = None,
     ) -> RenderResult:
         if not self.environment.is_async:
             raise error(
@@ -700,7 +726,7 @@ class HedronJinja:
                 ),
                 remediation="Add `jinja.async` to the root HDJ prologue features.",
             )
-        session = self._new_session(name, graph, context, render_mode, diagnostics, spec)
+        session = self._new_session(name, graph, context, render_mode, diagnostics, spec, htmx)
         hdj = self._hdj_context(session)
         token = _ACTIVE_SESSION.set(session)
         chunks: list[str] = []
@@ -780,8 +806,8 @@ class HedronJinja:
                 title="Package template namespaces are not a format-v1 input",
                 explanation="Phase 0.9 accepts application-owned .hdj loader names only.",
                 remediation=(
-                    "Keep installed-package Jinja in a separate environment until the finite, "
-                    "fingerprinted phase 0.11 namespace contract."
+                    "Keep installed-package Jinja in a separate environment pending a future "
+                    "loader-authority and HDJ-v2 source contract."
                 ),
             )
         return spec.name, spec
@@ -1035,18 +1061,17 @@ class HedronJinja:
             missing.append("jinja.loop-controls")
         if "jinja.async" in features and not self.environment.is_async:
             missing.append("jinja.async")
-        from importlib import import_module
+        from hedron_jinja.providers import provider_available
 
-        if "hedron.data" in features:
-            try:
-                import_module("hedron_data")
-            except ImportError:
-                missing.append("hedron.data")
-        if "hedron.charts" in features:
-            try:
-                import_module("hedron_charts")
-            except ImportError:
-                missing.append("hedron.charts")
+        for feature in sorted(
+            features
+            & {"hedron.data", "hedron.charts", "hedron.maps", "hedron.elements", "hedron.extras"}
+        ):
+            if self.app_binding is not None:
+                if feature not in self.app_binding.providers:
+                    missing.append(feature)
+            elif not provider_available(feature):
+                missing.append(feature)
         return [
             make_diagnostic(
                 "HED-JINJA-0023",
@@ -1115,6 +1140,7 @@ class HedronJinja:
         mode: RenderMode,
         diagnostics: tuple[Diagnostic, ...],
         spec: TemplateSpec[Model],
+        htmx: HtmxContext | Mapping[str, JsonValue] | None,
     ) -> _RenderSession:
         render_context = context or RenderContext.standalone()
         session = _RenderSession(
@@ -1125,6 +1151,7 @@ class HedronJinja:
             context=render_context,
             mode=mode,
             core=CoreRenderSession(render_context),
+            htmx=self._htmx_facts(htmx),
             static_asset_ids=frozenset(
                 logical_id for parsed in graph for logical_id in parsed.declaration.assets
             )
@@ -1142,14 +1169,79 @@ class HedronJinja:
         return session
 
     def _hdj_context(self, session: _RenderSession) -> HdjContext:
+        app_binding = self.app_binding
         return HdjContext(
             mode=session.mode,
             locale=session.context.locale,
             theme=session.context.theme,
+            htmx=session.htmx,
+            app_id=app_binding.app_id if app_binding is not None else None,
+            binding_fingerprint=app_binding.fingerprint if app_binding is not None else None,
+            themes=app_binding.themes if app_binding is not None else (),
+            application_styles=(
+                tuple(item.as_mapping() for item in app_binding.application_styles)
+                if app_binding is not None
+                else ()
+            ),
+            providers=(
+                {key: value.as_mapping() for key, value in app_binding.providers.items()}
+                if app_binding is not None
+                else {}
+            ),
             _url_builder=self.url_builder,
             _asset_builder=lambda logical_id: self._context_asset_url(session, logical_id),
             _csrf_builder=self.csrf_builder,
         )
+
+    @staticmethod
+    def _htmx_facts(
+        value: HtmxContext | Mapping[str, JsonValue] | None,
+    ) -> Mapping[str, object]:
+        if value is None:
+            return MappingProxyType({})
+        if isinstance(value, HtmxContext):
+            facts: dict[str, JsonValue] = {
+                "is_htmx": value.is_htmx,
+                "target": value.target,
+                "trigger": value.trigger,
+                "trigger_name": value.trigger_name,
+                "current_url": value.current_url,
+                "prompt": value.prompt,
+                "boosted": value.boosted,
+                "history_restore": value.history_restore,
+                "extras": dict(value.extras),
+            }
+            HedronJinja._validate_json_fact(facts)
+            return MappingProxyType(facts)
+        if len(value) > 32 or any(not isinstance(key, str) or not key for key in value):
+            raise ValueError("HDJ HTMX facts require at most 32 non-empty string keys")
+        facts = dict(value)
+        HedronJinja._validate_json_fact(facts)
+        return MappingProxyType(facts)
+
+    @staticmethod
+    def _validate_json_fact(value: JsonValue, *, depth: int = 0) -> None:
+        if depth > 4:
+            raise ValueError("HDJ HTMX facts may be nested at most four levels")
+        if isinstance(value, str):
+            if len(value) > 4096:
+                raise ValueError("HDJ HTMX fact strings may contain at most 4096 characters")
+            return
+        if value is None or isinstance(value, (bool, int, float)):
+            return
+        if isinstance(value, Mapping):
+            if len(value) > 32 or any(not isinstance(key, str) or not key for key in value):
+                raise ValueError("HDJ HTMX fact objects require at most 32 non-empty string keys")
+            for item in value.values():
+                HedronJinja._validate_json_fact(item, depth=depth + 1)
+            return
+        if isinstance(value, (list, tuple)):
+            if len(value) > 32:
+                raise ValueError("HDJ HTMX fact arrays may contain at most 32 values")
+            for item in value:
+                HedronJinja._validate_json_fact(item, depth=depth + 1)
+            return
+        raise TypeError("HDJ HTMX facts must contain JSON-compatible values")
 
     def _session(self) -> _RenderSession:
         session = _ACTIVE_SESSION.get()
@@ -1238,6 +1330,36 @@ class HedronJinja:
         )
         session.merge(result)
         return Markup(result.html)
+
+    def _render_node(self, value: object) -> Markup:
+        """Render one app-bound node through the active HDJ metadata session."""
+        session = self._session()
+        if callable(value) and hasattr(value, "logical_id") and hasattr(value, "app_id"):
+            value = value()
+        result = session.core.render(value, mode=RenderMode.FRAGMENT)  # type: ignore[arg-type]
+        session.merge(result)
+        return Markup(result.html)
+
+    def _render_registered_view(self, target: object, **bind_kwargs: object) -> Markup:
+        app_binding = self.app_binding
+        if app_binding is None:
+            raise RuntimeError("h_view requires an app-scoped JinjaBinding")
+        return self._render_node(app_binding.view(target, **bind_kwargs))
+
+    def _render_registered_command_form(
+        self,
+        target: object,
+        *,
+        fields: object | None = None,
+        **form_kwargs: object,
+    ) -> Markup:
+        app_binding = self.app_binding
+        if app_binding is None:
+            raise RuntimeError("h_command_form requires an app-scoped JinjaBinding")
+        field_values = fields if isinstance(fields, (list, tuple)) else None
+        return self._render_node(
+            app_binding.command_form(target, fields=field_values, **form_kwargs)
+        )
 
     def _render_slot(self, name: str, caller: _JinjaCaller) -> Markup:
         session = self._session()
@@ -1368,6 +1490,13 @@ class HedronJinja:
                 {
                     "template": session.template_name,
                     "template_logical_id": session.logical_id,
+                    "app_id": self.app_binding.app_id if self.app_binding is not None else None,
+                    "binding_fingerprint": (
+                        self.app_binding.fingerprint if self.app_binding is not None else None
+                    ),
+                    "locale": session.context.locale,
+                    "theme": session.context.theme,
+                    "htmx": dict(session.htmx),
                     "component_invocations": session.component_invocations,
                     "node_count": session.core.node_count,
                     "components": tuple(session.traces),
@@ -1519,7 +1648,7 @@ class HedronJinja:
                 title="Dynamic external URL is not a format-v1 input",
                 explanation=f"`{filter_name}` cannot reconcile a runtime origin in phase 0.9.",
                 remediation=(
-                    "Use a local SafeUrl or trusted literal source; native origin policy is "
-                    "scheduled for phase 0.11."
+                    "Use a local SafeUrl or an application-owned external navigation policy "
+                    "adapter outside HDJ v1."
                 ),
             )

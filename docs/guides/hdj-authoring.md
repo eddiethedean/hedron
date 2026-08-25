@@ -23,6 +23,10 @@ pip install "hedron[jinja]>=0.64.0,<0.65"
 
 Then follow [HDJ API — Setup](../api/JINJA.md#setup).
 
+Repository train 0.66 adds an immutable, app-scoped registry/interaction binding for applications
+that need logical-ID views and forms, TypeSchema/catalog facts, providers, themes, styles, or
+portable HTMX request facts. See [App-scoped HDJ binding](../api/HDJ_PARITY_066.md).
+
 ## Element declarations (0.40)
 
 HDJ prologues may declare custom-element metadata that must stay aligned with the

@@ -70,6 +70,7 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Published** (`v0.63.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
 | **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Published** (`v0.64.0`; [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [18 completed and 4 open enhancement issues](#phase-064-enhancement-inventory)) |
 | **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, eight bounded issue slices, and touched-surface fallback evidence | **Implemented and verified in-tree; release candidate `v0.65.0`** ([RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [scope](acceptance/application-styling-scope-065.md); [acceptance](acceptance/RELEASE_0_65.md)) |
+| **0.66** | HDJ parity and registry integration: app-scoped binding, registry-backed components/assets/themes/styles, live logical-ID interactions, portable HTMX facts, provider parity, and claim-honest evidence | **Implemented and verified in-tree; release candidate `v0.66.0`** ([RFC-0093](rfcs/RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md); [implementation](implementation/HDJ_PARITY_066.md); [acceptance](acceptance/RELEASE_0_66.md)) |
 
 ### Phase 0.64 enhancement inventory
 
@@ -6708,3 +6709,35 @@ The complete packet is [RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md),
 [gate](acceptance/release-gate-0.65.toml), [inventory](acceptance/application-styling-inventory-065.toml),
 [contract](acceptance/application-styling-contract-065.toml), [budgets](acceptance/application-styling-budgets-065.toml),
 and [upgrade fixtures](acceptance/application-styling-upgrade-fixtures-065.md).
+
+## Phase 0.66 — HDJ parity and registry integration
+
+**Status:** In progress. The HDJ foundation is implemented and Verified; thirteen imported issue
+gates remain Planned and block the 0.66 cut.
+
+Phase 0.66 restores `hedron-jinja` as an evidence-backed consumer of the post-0.46 core platform.
+One immutable `JinjaBinding` carries application identity, trusted component and asset projections,
+explicit live handles, provider declarations, theme names, and redacted application-style facts.
+Templates gain app-scoped view/form/catalog/schema/bundle helpers and bounded portable HTMX request
+facts while preserving ordinary Jinja/HTML and the existing HDJ metadata session.
+
+The phase also restores claim honesty: coordinated dependency bumps are not Jinja feature evidence.
+Dynamic dependencies, foreign Jinja execution, and installed-package HDJ namespaces remain
+explicitly Deferred rather than being described as shipped by inventory-only types. See
+[RFC-0093](rfcs/RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md), the
+[implementation](implementation/HDJ_PARITY_066.md), [public API](api/HDJ_PARITY_066.md), and
+[release acceptance](acceptance/RELEASE_0_66.md).
+
+### Open issue ownership required for the 0.66 cut
+
+| Issues | Required outcome | Gates |
+|---|---|---|
+| #718, #726 | Transactional data auditing and truthful WebSocket producer failure propagation | `DATA-AUDIT-066`, `WS-PRODUCER-066` |
+| #719, #720, #723, #724 | Finite, standards-valid HTMX/map/chart JSON boundaries | `HTMX-JSON-066`, `MAP-NUMERIC-066`, `ALTAIR-JSON-066`, `PLOTLY-JSON-066` |
+| #721, #722, #727 | Null-safe claim handling, bounded theme archives, and finite rate-limit windows | `CLAIM-REDACT-066`, `THEME-ARCHIVE-066`, `AUTH-RATE-066` |
+| #725 | Valid future-major scaffold dependency ceilings | `PIN-CEILING-066` |
+| #728–#730 | Bounded typography measure, safe effects, and contextual presentation variants | `TYPE-MEASURE-066`, `TYPE-EFFECT-066`, `CONTEXT-PRESENT-066` |
+
+The authoritative itemized ledger is
+[`open-issues-066.toml`](acceptance/open-issues-066.toml). Intake also closed #613 and #140 after
+confirming that their fixes and focused regressions were already on `main`.

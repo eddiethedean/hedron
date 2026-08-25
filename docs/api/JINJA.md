@@ -10,7 +10,8 @@ status: shipped
     `hedron_jinja`, and `.hdj` is the explicit, versioned template format. After a small static
     TOML prologue, the body is ordinary Jinja and HTML.
 
-    **Package maturity:** Beta on the living **0.64.x** train (HDJ introduced earlier).
+    **Package maturity:** Beta on the published **0.64.x** train; repository development is
+    **0.66.0**.
     The phase 0.9 core authoring surface is **shipped**. Remaining RFC-0031 capability
     edges continue to close without blocking basic `.hdj` use—see [STABILITY](STABILITY.md)
     and [What’s ready](../guides/whats-ready.md).
@@ -63,6 +64,11 @@ templates = HedronJinja(
 
 Bindings are application-local and freeze on the first check or render. Configure Jinja loaders,
 bytecode cache, i18n, extensions, application filters, tests, and globals before binding.
+
+For registered interaction handles and post-0.46 core registry facts, construct an app-scoped
+`JinjaBinding` and pass it as `binding=`. This enables logical-ID view/form rendering, catalog and
+TypeSchema helpers, provider/theme/style facts, and explicit HTMX request facts. See
+[App-scoped HDJ binding (0.66)](HDJ_PARITY_066.md).
 
 ## Template contract
 
@@ -237,9 +243,10 @@ Use standard Jinja directly:
 - whitespace control, comments, i18n, `do`, and loop controls when enabled; and
 - explicit application filters/globals plus transparent async behavior in `render_async()`.
 
-Format-v1 production builds accept only static `.hdj` dependencies. Dynamic candidate manifests,
-foreign Jinja, and package namespace interoperation are scheduled for phase 0.11; ordinary Jinja can
-run alongside HDJ in a separate environment today.
+Format-v1 production builds accept only static application-owned `.hdj` dependencies. Dynamic
+candidate manifests, foreign Jinja, and installed-package HDJ namespaces remain Deferred pending a
+future loader-authority/HDJ-v2 contract; ordinary Jinja can run alongside HDJ in a separate
+environment today.
 
 ## HTML, CSS, and JavaScript
 
@@ -333,8 +340,8 @@ capabilities = templates.capabilities(DASHBOARD)
 
 `describe()` returns the parsed format version, kind, profile, declared and effective features,
 requirements, assets, regions, source digest, and body start line without rendering. Format v1
-rejects dynamic dependencies rather than exposing dependency-bound namespaces; finite fingerprinted
-manifests arrive in phase 0.11. Checking covers static template dependencies, component/slot/view
+rejects dynamic dependencies rather than exposing dependency-bound namespaces; existing inventory
+manifests are inspection-only and not executable loader inputs. Checking covers static template dependencies, component/slot/view
 contracts, the finite contextual sink matrix, assets, locally inferable HTMX capabilities, render
 shape, and enforceable resource limits. Route and response integration is phase 0.11; version-aware
 HTMX and browser evidence is phase 0.10; broader contextual/provider analysis is phase 0.14.

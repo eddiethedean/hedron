@@ -1,0 +1,48 @@
+schema_version = 1
+phase = "0.66"
+status = "Verified"
+authority = "RFC-0093"
+baseline = "v0.65.0"
+
+[[capability]]
+id = "BINDING-066"
+state = "Verified"
+summary = "Immutable app-scoped binding with deterministic fingerprint and cross-app refusal."
+evidence = ["tests/jinja/test_hdj_0_66.py"]
+
+[[capability]]
+id = "REGISTRY-066"
+state = "Verified"
+summary = "Trusted core registry projection for components, approved asset URLs, themes, and redacted styles."
+evidence = ["tests/jinja/test_hdj_0_66.py"]
+
+[[capability]]
+id = "INTERACTION-066"
+state = "Verified"
+summary = "App-bound live views/forms plus catalog, TypeSchema, and FeatureBundle facts."
+evidence = ["tests/jinja/test_hdj_0_66.py", "tests/unit/test_authoring_045.py"]
+
+[[capability]]
+id = "CONTEXT-066"
+state = "Verified"
+summary = "Bounded portable HTMX, locale, theme, app, and binding trace facts."
+evidence = ["tests/jinja/test_hdj_0_66.py"]
+
+[[capability]]
+id = "PROVIDER-066"
+state = "Verified"
+summary = "Explicit data, charts, maps, elements, and extras provider manifests."
+evidence = ["tests/jinja/test_hdj_0_66.py", "tests/jinja/test_hdj_0_12.py"]
+
+[[capability]]
+id = "STYLE-066"
+state = "Verified"
+summary = "Registry-backed theme/style facts and approved assets with source paths redacted."
+evidence = ["tests/jinja/test_hdj_0_66.py"]
+
+[[capability]]
+id = "DYNAMIC-NAMESPACE-066"
+state = "Deferred"
+owner = "HDJ v2 loader contract"
+fallback = "Static application-owned .hdj dependencies and a separate ordinary Jinja environment."
+summary = "Dynamic, foreign, and installed-package template execution remains unsupported."

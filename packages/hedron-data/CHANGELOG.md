@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.66.0] — 2026-08-25
+
+### Changed
+- Coordinated development train for Phase 0.66 HDJ parity and registry integration.
+
 ## [0.65.0] — 2026-08-25
 
 ### Added

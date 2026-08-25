@@ -84,11 +84,17 @@ EXPLICIT_FEATURES = frozenset(
         "jinja.foreign",
         "hedron.data",
         "hedron.charts",
+        "hedron.maps",
+        "hedron.elements",
+        "hedron.extras",
+        "hedron.type-schema",
+        "hedron.feature-bundles",
+        "hedron.application-styles",
     }
 )
 KNOWN_FEATURES = frozenset().union(*PROFILE_FEATURES.values()) | EXPLICIT_FEATURES
-# jinja.dynamic-dependencies and jinja.foreign are Supported in phase 0.11 (D-046).
-DEFERRED_V1_FEATURES: frozenset[str] = frozenset()
+# Inventory manifest types exist, but HDJ v1 has no dynamic/foreign loader authority.
+DEFERRED_V1_FEATURES: frozenset[str] = frozenset({"jinja.dynamic-dependencies", "jinja.foreign"})
 
 
 BUILTIN_CAPABILITIES = frozenset(
@@ -245,7 +251,7 @@ def parse_hdj_source(name: str, raw: str) -> ParsedHdjSource:
                 name,
                 2,
                 f"Feature {feature!r} is intentionally deferred from HDJ format v1.",
-                "Use static .hdj dependencies in 0.9.",
+                "Use static application-owned .hdj dependencies; manifests are inspection-only.",
             )
         if feature not in KNOWN_FEATURES and not _PROVIDER_FEATURE_RE.fullmatch(feature):
             raise _source_error(
@@ -556,6 +562,16 @@ def observed_features(environment: Environment, parsed: ParsedHdjSource) -> froz
         observed.add("hedron.forms")
     if re.search(r"\bhdj\.theme\b", body):
         observed.add("hedron.themes")
+    if re.search(r"\bhdj\.(?:scoped_style|application_styles)\b", body):
+        observed.add("hedron.styles")
+        if "application_styles" in body:
+            observed.add("hedron.application-styles")
+    if re.search(r"\bh_(?:view|command_form|catalog_facts)\s*\(", body):
+        observed.add("hedron.interaction")
+    if re.search(r"\bh_type_schema\s*\(", body):
+        observed.add("hedron.type-schema")
+    if re.search(r"\bh_feature_bundles\s*\(", body):
+        observed.add("hedron.feature-bundles")
     if re.search(r"<\s*style\b|\sstyle\s*=|<\s*link\b[^>]*\brel\s*=\s*['\"]stylesheet", body, re.I):
         observed.add("web.css")
     if re.search(r"<\s*script\b|\son[a-z]+\s*=", body, re.I):

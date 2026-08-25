@@ -116,17 +116,17 @@ def test_production_inventory() -> None:
     assert inv.as_dict()["capabilities"] == ["web.html"]
 
 
-def test_prologue_accepts_dynamic_and_foreign_features() -> None:
+@pytest.mark.parametrize("feature", ["jinja.dynamic-dependencies", "jinja.foreign"])
+def test_prologue_refuses_inventory_only_features(feature: str) -> None:
     source = """\
 ---hdj
 version = 1
 kind = "page"
 profile = "custom"
-features = ["jinja.dynamic-dependencies", "jinja.foreign"]
+features = ["FEATURE"]
 ---
 <html><body>ok</body></html>
-"""
-    parsed = parse_hdj_source("demo.hdj", source)
-    assert "jinja.dynamic-dependencies" in parsed.declaration.declared_features
-    assert "jinja.foreign" in parsed.declaration.declared_features
-    assert "ok" in parsed.body
+""".replace("FEATURE", feature)
+
+    with pytest.raises(HedronError, match="intentionally deferred"):
+        parse_hdj_source("demo.hdj", source)

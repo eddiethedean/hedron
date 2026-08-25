@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.66.0] — 2026-08-25
+
+### Added
+- Immutable app-scoped `JinjaBinding` snapshots for trusted components, explicit live handles,
+  approved registry asset URLs, themes, providers, and redacted application-style facts.
+- Logical-ID view/form rendering plus app-scoped catalog, TypeSchema, FeatureBundle, and portable
+  HTMX request facts.
+- Provider manifests for maps, elements, and extras alongside data and charts.
+
+### Changed
+- Coordinated development train for Phase 0.66 HDJ parity and registry integration.
+- Dynamic, foreign, and installed-package template execution is explicitly Deferred for HDJ v1.
+
 ## [0.65.0] — 2026-08-25
 
 ### Added

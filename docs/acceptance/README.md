@@ -85,6 +85,9 @@ status commentary, not a satisfied release gate.
   packet with public-hook, asset, layer, token, diagnostics, ejection, bounded open-issue slices,
   touched-surface fallback, performance, upgrade, fleet, documentation, and package gates; see
   the [refined scope](application-styling-scope-065.md)
+- [`v0.66` HDJ parity, registry integration, and open-issue closure](RELEASE_0_66.md) — **In
+  progress**: the app-scoped HDJ foundation is Verified; thirteen issue gates remain Planned in the
+  [open-issue inventory](open-issues-066.toml); see [release-gate-0.66.toml](release-gate-0.66.toml)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
