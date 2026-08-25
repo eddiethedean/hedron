@@ -66,15 +66,36 @@ def test_scoped_recipe_compilation_is_deterministic_and_logical() -> None:
 
     first = compile_scoped_styles((recipe,))
     second = compile_scoped_styles((recipe,))
+    reversed_conditions = ScopedStyleRecipe(
+        component=recipe.component,
+        part=recipe.part,
+        states=recipe.states,
+        declarations=recipe.declarations,
+        conditions=tuple(reversed(recipe.conditions)),
+    )
+    reversed_bundle = compile_scoped_styles((reversed_conditions,))
 
     assert first.css == second.css
     assert first.digest == second.digest
+    assert first.css == reversed_bundle.css
     assert "@container (min-width: 40rem)" in first.css
     assert '[dir="rtl"]' in first.css
+    assert f'[dir="rtl"] .{recipe.class_name}' in first.css
+    assert '[dir="rtl"] @container' not in first.css
     assert '[data-hedron-state~="invalid"]' in first.css
     assert '[data-hedron-state~="busy"]' in first.css
     assert "padding-inline" in first.css
     assert "padding-left" not in first.css
+
+    direction_only = ScopedStyleRecipe(
+        component="Card",
+        part="body",
+        declarations={"color": "red"},
+        conditions=(ResponsiveCondition("direction", "rtl"),),
+    )
+    direction_css = compile_scoped_styles((direction_only,)).css
+    assert f'@layer components {{\n[dir="rtl"] .{direction_only.class_name} {{' in direction_css
+    assert '[dir="rtl"] @layer' not in direction_css
 
 
 @pytest.mark.parametrize(

@@ -248,11 +248,20 @@ def compile_scoped_styles(recipes: Sequence[ScopedStyleRecipe]) -> ScopedStyleBu
         selector = f".{recipe.class_name}"
         if recipe.states:
             selector += "".join(f'[data-hedron-state~="{state}"]' for state in recipe.states)
+        at_rules: list[str] = []
+        selector_prefixes: list[str] = []
+        for condition in sorted(recipe.conditions, key=lambda item: (item.kind, item.value)):
+            prefix = condition.media_prefix()
+            if prefix.startswith("@"):
+                at_rules.append(prefix)
+            else:
+                selector_prefixes.append(prefix)
+        if selector_prefixes:
+            selector = " ".join((*selector_prefixes, selector))
         body = "".join(f"  {key}: {value};\n" for key, value in sorted(recipe.declarations.items()))
         rule = f"@layer {recipe.layer} {{\n{selector} {{\n{body}}}\n}}\n"
-        for condition in recipe.conditions:
-            prefix = condition.media_prefix()
-            rule = f"{prefix} {{\n{rule}}}\n" if prefix.startswith("@") else f"{prefix} {rule}"
+        for at_rule in reversed(at_rules):
+            rule = f"{at_rule} {{\n{rule}}}\n"
         chunks.append(rule)
     return ScopedStyleBundle("".join(chunks), tuple(item.to_dict() for item in ordered))
 
