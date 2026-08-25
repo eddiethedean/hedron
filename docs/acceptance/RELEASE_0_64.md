@@ -5,9 +5,10 @@
 **RFC:** [RFC-0091](../rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md)
 **Execution:** [EXECUTION_0_64](../implementation/EXECUTION_0_64.md)
 
-**Issue inventory:** 22 phase-owned open `enhancement` issues are tracked in the
-[phase 0.64 roadmap inventory](../ROADMAP.md#phase-064-open-enhancement-inventory), including
-0.62 carry-forward work. Issue #86 remains owned by phase 0.21.
+**Issue inventory:** 22 phase-owned `enhancement` issues are tracked in the
+[phase 0.64 roadmap inventory](../ROADMAP.md#phase-064-enhancement-inventory): 18 are implemented
+and closed, while 4 remain open for deferred follow-up. This includes 0.62 carry-forward work;
+issue #86 remains owned by phase 0.21.
 
 ## 0.64.0 release boundary
 

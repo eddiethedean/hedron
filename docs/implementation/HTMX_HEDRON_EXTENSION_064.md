@@ -6,9 +6,10 @@
 **Acceptance:** [RELEASE_0_64](../acceptance/RELEASE_0_64.md)
 **Execution:** [EXECUTION_0_64](EXECUTION_0_64.md)
 
-**Issue inventory:** Stage 0 tracks all 22 phase-owned open `enhancement` issues in the
-[phase 0.64 roadmap inventory](../ROADMAP.md#phase-064-open-enhancement-inventory), including
-the 0.62 carry-forward items. Issue #86 remains owned by phase 0.21.
+**Issue inventory:** Stage 0 tracks all 22 phase-owned `enhancement` issues in the
+[phase 0.64 roadmap inventory](../ROADMAP.md#phase-064-enhancement-inventory): 18 are implemented
+and closed, while 4 remain open for deferred follow-up. This includes the 0.62 carry-forward
+items. Issue #86 remains owned by phase 0.21.
 
 ## Refined phase boundary
 

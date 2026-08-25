@@ -68,15 +68,15 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.61** | Unified action state and server-first async boundaries | **Implemented, verified, tagged, and published** (`v0.61.0`; RFC-0090; [implementation](implementation/ACTION_STATE_ASYNC_061.md); [acceptance](acceptance/RELEASE_0_61.md)) |
 | **0.62** | Responsive navigation, bounded optimism, and localized failure isolation | **Published** (`v0.62.0`; progressive dashboard fan-out explicitly omitted; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/NAVIGATION_OPTIMISM_062.md); [acceptance](acceptance/RELEASE_0_62.md)) |
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Published** (`v0.63.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
-| **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Published** (`v0.64.0`; [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [22 open enhancement issues](#phase-064-open-enhancement-inventory)) |
+| **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Published** (`v0.64.0`; [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [18 completed and 4 open enhancement issues](#phase-064-enhancement-inventory)) |
 
-### Phase 0.64 open enhancement inventory
+### Phase 0.64 enhancement inventory
 
-GitHub reports the following **22 open issues** with the `enhancement` label for phase 0.64
-(queried 2026-08-24). All listed issues are tracked in phase 0.64 per the current planning
-decision. The source tags are retained so the 0.62 carry-forward work remains distinguishable
-from the issues originally opened for 0.64. Issue #86 remains owned by phase 0.21 and is not part
-of this inventory.
+The phase 0.64 inventory contains **22 enhancement issues** (queried 2026-08-24): **18 are
+implemented and closed**, and **4 remain open** for deferred follow-up. All listed issues remain
+tracked in phase 0.64 per the current planning decision. The source tags are retained so the 0.62
+carry-forward work remains distinguishable from the issues originally opened for 0.64. Issue #86
+remains owned by phase 0.21 and is not part of this inventory.
 
 | Issue | Original scope | Enhancement |
 |---|---|---|

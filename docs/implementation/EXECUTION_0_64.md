@@ -11,8 +11,9 @@ tracks: bounded presentation contracts and an opt-in HTMX lifecycle projection. 
 complete only when its implementation, compatibility behavior, tests, documentation, and named
 evidence land together.
 
-Issue #86 is not part of this plan; it remains owned by Phase 0.21. The 22 phase-owned open
-enhancements are the live issue input and are listed in the [roadmap inventory](../ROADMAP.md#phase-064-open-enhancement-inventory).
+Issue #86 is not part of this plan; it remains owned by Phase 0.21. The 22 phase-owned
+enhancements (18 implemented and closed, 4 open for deferred follow-up) are listed in the
+[roadmap inventory](../ROADMAP.md#phase-064-enhancement-inventory).
 
 ## Objectives and invariants
 
