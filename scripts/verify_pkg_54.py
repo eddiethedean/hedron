@@ -191,6 +191,7 @@ def main(argv: list[str] | None = None) -> int:
                 "0.61.",
                 "0.62.",
                 "0.63.",
+                "0.64.",
             )
         ):
             print("ok: 0.54 historical packet; skip execute-verified under living tip")
