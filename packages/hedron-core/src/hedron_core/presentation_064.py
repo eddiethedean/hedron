@@ -146,15 +146,33 @@ class ResponsiveCondition:
     value: str
 
     def __post_init__(self) -> None:
-        if self.kind == "viewport" and self.value not in _BREAKPOINTS:
+        if not isinstance(self.kind, str) or self.kind not in (
+            "viewport",
+            "container",
+            "direction",
+            "writing-mode",
+            "accessibility",
+        ):
+            raise PresentationError(f"unknown responsive condition kind: {self.kind!r}")
+        if self.kind == "viewport" and (
+            not isinstance(self.value, str) or self.value not in _BREAKPOINTS
+        ):
             raise PresentationError(f"unknown viewport condition: {self.value!r}")
-        if self.kind == "container" and self.value not in _CONTAINER_SIZES:
+        if self.kind == "container" and (
+            not isinstance(self.value, str) or self.value not in _CONTAINER_SIZES
+        ):
             raise PresentationError(f"unknown container condition: {self.value!r}")
-        if self.kind == "direction" and self.value not in _DIRECTIONS:
+        if self.kind == "direction" and (
+            not isinstance(self.value, str) or self.value not in _DIRECTIONS
+        ):
             raise PresentationError(f"unknown direction: {self.value!r}")
-        if self.kind == "writing-mode" and self.value not in _WRITING_MODES:
+        if self.kind == "writing-mode" and (
+            not isinstance(self.value, str) or self.value not in _WRITING_MODES
+        ):
             raise PresentationError(f"unknown writing mode: {self.value!r}")
-        if self.kind == "accessibility" and self.value not in _ACCESSIBILITY:
+        if self.kind == "accessibility" and (
+            not isinstance(self.value, str) or self.value not in _ACCESSIBILITY
+        ):
             raise PresentationError(f"unknown accessibility condition: {self.value!r}")
 
     def media_prefix(self) -> str:
@@ -166,15 +184,16 @@ class ResponsiveCondition:
             return f'[dir="{self.value}"]'
         if self.kind == "writing-mode":
             return f'[style*="writing-mode: {self.value}"]'
-        if self.value == "forced-colors":
-            return "@media (forced-colors: active)"
-        if self.value == "more-contrast":
-            return "@media (prefers-contrast: more)"
-        if self.value == "reduced-motion":
-            return "@media (prefers-reduced-motion: reduce)"
-        if self.value == "reduced-transparency":
-            return "@media (prefers-reduced-transparency: reduce)"
-        return "@media print"
+        accessibility_prefixes = {
+            "forced-colors": "@media (forced-colors: active)",
+            "more-contrast": "@media (prefers-contrast: more)",
+            "reduced-motion": "@media (prefers-reduced-motion: reduce)",
+            "reduced-transparency": "@media (prefers-reduced-transparency: reduce)",
+            "print": "@media print",
+        }
+        if self.kind == "accessibility":
+            return accessibility_prefixes[self.value]
+        raise PresentationError(f"unknown responsive condition kind: {self.kind!r}")
 
 
 @dataclass(frozen=True, slots=True)
