@@ -1,17 +1,17 @@
 ---
-status: draft
+status: verified
 ---
 
 # Edron release roadmap
 
-**Status:** Draft and blocked; Edron is not implemented or published<br>
-**Current phase:** `0.0` design and native enablement<br>
-**First release target:** Edron `0.1.0`; compatible Hedron train unassigned<br>
+**Status:** Phase `0.2` implemented in-tree; Edron remains a Beta, separately versioned package<br>
+**Current phase:** `0.2` authoring refinement and tooling<br>
+**First release target:** Edron `0.2.0`; compatible Hedron train `0.66.x`<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
-**Public API:** [Edron 0.1 public API](api/EDRON.md)<br>
+**Public API:** [Edron 0.2 authoring and tooling](api/EDRON_02.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
 **Packaging:** [Edron 0.1 packaging](api/EDRON_PACKAGING.md)<br>
-**Acceptance:** [Edron 0.1 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)
+**Acceptance:** [Edron 0.2 acceptance packet](acceptance/EDRON_002.md)
 
 This is the release roadmap for the separately versioned `edron` distribution. It does not assign
 Hedron release numbers, change the Hedron capability roadmap, authorize implementation, or claim
@@ -25,9 +25,9 @@ countdown or commitment to `1.0`.
 
 | Edron phase | Theme | Status |
 |---|---|---|
-| **0.0** | Design acceptance, reusable Hedron enablement, locks, fixtures, and implementation-entry evidence | **Current; Draft/Blocked; no package release** |
-| **0.1** | Complete batteries-included class facade with native Hedron identity, HTMX/HTTP parity, base tables/charts/maps, optional adapters, styling, jobs, and tooling | **Planned; blocked by Decisions A and B** |
-| **0.2** | Authoring refinement, diagnostics, source-aware tooling, and evidence-driven vocabulary polish | Candidate after `0.1` |
+| **0.0** | Design acceptance, reusable Hedron enablement, locks, fixtures, and implementation-entry evidence | **Implemented baseline** |
+| **0.1** | Complete batteries-included class facade with native Hedron identity, HTMX/HTTP parity, base tables/charts/maps, optional adapters, styling, jobs, and tooling | **Implemented in-tree; Beta** |
+| **0.2** | Authoring refinement, diagnostics, source-aware tooling, and evidence-driven vocabulary polish | **Implemented and verified in-tree; Beta** |
 | **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | Candidate after `0.2` |
 | **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | Candidate after `0.3` |
 | **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | Candidate after `0.4` |

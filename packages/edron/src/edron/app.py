@@ -13,9 +13,14 @@ from pydantic import BaseModel
 import hedron
 from edron._internal import Frame, frame_context
 from edron.dependencies import Dependency
-from edron.descriptors import Action, BoundAction, Fragment
+from edron.descriptors import Action, BoundAction, BoundFragment, Fragment
+from edron.diagnostics import source_location
 from edron.errors import BindingError, RegistrationError
 from edron.page import Page
+
+MAX_EXPLANATION_PAGES = 256
+MAX_EXPLANATION_SURFACES = 64
+MAX_SOURCE_MAP_ENTRIES = 1024
 
 
 class App:
@@ -52,6 +57,8 @@ class App:
         self._pages: dict[str, Any] = {}
         self._fragments: dict[int, Any] = {}
         self._actions: dict[int, Any] = {}
+        self._function_pages: dict[int, type[Page]] = {}
+        self._bundles: dict[int, Any] = {}
         self._sealed = False
 
     @classmethod
@@ -64,6 +71,8 @@ class App:
         instance._pages = {}
         instance._fragments = {}
         instance._actions = {}
+        instance._function_pages = {}
+        instance._bundles = {}
         instance._sealed = False
         return instance
 
@@ -73,7 +82,12 @@ class App:
 
     @property
     def native(self) -> hedron.Hedron:
+        """The exact native app (kept as a property for 0.1 compatibility)."""
         return self.hedron
+
+    def native_surface(self, surface: Any) -> Any:
+        """Resolve a registered Edron surface to its exact native projection."""
+        return self._native_surface(surface)
 
     async def __call__(self, scope: Any, receive: Any, send: Any) -> None:
         """Expose the facade as an ordinary ASGI application."""
@@ -164,6 +178,84 @@ class App:
 
         return register
 
+    def function_page(
+        self,
+        path: str,
+        *,
+        title: str,
+        name: str | None = None,
+        show_title: bool = True,
+        dependencies: Sequence[Any] = (),
+    ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+        """Register a function as a page with the same fresh-instance semantics.
+
+        This is intentionally explicit and limited to a single render function.  A
+        function page cannot grow inherited fragments/actions, which keeps the class
+        facade as the composition path for related surfaces.
+        """
+        self._ensure_open()
+        if not path.startswith("/"):
+            raise RegistrationError("page paths must begin with /", code="EDRON_PAGE_PATH")
+
+        def register(render_fn: Callable[..., Any]) -> Callable[..., Any]:
+            if not callable(render_fn) or inspect.isclass(render_fn):
+                raise RegistrationError(
+                    "@app.function_page must decorate a function", code="EDRON_PAGE_TYPE"
+                )
+            signature = inspect.signature(render_fn)
+            if any(
+                parameter.name in {"self", "page"} for parameter in signature.parameters.values()
+            ):
+                raise RegistrationError(
+                    "function pages receive only declared request parameters",
+                    code="EDRON_PAGE_INIT",
+                )
+            page_name = name or render_fn.__name__
+            self_parameter = inspect.Parameter("self", inspect.Parameter.POSITIONAL_OR_KEYWORD)
+            wrapped_signature = signature.replace(
+                parameters=[self_parameter, *signature.parameters.values()]
+            )
+            if inspect.iscoroutinefunction(render_fn):
+
+                async def async_page_render(instance: Page, **kwargs: Any) -> Any:
+                    return await render_fn(**kwargs)
+
+                page_render = async_page_render
+            else:
+
+                def sync_page_render(instance: Page, **kwargs: Any) -> Any:
+                    return render_fn(**kwargs)
+
+                page_render = sync_page_render
+
+            page_render.__name__ = render_fn.__name__
+            page_render.__module__ = render_fn.__module__
+            page_render.__qualname__ = render_fn.__qualname__
+            page_render.__signature__ = wrapped_signature  # type: ignore[attr-defined]
+            page_type = type(
+                f"{render_fn.__name__.title().replace('_', '')}Page",
+                (Page,),
+                {"__module__": render_fn.__module__, "render": page_render},
+            )
+            self._register_page(
+                page_type,
+                path,
+                title,
+                name=page_name,
+                show_title=show_title,
+                dependencies=dependencies,
+            )
+            self._function_pages[id(render_fn)] = page_type
+            self._pages[path]["function"] = render_fn
+            self._pages[path]["source"] = source_location(render_fn)
+            return render_fn
+
+        return register
+
+    def page_function(self, *args: Any, **kwargs: Any) -> Any:
+        """Alias for :meth:`function_page` with the noun-first spelling."""
+        return self.function_page(*args, **kwargs)
+
     def _register_page(
         self,
         page_type: type[Page],
@@ -177,18 +269,26 @@ class App:
         self._ensure_open()
         if not inspect.isclass(page_type) or not issubclass(page_type, Page) or page_type is Page:
             raise RegistrationError(
-                "@app.page must decorate a Page subclass", code="EDRON_PAGE_TYPE"
+                "@app.page must decorate a Page subclass",
+                code="EDRON_PAGE_TYPE",
+                source=source_location(page_type),
             )
         if path in self._pages:
             raise RegistrationError(
                 f"page path {path!r} is already registered", code="EDRON_DUPLICATE_PATH"
             )
         if "__init__" in page_type.__dict__:
-            raise RegistrationError("Page classes must not define __init__", code="EDRON_PAGE_INIT")
+            raise RegistrationError(
+                "Page classes must not define __init__",
+                code="EDRON_PAGE_INIT",
+                source=source_location(page_type),
+            )
         render = page_type.__dict__.get("render")
         if render is None or not callable(render):
             raise RegistrationError(
-                f"{page_type.__name__} must define render()", code="EDRON_RENDER_MISSING"
+                f"{page_type.__name__} must define render()",
+                code="EDRON_RENDER_MISSING",
+                source=source_location(page_type),
             )
 
         page_dependencies = [
@@ -239,7 +339,7 @@ class App:
             async_endpoint.__module__ = endpoint.__module__
             async_endpoint.__signature__ = render_signature  # type: ignore[attr-defined]
             endpoint = async_endpoint
-        self.hedron.page(
+        native_page = self.hedron.page(
             path,
             name=route_name,
             dependencies=[self._native_dependency(x) for x in page_route_dependencies],
@@ -251,6 +351,8 @@ class App:
             "title": title,
             "name": route_name,
             "show_title": show_title,
+            "source": source_location(page_type) or source_location(render),
+            "native": native_page,
         }
         self._pages[path] = page_record
         for member_name, member in page_type.__dict__.items():
@@ -420,6 +522,140 @@ class App:
 
         require_frame("page", "fragment").buffer.append(node)
 
+    def _native_surface(self, surface: Any) -> Any:
+        """Resolve an Edron definition to the exact object registered in Hedron."""
+        if isinstance(surface, BoundFragment):
+            native = self._fragments.get(id(surface.fragment))
+            return (
+                native.bind(**surface.arguments)
+                if native is not None and surface.arguments
+                else native
+            )
+        if isinstance(surface, Fragment):
+            return self._fragments.get(id(surface))
+        if isinstance(surface, BoundAction):
+            native = self._actions.get(id(surface.action))
+            return self._bind_action(native, surface.arguments) if native is not None else None
+        if isinstance(surface, Action):
+            return self._actions.get(id(surface))
+        if isinstance(surface, type) and issubclass(surface, Page):
+            for record in self._pages.values():
+                if record["type"] is surface:
+                    return record.get("native")
+        candidate: Any = surface
+        if hasattr(candidate, "to_bundle"):
+            if id(candidate) in self._bundles:
+                return self._bundles[id(candidate)]
+            return candidate.to_bundle()
+        return None
+
+    def source_map(self) -> dict[str, Any]:
+        """Return a bounded, redacted map from Edron sources to native projections."""
+        entries: list[dict[str, Any]] = []
+        truncated = False
+        for record in self._pages.values():
+            if len(entries) >= MAX_SOURCE_MAP_ENTRIES:
+                truncated = True
+                break
+            page_source = record.get("source")
+            entries.append(
+                {
+                    "kind": "page",
+                    "name": record["name"],
+                    "path": record["path"],
+                    "source": page_source.to_mapping() if page_source is not None else None,
+                }
+            )
+            page_type = record["type"]
+            for _member_name, member in page_type.__dict__.items():
+                if not isinstance(member, (Fragment, Action)):
+                    continue
+                if len(entries) >= MAX_SOURCE_MAP_ENTRIES:
+                    truncated = True
+                    break
+                native = member._native
+                source = member._source
+                entries.append(
+                    {
+                        "kind": "fragment" if isinstance(member, Fragment) else "action",
+                        "name": member.logical_id,
+                        "path": getattr(native, "path", None),
+                        "native_id": getattr(native, "logical_id", None),
+                        "source": source.to_mapping() if source is not None else None,
+                        **(
+                            {"inherited_from": member._inherited_from}
+                            if member._inherited_from
+                            else {}
+                        ),
+                    }
+                )
+        return {"schema": "edron.source-map/1", "entries": entries, "truncated": truncated}
+
+    def explain(self) -> dict[str, Any]:
+        """Explain registered Edron surfaces without executing application callbacks."""
+        pages: list[dict[str, Any]] = []
+        truncated = False
+        for record in self._pages.values():
+            if len(pages) >= MAX_EXPLANATION_PAGES:
+                truncated = True
+                break
+            page_type = record["type"]
+            surfaces = []
+            for member_name, member in page_type.__dict__.items():
+                if isinstance(member, Fragment):
+                    native = member._native
+                    surfaces.append(
+                        {
+                            "name": member_name,
+                            "kind": "fragment",
+                            "logical_id": member.logical_id,
+                            "method": "GET",
+                            "path": getattr(native, "path", None),
+                            "source": member._source.to_mapping() if member._source else None,
+                        }
+                    )
+                elif isinstance(member, Action):
+                    native = member._native
+                    surfaces.append(
+                        {
+                            "name": member_name,
+                            "kind": "action",
+                            "logical_id": member.logical_id,
+                            "method": member.method.upper(),
+                            "path": getattr(native, "path", None),
+                            "source": member._source.to_mapping() if member._source else None,
+                        }
+                    )
+            if len(surfaces) > MAX_EXPLANATION_SURFACES:
+                surfaces = surfaces[:MAX_EXPLANATION_SURFACES]
+                truncated = True
+            source = record.get("source")
+            pages.append(
+                {
+                    "name": record["name"],
+                    "path": record["path"],
+                    "title": record["title"],
+                    "class": f"{page_type.__module__}.{page_type.__qualname__}",
+                    "source": source.to_mapping() if source else None,
+                    "surfaces": surfaces,
+                }
+            )
+        return {
+            "schema": "edron.application-explanation/1",
+            "title": self.title,
+            "pages": pages,
+            "source_map": self.source_map(),
+            "native_authority": "hedron",
+            "callbacks_executed": False,
+            "truncated": truncated,
+        }
+
+    def check(self) -> Any:
+        """Return a diagnostic report for registered metadata only."""
+        from edron.tooling import check_application
+
+        return check_application(self)
+
     def _resolve_action(self, value: Any) -> Any:
         if isinstance(value, BoundAction):
             native = self._actions.get(id(value.action))
@@ -485,7 +721,9 @@ class App:
         return native.form(**kwargs)
 
     def include(self, feature: Any) -> Any:
-        return self.hedron.include_feature(feature)
+        bundle = self.hedron.include_feature(feature)
+        self._bundles[id(feature)] = bundle
+        return bundle
 
     def styles(self, name: str, source: str | Path, **kwargs: Any) -> Any:
         return self.hedron.styles(name, source, **kwargs)

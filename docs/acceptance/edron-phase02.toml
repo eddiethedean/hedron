@@ -1,0 +1,37 @@
+schema = "edron.phase-acceptance/1"
+phase = "0.2"
+status = "Verified"
+package = "edron"
+version = "0.2.0"
+native_authority = "hedron"
+callbacks_executed_by_static_check = false
+
+[[gate]]
+id = "EDR-02-DIAGNOSTICS"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase02.py::test_diagnostic_is_structured_and_redacts_sensitive_context"
+
+[[gate]]
+id = "EDR-02-STATIC"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase02.py::test_static_check_does_not_import_source"
+
+[[gate]]
+id = "EDR-02-EXPLAIN"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase02.py::test_explain_contains_source_mapped_registered_surfaces"
+
+[[gate]]
+id = "EDR-02-SCAFFOLD"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase02.py::test_scaffold_is_deterministic_and_refuses_overwrite"
+
+[[gate]]
+id = "EDR-02-AUTHORING"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase02.py::test_function_page_is_explicit_and_request_compatible"
+
+[[gate]]
+id = "EDR-02-REGRESSION"
+state = "Verified"
+evidence = "tests/unit/test_edron_runtime.py; tests/unit/test_edron_docs_checker.py"

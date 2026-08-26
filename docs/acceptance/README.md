@@ -19,6 +19,9 @@ status commentary, not a satisfied release gate.
   [fixture lock](edron-fixture-lock-001.toml), and
   [performance/resource lock](edron-performance-lock-001.toml); all remain unaccepted, incomplete,
   unlocked, and blocked.
+- [Edron `0.2.0` acceptance packet](EDRON_002.md) — **Verified release candidate**; see the
+  [phase gates](edron-phase02.toml) and [release gate](edron-release-gate-002.toml). The package is
+  ready for the maintainer-controlled `edron-v0.2.0` tag and PyPI publication step.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)

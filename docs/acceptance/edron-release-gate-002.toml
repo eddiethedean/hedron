@@ -1,0 +1,43 @@
+schema_version = 1
+packet = "edron.release/1"
+status = "Release candidate verified"
+target = "edron 0.2.0"
+tag = "edron-v0.2.0"
+package = "edron"
+version = "0.2.0"
+compatible_hedron = ">=0.66,<0.67"
+python = ">=3.11,<3.15"
+publication_state = "Not uploaded"
+release_ready = true
+native_authority = "hedron"
+callbacks_executed_by_static_check = false
+
+[[gate]]
+id = "EDR-RELEASE-METADATA-002"
+state = "Verified"
+evidence = "packages/edron/pyproject.toml; packages/edron/src/edron/__init__.py; packages/edron/CHANGELOG.md"
+
+[[gate]]
+id = "EDR-RELEASE-TESTS-002"
+state = "Verified"
+evidence = "2652 passed: pytest -q tests/unit"
+
+[[gate]]
+id = "EDR-RELEASE-LINT-002"
+state = "Verified"
+evidence = "ruff check packages/edron/src/edron tests/unit/test_edron_phase02.py tests/unit/test_package_metadata.py"
+
+[[gate]]
+id = "EDR-RELEASE-ARTIFACTS-002"
+state = "Verified"
+evidence = "scripts/check_edron_release.py against edron-0.2.0-py3-none-any.whl and edron-0.2.0.tar.gz"
+
+[[gate]]
+id = "EDR-RELEASE-DOCS-002"
+state = "Verified"
+evidence = "docs/acceptance/EDRON_002.md; docs/api/EDRON_02.md; docs/implementation/EDRON_002.md"
+
+[[gate]]
+id = "EDR-RELEASE-WORKFLOW-002"
+state = "Verified"
+evidence = ".github/workflows/edron-release.yml"

@@ -8,6 +8,7 @@ from typing import Annotated, Any, Generic, ParamSpec, TypeVar, get_args, get_or
 from fastapi.params import Depends as DependsParam
 
 from edron._internal import require_frame
+from edron.diagnostics import SourceLocation, source_location
 from edron.errors import BindingError, PhaseError, RegistrationError
 
 P = ParamSpec("P")
@@ -74,10 +75,13 @@ class Fragment(Generic[P]):
     dependencies: tuple[Any, ...] = ()
     _owner: type[Any] | None = field(default=None, init=False, repr=False)
     _native: Any = field(default=None, init=False, repr=False)
+    _source: SourceLocation | None = field(default=None, init=False, repr=False)
+    _inherited_from: str | None = field(default=None, init=False, repr=False)
 
     def __post_init__(self) -> None:
         self.name = self.name or self.fn.__name__
         self._signature = inspect.signature(self.fn)
+        self._source = source_location(self.fn)
 
     @property
     def logical_id(self) -> str:
@@ -136,10 +140,13 @@ class Action(Generic[P, R]):
     dependencies: tuple[Any, ...] = ()
     _owner: type[Any] | None = field(default=None, init=False, repr=False)
     _native: Any = field(default=None, init=False, repr=False)
+    _source: SourceLocation | None = field(default=None, init=False, repr=False)
+    _inherited_from: str | None = field(default=None, init=False, repr=False)
 
     def __post_init__(self) -> None:
         self.name = self.name or self.fn.__name__
         self._signature = inspect.signature(self.fn)
+        self._source = source_location(self.fn)
         if self.method.lower() not in {"post", "put", "patch", "delete"}:
             raise RegistrationError(
                 "actions must use an unsafe HTTP method", code="EDRON_ACTION_METHOD"
@@ -215,3 +222,38 @@ def action(fn: Callable[..., Any] | None = None, **kwargs: Any) -> Any:
         return Action(wrapped, **kwargs)
 
     return decorate
+
+
+def inherit(
+    surface: Fragment[P] | Action[P, Any], *, name: str | None = None, path: str | None = None
+) -> Any:
+    """Opt in to exposing one descriptor on a subclass.
+
+    Decorated surfaces are never inherited implicitly.  Assigning ``inherit(Base.view)``
+    creates a fresh descriptor owned by the subclass, so routes and native handles remain
+    app-scoped and a base class cannot accidentally expose a surface.
+    """
+    if not isinstance(surface, (Fragment, Action)):
+        raise RegistrationError(
+            "inherit expects a Fragment or Action descriptor", code="EDRON_PAGE_TYPE"
+        )
+    overrides: dict[str, Any] = {"name": name or surface.name}
+    if path is not None:
+        overrides["path"] = path
+    cloned = type(surface)(
+        surface.fn,
+        **{
+            field_name: getattr(surface, field_name)
+            for field_name in (
+                ("path", "fallback", "dependencies")
+                if isinstance(surface, Fragment)
+                else ("method", "path", "fallback", "idempotency", "updates", "dependencies")
+            )
+        },
+        **overrides,
+    )
+    cloned._inherited_from = surface.logical_id
+    return cloned
+
+
+expose = inherit

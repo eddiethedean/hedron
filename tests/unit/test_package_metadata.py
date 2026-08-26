@@ -72,7 +72,6 @@ def test_version_is_synchronized() -> None:
     independent_beta = (
         "hedron-native",
         "hedron-maps",
-        "edron",
     )
     for name in independent_beta:
         other = tomllib.loads(
@@ -85,6 +84,10 @@ def test_version_is_synchronized() -> None:
         ]
         assert development_status == ["Development Status :: 4 - Beta"], name
         assert str(other["version"]).startswith("0.1."), name
+    edron = tomllib.loads(
+        (ROOT / "packages" / "edron" / "pyproject.toml").read_text(encoding="utf-8")
+    )["project"]
+    assert edron["version"].startswith("0.2.")
     mcp = tomllib.loads(
         (ROOT / "packages" / "hedron-mcp" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]

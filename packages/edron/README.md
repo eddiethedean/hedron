@@ -16,5 +16,6 @@ class Home(ed.Page):
         self.text("A small Python vocabulary over native Hedron.")
 ```
 
-Edron 0.1 is a Beta implementation line. Native Hedron objects remain available through
-`app.hedron` and `Page.include()`.
+Edron 0.2 is a Beta implementation line. Native Hedron objects remain available through
+`app.hedron` and `Page.include()`. Use `edron check` for non-executing editor feedback,
+`edron explain` for source-mapped registration facts, and `edron new` for teaching scaffolds.
