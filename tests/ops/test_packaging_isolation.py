@@ -35,7 +35,7 @@ _INDEPENDENT_BETA_02 = {
     "hedron-sim",
     "hedron-notebook",
 }
-_INDEPENDENT_BETA_03 = {
+_INDEPENDENT_BETA_04 = {
     "edron",
 }
 _INDEPENDENT_MAJOR = {
@@ -56,8 +56,8 @@ def test_all_packages_declare_license_and_version() -> None:
             assert project["version"] == workspace_version, pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert str(project["version"]).startswith("0.2."), pyproject
-        elif name in _INDEPENDENT_BETA_03:
-            assert str(project["version"]).startswith("0.3."), pyproject
+        elif name in _INDEPENDENT_BETA_04:
+            assert str(project["version"]).startswith("0.4."), pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:
             assert str(project["version"]).startswith("0.1."), pyproject
         elif name in _INDEPENDENT_MAJOR:

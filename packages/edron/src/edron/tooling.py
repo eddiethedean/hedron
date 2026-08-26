@@ -229,7 +229,7 @@ def doctor(*, application: Any = None) -> dict[str, Any]:
     from packaging.specifiers import SpecifierSet
 
     requirements = {
-        "edron": (">=0.3,<0.4", "edron"),
+        "edron": (">=0.4,<0.5", "edron"),
         "hedron": (">=0.66,<0.67", "hedron"),
         "hedron-data": (">=0.66,<0.67", "hedron_data"),
         "hedron-charts": (">=0.2,<0.3", "hedron_charts"),
