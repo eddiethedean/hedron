@@ -35,3 +35,8 @@ evidence = "scripts/check_edron_release.py against edron-0.3.0 wheel and sdist"
 id = "EDR-RELEASE-DOCS-003"
 state = "Verified"
 evidence = "docs/acceptance/EDRON_003.md; docs/api/EDRON_03.md; docs/implementation/EDRON_003.md"
+
+[[gate]]
+id = "EDR-RELEASE-WORKFLOW-003"
+state = "Verified"
+evidence = ".github/workflows/edron-release.yml; tests/unit/test_edron_phase03.py; tests/ops/test_packaging_isolation.py::test_all_packages_declare_license_and_version"
