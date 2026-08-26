@@ -26,6 +26,7 @@ _BETA_PACKAGES = {
 _INDEPENDENT_BETA = {
     "hedron-native",
     "hedron-maps",
+    "edron",
 }
 _INDEPENDENT_BETA_02 = {
     "hedron-mcp",

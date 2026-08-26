@@ -1,0 +1,60 @@
+[project]
+name = "edron"
+version = "0.1.0"
+description = "Pythonic class-oriented authoring facade for Hedron"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Odos Matthews", email = "odosmatthews@gmail.com" }]
+maintainers = [{ name = "Odos Matthews", email = "odosmatthews@gmail.com" }]
+keywords = ["fastapi", "htmx", "python", "server-rendered", "dashboard"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
+]
+dependencies = [
+    "hedron>=0.66.0,<0.67",
+    "hedron-data>=0.66.0,<0.67",
+    "hedron-charts>=0.2.1,<0.3",
+    "hedron-maps>=0.1.1,<0.2",
+    "markdown>=3.5",
+    "nh3>=0.2",
+    "uvicorn>=0.52.1",
+]
+
+[project.optional-dependencies]
+pandas = ["pandas>=2.0", "narwhals>=1.0"]
+polars = ["polars>=1.0", "narwhals>=1.0"]
+pyarrow = ["pyarrow>=15.0", "narwhals>=1.0"]
+plotly = ["plotly>=5.18,<7"]
+altair = ["altair>=6,<7", "vl-convert-python>=1.0"]
+matplotlib = ["matplotlib>=3.8,<4"]
+sqlalchemy = ["sqlalchemy>=2,<3"]
+
+[project.scripts]
+edron = "edron.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/hedron"
+Repository = "https://github.com/eddiethedean/hedron"
+Issues = "https://github.com/eddiethedean/hedron/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/edron"]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src/edron", "README.md", "CHANGELOG.md", "LICENSE", "pyproject.toml"]

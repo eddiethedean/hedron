@@ -15,6 +15,7 @@ resolution-markers = [
 
 [manifest]
 members = [
+    "edron",
     "fastapi-workbench",
     "hedron",
     "hedron-charts",
@@ -653,6 +654,70 @@ sdist = { url = "https://files.pythonhosted.org/packages/8c/8b/57666417c0f90f08b
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ba/5a/18ad964b0086c6e62e2e7500f7edc89e3faa45033c71c1893d34eed2b2de/dnspython-2.8.0-py3-none-any.whl", hash = "sha256:01d9bbc4a2d76bf0db7c1f729812ded6d912bd318d3b1cf81d30c0f845dbf3af", size = 331094, upload-time = "2025-09-07T18:57:58.071Z" },
 ]
+
+[[package]]
+name = "edron"
+version = "0.1.0"
+source = { editable = "packages/edron" }
+dependencies = [
+    { name = "hedron" },
+    { name = "hedron-charts" },
+    { name = "hedron-data" },
+    { name = "hedron-maps" },
+    { name = "markdown" },
+    { name = "nh3" },
+    { name = "uvicorn" },
+]
+
+[package.optional-dependencies]
+altair = [
+    { name = "altair" },
+    { name = "vl-convert-python" },
+]
+matplotlib = [
+    { name = "matplotlib" },
+]
+pandas = [
+    { name = "narwhals" },
+    { name = "pandas" },
+]
+plotly = [
+    { name = "plotly" },
+]
+polars = [
+    { name = "narwhals" },
+    { name = "polars" },
+]
+pyarrow = [
+    { name = "narwhals" },
+    { name = "pyarrow" },
+]
+sqlalchemy = [
+    { name = "sqlalchemy" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "altair", marker = "extra == 'altair'", specifier = ">=6,<7" },
+    { name = "hedron", editable = "packages/hedron" },
+    { name = "hedron-charts", editable = "packages/hedron-charts" },
+    { name = "hedron-data", editable = "packages/hedron-data" },
+    { name = "hedron-maps", editable = "packages/hedron-maps" },
+    { name = "markdown", specifier = ">=3.5" },
+    { name = "matplotlib", marker = "extra == 'matplotlib'", specifier = ">=3.8,<4" },
+    { name = "narwhals", marker = "extra == 'pandas'", specifier = ">=1.0" },
+    { name = "narwhals", marker = "extra == 'polars'", specifier = ">=1.0" },
+    { name = "narwhals", marker = "extra == 'pyarrow'", specifier = ">=1.0" },
+    { name = "nh3", specifier = ">=0.2" },
+    { name = "pandas", marker = "extra == 'pandas'", specifier = ">=2.0" },
+    { name = "plotly", marker = "extra == 'plotly'", specifier = ">=5.18,<7" },
+    { name = "polars", marker = "extra == 'polars'", specifier = ">=1.0" },
+    { name = "pyarrow", marker = "extra == 'pyarrow'", specifier = ">=15.0" },
+    { name = "sqlalchemy", marker = "extra == 'sqlalchemy'", specifier = ">=2,<3" },
+    { name = "uvicorn", specifier = ">=0.52.1" },
+    { name = "vl-convert-python", marker = "extra == 'altair'", specifier = ">=1.0" },
+]
+provides-extras = ["pandas", "polars", "pyarrow", "plotly", "altair", "matplotlib", "sqlalchemy"]
 
 [[package]]
 name = "email-validator"
@@ -1538,6 +1603,7 @@ dev = [
     { name = "axe-playwright-python" },
     { name = "dask", extra = ["dataframe"] },
     { name = "django" },
+    { name = "edron" },
     { name = "email-validator" },
     { name = "fastapi-workbench" },
     { name = "flask" },
@@ -1599,6 +1665,7 @@ dev = [
     { name = "axe-playwright-python", specifier = ">=0.1.8" },
     { name = "dask", extras = ["dataframe"], specifier = ">=2024.1" },
     { name = "django", specifier = ">=5.2,<6" },
+    { name = "edron", editable = "packages/edron" },
     { name = "email-validator", specifier = ">=2.0" },
     { name = "fastapi-workbench", editable = "packages/fastapi-workbench" },
     { name = "flask", specifier = ">=3,<4" },

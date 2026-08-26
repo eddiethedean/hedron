@@ -1,0 +1,453 @@
+from __future__ import annotations
+
+import inspect
+from collections.abc import Callable, Mapping, Sequence
+from pathlib import Path
+from typing import Annotated, Any, get_args, get_origin
+
+from pydantic import BaseModel
+
+import hedron
+from edron._internal import Frame, frame_context
+from edron.dependencies import Dependency
+from edron.descriptors import Action, BoundAction, Fragment
+from edron.errors import BindingError, RegistrationError
+from edron.page import Page
+
+
+class App:
+    """Class-oriented facade over exactly one native :class:`hedron.Hedron` app."""
+
+    def __init__(
+        self,
+        *,
+        title: str,
+        theme: Any = None,
+        security: Any = "standard",
+        session_secret: str | None = None,
+        production: bool | None = None,
+        build_dir: str | Path | None = None,
+        root_path: str | None = None,
+        debug: bool = False,
+    ) -> None:
+        if not isinstance(title, str) or not title.strip():
+            raise RegistrationError("App.title must be a non-empty string", code="EDRON_APP_TITLE")
+        kwargs: dict[str, Any] = {
+            "title": title,
+            "security": security,
+            "production": production,
+            "build_dir": build_dir,
+            "root_path": root_path,
+            "debug": debug,
+        }
+        if theme is not None:
+            kwargs["theme"] = theme
+        if session_secret is not None:
+            kwargs["session_secret"] = session_secret
+        self.title = title
+        self.hedron = hedron.Hedron(**kwargs)
+        self._pages: dict[str, Any] = {}
+        self._fragments: dict[int, Any] = {}
+        self._actions: dict[int, Any] = {}
+        self._sealed = False
+
+    @classmethod
+    def from_hedron(cls, app: hedron.Hedron, *, title: str | None = None) -> App:
+        if not isinstance(app, hedron.Hedron):
+            raise TypeError("from_hedron expects a Hedron instance")
+        instance = cls.__new__(cls)
+        instance.title = title or getattr(app, "title", "Edron application")
+        instance.hedron = app
+        instance._pages = {}
+        instance._fragments = {}
+        instance._actions = {}
+        instance._sealed = False
+        return instance
+
+    @property
+    def routes(self) -> Any:
+        return self.hedron.routes
+
+    @property
+    def native(self) -> hedron.Hedron:
+        return self.hedron
+
+    async def __call__(self, scope: Any, receive: Any, send: Any) -> None:
+        """Expose the facade as an ordinary ASGI application."""
+        await self.hedron(scope, receive, send)
+
+    def _ensure_open(self) -> None:
+        if self._sealed:
+            raise RegistrationError("the Edron app is sealed", code="EDRON_APP_SEALED")
+
+    @staticmethod
+    def _unwrap_annotations(annotation: Any) -> Any:
+        if get_origin(annotation) is Annotated:
+            return get_args(annotation)[0]
+        return annotation
+
+    @staticmethod
+    def _dependency_signature(
+        signature: inspect.Signature, dependencies: Sequence[Any]
+    ) -> inspect.Signature:
+        params = list(signature.parameters.values())
+        params.extend(
+            inspect.Parameter(
+                f"__edron_dep_{index}",
+                inspect.Parameter.KEYWORD_ONLY,
+                annotation=Any,
+                default=dependency.native() if isinstance(dependency, Dependency) else dependency,
+            )
+            for index, dependency in enumerate(dependencies)
+        )
+        return signature.replace(parameters=params)
+
+    @staticmethod
+    def _without_self(signature: inspect.Signature) -> inspect.Signature:
+        params = list(signature.parameters.values())
+        if params and params[0].name == "self":
+            params.pop(0)
+        return signature.replace(parameters=params)
+
+    def _page_dependencies(self, page_type: type[Page]) -> list[Dependency[Any]]:
+        return [value for value in page_type.__dict__.values() if isinstance(value, Dependency)]
+
+    def _instantiate(self, page_type: type[Page], dependency_values: Mapping[str, Any]) -> Page:
+        try:
+            instance = page_type()
+        except TypeError as exc:
+            raise RegistrationError(
+                f"{page_type.__name__} must have a no-argument constructor", code="EDRON_PAGE_INIT"
+            ) from exc
+        for name, value in dependency_values.items():
+            setattr(instance, name, value)
+        return instance
+
+    @staticmethod
+    def _dependency_values(page_type: type[Page], kwargs: dict[str, Any]) -> dict[str, Any]:
+        values: dict[str, Any] = {}
+        for index, dependency in enumerate(
+            value for value in page_type.__dict__.values() if isinstance(value, Dependency)
+        ):
+            key = f"__edron_dep_{index}"
+            if key in kwargs:
+                values[dependency.name or key] = kwargs.pop(key)
+        return values
+
+    @staticmethod
+    def _call_with_kwargs(fn: Callable[..., Any], instance: Page, kwargs: dict[str, Any]) -> Any:
+        signature = inspect.signature(fn)
+        names = set(signature.parameters) - {"self"}
+        return fn(instance, **{key: value for key, value in kwargs.items() if key in names})
+
+    def page(
+        self,
+        path: str,
+        *,
+        title: str,
+        name: str | None = None,
+        show_title: bool = True,
+        dependencies: Sequence[Any] = (),
+    ) -> Callable[[type[Page]], type[Page]]:
+        self._ensure_open()
+        if not path.startswith("/"):
+            raise RegistrationError("page paths must begin with /", code="EDRON_PAGE_PATH")
+
+        def register(page_type: type[Page]) -> type[Page]:
+            self._register_page(
+                page_type, path, title, name=name, show_title=show_title, dependencies=dependencies
+            )
+            return page_type
+
+        return register
+
+    def _register_page(
+        self,
+        page_type: type[Page],
+        path: str,
+        title: str,
+        *,
+        name: str | None,
+        show_title: bool,
+        dependencies: Sequence[Any],
+    ) -> None:
+        self._ensure_open()
+        if not inspect.isclass(page_type) or not issubclass(page_type, Page) or page_type is Page:
+            raise RegistrationError(
+                "@app.page must decorate a Page subclass", code="EDRON_PAGE_TYPE"
+            )
+        if path in self._pages:
+            raise RegistrationError(
+                f"page path {path!r} is already registered", code="EDRON_DUPLICATE_PATH"
+            )
+        if "__init__" in page_type.__dict__:
+            raise RegistrationError("Page classes must not define __init__", code="EDRON_PAGE_INIT")
+        render = page_type.__dict__.get("render")
+        if render is None or not callable(render):
+            raise RegistrationError(
+                f"{page_type.__name__} must define render()", code="EDRON_RENDER_MISSING"
+            )
+
+        page_dependencies = [
+            *self._page_dependencies(page_type),
+            *[item for item in dependencies if isinstance(item, Dependency)],
+        ]
+        render_signature = self._dependency_signature(
+            self._without_self(inspect.signature(render)), page_dependencies
+        )
+        route_name = name or page_type.__name__.lower()
+
+        def endpoint(**kwargs: Any) -> Any:
+            dependency_values = self._dependency_values(page_type, kwargs)
+            request = self._request()
+            frame = Frame(self, None, "page", request=request)
+            with frame_context(frame):
+                instance = self._instantiate(page_type, dependency_values)
+                frame.page = instance
+                result = self._call_with_kwargs(render, instance, kwargs)
+                if inspect.isawaitable(result):
+                    raise RuntimeError("async render requires the async route adapter")
+                if result is not None:
+                    instance.include(result)
+                return hedron_core_page(
+                    *instance._resolved_output(), title=title if show_title else None
+                )
+
+        endpoint.__name__ = f"edron_{route_name}"
+        endpoint.__module__ = page_type.__module__
+        endpoint.__signature__ = render_signature  # type: ignore[attr-defined]
+        if inspect.iscoroutinefunction(render):
+
+            async def async_endpoint(**kwargs: Any) -> Any:
+                dependency_values = self._dependency_values(page_type, kwargs)
+                frame = Frame(self, None, "page", request=self._request())
+                with frame_context(frame):
+                    instance = self._instantiate(page_type, dependency_values)
+                    frame.page = instance
+                    result = await self._call_with_kwargs(render, instance, kwargs)
+                    if result is not None:
+                        instance.include(result)
+                    return hedron_core_page(
+                        *instance._resolved_output(), title=title if show_title else None
+                    )
+
+            async_endpoint.__name__ = endpoint.__name__
+            async_endpoint.__module__ = endpoint.__module__
+            async_endpoint.__signature__ = render_signature  # type: ignore[attr-defined]
+            endpoint = async_endpoint
+        self.hedron.page(
+            path, name=route_name, dependencies=[self._native_dependency(x) for x in dependencies]
+        )(endpoint)
+
+        page_record = {
+            "type": page_type,
+            "path": path,
+            "title": title,
+            "name": route_name,
+            "show_title": show_title,
+        }
+        self._pages[path] = page_record
+        for member_name, member in page_type.__dict__.items():
+            if isinstance(member, Fragment):
+                self._register_fragment(member, page_type, path, member_name, page_dependencies)
+            elif isinstance(member, Action):
+                self._register_action(member, page_type, path, member_name, page_dependencies)
+
+    @staticmethod
+    def _native_dependency(value: Any) -> Any:
+        return value.native() if isinstance(value, Dependency) else value
+
+    def _register_fragment(
+        self,
+        definition: Fragment[Any],
+        page_type: type[Page],
+        page_path: str,
+        member_name: str,
+        dependencies: Sequence[Any],
+    ) -> None:
+        route = definition.path or f"{page_path.rstrip('/')}/__edron/{member_name}"
+        fn_signature = self._without_self(inspect.signature(definition.fn))
+        signature = self._dependency_signature(fn_signature, dependencies)
+
+        def endpoint(**kwargs: Any) -> Any:
+            dependency_values = self._dependency_values(page_type, kwargs)
+            frame = Frame(self, None, "fragment", request=self._request())
+            with frame_context(frame):
+                instance = self._instantiate(page_type, dependency_values)
+                frame.page = instance
+                result = self._call_with_kwargs(definition.fn, instance, kwargs)
+                if inspect.isawaitable(result):
+                    raise RuntimeError("async fragments require the async route adapter")
+                if result is not None:
+                    instance.include(result)
+                return hedron_core_fragment(*instance._resolved_output())
+
+        endpoint.__name__ = f"edron_fragment_{page_type.__name__}_{member_name}"
+        endpoint.__module__ = page_type.__module__
+        endpoint.__signature__ = signature  # type: ignore[attr-defined]
+        if inspect.iscoroutinefunction(definition.fn):
+
+            async def async_endpoint(**kwargs: Any) -> Any:
+                dependency_values = self._dependency_values(page_type, kwargs)
+                frame = Frame(self, None, "fragment", request=self._request())
+                with frame_context(frame):
+                    instance = self._instantiate(page_type, dependency_values)
+                    frame.page = instance
+                    result = await self._call_with_kwargs(definition.fn, instance, kwargs)
+                    if result is not None:
+                        instance.include(result)
+                    return hedron_core_fragment(*instance._resolved_output())
+
+            async_endpoint.__name__ = endpoint.__name__
+            async_endpoint.__module__ = endpoint.__module__
+            async_endpoint.__signature__ = signature  # type: ignore[attr-defined]
+            endpoint = async_endpoint
+        native = self.hedron.refreshable(
+            route,
+            name=f"{page_type.__name__}_{member_name}",
+            fallback=definition.fallback,
+            dependencies=[self._native_dependency(x) for x in dependencies],
+        )(endpoint)
+        definition._native = native
+        self._fragments[id(definition)] = native
+
+    def _register_action(
+        self,
+        definition: Action[Any, Any],
+        page_type: type[Page],
+        page_path: str,
+        member_name: str,
+        dependencies: Sequence[Any],
+    ) -> None:
+        route = definition.path or f"{page_path.rstrip('/')}/__edron/{member_name}"
+        signature = self._without_self(inspect.signature(definition.fn))
+        parameters = list(signature.parameters.values())
+        for index, parameter in enumerate(parameters):
+            annotation = self._unwrap_annotations(parameter.annotation)
+            if inspect.isclass(annotation) and issubclass(annotation, BaseModel):
+                from hedron.type_authoring import FormBody
+
+                parameters[index] = parameter.replace(annotation=Annotated[annotation, FormBody()])
+                break
+        signature = self._dependency_signature(
+            signature.replace(parameters=parameters), dependencies
+        )
+
+        def endpoint(**kwargs: Any) -> Any:
+            dependency_values = self._dependency_values(page_type, kwargs)
+            frame = Frame(self, None, "action", request=self._request())
+            with frame_context(frame):
+                instance = self._instantiate(page_type, dependency_values)
+                frame.page = instance
+                return self._call_with_kwargs(definition.fn, instance, kwargs)
+
+        endpoint.__name__ = f"edron_action_{page_type.__name__}_{member_name}"
+        endpoint.__module__ = page_type.__module__
+        endpoint.__signature__ = signature  # type: ignore[attr-defined]
+        if inspect.iscoroutinefunction(definition.fn):
+
+            async def async_endpoint(**kwargs: Any) -> Any:
+                dependency_values = self._dependency_values(page_type, kwargs)
+                frame = Frame(self, None, "action", request=self._request())
+                with frame_context(frame):
+                    instance = self._instantiate(page_type, dependency_values)
+                    frame.page = instance
+                    return await self._call_with_kwargs(definition.fn, instance, kwargs)
+
+            async_endpoint.__name__ = endpoint.__name__
+            async_endpoint.__module__ = endpoint.__module__
+            async_endpoint.__signature__ = signature  # type: ignore[attr-defined]
+            endpoint = async_endpoint
+        native = self.hedron.command(
+            route,
+            method=definition.method.upper(),
+            name=f"{page_type.__name__}_{member_name}",
+            fallback=definition.fallback,
+            dependencies=[self._native_dependency(x) for x in dependencies],
+        )(endpoint)
+        definition._native = native
+        self._actions[id(definition)] = native
+
+    def _request(self) -> Any:
+        try:
+            from hedron.routing.router import current_request
+
+            return current_request.get()
+        except (ImportError, LookupError):
+            return None
+
+    def _mount_fragment(self, definition: Fragment[Any], arguments: Mapping[str, Any]) -> None:
+        native = self._fragments.get(id(definition))
+        if native is None:
+            raise BindingError("fragment is not registered on this app", code="EDRON_FRAGMENT_APP")
+        try:
+            node = native.bind(**dict(arguments))() if arguments else native()
+        except Exception as exc:
+            raise BindingError(
+                f"could not bind fragment {definition.name}", code="EDRON_FRAGMENT_BIND"
+            ) from exc
+        from edron._internal import require_frame
+
+        require_frame("page", "fragment").buffer.append(node)
+
+    def _resolve_action(self, value: Any) -> Any:
+        if isinstance(value, BoundAction):
+            return self._actions.get(id(value.action))
+        if isinstance(value, Action):
+            return self._actions.get(id(value))
+        return value
+
+    def _action_button(self, label: str, action: Any, **kwargs: Any) -> Any:
+        native = self._resolve_action(action)
+        if native is None or not hasattr(native, "button"):
+            raise BindingError(
+                "button requires a registered Edron action", code="EDRON_ACTION_BIND"
+            )
+        confirm = kwargs.pop("confirm", None)
+        if confirm is not None:
+            kwargs["hx-confirm"] = getattr(confirm, "message", confirm)
+        variant = kwargs.pop("variant", None)
+        size = kwargs.pop("size", None)
+        width = kwargs.pop("width", None)
+        classes = ["edron-action-button"]
+        if variant:
+            classes.append(f"edron-action-button--{variant}")
+        if size:
+            classes.append(f"edron-action-button--{size}")
+        if width:
+            classes.append(f"edron-action-button--{width}")
+        kwargs["class_"] = " ".join(classes)
+        return native.button(
+            label, **{key: value for key, value in kwargs.items() if value is not None}
+        )
+
+    def _action_form(self, action: Any, *, model: Any = None, **kwargs: Any) -> Any:
+        native = self._resolve_action(action)
+        if native is None or not hasattr(native, "form"):
+            raise BindingError("form requires a registered Edron action", code="EDRON_ACTION_BIND")
+        if model is not None and getattr(native, "input_model", None) is None:
+            raise BindingError(
+                "the action does not have a typed form body", code="EDRON_FORM_MODEL"
+            )
+        return native.form(**kwargs)
+
+    def include(self, feature: Any) -> Any:
+        return self.hedron.include_feature(feature)
+
+    def styles(self, name: str, source: str | Path, **kwargs: Any) -> Any:
+        return self.hedron.styles(name, source, **kwargs)
+
+    def seal(self) -> None:
+        self._sealed = True
+
+
+def hedron_core_page(*nodes: Any, title: str | None = None) -> Any:
+    from hedron_core.builtins.document import Page as NativePage
+
+    return NativePage(*nodes, title=title)
+
+
+def hedron_core_fragment(*nodes: Any) -> Any:
+    from hedron_core.builtins.document import Fragment as NativeFragment
+
+    return NativeFragment(*nodes)

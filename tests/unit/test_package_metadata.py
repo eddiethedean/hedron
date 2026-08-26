@@ -72,6 +72,7 @@ def test_version_is_synchronized() -> None:
     independent_beta = (
         "hedron-native",
         "hedron-maps",
+        "edron",
     )
     for name in independent_beta:
         other = tomllib.loads(
@@ -146,6 +147,7 @@ def test_package_maturity_classifiers() -> None:
         "hedron-sim": "Development Status :: 4 - Beta",
         "hedron-notebook": "Development Status :: 4 - Beta",
         "hedron-jinja": "Development Status :: 4 - Beta",
+        "edron": "Development Status :: 4 - Beta",
     }
     for package, maturity in expected.items():
         project = tomllib.loads(

@@ -29,6 +29,7 @@ packages = [
   "hedron-workbench",
   "hedron-posit",
   "hedron-elements",
+  "edron",
   "fastapi-workbench",
   "hedron-runtime-node",
   "hedron-runtime-java",
@@ -319,3 +320,14 @@ supported = []
 experimental = ["web_component_abi", "hedron_example"]
 excluded = ["production_grade_until_0_41", "stable_tag_promotion"]
 production_grade_destination = "0.42"
+
+[edron]
+owner = "edron"
+maturity = "beta"
+channel = "pypi"
+pin = ">=0.1.0,<0.2"
+evidence = "edron-release-gate-001.toml"
+disposition = "incubator"
+supported = ["class_pages", "native_fragments", "native_actions", "native_inputs"]
+experimental = ["optional_adapters", "job_flow"]
+excluded = ["production_grade_until_edron_acceptance_packet_is_verified"]
