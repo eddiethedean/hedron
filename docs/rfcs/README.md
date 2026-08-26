@@ -111,3 +111,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0091](RFC-0091-HTMX-HEDRON-EXTENSION.md) | Hedron HTMX interaction extension | Proposed; phase 0.64 |
 | [0092](RFC-0092-INTEGRATED-STYLING-PLATFORM.md) | Integrated styling platform and application CSS | Proposed; phase 0.65 / D-109 / D-110 |
 | [0093](RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md) | HDJ parity and registry integration | Accepted / implemented; phase 0.66 / D-111 / D-112 |
+| [0094](RFC-0094-EDRON-AUTHORING-FACADE.md) | Edron batteries-included Pythonic authoring facade | Draft; phase unassigned |

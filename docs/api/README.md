@@ -135,4 +135,11 @@ These contracts compile onto the golden path. They are **not** required for Hell
 - [Explorer architecture](EXPLORER_ARCHITECTURE.md) — **0.50** Published in-tree (related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503))
 - [Curated extras](EXTRAS.md) — historical 0.51 contract; see [Current release and support](../guides/current-release.md) for installable versions.
 
+## Draft package contracts
+
+- [Edron 0.1 public API](EDRON.md) — draft class-oriented, batteries-included facade over Hedron;
+  **not implemented or published**.
+- [Edron 0.1 state and interaction](EDRON_STATE_INTERACTION.md) — draft state ownership,
+  lifecycle, HTTP/HTMX, concurrency, and fallback contract; **not implemented or published**.
+
 Public exception types: [EXCEPTIONS.md](EXCEPTIONS.md).
