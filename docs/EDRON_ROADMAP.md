@@ -66,7 +66,9 @@ Required outcomes:
 
 - accept RFC-0094 and the public API, state/interaction, packaging, capability, implementation, and
   golden-application documents as one coherent design;
-- resolve `UP-001` through `UP-011` as Existing or Shipped native Hedron authorities;
+- deliver the five focused native workstreams (`HEDRON-WS-CLASS`, `HEDRON-WS-INTERACTIONS`,
+  `HEDRON-WS-PROVENANCE`, `HEDRON-WS-JOBS`, and `HEDRON-WS-STYLING`) while resolving each
+  constituent `UP-001` through `UP-011` row as Existing or Shipped;
 - freeze the capability, package, public API, lowering, state/interaction, fixture, performance,
   security, and accessibility locks;
 - implement reusable Hedron enablement in the owning Hedron packages under their own acceptance

@@ -1,0 +1,470 @@
+schema_version = 1
+packet = "edron-performance-lock/1"
+status = "Draft and blocked"
+target = "edron 0.1.0"
+planning_baseline = "hedron workspace 0.66.1"
+authority = "EDRON_001.md#performance-and-resource-lock"
+accepted = false
+complete = false
+locked = false
+all_limits_frozen = false
+comparison_authority = "equivalent explicit native Hedron"
+blockers = [
+  "No accepted compatible package train or benchmark artifact exists.",
+  "Runner class, fixtures, repetitions, statistics, and cold/warm protocols are unfrozen.",
+  "Every numeric threshold and bounded-runtime limit remains unassigned.",
+  "No retained baseline, comparator, regression rationale, or reviewer approval exists."
+]
+
+[measurement]
+runner_class = "unassigned"
+operating_system = "unassigned"
+python = "unassigned"
+hedron_train = "unassigned"
+edron_artifact = "unassigned"
+repetitions = "unassigned"
+summary_statistic = "unassigned"
+variance_policy = "unassigned"
+retained_report = "unassigned"
+state = "Unfrozen"
+
+[[budget]]
+id = "PERF-WHEEL-COMPRESSED"
+metric = "Edron wheel compressed size"
+unit = "bytes"
+direction = "maximum"
+mode = "built artifact"
+comparator = "none"
+limit_state = "Unfrozen"
+failure = "reject artifact"
+
+[[budget]]
+id = "PERF-WHEEL-UNCOMPRESSED"
+metric = "Edron wheel installed uncompressed size"
+unit = "bytes"
+direction = "maximum"
+mode = "clean base environment"
+comparator = "none"
+limit_state = "Unfrozen"
+failure = "reject artifact"
+
+[[budget]]
+id = "PERF-BASE-ENVIRONMENT"
+metric = "Clean base environment installed size"
+unit = "bytes"
+direction = "maximum"
+mode = "resolved package train"
+comparator = "equivalent Hedron environment"
+limit_state = "Unfrozen"
+failure = "fail installation budget gate"
+
+[[budget]]
+id = "PERF-IMPORT-COLD-TIME"
+metric = "Cold root import elapsed time"
+unit = "milliseconds"
+direction = "maximum"
+mode = "fresh interpreter"
+comparator = "equivalent native imports"
+limit_state = "Unfrozen"
+failure = "fail import budget gate"
+
+[[budget]]
+id = "PERF-IMPORT-WARM-TIME"
+metric = "Warm root import elapsed time"
+unit = "milliseconds"
+direction = "maximum"
+mode = "same interpreter"
+comparator = "equivalent native imports"
+limit_state = "Unfrozen"
+failure = "fail import budget gate"
+
+[[budget]]
+id = "PERF-IMPORT-PEAK-MEMORY"
+metric = "Cold root import peak allocated memory"
+unit = "bytes"
+direction = "maximum"
+mode = "fresh interpreter"
+comparator = "equivalent native imports"
+limit_state = "Unfrozen"
+failure = "fail import budget gate"
+
+[[budget]]
+id = "PERF-IMPORT-MODULES"
+metric = "Modules loaded by root import"
+unit = "modules"
+direction = "maximum"
+mode = "fresh interpreter"
+comparator = "equivalent native imports"
+limit_state = "Unfrozen"
+failure = "fail import budget gate"
+
+[[budget]]
+id = "PERF-REGISTER-PAGE-TIME"
+metric = "Page class registration elapsed time"
+unit = "microseconds_per_page"
+direction = "maximum"
+mode = "trusted registration"
+comparator = "equivalent native page registration"
+limit_state = "Unfrozen"
+failure = "reject registration atomically"
+
+[[budget]]
+id = "PERF-REGISTER-FRAGMENT-TIME"
+metric = "Fragment registration elapsed time"
+unit = "microseconds_per_fragment"
+direction = "maximum"
+mode = "trusted registration"
+comparator = "equivalent native fragment registration"
+limit_state = "Unfrozen"
+failure = "reject registration atomically"
+
+[[budget]]
+id = "PERF-REGISTER-ACTION-TIME"
+metric = "Action registration elapsed time"
+unit = "microseconds_per_action"
+direction = "maximum"
+mode = "trusted registration"
+comparator = "equivalent native action registration"
+limit_state = "Unfrozen"
+failure = "reject registration atomically"
+
+[[budget]]
+id = "PERF-REGISTER-PEAK-MEMORY"
+metric = "Class registration peak allocated memory"
+unit = "bytes_per_page"
+direction = "maximum"
+mode = "trusted registration"
+comparator = "equivalent native registration"
+limit_state = "Unfrozen"
+failure = "reject registration atomically"
+
+[[budget]]
+id = "PERF-REQUEST-FULL-PAGE"
+metric = "Full-page request latency overhead"
+unit = "ratio_to_native"
+direction = "maximum"
+mode = "warm steady state"
+comparator = "equivalent explicit native Hedron page"
+limit_state = "Unfrozen"
+failure = "fail request performance gate"
+
+[[budget]]
+id = "PERF-REQUEST-FRAGMENT"
+metric = "Fragment request latency overhead"
+unit = "ratio_to_native"
+direction = "maximum"
+mode = "warm steady state"
+comparator = "equivalent explicit native Hedron fragment"
+limit_state = "Unfrozen"
+failure = "fail request performance gate"
+
+[[budget]]
+id = "PERF-REQUEST-ACTION"
+metric = "Action request latency overhead"
+unit = "ratio_to_native"
+direction = "maximum"
+mode = "warm steady state"
+comparator = "equivalent explicit native Hedron action"
+limit_state = "Unfrozen"
+failure = "fail request performance gate"
+
+[[budget]]
+id = "PERF-REQUEST-ALLOCATIONS"
+metric = "Request allocation overhead"
+unit = "ratio_to_native"
+direction = "maximum"
+mode = "full-page fragment and action fixtures"
+comparator = "equivalent explicit native Hedron"
+limit_state = "Unfrozen"
+failure = "fail request performance gate"
+
+[[budget]]
+id = "LIMIT-OUTPUT-NODES"
+metric = "Native output nodes per execution frame"
+unit = "nodes"
+direction = "maximum"
+mode = "before emission"
+comparator = "native renderer limit"
+limit_state = "Unfrozen"
+failure = "fail closed without partial output"
+
+[[budget]]
+id = "LIMIT-OUTPUT-BYTES"
+metric = "Generated output bytes per response"
+unit = "bytes"
+direction = "maximum"
+mode = "before emission"
+comparator = "native response limit"
+limit_state = "Unfrozen"
+failure = "fail closed without partial output"
+
+[[budget]]
+id = "LIMIT-OUTPUT-DEPTH"
+metric = "Output container nesting depth"
+unit = "levels"
+direction = "maximum"
+mode = "request lowering"
+comparator = "native renderer limit"
+limit_state = "Unfrozen"
+failure = "fail closed without partial output"
+
+[[budget]]
+id = "LIMIT-CONTROLS"
+metric = "Controls per page or fragment plan"
+unit = "controls"
+direction = "maximum"
+mode = "registration and request lowering"
+comparator = "native binding plan limit"
+limit_state = "Unfrozen"
+failure = "reject plan atomically"
+
+[[budget]]
+id = "LIMIT-CONTROL-OPTIONS"
+metric = "Options per input control"
+unit = "options"
+direction = "maximum"
+mode = "request lowering"
+comparator = "native control limit"
+limit_state = "Unfrozen"
+failure = "reject control before emission"
+
+[[budget]]
+id = "LIMIT-BINDINGS"
+metric = "Typed bindings per route operation"
+unit = "bindings"
+direction = "maximum"
+mode = "registration"
+comparator = "native binding plan limit"
+limit_state = "Unfrozen"
+failure = "reject registration atomically"
+
+[[budget]]
+id = "LIMIT-TARGETS"
+metric = "Update targets and effect fan-out per operation"
+unit = "targets"
+direction = "maximum"
+mode = "registration and response"
+comparator = "native interaction limit"
+limit_state = "Unfrozen"
+failure = "reject operation without partial effects"
+
+[[budget]]
+id = "LIMIT-METADATA-BYTES"
+metric = "Generated metadata trace and source-map bytes"
+unit = "bytes"
+direction = "maximum"
+mode = "registration and explanation"
+comparator = "native report limits"
+limit_state = "Unfrozen"
+failure = "truncate only at an explicitly marked native boundary or fail closed"
+
+[[budget]]
+id = "LIMIT-ASSET-COUNT"
+metric = "Distinct planned assets per application"
+unit = "assets"
+direction = "maximum"
+mode = "sealed native asset graph"
+comparator = "native asset planner limit"
+limit_state = "Unfrozen"
+failure = "reject asset plan atomically"
+
+[[budget]]
+id = "LIMIT-ASSET-BYTES"
+metric = "Generated local asset bytes per application"
+unit = "bytes"
+direction = "maximum"
+mode = "built artifact"
+comparator = "native asset planner limit"
+limit_state = "Unfrozen"
+failure = "reject artifact"
+
+[[budget]]
+id = "PERF-OPTIONAL-ABSENT"
+metric = "Optional capability absent-path check time"
+unit = "milliseconds"
+direction = "maximum"
+mode = "first and cached feature call"
+comparator = "native adapter registry"
+limit_state = "Unfrozen"
+failure = "fail optional capability budget gate"
+
+[[budget]]
+id = "PERF-OPTIONAL-SUCCESS"
+metric = "Optional capability successful activation time"
+unit = "milliseconds"
+direction = "maximum"
+mode = "first and cached feature call"
+comparator = "native adapter activation"
+limit_state = "Unfrozen"
+failure = "fail optional capability budget gate"
+
+[[budget]]
+id = "LIMIT-OPTIONAL-CACHE"
+metric = "Retained optional capability cache entries"
+unit = "entries"
+direction = "maximum"
+mode = "process lifetime"
+comparator = "native adapter registry"
+limit_state = "Unfrozen"
+failure = "reject unbounded cache design"
+
+[[budget]]
+id = "LIMIT-SESSION-BYTES"
+metric = "Typed session serialized value bytes"
+unit = "bytes_per_key"
+direction = "maximum"
+mode = "native session write"
+comparator = "native session codec and backend"
+limit_state = "Unfrozen"
+failure = "reject write without partial mutation"
+
+[[budget]]
+id = "LIMIT-CACHE-ENTRY-BYTES"
+metric = "Cache entry serialized bytes"
+unit = "bytes_per_entry"
+direction = "maximum"
+mode = "native cache write"
+comparator = "native cache backend"
+limit_state = "Unfrozen"
+failure = "reject write without partial mutation"
+
+[[budget]]
+id = "LIMIT-CACHE-ENTRIES"
+metric = "Cache entries per declared scope"
+unit = "entries"
+direction = "maximum"
+mode = "native cache lifecycle"
+comparator = "native cache backend"
+limit_state = "Unfrozen"
+failure = "fail closed according to frozen eviction policy"
+
+[[budget]]
+id = "LIMIT-IDEMPOTENCY-RETENTION"
+metric = "Idempotency record retention"
+unit = "seconds"
+direction = "bounded_range"
+mode = "native operation store"
+comparator = "native idempotency policy"
+limit_state = "Unfrozen"
+failure = "reject unsafe configuration"
+
+[[budget]]
+id = "LIMIT-JOB-PAYLOAD"
+metric = "Serialized job payload bytes"
+unit = "bytes"
+direction = "maximum"
+mode = "native job submission"
+comparator = "native job backend"
+limit_state = "Unfrozen"
+failure = "reject submission before enqueue"
+
+[[budget]]
+id = "LIMIT-JOB-RESULT"
+metric = "Serialized job result metadata bytes"
+unit = "bytes"
+direction = "maximum"
+mode = "native job completion"
+comparator = "native job backend"
+limit_state = "Unfrozen"
+failure = "fail result publication closed"
+
+[[budget]]
+id = "LIMIT-JOB-POLL-RATE"
+metric = "Job status polls per scoped subject"
+unit = "requests_per_minute"
+direction = "maximum"
+mode = "native status endpoint"
+comparator = "native polling policy"
+limit_state = "Unfrozen"
+failure = "return native bounded-rate response"
+
+[[budget]]
+id = "LIMIT-JOB-ATTEMPTS"
+metric = "Job execution attempts"
+unit = "attempts"
+direction = "maximum"
+mode = "native job lifecycle"
+comparator = "native job backend"
+limit_state = "Unfrozen"
+failure = "enter native terminal failure"
+
+[[budget]]
+id = "LIMIT-JOB-RETENTION"
+metric = "Terminal job record and result retention"
+unit = "seconds"
+direction = "bounded_range"
+mode = "native job backend"
+comparator = "native job backend"
+limit_state = "Unfrozen"
+failure = "expire through native lifecycle"
+
+[[budget]]
+id = "LIMIT-UPLOAD-BYTES"
+metric = "Accepted request upload bytes"
+unit = "bytes"
+direction = "maximum"
+mode = "native request boundary"
+comparator = "native body and upload policy"
+limit_state = "Unfrozen"
+failure = "reject before application processing"
+
+[[budget]]
+id = "LIMIT-DOWNLOAD-BYTES"
+metric = "In-memory download bytes"
+unit = "bytes"
+direction = "maximum"
+mode = "native download response"
+comparator = "native download policy"
+limit_state = "Unfrozen"
+failure = "require an opaque provider ID or reject"
+
+[[budget]]
+id = "PERF-CLI-CHECK"
+metric = "Static check elapsed time and peak memory"
+unit = "milliseconds_and_bytes"
+direction = "maximum"
+mode = "representative source corpus"
+comparator = "none"
+limit_state = "Unfrozen"
+failure = "fail tooling performance gate"
+
+[[budget]]
+id = "PERF-CLI-TRUSTED"
+metric = "Trusted register and explain elapsed time and peak memory"
+unit = "milliseconds_and_bytes"
+direction = "maximum"
+mode = "isolated trusted fixture"
+comparator = "native registration and explanation"
+limit_state = "Unfrozen"
+failure = "fail tooling performance gate"
+
+[[budget]]
+id = "LIMIT-CLI-OUTPUT"
+metric = "CLI JSON SARIF and text report bytes"
+unit = "bytes"
+direction = "maximum"
+mode = "representative maximum fixture"
+comparator = "native report limits"
+limit_state = "Unfrozen"
+failure = "emit a bounded explicit truncation diagnostic or fail"
+
+[[budget]]
+id = "PERF-RESOLVE-INSTALL-BUILD"
+metric = "Resolver install and build elapsed time"
+unit = "seconds"
+direction = "maximum"
+mode = "clean pip and uv environments"
+comparator = "locked baseline artifact train"
+limit_state = "Unfrozen"
+failure = "fail packaging performance gate"
+
+[invariants]
+numeric_limits_required_before_design_acceptance = true
+thresholds_frozen_before_benchmark_execution = true
+native_comparison_required = true
+cold_and_warm_modes_explicit = true
+fail_closed_on_exhaustion = true
+partial_output_or_mutation_allowed = false
+unbounded_values_allowed = false
+post_hoc_thresholds_allowed = false
+retained_reports_required = true

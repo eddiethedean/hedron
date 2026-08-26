@@ -341,19 +341,19 @@ Every item below begins `Unresolved`. Stage 0 must either cite existing public H
 change it to `Existing`, or approve/implement a native Hedron contract and change it to `Shipped`.
 Edron cannot satisfy an item privately.
 
-| ID | Native enablement question | Edron capabilities blocked | Proposed native owner | Stage 0 state |
-|---|---|---|---|---|
-| `UP-001` | Fresh-instance class compiler for direct page members, inspected signatures, async, and exact handles | `APP-004`, `FRAG-001`, `ACT-001` | Hedron application/interaction compiler | Unresolved |
-| `UP-002` | Bounded coherent typed GET filter plan across named controls and refresh targets | `FILTER-002`–`FILTER-005` | Hedron router/forms/interaction plan | Unresolved |
-| `UP-003` | Public class dependency descriptor with cleanup, override, static explanation, and shadow protection | `DEP-001`, `DEP-002` | Hedron/FastAPI dependency integration | Unresolved |
-| `UP-004` | Safe owning-screen fallback derivation preserving unsafe method, CSRF, validation, and redirect policy | `APP-004`, `ACT-004` | Hedron action/response compiler | Unresolved |
-| `UP-005` | Accessible destructive confirmation with keyboard/focus/cancel and unsafe no-JS submission | `CONTROL-002` | Hedron component/interaction layer | Unresolved |
-| `UP-006` | Native success outcome presentation with equivalent HTMX/ordinary HTTP meaning | `RESULT-003` | Hedron interaction response compiler | Unresolved |
-| `UP-007` | Stable lookup from facade source surface/binding to exact native handle/reference | `APP-007`, `NATIVE-010`, explanation | Hedron registry/catalog | Unresolved |
-| `UP-008` | `TaskFlow` backend dependency, shared scope, result adapter, polling terminality, and production gate | `JOB-001`, `JOB-002` | Hedron jobs/package workflow | Unresolved |
-| `UP-009` | Variant aliases projected from native recipe-family registry metadata | `STYLE-004` | Hedron styling registry | Unresolved |
-| `UP-010` | Brand/theme token contract consumed consistently by core/data/charts/maps | `STYLE-002`, `STYLE-008` | Hedron styling + owning packages | Unresolved |
-| `UP-011` | Native style/registry reports retain external facade source provenance without another schema | `STYLE-009`, `TOOL-004`, `TOOL-008` | Hedron diagnostics/style reports | Unresolved |
+| ID | Workstream | Native enablement question | Edron capabilities blocked | Proposed native owner | Stage 0 state |
+|---|---|---|---|---|---|
+| `UP-001` | `HEDRON-WS-CLASS` | Fresh-instance class compiler for direct page members, inspected signatures, async, and exact handles | `APP-004`, `FRAG-001`, `ACT-001` | Hedron application/interaction compiler | Unresolved |
+| `UP-002` | `HEDRON-WS-INTERACTIONS` | Bounded coherent typed GET filter plan across named controls and refresh targets | `FILTER-002`–`FILTER-005` | Hedron router/forms/interaction plan | Unresolved |
+| `UP-003` | `HEDRON-WS-CLASS` | Public class dependency descriptor with cleanup, override, static explanation, and shadow protection | `DEP-001`, `DEP-002` | Hedron/FastAPI dependency integration | Unresolved |
+| `UP-004` | `HEDRON-WS-INTERACTIONS` | Safe owning-screen fallback derivation preserving unsafe method, CSRF, validation, and redirect policy | `APP-004`, `ACT-004` | Hedron action/response compiler | Unresolved |
+| `UP-005` | `HEDRON-WS-INTERACTIONS` | Accessible destructive confirmation with keyboard/focus/cancel and unsafe no-JS submission | `CONTROL-002` | Hedron component/interaction layer | Unresolved |
+| `UP-006` | `HEDRON-WS-INTERACTIONS` | Native success outcome presentation with equivalent HTMX/ordinary HTTP meaning | `RESULT-003` | Hedron interaction response compiler | Unresolved |
+| `UP-007` | `HEDRON-WS-PROVENANCE` | Stable lookup from facade source surface/binding to exact native handle/reference | `APP-007`, `NATIVE-010`, explanation | Hedron registry/catalog | Unresolved |
+| `UP-008` | `HEDRON-WS-JOBS` | `TaskFlow` backend dependency, shared scope, result adapter, polling terminality, and production gate | `JOB-001`, `JOB-002` | Hedron jobs/package workflow | Unresolved |
+| `UP-009` | `HEDRON-WS-STYLING` | Variant aliases projected from native recipe-family registry metadata | `STYLE-004` | Hedron styling registry | Unresolved |
+| `UP-010` | `HEDRON-WS-STYLING` | Brand/theme token contract consumed consistently by core/data/charts/maps | `STYLE-002`, `STYLE-008` | Hedron styling + owning packages | Unresolved |
+| `UP-011` | `HEDRON-WS-PROVENANCE` | Native style/registry reports retain external facade source provenance without another schema | `STYLE-009`, `TOOL-004`, `TOOL-008` | Hedron diagnostics/style reports | Unresolved |
 
 For each resolved row the packet records the Hedron public symbol/schema, minimum release,
 maturity, RFC/contract, conformance tests, owner, and rollback story. “Similar internal code exists”

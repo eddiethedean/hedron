@@ -1,0 +1,250 @@
+schema_version = 1
+packet = "edron-lowering-matrix/1"
+status = "Draft and blocked"
+target = "edron 0.1.0"
+planning_baseline = "hedron workspace 0.66.1"
+authority = "../implementation/EDRON_001.md"
+public_contract = "../api/EDRON.md"
+accepted = false
+complete = false
+locked = false
+blockers = [
+  "UP-001 through UP-011 are unresolved.",
+  "Exact public native symbols, schemas, and compatible shipped versions are unfrozen.",
+  "Route, handle, effect, asset, and source-provenance differential fixtures do not exist.",
+  "No Edron compiler or runtime artifact exists from which to capture native facts."
+]
+
+[invariants]
+one_native_application = true
+one_renderer = true
+one_router = true
+one_interaction_catalog = true
+one_state_authority = true
+one_style_asset_authority = true
+callback_during_registration = false
+source_to_source_generation = false
+full_page_rerun_runtime = false
+native_identity_required = true
+ordinary_http_fallback_required = true
+htmx_is_native_projection = true
+
+[[lowering]]
+id = "LOWER-APP"
+edron_surface = ["App", "App.from_hedron", "app.hedron"]
+native_authority = ["hedron.Hedron", "FastAPI/Starlette ASGI"]
+compile_phase = "application construction"
+request_phase = "native ASGI delegation"
+fallback = "ordinary ASGI/HTTP"
+upstream = []
+state = "Draft"
+
+[[lowering]]
+id = "LOWER-PAGE"
+edron_surface = ["@app.page", "Page.render"]
+native_authority = ["Hedron screen/page registry", "ScreenHandle", "native route descriptor"]
+compile_phase = "fresh-instance class compilation"
+request_phase = "fresh Page instance and request-local output frame"
+fallback = "native full-page GET response"
+upstream = ["UP-001", "UP-004", "UP-007"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-LAYOUT"
+edron_surface = ["Container", "container", "card", "columns", "tabs", "expander", "sidebar"]
+native_authority = ["hedron-core built-in components", "native component tree"]
+compile_phase = "none"
+request_phase = "append bounded native nodes to the active output frame"
+fallback = "semantic server-rendered layout"
+upstream = []
+state = "Draft"
+
+[[lowering]]
+id = "LOWER-INCLUDE"
+edron_surface = ["Page.include"]
+native_authority = ["hedron_core.component.NodeLike", "native renderer"]
+compile_phase = "native protocol validation"
+request_phase = "append the exact native node"
+fallback = "native node fallback"
+upstream = []
+state = "Draft"
+
+[[lowering]]
+id = "LOWER-TEXT"
+edron_surface = ["heading", "subheader", "text", "caption", "markdown", "code", "divider", "success", "info", "warning", "error", "empty"]
+native_authority = ["Hedron semantic built-ins", "Markdown parser/sanitizer under native trust policy"]
+compile_phase = "static literal/source explanation where available"
+request_phase = "construct and append native nodes"
+fallback = "semantic HTML"
+upstream = []
+state = "Draft"
+
+[[lowering]]
+id = "LOWER-DATA"
+edron_surface = ["metric", "table", "dataframe"]
+native_authority = ["hedron-data table/data-view adapters", "native data editor through explicit composition"]
+compile_phase = "capability and schema validation"
+request_phase = "bounded coercion into native data nodes"
+fallback = "semantic static table or declared native data fallback"
+upstream = ["UP-010"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-CHART"
+edron_surface = ["line_chart", "area_chart", "bar_chart", "scatter_chart"]
+native_authority = ["hedron-charts first-party ChartSpec/ChartPlan and assets"]
+compile_phase = "chart declaration validation"
+request_phase = "bounded native chart construction"
+fallback = "accessible description and data alternative"
+upstream = ["UP-010"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-MAP"
+edron_surface = ["map"]
+native_authority = ["hedron-maps MapSpec/MapPlan, providers, assets"]
+compile_phase = "map declaration/provider validation"
+request_phase = "bounded native map construction"
+fallback = "semantic/static/blank-map native fallback according to provider policy"
+upstream = ["UP-010"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-OPTIONAL-DISPLAY"
+edron_surface = ["plotly_chart", "altair_chart", "matplotlib_chart"]
+native_authority = ["hedron-charts owning adapter catalog", "Edron fixed capability metadata"]
+compile_phase = "lazy distribution/version/import/native-adapter resolution"
+request_phase = "exact selected native adapter; no fallback guessing"
+fallback = "structured missing/incompatible/broken capability diagnostic"
+upstream = ["UP-010"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-INPUT"
+edron_surface = ["text_input", "number_input", "selectbox", "multiselect", "slider", "checkbox", "date_input"]
+native_authority = ["native typed GET/query control and codec contracts"]
+compile_phase = "name/type/default/target plan validation"
+request_phase = "read canonical typed query value"
+fallback = "ordinary GET form/control"
+upstream = ["UP-002"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-FILTER"
+edron_surface = ["filters", "FilterScope"]
+native_authority = ["native coherent typed GET filter plan", "FragmentHandle targets"]
+compile_phase = "atomic group/name/target/history validation"
+request_phase = "one coherent query snapshot and generation"
+fallback = "ordinary GET submit"
+upstream = ["UP-002", "UP-007"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-FRAGMENT"
+edron_surface = ["fragment", "Fragment", "BoundFragment"]
+native_authority = ["FragmentHandle", "hedron.BoundFragment", "native GET route/host"]
+compile_phase = "class-member descriptor compilation"
+request_phase = "fresh owner instance; addressed fragment only"
+fallback = "owning page/full HTTP fragment disposition"
+upstream = ["UP-001", "UP-007"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-ACTION"
+edron_surface = ["action", "Action", "BoundAction", "button", "Confirm"]
+native_authority = ["ActionHandle", "native unsafe method, CSRF, binding, effects, response compiler"]
+compile_phase = "class-member descriptor, binding, target, fallback, confirmation validation"
+request_phase = "fresh owner instance and native unsafe interaction"
+fallback = "owning-screen PRG/ordinary unsafe form"
+upstream = ["UP-001", "UP-004", "UP-005", "UP-007"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-FORM"
+edron_surface = ["form"]
+native_authority = ["Pydantic model boundary", "native FormBody/TypeSchema/control/action compiler"]
+compile_phase = "schema/control/action compatibility validation"
+request_phase = "native typed form binding and error response"
+fallback = "ordinary unsafe form with semantic validation errors"
+upstream = ["UP-004"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-OUTCOME"
+edron_surface = ["Outcome", "refresh", "success"]
+native_authority = ["InteractionResult", "RefreshIntent", "Patch", "PatchSet", "Response"]
+compile_phase = "declared target/effect validation"
+request_phase = "native response/effect compilation"
+fallback = "equivalent ordinary HTTP meaning"
+upstream = ["UP-006", "UP-007"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-DEPENDENCY"
+edron_surface = ["dependency", "Dependency"]
+native_authority = ["FastAPI Depends", "native request dependency lifecycle/overrides"]
+compile_phase = "class dependency descriptor compilation"
+request_phase = "native resolution, caching, async/generator cleanup"
+fallback = "native dependency failure response"
+upstream = ["UP-003"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-CACHE-SESSION"
+edron_surface = ["cache_data", "CachedFunction", "typed session composition"]
+native_authority = ["Hedron cache", "native SessionState and dependency adapters"]
+compile_phase = "scope/codec/limit validation"
+request_phase = "native scoped lookup/write/invalidation"
+fallback = "declared miss/failure behavior"
+upstream = []
+state = "Draft"
+
+[[lowering]]
+id = "LOWER-STYLE"
+edron_surface = ["theme", "variant", "recipe", "style_scope", "App.styles"]
+native_authority = ["DesignSystem", "StyleRecipe", "StyleContext", "ApplicationStyleMeta", "native asset/style reports"]
+compile_phase = "registry-derived family mapping and application stylesheet registration"
+request_phase = "native style context and stable public hooks"
+fallback = "native semantic component defaults and accessibility modes"
+upstream = ["UP-009", "UP-010", "UP-011"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-JOB"
+edron_surface = ["JobFlow", "job"]
+native_authority = ["TaskFlow", "FeatureBundle", "JobBackend", "JobScope", "Poll"]
+compile_phase = "flow/backend/scope/result/authorization validation"
+request_phase = "native submit/status/cancel/result/download operations"
+fallback = "polling and ordinary HTTP/no-JavaScript status flow"
+upstream = ["UP-008"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-DOWNLOAD"
+edron_surface = ["download", "Download", "download_button"]
+native_authority = ["native authorized download provider/response/range policy"]
+compile_phase = "opaque reference or bytes metadata validation"
+request_phase = "authorization recheck and native response"
+fallback = "ordinary authorized GET/download response"
+upstream = []
+state = "Draft"
+
+[[lowering]]
+id = "LOWER-NATIVE"
+edron_surface = ["app.native", "app.hedron", "App.include"]
+native_authority = ["exact native handles/references/FeatureBundle/Hedron application"]
+compile_phase = "registry identity/provenance lookup"
+request_phase = "native object used without proxy/copy"
+fallback = "fail closed on cross-app, stale, or incompatible object"
+upstream = ["UP-007"]
+state = "Blocked"
+
+[[lowering]]
+id = "LOWER-TOOLING"
+edron_surface = ["run", "check", "register", "explain", "doctor", "style"]
+native_authority = ["native registries, diagnostics, style reports, ASGI server"]
+compile_phase = "static source only unless trusted import is explicitly requested"
+request_phase = "none for static check; trusted registration for runtime/native facts"
+fallback = "bounded text/JSON/SARIF diagnostics"
+upstream = ["UP-007", "UP-011"]
+state = "Blocked"

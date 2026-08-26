@@ -1,0 +1,109 @@
+schema_version = 1
+packet = "edron-public-api-lock/1"
+status = "Draft and blocked"
+target = "edron 0.1.0"
+planning_baseline = "hedron workspace 0.66.1"
+authority = "../api/EDRON.md"
+accepted = false
+complete = false
+locked = false
+api_tier = "beta candidate"
+signature_snapshot_state = "Unfrozen"
+signature_snapshot_sha256 = "unassigned"
+blockers = [
+  "Decision A has not accepted the public declarations.",
+  "UP-001 through UP-011 prevent final native-backed signature acceptance.",
+  "The exact signature/type-checker snapshot and digest have not been generated.",
+  "Diagnostic JSON/SARIF fixtures and compatibility evidence do not exist."
+]
+
+[root]
+exports = [
+  "Action", "App", "BindingError", "BoundAction", "BoundFragment",
+  "BrokenCapabilityError", "CachedFunction", "CapabilityError", "Color", "Confirm",
+  "Container", "Dependency", "DesignSystem", "Download", "EdronError", "FilterScope",
+  "Fragment", "IncompatibleCapabilityError", "JobBackend", "JobFlow", "JobScope",
+  "MissingCapabilityError", "Outcome", "Page", "PhaseError", "RegistrationError",
+  "StyleRecipe", "action", "cache_data", "dependency", "download", "fragment", "refresh",
+  "success", "theme"
+]
+count = 35
+conventional_import = "import edron as ed"
+streamlit_alias_promised = false
+
+[submodules]
+diagnostics = ["EdronDiagnostic", "SourceLocation"]
+beginner_root_reexport = false
+
+[classes]
+facade = [
+  "App", "Page", "Container", "FilterScope", "Fragment", "BoundFragment", "Action",
+  "BoundAction", "Dependency", "CachedFunction", "Confirm", "Download", "JobFlow"
+]
+exceptions = [
+  "EdronError", "RegistrationError", "PhaseError", "BindingError", "CapabilityError",
+  "MissingCapabilityError", "IncompatibleCapabilityError", "BrokenCapabilityError"
+]
+
+[page_surface]
+output = ["heading", "subheader", "text", "caption", "markdown", "code", "divider", "success", "info", "warning", "error", "empty"]
+layout = ["include", "container", "card", "columns", "tabs", "expander", "sidebar"]
+data = ["metric", "table", "dataframe", "line_chart", "area_chart", "bar_chart", "scatter_chart", "map"]
+optional_display = ["plotly_chart", "altair_chart", "matplotlib_chart"]
+input = ["text_input", "number_input", "selectbox", "multiselect", "slider", "checkbox", "date_input", "filters"]
+interaction = ["button", "form", "job", "download_button"]
+styling = ["style_scope"]
+
+[factories]
+names = ["fragment", "action", "success", "refresh", "dependency", "cache_data", "theme", "download"]
+
+[native_identity]
+Color = "hedron.Color"
+DesignSystem = "hedron.DesignSystem"
+StyleRecipe = "hedron.StyleRecipe"
+JobBackend = "hedron_core.jobs.JobBackend"
+JobScope = "hedron.JobScope"
+
+[returns]
+display = "None"
+safe_input = "validated typed Python value"
+container = "Container"
+filters = "FilterScope"
+page_decorator = "original Page class"
+fragment_decorator = "Fragment descriptor"
+action_decorator = "Action descriptor"
+refresh = "hedron.RefreshIntent"
+success = "hedron.InteractionResult"
+theme = "hedron.DesignSystem"
+native = "exact native handle, bound reference, or FeatureBundle"
+
+[diagnostics]
+codes = [
+  "EDR-APP-0001", "EDR-APP-0002", "EDR-APP-0003", "EDR-PAGE-0001", "EDR-PAGE-0002", "EDR-PAGE-0003",
+  "EDR-PHASE-0001", "EDR-PHASE-0002", "EDR-PHASE-0003", "EDR-PHASE-0004",
+  "EDR-BIND-0001", "EDR-BIND-0002", "EDR-BIND-0003", "EDR-BIND-0004", "EDR-BIND-0005",
+  "EDR-FORM-0001", "EDR-FORM-0002", "EDR-FORM-0003", "EDR-DEP-0001", "EDR-DEP-0002", "EDR-DEP-0003",
+  "EDR-CAP-0001", "EDR-CAP-0002", "EDR-CAP-0003", "EDR-LOWER-0001", "EDR-LOWER-0002",
+  "EDR-NATIVE-0001", "EDR-NATIVE-0002", "EDR-STYLE-0001", "EDR-STYLE-0002", "EDR-STYLE-0003",
+  "EDR-JOB-0001", "EDR-JOB-0002", "EDR-JOB-0003"
+]
+source_positions_one_based = true
+context_bounded_and_redacted = true
+native_code_identity_preserved = true
+
+[absent]
+names = [
+  "write", "session_state", "cache_resource", "data_editor", "native_app", "unsafe_allow_html"
+]
+semantics = [
+  "import edron as st", "Boolean-returning mutation buttons", "module-global output",
+  "whole-script reruns", "persistent page instances", "runtime dependency installation",
+  "automatic optional backend fallback"
+]
+
+[compatibility]
+generated_paths_public = false
+generated_dom_ids_public = false
+native_object_identity_required = true
+unknown_root_exports_forbidden = true
+private_native_dependencies_forbidden = true

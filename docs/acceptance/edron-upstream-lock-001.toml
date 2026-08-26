@@ -5,11 +5,73 @@ target = "edron 0.1.0"
 planning_baseline = "hedron workspace 0.66.1"
 authority = "../implementation/EDRON_CAPABILITY_INVENTORIES.md#inventory-k-required-upstream-hedron-enablement"
 resolution_states = ["Existing", "Shipped"]
+workstream_count = 5
 all_resolved = false
 implementation_entry_satisfied = false
 
+[[workstream]]
+id = "HEDRON-WS-CLASS"
+title = "Class compilation and dependency binding"
+requirements = ["UP-001", "UP-003"]
+owner = "Hedron application compiler and dependency-injection maintainers"
+objective = "Provide a reusable fresh-instance class definition model whose typed dependencies, lifecycle, overrides, cleanup, static explanation, and native handles remain Hedron-owned."
+native_packages = ["hedron"]
+deliverables = ["public class compiler contract", "public class dependency descriptor", "atomic registration and lifecycle evidence", "compatible shipped version"]
+acceptance_focus = ["fresh instance per request", "sync and async members", "signature preservation", "dependency override and cleanup", "client shadow rejection", "no facade-specific runtime"]
+state = "Blocked"
+blocker = "UP-001 and UP-003 are unresolved and no separate Hedron contract or owner acceptance is recorded."
+
+[[workstream]]
+id = "HEDRON-WS-INTERACTIONS"
+title = "HTTP, HTMX, and no-JavaScript interaction parity"
+requirements = ["UP-002", "UP-004", "UP-005", "UP-006"]
+owner = "Hedron routing, forms, actions, responses, security, and accessibility maintainers"
+objective = "Unify safe filter plans and unsafe action outcomes so one native interaction definition preserves method, validation, CSRF, fallback, confirmation, status, accessibility, and race semantics across all transports."
+native_packages = ["hedron"]
+deliverables = ["coherent typed GET filter plan", "owning-screen action fallback", "accessible unsafe confirmation", "success outcome parity", "raw HTTP, HTMX, no-JavaScript, race, security, and accessibility evidence", "compatible shipped version"]
+acceptance_focus = ["GET query canonicality", "unsafe method preservation", "CSRF and validation", "PRG fallback", "keyboard and focus", "equivalent response status and meaning", "stale response rejection"]
+state = "Blocked"
+blocker = "UP-002 and UP-004 through UP-006 are unresolved and no separate Hedron contract or owner acceptance is recorded."
+
+[[workstream]]
+id = "HEDRON-WS-PROVENANCE"
+title = "Registry identity and external-facade provenance"
+requirements = ["UP-007", "UP-011"]
+owner = "Hedron registry, diagnostics, style-report, and tooling maintainers"
+objective = "Expose stable lookup from an opaque external facade source/binding to the exact native handle and retain that source through bounded native registry, explanation, style, and diff reports."
+native_packages = ["hedron"]
+deliverables = ["public source-to-handle lookup contract", "versioned external-facade provenance schema", "registry and style report projection", "identity, collision, redaction, and diff evidence", "compatible shipped version"]
+acceptance_focus = ["exact native object identity", "app-scoped collision rules", "opaque facade vocabulary", "bounded redacted source facts", "one native report schema", "static versus observed facts"]
+state = "Blocked"
+blocker = "UP-007 and UP-011 are unresolved and no separate Hedron contract or owner acceptance is recorded."
+
+[[workstream]]
+id = "HEDRON-WS-JOBS"
+title = "TaskFlow application workflow"
+requirements = ["UP-008"]
+owner = "Hedron task and job maintainers"
+objective = "Extend native TaskFlow for application-owned backend dependencies, scoped submission and observation, result adaptation, terminal polling, cancellation, and production safety without adding a worker authority."
+native_packages = ["hedron"]
+deliverables = ["public TaskFlow extension contract", "backend and scope integration", "result, polling, cancellation, and production gates", "ordinary HTTP and no-JavaScript evidence", "compatible shipped version"]
+acceptance_focus = ["durable multi-worker backend", "subject and tenant scope", "terminal state", "stale poll rejection", "cancellation race", "manual refresh fallback", "no bundled worker"]
+state = "Blocked"
+blocker = "UP-008 is unresolved and no separate Hedron contract or owner acceptance is recorded."
+
+[[workstream]]
+id = "HEDRON-WS-STYLING"
+title = "Registry-derived variants and cross-package theming"
+requirements = ["UP-009", "UP-010"]
+owner = "Hedron core, data, charts, maps, and styling maintainers"
+objective = "Publish recipe-family variant metadata and a complete shared brand/theme contract consumed consistently by all first-party rendering packages."
+native_packages = ["hedron", "hedron-data", "hedron-charts", "hedron-maps"]
+deliverables = ["public recipe-family variant metadata", "cross-package theme and token contract", "registry mapping and explanation", "mode, accessibility, asset, and compatibility evidence", "mutually compatible shipped package train"]
+acceptance_focus = ["finite registry-derived vocabulary", "mapping version and collisions", "token and mode parity", "accessibility modes", "asset lifecycle", "data, chart, and map consistency"]
+state = "Blocked"
+blocker = "UP-009 and UP-010 are unresolved and no joint Hedron contract, owner acceptance, or compatible package train is recorded."
+
 [[requirement]]
 id = "UP-001"
+workstream = "HEDRON-WS-CLASS"
 title = "Fresh-instance class compiler"
 owner = "Hedron compiler/lifecycle maintainers"
 state = "Blocked"
@@ -20,6 +82,7 @@ blocker = "No accepted public Hedron class-compilation contract, owner dispositi
 
 [[requirement]]
 id = "UP-002"
+workstream = "HEDRON-WS-INTERACTIONS"
 title = "Coherent typed GET filter plan"
 owner = "Hedron interaction maintainers"
 state = "Blocked"
@@ -30,6 +93,7 @@ blocker = "No accepted public Hedron filter-plan contract, owner disposition, or
 
 [[requirement]]
 id = "UP-003"
+workstream = "HEDRON-WS-CLASS"
 title = "Class dependency descriptor"
 owner = "Hedron dependency-injection maintainers"
 state = "Blocked"
@@ -40,6 +104,7 @@ blocker = "No accepted public Hedron class dependency descriptor, owner disposit
 
 [[requirement]]
 id = "UP-004"
+workstream = "HEDRON-WS-INTERACTIONS"
 title = "Owning-screen action fallback"
 owner = "Hedron action/routing maintainers"
 state = "Blocked"
@@ -50,6 +115,7 @@ blocker = "No accepted public Hedron owning-screen fallback contract, owner disp
 
 [[requirement]]
 id = "UP-005"
+workstream = "HEDRON-WS-INTERACTIONS"
 title = "Accessible unsafe-action confirmation"
 owner = "Hedron interaction/accessibility maintainers"
 state = "Blocked"
@@ -60,6 +126,7 @@ blocker = "No accepted public Hedron confirmation contract, owner disposition, o
 
 [[requirement]]
 id = "UP-006"
+workstream = "HEDRON-WS-INTERACTIONS"
 title = "Success outcome parity"
 owner = "Hedron action/response maintainers"
 state = "Blocked"
@@ -70,6 +137,7 @@ blocker = "No accepted public Hedron success-outcome parity contract, owner disp
 
 [[requirement]]
 id = "UP-007"
+workstream = "HEDRON-WS-PROVENANCE"
 title = "Facade source and binding to native handle lookup"
 owner = "Hedron registry/tooling maintainers"
 state = "Blocked"
@@ -80,6 +148,7 @@ blocker = "No accepted public Hedron facade-provenance lookup contract, owner di
 
 [[requirement]]
 id = "UP-008"
+workstream = "HEDRON-WS-JOBS"
 title = "Extended native TaskFlow"
 owner = "Hedron task/job maintainers"
 state = "Blocked"
@@ -90,6 +159,7 @@ blocker = "No accepted public Hedron TaskFlow extension, owner disposition, or s
 
 [[requirement]]
 id = "UP-009"
+workstream = "HEDRON-WS-STYLING"
 title = "Native recipe-family variant metadata"
 owner = "Hedron style maintainers"
 state = "Blocked"
@@ -100,6 +170,7 @@ blocker = "No accepted public Hedron recipe-variant metadata contract, owner dis
 
 [[requirement]]
 id = "UP-010"
+workstream = "HEDRON-WS-STYLING"
 title = "Cross-package brand and theme contract"
 owner = "Hedron core/data/charts/maps style maintainers"
 state = "Blocked"
@@ -110,6 +181,7 @@ blocker = "No accepted cross-package Hedron theme contract, joint owner disposit
 
 [[requirement]]
 id = "UP-011"
+workstream = "HEDRON-WS-PROVENANCE"
 title = "External facade provenance in native reports"
 owner = "Hedron style/registry/tooling maintainers"
 state = "Blocked"

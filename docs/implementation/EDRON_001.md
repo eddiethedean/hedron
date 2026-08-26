@@ -825,8 +825,8 @@ authority. Focus/busy/history/stale/OOB/asset cleanup and rapid interaction race
 1. Approve RFC/API/state/packaging/inventory/specification documents together.
 2. Freeze numeric limits/performance budgets, Python/platform matrix, package requirements, and
    public maturity policy.
-3. Assign every `UP-001`–`UP-011` row to an Existing public authority or a separately accepted
-   Hedron contract/owner/evidence plan.
+3. Partition `UP-001`–`UP-011` into the five focused Hedron workstreams and assign every row to an
+   Existing public authority or a separately accepted Hedron contract/owner/evidence plan.
 4. Create the machine-readable Edron capability, upstream, package, and release-gate manifests.
 5. Approve golden/focused fixture sources and security/accessibility/human protocols.
 
@@ -839,6 +839,21 @@ Implement unresolved native contracts in owning Hedron packages under their own 
 tests, changelogs, and release decisions. Work is independently useful and contains no import/runtime
 dependency on Edron. Freeze the first shipped compatible Hedron train only after all required
 native evidence passes.
+
+Stage 1 is organized into five focused Hedron workstreams:
+
+| Workstream | Requirements | Delivery boundary |
+|---|---|---|
+| `HEDRON-WS-CLASS` | `UP-001`, `UP-003` | class compiler and dependency descriptor, including atomicity and fresh-instance lifecycle |
+| `HEDRON-WS-INTERACTIONS` | `UP-002`, `UP-004`–`UP-006` | coherent safe filters and unsafe-action parity across HTTP, HTMX, and no-JavaScript paths |
+| `HEDRON-WS-PROVENANCE` | `UP-007`, `UP-011` | exact source-to-handle lookup and shared external-facade report provenance |
+| `HEDRON-WS-JOBS` | `UP-008` | scoped native `TaskFlow` submission/status/result/cancel composition and production gate |
+| `HEDRON-WS-STYLING` | `UP-009`, `UP-010` | native variant metadata and a compatible cross-package theme train |
+
+The workstreams may proceed and ship independently. Each produces native contract, implementation,
+conformance, compatibility, changelog, rollback, and release evidence. The provenance workstream
+coordinates with class and styling schemas, but Hedron owns the shared opaque source model; neither
+workstream may introduce Edron imports or vocabulary as native runtime authority.
 
 Stage 1 also completes the package/API/lowering/state/fixture/performance locks, checker/CI lanes,
 security corpus, accessibility protocol, and exact implementation-entry review. Exit requires
@@ -906,7 +921,7 @@ machine-readable artifacts equivalent to:
 |---|---|
 | Edron release gate | every normative RFC/API/state/package/inventory/spec requirement and evidence owner/status |
 | capability manifest | base/optional/native/deferred IDs, distribution ranges, imports, owners, maturity, diagnostics |
-| upstream lock | `UP-001`–`UP-011`, native contract/symbol/version/tests/owner/rollback disposition |
+| upstream lock | five focused Hedron workstreams partitioning `UP-001`–`UP-011`, plus native contract/symbol/version/tests/owner/rollback disposition per requirement |
 | package lock | Python/platform matrix, required/optional resolved requirements, wheel/sdist/assets/licenses |
 | public API snapshot | root exports, signatures, annotations, return/identity rules, diagnostic codes |
 | lowering matrix | Edron surface → exact native descriptor/node/route/policy/assets/source projection |

@@ -1,0 +1,288 @@
+schema_version = 1
+packet = "edron-state-interaction-matrix/1"
+status = "Draft and blocked"
+target = "edron 0.1.0"
+planning_baseline = "hedron workspace 0.66.1"
+authority = "../api/EDRON_STATE_INTERACTION.md"
+accepted = false
+complete = false
+locked = false
+blockers = [
+  "The coherent filter, dependency, action fallback, confirmation, success, lookup, and job contracts are unresolved upstream.",
+  "Numeric state, binding, operation, history, job, cache, and diagnostic limits are unfrozen.",
+  "Concurrency, restart, multi-worker, HTMX, ordinary HTTP, and no-JavaScript fixtures do not exist.",
+  "Security and human accessibility protocols remain unaccepted."
+]
+
+[identity]
+app = "native application/registry identity"
+surface = "app-scoped facade source key projected to exact native handle"
+binding = "native typed binding plan; never authorization"
+operation = "native generation/revision/idempotency identity"
+job = "native opaque job identity scoped by JobScope"
+cache = "native scope plus canonical arguments/codec/version"
+secret_values_in_public_identity = false
+
+[[state]]
+id = "STATE-PAGE-INSTANCE"
+value = "Page instance fields"
+owner = "Edron request executor"
+writer = "fresh constructor and current request method"
+lifetime = "one page, fragment, or action request"
+persistence = "none"
+concurrency = "never shared between requests"
+sensitive = "application-defined; must not enter public identity or diagnostics"
+state = "Draft"
+
+[[state]]
+id = "STATE-OUTPUT-FRAME"
+value = "ordered output/container/control plan"
+owner = "Edron request-local execution frame"
+writer = "active Page output methods"
+lifetime = "one render or fragment request"
+persistence = "none; discarded atomically on author-method failure"
+concurrency = "context-local and bounded"
+sensitive = "rendered values follow native escaping/redaction"
+state = "Draft"
+
+[[state]]
+id = "STATE-SAFE-INPUT"
+value = "typed safe control value"
+owner = "canonical URL query plus native codec/binding plan"
+writer = "ordinary GET or HTMX GET request"
+lifetime = "URL/request; optionally browser history"
+persistence = "URL only unless application explicitly stores it"
+concurrency = "latest accepted native generation; stale responses rejected"
+sensitive = "secret values forbidden from query/history"
+state = "Blocked"
+upstream = ["UP-002"]
+
+[[state]]
+id = "STATE-FORM-INPUT"
+value = "typed unsafe form/action input"
+owner = "current request body and native Pydantic/action binding"
+writer = "ordinary or HTMX unsafe submission"
+lifetime = "one submission plus bounded validation redisplay"
+persistence = "application mutation only after validation/authz/CSRF"
+concurrency = "native revision/idempotency policy"
+sensitive = "redacted from diagnostics/history; password/secret retention forbidden"
+state = "Blocked"
+upstream = ["UP-004", "UP-005"]
+
+[[state]]
+id = "STATE-DEPENDENCY"
+value = "resolved request resource"
+owner = "native FastAPI/Hedron dependency graph"
+writer = "dependency provider"
+lifetime = "native request/dependency scope"
+persistence = "provider-defined; not an Edron global"
+concurrency = "native provider contract"
+sensitive = "cannot be shadowed by client bindings"
+state = "Blocked"
+upstream = ["UP-003"]
+
+[[state]]
+id = "STATE-SESSION"
+value = "typed session fields"
+owner = "native session backend and application schema"
+writer = "explicit application/native session operations"
+lifetime = "declared session expiry/version"
+persistence = "configured backend; development defaults make no multi-worker claim"
+concurrency = "backend revision/conflict semantics"
+sensitive = "encrypted/signed/redacted under native policy"
+state = "Draft"
+
+[[state]]
+id = "STATE-CACHE"
+value = "recomputable cached data"
+owner = "native Hedron cache/backend"
+writer = "cache_data wrapper through native cache"
+lifetime = "declared TTL/version/scope"
+persistence = "backend-dependent; no durability claim by default"
+concurrency = "native stampede/atomicity semantics"
+sensitive = "scope and key privacy required"
+state = "Draft"
+
+[[state]]
+id = "STATE-DURABLE"
+value = "application records and transactions"
+owner = "application repository/database"
+writer = "authorized application action/job transaction"
+lifetime = "application-defined"
+persistence = "durable application storage"
+concurrency = "application revision/transaction policy"
+sensitive = "application authorization/tenant policy"
+state = "Draft"
+
+[[state]]
+id = "STATE-IDEMPOTENCY"
+value = "unsafe operation replay record"
+owner = "native/application authoritative idempotency store"
+writer = "native action compiler around the application transaction"
+lifetime = "bounded declared retention"
+persistence = "required store when idempotency=required"
+concurrency = "subject/tenant/action/key/payload bound; fail closed on ambiguity"
+sensitive = "keys and payload digests redacted"
+state = "Blocked"
+upstream = ["UP-004"]
+
+[[state]]
+id = "STATE-JOB"
+value = "job payload/status/progress/result/cancel state"
+owner = "application JobBackend scoped by native JobScope"
+writer = "application worker/backend and authorized job operations"
+lifetime = "backend retention/terminal policy"
+persistence = "backend-defined; in-memory development backend forbidden in production"
+concurrency = "native job revision/terminality/cancel contract"
+sensitive = "opaque IDs; cross-scope lookup returns no disclosure"
+state = "Blocked"
+upstream = ["UP-008"]
+
+[[state]]
+id = "STATE-BROWSER"
+value = "focus, busy, history, enhancement generation, and transient presentation"
+owner = "native Hedron HTMX extension/browser platform"
+writer = "native response metadata and bounded browser enhancement"
+lifetime = "current document/history entry/interaction"
+persistence = "non-authoritative; server/URL remains canonical"
+concurrency = "generation/revision checks and native cleanup"
+sensitive = "no secret or authorization authority"
+state = "Draft"
+
+[[state]]
+id = "STATE-STYLE"
+value = "theme, variant, recipe, scope, and registered application CSS plan"
+owner = "native style registry, DesignSystem, and asset graph"
+writer = "registration-time native style APIs and request-local StyleContext"
+lifetime = "application registration or lexical request scope"
+persistence = "native manifest/assets; optional preference is application-owned"
+concurrency = "immutable after seal; request scopes context-local"
+sensitive = "source paths and values redacted in reports"
+state = "Blocked"
+upstream = ["UP-009", "UP-010", "UP-011"]
+
+[[interaction]]
+id = "INTERACTION-PAGE"
+surface = "Page.render"
+method = "GET"
+csrf = false
+htmx = "native full-page or declared enhanced navigation"
+ordinary_http = "semantic full document"
+no_javascript = "required"
+mutation = false
+state = "Blocked"
+upstream = ["UP-001"]
+
+[[interaction]]
+id = "INTERACTION-FRAGMENT"
+surface = "Fragment"
+method = "GET"
+csrf = false
+htmx = "native target/swap/history policy"
+ordinary_http = "declared owning-page or standalone fallback"
+no_javascript = "required"
+mutation = false
+state = "Blocked"
+upstream = ["UP-001", "UP-007"]
+
+[[interaction]]
+id = "INTERACTION-FILTER"
+surface = "FilterScope and safe controls"
+method = "GET"
+csrf = false
+htmx = "coherent native filter plan and latest generation"
+ordinary_http = "ordinary GET form submit"
+no_javascript = "required"
+mutation = false
+state = "Blocked"
+upstream = ["UP-002", "UP-007"]
+
+[[interaction]]
+id = "INTERACTION-ACTION"
+surface = "Action/button"
+method = "POST|PUT|PATCH|DELETE"
+csrf = true
+htmx = "native action result/effects/targets"
+ordinary_http = "owning-screen PRG or explicit safe local fallback"
+no_javascript = "required"
+mutation = true
+state = "Blocked"
+upstream = ["UP-004", "UP-005", "UP-006", "UP-007"]
+
+[[interaction]]
+id = "INTERACTION-FORM"
+surface = "Pydantic form"
+method = "POST|PUT|PATCH|DELETE according to owning action"
+csrf = true
+htmx = "native validation/error/action response"
+ordinary_http = "semantic form validation and PRG"
+no_javascript = "required"
+mutation = true
+state = "Blocked"
+upstream = ["UP-004"]
+
+[[interaction]]
+id = "INTERACTION-JOB-SUBMIT"
+surface = "JobFlow submit"
+method = "POST"
+csrf = true
+htmx = "native TaskFlow submit/status mount"
+ordinary_http = "submit then status page"
+no_javascript = "required"
+mutation = true
+state = "Blocked"
+upstream = ["UP-008"]
+
+[[interaction]]
+id = "INTERACTION-JOB-STATUS"
+surface = "JobFlow status/result"
+method = "GET"
+csrf = false
+htmx = "bounded polling until every terminal/unrecoverable state"
+ordinary_http = "refreshable status page"
+no_javascript = "required"
+mutation = false
+state = "Blocked"
+upstream = ["UP-008"]
+
+[[interaction]]
+id = "INTERACTION-JOB-CANCEL"
+surface = "JobFlow cancel"
+method = "POST"
+csrf = true
+htmx = "native scoped cancel outcome"
+ordinary_http = "unsafe form and status redirect"
+no_javascript = "required"
+mutation = true
+state = "Blocked"
+upstream = ["UP-008"]
+
+[[interaction]]
+id = "INTERACTION-DOWNLOAD"
+surface = "Download/download_button"
+method = "GET through registered authorized provider"
+csrf = false
+htmx = "ordinary browser download; no hidden data authority"
+ordinary_http = "native range/content-disposition response"
+no_javascript = "required"
+mutation = false
+state = "Draft"
+
+[[interaction]]
+id = "INTERACTION-EXPLAIN"
+surface = "check/register/explain/doctor/style tooling"
+method = "local tooling"
+csrf = false
+htmx = "not applicable"
+ordinary_http = "not applicable"
+no_javascript = "not applicable"
+mutation = false
+state = "Blocked"
+upstream = ["UP-007", "UP-011"]
+
+[limits]
+authority = "edron-performance-lock-001.toml"
+state = "Unfrozen"
+fail_partial_mutation = false
+silent_field_drop = false
+half_target_plan = false

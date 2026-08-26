@@ -434,6 +434,7 @@ quality_docs() {
   run_py scripts/check_package_docs_inventory.py
   run_py scripts/check_documentation_ownership.py
   run_py scripts/check_api_docs_coverage.py
+  run_py scripts/check_edron_docs.py
   run_py scripts/check_package_readme_links.py
   run_py scripts/check_public_doc_links.py
   run_py scripts/check_changelog_structure.py

@@ -384,8 +384,8 @@ from hedron_data import DataTable
 
 class Dashboard(ed.Page):
     def render(self) -> None:
-        self.add(LineChart(data=[1, 3, 2]))
-        self.add(DataTable(rows=[{"name": "Ada"}]))
+        self.include(LineChart(data=[1, 3, 2]))
+        self.include(DataTable(rows=[{"name": "Ada"}]))
 ```
 
 The classes in that example are the objects from their installed owning wheels. Edron does not

@@ -10,7 +10,15 @@ status commentary, not a satisfied release gate.
 - [Edron `0.1.0` acceptance packet](EDRON_001.md) — **Draft and blocked**; separates design
   acceptance, implementation entry, and publication; see
   [machine gates](edron-release-gate-001.toml) and
-  [upstream lock](edron-upstream-lock-001.toml)
+  [upstream lock](edron-upstream-lock-001.toml). Its machine-readable drafts are the
+  [capability manifest](edron-capability-manifest-001.toml),
+  [package/train lock](edron-package-lock-001.toml),
+  [public API lock](edron-public-api-lock-001.toml),
+  [lowering matrix](edron-lowering-matrix-001.toml),
+  [state/interaction matrix](edron-state-interaction-matrix-001.toml),
+  [fixture lock](edron-fixture-lock-001.toml), and
+  [performance/resource lock](edron-performance-lock-001.toml); all remain unaccepted, incomplete,
+  unlocked, and blocked.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)

@@ -783,6 +783,18 @@ three dispositions:
 Initial upstream candidates are the same `UP-001`–`UP-011` rows locked by the capability inventory
 and acceptance packet:
 
+| Hedron workstream | Requirements | Cohesive native deliverable |
+|---|---|---|
+| `HEDRON-WS-CLASS` | `UP-001`, `UP-003` | fresh-instance class compilation with typed dependency lifecycle |
+| `HEDRON-WS-INTERACTIONS` | `UP-002`, `UP-004`–`UP-006` | transport-equivalent filters, action fallback, confirmation, and success outcomes |
+| `HEDRON-WS-PROVENANCE` | `UP-007`, `UP-011` | exact registry identity and bounded external-facade provenance in native reports |
+| `HEDRON-WS-JOBS` | `UP-008` | application-oriented native `TaskFlow` composition |
+| `HEDRON-WS-STYLING` | `UP-009`, `UP-010` | registry-derived variants and cross-package theme/token parity |
+
+These five workstreams are independently useful Hedron changes with native vocabulary, ownership,
+tests, changelogs, and release decisions. Grouping coordinates related contracts; it does not merge
+their acceptance identities or let one completed row satisfy another.
+
 | ID | Edron need | Hedron question |
 |---|---|---|
 | `UP-001` | Page methods compiled as bound actions/fragments | Can the existing fresh-instance class compiler and handle descriptors be generalized without Edron knowledge? |

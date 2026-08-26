@@ -86,52 +86,52 @@ blocker = "UP-001 through UP-011 are unresolved."
 
 [[artifact]]
 id = "CAPABILITY_MANIFEST"
-planned_path = "edron-capability-manifest-001.toml"
+path = "edron-capability-manifest-001.toml"
 state = "Blocked"
 required_before = "A"
-blocker = "The machine capability manifest has not been designed or generated."
+blocker = "A machine-readable draft exists, but its dispositions are unaccepted and its evidence is incomplete."
 
 [[artifact]]
 id = "PACKAGE_LOCK"
-planned_path = "edron-package-lock-001.toml"
+path = "edron-package-lock-001.toml"
 state = "Blocked"
 required_before = "B"
-blocker = "The compatible package and dependency train is not frozen."
+blocker = "A machine-readable draft exists, but the compatible package and dependency train is not frozen."
 
 [[artifact]]
 id = "PUBLIC_API_LOCK"
-planned_path = "edron-public-api-lock-001.toml"
+path = "edron-public-api-lock-001.toml"
 state = "Blocked"
 required_before = "B"
-blocker = "The accepted public API snapshot does not exist."
+blocker = "A machine-readable draft exists, but the public API snapshot and digest are unaccepted and unfrozen."
 
 [[artifact]]
 id = "LOWERING_MATRIX"
-planned_path = "edron-lowering-matrix-001.toml"
+path = "edron-lowering-matrix-001.toml"
 state = "Blocked"
 required_before = "B"
-blocker = "The native lowering matrix does not exist."
+blocker = "A machine-readable draft exists, but native symbols, shipped versions, and differential evidence are unfrozen."
 
 [[artifact]]
 id = "STATE_INTERACTION_MATRIX"
-planned_path = "edron-state-interaction-matrix-001.toml"
+path = "edron-state-interaction-matrix-001.toml"
 state = "Blocked"
 required_before = "B"
-blocker = "The state and interaction trace matrix does not exist."
+blocker = "A machine-readable draft exists, but upstream contracts, limits, and lifecycle evidence remain unresolved."
 
 [[artifact]]
 id = "FIXTURE_LOCK"
-planned_path = "edron-fixture-lock-001.toml"
+path = "edron-fixture-lock-001.toml"
 state = "Blocked"
 required_before = "B"
-blocker = "Golden and focused fixture source hashes and expected native facts are not frozen."
+blocker = "A machine-readable draft exists, but fixture sources, hashes, expected native facts, and evidence are not frozen."
 
 [[artifact]]
 id = "PERFORMANCE_LOCK"
-planned_path = "edron-performance-lock-001.toml"
+path = "edron-performance-lock-001.toml"
 state = "Blocked"
 required_before = "A"
-blocker = "Numeric performance and resource budgets are not frozen."
+blocker = "A machine-readable draft exists, but every numeric performance and resource budget remains unfrozen."
 
 [[artifact]]
 id = "RELEASE_EVIDENCE"
@@ -210,7 +210,7 @@ phase = "design"
 state = "Blocked"
 required = true
 owner = "Hedron maintainers"
-summary = "Resolve UP-001 through UP-011 to an existing or proposed native owner, contract, and evidence path."
+summary = "Partition UP-001 through UP-011 into five focused Hedron workstreams and resolve every row to an existing or proposed native owner, contract, and evidence path."
 blocker = "All 11 upstream requirements remain unresolved in edron-upstream-lock-001.toml."
 
 [[gate]]

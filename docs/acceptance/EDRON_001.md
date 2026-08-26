@@ -104,20 +104,22 @@ provenance are not waivable.
 | Implementation specification | `docs/implementation/EDRON_001.md` | Planned review | Decision A |
 | Human packet and gate index | this file + `edron-release-gate-001.toml` | Draft | Decision A |
 | Upstream lock | `edron-upstream-lock-001.toml` | Blocked: all 11 unresolved | Decision B |
-| Machine capability manifest | planned `edron-capability-manifest-001.toml` | Missing | Decision A |
-| Package/train lock | planned `edron-package-lock-001.toml` | Missing/unfrozen | Decision B |
-| Public API snapshot | planned `edron-public-api-lock-001.toml` | Missing | Decision B |
-| Native lowering matrix | planned `edron-lowering-matrix-001.toml` | Missing | Decision B |
-| State/interaction matrix | planned `edron-state-interaction-matrix-001.toml` | Missing | Decision B |
-| Golden/focused fixture lock | planned `edron-fixture-lock-001.toml` | Missing | Decision B |
-| Performance/resource lock | planned `edron-performance-lock-001.toml` | Missing/unfrozen | Decision A/B |
+| Machine capability manifest | [edron-capability-manifest-001.toml](edron-capability-manifest-001.toml) | Draft/blocked: dispositions unaccepted; evidence incomplete | Decision A |
+| Package/train lock | [edron-package-lock-001.toml](edron-package-lock-001.toml) | Draft/blocked: train and support matrix unfrozen | Decision B |
+| Public API snapshot | [edron-public-api-lock-001.toml](edron-public-api-lock-001.toml) | Draft/blocked: signatures and digest unfrozen | Decision B |
+| Native lowering matrix | [edron-lowering-matrix-001.toml](edron-lowering-matrix-001.toml) | Draft/blocked: native symbols, versions, and evidence unfrozen | Decision B |
+| State/interaction matrix | [edron-state-interaction-matrix-001.toml](edron-state-interaction-matrix-001.toml) | Draft/blocked: upstream contracts, limits, and evidence unresolved | Decision B |
+| Golden/focused fixture lock | [edron-fixture-lock-001.toml](edron-fixture-lock-001.toml) | Draft/blocked: sources, hashes, facts, and evidence unfrozen | Decision B |
+| Performance/resource lock | [edron-performance-lock-001.toml](edron-performance-lock-001.toml) | Draft/blocked: measurement protocol and every numeric limit unfrozen | Decision A/B |
 | Security corpus/ledger schema | planned Edron acceptance/security artifacts | Missing | Decision B/C |
 | Human accessibility protocol/ledger | planned `human-at/edron-001/` | Missing | Decision B/C |
 | Release evidence bundle | planned tag/CI artifact bundle | Not applicable yet | Decision C |
 
-An artifact named “planned” or containing `TBD`, placeholder zeroes, empty required arrays, missing
-owners, or unbound commands cannot become Verified. Machine locks contain values and digests, not
-only links back to prose.
+The seven machine-readable drafts set schemas and expose unresolved work without satisfying any
+gate: each records `accepted = false`, `complete = false`, and `locked = false`. An artifact named
+“planned” or containing `TBD`, placeholder zeroes, empty required arrays, missing owners, or unbound
+commands cannot become Verified. Machine locks contain values and digests, not only links back to
+prose.
 
 ## Decision A gates — design acceptance
 
@@ -131,7 +133,7 @@ only links back to prose.
 | `EDR-DESIGN-INVENTORY-001` | Every base/optional/native/tooling/upstream/deferred capability has one disposition | `EDR-INV-*` audit; zero unowned rows | architecture | Planned |
 | `EDR-DESIGN-IMPLEMENTATION-001` | Package/modules/compiler/runtime/native integration/stages/tests are implementable without duplicate authority | 87-ID implementation trace review | implementation | Planned |
 | `EDR-DESIGN-AUTHORITY-001` | Edron introduces no renderer/router/DI/interaction/state/style/asset/browser/security authority | native authority and dependency-direction review | architecture/security | Planned |
-| `EDR-DESIGN-UPSTREAM-001` | `UP-001`–`UP-011` each has an Existing or proposed native owner/contract/evidence path | upstream lock with no ambiguous/Edron-local disposition | Hedron maintainers | Blocked |
+| `EDR-DESIGN-UPSTREAM-001` | Five focused Hedron workstreams partition `UP-001`–`UP-011`, and every row has an Existing or proposed native owner/contract/evidence path | upstream lock with no duplicate, missing, ambiguous, or Edron-local disposition | Hedron maintainers | Blocked |
 | `EDR-DESIGN-LIMITS-001` | Numeric output/binding/state/job/diagnostic/package limits are frozen | performance/resource lock with rationale and failure behavior | performance/security | Blocked |
 | `EDR-DESIGN-SECURITY-001` | Threat model, trust boundaries, adversarial corpus, redaction and supply-chain plan are approved | security review/corpus index | security | Planned |
 | `EDR-DESIGN-A11Y-001` | Semantic/focus/status/no-JS/chart/map/style/human evidence plan is approved | a11y matrix and scoped human protocol | accessibility | Planned |
@@ -190,8 +192,21 @@ expected to implement it.
 
 ## Upstream Hedron acceptance lock
 
-The machine source is [edron-upstream-lock-001.toml](edron-upstream-lock-001.toml). Every row is
-currently Blocked/Unresolved.
+The machine source is [edron-upstream-lock-001.toml](edron-upstream-lock-001.toml). The eleven
+requirements are grouped into five independently reviewable Hedron workstreams; every workstream
+and requirement remains Blocked/Unresolved.
+
+| Workstream | Requirements | Native outcome | Primary owners |
+|---|---|---|---|
+| `HEDRON-WS-CLASS` | `UP-001`, `UP-003` | reusable fresh-instance class compilation and dependency binding | application compiler and DI |
+| `HEDRON-WS-INTERACTIONS` | `UP-002`, `UP-004`–`UP-006` | one HTTP/HTMX/no-JS filter, fallback, confirmation, and success model | routing/forms/actions/responses/security/a11y |
+| `HEDRON-WS-PROVENANCE` | `UP-007`, `UP-011` | exact native handle lookup plus bounded external-facade provenance in native reports | registry/diagnostics/style tooling |
+| `HEDRON-WS-JOBS` | `UP-008` | reusable application-oriented `TaskFlow` lifecycle | tasks/jobs |
+| `HEDRON-WS-STYLING` | `UP-009`, `UP-010` | registry-derived variants and cross-package theme parity | core/data/charts/maps/styling |
+
+Workstream grouping is scheduling and ownership structure, not a resolution shortcut. Each
+constituent `UP-*` row still needs its own public contract/symbol, evidence, resolution, and shipped
+version. A workstream may ship independently, but Decision B still requires all eleven rows.
 
 | ID | Required native authority | Blocks | Verification needed before Decision B |
 |---|---|---|---|

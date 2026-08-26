@@ -1,0 +1,135 @@
+schema_version = 1
+packet = "edron-capability-manifest/1"
+status = "Draft and blocked"
+target = "edron 0.1.0"
+planning_baseline = "hedron workspace 0.66.1"
+authority = "../implementation/EDRON_CAPABILITY_INVENTORIES.md"
+accepted = false
+complete = false
+locked = false
+inventory_row_count = 134
+non_base_capability_count = 128
+root_export_count = 35
+optional_capability_count = 7
+upstream_requirement_count = 11
+native_capability_count = 10
+deferred_capability_count = 18
+blockers = [
+  "Decision A has not accepted the inventory dispositions.",
+  "UP-001 through UP-011 are unresolved.",
+  "The compatible package train and numeric resource limits are unfrozen.",
+  "Per-capability evidence commands and artifact digests do not exist."
+]
+
+[semantics]
+base = "Available after plain pip install edron through declared required distributions."
+optional = "Activated by compatible direct dependencies; an Edron extra is only a shortcut."
+native_base = "Installed with Edron but imported and owned through the native Hedron package."
+application = "Supplied or configured by the application or deployment."
+tooling = "Development/static tooling in the base distribution with an explicit trust boundary."
+deferred = "Intentionally absent from the Edron 0.1 beginner surface."
+rejected = "Architecturally rejected; not a later implementation shortcut."
+
+[root]
+exports = [
+  "Action", "App", "BindingError", "BoundAction", "BoundFragment",
+  "BrokenCapabilityError", "CachedFunction", "CapabilityError", "Color", "Confirm",
+  "Container", "Dependency", "DesignSystem", "Download", "EdronError", "FilterScope",
+  "Fragment", "IncompatibleCapabilityError", "JobBackend", "JobFlow", "JobScope",
+  "MissingCapabilityError", "Outcome", "Page", "PhaseError", "RegistrationError",
+  "StyleRecipe", "action", "cache_data", "dependency", "download", "fragment", "refresh",
+  "success", "theme"
+]
+submodule_exports = ["edron.diagnostics.EdronDiagnostic", "edron.diagnostics.SourceLocation"]
+
+[inventory]
+ids = [
+  "APP-001", "APP-002", "APP-003", "APP-004", "APP-005", "APP-006", "APP-007", "APP-008",
+  "APP-009", "APP-010", "OUT-001", "OUT-002", "OUT-003", "OUT-004", "OUT-005", "OUT-006",
+  "OUT-007", "TEXT-001", "TEXT-002", "TEXT-003", "TEXT-004", "TEXT-005", "DATA-001", "DATA-002",
+  "DATA-003", "DATA-004", "CHART-001", "MAP-001", "DATA-005", "INPUT-001", "INPUT-002", "INPUT-003",
+  "INPUT-004", "INPUT-005", "FILTER-001", "FILTER-002", "FILTER-003", "FILTER-004", "FILTER-005", "FRAG-001",
+  "FRAG-002", "FRAG-003", "FRAG-004", "ACT-001", "ACT-002", "ACT-003", "ACT-004", "ACT-005",
+  "ACT-006", "CONTROL-001", "CONTROL-002", "FORM-001", "FORM-002", "FORM-003", "RESULT-001", "RESULT-002",
+  "RESULT-003", "DEP-001", "DEP-002", "CACHE-001", "STATE-001", "STATE-002", "STATE-003", "JOB-001",
+  "JOB-002", "JOB-003", "DL-001", "DL-002", "STYLE-001", "STYLE-002", "STYLE-003", "STYLE-004",
+  "STYLE-005", "STYLE-006", "STYLE-007", "STYLE-008", "STYLE-009", "STYLE-010", "PKG-BASE-001", "PKG-BASE-002",
+  "PKG-BASE-003", "PKG-BASE-004", "PKG-BASE-005", "PKG-BASE-006", "NATIVE-001", "NATIVE-002", "NATIVE-003", "NATIVE-004",
+  "NATIVE-005", "NATIVE-006", "NATIVE-007", "NATIVE-008", "NATIVE-009", "NATIVE-010", "TOOL-001", "TOOL-002",
+  "TOOL-003", "TOOL-004", "TOOL-005", "TOOL-006", "TOOL-007", "TOOL-008", "DIAG-001", "DIAG-002",
+  "DIAG-003", "UP-001", "UP-002", "UP-003", "UP-004", "UP-005", "UP-006", "UP-007",
+  "UP-008", "UP-009", "UP-010", "UP-011", "DEF-001", "DEF-002", "DEF-003", "DEF-004",
+  "DEF-005", "DEF-006", "DEF-007", "DEF-008", "DEF-009", "DEF-010", "DEF-011", "DEF-012",
+  "DEF-013", "DEF-014", "DEF-015", "DEF-016", "DEF-017", "DEF-018"
+]
+base_package_ids = [
+  "PKG-BASE-001", "PKG-BASE-002", "PKG-BASE-003", "PKG-BASE-004", "PKG-BASE-005", "PKG-BASE-006"
+]
+upstream_ids = [
+  "UP-001", "UP-002", "UP-003", "UP-004", "UP-005", "UP-006",
+  "UP-007", "UP-008", "UP-009", "UP-010", "UP-011"
+]
+deferred_ids = [
+  "DEF-001", "DEF-002", "DEF-003", "DEF-004", "DEF-005", "DEF-006",
+  "DEF-007", "DEF-008", "DEF-009", "DEF-010", "DEF-011", "DEF-012",
+  "DEF-013", "DEF-014", "DEF-015", "DEF-016", "DEF-017", "DEF-018"
+]
+row_serialization_state = "Draft; install/disposition/owner/readiness remain authoritative in the inventory until Decision A."
+
+[[optional]]
+id = "data.pandas"
+requirements = ["pandas>=2.0", "narwhals>=1.0"]
+shortcut = "edron[pandas]"
+owner = "hedron-data"
+maturity = "beta candidate"
+
+[[optional]]
+id = "data.polars"
+requirements = ["polars>=1.0", "narwhals>=1.0"]
+shortcut = "edron[polars]"
+owner = "hedron-data"
+maturity = "beta candidate"
+
+[[optional]]
+id = "data.pyarrow"
+requirements = ["pyarrow>=15.0", "narwhals>=1.0"]
+shortcut = "edron[pyarrow]"
+owner = "hedron-data"
+maturity = "beta candidate"
+
+[[optional]]
+id = "chart.plotly"
+requirements = ["plotly>=5.18,<7"]
+shortcut = "edron[plotly]"
+owner = "hedron-charts"
+maturity = "experimental"
+
+[[optional]]
+id = "chart.altair"
+requirements = ["altair>=6,<7", "vl-convert-python>=1.0"]
+shortcut = "edron[altair]"
+owner = "hedron-charts"
+maturity = "experimental"
+
+[[optional]]
+id = "chart.matplotlib"
+requirements = ["matplotlib>=3.8,<4"]
+shortcut = "edron[matplotlib]"
+owner = "hedron-charts"
+maturity = "beta/static-supported-scope candidate"
+
+[[optional]]
+id = "data.sqlalchemy"
+requirements = ["sqlalchemy>=2,<3"]
+shortcut = "edron[sqlalchemy]"
+owner = "hedron-data"
+maturity = "beta candidate"
+
+[invariants]
+direct_install_activates = true
+shortcut_is_runtime_flag = false
+runtime_installer = false
+all_extra_allowed = false
+automatic_backend_fallback = false
+native_object_identity_preserved = true
+second_runtime_allowed = false

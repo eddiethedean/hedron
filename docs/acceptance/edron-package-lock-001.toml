@@ -1,0 +1,132 @@
+schema_version = 1
+packet = "edron-package-lock/1"
+status = "Draft and blocked"
+target = "edron 0.1.0"
+planning_baseline = "hedron workspace 0.66.1"
+authority = "../api/EDRON_PACKAGING.md"
+accepted = false
+complete = false
+locked = false
+blockers = [
+  "No compatible Hedron release contains all UP-001 through UP-011 requirements.",
+  "Exact first-party, parser, sanitizer, server, build, and tooling specifiers are unfrozen.",
+  "Supported Python, platform, browser, type-checker, pip, and uv matrices are unverified.",
+  "Wheel, sdist, license, asset, SBOM, provenance, upgrade, and rollback evidence does not exist."
+]
+
+[python]
+candidates = ["3.11", "3.12", "3.13", "3.14"]
+selection_state = "Unfrozen"
+requires_python = "unassigned"
+
+[platforms]
+required_candidate = ["linux"]
+additional_candidates = ["macos", "windows"]
+architecture_selection = "unassigned"
+selection_state = "Unfrozen"
+
+[artifacts]
+build_backend = "hatchling candidate; unaccepted"
+wheel = true
+sdist = true
+typed_marker = "edron/py.typed"
+console_script = "edron"
+source_layout = "packages/edron/src"
+reproducibility_state = "Unverified"
+sbom_state = "Missing"
+provenance_state = "Missing"
+
+[[required_distribution]]
+id = "runtime.hedron"
+distribution = "hedron"
+specifier = "unassigned"
+reason = "ASGI, components, routing, interactions, state, security, styling, assets, HTMX"
+
+[[required_distribution]]
+id = "runtime.data"
+distribution = "hedron-data"
+specifier = "unassigned"
+reason = "tables, data views, native data editor, data adapters"
+
+[[required_distribution]]
+id = "runtime.charts"
+distribution = "hedron-charts"
+specifier = "unassigned"
+reason = "first-party charts and optional plotting adapters"
+
+[[required_distribution]]
+id = "runtime.maps"
+distribution = "hedron-maps"
+specifier = "unassigned"
+reason = "first-party maps and assets"
+
+[[required_distribution]]
+id = "runtime.markdown"
+distribution = "unassigned"
+specifier = "unassigned"
+reason = "maintained Markdown parser"
+
+[[required_distribution]]
+id = "runtime.sanitizer"
+distribution = "unassigned"
+specifier = "unassigned"
+reason = "maintained HTML sanitization under Hedron trust policy"
+
+[[required_distribution]]
+id = "runtime.server"
+distribution = "uvicorn"
+specifier = "unassigned"
+reason = "edron run development server and reload path"
+
+[[optional]]
+id = "data.pandas"
+requirements = ["pandas>=2.0", "narwhals>=1.0"]
+extra = "pandas"
+
+[[optional]]
+id = "data.polars"
+requirements = ["polars>=1.0", "narwhals>=1.0"]
+extra = "polars"
+
+[[optional]]
+id = "data.pyarrow"
+requirements = ["pyarrow>=15.0", "narwhals>=1.0"]
+extra = "pyarrow"
+
+[[optional]]
+id = "chart.plotly"
+requirements = ["plotly>=5.18,<7"]
+extra = "plotly"
+
+[[optional]]
+id = "chart.altair"
+requirements = ["altair>=6,<7", "vl-convert-python>=1.0"]
+extra = "altair"
+
+[[optional]]
+id = "chart.matplotlib"
+requirements = ["matplotlib>=3.8,<4"]
+extra = "matplotlib"
+
+[[optional]]
+id = "data.sqlalchemy"
+requirements = ["sqlalchemy>=2,<3"]
+extra = "sqlalchemy"
+
+[matrix]
+package_managers = ["pip", "uv"]
+browsers = ["chromium", "firefox", "webkit"]
+http_paths = ["ordinary-http", "htmx", "no-javascript"]
+optional_lanes = ["absent", "direct", "shortcut", "incompatible-low", "incompatible-high", "broken-import"]
+install_lanes = ["wheel", "sdist", "offline-import", "upgrade", "invalid-train", "uninstall", "rollback"]
+verification_state = "Unverified"
+
+[invariants]
+plain_install_includes_base_batteries = true
+direct_optional_install_activates = true
+extras_are_shortcuts_only = true
+runtime_detects_requested_extra = false
+runtime_installer = false
+all_extra_allowed = false
+optional_imports_on_root_path = false
+native_packages_remain_independently_usable = true

@@ -1,0 +1,188 @@
+schema_version = 1
+packet = "edron-fixture-lock/1"
+status = "Draft and blocked"
+target = "edron 0.1.0"
+planning_baseline = "hedron workspace 0.66.1"
+authority = "../implementation/EDRON_GOLDEN_APPS.md"
+acceptance_authority = "EDRON_001.md#fixture-and-coverage-lock"
+accepted = false
+complete = false
+locked = false
+all_sources_materialized = false
+all_hashes_frozen = false
+blockers = [
+  "The six golden applications are design examples, not materialized executable fixtures.",
+  "Focused positive, negative, native, HTTP, browser, security, accessibility, and performance fixtures do not exist.",
+  "Expected native routes, handles, methods, targets, effects, assets, and state facts are unfrozen.",
+  "No source hashes, evidence commands, retained reports, or reviewer approvals exist."
+]
+
+[digest_policy]
+algorithm = "sha256"
+canonicalization = "raw committed file bytes"
+source_sha256_placeholder = "unassigned"
+hash_state = "Unfrozen"
+
+[matrix]
+http_paths = ["ordinary-http", "htmx", "no-javascript"]
+browsers = ["chromium", "firefox", "webkit"]
+optional_lanes = ["absent", "direct", "shortcut", "incompatible-low", "incompatible-high", "broken-import"]
+artifact_lanes = ["wheel", "sdist", "offline-import", "upgrade", "invalid-train", "uninstall", "rollback"]
+evidence_state = "Missing"
+
+[[golden]]
+id = "GOLDEN-HELLO"
+name = "Hello page"
+design_source = "../implementation/EDRON_GOLDEN_APPS.md#golden-application-1-hello-page"
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+hash_state = "Unfrozen"
+capabilities = ["APP-001", "APP-002", "APP-003", "TEXT-001", "TEXT-002", "STYLE-001", "TOOL-001"]
+required_facts = ["clean base install", "page and route", "document title", "one h1", "native text nodes", "native theme", "semantic full page", "no network or Node"]
+required_paths = ["ordinary-http", "no-javascript"]
+maturity = "Draft"
+state = "Blocked"
+
+[[golden]]
+id = "GOLDEN-SALES"
+name = "Filtered sales dashboard"
+design_source = "../implementation/EDRON_GOLDEN_APPS.md#golden-application-2-filtered-sales-dashboard"
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+hash_state = "Unfrozen"
+capabilities = ["DATA-001", "DATA-002", "DATA-003", "CHART-001", "INPUT-003", "INPUT-005", "FILTER-001", "FRAG-001", "CACHE-001"]
+required_facts = ["native layout", "metric", "dataframe", "first-party chart", "coherent GET filters", "fragment target", "cache identity", "history", "race rejection", "full-page fallback"]
+required_paths = ["ordinary-http", "htmx", "no-javascript"]
+maturity = "Draft"
+state = "Blocked"
+
+[[golden]]
+id = "GOLDEN-CRUD"
+name = "Validated customer CRUD"
+design_source = "../implementation/EDRON_GOLDEN_APPS.md#golden-application-3-validated-customer-crud"
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+hash_state = "Unfrozen"
+capabilities = ["FORM-001", "FORM-002", "FORM-003", "DEP-001", "ACT-001", "ACT-002", "ACT-003", "ACT-004", "ACT-005", "RESULT-001"]
+required_facts = ["native dependency lifecycle", "Pydantic form", "authorization", "CSRF", "typed binding", "accessible confirmation", "idempotency", "revision conflict", "effects", "PRG", "focus and error summary"]
+required_paths = ["ordinary-http", "htmx", "no-javascript"]
+maturity = "Draft"
+state = "Blocked"
+
+[[golden]]
+id = "GOLDEN-JOB"
+name = "Durable report job"
+design_source = "../implementation/EDRON_GOLDEN_APPS.md#golden-application-4-durable-report-job"
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+hash_state = "Unfrozen"
+capabilities = ["JOB-001", "JOB-002", "JOB-003", "DL-001", "DL-002", "DEP-001", "FORM-001"]
+required_facts = ["durable backend", "subject and tenant scope", "submit", "status", "poll", "cancel", "terminal result", "download", "manual refresh fallback", "multi-worker production gate"]
+required_paths = ["ordinary-http", "htmx", "no-javascript"]
+maturity = "Draft"
+state = "Blocked"
+
+[[golden]]
+id = "GOLDEN-PLOTLY"
+name = "Optional Plotly integration"
+design_source = "../implementation/EDRON_GOLDEN_APPS.md#golden-application-5-optional-plotly-integration"
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+hash_state = "Unfrozen"
+capabilities = ["CHART-001", "DIAG-001", "DIAG-002"]
+required_facts = ["root import without Plotly", "absent diagnostic", "direct activation", "shortcut equivalence", "incompatible-low diagnostic", "incompatible-high diagnostic", "broken-import diagnostic", "no adapter fallback", "native asset remount", "strict CSP"]
+required_paths = ["ordinary-http", "htmx", "no-javascript"]
+maturity = "Draft"
+state = "Blocked"
+
+[[golden]]
+id = "GOLDEN-STYLING"
+name = "Branded styling from simple to native"
+design_source = "../implementation/EDRON_GOLDEN_APPS.md#golden-application-6-branded-styling-from-simple-to-native"
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+hash_state = "Unfrozen"
+capabilities = ["STYLE-001", "STYLE-002", "STYLE-003", "STYLE-004", "STYLE-005", "STYLE-006", "STYLE-007", "STYLE-008", "STYLE-009", "STYLE-010"]
+required_facts = ["one native style registry", "identity re-exports", "registry-derived variants", "native override precedence", "request-local scope", "native package composition", "fingerprinted local CSS", "strict CSP", "accessibility modes", "style explain and diff"]
+required_paths = ["ordinary-http", "htmx", "no-javascript"]
+maturity = "Draft"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-MAP"
+scope = "Simple map geometry, local UI assets, explicit tile/data network policy, CSP, description, and fallback."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-NATIVE-EDITOR"
+scope = "Native hedron-data editor access plus a negative test proving no Edron editor claim."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-OPTIONAL-MATRIX"
+scope = "Pandas, Polars, PyArrow, Altair, Matplotlib, and SQLAlchemy optional capability matrices."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-NATIVE-COMPOSITION"
+scope = "Native component, fragment, action, feature, route, theme/style, session/cache/job composition and identity."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-DEPENDENCY-LIFECYCLE"
+scope = "Dependency cleanup, overrides, shadowing, concurrent fresh instances, and context teardown."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-STATE-JOBS-DOWNLOADS"
+scope = "Cache scopes/invalidation/restart, typed sessions, multi-worker job scope, downloads, and ranges."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-CLI-TRUST"
+scope = "Static versus trusted import, JSON/SARIF, redaction, optional probe, and source versus observed facts."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-ARTIFACT-UPGRADE"
+scope = "Wheel/sdist external installs, invalid trains, upgrades, uninstall/rollback, offline import, and assets."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-DEFERRED-NEGATIVE"
+scope = "Every Deferred or rejected API name as a negative source, import, typing, and runtime test."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[[focused]]
+id = "FOCUSED-CROSS-CUTTING"
+scope = "Security, accessibility, browser, no-JavaScript, and native performance differential corpora."
+materialized_source = "unassigned"
+source_sha256 = "unassigned"
+state = "Blocked"
+
+[invariants]
+golden_count = 6
+focused_fixture_group_count = 10
+semantic_http_assertions_required = true
+snapshot_only_evidence_sufficient = false
+native_fact_identity_required = true
+source_hashes_required_before_implementation = true
+evidence_commands_required_before_verification = true

@@ -103,7 +103,7 @@ def check() -> int:
         print("\n".join(errors), file=sys.stderr)
     if stale or errors:
         return 1
-    print("ok: root STATUS.md matches docs/; only docs/ROADMAP.md exists")
+    print("ok: root STATUS.md matches docs/; canonical Hedron roadmap is docs/ROADMAP.md")
     return 0
 
 
