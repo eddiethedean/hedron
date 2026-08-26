@@ -7,6 +7,10 @@ For the phase 0.6 closure gate and every later release, completion also follows 
 dimensions, retained artifacts, and named ownership are required. A checked box without evidence is
 status commentary, not a satisfied release gate.
 
+- [Edron `0.1.0` acceptance packet](EDRON_001.md) — **Draft and blocked**; separates design
+  acceptance, implementation entry, and publication; see
+  [machine gates](edron-release-gate-001.toml) and
+  [upstream lock](edron-upstream-lock-001.toml)
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)

@@ -1,0 +1,119 @@
+schema_version = 1
+packet = "edron-upstream-lock/1"
+status = "Blocked"
+target = "edron 0.1.0"
+planning_baseline = "hedron workspace 0.66.1"
+authority = "../implementation/EDRON_CAPABILITY_INVENTORIES.md#inventory-k-required-upstream-hedron-enablement"
+resolution_states = ["Existing", "Shipped"]
+all_resolved = false
+implementation_entry_satisfied = false
+
+[[requirement]]
+id = "UP-001"
+title = "Fresh-instance class compiler"
+owner = "Hedron compiler/lifecycle maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["page compilation", "fragment compilation", "action compilation"]
+required_evidence = ["public contract and symbol", "atomic registration plan", "fresh-instance lifecycle and conformance evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron class-compilation contract, owner disposition, or shipped release has been recorded."
+
+[[requirement]]
+id = "UP-002"
+title = "Coherent typed GET filter plan"
+owner = "Hedron interaction maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["named controls", "filter scopes", "history semantics"]
+required_evidence = ["public plan schema and builder", "HTTP, HTMX, no-JavaScript, and race evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron filter-plan contract, owner disposition, or shipped release has been recorded."
+
+[[requirement]]
+id = "UP-003"
+title = "Class dependency descriptor"
+owner = "Hedron dependency-injection maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["ed.dependency"]
+required_evidence = ["public descriptor contract and symbol", "override, cleanup, static-analysis, and shadowing evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron class dependency descriptor, owner disposition, or shipped release has been recorded."
+
+[[requirement]]
+id = "UP-004"
+title = "Owning-screen action fallback"
+owner = "Hedron action/routing maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["default action fallback", "Post/Redirect/Get behavior"]
+required_evidence = ["public fallback contract", "unsafe-method, CSRF, validation, and redirect evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron owning-screen fallback contract, owner disposition, or shipped release has been recorded."
+
+[[requirement]]
+id = "UP-005"
+title = "Accessible unsafe-action confirmation"
+owner = "Hedron interaction/accessibility maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["confirm parameter"]
+required_evidence = ["public confirmation contract", "keyboard, focus, cancel, no-JavaScript, and security evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron confirmation contract, owner disposition, or shipped release has been recorded."
+
+[[requirement]]
+id = "UP-006"
+title = "Success outcome parity"
+owner = "Hedron action/response maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["ed.success"]
+required_evidence = ["public success outcome contract", "HTMX and ordinary-response status, presentation, and error evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron success-outcome parity contract, owner disposition, or shipped release has been recorded."
+
+[[requirement]]
+id = "UP-007"
+title = "Facade source and binding to native handle lookup"
+owner = "Hedron registry/tooling maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["app.native", "explain tooling"]
+required_evidence = ["public registry lookup and provenance schema", "identity, collision, and source-redaction evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron facade-provenance lookup contract, owner disposition, or shipped release has been recorded."
+
+[[requirement]]
+id = "UP-008"
+title = "Extended native TaskFlow"
+owner = "Hedron task/job maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["JobFlow"]
+required_evidence = ["public TaskFlow extension contract", "backend, scope, result, polling, production, and no-JavaScript evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron TaskFlow extension, owner disposition, or shipped release has been recorded."
+
+[[requirement]]
+id = "UP-009"
+title = "Native recipe-family variant metadata"
+owner = "Hedron style maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["variant parameter"]
+required_evidence = ["public variant metadata contract", "registry mapping, version, explanation, and collision evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron recipe-variant metadata contract, owner disposition, or shipped release has been recorded."
+
+[[requirement]]
+id = "UP-010"
+title = "Cross-package brand and theme contract"
+owner = "Hedron core/data/charts/maps style maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["Edron theme guarantee"]
+required_evidence = ["public cross-package theme contract", "token, mode, accessibility, and asset evidence", "mutually compatible shipped package versions"]
+blocker = "No accepted cross-package Hedron theme contract, joint owner disposition, or compatible shipped train has been recorded."
+
+[[requirement]]
+id = "UP-011"
+title = "External facade provenance in native reports"
+owner = "Hedron style/registry/tooling maintainers"
+state = "Blocked"
+resolution = "Unresolved"
+blocks = ["explain tooling", "style tooling"]
+required_evidence = ["public report provenance schema", "source, redaction, and diff evidence", "compatible shipped version"]
+blocker = "No accepted public Hedron external-facade report contract, owner disposition, or shipped release has been recorded."

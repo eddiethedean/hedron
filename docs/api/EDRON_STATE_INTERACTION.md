@@ -7,6 +7,10 @@ status: draft
 **Status:** Draft design contract; Edron is not implemented or published<br>
 **Target:** `edron` 0.1 after required native Hedron enablement<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
+**Packaging:** [Edron 0.1 packaging](EDRON_PACKAGING.md)<br>
+**Capability inventories:** [Edron 0.1 capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)<br>
+**Implementation:** [Edron 0.1 implementation specification](../implementation/EDRON_001.md)<br>
+**Acceptance:** [Edron 0.1 acceptance packet](../acceptance/EDRON_001.md)<br>
 **Architecture:** [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Fixtures:** [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
 
@@ -842,6 +846,10 @@ explicit URL/form/session/durable/cache/browser/deferred disposition under RFC-0
 ## See also
 
 - [Edron 0.1 public API](EDRON.md)
+- [Edron packaging](EDRON_PACKAGING.md)
+- [Edron capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)
+- [Edron implementation specification](../implementation/EDRON_001.md)
+- [Edron acceptance packet](../acceptance/EDRON_001.md)
 - [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)
 - [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
 - [Native state APIs](STATE.md)

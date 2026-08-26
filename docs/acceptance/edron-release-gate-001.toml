@@ -1,0 +1,543 @@
+schema_version = 1
+packet = "edron.acceptance/1"
+status = "Draft and blocked"
+target = "edron 0.1.0"
+planning_baseline = "hedron workspace 0.66.1"
+verified_state = "Verified"
+acceptance_packet = "EDRON_001.md"
+evidence_policy = "EVIDENCE.md"
+upstream_lock = "edron-upstream-lock-001.toml"
+design_accepted = false
+implementation_authorized = false
+release_ready = false
+
+[[decision]]
+id = "A"
+name = "Design acceptance"
+required_gate_prefix = "EDR-DESIGN-"
+state = "Blocked"
+authorized = false
+blocker = "Required design gates remain Planned or Blocked and no retained design decision exists."
+
+[[decision]]
+id = "B"
+name = "Edron implementation entry"
+required_gate_prefix = "EDR-ENTRY-"
+state = "Blocked"
+authorized = false
+blocker = "Decision A is not accepted, all 11 upstream requirements are unresolved, and implementation-entry evidence does not exist."
+
+[[decision]]
+id = "C"
+name = "Edron 0.1.0 publication"
+required_gate_prefix = "EDR-RELEASE-"
+state = "Blocked"
+authorized = false
+blocker = "Decisions A and B are not satisfied and no Edron release artifact or release evidence exists."
+
+[[artifact]]
+id = "RFC"
+path = "../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md"
+state = "Planned"
+required_before = "A"
+
+[[artifact]]
+id = "GOLDENS"
+path = "../implementation/EDRON_GOLDEN_APPS.md"
+state = "Planned"
+required_before = "A"
+
+[[artifact]]
+id = "PUBLIC_API"
+path = "../api/EDRON.md"
+state = "Planned"
+required_before = "A"
+
+[[artifact]]
+id = "STATE_INTERACTION"
+path = "../api/EDRON_STATE_INTERACTION.md"
+state = "Planned"
+required_before = "A"
+
+[[artifact]]
+id = "PACKAGING"
+path = "../api/EDRON_PACKAGING.md"
+state = "Planned"
+required_before = "A"
+
+[[artifact]]
+id = "CAPABILITY_INVENTORIES"
+path = "../implementation/EDRON_CAPABILITY_INVENTORIES.md"
+state = "Planned"
+required_before = "A"
+
+[[artifact]]
+id = "IMPLEMENTATION_SPECIFICATION"
+path = "../implementation/EDRON_001.md"
+state = "Planned"
+required_before = "A"
+
+[[artifact]]
+id = "UPSTREAM_LOCK"
+path = "edron-upstream-lock-001.toml"
+state = "Blocked"
+required_before = "B"
+blocker = "UP-001 through UP-011 are unresolved."
+
+[[artifact]]
+id = "CAPABILITY_MANIFEST"
+planned_path = "edron-capability-manifest-001.toml"
+state = "Blocked"
+required_before = "A"
+blocker = "The machine capability manifest has not been designed or generated."
+
+[[artifact]]
+id = "PACKAGE_LOCK"
+planned_path = "edron-package-lock-001.toml"
+state = "Blocked"
+required_before = "B"
+blocker = "The compatible package and dependency train is not frozen."
+
+[[artifact]]
+id = "PUBLIC_API_LOCK"
+planned_path = "edron-public-api-lock-001.toml"
+state = "Blocked"
+required_before = "B"
+blocker = "The accepted public API snapshot does not exist."
+
+[[artifact]]
+id = "LOWERING_MATRIX"
+planned_path = "edron-lowering-matrix-001.toml"
+state = "Blocked"
+required_before = "B"
+blocker = "The native lowering matrix does not exist."
+
+[[artifact]]
+id = "STATE_INTERACTION_MATRIX"
+planned_path = "edron-state-interaction-matrix-001.toml"
+state = "Blocked"
+required_before = "B"
+blocker = "The state and interaction trace matrix does not exist."
+
+[[artifact]]
+id = "FIXTURE_LOCK"
+planned_path = "edron-fixture-lock-001.toml"
+state = "Blocked"
+required_before = "B"
+blocker = "Golden and focused fixture source hashes and expected native facts are not frozen."
+
+[[artifact]]
+id = "PERFORMANCE_LOCK"
+planned_path = "edron-performance-lock-001.toml"
+state = "Blocked"
+required_before = "A"
+blocker = "Numeric performance and resource budgets are not frozen."
+
+[[artifact]]
+id = "RELEASE_EVIDENCE"
+planned_path = "release-artifact-bundle"
+state = "Blocked"
+required_before = "C"
+blocker = "No Edron runtime, release candidate, tagged artifact, or retained release evidence exists."
+
+[[gate]]
+id = "EDR-DESIGN-CONTRACT-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "architecture"
+summary = "Approve RFC scope, goals, non-goals, authority, alternatives, and compatibility."
+
+[[gate]]
+id = "EDR-DESIGN-GOLDEN-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "product/API"
+summary = "Freeze six golden applications and their native, fallback, state, security, and accessibility analysis."
+
+[[gate]]
+id = "EDR-DESIGN-API-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "API"
+summary = "Freeze root exports, classes, signatures, returns, diagnostics, native identity, and deferrals."
+
+[[gate]]
+id = "EDR-DESIGN-STATE-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "interactions"
+summary = "Freeze owner, lifetime, method, concurrency, idempotency, fallback, and HTMX rules."
+
+[[gate]]
+id = "EDR-DESIGN-PACKAGE-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "packaging"
+summary = "Freeze base batteries, optional/direct/extra semantics, artifacts, imports, and compatibility."
+
+[[gate]]
+id = "EDR-DESIGN-INVENTORY-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "architecture"
+summary = "Assign exactly one disposition to every base, optional, native, tooling, upstream, and deferred capability."
+
+[[gate]]
+id = "EDR-DESIGN-IMPLEMENTATION-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "implementation"
+summary = "Confirm the package, modules, compiler, runtime, native integration, stages, and tests are implementable without duplicate authority."
+
+[[gate]]
+id = "EDR-DESIGN-AUTHORITY-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "architecture/security"
+summary = "Confirm Edron introduces no renderer, router, DI, interaction, state, style, asset, browser, or security authority."
+
+[[gate]]
+id = "EDR-DESIGN-UPSTREAM-001"
+phase = "design"
+state = "Blocked"
+required = true
+owner = "Hedron maintainers"
+summary = "Resolve UP-001 through UP-011 to an existing or proposed native owner, contract, and evidence path."
+blocker = "All 11 upstream requirements remain unresolved in edron-upstream-lock-001.toml."
+
+[[gate]]
+id = "EDR-DESIGN-LIMITS-001"
+phase = "design"
+state = "Blocked"
+required = true
+owner = "performance/security"
+summary = "Freeze numeric output, binding, state, job, diagnostic, and package limits."
+blocker = "Numeric limits, rationale, and failure behavior have not been accepted."
+
+[[gate]]
+id = "EDR-DESIGN-SECURITY-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "security"
+summary = "Approve the threat model, trust boundaries, adversarial corpus, redaction, and supply-chain plan."
+
+[[gate]]
+id = "EDR-DESIGN-A11Y-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "accessibility"
+summary = "Approve semantic, focus, status, no-JavaScript, chart, map, style, and human evidence plans."
+
+[[gate]]
+id = "EDR-DESIGN-PERF-001"
+phase = "design"
+state = "Blocked"
+required = true
+owner = "performance"
+summary = "Freeze native-comparison metrics, budgets, and measurement methods."
+blocker = "The performance lock and benchmark design do not exist."
+
+[[gate]]
+id = "EDR-DESIGN-EVIDENCE-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "release"
+summary = "Map every normative ID to an owner, command class, CI lane, and retained artifact type."
+
+[[gate]]
+id = "EDR-DESIGN-DOCS-001"
+phase = "design"
+state = "Planned"
+required = true
+owner = "docs"
+summary = "Make design packet links, terminology, status, examples, and strict builds agree."
+
+[[gate]]
+id = "EDR-DESIGN-DECISION-001"
+phase = "design"
+state = "Blocked"
+required = true
+owner = "release/architecture"
+summary = "Obtain required reviewers' signatures over exact digests with explicit Decision A authority."
+blocker = "No retained design decision or signed digest record exists."
+
+[[gate]]
+id = "EDR-ENTRY-DESIGN-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "release"
+summary = "Verify every Decision A gate."
+blocker = "Decision A is not accepted."
+
+[[gate]]
+id = "EDR-ENTRY-UPSTREAM-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "Hedron owners"
+summary = "Ship all 11 native requirements in the required compatible train."
+blocker = "UP-001 through UP-011 are unresolved and unshipped."
+
+[[gate]]
+id = "EDR-ENTRY-TRAIN-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "packaging"
+summary = "Lock an exact mutually compatible Python, Hedron, adapter, server, parser, and sanitizer train."
+blocker = "The package train and candidate resolver evidence are not frozen."
+
+[[gate]]
+id = "EDR-ENTRY-MANIFESTS-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "release/tooling"
+summary = "Complete mutually consistent capability, package, API, lowering, state, fixture, and performance locks."
+blocker = "Required machine locks are missing."
+
+[[gate]]
+id = "EDR-ENTRY-FIXTURES-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "testing"
+summary = "Freeze golden and focused positive, negative, native, and no-JavaScript source fixtures."
+blocker = "The fixture lock and expected native facts do not exist."
+
+[[gate]]
+id = "EDR-ENTRY-CI-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "release/CI"
+summary = "Provide self-tested checkers and CI lanes that fail missing, duplicate, or fake Verified evidence."
+blocker = "The Edron packet checker and CI workflows do not exist."
+
+[[gate]]
+id = "EDR-ENTRY-SECURITY-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "security"
+summary = "Prepare the threat corpus and artifact, import, and package attack harness."
+blocker = "The executable security corpus and readiness sign-off do not exist."
+
+[[gate]]
+id = "EDR-ENTRY-A11Y-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "accessibility"
+summary = "Prepare automated and human protocols, tasks, privacy rules, ledger schema, and environments."
+blocker = "The accessibility protocol, checker, environments, and readiness sign-off do not exist."
+
+[[gate]]
+id = "EDR-ENTRY-ZERO-BLOCKERS-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "architecture/release"
+summary = "Remove every Enable, unknown owner, placeholder budget/range, private native seam, and undocumented Required deferral."
+blocker = "Known upstream, lock, budget, and evidence blockers remain."
+
+[[gate]]
+id = "EDR-ENTRY-AUTHORIZATION-001"
+phase = "implementation-entry"
+state = "Blocked"
+required = true
+owner = "release/architecture"
+summary = "Explicitly authorize packages/edron implementation at exact accepted locks and digests."
+blocker = "No retained implementation-entry decision exists."
+
+[[gate]]
+id = "EDR-RELEASE-RUNTIME-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "Edron implementation"
+summary = "Verify the definition compiler, request frames, buffers, descriptors, and all public methods."
+blocker = "Edron runtime implementation and evidence do not exist."
+
+[[gate]]
+id = "EDR-RELEASE-API-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "API"
+summary = "Verify the exact root, signature, typing, return, and diagnostic snapshot with no accidental exports."
+blocker = "No built Edron API or retained API evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-NATIVE-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "architecture/Hedron"
+summary = "Verify exact native objects, registries, routes, effects, styles, assets, and mixed composition."
+blocker = "Native requirements are unresolved and no Edron interoperability evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-HTTP-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "interactions"
+summary = "Verify full-page, filter, fragment, action, form, job, and download HTTP, HTMX, and no-JavaScript meaning."
+blocker = "No Edron runtime or raw HTTP/browser evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-STATE-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "state"
+summary = "Verify request, session, cache, durable, job, and browser ownership across restart and multi-worker claims."
+blocker = "No Edron runtime or state/concurrency evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-CAPABILITY-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "packaging/adapters"
+summary = "Verify base batteries and all optional absent, direct, extra, incompatible, and broken lanes."
+blocker = "No Edron artifacts or clean-environment capability evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-STYLE-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "styling"
+summary = "Verify themes, variants, recipes, scopes, CSS, native packages, adapters, CSP, and modes."
+blocker = "No Edron styling implementation or evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-JOB-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "jobs"
+summary = "Verify job backend, scope, poll, cancel, result, download, production, and no-JavaScript behavior."
+blocker = "Native job prerequisites and Edron job evidence do not exist."
+
+[[gate]]
+id = "EDR-RELEASE-SECURITY-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "security"
+summary = "Pass all security requirements and adversarial corpus with zero unwaivable finding."
+blocker = "No release artifact or retained security evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-A11Y-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "accessibility"
+summary = "Pass automated and scoped human accessibility evidence with honest claim limits."
+blocker = "No release artifact, automated report, or human ledger exists."
+
+[[gate]]
+id = "EDR-RELEASE-PERF-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "performance"
+summary = "Pass every frozen native-comparison and resource budget."
+blocker = "Budgets are not frozen and no benchmark evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-TYPING-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "typing"
+summary = "Validate positive, negative, golden, and native cases on the supported Python and type-checker matrix."
+blocker = "No Edron package, type-checker matrix, or retained typing report exists."
+
+[[gate]]
+id = "EDR-RELEASE-CLI-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "tooling"
+summary = "Verify run, check, register, explain, doctor, and style commands, trust boundaries, formats, and exit codes."
+blocker = "No Edron CLI implementation or evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-GOLDEN-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "testing"
+summary = "Pass all six goldens and focused map, editor, state, native, optional, and CLI fixtures."
+blocker = "Fixtures are not frozen and no Edron runtime evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-PACKAGE-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "packaging"
+summary = "Verify wheel and sdist metadata, assets, typing, licenses, clean installs, offline import, build, and provenance."
+blocker = "No Edron distribution artifacts exist."
+
+[[gate]]
+id = "EDR-RELEASE-UPGRADE-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "release"
+summary = "Verify compatible install, upgrade, invalid train, uninstall, rollback, and native-only operation."
+blocker = "No Edron versions, locked train, or upgrade/rollback evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-DOCS-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "docs"
+summary = "Verify release documentation matches built artifacts, maturity, limitations, and availability."
+blocker = "No Edron release artifact or release documentation evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-HUMAN-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "release"
+summary = "Obtain architecture, security, accessibility, packaging, and release sign-off over exact evidence."
+blocker = "No complete evidence bundle or retained human release decision exists."
+
+[[gate]]
+id = "EDR-RELEASE-REGRESS-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "release"
+summary = "Pass the full required Hedron and Edron regression suite on release source and artifacts."
+blocker = "No Edron release source, artifact, or retained regression evidence exists."
+
+[[gate]]
+id = "EDR-RELEASE-PUBLISH-001"
+phase = "release"
+state = "Blocked"
+required = true
+owner = "release"
+summary = "Verify tagged artifacts, hashes, provenance, publication rehearsal, rollback, and final decision."
+blocker = "No tagged Edron artifacts, publication rehearsal, or final release decision exists."

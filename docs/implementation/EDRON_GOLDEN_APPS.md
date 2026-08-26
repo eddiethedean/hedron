@@ -2,9 +2,13 @@
 
 **Status:** Design draft; no Edron API in this document is implemented or available<br>
 **Purpose:** Input to the proposed Edron RFC and public API contract<br>
-**Baseline:** Hedron `0.66.x` repository train
-**Public API contract:** [Edron 0.1 public API](../api/EDRON.md)
-**State and interaction contract:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)
+**Baseline:** Hedron `0.66.x` repository train<br>
+**Public API contract:** [Edron 0.1 public API](../api/EDRON.md)<br>
+**State and interaction contract:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)<br>
+**Packaging contract:** [Edron 0.1 packaging](../api/EDRON_PACKAGING.md)<br>
+**Capability inventories:** [Edron 0.1 capability inventories](EDRON_CAPABILITY_INVENTORIES.md)<br>
+**Implementation:** [Edron 0.1 implementation specification](EDRON_001.md)<br>
+**Acceptance:** [Edron 0.1 acceptance packet](../acceptance/EDRON_001.md)
 
 This document tests the proposed Edron authoring model against six representative applications
 before runtime code or public signatures are committed. The examples are executable-design
@@ -901,7 +905,9 @@ may add it to Hedron before implementing the corresponding Edron surface.
 
 ## Public contract decisions exposed by the fixtures
 
-The [Edron public API contract](../api/EDRON.md) resolves these design pressures for 0.1. They remain
+The [Edron public API contract](../api/EDRON.md),
+[state and interaction contract](../api/EDRON_STATE_INTERACTION.md), and
+[packaging contract](../api/EDRON_PACKAGING.md) resolve these design pressures for 0.1. They remain
 draft decisions until RFC-0094 and its Stage 0 packet are accepted.
 
 1. **Visible page title:** `title=` emits the document title and default `h1`; `show_title=False`

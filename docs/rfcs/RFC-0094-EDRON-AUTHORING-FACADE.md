@@ -5,6 +5,10 @@
 **Design fixtures:** [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)<br>
 **Public API contract:** [Edron 0.1 public API](../api/EDRON.md)<br>
 **State and interaction contract:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)<br>
+**Packaging contract:** [Edron 0.1 packaging](../api/EDRON_PACKAGING.md)<br>
+**Capability inventories:** [Edron 0.1 capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)<br>
+**Implementation specification:** [Edron 0.1 implementation](../implementation/EDRON_001.md)<br>
+**Acceptance packet:** [Edron 0.1 acceptance](../acceptance/EDRON_001.md)<br>
 **Extends:** RFC-0012, RFC-0014, RFC-0018, RFC-0023, RFC-0024, RFC-0026, RFC-0070,
 RFC-0071, RFC-0072, RFC-0073, RFC-0084, RFC-0085, RFC-0087, RFC-0089, RFC-0090,
 RFC-0091, and RFC-0092<br>
@@ -70,7 +74,7 @@ server capabilities expected by the beginner vocabulary. Third-party libraries r
 Installing either the dependency directly or the matching Edron extra activates the same adapter:
 
 ```bash
-pip install edron plotly
+pip install edron "plotly>=5.18,<7"
 pip install "edron[plotly]"
 ```
 
@@ -982,11 +986,12 @@ Hedron APIs.
 ## Remaining Stage 0 questions
 
 The [public API contract](../api/EDRON.md) and
-[state and interaction contract](../api/EDRON_STATE_INTERACTION.md) resolve the beginner names,
-return behavior, page class rules, descriptor behavior, native app/property/lookup spelling,
-initial direct identity exports, state ownership and lifecycle, interaction defaults, job facade
-presence, optional shortcut registry, styling constructor/variants/scope, and deliberately absent
-0.1 features. Stage 0 still must resolve:
+[state and interaction contract](../api/EDRON_STATE_INTERACTION.md), together with the
+[packaging contract](../api/EDRON_PACKAGING.md), resolve the beginner names, return behavior, page
+class rules, descriptor behavior, native app/property/lookup spelling, initial direct identity
+exports, state ownership and lifecycle, interaction defaults, job facade presence, base battery
+boundaries, optional shortcut semantics, artifact/release behavior, styling constructor/variants/
+scope, and deliberately absent 0.1 features. Stage 0 still must resolve:
 
 1. What numeric performance, registration, output, binding, styling, and diagnostic budgets satisfy
    the acceptance gates?
@@ -1002,14 +1007,21 @@ presence, optional shortcut registry, styling constructor/variants/scope, and de
 
 ## Acceptance criteria
 
-This RFC may move from Draft to Accepted only after the following contract evidence exists. Edron
-runtime implementation begins only after `EDR-STAGE0-001` through `EDR-UPSTREAM-001` are accepted.
+This RFC may move from Draft to Accepted only after the following contract evidence exists and
+Decision A in the [Edron 0.1 acceptance packet](../acceptance/EDRON_001.md) is Verified. Edron
+runtime implementation begins only after that packet separately records Decision B as Verified.
 
 - **EDR-STAGE0-001:** A public API contract freezes `App`, `Page`, page registration, output/input
   behavior, containers, fragments, actions, forms, outcomes, native lookup, and diagnostics used by
   all golden applications.
 - **EDR-GOLDEN-001:** Every golden application has an approved Edron source fixture, conceptual
   native lowering, state/security/accessibility analysis, and executable acceptance scenario.
+- **EDR-INVENTORY-001:** The capability inventories account for every public surface, base and
+  optional installation, native escape hatch, upstream dependency, deferral, cross-cutting
+  disposition, and acceptance fixture; every `EDR-INV-*` criterion has corresponding evidence.
+- **EDR-IMPLEMENTATION-001:** The implementation specification maps every accepted capability to
+  package/module boundaries, definition/request lowering, native authority, staged work, tests,
+  artifacts, and release evidence; every `EDR-IMPL-*` requirement has a release-gate owner.
 - **EDR-AUTHORITY-001:** Architecture review proves Edron introduces no renderer, route registry,
   interaction registry, HTMX runtime, security authority, durable state store, or job queue.
 - **EDR-LIFECYCLE-001:** Page, fragment, and action requests create distinct fresh instances;
@@ -1027,8 +1039,10 @@ runtime implementation begins only after `EDR-STAGE0-001` through `EDR-UPSTREAM-
   `EDR-SI-*` owner, lifecycle, binding, concurrency, parity, security, accessibility, explanation,
   and performance criterion has corresponding evidence; page fields are never presented as
   persistent state.
-- **EDR-PACKAGE-001:** A clean `pip install edron` wheel environment runs the first-party table,
-  chart, map, Markdown, and server golden paths without further Hedron package installation.
+- **EDR-PACKAGE-001:** The companion packaging contract is approved and every `EDR-PKG-*`
+  artifact, base, train, authority, capability, extras, diagnostic, import, asset, drift, security,
+  compatibility, and performance criterion has corresponding evidence; a clean `pip install edron`
+  runs the first-party golden paths without another Hedron package installation.
 - **EDR-CAPABILITY-001:** Direct third-party installation and matching extra installation activate
   identical adapters; missing, incompatible, and broken imports yield structured exact remediation;
   no runtime installer or `all` extra exists.
@@ -1057,6 +1071,10 @@ runtime implementation begins only after `EDR-STAGE0-001` through `EDR-UPSTREAM-
   Hedron interoperability guide, styling ladder, theme and local-CSS guides, state guide, optional
   dependency guide, deployment guide, API reference, and troubleshooting catalog match the
   accepted contracts.
+- **EDR-ACCEPTANCE-001:** The human acceptance packet and machine gate enumerate separate design,
+  implementation-entry, and publication decisions; every Required gate is fail-closed, and all
+  upstream locks, package locks, budgets, commands, retained artifacts, and sign-offs required for
+  the applicable decision are Verified.
 
 Acceptance of this RFC approves the architecture and contract-development work. It does not by
 itself claim that Edron exists on PyPI, that the sketched APIs are implemented, or that unresolved

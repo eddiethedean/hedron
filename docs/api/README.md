@@ -61,6 +61,13 @@ users should pin `hedron>=0.64.0,<0.65` from the public index.
 
 ## Full catalog
 
+### Proposed Edron facade
+
+- [Edron 0.1 public API](EDRON.md) — Draft design contract; not implemented or published
+- [Edron state and interaction](EDRON_STATE_INTERACTION.md)
+- [Edron packaging](EDRON_PACKAGING.md)
+- [Edron acceptance packet](../acceptance/EDRON_001.md) — Draft and blocked
+
 ### Application
 
 - [Hedron](HEDRON.md)
@@ -141,5 +148,14 @@ These contracts compile onto the golden path. They are **not** required for Hell
   **not implemented or published**.
 - [Edron 0.1 state and interaction](EDRON_STATE_INTERACTION.md) — draft state ownership,
   lifecycle, HTTP/HTMX, concurrency, and fallback contract; **not implemented or published**.
+- [Edron 0.1 packaging](EDRON_PACKAGING.md) — draft base batteries, native distribution
+  aggregation, optional dependency, extras, artifact, and release contract; **not implemented or
+  published**.
+- [Edron 0.1 capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md) — draft
+  disposition of base, optional, native, tooling, upstream, deferred, and acceptance capabilities;
+  **not implemented or published**.
+- [Edron 0.1 implementation specification](../implementation/EDRON_001.md) — draft package/module,
+  compiler, request-lowering, native integration, staged work, test, and release requirements;
+  **implementation is not authorized**.
 
 Public exception types: [EXCEPTIONS.md](EXCEPTIONS.md).

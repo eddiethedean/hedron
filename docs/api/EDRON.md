@@ -7,6 +7,10 @@ status: draft
 **Status:** Draft design contract; Edron is not implemented or published<br>
 **Target:** `edron` 0.1 after the required Hedron enablement packet<br>
 **Authority:** [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
+**Packaging:** [Edron 0.1 packaging](EDRON_PACKAGING.md)<br>
+**Capability inventories:** [Edron 0.1 capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)<br>
+**Implementation:** [Edron 0.1 implementation specification](../implementation/EDRON_001.md)<br>
+**Acceptance:** [Edron 0.1 acceptance packet](../acceptance/EDRON_001.md)<br>
 **Executable-design fixtures:** [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
 
 This document freezes the proposed beginner-facing Python contract before implementation. It is
@@ -74,6 +78,10 @@ compatibility promises. Authors needing a persistent URL, route name, component 
 hook must provide or use its documented public form.
 
 ## Distribution contract
+
+The normative artifact, dependency, capability, extras, and release requirements are defined in
+the [Edron packaging contract](EDRON_PACKAGING.md). This section freezes the public installation
+surface.
 
 The `edron` distribution supports the same Python range as its compatible Hedron train. The first
 release must support Python 3.11 through 3.14 unless the accepted upstream packet changes the whole
@@ -1314,6 +1322,10 @@ arrive as an undocumented convenience.
 - [RFC-0094: Edron authoring facade](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)
 - [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
 - [Edron state and interaction](EDRON_STATE_INTERACTION.md)
+- [Edron packaging](EDRON_PACKAGING.md)
+- [Edron capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)
+- [Edron implementation specification](../implementation/EDRON_001.md)
+- [Edron acceptance packet](../acceptance/EDRON_001.md)
 - [Refreshable views and commands](REFRESHABLE_VIEWS.md)
 - [Type-driven authoring](TYPE_DRIVEN_AUTHORING.md)
 - [Application styling](APPLICATION_STYLING_065.md)
