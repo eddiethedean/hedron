@@ -59,7 +59,7 @@ from hedron_jinja.providers import (
 from hedron_jinja.source import validate_element_declarations
 from hedron_jinja.type_authoring import refuse_annotation_evaluation, registered_type_schema
 
-__version__ = "0.66.0"
+__version__ = "0.66.1"
 
 __all__ = [
     "AsyncIoBudget",

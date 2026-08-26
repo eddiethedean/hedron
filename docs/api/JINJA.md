@@ -11,7 +11,7 @@ status: shipped
     TOML prologue, the body is ordinary Jinja and HTML.
 
     **Package maturity:** Beta on the published **0.64.x** train; repository development is
-    **0.66.0**.
+    **0.66.1**.
     The phase 0.9 core authoring surface is **shipped**. Remaining RFC-0031 capability
     edges continue to close without blocking basic `.hdj` use—see [STABILITY](STABILITY.md)
     and [What’s ready](../guides/whats-ready.md).

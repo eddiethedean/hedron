@@ -11,22 +11,22 @@
 **Date:** 2026-08-25
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.66.0`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.66.1`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.1`, `hedron-charts`
 `0.2.1`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
 `hedron-sim` `0.2.1`, `hedron-mcp` `0.2.2`, `hedron-gradio` `0.2.1`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.66.0`
+`0.66.1`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
 `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
-`hedron-runtime-node` / `hedron-runtime-java` `0.66.0`.
+`hedron-runtime-node` / `hedron-runtime-java` `0.66.1`.
 
 **Phase focus:** The published train is **0.64** (RFC-0091). Phase **0.66** is verified against
-the `v0.65.0` baseline; the coordinated packages are at `0.66.0`. Its HDJ foundation and all
+the `v0.65.0` baseline; the coordinated packages are at `0.66.1`. Its HDJ foundation and all
 thirteen imported issue gates are implemented and Verified. Dynamic, foreign, and installed-package template execution
 remain explicitly Deferred. Phase **0.65** remains the
 verified in-tree predecessor awaiting final tag publication. Phase **0.63** (verified

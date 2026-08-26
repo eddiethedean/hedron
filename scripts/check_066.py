@@ -8,6 +8,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import tomllib
 import zipfile
 from pathlib import Path
 
@@ -93,16 +94,31 @@ def _package() -> None:
     facade = _text("packages/hedron-jinja/src/hedron_jinja/__init__.py")
     workspace = _text("pyproject.toml")
     release = _text("docs/release.toml")
-    _require('version = "0.66.0"' in package, "hedron-jinja package version is not 0.66.0")
+    release_data = tomllib.loads(release)["release"]
+    expected_version = str(release_data["development_version"])
+    _require(
+        expected_version.startswith("0.66."),
+        "release metadata development version is not on the 0.66 train",
+    )
+    _require(
+        f'version = "{expected_version}"' in package,
+        f"hedron-jinja package version is not {expected_version}",
+    )
     _require(
         '"hedron-core>=0.66.0,<0.67"' in package,
         "hedron-jinja core dependency is not on the 0.66 train",
     )
-    _require('__version__ = "0.66.0"' in facade, "hedron-jinja facade version is not 0.66.0")
-    _require('version = "0.66.0"' in workspace, "workspace version is not 0.66.0")
     _require(
-        'development_version = "0.66.0"' in release,
-        "release metadata development version is not 0.66.0",
+        f'__version__ = "{expected_version}"' in facade,
+        f"hedron-jinja facade version is not {expected_version}",
+    )
+    _require(
+        f'version = "{expected_version}"' in workspace,
+        f"workspace version is not {expected_version}",
+    )
+    _require(
+        f'development_version = "{expected_version}"' in release,
+        f"release metadata development version is not {expected_version}",
     )
     for symbol in ("JinjaBinding", "ApplicationStyleFact", "maps_provider_manifest"):
         _require(f'"{symbol}"' in facade, f"public facade omits {symbol}")

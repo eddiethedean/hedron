@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workbench"
-version = "0.66.0"
+version = "0.66.1"
 description = "Posit Workbench / RStudio Server deployment adapter for Hedron (compatibility package)"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
