@@ -93,6 +93,7 @@ def test_edron_has_an_independent_release_path() -> None:
     assert general.count('echo "Skipping Edron; publish it only from edron-v* tags"') == 2
     assert '"edron-v*.*.*"' in edron
     assert "needs: test" in edron
-    assert "pytest -q tests/unit/test_edron_runtime.py" in edron
+    assert "tests/unit/test_edron_runtime.py" in edron
+    assert "tests/unit/test_edron_phase02.py" in edron
     assert "id-token: write" in edron
     assert "pypa/gh-action-pypi-publish@release/v1" in edron

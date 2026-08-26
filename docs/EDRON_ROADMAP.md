@@ -11,7 +11,7 @@ status: verified
 **Public API:** [Edron 0.2 authoring and tooling](api/EDRON_02.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
 **Packaging:** [Edron 0.1 packaging](api/EDRON_PACKAGING.md)<br>
-**Acceptance:** [Edron 0.2 acceptance packet](acceptance/EDRON_002.md)
+**Acceptance:** [Edron 0.2 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_002.md)
 
 This is the release roadmap for the separately versioned `edron` distribution. It does not assign
 Hedron release numbers, change the Hedron capability roadmap, authorize implementation, or claim
