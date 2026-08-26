@@ -121,7 +121,7 @@ def ingest_csp_report(
     *,
     content_type: str | None,
     reporting: CspReporting | None = None,
-) -> dict[str, Any] | None:
+) -> dict[str, Any] | list[dict[str, Any]] | None:
     """Parse and redact a CSP violation report. Never mutates policy."""
     reporting = reporting or CspReporting()
     if reporting.sample_rate < 1.0:
@@ -141,9 +141,24 @@ def ingest_csp_report(
         payload = json.loads(body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
         return None
+    if ctype == "application/reports+json":
+        if not isinstance(payload, list):
+            return None
+        reports: list[dict[str, Any]] = []
+        for item in payload:
+            if not isinstance(item, dict):
+                continue
+            report = item.get("body")
+            if isinstance(report, dict):
+                reports.append(_normalize_csp_report(report))
+        return reports
     report = payload.get("csp-report") if isinstance(payload, dict) else None
     if not isinstance(report, dict):
         report = payload if isinstance(payload, dict) else {}
+    return _normalize_csp_report(report)
+
+
+def _normalize_csp_report(report: dict[str, Any]) -> dict[str, Any]:
     status_raw = report.get("status-code", report.get("statusCode"))
     status_code: int | None
     try:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
@@ -27,7 +28,8 @@ def _sort_key(value: JsonValue) -> tuple[int, str, float | str]:
     if isinstance(value, bool):
         return (1, "bool", "1" if value else "0")
     if isinstance(value, (int, float)) and not isinstance(value, bool):
-        return (2, "number", float(value))
+        numeric = float(value)
+        return (2, "number", numeric if math.isfinite(numeric) else 0.0)
     if isinstance(value, str):
         return (3, "str", value)
     return (4, type(value).__name__, str(value))
@@ -41,7 +43,17 @@ def _enforce_budgets(rows: Sequence[Mapping[str, JsonValue]], plan: TransformPla
             explanation=f"Transform produced {len(rows)} rows; max_rows is {plan.max_rows}.",
             remediation="Lower the input or raise the explicit transform row budget.",
         )
-    encoded = json.dumps(rows, default=str, separators=(",", ":")).encode("utf-8")
+    try:
+        encoded = json.dumps(rows, default=str, separators=(",", ":"), allow_nan=False).encode(
+            "utf-8"
+        )
+    except ValueError as exc:
+        raise error(
+            "HED-DATA-0052",
+            title="Transform contains non-finite JSON value",
+            explanation="Transform output contains NaN or Infinity, which is not valid JSON.",
+            remediation="Normalize numeric values to finite JSON numbers before returning them.",
+        ) from exc
     if len(encoded) > plan.max_bytes:
         raise error(
             "HED-DATA-0051",

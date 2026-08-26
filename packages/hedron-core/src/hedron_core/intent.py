@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import math
 import secrets
 import threading
 import time
@@ -93,6 +94,10 @@ class SecurityKeyring:
             )
 
     def _window_ok(self, record: KeyRecord, *, now: float) -> bool:
+        if not math.isfinite(now):
+            return False
+        if not all(math.isfinite(value) for value in (record.not_before, record.not_after)):
+            return False
         if record.not_before and now < record.not_before:
             return False
         return not (record.not_after and now > record.not_after)
@@ -187,6 +192,8 @@ def mint_intent(
     store: IntentStore | None = None,
 ) -> SignedIntent:
     ts = time.time() if now is None else now
+    if not math.isfinite(float(ts)) or not math.isfinite(float(ttl_seconds)) or ttl_seconds < 0:
+        raise ValueError("now and ttl_seconds must be finite, with ttl_seconds >= 0")
     key = keyring.get_for_mint("intent", now=ts)
     intent_id = secrets.token_hex(16)
     payload_fp = fingerprint_payload(payload)
@@ -241,6 +248,8 @@ def verify_intent(
     now: float | None = None,
 ) -> None:
     ts = time.time() if now is None else now
+    if not math.isfinite(float(ts)) or not math.isfinite(float(intent.expires_at)):
+        raise IntentError("intent timestamp invalid")
     if ts > intent.expires_at:
         raise IntentError("intent expired")
     key = keyring.get_for_verify(intent.key_id, "intent", now=ts)

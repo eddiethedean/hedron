@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+import math
 import re
 from collections.abc import Callable, Iterable, Iterator, Mapping
 from contextvars import ContextVar
@@ -16,6 +18,7 @@ from jinja2.ext import Extension
 from jinja2.nativetypes import NativeEnvironment
 from jinja2.parser import Parser
 from jinja2.runtime import Context
+from jinja2.utils import htmlsafe_json_dumps
 from markupsafe import Markup
 
 from hedron_core import (
@@ -465,6 +468,7 @@ class HedronJinja:
         environment.filters["hedron_nav_url"] = self._navigation_url_filter
         environment.filters["hedron_form_url"] = self._form_url_filter
         environment.filters["hedron_asset_url"] = self._asset_url_filter
+        environment.filters["tojson"] = self._strict_tojson_filter
         _BINDINGS[environment] = ref(self)
 
         for alias, factory in (
@@ -1227,6 +1231,8 @@ class HedronJinja:
             if len(value) > 4096:
                 raise ValueError("HDJ HTMX fact strings may contain at most 4096 characters")
             return
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ValueError("HDJ HTMX facts must contain finite JSON numbers")
         if value is None or isinstance(value, (bool, int, float)):
             return
         if isinstance(value, Mapping):
@@ -1242,6 +1248,11 @@ class HedronJinja:
                 HedronJinja._validate_json_fact(item, depth=depth + 1)
             return
         raise TypeError("HDJ HTMX facts must contain JSON-compatible values")
+
+    @staticmethod
+    def _strict_tojson_filter(value: object) -> Markup:
+        """Serialize JSON sinks without emitting non-standard NaN/Infinity tokens."""
+        return htmlsafe_json_dumps(value, dumps=json.dumps, allow_nan=False)
 
     def _session(self) -> _RenderSession:
         session = _ACTIVE_SESSION.get()

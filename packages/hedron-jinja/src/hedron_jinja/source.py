@@ -455,7 +455,11 @@ def _valid_network_capability(capability: str) -> bool:
     match = _NETWORK_CAPABILITY_RE.fullmatch(capability)
     if match is None:
         return False
-    parts = urlsplit(match.group(1))
+    try:
+        parts = urlsplit(match.group(1))
+        _ = parts.port
+    except ValueError:
+        return False
     return bool(
         parts.scheme == "https"
         and parts.hostname
@@ -465,6 +469,30 @@ def _valid_network_capability(capability: str) -> bool:
         and not parts.query
         and not parts.fragment
     )
+
+
+def _network_origins(value: str) -> tuple[str, ...]:
+    """Return validated HTTP(S) origins found in a URL or srcset value."""
+    candidates = value.split(",")
+    origins: set[str] = set()
+    for candidate in candidates:
+        raw = candidate.strip().split(None, 1)[0] if candidate.strip() else ""
+        if not raw:
+            continue
+        try:
+            parts = urlsplit(raw)
+            _ = parts.port
+        except ValueError:
+            continue
+        if (
+            parts.scheme.lower() in {"http", "https"}
+            and parts.netloc
+            and parts.hostname
+            and parts.username is None
+            and parts.password is None
+        ):
+            origins.add(f"{parts.scheme.lower()}://{parts.netloc.lower()}")
+    return tuple(sorted(origins))
 
 
 class HdjLoader(BaseLoader):
@@ -694,11 +722,9 @@ class _LiteralCapabilityParser(HTMLParser):
                 pass
             if value:
                 purpose = _remote_purpose(tag.lower(), lowered)
-                parts = urlsplit(value.strip())
-                if purpose and parts.scheme.lower() in {"http", "https"} and parts.netloc:
-                    self.capabilities.add(
-                        f"network.{purpose}-origin:{parts.scheme.lower()}://{parts.netloc.lower()}"
-                    )
+                if purpose:
+                    for origin in _network_origins(value):
+                        self.capabilities.add(f"network.{purpose}-origin:{origin}")
 
 
 def _hx_value_needs_eval(attribute: str, value: str | None) -> bool:

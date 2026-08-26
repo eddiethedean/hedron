@@ -249,6 +249,7 @@ Phase 0.63 bounded source-check findings.
 | `HED-DATA-0041` | `HED_DATA_0041` |
 | `HED-DATA-0050` | `HED_DATA_0050` |
 | `HED-DATA-0051` | `HED_DATA_0051` |
+| `HED-DATA-0052` | `HED_DATA_0052` |
 | `HED-DATA-0060` | `HED_DATA_0060` |
 | `HED-DATA-0061` | `HED_DATA_0061` |
 

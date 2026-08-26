@@ -24,7 +24,11 @@ def is_same_origin(
 
     Browser WebSocket upgrades use ``ws``/``wss`` while Origin uses ``http``/``https``.
     """
-    parsed = urlparse(origin)
+    try:
+        parsed = urlparse(origin)
+        port = parsed.port
+    except ValueError:
+        return False
     if not parsed.hostname or not parsed.scheme or not request_hostname:
         return False
     origin_scheme = parsed.scheme.lower()
@@ -37,4 +41,4 @@ def is_same_origin(
         return False
     if parsed.hostname != request_hostname:
         return False
-    return effective_port(origin_scheme, parsed.port) == effective_port(req_http, request_port)
+    return effective_port(origin_scheme, port) == effective_port(req_http, request_port)

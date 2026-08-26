@@ -205,9 +205,14 @@ def is_safe_navigation_url(url: str, *, origin: str, same_origin_only: bool = Tr
     """Validate a navigation/prefetch URL without granting authority."""
     if any(ord(char) < 32 for char in url) or not url:
         return False
-    resolved = urljoin(origin.rstrip("/") + "/", url)
-    target = urlsplit(resolved)
-    source = urlsplit(origin)
+    try:
+        resolved = urljoin(origin.rstrip("/") + "/", url)
+        target = urlsplit(resolved)
+        source = urlsplit(origin)
+        _ = target.port
+        _ = source.port
+    except ValueError:
+        return False
     if target.scheme not in {"http", "https"} or target.username or target.password:
         return False
     return not same_origin_only or (target.scheme, target.netloc.lower()) == (

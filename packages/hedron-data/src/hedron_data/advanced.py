@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import math
 import operator
 import re
 from collections.abc import Mapping, Sequence
@@ -103,10 +104,21 @@ def evaluate_formula(
                 remediation="Use numeric cells, or omit non-numeric columns from the formula.",
             )
         if isinstance(raw, (int, float)):
-            return float(raw)
+            numeric = float(raw)
+            if not math.isfinite(numeric):
+                raise error(
+                    "HED-DATA-0032",
+                    title="Non-finite formula cell",
+                    explanation=f"Column {name!r} must contain a finite number.",
+                    remediation="Replace NaN and Infinity values before evaluating formulas.",
+                )
+            return numeric
         if isinstance(raw, str):
             try:
-                return float(raw)
+                numeric = float(raw)
+                if not math.isfinite(numeric):
+                    raise ValueError("non-finite number")
+                return numeric
             except ValueError:
                 raise error(
                     "HED-DATA-0032",
@@ -185,7 +197,10 @@ def evaluate_formula(
         )
 
     try:
-        return _eval(tree)
+        result = _eval(tree)
+        if not math.isfinite(result):
+            raise ValueError("formula result is not finite")
+        return result
     except (ZeroDivisionError, OverflowError, ValueError) as exc:
         raise error(
             "HED-DATA-0032",
@@ -227,6 +242,8 @@ def pivot_rows(
         try:
             num = float(raw)  # type: ignore[arg-type]
         except (TypeError, ValueError):
+            continue
+        if not math.isfinite(num):
             continue
         buckets.setdefault(bucket_key, []).append(num)
     out: list[dict[str, JsonValue]] = []

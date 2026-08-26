@@ -9,6 +9,7 @@ tokens) are required for immediate logout/revocation across devices.
 
 from __future__ import annotations
 
+import math
 import time
 from collections.abc import MutableMapping
 from typing import Any, Literal
@@ -97,12 +98,15 @@ def check_session_timeout(
     Note: signed cookies alone cannot revoke early — clearing server session
     state (or rotating refresh) is required for immediate invalidation.
     """
-    if idle_seconds is not None and float(idle_seconds) < 0:
-        raise ValueError(f"idle_seconds must be >= 0 or None, got {idle_seconds!r}")
-    if absolute_seconds is not None and float(absolute_seconds) < 0:
-        raise ValueError(f"absolute_seconds must be >= 0 or None, got {absolute_seconds!r}")
+    for name, value in (("idle_seconds", idle_seconds), ("absolute_seconds", absolute_seconds)):
+        if value is not None:
+            numeric = float(value)
+            if not math.isfinite(numeric) or numeric < 0:
+                raise ValueError(f"{name} must be finite and >= 0 or None, got {value!r}")
 
     ts = float(time.time() if now is None else now)
+    if not math.isfinite(ts):
+        raise ValueError(f"now must be finite, got {now!r}")
     created = session.get(SESSION_CREATED_KEY)
     last_seen = session.get(SESSION_LAST_SEEN_KEY)
 
@@ -111,7 +115,8 @@ def check_session_timeout(
             if raise_on_expired:
                 raise SessionTimeoutError("absolute", message="session missing created stamp")
             return False
-        if ts - float(created) > float(absolute_seconds):
+        created_ts = float(created)
+        if not math.isfinite(created_ts) or ts - created_ts > float(absolute_seconds):
             if raise_on_expired:
                 raise SessionTimeoutError("absolute")
             return False
@@ -121,7 +126,8 @@ def check_session_timeout(
             if raise_on_expired:
                 raise SessionTimeoutError("idle", message="session missing last_seen stamp")
             return False
-        if ts - float(last_seen) > float(idle_seconds):
+        last_seen_ts = float(last_seen)
+        if not math.isfinite(last_seen_ts) or ts - last_seen_ts > float(idle_seconds):
             if raise_on_expired:
                 raise SessionTimeoutError("idle")
             return False
