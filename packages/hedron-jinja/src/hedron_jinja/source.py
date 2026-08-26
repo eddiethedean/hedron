@@ -455,7 +455,11 @@ def _valid_network_capability(capability: str) -> bool:
     match = _NETWORK_CAPABILITY_RE.fullmatch(capability)
     if match is None:
         return False
-    parts = urlsplit(match.group(1))
+    try:
+        parts = urlsplit(match.group(1))
+        _ = parts.port
+    except ValueError:
+        return False
     return bool(
         parts.scheme == "https"
         and parts.hostname
@@ -465,6 +469,27 @@ def _valid_network_capability(capability: str) -> bool:
         and not parts.query
         and not parts.fragment
     )
+
+
+def _network_origins(value: str, *, srcset: bool = False) -> tuple[str, ...]:
+    """Return validated HTTP(S) origins found in a URL or srcset value."""
+    candidates = value.split(",") if srcset else (value,)
+    origins: set[str] = set()
+    for candidate in candidates:
+        raw = candidate.strip().split(None, 1)[0] if candidate.strip() else ""
+        if not raw:
+            continue
+        try:
+            parts = urlsplit(raw)
+            _ = parts.port
+        except ValueError:
+            continue
+        hostname = parts.hostname
+        if parts.scheme.lower() in {"http", "https"} and parts.netloc and hostname:
+            host = f"[{hostname}]" if ":" in hostname else hostname
+            port_suffix = f":{parts.port}" if parts.port is not None else ""
+            origins.add(f"{parts.scheme.lower()}://{host.lower()}{port_suffix}")
+    return tuple(sorted(origins))
 
 
 class HdjLoader(BaseLoader):
@@ -694,11 +719,9 @@ class _LiteralCapabilityParser(HTMLParser):
                 pass
             if value:
                 purpose = _remote_purpose(tag.lower(), lowered)
-                parts = urlsplit(value.strip())
-                if purpose and parts.scheme.lower() in {"http", "https"} and parts.netloc:
-                    self.capabilities.add(
-                        f"network.{purpose}-origin:{parts.scheme.lower()}://{parts.netloc.lower()}"
-                    )
+                if purpose:
+                    for origin in _network_origins(value, srcset=lowered == "srcset"):
+                        self.capabilities.add(f"network.{purpose}-origin:{origin}")
 
 
 def _hx_value_needs_eval(attribute: str, value: str | None) -> bool:
@@ -981,7 +1004,20 @@ def _htmx_local_diagnostics(
             stripped = value.strip()
             if not stripped or "{{" in stripped:
                 continue
-            parts = urlsplit(stripped)
+            try:
+                parts = urlsplit(stripped)
+                _ = parts.port
+            except ValueError:
+                diagnostics.append(
+                    _context_diag(
+                        parsed,
+                        original_body,
+                        offset,
+                        f"Literal `{attribute}` URL is malformed",
+                        "Use a valid http(s) or same-origin path SafeUrl / static URL.",
+                    )
+                )
+                continue
             if parts.scheme.lower() in {"javascript", "data", "vbscript"}:
                 diagnostics.append(
                     _context_diag(

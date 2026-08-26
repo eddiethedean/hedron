@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import contextlib
 import os
 import tempfile
 from collections.abc import Sequence
@@ -56,9 +55,16 @@ class UploadHandle:
         return self.path
 
     def cleanup(self) -> None:
-        if self.owned and self.path.exists():
-            with contextlib.suppress(OSError):
-                self.path.unlink()
+        if not self.owned:
+            return
+        try:
+            self.path.unlink()
+        except FileNotFoundError:
+            self.owned = False
+        except OSError:
+            # Preserve ownership so a transient filesystem failure can be retried.
+            return
+        else:
             self.owned = False
 
 

@@ -98,11 +98,11 @@ class MemoryReplayStore:
         now = time.monotonic()
         with self._lock:
             self._purge(now)
-            if len(self._entries) >= self._max_keys:
-                raise RuntimeError("Replay store key budget exceeded")
             slot = (scope, key)
             existing = self._entries.get(slot)
             if existing is None:
+                if len(self._entries) >= self._max_keys:
+                    raise RuntimeError("Replay store key budget exceeded")
                 self._entries[slot] = _Entry(
                     fingerprint=fingerprint,
                     expires_at=now + retention_seconds,

@@ -31,8 +31,8 @@ class DataQuery:
     allowlisted_projection_fields: frozenset[str] | None = None
 
     def validated(self, *, max_page_size: int = DEFAULT_MAX_PAGE_SIZE) -> DataQuery:
-        if self.offset < 0:
-            raise ValueError("DataQuery.offset must be >= 0")
+        if not isinstance(self.offset, int) or isinstance(self.offset, bool) or self.offset < 0:
+            raise ValueError("DataQuery.offset must be an integer >= 0")
         if (
             not isinstance(max_page_size, int)
             or isinstance(max_page_size, bool)
@@ -40,8 +40,8 @@ class DataQuery:
         ):
             raise ValueError("max_page_size must be an integer >= 1")
         limit = self.limit
-        if limit < 1:
-            raise ValueError("DataQuery.limit must be >= 1")
+        if not isinstance(limit, int) or isinstance(limit, bool) or limit < 1:
+            raise ValueError("DataQuery.limit must be an integer >= 1")
         capped = min(limit, max_page_size, HARD_MAX_PAGE_SIZE)
         if capped < 1:
             raise ValueError("DataQuery.limit must be >= 1 after capping")

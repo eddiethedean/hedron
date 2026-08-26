@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import math
 import secrets
 import threading
 import time
@@ -93,6 +94,15 @@ class SecurityKeyring:
             )
 
     def _window_ok(self, record: KeyRecord, *, now: float) -> bool:
+        try:
+            finite = all(
+                not isinstance(value, bool) and math.isfinite(value)
+                for value in (now, record.not_before, record.not_after)
+            )
+        except TypeError:
+            return False
+        if not finite:
+            return False
         if record.not_before and now < record.not_before:
             return False
         return not (record.not_after and now > record.not_after)
@@ -187,6 +197,18 @@ def mint_intent(
     store: IntentStore | None = None,
 ) -> SignedIntent:
     ts = time.time() if now is None else now
+    if (
+        isinstance(ts, bool)
+        or not isinstance(ts, (int, float))
+        or not math.isfinite(ts)
+        or isinstance(ttl_seconds, bool)
+        or not isinstance(ttl_seconds, (int, float))
+        or not math.isfinite(ttl_seconds)
+        or ttl_seconds < 0
+    ):
+        raise ValueError("now and ttl_seconds must be finite, with ttl_seconds >= 0")
+    ts = float(ts)
+    ttl_seconds = float(ttl_seconds)
     key = keyring.get_for_mint("intent", now=ts)
     intent_id = secrets.token_hex(16)
     payload_fp = fingerprint_payload(payload)
@@ -241,7 +263,16 @@ def verify_intent(
     now: float | None = None,
 ) -> None:
     ts = time.time() if now is None else now
-    if ts > intent.expires_at:
+    if (
+        isinstance(ts, bool)
+        or not isinstance(ts, (int, float))
+        or not math.isfinite(ts)
+        or isinstance(intent.expires_at, bool)
+        or not isinstance(intent.expires_at, (int, float))
+        or not math.isfinite(intent.expires_at)
+    ):
+        raise IntentError("intent timestamp invalid")
+    if float(ts) > float(intent.expires_at):
         raise IntentError("intent expired")
     key = keyring.get_for_verify(intent.key_id, "intent", now=ts)
     expected_sig = _sign(key.secret, intent.canonical_payload())

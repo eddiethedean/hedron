@@ -29,6 +29,8 @@ _MAX_COMPRESSION_RATIO = 100
 _MAX_COLUMN_REPEATS = 10_000
 _MAX_ROW_REPEATS = 10_000
 _MAX_EXPANDED_CELLS = 50_000
+_MAX_XLSX_COLUMN_INDEX = 16_383  # XFD, the final column in XLSX
+_MAX_XLSX_ROW_INDEX = 1_048_576
 _CELL_REF = re.compile(r"^([A-Za-z]+)(\d+)$")
 # XML 1.0 Char exclusions (plus DEL): controls other than TAB/LF/CR.
 _XML_ILLEGAL = re.compile(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]")
@@ -100,6 +102,22 @@ def _xml_safe_text(value: str) -> str:
 def _escape_xml_text(value: str) -> str:
     safe = _xml_safe_text(value)
     return safe.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def _validated_headers(values: Sequence[str]) -> list[str]:
+    headers = [value or f"col_{index}" for index, value in enumerate(values)]
+    seen: dict[str, int] = {}
+    for index, header in enumerate(headers):
+        key = str(header)
+        if key in seen:
+            raise error(
+                "HED-DATA-0041",
+                title="Duplicate spreadsheet header",
+                explanation=(f"Header {header!r} at column {index} duplicates column {seen[key]}."),
+                remediation="Rename duplicate headers before importing the worksheet.",
+            )
+        seen[key] = index
+    return headers
 
 
 def excel_col(index: int) -> str:
@@ -269,6 +287,13 @@ def _inline_string_text(cell: ET.Element, ns: dict[str, str]) -> str | None:
 def _cell_column_index(cell: ET.Element, fallback: int) -> int:
     ref = cell.get("r")
     if not ref:
+        if fallback > _MAX_XLSX_COLUMN_INDEX:
+            raise error(
+                "HED-DATA-0041",
+                title="XLSX cell reference exceeds bounds",
+                explanation="Implicit cell column is outside the XLSX worksheet limits.",
+                remediation="Export a worksheet within the XLSX row and column limits.",
+            )
         return fallback
     match = _CELL_REF.match(ref)
     if not match:
@@ -278,7 +303,24 @@ def _cell_column_index(cell: ET.Element, fallback: int) -> int:
             explanation=f"Cannot parse cell reference {ref!r}.",
             remediation="Export a standards-compliant worksheet.",
         )
-    return excel_col_index(match.group(1))
+    letters, row_text = match.groups()
+    if len(letters) > 3 or len(row_text) > 7:
+        raise error(
+            "HED-DATA-0041",
+            title="XLSX cell reference exceeds bounds",
+            explanation=f"Cell reference {ref!r} is outside the XLSX worksheet limits.",
+            remediation="Export a worksheet within the XLSX row and column limits.",
+        )
+    column = excel_col_index(letters)
+    row = int(row_text)
+    if column > _MAX_XLSX_COLUMN_INDEX or row < 1 or row > _MAX_XLSX_ROW_INDEX:
+        raise error(
+            "HED-DATA-0041",
+            title="XLSX cell reference exceeds bounds",
+            explanation=f"Cell reference {ref!r} is outside the XLSX worksheet limits.",
+            remediation="Export a worksheet within the XLSX row and column limits.",
+        )
+    return column
 
 
 def import_rows_xlsx(
@@ -305,10 +347,12 @@ def import_rows_xlsx(
         )
     ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
     matrix: list[list[str]] = []
+    expanded = 0
     for row in root.findall(".//m:sheetData/m:row", ns):
         by_col: dict[int, str] = {}
         next_dense = 0
         seen_refs: set[str] = set()
+        seen_columns: set[int] = set()
         for cell in row.findall("m:c", ns):
             ref = cell.get("r")
             if ref:
@@ -321,6 +365,14 @@ def import_rows_xlsx(
                     )
                 seen_refs.add(ref)
             col_idx = _cell_column_index(cell, next_dense)
+            if col_idx in seen_columns:
+                raise error(
+                    "HED-DATA-0041",
+                    title="Duplicate XLSX cell column",
+                    explanation=f"Worksheet row contains column {excel_col(col_idx)!r} twice.",
+                    remediation="Export a standards-compliant worksheet without duplicate cells.",
+                )
+            seen_columns.add(col_idx)
             next_dense = col_idx + 1
             formula = cell.find("m:f", ns)
             cell_type = cell.get("t")
@@ -358,13 +410,29 @@ def import_rows_xlsx(
                 )
             by_col[col_idx] = text
         if not by_col:
+            expanded += 1
+            if expanded > _MAX_EXPANDED_CELLS:
+                raise error(
+                    "HED-DATA-0041",
+                    title="XLSX expanded cell budget exceeded",
+                    explanation=f"Worksheet expands to more than {_MAX_EXPANDED_CELLS} cells.",
+                    remediation="Reduce sparse worksheet dimensions before import.",
+                )
             matrix.append([])
             continue
         width = max(by_col) + 1
+        expanded += width
+        if expanded > _MAX_EXPANDED_CELLS:
+            raise error(
+                "HED-DATA-0041",
+                title="XLSX expanded cell budget exceeded",
+                explanation=f"Worksheet expands to more than {_MAX_EXPANDED_CELLS} cells.",
+                remediation="Reduce sparse worksheet dimensions before import.",
+            )
         matrix.append([by_col.get(i, "") for i in range(width)])
     if not matrix:
         return []
-    headers = [h or f"col_{i}" for i, h in enumerate(matrix[0])]
+    headers = _validated_headers(matrix[0])
     out: list[dict[str, JsonValue]] = []
     for row in matrix[1:]:
         if not row or not any(row):
@@ -509,7 +577,7 @@ def import_rows_ods(
                     matrix.append(list(values))
             if not matrix:
                 return []
-            headers = [h or f"col_{i}" for i, h in enumerate(matrix[0])]
+            headers = _validated_headers(matrix[0])
             return [
                 {headers[i]: (row[i] if i < len(row) else "") for i in range(len(headers))}
                 for row in matrix[1:]
@@ -520,6 +588,8 @@ def import_rows_ods(
             zf, "content.csv", max_uncompressed_bytes=max_uncompressed_bytes
         ).decode("utf-8")
     reader = csv.DictReader(io.StringIO(raw))
+    if reader.fieldnames is not None:
+        reader.fieldnames = _validated_headers([str(value or "") for value in reader.fieldnames])
     out: list[dict[str, JsonValue]] = []
     for row in reader:
         cleaned: dict[str, JsonValue] = {
