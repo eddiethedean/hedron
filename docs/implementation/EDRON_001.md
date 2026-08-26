@@ -6,7 +6,7 @@ status: draft
 
 **Status:** Stage 0 draft; implementation is not authorized and Edron is not published<br>
 **Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
-**Planning baseline:** Hedron workspace `0.66.1`; not an accepted compatibility floor<br>
+**Planning baseline:** Hedron workspace `0.66.2`; not an accepted compatibility floor<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Decision/RFC:** [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 0.1 public API](../api/EDRON.md)<br>

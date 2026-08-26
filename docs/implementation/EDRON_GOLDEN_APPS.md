@@ -3,7 +3,7 @@
 **Status:** Design draft; no Edron API in this document is implemented or available<br>
 **Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Purpose:** Input to the proposed Edron RFC and public API contract<br>
-**Planning baseline:** Hedron workspace `0.66.1`; not an accepted compatibility floor<br>
+**Planning baseline:** Hedron workspace `0.66.2`; not an accepted compatibility floor<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API contract:** [Edron 0.1 public API](../api/EDRON.md)<br>
 **State and interaction contract:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)<br>

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2] — 2026-08-26
+
+### Fixed
+
+- Publish a corrected Hedron 0.66-compatible satellite release. The previous
+  `0.2.1` PyPI artifact carried a stale `hedron-core<0.62` requirement.
+
 ## [0.2.1] — 2026-08-24
 
 ### Changed

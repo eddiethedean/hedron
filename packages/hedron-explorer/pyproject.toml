@@ -1,6 +1,6 @@
 [project]
 name = "hedron-explorer"
-version = "0.66.1"
+version = "0.66.2"
 description = "Development Component Explorer preview for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"

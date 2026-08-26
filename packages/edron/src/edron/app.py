@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import inspect
+import re
 from collections.abc import Callable, Mapping, Sequence
+from dataclasses import replace
 from pathlib import Path
 from typing import Annotated, Any, get_args, get_origin
+from urllib.parse import quote, urlencode, urlsplit, urlunsplit
 
 from pydantic import BaseModel
 
@@ -192,6 +195,7 @@ class App:
             *self._page_dependencies(page_type),
             *[item for item in dependencies if isinstance(item, Dependency)],
         ]
+        page_route_dependencies = list(dependencies)
         render_signature = self._dependency_signature(
             self._without_self(inspect.signature(render)), page_dependencies
         )
@@ -236,7 +240,9 @@ class App:
             async_endpoint.__signature__ = render_signature  # type: ignore[attr-defined]
             endpoint = async_endpoint
         self.hedron.page(
-            path, name=route_name, dependencies=[self._native_dependency(x) for x in dependencies]
+            path,
+            name=route_name,
+            dependencies=[self._native_dependency(x) for x in page_route_dependencies],
         )(endpoint)
 
         page_record = {
@@ -249,9 +255,29 @@ class App:
         self._pages[path] = page_record
         for member_name, member in page_type.__dict__.items():
             if isinstance(member, Fragment):
-                self._register_fragment(member, page_type, path, member_name, page_dependencies)
+                self._register_fragment(
+                    member,
+                    page_type,
+                    path,
+                    member_name,
+                    callable_dependencies=[
+                        *page_dependencies,
+                        *[item for item in member.dependencies if isinstance(item, Dependency)],
+                    ],
+                    route_dependencies=[*page_route_dependencies, *member.dependencies],
+                )
             elif isinstance(member, Action):
-                self._register_action(member, page_type, path, member_name, page_dependencies)
+                self._register_action(
+                    member,
+                    page_type,
+                    path,
+                    member_name,
+                    callable_dependencies=[
+                        *page_dependencies,
+                        *[item for item in member.dependencies if isinstance(item, Dependency)],
+                    ],
+                    route_dependencies=[*page_route_dependencies, *member.dependencies],
+                )
 
     @staticmethod
     def _native_dependency(value: Any) -> Any:
@@ -263,11 +289,13 @@ class App:
         page_type: type[Page],
         page_path: str,
         member_name: str,
-        dependencies: Sequence[Any],
+        *,
+        callable_dependencies: Sequence[Any],
+        route_dependencies: Sequence[Any],
     ) -> None:
         route = definition.path or f"{page_path.rstrip('/')}/__edron/{member_name}"
         fn_signature = self._without_self(inspect.signature(definition.fn))
-        signature = self._dependency_signature(fn_signature, dependencies)
+        signature = self._dependency_signature(fn_signature, callable_dependencies)
 
         def endpoint(**kwargs: Any) -> Any:
             dependency_values = self._dependency_values(page_type, kwargs)
@@ -306,7 +334,7 @@ class App:
             route,
             name=f"{page_type.__name__}_{member_name}",
             fallback=definition.fallback,
-            dependencies=[self._native_dependency(x) for x in dependencies],
+            dependencies=[self._native_dependency(x) for x in route_dependencies],
         )(endpoint)
         definition._native = native
         self._fragments[id(definition)] = native
@@ -317,7 +345,9 @@ class App:
         page_type: type[Page],
         page_path: str,
         member_name: str,
-        dependencies: Sequence[Any],
+        *,
+        callable_dependencies: Sequence[Any],
+        route_dependencies: Sequence[Any],
     ) -> None:
         route = definition.path or f"{page_path.rstrip('/')}/__edron/{member_name}"
         signature = self._without_self(inspect.signature(definition.fn))
@@ -330,7 +360,7 @@ class App:
                 parameters[index] = parameter.replace(annotation=Annotated[annotation, FormBody()])
                 break
         signature = self._dependency_signature(
-            signature.replace(parameters=parameters), dependencies
+            signature.replace(parameters=parameters), callable_dependencies
         )
 
         def endpoint(**kwargs: Any) -> Any:
@@ -363,7 +393,7 @@ class App:
             method=definition.method.upper(),
             name=f"{page_type.__name__}_{member_name}",
             fallback=definition.fallback,
-            dependencies=[self._native_dependency(x) for x in dependencies],
+            dependencies=[self._native_dependency(x) for x in route_dependencies],
         )(endpoint)
         definition._native = native
         self._actions[id(definition)] = native
@@ -392,10 +422,33 @@ class App:
 
     def _resolve_action(self, value: Any) -> Any:
         if isinstance(value, BoundAction):
-            return self._actions.get(id(value.action))
+            native = self._actions.get(id(value.action))
+            if native is None:
+                return None
+            return self._bind_action(native, value.arguments)
         if isinstance(value, Action):
             return self._actions.get(id(value))
         return value
+
+    @staticmethod
+    def _bind_action(native: Any, arguments: Mapping[str, Any]) -> Any:
+        if not arguments:
+            return native
+        parts = urlsplit(str(native.path))
+        path = parts.path
+        query: dict[str, Any] = dict()
+        for name, value in arguments.items():
+            marker = re.compile(r"\{" + re.escape(name) + r"(?::[^}]+)?\}")
+            if marker.search(path):
+                path = marker.sub(quote(str(value), safe=""), path)
+            else:
+                query[name] = value
+        encoded = urlencode(query, doseq=True)
+        combined_query = "&".join(item for item in (parts.query, encoded) if item)
+        return replace(
+            native,
+            path=urlunsplit((parts.scheme, parts.netloc, path, combined_query, parts.fragment)),
+        )
 
     def _action_button(self, label: str, action: Any, **kwargs: Any) -> Any:
         native = self._resolve_action(action)

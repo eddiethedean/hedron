@@ -75,7 +75,7 @@ CONTRACT_DOCUMENTS = (
 )
 
 TARGET_TEXT = "Edron `0.1.0`; compatible Hedron train and release phase unassigned"
-BASELINE_TEXT = "Hedron workspace `0.66.1`; not an accepted compatibility floor"
+BASELINE_TEXT = "Hedron workspace `0.66.2`; not an accepted compatibility floor"
 EXPECTED_UPSTREAM_IDS = tuple(f"UP-{number:03d}" for number in range(1, 12))
 EXPECTED_UPSTREAM_WORKSTREAMS = {
     "HEDRON-WS-CLASS": ("UP-001", "UP-003"),
@@ -182,7 +182,7 @@ EXPECTED_FOCUSED_IDS = (
 )
 EXPECTED_PERFORMANCE_BUDGET_COUNT = 43
 MACHINE_TARGET = "edron 0.1.0"
-MACHINE_BASELINE = "hedron workspace 0.66.1"
+MACHINE_BASELINE = "hedron workspace 0.66.2"
 
 PYTHON_FENCE = re.compile(r"^```python[^\n]*\n(.*?)^```\s*$", re.MULTILINE | re.DOTALL)
 MARKDOWN_LINK = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+[^)]*)?\)")

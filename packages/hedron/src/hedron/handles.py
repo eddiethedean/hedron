@@ -74,8 +74,8 @@ __all__ = [
 _ADAPTER = StructuralBindingAdapter()
 _REQUEST_NAMES = frozenset({"request", "websocket"})
 _UNSET = object()
-_DISPATCH_EFFECTS: dict[str, object] = {}
-_DISPATCH_AFTER_LOAD: dict[str, str] = {}
+_DISPATCH_EFFECTS: dict[tuple[str, str], object] = {}
+_DISPATCH_AFTER_LOAD: dict[tuple[str, str], str] = {}
 
 
 def _require_local_fallback(fallback: str) -> None:
@@ -701,7 +701,7 @@ class ActionHandle(Generic[InputT, ResultT]):
 
     def effect(self, intent: RefreshIntent | InteractionResult) -> ActionHandle[InputT, ResultT]:
         """Compile success as refresh+toast / InteractionResult (hx-swap none)."""
-        _DISPATCH_EFFECTS[self.logical_id] = intent
+        _DISPATCH_EFFECTS[(self.app_id, self.logical_id)] = intent
         return replace(self, _effect=intent)
 
     def after(
@@ -713,7 +713,7 @@ class ActionHandle(Generic[InputT, ResultT]):
     ) -> ActionHandle[InputT, ResultT]:
         """Compile delayed/filtered hx-trigger or after-swap load (no setTimeout/click)."""
         if load:
-            _DISPATCH_AFTER_LOAD[self.logical_id] = load
+            _DISPATCH_AFTER_LOAD[(self.app_id, self.logical_id)] = load
         return replace(
             self,
             _after_load=load if load is not None else self._after_load,
@@ -818,9 +818,11 @@ def apply_action_handle_effects(
     from hedron_core.updates import compile_to_interaction
 
     effect = (
-        handle._effect if handle._effect is not None else _DISPATCH_EFFECTS.get(handle.logical_id)
+        handle._effect
+        if handle._effect is not None
+        else _DISPATCH_EFFECTS.get((handle.app_id, handle.logical_id))
     )
-    after_load = handle._after_load or _DISPATCH_AFTER_LOAD.get(handle.logical_id)
+    after_load = handle._after_load or _DISPATCH_AFTER_LOAD.get((handle.app_id, handle.logical_id))
     if effect is None and not after_load:
         return result
     compiled: object = result

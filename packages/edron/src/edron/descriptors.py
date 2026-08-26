@@ -3,13 +3,45 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Generic, ParamSpec, TypeVar, overload
+from typing import Annotated, Any, Generic, ParamSpec, TypeVar, get_args, get_origin, overload
+
+from fastapi.params import Depends as DependsParam
 
 from edron._internal import require_frame
-from edron.errors import PhaseError, RegistrationError
+from edron.errors import BindingError, PhaseError, RegistrationError
 
 P = ParamSpec("P")
 R = TypeVar("R")
+
+
+def _application_parameters(fn: Callable[..., Any]) -> dict[str, inspect.Parameter]:
+    parameters = inspect.signature(fn).parameters
+    result: dict[str, inspect.Parameter] = {}
+    for name, parameter in parameters.items():
+        if name in {"self", "cls", "request", "websocket"}:
+            continue
+        if isinstance(parameter.default, DependsParam):
+            continue
+        annotation = parameter.annotation
+        if get_origin(annotation) is Annotated and any(
+            isinstance(item, DependsParam) for item in get_args(annotation)[1:]
+        ):
+            continue
+        result[name] = parameter
+    return result
+
+
+def _validate_action_bind(action: Action[Any, Any], arguments: dict[str, Any]) -> None:
+    application_parameters = _application_parameters(action.fn)
+    unknown = sorted(set(arguments) - set(application_parameters))
+    if unknown:
+        raise BindingError(
+            f"unknown action argument(s): {', '.join(unknown)}", code="EDRON_ACTION_BIND"
+        )
+    try:
+        inspect.signature(action.fn).bind_partial(**arguments)
+    except TypeError as exc:
+        raise BindingError(str(exc), code="EDRON_ACTION_BIND") from exc
 
 
 @dataclass
@@ -72,6 +104,9 @@ class BoundAction(Generic[P, R]):
     action: Action[P, R]
     arguments: dict[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        _validate_action_bind(self.action, self.arguments)
+
     @property
     def logical_id(self) -> str:
         return self.action.logical_id
@@ -79,6 +114,7 @@ class BoundAction(Generic[P, R]):
     def bind(self, **arguments: Any) -> BoundAction[P, R]:
         merged = dict(self.arguments)
         merged.update(arguments)
+        _validate_action_bind(self.action, merged)
         return BoundAction(self.action, merged)
 
     def __call__(self, **_: Any) -> Any:
@@ -126,6 +162,7 @@ class Action(Generic[P, R]):
         return BoundAction(self)
 
     def bind(self, **arguments: Any) -> BoundAction[P, R]:
+        _validate_action_bind(self, arguments)
         return BoundAction(self, dict(arguments))
 
 

@@ -17,8 +17,39 @@ env:
   UV_VERSION: "0.12.1"
 
 jobs:
+  test:
+    name: Test Edron
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Sync locked workspace
+        run: uv sync --locked --python 3.11
+
+      - name: Run Edron regression tests
+        run: uv run --python 3.11 pytest -q tests/unit/test_edron_runtime.py
+
   publish:
     name: Build and publish Edron
+    needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:

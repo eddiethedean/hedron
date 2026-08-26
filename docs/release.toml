@@ -3,7 +3,7 @@
 # must agree with this file. The workspace may be preparing a later release.
 train = "0.64"
 published_version = "0.64.0"
-development_version = "0.66.1"
+development_version = "0.66.2"
 published_date = "2026-08-24"
 pin_floor = "0.64.0"
 pin_ceiling = "0.65"

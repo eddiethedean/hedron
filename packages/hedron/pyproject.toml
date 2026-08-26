@@ -1,6 +1,6 @@
 [project]
 name = "hedron"
-version = "0.66.1"
+version = "0.66.2"
 description = "FastAPI-native component framework for HTML and HTMX"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -52,10 +52,10 @@ data = [
     "hedron-data>=0.66.0,<0.67",
 ]
 charts = [
-    "hedron-charts>=0.2.1,<0.3",
+    "hedron-charts>=0.2.2,<0.3",
 ]
 maps = [
-    "hedron-maps>=0.1.1,<0.2",
+    "hedron-maps>=0.1.2,<0.2",
 ]
 markdown = [
     "markdown>=3.5",

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.66.2] — 2026-08-26
+
+### Fixed
+- Explicit URL port 0 is rejected instead of being mistaken for the default
+  HTTPS port.
+
 ## [0.66.1] — 2026-08-25
 
 ### Fixed

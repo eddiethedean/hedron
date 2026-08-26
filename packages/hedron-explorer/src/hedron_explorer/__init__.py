@@ -4,6 +4,6 @@ from __future__ import annotations
 
 from hedron_explorer.router import explorer_router
 
-__version__ = "0.66.1"
+__version__ = "0.66.2"
 
 __all__ = ["__version__", "explorer_router"]

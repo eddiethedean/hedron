@@ -78,7 +78,10 @@ class EgressPolicy:
             return EgressDecision(
                 kind=EgressDecisionKind.DENY, url=url, reason="host_denied", hop=hop
             )
-        effective_port = port or (443 if scheme == "https" else 80)
+        # ``0`` is an explicitly supplied port, not an omitted port.  Using
+        # truthiness here would turn ``https://host:0`` into the default 443
+        # and allow it when 443 is allowlisted.
+        effective_port = port if port is not None else (443 if scheme == "https" else 80)
         if effective_port not in self.allowed_ports:
             return EgressDecision(
                 kind=EgressDecisionKind.DENY, url=url, reason="port_denied", hop=hop

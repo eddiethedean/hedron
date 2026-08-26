@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.66.2] — 2026-08-26
+
+### Fixed
+- Maintenance fixes for the 0.66.x release train.
+
 ## [0.66.1] — 2026-08-25
 
 ### Fixed

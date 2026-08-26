@@ -59,6 +59,34 @@ def test_hx_trigger_include_validate_and_rejects_js_vals() -> None:
         raise AssertionError("js: headers must be rejected")
 
 
+def test_action_effects_are_scoped_to_their_app() -> None:
+    first = make_app()
+
+    @first.command(name="save", fallback="/")
+    def first_save():
+        return Text("first")
+
+    first_save.effect(InteractionResult(trigger="first-only"))
+
+    second = make_app()
+
+    @second.command(name="save", fallback="/")
+    def second_save():
+        return Text("second")
+
+    @second.page("/")
+    def home():
+        return Page(Text("home"), title="Home")
+
+    with TestClient(second) as client:
+        headers = csrf_headers(client)
+        response = client.post(second_save.path, headers=headers)
+
+    assert response.status_code == 200
+    assert response.text == "<p>second</p>"
+    assert response.headers.get("HX-Trigger") in {None, ""}
+
+
 def test_select_depends_on_compiles_htmx_get() -> None:
     html = render_html(
         Select(

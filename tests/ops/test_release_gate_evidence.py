@@ -84,3 +84,15 @@ def test_built_quickstart_is_verified_before_pypi_upload() -> None:
     upload = workflow.index("      - name: Publish to PyPI", prepublish)
     assert prepublish < upload
     assert '"${{ steps.ref.outputs.version }}" --dist-dir dist --attempts 1' in workflow
+
+
+def test_edron_has_an_independent_release_path() -> None:
+    general = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    edron = (ROOT / ".github" / "workflows" / "edron-release.yml").read_text(encoding="utf-8")
+
+    assert general.count('echo "Skipping Edron; publish it only from edron-v* tags"') == 2
+    assert '"edron-v*.*.*"' in edron
+    assert "needs: test" in edron
+    assert "pytest -q tests/unit/test_edron_runtime.py" in edron
+    assert "id-token: write" in edron
+    assert "pypa/gh-action-pypi-publish@release/v1" in edron

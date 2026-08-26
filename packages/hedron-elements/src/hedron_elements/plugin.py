@@ -39,7 +39,7 @@ _STATIC = _ROOT / "static"
 
 PLUGIN_META = PluginMeta(
     name="hedron_elements",
-    version="0.66.1",
+    version="0.66.2",
     distribution="hedron-elements",
     hedron_version=">=0.66,<0.67",
     capabilities=PluginCapabilities(

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.66.2] — 2026-08-26
+
+### Fixed
+- Action effects are isolated by app instance, preventing same-named commands in
+  separate apps from inheriting one another's effects.
+
 ## [0.66.1] — 2026-08-25
 
 ### Fixed

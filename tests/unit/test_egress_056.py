@@ -26,6 +26,8 @@ def test_egress_056_deny_by_default_and_redirects() -> None:
     assert decision.reason == "allowed"
     with pytest.raises(EgressError):
         allow.require("https://api.example:8443/v1", resolver=_public_resolver)
+    with pytest.raises(EgressError):
+        allow.require("https://api.example:0/v1", resolver=_public_resolver)
     chain = decide_redirect_chain(
         "https://api.example/a",
         ["https://api.example/b"],
