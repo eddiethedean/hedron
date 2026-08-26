@@ -29,7 +29,7 @@ countdown or commitment to `1.0`.
 | **0.1** | Complete batteries-included class facade with native Hedron identity, HTMX/HTTP parity, base tables/charts/maps, optional adapters, styling, jobs, and tooling | **Implemented in-tree; Beta** |
 | **0.2** | Authoring refinement, diagnostics, source-aware tooling, and evidence-driven vocabulary polish | **Implemented and verified in-tree; Beta** |
 | **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | **Published** (`edron-v0.3.0`; Beta) |
-| **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | Candidate after `0.3` |
+| **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | **Refined candidate** after `0.3`; no implementation claim |
 | **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | Candidate after `0.4` |
 | **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | Candidate after `0.5` |
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | Candidate after `0.6` |
@@ -140,19 +140,57 @@ Applications continue to own data authorization and persistence.
 
 ## Phase 0.4 — visualization and linked-data workflows
 
-Phase `0.4` deepens charts, maps, media, and data-linked presentation through owning native
-packages.
+Phase `0.4` is now a refined implementation candidate, not an availability claim. It may begin
+only after the native chart, map, media, asset, and interaction contracts below are verified in the
+compatible Hedron train. Edron will add small authoring spellings and provenance only; the owning
+native packages remain responsible for rendering, sanitization, assets, and browser behavior.
 
-Candidate scope:
+### Proposed contract
 
-- deliberate promotion of additional `hedron-charts` and `hedron-maps` capabilities;
-- typed chart/map selections that drive native safe filters or explicit actions;
-- accessible descriptions, data alternatives, keyboard behavior, and static/offline fallbacks;
-- richer export and media/download composition; and
-- consistent theme, asset, CSP, and explanation behavior across first-party and optional adapters.
+| Workstream | Candidate outcome | Native owner and required evidence |
+|---|---|---|
+| `VIS-04` presentation | A single explicit chart/map composition path that accepts a reviewed native spec or a bounded beginner form, preserves title/description metadata, and exposes the owning native projection for inspection | `hedron-charts` / `hedron-maps`; first-party and optional-adapter parity, payload limits, redaction, and package-pin tests |
+| `LINK-04` selection links | Typed chart/map selections can submit only to a registered native filter or action handle; selection cardinality and payload size use the native limits; unknown fields, callbacks, and arbitrary URLs fail closed | `ChartInteraction`, map interaction contracts, native router/command/filter authorities; HTTP, HTMX, no-JavaScript, CSRF, authorization, and race evidence |
+| `ALT-04` accessible fallback | Every interactive visualization has a server-rendered text/table or static-image alternative, a meaningful accessible name/description, keyboard-reachable controls, and an explicit offline/error representation | native visualization accessibility contracts; automated HTML/a11y checks, keyboard/forced-colors/reduced-motion coverage, and offline/browser fixtures |
+| `MEDIA-04` export and media | Chart/map export and image/audio/video composition use opaque authorized references, safe media types, bounded downloads, captions/transcripts where applicable, and ordinary HTTP fallbacks | `hedron` media/download responses and `hedron-core` media/a11y surfaces; authorization, range/cache, filename, CSP, and no-path-disclosure tests |
+| `ASSET-04` cross-cutting policy | Theme tokens, asset activation, CSP origins, explanation metadata, and source provenance are consistent across first-party and optional adapters; no adapter silently adds network access | native style/asset/security registries; projection, static-check, dependency, and ejection evidence |
 
-Browser enhancement remains a projection of server-owned state. Edron does not add a client-side
-chart, map, component, or event runtime.
+The beginner-facing API remains deliberately small. The intended shape is an explicit visualization
+method plus typed `selection=`, `alternative=`, and `export=` values, rather than implicit event
+callbacks or a second Edron registry. Exact names and signatures are not frozen until the native
+contract and acceptance packet are approved.
+
+### Bounds and ownership
+
+- Visualizations are server-owned projections. Edron never introduces a client-side chart, map,
+  component, event, or state runtime.
+- Selection values are untrusted input. They must be validated by native typed payloads, bounded by
+  the owning interaction contract, and lowered to a registered filter/action; they must not invoke
+  arbitrary Python callables or carry executable JavaScript.
+- Data, authorization, filtering, persistence, transactions, download authorization, and durable
+  media storage remain application-owned. A visualization may display only the rows/features the
+  application has already authorized.
+- First-party static/offline alternatives are required before browser enhancement is considered
+  complete. Optional adapters may remain Experimental or unavailable when they cannot meet the same
+  fallback, CSP, and accessibility contract.
+
+### Entry and exit gates
+
+Phase `0.4` implementation entry requires a dedicated acceptance packet that freezes the public
+surface, native package pins, selection/download limits, supported adapter matrix, and security/a11y
+fixtures. Release exit requires, at minimum:
+
+1. native chart/map/media contracts are published and their Edron projections preserve object
+   identity and source provenance;
+2. chart and map selections pass typed HTTP, HTMX, no-JavaScript, authorization, CSRF, and
+   concurrency tests with bounded payloads;
+3. every supported visualization has a text/table or static/offline alternative and keyboard,
+   forced-colors, reduced-motion, and failure-state evidence;
+4. export/media paths pass authorization, range/cache, safe-filename, CSP, and redaction checks;
+5. optional adapters remain lazy, directly-installed, version-pinned, and explicitly diagnosed;
+   and
+6. built wheel/sdist, documentation, upgrade fixtures, and the complete Edron 0.3 regression suite
+   pass before a `0.4.0` tag is considered.
 
 ## Phase 0.5 — state, resources, and operational workflows
 
