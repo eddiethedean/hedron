@@ -1,8 +1,10 @@
 # Edron golden applications
 
 **Status:** Design draft; no Edron API in this document is implemented or available<br>
+**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Purpose:** Input to the proposed Edron RFC and public API contract<br>
-**Baseline:** Hedron `0.66.x` repository train<br>
+**Planning baseline:** Hedron workspace `0.66.1`; not an accepted compatibility floor<br>
+**Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API contract:** [Edron 0.1 public API](../api/EDRON.md)<br>
 **State and interaction contract:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)<br>
 **Packaging contract:** [Edron 0.1 packaging](../api/EDRON_PACKAGING.md)<br>
@@ -51,9 +53,10 @@ the Edron RFC and public API contract.
    callback `args`/`kwargs` bags.
 10. The page decorator's `title=` supplies the document title, navigation label, and visible `h1`
     by default. `show_title=False` is the explicit escape hatch.
-11. `pip install edron` includes native tables, data editing, first-party charts, maps, Markdown,
-    and the application server. Third-party integrations activate when their compatible dependency
-    is installed directly; `edron[extra]` is only an installer shortcut.
+11. `pip install edron` includes Edron tables/dataframes, the native data editor for explicit direct
+    composition, first-party charts, maps, Markdown, and the application server. No Edron
+    `data_editor` method is implied. Third-party integrations activate when their compatible
+    dependency is installed directly; `edron[extra]` is only an installer shortcut.
 12. Native Hedron components remain embeddable through the canonical `self.include(...)` method.
 13. Styling progresses from a built-in theme to `ed.theme(...)`, finite component variants, native
     `StyleRecipe`/`StyleScope`, and registered local CSS; every level uses Hedron's single styling
@@ -184,7 +187,8 @@ security headers, asset policy, diagnostics, and no-JavaScript correctness.
 - GET `/` contains exactly one `h1` and the two content messages without user-authored JavaScript;
 - the wheel requires no Node installation or network asset fetch at render time;
 - two concurrent requests use distinct `Home` instances and render identical output; and
-- `edron check app.py` explains the generated page and underlying Hedron screen.
+- `edron check app.py` identifies the declared page statically, while `edron explain app.py`
+  imports the trusted app and identifies the generated native Hedron screen.
 
 ## Golden application 2: filtered sales dashboard
 
@@ -476,7 +480,8 @@ infer authorization from page visibility, a confirmation dialog, or Pydantic val
 - a forged or cross-app bound action is rejected;
 - duplicate delete submission follows the declared idempotency policy;
 - confirmation is keyboard accessible and has a functional no-JavaScript disposition; and
-- route catalogs and `edron check` identify generated actions without exposing bound customer data.
+- static `edron check` identifies the declared actions, while trusted `edron explain` and native
+  route catalogs identify their generated handles without exposing bound customer data.
 
 ## Golden application 4: durable report job
 
@@ -646,7 +651,7 @@ The module and page class remain importable without Plotly. The call fails at th
 not during `import edron`:
 
 ```text
-EdronOptionalDependencyError
+MissingCapabilityError (EDR-CAP-0001)
 
 plotly_chart() requires plotly>=5.18,<7, but Plotly is not installed.
 
@@ -750,7 +755,8 @@ class Operations(ed.Page):
                 [
                     {"pipeline": "Customers", "state": "Healthy"},
                     {"pipeline": "Invoices", "state": "Delayed"},
-                ]
+                ],
+                name="pipelines",
             )
 
         self.button("Run pipeline", action=self.run, variant="primary")
@@ -787,14 +793,8 @@ h1 {
   text-wrap: balance;
 }
 
-[data-hedron-component="Card"] [data-hedron-part="header"] {
+[data-hedron-component="Card"][data-hedron-part="heading"] {
   border-block-end: 1px solid var(--hedron-color-border);
-}
-
-@media print {
-  [data-hedron-component="Button"] {
-    display: none;
-  }
 }
 ```
 
@@ -934,14 +934,17 @@ draft decisions until RFC-0094 and its Stage 0 packet are accepted.
 11. **Public vocabulary:** explicit display/input methods, `include`, `app.hedron`, and
     `app.native(...)` are canonical; `display`, `write`, `self.hedron`, and magic dispatch are absent.
 12. **Configuration defaults:** `App` uses the native standard security profile, exposes ASGI,
-    includes Uvicorn for `edron run`, and delegates advanced host configuration to `app.hedron`.
+    includes Uvicorn for `edron run`, and accepts the construction-time session secret,
+    production, and build-manifest inputs. Other immutable host/lifespan options use an explicitly
+    constructed native `Hedron` passed to `App.from_hedron(...)`; `app.hedron` remains the exact
+    post-construction native application, not a way to retrofit middleware.
 13. **Upstream work:** every missing native foundation requires independent Hedron ownership before
     Edron consumes it.
 14. **Styling facade:** `ed.theme(...)` returns native `DesignSystem`; selected styling types are
     identity re-exports; finite variants, native scopes/recipes, and registered CSS share one
     authority.
 
-## Stage 0 exit gate
+## Golden-fixture readiness gate
 
 The golden application packet is ready to feed an accepted RFC only when:
 
@@ -953,3 +956,7 @@ The golden application packet is ready to feed an accepted RFC only when:
 - the clean base and optional-dependency installation matrices are fixed;
 - the six examples type-check under the proposed public signatures; and
 - unresolved decisions are either selected in the RFC or explicitly deferred outside Edron 0.1.
+
+This makes the fixture packet eligible for Decision A review; it does not by itself satisfy
+Decision A, authorize native Hedron work, or authorize Edron runtime implementation under Decision
+B.

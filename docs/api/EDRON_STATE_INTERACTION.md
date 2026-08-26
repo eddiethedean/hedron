@@ -5,14 +5,15 @@ status: draft
 # Edron 0.1 state and interaction contract
 
 **Status:** Draft design contract; Edron is not implemented or published<br>
-**Target:** `edron` 0.1 after required native Hedron enablement<br>
+**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
 **Packaging:** [Edron 0.1 packaging](EDRON_PACKAGING.md)<br>
-**Capability inventories:** [Edron 0.1 capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)<br>
-**Implementation:** [Edron 0.1 implementation specification](../implementation/EDRON_001.md)<br>
-**Acceptance:** [Edron 0.1 acceptance packet](../acceptance/EDRON_001.md)<br>
-**Architecture:** [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
-**Fixtures:** [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
+**Capability inventories:** [Edron 0.1 capability inventories](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_CAPABILITY_INVENTORIES.md)<br>
+**Implementation:** [Edron 0.1 implementation specification](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_001.md)<br>
+**Acceptance:** [Edron 0.1 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)<br>
+**Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
+**Fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
 This document defines how state is owned and how interactions progress in Edron. It complements
 the Python signatures in the public API contract. Hedron remains the authority for request
@@ -687,9 +688,12 @@ referers, logs, traces, and cache keys must not receive secrets or sensitive for
 
 ## Static explanation and observability
 
-`edron check` and `edron explain` project the native sealed interaction catalog, handle descriptors,
-route/effect graph, dependency metadata, state ownership, policies, assets, and Edron source map.
-They do not execute application callbacks.
+Plain `edron check` projects conservative static source facts only; it neither imports the
+application nor claims native registration success. `edron check --register` and `edron explain`
+cross the disclosed trusted-import boundary, seal/project the native interaction catalog, handle
+descriptors, route/effect graph, dependency metadata, policies, assets, and Edron source map. None
+of these modes executes page renderers, fragments, actions, dependency providers, jobs, or data
+loaders merely to fill an explanation gap.
 
 For each surface, explanation includes where applicable:
 
@@ -793,7 +797,7 @@ the authority for persistence and replay correctness.
 
 This contract is additive over native Hedron state and interaction APIs. Existing native
 `SessionState`, `FragmentHandle`, `ActionHandle`, `InteractionPolicy`, `ActionState`,
-`OperationIdentity`, `RefreshIntent`, `PatchSet`, `TaskFlow`, `OptimisticMutation`, HTMX extension,
+`OperationIdentity`, `RefreshIntent`, `Patch`, `PatchSet`, `TaskFlow`, `OptimisticMutation`, HTMX extension,
 and full route/response APIs remain usable through `app.hedron` and native imports.
 
 Moving a native application surface into Edron must preserve:
@@ -847,11 +851,11 @@ explicit URL/form/session/durable/cache/browser/deferred disposition under RFC-0
 
 - [Edron 0.1 public API](EDRON.md)
 - [Edron packaging](EDRON_PACKAGING.md)
-- [Edron capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)
-- [Edron implementation specification](../implementation/EDRON_001.md)
-- [Edron acceptance packet](../acceptance/EDRON_001.md)
-- [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)
-- [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
+- [Edron capability inventories](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_CAPABILITY_INVENTORIES.md)
+- [Edron implementation specification](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_001.md)
+- [Edron acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)
+- [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)
+- [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 - [Native state APIs](STATE.md)
 - [Native interaction APIs](INTERACTION.md)
 - [Refreshable views and commands](REFRESHABLE_VIEWS.md)

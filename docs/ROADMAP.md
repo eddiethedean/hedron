@@ -72,6 +72,9 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, eight bounded issue slices, and touched-surface fallback evidence | **Implemented and verified in-tree; release candidate `v0.65.0`** ([RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [scope](acceptance/application-styling-scope-065.md); [acceptance](acceptance/RELEASE_0_65.md)) |
 | **0.66** | HDJ parity and registry integration: app-scoped binding, registry-backed components/assets/themes/styles, live logical-ID interactions, portable HTMX facts, provider parity, and claim-honest evidence | **Implemented and verified in-tree; release candidate `v0.66.1`** ([RFC-0093](rfcs/RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md); [implementation](implementation/HDJ_PARITY_066.md); [acceptance](acceptance/RELEASE_0_66.md)) |
 
+Edron is independently versioned and does not consume Hedron phase numbers. Its compatible Hedron
+train remains unassigned; see the [Edron `0.x` release roadmap](EDRON_ROADMAP.md).
+
 ### Phase 0.64 enhancement inventory
 
 The phase 0.64 inventory contains **22 enhancement issues** (queried 2026-08-24): **18 are

@@ -5,7 +5,8 @@ status: draft
 # Edron 0.1 capability inventories
 
 **Status:** Stage 0 design inventory; Edron is not implemented or published<br>
-**Target:** `edron` 0.1 after required Hedron enablement<br>
+**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](../api/EDRON.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)<br>
 **Packaging:** [Edron 0.1 packaging](../api/EDRON_PACKAGING.md)<br>
@@ -84,7 +85,7 @@ the detailed behavior is expanded in the capability inventories below.
 | `Confirm` | immutable confirmation request | Base | Facade + Upstream; `CONTROL-002` |
 | `download`, `Download` | opaque download factory/value | Base | Facade + Native + Application; `DL-001`, `DL-002` |
 | `JobFlow` | job composition facade | Base + Application | Facade + Upstream; `JOB-001`–`JOB-003` |
-| `JobBackend`, `JobScope` | identity re-exports | Base | Native; job/application authority |
+| `JobBackend`, `JobScope` | identity re-exports | Base | Native; `hedron_core.jobs.JobBackend` and `hedron.JobScope` |
 | `theme` | native design-system constructor facade | Base | Facade + Native + Upstream; `STYLE-002` |
 | `Color`, `DesignSystem`, `StyleRecipe` | identity re-exports | Base | Native; `STYLE-003`, `STYLE-005` |
 | `EdronError` | Edron diagnostic base exception | Base | Facade diagnostic only; `DIAG-001` |
@@ -99,7 +100,7 @@ beginner root.
 
 | ID | Capability / public surface | Install | Disposition | Native authority | Readiness |
 |---|---|---|---|---|---|
-| `APP-001` | `App(...)` creates one ASGI-callable application | Base | Facade + Native | `hedron.Hedron`, FastAPI/Starlette ASGI | Ready |
+| `APP-001` | `App(...)` creates one ASGI-callable application with explicit session/production/build inputs | Base | Facade + Native | `hedron.Hedron`, FastAPI/Starlette ASGI/lifespan/security | Ready; production evidence required |
 | `APP-002` | `App.from_hedron(...)` attaches to one unsealed native app | Base | Facade + Native | native app/registry seal lifecycle | Verify |
 | `APP-003` | `app.hedron` exposes the exact underlying app | Base | Native | object identity | Ready |
 | `APP-004` | `@app.page(...)` registers a direct `Page` subclass | Base | Facade + Upstream | screen/router plus fresh-instance class compiler | Enable `UP-001`, `UP-004` |
@@ -186,7 +187,7 @@ whole-page rerun triggers.
 | `FORM-001` | `form(Model, action=...)` | Base | Facade + Native | Pydantic/native form compiler and errors | Verify |
 | `FORM-002` | `controls=` typed overrides, safe retention, redaction | Base | Facade + Native | native schema/control registry | Verify |
 | `FORM-003` | HTMX and ordinary HTTP parity | Base | Native | response/error/PRG compiler | Ready; differential evidence required |
-| `RESULT-001` | `Outcome` native result union | Base | Native | `InteractionResult`, `RefreshIntent`, `PatchSet`, `Response` | Ready |
+| `RESULT-001` | `Outcome` native result union | Base | Native | `InteractionResult`, `RefreshIntent`, `Patch`, `PatchSet`, `Response` | Ready |
 | `RESULT-002` | `refresh(...)` | Base | Facade + Native | exact native `RefreshIntent` | Ready |
 | `RESULT-003` | `success(...)` and ordinary fallback meaning | Base | Facade + Upstream | native result presentation/HTTP parity | Enable `UP-006` |
 

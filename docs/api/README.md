@@ -63,10 +63,11 @@ users should pin `hedron>=0.64.0,<0.65` from the public index.
 
 ### Proposed Edron facade
 
+- [Edron `0.x` release roadmap](../EDRON_ROADMAP.md) — Draft; current phase `0.0`, no release authorized
 - [Edron 0.1 public API](EDRON.md) — Draft design contract; not implemented or published
 - [Edron state and interaction](EDRON_STATE_INTERACTION.md)
 - [Edron packaging](EDRON_PACKAGING.md)
-- [Edron acceptance packet](../acceptance/EDRON_001.md) — Draft and blocked
+- [Edron acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md) — Draft and blocked
 
 ### Application
 
@@ -151,10 +152,10 @@ These contracts compile onto the golden path. They are **not** required for Hell
 - [Edron 0.1 packaging](EDRON_PACKAGING.md) — draft base batteries, native distribution
   aggregation, optional dependency, extras, artifact, and release contract; **not implemented or
   published**.
-- [Edron 0.1 capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md) — draft
+- [Edron 0.1 capability inventories](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_CAPABILITY_INVENTORIES.md) — draft
   disposition of base, optional, native, tooling, upstream, deferred, and acceptance capabilities;
   **not implemented or published**.
-- [Edron 0.1 implementation specification](../implementation/EDRON_001.md) — draft package/module,
+- [Edron 0.1 implementation specification](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_001.md) — draft package/module,
   compiler, request-lowering, native integration, staged work, test, and release requirements;
   **implementation is not authorized**.
 

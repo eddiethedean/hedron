@@ -5,13 +5,14 @@ status: draft
 # Edron 0.1 public API contract
 
 **Status:** Draft design contract; Edron is not implemented or published<br>
-**Target:** `edron` 0.1 after the required Hedron enablement packet<br>
-**Authority:** [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
+**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
+**Authority:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Packaging:** [Edron 0.1 packaging](EDRON_PACKAGING.md)<br>
-**Capability inventories:** [Edron 0.1 capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)<br>
-**Implementation:** [Edron 0.1 implementation specification](../implementation/EDRON_001.md)<br>
-**Acceptance:** [Edron 0.1 acceptance packet](../acceptance/EDRON_001.md)<br>
-**Executable-design fixtures:** [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
+**Capability inventories:** [Edron 0.1 capability inventories](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_CAPABILITY_INVENTORIES.md)<br>
+**Implementation:** [Edron 0.1 implementation specification](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_001.md)<br>
+**Acceptance:** [Edron 0.1 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)<br>
+**Executable-design fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
 This document freezes the proposed beginner-facing Python contract before implementation. It is
 normative for Edron 0.1 design and acceptance, but it is not an availability claim. Signatures use
@@ -57,8 +58,8 @@ The conventional import is `import edron as ed`. Documentation does not use or r
 
 ## Contract language and stability
 
-The words **must**, **must not**, **required**, **should**, and **may** are normative. Edron 0.1 is a
-Beta distribution and all new Edron-owned symbols in this contract begin at API tier `beta`.
+The words **must**, **must not**, **required**, **should**, and **may** are normative. Edron `0.1.0`
+will be a Beta distribution and all new Edron-owned symbols in this contract begin at API tier `beta`.
 Identity re-exports retain the native Hedron symbol's own tier. Experimental third-party adapters
 remain explicitly `experimental` even when reached through an Edron method.
 
@@ -134,7 +135,7 @@ Identity re-export means object identity, not merely compatible behavior:
 ed.Color is hedron.Color
 ed.DesignSystem is hedron.DesignSystem
 ed.StyleRecipe is hedron.StyleRecipe
-ed.JobBackend is hedron.JobBackend
+ed.JobBackend is hedron_core.jobs.JobBackend
 ed.JobScope is hedron.JobScope
 ```
 
@@ -148,19 +149,25 @@ The conceptual aliases below are used throughout the signatures:
 
 ```python
 from collections.abc import Awaitable, Callable, Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
+from inspect import Signature
 from pathlib import Path
+from types import TracebackType
 from typing import Any, Generic, Literal, ParamSpec, Protocol, TypeAlias, TypeVar, overload
 
 from fastapi.params import Depends
 from hedron import (
     ActionHandle,
+    BoundFragment as NativeBoundFragment,
+    Color,
     ComponentRef,
     DesignSystem,
     FragmentHandle,
     Hedron,
     InteractionResult,
+    JobScope,
+    Patch,
     PatchSet,
     RefreshIntent,
     ScreenHandle,
@@ -172,6 +179,8 @@ from hedron import (
 )
 from hedron_core.component import NodeLike
 from hedron_core.bundles import FeatureBundle, FeatureProvider
+from hedron_core.diagnostics import Diagnostic as HedronDiagnostic
+from hedron_core.jobs import JobBackend
 from hedron_core.registry import ApplicationStyleMeta
 from hedron_core.typing_aliases import JsonValue
 from pydantic import BaseModel
@@ -186,9 +195,15 @@ PageT = TypeVar("PageT", bound="Page")
 InputT = TypeVar("InputT", bound=BaseModel)
 ResultT = TypeVar("ResultT")
 
-Outcome: TypeAlias = InteractionResult | RefreshIntent | PatchSet | Response
+Outcome: TypeAlias = InteractionResult | RefreshIntent | Patch[Any] | PatchSet | Response
 NativeTheme: TypeAlias = str | Theme | ThemeSpec | DesignSystem
-UpdateTarget: TypeAlias = Fragment[Any] | BoundFragment[Any] | FragmentHandle[Any, Any]
+UpdateTarget: TypeAlias = (
+    Fragment[Any]
+    | BoundFragment[Any]
+    | FragmentHandle[Any, Any]
+    | NativeBoundFragment[Any]
+    | ComponentRef
+)
 UpdateTargets: TypeAlias = UpdateTarget | Sequence[UpdateTarget]
 ```
 
@@ -240,6 +255,9 @@ class App:
         title: str,
         theme: NativeTheme | None = None,
         security: SecurityPolicy | Literal["development", "standard", "strict"] = "standard",
+        session_secret: str | None = None,
+        production: bool | None = None,
+        build_dir: str | Path | None = None,
         root_path: str = "",
         debug: bool = False,
     ) -> None: ...
@@ -277,7 +295,23 @@ class App:
         allowed_roots: Sequence[str | Path] | None = None,
     ) -> ApplicationStyleMeta: ...
 
-    def native(self, surface: object) -> ScreenHandle[Any] | FragmentHandle[Any, Any] | ActionHandle[Any, Any]: ...
+    @overload
+    def native(self, surface: type[Page]) -> ScreenHandle[Any]: ...
+
+    @overload
+    def native(
+        self,
+        surface: Fragment[Any] | BoundFragment[Any],
+    ) -> FragmentHandle[Any, Any] | NativeBoundFragment[Any]: ...
+
+    @overload
+    def native(
+        self,
+        surface: Action[Any, Any] | BoundAction[Any, Any],
+    ) -> ActionHandle[Any, Any]: ...
+
+    @overload
+    def native(self, surface: JobFlow[Any, Any]) -> FeatureBundle: ...
 
     async def __call__(self, scope: object, receive: object, send: object) -> None: ...
 ```
@@ -286,6 +320,14 @@ class App:
 existing unsealed native application and uses that application's title, theme, security, root path,
 middleware, and dependency configuration. It never copies the native app. Registration fails if
 the native registry or OpenAPI schema is already sealed.
+
+`session_secret`, `production`, and `build_dir` are the small construction-time production surface
+and preserve the corresponding native Hedron meaning. With `session_secret=None`, Edron may use
+the native development default only outside production; strict security or the production gate
+requires an explicit application secret. `production=None` follows the native environment policy.
+Applications needing different session enablement, a custom lifespan, Explorer construction, or
+other FastAPI/Hedron constructor options construct `Hedron(...)` explicitly and use
+`App.from_hedron(...)`. These settings cannot be retrofitted later through `app.hedron`.
 
 `app.hedron` is the canonical underlying-app property. There is no `native_app` synonym in 0.1.
 The `App` object itself is ASGI-callable and delegates to that exact instance, so both commands are
@@ -298,7 +340,9 @@ uvicorn app:app
 
 `App.include(...)` accepts only documented feature/provider types. In 0.1 that includes `JobFlow`
 and compatible native Hedron `FeatureProvider`/`FeatureBundle` values. It returns `None`; the native
-registered bundle is available through `app.native(...)` or the Hedron catalog.
+registered bundle for an Edron `JobFlow` is available through `app.native(flow)`. A directly
+included native `FeatureBundle` already is the native object and remains available through the
+Hedron catalog.
 
 `App.styles(...)` has the same arguments and return object as `app.hedron.styles(...)` and delegates
 once. Registration order, source roots, scope, cascade layer, CSP, and late-registration checks are
@@ -334,13 +378,31 @@ All signatures below whose first parameter is `self` are methods on both `Page` 
 unless the surrounding section says otherwise. `sidebar` exists only on `Page`.
 
 ```python
+class Container:
+    def __enter__(self) -> Container: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> Literal[False]: ...
+
+class FilterScope:
+    def __enter__(self) -> FilterScope: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> Literal[False]: ...
+
 class Page:
-    def render(self) -> None: ...
+    def render(self) -> None | Awaitable[None]: ...
 
     @property
     def sidebar(self) -> Container: ...
 
-    def include(self, value: NodeLike | object) -> None: ...
+    def include(self, value: NodeLike) -> None: ...
     def container(self, *, border: bool = False) -> Container: ...
     def card(
         self,
@@ -593,8 +655,9 @@ def date_input(self, label: str, *, name: str, default: date | None = None, upda
 ```
 
 `options` must be finite and request-serializable through a registered native codec. `format_func`
-is presentation only and never parses or authorizes a submitted value. Submitted values must match
-one canonical option value.
+is presentation only and never parses or authorizes a submitted value. `selectbox` requires at
+least one option; `default=None` selects the first canonical option, while an explicit default must
+match one canonical option value. Submitted values must also match one canonical option value.
 
 ### Coherent filter groups
 
@@ -620,10 +683,11 @@ def filters(
 ) -> FilterScope: ...
 ```
 
-`FilterScope` is a request-local context manager/container. `submit_label=None` uses native
-change-trigger enhancement plus an ordinary submit control in the no-JavaScript path. Supplying a
-label makes the submit control visible in both paths. Filter scopes use `GET` only and cannot contain
-actions, file uploads, nested forms, or mutation callbacks.
+`FilterScope` is a request-local context manager for grouping safe controls; it is not a body or
+form container and exposes no output/action methods. `submit_label=None` uses native change-trigger
+enhancement plus an ordinary submit control in the no-JavaScript path. Supplying a label makes the
+submit control visible in both paths. Filter scopes use `GET` only and cannot contain actions, file
+uploads, nested forms, or mutation callbacks.
 
 ## `fragment`, `Fragment`, and `BoundFragment`
 
@@ -765,6 +829,7 @@ def button(
     label: str,
     *,
     action: Action[Any, Any] | BoundAction[Any, Any] | ActionHandle[Any, Any],
+    size: Literal["sm", "md", "lg"] = "md",
     variant: Literal["primary", "secondary", "danger", "quiet"] | None = None,
     recipe: str | StyleRecipe | None = None,
     confirm: str | Confirm | None = None,
@@ -809,9 +874,7 @@ it cannot clear a failed or ambiguous submission.
 class. Native outcome objects may be returned directly.
 
 ```python
-def refresh(
-    *targets: Fragment[Any] | BoundFragment[Any] | FragmentHandle[Any, Any],
-) -> RefreshIntent: ...
+def refresh(*targets: UpdateTarget) -> RefreshIntent: ...
 
 def success(
     message: str | None = None,
@@ -839,7 +902,7 @@ never converted to success.
 ```python
 class Dependency(Generic[T]):
     provider: Callable[..., T] | Depends
-    use_cache: bool
+    use_cache: bool | None
 
     def __get__(self, instance: Page | None, owner: type[Page]) -> T | Dependency[T]: ...
 
@@ -874,9 +937,9 @@ from query/form/action binding and cannot be client-shadowed.
 
 ```python
 class CachedFunction(Protocol[P, R]):
-    def __call__(*args: P.args, **kwargs: P.kwargs) -> R: ...
-    def invalidate(*args: P.args, **kwargs: P.kwargs) -> None: ...
-    def invalidate_all() -> None: ...
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> R: ...
+    def invalidate(self, *args: P.args, **kwargs: P.kwargs) -> None: ...
+    def invalidate_all(self) -> None: ...
 
 def cache_data(
     *,
@@ -1112,16 +1175,18 @@ Every Edron registration has one native authority:
 | `app.styles` | native `ApplicationStyleMeta` and asset graph |
 | `JobFlow` | native `TaskFlow`/`FeatureBundle` |
 
-`app.native(surface)` returns the exact registered native handle, not a proxy. The same object is
-used for reverse routing, rendering, target/effect validation, the interaction catalog, Explorer,
-tests, and explanation. A surface from another app, stale registration, or incompatible Hedron
-train fails rather than being cloned.
+`app.native(surface)` returns the exact registered native projection, not a proxy. Page, fragment,
+action, and bound surfaces return the handle/reference used for reverse routing, rendering,
+target/effect validation, the interaction catalog, Explorer, tests, and explanation. An Edron
+`JobFlow` returns the exact included `FeatureBundle` used by the native catalog. A surface from
+another app, stale registration, or incompatible Hedron train fails rather than being cloned.
 
 Native Hedron objects work in Edron positions where their public protocol matches:
 
 - `self.include(...)` accepts native body renderables;
 - `action=` accepts native `ActionHandle`;
-- `updates=` and `ed.refresh(...)` accept native `FragmentHandle`/bound fragments;
+- `updates=` and `ed.refresh(...)` accept native `FragmentHandle`, bound fragments, and compatible
+  registered `ComponentRef` targets;
 - native registered styles/themes/policies affect Edron-generated components; and
 - `app.hedron` accepts native pages, middleware, dependencies, routers, features, tests, and ASGI
   integration alongside Edron registrations.
@@ -1135,18 +1200,19 @@ The following Edron signatures are frozen requirements but cannot be implemented
 Edron-only mechanics. Before the corresponding Edron surface ships, Hedron must either identify an
 existing public authority or add the reusable native contract and its own acceptance evidence.
 
-| Edron surface | Required native authority |
-|---|---|
-| Page member → native handle compilation | Fresh-instance class compiler supporting owning class, inspected signature, async, and exact source-to-handle lookup |
-| Coherent query controls | Bounded typed GET filter plan spanning several controls and one/more refreshable handles |
-| `ed.dependency` | Public request dependency descriptor with cleanup, override, static explanation, and client-shadow protection |
-| Default action fallback | Safe owning-screen fallback derivation that preserves unsafe method, CSRF, validation, and redirect policy |
-| `confirm=` | Accessible native confirmation with keyboard, focus, cancellation, unsafe no-JS submission, and no behavior authority from styling |
-| `ed.success` ordinary fallback | Native outcome presentation with equivalent HTMX and ordinary HTTP meaning without unsafe query leakage |
-| `JobFlow` | `TaskFlow` support for explicit backend dependency, common scope, Edron result-output adapter, terminal polling, and production gate |
-| `app.native(surface)` | Stable registry lookup from facade source surface/binding to the exact native handle/reference |
-| `variant=` | Registry-derived family/recipe alias metadata and explanation; no Edron-only recipe registry |
-| Style explanation | Native report accepting facade source provenance without a second schema |
+| ID | Edron surface | Required native authority |
+|---|---|---|
+| `UP-001` | Page member → native handle compilation | Fresh-instance class compiler supporting owning class, inspected signature, async, and exact handles |
+| `UP-002` | Coherent query controls | Bounded typed GET filter plan spanning several controls and one/more refreshable handles |
+| `UP-003` | `ed.dependency` | Public request dependency descriptor with cleanup, override, static explanation, and client-shadow protection |
+| `UP-004` | Default action fallback | Safe owning-screen fallback derivation that preserves unsafe method, CSRF, validation, and redirect policy |
+| `UP-005` | `confirm=` | Accessible native confirmation with keyboard, focus, cancellation, unsafe no-JS submission, and no behavior authority from styling |
+| `UP-006` | `ed.success` ordinary fallback | Native outcome presentation with equivalent HTMX and ordinary HTTP meaning without unsafe query leakage |
+| `UP-007` | `app.native(surface)` | Stable registry lookup from facade source surface/binding to the exact native handle/reference |
+| `UP-008` | `JobFlow` | `TaskFlow` support for explicit backend dependency, common scope, Edron result-output adapter, terminal polling, and production gate |
+| `UP-009` | `variant=` | Registry-derived family/recipe alias metadata and explanation; no Edron-only recipe registry |
+| `UP-010` | Cross-package `ed.theme(...)` guarantee | Shared core/data/charts/maps token, mode, accessibility, and asset contract |
+| `UP-011` | Style/registry explanation | Native reports accepting facade source provenance without a second schema |
 
 If a row cannot be satisfied cleanly, that Edron surface is deferred. The implementation must not
 approximate it with hidden endpoints, a parallel registry, process globals, browser-only behavior,
@@ -1187,19 +1253,41 @@ Edron exceptions expose a structured diagnostic with at least `code`, `title`, `
 redacted under native policy.
 
 ```python
+@dataclass(frozen=True, slots=True)
+class SourceLocation:
+    path: str
+    start_line: int
+    start_column: int = 1
+    end_line: int | None = None
+    end_column: int | None = None
+    qualname: str | None = None
+
+@dataclass(frozen=True, slots=True)
+class EdronDiagnostic:
+    code: str
+    severity: Literal["error", "warning", "information"]
+    title: str
+    explanation: str
+    remediation: str = ""
+    source: SourceLocation | None = None
+    native_diagnostic: HedronDiagnostic | None = None
+    context: Mapping[str, JsonValue] = field(default_factory=dict)
+    docs_url: str | None = None
+
 class EdronError(Exception):
     diagnostic: EdronDiagnostic
 
 class RegistrationError(EdronError): ...
 class PhaseError(EdronError): ...
 class BindingError(EdronError): ...
-class CapabilityError(EdronError): ...
 ```
 
 `EdronDiagnostic` and `SourceLocation` are public read-only records in `edron.diagnostics`, but are
-not beginner root re-exports. Their JSON/SARIF projections follow the shared Hedron diagnostic
-schema and unknown-field/version rules. Catch the semantic exception classes in application tools;
-do not branch on rendered message text.
+not beginner root re-exports. Source positions are 1-based; absent end positions mean the start
+position. Context is bounded/redacted JSON-compatible data, and a retained native diagnostic keeps
+its original `HED-*` identity. JSON/SARIF projections follow the shared Hedron diagnostic schema
+and unknown-field/version rules. Catch the semantic exception classes in application tools; do not
+branch on rendered message text.
 
 ### Stable Edron diagnostic codes
 
@@ -1305,7 +1393,8 @@ arrive as an undocumented convenience.
 |---|---|
 | Display/output method | `None` after appending to current native plan |
 | Safe input | Validated typed Python value for current request |
-| Container/layout method | Request-local `Container`/scope |
+| Container/layout method | Request-local `Container` |
+| `filters(...)` | Request-local safe-control `FilterScope` |
 | `@app.page` | Original page class unchanged |
 | `@ed.fragment` / `@ed.action` | Public Edron descriptor |
 | Fragment call in output phase | `None` after native host mount/materialization |
@@ -1314,18 +1403,18 @@ arrive as an undocumented convenience.
 | `ed.success(...)` | Native `InteractionResult` |
 | `ed.theme(...)` | Native `DesignSystem` |
 | `app.styles(...)` | Native `ApplicationStyleMeta` |
-| `app.native(...)` | Exact native registered handle/reference |
+| `app.native(...)` | Exact native registered handle, bound reference, or `FeatureBundle` projection |
 | `App.include(...)` | `None` |
 
 ## See also
 
-- [RFC-0094: Edron authoring facade](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)
-- [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
+- [RFC-0094: Edron authoring facade](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)
+- [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 - [Edron state and interaction](EDRON_STATE_INTERACTION.md)
 - [Edron packaging](EDRON_PACKAGING.md)
-- [Edron capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)
-- [Edron implementation specification](../implementation/EDRON_001.md)
-- [Edron acceptance packet](../acceptance/EDRON_001.md)
+- [Edron capability inventories](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_CAPABILITY_INVENTORIES.md)
+- [Edron implementation specification](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_001.md)
+- [Edron acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)
 - [Refreshable views and commands](REFRESHABLE_VIEWS.md)
 - [Type-driven authoring](TYPE_DRIVEN_AUTHORING.md)
 - [Application styling](APPLICATION_STYLING_065.md)

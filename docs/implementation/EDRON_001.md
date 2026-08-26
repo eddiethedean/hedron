@@ -5,8 +5,9 @@ status: draft
 # Edron 0.1 implementation specification
 
 **Status:** Stage 0 draft; implementation is not authorized and Edron is not published<br>
-**Target:** Edron `0.1.0`; release phase and compatible Hedron train unassigned<br>
-**Planning baseline:** Hedron workspace `0.66.1`; not the Edron compatibility floor<br>
+**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Planning baseline:** Hedron workspace `0.66.1`; not an accepted compatibility floor<br>
+**Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Decision/RFC:** [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 0.1 public API](../api/EDRON.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)<br>
@@ -36,20 +37,22 @@ At completion:
 - safe inputs produce coherent typed GET/HTMX plans with ordinary HTTP fallback;
 - unsafe interactions retain native method, CSRF, authorization, idempotency, conflict, and
   fallback behavior;
-- first-party tables/charts/maps and native data editing are installed without extra Hedron
-  commands;
+- first-party tables/charts/maps and the native data editor for explicit direct composition are
+  installed without extra Hedron commands; no Edron `data_editor` method is implied;
 - optional adapters activate from compatible direct dependencies, with extras only as shortcuts;
 - native Hedron objects and advanced APIs remain directly usable; and
 - static/runtime tooling explains the same native registries with Edron source provenance.
 
 ## Authorization and blocking rule
 
-This file does not authorize runtime implementation while RFC-0094 remains Draft. Before an Edron
-slice begins, every capability it consumes that is marked `Enable` in the capability inventories
+This file does not authorize runtime implementation. Decision A may authorize separately useful
+Hedron enablement under its own native authority, but no `packages/edron` runtime slice begins until
+the acceptance packet records Decision B as Verified. At that point every Required `Enable` row
 must have one of these recorded outcomes:
 
-1. an existing public Hedron contract and passing conformance evidence are identified; or
-2. a separate Hedron RFC/contract is accepted, implemented, and shipped in the required train.
+1. an existing public Hedron contract and passing conformance evidence are identified in the
+   compatible train; or
+2. a separate Hedron RFC/contract is accepted, implemented, verified, and shipped in that train.
 
 No private Edron endpoint, registry, state machine, dependency resolver, target protocol, style
 mapping, or browser runtime may temporarily stand in for missing Hedron behavior. If an upstream
@@ -256,7 +259,11 @@ process-global owner. Registering after the native seal fails with the documente
 
 `App.from_hedron(...)` stores and delegates to the exact supplied unsealed `Hedron`. `App(...)`
 constructs exactly one native instance. Both paths share the same compiler and projection mapping.
-The Edron `App.__call__` delegates directly to that native ASGI object.
+The simple constructor forwards the accepted `session_secret`, `production`, `build_dir`, security,
+theme, root-path, and debug inputs exactly once without copying secrets into source maps or reports.
+Other construction-time native options require an explicitly constructed `Hedron` passed to
+`App.from_hedron(...)`; they cannot be retrofitted after middleware/lifespan setup. The Edron
+`App.__call__` delegates directly to that native ASGI object.
 
 ### `Fragment` and `Action`
 
@@ -489,9 +496,10 @@ arbitrary executable entry points, and is never selected by request data. Compat
 extra-installed environments use the same adapter path. Environment changes require restart; Edron
 never invokes `pip`, `uv`, a shell, or a package index.
 
-Optional methods are always defined. They call one capability resolver, then delegate to the owning
-native adapter. Explicit backend methods never catch a capability error and silently choose another
-backend.
+Optional Edron entry points are always defined. Method-backed capabilities call one resolver, then
+delegate to the owning native adapter; registry-only capabilities such as the curated SQLAlchemy
+source remain available through documented native composition and doctor. Explicit backend methods
+never catch a capability error and silently choose another backend.
 
 ## Native interoperability implementation
 
@@ -817,11 +825,13 @@ authority. Focus/busy/history/stale/OOB/asset cleanup and rapid interaction race
 1. Approve RFC/API/state/packaging/inventory/specification documents together.
 2. Freeze numeric limits/performance budgets, Python/platform matrix, package requirements, and
    public maturity policy.
-3. Resolve every `UP-001`–`UP-011` inventory row as Existing or accepted Hedron work.
+3. Assign every `UP-001`–`UP-011` row to an Existing public authority or a separately accepted
+   Hedron contract/owner/evidence plan.
 4. Create the machine-readable Edron capability, upstream, package, and release-gate manifests.
 5. Approve golden/focused fixture sources and security/accessibility/human protocols.
 
-Exit requires `EDR-STAGE0-*`, `EDR-INV-*`, `EDR-PKG-*`, `EDR-SI-*`, and the Stage 0 RFC criteria.
+Exit requires Decision A in the acceptance packet. It accepts the design and may authorize the
+independent native work in Stage 1; it does not authorize `packages/edron` runtime code.
 
 ### Stage 1 — reusable Hedron enablement
 
@@ -829,6 +839,11 @@ Implement unresolved native contracts in owning Hedron packages under their own 
 tests, changelogs, and release decisions. Work is independently useful and contains no import/runtime
 dependency on Edron. Freeze the first shipped compatible Hedron train only after all required
 native evidence passes.
+
+Stage 1 also completes the package/API/lowering/state/fixture/performance locks, checker/CI lanes,
+security corpus, accessibility protocol, and exact implementation-entry review. Exit requires
+Decision B; satisfying only one Edron surface's native prerequisite cannot authorize a partial
+facade runtime.
 
 ### Stage 2 — Edron package foundation
 
@@ -884,7 +899,8 @@ reordered for convenience. A merged internal slice does not create a public avai
 
 ## Required acceptance artifacts
 
-Before implementation begins, Stage 0 creates versioned machine-readable artifacts equivalent to:
+Before Edron runtime implementation begins, Stages 0 and 1 create and verify versioned
+machine-readable artifacts equivalent to:
 
 | Artifact | Required contents |
 |---|---|
@@ -925,7 +941,8 @@ The implementation specification is satisfied only when:
 - every `EDR-IMPL-SEC-*`, `EDR-IMPL-A11Y-*`, `EDR-IMPL-PERF-*`, and
   `EDR-IMPL-TRACE-*` requirement has passing evidence;
 - all required upstream Hedron contracts are shipped in the frozen compatible train;
-- all 77 inventoried public/conceptual declarations and exact root exports pass API/typing tests;
+- every inventoried public/conceptual declaration and the exact root export allowlist pass
+  API/typing tests;
 - all golden/focused, HTTP/HTMX/no-JS, native differential, capability, concurrency, security,
   accessibility, performance, upgrade, and artifact matrices pass;
 - built wheel/sdist clean installations behave identically to the accepted workspace behavior; and

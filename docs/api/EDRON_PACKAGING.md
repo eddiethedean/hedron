@@ -5,14 +5,15 @@ status: draft
 # Edron 0.1 packaging contract
 
 **Status:** Draft design contract; Edron is not implemented or published<br>
-**Target:** `edron` 0.1 after the required native Hedron enablement train<br>
+**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](EDRON_STATE_INTERACTION.md)<br>
-**Capability inventories:** [Edron 0.1 capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)<br>
-**Implementation:** [Edron 0.1 implementation specification](../implementation/EDRON_001.md)<br>
-**Acceptance:** [Edron 0.1 acceptance packet](../acceptance/EDRON_001.md)<br>
-**Architecture:** [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
-**Fixtures:** [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
+**Capability inventories:** [Edron 0.1 capability inventories](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_CAPABILITY_INVENTORIES.md)<br>
+**Implementation:** [Edron 0.1 implementation specification](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_001.md)<br>
+**Acceptance:** [Edron 0.1 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)<br>
+**Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
+**Fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
 This document defines what installing Edron installs, how Edron composes separately owned Hedron
 packages, how optional third-party capabilities activate, and what artifacts and evidence are
@@ -608,11 +609,11 @@ The packaging acceptance suite includes:
 
 - [Edron 0.1 public API](EDRON.md)
 - [Edron state and interaction](EDRON_STATE_INTERACTION.md)
-- [Edron capability inventories](../implementation/EDRON_CAPABILITY_INVENTORIES.md)
-- [Edron implementation specification](../implementation/EDRON_001.md)
-- [Edron acceptance packet](../acceptance/EDRON_001.md)
-- [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)
-- [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)
+- [Edron capability inventories](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_CAPABILITY_INVENTORIES.md)
+- [Edron implementation specification](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_001.md)
+- [Edron acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)
+- [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)
+- [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 - [Hedron package-native workflows](PACKAGE_WORKFLOWS.md)
 - [Hedron curated extras](EXTRAS.md)
 - [Current release and support](../guides/current-release.md)

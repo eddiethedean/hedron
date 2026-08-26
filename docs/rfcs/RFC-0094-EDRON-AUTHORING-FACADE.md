@@ -1,7 +1,8 @@
 # RFC-0094: Edron batteries-included Pythonic authoring facade
 
 **Status:** Draft<br>
-**Proposed target:** Unassigned; Edron `0.1` after required Hedron enablement<br>
+**Proposed target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Design fixtures:** [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)<br>
 **Public API contract:** [Edron 0.1 public API](../api/EDRON.md)<br>
 **State and interaction contract:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)<br>
@@ -53,8 +54,14 @@ class SalesPage(ed.Page):
     @ed.fragment
     def results(self, region: str) -> None:
         rows = load_sales(region)
-        self.line_chart(rows, x="month", y="revenue")
-        self.dataframe(rows)
+        self.line_chart(
+            rows,
+            x="month",
+            y="revenue",
+            title="Monthly revenue",
+            description="Revenue for the selected region.",
+        )
+        self.dataframe(rows, name="sales")
 ```
 
 At application startup, Edron compiles this class metadata into ordinary Hedron pages, fragment
@@ -212,7 +219,7 @@ class Customers(ed.Page):
 
     @ed.fragment
     def list_customers(self, query: str = "") -> None:
-        self.dataframe(find_customers(query))
+        self.dataframe(find_customers(query), name="customers")
 
     @ed.action(updates=(list_customers,))
     def archive(self, customer_id: int) -> ed.Outcome:
@@ -232,6 +239,12 @@ Page classes are controllers, not components, dependency containers, or persiste
 The decorated class symbol remains the class so normal typing, inheritance, documentation, and
 unit construction remain understandable. Registration metadata is held by the application, not by
 mutating a shared class instance.
+
+The simple constructor also exposes the construction-time production inputs that cannot be changed
+safely after middleware and lifespan composition: `session_secret`, `production`, and `build_dir`.
+Applications needing additional native FastAPI/Hedron construction options create the native app
+explicitly and pass it to `App.from_hedron(...)`; post-construction access through `app.hedron`
+does not pretend that immutable middleware or lifespan configuration can be retrofitted.
 
 ### 3. Instance and execution lifecycle
 
@@ -472,7 +485,8 @@ The following beginner-facing capabilities are Required after `pip install edron
 Hedron package installation command:
 
 - semantic text, feedback, layout, inputs, forms, navigation, and file controls supplied by Hedron;
-- native tables and supported data editing supplied by `hedron-data`;
+- Edron `table`/`dataframe` paths plus the installed native `hedron-data` editor for explicit direct
+  composition; Edron `0.1.0` does not claim a `data_editor` facade method;
 - first-party charts supplied by `hedron-charts`;
 - first-party maps supplied by `hedron-maps`;
 - safe Markdown; and
@@ -494,7 +508,7 @@ If Plotly is absent, the call raises a structured `ed.MissingCapabilityError` co
 
 - capability and adapter name;
 - missing distribution and compatible version range;
-- `pip install plotly` as the direct command;
+- `pip install "plotly>=5.18,<7"` as the direct command;
 - `pip install "edron[plotly]"` as the equivalent shortcut;
 - the Edron call site; and
 - an offline documentation reference.
@@ -599,7 +613,7 @@ cascade. The initial mappings are deliberately small:
 | Action control | `quiet` | finite ghost/neutral control appearance |
 | Surface/card | `plain` | baseline surface |
 | Surface/card | `outlined` | finite outlined surface appearance |
-| Surface/card | `raised` | `dashboard_panel` or compatible raised-surface recipe |
+| Surface/card | `raised` | `dashboard_panel` recipe |
 | Data view | `compact` | `dense_data` recipe |
 
 Stage 0 freezes the exact family mapping from the native registry; Edron does not hard-code a list
@@ -658,7 +672,7 @@ defaults:
 
 ```python
 with self.style_scope(density="compact"):
-    self.dataframe(rows)
+    self.dataframe(rows, name="sales")
 ```
 
 `self.style_scope(...)` lowers to native `StyleScope`/`StyleContext` and emits the same stable
@@ -766,20 +780,27 @@ three dispositions:
 3. **Keep in Edron or defer:** keep only authoring ergonomics in Edron; otherwise defer rather than
    create a hidden Edron runtime.
 
-Initial upstream candidates are:
+Initial upstream candidates are the same `UP-001`–`UP-011` rows locked by the capability inventory
+and acceptance packet:
 
-| Edron need | Hedron question |
-|---|---|
-| Page methods compiled as bound actions/fragments | Can the existing fresh-instance class compiler and handle descriptors be generalized without Edron knowledge? |
-| Several named filters updating one fragment | Does Hedron need a first-class coherent GET filter-binding plan? |
-| Typed request-scoped fields on page classes | Does the native dependency system need a public descriptor with static explanation and overrides? |
-| Owning-page fallback for generated actions | Can a safe fallback derive from a registered screen without making path identity authoritative? |
-| Accessible destructive confirmation | Does Hedron need a reusable native confirmation flow with no-JavaScript behavior? |
-| Simple job form/status/result composition | Which reusable `TaskFlow` improvements are required? |
-| Exact native object projection from class members | Can the shared registry expose a stable lookup from source surface to native handle? |
-| Compact component variants without a parallel vocabulary | Can variant aliases be projected from native recipe-family registry metadata? |
-| One brand call covering first-party data/chart/map packages | Do all required packages consume the complete shared theme/token contract? |
-| Source-mapped style explanations in Edron vocabulary | Can native style plans retain an external facade source without duplicating report schemas? |
+| ID | Edron need | Hedron question |
+|---|---|---|
+| `UP-001` | Page methods compiled as bound actions/fragments | Can the existing fresh-instance class compiler and handle descriptors be generalized without Edron knowledge? |
+| `UP-002` | Several named filters updating one fragment | Does Hedron need a first-class coherent GET filter-binding plan? |
+| `UP-003` | Typed request-scoped fields on page classes | Does the native dependency system need a public descriptor with static explanation and overrides? |
+| `UP-004` | Owning-page fallback for generated actions | Can a safe fallback derive from a registered screen without making path identity authoritative? |
+| `UP-005` | Accessible destructive confirmation | Does Hedron need a reusable native confirmation flow with no-JavaScript behavior? |
+| `UP-006` | Equivalent simple success presentation | Can one native success outcome retain authoritative status and accessible meaning under HTMX and ordinary HTTP? |
+| `UP-007` | Exact native object projection from class members | Can the shared registry expose a stable lookup from source surface to native handle? |
+| `UP-008` | Simple job form/status/result composition | Which reusable `TaskFlow` improvements are required? |
+| `UP-009` | Compact component variants without a parallel vocabulary | Can variant aliases be projected from native recipe-family registry metadata? |
+| `UP-010` | One brand call covering first-party data/chart/map packages | Do all required packages consume the complete shared theme/token contract? |
+| `UP-011` | Source-mapped style explanations in Edron vocabulary | Can native style plans retain an external facade source without duplicating report schemas? |
+
+Each row must resolve as `Existing` or `Shipped` in the upstream lock before Decision B. If review
+instead keeps behavior wholly Edron-specific or defers the facade surface, the RFC, public
+contracts, inventory, goldens, and lock must first remove or reclassify that Required dependency;
+an `Edron-only` label cannot falsely satisfy an upstream row.
 
 No Edron release may implement a candidate locally and describe it as native parity while the
 underlying route, binding, security, lifecycle, or registry semantics differ.

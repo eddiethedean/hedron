@@ -3,6 +3,7 @@
 **Status:** Draft and blocked; Edron implementation is not authorized and Edron is not published<br>
 **Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Planning baseline:** Hedron workspace `0.66.1`; not an accepted compatibility floor<br>
+**Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **RFC:** [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 0.1 public API](../api/EDRON.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)<br>
@@ -124,7 +125,7 @@ only links back to prose.
 |---|---|---|---|---|
 | `EDR-DESIGN-CONTRACT-001` | RFC scope/goals/non-goals/authority/alternatives/compatibility are approved | RFC review record and accepted revision digest | architecture | Planned |
 | `EDR-DESIGN-GOLDEN-001` | Six golden apps have frozen source, native lowering, fallback/state/security/a11y analysis | Golden source/analysis lock and reviewers | product/API | Planned |
-| `EDR-DESIGN-API-001` | Root exports, classes, signatures, returns, diagnostics, native identity, and deferrals are frozen | API snapshot with 77 declaration accounting and typing review | API | Planned |
+| `EDR-DESIGN-API-001` | Root exports, classes, signatures, returns, diagnostics, native identity, and deferrals are frozen | Complete declaration accounting, exact root snapshot, and typing review | API | Planned |
 | `EDR-DESIGN-STATE-001` | Owner/lifetime/method/concurrency/idempotency/fallback/HTMX rules are frozen | `EDR-SI-*` trace matrix and state review | interactions | Planned |
 | `EDR-DESIGN-PACKAGE-001` | Base batteries, optional/direct/extra semantics, artifacts, import and compatibility rules are frozen | `EDR-PKG-*` matrix and candidate resolver evidence | packaging | Planned |
 | `EDR-DESIGN-INVENTORY-001` | Every base/optional/native/tooling/upstream/deferred capability has one disposition | `EDR-INV-*` audit; zero unowned rows | architecture | Planned |
