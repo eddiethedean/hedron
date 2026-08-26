@@ -108,7 +108,7 @@ def _validated_headers(values: Sequence[str]) -> list[str]:
     headers = [value or f"col_{index}" for index, value in enumerate(values)]
     seen: dict[str, int] = {}
     for index, header in enumerate(headers):
-        key = str(header).strip().casefold()
+        key = str(header)
         if key in seen:
             raise error(
                 "HED-DATA-0041",
@@ -287,6 +287,13 @@ def _inline_string_text(cell: ET.Element, ns: dict[str, str]) -> str | None:
 def _cell_column_index(cell: ET.Element, fallback: int) -> int:
     ref = cell.get("r")
     if not ref:
+        if fallback > _MAX_XLSX_COLUMN_INDEX:
+            raise error(
+                "HED-DATA-0041",
+                title="XLSX cell reference exceeds bounds",
+                explanation="Implicit cell column is outside the XLSX worksheet limits.",
+                remediation="Export a worksheet within the XLSX row and column limits.",
+            )
         return fallback
     match = _CELL_REF.match(ref)
     if not match:
@@ -296,8 +303,16 @@ def _cell_column_index(cell: ET.Element, fallback: int) -> int:
             explanation=f"Cannot parse cell reference {ref!r}.",
             remediation="Export a standards-compliant worksheet.",
         )
-    column = excel_col_index(match.group(1))
-    row = int(match.group(2))
+    letters, row_text = match.groups()
+    if len(letters) > 3 or len(row_text) > 7:
+        raise error(
+            "HED-DATA-0041",
+            title="XLSX cell reference exceeds bounds",
+            explanation=f"Cell reference {ref!r} is outside the XLSX worksheet limits.",
+            remediation="Export a worksheet within the XLSX row and column limits.",
+        )
+    column = excel_col_index(letters)
+    row = int(row_text)
     if column > _MAX_XLSX_COLUMN_INDEX or row < 1 or row > _MAX_XLSX_ROW_INDEX:
         raise error(
             "HED-DATA-0041",
@@ -337,6 +352,7 @@ def import_rows_xlsx(
         by_col: dict[int, str] = {}
         next_dense = 0
         seen_refs: set[str] = set()
+        seen_columns: set[int] = set()
         for cell in row.findall("m:c", ns):
             ref = cell.get("r")
             if ref:
@@ -349,6 +365,14 @@ def import_rows_xlsx(
                     )
                 seen_refs.add(ref)
             col_idx = _cell_column_index(cell, next_dense)
+            if col_idx in seen_columns:
+                raise error(
+                    "HED-DATA-0041",
+                    title="Duplicate XLSX cell column",
+                    explanation=f"Worksheet row contains column {excel_col(col_idx)!r} twice.",
+                    remediation="Export a standards-compliant worksheet without duplicate cells.",
+                )
+            seen_columns.add(col_idx)
             next_dense = col_idx + 1
             formula = cell.find("m:f", ns)
             cell_type = cell.get("t")
@@ -386,6 +410,14 @@ def import_rows_xlsx(
                 )
             by_col[col_idx] = text
         if not by_col:
+            expanded += 1
+            if expanded > _MAX_EXPANDED_CELLS:
+                raise error(
+                    "HED-DATA-0041",
+                    title="XLSX expanded cell budget exceeded",
+                    explanation=f"Worksheet expands to more than {_MAX_EXPANDED_CELLS} cells.",
+                    remediation="Reduce sparse worksheet dimensions before import.",
+                )
             matrix.append([])
             continue
         width = max(by_col) + 1
@@ -557,7 +589,7 @@ def import_rows_ods(
         ).decode("utf-8")
     reader = csv.DictReader(io.StringIO(raw))
     if reader.fieldnames is not None:
-        _validated_headers([str(value or "") for value in reader.fieldnames])
+        reader.fieldnames = _validated_headers([str(value or "") for value in reader.fieldnames])
     out: list[dict[str, JsonValue]] = []
     for row in reader:
         cleaned: dict[str, JsonValue] = {

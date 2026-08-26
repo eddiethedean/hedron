@@ -148,6 +148,8 @@ def ingest_csp_report(
         for item in payload:
             if not isinstance(item, dict):
                 continue
+            if item.get("type") != "csp-violation":
+                continue
             report = item.get("body")
             if isinstance(report, dict):
                 reports.append(_normalize_csp_report(report))

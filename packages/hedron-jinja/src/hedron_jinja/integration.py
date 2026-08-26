@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import math
 import re
 from collections.abc import Callable, Iterable, Iterator, Mapping
@@ -18,7 +17,6 @@ from jinja2.ext import Extension
 from jinja2.nativetypes import NativeEnvironment
 from jinja2.parser import Parser
 from jinja2.runtime import Context
-from jinja2.utils import htmlsafe_json_dumps
 from markupsafe import Markup
 
 from hedron_core import (
@@ -468,7 +466,9 @@ class HedronJinja:
         environment.filters["hedron_nav_url"] = self._navigation_url_filter
         environment.filters["hedron_form_url"] = self._form_url_filter
         environment.filters["hedron_asset_url"] = self._asset_url_filter
-        environment.filters["tojson"] = self._strict_tojson_filter
+        json_kwargs = dict(environment.policies.get("json.dumps_kwargs", {}))
+        json_kwargs["allow_nan"] = False
+        environment.policies["json.dumps_kwargs"] = json_kwargs
         _BINDINGS[environment] = ref(self)
 
         for alias, factory in (
@@ -534,7 +534,16 @@ class HedronJinja:
                 explanation=f"Asset ID {logical_id!r} is already registered.",
                 remediation="Register one canonical definition.",
             )
-        parts = urlsplit(asset.href)
+        try:
+            parts = urlsplit(asset.href)
+            _ = parts.port
+        except ValueError as exc:
+            raise error(
+                "HED-JINJA-0019",
+                title="Invalid HDJ asset URL",
+                explanation=f"Asset {logical_id!r} has a malformed URL.",
+                remediation="Register a valid local path or HTTPS asset URL.",
+            ) from exc
         if parts.scheme and parts.scheme.lower() != "https":
             raise error(
                 "HED-JINJA-0019",
@@ -1249,11 +1258,6 @@ class HedronJinja:
             return
         raise TypeError("HDJ HTMX facts must contain JSON-compatible values")
 
-    @staticmethod
-    def _strict_tojson_filter(value: object) -> Markup:
-        """Serialize JSON sinks without emitting non-standard NaN/Infinity tokens."""
-        return htmlsafe_json_dumps(value, dumps=json.dumps, allow_nan=False)
-
     def _session(self) -> _RenderSession:
         session = _ACTIVE_SESSION.get()
         if session is None or session.binding is not self:
@@ -1439,7 +1443,16 @@ class HedronJinja:
         if asset is None:
             raise HedronError(self._unknown_asset_diagnostic("<render>", logical_id))
         self._add_registered_asset(session, logical_id)
-        parts = urlsplit(asset.href)
+        try:
+            parts = urlsplit(asset.href)
+            _ = parts.port
+        except ValueError as exc:
+            raise error(
+                "HED-JINJA-0019",
+                title="Invalid HDJ asset URL",
+                explanation=f"Asset {logical_id!r} has a malformed URL.",
+                remediation="Register a valid local path or HTTPS asset URL.",
+            ) from exc
         return SafeUrl.parse(
             asset.href,
             purpose=UrlPurpose.ASSET,
@@ -1450,7 +1463,11 @@ class HedronJinja:
         asset = self._assets.get(logical_id)
         if asset is None:
             return None
-        parts = urlsplit(asset.href)
+        try:
+            parts = urlsplit(asset.href)
+            _ = parts.port
+        except ValueError:
+            return None
         if parts.scheme not in {"http", "https"} or not parts.netloc:
             return None
         purpose = self._asset_kind_purpose(asset.kind)
@@ -1639,7 +1656,16 @@ class HedronJinja:
 
     def _asset_url_filter(self, value: object) -> str:
         url = self._url_for_purpose(value, UrlPurpose.ASSET, "hedron_asset_url")
-        parts = urlsplit(url)
+        try:
+            parts = urlsplit(url)
+            _ = parts.port
+        except ValueError as exc:
+            raise error(
+                "HED-JINJA-0010",
+                title="Invalid HDJ asset URL",
+                explanation="The asset URL is malformed.",
+                remediation="Use a validated local or HTTPS SafeUrl.",
+            ) from exc
         if parts.scheme in {"http", "https"}:
             session = self._session()
             if not any(asset.href == url for asset in session.assets.values()):
@@ -1653,7 +1679,17 @@ class HedronJinja:
 
     @staticmethod
     def _reject_external_dynamic_url(url: str, filter_name: str) -> None:
-        if urlsplit(url).scheme in {"http", "https"}:
+        try:
+            parts = urlsplit(url)
+            _ = parts.port
+        except ValueError as exc:
+            raise error(
+                "HED-JINJA-0010",
+                title="Invalid HDJ URL",
+                explanation=f"`{filter_name}` received a malformed URL.",
+                remediation="Use a validated local SafeUrl.",
+            ) from exc
+        if parts.scheme in {"http", "https"}:
             raise error(
                 "HED-JINJA-0010",
                 title="Dynamic external URL is not a format-v1 input",

@@ -37,6 +37,15 @@ class SessionTimeoutError(Exception):
         super().__init__(message or f"session expired ({reason})")
 
 
+def _finite_float(value: object, *, name: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{name} must be a finite number, got {value!r}")
+    numeric = float(value)
+    if not math.isfinite(numeric):
+        raise ValueError(f"{name} must be a finite number, got {value!r}")
+    return numeric
+
+
 def stamp_session_created(
     session: MutableMapping[str, Any],
     *,
@@ -45,9 +54,13 @@ def stamp_session_created(
 ) -> float:
     """Record absolute-session start time; does not overwrite an existing stamp."""
     existing = session.get(key)
-    if isinstance(existing, (int, float)):
+    if (
+        isinstance(existing, (int, float))
+        and not isinstance(existing, bool)
+        and math.isfinite(existing)
+    ):
         return float(existing)
-    ts = float(time.time() if now is None else now)
+    ts = _finite_float(time.time() if now is None else now, name="now")
     session[key] = ts
     return ts
 
@@ -58,7 +71,7 @@ def stamp_session_last_seen(
     now: float | None = None,
     key: str = SESSION_LAST_SEEN_KEY,
 ) -> float:
-    ts = float(time.time() if now is None else now)
+    ts = _finite_float(time.time() if now is None else now, name="now")
     session[key] = ts
     return ts
 
@@ -69,7 +82,7 @@ def touch_session(
     now: float | None = None,
 ) -> None:
     """Ensure ``created`` exists and refresh ``last_seen``."""
-    ts = float(time.time() if now is None else now)
+    ts = _finite_float(time.time() if now is None else now, name="now")
     stamp_session_created(session, now=ts)
     stamp_session_last_seen(session, now=ts)
 
@@ -100,18 +113,19 @@ def check_session_timeout(
     """
     for name, value in (("idle_seconds", idle_seconds), ("absolute_seconds", absolute_seconds)):
         if value is not None:
-            numeric = float(value)
-            if not math.isfinite(numeric) or numeric < 0:
+            try:
+                numeric = _finite_float(value, name=name)
+            except ValueError:
+                raise ValueError(f"{name} must be finite and >= 0 or None, got {value!r}") from None
+            if numeric < 0:
                 raise ValueError(f"{name} must be finite and >= 0 or None, got {value!r}")
 
-    ts = float(time.time() if now is None else now)
-    if not math.isfinite(ts):
-        raise ValueError(f"now must be finite, got {now!r}")
+    ts = _finite_float(time.time() if now is None else now, name="now")
     created = session.get(SESSION_CREATED_KEY)
     last_seen = session.get(SESSION_LAST_SEEN_KEY)
 
     if absolute_seconds is not None:
-        if not isinstance(created, (int, float)):
+        if not isinstance(created, (int, float)) or isinstance(created, bool):
             if raise_on_expired:
                 raise SessionTimeoutError("absolute", message="session missing created stamp")
             return False
@@ -122,7 +136,7 @@ def check_session_timeout(
             return False
 
     if idle_seconds is not None:
-        if not isinstance(last_seen, (int, float)):
+        if not isinstance(last_seen, (int, float)) or isinstance(last_seen, bool):
             if raise_on_expired:
                 raise SessionTimeoutError("idle", message="session missing last_seen stamp")
             return False

@@ -49,7 +49,7 @@ def redirect_external(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid external redirect URL",
         ) from None
-    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc or not parsed.hostname:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid external redirect URL",

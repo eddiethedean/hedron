@@ -260,11 +260,14 @@ def pivot_rows(
                 raise ValueError(f"Pivot column values {previous[1]!r} and {col_key[1]!r} collide")
             emitted[key] = col_key
             if agg == "sum":
-                item[key] = sum(nums)
+                aggregate = sum(nums)
             elif agg == "count":
-                item[key] = len(nums)
-            elif agg == "avg":
-                item[key] = sum(nums) / len(nums) if nums else 0.0
+                aggregate = len(nums)
+            else:  # agg == "avg"; unsupported values are rejected above.
+                aggregate = sum(nums) / len(nums) if nums else 0.0
+            if isinstance(aggregate, float) and not math.isfinite(aggregate):
+                raise ValueError("Pivot aggregate is not a finite JSON number")
+            item[key] = aggregate
         out.append(item)
     return out
 

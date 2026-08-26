@@ -471,9 +471,9 @@ def _valid_network_capability(capability: str) -> bool:
     )
 
 
-def _network_origins(value: str) -> tuple[str, ...]:
+def _network_origins(value: str, *, srcset: bool = False) -> tuple[str, ...]:
     """Return validated HTTP(S) origins found in a URL or srcset value."""
-    candidates = value.split(",")
+    candidates = value.split(",") if srcset else (value,)
     origins: set[str] = set()
     for candidate in candidates:
         raw = candidate.strip().split(None, 1)[0] if candidate.strip() else ""
@@ -484,14 +484,11 @@ def _network_origins(value: str) -> tuple[str, ...]:
             _ = parts.port
         except ValueError:
             continue
-        if (
-            parts.scheme.lower() in {"http", "https"}
-            and parts.netloc
-            and parts.hostname
-            and parts.username is None
-            and parts.password is None
-        ):
-            origins.add(f"{parts.scheme.lower()}://{parts.netloc.lower()}")
+        hostname = parts.hostname
+        if parts.scheme.lower() in {"http", "https"} and parts.netloc and hostname:
+            host = f"[{hostname}]" if ":" in hostname else hostname
+            port_suffix = f":{parts.port}" if parts.port is not None else ""
+            origins.add(f"{parts.scheme.lower()}://{host.lower()}{port_suffix}")
     return tuple(sorted(origins))
 
 
@@ -723,7 +720,7 @@ class _LiteralCapabilityParser(HTMLParser):
             if value:
                 purpose = _remote_purpose(tag.lower(), lowered)
                 if purpose:
-                    for origin in _network_origins(value):
+                    for origin in _network_origins(value, srcset=lowered == "srcset"):
                         self.capabilities.add(f"network.{purpose}-origin:{origin}")
 
 
@@ -1007,7 +1004,20 @@ def _htmx_local_diagnostics(
             stripped = value.strip()
             if not stripped or "{{" in stripped:
                 continue
-            parts = urlsplit(stripped)
+            try:
+                parts = urlsplit(stripped)
+                _ = parts.port
+            except ValueError:
+                diagnostics.append(
+                    _context_diag(
+                        parsed,
+                        original_body,
+                        offset,
+                        f"Literal `{attribute}` URL is malformed",
+                        "Use a valid http(s) or same-origin path SafeUrl / static URL.",
+                    )
+                )
+                continue
             if parts.scheme.lower() in {"javascript", "data", "vbscript"}:
                 diagnostics.append(
                     _context_diag(
