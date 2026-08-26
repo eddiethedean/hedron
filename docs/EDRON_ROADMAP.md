@@ -4,9 +4,9 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Phase `0.3` implemented in-tree; Edron remains a Beta, separately versioned package<br>
-**Current phase:** `0.3` data editing and workspace ergonomics<br>
-**First release target:** Edron `0.3.0`; compatible Hedron train `0.66.x`<br>
+**Status:** Edron `0.3.0` published (`edron-v0.3.0`); Edron remains a Beta, separately versioned package<br>
+**Current release line:** `0.3` data editing and workspace ergonomics<br>
+**Latest release:** Edron `0.3.0`; compatible Hedron train `0.66.x`<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 0.3 data workspaces](api/EDRON_03.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
@@ -28,7 +28,7 @@ countdown or commitment to `1.0`.
 | **0.0** | Design acceptance, reusable Hedron enablement, locks, fixtures, and implementation-entry evidence | **Implemented baseline** |
 | **0.1** | Complete batteries-included class facade with native Hedron identity, HTMX/HTTP parity, base tables/charts/maps, optional adapters, styling, jobs, and tooling | **Implemented in-tree; Beta** |
 | **0.2** | Authoring refinement, diagnostics, source-aware tooling, and evidence-driven vocabulary polish | **Implemented and verified in-tree; Beta** |
-| **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | **Implemented and verified in-tree; Beta** |
+| **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | **Published** (`edron-v0.3.0`; Beta) |
 | **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | Candidate after `0.3` |
 | **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | Candidate after `0.4` |
 | **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | Candidate after `0.5` |
@@ -58,7 +58,7 @@ and Edron never installs packages at runtime.
 
 ## Phase 0.0 — design and native enablement
 
-Phase `0.0` is the current pre-release program. It publishes no Edron distribution. In the
+Phase `0.0` was the pre-release program. It published no Edron distribution. In the
 implementation specification, this roadmap phase spans Stage 0 design and Stage 1 reusable Hedron
 enablement; roadmap phases describe releases, while implementation stages describe work order.
 

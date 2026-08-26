@@ -22,7 +22,7 @@ status commentary, not a satisfied release gate.
 - [Edron `0.2.0` acceptance packet](EDRON_002.md) — **Verified release candidate**; see the
   [phase gates](edron-phase02.toml) and [release gate](edron-release-gate-002.toml). The package is
   ready for the maintainer-controlled `edron-v0.2.0` tag and PyPI publication step.
-- [Edron `0.3.0` acceptance packet](EDRON_003.md) — **Verified release candidate**; see the
+- [Edron `0.3.0` acceptance packet](EDRON_003.md) — **Published** (`edron-v0.3.0`); see the
   [phase gates](edron-phase03.toml) and [release gate](edron-release-gate-003.toml). Data ownership,
   authorization, persistence, transactions, and audit storage remain application-owned.
 - [Component model](COMPONENT_MODEL.md)

@@ -1,13 +1,13 @@
 schema_version = 1
 packet = "edron.release/1"
-status = "Release candidate verified"
+status = "Published"
 target = "edron 0.3.0"
 tag = "edron-v0.3.0"
 package = "edron"
 version = "0.3.0"
 compatible_hedron = ">=0.66,<0.67"
 python = ">=3.11,<3.15"
-publication_state = "Not uploaded"
+publication_state = "Published to PyPI"
 release_ready = true
 native_authority = "hedron-data"
 

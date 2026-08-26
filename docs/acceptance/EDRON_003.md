@@ -1,10 +1,10 @@
 # Edron 0.3 acceptance
 
-**Status:** Verified release candidate
+**Status:** Published
 
 Phase 0.3 is accepted in-tree when the focused commands in
-[`EDRON_003.md`](../implementation/EDRON_003.md) pass. Publication remains a
-maintainer-controlled external step.
+[`EDRON_003.md`](../implementation/EDRON_003.md) pass. The `edron-v0.3.0` tag completed the
+release workflow: its built artifacts were provenance-attested and published to PyPI.
 
 | Gate | Evidence | State |
 |---|---|---|
