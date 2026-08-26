@@ -5,7 +5,7 @@ status: verified
 # Edron release roadmap
 
 **Status:** Edron `0.3.0` published (`edron-v0.3.0`); Edron remains a Beta, separately versioned package<br>
-**Current release line:** `0.3` data editing and workspace ergonomics<br>
+**Edron release line:** `0.3` data editing and workspace ergonomics<br>
 **Latest release:** Edron `0.3.0`; compatible Hedron train `0.66.x`<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 0.3 data workspaces](api/EDRON_03.md)<br>
