@@ -25,6 +25,9 @@ status commentary, not a satisfied release gate.
 - [Edron `0.3.0` acceptance packet](EDRON_003.md) — **Published** (`edron-v0.3.0`); see the
   [phase gates](edron-phase03.toml) and [release gate](edron-release-gate-003.toml). Data ownership,
   authorization, persistence, transactions, and audit storage remain application-owned.
+- [Edron `0.4.0` acceptance packet](EDRON_004.md) — **Implemented and verified in-tree; publication
+  pending**; see the [phase gates](edron-phase04.toml). Visualization, interaction, accessibility,
+  and media behavior remain projections of native Hedron authorities.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any
@@ -38,6 +39,41 @@ def _error(code: str, title: str, explanation: str, remediation: str) -> Feature
             remediation=remediation,
         )
     )
+
+
+def _projection_id(value: object) -> str:
+    """Return a stable projection identifier for handles and components."""
+    ident = getattr(value, "logical_id", None)
+    if callable(ident):
+        try:
+            ident = ident()
+        except TypeError:
+            ident = None
+    if isinstance(ident, str) and ident:
+        return ident
+    return type(value).__name__
+
+
+def _invoke_command(command: object, handler: object, payload: object) -> object:
+    """Invoke native and facade handles using their declared payload keyword."""
+    if not callable(handler):
+        return None
+    signature = getattr(command, "handler_signature", None)
+    if isinstance(signature, inspect.Signature):
+        names = [
+            parameter.name
+            for parameter in signature.parameters.values()
+            if parameter.name not in {"self", "request", "websocket"}
+            and parameter.kind
+            in {
+                inspect.Parameter.POSITIONAL_ONLY,
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                inspect.Parameter.KEYWORD_ONLY,
+            }
+        ]
+        if names:
+            return handler(**{names[0]: payload})
+    return handler(payload)
 
 
 @dataclass(frozen=True, slots=True)
@@ -123,7 +159,7 @@ class ChartInteraction:
                     if callable(copier):
                         typed = copier(update={"ids": ids[:max_items]})
                 handler = getattr(command, "__wrapped__", None) or getattr(command, "handler", None)
-                result = handler(typed) if callable(handler) else None
+                result = _invoke_command(command, handler, typed)
                 if result is not None:
                     return result
                 from hedron.handles import BoundFragment, FragmentHandle, refresh
@@ -164,8 +200,8 @@ class ChartInteraction:
             ),
             data={
                 "event": event,
-                "command": getattr(command, "logical_id", ""),
-                "chart": getattr(chart, "logical_id", type(chart).__name__),
+                "command": _projection_id(command),
+                "chart": _projection_id(chart),
                 "max_items": max_items,
                 "refreshes": [getattr(item, "logical_id", str(item)) for item in self.refreshes],
                 "export_is": "ActionHandle",

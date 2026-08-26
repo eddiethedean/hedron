@@ -1,6 +1,6 @@
 """Edron: a class-oriented authoring facade for Hedron."""
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 from edron.app import App
 from edron.cache import CachedFunction, cache_data

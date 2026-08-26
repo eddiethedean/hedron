@@ -599,6 +599,7 @@ class App:
     def explain(self) -> dict[str, Any]:
         """Explain registered Edron surfaces without executing application callbacks."""
         pages: list[dict[str, Any]] = []
+        visual_interactions: list[dict[str, Any]] = []
         truncated = False
         for record in self._pages.values():
             if len(pages) >= MAX_EXPLANATION_PAGES:
@@ -645,6 +646,26 @@ class App:
                     "surfaces": surfaces,
                 }
             )
+        for bundle in self._bundles.values():
+            if len(visual_interactions) >= MAX_EXPLANATION_SURFACES:
+                truncated = True
+                break
+            provider = getattr(bundle, "provider", "")
+            if provider not in {"hedron-charts", "hedron-maps"}:
+                continue
+            projections = getattr(bundle, "projections", ())
+            projection = projections[0] if projections else None
+            visual_interactions.append(
+                {
+                    "kind": "chart-interaction"
+                    if provider == "hedron-charts"
+                    else "map-interaction",
+                    "logical_id": getattr(bundle, "logical_id", None),
+                    "provider": provider,
+                    "provider_version": getattr(bundle, "provider_version", None),
+                    "projection": projection.as_mapping() if projection is not None else None,
+                }
+            )
         return {
             "schema": "edron.application-explanation/1",
             "title": self.title,
@@ -653,6 +674,7 @@ class App:
                 {"save_path": path, **dict(record["workspace"].diagnostics())}
                 for path, record in self._data_workspaces.items()
             ],
+            "visual_interactions": visual_interactions,
             "source_map": self.source_map(),
             "native_authority": "hedron",
             "callbacks_executed": False,
@@ -733,6 +755,72 @@ class App:
         bundle = self.hedron.include_feature(feature)
         self._bundles[id(feature)] = bundle
         return bundle
+
+    def _include_visual_interaction(self, interaction: Any) -> Any:
+        """Include one native chart/map interaction exactly once per app."""
+        cached = self._bundles.get(id(interaction))
+        if cached is not None:
+            return cached
+        return self.include(interaction)
+
+    def chart_interaction(
+        self,
+        chart: Any,
+        *,
+        event: str,
+        payload: type[Any],
+        command: Any,
+        refreshes: Sequence[Any] = (),
+        max_items: int = 100,
+        name: str | None = None,
+        experimental: bool = False,
+    ) -> Any:
+        """Register a typed chart event against a native action handle.
+
+        The native ``ChartInteraction`` contract validates the closed event
+        set, payload, cardinality, and effect fan-out. Edron resolves its own
+        action descriptors to the exact native handle before registration.
+        """
+        from hedron_charts import ChartInteraction
+
+        native_command = self._resolve_action(command)
+        interaction = ChartInteraction(
+            chart=chart,
+            event=event,
+            payload=payload,
+            command=native_command,
+            refreshes=refreshes,
+            max_items=max_items,
+            name=name,
+            experimental=experimental,
+        )
+        return self._include_visual_interaction(interaction)
+
+    def map_interaction(
+        self,
+        map: Any,
+        *,
+        event: str,
+        payload: type[Any],
+        command: Any,
+        refreshes: Sequence[Any] = (),
+        max_items: int = 100,
+        name: str | None = None,
+    ) -> Any:
+        """Register a typed map event against a native action handle."""
+        from hedron_maps import MapInteraction
+
+        native_command = self._resolve_action(command)
+        interaction = MapInteraction(
+            map=map,
+            event=event,
+            payload=payload,
+            command=native_command,
+            refreshes=refreshes,
+            max_items=max_items,
+            name=name,
+        )
+        return self._include_visual_interaction(interaction)
 
     def data_workspace(
         self,

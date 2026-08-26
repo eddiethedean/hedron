@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.0] — 2026-08-26
+
+### Added
+
+- Advanced native chart specifications with explicit accessible alternatives.
+- Typed chart and map interaction registration that resolves Edron actions to native handles.
+- Native image, audio, and video page helpers with safe URLs and validated media tracks.
+- Bounded visualization interaction metadata in `App.explain()`.
+
+### Fixed
+
+- Edron action handlers now receive fresh request-local controller instances without permitting
+  output emission during action execution.
+- Chart and map interaction dispatch supports both native handlers and Edron action endpoints.
+
 ## [0.3.0] — 2026-08-26
 
 ### Added

@@ -1,0 +1,36 @@
+schema = "edron.phase-acceptance/1"
+phase = "0.4"
+status = "Verified"
+package = "edron"
+version = "0.4.0"
+native_authority = "hedron-charts, hedron-maps, hedron-core, hedron"
+
+[[gate]]
+id = "EDR-04-VIS"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase04.py::test_page_visualization_and_media_helpers_keep_native_fallbacks"
+
+[[gate]]
+id = "EDR-04-LINK"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase04.py::test_chart_interaction_resolves_edron_action_and_is_explained; tests/unit/test_edron_phase04.py::test_map_interaction_promotes_native_map_event_contract"
+
+[[gate]]
+id = "EDR-04-ALT"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase04.py::test_page_visualization_and_media_helpers_keep_native_fallbacks; tests/unit/test_edron_phase04.py::test_image_requires_meaningful_alt_text"
+
+[[gate]]
+id = "EDR-04-MEDIA"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase04.py::test_page_visualization_and_media_helpers_keep_native_fallbacks"
+
+[[gate]]
+id = "EDR-04-EXPLAIN"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase04.py::test_chart_interaction_resolves_edron_action_and_is_explained"
+
+[[gate]]
+id = "EDR-04-REGRESSION"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase02.py; tests/unit/test_edron_phase03.py; tests/unit/test_edron_runtime.py"

@@ -79,7 +79,10 @@ class Page:
     """Base class for Edron request-scoped page controllers."""
 
     def __init__(self) -> None:
-        self._frame = require_frame("page", "fragment")
+        # Action handlers still receive a fresh controller instance so their
+        # application method can use the same dependency attributes. Output
+        # methods independently remain page/fragment-only via ``require_frame``.
+        self._frame = require_frame("page", "fragment", "action")
         self._container_stack: list[Container] = []
         self._explicit_target: Container | None = None
         self._sidebar: Container | None = None
@@ -218,6 +221,31 @@ class Page:
         kwargs["editable"] = True
         return self.data_workspace(workspace, **kwargs)
 
+    def chart(
+        self,
+        spec: Any,
+        *,
+        alternative: str | None = None,
+        _target: Container | None = None,
+    ) -> None:
+        """Render a reviewed native ``hedron-charts`` specification.
+
+        ``Chart`` owns compilation, payload limits, sanitization, and its
+        accessible static/table fallback. Edron only places the native node
+        in the request-local output buffer.
+        """
+        from hedron_charts import Chart
+
+        node = spec if isinstance(spec, Chart) else Chart(spec=spec)
+        self._append(node, _target=_target)
+        if alternative is not None:
+            if not isinstance(alternative, str) or not alternative.strip():
+                raise ValueError("chart alternative must be a non-empty string")
+            self._append(
+                self._native("Text", alternative, as_="small", class_="edron-visual-alternative"),
+                _target=_target,
+            )
+
     def _chart(
         self,
         kind: str,
@@ -316,12 +344,107 @@ class Page:
         zoom: float = 2.0,
         title: str = "Map",
         description: str = "Geographic map",
+        alternative: str | None = None,
+        _target: Container | None = None,
         **kwargs: Any,
     ) -> None:
         from hedron_maps import Map
 
         self._append(
-            Map(spec, center=center, zoom=zoom, title=title, description=description, **kwargs)
+            Map(spec, center=center, zoom=zoom, title=title, description=description, **kwargs),
+            _target=_target,
+        )
+        if alternative is not None:
+            if not isinstance(alternative, str) or not alternative.strip():
+                raise ValueError("map alternative must be a non-empty string")
+            self._append(
+                self._native("Text", alternative, as_="small", class_="edron-visual-alternative"),
+                _target=_target,
+            )
+
+    def image(
+        self,
+        src: Any,
+        *,
+        alt: str,
+        width: int | None = None,
+        height: int | None = None,
+        allow_external: bool = False,
+        _target: Container | None = None,
+    ) -> None:
+        """Render a native safe image with required alternative text."""
+        if not isinstance(alt, str) or not alt.strip():
+            raise ValueError("image alt must be a non-empty string")
+        self._append(
+            self._native(
+                "Image",
+                src,
+                alt=alt,
+                width=width,
+                height=height,
+                allow_external=allow_external,
+            ),
+            _target=_target,
+        )
+
+    def audio(
+        self,
+        src: Any,
+        *,
+        tracks: Sequence[Any] = (),
+        controls: bool = True,
+        autoplay: bool = False,
+        loop: bool = False,
+        muted: bool = False,
+        preload: str | None = None,
+        allow_external: bool = False,
+        _target: Container | None = None,
+    ) -> None:
+        """Render native audio with validated caption/transcript tracks."""
+        self._append(
+            self._native(
+                "Audio",
+                src,
+                tracks=tracks,
+                controls=controls,
+                autoplay=autoplay,
+                loop=loop,
+                muted=muted,
+                preload=preload,
+                allow_external=allow_external,
+            ),
+            _target=_target,
+        )
+
+    def video(
+        self,
+        src: Any,
+        *,
+        tracks: Sequence[Any] = (),
+        controls: bool = True,
+        autoplay: bool = False,
+        loop: bool = False,
+        muted: bool = False,
+        preload: str | None = None,
+        poster: Any = None,
+        allow_external: bool = False,
+        _target: Container | None = None,
+    ) -> None:
+        """Render native video with a safe poster and caption tracks."""
+        self._append(
+            self._native(
+                "Video",
+                src,
+                tracks=tracks,
+                controls=controls,
+                autoplay=autoplay,
+                loop=loop,
+                muted=muted,
+                preload=preload,
+                poster=poster,
+                allow_external=allow_external,
+            ),
+            _target=_target,
         )
 
     def _request_value(self, name: str, default: Any) -> Any:
