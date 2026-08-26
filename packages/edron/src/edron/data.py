@@ -143,9 +143,7 @@ class EditIntent:
                     field=str(item.get("field", "")),
                     value=cast(JsonValue, item.get("value")),
                     row_version=(
-                        str(item["row_version"])
-                        if item.get("row_version") is not None
-                        else None
+                        str(item["row_version"]) if item.get("row_version") is not None else None
                     ),
                 )
             )
