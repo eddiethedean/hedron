@@ -1,0 +1,42 @@
+schema = "edron.phase-acceptance/1"
+phase = "0.5"
+status = "Planned"
+package = "edron"
+version = "0.5.0"
+required_predecessor = "edron-v0.4.0"
+native_authority = "hedron-core, hedron, hedron-flask, hedron-django"
+
+[[gate]]
+id = "EDR-05-RES"
+state = "Planned"
+evidence = "native dependency/lifespan contract; sync/async cleanup, cancellation, error, and override fixtures"
+
+[[gate]]
+id = "EDR-05-STATE"
+state = "Planned"
+evidence = "typed session/cache ownership, scope, expiry, invalidation, restart, and multi-worker fixtures"
+
+[[gate]]
+id = "EDR-05-JOB"
+state = "Planned"
+evidence = "native JobBackend/TaskFlow progress, cancel, retry/idempotency, result, retention, auth, and race fixtures"
+
+[[gate]]
+id = "EDR-05-LIVE"
+state = "Planned"
+evidence = "polling/no-JavaScript parity plus optional SSE/WebSocket reconnect, stale, disconnect, CSP, and rate fixtures"
+
+[[gate]]
+id = "EDR-05-OPS"
+state = "Planned"
+evidence = "production durability, worker topology, restart, graceful shutdown, import isolation, and redaction checks"
+
+[[gate]]
+id = "EDR-05-ADAPTER"
+state = "Planned"
+evidence = "lazy optional adapter matrix, direct-install/version-pin checks, and explicit diagnostics"
+
+[[gate]]
+id = "EDR-05-REGRESSION"
+state = "Planned"
+evidence = "Edron 0.4 regression, upgrade fixtures, documentation, package metadata, and wheel/sdist checks"

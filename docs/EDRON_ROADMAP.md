@@ -4,7 +4,7 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `0.4.0` implemented in-tree (unreleased Beta); `edron-v0.3.0` remains the latest published tag<br>
+**Status:** Edron `0.4.0` implemented and tagged in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
 **Edron release line:** `0.3` data editing and workspace ergonomics<br>
 **Latest release:** Edron `0.3.0`; compatible Hedron train `0.66.x`<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
@@ -29,8 +29,8 @@ countdown or commitment to `1.0`.
 | **0.1** | Complete batteries-included class facade with native Hedron identity, HTMX/HTTP parity, base tables/charts/maps, optional adapters, styling, jobs, and tooling | **Implemented in-tree; Beta** |
 | **0.2** | Authoring refinement, diagnostics, source-aware tooling, and evidence-driven vocabulary polish | **Implemented and verified in-tree; Beta** |
 | **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | **Published** (`edron-v0.3.0`; Beta) |
-| **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | **Implemented in-tree; unreleased Beta** |
-| **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | Candidate after `0.4` |
+| **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | **Tagged** (`edron-v0.4.0`; publication pending) |
+| **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | **Refined candidate** after `0.4`; no implementation claim |
 | **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | Candidate after `0.5` |
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | Candidate after `0.6` |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | Candidate after `0.7` |
@@ -194,21 +194,70 @@ fixtures. Release exit requires, at minimum:
 
 ## Phase 0.5 — state, resources, and operational workflows
 
-Phase `0.5` improves common long-running and resource-backed applications while preserving explicit
-owners and lifetimes.
+Phase `0.5` is a refined implementation candidate, not an availability claim. It may begin only
+after the `0.4` acceptance packet is closed and the native state, resource, job, and operations
+contracts below are verified in the compatible Hedron train. Edron adds authoring ergonomics and
+diagnostics only; native hosts remain responsible for lifetimes, persistence, transport, and
+production enforcement.
 
-Candidate scope:
+### Proposed contract
 
-- dependency-based resource ergonomics with deterministic cleanup and overrides rather than a
-  global `cache_resource` store;
-- richer job progress, cancellation, result, retry, and operator diagnostics over native job
-  contracts;
-- optional native SSE or WebSocket job observation only when polling and no-JavaScript behavior
-  remain correct; and
-- clearer session/cache/durable-state deployment checks and multi-worker diagnostics.
+| Workstream | Candidate outcome | Native owner and required evidence |
+|---|---|---|
+| `RES-05` resource lifetimes | Explicit request/application resource declarations with sync and async setup/cleanup, deterministic teardown on success/error/cancellation, and test/deployment overrides; no implicit global resource cache | native dependency/lifespan and adapter DI contracts; cleanup ordering, exception, cancellation, override, and leak tests |
+| `STATE-05` typed state and cache | Small typed session/cache spellings that declare owner, lifetime, sensitivity, version/expiry, scope partition, and invalidation; restart and multi-worker behavior is explicit | native session, cache, and durability authorities; cross-user/tenant isolation, expiry, migration, restart, and process-local diagnostics |
+| `JOB-05` durable job workflows | `JobFlow` projection for bounded progress, cancellation, retry/idempotency, terminal result/download, and operator-safe diagnostics while preserving one authorized `JobScope` | native `JobBackend`/`TaskFlow`; payload/result limits, authorization, replay, race, cancellation, retention, and no-enumeration evidence |
+| `LIVE-05` progressive observation | Optional SSE/WebSocket observation over the native status handle; polling, ordinary HTTP, and no-JavaScript remain canonical and semantically equivalent | native live transport and response/HTMX contracts; reconnect/backoff, stale generations, disconnect, rate/budget, CSP, and extension-absent browser fixtures |
+| `OPS-05` deployment diagnostics | Deterministic `check`/`doctor` facts for process-local state, durable backend readiness, worker topology, graceful shutdown, and configured limits, with redacted output and fail-closed production findings | `hedron-core` production gates plus Flask/Django/ASGI adapters; multi-worker, restart, secret-redaction, import isolation, and operator remediation evidence |
 
-Edron does not ship or own a production worker, scheduler, queue, database, object store, or
-distributed cache.
+The beginner-facing API remains deliberately small. The intended shape is explicit
+`dependency=`/resource declarations, typed state/cache values, and a `JobFlow` policy object rather
+than a global `session_state` dictionary, hidden persistence, magic reruns, or an Edron-owned worker
+runtime. Exact names and signatures are not frozen until the native contracts and acceptance packet
+are approved.
+
+### Bounds and ownership
+
+- Every resource has one declared lifetime and one cleanup owner. Cleanup runs at most once, is
+  ordered by the native host, and never leaves an object reachable from a detached task or page
+  instance after request completion.
+- State and cache keys are typed, scope-partitioned, and bounded. Session values never contain
+  dependencies, open connections, job results, secrets, or unbounded collections; cache loss may
+  affect performance only and never becomes durable truth.
+- Job input, progress, status, result, retry, retention, and poll budgets are frozen numerically in
+  the acceptance packet. Progress and diagnostics are value-redacted; job IDs are opaque and never
+  authorize observation without the native scope check.
+- Polling/no-JavaScript behavior is the correctness baseline. Live transports are opt-in native
+  enhancements and must fall back on unsupported hosts, reconnect exhaustion, stale generations,
+  or policy denial without changing authoritative state.
+- Applications own databases, repositories, transactions, object/media storage, queues, schedulers,
+  workers, distributed caches, authorization, and audit records. Edron never provisions or selects
+  those services at runtime.
+
+### Entry and exit gates
+
+Phase `0.5` implementation entry requires a dedicated acceptance packet that freezes the public
+surface, compatible native package pins, supported resource/session/cache/job backends, live
+transport matrix, numeric budgets, and operator redaction fixtures. Release exit requires, at
+minimum:
+
+1. sync/async resource setup, teardown, cancellation, error ordering, and explicit overrides pass
+   under every supported host;
+2. typed session/cache scope, expiry, invalidation, migration, restart, and multi-worker tests
+   prove no cross-user or cross-tenant leakage and diagnose process-local claims;
+3. durable job progress, cancel, retry/idempotency, result/download, retention, and operator
+   surfaces pass authorization, CSRF, race, replay, no-enumeration, and no-JavaScript evidence;
+4. optional SSE/WebSocket observation passes reconnect, stale-generation, disconnect, rate, CSP,
+   and browser tests while polling and ordinary HTTP remain equivalent without the transport;
+5. deployment checks fail closed for non-durable production backends and produce deterministic,
+   redacted remediation facts without importing or executing application code;
+6. optional adapters remain lazy, directly installed, version-pinned, and explicitly diagnosed;
+   and
+7. built wheel/sdist, documentation, upgrade fixtures, and the complete Edron `0.4` regression
+   suite pass before an `edron-v0.5.0` tag is considered.
+
+The phase does not add a worker, scheduler, queue, database, object store, distributed cache,
+global resource registry, implicit rerun model, or client-side state authority.
 
 ## Phase 0.6 — reusable composition and package depth
 
