@@ -1,0 +1,49 @@
+schema = "edron.phase-acceptance/1"
+phase = "0.3"
+status = "Verified"
+package = "edron"
+version = "0.3.0"
+native_authority = "hedron-data"
+max_page_size = 500
+max_edit_operations = 500
+max_selection_size = 500
+
+[[gate]]
+id = "EDR-03-SOURCE"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase03.py::test_edit_intent_and_source_contracts_are_bounded"
+
+[[gate]]
+id = "EDR-03-QUERY"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase03.py::test_workspace_pages_sort_filters_search_and_bounds"
+
+[[gate]]
+id = "EDR-03-EDIT"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase03.py::test_edit_is_authorized_validated_concurrent_and_audited"
+
+[[gate]]
+id = "EDR-03-AUDIT"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase03.py::test_edit_is_authorized_validated_concurrent_and_audited"
+
+[[gate]]
+id = "EDR-03-FALLBACK"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase03.py::test_page_facade_renders_native_table_editor_and_fallback"
+
+[[gate]]
+id = "EDR-03-EXPORT"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase03.py::test_selection_and_csv_export_are_bounded_to_authorized_page"
+
+[[gate]]
+id = "EDR-03-DIAGNOSTICS"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase03.py::test_workspace_diagnostics_redact_shape_and_native_feature"
+
+[[gate]]
+id = "EDR-03-REGRESSION"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase02.py; tests/unit/test_edron_runtime.py"

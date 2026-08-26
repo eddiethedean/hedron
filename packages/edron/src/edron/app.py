@@ -59,6 +59,7 @@ class App:
         self._actions: dict[int, Any] = {}
         self._function_pages: dict[int, type[Page]] = {}
         self._bundles: dict[int, Any] = {}
+        self._data_workspaces: dict[str, Any] = {}
         self._sealed = False
 
     @classmethod
@@ -73,6 +74,7 @@ class App:
         instance._actions = {}
         instance._function_pages = {}
         instance._bundles = {}
+        instance._data_workspaces = {}
         instance._sealed = False
         return instance
 
@@ -524,6 +526,9 @@ class App:
 
     def _native_surface(self, surface: Any) -> Any:
         """Resolve an Edron definition to the exact object registered in Hedron."""
+        for record in self._data_workspaces.values():
+            if record["workspace"] is surface:
+                return record["native"]
         if isinstance(surface, BoundFragment):
             native = self._fragments.get(id(surface.fragment))
             return (
@@ -644,6 +649,10 @@ class App:
             "schema": "edron.application-explanation/1",
             "title": self.title,
             "pages": pages,
+            "data_workspaces": [
+                {"save_path": path, **dict(record["workspace"].diagnostics())}
+                for path, record in self._data_workspaces.items()
+            ],
             "source_map": self.source_map(),
             "native_authority": "hedron",
             "callbacks_executed": False,
@@ -724,6 +733,77 @@ class App:
         bundle = self.hedron.include_feature(feature)
         self._bundles[id(feature)] = bundle
         return bundle
+
+    def data_workspace(
+        self,
+        workspace: Any,
+        *,
+        save_path: str | None = None,
+        dependencies: Sequence[Any] = (),
+    ) -> Any:
+        """Register an explicit native mutation route for an Edron workspace."""
+        from starlette.exceptions import HTTPException
+        from starlette.requests import Request
+        from starlette.responses import JSONResponse
+
+        from edron.data import DataWorkspace, EditIntent
+
+        self._ensure_open()
+        if not isinstance(workspace, DataWorkspace):
+            raise TypeError("data_workspace expects edron.DataWorkspace")
+        if workspace.edit_policy is None:
+            raise RegistrationError(
+                "cannot register a save route for a read-only workspace",
+                code="EDRON_DATA_READ_ONLY",
+            )
+        path = save_path or f"/__edron/data/{workspace.name}/save"
+        if not path.startswith("/"):
+            raise RegistrationError(
+                "workspace save paths must begin with /", code="EDRON_PAGE_PATH"
+            )
+        if path in self._data_workspaces:
+            raise RegistrationError(
+                f"workspace save path {path!r} is already registered",
+                code="EDRON_DUPLICATE_PATH",
+            )
+
+        async def save(request: Request) -> JSONResponse:
+            try:
+                payload = await request.json()
+                if not isinstance(payload, Mapping):
+                    raise ValueError("editor payload must be an object")
+                intent = EditIntent.from_mapping(payload)
+            except (TypeError, ValueError) as exc:
+                raise HTTPException(status_code=422, detail="invalid_data_edit") from exc
+            result = workspace.apply(
+                intent,
+                principal=workspace.principal_from_request(request),
+            )
+            body = {
+                "ok": result.ok,
+                "version": result.version,
+                "errors": [
+                    {"row_key": item.row_key, "field": item.field, "message": item.message}
+                    for item in result.errors
+                ],
+                "conflicts": [
+                    {"row_key": item.row_key, "field": item.field, "message": item.message}
+                    for item in result.conflicts
+                ],
+            }
+            status = 409 if result.conflicts else 422 if not result.ok else 200
+            return JSONResponse(body, status_code=status)
+
+        save.__name__ = f"edron_data_{workspace.name}_save"
+        save.__annotations__ = {"request": Request, "return": JSONResponse}
+        native = self.hedron.action(
+            path,
+            name=f"edron-data-{workspace.name}-save",
+            dependencies=[self._native_dependency(item) for item in dependencies],
+        )(save)
+        workspace.save_endpoint = path
+        self._data_workspaces[path] = {"workspace": workspace, "native": native}
+        return workspace
 
     def styles(self, name: str, source: str | Path, **kwargs: Any) -> Any:
         return self.hedron.styles(name, source, **kwargs)

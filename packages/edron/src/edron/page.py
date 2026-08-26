@@ -4,7 +4,7 @@ import base64
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Any
+from typing import Any, Literal
 
 import hedron
 from edron._internal import require_frame
@@ -169,6 +169,54 @@ class Page:
         self._append(node)
 
     dataframe = table
+
+    def data_workspace(
+        self,
+        workspace: Any,
+        *,
+        request: Any = None,
+        editable: bool = False,
+        selection: Any = None,
+        caption: str | None = None,
+        save_endpoint: str | None = None,
+        save_mode: Literal["batch", "row", "cell"] = "batch",
+        _target: Container | None = None,
+    ) -> Any:
+        """Render one bounded Edron workspace page and return its safe page value.
+
+        When ``request`` is omitted, ordinary query parameters are parsed through
+        the workspace allowlists.  ``editable=True`` lowers to the native data
+        editor; otherwise this lowers to its native accessible table.
+        """
+        from edron.data import DataWorkspace, PageRequest
+
+        if not isinstance(workspace, DataWorkspace):
+            raise TypeError("data_workspace expects edron.DataWorkspace")
+        if request is None:
+            native_request = self._frame.request
+            query = (
+                getattr(native_request, "query_params", {}) if native_request is not None else {}
+            )
+            request = workspace.request_from(query)
+        if not isinstance(request, PageRequest):
+            raise TypeError("request must be edron.PageRequest")
+        page = workspace.page(request, selection=selection)
+        if editable:
+            node = workspace.editor(
+                page,
+                caption=caption,
+                save_endpoint=save_endpoint,
+                save_mode=save_mode,
+            )
+        else:
+            node = workspace.table(page, caption=caption)
+        self._append(node, _target=_target)
+        return page
+
+    def data_editor(self, workspace: Any, **kwargs: Any) -> Any:
+        """Editable spelling of :meth:`data_workspace`."""
+        kwargs["editable"] = True
+        return self.data_workspace(workspace, **kwargs)
 
     def _chart(
         self,

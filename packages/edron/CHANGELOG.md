@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0] — 2026-08-26
+
+### Added
+
+- Explicit native, in-memory/dataframe, and SQLAlchemy data-source facades.
+- Bounded data workspaces with allowlisted paging, filters, sorting, search, selection, and CSV
+  export.
+- Typed edit intents with deny-by-default authorization, validation, writable-field, concurrency,
+  and value-free audit contracts.
+- Native DataTable/DataEditor page composition and ordinary-form DataWorkspace escape hatch.
+
 ## [0.2.0] — 2026-08-26
 
 ### Added

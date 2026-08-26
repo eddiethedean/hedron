@@ -4,14 +4,14 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Phase `0.2` implemented in-tree; Edron remains a Beta, separately versioned package<br>
-**Current phase:** `0.2` authoring refinement and tooling<br>
-**First release target:** Edron `0.2.0`; compatible Hedron train `0.66.x`<br>
+**Status:** Phase `0.3` implemented in-tree; Edron remains a Beta, separately versioned package<br>
+**Current phase:** `0.3` data editing and workspace ergonomics<br>
+**First release target:** Edron `0.3.0`; compatible Hedron train `0.66.x`<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
-**Public API:** [Edron 0.2 authoring and tooling](api/EDRON_02.md)<br>
+**Public API:** [Edron 0.3 data workspaces](api/EDRON_03.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
 **Packaging:** [Edron 0.1 packaging](api/EDRON_PACKAGING.md)<br>
-**Acceptance:** [Edron 0.2 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_002.md)
+**Acceptance:** [Edron 0.3 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_003.md)
 
 This is the release roadmap for the separately versioned `edron` distribution. It does not assign
 Hedron release numbers, change the Hedron capability roadmap, authorize implementation, or claim
@@ -28,7 +28,7 @@ countdown or commitment to `1.0`.
 | **0.0** | Design acceptance, reusable Hedron enablement, locks, fixtures, and implementation-entry evidence | **Implemented baseline** |
 | **0.1** | Complete batteries-included class facade with native Hedron identity, HTMX/HTTP parity, base tables/charts/maps, optional adapters, styling, jobs, and tooling | **Implemented in-tree; Beta** |
 | **0.2** | Authoring refinement, diagnostics, source-aware tooling, and evidence-driven vocabulary polish | **Implemented and verified in-tree; Beta** |
-| **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | Candidate after `0.2` |
+| **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | **Implemented and verified in-tree; Beta** |
 | **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | Candidate after `0.3` |
 | **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | Candidate after `0.4` |
 | **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | Candidate after `0.5` |
@@ -125,15 +125,15 @@ magic callback argument bags, or a global session dictionary.
 
 ## Phase 0.3 — data editing and workspace ergonomics
 
-Phase `0.3` may promote a small, explicit subset of native data-workspace behavior into Edron.
+Phase `0.3` promotes a small, explicit subset of native data-workspace behavior into Edron.
 
-Candidate scope:
+The release includes:
 
-- an Edron data-editor facade only after schema, typed edit intent, authorization, validation,
+- an Edron data-editor facade with explicit schema, typed edit intent, authorization, validation,
   concurrency/conflict, audit, accessibility, and ordinary-form fallback contracts are accepted;
 - simpler native `DataSource` and `DataWorkspace` composition for common read/filter/edit flows;
-- bounded large-table paging, selection, export, and diagnostics; and
-- deeper verified pandas, Polars, PyArrow, and SQLAlchemy adapter ergonomics.
+- bounded large-table paging, selection, current-page export, and diagnostics; and
+- verified pandas, Polars, PyArrow, and SQLAlchemy adapter ergonomics.
 
 Edron does not become a database, ORM, transaction manager, repository, or durable-state owner.
 Applications continue to own data authorization and persistence.

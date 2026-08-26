@@ -1,6 +1,6 @@
 """Edron: a class-oriented authoring facade for Hedron."""
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 from edron.app import App
 from edron.cache import CachedFunction, cache_data
@@ -11,6 +11,19 @@ from edron.capabilities import (
     MissingCapabilityError,
 )
 from edron.confirm import Confirm
+from edron.data import (
+    AuditEvent,
+    CellEdit,
+    Column,
+    DataExport,
+    DataSelection,
+    DataSource,
+    DataWorkspace,
+    EditIntent,
+    EditPolicy,
+    PageRequest,
+    WorkspacePage,
+)
 from edron.dependencies import Dependency, dependency
 from edron.descriptors import (
     Action,
@@ -40,14 +53,21 @@ __all__ = [
     "CachedFunction",
     "CapabilityError",
     "Color",
+    "Column",
     "Confirm",
     "Container",
     "Dependency",
+    "DataExport",
+    "DataSelection",
+    "DataSource",
+    "DataWorkspace",
     "DiagnosticReport",
     "DesignSystem",
     "Download",
     "EdronError",
     "EdronDiagnostic",
+    "EditIntent",
+    "EditPolicy",
     "FilterScope",
     "Fragment",
     "IncompatibleCapabilityError",
@@ -58,6 +78,7 @@ __all__ = [
     "BrokenCapabilityError",
     "Outcome",
     "Page",
+    "PageRequest",
     "PhaseError",
     "RegistrationError",
     "StyleContext",
@@ -77,4 +98,7 @@ __all__ = [
     "success",
     "theme",
     "SourceLocation",
+    "WorkspacePage",
+    "AuditEvent",
+    "CellEdit",
 ]
