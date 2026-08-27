@@ -177,6 +177,37 @@ def test_phase_1_0_refresh_outcome_targets_owned_view_without_full_reload() -> N
     assert response.headers.get("HX-Trigger") == '{"hedron:refresh-h-view-status": {}}'
 
 
+def test_phase_1_0_refresh_outcome_rejects_unknown_target() -> None:
+    from fastapi.testclient import TestClient
+
+    from hedron import Hedron, Outcome, Page, Text
+
+    app = Hedron(
+        title="outcome-refresh-unknown",
+        security="standard",
+        explorer="off",
+        session_secret="phase-1-unknown-secret",
+    )
+
+    @app.action("/refresh")
+    def refresh_unknown() -> Outcome:
+        return Outcome.refresh("not-registered")
+
+    @app.page("/")
+    def home():
+        return Page(Text("home"), title="Home")
+
+    client = TestClient(app)
+    token = client.get("/").cookies.get("hedron_csrf")
+    response = client.post(
+        "/refresh",
+        headers={"HX-Request": "true", "X-CSRF-Token": token or ""},
+    )
+
+    assert response.status_code == 403
+    assert "HED-UPDATE-0003" in response.text
+
+
 def test_phase_1_0_target_check_does_not_import_application(tmp_path: Path) -> None:
     (tmp_path / "bad_app.py").write_text(
         "raise RuntimeError('target check must be non-executing')\n",
