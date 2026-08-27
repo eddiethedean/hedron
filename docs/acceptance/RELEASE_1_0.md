@@ -21,6 +21,11 @@ The packet is internally verifiable with `python scripts/check_100.py --check-pl
 validates implementation metadata and planning honesty; it does not verify any Planned release
 gate or authorize publication.
 
+Executable local results are summarized in the retained
+[verification ledger](compatibility-report-100/verification-100.json). Green checks are recorded
+alongside explicit blockers; the ledger does not substitute local working-tree output for an
+immutable target artifact or release approval.
+
 The immutable Stage-0 inventory includes the export/artifact catalogs, the stable inventory, and
 the AST-derived [`task-inventory-100.toml`](task-inventory-100.toml) graph of public classes,
 functions, methods, source lines, and signatures. These generated records identify the review
