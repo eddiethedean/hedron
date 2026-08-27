@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 import warnings
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -180,6 +181,50 @@ PUBLIC_FUTURE_WARNINGS = FutureWarningRegistry(
             fixture="tests/upgrade/shared.py",
             automation_status="automatic",
         ),
+        FutureWarningRecord(
+            code="HED-MIGRATE-0675",
+            old_path="app.screen",
+            replacement="app.page",
+            owner="hedron.app",
+            source="contract-freeze-067.toml",
+            documentation="docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
+            fixture="tests/upgrade/shared.py",
+            confidence="partial",
+            automation_status="manual-review",
+        ),
+        FutureWarningRecord(
+            code="HED-MIGRATE-0676",
+            old_path="app.refreshable",
+            replacement="app.view",
+            owner="hedron.app",
+            source="contract-freeze-067.toml",
+            documentation="docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
+            fixture="tests/upgrade/shared.py",
+            confidence="partial",
+            automation_status="manual-review",
+        ),
+        FutureWarningRecord(
+            code="HED-MIGRATE-0677",
+            old_path="app.command",
+            replacement="app.action",
+            owner="hedron.app",
+            source="contract-freeze-067.toml",
+            documentation="docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
+            fixture="tests/upgrade/shared.py",
+            confidence="partial",
+            automation_status="manual-review",
+        ),
+        FutureWarningRecord(
+            code="HED-MIGRATE-0678",
+            old_path="app.form_command",
+            replacement="app.action",
+            owner="hedron.app",
+            source="contract-freeze-067.toml",
+            documentation="docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
+            fixture="tests/upgrade/shared.py",
+            confidence="partial",
+            automation_status="manual-review",
+        ),
     )
 )
 
@@ -196,4 +241,20 @@ def warn_legacy_path(path: str, *, stacklevel: int = 2) -> None:
     record = next(iter(PUBLIC_FUTURE_WARNINGS.for_path(path)), None)
     if record is None:
         raise KeyError(path)
-    emit_future_warning(record, stacklevel=stacklevel + 1)
+    # Framework-owned helpers can invoke transitional decorators while
+    # assembling a workspace.  Those are implementation details rather than
+    # application compatibility sites, so do not emit duplicate warnings for
+    # them.  ``emit_future_warning`` adds one call frame of its own; account
+    # for both helpers so direct application calls point at their source.
+    package_roots = ("/packages/hedron/", "/packages/hedron-core/", "/packages/hedron-data/")
+    frames = inspect.stack(context=0)
+    caller = frames[stacklevel] if len(frames) > stacklevel else None
+    if caller is not None:
+        filename = caller.filename.replace("\\", "/")
+        module = str(caller.frame.f_globals.get("__package__", ""))
+        framework_module = module in {"hedron", "hedron_core", "hedron_data"} or module.startswith(
+            ("hedron.", "hedron_core.", "hedron_data.")
+        )
+        if framework_module or any(root in filename for root in package_roots):
+            return
+    emit_future_warning(record, stacklevel=stacklevel + 2)

@@ -219,6 +219,7 @@ def form_command(
             fallback=fallback,
             dependencies=dependencies,
             outcomes=outcomes,
+            _emit_legacy_warning=False,
         )
         handle = register(annotated)
         if controls:

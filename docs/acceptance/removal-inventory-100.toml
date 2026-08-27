@@ -13,6 +13,38 @@ state = "warning-and-tooling"
 fixture = "tests/upgrade/shared.py"
 
 [[removal]]
+code = "HED-MIGRATE-0675"
+old_path = "app.screen"
+replacement = "app.page"
+kind = "decorator"
+state = "warning-and-manual-migration"
+fixture = "tests/upgrade/shared.py"
+
+[[removal]]
+code = "HED-MIGRATE-0676"
+old_path = "app.refreshable"
+replacement = "app.view"
+kind = "decorator"
+state = "warning-and-manual-migration"
+fixture = "tests/upgrade/shared.py"
+
+[[removal]]
+code = "HED-MIGRATE-0677"
+old_path = "app.command"
+replacement = "app.action"
+kind = "decorator"
+state = "warning-and-manual-migration"
+fixture = "tests/upgrade/shared.py"
+
+[[removal]]
+code = "HED-MIGRATE-0678"
+old_path = "app.form_command"
+replacement = "app.action"
+kind = "decorator"
+state = "warning-and-manual-migration"
+fixture = "tests/upgrade/shared.py"
+
+[[removal]]
 code = "HED-MIGRATE-0672"
 old_path = "app.fragment"
 replacement = "app.view"

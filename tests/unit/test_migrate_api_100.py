@@ -32,6 +32,8 @@ def test_scan_flags_only_registered_legacy_paths(tmp_path: Path) -> None:
     )
     report = scan_api(source)
     assert [(item.old_path, item.confidence) for item in report.findings] == [
+        ("app.refreshable", "partial"),
+        ("app.command", "partial"),
         ("app.component", "complete"),
         ("app.include_feature", "complete"),
     ]
@@ -102,3 +104,19 @@ def test_cli_registers_the_targeted_api_migrator() -> None:
     args = _build_parser().parse_args(["migrate", "api", "--target", "1.0", "project"])
     assert args.source == "project"
     assert args.target == "1.0"
+
+
+def test_canonical_app_view_owns_a_refreshable_handle_without_legacy_warning() -> None:
+    from tests.unit._helpers_043 import make_app, reset_043
+
+    from hedron import FragmentHandle, Text
+
+    reset_043()
+    app = make_app()
+
+    @app.view("/status")
+    def status():
+        return Text("live")
+
+    assert isinstance(status, FragmentHandle)
+    assert status.path == "/status"

@@ -1,0 +1,16 @@
+schema = "hedron.upgrade-fixture-manifest/1"
+baseline = "v0.67.0"
+target = "v1.0.0"
+canonical = ["canonical/app.py", "canonical/config.toml"]
+transitional = [
+  "app_component.py",
+  "app_fragment.py",
+  "app_include_feature.py",
+  "router_component.py",
+  "app_screen.py",
+  "app_refreshable.py",
+  "app_command.py",
+  "app_form_command.py",
+]
+negative = ["undeclared_dynamic.py", "invalid_interaction.py"]
+rollback = ["export.json"]

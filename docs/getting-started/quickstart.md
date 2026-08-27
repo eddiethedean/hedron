@@ -93,7 +93,7 @@ app = Hedron(
 )
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
@@ -103,25 +103,25 @@ def status():
     )
 
 
-@app.command(fallback="/")
+@app.action("/ping")
 def ping():
     from hedron import refresh
 
     return refresh(status).toast("Refreshed")
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
     return Stack(
         Text("Hello from hedron new"),
         status(),
-        status.refresh_button("Refresh status"),
-        ping.button("Ping"),
+        html.button("Refresh status", hx_get=status.path),
+        html.button("Ping", hx_post="/ping"),
     )
 ```
 
-Prefer `@app.screen` for new apps. Use explicit `Page` + `@app.page` only when you need
-full `Page` constructor control — see the [Hedron API](../api/HEDRON.md).
+The canonical 1.0 roles are `@app.page`, `@app.view`, and `@app.action`; see the
+[Hedron API](../api/HEDRON.md).
 
 Change:
 
@@ -139,8 +139,8 @@ Save the file. Uvicorn reloads and the browser shows the new text.
 
 ## Optional: form command with validation
 
-For forms, prefer `@app.form_command` (discovers one Pydantic model and lowers to
-`FormBody` + `@app.command`):
+For forms, keep validation in the typed action boundary with `FormBody` and explicit controls. The
+0.67 `@app.form_command` helper is warning-backed migration syntax for the same action task:
 
 ```python
 from pydantic import BaseModel, Field

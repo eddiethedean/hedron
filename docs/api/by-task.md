@@ -14,12 +14,12 @@ organized by intent.
 
 | I want to… | Start with | Then read |
 |---|---|---|
-| Create an application | [`Hedron`](HEDRON.md), `@app.screen` | [Build your first app](../getting-started/quickstart.md) |
+| Create an application | [`Hedron`](HEDRON.md), `@app.page` | [Build your first app](../getting-started/quickstart.md) |
 | Render a complete page | [`Page`](PAGE.md), `@app.page` | [Core concepts](../getting-started/core-concepts.md) |
-| Update one part of a page | `@app.refreshable`, `status.refresh_button(...)` | [What is HTMX?](../getting-started/what-is-htmx.md) |
-| Add a second interaction | `@app.refreshable`, `@app.command` | [HTMX interactions](../guides/htmx-interactions.md) |
-| Accept a form safely | `@app.form_command`, `FormBody`, `CsrfField` | [Minimal form POST](../guides/minimal-form.md) |
-| Choose a lower-level interaction API | `region`, `@app.fragment`, `InteractionResult` | [Which interaction API?](../getting-started/interaction-apis.md) |
+| Update one part of a page | `@app.view`, `Interaction` | [What is HTMX?](../getting-started/what-is-htmx.md) |
+| Add a second interaction | `@app.view`, `@app.action`, `Interaction` | [HTMX interactions](../guides/htmx-interactions.md) |
+| Accept a form safely | `@app.action`, `FormBody`, `CsrfField` | [Minimal form POST](../guides/minimal-form.md) |
+| Choose a lower-level interaction API | `HedronRouter`, explicit `InteractionResult` | [Which interaction API?](../getting-started/interaction-apis.md) |
 | Build a reusable component | `Component`, `Props`, `NodeLike` | [Component demos](../components/index.md) |
 | Style a product surface | `DesignSystem`, `StyleRecipe`, `StyleScope` | [Presentation](PRESENTATION.md) · [Modern CSS in 0.60](../guides/modern-css-0.60.md) |
 | Add data and tables | `DataWorkspace`, `DataTable`, `Auto` | [Data applications](../guides/data-apps.md) · [Data API](DATA.md) |
@@ -32,8 +32,8 @@ organized by intent.
 
 Start with the highest-level contract that solves the problem:
 
-1. Use a guide and a facade such as `@app.screen`, `@app.refreshable`, or
-   `@app.form_command` for a new application.
+1. Use the canonical function roles `@app.page`, `@app.view`, and `@app.action` for a new
+   application. The 0.67 screen/refreshable/command helpers are migration-only paths.
 2. Use a component page when you need an exact constructor, prop, or accessibility
    contract.
 3. Use the API reference when you need return types, errors, response headers, or

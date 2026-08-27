@@ -53,7 +53,7 @@ Generate inventories from the immutable `v0.67.0` artifacts and source tree, not
 - stable maturity, support, security, rollback, and evidence-retention boundaries.
 
 Reconcile the generated inventory with `contract-freeze-067.toml`, the component-engine inventory,
-the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The current four warning
+the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The current eight warning
 records are a known lower bound. `ENTRY-100` remains Planned until every proposed removal has
 complete coverage and the stable inventory is machine-enumerated.
 
@@ -136,8 +136,9 @@ the browser asset/registry modules under `packages/hedron-core/src/hedron_core/`
 4. Diff the generated result against docs, examples, scaffolds, Explorer, `PUBLIC_FUTURE_WARNINGS`,
    `codes.py`, and existing upgrade fixtures. Every mismatch becomes an inventory row.
 5. Publish stable, transitional, Advanced, package-native, Beta, Experimental, internal, Deferred,
-   and not-fit dispositions. Resolve the current four-warning floor (`app.component`,
-   `app.fragment`, `app.include_feature`, `router.component`) against the complete extracted surface.
+   and not-fit dispositions. Resolve the current eight-warning floor (`app.component`,
+   `app.fragment`, `app.include_feature`, `router.component`, `app.screen`, `app.refreshable`,
+   `app.command`, `app.form_command`) against the complete extracted surface.
 6. Publish the 0.67.x migration-support window and exact dual-version matrix. Do not choose a
    calendar release date; the cut remains evidence-triggered.
 

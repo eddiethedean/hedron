@@ -599,13 +599,17 @@ class App:
                 getattr(getattr(self.hedron, "state", None), "hedron_mount_path", "") or ""
             ),
         )
-        self.hedron.view(
+        # Edron's class facade owns the handle construction itself.  Use the
+        # lower-level router decorator here so the canonical Hedron ``view``
+        # API does not wrap this already-built endpoint a second time.
+        self.hedron._root_router.view(
             handle.path,
             name=handle.name,
             include_in_schema=False,
             fragment_regions=(handle.region,),
             dependencies=[self._native_dependency(x) for x in route_dependencies],
         )(wrap_endpoint_result(handle))
+        self.hedron._sync_root_route()
         native = handle
         definition._native = native
         self._fragments[id(definition)] = native

@@ -1,16 +1,19 @@
 # Which interaction API?
 
-Hedron has two ways to swap HTML into a page. **Start with refreshable views.** Use
-`app.region` / `@app.fragment` only when you need an explicit selector allowlist.
+Hedron 1.0 has one ordinary interaction model. Use `@app.view` for safe replaceable reads and
+`@app.action` for unsafe operations; describe local or combined browser behavior with
+`Interaction`. `HedronRouter` remains the Advanced escape hatch for an explicit selector or raw
+HTTP boundary.
 
 | Use this | When |
 |---|---|
-| `@app.refreshable` + `@app.command` | Default. What `hedron new` generates. Named views and commands with handles (`status()`, `status.refresh_button(...)`, `refresh(status)`). |
-| `app.region` + `@app.fragment` + `RefreshButton.for_region` | Explicit HTMX target allowlist, custom selectors, or you are maintaining pre-0.43 code. |
+| `@app.view` + `@app.action` | Canonical function roles. Views own replaceable handles; actions own unsafe requests and outcomes. |
+| `HedronRouter.view` / `HedronRouter.action` | Advanced route integration when a lower-level HTTP/target contract is required. |
 
-Both compile to the same fail-closed fragment/OOB stack. Neither is deprecated.
+Both compile to the same fail-closed fragment/OOB stack. The 0.67 helper spellings remain only as
+warning-backed migration paths.
 
-## Default: refreshable and command
+## Canonical: view and action
 
 ```python
 from hedron import Hedron, Stack, Text, html
@@ -18,31 +21,30 @@ from hedron import Hedron, Stack, Text, html
 app = Hedron(title="Demo", security="standard", session_secret="dev", explorer="off")
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
     return html.div(Text("ok"), role="status")
 
 
-@app.command(fallback="/")
+@app.action("/ping")
 def ping():
     from hedron import refresh
 
     return refresh(status).toast("Refreshed")
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
-    return Stack(status(), status.refresh_button("Refresh"), ping.button("Ping"))
+    return Stack(
+        status(),
+        html.button("Refresh", hx_get=status.path),
+        html.button("Ping", hx_post="/ping"),
+    )
 ```
-
-!!! note "Advanced — explicit `@app.page`"
-
-    Prefer `@app.screen` for new golden paths. Use `@app.page` + `Page(...)` when you need
-    full document constructor control.
 
 Continue: [Build your first app](quickstart.md) →
 [HTMX interactions](../guides/htmx-interactions.md) →
-[Refreshable views](../api/REFRESHABLE_VIEWS.md).
+[Interaction](../api/INTERACTION.md).
 
 ## Explicit: region and fragment
 

@@ -37,8 +37,10 @@ manual/non-fit disposition.
 
 ## Transitional minimum
 
-The initial runtime registry covers `app.component -> app.view`, `app.fragment -> app.view`, and
-`app.include_feature -> app.include`, and `router.component -> router.view`. Those four fixtures are a floor, not proof that the public
+The initial runtime registry covers `app.component -> app.view`, `app.fragment -> app.view`,
+`app.include_feature -> app.include`, `router.component -> router.view`, `app.screen -> app.page`,
+`app.refreshable -> app.view`, `app.command -> app.action`, and `app.form_command -> app.action`.
+Those eight fixtures are a floor, not proof that the public
 0.67 inventory is complete. W0 must generate the full public-artifact inventory and add one row per
 removed import, decorator, argument, config/CLI/HDJ/markup form, browser tag/controller, root shim,
 and generated spelling.

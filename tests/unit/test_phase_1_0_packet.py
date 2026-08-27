@@ -63,10 +63,19 @@ def test_phase_1_0_keeps_verified_067_as_immutable_predecessor() -> None:
 def test_phase_1_0_packet_names_known_warning_floor_without_claiming_completeness() -> None:
     upgrade = (ROOT / "docs/acceptance/upgrade-fixtures-1.0.md").read_text(encoding="utf-8")
     contract = _toml("docs/acceptance/one-zero-cut-contract.toml")
-    for spelling in ("app.component", "app.fragment", "app.include_feature"):
+    for spelling in (
+        "app.component",
+        "app.fragment",
+        "app.include_feature",
+        "router.component",
+        "app.screen",
+        "app.refreshable",
+        "app.command",
+        "app.form_command",
+    ):
         assert spelling in upgrade
     gap = contract["migration"]["known_stage_0_gap"]
-    assert "four" in gap
+    assert "eight" in gap
     assert "before any removal" in gap
 
 

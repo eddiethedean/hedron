@@ -16,7 +16,7 @@ behavior while installing Hedron route classes, response handling, lifespan comp
 assets, registry, security defaults, and optional development Explorer.
 
 ```python
-from hedron import Hedron, Text
+from hedron import Hedron, Page, Text
 
 app = Hedron(
     title="Example",
@@ -30,14 +30,14 @@ app = Hedron(
 )
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
-    return Text("ok")
+    return Page(Text("ok"), title="Home")
 ```
 
-!!! note "Advanced — explicit `@app.page`"
-
-    `@app.screen` lowers to `Page` + `@app.page`. Prefer `screen` for new golden paths.
+`@app.page`, `@app.view`, and `@app.action` are the canonical 1.0 function roles. The 0.67
+`screen`, `refreshable`, `command`, and `form_command` helpers remain migration paths and emit
+structured `HedronFutureWarning` records.
 
 ## Parameters
 
@@ -90,22 +90,22 @@ parameters:
 
 | Method | Description |
 |---|---|
-| `screen(path, *, title, **kwargs)` | Register a beginner screen that lowers to `Page` + `page` (returns `ScreenHandle`) |
-| `form_command(path, *, fallback, **kwargs)` | Form command that discovers one Pydantic model and lowers to `FormBody` + `command` |
-| `page(path, **kwargs)` | Register a PAGE route (navigation HTML; fragment when `HX-Request`) — Advanced when `screen` applies |
-| `refreshable(path, **kwargs)` | Register a GET fragment view; returns a `FragmentHandle` |
-| `command(path, **kwargs)` | Register a CSRF-backed mutation; returns an `ActionHandle` |
-| `component(path, **kwargs)` | Register a FRAGMENT route; use `methods=["POST"]` for HTMX form fragments with `fragment_regions` |
-| `action(path, **kwargs)` | Register an action route (CSRF on unsafe methods). Prefer `@command` / `form_command` for new forms; see [ACTION](ACTION.md) |
+| `page(path, **kwargs)` | Canonical PAGE route; function returns one document tree |
+| `view(path, **kwargs)` | Canonical safe replaceable GET view; returns a `FragmentHandle` |
+| `action(path, **kwargs)` | Canonical action route; CSRF applies to unsafe methods |
+| `screen(path, *, title, **kwargs)` | 0.67 migration helper lowering to `Page` + `page` (returns `ScreenHandle`) |
+| `refreshable(path, **kwargs)` | 0.67 migration helper for `view`; returns a `FragmentHandle` |
+| `command(path, **kwargs)` | 0.67 migration helper for typed actions; returns an `ActionHandle` |
+| `form_command(path, *, fallback, **kwargs)` | 0.67 migration helper lowering to a typed action |
+| `component(path, **kwargs)` | Advanced/compatibility FRAGMENT route; use `view` for safe views |
 | `region(id, selector=None, description="")` | Declare a `FragmentRegion` (default selector `#{id}`) for `RefreshButton.for_region` / allowlists |
-| `fragment(path, region=..., regions=..., **kwargs)` | Alias of `component` that merges `region` / `regions` into the allowlist |
+| `fragment(path, region=..., regions=..., **kwargs)` | Compatibility alias of `component`; migrate to `view` |
 | `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
 | `include_feature(bundle, *, capabilities=None)` | Include one `FeatureBundle` / `FeatureProvider` before registry/catalog seal |
 | `include_router(...)` | Standard FastAPI router include |
 
-Golden-path HTMX uses `@app.screen`, `@app.form_command`, `@app.refreshable`, and
-`@app.command` (see [What’s new in 0.60](../guides/whats-new-0.60.md) and
-[Refreshable views](REFRESHABLE_VIEWS.md)). Flask/Django hosts are Supported for
+Canonical 1.0 HTMX uses `@app.page`, `@app.view`, and `@app.action`; `Interaction` and `Outcome`
+describe browser effects and operation results. Flask/Django hosts are Supported for
 pages/fragments but are **not** decorator-parity Supported for these FastAPI progressive
 facades. `page` / `component` / `action` plus `fragment_regions` remain the lower-level
 allowlist API.
@@ -116,19 +116,23 @@ from hedron import Hedron, Stack, Text, html, refresh
 app = Hedron(title="Demo", security="standard", explorer="off", session_secret="replace-in-production")
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
     return html.div(Text("ok"), role="status")
 
 
-@app.command("/notes", fallback="/")
+@app.action("/notes")
 def save():
     return refresh(status)
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
-    return Stack(status(), status.refresh_button("Refresh"), save.form())
+    return Stack(
+        status(),
+        html.button("Refresh", hx_get=status.path),
+        html.button("Save", hx_post="/notes"),
+    )
 ```
 
 Also see module helpers `mount_hedron_static(app)` and `mount_build_assets(app, build_dir)`.

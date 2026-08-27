@@ -15,6 +15,7 @@ GATE_PATH = ACCEPTANCE / "release-gate-1.0.toml"
 CONTRACT_PATH = ACCEPTANCE / "one-zero-cut-contract.toml"
 BOM_PATH = ACCEPTANCE / "compatibility-bom-067.toml"
 PREDECESSOR_GATE_PATH = ACCEPTANCE / "release-gate-0.67.toml"
+FIXTURE_ROOT = ROOT / "tests/upgrade/phase_1_0"
 
 EXPECTED_GATES = (
     "ENTRY-100",
@@ -54,9 +55,65 @@ REQUIRED_FILES = (
     "docs/acceptance/support-policy-100.md",
 )
 
+TRANSITIONAL_FIXTURES = {
+    "app_component.py": "app.component",
+    "app_fragment.py": "app.fragment",
+    "app_include_feature.py": "app.include_feature",
+    "router_component.py": "router.component",
+    "app_screen.py": "app.screen",
+    "app_refreshable.py": "app.refreshable",
+    "app_command.py": "app.command",
+    "app_form_command.py": "app.form_command",
+}
+
 
 def _toml(path: Path) -> dict[str, object]:
     return tomllib.loads(path.read_text(encoding="utf-8"))
+
+
+def _check_fixture_corpus() -> list[str]:
+    """Validate the source fixture shape used by MIGRATE/COMPAT gates."""
+    for _source_root in (ROOT / "packages/hedron/src", ROOT / "packages/hedron-core/src"):
+        if str(_source_root) not in sys.path:
+            sys.path.insert(0, str(_source_root))
+    from hedron.migrate.api import scan_api
+
+    errors: list[str] = []
+    manifest_path = FIXTURE_ROOT / "manifest.toml"
+    if not manifest_path.is_file():
+        return ["missing phase-1.0 fixture manifest: tests/upgrade/phase_1_0/manifest.toml"]
+    manifest = _toml(manifest_path)
+    if manifest.get("schema") != "hedron.upgrade-fixture-manifest/1":
+        errors.append("phase-1.0 fixture manifest has an unexpected schema")
+    if manifest.get("baseline") != "v0.67.0" or manifest.get("target") != "v1.0.0":
+        errors.append("phase-1.0 fixture manifest must span v0.67.0 to v1.0.0")
+
+    canonical = FIXTURE_ROOT / "canonical"
+    if not canonical.is_dir():
+        errors.append("missing canonical phase-1.0 fixture directory")
+    else:
+        report = scan_api(canonical)
+        if report.findings:
+            errors.append("canonical phase-1.0 fixtures contain transitional API findings")
+
+    transitional = FIXTURE_ROOT / "transitional"
+    for filename, old_path in TRANSITIONAL_FIXTURES.items():
+        path = transitional / filename
+        if not path.is_file():
+            errors.append(f"missing transitional fixture: {path.relative_to(ROOT)}")
+            continue
+        findings = scan_api(path).findings
+        if not findings or findings[0].old_path != old_path:
+            errors.append(f"transitional fixture {filename} does not exercise {old_path}")
+
+    for relative in (
+        "negative/undeclared_dynamic.py",
+        "negative/invalid_interaction.py",
+        "rollback/export.json",
+    ):
+        if not (FIXTURE_ROOT / relative).is_file():
+            errors.append(f"missing phase-1.0 fixture: tests/upgrade/phase_1_0/{relative}")
+    return errors
 
 
 def check_plan() -> list[str]:
@@ -128,6 +185,10 @@ def check_plan() -> list[str]:
         "HED-MIGRATE-0672",
         "HED-MIGRATE-0673",
         "HED-MIGRATE-0674",
+        "HED-MIGRATE-0675",
+        "HED-MIGRATE-0676",
+        "HED-MIGRATE-0677",
+        "HED-MIGRATE-0678",
     }
     if not required_warning_codes <= warning_codes:
         errors.append("warning inventory is missing the implemented warning floor")
@@ -176,6 +237,10 @@ def check_plan() -> list[str]:
         "HED-MIGRATE-0672",
         "HED-MIGRATE-0673",
         "HED-MIGRATE-0674",
+        "HED-MIGRATE-0675",
+        "HED-MIGRATE-0676",
+        "HED-MIGRATE-0677",
+        "HED-MIGRATE-0678",
     ):
         if code not in migration_source:
             errors.append(f"known 0.67 warning floor is missing {code}")
@@ -184,6 +249,8 @@ def check_plan() -> list[str]:
     for token in ("Stage 0 Refined", "RELEASE_1_0", "release-gate-1.0.toml", "D-117"):
         if token not in roadmap:
             errors.append(f"roadmap does not expose 1.0 packet token {token!r}")
+
+    errors.extend(_check_fixture_corpus())
 
     return errors
 

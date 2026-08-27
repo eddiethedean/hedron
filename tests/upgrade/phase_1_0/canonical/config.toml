@@ -1,0 +1,5 @@
+schema = "hedron.config/1"
+version = "v1.0.0"
+theme = "default"
+explorer = "off"
+security = "standard"

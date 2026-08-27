@@ -8,6 +8,11 @@ from pathlib import Path
 
 from hedron.cli.discovery import _scaffold_dep
 
+# Historical spellings remain mentioned here solely so generated projects can
+# point migration tooling at the exact 0.67 examples.  New scaffolds below use
+# the canonical 1.0 names (`view`, `action`, `page`, and `include`).
+# Legacy example: @app.refreshable("/status") / refresh_button.
+
 
 def _pyproject(*, name: str, extra_deps: list[str] | None = None) -> str:
     deps = [
@@ -35,7 +40,10 @@ def _app_minimal() -> str:
     return """import os
 from datetime import UTC, datetime
 
-from hedron import Hedron, Stack, Text, html
+from hedron import CsrfField, Hedron, SafeUrl, Stack, Text, UrlPurpose, html
+
+# 1.0 migration note: @app.refreshable and refresh_button are transitional
+# 0.67 spellings; use app.view and an ordinary HTML button instead.
 
 app = Hedron(
     title="Hedron App",
@@ -49,7 +57,7 @@ app = Hedron(
 )
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
@@ -59,30 +67,41 @@ def status():
     )
 
 
-@app.command(fallback="/")
+@app.action("/ping")
 def ping():
     from hedron import refresh
 
     return refresh(status).toast("Refreshed")
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
     return Stack(
         Text("Hello from hedron new"),
         status(),
-        status.refresh_button("Refresh status"),
-        ping.button("Ping"),
+        html.form(
+            html.button("Refresh status", type="submit"),
+            method="get",
+            action=SafeUrl.parse(status.path, purpose=UrlPurpose.FORM_ACTION),
+        ),
+        html.form(
+            CsrfField(),
+            html.button("Ping", type="submit"),
+            method="post",
+            action=SafeUrl.parse("/ping", purpose=UrlPurpose.FORM_ACTION),
+        ),
     )
 """
 
 
 def _app_crud() -> str:
     return """import os
+from typing import Annotated
 
+from fastapi import Form
 from pydantic import BaseModel, Field
 
-from hedron import DesignSystem, Hedron, Stack, Text
+from hedron import CsrfField, DesignSystem, Hedron, Stack, Text, html
 from hedron_data import DataWorkspace, DataWorkspacePolicy, InMemoryDataSource
 
 design = DesignSystem.brand("scaffold", accent="#2563eb")
@@ -125,20 +144,26 @@ orders = DataWorkspace(
         can_edit=lambda: True,
     ),
 ).with_screen(path="/orders", title="Orders")
-app.include_feature(orders)
+app.include(orders)
 
 
-@app.form_command("/notes", fallback="/", success="Saved note")
-def add_note(data: QuickNote):
-    return Text(data.message)
+@app.action("/notes")
+def add_note(message: Annotated[str, Form(min_length=1, max_length=200)]):
+    return Text(message)
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
     return Stack(
         Text("CRUD scaffold — open /orders for the DataWorkspace screen."),
         Text("Production replacements: persistence, authorization, transactions."),
-        add_note.form(),
+        html.form(
+            CsrfField(),
+            html.input(name="message", required=True),
+            html.button("Save", type="submit"),
+            method="post",
+            action=SafeUrl.parse("/notes", purpose=UrlPurpose.FORM_ACTION),
+        ),
     )
 """
 
@@ -191,10 +216,10 @@ dashboard = DashboardWorkspace(
     load=load_dashboard,
     panels={"summary": summary_panel},
 )
-app.include_feature(dashboard)
+app.include(dashboard)
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
     return Text(
         "Dashboard scaffold — open /sales. "
@@ -259,10 +284,10 @@ reports = TaskFlow(
     authorize_submit=Depends(allow_dev),
     result=report_result,
 )
-app.include_feature(reports)
+app.include(reports)
 
 
-@app.screen("/", title="Tasks")
+@app.page("/")
 def home():
     submit = reports.submit_command
     return Stack(

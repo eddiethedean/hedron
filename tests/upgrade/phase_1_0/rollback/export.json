@@ -1,0 +1,8 @@
+{
+  "schema": "hedron.rollback/1",
+  "source": "v0.67.0",
+  "target": "v1.0.0",
+  "format": "json",
+  "portable": true,
+  "requires_target_only_features": false
+}

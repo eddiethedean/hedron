@@ -159,6 +159,9 @@ class HedronPagesMixin:
         Returns:
             Decorator that registers the page and returns a ``ScreenHandle``.
         """
+        from hedron_core.migration import warn_legacy_path
+
+        warn_legacy_path("app.screen", stacklevel=2)
         import functools
         import inspect
 
@@ -270,6 +273,9 @@ class HedronPagesMixin:
         Discovers exactly one Pydantic ``BaseModel`` parameter, injects ``FormBody``,
         and returns the ordinary ``ActionHandle`` (including ``.form()`` / ``.button()``).
         """
+        from hedron_core.migration import warn_legacy_path
+
+        warn_legacy_path("app.form_command", stacklevel=2)
         return _form_command(
             self,
             path,
@@ -322,25 +328,21 @@ class HedronPagesMixin:
 
     def view(
         self,
-        path: str,
+        path: str | Callable[P, R] | type[RefreshableView[Any, Any]] | None = None,
         *,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         **kwargs: Any,
-    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
-        """Register the canonical safe replaceable view surface.
+    ) -> FragmentHandle[Any, Any] | Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]:
+        """Register the canonical safe replaceable view and return its handle.
 
-        ``view`` deliberately shares the existing fragment renderer and target
-        authorization implementation. The older ``component``/``fragment``
-        spellings remain available as compatibility surfaces during 0.67.
+        The 1.0 view surface owns the route, target, binding, and lifecycle
+        metadata.  ``HedronRouter.view`` remains the lower-level route
+        decorator for applications that explicitly choose the Advanced router
+        integration surface.
         """
-        decorator = self._root_router.view(path, fragment_regions=fragment_regions, **kwargs)
-
-        def wrap(fn: Callable[P, R]) -> Callable[P, R]:
-            decorator(fn)
-            self._sync_root_route()
-            return fn
-
-        return wrap
+        if fragment_regions is not None:
+            kwargs["fragment_regions"] = fragment_regions
+        return self.refreshable(path, _emit_legacy_warning=False, **kwargs)
 
     def region(
         self,
@@ -522,6 +524,12 @@ class HedronPagesMixin:
         """Register a GET renderer and return a ``FragmentHandle``."""
         import inspect
 
+        emit_legacy_warning = bool(kwargs.pop("_emit_legacy_warning", True))
+        if emit_legacy_warning:
+            from hedron_core.migration import warn_legacy_path
+
+            warn_legacy_path("app.refreshable", stacklevel=2)
+
         if inspect.isclass(path):
             from hedron.type_authoring import (
                 class_config_conflict,
@@ -548,6 +556,7 @@ class HedronPagesMixin:
                 fallback=fallback or getattr(view_cls, "fallback", None),
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
+                _emit_legacy_warning=False,
                 **kwargs,
             )
             return register(compiled)
@@ -565,6 +574,7 @@ class HedronPagesMixin:
                 fallback=fallback,
                 include_in_schema=include_in_schema,
                 dependencies=dependencies,
+                _emit_legacy_warning=False,
                 **kwargs,
             )
             return register(path)
@@ -615,12 +625,17 @@ class HedronPagesMixin:
                 mount_path=mount,
             )
             endpoint = wrap_endpoint_result(handle)
+            extra_regions = kwargs.pop("fragment_regions", None)
+            from hedron.routing.router import _normalize_fragment_regions
+
+            regions = (handle.region, *_normalize_fragment_regions(extra_regions))
             self._root_router.component(
                 handle.path,
-                fragment_regions=(handle.region,),
+                fragment_regions=regions,
                 name=handle.name,
                 include_in_schema=include_in_schema,
                 dependencies=_route_dependencies(dependencies),
+                _emit_legacy_warning=False,
                 **kwargs,
             )(endpoint)
             self._sync_root_route()
@@ -678,6 +693,12 @@ class HedronPagesMixin:
         """Register a mutation and return an ``ActionHandle``."""
         import inspect
 
+        emit_legacy_warning = bool(kwargs.pop("_emit_legacy_warning", True))
+        if emit_legacy_warning:
+            from hedron_core.migration import warn_legacy_path
+
+            warn_legacy_path("app.command", stacklevel=2)
+
         authorization = kwargs.pop("authorization", None)
         if inspect.isclass(path):
             from hedron.type_authoring import (
@@ -702,6 +723,7 @@ class HedronPagesMixin:
                 dependencies=dependencies,
                 authorization=authorization,
                 outcomes=outcomes,
+                _emit_legacy_warning=False,
                 **kwargs,
             )
             return register(compiled)
@@ -716,6 +738,7 @@ class HedronPagesMixin:
                 dependencies=dependencies,
                 authorization=authorization,
                 outcomes=outcomes,
+                _emit_legacy_warning=False,
                 **kwargs,
             )
             return register(path)

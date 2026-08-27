@@ -70,7 +70,7 @@ transform_command = "hedron migrate api --target 1.0"
 transform_policy = "static, reviewable, idempotent, non-executing, and no overwrite without explicit apply/output"
 required_confidence = ["complete", "partial", "unknown"]
 cut_requirement = "zero undocumented removals and zero removal records with partial or unknown coverage"
-known_stage_0_gap = "the in-tree public warning registry currently contains four route/include records; W0 must reconcile it against every documented/exported/generated/configured/CLI/HDJ/browser-markup 0.67 path before any removal"
+known_stage_0_gap = "the in-tree public warning registry currently contains eight route/include records; W0 must reconcile it against every documented/exported/generated/configured/CLI/HDJ/browser-markup 0.67 path before any removal"
 
 [support]
 policy = "SemVer for the stable 1.x inventory; security and current-release support remain governed by published support/security policy"
