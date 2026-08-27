@@ -82,6 +82,19 @@ def test_scan_and_transform_direct_legacy_helper_imports(tmp_path: Path) -> None
     )
 
 
+def test_wildcard_import_is_unknown_for_every_registered_legacy_path(tmp_path: Path) -> None:
+    source = tmp_path / "wildcard.py"
+    source.write_text("from hedron import *\n", encoding="utf-8")
+
+    findings = scan_api(source).findings
+
+    assert len(findings) == len(PUBLIC_FUTURE_WARNINGS.records())
+    assert {item.confidence for item in findings} == {"unknown"}
+    assert {item.automation_status for item in findings} == {"manual-review"}
+    assert {item.kind for item in findings} == {"import"}
+    assert unified_diff(source) == ""
+
+
 def test_region_fragment_is_reported_partial_and_not_rewritten(tmp_path: Path) -> None:
     source = tmp_path / "app.py"
     source.write_text(
