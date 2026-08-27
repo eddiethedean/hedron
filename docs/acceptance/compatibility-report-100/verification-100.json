@@ -57,7 +57,7 @@
       "id": "REGRESS-100",
       "command": ".venv/bin/pytest -q --tb=short -n 0",
       "status": "blocked",
-      "summary": "3500 passed, 171 skipped, 275 historical 0.x failures; legacy tests still invoke removed aliases"
+      "summary": "3502 passed, 171 skipped, 275 historical 0.x failures; legacy tests still invoke removed aliases"
     },
     {
       "id": "RELEASE-100",
