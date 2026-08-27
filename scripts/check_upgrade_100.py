@@ -32,7 +32,39 @@ spec = importlib.util.spec_from_file_location("hedron_phase_1_bridge", app_path)
 assert spec is not None and spec.loader is not None
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
-response = TestClient(module.app).get("/")
+client = TestClient(module.app)
+response = client.get("/")
+csrf = client.cookies.get("hedron_csrf", "")
+outcomes = {}
+for name in (
+    "ping",
+    "no-content",
+    "refresh",
+    "patch",
+    "redirect",
+    "job",
+    "validation",
+    "conflict",
+    "download",
+):
+    outcome = client.post(
+        "/ping" if name == "ping" else f"/outcomes/{name}",
+        headers={"HX-Request": "true", "X-CSRF-Token": csrf},
+    )
+    try:
+        body = outcome.json()
+    except ValueError:
+        body = {}
+    outcomes[name] = {
+        "status": outcome.status_code,
+        "role": body.get("role") if isinstance(body, dict) else None,
+        "refresh": bool(
+            outcome.headers.get("HX-Trigger") or outcome.headers.get("HX-Refresh")
+        ),
+        "redirect": outcome.headers.get("HX-Redirect"),
+        "job": outcome.headers.get("X-Hedron-Job-Id"),
+        "download": outcome.headers.get("X-Hedron-Download"),
+    }
 hdj = fixture / "status.hdj"
 parsed = parse_hdj_source("status.hdj", hdj.read_text(encoding="utf-8"))
 print(json.dumps({
@@ -41,6 +73,7 @@ print(json.dumps({
     "interaction_marker": 'data-hedron-interaction="request"' in response.text,
     "local_interaction_marker": 'data-hedron-interaction="local"' in response.text,
     "combined_interaction_marker": 'data-hedron-interaction="combined"' in response.text,
+    "outcomes": outcomes,
     "hdj_format_version": parsed.declaration.format_version,
     "hdj_kind": parsed.declaration.kind.value,
 }, sort_keys=True))
@@ -141,6 +174,80 @@ def run(*, baseline: str = "v0.67.0") -> dict[str, object]:
         "interaction_marker": True,
         "local_interaction_marker": True,
         "combined_interaction_marker": True,
+        "outcomes": {
+            "ping": {
+                "status": 200,
+                "role": None,
+                "refresh": False,
+                "redirect": None,
+                "job": None,
+                "download": None,
+            },
+            "no-content": {
+                "status": 204,
+                "role": None,
+                "refresh": False,
+                "redirect": None,
+                "job": None,
+                "download": None,
+            },
+            "refresh": {
+                "status": 200,
+                "role": None,
+                "refresh": True,
+                "redirect": None,
+                "job": None,
+                "download": None,
+            },
+            "patch": {
+                "status": 200,
+                "role": "patch",
+                "refresh": False,
+                "redirect": None,
+                "job": None,
+                "download": None,
+            },
+            "redirect": {
+                "status": 200,
+                "role": None,
+                "refresh": False,
+                "redirect": "/status",
+                "job": None,
+                "download": None,
+            },
+            "job": {
+                "status": 202,
+                "role": None,
+                "refresh": False,
+                "redirect": None,
+                "job": "job-1",
+                "download": None,
+            },
+            "validation": {
+                "status": 422,
+                "role": "validation",
+                "refresh": False,
+                "redirect": None,
+                "job": None,
+                "download": None,
+            },
+            "conflict": {
+                "status": 409,
+                "role": "conflict",
+                "refresh": False,
+                "redirect": None,
+                "job": None,
+                "download": None,
+            },
+            "download": {
+                "status": 200,
+                "role": None,
+                "refresh": False,
+                "redirect": None,
+                "job": None,
+                "download": "/download/report.csv",
+            },
+        },
         "hdj_format_version": 1,
         "hdj_kind": "fragment",
     }
