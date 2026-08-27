@@ -10,7 +10,10 @@ remain blocked until reproducible, retained v1.0.0 artifacts and a lock are
 available; temporary build output is not treated as release evidence. Packaging
 rehearsals fix `SOURCE_DATE_EPOCH=0` and disable maturin's non-deterministic
 generated Rust SBOM; all 44 workspace artifacts, including the native wheel,
-are byte-for-byte reproducible under that input.
+are byte-for-byte reproducible under that input. The retained
+[`local-build-evidence.json`](local-build-evidence.json) records SHA-256s for
+the 24 coordinated 1.0.0 artifacts; the corresponding files remain temporary
+and are deliberately not treated as retained release artifacts.
 
 `python scripts/check_upgrade_100.py --baseline v0.67.0 --json` reruns the
 canonical Python/HDJ/HTTP probe against both the immutable baseline and the
