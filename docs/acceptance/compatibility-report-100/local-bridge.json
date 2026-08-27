@@ -24,6 +24,8 @@
       "http_status": 200,
       "contains_ready": true,
       "interaction_marker": true,
+      "local_interaction_marker": true,
+      "combined_interaction_marker": true,
       "hdj_format_version": 1,
       "hdj_kind": "fragment"
     },

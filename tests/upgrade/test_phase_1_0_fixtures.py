@@ -82,6 +82,8 @@ def test_canonical_fixture_imports_and_serves_page() -> None:
     assert response.status_code == 200
     assert "ready" in response.text
     assert 'data-hedron-interaction="request"' in response.text
+    assert 'data-hedron-interaction="local"' in response.text
+    assert 'data-hedron-interaction="combined"' in response.text
 
 
 def test_canonical_fixture_type_checks_without_errors() -> None:

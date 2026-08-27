@@ -39,6 +39,8 @@ print(json.dumps({
     "http_status": response.status_code,
     "contains_ready": "ready" in response.text,
     "interaction_marker": 'data-hedron-interaction="request"' in response.text,
+    "local_interaction_marker": 'data-hedron-interaction="local"' in response.text,
+    "combined_interaction_marker": 'data-hedron-interaction="combined"' in response.text,
     "hdj_format_version": parsed.declaration.format_version,
     "hdj_kind": parsed.declaration.kind.value,
 }, sort_keys=True))
@@ -137,6 +139,8 @@ def run(*, baseline: str = "v0.67.0") -> dict[str, object]:
         "http_status": 200,
         "contains_ready": True,
         "interaction_marker": True,
+        "local_interaction_marker": True,
+        "combined_interaction_marker": True,
         "hdj_format_version": 1,
         "hdj_kind": "fragment",
     }
