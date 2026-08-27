@@ -19,6 +19,14 @@ instead of repeating version numbers.
 | Package maturity | Beta | Beta surfaces remain usable with pins; no SLA |
 | Supported Python | 3.11–3.14 | CPython only |
 
+The 1.0 package split is intentional:
+
+| Package | 1.0 role | Status |
+|---|---|---|
+| `hedron-posit` | Coordinated Hedron facade for Posit Workbench and Connect | `1.0.0` repository candidate |
+| `fastapi-workbench` | Independent generic adapter for plain FastAPI/ASGI apps | `1.0.1` |
+| `hedron-workbench` | Former compatibility distribution | Removed in 1.0.0 |
+
 Application documentation uses the latest public PyPI pin:
 
 ```text

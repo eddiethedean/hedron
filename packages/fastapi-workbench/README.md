@@ -13,9 +13,9 @@ Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0
 ## Install
 
 ```bash
-python3 -m venv .venv
+python3.11 -m venv .venv
 source .venv/bin/activate
-python -m pip install "fastapi-workbench>=1.0.1,<2.0"
+python3.11 -m pip install "fastapi-workbench>=1.0.1,<2.0"
 ```
 
 ## Quick start

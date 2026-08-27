@@ -1,7 +1,7 @@
 # Project and package layout
 
-**Status:** Maintainer reference for the stable **1.0.x** train; the latest public PyPI
-release is **v1.0.0** and the verified beta repository tip is **v0.67.0**.
+**Status:** Maintainer reference for the **1.0.x** release candidate; the latest public
+PyPI release is **v0.66.2** and the `v1.0.0` tag is pending publication.
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -46,8 +46,6 @@ hedron/
 │   │   └── src/hedron_gradio/
 │   ├── hedron-sim/                  # Beta tooling-grade offline HTMX docs/demo simulator
 │   │   └── src/hedron_sim/
-│   ├── hedron-workbench/            # Posit Workbench compatibility adapter (0.33)
-│   │   └── src/hedron_workbench/
 │   ├── hedron-posit/                # Unified Posit Workbench / Connect adapter (0.33)
 │   │   └── src/hedron_posit/
 │   ├── hedron-native/             # Optional Rust acceleration (Beta 0.1.x)
@@ -97,18 +95,17 @@ hedron/
 | `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Beta tooling) | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
 | `hedron-elements` | `hedron_elements` | Beta Web Component ABI (Supported inventory only); also `hedron[elements]` | `v0.51.0` |
-| `hedron-workbench` | `hedron_workbench` | `hedron-posit`; Posit Workbench compatibility; also `hedron[workbench]` | `v0.51.0` |
-| `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | `v0.51.0` |
-| `fastapi-workbench` | `fastapi_workbench` | Starlette, Uvicorn; independent plain-FastAPI/ASGI Workbench adapter | `v1.0.0` |
+| `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | `v1.0.0` candidate |
+| `fastapi-workbench` | `fastapi_workbench` | Starlette, Uvicorn; independent plain-FastAPI/ASGI Workbench adapter | `v1.0.1` |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
 `hedron-explorer` for development diagnostics; `hedron[jinja]` installs the separate integration.
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated stable PyPI release is **`v1.0.0`**; the repository beta
-tip is **`v0.67.0`**.
-(`registry_status = uploaded`) — see [STATUS](STATUS.md).
+**Publish note:** the coordinated **`v1.0.0`** release candidate is in this repository;
+the latest public PyPI release is **`v0.66.2`** and publication evidence is pending — see
+[STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
 

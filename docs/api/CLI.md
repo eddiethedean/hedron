@@ -305,7 +305,8 @@ always falls back to the reference Python serializer.
 ### `run`
 
 Run an ASGI application with Uvicorn. When Posit Workbench is explicitly selected or
-`RS_SERVER_URL` is present, delegate pre-import mount discovery to `hedron-workbench`.
+`RS_SERVER_URL` is present, delegate pre-import mount discovery to `hedron-posit` when
+the `hedron[posit]` extra is installed.
 
 ```bash
 hedron run app:app --reload
@@ -328,7 +329,7 @@ hedron run app:app --workbench --workbench-mode on
 | `--topology` | `auto`, `local`, `launcher-local`, `launcher-kubernetes`, `launcher-slurm`, or `reverse-proxy` |
 
 The target must be `module:attribute` (or supplied through global `--app`). A detected
-Workbench runtime without `hedron[workbench]` exits `2` with an install hint.
+Workbench runtime without `hedron[posit]` exits `2` with an install hint.
 
 ### `migrate api`
 

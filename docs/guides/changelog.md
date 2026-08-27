@@ -23,7 +23,6 @@ below record package-specific implementation changes.
 | `hedron-gradio` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-gradio/CHANGELOG.md) |
 | `hedron-sample-kit` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-sample-kit/CHANGELOG.md) |
 | `hedron-sim` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-sim/CHANGELOG.md) |
-| `hedron-workbench` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-workbench/CHANGELOG.md) |
 | `hedron-posit` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-posit/CHANGELOG.md) |
 | `fastapi-workbench` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/fastapi-workbench/CHANGELOG.md) |
 | `edron` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/edron/CHANGELOG.md) |

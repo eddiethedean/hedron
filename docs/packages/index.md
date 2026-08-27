@@ -23,7 +23,7 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.3,<0.3` 
     See [How to read](../getting-started/how-to-read.md) and
     [What’s ready](../guides/whats-ready.md). Pin versions on `0.x`.
 
-## Beta extensions and adapters
+## Extensions and adapters
 
 | Package | Extra | Role |
 |---|---|---|
@@ -34,7 +34,6 @@ and the sample kit install directly. Charts require `hedron-charts>=0.2.3,<0.3` 
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
 | [hedron-charts](hedron-charts.md) | `hedron[charts]` | First-party charts and visualization adapters; `>=0.2.3,<0.3` on the 1.0 train |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
-| [hedron-workbench](hedron-workbench.md) | `hedron[workbench]` | Posit Workbench compatibility facade (`HedronWorkbench`) |
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
 | [hedron-maps](hedron-maps.md) | `hedron[maps]` | First-class custom-server, MapLibre, and offline maps (`hedron-maps` `0.1.0`) |
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |

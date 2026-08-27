@@ -12,7 +12,7 @@ baseline.
 **Date:** 2026-08-27
 **Implementation:** Stable — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `1.0.0`;
+`hedron-posit` / `hedron-elements` `1.0.0`;
 independent — stable `fastapi-workbench` `1.0.1`; Beta `hedron-maps` `0.1.3`, `hedron-charts`
 `0.2.3`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
 `hedron-sim` `0.2.2`, `hedron-mcp` `0.2.3`, `hedron-gradio` `0.2.2`, `hedron-runtime-node` / `hedron-runtime-java`
@@ -20,7 +20,7 @@ independent — stable `fastapi-workbench` `1.0.1`; Beta `hedron-maps` `0.1.3`, 
 (MIT, D-033).
 **Package maturity:** Stable — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-`hedron-workbench`, `hedron-posit`, `hedron-elements` (enumerated stable inventory only). Beta —
+`hedron-posit`, `hedron-elements` (enumerated stable inventory only). Beta —
 `hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
 `hedron-sim`, `hedron-mcp`, `hedron-gradio`. Independent Stable: `fastapi-workbench` `1.0.1`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.

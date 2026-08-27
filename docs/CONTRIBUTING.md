@@ -231,7 +231,6 @@ Local Playwright is still optional for docs-only work. On docs-only PRs, CI skip
 | `packages/hedron-mcp` | Deny-by-default MCP projection (Beta) |
 | `packages/hedron-gradio` | Allowlisted Gradio client interoperability (Beta) |
 | `packages/hedron-sim` | Offline HTMX documentation simulator (Beta tooling-grade) |
-| `packages/hedron-workbench` | Posit Workbench compatibility adapter (Beta) |
 | `packages/hedron-posit` | Unified Posit Workbench / Connect adapter (Beta) |
 | `packages/hedron-elements` | Web Component ABI incubator (Alpha) |
 | `packages/fastapi-workbench` | Independent plain-FastAPI Workbench adapter (`1.x`) |

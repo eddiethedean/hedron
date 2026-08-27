@@ -6,18 +6,16 @@ changing only the launch command of an existing app. For a new application, inst
 [`hedron-posit` beginner walkthrough](../getting-started/first-app-posit-workbench.md) explains each
 step.
 
-**Preferred for new apps:** `hedron-posit>=0.67.0` (or
-`hedron[posit]>=0.67.0`). **Compatibility surface:**
-`hedron-workbench>=0.66.2,<0.67` (or `hedron[workbench]>=0.66.2,<0.67`).
-`hedron-posit` owns Hedron's Workbench runtime directly and does not require the
-standalone `fastapi-workbench` package.
+**Preferred for new apps:** `hedron-posit>=1.0.0,<2.0` (or
+`hedron[posit]>=1.0.0,<2.0`). The latest public PyPI release remains `0.66.2`
+until the 1.0.0 tag is published. Plain FastAPI applications should use the
+independent `fastapi-workbench>=1.0.1,<2.0` package.
 
 If `python3.11` is unavailable, use the walkthrough's [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
 before creating the virtual environment. When finished, return to [One application class, local and Workbench](#one-application-class-local-and-workbench).
 
 Supported Workbench floor is **2025.05.1** (linux/amd64). Current verified lane is
-Workbench **2026.07.0**. Prefer `HedronPosit` / `hedron-posit run` for new apps;
-`HedronWorkbench` remains the compatibility facade.
+Workbench **2026.07.0**. Prefer `HedronPosit` / `hedron-posit run` for new apps.
 
 ## One application class, local and Workbench
 
@@ -63,15 +61,12 @@ hedron-posit check
 hedron-posit run app:app
 hedron-posit run app:create_app --factory
 
-# Compatibility entry points for an existing app:
+# The flagship command also delegates when the Posit extra is installed:
 hedron run app:app
-hedron-workbench run app:app
-hedron-workbench check --format json
 ```
 
 Use the `hedron-posit` commands for a new app. `hedron run` automatically delegates to an
-installed optional adapter when `RS_SERVER_URL` is present; the `hedron-workbench` commands remain
-available for compatibility with existing projects.
+installed Posit adapter when `RS_SERVER_URL` is present.
 
 The launcher:
 
@@ -103,7 +98,7 @@ module is imported.
 
 ```python
 import os
-from hedron_workbench import workbenchify
+from hedron_posit import workbenchify
 
 os.environ["HEDRON_ROOT_PATH"] = "/s/example/p/8050"  # before Hedron()
 from app import app
