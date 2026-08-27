@@ -283,6 +283,27 @@ def _import_findings(
         if not isinstance(node, ast.ImportFrom) or node.module not in {"hedron", "hedron.app"}:
             continue
         for alias in node.names:
+            if alias.name == "*":
+                # A wildcard import can bring any compatibility helper into the
+                # application namespace.  Report every registered path as an
+                # opaque import instead of pretending the project is clean.
+                for record in records.values():
+                    out.append(
+                        _finding(
+                            path=display_path,
+                            line=int(getattr(node, "lineno", 1)),
+                            column=int(getattr(node, "col_offset", 0)) + 1,
+                            record=record,
+                            confidence="unknown",
+                            automation_status="manual-review",
+                            reason=(
+                                "A wildcard import may expose transitional helpers; "
+                                "the imported names cannot be proven statically."
+                            ),
+                            kind="import",
+                        )
+                    )
+                continue
             old_path = _IMPORTED_API.get(alias.name)
             record = records.get(old_path or "")
             if record is None or not hasattr(node, "lineno"):
@@ -579,21 +600,23 @@ def _replace_python(
     for node in ast.walk(tree):
         if not isinstance(node, ast.ImportFrom) or node.module not in {"hedron", "hedron.app"}:
             continue
-        line_no = int(getattr(node, "lineno", 0))
-        line_start = _offset_for_position(source, line_no, 0)
-        line_end = _offset_for_position(source, line_no + 1, 0)
-        line_text = source[line_start:line_end]
         for alias in node.names:
             old_path = _IMPORTED_API.get(alias.name)
             if old_path is None:
                 continue
-            replacement = wanted.get((line_no, old_path))
-            if replacement is None:
+            # Import aliases expose their own source span (including multiline
+            # parenthesized imports).  Match either the finding's ImportFrom
+            # line or the alias line, then replace only the imported token so
+            # ``as`` bindings remain intact.
+            alias_line = int(getattr(alias, "lineno", 0) or getattr(node, "lineno", 0))
+            node_line = int(getattr(node, "lineno", 0))
+            replacement = wanted.get((node_line, old_path)) or wanted.get((alias_line, old_path))
+            if replacement is None or not hasattr(alias, "col_offset"):
                 continue
-            match = re.search(rf"\b{re.escape(alias.name)}\b", line_text)
-            if match is None:
-                continue
-            replacements.append((line_start + match.start(), line_start + match.end(), replacement))
+            start = _offset_for_position(source, alias_line, int(alias.col_offset))
+            # The alias span includes ``as name``.  Restrict replacement to the
+            # imported identifier at the beginning of that span.
+            replacements.append((start, start + len(alias.name), replacement))
     for start, end, replacement in sorted(set(replacements), reverse=True):
         source = source[:start] + replacement + source[end:]
     return source, len(set(replacements))
