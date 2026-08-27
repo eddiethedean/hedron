@@ -34,7 +34,7 @@ Shipping? [Ship](ship.md).
 - [HTMX interactions](htmx-interactions.md) — add a second refreshable view
 - [Post a minimal form](minimal-form.md) — golden-path `@app.action` + CSRF
 - [Forms and actions](forms-and-actions.md) — advanced region / `InteractionResult` path
-- [Mutations](mutations.md) — when to use `@action` vs `@component` POST
+- [Mutations](mutations.md) — canonical `@app.action` mutation routes
 - [Live updates (polling)](live-interaction.md) — `Poll` is Supported; SSE/WS experimental
 - [HTMX extensions](htmx-extensions.md) — declared SSE, head-support, preload
 

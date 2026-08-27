@@ -137,19 +137,21 @@ Text("Hello from Ada")
 
 Save the file. Uvicorn reloads and the browser shows the new text.
 
-## Optional: form command with validation
+## Optional: typed action form with validation
 
-For forms, keep validation in the typed action boundary with `FormBody` and explicit controls. The
-0.67 `@app.form_command` helper is warning-backed migration syntax for the same action task:
+For forms, keep validation in the typed action boundary with `FormBody` and explicit controls.
 
 ```python
+from typing import Annotated
+
 from pydantic import BaseModel, Field
+from hedron import FormBody
 
 class QuickNote(BaseModel):
     message: str = Field(min_length=1, max_length=200)
 
-@app.form_command("/notes", fallback="/", success="Saved note")
-def add_note(data: QuickNote):
+@app.action("/notes", fallback="/")
+def add_note(data: Annotated[QuickNote, FormBody()]):
     return Text(data.message)
 
 # Inside home(): add_note.form()
