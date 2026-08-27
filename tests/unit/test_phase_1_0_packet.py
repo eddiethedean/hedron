@@ -51,8 +51,9 @@ def test_phase_1_0_gate_is_subtractive_and_planned() -> None:
     assert all(row["state"] == "Planned" for row in gate["evidence"])
     assert contract["release_boundary"]["net_new_required_runtime_capabilities"] == 0
     assert contract["release_boundary"]["compatibility_layer_in_1_0"] is False
-    assert contract["changes_runtime"] is False
+    assert contract["changes_runtime"] is True
     assert contract["changes_versions"] is True
+    assert contract["runtime_change_rule"].startswith("compatibility-preserving corrections")
 
 
 def test_phase_1_0_keeps_verified_067_as_immutable_predecessor() -> None:

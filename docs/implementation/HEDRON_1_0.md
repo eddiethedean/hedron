@@ -35,7 +35,9 @@ immutable 0.67 public/task/artifact inventory
    make optional ownership honest; they are not second beginner paths.
 7. The stable promise is enumerated. Beta/Experimental contracts remain visibly outside SemVer's
    stable facade, and independent satellites keep independent versions.
-8. No package/version/classifier claim changes during Stage 0 refinement.
+8. Runtime corrections are limited to compatibility-preserving authorization fixes; no net-new
+   Required capability is introduced. Package/version/classifier claims are explicit and bumped
+   for the coordinated 1.0.0 cut.
 
 ## Entry audit (W0)
 

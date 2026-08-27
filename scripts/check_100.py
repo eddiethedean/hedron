@@ -480,10 +480,14 @@ def check_plan() -> list[str]:
         errors.append("cut contract must state the implementation-in-progress status exactly")
     if contract.get("planning_baseline") != "v0.67.0":
         errors.append("cut contract must use immutable v0.67.0 as its baseline")
-    if contract.get("changes_runtime") is not False or contract.get("changes_versions") is not True:
+    if contract.get("changes_runtime") is not True or contract.get("changes_versions") is not True:
         errors.append(
-            "1.0 implementation must keep runtime corrections explicit and version metadata bumped"
+            "1.0 implementation must declare compatibility-preserving runtime corrections and bump version metadata"
         )
+    if contract.get("runtime_change_rule") != (
+        "compatibility-preserving corrections only; no net-new Required runtime capabilities"
+    ):
+        errors.append("1.0 runtime changes must remain compatibility-preserving and non-expansive")
     if contract.get("stage_1_entry_satisfied") is not False:
         errors.append("cut contract must retain the W0/ENTRY-100 blocker")
     if warning_inventory.get("baseline") != "v0.67.0":
