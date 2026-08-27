@@ -66,10 +66,10 @@ dashboard = DashboardWorkspace(
     load=load_dashboard,
     panels={"summary": summary_panel},
 )
-app.include_feature(dashboard)
+app.include(dashboard)
 
 
-@app.screen("/", title="Home")
+@app.page("/", title="Home")
 def home():
     return Text("Open /sales for the DashboardWorkspace. Replace loader/auth for production.")
 ```
@@ -167,17 +167,17 @@ checks, authorization, and the action that supplies the rows.
         )
 
 
-    @app.fragment("/rows", region=table)
+    @app.view("/rows", fragment_regions=(table,))
     def all_rows():
         return swap(table_panel())
 
 
-    @app.fragment("/rows/admin", region=table)
+    @app.view("/rows/admin", fragment_regions=(table,))
     def admin_rows():
         return swap(table_panel("admin"))
 
 
-    @app.fragment("/rows/member", region=table)
+    @app.view("/rows/member", fragment_regions=(table,))
     def member_rows():
         return swap(table_panel("member"))
     ```
@@ -212,7 +212,7 @@ graph.register(
 )
 
 
-@app.screen("/", title="Home")
+@app.page("/", title="Home")
 def home():
     order = ", ".join(graph.topological_order())
     return Text(f"Bindings in order: {order}")

@@ -65,7 +65,7 @@ Summarize one or more form-level validation errors.
         )
 
 
-    @app.component("/invite", methods=["POST"], fragment_regions=(region, slot))
+    @app.action("/invite", method="POST", fragment_regions=(region, slot))
     def fail() -> InteractionResult:
         return InteractionResult(
             content=FormErrors(["Email is required.", "Choose a billing plan."]),

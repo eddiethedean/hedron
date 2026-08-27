@@ -30,7 +30,7 @@ def main() -> int:
             ROOT / "docs/examples/session-auth.md",
             [
                 '@app.page("/login")',
-                '@app.command("/logout"',
+                '@app.action("/logout"',
                 'RedirectResponse("/login"',
                 "curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/session-auth/app.py",
                 "Real recipe",
@@ -47,7 +47,7 @@ def main() -> int:
             [
                 "create_engine",
                 "sqlalchemy",
-                '@app.command("/save"',
+                '@app.action("/save"',
                 "refresh(notes)",
                 "curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/notes-sqlalchemy/app.py",
                 "Real recipe",
@@ -57,7 +57,7 @@ def main() -> int:
             ROOT / "docs/guides/authentication.md",
             [
                 '@app.page("/login")',
-                '@app.command("/logout"',
+                '@app.action("/logout"',
                 "examples/session-auth",
             ],
         ),

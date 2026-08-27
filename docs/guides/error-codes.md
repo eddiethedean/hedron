@@ -57,7 +57,7 @@ reserved for 0.47 are listed under [HED-MAP](#hed-map).
 | CSRF **403** on POST | blocker | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | `HED-VIEW-0003` | blocker | Unbound parameterized handle mounted | Call `handle.bind(...)` before mount |
 | `HED-UPDATE-0001` | blocker | Mixed refresh and patch | Return `refresh(...)` or `patches(...)`, not both |
-| `HED-CMD-0002` | blocker | Command has no ordinary HTTP fallback | Pass `fallback=` to `@app.command` |
+| `HED-CMD-0002` | blocker | Action has no ordinary HTTP fallback | Pass `fallback=` to `@app.action` |
 | `HED-PLUGIN-0001` | blocker | Named plugin missing from entry points | Install the package or remove the name from `[tool.hedron].plugins` |
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |

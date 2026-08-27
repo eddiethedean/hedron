@@ -148,7 +148,7 @@ form in [Minimal form POST](minimal-form.md) that appends to `_NOTES` (same scaf
 
 ## Explicit allowlist (`region` / `@fragment`)
 
-`hedron new` does **not** generate `app.region` or `@app.fragment`. Those remain the
+`hedron new` does **not** generate `app.region` or legacy fragment decorators. Those remain the
 lower-level API when you need an explicit selector allowlist. See
 [Which interaction API?](../getting-started/interaction-apis.md) and
 [Interaction](../api/INTERACTION.md).

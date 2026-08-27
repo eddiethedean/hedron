@@ -66,7 +66,7 @@ def home(request: Request) -> Page:
     )
 
 
-@app.component("/notes", methods=["POST"], fragment_regions=(listing,))
+@app.action("/notes", method="POST", fragment_regions=(listing,))
 def add_note(request: Request, note: Annotated[str, Form()] = "") -> object:
     text = note.strip()
     if text:
@@ -74,7 +74,7 @@ def add_note(request: Request, note: Annotated[str, Form()] = "") -> object:
     return render_list(request)
 
 
-@app.component("/notes/delete", methods=["POST"], fragment_regions=(listing,))
+@app.action("/notes/delete", method="POST", fragment_regions=(listing,))
 def delete_note(request: Request, note_id: Annotated[str, Form()] = "") -> object:
     NOTES.pop(note_id, None)
     return render_list(request)

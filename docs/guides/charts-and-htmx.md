@@ -228,7 +228,7 @@ HTMX cleanup and load lifecycle, so a replaced chart is disposed and the new one
         )
 
 
-    @app.component("/charts/refresh", fragment_regions=(panel,))
+    @app.view("/charts/refresh", fragment_regions=(panel,))
     def refresh() -> InteractionResult:
         return InteractionResult(
             content=chart_panel(

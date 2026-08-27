@@ -64,7 +64,7 @@ Refresh a target component through a typed reference or safe URL.
         )
 
 
-    @app.fragment("/status", region=status)
+    @app.view("/status", fragment_regions=(status,))
     def refresh():
         return swap(panel())
     ```

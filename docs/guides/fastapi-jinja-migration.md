@@ -21,7 +21,7 @@ Hedron components. For Streamlit, see [Migrate from Streamlit](streamlit-migrati
 | Concern | Plain FastAPI + Jinja | Hedron |
 |---|---|---|
 | UI structure | Template files + `context={...}` | Python components returning `Page` / fragments |
-| Partial updates | Separate partial template or `if request.headers.get("HX-Request")` | Same handler; Hedron selects page vs fragment mode, or `@app.component` |
+| Partial updates | Separate partial template or `if request.headers.get("HX-Request")` | Same handler; Hedron selects page vs fragment mode, or `@app.view` |
 | CSRF | Manual cookie/header or Starlette SessionMiddleware DIY | Built-in profile (`security="standard"`) + `csrf_token_for_request` |
 | HTMX response headers | Hand-set `HX-Trigger` / `HX-Retarget` | `InteractionResult` fields (validated) |
 | Secrets in markup | Easy to leak via `{{ }}` | `Secret` / non-renderable types; escape by default |
@@ -71,7 +71,7 @@ def home() -> Page:
 **Before:** a partial template returned when `HX-Request` is set, or a dedicated
 `/partials/...` route.
 
-**After:** declare a region and return `InteractionResult` from `@app.component` — see
+**After:** declare a region and return `InteractionResult` from `@app.view` — see
 [HTMX interactions](htmx-interactions.md). Direct navigation to the same URL can still
 return a full `Page` when you keep a `@app.page` entry point.
 
@@ -89,7 +89,7 @@ re-exported from `hedron`) and `@app.action`. For validation fragments, continue
 1. Install `hedron` beside your existing app ([installation](../getting-started/installation.md)).
 2. Wrap or replace one read-only page with `@app.page` + built-ins
    ([quickstart](../getting-started/quickstart.md)).
-3. Move one HTMX refresh to `@app.component` + `FragmentRegion`
+3. Move one HTMX refresh to `@app.view` + `FragmentRegion`
    ([HTMX interactions](htmx-interactions.md)).
 4. Port one form POST with CSRF ([minimal form](minimal-form.md)).
 5. Wire persistence with FastAPI `Depends` as you already do; for grids see

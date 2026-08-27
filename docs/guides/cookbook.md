@@ -106,7 +106,7 @@ def home():
 Clicking the button requests `/status` and replaces only the view's declared region. A
 request aimed at another target fails closed. Full walkthrough:
 [HTMX interactions](htmx-interactions.md). For custom selectors or an explicit target
-allowlist, use `app.region` + `@app.fragment`; see
+allowlist, use `app.region` + `@app.view`; see
 [Which interaction API?](../getting-started/interaction-apis.md).
 
 ## Out-of-band swap
@@ -215,7 +215,7 @@ See [Interaction API](../api/INTERACTION.md).
         )
 
 
-    @app.component("/settings", methods=["POST"], fragment_regions=(main, host))
+    @app.action("/settings", method="POST", fragment_regions=(main, host))
     def save() -> InteractionResult:
         return InteractionResult(
             content=primary(False),
@@ -262,7 +262,7 @@ Prefer polling on every host — SSE helpers are **experimental**
 
 !!! note "Advanced — explicit region / fragment"
 
-    For a custom selector allowlist, use `app.region` + `@app.fragment` + `ComponentRef`
+    For a custom selector allowlist, use `app.region` + `@app.view` + `ComponentRef`
     instead of `@app.view`. See
     [Which interaction API?](../getting-started/interaction-apis.md).
 

@@ -48,7 +48,7 @@ def home() -> Page:
     )
 
 
-@app.fragment("/jobs/42", region=box)
+@app.view("/jobs/42", fragment_regions=(box,))
 def tick():
     global _tick
     state, detail = _STEPS[min(_tick, len(_STEPS) - 1)]

@@ -43,6 +43,19 @@ def test_scan_flags_only_registered_legacy_paths(tmp_path: Path) -> None:
     assert report.findings[0].fixture == "tests/upgrade/shared.py"
 
 
+def test_scan_does_not_treat_simapp_fragment_as_hedron_legacy_api(tmp_path: Path) -> None:
+    source = tmp_path / "sim.py"
+    source.write_text(
+        "from hedron_sim import SimApp\n"
+        "app = SimApp(demo_id='offline')\n"
+        "@app.fragment('/status', region='panel')\n"
+        "def status(): pass\n",
+        encoding="utf-8",
+    )
+
+    assert scan_api(source).findings == ()
+
+
 def test_scan_keeps_same_line_calls_as_separate_call_sites(tmp_path: Path) -> None:
     source = tmp_path / "same_line.py"
     source.write_text("app.component('/a'); app.component('/b')\n", encoding="utf-8")

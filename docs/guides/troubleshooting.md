@@ -112,10 +112,10 @@ docs to the tag that matches your installed release.
 
 ## Tutorial code does not match `hedron new`
 
-**Cause:** A guide still shows `app.region` / `@app.fragment` / `RefreshButton.for_region`,
-but `hedron new` generates `@app.refreshable("/status")` and `status.refresh_button(...)`.
+**Cause:** A guide still shows an older region spelling, but `hedron new` generates
+`@app.view("/status")` and `status.refresh_button(...)`.
 
-**Fix:** Keep the generated app. Add a second `@app.refreshable` as in
+**Fix:** Keep the generated app. Add a second `@app.view` as in
 [HTMX interactions](htmx-interactions.md). Do not paste a region/fragment scaffold over
 Hello. See [Which interaction API?](../getting-started/interaction-apis.md).
 
@@ -132,11 +132,11 @@ See [Secrets and workers](secrets-and-workers.md).
 **Cause:** The request’s `HX-Target` is not in the route’s declared region allowlist
 (typo in the region id / selector, or wrong fragment route).
 
-**Fix:** Prefer the generated handle: `@app.refreshable("/status")` plus
+**Fix:** Prefer the generated handle: `@app.view("/status")` plus
 `status.refresh_button(...)`. If you use the explicit allowlist path, keep one region
 object end-to-end: `status = app.region("service-status")`,
 `RefreshButton.for_region(status, href="/status", ...)`, and
-`@app.fragment("/status", region=status)`. Confirm with:
+`@app.view("/status", fragment_regions=(status,))`. Confirm with:
 
 ```bash
 curl -H 'HX-Request: true' -H 'HX-Target: #service-status' http://127.0.0.1:8000/status
@@ -206,7 +206,7 @@ curl -H 'HX-Request: true' -H 'HX-Target: #service-status' http://127.0.0.1:8000
         )
 
 
-    @app.fragment("/status", region=status)
+    @app.view("/status", fragment_regions=(status,))
     def refresh():
         return swap(status_panel())
     ```

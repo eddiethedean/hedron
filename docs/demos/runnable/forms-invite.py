@@ -74,7 +74,7 @@ def home(request: Request) -> Page:
     )
 
 
-@app.component("/invite", methods=["POST"], fragment_regions=(form_region,))
+@app.action("/invite", method="POST", fragment_regions=(form_region,))
 async def invite(request: Request) -> InteractionResult:
     form = await request.form()
     try:

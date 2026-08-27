@@ -30,7 +30,7 @@ def home() -> Page:
     )
 
 
-@app.fragment("/reports", region=panel)
+@app.view("/reports", fragment_regions=(panel,))
 def reports():
     return swap(
         Fragment(
@@ -40,7 +40,7 @@ def reports():
     )
 
 
-@app.fragment("/team", region=panel)
+@app.view("/team", fragment_regions=(panel,))
 def team():
     return swap(
         Fragment(

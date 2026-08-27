@@ -26,7 +26,7 @@ ordinary HTTP/HTMX instead of translating `ui.*` calls one-for-one. Full audit:
 | Storage (`app.storage.user` / `browser` / `general`) | `SessionState`, cookies, `BrowserStorage` tiers | Quotas, expiry, consent; server authority for secrets |
 | Auth recipes | OIDC login/logout helpers, session idle/absolute timeouts, login CSRF, rate limits | Host sessions + app authorization remain authoritative |
 | Connections / resources | Named connection registry + SQLAlchemy/Snowflake providers | Host DI/lifespan; no global locator |
-| Partial page updates | `app.region`, `@app.fragment`, `swap` / `swap_oob` | Fail-closed region authorization |
+| Partial page updates | `app.region`, `@app.view`, `swap` / `swap_oob` | Fail-closed region authorization |
 | Testing | `AppScenario`, HTMX InteractionResult asserts | HTTP-faithful; no outbox simulation |
 
 ## Storage-tier mapping

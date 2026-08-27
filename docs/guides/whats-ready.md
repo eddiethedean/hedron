@@ -44,8 +44,8 @@ screen-reader sessions are not Supported yet**.
 | Job | Status | Start here |
 |---|---|---|
 | CRUD / admin / forms | **Supported** | [First app](../getting-started/quickstart.md) |
-| Progressive screens (`@app.screen`) | **Supported** (FastAPI; API `beta`) | [What’s new in 0.60](whats-new-0.60.md) |
-| HTMX refreshable views / commands (`@app.refreshable`) | **Supported** | [Which interaction API?](../getting-started/interaction-apis.md) |
+| Pages (`@app.page`) | **Supported** | [Quickstart](../getting-started/quickstart.md) |
+| HTMX views / actions (`@app.view` / `@app.action`) | **Supported** | [Which interaction API?](../getting-started/interaction-apis.md) |
 | Multi-worker durable jobs (polling) | **Supported** with shared Redis | [Jobs](../api/JOBS.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Charts (first-party / Matplotlib) | **Supported**; Plotly/Altair **Experimental** | [Chart API](../api/CHART.md) |
@@ -58,7 +58,7 @@ screen-reader sessions are not Supported yet**.
 | Capability | FastAPI (`hedron`) | Flask (`hedron-flask`) | Django (`hedron-django`) |
 |---|---|---|---|
 | Pages + HTMX fragments + CSRF | Supported | Supported | Supported |
-| `@app.screen` / `form_command` facades | Supported (API `beta`) | Not on this host | Not on this host |
+| `@app.page` / `@app.action` facades | Supported | Not on this host | Not on this host |
 | Polling job status | Supported | Supported | Supported |
 | Live SSE / WebSocket helpers | Experimental | Prefer polling | Prefer polling |
 | DataTable / charts extras | Supported with pins | Supported with pins | Supported with pins |

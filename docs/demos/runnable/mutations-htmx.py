@@ -44,6 +44,6 @@ def home(request: Request) -> Page:
     )
 
 
-@app.component("/save", methods=["POST"], fragment_regions=(result,))
+@app.action("/save", method="POST", fragment_regions=(result,))
 def save(note: Annotated[str, Form()] = "") -> object:
     return html.div(html.strong("Saved in region"), Text(note))

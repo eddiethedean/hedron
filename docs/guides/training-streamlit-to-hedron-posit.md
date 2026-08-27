@@ -142,7 +142,7 @@ Browser GET /?region=North
   -> Hedron renders a full HTML document
 
 Browser HTMX GET /freshness, HX-Target: #freshness
-  -> @app.fragment checks the declared region
+  -> @app.view checks the declared region
   -> Hedron returns only replacement HTML
   -> HTMX swaps #freshness
 
@@ -441,7 +441,7 @@ RefreshButton.for_region(
 After the page route, add:
 
 ```python
-@app.fragment("/freshness", region=freshness)
+@app.view("/freshness", fragment_regions=(freshness,))
 def refresh_freshness():
     return swap(freshness_panel())
 ```
