@@ -64,6 +64,12 @@ def test_release_gate_0_23_manifest_passes_strict_checks() -> None:
     assert any(gate._is_executable_ssot_command(str(r["command"])) for r in verified)
 
 
+def test_release_gate_0_67_plan_is_selected_and_well_formed() -> None:
+    manifest = ROOT / "docs" / "acceptance" / "release-gate-0.67.toml"
+    assert gate.evidence_manifest_for("0.67.0") == manifest
+    assert gate.check_evidence_manifest_lenient(manifest) == []
+
+
 def test_current_patch_package_metadata_passes() -> None:
     release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
     # The workspace may be preparing a patch that is not on PyPI yet.

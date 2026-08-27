@@ -287,6 +287,7 @@ nav:
     - CLI: api/CLI.md
     - Workflow: api/WORKFLOW.md
     - Phase 0.62 interaction contracts: api/INTERACTION_062.md
+    - Planned 1.0 HTMX/Alpine boundary: api/HTMX_ALPINE_BOUNDARY_1_0.md
     - Components: components/index.md
     - StyleScope: components/style-scope.md
     - Configuration: CONFIGURATION.md

@@ -36,6 +36,7 @@ Documentation source ownership and review rules:
 | Script | Role |
 |---|---|
 | `check_release_gate.py` | Gate TOML vs claimed version (`0.10.1`, `0.11.0`, …) |
+| `check_067.py` | Phase **0.67** contract/BOM/release-packet wiring (`--check-plan`); `--verify --gate …` deliberately refuses each Planned runtime gate until its evidence implementation replaces the guard |
 | `check_human_at_packet.py` | Phase **0.21** human AT protocol/schema/ledger packet (D-052). Without flags: engineering packet OK. Pass `--require-sessions` only when flipping SR/PARTICIPANT/ARTIFACT/REMEDIATE to Verified after real sessions. |
 | `verify_pkg_21.py` | Phase **0.21** historical packet verify (human AT engineering cut) |
 | `verify_pkg_22.py` | Phase **0.22** CSRF packet + focused security tests (`check_release_gate.py 0.22.0`) |

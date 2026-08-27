@@ -12,8 +12,11 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 installable public release is `v0.64.0`.
 Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
-A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
-(D-038: no calendar `1.0` scheduled; D-053 / RFC-0056; D-054 / RFC-0057).
+A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below.
+D-114/D-115/D-116 now plan 1.0 after Verified 0.67, freeze its one-way task and component-engine
+graph before 0.67 runtime implementation, retain the public Web Component ABI, and supersede
+D-038's no-calendar clause; the existing
+D-053 / RFC-0056 and D-054 / RFC-0057 evidence and stable-tier obligations remain in force.
 **Version:** `0.51.x` / catalog baseline
 `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`+`0.24`+`0.25`+`0.26`+`0.27`+`0.28`+`0.50`+`0.51`
 

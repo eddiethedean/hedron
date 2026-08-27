@@ -113,9 +113,16 @@ status commentary, not a satisfied release gate.
   packet with public-hook, asset, layer, token, diagnostics, ejection, bounded open-issue slices,
   touched-surface fallback, performance, upgrade, fleet, documentation, and package gates; see
   the [refined scope](application-styling-scope-065.md)
-- [`v0.66` HDJ parity, registry integration, and open-issue closure](RELEASE_0_66.md) — **In
-  progress**: the app-scoped HDJ foundation is Verified; thirteen issue gates remain Planned in the
-  [open-issue inventory](open-issues-066.toml); see [release-gate-0.66.toml](release-gate-0.66.toml)
+- [`v0.66` HDJ parity, registry integration, and open-issue closure](RELEASE_0_66.md) — **Verified
+  in-tree** from the `v0.66.2` planning baseline; see the [open-issue inventory](open-issues-066.toml)
+  and [release gate](release-gate-0.66.toml)
+- [`v0.67` Alpine browser-local enhancement and unified interaction preview](RELEASE_0_67.md) —
+  **Proposed**; W1 is blocked on `FREEZE-067`, then 30 Planned gates cover supply/CSP, document
+  closure, typed directives, bidirectional Alpine/Web-Component engine selection,
+  Alpine/plugin/widget breadth, HTMX lifecycle, failure behavior, compatibility, migration
+  warnings, and packaging. See the
+  [machine gate](release-gate-0.67.toml), [contract freeze](contract-freeze-067.toml), and
+  [compatibility BOM](compatibility-bom-067.toml).
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

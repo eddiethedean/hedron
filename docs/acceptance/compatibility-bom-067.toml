@@ -1,0 +1,85 @@
+schema_version = 1
+phase = "0.67"
+status = "Planned; exact resolutions and browser revisions lock at FREEZE-067/SUPPLY-067"
+owning_gate = "BOM-067"
+source_compatibility = "1.0 canonical application source/config/templates/CLI executes and type-checks on 0.67.0 and 1.0.0"
+wheel_metadata_portability = false
+private_or_pickle_portability = false
+
+[python]
+implementation = "CPython"
+versions = ["3.11", "3.12", "3.13", "3.14"]
+declared = ">=3.11,<3.15"
+
+[python_dependencies]
+fastapi_supported = ">=0.141.1,<0.142"
+fastapi_declared = ">=0.141.1,<0.150"
+pydantic_supported = ">=2.13.4,<2.14"
+pydantic_declared = ">=2.13.4,<2.15"
+flask = ">=3,<4"
+django = ">=5.2,<6"
+jinja = ">=3.1,<4"
+
+[coordinated_packages]
+line_067 = [
+  "hedron-core",
+  "hedron",
+  "hedron-explorer",
+  "hedron-data",
+  "hedron-flask",
+  "hedron-django",
+  "hedron-jinja",
+  "hedron-conformance",
+  "hedron-extras",
+  "hedron-workbench",
+  "hedron-posit",
+  "hedron-elements",
+]
+required_test = "clean 0.67.0 and 1.0.0 environments resolve the documented canonical corpus"
+
+[independent_satellites]
+packages = [
+  "hedron-charts",
+  "hedron-maps",
+  "hedron-native",
+  "hedron-mcp",
+  "hedron-gradio",
+  "hedron-sample-kit",
+  "hedron-notebook",
+  "hedron-sim",
+  "fastapi-workbench",
+  "edron",
+]
+policy = "each owning package publishes an explicit Hedron 0.67/1.x compatibility range; package-native application fixtures name exact tested versions"
+
+[browser_assets]
+htmx = "2.0.10"
+alpine_csp_candidate = "3.16.3"
+alpine_plugins_candidate = "exact compatible per-package pins"
+alpine_ui_candidate = "@alpinejs/ui exact tagged/published candidate, per-family admission"
+production_source = "vendored same-origin assets only"
+
+[browser_matrix]
+engines = ["Chromium", "Firefox", "WebKit"]
+exact_revisions = "freeze from the repository Playwright lock at SUPPLY-067"
+os = "CI-supported Linux plus documented platform spot checks; exact images lock at FREEZE-067"
+
+[tooling]
+type_checker = "pyright"
+python_version = "3.11"
+exact_pyright_resolution = "uv.lock at FREEZE-067"
+cli = "all documented 1.0 commands and flags"
+config = "documented [tool.hedron] 1.0 schema"
+hdj = "HDJ v1 plus the declared Alpine feature profile"
+generated_code = "1.0 scaffolds and migration outputs"
+
+[fixtures]
+source_sets = ["1.0-canonical", "shared", "0.67-only/transitional"]
+required_modes = ["import", "type-check", "execute", "build", "CLI", "HDJ", "browser"]
+one_zero_fixture = "runs unchanged on 0.67.0 and 1.0.0"
+transitional_fixture = "runs on 0.67.0 with a warning/disposition and may fail on 1.0.0 with a precise diagnostic"
+
+[update_policy]
+necessary_one_zero_fix = "backport to a 0.67 patch before 1.0 or defer to 1.1"
+matrix_change = "requires an accepted BOM amendment and rerun of both-version fixtures"
+unsupported_resolution = "must be identified as outside the BOM, not treated as compatibility evidence"

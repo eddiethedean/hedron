@@ -1,0 +1,163 @@
+schema_version = 1
+phase = "0.67"
+status = "Accepted planning lock; exact symbol spellings become Verified at FREEZE-067"
+owning_rfcs = ["RFC-0095", "RFC-0096"]
+decisions = ["D-113", "D-114", "D-115", "D-116"]
+entry_gate = "FREEZE-067"
+blocks_work_after = "W0"
+target = "v0.67.0"
+successor = "v1.0.0"
+compatibility_direction = "all documented 1.0 application source runs unchanged on 0.67; transitional 0.67 source may require migration for 1.0"
+boundary_contract = "../api/HTMX_ALPINE_BOUNDARY_1_0.md"
+component_engine_inventory = "component-engine-dispositions-067.toml"
+
+[authoring]
+application = "Hedron"
+route_style = "functions-only"
+page = "@app.page"
+view = "@app.view"
+action = "@app.action"
+include = "app.include"
+presentation = "hedron.ui"
+semantic_html = "hedron.html"
+raw_http = "Advanced FastAPI/Hedron routing"
+class_route_dsl = false
+implicit_output_buffer = false
+
+[returns]
+page = "exactly one presentation tree; @app.page owns title/layout/shell/head/browser metadata"
+view = "exactly one presentation tree"
+action = "exactly one role-valid Outcome"
+multiple_siblings = "explicit fragment/container composition node"
+explicit_Page_handler_result = "Advanced rendering/adapter surface, not canonical page authoring"
+arbitrary_response_objects = "Advanced raw HTTP routes only"
+
+[interaction]
+public_type = "Interaction"
+shape = "closed discriminated effect"
+effect_variants = ["local", "request", "combined"]
+illegal_cross_lane_combinations = "construction and static-check error"
+local_authority = "Alpine presentation state and DOM/focus/geometry projection"
+request_authority = "Hedron handle plus HTMX request/target/swap"
+combined_authority = "one lifecycle coordinator; server response remains authoritative"
+
+[outcome]
+public_family = "Outcome"
+shape = "closed and role-indexed"
+action_variants = [
+  "success/no-content",
+  "refresh exact view handles",
+  "bounded authoritative patch",
+  "safe local redirect",
+  "accepted job",
+  "validation/conflict",
+  "authorized download",
+]
+raw_response_boundary = "Advanced raw HTTP routes"
+
+[browser_plan]
+scope = "one immutable document plan"
+canonical_demand_sources = [
+  "Hedron components",
+  "Interaction values",
+  "typed Alpine values",
+  "Advanced registered custom modules",
+]
+manual_ordinary_page_plugin_list = false
+closure = "initial presentation tree plus every statically declared reachable view/fragment"
+fragment_rule = "fragment requirements must be a subset of the installed document plan"
+dynamic_rule = "Advanced routes declare requirements; unknown/incompatible fragments fail with a focused diagnostic"
+runtime_evidence = "versioned browser-plan fingerprint accompanies HTMX requests"
+response_time_plugin_registration = false
+feature_off = "no Alpine assets, directives, markers, observers, stores, or requests"
+
+[directives]
+canonical_names = "long-form x-on:* and x-bind:*"
+expression_model = "small typed CSP-verified AST"
+advanced_escape = "one reviewed expression type"
+binding_sinks = [
+  "text/scalar",
+  "boolean",
+  "ARIA",
+  "admitted class token",
+  "typed Hedron style property/token",
+  "SafeUrl purpose",
+  "DOM property",
+]
+generic_runtime_attribute_map = false
+arbitrary_raw_x_attributes = false
+
+[lifecycle]
+contract = "observable init/cleanup/settle/OOB/history/focus/state outcomes"
+documented_upstream_surfaces_only = true
+double_init_or_cleanup = "forbidden"
+ordinary_swap = "Supported replacement with reset unless preservation is declared"
+morph = "Progressive candidate; admit at most one path after full evidence, otherwise record non-admission"
+
+[component_engine]
+selection_order = ["native", "alpine", "web_component", "external_or_not_fit"]
+one_canonical_engine_per_task = true
+web_component_abi_retained = true
+third_party_authoring_retained = true
+common_behavior = "native semantic HTML plus registered Alpine enhancement"
+specialist_behavior = "evidence-selected Web Component with typed properties/events and resource lifecycle"
+bidirectional_audit = "existing elements may migrate to Alpine; existing scripts/Alpine hosts may promote to Web Components"
+engine_is_lowering_detail = "public Python component/task name does not vary by engine"
+
+[failure]
+essential_x_cloak = false
+enhanced_hiding = "only after an initialized-root marker"
+required_cases = [
+  "JavaScript disabled",
+  "Alpine/core/plugin 404",
+  "integrity mismatch",
+  "CSP refusal",
+  "plugin registration failure",
+  "slow initialization",
+]
+baseline = "essential semantic content and ordinary form/link/server behavior remain usable"
+
+[warnings]
+class = "HedronFutureWarning"
+visible_by_default = true
+public_scope = "documented, exported, generated, configured, CLI, HDJ, and browser-markup 0.67 contracts, including beta/experimental"
+excluded_scope = "private underscore/internal implementation details"
+static_command = "hedron check --target 1.0"
+confidence = ["complete", "partial", "unknown"]
+dynamic_uncertainty = "must be reported, never treated as a clean migration"
+required_fields = [
+  "code",
+  "old path/form",
+  "replacement or non-fit reason",
+  "owner",
+  "first-warning version",
+  "removal version",
+  "source",
+  "documentation anchor",
+  "automation status",
+  "fixture",
+]
+
+[freeze_rules]
+before_w1 = [
+  "exact public imports and signatures",
+  "task-to-interface graph",
+  "return shapes",
+  "Interaction and Outcome variants",
+  "browser feature ownership and closure",
+  "component engine dispositions and Web Component ABI continuity",
+  "warning/removal registry schema",
+  "compatibility BOM",
+]
+post_freeze_allowed = [
+  "private implementation changes",
+  "artifact-derived numeric budgets",
+  "browser implementation thresholds",
+  "maturity downgrade or explicit non-admission",
+]
+post_freeze_forbidden = [
+  "new canonical public calling form",
+  "second spelling for an existing task",
+  "new Required runtime capability only in 1.0",
+  "silent removal from 1.0",
+]

@@ -1,0 +1,192 @@
+schema_version = 1
+phase = "0.67"
+target = "1.0"
+status = "Proposed W0 inventory; dispositions lock at ENGINE-067/FREEZE-067"
+decision = "D-116"
+owning_gate = "ENGINE-067"
+contract = "../implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md"
+boundary = "../api/HTMX_ALPINE_BOUNDARY_1_0.md"
+one_canonical_engine_per_task = true
+web_component_abi_retained = true
+third_party_authoring_retained = true
+
+[selection]
+order = ["native", "alpine", "web_component", "external_or_not_fit"]
+native = "standards HTML/CSS satisfies the Supported behavior"
+alpine = "disposable document-local behavior enhances semantic server HTML"
+web_component = "specialist independently reusable browser subsystem with meaningful lifecycle/resource/property/event ownership"
+external_or_not_fit = "provider-owned client subsystem or capability outside bounded Hedron component authority"
+
+[[family]]
+id = "element-abi-example"
+current = ["hedron-example"]
+disposition = "retain_conformance_fixture"
+target_engine = "web_component"
+canonical_task = "Web Component ABI example and author-kit conformance"
+public_component = "Example"
+compatibility = "retained but not recommended as an application widget"
+reason = "The custom-element boundary is itself the feature being tested."
+
+[[family]]
+id = "disclosure"
+current = ["Disclosure", "hedron-disclosure", "hedron-disclose"]
+disposition = "migrate_to_alpine"
+target_engine = "native_plus_alpine"
+canonical_task = "Disclosure"
+public_component = "Disclosure"
+compatibility = "direct tags/controllers warn in 0.67 and are removed in 1.0"
+reason = "Semantic details plus disposable open/focus behavior does not justify two custom-element wrappers."
+
+[[family]]
+id = "dialog"
+current = ["Dialog", "hedron-dialog"]
+disposition = "migrate_to_alpine"
+target_engine = "native_plus_alpine"
+canonical_task = "Dialog"
+public_component = "Dialog"
+compatibility = "direct tag warns in 0.67 and is removed in 1.0"
+reason = "Native dialog/top-layer semantics plus Alpine Focus/lifecycle fit common server-rendered UI."
+
+[[family]]
+id = "text-field"
+current = ["native input/textarea", "hedron-field-text"]
+disposition = "migrate_to_native_alpine"
+target_engine = "native_plus_alpine"
+canonical_task = "Text field"
+public_component = "TextInput"
+compatibility = "direct tag/package path warns in 0.67 and is removed in 1.0"
+reason = "Native controls own value/form semantics; masks/counts/hints are disposable enhancement."
+
+[[family]]
+id = "choice-field"
+current = ["native checkbox/radio/select", "hedron-field-choice"]
+disposition = "split_by_distinct_capability"
+target_engine = "native_plus_alpine"
+canonical_task = "Native choice or enhanced listbox/combobox through one Hedron control family"
+public_component = "Choice controls"
+compatibility = "wrapper tag warns in 0.67 and is removed in 1.0"
+reason = "Simple controls remain native; richer common choice behavior fits Alpine rather than a generic form wrapper."
+
+[[family]]
+id = "file-field"
+current = ["native file input", "hedron-field-file"]
+disposition = "migrate_ordinary_path_and_audit_advanced_host"
+target_engine = "native_plus_alpine"
+canonical_task = "Ordinary file input/upload"
+public_component = "FileUpload"
+compatibility = "wrapper tag warns in 0.67; a distinct advanced uploader requires separate admission"
+reason = "Native input owns File/form semantics; simple preview/count/drop presentation is local enhancement."
+
+[[family]]
+id = "async-action-presentation"
+current = ["hedron-action-async", "htmx-ext-hedron lifecycle markers"]
+disposition = "migrate_to_unified_interaction"
+target_engine = "alpine_or_request_dom_lowering"
+canonical_task = "Interaction pending/terminal presentation"
+public_component = "Interaction"
+compatibility = "direct tag warns in 0.67 and is removed in 1.0"
+reason = "Operation identity belongs to Hedron; Alpine or the request-only DOM lowering projects one policy."
+
+[[family]]
+id = "chart"
+current = ["hedron-chart"]
+disposition = "retain_web_component"
+target_engine = "web_component"
+canonical_task = "Chart"
+public_component = "Chart"
+compatibility = "retained"
+reason = "Independent visualization host owns SVG/canvas, resize, selection, export, adapters, and lifecycle resources."
+
+[[family]]
+id = "map"
+current = ["hedron-map"]
+disposition = "retain_web_component"
+target_engine = "web_component"
+canonical_task = "Map"
+public_component = "Map"
+compatibility = "retained"
+reason = "Independent map host owns MapLibre/viewport/layers/events and substantial resource lifecycle."
+
+[[family]]
+id = "data-editor"
+current = ["hedron-data-editor"]
+disposition = "retain_web_component"
+target_engine = "web_component"
+canonical_task = "DataEditor"
+public_component = "DataEditor"
+compatibility = "retained"
+reason = "Complex grid/editor selection, draft, viewport, conflict, adapter, and resource lifecycle benefits from a stable host boundary."
+
+[[family]]
+id = "extras-provider-hosts"
+current = ["registered hedron-extras custom-element hosts"]
+disposition = "audit_each_provider"
+target_engine = "provider_owned_web_component_or_migrate"
+canonical_task = "Owning provider capability"
+public_component = "package-native"
+compatibility = "substantive hosts retained; trivial common-widget wrappers migrate with warnings"
+reason = "Provider ownership may justify isolation, but custom-element registration alone is not sufficient evidence."
+
+[[family]]
+id = "third-party-element-abi"
+current = ["registered third-party custom elements", "hedron new element author kit"]
+disposition = "retain_advanced_platform"
+target_engine = "web_component"
+canonical_task = "Third-party framework-neutral browser component"
+public_component = "element registry/author kit"
+compatibility = "retained with explicit ABI ranges"
+reason = "The standards-based packaging and interoperability boundary remains valuable independently of first-party tag choices."
+
+[[candidate]]
+id = "advanced-code-editor"
+current = "CodeEditor host stub"
+direction = "evaluate_web_component"
+required = ["exact editor engine/assets/license", "worker/model/selection cleanup", "typed value/change API", "SSR/form fallback", "CSP", "accessibility", "performance"]
+
+[[candidate]]
+id = "terminal-emulator"
+current = "TerminalView experimental surface"
+direction = "evaluate_web_component"
+required = ["explicit transport boundary", "resource cleanup", "keyboard/screen-reader policy", "bounded history", "CSP", "package ownership"]
+
+[[candidate]]
+id = "advanced-uploader"
+current = "ordinary native file/directory upload components"
+direction = "evaluate_web_component_for_distinct_advanced_capability"
+required = ["native fallback", "File/object-URL cleanup", "bounded queues", "server-owned acceptance", "retry/conflict/security"]
+
+[[candidate]]
+id = "advanced-media-capture"
+current = "native camera/microphone capture controls"
+direction = "evaluate_web_component_for_streaming_or_recording_only"
+required = ["permission lifecycle", "track cleanup", "device changes", "recording bounds", "upload fallback", "privacy", "accessibility"]
+
+[[candidate]]
+id = "specialist-canvas-wasm-host"
+current = "future diagram/canvas/WebGL/WebGPU/WASM adapters"
+direction = "evaluate_web_component"
+required = ["independent package value", "typed properties/events", "resource teardown", "semantic fallback", "budgets", "no request/domain authority"]
+
+[migration]
+web_component_to_alpine = [
+  "preserve canonical Python component name",
+  "ship native/Alpine lowering in 0.67",
+  "behavior-parity fixtures",
+  "warn every public old tag/path/asset/event",
+  "remove duplicate element in 1.0",
+]
+alpine_or_script_to_web_component = [
+  "preserve canonical Python component name",
+  "prove specialist-host criteria",
+  "register ABI/properties/events/assets/ownership/fallback/lifecycle",
+  "do not embed private Alpine or HTMX request authority",
+  "remove prior private controller after parity",
+]
+
+[composition]
+alpine_may = "set documented properties/attributes and receive typed events through normalized adapters"
+alpine_must_not = "traverse or rewrite element-owned DOM"
+element_must_not = "boot private Alpine state, mutate enclosing stores, or originate application requests"
+htmx_may = "replace the whole element or a declared data-hedron-server-region"
+htmx_must_not = "replace element-owned DOM in place"
+writer_rule = "one engine owns each value, selection, busy state, focus outcome, and announcement"

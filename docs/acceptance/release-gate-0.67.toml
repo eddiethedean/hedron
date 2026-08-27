@@ -1,0 +1,230 @@
+schema_version = 1
+phase = "0.67"
+status = "Planned"
+owning_rfc = "RFC-0095"
+follow_on_rfc = "RFC-0096"
+decision = "D-113"
+contract_refine = "D-115"
+component_engine_decision = "D-116"
+planning_baseline = "v0.66.2"
+required_predecessor = "v0.66.2"
+target = "v0.67.0"
+predecessor_satisfied = true
+stage_1_entry_satisfied = false
+zero_undocumented_deferred = true
+acceptance_packet = "RELEASE_0_67.md"
+implementation = "../implementation/ALPINE_INTEGRATION_067.md"
+contract = "contract-freeze-067.toml"
+compatibility_bom = "compatibility-bom-067.toml"
+boundary_contract = "../api/HTMX_ALPINE_BOUNDARY_1_0.md"
+component_engine_inventory = "component-engine-dispositions-067.toml"
+
+[[evidence]]
+id = "FREEZE-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate FREEZE-067 --verify"
+owner = "architecture"
+ci_job = "evidence"
+
+[[evidence]]
+id = "CONTRACT-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate CONTRACT-067 --verify"
+owner = "hedron-core"
+ci_job = "evidence"
+
+[[evidence]]
+id = "SUPPLY-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate SUPPLY-067 --verify"
+owner = "supply-chain"
+ci_job = "evidence"
+
+[[evidence]]
+id = "CSP-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate CSP-067 --verify"
+owner = "security"
+ci_job = "browser"
+
+[[evidence]]
+id = "PLAN-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate PLAN-067 --verify"
+owner = "browser-platform"
+ci_job = "evidence"
+
+[[evidence]]
+id = "CLOSURE-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate CLOSURE-067 --verify"
+owner = "browser-platform"
+ci_job = "browser"
+
+[[evidence]]
+id = "ASSET-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate ASSET-067 --verify"
+owner = "assets"
+ci_job = "browser"
+
+[[evidence]]
+id = "DIRECTIVE-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate DIRECTIVE-067 --verify"
+owner = "authoring"
+ci_job = "test"
+
+[[evidence]]
+id = "CORE-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate CORE-067 --verify"
+owner = "browser-platform"
+ci_job = "browser"
+
+[[evidence]]
+id = "PLUGIN-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate PLUGIN-067 --verify"
+owner = "browser-platform"
+ci_job = "browser"
+
+[[evidence]]
+id = "UI-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate UI-067 --verify"
+owner = "components"
+ci_job = "browser"
+
+[[evidence]]
+id = "INTERACTION-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate INTERACTION-067 --verify"
+owner = "hedron-core"
+ci_job = "test"
+
+[[evidence]]
+id = "HTMX-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate HTMX-067 --verify"
+owner = "browser-platform"
+ci_job = "browser"
+
+[[evidence]]
+id = "MORPH-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate MORPH-067 --verify"
+owner = "browser-platform"
+ci_job = "browser"
+
+[[evidence]]
+id = "STATE-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate STATE-067 --verify"
+owner = "state"
+ci_job = "browser"
+
+[[evidence]]
+id = "FAILURE-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate FAILURE-067 --verify"
+owner = "progressive-enhancement"
+ci_job = "browser"
+
+[[evidence]]
+id = "SECURITY-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate SECURITY-067 --verify"
+owner = "security"
+ci_job = "evidence"
+
+[[evidence]]
+id = "AUTHOR-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate AUTHOR-067 --verify"
+owner = "authoring"
+ci_job = "test"
+
+[[evidence]]
+id = "HDJ-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate HDJ-067 --verify"
+owner = "hedron-jinja"
+ci_job = "test"
+
+[[evidence]]
+id = "TOOLING-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate TOOLING-067 --verify"
+owner = "tooling"
+ci_job = "evidence"
+
+[[evidence]]
+id = "ENGINE-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate ENGINE-067 --verify"
+owner = "browser-platform"
+ci_job = "browser"
+
+[[evidence]]
+id = "WIDGET-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate WIDGET-067 --verify"
+owner = "components"
+ci_job = "browser"
+
+[[evidence]]
+id = "A11Y-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate A11Y-067 --verify"
+owner = "accessibility"
+ci_job = "browser"
+
+[[evidence]]
+id = "PERF-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate PERF-067 --verify"
+owner = "performance"
+ci_job = "browser"
+
+[[evidence]]
+id = "COMPAT-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate COMPAT-067 --verify"
+owner = "compatibility"
+ci_job = "test"
+
+[[evidence]]
+id = "DEPRECATE-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate DEPRECATE-067 --verify"
+owner = "migration"
+ci_job = "evidence"
+
+[[evidence]]
+id = "BOM-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate BOM-067 --verify"
+owner = "compatibility"
+ci_job = "evidence"
+
+[[evidence]]
+id = "DOCS-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate DOCS-067 --verify"
+owner = "docs"
+ci_job = "quality"
+
+[[evidence]]
+id = "REGRESS-067"
+state = "Planned"
+command = "bash scripts/ci_checks.sh test --python 3.12"
+owner = "release"
+ci_job = "test"
+
+[[evidence]]
+id = "PKG-067"
+state = "Planned"
+command = "python scripts/check_067.py --gate PKG-067 --verify"
+owner = "packaging"
+ci_job = "packaging"
