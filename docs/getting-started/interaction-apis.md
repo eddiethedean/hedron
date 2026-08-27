@@ -56,7 +56,7 @@ def status_panel():
     return html.div(Text("ok"), id=status.id)
 
 
-@app.fragment("/status", region=status)
+@app.view("/status", fragment_regions=(status,))
 def refresh_status():
     return swap(status_panel())
 ```

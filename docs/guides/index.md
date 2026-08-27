@@ -32,7 +32,7 @@ Shipping? [Ship](ship.md).
 ## Build interactions
 
 - [HTMX interactions](htmx-interactions.md) — add a second refreshable view
-- [Post a minimal form](minimal-form.md) — golden-path `@app.command` + CSRF
+- [Post a minimal form](minimal-form.md) — golden-path `@app.action` + CSRF
 - [Forms and actions](forms-and-actions.md) — advanced region / `InteractionResult` path
 - [Mutations](mutations.md) — when to use `@action` vs `@component` POST
 - [Live updates (polling)](live-interaction.md) — `Poll` is Supported; SSE/WS experimental
