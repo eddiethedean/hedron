@@ -5,8 +5,8 @@ change Edron page, action, data, job, or native-object identity contracts.
 
 ## Required fixture facts
 
-1. An existing 0.7 application can install `edron>=0.8,<0.9` against the compatible Hedron train
-   without importing a second Edron runtime.
+1. An existing 0.7 application can install `edron>=0.8,<0.9` with `hedron>=0.66.2,<0.67` and
+   `hedron-data>=0.66.2,<0.67` without importing a second Edron runtime.
 2. A production deployment runs `hedron build` again and ships the resulting `manifest.json`; a
    missing or invalid manifest fails startup/checks before serving application routes.
 3. Root path, cookie path, CSRF, redirect, static asset, and HTMX URLs remain one native mounted-path
@@ -27,5 +27,6 @@ change Edron page, action, data, job, or native-object identity contracts.
 | `edron check`, `edron explain`, `edron doctor` | Preserved; `doctor` may include deployment facts |
 | New `edron deploy-check` command | Added, read-only |
 | `edron>=0.7,<0.8` generated pins | Regenerated as `edron>=0.8,<0.9` |
+| Hedron compatibility | Fixed to Hedron `0.66.2` / `>=0.66.2,<0.67`; Edron `0.9.0` targets Hedron `0.67.0` |
 | Flask/Django Edron page-class parity | Not introduced |
 | Notebook production hosting / cloud provisioning | Not introduced |

@@ -30,6 +30,10 @@ def main() -> int:
     source = (PACKAGE / "src" / "edron" / "__init__.py").read_text(encoding="utf-8")
     if project.get("version") != VERSION or f'__version__ = "{VERSION}"' not in source:
         problems.append("package version is not 0.8.0")
+    dependencies = set(str(item) for item in project.get("dependencies", []))
+    for expected in ("hedron>=0.66.2,<0.67", "hedron-data>=0.66.2,<0.67"):
+        if expected not in dependencies:
+            problems.append(f"0.8.0 dependency pin is missing: {expected}")
     gate = tomllib.loads(GATES.read_text(encoding="utf-8"))
     rows = gate.get("gate", [])
     ids = {row.get("id") for row in rows}

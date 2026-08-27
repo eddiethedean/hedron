@@ -29,7 +29,7 @@ evidence = "bounded deploy-check and doctor reports; multi-worker state/job back
 [[gate]]
 id = "EDR-08-SUPPLY"
 state = "Implemented"
-evidence = "artifact SHA-256 manifest, Edron wheel/sdist inclusion, offline metadata, license/SBOM/provenance documentation, and release checker"
+evidence = "artifact SHA-256 manifest, Edron wheel/sdist inclusion, exact Hedron 0.66.2 metadata pins, offline metadata, license/SBOM/provenance documentation, and release checker"
 
 [[gate]]
 id = "EDR-08-UPGRADE"

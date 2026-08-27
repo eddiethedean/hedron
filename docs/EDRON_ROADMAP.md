@@ -4,9 +4,10 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `0.6.0` implemented and tagged in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
+**Status:** Edron `0.8.0` implemented and release-verified in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
 **Edron release line:** `0.6` reusable composition and capability promotion<br>
-**Latest release:** Edron `0.3.0`; compatible Hedron train `0.66.x`<br>
+**Latest in-tree release:** Edron `0.8.0`; Hedron `0.66.2` (`>=0.66.2,<0.67`)<br>
+**Latest published release:** Edron `0.3.0`; the `0.9.0` target train is Hedron `0.67.0`<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 0.3 data workspaces](api/EDRON_03.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
@@ -412,7 +413,8 @@ incompatible state, mutation, security, accessibility, or deployment semantics.
 
 ## Phase 0.8 — deployment and host integration
 
-Phase `0.8` is implemented and release-verified in-tree; publication remains pending.
+Phase `0.8` is implemented and release-verified in-tree; publication remains pending. Its release
+contract is Edron `0.8.0` on Hedron `0.66.2` (`>=0.66.2,<0.67`).
 It makes an Edron application reviewable and repeatable at the deployment boundary after the `0.7`
 migration and adoption contracts are closed. The phase standardizes evidence and diagnostics around
 the existing ASGI application; it does not turn Edron into a process supervisor, cloud provisioner,
@@ -504,7 +506,8 @@ production hosting, or a new renderer, router, asset, security, or observability
 
 ## Phase 0.9 — long-lived `0.x` consolidation
 
-Phase `0.9` is the Edron consolidation and compatibility phase. It turns the accepted `0.1`–`0.8`
+Phase `0.9` is the Edron consolidation and compatibility phase on the planned Hedron `0.67.0`
+train. It turns the accepted `0.1`–`0.8`
 surface into a deliberately classified, measurable, and maintainable `0.x` contract. It is a
 candidate phase: no `0.9` API is accepted until its packet, locks, and evidence are reviewed.
 

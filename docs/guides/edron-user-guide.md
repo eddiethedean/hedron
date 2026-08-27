@@ -10,7 +10,7 @@ Edron is a typed, server-rendered Python facade over one native Hedron applicati
 for dashboards, internal tools, data workspaces, and workflows that should remain useful with
 ordinary HTTP and without a separate frontend build system.
 
-This guide targets Edron `0.8.x` and the compatible Hedron `0.66.x` train. Edron is a **Beta**
+This guide targets Edron `0.8.x` and Hedron `0.66.2` (`>=0.66.2,<0.67`). Edron is a **Beta**
 distribution: pin the package train, keep the supported surface explicit, and treat undocumented
 imports as internal.
 

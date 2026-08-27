@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 import tarfile
 import tomllib
@@ -48,6 +49,10 @@ REQUIRED_SDIST_SUFFIXES = {
     "/pyproject.toml",
 }
 FORBIDDEN_WHEEL_PREFIXES = ("hedron/", "hedron_core/", "hedron_data/", "hedron_charts/")
+EXPECTED_REQUIREMENTS = {
+    ("hedron", frozenset({">=0.66.2", "<0.67"})),
+    ("hedron-data", frozenset({">=0.66.2", "<0.67"})),
+}
 
 
 def _fail(message: str) -> None:
@@ -57,6 +62,10 @@ def _fail(message: str) -> None:
 def _project_version() -> str:
     project = tomllib.loads((PACKAGE / "pyproject.toml").read_text(encoding="utf-8"))["project"]
     version = str(project["version"])
+    dependencies = {str(item) for item in project.get("dependencies", [])}
+    for expected in ("hedron>=0.66.2,<0.67", "hedron-data>=0.66.2,<0.67"):
+        if expected not in dependencies:
+            _fail(f"packages/edron dependency pin is missing {expected}")
     source = (PACKAGE / "src" / "edron" / "__init__.py").read_text(encoding="utf-8")
     if f'__version__ = "{version}"' not in source:
         _fail(f"packages/edron __version__ does not match {version}")
@@ -66,12 +75,20 @@ def _project_version() -> str:
     return version
 
 
-def _metadata(archive: zipfile.ZipFile) -> tuple[str, str]:
+def _metadata(archive: zipfile.ZipFile) -> tuple[str, str, list[str]]:
     metadata_names = [name for name in archive.namelist() if name.endswith(".dist-info/METADATA")]
     if len(metadata_names) != 1:
         _fail(f"expected one wheel METADATA file, found {metadata_names}")
     message = BytesParser(policy=compat32).parsebytes(archive.read(metadata_names[0]))
-    return message.get("Name", ""), message.get("Version", "")
+    return message.get("Name", ""), message.get("Version", ""), message.get_all("Requires-Dist", [])
+
+
+def _requirement_key(value: str) -> tuple[str, frozenset[str]]:
+    match = re.match(r"^([A-Za-z0-9_.-]+)(.*)$", value.replace(" ", ""))
+    if match is None:
+        return value.lower(), frozenset()
+    name, specifiers = match.groups()
+    return name.lower().replace("_", "-"), frozenset(item for item in specifiers.split(",") if item)
 
 
 def check_artifacts(dist_dir: Path, expected_version: str) -> None:
@@ -90,9 +107,13 @@ def check_artifacts(dist_dir: Path, expected_version: str) -> None:
         copied = [name for name in names if name.startswith(FORBIDDEN_WHEEL_PREFIXES)]
         if copied:
             _fail(f"wheel copied native package files: {sorted(copied)[:5]}")
-        name, version = _metadata(archive)
+        name, version, requirements = _metadata(archive)
         if (name, version) != ("edron", expected_version):
             _fail(f"wheel metadata is {name} {version}, expected edron {expected_version}")
+        requirement_keys = {_requirement_key(item) for item in requirements}
+        missing_requirements = EXPECTED_REQUIREMENTS - requirement_keys
+        if missing_requirements:
+            _fail(f"wheel metadata is missing release pins: {sorted(missing_requirements)}")
 
     with tarfile.open(sdists[0], "r:gz") as archive:
         names = {member.name for member in archive.getmembers()}

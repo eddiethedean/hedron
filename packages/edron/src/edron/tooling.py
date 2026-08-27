@@ -237,8 +237,8 @@ def doctor(
 
     requirements = {
         "edron": (">=0.8,<0.9", "edron"),
-        "hedron": (">=0.66,<0.67", "hedron"),
-        "hedron-data": (">=0.66,<0.67", "hedron_data"),
+        "hedron": (">=0.66.2,<0.67", "hedron"),
+        "hedron-data": (">=0.66.2,<0.67", "hedron_data"),
         "hedron-charts": (">=0.2,<0.3", "hedron_charts"),
         "hedron-maps": (">=0.1,<0.2", "hedron_maps"),
     }

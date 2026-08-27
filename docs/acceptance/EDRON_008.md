@@ -2,7 +2,7 @@
 
 **Status:** Implemented and release-verified in-tree; publication pending
 
-**Package:** `edron==0.8.0` · compatible Hedron train `0.66.x`
+**Package:** `edron==0.8.0` · Hedron `0.66.2` (`>=0.66.2,<0.67`)
 
 Phase 0.8 is the Edron deployment and host-integration slice. It makes deployment assumptions
 explicit and reviewable without adding a process supervisor, cloud provisioner, secret manager, or

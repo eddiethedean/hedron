@@ -39,6 +39,11 @@ def test_phase08_packet_and_all_profiles_are_present() -> None:
 def test_generated_projects_use_the_08_train() -> None:
     scaffold = (ROOT / "packages/edron/src/edron/scaffolds.py").read_text(encoding="utf-8")
     generated = (ROOT / "packages/edron/src/edron/migrate/generate.py").read_text(encoding="utf-8")
+    project = (ROOT / "packages/edron/pyproject.toml").read_text(encoding="utf-8")
+    roadmap = (ROOT / "docs/EDRON_ROADMAP.md").read_text(encoding="utf-8")
     assert "edron>=0.8,<0.9" in scaffold
     assert "edron>=0.8,<0.9" in generated
     assert "edron>=0.7,<0.8" not in scaffold + generated
+    assert '"hedron>=0.66.2,<0.67"' in project
+    assert '"hedron-data>=0.66.2,<0.67"' in project
+    assert "0.9.0` target train is Hedron `0.67.0" in roadmap
