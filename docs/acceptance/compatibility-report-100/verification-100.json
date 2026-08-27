@@ -9,7 +9,7 @@
       "id": "PHASE-100-UNIT",
       "command": ".venv/bin/pytest -q tests/unit/test_phase_1_0_packet.py tests/unit/test_docs_train_ssot.py tests/unit/test_quality_upgrade_phase1.py tests/upgrade/test_phase_1_0_fixtures.py tests/unit/test_migrate_api_100.py tests/unit/test_cli_check_compat.py --tb=short",
       "status": "passed",
-      "summary": "90 passed, 10 warnings"
+      "summary": "91 passed, 10 warnings"
     },
     {
       "id": "BRIDGE-100",

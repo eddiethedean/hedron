@@ -133,6 +133,24 @@ class HedronPagesMixin:
 
         return wrap
 
+    @overload
+    def view(
+        self,
+        path: Callable[..., Any] | type[RefreshableView[Any, Any]],
+        *,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        **kwargs: Any,
+    ) -> FragmentHandle[Any, Any]: ...
+
+    @overload
+    def view(
+        self,
+        path: str | None = None,
+        *,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[..., Any]], FragmentHandle[Any, Any]]: ...
+
     def view(
         self,
         path: str | Callable[P, R] | type[RefreshableView[Any, Any]] | None = None,
