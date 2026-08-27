@@ -171,7 +171,7 @@ _wrap_hedron_view = wrap_hedron_view
 
 
 class HedronBlueprint(Blueprint):
-    """Flask Blueprint with Hedron ``page`` / ``component`` / ``action`` helpers."""
+    """Flask Blueprint with Hedron ``page`` / ``view`` / ``action`` helpers."""
 
     def page(
         self,
@@ -318,9 +318,10 @@ class HedronBlueprint(Blueprint):
         )
         self.add_url_rule(path, endpoint=ep, view_func=wrapped, methods=method_list, **options)
 
-    def include_feature(
+    def include(
         self, feature: FeatureBundle | FeatureProvider, *, app_id: str | None = None
     ) -> FeatureBundle:
+        """Include one validated feature bundle through the canonical 1.0 spelling."""
         from hedron_flask.catalog import include_feature as _include
 
         return _include(feature, app_id=app_id or "flask")

@@ -290,7 +290,7 @@ def _try_initial_render_model(
 
 @dataclass(frozen=False)
 class FragmentHandle(Generic[BindT, ContentT]):
-    """Callable mounted-view handle returned by ``@app.refreshable``."""
+    """Callable mounted-view handle returned by ``@app.view``."""
 
     logical_id: str
     name: str
