@@ -56,6 +56,10 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 export UV_NO_PROGRESS="${UV_NO_PROGRESS:-1}"
+# Keep wheel/sdist metadata and native linker identities stable across clean
+# packaging rehearsals. Callers may provide a different fixed epoch when
+# reproducing a historical release; an unset value defaults to Unix epoch.
+export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-0}"
 
 PYTHON="${PYTHON:-3.12}"
 GATE_VERSION="${HEDRON_GATE_VERSION:-0.67.0}"

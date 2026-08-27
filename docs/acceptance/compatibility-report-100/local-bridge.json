@@ -14,7 +14,7 @@
     "result": "22 coordinated and satellite distributions built successfully",
     "versions": "coordinated workspace metadata declares 1.0.0; independent satellites retain their declared versions",
     "artifact_retention": "temporary run only; immutable digests are still required for COMPAT-100/PKG-100",
-    "reproducibility": "all pure-Python artifacts matched across two SOURCE_DATE_EPOCH builds; hedron-native wheel differs because its Mach-O extension receives a linker UUID"
+    "reproducibility": "all artifacts, including the hedron-native Mach-O extension and SBOM, matched byte-for-byte across two SOURCE_DATE_EPOCH=0 wheel builds; CI now fixes that input"
   },
   "bridge_run": {
     "command": "python scripts/check_upgrade_100.py --baseline v0.67.0 --json",
@@ -30,7 +30,7 @@
   },
   "target_artifact": {
     "available": false,
-    "reason": "No retained reproducible v1.0.0 wheel/sdist and lock are present yet; hedron-native Mach-O UUID reproducibility remains unresolved",
+    "reason": "No retained reproducible v1.0.0 wheel/sdist and lock are present yet; local reproducibility is proven but publication evidence is still missing",
     "required_before": ["COMPAT-100", "FLEET-100", "PKG-100", "RELEASE-100"]
   },
   "release_claim": false
