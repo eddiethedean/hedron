@@ -33,7 +33,19 @@
       "id": "BROWSER-100",
       "command": "bash scripts/ci_checks.sh browser --python 3.11",
       "status": "passed",
-      "summary": "115 passed, 52 skipped, 3779 deselected"
+      "summary": "Chromium: 115 passed, 52 skipped, 3781 deselected"
+    },
+    {
+      "id": "BROWSER-FIREFOX-100",
+      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=firefox bash scripts/ci_checks.sh browser --python 3.11",
+      "status": "passed",
+      "summary": "Firefox: 113 passed, 54 skipped, 3781 deselected"
+    },
+    {
+      "id": "BROWSER-WEBKIT-100",
+      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=webkit bash scripts/ci_checks.sh browser --python 3.11",
+      "status": "passed",
+      "summary": "WebKit: 113 passed, 54 skipped, 3781 deselected"
     },
     {
       "id": "BUILD-100",

@@ -380,6 +380,8 @@ def test_phase_1_0_verification_ledger_is_explicit_about_green_and_blocked_check
     assert ledger["schema"] == "hedron.verification-evidence/1"
     checks = {row["id"]: row for row in ledger["checks"]}
     assert checks["BROWSER-100"]["status"] == "passed"
+    assert checks["BROWSER-FIREFOX-100"]["status"] == "passed"
+    assert checks["BROWSER-WEBKIT-100"]["status"] == "passed"
     assert checks["TYPE-100"]["status"] == "passed"
     assert checks["REGRESS-100"]["status"] == "blocked"
     assert checks["RELEASE-100"]["status"] == "blocked"
