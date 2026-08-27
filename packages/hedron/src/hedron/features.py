@@ -183,8 +183,8 @@ def include_feature(
     """Include one validated bundle before registry/catalog seal.
 
     Accepts a ``FeatureBundle`` or a ``FeatureProvider`` (``to_bundle()``).
-    A ``DataWorkspace`` is a provider; beginner spelling is
-    ``app.include_feature(orders)``.
+    A ``DataWorkspace`` is a provider; the canonical application spelling is
+    ``app.include(orders)``.
     """
     from hedron_core.catalog import get_sealed_catalog
 

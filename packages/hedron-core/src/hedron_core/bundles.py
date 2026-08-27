@@ -238,11 +238,10 @@ def include_bundle(
                     title="Unmaterialized FeatureBundle handle",
                     explanation=(
                         f"Bundle {bundle.logical_id!r} includes a factory with no logical_id. "
-                        "DataWorkspace materialization is FastAPI Hedron.include_feature only."
+                        "DataWorkspace materialization is FastAPI Hedron.include only."
                     ),
                     remediation=(
-                        "Call Hedron.include_feature on FastAPI, or include "
-                        "already-registered handles."
+                        "Call Hedron.include on FastAPI, or include already-registered handles."
                     ),
                 )
         existing_graph = {
@@ -434,7 +433,7 @@ def eject_source(bundle: FeatureBundle) -> str:
             f"# Ejected FeatureBundle {bundle.logical_id!r} from "
             f"{bundle.provider} {bundle.provider_version}"
         ),
-        "# Register these ordinary handles instead of app.include_feature(...).",
+        "# Register these ordinary handles instead of app.include(...).",
         f"# Views: {', '.join(str(item) for item in view_ids) or '(none)'}",
         f"# Commands: {', '.join(str(item) for item in command_ids) or '(none)'}",
         f"# Projections: {', '.join(item.namespace for item in bundle.projections) or '(none)'}",

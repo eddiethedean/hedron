@@ -64,7 +64,7 @@ class Hedron(HedronPagesMixin, FastAPI):
 
     Installs session middleware (when enabled), CSRF-aware security profiles,
     security headers, bundled HTMX static assets, and a root ``HedronRouter`` for
-    ``@page`` / ``@component`` / ``@action`` routes.
+    ``@page`` / ``@view`` / ``@action`` routes.
 
     Args:
         security: Built-in profile name (``development`` / ``standard`` / ``strict``)

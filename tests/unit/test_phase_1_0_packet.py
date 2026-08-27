@@ -141,6 +141,25 @@ def test_phase_1_0_action_returns_typed_handle() -> None:
     assert act.fallback == "/"
 
 
+def test_phase_1_0_app_exposes_only_canonical_route_facade() -> None:
+    from hedron import Hedron
+
+    app = Hedron(title="canonical-surface", explorer="off", session_secret="phase-1-surface")
+    assert all(
+        not hasattr(app, name)
+        for name in (
+            "component",
+            "fragment",
+            "include_feature",
+            "screen",
+            "refreshable",
+            "command",
+            "form_command",
+        )
+    )
+    assert all(callable(getattr(app, name)) for name in ("page", "view", "action", "include"))
+
+
 def test_phase_1_0_refresh_outcome_targets_owned_view_without_full_reload() -> None:
     from fastapi.testclient import TestClient
 
@@ -269,9 +288,7 @@ def test_phase_1_0_inventories_have_explicit_classification() -> None:
     assert len(surfaces) == len(symbols)
     assert all(row["owner"] and row["maturity"] != "unclassified" for row in surfaces)
     assert all(row["owner"] and row["disposition"] != "unclassified" for row in artifacts)
-    assert {row["canonical"] for row in surfaces} == {
-        row["qualified"] for row in symbols
-    }
+    assert {row["canonical"] for row in surfaces} == {row["qualified"] for row in symbols}
 
 
 def test_phase_1_0_compatibility_report_retains_baseline_bridge_probe() -> None:

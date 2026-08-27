@@ -35,15 +35,14 @@ _SESSION_RESULT_PREFIX = "hedron.upload.result."
 class _UploadFlowApp(Protocol):
     """Minimal Hedron host surface for UploadFlow materialization."""
 
-    def screen(
+    def page(
         self,
         path: str,
         *,
-        title: str,
         name: str | None = None,
     ) -> Callable[[Callable[..., object]], object]: ...
 
-    def command(
+    def action(
         self,
         path: str,
         *,
@@ -52,7 +51,7 @@ class _UploadFlowApp(Protocol):
         dependencies: Sequence[object] | None = None,
     ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
 
-    def refreshable(
+    def view(
         self,
         path: str,
         *,
@@ -340,7 +339,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
             upload_command.__name__ = f"upload_command_{flow.name}"
             upload_command.__qualname__ = upload_command.__name__
 
-            handle = app.command(
+            handle = app.action(
                 f"/{flow.name}/upload",
                 name=f"{flow.name}-upload-command",
                 fallback=f"/{flow.name}/upload",
@@ -382,9 +381,9 @@ class UploadFlow(Generic[StoredT, ResultT]):
 
             upload_screen.__name__ = f"upload_screen_{flow.name}"
             upload_screen.__qualname__ = upload_screen.__name__
-            flow.upload_screen = app.screen(
-                f"/{flow.name}/upload", title="Upload", name=f"{flow.name}-upload"
-            )(upload_screen)
+            flow.upload_screen = app.page(f"/{flow.name}/upload", name=f"{flow.name}-upload")(
+                upload_screen
+            )
             # Keep handle referenced so type-checkers know materialization ran.
             _ = upload_handle
             return flow.upload_screen
@@ -413,7 +412,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
 
             result_view.__name__ = f"result_view_{flow.name}"
             result_view.__qualname__ = result_view.__name__
-            registered = app.refreshable(
+            registered = app.view(
                 f"/{flow.name}/result",
                 name=f"{flow.name}-result",
                 dependencies=(flow.authorize,),
@@ -426,7 +425,7 @@ class UploadFlow(Generic[StoredT, ResultT]):
             if flow.authorize_download is None:
                 return None
 
-            @app.refreshable(
+            @app.view(
                 f"/{flow.name}/download",
                 name=f"{flow.name}-download",
                 dependencies=(flow.authorize_download,),

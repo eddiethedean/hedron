@@ -37,7 +37,7 @@ Dependency: TypeAlias = object
 class _TaskFlowApp(Protocol):
     """Minimal Hedron host surface for TaskFlow materialization."""
 
-    def refreshable(
+    def view(
         self,
         path: str,
         *,
@@ -45,7 +45,7 @@ class _TaskFlowApp(Protocol):
         dependencies: Sequence[object] | None = None,
     ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
 
-    def command(
+    def action(
         self,
         path: str,
         *,
@@ -218,7 +218,7 @@ class TaskFlow(Generic[InputT, ResultT]):
             class _JobId(BaseModel):
                 job_id: str = Field(min_length=1)
 
-            @app.refreshable(
+            @app.view(
                 f"/{flow.name}/status/{{job_id}}",
                 name=f"{flow.name}-status",
                 dependencies=flow._deps(flow.authorize_submit),
@@ -285,7 +285,7 @@ class TaskFlow(Generic[InputT, ResultT]):
             class _CancelBody(BaseModel):
                 job_id: str = Field(min_length=1)
 
-            @app.command(
+            @app.action(
                 f"/{flow.name}/cancel",
                 name=f"{flow.name}-cancel",
                 fallback=f"/{flow.name}/status",
@@ -336,7 +336,7 @@ class TaskFlow(Generic[InputT, ResultT]):
             class _JobId(BaseModel):
                 job_id: str = Field(min_length=1)
 
-            @app.refreshable(
+            @app.view(
                 f"/{flow.name}/result/{{job_id}}",
                 name=f"{flow.name}-result",
                 dependencies=flow._deps(flow.authorize_submit),

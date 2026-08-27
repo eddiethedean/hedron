@@ -132,7 +132,7 @@ class ChartInteraction:
                 HED_BUNDLE_0007,
                 "ChartInteraction.command must be a registered ActionHandle",
                 "Event payloads are untrusted Pydantic input to a registered command.",
-                "Register the command with @app.command before composing ChartInteraction.",
+                "Register the command with @app.action before composing ChartInteraction.",
             )
 
     def to_bundle(self) -> FeatureBundle:
@@ -174,7 +174,7 @@ class ChartInteraction:
                 return result
 
             on_chart_event.__annotations__ = {"payload": payload_type, "return": object}
-            return app.command(  # type: ignore[union-attr]
+            return app.action(  # type: ignore[union-attr]
                 f"/charts/{ident}/{event}",
                 name=f"{ident}-{event}",
             )(on_chart_event)
@@ -182,7 +182,7 @@ class ChartInteraction:
         def export_command(app: object) -> object:
             from hedron import Text
 
-            @app.command(f"/charts/{ident}/export", name=f"{ident}-export")  # type: ignore[union-attr]
+            @app.action(f"/charts/{ident}/export", name=f"{ident}-export")  # type: ignore[union-attr]
             def export() -> object:
                 return Text("export")
 

@@ -41,15 +41,14 @@ SessionRotationPolicy = Literal["on_login", "never"]
 class _AuthFlowApp(Protocol):
     """Minimal Hedron host surface for SessionAuthFlow materialization."""
 
-    def screen(
+    def page(
         self,
         path: str,
         *,
-        title: str,
         name: str | None = None,
     ) -> Callable[[Callable[..., object]], object]: ...
 
-    def command(
+    def action(
         self,
         path: str,
         *,
@@ -282,20 +281,25 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
 
             login_handle = _ensure_login_command(app)
 
-            @app.screen(flow.login_path, title="Sign in", name=f"{flow.provider}-login")
+            @app.page(flow.login_path, name=f"{flow.provider}-login")
             def login_screen(request: Request) -> object:
                 generated = login_handle.form(submit_label="Sign in")
                 children = list(getattr(generated, "_children", ()) or ())
                 html_attrs = dict(getattr(generated, "_html_attrs", {}) or {})
-                return Stack(
-                    Text("Sign in"),
-                    Form(
-                        LoginCsrfField(session=request.session),
-                        *children,
-                        action=login_handle,
-                        method="post",
-                        **html_attrs,
+                from hedron import Page
+
+                return Page(
+                    Stack(
+                        Text("Sign in"),
+                        Form(
+                            LoginCsrfField(session=request.session),
+                            *children,
+                            action=login_handle,
+                            method="post",
+                            **html_attrs,
+                        ),
                     ),
+                    title="Sign in",
                 )
 
             flow.login_screen = login_screen
@@ -305,7 +309,7 @@ class SessionAuthFlow(Generic[CredentialsT, PrincipalT, SessionT]):
             return _ensure_login_command(app)
 
         def logout_command_factory(app: _AuthFlowApp) -> object:
-            @app.command(flow.logout_path, name=f"{flow.provider}-logout", fallback="/")
+            @app.action(flow.logout_path, name=f"{flow.provider}-logout", fallback="/")
             def logout_command(request: Request) -> object:
                 session = request.session
                 clear = getattr(session, "clear", None)
