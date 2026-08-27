@@ -18,7 +18,7 @@ region = Map(
 ```
 
 `MBTiles` is a declared `archive_id` plus a construction-time path via
-`MBTilesArchive` / `Hedron.include_feature`. Integer XYZ routes are owned by the
+`MBTilesArchive` / `app.include(...)`. Integer XYZ routes are owned by the
 flagship/adapters. Never pass a filesystem path from a request.
 
 `basemap=None` is a valid blank map. Air-gap: every resource must be same-origin;

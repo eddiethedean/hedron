@@ -1,4 +1,4 @@
-# Mutations: `@action` vs `@component` POST
+# Mutations with `@app.action`
 
 Hedron has two common ways to handle unsafe HTTP methods (POST/PUT/PATCH/DELETE).
 Pick one deliberately — do not mix them on the same form without understanding the
@@ -10,9 +10,9 @@ difference.
 |---|---|---|
 | Classic form POST that returns a **full page** (redirect or confirmation `Page`) | `@app.action("/…")` | Simplest CSRF-safe mutation; optional `fragment_regions` if HTMX also targets a region |
 | HTMX POST that swaps a **declared region** / returns `InteractionResult` | `@app.action("/…", fragment_regions=(…,))` | Canonical mutation route with a region allowlist |
-| DELETE/PUT with CSRF and a fragment body | `@app.action(..., method="DELETE", fragment_regions=…)` **or** `@component(..., methods=["DELETE"], fragment_regions=…)` | Same allowlist contract |
+| DELETE/PUT with CSRF and a fragment body | `@app.action(..., method="DELETE", fragment_regions=…)` | Same allowlist contract |
 
-`@action` **does** accept `fragment_regions`. Declare the swap host so HTMX `HX-Target`
+`@app.action` **does** accept `fragment_regions`. Declare the swap host so HTMX `HX-Target`
 is authorized (fail-closed 403 otherwise).
 
 ### Try it (simulated)
@@ -89,7 +89,7 @@ def save(request: Request, note: Annotated[str, Form()]) -> Page:
     return Page(Text(f"Saved: {note}"), title="Saved")
 ```
 
-## HTMX fragment → `@component` POST
+## HTMX fragment → `@app.action` POST
 
 See [Forms and actions](forms-and-actions.md) for validation fragments.
 

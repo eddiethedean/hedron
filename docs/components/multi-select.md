@@ -61,7 +61,7 @@ Keep `MultiSelect` at the smallest semantic boundary. Fragment routes should ret
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-`MultiSelect` participates in interaction markup. Pair it with an explicit `@action` / `@component` POST (and CSRF) when the control mutates state.
+`MultiSelect` participates in interaction markup. Pair it with an explicit `@app.action` POST (and CSRF) when the control mutates state.
 
 ## Accessibility
 

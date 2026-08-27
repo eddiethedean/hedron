@@ -146,10 +146,10 @@ form in [Minimal form POST](minimal-form.md) that appends to `_NOTES` (same scaf
 | `status()` | Renders the view (and its host) on the page. |
 | `status.refresh_button(...)` | Wires `hx-get` / `hx-target` / `hx-swap` from that handle. |
 
-## Explicit allowlist (`region` / `@fragment`)
+## Explicit allowlist (`FragmentRegion`)
 
-`hedron new` does **not** generate `app.region` or legacy fragment decorators. Those remain the
-lower-level API when you need an explicit selector allowlist. See
+`hedron new` does **not** generate explicit selector allowlists. `FragmentRegion` remains an
+Advanced API when you need one for a custom route. See
 [Which interaction API?](../getting-started/interaction-apis.md) and
 [Interaction](../api/INTERACTION.md).
 
