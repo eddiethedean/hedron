@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -206,6 +207,19 @@ def check_plan() -> list[str]:
     baseline_commit = baseline.get("baseline_commit")
     if not isinstance(baseline_commit, str) or len(baseline_commit) != 40:
         errors.append("baseline artifact must record the immutable v0.67.0 commit")
+    source_digest = baseline.get("source_digest")
+    if (
+        not isinstance(source_digest, str)
+        or len(source_digest) != hashlib.sha256().digest_size * 2
+        or any(char not in "0123456789abcdef" for char in source_digest)
+    ):
+        errors.append("baseline artifact must record a SHA-256 digest of tracked baseline files")
+    generation = baseline.get("generation")
+    if (
+        not isinstance(generation, dict)
+        or generation.get("tracked_file_digest") != "sha256(path + bytes, sorted)"
+    ):
+        errors.append("baseline artifact must identify the all-tracked-file digest algorithm")
     for name, inventory, minimum in (
         ("public", public_inventory, 1),
         ("stable", stable_inventory, 1),
