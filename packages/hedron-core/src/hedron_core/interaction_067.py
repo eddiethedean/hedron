@@ -342,16 +342,21 @@ class Outcome:
     def refresh(cls, *handles: object) -> Outcome:
         """Refresh one or more registered view handles by logical id.
 
-        Callers may pass a handle object (anything exposing ``logical_id``) or
-        an already-normalized logical-id string.  The wire payload stays a
-        redacted string so outcomes never serialize application objects.
+        Callers may pass a handle object (anything exposing ``dom_id`` or
+        ``logical_id``) or an already-normalized logical-id string.  The wire
+        payload stays a redacted string so outcomes never serialize application
+        objects; bound handles retain their exact instance identity.
         """
         normalized: list[str] = []
         for handle in handles:
             if isinstance(handle, str):
                 value = handle.strip()
             else:
-                value = str(getattr(handle, "logical_id", "") or "").strip()
+                value = str(
+                    getattr(handle, "dom_id", None)
+                    or getattr(handle, "logical_id", "")
+                    or ""
+                ).strip()
             if not value:
                 raise ValueError("refresh handles must be non-empty logical ids or view handles")
             normalized.append(value)
