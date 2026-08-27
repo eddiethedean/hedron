@@ -35,18 +35,19 @@ def apply_safe_codemod(source: str) -> CodemodResult:
         tree = ast.parse(source)
     except SyntaxError as exc:
         return CodemodResult(source, False, diagnostics=(f"syntax error: {exc}",))
-    edits: list[tuple[int, int, str, str, int, int]] = []
+    edits: list[tuple[int, int, int, str, str, int]] = []
     for node in ast.walk(tree):
         if not isinstance(node, ast.Attribute) or node.attr not in _RENAMES:
             continue
         if not isinstance(node.value, ast.Name) or node.value.id not in {"app", "ed", "edron"}:
             continue
-        start = getattr(node, "end_col_offset", 0) - len(node.attr)
+        end = int(node.end_col_offset or 0)
+        start = end - len(node.attr)
         edits.append(
             (
                 node.lineno,
                 start,
-                node.end_col_offset,
+                end,
                 node.attr,
                 _RENAMES[node.attr],
                 node.col_offset,
