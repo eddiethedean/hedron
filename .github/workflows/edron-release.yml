@@ -47,6 +47,8 @@ jobs:
       - name: Run Edron regression tests
         run: >-
           uv run --python 3.11 pytest -q
+          tests/unit/test_edron_phase05.py
+          tests/unit/test_edron_phase04.py
           tests/unit/test_edron_phase03.py
           tests/unit/test_edron_phase02.py
           tests/unit/test_edron_runtime.py
@@ -60,6 +62,8 @@ jobs:
           uv run --python 3.11 ruff check
           packages/edron/src/edron
           scripts/check_edron_release.py
+          tests/unit/test_edron_phase05.py
+          tests/unit/test_edron_phase04.py
           tests/unit/test_edron_phase03.py
           tests/unit/test_edron_phase02.py
           tests/unit/test_package_metadata.py
