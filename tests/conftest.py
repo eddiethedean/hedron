@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import ast
 import os
 import re
+from functools import lru_cache
 from pathlib import Path
 
 import django
@@ -29,6 +31,9 @@ _REMOVED_API = re.compile(
     r"region_app|handle_app)\.(?:component|fragment|refreshable|command|"
     r"form_command|include_feature)\b"
 )
+_REMOVED_METHOD = re.compile(
+    r"\b[A-Za-z_]\w*\.(?:component|fragment|refreshable|command|form_command|include_feature)\b"
+)
 _RETIREMENT_EXCLUDES = frozenset(
     {
         "test_cli_check_compat.py",
@@ -50,24 +55,79 @@ _RETIREMENT_MODULES = frozenset(
 
 
 def _is_pre_one_api_module(path: Path) -> bool:
-    """Return whether a test module targets an API removed by Hedron 1.0."""
+    """Return whether a test module is explicitly a historical 0.x fixture."""
     if "phase_1_0" in path.parts or "phase_1_0" in path.name:
         return False
     if path.name in _RETIREMENT_EXCLUDES:
         return False
     if path.name in _RETIREMENT_MODULES:
         return True
+    return "upgrade" in path.parts and path.name.startswith("test_0_")
+
+
+@lru_cache(maxsize=512)
+def _legacy_api_ranges(path: str) -> tuple[tuple[int, int], ...]:
+    """Return function ranges that directly exercise a removed API."""
+    source_path = Path(path)
+    try:
+        source = source_path.read_text(encoding="utf-8")
+        tree = ast.parse(source, filename=path)
+    except (OSError, UnicodeDecodeError, SyntaxError, ValueError):
+        return ()
+    lines = source.splitlines()
+    functions = {
+        node.name: node
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    direct_legacy = set()
+    for name, node in functions.items():
+        start = min(
+            [int(node.lineno)] + [int(decorator.lineno) for decorator in node.decorator_list]
+        )
+        end = int(getattr(node, "end_lineno", node.lineno))
+        function_source = "\n".join(lines[start - 1 : end])
+        if _REMOVED_API.search(function_source) or _REMOVED_METHOD.search(function_source):
+            direct_legacy.add(name)
+    calls = {
+        name: {
+            call.func.id
+            for call in ast.walk(node)
+            if isinstance(call, ast.Call) and isinstance(call.func, ast.Name)
+        }
+        for name, node in functions.items()
+    }
+    legacy_names = set(direct_legacy)
+    changed = True
+    while changed:
+        changed = False
+        for name, called in calls.items():
+            if name not in legacy_names and called & legacy_names:
+                legacy_names.add(name)
+                changed = True
+    ranges: list[tuple[int, int]] = []
+    for name, node in functions.items():
+        if name not in legacy_names:
+            continue
+        start = min(
+            [int(node.lineno)] + [int(decorator.lineno) for decorator in node.decorator_list]
+        )
+        end = int(getattr(node, "end_lineno", node.lineno))
+        ranges.append((start, end))
+    return tuple(ranges)
+
+
+def _is_pre_one_api_item(item: pytest.Item) -> bool:
+    """Skip only the collected test that directly uses a removed API."""
+    path = Path(str(item.path))
+    if _is_pre_one_api_module(path):
+        return True
+    if path.name in _RETIREMENT_EXCLUDES:
+        return False
     if "upgrade" in path.parts and path.name.startswith("test_0_"):
         return True
-    try:
-        source = path.read_text(encoding="utf-8")
-    except (OSError, UnicodeDecodeError):
-        return False
-    # SimApp deliberately retains its own fragment vocabulary; these browser
-    # and simulator tests are package-native, not Hedron compatibility tests.
-    if "SimApp" in source:
-        return False
-    return bool(_REMOVED_API.search(source))
+    line = int(item.location[1]) + 1
+    return any(start <= line <= end for start, end in _legacy_api_ranges(str(path)))
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -220,9 +280,7 @@ def pytest_configure(config: pytest.Config) -> None:
     install_reuse_patches()
 
 
-def pytest_collection_modifyitems(
-    config: pytest.Config, items: list[pytest.Item]
-) -> None:
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
     """Retire 0.x API fixtures when the suite is run against the 1.0 train.
 
     The same test tree is used by the immutable 0.67 bridge job, where these
@@ -238,8 +296,7 @@ def pytest_collection_modifyitems(
         return
     reason = "historical 0.x API fixture retired on the Hedron 1.0 canonical surface"
     for item in items:
-        path = Path(str(item.path))
-        if _is_pre_one_api_module(path):
+        if _is_pre_one_api_item(item):
             item.add_marker(pytest.mark.skip(reason=reason))
 
 

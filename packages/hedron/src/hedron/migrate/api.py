@@ -270,6 +270,16 @@ _IMPORTED_API = {
     "form_command": "app.form_command",
 }
 
+_SYNTAX_ERROR_RECORD = FutureWarningRecord(
+    code="HED-MIGRATE-0001",
+    old_path="<syntax-error>",
+    replacement="manual review",
+    owner="hedron",
+    confidence="unknown",
+    automation_status="manual-review",
+    documentation="A syntax error prevents complete static migration analysis.",
+)
+
 
 def _import_findings(
     tree: ast.AST,
@@ -333,8 +343,32 @@ def _import_findings(
 def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMigrationFinding, ...]:
     try:
         tree = ast.parse(source, filename=str(path))
-    except (SyntaxError, ValueError):
-        return ()
+    except SyntaxError as exc:
+        return (
+            _finding(
+                path=display_path,
+                line=int(exc.lineno or 1),
+                column=int(exc.offset or 1),
+                record=_SYNTAX_ERROR_RECORD,
+                confidence="unknown",
+                automation_status="manual-review",
+                reason=f"Python syntax error prevents complete analysis: {exc.msg}.",
+                kind="error",
+            ),
+        )
+    except ValueError as exc:
+        return (
+            _finding(
+                path=display_path,
+                line=1,
+                column=1,
+                record=_SYNTAX_ERROR_RECORD,
+                confidence="unknown",
+                automation_status="manual-review",
+                reason=f"Python source could not be parsed: {exc}.",
+                kind="error",
+            ),
+        )
     out: list[ApiMigrationFinding] = []
     seen: set[tuple[int, int, str]] = set()
     records = {record.old_path: record for record in PUBLIC_FUTURE_WARNINGS.records()}
@@ -366,7 +400,13 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     out.extend(_import_findings(tree, display_path=display_path, records=records))
     seen.update((item.line, item.column - 1, item.old_path) for item in out)
 
-    def add(node: ast.AST, old_path: str, *, manual: bool = False) -> None:
+    def add(
+        node: ast.AST,
+        old_path: str,
+        *,
+        manual: bool = False,
+        unknown_receiver: bool = False,
+    ) -> None:
         record = records.get(old_path)
         if record is None or not hasattr(node, "lineno"):
             return
@@ -387,6 +427,13 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
         if manual:
             reason = "Region-specific arguments need a human review before renaming."
             confidence = "partial"
+            automation = "manual-review"
+        if unknown_receiver:
+            reason = (
+                "The receiver is not statically known to be a Hedron application; "
+                "verify the owner before migrating."
+            )
+            confidence = "unknown"
             automation = "manual-review"
         # A component route that declares an unsafe method is an action task,
         # not a safe view. The registry records the common GET rename; this
@@ -436,6 +483,21 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
                     if adapter is not None:
                         dotted = f"{adapter}.{node.func.attr}"
             if dotted not in records:
+                if isinstance(node.func, ast.Attribute) and node.func.attr in {
+                    "component",
+                    "fragment",
+                    "refreshable",
+                    "command",
+                    "form_command",
+                    "include_feature",
+                }:
+                    receiver = _dotted(node.func.value)
+                    if receiver and receiver not in simulator_receivers:
+                        add(
+                            node,
+                            f"app.{node.func.attr}",
+                            unknown_receiver=True,
+                        )
                 continue
             if dotted.startswith("app.") and isinstance(node.func, ast.Attribute):
                 receiver = node.func.value
@@ -447,7 +509,11 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
             add(node, dotted, manual=manual)
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             for decorator in node.decorator_list:
-                dotted = _dotted(decorator)
+                dotted = (
+                    _dotted(decorator.func)
+                    if isinstance(decorator, ast.Call)
+                    else _dotted(decorator)
+                )
                 if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Attribute):
                     receiver = decorator.func.value
                     if isinstance(receiver, ast.Name):
@@ -455,11 +521,38 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
                         if adapter is not None:
                             dotted = f"{adapter}.{decorator.func.attr}"
                 if dotted in records:
-                    if dotted.startswith("app.") and isinstance(decorator, ast.Attribute):
-                        receiver = decorator.value
+                    decorator_target = (
+                        decorator.func if isinstance(decorator, ast.Call) else decorator
+                    )
+                    if dotted.startswith("app.") and isinstance(decorator_target, ast.Attribute):
+                        receiver = decorator_target.value
                         if isinstance(receiver, ast.Name) and receiver.id in simulator_receivers:
                             continue
-                    add(decorator, dotted)
+                    manual = (
+                        dotted == "app.fragment"
+                        and isinstance(decorator, ast.Call)
+                        and any(
+                            kw.arg in {"region", "regions", "fragment_regions"}
+                            for kw in decorator.keywords
+                        )
+                    )
+                    add(decorator, dotted, manual=manual)
+                elif isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Attribute):
+                    if decorator.func.attr in {
+                        "component",
+                        "fragment",
+                        "refreshable",
+                        "command",
+                        "form_command",
+                        "include_feature",
+                    }:
+                        receiver = _dotted(decorator.func.value)
+                        if receiver and receiver not in simulator_receivers:
+                            add(
+                                decorator,
+                                f"app.{decorator.func.attr}",
+                                unknown_receiver=True,
+                            )
     # Reflection is intentionally never rewritten.  Report it as unknown so a
     # clean AST result cannot be mistaken for a complete migration proof.
     reflected = re.compile(

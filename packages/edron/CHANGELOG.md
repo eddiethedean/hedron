@@ -11,7 +11,8 @@
 
 ### Changed
 
-- Edron now targets `hedron>=0.67.0,<0.68` and `hedron-data>=0.67.0,<0.68`.
+- Edron supports the Hedron 0.67 through 1.x compatibility range (`>=0.67.0,<2.0`)
+  for both `hedron` and `hedron-data`.
 - Edron page/action registration uses Hedron's canonical `view` and `action` surfaces.
 
 ## [0.8.0] — 2026-08-27
