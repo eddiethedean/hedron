@@ -222,14 +222,21 @@ def check_application(app: Any) -> DiagnosticReport:
     return DiagnosticReport(tuple(findings))
 
 
-def doctor(*, application: Any = None) -> dict[str, Any]:
+def doctor(
+    *,
+    application: Any = None,
+    deployment_profile: str | None = None,
+    deployment_overrides: Mapping[str, Any] | None = None,
+    environ: Mapping[str, str] | None = None,
+    cwd: str | Path | None = None,
+) -> dict[str, Any]:
     """Report package capabilities without installing or changing anything."""
     import importlib.metadata
 
     from packaging.specifiers import SpecifierSet
 
     requirements = {
-        "edron": (">=0.7,<0.8", "edron"),
+        "edron": (">=0.8,<0.9", "edron"),
         "hedron": (">=0.66,<0.67", "hedron"),
         "hedron-data": (">=0.66,<0.67", "hedron_data"),
         "hedron-charts": (">=0.2,<0.3", "hedron_charts"),
@@ -284,6 +291,16 @@ def doctor(*, application: Any = None) -> dict[str, Any]:
         operations = getattr(application, "operations", None)
         if callable(operations):
             result["operations"] = operations()
+    if deployment_profile is not None or deployment_overrides:
+        from edron.deployment import check_deployment
+
+        result["deployment"] = check_deployment(
+            deployment_profile,
+            environ=environ,
+            cwd=cwd,
+            overrides=deployment_overrides,
+            application=application,
+        ).to_mapping()
     return result
 
 

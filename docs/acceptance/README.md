@@ -39,6 +39,10 @@ status commentary, not a satisfied release gate.
   availability claim**; see the [phase gates](edron-phase07.toml). Migration analysis, Edron
   generation, codemods, reports, and examples remain reviewable tooling; no Streamlit compatibility
   runtime or behavioral-equivalence claim is introduced.
+- [Edron `0.8.0` acceptance packet](EDRON_008.md) — **Implemented in-tree; release verification
+  complete; publication pending**; see the [phase gates](edron-phase08.toml). Deployment profiles,
+  mounted-path edge behavior, host maturity, operations diagnostics, artifacts, and upgrade/recovery
+  behavior remain explicit projections over native Hedron authorities.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)

@@ -127,6 +127,9 @@ edron explain app:app
 
 # Check installed required and optional capabilities
 edron doctor
+
+# Validate a deployment profile without importing application code
+edron deploy-check --profile reverse-proxy --format json
 ```
 
 For CI, `edron check --format sarif` produces review-friendly diagnostics. Applications can also
@@ -145,7 +148,9 @@ SQLAlchemy (for example, `pip install "edron[polars,sqlalchemy]"`).
 
 Read the [getting started guide](https://hedron.readthedocs.io/en/latest/getting-started/), browse
 the [API guides](https://hedron.readthedocs.io/en/latest/api/), or see the
-[Edron roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
+[Edron user guide](https://hedron.readthedocs.io/en/latest/guides/edron-user-guide/), the
+[Edron roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/EDRON_ROADMAP.md) and
+[deployment guide](https://github.com/eddiethedean/hedron/blob/main/docs/guides/edron-deployment.md).
 
 ## How Edron fits in
 

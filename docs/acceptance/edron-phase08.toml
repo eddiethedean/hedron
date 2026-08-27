@@ -1,0 +1,42 @@
+schema = "edron.phase-acceptance/1"
+phase = "0.8"
+status = "Implemented"
+package = "edron"
+version = "0.8.0"
+required_predecessor = "edron-v0.7.0"
+native_authority = "hedron, hedron-core, hedron-posit"
+
+[[gate]]
+id = "EDR-08-PROFILE"
+state = "Implemented"
+evidence = "versioned profile defaults; environment/explicit precedence; unknown-field, external-bind, and deterministic conflict fixtures"
+
+[[gate]]
+id = "EDR-08-EDGE"
+state = "Implemented"
+evidence = "root-path, public URL, proxy trust, production manifest, HTTP/HTMX fallback, and no-secret diagnostics fixtures"
+
+[[gate]]
+id = "EDR-08-HOST"
+state = "Implemented"
+evidence = "ASGI-first maturity lanes, Workbench/Posit handoff boundaries, host mount guidance, and non-ASGI non-goal fixtures"
+
+[[gate]]
+id = "EDR-08-OPS"
+state = "Implemented"
+evidence = "bounded deploy-check and doctor reports; multi-worker state/job backend claims; secret, readiness, redaction, and restart guidance"
+
+[[gate]]
+id = "EDR-08-SUPPLY"
+state = "Implemented"
+evidence = "artifact SHA-256 manifest, Edron wheel/sdist inclusion, offline metadata, license/SBOM/provenance documentation, and release checker"
+
+[[gate]]
+id = "EDR-08-UPGRADE"
+state = "Implemented"
+evidence = "pinned 0.7-to-0.8 upgrade guidance, two-version fixtures, failed-start/rollback boundaries, and application-owned migration refusal"
+
+[[gate]]
+id = "EDR-08-REGRESSION"
+state = "Implemented"
+evidence = "phase 0.8 unit tests, Edron 0.7 migration regression, package metadata, artifact shape, and lint checks"

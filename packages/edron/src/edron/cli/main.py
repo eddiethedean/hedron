@@ -6,6 +6,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from edron.deployment import PROFILE_NAMES, check_deployment
 from edron.diagnostics import DiagnosticReport, finding
 from edron.migrate.cli import build_migrate_parser
 from edron.scaffolds import TEMPLATES, create_scaffold
@@ -41,6 +42,46 @@ def _app_failure(message: str) -> DiagnosticReport:
     )
 
 
+def _add_deployment_arguments(command: argparse.ArgumentParser) -> None:
+    command.add_argument(
+        "--profile",
+        metavar="PROFILE",
+        default=None,
+        help=f"deployment profile ({', '.join(PROFILE_NAMES)})",
+    )
+    command.add_argument("--bind", default=None)
+    command.add_argument("--port", type=int, default=None)
+    command.add_argument("--workers", type=int, default=None)
+    command.add_argument("--root-path", default=None)
+    command.add_argument("--build-dir", type=Path, default=None)
+    command.add_argument("--external-url", default=None)
+    command.add_argument("--trust-proxy", action="append", default=None)
+    command.add_argument(
+        "--state-backend", choices=("process-local", "shared", "unknown"), default=None
+    )
+    command.add_argument(
+        "--job-backend", choices=("process-local", "shared", "unknown"), default=None
+    )
+    command.add_argument("--secret-source", default=None, help="opaque platform secret reference")
+
+
+def _deployment_overrides(args: argparse.Namespace) -> dict[str, object]:
+    values = {
+        "bind": args.bind,
+        "port": args.port,
+        "workers": args.workers,
+        "root_path": args.root_path,
+        "build_dir": str(args.build_dir) if args.build_dir is not None else None,
+        "external_url": args.external_url,
+        "state_backend": args.state_backend,
+        "job_backend": args.job_backend,
+        "secret_source": args.secret_source,
+    }
+    if args.trust_proxy is not None:
+        values["trust_proxy"] = tuple(args.trust_proxy)
+    return {key: value for key, value in values.items() if value is not None}
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="edron")
     sub = parser.add_subparsers(dest="command")
@@ -50,6 +91,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     run.add_argument("--host", default="127.0.0.1")
     run.add_argument("--port", type=int, default=8000)
     run.add_argument("--reload", action="store_true")
+
+    deploy_check = sub.add_parser(
+        "deploy-check", help="validate an explicit deployment profile without importing the app"
+    )
+    _add_deployment_arguments(deploy_check)
+    deploy_check.add_argument("--format", choices=("text", "json", "sarif"), default="text")
+    deploy_check.add_argument("--cwd", type=Path, default=None)
 
     check = sub.add_parser("check", help="statically check an Edron source file")
     check.add_argument("application", help="app.py or module:attribute")
@@ -66,6 +114,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "application", nargs="?", help="optional trusted app.py or module:attribute"
     )
     doctor_parser.add_argument("--format", choices=("text", "json"), default="text")
+    _add_deployment_arguments(doctor_parser)
+    doctor_parser.add_argument("--cwd", type=Path, default=None)
 
     new = sub.add_parser("new", help="create an Edron teaching scaffold")
     new.add_argument("name")
@@ -85,6 +135,19 @@ def main(argv: Sequence[str] | None = None) -> int:
 
             uvicorn.run(application, host=args.host, port=args.port, reload=args.reload)
             return 0
+        if args.command == "deploy-check":
+            report = check_deployment(
+                args.profile,
+                cwd=args.cwd,
+                overrides=_deployment_overrides(args),
+            )
+            if args.format == "json":
+                print(report.to_json(), end="")
+            elif args.format == "sarif":
+                print(json.dumps(report.to_sarif(), indent=2, sort_keys=True))
+            else:
+                print(report.to_text())
+            return 0 if report.ok else 2
         if args.command == "check":
             if ":" in args.application and not Path(args.application).is_file():
                 if not args.register:
@@ -116,7 +179,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
         if args.command == "doctor":
             application = load_application(args.application) if args.application else None
-            payload = doctor(application=application)
+            payload = doctor(
+                application=application,
+                deployment_profile=args.profile,
+                deployment_overrides=_deployment_overrides(args),
+                cwd=args.cwd,
+            )
             if args.format == "json":
                 print(json.dumps(payload, indent=2, sort_keys=True))
             else:
@@ -125,7 +193,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                     for item in payload[group]:
                         version = f" {item['version']}" if item.get("version") else ""
                         print(f"  {item['name']}: {item['status']}{version}")
-            return 0
+            deployment = payload.get("deployment")
+            return 0 if not isinstance(deployment, dict) or deployment.get("ok", True) else 2
         if args.command == "new":
             destination = args.path or Path(args.name)
             files = create_scaffold(

@@ -12,6 +12,9 @@ Complete **Start** first ([Learning path](../getting-started/learning-path.md):
 First app → HTMX → Minimal form). This section continues with polling, data, security,
 and ops.
 
+Building with the Edron facade? Start with the [Edron user guide](edron-user-guide.md), then use
+the task-specific guides below for deeper native Hedron contracts.
+
 **Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md).
 Evaluating adoption? [What’s ready](whats-ready.md) · [Evaluate](evaluate.md).
 Shipping? [Ship](ship.md).

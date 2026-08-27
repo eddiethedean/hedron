@@ -1,6 +1,6 @@
 """Edron: a class-oriented authoring facade for Hedron."""
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 from edron.app import App
 from edron.cache import CachedFunction, cache_data
@@ -26,6 +26,23 @@ from edron.data import (
     WorkspacePage,
 )
 from edron.dependencies import Dependency, Resource, dependency, resource
+from edron.deployment import (
+    ARTIFACT_SCHEMA,
+    PROFILE_NAMES,
+    PROFILE_SCHEMA,
+    BackendMode,
+    DeploymentError,
+    DeploymentProfile,
+    DeploymentProfileName,
+    DeploymentReport,
+    DeploymentResolution,
+    artifact_manifest,
+    artifact_records,
+    check_deployment,
+    deployment_report,
+    profile_from_environment,
+    resolve_deployment_profile,
+)
 from edron.descriptors import (
     Action,
     BoundAction,
@@ -55,6 +72,8 @@ from edron.styling import Color, DesignSystem, StyleContext, StyleRecipe, Theme,
 __all__ = [
     "Action",
     "App",
+    "ARTIFACT_SCHEMA",
+    "BackendMode",
     "BindingError",
     "BoundAction",
     "BoundFragment",
@@ -66,6 +85,11 @@ __all__ = [
     "Confirm",
     "Container",
     "Dependency",
+    "DeploymentError",
+    "DeploymentProfile",
+    "DeploymentProfileName",
+    "DeploymentReport",
+    "DeploymentResolution",
     "Resource",
     "DataExport",
     "DataSelection",
@@ -91,6 +115,8 @@ __all__ = [
     "Outcome",
     "PackageConflictError",
     "Page",
+    "PROFILE_NAMES",
+    "PROFILE_SCHEMA",
     "PageRequest",
     "LayoutSpec",
     "NavigationError",
@@ -104,10 +130,16 @@ __all__ = [
     "ThemeSpec",
     "TEMPLATES",
     "action",
+    "artifact_manifest",
+    "artifact_records",
+    "check_deployment",
     "cache_data",
     "create_scaffold",
     "dependency",
+    "deployment_report",
     "resource",
+    "profile_from_environment",
+    "resolve_deployment_profile",
     "download",
     "fragment",
     "inherit",

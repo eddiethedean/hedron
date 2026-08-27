@@ -208,6 +208,7 @@ nav:
       - New developer — Posit Workbench: getting-started/first-app-posit-workbench.md
   - Guides:
     - Overview: guides/index.md
+    - Edron user guide: guides/edron-user-guide.md
     - Cookbook: guides/cookbook.md
     - Comprehensive styling: guides/styling.md
     - Modern CSS in 0.59: guides/modern-css-0.59.md

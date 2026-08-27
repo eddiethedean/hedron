@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.8.0] — 2026-08-27
+
+### Added
+
+- Explicit local, single-process, reverse-proxy, container, orchestrated, Workbench, and Posit
+  Connect deployment profiles with deterministic precedence and bounded diagnostics.
+- `edron deploy-check` plus profile-aware `doctor` reports for production manifests, secrets,
+  proxy trust, root paths, multi-worker state/job claims, and host handoffs.
+- Deterministic Edron artifact manifests with bounded SHA-256 records for offline promotion and
+  release verification.
+- Phase 0.8 acceptance packet, profile/proxy/host/recovery fixtures, and deployment guide.
+
+### Changed
+
+- Scaffolds and generated migration projects pin the current `edron>=0.8,<0.9` package train.
+
 ## [0.7.0] — 2026-08-27
 
 ### Added

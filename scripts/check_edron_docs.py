@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Validate the Edron design packet's cross-document contracts.
 
-The Edron runtime does not exist yet, so its documentation, examples, and machine locks are the
-current source of truth. This checker deliberately fails closed when those sources drift.
+The documentation and machine locks remain the source of truth for the accepted design contract;
+the implemented runtime and release evidence are checked by their phase-specific suites.
 """
 
 from __future__ import annotations

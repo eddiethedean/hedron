@@ -33,7 +33,7 @@ countdown or commitment to `1.0`.
 | **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | **Implemented in-tree; unreleased Beta** |
 | **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | **Tagged** (`edron-v0.6.0`; publication pending) |
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Implemented in-tree; release evidence required** |
-| **0.8** | Deployment profiles, host integration evidence, and production operations guidance | Candidate after `0.7` |
+| **0.8** | Deployment profiles, host integration evidence, and production operations guidance | **Implemented and release-verified in-tree; publication pending** |
 | **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation | Candidate after `0.8` |
 
 Candidate phases after `0.1` are directional themes, not accepted API contracts. A capability may
@@ -412,38 +412,194 @@ incompatible state, mutation, security, accessibility, or deployment semantics.
 
 ## Phase 0.8 — deployment and host integration
 
-Phase `0.8` strengthens production adoption after the core authoring model has accumulated release
-evidence.
+Phase `0.8` is implemented and release-verified in-tree; publication remains pending.
+It makes an Edron application reviewable and repeatable at the deployment boundary after the `0.7`
+migration and adoption contracts are closed. The phase standardizes evidence and diagnostics around
+the existing ASGI application; it does not turn Edron into a process supervisor, cloud provisioner,
+or host abstraction layer.
 
-Candidate scope:
+### Proposed contract
 
-- reviewed ASGI deployment profiles and environment diagnostics;
-- proxy/root-path, static asset, build-manifest, secret, worker, and observability guidance;
-- native Workbench, Posit, notebook-preview, and remote-tooling composition where their maturity
-  claims permit it;
-- artifact, SBOM, provenance, upgrade, rollback, and air-gapped installation improvements; and
-- evaluation of non-ASGI host authoring only through a separately accepted native lifecycle and
-  HTTP/HTMX parity contract.
+| Workstream | Candidate outcome | Native owner and required evidence |
+|---|---|---|
+| `PROFILE-08` deployment profiles | A small versioned profile vocabulary covers local development, single-process production, reverse-proxy/root-path, container/orchestrated, and approved Workbench/Posit handoffs; each profile records bind, mount, static, worker, state, job, and trust assumptions | `hedron-core`, `hedron-posit`, and Edron launcher/CLI contracts; profile schema, precedence, unknown-field, loopback/external-bind, and deterministic-diagnostics fixtures |
+| `EDGE-08` proxy and asset boundary | Profile-aware URL, redirect, cookie, CSRF, CSP, static-asset, build-manifest, compression, and cache guidance remains correct under a mounted path and a real proxy; invalid or missing production manifests fail closed | native routing, security, asset, and response authorities; root-path, forwarded-header, cookie-path, cache, integrity, stale-asset, and no-JavaScript HTTP/HTMX evidence |
+| `HOST-08` host integration matrix | Edron's ASGI flagship and any directly supported Hedron host handoff have explicit Supported, Tooling, Experimental, or Deferred dispositions with version floors, launch order, limits, and ejection paths | `hedron` and `hedron-posit` host contracts; clean-process, import-order, mount, public-link, restart, worker, and package-pin matrices |
+| `OPS-08` production diagnostics | `edron check`/`doctor` or the native equivalent reports effective configuration, readiness, graceful-shutdown, worker topology, durable-state/job assumptions, limits, and redacted remediation facts without importing arbitrary application code | native production gates and Edron diagnostics; fail-closed secret handling, multi-worker/restart, signal, timeout, health/readiness, and redaction evidence |
+| `SUPPLY-08` release artifacts | Edron release artifacts include reproducible metadata sufficient to identify package versions, compatible Hedron train, wheel/sdist hashes, dependency licenses, SBOM/provenance records, and the exact verification commands; no runtime installation is required | package metadata and release-evidence contracts; clean wheel/sdist, offline install, dependency isolation, license, hash, and provenance fixtures |
+| `UPGRADE-08` upgrade and recovery | A pinned-train upgrade guide covers preflight, manifest rebuild, schema/state compatibility, smoke checks, rollback boundaries, and air-gapped promotion; rollback never pretends to reverse application-owned data migrations | Edron compatibility policy and application-owned persistence boundary; two-version fixtures, failed-start recovery, asset-cache invalidation, migration refusal, and operator-runbook evidence |
 
-Flask or Django page-class parity is not promised by this roadmap. A host integration cannot weaken
-the native security, state, fallback, or deployment contract.
+The phase has three maturity lanes:
+
+- **Required baseline:** ASGI deployment, explicit reverse-proxy/root-path behavior, production
+  build-manifest enforcement, secure configuration diagnostics, ordinary HTTP/HTMX smoke paths,
+  and package/artifact verification.
+- **Conditional host support:** Workbench/Posit and other Hedron host handoffs may be Supported
+  only when their native adapter supplies the lifecycle, URL, cookie, worker, and version evidence.
+  Notebook preview and remote tooling remain tooling-grade or Experimental unless a separate host
+  packet proves a production boundary.
+- **Evaluation only:** Flask/Django Edron page-class parity, new process managers, cloud-specific
+  provisioning, and non-ASGI authoring require a separately accepted native lifecycle and
+  HTTP/HTMX parity contract. A research matrix or launcher recipe is not a support claim.
+
+The beginner-facing workflow is deliberately inspectable: build the application assets, run the
+profile-aware checks, deploy with the host's normal ASGI mechanism, and smoke-test the same routes
+through the real proxy. Profiles describe and validate a deployment; they do not discover arbitrary
+infrastructure, install packages, infer secrets, or silently select a worker, queue, database, or
+public URL.
+
+### Bounds and ownership
+
+- Edron owns authoring, projection, diagnostics, and bounded release metadata. The ASGI server,
+  reverse proxy, TLS termination, process supervisor, orchestrator, secrets manager, observability
+  backend, database, object store, queue, and durable job backend remain application or platform
+  owned.
+- Every profile has one explicit source of truth for mount, external URL, static/build directory,
+  worker mode, and state/job durability. Conflicting environment, CLI, and host values fail closed
+  or produce a stable finding; they are never resolved from an untrusted `Host` or forwarded header.
+- Production checks may inspect declared configuration and package metadata, but must not import or
+  execute arbitrary application callbacks, contact external services, print secret-shaped values, or
+  claim that a process-local resource/session/cache is durable.
+- Root-path, cookies, CSRF, redirects, asset URLs, and HTMX requests are one native mounted-path
+  contract. A host adapter cannot weaken authorization, CSP, trusted-proxy, safe-download,
+  no-JavaScript, or error/fallback semantics.
+- Multi-worker and restart guidance must state which features require shared native backends or
+  sticky routing. Edron never silently upgrades process-local state, live transport, or job status
+  into a distributed guarantee.
+- Rollback covers application artifacts and package pins only. Data migrations, secrets rotation,
+  external side effects, queued work, and user-owned files require an application runbook and are
+  never reversed by Edron automatically.
+- Supply-chain records are bounded and verifiable, but they do not certify a deployment, third-party
+  dependency, cloud account, or application security posture.
+
+### Entry and exit gates
+
+Phase `0.8` implementation entry requires closure of the `0.7` release evidence, a dedicated
+acceptance packet that freezes the supported profile/host matrix, compatible package pins, numeric
+diagnostic and artifact budgets, and the required security/upgrade fixtures. Release exit requires,
+at minimum:
+
+1. every Required profile has deterministic precedence, explicit trust assumptions, versioned
+   configuration, and actionable refusal diagnostics;
+2. production builds fail closed for missing or invalid manifests, while mounted static assets,
+   redirects, cookies, CSRF, CSP, cache behavior, ordinary HTTP, HTMX, and no-JavaScript fallbacks
+   pass proxy fixtures;
+3. the ASGI host and each conditionally Supported handoff pass clean-process, import-order,
+   root-path, public-link, restart, worker, graceful-shutdown, and package-pin evidence;
+4. `check`/`doctor` findings are bounded, deterministic, redacted, callback-free, and distinguish
+   process-local from durable state/job claims, with health/readiness and remediation coverage;
+5. wheel/sdist, offline-install, dependency-isolation, license, SBOM/provenance, hash, and exact
+   verification-command artifacts are complete for the pinned Edron/Hedron train;
+6. upgrade, failed-start, rollback, stale-asset, and application-owned migration boundaries are
+   exercised in two-version fixtures and documented as an operator runbook;
+7. every non-Required host or capability has an explicit maturity disposition, version boundary,
+   fallback, and ejection path; and
+8. the complete Edron `0.7` regression suite plus the phase `0.8` profile, proxy, host, artifact,
+   security, and recovery suites pass before an `edron-v0.8.0` tag is considered.
+
+The phase does not add a cloud deployment service, Docker/Kubernetes/Workbench operator, process
+supervisor, runtime package installer, secret manager, distributed state/job backend, automatic
+public-URL discovery, arbitrary forwarded-header trust, Flask/Django page-class parity, notebook
+production hosting, or a new renderer, router, asset, security, or observability authority.
 
 ## Phase 0.9 — long-lived `0.x` consolidation
 
-Phase `0.9` is reserved for sustained compatibility and maturity work across the accepted Edron
-surface.
+Phase `0.9` is the Edron consolidation and compatibility phase. It turns the accepted `0.1`–`0.8`
+surface into a deliberately classified, measurable, and maintainable `0.x` contract. It is a
+candidate phase: no `0.9` API is accepted until its packet, locks, and evidence are reviewed.
 
-Candidate scope:
+The phase has one governing rule: maturity is earned by evidence, not by age or usage. A capability
+that cannot meet the phase contract remains `beta`, `experimental`, `deferred`, or
+`application-owned`; it is not promoted merely to make the roadmap look complete.
 
-- promote a narrow evidence-backed subset from Beta to the repository's stable API tier;
-- complete deprecations and migration tooling without retaining contradictory aliases;
-- reduce import, compile, request, asset, package, and diagnostic overhead against frozen budgets;
-- deepen security, accessibility, browser, platform, multi-worker, and long-duration evidence;
-- simplify the public vocabulary where measured usage proves overlap; and
-- maintain compatibility across a bounded, supported Hedron train.
+### Candidate contract
 
-Phase `0.9` may receive multiple minor and patch releases. It is not a release candidate for `1.0`,
-and finishing it does not create or schedule a `1.x` phase.
+| Workstream | Candidate outcome | Required evidence and owner |
+|---|---|---|
+| `STABILITY-09` public maturity | A narrow Edron beginner surface is classified as `stable`; every other exported or documented surface has an explicit maturity and owner | Symbol-level catalog, `__all__`/import checks, typed signatures, native-object identity fixtures, and a reviewed stable-promotion decision; Edron plus the owning Hedron package |
+| `COMPAT-09` supported train | One bounded Python, Edron, Hedron, adapter, browser-asset, and host matrix is published as Supported; declared-but-untested ranges are labeled unsupported | Clean-install, import-order, lockfile, upgrade, and cross-adapter matrices; release engineering and native package owners |
+| `DEPRECATE-09` vocabulary cleanup | Overlapping names, aliases, and transitional paths have one canonical replacement, a diagnostic code, a migration path, and a numeric support window | Inventory of public names and warnings, idempotent migration fixtures, docs/search checks, and removal review; Edron tooling plus API owners |
+| `PERF-09` bounded performance | Import, compile, render, request, asset, diagnostic, and package-install budgets are measured and protected without weakening semantics or security | Reproducible baseline, percentile thresholds, cold/warm runs, memory/size records, and regression CI; Edron plus native render/package owners |
+| `SEC-09` security maintenance | Accepted security boundaries are exercised across profiles, adapters, downloads, redirects, cookies, CSRF, CSP, proxy trust, secrets, and diagnostics | Threat-model delta, negative corpus, redaction assertions, dependency/security review, and fail-closed HTTP evidence; native security owners |
+| `A11Y-09` accessibility maintenance | Supported page and interaction primitives preserve semantic HTML, keyboard/focus behavior, names/roles, reduced motion, contrast guidance, and no-JavaScript fallbacks | Automated checks plus manual keyboard/screen-reader and browser fixtures for representative Edron applications; native rendering and interaction owners |
+| `PLATFORM-09` lifecycle evidence | Supported hosts and adapters have explicit version floors, launch/restart behavior, worker limits, fallback paths, and ejection paths | Clean-process, mounted-path, multi-worker, shutdown, and long-duration smoke matrices; host and adapter owners |
+| `DOCS-09` adoption clarity | The public vocabulary, examples, diagnostics, compatibility policy, and upgrade guidance agree with the machine-readable contracts | Link/API/example checks, beginner walkthroughs, changelog review, and a two-version upgrade rehearsal; Edron documentation owner |
+
+The stable candidate is intentionally small. It must be portable across the supported ASGI baseline,
+retain direct native Hedron composition, have a documented return and error contract, and pass the
+HTTP, HTMX, no-JavaScript, concurrency, security, accessibility, packaging, and upgrade checks
+appropriate to its scope. Stable classification does not promote optional extras, framework adapters,
+live transports, host-specific behavior, or internal serializer details automatically.
+
+### Maturity and compatibility rules
+
+- `stable` means compatibility-protected across Edron `0.x`; an incompatible change requires an
+  accepted decision, migration guidance or tooling, a deprecation diagnostic when feasible, and at
+  least one intervening minor phase.
+- `beta` remains a supported-for-evaluation contract that may change at a minor phase boundary only
+  with a changelog entry, migration impact, diagnostics, and evidence. It is not a promise that every
+  optional host or dependency combination works.
+- `experimental` and `deferred` surfaces must be visibly labeled in docs and reports. Experimental
+  behavior cannot be the only path for an ordinary HTTP, no-JavaScript, security, or recovery flow.
+- `internal` symbols, private serializer nodes, generated implementation details, and undocumented
+  transitive imports are not compatibility promises, even when users can import them today.
+- A deprecation has a stable identifier, replacement or non-fit explanation, first-release marker,
+  and removal review. The minimum removal window is one intervening minor phase unless an accepted
+  security or correctness decision records why that is unsafe.
+- Package metadata may declare a wider range than CI proves. The phase packet must distinguish
+  Supported, installable-but-untested, and incompatible combinations and must pin the release train
+  used for its evidence.
+
+### Entry and exit gates
+
+Phase `0.9` implementation entry requires the `0.8` acceptance packet to be release-verified, a
+frozen public-surface inventory, named native owners, a compatibility baseline, and a machine-readable
+budget/deprecation lock. Release exit requires, at minimum:
+
+1. every exported and documented Edron capability has one maturity, owner, package disposition, and
+   public-vs-internal classification;
+2. the promoted stable subset has exact signatures, deterministic diagnostics, native identity,
+   ordinary HTTP/HTMX and no-JavaScript behavior, security, accessibility, and upgrade evidence;
+3. the Supported dependency and host matrix passes in clean environments, with unsupported ranges
+   clearly labeled and no accidental dependency widening;
+4. every deprecated or contradictory path has a warning/migration fixture, a numeric support window,
+   and an explicit removal or retention decision;
+5. import, compile, render, request, asset, diagnostic, artifact, and installation measurements meet
+   the published budgets, with no benchmark-only semantic shortcuts;
+6. security and accessibility regression suites cover representative pages, interactions, adapters,
+   mounted paths, production profiles, and negative cases;
+7. wheel/sdist, offline-install, dependency-isolation, browser-asset, provenance, and upgrade/rollback
+   evidence are retained for the pinned Edron/Hedron train; and
+8. the complete preceding regression suite plus the Phase `0.9` compatibility, maturity, performance,
+   security, accessibility, documentation, and recovery suites pass before an `edron-v0.9.0` tag is
+   considered.
+
+If a gate fails, the affected capability keeps its prior maturity or is narrowed in the acceptance
+packet. The phase does not gain a compatibility promise by silently removing a failing test.
+
+### Release shape and non-goals
+
+`0.9.0` establishes the reviewed maturity and compatibility baseline. `0.9.x` releases are for
+compatible fixes, security updates, dependency updates within the declared matrix, and documentation
+or migration corrections. Additive work that introduces a new authority, host, renderer, interaction
+model, live transport, or broad framework parity belongs in a separately accepted phase or RFC.
+
+Phase `0.9` does not:
+
+- create or schedule Edron `1.x`, freeze every Beta API, or turn the package's Beta distribution
+  classifier into a stable product guarantee;
+- provide `import edron as st`, a whole-script rerun runtime, a global session dictionary, or a
+  second renderer, router, state, job, asset, browser, or security authority;
+- add a new framework/host adapter solely to enlarge the support table, or claim Flask/Django,
+  notebook, Workbench, Posit Connect, or live-transport parity without a native lifecycle packet;
+- remove a public path without the deprecation and migration rules above, except where an earlier
+  accepted decision explicitly records a different boundary; or
+- conceal regressions by changing semantics, weakening security/accessibility checks, dropping
+  no-JavaScript fallbacks, or narrowing the tested matrix while leaving broader claims in metadata.
+
+Phase `0.9` may receive multiple minor and patch releases. Completion means that the surviving public
+surface is easier to classify, measure, upgrade, and support—not that every Edron capability becomes
+stable or that a future major release is implied.
 
 ## Permanent boundaries across all phases
 
@@ -479,6 +635,10 @@ built-artifact evidence, and explicit release decision. A roadmap row cannot sat
 gate and cannot be cited as proof that a feature is available.
 
 ## Related documents
+
+- [Edron user guide](guides/edron-user-guide.md)
+- [Edron 0.8 acceptance packet](acceptance/EDRON_008.md)
+- [Edron deployment guide](guides/edron-deployment.md)
 
 - [Edron 0.1 public API](api/EDRON.md)
 - [Edron state and interaction](api/EDRON_STATE_INTERACTION.md)

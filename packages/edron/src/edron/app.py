@@ -56,6 +56,15 @@ class App:
             kwargs["session_secret"] = session_secret
         self.title = title
         self.hedron = hedron.Hedron(**kwargs)
+        self._deployment_options = {
+            key: value
+            for key, value in {
+                "production": production,
+                "build_dir": str(build_dir) if build_dir is not None else None,
+                "root_path": root_path,
+            }.items()
+            if value is not None
+        }
         from hedron.connections import ConnectionRegistry, install_connections
 
         self._resources = ConnectionRegistry()
@@ -79,6 +88,11 @@ class App:
         instance = cls.__new__(cls)
         instance.title = title or getattr(app, "title", "Edron application")
         instance.hedron = app
+        instance._deployment_options = {}
+        for key in ("production", "build_dir", "root_path"):
+            value = getattr(getattr(app, "state", None), f"hedron_{key}", None)
+            if value is not None:
+                instance._deployment_options[key] = value
         from hedron.connections import ConnectionRegistry, install_connections
 
         existing_resources = getattr(app.state, "hedron_connections", None)
@@ -926,6 +940,7 @@ class App:
 
     def operations(self) -> dict[str, Any]:
         """Return bounded deployment facts without resolving resources or jobs."""
+        from edron.deployment import check_deployment
         from hedron_core.cache import get_cache_backend
         from hedron_core.durability import is_process_local
         from hedron_core.jobs import get_job_backend
@@ -933,9 +948,15 @@ class App:
         jobs = get_job_backend()
         cache = get_cache_backend()
         production = bool(getattr(self.hedron.state, "hedron_production", False))
+        deployment = check_deployment(
+            environ={},
+            overrides=self._deployment_options,
+            application=self,
+        )
         return {
             "schema": "edron.operations/1",
             "production": production,
+            "deployment": deployment.to_mapping(),
             "backends": {
                 "jobs": {
                     "type": type(jobs).__name__,
@@ -965,6 +986,26 @@ class App:
                 "no worker, scheduler, queue, database, or object store is provisioned",
             ],
         }
+
+    def deployment(
+        self,
+        profile: str | None = None,
+        *,
+        environ: Mapping[str, str] | None = None,
+        cwd: str | Path | None = None,
+        overrides: Mapping[str, Any] | None = None,
+    ) -> Any:
+        """Return a bounded profile report for this app without serving it."""
+        from edron.deployment import check_deployment
+
+        merged = {**self._deployment_options, **dict(overrides or {})}
+        return check_deployment(
+            profile,
+            environ=environ,
+            cwd=cwd,
+            overrides=merged,
+            application=self,
+        )
 
     diagnostics = operations
 
