@@ -13,6 +13,30 @@ state = "warning-and-tooling"
 fixture = "tests/upgrade/shared.py"
 
 [[removal]]
+code = "HED-MIGRATE-0679"
+old_path = "flask.component"
+replacement = "flask.view"
+kind = "adapter decorator"
+state = "warning-and-tooling"
+fixture = "tests/upgrade/phase_1_0/transitional/flask_component.py"
+
+[[removal]]
+code = "HED-MIGRATE-0680"
+old_path = "blueprint.component"
+replacement = "blueprint.view"
+kind = "adapter decorator"
+state = "warning-and-tooling"
+fixture = "tests/upgrade/phase_1_0/transitional/blueprint_component.py"
+
+[[removal]]
+code = "HED-MIGRATE-0681"
+old_path = "blueprint.include_feature"
+replacement = "blueprint.include"
+kind = "adapter method"
+state = "warning-and-tooling"
+fixture = "tests/upgrade/phase_1_0/transitional/blueprint_include_feature.py"
+
+[[removal]]
 code = "HED-MIGRATE-0675"
 old_path = "app.screen"
 replacement = "app.page"

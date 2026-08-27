@@ -130,6 +130,9 @@ TRANSITIONAL_FIXTURES = {
     "app_refreshable.py": "app.refreshable",
     "app_command.py": "app.command",
     "app_form_command.py": "app.form_command",
+    "flask_component.py": "flask.component",
+    "blueprint_component.py": "blueprint.component",
+    "blueprint_include_feature.py": "blueprint.include_feature",
 }
 
 
@@ -443,6 +446,9 @@ def check_plan() -> list[str]:
         "HED-MIGRATE-0676",
         "HED-MIGRATE-0677",
         "HED-MIGRATE-0678",
+        "HED-MIGRATE-0679",
+        "HED-MIGRATE-0680",
+        "HED-MIGRATE-0681",
     }
     if not required_warning_codes <= warning_codes:
         errors.append("warning inventory is missing the implemented warning floor")
@@ -568,6 +574,9 @@ def check_plan() -> list[str]:
         "HED-MIGRATE-0676",
         "HED-MIGRATE-0677",
         "HED-MIGRATE-0678",
+        "HED-MIGRATE-0679",
+        "HED-MIGRATE-0680",
+        "HED-MIGRATE-0681",
     ):
         if code not in migration_source:
             errors.append(f"known 0.67 warning floor is missing {code}")
