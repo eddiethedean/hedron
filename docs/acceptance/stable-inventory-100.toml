@@ -1,37 +1,8533 @@
 schema_version = 1
 phase = "1.0"
-status = "Draft; package and symbol census pending W0"
+status = "Generated; stability and task reconciliation pending W0"
 baseline = "v0.67.0"
-stable_rule = "SemVer applies only to this enumerated inventory; Beta and Experimental exports remain outside it."
+baseline_commit = "82bd0e4f8fcd2ae75fd50fd2c41e18fbd674ace6"
+stable_rule = "Every export is enumerated; reviewed rows enter the SemVer stable promise."
 
 [[package]]
-name = "hedron-core"
-version = "0.67.0"
-disposition = "coordinated-cut"
+name = "edron"
+import = "edron"
+version = "0.8.0"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "edron.Action"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.App"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.ARTIFACT_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.BackendMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.BindingError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.BoundAction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.BoundFragment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.CachedFunction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.CapabilityError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.CapabilityPromotion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Color"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Column"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Confirm"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Container"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Dependency"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DeploymentError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DeploymentProfile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DeploymentProfileName"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DeploymentReport"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DeploymentResolution"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Resource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DataExport"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DataSelection"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DataSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DataWorkspace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DiagnosticReport"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.DesignSystem"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Download"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.EdronError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.EdronDiagnostic"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.EditIntent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.EditPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.FilterScope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.FeaturePackage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Fragment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.IncompatibleCapabilityError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.JobBackend"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.JobFlow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.JobScope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.job_status_events"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.MissingCapabilityError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.BrokenCapabilityError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Outcome"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.PackageConflictError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Page"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.PROFILE_NAMES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.PROFILE_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.PageRequest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.LayoutSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.NavigationError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.NavigationTarget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.LAYOUT_KINDS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.PhaseError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.RegistrationError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.StyleContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.StyleRecipe"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.Theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.ThemeSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.TEMPLATES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.action"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.artifact_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.artifact_records"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.check_deployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.cache_data"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.create_scaffold"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.dependency"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.deployment_report"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.resource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.profile_from_environment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.resolve_deployment_profile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.download"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.fragment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.inherit"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.expose"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.refresh"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.success"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.feature_package"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.layout"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.promoted_capability"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.promoted_capabilities"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.SourceLocation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.WorkspacePage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.AuditEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "edron.CellEdit"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "fastapi-workbench"
+import = "fastapi_workbench"
+version = "1.0.1"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "fastapi_workbench.ROOT_PATH_ENV"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.RESOLVED_MOUNT_ENV"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.RESOLVED_PUBLIC_BASE_ENV"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.RESOLVED_MODE_ENV"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.RESOLVED_SOURCE_ENV"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.ResolvedDeployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.DeploymentCapabilities"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.WorkbenchConfig"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.WorkbenchMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.WorkbenchTopology"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.WorkbenchPathMiddleware"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.export_workbench_state"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.is_ephemeral_workbench_mount"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.is_posit_connect_scope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.is_workbench_env"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.is_workbench_job"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.is_workbench_scope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.normalize_http_origin"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.parse_rserver_url_output"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.prepare_app"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.resolve_deployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "fastapi_workbench.workbenchify"
+maturity = "unclassified"
+disposition = "needs-review"
 
 [[package]]
 name = "hedron"
+import = "hedron"
 version = "0.67.0"
 disposition = "coordinated-cut"
 
-[[package]]
-name = "hedron-explorer"
-version = "0.67.0"
-disposition = "coordinated-cut"
+[[symbol]]
+qualified = "hedron.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
 
-[[package]]
-name = "hedron-jinja"
-version = "0.67.0"
-disposition = "coordinated-cut"
+[[symbol]]
+qualified = "hedron.action_attrs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ActionDock"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ActionPhase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ActionPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ActionState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ActionTrace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ActionTransitionError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AlpineAttrs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AlpineDirective"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AlpineExpression"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AlpineFeatureDemand"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AlpineMaturity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BrowserPlanError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BrowserFeaturePlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BrowserPlanClosure"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BoundaryDecision"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BoundaryPhase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AsyncPhase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.begin_operation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.complete_operation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.decide_prefetch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ActionGroup"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ActionHandle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ActionRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.addressable"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Alert"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AmbientCanvas"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AmbientBackdrop"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AmbientLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.apply_color_mode_cookie"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.approved_headers"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.apply_navigation_headers"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AppShell"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AppShellChrome"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AsyncRegion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Surface"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ResourceRow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ResourceList"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ScrollRegion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NavStatus"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Identity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.IdentityRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.IdentityTarget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.GridItem"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.EnvironmentBanner"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Brand"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Avatar"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AppFooter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AccountSummary"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Aside"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AttrHost"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Audio"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AuthDenied"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AuthResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AuthSuccess"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Auto"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.AutoForm"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.await_if_needed"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Badge"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BottomDock"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BoundaryBindingPlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BoundFragment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.browser_context"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.browser_context_from_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BrowserContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BrowserStorage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.BrowserStorageUnavailable"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Button"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ByteRangeNotSatisfiable"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.cache_component"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.cache_data"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CachePolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CameraCapture"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Card"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Carousel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.case"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CatalogEntry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CatalogVersionError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ChatInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ChatMessage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Checkbox"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ChipInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CircularProgress"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ClipboardCopy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CodeBlock"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CodeViewer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ColorInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ColorMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ColorModeToggle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CommandHandler"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CommandResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.compile_css"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.compile_palette"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.compatibility_theme_vars"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.component_contract_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.element_metadata_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.package_identity_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.derived_theme_tokens"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Component"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ComponentRef"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ComponentResponse"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ConfirmButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Container"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ConnectorFlow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ConnectorNode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ConnectorTrack"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ContextMenu"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.contrast_diagnostics"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.contrast_ratio"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Control"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.cookie_path_for_mount"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.csrf_token_for_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CsrfField"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CsrfStrategy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CsrfValidationError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DashboardHistory"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DashboardWorkspace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DateInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DateTimeInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.default_interaction_policy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DependencyLifetime"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DependencyPlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DependsOn"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DescriptionList"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DesignSystem"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Color"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ComponentStateMatrix"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ComponentThemeContract"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.CoverageProfile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RecipeFamily"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.StyleContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.THEME_PACKAGE_COMPATIBILITY"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Dialog"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Dialogue"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DialogueTurn"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DirectoryUpload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DirectoryUploadFile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Divider"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DoubleSubmitCookieCsrf"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.download_all_zip"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.DownloadButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ErrorState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ExampleItem"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ExampleSet"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Expander"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FeedbackPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Field"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FailureBoundary"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FailureDisposition"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FutureWarningRecord"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FutureWarningRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PUBLIC_FUTURE_WARNINGS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.emit_future_warning"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FileComponentResponse"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FileUpload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FlowStep"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Footer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Form"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.form_sync_attrs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FormBody"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FormErrors"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FormField"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FormGrid"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FormModel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Fragment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FragmentHandle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FragmentHost"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FragmentRegion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FragmentRegionError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.FragmentResponse"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Gallery"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.GalleryItem"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.gather"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.GeoJSONLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.GeolocationButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.GeolocationHint"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.get_icon"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Grid"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Head"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Header"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Heading"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HedronFutureWarning"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.warn_legacy_path"
+maturity = "unclassified"
+disposition = "needs-review"
 
 [[symbol]]
 qualified = "hedron.Hedron"
-disposition = "canonical"
+maturity = "unclassified"
+disposition = "needs-review"
 
 [[symbol]]
-qualified = "hedron_core.Interaction"
-disposition = "canonical"
+qualified = "hedron.hedron_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HedronRoute"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HedronRouter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Help"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HelpInspector"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HTML"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.html"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.htmx_context"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.htmx_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HtmxLink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HEDRON_NAVIGATION_HEADER"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HEDRON_NAVIGATION_PHASE_HEADER"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HEDRON_NAVIGATION_TARGET_HEADER"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HEDRON_NAVIGATION_TITLE_HEADER"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HEDRON_PREFETCH_HEADER"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.HtmxRequest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Hx"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Icon"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.IconButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.IFrame"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Image"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InferenceInterface"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InferencePolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InferenceWorkflow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InfiniteScroll"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Inline"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InstanceKey"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Interaction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InteractionKind"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InteractionCatalog"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InteractionManifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InteractionPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InteractionRecorder"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.InteractionResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.invalidate_tags"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.is_safe_navigation_url"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.JobScope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.JobScopeProvider"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.JSONViewer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Label"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Lazy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Link"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.LinkButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.List"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.LocalEffect"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.list_icons"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Loading"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.LoginCsrfField"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Logo"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Main"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.MainPanel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Map"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.MarkerSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Math"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.media_file_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PollPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RateLimitPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SessionAuthFlow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SessionRotationPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.StyleRecipe"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.StyleScope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ThemePicker"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ThemePreference"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.resolve_theme_preference"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.theme_boot_asset"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.theme_markers"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TaskFlow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TaskUnavailablePolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.UploadFlow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.MenuButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.merge_htmx_headers"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Metric"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.MicrophoneCapture"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Model"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ModelDemo"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.mount_from_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.mount_hedron_static"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.MountPath"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.MultiSelect"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Nav"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NavGroup"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NavLink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NavigationDecision"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NavigationIdentity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NavigationMachine"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NavigationPhase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NavigationPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NavigationState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.OperationIdentity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Outcome"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.OutcomeKind"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PrefetchDecision"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.evaluate_prefetch_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TraceEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.transition_action"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.normalize_mount_path"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.NumberInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.oob_swap"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.OobHost"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.OobUpdate"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.OutcomeMap"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PackageProjection"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Page"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PageHeader"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PageIcon"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PageResponse"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Pagination"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ParameterViewer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.parse_byte_range"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Patch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.patches"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PatchSet"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PdfViewer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Pills"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Poll"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Popover"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PredictionFeedback"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PredictionLabel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.PredictionScore"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.prefix_local_path"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ProcessFlow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Progress"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ProjectionCapability"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Props"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RadioGroup"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RangeInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RatingInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.read_color_mode_preference"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RecordedExchange"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RecordingSnippet"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.redact_cookie_value"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.redirect_external"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.redirect_htmx"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.redirect_local"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Refresh"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.refresh"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RefreshableView"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RefreshButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Refreshes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RefreshIntent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.register_icon"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RegisteredAction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.render"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.render_component_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.render_interaction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RenderContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RenderMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RenderResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RequestIndicator"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RequestEffect"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.RequiresScopes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.resolve_color_mode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.resolve_mount_path"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.resolve_mount_path_from_environ"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.navigation_identity_from_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.resolve_route_path"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.resolved_theme_from_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.retarget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.run_sync"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.safe_download_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SafeUrl"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ReviewedExpression"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ScreenHandle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ScreenLayout"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Secret"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Section"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SecurityHeadersPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SecurityPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SecurityProfile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SegmentedControl"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Select"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SelectSlider"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Sensitive"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.session_state"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SessionState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SessionTokenCsrf"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Sidebar"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Skeleton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SkipLink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Spacer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SplitView"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.MasterDetail"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Stack"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.StateView"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.StateTransfer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.StateTransferPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Status"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.StorageQuotaExceeded"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.styles_from_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.StyleSymbols"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.SubmitButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.swap"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.swap_oob"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Table"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TableColumn"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Tabs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Text"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TextArea"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TextInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ThemeBuilder"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ThemePackage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ThemePatch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ThemeSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ThemeValidationReport"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.conformance_report"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.diff_theme_specs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.explain_theme_spec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.export_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.load_theme_package"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.package_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.register_component_theme_contract"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.registered_component_theme_contracts"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.register_recipe_family"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.registered_recipe_families"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.register_theme_package"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.resolve_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.StateMatrixEntry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ThemeExport"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ThemeResolution"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.build_state_matrix"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.inspect_theme_css"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.theme_contract_report"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TRACE_CONTRACT_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.decode_interaction_trace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.encode_interaction_trace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.profile_interaction_trace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.validate_theme_spec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TimeInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Timeline"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Title"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Toast"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ToastHost"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ToggleSwitch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Tooltip"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.trusted_svg"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TrustedHtml"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.TypeSchema"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Typography"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Updates"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.UrlPurpose"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.validate_directory_upload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.Video"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ViewParams"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron.ViewportHint"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-charts"
+import = "hedron_charts"
+version = "0.2.2"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "hedron_charts.AltairAdapter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.AltairChart"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.AreaChart"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.BarChart"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.Chart"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.ChartInteraction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.ChartPlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.ChartSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.LineChart"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.MatplotlibAdapter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.MatplotlibChart"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.PlotlyAdapter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.PlotlyChart"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.RUNTIME_PINS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.ScatterChart"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.TAG_NAME"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.apply_annotations"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.beginner_to_spec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.chart_from_beginner"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.compile_chart"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.compile_figure"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.ensure_pin_stubs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.export_csv"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.export_json"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.export_svg"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.optional_adapters"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.parse_chart_spec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.pinned_runtime"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.plan_export_bundle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_charts.verify_pin"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-conformance"
+import = "hedron_conformance"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_conformance.AUTHORING_LOOP_SCHEMA_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.AUTHOR_KIT_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.CONTRACT_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.CURRENT_CONTRACT_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.FIXTURE_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.HED_NOTEBOOK_TOKEN"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.HED_NOTEBOOK_TOPOLOGY"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.HED_PACKAGE_DOCTOR"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.HED_SIM_LIMIT"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.HED_SIM_UNSUPPORTED"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.NO_NETWORK_MARKER"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.PREVIOUS_CONTRACT_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.PROCESS_KILL_TIMEOUT_S"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.PROFILE_IDS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.PROTOCOL_CURRENT"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.PROTOCOL_PREVIOUS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.AuthorKitDiagnostic"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.AuthoringLoopDiagnostic"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.AuthoringLoopFixture"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.Capability"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.CapabilityResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.CompatibilityDecision"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.CompileReport"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.ConformanceFixture"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.ExpectedOutcome"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.FixtureInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.FixtureResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.KitReport"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.Profile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.ProfileRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.ArchiveBudgetError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.SandboxPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.SuitePathError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.admit_fixtures"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.author_kit_dir"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.author_kit_summary"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.build_result_envelope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.check_archive_budget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.check_contract_version"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.check_fixture_version"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.compatibility_policy_dict"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.compile_suite"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.declared_capabilities"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.intentional_failure_examples"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.load_bundled_fixtures"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.load_element_abi_fixtures"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.load_profile_registry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.negotiate_protocol"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.normalize_html"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.offline_bundle_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.profile_suite_digest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.protocol_matrix"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.refuse_secret_env_capture"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.run_kit"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.suite_digest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.suite_digests"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.to_junit"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.to_sarif"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.validate_author_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.validate_fixture_schema"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.validate_suite_path"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_conformance.verify_envelope_digest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-core"
+import = "hedron_core"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_core.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ActionDock"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ActionPhase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ActionPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ActionState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ActionTrace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ActionTransitionError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ALPINE_PLAN_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AlpineAttrs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AlpineDirective"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AlpineExpression"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AlpineFeatureDemand"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AlpineMaturity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BrowserPlanError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BrowserFeaturePlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BrowserPlanClosure"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.browser_assets_for_features"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ActionGroup"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ActionRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BoundaryDecision"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BoundaryPhase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.addressable"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AddressableDescriptor"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AddressableMeta"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Alert"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AmbientCanvas"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AmbientBackdrop"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AmbientLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.allow_htmx_eval"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ApplicabilityInterval"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.application_spec_to_asset_ref"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ApplicationAssetPlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ApplicationAssetSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.apply_property_patch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.apply_suppressions"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.approved_headers"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.begin_operation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AppShell"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AppShellChrome"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavStatus"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.EnvironmentBanner"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Brand"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AppFooter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AccountSummary"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Aside"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AssetMeta"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AssetRef"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AsyncRegion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AsyncPhase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AttrHost"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Audio"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.aurora_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.authorize_htmx_target"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.authorize_location_selectors"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.authorize_oob_update"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.authorize_response_selector"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.authorized_chart_event"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.AuthSignal"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Auto"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Badge"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BASE_DESCRIPTOR_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BaseHandleDescriptor"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BatchWindow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BindingAdapter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BindingPlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BottomDock"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BoundaryBindingPlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BrowserContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BrowserModuleMeta"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BrowserStorage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BrowserStorageUnavailable"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.builtin_themes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.BusyRegion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Button"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CachedExampleResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CacheScope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CacheTrace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.complete_operation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CameraCapture"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.capability_matrix"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CapabilityRecord"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Card"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Surface"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ResourceRow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ResourceList"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ScrollRegion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Identity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.IdentityRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.IdentityTarget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Avatar"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Carousel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.catalog_facts"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CatalogEntry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CatalogVersionError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ChannelBudget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ChannelMessage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ChartAccessibility"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ChartAnnotation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ChartEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ChartOutput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ChatMessage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Checkbox"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ChipInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ChunkedList"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CircularProgress"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ClientStateRead"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ClipboardCopy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CodeBlock"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CodeViewer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CollectionPatch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CollectionSelector"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CollectionSelectorKind"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.color_mode_script"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ColorInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ColorMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ColorModeToggle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compile_application_asset_plan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compile_css"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compile_interaction_catalog"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compile_palette"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compile_to_interaction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compatibility_theme_vars"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.component_contract_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.element_metadata_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.package_identity_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Component"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ComponentNode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compose_cross_filter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ConcurrencyGroup"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ConfirmButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Container"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ConnectorFlow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ConnectorNode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ConnectorTrack"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ContextMenu"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.contrast_diagnostics"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.contrast_ratio"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CrossFilterBinding"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CsrfField"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CsrfStrategy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CsrfValidationError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.dashboard_graph_payload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DashboardBinding"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DashboardGraphError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DateInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DateTimeInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.decide_preload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.decide_prefetch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.default_interaction_policy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.default_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DependencyLifetime"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DependencyPlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DescriptionList"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DesignSystem"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Color"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ComponentStateMatrix"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ComponentThemeContract"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.CoverageProfile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RecipeFamily"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StyleContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.THEME_PACKAGE_COMPATIBILITY"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ThemeBuilder"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ThemePackage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ThemePatch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ThemeSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ThemeValidationReport"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TraceEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.transition_action"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.conformance_report"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.diff_theme_specs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.explain_theme_spec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.export_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.load_theme_package"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.package_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_component_theme_contract"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.registered_component_theme_contracts"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_recipe_family"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.registered_recipe_families"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_theme_package"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.resolve_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StateMatrixEntry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ThemeExport"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ThemeResolution"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.build_state_matrix"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.inspect_theme_css"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.theme_contract_report"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TRACE_CONTRACT_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.decode_interaction_trace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.encode_interaction_trace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.profile_interaction_trace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.validate_theme_spec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.descriptor_fingerprint"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.design_system_vars"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.derived_theme_tokens"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Diagnostic"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.diagnostics_to_json"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.diagnostics_to_sarif"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.diagnostics_to_text"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DiagnosticSeverity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Dialog"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Dialogue"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DialogueTurn"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DirectoryUpload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DirectoryUploadFile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Divider"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.DoubleSubmitCookieCsrf"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.EFFECT_GRAPH_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.eject_bundle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.eject_source"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ElementDefinitionMeta"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ElementFieldOwnership"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.emit_security_audit"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.emit_theme_css"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.encode_sse"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ensure_builtin_themes_registered"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.EventPayload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ExampleItem"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ExampleSet"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Expander"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.export_effect_graph"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.export_routes_document"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ExtensionAsset"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ExtensionSet"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.EXPLANATION_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.explain_feature"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FeatureBundle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FeatureConflictError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FeatureExplanation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FeatureProvider"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FeatureRequirement"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FeatureSourceMap"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FeedbackPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FeedbackRecord"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Field"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FailureBoundary"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FailureDisposition"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.filter_by_applicability"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FlowStep"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Footer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FORCED_COLOR_TOKENS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Form"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FormErrors"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FormField"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FormGrid"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FormModel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Fragment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FRAGMENT_HOST_TAGS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FragmentHost"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FragmentRegion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.full_fragment_fallback_required"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Gallery"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.GalleryItem"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.generate_interaction_tests"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.GENERATOR_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.GeoJSONLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.GeolocationButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.GeolocationHint"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.get_cache_traces"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.get_icon"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.get_registry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.get_security_audit_sink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.GraphRecording"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.GraphReplayEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Grid"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.GridItem"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Head"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Header"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Heading"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HedronError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Help"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HelpInspector"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.html"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HtmlAttrMap"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HtmlAttrValue"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.htmx_eval_allowed"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HtmxContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HtmxExtension"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HtmxLink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Hx"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HX_PRELOADED"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HxLocation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HxTriggerPayload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Icon"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.IconButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.IconEntry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.IFrame"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Image"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.include_bundle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.included_bundles"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InferenceAdmission"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InferenceDiagnostics"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InferenceError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InferenceInterface"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InferencePolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InferencePriority"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InferenceQueueStatus"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InferenceWorkflow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Inline"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InMemoryCacheBackend"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InMemoryFeedbackSink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InProcessInferenceQueue"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.inspect_data"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InstanceKey"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.interaction_headers"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InteractionCatalog"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InteractionGraph"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InteractionManifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InteractionPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InteractionResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InteractionTrace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.invalidate_tags"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.is_terminal_job_state"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.job_status_sse_events"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.JobStatusDict"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.JsonObject"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.JsonPrimitive"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.callable_ref"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SOURCE_MAP_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.source_map_for"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.JsonValue"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.JSONViewer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.known_extensions"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Label"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.LandmarkProps"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.LifecycleResource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Link"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.LinkButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.List"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.list_icons"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.LiveObservation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Logo"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Main"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MainPanel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Map"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MAP_VIEWPORT_TRIGGER"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MarkerSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Math"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MAX_PATCH_TARGETS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MAX_REFRESH_TARGETS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MediaChunk"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MediaSession"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MediaSessionBudget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MediaSessionState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.meets_severity_threshold"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MenuButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Metric"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MicrophoneCapture"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Model"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ModelDemo"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ModelDemoError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MultiSelect"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Nav"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavigationDecision"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavigationIdentity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavigationMachine"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavigationPhase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavigationPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavigationPreloadPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavigationState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavLink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NavGroup"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NodeLike"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.normalize_severity_alias"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.NumberInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.OobHost"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.OobUpdate"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.OperationIdentity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PrefetchDecision"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.OperationWorkflow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ordered_registry_assets"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.OVERLAY_ELEVATION_TOKENS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PackageProjection"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Page"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PageHeader"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PageIcon"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PageSessionChannel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ParameterViewer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PartialFailurePolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Patch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PatchError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PatchOp"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PatchSet"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PdfViewer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Pills"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PluginMetaDict"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Popover"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PortableTarget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PredictionFeedback"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PredictionLabel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PredictionScore"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PreloadDecision"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.prepare_tree"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PrepareContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PrepareTiming"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PRINT_SAFE_TOKENS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PRIVATE_SELECTORS_SUPPORTED"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ProcessFlow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Progress"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ProjectionCapability"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ProjectionDisposition"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ProjectionProvider"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PropertyPatch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Props"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PublishedRevision"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.QueuedInference"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RadioGroup"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RangeInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RatingInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.record_exchange"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.redact_cookie_value"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RefreshIntent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RegionUpdate"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_addressable"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_asset"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_application_style"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_browser_module"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_component"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_element_definition"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_icon"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_projection_provider"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_renderer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_route"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.register_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RegisteredAction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RegisteredCallableAdapter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RemediationAction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.render"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RenderContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RenderMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RenderResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.REACT_ISLAND_RECIPE"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ReactIslandRecipe"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RenderSession"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RenderTrace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.replay"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RequestIndicator"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.REQUIRED_A11Y_TOKENS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RequiresScopes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RESERVED_RESPONSE_SINK_IDS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.reset_bundles_for_tests"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.reset_cache_for_tests"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.reset_registry_for_tests"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.resolve_color_mode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.resolve_feature"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.retry_operation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ROUTE_DOCUMENT_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RouteMeta"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.run_visual_conformance"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SafeUrl"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.sanitize_geojson"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.scoped_identifier"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.seal_interaction_catalog"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.seal_registry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Secret"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Section"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SecurityAuditEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SecurityAuditEventType"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SecurityAuditSink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SecurityHeadersPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SecurityPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SecurityProfile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SecurityProfileName"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SegmentedControl"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Select"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SelectSlider"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Sensitive"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SessionTokenCsrf"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.set_security_audit_sink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Sidebar"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Skeleton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SkipLink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SourceSpan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StateTransfer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StateTransferPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Spacer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SplitView"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MasterDetail"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SseEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SseRegion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SseTrigger"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Stack"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StateView"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Status"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StatusPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StorageQuotaExceeded"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StreamBudget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StreamedDocument"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StructuralBindingAdapter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StructuredLogAuditSink"
+maturity = "unclassified"
+disposition = "needs-review"
 
 [[symbol]]
 qualified = "hedron_core.Outcome"
-disposition = "canonical"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.OutcomeKind"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.RequestEffect"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ReviewedExpression"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FutureWarningRecord"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.FutureWarningRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HedronFutureWarning"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PUBLIC_FUTURE_WARNINGS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.emit_future_warning"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.warn_legacy_path"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.styles_from_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.STYLE_BUNDLE_COMPONENTS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StyleBundle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compare_style_bundle_sizes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compile_style_bundle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.style_bundle_asset_refs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.style_bundle_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StyleRecipe"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StyleScope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ThemePicker"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ThemePreference"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.resolve_theme_preference"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.theme_boot_asset"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.theme_markers"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.react_island_host"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.react_island_recipe"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.StyleSymbols"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ApplicationStyleMeta"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SubmitButton"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Suppression"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SurfaceProjectionProvider"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.SwapReveal"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Table"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TableColumn"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Tabs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TERMINAL_JOB_STATES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Text"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TextArea"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TextInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.THEME_DENSITIES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.theme_element_compatibility"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TimeInput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Timeline"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Title"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Toast"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ToastHost"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ToggleSwitch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TokenStream"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Tooltip"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TriggerContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.triggers_from_chart_event"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.triggers_from_grid_selection"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.trusted_svg"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TrustedHtml"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TYPE_SCHEMA_NAMESPACE"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TYPE_SCHEMA_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.TypeSchema"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Typography"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.UrlPurpose"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.UrlReverseRequest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.validate_annotation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.validate_chart_event"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.validate_directory_upload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.validate_element_style_contract"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.emit_visualization_theme_css"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.resolve_visualization_theme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Video"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.is_safe_navigation_url"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ViewportHint"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.VISUALIZATION_ROLES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.VisualizationAdapter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.VisualizationPalette"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.VisualizationLimits"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.VisualizationSeries"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.WorkflowEditorView"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.WorkflowError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.WorkflowNode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.WorkflowNodeKind"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.WorkflowNodeResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.WorkflowPermission"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.WorkflowPort"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.WorkflowRunResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PRESENTATION_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PRESENTATION_TOKEN_MANIFEST"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.MotionRecipe"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PresentationContract"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.PresentationError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ResponsiveCondition"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ScopedStyleBundle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.ScopedStyleRecipe"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.component_presentation_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.compile_scoped_styles"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.presentation_contract"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.presentation_token_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.presentation_tokens"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.motion_recipe"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.motion_recipes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HEDRON_LIFECYCLE_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.HedronLifecycleEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.Interaction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.InteractionKind"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.LifecycleFact"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.LifecyclePolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.LifecycleState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.LocalEffect"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.lifecycle_attributes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_core.transition_lifecycle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-data"
+import = "hedron_data"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_data.ABI_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.AG_GRID_BACKEND"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.APPROVED_PHASE062_RISKS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.AGGridRowModel"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.AsyncDataEditorSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.AsyncInMemoryDataSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.AsyncVisualizationSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.CellFormat"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.CellUpdate"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.CollaborativeConflict"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.Column"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.ColumnSchema"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.Conflict"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DATA_EDITOR_EVENTS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DENY_BY_DEFAULT_RISKS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DaskDataSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DataChanges"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DataEditor"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DataEditorSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DataPage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DataQuery"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DataSaveResult"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DataTable"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DataWorkspace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DataWorkspacePolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.FeatureOverrides"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DEFAULT_MAX_PAGE_SIZE"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DEFAULT_MAX_VIZ_PAYLOAD_BYTES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DEFAULT_MAX_VIZ_ROWS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.DjangoQuerySetDataSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.ELEMENT_ID"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.EditProvenance"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.FieldError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.GridCellEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.GridDragEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.GridEditEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.GridEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.GridPaginationEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.GridSelectionEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.GridViewportEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.HARD_MAX_PAGE_SIZE"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.InMemoryDataSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.MergeRegion"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.OptimisticMutation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.OptimisticMutationState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.OptimisticPatch"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.QueryBudgetExceeded"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.QueryDiagnostics"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.SQLAlchemyDataSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.SavedView"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.SnowflakeDataSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.SpatialAlternative"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.TAG_NAME"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.TransformPlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.TransformStep"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.TreeNode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.VisualizationSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.aggrid_column_defs"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.apply_plan_in_memory"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.assert_optimism_allowed"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.assert_phase062_optimism_allowed"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.authorized_grid_event"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.columns_from_model"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.conflict_actions"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.ensure_aggrid_assets"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.evaluate_formula"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.export_rows_ods"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.export_rows_xlsx"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.filter_writable_changes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.flatten_tree"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.import_rows_ods"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.import_rows_xlsx"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.infinite_block_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.merge_changes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.new_idempotency_key"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.normalize_rows"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.pivot_rows"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.plan_from_query"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.recover_pending"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.require_dask"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.require_snowflake"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.resolve_columns"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.rows_to_tree"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.spatial_alternatives_for"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.validate_grid_event"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_data.write_policy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-django"
+import = "hedron_django"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_django.DjangoUrlReverser"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.HedronDjango"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.HedronDjangoConfig"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.HedronSecurityHeadersMiddleware"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.POLLING_FALLBACK_SUPPORTED"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.component_path"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.component_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.csrf_hidden_input"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.form_to_nodes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.formset_to_nodes"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.hedron_paths"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.hedron_static_urlpatterns"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.hedron_view"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.include_component_path"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.include_feature"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.interaction_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.poll_status_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.project_bundle_facts"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.project_catalog_facts"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.refuse_live_host_authority"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_django.validation_interaction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-elements"
+import = "hedron_elements"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_elements.AUTHOR_SURFACES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.DISPOSITIONS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.BrowserTrace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.CompositionEdge"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.DraftTransferEnvelope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.Example"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.NON_FITS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.OwnershipMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.REQUIRED_DIAGNOSTICS_PREFIX_GUIDANCE"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.REQUIRED_ELEMENT_META_KEYS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.ReactMigrationMatrix"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.apply_incoming_update"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.diagnostics_prefix_guidance"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.matrix_rows"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.packaging_checklist"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.render_element_markup"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.validate_element_author_meta"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.validate_field_ownership"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.validate_trace_payload"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.subject_fingerprint"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_elements.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-explorer"
+import = "hedron_explorer"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_explorer.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_explorer.explorer_router"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-extras"
+import = "hedron_extras"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_extras.AvatarProfile"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.BadgeLink"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.BrowserPythonSandbox"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.Calendar"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.CallableActionForm"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.ChartWorkbench"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.ChoiceCards"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.ChoiceOption"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.DataExplorer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.DiagramOutput"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.ExtrasFeature"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.FloatingAction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.FocusScrollRequest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.ImageAnnotations"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.ImageCompare"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.ImageCrop"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.ImageRegionSelect"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.JSONEditor"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.KeyboardShortcuts"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.LogConsole"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.MetricCard"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.SandboxBudget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.ShortcutBinding"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.SignaturePad"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.SplitPane"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.Steps"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.TodoList"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.TokenWeightedText"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.TreeNodeProps"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.TreeView"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.Typeahead"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_extras.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-flask"
+import = "hedron_flask"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_flask.FlaskUrlReverser"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.HedronBlueprint"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.HedronFlask"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.POLLING_FALLBACK_SUPPORTED"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.component_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.hedron_route"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.include_feature"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.interaction_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.mount_hedron_static"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.poll_status_response"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.project_bundle_facts"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.project_catalog_facts"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.refuse_live_host_authority"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_flask.wrap_hedron_view"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-gradio"
+import = "hedron_gradio"
+version = "0.2.1"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "hedron_gradio.GradioClientAdapter"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_gradio.GradioEndpoint"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_gradio.GradioRemoteConfig"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_gradio.GradioRemoteError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_gradio.HuggingFaceVendorNode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_gradio.RemoteWorkflow"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_gradio.hf_space_node"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_gradio.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-jinja"
+import = "hedron_jinja"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_jinja.AsyncIoBudget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.AsyncIoDeclaration"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.AsyncIoRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.ApplicationStyleFact"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.DynamicDependency"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.DynamicDependencyManifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.ExtensionEvidence"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.ExtensionRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.ForeignNamespace"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.HedronJinja"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.HedronJinjaExtension"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.HdjContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.JinjaBinding"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.LoopMacroBudget"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.LoopMacroCounters"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.ProductionInventory"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.ProviderManifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.TemplateCapabilities"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.TemplateDeclaration"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.TemplateKind"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.TemplateSource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.TemplateSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.TwoPhaseStream"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.a11y_static_diagnostics"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.async_io_session"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.build_production_inventory"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.catalog_command_form"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.catalog_view"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.charts_provider_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.checker_fixture_from_diagnostics"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.coerce_interaction_target"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.data_provider_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.elements_provider_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.extras_provider_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.instrumentation_session"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.list_feature_bundles"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.maps_provider_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.portable_checker_json"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.provider_available"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.refuse_annotation_evaluation"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.reconcile_csp"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.record_loop_iteration"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.resolve_registered_handle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.record_macro_call"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.register_htmx_catalog"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.registered_type_schema"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.run_declared_async_io"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_jinja.validate_element_declarations"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-maps"
+import = "hedron_maps"
+version = "0.1.2"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "hedron_maps.MAPLIBRE_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.RUNTIME_PINS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.SYNTHETIC_ARCHIVE"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.TAG_NAME"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.Bounds"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.CircleLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.FeatureActivated"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.FeatureSelected"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.GeoJSONLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.LayerVisibilityChanged"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.LineLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MBTiles"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MBTilesArchive"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.Map"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MapFailed"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MapInteraction"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MapLoaded"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MapPlan"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MapPolicy"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MapSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MapStyle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MapTheme"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.MarkerLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.NoBasemap"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.OfflineMapBundle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.OpenStreetMap"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.PMTiles"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.PolygonLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.RasterLayer"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.RasterTiles"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.StaticImage"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.TAG_NAME"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.TileJSON"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.VectorTiles"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.ViewState"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.ViewportChanged"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.assert_pins_present"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.bundle_from_paths"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.compile_map"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.parse_map_spec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_maps.verify_pin"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-mcp"
+import = "hedron_mcp"
+version = "0.2.2"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "hedron_mcp.AuthorizationError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.BoundsError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.DEFAULT_PROTOCOL_VERSION"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.InvalidParamsError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.McpAuditEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.McpAuditLog"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.McpBounds"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.McpExposure"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.McpProjection"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.McpResource"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.McpTool"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.SDK_PIN"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.SUPPORTED_CLIENTS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.SUPPORTED_PROTOCOL_VERSIONS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.mount_mcp"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.negotiate_protocol_version"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.redact_value"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_mcp.sdk_version"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-native"
+import = "hedron_native"
+version = "0.1.2"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "hedron_native.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_native.escape_attr"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_native.escape_attr_python"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_native.escape_text"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_native.escape_text_python"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_native.native_available"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_native.native_disabled_by_env"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-notebook"
+import = "hedron_notebook"
+version = "0.2.1"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "hedron_notebook.DISPLAY_SNAPSHOT_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.HED_NOTEBOOK_TOKEN"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.HED_NOTEBOOK_TOPOLOGY"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.LOOPBACK_HOSTS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.PREVIEW_TOKEN_COOKIE"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.PREVIEW_TOKEN_HEADER"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.PREVIEW_TOKEN_QUERY"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.REDACTED"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.DisplayHandle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.NotebookPreview"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.NotebookSession"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.NotebookTokenError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.NotebookTopologyError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.PreviewTokenGate"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.StaleDisplayHandleError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.handoff_disposition"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.inspect_features"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.is_loopback_host"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.preview_handle"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.redact_text"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.require_loopback_host"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.start_preview"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.start_server_handoff"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_notebook.wrap_preview_app"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-posit"
+import = "hedron_posit"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_posit.ConnectConfig"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.ConnectCookieMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.CookieRegistry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.CookieSpec"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.DEFAULT_MATRIX"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.DeploymentCapabilities"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.ExternalBase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.HedronPosit"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.MatrixCase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.PositConfig"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.PositContext"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.PositDiagnostic"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.PositProduct"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.PositStatus"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.ResolvedDeployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.ResolvedPositDeployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.WorkbenchConfig"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.WorkbenchMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.WorkbenchTopology"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.WorkbenchPathMiddleware"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.browser_mount_from_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.compose_external_url"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.compose_local_url"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.connect_external_base_from_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.is_ephemeral_workbench_mount"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.is_posit_connect_scope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.export_hedron_state"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.is_workbench_env"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.is_workbench_job"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.is_workbench_scope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.local_href"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.mounted_redirect"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.parse_rserver_url_output"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.prepare_app"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.resolve_cookie_path"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.resolve_deployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.resolve_posit_deployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.resolve_product"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.run_deployment_matrix"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.validate_deployed_interactions"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.validate_external_base_url"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_posit.workbenchify"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-sample-kit"
+import = "hedron_sample_kit"
+version = "0.2.1"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "hedron_sample_kit.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sample_kit.authoring_fixture"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sample_kit.list_variants"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-sim"
+import = "hedron_sim"
+version = "0.2.1"
+disposition = "independent-satellite"
+
+[[symbol]]
+qualified = "hedron_sim.DECLARED_HX_ATTRS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.DECLARED_HX_METHODS"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.DECLARED_SWAP_STYLES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.DEFAULT_SUBSET"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.HED_SIM_LIMIT"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.HED_SIM_UNSUPPORTED"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.MANIFEST_CATEGORIES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.PARITY_FIXTURES"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.PARITY_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SIM_LOCAL_TIME"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SIM_MANIFEST_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SIM_SCENARIO_SCHEMA"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SIM_UTC"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.ManifestEntry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SimApp"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SimClock"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SimEvent"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SimLimitError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SimLimits"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SimRecorder"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SimRoute"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.SimScenario"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.UnsupportedSimFeatureError"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.compare_parity"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.divergence_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.embed_demo"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.export_scenario"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.import_scenario"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.inspect_features"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.manifest_entry"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.manifest_markdown"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.normalize_parity_html"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.render_handler_html"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.require_supported_feature"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.require_supported_method"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.require_supported_swap"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.sim_form"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.sim_local_time"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.sim_utc"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.subset_manifest"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.subset_policy_markdown"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_sim.wrap_browser_chrome"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[package]]
+name = "hedron-workbench"
+import = "hedron_workbench"
+version = "0.67.0"
+disposition = "coordinated-cut"
+
+[[symbol]]
+qualified = "hedron_workbench.ConnectConfig"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.ConnectCookieMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.ResolvedDeployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.ResolvedPositDeployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.DeploymentCapabilities"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.ExternalBase"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.HedronWorkbench"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.PositConfig"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.PositProduct"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.PositStatus"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.WorkbenchConfig"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.WorkbenchMode"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.WorkbenchTopology"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.WorkbenchPathMiddleware"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.__version__"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.browser_mount_from_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.compose_external_url"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.connect_external_base_from_request"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.is_ephemeral_workbench_mount"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.is_posit_connect_scope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.export_hedron_state"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.is_workbench_env"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.is_workbench_job"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.is_workbench_scope"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.local_href"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.mounted_redirect"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.parse_rserver_url_output"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.prepare_app"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.resolve_deployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.resolve_posit_deployment"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.resolve_product"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.validate_external_base_url"
+maturity = "unclassified"
+disposition = "needs-review"
+
+[[symbol]]
+qualified = "hedron_workbench.workbenchify"
+maturity = "unclassified"
+disposition = "needs-review"

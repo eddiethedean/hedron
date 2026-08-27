@@ -1,11 +1,26 @@
 {
-  "schema": "hedron.phase-1.0-baseline/1",
-  "phase": "1.0",
-  "status": "Draft; evidence collection pending",
   "baseline": "v0.67.0",
-  "target": "v1.0.0",
-  "net_new_required_runtime_capabilities": 0,
+  "baseline_commit": "82bd0e4f8fcd2ae75fd50fd2c41e18fbd674ace6",
+  "generation": {
+    "command": "python scripts/generate_100_inventory.py --baseline v0.67.0",
+    "non_executing": true,
+    "tracked_artifact_digest": "sha256(path + bytes, sorted)"
+  },
+  "inventory_counts": {
+    "public": {
+      "artifacts": 3596,
+      "packages": 22,
+      "symbols": 1679
+    },
+    "stable": {
+      "packages": 22,
+      "symbols": 1679
+    }
+  },
+  "phase": "1.0",
   "release_cut_satisfied": false,
-  "gates": "docs/acceptance/release-gate-1.0.toml",
-  "warning_registry": "docs/acceptance/warnings-100.toml"
+  "schema": "hedron.phase-1.0-baseline/1",
+  "source_digest": "928f8e5badbf3b3cb9182627dacc2eef22b76fe1650345634f4a1d00ba639a8d",
+  "status": "Generated; reconciliation and release evidence pending",
+  "target": "v1.0.0"
 }

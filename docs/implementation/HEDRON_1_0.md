@@ -128,7 +128,9 @@ the browser asset/registry modules under `packages/hedron-core/src/hedron_core/`
 ### W0 — inventory, baseline, and entry lock
 
 1. Build the `v0.67.0` baseline in a clean environment and record the checksums and tool/browser
-   identities in `baseline-100.json`.
+   identities in `baseline-100.json`. The repository generator is
+   `scripts/generate_100_inventory.py`; it materializes the tag with `git archive`, parses exports
+   without importing code, and emits deterministic public/stable inventories plus baseline counts.
 2. Extract `__all__`, public imports, signatures, overloads, schemas, decorators, CLI/config/HDJ
    forms, generated output, browser tags/controllers/assets, manifests, and package entry points.
 3. Normalize aliases and alternate spellings by developer task, not by module name. Join the result
@@ -313,6 +315,7 @@ shape. Commands that verify implementation evidence do not exist until the corre
 lands; the planning checker must continue to fail closed before then.
 
 ```text
+python scripts/generate_100_inventory.py --baseline v0.67.0 --output-dir docs/acceptance
 python scripts/check_100.py --check-plan
 python scripts/check_100.py --gate ENTRY-100 --verify
 python scripts/check_100.py --gate SURFACE-100 --verify
