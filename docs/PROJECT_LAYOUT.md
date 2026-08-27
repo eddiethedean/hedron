@@ -1,7 +1,7 @@
 # Project and package layout
 
-**Status:** Maintainer reference for the stable **0.66.x** train; the latest public PyPI
-release is **v0.66.2** and the verified beta repository tip is **v0.67.0**.
+**Status:** Maintainer reference for the stable **1.0.x** train; the latest public PyPI
+release is **v1.0.0** and the verified beta repository tip is **v0.67.0**.
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -80,7 +80,7 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.66.x`) |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `1.0.x`) |
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
@@ -106,7 +106,7 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated stable PyPI release is **`v0.66.2`**; the repository beta
+**Publish note:** the coordinated stable PyPI release is **`v1.0.0`**; the repository beta
 tip is **`v0.67.0`**.
 (`registry_status = uploaded`) — see [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under

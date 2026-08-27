@@ -123,7 +123,7 @@ Web Components, Workbench, and Posit):
 
 Charts: `pip install "hedron[charts]>=0.66.2,<0.67"`.
 Maps: `pip install "hedron[maps]>=0.66.2,<0.67"`.
-Plugin authors can install `hedron-sample-kit>=0.2.1,<0.3`. Older satellite releases target
+Plugin authors can install `hedron-sample-kit>=0.2.2,<0.3`. Older satellite releases target
 older cores; see [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 
 Prefer not to install locally? Use a **full cloud environment** (not a hosted playground) —

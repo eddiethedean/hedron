@@ -12,7 +12,7 @@ Use the pin the package index can resolve.
 the next train is an intentional upgrade.
 
 **Published** — A cut available on the current train. The repository’s published cut is
-`v0.66.2` on PyPI. The `v0.67.0` train is Beta. Pin the latest stable upper-bounded install constraint for reproducible
+`v1.0.0` on PyPI. The `v0.67.0` train is Beta. Pin the latest stable upper-bounded install constraint for reproducible
 installs.
 
 **Action** — A typed server operation with an HTTP method, input contract, dependencies, and response behavior.
@@ -75,7 +75,7 @@ sandbox for hostile authors.
 ## Maturity vocabulary
 
 **Train** — A coordinated package version line (for example `0.25.x` / tag `v0.25.0`) that
-adopters pin together. “Living train” means the current stable published line (`0.66.x`).
+adopters pin together. “Living train” means the current stable published line (`1.0.x`).
 
 **Package maturity (Beta / Alpha)** — PyPI packaging readiness. **Beta** flagship packages
 are pin-for-production; **Alpha** packages expect more churn. Not the same as capability

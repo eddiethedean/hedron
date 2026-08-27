@@ -47,6 +47,6 @@ def test_packet_and_sandbox_entry() -> None:
         # Same-train deferred patch: first-run pin stays >=pypi,<next-minor.
         assert ceil_mm == (train_mm[0], train_mm[1] + 1)
     else:
-        # Deferred while PyPI still serves a prior train. First-run pins may span
-        # through the next minor so the living tip can land without a pin rewrite.
-        assert ceil_mm in {train_mm, (train_mm[0], train_mm[1] + 1)}
+        # Deferred while PyPI still serves a prior train. Its public-index pin
+        # remains bounded to that installable train until publication.
+        assert ceil_mm == (pypi_mm[0], pypi_mm[1] + 1)

@@ -2,8 +2,8 @@
 
 Production-grade Gradio client interoperability for Hedron.
 
-**Package maturity:** Beta (`0.2.0`) · pin `>=0.2.0,<0.3`  
-**Flagship extra:** `hedron[gradio]` · **Import:** `hedron_gradio`  
+**Package maturity:** Beta (`0.2.0`) · pin `>=0.2.0,<0.3`
+**Flagship extra:** `hedron[gradio]` · **Import:** `hedron_gradio`
 Provides allowlisted remote endpoint discovery, predict / job / stream helpers with explicit
 schemas, bounded
 file transport, and Hugging Face vendor-node adapters — **without** embedding Gradio’s UI runtime

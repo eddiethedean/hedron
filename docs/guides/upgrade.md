@@ -50,7 +50,7 @@ should use [Build your first app](../getting-started/quickstart.md).
 
 ## 0.58 → 0.62
 
-Checkout tip `v0.66.2` uses `uv sync`. See [What's new in 0.62](whats-new-0.62.md),
+Checkout tip `v1.0.0` uses `uv sync`. See [What's new in 0.62](whats-new-0.62.md),
 [Hedron API](../api/HEDRON.md), and [Presentation](../api/PRESENTATION.md).
 
 1. Upgrade the application pin to `hedron>=0.66.2,<0.67`.
@@ -64,7 +64,7 @@ Checkout tip `v0.66.2` uses `uv sync`. See [What's new in 0.62](whats-new-0.62.m
 
 ## 0.57 → 0.58
 
-Checkout tip `v0.66.2` uses `uv sync`. From the public index, install
+Checkout tip `v1.0.0` uses `uv sync`. From the public index, install
 `hedron>=0.66.2,<0.67`. See [What's new in 0.58](whats-new-0.58.md),
 [Hedron API](../api/HEDRON.md), and [Presentation](../api/PRESENTATION.md).
 
@@ -78,7 +78,7 @@ Checkout tip `v0.66.2` uses `uv sync`. From the public index, install
 
 ## 0.56 → 0.57
 
-Checkout tip `v0.66.2` uses `uv sync`. From PyPI, install
+Checkout tip `v1.0.0` uses `uv sync`. From PyPI, install
 `hedron>=0.66.2,<0.67`. See
 [What's new in 0.57](whats-new-0.57.md) and
 [Presentation](../api/PRESENTATION.md).
@@ -89,7 +89,7 @@ Checkout tip `v0.66.2` uses `uv sync`. From PyPI, install
 
 ## 0.55 → 0.56
 
-Checkout tip `v0.66.2` uses `uv sync`. From PyPI, install
+Checkout tip `v1.0.0` uses `uv sync`. From PyPI, install
 `hedron>=0.66.2,<0.67`. See
 [What's new in 0.56](whats-new-0.56.md) and
 [Security control plane](../api/SECURITY_PLANE.md).
@@ -250,7 +250,7 @@ preload remain experimental.
 3. Existing 0.42–0.46 handlers and unused `include_feature` keep working.
 4. Adopt maps only via `hedron[maps]` / `from hedron_maps import …`.
 5. If you use editable grids or charts, keep `hedron[data]` / `hedron[charts]` on the
-   tip pin (or `hedron-charts>=0.2.1,<0.3`).
+   tip pin (or `hedron-charts>=0.2.3,<0.3`).
 6. If you use Posit Workbench or Connect, prefer `hedron[posit]` / `HedronPosit`.
 
 ## Install
@@ -261,7 +261,7 @@ python -m pip install -U "hedron[data]>=0.66.2,<0.67"
 python -m pip install -U "hedron[charts]>=0.66.2,<0.67"
 python -m pip install -U "hedron[maps]>=0.66.2,<0.67"
 # independent charts satellite:
-python -m pip install -U "hedron-charts>=0.2.1,<0.3"
+python -m pip install -U "hedron-charts>=0.2.3,<0.3"
 # optional production-grade elements inventory:
 python -m pip install -U "hedron[elements]>=0.66.2,<0.67"
 ```

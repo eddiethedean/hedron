@@ -8,7 +8,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.18**. The current published train is **0.66.x** (`v0.66.2` on PyPI). Pin `hedron>=0.66.2,<0.67` from PyPI.
+    This page describes **0.18**. The current published train is **0.66.x** (`v1.0.0` on PyPI). Pin `hedron>=0.66.2,<0.67` from PyPI.
 
 Phase **0.18** adds model demos and inference workflows — fail-closed demo composition,
 governed feedback, inference scheduling over `JobBackend`, an interaction recorder, explicit
@@ -40,6 +40,6 @@ workflows, and optional Gradio interop. See
 
 ## Upgrade notes
 
-Prefer the current 0.66.x train for new apps; stay on a historical upper-bound pin
+Prefer the current .1.0.x train for new apps; stay on a historical upper-bound pin
 only when you must freeze this phase. Install `hedron[gradio]` only when needed.
 See [Gradio migration](gradio-migration.md).

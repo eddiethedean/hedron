@@ -2,7 +2,7 @@
 
 Curated optional extras and analysis workbenches for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.64.x` (`v0.64.0` published on PyPI) · pin `>=0.66.2,<0.67`<br>
+**Package maturity:** Stable · **Repository release candidate:** `v1.0.0` (Git tag/PyPI upload deferred) · **Latest PyPI release:** `v0.66.2` · public pin `>=0.66.2,<0.67` until publication
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`<br>
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 

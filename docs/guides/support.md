@@ -25,10 +25,10 @@ Package maturity **Beta** means the public API is usable and tested, but breakin
 may still land on the `0.x` line under the [compatibility policy](../COMPATIBILITY.md).
 Pin versions in production, read [upgrade](upgrade.md) notes before bumping trains, and
 treat the Beta `hedron-elements` Supported inventory as still more volatile than CRUD
-pages. Charts require `hedron-charts>=0.2.1,<0.3`. The sample kit requires
-`hedron-sample-kit>=0.2.1,<0.3` — see [Compatibility](../COMPATIBILITY.md).
+pages. Charts require `hedron-charts>=0.2.3,<0.3`. The sample kit requires
+`hedron-sample-kit>=0.2.2,<0.3` — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current published train (`0.66.x`).
+**Support window:** security fixes target the current published train (`1.0.x`).
 Previous minors receive best-effort triage as documented in
 [SECURITY.md](../SECURITY.md) (no multi-year LTS). Version and pin SoT:
 [Current release and support](current-release.md). Public-index notes:

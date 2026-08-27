@@ -4,7 +4,7 @@
 
 Install the latest public release from PyPI:
 `pip install "hedron>=0.66.2,<0.67"`. Contributors working from a git checkout use
-`uv sync` (workspace packages). The current published release is `v0.66.2`. See
+`uv sync` (workspace packages). The current published release is `v1.0.0`. See
 [Installation](../getting-started/installation.md).
 
 ```bash
@@ -156,7 +156,7 @@ next minor train requires an intentional review. See [Compatibility](../COMPATIB
 **Supported**. Those packages are **Beta** on PyPI — pin versions.
 
 Charts install through `hedron[charts]>=0.66.2,<0.67`; the sample kit installs as
-`hedron-sample-kit>=0.2.1,<0.3`. Earlier satellite versions target older cores. See
+`hedron-sample-kit>=0.2.2,<0.3`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

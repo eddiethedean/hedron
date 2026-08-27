@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from hedron_conformance.authoring_loop import AuthoringLoopFixture
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 __all__ = ["__version__", "authoring_fixture", "list_variants"]
 

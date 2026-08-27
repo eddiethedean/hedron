@@ -9,7 +9,7 @@ status: shipped
     This page is the historical **FACADE-023** artifact. It records the 0.23-era beginner
     facade as carried through the 0.66.x train; it is not the 1.0 stable inventory. Symbols listed under
     [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) remain
-    compatibility-protected **`stable`** on the living **0.66.x** train. Pin
+    compatibility-protected **`stable`** on the living **.1.0.x** train. Pin
     `uv sync` from a checkout. Application users should install
     `hedron>=0.66.2,<0.67` from PyPI.
 

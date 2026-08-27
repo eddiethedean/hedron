@@ -106,14 +106,14 @@ CURRENT_CLAIM_VERSION = re.compile(
     r"living(?:\s+published)?\s+(?:train|line|version|release)|"
     r"last\s+(?:published|PyPI/git)|"
     r"published/latest"
-    r")[^\n]{0,100}?v?(0\.\d+(?:\.\d+)?(?:\.x)?)"
+    r")[^\n]{0,100}?v?(\d+\.\d+(?:\.\d+)?(?:\.x)?)"
     r"|"
     # living/current **0.26** train (version before train|line)
     rf"\b(?:current(?:ly)?|living)(?:\s+published)?{_MD_GAP}"
-    rf"v?(0\.\d+(?:\.\d+)?(?:\.x)?){_MD_GAP}(?:train|line)\b"
+    rf"v?(\d+\.\d+(?:\.\d+)?(?:\.x)?){_MD_GAP}(?:train|line)\b"
     r"|"
     # tip-hub "last **v0.26.0**" (bold version; avoids phase "last `v0.25.2`" rows)
-    rf"\blast{_MD_GAP}\*\*v?(0\.\d+(?:\.\d+)?(?:\.x)?)\*\*"
+    rf"\blast{_MD_GAP}\*\*v?(\d+\.\d+(?:\.\d+)?(?:\.x)?)\*\*"
     r")",
     re.I,
 )
@@ -137,20 +137,20 @@ SATELLITE_REQUIREMENT = re.compile(
 MATURITY_COLLISION = re.compile(r"Supported beta|Maturity SSOT|beachhead Supported", re.I)
 CURRENT_TRAIN_MENTION = re.compile(
     r"\b(?:current(?:ly)?|living)(?:\s+published)?\s+(?:train|line)\b|"
-    rf"\b(?:current(?:ly)?|living){_MD_GAP}0\.\d+",
+    rf"\b(?:current(?:ly)?|living){_MD_GAP}\d+\.\d+",
     re.I,
 )
 PYPI_VERSION_CLAIM = re.compile(
     r"(?:"
     r"(?<!\blast published\s)"
     r"(?:\*\*published\*\*|\bpublished\s+as\b|\bon pypi\b|\bpypi\b)"
-    r"[^\n]{0,80}?[`'\"*]*v?(0\.\d+\.\d+)"
+    r"[^\n]{0,80}?[`'\"*]*v?(\d+\.\d+\.\d+)"
     r"|"
-    r"[`'\"*]*v?(0\.\d+\.\d+)[^\n]{0,40}?\bon pypi\b"
+    r"[`'\"*]*v?(\d+\.\d+\.\d+)[^\n]{0,40}?\bon pypi\b"
     r")",
     re.I,
 )
-TRAIN_LABEL = re.compile(r"\b(0\.\d+(?:\.\d+)?)\s+train\b", re.I)
+TRAIN_LABEL = re.compile(r"\b(\d+\.\d+(?:\.\d+)?)\s+train\b", re.I)
 
 PUBLIC_DOC_EXCLUDES = {
     "archive",
@@ -281,7 +281,7 @@ BOILERPLATE_ALLOWED_PATHS = frozenset(
 FIRST_RUN_PATHS = REGISTRY_HONESTY_PATHS
 
 IN_TREE_DEFERRED_BOILERPLATE = re.compile(
-    r"published in-tree\s+`?v?0\.\d+(?:\.\d+)?`?\.?\*?\*?\s*"
+    r"published in-tree\s+`?v?\d+\.\d+(?:\.\d+)?`?\.?\*?\*?\s*"
     r"git tag and pypi upload are",
     re.IGNORECASE,
 )
@@ -293,8 +293,8 @@ STALE_DEFERRED_PHRASE = re.compile(
     r"\bnot yet uploaded\b|"
     r"\buntil its (?:PyPI|pypi) upload\b|"
     r"\blatest installable public train is\b|"
-    r"\brepository(?:'s|’s)?\s+(?:\*\*)?0\.\d+\.x(?:\*\*)?\s+train is for contributors\b|"
-    r"\brepository contains the published\s+(?:\*\*|`)?0\.\d+\.x"
+    r"\brepository(?:'s|’s)?\s+(?:\*\*)?\d+\.\d+\.x(?:\*\*)?\s+train is for contributors\b|"
+    r"\brepository contains the published\s+(?:\*\*|`)?\d+\.\d+\.x"
     r")",
     re.IGNORECASE,
 )
@@ -580,18 +580,18 @@ def check_first_run_registry_honesty(
 
 
 _LIVING_TIP_CLAIM = re.compile(
-    r"\b(?:living|checkout|in-tree)\s+tip\b[^\n]{0,40}?v?(0\.\d+\.\d+)",
+    r"\b(?:living|checkout|in-tree)\s+tip\b[^\n]{0,40}?v?(\d+\.\d+\.\d+)",
     re.IGNORECASE,
 )
 _EDITABLE_TIP_CLAIM = re.compile(
-    r"\beditable\s+\*?\*?v?(0\.\d+\.\d+)\*?\*?",
+    r"\beditable\s+\*?\*?v?(\d+\.\d+\.\d+)\*?\*?",
     re.IGNORECASE,
 )
 _DEFERRED_UPLOAD_CLAIM = re.compile(
-    r"\b(?:for|upload(?:\s+for)?|tag(?:/pypi)?(?:\s+for)?)\s+\*?\*?v?(0\.\d+\.\d+)\*?\*?"
+    r"\b(?:for|upload(?:\s+for)?|tag(?:/pypi)?(?:\s+for)?)\s+\*?\*?v?(\d+\.\d+\.\d+)\*?\*?"
     r"[^\n]{0,40}?\bdeferred\b"
     r"|"
-    r"\b(0\.\d+\.\d+)\b[^\n]{0,20}?\b(?:tag/pypi\s+)?deferred\b",
+    r"\b(\d+\.\d+\.\d+)\b[^\n]{0,20}?\b(?:tag/pypi\s+)?deferred\b",
     re.IGNORECASE,
 )
 
@@ -653,7 +653,7 @@ def check_in_tree_deferred_boilerplate(
 
 
 _EVALUATE_VERSION_ROW = re.compile(r"^\|\s*Version\s*\|\s*(.+?)\s*\|", re.IGNORECASE)
-_VERSION_TOKEN = re.compile(r"0\.\d+(?:\.\d+)?(?:\.x)?")
+_VERSION_TOKEN = re.compile(r"\d+\.\d+(?:\.\d+)?(?:\.x)?")
 
 
 def check_evaluate_version(

@@ -1,6 +1,6 @@
 [project]
 name = "hedron-notebook"
-version = "0.2.1"
+version = "0.2.2"
 description = "Beta tooling-grade localhost notebook preview helper for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"

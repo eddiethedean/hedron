@@ -8,7 +8,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.16**. The current published train is **0.66.x** (`v0.66.2` on PyPI). Pin `hedron>=0.66.2,<0.67` from PyPI.
+    This page describes **0.16**. The current published train is **0.66.x** (`v1.0.0` on PyPI). Pin `hedron>=0.66.2,<0.67` from PyPI.
 
 Phase **0.16** adds an optional `hedron-extras` toolkit for specialized data-app interactions and
 analysis workbenches — without expanding the core runtime or adopting Streamlit-style reruns or a

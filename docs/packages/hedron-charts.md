@@ -23,15 +23,15 @@ Experimental explicit opt-ins.
 pip install "hedron[charts]>=0.66.2,<0.67"
 
 # Or install the independently versioned satellite:
-pip install "hedron-charts>=0.2.1,<0.3"
+pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 Add only the plotting backend your application uses:
 
 ```bash
-pip install "hedron-charts[matplotlib]>=0.2.1,<0.3"
-pip install "hedron-charts[plotly]>=0.2.1,<0.3"
-pip install "hedron-charts[altair]>=0.2.1,<0.3"
+pip install "hedron-charts[matplotlib]>=0.2.3,<0.3"
+pip install "hedron-charts[plotly]>=0.2.3,<0.3"
+pip install "hedron-charts[altair]>=0.2.3,<0.3"
 ```
 
 | Extra | Backend |

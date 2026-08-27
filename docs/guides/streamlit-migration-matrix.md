@@ -75,7 +75,7 @@ for community packages.
 !!! note "Hedron 0.27 chart floor"
 
     Use `hedron[charts]>=0.66.2,<0.67`, which enforces
-    `hedron-charts>=0.2.1,<0.3`. See
+    `hedron-charts>=0.2.3,<0.3`. See
     [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## Status, chat, and long-running work

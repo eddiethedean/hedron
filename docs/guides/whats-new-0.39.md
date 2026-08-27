@@ -5,7 +5,7 @@
     Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.66.2,<0.67`). See [Whatâ€™s new in 0.51](whats-new-0.51.md).
 
 **Published** as `v0.39.0` on 2026-08-14. Historical pin: `hedron>=0.39.0,<0.40`. Charts remain on the
-Published 0.2 line: `hedron-charts>=0.2.1,<0.3`.
+Published 0.2 line: `hedron-charts>=0.2.3,<0.3`.
 
 Phase **0.39** converges rich data surfaces onto the public Web Component ABI and proves explicit
 optimistic edits ([RFC-0060](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) / D-067).
@@ -40,7 +40,7 @@ Historical 0.39 pin below. For new apps, use `hedron>=0.58.0,<0.61`; see [Whatâ€
 pip install "hedron>=0.39.0,<0.40"
 pip install "hedron[data]>=0.39.0,<0.40"
 # charts satellite (Published 0.38 line):
-pip install "hedron-charts>=0.2.1,<0.3"
+pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## See also

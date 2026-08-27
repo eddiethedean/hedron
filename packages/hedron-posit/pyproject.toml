@@ -23,7 +23,7 @@ keywords = [
     "proxy",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Framework :: FastAPI",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",

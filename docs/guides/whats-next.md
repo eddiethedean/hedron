@@ -34,7 +34,7 @@ Install pins: [Current release](current-release.md) ·
 | **0.67** | Alpine browser-local enhancement and unified interaction preview | **Beta** as `v0.67.0`; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ALPINE_INTEGRATION_067.md) |
 | **1.0** | Canonical interface, HTMX/Alpine interaction, and component-engine consolidation | **Stage 0 Refined; implementation pending**; removal work is blocked on complete 0.67 inventory/warning reconciliation; [cut plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_1_0.md) |
 
-Phase 0.66 is the current stable capability train and is published on PyPI as `v0.66.2`.
+Phase 0.66 is the current stable capability train and is published on PyPI as `v1.0.0`.
 Phase 0.67 is the Beta preview train (`v0.67.0`) and does not change the stable Supported surface.
 For 0.62, canonical navigation, fallback, localized failure, identity safety, and a small approved
 optimistic core are the proposed Required cut; prefetch, transitions, bulk actions, and dashboard

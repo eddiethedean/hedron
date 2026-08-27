@@ -8,7 +8,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
-**Status:** Accepted · **Shipped** (current train **0.66.x**)
+**Status:** Accepted · **Shipped** (current train **1.0.x**)
 
 `Field` declares validation, presentation, security, and data-editing metadata on
 `Model` / `FormModel` attributes. It returns a Pydantic `FieldInfo` with Hedron metadata.

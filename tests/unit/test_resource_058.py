@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from fastapi.testclient import TestClient
 from pydantic import BaseModel, Field
 
 from hedron import Hedron
@@ -43,16 +44,20 @@ def test_workspace_with_screen_stores_meta_and_materializes() -> None:
             can_create=lambda: True,
             can_edit=lambda: True,
         ),
-    ).with_screen(path="/orders", title="Orders")
+    ).with_screen(path="/orders", title="Orders", layout="grid")
 
     assert workspace._screen_meta is not None
     assert workspace._screen_meta["path"] == "/orders"
     assert workspace._screen_meta["title"] == "Orders"
 
     app = _app()
-    bundle = app.include_feature(workspace)
+    bundle = app.include(workspace)
     assert bundle.logical_id
     assert workspace.screen is not None
+    response = TestClient(app).get("/orders")
+    assert response.status_code == 200
+    assert 'data-hedron-layout="grid"' in response.text
+    assert 'data-hedron-layout="stack"' not in response.text
 
 
 def test_in_memory_data_source_constructs() -> None:

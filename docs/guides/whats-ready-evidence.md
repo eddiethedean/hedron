@@ -205,4 +205,4 @@ Extras: `"hedron[data]>=0.66.2,<0.67"`, `"hedron[extras]>=0.66.2,<0.67"`,
 `"hedron[gradio]>=0.66.2,<0.67"` (Beta satellite; pin `hedron-gradio>=0.2.1,<0.3`),
 `"hedron[charts]>=0.66.2,<0.67"`, `"hedron[maps]>=0.66.2,<0.67"`, `"hedron[workbench]>=0.66.2,<0.67"`,
 `"hedron[posit]>=0.66.2,<0.67"`,
-and `"hedron-sample-kit>=0.2.1,<0.3"`.
+and `"hedron-sample-kit>=0.2.2,<0.3"`.

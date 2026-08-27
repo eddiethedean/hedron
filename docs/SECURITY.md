@@ -2,20 +2,19 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.66.x`), which is the stable
-release channel.
-Older `0.x` lines should
-upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.65.x`) continues through approximately **2027-08-20** — after that, upgrade
+Security fixes land on the **current repository train** (`1.0.x`), which becomes the stable
+release channel when the deferred tag/PyPI upload completes.
+Older lines should upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately
+previous minor (`0.67.x`) continues through approximately **2027-02-27** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The current published train is **`0.66.x`**; pin `>=0.66.2,<0.67` from PyPI.
-The `0.67.0` Beta preview is not the production security-support channel.
+The current repository train is **`1.0.x`**. Until publication, the public PyPI pin remains
+`>=0.66.2,<0.67`; the `v1.0.0` upload is deferred.
 
 | Version | Supported |
 |---|---|
-| `0.66.x` | Yes (current published train — pin `>=0.66.2,<0.67`; published `v0.66.2`) |
-| `0.65.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.66.x` |
+| `1.0.x` | Yes (current repository train — public PyPI pin remains `>=0.66.2,<0.67`; upload deferred) |
+| `0.67.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.0.x` |
 | `0.56.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.60.x` |
 | `0.55.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
 | `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |

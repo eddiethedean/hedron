@@ -628,14 +628,20 @@ class DataWorkspace(Generic[ModelT]):
 
             @app.page(str(meta["path"]), name=str(meta["name"]))
             def workspace_screen() -> object:
-                from hedron import Page, Stack, Text
+                from hedron import Grid, Page, Stack, Text
                 from hedron_core.component import NodeLike
 
                 nodes: list[NodeLike] = [Text(str(meta["title"]))]
                 if workspace.list_view is not None:
                     with contextlib.suppress(Exception):
                         nodes.append(workspace.list_view())
-                content: NodeLike = Stack(*nodes)
+                layout = str(meta["layout"])
+                if layout == "plain":
+                    content: NodeLike = nodes[0] if len(nodes) == 1 else nodes
+                elif layout == "grid":
+                    content = Grid(*nodes)
+                else:
+                    content = Stack(*nodes)
                 return Page(content, title=str(meta["title"]))
 
             workspace.screen = workspace_screen

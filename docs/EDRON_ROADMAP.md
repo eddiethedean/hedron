@@ -507,16 +507,16 @@ production hosting, or a new renderer, router, asset, security, or observability
 ## Phase 0.9 — long-lived `0.x` consolidation on Hedron `0.67.0`
 
 Phase `0.9` is the Edron consolidation and compatibility phase on the Hedron `0.67.0` train. Its
-release target is Edron `0.9.0` with `hedron>=0.67.0,<0.68` and a lockfile that resolves
+release target is Edron `0.9.1` with `hedron>=0.67.0,<2.0` and a baseline lockfile that resolves
 `hedron==0.67.0` (including the coordinated `hedron-core` and `hedron-data` 0.67.0 packages when
 those capabilities are exercised). The same Edron 0.9 source and public contract must remain
-forward-compatible with Hedron `1.0.0` once that release is available and its compatibility fixture
-passes. Hedron 1.0 is a future compatibility target, not a dependency claim before publication;
-the 0.9 release artifact remains pinned to the 0.67.0 evidence train. Edron `0.8.x` remains pinned
+forward-compatible with Hedron `1.0.0`; its compatibility fixture passes against the release
+candidate. The 0.9.1 patch declares that verified range while retaining the 0.67.0 baseline
+evidence train. Edron `0.8.x` remains pinned
 to the Hedron `0.66.2` train; no Phase 0.9 planning change widens or retrofits the already released
 0.8 contract. Phase 0.9 turns the accepted `0.1`–`0.8`
 surface into a deliberately classified, measurable, and maintainable `0.x` contract. The
-implementation is accepted in-tree; publication and the `edron-v0.9.0` tag remain maintainer-controlled.
+implementation is accepted in-tree; publication and the `edron-v0.9.1` tag remain maintainer-controlled.
 
 The release must be built and tested from the Hedron `v0.67.0` baseline or an equivalent immutable
 source/lock snapshot. A moving `main` checkout, an unbounded `hedron` requirement, or evidence

@@ -17,7 +17,8 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 ## Which version to install
 
 The current public release is **`0.66.2`** on PyPI. This repository checkout is the
-coordinated `1.0.0` train; `v0.67.0` remains the immutable migration baseline.
+coordinated `1.0.0` train; its Git tag/PyPI upload is deferred, and `v0.67.0` remains the
+immutable migration baseline.
 
 | You are… | Install |
 |---|---|
@@ -159,7 +160,7 @@ Registry extras use the same PyPI pin as the flagship:
 ```bash
 pip install "hedron[data]>=0.66.2,<0.67"
 pip install "hedron[charts]>=0.66.2,<0.67"
-pip install "hedron-sample-kit>=0.2.1,<0.3"
+pip install "hedron-sample-kit>=0.2.2,<0.3"
 ```
 
 | Extra | When you need it | Package docs |
