@@ -132,7 +132,7 @@ def _check_htmx_region_mismatches(base: Path) -> list[Any]:
                     ),
                     remediation=(
                         "Use RefreshButton.for_region(region, href=...) or align "
-                        "target= with @app.fragment(..., region=...) / fragment_regions=."
+                        "target= with the route's fragment_regions declaration."
                     ),
                     context={"href": href, "target": target, "declared": sorted(allowed)},
                 )
@@ -304,7 +304,7 @@ def _check_select_oob_conflicts(base: Path) -> list[Any]:
     return diags
 
 
-def _check_043_handles(base: Path) -> list[Any]:
+def _check_043_handles(base: Path, *, target_100: bool = False) -> list[Any]:
     """IH-DX-006: duplicate mounts, stale paths, foreign handles, missing fallback, fan-out."""
     from hedron_core import DiagnosticSeverity
     from hedron_core.codes import (
@@ -317,7 +317,11 @@ def _check_043_handles(base: Path) -> list[Any]:
     from hedron_core.updates import MAX_REFRESH_TARGETS, list_handle_descriptors
 
     diags: list[Any] = []
-    refreshable_names: dict[str, str] = {}
+    # Apply the same safety checks to canonical 1.0 names while avoiding
+    # duplicate transitional diagnostics during a target migration pass.
+    view_decorator = "view" if target_100 else "refreshable"
+    action_decorator = "action" if target_100 else "command"
+    view_names: dict[str, str] = {}
     command_without_fallback: list[str] = []
     for path in _iter_project_py_files(base):
         try:
@@ -329,22 +333,22 @@ def _check_043_handles(base: Path) -> list[Any]:
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 for deco in node.decorator_list:
                     name = _decorator_attr(deco)
-                    if name == "refreshable":
-                        owner = refreshable_names.get(node.name)
+                    if name == view_decorator:
+                        owner = view_names.get(node.name)
                         if owner and owner != str(path):
                             diags.append(
                                 make_diagnostic(
                                     HED_VIEW_0002,
                                     severity=DiagnosticSeverity.ERROR,
-                                    title="Duplicate refreshable name",
+                                    title=f"Duplicate {view_decorator} name",
                                     explanation=(
                                         f"{node.name} is registered in both {owner} and {path}."
                                     ),
                                     remediation="Use distinct names or explicit key=.",
                                 )
                             )
-                        refreshable_names[node.name] = str(path)
-                    if name == "command" and not _decorator_has_kw(deco, "fallback"):
+                        view_names[node.name] = str(path)
+                    if name == action_decorator and not _decorator_has_kw(deco, "fallback"):
                         command_without_fallback.append(f"{path}:{node.name}")
             if isinstance(node, ast.Call):
                 func = node.func
@@ -389,6 +393,7 @@ def _check_043_handles(base: Path) -> list[Any]:
                 isinstance(node, ast.Call)
                 and isinstance(node.func, ast.Attribute)
                 and node.func.attr == "fragment"
+                and not target_100
             ):
                 diags.append(
                     make_diagnostic(
@@ -409,11 +414,19 @@ def _check_043_handles(base: Path) -> list[Any]:
             make_diagnostic(
                 HED_CMD_0002,
                 severity=DiagnosticSeverity.WARNING,
-                title="Command missing fallback for ordinary HTTP",
+                title=(
+                    "Action missing fallback for ordinary HTTP"
+                    if target_100
+                    else "Command missing fallback for ordinary HTTP"
+                ),
                 explanation=(
                     f"{item} has no fallback=; HTMX refresh cannot be the only success path."
                 ),
-                remediation="Pass fallback= to @app.command or handle.button(fallback=...).",
+                remediation=(
+                    "Pass fallback= to @app.action or handle.button(fallback=...)."
+                    if target_100
+                    else "Pass fallback= to @app.command or handle.button(fallback=...)."
+                ),
             )
         )
     return diags
@@ -744,7 +757,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
 
     diags.extend(_check_htmx_region_mismatches(base))
     diags.extend(_check_select_oob_conflicts(base))
-    diags.extend(_check_043_handles(base))
+    diags.extend(_check_043_handles(base, target_100=static_target_100))
     diags.extend(_check_044_type_authoring(base))
     if getattr(args, "target", None) == "1.0":
         diags.extend(_check_target_100(base))
@@ -887,11 +900,24 @@ def _cmd_check(args: argparse.Namespace) -> int:
     threshold = normalize_severity_alias(args.severity)
     fmt = args.format
     if fmt == "json":
-        print(json.dumps(diagnostics_to_json(all_diags), indent=2))
-        if inventory_summary is not None:
-            print(json.dumps({"hdj_inventory": inventory_summary}, indent=2))
-        if explorer_diff is not None:
-            print(json.dumps({"explorer_diff": explorer_diff}, indent=2))
+        # Targeted migration checks are consumed by editors and CI as one
+        # machine-readable document.  Keep the long-standing bare diagnostic
+        # array for the ordinary check, but envelope optional HDJ/Explorer
+        # reports for ``--target 1.0`` so the output is never concatenated JSON
+        # documents when those integrations are installed.
+        if static_target_100:
+            payload: dict[str, object] = {"diagnostics": diagnostics_to_json(all_diags)}
+            if inventory_summary is not None:
+                payload["hdj_inventory"] = inventory_summary
+            if explorer_diff is not None:
+                payload["explorer_diff"] = explorer_diff
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print(json.dumps(diagnostics_to_json(all_diags), indent=2))
+            if inventory_summary is not None:
+                print(json.dumps({"hdj_inventory": inventory_summary}, indent=2))
+            if explorer_diff is not None:
+                print(json.dumps({"explorer_diff": explorer_diff}, indent=2))
     elif fmt == "sarif":
         print(json.dumps(diagnostics_to_sarif(all_diags), indent=2))
     else:
