@@ -32,7 +32,7 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
     )
 
 
-    @app.refreshable("/status")
+    @app.view("/status")
     def status():
         stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
         return html.div(
@@ -42,7 +42,7 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
         )
 
 
-    @app.command(fallback="/")
+    @app.action(fallback="/")
     def ping():
         from hedron import refresh
 
@@ -62,8 +62,8 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
         )
     ```
 
-Prefer `@app.screen` for new apps. Use explicit `Page` + `@app.page` only when you need
-full `Page` constructor control — see the
+Use `@app.page`, `@app.view`, and `@app.action` as the canonical 1.0 function roles. Use
+explicit `Page` + `@app.page` when you need full `Page` constructor control — see the
 [Hedron API](../api/HEDRON.md).
 
 ```bash
@@ -88,7 +88,7 @@ from hedron import Hedron, Text
 app = Hedron(title="Demo", security="standard", session_secret="replace-me")
 
 
-@app.screen("/", title="Demo")
+@app.page("/")
 def home():
     return Text("Hello, Hedron")
 ```
@@ -101,8 +101,8 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 ## CSRF form
 
-Prefer `@app.form_command` for validated forms (see [quickstart](../getting-started/quickstart.md)
-CRUD scaffold). Follow the pasteable advanced form in
+Prefer `@app.action` with a typed `FormBody` boundary for validated forms (see
+[quickstart](../getting-started/quickstart.md) CRUD scaffold). Follow the pasteable form in
 [Minimal form POST](../guides/minimal-form.md) when you need explicit `Form` / `CsrfField`.
 
 ## Live clock (polling)
