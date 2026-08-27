@@ -43,6 +43,9 @@ status commentary, not a satisfied release gate.
   complete; publication pending**; see the [phase gates](edron-phase08.toml). Deployment profiles,
   mounted-path edge behavior, host maturity, operations diagnostics, artifacts, and upgrade/recovery
   behavior remain explicit projections over native Hedron authorities.
+- [Edron `0.9.0` acceptance packet](EDRON_009.md) — **Refined candidate; implementation pending**;
+  see the [phase gates](edron-phase09.toml) and [0.8-to-0.9 upgrade fixtures](upgrade-fixtures-09.md).
+  The candidate train is Hedron `0.67.0`; no 0.9 availability or stable-maturity claim is made yet.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)

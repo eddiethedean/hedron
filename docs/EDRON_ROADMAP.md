@@ -35,7 +35,7 @@ countdown or commitment to `1.0`.
 | **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | **Tagged** (`edron-v0.6.0`; publication pending) |
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Implemented in-tree; release evidence required** |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | **Implemented and release-verified in-tree; publication pending** |
-| **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation | Candidate after `0.8` |
+| **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation on Hedron `0.67.0` | Refined candidate; implementation pending |
 
 Candidate phases after `0.1` are directional themes, not accepted API contracts. A capability may
 move, narrow, remain native-only, or be rejected during its design review. Patch releases fix and
@@ -504,12 +504,26 @@ supervisor, runtime package installer, secret manager, distributed state/job bac
 public-URL discovery, arbitrary forwarded-header trust, Flask/Django page-class parity, notebook
 production hosting, or a new renderer, router, asset, security, or observability authority.
 
-## Phase 0.9 — long-lived `0.x` consolidation
+## Phase 0.9 — long-lived `0.x` consolidation on Hedron `0.67.0`
 
-Phase `0.9` is the Edron consolidation and compatibility phase on the planned Hedron `0.67.0`
-train. It turns the accepted `0.1`–`0.8`
+Phase `0.9` is the Edron consolidation and compatibility phase on the Hedron `0.67.0` train. Its
+release target is Edron `0.9.0` with `hedron>=0.67.0,<0.68` and a lockfile that resolves
+`hedron==0.67.0` (including the coordinated `hedron-core` and `hedron-data` 0.67.0 packages when
+those capabilities are exercised). The same Edron 0.9 source and public contract must remain
+forward-compatible with Hedron `1.0.0` once that release is available and its compatibility fixture
+passes. Hedron 1.0 is a future compatibility target, not a dependency claim before publication;
+the 0.9 release artifact remains pinned to the 0.67.0 evidence train. Edron `0.8.x` remains pinned
+to the Hedron `0.66.2` train; no Phase 0.9 planning change widens or retrofits the already released
+0.8 contract. Phase 0.9 turns the accepted `0.1`–`0.8`
 surface into a deliberately classified, measurable, and maintainable `0.x` contract. It is a
-candidate phase: no `0.9` API is accepted until its packet, locks, and evidence are reviewed.
+refined candidate: no `0.9` API is accepted until its packet, locks, and evidence are reviewed.
+
+The release must be built and tested from the Hedron `v0.67.0` baseline or an equivalent immutable
+source/lock snapshot. A moving `main` checkout, an unbounded `hedron` requirement, or evidence
+collected against Hedron `0.66.x` cannot satisfy the Phase 0.9 compatibility gate. The human packet
+is [EDRON_009.md](acceptance/EDRON_009.md); its machine-readable gate lock is
+[edron-phase09.toml](acceptance/edron-phase09.toml), and the transition fixture is
+[upgrade-fixtures-09.md](acceptance/upgrade-fixtures-09.md).
 
 The phase has one governing rule: maturity is earned by evidence, not by age or usage. A capability
 that cannot meet the phase contract remains `beta`, `experimental`, `deferred`, or
@@ -517,14 +531,65 @@ that cannot meet the phase contract remains `beta`, `experimental`, `deferred`, 
 
 ### Candidate contract
 
+The candidate contract is split into three release layers:
+
+1. **Train boundary:** Edron `0.9.0` consumes Hedron `0.67.0`; clean installs, the workspace lock,
+   built metadata, and all native identity fixtures must agree on that train. A second forward-
+   compatibility matrix must run against Hedron `1.0.0` after it is released.
+2. **Maturity boundary:** only the explicitly promoted beginner subset may become `stable`; every
+   other surface keeps a visible `beta`, `experimental`, `deferred`, `internal`, or
+   `application-owned` disposition.
+3. **Maintenance boundary:** 0.9.x may fix or clarify the accepted contract, but cannot add a new
+   authority or silently change a maturity, dependency, security, accessibility, or fallback claim.
+
+### Hedron 0.67 feature integration
+
+Hedron `0.67.0` is not only a dependency floor. It supplies the native browser and interaction
+contracts that Edron 0.9 must consume when those capabilities are admitted. Edron remains a
+beginner-facing facade over those authorities; it does not fork their registries, asset plans,
+request lifecycle, component engines, or outcome algebra.
+
+| Hedron 0.67 capability | Edron 0.9 candidate integration | Boundary and required proof |
+|---|---|---|
+| Demand-driven Alpine document feature plans | Edron components and interaction declarations contribute native feature demands; the page plan computes the initial and reachable-fragment closure and local assets | No page-level plugin lists, remote scripts, response-time registration, or feature-on assets when the capability is unused; prove CSP, integrity, fragment-subset, and feature-off fixtures |
+| Closed `Interaction` forms (`local`, `request`, `combined`) | Edron's interaction helpers lower to the single Hedron interaction contract, preserving one request maximum and the ordinary HTTP fallback | Alpine may own disposable local presentation; HTMX/Hedron owns requests and server truth; prove invalid cross-lane combinations fail and exact fallback behavior remains usable |
+| Role-indexed `Outcome` values | Edron action results and refresh helpers map to native success, refresh, patch, redirect, job, validation/conflict, and download outcomes where supported | Do not keep parallel response/update semantics or let a Boolean action hide mutation; prove status, target identity, authorization, and no-JavaScript parity |
+| HTMX lifecycle and Alpine coordination | Edron deployment and page diagnostics expose native init, cleanup, swap, settle, history, focus, announcement, and stale-result facts through `explain`/`doctor` | One writer owns each state, focus, busy, and announcement concern; prove exactly-once cleanup, replacement/reset behavior, and redacted traces |
+| Component-engine dispositions and accessible widgets | Common Edron controls use native HTML plus Alpine; charts, maps, data editors, and other specialist subsystems remain in their owning Web Component/package | No parallel `Alpine*` facade or copied widget runtime; every promoted widget needs keyboard/focus, semantic fallback, browser, provenance, and performance evidence |
+| 0.67 warning and migration inventory | Edron diagnostics and generated examples surface Hedron compatibility warnings with the native code, replacement/disposition, and release window | Warnings are deterministic and actionable; Edron does not suppress native 0.67 warnings or promise 1.0 removals without a fixture |
+
+The source of truth for these integrations is Hedron's [0.67 Alpine implementation plan](implementation/ALPINE_INTEGRATION_067.md),
+[HTMX/Alpine boundary](api/HTMX_ALPINE_BOUNDARY_1_0.md), and [component-engine dispositions](implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md).
+The Edron candidate does not automatically promote every Hedron 0.67 widget: a provider-owned or
+specialist capability remains native-only, optional, Progressive, Experimental, Deferred, or
+application-owned until its Edron evidence is accepted.
+
+#### Deprecated-feature exclusion
+
+Edron 0.9 consumes only the canonical Hedron 0.67 paths. It must not import, emit, document as a
+beginner path, or depend on any Hedron feature that 0.67 marks as a compatibility path with a
+warning or a planned 1.0 removal. This includes the direct `hedron-disclose` path, duplicate
+`hedron-elements` common-widget wrappers, direct `hedron-dialog`, `hedron-field-text`,
+`hedron-field-choice`, `hedron-field-file`, and `hedron-action-async` compatibility paths, and
+delegated common-widget controllers where the 0.67 inventory selects native plus Alpine.
+
+Those paths may appear only in migration input, static findings, or a narrowly scoped warning
+fixture. They must never be the implementation dependency, generated output, example authoring
+path, browser asset requirement, or runtime fallback for Edron 0.9. The clean-surface gate is
+separate from deprecation support: Edron may help an application identify and migrate an old path
+without using that path itself.
+
 | Workstream | Candidate outcome | Required evidence and owner |
 |---|---|---|
+| `NATIVE-09` Hedron 0.67 bridge | Edron's accepted projections use the Hedron 0.67 application, interaction, outcome, lifecycle, asset, and component authorities without a duplicate runtime | Native identity, lowering, warning, import-order, browser-plan, and ejection fixtures; Edron plus Hedron core owners |
+| `BROWSER-09` browser feature integration | The admitted Edron browser surface uses Hedron 0.67's demand-driven Alpine/CSP/lifecycle model and its explicit native/Web Component dispositions | Chromium/Firefox/WebKit, CSP/SRI, feature-off, fragment, keyboard/focus, cleanup, and specialist-host fixtures; Hedron browser owners |
+| `CLEAN-067` deprecated-feature exclusion | Edron runtime code, generated projects, examples, docs, and package metadata use only canonical Hedron 0.67 paths; deprecated 0.67 compatibility paths are warning/migration inputs only | Static forbidden-symbol/tag/asset scan, generated-output scan, import graph, browser asset manifest, and negative runtime fixtures; Edron plus Hedron core owners |
 | `STABILITY-09` public maturity | A narrow Edron beginner surface is classified as `stable`; every other exported or documented surface has an explicit maturity and owner | Symbol-level catalog, `__all__`/import checks, typed signatures, native-object identity fixtures, and a reviewed stable-promotion decision; Edron plus the owning Hedron package |
-| `COMPAT-09` supported train | One bounded Python, Edron, Hedron, adapter, browser-asset, and host matrix is published as Supported; declared-but-untested ranges are labeled unsupported | Clean-install, import-order, lockfile, upgrade, and cross-adapter matrices; release engineering and native package owners |
+| `COMPAT-09` supported train | One bounded Python, Edron, Hedron 0.67, adapter, browser-asset, and host matrix is published as Supported, with a forward-compatibility matrix for Hedron 1.0 once released; declared-but-untested ranges are labeled unsupported | Clean-install, import-order, lockfile resolving 0.67.0, 1.0 forward-compatibility, upgrade, and cross-adapter matrices; release engineering and native package owners |
 | `DEPRECATE-09` vocabulary cleanup | Overlapping names, aliases, and transitional paths have one canonical replacement, a diagnostic code, a migration path, and a numeric support window | Inventory of public names and warnings, idempotent migration fixtures, docs/search checks, and removal review; Edron tooling plus API owners |
 | `PERF-09` bounded performance | Import, compile, render, request, asset, diagnostic, and package-install budgets are measured and protected without weakening semantics or security | Reproducible baseline, percentile thresholds, cold/warm runs, memory/size records, and regression CI; Edron plus native render/package owners |
 | `SEC-09` security maintenance | Accepted security boundaries are exercised across profiles, adapters, downloads, redirects, cookies, CSRF, CSP, proxy trust, secrets, and diagnostics | Threat-model delta, negative corpus, redaction assertions, dependency/security review, and fail-closed HTTP evidence; native security owners |
-| `A11Y-09` accessibility maintenance | Supported page and interaction primitives preserve semantic HTML, keyboard/focus behavior, names/roles, reduced motion, contrast guidance, and no-JavaScript fallbacks | Automated checks plus manual keyboard/screen-reader and browser fixtures for representative Edron applications; native rendering and interaction owners |
+| `A11Y-09` accessibility maintenance | Supported page and interaction primitives preserve Hedron 0.67 semantic HTML, keyboard/focus behavior, names/roles, reduced motion, contrast guidance, and no-JavaScript fallbacks | Automated checks plus manual keyboard/screen-reader and browser fixtures for representative Edron applications; native rendering and interaction owners |
 | `PLATFORM-09` lifecycle evidence | Supported hosts and adapters have explicit version floors, launch/restart behavior, worker limits, fallback paths, and ejection paths | Clean-process, mounted-path, multi-worker, shutdown, and long-duration smoke matrices; host and adapter owners |
 | `DOCS-09` adoption clarity | The public vocabulary, examples, diagnostics, compatibility policy, and upgrade guidance agree with the machine-readable contracts | Link/API/example checks, beginner walkthroughs, changelog review, and a two-version upgrade rehearsal; Edron documentation owner |
 
@@ -556,24 +621,33 @@ live transports, host-specific behavior, or internal serializer details automati
 ### Entry and exit gates
 
 Phase `0.9` implementation entry requires the `0.8` acceptance packet to be release-verified, a
-frozen public-surface inventory, named native owners, a compatibility baseline, and a machine-readable
-budget/deprecation lock. Release exit requires, at minimum:
+frozen public-surface inventory, named native owners, a compatibility baseline for Hedron `0.67.0`
+and a forward-compatibility target for Hedron `1.0.0`, and the machine-readable [phase 0.9 gate
+lock](acceptance/edron-phase09.toml). The lock must carry the exact 0.67.0 evidence target, the
+future 1.0.0 compatibility policy, package requirement bounds, supported Python/host/browser matrix,
+budget units, deprecation windows, and explicit deferred dispositions. Release exit requires, at
+minimum:
 
 1. every exported and documented Edron capability has one maturity, owner, package disposition, and
    public-vs-internal classification;
-2. the promoted stable subset has exact signatures, deterministic diagnostics, native identity,
+2. no Edron runtime, generated project, example, documentation beginner path, package metadata, or
+   browser asset plan depends on a deprecated Hedron 0.67 compatibility path; migration tooling may
+   recognize such input only to emit a warning and replacement;
+3. the promoted stable subset has exact signatures, deterministic diagnostics, native identity,
    ordinary HTTP/HTMX and no-JavaScript behavior, security, accessibility, and upgrade evidence;
-3. the Supported dependency and host matrix passes in clean environments, with unsupported ranges
+4. the Supported dependency and host matrix passes in clean environments, with unsupported ranges
    clearly labeled and no accidental dependency widening;
-4. every deprecated or contradictory path has a warning/migration fixture, a numeric support window,
+5. every deprecated or contradictory path has a warning/migration fixture, a numeric support window,
    and an explicit removal or retention decision;
-5. import, compile, render, request, asset, diagnostic, artifact, and installation measurements meet
+6. import, compile, render, request, asset, diagnostic, artifact, and installation measurements meet
    the published budgets, with no benchmark-only semantic shortcuts;
-6. security and accessibility regression suites cover representative pages, interactions, adapters,
+7. security and accessibility regression suites cover representative pages, interactions, adapters,
    mounted paths, production profiles, and negative cases;
-7. wheel/sdist, offline-install, dependency-isolation, browser-asset, provenance, and upgrade/rollback
-   evidence are retained for the pinned Edron/Hedron train; and
-8. the complete preceding regression suite plus the Phase `0.9` compatibility, maturity, performance,
+8. wheel/sdist, offline-install, dependency-isolation, browser-asset, provenance, and upgrade/rollback
+   evidence are retained for Edron `0.9.0` on the Hedron `0.67.0` lock target; and
+9. the Edron 0.9 source and accepted public contract pass the Hedron 0.67.0 matrix and, once
+   released, the Hedron 1.0.0 forward-compatibility matrix without deprecated-path dependencies;
+10. the complete preceding regression suite plus the Phase `0.9` compatibility, maturity, performance,
    security, accessibility, documentation, and recovery suites pass before an `edron-v0.9.0` tag is
    considered.
 

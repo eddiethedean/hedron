@@ -1,0 +1,95 @@
+schema = "edron.phase-acceptance/1"
+phase = "0.9"
+status = "Candidate"
+package = "edron"
+version = "0.9.0"
+required_predecessor = "edron-v0.8.0"
+hedron_train = "0.67.0"
+hedron_requirement = ">=0.67.0,<0.68"
+hedron_lock_target = "hedron==0.67.0"
+coordinated_lock_targets = ["hedron-core==0.67.0", "hedron-data==0.67.0"]
+hedron_forward_compatibility_target = "1.0.0"
+hedron_forward_compatibility_policy = "run-the-accepted-edron-contract-once-hedron-1.0.0-is-released"
+hedron_1_0_dependency_policy = "do-not-declare-before-release-and-verification"
+native_authority = "hedron 0.67.0, hedron-core 0.67.0, and owning hedron-* packages"
+deprecated_feature_policy = "warning-and-migration-input-only"
+forbidden_compatibility_paths = [
+  "hedron-disclose direct tag/controller path",
+  "hedron-elements duplicate common-widget wrappers",
+  "hedron-dialog direct compatibility path",
+  "hedron-field-text direct compatibility path",
+  "hedron-field-choice direct compatibility path",
+  "hedron-field-file direct compatibility path",
+  "hedron-action-async direct compatibility path",
+  "delegated common-widget controllers selected for native-plus-Alpine migration",
+]
+
+[[gate]]
+id = "EDR-09-TRAIN"
+state = "Planned"
+evidence = "Edron 0.9 metadata bounds; uv.lock resolving Hedron 0.67.0; clean install; wheel/sdist Requires-Dist; exact source and artifact fingerprints"
+
+[[gate]]
+id = "EDR-09-NATIVE"
+state = "Planned"
+evidence = "native application/interaction/outcome/lifecycle/asset/component identity; lowering; ejection; import-order; and warning fixtures against Hedron 0.67.0"
+
+[[gate]]
+id = "EDR-09-BROWSER"
+state = "Planned"
+evidence = "demand-driven Alpine/CSP plan; local assets and integrity; initial/reachable fragment closure; feature-off zero-cost; HTMX lifecycle; and component-engine dispositions"
+
+[[gate]]
+id = "EDR-09-CLEAN-067"
+state = "Planned"
+evidence = "forbidden compatibility-path scan across Edron imports, runtime lowering, generated projects, examples, docs, package metadata, and browser assets; migration-only warning fixtures"
+
+[[gate]]
+id = "EDR-09-MATURITY"
+state = "Planned"
+evidence = "symbol-level public/internal inventory; maturity and owner records; stable-promotion review; typed signatures; and generated/import surface checks"
+
+[[gate]]
+id = "EDR-09-COMPAT"
+state = "Planned"
+evidence = "Python/Edron/Hedron 0.67/adapters/browser/host matrix plus a Hedron 1.0 forward-compatibility matrix once released; unsupported-range labels; clean environments; import order; and lock consistency"
+
+[[gate]]
+id = "EDR-09-DEPRECATION"
+state = "Planned"
+evidence = "canonical replacement catalog; structured warning codes; first-release markers; one-intervening-minor windows; idempotent migration and removal fixtures"
+
+[[gate]]
+id = "EDR-09-PERF"
+state = "Planned"
+evidence = "cold/warm import, compile, render, request, asset, diagnostic, memory, wheel, and clean-install baselines with percentile thresholds"
+
+[[gate]]
+id = "EDR-09-SECURITY"
+state = "Planned"
+evidence = "CSP/SRI, proxy trust, redirect, cookie, CSRF, download, secret, untrusted-input, and redacted-diagnostic negative corpus"
+
+[[gate]]
+id = "EDR-09-A11Y"
+state = "Planned"
+evidence = "semantic HTML; names/roles; keyboard/focus; reduced motion; contrast guidance; screen-reader review; browser fixtures; and no-JavaScript fallbacks"
+
+[[gate]]
+id = "EDR-09-PLATFORM"
+state = "Planned"
+evidence = "clean process, root path, worker, restart, graceful shutdown, adapter handoff, host limits, fallback, and ejection matrices"
+
+[[gate]]
+id = "EDR-09-DOCS"
+state = "Planned"
+evidence = "user guide, examples, API exports, diagnostics, generated projects, compatibility policy, links, and changelog agree with machine locks"
+
+[[gate]]
+id = "EDR-09-UPGRADE"
+state = "Planned"
+evidence = "0.8/Hedron 0.66.2 to 0.9/Hedron 0.67.0 two-version upgrade; rollback; stale assets; warnings; and application-owned migration boundaries"
+
+[[gate]]
+id = "EDR-09-REGRESSION"
+state = "Planned"
+evidence = "complete Edron predecessor regression plus Phase 0.9 native, browser, compatibility, performance, security, accessibility, documentation, and recovery suites"
