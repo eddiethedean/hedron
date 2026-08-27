@@ -3,11 +3,17 @@
   "baseline": "v0.67.0",
   "target": "v1.0.0",
   "status": "blocked",
-  "source_commit": "6604fce5",
+  "source_commit": "3611cde4",
   "canonical_fixture": {
     "command": ".venv/bin/python -m pytest -n 0 tests/upgrade/test_phase_1_0_fixtures.py",
     "result": "4 passed",
     "environment": "in-tree 0.67 implementation"
+  },
+  "baseline_build": {
+    "command": "uv build --all-packages --out-dir <temporary-evidence-dir> --no-build-logs",
+    "result": "22 coordinated and satellite distributions built successfully",
+    "versions": "workspace metadata remains 0.67.0; independent satellites retain declared versions",
+    "artifact_retention": "temporary run only; immutable digests are still required for COMPAT-100/PKG-100"
   },
   "target_artifact": {
     "available": false,
