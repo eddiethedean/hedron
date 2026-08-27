@@ -35,7 +35,7 @@ countdown or commitment to `1.0`.
 | **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | **Tagged** (`edron-v0.6.0`; publication pending) |
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Implemented in-tree; release evidence required** |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | **Implemented and release-verified in-tree; publication pending** |
-| **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation on Hedron `0.67.0` | Refined candidate; implementation pending |
+| **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation on Hedron `0.67.0` | Implemented and release-verified in-tree; publication pending |
 
 Candidate phases after `0.1` are directional themes, not accepted API contracts. A capability may
 move, narrow, remain native-only, or be rejected during its design review. Patch releases fix and

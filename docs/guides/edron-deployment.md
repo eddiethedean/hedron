@@ -1,7 +1,7 @@
 # Edron deployment
 
-Edron 0.8 adds a read-only deployment check around the native Hedron ASGI application. It validates
-declared assumptions before the host starts the app; it does not launch a process, discover cloud
+Edron 0.9 provides a read-only deployment check around the native Hedron ASGI application. It
+validates declared assumptions before the host starts the app; it does not launch a process, discover cloud
 infrastructure, install packages, or import application code.
 
 ## Profiles
@@ -72,7 +72,7 @@ returns to a prior application artifact and package pin only.
 Edron is ASGI-first. `hedron-posit` may supply a Supported Workbench or Posit Connect handoff when
 its native version, lifecycle, mount, cookie, URL, and worker evidence is present. Notebook preview
 and remote tooling remain tooling-grade or Experimental. Flask/Django Edron page-class parity is not
-part of the 0.8 contract; use their native Hedron adapters and their own host evidence.
+part of the 0.9 contract; use their native Hedron adapters and their own host evidence.
 
 ## Diagnostics
 

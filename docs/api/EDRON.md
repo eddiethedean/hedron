@@ -1,11 +1,12 @@
 ---
-status: draft
+status: verified
 ---
 
-# Edron 0.1 public API contract
+# Edron public API contract
 
-**Status:** Draft design contract; Edron is not implemented or published<br>
-**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Status:** Edron `0.9.0` implemented and verified in-tree; publication pending<br>
+**Target:** Edron `0.9.0`; Hedron `0.67.0` (`>=0.67.0,<0.68`)<br>
+**Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Authority:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Packaging:** [Edron 0.1 packaging](EDRON_PACKAGING.md)<br>
@@ -14,8 +15,10 @@ status: draft
 **Acceptance:** [Edron 0.1 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)<br>
 **Executable-design fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
-This document freezes the proposed beginner-facing Python contract before implementation. It is
-normative for Edron 0.1 design and acceptance, but it is not an availability claim. Signatures use
+This document records the beginner-facing Python contract through Edron 0.9. The original 0.1
+sections remain the compatibility foundation; current release and migration details are in the
+[Edron user guide](../guides/edron-user-guide.md) and [0.9 acceptance packet](../acceptance/EDRON_009.md).
+Signatures use
 Python typing notation; imported native types keep their owning Hedron package and stability level.
 
 ## Short example
@@ -50,7 +53,7 @@ class SalesPage(ed.Page):
     @ed.action
     def reload(self) -> ed.Outcome:
         load_sales.invalidate()
-        return ed.refresh(self.results).toast("Sales data reloaded")
+        return ed.refresh(self.results)
 ```
 
 The conventional import is `import edron as ed`. Documentation does not use or recommend
@@ -58,12 +61,12 @@ The conventional import is `import edron as ed`. Documentation does not use or r
 
 ## Contract language and stability
 
-The words **must**, **must not**, **required**, **should**, and **may** are normative. Edron `0.1.0`
-will be a Beta distribution and all new Edron-owned symbols in this contract begin at API tier `beta`.
+The words **must**, **must not**, **required**, **should**, and **may** are normative. Edron `0.9.0`
+is a Beta distribution and all Edron-owned symbols in this contract remain API tier `beta`.
 Identity re-exports retain the native Hedron symbol's own tier. Experimental third-party adapters
 remain explicitly `experimental` even when reached through an Edron method.
 
-The 0.1 compatibility promise covers:
+The current compatibility promise covers:
 
 - documented import names and signatures;
 - lifecycle and request-phase rules;
@@ -72,6 +75,13 @@ The 0.1 compatibility promise covers:
 - optional-capability activation and structured error categories;
 - styling precedence and native-authority behavior; and
 - stable Edron diagnostic codes listed here.
+
+Edron 0.9 additionally exposes the native Hedron 0.67 `Interaction`, `Outcome`,
+`AlpineFeatureDemand`, `BrowserFeaturePlan`, and `BrowserPlanClosure` contracts. These are identity
+re-exports: Edron does not create a parallel browser runtime, request authority, or outcome algebra.
+Use `edron.Interaction.local`, `.request`, or `.combined` for declared interactions and
+`edron.browser_plan()` for demand-driven browser assets. Hedron 1.0 is a future compatibility target;
+Edron 0.9 does not declare it as a dependency before its release and verification.
 
 Generated internal paths, DOM IDs, private classes, private descriptor/compiler types, buffer
 implementation, exact HTML whitespace, and private native Hedron implementation details are not
@@ -84,14 +94,11 @@ The normative artifact, dependency, capability, extras, and release requirements
 the [Edron packaging contract](EDRON_PACKAGING.md). This section freezes the public installation
 surface.
 
-The `edron` distribution supports the same Python range as its compatible Hedron train. The first
-release must support Python 3.11 through 3.14 unless the accepted upstream packet changes the whole
-train consistently.
+The `edron` distribution supports Python 3.11 through 3.14 on the 0.9 train, matching Hedron 0.67.
 
-`pip install edron` requires compatible releases of `hedron`, `hedron-data`, `hedron-charts`, and
-`hedron-maps`, plus the maintained Markdown/sanitization and Uvicorn dependencies. The exact
-minimum Hedron version is the first release containing every accepted upstream requirement; it is
-frozen in the packaging acceptance packet rather than guessed in this pre-implementation contract.
+`pip install edron` requires `hedron>=0.67.0,<0.68` and `hedron-data>=0.67.0,<0.68`, plus the
+compatible `hedron-charts`, `hedron-maps`, Markdown/sanitization, and Uvicorn dependencies. The
+exact train is frozen in the [0.9 acceptance packet](../acceptance/EDRON_009.md).
 
 The package publishes `py.typed`, wheel, and source distributions. Importing `edron` must not:
 
@@ -102,7 +109,8 @@ The package publishes `py.typed`, wheel, and source distributions. Importing `ed
 
 ## Root export inventory
 
-The following is the complete intended beginner root inventory for 0.1. A symbol not listed here is
+The following is the complete intended beginner root inventory for the original Edron foundation. The
+0.9 native aliases are documented above. A symbol not listed here is
 not promised from `edron`, even when it is available from a native Hedron package.
 
 | Export | Kind | Tier | Contract |

@@ -6,7 +6,8 @@
 [![License](https://img.shields.io/github/license/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/blob/main/packages/edron/LICENSE)
 [![Status: Beta](https://img.shields.io/badge/status-beta-orange.svg)](https://github.com/eddiethedean/hedron)
 
-Build polished, server-rendered Python apps with a small, explicit API.
+Build polished, server-rendered Python apps with a small, explicit API. The current Edron train is
+`0.9.x`, built on Hedron `0.67.0`.
 
 Edron keeps the first page simple and gives the same codebase room to grow into dashboards,
 internal tools, data workspaces, long-running jobs, and reusable feature packages. You write
@@ -23,7 +24,7 @@ as a finding or TODO.
 Install Edron, create `app.py`, and start the development server:
 
 ```console
-python -m pip install edron
+python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<0.68" "hedron-data>=0.67.0,<0.68"
 edron run app:app --reload
 ```
 
