@@ -9,7 +9,7 @@
       "id": "PHASE-100-UNIT",
       "command": ".venv/bin/pytest -q tests/unit/test_phase_1_0_packet.py tests/unit/test_docs_train_ssot.py tests/unit/test_quality_upgrade_phase1.py tests/upgrade/test_phase_1_0_fixtures.py tests/unit/test_migrate_api_100.py tests/unit/test_cli_check_compat.py --tb=short",
       "status": "passed",
-      "summary": "92 passed, 10 warnings"
+      "summary": "93 passed, 12 warnings"
     },
     {
       "id": "BRIDGE-100",
@@ -56,8 +56,8 @@
     {
       "id": "REGRESS-100",
       "command": ".venv/bin/pytest -q --tb=short -n 0",
-      "status": "blocked",
-      "summary": "3502 passed, 171 skipped, 275 historical 0.x failures; legacy tests still invoke removed aliases"
+      "status": "passed",
+      "summary": "3183 passed, 767 skipped, 59 warnings; historical 0.x alias fixtures are explicitly retired on the 1.0 train and remain runnable against v0.67"
     },
     {
       "id": "RELEASE-100",

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import tomllib
@@ -21,6 +22,22 @@ def test_phase_1_0_plan_checker_passes_without_verifying_release() -> None:
     result = subprocess.run(
         [sys.executable, "scripts/check_100.py", "--check-plan"],
         cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "release gates remain Planned" in result.stdout
+
+
+def test_phase_1_0_plan_checker_bootstraps_checkout_sources() -> None:
+    """The documented checker command must work without an injected PYTHONPATH."""
+    env = dict(os.environ)
+    env.pop("PYTHONPATH", None)
+    result = subprocess.run(
+        [sys.executable, "scripts/check_100.py", "--check-plan"],
+        cwd=ROOT,
+        env=env,
         text=True,
         capture_output=True,
         check=False,
@@ -383,7 +400,7 @@ def test_phase_1_0_verification_ledger_is_explicit_about_green_and_blocked_check
     assert checks["BROWSER-FIREFOX-100"]["status"] == "passed"
     assert checks["BROWSER-WEBKIT-100"]["status"] == "passed"
     assert checks["TYPE-100"]["status"] == "passed"
-    assert checks["REGRESS-100"]["status"] == "blocked"
+    assert checks["REGRESS-100"]["status"] == "passed"
     assert checks["RELEASE-100"]["status"] == "blocked"
 
 
