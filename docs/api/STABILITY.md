@@ -141,7 +141,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   primitives (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`, `AppShell`/`MainPanel`), public
   `render_interaction`, dashboard graph / patch facades, `InteractionRecorder`, and model-demo /
   inference / workflow facades re-exported from core. Phase 0.43 handle/update symbols are **beta**:
-  `@app.refreshable`, `@app.command`, `FragmentHandle`, `BoundFragment`, `ActionHandle`, `Refresh`,
+  historical `@app.refreshable`, `@app.command`, `FragmentHandle`, `BoundFragment`, `ActionHandle`, `Refresh`,
   `refresh`, `patches`, `FragmentHost`, `Patch`, `PatchSet`, `RefreshIntent`. Phase 0.44 type-driven
   authoring symbols are **beta**: `ViewParams`, `FormBody`, `Sensitive`, `InstanceKey`, `Control`,
   `Refreshes`, `Updates`, `OutcomeMap`, `case`, `CommandResult`, `RefreshableView`,
@@ -150,6 +150,9 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   `Hedron.interactions`. Phase 0.46 package-workflow symbols are **beta**: `FeatureBundle`,
   `FeatureRequirement`, `FeatureConflictError`, `Hedron.include_feature`, `DataWorkspace`,
   `ChartInteraction`, `McpExposure`, `RemoteWorkflow`.
+  In the 1.0 canonical surface, `@app.view`, `@app.action`, and `app.include` are the ordinary
+  task paths; the machine-enumerated stable promise is maintained in
+  `docs/acceptance/stable-inventory-100.toml`.
 - **experimental:** live transports — import from `hedron.experimental`
   (`SseResponse`, `job_status_sse_response`, `sse_response`,
   `StreamingComponentResponse`, `stream_*`, `accept_page_session_channel`,
