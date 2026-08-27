@@ -58,6 +58,7 @@ REQUIRED_FILES = (
     "docs/acceptance/compatibility-report-100/README.md",
     "docs/acceptance/compatibility-report-100/local-bridge.json",
     "scripts/generate_100_inventory.py",
+    "scripts/check_upgrade_100.py",
 )
 
 TRANSITIONAL_FIXTURES = {
@@ -260,6 +261,15 @@ def check_plan() -> list[str]:
     target_artifact = compatibility.get("target_artifact")
     if not isinstance(target_artifact, dict) or target_artifact.get("available") is not False:
         errors.append("compatibility report may not claim a v1.0.0 artifact is available")
+    bridge_run = compatibility.get("bridge_run")
+    if not isinstance(bridge_run, dict):
+        errors.append("compatibility report must retain the executable baseline bridge run")
+    else:
+        if bridge_run.get("baseline_commit") != baseline_commit:
+            errors.append("compatibility bridge run must use the recorded immutable baseline")
+        facts = bridge_run.get("facts")
+        if not isinstance(facts, dict) or facts.get("http_status") != 200:
+            errors.append("compatibility bridge run must record a successful canonical HTTP probe")
 
     release_boundary = contract.get("release_boundary")
     if not isinstance(release_boundary, dict):

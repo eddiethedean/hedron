@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 import tomllib
@@ -168,3 +169,13 @@ def test_phase_1_0_inventory_generator_reads_immutable_baseline(tmp_path: Path) 
     stable_text = (tmp_path / "stable-inventory-100.toml").read_text(encoding="utf-8")
     assert 'qualified = "hedron.Hedron"' in stable_text
     assert 'maturity = "stable"' in stable_text
+
+
+def test_phase_1_0_compatibility_report_retains_baseline_bridge_probe() -> None:
+    report = json.loads(
+        (ROOT / "docs/acceptance/compatibility-report-100/local-bridge.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert report["bridge_run"]["command"].startswith("python scripts/check_upgrade_100.py")
+    assert report["bridge_run"]["facts"]["http_status"] == 200
