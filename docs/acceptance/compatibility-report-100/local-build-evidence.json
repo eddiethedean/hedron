@@ -2,7 +2,7 @@
   "schema": "hedron.local-build-evidence/1",
   "phase": "1.0",
   "target": "v1.0.0",
-  "source_commit": "41e89d273c9ba7dd72f1f71a44bb4f50e2d89f66",
+  "source_commit": "ab0aff734e4f5b6ab9aef3c5f63b1b71766f777d",
   "command": "SOURCE_DATE_EPOCH=0 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages",
   "environment": {
     "python": "3.11.9",
@@ -18,8 +18,8 @@
   "artifact_retention": false,
   "release_claim": false,
   "artifacts": [
-    {"name": "hedron-1.0.0-py3-none-any.whl", "sha256": "47083f93f4059ac12a8e56c2956bc232444542233bfadc2df2e9b541a0bdb598"},
-    {"name": "hedron-1.0.0.tar.gz", "sha256": "e0707e3a302eb8a7eebf8594f7ed6768be394dcdea7951918e54bf5f44a3ef82"},
+    {"name": "hedron-1.0.0-py3-none-any.whl", "sha256": "3cce73c2dab096b127cc57127f9ccdcf70101a8ee7ff4af8be270c43b66611e0"},
+    {"name": "hedron-1.0.0.tar.gz", "sha256": "a167d72c37d689c96bf9d8f4ea7c4bf497936f1636710e7542a248856b28fe35"},
     {"name": "hedron_conformance-1.0.0-py3-none-any.whl", "sha256": "40fc3baa7c16cbedc5fee099c50c30dac265cc696751b3badb7f0fdb4e706702"},
     {"name": "hedron_conformance-1.0.0.tar.gz", "sha256": "15fb8286e1dd3be21076a0d6e15bf38bee2c07dc448286c01a40f85d7d69702e"},
     {"name": "hedron_core-1.0.0-py3-none-any.whl", "sha256": "4b16773337ec911421e14011015e587c8037a076a417c8d6874f78c8c4b2e6f4"},
