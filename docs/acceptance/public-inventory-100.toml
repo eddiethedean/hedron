@@ -783,3011 +783,3011 @@ disposition = "coordinated-cut"
 task = "export:hedron.__version__"
 canonical = "hedron.__version__"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.action_attrs"
 canonical = "hedron.action_attrs"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ActionDock"
 canonical = "hedron.ActionDock"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ActionPhase"
 canonical = "hedron.ActionPhase"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ActionPolicy"
 canonical = "hedron.ActionPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ActionState"
 canonical = "hedron.ActionState"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ActionTrace"
 canonical = "hedron.ActionTrace"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ActionTransitionError"
 canonical = "hedron.ActionTransitionError"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AlpineAttrs"
 canonical = "hedron.AlpineAttrs"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AlpineDirective"
 canonical = "hedron.AlpineDirective"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AlpineExpression"
 canonical = "hedron.AlpineExpression"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AlpineFeatureDemand"
 canonical = "hedron.AlpineFeatureDemand"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AlpineMaturity"
 canonical = "hedron.AlpineMaturity"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BrowserPlanError"
 canonical = "hedron.BrowserPlanError"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BrowserFeaturePlan"
 canonical = "hedron.BrowserFeaturePlan"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BrowserPlanClosure"
 canonical = "hedron.BrowserPlanClosure"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BoundaryDecision"
 canonical = "hedron.BoundaryDecision"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BoundaryPhase"
 canonical = "hedron.BoundaryPhase"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AsyncPhase"
 canonical = "hedron.AsyncPhase"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.begin_operation"
 canonical = "hedron.begin_operation"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.complete_operation"
 canonical = "hedron.complete_operation"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.decide_prefetch"
 canonical = "hedron.decide_prefetch"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ActionGroup"
 canonical = "hedron.ActionGroup"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ActionHandle"
 canonical = "hedron.ActionHandle"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ActionRegistry"
 canonical = "hedron.ActionRegistry"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.addressable"
 canonical = "hedron.addressable"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Alert"
 canonical = "hedron.Alert"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AmbientCanvas"
 canonical = "hedron.AmbientCanvas"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AmbientBackdrop"
 canonical = "hedron.AmbientBackdrop"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AmbientLayer"
 canonical = "hedron.AmbientLayer"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.apply_color_mode_cookie"
 canonical = "hedron.apply_color_mode_cookie"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.approved_headers"
 canonical = "hedron.approved_headers"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.apply_navigation_headers"
 canonical = "hedron.apply_navigation_headers"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AppShell"
 canonical = "hedron.AppShell"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AppShellChrome"
 canonical = "hedron.AppShellChrome"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AsyncRegion"
 canonical = "hedron.AsyncRegion"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Surface"
 canonical = "hedron.Surface"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ResourceRow"
 canonical = "hedron.ResourceRow"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ResourceList"
 canonical = "hedron.ResourceList"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ScrollRegion"
 canonical = "hedron.ScrollRegion"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NavStatus"
 canonical = "hedron.NavStatus"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Identity"
 canonical = "hedron.Identity"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.IdentityRegistry"
 canonical = "hedron.IdentityRegistry"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.IdentityTarget"
 canonical = "hedron.IdentityTarget"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.GridItem"
 canonical = "hedron.GridItem"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.EnvironmentBanner"
 canonical = "hedron.EnvironmentBanner"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Brand"
 canonical = "hedron.Brand"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Avatar"
 canonical = "hedron.Avatar"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AppFooter"
 canonical = "hedron.AppFooter"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AccountSummary"
 canonical = "hedron.AccountSummary"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Aside"
 canonical = "hedron.Aside"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AttrHost"
 canonical = "hedron.AttrHost"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Audio"
 canonical = "hedron.Audio"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AuthDenied"
 canonical = "hedron.AuthDenied"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AuthResult"
 canonical = "hedron.AuthResult"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AuthSuccess"
 canonical = "hedron.AuthSuccess"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Auto"
 canonical = "hedron.Auto"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.AutoForm"
 canonical = "hedron.AutoForm"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.await_if_needed"
 canonical = "hedron.await_if_needed"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Badge"
 canonical = "hedron.Badge"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BottomDock"
 canonical = "hedron.BottomDock"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BoundaryBindingPlan"
 canonical = "hedron.BoundaryBindingPlan"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BoundFragment"
 canonical = "hedron.BoundFragment"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.browser_context"
 canonical = "hedron.browser_context"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.browser_context_from_request"
 canonical = "hedron.browser_context_from_request"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BrowserContext"
 canonical = "hedron.BrowserContext"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BrowserStorage"
 canonical = "hedron.BrowserStorage"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.BrowserStorageUnavailable"
 canonical = "hedron.BrowserStorageUnavailable"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Button"
 canonical = "hedron.Button"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ByteRangeNotSatisfiable"
 canonical = "hedron.ByteRangeNotSatisfiable"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.cache_component"
 canonical = "hedron.cache_component"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.cache_data"
 canonical = "hedron.cache_data"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CachePolicy"
 canonical = "hedron.CachePolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CameraCapture"
 canonical = "hedron.CameraCapture"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Card"
 canonical = "hedron.Card"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Carousel"
 canonical = "hedron.Carousel"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.case"
 canonical = "hedron.case"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CatalogEntry"
 canonical = "hedron.CatalogEntry"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CatalogVersionError"
 canonical = "hedron.CatalogVersionError"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ChatInput"
 canonical = "hedron.ChatInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ChatMessage"
 canonical = "hedron.ChatMessage"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Checkbox"
 canonical = "hedron.Checkbox"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ChipInput"
 canonical = "hedron.ChipInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CircularProgress"
 canonical = "hedron.CircularProgress"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ClipboardCopy"
 canonical = "hedron.ClipboardCopy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CodeBlock"
 canonical = "hedron.CodeBlock"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CodeViewer"
 canonical = "hedron.CodeViewer"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ColorInput"
 canonical = "hedron.ColorInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ColorMode"
 canonical = "hedron.ColorMode"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ColorModeToggle"
 canonical = "hedron.ColorModeToggle"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CommandHandler"
 canonical = "hedron.CommandHandler"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CommandResult"
 canonical = "hedron.CommandResult"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.compile_css"
 canonical = "hedron.compile_css"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.compile_palette"
 canonical = "hedron.compile_palette"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.compatibility_theme_vars"
 canonical = "hedron.compatibility_theme_vars"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.component_contract_manifest"
 canonical = "hedron.component_contract_manifest"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.element_metadata_manifest"
 canonical = "hedron.element_metadata_manifest"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.package_identity_manifest"
 canonical = "hedron.package_identity_manifest"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.derived_theme_tokens"
 canonical = "hedron.derived_theme_tokens"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Component"
 canonical = "hedron.Component"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ComponentRef"
 canonical = "hedron.ComponentRef"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ComponentResponse"
 canonical = "hedron.ComponentResponse"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ConfirmButton"
 canonical = "hedron.ConfirmButton"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Container"
 canonical = "hedron.Container"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ConnectorFlow"
 canonical = "hedron.ConnectorFlow"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ConnectorNode"
 canonical = "hedron.ConnectorNode"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ConnectorTrack"
 canonical = "hedron.ConnectorTrack"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ContextMenu"
 canonical = "hedron.ContextMenu"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.contrast_diagnostics"
 canonical = "hedron.contrast_diagnostics"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.contrast_ratio"
 canonical = "hedron.contrast_ratio"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Control"
 canonical = "hedron.Control"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.cookie_path_for_mount"
 canonical = "hedron.cookie_path_for_mount"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.csrf_token_for_request"
 canonical = "hedron.csrf_token_for_request"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CsrfField"
 canonical = "hedron.CsrfField"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.CsrfStrategy"
 canonical = "hedron.CsrfStrategy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.CsrfValidationError"
 canonical = "hedron.CsrfValidationError"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DashboardHistory"
 canonical = "hedron.DashboardHistory"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DashboardWorkspace"
 canonical = "hedron.DashboardWorkspace"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DateInput"
 canonical = "hedron.DateInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DateTimeInput"
 canonical = "hedron.DateTimeInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.default_interaction_policy"
 canonical = "hedron.default_interaction_policy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DependencyLifetime"
 canonical = "hedron.DependencyLifetime"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DependencyPlan"
 canonical = "hedron.DependencyPlan"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DependsOn"
 canonical = "hedron.DependsOn"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DescriptionList"
 canonical = "hedron.DescriptionList"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DesignSystem"
 canonical = "hedron.DesignSystem"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Color"
 canonical = "hedron.Color"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ComponentStateMatrix"
 canonical = "hedron.ComponentStateMatrix"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ComponentThemeContract"
 canonical = "hedron.ComponentThemeContract"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.CoverageProfile"
 canonical = "hedron.CoverageProfile"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RecipeFamily"
 canonical = "hedron.RecipeFamily"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.StyleContext"
 canonical = "hedron.StyleContext"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.THEME_PACKAGE_COMPATIBILITY"
 canonical = "hedron.THEME_PACKAGE_COMPATIBILITY"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Dialog"
 canonical = "hedron.Dialog"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Dialogue"
 canonical = "hedron.Dialogue"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DialogueTurn"
 canonical = "hedron.DialogueTurn"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DirectoryUpload"
 canonical = "hedron.DirectoryUpload"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DirectoryUploadFile"
 canonical = "hedron.DirectoryUploadFile"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Divider"
 canonical = "hedron.Divider"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DoubleSubmitCookieCsrf"
 canonical = "hedron.DoubleSubmitCookieCsrf"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.download_all_zip"
 canonical = "hedron.download_all_zip"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.DownloadButton"
 canonical = "hedron.DownloadButton"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ErrorState"
 canonical = "hedron.ErrorState"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ExampleItem"
 canonical = "hedron.ExampleItem"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ExampleSet"
 canonical = "hedron.ExampleSet"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Expander"
 canonical = "hedron.Expander"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FeedbackPolicy"
 canonical = "hedron.FeedbackPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Field"
 canonical = "hedron.Field"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FailureBoundary"
 canonical = "hedron.FailureBoundary"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FailureDisposition"
 canonical = "hedron.FailureDisposition"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FutureWarningRecord"
 canonical = "hedron.FutureWarningRecord"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FutureWarningRegistry"
 canonical = "hedron.FutureWarningRegistry"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PUBLIC_FUTURE_WARNINGS"
 canonical = "hedron.PUBLIC_FUTURE_WARNINGS"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.emit_future_warning"
 canonical = "hedron.emit_future_warning"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FileComponentResponse"
 canonical = "hedron.FileComponentResponse"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FileUpload"
 canonical = "hedron.FileUpload"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FlowStep"
 canonical = "hedron.FlowStep"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Footer"
 canonical = "hedron.Footer"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Form"
 canonical = "hedron.Form"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.form_sync_attrs"
 canonical = "hedron.form_sync_attrs"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FormBody"
 canonical = "hedron.FormBody"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FormErrors"
 canonical = "hedron.FormErrors"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.FormField"
 canonical = "hedron.FormField"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.FormGrid"
 canonical = "hedron.FormGrid"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FormModel"
 canonical = "hedron.FormModel"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Fragment"
 canonical = "hedron.Fragment"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FragmentHandle"
 canonical = "hedron.FragmentHandle"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FragmentHost"
 canonical = "hedron.FragmentHost"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FragmentRegion"
 canonical = "hedron.FragmentRegion"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.FragmentRegionError"
 canonical = "hedron.FragmentRegionError"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.FragmentResponse"
 canonical = "hedron.FragmentResponse"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Gallery"
 canonical = "hedron.Gallery"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.GalleryItem"
 canonical = "hedron.GalleryItem"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.gather"
 canonical = "hedron.gather"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.GeoJSONLayer"
 canonical = "hedron.GeoJSONLayer"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.GeolocationButton"
 canonical = "hedron.GeolocationButton"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.GeolocationHint"
 canonical = "hedron.GeolocationHint"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.get_icon"
 canonical = "hedron.get_icon"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Grid"
 canonical = "hedron.Grid"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Head"
 canonical = "hedron.Head"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Header"
 canonical = "hedron.Header"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Heading"
 canonical = "hedron.Heading"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HedronFutureWarning"
 canonical = "hedron.HedronFutureWarning"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.warn_legacy_path"
 canonical = "hedron.warn_legacy_path"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Hedron"
 canonical = "hedron.Hedron"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.hedron_response"
 canonical = "hedron.hedron_response"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HedronRoute"
 canonical = "hedron.HedronRoute"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HedronRouter"
 canonical = "hedron.HedronRouter"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.Help"
 canonical = "hedron.Help"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HelpInspector"
 canonical = "hedron.HelpInspector"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HTML"
 canonical = "hedron.HTML"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.html"
 canonical = "hedron.html"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.htmx_context"
 canonical = "hedron.htmx_context"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.htmx_request"
 canonical = "hedron.htmx_request"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HtmxLink"
 canonical = "hedron.HtmxLink"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HEDRON_NAVIGATION_HEADER"
 canonical = "hedron.HEDRON_NAVIGATION_HEADER"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HEDRON_NAVIGATION_PHASE_HEADER"
 canonical = "hedron.HEDRON_NAVIGATION_PHASE_HEADER"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HEDRON_NAVIGATION_TARGET_HEADER"
 canonical = "hedron.HEDRON_NAVIGATION_TARGET_HEADER"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HEDRON_NAVIGATION_TITLE_HEADER"
 canonical = "hedron.HEDRON_NAVIGATION_TITLE_HEADER"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HEDRON_PREFETCH_HEADER"
 canonical = "hedron.HEDRON_PREFETCH_HEADER"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.HtmxRequest"
 canonical = "hedron.HtmxRequest"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Hx"
 canonical = "hedron.Hx"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.Icon"
 canonical = "hedron.Icon"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.IconButton"
 canonical = "hedron.IconButton"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.IFrame"
 canonical = "hedron.IFrame"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Image"
 canonical = "hedron.Image"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InferenceInterface"
 canonical = "hedron.InferenceInterface"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InferencePolicy"
 canonical = "hedron.InferencePolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InferenceWorkflow"
 canonical = "hedron.InferenceWorkflow"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InfiniteScroll"
 canonical = "hedron.InfiniteScroll"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Inline"
 canonical = "hedron.Inline"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InstanceKey"
 canonical = "hedron.InstanceKey"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Interaction"
 canonical = "hedron.Interaction"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InteractionKind"
 canonical = "hedron.InteractionKind"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InteractionCatalog"
 canonical = "hedron.InteractionCatalog"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InteractionManifest"
 canonical = "hedron.InteractionManifest"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InteractionPolicy"
 canonical = "hedron.InteractionPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InteractionRecorder"
 canonical = "hedron.InteractionRecorder"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.InteractionResult"
 canonical = "hedron.InteractionResult"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.invalidate_tags"
 canonical = "hedron.invalidate_tags"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.is_safe_navigation_url"
 canonical = "hedron.is_safe_navigation_url"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.JobScope"
 canonical = "hedron.JobScope"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.JobScopeProvider"
 canonical = "hedron.JobScopeProvider"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.JSONViewer"
 canonical = "hedron.JSONViewer"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Label"
 canonical = "hedron.Label"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.Lazy"
 canonical = "hedron.Lazy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Link"
 canonical = "hedron.Link"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.LinkButton"
 canonical = "hedron.LinkButton"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.List"
 canonical = "hedron.List"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.LocalEffect"
 canonical = "hedron.LocalEffect"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.list_icons"
 canonical = "hedron.list_icons"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Loading"
 canonical = "hedron.Loading"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.LoginCsrfField"
 canonical = "hedron.LoginCsrfField"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Logo"
 canonical = "hedron.Logo"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Main"
 canonical = "hedron.Main"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.MainPanel"
 canonical = "hedron.MainPanel"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Map"
 canonical = "hedron.Map"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.MarkerSpec"
 canonical = "hedron.MarkerSpec"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Math"
 canonical = "hedron.Math"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.media_file_response"
 canonical = "hedron.media_file_response"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PollPolicy"
 canonical = "hedron.PollPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RateLimitPolicy"
 canonical = "hedron.RateLimitPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SessionAuthFlow"
 canonical = "hedron.SessionAuthFlow"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SessionRotationPolicy"
 canonical = "hedron.SessionRotationPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.StyleRecipe"
 canonical = "hedron.StyleRecipe"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.StyleScope"
 canonical = "hedron.StyleScope"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ThemePicker"
 canonical = "hedron.ThemePicker"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ThemePreference"
 canonical = "hedron.ThemePreference"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.resolve_theme_preference"
 canonical = "hedron.resolve_theme_preference"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.theme_boot_asset"
 canonical = "hedron.theme_boot_asset"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.theme_markers"
 canonical = "hedron.theme_markers"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.TaskFlow"
 canonical = "hedron.TaskFlow"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.TaskUnavailablePolicy"
 canonical = "hedron.TaskUnavailablePolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.UploadFlow"
 canonical = "hedron.UploadFlow"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.MenuButton"
 canonical = "hedron.MenuButton"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.merge_htmx_headers"
 canonical = "hedron.merge_htmx_headers"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Metric"
 canonical = "hedron.Metric"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.MicrophoneCapture"
 canonical = "hedron.MicrophoneCapture"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Model"
 canonical = "hedron.Model"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ModelDemo"
 canonical = "hedron.ModelDemo"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.mount_from_request"
 canonical = "hedron.mount_from_request"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.mount_hedron_static"
 canonical = "hedron.mount_hedron_static"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.MountPath"
 canonical = "hedron.MountPath"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.MultiSelect"
 canonical = "hedron.MultiSelect"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Nav"
 canonical = "hedron.Nav"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NavGroup"
 canonical = "hedron.NavGroup"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NavLink"
 canonical = "hedron.NavLink"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NavigationDecision"
 canonical = "hedron.NavigationDecision"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NavigationIdentity"
 canonical = "hedron.NavigationIdentity"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NavigationMachine"
 canonical = "hedron.NavigationMachine"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NavigationPhase"
 canonical = "hedron.NavigationPhase"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NavigationPolicy"
 canonical = "hedron.NavigationPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NavigationState"
 canonical = "hedron.NavigationState"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.OperationIdentity"
 canonical = "hedron.OperationIdentity"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Outcome"
 canonical = "hedron.Outcome"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.OutcomeKind"
 canonical = "hedron.OutcomeKind"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PrefetchDecision"
 canonical = "hedron.PrefetchDecision"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.evaluate_prefetch_request"
 canonical = "hedron.evaluate_prefetch_request"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.TraceEvent"
 canonical = "hedron.TraceEvent"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.transition_action"
 canonical = "hedron.transition_action"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.normalize_mount_path"
 canonical = "hedron.normalize_mount_path"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.NumberInput"
 canonical = "hedron.NumberInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.oob_swap"
 canonical = "hedron.oob_swap"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.OobHost"
 canonical = "hedron.OobHost"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.OobUpdate"
 canonical = "hedron.OobUpdate"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.OutcomeMap"
 canonical = "hedron.OutcomeMap"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PackageProjection"
 canonical = "hedron.PackageProjection"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Page"
 canonical = "hedron.Page"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.PageHeader"
 canonical = "hedron.PageHeader"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PageIcon"
 canonical = "hedron.PageIcon"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PageResponse"
 canonical = "hedron.PageResponse"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Pagination"
 canonical = "hedron.Pagination"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ParameterViewer"
 canonical = "hedron.ParameterViewer"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.parse_byte_range"
 canonical = "hedron.parse_byte_range"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Patch"
 canonical = "hedron.Patch"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.patches"
 canonical = "hedron.patches"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PatchSet"
 canonical = "hedron.PatchSet"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PdfViewer"
 canonical = "hedron.PdfViewer"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Pills"
 canonical = "hedron.Pills"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Poll"
 canonical = "hedron.Poll"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.Popover"
 canonical = "hedron.Popover"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PredictionFeedback"
 canonical = "hedron.PredictionFeedback"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PredictionLabel"
 canonical = "hedron.PredictionLabel"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.PredictionScore"
 canonical = "hedron.PredictionScore"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.prefix_local_path"
 canonical = "hedron.prefix_local_path"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ProcessFlow"
 canonical = "hedron.ProcessFlow"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Progress"
 canonical = "hedron.Progress"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ProjectionCapability"
 canonical = "hedron.ProjectionCapability"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Props"
 canonical = "hedron.Props"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RadioGroup"
 canonical = "hedron.RadioGroup"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RangeInput"
 canonical = "hedron.RangeInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RatingInput"
 canonical = "hedron.RatingInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.read_color_mode_preference"
 canonical = "hedron.read_color_mode_preference"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RecordedExchange"
 canonical = "hedron.RecordedExchange"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RecordingSnippet"
 canonical = "hedron.RecordingSnippet"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.redact_cookie_value"
 canonical = "hedron.redact_cookie_value"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.redirect_external"
 canonical = "hedron.redirect_external"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.redirect_htmx"
 canonical = "hedron.redirect_htmx"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.redirect_local"
 canonical = "hedron.redirect_local"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Refresh"
 canonical = "hedron.Refresh"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.refresh"
 canonical = "hedron.refresh"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RefreshableView"
 canonical = "hedron.RefreshableView"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RefreshButton"
 canonical = "hedron.RefreshButton"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.Refreshes"
 canonical = "hedron.Refreshes"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RefreshIntent"
 canonical = "hedron.RefreshIntent"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.register_icon"
 canonical = "hedron.register_icon"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RegisteredAction"
 canonical = "hedron.RegisteredAction"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.render"
 canonical = "hedron.render"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.render_component_response"
 canonical = "hedron.render_component_response"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.render_interaction"
 canonical = "hedron.render_interaction"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RenderContext"
 canonical = "hedron.RenderContext"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RenderMode"
 canonical = "hedron.RenderMode"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RenderResult"
 canonical = "hedron.RenderResult"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RequestIndicator"
 canonical = "hedron.RequestIndicator"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RequestEffect"
 canonical = "hedron.RequestEffect"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.RequiresScopes"
 canonical = "hedron.RequiresScopes"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.resolve_color_mode"
 canonical = "hedron.resolve_color_mode"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.resolve_mount_path"
 canonical = "hedron.resolve_mount_path"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.resolve_mount_path_from_environ"
 canonical = "hedron.resolve_mount_path_from_environ"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.navigation_identity_from_request"
 canonical = "hedron.navigation_identity_from_request"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.resolve_route_path"
 canonical = "hedron.resolve_route_path"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.resolved_theme_from_request"
 canonical = "hedron.resolved_theme_from_request"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.retarget"
 canonical = "hedron.retarget"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.run_sync"
 canonical = "hedron.run_sync"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.safe_download_response"
 canonical = "hedron.safe_download_response"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SafeUrl"
 canonical = "hedron.SafeUrl"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ReviewedExpression"
 canonical = "hedron.ReviewedExpression"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ScreenHandle"
 canonical = "hedron.ScreenHandle"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ScreenLayout"
 canonical = "hedron.ScreenLayout"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Secret"
 canonical = "hedron.Secret"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Section"
 canonical = "hedron.Section"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SecurityHeadersPolicy"
 canonical = "hedron.SecurityHeadersPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.SecurityPolicy"
 canonical = "hedron.SecurityPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.SecurityProfile"
 canonical = "hedron.SecurityProfile"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SegmentedControl"
 canonical = "hedron.SegmentedControl"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Select"
 canonical = "hedron.Select"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SelectSlider"
 canonical = "hedron.SelectSlider"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Sensitive"
 canonical = "hedron.Sensitive"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.session_state"
 canonical = "hedron.session_state"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SessionState"
 canonical = "hedron.SessionState"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SessionTokenCsrf"
 canonical = "hedron.SessionTokenCsrf"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.Sidebar"
 canonical = "hedron.Sidebar"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Skeleton"
 canonical = "hedron.Skeleton"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SkipLink"
 canonical = "hedron.SkipLink"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Spacer"
 canonical = "hedron.Spacer"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SplitView"
 canonical = "hedron.SplitView"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.MasterDetail"
 canonical = "hedron.MasterDetail"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Stack"
 canonical = "hedron.Stack"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.StateView"
 canonical = "hedron.StateView"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.StateTransfer"
 canonical = "hedron.StateTransfer"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.StateTransferPolicy"
 canonical = "hedron.StateTransferPolicy"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Status"
 canonical = "hedron.Status"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.StorageQuotaExceeded"
 canonical = "hedron.StorageQuotaExceeded"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.styles_from_manifest"
 canonical = "hedron.styles_from_manifest"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.StyleSymbols"
 canonical = "hedron.StyleSymbols"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.SubmitButton"
 canonical = "hedron.SubmitButton"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.swap"
 canonical = "hedron.swap"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.swap_oob"
 canonical = "hedron.swap_oob"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.Table"
 canonical = "hedron.Table"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.TableColumn"
 canonical = "hedron.TableColumn"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Tabs"
 canonical = "hedron.Tabs"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Text"
 canonical = "hedron.Text"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.TextArea"
 canonical = "hedron.TextArea"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.TextInput"
 canonical = "hedron.TextInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "stable"
+maturity = "stable"
 
 [[surface]]
 task = "export:hedron.Theme"
 canonical = "hedron.Theme"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ThemeBuilder"
 canonical = "hedron.ThemeBuilder"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ThemePackage"
 canonical = "hedron.ThemePackage"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ThemePatch"
 canonical = "hedron.ThemePatch"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ThemeSpec"
 canonical = "hedron.ThemeSpec"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ThemeValidationReport"
 canonical = "hedron.ThemeValidationReport"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.conformance_report"
 canonical = "hedron.conformance_report"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.diff_theme_specs"
 canonical = "hedron.diff_theme_specs"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.explain_theme_spec"
 canonical = "hedron.explain_theme_spec"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.export_theme"
 canonical = "hedron.export_theme"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.load_theme_package"
 canonical = "hedron.load_theme_package"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.package_theme"
 canonical = "hedron.package_theme"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.register_component_theme_contract"
 canonical = "hedron.register_component_theme_contract"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.registered_component_theme_contracts"
 canonical = "hedron.registered_component_theme_contracts"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.register_recipe_family"
 canonical = "hedron.register_recipe_family"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.registered_recipe_families"
 canonical = "hedron.registered_recipe_families"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.register_theme_package"
 canonical = "hedron.register_theme_package"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.resolve_theme"
 canonical = "hedron.resolve_theme"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.StateMatrixEntry"
 canonical = "hedron.StateMatrixEntry"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ThemeExport"
 canonical = "hedron.ThemeExport"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ThemeResolution"
 canonical = "hedron.ThemeResolution"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.build_state_matrix"
 canonical = "hedron.build_state_matrix"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.inspect_theme_css"
 canonical = "hedron.inspect_theme_css"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.theme_contract_report"
 canonical = "hedron.theme_contract_report"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.TRACE_CONTRACT_SCHEMA"
 canonical = "hedron.TRACE_CONTRACT_SCHEMA"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.decode_interaction_trace"
 canonical = "hedron.decode_interaction_trace"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.encode_interaction_trace"
 canonical = "hedron.encode_interaction_trace"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.profile_interaction_trace"
 canonical = "hedron.profile_interaction_trace"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.validate_theme_spec"
 canonical = "hedron.validate_theme_spec"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.TimeInput"
 canonical = "hedron.TimeInput"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Timeline"
 canonical = "hedron.Timeline"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Title"
 canonical = "hedron.Title"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Toast"
 canonical = "hedron.Toast"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ToastHost"
 canonical = "hedron.ToastHost"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ToggleSwitch"
 canonical = "hedron.ToggleSwitch"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Tooltip"
 canonical = "hedron.Tooltip"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.trusted_svg"
 canonical = "hedron.trusted_svg"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.TrustedHtml"
 canonical = "hedron.TrustedHtml"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.TypeSchema"
 canonical = "hedron.TypeSchema"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Typography"
 canonical = "hedron.Typography"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Updates"
 canonical = "hedron.Updates"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.UrlPurpose"
 canonical = "hedron.UrlPurpose"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.validate_directory_upload"
 canonical = "hedron.validate_directory_upload"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.Video"
 canonical = "hedron.Video"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ViewParams"
 canonical = "hedron.ViewParams"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[surface]]
 task = "export:hedron.ViewportHint"
 canonical = "hedron.ViewportHint"
 owner = "hedron"
-disposition = "unclassified"
-maturity = "unclassified"
+disposition = "beta"
+maturity = "beta"
 
 [[package]]
 name = "hedron-charts"
