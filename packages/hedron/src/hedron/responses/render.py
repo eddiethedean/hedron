@@ -32,6 +32,7 @@ from hedron_core.interaction import (
     authorize_htmx_target,
     interaction_headers,
     materialize_interaction_nodes,
+    resolve_fragment_region,
     select_htmx_auth_target,
     validated_extra_headers,
 )
@@ -115,6 +116,21 @@ def _authorize_component_htmx(
         if target and any(matches_declared_host(region, target) for region in handle_hosts):
             return
         if target:
+            # Preserve explicit application-owned regions alongside the
+            # generated view host.  The owned host still wins when targeted,
+            # while declared OOB/status regions remain valid destinations.
+            declared_regions = tuple(
+                region for region in fragment_regions if region not in handle_hosts
+            )
+            if declared_regions:
+                try:
+                    resolve_fragment_region(
+                        InteractionPolicy(declared_regions=declared_regions), target
+                    )
+                except FragmentRegionError:
+                    pass
+                else:
+                    return
             raise FragmentRegionError(
                 f"HX-Target {target!r} disagrees with owned handle host",
                 requested=target,

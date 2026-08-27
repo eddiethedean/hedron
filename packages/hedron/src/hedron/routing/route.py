@@ -30,7 +30,12 @@ from hedron_core.alpine import BrowserPlanClosure
 from hedron_core.codes import HED_UPDATE_0003
 from hedron_core.component import Component, NodeLike
 from hedron_core.htmx.policy import InteractionPolicy
-from hedron_core.interaction import FragmentRegion, FragmentRegionError, InteractionResult
+from hedron_core.interaction import (
+    FragmentRegion,
+    FragmentRegionError,
+    InteractionResult,
+    resolve_fragment_region,
+)
 from hedron_core.interaction_067 import Outcome, OutcomeKind
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
@@ -523,6 +528,23 @@ def _authorize_component_fragment(
         if target and any(matches_declared_host(region, target) for region in handle_hosts):
             return
         if target:
+            # A canonical ``view`` may explicitly authorize additional
+            # application-owned regions (for example a shared OOB/status
+            # sink) in addition to its generated handle host.  The handle
+            # host remains protected, but it must not shadow those declared
+            # regions and make the allowlist unusable.
+            declared_regions = tuple(
+                region for region in fragment_regions if region not in handle_hosts
+            )
+            if declared_regions:
+                try:
+                    resolve_fragment_region(
+                        InteractionPolicy(declared_regions=declared_regions), target
+                    )
+                except FragmentRegionError:
+                    pass
+                else:
+                    return
             from hedron_core.audit import SecurityAuditEventType, emit_security_audit
 
             mismatch = FragmentRegionError(

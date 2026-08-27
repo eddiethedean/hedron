@@ -48,7 +48,7 @@ def browser_app_url() -> Iterator[str]:
     class Payload(BaseModel):
         title: str = "hi"
 
-    @app.command(fallback="/")
+    @app.action("/submit", fallback="/")
     def add(data: Annotated[Payload, FormBody()]):
         return Text(data.title)
 
