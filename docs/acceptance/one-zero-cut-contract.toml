@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "1.0"
-status = "Implementation in progress; release evidence pending"
+status = "Verified"
 planning_baseline = "v0.67.0"
 required_predecessor = "v0.67.0"
 predecessor_state = "Verified Beta preview"
@@ -13,7 +13,7 @@ release_gate = "release-gate-1.0.toml"
 upgrade_fixtures = "upgrade-fixtures-1.0.md"
 implementation_plan = "../implementation/HEDRON_1_0.md"
 stage_1_entry_satisfied = true
-release_cut_satisfied = false
+release_cut_satisfied = true
 changes_runtime = true
 changes_versions = true
 runtime_change_rule = "compatibility-preserving corrections only; no net-new Required runtime capabilities"

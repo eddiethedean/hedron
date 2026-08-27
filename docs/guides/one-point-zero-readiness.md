@@ -1,14 +1,14 @@
 # Public 1.0 readiness (architectural review)
 
-**Status:** Maintainer assessment updated for Verified Beta `v0.67.0` and the Accepted,
-**Stage 0 Refined** 1.0 cut plan. This is not an implementation or release-date claim.
+**Status:** **Verified `v1.0.0` release candidate.** All 17 release gates and the immutable
+`v0.67.0` compatibility bridge pass; the Git tag and PyPI upload remain maintainer-controlled.
 [D-114–D-117](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) supersede
 D-038's no-1.0 terminus while retaining its evidence-based maturity rules.
 
-**Verdict:** Do not call Hedron `1.0` today. The cut is now bounded and executable as a plan, but
-`ENTRY-100` blocks removal work until the complete 0.67 public/task/artifact inventory, warning
-reconciliation, enumerated stable surface, dual-version corpus, exact matrix, and 0.67.x support
-window exist. The release is subtractive; it is not waiting for another runtime capability.
+**Verdict:** The repository is ready to tag `v1.0.0`. The complete 0.67 public/task/artifact
+inventory, warning reconciliation, enumerated stable surface, dual-version corpus, exact matrix,
+support window, reproducible artifacts, and regression evidence are retained in the acceptance
+packet. PyPI still serves `0.66.2` until the release workflow completes.
 
 ## What is already strong
 
@@ -30,11 +30,11 @@ window exist. The release is subtractive; it is not waiting for another runtime 
 | Leaky abstractions | Root/`hedron_core` kitchen-sink exports; satellites importing FastAPI `hedron` |
 | Scaling risks | Every phase adds permanent CI cost; soft FastAPI coupling spreads with each satellite |
 
-## Before an honest 1.0 (must)
+## 1.0 release checklist (complete)
 
 1. **Governance — refined:** RFC-0096 and D-114–D-117 supersede D-038, define the evidence-driven
    cut, and explicitly make no commercial SLA or multi-year LTS claim.
-2. **API freeze boundary — pending `ENTRY-100`:** Shrink root/`hedron_core` public surfaces; enforce
+2. **API freeze boundary — verified:** Shrink root/`hedron_core` public surfaces; enforce
    [symbol tiers](../api/SYMBOL_TIERS.md); promote only contracts you will protect across
    majors; remove experimental root aliases.
 3. **Dependency purity — release gate:** Eliminate satellite→`hedron` imports (see

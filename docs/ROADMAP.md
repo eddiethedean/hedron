@@ -6862,16 +6862,15 @@ tag-by-tag recommendations are the
 
 ## Hedron 1.0 — interface and HTMX/Alpine interaction consolidation
 
-**Status:** **Stage 0 Refined; implementation pending.** Verified Beta `v0.67.0` is the immutable
-planning baseline and required predecessor. D-117 turns the D-114–D-116 architecture and 0.67
+**Status:** **Verified `v1.0.0` release candidate; tag/PyPI publication pending.** Verified Beta
+`v0.67.0` is the immutable planning baseline and required predecessor. D-117 turns the D-114–D-116 architecture and 0.67
 freeze into an executable cut packet: the [implementation plan](implementation/HEDRON_1_0.md),
 [acceptance plan](acceptance/RELEASE_1_0.md), [machine release gate](acceptance/release-gate-1.0.toml),
 [cut contract](acceptance/one-zero-cut-contract.toml), and
 [upgrade fixture ledger](acceptance/upgrade-fixtures-1.0.md). The refinement itself changes no
-package version, maturity classifier, or release claim; the implementation records one
-compatibility-preserving authorization correction explicitly. `ENTRY-100` remains Planned and
-blocks removal work until the generated 0.67 public/task/artifact inventory is reconciled with the
-warning registry and the enumerated stable 1.0 inventory is frozen.
+package version, maturity classifier, or release claim; the completed implementation records one
+compatibility-preserving authorization correction explicitly. The complete inventory, warning,
+stable-surface, compatibility, artifact, and regression evidence is retained; all 17 rows are Verified.
 
 Hedron 1.0 makes the previewed unified interaction model canonical and enforces one stable public
 path per developer task and abstraction level. Function handlers are the only route-authoring
@@ -6917,10 +6916,8 @@ browser, tooling, configuration, HDJ, and fixture matrix is the
    argument, config/CLI/HDJ/markup form, generated spelling, root shim, controller, or tag needs a
    complete 0.67 warning/finding and before/after fixture. Partial or unknown analysis may diagnose
    risk but cannot authorize deletion.
-3. **Known inventory gap is explicit.** The in-tree warning registry currently contains the three
-   route/include records for `app.component`, `app.fragment`, and `app.include_feature`. They are a
-   fixture floor, not proof that every proposed 1.0 removal has warning coverage. W0 generates and
-   reconciles the complete public surface before `ENTRY-100` can pass.
+3. **Inventory closure is explicit.** The eleven in-tree route/include and adapter warning records
+   are reconciled against the complete public surface; `ENTRY-100` is Verified.
 4. **Stable means enumerated.** SemVer protects the accepted canonical stable inventory, not every
    importable Beta/Experimental symbol. Advanced and package-native paths remain only for distinct
    capabilities or honest optional ownership.
@@ -6929,7 +6926,7 @@ browser, tooling, configuration, HDJ, and fixture matrix is the
 6. **Claim boundary.** The cut does not imply a commercial SLA, multi-year LTS, human-AT result,
    blanket WCAG conformance, promotion of experimental live transports, or Stable maturity for
    every satellite/capability.
-7. **Support and rollback.** The 0.67.x migration-support window must be published before cut.
+7. **Support and rollback.** The 0.67.x migration-support window is published before cut.
    Before publication the release stops on a failed invariant; after publication, fixes move
    forward in 1.0.x rather than retagging or silently restoring aliases.
 
@@ -6943,6 +6940,5 @@ performance after shim removal. W8 runs the same canonical corpus on immutable 0
 environments plus the fleet. W9 builds reproducible artifacts and authorizes the cut only after all
 17 rows in `release-gate-1.0.toml` are Verified.
 
-The planning checker is `python scripts/check_100.py --check-plan`. It validates cross-artifact
-consistency and rejects a version/release claim; it deliberately refuses `--verify` while a selected
-release gate is Planned.
+The packet checker is `python scripts/check_100.py --check-plan`; each executable slice is available
+through `python scripts/check_100.py --gate <GATE-ID> --verify`.

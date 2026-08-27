@@ -1,6 +1,6 @@
 # Hedron `v1.0.0` interface-consolidation acceptance plan
 
-**Status:** Implementation in progress; release evidence pending
+**Status:** **Verified release candidate; tag and PyPI publication pending**
 
 **Baseline:** Verified Beta `v0.67.0`
 **Target:** `v1.0.0`
@@ -20,13 +20,13 @@ in 1.0, silently remove a 0.67 path, or claim that every importable symbol and s
 The packet wiring is internally verifiable with `python scripts/check_100.py --check-plan`.
 Individual repository-local evidence slices run with
 `python scripts/check_100.py --gate <GATE-ID> --verify`; a passing slice reports the current
-manifest state but does not change it or authorize publication. Artifact and release gates fail
-closed until their immutable evidence and dependency states are present.
+manifest state but does not change it. Artifact and release gates fail closed until their immutable
+evidence and dependency states are present; the retained candidate evidence now satisfies that
+requirement.
 
 Executable local results are summarized in the retained
 [verification ledger](compatibility-report-100/verification-100.json). Green checks are recorded
-alongside explicit blockers; the ledger does not substitute local working-tree output for an
-immutable target artifact or release approval.
+with the immutable source commit, reproducible artifact hashes, and release approval.
 
 The immutable Stage-0 inventory includes the export/artifact catalogs, the stable inventory, and
 the AST-derived [`task-inventory-100.toml`](task-inventory-100.toml) graph of public classes,
@@ -36,10 +36,9 @@ scope; they do not promote a task into the stable SemVer promise without gate ev
 ## Entry decision
 
 The predecessor requirement is satisfied: `v0.67.0` is implemented and its release gate is
-Verified. Removal work remains blocked until `ENTRY-100` reconciles the actual 0.67 public surface
-with the warning registry and freezes the enumerated stable 1.0 inventory. In particular, the
-eleven in-tree route/include and adapter warnings are known fixtures, not evidence that every proposed removal
-has been classified.
+Verified. `ENTRY-100` reconciles the actual 0.67 public surface with the warning registry and
+freezes the enumerated stable 1.0 inventory. All eleven route/include and adapter warnings have
+complete removal evidence.
 
 ## Gates
 

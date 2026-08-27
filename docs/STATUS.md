@@ -4,31 +4,29 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v0.66.2` is the stable release on PyPI. `v0.67.0` is the Beta
-preview train; its acceptance packet is Verified in-tree but is not the stable channel.
+**Roadmap position:** `v1.0.0` is a Verified release candidate; its Git tag/PyPI upload is
+pending. `v0.66.2` remains the latest release on PyPI, and `v0.67.0` is the immutable migration
+baseline.
 **Date:** 2026-08-27
-**Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
+**Implementation:** Stable — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.67.0`;
-Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
-`0.1.1`, `hedron-charts`
-`0.2.1`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
-`hedron-sim` `0.2.1`, `hedron-mcp` `0.2.2`, `hedron-gradio` `0.2.1`, `hedron-runtime-node` / `hedron-runtime-java`
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `1.0.0`;
+independent — stable `fastapi-workbench` `1.0.1`; Beta `hedron-maps` `0.1.3`, `hedron-charts`
+`0.2.3`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
+`hedron-sim` `0.2.2`, `hedron-mcp` `0.2.3`, `hedron-gradio` `0.2.2`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.66.2`
 (MIT, D-033).
-**Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
+**Package maturity:** Stable — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-`hedron-workbench`, `hedron-posit`, `hedron-elements` (Supported inventory only), `hedron-maps`, `hedron-charts`,
-`hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
-Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
+`hedron-workbench`, `hedron-posit`, `hedron-elements` (enumerated stable inventory only). Beta —
+`hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
+`hedron-sim`, `hedron-mcp`, `hedron-gradio`. Independent Stable: `fastapi-workbench` `1.0.1`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.
 
-**Phase focus:** The stable train is **0.66.2**. Phase **0.67** is the Beta preview train, verified against
-the `v0.66.2` baseline; the coordinated packages are at `0.67.0`. Its HDJ foundation and all
-thirteen imported issue gates are implemented and Verified. Dynamic, foreign, and installed-package template execution
-remain explicitly Deferred. Phase **1.0** is **Stage 0 Refined; implementation pending** against
-immutable `v0.67.0`; `ENTRY-100` blocks removal work until the complete inventory/warning and stable
-surface locks exist. Phase **0.65** remains the
+**Phase focus:** Phase **1.0** is a **Verified release candidate** against immutable `v0.67.0`;
+all 17 rows, reproducible candidate artifacts, dual-version compatibility, and release approval
+are retained. Dynamic, foreign, and installed-package template execution remain explicitly
+Deferred. Phase **0.65** remains the
 verified in-tree predecessor awaiting final tag publication. Phase **0.63** (verified
 RFC-0090) remains implemented and published as `v0.63.0`, with its 27-gate packet and
 executable browser/unit coverage for theme contracts, tooling, and interoperability; human

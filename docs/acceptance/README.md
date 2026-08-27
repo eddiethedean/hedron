@@ -134,11 +134,11 @@ status commentary, not a satisfied release gate.
   lifecycle, failure behavior, compatibility, migration warnings, and packaging. See the
   [machine gate](release-gate-0.67.toml), [contract freeze](contract-freeze-067.toml), and
   [compatibility BOM](compatibility-bom-067.toml).
-- [`v1.0` interface and HTMX/Alpine/component-engine consolidation](RELEASE_1_0.md) — **Implementation
-  in progress; release evidence pending**. The [cut contract](one-zero-cut-contract.toml), [17-row
+- [`v1.0` interface and HTMX/Alpine/component-engine consolidation](RELEASE_1_0.md) — **Verified
+  release candidate; tag/PyPI publication pending**. The [cut contract](one-zero-cut-contract.toml), [17-row
   machine gate](release-gate-1.0.toml), and [upgrade fixtures](upgrade-fixtures-1.0.md) define a
-  subtractive cut from immutable `v0.67.0`; `ENTRY-100` blocks removals until the complete public
-  inventory, warning reconciliation, stable inventory, exact matrix, and support window exist.
+  subtractive cut from immutable `v0.67.0`; all rows are Verified with retained compatibility,
+  regression, reproducibility, support-window, and release evidence.
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
