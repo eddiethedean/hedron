@@ -14,8 +14,9 @@ upgrade_fixtures = "upgrade-fixtures-1.0.md"
 implementation_plan = "../implementation/HEDRON_1_0.md"
 stage_1_entry_satisfied = false
 release_cut_satisfied = false
-changes_runtime = false
+changes_runtime = true
 changes_versions = true
+runtime_change_rule = "compatibility-preserving corrections only; no net-new Required runtime capabilities"
 
 [release_boundary]
 kind = "subtractive canonicalization"
