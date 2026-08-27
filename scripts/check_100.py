@@ -311,22 +311,22 @@ def _check_inventory_classification(
             errors.append("stable inventory symbol is missing qualified identity")
         else:
             stable_symbols.add(qualified)
-        if str(row.get("maturity", "")) not in {"stable", "beta", "experimental"}:
-            errors.append(f"stable inventory {qualified or '<unknown>'} has unknown maturity")
-        if str(row.get("disposition", "")) not in {
-            "stable",
-            "beta",
-            "experimental",
-            "package-native",
-        }:
-            errors.append(f"stable inventory {qualified or '<unknown>'} has unknown disposition")
-    if public_symbols != stable_symbols:
-        missing = sorted(public_symbols - stable_symbols)
-        extra = sorted(stable_symbols - public_symbols)
+        if str(row.get("maturity", "")) != "stable":
+            errors.append(f"stable inventory {qualified or '<unknown>'} is not stable")
+        if str(row.get("disposition", "")) != "stable":
+            errors.append(f"stable inventory {qualified or '<unknown>'} has non-stable disposition")
+    expected_stable = {
+        str(row.get("canonical"))
+        for row in public_rows
+        if isinstance(row, dict) and str(row.get("maturity", "")) == "stable"
+    }
+    if stable_symbols != expected_stable:
+        missing = sorted(expected_stable - stable_symbols)
+        extra = sorted(stable_symbols - expected_stable)
         if missing:
-            errors.append(f"stable inventory omits public exports: {missing[:3]!r}")
+            errors.append(f"stable inventory omits stable public exports: {missing[:3]!r}")
         if extra:
-            errors.append(f"stable inventory has unenumerated exports: {extra[:3]!r}")
+            errors.append(f"stable inventory has non-stable exports: {extra[:3]!r}")
     return errors
 
 
