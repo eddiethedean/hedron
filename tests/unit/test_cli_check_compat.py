@@ -162,3 +162,23 @@ def test_target_100_json_is_one_document_with_hdj_inventory(
     assert isinstance(payload, dict)
     assert payload["diagnostics"]
     assert payload["hdj_inventory"]["templates"] == 1
+
+
+def test_check_json_envelopes_hdj_inventory_in_ordinary_mode(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    from hedron.cli import main
+
+    (tmp_path / "pyproject.toml").write_text("[tool.hedron]\n", encoding="utf-8")
+    (tmp_path / "status.hdj").write_text(
+        '---hdj\nversion = 1\nkind = "fragment"\n---\n<section>ok</section>\n',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(SystemExit) as result:
+        main(["check", "--project", str(tmp_path), "--format", "json"])
+
+    assert result.value.code == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert isinstance(payload, dict)
+    assert payload["hdj_inventory"]["templates"] == 1
