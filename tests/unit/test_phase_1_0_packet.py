@@ -307,7 +307,12 @@ def test_phase_1_0_task_inventory_has_provenance_and_public_method_rows() -> Non
         for row in rows
     )
     assert all(
-        row["task"] and row["source"] and row["owner"] and row["disposition"] == "package-native"
+        row["task"]
+        and row["source"]
+        and row["signature"]
+        and int(row["line"]) > 0
+        and row["owner"]
+        and row["disposition"] == "package-native"
         for row in rows
     )
 

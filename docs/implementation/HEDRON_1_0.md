@@ -54,9 +54,9 @@ Generate inventories from the immutable `v0.67.0` artifacts and source tree, not
 
 The non-executing generator emits `public-inventory-100.toml` and
 `stable-inventory-100.toml` for exports/artifacts plus `task-inventory-100.toml` for every public
-class, function, and method discovered in the immutable baseline source. The task inventory is
-an ownership graph, not an automatic SemVer promotion; stable status remains governed by the
-reviewed stable inventory.
+class, function, and method discovered in the immutable baseline source, including source lines
+and AST-derived signatures. The task inventory is an ownership graph, not an automatic SemVer
+promotion; stable status remains governed by the reviewed stable inventory.
 
 Reconcile the generated inventory with `contract-freeze-067.toml`, the component-engine inventory,
 the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The current eleven warning
