@@ -1,4 +1,47 @@
-# Upgrade to stable Hedron 0.66.2
+# Upgrade to Hedron 1.0
+
+This guide starts with the current 1.0 migration boundary, then retains historical notes for
+older release trains. The immutable migration baseline is `v0.67.0`; the coordinated checkout
+is `1.0.0` on the `v1.0` branch. Read [Current release and support](current-release.md) for the
+published PyPI status before changing an application pin.
+
+## 0.67 → 1.0
+
+Hedron 1.0 is a subtractive, canonicalization release. Migrate the ordinary route surface to
+the three function roles below; each old spelling has a structured warning and a static finding.
+
+| 0.67 path | 1.0 path | Notes |
+|---|---|---|
+| `@app.screen` | `@app.page` | Return one document tree; keep explicit `Page` when needed |
+| `@app.refreshable` / `@app.fragment` | `@app.view` | View handlers return one tree and produce a view handle |
+| `@app.command` / `@app.form_command` | `@app.action` | Unsafe requests default to `POST` and produce an action handle |
+| `app.include_feature(...)` | `app.include(...)` | Feature ownership remains explicit |
+| `@router.component` | `@router.view` | Advanced router integration; unsafe routes use `@router.action` |
+
+Run the non-executing check first, review the proposed diff, and only then write an output tree:
+
+```bash
+python -m hedron --app app:app check --target 1.0 --project .
+python -m hedron migrate api --target 1.0 . --out migrated-app
+```
+
+The migrator is intentionally conservative: region-specific, dynamic, direct-import, and
+unsafe-component forms remain manual-review findings. It never imports the application, executes
+source, or overwrites an existing output. Run the checker again on the reviewed result and keep
+the original tree for rollback until the application passes its own 1.0 checks.
+
+The canonical source fixture is exercised by the repository bridge:
+
+```bash
+python scripts/check_upgrade_100.py --baseline v0.67.0 --json
+```
+
+The bridge currently proves the baseline/current HTTP and HDJ probe only; it does not authorize
+publication while retained 1.0 artifacts and full release evidence are unavailable.
+
+## Historical release notes
+
+The sections below document older upgrades and are not the 1.0 authoring path.
 
 This guide covers upgrading an application to the stable **0.66.x** train
 (`v0.66.2`) from PyPI or a source checkout. The `v0.67.0` train is Beta preview.
@@ -290,8 +333,8 @@ Hedron 0.46.x added opt-in package-native features that compile onto existing
 
 ## Behavioral notes (0.42 → 0.43)
 
-1. **Additive only.** `@app.fragment` and `@app.action` still return the original function.
-   New `@app.view` / `@app.action` return handles.
+1. This historical 0.43 note predates the 1.0 boundary. In 1.0, `@app.view` and `@app.action`
+   are canonical handle-producing decorators; use the 0.67 → 1.0 section above for migration.
 2. **Refresh is not a full page reload.** Top-level `refresh()` compiles to bounded
    `HX-Trigger` events; it does not set `HX-Refresh`.
 3. **Generated ids are not rollback-stable.** Explicit `path=` / `key=` are the
