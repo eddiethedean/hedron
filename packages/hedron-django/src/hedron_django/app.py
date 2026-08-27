@@ -10,10 +10,16 @@ from django.http import HttpRequest, HttpResponse
 from hedron_core.adapter import DJANGO_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_django.csrf import csrf_token_for_request
 from hedron_django.htmx import htmx_context, render_mode_for_request
-from hedron_django.responses import _headers_mapping, component_response, interaction_response
+from hedron_django.responses import (
+    _headers_mapping,
+    _outcome_response,
+    component_response,
+    interaction_response,
+)
 from hedron_django.routing import HEDRON_APP_ID, DjangoUrlReverser
 
 __all__ = ["HedronDjango"]
@@ -93,6 +99,15 @@ class HedronDjango:
             return HttpResponse(str(exc).encode("utf-8"), status=status, content_type="text/plain")
         if isinstance(compiled, InteractionResult):
             value = compiled
+        if isinstance(compiled, Outcome):
+            return _outcome_response(
+                compiled,
+                request=request,
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                app_id=self.hedron_app_id,
+            )
         if isinstance(value, InteractionResult):
             return interaction_response(
                 value,
@@ -154,6 +169,15 @@ class HedronDjango:
             return HttpResponse(str(exc).encode("utf-8"), status=status, content_type="text/plain")
         if isinstance(compiled, InteractionResult):
             value = compiled
+        if isinstance(compiled, Outcome):
+            return _outcome_response(
+                compiled,
+                request=request,
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                app_id=self.hedron_app_id,
+            )
         if isinstance(value, InteractionResult):
             if value.content is not None:
                 await prepare_tree(value.content)
