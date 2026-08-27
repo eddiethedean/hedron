@@ -1,4 +1,4 @@
-"""Screen facade: beginner page decorator lowering to ``Page`` + ``@app.page``."""
+"""Advanced screen normalization helpers used by the canonical ``@app.page`` surface."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ PageOptions: TypeAlias = Mapping[str, object]
 
 @dataclass(frozen=False)
 class ScreenHandle(Generic[P]):
-    """Inspectable navigable page handle returned by ``@app.screen``."""
+    """Inspectable navigable page handle for advanced page composition."""
 
     path: str
     name: str
@@ -112,7 +112,7 @@ def validate_screen_registration(
             HED_SCREEN_0001,
             title="Screen title is required",
             explanation="title must be an explicit non-empty string; it is not inferred.",
-            remediation="Pass title=... to @app.screen.",
+            remediation="Pass title=... to @app.page or return an explicit Page.",
         )
     if layout not in SCREEN_LAYOUTS:
         raise error(
@@ -202,7 +202,7 @@ def _validate_explicit_page(
             HED_SCREEN_0001,
             title="Conflicting screen shell",
             explanation="An explicit Page cannot be combined with decorator shell=...",
-            remediation="Compose AppShell inside the Page, or omit shell= on @app.screen.",
+            remediation="Compose AppShell inside the Page, or omit shell= on @app.page.",
         )
     if page_options:
         conflicting = sorted(

@@ -141,7 +141,7 @@ _RULES: tuple[MappingRule, ...] = (
     _u("st.balloons", "no decorative parity", note="No parity"),
     _u("st.snow", "no decorative parity", note="No parity"),
     # Execution / state / cache
-    _s("st.fragment", "app.region / @app.fragment"),
+    _s("st.fragment", "app.region / @app.view"),
     _s("st.dialog", "Dialog + fragment/action"),
     _u("st.rerun", "no rerun loop", code="HED-MIG-ST-0004"),
     _u("st.stop", "early return / HTTP exception", code="HED-MIG-ST-0004"),

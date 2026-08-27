@@ -34,6 +34,23 @@ MAINTAINED_CONSUMERS = (
     "packages/hedron/README.md",
 )
 
+# These are first-party authoring surfaces rather than historical migration
+# records.  Keep them on the same one-clear-way lint as runnable examples so a
+# future docs edit cannot quietly reintroduce a removed 0.x spelling.
+MAINTAINED_DOC_ROOTS = (
+    "docs/components",
+    "docs/demos/runnable",
+    "docs/examples",
+    "docs/guides",
+)
+MAINTAINED_DOC_EXCLUDES = frozenset(
+    {
+        "docs/guides/upgrade.md",
+        "docs/guides/whats-new-0.43.md",
+        "docs/guides/whats-new-0.46.md",
+    }
+)
+
 COORDINATED_PACKAGES = (
     "hedron-core",
     "hedron",
@@ -233,6 +250,24 @@ def _check_maintained_consumers() -> list[str]:
             errors.append(
                 f"maintained consumer contains transitional API ({relative}): {details}{suffix}"
             )
+    for relative_root in MAINTAINED_DOC_ROOTS:
+        root = ROOT / relative_root
+        if not root.is_dir():
+            errors.append(f"missing maintained docs root: {relative_root}")
+            continue
+        for path in sorted(root.rglob("*")):
+            if not path.is_file() or path.suffix.lower() not in {".md", ".py"}:
+                continue
+            relative = path.relative_to(ROOT).as_posix()
+            if relative in MAINTAINED_DOC_EXCLUDES:
+                continue
+            findings = scan_api(path).findings
+            if findings:
+                details = ", ".join(f"{item.old_path}@{item.line}" for item in findings[:3])
+                suffix = "..." if len(findings) > 3 else ""
+                errors.append(
+                    f"maintained docs contain transitional API ({relative}): {details}{suffix}"
+                )
     return errors
 
 

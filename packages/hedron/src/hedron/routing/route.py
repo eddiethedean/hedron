@@ -34,6 +34,7 @@ from hedron_core.interaction import FragmentRegion, FragmentRegionError, Interac
 from hedron_core.interaction_067 import Outcome, OutcomeKind
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
+from hedron_core.typing_aliases import JsonValue
 from hedron_core.updates import (
     list_handle_descriptors,
     matches_declared_host,
@@ -313,7 +314,7 @@ class HedronRoute(APIRoute):
                     safe_dom_id(descriptor.logical_id),
                 )
             }
-            events: dict[str, dict[str, object]] = {}
+            events: dict[str, JsonValue] = {}
             regions: list[FragmentRegion] = []
             for raw_handle in handles:
                 if not isinstance(raw_handle, str):

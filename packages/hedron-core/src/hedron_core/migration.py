@@ -122,9 +122,7 @@ class FutureWarningRegistry:
         for record in self.records():
             previous = seen_paths.get(record.old_path)
             if previous is not None and previous != record.code:
-                issues.append(
-                    f"{record.old_path}: registered by both {previous} and {record.code}"
-                )
+                issues.append(f"{record.old_path}: registered by both {previous} and {record.code}")
             seen_paths[record.old_path] = record.code
             for field in ("source", "documentation", "fixture"):
                 value = getattr(record, field)

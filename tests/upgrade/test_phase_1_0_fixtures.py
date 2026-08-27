@@ -68,7 +68,7 @@ def test_canonical_fixture_imports_and_serves_page() -> None:
     response = TestClient(module.app).get("/")
     assert response.status_code == 200
     assert "ready" in response.text
-    assert "data-hedron-interaction=\"request\"" in response.text
+    assert 'data-hedron-interaction="request"' in response.text
 
 
 def test_canonical_hdj_fixture_parses_without_legacy_forms() -> None:
