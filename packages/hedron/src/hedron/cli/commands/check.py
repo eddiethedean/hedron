@@ -900,12 +900,11 @@ def _cmd_check(args: argparse.Namespace) -> int:
     threshold = normalize_severity_alias(args.severity)
     fmt = args.format
     if fmt == "json":
-        # Targeted migration checks are consumed by editors and CI as one
-        # machine-readable document.  Keep the long-standing bare diagnostic
-        # array for the ordinary check, but envelope optional HDJ/Explorer
-        # reports for ``--target 1.0`` so the output is never concatenated JSON
-        # documents when those integrations are installed.
-        if static_target_100:
+        # Machine-readable output is one document whenever auxiliary HDJ or
+        # Explorer reports are present.  Keep the long-standing bare
+        # diagnostic array for the ordinary no-integration case, while the
+        # target pass always uses an envelope for editor/CI consumers.
+        if static_target_100 or hdj_reports or explorer_diff is not None:
             payload: dict[str, object] = {"diagnostics": diagnostics_to_json(all_diags)}
             if inventory_summary is not None:
                 payload["hdj_inventory"] = inventory_summary
