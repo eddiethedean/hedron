@@ -16,17 +16,17 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Which version to install
 
-The current stable release is **`0.66.2`** on PyPI. The `v0.67.0` repository train is the
-Beta preview.
+The current public release is **`0.66.2`** on PyPI. This repository checkout is the
+coordinated `1.0.0` train; `v0.67.0` remains the immutable migration baseline.
 
 | You are… | Install |
 |---|---|
 | Building an app from PyPI | `hedron>=0.66.2,<0.67` |
-| Working in this repository | `uv sync` (editable **0.66.2**) |
+| Working in this repository | `uv sync` (editable **1.0.0**) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
-are **Beta** (usable, not 1.0, no SLA). The 1.0 cut is Stage 0 Refined but is not implemented or
-released. Capability detail:
+are **Beta** (usable, no SLA). The 1.0 cut is implemented in this checkout but remains pending
+release evidence. Capability detail:
 [What’s ready](../guides/whats-ready.md).
 
 ## Install from PyPI

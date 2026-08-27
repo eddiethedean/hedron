@@ -13,8 +13,9 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Stable | `0.66.2` / `0.66.x` | Current stable release and production pin |
-| Beta | `0.67.0` | Preview release for the next phase; subject to change |
+| Repository train | `1.0.0` / `1.0.x` | Coordinated checkout; release evidence pending |
+| Stable PyPI | `0.66.2` / `0.66.x` | Current public release and production pin |
+| Migration baseline | `0.67.0` | Immutable predecessor used by the 1.0 bridge |
 | Package maturity | Beta | Beta surfaces remain usable with pins; no SLA |
 | Supported Python | 3.11–3.14 | CPython only |
 

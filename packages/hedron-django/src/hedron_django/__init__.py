@@ -23,7 +23,7 @@ from hedron_django.routing import DjangoUrlReverser, action, hedron_view, page, 
 from hedron_django.static_mount import hedron_static_urlpatterns
 from hedron_django.urls import component_path, hedron_paths, include_component_path
 
-__version__ = "0.67.0"
+__version__ = "1.0.0"
 
 __all__ = [
     "DjangoUrlReverser",

@@ -52,7 +52,7 @@ def test_phase_1_0_gate_is_subtractive_and_planned() -> None:
     assert contract["release_boundary"]["net_new_required_runtime_capabilities"] == 0
     assert contract["release_boundary"]["compatibility_layer_in_1_0"] is False
     assert contract["changes_runtime"] is False
-    assert contract["changes_versions"] is False
+    assert contract["changes_versions"] is True
 
 
 def test_phase_1_0_keeps_verified_067_as_immutable_predecessor() -> None:
@@ -60,7 +60,7 @@ def test_phase_1_0_keeps_verified_067_as_immutable_predecessor() -> None:
     workspace = _toml("pyproject.toml")
     assert predecessor["status"] == "Verified"
     assert predecessor["target"] == "v0.67.0"
-    assert workspace["project"]["version"] == "0.67.0"
+    assert workspace["project"]["version"] == "1.0.0"
 
 
 def test_phase_1_0_packet_names_known_warning_floor_without_claiming_completeness() -> None:
