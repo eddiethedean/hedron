@@ -135,6 +135,7 @@ def run_migrate_api(
     from hedron.migrate.api import transform_api, unified_diff
     from hedron_core.diagnostics import diagnostics_to_sarif
 
+    diff = unified_diff(source) if show_diff else ""
     report = transform_api(source, output=out, apply=apply)
     if fmt == "json":
         print(report.to_json(), end="")
@@ -156,10 +157,8 @@ def run_migrate_api(
             print("Changed files:")
             for change in report.changes:
                 print(f"- {change.path}: {change.replacements} replacement(s)")
-        if show_diff:
-            diff = unified_diff(source)
-            if diff:
-                print(diff, end="")
+        if show_diff and diff:
+            print(diff, end="")
         if report.requires_review:
             print("REVIEW REQUIRED", file=sys.stderr)
     return report
