@@ -71,9 +71,9 @@ def test_stage1_modules_and_satellite_versions() -> None:
             Path("packages/hedron-notebook/pyproject.toml").read_text(encoding="utf-8")
         )
         sim = tomllib.loads(Path("packages/hedron-sim/pyproject.toml").read_text(encoding="utf-8"))
-        assert sample["project"]["version"] == "0.2.1"
-        assert notebook["project"]["version"] == "0.2.1"
-        assert sim["project"]["version"] == "0.2.1"
+        assert sample["project"]["version"] == "0.2.2"
+        assert notebook["project"]["version"] == "0.2.2"
+        assert sim["project"]["version"] == "0.2.2"
         return
 
     workspace = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
@@ -88,6 +88,6 @@ def test_stage1_modules_and_satellite_versions() -> None:
         Path("packages/hedron-notebook/pyproject.toml").read_text(encoding="utf-8")
     )
     sim = tomllib.loads(Path("packages/hedron-sim/pyproject.toml").read_text(encoding="utf-8"))
-    assert sample["project"]["version"] == "0.2.1"
-    assert notebook["project"]["version"] == "0.2.1"
-    assert sim["project"]["version"] == "0.2.1"
+    assert sample["project"]["version"] == "0.2.2"
+    assert notebook["project"]["version"] == "0.2.2"
+    assert sim["project"]["version"] == "0.2.2"

@@ -3,7 +3,7 @@
 Annotated tour of
 [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)—
 the FastAPI flagship CRUD sample and multi-worker production kitchen sink on the stable
-**0.66.x** train. Prefer [session auth](session-auth.md) and
+**1.0.x** train in this repository. Prefer [session auth](session-auth.md) and
 [notes + SQLAlchemy](notes-sqlalchemy.md) for a shorter second-hour path; use this app
 when you want the full archetype in one tree.
 

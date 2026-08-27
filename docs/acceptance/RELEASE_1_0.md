@@ -17,9 +17,11 @@ only ordinary surface, removes fully warned compatibility paths, and changes def
 documentation to the frozen model. It does not add a Required runtime capability that exists only
 in 1.0, silently remove a 0.67 path, or claim that every importable symbol and satellite is Stable.
 
-The packet is internally verifiable with `python scripts/check_100.py --check-plan`. That command
-validates implementation metadata and planning honesty; it does not verify any Planned release
-gate or authorize publication.
+The packet wiring is internally verifiable with `python scripts/check_100.py --check-plan`.
+Individual repository-local evidence slices run with
+`python scripts/check_100.py --gate <GATE-ID> --verify`; a passing slice reports the current
+manifest state but does not change it or authorize publication. Artifact and release gates fail
+closed until their immutable evidence and dependency states are present.
 
 Executable local results are summarized in the retained
 [verification ledger](compatibility-report-100/verification-100.json). Green checks are recorded

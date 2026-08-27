@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1] — 2026-08-27
+
+### Fixed
+
+- Publish the Hedron 1.0-compatible dependency metadata under a new immutable
+  patch version, including the corresponding charts and maps satellite floors.
+
 ## [0.9.0] — 2026-08-27
 
 ### Added

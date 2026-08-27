@@ -18,7 +18,7 @@ def _toml(relative: str) -> dict[str, object]:
     return tomllib.loads((ROOT / relative).read_text(encoding="utf-8"))
 
 
-def test_phase_1_0_plan_checker_passes_without_verifying_release() -> None:
+def test_phase_1_0_plan_checker_passes_without_claiming_release() -> None:
     result = subprocess.run(
         [sys.executable, "scripts/check_100.py", "--check-plan"],
         cwd=ROOT,
@@ -27,7 +27,7 @@ def test_phase_1_0_plan_checker_passes_without_verifying_release() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    assert "release gates remain Planned" in result.stdout
+    assert "Hedron 1.0 packet: OK" in result.stdout
 
 
 def test_phase_1_0_plan_checker_bootstraps_checkout_sources() -> None:
@@ -43,10 +43,10 @@ def test_phase_1_0_plan_checker_bootstraps_checkout_sources() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    assert "release gates remain Planned" in result.stdout
+    assert "Hedron 1.0 packet: OK" in result.stdout
 
 
-def test_phase_1_0_release_verification_fails_closed() -> None:
+def test_phase_1_0_entry_verification_passes_after_inventory_closure() -> None:
     result = subprocess.run(
         [sys.executable, "scripts/check_100.py", "--gate", "ENTRY-100", "--verify"],
         cwd=ROOT,
@@ -54,18 +54,29 @@ def test_phase_1_0_release_verification_fails_closed() -> None:
         capture_output=True,
         check=False,
     )
-    assert result.returncode == 1
-    assert "ENTRY-100 is Planned" in result.stderr
+    assert result.returncode == 0, result.stderr
+    assert "ENTRY-100: executable evidence passed" in result.stdout
 
 
-def test_phase_1_0_gate_is_subtractive_and_planned() -> None:
+def test_phase_1_0_migration_gate_executes_repository_evidence() -> None:
+    result = subprocess.run(
+        [sys.executable, "scripts/check_100.py", "--gate", "MIGRATE-100", "--verify"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "MIGRATE-100: executable evidence passed" in result.stdout
+
+
+def test_phase_1_0_gate_is_subtractive() -> None:
     gate = _toml("docs/acceptance/release-gate-1.0.toml")
     contract = _toml("docs/acceptance/one-zero-cut-contract.toml")
     assert gate["phase"] == "1.0"
     assert gate["target"] == "v1.0.0"
-    assert gate["status"] == "Planned"
-    assert gate["stage_1_entry_satisfied"] is False
-    assert all(row["state"] == "Planned" for row in gate["evidence"])
+    assert gate["status"] in {"In progress", "Verified"}
+    assert gate["stage_1_entry_satisfied"] is True
     assert contract["release_boundary"]["net_new_required_runtime_capabilities"] == 0
     assert contract["release_boundary"]["compatibility_layer_in_1_0"] is False
     assert contract["changes_runtime"] is True
@@ -81,7 +92,7 @@ def test_phase_1_0_keeps_verified_067_as_immutable_predecessor() -> None:
     assert workspace["project"]["version"] == "1.0.0"
 
 
-def test_phase_1_0_packet_names_known_warning_floor_without_claiming_completeness() -> None:
+def test_phase_1_0_packet_names_verified_warning_floor() -> None:
     upgrade = (ROOT / "docs/acceptance/upgrade-fixtures-1.0.md").read_text(encoding="utf-8")
     contract = _toml("docs/acceptance/one-zero-cut-contract.toml")
     for spelling in (
@@ -95,9 +106,9 @@ def test_phase_1_0_packet_names_known_warning_floor_without_claiming_completenes
         "app.form_command",
     ):
         assert spelling in upgrade
-    gap = contract["migration"]["known_stage_0_gap"]
-    assert "eight" in gap
-    assert "before any removal" in gap
+    state = contract["migration"]["warning_inventory_state"]
+    assert "eleven records reconciled" in state
+    assert "verified" in state
 
 
 def test_phase_1_0_execution_plan_is_actionable_and_complete() -> None:

@@ -16,7 +16,7 @@ from hedron_gradio.migration import GRADIO_NON_PARITY, diagnose
 
 
 def test_package_version() -> None:
-    assert __version__ == "0.2.1"
+    assert __version__ == "0.2.2"
 
 
 def test_disabled_adapter_discover_empty() -> None:

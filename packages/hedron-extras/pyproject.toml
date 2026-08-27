@@ -19,7 +19,7 @@ keywords = [
     "workbench",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
@@ -44,7 +44,7 @@ dependencies = [
 code_editor = []  # deprecated empty stub (CodeEditor remains host textarea)
 json_editor = []
 data_explorer = ["hedron-data>=1.0.0,<2.0"]
-chart_workbench = ["hedron-data>=1.0.0,<2.0", "hedron-charts>=0.2.2,<0.3"]
+chart_workbench = ["hedron-data>=1.0.0,<2.0", "hedron-charts>=0.2.3,<0.3"]
 image_tools = []
 calendar = []
 signature = []
@@ -55,7 +55,7 @@ joystick = []
 experimental-ui = []
 all = [
     "hedron-data>=1.0.0,<2.0",
-    "hedron-charts>=0.2.2,<0.3",
+    "hedron-charts>=0.2.3,<0.3",
 ]
 
 [project.entry-points."hedron.plugins"]

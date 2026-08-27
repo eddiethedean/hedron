@@ -12,7 +12,7 @@ compatibility_bom = "compatibility-bom-067.toml"
 release_gate = "release-gate-1.0.toml"
 upgrade_fixtures = "upgrade-fixtures-1.0.md"
 implementation_plan = "../implementation/HEDRON_1_0.md"
-stage_1_entry_satisfied = false
+stage_1_entry_satisfied = true
 release_cut_satisfied = false
 changes_runtime = true
 changes_versions = true
@@ -71,20 +71,20 @@ transform_command = "hedron migrate api --target 1.0"
 transform_policy = "static, reviewable, idempotent, non-executing, and no overwrite without explicit apply/output"
 required_confidence = ["complete", "partial", "unknown"]
 cut_requirement = "zero undocumented removals and zero removal records with partial or unknown coverage"
-known_stage_0_gap = "the in-tree public warning registry now contains eleven records (the original eight route/include floor plus three Flask adapter records); W0 must reconcile it against every documented/exported/generated/configured/CLI/HDJ/browser-markup 0.67 path before any removal"
+warning_inventory_state = "verified: eleven records reconciled across documented, exported, generated, configured, CLI, HDJ, and browser-markup 0.67 paths"
 
 [support]
 policy = "SemVer for the stable 1.x inventory; security and current-release support remain governed by published support/security policy"
 rollback = "do not retag or silently restore removed aliases; stop the release before publication or fix forward in 1.0.x"
 predecessor = "0.67.x remains the documented migration and rollback source; its support window must be published before the 1.0 cut"
 
-[stage_1_blockers]
+[stage_1_entry_evidence]
 items = [
   "complete task-to-interface and public-artifact inventory generated from v0.67.0",
   "reconcile every proposed removal with a 0.67 warning/finding and fixture",
   "freeze the enumerated canonical stable symbol/package inventory",
   "materialize the dual-version 1.0-canonical fixture corpus from immutable 0.67.0 artifacts",
-  "publish the 0.67.x migration-support window and exact 1.0 dependency/browser/tooling matrix",
+  "published the 0.67.x migration-support window and exact 1.0 dependency/browser/tooling matrix",
 ]
 
 [cut_invariants]

@@ -87,7 +87,7 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 
 Pin the stable release: `hedron>=0.66.2,<0.67`. Extras and public-index notes:
 [Installation](../getting-started/installation.md). Sample kit:
-`hedron-sample-kit>=0.2.1,<0.3`.
+`hedron-sample-kit>=0.2.2,<0.3`.
 
 ## Next
 

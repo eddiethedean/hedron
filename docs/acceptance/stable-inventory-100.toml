@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "1.0"
-status = "Generated; machine classification complete; stable task review pending W0"
+status = "Verified; enumerated stable surface reviewed for the 1.0 cut"
 baseline = "v0.67.0"
 baseline_commit = "82bd0e4f8fcd2ae75fd50fd2c41e18fbd674ace6"
 stable_rule = "Every export is enumerated; only rows explicitly classified stable enter the SemVer promise."

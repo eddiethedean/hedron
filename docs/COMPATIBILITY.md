@@ -30,7 +30,7 @@ inventory only.
 
 ### Charts and sample-kit compatibility floor
 
-`hedron-charts>=0.2.1,<0.3` and `hedron-sample-kit>=0.2.1,<0.3` are compatible with
+`hedron-charts>=0.2.3,<0.3` and `hedron-sample-kit>=0.2.2,<0.3` are compatible with
 `hedron-core>=0.66.2,<0.67`. The flagship `hedron[charts]>=0.66.2,<0.67` extra enforces
 that chart floor.
 

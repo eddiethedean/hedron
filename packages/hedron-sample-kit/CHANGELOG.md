@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2] — 2026-08-27
+
+### Fixed
+
+- Publish the Hedron 1.0-compatible core and conformance dependency metadata
+  under a new immutable patch version.
+
 ## [0.2.1] — 2026-08-24
 
 ### Changed

@@ -37,9 +37,9 @@ and the
 # flagship extra:
 pip install "hedron[charts]>=0.66.2,<0.67"
 # independent satellite:
-pip install "hedron-charts>=0.2.1,<0.3"
+pip install "hedron-charts>=0.2.3,<0.3"
 # Add a backend when needed:
-pip install "hedron-charts[matplotlib]>=0.2.1,<0.3"
+pip install "hedron-charts[matplotlib]>=0.2.3,<0.3"
 ```
 
 Pin the living charts line at `>=0.2.0,<0.3` on the 0.51 train.

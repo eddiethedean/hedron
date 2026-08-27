@@ -27,7 +27,7 @@ From `0.27.x`:
 
 ```bash
 python -m pip install -U "hedron>=0.28.2,<0.29"
-python -m pip install -U "hedron-charts>=0.2.1,<0.3" "hedron-native>=0.1.2,<0.2"
+python -m pip install -U "hedron-charts>=0.2.3,<0.3" "hedron-native>=0.1.2,<0.2"
 ```
 
 Details: [RELEASE_0_28](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_28.md) · [upgrade guide](upgrade.md).

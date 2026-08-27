@@ -109,7 +109,7 @@ def test_version_is_synchronized() -> None:
         if classifier.startswith("Development Status ::")
     ]
     assert gradio_status == ["Development Status :: 4 - Beta"]
-    assert gradio["version"] == "0.2.1"
+    assert gradio["version"] == "0.2.2"
 
 
 def test_public_metadata_fields() -> None:
@@ -140,18 +140,18 @@ def test_public_metadata_fields() -> None:
 
 def test_package_maturity_classifiers() -> None:
     expected = {
-        "hedron": "Development Status :: 4 - Beta",
-        "hedron-core": "Development Status :: 4 - Beta",
-        "hedron-data": "Development Status :: 4 - Beta",
-        "hedron-django": "Development Status :: 4 - Beta",
-        "hedron-explorer": "Development Status :: 4 - Beta",
-        "hedron-flask": "Development Status :: 4 - Beta",
+        "hedron": "Development Status :: 5 - Production/Stable",
+        "hedron-core": "Development Status :: 5 - Production/Stable",
+        "hedron-data": "Development Status :: 5 - Production/Stable",
+        "hedron-django": "Development Status :: 5 - Production/Stable",
+        "hedron-explorer": "Development Status :: 5 - Production/Stable",
+        "hedron-flask": "Development Status :: 5 - Production/Stable",
         "hedron-charts": "Development Status :: 4 - Beta",
         "hedron-native": "Development Status :: 4 - Beta",
         "hedron-sample-kit": "Development Status :: 4 - Beta",
         "hedron-sim": "Development Status :: 4 - Beta",
         "hedron-notebook": "Development Status :: 4 - Beta",
-        "hedron-jinja": "Development Status :: 4 - Beta",
+        "hedron-jinja": "Development Status :: 5 - Production/Stable",
         "edron": "Development Status :: 4 - Beta",
     }
     for package, maturity in expected.items():

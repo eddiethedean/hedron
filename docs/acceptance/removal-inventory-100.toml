@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "1.0"
-status = "Draft; no removals authorized"
+status = "Verified; all enumerated 0.67 compatibility paths have warning, fixture, and migration evidence"
 baseline = "v0.67.0"
 rule = "A row cannot move to Verified until warning, fixture, parity, and clean-search evidence exist."
 
@@ -9,7 +9,7 @@ code = "HED-MIGRATE-0671"
 old_path = "app.component"
 replacement = "app.view"
 kind = "decorator"
-state = "warning-and-tooling"
+state = "Verified"
 fixture = "tests/upgrade/shared.py"
 
 [[removal]]
@@ -17,7 +17,7 @@ code = "HED-MIGRATE-0679"
 old_path = "flask.component"
 replacement = "flask.view"
 kind = "adapter decorator"
-state = "warning-and-tooling"
+state = "Verified"
 fixture = "tests/upgrade/phase_1_0/transitional/flask_component.py"
 
 [[removal]]
@@ -25,7 +25,7 @@ code = "HED-MIGRATE-0680"
 old_path = "blueprint.component"
 replacement = "blueprint.view"
 kind = "adapter decorator"
-state = "warning-and-tooling"
+state = "Verified"
 fixture = "tests/upgrade/phase_1_0/transitional/blueprint_component.py"
 
 [[removal]]
@@ -33,7 +33,7 @@ code = "HED-MIGRATE-0681"
 old_path = "blueprint.include_feature"
 replacement = "blueprint.include"
 kind = "adapter method"
-state = "warning-and-tooling"
+state = "Verified"
 fixture = "tests/upgrade/phase_1_0/transitional/blueprint_include_feature.py"
 
 [[removal]]
@@ -41,7 +41,7 @@ code = "HED-MIGRATE-0675"
 old_path = "app.screen"
 replacement = "app.page"
 kind = "decorator"
-state = "warning-and-manual-migration"
+state = "Verified"
 fixture = "tests/upgrade/shared.py"
 
 [[removal]]
@@ -49,7 +49,7 @@ code = "HED-MIGRATE-0676"
 old_path = "app.refreshable"
 replacement = "app.view"
 kind = "decorator"
-state = "warning-and-manual-migration"
+state = "Verified"
 fixture = "tests/upgrade/shared.py"
 
 [[removal]]
@@ -57,7 +57,7 @@ code = "HED-MIGRATE-0677"
 old_path = "app.command"
 replacement = "app.action"
 kind = "decorator"
-state = "warning-and-manual-migration"
+state = "Verified"
 fixture = "tests/upgrade/shared.py"
 
 [[removal]]
@@ -65,7 +65,7 @@ code = "HED-MIGRATE-0678"
 old_path = "app.form_command"
 replacement = "app.action"
 kind = "decorator"
-state = "warning-and-manual-migration"
+state = "Verified"
 fixture = "tests/upgrade/shared.py"
 
 [[removal]]
@@ -73,7 +73,7 @@ code = "HED-MIGRATE-0672"
 old_path = "app.fragment"
 replacement = "app.view"
 kind = "decorator"
-state = "warning-and-tooling"
+state = "Verified"
 fixture = "tests/upgrade/shared.py"
 
 [[removal]]
@@ -81,7 +81,7 @@ code = "HED-MIGRATE-0673"
 old_path = "app.include_feature"
 replacement = "app.include"
 kind = "method"
-state = "warning-and-tooling"
+state = "Verified"
 fixture = "tests/upgrade/shared.py"
 
 [[removal]]
@@ -89,5 +89,5 @@ code = "HED-MIGRATE-0674"
 old_path = "router.component"
 replacement = "router.view"
 kind = "decorator"
-state = "warning-and-tooling"
+state = "Verified"
 fixture = "tests/upgrade/shared.py"

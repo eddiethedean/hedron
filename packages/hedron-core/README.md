@@ -12,7 +12,8 @@ Building an app? Install [`hedron`](https://pypi.org/project/hedron/) instead. U
 package if you are writing a host adapter or rendering components outside a web
 framework.
 
-**Package maturity:** Beta · stable published train `v0.66.2` · beta repository train `v0.67.0` · pin `>=0.66.2,<0.67` from PyPI.
+**Package maturity:** Stable · **Repository release candidate:** `v1.0.0` (Git tag/PyPI upload deferred) · **Latest PyPI release:** `v0.66.2` · public pin `>=0.66.2,<0.67` until publication; checkouts use `uv sync`
+release `v0.66.2` · pin `>=0.66.2,<0.67` from PyPI until publication.
 
 ## Install
 

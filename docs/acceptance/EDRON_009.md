@@ -2,12 +2,12 @@
 
 **Status:** Implemented and verified in-tree; publication pending
 
-**Package target:** `edron==0.9.0` · Hedron `0.67.0` (`>=0.67.0,<0.68`)
+**Package target:** `edron==0.9.1` · Hedron `0.67.0` through `1.x` (`>=0.67.0,<2.0`)
 
 **Evidence lock:** clean environments must resolve `hedron==0.67.0`, with coordinated
 `hedron-core==0.67.0` and `hedron-data==0.67.0` when those capabilities are exercised. The accepted
-Edron source and public contract must also pass a forward-compatibility matrix on Hedron `1.0.0`
-once Hedron 1.0 is released; 1.0 is not declared as a dependency before then.
+Edron source and public contract also pass the forward-compatibility matrix on the Hedron `1.0.0`
+release candidate. The widened requirement is published as the new immutable `0.9.1` patch.
 
 Phase 0.9 consolidates the Edron 0.1–0.8 surface while consuming the native Hedron 0.67 browser,
 interaction, outcome, lifecycle, and component-engine contracts. It does not copy Hedron's runtime
@@ -38,6 +38,5 @@ Public contract outline: [Edron release roadmap](../EDRON_ROADMAP.md) ·
 | `EDR-09-REGRESSION` | Predecessor Edron regression plus all Phase 0.9 native, browser, compatibility, performance, security, accessibility, and recovery suites | Implemented |
 
 The packet records the accepted in-tree implementation. Publication and tagging remain maintainer-
-controlled. Hedron 1.0 compatibility is intentionally a future rehearsal because Hedron 1.0 is not
-yet released. Migration tooling may recognize deprecated 0.67 input, but Edron 0.9 runtime and
+controlled. Migration tooling may recognize deprecated 0.67 input, but Edron 0.9 runtime and
 generated output may not use it.

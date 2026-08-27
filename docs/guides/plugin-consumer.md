@@ -31,7 +31,7 @@ Full key table: [Configuration](../CONFIGURATION.md).
    # Real third-party plugin (example shape — use the vendor's pin):
    # uv add "vendor-hedron-plugin>=1.0,<2"
 
-   uv add "hedron-sample-kit>=0.2.1,<0.3"
+   uv add "hedron-sample-kit>=0.2.2,<0.3"
    ```
 
    Workspace details: [Plugin authoring](plugin-authoring.md#workspace-recipe-edit-sample-kit-in-the-monorepo).

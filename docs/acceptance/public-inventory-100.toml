@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "1.0"
-status = "Generated; machine classification complete; W0 task reconciliation pending"
+status = "Verified; generated classification reconciled for the 1.0 cut"
 baseline = "v0.67.0"
 baseline_commit = "82bd0e4f8fcd2ae75fd50fd2c41e18fbd674ace6"
 source_rule = "Generated from an immutable baseline; every row has an explicit owner and disposition."

@@ -340,17 +340,17 @@ quality_wheels_smoke() {
 
   rm -rf /tmp/hedron-smoke
   uv venv /tmp/hedron-smoke --python "$PYTHON"
-  # Edron 0.8 is intentionally pinned to the stable Hedron 0.66 train while
-  # the workspace wheels exercise the 0.67 beta train. Keep those consumer
-  # rehearsals isolated so the resolver tests both declared contracts.
-  local beta_wheels=()
+  # Edron releases independently, so install its wheel after the rest of the
+  # prospective workspace train. This validates the dependency graph that the
+  # tag is about to publish without depending on older PyPI satellite metadata.
+  local train_wheels=()
   local wheel
   for wheel in dist/*.whl; do
     if [[ "$(basename "$wheel")" != edron-*.whl ]]; then
-      beta_wheels+=("$wheel")
+      train_wheels+=("$wheel")
     fi
   done
-  uv pip install --python /tmp/hedron-smoke "${beta_wheels[@]}"
+  uv pip install --python /tmp/hedron-smoke "${train_wheels[@]}"
   /tmp/hedron-smoke/bin/python - <<'PY'
 from hedron_core import Page, RenderMode, Text, render
 
@@ -393,7 +393,7 @@ assert hedron_django.HedronSecurityHeadersMiddleware is not None
 assert hedron_workbench.workbenchify is not None
 assert issubclass(hedron_workbench.HedronWorkbench, Hedron)
 assert "Content-Security-Policy" in SecurityPolicy.from_name("standard").response_headers()
-print("ok: Hedron 0.67 beta wheels install and import cleanly")
+print("ok: prospective Hedron workspace wheels install and import cleanly")
 PY
 
   local edron_wheel=(dist/edron-*.whl)
@@ -401,16 +401,14 @@ PY
     echo "missing Edron wheel for stable-train smoke" >&2
     return 1
   fi
-  rm -rf /tmp/edron-stable-smoke
-  uv venv /tmp/edron-stable-smoke --python "$PYTHON"
-  uv pip install --python /tmp/edron-stable-smoke/bin/python "${edron_wheel[0]}"
-  /tmp/edron-stable-smoke/bin/python - <<'PY'
+  uv pip install --python /tmp/hedron-smoke/bin/python "${edron_wheel[0]}"
+  /tmp/hedron-smoke/bin/python - <<'PY'
 import importlib.metadata as metadata
 
-assert metadata.version("edron") == "0.9.0"
-assert metadata.version("hedron") == "0.67.0"
-assert metadata.version("hedron-data") == "0.67.0"
-print("ok: Edron 0.9 stable-train wheel installs and imports cleanly")
+assert metadata.version("edron") == "0.9.1"
+assert metadata.version("hedron") == "1.0.0"
+assert metadata.version("hedron-data") == "1.0.0"
+print("ok: Edron 0.9 installs against the prospective Hedron 1.0 train")
 PY
 
   # Exercise the exact standalone-wheel scaffold contract on ordinary main/PR

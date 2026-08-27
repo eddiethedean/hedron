@@ -21,7 +21,7 @@ def _package_version() -> str:
     try:
         return version("hedron-mcp")
     except PackageNotFoundError:
-        return "0.2.1"
+        return "0.2.3"
 
 
 __all__ = [

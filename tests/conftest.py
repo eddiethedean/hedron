@@ -120,6 +120,8 @@ def _legacy_api_ranges(path: str) -> tuple[tuple[int, int], ...]:
 def _is_pre_one_api_item(item: pytest.Item) -> bool:
     """Skip only the collected test that directly uses a removed API."""
     path = Path(str(item.path))
+    if "phase_1_0" in path.parts or "phase_1_0" in path.name:
+        return False
     if _is_pre_one_api_module(path):
         return True
     if path.name in _RETIREMENT_EXCLUDES:

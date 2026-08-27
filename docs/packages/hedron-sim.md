@@ -3,7 +3,7 @@
 Offline HTMX simulation for Hedron docs and demos.
 
 **Package maturity:** Beta tooling-grade (`0.2.x`) · pin `>=0.2.0,<0.3`
-**Flagship extra:** none — install directly · **Import:** `hedron_sim`  
+**Flagship extra:** none — install directly · **Import:** `hedron_sim`
 Compatible with published Hedron train `0.64.x` (`v0.64.0` on PyPI). Author demos
 with ordinary Hedron components, then
 embed them in **static** docs — no FastAPI process required.
