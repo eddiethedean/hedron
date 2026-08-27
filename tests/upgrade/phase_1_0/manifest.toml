@@ -1,7 +1,7 @@
 schema = "hedron.upgrade-fixture-manifest/1"
 baseline = "v0.67.0"
 target = "v1.0.0"
-canonical = ["canonical/app.py", "canonical/config.toml"]
+canonical = ["canonical/app.py", "canonical/config.toml", "canonical/status.hdj"]
 transitional = [
   "app_component.py",
   "app_fragment.py",
