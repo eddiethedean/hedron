@@ -270,7 +270,11 @@ def test_phase_1_0_inventory_generator_reads_immutable_baseline(tmp_path: Path) 
     assert counts["public"]["artifacts"] >= 1000
     assert (tmp_path / "public-inventory-100.toml").is_file()
     assert (tmp_path / "stable-inventory-100.toml").is_file()
+    assert (tmp_path / "task-inventory-100.toml").is_file()
     assert (tmp_path / "baseline-100.json").is_file()
+    assert counts["tasks"] >= 4000
+    task_text = (tmp_path / "task-inventory-100.toml").read_text(encoding="utf-8")
+    assert 'task = "method:hedron.app.pages.HedronPagesMixin.page"' in task_text
     stable_text = (tmp_path / "stable-inventory-100.toml").read_text(encoding="utf-8")
     assert 'qualified = "hedron.Hedron"' in stable_text
     assert 'maturity = "stable"' in stable_text
@@ -291,6 +295,22 @@ def test_phase_1_0_inventories_have_explicit_classification() -> None:
     stable_exports = {row["canonical"] for row in surfaces if row["maturity"] == "stable"}
     assert stable_exports == {row["qualified"] for row in symbols}
     assert all(row["maturity"] == "stable" and row["disposition"] == "stable" for row in symbols)
+
+
+def test_phase_1_0_task_inventory_has_provenance_and_public_method_rows() -> None:
+    task_inventory = _toml("docs/acceptance/task-inventory-100.toml")
+    assert task_inventory["baseline"] == "v0.67.0"
+    rows = task_inventory["task"]
+    assert isinstance(rows, list) and len(rows) >= 4000
+    assert any(
+        row["kind"] == "method"
+        and row["interface"] == "hedron.app.pages.HedronPagesMixin.page"
+        for row in rows
+    )
+    assert all(
+        row["task"] and row["source"] and row["owner"] and row["disposition"] == "package-native"
+        for row in rows
+    )
 
 
 def test_phase_1_0_compatibility_report_retains_baseline_bridge_probe() -> None:

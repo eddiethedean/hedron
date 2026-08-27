@@ -111,6 +111,7 @@ REQUIRED_FILES = (
     "docs/api/HTMX_ALPINE_BOUNDARY_1_0.md",
     "docs/acceptance/public-inventory-100.toml",
     "docs/acceptance/stable-inventory-100.toml",
+    "docs/acceptance/task-inventory-100.toml",
     "docs/acceptance/removal-inventory-100.toml",
     "docs/acceptance/warnings-100.toml",
     "docs/acceptance/baseline-100.json",
@@ -368,6 +369,46 @@ def _check_inventory_classification(
     return errors
 
 
+def _check_task_inventory(task_inventory: dict[str, object], baseline_commit: str) -> list[str]:
+    """Validate the AST-derived task/interface graph and its provenance."""
+    errors: list[str] = []
+    if task_inventory.get("baseline") != "v0.67.0":
+        errors.append("task inventory must use immutable v0.67.0")
+    if task_inventory.get("baseline_commit") != baseline_commit:
+        errors.append("task inventory baseline commit differs from baseline artifact")
+    rows = task_inventory.get("task")
+    if not isinstance(rows, list) or not rows:
+        return ["task inventory must enumerate public classes, functions, and methods"]
+    identities: set[str] = set()
+    interfaces: set[str] = set()
+    allowed_kinds = {"class", "function", "method"}
+    allowed_maturity = {"stable", "beta", "experimental", "internal"}
+    for row in rows:
+        if not isinstance(row, dict):
+            errors.append("task inventory contains a non-table row")
+            continue
+        task = str(row.get("task", ""))
+        interface = str(row.get("interface", ""))
+        if not task or not interface:
+            errors.append("task inventory rows require task and interface identities")
+            continue
+        if task in identities:
+            errors.append(f"task inventory contains duplicate task {task}")
+        identities.add(task)
+        if interface in interfaces and str(row.get("kind")) != "method":
+            errors.append(f"task inventory contains duplicate interface {interface}")
+        interfaces.add(interface)
+        if str(row.get("kind", "")) not in allowed_kinds:
+            errors.append(f"task inventory {task} has unknown kind")
+        if not str(row.get("source", "")).strip() or not str(row.get("owner", "")).strip():
+            errors.append(f"task inventory {task} is missing source or owner")
+        if str(row.get("maturity", "")) not in allowed_maturity:
+            errors.append(f"task inventory {task} has unknown maturity")
+        if str(row.get("disposition", "")) != "package-native":
+            errors.append(f"task inventory {task} must retain package-native ownership")
+    return errors
+
+
 def check_plan() -> list[str]:
     errors: list[str] = []
     for relative in REQUIRED_FILES:
@@ -385,6 +426,7 @@ def check_plan() -> list[str]:
     removal_inventory = _toml(ACCEPTANCE / "removal-inventory-100.toml")
     public_inventory = _toml(ACCEPTANCE / "public-inventory-100.toml")
     stable_inventory = _toml(ACCEPTANCE / "stable-inventory-100.toml")
+    task_inventory = _toml(ACCEPTANCE / "task-inventory-100.toml")
     baseline = json.loads((ACCEPTANCE / "baseline-100.json").read_text(encoding="utf-8"))
     compatibility = json.loads(
         (ACCEPTANCE / "compatibility-report-100/local-bridge.json").read_text(encoding="utf-8")
@@ -509,6 +551,8 @@ def check_plan() -> list[str]:
         else:
             if expected_commit != baseline_commit:
                 errors.append("baseline artifact does not match the v0.67.0 git tag")
+    if isinstance(baseline_commit, str):
+        errors.extend(_check_task_inventory(task_inventory, baseline_commit))
     if (
         compatibility.get("schema") != "hedron.compatibility-report/1"
         or compatibility.get("baseline") != "v0.67.0"

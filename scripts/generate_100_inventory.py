@@ -271,6 +271,105 @@ def _artifact_classification(root: Path, relative: Path) -> tuple[str, str, str]
     return "release", "internal", "repository-support"
 
 
+def _public_task_rows(root: Path) -> tuple[dict[str, str], ...]:
+    """Extract a non-executing task-to-interface graph from package source.
+
+    ``__all__`` is useful for the import surface, but it cannot describe the
+    public methods on exported classes (or package-owned helpers that are
+    intentionally not root re-exports).  The Stage 0 contract requires those
+    interfaces to be enumerated as well.  Parse source ASTs instead of
+    importing modules so decorators, optional dependencies, and registration
+    side effects cannot influence the baseline snapshot.
+    """
+    rows_by_task: dict[str, dict[str, str]] = {}
+    for distribution in sorted(PACKAGE_IMPORTS):
+        package_root = root / "packages" / distribution / "src" / PACKAGE_IMPORTS[distribution]
+        if not package_root.is_dir():
+            continue
+        package_maturity = _package_maturity(root, distribution)
+        for path in sorted(package_root.rglob("*.py")):
+            try:
+                tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+            except (OSError, SyntaxError, UnicodeDecodeError):
+                continue
+            relative_module = path.relative_to(package_root).with_suffix("")
+            module_suffix = ".".join(relative_module.parts)
+            if module_suffix == "__init__":
+                module_suffix = ""
+            module = PACKAGE_IMPORTS[distribution] + ("." + module_suffix if module_suffix else "")
+            source = path.relative_to(root).as_posix()
+
+            def add(
+                name: str,
+                kind: str,
+                *,
+                module_name: str = module,
+                source_path: str = source,
+                owner: str = distribution,
+                maturity: str = package_maturity,
+            ) -> None:
+                if not name or name.startswith("_"):
+                    return
+                interface = f"{module_name}.{name}"
+                task = f"{kind}:{interface}"
+                rows_by_task.setdefault(
+                    task,
+                    {
+                        "task": task,
+                        "interface": interface,
+                        "kind": kind,
+                        "source": source_path,
+                        "owner": owner,
+                        "maturity": maturity,
+                        # Task rows describe ownership, not a SemVer promise.
+                        # Stable promotion is reviewed separately in the
+                        # generated stable inventory.
+                        "disposition": "package-native",
+                    },
+                )
+
+            for node in tree.body:
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    add(node.name, "function")
+                elif isinstance(node, ast.ClassDef) and not node.name.startswith("_"):
+                    add(node.name, "class")
+                    for member in node.body:
+                        if isinstance(member, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                            add(f"{node.name}.{member.name}", "method")
+    return tuple(sorted(rows_by_task.values(), key=lambda row: (row["task"], row["source"])))
+
+
+def _write_task_inventory(path: Path, *, baseline: str, commit: str, root: Path) -> int:
+    """Write the complete AST-derived task/interface graph for the baseline."""
+    rows = _public_task_rows(root)
+    lines = [
+        "schema_version = 1",
+        'phase = "1.0"',
+        'status = "Generated; AST task graph complete; maturity review remains explicit"',
+        f"baseline = {_toml_string(baseline)}",
+        f"baseline_commit = {_toml_string(commit)}",
+        "source_rule = "
+        '"Public classes, functions, and methods are enumerated without importing code."',
+        "",
+    ]
+    for row in rows:
+        lines.extend(
+            [
+                "[[task]]",
+                f"task = {_toml_string(row['task'])}",
+                f"interface = {_toml_string(row['interface'])}",
+                f"kind = {_toml_string(row['kind'])}",
+                f"source = {_toml_string(row['source'])}",
+                f"owner = {_toml_string(row['owner'])}",
+                f"maturity = {_toml_string(row['maturity'])}",
+                f"disposition = {_toml_string(row['disposition'])}",
+                "",
+            ]
+        )
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return len(rows)
+
+
 def _write_public_inventory(
     path: Path, *, baseline: str, commit: str, root: Path
 ) -> dict[str, int]:
@@ -416,7 +515,7 @@ def _write_stable_inventory(
 
 
 def _write_baseline(
-    path: Path, *, baseline: str, commit: str, root: Path, counts: dict[str, int]
+    path: Path, *, baseline: str, commit: str, root: Path, counts: dict[str, object]
 ) -> None:
     files = _tracked_files(root)
     digest = hashlib.sha256()
@@ -460,7 +559,13 @@ def generate(
             commit=commit,
             root=baseline_root,
         )
-        counts = {"public": public_counts, "stable": stable_counts}
+        task_count = _write_task_inventory(
+            output_dir / "task-inventory-100.toml",
+            baseline=baseline,
+            commit=commit,
+            root=baseline_root,
+        )
+        counts = {"public": public_counts, "stable": stable_counts, "tasks": task_count}
         _write_baseline(
             output_dir / "baseline-100.json",
             baseline=baseline,
