@@ -15,7 +15,7 @@
       "id": "BRIDGE-100",
       "command": ".venv/bin/python scripts/check_upgrade_100.py --baseline v0.67.0 --json",
       "status": "passed",
-      "summary": "immutable baseline and current canonical Python/HDJ/HTTP probes matched"
+      "summary": "immutable baseline and current canonical Python/HDJ/HTTP probes and type-checks matched"
     },
     {
       "id": "TYPE-100",
