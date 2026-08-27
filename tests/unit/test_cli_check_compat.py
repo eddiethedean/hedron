@@ -126,3 +126,39 @@ def test_check_json_output_filters_compat(
     payload_all, _ = json.JSONDecoder().raw_decode(capsys.readouterr().out)
     codes_all = {item["code"] for item in payload_all}
     assert {"HED-COMPAT-0001", "HED-COMPAT-0002", "HED-COMPAT-0003"} <= codes_all
+
+
+def test_target_100_json_is_one_document_with_hdj_inventory(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """The migration target output must be parseable when HDJ is installed."""
+    from hedron.cli import main
+
+    (tmp_path / "pyproject.toml").write_text("[tool.hedron]\n", encoding="utf-8")
+    (tmp_path / "status.hdj").write_text(
+        "---hdj\nversion = 1\nkind = \"fragment\"\n---\n<section>ok</section>\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "app.py").write_text(
+        "@app.component('/legacy')\ndef legacy(): pass\n", encoding="utf-8"
+    )
+
+    with pytest.raises(SystemExit) as result:
+        main(
+            [
+                "check",
+                "--target",
+                "1.0",
+                "--project",
+                str(tmp_path),
+                "--format",
+                "json",
+                "--severity",
+                "information",
+            ]
+        )
+    assert result.value.code == 1
+    payload = json.loads(capsys.readouterr().out)
+    assert isinstance(payload, dict)
+    assert payload["diagnostics"]
+    assert payload["hdj_inventory"]["templates"] == 1
