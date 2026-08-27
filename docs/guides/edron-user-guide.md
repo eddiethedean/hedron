@@ -38,7 +38,7 @@ Use a clean environment and pin the Edron minor train:
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<0.68" "hedron-data>=0.67.0,<0.68"
+python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<2.0" "hedron-data>=0.67.0,<2.0"
 ```
 
 On Windows, activate `.venv\\Scripts\\activate` instead. Verify the interpreter that will run the

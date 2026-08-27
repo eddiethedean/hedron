@@ -355,14 +355,15 @@ def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[
     allowed = {facts.pin}
     if path in POSIT_WORKBENCH_PATHS:
         allowed.add(">=0.67.0,<0.68")
-    # Edron 0.9 is an in-tree target on the verified 0.67 bridge, not the
-    # published 0.66 adopter train. Its own install pages intentionally use
-    # the explicit 0.67 bridge range.
+    # Independent Edron 0.9 is an in-tree target on the verified 0.67 bridge,
+    # not the published 0.66 adopter train. Its package metadata deliberately
+    # spans 0.67 and 1.x, so its own install pages must be checked against that
+    # explicit compatibility range rather than silently rewritten to 0.66.
     if path in {
         Path("docs/guides/edron-user-guide.md"),
         Path("packages/edron/README.md"),
     }:
-        allowed.add(">=0.67.0,<0.68")
+        allowed.add(">=0.67.0,<2.0")
     if facts.registry_deferred and facts.pypi_pin != facts.pin:
         if path is not None and path in FIRST_RUN_INSTALL_PATHS:
             return {facts.pypi_pin}
