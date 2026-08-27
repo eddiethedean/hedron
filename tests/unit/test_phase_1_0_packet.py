@@ -200,6 +200,35 @@ def test_phase_1_0_refresh_outcome_targets_owned_view_without_full_reload() -> N
     )
 
 
+def test_phase_1_0_view_allows_explicit_regions_alongside_owned_host() -> None:
+    from fastapi.testclient import TestClient
+
+    from hedron import Hedron, Page, Text
+
+    app = Hedron(
+        title="view-regions",
+        security="standard",
+        explorer="off",
+        session_secret="phase-1-view-regions-secret",
+    )
+    region = app.region("status")
+
+    @app.view("/status", fragment_regions=(region,))
+    def status():
+        return Text("ready")
+
+    @app.page("/")
+    def home():
+        return Page(status(), title="Home")
+
+    response = TestClient(app).get(
+        "/status",
+        headers={"HX-Request": "true", "HX-Target": "#status"},
+    )
+    assert response.status_code == 200
+    assert "ready" in response.text
+
+
 def test_phase_1_0_refresh_outcome_rejects_unknown_target() -> None:
     from fastapi.testclient import TestClient
 

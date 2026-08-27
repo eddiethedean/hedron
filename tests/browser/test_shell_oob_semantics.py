@@ -77,7 +77,7 @@ def shell_app_url() -> Iterator[str]:
             title="Shell OOB",
         )
 
-    @app.fragment("/profile", fragment_regions=regions)
+    @app.view("/profile", fragment_regions=regions)
     def profile() -> InteractionResult:
         return InteractionResult(
             content=Text("Profile panel"),
@@ -187,7 +187,7 @@ def shell_conflict_app_url() -> Iterator[str]:
             title="Shell OOB conflict",
         )
 
-    @app.fragment("/profile", fragment_regions=regions)
+    @app.view("/profile", fragment_regions=regions)
     def profile() -> InteractionResult:
         # OuterHTML OOB envelope + matching select_oob replaces the <nav> host.
         return InteractionResult(
