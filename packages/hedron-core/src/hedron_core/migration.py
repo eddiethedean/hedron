@@ -5,6 +5,7 @@ from __future__ import annotations
 import warnings
 from collections.abc import Iterable
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Final
 
 __all__ = [
@@ -107,6 +108,35 @@ class FutureWarningRegistry:
     def to_dict(self) -> list[dict[str, str]]:
         return [record.to_dict() for record in self.records()]
 
+    def validate(self, *, root: str | Path | None = None) -> tuple[str, ...]:
+        """Return deterministic registry issues without mutating the registry.
+
+        A release gate can use this check before deleting a path.  Missing
+        documentation/fixture metadata is an error even when the runtime
+        warning itself is otherwise valid.
+        """
+        base = Path(root).resolve() if root is not None else None
+        issues: list[str] = []
+        seen_paths: dict[str, str] = {}
+        for record in self.records():
+            previous = seen_paths.get(record.old_path)
+            if previous is not None and previous != record.code:
+                issues.append(
+                    f"{record.old_path}: registered by both {previous} and {record.code}"
+                )
+            seen_paths[record.old_path] = record.code
+            for field in ("source", "documentation", "fixture"):
+                value = getattr(record, field)
+                if not value.strip():
+                    issues.append(f"{record.code}: missing {field}")
+                elif (
+                    base is not None
+                    and field in {"documentation", "fixture"}
+                    and not (base / value).is_file()
+                ):
+                    issues.append(f"{record.code}: {field} does not exist: {value}")
+        return tuple(sorted(set(issues)))
+
 
 PUBLIC_FUTURE_WARNINGS = FutureWarningRegistry(
     (
@@ -135,6 +165,16 @@ PUBLIC_FUTURE_WARNINGS = FutureWarningRegistry(
             old_path="app.include_feature",
             replacement="app.include",
             owner="hedron.app",
+            source="contract-freeze-067.toml",
+            documentation="docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
+            fixture="tests/upgrade/shared.py",
+            automation_status="automatic",
+        ),
+        FutureWarningRecord(
+            code="HED-MIGRATE-0674",
+            old_path="router.component",
+            replacement="router.view",
+            owner="hedron.routing",
             source="contract-freeze-067.toml",
             documentation="docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
             fixture="tests/upgrade/shared.py",

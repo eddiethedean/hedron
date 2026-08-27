@@ -1,0 +1,37 @@
+schema_version = 1
+phase = "1.0"
+status = "Draft; no removals authorized"
+baseline = "v0.67.0"
+rule = "A row cannot move to Verified until warning, fixture, parity, and clean-search evidence exist."
+
+[[removal]]
+code = "HED-MIGRATE-0671"
+old_path = "app.component"
+replacement = "app.view"
+kind = "decorator"
+state = "warning-and-tooling"
+fixture = "tests/upgrade/shared.py"
+
+[[removal]]
+code = "HED-MIGRATE-0672"
+old_path = "app.fragment"
+replacement = "app.view"
+kind = "decorator"
+state = "warning-and-tooling"
+fixture = "tests/upgrade/shared.py"
+
+[[removal]]
+code = "HED-MIGRATE-0673"
+old_path = "app.include_feature"
+replacement = "app.include"
+kind = "method"
+state = "warning-and-tooling"
+fixture = "tests/upgrade/shared.py"
+
+[[removal]]
+code = "HED-MIGRATE-0674"
+old_path = "router.component"
+replacement = "router.view"
+kind = "decorator"
+state = "warning-and-tooling"
+fixture = "tests/upgrade/shared.py"

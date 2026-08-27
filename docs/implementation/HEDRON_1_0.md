@@ -53,7 +53,7 @@ Generate inventories from the immutable `v0.67.0` artifacts and source tree, not
 - stable maturity, support, security, rollback, and evidence-retention boundaries.
 
 Reconcile the generated inventory with `contract-freeze-067.toml`, the component-engine inventory,
-the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The current three warning
+the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The current four warning
 records are a known lower bound. `ENTRY-100` remains Planned until every proposed removal has
 complete coverage and the stable inventory is machine-enumerated.
 
@@ -75,6 +75,285 @@ complete coverage and the stable inventory is machine-enumerated.
 W1 and W2 do not begin before W0. W3 can expand analyzers during W0 but cannot claim complete
 automation until the inventory is closed. W4–W6 may proceed by independent, warning-backed slice
 after `ENTRY-100`; W8 starts only when canonical artifacts are buildable; W9 is last.
+
+## Execution contract
+
+Every workstream produces three things: a reviewed code/configuration change, executable evidence,
+and a machine-readable update to the 1.0 packet. A workstream is not complete because its code
+exists or because a test passes locally. The owner must attach the exact baseline commit, Python and
+dependency lock, browser/container identity where relevant, command output, artifact digest, and
+the gate row it advances.
+
+The immutable baseline is the published `v0.67.0` source/wheel/sdist and its lockfile. Create a
+separate baseline directory outside the source packages (for example `.evidence/1.0/baseline/`)
+containing:
+
+- source commit and clean-install metadata;
+- `pyproject.toml`, `uv.lock`, package versions, Python/Pyright versions, and adapter extras;
+- browser, Playwright, OS/container, Alpine/HTMX asset, and Web Component ABI identities;
+- exported symbol/signature snapshots and the 0.67 warning registry snapshot; and
+- checksums for every input and generated report.
+
+No workstream may use a moving checkout as its predecessor evidence. If a baseline artifact cannot
+be reproduced, stop at `ENTRY-100` and repair the evidence rather than weakening the comparison.
+
+## Deliverables and repository seams
+
+The following files are the planned source-of-truth outputs. They are deliberately separate from
+the human packet so tooling can reject drift and reviewers can inspect one bounded concern at a
+time.
+
+| Deliverable | Owner | Contents | First gate |
+|---|---|---|---|
+| `docs/acceptance/public-inventory-100.toml` | architecture/API | Every documented/exported/generated/configured/CLI/HDJ/markup/browser/package path, task, owner, maturity, and disposition | `ENTRY-100` |
+| `docs/acceptance/stable-inventory-100.toml` | API/release | Enumerated SemVer-protected symbols, signatures, schemas, packages, and supported adapters | `SURFACE-100` |
+| `docs/acceptance/removal-inventory-100.toml` | migration/API | One row per removed path, replacement/non-fit reason, warning code, fixture, confidence, and removal slice | `REMOVE-100` |
+| `docs/acceptance/warnings-100.toml` | migration/tooling | Runtime/static warning schema, source forms, diagnostic metadata, and coverage status | `ENTRY-100` |
+| `docs/acceptance/baseline-100.json` | release engineering | Immutable 0.67.0 commit, locks, artifacts, browsers, tools, and hashes | `ENTRY-100` |
+| `docs/acceptance/support-policy-100.md` | release/docs | 0.67.x migration window, 1.x support boundary, rollback policy, and no-SLA/LTS claims | `ENTRY-100` |
+| `docs/acceptance/compatibility-report-100/` | compatibility | Dual-version imports, typing, execution, build, CLI, HDJ, browser, and package reports | `COMPAT-100` |
+| `.evidence/1.0/` (ignored) | all owners | Reproducible logs, traces, screenshots, SBOMs, wheels, sdists, and digests linked by packet rows | all gates |
+
+Primary runtime seams are `packages/hedron-core/src/hedron_core/migration.py` (warning records),
+`packages/hedron-core/src/hedron_core/__init__.py` and `packages/hedron/src/hedron/__init__.py`
+(exports), `packages/hedron/src/hedron/cli/commands/check.py` (static findings), the routing and
+interaction modules under `packages/hedron-core/src/hedron_core/` and `packages/hedron/src/hedron/`,
+the browser asset/registry modules under `packages/hedron-core/src/hedron_core/`, HDJ under
+`packages/hedron-jinja/src/hedron_jinja/`, and component/element registries under the core and
+`hedron-elements` packages. Tests belong beside the relevant phase suites plus
+`tests/upgrade/` for cross-version fixtures; generated evidence never belongs in source packages.
+
+## Workstream runbooks
+
+### W0 — inventory, baseline, and entry lock
+
+1. Build the `v0.67.0` baseline in a clean environment and record the checksums and tool/browser
+   identities in `baseline-100.json`.
+2. Extract `__all__`, public imports, signatures, overloads, schemas, decorators, CLI/config/HDJ
+   forms, generated output, browser tags/controllers/assets, manifests, and package entry points.
+3. Normalize aliases and alternate spellings by developer task, not by module name. Join the result
+   to the component-engine dispositions and `contract-freeze-067.toml`.
+4. Diff the generated result against docs, examples, scaffolds, Explorer, `PUBLIC_FUTURE_WARNINGS`,
+   `codes.py`, and existing upgrade fixtures. Every mismatch becomes an inventory row.
+5. Publish stable, transitional, Advanced, package-native, Beta, Experimental, internal, Deferred,
+   and not-fit dispositions. Resolve the current four-warning floor (`app.component`,
+   `app.fragment`, `app.include_feature`, `router.component`) against the complete extracted surface.
+6. Publish the 0.67.x migration-support window and exact dual-version matrix. Do not choose a
+   calendar release date; the cut remains evidence-triggered.
+
+**Exit checklist:** all seven W0 deliverables exist; inventory counts are reproducible; every
+proposed removal has a disposition; no public path is `unknown` without an owner; the stable
+inventory is enumerated; and `python scripts/check_100.py --check-plan` plus `ENTRY-100` evidence
+pass. Until then, no deletion or 1.0-only default switch is allowed.
+
+### W1 — canonical surface and type boundary
+
+1. Turn the stable inventory into the authoritative export/stub/signature allowlist. Remove only
+   duplicate root re-exports; preserve package-native ownership and optional import errors.
+2. Make function-only `page`/`view`/`action`, one-tree returns, role-valid `Outcome`, closed
+   `Interaction`, `hedron.ui`, and `app.include` the only ordinary generated/scaffolded forms.
+3. Mark retained `Page`, raw responses, low-level modules, and specialist hosts as Advanced or
+   package-native in exports, docs, autodoc, and diagnostics.
+4. Add API/task lint that fails when one task has two stable documented/scaffolded/generated paths,
+   or when a Beta/Experimental path leaks into the stable facade.
+5. Update typing stubs, overloads, schemas, import-order tests, autodoc snapshots, and package
+   `__all__` assertions together; a signature change without its fixture is incomplete.
+
+**Exit checklist:** `stable-inventory-100.toml` is reviewed; `SURFACE-100` and `TYPE-100` pass;
+the canonical corpus still imports and type-checks against 0.67.0; and no package version has been
+bumped.
+
+### W2 — warning-backed removal slices
+
+Process removals in small, independently revertible slices ordered by blast radius:
+
+1. duplicate decorators/aliases and root shims;
+2. duplicate component/controller/tag paths selected by `ENGINE-067`;
+3. browser activation knobs and manual ordinary-page plugin paths;
+4. duplicate response/update/interaction spellings; and
+5. generated, CLI/config, HDJ, manifest, and template compatibility forms.
+
+For each slice, add the complete row to `removal-inventory-100.toml`, implement the 0.67 warning or
+static finding first, add the before/after fixture, run the non-executing migrator, update all
+consumers, then delete the 1.0 path. Keep the old path in 0.67 migration tooling where the warning
+contract requires it. Never use a dynamic `__getattr__`, import hook, shadow module, or broad alias
+to make a removed path appear to work in 1.0.
+
+**Exit checklist:** every deleted path has complete warning coverage, a replacement/non-fit reason,
+an idempotent migration result, and parity evidence; `REMOVE-100` passes with zero undocumented
+removals; and a clean search finds no compatibility spelling in the stable source/docs/generated
+output.
+
+### W3 — static checking and migration tooling
+
+1. Extend `hedron check --target 1.0` to imports, calls, keyword arguments, config, CLI, HDJ,
+   manifests, browser markup, generated code, and templates without importing or executing the
+   application.
+2. Emit deterministic text, JSON, and SARIF findings with code, source span, replacement/non-fit
+   reason, owner, removal version, documentation anchor, fixture, and complete/partial/unknown
+   confidence.
+3. Implement `hedron migrate api --target 1.0` as a reviewable transform: default diff/report,
+   explicit output/apply, no overwrite, no execution, idempotence, and a refusal for opaque or
+   dynamic constructs that cannot be proven safe.
+4. Keep runtime `HedronFutureWarning` records and static findings generated from the same registry;
+   add a registry lint preventing duplicate codes, missing fixtures, or stale paths.
+
+**Exit checklist:** `MIGRATE-100` passes the complete/partial/unknown corpus, no-execution probes,
+SARIF schema, idempotence, and no-overwrite tests; static findings match runtime metadata; and
+opaque constructs are reported rather than declared clean.
+
+### W4 — interaction and lifecycle cutover
+
+1. Validate the frozen `Interaction` union and role-indexed `Outcome` at construction, static check,
+   route registration, and response lowering.
+2. Verify local effects lower only to Alpine; request effects lower only to Hedron/HTMX; combined
+   effects use one lifecycle coordinator and one request maximum.
+3. Exercise document-plan closure, fragment subset checks, state ownership/reconciliation,
+   init/cleanup/settle/OOB/history/error, focus/announcement, stale-result, and failure behavior.
+4. Remove any parallel default path only after the 0.67 fixture demonstrates ordinary HTTP and
+   no-JavaScript parity. Keep Morph non-admission valid and explicit.
+
+**Exit checklist:** `INTERACTION-100` passes local/request/combined, reset/preserve, duplicate
+request, dual-writer, cross-authority, OOB/history, missing-asset, and no-JS fixtures in all three
+browsers; boundary traces are redacted and source-mapped.
+
+### W5 — component-engine cutover
+
+1. Convert each `ENGINE-067` disposition into a 1.0 inventory row with public Python task name,
+   engine, owner, ABI, fallback, lifecycle, resource, CSP, and accessibility evidence.
+2. Migrate only common widgets with native/Alpine parity. Retain chart/map/data-editor and other
+   specialist hosts where their resource or ABI boundary is real.
+3. Preserve the Web Component ABI and third-party author kit; never expose engine choice as an
+   ordinary author parameter or publish parallel `Alpine*`/Web Component names.
+4. Run keyboard/focus/no-JS/HTMX cleanup and browser parity before deleting each legacy wrapper.
+
+**Exit checklist:** `ENGINE-100` passes one-task/one-engine lint, specialist-host ABI fixtures,
+common-widget parity, fallback, CSP, lifecycle, and provenance checks.
+
+### W6 — consumer and documentation migration
+
+Migrate the maintained surface in dependency order: core examples and reference app, scaffolds and
+generated projects, API/task pages and autodoc, Explorer and scenarios, FastAPI/Flask/Django/HDJ
+adapters, Workbench/Posit, package-native satellite examples, CLI/config schemas, and migration
+guides. Run the target check over the entire tree after each batch. The batch is rejected if it
+introduces a second spelling, a deprecated browser asset, a missing feature demand, or a misleading
+stability claim.
+
+**Exit checklist:** `TOOLING-100` and `DOCS-100` pass source search, generated-output comparison,
+task lint, API link checks, HDJ static checks, Explorer/scenario snapshots, and a clean beginner
+walkthrough.
+
+### W7 — quality closure after removals
+
+Run the security, accessibility, and performance suites after compatibility code has been removed;
+do not rely only on the 0.67 results. Include unsafe directive/HTML/URL/state inputs, CSRF/CSP and
+redaction, production plugin policy, feature-off zero assets, leak/idempotent cleanup, lifecycle
+repetition, keyboard/focus/reflow/forced-colors/reduced-motion/RTL, and cold/warm import/render/
+request/asset measurements. Numeric ceilings are frozen from evidence and recorded in the packet;
+benchmarks cannot bypass semantic or security checks.
+
+**Exit checklist:** `SECURITY-100`, `A11Y-100`, and `PERF-100` pass on the declared matrix with no
+new waiver that lacks an owner, expiry, and explicit maturity downgrade.
+
+### W8 — dual-version and fleet compatibility
+
+1. Build the canonical corpus once and run it in isolated 0.67.0 and 1.0.0 environments. Compare
+   imports, Pyright, rendered HTML/manifest/trace facts, HTTP outcomes, browser screenshots/traces,
+   CLI/HDJ/build output, and error metadata with approved nondeterministic fields only.
+2. Run the coordinated package matrix together and each independent satellite at its exact declared
+   range. Test optional packages both installed and absent; import-order tests must remain acyclic.
+3. Retain the exact lock, wheel/sdist hashes, browser identities, and reports for every matrix row.
+   A declared-but-untested range is Unsupported, never inferred from a neighboring row.
+
+**Exit checklist:** `COMPAT-100` and `FLEET-100` pass all canonical/shared/transitional/negative/
+rollback lanes; no 1.0 fixture depends on a removed 0.67 path; and all independent ranges are
+published in package metadata and docs.
+
+### W9 — artifacts, release candidate, and cut
+
+1. Update coordinated package versions/classifiers/changelogs only after all behavior and migration
+   gates pass. Keep independent satellite versions independent.
+2. Build clean wheels and sdists twice from the same source with normalized timestamps; compare
+   manifests, hashes, license notices, SBOMs, and browser assets.
+3. Exercise offline installation, fresh virtual environments, import order, CLI scaffolding,
+   rollback rehearsal, and the release workflow from the candidate tag.
+4. Publish support/rollback policy and migration documentation, then request `RELEASE-100` approval.
+   Tag and publish only from the approved immutable commit.
+
+**Exit checklist:** `REGRESS-100`, `PKG-100`, and `RELEASE-100` are Verified; every prior gate is
+Verified; the release report links all evidence; and no user-facing page calls the candidate
+released before publication.
+
+## Pull-request sequence and ownership
+
+Use one narrowly scoped PR per row or removal slice. The recommended order is:
+
+| PR group | Required contents | Must be green before |
+|---|---|---|
+| P0 baseline | W0 generators, snapshots, inventories, support policy, checker schemas | Any runtime deletion |
+| P1 surface | Stable exports, signatures, API/task lint, package ownership | P2 |
+| P2 migration registry | Warning records, codes, static findings, fixture harness | P3 |
+| P3 migration transforms | One warning-backed removal slice per PR, with before/after fixtures | P4 |
+| P4 interaction | Outcome/Interaction validation, lifecycle traces, closure/state fixtures | P5 |
+| P5 engines | One component disposition/migration at a time, ABI and fallback evidence | P6 |
+| P6 consumers | Examples, scaffolds, Explorer, HDJ, adapters, CLI/config, docs | P7 |
+| P7 hardening | Security/a11y/performance and three-browser reruns | P8 |
+| P8 fleet | Dual-version and satellite matrices, lock/artifact reports | P9 |
+| P9 release | Version/changelog/metadata changes, clean artifacts, release rehearsal | Tag/publication |
+
+Every PR description includes the task, disposition row, gate IDs, baseline identity, changed
+authority (which must remain unchanged), fixture commands, and rollback action. Reviewers reject
+mixed removal slices that cannot be reverted independently.
+
+## Verification command matrix
+
+The exact commands live in `release-gate-1.0.toml`; this is the execution order and minimum CI
+shape. Commands that verify implementation evidence do not exist until the corresponding workstream
+lands; the planning checker must continue to fail closed before then.
+
+```text
+python scripts/check_100.py --check-plan
+python scripts/check_100.py --gate ENTRY-100 --verify
+python scripts/check_100.py --gate SURFACE-100 --verify
+python scripts/check_100.py --gate TYPE-100 --verify
+python scripts/check_100.py --gate REMOVE-100 --verify
+python scripts/check_100.py --gate MIGRATE-100 --verify
+python scripts/check_100.py --gate INTERACTION-100 --verify
+python scripts/check_100.py --gate ENGINE-100 --verify
+python scripts/check_100.py --gate TOOLING-100 --verify
+python scripts/check_100.py --gate DOCS-100 --verify
+python scripts/check_100.py --gate SECURITY-100 --verify
+python scripts/check_100.py --gate A11Y-100 --verify
+python scripts/check_100.py --gate PERF-100 --verify
+python scripts/check_100.py --gate COMPAT-100 --verify
+python scripts/check_100.py --gate FLEET-100 --verify
+bash scripts/ci_checks.sh all --python 3.12 --all-browsers --gate-version 1.0.0 --jobs 1
+python scripts/check_100.py --gate PKG-100 --verify
+python scripts/check_100.py --gate RELEASE-100 --verify
+```
+
+The CI matrix must include CPython 3.11–3.14, the exact FastAPI/Pydantic bounds, FastAPI plus
+Flask/Django/HDJ adapter rows, optional satellite present/absent rows, Pyright, and Chromium/
+Firefox/WebKit. Browser rows run on the pinned Playwright lock and record screenshots/traces;
+non-browser rows run in clean isolated environments. The release job consumes evidence artifacts
+from earlier jobs and never converts a Planned row to Verified by editing TOML.
+
+## Definition of done
+
+Phase 1.0 is fully implemented only when all of the following are true:
+
+- the 0.67 baseline and public inventory are reproducible and `ENTRY-100` is Verified;
+- the stable inventory is enumerated and one task has one ordinary public path;
+- every removed path was warned/found in 0.67, migrated or explicitly dispositioned, and fixture-backed;
+- the canonical interaction, outcome, document-plan, lifecycle, component-engine, fallback,
+  security, accessibility, and performance contracts pass after removal;
+- the same canonical source/config/HDJ/CLI corpus passes unchanged on 0.67.0 and 1.0.0;
+- coordinated packages build at 1.0.0 while independent satellites retain exact ranges;
+- docs, scaffolds, generated code, Explorer, and package metadata contain no stale compatibility
+  spelling or contradictory maturity/release claim;
+- clean, offline, reproducible artifact and rollback rehearsals pass; and
+- all 17 release rows are Verified with no undocumented removal, unsupported range, or open cut
+  blocker.
 
 ## Removal slice protocol
 

@@ -458,61 +458,16 @@ def _check_044_type_authoring(base: Path) -> list[Any]:
 
 
 def _check_target_100(base: Path) -> list[Any]:
-    """Find documented 0.67 compatibility spellings without importing project code."""
-    from hedron_core import DiagnosticSeverity
-    from hedron_core.diagnostics import make_diagnostic
+    """Find 0.67 compatibility spellings without importing project code.
 
-    replacements = {
-        "screen": "@app.page",
-        "component": "@app.view",
-        "fragment": "@app.view",
-        "refreshable": "@app.view",
-        "command": "@app.action",
-        "form_command": "@app.action",
-        "include_feature": "app.include",
-    }
-    diagnostics: list[Any] = []
-    skip = {".venv", "node_modules", "dist", "site-packages", ".git"}
-    for path in sorted(base.rglob("*.py")):
-        if any(part in skip or part.startswith(".") for part in path.parts):
-            continue
-        try:
-            tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-        except (OSError, SyntaxError, UnicodeDecodeError):
-            continue
-        for node in ast.walk(tree):
-            if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
-                continue
-            old = node.func.attr
-            replacement = replacements.get(old)
-            if replacement is None:
-                continue
-            diagnostics.append(
-                make_diagnostic(
-                    "HED-MIGRATE-0670",
-                    severity=DiagnosticSeverity.WARNING,
-                    title="Hedron 1.0 compatibility path",
-                    explanation=(
-                        f"{path}:{node.lineno} uses transitional `{old}` authoring; "
-                        f"the 1.0 canonical path is `{replacement}`."
-                    ),
-                    remediation=f"Migrate this task to {replacement} before Hedron 1.0.",
-                    context={
-                        "code": "HED-MIGRATE-0670",
-                        "old_path": old,
-                        "replacement": replacement,
-                        "owner": "hedron",
-                        "first_warning_version": "0.67",
-                        "removal_version": "1.0",
-                        "source": str(path),
-                        "documentation": "docs/implementation/HEDRON_1_0_EDRON_INTERFACE_AUDIT.md",
-                        "fixture": "shared/target-1.0",
-                        "confidence": "complete",
-                        "automation_status": "automatic",
-                    },
-                )
-            )
-    return diagnostics
+    The scanner delegates to the same warning registry used by executable
+    compatibility wrappers.  This keeps canonical methods such as
+    ``refreshable`` and ``command`` from being reported merely because they
+    happen to share a suffix with an older spelling.
+    """
+    from hedron.migrate.api import scan_api
+
+    return list(scan_api(base).diagnostics())
 
 
 def _decorator_attr(node: ast.AST) -> str | None:

@@ -525,6 +525,12 @@ class HedronRouter(APIRouter):
         browser_closure: BrowserPlanClosure | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        emit_legacy_warning = bool(kwargs.pop("_emit_legacy_warning", True))
+        if emit_legacy_warning and _route_kind == "component":
+            from hedron_core.migration import warn_legacy_path
+
+            warn_legacy_path("router.component", stacklevel=2)
+
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
             from hedron.responses import FragmentResponse
 

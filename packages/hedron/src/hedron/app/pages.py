@@ -306,7 +306,12 @@ class HedronPagesMixin:
             from hedron_core.migration import warn_legacy_path
 
             warn_legacy_path("app.component", stacklevel=2)
-        decorator = self._root_router.component(path, fragment_regions=fragment_regions, **kwargs)
+        decorator = self._root_router.component(
+            path,
+            fragment_regions=fragment_regions,
+            _emit_legacy_warning=False,
+            **kwargs,
+        )
 
         def wrap(fn: Callable[P, R]) -> Callable[P, R]:
             decorator(fn)

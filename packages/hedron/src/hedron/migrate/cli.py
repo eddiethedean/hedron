@@ -1,4 +1,4 @@
-"""CLI entry for ``hedron migrate streamlit``."""
+"""CLI entries for the non-executing Hedron migration assistants."""
 
 from __future__ import annotations
 
@@ -71,6 +71,98 @@ def build_react_parser(
     parser.add_argument("--format", choices=("text", "json"), default="text")
     parser.set_defaults(func=run_migrate_react_args)
     return parser
+
+
+def build_api_parser(
+    subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+) -> argparse.ArgumentParser:
+    """Register the 0.67-to-1.0 API migration scanner/transform."""
+    parser = subparsers.add_parser(
+        "api",
+        help="Statically migrate transitional Hedron API paths to the 1.0 surface",
+    )
+    parser.add_argument(
+        "source",
+        nargs="?",
+        default=".",
+        help="Python file or project directory (default: current directory)",
+    )
+    parser.add_argument("--target", choices=("1.0",), required=True)
+    parser.add_argument(
+        "--out",
+        default=None,
+        help="Write transformed files to a new directory/file (never overwrites)",
+    )
+    parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Apply proven replacements in place; manual findings remain untouched",
+    )
+    parser.add_argument(
+        "--diff",
+        action="store_true",
+        help="Print a unified diff for proven replacements",
+    )
+    parser.add_argument("--format", choices=("text", "json", "sarif"), default="text")
+    parser.set_defaults(func=run_migrate_api_args)
+    return parser
+
+
+def run_migrate_api_args(args: argparse.Namespace) -> int:
+    try:
+        report = run_migrate_api(
+            source=Path(args.source),
+            out=Path(args.out) if args.out else None,
+            apply=bool(args.apply),
+            fmt=str(args.format),
+            show_diff=bool(args.diff),
+        )
+    except (FileNotFoundError, FileExistsError, OSError, ValueError) as exc:
+        print(f"API migration failed: {exc}", file=sys.stderr)
+        return 1
+    return 2 if report.requires_review else 0
+
+
+def run_migrate_api(
+    *,
+    source: Path,
+    out: Path | None = None,
+    apply: bool = False,
+    fmt: str = "text",
+    show_diff: bool = False,
+):
+    """Scan and optionally transform API paths without importing target code."""
+    from hedron.migrate.api import transform_api, unified_diff
+    from hedron_core.diagnostics import diagnostics_to_sarif
+
+    report = transform_api(source, output=out, apply=apply)
+    if fmt == "json":
+        print(report.to_json(), end="")
+    elif fmt == "sarif":
+        import json as _json
+
+        print(_json.dumps(diagnostics_to_sarif(report.diagnostics()), indent=2, sort_keys=True))
+    else:
+        print(f"API migration source: {report.source}")
+        print(f"Non-executing: {report.non_executing}")
+        print(f"Files: {report.files_seen}  Findings: {len(report.findings)}")
+        for finding in report.findings:
+            print(
+                f"- {finding.code} {finding.old_path} -> {finding.replacement} "
+                f"({finding.path}:{finding.line}:{finding.column}; "
+                f"confidence={finding.confidence}, automation={finding.automation_status})"
+            )
+        if report.changes:
+            print("Changed files:")
+            for change in report.changes:
+                print(f"- {change.path}: {change.replacements} replacement(s)")
+        if show_diff:
+            diff = unified_diff(source)
+            if diff:
+                print(diff, end="")
+        if report.requires_review:
+            print("REVIEW REQUIRED", file=sys.stderr)
+    return report
 
 
 def run_migrate_react_args(args: argparse.Namespace) -> int:

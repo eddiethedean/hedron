@@ -1,0 +1,41 @@
+schema_version = 1
+phase = "1.0"
+status = "Draft; generated inventory implementation pending W0 reconciliation"
+baseline = "v0.67.0"
+source_rule = "Documented, exported, generated, configured, CLI, HDJ, and browser-markup contracts are in scope."
+
+[[surface]]
+task = "document-page"
+canonical = "app.page"
+owner = "hedron.app"
+disposition = "canonical"
+
+[[surface]]
+task = "replaceable-view"
+canonical = "app.view"
+owner = "hedron.app"
+disposition = "canonical"
+
+[[surface]]
+task = "mutation-action"
+canonical = "app.action"
+owner = "hedron.app"
+disposition = "canonical"
+
+[[surface]]
+task = "feature-inclusion"
+canonical = "app.include"
+owner = "hedron.app"
+disposition = "canonical"
+
+[[surface]]
+task = "typed-interaction"
+canonical = "hedron_core.Interaction"
+owner = "hedron-core"
+disposition = "canonical"
+
+[[surface]]
+task = "role-outcome"
+canonical = "hedron_core.Outcome"
+owner = "hedron-core"
+disposition = "canonical"

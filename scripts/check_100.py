@@ -46,6 +46,12 @@ REQUIRED_FILES = (
     "docs/implementation/HEDRON_1_0.md",
     "docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md",
     "docs/api/HTMX_ALPINE_BOUNDARY_1_0.md",
+    "docs/acceptance/public-inventory-100.toml",
+    "docs/acceptance/stable-inventory-100.toml",
+    "docs/acceptance/removal-inventory-100.toml",
+    "docs/acceptance/warnings-100.toml",
+    "docs/acceptance/baseline-100.json",
+    "docs/acceptance/support-policy-100.md",
 )
 
 
@@ -66,6 +72,8 @@ def check_plan() -> list[str]:
     contract = _toml(CONTRACT_PATH)
     bom = _toml(BOM_PATH)
     predecessor = _toml(PREDECESSOR_GATE_PATH)
+    warning_inventory = _toml(ACCEPTANCE / "warnings-100.toml")
+    baseline = json.loads((ACCEPTANCE / "baseline-100.json").read_text(encoding="utf-8"))
     workspace = _toml(ROOT / "pyproject.toml")
 
     if gate.get("phase") != "1.0" or gate.get("target") != "v1.0.0":
@@ -107,6 +115,24 @@ def check_plan() -> list[str]:
         errors.append("Stage 0 refinement cannot change runtime or package versions")
     if contract.get("stage_1_entry_satisfied") is not False:
         errors.append("cut contract must retain the W0/ENTRY-100 blocker")
+    if warning_inventory.get("baseline") != "v0.67.0":
+        errors.append("warning inventory must use the immutable v0.67.0 baseline")
+    warning_rows = warning_inventory.get("warning")
+    warning_codes = {
+        str(row.get("code"))
+        for row in warning_rows
+        if isinstance(row, dict) and row.get("code")
+    } if isinstance(warning_rows, list) else set()
+    required_warning_codes = {
+        "HED-MIGRATE-0671",
+        "HED-MIGRATE-0672",
+        "HED-MIGRATE-0673",
+        "HED-MIGRATE-0674",
+    }
+    if not required_warning_codes <= warning_codes:
+        errors.append("warning inventory is missing the implemented warning floor")
+    if baseline.get("baseline") != "v0.67.0" or baseline.get("release_cut_satisfied") is not False:
+        errors.append("baseline artifact must remain a draft against v0.67.0")
 
     release_boundary = contract.get("release_boundary")
     if not isinstance(release_boundary, dict):
@@ -145,7 +171,12 @@ def check_plan() -> list[str]:
     migration_source = (ROOT / "packages/hedron-core/src/hedron_core/migration.py").read_text(
         encoding="utf-8"
     )
-    for code in ("HED-MIGRATE-0671", "HED-MIGRATE-0672", "HED-MIGRATE-0673"):
+    for code in (
+        "HED-MIGRATE-0671",
+        "HED-MIGRATE-0672",
+        "HED-MIGRATE-0673",
+        "HED-MIGRATE-0674",
+    ):
         if code not in migration_source:
             errors.append(f"known 0.67 warning floor is missing {code}")
 

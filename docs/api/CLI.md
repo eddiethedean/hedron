@@ -325,6 +325,23 @@ hedron run app:app --workbench --workbench-mode on
 The target must be `module:attribute` (or supplied through global `--app`). A detected
 Workbench runtime without `hedron[workbench]` exits `2` with an install hint.
 
+### `migrate api`
+
+Audit and mechanically migrate transitional 0.67 API paths for the 1.0 surface. The command is
+static and never imports or executes the inspected project. By default it prints a report; use
+`--diff` to show proven replacements, `--out` to write a fresh output file/tree, or `--apply` for
+an explicit in-place update. Existing output is never overwritten.
+
+```bash
+hedron migrate api --target 1.0 .
+hedron migrate api --target 1.0 . --diff --format json
+hedron migrate api --target 1.0 app.py --out migrated-app.py
+```
+
+`app.component` and `app.include_feature` are mechanically renamed. Region-specific
+`app.fragment` calls are reported with `partial` confidence and remain unchanged for review.
+Text/template occurrences are also reported, but are never automatically rewritten.
+
 ### `migrate streamlit`
 
 Statically analyze a Streamlit entrypoint or project and optionally generate a reviewable

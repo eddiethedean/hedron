@@ -66,5 +66,34 @@ def test_phase_1_0_packet_names_known_warning_floor_without_claiming_completenes
     for spelling in ("app.component", "app.fragment", "app.include_feature"):
         assert spelling in upgrade
     gap = contract["migration"]["known_stage_0_gap"]
-    assert "three" in gap
+    assert "four" in gap
     assert "before any removal" in gap
+
+
+def test_phase_1_0_execution_plan_is_actionable_and_complete() -> None:
+    plan = (ROOT / "docs/implementation/HEDRON_1_0.md").read_text(encoding="utf-8")
+    for heading in (
+        "### W0 — inventory, baseline, and entry lock",
+        "### W1 — canonical surface and type boundary",
+        "### W2 — warning-backed removal slices",
+        "### W3 — static checking and migration tooling",
+        "### W4 — interaction and lifecycle cutover",
+        "### W5 — component-engine cutover",
+        "### W6 — consumer and documentation migration",
+        "### W7 — quality closure after removals",
+        "### W8 — dual-version and fleet compatibility",
+        "### W9 — artifacts, release candidate, and cut",
+        "## Pull-request sequence and ownership",
+        "## Verification command matrix",
+        "## Definition of done",
+    ):
+        assert heading in plan
+    for artifact in (
+        "public-inventory-100.toml",
+        "stable-inventory-100.toml",
+        "removal-inventory-100.toml",
+        "warnings-100.toml",
+        "baseline-100.json",
+        "support-policy-100.md",
+    ):
+        assert artifact in plan

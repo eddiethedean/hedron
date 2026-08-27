@@ -26,7 +26,7 @@ authorize package/version changes.
 The predecessor requirement is satisfied: `v0.67.0` is implemented and its release gate is
 Verified. Removal work remains blocked until `ENTRY-100` reconciles the actual 0.67 public surface
 with the warning registry and freezes the enumerated stable 1.0 inventory. In particular, the
-three in-tree route/include warnings are known fixtures, not evidence that every proposed removal
+four in-tree route/include warnings are known fixtures, not evidence that every proposed removal
 has been classified.
 
 ## Gates

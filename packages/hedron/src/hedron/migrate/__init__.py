@@ -23,10 +23,18 @@ def run_migrate_react(*args: Any, **kwargs: Any) -> int:
     return _run(*args, **kwargs)
 
 
+def run_migrate_api(*args: Any, **kwargs: Any) -> Any:
+    """Lazy wrapper for the non-executing 1.0 API migrator."""
+    from hedron.migrate.cli import run_migrate_api as _run
+
+    return _run(*args, **kwargs)
+
+
 __all__ = [
     "MAPPING_CATALOG_VERSION",
     "SCHEMA_VERSION",
     "STREAMLIT_AUDIT_BASELINE",
     "run_migrate_streamlit",
     "run_migrate_react",
+    "run_migrate_api",
 ]

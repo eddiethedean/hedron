@@ -658,8 +658,9 @@ def _register_migrate_commands(sub: Any) -> None:
         help="Reviewable framework migration assistants (RFC-0061)",
     )
     migrate_sub = migrate_p.add_subparsers(dest="migrate_command", required=True)
-    from hedron.migrate.cli import build_react_parser, build_streamlit_parser
+    from hedron.migrate.cli import build_api_parser, build_react_parser, build_streamlit_parser
 
+    build_api_parser(migrate_sub)
     build_streamlit_parser(migrate_sub)
     build_react_parser(migrate_sub)
 

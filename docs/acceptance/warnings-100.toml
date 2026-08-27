@@ -1,0 +1,53 @@
+schema_version = 1
+phase = "1.0"
+status = "Draft; warning floor implemented, full public-artifact reconciliation pending"
+source = "packages/hedron-core/src/hedron_core/migration.py"
+baseline = "v0.67.0"
+
+[[warning]]
+code = "HED-MIGRATE-0671"
+old_path = "app.component"
+replacement = "app.view"
+owner = "hedron.routing"
+first_warning_version = "0.67"
+removal_version = "1.0"
+confidence = "complete"
+automation_status = "automatic"
+documentation = "docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md"
+fixture = "tests/upgrade/shared.py"
+
+[[warning]]
+code = "HED-MIGRATE-0672"
+old_path = "app.fragment"
+replacement = "app.view"
+owner = "hedron.routing"
+first_warning_version = "0.67"
+removal_version = "1.0"
+confidence = "complete"
+automation_status = "automatic"
+documentation = "docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md"
+fixture = "tests/upgrade/shared.py"
+
+[[warning]]
+code = "HED-MIGRATE-0673"
+old_path = "app.include_feature"
+replacement = "app.include"
+owner = "hedron.app"
+first_warning_version = "0.67"
+removal_version = "1.0"
+confidence = "complete"
+automation_status = "automatic"
+documentation = "docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md"
+fixture = "tests/upgrade/shared.py"
+
+[[warning]]
+code = "HED-MIGRATE-0674"
+old_path = "router.component"
+replacement = "router.view"
+owner = "hedron.routing"
+first_warning_version = "0.67"
+removal_version = "1.0"
+confidence = "complete"
+automation_status = "automatic"
+documentation = "docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md"
+fixture = "tests/upgrade/shared.py"
