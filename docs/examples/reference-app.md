@@ -196,7 +196,7 @@ user table on the dashboard:
         )
 
 
-    @app.component("/notes", methods=["POST"], fragment_regions=(listing,))
+    @app.action("/notes", method="POST", fragment_regions=(listing,))
     def add_note(request: Request, note: Annotated[str, Form()] = "") -> object:
         text = note.strip()
         if text:
@@ -204,7 +204,7 @@ user table on the dashboard:
         return render_list(request)
 
 
-    @app.component("/notes/delete", methods=["POST"], fragment_regions=(listing,))
+    @app.action("/notes/delete", method="POST", fragment_regions=(listing,))
     def delete_note(request: Request, note_id: Annotated[str, Form()] = "") -> object:
         NOTES.pop(note_id, None)
         return render_list(request)
@@ -288,7 +288,7 @@ Dashboard chart routes return `InteractionResult` fragments:
         )
 
 
-    @app.component("/charts/refresh", fragment_regions=(panel,))
+    @app.view("/charts/refresh", fragment_regions=(panel,))
     def refresh() -> InteractionResult:
         return InteractionResult(
             content=chart_panel(

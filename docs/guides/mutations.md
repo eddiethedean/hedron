@@ -9,7 +9,7 @@ difference.
 | You need… | Use | Why |
 |---|---|---|
 | Classic form POST that returns a **full page** (redirect or confirmation `Page`) | `@app.action("/…")` | Simplest CSRF-safe mutation; optional `fragment_regions` if HTMX also targets a region |
-| HTMX POST that swaps a **declared region** / returns `InteractionResult` | `@app.action("/…", fragment_regions=(…,))` **or** `@app.component("/…", methods=["POST"], fragment_regions=(…,))` | Both accept region allowlists; prefer `action` for mutations |
+| HTMX POST that swaps a **declared region** / returns `InteractionResult` | `@app.action("/…", fragment_regions=(…,))` | Canonical mutation route with a region allowlist |
 | DELETE/PUT with CSRF and a fragment body | `@app.action(..., method="DELETE", fragment_regions=…)` **or** `@component(..., methods=["DELETE"], fragment_regions=…)` | Same allowlist contract |
 
 `@action` **does** accept `fragment_regions`. Declare the swap host so HTMX `HX-Target`
@@ -74,7 +74,7 @@ is authorized (fail-closed 403 otherwise).
         )
 
 
-    @app.component("/save", methods=["POST"], fragment_regions=(result,))
+    @app.action("/save", method="POST", fragment_regions=(result,))
     def save(note: Annotated[str, Form()] = "") -> object:
         return html.div(html.strong("Saved in region"), Text(note))
     ```
@@ -99,7 +99,7 @@ from hedron import FragmentRegion, InteractionResult
 FORM = FragmentRegion(id="note-form", selector="#note-form")
 
 
-@app.component("/save", methods=["POST"], fragment_regions=(FORM,))
+@app.action("/save", method="POST", fragment_regions=(FORM,))
 def save_fragment(...) -> InteractionResult:
     return InteractionResult(content=..., region_id=FORM.id, explanation="...")
 ```

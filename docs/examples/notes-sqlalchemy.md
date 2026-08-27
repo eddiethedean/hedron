@@ -155,7 +155,7 @@ process working directory (gitignored).
 
 ## What it shows
 
-- `@app.refreshable` notes list plus `@app.command` save/delete with `FormBody` / `refresh(notes)`
+- `@app.view` notes list plus `@app.action` save/delete with `FormBody` / `refresh(notes)`
 - SQLAlchemy ORM + SQLite (`notes.db` in the process working directory)
 - HTMX fragment refresh with ordinary HTTP fallback to `/`
 

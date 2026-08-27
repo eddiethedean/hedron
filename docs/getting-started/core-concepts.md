@@ -66,7 +66,7 @@ fragment updates use `@app.view` (what `hedron new` generates).
 !!! note "Advanced — explicit region control"
 
     `@app.page` and `@app.view` are the canonical function roles. Use the explicit
-    `app.region` / `@app.fragment` API only for a custom allowlist or another distinct
+    `app.region` / `@app.view` API only for a custom allowlist or another distinct
     lower-level boundary — [Which interaction API?](interaction-apis.md).
 
 That separation matters: rendering a component never silently makes it reachable over

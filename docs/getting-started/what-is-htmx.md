@@ -103,7 +103,7 @@ def home():
 !!! note "Advanced — explicit region control"
 
     The canonical roles are `@app.page`, `@app.view`, and `@app.action`. Use the lower-level
-    `app.region` / `@app.fragment` API only when you need a distinct custom allowlist.
+    `app.region` / `@app.view` API only when you need a distinct custom allowlist.
 
 `status.refresh_button(...)` renders the browser wiring for you. Its relevant output
 is equivalent to:
@@ -120,7 +120,7 @@ is equivalent to:
 ```
 
 You can use HTMX attributes directly when you need them, but handles remove selector
-duplication from the common path. The lower-level `app.region` / `@app.fragment` API is
+duplication from the common path. The lower-level `app.region` / `@app.view` API is
 documented in [Which interaction API?](interaction-apis.md).
 
 ## The pieces to remember

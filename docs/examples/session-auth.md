@@ -131,7 +131,7 @@ Open [http://127.0.0.1:8000/login](http://127.0.0.1:8000/login). Demo: `ada` / `
 
 ## Advanced — explicit `@app.page` / Form
 
-Lower to `@app.page("/login")`, `@app.command`, `CsrfField`, and manual redirects when
+Lower to `@app.page("/login")`, `@app.action`, `CsrfField`, and manual redirects when
 ejecting. See [AUTH.md](../api/AUTH.md) and [Authentication](../guides/authentication.md).
 
 Source: [`examples/session-auth`](https://github.com/eddiethedean/hedron/tree/main/examples/session-auth).

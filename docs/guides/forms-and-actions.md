@@ -102,7 +102,7 @@ with errors. A valid submit replaces a result region with a success message.
         )
 
 
-    @app.component("/invite", methods=["POST"], fragment_regions=(form_region,))
+    @app.action("/invite", method="POST", fragment_regions=(form_region,))
     async def invite(request: Request) -> InteractionResult:
         form = await request.form()
         try:
@@ -144,7 +144,7 @@ errors; submit a longer email to see the success region.
 |---|---|
 | `FormModel` | Validated input shape for the form |
 | `Form` / `FormField` | Native progressive-enhancement form with optional HTMX attrs |
-| `@app.component(..., methods=["POST"])` | Mutation fragment route; CSRF validated by the security profile |
+| `@app.action(..., method="POST")` | Mutation route; CSRF validated by the security profile |
 | `FragmentRegion` | Allowlisted HTMX target for the response |
 | `InteractionResult` | Fragment content plus validated HTMX metadata |
 | `csrf_token_for_request` | Stable token matching the cookie for this request |
@@ -251,7 +251,7 @@ HTMX is optional. Critical mutations must succeed when the browser posts a norma
 ```python
 from fastapi.responses import RedirectResponse
 
-@app.component("/invite", methods=["POST"])
+@app.action("/invite", method="POST")
 async def invite(request: Request):
     # parse form + validate CSRF / FormModel …
     if request.headers.get("HX-Request"):

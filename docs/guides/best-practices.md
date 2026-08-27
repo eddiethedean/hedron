@@ -5,7 +5,7 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 ## Pages vs fragments
 
 - Use `@app.page` (or full `Page`) for document shells and first paint.
-- Use `@app.component` / fragment routes for HTMX swaps into declared regions.
+- Use `@app.view` routes for replaceable views and `@app.action` for HTMX mutations into declared regions.
 - Declare `FragmentRegion` allowlists when OOB or retarget is in play—do not authorize one
   `#id` and emit `hx-swap-oob` for another.
 

@@ -98,9 +98,9 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Upload a small `.txt` or `.
 - `UploadField` + `UploadBudget` (display and enforcement stay aligned)
 - Application-owned storage (no inferred filesystem layout)
 
-## Advanced — explicit `@app.command` / FileUpload
+## Advanced — explicit `@app.action` / FileUpload
 
-Lower to `FileUpload`, `Form(enctype="multipart/form-data")`, and `@app.command` when
+Lower to `FileUpload`, `Form(enctype="multipart/form-data")`, and `@app.action` when
 ejecting. See [What’s new in 0.60](../guides/whats-new-0.60.md).
 
 Source: [`examples/file-upload`](https://github.com/eddiethedean/hedron/tree/main/examples/file-upload).
