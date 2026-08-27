@@ -141,7 +141,7 @@ above for new apps.
     _NOTES: list[str] = []
 
 
-    @app.refreshable("/status")
+    @app.view("/status")
     def status():
         stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
         return html.div(
@@ -151,7 +151,7 @@ above for new apps.
         )
 
 
-    @app.refreshable("/notes-count")
+    @app.view("/notes-count")
     def notes():
         return html.div(
             Text(f"Notes saved: {len(_NOTES)}"),

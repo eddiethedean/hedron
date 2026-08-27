@@ -47,7 +47,7 @@ deploy. Hedron is **not** an identity provider.
     USERS = {"ada": "correct-horse"}
 
 
-    @app.command("/login", fallback="/login")
+    @app.action("/login", fallback="/login")
     def login(
         request: Request,
         username: str = FastAPIForm(...),
@@ -59,7 +59,7 @@ deploy. Hedron is **not** an identity provider.
         return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
-    @app.command("/logout", fallback="/login")
+    @app.action("/logout", fallback="/login")
     def logout(request: Request):
         request.session.clear()
         return RedirectResponse("/login", status_code=status.HTTP_303_SEE_OTHER)

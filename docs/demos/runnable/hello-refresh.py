@@ -11,7 +11,7 @@ app = Hedron(
 )
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
@@ -21,7 +21,7 @@ def status():
     )
 
 
-@app.command(fallback="/")
+@app.action(fallback="/")
 def ping():
     from hedron import refresh
 
