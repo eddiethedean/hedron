@@ -303,8 +303,7 @@ def test_phase_1_0_task_inventory_has_provenance_and_public_method_rows() -> Non
     rows = task_inventory["task"]
     assert isinstance(rows, list) and len(rows) >= 4000
     assert any(
-        row["kind"] == "method"
-        and row["interface"] == "hedron.app.pages.HedronPagesMixin.page"
+        row["kind"] == "method" and row["interface"] == "hedron.app.pages.HedronPagesMixin.page"
         for row in rows
     )
     assert all(
