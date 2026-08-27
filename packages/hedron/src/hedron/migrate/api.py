@@ -42,16 +42,23 @@ _SKIP_DIRS = frozenset(
 )
 _TEXT_SUFFIXES = frozenset(
     {
+        ".cfg",
+        ".conf",
+        ".env",
+        ".ini",
         ".toml",
         ".yaml",
         ".yml",
         ".json",
+        ".lock",
         ".hdj",
         ".html",
         ".htm",
         ".jinja",
         ".jinja2",
         ".md",
+        ".pyi",
+        ".txt",
     }
 )
 
@@ -519,6 +526,7 @@ def transform_api(
         targets = [(source_path, destination)]
     else:
         if output is not None:
+            destination.parent.mkdir(parents=True, exist_ok=True)
             destination.mkdir(parents=True, exist_ok=False)
         targets = [(path, destination / path.relative_to(root)) for path in files]
     changes: list[ApiMigrationChange] = []

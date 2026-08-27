@@ -99,6 +99,29 @@ def test_transform_output_is_a_complete_reviewable_tree(tmp_path: Path) -> None:
     assert (output / "README.md").read_text(encoding="utf-8") == "unchanged project notes\n"
 
 
+def test_transform_output_creates_nested_destination_parent(tmp_path: Path) -> None:
+    source = tmp_path / "project"
+    source.mkdir()
+    (source / "app.py").write_text("app.include_feature(bundle)\n", encoding="utf-8")
+    output = tmp_path / "artifacts" / "migrated"
+
+    transform_api(source, output=output)
+
+    assert (output / "app.py").read_text(encoding="utf-8") == "app.include(bundle)\n"
+
+
+@pytest.mark.parametrize("suffix", [".pyi", ".ini", ".cfg", ".conf", ".env", ".lock"])
+def test_scan_covers_project_text_artifact_suffixes(tmp_path: Path, suffix: str) -> None:
+    source = tmp_path / f"settings{suffix}"
+    source.write_text("app.include_feature(bundle)\n", encoding="utf-8")
+
+    findings = scan_api(source).findings
+
+    assert len(findings) == 1
+    assert findings[0].kind == "text"
+    assert findings[0].old_path == "app.include_feature"
+
+
 def test_json_is_stable_and_advertises_schema(tmp_path: Path) -> None:
     source = tmp_path / "app.py"
     source.write_text("@app.component('/')\ndef old(): pass\n", encoding="utf-8")
