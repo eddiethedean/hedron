@@ -108,6 +108,33 @@ def test_canonical_fixture_type_checks_without_errors() -> None:
     assert result.returncode == 0, result.stdout + result.stderr
 
 
+def test_canonical_outcome_handlers_lower_expected_roles() -> None:
+    path = ROOT / "canonical" / "app.py"
+    spec = importlib.util.spec_from_file_location("hedron_phase_1_outcomes", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    client = TestClient(module.app)
+    client.get("/")
+    token = client.cookies.get("hedron_csrf", "")
+    headers = {"HX-Request": "true", "X-CSRF-Token": token}
+    expected = {
+        "no-content": 204,
+        "refresh": 200,
+        "patch": 200,
+        "redirect": 200,
+        "job": 202,
+        "validation": 422,
+        "conflict": 409,
+        "download": 200,
+    }
+    for name, status in expected.items():
+        response = client.post(f"/outcomes/{name}", headers=headers)
+        assert response.status_code == status, name
+    assert client.post("/ping", headers=headers).status_code == 200
+    assert client.post("/outcomes/patch", headers=headers).json()["role"] == "patch"
+
+
 def test_canonical_hdj_fixture_parses_without_legacy_forms() -> None:
     from hedron_jinja.source import parse_hdj_source
 

@@ -6,7 +6,7 @@
   "source_commit": "c0dce113",
   "canonical_fixture": {
     "command": ".venv/bin/python -m pytest -n 0 tests/upgrade/test_phase_1_0_fixtures.py",
-    "result": "7 passed, 1 warning",
+    "result": "9 passed, 1 warning",
     "environment": "immutable v0.67 source snapshot plus current v1.0.0 checkout"
   },
   "baseline_build": {
@@ -26,6 +26,17 @@
       "interaction_marker": true,
       "local_interaction_marker": true,
       "combined_interaction_marker": true,
+      "outcomes": {
+        "ping": {"status": 200, "role": null, "refresh": false, "redirect": null, "job": null, "download": null},
+        "no-content": {"status": 204, "role": null, "refresh": false, "redirect": null, "job": null, "download": null},
+        "refresh": {"status": 200, "role": null, "refresh": true, "redirect": null, "job": null, "download": null},
+        "patch": {"status": 200, "role": "patch", "refresh": false, "redirect": null, "job": null, "download": null},
+        "redirect": {"status": 200, "role": null, "refresh": false, "redirect": "/status", "job": null, "download": null},
+        "job": {"status": 202, "role": null, "refresh": false, "redirect": null, "job": "job-1", "download": null},
+        "validation": {"status": 422, "role": "validation", "refresh": false, "redirect": null, "job": null, "download": null},
+        "conflict": {"status": 409, "role": "conflict", "refresh": false, "redirect": null, "job": null, "download": null},
+        "download": {"status": 200, "role": null, "refresh": false, "redirect": null, "job": null, "download": "/download/report.csv"}
+      },
       "hdj_format_version": 1,
       "hdj_kind": "fragment"
     },
