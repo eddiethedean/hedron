@@ -196,7 +196,7 @@ class MapInteraction:
                 HED_BUNDLE_0007,
                 "MapInteraction.command must be a registered ActionHandle",
                 "Event payloads are untrusted Pydantic input to a registered command.",
-                "Register the command with @app.command before composing MapInteraction.",
+                "Register the command with @app.action before composing MapInteraction.",
             )
 
     def to_bundle(self) -> FeatureBundle:
@@ -259,7 +259,7 @@ class MapInteraction:
                 return result
 
             on_map_event.__annotations__ = {"payload": payload_type, "return": object}
-            return app.command(  # type: ignore[union-attr]
+            return app.action(  # type: ignore[union-attr]
                 path,
                 name=f"{ident}-{event}",
             )(on_map_event)

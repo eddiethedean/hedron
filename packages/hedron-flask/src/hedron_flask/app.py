@@ -154,7 +154,7 @@ class HedronFlask:
 
         return decorator
 
-    def component(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def _view_route(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("GET",)))
@@ -164,7 +164,7 @@ class HedronFlask:
 
         def decorator(view: Callable[P, R]) -> Callable[P, R]:
             if self.flask is None:
-                raise RuntimeError("HedronFlask.init_app(app) must be called before component()")
+                raise RuntimeError("HedronFlask.init_app(app) must be called before view()")
             wrapped = wrap_hedron_view(
                 view,
                 require_csrf=require_csrf,
@@ -182,11 +182,10 @@ class HedronFlask:
         """Register the canonical replaceable view route.
 
         Flask has no separate response type for a fragment, so the adapter's
-        canonical ``view`` surface shares the component response lowering while
-        keeping ``page`` available for full-document routes.  ``component`` is
-        retained as the 0.67 compatibility spelling.
+        canonical ``view`` surface shares the fragment response lowering while
+        keeping ``page`` available for full-document routes.
         """
-        return self.component(rule, **options)
+        return self._view_route(rule, **options)
 
     def action(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         from hedron_flask.blueprint import wrap_hedron_view

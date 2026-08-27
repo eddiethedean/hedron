@@ -1,4 +1,4 @@
-"""Form-command facade: inject ``FormBody`` and lower to ``@app.command``."""
+"""Form-action facade: inject ``FormBody`` and lower to ``@app.action``."""
 
 from __future__ import annotations
 
@@ -182,7 +182,7 @@ def form_command(
     controls: Mapping[str, Control | NodeLike] | None = None,
     dependencies: Sequence[object] | None = None,
 ) -> Callable[[Callable[P, R]], ActionHandle[Any, Any]]:
-    """Decorator factory that discovers a form model and registers via ``app.command``."""
+    """Decorator factory that discovers a form model and registers via ``app.action``."""
     if not is_local_path(str(fallback)):
         raise error(
             HED_SEC_0001,
@@ -213,13 +213,12 @@ def form_command(
         if outcomes is not None and getattr(annotated, "__hedron_outcomes__", None) is None:
             setattr(annotated, "__hedron_outcomes__", outcomes)  # noqa: B010
 
-        register = app.command(  # type: ignore[attr-defined]
+        register = app.action(  # type: ignore[attr-defined]
             path,
             name=name,
             fallback=fallback,
             dependencies=dependencies,
             outcomes=outcomes,
-            _emit_legacy_warning=False,
         )
         handle = register(annotated)
         if controls:

@@ -67,7 +67,7 @@ def home() -> Page:
     )
 
 
-@app.component("/status", fragment_regions=(PANEL,))
+@app.view("/status", fragment_regions=(PANEL,))
 def status() -> InteractionResult:
     return InteractionResult(
         content=panel_body(),

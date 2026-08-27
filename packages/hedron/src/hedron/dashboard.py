@@ -32,15 +32,14 @@ DashboardHistory = Literal["replace", "push", "none"]
 class _DashboardApp(Protocol):
     """Minimal Hedron host surface for dashboard materialization."""
 
-    def screen(
+    def page(
         self,
         path: str,
         *,
-        title: str,
         name: str | None = None,
     ) -> Callable[[Callable[..., object]], object]: ...
 
-    def refreshable(
+    def view(
         self,
         path: str,
         *,
@@ -48,7 +47,7 @@ class _DashboardApp(Protocol):
         cache: CacheHint | None = None,
     ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
 
-    def command(
+    def action(
         self,
         path: str,
         *,
@@ -207,7 +206,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
 
                     defaults = workspace.filters()
 
-                    @app.refreshable(
+                    @app.view(
                         ppath,
                         name=f"{workspace.name}-panel-{pname}",
                         cache=None if workspace.cache is None else workspace.cache.hint,
@@ -281,7 +280,7 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
 
             workspace.filter_form = filter_handle
 
-            @app.screen(workspace.path, title=workspace.title, name=workspace.name)
+            @app.page(workspace.path, name=workspace.name)
             def dashboard_screen() -> object:
                 nodes: list[NodeLike] = [
                     PageHeader(workspace.title),
@@ -295,7 +294,9 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                             nodes.append(Text(pname))
                     else:
                         nodes.append(Text(pname))
-                return Stack(*nodes)
+                from hedron import Page
+
+                return Page(Stack(*nodes), title=workspace.title)
 
             workspace.screen = dashboard_screen
             return dashboard_screen

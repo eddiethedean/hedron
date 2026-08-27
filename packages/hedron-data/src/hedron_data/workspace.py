@@ -56,31 +56,22 @@ class FeatureOverrides:
 
 
 class _WorkspaceApp(Protocol):
-    """Minimal host surface used by workspace factories (Hedron.refreshable/command)."""
+    """Minimal host surface used by workspace factories."""
 
-    def refreshable(
+    def view(
         self,
         path: str,
         *,
         name: str | None = None,
     ) -> Callable[[Callable[..., object]], FragmentHandle[Any, Any]]: ...
 
-    def command(
+    def action(
         self,
         path: str,
         *,
         name: str | None = None,
         fallback: str | None = None,
     ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
-
-    def screen(
-        self,
-        path: str,
-        *,
-        title: str,
-        name: str | None = None,
-        layout: str = "stack",
-    ) -> Callable[[Callable[..., object]], object]: ...
 
     def page(
         self,
@@ -217,7 +208,7 @@ class DataWorkspace(Generic[ModelT]):
 
         Returns ``self`` after storing screen metadata. When the workspace is
         included on a FastAPI ``Hedron`` host, ``to_bundle()`` also registers a
-        screen/page at ``path`` when the host exposes ``app.screen``.
+        screen/page at ``path`` through the canonical ``app.page`` surface.
         """
         if not path or not str(path).startswith("/"):
             raise _error(
@@ -425,7 +416,7 @@ class DataWorkspace(Generic[ModelT]):
             from hedron import ViewParams
 
             if workspace.list_override is not None:
-                handle = app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")(
+                handle = app.view(f"/{workspace.name}", name=f"{workspace.name}-list")(
                     workspace.list_override
                 )
                 workspace.list_view = handle
@@ -434,7 +425,7 @@ class DataWorkspace(Generic[ModelT]):
             list_query = workspace._list_query_model()
             list_defaults = list_query()
 
-            @app.refreshable(f"/{workspace.name}", name=f"{workspace.name}-list")
+            @app.view(f"/{workspace.name}", name=f"{workspace.name}-list")
             def list_view(
                 # Runtime pydantic model from create_model; not a static type expression.
                 params: Annotated[list_query, ViewParams(source="query")] = list_defaults,  # type: ignore[valid-type]
@@ -466,14 +457,14 @@ class DataWorkspace(Generic[ModelT]):
 
             identity = workspace._identity_model()
             if workspace.detail_override is not None:
-                handle = app.refreshable(
+                handle = app.view(
                     f"/{workspace.name}/{{{workspace.key_field}}}",
                     name=f"{workspace.name}-detail",
                 )(workspace.detail_override)
                 workspace.detail_view = handle
                 return handle
 
-            @app.refreshable(
+            @app.view(
                 f"/{workspace.name}/{{{workspace.key_field}}}",
                 name=f"{workspace.name}-detail",
             )
@@ -505,7 +496,7 @@ class DataWorkspace(Generic[ModelT]):
             from hedron import FormBody, Text, refresh
 
             if workspace.create_override is not None:
-                handle = app.command(
+                handle = app.action(
                     f"/{workspace.name}/create",
                     name=f"{workspace.name}-create",
                     fallback=f"/{workspace.name}",
@@ -514,7 +505,7 @@ class DataWorkspace(Generic[ModelT]):
                 workspace._attach_form_overrides(handle)
                 return handle
 
-            @app.command(
+            @app.action(
                 f"/{workspace.name}/create",
                 name=f"{workspace.name}-create",
                 fallback=f"/{workspace.name}",
@@ -547,7 +538,7 @@ class DataWorkspace(Generic[ModelT]):
             from hedron import FormBody, Text, refresh
 
             if workspace.edit_override is not None:
-                handle = app.command(
+                handle = app.action(
                     f"/{workspace.name}/edit",
                     name=f"{workspace.name}-edit",
                     fallback=f"/{workspace.name}",
@@ -566,7 +557,7 @@ class DataWorkspace(Generic[ModelT]):
             else:
                 EditModel = workspace.edit_model
 
-            @app.command(
+            @app.action(
                 f"/{workspace.name}/edit",
                 name=f"{workspace.name}-edit",
                 fallback=f"/{workspace.name}",
@@ -634,44 +625,18 @@ class DataWorkspace(Generic[ModelT]):
                 tagged: Any = lambda: None  # noqa: E731
                 tagged.logical_id = f"{workspace.name}-screen-unset"
                 return tagged
-            if not callable(getattr(app, "screen", None)):
-                # Host without screen facade: fall back to page when available.
-                if not callable(getattr(app, "page", None)):
-                    tagged = lambda: None  # noqa: E731
-                    tagged.logical_id = f"{workspace.name}-screen"
-                    tagged.path = str(meta["path"])
-                    return tagged
 
-                @app.page(str(meta["path"]), name=str(meta["name"]))
-                def screen_page() -> object:
-                    from hedron import Text
-                    from hedron_core.builtins.document import Page
-                    from hedron_core.component import NodeLike
-
-                    nodes: list[NodeLike] = [Text(str(meta["title"]))]
-                    if workspace.list_view is not None:
-                        with contextlib.suppress(Exception):
-                            nodes.append(workspace.list_view())
-                    return Page(*nodes, title=str(meta["title"]))
-
-                workspace.screen = screen_page
-                return screen_page
-
-            @app.screen(
-                str(meta["path"]),
-                title=str(meta["title"]),
-                name=str(meta["name"]),
-                layout=str(meta["layout"]),  # type: ignore[arg-type]
-            )
+            @app.page(str(meta["path"]), name=str(meta["name"]))
             def workspace_screen() -> object:
-                from hedron import Stack, Text
+                from hedron import Page, Stack, Text
                 from hedron_core.component import NodeLike
 
                 nodes: list[NodeLike] = [Text(str(meta["title"]))]
                 if workspace.list_view is not None:
                     with contextlib.suppress(Exception):
                         nodes.append(workspace.list_view())
-                return Stack(*nodes)
+                content: NodeLike = Stack(*nodes)
+                return Page(content, title=str(meta["title"]))
 
             workspace.screen = workspace_screen
             return workspace_screen

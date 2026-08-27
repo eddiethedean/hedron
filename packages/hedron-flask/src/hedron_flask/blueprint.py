@@ -204,7 +204,7 @@ class HedronBlueprint(Blueprint):
 
         return decorator
 
-    def component(
+    def _view_route(
         self,
         rule: str,
         *,
@@ -247,11 +247,11 @@ class HedronBlueprint(Blueprint):
     ) -> Callable[[F], F]:
         """Register the canonical replaceable view route.
 
-        A Flask response is lowered identically for component and view routes;
-        this explicit alias gives adapter applications the same canonical task
-        vocabulary as FastAPI while ``component`` remains a migration spelling.
+        A Flask response is lowered identically for fragment and view routes;
+        this explicit canonical surface gives adapter applications the same task
+        vocabulary as FastAPI.
         """
-        return self.component(
+        return self._view_route(
             rule,
             endpoint=endpoint,
             methods=methods,
