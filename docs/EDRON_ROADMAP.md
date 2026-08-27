@@ -4,8 +4,8 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `0.5.0` implemented in-tree (publication pending); `edron-v0.4.0` is the latest in-tree tag and `edron-v0.3.0` remains the latest published release<br>
-**Edron release line:** `0.3` data editing and workspace ergonomics<br>
+**Status:** Edron `0.6.0` implemented and tagged in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
+**Edron release line:** `0.6` reusable composition and capability promotion<br>
 **Latest release:** Edron `0.3.0`; compatible Hedron train `0.66.x`<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 0.3 data workspaces](api/EDRON_03.md)<br>
@@ -31,8 +31,8 @@ countdown or commitment to `1.0`.
 | **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | **Published** (`edron-v0.3.0`; Beta) |
 | **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | **Tagged** (`edron-v0.4.0`; publication pending) |
 | **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | **Implemented in-tree; unreleased Beta** |
-| **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | **Implemented in-tree; unreleased Beta** |
-| **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | Candidate after `0.6` |
+| **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | **Tagged** (`edron-v0.6.0`; publication pending) |
+| **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Refined implementation candidate; no availability claim** |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | Candidate after `0.7` |
 | **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation | Candidate after `0.8` |
 
@@ -321,19 +321,94 @@ state, or a new worker/deployment runtime.
 
 ## Phase 0.7 — migration and adoption tooling
 
-Phase `0.7` may extend the existing reviewable Streamlit migration work with Edron as an output
-target.
+Phase `0.7` is a refined implementation candidate, not an availability claim. It may begin only
+after the `0.6` acceptance packet is closed and the reviewable migration contracts from
+[RFC-0061](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0061-STREAMLIT-AST-MIGRATOR.md) are reconciled with Edron's class, request,
+state, package, and capability vocabulary. Edron is an output target for migration assistance;
+the existing Hedron migrator remains a separate tool and authority.
 
-Candidate scope:
+### Proposed contract
 
-- conservative AST analysis that never imports or executes untrusted source;
-- generated Edron scaffolds with source mappings and explicit unresolved findings;
-- vocabulary, state-owner, interaction, styling, and dependency migration reports;
-- codemods for accepted Edron API changes; and
-- side-by-side Streamlit, Edron, and native Hedron teaching examples.
+| Workstream | Candidate outcome | Native owner and required evidence |
+|---|---|---|
+| `ANALYZE-07` static source analysis | A bounded AST analyzer accepts a Streamlit entrypoint or project, resolves only local modules beneath an explicit project root, and never imports, executes, opens application paths, or contacts a network | `hedron-core` diagnostics and source-location contracts; file/byte/node/import/time limits, symlink containment, malformed-source, and no-execution fixtures |
+| `MAP-07` migration catalog | A versioned, inspectable mapping catalog translates a locked Streamlit subset to Edron pages, layouts, controls, fragments, actions, data, charts, and media with `translated`, `scaffolded`, `report_only`, or `unsupported` dispositions | RFC-0061 mapping registry and Edron public API; no-drop coverage, version-boundary, alias, dynamic-symbol, and unknown-API evidence |
+| `GENERATE-07` Edron scaffold | `edron migrate streamlit SOURCE --out DIR` creates a fresh Edron project with bounded pins, secure defaults, tests, `REVIEW.md`, report JSON, and source maps; generated code is reviewable and never overwrites source or a non-empty destination | Edron scaffolds and native package metadata; atomic output, path redaction, secret absence, import isolation, wheel/sdist, and clean-consumer fixtures |
+| `OWNERSHIP-07` state and side-effect plan | Reports identify widget dependencies, callbacks, rerun/stop flow, cache/resource use, files, secrets, auth, custom components, and writes, then recommend URL, request/form, session, cache, resource, browser, or durable owners | Edron state/interaction and native security/lifecycle contracts; control-flow, mutation, authorization, tenancy, and explicit-manual-decision fixtures |
+| `CODEMOD-07` safe codemods | Opt-in codemods apply only accepted, semantics-preserving Edron API changes to generated or Edron-owned source, with a preview/diff, idempotency, source maps, and refusal on ambiguity | Python AST/CST boundary and Edron compatibility policy; no-source-mutation, formatting, comments, import, idempotency, and unsafe-pattern fixtures |
+| `REPORT-07` adoption reports | Text, deterministic JSON, and shared SARIF reports summarize coverage, unresolved decisions, dependencies, risk, and next actions; thresholds are usable in local development and CI | Native diagnostics/SARIF adapter; stable codes, redaction, bounded output, schema/version negotiation, and terminal/Markdown injection tests |
+| `EXAMPLES-07` migration teaching kit | Side-by-side Streamlit, Edron, and native Hedron examples cover a read-only dashboard, validated filters, an explicit write, data workspace, and a long-running job, each with outcome tests and a cutover note | Edron golden applications and migration guide; fixture parity, accessibility, no-JavaScript, HTTP, and deployment-review evidence |
 
-Generated code requires review. This phase does not promise one-for-one behavior, accept
-`import edron as st`, emulate Streamlit reruns, or hide incompatible state and mutation semantics.
+The beginner-facing workflow is deliberately two-stage: analyze first, then generate into a new
+directory. The report is the authority on what was translated and what still needs a developer
+decision. Edron may reuse the RFC-0061 migration IR and mapping evidence where compatible, but it
+must not create a second analyzer, silently fork mapping semantics, or present a clean report as
+behavioral equivalence.
+
+### Supported first slice
+
+The first Supported catalog is intentionally narrow:
+
+- titles, headings, text, safe Markdown, metrics, ordinary tables, and bounded dataframes;
+- columns, containers, sidebar, tabs, and expanders when semantic order is reviewable;
+- simple select, multiselect, slider, checkbox, text, number, and date controls as validated GET
+  inputs, with POST forms only where mutation evidence requires them;
+- `st.form` and submit buttons as explicit Edron forms/actions with CSRF and validation review;
+- statically declared pages/navigation and common first-party charts with accessible alternatives;
+- direct mapping of framework-free calculations, Pydantic models, data access, and domain services;
+  and
+- report-only findings for dynamic imports, custom components, raw HTML, uploads/downloads,
+  authentication, secrets, external services, rerun/stop flow, and ambiguous state ownership.
+
+No mapping may infer authorization, turn arbitrary HTML trusted, copy `st.session_state` into one
+global dictionary, or claim that a cache is durable state. A generated action with unresolved
+mutation findings must be unreachable or fail closed until reviewed.
+
+### Bounds and ownership
+
+- The source is untrusted text. Analysis is bounded by file count, bytes, AST nodes, import depth,
+  recursion depth, and elapsed time; local resolution cannot escape the project root through paths
+  or symlinks.
+- The source application is read-only. Generation writes only to an absent or empty destination
+  through an atomic staging process and never copies secrets, absolute machine paths, or source
+  files into generated output.
+- Every recognized call receives a disposition and stable source span. Unsupported or ambiguous
+  constructs produce findings rather than speculative code or silent drops.
+- Generated Edron code uses public APIs, explicit routes, request/form boundaries, safe defaults,
+  and the current compatible package train. It does not import Streamlit at runtime or add a
+  compatibility shim, rerun engine, second state store, or client runtime.
+- Codemods are opt-in and reviewable. They may change only accepted Edron-owned syntax; ambiguous,
+  dynamic, or framework-semantic changes are refused with a source-mapped finding.
+- Applications retain ownership of domain logic, authorization, tenancy, persistence, transactions,
+  secrets, files, external services, deployment, and cutover. Migration output is a proposal, not a
+  deployment authorization or equivalence certificate.
+
+### Entry and exit gates
+
+Phase `0.7` implementation entry requires the [Edron 0.7 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_007.md)
+and [machine-readable phase gates](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/edron-phase07.toml), plus closure of the `0.6`
+release evidence. Release exit requires, at minimum:
+
+1. bounded analysis proves no source import/execution, no path/network access, project-root
+   containment, deterministic limits, and actionable refusal diagnostics;
+2. the versioned mapping catalog covers every recognized call with no-drop dispositions and agrees
+   with the maintained Streamlit migration matrix and RFC-0061 compatibility window;
+3. generated Edron projects use public APIs and secure pins, contain report/source-map/review/test
+   artifacts, refuse overwrite, preserve source bytes, and contain no Streamlit runtime dependency;
+4. state, side-effect, dependency, styling, accessibility, and hosting decisions are surfaced as
+   stable findings rather than hidden in generated code;
+5. codemods provide preview/diff, idempotency, source provenance, and fail closed on ambiguity or
+   unsafe framework semantics;
+6. text/JSON/SARIF reports are redacted, bounded, schema-versioned, deterministic, and thresholdable
+   in CI;
+7. side-by-side examples pass outcome, HTTP, accessibility, no-JavaScript, package, and upgrade
+   fixtures; and
+8. the complete Edron `0.6` regression suite plus the phase `0.7` migration, adversarial, and clean
+   consumer suites pass before an `edron-v0.7.0` tag is considered.
+
+The phase does not promise one-for-one Streamlit behavior, accept `import edron as st`, emulate
+Streamlit reruns, auto-extract `domain.py`, execute an AI converter, rewrite in place, or hide
+incompatible state, mutation, security, accessibility, or deployment semantics.
 
 ## Phase 0.8 — deployment and host integration
 

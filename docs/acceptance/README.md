@@ -35,6 +35,10 @@ status commentary, not a satisfied release gate.
   complete; publication pending**; see the [phase gates](edron-phase06.toml). Reusable composition,
   navigation/layout, capability promotion, mixed-surface evidence, and package depth remain
   projections owned by native Hedron authorities.
+- [Edron `0.7.0` acceptance packet](EDRON_007.md) — **Refined implementation candidate; no
+  availability claim**; see the [phase gates](edron-phase07.toml). Migration analysis, Edron
+  generation, codemods, reports, and examples remain reviewable tooling; no Streamlit compatibility
+  runtime or behavioral-equivalence claim is introduced.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)
