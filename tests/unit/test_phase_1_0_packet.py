@@ -257,6 +257,23 @@ def test_phase_1_0_inventory_generator_reads_immutable_baseline(tmp_path: Path) 
     assert 'maturity = "stable"' in stable_text
 
 
+def test_phase_1_0_inventories_have_explicit_classification() -> None:
+    public = _toml("docs/acceptance/public-inventory-100.toml")
+    stable = _toml("docs/acceptance/stable-inventory-100.toml")
+    surfaces = public["surface"]
+    artifacts = public["artifact"]
+    symbols = stable["symbol"]
+    assert isinstance(surfaces, list) and surfaces
+    assert isinstance(artifacts, list) and artifacts
+    assert isinstance(symbols, list) and symbols
+    assert len(surfaces) == len(symbols)
+    assert all(row["owner"] and row["maturity"] != "unclassified" for row in surfaces)
+    assert all(row["owner"] and row["disposition"] != "unclassified" for row in artifacts)
+    assert {row["canonical"] for row in surfaces} == {
+        row["qualified"] for row in symbols
+    }
+
+
 def test_phase_1_0_compatibility_report_retains_baseline_bridge_probe() -> None:
     report = json.loads(
         (ROOT / "docs/acceptance/compatibility-report-100/local-bridge.json").read_text(
