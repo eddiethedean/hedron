@@ -661,6 +661,8 @@ def check_plan() -> list[str]:
             "TYPE-100",
             "QUALITY-100",
             "BROWSER-100",
+            "BROWSER-FIREFOX-100",
+            "BROWSER-WEBKIT-100",
             "BUILD-100",
             "REGRESS-100",
             "RELEASE-100",
