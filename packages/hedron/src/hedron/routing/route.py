@@ -34,7 +34,12 @@ from hedron_core.interaction import FragmentRegion, FragmentRegionError, Interac
 from hedron_core.interaction_067 import Outcome, OutcomeKind
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
-from hedron_core.updates import list_handle_descriptors, refresh_event_name, safe_dom_id
+from hedron_core.updates import (
+    list_handle_descriptors,
+    matches_declared_host,
+    refresh_event_name,
+    safe_dom_id,
+)
 
 _logger = logging.getLogger("hedron.routing.route")
 
@@ -313,7 +318,24 @@ class HedronRoute(APIRoute):
             for raw_handle in handles:
                 if not isinstance(raw_handle, str):
                     raise TypeError("refresh outcome handles must be strings")
-                descriptor = by_name.get(raw_handle.strip())
+                candidate = raw_handle.strip()
+                descriptor = by_name.get(candidate)
+                dom_id = safe_dom_id(descriptor.logical_id) if descriptor else ""
+                if descriptor is None:
+                    # Bound view handles carry a validated instance suffix. Do
+                    # not accept arbitrary lookalike ids or allow command
+                    # handles to become refresh targets.
+                    for view in descriptors:
+                        if view.kind != "view":
+                            continue
+                        base = safe_dom_id(view.logical_id)
+                        if candidate == base or not candidate.startswith(f"{base}-"):
+                            continue
+                        region = FragmentRegion(id=base, selector=f"#{base}")
+                        if matches_declared_host(region, f"#{candidate}"):
+                            descriptor = view
+                            dom_id = candidate
+                            break
                 if descriptor is None:
                     from fastapi import HTTPException
 
@@ -324,7 +346,6 @@ class HedronRoute(APIRoute):
                             "is not an owned view handle."
                         ),
                     )
-                dom_id = safe_dom_id(descriptor.logical_id)
                 events[refresh_event_name(dom_id)] = {}
                 regions.append(FragmentRegion(id=dom_id, selector=f"#{dom_id}"))
             return await render_interaction(

@@ -157,13 +157,15 @@ def test_phase_1_0_refresh_outcome_targets_owned_view_without_full_reload() -> N
     def status():
         return Text("ready")
 
+    bound_status = status.bind()
+
     @app.action("/refresh")
     def refresh_status() -> Outcome:
-        return Outcome.refresh(status)
+        return Outcome.refresh(bound_status)
 
     @app.page("/")
     def home():
-        return Page(status(), title="Home")
+        return Page(bound_status(), title="Home")
 
     client = TestClient(app)
     token = client.get("/").cookies.get("hedron_csrf")
@@ -174,7 +176,9 @@ def test_phase_1_0_refresh_outcome_targets_owned_view_without_full_reload() -> N
 
     assert response.status_code == 200
     assert response.headers.get("HX-Refresh") in {None, ""}
-    assert response.headers.get("HX-Trigger") == '{"hedron:refresh-h-view-status": {}}'
+    assert response.headers.get("HX-Trigger") == (
+        f'{{"hedron:refresh-{bound_status.dom_id}": {{}}}}'
+    )
 
 
 def test_phase_1_0_refresh_outcome_rejects_unknown_target() -> None:
