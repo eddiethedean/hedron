@@ -21,6 +21,11 @@ The packet is internally verifiable with `python scripts/check_100.py --check-pl
 validates implementation metadata and planning honesty; it does not verify any Planned release
 gate or authorize publication.
 
+The immutable Stage-0 inventory includes the export/artifact catalogs, the stable inventory, and
+the AST-derived [`task-inventory-100.toml`](task-inventory-100.toml) graph of public classes,
+functions, methods, source lines, and signatures. These generated records identify the review
+scope; they do not promote a task into the stable SemVer promise without gate evidence.
+
 ## Entry decision
 
 The predecessor requirement is satisfied: `v0.67.0` is implemented and its release gate is
