@@ -1,0 +1,51 @@
+{
+  "schema": "hedron.verification-evidence/1",
+  "phase": "1.0",
+  "target": "v1.0.0",
+  "source_commit": "41e89d273c9ba7dd72f1f71a44bb4f50e2d89f66",
+  "retained_command_output": false,
+  "checks": [
+    {
+      "id": "PHASE-100-UNIT",
+      "command": ".venv/bin/pytest -q tests/unit/test_phase_1_0_packet.py tests/unit/test_docs_train_ssot.py tests/unit/test_quality_upgrade_phase1.py tests/upgrade/test_phase_1_0_fixtures.py tests/unit/test_migrate_api_100.py tests/unit/test_cli_check_compat.py --tb=short",
+      "status": "passed",
+      "summary": "89 passed, 10 warnings"
+    },
+    {
+      "id": "BRIDGE-100",
+      "command": ".venv/bin/python scripts/check_upgrade_100.py --baseline v0.67.0 --json",
+      "status": "passed",
+      "summary": "immutable baseline and current canonical Python/HDJ/HTTP probes matched"
+    },
+    {
+      "id": "QUALITY-100",
+      "command": "bash scripts/ci_checks.sh quality --python 3.11 --skip-wheels",
+      "status": "passed",
+      "summary": "Ruff, Pyright (0 errors), core-neutral, docs, and package verification passed"
+    },
+    {
+      "id": "BROWSER-100",
+      "command": "bash scripts/ci_checks.sh browser --python 3.11",
+      "status": "passed",
+      "summary": "115 passed, 52 skipped, 3779 deselected"
+    },
+    {
+      "id": "BUILD-100",
+      "command": "SOURCE_DATE_EPOCH=0 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages (repeated twice)",
+      "status": "passed",
+      "summary": "24 coordinated 1.0.0 artifacts matched byte-for-byte"
+    },
+    {
+      "id": "REGRESS-100",
+      "command": ".venv/bin/pytest -q --tb=short -n 0",
+      "status": "blocked",
+      "summary": "3500 passed, 171 skipped, 275 historical 0.x failures; legacy tests still invoke removed aliases"
+    },
+    {
+      "id": "RELEASE-100",
+      "command": ".venv/bin/python scripts/check_100.py --gate ENTRY-100 --verify --json",
+      "status": "blocked",
+      "summary": "release verification is fail-closed while 1.0 gate rows remain Planned"
+    }
+  ]
+}

@@ -369,6 +369,19 @@ def test_phase_1_0_local_build_evidence_is_reproducible_but_not_release_claim() 
     assert len(evidence["artifacts"]) == 24
 
 
+def test_phase_1_0_verification_ledger_is_explicit_about_green_and_blocked_checks() -> None:
+    ledger = json.loads(
+        (ROOT / "docs/acceptance/compatibility-report-100/verification-100.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert ledger["schema"] == "hedron.verification-evidence/1"
+    checks = {row["id"]: row for row in ledger["checks"]}
+    assert checks["BROWSER-100"]["status"] == "passed"
+    assert checks["REGRESS-100"]["status"] == "blocked"
+    assert checks["RELEASE-100"]["status"] == "blocked"
+
+
 def test_phase_1_0_checker_validates_coordinated_and_satellite_metadata() -> None:
     from scripts.check_100 import _check_package_metadata
 
