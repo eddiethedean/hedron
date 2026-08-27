@@ -1,6 +1,6 @@
 schema = "edron.phase-acceptance/1"
 phase = "0.9"
-status = "Candidate"
+status = "Implemented"
 package = "edron"
 version = "0.9.0"
 required_predecessor = "edron-v0.8.0"
@@ -26,70 +26,70 @@ forbidden_compatibility_paths = [
 
 [[gate]]
 id = "EDR-09-TRAIN"
-state = "Planned"
+state = "Implemented"
 evidence = "Edron 0.9 metadata bounds; uv.lock resolving Hedron 0.67.0; clean install; wheel/sdist Requires-Dist; exact source and artifact fingerprints"
 
 [[gate]]
 id = "EDR-09-NATIVE"
-state = "Planned"
+state = "Implemented"
 evidence = "native application/interaction/outcome/lifecycle/asset/component identity; lowering; ejection; import-order; and warning fixtures against Hedron 0.67.0"
 
 [[gate]]
 id = "EDR-09-BROWSER"
-state = "Planned"
+state = "Implemented"
 evidence = "demand-driven Alpine/CSP plan; local assets and integrity; initial/reachable fragment closure; feature-off zero-cost; HTMX lifecycle; and component-engine dispositions"
 
 [[gate]]
 id = "EDR-09-CLEAN-067"
-state = "Planned"
+state = "Implemented"
 evidence = "forbidden compatibility-path scan across Edron imports, runtime lowering, generated projects, examples, docs, package metadata, and browser assets; migration-only warning fixtures"
 
 [[gate]]
 id = "EDR-09-MATURITY"
-state = "Planned"
+state = "Implemented"
 evidence = "symbol-level public/internal inventory; maturity and owner records; stable-promotion review; typed signatures; and generated/import surface checks"
 
 [[gate]]
 id = "EDR-09-COMPAT"
-state = "Planned"
+state = "Implemented"
 evidence = "Python/Edron/Hedron 0.67/adapters/browser/host matrix plus a Hedron 1.0 forward-compatibility matrix once released; unsupported-range labels; clean environments; import order; and lock consistency"
 
 [[gate]]
 id = "EDR-09-DEPRECATION"
-state = "Planned"
+state = "Implemented"
 evidence = "canonical replacement catalog; structured warning codes; first-release markers; one-intervening-minor windows; idempotent migration and removal fixtures"
 
 [[gate]]
 id = "EDR-09-PERF"
-state = "Planned"
+state = "Implemented"
 evidence = "cold/warm import, compile, render, request, asset, diagnostic, memory, wheel, and clean-install baselines with percentile thresholds"
 
 [[gate]]
 id = "EDR-09-SECURITY"
-state = "Planned"
+state = "Implemented"
 evidence = "CSP/SRI, proxy trust, redirect, cookie, CSRF, download, secret, untrusted-input, and redacted-diagnostic negative corpus"
 
 [[gate]]
 id = "EDR-09-A11Y"
-state = "Planned"
+state = "Implemented"
 evidence = "semantic HTML; names/roles; keyboard/focus; reduced motion; contrast guidance; screen-reader review; browser fixtures; and no-JavaScript fallbacks"
 
 [[gate]]
 id = "EDR-09-PLATFORM"
-state = "Planned"
+state = "Implemented"
 evidence = "clean process, root path, worker, restart, graceful shutdown, adapter handoff, host limits, fallback, and ejection matrices"
 
 [[gate]]
 id = "EDR-09-DOCS"
-state = "Planned"
+state = "Implemented"
 evidence = "user guide, examples, API exports, diagnostics, generated projects, compatibility policy, links, and changelog agree with machine locks"
 
 [[gate]]
 id = "EDR-09-UPGRADE"
-state = "Planned"
+state = "Implemented"
 evidence = "0.8/Hedron 0.66.2 to 0.9/Hedron 0.67.0 two-version upgrade; rollback; stale assets; warnings; and application-owned migration boundaries"
 
 [[gate]]
 id = "EDR-09-REGRESSION"
-state = "Planned"
+state = "Implemented"
 evidence = "complete Edron predecessor regression plus Phase 0.9 native, browser, compatibility, performance, security, accessibility, documentation, and recovery suites"

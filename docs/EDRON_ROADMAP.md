@@ -4,9 +4,9 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `0.8.0` implemented and release-verified in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
+**Status:** Edron `0.9.0` implemented and release-verified in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
 **Edron release line:** `0.6` reusable composition and capability promotion<br>
-**Latest in-tree release:** Edron `0.8.0`; Hedron `0.66.2` (`>=0.66.2,<0.67`)<br>
+**Latest in-tree release:** Edron `0.9.0`; Hedron `0.67.0` (`>=0.67.0,<0.68`)<br>
 **Latest published release:** Edron `0.3.0`; the `0.9.0` target train is Hedron `0.67.0`<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 0.3 data workspaces](api/EDRON_03.md)<br>
@@ -515,8 +515,8 @@ passes. Hedron 1.0 is a future compatibility target, not a dependency claim befo
 the 0.9 release artifact remains pinned to the 0.67.0 evidence train. Edron `0.8.x` remains pinned
 to the Hedron `0.66.2` train; no Phase 0.9 planning change widens or retrofits the already released
 0.8 contract. Phase 0.9 turns the accepted `0.1`–`0.8`
-surface into a deliberately classified, measurable, and maintainable `0.x` contract. It is a
-refined candidate: no `0.9` API is accepted until its packet, locks, and evidence are reviewed.
+surface into a deliberately classified, measurable, and maintainable `0.x` contract. The
+implementation is accepted in-tree; publication and the `edron-v0.9.0` tag remain maintainer-controlled.
 
 The release must be built and tested from the Hedron `v0.67.0` baseline or an equivalent immutable
 source/lock snapshot. A moving `main` checkout, an unbounded `hedron` requirement, or evidence
@@ -529,7 +529,7 @@ The phase has one governing rule: maturity is earned by evidence, not by age or 
 that cannot meet the phase contract remains `beta`, `experimental`, `deferred`, or
 `application-owned`; it is not promoted merely to make the roadmap look complete.
 
-### Candidate contract
+### Implemented contract
 
 The candidate contract is split into three release layers:
 

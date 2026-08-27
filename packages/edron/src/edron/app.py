@@ -79,6 +79,7 @@ class App:
         self._navigation_targets: dict[str, NavigationTarget] = {}
         self._promotions: dict[str, Any] = {}
         self._data_workspaces: dict[str, Any] = {}
+        self._interactions: dict[str, hedron.Interaction] = {}
         self._sealed = False
 
     @classmethod
@@ -111,6 +112,7 @@ class App:
         instance._navigation_targets = {}
         instance._promotions = {}
         instance._data_workspaces = {}
+        instance._interactions = {}
         instance._sealed = False
         return instance
 
@@ -126,6 +128,20 @@ class App:
     def native_surface(self, surface: Any) -> Any:
         """Resolve a registered Edron surface to its exact native projection."""
         return self._native_surface(surface)
+
+    def interaction(self, value: hedron.Interaction) -> hedron.Interaction:
+        """Register and return one native Hedron 0.67 interaction declaration."""
+        if not isinstance(value, hedron.Interaction):
+            raise TypeError("interaction expects a native hedron.Interaction")
+        self._ensure_open()
+        self._interactions[value.fingerprint] = value
+        return value
+
+    def browser_plan(self, *demands: Any, assets: Sequence[str] = ()) -> Any:
+        """Build the native demand-driven browser plan for a page document."""
+        from hedron import BrowserFeaturePlan
+
+        return BrowserFeaturePlan.from_demands(demands, assets=assets)
 
     @property
     def resources(self) -> Any:
@@ -568,12 +584,29 @@ class App:
             async_endpoint.__module__ = endpoint.__module__
             async_endpoint.__signature__ = signature  # type: ignore[attr-defined]
             endpoint = async_endpoint
-        native = self.hedron.refreshable(
-            route,
+        from hedron.handles import build_view_handle, wrap_endpoint_result
+
+        handle = build_view_handle(
+            endpoint,
+            app_id=str(getattr(self.hedron, "hedron_app_id", "") or ""),
+            path=route,
+            key=None,
             name=f"{page_type.__name__}_{member_name}",
+            host=None,
             fallback=definition.fallback,
+            include_in_schema=False,
+            mount_path=str(
+                getattr(getattr(self.hedron, "state", None), "hedron_mount_path", "") or ""
+            ),
+        )
+        self.hedron.view(
+            handle.path,
+            name=handle.name,
+            include_in_schema=False,
+            fragment_regions=(handle.region,),
             dependencies=[self._native_dependency(x) for x in route_dependencies],
-        )(endpoint)
+        )(wrap_endpoint_result(handle))
+        native = handle
         definition._native = native
         self._fragments[id(definition)] = native
 
@@ -626,13 +659,27 @@ class App:
             async_endpoint.__module__ = endpoint.__module__
             async_endpoint.__signature__ = signature  # type: ignore[attr-defined]
             endpoint = async_endpoint
-        native = self.hedron.command(
-            route,
+        from hedron.handles import build_command_handle
+
+        handle = build_command_handle(
+            endpoint,
+            app_id=str(getattr(self.hedron, "hedron_app_id", "") or ""),
+            path=route,
             method=definition.method.upper(),
             name=f"{page_type.__name__}_{member_name}",
             fallback=definition.fallback,
+            include_in_schema=True,
+            mount_path=str(
+                getattr(getattr(self.hedron, "state", None), "hedron_mount_path", "") or ""
+            ),
+        )
+        self.hedron.action(
+            handle.path,
+            method=handle.method,
+            name=handle.name,
             dependencies=[self._native_dependency(x) for x in route_dependencies],
         )(endpoint)
+        native = handle
         definition._native = native
         self._actions[id(definition)] = native
 
@@ -820,6 +867,17 @@ class App:
                 for name, spec in self._resource_specs.items()
             ],
             "visual_interactions": visual_interactions,
+            "interactions": [
+                interaction.to_dict()
+                for interaction in sorted(
+                    self._interactions.values(), key=lambda item: item.fingerprint
+                )
+            ],
+            "browser_contract": {
+                "hedron_train": "0.67.0",
+                "forward_compatibility_target": "1.0.0",
+                "authority": "hedron",
+            },
             "packages": [
                 {
                     "name": package.name,
@@ -1082,7 +1140,7 @@ class App:
     def include(self, feature: Any) -> Any:
         if isinstance(feature, FeaturePackage):
             return self.include_package(feature)
-        bundle = self.hedron.include_feature(feature)
+        bundle = self.hedron.include(feature)
         self._bundles[id(feature)] = bundle
         return bundle
 
@@ -1093,7 +1151,7 @@ class App:
         capabilities: Mapping[str, bool] | None = None,
     ) -> Any:
         """Include a native feature through the exact Hedron transaction."""
-        bundle = self.hedron.include_feature(feature, capabilities=capabilities)
+        bundle = self.hedron.include(feature, capabilities=capabilities)
         self._bundles[id(feature)] = bundle
         return bundle
 
@@ -1140,7 +1198,7 @@ class App:
                     depends_on=asset.depends_on,
                     placement=asset.placement,
                 )
-            bundle = self.hedron.include_feature(package.to_bundle(), capabilities=capabilities)
+            bundle = self.hedron.include(package.to_bundle(), capabilities=capabilities)
         except Exception:
             restore_registry_builder(snapshot)
             raise

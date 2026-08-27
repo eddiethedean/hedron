@@ -87,7 +87,7 @@ def test_version_is_synchronized() -> None:
     edron = tomllib.loads(
         (ROOT / "packages" / "edron" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
-    assert edron["version"].startswith("0.8.")
+    assert edron["version"].startswith("0.9.")
     mcp = tomllib.loads(
         (ROOT / "packages" / "hedron-mcp" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]

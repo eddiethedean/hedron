@@ -1,8 +1,23 @@
 """Edron: a class-oriented authoring facade for Hedron."""
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 
 from edron.app import App
+from edron.browser import (
+    HEDRON_BROWSER_FORWARD_TARGET,
+    HEDRON_BROWSER_REQUIREMENT,
+    HEDRON_BROWSER_TRAIN,
+    AlpineAttrs,
+    AlpineDirective,
+    AlpineExpression,
+    AlpineFeatureDemand,
+    AlpineMaturity,
+    BrowserFeaturePlan,
+    BrowserPlanClosure,
+    browser_closure,
+    browser_plan,
+    feature_demand,
+)
 from edron.cache import CachedFunction, cache_data
 from edron.capabilities import (
     BrokenCapabilityError,
@@ -43,6 +58,7 @@ from edron.deployment import (
     profile_from_environment,
     resolve_deployment_profile,
 )
+from edron.deprecations import DEPRECATED_HEDRON_067_PATHS, deprecated_hedron_paths
 from edron.descriptors import (
     Action,
     BoundAction,
@@ -56,6 +72,7 @@ from edron.descriptors import (
 from edron.diagnostics import DiagnosticReport, EdronDiagnostic, SourceLocation
 from edron.downloads import Download, download
 from edron.errors import BindingError, EdronError, PhaseError, RegistrationError
+from edron.interaction import Interaction, InteractionKind, Outcome, OutcomeKind
 from edron.jobs import (  # pyright: ignore[reportUnknownVariableType]
     JobBackend,
     JobFlow,
@@ -63,7 +80,7 @@ from edron.jobs import (  # pyright: ignore[reportUnknownVariableType]
     job_status_events,
 )
 from edron.navigation import LAYOUT_KINDS, LayoutSpec, NavigationError, NavigationTarget, layout
-from edron.outcomes import Outcome, refresh, success
+from edron.outcomes import refresh, success
 from edron.page import Container, FilterScope, Page
 from edron.promotion import CapabilityPromotion, promoted_capabilities, promoted_capability
 from edron.scaffolds import TEMPLATES, create_scaffold
@@ -72,11 +89,18 @@ from edron.styling import Color, DesignSystem, StyleContext, StyleRecipe, Theme,
 __all__ = [
     "Action",
     "App",
+    "AlpineAttrs",
+    "AlpineDirective",
+    "AlpineExpression",
+    "AlpineFeatureDemand",
+    "AlpineMaturity",
     "ARTIFACT_SCHEMA",
     "BackendMode",
     "BindingError",
     "BoundAction",
     "BoundFragment",
+    "BrowserFeaturePlan",
+    "BrowserPlanClosure",
     "CachedFunction",
     "CapabilityError",
     "CapabilityPromotion",
@@ -95,6 +119,7 @@ __all__ = [
     "DataSelection",
     "DataSource",
     "DataWorkspace",
+    "DEPRECATED_HEDRON_067_PATHS",
     "DiagnosticReport",
     "DesignSystem",
     "Download",
@@ -112,7 +137,10 @@ __all__ = [
     "job_status_events",
     "MissingCapabilityError",
     "BrokenCapabilityError",
+    "Interaction",
+    "InteractionKind",
     "Outcome",
+    "OutcomeKind",
     "PackageConflictError",
     "Page",
     "PROFILE_NAMES",
@@ -137,7 +165,14 @@ __all__ = [
     "create_scaffold",
     "dependency",
     "deployment_report",
+    "deprecated_hedron_paths",
     "resource",
+    "browser_closure",
+    "browser_plan",
+    "feature_demand",
+    "HEDRON_BROWSER_FORWARD_TARGET",
+    "HEDRON_BROWSER_REQUIREMENT",
+    "HEDRON_BROWSER_TRAIN",
     "profile_from_environment",
     "resolve_deployment_profile",
     "download",

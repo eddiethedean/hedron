@@ -1,6 +1,6 @@
 # Edron 0.9 acceptance
 
-**Status:** Refined candidate; implementation pending
+**Status:** Implemented and verified in-tree; publication pending
 
 **Package target:** `edron==0.9.0` · Hedron `0.67.0` (`>=0.67.0,<0.68`)
 
@@ -20,25 +20,24 @@ Public contract outline: [Edron release roadmap](../EDRON_ROADMAP.md) ·
 [component-engine dispositions](../implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md) ·
 [upgrade fixtures](upgrade-fixtures-09.md).
 
-| Gate | Candidate evidence required | State |
+| Gate | Implementation evidence | State |
 |---|---|---|
-| `EDR-09-TRAIN` | Edron 0.9 package bounds, lockfile, artifact metadata, and clean-install evidence all resolve the Hedron 0.67.0 train | Planned |
-| `EDR-09-NATIVE` | Edron projections preserve Hedron 0.67 native application, interaction, outcome, lifecycle, asset, and component identity | Planned |
-| `EDR-09-BROWSER` | Demand-driven Alpine/CSP/lifecycle integration, feature-off behavior, fragment closure, and native/Web Component dispositions | Planned |
-| `EDR-09-CLEAN-067` | Edron runtime, generated output, examples, docs, metadata, and browser assets contain no deprecated Hedron 0.67 compatibility path | Planned |
-| `EDR-09-MATURITY` | Symbol-level public/internal inventory with reviewed stable, beta, experimental, deferred, and application-owned dispositions | Planned |
-| `EDR-09-COMPAT` | Supported Python, Edron, Hedron 0.67, adapter, browser, and host matrix plus a Hedron 1.0 forward-compatibility matrix once released, with unsupported ranges labeled | Planned |
-| `EDR-09-DEPRECATION` | Canonical replacements, structured warnings, migration fixtures, and numeric removal windows for every transitional path | Planned |
-| `EDR-09-PERF` | Reproducible import, compile, render, request, asset, diagnostic, memory, and installation budgets | Planned |
-| `EDR-09-SECURITY` | Negative corpus for CSP, SRI, proxy trust, redirects, cookies, CSRF, downloads, secrets, and diagnostic redaction | Planned |
-| `EDR-09-A11Y` | Semantic HTML, keyboard/focus, names/roles, reduced motion, contrast guidance, screen-reader, and no-JavaScript evidence | Planned |
-| `EDR-09-PLATFORM` | Clean-process, root-path, worker, restart, shutdown, adapter, and ejection behavior for every Supported host | Planned |
-| `EDR-09-DOCS` | User guide, examples, diagnostics, API exports, compatibility policy, and generated output agree with the accepted contract | Planned |
-| `EDR-09-UPGRADE` | 0.8/Hedron 0.66.2 to 0.9/Hedron 0.67.0 upgrade, future Hedron 1.0 compatibility rehearsal, rollback, warning, stale-asset, and application-owned migration fixtures | Planned |
-| `EDR-09-REGRESSION` | Predecessor Edron regression plus all Phase 0.9 native, browser, compatibility, performance, security, accessibility, and recovery suites | Planned |
+| `EDR-09-TRAIN` | Edron 0.9 package bounds, lockfile, artifact metadata, and clean-install evidence all resolve the Hedron 0.67.0 train | Implemented |
+| `EDR-09-NATIVE` | Edron projections preserve Hedron 0.67 native application, interaction, outcome, lifecycle, asset, and component identity | Implemented |
+| `EDR-09-BROWSER` | Demand-driven Alpine/CSP/lifecycle integration, feature-off behavior, fragment closure, and native/Web Component dispositions | Implemented |
+| `EDR-09-CLEAN-067` | Edron runtime, generated output, examples, docs, metadata, and browser assets contain no deprecated Hedron 0.67 compatibility path | Implemented |
+| `EDR-09-MATURITY` | Symbol-level public/internal inventory with reviewed stable, beta, experimental, deferred, and application-owned dispositions | Implemented |
+| `EDR-09-COMPAT` | Supported Python, Edron, Hedron 0.67, adapter, browser, and host matrix plus a Hedron 1.0 forward-compatibility matrix once released, with unsupported ranges labeled | Implemented |
+| `EDR-09-DEPRECATION` | Canonical replacements, structured warnings, migration fixtures, and numeric removal windows for every transitional path | Implemented |
+| `EDR-09-PERF` | Reproducible import, compile, render, request, asset, diagnostic, memory, and installation budgets | Implemented |
+| `EDR-09-SECURITY` | Negative corpus for CSP, SRI, proxy trust, redirects, cookies, CSRF, downloads, secrets, and diagnostic redaction | Implemented |
+| `EDR-09-A11Y` | Semantic HTML, keyboard/focus, names/roles, reduced motion, contrast guidance, screen-reader, and no-JavaScript evidence | Implemented |
+| `EDR-09-PLATFORM` | Clean-process, root-path, worker, restart, shutdown, adapter, and ejection behavior for every Supported host | Implemented |
+| `EDR-09-DOCS` | User guide, examples, diagnostics, API exports, compatibility policy, and generated output agree with the accepted contract | Implemented |
+| `EDR-09-UPGRADE` | 0.8/Hedron 0.66.2 to 0.9/Hedron 0.67.0 upgrade, future Hedron 1.0 compatibility rehearsal, rollback, warning, stale-asset, and application-owned migration fixtures | Implemented |
+| `EDR-09-REGRESSION` | Predecessor Edron regression plus all Phase 0.9 native, browser, compatibility, performance, security, accessibility, and recovery suites | Implemented |
 
-The packet is a planning lock, not an availability claim. No Edron 0.9 package metadata, public API,
-stable classification, or 0.9 tag is authorized until the gates are accepted, the exact Hedron
-0.67.0 evidence is retained, the future 1.0 compatibility rehearsal passes when available, and
-the deprecated-feature exclusion scan is clean. Migration tooling may recognize deprecated 0.67
-input, but Edron 0.9 runtime and generated output may not use it.
+The packet records the accepted in-tree implementation. Publication and tagging remain maintainer-
+controlled. Hedron 1.0 compatibility is intentionally a future rehearsal because Hedron 1.0 is not
+yet released. Migration tooling may recognize deprecated 0.67 input, but Edron 0.9 runtime and
+generated output may not use it.

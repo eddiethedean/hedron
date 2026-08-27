@@ -21,6 +21,9 @@ REQUIRED_WHEEL_FILES = {
     "edron/diagnostics.py",
     "edron/deployment.py",
     "edron/data.py",
+    "edron/browser.py",
+    "edron/interaction.py",
+    "edron/deprecations.py",
     "edron/scaffolds.py",
     "edron/tooling.py",
     "edron/cli/main.py",
@@ -36,6 +39,9 @@ REQUIRED_SDIST_SUFFIXES = {
     "/src/edron/diagnostics.py",
     "/src/edron/deployment.py",
     "/src/edron/data.py",
+    "/src/edron/browser.py",
+    "/src/edron/interaction.py",
+    "/src/edron/deprecations.py",
     "/src/edron/scaffolds.py",
     "/src/edron/tooling.py",
     "/src/edron/migrate/__init__.py",
@@ -49,9 +55,9 @@ REQUIRED_SDIST_SUFFIXES = {
     "/pyproject.toml",
 }
 FORBIDDEN_WHEEL_PREFIXES = ("hedron/", "hedron_core/", "hedron_data/", "hedron_charts/")
-EXPECTED_REQUIREMENTS = {
-    ("hedron", frozenset({">=0.66.2", "<0.67"})),
-    ("hedron-data", frozenset({">=0.66.2", "<0.67"})),
+REQUIREMENTS_BY_VERSION = {
+    "0.8": ("hedron>=0.66.2,<0.67", "hedron-data>=0.66.2,<0.67"),
+    "0.9": ("hedron>=0.67.0,<0.68", "hedron-data>=0.67.0,<0.68"),
 }
 
 
@@ -63,7 +69,11 @@ def _project_version() -> str:
     project = tomllib.loads((PACKAGE / "pyproject.toml").read_text(encoding="utf-8"))["project"]
     version = str(project["version"])
     dependencies = {str(item) for item in project.get("dependencies", [])}
-    for expected in ("hedron>=0.66.2,<0.67", "hedron-data>=0.66.2,<0.67"):
+    try:
+        expected_dependencies = REQUIREMENTS_BY_VERSION[".".join(version.split(".")[:2])]
+    except KeyError:
+        _fail(f"no Edron release train is configured for {version}")
+    for expected in expected_dependencies:
         if expected not in dependencies:
             _fail(f"packages/edron dependency pin is missing {expected}")
     source = (PACKAGE / "src" / "edron" / "__init__.py").read_text(encoding="utf-8")
@@ -111,7 +121,11 @@ def check_artifacts(dist_dir: Path, expected_version: str) -> None:
         if (name, version) != ("edron", expected_version):
             _fail(f"wheel metadata is {name} {version}, expected edron {expected_version}")
         requirement_keys = {_requirement_key(item) for item in requirements}
-        missing_requirements = EXPECTED_REQUIREMENTS - requirement_keys
+        expected_requirements = {
+            _requirement_key(item)
+            for item in REQUIREMENTS_BY_VERSION[".".join(expected_version.split(".")[:2])]
+        }
+        missing_requirements = expected_requirements - requirement_keys
         if missing_requirements:
             _fail(f"wheel metadata is missing release pins: {sorted(missing_requirements)}")
 

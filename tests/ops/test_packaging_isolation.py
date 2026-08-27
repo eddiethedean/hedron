@@ -57,7 +57,7 @@ def test_all_packages_declare_license_and_version() -> None:
         elif name in _INDEPENDENT_BETA_02:
             assert str(project["version"]).startswith("0.2."), pyproject
         elif name == "edron":
-            assert str(project["version"]).startswith("0.8."), pyproject
+            assert str(project["version"]).startswith("0.9."), pyproject
         elif name in _INDEPENDENT_BETA_05:
             assert str(project["version"]).startswith("0.5."), pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:

@@ -10,7 +10,7 @@ Edron is a typed, server-rendered Python facade over one native Hedron applicati
 for dashboards, internal tools, data workspaces, and workflows that should remain useful with
 ordinary HTTP and without a separate frontend build system.
 
-This guide targets Edron `0.8.x` and Hedron `0.66.2` (`>=0.66.2,<0.67`). Edron is a **Beta**
+This guide targets Edron `0.9.x` and Hedron `0.67.0` (`>=0.67.0,<0.68`). Edron is a **Beta**
 distribution: pin the package train, keep the supported surface explicit, and treat undocumented
 imports as internal.
 
@@ -38,7 +38,7 @@ Use a clean environment and pin the Edron minor train:
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install "edron>=0.8,<0.9"
+python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<0.68" "hedron-data>=0.67.0,<0.68"
 ```
 
 On Windows, activate `.venv\\Scripts\\activate` instead. Verify the interpreter that will run the
@@ -192,6 +192,24 @@ Important interaction rules:
 - For a form, use `self.form(Model, action=self.save)` with a typed Pydantic model where appropriate.
 - Test both the full-page response and the fragment response. The fragment is not a separate data
   authority; it is another projection of the same application code.
+
+For browser-local enhancement, use the native Hedron 0.67 interaction algebra and planner through
+Edron’s thin exports. Local effects are disposable; request effects remain server-owned:
+
+```python
+toggle = ed.Interaction.local("toggle-panel", state_keys=("open",))
+save = ed.Interaction.request("sales-save", target="#sales", swap="outerHTML")
+save_and_close = ed.Interaction.combined(
+    "close-panel", "sales-save", state_keys=("open",), target="#sales"
+)
+app.interaction(toggle)
+plan = ed.browser_plan(toggle.demands())
+```
+
+`ed.browser_plan()` is demand-driven. An empty plan emits no Alpine assets; a demanded plan owns
+the local CSP-safe Alpine runtime, plugin assets, and HTMX bridge through Hedron. Do not add Alpine
+fetch calls, remote scripts, page-level plugin tags, or a second state/request authority. Use
+`ed.browser_closure()` when a page has statically reachable fragments.
 
 ## 5. Inject dependencies and own resources
 
@@ -533,7 +551,7 @@ Treat an Edron upgrade as an application release:
 Edron does not reverse database migrations, rotate secrets, cancel external side effects, reclaim
 user files, or undo already-enqueued work. Those actions require an application-owned runbook.
 
-For the current phase boundary, see [Edron 0.8 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_008.md) and the
+For the current phase boundary, see [Edron 0.9 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md) and the
 [Edron roadmap](../EDRON_ROADMAP.md).
 
 ## 14. Migrate from Streamlit

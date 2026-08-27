@@ -40,7 +40,7 @@ def test_generator_is_fresh_edron_project(tmp_path: Path) -> None:
     assert "import streamlit" not in app
     assert "from hedron import" not in app
     ast.parse(app)
-    assert "edron>=0.8,<0.9" in (out / "pyproject.toml").read_text()
+    assert "edron>=0.9,<0.10" in (out / "pyproject.toml").read_text()
     assert (out / "migration/report.json").is_file()
     assert (out / "migration/source-map.json").is_file()
     assert (out / "migration/REVIEW.md").is_file()

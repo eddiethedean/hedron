@@ -399,10 +399,10 @@ PY
   /tmp/edron-stable-smoke/bin/python - <<'PY'
 import importlib.metadata as metadata
 
-assert metadata.version("edron") == "0.8.0"
-assert metadata.version("hedron") == "0.66.2"
-assert metadata.version("hedron-data") == "0.66.2"
-print("ok: Edron 0.8 stable-train wheel installs and imports cleanly")
+assert metadata.version("edron") == "0.9.0"
+assert metadata.version("hedron") == "0.67.0"
+assert metadata.version("hedron-data") == "0.67.0"
+print("ok: Edron 0.9 stable-train wheel installs and imports cleanly")
 PY
 
   # Exercise the exact standalone-wheel scaffold contract on ordinary main/PR

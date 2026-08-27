@@ -3,24 +3,20 @@ from __future__ import annotations
 from typing import Any
 
 from edron._internal import require_frame
-from hedron import InteractionResult, RefreshIntent
-from hedron import refresh as _native_refresh
-
-Outcome = InteractionResult | RefreshIntent | Any
+from hedron import Outcome, OutcomeKind
 
 
-def success(message: str | None = None, *, status_code: int = 200) -> InteractionResult:
-    content = None
-    if message is not None:
-        from hedron import Status
-
-        content = Status(message, tone="success")
-    return InteractionResult(content=content, status_code=status_code, swap="none")
+def success(message: str | None = None, *, status_code: int = 200) -> Outcome:
+    """Return the closed native success outcome."""
+    if status_code != 200:
+        raise ValueError("native Hedron 0.67 success outcomes use status_code=200")
+    return Outcome.success(**({"message": message} if message is not None else {}))
 
 
-def refresh(*targets: Any) -> RefreshIntent:
+def refresh(*targets: Any) -> Outcome:
+    """Return a native refresh outcome for registered Edron views."""
     frame = require_frame("action")
-    resolved = []
+    resolved: list[str] = []
     for target in targets:
         if hasattr(target, "fragment"):
             target = target.fragment
@@ -31,5 +27,10 @@ def refresh(*targets: Any) -> RefreshIntent:
             native = target
         if hasattr(target, "arguments") and target.arguments:
             native = native.bind(**target.arguments)
-        resolved.append(native)
-    return _native_refresh(*resolved)
+        logical_id = getattr(native, "logical_id", None)
+        if not isinstance(logical_id, str) or not logical_id.strip():
+            raise TypeError("refresh targets must be registered Edron views")
+        resolved.append(logical_id)
+    if not resolved:
+        raise ValueError("refresh requires at least one target")
+    return Outcome(OutcomeKind.REFRESH, {"handles": resolved})

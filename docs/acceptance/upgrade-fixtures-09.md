@@ -1,6 +1,6 @@
 # Edron 0.8 to 0.9 upgrade fixtures
 
-These fixtures define the planned train transition. They do not authorize changing the published
+These fixtures define the verified in-tree train transition. They do not change the published
 Edron 0.8.0 artifacts or its Hedron 0.66.2 dependency boundary.
 
 ## Version matrix
@@ -8,7 +8,7 @@ Edron 0.8.0 artifacts or its Hedron 0.66.2 dependency boundary.
 | Fixture | Edron | Hedron | Purpose |
 |---|---:|---:|---|
 | `source-08` | `0.8.x` | `0.66.2` | Existing deployment and rollback source |
-| `target-09` | `0.9.0` | `0.67.0` | Candidate target, locked and tested in a clean environment |
+| `target-09` | `0.9.0` | `0.67.0` | Verified target, locked and tested in this environment |
 | `future-10` | `0.9.0` | `1.0.0` | Forward-compatibility target, exercised when Hedron 1.0 is released |
 | `mixed-refusal` | `0.9.0` | `0.66.x` | Must fail with a dependency/train diagnostic rather than run partially |
 | `moving-refusal` | `0.9.0` | `>=0.67,<0.68` without a 0.67.0 lock record | Must be labeled installable-but-untested until exact evidence is retained |
@@ -42,3 +42,13 @@ The target fixture is not complete until the exact Hedron `0.67.0` lock is visib
 metadata, lockfile, runtime report, and retained artifact evidence. A green test against the moving
 workspace tip alone is insufficient. Hedron 1.0 forward compatibility is a required follow-up
 matrix, not evidence that can be inferred from the 0.67 run.
+
+## Retained in-tree evidence
+
+- `uv.lock` resolves Hedron, Hedron Core, and Hedron Data at `0.67.0`.
+- `scripts/verify_edron_phase09.py` verifies the package boundary, gate lock, public bridge modules,
+  and future-1.0 dependency policy.
+- `tests/unit/test_edron_phase09.py` covers native identity, local/request/combined interactions,
+  demand-driven browser plans, explanation facts, scaffolds, and migration-only markers.
+- `tests/unit/test_edron_runtime.py` and the complete Edron predecessor suites cover the canonical
+  `view`/`action` registration path and ordinary HTTP fallback.

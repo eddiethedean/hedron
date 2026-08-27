@@ -236,9 +236,9 @@ def doctor(
     from packaging.specifiers import SpecifierSet
 
     requirements = {
-        "edron": (">=0.8,<0.9", "edron"),
-        "hedron": (">=0.66.2,<0.67", "hedron"),
-        "hedron-data": (">=0.66.2,<0.67", "hedron_data"),
+        "edron": (">=0.9,<0.10", "edron"),
+        "hedron": (">=0.67.0,<0.68", "hedron"),
+        "hedron-data": (">=0.67.0,<0.68", "hedron_data"),
         "hedron-charts": (">=0.2,<0.3", "hedron_charts"),
         "hedron-maps": (">=0.1,<0.2", "hedron_maps"),
     }

@@ -68,7 +68,11 @@ def create_scaffold(
 name = "{project}"
 version = "0.1.0"
 requires-python = ">=3.11,<3.15"
-dependencies = ["edron>=0.8,<0.9"]
+dependencies = [
+    "edron>=0.9,<0.10",
+    "hedron>=0.67.0,<0.68",
+    "hedron-data>=0.67.0,<0.68",
+]
 
 [build-system]
 requires = ["hatchling"]

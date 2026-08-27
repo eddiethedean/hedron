@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.0] — 2026-08-27
+
+### Added
+
+- Native Hedron 0.67 interaction, outcome, Alpine feature-plan, and fragment-closure exports.
+- Demand-driven browser helpers, compatibility metadata, interaction explanation facts, and
+  deprecated-path migration scanning.
+- Phase 0.9 release, upgrade, compatibility, and native identity evidence.
+
+### Changed
+
+- Edron now targets `hedron>=0.67.0,<0.68` and `hedron-data>=0.67.0,<0.68`.
+- Edron page/action registration uses Hedron's canonical `view` and `action` surfaces.
+
 ## [0.8.0] — 2026-08-27
 
 ### Added
