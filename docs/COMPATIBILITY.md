@@ -184,7 +184,9 @@ Hedron uses documented public upstream APIs. Compatibility shims are isolated by
 Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 (`stable` | `beta` | `experimental` | `internal` | `deferred`).
 
-- Hedron intentionally remains on capability-driven `0.x` releases; no 1.0 freeze is scheduled.
+- The current public/stable and Beta preview trains remain `0.x`. RFC-0096 and D-114–D-117 define
+  a **Stage 0 Refined, not implemented or released** subtractive 1.0 cut from Verified Beta
+  `v0.67.0`; the enumerated stable inventory and removal evidence remain gated by `ENTRY-100`.
 - `stable` contracts are compatibility-protected regardless of the distribution's `0.x` version.
   An incompatible change requires an accepted RFC/decision, migration tooling or guidance, a
   deprecation diagnostic when feasible, and at least one intervening minor phase before removal.
@@ -198,8 +200,9 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
     approved beta/experimental revision with migration evidence;
   - **PATCH** — compatible bug/security fixes, dependency changes within the declared range, and
     documentation;
-  - **FUTURE MAJOR** — reserved for a separately accepted RFC demonstrating a real ecosystem-wide
-    compatibility boundary, never created merely because the roadmap reached a certain size.
+  - **MAJOR** — requires an Accepted RFC demonstrating a real ecosystem-wide compatibility
+    boundary. RFC-0096 governs the planned 1.0 consolidation; a version number alone never
+    authorizes incompatible change.
 - Bundled browser-asset pin changes (exact HTMX version/digest) are at least a **MINOR** and require
   the three-engine browser suite plus asset audit evidence.
 - Build-manifest format bumps that reject older artifacts require a new minor phase,

@@ -15,7 +15,8 @@ symbols remain API compatibility level **`beta`**. The
 [expanded](../api/STABILITY.md#expanded-stable-tier-023) stable tables are
 compatibility-protected today (narrow Beginner/CRUD facade —
 [STABLE_FACADE](../api/STABLE_FACADE.md)) — not every Supported row on this page.
-Package maturity remains **Beta** on PyPI — no scheduled 1.0, no commercial SLA.
+Package maturity remains **Beta** on PyPI — the Stage 0 Refined 1.0 cut is not implemented and has
+no scheduled release date or commercial SLA.
 
 | Label | Meaning |
 |---|---|

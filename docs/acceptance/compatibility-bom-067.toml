@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.67"
-status = "Planned; exact resolutions and browser revisions lock at FREEZE-067/SUPPLY-067"
+status = "Verified for the v0.67.0 bridge; 1.0 execution pending"
 owning_gate = "BOM-067"
 source_compatibility = "1.0 canonical application source/config/templates/CLI executes and type-checks on 0.67.0 and 1.0.0"
 wheel_metadata_portability = false

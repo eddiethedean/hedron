@@ -113,4 +113,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0093](RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md) | HDJ parity and registry integration | Accepted / implemented; phase 0.66 / D-111 / D-112 |
 | [0094](RFC-0094-EDRON-AUTHORING-FACADE.md) | Edron batteries-included Pythonic authoring facade | Draft; Edron phase 0.0 design, compatible Hedron train unassigned; Decision A blocked in the [Edron 0.1 acceptance packet](../acceptance/EDRON_001.md) |
 | [0095](RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md) | Alpine browser-local enhancement and unified interaction preview | Proposed; phase 0.67 / D-113, refined by D-115 / D-116 |
-| [0096](RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md) | Hedron 1.0 interface and HTMX/Alpine/component-engine consolidation | Proposed; post-0.67 `v1.0.0` / D-114, refined by D-115 / D-116 |
+| [0096](RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md) | Hedron 1.0 interface and HTMX/Alpine/component-engine consolidation | Accepted / Stage 0 Refined against Verified `v0.67.0`; D-114–D-117; implementation pending |

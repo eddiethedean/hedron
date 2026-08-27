@@ -1,0 +1,97 @@
+schema_version = 1
+phase = "1.0"
+status = "Stage 0 Refined; implementation and release evidence pending"
+planning_baseline = "v0.67.0"
+required_predecessor = "v0.67.0"
+predecessor_state = "Verified Beta preview"
+target = "v1.0.0"
+owning_rfc = "RFC-0096"
+decisions = ["D-114", "D-115", "D-116", "D-117"]
+contract_freeze = "contract-freeze-067.toml"
+compatibility_bom = "compatibility-bom-067.toml"
+release_gate = "release-gate-1.0.toml"
+upgrade_fixtures = "upgrade-fixtures-1.0.md"
+implementation_plan = "../implementation/HEDRON_1_0.md"
+stage_1_entry_satisfied = false
+release_cut_satisfied = false
+changes_runtime = false
+changes_versions = false
+
+[release_boundary]
+kind = "subtractive canonicalization"
+net_new_required_runtime_capabilities = 0
+canonical_source_rule = "every documented 1.0 application source, configuration, HDJ template, and CLI form runs unchanged on 0.67.0"
+removal_rule = "remove only a public 0.67 path represented by a complete warning record and before/after fixture"
+unknown_rule = "an unclassified or incompletely analyzed public path blocks removal and the 1.0 cut"
+correction_rule = "backport a required canonical correction to 0.67.x before the cut or defer it to 1.1"
+compatibility_layer_in_1_0 = false
+
+[canonical_surface]
+application = "Hedron"
+route_style = "function-only page/view/action handlers"
+page_and_view_return = "exactly one presentation tree"
+action_return = "one role-valid Outcome"
+interaction = "one closed local/request/combined Interaction"
+browser_plan = "one demand-derived immutable document plan"
+advanced_escape_hatches = "retained only for a distinct non-overlapping capability"
+task_rule = "one documented, scaffolded, generated, and stable path per task and abstraction level"
+
+[maturity]
+stable_promise = "SemVer applies to the enumerated canonical stable inventory, not every importable symbol"
+beta_and_experimental = "kept outside the stable facade and explicitly labeled"
+human_at = "does not block the cut; no human-AT or WCAG conformance claim is implied"
+live_transports = "retain their existing maturity; 1.0 does not promote experimental live transports"
+commercial_sla = false
+multi_year_lts = false
+
+[packages]
+coordinated_cut = [
+  "hedron-core",
+  "hedron",
+  "hedron-explorer",
+  "hedron-data",
+  "hedron-flask",
+  "hedron-django",
+  "hedron-jinja",
+  "hedron-conformance",
+  "hedron-extras",
+  "hedron-workbench",
+  "hedron-posit",
+  "hedron-elements",
+]
+coordinated_version = "1.0.0"
+independent_satellites = "retain independent versions and publish explicit Hedron 0.67/1.x compatibility ranges"
+root_reexports = "canonical facade only; package-native ownership remains visible"
+
+[migration]
+runtime_warning_class = "HedronFutureWarning"
+static_command = "hedron check --target 1.0"
+transform_command = "hedron migrate api --target 1.0"
+transform_policy = "static, reviewable, idempotent, non-executing, and no overwrite without explicit apply/output"
+required_confidence = ["complete", "partial", "unknown"]
+cut_requirement = "zero undocumented removals and zero removal records with partial or unknown coverage"
+known_stage_0_gap = "the in-tree public warning registry currently contains three route/include records; W0 must reconcile it against every documented/exported/generated/configured/CLI/HDJ/browser-markup 0.67 path before any removal"
+
+[support]
+policy = "SemVer for the stable 1.x inventory; security and current-release support remain governed by published support/security policy"
+rollback = "do not retag or silently restore removed aliases; stop the release before publication or fix forward in 1.0.x"
+predecessor = "0.67.x remains the documented migration and rollback source; its support window must be published before the 1.0 cut"
+
+[stage_1_blockers]
+items = [
+  "complete task-to-interface and public-artifact inventory generated from v0.67.0",
+  "reconcile every proposed removal with a 0.67 warning/finding and fixture",
+  "freeze the enumerated canonical stable symbol/package inventory",
+  "materialize the dual-version 1.0-canonical fixture corpus from immutable 0.67.0 artifacts",
+  "publish the 0.67.x migration-support window and exact 1.0 dependency/browser/tooling matrix",
+]
+
+[cut_invariants]
+items = [
+  "all release-gate-1.0.toml rows are Verified",
+  "all 1.0-canonical fixtures pass unchanged on 0.67.0 and 1.0.0",
+  "all removals warned or produced deterministic static findings in 0.67",
+  "no compatibility aliases, dynamic root shims, or parallel canonical engines remain",
+  "documentation, scaffolds, generated code, examples, Explorer, and HDJ use only canonical paths",
+  "wheel, sdist, offline, upgrade, rollback, security, accessibility, browser, typing, and fleet evidence pass",
+]

@@ -6,7 +6,7 @@
 
 **Roadmap position:** `v0.66.2` is the stable release on PyPI. `v0.67.0` is the Beta
 preview train; its acceptance packet is Verified in-tree but is not the stable channel.
-**Date:** 2026-08-25
+**Date:** 2026-08-27
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
 `hedron-workbench` / `hedron-posit` / `hedron-elements` `0.67.0`;
@@ -26,7 +26,9 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 **Phase focus:** The stable train is **0.66.2**. Phase **0.67** is the Beta preview train, verified against
 the `v0.66.2` baseline; the coordinated packages are at `0.67.0`. Its HDJ foundation and all
 thirteen imported issue gates are implemented and Verified. Dynamic, foreign, and installed-package template execution
-remain explicitly Deferred. Phase **0.65** remains the
+remain explicitly Deferred. Phase **1.0** is **Stage 0 Refined; implementation pending** against
+immutable `v0.67.0`; `ENTRY-100` blocks removal work until the complete inventory/warning and stable
+surface locks exist. Phase **0.65** remains the
 verified in-tree predecessor awaiting final tag publication. Phase **0.63** (verified
 RFC-0090) remains implemented and published as `v0.63.0`, with its 27-gate packet and
 executable browser/unit coverage for theme contracts, tooling, and interoperability; human
@@ -466,8 +468,9 @@ related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https
 [#503](https://github.com/eddiethedean/hedron/issues/503) closed on this cut;
 see [implementation requirements](implementation/EXPLORER_050.md) and
 [acceptance packet](acceptance/RELEASE_0_50.md).
-These phases require Verified evidence before any package maturity label changes. They do not
-schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
+These historical phases require Verified evidence before any package maturity label changes. The
+later D-114–D-117 1.0 plan does not retroactively change them, promote every experimental
+subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.
 [#373](https://github.com/eddiethedean/hedron/issues/373) and
 [#350](https://github.com/eddiethedean/hedron/issues/350) remain open for 0.48 / 0.47 publish assets.

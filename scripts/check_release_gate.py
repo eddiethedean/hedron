@@ -73,6 +73,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.65": ROOT / "docs" / "acceptance" / "release-gate-0.65.toml",
     "0.66": ROOT / "docs" / "acceptance" / "release-gate-0.66.toml",
     "0.67": ROOT / "docs" / "acceptance" / "release-gate-0.67.toml",
+    "1.0": ROOT / "docs" / "acceptance" / "release-gate-1.0.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 # Includes historical ``release`` attestation used by older gate manifests.

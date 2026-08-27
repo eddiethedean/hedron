@@ -1,8 +1,8 @@
 # RFC-0096: Hedron 1.0 interface and HTMX/Alpine interaction consolidation
 
-**Status:** Proposed  
+**Status:** Accepted / Stage 0 Refined; implementation pending
 **Target:** `v1.0.0`, after `v0.67.0` Alpine integration is Verified  
-**Decision:** D-114, refined by D-115 / D-116  
+**Decision:** D-114, refined by D-115 / D-116 / D-117
 **Capability baseline:** Hedron `v0.67.0`; no net-new Required runtime capability  
 **Input:** [RFC-0095](RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md), Edron's published authoring facade,
 and the 0.67 compatibility inventory  
@@ -18,6 +18,17 @@ and the 0.67 compatibility inventory
 [HTMX_ALPINE_BOUNDARY_1_0](../api/HTMX_ALPINE_BOUNDARY_1_0.md)
 **Component engine dispositions:**
 [COMPONENT_ENGINE_DISPOSITIONS_067_1_0](../implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md)
+**1.0 cut contract:**
+[one-zero-cut-contract.toml](../acceptance/one-zero-cut-contract.toml)
+**Implementation and acceptance:**
+[HEDRON_1_0](../implementation/HEDRON_1_0.md) ·
+[RELEASE_1_0](../acceptance/RELEASE_1_0.md) ·
+[release-gate-1.0.toml](../acceptance/release-gate-1.0.toml)
+
+**Stage 0 revision (2026-08-27):** D-117 rebases the cut plan on Verified Beta `v0.67.0`,
+defines the subtractive release/package/maturity/support boundary, records the incomplete warning
+registry as an explicit W0 blocker, and freezes 17 Planned release gates plus dual-version upgrade
+fixtures. It changes no runtime, package version, maturity classifier, or release claim.
 
 ## Summary
 
@@ -239,7 +250,7 @@ not as a second route-authoring syntax beside functions.
 
 ## Work program
 
-### Stage 0 — freeze the 1.0 contract before 0.67 W1
+### Stage 0A — freeze the 1.0 contract before 0.67 W1 (complete)
 
 - generate the complete API/artifact inventory and task-to-interface graph;
 - run native and Edron golden applications through the same outcome matrix;
@@ -250,6 +261,16 @@ not as a second route-authoring syntax beside functions.
   browser-feature closure, warning records, and the compatibility BOM; and
 - make `FREEZE-067` a hard entry gate for W1, with tests that reject accidental post-freeze
   additions or alternate calling forms.
+
+### Stage 0B — refine the cut against Verified 0.67 (D-117)
+
+- generate the complete public/task/artifact inventory from immutable `v0.67.0` artifacts;
+- reconcile every proposed removal with the 0.67 runtime/static warning registry and a fixture;
+- treat the three existing route/include warnings as a known floor rather than inventory closure;
+- enumerate the stable symbol/package inventory and keep Beta/Experimental surfaces outside it;
+- materialize the canonical/transitional/negative/rollback dual-version fixture lanes;
+- publish the exact matrix and 0.67.x migration-support window before the cut; and
+- keep `ENTRY-100` Planned and removal work blocked until those artifacts are complete.
 
 ### Stage 1 — make 0.67 the migration bridge
 

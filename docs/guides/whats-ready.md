@@ -3,7 +3,8 @@
 **Ship today (pinned CRUD / admin on FastAPI, Flask, or Django):** pages, HTMX
 fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
-screen-reader claims. Packages are **Beta**. There is no SLA and no scheduled 1.0.
+screen-reader claims. Packages are **Beta**. There is no SLA; the Stage 0 Refined 1.0 cut has no
+scheduled release date and is not implemented.
 
 This page is the **adopter** maturity summary for the stable **0.66.x** train
 ([Current release and support](current-release.md)). Full capability matrices and

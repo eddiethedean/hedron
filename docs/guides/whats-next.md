@@ -18,7 +18,8 @@ Install pins: [Current release](current-release.md) ·
 | Progressive screens / form commands / TaskFlow / DashboardWorkspace | **Available in published 0.60.2** — [What’s new in 0.60](whats-new-0.60.md) |
 | Human screen-reader / compensated AT sessions | Protocol exists; **not Supported** until real sessions |
 | Live SSE / WebSocket / streaming as production defaults | Stay **experimental**; polling remains Supported |
-| Hedron 1.0 / commercial SLA | **None scheduled** |
+| Hedron 1.0 | **Stage 0 Refined; not implemented or released** — subtractive interface consolidation after Verified Beta 0.67; no calendar promise |
+| Commercial SLA / multi-year LTS | **Not claimed by the 1.0 plan** |
 
 ## Proposed phases after 0.60
 
@@ -31,6 +32,7 @@ Install pins: [Current release](current-release.md) ·
 | **0.65** | Integrated styling platform and first-class application CSS | **Proposed; not a current release**; four bounded open-issue slices plus public hooks, app assets, tokens, diagnostics, ejection, and touched-surface fallbacks; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/APPLICATION_STYLING_065.md) · [refined scope](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/application-styling-scope-065.md) |
 | **0.66** | HDJ parity, registry integration, and open-issue closure | **Stable** as `v0.66.2`; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HDJ_PARITY_066.md) |
 | **0.67** | Alpine browser-local enhancement and unified interaction preview | **Beta** as `v0.67.0`; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ALPINE_INTEGRATION_067.md) |
+| **1.0** | Canonical interface, HTMX/Alpine interaction, and component-engine consolidation | **Stage 0 Refined; implementation pending**; removal work is blocked on complete 0.67 inventory/warning reconciliation; [cut plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_1_0.md) |
 
 Phase 0.66 is the current stable capability train and is published on PyPI as `v0.66.2`.
 Phase 0.67 is the Beta preview train (`v0.67.0`) and does not change the stable Supported surface.

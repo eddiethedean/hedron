@@ -25,7 +25,8 @@ Beta preview.
 | Working in this repository | `uv sync` (editable **0.66.2**) |
 
 Always use an upper bound so a future minor train cannot install by accident. Packages
-are **Beta** (usable, no 1.0, no SLA). Capability detail:
+are **Beta** (usable, not 1.0, no SLA). The 1.0 cut is Stage 0 Refined but is not implemented or
+released. Capability detail:
 [What’s ready](../guides/whats-ready.md).
 
 ## Install from PyPI

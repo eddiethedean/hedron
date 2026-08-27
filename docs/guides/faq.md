@@ -14,7 +14,8 @@ uv add "hedron>=0.66.2,<0.67"
 ```
 
 Always use an upper bound so a future minor train cannot install by accident.
-Packages are **Beta** (usable, no 1.0, no SLA). Capability detail:
+Current packages are **Beta** (usable, not 1.0, no SLA). The 1.0 cut is Stage 0 Refined but is not
+implemented or released. Capability detail:
 [What’s ready](whats-ready.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).

@@ -1,15 +1,14 @@
 # Public 1.0 readiness (architectural review)
 
-**Status:** Maintainer assessment of the living **0.66.x** train against an honest
-public major. This is **not** a scheduled release plan.
-[D-038](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md)
-still removes any calendar `1.0` terminus until a superseding RFC is Accepted.
+**Status:** Maintainer assessment updated for Verified Beta `v0.67.0` and the Accepted,
+**Stage 0 Refined** 1.0 cut plan. This is not an implementation or release-date claim.
+[D-114–D-117](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) supersede
+D-038's no-1.0 terminus while retaining its evidence-based maturity rules.
 
-**Verdict:** Do not call Hedron `1.0` today. Treat the product as **Beta with
-enterprise-grade process**. The server-rendered CRUD/HTMX core is sound; blockers
-are API surface honesty, package-graph purity, process/SSOT debt, and unfinished
-adopter-critical DoD items (human AT sessions, durable ops clarity, identity
-non-goals)—not missing CSRF or escaping.
+**Verdict:** Do not call Hedron `1.0` today. The cut is now bounded and executable as a plan, but
+`ENTRY-100` blocks removal work until the complete 0.67 public/task/artifact inventory, warning
+reconciliation, enumerated stable surface, dual-version corpus, exact matrix, and 0.67.x support
+window exist. The release is subtractive; it is not waiting for another runtime capability.
 
 ## What is already strong
 
@@ -33,23 +32,25 @@ non-goals)—not missing CSRF or escaping.
 
 ## Before an honest 1.0 (must)
 
-1. **Governance:** Accept an RFC that supersedes D-038; write a dated definition of done;
-   decide LTS/SLA (even if “none—current train only”).
-2. **API freeze boundary:** Shrink root/`hedron_core` public surfaces; enforce
+1. **Governance — refined:** RFC-0096 and D-114–D-117 supersede D-038, define the evidence-driven
+   cut, and explicitly make no commercial SLA or multi-year LTS claim.
+2. **API freeze boundary — pending `ENTRY-100`:** Shrink root/`hedron_core` public surfaces; enforce
    [symbol tiers](../api/SYMBOL_TIERS.md); promote only contracts you will protect across
    majors; remove experimental root aliases.
-3. **Dependency purity:** Eliminate satellite→`hedron` imports (see
+3. **Dependency purity — release gate:** Eliminate satellite→`hedron` imports (see
    `scripts/check_satellite_imports.py`); declare optional edges; freeze a Supported
    extras matrix; tip==PyPI discipline.
-4. **Security contract:** Promote a locked security-plane/CSRF/trust subset to `stable`
+4. **Security contract — release gate:** Promote a locked security-plane/CSRF/trust subset to `stable`
    **or** exclude it from the 1.0 claim; production deny plugins by default; block
    experimental live mounts without explicit risk acceptance.
-5. **Ops floor:** Durable jobs required in production profiles (already gated);
+5. **Ops floor — release gate:** Durable jobs required in production profiles (already gated);
    decide cache stampede/single-flight story; keep **polling_only** as Supported live.
-6. **AT honesty:** Complete human AT Verified cut **or** explicitly drop it from the DoD.
-7. **Process prune:** Archive old packets; PR CI runs tip + recent only; generated
+6. **AT honesty — resolved boundary:** Human AT does not block the cut and 1.0 makes no human-AT,
+   WCAG-conformance, certification, or legal-compliance claim; automated/keyboard/focus evidence
+   still gates the canonical widgets.
+7. **Process prune — release gate:** Archive old packets; PR CI runs tip + recent only; generated
    remediation truth instead of stale issue tables.
-8. **Package maturity:** Flagship + claimed adapters move Beta → Stable on PyPI for the
+8. **Package maturity — release gate:** Flagship + claimed adapters move Beta → Stable on PyPI for the
    **frozen inventory only**.
 
 ## Can wait until 2.0
@@ -83,3 +84,5 @@ non-goals)—not missing CSRF or escaping.
 - [Stability](../api/STABILITY.md)
 - [Enterprise diligence](enterprise-diligence.md)
 - [Production-quality maturity](https://github.com/eddiethedean/hedron/blob/main/docs/guides/production-quality.md)
+- [1.0 implementation and cut plan](../implementation/HEDRON_1_0.md)
+- [1.0 acceptance plan](../acceptance/RELEASE_1_0.md)

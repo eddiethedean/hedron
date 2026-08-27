@@ -73,7 +73,7 @@ Beta preview version: `v0.67.0`. Pin `hedron` for production; see
 | **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, eight bounded issue slices, and touched-surface fallback evidence | **Implemented and verified in-tree; release candidate `v0.65.0`** ([RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [scope](acceptance/application-styling-scope-065.md); [acceptance](acceptance/RELEASE_0_65.md)) |
 | **0.66** | HDJ parity and registry integration: app-scoped binding, registry-backed components/assets/themes/styles, live logical-ID interactions, portable HTMX facts, provider parity, and claim-honest evidence | **Stable `v0.66.2`** ([RFC-0093](rfcs/RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md); [implementation](implementation/HDJ_PARITY_066.md); [acceptance](acceptance/RELEASE_0_66.md)) |
 | **0.67** | Alpine browser-local features, bidirectional Alpine/Web-Component engine dispositions, and an opt-in preview of one unified Alpine/HTMX/Hedron interaction and lifecycle model | **Beta `v0.67.0`; implemented and verified in-tree** ([RFC-0095](rfcs/RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md); D-113 / D-115 / D-116; [implementation](implementation/ALPINE_INTEGRATION_067.md); [engine dispositions](implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md); [acceptance](acceptance/RELEASE_0_67.md)) |
-| **1.0** | Canonical developer-interface, HTMX/Alpine interaction, and component-engine consolidation; removal of warned 0.67 compatibility paths | **Planned after Verified 0.67; architecture locked** ([RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md); D-114 / D-115 / D-116); every 1.0 application must run on 0.67 |
+| **1.0** | Canonical developer-interface, HTMX/Alpine interaction, and component-engine consolidation; removal of fully warned 0.67 compatibility paths | **Stage 0 Refined; implementation pending** ([RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md); D-114–D-117; [implementation](implementation/HEDRON_1_0.md); [acceptance](acceptance/RELEASE_1_0.md)); every 1.0 application must run unchanged on 0.67 |
 
 Edron is independently versioned and does not consume Hedron phase numbers. Its compatible Hedron
 train remains unassigned; see the [Edron `0.x` release roadmap](EDRON_ROADMAP.md).
@@ -6862,11 +6862,15 @@ tag-by-tag recommendations are the
 
 ## Hedron 1.0 — interface and HTMX/Alpine interaction consolidation
 
-**Status:** Planned after phase 0.67 is implemented and Verified. D-115 and D-116 accept the architecture and
-one-way task graph now; `FREEZE-067` locks exact canonical imports, signatures, returns, variants,
-document closure, removals, and the compatibility BOM before W1. Later evidence may set numerical
-budgets, browser thresholds, or a lower maturity/non-admission disposition, but cannot add another
-canonical calling form.
+**Status:** **Stage 0 Refined; implementation pending.** Verified Beta `v0.67.0` is the immutable
+planning baseline and required predecessor. D-117 turns the D-114–D-116 architecture and 0.67
+freeze into an executable cut packet: the [implementation plan](implementation/HEDRON_1_0.md),
+[acceptance plan](acceptance/RELEASE_1_0.md), [machine release gate](acceptance/release-gate-1.0.toml),
+[cut contract](acceptance/one-zero-cut-contract.toml), and
+[upgrade fixture ledger](acceptance/upgrade-fixtures-1.0.md). This refinement changes no runtime,
+package version, maturity classifier, or release claim. `ENTRY-100` remains Planned and blocks
+removal work until the generated 0.67 public/task/artifact inventory is reconciled with the warning
+registry and the enumerated stable 1.0 inventory is frozen.
 
 Hedron 1.0 makes the previewed unified interaction model canonical and enforces one stable public
 path per developer task and abstraction level. Function handlers are the only route-authoring
@@ -6902,3 +6906,42 @@ deferred to 1.1. No public 0.67 path may disappear silently. The exact dual-vers
 browser, tooling, configuration, HDJ, and fixture matrix is the
 [0.67/1.0 compatibility BOM](acceptance/compatibility-bom-067.toml). See
 [RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md).
+
+### Refined cut boundary
+
+1. **Subtractive release.** Version 1.0 adds zero net-new Required runtime capabilities. It makes
+   the already shipped 0.67 canonical model the default and removes only fully evidenced
+   transitional paths.
+2. **Removal is per artifact, not per intention.** Every deleted import, alias, decorator,
+   argument, config/CLI/HDJ/markup form, generated spelling, root shim, controller, or tag needs a
+   complete 0.67 warning/finding and before/after fixture. Partial or unknown analysis may diagnose
+   risk but cannot authorize deletion.
+3. **Known inventory gap is explicit.** The in-tree warning registry currently contains the three
+   route/include records for `app.component`, `app.fragment`, and `app.include_feature`. They are a
+   fixture floor, not proof that every proposed 1.0 removal has warning coverage. W0 generates and
+   reconciles the complete public surface before `ENTRY-100` can pass.
+4. **Stable means enumerated.** SemVer protects the accepted canonical stable inventory, not every
+   importable Beta/Experimental symbol. Advanced and package-native paths remain only for distinct
+   capabilities or honest optional ownership.
+5. **Coordinated but not monolithic.** The coordinated 0.67 packages cut together at `1.0.0`;
+   independent satellites retain their versions and publish exact Hedron 0.67/1.x ranges.
+6. **Claim boundary.** The cut does not imply a commercial SLA, multi-year LTS, human-AT result,
+   blanket WCAG conformance, promotion of experimental live transports, or Stable maturity for
+   every satellite/capability.
+7. **Support and rollback.** The 0.67.x migration-support window must be published before cut.
+   Before publication the release stops on a failed invariant; after publication, fixes move
+   forward in 1.0.x rather than retagging or silently restoring aliases.
+
+### Refined work and gate sequence
+
+W0 generates the immutable 0.67 inventory, reconciles warnings, freezes the stable inventory, and
+passes `ENTRY-100`. W1–W3 reduce the facade, remove warning-backed slices, and complete static
+migration tooling. W4–W6 make the frozen interaction/engine model canonical across authoring,
+tooling, docs, examples, scaffolds, Explorer, and HDJ. W7 hardens security, accessibility, and
+performance after shim removal. W8 runs the same canonical corpus on immutable 0.67.0 and 1.0.0
+environments plus the fleet. W9 builds reproducible artifacts and authorizes the cut only after all
+17 rows in `release-gate-1.0.toml` are Verified.
+
+The planning checker is `python scripts/check_100.py --check-plan`. It validates cross-artifact
+consistency and rejects a version/release claim; it deliberately refuses `--verify` while a selected
+release gate is Planned.

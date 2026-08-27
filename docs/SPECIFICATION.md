@@ -69,8 +69,9 @@ Under D-035, phase 0.7 additionally requires the phase 0.6 behavioral closure ga
 adapter-neutral ownership, resolved package dependency direction, concrete compatibility ranges,
 and evidence-backed adapter/operations/jobs/observability ledgers. Phase 0.9 replaced HDN with
 HDJ; phase 0.10 delivers live transports; native Flask/Django depth moves to 0.11.
-Later work continues through capability-driven `0.x` phases; no 1.0
-freeze is scheduled.
+Later work continued through capability-driven `0.x` phases. D-114 supersedes the former
+no-1.0 terminus after Verified Beta `v0.67.0`; D-117 refines the subtractive `v1.0.0` cut packet,
+but makes no implementation, release-date, or package-version claim.
 
 The cumulative [reference application](REFERENCE_APPLICATION.md) grows from the phase 0.1
 static rendering proof through the phase 0.2 authenticated FastAPI CRUD application into
