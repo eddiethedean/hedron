@@ -10,7 +10,7 @@ status: shipped
 
 **Status:** Accepted · **Shipped**
 
-For application-local resources, `@router.component(...)` declares and registers the
+For application-local resources, `@router.view(...)` declares and registers the
 factory. Reusable packages may define a resource with `@addressable` and expose it later.
 
 ## App-local component route
@@ -27,7 +27,7 @@ async def user_table() -> Text:
     return Text("rows")
 ```
 
-### `@router.component` parameters
+### `@router.view` parameters
 
 | Parameter | Description |
 |---|---|

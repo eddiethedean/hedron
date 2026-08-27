@@ -33,7 +33,7 @@ orders = DataWorkspace(
         can_edit=lambda: True,
     ),
 ).with_screen(path="/orders", title="Orders")
-app.include_feature(orders)
+app.include(orders)
 ```
 
 Recipe: [Notes CRUD](../examples/crud-tutorial.md). Scaffold:
