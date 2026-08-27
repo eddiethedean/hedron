@@ -26,7 +26,7 @@ app = Hedron(
 _NOTES: list[str] = []
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
@@ -36,7 +36,7 @@ def status():
     )
 
 
-@app.refreshable("/notes-count")
+@app.view("/notes-count")
 def notes():
     return html.div(
         Text(f"Notes saved: {len(_NOTES)}"),
