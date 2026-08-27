@@ -379,7 +379,15 @@ def _write_stable_inventory(
         'classified stable enter the SemVer promise."',
         "",
     ]
+    stable_packages: list[tuple[str, str, str, tuple[str, ...]]] = []
     for distribution, import_name, version, package_maturity, exports, tiers in packages:
+        stable_exports = tuple(
+            name for name in exports if tiers.get(name, package_maturity) == "stable"
+        )
+        if stable_exports:
+            stable_packages.append((distribution, import_name, version, stable_exports))
+
+    for distribution, import_name, version, exports in stable_packages:
         lines.extend(
             [
                 "[[package]]",
@@ -391,23 +399,20 @@ def _write_stable_inventory(
             ]
         )
         for name in exports:
-            maturity = tiers.get(name, package_maturity)
-            disposition = {
-                "stable": "stable",
-                "beta": "beta" if distribution == "hedron" else "package-native",
-                "experimental": "experimental",
-            }.get(maturity, "experimental")
             lines.extend(
                 [
                     "[[symbol]]",
                     f"qualified = {_toml_string(import_name + '.' + name)}",
-                    f"maturity = {_toml_string(maturity)}",
-                    f"disposition = {_toml_string(disposition)}",
+                    'maturity = "stable"',
+                    'disposition = "stable"',
                     "",
                 ]
             )
     path.write_text("\n".join(lines), encoding="utf-8")
-    return {"packages": len(packages), "symbols": sum(len(item[4]) for item in packages)}
+    return {
+        "packages": len(stable_packages),
+        "symbols": sum(len(item[3]) for item in stable_packages),
+    }
 
 
 def _write_baseline(

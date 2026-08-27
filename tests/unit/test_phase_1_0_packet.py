@@ -285,10 +285,12 @@ def test_phase_1_0_inventories_have_explicit_classification() -> None:
     assert isinstance(surfaces, list) and surfaces
     assert isinstance(artifacts, list) and artifacts
     assert isinstance(symbols, list) and symbols
-    assert len(surfaces) == len(symbols)
+    assert len(symbols) <= len(surfaces)
     assert all(row["owner"] and row["maturity"] != "unclassified" for row in surfaces)
     assert all(row["owner"] and row["disposition"] != "unclassified" for row in artifacts)
-    assert {row["canonical"] for row in surfaces} == {row["qualified"] for row in symbols}
+    stable_exports = {row["canonical"] for row in surfaces if row["maturity"] == "stable"}
+    assert stable_exports == {row["qualified"] for row in symbols}
+    assert all(row["maturity"] == "stable" and row["disposition"] == "stable" for row in symbols)
 
 
 def test_phase_1_0_compatibility_report_retains_baseline_bridge_probe() -> None:
