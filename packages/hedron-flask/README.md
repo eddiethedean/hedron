@@ -75,7 +75,7 @@ flask --app app:create_app run --reload
 ## What this package includes
 
 - `HedronFlask` / `init_app` application integration
-- `HedronBlueprint` with `@page` / `@component` / `@action` style routing
+- `HedronBlueprint` with `@page` / `@view` / `@action` style routing
 - `component_response` / `interaction_response` helpers
 - Fragment region authorization and approved HTMX header merging
 - Portable `SecurityPolicy` headers and Flask-Login `AuthSignal` bridge

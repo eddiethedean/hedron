@@ -178,11 +178,7 @@ class HedronPagesMixin:
         fallback: str | None = None,
         include_in_schema: bool = True,
         **kwargs: Any,
-    ) -> (
-        ActionHandle[Any, Any]
-        | Callable[[Callable[P, R]], ActionHandle[Any, Any]]
-        | Callable[[Callable[P, R]], Callable[P, R]]
-    ):
+    ) -> Callable[[Callable[P, R]], ActionHandle[Any, Any]]:
         """Register the canonical typed mutation and return an ``ActionHandle``.
 
         Args:

@@ -1,4 +1,4 @@
-"""HedronRouter with page, component, and action registration."""
+"""HedronRouter with canonical page, view, and action registration."""
 
 from __future__ import annotations
 

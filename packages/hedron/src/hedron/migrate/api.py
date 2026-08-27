@@ -79,7 +79,7 @@ def _line_col(source: str, offset: int) -> tuple[int, int]:
     return line, offset - last_newline
 
 
-def _iter_files(source: Path) -> tuple[Path, tuple[Path, ...]]:
+def _iter_files(source: Path, *, include_all: bool = False) -> tuple[Path, tuple[Path, ...]]:
     source = source.resolve()
     if source.is_file():
         return source.parent, (source,)
@@ -89,7 +89,7 @@ def _iter_files(source: Path) -> tuple[Path, tuple[Path, ...]]:
     for path in sorted(source.rglob("*")):
         if not path.is_file() or any(part in _SKIP_DIRS for part in path.relative_to(source).parts):
             continue
-        if path.suffix == ".py" or path.suffix.lower() in _TEXT_SUFFIXES:
+        if include_all or path.suffix == ".py" or path.suffix.lower() in _TEXT_SUFFIXES:
             files.append(path)
     return source, tuple(files)
 
@@ -333,9 +333,7 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
         if constructor is None or constructor.rsplit(".", 1)[-1] != "SimApp":
             continue
         targets = node.targets if isinstance(node, ast.Assign) else (node.target,)
-        simulator_receivers.update(
-            target.id for target in targets if isinstance(target, ast.Name)
-        )
+        simulator_receivers.update(target.id for target in targets if isinstance(target, ast.Name))
     out.extend(_import_findings(tree, display_path=display_path, records=records))
     seen.update((item.line, item.column - 1, item.old_path) for item in out)
 
@@ -597,9 +595,7 @@ def _replace_python(
             match = re.search(rf"\b{re.escape(alias.name)}\b", line_text)
             if match is None:
                 continue
-            replacements.append(
-                (line_start + match.start(), line_start + match.end(), replacement)
-            )
+            replacements.append((line_start + match.start(), line_start + match.end(), replacement))
     for start, end, replacement in sorted(set(replacements), reverse=True):
         source = source[:start] + replacement + source[end:]
     return source, len(set(replacements))
@@ -650,7 +646,10 @@ def transform_api(
         return report
     if output is not None and apply:
         raise ValueError("choose --out or --apply, not both")
-    root, files = _iter_files(source_path)
+    # A generated output tree must be a lossless project copy.  The scanner
+    # intentionally restricts analysis to known text suffixes, but ``--out``
+    # also carries static assets and extensionless files forward unchanged.
+    root, files = _iter_files(source_path, include_all=output is not None)
     destination = Path(output).resolve() if output is not None else root
     if output is not None and source_path.is_file():
         targets = [(source_path, destination)]
@@ -665,27 +664,42 @@ def transform_api(
         for path in {item.path for item in report.findings}
     }
     for original, target in targets:
-        try:
-            text = original.read_text(encoding="utf-8")
-        except (OSError, UnicodeDecodeError):
-            continue
         display = original.name if source_path.is_file() else original.relative_to(root).as_posix()
         items = by_path.get(display, ())
-        if original.suffix == ".py":
-            transformed, count = _replace_python(text, original, items)
+        is_text = original.suffix == ".py" or original.suffix.lower() in _TEXT_SUFFIXES
+        changed = False
+        count = 0
+        if is_text:
+            try:
+                text = original.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            if original.suffix == ".py":
+                transformed, count = _replace_python(text, original, items)
+            else:
+                transformed, count = _replace_text(text, items)
+            changed = bool(count and transformed != text)
+            if output is not None:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                if target.exists():
+                    raise FileExistsError(f"refusing to overwrite {target}")
+                # ``--out`` is a complete, reviewable project tree rather than a
+                # sparse patch directory.  Preserve files that have no proven
+                # replacement so reviewers can run the generated tree directly.
+                target.write_text(transformed, encoding="utf-8")
+            elif changed:
+                target.write_text(transformed, encoding="utf-8")
         else:
-            transformed, count = _replace_text(text, items)
-        if output is not None:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            if target.exists():
-                raise FileExistsError(f"refusing to overwrite {target}")
-            # ``--out`` is a complete, reviewable project tree rather than a
-            # sparse patch directory.  Preserve files that have no proven
-            # replacement so reviewers can run the generated tree directly.
-            target.write_text(transformed, encoding="utf-8")
-        elif count and transformed != text:
-            target.write_text(transformed, encoding="utf-8")
-        if count and transformed != text:
+            try:
+                raw = original.read_bytes()
+            except OSError:
+                continue
+            if output is not None:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                if target.exists():
+                    raise FileExistsError(f"refusing to overwrite {target}")
+                target.write_bytes(raw)
+        if changed:
             changes.append(ApiMigrationChange(display, count))
     return ApiMigrationReport(
         source=report.source,

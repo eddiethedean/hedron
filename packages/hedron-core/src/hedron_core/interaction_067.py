@@ -353,9 +353,7 @@ class Outcome:
                 value = handle.strip()
             else:
                 value = str(
-                    getattr(handle, "dom_id", None)
-                    or getattr(handle, "logical_id", "")
-                    or ""
+                    getattr(handle, "dom_id", None) or getattr(handle, "logical_id", "") or ""
                 ).strip()
             if not value:
                 raise ValueError("refresh handles must be non-empty logical ids or view handles")

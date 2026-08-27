@@ -136,7 +136,7 @@ def test_target_100_json_is_one_document_with_hdj_inventory(
 
     (tmp_path / "pyproject.toml").write_text("[tool.hedron]\n", encoding="utf-8")
     (tmp_path / "status.hdj").write_text(
-        "---hdj\nversion = 1\nkind = \"fragment\"\n---\n<section>ok</section>\n",
+        '---hdj\nversion = 1\nkind = "fragment"\n---\n<section>ok</section>\n',
         encoding="utf-8",
     )
     (tmp_path / "app.py").write_text(

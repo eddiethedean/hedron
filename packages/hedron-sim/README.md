@@ -55,7 +55,7 @@ def home() -> Page:
     )
 
 
-@app.fragment("/status", region=status)
+@app.fragment("/status", region=status)  # SimApp package-native simulator route
 def refresh_status():
     return swap(status_panel())
 
