@@ -28,13 +28,23 @@ def test_transitional_fixture_corpus_covers_warning_floor() -> None:
         "app_refreshable.py": "app.refreshable",
         "app_command.py": "app.command",
         "app_form_command.py": "app.form_command",
+        "flask_component.py": "flask.component",
+        "blueprint_component.py": "blueprint.component",
+        "blueprint_include_feature.py": "blueprint.include_feature",
     }
     observed = {}
     for filename, _old_path in expected.items():
         findings = scan_api(ROOT / "transitional" / filename).findings
         assert findings, filename
         observed[filename] = findings[0].old_path
-        assert findings[0].fixture == "tests/upgrade/shared.py"
+        if filename in {
+            "flask_component.py",
+            "blueprint_component.py",
+            "blueprint_include_feature.py",
+        }:
+            assert findings[0].fixture == f"tests/upgrade/phase_1_0/transitional/{filename}"
+        else:
+            assert findings[0].fixture == "tests/upgrade/shared.py"
         assert findings[0].removal_version == "1.0"
     assert observed == expected
 
