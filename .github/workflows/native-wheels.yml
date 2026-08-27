@@ -39,11 +39,11 @@ env:
   CIBW_BEFORE_ALL_LINUX: >-
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
     | sh -s -- -y --default-toolchain stable --profile default
-  CIBW_ENVIRONMENT_LINUX: 'PATH="$HOME/.cargo/bin:$PATH" RUSTUP_TOOLCHAIN=stable SOURCE_DATE_EPOCH="$SOURCE_DATE_EPOCH"'
+  CIBW_ENVIRONMENT_LINUX: 'PATH="$HOME/.cargo/bin:$PATH" RUSTUP_TOOLCHAIN=stable SOURCE_DATE_EPOCH="$SOURCE_DATE_EPOCH" PYTHONDONTWRITEBYTECODE=1'
   # macOS / Windows build on the host runner (no container).
   CIBW_BEFORE_BUILD_MACOS: "rustup default stable"
   CIBW_BEFORE_BUILD_WINDOWS: "rustup default stable"
-  CIBW_ENVIRONMENT: 'PATH="$HOME/.cargo/bin:$PATH" SOURCE_DATE_EPOCH="$SOURCE_DATE_EPOCH"'
+  CIBW_ENVIRONMENT: 'PATH="$HOME/.cargo/bin:$PATH" SOURCE_DATE_EPOCH="$SOURCE_DATE_EPOCH" PYTHONDONTWRITEBYTECODE=1'
 
 jobs:
   wheels:

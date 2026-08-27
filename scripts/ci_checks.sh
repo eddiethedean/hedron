@@ -60,6 +60,10 @@ export UV_NO_PROGRESS="${UV_NO_PROGRESS:-1}"
 # packaging rehearsals. Callers may provide a different fixed epoch when
 # reproducing a historical release; an unset value defaults to Unix epoch.
 export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-0}"
+# Do not let interpreter startup create package-local bytecode that can be
+# picked up by native wheel builds and make otherwise identical artifacts
+# differ based on build order.
+export PYTHONDONTWRITEBYTECODE="${PYTHONDONTWRITEBYTECODE:-1}"
 
 PYTHON="${PYTHON:-3.12}"
 GATE_VERSION="${HEDRON_GATE_VERSION:-0.67.0}"
