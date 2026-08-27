@@ -1,6 +1,6 @@
 # Hedron 1.0 implementation and cut plan
 
-**Status:** Stage 0 Refined; W1 removal work blocked on `ENTRY-100`
+**Status:** Implementation in progress; release evidence remains blocked on `ENTRY-100`
 **Baseline:** Verified Beta `v0.67.0`
 **Target:** `v1.0.0`
 **Authority:** RFC-0096 and D-114–D-117
@@ -274,8 +274,9 @@ published in package metadata and docs.
 
 ### W9 — artifacts, release candidate, and cut
 
-1. Update coordinated package versions/classifiers/changelogs only after all behavior and migration
-   gates pass. Keep independent satellite versions independent.
+1. Update coordinated package versions/classifiers/changelogs on the dedicated `v1.0` branch once
+   the implementation surface is ready; publication still waits for every behavior and migration
+   gate. Keep independent satellite versions independent.
 2. Build clean wheels and sdists twice from the same source with normalized timestamps; compare
    manifests, hashes, license notices, SBOMs, and browser assets.
 3. Exercise offline installation, fresh virtual environments, import order, CLI scaffolding,

@@ -1,6 +1,6 @@
 # Hedron `v1.0.0` interface-consolidation acceptance plan
 
-**Status:** Stage 0 Refined; implementation and release evidence pending
+**Status:** Implementation in progress; release evidence pending
 
 **Baseline:** Verified Beta `v0.67.0`
 **Target:** `v1.0.0`
@@ -17,9 +17,9 @@ only ordinary surface, removes fully warned compatibility paths, and changes def
 documentation to the frozen model. It does not add a Required runtime capability that exists only
 in 1.0, silently remove a 0.67 path, or claim that every importable symbol and satellite is Stable.
 
-The Stage 0 packet is internally verifiable with `python scripts/check_100.py --check-plan`.
-That command validates planning honesty only. It does not verify any Planned release gate or
-authorize package/version changes.
+The packet is internally verifiable with `python scripts/check_100.py --check-plan`. That command
+validates implementation metadata and planning honesty; it does not verify any Planned release
+gate or authorize publication.
 
 ## Entry decision
 

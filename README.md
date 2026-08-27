@@ -13,7 +13,8 @@ Routes return Python components; HTMX swaps HTML fragments. No Node frontend.
 **Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
-The stable release is `0.66.2` on PyPI; `0.67.0` is the Beta preview. See the [installation guide](https://hedron.readthedocs.io/en/latest/getting-started/installation/)
+The latest public release is `0.66.2` on PyPI; this checkout is the coordinated `1.0.0`
+train with `v0.67.0` as its migration baseline. See the [installation guide](https://hedron.readthedocs.io/en/latest/getting-started/installation/)
 for the supported registry pins.
 Application pins and extras:
 [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
@@ -78,7 +79,7 @@ Jinja+HTMX stack. Prefer `@app.screen` for new apps.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
-The stable release is **0.66.2**; packages and the `0.67.0` preview remain **Beta** — pin
+The public PyPI release is **0.66.2**; the `1.0.0` checkout remains in release verification — pin
 the stable minor range (`>=0.66.2,<0.67`). For production fit, read
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/); for Hello,
 keep going below.

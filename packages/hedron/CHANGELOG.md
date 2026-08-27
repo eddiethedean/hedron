@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.0] — 2026-08-27
+
+- Canonical `page`/`view`/`action` authoring and 0.67 migration tooling.
+
 ## [0.67.0] — 2026-08-27
 
 ### Added

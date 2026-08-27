@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.0] — 2026-08-27
+
+- Canonical 1.0 route, interaction, and migration interfaces.
+
 ## [0.67.0] — 2026-08-27
 
 ### Added

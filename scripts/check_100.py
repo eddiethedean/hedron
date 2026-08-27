@@ -172,15 +172,14 @@ def check_plan() -> list[str]:
         if not str(row.get("owner", "")).strip():
             errors.append(f"{gate_id}: missing owner")
 
-    if contract.get("status") != "Stage 0 Refined; implementation and release evidence pending":
-        errors.append("cut contract must state the refined-but-unimplemented status exactly")
+    if contract.get("status") != "Implementation in progress; release evidence pending":
+        errors.append("cut contract must state the implementation-in-progress status exactly")
     if contract.get("planning_baseline") != "v0.67.0":
         errors.append("cut contract must use immutable v0.67.0 as its baseline")
-    if (
-        contract.get("changes_runtime") is not False
-        or contract.get("changes_versions") is not False
-    ):
-        errors.append("Stage 0 refinement cannot change runtime or package versions")
+    if contract.get("changes_runtime") is not False or contract.get("changes_versions") is not True:
+        errors.append(
+            "1.0 implementation must keep runtime corrections explicit and version metadata bumped"
+        )
     if contract.get("stage_1_entry_satisfied") is not False:
         errors.append("cut contract must retain the W0/ENTRY-100 blocker")
     if warning_inventory.get("baseline") != "v0.67.0":
@@ -300,10 +299,8 @@ def check_plan() -> list[str]:
 
     project = workspace.get("project")
     current_version = project.get("version") if isinstance(project, dict) else None
-    if current_version != "0.67.0":
-        errors.append(
-            f"Stage 0 refinement must leave workspace at 0.67.0, found {current_version!r}"
-        )
+    if current_version != "1.0.0":
+        errors.append(f"v1.0 branch must set workspace version to 1.0.0, found {current_version!r}")
 
     migration_source = (ROOT / "packages/hedron-core/src/hedron_core/migration.py").read_text(
         encoding="utf-8"

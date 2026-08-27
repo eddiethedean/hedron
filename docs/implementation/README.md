@@ -51,7 +51,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
   D-101 / D-102 / D-105 W0–W17 workstreams for screens, forms, workspaces, task/dashboard/session/
   upload flows, `DesignSystem`, brand compilation, recipes/feature roles, scopes, unified
   explanation/preview/diff/ejection, all starter migrations, and twenty-gate release evidence
-  (Stage 0 Refined)
+  (implementation in progress)
 - [Modern CSS platform and intuitive built-in styling](MODERN_CSS_059.md) — phase 0.59 D-106 / D-107
   refined workstreams for the scoped compiler, cascade/tokens, modern color/type, container layout,
   media/overlay/motion, control/AppShell/pipeline consumer slices, tooling, fleet adoption, and
@@ -89,10 +89,10 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Phase 0.67 execution plan](EXECUTION_0_67.md) — entry lock, supply/CSP, browser-plan closure,
   typed directives, unified interaction, lifecycle, component-engine, migration, evidence, and
   release sequence
-- [Hedron 1.0 implementation and cut plan](HEDRON_1_0.md) — **Stage 0 Refined** against Verified
+- [Hedron 1.0 implementation and cut plan](HEDRON_1_0.md) — **Implementation in progress** against Verified
   Beta `v0.67.0`; complete inventory/warning reconciliation, canonical facade and per-slice
   removals, static migration, interaction/engine cutover, dual-version fleet evidence, and
-  release sequencing; W1 removals remain blocked on `ENTRY-100`
+  release sequencing; removals remain blocked on `ENTRY-100`
 - [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
   workstreams for compiling the Markdown corpus into native Hedron component trees, building the
   docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud
