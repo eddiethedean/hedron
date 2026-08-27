@@ -355,6 +355,8 @@ def test_phase_1_0_compatibility_report_retains_baseline_bridge_probe() -> None:
     )
     assert report["bridge_run"]["command"].startswith("python scripts/check_upgrade_100.py")
     assert report["bridge_run"]["facts"]["http_status"] == 200
+    assert report["bridge_run"]["baseline_typecheck"]["returncode"] == 0
+    assert report["bridge_run"]["current_typecheck"]["returncode"] == 0
 
 
 def test_phase_1_0_local_build_evidence_is_reproducible_but_not_release_claim() -> None:
