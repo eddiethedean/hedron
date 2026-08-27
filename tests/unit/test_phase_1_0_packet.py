@@ -165,3 +165,6 @@ def test_phase_1_0_inventory_generator_reads_immutable_baseline(tmp_path: Path) 
     assert (tmp_path / "public-inventory-100.toml").is_file()
     assert (tmp_path / "stable-inventory-100.toml").is_file()
     assert (tmp_path / "baseline-100.json").is_file()
+    stable_text = (tmp_path / "stable-inventory-100.toml").read_text(encoding="utf-8")
+    assert 'qualified = "hedron.Hedron"' in stable_text
+    assert 'maturity = "stable"' in stable_text

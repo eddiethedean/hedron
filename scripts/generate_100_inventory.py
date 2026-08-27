@@ -16,6 +16,7 @@ import hashlib
 import json
 import subprocess
 import tempfile
+import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -148,6 +149,20 @@ def _package_init(root: Path, distribution: str) -> Path | None:
     return path if path.is_file() else None
 
 
+def _tiers(root: Path, distribution: str) -> dict[str, str]:
+    """Load the immutable export-tier map where one exists."""
+    if distribution != "hedron":
+        return {}
+    path = root / "docs" / "api" / "export_tiers.toml"
+    try:
+        table = tomllib.loads(path.read_text(encoding="utf-8")).get("hedron", {})
+    except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError):
+        return {}
+    if not isinstance(table, dict):
+        return {}
+    return {str(name): str(value) for name, value in table.items() if isinstance(value, str)}
+
+
 def _tracked_artifacts(root: Path) -> tuple[Path, ...]:
     paths: list[Path] = []
     for path in sorted(root.rglob("*")):
@@ -207,13 +222,19 @@ def _package_disposition(distribution: str) -> str:
 def _write_public_inventory(
     path: Path, *, baseline: str, commit: str, root: Path
 ) -> dict[str, int]:
-    packages: list[tuple[str, str, str, tuple[str, ...]]] = []
+    packages: list[tuple[str, str, str, tuple[str, ...], dict[str, str]]] = []
     for distribution in sorted(PACKAGE_IMPORTS):
         init = _package_init(root, distribution)
         if init is None:
             continue
         packages.append(
-            (distribution, PACKAGE_IMPORTS[distribution], _version(init), _read_all(init))
+            (
+                distribution,
+                PACKAGE_IMPORTS[distribution],
+                _version(init),
+                _read_all(init),
+                _tiers(root, distribution),
+            )
         )
     artifacts = _tracked_artifacts(root)
     lines = [
@@ -225,7 +246,7 @@ def _write_public_inventory(
         'source_rule = "Generated from an immutable baseline; dispositions require review."',
         "",
     ]
-    for distribution, import_name, version, exports in packages:
+    for distribution, import_name, version, exports, tiers in packages:
         lines.extend(
             [
                 "[[package]]",
@@ -243,8 +264,8 @@ def _write_public_inventory(
                     f"task = {_toml_string('export:' + import_name + '.' + name)}",
                     f"canonical = {_toml_string(import_name + '.' + name)}",
                     f"owner = {_toml_string(distribution)}",
-                    'disposition = "unclassified"',
-                    'maturity = "unclassified"',
+                    f"disposition = {_toml_string(tiers.get(name, 'unclassified'))}",
+                    f"maturity = {_toml_string(tiers.get(name, 'unclassified'))}",
                     "",
                 ]
             )
@@ -269,13 +290,19 @@ def _write_public_inventory(
 def _write_stable_inventory(
     path: Path, *, baseline: str, commit: str, root: Path
 ) -> dict[str, int]:
-    packages: list[tuple[str, str, str, tuple[str, ...]]] = []
+    packages: list[tuple[str, str, str, tuple[str, ...], dict[str, str]]] = []
     for distribution in sorted(PACKAGE_IMPORTS):
         init = _package_init(root, distribution)
         if init is None:
             continue
         packages.append(
-            (distribution, PACKAGE_IMPORTS[distribution], _version(init), _read_all(init))
+            (
+                distribution,
+                PACKAGE_IMPORTS[distribution],
+                _version(init),
+                _read_all(init),
+                _tiers(root, distribution),
+            )
         )
     lines = [
         "schema_version = 1",
@@ -287,7 +314,7 @@ def _write_stable_inventory(
         'SemVer stable promise."',
         "",
     ]
-    for distribution, import_name, version, exports in packages:
+    for distribution, import_name, version, exports, tiers in packages:
         lines.extend(
             [
                 "[[package]]",
@@ -299,12 +326,14 @@ def _write_stable_inventory(
             ]
         )
         for name in exports:
+            maturity = tiers.get(name, "unclassified")
+            disposition = "stable" if maturity == "stable" else "needs-review"
             lines.extend(
                 [
                     "[[symbol]]",
                     f"qualified = {_toml_string(import_name + '.' + name)}",
-                    'maturity = "unclassified"',
-                    'disposition = "needs-review"',
+                    f"maturity = {_toml_string(maturity)}",
+                    f"disposition = {_toml_string(disposition)}",
                     "",
                 ]
             )
