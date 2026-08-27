@@ -158,7 +158,7 @@ class ClassifyIn(BaseModel):
     ]
 
 
-@app.command("/predict", fallback="/")
+@app.action("/predict", fallback="/")
 def predict_public(request: Request, data: Annotated[ClassifyIn, FormBody()]):
     handler = CLASSIFY_ACTION.handler
     if handler is None:  # Defensive: registered demos fail closed without a handler.
