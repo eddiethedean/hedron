@@ -53,6 +53,8 @@ REQUIRED_FILES = (
     "docs/acceptance/warnings-100.toml",
     "docs/acceptance/baseline-100.json",
     "docs/acceptance/support-policy-100.md",
+    "docs/acceptance/compatibility-report-100/README.md",
+    "docs/acceptance/compatibility-report-100/local-bridge.json",
 )
 
 TRANSITIONAL_FIXTURES = {
@@ -131,6 +133,9 @@ def check_plan() -> list[str]:
     predecessor = _toml(PREDECESSOR_GATE_PATH)
     warning_inventory = _toml(ACCEPTANCE / "warnings-100.toml")
     baseline = json.loads((ACCEPTANCE / "baseline-100.json").read_text(encoding="utf-8"))
+    compatibility = json.loads(
+        (ACCEPTANCE / "compatibility-report-100/local-bridge.json").read_text(encoding="utf-8")
+    )
     workspace = _toml(ROOT / "pyproject.toml")
 
     if gate.get("phase") != "1.0" or gate.get("target") != "v1.0.0":
@@ -194,6 +199,17 @@ def check_plan() -> list[str]:
         errors.append("warning inventory is missing the implemented warning floor")
     if baseline.get("baseline") != "v0.67.0" or baseline.get("release_cut_satisfied") is not False:
         errors.append("baseline artifact must remain a draft against v0.67.0")
+    if (
+        compatibility.get("schema") != "hedron.compatibility-report/1"
+        or compatibility.get("baseline") != "v0.67.0"
+        or compatibility.get("target") != "v1.0.0"
+        or compatibility.get("status") != "blocked"
+        or compatibility.get("release_claim") is not False
+    ):
+        errors.append("compatibility report must remain an honest blocked draft")
+    target_artifact = compatibility.get("target_artifact")
+    if not isinstance(target_artifact, dict) or target_artifact.get("available") is not False:
+        errors.append("compatibility report may not claim a v1.0.0 artifact is available")
 
     release_boundary = contract.get("release_boundary")
     if not isinstance(release_boundary, dict):

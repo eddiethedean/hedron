@@ -1,0 +1,18 @@
+{
+  "schema": "hedron.compatibility-report/1",
+  "baseline": "v0.67.0",
+  "target": "v1.0.0",
+  "status": "blocked",
+  "source_commit": "6604fce5",
+  "canonical_fixture": {
+    "command": ".venv/bin/python -m pytest -n 0 tests/upgrade/test_phase_1_0_fixtures.py",
+    "result": "4 passed",
+    "environment": "in-tree 0.67 implementation"
+  },
+  "target_artifact": {
+    "available": false,
+    "reason": "No reproducible v1.0.0 wheel/sdist and lock are present yet",
+    "required_before": ["COMPAT-100", "FLEET-100", "PKG-100", "RELEASE-100"]
+  },
+  "release_claim": false
+}
