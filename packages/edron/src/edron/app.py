@@ -12,10 +12,12 @@ from pydantic import BaseModel
 
 import hedron
 from edron._internal import Frame, frame_context
+from edron.composition import MAX_PACKAGE_ASSETS, FeaturePackage, PackageConflictError
 from edron.dependencies import Dependency, Resource
 from edron.descriptors import Action, BoundAction, BoundFragment, Fragment
 from edron.diagnostics import source_location
 from edron.errors import BindingError, RegistrationError
+from edron.navigation import LayoutSpec, NavigationError, NavigationTarget
 from edron.page import Page
 
 MAX_EXPLANATION_PAGES = 256
@@ -64,6 +66,9 @@ class App:
         self._actions: dict[int, Any] = {}
         self._function_pages: dict[int, type[Page]] = {}
         self._bundles: dict[int, Any] = {}
+        self._packages: dict[str, FeaturePackage] = {}
+        self._navigation_targets: dict[str, NavigationTarget] = {}
+        self._promotions: dict[str, Any] = {}
         self._data_workspaces: dict[str, Any] = {}
         self._sealed = False
 
@@ -88,6 +93,9 @@ class App:
         instance._actions = {}
         instance._function_pages = {}
         instance._bundles = {}
+        instance._packages = {}
+        instance._navigation_targets = {}
+        instance._promotions = {}
         instance._data_workspaces = {}
         instance._sealed = False
         return instance
@@ -798,10 +806,122 @@ class App:
                 for name, spec in self._resource_specs.items()
             ],
             "visual_interactions": visual_interactions,
+            "packages": [
+                {
+                    "name": package.name,
+                    "version": package.version,
+                    "logical_id": package.logical_id,
+                    "assets": [asset.logical_id for asset in package.assets],
+                    "description": package.description,
+                    "documentation": package.documentation,
+                }
+                for package in sorted(self._packages.values(), key=lambda item: item.name)
+            ],
+            "promotions": [
+                promotion.as_mapping()
+                for promotion in sorted(self._promotions.values(), key=lambda item: item.name)
+            ],
             "source_map": self.source_map(),
             "native_authority": "hedron",
             "callbacks_executed": False,
             "truncated": truncated,
+        }
+
+    def manifest(self) -> dict[str, Any]:
+        """Return a bounded deterministic Edron/native lowering manifest."""
+        import hashlib
+        import json
+
+        from hedron_core.registry import get_registry
+
+        pages = [
+            {
+                "name": str(record["name"]),
+                "path": str(record["path"]),
+                "title": str(record["title"]),
+            }
+            for record in self._pages.values()
+        ][:MAX_EXPLANATION_PAGES]
+        bundles = []
+        for bundle in sorted(
+            self._bundles.values(), key=lambda item: getattr(item, "logical_id", "")
+        ):
+            logical_id = getattr(bundle, "logical_id", None)
+            if not isinstance(logical_id, str):
+                continue
+            bundles.append(
+                {
+                    "logical_id": logical_id,
+                    "provider": str(getattr(bundle, "provider", "")),
+                    "provider_version": str(getattr(bundle, "provider_version", "")),
+                }
+            )
+        assets = [
+            {
+                "logical_id": str(asset.logical_id),
+                "kind": str(asset.kind),
+                "digest": str(asset.digest),
+                "content_type": str(asset.content_type),
+                "depends_on": list(asset.depends_on),
+                "placement": str(asset.placement),
+            }
+            for asset in get_registry().assets()
+        ][:MAX_PACKAGE_ASSETS]
+        payload: dict[str, Any] = {
+            "schema": "edron.application-manifest/1",
+            "title": self.title,
+            "native_authority": "hedron",
+            "pages": pages,
+            "packages": [
+                {
+                    "name": package.name,
+                    "version": package.version,
+                    "logical_id": package.logical_id,
+                    "assets": [asset.logical_id for asset in package.assets],
+                }
+                for package in sorted(self._packages.values(), key=lambda item: item.name)
+            ],
+            "bundles": bundles[:MAX_EXPLANATION_SURFACES],
+            "assets": assets,
+            "promotions": [
+                promotion.as_mapping()
+                for promotion in sorted(self._promotions.values(), key=lambda item: item.name)
+            ],
+            "callbacks_executed": False,
+        }
+        encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        payload["fingerprint"] = hashlib.sha256(encoded).hexdigest()[:32]
+        return payload
+
+    def conformance(self) -> dict[str, Any]:
+        """Check bounded Edron/native metadata without invoking app callbacks."""
+        findings: list[dict[str, str]] = []
+        paths: set[str] = set()
+        names: set[str] = set()
+        for record in self._pages.values():
+            path = str(record["path"])
+            name = str(record["name"])
+            if path in paths:
+                findings.append({"code": "EDR-06-NAV-DUPLICATE-PATH", "message": path})
+            if name in names:
+                findings.append({"code": "EDR-06-NAV-DUPLICATE-NAME", "message": name})
+            paths.add(path)
+            names.add(name)
+        try:
+            manifest = self.manifest()
+            if manifest.get("callbacks_executed") is not False:
+                findings.append({"code": "EDR-06-EVID-CALLBACK", "message": "callbacks executed"})
+            if len(manifest.get("pages", ())) > MAX_EXPLANATION_PAGES:
+                findings.append({"code": "EDR-06-EVID-BOUND", "message": "page bound exceeded"})
+        except (TypeError, ValueError, KeyError, RuntimeError) as exc:
+            findings.append({"code": "EDR-06-EVID-MANIFEST", "message": type(exc).__name__})
+            manifest = {"schema": "edron.application-manifest/1"}
+        return {
+            "schema": "edron.conformance/1",
+            "ok": not findings,
+            "findings": findings,
+            "fingerprint": manifest.get("fingerprint"),
+            "manifest": manifest,
         }
 
     def operations(self) -> dict[str, Any]:
@@ -919,9 +1039,153 @@ class App:
         return native.form(**kwargs)
 
     def include(self, feature: Any) -> Any:
+        if isinstance(feature, FeaturePackage):
+            return self.include_package(feature)
         bundle = self.hedron.include_feature(feature)
         self._bundles[id(feature)] = bundle
         return bundle
+
+    def include_feature(
+        self,
+        feature: Any,
+        *,
+        capabilities: Mapping[str, bool] | None = None,
+    ) -> Any:
+        """Include a native feature through the exact Hedron transaction."""
+        bundle = self.hedron.include_feature(feature, capabilities=capabilities)
+        self._bundles[id(feature)] = bundle
+        return bundle
+
+    def include_package(
+        self,
+        package: FeaturePackage,
+        *,
+        capabilities: Mapping[str, bool] | None = None,
+    ) -> FeaturePackage:
+        """Atomically register a declarative package and its native assets."""
+        if not isinstance(package, FeaturePackage):
+            raise TypeError("include_package expects edron.FeaturePackage")
+        self._ensure_open()
+        existing = self._packages.get(package.name)
+        if existing is not None:
+            if existing == package:
+                return existing
+            raise PackageConflictError(f"package {package.name!r} is already registered")
+        from hedron_core.registry import (
+            get_registry,
+            register_asset,
+            restore_registry_builder,
+            snapshot_registry_builder,
+        )
+
+        snapshot = snapshot_registry_builder()
+        existing_assets = {item.logical_id: item for item in get_registry().assets()}
+        try:
+            for asset in package.assets:
+                prior = existing_assets.get(asset.logical_id)
+                if prior is not None:
+                    if prior != asset:
+                        raise PackageConflictError(
+                            f"asset {asset.logical_id!r} conflicts with an existing asset"
+                        )
+                    continue
+                register_asset(
+                    logical_id=asset.logical_id,
+                    kind=asset.kind,
+                    path=asset.path,
+                    digest=asset.digest,
+                    content_type=asset.content_type,
+                    attributes=asset.attributes,
+                    depends_on=asset.depends_on,
+                    placement=asset.placement,
+                )
+            bundle = self.hedron.include_feature(package.to_bundle(), capabilities=capabilities)
+        except Exception:
+            restore_registry_builder(snapshot)
+            raise
+        self._packages[package.name] = package
+        self._bundles[id(package)] = bundle
+        return package
+
+    def package(
+        self, package: FeaturePackage, *, capabilities: Mapping[str, bool] | None = None
+    ) -> FeaturePackage:
+        """Alias for :meth:`include_package`."""
+        return self.include_package(package, capabilities=capabilities)
+
+    def navigation_target(self, target: Any) -> NavigationTarget:
+        """Return an app-owned typed target for a registered page or native screen."""
+        if isinstance(target, NavigationTarget):
+            if target.app_id != str(getattr(self.hedron, "hedron_app_id", "")):
+                raise NavigationError("navigation target belongs to another application")
+            return target
+        for record in self._pages.values():
+            if target is record["type"] or target is record.get("native"):
+                result = NavigationTarget(
+                    app_id=str(getattr(self.hedron, "hedron_app_id", "")),
+                    name=str(record["name"]),
+                    path=str(record["path"]),
+                    title=str(record["title"]),
+                    source_kind="page",
+                )
+                self._navigation_targets[result.name] = result
+                return result
+        path = getattr(target, "path", None)
+        name = getattr(target, "name", None) or getattr(target, "logical_id", None)
+        if isinstance(path, str) and isinstance(name, str):
+            result = NavigationTarget(
+                app_id=str(getattr(self.hedron, "hedron_app_id", "")),
+                name=name.removeprefix("screen:"),
+                path=path,
+                title=str(getattr(target, "title", name)),
+                source_kind="screen",
+            )
+            self._navigation_targets[result.name] = result
+            return result
+        if isinstance(target, str):
+            if target in self._pages:
+                return self.navigation_target(self._pages[target]["type"])
+            for record in self._pages.values():
+                if target == record["name"]:
+                    return self.navigation_target(record["type"])
+        raise NavigationError("navigation target must be a registered Edron page or native screen")
+
+    nav = navigation_target
+    target = navigation_target
+    navigation = navigation_target
+
+    def layout(self, kind: str = "stack", **kwargs: Any) -> LayoutSpec:
+        """Return a shared, validated layout declaration."""
+        return LayoutSpec(kind=kind, **kwargs)  # type: ignore[arg-type]
+
+    def promote_capability(self, name: str) -> Any:
+        """Promote one reviewed native capability after metadata validation."""
+        from edron.promotion import promoted_capability
+
+        promotion = promoted_capability(name)
+        facts = promotion.inspect()
+        if facts.get("status") != "available":
+            if facts.get("status") == "missing":
+                from edron.capabilities import MissingCapabilityError
+
+                raise MissingCapabilityError(
+                    f"install {promotion.distribution!r} to enable {name!r}",
+                    distribution=promotion.distribution,
+                )
+            from edron.capabilities import IncompatibleCapabilityError
+
+            raise IncompatibleCapabilityError(
+                (
+                    f"{promotion.distribution} is outside the compatible Hedron train "
+                    f"{promotion.train}"
+                ),
+                distribution=promotion.distribution,
+                version=facts.get("version"),
+            )
+        self._promotions[name] = promotion
+        return promotion
+
+    promote = promote_capability
 
     def _include_visual_interaction(self, interaction: Any) -> Any:
         """Include one native chart/map interaction exactly once per app."""

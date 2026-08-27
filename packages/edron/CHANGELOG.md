@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0] — 2026-08-26
+
+### Added
+
+- Declarative `FeaturePackage` composition with native FeatureBundle inclusion, asset
+  collision/deduplication, provenance, and rollback.
+- Typed app-owned navigation targets and shared bounded layout recipes over native Hedron nodes.
+- Reviewed lazy promotion metadata for the mature `hedron-data`, `hedron-charts`, and
+  `hedron-maps` capabilities, with explicit native ejection guidance.
+- Bounded deterministic application manifests and callback-free conformance reports.
+
 ## [0.5.0] — 2026-08-26
 
 ### Added

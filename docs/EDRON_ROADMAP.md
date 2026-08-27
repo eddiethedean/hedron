@@ -31,7 +31,7 @@ countdown or commitment to `1.0`.
 | **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | **Published** (`edron-v0.3.0`; Beta) |
 | **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | **Tagged** (`edron-v0.4.0`; publication pending) |
 | **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | **Implemented in-tree; unreleased Beta** |
-| **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | **Refined implementation candidate; no availability claim** |
+| **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | **Implemented in-tree; unreleased Beta** |
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | Candidate after `0.6` |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | Candidate after `0.7` |
 | **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation | Candidate after `0.8` |
@@ -260,13 +260,13 @@ global resource registry, implicit rerun model, or client-side state authority.
 
 ## Phase 0.6 — reusable composition and package depth
 
-Phase `0.6` is a refined implementation candidate, not an availability claim. It makes larger
+Phase `0.6` is implemented in-tree and remains unreleased. It makes larger
 Edron applications easier to organize while preserving one native renderer, router, catalog,
 lifespan, security boundary, and asset authority. The phase may begin only after the `0.5`
 acceptance packet is closed and the native composition contracts below are accepted in the
 compatible Hedron train.
 
-### Proposed contract
+### Implemented contract
 
 | Workstream | Candidate outcome | Native owner and required evidence |
 |---|---|---|

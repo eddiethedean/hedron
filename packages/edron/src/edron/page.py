@@ -9,6 +9,7 @@ from typing import Any, Literal
 import hedron
 from edron._internal import require_frame
 from edron.errors import BindingError
+from edron.navigation import LayoutSpec
 
 
 @dataclass
@@ -689,6 +690,36 @@ class Page:
         self._append(container, _target=_target)
         return container
 
+    def layout(
+        self,
+        spec: LayoutSpec | str = "stack",
+        *,
+        _target: Container | None = None,
+        **options: Any,
+    ) -> Container:
+        """Open a shared, bounded layout container for imperative composition."""
+        if isinstance(spec, str):
+            resolved = LayoutSpec(kind=spec, **options)  # type: ignore[arg-type]
+        elif isinstance(spec, LayoutSpec):
+            if options:
+                raise TypeError("layout options cannot be combined with a LayoutSpec")
+            resolved = spec
+        else:
+            raise TypeError("layout expects a layout kind or edron.LayoutSpec")
+        container = Container(
+            self,
+            resolved.kind,
+            {
+                "gap": resolved.gap,
+                "columns": resolved.columns,
+                "max_width": resolved.max_width,
+                "align": resolved.align,
+                "padding": resolved.padding,
+            },
+        )
+        self._append(container, _target=_target)
+        return container
+
     def columns(
         self,
         spec: int | Sequence[int | float] = 2,
@@ -824,7 +855,17 @@ class Page:
             if kind == "grid":
                 options = dict(value.options)
                 options.pop("vertical_alignment", None)
+                options.pop("max_width", None)
+                options.pop("align", None)
+                options.pop("padding", None)
                 return self._native("Grid", *children, **options)
+            if kind == "container":
+                options = dict(value.options)
+                options.pop("gap", None)
+                options.pop("columns", None)
+                return self._native("Container", *children, **options)
+            if kind == "plain":
+                return children[0] if len(children) == 1 else children
             if kind == "tabs":
                 items = list(zip(value.options["labels"], children, strict=True))
                 return self._native("Tabs", items)
@@ -834,7 +875,12 @@ class Page:
                 )
             if kind == "style":
                 return self._native("StyleScope", *children, **value.options)
-            return self._native("Stack", *children, **value.options)
+            options = dict(value.options)
+            options.pop("columns", None)
+            options.pop("max_width", None)
+            options.pop("align", None)
+            options.pop("padding", None)
+            return self._native("Stack", *children, **options)
         return value
 
     def _resolved_output(self) -> list[Any]:

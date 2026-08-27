@@ -1,6 +1,6 @@
 """Edron: a class-oriented authoring facade for Hedron."""
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 from edron.app import App
 from edron.cache import CachedFunction, cache_data
@@ -10,6 +10,7 @@ from edron.capabilities import (
     IncompatibleCapabilityError,
     MissingCapabilityError,
 )
+from edron.composition import FeaturePackage, PackageConflictError, feature_package
 from edron.confirm import Confirm
 from edron.data import (
     AuditEvent,
@@ -44,8 +45,10 @@ from edron.jobs import (  # pyright: ignore[reportUnknownVariableType]
     JobScope,
     job_status_events,
 )
+from edron.navigation import LAYOUT_KINDS, LayoutSpec, NavigationError, NavigationTarget, layout
 from edron.outcomes import Outcome, refresh, success
 from edron.page import Container, FilterScope, Page
+from edron.promotion import CapabilityPromotion, promoted_capabilities, promoted_capability
 from edron.scaffolds import TEMPLATES, create_scaffold
 from edron.styling import Color, DesignSystem, StyleContext, StyleRecipe, Theme, ThemeSpec, theme
 
@@ -57,6 +60,7 @@ __all__ = [
     "BoundFragment",
     "CachedFunction",
     "CapabilityError",
+    "CapabilityPromotion",
     "Color",
     "Column",
     "Confirm",
@@ -75,6 +79,7 @@ __all__ = [
     "EditIntent",
     "EditPolicy",
     "FilterScope",
+    "FeaturePackage",
     "Fragment",
     "IncompatibleCapabilityError",
     "JobBackend",
@@ -84,8 +89,13 @@ __all__ = [
     "MissingCapabilityError",
     "BrokenCapabilityError",
     "Outcome",
+    "PackageConflictError",
     "Page",
     "PageRequest",
+    "LayoutSpec",
+    "NavigationError",
+    "NavigationTarget",
+    "LAYOUT_KINDS",
     "PhaseError",
     "RegistrationError",
     "StyleContext",
@@ -105,6 +115,10 @@ __all__ = [
     "refresh",
     "success",
     "theme",
+    "feature_package",
+    "layout",
+    "promoted_capability",
+    "promoted_capabilities",
     "SourceLocation",
     "WorkspacePage",
     "AuditEvent",

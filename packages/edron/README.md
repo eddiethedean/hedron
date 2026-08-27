@@ -16,7 +16,7 @@ class Home(ed.Page):
         self.text("A small Python vocabulary over native Hedron.")
 ```
 
-Edron 0.5 is an in-tree Beta implementation line. Native Hedron objects remain available through
+Edron 0.6 is an in-tree Beta implementation line. Native Hedron objects remain available through
 `app.hedron` and `Page.include()`. Use `edron check` for non-executing editor feedback,
 `edron explain` for source-mapped registration facts, and `edron new` for teaching scaffolds.
 
@@ -82,3 +82,23 @@ workspace = ed.DataWorkspace("people", source=source, columns=columns)
 
 Add an `EditPolicy` with explicit authorization to make a workspace editable. Edron never owns
 database sessions, transactions, authorization state, persistence, or audit storage.
+
+Phase 0.6 adds reusable package composition, typed navigation targets, shared native layout
+recipes, reviewed lazy capability promotion, and bounded lowering evidence:
+
+```python
+dashboard = ed.feature_package("acme.dashboard", "0.1.0")
+app.include_package(dashboard)
+
+@app.page("/home", title="Home")
+class Home(ed.Page):
+    def render(self) -> None:
+        with self.layout(ed.layout("grid", columns=2)) as body:
+            body.text("Ready")
+
+home = app.navigation_target(Home)
+app.promote_capability("charts")  # native hedron_charts remains the escape hatch
+```
+
+`app.manifest()` and `app.conformance()` expose deterministic, redacted Edron/native lowering
+facts without executing application callbacks.
