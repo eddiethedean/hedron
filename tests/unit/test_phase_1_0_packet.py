@@ -327,6 +327,18 @@ def test_phase_1_0_compatibility_report_retains_baseline_bridge_probe() -> None:
     assert report["bridge_run"]["facts"]["http_status"] == 200
 
 
+def test_phase_1_0_local_build_evidence_is_reproducible_but_not_release_claim() -> None:
+    evidence = json.loads(
+        (ROOT / "docs/acceptance/compatibility-report-100/local-build-evidence.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert evidence["reproducibility"]["verified"] is True
+    assert evidence["artifact_retention"] is False
+    assert evidence["release_claim"] is False
+    assert len(evidence["artifacts"]) == 24
+
+
 def test_phase_1_0_checker_validates_coordinated_and_satellite_metadata() -> None:
     from scripts.check_100 import _check_package_metadata
 

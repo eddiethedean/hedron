@@ -1,0 +1,46 @@
+{
+  "schema": "hedron.local-build-evidence/1",
+  "phase": "1.0",
+  "target": "v1.0.0",
+  "source_commit": "9771e87a66e0a72d662d917c17cdbf4029fb9717",
+  "command": "SOURCE_DATE_EPOCH=0 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages",
+  "environment": {
+    "python": "3.11.9",
+    "uv": "0.11.3",
+    "source_date_epoch": 0
+  },
+  "reproducibility": {
+    "repeat_builds": 2,
+    "comparison": "byte-for-byte SHA-256 equality",
+    "scope": "all 1.0.0 wheel and sdist files produced in dist/",
+    "verified": true
+  },
+  "artifact_retention": false,
+  "release_claim": false,
+  "artifacts": [
+    {"name": "hedron-1.0.0-py3-none-any.whl", "sha256": "163b7ec487de3fb3509c728efd6b4c94675c0ac4133f0082c287c7d327c71220"},
+    {"name": "hedron-1.0.0.tar.gz", "sha256": "fc7cc37a8cb108fd20a38248991204797efc271ea5816054e6cdef34ed7a91b2"},
+    {"name": "hedron_conformance-1.0.0-py3-none-any.whl", "sha256": "40fc3baa7c16cbedc5fee099c50c30dac265cc696751b3badb7f0fdb4e706702"},
+    {"name": "hedron_conformance-1.0.0.tar.gz", "sha256": "15fb8286e1dd3be21076a0d6e15bf38bee2c07dc448286c01a40f85d7d69702e"},
+    {"name": "hedron_core-1.0.0-py3-none-any.whl", "sha256": "4b16773337ec911421e14011015e587c8037a076a417c8d6874f78c8c4b2e6f4"},
+    {"name": "hedron_core-1.0.0.tar.gz", "sha256": "c37c93798c972232e4d47a030ea64349f4b088ae659a55e333eb279f11fe8772"},
+    {"name": "hedron_data-1.0.0-py3-none-any.whl", "sha256": "3168ea517a90172221726468f08b228285aee85f762164e958141319003a7094"},
+    {"name": "hedron_data-1.0.0.tar.gz", "sha256": "2e296ead4f809eed852179f59abcd446e8bcabcb4b64a9aa0f44bea142f426f3"},
+    {"name": "hedron_django-1.0.0-py3-none-any.whl", "sha256": "06e6b5f0a1440904505a9d462608a794f79ccb573e15fc2dece2069a399332d9"},
+    {"name": "hedron_django-1.0.0.tar.gz", "sha256": "16e399bc64c46f7b8d166c923ac8e14c996841c2a3fddd10ced5d4d6dd462b66"},
+    {"name": "hedron_elements-1.0.0-py3-none-any.whl", "sha256": "e0a5ff28de7e39f1b95c58186aac20879b5da0635f75b6b4c6e4a8363ff8382b"},
+    {"name": "hedron_elements-1.0.0.tar.gz", "sha256": "51d951abba2c388379f06df77106b99791b422a2735e38736801ff449c4b953e"},
+    {"name": "hedron_explorer-1.0.0-py3-none-any.whl", "sha256": "9ab7d20c332514dd51bd1f192adc9030e8fe52042b44bb99a541619b031d9bb1"},
+    {"name": "hedron_explorer-1.0.0.tar.gz", "sha256": "9230b9e4aaf98adc97e35889c148a1230d3b479ee3b09ea82e67785b6ee03132"},
+    {"name": "hedron_extras-1.0.0-py3-none-any.whl", "sha256": "66218579ced0db5d22edb238d9c2211ee5aa647c0af965f3c23fe4af728ad447"},
+    {"name": "hedron_extras-1.0.0.tar.gz", "sha256": "44032041af9435a580bc0e13734fa0a5aee78311be47878669bc5589deb9a9a1"},
+    {"name": "hedron_flask-1.0.0-py3-none-any.whl", "sha256": "2a70bccf1884d0fc8ff4dba2a8594e06aa4d4f1d53fb2eeb42dcd1df46909992"},
+    {"name": "hedron_flask-1.0.0.tar.gz", "sha256": "a19e9afa183f79dd423fc00abafbf3b20a95340260f0dd4ba4abf26de269a407"},
+    {"name": "hedron_jinja-1.0.0-py3-none-any.whl", "sha256": "c0bef34ffc01bd93666f6717687a7be9dfc9ecc0a50fbf1c54b82e12ffaea3e0"},
+    {"name": "hedron_jinja-1.0.0.tar.gz", "sha256": "798ffa15710ecfb44174efed546a6cf8bbd06b5862c1bd544baec651c6f47522"},
+    {"name": "hedron_posit-1.0.0-py3-none-any.whl", "sha256": "026e548abd46f5b3abfa1a7c0cab4e7fee06a3431793f148edf3f884a8dfb758"},
+    {"name": "hedron_posit-1.0.0.tar.gz", "sha256": "359bf6902f92b1da3c05de59fc9d85ae50e1aad2c6254c785ec38ed449d4083d"},
+    {"name": "hedron_workbench-1.0.0-py3-none-any.whl", "sha256": "fbb9f5cd2537c9ee0472c2a2e2aa6419cb180f13f7ead89a96c600ea66c3d1f4"},
+    {"name": "hedron_workbench-1.0.0.tar.gz", "sha256": "5f69318701c3ac7c1040920491331dd4c9b2382cbf11d8d937a3e8ece682dcf8"}
+  ]
+}

@@ -118,6 +118,7 @@ REQUIRED_FILES = (
     "docs/acceptance/support-policy-100.md",
     "docs/acceptance/compatibility-report-100/README.md",
     "docs/acceptance/compatibility-report-100/local-bridge.json",
+    "docs/acceptance/compatibility-report-100/local-build-evidence.json",
     "scripts/generate_100_inventory.py",
     "scripts/check_upgrade_100.py",
 )
@@ -440,6 +441,11 @@ def check_plan() -> list[str]:
     compatibility = json.loads(
         (ACCEPTANCE / "compatibility-report-100/local-bridge.json").read_text(encoding="utf-8")
     )
+    build_evidence = json.loads(
+        (ACCEPTANCE / "compatibility-report-100/local-build-evidence.json").read_text(
+            encoding="utf-8"
+        )
+    )
     workspace = _toml(ROOT / "pyproject.toml")
 
     if gate.get("phase") != "1.0" or gate.get("target") != "v1.0.0":
@@ -573,6 +579,38 @@ def check_plan() -> list[str]:
     target_artifact = compatibility.get("target_artifact")
     if not isinstance(target_artifact, dict) or target_artifact.get("available") is not False:
         errors.append("compatibility report may not claim a v1.0.0 artifact is available")
+    if (
+        build_evidence.get("schema") != "hedron.local-build-evidence/1"
+        or build_evidence.get("target") != "v1.0.0"
+        or build_evidence.get("artifact_retention") is not False
+        or build_evidence.get("release_claim") is not False
+    ):
+        errors.append(
+            "local build evidence must remain a non-release, non-retained artifact record"
+        )
+    reproducibility = build_evidence.get("reproducibility")
+    if not isinstance(reproducibility, dict) or reproducibility.get("verified") is not True:
+        errors.append("local build evidence must record verified reproducibility")
+    artifacts = build_evidence.get("artifacts")
+    if not isinstance(artifacts, list) or len(artifacts) != 24:
+        errors.append("local build evidence must enumerate the 24 coordinated 1.0.0 artifacts")
+    else:
+        seen_artifacts: set[str] = set()
+        for artifact in artifacts:
+            if not isinstance(artifact, dict):
+                errors.append("local build evidence contains a non-table artifact")
+                continue
+            name = str(artifact.get("name", ""))
+            digest = str(artifact.get("sha256", ""))
+            if not name or name in seen_artifacts:
+                errors.append("local build evidence contains a missing or duplicate artifact name")
+            seen_artifacts.add(name)
+            if len(digest) != hashlib.sha256().digest_size * 2 or any(
+                char not in "0123456789abcdef" for char in digest
+            ):
+                errors.append(
+                    f"local build evidence has an invalid SHA-256 for {name or '<unknown>'}"
+                )
     bridge_run = compatibility.get("bridge_run")
     if not isinstance(bridge_run, dict):
         errors.append("compatibility report must retain the executable baseline bridge run")
