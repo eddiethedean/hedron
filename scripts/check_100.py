@@ -198,6 +198,26 @@ def _check_package_metadata() -> list[str]:
     if not isinstance(workspace, dict) or workspace.get("version") != "1.0.0":
         errors.append("root workspace metadata must declare version 1.0.0")
 
+    lock_path = ROOT / "uv.lock"
+    try:
+        lock = _toml(lock_path)
+    except (OSError, ValueError):
+        lock = {}
+        errors.append("uv.lock must be readable for the coordinated 1.0.0 cut")
+    lock_packages = lock.get("package", []) if isinstance(lock, dict) else []
+    lock_versions = (
+        {
+            str(row.get("name")): str(row.get("version"))
+            for row in lock_packages
+            if isinstance(row, dict) and row.get("name")
+        }
+        if isinstance(lock_packages, list)
+        else {}
+    )
+    for distribution in COORDINATED_PACKAGES:
+        if lock_versions.get(distribution) != "1.0.0":
+            errors.append(f"{distribution}: uv.lock must resolve the coordinated version 1.0.0")
+
     for distribution in COORDINATED_PACKAGES:
         package_dir = ROOT / "packages" / distribution
         pyproject = package_dir / "pyproject.toml"
@@ -486,7 +506,8 @@ def check_plan() -> list[str]:
         errors.append("cut contract must use immutable v0.67.0 as its baseline")
     if contract.get("changes_runtime") is not True or contract.get("changes_versions") is not True:
         errors.append(
-            "1.0 implementation must declare compatibility-preserving runtime corrections and bump version metadata"
+            "1.0 implementation must declare compatibility-preserving runtime corrections "
+            "and bump version metadata"
         )
     if contract.get("runtime_change_rule") != (
         "compatibility-preserving corrections only; no net-new Required runtime capabilities"
@@ -645,7 +666,8 @@ def check_plan() -> list[str]:
         }
         if check_ids != required_checks:
             errors.append(
-                "verification evidence must cover phase, bridge, quality, browser, build, regression, and release checks"
+                "verification evidence must cover phase, bridge, quality, browser, build, "
+                "regression, and release checks"
             )
         for row in verification_checks:
             if not isinstance(row, dict):
