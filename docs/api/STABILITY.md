@@ -194,21 +194,20 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 Schema acceptance is broader than specialized host painting in `hedron-charts 0.2.0`; see the
 [Chart API coverage matrix](CHART.md#compiler-contract-versus-current-host-coverage).
 
-### `hedron-workbench` (Beta) — `beta` optional Workbench adapter
+### `hedron-posit` (Stable facade) — `stable` Posit adapter
 
-Install `hedron[workbench]` / `hedron-workbench>=0.66.2,<0.67`. Supported:
-`HedronWorkbench`, pre-import launcher and resolved-state handoff,
+Install `hedron[posit]` / `hedron-posit>=1.0.0,<2.0`. Supported:
+`HedronPosit`, pre-import Workbench launcher and resolved-state handoff,
 `HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic URL and safe
 response-header adaptation, Hedron-owned request-time cookie repair,
 browser/durable URL separation, explicit-mount routing, topology diagnostics,
 and ordinary local Uvicorn/generic-root-path parity. Posit Connect trusted-header
-behavior remains Experimental. The launcher can hand its pre-bound listener to
-Uvicorn reload or multiple workers (not both). Excluded: Flask/Django/WSGI,
-wildcard proxy trust, arbitrary raw HTML/JavaScript rewriting, vendoring
-fastapi-workbench, and bundling `rserver-url`.
+behavior remains Experimental. The generic implementation is provided by the
+independent `fastapi-workbench>=1.0.1,<2.0` package. The removed
+`hedron-workbench` distribution and `hedron[workbench]` extra are not supported.
 
-See [production-grade-inventory-029.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/production-grade-inventory-029.toml)
-and [Posit Workbench](../guides/posit-workbench.md).
+See [Posit Workbench](../guides/posit-workbench.md) and the
+[current release](../guides/current-release.md).
 
 ### `hedron-flask` / `hedron-django` (Beta) — `beta` Supported adapters
 

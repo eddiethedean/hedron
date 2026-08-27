@@ -29,7 +29,7 @@ uv sync
 | [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask | — | See example README |
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | — | See example README |
 | [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | HDJ | — | Prints HTML to stdout (not a web server) |
-| [workbench-reference](https://github.com/eddiethedean/hedron/tree/main/examples/workbench-reference) | FastAPI | — | `hedron-workbench run app_facade:app` from `examples/workbench-reference` |
+| [workbench-reference](https://github.com/eddiethedean/hedron/tree/main/examples/workbench-reference) | FastAPI | — | `hedron-posit run app_facade:app` from `examples/workbench-reference` |
 
 ## Phase evidence (0.15–0.18)
 

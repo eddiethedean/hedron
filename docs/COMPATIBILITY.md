@@ -20,11 +20,11 @@ The **Supported matrix** is the CI-tested range. Package metadata may declare a 
 compatible range; versions outside the Supported column are installable but unsupported
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
-`hedron-extras`, `hedron-workbench`, `hedron-posit`, `hedron-elements`)
+`hedron-extras`, `hedron-posit`, `hedron-elements`)
 stay on the published `0.64.x` train (`v0.64.0` on PyPI). Independent Beta packages
 `hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
 lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
-also version independently. Independent `fastapi-workbench>=1.0.0,<2` is not on the
+also version independently. Independent `fastapi-workbench>=1.0.1,<2` is not on the
 coordinated 0.51 train. `hedron-elements` is Beta for the declared Supported
 inventory only.
 

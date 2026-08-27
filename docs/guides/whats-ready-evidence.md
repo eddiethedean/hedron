@@ -57,7 +57,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | ReactMigrationMatrix / island | Matrix **Supported** as guidance; island **Experimental** docs/reference only | [REACT_MIGRATION_MATRIX_040](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/REACT_MIGRATION_MATRIX_040.md) |
 | Table↔chart cross-filter | **Supported** via `compose_chartlink_039` on Published 0.38 `hedron-chart` | [Dashboards](dashboards.md) |
 | Flask / Django host | **Supported** (host pages/fragments/CSRF; **not** FastAPI decorator-parity for progressive facades) | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
-| Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronWorkbench` / `HedronPosit`; no import auto-wrap |
+| Posit Workbench / RStudio Server | **Supported** (`hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronPosit`; no import auto-wrap |
 | Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
 | Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.66.2,<0.67`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
@@ -201,8 +201,8 @@ Pin `hedron>=0.66.2,<0.67`. Public-index notes: [Installation](../getting-starte
 Extras: `"hedron[data]>=0.66.2,<0.67"`, `"hedron[extras]>=0.66.2,<0.67"`,
 `"hedron[jinja]>=0.66.2,<0.67"`, `"hedron[dev]>=0.66.2,<0.67"`,
 `"hedron[notebook]>=0.66.2,<0.67"` (tooling / localhost),
-`"hedron[mcp]>=0.64.0,<0.62"` (Beta Supported inventory),
+`"hedron[mcp]>=0.66.2,<0.67"` (Beta Supported inventory),
 `"hedron[gradio]>=0.66.2,<0.67"` (Beta satellite; pin `hedron-gradio>=0.2.1,<0.3`),
-`"hedron[charts]>=0.66.2,<0.67"`, `"hedron[maps]>=0.66.2,<0.67"`, `"hedron[workbench]>=0.66.2,<0.67"`,
-`"hedron[posit]>=0.66.2,<0.67"`,
+`"hedron[charts]>=0.66.2,<0.67"`, `"hedron[maps]>=0.66.2,<0.67"`,
+`"hedron[posit]>=1.0.0,<2.0"`,
 and `"hedron-sample-kit>=0.2.2,<0.3"`.

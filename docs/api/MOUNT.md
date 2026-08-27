@@ -21,7 +21,7 @@ These helpers resolve that mount and keep cookie paths consistent.
 3. Confirm CSRF cookies use `Path=/apps/hedron` (not `/` alone) and that Refresh /
    form posts still hit the app.
 
-Posit Workbench: `hedron-workbench run` exports `HEDRON_ROOT_PATH` from discovered
+Posit Workbench: `hedron-posit run` exports `HEDRON_ROOT_PATH` from discovered
 `rserver-url` output **before** importing the app. See
 [Posit Workbench](../guides/posit-workbench.md).
 

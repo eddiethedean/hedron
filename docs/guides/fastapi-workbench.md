@@ -3,7 +3,7 @@
 Deploy plain FastAPI applications behind Posit Workbench / RStudio Server without
 installing Hedron.
 
-**Package:** `fastapi-workbench` `1.0.0` (independent semver) · import `fastapi_workbench`
+**Package:** `fastapi-workbench` `1.0.1` (independent semver) · import `fastapi_workbench`
 **Requires:** Python 3.11–3.14, FastAPI/Starlette ASGI app
 
 Supported Workbench floor is **2025.05.1** (linux/amd64). Current verified lane is
@@ -12,9 +12,9 @@ Workbench **2026.07.0**.
 ## Install
 
 ```bash
-pip install "fastapi-workbench>=1.0.0,<2.0" "fastapi" "uvicorn[standard]"
+pip install "fastapi-workbench>=1.0.1,<2.0" "fastapi" "uvicorn[standard]"
 # or
-uv add "fastapi-workbench>=1.0.0,<2.0" "fastapi" "uvicorn[standard]"
+uv add "fastapi-workbench>=1.0.1,<2.0" "fastapi" "uvicorn[standard]"
 ```
 
 ## Launch on Workbench
@@ -41,13 +41,13 @@ Installing or importing this package never monkey-patches your application.
 
 ## Hedron apps
 
-Hedron applications should use [`hedron-workbench`](posit-workbench.md) 0.30+,
-which depends on this package and adds `HedronWorkbench`, `HEDRON_ROOT_PATH`, and
-Hedron URL/CSRF integration.
+Hedron applications should use [`hedron-posit`](posit-workbench.md) 1.0+ (or
+`hedron[posit]`), which composes this package and adds `HedronPosit`,
+`HEDRON_ROOT_PATH`, and Hedron URL/CSRF integration.
 
 ## Reference
 
 - [RFC-0063](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md)
 - [Example app](https://github.com/eddiethedean/hedron/tree/main/examples/fastapi-workbench-reference)
 - REALWB-030 Docker smoke runs this app via `fastapi-workbench run` alongside the
-  hedron-workbench reference (`examples/workbench-reference/app_facade.py`).
+  `hedron-posit` reference (`examples/workbench-reference/app_facade.py`).

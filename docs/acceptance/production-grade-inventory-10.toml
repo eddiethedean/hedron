@@ -26,7 +26,6 @@ packages = [
   "hedron-notebook",
   "hedron-mcp",
   "hedron-gradio",
-  "hedron-workbench",
   "hedron-posit",
   "hedron-elements",
   "fastapi-workbench",
@@ -68,8 +67,6 @@ maturity = "beta"
 maturity = "beta"
 [hedron-gradio]
 maturity = "beta"
-[hedron-workbench]
-maturity = "stable"
 [hedron-posit]
 maturity = "stable"
 [hedron-elements]

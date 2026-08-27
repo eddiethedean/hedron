@@ -41,7 +41,7 @@ Quickstarts: [Flask](../getting-started/flask.md) · [Django](../getting-started
 
 See the full [configuration reference](../CONFIGURATION.md).
 
-Posit Workbench / RStudio Server: use `hedron-workbench run app:app` so
+Posit Workbench / RStudio Server: use `hedron-posit run app:app` so
 `HEDRON_ROOT_PATH` is exported before import. See [Posit Workbench](posit-workbench.md).
 
 For durable multi-worker jobs, see [Celery / RQ + Redis](jobs-celery-rq.md).
