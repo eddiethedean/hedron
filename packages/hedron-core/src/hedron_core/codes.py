@@ -23,6 +23,8 @@ HED_ASSET_SYMLINK = "HED-ASSET-0006"
 HED_ASSET_MIME = "HED-ASSET-0007"
 HED_BROWSER_DUPLICATE = "HED-ASSET-0010"
 HED_BROWSER_INVALID = "HED-ASSET-0011"
+# Browser capability planning (0.67)
+HED_BROWSER_0671 = "HED-BROWSER-0671"  # fragment feature/asset plan exceeds its document closure
 # Application asset plan (0.53 / ASSET-053)
 HED_ASSET_0531 = "HED-ASSET-0531"  # duplicate application asset logical_id
 HED_ASSET_0532 = "HED-ASSET-0532"  # missing application asset dependency
@@ -104,6 +106,11 @@ HED_SEC_0008 = "HED-SEC-0008"
 HED_SEC_0009 = "HED-SEC-0009"
 HED_SEC_0010 = "HED-SEC-0010"
 HED_SEC_0011 = "HED-SEC-0011"
+HED_SEC_0012 = "HED-SEC-0012"  # untyped Alpine attribute escape hatch
+HED_SEC_0013 = "HED-SEC-0013"  # duplicate Alpine directive attribute
+HED_SEC_0014 = "HED-SEC-0014"  # raw Alpine attribute bypass
+HED_SEC_0015 = "HED-SEC-0015"  # untyped interaction attribute escape hatch
+HED_SEC_0016 = "HED-SEC-0016"  # duplicate interaction attribute
 HED_SEC_0020 = "HED-SEC-0020"
 
 # Auto / icons / content / auth / compat
@@ -524,6 +531,11 @@ HED_MIGRATE_0005 = "HED-MIGRATE-0005"  # error-boundary migration candidate
 HED_MIGRATE_0006 = "HED-MIGRATE-0006"  # routing/portal migration candidate
 HED_MIGRATE_0007 = "HED-MIGRATE-0007"  # client-runtime migration candidate
 HED_MIGRATE_0008 = "HED-MIGRATE-0008"  # React-only widget migration candidate
+# Hedron 1.0 compatibility warnings (0.67)
+HED_MIGRATE_0670 = "HED-MIGRATE-0670"  # transitional authoring path found by analyzer
+HED_MIGRATE_0671 = "HED-MIGRATE-0671"  # app.component -> app.view
+HED_MIGRATE_0672 = "HED-MIGRATE-0672"  # app.fragment -> app.view
+HED_MIGRATE_0673 = "HED-MIGRATE-0673"  # app.include_feature -> app.include
 
 
 def registered_codes() -> frozenset[str]:

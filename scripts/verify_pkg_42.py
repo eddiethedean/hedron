@@ -249,6 +249,7 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.64.",
             "0.65.",
             "0.66.",
+            "0.67.",
         )
     ):
         raise SystemExit(
@@ -281,6 +282,7 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.64.",
             "0.65.",
             "0.66.",
+            "0.67.",
         )
     ):
         print(f"ok: post-cut living tip {version} (0.42 packet verified)")
@@ -384,6 +386,7 @@ def main(argv: list[str] | None = None) -> int:
             "0.64.",
             "0.65.",
             "0.66.",
+            "0.67.",
         )
     ):
         errors = gate.check_evidence_manifest(GATE)

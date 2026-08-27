@@ -89,6 +89,12 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-ASSET-0537` | `HED_ASSET_0537` |
 | `HED-ASSET-0538` | `HED_ASSET_0538` |
 
+## HED-BROWSER (0.67)
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-BROWSER-0671` | `HED_BROWSER_0671` |
+
 ## HED-AUDIT
 
 | Code | Catalog symbol |
@@ -542,6 +548,11 @@ Phase 0.47 assigns the following families:
 | `HED-SEC-0009` | `HED_SEC_0009` |
 | `HED-SEC-0010` | `HED_SEC_0010` |
 | `HED-SEC-0011` | `HED_SEC_0011` |
+| `HED-SEC-0012` | `HED_SEC_0012` |
+| `HED-SEC-0013` | `HED_SEC_0013` |
+| `HED-SEC-0014` | `HED_SEC_0014` |
+| `HED-SEC-0015` | `HED_SEC_0015` |
+| `HED-SEC-0016` | `HED_SEC_0016` |
 
 | `HED-ELEMENT-0001` | blocker | Element tag/definition conflict | Align definitions or choose a new tag/logical id |
 | `HED-ELEMENT-0002` | blocker | Incompatible element ABI pair | Align markup/module ABI majors |
@@ -708,6 +719,10 @@ Phase 0.63 React migration analyzer findings.
 | `HED-MIGRATE-0006` | `HED_MIGRATE_0006` |
 | `HED-MIGRATE-0007` | `HED_MIGRATE_0007` |
 | `HED-MIGRATE-0008` | `HED_MIGRATE_0008` |
+| `HED-MIGRATE-0670` | `HED_MIGRATE_0670` |
+| `HED-MIGRATE-0671` | `HED_MIGRATE_0671` |
+| `HED-MIGRATE-0672` | `HED_MIGRATE_0672` |
+| `HED-MIGRATE-0673` | `HED_MIGRATE_0673` |
 
 ## HED-TYPE (0.44)
 

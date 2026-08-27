@@ -501,7 +501,7 @@ def resolve_deployment_profile(
         values[field_name] = value
 
     try:
-        profile = DeploymentProfile.for_name(canonical, **values)
+        resolved_profile = DeploymentProfile.for_name(canonical, **values)
     except DeploymentError as exc:
         findings.append(
             _diagnostic(
@@ -512,8 +512,10 @@ def resolve_deployment_profile(
                 "Adjust the explicit profile values and rerun the deployment check.",
             )
         )
-        profile = DeploymentProfile.for_name("local")
-    return DeploymentResolution(profile, DiagnosticReport(tuple(findings[:_MAX_DIAGNOSTICS])))
+        resolved_profile = DeploymentProfile.for_name("local")
+    return DeploymentResolution(
+        resolved_profile, DiagnosticReport(tuple(findings[:_MAX_DIAGNOSTICS]))
+    )
 
 
 def _path_for_build_dir(build_dir: str, *, cwd: str | Path | None) -> Path:

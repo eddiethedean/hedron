@@ -1,4 +1,4 @@
-REALWB-030 start 2026-08-19T19:21:41Z
+REALWB-030 start 2026-08-27T14:53:26Z
 image=posit/workbench@sha256:***
 docker_platform=linux/amd64
 python=Python 3.12.13
@@ -24,7 +24,7 @@ CSRF=ok
 ASSETS=ok
 OPENAPI=ok docs=200 spec=200
 explorer=off
-REDIRECT=ok mount_once=ok
+REDIRECT=ok scheme_absolute=ok mount_once=ok
 ENCODED_TARGET=ok
 TARGET_GUARDS=ok unsafe=400 conflict=400 origin=400 oversized=414
 DIAGNOSTICS=ok active=true normalizer_count=1 handoff=ok redacted=ok
@@ -52,13 +52,6 @@ FASTAPI_WEBSOCKET=ok
 FASTAPI_OUTSIDE_WORKBENCH=ok active=false workbenchified=false generic_aliases_ignored=ok
 FASTAPI_PACKAGE=pass
 RESULT=pass
-REALWB-030 end 2026-08-19T19:22:09Z
+REALWB-030 end 2026-08-27T14:53:52Z
 LICENSE_DEACTIVATE=begin timeout=120s
 LICENSE_DEACTIVATE=end
-REALWB-030 start 2026-08-24T13:28:25Z
-image=posit/workbench@sha256:***
-docker_platform=linux/amd64
-python=Python 3.12.13
-REALWB-030 skip reason=license_unset PWB_LICENSE is unset (load .env or export it)
-RESULT=skip
-REALWB-030 end 2026-08-24T13:28:25Z

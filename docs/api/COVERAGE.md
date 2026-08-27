@@ -42,6 +42,14 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `ComponentStateMatrix`, `StateMatrixEntry`, `ThemeExport`, `ThemeResolution`, `build_state_matrix`, `compatibility_theme_vars`, `component_contract_manifest`, `derived_theme_tokens`, `export_theme`, `inspect_theme_css`, `resolve_theme`, `theme_contract_report` | [Theme platform](THEME.md), [phase 0.63 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
 | `TRACE_CONTRACT_SCHEMA`, `decode_interaction_trace`, `encode_interaction_trace`, `profile_interaction_trace`, `element_metadata_manifest`, `package_identity_manifest` | [Phase 0.63 implementation](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
 
+## Phase 0.67 browser-local and interaction preview
+
+| Export | Primary docs |
+|---|---|
+| `AlpineAttrs`, `AlpineDirective`, `AlpineExpression`, `AlpineFeatureDemand`, `AlpineMaturity`, `BrowserFeaturePlan`, `BrowserPlanClosure`, `BrowserPlanError` | [0.67 Alpine integration](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ALPINE_INTEGRATION_067.md), [HTMX/Alpine boundary](HTMX_ALPINE_BOUNDARY_1_0.md) |
+| `Interaction`, `InteractionKind`, `LocalEffect`, `Outcome`, `OutcomeKind`, `RequestEffect`, `ReviewedExpression` | [0.67 interaction preview](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ALPINE_INTEGRATION_067.md), [Interaction](INTERACTION.md) |
+| `FutureWarningRecord`, `FutureWarningRegistry`, `HedronFutureWarning`, `PUBLIC_FUTURE_WARNINGS`, `emit_future_warning`, `warn_legacy_path` | [0.67 migration warnings](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ALPINE_INTEGRATION_067.md), [Exceptions](EXCEPTIONS.md) |
+
 ## Inference and model demos (0.18)
 
 | Export / package | Primary docs |

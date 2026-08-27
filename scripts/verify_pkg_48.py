@@ -145,7 +145,7 @@ def _check_versions(*, allow_planned: bool) -> None:
         raise SystemExit(f"{RELEASE}: [release] table required")
     published = str(release.get("published_version", "")).strip()
     development = str(release.get("development_version", "")).strip()
-    if published.startswith("0.64."):
+    if published.startswith(("0.64.", "0.65.", "0.66.", "0.67.")):
         print(f"ok: 0.48 historical under living published {published}")
         return
     if allow_planned:
@@ -233,6 +233,7 @@ def main(argv: list[str] | None = None) -> int:
         (
             "0.65.",
             "0.66.",
+            "0.67.",
             "0.64.",
             "0.49.",
             "0.50.",

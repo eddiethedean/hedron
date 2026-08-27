@@ -134,6 +134,9 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.62.",
             "0.63.",
             "0.64.",
+            "0.65.",
+            "0.66.",
+            "0.67.",
         )
     ):
         print(f"ok: 0.55 historical under living published {published}")
@@ -182,6 +185,9 @@ def main(argv: list[str] | None = None) -> int:
         if published.startswith(
             (
                 "0.64.",
+                "0.65.",
+                "0.66.",
+                "0.67.",
                 "0.56.",
                 "0.57.",
                 "0.58.",

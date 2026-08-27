@@ -332,7 +332,17 @@ quality_wheels_smoke() {
 
   rm -rf /tmp/hedron-smoke
   uv venv /tmp/hedron-smoke --python "$PYTHON"
-  uv pip install --python /tmp/hedron-smoke dist/*.whl
+  # Edron 0.8 is intentionally pinned to the stable Hedron 0.66 train while
+  # the workspace wheels exercise the 0.67 beta train. Keep those consumer
+  # rehearsals isolated so the resolver tests both declared contracts.
+  local beta_wheels=()
+  local wheel
+  for wheel in dist/*.whl; do
+    if [[ "$(basename "$wheel")" != edron-*.whl ]]; then
+      beta_wheels+=("$wheel")
+    fi
+  done
+  uv pip install --python /tmp/hedron-smoke "${beta_wheels[@]}"
   /tmp/hedron-smoke/bin/python - <<'PY'
 from hedron_core import Page, RenderMode, Text, render
 
@@ -375,7 +385,24 @@ assert hedron_django.HedronSecurityHeadersMiddleware is not None
 assert hedron_workbench.workbenchify is not None
 assert issubclass(hedron_workbench.HedronWorkbench, Hedron)
 assert "Content-Security-Policy" in SecurityPolicy.from_name("standard").response_headers()
-print("ok: all workspace wheels install and import cleanly")
+print("ok: Hedron 0.67 beta wheels install and import cleanly")
+PY
+
+  local edron_wheel=(dist/edron-*.whl)
+  if [[ ! -f "${edron_wheel[0]}" || "${edron_wheel[0]}" == 'dist/edron-*.whl' ]]; then
+    echo "missing Edron wheel for stable-train smoke" >&2
+    return 1
+  fi
+  rm -rf /tmp/edron-stable-smoke
+  uv venv /tmp/edron-stable-smoke --python "$PYTHON"
+  uv pip install --python /tmp/edron-stable-smoke/bin/python "${edron_wheel[0]}"
+  /tmp/edron-stable-smoke/bin/python - <<'PY'
+import importlib.metadata as metadata
+
+assert metadata.version("edron") == "0.8.0"
+assert metadata.version("hedron") == "0.66.2"
+assert metadata.version("hedron-data") == "0.66.2"
+print("ok: Edron 0.8 stable-train wheel installs and imports cleanly")
 PY
 
   # Exercise the exact standalone-wheel scaffold contract on ordinary main/PR

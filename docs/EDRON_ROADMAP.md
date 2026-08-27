@@ -640,7 +640,7 @@ gate and cannot be cited as proof that a feature is available.
 ## Related documents
 
 - [Edron user guide](guides/edron-user-guide.md)
-- [Edron 0.8 acceptance packet](acceptance/EDRON_008.md)
+- [Edron 0.8 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_008.md)
 - [Edron deployment guide](guides/edron-deployment.md)
 
 - [Edron 0.1 public API](api/EDRON.md)

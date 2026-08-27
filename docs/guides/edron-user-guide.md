@@ -533,7 +533,7 @@ Treat an Edron upgrade as an application release:
 Edron does not reverse database migrations, rotate secrets, cancel external side effects, reclaim
 user files, or undo already-enqueued work. Those actions require an application-owned runbook.
 
-For the current phase boundary, see [Edron 0.8 acceptance](../acceptance/EDRON_008.md) and the
+For the current phase boundary, see [Edron 0.8 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_008.md) and the
 [Edron roadmap](../EDRON_ROADMAP.md).
 
 ## 14. Migrate from Streamlit
@@ -577,7 +577,7 @@ authorization, persistence, and request boundaries reviewable.
 ## Next references
 
 - [Edron deployment guide](edron-deployment.md)
-- [Edron 0.8 acceptance packet](../acceptance/EDRON_008.md)
+- [Edron 0.8 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_008.md)
 - [Edron packaging and compatibility](../api/EDRON_PACKAGING.md) · [Compatibility policy](../COMPATIBILITY.md)
 - [Security](security.md) · [Accessibility](accessibility.md) · [Test your UI](testing.md)
 - [Edron API contract](../api/EDRON.md) · [Edron roadmap](../EDRON_ROADMAP.md)

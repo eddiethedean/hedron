@@ -135,6 +135,9 @@ def _check_versions(*, allow_planned: bool) -> None:
             "0.62.",
             "0.63.",
             "0.64.",
+            "0.65.",
+            "0.66.",
+            "0.67.",
         )
     ):
         print(f"ok: 0.54 historical under living published {published}")
@@ -192,6 +195,9 @@ def main(argv: list[str] | None = None) -> int:
                 "0.62.",
                 "0.63.",
                 "0.64.",
+                "0.65.",
+                "0.66.",
+                "0.67.",
             )
         ):
             print("ok: 0.54 historical packet; skip execute-verified under living tip")
