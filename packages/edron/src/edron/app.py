@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 import hedron
 from edron._internal import Frame, frame_context
-from edron.dependencies import Dependency
+from edron.dependencies import Dependency, Resource
 from edron.descriptors import Action, BoundAction, BoundFragment, Fragment
 from edron.diagnostics import source_location
 from edron.errors import BindingError, RegistrationError
@@ -54,6 +54,11 @@ class App:
             kwargs["session_secret"] = session_secret
         self.title = title
         self.hedron = hedron.Hedron(**kwargs)
+        from hedron.connections import ConnectionRegistry, install_connections
+
+        self._resources = ConnectionRegistry()
+        install_connections(self.hedron, self._resources)
+        self._resource_specs: dict[str, Resource] = {}
         self._pages: dict[str, Any] = {}
         self._fragments: dict[int, Any] = {}
         self._actions: dict[int, Any] = {}
@@ -69,6 +74,15 @@ class App:
         instance = cls.__new__(cls)
         instance.title = title or getattr(app, "title", "Edron application")
         instance.hedron = app
+        from hedron.connections import ConnectionRegistry, install_connections
+
+        existing_resources = getattr(app.state, "hedron_connections", None)
+        if isinstance(existing_resources, ConnectionRegistry):
+            instance._resources = existing_resources
+        else:
+            instance._resources = ConnectionRegistry()
+            install_connections(app, instance._resources)
+        instance._resource_specs = {}
         instance._pages = {}
         instance._fragments = {}
         instance._actions = {}
@@ -90,6 +104,104 @@ class App:
     def native_surface(self, surface: Any) -> Any:
         """Resolve a registered Edron surface to its exact native projection."""
         return self._native_surface(surface)
+
+    @property
+    def resources(self) -> Any:
+        """The app-owned native resource registry."""
+        return self._resources
+
+    def resource(
+        self,
+        name: str | Resource,
+        factory: Callable[[], Any] | None = None,
+        *,
+        kind: str = "custom",
+        scope: str = "application",
+        secret_refs: Mapping[str, str] | None = None,
+        config: Mapping[str, object] | None = None,
+        healthcheck: Callable[[Any], bool] | None = None,
+        healthcheck_name: str | None = None,
+    ) -> Dependency[Any]:
+        """Register a lazy native resource and return a typed dependency descriptor."""
+        self._ensure_open()
+        if isinstance(name, Resource):
+            if factory is not None:
+                raise TypeError("resource specification already contains a factory")
+            spec = name
+            name = spec.name
+        else:
+            spec = None
+        if factory is None:
+            if spec is None:
+                raise TypeError("resource requires an explicit factory")
+        else:
+            spec = Resource(
+                name=name,
+                factory=factory,
+                scope=scope,  # type: ignore[arg-type]
+                kind=kind,  # type: ignore[arg-type]
+                secret_refs=secret_refs or {},
+                config=config or {},
+                healthcheck=healthcheck,
+                healthcheck_name=healthcheck_name,
+            )
+        assert spec is not None
+        self._resource_specs[spec.name] = spec
+        if spec.scope == "application":
+            spec.register(self._resources)
+        else:
+            if spec.scope != "request":
+                raise ValueError("resource scope must be 'request' or 'application'")
+
+            closer_names = ("close", "dispose", "shutdown", "aclose")
+            request_provider: Callable[..., Any]
+            if inspect.iscoroutinefunction(spec.factory):
+
+                async def async_request_resource() -> Any:
+                    value = await spec.factory()
+                    try:
+                        yield value
+                    finally:
+                        closer = next(
+                            (getattr(value, attr, None) for attr in closer_names),
+                            None,
+                        )
+                        if callable(closer):
+                            result = closer()
+                            if inspect.isawaitable(result):
+                                await result
+
+                request_provider = async_request_resource
+
+            else:
+
+                def sync_request_resource() -> Any:
+                    value = spec.factory()
+                    if inspect.isawaitable(value):
+                        raise RuntimeError("async request resources require an async provider")
+                    try:
+                        yield value
+                    finally:
+                        closer = next(
+                            (getattr(value, attr, None) for attr in closer_names),
+                            None,
+                        )
+                        if callable(closer):
+                            result = closer()
+                            if inspect.isawaitable(result):
+                                raise RuntimeError(
+                                    "request resource cleanup returned an awaitable; "
+                                    "use native async DI"
+                                )
+
+                request_provider = sync_request_resource
+
+            return Dependency(request_provider, name=spec.name, scope="request")
+        from hedron.connections import connection_dependency
+
+        return Dependency(connection_dependency(name), name=name)
+
+    connection = resource
 
     async def __call__(self, scope: Any, receive: Any, send: Any) -> None:
         """Expose the facade as an ordinary ASGI application."""
@@ -674,12 +786,67 @@ class App:
                 {"save_path": path, **dict(record["workspace"].diagnostics())}
                 for path, record in self._data_workspaces.items()
             ],
+            "resources": [
+                {
+                    "name": name,
+                    "kind": spec.kind,
+                    "scope": spec.scope,
+                    "healthcheck": spec.healthcheck_name
+                    or ("configured" if spec.healthcheck is not None else None),
+                    "lazy": True,
+                }
+                for name, spec in self._resource_specs.items()
+            ],
             "visual_interactions": visual_interactions,
             "source_map": self.source_map(),
             "native_authority": "hedron",
             "callbacks_executed": False,
             "truncated": truncated,
         }
+
+    def operations(self) -> dict[str, Any]:
+        """Return bounded deployment facts without resolving resources or jobs."""
+        from hedron_core.cache import get_cache_backend
+        from hedron_core.durability import is_process_local
+        from hedron_core.jobs import get_job_backend
+
+        jobs = get_job_backend()
+        cache = get_cache_backend()
+        production = bool(getattr(self.hedron.state, "hedron_production", False))
+        return {
+            "schema": "edron.operations/1",
+            "production": production,
+            "backends": {
+                "jobs": {
+                    "type": type(jobs).__name__,
+                    "process_local": is_process_local(jobs),
+                    "durable": not is_process_local(jobs),
+                },
+                "cache": {
+                    "type": type(cache).__name__,
+                    "process_local": is_process_local(cache),
+                    "durable": not is_process_local(cache),
+                },
+            },
+            "resources": [
+                {
+                    "name": name,
+                    "kind": spec.kind,
+                    "scope": spec.scope,
+                    "healthcheck": spec.healthcheck_name
+                    or ("configured" if spec.healthcheck is not None else None),
+                    "resolved": False,
+                }
+                for name, spec in self._resource_specs.items()
+            ],
+            "limitations": [
+                "resource factories are lazy and app-lifespan owned",
+                "jobs and cache remain native application-configured backends",
+                "no worker, scheduler, queue, database, or object store is provisioned",
+            ],
+        }
+
+    diagnostics = operations
 
     def check(self) -> Any:
         """Return a diagnostic report for registered metadata only."""

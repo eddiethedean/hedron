@@ -4,7 +4,7 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `0.4.0` implemented and tagged in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
+**Status:** Edron `0.5.0` implemented in-tree (publication pending); `edron-v0.4.0` is the latest in-tree tag and `edron-v0.3.0` remains the latest published release<br>
 **Edron release line:** `0.3` data editing and workspace ergonomics<br>
 **Latest release:** Edron `0.3.0`; compatible Hedron train `0.66.x`<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
@@ -30,7 +30,7 @@ countdown or commitment to `1.0`.
 | **0.2** | Authoring refinement, diagnostics, source-aware tooling, and evidence-driven vocabulary polish | **Implemented and verified in-tree; Beta** |
 | **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | **Published** (`edron-v0.3.0`; Beta) |
 | **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | **Tagged** (`edron-v0.4.0`; publication pending) |
-| **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | **Refined candidate** after `0.4`; no implementation claim |
+| **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | **Implemented in-tree; unreleased Beta** |
 | **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | Candidate after `0.5` |
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | Candidate after `0.6` |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | Candidate after `0.7` |
@@ -194,11 +194,10 @@ fixtures. Release exit requires, at minimum:
 
 ## Phase 0.5 — state, resources, and operational workflows
 
-Phase `0.5` is a refined implementation candidate, not an availability claim. It may begin only
-after the `0.4` acceptance packet is closed and the native state, resource, job, and operations
-contracts below are verified in the compatible Hedron train. Edron adds authoring ergonomics and
-diagnostics only; native hosts remain responsible for lifetimes, persistence, transport, and
-production enforcement.
+Phase `0.5` is implemented in-tree but remains pending publication. It began after the `0.4`
+acceptance packet was closed; the native state, resource, job, and operations contracts below are
+verified in the compatible Hedron train. Edron adds authoring ergonomics and diagnostics only;
+native hosts remain responsible for lifetimes, persistence, transport, and production enforcement.
 
 ### Proposed contract
 

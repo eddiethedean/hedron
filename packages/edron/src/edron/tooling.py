@@ -229,7 +229,7 @@ def doctor(*, application: Any = None) -> dict[str, Any]:
     from packaging.specifiers import SpecifierSet
 
     requirements = {
-        "edron": (">=0.4,<0.5", "edron"),
+        "edron": (">=0.5,<0.6", "edron"),
         "hedron": (">=0.66,<0.67", "hedron"),
         "hedron-data": (">=0.66,<0.67", "hedron_data"),
         "hedron-charts": (">=0.2,<0.3", "hedron_charts"),
@@ -281,6 +281,9 @@ def doctor(*, application: Any = None) -> dict[str, Any]:
     ]
     if application is not None:
         result["application"] = explain_application(application)
+        operations = getattr(application, "operations", None)
+        if callable(operations):
+            result["operations"] = operations()
     return result
 
 

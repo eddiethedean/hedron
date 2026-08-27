@@ -16,7 +16,7 @@ from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_TASKFLOW_0001, HED_TASKFLOW_0003
 from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
-from hedron_core.jobs import JobState, get_job_backend, job_authorized_http
+from hedron_core.jobs import JobBackend, JobState, get_job_backend, job_authorized_http
 from hedron_core.operation_workflow import is_terminal_job_state
 from hedron_core.typing_aliases import JsonValue
 
@@ -85,8 +85,12 @@ class TaskFlow(Generic[InputT, ResultT]):
         authorize_submit: Dependency,
         result: Callable[[ResultT], NodeLike],
         *,
+        idempotency_key: Callable[[InputT], str | None] | None = None,
         authorize_cancel: Dependency | None = None,
         poll: PollPolicy | None = None,
+        backend: JobBackend | None = None,
+        retry_attempts: int = 0,
+        result_ttl_seconds: int = 86_400,
         backend_unavailable: TaskUnavailablePolicy = "fail_closed",
         provider: str = "hedron",
         provider_version: str = "0.60.2",
@@ -109,11 +113,19 @@ class TaskFlow(Generic[InputT, ResultT]):
         self.input_model = input_model
         self.job_type = job_type
         self.payload = payload
+        self.idempotency_key = idempotency_key
         self.scope = scope
         self.authorize_submit = authorize_submit
         self.result = result
         self.authorize_cancel = authorize_cancel
         self.poll = poll if poll is not None else PollPolicy()
+        self.backend = backend
+        if retry_attempts < 0 or retry_attempts > 10:
+            raise ValueError("retry_attempts must be between 0 and 10")
+        if result_ttl_seconds < 60 or result_ttl_seconds > 2_592_000:
+            raise ValueError("result_ttl_seconds must be between 60 and 2592000")
+        self.retry_attempts = retry_attempts
+        self.result_ttl_seconds = result_ttl_seconds
         self.backend_unavailable = backend_unavailable
         self.provider = provider
         self.provider_version = provider_version
@@ -121,6 +133,9 @@ class TaskFlow(Generic[InputT, ResultT]):
         self.status_view: object | None = None
         self.cancel_command: object | None = None
         self.result_view: object | None = None
+
+    def _job_backend(self) -> JobBackend:
+        return self.backend if self.backend is not None else get_job_backend()
 
     def _deps(self, *items: Dependency | None) -> Sequence[object]:
         return tuple(item for item in items if item is not None)
@@ -153,9 +168,16 @@ class TaskFlow(Generic[InputT, ResultT]):
                 except Exception as exc:
                     raise HTTPException(status_code=422, detail="invalid_payload") from exc
                 try:
+                    idempotency_key = (
+                        flow.idempotency_key(data)  # type: ignore[arg-type]
+                        if flow.idempotency_key is not None
+                        else None
+                    )
                     job_id = enqueue_durable(
                         flow.job_type,
                         body,
+                        backend=flow._job_backend(),
+                        idempotency_key=idempotency_key,
                         tenant_id=scope.tenant_id,
                         auth_subject=scope.auth_subject,
                     )
@@ -207,7 +229,7 @@ class TaskFlow(Generic[InputT, ResultT]):
                 scope = flow._scope_for_request()
                 job_id = str(params.job_id)
                 try:
-                    status = get_job_backend().get(
+                    status = flow._job_backend().get(
                         job_id,
                         auth_subject=scope.auth_subject,
                         tenant_id=scope.tenant_id,
@@ -275,7 +297,7 @@ class TaskFlow(Generic[InputT, ResultT]):
                 scope = flow._scope_for_request()
                 job_id = str(data.job_id)
                 try:
-                    get_job_backend().request_cancel(
+                    flow._job_backend().request_cancel(
                         job_id,
                         auth_subject=scope.auth_subject,
                         tenant_id=scope.tenant_id,
@@ -287,7 +309,7 @@ class TaskFlow(Generic[InputT, ResultT]):
                         explanation=f"request_cancel raised: {exc}",
                         remediation="Check JobBackend cancel support and scope.",
                     ) from exc
-                status = get_job_backend().get(
+                status = flow._job_backend().get(
                     job_id,
                     auth_subject=scope.auth_subject,
                     tenant_id=scope.tenant_id,
@@ -324,7 +346,7 @@ class TaskFlow(Generic[InputT, ResultT]):
             ) -> object:
                 scope = flow._scope_for_request()
                 job_id = str(params.job_id)
-                status = get_job_backend().get(
+                status = flow._job_backend().get(
                     job_id,
                     auth_subject=scope.auth_subject,
                     tenant_id=scope.tenant_id,
@@ -364,6 +386,7 @@ class TaskFlow(Generic[InputT, ResultT]):
             data={
                 "name": self.name,
                 "job_type": self.job_type,
+                "idempotency": self.idempotency_key is not None,
                 "surfaces": [
                     "submit_command",
                     "submit_form",
@@ -372,6 +395,8 @@ class TaskFlow(Generic[InputT, ResultT]):
                     "result_view",
                 ],
                 "poll_interval_ms": self.poll.interval_ms,
+                "retry_attempts": self.retry_attempts,
+                "result_ttl_seconds": self.result_ttl_seconds,
                 "backend_unavailable": self.backend_unavailable,
                 "cancel": self.authorize_cancel is not None,
             },

@@ -1,6 +1,6 @@
 """Edron: a class-oriented authoring facade for Hedron."""
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 from edron.app import App
 from edron.cache import CachedFunction, cache_data
@@ -24,7 +24,7 @@ from edron.data import (
     PageRequest,
     WorkspacePage,
 )
-from edron.dependencies import Dependency, dependency
+from edron.dependencies import Dependency, Resource, dependency, resource
 from edron.descriptors import (
     Action,
     BoundAction,
@@ -38,7 +38,12 @@ from edron.descriptors import (
 from edron.diagnostics import DiagnosticReport, EdronDiagnostic, SourceLocation
 from edron.downloads import Download, download
 from edron.errors import BindingError, EdronError, PhaseError, RegistrationError
-from edron.jobs import JobBackend, JobFlow, JobScope  # pyright: ignore[reportUnknownVariableType]
+from edron.jobs import (  # pyright: ignore[reportUnknownVariableType]
+    JobBackend,
+    JobFlow,
+    JobScope,
+    job_status_events,
+)
 from edron.outcomes import Outcome, refresh, success
 from edron.page import Container, FilterScope, Page
 from edron.scaffolds import TEMPLATES, create_scaffold
@@ -57,6 +62,7 @@ __all__ = [
     "Confirm",
     "Container",
     "Dependency",
+    "Resource",
     "DataExport",
     "DataSelection",
     "DataSource",
@@ -74,6 +80,7 @@ __all__ = [
     "JobBackend",
     "JobFlow",
     "JobScope",
+    "job_status_events",
     "MissingCapabilityError",
     "BrokenCapabilityError",
     "Outcome",
@@ -90,6 +97,7 @@ __all__ = [
     "cache_data",
     "create_scaffold",
     "dependency",
+    "resource",
     "download",
     "fragment",
     "inherit",

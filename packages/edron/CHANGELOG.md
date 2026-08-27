@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.5.0] — 2026-08-26
+
+### Added
+
+- App-owned native resource registration with lazy resolution, lifespan cleanup, health metadata,
+  and explicit dependency descriptors.
+- Native-backed Edron caching with TTL, scope/vary policy, tags, mutable-value isolation, and
+  bounded per-function eviction.
+- JobFlow backend selection, native poll policy wiring, bounded retry/result policy metadata, and
+  safe native job-status SSE event formatting.
+- Bounded deployment diagnostics and resource metadata through `App.operations()` and `doctor`.
+
+### Fixed
+
+- Edron JobFlow now honors its explicit backend and polling interval instead of silently using the
+  process-global job backend/default poll policy.
+
 ## [0.4.0] — 2026-08-26
 
 ### Added

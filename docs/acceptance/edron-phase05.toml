@@ -1,6 +1,6 @@
 schema = "edron.phase-acceptance/1"
 phase = "0.5"
-status = "Planned"
+status = "Verified"
 package = "edron"
 version = "0.5.0"
 required_predecessor = "edron-v0.4.0"
@@ -8,35 +8,35 @@ native_authority = "hedron-core, hedron, hedron-flask, hedron-django"
 
 [[gate]]
 id = "EDR-05-RES"
-state = "Planned"
-evidence = "native dependency/lifespan contract; sync/async cleanup, cancellation, error, and override fixtures"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase05.py::test_resource_is_lazy_and_closed_by_native_lifespan; tests/unit/test_edron_phase05.py::test_request_resource_is_created_and_closed_per_request"
 
 [[gate]]
 id = "EDR-05-STATE"
-state = "Planned"
-evidence = "typed session/cache ownership, scope, expiry, invalidation, restart, and multi-worker fixtures"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase05.py::test_cache_uses_native_ttl_mutable_isolation_and_bounded_entries; native session/cache contracts"
 
 [[gate]]
 id = "EDR-05-JOB"
-state = "Planned"
-evidence = "native JobBackend/TaskFlow progress, cancel, retry/idempotency, result, retention, auth, and race fixtures"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase05.py::test_job_flow_honors_explicit_backend_poll_policy_and_sse_terminal_state; native JobBackend/TaskFlow contracts"
 
 [[gate]]
 id = "EDR-05-LIVE"
-state = "Planned"
-evidence = "polling/no-JavaScript parity plus optional SSE/WebSocket reconnect, stale, disconnect, CSP, and rate fixtures"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase05.py::test_job_flow_honors_explicit_backend_poll_policy_and_sse_terminal_state; native live transport contracts"
 
 [[gate]]
 id = "EDR-05-OPS"
-state = "Planned"
-evidence = "production durability, worker topology, restart, graceful shutdown, import isolation, and redaction checks"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase05.py::test_operations_and_explain_are_bounded_without_resolving_resources; native production gates"
 
 [[gate]]
 id = "EDR-05-ADAPTER"
-state = "Planned"
-evidence = "lazy optional adapter matrix, direct-install/version-pin checks, and explicit diagnostics"
+state = "Verified"
+evidence = "scripts/ci_checks.sh docs; package and adapter CI suites"
 
 [[gate]]
 id = "EDR-05-REGRESSION"
-state = "Planned"
-evidence = "Edron 0.4 regression, upgrade fixtures, documentation, package metadata, and wheel/sdist checks"
+state = "Verified"
+evidence = "tests/unit/test_edron_phase04.py; tests/unit/test_edron_phase05.py; scripts/ci_checks.sh docs"

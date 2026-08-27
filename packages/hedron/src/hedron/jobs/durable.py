@@ -31,8 +31,9 @@ def enqueue_durable(
     idempotency_key: str | None = None,
     tenant_id: str | None = None,
     auth_subject: str | None = None,
+    backend: Any | None = None,
 ) -> str:
-    handle = get_job_backend().submit(
+    handle = (backend or get_job_backend()).submit(
         job_type,
         payload,
         idempotency_key=idempotency_key,

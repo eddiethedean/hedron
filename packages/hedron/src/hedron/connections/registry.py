@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 import logging
 import threading
 from collections.abc import AsyncGenerator, Callable, Mapping
@@ -205,6 +206,14 @@ class ConnectionRegistry:
 
         try:
             instance = self._factories[name]()
+            if inspect.isawaitable(instance):
+                close = getattr(instance, "close", None)
+                if callable(close):
+                    close()
+                raise RuntimeError(
+                    f"Connection factory {name!r} returned an awaitable; "
+                    "use the async dependency/lifespan path."
+                )
         except Exception as exc:
             with self._lock:
                 self._pending.pop(name, None)
@@ -219,6 +228,22 @@ class ConnectionRegistry:
             result = self._instances[name]
         pending.set()
         return result
+
+    async def get_async(self, name: str) -> object:
+        """Resolve a connection from either a sync or async factory."""
+        with self._lock:
+            if name not in self._factories:
+                raise KeyError(f"unknown connection {name!r}")
+            if name in self._instances:
+                return self._instances[name]
+            factory = self._factories[name]
+        instance = factory()
+        if inspect.isawaitable(instance):
+            instance = await instance
+        with self._lock:
+            existing = self._instances.setdefault(name, instance)
+            self._factory_errors.pop(name, None)
+        return existing
 
     def health(self, name: str) -> bool:
         """Run the registered healthcheck (or ``True`` when none is configured).
@@ -301,8 +326,13 @@ def get_connection(request: Request, name: str) -> object:
 def connection_dependency(name: str) -> Callable[[Request], object]:
     """FastAPI ``Depends`` factory for a named connection."""
 
-    def _dependency(request: Request) -> object:
-        return get_connection(request, name)
+    async def _dependency(request: Request) -> object:
+        registry = getattr(request.app.state, "hedron_connections", None)
+        if not isinstance(registry, ConnectionRegistry):
+            raise RuntimeError(
+                "ConnectionRegistry not installed; call install_connections(app, registry) first"
+            )
+        return await registry.get_async(name)
 
     _dependency.__name__ = f"connection_{name}"
     _dependency.__hedron_connection__ = name  # type: ignore[attr-defined]  # FastAPI dep marker
