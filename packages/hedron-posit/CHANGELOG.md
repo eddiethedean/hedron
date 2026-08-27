@@ -46,8 +46,9 @@
 
 ### Changed
 - Coordinated train cut for Phase 0.65.
-- Moved the Workbench resolver, middleware, and launcher implementation into
-  `hedron-posit`; the package no longer depends on `fastapi-workbench`.
+- Consolidated the Workbench resolver, middleware, and launcher on the shared
+  `fastapi-workbench` core; Hedron-Posit retains only its branding and Connect
+  composition layer.
 
 ## [0.64.1] — 2026-08-25
 

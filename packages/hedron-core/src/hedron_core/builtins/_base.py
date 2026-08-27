@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import re
 from collections.abc import Sequence
-from typing import Any
 
-from hedron_core.component import Component, NodeLike
+from hedron_core.component import NodeLike
 from hedron_core.models import Props
 
 
@@ -61,14 +60,4 @@ def collect_children(*nodes: NodeLike, children: NodeLike = None) -> tuple[NodeL
             collected.extend(children)
         else:
             collected.append(children)
-    return tuple(collected)
-
-
-def take_children(
-    component: Component[Any], *nodes: NodeLike, children: NodeLike = None
-) -> tuple[NodeLike, ...]:
-    """Backward-compatible helper that also includes fluent ``.children(...)`` values."""
-    collected = list(collect_children(*nodes, children=children))
-    if component._children:
-        collected.extend(component._children)
     return tuple(collected)

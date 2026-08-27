@@ -6,7 +6,7 @@ import os
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
-from urllib.parse import urljoin, urlsplit, urlunsplit
+from urllib.parse import urljoin
 
 from hedron_core.mount import cookie_path_for_mount, normalize_mount_path
 
@@ -107,15 +107,6 @@ def external_base_url(
     base = f"{scheme}://{host}"
     normalized = normalize_mount_path(mount)
     return urljoin(base + "/", normalized.lstrip("/") + "/") if normalized else base
-
-
-def strip_double_slash_path(url: str) -> str:
-    """Collapse accidental ``//`` in the path component of a local URL."""
-    parts = urlsplit(url)
-    if parts.scheme or parts.netloc:
-        path = parts.path.replace("//", "/")
-        return urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
-    return url.replace("//", "/") if url.startswith("/") else url
 
 
 def mount_from_request(request: Any, *, trusted_peers: Sequence[str] | None = None) -> MountPath:

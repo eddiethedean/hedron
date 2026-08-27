@@ -133,6 +133,7 @@ class TaskFlow(Generic[InputT, ResultT]):
         self.status_view: object | None = None
         self.cancel_command: object | None = None
         self.result_view: object | None = None
+        self.show_cancel = False
 
     def _job_backend(self) -> JobBackend:
         return self.backend if self.backend is not None else get_job_backend()
@@ -256,7 +257,16 @@ class TaskFlow(Generic[InputT, ResultT]):
                         except Exception:  # noqa: BLE001
                             return body
                     return body
-                from hedron import ComponentRef
+                from hedron import ComponentRef, Stack
+
+                content = body
+                if flow.show_cancel and flow.cancel_command is not None:
+                    cancel_form = getattr(flow.cancel_command, "form", None)
+                    if callable(cancel_form):
+                        content = Stack(
+                            body,
+                            cancel_form(value={"job_id": job_id}, submit_label="Cancel"),
+                        )
 
                 ref = ComponentRef(
                     logical_id=f"{flow.name}-status",
@@ -266,7 +276,7 @@ class TaskFlow(Generic[InputT, ResultT]):
                 return Poll(
                     ref=ref,
                     interval_ms=flow.poll.interval_ms,
-                    content=body,
+                    content=content,
                 )
 
             flow.status_view = status_view

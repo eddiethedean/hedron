@@ -48,8 +48,23 @@ class JobFlow:
             raise ValueError("result_ttl_seconds must be between 60 and 2592000")
         self.retry_attempts = retry_attempts
         self.result_ttl_seconds = result_ttl_seconds
+        # Materialization is registration, not rendering.  Keep the native
+        # flow and bundle so repeated page renders never register duplicate
+        # routes or lose the generated handles.
+        self._native: Any | None = None
+        self._bundle: Any | None = None
+        self.submit_command: Any | None = None
+        self.status_view: Any | None = None
+        self.cancel_command: Any | None = None
+        self.result_view: Any | None = None
 
     def to_bundle(self) -> Any:
+        if self._bundle is not None:
+            return self._bundle
+        def native_dependency(value: Any) -> Any:
+            converter = getattr(value, "native", None)
+            return converter() if callable(converter) else value
+
         native = TaskFlow(
             name=self.name,
             input_model=self.input_model,
@@ -57,15 +72,32 @@ class JobFlow:
             payload=self.payload,
             idempotency_key=self.idempotency_key,
             scope=self.scope,
-            authorize_submit=self.authorize_submit,
-            authorize_cancel=self.authorize_cancel,
+            authorize_submit=native_dependency(self.authorize_submit),
+            authorize_cancel=native_dependency(self.authorize_cancel),
             result=self.result,
             poll=PollPolicy(interval_ms=self.poll_interval_ms),
             backend=self.backend,
             retry_attempts=self.retry_attempts,
             result_ttl_seconds=self.result_ttl_seconds,
         )
-        return native.to_bundle()
+        bundle = native.to_bundle()
+        self._native = native
+        self._bundle = bundle
+        self.submit_command = native.submit_command
+        self.status_view = native.status_view
+        self.cancel_command = native.cancel_command
+        self.result_view = native.result_view
+        return bundle
+
+    def _sync_native_handles(self) -> None:
+        """Expose handles after the host materializes the feature factories."""
+        native = self._native
+        if native is None:
+            return
+        self.submit_command = native.submit_command
+        self.status_view = native.status_view
+        self.cancel_command = native.cancel_command
+        self.result_view = native.result_view
 
 
 def job_status_events(
