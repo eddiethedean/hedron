@@ -658,6 +658,7 @@ def check_plan() -> list[str]:
         required_checks = {
             "PHASE-100-UNIT",
             "BRIDGE-100",
+            "TYPE-100",
             "QUALITY-100",
             "BROWSER-100",
             "BUILD-100",

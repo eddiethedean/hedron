@@ -18,6 +18,12 @@
       "summary": "immutable baseline and current canonical Python/HDJ/HTTP probes matched"
     },
     {
+      "id": "TYPE-100",
+      "command": "PYTHONPATH=packages/hedron/src:packages/hedron-core/src:packages/hedron-jinja/src .venv/bin/pyright tests/upgrade/phase_1_0/canonical/app.py",
+      "status": "passed",
+      "summary": "canonical 1.0 fixture type-checks with 0 errors and 0 warnings"
+    },
+    {
       "id": "QUALITY-100",
       "command": "bash scripts/ci_checks.sh quality --python 3.11 --skip-wheels",
       "status": "passed",
