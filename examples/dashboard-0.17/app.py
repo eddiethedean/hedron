@@ -57,7 +57,7 @@ def panel() -> MainPanel:
     return MainPanel(Text("Dynamic panel"), id="main-panel")
 
 
-@app.component("/actions/apply-filters", methods=["POST"])
+@app.action("/actions/apply-filters", method="POST")
 def apply_filters() -> InteractionResult:
     global _STATE
     try:

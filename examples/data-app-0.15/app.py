@@ -35,7 +35,7 @@ app = Hedron(
 # from hedron.connections import ...  # named registry + providers; prefer host DI/lifespan
 
 
-@app.refreshable("/panel")
+@app.view("/panel")
 def panel():
     return html.div(Text("Panel refreshed"))
 

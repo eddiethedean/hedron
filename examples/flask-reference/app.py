@@ -39,7 +39,7 @@ def home():
     )
 
 
-@ui.component("/fragment", fragment_regions=(PANEL,))
+@ui.view("/fragment", fragment_regions=(PANEL,))
 def fragment():
     return InteractionResult(
         content=panel_body(),

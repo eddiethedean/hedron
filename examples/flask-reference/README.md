@@ -43,6 +43,6 @@ CSRF: safe GETs set the `hedron_csrf` cookie. Unsafe methods on `hedron_route` /
 ## Scope
 
 This slice proves portable components and `InteractionResult` on Flask. Adapters
-do not ship `@app.refreshable`; the home page still uses the same Refresh
+do not ship a separate refreshable facade; the home page still uses the same Refresh
 pattern as `hedron new --flask`. It is not the full FastAPI reference application
 (auth, DataEditor, charts).

@@ -728,7 +728,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
     )
     users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
 
-    @users.component("/table", fragment_regions=USER_TABLE_REGION)
+    @users.view("/table", fragment_regions=USER_TABLE_REGION)
     async def table(store: Annotated[Store, Depends(get_store)]) -> Table:
         return users_table_component(store)
 
@@ -1102,7 +1102,7 @@ def build_plain_fastapi_app() -> FastAPI:
 
     users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
 
-    @users.component("/table", fragment_regions=USER_TABLE_REGION)
+    @users.view("/table", fragment_regions=USER_TABLE_REGION)
     async def table(store: Annotated[Store, Depends(get_store)]) -> Table:
         return users_table_component(store)
 
