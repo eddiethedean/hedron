@@ -76,6 +76,12 @@ def test_install_commands_require_the_canonical_bounded_pin() -> None:
         assert not failures(f'uvx --from "hedron{ssot.FACTS.pypi_pin}" hedron new demo')
 
 
+def test_in_tree_edron_target_accepts_its_explicit_067_forward_pin() -> None:
+    command = 'pip install "hedron>=0.67.0,<2.0" "hedron-data>=0.67.0,<2.0"'
+    assert not ssot.check_text(Path("packages/edron/README.md"), command)
+    assert ssot.check_text(Path("fixture.md"), command)
+
+
 def test_pypi_latest_claim_is_allowed_when_registry_is_deferred() -> None:
     if not ssot.FACTS.registry_deferred:
         return
