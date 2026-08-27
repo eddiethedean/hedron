@@ -44,11 +44,43 @@ _FOR = re.compile(
 _MODIFIER = re.compile(r"^(?:[a-z][a-z0-9-]*|(?:0|[1-9][0-9]{0,3})(?:ms|s))$")
 _KNOWN_MODIFIERS = frozenset(
     {
-        "prevent", "stop", "outside", "window", "document", "once", "self",
-        "camel", "dot", "passive", "capture", "debounce", "throttle", "enter",
-        "escape", "tab", "space", "shift", "ctrl", "alt", "meta", "up", "down",
-        "left", "right", "home", "end", "page-up", "page-down", "delete", "backspace",
-        "lazy", "change", "blur", "number", "boolean", "fill",
+        "prevent",
+        "stop",
+        "outside",
+        "window",
+        "document",
+        "once",
+        "self",
+        "camel",
+        "dot",
+        "passive",
+        "capture",
+        "debounce",
+        "throttle",
+        "enter",
+        "escape",
+        "tab",
+        "space",
+        "shift",
+        "ctrl",
+        "alt",
+        "meta",
+        "up",
+        "down",
+        "left",
+        "right",
+        "home",
+        "end",
+        "page-up",
+        "page-down",
+        "delete",
+        "backspace",
+        "lazy",
+        "change",
+        "blur",
+        "number",
+        "boolean",
+        "fill",
     }
 )
 _KEY_MODIFIERS = frozenset(
@@ -86,6 +118,7 @@ def _asset_sort_key(asset: str) -> tuple[int, str]:
     if asset == _HEDRON_BRIDGE_ASSET:
         return (2, asset)
     return (0, asset)
+
 
 JsonValue: TypeAlias = None | bool | int | float | str | list["JsonValue"] | dict[str, "JsonValue"]
 
@@ -526,9 +559,8 @@ class AlpineDirective:
                     parsed = json.loads(value)
                 except json.JSONDecodeError:
                     parsed = None
-                    if (
-                        _REVIEWED.fullmatch(value.strip()) is None
-                        and not (name == "x-for" and _FOR.fullmatch(value.strip()))
+                    if _REVIEWED.fullmatch(value.strip()) is None and not (
+                        name == "x-for" and _FOR.fullmatch(value.strip())
                     ):
                         raise ValueError(
                             "string Alpine expressions must use the reviewed CSP-safe grammar"
@@ -720,10 +752,7 @@ class AlpineAttrs:
         for key in overlap:
             if self.state[key] != other.state[key]:
                 raise ValueError(f"conflicting Alpine state writer for {key!r}")
-        names = {
-            directive.name
-            for directive in cast(tuple[AlpineDirective, ...], self.directives)
-        }
+        names = {directive.name for directive in cast(tuple[AlpineDirective, ...], self.directives)}
         other_directives = cast(tuple[AlpineDirective, ...], other.directives)
         duplicate = names.intersection(directive.name for directive in other_directives)
         if duplicate:

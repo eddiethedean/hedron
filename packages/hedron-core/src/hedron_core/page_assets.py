@@ -262,7 +262,7 @@ def inject_alpine_plan(
         )
         scripts.append(
             f'<script type="module" src="{html_lib.escape(href, quote=True)}"'
-            f'{integrity_attrs}></script>'
+            f"{integrity_attrs}></script>"
         )
     if (
         runtime not in html_text
@@ -281,7 +281,7 @@ def inject_alpine_plan(
         if "</body>" in html_text:
             return html_text.replace("</body>", f"{marker}\n</body>", 1)
         return html_text + marker
-    tag = f'{marker}\n' + "\n".join(scripts)
+    tag = f"{marker}\n" + "\n".join(scripts)
     if "</head>" in html_text:
         return html_text.replace("</head>", f"{tag}\n</head>", 1)
     if "</body>" in html_text:

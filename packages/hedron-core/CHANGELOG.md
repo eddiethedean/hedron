@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.67.0] — 2026-08-27
+
+### Added
+- Typed Alpine directives, browser-plan closure, local assets, security validation, and
+  Phase 0.67 browser enhancement contracts.
+
 ## [0.66.2] — 2026-08-26
 
 ### Fixed

@@ -13,8 +13,8 @@ authorized corrective retag after a failed publication.
 1. The release commit is on green `main`, with no unexplained waived checks.
 2. `docs/release.toml`, package metadata, `__version__`, dependency pins, lockfile,
    changelog headings, CI gate version, security support window, and release notes agree.
-3. `docs/acceptance/release-gate-0.64.toml` must match the bounded 0.64.0 release packet and
-   `scripts/check_064.py --gate CONTRACT-064 --verify` must pass for the release. Historical packets
+3. `docs/acceptance/release-gate-0.67.toml` must match the 0.67.0 release packet and
+   `scripts/check_067.py --gate PKG-067 --verify` must pass for the release. Historical packets
    `scripts/verify_pkg_58.py`,
    `scripts/verify_pkg_57.py`, and `scripts/verify_pkg_56.py` remain green.
 4. The repository and PyPI trusted-publishing configuration are controlled by active
@@ -34,10 +34,12 @@ authorized corrective retag after a failed publication.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.64.0
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.67.0
 bash scripts/ci_checks.sh browser --python 3.12
-uv run python scripts/check_release_gate.py 0.64.0
-uv run python scripts/check_published_quickstart.py 0.64.0 --dist-dir dist --attempts 1
+uv run python scripts/check_release_gate.py 0.67.0
+uv run python scripts/check_published_quickstart.py 0.67.0 --dist-dir dist --attempts 1
+uv run python scripts/check_067.py --check-plan
+uv run python scripts/check_067.py --gate PKG-067 --verify
 uv run python scripts/check_063.py --gate CONTRACT-063 --verify
 uv run python scripts/verify_pkg_60.py
 uv run python scripts/verify_pkg_59.py

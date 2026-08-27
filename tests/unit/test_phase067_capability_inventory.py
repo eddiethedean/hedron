@@ -82,6 +82,6 @@ def test_machine_disposition_covers_the_frozen_surface() -> None:
         '"Alpine.data"',
         '"anchor"',
         '"morph"',
-        'essential_x_cloak = false',
+        "essential_x_cloak = false",
     ):
         assert token in packet

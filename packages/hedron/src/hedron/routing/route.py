@@ -44,7 +44,12 @@ class _SupportsRender(Protocol):
 
 
 HedronEndpointResult: TypeAlias = (
-    StarletteResponse | InteractionResult | HTML | Component[Any] | Model | _SupportsRender
+    StarletteResponse
+    | InteractionResult
+    | HTML
+    | Component[Any]
+    | Model
+    | _SupportsRender
     | Outcome
 )
 

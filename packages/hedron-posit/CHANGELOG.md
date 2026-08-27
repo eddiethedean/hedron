@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.67.0] — 2026-08-27
+
+### Changed
+- Aligned the Posit facade and coordinated package metadata with the Phase 0.67 release train.
+
 ## [0.66.2] — 2026-08-26
 
 ### Fixed

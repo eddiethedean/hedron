@@ -126,9 +126,7 @@ class Interaction:
             raise ValueError("interaction source is required")
         if self.local_effect is not None and not isinstance(self.local_effect, LocalEffect):
             raise TypeError("local_effect must be a LocalEffect")
-        if self.request_effect is not None and not isinstance(
-            self.request_effect, RequestEffect
-        ):
+        if self.request_effect is not None and not isinstance(self.request_effect, RequestEffect):
             raise TypeError("request_effect must be a RequestEffect")
         has_local = self.local_effect is not None
         has_request = self.request_effect is not None
@@ -298,15 +296,18 @@ class Outcome:
             )
         if role is OutcomeKind.REFRESH:
             handles = payload.get("handles")
-            if not isinstance(handles, list) or not handles or any(
-                not isinstance(handle, str) or not handle.strip() for handle in handles
+            if (
+                not isinstance(handles, list)
+                or not handles
+                or any(not isinstance(handle, str) or not handle.strip() for handle in handles)
             ):
                 raise ValueError("refresh outcome handles must be a non-empty string list")
         if role is OutcomeKind.PATCH:
             target = payload.get("target")
-            if not isinstance(target, str) or re.fullmatch(
-                r"#[A-Za-z][A-Za-z0-9_.:-]{0,95}", target
-            ) is None:
+            if (
+                not isinstance(target, str)
+                or re.fullmatch(r"#[A-Za-z][A-Za-z0-9_.:-]{0,95}", target) is None
+            ):
                 raise ValueError("patch outcome target must be a bounded id selector")
         if role is OutcomeKind.REDIRECT:
             location = payload.get("location")
@@ -315,9 +316,7 @@ class Outcome:
                 or not location.startswith("/")
                 or location.startswith("//")
             ):
-                raise ValueError(
-                    "redirect outcome location must be a local root-relative path"
-                )
+                raise ValueError("redirect outcome location must be a local root-relative path")
         if role is OutcomeKind.JOB and (
             not isinstance(payload.get("job_id"), str) or not str(payload["job_id"]).strip()
         ):

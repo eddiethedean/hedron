@@ -60,5 +60,6 @@ def test_roadmap_053_status_matches_cut() -> None:
     published_version = str(release["published_version"])
     assert (
         f"living **{train}.x** train" in ref_one_line
+        or f"stable **{train}.x** train" in ref_one_line
         or f"repository tip is `{published_version}`" in ref_one_line
     )

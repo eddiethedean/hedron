@@ -25,7 +25,7 @@ def test_reads_every_authoritative_htmx_pin() -> None:
     assert {(pin.package, pin.version) for pin in pins} == {
         ("htmx.org", "2.0.10"),
         ("htmx-ext-head-support", "2.0.5"),
-        ("htmx-ext-hedron", "0.66.2"),
+        ("htmx-ext-hedron", "0.67.0"),
         ("htmx-ext-preload", "2.1.2"),
         ("htmx-ext-sse", "2.2.4"),
     }

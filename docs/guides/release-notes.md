@@ -3,6 +3,16 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.67.0 Beta — 2026-08-27
+
+Beta release candidate for Phase 0.67. The stable predecessor remains `v0.66.2`.
+This release adds demand-driven Alpine browser enhancement, typed browser-plan closure,
+unified local/request/combined interaction contracts, lifecycle handoff, explicit failure
+behavior, and the verified 0.67 acceptance packet.
+
+Beta evaluation pin: `hedron>=0.67.0,<0.68`. Production applications should remain on
+the stable pin `hedron>=0.66.2,<0.67` until the beta is formally published.
+
 ## 0.64.0 — 2026-08-24 (in-tree)
 
 In-tree bounded release slice for Phase 0.64: finite presentation tokens, responsive scoped

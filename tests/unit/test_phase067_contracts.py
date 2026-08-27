@@ -102,9 +102,7 @@ def test_render_response_uses_page_closure_and_rejects_late_fragment_requirement
             render(
                 html.div(
                     "fragment",
-                    alpine=AlpineAttrs(
-                        state={"open": False}, features=("focus",), source="late"
-                    ),
+                    alpine=AlpineAttrs(state={"open": False}, features=("focus",), source="late"),
                 ),
                 mode=RenderMode.FRAGMENT,
             ),
@@ -114,12 +112,20 @@ def test_render_response_uses_page_closure_and_rejects_late_fragment_requirement
 
 def test_phase067_supply_catalog_has_exact_csp_and_nine_official_plugins() -> None:
     assert set(ALPINE_067_ARTIFACTS) == {
-        "core", "anchor", "collapse", "focus", "intersect", "mask", "morph",
-        "persist", "resize", "sort", "ui",
+        "core",
+        "anchor",
+        "collapse",
+        "focus",
+        "intersect",
+        "mask",
+        "morph",
+        "persist",
+        "resize",
+        "sort",
+        "ui",
     }
     assert all(
-        item.version == "3.16.3" and item.license == "MIT"
-        for item in ALPINE_067_ARTIFACTS.values()
+        item.version == "3.16.3" and item.license == "MIT" for item in ALPINE_067_ARTIFACTS.values()
     )
     assert len(alpine_artifact_manifest()) == 11
 

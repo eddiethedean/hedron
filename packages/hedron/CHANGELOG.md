@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.67.0] — 2026-08-27
+
+### Added
+- Alpine browser-local enhancement, typed browser-plan closure, unified interaction/lifecycle
+  contracts, and the verified Phase 0.67 release-gate evidence.
+
 ## [0.66.2] — 2026-08-26
 
 ### Fixed

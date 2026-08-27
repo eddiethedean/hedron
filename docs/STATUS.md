@@ -9,7 +9,7 @@ preview train; its acceptance packet is Verified in-tree but is not the stable c
 **Date:** 2026-08-25
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.66.2`;
+`hedron-workbench` / `hedron-posit` / `hedron-elements` `0.67.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 `0.1.1`, `hedron-charts`
 `0.2.1`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
@@ -24,7 +24,7 @@ Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimen
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.
 
 **Phase focus:** The stable train is **0.66.2**. Phase **0.67** is the Beta preview train, verified against
-the `v0.65.0` baseline; the coordinated packages are at `0.66.2`. Its HDJ foundation and all
+the `v0.66.2` baseline; the coordinated packages are at `0.67.0`. Its HDJ foundation and all
 thirteen imported issue gates are implemented and Verified. Dynamic, foreign, and installed-package template execution
 remain explicitly Deferred. Phase **0.65** remains the
 verified in-tree predecessor awaiting final tag publication. Phase **0.63** (verified

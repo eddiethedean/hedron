@@ -529,9 +529,7 @@ class Tabs(Component[TabsProps]):
         active = self.props.active or self._panels[0][0]
         tablist = []
         panels = []
-        root_alpine = AlpineAttrs.data(
-            {"active": active}, source=f"component:Tabs:{tabs_id}"
-        )
+        root_alpine = AlpineAttrs.data({"active": active}, source=f"component:Tabs:{tabs_id}")
         for idx, (name, content) in enumerate(self._panels):
             tab_id = f"{tabs_id}-tab-{idx}"
             panel_id = f"{tabs_id}-panel-{idx}"
@@ -546,9 +544,7 @@ class Tabs(Component[TabsProps]):
                         directives=(
                             AlpineDirective(
                                 "x-on:click",
-                                AlpineExpression.assign(
-                                    "active", AlpineExpression.literal(name)
-                                ),
+                                AlpineExpression.assign("active", AlpineExpression.literal(name)),
                             ),
                             AlpineDirective(
                                 "x-bind:aria-selected",

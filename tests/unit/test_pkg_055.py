@@ -43,6 +43,7 @@ def test_stage1_modules_and_versions() -> None:
         or tip.startswith("0.64.")
         or tip.startswith("0.65.")
         or tip.startswith("0.66.")
+        or tip.startswith("0.67.")
     ):
         # Historical 0.55 packet under a later living tip.
         assert Path("packages/hedron/src/hedron/workflow.py").is_file()

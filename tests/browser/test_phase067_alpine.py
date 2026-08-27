@@ -59,9 +59,14 @@ def browser_app_url() -> Iterator[str]:
                     id="toggle",
                     alpine=AlpineAttrs.on(
                         "click",
-                        AlpineExpression.assign("open", AlpineExpression.binary(
-                            "===", AlpineExpression.name("open"), AlpineExpression.literal(False)
-                        )),
+                        AlpineExpression.assign(
+                            "open",
+                            AlpineExpression.binary(
+                                "===",
+                                AlpineExpression.name("open"),
+                                AlpineExpression.literal(False),
+                            ),
+                        ),
                     ),
                 ),
                 html.p(
@@ -80,9 +85,7 @@ def browser_app_url() -> Iterator[str]:
                         type="text",
                         id="name-input",
                         value="Ada",
-                        alpine=AlpineAttrs.model(
-                            "name", source="browser:phase067:name-input"
-                        ),
+                        alpine=AlpineAttrs.model("name", source="browser:phase067:name-input"),
                     ),
                 ),
                 html.output(
@@ -135,8 +138,16 @@ def browser_app_url() -> Iterator[str]:
                     alpine=AlpineAttrs(
                         directives={"x-trap": AlpineExpression.name("open")},
                         features=(
-                            "anchor", "collapse", "focus", "intersect", "mask", "morph",
-                            "persist", "resize", "sort", "ui",
+                            "anchor",
+                            "collapse",
+                            "focus",
+                            "intersect",
+                            "mask",
+                            "morph",
+                            "persist",
+                            "resize",
+                            "sort",
+                            "ui",
                         ),
                     ),
                 ),
@@ -167,9 +178,7 @@ def browser_app_url() -> Iterator[str]:
 
 
 @pytest.mark.parametrize("engine", ("chromium", "firefox", "webkit"))
-def test_alpine_core_and_focus_plugin_are_demand_loaded(
-    browser_app_url: str, engine: str
-) -> None:
+def test_alpine_core_and_focus_plugin_are_demand_loaded(browser_app_url: str, engine: str) -> None:
     with sync_playwright() as pw:
         browser = getattr(pw, engine).launch(headless=True)
         page = browser.new_page()

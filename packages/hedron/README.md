@@ -16,7 +16,7 @@ you do not need a Node.js toolchain or a full-script rerun model.
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
 Requires Python 3.11–3.14. The latest public PyPI release is `hedron>=0.66.2,<0.67`
-(`v0.64.0`).
+(`v0.66.2`); the repository checkout is the `v0.67.0` beta train.
 The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
@@ -114,7 +114,7 @@ Coming from Streamlit? Start with the
 ## Install
 
 The latest installable PyPI release is `hedron>=0.66.2,<0.67`. The repository checkout
-provides the verified `0.64.x` release candidate. Use `uv sync` when working from a checkout.
+provides the verified `0.67.0` beta train. Use `uv sync` when working from a checkout.
 
 ```bash
 uv add "hedron>=0.66.2,<0.67" "uvicorn[standard]"
@@ -122,7 +122,7 @@ uv add "hedron>=0.66.2,<0.67" "uvicorn[standard]"
 python -m pip install "hedron>=0.66.2,<0.67" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Repository train:** `0.66.x` · **Repository tip:** `0.64.0` · **Latest PyPI release:** `0.64.0` · **Application pin:** `>=0.66.2,<0.67`
+**Package maturity:** Beta · **Stable train:** `0.66.x` · **Repository beta tip:** `0.67.0` · **Latest PyPI release:** `0.66.2` · **Application pin:** `>=0.66.2,<0.67`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the

@@ -11,7 +11,7 @@ Data-source protocols, optional dataframe normalization, and a
 Tabulator-backed grid Web Component — registered through the public Hedron
 plugin contract. Install as `hedron-data` or via the flagship extra `hedron[data]`.
 
-**Package maturity:** Beta · **Train:** `0.64.x` (published as `v0.64.0` on PyPI) · application pin `>=0.66.2,<0.67`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Stable train:** `0.66.x` (published as `v0.66.2` on PyPI) · **Beta repository train:** `0.67.0` · application pin `>=0.66.2,<0.67`; repository checkouts use `uv sync`
 
 ## Install
 
