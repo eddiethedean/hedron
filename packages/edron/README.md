@@ -1,27 +1,102 @@
 # Edron
 
-Edron is a class-oriented Python authoring facade over Hedron. It keeps Hedron as the renderer,
-router, interaction, state, styling, and security authority.
+[![CI](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml/badge.svg)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/edron.svg)](https://pypi.org/project/edron/)
+[![Python versions](https://img.shields.io/pypi/pyversions/edron.svg)](https://pypi.org/project/edron/)
+[![License](https://img.shields.io/github/license/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/blob/main/packages/edron/LICENSE)
+[![Status: Beta](https://img.shields.io/badge/status-beta-orange.svg)](https://github.com/eddiethedean/hedron)
+
+Build polished, server-rendered Python apps with a small, explicit API.
+
+Edron keeps the first page simple and gives the same codebase room to grow into dashboards,
+internal tools, data workspaces, long-running jobs, and reusable feature packages. You write
+ordinary Python, run one command, and get accessible HTML with progressive enhancement—without
+maintaining a separate frontend application or learning a callback-heavy UI model.
+
+## A first page in minutes
+
+Install Edron, create `app.py`, and start the development server:
+
+```console
+python -m pip install edron
+edron run app:app --reload
+```
 
 ```python
 import edron as ed
 
-app = ed.App(title="Hello")
+app = ed.App(title="Hello Edron")
 
 
 @app.page("/", title="Hello")
 class Home(ed.Page):
     def render(self) -> None:
         self.heading("Hello, Edron")
-        self.text("A small Python vocabulary over native Hedron.")
+        self.text("A small Python API for useful web applications.")
 ```
 
-Edron 0.6 is an in-tree Beta implementation line. Native Hedron objects remain available through
-`app.hedron` and `Page.include()`. Use `edron check` for non-executing editor feedback,
-`edron explain` for source-mapped registration facts, and `edron new` for teaching scaffolds.
+That is the whole application. Add a route, compose a layout, or wire an action when you need
+it—there is no generated frontend project to keep in sync.
 
-Phase 0.5 adds explicit resource lifetimes, native-backed cache policy, durable job wiring, and
-deployment diagnostics without creating a second registry or worker runtime:
+For a guided starting point, use a teaching scaffold:
+
+```console
+edron new my-app --template minimal
+cd my-app
+edron run app:app --reload
+```
+
+## Why developers reach for Edron
+
+- **Python all the way down.** Pages, components, actions, forms, data, and jobs use familiar
+  functions, classes, and type hints.
+- **A fast path and an escape hatch.** Start with a handful of readable Edron primitives. Keep
+  full control of the underlying application when an advanced integration needs it.
+- **Server-first by default.** HTML is useful on its own; HTMX-style enhancement adds smooth
+  interactions without making JavaScript a requirement.
+- **Batteries included for real work.** Compose navigation and layouts, render charts and media,
+  build bounded data tables and editors, manage resources and caching, and expose durable jobs.
+- **Inspectable instead of magical.** `edron check`, `edron explain`, and `edron doctor` make
+  registration, dependencies, capabilities, and deployment facts visible before production.
+- **Easy to test and review.** Explicit routes, typed inputs, bounded payloads, and deterministic
+  manifests keep behavior straightforward to assert in unit tests and code review.
+
+## A small API that scales
+
+The same page vocabulary works for a simple screen or a complete workflow:
+
+```python
+import edron as ed
+
+app = ed.App(title="Sales")
+
+
+@app.page("/sales", title="Sales")
+class Sales(ed.Page):
+    def render(self) -> None:
+        self.heading("Sales overview")
+        with self.layout(ed.layout("grid", columns=2)) as body:
+            body.text("A layout is just Python composition.")
+```
+
+Common building blocks include:
+
+| Need | Edron API |
+| --- | --- |
+| Pages and reusable UI | `Page`, `@app.page`, `fragment`, `inherit`, `expose` |
+| Navigation and layout | `navigation_target`, `layout`, `NavLink`-compatible targets |
+| Forms and interactions | typed `action`, `fragment`, `Outcome`, `refresh`, `success` |
+| Tables and editing | `DataSource`, `DataWorkspace`, `Column`, `EditPolicy` |
+| Charts and media | `chart`, `map`, `image`, `audio`, `video` |
+| Resources and performance | `resource`, `dependency`, `cache_data` |
+| Long-running work | `JobFlow`, `JobBackend`, status polling/events |
+| Reusable app features | `feature_package`, `include_package`, capability promotion |
+
+## Data, resources, and jobs stay explicit
+
+Edron makes application boundaries visible instead of hiding them in global state. For example,
+resources are lazy and app-owned, cache policy is declared beside the function it protects, and
+data editing is deny-by-default:
 
 ```python
 db = app.resource("database", create_database, secret_refs={"dsn": "DATABASE_URL"})
@@ -32,73 +107,48 @@ def load_summary(tenant_id: str) -> dict[str, int]:
     return query_summary(db, tenant_id)
 ```
 
-Resources are lazy and closed by the native app lifespan. `app.operations()` reports backend
-durability and resource metadata without resolving factories or exposing secrets. `JobFlow` keeps
-polling and ordinary HTTP as the correctness baseline; optional live observations are native SSE
-projections with the same authorization and no-JavaScript fallback.
+Use `DataWorkspace` for bounded paging, filtering, sorting, selection, CSV export, and typed edit
+intents. Use `JobFlow` when work must outlive a request. Your application still owns the database
+session, transaction, authorization, persistence, and audit decisions.
 
-Phase 0.4 adds explicit visualization and media composition while keeping native Hedron as the
-rendering and security authority:
+## Tooling that helps before deployment
 
-```python
-from pydantic import BaseModel
-from hedron_charts import Chart, beginner_to_spec
+```console
+# Check source without importing application code
+edron check app.py
 
-chart = Chart(
-    spec=beginner_to_spec(
-        kind="line",
-        data=rows,
-        x="month",
-        y="revenue",
-        title="Revenue",
-        description="Revenue by month",
-    )
-)
+# Inspect registered pages and surfaces
+edron explain app:app
 
-
-@app.page("/sales", title="Sales")
-class Sales(ed.Page):
-    def render(self) -> None:
-        self.chart(chart, alternative="The table below contains the exact values.")
-        self.image("/assets/sales.png", alt="Revenue trend")
+# Check installed required and optional capabilities
+edron doctor
 ```
 
-Typed chart/map links are registered with `app.chart_interaction(...)` or
-`app.map_interaction(...)`; they lower to native `ChartInteraction`/`MapInteraction` bundles and
-never execute client callbacks. Selection payloads remain bounded, typed, and subject to the
-native authorization and CSRF policies.
+For CI, `edron check --format sarif` produces review-friendly diagnostics. Applications can also
+expose deterministic `app.manifest()` and `app.conformance()` reports for release checks.
 
-Data workspaces are explicit and application-owned:
+## Installation and optional integrations
 
-```python
-columns = (ed.Column("id", read_only=True), ed.Column("name", writable=True))
-source = ed.DataSource.in_memory(
-    [{"id": "1", "name": "Ada"}],
-    columns=columns,
-    writable_fields=("name",),
-)
-workspace = ed.DataWorkspace("people", source=source, columns=columns)
+Edron supports Python 3.11–3.14. Install only what your application needs:
+
+```console
+python -m pip install edron
 ```
 
-Add an `EditPolicy` with explicit authorization to make a workspace editable. Edron never owns
-database sessions, transactions, authorization state, persistence, or audit storage.
+Optional extras are available for pandas, Polars, PyArrow, Plotly, Altair, Matplotlib, and
+SQLAlchemy (for example, `pip install "edron[polars,sqlalchemy]"`).
 
-Phase 0.6 adds reusable package composition, typed navigation targets, shared native layout
-recipes, reviewed lazy capability promotion, and bounded lowering evidence:
+Read the [getting started guide](https://hedron.readthedocs.io/en/latest/getting-started/), browse
+the [API guides](https://hedron.readthedocs.io/en/latest/api/), or see the
+[Edron roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
-```python
-dashboard = ed.feature_package("acme.dashboard", "0.1.0")
-app.include_package(dashboard)
+## How Edron fits in
 
-@app.page("/home", title="Home")
-class Home(ed.Page):
-    def render(self) -> None:
-        with self.layout(ed.layout("grid", columns=2)) as body:
-            body.text("Ready")
+Edron is the authoring layer: it gives application developers a friendly, typed vocabulary and
+keeps the important boundaries explicit. A mature native web engine handles the lower-level
+rendering, routing, interaction, styling, and security work underneath. Most applications never
+need to think about that implementation detail; when they do, the exact native application remains
+available through `app.native` / `app.hedron` and `Page.include()`.
 
-home = app.navigation_target(Home)
-app.promote_capability("charts")  # native hedron_charts remains the escape hatch
-```
-
-`app.manifest()` and `app.conformance()` expose deterministic, redacted Edron/native lowering
-facts without executing application callbacks.
+Edron is currently a **Beta** API line. Feedback, issues, and contributions are welcome in the
+[Hedron repository](https://github.com/eddiethedean/hedron).
