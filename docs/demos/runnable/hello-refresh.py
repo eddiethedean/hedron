@@ -21,7 +21,7 @@ def status():
     )
 
 
-@app.action(fallback="/")
+@app.action("/ping", fallback="/")
 def ping():
     from hedron import refresh
 
