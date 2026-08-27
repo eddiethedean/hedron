@@ -236,6 +236,7 @@ def _finding(
     automation_status: str,
     reason: str,
     kind: str,
+    replacement: str | None = None,
 ) -> ApiMigrationFinding:
     return ApiMigrationFinding(
         path=path,
@@ -243,7 +244,7 @@ def _finding(
         column=column,
         code=record.code,
         old_path=record.old_path,
-        replacement=record.replacement,
+        replacement=replacement or record.replacement,
         owner=record.owner,
         confidence=confidence,
         automation_status=automation_status,
@@ -256,6 +257,58 @@ def _finding(
     )
 
 
+# Direct helper imports are less common than method decorators, but they are
+# still part of the public 0.67 surface. Keep this deliberately narrow:
+# unrelated symbols such as the ``Component`` node class must not be mistaken
+# for the transitional ``app.component`` route.
+_IMPORTED_API = {
+    "fragment": "app.fragment",
+    "include_feature": "app.include_feature",
+    "screen": "app.screen",
+    "refreshable": "app.refreshable",
+    "command": "app.command",
+    "form_command": "app.form_command",
+}
+
+
+def _import_findings(
+    tree: ast.AST,
+    *,
+    display_path: str,
+    records: Mapping[str, FutureWarningRecord],
+) -> tuple[ApiMigrationFinding, ...]:
+    """Find direct imports of transitional helpers without importing modules."""
+    out: list[ApiMigrationFinding] = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ImportFrom) or node.module not in {"hedron", "hedron.app"}:
+            continue
+        for alias in node.names:
+            old_path = _IMPORTED_API.get(alias.name)
+            record = records.get(old_path or "")
+            if record is None or not hasattr(node, "lineno"):
+                continue
+            # A direct import does not identify the owning application object;
+            # e.g. ``include_feature`` is an app method, not a module-level
+            # ``include`` function. Report it for review rather than emitting
+            # an invalid import rewrite.
+            confidence = "unknown"
+            automation = "manual-review"
+            reason = "A direct helper import has no statically provable application owner."
+            out.append(
+                _finding(
+                    path=display_path,
+                    line=int(getattr(node, "lineno", 1)),
+                    column=int(getattr(node, "col_offset", 0)) + 1,
+                    record=record,
+                    confidence=confidence,
+                    automation_status=automation,
+                    reason=reason,
+                    kind="import",
+                )
+            )
+    return tuple(out)
+
+
 def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMigrationFinding, ...]:
     try:
         tree = ast.parse(source, filename=str(path))
@@ -264,6 +317,8 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     out: list[ApiMigrationFinding] = []
     seen: set[tuple[int, int, str]] = set()
     records = {record.old_path: record for record in PUBLIC_FUTURE_WARNINGS.records()}
+    out.extend(_import_findings(tree, display_path=display_path, records=records))
+    seen.update((item.line, item.column - 1, item.old_path) for item in out)
 
     def add(node: ast.AST, old_path: str, *, manual: bool = False) -> None:
         record = records.get(old_path)
@@ -278,6 +333,7 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
             return
         seen.add(key)
         reason = "The replacement is a proven mechanical rename."
+        replacement: str | None = None
         if record.confidence != "complete":
             reason = "The replacement changes the handler contract and needs a human review."
         confidence = record.confidence
@@ -286,6 +342,30 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
             reason = "Region-specific arguments need a human review before renaming."
             confidence = "partial"
             automation = "manual-review"
+        # A component route that declares an unsafe method is an action task,
+        # not a safe view. The registry records the common GET rename; this
+        # call-site disposition prevents an unsafe route from being rewritten
+        # to a GET-oriented decorator.
+        if old_path in {"app.component", "router.component"} and isinstance(node, ast.Call):
+            methods: list[str] = []
+            for keyword in node.keywords:
+                if keyword.arg == "method" and isinstance(keyword.value, ast.Constant):
+                    methods.append(str(keyword.value.value))
+                elif keyword.arg == "methods" and isinstance(
+                    keyword.value, (ast.List, ast.Tuple, ast.Set)
+                ):
+                    methods.extend(
+                        str(item.value)
+                        for item in keyword.value.elts
+                        if isinstance(item, ast.Constant)
+                    )
+            if any(method.upper() not in {"GET", "HEAD", "OPTIONS", "TRACE"} for method in methods):
+                reason = (
+                    "Unsafe component methods are action tasks; choose the action API manually."
+                )
+                confidence = "partial"
+                automation = "manual-review"
+                replacement = old_path.replace("component", "action")
         out.append(
             _finding(
                 path=display_path,
@@ -296,6 +376,7 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
                 automation_status=automation,
                 reason=reason,
                 kind="python",
+                replacement=replacement,
             )
         )
 
@@ -469,6 +550,29 @@ def _replace_python(
         start = _offset_for_position(source, end_lineno, end_col_offset) - len(leaf)
         end = start + len(leaf)
         replacements.append((start, end, replacement))
+    # Replace only the imported identifier, preserving ``as`` aliases. The
+    # AST's ImportFrom aliases do not expose reliable end offsets on every
+    # supported Python version, so locate the token on the recorded line.
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ImportFrom) or node.module not in {"hedron", "hedron.app"}:
+            continue
+        line_no = int(getattr(node, "lineno", 0))
+        line_start = _offset_for_position(source, line_no, 0)
+        line_end = _offset_for_position(source, line_no + 1, 0)
+        line_text = source[line_start:line_end]
+        for alias in node.names:
+            old_path = _IMPORTED_API.get(alias.name)
+            if old_path is None:
+                continue
+            replacement = wanted.get((line_no, old_path))
+            if replacement is None:
+                continue
+            match = re.search(rf"\b{re.escape(alias.name)}\b", line_text)
+            if match is None:
+                continue
+            replacements.append(
+                (line_start + match.start(), line_start + match.end(), replacement)
+            )
     for start, end, replacement in sorted(set(replacements), reverse=True):
         source = source[:start] + replacement + source[end:]
     return source, len(set(replacements))

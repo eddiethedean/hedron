@@ -401,24 +401,59 @@ class HedronPagesMixin:
             **kwargs,
         )
 
-    def action(self, path: str, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
-        """Register a mutation endpoint (typically POST) with CSRF when profiles require it.
+    def action(
+        self,
+        path: str,
+        *,
+        method: str = "POST",
+        fallback: str | None = None,
+        include_in_schema: bool = True,
+        **kwargs: Any,
+    ) -> ActionHandle[Any, Any] | Callable[[Callable[P, R]], ActionHandle[Any, Any]] | Callable[
+        [Callable[P, R]], Callable[P, R]
+    ]:
+        """Register the canonical typed mutation and return an ``ActionHandle``.
 
         Args:
             path: URL path (FastAPI path syntax).
-            **kwargs: Forwarded to ``HedronRouter.action`` (for example ``method=\"POST\"``).
+            method: Unsafe HTTP verb, ``POST`` by default.
+            fallback: Optional ordinary HTTP fallback path.
+            include_in_schema: Include the action in OpenAPI (``True`` by default).
+            **kwargs: Canonical action options such as ``fragment_regions``,
+                ``authorization``, ``idempotency``, and ``outcomes``.
 
         Returns:
-            Decorator that registers the action handler.
+            A decorator that returns an ``ActionHandle`` after registration.
         """
-        decorator = self._root_router.action(path, **kwargs)
+        simulator_options = {
+            "accumulate",
+            "empty",
+            "list_remove",
+            "methods",
+            "region",
+            "regions",
+            "sequence",
+            "validate",
+            "variants",
+        }
+        if simulator_options.intersection(kwargs):
+            kwargs.setdefault("include_in_schema", include_in_schema)
+            decorator = self._root_router.action(path, **kwargs)
 
-        def wrap(fn: Callable[P, R]) -> Callable[P, R]:
-            decorator(fn)
-            self._sync_root_route()
-            return fn
+            def wrap(fn: Callable[P, R]) -> Callable[P, R]:
+                decorator(fn)
+                self._sync_root_route()
+                return fn
 
-        return wrap
+            return wrap
+        return self.command(
+            path,
+            method=method,
+            fallback=fallback,
+            include_in_schema=include_in_schema,
+            _emit_legacy_warning=False,
+            **kwargs,
+        )
 
     def include_component(
         self,

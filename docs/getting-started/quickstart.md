@@ -20,8 +20,8 @@ Install from PyPI: `hedron>=0.66.2,<0.67`. Other pins and extras:
 ## You will learn
 
 - how `hedron new` creates an ordinary Python application;
-- how a component screen becomes a complete HTML page;
-- how `@app.refreshable` returns a targeted HTML fragment;
+- how a returned component tree becomes a complete HTML page;
+- how `@app.view` returns a targeted HTML fragment handle;
 - how to make one edit, run a diagnostic check, and choose the next tutorial step.
 
 You do not need prior HTMX or JavaScript knowledge. The [core concepts](core-concepts.md)
@@ -185,12 +185,12 @@ For Python installation, Windows commands, optional extras, proxies, and adapter
 `hedron new` writes an ordinary `app.py` and a `pyproject.toml` with a bounded Hedron pin.
 The project configuration reserves `components/` as the component root; create that
 directory when you add your first project-owned component. The generated page declares a
-refreshable view and returns a small fragment for that view.
+canonical view and returns a small fragment for that view.
 
 ```text
 my-hedron-app/
-├── app.py           # application, screen, command, and refreshable view
-└── pyproject.toml   # dependencies and bounded Hedron pin
+app.py           # application, page, action, and view handlers
+pyproject.toml   # dependencies and bounded Hedron pin
 
 # Created later when you add project-owned components:
 components/

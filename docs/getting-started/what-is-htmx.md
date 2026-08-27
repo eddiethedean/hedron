@@ -20,9 +20,8 @@ Server:  <html> ... the complete document ... </html>
 Browser: replaces the current document
 ```
 
-That model remains available in Hedron. An `@app.screen` route returns page content,
-which Hedron wraps as a complete HTML document (`@app.page` + `Page` is the Advanced
-form of the same idea).
+That model remains available in Hedron. An `@app.page` route returns one presentation
+tree, which Hedron renders as a complete HTML document.
 
 HTMX adds a second, smaller interaction model:
 
@@ -40,7 +39,7 @@ page it replaces is a **region** (the view’s host). Replacing it is a **swap**
 | Browser requests | A page URL | A fragment URL |
 | Server returns | A complete HTML document | HTML for one region |
 | Browser updates | The whole document | The chosen region only |
-| Hedron API | `@app.screen` (or Advanced `@app.page` + `Page`) | `@app.refreshable` + `status.refresh_button(...)` |
+| Hedron API | `@app.page` | `@app.view` + `status.refresh_button(...)` |
 
 ## The Hedron + HTMX request cycle
 
@@ -83,7 +82,7 @@ app = Hedron(
 )
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
@@ -93,7 +92,7 @@ def status():
     )
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
     return Stack(
         status(),
@@ -101,10 +100,10 @@ def home():
     )
 ```
 
-!!! note "Advanced — explicit `@app.page`"
+!!! note "Advanced — explicit region control"
 
-    `@app.screen` lowers to `Page` + `@app.page`. Prefer `screen` for new golden paths;
-    keep `@app.page` when you need full `Page` constructor control.
+    The canonical roles are `@app.page`, `@app.view`, and `@app.action`. Use the lower-level
+    `app.region` / `@app.fragment` API only when you need a distinct custom allowlist.
 
 `status.refresh_button(...)` renders the browser wiring for you. Its relevant output
 is equivalent to:
@@ -128,7 +127,7 @@ documented in [Which interaction API?](interaction-apis.md).
 
 | Hedron code | Meaning |
 |---|---|
-| `@app.refreshable("/status")` | Registers a GET fragment view at `/status` and returns a handle. |
+| `@app.view("/status")` | Registers a GET fragment view at `/status` and returns a handle. |
 | `status()` | Renders the view host on the page. |
 | `status.refresh_button(...)` | Makes a GET request and targets that host when clicked. |
 

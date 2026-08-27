@@ -625,7 +625,7 @@ class _CommandButton(Component[_CommandButtonProps]):
 
 @dataclass(frozen=False)
 class ActionHandle(Generic[InputT, ResultT]):
-    """Typed command reference returned by ``@app.command``."""
+    """Typed action reference returned by canonical ``@app.action``."""
 
     logical_id: str
     name: str

@@ -103,7 +103,7 @@ def home(request: Request, error: str | None = None) -> Page:
     )
 
 
-@app.command("/logout", fallback="/")
+@app.action("/logout", fallback="/")
 def logout(request: Request) -> RedirectResponse:
     """End the local session; add provider end-session redirect if required."""
     request.session.clear()

@@ -748,7 +748,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         token = csrf_token_for_request(request, policy)
         return edit_user_page(user=user, csrf_token=token, username=username)
 
-    @app.command(
+    @app.action(
         "/users",
         fallback="/",
         dependencies=[Depends(require_user)],
@@ -785,7 +785,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
             return users_table_component(store)
         return redirect_local("/?msg=User%20created")
 
-    @app.command(
+    @app.action(
         "/users/{user_id}",
         fallback="/",
         dependencies=[Depends(require_user)],
@@ -825,7 +825,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
             return users_table_component(store)
         return redirect_local("/?msg=User%20updated")
 
-    @app.command(
+    @app.action(
         "/users/{user_id}/delete",
         fallback="/",
         dependencies=[Depends(require_user)],
@@ -879,7 +879,7 @@ def mount_phase06_routes(app: FastAPI) -> None:
     )
     router = HedronRouter(prefix="/charts", dependencies=[Depends(require_user)])
 
-    @router.component("/fragment", fragment_regions=regions)
+    @router.view("/fragment", fragment_regions=regions)
     def chart_fragment() -> InteractionResult:
         chart = LineChart(
             [

@@ -207,9 +207,8 @@ You do not need to memorize `app.py`. Its main pieces are:
 
 1. **Imports** make Hedron and Python names available.
 2. `app = Hedron(...)` creates the application object Uvicorn imports.
-3. `@app.refreshable("/status")` registers the status view and returns a handle.
-4. `@app.screen("/", title="Home")` connects the browser path `/` to the `home` Python function
-   (it lowers to `Page` + `@app.page` under the hood).
+3. `@app.view("/status")` registers the status view and returns a handle.
+4. `@app.page("/")` connects the browser path `/` to the `home` Python function.
 5. `status.refresh_button(...)` and `ping.button(...)` derive HTMX wiring from those handles.
 
 When a browser opens `/`, Hedron calls `home()` and renders a document from its returned body,
@@ -225,7 +224,7 @@ At the end of `app.py`, add:
 ```python
 
 
-@app.screen("/about", title="About")
+@app.page("/about")
 def about():
     return Text("This is my second page.")
 ```
@@ -233,13 +232,13 @@ def about():
 Save the file, then open [http://127.0.0.1:8000/about](http://127.0.0.1:8000/about). The decorator
 connects the `/about` URL to the function immediately below it.
 
-If you get a 404 response, check that you saved `app.py`, the line begins with `@app.screen`, and the
+If you get a 404 response, check that you saved `app.py`, the line begins with `@app.page`, and the
 server reloaded without an error.
 
-!!! note "Advanced — explicit `@app.page`"
+!!! note "Explicit document metadata"
 
-    Prefer `@app.screen` for new pages. Use `@app.page` when you need the full `Page`
-    constructor (document metadata, custom layout options).
+    Use `@app.page` for the canonical page role. Return an explicit `Page` value when you
+    need document metadata or custom layout options.
 
 ## 8. Ask Hedron to check the app
 

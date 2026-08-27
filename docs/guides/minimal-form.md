@@ -1,7 +1,7 @@
 # Minimal form POST
 
 Add a CSRF-safe note form to the **same** FastAPI scaffold from
-[HTMX interactions](htmx-interactions.md). The golden path is `@app.command` plus
+[HTMX interactions](htmx-interactions.md). The golden path is `@app.action` plus
 `CsrfField` and `save.form()`, matching
 [Notes + SQLAlchemy](../examples/notes-sqlalchemy.md). Use this before the advanced
 region / `InteractionResult` path in [Forms and actions](forms-and-actions.md).
@@ -58,7 +58,7 @@ note, then `redirect_local("/")` reloads the page so the count increments. CSRF 
     _NOTES: list[str] = []
 
 
-    @app.refreshable("/status")
+    @app.view("/status")
     def status():
         stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
         return html.div(
@@ -68,7 +68,7 @@ note, then `redirect_local("/")` reloads the page so the count increments. CSRF 
         )
 
 
-    @app.refreshable("/notes-count")
+    @app.view("/notes-count")
     def notes():
         return html.div(
             Text(f"Notes saved: {len(_NOTES)}"),

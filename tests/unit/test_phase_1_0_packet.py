@@ -126,6 +126,21 @@ def test_phase_1_0_django_adapter_exports_canonical_decorators() -> None:
     assert callable(view)
 
 
+def test_phase_1_0_action_returns_typed_handle() -> None:
+    from hedron import ActionHandle, Hedron, Outcome
+
+    app = Hedron(title="action-handle", explorer="off", session_secret="phase-1-action-secret")
+
+    @app.action("/act", fallback="/")
+    def act() -> Outcome:
+        return Outcome.success(message="ok")
+
+    assert isinstance(act, ActionHandle)
+    assert act.path == "/act"
+    assert act.method == "POST"
+    assert act.fallback == "/"
+
+
 def test_phase_1_0_target_check_does_not_import_application(tmp_path: Path) -> None:
     (tmp_path / "bad_app.py").write_text(
         "raise RuntimeError('target check must be non-executing')\n",

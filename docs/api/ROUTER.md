@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.66.x**)
+**Status:** Accepted · **Shipped** (introduced in 0.4; current checkout train **1.0.x**)
 
 ```python
 from fastapi import Depends
@@ -32,12 +32,12 @@ responses, and metadata. It adds `page`, `refreshable`, `command`, `component`, 
 decorators on its root router.
 
 ```python
-@users.refreshable("/table")
+@users.view("/table")
 def user_table():
     return Text("Users")
 
 
-@users.command("/{user_id}")
+@users.action("/{user_id}")
 def delete_user(user_id: str):
     ...
 ```
@@ -62,13 +62,15 @@ conflicting `InteractionResult.policy.declared_regions` value.
 | Decorator | Typical return | Notes |
 |---|---|---|
 | `@router.page(path, **kwargs)` | `Page` / document | PAGE mode for navigation; fragment for `HX-Request`; accepts `fragment_regions` |
-| `@router.refreshable(path, **kwargs)` | Fragment / `FragmentHandle` | Golden-path GET view; use `handle.refresh_button(...)` |
-| `@router.command(path, **kwargs)` | `ActionHandle` | Golden-path CSRF mutation; use `handle.form()` / `handle.button(...)` |
+| `@router.view(path, **kwargs)` | Component / fragment | Advanced GET view route; use `Hedron.view` for owned handles |
+| `@router.action(path, method=..., **kwargs)` | Component or redirect | Advanced CSRF action route; use `Hedron.action` for typed handles |
+| `@router.refreshable(path, **kwargs)` | `FragmentHandle` | 0.67 migration helper for `view` |
+| `@router.command(path, **kwargs)` | `ActionHandle` | 0.67 migration helper for typed actions |
 | `@router.component(path, **kwargs)` | Component / fragment | Lower-level FRAGMENT mode; accepts `fragment_regions` |
-| `@router.action(path, method=..., **kwargs)` | Component or redirect | Lower-level CSRF action; prefer `@command` for new forms |
 
-On the flagship `Hedron` app (root router), prefer `@app.refreshable` and `@app.command`.
-`app.region(...)` plus `@app.fragment(...)` remain available for explicit HTMX allowlists.
+On the flagship `Hedron` app (root router), prefer `@app.page`, `@app.view`, and `@app.action`.
+`app.region(...)` plus `@app.fragment(...)` remain available only for explicit lower-level
+HTMX allowlists.
 
 `HedronRouter` exposes the same decorators. See [Hedron](HEDRON.md) and
 [Refreshable views](REFRESHABLE_VIEWS.md).
