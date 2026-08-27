@@ -74,6 +74,32 @@ def _probe(*, fixture: Path, package_root: Path) -> dict[str, object]:
     return json.loads(lines[-1])
 
 
+def _type_check(*, fixture: Path, package_root: Path) -> dict[str, int]:
+    """Type-check the canonical fixture against one materialized source tree."""
+    env = dict(os.environ)
+    env["PYTHONPATH"] = os.pathsep.join(
+        str(path)
+        for path in (
+            package_root / "packages" / "hedron" / "src",
+            package_root / "packages" / "hedron-core" / "src",
+            package_root / "packages" / "hedron-jinja" / "src",
+            fixture,
+        )
+    )
+    result = subprocess.run(
+        [sys.executable, "-m", "pyright", str(fixture / "app.py")],
+        cwd=package_root,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode:
+        detail = (result.stdout + "\n" + result.stderr).strip()
+        raise RuntimeError(f"canonical type-check failed for {package_root}: {detail[-4000:]}")
+    return {"returncode": result.returncode}
+
+
 def _materialize(tag: str) -> tuple[Path, str, tempfile.TemporaryDirectory[str]]:
     try:
         commit = subprocess.check_output(
@@ -103,6 +129,8 @@ def run(*, baseline: str = "v0.67.0") -> dict[str, object]:
     try:
         baseline_facts = _probe(fixture=FIXTURE, package_root=baseline_root)
         current_facts = _probe(fixture=FIXTURE, package_root=ROOT)
+        baseline_typecheck = _type_check(fixture=FIXTURE, package_root=baseline_root)
+        current_typecheck = _type_check(fixture=FIXTURE, package_root=ROOT)
     finally:
         temporary.cleanup()
     expected = {
@@ -123,6 +151,8 @@ def run(*, baseline: str = "v0.67.0") -> dict[str, object]:
         "fixture": "tests/upgrade/phase_1_0/canonical",
         "baseline_result": baseline_facts,
         "current_result": current_facts,
+        "baseline_typecheck": baseline_typecheck,
+        "current_typecheck": current_typecheck,
         "target_artifact": {"available": False},
         "release_claim": False,
     }

@@ -688,6 +688,10 @@ def check_plan() -> list[str]:
         facts = bridge_run.get("facts")
         if not isinstance(facts, dict) or facts.get("http_status") != 200:
             errors.append("compatibility bridge run must record a successful canonical HTTP probe")
+        for name in ("baseline_typecheck", "current_typecheck"):
+            typecheck = bridge_run.get(name)
+            if not isinstance(typecheck, dict) or typecheck.get("returncode") != 0:
+                errors.append(f"compatibility bridge run must record a successful {name}")
 
     release_boundary = contract.get("release_boundary")
     if not isinstance(release_boundary, dict):

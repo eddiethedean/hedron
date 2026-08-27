@@ -18,7 +18,7 @@
   },
   "bridge_run": {
     "command": "python scripts/check_upgrade_100.py --baseline v0.67.0 --json",
-    "result": "baseline and current canonical Python/HDJ probes passed",
+    "result": "baseline and current canonical Python/HDJ/HTTP probes and type-checks passed",
     "baseline_commit": "82bd0e4f8fcd2ae75fd50fd2c41e18fbd674ace6",
     "facts": {
       "http_status": 200,
@@ -26,7 +26,9 @@
       "interaction_marker": true,
       "hdj_format_version": 1,
       "hdj_kind": "fragment"
-    }
+    },
+    "baseline_typecheck": {"returncode": 0},
+    "current_typecheck": {"returncode": 0}
   },
   "target_artifact": {
     "available": false,
