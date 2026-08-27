@@ -36,7 +36,7 @@ The generated app (from `hedron new`) is ordinary Python:
 import os
 from datetime import UTC, datetime
 
-from hedron import Hedron, Stack, Text, html
+from hedron import Hedron, Page, Stack, Text, html
 
 app = Hedron(
     title="Hedron App",
@@ -46,7 +46,7 @@ app = Hedron(
 )
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
@@ -56,25 +56,28 @@ def status():
     )
 
 
-@app.command(fallback="/")
+@app.action("/ping")
 def ping():
     from hedron import refresh
 
     return refresh(status).toast("Refreshed")
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
-    return Stack(
-        Text("Hello from hedron new"),
-        status(),
-        status.refresh_button("Refresh status"),
-        ping.button("Ping"),
+    return Page(
+        Stack(
+            Text("Hello from hedron new"),
+            status(),
+            html.button("Refresh status", hx_get=status.path),
+            html.button("Ping", hx_post="/ping"),
+        ),
+        title="Home",
     )
 ```
 
-Prefer `@app.screen` for new apps. Use explicit `Page` + `@app.page` only when you need
-full `Page` constructor control
+Use `@app.page`, `@app.view`, and `@app.action` as the canonical 1.0 function roles. Use
+explicit `Page` + `@app.page` when you need full `Page` constructor control
 ([docs](https://hedron.readthedocs.io/en/latest/api/HEDRON/)).
 
 Undeclared HTMX targets fail closed.

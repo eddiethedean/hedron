@@ -179,3 +179,9 @@ def test_phase_1_0_compatibility_report_retains_baseline_bridge_probe() -> None:
     )
     assert report["bridge_run"]["command"].startswith("python scripts/check_upgrade_100.py")
     assert report["bridge_run"]["facts"]["http_status"] == 200
+
+
+def test_phase_1_0_checker_validates_coordinated_and_satellite_metadata() -> None:
+    from scripts.check_100 import _check_package_metadata
+
+    assert _check_package_metadata() == []
