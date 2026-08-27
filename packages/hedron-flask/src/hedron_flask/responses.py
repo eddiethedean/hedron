@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import Any, cast
 
 from flask import Response
 from flask import request as flask_request
@@ -24,10 +24,12 @@ from hedron_core.interaction import (
     select_htmx_auth_target,
     validated_extra_headers,
 )
+from hedron_core.interaction_067 import Outcome, OutcomeKind
 from hedron_core.mount import normalize_mount_path, prefix_local_path
 from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 from hedron_core.security_policy import SecurityPolicy
+from hedron_core.typing_aliases import JsonValue
 from hedron_flask.htmx import render_mode_for_request
 
 _logger = logging.getLogger("hedron.flask")
@@ -36,6 +38,120 @@ __all__ = [
     "component_response",
     "interaction_response",
 ]
+
+
+def _outcome_response(
+    result: Outcome,
+    *,
+    authenticated: bool = False,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+    app_id: str | None = None,
+) -> Response:
+    """Lower a typed action outcome using the same wire roles as FastAPI."""
+    import json
+
+    role = result.role
+    payload = dict(result.payload)
+    if role is OutcomeKind.NO_CONTENT:
+        return Response(status=204)
+    if role is OutcomeKind.REDIRECT:
+        return interaction_response(
+            InteractionResult(redirect=str(payload["location"]), status_code=200),
+            authenticated=authenticated,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
+    if role is OutcomeKind.REFRESH:
+        from hedron_core.codes import HED_UPDATE_0003
+        from hedron_core.updates import (
+            list_handle_descriptors,
+            matches_declared_host,
+            refresh_event_name,
+            safe_dom_id,
+        )
+
+        handles = payload.get("handles")
+        if not isinstance(handles, list):
+            return Response(
+                "refresh outcome handles must be a list", status=400, mimetype="text/plain"
+            )
+        descriptors = list_handle_descriptors(app_id=app_id)
+        by_name = {
+            key: descriptor
+            for descriptor in descriptors
+            if descriptor.kind == "view"
+            for key in (descriptor.logical_id, descriptor.name, safe_dom_id(descriptor.logical_id))
+        }
+        events: dict[str, JsonValue] = {}
+        regions: list[FragmentRegion] = []
+        for raw_handle in handles:
+            if not isinstance(raw_handle, str):
+                return Response(
+                    "refresh outcome handles must be strings", status=400, mimetype="text/plain"
+                )
+            candidate = raw_handle.strip()
+            descriptor = by_name.get(candidate)
+            dom_id = safe_dom_id(descriptor.logical_id) if descriptor else ""
+            if descriptor is None:
+                for view_descriptor in descriptors:
+                    if view_descriptor.kind != "view":
+                        continue
+                    base = safe_dom_id(view_descriptor.logical_id)
+                    if not candidate.startswith(f"{base}-"):
+                        continue
+                    region = FragmentRegion(id=base, selector=f"#{base}")
+                    if matches_declared_host(region, f"#{candidate}"):
+                        descriptor = view_descriptor
+                        dom_id = candidate
+                        break
+            if descriptor is None:
+                return Response(
+                    f"{HED_UPDATE_0003}: Outcome.refresh target {raw_handle!r} "
+                    "is not an owned view handle.",
+                    status=403,
+                    mimetype="text/plain",
+                )
+            events[refresh_event_name(dom_id)] = cast(JsonValue, {})
+            regions.append(FragmentRegion(id=dom_id, selector=f"#{dom_id}"))
+        return interaction_response(
+            InteractionResult(
+                content=None,
+                status_code=200,
+                trigger=events,
+                policy=InteractionPolicy(
+                    declared_regions=tuple(regions), allow_undeclared_targets=False
+                ),
+            ),
+            authenticated=authenticated,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
+    if role is OutcomeKind.JOB:
+        return Response(status=202, headers={"X-Hedron-Job-Id": str(payload["job_id"])})
+    if role is OutcomeKind.DOWNLOAD:
+        return Response(status=200, headers={"X-Hedron-Download": str(payload["url"])})
+    if role is OutcomeKind.VALIDATION:
+        return Response(
+            json.dumps(result.to_dict(), sort_keys=True),
+            status=422,
+            content_type="application/json",
+        )
+    if role is OutcomeKind.CONFLICT:
+        return Response(
+            json.dumps(result.to_dict(), sort_keys=True),
+            status=409,
+            content_type="application/json",
+        )
+    if role is OutcomeKind.PATCH:
+        return Response(
+            json.dumps(result.to_dict(), sort_keys=True),
+            status=200,
+            content_type="application/json",
+        )
+    # SUCCESS is intentionally bodyless.  An action that needs HTML should
+    # return a component/InteractionResult instead of overloading its role.
+    return Response(status=200)
 
 
 def _header_value(headers: Mapping[str, str], name: str) -> str | None:

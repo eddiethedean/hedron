@@ -12,10 +12,11 @@ from flask import Flask, Response, current_app, request, url_for
 from hedron_core.adapter import UrlReverseRequest
 from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.interaction_067 import Outcome
 from hedron_core.mount import prefix_local_path
 from hedron_core.rendering import RenderResult
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, validate_csrf
-from hedron_flask.responses import component_response, interaction_response
+from hedron_flask.responses import _outcome_response, component_response, interaction_response
 
 __all__ = [
     "FlaskUrlReverser",
@@ -116,6 +117,14 @@ def hedron_route(
                 code = getattr(exc.diagnostic, "code", "")
                 status = 403 if str(code).startswith("HED-UPDATE-0003") else 400
                 return Response(str(exc), status=status, content_type="text/plain")
+            if isinstance(value, Outcome):
+                return _outcome_response(
+                    value,
+                    authenticated=authenticated,
+                    fragment_regions=fragment_regions,
+                    allow_undeclared_targets=allow_undeclared_targets,
+                    app_id=expected_hedron_app_id(extension),
+                )
             if isinstance(value, InteractionResult):
                 return interaction_response(
                     value,

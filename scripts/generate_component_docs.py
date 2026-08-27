@@ -3381,7 +3381,7 @@ def page_text(spec: ComponentDoc) -> str:
     elif spec.group in {"forms", "controls", "interaction"}:
         mutation_note = (
             f"`{spec.name}` participates in interaction markup. Pair it with an explicit "
-            "`@action` / `@component` POST (and CSRF) when the control mutates state."
+            "`@app.action` POST (and CSRF) when the control mutates state."
         )
     else:
         mutation_note = (

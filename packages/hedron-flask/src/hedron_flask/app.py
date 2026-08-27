@@ -15,6 +15,7 @@ from flask.typing import RouteCallable
 from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfileName
 from hedron_flask.blueprint import attach_hedron_to_flask
@@ -26,7 +27,7 @@ from hedron_flask.csrf import (
     validate_csrf,
 )
 from hedron_flask.htmx import htmx_context, render_mode_for_request
-from hedron_flask.responses import component_response, interaction_response
+from hedron_flask.responses import _outcome_response, component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser
 from hedron_flask.static_mount import mount_hedron_static
 
@@ -272,6 +273,14 @@ class HedronFlask:
             return FlaskResponse(str(exc), status=status, content_type="text/plain")
         if isinstance(compiled, InteractionResult):
             value = compiled
+        if isinstance(compiled, Outcome):
+            return _outcome_response(
+                compiled,
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                app_id=self.hedron_app_id,
+            )
         if isinstance(value, InteractionResult):
             return interaction_response(
                 value,
@@ -327,6 +336,14 @@ class HedronFlask:
             return FlaskResponse(str(exc), status=status, content_type="text/plain")
         if isinstance(compiled, InteractionResult):
             value = compiled
+        if isinstance(compiled, Outcome):
+            return _outcome_response(
+                compiled,
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                app_id=self.hedron_app_id,
+            )
         if isinstance(value, InteractionResult):
             if value.content is not None:
                 await prepare_tree(value.content)
