@@ -179,6 +179,9 @@ def browser_app_url() -> Iterator[str]:
 
 @pytest.mark.parametrize("engine", ("chromium", "firefox", "webkit"))
 def test_alpine_core_and_focus_plugin_are_demand_loaded(browser_app_url: str, engine: str) -> None:
+    selected = os.environ.get("HEDRON_BROWSER_ENGINE")
+    if selected and selected != engine:
+        pytest.skip(f"HEDRON_BROWSER_ENGINE={selected}")
     with sync_playwright() as pw:
         browser = getattr(pw, engine).launch(headless=True)
         page = browser.new_page()
@@ -227,7 +230,9 @@ def test_alpine_core_and_focus_plugin_are_demand_loaded(browser_app_url: str, en
 
 def test_semantic_content_survives_javascript_disabled(browser_app_url: str) -> None:
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = getattr(pw, os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium").launch(
+            headless=True
+        )
         context = browser.new_context(java_script_enabled=False)
         page = context.new_page()
         try:
@@ -244,7 +249,9 @@ def test_semantic_content_survives_javascript_disabled(browser_app_url: str) -> 
 
 def test_semantic_content_survives_alpine_asset_failure(browser_app_url: str) -> None:
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = getattr(pw, os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium").launch(
+            headless=True
+        )
         context = browser.new_context()
         page = context.new_page()
         page.route("**/hedron-static/alpine/*.js", lambda route: route.abort())
@@ -261,7 +268,9 @@ def test_semantic_content_survives_alpine_asset_failure(browser_app_url: str) ->
 
 def test_integrity_failure_does_not_cloak_semantic_content(browser_app_url: str) -> None:
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = getattr(pw, os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium").launch(
+            headless=True
+        )
         context = browser.new_context()
         page = context.new_page()
 
