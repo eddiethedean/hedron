@@ -15,7 +15,7 @@ ROOT = Path(__file__).parent / "phase_1_0"
 def test_canonical_fixture_has_no_transitional_findings() -> None:
     report = scan_api(ROOT / "canonical")
     assert report.findings == ()
-    assert report.files_seen == 3  # app.py, config.toml, and README.md
+    assert report.files_seen == 4  # app.py, config.toml, status.hdj, and README.md
 
 
 def test_transitional_fixture_corpus_covers_warning_floor() -> None:
@@ -46,6 +46,19 @@ def test_negative_dynamic_fixture_is_manual_unknown() -> None:
     assert findings[0].automation_status == "manual-review"
 
 
+def test_negative_interaction_fixture_rejects_cross_lane_fields() -> None:
+    path = ROOT / "negative" / "invalid_interaction.py"
+    spec = importlib.util.spec_from_file_location("hedron_phase_1_invalid_interaction", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    except ValueError as exc:
+        assert "exactly its declared effect lanes" in str(exc)
+    else:
+        raise AssertionError("invalid interaction fixture unexpectedly executed")
+
+
 def test_canonical_fixture_imports_and_serves_page() -> None:
     path = ROOT / "canonical" / "app.py"
     spec = importlib.util.spec_from_file_location("hedron_phase_1_canonical", path)
@@ -56,3 +69,12 @@ def test_canonical_fixture_imports_and_serves_page() -> None:
     assert response.status_code == 200
     assert "ready" in response.text
     assert "data-hedron-interaction=\"request\"" in response.text
+
+
+def test_canonical_hdj_fixture_parses_without_legacy_forms() -> None:
+    from hedron_jinja.source import parse_hdj_source
+
+    source = (ROOT / "canonical" / "status.hdj").read_text(encoding="utf-8")
+    parsed = parse_hdj_source("status.hdj", source)
+    assert parsed.declaration.format_version == 1
+    assert parsed.declaration.kind.value == "fragment"
