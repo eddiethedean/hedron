@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Generate deterministic Hedron 1.0 W0 inventory artifacts.
 
-The generator intentionally reads an immutable baseline (a git tag or an
-already materialized directory).  It does not import package code, execute
-decorators, or infer maturity from a moving checkout.  The resulting files are
+The generator intentionally reads an immutable baseline git tag.  It does not
+import package code, execute decorators, or infer maturity from a moving checkout.
+The resulting files are
 inventory inputs for human reconciliation; they do not mark a release gate
 Verified by themselves.
 """
