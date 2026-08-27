@@ -119,6 +119,7 @@ REQUIRED_FILES = (
     "docs/acceptance/compatibility-report-100/README.md",
     "docs/acceptance/compatibility-report-100/local-bridge.json",
     "docs/acceptance/compatibility-report-100/local-build-evidence.json",
+    "docs/acceptance/compatibility-report-100/verification-100.json",
     "scripts/generate_100_inventory.py",
     "scripts/check_upgrade_100.py",
 )
@@ -446,6 +447,9 @@ def check_plan() -> list[str]:
             encoding="utf-8"
         )
     )
+    verification = json.loads(
+        (ACCEPTANCE / "compatibility-report-100/verification-100.json").read_text(encoding="utf-8")
+    )
     workspace = _toml(ROOT / "pyproject.toml")
 
     if gate.get("phase") != "1.0" or gate.get("target") != "v1.0.0":
@@ -615,6 +619,43 @@ def check_plan() -> list[str]:
                 errors.append(
                     f"local build evidence has an invalid SHA-256 for {name or '<unknown>'}"
                 )
+    if (
+        verification.get("schema") != "hedron.verification-evidence/1"
+        or verification.get("phase") != "1.0"
+        or verification.get("target") != "v1.0.0"
+        or verification.get("source_commit") != build_evidence.get("source_commit")
+        or verification.get("retained_command_output") is not False
+    ):
+        errors.append(
+            "verification evidence must be a non-retained v1.0.0 ledger for the build source"
+        )
+    verification_checks = verification.get("checks")
+    if not isinstance(verification_checks, list):
+        errors.append("verification evidence must contain executable check records")
+    else:
+        check_ids = {str(row.get("id")) for row in verification_checks if isinstance(row, dict)}
+        required_checks = {
+            "PHASE-100-UNIT",
+            "BRIDGE-100",
+            "QUALITY-100",
+            "BROWSER-100",
+            "BUILD-100",
+            "REGRESS-100",
+            "RELEASE-100",
+        }
+        if check_ids != required_checks:
+            errors.append(
+                "verification evidence must cover phase, bridge, quality, browser, build, regression, and release checks"
+            )
+        for row in verification_checks:
+            if not isinstance(row, dict):
+                errors.append("verification evidence contains a non-table check")
+                continue
+            check_id = row.get("id", "<unknown>")
+            if not str(row.get("command", "")).strip() or not str(row.get("summary", "")).strip():
+                errors.append(f"verification check {check_id} lacks command or summary")
+            if str(row.get("status", "")) not in {"passed", "blocked"}:
+                errors.append(f"verification check {check_id} has an invalid status")
     bridge_run = compatibility.get("bridge_run")
     if not isinstance(bridge_run, dict):
         errors.append("compatibility report must retain the executable baseline bridge run")

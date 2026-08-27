@@ -15,6 +15,12 @@ are byte-for-byte reproducible under that input. The retained
 the 24 coordinated 1.0.0 artifacts; the corresponding files remain temporary
 and are deliberately not treated as retained release artifacts.
 
+The [`verification-100.json`](verification-100.json) ledger records the exact
+local phase, bridge, quality, browser, and reproducible-build checks, plus the
+known historical regression and release-gate blockers. It deliberately keeps
+command output non-retained and never upgrades a blocked check to a release
+claim.
+
 `python scripts/check_upgrade_100.py --baseline v0.67.0 --json` reruns the
 canonical Python/HDJ/HTTP probe against both the immutable baseline and the
 current checkout.
