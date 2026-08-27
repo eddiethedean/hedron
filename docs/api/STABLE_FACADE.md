@@ -4,13 +4,18 @@ status: shipped
 
 # Beginner / stable facade inventory
 
-!!! note "Facade inventory from 0.23; living train is 0.66.x"
+!!! warning "Historical facade inventory"
 
-    This inventory is the **FACADE-023** artifact. Symbols listed under
+    This page is the historical **FACADE-023** artifact. It records the 0.23-era beginner
+    facade as carried through the 0.66.x train; it is not the 1.0 stable inventory. Symbols listed under
     [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) remain
     compatibility-protected **`stable`** on the living **0.66.x** train. Pin
     `uv sync` from a checkout. Application users should install
     `hedron>=0.66.2,<0.67` from PyPI.
+
+    For the current 1.0 contract, use the machine-enumerated
+    [stable inventory](../acceptance/stable-inventory-100.toml) and the canonical
+    `@app.page` / `@app.view` / `@app.action` roles documented in [Hedron](HEDRON.md).
 
 **Owning gates:** `FACADE-023` (`python scripts/check_stable_facade.py`),
 `STABLE-023`, `INVENTORY-023`. Decision: **D-053** /
@@ -41,7 +46,9 @@ status: shipped
 | `from hedron_core.jobs import JobBackend, JobStatus, JobHandle, JobState, set_job_backend, get_job_backend` | Job protocol |
 | `from hedron.testing import AppScenario, assert_page_document, assert_fragment_body, assert_htmx_trigger, assert_hx_retarget, assert_oob_present, assert_hx_push_url, assert_hx_redirect, assert_hx_reswap` | App tests |
 
-Instance methods on `Hedron`: `app.region(...)`, `app.fragment(...)`.
+Instance methods on `Hedron` in this historical inventory: `app.region(...)`, `app.fragment(...)`.
+The 1.0 canonical inclusion path is `app.include(...)`; `app.fragment(...)` is retained only as
+a 0.67 migration helper while the release gate is pending.
 On `HedronRouter`, declare `FragmentRegion` values and pass `fragment_regions=` to
 `@page` / `@component` / `@action` (no `.region` / `.fragment` helpers).
 
