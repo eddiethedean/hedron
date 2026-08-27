@@ -56,6 +56,30 @@ def test_scan_does_not_treat_simapp_fragment_as_hedron_legacy_api(tmp_path: Path
     assert scan_api(source).findings == ()
 
 
+def test_scan_infers_removed_flask_adapter_methods(tmp_path: Path) -> None:
+    source = tmp_path / "flask_adapter.py"
+    source.write_text(
+        "from hedron_flask import HedronBlueprint\n"
+        "blueprint = HedronBlueprint('ui', __name__)\n"
+        "@blueprint.component('/status')\n"
+        "def status(): pass\n"
+        "blueprint.include_feature(bundle)\n",
+        encoding="utf-8",
+    )
+
+    report = scan_api(source)
+
+    assert [(item.old_path, item.replacement) for item in report.findings] == [
+        ("blueprint.component", "blueprint.view"),
+        ("blueprint.include_feature", "blueprint.include"),
+    ]
+    output = tmp_path / "migrated.py"
+    transform_api(source, output=output)
+    migrated = output.read_text(encoding="utf-8")
+    assert "@blueprint.view('/status')" in migrated
+    assert "blueprint.include(bundle)" in migrated
+
+
 def test_scan_keeps_same_line_calls_as_separate_call_sites(tmp_path: Path) -> None:
     source = tmp_path / "same_line.py"
     source.write_text("app.component('/a'); app.component('/b')\n", encoding="utf-8")
