@@ -38,7 +38,7 @@ Use a clean environment and pin the Edron minor train:
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<0.68" "hedron-data>=0.67.0,<0.68"
+python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<2.0" "hedron-data>=0.67.0,<2.0"
 ```
 
 On Windows, activate `.venv\\Scripts\\activate` instead. Verify the interpreter that will run the
@@ -596,7 +596,7 @@ authorization, persistence, and request boundaries reviewable.
 
 - [Edron deployment guide](edron-deployment.md)
 - [Edron 0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md)
-- [Edron 0.8 → 0.9 upgrade fixtures](../acceptance/upgrade-fixtures-09.md)
+- [Edron 0.8 → 0.9 upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-09.md)
 - [Edron packaging and compatibility](../api/EDRON_PACKAGING.md) · [Compatibility policy](../COMPATIBILITY.md)
 - [Security](security.md) · [Accessibility](accessibility.md) · [Test your UI](testing.md)
 - [Edron API contract](../api/EDRON.md) · [Edron roadmap](../EDRON_ROADMAP.md)

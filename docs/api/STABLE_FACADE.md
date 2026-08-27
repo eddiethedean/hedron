@@ -14,7 +14,7 @@ status: shipped
     `hedron>=0.66.2,<0.67` from PyPI.
 
     For the current 1.0 contract, use the machine-enumerated
-    [stable inventory](../acceptance/stable-inventory-100.toml) and the canonical
+    [stable inventory](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/stable-inventory-100.toml) and the canonical
     `@app.page` / `@app.view` / `@app.action` roles documented in [Hedron](HEDRON.md).
 
 **Owning gates:** `FACADE-023` (`python scripts/check_stable_facade.py`),

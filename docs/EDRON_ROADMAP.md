@@ -521,9 +521,9 @@ implementation is accepted in-tree; publication and the `edron-v0.9.0` tag remai
 The release must be built and tested from the Hedron `v0.67.0` baseline or an equivalent immutable
 source/lock snapshot. A moving `main` checkout, an unbounded `hedron` requirement, or evidence
 collected against Hedron `0.66.x` cannot satisfy the Phase 0.9 compatibility gate. The human packet
-is [EDRON_009.md](acceptance/EDRON_009.md); its machine-readable gate lock is
-[edron-phase09.toml](acceptance/edron-phase09.toml), and the transition fixture is
-[upgrade-fixtures-09.md](acceptance/upgrade-fixtures-09.md).
+is [EDRON_009.md](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md); its machine-readable gate lock is
+[edron-phase09.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/edron-phase09.toml), and the transition fixture is
+[upgrade-fixtures-09.md](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-09.md).
 
 The phase has one governing rule: maturity is earned by evidence, not by age or usage. A capability
 that cannot meet the phase contract remains `beta`, `experimental`, `deferred`, or
@@ -558,8 +558,8 @@ request lifecycle, component engines, or outcome algebra.
 | Component-engine dispositions and accessible widgets | Common Edron controls use native HTML plus Alpine; charts, maps, data editors, and other specialist subsystems remain in their owning Web Component/package | No parallel `Alpine*` facade or copied widget runtime; every promoted widget needs keyboard/focus, semantic fallback, browser, provenance, and performance evidence |
 | 0.67 warning and migration inventory | Edron diagnostics and generated examples surface Hedron compatibility warnings with the native code, replacement/disposition, and release window | Warnings are deterministic and actionable; Edron does not suppress native 0.67 warnings or promise 1.0 removals without a fixture |
 
-The source of truth for these integrations is Hedron's [0.67 Alpine implementation plan](implementation/ALPINE_INTEGRATION_067.md),
-[HTMX/Alpine boundary](api/HTMX_ALPINE_BOUNDARY_1_0.md), and [component-engine dispositions](implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md).
+The source of truth for these integrations is Hedron's [0.67 Alpine implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ALPINE_INTEGRATION_067.md),
+[HTMX/Alpine boundary](https://github.com/eddiethedean/hedron/blob/main/docs/api/HTMX_ALPINE_BOUNDARY_1_0.md), and [component-engine dispositions](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md).
 The Edron candidate does not automatically promote every Hedron 0.67 widget: a provider-owned or
 specialist capability remains native-only, optional, Progressive, Experimental, Deferred, or
 application-owned until its Edron evidence is accepted.

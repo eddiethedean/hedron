@@ -24,7 +24,7 @@ as a finding or TODO.
 Install Edron, create `app.py`, and start the development server:
 
 ```console
-python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<0.68" "hedron-data>=0.67.0,<0.68"
+python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<2.0" "hedron-data>=0.67.0,<2.0"
 edron run app:app --reload
 ```
 
