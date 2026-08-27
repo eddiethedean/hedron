@@ -15,7 +15,8 @@
     "stable": {
       "packages": 2,
       "symbols": 51
-    }
+    },
+    "tasks": 4844
   },
   "phase": "1.0",
   "release_cut_satisfied": false,

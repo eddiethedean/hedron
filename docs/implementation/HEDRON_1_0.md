@@ -52,6 +52,12 @@ Generate inventories from the immutable `v0.67.0` artifacts and source tree, not
   and host resolutions; and
 - stable maturity, support, security, rollback, and evidence-retention boundaries.
 
+The non-executing generator emits `public-inventory-100.toml` and
+`stable-inventory-100.toml` for exports/artifacts plus `task-inventory-100.toml` for every public
+class, function, and method discovered in the immutable baseline source. The task inventory is
+an ownership graph, not an automatic SemVer promotion; stable status remains governed by the
+reviewed stable inventory.
+
 Reconcile the generated inventory with `contract-freeze-067.toml`, the component-engine inventory,
 the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The current eleven warning
 records (eight core route/include records plus three Flask adapter records) are a known lower bound.
@@ -107,6 +113,7 @@ time.
 | Deliverable | Owner | Contents | First gate |
 |---|---|---|---|
 | `docs/acceptance/public-inventory-100.toml` | architecture/API | Every documented/exported/generated/configured/CLI/HDJ/markup/browser/package path, task, owner, maturity, and disposition | `ENTRY-100` |
+| `docs/acceptance/task-inventory-100.toml` | architecture/API | AST-derived public class/function/method task-to-interface graph with immutable provenance | `ENTRY-100` |
 | `docs/acceptance/stable-inventory-100.toml` | API/release | Enumerated SemVer-protected symbols, signatures, schemas, packages, and supported adapters | `SURFACE-100` |
 | `docs/acceptance/removal-inventory-100.toml` | migration/API | One row per removed path, replacement/non-fit reason, warning code, fixture, confidence, and removal slice | `REMOVE-100` |
 | `docs/acceptance/warnings-100.toml` | migration/tooling | Runtime/static warning schema, source forms, diagnostic metadata, and coverage status | `ENTRY-100` |
@@ -131,7 +138,9 @@ the browser asset/registry modules under `packages/hedron-core/src/hedron_core/`
 1. Build the `v0.67.0` baseline in a clean environment and record the checksums and tool/browser
    identities in `baseline-100.json`. The repository generator is
    `scripts/generate_100_inventory.py`; it materializes the tag with `git archive`, parses exports
-   without importing code, and emits deterministic public/stable inventories plus baseline counts.
+   without importing code, and emits deterministic public/stable/task inventories plus baseline
+   counts. The task inventory preserves public class/function/method interfaces that are not
+   visible in an import-only snapshot.
 2. Extract `__all__`, public imports, signatures, overloads, schemas, decorators, CLI/config/HDJ
    forms, generated output, browser tags/controllers/assets, manifests, and package entry points.
 3. Normalize aliases and alternate spellings by developer task, not by module name. Join the result
@@ -145,7 +154,7 @@ the browser asset/registry modules under `packages/hedron-core/src/hedron_core/`
 6. Publish the 0.67.x migration-support window and exact dual-version matrix. Do not choose a
    calendar release date; the cut remains evidence-triggered.
 
-**Exit checklist:** all seven W0 deliverables exist; inventory counts are reproducible; every
+**Exit checklist:** all eight W0 deliverables exist; inventory counts are reproducible; every
 proposed removal has a disposition; no public path is `unknown` without an owner; the stable
 inventory is enumerated; and `python scripts/check_100.py --check-plan` plus `ENTRY-100` evidence
 pass. Until then, no deletion or 1.0-only default switch is allowed.
