@@ -106,9 +106,6 @@ elements = ["hedron-elements>=1.0.0,<2.0"]
 gradio = [
     "hedron-gradio>=0.2.2,<0.3",
 ]
-workbench = [
-    "hedron-workbench>=1.0.0,<2.0",
-]
 posit = [
     "hedron-posit>=1.0.0,<2.0",
 ]

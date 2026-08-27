@@ -1,10 +1,10 @@
 # Workbench reference
 
 Ordinary Hedron app with a page, HTMX fragment, and CSRF-ready cookies.
-**No `hedron_workbench` imports.**
+Uses the supported `hedron_posit` integration.
 
 `app_facade.py` provides the recommended one-class variant using
-`HedronWorkbench`; it behaves like `Hedron` locally and consumes launcher state
+`HedronPosit`; it behaves like `Hedron` locally and consumes launcher state
 on Workbench.
 
 ## Local
@@ -17,9 +17,9 @@ uv run uvicorn app_facade:app --app-dir examples/workbench-reference --reload
 ## Workbench
 
 ```bash
-hedron-workbench run app_facade:app
+hedron-posit run app_facade:app
 # or from this directory after installing the extra:
-hedron-workbench run app:app
+hedron-posit run app:app
 ```
 
 ## Docker smoke (REALWB-030)
@@ -31,7 +31,7 @@ are released for the next local or CI run.
 The live matrix probes the pinned Workbench image and real `rserver-url`, then runs
 **three package passes**:
 
-1. **hedron-workbench** — `app_facade.py` via `hedron-workbench run` (HTMX, CSRF,
+1. **hedron-posit** — `app_facade.py` via `hedron-posit run` (HTMX, CSRF,
    Hedron assets, external invite URLs, WebSockets, inactive-facade parity).
 2. **hedron-posit** — `app_posit.py` via `hedron-posit run` (`HedronPosit` launcher,
    mount handoff, redirects, `posit_status`, inactive ordinary-host parity).
@@ -58,4 +58,3 @@ bash ../../scripts/realwb_029.sh
 ```
 
 See also [`examples/fastapi-workbench-reference/`](../fastapi-workbench-reference/README.md).
-

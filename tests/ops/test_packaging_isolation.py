@@ -19,7 +19,6 @@ _BETA_PACKAGES = {
     "hedron-explorer",
     "hedron-conformance",
     "hedron-extras",
-    "hedron-workbench",
     "hedron-posit",
     "hedron-elements",
 }

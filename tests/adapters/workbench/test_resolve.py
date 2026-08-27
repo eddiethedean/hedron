@@ -7,10 +7,10 @@ import json
 import pytest
 
 from hedron_core.diagnostics import HedronError
-from hedron_workbench.config import WorkbenchConfig, WorkbenchMode, WorkbenchTopology
-from hedron_workbench.detect import is_workbench_env, is_workbench_forced
-from hedron_workbench.redact import redact_record, redact_text, redact_url
-from hedron_workbench.resolve import (
+from hedron_posit.config import WorkbenchConfig, WorkbenchMode, WorkbenchTopology
+from hedron_posit.detect import is_workbench_env, is_workbench_forced
+from hedron_posit.redact import redact_record, redact_text, redact_url
+from hedron_posit.resolve import (
     RESOLVED_MODE_ENV,
     RESOLVED_MOUNT_ENV,
     RESOLVED_PUBLIC_BASE_ENV,

@@ -33,7 +33,6 @@ _TRAIN_DISTS = (
     "hedron-jinja",
     "hedron-conformance",
     "hedron-extras",
-    "hedron-workbench",
     "hedron-posit",
     "hedron-elements",
 )
@@ -47,7 +46,6 @@ _EXTRA_DISTS = (
     "hedron-django",
     "hedron-explorer",
     "hedron-conformance",
-    "hedron-workbench",
     "hedron-posit",
     "hedron-native",
     "hedron-maps",

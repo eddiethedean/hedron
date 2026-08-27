@@ -75,7 +75,6 @@ COORDINATED_PACKAGES = (
     "hedron-jinja",
     "hedron-conformance",
     "hedron-extras",
-    "hedron-workbench",
     "hedron-posit",
     "hedron-elements",
 )

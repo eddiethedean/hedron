@@ -50,8 +50,7 @@ def test_posit_workbench_packages_present() -> None:
     from pathlib import Path
 
     assert Path("packages/hedron-posit").is_dir()
-    assert Path("packages/hedron-workbench").is_dir()
     posit = Path("packages/hedron-posit/src/hedron_posit/app.py").read_text(encoding="utf-8")
     assert "root_path" in posit
-    workbench = Path("packages/hedron-workbench").joinpath("src")
+    workbench = Path("packages/hedron-posit").joinpath("src")
     assert workbench.is_dir()

@@ -68,7 +68,6 @@ plugins:
             - packages/hedron-core/src
             - packages/hedron-flask/src
             - packages/hedron-django/src
-            - packages/hedron-workbench/src
             - packages/hedron-posit/src
 
 hooks:

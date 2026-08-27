@@ -17,16 +17,16 @@ def _cmd_run_app(args: argparse.Namespace) -> int:
     workbench_runtime = bool(str(os.environ.get("RS_SERVER_URL") or "").strip())
     if args.workbench or workbench_runtime:
         try:
-            from hedron_workbench.config import (
+            from hedron_posit.config import (
                 WorkbenchConfig,
                 WorkbenchMode,
                 WorkbenchTopology,
             )
-            from hedron_workbench.runner import run_target
+            from hedron_posit.runner import run_target
         except ImportError:
             print(
-                "Posit Workbench runtime detected but hedron-workbench is not installed; "
-                "install hedron[workbench]",
+                "Posit Workbench runtime detected but hedron-posit is not installed; "
+                "install hedron[posit]",
                 file=sys.stderr,
             )
             return 2

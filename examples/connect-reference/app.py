@@ -1,4 +1,4 @@
-"""HedronWorkbench reference app deployed as a FastAPI API on Posit Connect."""
+"""HedronPosit reference app deployed as a FastAPI API on Posit Connect."""
 
 from __future__ import annotations
 

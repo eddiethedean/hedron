@@ -36,7 +36,6 @@ members = [
     "hedron-posit",
     "hedron-sample-kit",
     "hedron-sim",
-    "hedron-workbench",
     "hedron-workspace",
 ]
 
@@ -1119,9 +1118,6 @@ posit = [
 sanitize = [
     { name = "nh3" },
 ]
-workbench = [
-    { name = "hedron-workbench" },
-]
 
 [package.metadata]
 requires-dist = [
@@ -1144,7 +1140,6 @@ requires-dist = [
     { name = "hedron-native", marker = "extra == 'native'", editable = "packages/hedron-native" },
     { name = "hedron-notebook", marker = "extra == 'notebook'", editable = "packages/hedron-notebook" },
     { name = "hedron-posit", marker = "extra == 'posit'", editable = "packages/hedron-posit" },
-    { name = "hedron-workbench", marker = "extra == 'workbench'", editable = "packages/hedron-workbench" },
     { name = "httpx", marker = "extra == 'auth'", specifier = ">=0.28" },
     { name = "itsdangerous", specifier = ">=2.2" },
     { name = "markdown", marker = "extra == 'markdown'", specifier = ">=3.5" },
@@ -1158,7 +1153,7 @@ requires-dist = [
     { name = "pygments", marker = "extra == 'code'", specifier = ">=2.17" },
     { name = "python-multipart", specifier = ">=0.0.9" },
 ]
-provides-extras = ["dev", "data", "charts", "maps", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "jinja", "native", "conformance", "extras", "experimental-ui", "notebook", "mcp", "elements", "gradio", "workbench", "posit", "otel"]
+provides-extras = ["dev", "data", "charts", "maps", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "jinja", "native", "conformance", "extras", "experimental-ui", "notebook", "mcp", "elements", "gradio", "posit", "otel"]
 
 [[package]]
 name = "hedron-charts"
@@ -1583,17 +1578,6 @@ requires-dist = [
 ]
 
 [[package]]
-name = "hedron-workbench"
-version = "1.0.0"
-source = { editable = "packages/hedron-workbench" }
-dependencies = [
-    { name = "hedron-posit" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "hedron-posit", editable = "packages/hedron-posit" }]
-
-[[package]]
 name = "hedron-workspace"
 version = "1.0.0"
 source = { virtual = "." }
@@ -1629,7 +1613,6 @@ dev = [
     { name = "hedron-posit" },
     { name = "hedron-sample-kit" },
     { name = "hedron-sim" },
-    { name = "hedron-workbench" },
     { name = "httpx" },
     { name = "markdown" },
     { name = "matplotlib" },
@@ -1691,7 +1674,6 @@ dev = [
     { name = "hedron-posit", editable = "packages/hedron-posit" },
     { name = "hedron-sample-kit", editable = "packages/hedron-sample-kit" },
     { name = "hedron-sim", editable = "packages/hedron-sim" },
-    { name = "hedron-workbench", editable = "packages/hedron-workbench" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "markdown", specifier = ">=3.5" },
     { name = "matplotlib", specifier = ">=3.8,<4" },

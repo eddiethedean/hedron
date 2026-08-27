@@ -41,7 +41,7 @@ def test_reference_style_app_health_and_headers(minimal_client: TestClient) -> N
         "hedron_mcp",
         "hedron_gradio",
         "hedron_posit",
-        "hedron_workbench",
+        "hedron_posit",
         "hedron_jinja",
         "hedron_extras",
     ],

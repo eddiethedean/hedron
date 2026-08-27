@@ -25,8 +25,8 @@ from hedron import (
 )
 from hedron.mount import prefix_local_path
 from hedron_core import reset_registry_for_tests
-from hedron_workbench import HedronWorkbench, WorkbenchConfig, workbenchify
-from hedron_workbench.urls import connect_external_base_from_request, mounted_redirect
+from hedron_posit import HedronPosit, WorkbenchConfig, workbenchify
+from hedron_posit.urls import connect_external_base_from_request, mounted_redirect
 
 
 @pytest.fixture(autouse=True)
@@ -108,7 +108,7 @@ def test_env_export_before_construction(monkeypatch: pytest.MonkeyPatch) -> None
 
 
 def test_workbench_facade_needs_no_wrapper() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="facade",
         security="standard",
         explorer="off",
@@ -130,7 +130,7 @@ def test_workbench_facade_needs_no_wrapper() -> None:
 
 
 def test_workbench_facade_explicit_root_path_wins() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="facade",
         security="standard",
         explorer="off",
@@ -144,7 +144,7 @@ def test_workbench_facade_explicit_root_path_wins() -> None:
 
 def test_workbench_facade_full_stack_without_scope_injector() -> None:
     mount = "/s/native/p/5"
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="native",
         security="standard",
         explorer="off",
@@ -193,7 +193,7 @@ def test_workbench_facade_full_stack_without_scope_injector() -> None:
 
 def test_rendered_component_urls_are_automatically_mounted_once() -> None:
     mount = "/s/rendered/p/7"
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="rendered",
         security="standard",
         explorer="off",
@@ -221,7 +221,7 @@ def test_rendered_component_urls_are_automatically_mounted_once() -> None:
 
 def test_request_time_root_path_adapts_urls_redirects_and_owned_cookies() -> None:
     mount = "/content/runtime"
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="runtime",
         security="standard",
         explorer="off",
@@ -251,7 +251,7 @@ def test_connect_contract_leaves_one_outer_response_rebase(
 ) -> None:
     monkeypatch.setenv("POSIT_PRODUCT", "CONNECT")
     mount = "/content/runtime"
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="connect-runtime",
         security="standard",
         explorer="off",
@@ -289,7 +289,7 @@ def test_connect_contract_leaves_one_outer_response_rebase(
 
 def test_htmx_redirect_header_is_automatically_mounted() -> None:
     mount = "/s/headers/p/4"
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="headers",
         security="development",
         explorer="off",
@@ -310,7 +310,7 @@ def test_inactive_workbench_facade_matches_plain_hedron(monkeypatch: pytest.Monk
     monkeypatch.setenv("HOST", "public.example")
     monkeypatch.setenv("PORT", "99999")
     monkeypatch.setenv("BASE_PATH", "/generic-platform")
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="ordinary",
         security="standard",
         explorer="off",
@@ -330,7 +330,7 @@ def test_inactive_workbench_facade_matches_plain_hedron(monkeypatch: pytest.Monk
 
 
 def test_inactive_facade_preserves_generic_asgi_root_path() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="ordinary-mount",
         security="standard",
         explorer="off",
@@ -353,7 +353,7 @@ def test_explicit_workbench_root_overrides_stale_hedron_mount(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("HEDRON_ROOT_PATH", "/stale")
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="root",
         security="standard",
         explorer="off",
@@ -366,7 +366,7 @@ def test_explicit_workbench_root_overrides_stale_hedron_mount(
 
 def test_workbench_status_redacts_session_mount() -> None:
     session_id = "4566a3c9ab5a7ad01e1a7"
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="status",
         security="standard",
         explorer="off",
@@ -393,7 +393,7 @@ def test_mounted_redirect_helper() -> None:
 
 def test_workbench_public_base_emits_scheme_absolute_location() -> None:
     mount = "/s/demo/p/8000"
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="absolute-location",
         security="standard",
         explorer="off",
@@ -417,7 +417,7 @@ def test_workbench_public_base_emits_scheme_absolute_location() -> None:
 
 def test_absolute_redirect_helper_uses_trusted_workbench_base() -> None:
     mount = "/s/demo/p/8000"
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="absolute-helper",
         security="standard",
         explorer="off",
@@ -449,7 +449,7 @@ def test_launcher_resolved_loopback_base_emits_absolute_location(
     )
     monkeypatch.setenv("HEDRON_WORKBENCH_RESOLVED_MODE", "on")
     monkeypatch.setenv("HEDRON_WORKBENCH_RESOLVED_SOURCE", "rserver-url")
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="resolved-absolute-location",
         security="standard",
         explorer="off",
@@ -609,7 +609,7 @@ def test_connect_runtime_marker_allows_forwarded_original_client(
 
 
 def test_external_url_uses_connect_base_and_encodes_invite_token() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="connect-url",
         security="standard",
         explorer="off",
@@ -632,7 +632,7 @@ def test_external_url_uses_connect_base_and_encodes_invite_token() -> None:
 
 
 def test_external_url_explicit_base_works_outside_workbench() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="ordinary-url",
         security="standard",
         explorer="off",
@@ -652,7 +652,7 @@ def test_external_url_explicit_base_works_outside_workbench() -> None:
 
 
 def test_external_url_uses_active_workbench_resolution_once() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="workbench-url",
         security="standard",
         explorer="off",
@@ -673,7 +673,7 @@ def test_external_url_uses_active_workbench_resolution_once() -> None:
 
 
 def test_stable_external_base_enables_durable_background_links() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="durable",
         security="standard",
         explorer="off",
@@ -687,7 +687,7 @@ def test_stable_external_base_enables_durable_background_links() -> None:
 
 
 def test_external_url_rejects_implicit_workbench_loopback_origin() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="workbench-loopback",
         security="standard",
         explorer="off",
@@ -699,7 +699,7 @@ def test_external_url_rejects_implicit_workbench_loopback_origin() -> None:
 
 
 def test_explicit_activation_of_constructed_inactive_facade_fails_loudly() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="inactive",
         security="standard",
         explorer="off",
@@ -710,7 +710,7 @@ def test_explicit_activation_of_constructed_inactive_facade_fails_loudly() -> No
 
 
 def test_external_url_fails_closed_without_trusted_deployment_base() -> None:
-    app = HedronWorkbench(
+    app = HedronPosit(
         title="no-public-base",
         security="standard",
         explorer="off",
@@ -737,7 +737,7 @@ def test_external_url_fails_closed_without_trusted_deployment_base() -> None:
 )
 def test_external_base_url_configuration_rejects_unsafe_values(base: str) -> None:
     with pytest.raises(ValueError):
-        HedronWorkbench(
+        HedronPosit(
             title="bad-base",
             security="standard",
             explorer="off",

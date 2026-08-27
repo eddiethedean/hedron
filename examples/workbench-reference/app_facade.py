@@ -1,4 +1,4 @@
-"""Reference app using one HedronWorkbench object locally and on Workbench."""
+"""Reference app using one HedronPosit object locally and on Workbench."""
 
 from __future__ import annotations
 
@@ -10,9 +10,9 @@ from fastapi import Request, WebSocket
 from starlette.responses import JSONResponse
 
 from hedron import Page, Stack, Text, html, redirect_local, refresh
-from hedron_workbench import HedronWorkbench
+from hedron_posit import HedronPosit
 
-app = HedronWorkbench(
+app = HedronPosit(
     title="Workbench facade reference",
     security="standard",
     explorer="off",
