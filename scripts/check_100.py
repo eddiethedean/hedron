@@ -813,7 +813,12 @@ def check_plan() -> list[str]:
             errors.append(f"known 0.67 warning floor is missing {code}")
 
     roadmap = (ROOT / "docs" / "ROADMAP.md").read_text(encoding="utf-8")
-    for token in ("Stage 0 Refined", "RELEASE_1_0", "release-gate-1.0.toml", "D-117"):
+    for token in (
+        "Verified `v1.0.0` release candidate",
+        "RELEASE_1_0",
+        "release-gate-1.0.toml",
+        "D-117",
+    ):
         if token not in roadmap:
             errors.append(f"roadmap does not expose 1.0 packet token {token!r}")
 

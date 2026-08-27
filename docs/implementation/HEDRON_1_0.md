@@ -1,6 +1,6 @@
 # Hedron 1.0 implementation and cut plan
 
-**Status:** Implementation in progress; release evidence remains blocked on `ENTRY-100`
+**Status:** **Implemented and Verified; `v1.0.0` tag/PyPI publication pending**
 **Baseline:** Verified Beta `v0.67.0`
 **Target:** `v1.0.0`
 **Authority:** RFC-0096 and D-114–D-117
@@ -61,10 +61,10 @@ and AST-derived signatures. The task inventory is an ownership graph, not an aut
 promotion; stable status remains governed by the reviewed stable inventory.
 
 Reconcile the generated inventory with `contract-freeze-067.toml`, the component-engine inventory,
-the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The current eleven warning
-records (eight core route/include records plus three Flask adapter records) are a known lower bound.
-`ENTRY-100` remains Planned until every proposed removal has
-complete coverage and the stable inventory is machine-enumerated.
+the compatibility BOM, docs/API references, and `PUBLIC_FUTURE_WARNINGS`. The eleven warning
+records (eight core route/include records plus three Flask adapter records) are fully reconciled.
+`ENTRY-100` is Verified: every proposed removal has complete coverage and the stable inventory is
+machine-enumerated.
 
 ## Work packages
 

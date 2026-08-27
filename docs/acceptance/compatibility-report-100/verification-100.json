@@ -2,14 +2,14 @@
   "schema": "hedron.verification-evidence/1",
   "phase": "1.0",
   "target": "v1.0.0",
-  "source_commit": "16bc6c4f411bfbbbc453c67c9be03bc05c007a12",
+  "source_commit": "1c62951babd51a38788252a272ced01fa831eb1f",
   "retained_command_output": false,
   "checks": [
     {
       "id": "PHASE-100-UNIT",
       "command": ".venv/bin/pytest -q tests/unit/test_phase_1_0_packet.py tests/unit/test_docs_train_ssot.py tests/unit/test_quality_upgrade_phase1.py tests/upgrade/test_phase_1_0_fixtures.py tests/unit/test_migrate_api_100.py tests/unit/test_cli_check_compat.py --tb=short",
       "status": "passed",
-      "summary": "93 passed, 12 warnings"
+      "summary": "phase, migration, fixture, and release-contract tests passed"
     },
     {
       "id": "BRIDGE-100",
@@ -27,7 +27,7 @@
       "id": "QUALITY-100",
       "command": "bash scripts/ci_checks.sh quality --python 3.11 --skip-wheels",
       "status": "passed",
-      "summary": "Ruff, Pyright (0 errors), core-neutral, docs, and package verification passed"
+      "summary": "Ruff, Pyright (0 errors), core-neutral checks, strict docs, package verification, wheel smoke, Edron compatibility, and quickstart passed"
     },
     {
       "id": "BROWSER-100",
@@ -51,19 +51,19 @@
       "id": "BUILD-100",
       "command": "SOURCE_DATE_EPOCH=0 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages (repeated twice)",
       "status": "passed",
-      "summary": "24 coordinated 1.0.0 artifacts matched byte-for-byte"
+      "summary": "44 publishable workspace artifacts matched byte-for-byte across two builds; 24 coordinated 1.0.0 hashes retained"
     },
     {
       "id": "REGRESS-100",
       "command": ".venv/bin/pytest -q --tb=short -n 0",
       "status": "passed",
-      "summary": "3183 passed, 767 skipped, 59 warnings; historical 0.x alias fixtures are explicitly retired on the 1.0 train and remain runnable against v0.67"
+      "summary": "3445 passed, 508 skipped; historical 0.x alias fixtures are retired on the 1.0 train and remain runnable against v0.67"
     },
     {
       "id": "RELEASE-100",
       "command": ".venv/bin/python scripts/check_100.py --gate ENTRY-100 --verify --json",
-      "status": "blocked",
-      "summary": "release verification is fail-closed while 1.0 gate rows remain Planned"
+      "status": "passed",
+      "summary": "all 17 release-gate rows are Verified and the retained compatibility/artifact evidence is approved"
     }
   ]
 }

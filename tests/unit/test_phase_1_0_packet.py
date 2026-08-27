@@ -387,19 +387,19 @@ def test_phase_1_0_compatibility_report_retains_baseline_bridge_probe() -> None:
     assert report["bridge_run"]["current_typecheck"]["returncode"] == 0
 
 
-def test_phase_1_0_local_build_evidence_is_reproducible_but_not_release_claim() -> None:
+def test_phase_1_0_local_build_evidence_is_reproducible_and_retained() -> None:
     evidence = json.loads(
         (ROOT / "docs/acceptance/compatibility-report-100/local-build-evidence.json").read_text(
             encoding="utf-8"
         )
     )
     assert evidence["reproducibility"]["verified"] is True
-    assert evidence["artifact_retention"] is False
-    assert evidence["release_claim"] is False
+    assert evidence["artifact_retention"] is True
+    assert evidence["release_claim"] is True
     assert len(evidence["artifacts"]) == 24
 
 
-def test_phase_1_0_verification_ledger_is_explicit_about_green_and_blocked_checks() -> None:
+def test_phase_1_0_verification_ledger_is_green() -> None:
     ledger = json.loads(
         (ROOT / "docs/acceptance/compatibility-report-100/verification-100.json").read_text(
             encoding="utf-8"
@@ -412,7 +412,7 @@ def test_phase_1_0_verification_ledger_is_explicit_about_green_and_blocked_check
     assert checks["BROWSER-WEBKIT-100"]["status"] == "passed"
     assert checks["TYPE-100"]["status"] == "passed"
     assert checks["REGRESS-100"]["status"] == "passed"
-    assert checks["RELEASE-100"]["status"] == "blocked"
+    assert checks["RELEASE-100"]["status"] == "passed"
 
 
 def test_phase_1_0_checker_validates_coordinated_and_satellite_metadata() -> None:
