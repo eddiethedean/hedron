@@ -141,6 +141,42 @@ def test_phase_1_0_action_returns_typed_handle() -> None:
     assert act.fallback == "/"
 
 
+def test_phase_1_0_refresh_outcome_targets_owned_view_without_full_reload() -> None:
+    from fastapi.testclient import TestClient
+
+    from hedron import Hedron, Outcome, Page, Text
+
+    app = Hedron(
+        title="outcome-refresh",
+        security="standard",
+        explorer="off",
+        session_secret="phase-1-outcome-secret",
+    )
+
+    @app.view("/status")
+    def status():
+        return Text("ready")
+
+    @app.action("/refresh")
+    def refresh_status() -> Outcome:
+        return Outcome.refresh("status")
+
+    @app.page("/")
+    def home():
+        return Page(status(), title="Home")
+
+    client = TestClient(app)
+    token = client.get("/").cookies.get("hedron_csrf")
+    response = client.post(
+        "/refresh",
+        headers={"HX-Request": "true", "X-CSRF-Token": token or ""},
+    )
+
+    assert response.status_code == 200
+    assert response.headers.get("HX-Refresh") in {None, ""}
+    assert response.headers.get("HX-Trigger") == '{"hedron:refresh-h-view-status": {}}'
+
+
 def test_phase_1_0_target_check_does_not_import_application(tmp_path: Path) -> None:
     (tmp_path / "bad_app.py").write_text(
         "raise RuntimeError('target check must be non-executing')\n",
