@@ -31,6 +31,10 @@ status commentary, not a satisfied release gate.
 - [Edron `0.5.0` acceptance packet](EDRON_005.md) — **Implemented and verified in-tree; publication
   pending**; see the [phase gates](edron-phase05.toml). Resource, state, job, live transport, and
   operations behavior remains owned by native Hedron authorities.
+- [Edron `0.6.0` acceptance packet](EDRON_006.md) — **Refined implementation candidate; no
+  availability claim**; see the [phase gates](edron-phase06.toml). Reusable composition,
+  navigation/layout, capability promotion, mixed-surface evidence, and package depth remain
+  proposals owned by native Hedron authorities.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)

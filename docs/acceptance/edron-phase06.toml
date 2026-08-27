@@ -1,0 +1,37 @@
+schema = "edron.phase-acceptance/1"
+phase = "0.6"
+status = "Planned"
+package = "edron"
+version = "0.6.0"
+required_predecessor = "edron-v0.5.0"
+native_authority = "hedron-core, hedron, hedron-flask, hedron-django"
+
+[[gate]]
+id = "EDR-06-COMP"
+state = "Planned"
+evidence = "atomic feature-package registration, import isolation, duplicate detection, rollback, and provenance fixtures"
+
+[[gate]]
+id = "EDR-06-NAV"
+state = "Planned"
+evidence = "typed navigation/layout authorization, accessibility, root-path, HTTP, and no-JavaScript parity fixtures"
+
+[[gate]]
+id = "EDR-06-PROMO"
+state = "Planned"
+evidence = "reviewed capability allowlist, native train/version checks, lazy import, provenance, and ejection fixtures"
+
+[[gate]]
+id = "EDR-06-EVID"
+state = "Planned"
+evidence = "bounded Edron/native manifests, fingerprints, conformance, redaction, and callback-free diagnostics fixtures"
+
+[[gate]]
+id = "EDR-06-PKG"
+state = "Planned"
+evidence = "wheel/sdist metadata, documentation, optional dependency, asset collision/deduplication, and upgrade fixtures"
+
+[[gate]]
+id = "EDR-06-REGRESSION"
+state = "Planned"
+evidence = "complete Edron 0.5 regression plus Phase 0.6 contract, package, and browser suites"

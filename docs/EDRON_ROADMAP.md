@@ -31,7 +31,7 @@ countdown or commitment to `1.0`.
 | **0.3** | Explicit data editing and data-workspace ergonomics over native Hedron data authorities | **Published** (`edron-v0.3.0`; Beta) |
 | **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | **Tagged** (`edron-v0.4.0`; publication pending) |
 | **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | **Implemented in-tree; unreleased Beta** |
-| **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | Candidate after `0.5` |
+| **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | **Refined implementation candidate; no availability claim** |
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | Candidate after `0.6` |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | Candidate after `0.7` |
 | **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation | Candidate after `0.8` |
@@ -260,20 +260,64 @@ global resource registry, implicit rerun model, or client-side state authority.
 
 ## Phase 0.6 — reusable composition and package depth
 
-Phase `0.6` makes larger Edron applications easier to organize without creating a second component
-or plugin ecosystem.
+Phase `0.6` is a refined implementation candidate, not an availability claim. It makes larger
+Edron applications easier to organize while preserving one native renderer, router, catalog,
+lifespan, security boundary, and asset authority. The phase may begin only after the `0.5`
+acceptance packet is closed and the native composition contracts below are accepted in the
+compatible Hedron train.
 
-Candidate scope:
+### Proposed contract
 
-- reusable page/feature packages that compile atomically into native `FeatureBundle` and catalog
-  entries;
-- typed application navigation and shared layout composition over native screen authorities;
-- deliberate beginner-facing promotion of high-value `hedron-*` capabilities; and
-- stronger mixed Edron/native testing, ejection, provenance, and asset-deduplication tools.
+| Workstream | Candidate outcome | Native owner and required evidence |
+|---|---|---|
+| `COMP-06` package composition | A reusable Edron feature package declares pages, fragments, actions, dependencies, assets, and projections; registration compiles atomically into native `FeatureBundle`/catalog entries with deterministic duplicate detection | native bundle/catalog and app registration contracts; import isolation, duplicate IDs, partial-registration rollback, and package-boundary fixtures |
+| `NAV-06` navigation and layout | Typed navigation targets and shared layouts compose over native routes/screens, preserve ordinary HTTP and no-JavaScript fallbacks, and reject unregistered or cross-application targets | native router, screen, link, and fallback contracts; authorization, root-path, stale-target, accessibility, and cross-app isolation evidence |
+| `PROMO-06` capability promotion | A small reviewed allowlist promotes selected mature `hedron-*` capabilities into Edron spellings with version/train checks, explicit provenance, and an ejection path to the native API | native package manifests, capability registry, and compatibility contracts; absent/old/new package, provenance, and ejection fixtures |
+| `EVID-06` mixed-surface verification | Applications can inspect Edron/native lowering, compare route/catalog/asset manifests, and run bounded conformance checks without importing arbitrary application callbacks | native explanation, manifest, testing, and asset contracts; redaction, deterministic fingerprints, import isolation, and budget evidence |
+| `PKG-06` package and asset depth | Feature packages ship typed metadata, documentation, upgrade notes, and deduplicated assets without copying native packages or creating a second registry | native packaging and asset pipeline contracts; wheel/sdist, static path, asset collision, lazy optional dependency, and upgrade fixtures |
 
-Edron continues to use fixed reviewed adapters and explicit native composition. It does not scan
-arbitrary plugins, automatically re-export every installed Hedron package, or maintain a parallel
-registry.
+The beginner-facing API remains explicit package composition, typed navigation/layout declarations,
+and reviewed capability helpers. Every declaration lowers to a native registration or projection;
+package imports never execute application callbacks, and diagnostics report provenance without
+secrets, source payloads, or filesystem paths.
+
+### Bounds and ownership
+
+- A feature package has one application owner and one registration transaction. Failed validation
+  leaves no partially registered route, catalog entry, dependency, or asset.
+- Logical IDs, route names, asset names, and navigation targets are bounded, deterministic, and
+  unique within an application. A collision fails closed with the owning package and source
+  provenance identified.
+- Shared layouts are composition only: they do not own sessions, resources, queues, workers,
+  authorization, persistence, or a second render tree. Navigation never bypasses native scope or
+  security checks.
+- Promoted capabilities remain optional and directly installed. Edron checks the native package
+  manifest and compatible train before import, exposes the native escape hatch, and never scans or
+  re-exports arbitrary installed plugins.
+- Explanations, manifests, and conformance reports are bounded and redacted. Asset deduplication
+  may reduce bytes but cannot change cache, CSP, route, or authorization semantics.
+
+### Entry and exit gates
+
+Phase `0.6` implementation entry requires the dedicated [Edron 0.6 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_006.md)
+and machine-readable [phase gates](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/edron-phase06.toml). Release exit requires, at
+minimum:
+
+1. package composition is atomic, import-isolated, provenance-preserving, and duplicate-safe;
+2. typed navigation and shared layouts preserve authorized native routes, accessibility,
+   root-path behavior, ordinary HTTP, and no-JavaScript fallbacks;
+3. promoted capabilities pass absent/present/version/train checks, remain lazy, and provide a
+   documented native ejection path;
+4. mixed Edron/native explanations, manifests, fingerprints, and conformance checks are bounded,
+   deterministic, redacted, and callback-free;
+5. package wheels/sdists, metadata, documentation, optional dependencies, and deduplicated assets
+   pass upgrade and collision fixtures; and
+6. the complete Edron `0.5` regression suite plus the new phase `0.6` contract suite pass before
+   an `edron-v0.6.0` tag is considered.
+
+The phase does not add a plugin marketplace, arbitrary plugin discovery, automatic package
+re-exports, a global registry, a second renderer/router/catalog/asset system, hidden navigation
+state, or a new worker/deployment runtime.
 
 ## Phase 0.7 — migration and adoption tooling
 
