@@ -5,7 +5,7 @@ Scaffold with the `hedron` CLI (`hedron new --django`); runtime is
 `hedron-django` + `hedron-core` (no FastAPI in the app process). The adapter
 mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
 
-**Install:** `pip install "hedron-django>=0.64.0,<0.65"` (or `uv add "hedron-django>=0.64.0,<0.65"`).
+**Install:** `pip install "hedron-django>=0.66.2,<0.67"` (or `uv add "hedron-django>=0.66.2,<0.67"`).
 Requires Python 3.11–3.14. See [Installation](installation.md).
 
 Django supports AppConfig, forms, and QuerySet DataSource. Progressive FastAPI
@@ -20,7 +20,7 @@ and raw `hx-*` attributes, not FastAPI `status.refresh_button(...)`.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.64.0,<0.65" hedron new my-django-app --django
+uvx --from "hedron>=0.66.2,<0.67" hedron new my-django-app --django
 cd my-django-app && uv sync
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```
@@ -59,7 +59,7 @@ ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
 ## Existing Django project (add a Refresh page)
 
 ```bash
-pip install "hedron-django>=0.64.0,<0.65" "django>=5.2,<6"
+pip install "hedron-django>=0.66.2,<0.67" "django>=5.2,<6"
 ```
 
 Add `hedron_django` to `INSTALLED_APPS` when you need forms/QuerySet helpers.

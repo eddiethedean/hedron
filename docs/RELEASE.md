@@ -1,7 +1,8 @@
 # Cutting a Hedron release
 
-This is the maintainer runbook for the published `0.64.x` train. Historical cut records live
-under `docs/archive/`. The current repository and latest public PyPI release are `v0.64.0`.
+This is the maintainer runbook for the stable `0.66.x` train and the Beta `0.67.0` preview.
+Historical cut records live under `docs/archive/`. The latest stable public PyPI release is
+`v0.66.2`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag except for an explicitly

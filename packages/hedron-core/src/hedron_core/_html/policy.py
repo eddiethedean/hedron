@@ -14,6 +14,7 @@ from hedron_core.typing_aliases import HtmlAttrValue
 _SAFE_LAYOUT_STYLE = re.compile(r"^--hedron-gap:\s*\d+(\.\d+)?(rem|em|px|%);?$")
 # Attribute names must be tokens — never whitespace, quotes, ``=``, or tag breakouts.
 _SAFE_ATTR_NAME = re.compile(r"^[A-Za-z_][\w.-]*$")
+_SAFE_ALPINE_ATTR_NAME = re.compile(r"^x-[a-z][a-z0-9-]*(?::[A-Za-z0-9_.-]+)?(?:\.[a-z0-9-]+)*$")
 _META_REFRESH_URL = re.compile(r"url\s*=", re.IGNORECASE)
 
 
@@ -24,7 +25,11 @@ class HtmlAttributePolicy:
         return isinstance(value, str) and bool(_SAFE_LAYOUT_STYLE.match(value.strip()))
 
     def require_safe_attr_name(self, name: str) -> str:
-        if not name or not _SAFE_ATTR_NAME.match(name) or any(ord(ch) < 32 for ch in name):
+        if (
+            not name
+            or (_SAFE_ATTR_NAME.match(name) is None and _SAFE_ALPINE_ATTR_NAME.match(name) is None)
+            or any(ord(ch) < 32 for ch in name)
+        ):
             raise error(
                 "HED-SEC-0010",
                 title="Unsafe attribute name rejected",
@@ -111,6 +116,48 @@ class HtmlAttributePolicy:
         for key, value in attrs.items():
             if value is None:
                 continue
+            if key == "alpine":
+                from hedron_core.alpine import AlpineAttrs
+
+                if not isinstance(value, AlpineAttrs):
+                    raise error(
+                        "HED-SEC-0012",
+                        title="Typed Alpine attributes required",
+                        explanation="The alpine= escape hatch accepts only AlpineAttrs.",
+                        remediation="Construct AlpineAttrs with typed state/directives.",
+                    )
+                for alpine_name, alpine_value in value.to_attributes().items():
+                    if alpine_name in out:
+                        raise error(
+                            "HED-SEC-0013",
+                            title="Duplicate Alpine attribute",
+                            explanation=f"Attribute {alpine_name!r} was provided more than once.",
+                            remediation="Declare each Alpine directive once.",
+                        )
+                    out[alpine_name] = alpine_value
+                continue
+            if key == "interaction":
+                from hedron_core.interaction_067 import Interaction
+
+                if not isinstance(value, Interaction):
+                    raise error(
+                        "HED-SEC-0015",
+                        title="Typed interaction required",
+                        explanation="The interaction= escape hatch accepts only Interaction.",
+                        remediation="Construct Interaction.local(), .request(), or .combined().",
+                    )
+                for interaction_name, interaction_value in value.to_attributes().items():
+                    if interaction_name in out:
+                        raise error(
+                            "HED-SEC-0016",
+                            title="Duplicate interaction attribute",
+                            explanation=(
+                                f"Attribute {interaction_name!r} was provided more than once."
+                            ),
+                            remediation="Declare each interaction once.",
+                        )
+                    out[interaction_name] = interaction_value
+                continue
             if key == "data" and isinstance(value, dict):
                 for dk, dv in value.items():
                     safe_key = self.require_safe_attr_name(str(dk))
@@ -124,6 +171,13 @@ class HtmlAttributePolicy:
             name = ATTR_ALIASES.get(key, key)
             self.require_safe_attr_name(str(name))
             lower = name.lower()
+            if lower.startswith("x-"):
+                raise error(
+                    "HED-SEC-0014",
+                    title="Raw Alpine attribute rejected",
+                    explanation=f"Attribute {name!r} must come from AlpineAttrs.",
+                    remediation="Use the typed alpine=AlpineAttrs(...) escape hatch.",
+                )
             canonical = canonical_hx_attribute(lower)
             if canonical.startswith("on"):
                 raise error(

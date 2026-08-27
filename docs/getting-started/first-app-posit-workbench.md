@@ -98,9 +98,9 @@ Choose a private project location approved by your organization. The following u
 ```bash
 mkdir -p ~/projects
 cd ~/projects
-uvx --from "hedron>=0.64.0,<0.65" hedron new my-workbench-app
+uvx --from "hedron>=0.66.2,<0.67" hedron new my-workbench-app
 cd my-workbench-app
-uv add "hedron-posit>=0.64.0,<0.65"
+uv add "hedron-posit>=0.66.2,<0.67"
 ```
 
 These commands create the project, make its isolated `.venv`, install the declared dependencies,
@@ -304,7 +304,7 @@ mkdir -p ~/projects/my-workbench-app
 cd ~/projects/my-workbench-app
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install "hedron>=0.64.0,<0.65" "hedron-posit>=0.64.0,<0.65" "uvicorn[standard]>=0.30"
+python -m pip install "hedron>=0.66.2,<0.67" "hedron-posit>=0.66.2,<0.67" "uvicorn[standard]>=0.30"
 python -m hedron new my-workbench-app --path .
 ```
 
@@ -312,7 +312,7 @@ Open `pyproject.toml` and add the adapter to the `dependencies` list so another 
 reproduce the app:
 
 ```toml
-"hedron-posit>=0.64.0,<0.65",
+"hedron-posit>=0.66.2,<0.67",
 ```
 
 Then install the declared project and run it:

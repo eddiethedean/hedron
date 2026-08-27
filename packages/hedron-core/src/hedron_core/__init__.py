@@ -23,6 +23,19 @@ from hedron_core.adapter import (
     capability_matrix,
 )
 from hedron_core.addressable import AddressableDescriptor, addressable
+from hedron_core.alpine import (
+    ALPINE_PLAN_SCHEMA,
+    AlpineAttrs,
+    AlpineDirective,
+    AlpineExpression,
+    AlpineFeatureDemand,
+    AlpineMaturity,
+    BrowserFeaturePlan,
+    BrowserPlanClosure,
+    BrowserPlanError,
+    ReviewedExpression,
+    browser_assets_for_features,
+)
 from hedron_core.application_assets import (
     ApplicationAssetPlan,
     ApplicationAssetSpec,
@@ -372,6 +385,14 @@ from hedron_core.interaction import (
     default_interaction_policy,
     interaction_headers,
 )
+from hedron_core.interaction_067 import (
+    Interaction,
+    InteractionKind,
+    LocalEffect,
+    Outcome,
+    OutcomeKind,
+    RequestEffect,
+)
 from hedron_core.lifetime import DependencyLifetime, DependencyPlan
 from hedron_core.live import LiveObservation, SseEvent, encode_sse, job_status_sse_events
 from hedron_core.media_session import (
@@ -379,6 +400,14 @@ from hedron_core.media_session import (
     MediaSession,
     MediaSessionBudget,
     MediaSessionState,
+)
+from hedron_core.migration import (
+    PUBLIC_FUTURE_WARNINGS,
+    FutureWarningRecord,
+    FutureWarningRegistry,
+    HedronFutureWarning,
+    emit_future_warning,
+    warn_legacy_path,
 )
 from hedron_core.model_demo import (
     ActionRegistry,
@@ -643,6 +672,16 @@ __all__ = [
     "ActionState",
     "ActionTrace",
     "ActionTransitionError",
+    "ALPINE_PLAN_SCHEMA",
+    "AlpineAttrs",
+    "AlpineDirective",
+    "AlpineExpression",
+    "AlpineFeatureDemand",
+    "AlpineMaturity",
+    "BrowserPlanError",
+    "BrowserFeaturePlan",
+    "BrowserPlanClosure",
+    "browser_assets_for_features",
     "ActionGroup",
     "ActionRegistry",
     "BoundaryDecision",
@@ -1115,6 +1154,16 @@ __all__ = [
     "StreamedDocument",
     "StructuralBindingAdapter",
     "StructuredLogAuditSink",
+    "Outcome",
+    "OutcomeKind",
+    "RequestEffect",
+    "ReviewedExpression",
+    "FutureWarningRecord",
+    "FutureWarningRegistry",
+    "HedronFutureWarning",
+    "PUBLIC_FUTURE_WARNINGS",
+    "emit_future_warning",
+    "warn_legacy_path",
     "styles_from_manifest",
     "STYLE_BUNDLE_COMPONENTS",
     "StyleBundle",
@@ -1205,9 +1254,12 @@ __all__ = [
     "motion_recipes",
     "HEDRON_LIFECYCLE_SCHEMA",
     "HedronLifecycleEvent",
+    "Interaction",
+    "InteractionKind",
     "LifecycleFact",
     "LifecyclePolicy",
     "LifecycleState",
+    "LocalEffect",
     "lifecycle_attributes",
     "transition_lifecycle",
 ]

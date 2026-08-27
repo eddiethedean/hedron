@@ -2,7 +2,7 @@
 
 !!! note "Living train"
 
-    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.64.0,<0.65`). See [What’s new in 0.51](whats-new-0.51.md).
+    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.66.2,<0.67`). See [What’s new in 0.51](whats-new-0.51.md).
 
 **Published** as `v0.32.0`. Historical pin for this train: `hedron>=0.32.0,<0.33`.
 

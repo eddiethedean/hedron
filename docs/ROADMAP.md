@@ -7,7 +7,8 @@
     [What’s next](guides/whats-next.md). Capability maturity:
     [What’s ready today](guides/whats-ready.md).
 
-This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
+This is the **single** Hedron roadmap ledger. Stable production version: `v0.66.2`.
+Beta preview version: `v0.67.0`. Pin `hedron` for production; see
 [What's ready today](guides/whats-ready.md) for capability maturity.
 
 ## Phase status (current train)
@@ -70,8 +71,8 @@ This is the **single** Hedron roadmap ledger. Pin `hedron` for production; see
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component ecosystem interoperability | **Published** (`v0.63.0`; [RFC-0090](rfcs/RFC-0090-REACTIVE-INTERACTION-PLATFORM.md); [implementation](implementation/INTERACTION_TOOLING_063.md); [acceptance](acceptance/RELEASE_0_63.md); issues [#676](https://github.com/eddiethedean/hedron/issues/676)–[#689](https://github.com/eddiethedean/hedron/issues/689)) |
 | **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability: theme scales, parts/states, responsive behavior, safe custom styling, and browser projection | **Published** (`v0.64.0`; [RFC-0091](rfcs/RFC-0091-HTMX-HEDRON-EXTENSION.md); [implementation](implementation/HTMX_HEDRON_EXTENSION_064.md); [acceptance](acceptance/RELEASE_0_64.md); [18 completed and 4 open enhancement issues](#phase-064-enhancement-inventory)) |
 | **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, eight bounded issue slices, and touched-surface fallback evidence | **Implemented and verified in-tree; release candidate `v0.65.0`** ([RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [scope](acceptance/application-styling-scope-065.md); [acceptance](acceptance/RELEASE_0_65.md)) |
-| **0.66** | HDJ parity and registry integration: app-scoped binding, registry-backed components/assets/themes/styles, live logical-ID interactions, portable HTMX facts, provider parity, and claim-honest evidence | **Implemented and verified in-tree; release candidate `v0.66.2`** ([RFC-0093](rfcs/RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md); [implementation](implementation/HDJ_PARITY_066.md); [acceptance](acceptance/RELEASE_0_66.md)) |
-| **0.67** | Alpine browser-local features, bidirectional Alpine/Web-Component engine dispositions, and an opt-in preview of one unified Alpine/HTMX/Hedron interaction and lifecycle model | **Proposed; W1 blocked on `FREEZE-067`** ([RFC-0095](rfcs/RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md); D-113 / D-115 / D-116; [implementation](implementation/ALPINE_INTEGRATION_067.md); [engine dispositions](implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md); [acceptance](acceptance/RELEASE_0_67.md)) |
+| **0.66** | HDJ parity and registry integration: app-scoped binding, registry-backed components/assets/themes/styles, live logical-ID interactions, portable HTMX facts, provider parity, and claim-honest evidence | **Stable `v0.66.2`** ([RFC-0093](rfcs/RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md); [implementation](implementation/HDJ_PARITY_066.md); [acceptance](acceptance/RELEASE_0_66.md)) |
+| **0.67** | Alpine browser-local features, bidirectional Alpine/Web-Component engine dispositions, and an opt-in preview of one unified Alpine/HTMX/Hedron interaction and lifecycle model | **Beta `v0.67.0`; implemented and verified in-tree** ([RFC-0095](rfcs/RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md); D-113 / D-115 / D-116; [implementation](implementation/ALPINE_INTEGRATION_067.md); [engine dispositions](implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md); [acceptance](acceptance/RELEASE_0_67.md)) |
 | **1.0** | Canonical developer-interface, HTMX/Alpine interaction, and component-engine consolidation; removal of warned 0.67 compatibility paths | **Planned after Verified 0.67; architecture locked** ([RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md); D-114 / D-115 / D-116); every 1.0 application must run on 0.67 |
 
 Edron is independently versioned and does not consume Hedron phase numbers. Its compatible Hedron
@@ -6752,16 +6753,35 @@ confirming that their fixes and focused regressions were already on `main`.
 
 ## Phase 0.67 — Alpine browser-local enhancement and unified interaction preview
 
-**Status:** Proposed. Phase 0.67 begins only from the Verified `v0.66.2` baseline and makes no
-current availability claim. W0 ends at `FREEZE-067`; no W1 runtime work begins until the
+**Status:** Beta `v0.67.0`, implemented and verified in-tree. Phase 0.67 builds on the stable
+`v0.66.2` baseline. W0 ends at `FREEZE-067`; no W1 runtime work begins until the
 machine-readable authoring, interaction, document-closure, warning, and compatibility contracts are
 Verified.
 
-Phase 0.67 adds Alpine's documented browser-local feature set through an exact, vendored,
-self-hosted CSP build and demand-driven official plugins. A typed/reviewed directive model reaches
-Python components and HDJ without enabling `unsafe-eval`, remote production assets, implicit
-activation, or an application Node build. Alpine owns disposable presentation state and local DOM,
-focus, geometry, and preference behavior; Hedron/HTMX retain server authority.
+### Refined scope and maturity lanes
+
+Phase 0.67 is a bounded migration bridge, not a promise to ship every Alpine capability or replace
+the existing Web Component platform. Its commitments are separated as follows:
+
+| Lane | 0.67 commitment | Admission rule |
+|---|---|---|
+| Foundation | Self-hosted Alpine CSP assets, typed directives, demand-driven document closure, lifecycle handoff, failure behavior, security, and feature-off zero cost | Required; no `unsafe-eval`, remote production assets, implicit activation, or consumer Node build |
+| Unified authoring | The 1.0-compatible function/page/view/action spine, closed `Outcome`, discriminated `Interaction`, Python/HDJ parity, and inspectable lowering | Required; `FREEZE-067` locks the single canonical spelling before W1 |
+| Component-engine audit | One disposition for every current tag, controller, Alpine module, and provider host; common widgets prefer native HTML plus Alpine, while specialist hosts retain or earn Web Component status | Required audit; runtime changes require parity, lifecycle, fallback, accessibility, and performance evidence |
+| Alpine extensions and widgets | Core directives, official plugins, `@alpinejs/ui` candidates, and standards-based widgets | Each feature is separately Supported, Progressive, Experimental, or Excluded; an audit or prototype is not a support claim |
+| Morph and migration | Ordinary replacement/reset, optional single Morph path, 0.67 warnings, target-1.0 findings, and dual-version fixtures | Replacement/reset is Required; Morph is admitted only as Progressive after full evidence; every 1.0 removal needs an observable migration path |
+
+The release exits only when every Required gate in
+[`RELEASE_0_67`](acceptance/RELEASE_0_67.md) is Verified and every other
+candidate has an explicit maturity disposition with evidence or a recorded non-admission. `FREEZE-067`
+is the hard boundary: later probes may lower maturity or set implementation budgets, but may not add
+another canonical API, browser authority, engine choice, or silent 1.0 removal.
+
+The foundation uses an exact, vendored, self-hosted CSP build and demand-driven official plugins. A
+typed/reviewed directive model reaches Python components and HDJ without enabling `unsafe-eval`,
+remote production assets, implicit activation, or an application Node build. Alpine owns disposable
+presentation state and local DOM, focus, geometry, and preference behavior; Hedron/HTMX retain server
+authority.
 
 Components, `Interaction` values, typed Alpine values, and Advanced registered custom modules
 contribute exact browser feature demands automatically. Hedron computes one immutable document plan
@@ -6770,11 +6790,11 @@ views/fragments. Every fragment must be a subset of that fingerprinted plan; a r
 register a plugin, module, store, or executable asset. Directive values are normalized through
 sink-specific text, boolean, ARIA, class-token, style-token, URL-purpose, and DOM-property types.
 
-It also independently enhances Hedron's existing component catalog to cover practical disclosure,
-overlay, menu, tabs, choice, notification, tooltip, carousel, listbox, combobox, field-helper, and
-sortable workflows. W3C APG and first-party Hedron contracts supply the behavior and accessibility
-baseline. Alpine's separately licensed paid UI component source is not copied, inspected, vendored,
-or used as a compatibility target.
+It also independently audits and, where evidence permits, enhances Hedron's existing component
+catalog for practical disclosure, overlay, menu, tabs, choice, notification, tooltip, carousel,
+listbox, combobox, field-helper, and sortable workflows. W3C APG and first-party Hedron contracts
+supply the behavior and accessibility baseline. Alpine's separately licensed paid UI component
+source is not copied, inspected, vendored, or used as a compatibility target.
 
 The 0.67 component-engine audit is bidirectional. Registered Alpine modules are the preliminary
 choice for Hedron-owned common-widget local behavior, so lightweight disclosure, dialog, form-field,
@@ -6788,7 +6808,9 @@ compose only across explicit ownership boundaries.
 
 Alpine's official MIT-declared `@alpinejs/ui` package is the preferred candidate substrate for
 combobox, dialog, disclosure, listbox, menu, popover, radio, switch, and tabs, subject to exact
-artifact/license, CSP, lifecycle, browser, accessibility, stability, and budget evidence. PineMix's
+artifact/license, CSP, lifecycle, browser, accessibility, stability, and budget evidence. A candidate
+does not become Supported merely because it is preferred: the relevant widget receives a fallback or
+an explicit Progressive/Experimental/Excluded disposition when evidence is incomplete. PineMix's
 30-component catalog expands the needs audit, but its code remains excluded until its empty license
 page is replaced by an explicit redistribution grant. MIT ecosystem sources may be used selectively
 with immutable provenance and notices; Tailwind and another component runtime do not enter Hedron.
@@ -6799,6 +6821,16 @@ fallbacks, lifecycle presentation, accessibility, and versioned local-state reco
 Illegal cross-lane combinations fail during construction and static checking. The declaration lowers
 to the existing Alpine, HTMX, handle, security, and rendering authorities rather than creating a
 third runtime.
+
+The [Phase 0.67 execution plan](implementation/EXECUTION_0_67.md) sequences the freeze, supply/CSP,
+document-plan, directive, interaction, lifecycle, component-engine, migration, hardening, fleet, and
+release work. It keeps `FREEZE-067` as the W1 entry gate and requires evidence for every Required
+capability before the phase can be published.
+
+The delivery order is W0 freeze, W1–W2 foundation and directive contracts, W3–W10 lifecycle,
+extensions, authoring, component-engine, failure, and evidence work, then W11–W12 migration, fleet,
+documentation, and packaging. A Stage 0 failure narrows the candidate or lowers its maturity; it
+does not weaken the CSP, authority, fallback, or compatibility boundary.
 
 Progressive enhancement is tested as a failure contract, not inferred from semantic markup alone.
 Essential content is never hidden solely by `x-cloak`; enhanced-only hiding starts only after an

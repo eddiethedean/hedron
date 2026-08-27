@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import ClassVar, Literal
 
+from hedron_core.alpine import AlpineAttrs
 from hedron_core.builtins._base import class_names, collect_children, dom_id_part
 from hedron_core.component import Component, NodeLike
 from hedron_core.csrf_strategy import CsrfTokenProvider, resolve_csrf_field_values
@@ -312,7 +313,7 @@ class FormField(Component[FormFieldProps]):
                 attrs["aria-invalid"] = aria["invalid"]
             if aria.get("required"):
                 attrs["aria-required"] = aria["required"]
-            return _NativeElement(el.tag, el.children, attrs)
+            return el.with_attributes(attrs)
 
         # Prefer applying aria to the interactive control inside wrappers (e.g. Checkbox).
         if node.tag == "div" and node.children:
@@ -329,7 +330,7 @@ class FormField(Component[FormFieldProps]):
                 else:
                     new_children.append(child)
             if applied:
-                return _NativeElement(node.tag, tuple(new_children), dict(node.attributes))
+                return node.with_attributes(dict(node.attributes))
         if node.tag in {"input", "select", "textarea", "button"}:
             return merge_attrs(node)
         return merge_attrs(node)
@@ -685,7 +686,12 @@ class RadioGroup(Component[RadioGroupProps]):
                 attrs["required"] = True
             inputs.append(
                 html.div(
-                    html.input(**attrs),
+                    html.input(
+                        **attrs,
+                        alpine=AlpineAttrs.model(
+                            "selected", source=f"component:RadioGroup:{group_id}:{index}"
+                        ),
+                    ),
                     html.label(label, for_=fid),
                     class_="hedron-radio",
                 )
@@ -694,6 +700,9 @@ class RadioGroup(Component[RadioGroupProps]):
             html.legend(self.props.legend),
             *inputs,
             id=group_id,
+            alpine=AlpineAttrs.data(
+                {"selected": self._value or ""}, source=f"component:RadioGroup:{group_id}"
+            ),
         )
 
 

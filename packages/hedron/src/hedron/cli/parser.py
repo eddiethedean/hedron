@@ -226,6 +226,12 @@ def _register_check_commands(sub: Any) -> None:
     check_p = sub.add_parser("check", help="Run project diagnostics")
     check_p.add_argument("--project", default=None)
     check_p.add_argument(
+        "--target",
+        choices=("1.0",),
+        default=None,
+        help="Report structured migration findings for the Hedron 1.0 surface",
+    )
+    check_p.add_argument(
         "--phase-063",
         dest="phase063",
         action="store_true",

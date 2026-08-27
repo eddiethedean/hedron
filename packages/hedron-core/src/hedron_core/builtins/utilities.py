@@ -6,6 +6,7 @@ import json
 from collections.abc import Mapping, Sequence
 from typing import Any, ClassVar, Literal, cast
 
+from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import DENSITIES, require_choice
 from hedron_core.component import Component, NodeLike
@@ -528,6 +529,9 @@ class Tabs(Component[TabsProps]):
         active = self.props.active or self._panels[0][0]
         tablist = []
         panels = []
+        root_alpine = AlpineAttrs.data(
+            {"active": active}, source=f"component:Tabs:{tabs_id}"
+        )
         for idx, (name, content) in enumerate(self._panels):
             tab_id = f"{tabs_id}-tab-{idx}"
             panel_id = f"{tabs_id}-panel-{idx}"
@@ -538,6 +542,25 @@ class Tabs(Component[TabsProps]):
                     type="button",
                     role="tab",
                     id=tab_id,
+                    alpine=AlpineAttrs(
+                        directives=(
+                            AlpineDirective(
+                                "x-on:click",
+                                AlpineExpression.assign(
+                                    "active", AlpineExpression.literal(name)
+                                ),
+                            ),
+                            AlpineDirective(
+                                "x-bind:aria-selected",
+                                AlpineExpression.binary(
+                                    "===",
+                                    AlpineExpression.name("active"),
+                                    AlpineExpression.literal(name),
+                                ),
+                            ),
+                        ),
+                        source=f"component:Tabs:{tabs_id}:tab:{idx}",
+                    ),
                     aria={
                         "selected": "true" if selected else "false",
                         "controls": panel_id,
@@ -551,7 +574,27 @@ class Tabs(Component[TabsProps]):
                     role="tabpanel",
                     id=panel_id,
                     aria={"labelledby": tab_id},
-                    hidden=None if selected else True,
+                    alpine=AlpineAttrs(
+                        directives=(
+                            AlpineDirective(
+                                "x-show",
+                                AlpineExpression.binary(
+                                    "===",
+                                    AlpineExpression.name("active"),
+                                    AlpineExpression.literal(name),
+                                ),
+                            ),
+                            AlpineDirective(
+                                "x-bind:hidden",
+                                AlpineExpression.binary(
+                                    "!==",
+                                    AlpineExpression.name("active"),
+                                    AlpineExpression.literal(name),
+                                ),
+                            ),
+                        ),
+                        source=f"component:Tabs:{tabs_id}:panel:{idx}",
+                    ),
                 )
             )
         return html.div(
@@ -565,6 +608,7 @@ class Tabs(Component[TabsProps]):
                 "hedron-density": self.props.density,
                 "hedron-responsive": self.props.responsive,
             },
+            alpine=root_alpine,
         )
 
 

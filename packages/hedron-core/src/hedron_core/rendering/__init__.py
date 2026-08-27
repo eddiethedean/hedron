@@ -16,6 +16,13 @@ from hedron_core._nodes import (
     Node,
     TextNode,
 )
+from hedron_core.alpine import (
+    _ALPINE_CORE_ASSET,
+    _HEDRON_BRIDGE_ASSET,
+    AlpineFeatureDemand,
+    BrowserFeaturePlan,
+    browser_assets_for_features,
+)
 from hedron_core.component import (
     Component,
     ComponentNode,
@@ -103,6 +110,7 @@ class RenderResult:
     diagnostics: tuple[Diagnostic, ...] = ()
     trace: RenderTrace | Mapping[str, object] | None = None
     htmx_plan: object | None = None
+    browser_plan: BrowserFeaturePlan = field(default_factory=BrowserFeaturePlan)
 
 
 class _RenderState:
@@ -115,6 +123,7 @@ class _RenderState:
         self.diagnostics: list[Diagnostic] = []
         self.stack: list[int] = []
         self.stack_labels: list[str] = []
+        self.browser_demands: list[AlpineFeatureDemand] = []
 
     def path(self) -> str:
         return " > ".join(self.stack_labels) if self.stack_labels else "<root>"
@@ -190,6 +199,17 @@ class RenderSession:
         }
         diagnostic_delta = tuple(self._state.diagnostics[previous_diagnostic_count:])
         plan_diagnostics = getattr(htmx_plan, "diagnostics", ()) or ()
+        browser_plan = BrowserFeaturePlan.from_demands(
+            self._state.browser_demands,
+            assets=(
+                (_ALPINE_CORE_ASSET, _HEDRON_BRIDGE_ASSET)
+                + browser_assets_for_features(
+                    demand.feature for demand in self._state.browser_demands
+                )
+                if self._state.browser_demands
+                else ()
+            ),
+        )
         return RenderResult(
             html=html_text,
             mode=mode,
@@ -198,6 +218,7 @@ class RenderSession:
             identity_map=MappingProxyType(identity_delta),
             diagnostics=diagnostic_delta + tuple(plan_diagnostics),
             htmx_plan=htmx_plan,
+            browser_plan=browser_plan,
             trace=MappingProxyType(
                 {
                     "path": self._state.path(),
@@ -206,6 +227,7 @@ class RenderSession:
                     "render_ordinal": self._render_count,
                     "locale": self.context.locale,
                     "theme": self.context.theme,
+                    "browser_plan_fingerprint": browser_plan.fingerprint,
                 }
             ),
         )
@@ -269,6 +291,7 @@ def _normalize(
     if isinstance(value, _TrustedRaw):
         return (value.to_node(),)
     if isinstance(value, _NativeElement):
+        _collect_browser_demands(value, state)
         child_nodes: list[Node] = []
         for child in value.children:
             child_nodes.extend(_normalize(child, state, depth=depth + 1))
@@ -300,6 +323,46 @@ def _normalize(
         remediation="Return a Component, html element, string, sequence, or None.",
         component_id=state.path(),
     )
+
+
+_ALPINE_DIRECTIVE_FEATURES = {
+    "x-data": "data",
+    "x-bind": "bind",
+    "x-model": "model",
+    "x-on": "on",
+    "x-show": "show",
+    "x-if": "if",
+    "x-for": "for",
+    "x-text": "text",
+    "x-html": "html",
+    "x-transition": "transition",
+    "x-cloak": "cloak",
+    "x-init": "init",
+    "x-effect": "effect",
+    "x-ignore": "ignore",
+    "x-id": "id",
+    "x-teleport": "teleport",
+}
+
+
+def _collect_browser_demands(element: _NativeElement, state: _RenderState) -> None:
+    attributes = element.attributes
+    for demand in element.browser_demands:
+        state.browser_demands.append(demand)  # type: ignore[arg-type]
+    typed_features = {demand.feature for demand in element.browser_demands}
+    for name in attributes:
+        lowered = name.lower()
+        if lowered.startswith("x-"):
+            base = lowered.split(":", 1)[0].split(".", 1)[0]
+            feature = _ALPINE_DIRECTIVE_FEATURES.get(base)
+            if feature and feature not in typed_features:
+                state.browser_demands.append(AlpineFeatureDemand(feature, "rendered-html"))
+        elif lowered == "data-hedron-interaction":
+            kind = str(attributes[name])
+            if kind in {"local", "combined"} and "interaction" not in typed_features:
+                state.browser_demands.append(
+                    AlpineFeatureDemand("interaction", "rendered-interaction")
+                )
 
 
 def _render_component(

@@ -10,12 +10,16 @@ the D-115 contract-freeze and D-116 component-engine refinements, the
 [capability and widget audit](../implementation/ALPINE_CAPABILITY_AUDIT_067.md), and the
 [implementation plan](../implementation/ALPINE_INTEGRATION_067.md). The predecessor is `v0.66.2`.
 
+Verification status: all 30 release-gate evidence rows are Verified by `scripts/check_067.py` or
+the repository regression suite. Morph and higher-complexity widget paths remain explicitly
+Progressive where their evidence does not justify a Supported claim.
+
 `FREEZE-067` is the W0 exit and W1 entry gate. It freezes exact public names/signatures/returns,
 interaction/outcome algebra, document feature-closure ownership, warning records, and the
 compatibility BOM before runtime implementation. Artifact-derived pins, budgets, browser fixtures,
 and implementation thresholds then freeze from Stage 0 evidence without changing those public
-forms. All release gates are Planned until their evidence exists; the cut requires every Required
-row Verified and zero undocumented Deferred row.
+forms. The release cut requires every Required row Verified and zero undocumented Deferred row;
+the manifest records that condition after the repository-wide regression pass.
 
 | Gate | Required evidence |
 |---|---|

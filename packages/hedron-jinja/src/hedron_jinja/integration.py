@@ -1507,6 +1507,26 @@ class HedronJinja:
                 explanation="Fragment templates cannot emit html, head, or body elements.",
                 remediation="Declare a page or remove document-level markup.",
             )
+        from hedron_core.alpine import AlpineFeatureDemand, BrowserFeaturePlan
+
+        alpine_features: set[str] = set()
+        for capability in inferred_capabilities(
+            ParsedHdjSource(
+                declaration=session.declaration,
+                raw="",
+                body=rendered,
+                compiled=rendered,
+            )
+        ):
+            if capability.startswith("alpine.") and capability != "alpine.core":
+                alpine_features.add(capability.removeprefix("alpine."))
+        browser_plan = BrowserFeaturePlan.from_demands(
+            tuple(
+                AlpineFeatureDemand(feature, f"hdj:{session.template_name}")
+                for feature in sorted(alpine_features)
+            ),
+            assets=("/hedron-static/hedron-alpine.mjs",) if alpine_features else (),
+        )
         return RenderResult(
             html=rendered,
             mode=session.mode,
@@ -1530,6 +1550,7 @@ class HedronJinja:
                     "components": tuple(session.traces),
                 }
             ),
+            browser_plan=browser_plan,
         )
 
     @staticmethod

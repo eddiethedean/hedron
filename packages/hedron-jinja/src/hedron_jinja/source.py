@@ -90,6 +90,12 @@ EXPLICIT_FEATURES = frozenset(
         "hedron.type-schema",
         "hedron.feature-bundles",
         "hedron.application-styles",
+        "alpine.core",
+        "alpine.data",
+        "alpine.bind",
+        "alpine.model",
+        "alpine.interaction",
+        "alpine.plugins",
     }
 )
 KNOWN_FEATURES = frozenset().union(*PROFILE_FEATURES.values()) | EXPLICIT_FEATURES
@@ -701,6 +707,16 @@ class _LiteralCapabilityParser(HTMLParser):
                 self.capabilities.add("htmx.response-scripts")
         for name, value in attrs:
             lowered = name.lower()
+            if lowered.startswith("x-"):
+                self.capabilities.add("alpine.core")
+                if lowered.startswith("x-data"):
+                    self.capabilities.add("alpine.data")
+                elif lowered.startswith("x-bind"):
+                    self.capabilities.add("alpine.bind")
+                elif lowered.startswith("x-model"):
+                    self.capabilities.add("alpine.model")
+                elif lowered.startswith("x-on"):
+                    self.capabilities.add("alpine.interaction")
             if lowered.startswith("on"):
                 self.capabilities.add("browser.inline-script")
             if lowered.startswith("hx-on") or _hx_value_needs_eval(lowered, value):

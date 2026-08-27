@@ -16,7 +16,7 @@ status: shipped
 ## Install
 
 ```bash
-pip install "hedron[otel]>=0.64.0,<0.65"
+pip install "hedron[otel]>=0.66.2,<0.67"
 ```
 
 ## Configure

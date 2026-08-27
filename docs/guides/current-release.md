@@ -13,15 +13,15 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Repository checkout | `0.64.0` / `0.64.x` | Published release train |
-| PyPI | `0.64.0` / `0.64.x` | Latest installable release from the public package index |
-| Package maturity | Beta | Usable with pins; no SLA or scheduled 1.0 release |
+| Stable | `0.66.2` / `0.66.x` | Current stable release and production pin |
+| Beta | `0.67.0` | Preview release for the next phase; subject to change |
+| Package maturity | Beta | Beta surfaces remain usable with pins; no SLA |
 | Supported Python | 3.11–3.14 | CPython only |
 
 Application documentation uses the latest public PyPI pin:
 
 ```text
-hedron>=0.64.0,<0.65
+hedron>=0.66.2,<0.67
 ```
 
 Contributors working from a checkout should use `uv sync` so local packages resolve
@@ -31,12 +31,14 @@ from the workspace.
 
 | You want… | Do this |
 |---|---|
-| Build an application | Install from PyPI: `hedron>=0.64.0,<0.65` |
+| Build an application | Install the stable release: `hedron>=0.66.2,<0.67` |
 | Contribute / hack on Hedron | Clone the repo and `uv sync` (editable workspace) |
-| Know security support window | Current published train `0.64.x` — [SECURITY.md](../SECURITY.md) |
+| Evaluate the beta preview | Use `v0.67.0` only for beta evaluation; stable applications should remain on `v0.66.2` |
+| Know security support window | Current stable train `0.66.x` — [SECURITY.md](../SECURITY.md) |
 | Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |
 
-The `0.64.0` release is the latest verified public release and is available from PyPI. See
+The `0.66.2` release is the latest stable public release and is available from PyPI. The
+`0.67.0` beta is the next preview train. See
 `docs/release.toml` for the public registry facts.
 
 ## What should I install?

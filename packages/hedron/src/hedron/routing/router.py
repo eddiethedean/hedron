@@ -22,6 +22,7 @@ from hedron.routing.route import HedronEndpointResult, HedronRoute
 from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
 from hedron.security.policy import SecurityPolicy
 from hedron_core.addressable import AddressableDescriptor
+from hedron_core.alpine import BrowserPlanClosure
 from hedron_core.identifiers import component_type_id
 from hedron_core.interaction import FragmentRegion
 from hedron_core.registry import register_route
@@ -345,6 +346,7 @@ def _wrap_endpoint(
     allow_undeclared_targets: bool = False,
     capability: str | None = None,
     idempotency: str | None = None,
+    browser_closure: BrowserPlanClosure | None = None,
 ) -> Callable[..., Response | Awaitable[Response]]:
     @functools.wraps(fn)
     async def endpoint(*args: Any, **kwargs: Any) -> Response:
@@ -374,6 +376,7 @@ def _wrap_endpoint(
                 kind=kind,
                 fragment_regions=fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                browser_closure=browser_closure,
             )
         except BaseException:
             # CancelledError is BaseException — abort so claims do not stick IN_FLIGHT.
@@ -450,6 +453,7 @@ class HedronRouter(APIRouter):
         tags: list[str | Enum] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
+        browser_closure: BrowserPlanClosure | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
@@ -468,6 +472,7 @@ class HedronRouter(APIRouter):
                 require_csrf=_requires_csrf(verb_list),
                 fragment_regions=regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                browser_closure=browser_closure,
             )
             self.add_api_route(
                 path,
@@ -516,6 +521,8 @@ class HedronRouter(APIRouter):
         tags: list[str | Enum] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
+        _route_kind: str = "component",
+        browser_closure: BrowserPlanClosure | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
@@ -524,16 +531,19 @@ class HedronRouter(APIRouter):
             route_name = name or fn.__name__
             logical_id = _logical_id(fn)
             verb_list = list(methods or ["GET"])
-            op_id = operation_id_for("component", route_name, path, verb_list[0])
+            if _route_kind not in {"component", "view"}:
+                raise ValueError("_route_kind must be component or view")
+            op_id = operation_id_for(_route_kind, route_name, path, verb_list[0])
             regions = _normalize_fragment_regions(fragment_regions)
             _annotate_callable(fn, fragment_regions=regions)
             wrapped = _wrap_endpoint(
                 fn,
-                kind="component",
+                kind=_route_kind,
                 mode=RenderMode.FRAGMENT,
                 require_csrf=_requires_csrf(verb_list),
                 fragment_regions=regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                browser_closure=browser_closure,
             )
             self.add_api_route(
                 path,
@@ -549,7 +559,7 @@ class HedronRouter(APIRouter):
                 **kwargs,
             )
             self._register_route_or_rollback(
-                kind="component",
+                kind=_route_kind,
                 logical_id=logical_id,
                 name=route_name,
                 path=f"{self.prefix}{path}",
@@ -571,6 +581,35 @@ class HedronRouter(APIRouter):
             return fn
 
         return decorator
+
+    def view(
+        self,
+        path: str,
+        *,
+        methods: Sequence[str] | None = None,
+        name: str | None = None,
+        include_in_schema: bool = False,
+        dependencies: Sequence[params.Depends] | None = None,
+        tags: list[str | Enum] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
+        browser_closure: BrowserPlanClosure | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        """Canonical view spelling over the existing safe fragment transport."""
+        return self.component(
+            path,
+            methods=methods,
+            name=name,
+            include_in_schema=include_in_schema,
+            dependencies=dependencies,
+            tags=tags,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+            _route_kind="view",
+            browser_closure=browser_closure,
+            **kwargs,
+        )
 
     def action(
         self,

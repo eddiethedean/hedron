@@ -17,7 +17,7 @@ browser context, and scenario testing — without Streamlit-style whole-script r
 
 !!! note "Historical phase"
 
-    This page describes **0.15**. The current published train is **0.64.x** (`v0.64.0` on PyPI) —
+    This page describes **0.15**. The current published train is **0.66.x** (`v0.66.2` on PyPI) —
     see [What’s new in 0.28](whats-new-0.28.md) and the [upgrade guide](upgrade.md).
 
 Pin `hedron>=0.15.0,<0.16` when staying on the 0.15 line.

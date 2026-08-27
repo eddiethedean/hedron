@@ -11,7 +11,7 @@ Capability maturity for *this* train: [What’s ready](whats-ready.md) ·
 Install pins: [Current release](current-release.md) ·
 [Installation](../getting-started/installation.md).
 
-## On the living 0.64.x train
+## Stable 0.66.2 and Beta 0.67.0
 
 | Topic | Disposition |
 |---|---|
@@ -29,10 +29,11 @@ Install pins: [Current release](current-release.md) ·
 | **0.63** | Theme contract completion, interaction profiling, static checks, and component interoperability | **Published** as `v0.64.0`; Progressive bundles/visuals/React island deferred; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/INTERACTION_TOOLING_063.md) |
 | **0.64** | Bounded presentation contracts and first-party HTMX lifecycle interoperability | Published `v0.64.0`; 18 enhancement issues completed, 4 remain open for deferred follow-up; [phase inventory](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#phase-064-enhancement-inventory); [refined phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HTMX_HEDRON_EXTENSION_064.md) |
 | **0.65** | Integrated styling platform and first-class application CSS | **Proposed; not a current release**; four bounded open-issue slices plus public hooks, app assets, tokens, diagnostics, ejection, and touched-surface fallbacks; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/APPLICATION_STYLING_065.md) · [refined scope](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/application-styling-scope-065.md) |
+| **0.66** | HDJ parity, registry integration, and open-issue closure | **Stable** as `v0.66.2`; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HDJ_PARITY_066.md) |
+| **0.67** | Alpine browser-local enhancement and unified interaction preview | **Beta** as `v0.67.0`; [phase plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/ALPINE_INTEGRATION_067.md) |
 
-Phase 0.64 is the current published capability train; its Required implementation is landed in-tree
-and published on PyPI with its acceptance packet. Phase 0.65 is a planning proposal and does not
-change the current Supported surface.
+Phase 0.66 is the current stable capability train and is published on PyPI as `v0.66.2`.
+Phase 0.67 is the Beta preview train (`v0.67.0`) and does not change the stable Supported surface.
 For 0.62, canonical navigation, fallback, localized failure, identity safety, and a small approved
 optimistic core are the proposed Required cut; prefetch, transitions, bulk actions, and dashboard
 fan-out remain optional Progressive work.

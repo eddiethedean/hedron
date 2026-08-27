@@ -1,0 +1,25 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "application",
+      "name": "hedron-browser-assets",
+      "version": "0.67.0"
+    }
+  },
+  "components": [
+    {"type": "library", "name": "@alpinejs/csp", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/anchor", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/collapse", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/focus", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/intersect", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/mask", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/morph", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/persist", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/resize", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/sort", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "@alpinejs/ui", "version": "3.16.3", "licenses": [{"license": {"id": "MIT"}}]}
+  ]
+}

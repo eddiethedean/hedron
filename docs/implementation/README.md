@@ -86,6 +86,9 @@ These documents describe how accepted RFC behavior will be implemented. They def
   packages, test/evidence inventory, pull-request sequence, rollout, rollback, and release handoff
 - [Phase 0.66 HDJ parity](HDJ_PARITY_066.md) — app-scoped binding, registry projection, live
   logical-ID helpers, portable HTMX facts, provider/style parity, and claim-honest gates
+- [Phase 0.67 execution plan](EXECUTION_0_67.md) — entry lock, supply/CSP, browser-plan closure,
+  typed directives, unified interaction, lifecycle, component-engine, migration, evidence, and
+  release sequence
 - [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
   workstreams for compiling the Markdown corpus into native Hedron component trees, building the
   docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud

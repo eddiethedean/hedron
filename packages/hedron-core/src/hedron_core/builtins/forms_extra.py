@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Literal
 
+from hedron_core.alpine import AlpineAttrs
 from hedron_core.builtins._base import (
     ElementProps,
     class_names,
@@ -545,8 +546,17 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
         if data:
             wrap["data"] = data
         return html.div(
-            html.input(**attrs),
+            html.input(
+                **attrs,
+                alpine=AlpineAttrs.model(
+                    "checked", source=f"component:ToggleSwitch:{self.props.id}:input"
+                ),
+            ),
             html.label(self.props.label, for_=self.props.id),
+            alpine=AlpineAttrs(
+                state={"checked": self.props.checked},
+                source=f"component:ToggleSwitch:{self.props.id}",
+            ),
             **wrap,
         )
 

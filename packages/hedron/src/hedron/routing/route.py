@@ -26,8 +26,10 @@ from hedron.responses import (
 )
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
+from hedron_core.alpine import BrowserPlanClosure
 from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import FragmentRegion, FragmentRegionError, InteractionResult
+from hedron_core.interaction_067 import Outcome, OutcomeKind
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
 
@@ -43,11 +45,12 @@ class _SupportsRender(Protocol):
 
 HedronEndpointResult: TypeAlias = (
     StarletteResponse | InteractionResult | HTML | Component[Any] | Model | _SupportsRender
+    | Outcome
 )
 
 
 def _is_hedron_value(value: object) -> bool:
-    if isinstance(value, (HTML, Component, StarletteResponse, InteractionResult)):
+    if isinstance(value, (HTML, Component, StarletteResponse, InteractionResult, Outcome)):
         return True
     if isinstance(value, Model) and not isinstance(value, Component):
         return True
@@ -146,6 +149,7 @@ class HedronRoute(APIRoute):
         kind: str = "page",
         fragment_regions: tuple[FragmentRegion, ...] = (),
         allow_undeclared_targets: bool = False,
+        browser_closure: BrowserPlanClosure | None = None,
     ) -> StarletteResponse:
         policy: SecurityPolicy = getattr(
             request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
@@ -153,6 +157,16 @@ class HedronRoute(APIRoute):
         authenticated = bool(getattr(request.state, "hedron_authenticated", False))
         result = await await_if_needed(result)
         vary = {"Vary": "HX-Request, HX-History-Restore-Request"}
+
+        if isinstance(result, Outcome):
+            return await HedronRoute._convert_outcome(
+                request,
+                result,
+                mode=mode,
+                kind=kind,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
 
         from hedron_core.diagnostics import HedronError
         from hedron_core.updates import compile_to_interaction
@@ -207,6 +221,7 @@ class HedronRoute(APIRoute):
                 fragment_regions=fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
                 allow_missing_target=kind == "action",
+                browser_closure=browser_closure,
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(response, policy, request=request)
@@ -238,11 +253,75 @@ class HedronRoute(APIRoute):
                 fragment_regions=fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
                 allow_missing_target=kind == "action",
+                browser_closure=browser_closure,
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(response, policy, request=request)
             return response
         raise TypeError(f"Unsupported Hedron endpoint return type: {type(result)!r}")
+
+    @staticmethod
+    async def _convert_outcome(
+        request: Request,
+        result: Outcome,
+        *,
+        mode: RenderMode | None,
+        kind: str,
+        fragment_regions: tuple[FragmentRegion, ...],
+        allow_undeclared_targets: bool,
+    ) -> StarletteResponse:
+        """Lower one role-indexed 0.67 outcome to the existing response authorities."""
+        role = result.role
+        payload = dict(result.payload)
+        if role is OutcomeKind.NO_CONTENT:
+            return StarletteResponse(status_code=204)
+        if role is OutcomeKind.REDIRECT:
+            return await render_interaction(
+                request,
+                InteractionResult(redirect=str(payload["location"]), status_code=200),
+                mode=mode,
+                kind=kind,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
+        if role is OutcomeKind.REFRESH:
+            return await render_interaction(
+                request,
+                InteractionResult(content=None, status_code=200, refresh=True),
+                mode=mode,
+                kind=kind,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
+        if role is OutcomeKind.JOB:
+            return StarletteResponse(
+                content="",
+                status_code=202,
+                headers={"X-Hedron-Job-Id": str(payload["job_id"])},
+            )
+        if role in {OutcomeKind.VALIDATION, OutcomeKind.CONFLICT}:
+            import json
+
+            return StarletteResponse(
+                content=json.dumps(result.to_dict(), sort_keys=True),
+                status_code=422 if role is OutcomeKind.VALIDATION else 409,
+                media_type="application/json",
+            )
+        if role is OutcomeKind.DOWNLOAD:
+            return StarletteResponse(
+                content="",
+                status_code=200,
+                headers={"X-Hedron-Download": str(payload["url"])},
+            )
+        if role is OutcomeKind.PATCH:
+            import json
+
+            return StarletteResponse(
+                content=json.dumps(result.to_dict(), sort_keys=True),
+                status_code=200,
+                media_type="application/json",
+            )
+        return StarletteResponse(status_code=200)
 
     @staticmethod
     async def _convert_interaction_result(

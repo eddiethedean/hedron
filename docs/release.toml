@@ -1,21 +1,25 @@
 [release]
 # Public release facts. Adopter-facing "current", "living", and install-pin claims
 # must agree with this file. The workspace may be preparing a later release.
-train = "0.64"
-published_version = "0.64.0"
+# Stable release channel. The workspace remains package-compatible with this cut.
+train = "0.66"
+published_version = "0.66.2"
+stable_version = "0.66.2"
+# Beta preview channel; intentionally separate from the stable package metadata.
+beta_version = "0.67.0"
 development_version = "0.66.2"
-published_date = "2026-08-24"
-pin_floor = "0.64.0"
-pin_ceiling = "0.65"
-previous_train = "0.63"
-previous_version = "0.63.0"
+published_date = "2026-08-26"
+pin_floor = "0.66.2"
+pin_ceiling = "0.67"
+previous_train = "0.65"
+previous_version = "0.65.0"
 previous_security_until = "2027-08-20"
 # Latest version actually on PyPI. Keep in sync with pypi.org (not workspace version).
 # When "uploaded", pypi_version must equal published_version and first-run commands
 # use the same pin as Installation.
-pypi_version = "0.64.0"
-pypi_pin_floor = "0.64.0"
-pypi_pin_ceiling = "0.65"
+pypi_version = "0.66.2"
+pypi_pin_floor = "0.66.2"
+pypi_pin_ceiling = "0.67"
 registry_status = "uploaded"
 
 [satellites]

@@ -4,8 +4,8 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** phase 0.64 is the published release train at `v0.64.0` on PyPI. The
-0.64 acceptance packet, tag, and package publication are complete.
+**Roadmap position:** `v0.66.2` is the stable release on PyPI. `v0.67.0` is the Beta
+preview train; its acceptance packet is Verified in-tree but is not the stable channel.
 **Date:** 2026-08-25
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
@@ -23,7 +23,7 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-maps`
 Independent (not coordinated Beta train): `fastapi-workbench` `1.0.0`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.
 
-**Phase focus:** The published train is **0.64** (RFC-0091). Phase **0.66** is verified against
+**Phase focus:** The stable train is **0.66.2**. Phase **0.67** is the Beta preview train, verified against
 the `v0.65.0` baseline; the coordinated packages are at `0.66.2`. Its HDJ foundation and all
 thirteen imported issue gates are implemented and Verified. Dynamic, foreign, and installed-package template execution
 remain explicitly Deferred. Phase **0.65** remains the

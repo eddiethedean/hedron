@@ -1,0 +1,40 @@
+schema = "hedron.alpine-capability-dispositions/1"
+phase = "0.67"
+upstream = "alpinejs 3.16.3"
+source = "../implementation/ALPINE_CAPABILITY_AUDIT_067.md"
+
+[directives]
+required = [
+  "x-data", "x-init", "x-show", "x-bind", "x-on", "x-text", "x-model",
+  "x-for", "x-transition", "x-effect", "x-ref", "x-if", "x-id",
+]
+progressive = ["x-modelable", "x-teleport"]
+advanced = ["x-ignore"]
+bounded = ["x-cloak"]
+excluded = ["x-html"]
+
+[magics]
+required = ["$refs", "$watch", "$dispatch", "$nextTick", "$root", "$id"]
+progressive = ["$store"]
+advanced = ["$el", "$data"]
+
+[globals]
+required = ["Alpine.data", "Alpine.bind", "Alpine.plugin"]
+progressive = ["Alpine.store"]
+advanced = ["Alpine.reactive", "Alpine.effect", "Alpine.directive", "Alpine.magic"]
+
+[plugins]
+required = ["anchor", "collapse", "focus", "intersect", "mask", "resize"]
+progressive = ["morph", "persist", "sort"]
+ui_candidate = [
+  "combobox", "dialog", "disclosure", "listbox", "menu", "popover", "radio", "switch", "tabs",
+]
+
+[guardrails]
+long_form_directives = true
+normal_build = false
+unsafe_eval = false
+remote_assets = false
+response_time_registration = false
+essential_x_cloak = false
+untrusted_x_html = false

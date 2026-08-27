@@ -1,7 +1,7 @@
 schema_version = 1
 phase = "0.67"
 target = "1.0"
-status = "Proposed W0 inventory; dispositions lock at ENGINE-067/FREEZE-067"
+status = "Verified W0 inventory; dispositions locked for 0.67/1.0 migration"
 decision = "D-116"
 owning_gate = "ENGINE-067"
 contract = "../implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md"

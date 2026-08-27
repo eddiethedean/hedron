@@ -32,7 +32,7 @@
 ## [0.64.0] — 2026-08-24
 
 ### Added
-- Bounded presentation and lifecycle contracts for the 0.64 train.
+- Bounded presentation and lifecycle contracts for the 0.66 train.
 
 ## [0.63.0] — 2026-08-24
 

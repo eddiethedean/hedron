@@ -301,7 +301,34 @@ class HedronPagesMixin:
         Returns:
             Decorator that registers the handler and returns it unchanged.
         """
+        emit_warning = bool(kwargs.pop("_emit_legacy_warning", True))
+        if emit_warning:
+            from hedron_core.migration import warn_legacy_path
+
+            warn_legacy_path("app.component", stacklevel=2)
         decorator = self._root_router.component(path, fragment_regions=fragment_regions, **kwargs)
+
+        def wrap(fn: Callable[P, R]) -> Callable[P, R]:
+            decorator(fn)
+            self._sync_root_route()
+            return fn
+
+        return wrap
+
+    def view(
+        self,
+        path: str,
+        *,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        """Register the canonical safe replaceable view surface.
+
+        ``view`` deliberately shares the existing fragment renderer and target
+        authorization implementation. The older ``component``/``fragment``
+        spellings remain available as compatibility surfaces during 0.67.
+        """
+        decorator = self._root_router.view(path, fragment_regions=fragment_regions, **kwargs)
 
         def wrap(fn: Callable[P, R]) -> Callable[P, R]:
             decorator(fn)
@@ -357,7 +384,15 @@ class HedronPagesMixin:
             merged.extend(regions)
         if fragment_regions is not None:
             merged.extend(fragment_regions)
-        return self.component(path, fragment_regions=merged or None, **kwargs)
+        from hedron_core.migration import warn_legacy_path
+
+        warn_legacy_path("app.fragment", stacklevel=2)
+        return self.component(
+            path,
+            fragment_regions=merged or None,
+            _emit_legacy_warning=False,
+            **kwargs,
+        )
 
     def action(self, path: str, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Register a mutation endpoint (typically POST) with CSRF when profiles require it.
@@ -409,6 +444,20 @@ class HedronPagesMixin:
         Accepts a ``FeatureBundle`` or a ``FeatureProvider`` such as
         ``DataWorkspace``. Beginner spelling: ``app.include_feature(orders)``.
         """
+        from hedron_core.migration import warn_legacy_path
+
+        warn_legacy_path("app.include_feature", stacklevel=2)
+        from hedron.features import include_feature as _include
+
+        return _include(self, feature, capabilities=capabilities)
+
+    def include(
+        self,
+        feature: FeatureBundle | FeatureProvider,
+        *,
+        capabilities: Mapping[str, bool] | None = None,
+    ) -> FeatureBundle:
+        """Include one feature bundle through the canonical 1.0 spelling."""
         from hedron.features import include_feature as _include
 
         return _include(self, feature, capabilities=capabilities)

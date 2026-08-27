@@ -1,6 +1,6 @@
 schema_version = 1
 phase = "0.67"
-status = "Accepted planning lock; exact symbol spellings become Verified at FREEZE-067"
+status = "Verified; exact symbol spellings and ownership are locked for 0.67"
 owning_rfcs = ["RFC-0095", "RFC-0096"]
 decisions = ["D-113", "D-114", "D-115", "D-116"]
 entry_gate = "FREEZE-067"

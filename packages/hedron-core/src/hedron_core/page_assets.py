@@ -38,6 +38,7 @@ __all__ = [
     "htmx_core_script_end",
     "inject_htmx_core",
     "inject_htmx_extensions",
+    "inject_alpine_plan",
     "inject_page_assets",
     "inject_page_theme",
     "static_directory",
@@ -227,6 +228,67 @@ def inject_htmx_extensions(
     return apply_hx_ext_attribute(html_text, resolved.hx_ext)
 
 
+def inject_alpine_plan(
+    html_text: str,
+    mode: RenderMode,
+    browser_plan: object | None = None,
+    *,
+    static_href: Callable[[str], str] | None = None,
+) -> str:
+    """Inject the single local CSP-safe Alpine runtime when the PAGE demands it."""
+    if mode is not RenderMode.PAGE:
+        return html_text
+    from hedron_core.alpine import BrowserFeaturePlan
+
+    if not isinstance(browser_plan, BrowserFeaturePlan) or browser_plan.feature_off:
+        return html_text
+    runtime = _prefix_href("/hedron-static/hedron-alpine.mjs", static_href=static_href)
+    marker = (
+        '<meta name="hedron-browser-plan" '
+        f'content="{html_lib.escape(browser_plan.fingerprint, quote=True)}">'
+    )
+    scripts: list[str] = []
+    from hedron_core.browser_assets_067 import ALPINE_FILE_INTEGRITY
+
+    for asset in browser_plan.assets:
+        href = _prefix_href(asset, static_href=static_href)
+        if href in html_text:
+            continue
+        integrity = ALPINE_FILE_INTEGRITY.get(asset)
+        integrity_attrs = (
+            f' integrity="{html_lib.escape(integrity, quote=True)}" crossorigin="anonymous"'
+            if integrity
+            else ""
+        )
+        scripts.append(
+            f'<script type="module" src="{html_lib.escape(href, quote=True)}"'
+            f'{integrity_attrs}></script>'
+        )
+    if (
+        runtime not in html_text
+        and "hedron-alpine.mjs" not in html_text
+        and runtime not in browser_plan.assets
+    ):
+        scripts.insert(
+            0,
+            f'<script type="module" src="{html_lib.escape(runtime, quote=True)}"></script>',
+        )
+    if not scripts:
+        if marker in html_text:
+            return html_text
+        if "</head>" in html_text:
+            return html_text.replace("</head>", f"{marker}\n</head>", 1)
+        if "</body>" in html_text:
+            return html_text.replace("</body>", f"{marker}\n</body>", 1)
+        return html_text + marker
+    tag = f'{marker}\n' + "\n".join(scripts)
+    if "</head>" in html_text:
+        return html_text.replace("</head>", f"{tag}\n</head>", 1)
+    if "</body>" in html_text:
+        return html_text.replace("</body>", f"{tag}\n</body>", 1)
+    return html_text + tag
+
+
 def _attr_suffix(attributes: Mapping[str, str]) -> str:
     parts: list[str] = []
     for key in sorted(attributes):
@@ -306,6 +368,7 @@ def inject_page_assets(
     theme: str | None = None,
     theme_preference: object | None = None,
     plan: ExtensionPlan | None = None,
+    browser_plan: object | None = None,
 ) -> str:
     """Inject HTMX core, default CSS/UI modules, build assets, then extensions.
 
@@ -319,6 +382,7 @@ def inject_page_assets(
     """
     html_text = inject_page_theme(html_text, mode, theme, preference=theme_preference)
     html_text = inject_htmx_core(html_text, mode, policy=policy, static_href=static_href)
+    html_text = inject_alpine_plan(html_text, mode, browser_plan, static_href=static_href)
     if mode is not RenderMode.PAGE:
         reject_invented_fragment_scripts(html_text)
         return html_text

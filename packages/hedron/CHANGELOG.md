@@ -32,7 +32,7 @@
 ## [0.64.0] — 2026-08-24
 
 ### Added
-- Bounded presentation contracts and opt-in Hedron HTMX lifecycle projection for the 0.64 train.
+- Bounded presentation contracts and opt-in Hedron HTMX lifecycle projection for the 0.66 train.
 
 ### Changed
 - Coordinated train cut for Phase 0.64; extension behavior remains explicitly declared and fallback-safe.

@@ -2,7 +2,7 @@
 
 Language-neutral Hedron conformance-test kit and capability runner.
 
-**Package maturity:** Beta · **Train:** `0.64.x` (`v0.64.0` published on PyPI) · pin `>=0.64.0,<0.65`
+**Package maturity:** Beta · **Train:** `0.64.x` (`v0.64.0` published on PyPI) · pin `>=0.66.2,<0.67`
 
 **Flagship extra:** `hedron[conformance]` · **Import:** `hedron_conformance`
 
@@ -14,12 +14,12 @@ Phase 0.52 authority contract: [RFC-0079](https://github.com/eddiethedean/hedron
 ## Install
 
 ```bash
-pip install "hedron[conformance]>=0.64.0,<0.65"
+pip install "hedron[conformance]>=0.66.2,<0.67"
 # or
-pip install "hedron-conformance>=0.64.0,<0.65"
+pip install "hedron-conformance>=0.66.2,<0.67"
 ```
 
-Checkout tip `v0.64.0` uses `uv sync`; applications install `>=0.64.0,<0.65` from PyPI.
+Checkout tip `v0.66.2` uses `uv sync`; applications install `>=0.66.2,<0.67` from PyPI.
 
 ## When to use
 

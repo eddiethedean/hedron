@@ -60,7 +60,7 @@ Hedron can inventory a Streamlit entrypoint or project without importing or exec
 Start with analysis so you can see the migration surface before writing Hedron code:
 
 ```bash
-uvx --from "hedron>=0.64.0,<0.65" hedron migrate streamlit \
+uvx --from "hedron>=0.66.2,<0.67" hedron migrate streamlit \
   streamlit_app.py \
   --analyze-only \
   --format text
@@ -91,7 +91,7 @@ evidence.
 When the inventory is useful, generate into a new or empty directory:
 
 ```bash
-uvx --from "hedron>=0.64.0,<0.65" hedron migrate streamlit \
+uvx --from "hedron>=0.66.2,<0.67" hedron migrate streamlit \
   streamlit_app.py \
   --out migrated-app
 ```
@@ -257,7 +257,7 @@ Before translating it, record three acceptance cases:
 Save the source as `streamlit_app.py`, then run:
 
 ```bash
-uvx --from "hedron>=0.64.0,<0.65" hedron migrate streamlit \
+uvx --from "hedron>=0.66.2,<0.67" hedron migrate streamlit \
   streamlit_app.py \
   --out sales-hedron
 cd sales-hedron
@@ -271,13 +271,13 @@ decisions explicitly.
 Install Hedron with the data extra, plus an ASGI server:
 
 ```bash
-uv add "hedron[data]>=0.64.0,<0.65" "uvicorn[standard]"
+uv add "hedron[data]>=0.66.2,<0.67" "uvicorn[standard]"
 ```
 
 To include charts, install the compatible satellite through the flagship extra:
 
 ```bash
-uv add "hedron[charts]>=0.64.0,<0.65"
+uv add "hedron[charts]>=0.66.2,<0.67"
 ```
 
 This enforces `hedron-charts>=0.2.1,<0.3`; see
@@ -487,7 +487,7 @@ Details: [Charts and HTMX](charts-and-htmx.md).
 | `st.columns` | `Grid` or `Inline` | Compose child components explicitly. |
 | `st.metric` | `Metric` | Pass the label, formatted value, and optional delta. |
 | `st.dataframe` | `DataTable` | Declare a `Model` when stable column types matter. Use `DataEditor` for edits. |
-| `st.line_chart` | `LineChart` (`hedron[charts]>=0.64.0,<0.65`) | Provide a title and accessible description; a table fallback remains useful. |
+| `st.line_chart` | `LineChart` (`hedron[charts]>=0.66.2,<0.67`) | Provide a title and accessible description; a table fallback remains useful. |
 | `st.plotly_chart` | `PlotlyChart` (experimental) | Hedron compiles the figure through its bounded chart adapter. |
 | `st.cache_data` | `cache_data` | Choose a TTL and a cache scope; include user or tenant dimensions for private data. |
 | `st.session_state` | Query parameters, your database, or `SessionState` | Prefer addressable URL state for filters and durable application storage for domain data. |
@@ -520,9 +520,9 @@ without a browser. Continue with [Test your UI](testing.md), [Security](security
 | Fragment request returns 403 | `HX-Target` does not match the route's declared region | Use `app.region(...)` and region-aware controls; check the id/selector |
 | POST returns a CSRF error | The form did not carry the token seeded by the page GET | Start with [Minimal form POST](minimal-form.md); do not disable CSRF to imitate a callback |
 | Query returns 422 | FastAPI rejected an invalid value or binding | Correct the form value and render friendly validation guidance for the workflow |
-| `DataTable` cannot be imported | The data extra is not installed | Install `hedron[data]>=0.64.0,<0.65` in the same environment as the app |
+| `DataTable` cannot be imported | The data extra is not installed | Install `hedron[data]>=0.66.2,<0.67` in the same environment as the app |
 | A private cache never hits | Sensitive scopes require concrete `vary_on` dimensions | Pass the user/tenant/session key as a function argument and include its name in `vary_on` |
-| Chart installation resolves an older core | The lower bound allowed a satellite before `0.1.6` | Install `hedron[charts]>=0.64.0,<0.65` in a clean environment |
+| Chart installation resolves an older core | The lower bound allowed a satellite before `0.1.6` | Install `hedron[charts]>=0.66.2,<0.67` in a clean environment |
 | State disappears after deployment/restart | Process/session memory was treated as durable storage | Move durable state to a database or shared service and review the multi-worker model |
 
 ## Migration checkpoint

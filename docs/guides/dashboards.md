@@ -4,8 +4,8 @@ Prefer **`DashboardWorkspace`** for validated filters, one request-bound loader,
 render-only panels (phase **0.60**). Phase **0.17** `DashboardBinding` /
 `InteractionGraph` remain available as Advanced linked-interaction primitives.
 
-Capability readiness is **Supported** on the living **0.64.x** train; API compatibility
-remains **`beta`** — pin `hedron>=0.64.0,<0.65` from PyPI (published as `v0.64.0`).
+Capability readiness is **Supported** on the living **0.66.x** train; API compatibility
+remains **`beta`** — pin `hedron>=0.66.2,<0.67` from PyPI (stable release `v0.66.2`).
 
 ## Start here
 

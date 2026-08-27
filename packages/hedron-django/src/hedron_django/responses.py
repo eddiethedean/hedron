@@ -252,6 +252,7 @@ def _inject_page_html(
     theme: str | None = None,
     plan: object | None = None,
     assets: object | None = None,
+    browser_plan: object | None = None,
 ) -> str:
     from hedron_core.htmx_extensions import ExtensionPlan
 
@@ -264,6 +265,7 @@ def _inject_page_html(
         theme=theme,
         plan=resolved,
         assets=assets if isinstance(assets, tuple) else None,
+        browser_plan=browser_plan,
     )
 
 
@@ -319,6 +321,7 @@ def component_response(
         theme=_render_theme(result),
         plan=getattr(result, "htmx_plan", None),
         assets=result.assets,
+        browser_plan=getattr(result, "browser_plan", None),
     )
     return HttpResponse(
         body.encode("utf-8"),
@@ -401,6 +404,7 @@ def interaction_response(
                 theme=_render_theme(rendered),
                 plan=getattr(rendered, "htmx_plan", None),
                 assets=rendered.assets,
+                browser_plan=getattr(rendered, "browser_plan", None),
             )
     return HttpResponse(
         body.encode("utf-8"),

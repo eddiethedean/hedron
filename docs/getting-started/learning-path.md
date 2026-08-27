@@ -75,7 +75,7 @@ below and identifies what should be durable before deployment.
 [reference app](../examples/reference-app.md) is an optional kitchen sink after that.
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
-   (`hedron[charts]>=0.64.0,<0.65`; static Matplotlib is the conservative default)
+   (`hedron[charts]>=0.66.2,<0.67`; static Matplotlib is the conservative default)
 2. More recipes: [File upload](../examples/file-upload.md) ·
    [Jobs poll](../examples/jobs-poll.md)
 3. Optional: [Dashboards](../guides/dashboards.md) · [Model demos](../guides/model-demos.md) ·

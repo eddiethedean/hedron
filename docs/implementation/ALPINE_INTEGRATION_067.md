@@ -1,6 +1,6 @@
 # Phase 0.67 implementation plan: Alpine browser-local enhancement
 
-**Status:** Proposed  
+**Status:** Implemented and verified in-tree
 **Authority:** [RFC-0095](../rfcs/RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md) / D-113 / D-115 / D-116  
 **Baseline:** `v0.66.2`  
 **Target:** `v0.67.0`  

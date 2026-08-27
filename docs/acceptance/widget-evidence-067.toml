@@ -1,0 +1,72 @@
+schema = "hedron.widget-evidence/1"
+phase = "0.67"
+provenance = [
+  "W3C ARIA Authoring Practices",
+  "HTML platform semantics",
+  "Hedron first-party component contracts",
+]
+restricted_sources = false
+parallel_alpine_family = false
+
+[[widget]]
+id = "disclosure"
+component = "Expander"
+engine = "native-plus-alpine"
+maturity = "Supported"
+test = "tests/a11y/test_phase05_utilities.py"
+
+[[widget]]
+id = "tabs"
+component = "Tabs"
+engine = "native-plus-alpine"
+maturity = "Supported"
+test = "tests/unit/test_phase067_contracts.py"
+
+[[widget]]
+id = "switch"
+component = "ToggleSwitch"
+engine = "native-plus-alpine"
+maturity = "Supported"
+test = "tests/unit/test_forms_044.py"
+
+[[widget]]
+id = "radio"
+component = "RadioGroup"
+engine = "native-plus-alpine"
+maturity = "Supported"
+test = "tests/unit/test_forms_044.py"
+
+[[widget]]
+id = "dialog"
+component = "Dialog"
+engine = "native"
+maturity = "Supported"
+test = "tests/a11y/test_dialog_a11y.py"
+
+[[widget]]
+id = "popover"
+component = "Popover"
+engine = "native"
+maturity = "Progressive"
+test = "tests/unit/test_surfaces_045.py"
+
+[[widget]]
+id = "combobox"
+component = "Select"
+engine = "native"
+maturity = "Progressive"
+test = "tests/unit/test_forms_044.py"
+
+[[widget]]
+id = "sortable"
+component = "collection"
+engine = "native"
+maturity = "Progressive"
+test = "tests/browser/test_browser_matrix.py"
+
+[[widget]]
+id = "morph"
+component = "HTMX replacement"
+engine = "htmx"
+maturity = "Progressive"
+test = "tests/browser/test_htmx_lifecycle.py"

@@ -457,6 +457,64 @@ def _check_044_type_authoring(base: Path) -> list[Any]:
     return diags
 
 
+def _check_target_100(base: Path) -> list[Any]:
+    """Find documented 0.67 compatibility spellings without importing project code."""
+    from hedron_core import DiagnosticSeverity
+    from hedron_core.diagnostics import make_diagnostic
+
+    replacements = {
+        "screen": "@app.page",
+        "component": "@app.view",
+        "fragment": "@app.view",
+        "refreshable": "@app.view",
+        "command": "@app.action",
+        "form_command": "@app.action",
+        "include_feature": "app.include",
+    }
+    diagnostics: list[Any] = []
+    skip = {".venv", "node_modules", "dist", "site-packages", ".git"}
+    for path in sorted(base.rglob("*.py")):
+        if any(part in skip or part.startswith(".") for part in path.parts):
+            continue
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+                continue
+            old = node.func.attr
+            replacement = replacements.get(old)
+            if replacement is None:
+                continue
+            diagnostics.append(
+                make_diagnostic(
+                    "HED-MIGRATE-0670",
+                    severity=DiagnosticSeverity.WARNING,
+                    title="Hedron 1.0 compatibility path",
+                    explanation=(
+                        f"{path}:{node.lineno} uses transitional `{old}` authoring; "
+                        f"the 1.0 canonical path is `{replacement}`."
+                    ),
+                    remediation=f"Migrate this task to {replacement} before Hedron 1.0.",
+                    context={
+                        "code": "HED-MIGRATE-0670",
+                        "old_path": old,
+                        "replacement": replacement,
+                        "owner": "hedron",
+                        "first_warning_version": "0.67",
+                        "removal_version": "1.0",
+                        "source": str(path),
+                        "documentation": "docs/implementation/HEDRON_1_0_EDRON_INTERFACE_AUDIT.md",
+                        "fixture": "shared/target-1.0",
+                        "confidence": "complete",
+                        "automation_status": "automatic",
+                    },
+                )
+            )
+    return diagnostics
+
+
 def _decorator_attr(node: ast.AST) -> str | None:
     if isinstance(node, ast.Attribute):
         return node.attr
@@ -727,6 +785,8 @@ def _cmd_check(args: argparse.Namespace) -> int:
     diags.extend(_check_select_oob_conflicts(base))
     diags.extend(_check_043_handles(base))
     diags.extend(_check_044_type_authoring(base))
+    if getattr(args, "target", None) == "1.0":
+        diags.extend(_check_target_100(base))
 
     if bool(getattr(args, "phase063", False)):
         from hedron.phase063_checks import analyze_project

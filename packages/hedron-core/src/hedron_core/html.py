@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import TypeAlias, cast
+
 from hedron_core._html.policy import (
     is_safe_layout_style,
     normalize_srcset,
@@ -12,8 +14,10 @@ from hedron_core._html.policy import (
 )
 from hedron_core._html_meta import FORBIDDEN_TAGS, KNOWN_TAGS, VOID_TAGS
 from hedron_core._nodes import ElementNode, Node, TrustedHtmlNode
+from hedron_core.alpine import AlpineAttrs
 from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
+from hedron_core.interaction_067 import Interaction
 from hedron_core.security import TrustedHtml
 from hedron_core.typing_aliases import HtmlAttrValue
 
@@ -24,6 +28,8 @@ _require_safe_attr_name = require_safe_attr_name
 
 __all__ = ["html"]
 
+HtmlTagAttrValue: TypeAlias = HtmlAttrValue | AlpineAttrs | Interaction
+
 
 class _HtmlTag:
     __slots__ = ("_tag",)
@@ -31,17 +37,17 @@ class _HtmlTag:
     def __init__(self, tag: str) -> None:
         self._tag = tag
 
-    def __call__(self, *children: NodeLike, **attrs: HtmlAttrValue) -> _NativeElement:
+    def __call__(self, *children: NodeLike, **attrs: HtmlTagAttrValue) -> _NativeElement:
         return _NativeElement(self._tag, children, attrs)
 
 
 class _NativeElement:
     """Public native HTML node implementing ComponentNode."""
 
-    __slots__ = ("tag", "children", "attributes")
+    __slots__ = ("tag", "children", "attributes", "browser_demands")
 
     def __init__(
-        self, tag: str, children: tuple[NodeLike, ...], attrs: dict[str, HtmlAttrValue]
+        self, tag: str, children: tuple[NodeLike, ...], attrs: dict[str, HtmlTagAttrValue]
     ) -> None:
         tag_l = tag.lower()
         if tag_l in FORBIDDEN_TAGS:
@@ -70,10 +76,39 @@ class _NativeElement:
             )
         self.tag = tag_l
         self.children = children
-        self.attributes = _normalize_attrs(attrs, tag=tag_l)
+        demands: tuple[object, ...] = ()
+        alpine_value = attrs.get("alpine")
+        if alpine_value is not None:
+            from hedron_core.alpine import AlpineAttrs
+
+            if isinstance(alpine_value, AlpineAttrs):
+                demands += alpine_value.demands()
+        interaction_value = attrs.get("interaction")
+        if interaction_value is not None:
+            from hedron_core.interaction_067 import Interaction
+
+            if isinstance(interaction_value, Interaction):
+                demands += interaction_value.demands()
+        self.browser_demands = demands
+        self.attributes = _normalize_attrs(cast(dict[str, HtmlAttrValue], attrs), tag=tag_l)
 
     def __hedron_node__(self) -> _NativeElement:
         return self
+
+    def with_attributes(self, attributes: dict[str, HtmlAttrValue]) -> _NativeElement:
+        """Clone an already-normalized element for framework-owned merges.
+
+        Render-time helpers sometimes need to add ARIA or identity attributes after
+        construction. Re-running the public constructor would mistake normalized
+        ``x-*`` attributes for raw author markup; this private clone keeps the
+        original typed-policy boundary intact.
+        """
+        clone = object.__new__(_NativeElement)
+        clone.tag = self.tag
+        clone.children = self.children
+        clone.attributes = attributes
+        clone.browser_demands = self.browser_demands
+        return clone
 
     def to_element_node(self, child_nodes: tuple[Node, ...]) -> ElementNode:
         return ElementNode(

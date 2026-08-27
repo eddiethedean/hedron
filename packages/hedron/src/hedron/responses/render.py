@@ -161,6 +161,7 @@ def render_component_response(
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
     allow_missing_target: bool = False,
+    browser_closure: object | None = None,
     _authorized_htmx_target: str | None = None,
 ) -> ComponentResponse:
     from fastapi import HTTPException
@@ -228,10 +229,46 @@ def render_component_response(
         finally:
             reset_htmx_eval_allowed(eval_token)
 
+    if browser_closure is not None:
+        from dataclasses import replace
+
+        from hedron_core.alpine import BrowserPlanClosure, BrowserPlanError
+
+        if not isinstance(browser_closure, BrowserPlanClosure):
+            raise TypeError("browser_closure must be a BrowserPlanClosure")
+        if selected_mode is RenderMode.PAGE:
+            try:
+                result.browser_plan.assert_subset_of(browser_closure.document_plan)
+            except BrowserPlanError as exc:
+                raise HTTPException(
+                    status_code=500,
+                    detail={"code": exc.code, "message": str(exc)},
+                ) from exc
+            result = replace(result, browser_plan=browser_closure.document_plan)
+        else:
+            try:
+                browser_closure.assert_fragment_subset(result.browser_plan)
+            except BrowserPlanError as exc:
+                raise HTTPException(
+                    status_code=500,
+                    detail={
+                        "code": "HED-BROWSER-0671",
+                        "message": str(exc),
+                    },
+                ) from exc
+
     if request is not None:
         result = _attach_manifest_assets(result, request)
 
     headers = dict(result.headers)
+    browser_plan = getattr(result, "browser_plan", None)
+    if browser_plan is not None and not getattr(browser_plan, "feature_off", True):
+        # The browser sends this fingerprint on subsequent HTMX requests.  Exposing
+        # it on the response makes the document-plan identity observable to adapters,
+        # traces, and reverse proxies without allowing a fragment to install assets.
+        fingerprint = getattr(browser_plan, "fingerprint", "")
+        if fingerprint:
+            headers.setdefault("X-Hedron-Browser-Plan", str(fingerprint))
     if policy is not None:
         headers.update(policy.response_headers(authenticated=authenticated))
     if extra_headers:
@@ -247,6 +284,11 @@ def render_component_response(
     else:
         # Request-less PAGE paths still need extension order (#55).
         html_text = _ensure_htmx_asset(html_text, selected_mode, policy=policy)
+        from hedron_core.page_assets import inject_alpine_plan
+
+        html_text = inject_alpine_plan(
+            html_text, selected_mode, getattr(result, "browser_plan", None)
+        )
         html_text = _inject_htmx_extension_assets(
             html_text, request=None, plan=getattr(result, "htmx_plan", None)
         )

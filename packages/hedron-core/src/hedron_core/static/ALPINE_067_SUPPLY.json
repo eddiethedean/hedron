@@ -1,0 +1,35 @@
+{
+  "schema": "hedron.browser-supply/1",
+  "phase": "0.67",
+  "upstream": "Alpine.js",
+  "version": "3.16.3",
+  "license": "MIT",
+  "artifact_policy": "same-origin-vendored-only",
+  "packages": {
+    "@alpinejs/csp": "sha512-eqz6rpWDXuJOGp3YvsXQqZljjBz7ZWAkEmJUt3zTJyK9SEjUcInfOx7sRLzEUlrU+o9r2UhxCVhFBc5eJAUMdA==",
+    "@alpinejs/anchor": "sha512-l53MqW/ZNzR+0jmQ6WhRWEb0K3ZxXhWxgjnLTA+GDX99wCO47lYaD8SIPjxXRARfcrRKPzrpj1llKa0pfwg1kw==",
+    "@alpinejs/collapse": "sha512-ekH5VBTpMBNnffAfvL+3mqFLIWNW4bUmCExEl+1WdGPewtVYBI2kMWNd2lVOsrvsDRSij7VGmAG0AK5s8WD03g==",
+    "@alpinejs/focus": "sha512-MwEeux0W+/DP4B3FyNHPs+kzqMmgfWRf25WsJLBH1kahBqiVHNLewSJotbO+9345A8WsHz3yx8XkaeNnepDv3Q==",
+    "@alpinejs/intersect": "sha512-hGiwxwfuRjiYpxnuZOD5ymQAPhyxspVfhwuSEg/TdJhfqmfacJd4Z42LIKIdXoDE8JaexXvrUeg5MBxzLVgMmQ==",
+    "@alpinejs/mask": "sha512-BKu3IT4kk1GqgH8Lsn8ekV6nrbbMJgjOuI6zC+rJ+m/iPxBstH80ELauD23a7OiJAVQZjdS+lmYFfCVAbk3Rqg==",
+    "@alpinejs/morph": "sha512-JUrZ9tCXTgdQRoHAIdCDzdrkyEC8ffXwFlynEQ7it0jFy2UW4X0jpcRRBUhvyD94OiMpN6bd82eWhd+3PaqP+g==",
+    "@alpinejs/persist": "sha512-VyhG3C1CKTvGwHQICw1GLfqIuUt++q54oSRGstX+Y30yjj+JK6HrWj50yzAS+C2K8SXnR99ipY6SQevLaHAgog==",
+    "@alpinejs/resize": "sha512-3GG13wnOqdYduvT1DPpdJolY254cT8eHw32bx3Ibay2v9HnPzRTDZ9BiZe4iI+1rEcH4E6IKsM7RsEjAaSO0Og==",
+    "@alpinejs/sort": "sha512-LEmI3oE+oIrWmAWoA4PhkA0/kvbrlAr5hBrAvreWU63U4oleTDpgp0LS0qzxBMLOzoEJKwupWuq9l2j6fz2erg==",
+    "@alpinejs/ui": "sha512-+XqQcRijbRZopSQLZJsFlmILB73E5k7fmGv4eesk3wOHZ+jAZ3s0IyXASGT+gpH8Qi7+wSNMI2V9QVegB93AQA=="
+  },
+  "files": {
+    "alpine/csp-3.16.3.js": "sha256-0de89ad5a626c023982c2ed7051ef5fd3cbfa22d012de81fa19005c811bfad4d",
+    "alpine/anchor-3.16.3.js": "sha256-ab491df26e53b7ff6e502e0fa403b1960ce742a1e4498f209d8247ecf3e9e486",
+    "alpine/collapse-3.16.3.js": "sha256-c7661d4e2cf0465e3cd693190debb5f592ac72dcc4cfe650581273767558b27b",
+    "alpine/focus-3.16.3.js": "sha256-ea7e215444f5110619549621cd0760cedfe273f708b144d4e658a87b702555f9",
+    "alpine/intersect-3.16.3.js": "sha256-f499948b46085d9de5654785a7325470ac0b2baff5e182264cbfab45ed59a76e",
+    "alpine/mask-3.16.3.js": "sha256-0be4ba74ad36b53b4adc1dcb32c2273f982ad2175c0a1b54120ca44c2d7839f6",
+    "alpine/morph-3.16.3.js": "sha256-40741b6d946e9c7e01787d8fefead1c1537a20cf7203726be648cda9d2c9f375",
+    "alpine/persist-3.16.3.js": "sha256-a5dcd888712ef90663b9aedb131515344cf7a7842cd520e75240824a2d105da4",
+    "alpine/resize-3.16.3.js": "sha256-9974762fa9de4f9f3871f34b639fe2983ab90ca8d6d67a17cacedf85bd72c58e",
+    "alpine/sort-3.16.3.js": "sha256-94f402ccd0537f9aa356b9b6a4c9b3fa346886cfd07e09792d005b3061dadbac",
+    "alpine/ui-3.16.3.js": "sha256-b0f83ea7b822a1197ffdcdb50a58bbd7b6669dcfa6ef9fed88609b4b8e3f7dba"
+  },
+  "notes": "Exact dist/cdn.min.js files were reproduced locally from the pinned npm tarballs. File hashes, npm integrity, license, and provenance are recorded here; plugin and UI maturity remains evidence-gated."
+}
