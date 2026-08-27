@@ -471,8 +471,8 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     # Stringly configuration in Python is another opaque form.  It is not
     # rewritten because the surrounding authority cannot be inferred.
     string_paths = re.compile(
-        r"\b(app|router)\.(component|fragment|include_feature|screen|refreshable|command|"
-        r"form_command)\b"
+        r"\b(app|router|flask|blueprint)\.(component|fragment|include_feature|screen|"
+        r"refreshable|command|form_command)\b"
     )
     for node in ast.walk(tree):
         if not isinstance(node, ast.Constant) or not isinstance(node.value, str):
@@ -506,7 +506,8 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
 
 
 _TEXT_PATTERN = re.compile(
-    r"\b(app|router)\.(component|fragment|include_feature|screen|refreshable|command|form_command)\b"
+    r"\b(app|router|flask|blueprint)\.(component|fragment|include_feature|screen|"
+    r"refreshable|command|form_command)\b"
 )
 
 
@@ -639,6 +640,9 @@ def _replace_text(source: str, findings: Iterable[ApiMigrationFinding] = ()) -> 
         "app.command": "app.action",
         "app.form_command": "app.action",
         "router.component": "router.view",
+        "flask.component": "flask.view",
+        "blueprint.component": "blueprint.view",
+        "blueprint.include_feature": "blueprint.include",
     }
     allowed = {
         item.old_path: item.replacement for item in findings if _replacement_for_finding(item)

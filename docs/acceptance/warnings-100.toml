@@ -17,6 +17,42 @@ documentation = "docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md"
 fixture = "tests/upgrade/shared.py"
 
 [[warning]]
+code = "HED-MIGRATE-0679"
+old_path = "flask.component"
+replacement = "flask.view"
+owner = "hedron-flask"
+first_warning_version = "0.67"
+removal_version = "1.0"
+confidence = "complete"
+automation_status = "automatic"
+documentation = "docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md"
+fixture = "tests/upgrade/phase_1_0/transitional/flask_component.py"
+
+[[warning]]
+code = "HED-MIGRATE-0680"
+old_path = "blueprint.component"
+replacement = "blueprint.view"
+owner = "hedron-flask"
+first_warning_version = "0.67"
+removal_version = "1.0"
+confidence = "complete"
+automation_status = "automatic"
+documentation = "docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md"
+fixture = "tests/upgrade/phase_1_0/transitional/blueprint_component.py"
+
+[[warning]]
+code = "HED-MIGRATE-0681"
+old_path = "blueprint.include_feature"
+replacement = "blueprint.include"
+owner = "hedron-flask"
+first_warning_version = "0.67"
+removal_version = "1.0"
+confidence = "complete"
+automation_status = "automatic"
+documentation = "docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md"
+fixture = "tests/upgrade/phase_1_0/transitional/blueprint_include_feature.py"
+
+[[warning]]
 code = "HED-MIGRATE-0675"
 old_path = "app.screen"
 replacement = "app.page"
