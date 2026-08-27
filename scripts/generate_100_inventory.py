@@ -158,6 +158,15 @@ def _tracked_artifacts(root: Path) -> tuple[Path, ...]:
     return tuple(paths)
 
 
+def _tracked_files(root: Path) -> tuple[Path, ...]:
+    """Return every baseline file used for the reproducibility digest."""
+    paths: list[Path] = []
+    for path in sorted(root.rglob("*")):
+        if path.is_file() and not any(part in SKIP_DIRS for part in path.relative_to(root).parts):
+            paths.append(path.relative_to(root))
+    return tuple(paths)
+
+
 def _git_baseline(tag: str) -> tuple[Path, str, tempfile.TemporaryDirectory[str]]:
     try:
         commit = subprocess.check_output(
@@ -306,7 +315,7 @@ def _write_stable_inventory(
 def _write_baseline(
     path: Path, *, baseline: str, commit: str, root: Path, counts: dict[str, int]
 ) -> None:
-    files = _tracked_artifacts(root)
+    files = _tracked_files(root)
     digest = hashlib.sha256()
     for relative in files:
         digest.update(relative.as_posix().encode("utf-8"))
@@ -322,7 +331,7 @@ def _write_baseline(
         "generation": {
             "command": "python scripts/generate_100_inventory.py --baseline v0.67.0",
             "non_executing": True,
-            "tracked_artifact_digest": "sha256(path + bytes, sorted)",
+            "tracked_file_digest": "sha256(path + bytes, sorted)",
         },
         "target": "v1.0.0",
         "release_cut_satisfied": False,

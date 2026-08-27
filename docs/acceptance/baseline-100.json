@@ -4,7 +4,7 @@
   "generation": {
     "command": "python scripts/generate_100_inventory.py --baseline v0.67.0",
     "non_executing": true,
-    "tracked_artifact_digest": "sha256(path + bytes, sorted)"
+    "tracked_file_digest": "sha256(path + bytes, sorted)"
   },
   "inventory_counts": {
     "public": {
@@ -20,7 +20,7 @@
   "phase": "1.0",
   "release_cut_satisfied": false,
   "schema": "hedron.phase-1.0-baseline/1",
-  "source_digest": "928f8e5badbf3b3cb9182627dacc2eef22b76fe1650345634f4a1d00ba639a8d",
+  "source_digest": "3cd7992d800f889088a257b43c400d9d48f17a792c6f8db486f7d2e0175979e1",
   "status": "Generated; reconciliation and release evidence pending",
   "target": "v1.0.0"
 }
