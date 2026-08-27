@@ -28,7 +28,7 @@ Pin and maturity follow the living **0.66.x** train; 0.55 workflow symbols remai
 ## Example
 
 ```python
-from hedron import Hedron, Stack, Text
+from hedron import Hedron, Page, Stack, Text
 from hedron.workflow import WorkflowManifest
 
 app = Hedron(title="Workflows", security="standard", session_secret="replace-me", explorer="off")
@@ -39,11 +39,14 @@ manifest = WorkflowManifest(
 )
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
-    return Stack(
-        Text(f"Workflow: {manifest.app_id}"),
-        Text("Use workflow helpers for upgradeable, capability-aware actions."),
+    return Page(
+        Stack(
+            Text(f"Workflow: {manifest.app_id}"),
+            Text("Use workflow helpers for upgradeable, capability-aware actions."),
+        ),
+        title="Home",
     )
 ```
 

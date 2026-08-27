@@ -28,19 +28,19 @@ their first release.
 ## Example
 
 ```python
-from hedron import Hedron
+from hedron import Hedron, Page
 from hedron.security_plane import RequestBudget, RequestBudgetLimits, SecurityContext
 
 app = Hedron(title="Admin", security="standard", session_secret="replace-me", explorer="off")
 
 
-@app.screen("/", title="Home")
+@app.page("/")
 def home():
     # Opt-in building blocks for policy composition / diagnostics.
     ctx = SecurityContext(application_id="admin", profile_name="standard")
     budget = RequestBudget(limits=RequestBudgetLimits(body_bytes=1_000_000))
     _ = (ctx, budget)
-    return "Security plane imports are available for policy composition."
+    return Page("Security plane imports are available for policy composition.", title="Home")
 ```
 
 Prefer the [security guide](../guides/security.md) for CSRF profiles and headers.

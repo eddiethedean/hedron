@@ -152,7 +152,7 @@ auth = SessionAuthFlow(
     rate_limit=RateLimitPolicy(limit=20, window_seconds=60.0),
     rotation="on_login",
 )
-app.include_feature(auth)
+app.include(auth)
 # Use Depends(auth.current_principal()) on protected screens/commands
 ```
 

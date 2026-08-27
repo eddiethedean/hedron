@@ -45,7 +45,7 @@ class Filters(BaseModel):
     q: str = ""
     limit: int = 50
 
-@app.refreshable("/items")
+@app.view("/items")
 def items(filters: Annotated[Filters, ViewParams(source="query")]): ...
 ```
 
@@ -68,7 +68,7 @@ window.
 ```python
 from hedron import RequiresScopes
 
-@app.command("/reports/export", authorization=RequiresScopes("reports:read", "reports:export"))
+@app.action("/reports/export", authorization=RequiresScopes("reports:read", "reports:export"))
 def export_report(...): ...
 ```
 
