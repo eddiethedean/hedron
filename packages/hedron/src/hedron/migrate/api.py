@@ -344,6 +344,7 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     # application facade.  Keep this inference syntactic so checking remains
     # non-executing; unknown receivers continue to be reported conservatively.
     simulator_receivers: set[str] = set()
+    adapter_receivers: dict[str, str] = {}
     for node in ast.walk(tree):
         if not isinstance(node, (ast.Assign, ast.AnnAssign)):
             continue
@@ -351,10 +352,17 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
         if not isinstance(value, ast.Call):
             continue
         constructor = _dotted(value.func)
-        if constructor is None or constructor.rsplit(".", 1)[-1] != "SimApp":
-            continue
         targets = node.targets if isinstance(node, ast.Assign) else (node.target,)
-        simulator_receivers.update(target.id for target in targets if isinstance(target, ast.Name))
+        constructor_name = constructor.rsplit(".", 1)[-1] if constructor else ""
+        if constructor_name == "SimApp":
+            simulator_receivers.update(
+                target.id for target in targets if isinstance(target, ast.Name)
+            )
+        if constructor_name in {"HedronFlask", "HedronBlueprint"}:
+            adapter = "flask" if constructor_name == "HedronFlask" else "blueprint"
+            adapter_receivers.update(
+                {target.id: adapter for target in targets if isinstance(target, ast.Name)}
+            )
     out.extend(_import_findings(tree, display_path=display_path, records=records))
     seen.update((item.line, item.column - 1, item.old_path) for item in out)
 
@@ -421,6 +429,12 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     for node in ast.walk(tree):
         if isinstance(node, ast.Call):
             dotted = _dotted(node.func)
+            if isinstance(node.func, ast.Attribute):
+                receiver = node.func.value
+                if isinstance(receiver, ast.Name):
+                    adapter = adapter_receivers.get(receiver.id)
+                    if adapter is not None:
+                        dotted = f"{adapter}.{node.func.attr}"
             if dotted not in records:
                 continue
             if dotted.startswith("app.") and isinstance(node.func, ast.Attribute):
@@ -434,6 +448,12 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             for decorator in node.decorator_list:
                 dotted = _dotted(decorator)
+                if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Attribute):
+                    receiver = decorator.func.value
+                    if isinstance(receiver, ast.Name):
+                        adapter = adapter_receivers.get(receiver.id)
+                        if adapter is not None:
+                            dotted = f"{adapter}.{decorator.func.attr}"
                 if dotted in records:
                     if dotted.startswith("app.") and isinstance(decorator, ast.Attribute):
                         receiver = decorator.value
