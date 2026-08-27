@@ -400,8 +400,17 @@ def _check_task_inventory(task_inventory: dict[str, object], baseline_commit: st
         interfaces.add(interface)
         if str(row.get("kind", "")) not in allowed_kinds:
             errors.append(f"task inventory {task} has unknown kind")
-        if not str(row.get("source", "")).strip() or not str(row.get("owner", "")).strip():
-            errors.append(f"task inventory {task} is missing source or owner")
+        if (
+            not str(row.get("source", "")).strip()
+            or not str(row.get("owner", "")).strip()
+            or not str(row.get("signature", "")).strip()
+        ):
+            errors.append(f"task inventory {task} is missing source, signature, or owner")
+        try:
+            if int(row.get("line", 0)) < 1:
+                errors.append(f"task inventory {task} has an invalid source line")
+        except (TypeError, ValueError):
+            errors.append(f"task inventory {task} has an invalid source line")
         if str(row.get("maturity", "")) not in allowed_maturity:
             errors.append(f"task inventory {task} has unknown maturity")
         if str(row.get("disposition", "")) != "package-native":

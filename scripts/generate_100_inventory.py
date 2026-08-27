@@ -299,9 +299,21 @@ def _public_task_rows(root: Path) -> tuple[dict[str, str], ...]:
             module = PACKAGE_IMPORTS[distribution] + ("." + module_suffix if module_suffix else "")
             source = path.relative_to(root).as_posix()
 
+            def signature(node: ast.AST, name: str) -> str:
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    result = f"({ast.unparse(node.args)})"
+                    if node.returns is not None:
+                        result += f" -> {ast.unparse(node.returns)}"
+                    return result
+                if isinstance(node, ast.ClassDef):
+                    bases = ", ".join(ast.unparse(base) for base in node.bases)
+                    return f"class {name}" + (f"({bases})" if bases else "")
+                return name
+
             def add(
                 name: str,
                 kind: str,
+                node: ast.AST,
                 *,
                 module_name: str = module,
                 source_path: str = source,
@@ -319,6 +331,8 @@ def _public_task_rows(root: Path) -> tuple[dict[str, str], ...]:
                         "interface": interface,
                         "kind": kind,
                         "source": source_path,
+                        "line": str(getattr(node, "lineno", 0)),
+                        "signature": signature(node, name),
                         "owner": owner,
                         "maturity": maturity,
                         # Task rows describe ownership, not a SemVer promise.
@@ -330,12 +344,12 @@ def _public_task_rows(root: Path) -> tuple[dict[str, str], ...]:
 
             for node in tree.body:
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    add(node.name, "function")
+                    add(node.name, "function", node)
                 elif isinstance(node, ast.ClassDef) and not node.name.startswith("_"):
-                    add(node.name, "class")
+                    add(node.name, "class", node)
                     for member in node.body:
                         if isinstance(member, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                            add(f"{node.name}.{member.name}", "method")
+                            add(f"{node.name}.{member.name}", "method", member)
     return tuple(sorted(rows_by_task.values(), key=lambda row: (row["task"], row["source"])))
 
 
@@ -360,6 +374,8 @@ def _write_task_inventory(path: Path, *, baseline: str, commit: str, root: Path)
                 f"interface = {_toml_string(row['interface'])}",
                 f"kind = {_toml_string(row['kind'])}",
                 f"source = {_toml_string(row['source'])}",
+                f"line = {row['line']}",
+                f"signature = {_toml_string(row['signature'])}",
                 f"owner = {_toml_string(row['owner'])}",
                 f"maturity = {_toml_string(row['maturity'])}",
                 f"disposition = {_toml_string(row['disposition'])}",
