@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from importlib.metadata import version
+import tomllib
 from pathlib import Path
 
 import hedron_elements
@@ -12,7 +12,12 @@ from hedron_elements.plugin import PLUGIN_META, register
 
 
 def test_version_and_exports() -> None:
-    assert hedron_elements.__version__ == version("hedron-elements")
+    package = tomllib.loads(
+        (Path(__file__).resolve().parents[2] / "packages/hedron-elements/pyproject.toml").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert hedron_elements.__version__ == package["project"]["version"]
     assert Example is not None
 
 

@@ -27,7 +27,7 @@ def test_action_idempotency_skips_duplicate_post() -> None:
     def home() -> Text:
         return Text("home")
 
-    @app.action("/pay", methods=["POST"], idempotency="required")
+    @app.action("/pay", method="POST", idempotency="required")
     def pay() -> Text:
         calls["n"] += 1
         return Text("paid")
@@ -57,7 +57,7 @@ def test_action_idempotency_aborts_on_handler_exception() -> None:
     def home() -> Text:
         return Text("home")
 
-    @app.action("/fail", methods=["POST"], idempotency="required")
+    @app.action("/fail", method="POST", idempotency="required")
     def fail() -> Text:
         calls["n"] += 1
         raise RuntimeError("pay boom")
@@ -83,7 +83,7 @@ def test_action_idempotency_required_without_key_raises() -> None:
     def home() -> Text:
         return Text("home")
 
-    @app.action("/need-key", methods=["POST"], idempotency="required")
+    @app.action("/need-key", method="POST", idempotency="required")
     def need_key() -> Text:
         return Text("ok")
 

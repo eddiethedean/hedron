@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import re
+from pathlib import Path
 
 import django
 import pytest
@@ -16,6 +18,56 @@ from hedron_core.icons import clear_icons_for_tests
 from hedron_core.jobs import reset_jobs_for_tests
 from hedron_core.plugins import reset_explorer_panels_for_tests
 from hedron_core.prepare import reset_prepare_for_tests
+
+# These tests exercise the pre-1.0 route vocabulary itself.  They remain
+# valuable when run against the immutable v0.67 baseline, but are not tests of
+# the 1.0 contract: the corresponding methods are intentionally absent.  Keep
+# the retirement policy in the test harness so the source package never grows
+# compatibility shims just to satisfy historical fixtures.
+_REMOVED_API = re.compile(
+    r"\b(?:app|router|ui|hedron|explicit|bundled|unmodeled|modeled|"
+    r"region_app|handle_app)\.(?:component|fragment|refreshable|command|"
+    r"form_command|include_feature)\b"
+)
+_RETIREMENT_EXCLUDES = frozenset(
+    {
+        "test_cli_check_compat.py",
+        "test_migrate_api_100.py",
+    }
+)
+_RETIREMENT_MODULES = frozenset(
+    {
+        "test_compat_050.py",
+        "test_edron_phase09_packet.py",
+        "test_phase042_packet.py",
+        "test_pkg_053.py",
+        "test_pkg_054.py",
+        "test_pkg_055.py",
+        "test_regress_050.py",
+        "test_screen_058.py",
+    }
+)
+
+
+def _is_pre_one_api_module(path: Path) -> bool:
+    """Return whether a test module targets an API removed by Hedron 1.0."""
+    if "phase_1_0" in path.parts or "phase_1_0" in path.name:
+        return False
+    if path.name in _RETIREMENT_EXCLUDES:
+        return False
+    if path.name in _RETIREMENT_MODULES:
+        return True
+    if "upgrade" in path.parts and path.name.startswith("test_0_"):
+        return True
+    try:
+        source = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return False
+    # SimApp deliberately retains its own fragment vocabulary; these browser
+    # and simulator tests are package-native, not Hedron compatibility tests.
+    if "SimApp" in source:
+        return False
+    return bool(_REMOVED_API.search(source))
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -166,6 +218,29 @@ def pytest_configure(config: pytest.Config) -> None:
     from tests.browser._playwright import install_reuse_patches
 
     install_reuse_patches()
+
+
+def pytest_collection_modifyitems(
+    config: pytest.Config, items: list[pytest.Item]
+) -> None:
+    """Retire 0.x API fixtures when the suite is run against the 1.0 train.
+
+    The same test tree is used by the immutable 0.67 bridge job, where these
+    tests continue to execute.  On 1.0 they are explicit skips rather than
+    failures, while canonical phase-1.0 fixtures remain fully active.
+    """
+    del config
+    try:
+        from hedron import __version__
+    except ImportError:
+        return
+    if not str(__version__).startswith("1."):
+        return
+    reason = "historical 0.x API fixture retired on the Hedron 1.0 canonical surface"
+    for item in items:
+        path = Path(str(item.path))
+        if _is_pre_one_api_module(path):
+            item.add_marker(pytest.mark.skip(reason=reason))
 
 
 def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:

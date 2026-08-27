@@ -5,6 +5,7 @@ from __future__ import annotations
 import tomllib
 from pathlib import Path
 
+from hedron.plugins import compatible_hedron_version
 from hedron_core.plugins import PluginContext, reset_explorer_panels_for_tests
 from hedron_sample_kit.plugin import PLUGIN_META, register
 
@@ -22,4 +23,6 @@ def test_sample_kit_registers_explorer_panel() -> None:
 def test_sample_kit_meta_pins_living_train() -> None:
     # Compatibility floor for the exemplar plugin.
     release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
-    assert str(release["development_version"]).rsplit(".", 1)[0] in PLUGIN_META.hedron_version
+    assert compatible_hedron_version(
+        PLUGIN_META.hedron_version, str(release["development_version"])
+    )

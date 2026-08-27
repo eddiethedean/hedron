@@ -11,10 +11,23 @@ import sys
 import tomllib
 from pathlib import Path
 
-from hedron_core.migration import PUBLIC_FUTURE_WARNINGS
-
 ROOT = Path(__file__).resolve().parents[1]
 ACCEPTANCE = ROOT / "docs" / "acceptance"
+
+# Keep the documented ``python scripts/check_100.py`` invocation usable from a
+# clean source checkout.  The checker is a Stage-0 repository tool and must not
+# require an editable install merely to validate the packet.  Insert the source
+# roots before importing runtime metadata so the checker validates the same
+# source tree it is checking rather than an unrelated installed version.
+for _source_root in (
+    ROOT / "packages" / "hedron-core" / "src",
+    ROOT / "packages" / "hedron" / "src",
+):
+    if _source_root.is_dir() and str(_source_root) not in sys.path:
+        sys.path.insert(0, str(_source_root))
+
+from hedron_core.migration import PUBLIC_FUTURE_WARNINGS  # noqa: E402
+
 GATE_PATH = ACCEPTANCE / "release-gate-1.0.toml"
 CONTRACT_PATH = ACCEPTANCE / "one-zero-cut-contract.toml"
 BOM_PATH = ACCEPTANCE / "compatibility-bom-067.toml"
