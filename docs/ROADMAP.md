@@ -6867,10 +6867,11 @@ planning baseline and required predecessor. D-117 turns the D-114–D-116 archit
 freeze into an executable cut packet: the [implementation plan](implementation/HEDRON_1_0.md),
 [acceptance plan](acceptance/RELEASE_1_0.md), [machine release gate](acceptance/release-gate-1.0.toml),
 [cut contract](acceptance/one-zero-cut-contract.toml), and
-[upgrade fixture ledger](acceptance/upgrade-fixtures-1.0.md). This refinement changes no runtime,
-package version, maturity classifier, or release claim. `ENTRY-100` remains Planned and blocks
-removal work until the generated 0.67 public/task/artifact inventory is reconciled with the warning
-registry and the enumerated stable 1.0 inventory is frozen.
+[upgrade fixture ledger](acceptance/upgrade-fixtures-1.0.md). The refinement itself changes no
+package version, maturity classifier, or release claim; the implementation records one
+compatibility-preserving authorization correction explicitly. `ENTRY-100` remains Planned and
+blocks removal work until the generated 0.67 public/task/artifact inventory is reconciled with the
+warning registry and the enumerated stable 1.0 inventory is frozen.
 
 Hedron 1.0 makes the previewed unified interaction model canonical and enforces one stable public
 path per developer task and abstraction level. Function handlers are the only route-authoring
