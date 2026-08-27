@@ -219,10 +219,62 @@ def _package_disposition(distribution: str) -> str:
     return "coordinated-cut" if distribution in COORDINATED else "independent-satellite"
 
 
+def _package_maturity(root: Path, distribution: str) -> str:
+    """Read a package's declared maturity from the immutable baseline metadata.
+
+    Inventory generation must not import package code or consult the moving
+    checkout.  The PEP 621 classifier is therefore the only package-level
+    maturity authority available to this non-executing generator.
+    """
+    path = root / "packages" / distribution / "pyproject.toml"
+    try:
+        project = tomllib.loads(path.read_text(encoding="utf-8")).get("project", {})
+    except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError):
+        return "experimental"
+    classifiers = project.get("classifiers", ()) if isinstance(project, dict) else ()
+    values = {str(item) for item in classifiers} if isinstance(classifiers, list) else set()
+    if "Development Status :: 5 - Production/Stable" in values:
+        return "stable"
+    if "Development Status :: 4 - Beta" in values:
+        return "beta"
+    if "Development Status :: 3 - Alpha" in values:
+        return "experimental"
+    return "experimental"
+
+
+def _artifact_classification(root: Path, relative: Path) -> tuple[str, str, str]:
+    """Return ``(owner, maturity, disposition)`` for an enumerated artifact.
+
+    The public inventory includes source, documentation, examples, tooling,
+    and CI artifacts so each row needs an explicit non-unknown owner.  These
+    categories are intentionally conservative: only a package's declared
+    source tree can be package-native; repository support material is not
+    promoted into the SemVer API promise.
+    """
+    parts = relative.parts
+    if parts and parts[0] == "packages" and len(parts) >= 2:
+        distribution = parts[1]
+        maturity = _package_maturity(root, distribution)
+        if len(parts) >= 3 and parts[2] == "src":
+            return distribution, maturity, "package-native"
+        return distribution, maturity, "package-metadata"
+    if parts and parts[0] == "docs":
+        return "docs", "internal", "documentation"
+    if parts and parts[0] == "examples":
+        return "examples", "beta", "maintained-example"
+    if parts and parts[0] == "tests":
+        return "quality", "internal", "verification"
+    if parts and parts[0] == "scripts":
+        return "tooling", "beta", "tooling"
+    if parts and parts[0] == ".github":
+        return "release", "internal", "ci"
+    return "release", "internal", "repository-support"
+
+
 def _write_public_inventory(
     path: Path, *, baseline: str, commit: str, root: Path
 ) -> dict[str, int]:
-    packages: list[tuple[str, str, str, tuple[str, ...], dict[str, str]]] = []
+    packages: list[tuple[str, str, str, str, tuple[str, ...], dict[str, str]]] = []
     for distribution in sorted(PACKAGE_IMPORTS):
         init = _package_init(root, distribution)
         if init is None:
@@ -232,6 +284,7 @@ def _write_public_inventory(
                 distribution,
                 PACKAGE_IMPORTS[distribution],
                 _version(init),
+                _package_maturity(root, distribution),
                 _read_all(init),
                 _tiers(root, distribution),
             )
@@ -240,13 +293,14 @@ def _write_public_inventory(
     lines = [
         "schema_version = 1",
         'phase = "1.0"',
-        'status = "Generated; W0 reconciliation pending"',
+        'status = "Generated; machine classification complete; W0 task reconciliation pending"',
         f"baseline = {_toml_string(baseline)}",
         f"baseline_commit = {_toml_string(commit)}",
-        'source_rule = "Generated from an immutable baseline; dispositions require review."',
+        'source_rule = "Generated from an immutable baseline; every row has an '
+        'explicit owner and disposition."',
         "",
     ]
-    for distribution, import_name, version, exports, tiers in packages:
+    for distribution, import_name, version, package_maturity, exports, tiers in packages:
         lines.extend(
             [
                 "[[package]]",
@@ -258,31 +312,41 @@ def _write_public_inventory(
             ]
         )
         for name in exports:
+            maturity = tiers.get(name, package_maturity)
+            disposition = {
+                "stable": "stable",
+                "beta": "beta" if distribution == "hedron" else "package-native",
+                "experimental": "experimental",
+            }.get(maturity, "experimental")
             lines.extend(
                 [
                     "[[surface]]",
                     f"task = {_toml_string('export:' + import_name + '.' + name)}",
                     f"canonical = {_toml_string(import_name + '.' + name)}",
                     f"owner = {_toml_string(distribution)}",
-                    f"disposition = {_toml_string(tiers.get(name, 'unclassified'))}",
-                    f"maturity = {_toml_string(tiers.get(name, 'unclassified'))}",
+                    f"disposition = {_toml_string(disposition)}",
+                    f"maturity = {_toml_string(maturity)}",
                     "",
                 ]
             )
     for artifact in artifacts:
+        owner, maturity, disposition = _artifact_classification(root, artifact)
         lines.extend(
             [
                 "[[artifact]]",
+                f"task = {_toml_string('artifact:' + artifact.as_posix())}",
                 f"path = {_toml_string(artifact.as_posix())}",
                 f"kind = {_toml_string(artifact.suffix.lower().lstrip('.') or 'extensionless')}",
-                'disposition = "unclassified"',
+                f"owner = {_toml_string(owner)}",
+                f"maturity = {_toml_string(maturity)}",
+                f"disposition = {_toml_string(disposition)}",
                 "",
             ]
         )
     path.write_text("\n".join(lines), encoding="utf-8")
     return {
         "packages": len(packages),
-        "symbols": sum(len(item[3]) for item in packages),
+        "symbols": sum(len(item[4]) for item in packages),
         "artifacts": len(artifacts),
     }
 
@@ -290,7 +354,7 @@ def _write_public_inventory(
 def _write_stable_inventory(
     path: Path, *, baseline: str, commit: str, root: Path
 ) -> dict[str, int]:
-    packages: list[tuple[str, str, str, tuple[str, ...], dict[str, str]]] = []
+    packages: list[tuple[str, str, str, str, tuple[str, ...], dict[str, str]]] = []
     for distribution in sorted(PACKAGE_IMPORTS):
         init = _package_init(root, distribution)
         if init is None:
@@ -300,6 +364,7 @@ def _write_stable_inventory(
                 distribution,
                 PACKAGE_IMPORTS[distribution],
                 _version(init),
+                _package_maturity(root, distribution),
                 _read_all(init),
                 _tiers(root, distribution),
             )
@@ -307,14 +372,14 @@ def _write_stable_inventory(
     lines = [
         "schema_version = 1",
         'phase = "1.0"',
-        'status = "Generated; stability and task reconciliation pending W0"',
+        'status = "Generated; machine classification complete; stable task review pending W0"',
         f"baseline = {_toml_string(baseline)}",
         f"baseline_commit = {_toml_string(commit)}",
-        'stable_rule = "Every export is enumerated; reviewed rows enter the '
-        'SemVer stable promise."',
+        'stable_rule = "Every export is enumerated; only rows explicitly '
+        'classified stable enter the SemVer promise."',
         "",
     ]
-    for distribution, import_name, version, exports, tiers in packages:
+    for distribution, import_name, version, package_maturity, exports, tiers in packages:
         lines.extend(
             [
                 "[[package]]",
@@ -326,8 +391,12 @@ def _write_stable_inventory(
             ]
         )
         for name in exports:
-            maturity = tiers.get(name, "unclassified")
-            disposition = "stable" if maturity == "stable" else "needs-review"
+            maturity = tiers.get(name, package_maturity)
+            disposition = {
+                "stable": "stable",
+                "beta": "beta" if distribution == "hedron" else "package-native",
+                "experimental": "experimental",
+            }.get(maturity, "experimental")
             lines.extend(
                 [
                     "[[symbol]]",
@@ -338,7 +407,7 @@ def _write_stable_inventory(
                 ]
             )
     path.write_text("\n".join(lines), encoding="utf-8")
-    return {"packages": len(packages), "symbols": sum(len(item[3]) for item in packages)}
+    return {"packages": len(packages), "symbols": sum(len(item[4]) for item in packages)}
 
 
 def _write_baseline(

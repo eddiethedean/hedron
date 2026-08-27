@@ -205,9 +205,7 @@ def _check_package_metadata() -> list[str]:
             and "hedron" in joined
             and (">=0.67" not in joined or "<2.0" not in joined)
         ):
-            errors.append(
-                f"{distribution}: Hedron dependency must explicitly span 0.67 and 1.x"
-            )
+            errors.append(f"{distribution}: Hedron dependency must explicitly span 0.67 and 1.x")
         module = distribution.replace("-", "_")
         init = ROOT / "packages" / distribution / "src" / module / "__init__.py"
         if not init.is_file():
@@ -235,6 +233,100 @@ def _check_maintained_consumers() -> list[str]:
             errors.append(
                 f"maintained consumer contains transitional API ({relative}): {details}{suffix}"
             )
+    return errors
+
+
+def _check_inventory_classification(
+    public_inventory: dict[str, object], stable_inventory: dict[str, object]
+) -> list[str]:
+    """Ensure generated W0 inventories have no silent/unknown rows.
+
+    The generator is intentionally conservative: non-root package exports are
+    package-native and repository artifacts are supporting material, not
+    automatically SemVer-stable.  This check protects that distinction and
+    verifies that the stable export enumeration covers the public export set.
+    """
+    errors: list[str] = []
+    allowed_maturity = {"stable", "beta", "experimental", "internal"}
+    allowed_dispositions = {
+        "stable",
+        "beta",
+        "experimental",
+        "package-native",
+        "coordinated-cut",
+        "independent-satellite",
+        "package-metadata",
+        "documentation",
+        "maintained-example",
+        "verification",
+        "tooling",
+        "ci",
+        "repository-support",
+    }
+    public_rows = public_inventory.get("surface")
+    public_artifacts = public_inventory.get("artifact")
+    stable_rows = stable_inventory.get("symbol")
+    if not isinstance(public_rows, list) or not isinstance(stable_rows, list):
+        return ["W0 inventories must contain [[surface]] and [[symbol]] rows"]
+    public_symbols: set[str] = set()
+    for row in public_rows:
+        if not isinstance(row, dict):
+            errors.append("public inventory contains a non-table surface row")
+            continue
+        canonical = str(row.get("canonical", ""))
+        if not canonical:
+            errors.append("public inventory surface is missing canonical identity")
+        else:
+            public_symbols.add(canonical)
+        if not str(row.get("owner", "")).strip():
+            errors.append(f"public inventory {canonical or '<unknown>'} is missing owner")
+        maturity = str(row.get("maturity", ""))
+        disposition = str(row.get("disposition", ""))
+        if maturity not in allowed_maturity:
+            errors.append(f"public inventory {canonical or '<unknown>'} has unknown maturity")
+        if disposition not in allowed_dispositions:
+            errors.append(f"public inventory {canonical or '<unknown>'} has unknown disposition")
+    if isinstance(public_artifacts, list):
+        for row in public_artifacts:
+            if not isinstance(row, dict):
+                errors.append("public inventory contains a non-table artifact row")
+                continue
+            identity = str(row.get("path", "<unknown>"))
+            for field in ("task", "owner", "maturity", "disposition"):
+                if not str(row.get(field, "")).strip():
+                    errors.append(f"public inventory artifact {identity} is missing {field}")
+            if str(row.get("maturity", "")) not in allowed_maturity:
+                errors.append(f"public inventory artifact {identity} has unknown maturity")
+            if str(row.get("disposition", "")) not in allowed_dispositions:
+                errors.append(f"public inventory artifact {identity} has unknown disposition")
+    else:
+        errors.append("public inventory must contain artifact rows")
+    stable_symbols: set[str] = set()
+    for row in stable_rows:
+        if not isinstance(row, dict):
+            errors.append("stable inventory contains a non-table symbol row")
+            continue
+        qualified = str(row.get("qualified", ""))
+        if not qualified:
+            errors.append("stable inventory symbol is missing qualified identity")
+        else:
+            stable_symbols.add(qualified)
+        if str(row.get("maturity", "")) not in {"stable", "beta", "experimental"}:
+            errors.append(f"stable inventory {qualified or '<unknown>'} has unknown maturity")
+        if str(row.get("disposition", "")) not in {
+            "stable",
+            "beta",
+            "experimental",
+            "package-native",
+        }:
+            errors.append(f"stable inventory {qualified or '<unknown>'} has unknown disposition")
+    if public_symbols != stable_symbols:
+        missing = sorted(public_symbols - stable_symbols)
+        extra = sorted(stable_symbols - public_symbols)
+        if missing:
+            errors.append(f"stable inventory omits public exports: {missing[:3]!r}")
+        if extra:
+            errors.append(f"stable inventory has unenumerated exports: {extra[:3]!r}")
     return errors
 
 
@@ -322,11 +414,11 @@ def check_plan() -> list[str]:
     registry_issues = PUBLIC_FUTURE_WARNINGS.validate(root=ROOT)
     errors.extend(f"warning registry: {issue}" for issue in registry_issues)
     removal_rows = removal_inventory.get("removal")
-    removal_codes = {
-        str(row.get("code"))
-        for row in removal_rows
-        if isinstance(row, dict) and row.get("code")
-    } if isinstance(removal_rows, list) else set()
+    removal_codes = (
+        {str(row.get("code")) for row in removal_rows if isinstance(row, dict) and row.get("code")}
+        if isinstance(removal_rows, list)
+        else set()
+    )
     if removal_codes != required_warning_codes:
         errors.append("removal inventory must contain exactly one row for each warning code")
     if baseline.get("baseline") != "v0.67.0" or baseline.get("release_cut_satisfied") is not False:
@@ -453,6 +545,7 @@ def check_plan() -> list[str]:
     errors.extend(_check_fixture_corpus())
     errors.extend(_check_package_metadata())
     errors.extend(_check_maintained_consumers())
+    errors.extend(_check_inventory_classification(public_inventory, stable_inventory))
 
     return errors
 
