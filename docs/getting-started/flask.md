@@ -8,7 +8,7 @@ the app process).
 Requires Python 3.11–3.14. See [Installation](installation.md).
 
 Flask supports pages, fragments, and CSRF. Progressive FastAPI facades
-(`@app.screen`, `form_command`, and related symbols) are FastAPI-only — see the
+(`@app.view`, `@app.action`, and related symbols) are FastAPI-only — see the
 host matrix on [What’s ready](../guides/whats-ready.md).
 
 ## Golden path (scaffold + Refresh)
@@ -138,7 +138,7 @@ Stay on Flask: extend the scaffold `HedronBlueprint` / `HedronFlask` using `view
 !!! warning "FastAPI-only continuation"
 
     [HTMX interactions](../guides/htmx-interactions.md) and
-    [Minimal form](../guides/minimal-form.md) assume `Hedron()` / `@app.refreshable` /
+    [Minimal form](../guides/minimal-form.md) assume `Hedron()` / `@app.view` /
     `status.refresh_button(...)` / `CsrfField()`. Use them after you switch hosts, not as the Flask
     next step.
 

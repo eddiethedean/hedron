@@ -2,7 +2,7 @@
 
 !!! note "FastAPI scaffold"
 
-    This page extends `@app.refreshable` from
+    This page extends `@app.view` from
     [Build your first app](../getting-started/quickstart.md). Flask and Django adapters
     keep their own `HedronBlueprint` / `@hedron_view` APIs — do not paste this onto an
     adapter scaffold.
@@ -19,7 +19,7 @@ templates, danger `Toast` dismiss) is documented on [Interaction API](../api/INT
 
 `hedron new` registered:
 
-- `@app.refreshable("/status")` as `status`
+- `@app.view("/status")` as `status`
 - `status()` on the home page
 - `status.refresh_button("Refresh status")`
 
@@ -63,7 +63,7 @@ A wrong `HX-Target` returns **403** by design.
     _NOTES: list[str] = []
 
 
-    @app.refreshable("/status")
+    @app.view("/status")
     def status():
         stamp = datetime.now(UTC).strftime("%H:%M:%S")
         return html.div(
@@ -73,7 +73,7 @@ A wrong `HX-Target` returns **403** by design.
         )
 
 
-    @app.refreshable("/notes-count")
+    @app.view("/notes-count")
     def notes():
         return html.div(
             Text(f"Notes saved: {len(_NOTES)}"),
@@ -106,7 +106,7 @@ Keep the existing `status` view. Add a **second** refreshable that counts notes 
 _NOTES: list[str] = []
 
 
-@app.refreshable("/notes-count")
+@app.view("/notes-count")
 def notes():
     return html.div(
         Text(f"Notes saved: {len(_NOTES)}"),
@@ -142,7 +142,7 @@ form in [Minimal form POST](minimal-form.md) that appends to `_NOTES` (same scaf
 
 | Contract | Responsibility |
 |---|---|
-| `@app.refreshable("/path")` | Registers a GET fragment view and returns a handle. |
+| `@app.view("/path")` | Registers a GET fragment view and returns a handle. |
 | `status()` | Renders the view (and its host) on the page. |
 | `status.refresh_button(...)` | Wires `hx-get` / `hx-target` / `hx-swap` from that handle. |
 
@@ -199,7 +199,7 @@ Confirm the host id in the page HTML if `#h-view-notes` does not match your buil
 
 ## When the interaction mutates state
 
-Use `@app.command` (or `@app.action(..., method="POST")`) for a mutation. Built-in
+Use `@app.action` for a mutation. Built-in
 security profiles validate CSRF on unsafe methods automatically after a safe GET seeds
 the cookie.
 

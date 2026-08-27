@@ -37,15 +37,15 @@ orders = DataWorkspace(
         can_edit=lambda: True,
     ),
 )
-app.include_feature(orders)
+app.include(orders)
 
 
-@app.command("/filter-orders")
+@app.action("/filter-orders")
 def filter_orders(payload: Selection):
     return Text(f"selected {len(payload.ids)}")
 
 
-app.include_feature(
+app.include(
     ChartInteraction(
         chart=orders.list_view,
         event="select",
@@ -62,7 +62,7 @@ class NoteIn(BaseModel):
     kind: Literal["work", "personal"] = "work"
 
 
-@app.command("/notes", fallback="/")
+@app.action("/notes", fallback="/")
 def add_note(data: Annotated[NoteIn, FormBody()]):
     return Text(data.title)
 

@@ -1,7 +1,7 @@
 # Forms and actions (advanced)
 
 Use this page when you need explicit region allowlists and `InteractionResult` fragments.
-For the golden-path form (`@app.command` + `CsrfField` + `save.form()`), start with
+For the golden-path form (`@app.action` + `CsrfField` + `save.form()`), start with
 [Minimal form POST](minimal-form.md) and the
 [Notes + SQLAlchemy recipe](../examples/notes-sqlalchemy.md).
 

@@ -91,7 +91,7 @@ def _complete_demo_job(job_id: str) -> None:
     _backend.mark(job_id, JobState.SUCCEEDED, result={"ok": True})
 
 
-@app.refreshable("/clock")
+@app.view("/clock")
 def clock():
     return clock_text()
 

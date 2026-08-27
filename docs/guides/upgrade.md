@@ -26,7 +26,7 @@ Checkout tip `v0.66.2` uses `uv sync`. From the public index, install
 [Hedron API](../api/HEDRON.md), and [Presentation](../api/PRESENTATION.md).
 
 1. Upgrade the application pin to `hedron>=0.66.2,<0.67`.
-2. Prefer progressive facades for new golden paths: `@app.screen`, `form_command`,
+2. Prefer progressive facades for new golden paths: `@app.page`, `@app.view`, and `@app.action`,
    `DataWorkspace.with_screen`, `TaskFlow`, `DashboardWorkspace`, `SessionAuthFlow`,
    `UploadFlow`, plus `DesignSystem` / `StyleRecipe` / `StyleScope` where styling applies.
 3. Keep labeled Advanced `@app.page` / explicit handle spellings when graduating or ejecting;
@@ -247,7 +247,7 @@ Hedron 0.46.x added opt-in package-native features that compile onto existing
 
 - `FeatureBundle` / `Hedron.include_feature` atomically register ordinary handles, components,
   scenarios, and stacked projections; they are not executors
-- `DataWorkspace` produces a beginner `app.include_feature(orders)` bundle over an explicit
+- `DataWorkspace` produces a beginner `app.include(orders)` bundle over an explicit
   `DataEditorSource` and `DataWorkspacePolicy`
 - `ChartInteraction` maps Supported `select` / `inspect` / `focus` / `reset` onto `ActionHandle`
   effects; `legend_filter` / `brush` / `drill_intent` stay Experimental
@@ -291,7 +291,7 @@ Hedron 0.46.x added opt-in package-native features that compile onto existing
 ## Behavioral notes (0.42 → 0.43)
 
 1. **Additive only.** `@app.fragment` and `@app.action` still return the original function.
-   New `@app.refreshable` / `@app.command` return handles.
+   New `@app.view` / `@app.action` return handles.
 2. **Refresh is not a full page reload.** Top-level `refresh()` compiles to bounded
    `HX-Trigger` events; it does not set `HX-Refresh`.
 3. **Generated ids are not rollback-stable.** Explicit `path=` / `key=` are the

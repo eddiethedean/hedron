@@ -65,5 +65,5 @@ Continue: [Interaction](../api/INTERACTION.md).
 
 ## Flask and Django
 
-Adapter hosts use `hedron_route` / `hedron_view` rather than `@app.refreshable`.
+Adapter hosts use `hedron_route` / `hedron_view` rather than FastAPI's `@app.view`.
 See [Flask](flask.md) and [Django](django.md).

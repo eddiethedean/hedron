@@ -17,7 +17,7 @@ MAX_BYTES = 64 * 1024
 ALLOWED = {".txt", ".csv"}
 
 
-@app.command("/upload", fallback="/")
+@app.action("/upload", fallback="/")
 async def upload(roster: UploadFile = File(...)) -> Page:
     name = roster.filename or "upload"
     suffix = "." + name.rsplit(".", 1)[-1].lower() if "." in name else ""

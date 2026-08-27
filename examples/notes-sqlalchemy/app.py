@@ -58,7 +58,7 @@ app = Hedron(
 )
 
 
-@app.refreshable("/notes")
+@app.view("/notes")
 def notes():
     with Session(engine) as db:
         rows = list(db.scalars(select(Note).order_by(Note.id.desc())).all())
@@ -80,7 +80,7 @@ def notes():
     return html.ul(*items)
 
 
-@app.command("/save", fallback="/")
+@app.action("/save", fallback="/")
 def save(data: Annotated[NoteIn, FormBody()]):
     normalized = data.body.strip()
     if not normalized:
@@ -94,7 +94,7 @@ def save(data: Annotated[NoteIn, FormBody()]):
     return refresh(notes)
 
 
-@app.command("/delete", fallback="/")
+@app.action("/delete", fallback="/")
 def delete(data: Annotated[DeleteNote, FormBody()]):
     with SessionLocal() as db:
         note = db.get(Note, data.note_id)

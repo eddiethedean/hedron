@@ -20,7 +20,7 @@ app = HedronWorkbench(
 )
 
 
-@app.refreshable("/status")
+@app.view("/status")
 def status():
     stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
@@ -30,7 +30,7 @@ def status():
     )
 
 
-@app.command("/ping", fallback="/")
+@app.action("/ping", fallback="/")
 def ping():
     return refresh(status).toast("pong")
 

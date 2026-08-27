@@ -69,7 +69,8 @@ See also [Security](security.md), [HTMX interactions](htmx-interactions.md),
 
 ## Day-one defaults
 
-1. Prefer `@app.screen` and documented facades over hand-wired `@app.page` unless you need
+1. Prefer the canonical `@app.page` / `@app.view` / `@app.action` roles over hand-wired
+   lower-level routes unless you need
    full `Page` control.
 2. Pin `hedron>=0.66.2,<0.67` (and matching host packages) in every environment.
 3. Keep Explorer off and `session_secret` from the environment in production.

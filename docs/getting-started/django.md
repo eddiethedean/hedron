@@ -9,7 +9,7 @@ mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
 Requires Python 3.11–3.14. See [Installation](installation.md).
 
 Django supports AppConfig, forms, and QuerySet DataSource. Progressive FastAPI
-facades (`@app.screen`, `form_command`, and related symbols) are FastAPI-only —
+facades (`@app.view`, `@app.action`, and related symbols) are FastAPI-only —
 see the host matrix on [What’s ready](../guides/whats-ready.md).
 
 ## Golden path (scaffold + Refresh)

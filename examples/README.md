@@ -11,7 +11,7 @@ on a clean venv — that is the polished first-success path.
 | [`theme-gallery/`](theme-gallery/) | FastAPI | Visual QA across common interfaces in forced light and dark modes |
 | [`chrome-zero-css/`](chrome-zero-css/) | FastAPI | Data Mover-class chrome from `Theme` + built-ins with no application CSS |
 | [`streamlit-migration/`](streamlit-migration/) | FastAPI | Runnable sales-dashboard migration with typed GET filters |
-| [`notes-sqlalchemy/`](notes-sqlalchemy/) | FastAPI | SQLite create / list / delete via `@app.refreshable` + `@app.command` |
+| [`notes-sqlalchemy/`](notes-sqlalchemy/) | FastAPI | SQLite create / list / delete via `@app.view` + `@app.action` |
 | [`session-auth/`](session-auth/) | FastAPI | Session login; `/` redirects to `/login` |
 | [`file-upload/`](file-upload/) | FastAPI | Multipart upload with size/type checks |
 | [`jobs-poll/`](jobs-poll/) | FastAPI | Supported job polling (`Poll` + status) |

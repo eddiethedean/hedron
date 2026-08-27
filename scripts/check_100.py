@@ -11,6 +11,8 @@ import sys
 import tomllib
 from pathlib import Path
 
+from hedron_core.migration import PUBLIC_FUTURE_WARNINGS
+
 ROOT = Path(__file__).resolve().parents[1]
 ACCEPTANCE = ROOT / "docs" / "acceptance"
 GATE_PATH = ACCEPTANCE / "release-gate-1.0.toml"
@@ -18,6 +20,19 @@ CONTRACT_PATH = ACCEPTANCE / "one-zero-cut-contract.toml"
 BOM_PATH = ACCEPTANCE / "compatibility-bom-067.toml"
 PREDECESSOR_GATE_PATH = ACCEPTANCE / "release-gate-0.67.toml"
 FIXTURE_ROOT = ROOT / "tests/upgrade/phase_1_0"
+MAINTAINED_CONSUMERS = (
+    "examples/connect-reference",
+    "examples/fastapi-pydantic",
+    "examples/file-upload",
+    "examples/live-interaction",
+    "examples/notes-sqlalchemy",
+    "examples/oidc",
+    "examples/package-workflows",
+    "examples/reference-app",
+    "examples/session-auth",
+    "examples/workbench-reference",
+    "packages/hedron/README.md",
+)
 
 COORDINATED_PACKAGES = (
     "hedron-core",
@@ -200,6 +215,29 @@ def _check_package_metadata() -> list[str]:
     return errors
 
 
+def _check_maintained_consumers() -> list[str]:
+    """Keep first-party maintained examples on the one-clear-way surface."""
+    for _source_root in (ROOT / "packages/hedron/src", ROOT / "packages/hedron-core/src"):
+        if str(_source_root) not in sys.path:
+            sys.path.insert(0, str(_source_root))
+    from hedron.migrate.api import scan_api
+
+    errors: list[str] = []
+    for relative in MAINTAINED_CONSUMERS:
+        path = ROOT / relative
+        if not path.exists():
+            errors.append(f"missing maintained consumer: {relative}")
+            continue
+        findings = scan_api(path).findings
+        if findings:
+            details = ", ".join(f"{item.old_path}@{item.line}" for item in findings[:3])
+            suffix = "..." if len(findings) > 3 else ""
+            errors.append(
+                f"maintained consumer contains transitional API ({relative}): {details}{suffix}"
+            )
+    return errors
+
+
 def check_plan() -> list[str]:
     errors: list[str] = []
     for relative in REQUIRED_FILES:
@@ -214,6 +252,7 @@ def check_plan() -> list[str]:
     bom = _toml(BOM_PATH)
     predecessor = _toml(PREDECESSOR_GATE_PATH)
     warning_inventory = _toml(ACCEPTANCE / "warnings-100.toml")
+    removal_inventory = _toml(ACCEPTANCE / "removal-inventory-100.toml")
     public_inventory = _toml(ACCEPTANCE / "public-inventory-100.toml")
     stable_inventory = _toml(ACCEPTANCE / "stable-inventory-100.toml")
     baseline = json.loads((ACCEPTANCE / "baseline-100.json").read_text(encoding="utf-8"))
@@ -280,6 +319,16 @@ def check_plan() -> list[str]:
     }
     if not required_warning_codes <= warning_codes:
         errors.append("warning inventory is missing the implemented warning floor")
+    registry_issues = PUBLIC_FUTURE_WARNINGS.validate(root=ROOT)
+    errors.extend(f"warning registry: {issue}" for issue in registry_issues)
+    removal_rows = removal_inventory.get("removal")
+    removal_codes = {
+        str(row.get("code"))
+        for row in removal_rows
+        if isinstance(row, dict) and row.get("code")
+    } if isinstance(removal_rows, list) else set()
+    if removal_codes != required_warning_codes:
+        errors.append("removal inventory must contain exactly one row for each warning code")
     if baseline.get("baseline") != "v0.67.0" or baseline.get("release_cut_satisfied") is not False:
         errors.append("baseline artifact must remain a draft against v0.67.0")
     baseline_commit = baseline.get("baseline_commit")
@@ -403,6 +452,7 @@ def check_plan() -> list[str]:
 
     errors.extend(_check_fixture_corpus())
     errors.extend(_check_package_metadata())
+    errors.extend(_check_maintained_consumers())
 
     return errors
 

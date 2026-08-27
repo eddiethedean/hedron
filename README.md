@@ -75,7 +75,7 @@ Pins and support status: [Current release](https://hedron.readthedocs.io/en/late
 
 CRUD, admin, dashboards, and forms as Python components on FastAPI — when you want HTMX fragment
 regions, CSRF defaults, and multi-worker job status **without** assembling a hand-rolled
-Jinja+HTMX stack. Prefer `@app.screen` for new apps.
+Jinja+HTMX stack. Prefer `@app.page`, `@app.view`, and `@app.action` for new apps.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.

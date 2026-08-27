@@ -92,7 +92,7 @@ parameters:
 |---|---|
 | `page(path, **kwargs)` | Canonical PAGE route; function returns one document tree |
 | `view(path, **kwargs)` | Canonical safe replaceable GET view; returns a `FragmentHandle` |
-| `action(path, **kwargs)` | Canonical action route; CSRF applies to unsafe methods |
+| `action(path, **kwargs)` | Canonical typed action; returns an `ActionHandle` and applies CSRF to unsafe methods |
 | `screen(path, *, title, **kwargs)` | 0.67 migration helper lowering to `Page` + `page` (returns `ScreenHandle`) |
 | `refreshable(path, **kwargs)` | 0.67 migration helper for `view`; returns a `FragmentHandle` |
 | `command(path, **kwargs)` | 0.67 migration helper for typed actions; returns an `ActionHandle` |
@@ -101,7 +101,8 @@ parameters:
 | `region(id, selector=None, description="")` | Declare a `FragmentRegion` (default selector `#{id}`) for `RefreshButton.for_region` / allowlists |
 | `fragment(path, region=..., regions=..., **kwargs)` | Compatibility alias of `component`; migrate to `view` |
 | `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
-| `include_feature(bundle, *, capabilities=None)` | Include one `FeatureBundle` / `FeatureProvider` before registry/catalog seal |
+| `include(bundle, *, capabilities=None)` | Canonical feature inclusion path; accepts one `FeatureBundle` / `FeatureProvider` before registry/catalog seal |
+| `include_feature(bundle, *, capabilities=None)` | 0.67 migration helper for `include` |
 | `include_router(...)` | Standard FastAPI router include |
 
 Canonical 1.0 HTMX uses `@app.page`, `@app.view`, and `@app.action`; `Interaction` and `Outcome`
@@ -144,7 +145,8 @@ see [Mutations](../guides/mutations.md).
 
 | Method / helper | Returns | Notes |
 |---|---|---|
-| `@app.page` / `@app.component` / `@app.action` decorators | The decorated callable (registered on the app) | Handler return values are rendered by `HedronRoute` |
+| `@app.page` / `@app.component` decorators | The decorated callable (registered on the app) | Handler return values are rendered by `HedronRoute` |
+| `@app.action` decorator | `ActionHandle` owning the route, fallback, and controls | The handler return value is lowered as an action outcome |
 | Page handler | `Page`, `InteractionResult`, model, or Starlette `Response` | PAGE HTML for navigation; FRAGMENT when `HX-Request` + authorized target |
 | Component / fragment handler | Component tree, `InteractionResult`, or `Response` | FRAGMENT mode by default |
 | Action handler | Component, `InteractionResult`, redirect helper, or `Response` | CSRF on unsafe methods when the profile enables it |

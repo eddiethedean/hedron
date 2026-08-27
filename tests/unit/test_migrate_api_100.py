@@ -49,6 +49,27 @@ def test_scan_keeps_same_line_calls_as_separate_call_sites(tmp_path: Path) -> No
     assert len(scan_api(source).findings) == 2
 
 
+def test_scan_and_transform_direct_legacy_helper_imports(tmp_path: Path) -> None:
+    source = tmp_path / "imports.py"
+    source.write_text(
+        "from hedron import include_feature, refreshable\n"
+        "include_feature(bundle)\n",
+        encoding="utf-8",
+    )
+
+    report = scan_api(source)
+
+    assert [(item.kind, item.old_path, item.confidence) for item in report.findings] == [
+        ("import", "app.include_feature", "unknown"),
+        ("import", "app.refreshable", "unknown"),
+    ]
+    output = tmp_path / "migrated.py"
+    transform_api(source, output=output)
+    assert output.read_text(encoding="utf-8").startswith(
+        "from hedron import include_feature, refreshable\n"
+    )
+
+
 def test_region_fragment_is_reported_partial_and_not_rewritten(tmp_path: Path) -> None:
     source = tmp_path / "app.py"
     source.write_text(
@@ -58,6 +79,22 @@ def test_region_fragment_is_reported_partial_and_not_rewritten(tmp_path: Path) -
     report = scan_api(source)
     assert report.requires_review
     assert report.findings[0].confidence == "partial"
+    assert unified_diff(source) == ""
+
+
+def test_unsafe_component_route_is_manual_action_migration(tmp_path: Path) -> None:
+    source = tmp_path / "unsafe.py"
+    source.write_text(
+        "@app.component('/save', methods=['POST'])\n"
+        "def save(): pass\n",
+        encoding="utf-8",
+    )
+
+    finding = scan_api(source).findings[0]
+
+    assert finding.replacement == "app.action"
+    assert finding.confidence == "partial"
+    assert finding.automation_status == "manual-review"
     assert unified_diff(source) == ""
 
 

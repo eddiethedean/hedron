@@ -45,7 +45,8 @@ status commentary, not a satisfied release gate.
   behavior remain explicit projections over native Hedron authorities.
 - [Edron `0.9.0` acceptance packet](EDRON_009.md) — **Implemented and verified in-tree; publication
   pending**; see the [phase gates](edron-phase09.toml) and [0.8-to-0.9 upgrade fixtures](upgrade-fixtures-09.md).
-  The release train is Hedron `0.67.0`; Hedron `1.0.0` remains a future compatibility rehearsal.
+  The predecessor train is Hedron `0.67.0`; this checkout implements the coordinated Hedron
+  `1.0.0` train while its release evidence remains pending.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)
@@ -133,8 +134,8 @@ status commentary, not a satisfied release gate.
   lifecycle, failure behavior, compatibility, migration warnings, and packaging. See the
   [machine gate](release-gate-0.67.toml), [contract freeze](contract-freeze-067.toml), and
   [compatibility BOM](compatibility-bom-067.toml).
-- [`v1.0` interface and HTMX/Alpine/component-engine consolidation](RELEASE_1_0.md) — **Stage 0
-  Refined; implementation pending**. The [cut contract](one-zero-cut-contract.toml), [17-row
+- [`v1.0` interface and HTMX/Alpine/component-engine consolidation](RELEASE_1_0.md) — **Implementation
+  in progress; release evidence pending**. The [cut contract](one-zero-cut-contract.toml), [17-row
   machine gate](release-gate-1.0.toml), and [upgrade fixtures](upgrade-fixtures-1.0.md) define a
   subtractive cut from immutable `v0.67.0`; `ENTRY-100` blocks removals until the complete public
   inventory, warning reconciliation, stable inventory, exact matrix, and support window exist.
