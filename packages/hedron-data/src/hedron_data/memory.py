@@ -126,11 +126,6 @@ class InMemoryDataSource:
         with self._lock:
             return self._dataset_version
 
-    def _next_version(self) -> str:
-        self._version_counter += 1
-        self._dataset_version = str(self._version_counter)
-        return self._dataset_version
-
     def fetch(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
         with self._lock:
             return self._fetch_unlocked(query)

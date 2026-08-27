@@ -1144,7 +1144,16 @@ class App:
     def include(self, feature: Any) -> Any:
         if isinstance(feature, FeaturePackage):
             return self.include_package(feature)
+        existing = self._bundles.get(id(feature))
+        if existing is not None:
+            sync = getattr(feature, "_sync_native_handles", None)
+            if callable(sync):
+                sync()
+            return existing
         bundle = self.hedron.include(feature)
+        sync = getattr(feature, "_sync_native_handles", None)
+        if callable(sync):
+            sync()
         self._bundles[id(feature)] = bundle
         return bundle
 
@@ -1155,7 +1164,16 @@ class App:
         capabilities: Mapping[str, bool] | None = None,
     ) -> Any:
         """Include a native feature through the exact Hedron transaction."""
+        existing = self._bundles.get(id(feature))
+        if existing is not None:
+            sync = getattr(feature, "_sync_native_handles", None)
+            if callable(sync):
+                sync()
+            return existing
         bundle = self.hedron.include(feature, capabilities=capabilities)
+        sync = getattr(feature, "_sync_native_handles", None)
+        if callable(sync):
+            sync()
         self._bundles[id(feature)] = bundle
         return bundle
 

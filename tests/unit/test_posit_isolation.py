@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import ast
 import sys
 import tomllib
 from pathlib import Path
@@ -31,20 +30,15 @@ def test_posit_does_not_import_workbench() -> None:
     assert "hedron_workbench" not in getattr(hedron_posit, "__dict__", {})
 
 
-def test_posit_does_not_depend_on_fastapi_workbench() -> None:
+def test_posit_uses_shared_fastapi_workbench_core() -> None:
     package = ROOT / "packages" / "hedron-posit"
     project = tomllib.loads((package / "pyproject.toml").read_text(encoding="utf-8"))["project"]
-    assert not any(
+    assert any(
         str(dependency).startswith("fastapi-workbench") for dependency in project["dependencies"]
     )
 
-    for source in (package / "src" / "hedron_posit").rglob("*.py"):
-        tree = ast.parse(source.read_text(encoding="utf-8"))
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                assert all(not alias.name.startswith("fastapi_workbench") for alias in node.names)
-            elif isinstance(node, ast.ImportFrom):
-                assert not (node.module or "").startswith("fastapi_workbench")
+    compatibility = package / "src" / "hedron_posit" / "_workbench"
+    assert sorted(path.name for path in compatibility.glob("*.py")) == ["__init__.py"]
 
 
 def test_import_does_not_wrap(monkeypatch: pytest.MonkeyPatch) -> None:

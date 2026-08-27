@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Literal
 
-from hedron_core.codes import HED_TYPE_0002, HED_TYPE_0005, HED_TYPE_0006
+from hedron_core.codes import HED_TYPE_0005, HED_TYPE_0006
 from hedron_core.diagnostics import error
 from hedron_core.updates import MAX_PATCH_TARGETS, MAX_REFRESH_TARGETS
 
@@ -157,12 +157,3 @@ class Updates:
             )
         object.__setattr__(self, "targets", targets)
         object.__setattr__(self, "target_ids", ids)
-
-
-def raise_conflicting_markers(detail: str) -> None:
-    raise error(
-        HED_TYPE_0002,
-        title="Conflicting type-authoring markers",
-        explanation=detail,
-        remediation="Attach exactly one Hedron source marker per parameter.",
-    )

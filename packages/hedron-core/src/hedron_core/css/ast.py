@@ -35,26 +35,6 @@ def parse_stylesheet(source: str) -> CssStylesheet:
         while i < n and source[i].isspace():
             i += 1
 
-    def read_until(chars: str) -> str:
-        nonlocal i
-        start = i
-        while i < n and source[i] not in chars:
-            if source[i] == "\\" and i + 1 < n:
-                i += 2
-                continue
-            if source[i] in {'"', "'"}:
-                quote = source[i]
-                i += 1
-                while i < n and source[i] != quote:
-                    if source[i] == "\\" and i + 1 < n:
-                        i += 2
-                    else:
-                        i += 1
-                i += 1
-                continue
-            i += 1
-        return source[start:i]
-
     def parse_block() -> tuple[list[CssDecl], list[CssRule]]:
         nonlocal i
         decls: list[CssDecl] = []

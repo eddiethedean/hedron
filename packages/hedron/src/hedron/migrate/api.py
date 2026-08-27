@@ -94,11 +94,6 @@ def _iter_files(source: Path, *, include_all: bool = False) -> tuple[Path, tuple
     return source, tuple(files)
 
 
-def _record_for(path: str) -> FutureWarningRecord | None:
-    records = PUBLIC_FUTURE_WARNINGS.for_path(path)
-    return records[0] if records else None
-
-
 @dataclass(frozen=True, slots=True)
 class ApiMigrationFinding:
     """One source-mapped compatibility finding."""

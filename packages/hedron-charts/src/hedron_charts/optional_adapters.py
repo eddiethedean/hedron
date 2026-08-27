@@ -81,18 +81,6 @@ def _json_output(
     )
 
 
-def _render_json(output: ChartOutput) -> NodeLike:
-    """Legacy dump used only for static/debug adapters."""
-    acc = output.accessibility
-    return html.figure(
-        html.h2(acc.title),
-        html.p(acc.description or acc.alt or ""),
-        html.pre(str(output.body)[:2000]),
-        class_=f"hedron-chart hedron-chart-{output.kind}",
-        **{"role": "img", "aria-label": acc.alt or acc.title},
-    )
-
-
 def _render_host(output: ChartOutput, host: str) -> NodeLike:
     return render_host_figure(output, host=host)
 

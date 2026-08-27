@@ -833,11 +833,29 @@ class Page:
         )
 
     def job(self, flow: Any, *, submit_label: str = "Submit", show_cancel: bool = False) -> None:
-        frame = require_frame("page", "fragment")
-        bundle = flow.to_bundle() if hasattr(flow, "to_bundle") else flow
-        frame.app.include(bundle)
-        if hasattr(bundle, "render"):
-            self._append(bundle.render())
+        """Render the submit surface for a flow already included in the app.
+
+        Including a feature mutates the router and must happen during startup.
+        A page render is request-time work, so it only consumes the handles
+        produced by the one-time materialization.  ``show_cancel`` is exposed
+        as a data hint for the generated status surface; a cancel command is
+        only rendered once a job id is available on that surface.
+        """
+        require_frame("page", "fragment")
+        submit = getattr(flow, "submit_command", None)
+        if submit is None:
+            native = getattr(flow, "_native", None)
+            submit = getattr(native, "submit_command", None)
+        if submit is None:
+            raise BindingError(
+                "job requires a flow included during app startup",
+                code="EDRON_JOB_BIND",
+            )
+        native = getattr(flow, "_native", None)
+        if native is not None:
+            native.show_cancel = bool(show_cancel)
+        attrs = {"data": {"hedron-job-cancel": "true"}} if show_cancel else {}
+        self.form(action=submit, submit_label=submit_label, **attrs)
 
     def _resolve(self, value: Any) -> Any:
         if isinstance(value, Container):
@@ -870,9 +888,9 @@ class Page:
                 items = list(zip(value.options["labels"], children, strict=True))
                 return self._native("Tabs", items)
             if kind == "expander":
-                return self._native(
-                    "Expander", value.options.pop("title"), *children, **value.options
-                )
+                options = dict(value.options)
+                title = options.pop("title")
+                return self._native("Expander", title, *children, **options)
             if kind == "style":
                 return self._native("StyleScope", *children, **value.options)
             options = dict(value.options)
