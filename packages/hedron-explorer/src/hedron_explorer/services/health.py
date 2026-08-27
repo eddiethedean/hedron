@@ -38,7 +38,6 @@ def package_health() -> dict[str, Any]:
             "hedron-jinja",
             "hedron-conformance",
             "hedron-extras",
-            "hedron-workbench",
             "hedron-posit",
             "hedron-elements",
         }

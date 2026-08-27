@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from hedron import Hedron, Page, Text
-from hedron_workbench import HedronWorkbench
+from hedron_posit import HedronPosit
 
 app = Hedron(
     title="sample-imported",
@@ -33,8 +33,8 @@ def create_app() -> Hedron:
     return created
 
 
-def create_workbench_app() -> HedronWorkbench:
-    created = HedronWorkbench(
+def create_workbench_app() -> HedronPosit:
+    created = HedronPosit(
         title="sample-workbench-factory",
         security="standard",
         explorer="off",

@@ -15,7 +15,6 @@ SUPPORTED_EXTRAS = (
     "charts",
     "mcp",
     "gradio",
-    "workbench",
     "posit",
     "extras",
     "conformance",

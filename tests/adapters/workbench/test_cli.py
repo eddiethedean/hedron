@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from hedron_workbench.cli import main
+from hedron_posit.cli import main
 
 
 def test_check_text() -> None:

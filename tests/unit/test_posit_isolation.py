@@ -24,6 +24,8 @@ def test_flagship_does_not_import_posit() -> None:
 def test_posit_does_not_import_workbench() -> None:
     import hedron_posit
 
+    package = ROOT / "packages" / "hedron-workbench"
+    assert not (package / "pyproject.toml").exists()
     assert "hedron_workbench" not in sys.modules or "hedron_workbench" not in getattr(
         hedron_posit, "__dict__", {}
     )

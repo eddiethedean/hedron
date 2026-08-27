@@ -28,4 +28,3 @@ Install this package into the content environment (do not vendor only source tre
 on Connect 2025.06).
 
 Docs: [Posit deployments](https://hedron.readthedocs.io/en/latest/guides/posit/).
-Compatibility package: `hedron-workbench` (re-exports / `HedronWorkbench` subclass).

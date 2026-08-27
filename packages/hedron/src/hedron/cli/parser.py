@@ -382,7 +382,7 @@ def _register_runtime_commands(sub: Any) -> None:
 
     run_p = sub.add_parser(
         "run",
-        help="Run an ASGI app; auto-use hedron-workbench inside Posit Workbench",
+        help="Run an ASGI app; auto-use hedron-posit inside Posit Workbench",
     )
     run_p.add_argument("target", nargs="?", help="module:app or module:factory")
     run_p.add_argument("--factory", action="store_true")

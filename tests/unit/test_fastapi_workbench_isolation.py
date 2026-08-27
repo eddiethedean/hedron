@@ -5,7 +5,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-FORBIDDEN = frozenset({"hedron", "hedron_core", "hedron_workbench"})
+FORBIDDEN = frozenset({"hedron", "hedron_core"})
 
 
 def test_no_hedron_imports_in_fastapi_workbench() -> None:

@@ -11,7 +11,7 @@ Pin `setuptools>=69,<82` in this `requirements.txt` as a belt-and-suspenders for
 that still honor that pin.
 
 `scripts/realconnect_029.sh` creates a temporary deployment bundle and vendors
-the local `hedron`, `hedron-core`, `hedron-workbench`, and `fastapi-workbench`
+the local `hedron`, `hedron-core`, `hedron-posit`, and `fastapi-workbench`
 source trees so the Connect smoke validates this checkout rather than a published
 package. Phase 0.33 Stage 0 uses `scripts/realconnect_033_probe.sh` (same vendoring)
 and adds a `/cookie-echo` diagnostic that reports owned cookie **names** only.
