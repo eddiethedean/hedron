@@ -235,6 +235,31 @@ class HedronBlueprint(Blueprint):
 
         return decorator
 
+    def view(
+        self,
+        rule: str,
+        *,
+        endpoint: str | None = None,
+        methods: Sequence[str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
+        **options: Any,
+    ) -> Callable[[F], F]:
+        """Register the canonical replaceable view route.
+
+        A Flask response is lowered identically for component and view routes;
+        this explicit alias gives adapter applications the same canonical task
+        vocabulary as FastAPI while ``component`` remains a migration spelling.
+        """
+        return self.component(
+            rule,
+            endpoint=endpoint,
+            methods=methods,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+            **options,
+        )
+
     def action(
         self,
         rule: str,

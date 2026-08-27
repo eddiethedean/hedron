@@ -85,6 +85,20 @@ def test_transform_is_non_executing_idempotent_and_refuses_overwrite(tmp_path: P
     assert transform_api(output).findings == ()
 
 
+def test_transform_output_is_a_complete_reviewable_tree(tmp_path: Path) -> None:
+    source = tmp_path / "project"
+    source.mkdir()
+    (source / "app.py").write_text("app.include_feature(bundle)\n", encoding="utf-8")
+    (source / "README.md").write_text("unchanged project notes\n", encoding="utf-8")
+    output = tmp_path / "migrated"
+
+    report = transform_api(source, output=output)
+
+    assert report.changes[0].path == "app.py"
+    assert (output / "app.py").read_text(encoding="utf-8") == "app.include(bundle)\n"
+    assert (output / "README.md").read_text(encoding="utf-8") == "unchanged project notes\n"
+
+
 def test_json_is_stable_and_advertises_schema(tmp_path: Path) -> None:
     source = tmp_path / "app.py"
     source.write_text("@app.component('/')\ndef old(): pass\n", encoding="utf-8")

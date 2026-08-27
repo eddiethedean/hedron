@@ -178,6 +178,16 @@ class HedronFlask:
 
         return decorator
 
+    def view(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        """Register the canonical replaceable view route.
+
+        Flask has no separate response type for a fragment, so the adapter's
+        canonical ``view`` surface shares the component response lowering while
+        keeping ``page`` available for full-document routes.  ``component`` is
+        retained as the 0.67 compatibility spelling.
+        """
+        return self.component(rule, **options)
+
     def action(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         from hedron_flask.blueprint import wrap_hedron_view
 

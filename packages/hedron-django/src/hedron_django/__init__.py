@@ -19,7 +19,7 @@ from hedron_django.forms import (
 from hedron_django.live import POLLING_FALLBACK_SUPPORTED, poll_status_response
 from hedron_django.middleware import HedronSecurityHeadersMiddleware
 from hedron_django.responses import component_response, interaction_response
-from hedron_django.routing import DjangoUrlReverser, hedron_view
+from hedron_django.routing import DjangoUrlReverser, action, hedron_view, page, view
 from hedron_django.static_mount import hedron_static_urlpatterns
 from hedron_django.urls import component_path, hedron_paths, include_component_path
 
@@ -34,12 +34,15 @@ __all__ = [
     "__version__",
     "component_path",
     "component_response",
+    "action",
     "csrf_hidden_input",
     "form_to_nodes",
     "formset_to_nodes",
     "hedron_paths",
     "hedron_static_urlpatterns",
     "hedron_view",
+    "page",
+    "view",
     "include_component_path",
     "include_feature",
     "interaction_response",

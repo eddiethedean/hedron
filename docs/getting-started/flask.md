@@ -97,7 +97,7 @@ def home() -> Page:
     )
 
 
-@ui.component("/status", fragment_regions=(PANEL,))
+@ui.view("/status", fragment_regions=(PANEL,))
 def status() -> InteractionResult:
     return InteractionResult(
         content=panel_body(),
@@ -132,7 +132,7 @@ Safe GETs issue the `hedron_csrf` cookie. Unsafe methods on `hedron_route` and
 
 ## Next
 
-Stay on Flask: extend the scaffold `HedronBlueprint` / `HedronFlask` and keep POST field
+Stay on Flask: extend the scaffold `HedronBlueprint` / `HedronFlask` using `view` / `action` and keep POST field
 `csrf_token`. Job status: prefer bounded **polling** (FastAPI SSE helpers are experimental).
 
 !!! warning "FastAPI-only continuation"

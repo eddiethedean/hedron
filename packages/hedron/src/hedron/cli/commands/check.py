@@ -694,7 +694,12 @@ def _cmd_check(args: argparse.Namespace) -> int:
     from hedron_core.diagnostics import make_diagnostic
     from hedron_core.discovery import discover_component_folders
 
-    app = _load_app(args.app)
+    # Target 1.0 checking is intentionally a static migration pass. Do not
+    # import an application's module (or execute its decorators) merely to
+    # report transitional spellings. The ordinary check retains its runtime
+    # registry checks.
+    static_target_100 = getattr(args, "target", None) == "1.0"
+    app = None if static_target_100 else _load_app(args.app)
     base = Path(args.project or Path.cwd()).resolve()
     settings = _apply_project_discovery(base)
     diags = []
@@ -703,13 +708,14 @@ def _cmd_check(args: argparse.Namespace) -> int:
         from hedron_explorer.services.diff import explorer_diff_report
         from hedron_explorer.services.health import package_health
 
-        package_health()
-        explorer_diff = cast(JsonObject, explorer_diff_report(app))
+        if app is not None:
+            package_health()
+            explorer_diff = cast(JsonObject, explorer_diff_report(app))
     except ImportError:
         print("hedron-explorer: skipped (not installed)", file=sys.stderr)
     # Routes / components presence
     registry = get_registry()
-    if not list(registry.components()) and not list(registry.routes()):
+    if not static_target_100 and not list(registry.components()) and not list(registry.routes()):
         diags.append(
             make_diagnostic(
                 "HED-CONFIG-0003",

@@ -537,14 +537,18 @@ def transform_api(
             transformed, count = _replace_python(text, original, items)
         else:
             transformed, count = _replace_text(text, items)
-        if count == 0 or transformed == text:
-            continue
         if output is not None:
             target.parent.mkdir(parents=True, exist_ok=True)
             if target.exists():
                 raise FileExistsError(f"refusing to overwrite {target}")
-        target.write_text(transformed, encoding="utf-8")
-        changes.append(ApiMigrationChange(display, count))
+            # ``--out`` is a complete, reviewable project tree rather than a
+            # sparse patch directory.  Preserve files that have no proven
+            # replacement so reviewers can run the generated tree directly.
+            target.write_text(transformed, encoding="utf-8")
+        elif count and transformed != text:
+            target.write_text(transformed, encoding="utf-8")
+        if count and transformed != text:
+            changes.append(ApiMigrationChange(display, count))
     return ApiMigrationReport(
         source=report.source,
         files_seen=report.files_seen,

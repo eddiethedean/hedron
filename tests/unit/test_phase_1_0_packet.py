@@ -7,6 +7,8 @@ import sys
 import tomllib
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -106,3 +108,44 @@ def test_phase_1_0_execution_plan_is_actionable_and_complete() -> None:
         "support-policy-100.md",
     ):
         assert artifact in plan
+
+
+def test_phase_1_0_flask_adapter_exposes_canonical_view_alias() -> None:
+    from hedron_flask import HedronBlueprint, HedronFlask
+
+    assert callable(HedronFlask.view)
+    assert callable(HedronBlueprint.view)
+
+
+def test_phase_1_0_django_adapter_exports_canonical_decorators() -> None:
+    from hedron_django import action, page, view
+
+    assert callable(action)
+    assert callable(page)
+    assert callable(view)
+
+
+def test_phase_1_0_target_check_does_not_import_application(tmp_path: Path) -> None:
+    (tmp_path / "bad_app.py").write_text(
+        "raise RuntimeError('target check must be non-executing')\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "source.py").write_text("app.component('/')\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text("[tool.hedron]\n", encoding="utf-8")
+    from hedron.cli import main
+
+    with pytest.raises(SystemExit) as result:
+        main(
+            [
+                "--app",
+                "bad_app:app",
+                "check",
+                "--target",
+                "1.0",
+                "--project",
+                str(tmp_path),
+                "--format",
+                "json",
+            ]
+        )
+    assert result.value.code == 0

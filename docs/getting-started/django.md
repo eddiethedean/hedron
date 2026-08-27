@@ -76,7 +76,7 @@ from django.urls import path
 
 from hedron_core import FragmentRegion, InteractionResult, Page, Text, html
 from hedron_core.interaction import InteractionPolicy
-from hedron_django import hedron_view
+from hedron_django import page, view
 
 PANEL = FragmentRegion(id="panel", selector="#panel")
 
@@ -86,7 +86,7 @@ def panel_body() -> object:
     return html.div(Text(f"Django status · {stamp}"), id="panel")
 
 
-@hedron_view
+@page
 def home(request: HttpRequest):
     return Page(
         html.div(
@@ -105,7 +105,7 @@ def home(request: HttpRequest):
     )
 
 
-@hedron_view(fragment_regions=(PANEL,))
+@view(fragment_regions=(PANEL,))
 def status(request: HttpRequest):
     return InteractionResult(
         content=panel_body(),
@@ -139,7 +139,7 @@ accept Hedron's portable `csrf_token` field name.
 
 ## Next
 
-Stay on Django: extend `@hedron_view` and POST with `csrfmiddlewaretoken`. Prefer
+Stay on Django: extend the canonical `@page` / `@view` decorators and POST with `csrfmiddlewaretoken`. Prefer
 [polling](../guides/live-interaction.md) for job status.
 
 !!! warning "FastAPI-only continuation"

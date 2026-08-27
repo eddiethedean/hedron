@@ -23,7 +23,10 @@ from hedron_django.responses import component_response, interaction_response
 __all__ = [
     "DjangoUrlReverser",
     "HEDRON_APP_ID",
+    "action",
     "hedron_view",
+    "page",
+    "view",
 ]
 
 F = TypeVar("F", bound=Callable[..., Any])
@@ -208,3 +211,69 @@ def hedron_view(
     if view is not None:
         return decorator(view)
     return decorator
+
+
+# Canonical adapter spellings.  Django's URL resolver owns route registration,
+# so page/view share the response-lowering wrapper and remain ordinary
+# function decorators.  ``hedron_view`` stays exported as the 0.67 spelling.
+def view(
+    handler: F | None = None,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> Any:
+    return hedron_view(
+        handler,
+        fragment_regions=fragment_regions,
+        allow_undeclared_targets=allow_undeclared_targets,
+    )
+
+
+def page(
+    handler: F | None = None,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> Any:
+    return hedron_view(
+        handler,
+        fragment_regions=fragment_regions,
+        allow_undeclared_targets=allow_undeclared_targets,
+    )
+
+
+def action(
+    handler: F | None = None,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> Any:
+    """Wrap a mutation handler with canonical response and CSRF lowering."""
+
+    def decorate(fn: F) -> F:
+        wrapped = hedron_view(
+            fn,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
+
+        if inspect.iscoroutinefunction(fn):
+
+            @wraps(wrapped)
+            async def async_action(request: HttpRequest, *args: object, **kwargs: object) -> Any:
+                if request.method.upper() not in {"POST", "PUT", "PATCH", "DELETE"}:
+                    return HttpResponse(status=405)
+                return await wrapped(request, *args, **kwargs)
+
+            markcoroutinefunction(async_action)
+            return cast(F, async_action)
+
+        @wraps(wrapped)
+        def sync_action(request: HttpRequest, *args: object, **kwargs: object) -> Any:
+            if request.method.upper() not in {"POST", "PUT", "PATCH", "DELETE"}:
+                return HttpResponse(status=405)
+            return wrapped(request, *args, **kwargs)
+
+        return cast(F, sync_action)
+
+    return decorate(handler) if handler is not None else decorate

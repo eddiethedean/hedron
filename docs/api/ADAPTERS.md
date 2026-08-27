@@ -94,6 +94,8 @@ def home():
 |---|---|---|
 | `init_app(app, *, security=None)` | `Flask` | Bind extension (idempotent for the same app) |
 | `page(rule, **options)` | decorator | Register a page view; supports `fragment_regions`, `methods` |
+| `view(rule, **options)` | decorator | Canonical replaceable-view spelling; lowers to the same component response path |
+| `action(rule, **options)` | decorator | Canonical mutation spelling; defaults to POST and CSRF protection |
 | `respond(value, request, *, context=None, mode=None, extra_headers=None, fragment_regions=None, allow_undeclared_targets=False)` | Flask `Response` | Render `NodeLike` / `InteractionResult`; CSRF on unsafe methods when enabled |
 | `auth_signal(request=None)` | `AuthSignal` | Flask-Login / session-derived auth signal (no session body to core) |
 | `csrf_token(request)` | `str` | Current CSRF token for forms / headers |
@@ -115,8 +117,9 @@ Calling `page` / `route` before `init_app` → `RuntimeError`.
 
 ## Django (`hedron_django.HedronDjango`)
 
-Thin helper for native Django views. Install AppConfig for system checks; wrap views with
-`hedron_view` or call `respond` from your own views.
+Thin helper for native Django views. Install AppConfig for system checks; wrap views with the
+canonical `view`, `page`, or `action` decorators (or the 0.67 `hedron_view` spelling), or call
+`respond` from your own views.
 
 ```python
 from hedron_django import HedronDjango
@@ -147,6 +150,8 @@ def home(request):
 | Symbol | Role |
 |---|---|
 | `HedronDjangoConfig` | Installable AppConfig + `hedron.*` system checks |
+| `view` / `page` | Canonical decorators that lower component trees and interactions to `HttpResponse` |
+| `action` | Canonical unsafe-method decorator (POST/PUT/PATCH/DELETE) with CSRF validation |
 | `hedron_view` | Wrap sync/async views; seeds CSRF cookie on safe GETs |
 | `interaction_response` / `component_response` | Build `HttpResponse` values |
 | `DjangoUrlReverser` | `reverse` with mount prefixes |
