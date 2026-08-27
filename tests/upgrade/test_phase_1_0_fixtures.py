@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import importlib.util
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -79,6 +82,28 @@ def test_canonical_fixture_imports_and_serves_page() -> None:
     assert response.status_code == 200
     assert "ready" in response.text
     assert 'data-hedron-interaction="request"' in response.text
+
+
+def test_canonical_fixture_type_checks_without_errors() -> None:
+    env = {
+        **os.environ,
+        "PYTHONPATH": os.pathsep.join(
+            (
+                str(ROOT.parent.parent.parent / "packages/hedron/src"),
+                str(ROOT.parent.parent.parent / "packages/hedron-core/src"),
+                str(ROOT.parent.parent.parent / "packages/hedron-jinja/src"),
+            )
+        ),
+    }
+    result = subprocess.run(
+        [sys.executable, "-m", "pyright", str(ROOT / "canonical/app.py")],
+        cwd=ROOT.parent.parent.parent,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_canonical_hdj_fixture_parses_without_legacy_forms() -> None:
