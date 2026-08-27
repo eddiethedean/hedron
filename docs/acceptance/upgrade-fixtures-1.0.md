@@ -1,6 +1,6 @@
 # Hedron 0.67 to 1.0 upgrade fixtures
 
-**Status:** Stage 0 Refined; fixture implementations are pending
+**Status:** Stage 0 Refined; fixture implementations are present, release evidence is pending
 
 **Source:** immutable `v0.67.0` wheels/sdists and source snapshot
 **Target:** `v1.0.0`

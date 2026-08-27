@@ -35,9 +35,9 @@ def home():
     return Page(Text("ok"), title="Home")
 ```
 
-`@app.page`, `@app.view`, and `@app.action` are the canonical 1.0 function roles. The 0.67
-`screen`, `refreshable`, `command`, and `form_command` helpers remain migration paths and emit
-structured `HedronFutureWarning` records.
+`@app.page`, `@app.view`, and `@app.action` are the only route-registration roles on the 1.0
+application facade. Removed 0.67 spellings are diagnosed by `hedron check` / `hedron migrate api`
+and are not runtime aliases.
 
 ## Parameters
 
@@ -79,13 +79,13 @@ parameters:
 | Parameter | Applies to | Type | Default | Description |
 |---|---|---|---|---|
 | `path` | all | `str` | required | Route path (FastAPI pattern) |
-| `methods` | `page`, `component` | sequence of HTTP methods | `["GET"]` | Allowed verbs; unsafe methods enable CSRF when configured |
+| `methods` | `page`, `view`, `action` | sequence of HTTP methods | `["GET"]` | Allowed verbs; unsafe methods enable CSRF when configured |
 | `method` | `action` only | `str` | `"POST"` | Primary verb when `methods` is omitted |
 | `name` | all | `str \| None` | function name | FastAPI route name |
 | `include_in_schema` | all | `bool` | `True` for page/action; `False` for component | OpenAPI inclusion |
 | `dependencies` | all | FastAPI `Depends` sequence | `None` | Route dependencies (auth gates, etc.) |
 | `tags` | all | list | `None` | OpenAPI tags |
-| `fragment_regions` | `page`, `component`, `action` | sequence of `FragmentRegion` | `None` | HTMX `HX-Target` allowlist for this route |
+| `fragment_regions` | `page`, `view`, `action` | sequence of `FragmentRegion` | `None` | HTMX `HX-Target` allowlist for this route |
 | `**kwargs` | all | FastAPI route options | — | Passed through to `add_api_route` (for example `response_class`) |
 
 | Method | Description |
@@ -93,23 +93,14 @@ parameters:
 | `page(path, **kwargs)` | Canonical PAGE route; function returns one document tree |
 | `view(path, **kwargs)` | Canonical safe replaceable GET view; returns a `FragmentHandle` |
 | `action(path, **kwargs)` | Canonical typed action; returns an `ActionHandle` and applies CSRF to unsafe methods |
-| `screen(path, *, title, **kwargs)` | 0.67 migration helper lowering to `Page` + `page` (returns `ScreenHandle`) |
-| `refreshable(path, **kwargs)` | 0.67 migration helper for `view`; returns a `FragmentHandle` |
-| `command(path, **kwargs)` | 0.67 migration helper for typed actions; returns an `ActionHandle` |
-| `form_command(path, *, fallback, **kwargs)` | 0.67 migration helper lowering to a typed action |
-| `component(path, **kwargs)` | Advanced/compatibility FRAGMENT route; use `view` for safe views |
 | `region(id, selector=None, description="")` | Declare a `FragmentRegion` (default selector `#{id}`) for `RefreshButton.for_region` / allowlists |
-| `fragment(path, region=..., regions=..., **kwargs)` | Compatibility alias of `component`; migrate to `view` |
 | `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
 | `include(bundle, *, capabilities=None)` | Canonical feature inclusion path; accepts one `FeatureBundle` / `FeatureProvider` before registry/catalog seal |
-| `include_feature(bundle, *, capabilities=None)` | 0.67 migration helper for `include` |
 | `include_router(...)` | Standard FastAPI router include |
 
 Canonical 1.0 HTMX uses `@app.page`, `@app.view`, and `@app.action`; `Interaction` and `Outcome`
-describe browser effects and operation results. Flask/Django hosts are Supported for
-pages/fragments but are **not** decorator-parity Supported for these FastAPI progressive
-facades. `page` / `component` / `action` plus `fragment_regions` remain the lower-level
-allowlist API.
+describe browser effects and operation results. Flask/Django adapters expose the same
+page/view/action vocabulary, while package-native advanced APIs remain explicitly scoped.
 
 ```python
 from hedron import Hedron, Stack, Text, html, refresh
@@ -145,7 +136,7 @@ see [Mutations](../guides/mutations.md).
 
 | Method / helper | Returns | Notes |
 |---|---|---|
-| `@app.page` / `@app.component` decorators | The decorated callable (registered on the app) | Handler return values are rendered by `HedronRoute` |
+| `@app.page` / `@app.view` decorators | The decorated callable or view handle (registered on the app) | Handler return values are rendered by `HedronRoute` |
 | `@app.action` decorator | `ActionHandle` owning the route, fallback, and controls | The handler return value is lowered as an action outcome |
 | Page handler | `Page`, `InteractionResult`, model, or Starlette `Response` | PAGE HTML for navigation; FRAGMENT when `HX-Request` + authorized target |
 | Component / fragment handler | Component tree, `InteractionResult`, or `Response` | FRAGMENT mode by default |

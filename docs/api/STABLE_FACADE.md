@@ -46,11 +46,10 @@ status: shipped
 | `from hedron_core.jobs import JobBackend, JobStatus, JobHandle, JobState, set_job_backend, get_job_backend` | Job protocol |
 | `from hedron.testing import AppScenario, assert_page_document, assert_fragment_body, assert_htmx_trigger, assert_hx_retarget, assert_oob_present, assert_hx_push_url, assert_hx_redirect, assert_hx_reswap` | App tests |
 
-Instance methods on `Hedron` in this historical inventory: `app.region(...)`, `app.fragment(...)`.
-The 1.0 canonical inclusion path is `app.include(...)`; `app.fragment(...)` is retained only as
-a 0.67 migration helper while the release gate is pending.
+The 1.0 application facade uses `app.page(...)`, `app.view(...)`, `app.action(...)`, and
+`app.include(...)`. Removed 0.67 spellings are reported by the static migration tooling.
 On `HedronRouter`, declare `FragmentRegion` values and pass `fragment_regions=` to
-`@page` / `@component` / `@action` (no `.region` / `.fragment` helpers).
+`@page` / `@view` / `@action`.
 
 ## Deny list (must not appear in inventory)
 
@@ -63,8 +62,9 @@ On `HedronRouter`, declare `FragmentRegion` values and pass `fragment_regions=` 
 ```text
 hedron:Hedron
 hedron:HedronRouter
-hedron:Hedron.region
-hedron:Hedron.fragment
+hedron:Hedron.page
+hedron:Hedron.view
+hedron:Hedron.action
 hedron:FragmentRegion
 hedron:Page
 hedron:Text
