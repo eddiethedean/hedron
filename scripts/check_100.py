@@ -19,6 +19,34 @@ BOM_PATH = ACCEPTANCE / "compatibility-bom-067.toml"
 PREDECESSOR_GATE_PATH = ACCEPTANCE / "release-gate-0.67.toml"
 FIXTURE_ROOT = ROOT / "tests/upgrade/phase_1_0"
 
+COORDINATED_PACKAGES = (
+    "hedron-core",
+    "hedron",
+    "hedron-explorer",
+    "hedron-data",
+    "hedron-flask",
+    "hedron-django",
+    "hedron-jinja",
+    "hedron-conformance",
+    "hedron-extras",
+    "hedron-workbench",
+    "hedron-posit",
+    "hedron-elements",
+)
+
+INDEPENDENT_SATELLITES = (
+    "hedron-charts",
+    "hedron-maps",
+    "hedron-native",
+    "hedron-mcp",
+    "hedron-gradio",
+    "hedron-sample-kit",
+    "hedron-notebook",
+    "hedron-sim",
+    "fastapi-workbench",
+    "edron",
+)
+
 EXPECTED_GATES = (
     "ENTRY-100",
     "SURFACE-100",
@@ -119,6 +147,56 @@ def _check_fixture_corpus() -> list[str]:
     ):
         if not (FIXTURE_ROOT / relative).is_file():
             errors.append(f"missing phase-1.0 fixture: tests/upgrade/phase_1_0/{relative}")
+    return errors
+
+
+def _check_package_metadata() -> list[str]:
+    """Ensure the v1.0 coordinated train cannot drift from package metadata."""
+    errors: list[str] = []
+    try:
+        workspace = _toml(ROOT / "pyproject.toml").get("project", {})
+    except (OSError, ValueError):
+        return ["unable to read root package metadata"]
+    if not isinstance(workspace, dict) or workspace.get("version") != "1.0.0":
+        errors.append("root workspace metadata must declare version 1.0.0")
+
+    for distribution in COORDINATED_PACKAGES:
+        package_dir = ROOT / "packages" / distribution
+        pyproject = package_dir / "pyproject.toml"
+        if not pyproject.is_file():
+            errors.append(f"missing coordinated package metadata: {distribution}")
+            continue
+        project = _toml(pyproject).get("project", {})
+        if not isinstance(project, dict) or project.get("version") != "1.0.0":
+            errors.append(f"{distribution}: coordinated package must declare version 1.0.0")
+            continue
+        module = distribution.replace("-", "_")
+        init = package_dir / "src" / module / "__init__.py"
+        if not init.is_file():
+            errors.append(f"{distribution}: missing package __init__")
+        elif '__version__ = "1.0.0"' not in init.read_text(encoding="utf-8"):
+            errors.append(f"{distribution}: __version__ is not 1.0.0")
+
+    for distribution in INDEPENDENT_SATELLITES:
+        pyproject = ROOT / "packages" / distribution / "pyproject.toml"
+        if not pyproject.is_file():
+            errors.append(f"missing independent satellite metadata: {distribution}")
+            continue
+        project = _toml(pyproject).get("project", {})
+        dependencies = project.get("dependencies", []) if isinstance(project, dict) else []
+        joined = " ".join(str(item) for item in dependencies)
+        if (
+            distribution != "hedron-native"
+            and "hedron" in joined
+            and (">=0.67" not in joined or "<2.0" not in joined)
+        ):
+            errors.append(
+                f"{distribution}: Hedron dependency must explicitly span 0.67 and 1.x"
+            )
+        module = distribution.replace("-", "_")
+        init = ROOT / "packages" / distribution / "src" / module / "__init__.py"
+        if not init.is_file():
+            errors.append(f"{distribution}: missing package __init__")
     return errors
 
 
@@ -324,6 +402,7 @@ def check_plan() -> list[str]:
             errors.append(f"roadmap does not expose 1.0 packet token {token!r}")
 
     errors.extend(_check_fixture_corpus())
+    errors.extend(_check_package_metadata())
 
     return errors
 
