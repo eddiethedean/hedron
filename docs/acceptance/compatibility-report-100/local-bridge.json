@@ -3,10 +3,10 @@
   "baseline": "v0.67.0",
   "target": "v1.0.0",
   "status": "blocked",
-  "source_commit": "c9c5f51c",
+  "source_commit": "5f7e1eb5",
   "canonical_fixture": {
     "command": ".venv/bin/python -m pytest -n 0 tests/upgrade/test_phase_1_0_fixtures.py",
-    "result": "4 passed",
+    "result": "7 passed, 1 warning",
     "environment": "immutable v0.67 source snapshot plus current v1.0.0 checkout"
   },
   "baseline_build": {
@@ -14,7 +14,7 @@
     "result": "22 coordinated and satellite distributions built successfully",
     "versions": "coordinated workspace metadata declares 1.0.0; independent satellites retain their declared versions",
     "artifact_retention": "temporary run only; immutable digests are still required for COMPAT-100/PKG-100",
-    "reproducibility": "all artifacts, including the hedron-native Mach-O extension and SBOM, matched byte-for-byte across two SOURCE_DATE_EPOCH=0 wheel builds; CI now fixes that input"
+    "reproducibility": "all 44 artifacts, including the hedron-native Mach-O extension, matched byte-for-byte across two SOURCE_DATE_EPOCH=0 builds; native Rust SBOM generation is disabled because maturin embeds a random isolated-build path"
   },
   "bridge_run": {
     "command": "python scripts/check_upgrade_100.py --baseline v0.67.0 --json",

@@ -42,6 +42,13 @@ python-source = "src"
 module-name = "hedron_native._native"
 features = ["extension-module"]
 
+# Keep release artifacts reproducible. Maturin's generated Rust SBOM embeds
+# the isolated build directory (which is intentionally random per build), so
+# package SBOM generation is disabled here; dependency provenance remains
+# captured by the repository's lockfile and release evidence.
+[tool.maturin.sbom]
+rust = false
+
 [tool.cibuildwheel]
 build = "cp311-* cp312-* cp313-* cp314-*"
 skip = "pp* *-musllinux_*"
