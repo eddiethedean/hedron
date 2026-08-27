@@ -8,11 +8,6 @@ from pathlib import Path
 
 from hedron.cli.discovery import _scaffold_dep
 
-# Historical spellings remain mentioned here solely so generated projects can
-# point migration tooling at the exact 0.67 examples.  New scaffolds below use
-# the canonical 1.0 names (`view`, `action`, `page`, and `include`).
-# Legacy example: @app.refreshable("/status") / refresh_button.
-
 
 def _pyproject(*, name: str, extra_deps: list[str] | None = None) -> str:
     deps = [
@@ -41,9 +36,6 @@ def _app_minimal() -> str:
 from datetime import UTC, datetime
 
 from hedron import CsrfField, Hedron, SafeUrl, Stack, Text, UrlPurpose, html
-
-# 1.0 migration note: @app.refreshable and refresh_button are transitional
-# 0.67 spellings; use app.view and an ordinary HTML button instead.
 
 app = Hedron(
     title="Hedron App",

@@ -323,7 +323,7 @@ def _fragment_region_http_detail(
         title="Unauthorized HTMX target",
         explanation=str(exc),
         remediation=(
-            "Declare the target via fragment_regions= / @app.fragment(region=...), "
+            "Declare the target via fragment_regions= / @app.view(fragment_regions=...), "
             "or fix the control's hx-target / RefreshButton.for_region(...)."
         ),
         context={"requested": requested, "declared": declared, "path": str(request.url.path)},

@@ -41,7 +41,7 @@ def resolve_registered_handle(
             HED_UPDATE_0003,
             title="HDJ handle references must be registered logical ids",
             explanation=f"{logical_id!r} is not a registered handle id.",
-            remediation="Pass a handle.logical_id from @app.refreshable / @app.command.",
+            remediation="Pass a handle.logical_id from @app.view / @app.action.",
         )
     matches = [
         item

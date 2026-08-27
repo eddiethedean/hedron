@@ -78,3 +78,16 @@ def test_canonical_hdj_fixture_parses_without_legacy_forms() -> None:
     parsed = parse_hdj_source("status.hdj", source)
     assert parsed.declaration.format_version == 1
     assert parsed.declaration.kind.value == "fragment"
+
+
+def test_flask_adapter_exposes_only_canonical_route_facade() -> None:
+    """Adapter applications must use the same page/view/action/include vocabulary."""
+    from hedron_flask import HedronBlueprint
+
+    blueprint = HedronBlueprint("phase_1_flask", __name__)
+    assert callable(blueprint.page)
+    assert callable(blueprint.view)
+    assert callable(blueprint.action)
+    assert callable(blueprint.include)
+    for legacy in ("component", "include_feature"):
+        assert not hasattr(blueprint, legacy)
