@@ -42,7 +42,7 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
         )
 
 
-    @app.action(fallback="/")
+    @app.action("/ping", fallback="/")
     def ping():
         from hedron import refresh
 
