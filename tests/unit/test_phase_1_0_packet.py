@@ -149,3 +149,19 @@ def test_phase_1_0_target_check_does_not_import_application(tmp_path: Path) -> N
             ]
         )
     assert result.value.code == 0
+
+
+def test_phase_1_0_inventory_generator_reads_immutable_baseline(tmp_path: Path) -> None:
+    from scripts.generate_100_inventory import generate
+
+    result = generate(baseline="v0.67.0", output_dir=tmp_path)
+
+    assert result["baseline"] == "v0.67.0"
+    assert len(str(result["commit"])) == 40
+    counts = result["counts"]
+    assert counts["public"]["packages"] >= 20
+    assert counts["public"]["symbols"] >= 1000
+    assert counts["public"]["artifacts"] >= 1000
+    assert (tmp_path / "public-inventory-100.toml").is_file()
+    assert (tmp_path / "stable-inventory-100.toml").is_file()
+    assert (tmp_path / "baseline-100.json").is_file()

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 import tomllib
 from pathlib import Path
@@ -55,6 +56,7 @@ REQUIRED_FILES = (
     "docs/acceptance/support-policy-100.md",
     "docs/acceptance/compatibility-report-100/README.md",
     "docs/acceptance/compatibility-report-100/local-bridge.json",
+    "scripts/generate_100_inventory.py",
 )
 
 TRANSITIONAL_FIXTURES = {
@@ -132,6 +134,8 @@ def check_plan() -> list[str]:
     bom = _toml(BOM_PATH)
     predecessor = _toml(PREDECESSOR_GATE_PATH)
     warning_inventory = _toml(ACCEPTANCE / "warnings-100.toml")
+    public_inventory = _toml(ACCEPTANCE / "public-inventory-100.toml")
+    stable_inventory = _toml(ACCEPTANCE / "stable-inventory-100.toml")
     baseline = json.loads((ACCEPTANCE / "baseline-100.json").read_text(encoding="utf-8"))
     compatibility = json.loads(
         (ACCEPTANCE / "compatibility-report-100/local-bridge.json").read_text(encoding="utf-8")
@@ -180,11 +184,11 @@ def check_plan() -> list[str]:
     if warning_inventory.get("baseline") != "v0.67.0":
         errors.append("warning inventory must use the immutable v0.67.0 baseline")
     warning_rows = warning_inventory.get("warning")
-    warning_codes = {
-        str(row.get("code"))
-        for row in warning_rows
-        if isinstance(row, dict) and row.get("code")
-    } if isinstance(warning_rows, list) else set()
+    warning_codes = (
+        {str(row.get("code")) for row in warning_rows if isinstance(row, dict) and row.get("code")}
+        if isinstance(warning_rows, list)
+        else set()
+    )
     required_warning_codes = {
         "HED-MIGRATE-0671",
         "HED-MIGRATE-0672",
@@ -199,6 +203,38 @@ def check_plan() -> list[str]:
         errors.append("warning inventory is missing the implemented warning floor")
     if baseline.get("baseline") != "v0.67.0" or baseline.get("release_cut_satisfied") is not False:
         errors.append("baseline artifact must remain a draft against v0.67.0")
+    baseline_commit = baseline.get("baseline_commit")
+    if not isinstance(baseline_commit, str) or len(baseline_commit) != 40:
+        errors.append("baseline artifact must record the immutable v0.67.0 commit")
+    for name, inventory, minimum in (
+        ("public", public_inventory, 1),
+        ("stable", stable_inventory, 1),
+    ):
+        if inventory.get("baseline") != "v0.67.0":
+            errors.append(f"{name} inventory must use immutable v0.67.0")
+        if inventory.get("baseline_commit") != baseline_commit:
+            errors.append(f"{name} inventory baseline commit differs from baseline artifact")
+        rows = inventory.get("surface" if name == "public" else "symbol")
+        if not isinstance(rows, list) or len(rows) < minimum:
+            errors.append(f"{name} inventory must enumerate exported/artifact rows")
+    counts = baseline.get("inventory_counts")
+    if not isinstance(counts, dict):
+        errors.append("baseline artifact must retain generated inventory counts")
+    elif not isinstance(counts.get("public"), dict) or not isinstance(counts.get("stable"), dict):
+        errors.append("baseline inventory counts must contain public and stable sections")
+    if isinstance(baseline_commit, str) and len(baseline_commit) == 40:
+        try:
+            expected_commit = subprocess.check_output(
+                ["git", "rev-list", "-1", "v0.67.0"],
+                cwd=ROOT,
+                text=True,
+                stderr=subprocess.STDOUT,
+            ).strip()
+        except (OSError, subprocess.CalledProcessError):
+            errors.append("immutable v0.67.0 git tag is unavailable")
+        else:
+            if expected_commit != baseline_commit:
+                errors.append("baseline artifact does not match the v0.67.0 git tag")
     if (
         compatibility.get("schema") != "hedron.compatibility-report/1"
         or compatibility.get("baseline") != "v0.67.0"
