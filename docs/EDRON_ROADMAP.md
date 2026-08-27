@@ -32,7 +32,7 @@ countdown or commitment to `1.0`.
 | **0.4** | Visualization, map, media, and linked-data workflow depth with accessible server-first fallbacks | **Tagged** (`edron-v0.4.0`; publication pending) |
 | **0.5** | Resource, state, durable-job, and operational workflow depth without owning application infrastructure | **Implemented in-tree; unreleased Beta** |
 | **0.6** | Reusable Edron application composition and deliberate `hedron-*` capability promotion | **Tagged** (`edron-v0.6.0`; publication pending) |
-| **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Refined implementation candidate; no availability claim** |
+| **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Implemented in-tree; release evidence required** |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | Candidate after `0.7` |
 | **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation | Candidate after `0.8` |
 
@@ -321,7 +321,7 @@ state, or a new worker/deployment runtime.
 
 ## Phase 0.7 — migration and adoption tooling
 
-Phase `0.7` is a refined implementation candidate, not an availability claim. It may begin only
+Phase `0.7` is implemented in-tree; release availability still requires the acceptance gates below. It may begin only
 after the `0.6` acceptance packet is closed and the reviewable migration contracts from
 [RFC-0061](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0061-STREAMLIT-AST-MIGRATOR.md) are reconciled with Edron's class, request,
 state, package, and capability vocabulary. Edron is an output target for migration assistance;

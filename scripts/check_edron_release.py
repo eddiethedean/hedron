@@ -22,6 +22,11 @@ REQUIRED_WHEEL_FILES = {
     "edron/scaffolds.py",
     "edron/tooling.py",
     "edron/cli/main.py",
+    "edron/migrate/__init__.py",
+    "edron/migrate/analyze.py",
+    "edron/migrate/codemod.py",
+    "edron/migrate/generate.py",
+    "edron/migrate/report.py",
 }
 REQUIRED_SDIST_SUFFIXES = {
     "/src/edron/__init__.py",
@@ -30,6 +35,11 @@ REQUIRED_SDIST_SUFFIXES = {
     "/src/edron/data.py",
     "/src/edron/scaffolds.py",
     "/src/edron/tooling.py",
+    "/src/edron/migrate/__init__.py",
+    "/src/edron/migrate/analyze.py",
+    "/src/edron/migrate/codemod.py",
+    "/src/edron/migrate/generate.py",
+    "/src/edron/migrate/report.py",
     "/README.md",
     "/CHANGELOG.md",
     "/LICENSE",
@@ -43,9 +53,7 @@ def _fail(message: str) -> None:
 
 
 def _project_version() -> str:
-    project = tomllib.loads(
-        (PACKAGE / "pyproject.toml").read_text(encoding="utf-8")
-    )["project"]
+    project = tomllib.loads((PACKAGE / "pyproject.toml").read_text(encoding="utf-8"))["project"]
     version = str(project["version"])
     source = (PACKAGE / "src" / "edron" / "__init__.py").read_text(encoding="utf-8")
     if f'__version__ = "{version}"' not in source:

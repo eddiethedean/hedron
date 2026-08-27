@@ -1,6 +1,6 @@
 schema = "edron.phase-acceptance/1"
 phase = "0.7"
-status = "Planned"
+status = "Implemented"
 package = "edron"
 version = "0.7.0"
 required_predecessor = "edron-v0.6.0"
@@ -9,40 +9,40 @@ input_baseline = "Streamlit 1.60.x"
 
 [[gate]]
 id = "EDR-07-ANALYZE"
-state = "Planned"
+state = "Implemented"
 evidence = "bounded AST/no-execution tests; project-root and symlink containment fixtures; deterministic limit/refusal fixtures"
 
 [[gate]]
 id = "EDR-07-MAP"
-state = "Planned"
+state = "Implemented"
 evidence = "versioned Streamlit-to-Edron mapping catalog; alias, unknown-symbol, version-boundary, and no-drop golden fixtures"
 
 [[gate]]
 id = "EDR-07-GENERATE"
-state = "Planned"
+state = "Implemented"
 evidence = "generated Edron scaffold, report/source-map/review artifacts, atomic output, no-overwrite/source-byte, secret/path-redaction, and clean-consumer fixtures"
 
 [[gate]]
 id = "EDR-07-OWNERSHIP"
-state = "Planned"
+state = "Implemented"
 evidence = "state/side-effect/dependency/security/accessibility/hosting findings and reviewed manual-decision fixtures"
 
 [[gate]]
 id = "EDR-07-CODEMOD"
-state = "Planned"
+state = "Implemented"
 evidence = "opt-in codemod preview/diff, idempotency, formatting/import/comment preservation, provenance, and unsafe-pattern refusal fixtures"
 
 [[gate]]
 id = "EDR-07-REPORT"
-state = "Planned"
+state = "Implemented"
 evidence = "deterministic bounded redacted text/JSON/SARIF reports, schema negotiation, threshold exit codes, and injection fixtures"
 
 [[gate]]
 id = "EDR-07-EXAMPLES"
-state = "Planned"
+state = "Implemented"
 evidence = "side-by-side Streamlit/Edron/native examples with outcome, HTTP, accessibility, no-JavaScript, and cutover evidence"
 
 [[gate]]
 id = "EDR-07-REGRESSION"
-state = "Planned"
+state = "Implemented"
 evidence = "Edron 0.6 regression; migration golden/adversarial suites; clean package install; wheel/sdist and upgrade checks"

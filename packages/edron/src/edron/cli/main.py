@@ -7,6 +7,7 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from edron.diagnostics import DiagnosticReport, finding
+from edron.migrate.cli import build_migrate_parser
 from edron.scaffolds import TEMPLATES, create_scaffold
 from edron.tooling import check_source, doctor, explain_application, load_application
 
@@ -72,8 +73,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     new.add_argument("--template", choices=TEMPLATES, default="minimal")
     new.add_argument("--overwrite", action="store_true")
 
+    build_migrate_parser(sub)
+
     args = parser.parse_args(argv)
     try:
+        if hasattr(args, "func"):
+            return args.func(args)
         if args.command == "run":
             application = load_application(args.application)
             import uvicorn

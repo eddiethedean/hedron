@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0] — 2026-08-27
+
+### Added
+
+- Bounded, no-execution `edron migrate streamlit` analysis and Edron-native project generation.
+- Deterministic JSON, text, and SARIF migration reports with source maps and a review checklist.
+- Opt-in syntax-only codemods for safe Edron API spelling migrations.
+
 ## [0.6.0] — 2026-08-26
 
 ### Added

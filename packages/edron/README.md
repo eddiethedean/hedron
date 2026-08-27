@@ -13,6 +13,11 @@ internal tools, data workspaces, long-running jobs, and reusable feature package
 ordinary Python, run one command, and get accessible HTML with progressive enhancement—without
 maintaining a separate frontend application or learning a callback-heavy UI model.
 
+For existing Streamlit projects, `edron migrate streamlit app.py --out migrated-app` produces a
+fresh Edron project, deterministic review report, and source map. The migration is static and
+review-first: source files are never executed or overwritten, and uncertain behavior is called out
+as a finding or TODO.
+
 ## A first page in minutes
 
 Install Edron, create `app.py`, and start the development server:
