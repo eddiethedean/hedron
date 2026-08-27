@@ -210,6 +210,12 @@ class HedronFlask:
 
         return decorator
 
+    def include(self, feature: object, *, app_id: str | None = None) -> object:
+        """Include one validated feature bundle through the canonical 1.0 spelling."""
+        from hedron_flask.catalog import include_feature
+
+        return include_feature(feature, app_id=app_id or self.hedron_app_id)  # type: ignore[arg-type]
+
     def render(
         self,
         value: NodeLike | Component[Any] | RenderResult,
