@@ -25,7 +25,7 @@ Do not translate “rerun” literally. Identify why the rerun happened.
 | Change a shareable filter | GET page or GET fragment | Page/region rendered from query parameters |
 | Submit several inputs together | GET form for filters; POST action for a write | Page, fragment, or 303 redirect |
 | Run a button side effect | POST `@app.action` | Persist, then redirect or return a fragment |
-| Refresh one expensive panel | GET `@app.fragment` | `swap(...)` into a declared region |
+| Refresh one expensive panel | GET `@app.view` | `swap(...)` into a declared region |
 | Poll job progress | Repeated GET from `Poll` | Status fragment |
 | Navigate to another screen | GET `@app.page` route | Full `Page` at a stable URL |
 | Abort because input is invalid | Validate before work; return an error response/component | 4xx or validation fragment |
@@ -117,7 +117,7 @@ to mutation routes, never to a component's `render()` method or a safe GET route
 The concepts are related but not identical:
 
 - Streamlit `st.fragment` reruns a portion of Python code independently.
-- Hedron `@app.fragment` handles a distinct HTTP request and returns replacement HTML.
+- Hedron `@app.view` handles a distinct HTTP request and returns replacement HTML.
 
 ```python
 from hedron import RefreshButton, html, swap
@@ -129,7 +129,7 @@ def status_panel():
     return html.div(load_status(), id=status.id)
 
 
-@app.fragment("/status", region=status)
+@app.view("/status", fragment_regions=(status,))
 def refresh_status():
     return swap(status_panel())
 

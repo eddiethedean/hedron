@@ -89,7 +89,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Pages, fragments, built-ins | `hedron` + `hedron-core` | Supported |
 | FastAPI routing, CSRF profiles, CLI, testing helpers | `hedron` | Supported |
 | HTMX fragment loops, `InteractionResult` | `hedron` | Supported |
-| `@app.refreshable` / `@app.command` / `refresh()` / `PatchSet` | `hedron` / `hedron-core` | Supported; API `beta`; compiles into the existing region / OOB stack |
+| `@app.view` / `@app.action` / `refresh()` / `PatchSet` | `hedron` / `hedron-core` | Supported; compiles into the existing region / OOB stack |
 | `ViewParams` / `FormBody` / `ActionHandle.form()` / `OutcomeMap` / class handlers | `hedron` / `hedron-core` | Supported; API `beta`; opt-in on 0.43 handles |
 | `FeatureBundle` / `Hedron.include_feature` / `DataWorkspace` / `ChartInteraction` | `hedron-core` / `hedron` / `hedron-data` / `hedron-charts` | Supported; API `beta`; compiles onto 0.43–0.45 handles; not an executor |
 | Chat / Dialog surfaces | `hedron` | Supported; history application-owned |

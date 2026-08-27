@@ -62,7 +62,7 @@ Append the next fragment when a pagination sentinel is revealed.
         )
 
 
-    @app.fragment("/events", region=feed)
+    @app.view("/events", fragment_regions=(feed,))
     def more():
         return swap(Fragment(html.li("Tests passed"), html.li("Release published")))
     ```

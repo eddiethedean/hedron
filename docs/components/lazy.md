@@ -59,7 +59,7 @@ Load a component fragment when its placeholder enters the document.
         )
 
 
-    @app.fragment("/activity-feed", region=box)
+    @app.view("/activity-feed", fragment_regions=(box,))
     def feed():
         return swap(
             html.div(

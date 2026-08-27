@@ -60,7 +60,7 @@ Reserve space for content that is still loading.
         )
 
 
-    @app.fragment("/profile", region=box)
+    @app.view("/profile", fragment_regions=(box,))
     def load():
         return swap(
             html.div(

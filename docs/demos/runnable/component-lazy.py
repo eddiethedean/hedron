@@ -30,7 +30,7 @@ def home() -> Page:
     )
 
 
-@app.fragment("/activity-feed", region=box)
+@app.view("/activity-feed", fragment_regions=(box,))
 def feed():
     return swap(
         html.div(

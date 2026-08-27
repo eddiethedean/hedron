@@ -32,16 +32,16 @@ def home() -> Page:
     )
 
 
-@app.fragment("/home", region=panel)
+@app.view("/home", fragment_regions=(panel,))
 def home_frag():
     return swap(panel_body("Home", "Overview metrics stay in MainPanel."))
 
 
-@app.fragment("/reports", region=panel)
+@app.view("/reports", fragment_regions=(panel,))
 def reports_frag():
     return swap(panel_body("Reports", "Reports fragment swapped into the panel."))
 
 
-@app.fragment("/settings", region=panel)
+@app.view("/settings", fragment_regions=(panel,))
 def settings_frag():
     return swap(panel_body("Settings", "Settings fragment; side nav stays put."))

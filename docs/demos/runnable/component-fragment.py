@@ -32,7 +32,7 @@ def home() -> Page:
     )
 
 
-@app.fragment("/profile-fragment", region=target)
+@app.view("/profile-fragment", fragment_regions=(target,))
 def refresh():
     return swap(
         Fragment(

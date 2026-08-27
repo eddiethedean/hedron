@@ -57,7 +57,7 @@ Present a recoverable request failure and optional HTMX retry.
         )
 
 
-    @app.fragment("/activity", region=box)
+    @app.view("/activity", fragment_regions=(box,))
     def retry():
         return swap(
             html.div(

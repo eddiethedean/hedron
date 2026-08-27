@@ -87,7 +87,7 @@ Stable out-of-band swap root with a reserved id.
         )
 
 
-    @app.component("/profile", methods=["POST"], fragment_regions=(main, host))
+    @app.action("/profile", method="POST", fragment_regions=(main, host))
     def save() -> InteractionResult:
         return InteractionResult(
             content=primary(draft=False),

@@ -60,7 +60,7 @@ Show a polite busy status while a request or deferred component is pending.
         )
 
 
-    @app.fragment("/activity", region=box)
+    @app.view("/activity", fragment_regions=(box,))
     def load():
         return swap(
             html.div(

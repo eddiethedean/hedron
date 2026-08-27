@@ -104,12 +104,12 @@ The docs simulation does not load MapLibre or request tiles.
         )
 
 
-    @app.fragment("/layers/incidents", region=panel)
+    @app.view("/layers/incidents", fragment_regions=(panel,))
     def incidents():
         return swap(map_panel(INCIDENTS, label="Active incidents"))
 
 
-    @app.fragment("/layers/inspections", region=panel)
+    @app.view("/layers/inspections", fragment_regions=(panel,))
     def inspections():
         return swap(map_panel(INSPECTIONS, label="Scheduled inspections"))
     ```

@@ -49,6 +49,6 @@ def home() -> Page:
     )
 
 
-@app.fragment("/status", region=status)
+@app.view("/status", fragment_regions=(status,))
 def refresh():
     return swap(status_panel())

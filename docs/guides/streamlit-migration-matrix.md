@@ -95,7 +95,7 @@ for community packages.
 | Streamlit | Closest Hedron path | Fit | Migration note |
 |---|---|---|---|
 | Default widget rerun | GET page/fragment or POST action | **Equivalent** | Translate the user's intent, not the rerun mechanism. |
-| `st.fragment` | `app.region`, `@app.fragment`, `swap(...)` | **Equivalent** | A distinct HTTP request returns HTML for an allowlisted target. |
+| `st.fragment` | `app.region`, `@app.view`, `swap(...)` | **Equivalent** | A distinct HTTP request returns HTML for an allowlisted target. |
 | `st.dialog` | `Dialog` + explicit fragment/action | **Equivalent** | Preserve focus, close behavior, and no-JS outcome where critical. |
 | `st.rerun` | Fragment response or POST→303 redirect | **No parity** | Do not add a hidden rerun loop. |
 | `st.stop` | Validation/early return/HTTP exception | **No parity** | Make the response state explicit. |

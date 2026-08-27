@@ -317,6 +317,25 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     out: list[ApiMigrationFinding] = []
     seen: set[tuple[int, int, str]] = set()
     records = {record.old_path: record for record in PUBLIC_FUTURE_WARNINGS.records()}
+    # ``hedron_sim.SimApp`` intentionally has its own fragment registration
+    # vocabulary and accepts simulator-only route options.  The migration
+    # checker must not mistake that package-native API for Hedron's removed
+    # application facade.  Keep this inference syntactic so checking remains
+    # non-executing; unknown receivers continue to be reported conservatively.
+    simulator_receivers: set[str] = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, (ast.Assign, ast.AnnAssign)):
+            continue
+        value = node.value
+        if not isinstance(value, ast.Call):
+            continue
+        constructor = _dotted(value.func)
+        if constructor is None or constructor.rsplit(".", 1)[-1] != "SimApp":
+            continue
+        targets = node.targets if isinstance(node, ast.Assign) else (node.target,)
+        simulator_receivers.update(
+            target.id for target in targets if isinstance(target, ast.Name)
+        )
     out.extend(_import_findings(tree, display_path=display_path, records=records))
     seen.update((item.line, item.column - 1, item.old_path) for item in out)
 
@@ -385,6 +404,10 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
             dotted = _dotted(node.func)
             if dotted not in records:
                 continue
+            if dotted.startswith("app.") and isinstance(node.func, ast.Attribute):
+                receiver = node.func.value
+                if isinstance(receiver, ast.Name) and receiver.id in simulator_receivers:
+                    continue
             manual = dotted == "app.fragment" and any(
                 kw.arg in {"region", "regions", "fragment_regions"} for kw in node.keywords
             )
@@ -393,6 +416,10 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
             for decorator in node.decorator_list:
                 dotted = _dotted(decorator)
                 if dotted in records:
+                    if dotted.startswith("app.") and isinstance(decorator, ast.Attribute):
+                        receiver = decorator.value
+                        if isinstance(receiver, ast.Name) and receiver.id in simulator_receivers:
+                            continue
                     add(decorator, dotted)
     # Reflection is intentionally never rewritten.  Report it as unknown so a
     # clean AST result cannot be mistaken for a complete migration proof.

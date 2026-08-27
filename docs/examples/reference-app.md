@@ -339,7 +339,7 @@ Prefer this path when validating production posture —
 | Session/user gate | `require_user` + router `dependencies=[Depends(require_user)]` | Auth gate |
 | CSRF on forms | `csrf_token_for_request` + hidden field / `hx-headers` in `_create_form` | CSRF on forms |
 | Create user POST | `@users.action("", method="POST")` | Fragment list refresh |
-| Fragment table refresh | `@users.component("/table")`, addressable `user_table` | Fragment list refresh |
+| Fragment table refresh | `@users.view("/table")`, addressable `user_table` | Fragment list refresh |
 | DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=0.66.2,<0.67` or the monorepo source) | Chart panel refresh (sim) |
 | Color mode | `ColorModeToggle` + preference cookie helpers | — |
 | Production archetype | compose + `requirements-prod.txt` + README ingredient table | — |

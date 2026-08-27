@@ -56,11 +56,11 @@ def home() -> Page:
     )
 
 
-@app.fragment("/places", region=panel)
+@app.view("/places", fragment_regions=(panel,))
 def all_places():
     return swap(map_panel())
 
 
-@app.fragment("/places/civic", region=panel)
+@app.view("/places/civic", fragment_regions=(panel,))
 def civic_places():
     return swap(map_panel(PLACES[1:], label="Civic places"))

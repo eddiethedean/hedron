@@ -475,7 +475,7 @@ python -m pip install "hedron-charts>=0.2.1,<0.3"
 Coordinated Beta train cut for refreshable views, command handles, and updates
 (D-071 / RFC-0070).
 
-- `@app.refreshable` / `@app.command` return handles that own routes, hosts, and controls.
+- `@app.view` / `@app.action` return handles that own routes, hosts, and controls.
 - `refresh()` and `Patch` / `PatchSet` compile into the existing `InteractionResult` / OOB stack.
 - Low-level `region` / `swap` APIs remain supported. New symbols begin Beta.
 - Pin `hedron>=0.66.2,<0.67`. Charts remain on `hedron-charts>=0.2.1,<0.3`.

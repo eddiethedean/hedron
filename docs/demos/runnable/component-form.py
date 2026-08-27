@@ -68,7 +68,7 @@ def home(request: Request) -> Page:
     return Page(Stack(form_body(csrf_token=_csrf(request))), title="Form")
 
 
-@app.component("/demo", methods=["POST"], fragment_regions=(region,))
+@app.action("/demo", method="POST", fragment_regions=(region,))
 async def submit(request: Request) -> InteractionResult:
     form = await request.form()
     try:

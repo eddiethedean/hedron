@@ -70,7 +70,7 @@ Render crawlable page links that optionally swap a target through HTMX.
         )
 
 
-    @app.fragment("/results", region=results)
+    @app.view("/results", fragment_regions=(results,))
     def page_frag(request: Request):
         page = int(request.query_params.get("page", "1"))
         page = page if page in PAGES else 1
