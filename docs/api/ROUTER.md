@@ -27,9 +27,8 @@ def users_page() -> Page:
 ```
 
 `HedronRouter` extends FastAPI `APIRouter` and supports prefixes, tags, dependencies,
-responses, and metadata. It adds `page`, `refreshable`, `command`, `component`, and
-`action` registration decorators backed by `HedronRoute`. `Hedron` exposes the same
-decorators on its root router.
+responses, and metadata. It adds the canonical `page`, `view`, and `action` registration
+decorators backed by `HedronRoute`. `Hedron` exposes the same decorators on its root router.
 
 ```python
 @users.view("/table")
@@ -50,7 +49,7 @@ from hedron import FragmentRegion, InteractionResult
 USERS_TABLE = FragmentRegion(id="users-table", selector="#users-table")
 
 
-@users.component("/table", fragment_regions=(USERS_TABLE,))
+@users.view("/table", fragment_regions=(USERS_TABLE,))
 async def user_table() -> InteractionResult: ...
 ```
 
@@ -64,13 +63,8 @@ conflicting `InteractionResult.policy.declared_regions` value.
 | `@router.page(path, **kwargs)` | `Page` / document | PAGE mode for navigation; fragment for `HX-Request`; accepts `fragment_regions` |
 | `@router.view(path, **kwargs)` | Component / fragment | Advanced GET view route; use `Hedron.view` for owned handles |
 | `@router.action(path, method=..., **kwargs)` | Component or redirect | Advanced CSRF action route; use `Hedron.action` for typed handles |
-| `@router.refreshable(path, **kwargs)` | `FragmentHandle` | 0.67 migration helper for `view` |
-| `@router.command(path, **kwargs)` | `ActionHandle` | 0.67 migration helper for typed actions |
-| `@router.component(path, **kwargs)` | Component / fragment | Lower-level FRAGMENT mode; accepts `fragment_regions` |
-
-On the flagship `Hedron` app (root router), prefer `@app.page`, `@app.view`, and `@app.action`.
-`app.region(...)` plus `@app.fragment(...)` remain available only for explicit lower-level
-HTMX allowlists.
+On the flagship `Hedron` app (root router), use `@app.page`, `@app.view`, and `@app.action`.
+Removed 0.67 spellings are handled by the static migration tooling and are not runtime aliases.
 
 `HedronRouter` exposes the same decorators. See [Hedron](HEDRON.md) and
 [Refreshable views](REFRESHABLE_VIEWS.md).
@@ -114,7 +108,7 @@ table on [Hedron](HEDRON.md#methods) (`path`, `methods` / `method`, `name`,
 
 | API | Returns |
 |---|---|
-| `@router.page` / `@router.component` / `@router.action` | The decorated callable (route registered) |
+| `@router.page` / `@router.view` / `@router.action` | The decorated callable (route registered) |
 | Handler body | `Page`, component tree, `InteractionResult`, model JSON, or explicit `Response` |
 | `include_component(descriptor, path=...)` | Registered routes for the addressable descriptor |
 | Rendered HTMX/HTML | Hedron HTML response classes unless an explicit `Response` is returned |
