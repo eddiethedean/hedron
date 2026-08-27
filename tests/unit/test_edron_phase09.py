@@ -42,12 +42,12 @@ def test_app_records_interactions_for_explanation() -> None:
     assert facts["browser_contract"]["hedron_train"] == "0.67.0"
 
 
-def test_scaffold_pins_edron_and_hedron_067(tmp_path: Path) -> None:
+def test_scaffold_supports_the_hedron_1_0_train(tmp_path: Path) -> None:
     create_scaffold("Phase 0.9", tmp_path / "app")
     project = (tmp_path / "app" / "pyproject.toml").read_text(encoding="utf-8")
     assert '"edron>=0.9,<0.10"' in project
-    assert '"hedron>=0.67.0,<0.68"' in project
-    assert '"hedron-data>=0.67.0,<0.68"' in project
+    assert '"hedron>=0.67.0,<2.0"' in project
+    assert '"hedron-data>=0.67.0,<2.0"' in project
 
 
 def test_deprecated_paths_are_migration_only_markers() -> None:

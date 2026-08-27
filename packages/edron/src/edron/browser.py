@@ -1,4 +1,4 @@
-"""Edron's thin browser contract over the native Hedron 0.67 planner."""
+"""Edron's thin browser contract over the native Hedron planner."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from hedron import (
 )
 
 HEDRON_BROWSER_TRAIN = "0.67.0"
-HEDRON_BROWSER_REQUIREMENT = ">=0.67.0,<0.68"
+HEDRON_BROWSER_REQUIREMENT = ">=0.67.0,<2.0"
 HEDRON_BROWSER_FORWARD_TARGET = "1.0.0"
 
 

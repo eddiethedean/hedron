@@ -155,6 +155,33 @@ def test_reflection_is_unknown_and_never_rewritten(tmp_path: Path) -> None:
     assert unified_diff(source) == ""
 
 
+def test_syntax_errors_are_unknown_and_require_review(tmp_path: Path) -> None:
+    source = tmp_path / "broken.py"
+    source.write_text("@app.component('/')\ndef broken(\n", encoding="utf-8")
+
+    report = scan_api(source)
+
+    assert report.requires_review is True
+    assert len(report.findings) == 1
+    assert report.findings[0].confidence == "unknown"
+    assert report.findings[0].kind == "error"
+
+
+def test_unknown_legacy_receiver_is_reported_for_manual_review(tmp_path: Path) -> None:
+    source = tmp_path / "aliased.py"
+    source.write_text(
+        "from hedron import Hedron\nsite = Hedron()\n@site.component('/')\ndef old(): pass\n",
+        encoding="utf-8",
+    )
+
+    report = scan_api(source)
+
+    assert report.requires_review is True
+    assert len(report.findings) == 1
+    assert report.findings[0].confidence == "unknown"
+    assert report.findings[0].automation_status == "manual-review"
+
+
 def test_transform_is_non_executing_idempotent_and_refuses_overwrite(tmp_path: Path) -> None:
     source = tmp_path / "app.py"
     source.write_text(
