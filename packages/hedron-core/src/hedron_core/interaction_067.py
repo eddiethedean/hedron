@@ -339,10 +339,25 @@ class Outcome:
         return cls(OutcomeKind.NO_CONTENT)
 
     @classmethod
-    def refresh(cls, *handles: str) -> Outcome:
-        if not handles or any(not handle.strip() for handle in handles):
+    def refresh(cls, *handles: object) -> Outcome:
+        """Refresh one or more registered view handles by logical id.
+
+        Callers may pass a handle object (anything exposing ``logical_id``) or
+        an already-normalized logical-id string.  The wire payload stays a
+        redacted string so outcomes never serialize application objects.
+        """
+        normalized: list[str] = []
+        for handle in handles:
+            if isinstance(handle, str):
+                value = handle.strip()
+            else:
+                value = str(getattr(handle, "logical_id", "") or "").strip()
+            if not value:
+                raise ValueError("refresh handles must be non-empty logical ids or view handles")
+            normalized.append(value)
+        if not normalized:
             raise ValueError("refresh requires at least one handle")
-        return cls(OutcomeKind.REFRESH, {"handles": list(handles)})
+        return cls(OutcomeKind.REFRESH, {"handles": normalized})
 
     @classmethod
     def patch(cls, target: str, content: object) -> Outcome:

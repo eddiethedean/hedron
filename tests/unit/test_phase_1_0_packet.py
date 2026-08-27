@@ -159,7 +159,7 @@ def test_phase_1_0_refresh_outcome_targets_owned_view_without_full_reload() -> N
 
     @app.action("/refresh")
     def refresh_status() -> Outcome:
-        return Outcome.refresh("status")
+        return Outcome.refresh(status)
 
     @app.page("/")
     def home():
