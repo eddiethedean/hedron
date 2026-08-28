@@ -655,6 +655,10 @@ cmd_realwb() {
 
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
+  if [[ "$GATE_VERSION" == "1.0.0" ]]; then
+    run_py scripts/check_100.py --gate PKG-100 --verify
+    return 0
+  fi
   if [[ "${HEDRON_CI_ALL:-0}" == 1 ]]; then
     echo "skip: packaging (verify_pkg_35–49 already covered by quality + evidence)"
     return 0
