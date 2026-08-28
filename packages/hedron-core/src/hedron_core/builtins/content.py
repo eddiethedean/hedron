@@ -7,6 +7,8 @@ from typing import Literal, cast
 
 from hedron_core.builtins._base import ElementProps, class_names
 from hedron_core.builtins.appearance import (
+    TEXT_WRAPS,
+    TRACKING,
     TYPE_EFFECTS,
     TYPE_MEASURES,
     TYPOGRAPHY_ROLES,
@@ -50,6 +52,8 @@ def _typography_attrs(
     lines: int | None = None,
     measure: str | None = None,
     effect: str | None = None,
+    tracking: str | None = None,
+    wrap: str | None = None,
 ) -> dict[str, HtmlAttrValue]:
     """Return class/data attributes for a semantic typography role."""
     attrs: dict[str, HtmlAttrValue] = {}
@@ -75,6 +79,10 @@ def _typography_attrs(
         data["hedron-type-measure"] = measure
     if effect is not None:
         data["hedron-type-effect"] = effect
+    if tracking is not None:
+        data["hedron-type-tracking"] = tracking
+    if wrap is not None:
+        data["hedron-type-wrap"] = wrap
     if data:
         attrs["data"] = data
     return attrs
@@ -101,6 +109,8 @@ class TextProps(Props):
     lines: int | None = None
     measure: TypographyMeasure | None = None
     effect: TypographyEffect | None = None
+    tracking: str | None = None
+    wrap: str | None = None
     class_: str | None = None
 
 
@@ -117,6 +127,8 @@ class Text(Component[TextProps]):
         lines: int | None = None,
         measure: TypographyMeasure | None = None,
         effect: TypographyEffect | None = None,
+        tracking: str | None = None,
+        wrap: str | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
@@ -124,6 +136,8 @@ class Text(Component[TextProps]):
         require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
         require_choice(measure, TYPE_MEASURES, label="measure")
         require_choice(effect, TYPE_EFFECTS, label="effect")
+        require_choice(tracking, TRACKING, label="tracking")
+        require_choice(wrap, TEXT_WRAPS, label="wrap")
         super().__init__(
             TextProps(
                 content=content,
@@ -133,6 +147,8 @@ class Text(Component[TextProps]):
                 lines=_validate_lines(lines),
                 measure=measure,
                 effect=effect,
+                tracking=tracking,
+                wrap=wrap,
                 class_=class_,
                 **kwargs,
             )
@@ -147,9 +163,13 @@ class Text(Component[TextProps]):
             lines=self.props.lines,
             measure=self.props.measure,
             effect=self.props.effect,
+            tracking=self.props.tracking,
+            wrap=self.props.wrap,
         )
         data = dict(cast(dict[str, str | bool | int | float | None], attrs.get("data", {})))
-        data.update(presentation_data("Text"))
+        scoped: dict[str, str | bool | int | float | None] = dict(presentation_data("Text"))
+        scoped.update(data)
+        data = scoped
         attrs["data"] = data
         return getattr(html, self.props.as_)(self.props.content, **attrs)
 
@@ -162,6 +182,8 @@ class HeadingProps(Props):
     lines: int | None = None
     measure: TypographyMeasure | None = None
     effect: TypographyEffect | None = None
+    tracking: str | None = None
+    wrap: str | None = None
     class_: str | None = None
 
 
@@ -178,6 +200,8 @@ class Heading(Component[HeadingProps]):
         lines: int | None = None,
         measure: TypographyMeasure | None = None,
         effect: TypographyEffect | None = None,
+        tracking: str | None = None,
+        wrap: str | None = None,
         class_: str | None = None,
         **kwargs: object,
     ) -> None:
@@ -185,6 +209,8 @@ class Heading(Component[HeadingProps]):
         require_choice(overflow, ("wrap", "break", "truncate", "clip"), label="overflow")
         require_choice(measure, TYPE_MEASURES, label="measure")
         require_choice(effect, TYPE_EFFECTS, label="effect")
+        require_choice(tracking, TRACKING, label="tracking")
+        require_choice(wrap, TEXT_WRAPS, label="wrap")
         super().__init__(
             HeadingProps(
                 content=content,
@@ -194,6 +220,8 @@ class Heading(Component[HeadingProps]):
                 lines=_validate_lines(lines),
                 measure=measure,
                 effect=effect,
+                tracking=tracking,
+                wrap=wrap,
                 class_=class_,
                 **kwargs,
             )
@@ -208,9 +236,13 @@ class Heading(Component[HeadingProps]):
             lines=self.props.lines,
             measure=self.props.measure,
             effect=self.props.effect,
+            tracking=self.props.tracking,
+            wrap=self.props.wrap,
         )
         data = dict(cast(dict[str, str | bool | int | float | None], attrs.get("data", {})))
-        data.update(presentation_data("Heading"))
+        scoped: dict[str, str | bool | int | float | None] = dict(presentation_data("Heading"))
+        scoped.update(data)
+        data = scoped
         attrs["data"] = data
         return getattr(html, f"h{self.props.level}")(self.props.content, **attrs)
 

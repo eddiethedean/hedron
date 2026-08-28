@@ -29,6 +29,7 @@ __all__ = [
     "REQUIRED_A11Y_TOKENS",
     "THEME_DENSITIES",
     "THEME_CONTENT_WIDTHS",
+    "THEME_TYPOGRAPHY_FEATURE_ROLES",
     "Theme",
     "aurora_theme",
     "builtin_themes",
@@ -90,6 +91,7 @@ PRINT_SAFE_TOKENS: tuple[str, ...] = (
 # ``hedron_core.builtins.appearance`` without importing the built-ins package.
 THEME_DENSITIES: tuple[str, ...] = ("compact", "comfortable", "spacious")
 THEME_CONTENT_WIDTHS: tuple[str, ...] = ("narrow", "default", "wide", "full")
+THEME_TYPOGRAPHY_FEATURE_ROLES: tuple[str, ...] = ("body", "display", "code", "tabular")
 _CONTENT_WIDTH_VALUES: dict[str, str] = {
     "narrow": "52rem",
     "default": "74rem",
@@ -322,6 +324,7 @@ class Theme:
     nav_width: str | None = None
     content_width: str | None = None
     typography_features: Mapping[str, int] = field(default_factory=dict)
+    typography_role_features: Mapping[str, Mapping[str, int]] = field(default_factory=dict)
     elevation: Mapping[str, str] = field(default_factory=dict)
     parent: str | None = None
     accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
@@ -402,13 +405,36 @@ class Theme:
                     ),
                     remediation="Use tags such as 'tnum' or 'cv02'.",
                 )
-            if not isinstance(value, int) or value < 0 or value > 99:
+            if not isinstance(value, int) or isinstance(value, bool) or value < 0 or value > 99:
                 raise error(
                     HED_THEME_INVALID,
                     title="Invalid OpenType feature value",
                     explanation=f"Feature {tag!r} value must be an integer from 0 to 99.",
                     remediation="Pass 0/1 for boolean features or a bounded stylistic-set value.",
                 )
+        for role, features in self.typography_role_features.items():
+            if role not in THEME_TYPOGRAPHY_FEATURE_ROLES:
+                raise error(
+                    HED_THEME_INVALID,
+                    title="Invalid OpenType feature role",
+                    explanation=f"Feature role {role!r} is not supported.",
+                    remediation=(
+                        "Use body, display, code, or tabular for role-specific font features."
+                    ),
+                )
+            for tag, value in features.items():
+                feature_name = f"{role}.{tag}"
+                if re.fullmatch(r"[A-Za-z0-9]{4}", str(tag)) is None or (
+                    not isinstance(value, int) or isinstance(value, bool) or value < 0 or value > 99
+                ):
+                    raise error(
+                        HED_THEME_INVALID,
+                        title="Invalid role-specific OpenType feature",
+                        explanation=(
+                            f"Feature {feature_name} must use a four-character tag and value 0..99."
+                        ),
+                        remediation="Use validated OpenType tags such as tnum=1 or cv02=1.",
+                    )
         if self.parent is not None and (
             not self.parent or not self.parent.replace("-", "").replace("_", "").isalnum()
         ):
@@ -443,6 +469,7 @@ class Theme:
         nav_width: str | None = None,
         content_width: str | None = None,
         typography_features: Mapping[str, int] | None = None,
+        typography_role_features: Mapping[str, Mapping[str, int]] | None = None,
         elevation: Mapping[str, str] | None = None,
         accessibility_modes: Mapping[str, Mapping[str, str]] | None = None,
     ) -> Theme:
@@ -471,6 +498,14 @@ class Theme:
                 **dict(merged_accessibility.get(mode, {})),
                 **dict(values),
             }
+        merged_role_features: dict[str, Mapping[str, int]] = {
+            role: dict(values) for role, values in self.typography_role_features.items()
+        }
+        for role, values in (typography_role_features or {}).items():
+            merged_role_features[role] = {
+                **dict(merged_role_features.get(role, {})),
+                **dict(values),
+            }
         return replace(
             self,
             name=name,
@@ -486,6 +521,7 @@ class Theme:
                 **dict(self.typography_features),
                 **dict(typography_features or {}),
             },
+            typography_role_features=merged_role_features,
             elevation={**dict(self.elevation), **dict(elevation or {})},
             parent=self.name,
             accessibility_modes=merged_accessibility,
@@ -658,6 +694,12 @@ def design_system_vars(theme: Theme) -> dict[str, str]:
         )
     if theme.typography_features.get("tnum") == 1:
         variables["--hedron-font-variant-numeric"] = "tabular-nums"
+    for role, features in sorted(theme.typography_role_features.items()):
+        variables[f"--hedron-font-feature-settings-{role}"] = ", ".join(
+            f'"{tag}" {value}' for tag, value in sorted(features.items())
+        )
+        if features.get("tnum") == 1:
+            variables[f"--hedron-font-variant-numeric-{role}"] = "tabular-nums"
     overlays = {**OVERLAY_ELEVATION_TOKENS}
     extra: dict[str, str] = {}
     for key, value in theme.elevation.items():

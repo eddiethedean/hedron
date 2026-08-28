@@ -507,7 +507,12 @@ def resolve_deployment(
         alias_name="PUBLIC_BASE_URL",
         warnings=warnings,
     )
-    if public_explicit is None and mount_explicit is not None:
+    if (
+        public_explicit is None
+        and mount_explicit is not None
+        and rs_server_url(env)
+        and not job_context
+    ):
         uvicorn_root = env.get(_UVICORN_ROOT_PATH)
         if uvicorn_root:
             public_explicit = _uvicorn_root_path_public_base(uvicorn_root)
