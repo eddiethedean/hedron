@@ -65,8 +65,12 @@ class RenderSession:
             component_renderer=component_renderer,
             browser_collector=browser_collector,
         )
-        self._browser_plan_builder = browser_plan_builder or DefaultBrowserPlanBuilder()
-        self._serializer = serializer or serialize_result
+        self._browser_plan_builder = (
+            browser_plan_builder
+            if browser_plan_builder is not None
+            else DefaultBrowserPlanBuilder()
+        )
+        self._serializer = serializer if serializer is not None else serialize_result
         self._render_count = 0
 
     @property
