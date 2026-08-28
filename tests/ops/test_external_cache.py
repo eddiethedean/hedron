@@ -220,6 +220,14 @@ def test_redis_cache_rejects_poisoned_non_standard_json() -> None:
         backend.lookup("x")
 
 
+def test_redis_cache_rejects_json_numbers_that_overflow_to_infinity() -> None:
+    client = _StubRedis()
+    backend = RedisCacheBackend(client)
+    client._store["h1:c:v:x"] = '{"value":1e400}'
+    with pytest.raises(ValueError, match="Corrupt cache value"):
+        backend.lookup("x")
+
+
 @pytest.mark.parametrize("ttl", [math.nan, math.inf, -math.inf])
 def test_redis_cache_rejects_non_finite_ttl_without_writes(ttl: float) -> None:
     client = _StubRedis()

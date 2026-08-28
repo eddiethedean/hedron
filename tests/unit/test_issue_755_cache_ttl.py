@@ -41,3 +41,23 @@ def test_edron_cache_rejects_invalid_ttl_at_definition(ttl: object) -> None:
         @ed.cache_data(ttl=ttl)  # type: ignore[arg-type]
         def cached() -> int:
             return 1
+
+
+@pytest.mark.parametrize("ttl", [1e308, 10**400])
+def test_cache_rejects_ttls_outside_the_shared_backend_range(ttl: object) -> None:
+    backend = InMemoryCacheBackend()
+    with pytest.raises(ValueError, match="finite number"):
+        backend.set("x", {"value": 1}, ttl=ttl)  # type: ignore[arg-type]
+    assert backend.lookup("x") == (False, None)
+
+    with pytest.raises(ValueError, match="finite number"):
+
+        @cache_data(ttl=ttl)  # type: ignore[arg-type]
+        def cached_data() -> int:
+            return 1
+
+    with pytest.raises(ValueError, match="finite number"):
+
+        @ed.cache_data(ttl=ttl)  # type: ignore[arg-type]
+        def cached_edron_data() -> int:
+            return 1

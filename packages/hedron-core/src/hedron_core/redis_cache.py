@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 from collections.abc import Iterable
 from typing import Any, Protocol, cast, runtime_checkable
 
@@ -21,6 +22,13 @@ REDIS_JOB_PREFIX = "h1:job:"
 
 def _reject_json_constant(value: str) -> None:
     raise ValueError(f"non-standard JSON constant {value}")
+
+
+def _parse_finite_json_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        raise ValueError(f"JSON number {value} exceeds the finite float range")
+    return parsed
 
 
 def _keyspace_overlaps(left: str, right: str) -> bool:
@@ -168,7 +176,11 @@ class RedisCacheBackend(CacheBackend):
         if isinstance(raw, bytes):
             raw = raw.decode("utf-8")
         try:
-            return True, json.loads(raw, parse_constant=_reject_json_constant)
+            return True, json.loads(
+                raw,
+                parse_constant=_reject_json_constant,
+                parse_float=_parse_finite_json_float,
+            )
         except (json.JSONDecodeError, ValueError) as exc:
             raise ValueError(f"Corrupt cache value for {key}") from exc
 
