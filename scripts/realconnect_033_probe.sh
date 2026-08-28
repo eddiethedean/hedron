@@ -280,7 +280,7 @@ fi
 if [[ "$BUNDLE_MODE" == "wheels" ]]; then
   WHEEL_DIR="$BUNDLE/wheels"
   mkdir -p "$WHEEL_DIR"
-  for pkg in hedron-core hedron hedron-posit hedron-workbench fastapi-workbench; do
+  for pkg in hedron-core hedron hedron-posit fastapi-workbench; do
     uv build "packages/$pkg" --out-dir "$WHEEL_DIR" -q
   done
   cp examples/connect-reference/requirements.txt "$BUNDLE/requirements.txt"
@@ -301,8 +301,6 @@ else
     packages/hedron-posit/src/hedron_posit/ "$BUNDLE/hedron_posit/"
   rsync -a --exclude '__pycache__' \
     packages/hedron-posit/src/pkg_resources/ "$BUNDLE/pkg_resources/"
-  rsync -a --exclude '__pycache__' \
-    packages/hedron-workbench/src/hedron_workbench/ "$BUNDLE/hedron_workbench/"
   rsync -a --exclude '__pycache__' \
     packages/fastapi-workbench/src/fastapi_workbench/ "$BUNDLE/fastapi_workbench/"
   log "bundle_mode=vendor"

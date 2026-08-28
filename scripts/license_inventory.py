@@ -24,6 +24,10 @@ def main() -> int:
         rows.append({"name": "hedron-workspace", "license": "MIT", "path": "LICENSE"})
 
     for pkg in sorted((ROOT / "packages").glob("*")):
+        # The standalone compatibility distribution was removed for 1.0;
+        # historical packet references must not make the current inventory fail.
+        if pkg.name == "hedron-workbench":
+            continue
         lic = pkg / "LICENSE"
         if not lic.is_file():
             errors.append(f"missing {pkg.name}/LICENSE")

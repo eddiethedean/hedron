@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Literal
+from typing import Literal, cast
 
 from hedron_core.builtins._base import ElementProps, class_names
 from hedron_core.builtins.appearance import (
@@ -21,6 +21,7 @@ from hedron_core.builtins.appearance import (
     require_choice,
     responsive_data,
 )
+from hedron_core.builtins.style_scope import presentation_data
 from hedron_core.codes import HED_HTML_0006
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
@@ -28,7 +29,6 @@ from hedron_core.html import html
 from hedron_core.models import Model, Props
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
-from hedron_core.builtins.style_scope import presentation_data
 
 
 def _kids(*children: NodeLike) -> tuple[NodeLike, ...]:
@@ -148,7 +148,9 @@ class Text(Component[TextProps]):
             measure=self.props.measure,
             effect=self.props.effect,
         )
-        attrs["data"] = {**dict(attrs.get("data", {})), **presentation_data("Text")}
+        data = dict(cast(dict[str, str | bool | int | float | None], attrs.get("data", {})))
+        data.update(presentation_data("Text"))
+        attrs["data"] = data
         return getattr(html, self.props.as_)(self.props.content, **attrs)
 
 
@@ -207,7 +209,9 @@ class Heading(Component[HeadingProps]):
             measure=self.props.measure,
             effect=self.props.effect,
         )
-        attrs["data"] = {**dict(attrs.get("data", {})), **presentation_data("Heading")}
+        data = dict(cast(dict[str, str | bool | int | float | None], attrs.get("data", {})))
+        data.update(presentation_data("Heading"))
+        attrs["data"] = data
         return getattr(html, f"h{self.props.level}")(self.props.content, **attrs)
 
 

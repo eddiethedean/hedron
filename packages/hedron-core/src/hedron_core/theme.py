@@ -386,7 +386,10 @@ class Theme:
                 raise error(
                     HED_THEME_INVALID,
                     title="Invalid theme content_width",
-                    explanation=f"content_width={self.content_width!r} is not a supported preset or CSS length.",
+                    explanation=(
+                        f"content_width={self.content_width!r} is not a supported "
+                        "preset or CSS length."
+                    ),
                     remediation="Use narrow, default, wide, full, or a safe CSS length.",
                 )
         for tag, value in self.typography_features.items():
@@ -394,7 +397,9 @@ class Theme:
                 raise error(
                     HED_THEME_INVALID,
                     title="Invalid OpenType feature tag",
-                    explanation=f"Feature tag {tag!r} must contain exactly four ASCII letters/digits.",
+                    explanation=(
+                        f"Feature tag {tag!r} must contain exactly four ASCII letters/digits."
+                    ),
                     remediation="Use tags such as 'tnum' or 'cv02'.",
                 )
             if not isinstance(value, int) or value < 0 or value > 99:
