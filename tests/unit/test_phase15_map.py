@@ -166,3 +166,24 @@ def test_map_geojson_attribute_is_strict_browser_json() -> None:
     assert match is not None
     payload = html_lib.unescape(match.group(1))
     assert json.loads(payload)["features"][0]["id"] == "place-1"
+
+
+def test_map_strips_non_finite_values_from_nested_property_arrays() -> None:
+    node = Map(
+        geojson={
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "place-1",
+                    "properties": {"values": [1, math.nan, [math.inf, 2]]},
+                    "geometry": None,
+                }
+            ],
+        }
+    )
+    markup = render(node, mode=RenderMode.FRAGMENT).html
+    match = re.search(r'data-geojson="([^"]*)"', markup)
+    assert match is not None
+    payload = json.loads(html_lib.unescape(match.group(1)))
+    assert payload["features"][0]["properties"]["values"] == [1, [2]]
