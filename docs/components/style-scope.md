@@ -39,7 +39,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, presentation=None, id=None, class_=None, mark=None)
+StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, presentation=None, recipes=(), id=None, class_=None, mark=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -50,6 +50,7 @@ StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, p
 | `color_mode` | `light | dark | None` | Optional color-mode marker (`data-hedron-color-mode`). |
 | `density` | `compact | comfortable | spacious | None` | Optional density marker (`data-hedron-density`). |
 | `presentation` | `dict[str, str] | None` | Finite slot-to-recipe defaults inherited by descendants. |
+| `recipes` | `Sequence[StyleRecipe]` | Optional scoped recipe catalog used to resolve presentation names into bounded component markers. |
 
 ## Composition and backend behavior
 
@@ -70,7 +71,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Do not pass recipe defaults or arbitrary CSS; only theme, finite variant, color_mode, and density are supported.
+- Do not pass arbitrary CSS or unresolved selectors; use finite StyleRecipe values and documented presentation slots.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

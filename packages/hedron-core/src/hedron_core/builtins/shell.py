@@ -832,22 +832,28 @@ class AppShell(Component[AppShellProps]):
             children.append(header)
         collapsed = self.props.nav_collapsed or self.props.nav_collapse == "always"
         if self.props.nav_collapse == "user":
+            toggle = html.button(
+                "Expand navigation" if collapsed else "Collapse navigation",
+                type="button",
+                aria={
+                    "controls": self._nav_id(),
+                    "expanded": not collapsed,
+                },
+                data={
+                    "hedron-nav-toggle": "true",
+                    "hedron-nav-preference": self.props.nav_preference_key,
+                },
+                class_="hedron-app-shell-nav-toggle",
+            )
             children.append(
-                html.button(
-                    "Expand navigation" if collapsed else "Collapse navigation",
-                    type="button",
-                    aria={
-                        "controls": self._nav_id(),
-                        "expanded": not collapsed,
-                    },
-                    data={
-                        "hedron-nav-toggle": "true",
-                        "hedron-nav-preference": self.props.nav_preference_key,
-                    },
-                    class_="hedron-app-shell-nav-toggle",
+                html.div(
+                    toggle,
+                    self._nav_element(),
+                    class_="hedron-app-shell-nav-rail",
                 )
             )
-        children.append(self._nav_element())
+        else:
+            children.append(self._nav_element())
         children.append(panel)
         if self._app_footer is not None:
             children.append(

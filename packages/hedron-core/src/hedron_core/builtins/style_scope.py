@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from contextvars import ContextVar
 from typing import Any, Literal
 
@@ -58,12 +59,61 @@ def pop_style_context(token: object) -> None:
 
 
 def presentation_data(slot: str) -> dict[str, str]:
-    """Return the render-time recipe marker for a declared presentation slot."""
+    """Return bounded markers from the nearest declared presentation recipe."""
     context = current_style_context()
     if context is None:
         return {}
     recipe = context.resolve_presentation(slot)
-    return {"hedron-style-recipe": recipe} if recipe else {}
+    if recipe is None:
+        return {}
+    markers = {"hedron-style-recipe": recipe}
+    marker_names = {
+        "role": "hedron-type-role",
+        "measure": "hedron-type-measure",
+        "effect": "hedron-type-effect",
+        "tracking": "hedron-type-tracking",
+        "wrap": "hedron-type-wrap",
+        "overflow": "hedron-overflow",
+        "size": "hedron-size",
+        "appearance": "hedron-appearance",
+        "emphasis": "hedron-emphasis",
+        "width": "hedron-width",
+        "density": "hedron-density",
+        "padding": "hedron-padding",
+        "elevation": "hedron-elevation",
+        "responsive": "hedron-responsive",
+    }
+    for field, value in context.resolve_presentation_values(slot).items():
+        marker = marker_names.get(field)
+        if marker is not None:
+            markers[marker] = value
+    return markers
+
+
+def _resolved_recipe_values(
+    name: str, catalog: dict[str, Any]
+) -> tuple[str | None, dict[str, str]]:
+    """Resolve one finite recipe inheritance chain without retaining a design object."""
+    chain: list[Any] = []
+    current = catalog.get(name)
+    seen: set[str] = set()
+    while current is not None:
+        if current.name in seen:
+            raise error(
+                HED_STYLE_SCOPE_0001,
+                title="StyleScope recipe inheritance cycle",
+                explanation=f"Recipe {current.name!r} appears more than once in its parent chain.",
+                remediation="Remove the cycle from the scoped recipe catalog.",
+            )
+        seen.add(current.name)
+        chain.append(current)
+        current = catalog.get(current.extends) if current.extends else None
+    if not chain:
+        return None, {}
+    values: dict[str, str] = {}
+    for recipe in reversed(chain):
+        values.update(recipe.values)
+    return chain[0].family, values
 
 
 class StyleScopeProps(ElementProps):
@@ -95,6 +145,7 @@ class StyleScope(Component[StyleScopeProps]):
         design: str | None = None,
         recipe_defaults: dict[str, str] | None = None,
         presentation: dict[str, str] | None = None,
+        recipes: Sequence[Any] = (),
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
@@ -208,6 +259,46 @@ class StyleScope(Component[StyleScopeProps]):
                 explanation="Presentation recipe names must be safe registered identifiers.",
                 remediation="Use presentation={'PageHeader.title': 'auth-display'}.",
             )
+        from hedron_core.design_system import BUILTIN_RECIPES, StyleRecipe
+
+        recipe_catalog: dict[str, StyleRecipe] = dict(BUILTIN_RECIPES)
+        declared_recipe_names: list[str] = []
+        for recipe in recipes:
+            if not isinstance(recipe, StyleRecipe):
+                raise error(
+                    HED_STYLE_SCOPE_0001,
+                    title="Invalid StyleScope recipe",
+                    explanation=f"Expected StyleRecipe, got {type(recipe).__name__}.",
+                    remediation="Pass recipes created with StyleRecipe.content/control/surface.",
+                )
+            recipe_catalog[recipe.name] = recipe
+            declared_recipe_names.append(recipe.name)
+        resolved_values: dict[str, dict[str, str]] = {}
+        for recipe_name in declared_recipe_names:
+            _family, values = _resolved_recipe_values(recipe_name, recipe_catalog)
+            resolved_values[recipe_name] = values
+        content_slots = {
+            "PageHeader.title",
+            "PageHeader.description",
+            "Heading",
+            "Text",
+            "Card.heading",
+            "Card.supporting-copy",
+            "Card.metadata",
+        }
+        for slot, recipe_name in presentation_values.items():
+            family, values = _resolved_recipe_values(recipe_name, recipe_catalog)
+            if family is None and recipe_name in {"none", "subtle", "display"}:
+                family, values = "content", {"effect": recipe_name}
+            if family is not None and slot in content_slots and family != "content":
+                raise error(
+                    HED_STYLE_SCOPE_0001,
+                    title="Incompatible StyleScope presentation recipe",
+                    explanation=f"Slot {slot!r} requires a content recipe, got {family!r}.",
+                    remediation="Map the slot to a StyleRecipe.content recipe.",
+                )
+            if values:
+                resolved_values[recipe_name] = values
         super().__init__(
             StyleScopeProps(
                 scope=scope,
@@ -224,7 +315,11 @@ class StyleScope(Component[StyleScopeProps]):
             )
         )
         self._children = collect_children(*nodes, children=children)
-        self._style_context = StyleContext(recipes=defaults, presentation=presentation_values)
+        self._style_context = StyleContext(
+            recipes=defaults,
+            presentation=presentation_values,
+            recipe_values=resolved_values,
+        )
 
     @property
     def style_context(self) -> StyleContext:

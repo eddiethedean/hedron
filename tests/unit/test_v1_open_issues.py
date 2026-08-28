@@ -4,12 +4,23 @@ import pytest
 
 from fastapi_workbench.config import WorkbenchConfig
 from fastapi_workbench.resolve import resolve_deployment
-from hedron_core import emit_theme_css, register_first_party_icons, render
+from hedron_core import (
+    StyleRecipe,
+    ThemeBuilder,
+    default_theme,
+    emit_theme_css,
+    export_theme,
+    load_theme_package,
+    package_theme,
+    register_first_party_icons,
+    render,
+)
 from hedron_core.builtins.content import Heading
 from hedron_core.builtins.landmarks import Nav
 from hedron_core.builtins.layout import PageHeader
 from hedron_core.builtins.shell import AppShell, HtmxLink, NavGroup
 from hedron_core.builtins.style_scope import StyleScope
+from hedron_core.diagnostics import HedronError
 from hedron_core.theme import Theme, compatibility_theme_vars
 
 
@@ -44,18 +55,44 @@ def test_htmx_link_safe_attrs_and_nav_group_action() -> None:
 
 
 def test_page_header_scope_and_shell_contract() -> None:
+    display_recipe = StyleRecipe.content(
+        "auth-display", measure="wide", effect="display", tracking="tight", wrap="balance"
+    )
     output = render(
         StyleScope(
-            PageHeader("Title", title_tracking="tight", title_wrap="break"),
-            presentation={"PageHeader.title": "display"},
+            PageHeader("Title"),
+            presentation={"PageHeader.title": "auth-display"},
+            recipes=(display_recipe,),
         )
     ).html
-    assert 'data-hedron-style-recipe="display"' in output
+    assert 'data-hedron-style-recipe="auth-display"' in output
+    assert 'data-hedron-type-measure="wide"' in output
+    assert 'data-hedron-type-effect="display"' in output
     assert 'data-hedron-type-tracking="tight"' in output
+    assert 'data-hedron-type-wrap="balance"' in output
     assert (
         'data-hedron-style-recipe="display"'
         in render(StyleScope(Heading("Heading"), presentation={"Heading": "display"})).html
     )
+    explicit = render(
+        StyleScope(
+            PageHeader("Title", title_measure="narrow", title_wrap="pretty"),
+            presentation={"PageHeader.title": "auth-display"},
+            recipes=(display_recipe,),
+        )
+    ).html
+    assert 'data-hedron-type-measure="narrow"' in explicit
+    assert 'data-hedron-type-wrap="pretty"' in explicit
+    nested = render(
+        StyleScope(
+            StyleScope(
+                PageHeader("Nested"),
+                presentation={"PageHeader.title": "auth-display"},
+            ),
+            recipes=(display_recipe,),
+        )
+    ).html
+    assert 'data-hedron-type-measure="wide"' in nested
     shell = render(AppShell(nav="links", body="body", nav_collapse="user")).html
     assert 'data-hedron-nav-collapse="user"' in shell
     assert 'aria-controls="main-panel-nav"' in shell
@@ -75,6 +112,12 @@ def test_workbench_full_root_path_preserves_origin() -> None:
     )
     assert resolved.external_origin == "https://workbench.example"
     assert resolved.browser_mount == "/s/u/p/123"
+    ordinary = resolve_deployment(
+        WorkbenchConfig(mount="/local"),
+        environ={"UVICORN_ROOT_PATH": "https://unexpected.example/local"},
+        bound_port=123,
+    )
+    assert ordinary.external_origin == "http://127.0.0.1:123"
 
 
 def test_first_party_icon_pack_is_optional() -> None:
@@ -97,6 +140,43 @@ def test_theme_typography_features_emit_consumable_css() -> None:
         "motion.duration": "0s",
         "focus.ring": "2px solid #00f",
     }
-    css = emit_theme_css(Theme(name="features", tokens=tokens, typography_features={"tnum": 1}))
+    theme = default_theme().extend(
+        "features",
+        content_width="wide",
+        typography_features={"tnum": 1},
+        typography_role_features={"code": {"zero": 1}, "tabular": {"tnum": 1}},
+    )
+    css = emit_theme_css(theme)
     assert "font-feature-settings" in css
     assert "font-variant-numeric" in css
+    assert "--hedron-font-feature-settings-code" in css
+    exported = export_theme(theme).to_dict()["theme"]
+    assert exported["content_width"] == "wide"
+    assert exported["typography_features"] == {"tnum": 1}
+    assert exported["typography_role_features"]["code"] == {"zero": 1}
+    spec = ThemeBuilder.from_theme(theme).build()
+    restored = load_theme_package(package_theme(spec, licenses=("MIT",))).to_theme()
+    assert restored.content_width == "wide"
+    assert restored.typography_features == {"tnum": 1}
+    assert restored.typography_role_features == {"code": {"zero": 1}, "tabular": {"tnum": 1}}
+    with pytest.raises(HedronError):
+        Theme(name="bad-features", tokens=tokens, typography_features={"tnum": True})
+
+
+def test_page_header_supports_editorial_wrap_and_tracking_contract() -> None:
+    output = render(
+        PageHeader(
+            "Localized heading",
+            eyebrow="Section",
+            description="Long localized description",
+            title_wrap="balance",
+            description_wrap="pretty",
+            description_tracking="loose",
+            eyebrow_tracking="wide",
+            eyebrow_wrap="normal",
+        )
+    ).html
+    assert 'data-hedron-type-wrap="balance"' in output
+    assert 'data-hedron-type-wrap="pretty"' in output
+    assert 'data-hedron-type-tracking="loose"' in output
+    assert 'data-hedron-type-tracking="wide"' in output
