@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import html as html_lib
+import json
+import math
+import re
+
 import pytest
 
 from hedron_core import HedronError, Map, MarkerSpec, RenderMode, render
-from hedron_core.codes import HED_MAP_0001, HED_MAP_0002
+from hedron_core.codes import HED_MAP_0001, HED_MAP_0002, HED_MAP_0003
 
 
 def test_map_renders_table_alternative_with_markers() -> None:
@@ -121,3 +126,43 @@ def test_malicious_geojson_properties_do_not_become_script_tags() -> None:
     # Dangerous keys stripped from payload.
     assert '"html"' not in html
     assert "alert(1)" not in html or "&lt;script&gt;" in html
+
+
+@pytest.mark.parametrize("feature_id", [math.nan, math.inf, -math.inf, True])
+def test_map_rejects_non_json_geojson_feature_ids(feature_id: object) -> None:
+    with pytest.raises(HedronError) as excinfo:
+        Map(
+            geojson={
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "id": feature_id,
+                        "properties": {"name": "invalid id"},
+                        "geometry": {"type": "Point", "coordinates": [0, 0]},
+                    }
+                ],
+            }
+        )
+    assert excinfo.value.diagnostic.code == HED_MAP_0003
+
+
+def test_map_geojson_attribute_is_strict_browser_json() -> None:
+    node = Map(
+        geojson={
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "place-1",
+                    "properties": {"name": "Place"},
+                    "geometry": {"type": "Point", "coordinates": [2, 1]},
+                }
+            ],
+        }
+    )
+    markup = render(node, mode=RenderMode.FRAGMENT).html
+    match = re.search(r'data-geojson="([^"]*)"', markup)
+    assert match is not None
+    payload = html_lib.unescape(match.group(1))
+    assert json.loads(payload)["features"][0]["id"] == "place-1"
