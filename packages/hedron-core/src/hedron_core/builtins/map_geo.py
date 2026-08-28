@@ -223,6 +223,26 @@ def _sanitize_geometry(geometry: object) -> JsonObject | None:
     return out
 
 
+def _sanitize_feature_id(value: object) -> str | int | float:
+    if isinstance(value, bool) or not isinstance(value, (str, int, float)):
+        if isinstance(value, bool):
+            raise error(
+                "HED-MAP-0003",
+                title="Invalid GeoJSON feature id",
+                explanation="GeoJSON feature ids must be strings or finite numbers, not bool.",
+                remediation="Provide a string or finite numeric feature id.",
+            )
+        return str(value)
+    if isinstance(value, float) and not math.isfinite(value):
+        raise error(
+            "HED-MAP-0003",
+            title="Invalid GeoJSON feature id",
+            explanation="GeoJSON feature ids must be finite (rejected NaN/Inf).",
+            remediation="Provide a string or finite numeric feature id.",
+        )
+    return value
+
+
 def sanitize_geojson(
     geojson: Mapping[str, Any] | None,
     *,
@@ -265,7 +285,7 @@ def sanitize_geojson(
         features.append(
             {
                 "type": "Feature",
-                "id": fid if isinstance(fid, (str, int, float)) else str(fid),
+                "id": _sanitize_feature_id(fid),
                 "properties": props,
                 "geometry": geometry,
             }
@@ -502,7 +522,11 @@ class Map(Component[MapProps]):
                 separators=(",", ":"),
             )
         if self._geojson is not None:
-            data["geojson"] = json.dumps(self._geojson, separators=(",", ":"))
+            data["geojson"] = json.dumps(
+                self._geojson,
+                separators=(",", ":"),
+                allow_nan=False,
+            )
 
         enhance = html.div(**enhance_attrs)
         parts: list[NodeLike] = [enhance, table]
