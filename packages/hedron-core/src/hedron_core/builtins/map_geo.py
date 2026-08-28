@@ -134,6 +134,25 @@ def _require_finite(value: object, *, what: str) -> float:
     return number
 
 
+def _sanitize_property_value(value: object) -> tuple[bool, JsonValue]:
+    if _looks_like_script(value):
+        return False, None
+    if isinstance(value, Mapping):
+        return True, _sanitize_properties(value)
+    if isinstance(value, (list, tuple)):
+        cleaned: list[JsonValue] = []
+        for item in value:
+            keep, sanitized = _sanitize_property_value(item)
+            if keep:
+                cleaned.append(sanitized)
+        return True, cleaned
+    if isinstance(value, float) and not math.isfinite(value):
+        return False, None
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return True, value
+    return True, str(value)
+
+
 def _sanitize_properties(props: object) -> dict[str, JsonValue]:
     if not isinstance(props, Mapping):
         return {}
@@ -142,22 +161,9 @@ def _sanitize_properties(props: object) -> dict[str, JsonValue]:
         key_s = str(key)
         if _is_dangerous_key(key_s):
             continue
-        if _looks_like_script(value):
-            continue
-        if isinstance(value, Mapping):
-            cleaned[key_s] = _sanitize_properties(value)
-        elif isinstance(value, (list, tuple)):
-            cleaned[key_s] = [
-                _sanitize_properties(item) if isinstance(item, Mapping) else item
-                for item in value
-                if not _looks_like_script(item)
-            ]
-        elif isinstance(value, (str, int, float, bool)) or value is None:
-            if isinstance(value, float) and not math.isfinite(value):
-                continue
-            cleaned[key_s] = value
-        else:
-            cleaned[key_s] = str(value)
+        keep, sanitized = _sanitize_property_value(value)
+        if keep:
+            cleaned[key_s] = sanitized
     return cleaned
 
 
@@ -223,6 +229,26 @@ def _sanitize_geometry(geometry: object) -> JsonObject | None:
     return out
 
 
+def _sanitize_feature_id(value: object) -> str | int | float:
+    if isinstance(value, bool) or not isinstance(value, (str, int, float)):
+        if isinstance(value, bool):
+            raise error(
+                "HED-MAP-0003",
+                title="Invalid GeoJSON feature id",
+                explanation="GeoJSON feature ids must be strings or finite numbers, not bool.",
+                remediation="Provide a string or finite numeric feature id.",
+            )
+        return str(value)
+    if isinstance(value, float) and not math.isfinite(value):
+        raise error(
+            "HED-MAP-0003",
+            title="Invalid GeoJSON feature id",
+            explanation="GeoJSON feature ids must be finite (rejected NaN/Inf).",
+            remediation="Provide a string or finite numeric feature id.",
+        )
+    return value
+
+
 def sanitize_geojson(
     geojson: Mapping[str, Any] | None,
     *,
@@ -265,7 +291,7 @@ def sanitize_geojson(
         features.append(
             {
                 "type": "Feature",
-                "id": fid if isinstance(fid, (str, int, float)) else str(fid),
+                "id": _sanitize_feature_id(fid),
                 "properties": props,
                 "geometry": geometry,
             }
@@ -502,7 +528,11 @@ class Map(Component[MapProps]):
                 separators=(",", ":"),
             )
         if self._geojson is not None:
-            data["geojson"] = json.dumps(self._geojson, separators=(",", ":"))
+            data["geojson"] = json.dumps(
+                self._geojson,
+                separators=(",", ":"),
+                allow_nan=False,
+            )
 
         enhance = html.div(**enhance_attrs)
         parts: list[NodeLike] = [enhance, table]
