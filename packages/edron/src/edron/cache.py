@@ -15,6 +15,7 @@ from threading import RLock
 from typing import Any, ParamSpec, TypeVar
 
 from edron.errors import BindingError
+from hedron_core.cache.backend import validate_cache_ttl
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -36,6 +37,7 @@ class CachedFunction:
     ) -> None:
         if not callable(fn):
             raise TypeError("cache_data expects a callable")
+        ttl = validate_cache_ttl(ttl)
         if ttl is not None and ttl < 0:
             raise BindingError("cache ttl must be non-negative", code="EDRON_CACHE_TTL")
         if max_entries < 1:

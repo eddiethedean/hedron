@@ -16,6 +16,7 @@ from hedron_core.cache import (
     get_cache_backend,
     record_cache_trace,
 )
+from hedron_core.cache.backend import validate_cache_ttl
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -56,6 +57,7 @@ def _decorate(
     component: bool,
 ) -> Callable[P, R]:
     del component  # reserved for future prepared-component policy hooks
+    ttl = validate_cache_ttl(ttl)
     identity = _identity_for(fn)
     is_async = inspect.iscoroutinefunction(fn)
 

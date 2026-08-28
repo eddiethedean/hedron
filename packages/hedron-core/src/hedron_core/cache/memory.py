@@ -12,6 +12,8 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, TypeVar, cast
 
+from hedron_core.cache.backend import validate_cache_ttl
+
 R = TypeVar("R")
 
 
@@ -78,7 +80,8 @@ class InMemoryCacheBackend:
         ttl: float | None = None,
         tags: tuple[str, ...] = (),
     ) -> None:
-        expires = None if ttl is None else time.monotonic() + ttl
+        normalized_ttl = validate_cache_ttl(ttl)
+        expires = None if normalized_ttl is None else time.monotonic() + normalized_ttl
         try:
             size = len(json.dumps(value, default=str))
         except TypeError:
