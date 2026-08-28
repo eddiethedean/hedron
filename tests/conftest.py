@@ -279,9 +279,13 @@ def _browser_suite_enabled() -> bool:
 
 
 def pytest_configure(config: pytest.Config) -> None:
-    """Reuse one Playwright driver when the opt-in browser suite is running."""
+    """Optionally reuse Playwright processes for local performance experiments."""
     del config
-    if not _browser_suite_enabled():
+    if not _browser_suite_enabled() or os.environ.get("HEDRON_BROWSER_REUSE") not in {
+        "1",
+        "true",
+        "yes",
+    }:
         return
     from tests.browser._playwright import install_reuse_patches
 
@@ -310,7 +314,11 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 
 def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     del session, exitstatus
-    if not _browser_suite_enabled():
+    if not _browser_suite_enabled() or os.environ.get("HEDRON_BROWSER_REUSE") not in {
+        "1",
+        "true",
+        "yes",
+    }:
         return
     from tests.browser._playwright import uninstall_reuse_patches
 

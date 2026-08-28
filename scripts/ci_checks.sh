@@ -40,6 +40,7 @@
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
+#   HEDRON_BROWSER_REUSE — optional shared Playwright process for local runs
 #   HEDRON_GATE_VERSION — default for --gate-version
 #   HEDRON_CHECK_JOBS — default concurrency for --jobs
 #   PWB_LICENSE / CONNECT_LICENSE — optional; realwb/realconnect skip when unset
@@ -542,8 +543,7 @@ cmd_quality() {
 cmd_browser() {
   export HEDRON_BROWSER="${HEDRON_BROWSER:-1}"
   export HEDRON_BROWSER_ENGINE="${HEDRON_BROWSER_ENGINE:-chromium}"
-  # Keep Playwright serial: xdist contention on a shared browser install flakes.
-  # One driver/browser per engine is reused for the process (tests/browser/_playwright.py).
+  # Keep Playwright serial: xdist contention on browser processes flakes.
   run_uv pytest -q -m browser --tb=short -n 0
 }
 

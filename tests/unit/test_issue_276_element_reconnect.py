@@ -26,6 +26,47 @@ def test_track_aborts_previous_signal_on_reconnect() -> None:
     subprocess.run(["node", "--input-type=module", "-e", script], check=True)
 
 
-def test_disclosure_and_action_bind_with_abort_signal() -> None:
-    assert "{ signal }" in DISCLOSURE.read_text(encoding="utf-8")
-    assert "{ signal }" in ACTION.read_text(encoding="utf-8")
+def test_disclosure_and_action_reconnect_without_duplicate_listeners() -> None:
+    script = f"""
+      const registry = new Map();
+      class FakeElement extends EventTarget {{
+        constructor() {{
+          super();
+          this.details = new EventTarget();
+          this.button = new EventTarget();
+          this.attributes = new Map();
+          this.details.open = false;
+        }}
+        querySelector(selector) {{
+          return selector === "details" ? this.details : this.button;
+        }}
+        setAttribute(name, value) {{ this.attributes.set(name, String(value)); }}
+        getAttribute(name) {{ return this.attributes.get(name) || null; }}
+      }}
+      globalThis.HTMLElement = FakeElement;
+      globalThis.customElements = {{
+        get(name) {{ return registry.get(name); }},
+        define(name, ctor) {{ registry.set(name, ctor); }},
+      }};
+
+      await import({DISCLOSURE.as_uri()!r});
+      const Disclosure = registry.get("hedron-disclosure");
+      const disclosure = new Disclosure();
+      let disclosureChanges = 0;
+      disclosure.addEventListener("hedron-disclosure-change", () => disclosureChanges++);
+      disclosure.connectedCallback();
+      disclosure.connectedCallback();
+      disclosure.details.dispatchEvent(new Event("toggle"));
+      if (disclosureChanges !== 1) process.exit(2);
+
+      await import({ACTION.as_uri()!r});
+      const Action = registry.get("hedron-action-async");
+      const action = new Action();
+      let actionChanges = 0;
+      action.addEventListener("hedron-action-change", () => actionChanges++);
+      action.connectedCallback();
+      action.connectedCallback();
+      action.button.dispatchEvent(new Event("click"));
+      if (actionChanges !== 1) process.exit(3);
+    """
+    subprocess.run(["node", "--input-type=module", "-e", script], check=True)

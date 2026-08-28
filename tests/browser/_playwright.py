@@ -1,15 +1,15 @@
 """Reuse one Playwright driver and browser per engine for the opt-in suite.
 
-Each ``sync_playwright()`` / ``BrowserType.launch()`` pair used to start a new
-driver and Chromium/Firefox/WebKit process. That dominated local and CI runtime.
-Patches install when ``HEDRON_BROWSER`` is set; ``browser.close()`` still drops
-contexts so tests stay isolated.
+Each ``sync_playwright()`` / ``BrowserType.launch()`` pair can reuse a driver
+and Chromium/Firefox/WebKit process for local performance experiments. The
+reuse patch is opt-in via ``HEDRON_BROWSER_REUSE=1``; normal CI uses Playwright's
+native lifecycle so browser teardown remains deterministic.
 """
 
 from __future__ import annotations
 
 from collections.abc import Iterator
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from typing import Any
 
 _pw: Any = None
@@ -52,13 +52,17 @@ def start() -> Any:
 
 def stop() -> None:
     global _pw
-    for browser in _browsers.values():
+    for browser in list(_browsers.values()):
         inner = getattr(browser, "_inner", browser)
-        inner.close()
+        # Tests may already have closed the wrapper; teardown must be idempotent.
+        with suppress(Exception):
+            inner.close()
     _browsers.clear()
     if _pw is not None:
-        _pw.stop()
-        _pw = None
+        try:
+            _pw.stop()
+        finally:
+            _pw = None
 
 
 def browser_for(engine: str) -> IsolatedBrowser:

@@ -8,7 +8,10 @@ explicit opt-in marker/job.
 from __future__ import annotations
 
 import math
+import os
+import time
 from typing import Any
+from uuid import uuid4
 
 import pytest
 
@@ -236,6 +239,34 @@ def test_redis_cache_rejects_non_finite_ttl_without_writes(ttl: float) -> None:
         backend.set("x", {"value": 1}, ttl=ttl, tags=("t",))
     assert client._store == {}
     assert client._sets == {}
+
+
+@pytest.mark.redis
+def test_real_redis_cache_expires_values_and_tag_indexes() -> None:
+    """Exercise Redis expiry rather than the in-process protocol stub."""
+    url = os.environ.get("HEDRON_REDIS_URL")
+    if not url:
+        pytest.skip("set HEDRON_REDIS_URL to run the real Redis contract")
+    redis = pytest.importorskip("redis")
+    client = redis.Redis.from_url(url, decode_responses=True)
+    client.ping()
+
+    prefix = f"h1:test-cache:{uuid4().hex}:"
+    backend = RedisCacheBackend(client, prefix=prefix)
+    try:
+        backend.set("item", {"value": 1}, ttl=0.2, tags=("ttl",))
+        assert backend.get("item") == {"value": 1}
+        time.sleep(0.35)
+        assert backend.get("item") is None
+        assert (
+            client.pttl(f"{prefix}t:ttl") in {-2, -1} or client.smembers(f"{prefix}t:ttl") == set()
+        )
+    finally:
+        client.delete(
+            f"{prefix}v:item",
+            f"{prefix}_tags:item",
+            f"{prefix}t:ttl",
+        )
 
 
 def test_redis_cache_does_not_share_job_keyspace() -> None:

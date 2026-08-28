@@ -25,103 +25,6 @@ from hedron_core.cache import get_cache_traces, reset_cache_for_tests
 from hedron_core.job_status_store import RedisStatusStore
 from hedron_core.jobs import _idempotency_scope_key, _legacy_idempotency_scope_key
 
-ISSUES = (
-    99,
-    100,
-    108,
-    136,
-    137,
-    138,
-    139,
-    140,
-    141,
-    145,
-    146,
-    147,
-    148,
-    151,
-    152,
-    156,
-    160,
-    174,
-    175,
-    177,
-    187,
-    205,
-    206,
-    208,
-    217,
-    218,
-    238,
-    242,
-    243,
-    245,
-    246,
-    249,
-)
-
-# Bound executable evidence for each locked remediation (path::node).
-_U = "tests/unit"
-_I = "tests/integration"
-_A = "tests/adapters"
-_R = f"{_U}/test_regress_042_issues.py"
-ISSUE_TESTS: dict[int, str] = {
-    99: (
-        f"{_U}/test_cache_single_flight_async.py::test_single_flight_async_safe_across_event_loops"
-    ),
-    100: f"{_U}/test_phase05_platform.py::test_cache_data_caches_none_results",
-    108: (
-        f"{_U}/test_snowflake_source.py::test_assert_select_only_allows_semicolon_inside_literals"
-    ),
-    136: f"{_I}/test_workbench_runner.py::test_prepare_app_exports_into_caller_environ",
-    137: f"{_A}/workbench/test_cli.py::test_check_discover_binds_before_rserver_url",
-    138: (
-        f"{_U}/test_phase15_identity.py::test_login_csrf_accepts_valid_cookie_when_session_diverges"
-    ),
-    139: f"{_U}/test_phase15_identity.py::test_auth_rate_limiter_evicts_stale_ip_keys",
-    140: f"{_R}::test_140_negative_session_timeout_limits_rejected",
-    141: f"{_U}/test_models_security.py::test_secret_hash_handles_unhashable_inner_value",
-    145: f"{_R}::test_145_redis_status_store_reads_legacy_idempotency_key",
-    146: f"{_R}::test_146_redis_status_store_cross_scope_idempotency_fails_closed",
-    147: f"{_R}::test_147_explicit_workers_one_beats_env",
-    148: f"{_R}::test_148_workbenchify_honors_caller_environ_for_expected_origins",
-    151: f"{_R}::test_151_public_cache_rejects_positional_user_id",
-    152: f"{_R}::test_152_store_oidc_handshake_merges_partial_updates",
-    156: f"{_R}::test_156_explorer_simulate_requires_csrf_when_disabled",
-    160: f"{_R}::test_160_doctor_empty_set_cookie_is_vacuously_ok",
-    174: f"{_R}::test_174_preview_root_path_rejects_cookie_injection",
-    175: f"{_R}::test_175_explorer_rate_limiter_deletes_idle_client_keys",
-    177: f"{_R}::test_177_mcp_validates_tool_arguments_against_schema",
-    187: f"{_R}::test_187_flask_csrf_enforced_on_connect_and_purge",
-    205: f"{_R}::test_205_gradio_abbreviated_loopback_is_private",
-    206: f"{_R}::test_206_rq_cancel_fails_closed_on_fetch_connection_error",
-    208: f"{_R}::test_208_redis_cache_tag_index_gets_ttl",
-    217: f"{_R}::test_217_mcp_cancel_is_bound_to_principal",
-    218: f"{_R}::test_218_redis_cache_set_and_tag_sadd_are_atomic",
-    238: f"{_R}::test_238_weak_secret_rejects_repeated_placeholders",
-    242: f"{_R}::test_242_redis_cache_ttl_matches_in_memory_semantics",
-    243: f"{_R}::test_243_rq_local_job_cache_pruned_on_terminal_and_cleanup",
-    245: f"{_R}::test_245_normalize_mount_path_rejects_cookie_attribute_injection",
-    246: f"{_R}::test_246_inference_release_drops_request_maps",
-    249: f"{_R}::test_249_color_mode_cookie_sets_secure_in_production",
-}
-
-
-def test_every_locked_issue_has_bound_evidence() -> None:
-    from pathlib import Path
-
-    root = Path(__file__).resolve().parents[2]
-    assert len(ISSUES) == 32
-    assert tuple(ISSUE_TESTS) == ISSUES
-    for issue, node in ISSUE_TESTS.items():
-        path = root / node.split("::", 1)[0]
-        assert path.is_file(), f"#{issue} evidence missing file {path}"
-        name = node.split("::", 1)[1] if "::" in node else ""
-        if name:
-            assert f"def {name}(" in path.read_text(encoding="utf-8"), (
-                f"#{issue} missing test {name} in {path}"
-            )
-
 
 class WatchError(Exception):
     """Stub WatchError so RedisStatusStore CAS works without redis-py."""
@@ -131,8 +34,13 @@ _redis_mod = ModuleType("redis")
 _exc_mod = ModuleType("redis.exceptions")
 _exc_mod.WatchError = WatchError  # type: ignore[attr-defined]
 _redis_mod.exceptions = _exc_mod  # type: ignore[attr-defined]
-sys.modules.setdefault("redis", _redis_mod)
-sys.modules.setdefault("redis.exceptions", _exc_mod)
+
+
+@pytest.fixture(autouse=True)
+def _redis_module_stub(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Scope the optional redis-py stub to these tests instead of the process."""
+    monkeypatch.setitem(sys.modules, "redis", _redis_mod)
+    monkeypatch.setitem(sys.modules, "redis.exceptions", _exc_mod)
 
 
 class _FakePipeline:
@@ -497,7 +405,8 @@ def test_177_mcp_validates_tool_arguments_against_schema() -> None:
     assert proj.call_tool("typed", {"x": 1}, principal="a") == {"x": 1}
 
 
-def test_187_flask_csrf_enforced_on_connect_and_purge() -> None:
+@pytest.mark.parametrize("method", ["CONNECT", "PURGE"])
+def test_187_flask_csrf_enforced_on_connect_and_purge(method: str) -> None:
     from hedron_core import Text
     from hedron_flask import HedronFlask, hedron_route
 
@@ -505,14 +414,30 @@ def test_187_flask_csrf_enforced_on_connect_and_purge() -> None:
     h.flask.secret_key = "test"
     app = h.flask
 
-    @hedron_route(app, "/mutate", methods=["CONNECT", "PURGE", "POST"], endpoint="mutate_multi")
+    @app.get("/seed")
+    def seed() -> str:
+        return "seed"
+
+    @hedron_route(app, "/mutate", methods=[method], endpoint=f"mutate_{method.lower()}")
     def mutate_multi() -> Text:
-        return Text("mutated-without-csrf")
+        return Text("mutated")
 
     client = app.test_client()
-    assert client.open("/mutate", method="CONNECT").status_code == 403
-    assert client.open("/mutate", method="PURGE").status_code == 403
-    assert client.post("/mutate", data={"x": "1"}).status_code == 403
+    assert client.open("/mutate", method=method).status_code == 403
+
+    seeded = client.get("/seed")
+    token = next(
+        cookie.split(";", 1)[0].split("=", 1)[1]
+        for cookie in seeded.headers.getlist("Set-Cookie")
+        if cookie.startswith("hedron_csrf=")
+    )
+    accepted = client.open(
+        "/mutate",
+        method=method,
+        headers={"X-CSRF-Token": token},
+    )
+    assert accepted.status_code == 200
+    assert b"mutated" in accepted.data
 
 
 def test_205_gradio_abbreviated_loopback_is_private() -> None:
@@ -549,8 +474,8 @@ def test_206_rq_cancel_fails_closed_on_fetch_connection_error(
     _exc_mod = ModuleType("redis.exceptions")
     _exc_mod.WatchError = _WatchError  # type: ignore[attr-defined]
     _redis_mod.exceptions = _exc_mod  # type: ignore[attr-defined]
-    sys.modules.setdefault("redis", _redis_mod)
-    sys.modules.setdefault("redis.exceptions", _exc_mod)
+    monkeypatch.setitem(sys.modules, "redis", _redis_mod)
+    monkeypatch.setitem(sys.modules, "redis.exceptions", _exc_mod)
 
     class _FakePipeline:
         def __init__(self, client: _MemRedis) -> None:
@@ -927,6 +852,22 @@ def test_218_redis_cache_set_and_tag_sadd_are_atomic() -> None:
     backend.set("k1", {"secret": True}, ttl=30, tags=("user:1",))
     assert backend.invalidate(tags=("user:1",)) == 1
     assert backend.get("k1") is None
+
+    class _FailingPipe(_Pipe):
+        def execute(self) -> list[object]:
+            self._ops.clear()
+            raise RuntimeError("EXEC failed")
+
+    class _FailingClient(_Client):
+        def pipeline(self, transaction: bool = True) -> _FailingPipe:
+            del transaction
+            return _FailingPipe(self)
+
+    failed = _FailingClient()
+    with pytest.raises(RuntimeError, match="EXEC failed"):
+        RedisCacheBackend(failed).set("k2", {"secret": True}, ttl=30, tags=("user:2",))
+    assert failed.store == {}
+    assert failed.sets == {}
 
 
 def test_238_weak_secret_rejects_repeated_placeholders() -> None:

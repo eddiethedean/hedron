@@ -36,7 +36,7 @@ def test_failed_batch_does_not_consume_message_budget(invalid: RegionUpdate) -> 
 
 def test_batch_budget_failure_is_atomic() -> None:
     channel = _channel()
-    channel.encode_region_update(RegionUpdate("r", "first"[:4]))
+    channel.encode_region_update(RegionUpdate("r", "four"))
     with pytest.raises(RuntimeError, match="budget exhausted"):
         channel.batch_updates([RegionUpdate("r", "a"), RegionUpdate("r", "b")])
     assert channel.messages_sent == 1
@@ -45,4 +45,19 @@ def test_batch_budget_failure_is_atomic() -> None:
 def test_empty_batch_preserves_message_budget() -> None:
     channel = _channel()
     assert channel.batch_updates([]) == []
+    assert channel.messages_sent == 0
+
+
+def test_batch_validates_count_and_utf8_bytes_without_consuming_budget() -> None:
+    channel = _channel()
+
+    with pytest.raises(ValueError, match="max_batch"):
+        channel.batch_updates(
+            [RegionUpdate("r", "a"), RegionUpdate("r", "b"), RegionUpdate("r", "c")]
+        )
+    assert channel.messages_sent == 0
+
+    # Two code points occupy four bytes; adding one more must fail the byte limit.
+    with pytest.raises(ValueError, match="max_message_bytes"):
+        channel.batch_updates([RegionUpdate("r", "ééé")])
     assert channel.messages_sent == 0

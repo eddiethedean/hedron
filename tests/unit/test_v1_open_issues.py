@@ -10,6 +10,8 @@ from hedron_core import (
     default_theme,
     emit_theme_css,
     export_theme,
+    get_icon,
+    list_icons,
     load_theme_package,
     package_theme,
     register_first_party_icons,
@@ -122,7 +124,13 @@ def test_workbench_full_root_path_preserves_origin() -> None:
 
 def test_first_party_icon_pack_is_optional() -> None:
     entries = register_first_party_icons()
-    assert len(entries) >= 20
+    names = [entry.name for entry in entries]
+    assert len(names) >= 20
+    assert len(names) == len(set(names))
+    assert all(entry.title == entry.name.replace("-", " ").title() for entry in entries)
+    assert all(entry.source == "hedron-core-icons" for entry in entries)
+    assert all(get_icon(name) == entry for name, entry in zip(names, entries, strict=True))
+    assert {entry.name for entry in list_icons()} >= set(names)
     assert all("currentColor" in entry.svg.value for entry in entries)
 
 
