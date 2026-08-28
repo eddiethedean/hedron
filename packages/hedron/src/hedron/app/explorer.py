@@ -43,6 +43,7 @@ def resolve_explorer_mode(
     *,
     explorer_enabled: bool,
     is_prod: bool,
+    warning_stacklevel: int = 3,
 ) -> str:
     """Resolve explorer mode from kwargs, pyproject, policy, and production gates."""
     if explorer is None:
@@ -59,7 +60,7 @@ def resolve_explorer_mode(
             "Explorer development mode is disabled in production; "
             "use explorer='secured' with explorer_dependencies, or explorer='off'.",
             UserWarning,
-            stacklevel=3,
+            stacklevel=warning_stacklevel,
         )
         mode = "off"
     return mode

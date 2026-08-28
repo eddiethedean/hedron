@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Literal
@@ -10,53 +9,22 @@ from typing import Any, Literal
 from fastapi import FastAPI
 from fastapi.params import Depends as DependsParam
 
-from hedron.app.explorer import (
-    ExplorerMode,
-    install_explorer_bridges,
-    mount_explorer_if_enabled,
-    resolve_explorer_mode,
+from hedron.app.bootstrap import (
+    HedronBootstrapConfig,
+    HedronBootstrapper,
+    HedronBootstrapStep,
+    normalize_theme_selection,
 )
+from hedron.app.explorer import ExplorerMode
 from hedron.app.pages import HedronPagesMixin
-from hedron.app.sessions import DEFAULT_SESSION_SECRET, configure_sessions
+from hedron.app.sessions import DEFAULT_SESSION_SECRET
 from hedron.lifespan import compose_lifespan
-from hedron.openapi import install_openapi
 from hedron.routing.router import HedronRouter
-from hedron.security.headers import SecurityHeadersMiddleware
-from hedron.security.plane_middleware import SecurityPlaneMiddleware
-from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
-from hedron.static_mount import mount_build_assets, mount_hedron_static
-from hedron_core.compile_gate import is_production_env
+from hedron.security.policy import SecurityPolicy, SecurityProfileName
 from hedron_core.design_system import DesignSystem
-from hedron_core.theme import Theme, ensure_default_theme_registered, register_theme_instance
-
-logger = logging.getLogger("hedron")
+from hedron_core.theme import Theme
 
 __all__ = ["Hedron"]
-
-
-def _normalize_theme_selection(
-    theme: str | Theme | DesignSystem | None,
-) -> tuple[str | None, DesignSystem | None]:
-    """Normalize ``str | Theme | DesignSystem | None`` to theme name + optional DesignSystem."""
-    if theme is None:
-        return None, None
-    if isinstance(theme, str):
-        return theme, None
-    from hedron_core.registry import get_registry
-
-    design: DesignSystem | None = None
-    if isinstance(theme, DesignSystem):
-        design = theme
-        theme_obj = theme.to_theme()
-    elif isinstance(theme, Theme):
-        theme_obj = theme
-    else:
-        raise TypeError(
-            f"theme must be str | Theme | DesignSystem | None; got {type(theme).__name__}"
-        )
-    if get_registry().get_theme(theme_obj.name) is None:
-        register_theme_instance(theme_obj)
-    return theme_obj.name, design
 
 
 class Hedron(HedronPagesMixin, FastAPI):
@@ -84,6 +52,8 @@ class Hedron(HedronPagesMixin, FastAPI):
         root_path: Optional construction-time mount (cookie Path / asset prefix).
             Wins over ``HEDRON_ROOT_PATH`` when set. ASGI ``root_path`` alone does
             not scope cookies.
+        bootstrap_steps: Optional extension steps run after Hedron's mandatory
+            identity, security, middleware, routing, and integration setup.
         *args: Forwarded to ``FastAPI``.
         **kwargs: Forwarded to ``FastAPI`` (``lifespan`` is composed with Hedron gates).
 
@@ -107,10 +77,11 @@ class Hedron(HedronPagesMixin, FastAPI):
         build_dir: str | Path | None = None,
         production: bool | None = None,
         root_path: str | None = None,
+        bootstrap_steps: Sequence[HedronBootstrapStep] | None = None,
         **kwargs: Any,
     ) -> None:
         user_lifespan = kwargs.pop("lifespan", None)
-        resolved_theme, design_system = _normalize_theme_selection(theme)
+        resolved_theme, design_system = normalize_theme_selection(theme)
         kwargs.setdefault(
             "lifespan",
             compose_lifespan(
@@ -121,110 +92,24 @@ class Hedron(HedronPagesMixin, FastAPI):
             ),
         )
         super().__init__(*args, **kwargs)
-
-        import secrets
-
-        self.hedron_policy = SecurityPolicy.from_name(security)
-        self.hedron_app_id = secrets.token_hex(8)
-        self.state.hedron_app_id = self.hedron_app_id
-        is_prod = is_production_env(production=production)
-        requested_explorer_mode = resolve_explorer_mode(
-            explorer,
-            explorer_enabled=self.hedron_policy.explorer_enabled,
-            is_prod=False,
+        self._explorer_dependencies = (
+            list(explorer_dependencies) if explorer_dependencies is not None else []
         )
-        self.hedron_explorer_mode = resolve_explorer_mode(
-            explorer,
-            explorer_enabled=self.hedron_policy.explorer_enabled,
-            is_prod=is_prod,
-        )
-
-        self.hedron_theme = resolved_theme
-        self.hedron_design_system = design_system
-        self.hedron_default_styles = default_styles
-        self.state.hedron_security = self.hedron_policy
-        self.state.hedron_theme = resolved_theme
-        self.state.hedron_design_system = design_system
-        self.state.hedron_default_styles = default_styles
-        self.state.hedron_production = production if production is not None else is_prod
-        self._explorer_dependencies = list(explorer_dependencies or [])
-
-        ensure_default_theme_registered()
-
-        from hedron_core.production_gate import (
-            assert_durable_backends,
-            assert_production_security_config,
-        )
-
-        assert_durable_backends(
-            production=is_prod,
-            strict_profile=self.hedron_policy.profile is SecurityProfile.STRICT,
-        )
-        assert_production_security_config(
-            production=is_prod,
-            security_profile=self.hedron_policy.profile.value,
-            session_secret=session_secret,
-            sessions_enabled=enable_sessions,
-            explorer_mode=requested_explorer_mode,
-            allow_external_redirects=self.hedron_policy.allow_external_redirects,
-            content_security_policy=self.hedron_policy.content_security_policy,
-        )
-
-        mount_cookie_path = "/"
-        mount_was_configured = False
-        try:
-            from hedron.mount import normalize_mount_path, resolve_mount_path_from_environ
-
-            if root_path is not None:
-                mount_was_configured = True
-                explicit = normalize_mount_path(root_path)
-                mount_cookie_path = explicit if explicit else "/"
-                self.state.hedron_mount_path = explicit
-            else:
-                env_mount = resolve_mount_path_from_environ()
-                if env_mount is not None:
-                    mount_was_configured = True
-                    mount_cookie_path = env_mount.cookie_path
-                    self.state.hedron_mount_path = env_mount.path
-                else:
-                    self.state.hedron_mount_path = ""
-        except (ImportError, OSError, ValueError, TypeError) as exc:
-            logger.debug("Mount path from environ unavailable: %s", exc)
-            self.state.hedron_mount_path = ""
-        self.state.hedron_mount_was_configured = mount_was_configured
-
-        configure_sessions(
-            self,
+        config = HedronBootstrapConfig(
+            security=security,
+            explorer=explorer,
             session_secret=session_secret,
             enable_sessions=enable_sessions,
-            is_prod=is_prod,
-            mount_cookie_path=mount_cookie_path,
+            explorer_dependencies=tuple(self._explorer_dependencies),
+            theme=resolved_theme,
+            design_system=design_system,
+            default_styles=default_styles,
+            build_dir=build_dir,
+            production=production,
+            root_path=root_path,
         )
-        self.add_middleware(SecurityHeadersMiddleware, policy=self.hedron_policy)
-        self.add_middleware(
-            SecurityPlaneMiddleware,
-            policy=self.hedron_policy,
-            application_id=getattr(self.state, "hedron_app_id", "hedron"),
-        )
-
-        mount_hedron_static(self)
-        mount_build_assets(self, build_dir)
-
-        self._root_router = HedronRouter()
-        self._root_router._hedron_host_app = self
-        install_openapi(self)
-
-        from hedron.status_responses import install_interaction_handlers
-
-        install_interaction_handlers(self)
-
-        install_explorer_bridges(self)
-
-        mount_explorer_if_enabled(
-            self,
-            explorer_mode=self.hedron_explorer_mode,
-            explorer_dependencies=self._explorer_dependencies,
-        )
+        extensions = tuple(bootstrap_steps) if bootstrap_steps is not None else ()
+        HedronBootstrapper(extension_steps=extensions).bootstrap(self, config)
 
     @property
     def interactions(self) -> object:
