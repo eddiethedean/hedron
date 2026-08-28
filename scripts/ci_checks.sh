@@ -57,9 +57,14 @@ cd "$ROOT"
 
 export UV_NO_PROGRESS="${UV_NO_PROGRESS:-1}"
 # Keep wheel/sdist metadata and native linker identities stable across clean
-# packaging rehearsals. Callers may provide a different fixed epoch when
-# reproducing a historical release; an unset value defaults to Unix epoch.
-export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-0}"
+# packaging rehearsals. ZIP/DOS timestamps cannot represent dates before 1980;
+# clamp the historical Unix-epoch default so Python 3.14's zipfile remains
+# portable across time zones while preserving deterministic artifacts.
+SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-315619200}"
+if [[ "$SOURCE_DATE_EPOCH" -lt 315619200 ]]; then
+  SOURCE_DATE_EPOCH=315619200
+fi
+export SOURCE_DATE_EPOCH
 # Do not let interpreter startup create package-local bytecode that can be
 # picked up by native wheel builds and make otherwise identical artifacts
 # differ based on build order.
