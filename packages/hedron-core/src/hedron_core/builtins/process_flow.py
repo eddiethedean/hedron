@@ -12,6 +12,7 @@ from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.builtins.style_scope import presentation_data
 
 __all__ = [
     "CONNECTOR_KINDS",
@@ -340,6 +341,7 @@ class FlowStep(Component[FlowStepProps]):
                         status if status in {"current", "complete", "blocked", "skipped"} else None
                     ),
                 ),
+                **presentation_data("ProcessFlow.step"),
             },
         }
         if status == "current":

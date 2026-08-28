@@ -157,9 +157,7 @@ def test_verified_candidate_status_rejects_implementation_and_registry_contradic
     assert ssot.check_release_candidate_status(
         path, "The 1.0 cut is not implemented and release evidence is pending."
     )
-    assert ssot.check_release_candidate_status(
-        path, "The v1.0.0 candidate is published on PyPI."
-    )
+    assert ssot.check_release_candidate_status(path, "The v1.0.0 candidate is published on PyPI.")
     assert ssot.check_release_candidate_status(path, "Use the living .1.0.x train.")
     assert not ssot.check_release_candidate_status(
         path,

@@ -28,6 +28,7 @@ from hedron_core.html import html
 from hedron_core.models import Model, Props
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.builtins.style_scope import presentation_data
 
 
 def _kids(*children: NodeLike) -> tuple[NodeLike, ...]:
@@ -147,6 +148,7 @@ class Text(Component[TextProps]):
             measure=self.props.measure,
             effect=self.props.effect,
         )
+        attrs["data"] = {**dict(attrs.get("data", {})), **presentation_data("Text")}
         return getattr(html, self.props.as_)(self.props.content, **attrs)
 
 
@@ -205,6 +207,7 @@ class Heading(Component[HeadingProps]):
             measure=self.props.measure,
             effect=self.props.effect,
         )
+        attrs["data"] = {**dict(attrs.get("data", {})), **presentation_data("Heading")}
         return getattr(html, f"h{self.props.level}")(self.props.content, **attrs)
 
 

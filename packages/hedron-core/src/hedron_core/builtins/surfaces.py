@@ -23,6 +23,7 @@ from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.builtins.style_scope import presentation_data
 
 
 class SurfaceProps(ElementProps):
@@ -252,7 +253,10 @@ class Card(Component[CardProps]):
                 html.div(
                     self._slot_values["header"],
                     class_="hedron-card-header",
-                    data=application_style_hook_data("Card", "heading", state="default"),
+                    data={
+                        **application_style_hook_data("Card", "heading", state="default"),
+                        **presentation_data("Card.heading"),
+                    },
                 )
             )
         elif self.props.title:
@@ -260,14 +264,20 @@ class Card(Component[CardProps]):
                 html.div(
                     html.h3(self.props.title),
                     class_="hedron-card-header",
-                    data=application_style_hook_data("Card", "heading", state="default"),
+                    data={
+                        **application_style_hook_data("Card", "heading", state="default"),
+                        **presentation_data("Card.heading"),
+                    },
                 )
             )
         parts.append(
             html.div(
                 *self._children,
                 class_="hedron-card-body",
-                data=application_style_hook_data("Card", "supporting-copy", state="default"),
+                data={
+                    **application_style_hook_data("Card", "supporting-copy", state="default"),
+                    **presentation_data("Card.supporting-copy"),
+                },
             )
         )
         if "footer" in self._slot_values:
@@ -275,7 +285,10 @@ class Card(Component[CardProps]):
                 html.div(
                     self._slot_values["footer"],
                     class_="hedron-card-footer",
-                    data=application_style_hook_data("Card", "metadata", state="default"),
+                    data={
+                        **application_style_hook_data("Card", "metadata", state="default"),
+                        **presentation_data("Card.metadata"),
+                    },
                 )
             )
         data = {

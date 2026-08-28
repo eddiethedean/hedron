@@ -17,6 +17,7 @@ from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.builtins.style_scope import presentation_data
 
 _HX_SELECTOR_ATTRS = frozenset(
     {"hx-target", "hx-select", "hx-select-oob", "hx-indicator", "hx-disabled-elt"}
@@ -279,7 +280,10 @@ class FormField(Component[FormFieldProps]):
             html.div(
                 control,
                 class_="hedron-form-field-control",
-                data=application_style_hook_data("FormField", "control", state=control_state),
+                data={
+                    **application_style_hook_data("FormField", "control", state=control_state),
+                    **presentation_data("FormField.control"),
+                },
             )
         )
         if self.props.help:

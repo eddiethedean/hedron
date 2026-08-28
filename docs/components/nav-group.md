@@ -43,13 +43,14 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-NavGroup(label=None, *items, children=None, id=None, class_=None, mark=None)
+NavGroup(label=None, *items, children=None, action=None, id=None, class_=None, mark=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `label` | `str | None` | Visible and accessible group label; omit when the surrounding nav owns the name. |
 | `items / children` | `NodeLike` | Links or other already-authorized navigation items. |
+| `action` | `NodeLike | None` | Optional typed action rendered in the group header. |
 
 ## Composition and backend behavior
 
