@@ -117,19 +117,18 @@ Choose a private project location approved by your organization. The following u
 
 ```bash
 mkdir -p ~/projects
-python3.11 -m venv ~/projects/.hedron-scaffold-venv
-source ~/projects/.hedron-scaffold-venv/bin/activate
-python3.11 -m pip install "hedron>=0.67.0,<0.68"
-hedron new my-workbench-app --path ~/projects/my-workbench-app
+mkdir -p ~/projects/my-workbench-app
 cd ~/projects/my-workbench-app
 python3.11 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install -e . "hedron-posit>=0.67.0"
+python3.11 -m pip install "hedron>=0.67.0,<0.68" "hedron-posit>=0.67.0"
+hedron new my-workbench-app --path .
 ```
 
-The first environment is only a temporary helper for creating the project. The project's `.venv`
-is the environment you use for the app. Activating it automatically switches from the helper
-environment, so you do not need to run `deactivate`.
+This creates one environment, `.venv`, inside the project. `hedron new` fills in the project files
+around that environment, and the same activated `.venv` is used for the app. The first install
+provides both the scaffolder and the Workbench launcher, so no second install is needed to run
+this example.
 
 Open the project in the editor with **File → Open Folder**, then select
 `~/projects/my-workbench-app`. Open a new terminal and confirm:

@@ -72,6 +72,19 @@ def test_scaffold_helper_matches_release_toml() -> None:
     assert _scaffold_dep("hedron") == f"hedron>={floor},<{ceiling}"
 
 
+def test_new_allows_scaffolding_around_an_existing_project_venv(tmp_path: Path) -> None:
+    destination = tmp_path / "app"
+    (destination / ".venv").mkdir(parents=True)
+
+    with pytest.raises(SystemExit) as result:
+        main(["new", "app", "--path", str(destination)])
+
+    assert result.value.code == 0
+    assert (destination / ".venv").is_dir()
+    assert (destination / "app.py").is_file()
+    assert (destination / "pyproject.toml").is_file()
+
+
 def test_published_quickstart_pin_matches_scaffold_and_release_toml() -> None:
     """Release CI must not reintroduce the train-.0 pin that failed v0.28.1."""
     module = _load_published_quickstart()

@@ -12,6 +12,13 @@ from hedron.cli.scaffold.fastapi import _scaffold_fastapi
 from hedron.cli.scaffold.flask import _scaffold_flask
 
 
+def _contains_only_project_venv(dest: Path) -> bool:
+    """Allow the beginner-friendly project-first flow without weakening overwrite safety."""
+    return dest.is_dir() and (dest / ".venv").is_dir() and all(
+        entry.name == ".venv" for entry in dest.iterdir()
+    )
+
+
 def _cmd_new(args: argparse.Namespace) -> int:
     if args.name == "element":
         if not args.element_name:
@@ -22,7 +29,12 @@ def _cmd_new(args: argparse.Namespace) -> int:
         print("Unexpected second name; use 'hedron new element <name>'", file=sys.stderr)
         return 2
     dest = Path(args.path or args.name).resolve()
-    if dest.exists() and any(dest.iterdir()) and not args.force:
+    if (
+        dest.exists()
+        and any(dest.iterdir())
+        and not args.force
+        and not _contains_only_project_venv(dest)
+    ):
         print(f"Refusing to overwrite non-empty {dest} (use --force)", file=sys.stderr)
         return 1
     framework = "fastapi"

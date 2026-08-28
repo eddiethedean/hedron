@@ -33,6 +33,11 @@ Scaffold an application.
 ```bash
 hedron new my-app
 hedron new my-app --path ./apps/my-app --force
+mkdir my-app && cd my-app
+python3.11 -m venv .venv
+source .venv/bin/activate
+python3.11 -m pip install "hedron>=0.66.2,<0.67"
+hedron new my-app --path .
 hedron new my-flask-app --flask
 hedron new my-django-app --django
 ```
@@ -41,7 +46,7 @@ hedron new my-django-app --django
 |---|---|
 | `name` | Project name |
 | `--path` | Destination directory (default: `./<name>`) |
-| `--force` | Allow writing into a non-empty destination |
+| `--force` | Allow writing into a non-empty destination; a directory containing only `.venv` is already accepted |
 | `--flask` | Scaffold a Flask + `hedron-flask` app without FastAPI |
 | `--django` | Scaffold a Django + `hedron-django` app without FastAPI |
 | `--template` | FastAPI template: `minimal` (default), `crud`, `dashboard`, or `task` |
