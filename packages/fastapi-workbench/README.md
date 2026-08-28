@@ -8,6 +8,9 @@ Installing or importing this package does **not** wrap your application.
 
 **Package maturity:** Stable independent `1.x` · pin `>=1.0.1,<2.0`
 
+The package supports Python **3.10–3.14**. The commands below use Python 3.11 as the
+standard Workbench spelling.
+
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
 
 ## Install

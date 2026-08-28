@@ -5,7 +5,7 @@ Minimal **native Django** slice (manage-less): home + fragment. Depends on
 
 ## Prerequisites
 
-- Python 3.11–3.14
+- Python 3.10–3.14
 - From a Hedron monorepo checkout: `uv sync`
 
 Or (pip, outside the monorepo):

@@ -5,7 +5,7 @@ Minimal **native Flask** slice: home page + HTMX fragment route. Depends on
 
 ## Prerequisites
 
-- Python 3.11–3.14
+- Python 3.10–3.14
 - From a Hedron monorepo checkout: `uv sync` (includes adapter extras)
 
 Or in a fresh project:

@@ -39,14 +39,14 @@ jobs:
           cache-dependency-glob: uv.lock
 
       - name: Set up Python
-        run: uv python install 3.11
+        run: uv python install 3.12
 
       - name: Sync locked workspace
-        run: uv sync --locked --python 3.11
+        run: uv sync --locked --python 3.12
 
       - name: Run Edron regression tests
         run: >-
-          uv run --python 3.11 pytest -q
+          uv run --python 3.12 pytest -q
           tests/unit/test_edron_phase05.py
           tests/unit/test_phase07_edron.py
           tests/unit/test_phase08_edron.py
@@ -65,7 +65,7 @@ jobs:
 
       - name: Lint Edron release surface
         run: >-
-          uv run --python 3.11 ruff check
+          uv run --python 3.12 ruff check
           packages/edron/src/edron
           scripts/check_edron_release.py
           scripts/verify_edron_phase08.py
@@ -83,7 +83,7 @@ jobs:
           tests/unit/test_package_metadata.py
 
       - name: Verify Edron 1.0 packet
-        run: uv run --python 3.11 python scripts/verify_edron_100.py
+        run: uv run --python 3.12 python scripts/verify_edron_100.py
 
   publish:
     name: Build and publish Edron
@@ -110,7 +110,7 @@ jobs:
           cache-dependency-glob: uv.lock
 
       - name: Set up Python
-        run: uv python install 3.11
+        run: uv python install 3.12
 
       - name: Verify tag and package version
         env:
@@ -130,7 +130,7 @@ jobs:
             exit 1
           fi
 
-          read -r package_name package_version <<<"$(uv run --no-project --python 3.11 python -c '
+          read -r package_name package_version <<<"$(uv run --no-project --python 3.12 python -c '
           import tomllib
           from pathlib import Path
           project = tomllib.loads(Path("packages/edron/pyproject.toml").read_text())["project"]
@@ -155,7 +155,7 @@ jobs:
           uv build --package edron --out-dir dist
           ls -la dist
           VERSION="${GITHUB_REF_NAME#edron-v}"
-          uv run --no-project --python 3.11 python scripts/check_edron_10_release.py \
+          uv run --no-project --python 3.12 python scripts/check_edron_10_release.py \
             --dist-dir dist --version "${VERSION}"
 
       - name: Attest build provenance

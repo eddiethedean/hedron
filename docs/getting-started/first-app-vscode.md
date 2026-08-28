@@ -79,7 +79,7 @@ you opened. Confirm the tools are available:
     Get-Location
     ```
 
-The Python result must be between 3.11 and 3.14. `pwd` and `Get-Location` mean “print working
+The Python result must be between 3.10 and 3.14. `pwd` and `Get-Location` mean “print working
 directory”; the result tells you which folder subsequent commands affect.
 
 If a command says it cannot find Python or `uv`, reopen VS Code after installing the tool. If it

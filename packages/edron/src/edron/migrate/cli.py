@@ -26,7 +26,7 @@ def build_migrate_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
     streamlit.add_argument("--analyze-only", action="store_true")
     streamlit.add_argument("--format", choices=("text", "json", "sarif"), default="text")
     streamlit.add_argument(
-        "--python-version", choices=("3.11", "3.12", "3.13", "3.14"), default="3.12"
+        "--python-version", choices=("3.10", "3.11", "3.12", "3.13", "3.14"), default="3.12"
     )
     streamlit.add_argument(
         "--fail-on", choices=("information", "warning", "error"), default="error"

@@ -6,6 +6,9 @@ installing Hedron.
 **Package:** `fastapi-workbench` `1.0.1` (independent semver) · import `fastapi_workbench`
 **Requires:** Python 3.10–3.14, FastAPI/Starlette ASGI app
 
+The package supports Python 3.10–3.14; the commands below use Python 3.11 as the standard
+Workbench spelling.
+
 If `python3.11` is unavailable, use the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
 before creating the virtual environment. When finished, return to [Install](#install).
 

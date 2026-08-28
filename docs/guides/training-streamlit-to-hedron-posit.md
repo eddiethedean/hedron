@@ -13,6 +13,9 @@ This workshop targets the Hedron **0.67.x** train (`hedron>=0.67.0,<0.68`) and P
 current [capability matrix](whats-ready.md) and
 [compatibility guide](../COMPATIBILITY.md) against your Posit versions and internal package mirror.
 
+The package supports Python 3.10–3.14; the Workbench command examples use Python 3.11 as the
+standard spelling.
+
 ## Training at a glance
 
 | Item | Plan |

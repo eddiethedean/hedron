@@ -224,9 +224,9 @@ jobs:
           enable-cache: true
           cache-dependency-glob: uv.lock
       - name: Set up Python
-        run: uv python install 3.11
+        run: uv python install 3.12
       - name: Sync
-        run: uv sync --locked --python 3.11
+        run: uv sync --locked --python 3.12
       - name: Verify tag, versions, license, and changelog
         run: |
           set -euo pipefail
@@ -234,16 +234,16 @@ jobs:
           # 0.28+ capability gates are Verified — do not pass --allow-planned.
           version="${{ steps.ref.outputs.version }}"
           if [[ "$version" == 0.21* ]]; then
-            uv run --python 3.11 python scripts/check_release_gate.py \
+            uv run --python 3.12 python scripts/check_release_gate.py \
               "$version" --allow-planned
           else
-            uv run --python 3.11 python scripts/check_release_gate.py "$version"
+            uv run --python 3.12 python scripts/check_release_gate.py "$version"
           fi
       - name: Build evidence bundle
         run: |
-          uv run --python 3.11 python scripts/build_evidence_bundle.py \
+          uv run --python 3.12 python scripts/build_evidence_bundle.py \
             --version "${{ steps.ref.outputs.version }}"
-          uv run --python 3.11 --with pip-audit python scripts/dep_audit.py
+          uv run --python 3.12 --with pip-audit python scripts/dep_audit.py
       - name: Build all workspace packages
         run: |
           set -euo pipefail
@@ -261,11 +261,11 @@ jobs:
           ls -la dist
       - name: Verify built quick start before publication
         run: >
-          uv run --python 3.11 python scripts/check_published_quickstart.py
+          uv run --python 3.12 python scripts/check_published_quickstart.py
           "${{ steps.ref.outputs.version }}" --dist-dir dist --attempts 1
       - name: Write release checksum manifest
         run: >
-          uv run --python 3.11 python scripts/write_release_manifest.py
+          uv run --python 3.12 python scripts/write_release_manifest.py
           "${{ steps.ref.outputs.version }}"
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
@@ -301,7 +301,7 @@ jobs:
               echo "Skipping Edron; publish it only from edron-v* tags"
               continue
             fi
-            read -r name pkg_version <<<"$(uv run --python 3.11 python - <<PY
+            read -r name pkg_version <<<"$(uv run --python 3.12 python - <<PY
           import tomllib
           from pathlib import Path
           data = tomllib.loads(Path("${pyproject}").read_text())["project"]
@@ -579,7 +579,7 @@ jobs:
         id: verify_quickstart
         if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}
         run: >
-          uv run --python 3.11 python scripts/check_published_quickstart.py
+          uv run --python 3.12 python scripts/check_published_quickstart.py
           "${{ steps.ref.outputs.version }}"
       - name: Create GitHub Release
         if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' && steps.verify_quickstart.outcome == 'success' }}
@@ -590,7 +590,7 @@ jobs:
           set -euo pipefail
           TAG="${{ steps.ref.outputs.tag }}"
           VERSION="${{ steps.ref.outputs.version }}"
-          NOTES="$(uv run --python 3.11 python scripts/release_notes.py "$VERSION" --package hedron)"
+          NOTES="$(uv run --python 3.12 python scripts/release_notes.py "$VERSION" --package hedron)"
           shopt -s nullglob
           # SUPPLY: omit plain linux_* wheels (PyPI rejects them); keep manylinux/musllinux.
           artifacts=()
