@@ -12,7 +12,7 @@ Docs-only PRs run the **`docs`** suite (mkdocs + train SSOT + recipe/sim checks)
 [CI path filters](#ci-path-filters) below). The rest of this page is the full contributor
 guide.
 
-**Prerequisites:** CPython **3.11–3.14** and [uv](https://docs.astral.sh/uv/).
+**Prerequisites:** CPython **3.10–3.14** and [uv](https://docs.astral.sh/uv/).
 
 | OS | Notes |
 |---|---|
@@ -50,6 +50,12 @@ uv run pytest -q
 
 Writing, source-ownership, generated-content, and review conventions:
 [Documentation standards](guides/documentation-standards.md).
+
+Runnable examples should use the fleet's Python 3.10 floor when that keeps the lesson
+equally clear. An example may deliberately use a newer Python feature, but the prose
+immediately before it must state the minimum version (for example, **Python 3.11+**).
+The package support contract remains Python 3.10–3.14 regardless of an explicitly
+versioned teaching example.
 
 ```bash
 uv sync --group docs
@@ -168,7 +174,7 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 
 | Job | Suite (`ci_checks.sh …`) | On pull requests? |
 |---|---|---|
-| `test` | `test` — `pytest -n auto` on Python 3.11–3.14 | Yes, unless **docs-only** |
+| `test` | `test` — `pytest -n auto` on Python 3.10–3.14 | Yes, unless **docs-only** |
 | `workbench-dependencies` | `workbench` — Workbench contract tests at minimum/latest Starlette/Uvicorn bounds | Yes, unless **docs-only** |
 | `quality` | `quality` — ruff, pyright, `verify_pkg_*`, wheel build + smoke, docs train SSOT, recipe/sim checks, `mkdocs build --strict` | Yes, unless **docs-only** (then the same job runs `docs` instead) |
 | `quality` (docs-only) | `docs` — mkdocs, train SSOT, recipe/sim checks; **no** Rust toolchain and **no** `uv build --all-packages` | Docs-only PRs |
@@ -179,7 +185,7 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 | `release` (commit CI) | `packaging` — Packaging rehearsal plus living `verify_pkg_47.py` cut | After `evidence` succeeds (skipped when docs-only) |
 
 Local full parity: `bash scripts/ci_checks.sh all --python 3.12 --skip-browser` runs every
-non-browser job on one Python; omit `--python` for the full 3.11–3.14 test matrix. Pass
+non-browser job on one Python; omit `--python` for the full 3.10–3.14 test matrix. Pass
 `--all-browsers` to match the `main`-branch browser matrix. See `scripts/ci_checks.sh --help`.
 
 Release workflow (`release.yml`) runs the same `test` / `quality` / `browser` / `evidence`
@@ -288,7 +294,7 @@ questions. Accepted behavior is changed through an explicit decision entry and R
 revision or superseding RFC.
 
 Plugin authors: start from [Plugin authoring](guides/plugin-authoring.md) and the
-sample kit (`hedron-sample-kit>=0.2.2,<0.3` on Hedron 0.58).
+1.0-compatible sample kit (`hedron-sample-kit>=0.2.3,<0.3`).
 
 ### Implementation changes
 

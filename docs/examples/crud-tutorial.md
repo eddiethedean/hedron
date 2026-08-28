@@ -114,7 +114,7 @@ above for new apps.
 
     ```python title="app.py"
     import os
-    from datetime import UTC, datetime
+    from datetime import datetime, timezone
 
     from fastapi import Form as FastAPIForm
 
@@ -143,7 +143,7 @@ above for new apps.
 
     @app.view("/status")
     def status():
-        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+        stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
         return html.div(
             Text(f"All systems operational · refreshed {stamp}"),
             role="status",

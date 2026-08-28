@@ -6,7 +6,7 @@ Scaffold with the `hedron` CLI (`hedron new --django`); runtime is
 mounts `/hedron-static` so PAGE responses can inject bundled HTMX.
 
 **Install:** `pip install "hedron-django>=0.66.2,<0.67"` (or `uv add "hedron-django>=0.66.2,<0.67"`).
-Requires Python 3.11–3.14. See [Installation](installation.md).
+Requires Python 3.10–3.14. See [Installation](installation.md).
 
 Django supports AppConfig, forms, and QuerySet DataSource. Progressive FastAPI
 facades (`@app.view`, `@app.action`, and related symbols) are FastAPI-only —
@@ -69,7 +69,7 @@ Minimal Refresh-capable view:
 
 ```python
 # demo/views.py
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from django.http import HttpRequest
 from django.urls import path
@@ -82,7 +82,7 @@ PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
 def panel_body() -> object:
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(Text(f"Django status · {stamp}"), id="panel")
 
 

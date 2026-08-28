@@ -6,9 +6,10 @@ import ipaddress
 import socket
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Protocol
 from urllib.parse import urlparse
+
+from hedron_core.compat import StrEnum
 
 
 class EgressDecisionKind(StrEnum):

@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import StrEnum
 from typing import Any, Generic, TypeVar
 
+from hedron_core.compat import StrEnum
 from hedron_core.security.secrets import Secret, is_secret, redact_value
 
 T = TypeVar("T")

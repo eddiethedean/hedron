@@ -1,4 +1,4 @@
-REALWB-030 start 2026-08-27T14:53:26Z
+REALWB-030 start 2026-08-28T15:55:33Z
 image=posit/workbench@sha256:***
 docker_platform=linux/amd64
 python=Python 3.12.13
@@ -52,6 +52,6 @@ FASTAPI_WEBSOCKET=ok
 FASTAPI_OUTSIDE_WORKBENCH=ok active=false workbenchified=false generic_aliases_ignored=ok
 FASTAPI_PACKAGE=pass
 RESULT=pass
-REALWB-030 end 2026-08-27T14:53:52Z
+REALWB-030 end 2026-08-28T15:55:54Z
 LICENSE_DEACTIVATE=begin timeout=120s
 LICENSE_DEACTIVATE=end

@@ -9,8 +9,9 @@ import json
 import os
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 ACCEPTANCE = ROOT / "docs" / "acceptance"
@@ -90,6 +91,17 @@ INDEPENDENT_SATELLITES = (
     "hedron-sim",
     "fastapi-workbench",
     "edron",
+)
+
+PLUGIN_DEFINITION_SATELLITES = frozenset(
+    {
+        "hedron-charts",
+        "hedron-gradio",
+        "hedron-maps",
+        "hedron-mcp",
+        "hedron-notebook",
+        "hedron-sample-kit",
+    }
 )
 
 EXPECTED_GATES = (
@@ -282,7 +294,15 @@ def _check_package_metadata() -> list[str]:
         project = _toml(pyproject).get("project", {})
         dependencies = project.get("dependencies", []) if isinstance(project, dict) else []
         joined = " ".join(str(item) for item in dependencies)
-        if (
+        if distribution == "edron":
+            if "hedron>=1.0.0,<2.0" not in joined:
+                errors.append("edron: Hedron dependency must require the canonical 1.x train")
+        elif distribution in PLUGIN_DEFINITION_SATELLITES:
+            if "hedron-core>=1.0.0,<2.0" not in joined:
+                errors.append(f"{distribution}: composable plugins require hedron-core>=1.0.0,<2.0")
+            if distribution == "hedron-notebook" and "hedron>=1.0.0,<2.0" not in joined:
+                errors.append("hedron-notebook: flagship dependency must require Hedron 1.x")
+        elif (
             distribution != "hedron-native"
             and "hedron" in joined
             and (">=0.67" not in joined or "<2.0" not in joined)

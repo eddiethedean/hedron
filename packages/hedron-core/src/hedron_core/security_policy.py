@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, fields
-from enum import StrEnum
 from typing import Any, Literal
 
+from hedron_core.compat import StrEnum
 from hedron_core.csrf_strategy import (
     DEFAULT_CSRF_COOKIE_NAME,
     DEFAULT_CSRF_FORM_FIELD,

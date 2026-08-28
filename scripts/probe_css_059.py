@@ -7,7 +7,7 @@ import argparse
 import hashlib
 import json
 import tempfile
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -143,7 +143,7 @@ def main() -> int:
     result: dict[str, Any] = {
         "schema": "hedron.css-probe/1",
         "phase": "0.59",
-        "generated_at": datetime.now(UTC).isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
         "parser": parser_probe(),
         "recipe": recipe_probe(),
     }

@@ -8,9 +8,10 @@ import os
 import subprocess
 import sys
 import tempfile
-import tomllib
 import zipfile
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_GATES = {

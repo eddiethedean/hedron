@@ -17,7 +17,7 @@
 #   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.37.0] [options]
 #
 # Full local CI (`all`) mirrors `.github/workflows/ci.yml` job order:
-#   test (Python 3.11–3.14 by default) → workbench-dependencies → quality →
+#   test (Python 3.10–3.14 by default) → workbench-dependencies → quality →
 #   browser (Chromium; pass --all-browsers for main-branch matrix) → realwb →
 #   realconnect → evidence → packaging
 #
@@ -27,7 +27,7 @@
 # project .venv. Suite order in `all` stays sequential for the same reason.
 #
 # `all` options (opt out of slow or credential-gated jobs):
-#   --python 3.12       Single Python for test (default matrix: 3.11–3.14)
+#   --python 3.12       Single Python for test (default matrix: 3.10–3.14)
 #   --all-pythons       Force full test matrix even after --python
 #   --jobs N            Max concurrent jobs (default: CPUs, or HEDRON_CHECK_JOBS)
 #   --skip-browser      Skip Playwright HTMX suite
@@ -72,7 +72,7 @@ export PYTHONDONTWRITEBYTECODE="${PYTHONDONTWRITEBYTECODE:-1}"
 
 PYTHON="${PYTHON:-3.12}"
 GATE_VERSION="${HEDRON_GATE_VERSION:-1.0.0}"
-CI_PYTHONS=(3.11 3.12 3.13 3.14)
+CI_PYTHONS=(3.10 3.11 3.12 3.13 3.14)
 PYTHON_EXPLICIT=0
 ALL_PYTHONS=0
 ALL_BROWSERS=0
@@ -410,10 +410,10 @@ PY
   /tmp/hedron-smoke/bin/python - <<'PY'
 import importlib.metadata as metadata
 
-assert metadata.version("edron") == "0.9.1"
+assert metadata.version("edron") == "1.0.0"
 assert metadata.version("hedron") == "1.0.0"
 assert metadata.version("hedron-data") == "1.0.0"
-print("ok: Edron 0.9 installs against the prospective Hedron 1.0 train")
+print("ok: Edron 1.0 installs against the Hedron 1.0 train")
 PY
 
   # Exercise the exact standalone-wheel scaffold contract on ordinary main/PR
@@ -557,12 +557,12 @@ cmd_workbench_bounds() {
     uv pip install --python "$venv/bin/python" \
       -e packages/hedron-core -e packages/hedron -e packages/fastapi-workbench -e packages/hedron-posit \
       -e packages/hedron-django \
-      pytest pytest-xdist httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
+      pytest pytest-xdist httpx "django>=5.2,<6" "starlette==0.40.0" "uvicorn==0.32.0"
   else
     uv pip install --python "$venv/bin/python" \
       -e packages/hedron-core -e packages/hedron -e packages/fastapi-workbench -e packages/hedron-posit \
       -e packages/hedron-django \
-      pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
+      pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=0.40.0" "uvicorn>=0.32"
   fi
   run "$venv/bin/pytest" -q \
     tests/adapters/workbench \

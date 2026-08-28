@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import Column, Integer, String, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
@@ -85,7 +85,7 @@ def save(data: Annotated[NoteIn, FormBody()]):
     normalized = data.body.strip()
     if not normalized:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            status_code=422,
             detail="Note body must not be blank",
         )
     with SessionLocal() as db:

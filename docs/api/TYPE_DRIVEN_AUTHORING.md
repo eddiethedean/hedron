@@ -496,7 +496,7 @@ FastAPI is the complete flagship. Flask, Django, and Jinja either consume portab
 [`adapter-disposition-044.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/adapter-disposition-044.toml).
 This phase does not implement 0.45 catalogs or 0.46 workflows.
 
-Supported authoring matrix: Python 3.11–3.14, Pydantic v2 public APIs only, FastAPI/Starlette as
+Supported authoring matrix: Python 3.10–3.14, Pydantic v2 public APIs only, FastAPI/Starlette as
 pinned on the 0.43 train, stock mypy and pyright. No required type-checker plugin.
 
 The `HED-TYPE-*` diagnostic family, including `HED-TYPE-BIND-SOURCE` (`HED-TYPE-0001`),

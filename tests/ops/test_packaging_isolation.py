@@ -61,7 +61,7 @@ def test_all_packages_declare_license_and_version() -> None:
         elif name in _INDEPENDENT_BETA_067:
             assert str(project["version"]).startswith("0.67."), pyproject
         elif name == "edron":
-            assert str(project["version"]).startswith("0.9."), pyproject
+            assert project["version"] == "1.0.0", pyproject
         elif name in _INDEPENDENT_BETA_05:
             assert str(project["version"]).startswith("0.5."), pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:
@@ -120,7 +120,7 @@ def test_025_satellites_have_installable_patch_floors() -> None:
         (ROOT / "packages" / "hedron-extras" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
 
-    charts_pin = "hedron-charts>=0.2.3,<0.3"
+    charts_pin = "hedron-charts>=0.2.4,<0.3"
     assert hedron["optional-dependencies"]["charts"] == [charts_pin]
     assert charts_pin in extras["optional-dependencies"]["chart_workbench"]
     assert charts_pin in extras["optional-dependencies"]["all"]
@@ -130,10 +130,10 @@ def test_025_satellites_have_installable_patch_floors() -> None:
     sample = tomllib.loads(
         (ROOT / "packages" / "hedron-sample-kit" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
-    # Tip may patch above the floor; pin floor stays >=0.2.3,<0.3.
+    # Tip may patch above the floor; the 1.0 plugin contract starts at these patches.
     assert charts["version"].startswith("0.2.")
     assert tuple(int(p) for p in charts["version"].split(".")) >= (0, 2, 0)
-    assert sample["version"] == "0.2.2"
+    assert sample["version"] == "0.2.3"
 
 
 def test_hedron_build_module_is_packaged(tmp_path: Path) -> None:

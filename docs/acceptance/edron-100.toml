@@ -1,0 +1,62 @@
+schema = "edron.release-acceptance/1"
+release = "1.0"
+status = "Implemented"
+package = "edron"
+version = "1.0.0"
+required_predecessor = "edron-v0.9.1"
+hedron_train = "1.0.0"
+hedron_requirement = ">=1.0.0,<2.0"
+hedron_data_requirement = ">=1.0.0,<2.0"
+canonical_roles = ["page", "view", "action", "include"]
+native_authority = "Hedron 1.x and the owning hedron-* packages"
+compatibility_policy = "no Hedron 0.67 runtime dependency or compatibility aliases"
+
+[[gate]]
+id = "EDR-100-TRAIN"
+state = "Implemented"
+evidence = "Edron, Hedron, and hedron-data metadata and lock resolve the 1.0.0 train"
+
+[[gate]]
+id = "EDR-100-ROUTES"
+state = "Implemented"
+evidence = "Edron pages, fragments, actions, and bundles delegate to canonical page/view/action/include APIs"
+
+[[gate]]
+id = "EDR-100-IDENTITY"
+state = "Implemented"
+evidence = "Edron descriptors expose the exact native handles stored by Hedron application state"
+
+[[gate]]
+id = "EDR-100-INTERACTION"
+state = "Implemented"
+evidence = "Native Interaction and Outcome identities, request lowering, target policy, and no-JavaScript fallbacks"
+
+[[gate]]
+id = "EDR-100-LIFECYCLE"
+state = "Implemented"
+evidence = "Demand-driven browser plan, fragment closure, HTMX settle/cleanup, and component lifecycle ownership"
+
+[[gate]]
+id = "EDR-100-COMPONENTS"
+state = "Implemented"
+evidence = "Native component engine, accessibility fallback, specialist chart/map/data hosts, and style contracts"
+
+[[gate]]
+id = "EDR-100-DATA-JOBS-CACHE"
+state = "Implemented"
+evidence = "Native data workspace, TaskFlow, PollPolicy, job backend, cache policy, and resource ownership"
+
+[[gate]]
+id = "EDR-100-TOOLING"
+state = "Implemented"
+evidence = "Scaffolds and migration output pin Edron/Hedron 1.x and pass the Hedron 1.0 static migrator"
+
+[[gate]]
+id = "EDR-100-PACKAGING"
+state = "Implemented"
+evidence = "Version, Requires-Dist, wheel, sdist, license, py.typed, and clean-install checks"
+
+[[gate]]
+id = "EDR-100-REGRESSION"
+state = "Implemented"
+evidence = "Edron unit, HTTP, security, accessibility, migration, packaging, and release suites"

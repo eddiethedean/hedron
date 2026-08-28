@@ -5,8 +5,12 @@ from __future__ import annotations
 from pathlib import Path
 
 from hedron_core.identifiers import content_digest
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
-from hedron_core.registry import register_asset
+from hedron_core.plugins import (
+    PluginCapabilities,
+    PluginContext,
+    PluginDefinition,
+    PluginMeta,
+)
 from hedron_sample_kit.variants import register_variants
 
 _ROOT = Path(__file__).resolve().parent
@@ -15,9 +19,9 @@ _MARK = _COMPONENT / "mark.txt"
 
 PLUGIN_META = PluginMeta(
     name="sample_kit",
-    version="0.2.2",
+    version="0.2.3",
     distribution="hedron-sample-kit",
-    hedron_version=">=0.67,<2.0",
+    hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -28,7 +32,7 @@ PLUGIN_META = PluginMeta(
 )
 
 
-def register(ctx: PluginContext) -> None:
+def _register_component(ctx: PluginContext) -> None:
     folder = _COMPONENT
     ctx.register_component(
         logical_id="hedron-sample-kit:callout.Callout",
@@ -43,13 +47,16 @@ def register(ctx: PluginContext) -> None:
     )
     if _MARK.is_file():
         digest = content_digest(_MARK.read_bytes())
-        register_asset(
+        ctx.register_asset(
             logical_id="hedron-sample-kit:callout.mark",
             kind="file",
             path=str(_MARK),
             digest=digest,
             content_type="text/plain",
         )
+
+
+def _register_explorer(ctx: PluginContext) -> None:
     ctx.register_explorer_provider(
         panel_id="sample-kit-callout",
         title="Sample Callout",
@@ -58,6 +65,9 @@ def register(ctx: PluginContext) -> None:
         capabilities=("html",),
     )
     ctx.register_diagnostic_owner("HED-SAMPLE-")
+
+
+def _register_projection(ctx: PluginContext) -> None:
     from hedron_core.catalog import SurfaceProjectionProvider
 
     ctx.register_projection_provider(
@@ -70,6 +80,9 @@ def register(ctx: PluginContext) -> None:
             disposition="native_consumer",
         )
     )
+
+
+def _register_bundle(ctx: PluginContext) -> None:
     from hedron_core.bundles import FeatureBundle
     from hedron_core.catalog import PackageProjection, ProjectionCapability
 
@@ -92,7 +105,26 @@ def register(ctx: PluginContext) -> None:
             ),
         )
     )
+
+
+def _register_variants(ctx: PluginContext) -> None:
     register_variants(ctx)
+
+
+PLUGIN = PluginDefinition.from_callbacks(
+    PLUGIN_META,
+    (
+        ("component", _register_component),
+        ("explorer", _register_explorer),
+        ("projection", _register_projection),
+        ("bundle", _register_bundle),
+        ("variants", _register_variants),
+    ),
+)
+
+
+def register(ctx: PluginContext) -> None:
+    PLUGIN.register(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

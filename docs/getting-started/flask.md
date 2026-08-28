@@ -5,7 +5,7 @@ Use `hedron-flask` for Flask-native apps. Scaffold with the `hedron` CLI
 the app process).
 
 **Install:** `pip install "hedron-flask>=0.66.2,<0.67"` (or `uv add "hedron-flask>=0.66.2,<0.67"`).
-Requires Python 3.11–3.14. See [Installation](installation.md).
+Requires Python 3.10–3.14. See [Installation](installation.md).
 
 Flask supports pages, fragments, and CSRF. Progressive FastAPI facades
 (`@app.view`, `@app.action`, and related symbols) are FastAPI-only — see the
@@ -59,7 +59,7 @@ Save as `app.py`:
 
 ```python
 import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from flask import Flask
 
@@ -74,7 +74,7 @@ PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
 def panel_body() -> object:
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(Text(f"Flask status · {stamp}"), id="panel")
 
 

@@ -9,11 +9,12 @@ from __future__ import annotations
 
 import logging
 import re
-import tomllib
 from collections.abc import Mapping
 from importlib.metadata import PackageNotFoundError, distributions, entry_points, version
 from pathlib import Path
 from typing import Any
+
+from hedron_core.compat import tomllib
 
 _LOG = logging.getLogger("hedron.fleet")
 

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import re
-import tomllib
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +15,7 @@ from hedron_core.codes import (
     HED_CHECK_0005,
     HED_CHECK_0006,
 )
+from hedron_core.compat import tomllib
 
 SCHEMA = "hedron.interaction-checks/1"
 MAX_FILES = 1_000

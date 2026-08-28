@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from enum import StrEnum
 from typing import Any, Literal
 
+from hedron_core.compat import StrEnum
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props

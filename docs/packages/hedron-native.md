@@ -22,7 +22,7 @@ pip install "hedron-native>=0.1.2,<0.2"
 ```
 
 Supported wheel tags cover **manylinux x86_64 + aarch64**, **macOS arm64**, and
-**Windows amd64** (CPython 3.11–3.14) via `native-wheels.yml` — confirm Supported
+**Windows amd64** (CPython 3.10–3.14) via `native-wheels.yml` — confirm Supported
 tags on PyPI. If a wheel is unavailable, pip may build from
 Rust source (requires a Rust toolchain) — or omit the package and rely on pure Python.
 

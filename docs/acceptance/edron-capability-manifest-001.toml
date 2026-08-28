@@ -78,21 +78,21 @@ row_serialization_state = "Draft; install/disposition/owner/readiness remain aut
 
 [[optional]]
 id = "data.pandas"
-requirements = ["pandas>=2.0", "narwhals>=1.0"]
+requirements = ["pandas>=2.0", "narwhals>=1.1"]
 shortcut = "edron[pandas]"
 owner = "hedron-data"
 maturity = "beta candidate"
 
 [[optional]]
 id = "data.polars"
-requirements = ["polars>=1.0", "narwhals>=1.0"]
+requirements = ["polars>=1.0", "narwhals>=1.1"]
 shortcut = "edron[polars]"
 owner = "hedron-data"
 maturity = "beta candidate"
 
 [[optional]]
 id = "data.pyarrow"
-requirements = ["pyarrow>=15.0", "narwhals>=1.0"]
+requirements = ["pyarrow>=15.0", "narwhals>=1.1"]
 shortcut = "edron[pyarrow]"
 owner = "hedron-data"
 maturity = "beta candidate"

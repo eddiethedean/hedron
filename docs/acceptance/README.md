@@ -47,6 +47,9 @@ status commentary, not a satisfied release gate.
   pending**; see the [phase gates](edron-phase09.toml) and [0.8-to-0.9 upgrade fixtures](upgrade-fixtures-09.md).
   The predecessor train is Hedron `0.67.0`; this checkout implements the coordinated Hedron
   verified `1.0.0` release candidate; tag and registry publication remain pending.
+- [Edron `1.0.0` acceptance packet](EDRON_100.md) — **Implemented in-tree; publication pending**;
+  see [edron-100.toml](edron-100.toml). Edron now requires Hedron 1.x and delegates canonical
+  page, view, action, include, handle, lifecycle, and result-lowering ownership to Hedron.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)

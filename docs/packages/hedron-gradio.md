@@ -2,8 +2,9 @@
 
 Production-grade Gradio client interoperability for Hedron.
 
-**Package maturity:** Beta · **Repository package version:** `0.2.2` · pin `>=0.2.2,<0.3`
+**Package maturity:** Beta · **Repository package version:** `0.2.3` · pin `>=0.2.3,<0.3`
 **Flagship extra:** `hedron[gradio]` · **Import:** `hedron_gradio`
+Requires `hedron-core>=1.0.0,<2.0`.
 Provides allowlisted remote endpoint discovery, predict / job / stream helpers with explicit
 schemas, bounded
 file transport, and Hugging Face vendor-node adapters — **without** embedding Gradio’s UI runtime
@@ -16,7 +17,7 @@ Disabled by default; absence adds no core dependency or startup cost.
 ```bash
 pip install "hedron[gradio]>=0.66.2,<0.67"
 # or
-pip install "hedron-gradio>=0.2.2,<0.3"
+pip install "hedron-gradio>=0.2.3,<0.3"
 ```
 
 For **live** Gradio endpoints, also install `gradio_client`. The package imports without

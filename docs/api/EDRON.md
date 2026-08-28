@@ -4,8 +4,8 @@ status: verified
 
 # Edron public API contract
 
-**Status:** Edron `0.9.1` implemented and verified in-tree; publication pending<br>
-**Target:** Edron `0.9.1`; Hedron `0.67.0` through `1.x` (`>=0.67.0,<2.0`)<br>
+**Status:** Edron `1.0.0` implemented and verified in-tree; publication pending<br>
+**Target:** Edron `1.0.0`; Hedron `1.x` (`>=1.0.0,<2.0`)<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Authority:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
@@ -15,9 +15,9 @@ status: verified
 **Acceptance:** [Edron 0.1 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md)<br>
 **Executable-design fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
-This document records the beginner-facing Python contract through Edron 0.9. The original 0.1
+This document records the beginner-facing Python contract through Edron 1.0. The original 0.1
 sections remain the compatibility foundation; release and migration details are in the
-[Edron user guide](../guides/edron-user-guide.md) and [0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md).
+[Edron user guide](../guides/edron-user-guide.md) and [1.0 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md).
 Signatures use
 Python typing notation; imported native types keep their owning Hedron package and stability level.
 
@@ -61,7 +61,7 @@ The conventional import is `import edron as ed`. Documentation does not use or r
 
 ## Contract language and stability
 
-The words **must**, **must not**, **required**, **should**, and **may** are normative. Edron `0.9.1`
+The words **must**, **must not**, **required**, **should**, and **may** are normative. Edron `1.0.0`
 is a Beta distribution and all Edron-owned symbols in this contract remain API tier `beta`.
 Identity re-exports retain the native Hedron symbol's own tier. Experimental third-party adapters
 remain explicitly `experimental` even when reached through an Edron method.
@@ -76,13 +76,13 @@ The current compatibility promise covers:
 - styling precedence and native-authority behavior; and
 - stable Edron diagnostic codes listed here.
 
-Edron 0.9 additionally exposes the native Hedron `Interaction`, `Outcome`,
+Edron exposes the native Hedron `Interaction`, `Outcome`,
 `AlpineFeatureDemand`, `BrowserFeaturePlan`, and `BrowserPlanClosure` contracts. These are identity
 re-exports: Edron does not create a parallel browser runtime, request authority, or outcome algebra.
 Use `edron.Interaction.local`, `.request`, or `.combined` for declared interactions and
-`edron.browser_plan()` for demand-driven browser assets. The original Edron 0.9 acceptance run
-used Hedron 0.67; the verified package range now also admits Hedron 1.x without adding a parallel
-runtime contract.
+`edron.browser_plan()` for demand-driven browser assets. Edron 1.0 registers page, view, action,
+and feature roles through the canonical Hedron 1.0 APIs and does not maintain parallel handle,
+router, lifecycle, or outcome-lowering implementations.
 
 Generated internal paths, DOM IDs, private classes, private descriptor/compiler types, buffer
 implementation, exact HTML whitespace, and private native Hedron implementation details are not
@@ -95,12 +95,12 @@ The normative artifact, dependency, capability, extras, and release requirements
 the [Edron packaging contract](EDRON_PACKAGING.md). This section freezes the public installation
 surface.
 
-The `edron` distribution supports Python 3.11 through 3.14 on the 0.9 train.
+The `edron` distribution supports Python 3.10 through 3.14 on the 1.0 train.
 
-`pip install edron` requires `hedron>=0.67.0,<2.0` and `hedron-data>=0.67.0,<2.0`, plus the
+`pip install edron` requires `hedron>=1.0.0,<2.0` and `hedron-data>=1.0.0,<2.0`, plus the
 compatible `hedron-charts`, `hedron-maps`, Markdown/sanitization, and Uvicorn dependencies. The
-original 0.67 verification train remains frozen in the
-[0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md).
+native 1.0 integration is frozen in the
+[1.0 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md).
 
 The package publishes `py.typed`, wheel, and source distributions. Importing `edron` must not:
 
@@ -1057,9 +1057,9 @@ The initial shortcut registry is:
 
 | Capability | Direct dependencies | Equivalent shortcut | Maturity |
 |---|---|---|---|
-| pandas input | `pandas>=2.0` and `narwhals>=1.0` | `edron[pandas]` | beta data adapter |
-| Polars input | `polars>=1.0` and `narwhals>=1.0` | `edron[polars]` | beta data adapter |
-| PyArrow input | `pyarrow>=15.0` and `narwhals>=1.0` | `edron[pyarrow]` | beta data adapter |
+| pandas input | `pandas>=2.0` and `narwhals>=1.1` | `edron[pandas]` | beta data adapter |
+| Polars input | `polars>=1.0` and `narwhals>=1.1` | `edron[polars]` | beta data adapter |
+| PyArrow input | `pyarrow>=15.0` and `narwhals>=1.1` | `edron[pyarrow]` | beta data adapter |
 | Plotly | `plotly>=5.18,<7` | `edron[plotly]` | experimental |
 | Altair | `altair>=6,<7` and `vl-convert-python>=1.0` | `edron[altair]` | experimental |
 | Matplotlib | `matplotlib>=3.8,<4` | `edron[matplotlib]` | beta/static Supported scope |

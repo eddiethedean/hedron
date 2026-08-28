@@ -6,7 +6,7 @@ search:
 
 # Build your first app
 
-About 10 minutes after Python **3.11–3.14** and either
+About 10 minutes after Python **3.10–3.14** and either
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/) or an activated virtual
 environment. Node.js is not required.
 
@@ -81,7 +81,7 @@ The generated `app.py` looks like this (you can paste it if scaffold is unavaila
 
 ```python
 import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron import Hedron, Stack, Text, html
 
@@ -95,7 +95,7 @@ app = Hedron(
 
 @app.view("/status")
 def status():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
         role="status",

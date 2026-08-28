@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from enum import StrEnum
 from typing import Literal
 from urllib.parse import urljoin, urlsplit
+
+from hedron_core.compat import StrEnum
 
 __all__ = [
     "NavigationDecision",

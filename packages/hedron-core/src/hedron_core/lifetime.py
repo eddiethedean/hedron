@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Literal
 
 from hedron_core.codes import HED_FP_0001
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import error
 
 __all__ = [

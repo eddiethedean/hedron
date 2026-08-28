@@ -5,7 +5,6 @@ from __future__ import annotations
 from collections.abc import Iterable, Iterator, Mapping
 from contextvars import ContextVar, Token
 from dataclasses import dataclass
-from enum import StrEnum
 from types import MappingProxyType
 from typing import Literal, TypedDict
 
@@ -18,6 +17,7 @@ from hedron_core.codes import (
     HED_EXT_0008,
     HED_EXT_0009,
 )
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, error, make_diagnostic
 
 __all__ = [

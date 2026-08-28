@@ -5,14 +5,13 @@ from __future__ import annotations
 from pathlib import Path
 
 from hedron_core.identifiers import content_digest
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
-from hedron_core.registry import (
-    ElementFieldOwnership,
-    register_asset,
-    register_browser_module,
-    register_component,
-    register_element_definition,
+from hedron_core.plugins import (
+    PluginCapabilities,
+    PluginContext,
+    PluginDefinition,
+    PluginMeta,
 )
+from hedron_core.registry import ElementFieldOwnership
 from hedron_data.editor import DATA_EDITOR_EVENTS, DataEditor
 from hedron_data.table import DataTable
 
@@ -24,7 +23,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_data",
     version="1.0.0",
     distribution="hedron-data",
-    hedron_version=">=0.67,<2.0",
+    hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -35,12 +34,12 @@ PLUGIN_META = PluginMeta(
 )
 
 
-def register(ctx: PluginContext) -> None:
+def _register_components(ctx: PluginContext) -> None:
     for cls in (DataTable, DataEditor):
         logical = (
             f"{cls.distribution}:{cls.__module__}.{getattr(cls, 'logical_name', cls.__name__)}"
         )
-        register_component(
+        ctx.register_component(
             logical_id=logical,
             name=getattr(cls, "logical_name", cls.__name__) or cls.__name__,
             module=cls.__module__,
@@ -50,16 +49,18 @@ def register(ctx: PluginContext) -> None:
             accessibility_notes="Native table semantics with keyboard-editable grid host.",
         )
 
+
+def _register_editor_element(ctx: PluginContext) -> None:
     if _JS.is_file():
         digest = content_digest(_JS.read_bytes())
-        register_asset(
+        ctx.register_asset(
             logical_id="hedron-data:tabulator.editor.js",
             kind="js",
             path=str(_JS),
             digest=digest,
             content_type="text/javascript",
         )
-        register_browser_module(
+        ctx.register_browser_module(
             logical_id="hedron-data:tabulator-editor",
             tag_name="hedron-data-editor",
             module_path=str(_JS),
@@ -68,7 +69,7 @@ def register(ctx: PluginContext) -> None:
             shadow_dom=False,
             htmx_lifecycle=True,
         )
-        register_element_definition(
+        ctx.register_element_definition(
             logical_id="hedron-data-editor",
             tag_name="hedron-data-editor",
             abi_version=1,
@@ -130,7 +131,7 @@ def register(ctx: PluginContext) -> None:
         )
     if _CSS.is_file():
         digest = content_digest(_CSS.read_bytes())
-        register_asset(
+        ctx.register_asset(
             logical_id="hedron-data:tabulator.editor.css",
             kind="css",
             path=str(_CSS),
@@ -138,6 +139,8 @@ def register(ctx: PluginContext) -> None:
             content_type="text/css",
         )
 
+
+def _register_catalog(ctx: PluginContext) -> None:
     ctx.register_explorer_provider(
         panel_id="hedron-data-schema",
         title="Data schema",
@@ -166,6 +169,20 @@ def register(ctx: PluginContext) -> None:
             limitations=("opt-in; explicit source/policy; no inferred authz",),
         )
     )
+
+
+PLUGIN = PluginDefinition.from_callbacks(
+    PLUGIN_META,
+    (
+        ("components", _register_components),
+        ("editor-element", _register_editor_element),
+        ("catalog", _register_catalog),
+    ),
+)
+
+
+def register(ctx: PluginContext) -> None:
+    PLUGIN.register(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

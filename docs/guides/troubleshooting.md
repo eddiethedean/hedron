@@ -52,8 +52,8 @@ python -m hedron check
 FastAPI/Pydantic version after install.
 
 **Cause:** Another package pins FastAPI/Pydantic outside Hedron’s **declared** range
-(`fastapi>=0.141.1,<0.150`, `pydantic>=2.13.4,<2.15`), or you need the **CI-supported**
-band for a known-good first app (`fastapi>=0.141.1,<0.142`, `pydantic>=2.13.4,<2.14`).
+(`fastapi>=0.121.0,<0.150`, `pydantic>=2.12.0,<2.15`), or you need the **CI-supported**
+band for a known-good first app (`fastapi>=0.121.0,<0.142`, `pydantic>=2.12.0,<2.14`).
 Declared ranges are wider than Supported — versions outside Supported can still install
 but are not CI-proven.
 

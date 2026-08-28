@@ -3,6 +3,10 @@
 ## [1.0.0] — 2026-08-27
 
 - Canonical 1.0 route, interaction, and migration interfaces.
+- Added the composable `PluginDefinition` and `PluginContribution` boundary used by
+  satellite package entry points. Contributions are ordered, named, and isolated
+  behind the injected `PluginContext`.
+- Broaden Pydantic compatibility to `>=2.12.0,<2.15` and Packaging to `>=22`.
 
 ## [0.67.0] — 2026-08-27
 

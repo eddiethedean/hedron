@@ -35,7 +35,7 @@ pip install "hedron[conformance]>=0.66.2,<0.67"
 
 The beta checkout tip is `v0.67.0`; stable applications install `>=0.66.2,<0.67` from PyPI.
 
-Requires Python 3.11–3.14.
+Requires Python 3.10–3.14.
 
 ## Runner
 

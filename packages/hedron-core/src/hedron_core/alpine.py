@@ -13,9 +13,10 @@ import json
 import re
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
-from enum import StrEnum
 from types import MappingProxyType
 from typing import Final, TypeAlias, cast
+
+from hedron_core.compat import StrEnum
 
 __all__ = [
     "ALPINE_PLAN_SCHEMA",

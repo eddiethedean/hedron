@@ -33,7 +33,7 @@ from hedron_notebook.topology import (
     start_server_handoff,
 )
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 __all__ = [
     "DISPLAY_SNAPSHOT_SCHEMA",

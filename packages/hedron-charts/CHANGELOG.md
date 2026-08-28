@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.4] — 2026-08-28
+
+### Changed
+
+- Require `hedron-core>=1.0.0,<2.0` for the composable plugin contract.
+- Split component, element, asset, renderer, and catalog registration into focused
+  `PluginDefinition` contributions.
+- Set the clean-install Pygal floor to `>=3.0.4` and include PyArrow `>=16` with
+  Datashader so current Dask can import its dataframe backend.
+
 ## [0.2.3] — 2026-08-27
 
 ### Fixed

@@ -3,6 +3,8 @@
 ## [1.0.0] — 2026-08-27
 
 - Canonical `page`/`view`/`action` authoring and 0.67 migration tooling.
+- Broaden verified runtime floors to FastAPI `>=0.121.0`, Pydantic `>=2.12.0`,
+  Packaging `>=22`, itsdangerous `>=2.1.2`, Markdown `>=3.4.1`, and HTTPX `>=0.27`.
 
 ## [0.67.0] — 2026-08-27
 

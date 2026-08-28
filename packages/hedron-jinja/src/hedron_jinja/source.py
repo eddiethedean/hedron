@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import re
-import tomllib
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from html.parser import HTMLParser
@@ -19,6 +18,7 @@ from hedron_core import (
     HedronError,
     SourceSpan,
 )
+from hedron_core.compat import tomllib
 from hedron_core.diagnostics import error, make_diagnostic
 from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_jinja.contracts import TemplateDeclaration, TemplateKind, validate_template_name

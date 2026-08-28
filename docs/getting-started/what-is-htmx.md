@@ -70,7 +70,7 @@ includes `Hedron(...)` and `session_secret`, copy the listing on
 [Build your first app](quickstart.md).
 
 ```python
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron import Hedron, Stack, Text, html
 
@@ -84,7 +84,7 @@ app = Hedron(
 
 @app.view("/status")
 def status():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
         role="status",

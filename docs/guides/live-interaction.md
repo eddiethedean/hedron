@@ -103,7 +103,7 @@ for Flask/Django use the same `Poll` component with `hedron_route` /
     ```
 
 ```python title="app.py"
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron import (
     ComponentRef,
@@ -132,7 +132,7 @@ CLOCK_REF = ComponentRef(
 
 
 def clock_text():
-    now = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    now = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return Text(now)
 
 

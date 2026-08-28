@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import tomllib
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -14,6 +13,7 @@ from hedron_core.codes import (
     HED_CONFIG_UNKNOWN_KEY,
     HED_CONFIG_UNSUPPORTED_VERSION,
 )
+from hedron_core.compat import tomllib
 from hedron_core.diagnostics import HedronError, error
 from hedron_core.identifiers import content_digest
 from hedron_core.manifests import canonical_json

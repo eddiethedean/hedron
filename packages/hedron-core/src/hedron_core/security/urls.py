@@ -6,9 +6,9 @@ import html as html_stdlib
 import posixpath
 import re
 import unicodedata
-from enum import StrEnum
 from urllib.parse import unquote, urlsplit
 
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import HedronError, error
 
 _DECODE_ROUNDS = 3

@@ -5,12 +5,19 @@ from __future__ import annotations
 
 import ast
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from _gate_030 import FWB_PKG, HED_WB_PKG, require_files, run_pytest, workbench_pytest_paths  # noqa: E402
+from _gate_030 import (  # noqa: E402
+    FWB_PKG,
+    HED_WB_PKG,
+    require_files,
+    run_pytest,
+    workbench_pytest_paths,
+)
 
 
 def _imports_hedron(path: Path) -> bool:

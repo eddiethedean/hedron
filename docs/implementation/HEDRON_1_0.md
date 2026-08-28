@@ -349,7 +349,7 @@ python scripts/check_100.py --gate PKG-100 --verify
 python scripts/check_100.py --gate RELEASE-100 --verify
 ```
 
-The CI matrix must include CPython 3.11–3.14, the exact FastAPI/Pydantic bounds, FastAPI plus
+The CI matrix must include CPython 3.10–3.14, the exact FastAPI/Pydantic bounds, FastAPI plus
 Flask/Django/HDJ adapter rows, optional satellite present/absent rows, Pyright, and Chromium/
 Firefox/WebKit. Browser rows run on the pinned Playwright lock and record screenshots/traces;
 non-browser rows run in clean isolated environments. The release job consumes evidence artifacts

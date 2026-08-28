@@ -19,10 +19,10 @@ compatibility window used by the 1.0 release gate; it is not a commercial SLA or
 
 | Boundary | Supported 1.0 range |
 |---|---|
-| Python | CPython `>=3.11,<3.15` |
+| Python | CPython `>=3.10,<3.15` |
 | Hedron coordinated packages | `>=1.0.0,<2.0` on one coordinated train |
-| FastAPI | `>=0.141.1,<0.150` |
-| Pydantic | `>=2.13.4,<2.15` |
+| FastAPI | `>=0.121.0,<0.150` |
+| Pydantic | `>=2.12.0,<2.15` |
 | Flask adapter | Flask `>=3,<4` |
 | Django adapter | Django `>=5.2,<6` |
 | Browser automation evidence | Playwright `1.62.0`, Chromium, Firefox, and WebKit |

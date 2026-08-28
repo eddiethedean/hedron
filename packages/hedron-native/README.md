@@ -26,7 +26,7 @@ uv add "hedron-native>=0.1.2,<0.2"
 pip install "hedron[native]>=0.66.2,<0.67"
 ```
 
-Requires Python 3.11–3.14. Prebuilt wheels for the Supported matrix are built by `native-wheels.yml` (confirm Supported tags on PyPI);
+Requires Python 3.10–3.14. Prebuilt wheels for the Supported matrix are built by `native-wheels.yml` (confirm Supported tags on PyPI);
 if a wheel is unavailable, pip may build from the Rust source (requires a Rust
 toolchain) or you can rely on the pure-Python path without this package.
 

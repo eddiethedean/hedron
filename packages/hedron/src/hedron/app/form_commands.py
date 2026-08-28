@@ -152,7 +152,8 @@ def inject_form_body(
         )
     marker = existing_body[0] if existing_body else FormBody(encoding=encoding)
     rest = tuple(item for item in metadata if not isinstance(item, FormBody))
-    new_annotation = Annotated[model, marker, *rest]
+    # The explicit tuple form keeps dynamic metadata expansion valid on Python 3.10.
+    new_annotation = Annotated[(model, marker, *rest)]
     signature = inspect.signature(fn)
     params = []
     for parameter in signature.parameters.values():

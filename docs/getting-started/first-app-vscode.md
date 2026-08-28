@@ -37,7 +37,7 @@ the server runs on your computer and is reachable only through a local address s
 
 Install:
 
-1. CPython **3.11–3.14** from [python.org](https://www.python.org/downloads/) or your
+1. CPython **3.10–3.14** from [python.org](https://www.python.org/downloads/) or your
    operating system's package manager.
 2. [Visual Studio Code](https://code.visualstudio.com/Download).
 3. [`uv`](https://docs.astral.sh/uv/getting-started/installation/), which creates an isolated

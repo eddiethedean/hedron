@@ -8,9 +8,10 @@ import hashlib
 import json
 import subprocess
 import sys
-import tomllib
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "dist" / "evidence-bundle"
@@ -57,7 +58,7 @@ def main() -> int:
     manifest = {
         "release_version": version,
         "phase": phase,
-        "generated_at": datetime.now(UTC).isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
         "uv_lock_sha256": digest,
         "artifacts": sorted(p.name for p in OUT.iterdir() if p.is_file()),
         "gate_manifest": gate_manifest,

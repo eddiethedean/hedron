@@ -28,7 +28,7 @@ Refresh a target component through a typed reference or safe URL.
 
     ```python title="app.py"
     import os
-    from datetime import UTC, datetime
+    from datetime import datetime, timezone
 
     from hedron import Hedron, Page, RefreshButton, Stack, html, swap
 
@@ -43,7 +43,7 @@ Refresh a target component through a typed reference or safe URL.
 
 
     def panel():
-        stamp = datetime.now(UTC).strftime("%H:%M:%S")
+        stamp = datetime.now(timezone.utc).strftime("%H:%M:%S")
         return html.div(
             html.strong("Service healthy"),
             html.span(f"Checked at {stamp}"),

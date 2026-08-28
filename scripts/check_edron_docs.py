@@ -12,13 +12,14 @@ import builtins
 import importlib
 import re
 import sys
-import tomllib
 import urllib.parse
 from collections import Counter
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
@@ -93,9 +94,9 @@ EXPECTED_REQUIREMENT_COUNTS = {
     IMPLEMENTATION: 87,
 }
 EXPECTED_OPTIONAL_REQUIREMENTS = {
-    "pandas": ("pandas>=2.0", "narwhals>=1.0"),
-    "polars": ("polars>=1.0", "narwhals>=1.0"),
-    "pyarrow": ("pyarrow>=15.0", "narwhals>=1.0"),
+    "pandas": ("pandas>=2.0", "narwhals>=1.1"),
+    "polars": ("polars>=1.0", "narwhals>=1.1"),
+    "pyarrow": ("pyarrow>=15.0", "narwhals>=1.1"),
     "plotly": ("plotly>=5.18,<7",),
     "altair": ("altair>=6,<7", "vl-convert-python>=1.0"),
     "matplotlib": ("matplotlib>=3.8,<4",),
@@ -1246,12 +1247,16 @@ def check_roadmap_and_stages(texts: Mapping[Path, str], findings: list[str]) -> 
     if headings != expected:
         findings.append(f"Edron roadmap phase headings must be 0.0..0.9, found {headings}")
     summary = re.findall(r"^\| \*\*(\d+\.\d+)\*\* \|", roadmap, re.MULTILINE)
-    if summary != expected:
-        findings.append(f"Edron roadmap summary must be 0.0..0.9, found {summary}")
+    expected_summary = [*expected, "1.0"]
+    if summary != expected_summary:
+        findings.append(f"Edron roadmap summary must be 0.0..1.0, found {summary}")
     if re.search(r"^## Phase 1\.", roadmap, re.MULTILINE):
         findings.append("Edron roadmap must not define a 1.x phase")
-    if "No Edron `1.x` phase is planned" not in roadmap:
-        findings.append("Edron roadmap must explicitly state that no 1.x phase is planned")
+    canonical_boundary = (
+        "Edron `1.0` is the first release that directly adopts Hedron's canonical 1.0 interface"
+    )
+    if canonical_boundary not in roadmap:
+        findings.append("Edron roadmap must declare the canonical 1.0 adoption boundary")
 
     stages = re.findall(r"^### Stage (\d+)\b", texts[IMPLEMENTATION], re.MULTILINE)
     if stages != [str(number) for number in range(8)]:

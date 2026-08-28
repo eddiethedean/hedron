@@ -21,4 +21,4 @@ use `NotebookSession` with deterministic cleanup.
 
 Supported evidence targets JupyterLab / classic-compatible frontends where
 available, IPython current/previous lines, VS Code notebook disposition, and
-headless saved-output rendering across Python 3.11–3.14.
+headless saved-output rendering across Python 3.10–3.14.

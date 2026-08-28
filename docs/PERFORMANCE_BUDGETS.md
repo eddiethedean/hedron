@@ -50,9 +50,9 @@ Budgets for the production-grade graduation packet (soft CI ceilings; extend 0.2
 | W-026-FRAGMENT | Fragment latency under Supported HTMX swap load | tests/performance/test_w025_fragment.py |
 | W-026-JOB-POLL | Job status poll fanout (polling_only) | tests/performance/test_w025_job_poll.py |
 | W-026-STARTUP | Flagship construct + min-deps import smoke | scripts/smoke_fastapi_026.py |
-| W-026-INSTALL | Python 3.11–3.14 / pinned FastAPI–Pydantic matrix (COMPATIBILITY) | docs/COMPATIBILITY.md |
+| W-026-INSTALL | Python 3.10–3.14 / pinned FastAPI–Pydantic matrix (COMPATIBILITY) | docs/COMPATIBILITY.md |
 
-Install matrix SSOT remains [COMPATIBILITY.md](COMPATIBILITY.md) (CPython 3.11–3.14;
+Install matrix SSOT remains [COMPATIBILITY.md](COMPATIBILITY.md) (CPython 3.10–3.14;
 Supported FastAPI/Pydantic pins). Offline-wheel / min-deps smoke:
 `python scripts/smoke_fastapi_026.py`.
 

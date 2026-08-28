@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import json
-from enum import StrEnum
 from importlib import resources
 from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict
+
+from hedron_core.compat import StrEnum
 
 FIXTURE_VERSION = "1.0.0"
 CONTRACT_VERSION = "hedron-portable-1"

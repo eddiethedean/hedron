@@ -21,7 +21,7 @@ post a validated form, persist notes, and finish with a deployment checklist.
 ## Before you start
 
 Use [Build your first app](../getting-started/quickstart.md) to create the project. You
-need Python **3.11–3.14** and either `uv` or an activated virtual environment. Each step
+need Python **3.10–3.14** and either `uv` or an activated virtual environment. Each step
 edits the same application and should take 5–20 minutes.
 
 ## The tutorial path

@@ -52,6 +52,7 @@ jobs:
           tests/unit/test_phase08_edron.py
           tests/unit/test_edron_phase09.py
           tests/unit/test_edron_phase09_packet.py
+          tests/unit/test_edron_100_packet.py
           tests/upgrade/test_0_7_to_0_8_deployment.py
           tests/unit/test_edron_phase04.py
           tests/unit/test_edron_phase03.py
@@ -70,6 +71,8 @@ jobs:
           scripts/verify_edron_phase08.py
           scripts/check_edron_09_release.py
           scripts/verify_edron_phase09.py
+          scripts/check_edron_10_release.py
+          scripts/verify_edron_100.py
           tests/unit/test_edron_phase05.py
           tests/unit/test_phase07_edron.py
           tests/unit/test_phase08_edron.py
@@ -79,8 +82,8 @@ jobs:
           tests/unit/test_edron_phase02.py
           tests/unit/test_package_metadata.py
 
-      - name: Verify Edron 0.9 packet
-        run: uv run --python 3.11 python scripts/verify_edron_phase09.py
+      - name: Verify Edron 1.0 packet
+        run: uv run --python 3.11 python scripts/verify_edron_100.py
 
   publish:
     name: Build and publish Edron
@@ -152,7 +155,7 @@ jobs:
           uv build --package edron --out-dir dist
           ls -la dist
           VERSION="${GITHUB_REF_NAME#edron-v}"
-          uv run --no-project --python 3.11 python scripts/check_edron_09_release.py \
+          uv run --no-project --python 3.11 python scripts/check_edron_10_release.py \
             --dist-dir dist --version "${VERSION}"
 
       - name: Attest build provenance

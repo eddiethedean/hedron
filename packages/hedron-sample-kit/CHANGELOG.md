@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3] — 2026-08-28
+
+### Changed
+
+- Require `hedron-core>=1.0.0,<2.0` and split component, Explorer, projection,
+  bundle, and variant registration into focused `PluginDefinition` contributions.
+
 ## [0.2.2] — 2026-08-27
 
 ### Fixed

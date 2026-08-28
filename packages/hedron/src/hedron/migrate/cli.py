@@ -45,7 +45,7 @@ def build_streamlit_parser(
     )
     parser.add_argument(
         "--python-version",
-        choices=("3.11", "3.12", "3.13", "3.14"),
+        choices=("3.10", "3.11", "3.12", "3.13", "3.14"),
         default="3.12",
         help="Parser grammar for the input source",
     )

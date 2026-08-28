@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Any
+
+from hedron_core.compat import StrEnum
 
 
 class Disposition(StrEnum):

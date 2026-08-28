@@ -82,8 +82,8 @@ def test_posit_workbench_pages_accept_the_matching_beta_bridge_pin() -> None:
         assert not ssot.check_text(path, f'pip install "hedron{pin}"')
 
 
-def test_in_tree_edron_target_accepts_its_explicit_067_forward_pin() -> None:
-    command = 'pip install "hedron>=0.67.0,<2.0" "hedron-data>=0.67.0,<2.0"'
+def test_edron_1_0_accepts_its_explicit_hedron_1_x_pin() -> None:
+    command = 'pip install "hedron>=1.0.0,<2.0" "hedron-data>=1.0.0,<2.0"'
     assert not ssot.check_text(Path("packages/edron/README.md"), command)
     assert ssot.check_text(Path("fixture.md"), command)
 

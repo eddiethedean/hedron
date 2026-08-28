@@ -5,11 +5,11 @@ from __future__ import annotations
 import re
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
-from enum import StrEnum
 from types import MappingProxyType
 from typing import Generic, TypeVar
 
 from hedron_core import Model, RenderMode, SafeUrl, TrustedHtml
+from hedron_core.compat import StrEnum
 from hedron_core.typing_aliases import JsonValue
 
 ViewT = TypeVar("ViewT", bound=Model)

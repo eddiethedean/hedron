@@ -32,7 +32,7 @@ __all__ = [
 @lru_cache(maxsize=1)
 def _pypi_pin_bounds() -> tuple[str, str]:
     """Read deferred-honesty pin from docs/release.toml when present in-tree."""
-    import tomllib
+    from hedron_core.compat import tomllib
 
     # packages/hedron-charts/src/hedron_charts/limits.py → repo root is parents[4]
     path = Path(__file__).resolve().parents[4] / "docs" / "release.toml"

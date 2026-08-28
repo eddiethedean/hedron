@@ -23,9 +23,9 @@ pypi_pin_ceiling = "0.67"
 registry_status = "deferred"
 
 [satellites]
-minimum_version = "0.2.2"
+minimum_version = "0.2.3"
 maximum_version = "0.3"
-charts_minimum_version = "0.2.3"
+charts_minimum_version = "0.2.4"
 charts_maximum_version = "0.3"
 
 [documentation]

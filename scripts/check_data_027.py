@@ -8,7 +8,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from _gate_027 import require_files, require_inventory_supported, run_pytest, run_script  # noqa: E402
+from _gate_027 import (  # noqa: E402
+    require_files,
+    require_inventory_supported,
+    run_pytest,
+    run_script,
+)
 
 
 def main() -> int:

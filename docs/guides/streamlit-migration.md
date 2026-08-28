@@ -280,7 +280,7 @@ To include charts, install the compatible satellite through the flagship extra:
 uv add "hedron[charts]>=0.66.2,<0.67"
 ```
 
-This enforces `hedron-charts>=0.2.3,<0.3`; see
+This enforces `hedron-charts>=0.2.4,<0.3`; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 Create `app.py`:

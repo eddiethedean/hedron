@@ -2,7 +2,7 @@
 name = "hedron-workspace"
 version = "1.0.0"
 description = "Hedron monorepo workspace"
-requires-python = ">=3.11,<3.15"
+requires-python = ">=3.10,<3.15"
 readme = "README.md"
 
 [tool.uv]
@@ -128,13 +128,17 @@ markers = [
 ]
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py310"
 line-length = 100
 src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-maps/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-posit/src", "packages/hedron-elements/src", "packages/edron/src", "packages/fastapi-workbench/src", "tests", "examples"]
 extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF100", "RUF012", "S110", "S112", "BLE001", "ASYNC", "PTH", "DTZ", "RET"]
+
+[tool.ruff.lint.isort]
+# Tests import the Python 3.10 tomli alias under the stdlib module name.
+extra-standard-library = ["tomllib"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/**/*.py" = ["B008"]

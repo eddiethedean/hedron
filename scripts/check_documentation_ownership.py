@@ -4,8 +4,9 @@
 from __future__ import annotations
 
 import fnmatch
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"

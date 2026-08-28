@@ -10,7 +10,7 @@
 Hedron lets you build admin tools, CRUD apps, and dashboards in Python on FastAPI.
 Routes return Python components; HTMX swaps HTML fragments. No Node frontend.
 
-**Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
+**Requires Python 3.10–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
 The latest public release is `0.66.2` on PyPI; this checkout is the coordinated `1.0.0`
@@ -123,7 +123,7 @@ Web Components, Workbench, and Posit):
 
 Charts: `pip install "hedron[charts]>=0.66.2,<0.67"`.
 Maps: `pip install "hedron[maps]>=0.66.2,<0.67"`.
-Plugin authors can install `hedron-sample-kit>=0.2.2,<0.3`. Older satellite releases target
+Plugin authors can install `hedron-sample-kit>=0.2.3,<0.3`. Older satellite releases target
 older cores; see [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 
 Prefer not to install locally? Use a **full cloud environment** (not a hosted playground) —

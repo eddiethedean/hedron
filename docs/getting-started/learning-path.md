@@ -14,7 +14,7 @@ but are new to editors, terminals, environments, servers, or tests, begin with
 [Your first application in Posit Workbench](first-app-posit-workbench.md) instead. Use
 [Installation](installation.md) when you need prerequisites, adapter choices, or troubleshooting.
 
-**Skills assumed after the first-app step:** Python 3.11+ and the ability to edit a file and run a
+**Skills assumed after the first-app step:** Python 3.10+ and the ability to edit a file and run a
 command. Basic FastAPI, HTML forms, SPA, and HTMX knowledge are not prerequisites; the curriculum
 introduces the necessary web concepts as they appear.
 

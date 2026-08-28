@@ -255,8 +255,8 @@ def test_explorer_security_lists_audit_tail() -> None:
 
 def test_explorer_fastapi_extra_matches_base_cap() -> None:
     text = Path("packages/hedron-explorer/pyproject.toml").read_text(encoding="utf-8")
-    assert "fastapi>=0.141.1,<0.150" in text
-    assert "fastapi>=0.141.1,<0.142" not in text
+    assert text.count("fastapi>=0.121.0,<0.150") == 2
+    assert "fastapi>=0.121.0,<0.142" not in text
 
 
 def test_hx_still_rejects_unsafe_selectors() -> None:

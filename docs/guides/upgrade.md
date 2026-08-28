@@ -260,8 +260,6 @@ python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install -U "hedron[data]>=0.66.2,<0.67"
 python -m pip install -U "hedron[charts]>=0.66.2,<0.67"
 python -m pip install -U "hedron[maps]>=0.66.2,<0.67"
-# independent charts satellite:
-python -m pip install -U "hedron-charts>=0.2.3,<0.3"
 # optional production-grade elements inventory:
 python -m pip install -U "hedron[elements]>=0.66.2,<0.67"
 ```
@@ -280,7 +278,7 @@ Public-index notes: [Installation](../getting-started/installation.md).
    exact-origin allowlists; empty prefixes fail closed.
 6. **Generated list views page.** `DataWorkspace` list routes honor `offset` / `limit` /
    `sort` / `q` and allowlisted field filters.
-7. **MCP authorize isolation.** Pin `hedron-mcp>=0.2.3,<0.3` with coordinated 1.0
+7. **MCP authorize isolation.** Pin `hedron-mcp>=0.2.4,<0.3` with coordinated 1.0
    artifacts (or use the public `hedron[mcp]>=0.66.2,<0.67` pin until publication) so a second
    `McpExposure.apply` cannot overwrite the first tool's authorize hook.
 

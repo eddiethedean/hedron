@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import re
 import sys
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,8 +35,8 @@ def _result_freshness_errors(text: str, errors: list[str]) -> None:
     if not match:
         errors.append("realconnect-033 RESULT.log missing start timestamp")
         return
-    started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
-    age = datetime.now(UTC) - started
+    started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    age = datetime.now(timezone.utc) - started
     if age > timedelta(days=45):
         errors.append(f"realconnect-033 RESULT.log is stale ({age.days} days); refresh live smoke")
 
@@ -52,8 +52,8 @@ def _minimum_floor_errors(text: str, errors: list[str]) -> None:
     if not match:
         errors.append("realconnect-033-202506 RESULT.log missing start timestamp")
         return
-    started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
-    age = datetime.now(UTC) - started
+    started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    age = datetime.now(timezone.utc) - started
     if age > timedelta(days=45):
         errors.append(
             f"realconnect-033-202506 RESULT.log is stale ({age.days} days); refresh live smoke"

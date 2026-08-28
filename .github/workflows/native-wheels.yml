@@ -30,7 +30,7 @@ env:
   UV_NO_PROGRESS: "1"
   # Reproducible wheel/sdist metadata (including native SBOM and Mach-O IDs).
   SOURCE_DATE_EPOCH: "0"
-  CIBW_BUILD: "cp311-* cp312-* cp313-* cp314-*"
+  CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
   CIBW_SKIP: "pp* *-musllinux_*"
   # One native arch per runner. Dual-arch Linux builds pull qemu foreign
   # manylinux images (`exec format error`) and hang until timeout.

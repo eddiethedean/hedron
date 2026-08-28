@@ -11,7 +11,6 @@ import copy
 import json
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass
-from enum import StrEnum
 from typing import Literal, TypeGuard
 
 from hedron_core.codes import (
@@ -20,6 +19,7 @@ from hedron_core.codes import (
     HED_PATCH_0003,
     HED_PATCH_0004,
 )
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import HedronError, error
 
 __all__ = [

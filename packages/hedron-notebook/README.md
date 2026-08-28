@@ -23,19 +23,19 @@ token are rejected. This package is **not** a Supported production server.
 ## Install
 
 ```bash
-pip install "hedron-notebook>=0.1.0,<0.2"
+pip install "hedron-notebook>=0.2.3,<0.3"  # requires Hedron and core >=1.0.0,<2.0
 # or
 uv add "hedron-notebook>=0.1.0,<0.2"
 # via flagship extra:
 pip install "hedron[notebook]>=0.66.2,<0.67"
 ```
 
-Requires Python 3.11–3.14.
+Requires Python 3.10–3.14.
 
 Optional server extra (uvicorn):
 
 ```bash
-pip install "hedron-notebook[server]>=0.1.0,<0.2"
+pip install "hedron-notebook[server]>=0.2.3,<0.3"
 ```
 
 ## Quick start

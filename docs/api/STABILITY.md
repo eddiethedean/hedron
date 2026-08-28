@@ -115,7 +115,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 | CLI | Compatibility-protected core: `new`, `dev`, `build`, `check`, `routes`, `components` | [CLI.md](CLI.md); additional shipped commands are API `beta` |
 | Configuration | `[tool.hedron]` schema | [CONFIGURATION.md](../CONFIGURATION.md) |
 | Diagnostics | `HED-*` codes + SARIF/JSON exporters | [DIAGNOSTICS.md](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md) |
-| Plugin protocol | `PluginMeta`, `PluginCapabilities`, `PluginContext`, entry point `hedron.plugins`, `load_plugins` | [PLUGINS.md](PLUGINS.md); loader lives in `hedron-core` |
+| Plugin protocol | `PluginMeta`, `PluginCapabilities`, `PluginContext`, `PluginContribution`, `PluginDefinition`, entry point `hedron.plugins`, `load_plugins` | [PLUGINS.md](PLUGINS.md); loader lives in `hedron-core` |
 | Registry metadata | Documented fields of `ComponentMeta`, `AddressableMeta`, `RouteMeta` | Public; private Explorer-only fields are internal |
 | HDJ authoring | `.hdj` format v1, `hedron-jinja`, `TemplateSpec`, `HedronJinja` | Format frozen as v1; package is `beta`; trusted templates only |
 | Build manifests | `BUILD` / `ASSET` / `CSS_SYMBOL` manifest format versions | Versioned; digest fields public |
@@ -185,7 +185,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - Dask/Snowflake sources, AG Grid Community host: **beta**
 - Spreadsheet I/O / collab helpers: **beta**
 
-### `hedron-charts` (Beta distribution; `>=0.2.3,<0.3` for coordinated 1.0 artifacts)
+### `hedron-charts` (Beta distribution; `>=0.2.4,<0.3` for coordinated 1.0 artifacts)
 
 - `Chart` / `ChartSpec` / `ChartPlan`, compiler, and deterministic exports: **beta**.
 - `MatplotlibChart` / static SVG: **beta** API on Beta distribution for Supported scopes.
@@ -193,7 +193,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **beta**.
 - Optional adapters + offline runtime pins: **experimental**.
 
-Schema acceptance is broader than specialized host painting in `hedron-charts 0.2.3`; see the
+Schema acceptance is broader than specialized host painting in `hedron-charts 0.2.4`; see the
 [Chart API coverage matrix](CHART.md#compiler-contract-versus-current-host-coverage).
 
 ### `hedron-posit` (Stable facade) — `stable` Posit adapter
@@ -217,7 +217,7 @@ Live helpers are **experimental** (polling remains Supported fallback).
 
 ### `hedron-explorer` (Stable package) — `beta` for `explorer_router`; panel internals **internal**
 
-### `hedron-sample-kit` (Beta tooling-grade; `>=0.2.2,<0.3`) — `beta`
+### `hedron-sample-kit` (Beta tooling-grade; `>=0.2.3,<0.3`) — `beta`
 
 ### `hedron-jinja` / HDJ (Stable package) — `beta` API; HDJ format v1 frozen
 
@@ -248,7 +248,7 @@ Optional deny-by-default MCP Streamable HTTP projection
 ([RFC-0043](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0043-MCP-PROJECTION.md)
 product contract; [RFC-0065](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md)
 graduation). D-015 separate distribution; maturity Beta / API `beta` for the declared Supported
-inventory. The coordinated 1.0 artifact is `hedron-mcp>=0.2.3,<0.3`. Disabled and empty by
+inventory. The coordinated 1.0 artifact is `hedron-mcp>=0.2.4,<0.3`. Disabled and empty by
 default. Mutating tools remain
 Experimental (`allow_mutations=True`).
 
@@ -258,7 +258,7 @@ Optional Gradio client interoperability
 ([RFC-0049](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0049-GRADIO-ADAPTER.md)
 product contract; RFC-0067 graduation). D-015 / D-049 separate distribution; maturity Beta /
 API `beta` for declared allowlisted client interoperability. The coordinated 1.0 artifact is
-`hedron-gradio>=0.2.2,<0.3`. Discover is empty while disabled;
+`hedron-gradio>=0.2.3,<0.3`. Discover is empty while disabled;
 absence adds no core cost. Vendor extensions and UI auto-composition remain Experimental, and
 the package does not embed Gradio's UI runtime.
 

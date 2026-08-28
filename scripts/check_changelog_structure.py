@@ -5,8 +5,9 @@ from __future__ import annotations
 
 import re
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE_HEADING = re.compile(r"^## \[([^\]]+)\](?: — (?:\d{4}-\d{2}-\d{2}|Unreleased))?$")

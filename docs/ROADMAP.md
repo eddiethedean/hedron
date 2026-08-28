@@ -75,8 +75,8 @@ Migration baseline: `v0.67.0`. Pin `hedron` for production; see
 | **0.67** | Alpine browser-local features, bidirectional Alpine/Web-Component engine dispositions, and an opt-in preview of one unified Alpine/HTMX/Hedron interaction and lifecycle model | **Beta `v0.67.0`; implemented and verified in-tree** ([RFC-0095](rfcs/RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md); D-113 / D-115 / D-116; [implementation](implementation/ALPINE_INTEGRATION_067.md); [engine dispositions](implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md); [acceptance](acceptance/RELEASE_0_67.md)) |
 | **1.0** | Canonical developer-interface, HTMX/Alpine interaction, and component-engine consolidation; removal of fully warned 0.67 compatibility paths | **Implemented and Verified as the `v1.0.0` repository candidate; publication pending** ([RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md); D-114–D-117; [implementation](implementation/HEDRON_1_0.md); [acceptance](acceptance/RELEASE_1_0.md)); every 1.0 application runs unchanged on 0.67 |
 
-Edron is independently versioned and does not consume Hedron phase numbers. Edron `0.9.1`
-accepts Hedron `>=0.67.0,<2.0`; see the [Edron `0.x` release roadmap](EDRON_ROADMAP.md).
+Edron is independently versioned. Edron `1.0.0` directly requires Hedron
+`>=1.0.0,<2.0`; see the [Edron release roadmap](EDRON_ROADMAP.md).
 
 ### Phase 0.64 enhancement inventory
 

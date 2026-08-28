@@ -16,7 +16,7 @@ and migration review used for the 1.0 cut.
 - A frozen stable inventory with SemVer compatibility protection.
 - One explicit HTMX/Alpine/Web Component authority boundary.
 - Stable coordinated packages, including `hedron-posit`; `hedron-workbench` was removed.
-- Python 3.11–3.14, FastAPI, Flask, Django, HDJ, browser, security, and package evidence.
+- Python 3.10–3.14, FastAPI, Flask, Django, HDJ, browser, security, and package evidence.
 - Polling as the Supported production fallback for asynchronous status.
 
 ## Candidates after 1.0

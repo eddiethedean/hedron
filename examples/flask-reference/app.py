@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from flask import Flask
 
@@ -17,7 +17,7 @@ PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
 def panel_body():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(Text(f"Flask status · {stamp}"), id="panel")
 
 

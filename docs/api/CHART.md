@@ -9,7 +9,7 @@ status: beta
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Beta package on 1.0 · `hedron-charts` `0.2.3`; first-party and Matplotlib
+**Status:** Beta package on 1.0 · `hedron-charts` `0.2.4`; first-party and Matplotlib
 paths Supported, Plotly/Altair Experimental
 
 !!! info "Phase 0.38 first-party charts"
@@ -21,7 +21,7 @@ paths Supported, Plotly/Altair Experimental
 
 ## Availability
 
-Install `hedron[charts]>=0.66.2,<0.67` (or `hedron-charts>=0.2.3,<0.3`). See
+Install `hedron[charts]>=1.0.0,<2.0` (or `hedron-charts>=0.2.4,<0.3`). See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## Public surface

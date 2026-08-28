@@ -5,8 +5,14 @@ from __future__ import annotations
 import ast
 import os
 import re
+import sys
 from functools import lru_cache
 from pathlib import Path
+
+if sys.version_info < (3, 11):
+    import tomli
+
+    sys.modules.setdefault("tomllib", tomli)
 
 import django
 import pytest

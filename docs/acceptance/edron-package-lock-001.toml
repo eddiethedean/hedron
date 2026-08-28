@@ -80,17 +80,17 @@ reason = "edron run development server and reload path"
 
 [[optional]]
 id = "data.pandas"
-requirements = ["pandas>=2.0", "narwhals>=1.0"]
+requirements = ["pandas>=2.0", "narwhals>=1.1"]
 extra = "pandas"
 
 [[optional]]
 id = "data.polars"
-requirements = ["polars>=1.0", "narwhals>=1.0"]
+requirements = ["polars>=1.0", "narwhals>=1.1"]
 extra = "polars"
 
 [[optional]]
 id = "data.pyarrow"
-requirements = ["pyarrow>=15.0", "narwhals>=1.0"]
+requirements = ["pyarrow>=15.0", "narwhals>=1.1"]
 extra = "pyarrow"
 
 [[optional]]

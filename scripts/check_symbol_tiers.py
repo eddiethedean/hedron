@@ -6,8 +6,9 @@ from __future__ import annotations
 import ast
 import re
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 INIT = ROOT / "packages" / "hedron" / "src" / "hedron" / "__init__.py"

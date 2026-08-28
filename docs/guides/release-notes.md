@@ -392,7 +392,6 @@ python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[maps]>=0.66.2,<0.67"
 python -m pip install "hedron[data]>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.48.0 — 2026-08-17
@@ -426,7 +425,6 @@ python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[maps]>=0.66.2,<0.67"
 python -m pip install "hedron[data]>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.46.0 — 2026-08-16
@@ -448,7 +446,6 @@ python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[data]>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
 python -m pip install "hedron[elements]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.45.0 — 2026-08-16
@@ -470,7 +467,6 @@ python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[data]>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
 python -m pip install "hedron[elements]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.44.0 — 2026-08-16
@@ -493,7 +489,6 @@ python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[data]>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
 python -m pip install "hedron[elements]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.43.0 — 2026-08-16
@@ -511,7 +506,6 @@ python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[data]>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
 python -m pip install "hedron[elements]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.42.0 — 2026-08-14
@@ -531,7 +525,6 @@ python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[data]>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
 python -m pip install "hedron[elements]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.40.0 — 2026-08-14
@@ -552,7 +545,6 @@ python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[data]>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
 python -m pip install "hedron[elements]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.39.0 — 2026-08-14
@@ -575,7 +567,6 @@ Coordinated Beta train cut for rich data surfaces and OptimisticMutation
 python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[data]>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.38.0 — 2026-08-14
@@ -594,7 +585,6 @@ Coordinated Beta train cut for first-party high-fidelity charts
 ```bash
 python -m pip install -U "hedron>=0.66.2,<0.67"
 python -m pip install "hedron[charts]>=0.66.2,<0.67"
-python -m pip install "hedron-charts>=0.2.3,<0.3"
 ```
 
 ## 0.37.0 — 2026-08-14

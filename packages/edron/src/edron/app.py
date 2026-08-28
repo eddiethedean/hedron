@@ -130,7 +130,7 @@ class App:
         return self._native_surface(surface)
 
     def interaction(self, value: hedron.Interaction) -> hedron.Interaction:
-        """Register and return one native Hedron 0.67 interaction declaration."""
+        """Register and return one native Hedron 1.0 interaction declaration."""
         if not isinstance(value, hedron.Interaction):
             raise TypeError("interaction expects a native hedron.Interaction")
         self._ensure_open()
@@ -584,33 +584,13 @@ class App:
             async_endpoint.__module__ = endpoint.__module__
             async_endpoint.__signature__ = signature  # type: ignore[attr-defined]
             endpoint = async_endpoint
-        from hedron.handles import build_view_handle, wrap_endpoint_result
-
-        handle = build_view_handle(
-            endpoint,
-            app_id=str(getattr(self.hedron, "hedron_app_id", "") or ""),
-            path=route,
-            key=None,
+        native = self.hedron.view(
+            route,
             name=f"{page_type.__name__}_{member_name}",
-            host=None,
             fallback=definition.fallback,
             include_in_schema=False,
-            mount_path=str(
-                getattr(getattr(self.hedron, "state", None), "hedron_mount_path", "") or ""
-            ),
-        )
-        # Edron's class facade owns the handle construction itself.  Use the
-        # lower-level router decorator here so the canonical Hedron ``view``
-        # API does not wrap this already-built endpoint a second time.
-        self.hedron._root_router.view(
-            handle.path,
-            name=handle.name,
-            include_in_schema=False,
-            fragment_regions=(handle.region,),
             dependencies=[self._native_dependency(x) for x in route_dependencies],
-        )(wrap_endpoint_result(handle))
-        self.hedron._sync_root_route()
-        native = handle
+        )(endpoint)
         definition._native = native
         self._fragments[id(definition)] = native
 
@@ -663,27 +643,14 @@ class App:
             async_endpoint.__module__ = endpoint.__module__
             async_endpoint.__signature__ = signature  # type: ignore[attr-defined]
             endpoint = async_endpoint
-        from hedron.handles import build_command_handle
-
-        handle = build_command_handle(
-            endpoint,
-            app_id=str(getattr(self.hedron, "hedron_app_id", "") or ""),
-            path=route,
+        native = self.hedron.action(
+            route,
             method=definition.method.upper(),
             name=f"{page_type.__name__}_{member_name}",
             fallback=definition.fallback,
             include_in_schema=True,
-            mount_path=str(
-                getattr(getattr(self.hedron, "state", None), "hedron_mount_path", "") or ""
-            ),
-        )
-        self.hedron.action(
-            handle.path,
-            method=handle.method,
-            name=handle.name,
             dependencies=[self._native_dependency(x) for x in route_dependencies],
         )(endpoint)
-        native = handle
         definition._native = native
         self._actions[id(definition)] = native
 
@@ -878,8 +845,8 @@ class App:
                 )
             ],
             "browser_contract": {
-                "hedron_train": "0.67.0",
-                "forward_compatibility_target": "1.0.0",
+                "hedron_train": "1.0.0",
+                "canonical_roles": ("page", "view", "action", "include"),
                 "authority": "hedron",
             },
             "packages": [

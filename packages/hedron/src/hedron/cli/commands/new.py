@@ -14,8 +14,10 @@ from hedron.cli.scaffold.flask import _scaffold_flask
 
 def _contains_only_project_venv(dest: Path) -> bool:
     """Allow the beginner-friendly project-first flow without weakening overwrite safety."""
-    return dest.is_dir() and (dest / ".venv").is_dir() and all(
-        entry.name == ".venv" for entry in dest.iterdir()
+    return (
+        dest.is_dir()
+        and (dest / ".venv").is_dir()
+        and all(entry.name == ".venv" for entry in dest.iterdir())
     )
 
 

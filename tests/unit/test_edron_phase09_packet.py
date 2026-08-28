@@ -28,14 +28,14 @@ def test_phase09_packet_is_implemented_on_hedron_067() -> None:
     assert all(row["state"] == "Implemented" for row in gates["gate"])
 
 
-def test_phase09_uses_the_09_hedron_boundary() -> None:
+def test_phase09_remains_historical_after_the_1_0_cutover() -> None:
     project = tomllib.loads((ROOT / "packages/edron/pyproject.toml").read_text(encoding="utf-8"))[
         "project"
     ]
     roadmap = (ROOT / "docs/EDRON_ROADMAP.md").read_text(encoding="utf-8")
 
-    assert project["version"] == "0.9.1"
-    assert "hedron>=0.67.0,<2.0" in project["dependencies"]
-    assert "hedron-data>=0.67.0,<2.0" in project["dependencies"]
+    assert project["version"] == "1.0.0"
+    assert "hedron>=1.0.0,<2.0" in project["dependencies"]
+    assert "hedron-data>=1.0.0,<2.0" in project["dependencies"]
     assert "Edron `0.8.x` remains pinned" in roadmap
     assert "Hedron `0.66.2` train" in roadmap

@@ -8,8 +8,9 @@ import re
 import shlex
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_BY_MAJOR_MINOR = {

@@ -18,7 +18,7 @@ logger = logging.getLogger("hedron")
 
 def _settings_explorer_hint() -> str | None:
     """Read explicit [tool.hedron] explorer from cwd when present."""
-    import tomllib
+    from hedron_core.compat import tomllib
 
     try:
         cwd = Path.cwd()

@@ -31,7 +31,7 @@ pip install "hedron-extras>=0.66.2,<0.67"
 pip install "hedron[experimental-ui]>=0.66.2,<0.67"
 ```
 
-Requires Python 3.11–3.14 and `hedron-core`.
+Requires Python 3.10–3.14 and `hedron-core`.
 
 ### Optional extras
 

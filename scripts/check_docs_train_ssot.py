@@ -12,9 +12,10 @@ from __future__ import annotations
 
 import re
 import sys
-import tomllib
 from dataclasses import dataclass
 from pathlib import Path
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE_FILE = ROOT / "docs" / "release.toml"
@@ -218,9 +219,7 @@ def check_release_candidate_status(path: Path, text: str) -> list[str]:
     failures: list[str] = []
     for index, line in enumerate(text.splitlines(), start=1):
         if RELEASE_CANDIDATE_CONTRADICTION.search(line):
-            failures.append(
-                f"{path}:{index}: contradictory 1.0 candidate status: {line.strip()}"
-            )
+            failures.append(f"{path}:{index}: contradictory 1.0 candidate status: {line.strip()}")
     return failures
 
 
@@ -230,9 +229,7 @@ def check_historical_release_banner(path: Path, text: str) -> list[str]:
     missing = [marker for marker in required if marker not in text]
     if not missing:
         return []
-    return [
-        f"{path}: historical release page is missing {', '.join(missing)}"
-    ]
+    return [f"{path}: historical release page is missing {', '.join(missing)}"]
 
 
 def check_section_landing(
@@ -417,15 +414,13 @@ def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[
     allowed = {facts.pin}
     if path in POSIT_WORKBENCH_PATHS:
         allowed.add(">=0.67.0,<0.68")
-    # Independent Edron 0.9 is an in-tree target on the verified 0.67 bridge,
-    # not the published 0.66 adopter train. Its package metadata deliberately
-    # spans 0.67 and 1.x, so its own install pages must be checked against that
-    # explicit compatibility range rather than silently rewritten to 0.66.
+    # Edron 1.0 directly consumes Hedron 1.x and therefore documents its own
+    # bounded major range instead of the flagship application's minor pin.
     if path in {
         Path("docs/guides/edron-user-guide.md"),
         Path("packages/edron/README.md"),
     }:
-        allowed.add(">=0.67.0,<2.0")
+        allowed.add(">=1.0.0,<2.0")
     if facts.registry_deferred and facts.pypi_pin != facts.pin:
         if path is not None and path in FIRST_RUN_INSTALL_PATHS:
             return {facts.pypi_pin}
@@ -810,9 +805,7 @@ def main() -> int:
     for path in sorted((ROOT / "docs" / "guides").glob("whats-new-0.*.md")):
         relative = path.relative_to(ROOT)
         historical_text = path.read_text(encoding="utf-8")
-        failures.extend(
-            check_text(relative, historical_text, check_installs=False)
-        )
+        failures.extend(check_text(relative, historical_text, check_installs=False))
         failures.extend(check_historical_release_banner(relative, historical_text))
     failures.extend(check_first_run_registry_honesty(honesty_texts))
     failures.extend(check_tip_honesty(tip_texts))

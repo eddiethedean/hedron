@@ -17,7 +17,7 @@ instead of repeating version numbers.
 | Stable PyPI | `0.66.2` / `0.66.x` | Current public release and production pin |
 | Migration baseline | `0.67.0` | Immutable predecessor used by the 1.0 bridge |
 | Package maturity | Stable coordinated inventory | Satellite packages retain their independent maturity; no commercial SLA |
-| Supported Python | 3.11–3.14 | CPython only |
+| Supported Python | 3.10–3.14 | CPython only |
 
 The 1.0 package split is intentional:
 

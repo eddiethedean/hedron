@@ -11,6 +11,7 @@ from hedron.migrate.ir import SourceUnit
 from hedron.migrate.limits import DEFAULT_LIMITS, AnalysisLimits
 
 _FEATURE_BY_VERSION: dict[str, int] = {
+    "3.10": 10,
     "3.11": 11,
     "3.12": 12,
     "3.13": 13,

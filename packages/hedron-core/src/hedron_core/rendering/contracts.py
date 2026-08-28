@@ -10,10 +10,10 @@ from __future__ import annotations
 from collections.abc import Mapping
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from enum import StrEnum
 from types import MappingProxyType
 
 from hedron_core.alpine import BrowserFeaturePlan
+from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import Diagnostic
 from hedron_core.typing_aliases import RenderTrace
 

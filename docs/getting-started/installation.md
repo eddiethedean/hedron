@@ -35,16 +35,16 @@ tag/registry publication remains. Capability detail:
 
 ### Prerequisites
 
-- CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
+- CPython **3.10–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
 - A **clean virtual environment** (shared data-science envs with older FastAPI often fail
   to resolve — see [Compatibility](../COMPATIBILITY.md) for declared vs CI-supported
   FastAPI/Pydantic bands)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 
-### Installing Python 3.11+
+### Installing Python 3.10+
 
-If `python3 --version` is missing or older than 3.11:
+If `python3 --version` is missing or older than 3.10:
 
 | Platform | Suggestion |
 |---|---|
@@ -161,7 +161,7 @@ Registry extras use the same PyPI pin as the flagship:
 ```bash
 pip install "hedron[data]>=0.66.2,<0.67"
 pip install "hedron[charts]>=0.66.2,<0.67"
-pip install "hedron-sample-kit>=0.2.2,<0.3"
+pip install "hedron-sample-kit>=0.2.3,<0.3"
 ```
 
 | Extra | When you need it | Package docs |
@@ -215,7 +215,7 @@ Leave Explorer off in production.
 
 | Symptom | Fix |
 |---|---|
-| Python older than 3.11 | Hedron requires **3.11–3.14**. Check with `python3 --version`, then install a supported interpreter (see Prerequisites above). |
+| Python older than 3.10 | Hedron requires **3.10–3.14**. Check with `python3 --version`, then install a supported interpreter (see Prerequisites above). |
 | `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.66.2,<0.67" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
 | `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
 | FastAPI / pip resolver conflict | **Use a clean venv.** Shared data-science envs with older FastAPI often fail. See [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |

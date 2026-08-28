@@ -1,4 +1,4 @@
-"""The Edron 0.9 deprecated-feature exclusion policy."""
+"""The Edron 1.0 deprecated-feature exclusion policy."""
 
 from __future__ import annotations
 

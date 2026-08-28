@@ -8,7 +8,7 @@ This page is the **existing-app** path.
 
 !!! warning "FastAPI pin — Supported vs declared"
 
-    For a known-good first mount, use FastAPI `>=0.141.1,<0.142` (CI-supported). Declared
+    For a known-good first mount, use FastAPI `>=0.121.0,<0.142` (CI-supported). Declared
     metadata allows up to `<0.150`, but versions outside Supported are not CI-proven.
     Shared or older FastAPI environments often fail to resolve — use a **clean venv**.
     See [troubleshooting](troubleshooting.md) and [Compatibility](../COMPATIBILITY.md).
@@ -103,7 +103,7 @@ the way `Hedron()` does.
 | Situation | Behavior on this path |
 |---|---|
 | CSRF missing/invalid on unsafe method | HTTP 403 from Hedron route CSRF when policy is set |
-| FastAPI outside `>=0.141.1,<0.142` | Install / resolver failure — clean venv or pin FastAPI |
+| FastAPI outside `>=0.121.0,<0.142` | Install / resolver failure — clean venv or pin FastAPI |
 | Missing session middleware | Session/CSRF features break — install `SessionMiddleware` |
 | Production without build manifest | Prefer `Hedron(production=True)` path or run `hedron build` yourself |
 

@@ -1,6 +1,6 @@
 # Single-file apps (pip evaluators)
 
-Run these without cloning the monorepo. Requires Python 3.11+ and a working network for
+Run these without cloning the monorepo. Requires Python 3.10+ and a working network for
 `pip install`. Prefer [Build your first app](../getting-started/quickstart.md)
 (`hedron new`) for the interactive Hello + Refresh first-hour path.
 
@@ -20,7 +20,7 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
 
     ```python title="app.py"
     import os
-    from datetime import UTC, datetime
+    from datetime import datetime, timezone
 
     from hedron import Hedron, Page, Stack, Text, html
 
@@ -34,7 +34,7 @@ Same scaffold as `hedron new` — includes HTMX Refresh.
 
     @app.view("/status")
     def status():
-        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+        stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
         return html.div(
             Text(f"All systems operational · refreshed {stamp}"),
             role="status",

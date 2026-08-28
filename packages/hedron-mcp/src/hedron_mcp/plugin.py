@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
+from hedron_core.plugins import (
+    PluginCapabilities,
+    PluginContext,
+    PluginDefinition,
+    PluginMeta,
+)
 
 PLUGIN_META = PluginMeta(
     name="hedron_mcp",
-    version="0.2.3",
+    version="0.2.4",
     distribution="hedron-mcp",
-    hedron_version=">=0.67,<2.0",
+    hedron_version=">=1.0,<2.0",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -20,7 +25,7 @@ PLUGIN_META = PluginMeta(
 )
 
 
-def register(ctx: PluginContext) -> None:
+def _register_feature(ctx: PluginContext) -> None:
     ctx.register_feature(
         name="mcp_projection",
         stability="beta",
@@ -35,6 +40,9 @@ def register(ctx: PluginContext) -> None:
         ),
     )
     ctx.register_diagnostic_owner("HED-MCP-")
+
+
+def _register_catalog(ctx: PluginContext) -> None:
     from hedron_core.catalog import SurfaceProjectionProvider
 
     ctx.register_projection_provider(
@@ -55,6 +63,16 @@ def register(ctx: PluginContext) -> None:
             limitations=("explicit opt-in; consume_catalog does not expose",),
         )
     )
+
+
+PLUGIN = PluginDefinition.from_callbacks(
+    PLUGIN_META,
+    (("feature", _register_feature), ("catalog", _register_catalog)),
+)
+
+
+def register(ctx: PluginContext) -> None:
+    PLUGIN.register(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

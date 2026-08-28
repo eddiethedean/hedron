@@ -53,8 +53,7 @@ The [HTMX/Alpine boundary](../api/HTMX_ALPINE_BOUNDARY_1_0.md) is normative for 
   `hedron[posit]`, or use `fastapi-workbench` for a plain ASGI application.
 - Charts, maps, native acceleration, MCP, Gradio, notebook, simulation, and sample-kit packages
   retain independent versions and their documented Beta/tooling boundaries.
-- Edron remains an independent authoring facade and declares compatibility with Hedron
-  `>=0.67.0,<2.0`.
+- Edron remains an independent authoring facade and requires Hedron `>=1.0.0,<2.0`.
 
 ## Migration tooling
 

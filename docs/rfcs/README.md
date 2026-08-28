@@ -111,6 +111,6 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0091](RFC-0091-HTMX-HEDRON-EXTENSION.md) | Hedron HTMX interaction extension | Proposed; phase 0.64 |
 | [0092](RFC-0092-INTEGRATED-STYLING-PLATFORM.md) | Integrated styling platform and application CSS | Proposed; phase 0.65 / D-109 / D-110 |
 | [0093](RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md) | HDJ parity and registry integration | Accepted / implemented; phase 0.66 / D-111 / D-112 |
-| [0094](RFC-0094-EDRON-AUTHORING-FACADE.md) | Edron batteries-included Pythonic authoring facade | Accepted and implemented; Edron `0.9.1` verified in-tree, publication pending |
+| [0094](RFC-0094-EDRON-AUTHORING-FACADE.md) | Edron batteries-included Pythonic authoring facade | Accepted and implemented; Edron `1.0.0` verified in-tree on Hedron 1.x, publication pending |
 | [0095](RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md) | Alpine browser-local enhancement and unified interaction preview | Accepted and implemented as the verified `v0.67.0` migration baseline; D-113 / D-115 / D-116 |
 | [0096](RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md) | Hedron 1.0 interface and HTMX/Alpine/component-engine consolidation | Accepted, implemented, and verified as the `v1.0.0` repository candidate; D-114–D-117; publication pending |

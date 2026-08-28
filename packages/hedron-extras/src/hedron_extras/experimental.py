@@ -13,8 +13,12 @@ from typing import Any
 from hedron_core.codes import HED_ASSET_MISSING
 from hedron_core.diagnostics import error
 from hedron_core.identifiers import content_digest
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
-from hedron_core.registry import register_asset, register_browser_module, register_component
+from hedron_core.plugins import (
+    PluginCapabilities,
+    PluginContext,
+    PluginDefinition,
+    PluginMeta,
+)
 from hedron_extras.specialty import DeviceBridge, Joystick, TerminalPolicy, TerminalView
 from hedron_extras.workbench import CodeEditor
 
@@ -34,7 +38,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_extras_experimental",
     version="1.0.0",
     distribution="hedron-extras",
-    hedron_version=">=0.67,<2.0",
+    hedron_version=">=1.0,<2.0",
     depends_on=("hedron_extras",),
     capabilities=PluginCapabilities(
         python=True,
@@ -70,7 +74,7 @@ def _asset_logical_id(rel: str) -> str:
     return f"hedron-extras:{rel.replace('/', '.')}"
 
 
-def _register_module_asset(rel: str) -> tuple[str, Path]:
+def _module_asset(rel: str) -> tuple[str, Path]:
     path = _ROOT / rel
     if not path.is_file():
         raise error(
@@ -79,28 +83,35 @@ def _register_module_asset(rel: str) -> tuple[str, Path]:
             explanation=f"Declared hedron-extras asset {rel!r} was not found at {path}.",
             remediation="Reinstall hedron-extras or repair the package wheel.",
         )
-    digest = content_digest(path.read_bytes())
     logical = _asset_logical_id(rel)
-    register_asset(
+    return logical, path
+
+
+def _register_module_asset(ctx: PluginContext, rel: str) -> tuple[str, Path]:
+    logical, path = _module_asset(rel)
+    ctx.register_asset(
         logical_id=logical,
         kind="module",
         path=str(path),
-        digest=digest,
+        digest=content_digest(path.read_bytes()),
         content_type="text/javascript",
         attributes={"type": "module"},
     )
     return logical, path
 
 
-def register(ctx: PluginContext) -> None:
+def _register_assets(ctx: PluginContext) -> None:
+    for rel, _module_id, _tag_name, _classes in _BROWSER_HOSTS:
+        _register_module_asset(ctx, rel)
+
+
+def _register_components(ctx: PluginContext) -> None:
     """Register EXTRAS-025 landmines (CodeEditor / TerminalView / joystick / device)."""
     module_by_cls: dict[type[Any], str] = {}
-    asset_logical_by_rel: dict[str, str] = {}
 
     for rel, module_id, tag_name, classes in _BROWSER_HOSTS:
-        asset_id, path = _register_module_asset(rel)
-        asset_logical_by_rel[rel] = asset_id
-        register_browser_module(
+        _, path = _module_asset(rel)
+        ctx.register_browser_module(
             logical_id=module_id,
             tag_name=tag_name,
             module_path=str(path),
@@ -117,7 +128,7 @@ def register(ctx: PluginContext) -> None:
             f"{cls.distribution}:{cls.__module__}.{getattr(cls, 'logical_name', cls.__name__)}"
         )
         modules = (module_by_cls[cls],) if cls in module_by_cls else ()
-        register_component(
+        ctx.register_component(
             logical_id=logical,
             name=getattr(cls, "logical_name", cls.__name__) or cls.__name__,
             module=cls.__module__,
@@ -127,12 +138,14 @@ def register(ctx: PluginContext) -> None:
             accessibility_notes="Experimental landmine — see hedron[experimental-ui].",
         )
 
+
+def _register_features(ctx: PluginContext) -> None:
     feature_specs: tuple[dict[str, Any], ...] = (
         {
             "name": "code_editor",
             "stability": "experimental",
             "description": "CodeEditor CSP-safe host stub (no pinned CodeMirror 6)",
-            "assets": (asset_logical_by_rel["assets/code_editor/editor.js"],),
+            "assets": (_asset_logical_id("assets/code_editor/editor.js"),),
             "http_fallback": True,
             "a11y_notes": "Textarea fallback; host stub only.",
             "security_notes": "CodeEditor never evaluates buffers.",
@@ -140,7 +153,7 @@ def register(ctx: PluginContext) -> None:
         {
             "name": "terminal",
             "stability": "experimental",
-            "assets": (asset_logical_by_rel["assets/terminal/terminal.js"],),
+            "assets": (_asset_logical_id("assets/terminal/terminal.js"),),
             "http_fallback": False,
             "security_notes": "Fail-closed without allowlist+authz+audit.",
             "a11y_notes": "Limited; command form is the accessible path.",
@@ -171,6 +184,20 @@ def register(ctx: PluginContext) -> None:
             http_fallback=bool(spec.get("http_fallback", True)),
             description=str(spec.get("description") or ""),
         )
+
+
+PLUGIN = PluginDefinition.from_callbacks(
+    PLUGIN_META,
+    (
+        ("assets", _register_assets),
+        ("components", _register_components),
+        ("features", _register_features),
+    ),
+)
+
+
+def register(ctx: PluginContext) -> None:
+    PLUGIN.register(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]

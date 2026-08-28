@@ -31,7 +31,7 @@ the PR is classified **docs-only** by the allowlist in `.github/workflows/ci.yml
 |---|---|
 | `quality` | ruff format + check, pyright, tip+2 `verify_pkg_*` (older packets on evidence), satellite import + symbol-tier gates, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
 | `quality` (docs-only) | `docs` suite: train SSOT / recipe / sim checks, relative links, `mkdocs build --strict` — **no** Rust toolchain, **no** `uv build --all-packages` |
-| `test` | `pytest` with pytest-xdist (`-n auto`) on Ubuntu for Python **3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
+| `test` | `pytest` with pytest-xdist (`-n auto`) on Ubuntu for Python **3.10, 3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
 | `browser` | Playwright HTMX suite — **Chromium on PRs**; Chromium + Firefox + WebKit on `main` / workflow_dispatch (skipped when docs-only) |
 | `evidence` | Supply-chain evidence bundle scripts (skipped when docs-only) |
 

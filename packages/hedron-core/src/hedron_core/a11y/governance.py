@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from typing import Any, Literal
 
 from hedron_core.a11y.profile import ACCESSIBILITY_PROFILE
@@ -70,7 +70,7 @@ class Waiver:
             raise ValueError("Waiver requires rationale and affected_users")
         if not self.remediation.strip():
             raise ValueError("Waiver requires remediation")
-        check = today or datetime.now(UTC).date()
+        check = today or datetime.now(timezone.utc).date()
         if self.expires < check:
             raise error(
                 "HED-A11Y-0010",
@@ -276,7 +276,7 @@ class EvidenceInventory:
     third_party_boundaries: list[str] = field(default_factory=list)
     feedback_route: str | None = None
     generated_at: str = field(
-        default_factory=lambda: datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+        default_factory=lambda: datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     )
 
     def add_waiver(self, waiver: Waiver, *, today: date | None = None) -> None:
@@ -311,7 +311,9 @@ class AccessibilityStatement:
     alternatives: list[str] = field(default_factory=list)
     tested_environments: list[str] = field(default_factory=list)
     assessment_approach: str = "Hedron automation + human review"
-    assessment_date: str = field(default_factory=lambda: datetime.now(UTC).date().isoformat())
+    assessment_date: str = field(
+        default_factory=lambda: datetime.now(timezone.utc).date().isoformat()
+    )
     approved_by: str | None = None
 
     def export(self) -> dict[str, Any]:

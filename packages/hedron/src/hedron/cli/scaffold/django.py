@@ -14,7 +14,7 @@ def _scaffold_django(args: argparse.Namespace, dest: Path) -> int:
         f'''[project]
 name = "{args.name}"
 version = "0.1.0"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     "{_scaffold_dep("hedron-django")}",
     "{_scaffold_dep("hedron-core")}",
@@ -67,7 +67,7 @@ CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"
         encoding="utf-8",
     )
     (project / "urls.py").write_text(
-        """from datetime import UTC, datetime
+        """from datetime import datetime, timezone
 
 from django.urls import path
 from hedron_core import FragmentRegion, InteractionResult, Page, Text, html
@@ -78,7 +78,7 @@ PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
 def panel_body():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(Text(f"Django status · {stamp}"), id="panel")
 
 

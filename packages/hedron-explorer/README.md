@@ -25,7 +25,7 @@ pip install "hedron-explorer>=0.66.2,<0.67"
 uv add "hedron[dev]>=0.66.2,<0.67"
 ```
 
-Requires Python 3.11–3.14 and [`hedron`](https://pypi.org/project/hedron/).
+Requires Python 3.10–3.14 and [`hedron`](https://pypi.org/project/hedron/).
 
 Optional: `hedron-explorer[fastapi]` when you need an explicit FastAPI extra
 marker for tooling (the flagship `hedron` package already depends on FastAPI).

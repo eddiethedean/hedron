@@ -65,8 +65,8 @@ PyPI release remains **`v0.66.2`**, so public-index users should pin
 
 ### Edron facade
 
-- [Edron `0.x` release roadmap](../EDRON_ROADMAP.md) — separately versioned Beta facade
-- [Edron public API](EDRON.md) — Edron `0.9.1`, implemented and verified in-tree
+- [Edron release roadmap](../EDRON_ROADMAP.md) — separately versioned Beta facade
+- [Edron public API](EDRON.md) — Edron `1.0.0`, implemented and verified in-tree
 - [Edron state and interaction](EDRON_STATE_INTERACTION.md)
 - [Edron packaging](EDRON_PACKAGING.md)
 - [Edron acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md) — Draft and blocked

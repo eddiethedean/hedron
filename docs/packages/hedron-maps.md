@@ -4,12 +4,12 @@ description: Independent Beta first-class maps for Hedron.
 
 # `hedron-maps`
 
-**Package maturity:** Beta · **Repository package version:** `0.1.3` · extra `hedron[maps]`
-The source tree targets Hedron `>=0.67.0,<2.0`; public-index flagship installs remain
+**Package maturity:** Beta · **Repository package version:** `0.1.4` · extra `hedron[maps]`
+The source tree requires `hedron-core>=1.0.0,<2.0`; public-index flagship installs remain
 `hedron>=0.66.2,<0.67` until the coordinated 1.0 publication.
 
 Package `0.1.0` introduced the phase 0.47 map contract. The coordinated 1.0 workspace
-uses the compatible `0.1.3` patch release; new applications should not select the
+uses the compatible `0.1.4` patch release; new applications should not select the
 historical floor when current artifacts are available.
 
 `hedron-maps` provides an explicit map grammar, deterministic compilation, a pinned MapLibre

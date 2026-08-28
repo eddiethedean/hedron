@@ -6,9 +6,10 @@ import contextlib
 import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Generic, Literal, Protocol, Self, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Generic, Literal, Protocol, TypeVar, cast
 
 from pydantic import BaseModel, Field, TypeAdapter, create_model
+from typing_extensions import Self
 
 from hedron_core.bundles import (
     MAX_WORKSPACE_FIELDS,

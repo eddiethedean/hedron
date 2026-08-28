@@ -1,6 +1,6 @@
 # Edron deployment
 
-Edron 0.9 provides a read-only deployment check around the native Hedron ASGI application. It
+Edron 1.0 provides a read-only deployment check around the native Hedron ASGI application. It
 validates declared assumptions before the host starts the app; it does not launch a process, discover cloud
 infrastructure, install packages, or import application code.
 

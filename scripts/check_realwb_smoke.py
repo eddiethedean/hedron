@@ -15,7 +15,7 @@ import os
 import re
 import subprocess
 import sys
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -124,8 +124,8 @@ def _validate_floor_log(text: str) -> list[str]:
     if not match:
         errors.append("realwb-030-202505 RESULT.log missing start timestamp")
         return errors
-    started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
-    age = datetime.now(UTC) - started
+    started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    age = datetime.now(timezone.utc) - started
     if age > MAX_AGE:
         errors.append(
             f"realwb-030-202505 RESULT.log is stale ({age.days} days); refresh live smoke"

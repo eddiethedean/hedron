@@ -16,7 +16,7 @@ The exact maintainer commands and publication rules live in
 | PyPI latest | **v0.66.2** |
 | Public-index pin | `hedron>=0.66.2,<0.67` |
 | Repository development | `uv sync` (editable 1.0.0 workspace) |
-| Charts satellite | `hedron-charts>=0.2.3,<0.3` |
+| Charts satellite | `hedron-charts>=0.2.4,<0.3` |
 | Generic Workbench adapter | `fastapi-workbench>=1.0.1,<2.0` |
 | Plan checker | `python scripts/check_100.py --check-plan` |
 | Entry gate | `python scripts/check_100.py --gate ENTRY-100 --verify` |

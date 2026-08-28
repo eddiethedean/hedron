@@ -44,6 +44,11 @@ class PluginContext:
         kwargs.setdefault("first_party", False)
         register_element_definition(**kwargs)
 
+    def register_renderer(self, renderer: Any) -> None:
+        from hedron_core.auto import register_renderer
+
+        register_renderer(renderer)
+
     def register_explorer_panel(
         self,
         *,

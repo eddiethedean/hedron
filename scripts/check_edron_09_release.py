@@ -6,11 +6,12 @@ from __future__ import annotations
 import argparse
 import sys
 import tarfile
-import tomllib
 import zipfile
 from pathlib import Path
 
 from check_edron_release import _fail, _project_version, check_artifacts
+
+from hedron_core.compat import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 

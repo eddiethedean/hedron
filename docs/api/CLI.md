@@ -365,7 +365,7 @@ hedron migrate streamlit streamlit_app.py --out ./migrated-app --python-version 
 | `--project-root` | Boundary for local-module discovery |
 | `--analyze-only` | Report without generating files |
 | `--format` | `text`, `json`, or `sarif` |
-| `--python-version` | Parser grammar: Python 3.11–3.14 |
+| `--python-version` | Parser grammar: Python 3.10–3.14 |
 | `--fail-on` | Return `2` when findings reach `information`, `warning`, or `error` (default) |
 
 Exit `1` covers invalid input or generation failure; exit `2` means review findings met the

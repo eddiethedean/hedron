@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.4] — 2026-08-28
+
+### Changed
+
+- Require `hedron-core>=1.0.0,<2.0` for the composable plugin contract.
+- Split component, element, MapLibre asset, and catalog registration into focused
+  `PluginDefinition` contributions.
+
 ## [0.1.3] — 2026-08-27
 
 ### Fixed

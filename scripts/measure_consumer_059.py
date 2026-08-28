@@ -7,7 +7,7 @@ import json
 import os
 import re
 import subprocess
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -118,7 +118,7 @@ def main() -> int:
         "returncode": result.returncode if result else 1,
         "test_output_tail": combined[-1000:],
         "errors": errors,
-        "generated_at": datetime.now(UTC).isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
     }
     OUTPUT.write_text(json.dumps(artifact, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(artifact, indent=2, sort_keys=True))

@@ -3,6 +3,11 @@
 from __future__ import annotations
 
 from hedron_core.plugins.context import PluginContext
+from hedron_core.plugins.definition import (
+    CallbackContribution,
+    PluginContribution,
+    PluginDefinition,
+)
 from hedron_core.plugins.explorer import (
     ExplorerPanelMeta,
     ExplorerProvider,
@@ -41,6 +46,9 @@ __all__ = [
     "PluginCapabilities",
     "PluginMeta",
     "PluginContext",
+    "CallbackContribution",
+    "PluginContribution",
+    "PluginDefinition",
     "get_explorer_panels",
     "get_explorer_providers",
     "get_feature_manifests",

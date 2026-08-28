@@ -11,8 +11,9 @@ import threading
 import time
 from collections.abc import Mapping
 from dataclasses import dataclass
-from enum import StrEnum
 from typing import Any, Protocol
+
+from hedron_core.compat import StrEnum
 
 
 class IntentState(StrEnum):

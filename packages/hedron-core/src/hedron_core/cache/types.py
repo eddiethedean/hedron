@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import StrEnum
+
+from hedron_core.compat import StrEnum
 
 
 class CacheScope(StrEnum):

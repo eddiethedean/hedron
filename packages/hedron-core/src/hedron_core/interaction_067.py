@@ -12,10 +12,10 @@ import json
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from enum import StrEnum
 from types import MappingProxyType
 
 from hedron_core.alpine import AlpineFeatureDemand, AlpineMaturity, _json_value
+from hedron_core.compat import StrEnum
 
 __all__ = [
     "Interaction",

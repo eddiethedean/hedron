@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import NotRequired, TypeAlias, TypedDict
+from typing import TypeAlias, TypedDict
+
+from typing_extensions import NotRequired
 
 from hedron_core.security import SafeUrl
 

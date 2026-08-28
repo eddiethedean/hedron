@@ -24,8 +24,8 @@ issues for undisclosed security problems.
 The coordinated 1.0 inventory is **Stable**; independent satellites may remain Beta or
 tooling-grade. API-level `beta` and `experimental` classifications still apply within a
 Stable distribution. Pin versions in production and read [upgrade](upgrade.md) notes
-before bumping trains. Charts require `hedron-charts>=0.2.3,<0.3`. The sample kit requires
-`hedron-sample-kit>=0.2.2,<0.3` — see [Compatibility](../COMPATIBILITY.md).
+before bumping trains. Charts require `hedron-charts>=0.2.4,<0.3`. The sample kit requires
+`hedron-sample-kit>=0.2.3,<0.3` — see [Compatibility](../COMPATIBILITY.md).
 
 **Support window:** security fixes target the current repository train (`1.0.x`); PyPI
 remains on 0.66.2 until publication.

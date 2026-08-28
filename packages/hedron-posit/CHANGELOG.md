@@ -3,6 +3,7 @@
 ## [1.0.0] — 2026-08-27
 
 - Align Posit package metadata with the Hedron 1.0 coordinated train.
+- Broaden direct Starlette compatibility to `>=0.40.0`.
 
 ## [0.67.1] — 2026-08-28
 

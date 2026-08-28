@@ -3,6 +3,7 @@
 ## [1.0.0] — 2026-08-27
 
 - Align Explorer package metadata with the Hedron 1.0 coordinated train.
+- Expand the verified FastAPI compatibility range to `>=0.121.0,<0.150`.
 
 ## [0.67.0] — 2026-08-27
 

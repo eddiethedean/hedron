@@ -3,7 +3,7 @@ name = "hedron-explorer"
 version = "1.0.0"
 description = "Development Component Explorer preview for Hedron"
 readme = "README.md"
-requires-python = ">=3.11,<3.15"
+requires-python = ">=3.10,<3.15"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
@@ -25,6 +25,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -33,13 +34,13 @@ classifiers = [
 ]
 dependencies = [
     "hedron-core>=1.0.0,<2.0",
-    "fastapi>=0.141.1,<0.150",
+    "fastapi>=0.121.0,<0.150",
 ]
 
 [project.optional-dependencies]
 # FastAPI mount is the default Explorer surface; declared for clarity / ADP-005.
 fastapi = [
-    "fastapi>=0.141.1,<0.150",
+    "fastapi>=0.121.0,<0.150",
 ]
 
 [project.urls]

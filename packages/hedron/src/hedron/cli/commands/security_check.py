@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import tomllib
 from dataclasses import asdict, dataclass, field
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
+from hedron_core.compat import tomllib
 from hedron_core.security_plane import CONFORMANCE_PROFILE_VERSION, SecurityPolicy
 
 Confidence = Literal["proven", "heuristic", "application_owned", "unsupported", "unverifiable"]
@@ -118,7 +118,7 @@ def collect_posture(
         "deployment WAF configuration (unverifiable offline)",
         "TLS termination and HSTS at the edge (unverifiable offline)",
     ]
-    active_day = today or datetime.now(UTC).date()
+    active_day = today or datetime.now(timezone.utc).date()
     suppressions = _load_suppressions(suppressions_path)
     active_suppressions = [
         row for row in suppressions if _suppression_active(row, today=active_day)

@@ -67,11 +67,11 @@ def create_scaffold(
     pyproject = f'''[project]
 name = "{project}"
 version = "0.1.0"
-requires-python = ">=3.11,<3.15"
+requires-python = ">=3.10,<3.15"
 dependencies = [
-    "edron>=0.9,<0.10",
-    "hedron>=0.67.0,<2.0",
-    "hedron-data>=0.67.0,<2.0",
+    "edron>=1.0.0,<2.0",
+    "hedron>=1.0.0,<2.0",
+    "hedron-data>=1.0.0,<2.0",
 ]
 
 [build-system]

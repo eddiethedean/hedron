@@ -314,7 +314,7 @@ def _check_manifest_redaction() -> None:
 
 
 def _check_release_documents() -> None:
-    import tomllib
+    from hedron_core.compat import tomllib
 
     gate = _text(ROOT / "docs/acceptance/release-gate-0.65.toml")
     inventory = _text(ROOT / "docs/acceptance/application-styling-inventory-065.toml")
@@ -333,7 +333,7 @@ def _check_release_documents() -> None:
 
 
 def _check_fleet() -> None:
-    import tomllib
+    from hedron_core.compat import tomllib
 
     inventory = tomllib.loads(
         _text(ROOT / "docs/acceptance/application-styling-inventory-065.toml")

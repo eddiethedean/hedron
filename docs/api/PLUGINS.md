@@ -24,7 +24,12 @@ sample_kit = "hedron_sample_kit.plugin:register"
 ```
 
 ```python
-from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
+from hedron_core.plugins import (
+    PluginCapabilities,
+    PluginContext,
+    PluginDefinition,
+    PluginMeta,
+)
 
 PLUGIN_META = PluginMeta(
     name="sample_kit",
@@ -35,32 +40,51 @@ PLUGIN_META = PluginMeta(
 )
 
 
-def register(ctx: PluginContext) -> None:
+def register_components(ctx: PluginContext) -> None:
     ctx.register_component(
         logical_id="hedron-sample-kit:callout.Callout",
         name="Callout",
         module="hedron_sample_kit.components.Callout",
         distribution="hedron-sample-kit",
     )
+
+
+def register_explorer(ctx: PluginContext) -> None:
     ctx.register_explorer_panel(panel_id="sample-kit-callout", title="Sample Callout")
     ctx.register_explorer_provider(
         panel_id="sample-kit-callout",
         title="Sample Callout",
         description="Isolated 0.50 panel",
     )
-    ctx.on_startup(lambda: None)
-    ctx.on_shutdown(lambda: None)
+
+
+PLUGIN = PluginDefinition.from_callbacks(
+    PLUGIN_META,
+    (("components", register_components), ("explorer", register_explorer)),
+)
+
+
+def register(ctx: PluginContext) -> None:
+    PLUGIN.register(ctx)
 
 
 register.PLUGIN_META = PLUGIN_META
 ```
+
+`PluginDefinition` is the recommended assembly boundary for first-party and
+third-party satellites. Each contribution owns one registration concern, runs in
+the declared order, and can be tested with an isolated `PluginContext`. The
+entry-point `register` function remains a compatibility adapter for the loader;
+package code should place new behavior in contributions rather than growing a
+single registration method.
 
 ## Parameters
 
 | Symbol | Key inputs | Role |
 |---|---|---|
 | `PluginMeta` | `name`, `version`, `distribution`, `hedron_version`, `capabilities` | Declares plugin identity and train pin |
-| `PluginContext` | (injected) | Registration surface for components, assets, panels, hooks |
+| `PluginContext` | (injected) | Registration surface for components, assets, renderers, panels, hooks |
+| `PluginDefinition` | `meta`, ordered contributions | Composes independent package registration responsibilities |
 | `[tool.hedron].plugins` | omit / `[]` / name list | Discovery enablement |
 
 Field-level tables for each `PluginContext` helper are below.
@@ -136,6 +160,11 @@ authors.
 | `first_party` | `bool` | `False` | Require `hedron-*` naming when true |
 
 Guide: [Plugin authoring — custom elements](../guides/plugin-authoring.md#5-custom-elements-040).
+
+### `register_renderer`
+
+Register a renderer through the plugin facade instead of importing the concrete auto-renderer
+registry. The argument is a `RendererSpec`; registration returns `None`.
 
 ### `register_explorer_panel`
 

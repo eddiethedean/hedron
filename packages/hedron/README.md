@@ -15,7 +15,7 @@ you do not need a Node.js toolchain or a full-script rerun model.
 
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
-Requires Python 3.11–3.14. This checkout is the coordinated `1.0.0` train; its Git tag/PyPI
+Requires Python 3.10–3.14. This checkout is the coordinated `1.0.0` train; its Git tag/PyPI
 upload is deferred. The latest public PyPI release remains `0.66.2`, with `v0.67.0` as the
 migration baseline.
 The fastest path uses
@@ -35,7 +35,7 @@ The generated app (from `hedron new`) is ordinary Python:
 
 ```python
 import os
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from hedron import Hedron, Page, Stack, Text, html
 
@@ -49,7 +49,7 @@ app = Hedron(
 
 @app.view("/status")
 def status():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · refreshed {stamp}"),
         role="status",

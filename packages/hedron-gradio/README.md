@@ -20,14 +20,14 @@ Also available as the flagship extra `hedron[gradio]`.
 ## Install
 
 ```bash
-pip install "hedron-gradio>=0.2.0,<0.3"
+pip install "hedron-gradio>=0.2.3,<0.3"
 # or
 uv add "hedron-gradio>=0.2.0,<0.3"
 # via flagship extra:
 pip install "hedron[gradio]>=0.66.2,<0.67"
 ```
 
-Requires Python 3.11–3.14.
+Requires Python 3.10–3.14.
 
 For **live** Gradio endpoints, also install `gradio_client`. The package imports
 without `gradio` or `gradio_client` installed; with declared endpoints and no

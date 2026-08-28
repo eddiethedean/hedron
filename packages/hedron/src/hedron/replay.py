@@ -7,8 +7,9 @@ import json
 import threading
 import time
 from dataclasses import dataclass
-from enum import StrEnum
 from typing import Any, Literal, Protocol
+
+from hedron_core.compat import StrEnum
 
 
 class ReplayState(StrEnum):

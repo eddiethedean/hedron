@@ -9,13 +9,13 @@
 **Roadmap position:** `v1.0.0` is a Verified release candidate; its Git tag/PyPI upload is
 pending. `v0.66.2` remains the latest release on PyPI, and `v0.67.0` is the immutable migration
 baseline.
-**Date:** 2026-08-27
+**Date:** 2026-08-28
 **Implementation:** Stable — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
 `hedron-posit` / `hedron-elements` `1.0.0`;
-independent — stable `fastapi-workbench` `1.0.1`; Beta `hedron-maps` `0.1.3`, `hedron-charts`
-`0.2.3`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
-`hedron-sim` `0.2.2`, `hedron-mcp` `0.2.3`, `hedron-gradio` `0.2.2`, `hedron-runtime-node` / `hedron-runtime-java`
+independent — stable `fastapi-workbench` `1.0.1`; Beta `hedron-maps` `0.1.4`, `hedron-charts`
+`0.2.4`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
+`hedron-gradio` `0.2.3`, `hedron-sim` `0.2.2`, `hedron-mcp` `0.2.4`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.66.2`
 (MIT, D-033).
 **Package maturity:** Stable — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,

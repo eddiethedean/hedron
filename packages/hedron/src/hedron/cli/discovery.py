@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import importlib
 import sys
-import tomllib
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 from hedron.config import HedronSettings
+from hedron_core.compat import tomllib
 from hedron_core.registry import ComponentMeta, get_registry
 
 

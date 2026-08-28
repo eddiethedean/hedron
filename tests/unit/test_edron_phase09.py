@@ -1,4 +1,4 @@
-"""Phase 0.9 native Hedron 0.67 contracts."""
+"""Historical Phase 0.9 contracts plus the Edron 1.0 train cutover."""
 
 from __future__ import annotations
 
@@ -39,15 +39,21 @@ def test_app_records_interactions_for_explanation() -> None:
     interaction = app.interaction(ed.Interaction.local("toggle", state_keys=("open",)))
     facts = app.explain()
     assert facts["interactions"] == [interaction.to_dict()]
-    assert facts["browser_contract"]["hedron_train"] == "0.67.0"
+    assert facts["browser_contract"]["hedron_train"] == "1.0.0"
+    assert facts["browser_contract"]["canonical_roles"] == (
+        "page",
+        "view",
+        "action",
+        "include",
+    )
 
 
-def test_scaffold_supports_the_hedron_1_0_train(tmp_path: Path) -> None:
-    create_scaffold("Phase 0.9", tmp_path / "app")
+def test_scaffold_requires_the_edron_and_hedron_1_0_trains(tmp_path: Path) -> None:
+    create_scaffold("Edron 1.0", tmp_path / "app")
     project = (tmp_path / "app" / "pyproject.toml").read_text(encoding="utf-8")
-    assert '"edron>=0.9,<0.10"' in project
-    assert '"hedron>=0.67.0,<2.0"' in project
-    assert '"hedron-data>=0.67.0,<2.0"' in project
+    assert '"edron>=1.0.0,<2.0"' in project
+    assert '"hedron>=1.0.0,<2.0"' in project
+    assert '"hedron-data>=1.0.0,<2.0"' in project
 
 
 def test_deprecated_paths_are_migration_only_markers() -> None:

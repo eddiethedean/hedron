@@ -31,7 +31,7 @@ For a local computer instead, use [Your first application with VS Code](first-ap
 Ask your Workbench administrator or team lead for:
 
 - the Workbench sign-in URL;
-- a session image or environment containing CPython **3.11–3.14**;
+- a session image or environment containing CPython **3.11** for the commands in this guide;
 - access to your organization's Python package index or PyPI;
 - permission to start a VS Code session and proxied development web server;
 - the right project directory if your team uses shared or mounted storage.
@@ -39,6 +39,9 @@ Ask your Workbench administrator or team lead for:
 Hedron supports Posit Workbench **2025.05.1 or newer** on `linux/amd64`; see the current
 [compatibility contract](../COMPATIBILITY.md) before treating a different version or architecture
 as Supported.
+
+Hedron packages support CPython **3.10–3.14**. This beginner guide uses Python 3.11
+consistently so every command has one concrete spelling.
 
 Official Workbench references:
 [session management](https://docs.posit.co/ide/server-pro/user/posit-workbench/guide/session-management.html) ·
@@ -82,7 +85,7 @@ python3.11 --version
 pwd
 ```
 
-Python must report 3.11–3.14. `pwd` prints the current remote directory. Paths such as
+Python must report 3.11.x. `pwd` prints the current remote directory. Paths such as
 `/home/your-name` belong to the Workbench server, not your laptop.
 
 Use the standard `venv` workflow below so all project packages stay inside the application

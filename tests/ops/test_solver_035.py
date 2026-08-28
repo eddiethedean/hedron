@@ -33,7 +33,7 @@ def test_supported_extras_are_declared() -> None:
 def test_gradio_extra_pins_beta_line() -> None:
     project = tomllib.loads(HEDRON_PYPROJECT.read_text(encoding="utf-8"))["project"]
     deps = " ".join(project["optional-dependencies"]["gradio"])
-    assert "hedron-gradio>=0.2.2,<0.3" in deps
+    assert "hedron-gradio>=0.2.3,<0.3" in deps
 
 
 def test_mixed_satellite_major_pins_are_distinct() -> None:

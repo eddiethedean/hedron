@@ -5,9 +5,9 @@ from __future__ import annotations
 import logging
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Any, Protocol, runtime_checkable
 
+from hedron_core.compat import StrEnum
 from hedron_core.csrf import redact_secret_like
 
 __all__ = [

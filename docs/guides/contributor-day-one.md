@@ -86,7 +86,7 @@ required for native wheel smoke).
 ## Plugins and RFCs (second contribution)
 
 - Plugin sample / authoring: [Plugin authoring](plugin-authoring.md) ·
-  [Using plugins](plugin-consumer.md) (`hedron-sample-kit>=0.2.2,<0.3` on the current
+  [Using plugins](plugin-consumer.md) (`hedron-sample-kit>=0.2.3,<0.3` on the current
   repository train; use the public compatibility pin documented on the package page).
 - Public contract changes: [Changing public contracts](../CONTRIBUTING.md#changing-public-contracts)
   (RFC intake steps).

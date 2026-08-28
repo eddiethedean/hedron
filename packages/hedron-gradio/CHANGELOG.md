@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3] — 2026-08-28
+
+### Changed
+
+- Require `hedron-core>=1.0.0,<2.0` and expose feature and catalog registration as
+  separate `PluginDefinition` contributions.
+
 ## [0.2.2] — 2026-08-27
 
 ### Fixed

@@ -23,7 +23,7 @@ uv add "hedron-jinja>=0.66.2,<0.67"
 pip install "hedron[jinja]>=0.66.2,<0.67"
 ```
 
-Requires Python 3.11–3.14, `hedron-core`, and Jinja2.
+Requires Python 3.10–3.14, `hedron-core`, and Jinja2.
 
 ## Quick start
 

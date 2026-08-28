@@ -43,9 +43,9 @@ A small browser library that swaps server HTML into page regions using attribute
 
 ## Why is FastAPI pinned so tightly?
 
-Two bands: **declared** install metadata allows FastAPI `>=0.141.1,<0.150` and Pydantic
-`>=2.13.4,<2.15`; the **CI-supported** matrix tests the tighter bands FastAPI
-`>=0.141.1,<0.142` and Pydantic `>=2.13.4,<2.14`. Prefer Supported for first apps.
+Two bands: **declared** install metadata allows FastAPI `>=0.121.0,<0.150` and Pydantic
+`>=2.12.0,<2.15`; the **CI-supported** matrix tests the tighter bands FastAPI
+`>=0.121.0,<0.142` and Pydantic `>=2.12.0,<2.14`. Prefer Supported for first apps.
 Shared data-science envs with older FastAPI often fail to resolve — use a **clean venv**.
 Details: [Compatibility](../COMPATIBILITY.md).
 
@@ -158,7 +158,7 @@ next minor train requires an intentional review. See [Compatibility](../COMPATIB
 **Supported**. Those packages are **Beta** on PyPI — pin versions.
 
 Charts install through `hedron[charts]>=0.66.2,<0.67`; the sample kit installs as
-`hedron-sample-kit>=0.2.2,<0.3`. Earlier satellite versions target older cores. See
+`hedron-sample-kit>=0.2.3,<0.3`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

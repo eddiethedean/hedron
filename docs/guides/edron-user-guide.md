@@ -10,7 +10,7 @@ Edron is a typed, server-rendered Python facade over one native Hedron applicati
 for dashboards, internal tools, data workspaces, and workflows that should remain useful with
 ordinary HTTP and without a separate frontend build system.
 
-This guide targets Edron `0.9.x` and Hedron `0.67.0` through `1.x` (`>=0.67.0,<2.0`). Edron is a **Beta**
+This guide targets Edron `1.0.x` and Hedron `1.x` (`>=1.0.0,<2.0`). Edron is a **Beta**
 distribution: pin the package train, keep the supported surface explicit, and treat undocumented
 imports as internal.
 
@@ -38,7 +38,7 @@ Use a clean environment and pin the Edron minor train:
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install "edron>=0.9,<0.10" "hedron>=0.67.0,<2.0" "hedron-data>=0.67.0,<2.0"
+python -m pip install "edron>=1.0.0,<2.0" "hedron>=1.0.0,<2.0" "hedron-data>=1.0.0,<2.0"
 ```
 
 On Windows, activate `.venv\\Scripts\\activate` instead. Verify the interpreter that will run the
@@ -551,7 +551,7 @@ Treat an Edron upgrade as an application release:
 Edron does not reverse database migrations, rotate secrets, cancel external side effects, reclaim
 user files, or undo already-enqueued work. Those actions require an application-owned runbook.
 
-For the current phase boundary, see [Edron 0.9 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md) and the
+For the current release boundary, see [Edron 1.0 acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md) and the
 [Edron roadmap](../EDRON_ROADMAP.md).
 
 ## 14. Migrate from Streamlit
@@ -595,7 +595,7 @@ authorization, persistence, and request boundaries reviewable.
 ## Next references
 
 - [Edron deployment guide](edron-deployment.md)
-- [Edron 0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md)
+- [Edron 1.0 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_100.md)
 - [Edron 0.8 → 0.9 upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-09.md)
 - [Edron packaging and compatibility](../api/EDRON_PACKAGING.md) · [Compatibility policy](../COMPATIBILITY.md)
 - [Security](security.md) · [Accessibility](accessibility.md) · [Test your UI](testing.md)

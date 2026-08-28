@@ -11,9 +11,10 @@ from __future__ import annotations
 
 import hashlib
 import re
-import tomllib
 from pathlib import Path
 from typing import Any
+
+from hedron_core.compat import tomllib
 
 HED_PACKAGE_DOCTOR = "HED-PACKAGE-DOCTOR"
 BOUNDARY = "package_doctor"

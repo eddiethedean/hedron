@@ -4,8 +4,8 @@ status: verified
 
 # Edron packaging contract
 
-**Status:** Implemented and verified through Edron `0.9.1`; publication pending<br>
-**Target:** Edron `0.9.1`; Hedron `>=0.67.0,<2.0`<br>
+**Status:** Implemented and verified through Edron `1.0.0`; publication pending<br>
+**Target:** Edron `1.0.0`; Hedron `>=1.0.0,<2.0`<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
@@ -17,7 +17,7 @@ status: verified
 **Fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
 This document began as the 0.1 packaging design and now defines what installing Edron installs
-through 0.9, how Edron composes separately owned Hedron
+through 1.0, how Edron composes separately owned Hedron
 packages, how optional third-party capabilities activate, and what artifacts and evidence are
 required for release. It complements the Python and interaction contracts. Python packaging
 metadata remains the installation authority; native Hedron packages remain the implementation,
@@ -188,7 +188,7 @@ shipping a degraded private replacement.
 ## Required version train
 
 Edron supports the same Python range as its compatible Hedron train. The first release targets
-Python 3.11 through 3.14 unless the accepted upstream packet changes the complete train
+Python 3.10 through 3.14 unless the accepted upstream packet changes the complete train
 consistently.
 
 Before RFC acceptance, the packaging packet freezes:
@@ -234,9 +234,9 @@ The initial curated shortcut registry is:
 
 | Capability ID | Direct requirements | Shortcut | Native owner/maturity |
 |---|---|---|---|
-| `data.pandas` | `pandas>=2.0`, `narwhals>=1.0` | `edron[pandas]` | `hedron-data`, beta |
-| `data.polars` | `polars>=1.0`, `narwhals>=1.0` | `edron[polars]` | `hedron-data`, beta |
-| `data.pyarrow` | `pyarrow>=15.0`, `narwhals>=1.0` | `edron[pyarrow]` | `hedron-data`, beta |
+| `data.pandas` | `pandas>=2.0`, `narwhals>=1.1` | `edron[pandas]` | `hedron-data`, beta |
+| `data.polars` | `polars>=1.0`, `narwhals>=1.1` | `edron[polars]` | `hedron-data`, beta |
+| `data.pyarrow` | `pyarrow>=15.0`, `narwhals>=1.1` | `edron[pyarrow]` | `hedron-data`, beta |
 | `chart.plotly` | `plotly>=5.18,<7` | `edron[plotly]` | `hedron-charts`, experimental |
 | `chart.altair` | `altair>=6,<7`, `vl-convert-python>=1.0` | `edron[altair]` | `hedron-charts`, experimental |
 | `chart.matplotlib` | `matplotlib>=3.8,<4` | `edron[matplotlib]` | `hedron-charts`, beta/static Supported scope |

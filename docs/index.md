@@ -9,7 +9,7 @@ search:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first application platform · 1.0 release candidate · Python 3.11–3.14</div>
+<div class="hedron-eyebrow">Python-first application platform · 1.0 release candidate · Python 3.10–3.14</div>
 
 # Stay in Python. Build the whole application.
 
@@ -48,7 +48,7 @@ All in Python.
 
 <div class="hedron-quickstart-label">Create an app in about 10 minutes</div>
 
-About 10 minutes after Python 3.11+ and uv (or pip) are ready:
+About 10 minutes after Python 3.10+ and uv (or pip) are ready:
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/

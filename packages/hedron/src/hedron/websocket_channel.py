@@ -127,7 +127,7 @@ async def accept_page_session_channel(
         while True:
             try:
                 raw = await receive_with_lifecycle()
-            except TimeoutError:
+            except asyncio.TimeoutError:
                 await websocket.send_text(json.dumps({"kind": "error", "detail": "idle timeout"}))
                 await websocket.close(code=1008)
                 return

@@ -8,9 +8,9 @@ import time
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Any, TypeVar
 
+from hedron_core.compat import StrEnum
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import _NativeElement
@@ -214,7 +214,7 @@ async def prepare_tree(
                     if remaining is not None:
                         try:
                             await asyncio.wait_for(_body(), timeout=remaining)
-                        except TimeoutError as exc:
+                        except asyncio.TimeoutError as exc:
                             ctx.cancel()
                             raise error(
                                 "HED-PREPARE-0002",
