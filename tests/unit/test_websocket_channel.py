@@ -216,3 +216,81 @@ def test_client_state_response_rejects_oversized_wire_frame() -> None:
     asyncio.run(_run())
     websocket.send_text.assert_not_awaited()
     websocket.close.assert_any_await(code=1009)
+
+
+def test_oversized_error_frame_does_not_close_twice() -> None:
+    class _StrictWebSocket:
+        def __init__(self) -> None:
+            self.headers = {"origin": "https://example.com"}
+            self.url = type("U", (), {"hostname": "example.com", "scheme": "wss", "port": None})()
+            self.closed = False
+            self.close_codes: list[int] = []
+            self.sent: list[str] = []
+
+        async def accept(self) -> None:
+            return None
+
+        async def receive_text(self) -> str:
+            return "x"
+
+        async def send_text(self, text: str) -> None:
+            if self.closed:
+                raise RuntimeError("cannot send after close")
+            self.sent.append(text)
+
+        async def close(self, code: int = 1000) -> None:
+            if self.closed:
+                raise RuntimeError("cannot close twice")
+            self.closed = True
+            self.close_codes.append(code)
+
+    websocket = _StrictWebSocket()
+    channel = PageSessionChannel(
+        channel_id="c1",
+        declared_regions=frozenset(),
+        budget=ChannelBudget(max_message_bytes=10),
+    )
+
+    asyncio.run(
+        accept_page_session_channel(websocket, channel)  # type: ignore[arg-type]
+    )
+
+    assert websocket.close_codes == [1009]
+    assert websocket.sent == []
+
+
+def test_client_state_serialization_error_is_not_reported_as_oversized() -> None:
+    channel = PageSessionChannel(
+        channel_id="c1",
+        declared_regions=frozenset(),
+        declared_client_reads=(ClientStateRead("form", "value"),),
+        budget=ChannelBudget(max_message_bytes=1_000),
+    )
+    websocket = MagicMock()
+    websocket.headers = {"origin": "https://example.com"}
+    websocket.url = type("U", (), {"hostname": "example.com", "scheme": "wss", "port": None})()
+    websocket.accept = AsyncMock()
+    websocket.close = AsyncMock()
+    websocket.send_text = AsyncMock()
+    websocket.receive_text = AsyncMock(
+        return_value=json.dumps(
+            {"kind": "client-state-request", "component_id": "form", "field": "value"}
+        )
+    )
+
+    async def _state(_component_id: str, _field: str) -> dict[str, object]:
+        value: dict[str, object] = {}
+        value["self"] = value
+        return value
+
+    async def _run() -> None:
+        await accept_page_session_channel(
+            websocket,  # type: ignore[arg-type]
+            channel,
+            on_client_state=_state,
+        )
+
+    with pytest.raises(ValueError, match="Circular reference detected"):
+        asyncio.run(_run())
+    websocket.send_text.assert_not_awaited()
+    assert all(call.kwargs.get("code") != 1009 for call in websocket.close.await_args_list)
