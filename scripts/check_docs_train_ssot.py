@@ -215,6 +215,16 @@ def _is_inventory_page(path: Path) -> bool:
 
 CANONICAL_INSTALL_PAGE = Path("docs/getting-started/installation.md")
 
+# The Posit adapter is released on the beta 0.67 train, so its Workbench
+# walkthroughs intentionally use the matching Hedron bridge rather than the
+# stable public 0.66 pin used by general-purpose beginner pages.
+POSIT_WORKBENCH_PATHS = frozenset(
+    {
+        Path("docs/getting-started/first-app-posit-workbench.md"),
+        Path("docs/guides/training-streamlit-to-hedron-posit.md"),
+    }
+)
+
 # Pages whose pip/uv/uvx lines must be registry-resolvable. While the upload is
 # deferred, that is the public-index pin — never the unpublished in-tree pin.
 # PyPI-lag honesty lives on REGISTRY_HONESTY_PATHS, not on these pages.
@@ -343,6 +353,8 @@ def _line_describes_pypi_latest(line: str) -> bool:
 
 def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[str]:
     allowed = {facts.pin}
+    if path in POSIT_WORKBENCH_PATHS:
+        allowed.add(">=0.67.0,<0.68")
     # Edron 0.9 is an in-tree target on the verified 0.67 bridge, not the
     # published 0.66 adopter train. Its own install pages intentionally use
     # the explicit 0.67 bridge range.

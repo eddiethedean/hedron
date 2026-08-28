@@ -8,9 +8,9 @@ Participants finish with a migrated sales dashboard that has validated URL filte
 server-rendered component tree, an allowlisted HTMX fragment, HTTP-level tests, and one
 application object that adapts to local, Workbench, and Connect environments.
 
-This workshop targets the current public Hedron **0.66.2** release
-(`hedron>=0.66.2,<0.67`) and Python **3.11–3.14**. The repository checkout is the **0.67.0** beta
-train. Before scheduling it, check the current [capability matrix](whats-ready.md) and
+This workshop targets the Hedron **0.67.x** train (`hedron>=0.67.0,<0.68`) and Python
+**3.11–3.14** so it matches the current `hedron-posit` adapter. Before scheduling it, check the
+current [capability matrix](whats-ready.md) and
 [compatibility guide](../COMPATIBILITY.md) against your Posit versions and internal package mirror.
 
 ## Training at a glance
@@ -64,7 +64,7 @@ Complete this checklist several days before the session.
 - Verify Python 3.11–3.14 and that participants can create and activate a project `venv`.
 - If `python3.11` is unavailable, use the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
   before creating the virtual environment. When finished, return to [Facilitator preparation](#facilitator-preparation).
-- Confirm that the environment can install `hedron>=0.66.2,<0.67` and optional packages
+- Confirm that the environment can install `hedron>=0.67.0,<0.68` and optional packages
   from PyPI or your approved internal package index.
 - On Workbench, verify that `RS_SERVER_URL` is present and `rserver-url` is executable.
 - Run the complete workshop once from the same Workbench IDE participants will use.
@@ -97,7 +97,7 @@ with these commands. When finished, return to [Participant prework](#participant
 python3.11 --version
 python3.11 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install "hedron>=0.66.2,<0.67"
+python3.11 -m pip install "hedron>=0.67.0,<0.68"
 hedron --version
 ```
 
@@ -175,7 +175,7 @@ cd hedron-training
 python3.11 --version
 python3.11 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install "hedron>=0.66.2,<0.67"
+python3.11 -m pip install "hedron>=0.67.0,<0.68"
 hedron --version
 ```
 

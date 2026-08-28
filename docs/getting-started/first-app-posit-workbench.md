@@ -119,7 +119,7 @@ Choose a private project location approved by your organization. The following u
 mkdir -p ~/projects
 python3.11 -m venv ~/projects/.hedron-scaffold-venv
 source ~/projects/.hedron-scaffold-venv/bin/activate
-python3.11 -m pip install "hedron>=0.66.2,<0.67"
+python3.11 -m pip install "hedron>=0.67.0,<0.68"
 hedron new my-workbench-app --path ~/projects/my-workbench-app
 cd ~/projects/my-workbench-app
 python3.11 -m venv .venv
@@ -140,8 +140,8 @@ pwd
 python3.11 -c "import hedron, hedron_posit; print(hedron.__version__)"
 ```
 
-Expect the path to end in `my-workbench-app` and the PyPI version to be **`0.66.2`**.
-A repository checkout reports the **`0.67.0`** beta version.
+Expect the path to end in `my-workbench-app` and Hedron to report the **`0.67.x`** version
+required by `hedron-posit`.
 
 The project contains:
 

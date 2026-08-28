@@ -76,6 +76,12 @@ def test_install_commands_require_the_canonical_bounded_pin() -> None:
         assert not failures(f'uvx --from "hedron{ssot.FACTS.pypi_pin}" hedron new demo')
 
 
+def test_posit_workbench_pages_accept_the_matching_beta_bridge_pin() -> None:
+    pin = ">=0.67.0,<0.68"
+    for path in ssot.POSIT_WORKBENCH_PATHS:
+        assert not ssot.check_text(path, f'pip install "hedron{pin}"')
+
+
 def test_pypi_latest_claim_is_allowed_when_registry_is_deferred() -> None:
     if not ssot.FACTS.registry_deferred:
         return

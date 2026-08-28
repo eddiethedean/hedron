@@ -51,6 +51,8 @@ def test_workbench_guide_uses_the_preferred_hedron_posit_surface() -> None:
     guide = POSIT_PATH.read_text(encoding="utf-8")
 
     assert "python3.11 -m venv .venv" in guide
+    assert 'python3.11 -m pip install "hedron>=0.67.0,<0.68"' in guide
+    assert 'python3.11 -m pip install "hedron>=0.66.2,<0.67"' not in guide
     assert 'python3.11 -m pip install -e . "hedron-posit>=0.67.0"' in guide
     assert "pyenv install" in guide
     assert "pyenv local" in guide
