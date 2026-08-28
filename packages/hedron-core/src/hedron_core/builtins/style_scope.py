@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from contextvars import ContextVar
 from typing import Any, Literal
 
 from pydantic import Field
@@ -39,6 +40,21 @@ PRESENTATION_SLOTS: tuple[str, ...] = (
     "ProcessFlow.step",
 )
 _PRESENTATION_SLOT_SET = frozenset(PRESENTATION_SLOTS)
+_CURRENT_STYLE_CONTEXT: ContextVar[StyleContext | None] = ContextVar(
+    "hedron_style_context", default=None
+)
+
+
+def current_style_context() -> StyleContext | None:
+    return _CURRENT_STYLE_CONTEXT.get()
+
+
+def push_style_context(context: StyleContext):
+    return _CURRENT_STYLE_CONTEXT.set(context)
+
+
+def pop_style_context(token: object) -> None:
+    _CURRENT_STYLE_CONTEXT.reset(token)  # type: ignore[arg-type]
 
 
 class StyleScopeProps(ElementProps):

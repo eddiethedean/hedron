@@ -10,6 +10,8 @@ from hedron_core.builtins._base import ElementProps, class_names, collect_childr
 from hedron_core.builtins.appearance import (
     TYPE_EFFECTS,
     TYPE_MEASURES,
+    TRACKING,
+    OVERFLOW_MODES,
     Density,
     TypographyEffect,
     TypographyMeasure,
@@ -363,6 +365,11 @@ class PageHeaderProps(ElementProps):
     description_effect: TypographyEffect | None = None
     measure: TypographyMeasure | None = None
     effect: TypographyEffect | None = None
+    title_tracking: str | None = None
+    title_wrap: str | None = None
+    description_wrap: str | None = None
+    eyebrow_tone: str | None = None
+    eyebrow_tracking: str | None = None
 
 
 class PageHeader(Component[PageHeaderProps]):
@@ -386,6 +393,11 @@ class PageHeader(Component[PageHeaderProps]):
         description_effect: TypographyEffect | None = None,
         measure: TypographyMeasure | None = None,
         effect: TypographyEffect | None = None,
+        title_tracking: str | None = None,
+        title_wrap: str | None = None,
+        description_wrap: str | None = None,
+        eyebrow_tone: str | None = None,
+        eyebrow_tracking: str | None = None,
         actions: NodeLike = None,
         meta: NodeLike = None,
         id: str | None = None,
@@ -399,6 +411,11 @@ class PageHeader(Component[PageHeaderProps]):
         require_choice(description_effect, TYPE_EFFECTS, label="description_effect")
         require_choice(measure, TYPE_MEASURES, label="measure")
         require_choice(effect, TYPE_EFFECTS, label="effect")
+        require_choice(title_tracking, TRACKING, label="title_tracking")
+        require_choice(eyebrow_tracking, TRACKING, label="eyebrow_tracking")
+        require_choice(title_wrap, OVERFLOW_MODES, label="title_wrap")
+        require_choice(description_wrap, OVERFLOW_MODES, label="description_wrap")
+        require_choice(eyebrow_tone, ("accent", "muted", "neutral"), label="eyebrow_tone")
         super().__init__(
             PageHeaderProps(
                 title=title,
@@ -412,6 +429,11 @@ class PageHeader(Component[PageHeaderProps]):
                 description_effect=description_effect,
                 measure=measure,
                 effect=effect,
+                title_tracking=title_tracking,
+                title_wrap=title_wrap,
+                description_wrap=description_wrap,
+                eyebrow_tone=eyebrow_tone,
+                eyebrow_tracking=eyebrow_tracking,
                 id=id,
                 class_=class_,
                 mark=mark,
@@ -424,13 +446,32 @@ class PageHeader(Component[PageHeaderProps]):
             self._slot_values["meta"] = meta
 
     def render(self) -> NodeLike:
+        style_context = None
+        try:
+            from hedron_core.builtins.style_scope import current_style_context
+
+            style_context = current_style_context()
+        except ImportError:
+            style_context = None
         text: list[NodeLike] = []
         if self.props.eyebrow:
             text.append(
                 html.p(
                     self.props.eyebrow,
                     class_="hedron-page-header-eyebrow hedron-type-eyebrow",
-                    data={"hedron-type-role": "eyebrow"},
+                    data={
+                        "hedron-type-role": "eyebrow",
+                        **(
+                            {"hedron-type-tone": self.props.eyebrow_tone}
+                            if self.props.eyebrow_tone
+                            else {}
+                        ),
+                        **(
+                            {"hedron-type-tracking": self.props.eyebrow_tracking}
+                            if self.props.eyebrow_tracking
+                            else {}
+                        ),
+                    },
                 )
             )
         heading = getattr(html, f"h{self.props.level}")
@@ -441,6 +482,14 @@ class PageHeader(Component[PageHeaderProps]):
             title_data["hedron-type-measure"] = title_measure
         if title_effect is not None:
             title_data["hedron-type-effect"] = title_effect
+        if self.props.title_tracking:
+            title_data["hedron-type-tracking"] = self.props.title_tracking
+        if self.props.title_wrap:
+            title_data["hedron-type-wrap"] = self.props.title_wrap
+        if style_context is not None:
+            recipe = style_context.resolve_presentation("PageHeader.title")
+            if recipe:
+                title_data["hedron-style-recipe"] = recipe
         text.append(heading(self.props.title, class_="hedron-page-header-title", data=title_data))
         if self.props.description:
             description_data: dict[str, str | bool | int | float | None] = {}
@@ -450,6 +499,12 @@ class PageHeader(Component[PageHeaderProps]):
                 description_data["hedron-type-measure"] = description_measure
             if description_effect is not None:
                 description_data["hedron-type-effect"] = description_effect
+            if self.props.description_wrap:
+                description_data["hedron-type-wrap"] = self.props.description_wrap
+            if style_context is not None:
+                recipe = style_context.resolve_presentation("PageHeader.description")
+                if recipe:
+                    description_data["hedron-style-recipe"] = recipe
             text.append(
                 html.p(
                     self.props.description,

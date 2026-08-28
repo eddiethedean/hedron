@@ -340,7 +340,14 @@ from hedron_core.htmx_extensions import (
     catalog_facts,
     known_extensions,
 )
-from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
+from hedron_core.icons import (
+    IconEntry,
+    get_icon,
+    list_icons,
+    register_first_party_icons,
+    register_icon,
+    trusted_svg,
+)
 from hedron_core.identity import (
     IdentityRegistry,
     IdentityTarget,
@@ -1084,6 +1091,7 @@ __all__ = [
     "register_component",
     "register_element_definition",
     "register_icon",
+    "register_first_party_icons",
     "register_projection_provider",
     "register_renderer",
     "register_route",

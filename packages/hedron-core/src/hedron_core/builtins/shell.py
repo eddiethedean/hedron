@@ -63,6 +63,7 @@ class NavGroup(Component[NavGroupProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
+        action: NodeLike = None,
         **kwargs: Any,
     ) -> None:
         normalized_label = None if label is None or not str(label).strip() else str(label).strip()
@@ -76,6 +77,7 @@ class NavGroup(Component[NavGroupProps]):
             )
         )
         self._items = collect_children(*items, children=children)
+        self._action = action
 
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
@@ -93,7 +95,11 @@ class NavGroup(Component[NavGroupProps]):
                     "aria": {"label": self.props.label},
                 }
             )
-            label: NodeLike = html.p(self.props.label, class_="hedron-nav-group-label")
+            label: NodeLike = html.div(
+                html.p(self.props.label, class_="hedron-nav-group-label"),
+                self._action,
+                class_="hedron-nav-group-heading",
+            )
         else:
             label = None
         return html.div(
@@ -180,6 +186,7 @@ class HtmxLinkProps(ElementProps):
     external: bool = False
     preload: str | None = None
     leading_icon: str | None = None
+    attrs: dict[str, HtmlAttrValue] = {}
 
 
 class HtmxLink(Component[HtmxLinkProps]):
@@ -208,6 +215,7 @@ class HtmxLink(Component[HtmxLinkProps]):
         id: str | None = None,
         class_: str | None = None,
         mark: str | None = None,
+        attrs: dict[str, HtmlAttrValue] | None = None,
         **kwargs: object,
     ) -> None:
         url = _coerce_nav_url(href, allow_external=external)
@@ -251,6 +259,17 @@ class HtmxLink(Component[HtmxLinkProps]):
                     remediation="Use a same-origin SafeUrl navigation path.",
                 )
             preload = mode
+        safe_attrs = dict(attrs or {})
+        for name in safe_attrs:
+            lowered = str(name).lower()
+            if lowered in {"href", "class", "class_", "id", "style"} or lowered.startswith("hx-"):
+                raise ValueError(f"HtmxLink attrs does not allow {name!r}")
+            if not (
+                lowered == "title" or lowered.startswith("aria-") or lowered.startswith("data-")
+            ):
+                raise ValueError(
+                    f"HtmxLink attrs only allows title, data-*, and aria-* (got {name!r})"
+                )
         super().__init__(
             HtmxLinkProps(
                 href=url,
@@ -270,12 +289,14 @@ class HtmxLink(Component[HtmxLinkProps]):
                 id=id,
                 class_=class_,
                 mark=mark,
+                attrs=safe_attrs,
                 **kwargs,
             )
         )
 
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {"href": self.props.href}
+        attrs.update(self.props.attrs)
         method = self.props.method.lower()
         path = str(self.props.href)
         # External links are plain navigation; do not emit hx-* absolute URLs
@@ -624,6 +645,9 @@ class AppShellProps(Props):
     id: str | None = None
     content_width: str = "default"
     mobile_collapse: bool = True
+    nav_collapse: Literal["never", "user", "always"] = "never"
+    nav_collapsed: bool = False
+    nav_preference_key: str = "hedron-nav-collapsed"
     chrome_preset: str = "standard"
     chrome_header_behavior: str = "flow"
     chrome_nav_behavior: str = "sticky"
@@ -674,12 +698,21 @@ class AppShell(Component[AppShellProps]):
         app_footer: NodeLike = None,
         content_width: str = "default",
         mobile_collapse: bool = True,
+        nav_collapse: Literal["never", "user", "always"] = "never",
+        nav_collapsed: bool = False,
+        nav_preference_key: str = "hedron-nav-collapsed",
         chrome: AppShellChrome | None = None,
         class_: str | None = None,
         id: str | None = None,
         **kwargs: object,
     ) -> None:
         require_choice(content_width, CONTENT_WIDTHS, label="content_width")
+        require_choice(nav_collapse, ("never", "user", "always"), label="nav_collapse")
+        if (
+            not nav_preference_key
+            or not nav_preference_key.replace("-", "").replace("_", "").isalnum()
+        ):
+            raise ValueError("nav_preference_key must be a safe identifier")
         resolved_chrome = chrome or AppShellChrome()
         super().__init__(
             AppShellProps(
@@ -688,6 +721,9 @@ class AppShell(Component[AppShellProps]):
                 id=id,
                 content_width=content_width,
                 mobile_collapse=mobile_collapse,
+                nav_collapse=nav_collapse,
+                nav_collapsed=nav_collapsed,
+                nav_preference_key=nav_preference_key,
                 chrome_preset=resolved_chrome.preset,
                 chrome_header_behavior=resolved_chrome.header_behavior,
                 chrome_nav_behavior=resolved_chrome.nav_behavior,
@@ -723,7 +759,7 @@ class AppShell(Component[AppShellProps]):
             data["hedron-app-nav"] = "true"
             props = LandmarkProps(
                 class_=class_names("hedron-app-shell-nav", child.props.class_),
-                id=child.props.id,
+                id=child.props.id or f"{self.props.panel_id}-nav",
                 lang=child.props.lang,
                 dir=child.props.dir,
                 title=child.props.title,
@@ -737,6 +773,7 @@ class AppShell(Component[AppShellProps]):
             *self._nav,
             *extras,
             class_="hedron-app-shell-nav",
+            id=f"{self.props.panel_id}-nav",
             data={"hedron-app-nav": "true"},
             aria={"label": "Primary"},
         )
@@ -788,6 +825,22 @@ class AppShell(Component[AppShellProps]):
         header = self._chrome_header()
         if header is not None:
             children.append(header)
+        if self.props.nav_collapse == "user":
+            children.append(
+                html.button(
+                    "Expand navigation" if self.props.nav_collapsed else "Collapse navigation",
+                    type="button",
+                    aria={
+                        "controls": f"{self.props.panel_id}-nav",
+                        "expanded": not self.props.nav_collapsed,
+                    },
+                    data={
+                        "hedron-nav-toggle": "true",
+                        "hedron-nav-preference": self.props.nav_preference_key,
+                    },
+                    class_="hedron-app-shell-nav-toggle",
+                )
+            )
         children.append(self._nav_element())
         children.append(panel)
         if self._app_footer is not None:
@@ -807,6 +860,8 @@ class AppShell(Component[AppShellProps]):
             "hedron-shell-nav-offset": chrome.nav_offset,
             "hedron-shell-gap": chrome.shell_gap,
             "hedron-shell-content-inset": chrome.content_inset,
+            "hedron-nav-collapse": self.props.nav_collapse,
+            "hedron-nav-collapsed": self.props.nav_collapsed,
             "hedron-shell-banner-spacing": chrome.banner_spacing,
             "hedron-shell-header-density": chrome.header_density,
             "hedron-shell-footer-density": chrome.footer_density,
