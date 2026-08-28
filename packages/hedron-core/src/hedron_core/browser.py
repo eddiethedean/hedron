@@ -11,6 +11,7 @@ authentication, authorization, or server-durability boundary.
 from __future__ import annotations
 
 import json
+import math
 import time
 from collections.abc import Mapping, MutableMapping
 from dataclasses import dataclass, field
@@ -27,6 +28,19 @@ __all__ = [
 ]
 
 _REDACTED = "[redacted]"
+
+
+def _finite_expiry(value: object, *, name: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"BrowserStorage {name} must be a finite number")
+    try:
+        normalized = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"BrowserStorage {name} must be a finite number") from exc
+    if not math.isfinite(normalized):
+        raise ValueError(f"BrowserStorage {name} must be a finite number")
+    return normalized
+
 
 # Cookie / header names whose values are always redacted in helpers.
 _SECRETISH_NAME_FRAGMENTS = frozenset(
@@ -329,9 +343,9 @@ class BrowserStorage:
             )
         self._check_schema(value, schema)
         self._purge_expired()
-        expiry = expires_at
+        expiry = None if expires_at is None else _finite_expiry(expires_at, name="expires_at")
         if ttl_seconds is not None:
-            expiry = time.time() + float(ttl_seconds)
+            expiry = time.time() + _finite_expiry(ttl_seconds, name="ttl_seconds")
         if key not in self._data and len(self._data) >= self.max_entries:
             raise StorageQuotaExceeded(
                 f"BrowserStorage {self.namespace!r} exceeds max_entries={self.max_entries}"

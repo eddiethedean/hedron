@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import time
 
 import pytest
@@ -114,6 +115,23 @@ def test_browser_storage_quota_and_expiry() -> None:
 
     with pytest.raises(RuntimeError, match="authentication"):
         store.forbid_auth_use()
+
+
+@pytest.mark.parametrize("value", [math.nan, math.inf, -math.inf, True])
+def test_browser_storage_rejects_non_finite_expiry_values(value: object) -> None:
+    store = BrowserStorage("prefs", consent_granted=True)
+    with pytest.raises(ValueError, match="finite number"):
+        store.set("ttl", "value", ttl_seconds=value)  # type: ignore[arg-type]
+    with pytest.raises(ValueError, match="finite number"):
+        store.set("absolute", "value", expires_at=value)  # type: ignore[arg-type]
+    assert store.keys() == []
+
+
+def test_browser_storage_rejects_expiry_integer_too_large_for_float() -> None:
+    store = BrowserStorage("prefs", consent_granted=True)
+    with pytest.raises(ValueError, match="finite number"):
+        store.set("ttl", "value", ttl_seconds=10**400)  # type: ignore[arg-type]
+    assert store.keys() == []
 
 
 def test_math_escapes_script() -> None:
