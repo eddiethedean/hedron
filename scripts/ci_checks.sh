@@ -332,9 +332,9 @@ quality_wheels_smoke() {
 
   rm -rf /tmp/hedron-smoke
   uv venv /tmp/hedron-smoke --python "$PYTHON"
-  # Edron 0.8 is intentionally pinned to the stable Hedron 0.66 train while
-  # the workspace wheels exercise the 0.67 beta train. Keep those consumer
-  # rehearsals isolated so the resolver tests both declared contracts.
+  # Keep the consumer rehearsal on the repository's in-tree wheels. Published
+  # satellite wheels may still carry constraints from an older Hedron train
+  # while the current workspace wheels are being prepared for release.
   local beta_wheels=()
   local wheel
   for wheel in dist/*.whl; do
@@ -395,7 +395,8 @@ PY
   fi
   rm -rf /tmp/edron-stable-smoke
   uv venv /tmp/edron-stable-smoke --python "$PYTHON"
-  uv pip install --python /tmp/edron-stable-smoke/bin/python "${edron_wheel[0]}"
+  uv pip install --python /tmp/edron-stable-smoke/bin/python \
+    --find-links dist "${edron_wheel[0]}"
   /tmp/edron-stable-smoke/bin/python - <<'PY'
 import importlib.metadata as metadata
 

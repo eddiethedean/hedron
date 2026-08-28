@@ -121,16 +121,15 @@ python3.11 -m venv ~/projects/.hedron-scaffold-venv
 source ~/projects/.hedron-scaffold-venv/bin/activate
 python3.11 -m pip install "hedron>=0.66.2,<0.67"
 hedron new my-workbench-app --path ~/projects/my-workbench-app
-deactivate
 cd ~/projects/my-workbench-app
 python3.11 -m venv .venv
 source .venv/bin/activate
 python3.11 -m pip install -e . "hedron-posit>=0.67.0"
 ```
 
-These commands create the project, make its isolated `.venv`, and install the declared dependencies
-plus the Workbench-aware adapter. Keep `~/projects/.hedron-scaffold-venv` only for creating
-additional scaffolds, or remove it after this project is ready.
+The first environment is only a temporary helper for creating the project. The project's `.venv`
+is the environment you use for the app. Activating it automatically switches from the helper
+environment, so you do not need to run `deactivate`.
 
 Open the project in the editor with **File → Open Folder**, then select
 `~/projects/my-workbench-app`. Open a new terminal and confirm:

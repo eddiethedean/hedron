@@ -268,10 +268,12 @@ network panel shows a small `/status` response rather than a full document.
 Stop the server with Ctrl+C, then return to the workshop root:
 
 ```bash
-deactivate
 cd ..
 source .venv/bin/activate
 ```
+
+Activating the workshop environment automatically switches from the app environment, so you do
+not need to run `deactivate`.
 
 ## Lab 2 — Migrate a Streamlit dashboard
 

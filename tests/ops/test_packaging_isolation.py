@@ -20,7 +20,6 @@ _BETA_PACKAGES = {
     "hedron-conformance",
     "hedron-extras",
     "hedron-workbench",
-    "hedron-posit",
     "hedron-elements",
 }
 _INDEPENDENT_BETA = {
@@ -34,6 +33,9 @@ _INDEPENDENT_BETA_02 = {
     "hedron-sample-kit",
     "hedron-sim",
     "hedron-notebook",
+}
+_INDEPENDENT_BETA_067 = {
+    "hedron-posit",
 }
 _INDEPENDENT_BETA_05 = {
     "edron",
@@ -56,6 +58,8 @@ def test_all_packages_declare_license_and_version() -> None:
             assert project["version"] == workspace_version, pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert str(project["version"]).startswith("0.2."), pyproject
+        elif name in _INDEPENDENT_BETA_067:
+            assert str(project["version"]).startswith("0.67."), pyproject
         elif name == "edron":
             assert str(project["version"]).startswith("0.9."), pyproject
         elif name in _INDEPENDENT_BETA_05:

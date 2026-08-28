@@ -60,4 +60,5 @@ def test_workbench_guide_uses_the_preferred_hedron_posit_surface() -> None:
     assert "hedron-posit run app:app --port 8000 --reload" in guide
     assert "uv add" not in guide
     assert "uv run" not in guide
+    assert "\ndeactivate\n" not in guide
     assert "from hedron_workbench import HedronWorkbench" not in guide
