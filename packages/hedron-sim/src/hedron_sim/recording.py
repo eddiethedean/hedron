@@ -108,6 +108,13 @@ class SimLimits:
             )
 
     def check_time_ms(self, elapsed_ms: int) -> None:
+        if elapsed_ms < 0:
+            raise SimLimitError(
+                f"sim scenario clock {elapsed_ms}ms must be non-negative",
+                limit="max_time_ms",
+                value=elapsed_ms,
+                maximum=self.max_time_ms,
+            )
         if elapsed_ms > self.max_time_ms:
             raise SimLimitError(
                 f"sim scenario clock {elapsed_ms}ms exceeds max_time_ms={self.max_time_ms}",
@@ -117,17 +124,66 @@ class SimLimits:
             )
 
 
-def _payload_depth(value: Any, *, depth: int = 1) -> int:
-    children: list[Any]
-    if isinstance(value, Mapping):
-        children = list(cast(Mapping[str, Any], value).values())
-    elif isinstance(value, (list, tuple)):
-        children = list(cast(Sequence[Any], value))
-    else:
-        return depth
-    if not children:
-        return depth
-    return max(_payload_depth(child, depth=depth + 1) for child in children)
+def _bounded_payload_depth(value: Any, limits: SimLimits, *, depth: int = 1) -> int:
+    deepest = depth
+    stack: list[tuple[Any, int]] = [(value, depth)]
+    while stack:
+        current, current_depth = stack.pop()
+        deepest = max(deepest, current_depth)
+        limits.check_depth(current_depth)
+        if isinstance(current, Mapping):
+            stack.extend((child, current_depth + 1) for child in current.values())
+        elif isinstance(current, (list, tuple)):
+            stack.extend((child, current_depth + 1) for child in current)
+    return deepest
+
+
+def _mapping_json_size(value: Any, limits: SimLimits) -> int:
+    """Measure JSON bytes iteratively so mapping imports cannot overflow recursion."""
+    size = 0
+    active: set[int] = set()
+    stack: list[tuple[str, Any]] = [("value", value)]
+    while stack:
+        operation, current = stack.pop()
+        if operation == "exit":
+            active.remove(cast(int, current))
+            continue
+        if isinstance(current, Mapping):
+            identity = id(current)
+            if identity in active:
+                raise ValueError("circular reference in sim scenario mapping")
+            active.add(identity)
+            items = sorted(current.items())
+            size += 2 + max(0, len(items) - 1) * 2
+            stack.append(("exit", identity))
+            for key, child in reversed(items):
+                if isinstance(key, str):
+                    key_text = key
+                elif key is None:
+                    key_text = "null"
+                elif isinstance(key, bool):
+                    key_text = "true" if key else "false"
+                elif isinstance(key, (int, float)):
+                    key_text = json.dumps(key, allow_nan=False)
+                else:
+                    raise TypeError(
+                        "sim scenario mapping keys must be str, int, float, bool, or None"
+                    )
+                encoded_key = json.dumps(key_text)
+                size += len(encoded_key.encode("utf-8")) + 2
+                stack.append(("value", child))
+        elif isinstance(current, (list, tuple)):
+            identity = id(current)
+            if identity in active:
+                raise ValueError("circular reference in sim scenario mapping")
+            active.add(identity)
+            size += 2 + max(0, len(current) - 1) * 2
+            stack.append(("exit", identity))
+            stack.extend(("value", child) for child in reversed(current))
+        else:
+            size += len(json.dumps(current, sort_keys=True, allow_nan=False).encode("utf-8"))
+        limits.check_bytes(size)
+    return size
 
 
 @dataclass
@@ -175,10 +231,15 @@ class SimEvent:
         raw_detail: Any = data.get("detail") or {}
         if not isinstance(raw_detail, Mapping):
             raise ValueError(f"sim scenario event detail must be a mapping, got {type(raw_detail)}")
+        raw_at_ms: Any = data.get("at_ms", 0)
+        if isinstance(raw_at_ms, bool) or not isinstance(raw_at_ms, int):
+            raise ValueError(
+                f"sim scenario event at_ms must be an integer, got {type(raw_at_ms).__name__}"
+            )
         return cls(
             kind=kind,
             name=str(data.get("name", "")),
-            at_ms=int(data.get("at_ms", 0)),
+            at_ms=raw_at_ms,
             detail=dict(cast(Mapping[str, Any], raw_detail)),
         )
 
@@ -223,7 +284,7 @@ class SimScenario:
             if not isinstance(row, Mapping):
                 raise ValueError("each sim scenario event must be a mapping")
             event = SimEvent.from_dict(cast(Mapping[str, Any], row))
-            limits.check_depth(_payload_depth(event.detail))
+            _bounded_payload_depth(event.detail, limits)
             limits.check_time_ms(event.at_ms)
             events.append(event)
         return cls(
@@ -255,7 +316,7 @@ class SimRecorder:
 
     def _append(self, kind: EventKind, name: str, detail: Mapping[str, Any]) -> SimEvent:
         self.limits.check_steps(len(self._events) + 1)
-        self.limits.check_depth(_payload_depth(dict(detail)))
+        _bounded_payload_depth(dict(detail), self.limits)
         event = SimEvent(kind=kind, name=name, at_ms=self.clock.now_ms, detail=dict(detail))
         self._events.append(event)
         return event
@@ -301,7 +362,13 @@ class SimRecorder:
 
 def export_scenario(scenario: SimScenario, *, indent: int | None = None) -> str:
     """Serialize ``scenario`` to deterministic JSON text within its byte bound."""
-    text = json.dumps(scenario.as_dict(), indent=indent, sort_keys=True)
+    payload = scenario.as_dict()
+    scenario.limits.check_steps(len(scenario.events))
+    for event in scenario.events:
+        _bounded_payload_depth(event.detail, scenario.limits)
+        scenario.limits.check_time_ms(event.at_ms)
+    _mapping_json_size(payload, scenario.limits)
+    text = json.dumps(payload, indent=indent, sort_keys=True, allow_nan=False)
     scenario.limits.check_bytes(len(text.encode("utf-8")))
     return text
 
@@ -316,10 +383,18 @@ def import_scenario(
     if isinstance(source, (str, bytes)):
         raw = source.encode("utf-8") if isinstance(source, str) else source
         bounds.check_bytes(len(raw))
-        loaded: Any = json.loads(raw.decode("utf-8"))
+        try:
+            loaded: Any = json.loads(raw.decode("utf-8"))
+        except RecursionError as exc:
+            raise SimLimitError(
+                "sim scenario nesting exceeds the safe parser depth",
+                limit="max_depth",
+                value=bounds.max_depth + 1,
+                maximum=bounds.max_depth,
+            ) from exc
     else:
         loaded = dict(source)
-        bounds.check_bytes(len(json.dumps(loaded, sort_keys=True).encode("utf-8")))
+        _mapping_json_size(loaded, bounds)
     if not isinstance(loaded, Mapping):
         raise ValueError("sim scenario document must be a JSON object")
     payload: dict[str, Any] = dict(cast(Mapping[str, Any], loaded))
