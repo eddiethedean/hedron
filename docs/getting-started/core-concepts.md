@@ -120,8 +120,9 @@ assets and diagnostics. User components do not concatenate response strings them
 
 HTMX owns request-and-swap interaction. Hedron validates targets, normalizes response
 headers, and applies CSRF policy to unsafe cookie-authenticated requests. Durable
-browser-local behavior belongs in standards-based Web Components rather than a hidden
-client runtime.
+application state remains on the server; Alpine owns disposable browser-local behavior,
+and specialist browser subsystems use bounded Web Components. See
+[What is Alpine?](what-is-alpine.md) for the local/server decision rule.
 
 Handlers may return `InteractionResult` for validated primary content, OOB updates, history,
 and cache/`Vary` hints instead of assembling `HX-*` headers by hand. See

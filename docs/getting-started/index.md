@@ -48,6 +48,7 @@ Evaluating production use? [What’s ready](../guides/whats-ready.md) ·
 | You need to… | Go to |
 |---|---|
 | Learn the page/fragment model | [Core concepts](core-concepts.md) |
+| Decide whether behavior belongs in the browser or on the server | [What is Alpine?](what-is-alpine.md) · [What is HTMX?](what-is-htmx.md) |
 | Choose between `@app.view` and the Advanced fragment API | [Which interaction API?](interaction-apis.md) |
 | Paste one focused pattern into an existing app | [Cookbook](../guides/cookbook.md) |
 | Diagnose an error or unexpected response | [Troubleshooting](../guides/troubleshooting.md) |

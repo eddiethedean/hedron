@@ -195,6 +195,7 @@ nav:
     - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
     - What is HTMX?: getting-started/what-is-htmx.md
+    - What is Alpine?: getting-started/what-is-alpine.md
     - Core concepts: getting-started/core-concepts.md
     - Choose an interaction API: getting-started/interaction-apis.md
     - Learning path: getting-started/learning-path.md

@@ -177,8 +177,8 @@ HTMX handles browser events, HTTP requests, and HTML swaps. It is not:
 - the Supported way to push server events continuously. Prefer polling for job status;
   Hedron's SSE and WebSocket helpers are FastAPI-only and experimental.
 
-You can still add JavaScript for behavior that genuinely belongs in the browser. HTMX
-simply means you do not need a SPA for routine server-driven interactions.
+Use [Alpine](what-is-alpine.md) for disposable behavior that genuinely belongs in the
+browser. HTMX means you do not need a SPA for routine server-driven interactions.
 
 ## Common questions
 
