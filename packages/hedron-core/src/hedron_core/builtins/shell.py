@@ -349,7 +349,7 @@ class HtmxLink(Component[HtmxLinkProps]):
                 html.span(self.props.label, class_="hedron-nav-link-label"),
                 **attrs,
             )
-        return html.a(self.props.label, **attrs)
+        return html.a(html.span(self.props.label, class_="hedron-nav-link-label"), **attrs)
 
 
 # Alias preferred by RFC-0044 / issue #28.
@@ -778,6 +778,11 @@ class AppShell(Component[AppShellProps]):
             aria={"label": "Primary"},
         )
 
+    def _nav_id(self) -> str:
+        if len(self._nav) == 1 and isinstance(self._nav[0], Nav) and self._nav[0].props.id:
+            return self._nav[0].props.id
+        return f"{self.props.panel_id}-nav"
+
     def _chrome_header(self) -> NodeLike | None:
         parts: list[NodeLike] = []
         if self._brand is not None:
@@ -825,14 +830,15 @@ class AppShell(Component[AppShellProps]):
         header = self._chrome_header()
         if header is not None:
             children.append(header)
+        collapsed = self.props.nav_collapsed or self.props.nav_collapse == "always"
         if self.props.nav_collapse == "user":
             children.append(
                 html.button(
-                    "Expand navigation" if self.props.nav_collapsed else "Collapse navigation",
+                    "Expand navigation" if collapsed else "Collapse navigation",
                     type="button",
                     aria={
-                        "controls": f"{self.props.panel_id}-nav",
-                        "expanded": not self.props.nav_collapsed,
+                        "controls": self._nav_id(),
+                        "expanded": not collapsed,
                     },
                     data={
                         "hedron-nav-toggle": "true",
@@ -861,7 +867,7 @@ class AppShell(Component[AppShellProps]):
             "hedron-shell-gap": chrome.shell_gap,
             "hedron-shell-content-inset": chrome.content_inset,
             "hedron-nav-collapse": self.props.nav_collapse,
-            "hedron-nav-collapsed": self.props.nav_collapsed,
+            "hedron-nav-collapsed": collapsed,
             "hedron-shell-banner-spacing": chrome.banner_spacing,
             "hedron-shell-header-density": chrome.header_density,
             "hedron-shell-footer-density": chrome.footer_density,

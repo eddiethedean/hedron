@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from hedron_core import render, register_first_party_icons
+from hedron_core import emit_theme_css, render, register_first_party_icons
+from hedron_core.builtins.content import Heading
+from hedron_core.builtins.landmarks import Nav
 from hedron_core.builtins.layout import PageHeader
 from hedron_core.builtins.shell import AppShell, HtmxLink, NavGroup
 from hedron_core.builtins.style_scope import StyleScope
@@ -50,9 +52,19 @@ def test_page_header_scope_and_shell_contract() -> None:
     ).html
     assert 'data-hedron-style-recipe="display"' in output
     assert 'data-hedron-type-tracking="tight"' in output
+    assert (
+        'data-hedron-style-recipe="display"'
+        in render(StyleScope(Heading("Heading"), presentation={"Heading": "display"})).html
+    )
     shell = render(AppShell(nav="links", body="body", nav_collapse="user")).html
     assert 'data-hedron-nav-collapse="user"' in shell
     assert 'aria-controls="main-panel-nav"' in shell
+    custom = render(
+        AppShell(nav=Nav("links", id="custom-nav"), body="body", nav_collapse="user")
+    ).html
+    assert 'aria-controls="custom-nav"' in custom
+    always = render(AppShell(nav="links", body="body", nav_collapse="always")).html
+    assert 'data-hedron-nav-collapsed="true"' in always
 
 
 def test_workbench_full_root_path_preserves_origin() -> None:
@@ -69,3 +81,22 @@ def test_first_party_icon_pack_is_optional() -> None:
     entries = register_first_party_icons()
     assert len(entries) >= 20
     assert all("currentColor" in entry.svg.value for entry in entries)
+
+
+def test_theme_typography_features_emit_consumable_css() -> None:
+    tokens = {
+        "color.bg": "#fff",
+        "color.fg": "#000",
+        "color.accent": "#00f",
+        "color.focus": "#00f",
+        "color.danger": "#f00",
+        "color.muted": "#666",
+        "font.family": "sans-serif",
+        "font.size": "1rem",
+        "space.unit": "4px",
+        "motion.duration": "0s",
+        "focus.ring": "2px solid #00f",
+    }
+    css = emit_theme_css(Theme(name="features", tokens=tokens, typography_features={"tnum": 1}))
+    assert "font-feature-settings" in css
+    assert "font-variant-numeric" in css

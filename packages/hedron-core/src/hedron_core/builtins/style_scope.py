@@ -57,6 +57,15 @@ def pop_style_context(token: object) -> None:
     _CURRENT_STYLE_CONTEXT.reset(token)  # type: ignore[arg-type]
 
 
+def presentation_data(slot: str) -> dict[str, str]:
+    """Return the render-time recipe marker for a declared presentation slot."""
+    context = current_style_context()
+    if context is None:
+        return {}
+    recipe = context.resolve_presentation(slot)
+    return {"hedron-style-recipe": recipe} if recipe else {}
+
+
 class StyleScopeProps(ElementProps):
     scope: str | None = None
     theme: str | None = None

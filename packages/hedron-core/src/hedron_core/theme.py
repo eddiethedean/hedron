@@ -647,6 +647,12 @@ def design_system_vars(theme: Theme) -> dict[str, str]:
         variables["--hedron-nav-width"] = theme.nav_width
     for tag, value in sorted(theme.typography_features.items()):
         variables[f"--hedron-font-feature-{tag}"] = str(value)
+    if theme.typography_features:
+        variables["--hedron-font-feature-settings"] = ", ".join(
+            f'"{tag}" {value}' for tag, value in sorted(theme.typography_features.items())
+        )
+    if theme.typography_features.get("tnum") == 1:
+        variables["--hedron-font-variant-numeric"] = "tabular-nums"
     overlays = {**OVERLAY_ELEVATION_TOKENS}
     extra: dict[str, str] = {}
     for key, value in theme.elevation.items():
