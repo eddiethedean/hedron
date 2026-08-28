@@ -14,7 +14,7 @@ from hedron.websocket_channel import (
     origin_allowed,
     send_region_update,
 )
-from hedron_core.channel import ClientStateRead, PageSessionChannel, RegionUpdate
+from hedron_core.channel import ChannelBudget, ClientStateRead, PageSessionChannel, RegionUpdate
 
 
 def test_page_session_channel_declared_regions() -> None:
@@ -160,3 +160,59 @@ def test_send_region_update_encodes_payload() -> None:
     payload = json.loads(websocket.send_text.await_args.args[0])
     assert payload["kind"] == "region-update"
     assert payload["region_id"] == "status"
+
+
+def test_send_region_update_rejects_oversized_wire_frame() -> None:
+    channel = PageSessionChannel(
+        channel_id="c1",
+        declared_regions=frozenset({"status"}),
+        budget=ChannelBudget(max_message_bytes=10),
+    )
+    websocket = MagicMock()
+    websocket.send_text = AsyncMock()
+
+    async def _run() -> None:
+        await send_region_update(
+            websocket,  # type: ignore[arg-type]
+            channel,
+            RegionUpdate(region_id="status", html="x"),
+        )
+
+    with pytest.raises(ValueError, match="outbound message exceeds max_message_bytes"):
+        asyncio.run(_run())
+    websocket.send_text.assert_not_awaited()
+    assert channel.messages_sent == 0
+
+
+def test_client_state_response_rejects_oversized_wire_frame() -> None:
+    channel = PageSessionChannel(
+        channel_id="c1",
+        declared_regions=frozenset(),
+        declared_client_reads=(ClientStateRead("form", "value"),),
+        budget=ChannelBudget(max_message_bytes=100),
+    )
+    websocket = MagicMock()
+    websocket.headers = {"origin": "https://example.com"}
+    websocket.url = type("U", (), {"hostname": "example.com", "scheme": "wss", "port": None})()
+    websocket.accept = AsyncMock()
+    websocket.close = AsyncMock()
+    websocket.send_text = AsyncMock()
+    websocket.receive_text = AsyncMock(
+        return_value=json.dumps(
+            {"kind": "client-state-request", "component_id": "form", "field": "value"}
+        )
+    )
+
+    async def _state(_component_id: str, _field: str) -> str:
+        return "x" * 200
+
+    async def _run() -> None:
+        await accept_page_session_channel(
+            websocket,  # type: ignore[arg-type]
+            channel,
+            on_client_state=_state,
+        )
+
+    asyncio.run(_run())
+    websocket.send_text.assert_not_awaited()
+    websocket.close.assert_any_await(code=1009)
