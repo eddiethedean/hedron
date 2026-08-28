@@ -67,14 +67,12 @@ class PageSessionChannel:
         if (component_id, field) not in allowed:
             raise ValueError(f"undeclared client read {component_id}.{field}")
 
-    def encode_region_update(self, update: RegionUpdate) -> ChannelMessage:
+    def _prepare_region_update(self, update: RegionUpdate) -> ChannelMessage:
         from hedron_core.htmx_contract import safe_hx_swap
 
         self.validate_region(update.region_id)
         if not safe_hx_swap(update.swap):
             raise ValueError(f"Unsafe HTMX swap value: {update.swap!r}")
-        if self.messages_sent >= self.budget.max_messages:
-            raise RuntimeError("channel message budget exhausted")
         encoded = ChannelMessage(
             kind="region-update",
             payload={
@@ -86,10 +84,20 @@ class PageSessionChannel:
         size = len(update.html.encode("utf-8"))
         if size > self.budget.max_message_bytes:
             raise ValueError("region update exceeds max_message_bytes")
+        return encoded
+
+    def encode_region_update(self, update: RegionUpdate) -> ChannelMessage:
+        encoded = self._prepare_region_update(update)
+        if self.messages_sent >= self.budget.max_messages:
+            raise RuntimeError("channel message budget exhausted")
         self.messages_sent += 1
         return encoded
 
     def batch_updates(self, updates: Sequence[RegionUpdate]) -> list[ChannelMessage]:
         if len(updates) > self.budget.max_batch:
             raise ValueError("batch exceeds max_batch")
-        return [self.encode_region_update(update) for update in updates]
+        encoded = [self._prepare_region_update(update) for update in updates]
+        if self.messages_sent + len(encoded) > self.budget.max_messages:
+            raise RuntimeError("channel message budget exhausted")
+        self.messages_sent += len(encoded)
+        return encoded
