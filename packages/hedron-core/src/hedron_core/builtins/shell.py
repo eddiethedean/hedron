@@ -186,7 +186,7 @@ class HtmxLinkProps(ElementProps):
     external: bool = False
     preload: str | None = None
     leading_icon: str | None = None
-    attrs: dict[str, HtmlAttrValue] = {}
+    attrs: dict[str, HtmlAttrValue] | None = None
 
 
 class HtmxLink(Component[HtmxLinkProps]):
@@ -296,7 +296,7 @@ class HtmxLink(Component[HtmxLinkProps]):
 
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {"href": self.props.href}
-        attrs.update(self.props.attrs)
+        attrs.update(self.props.attrs or {})
         method = self.props.method.lower()
         path = str(self.props.href)
         # External links are plain navigation; do not emit hx-* absolute URLs

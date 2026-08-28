@@ -7,6 +7,7 @@ from typing import ClassVar, Literal
 
 from hedron_core.alpine import AlpineAttrs
 from hedron_core.builtins._base import class_names, collect_children, dom_id_part
+from hedron_core.builtins.style_scope import presentation_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.csrf_strategy import CsrfTokenProvider, resolve_csrf_field_values
 from hedron_core.html import html
@@ -17,7 +18,6 @@ from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
-from hedron_core.builtins.style_scope import presentation_data
 
 _HX_SELECTOR_ATTRS = frozenset(
     {"hx-target", "hx-select", "hx-select-oob", "hx-indicator", "hx-disabled-elt"}

@@ -66,7 +66,7 @@ export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-0}"
 export PYTHONDONTWRITEBYTECODE="${PYTHONDONTWRITEBYTECODE:-1}"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.67.0}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-1.0.0}"
 CI_PYTHONS=(3.11 3.12 3.13 3.14)
 PYTHON_EXPLICIT=0
 ALL_PYTHONS=0
@@ -385,13 +385,13 @@ assert sample_kit_version
 # Adapter wheels must import without requiring FastAPI in the smoke path.
 import hedron_flask
 import hedron_django
-import hedron_workbench
+import hedron_posit
 from hedron_core import SecurityPolicy
 
 assert hedron_flask.HedronFlask is not None
 assert hedron_django.HedronSecurityHeadersMiddleware is not None
-assert hedron_workbench.workbenchify is not None
-assert issubclass(hedron_workbench.HedronWorkbench, Hedron)
+assert hedron_posit.workbenchify is not None
+assert issubclass(hedron_posit.HedronPosit, Hedron)
 assert "Content-Security-Policy" in SecurityPolicy.from_name("standard").response_headers()
 print("ok: prospective Hedron workspace wheels install and import cleanly")
 PY
@@ -550,12 +550,12 @@ cmd_workbench_bounds() {
   uv venv "$venv" --python "$PYTHON" --clear
   if [[ "$bounds" == minimum ]]; then
     uv pip install --python "$venv/bin/python" \
-      -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
+      -e packages/hedron-core -e packages/hedron -e packages/fastapi-workbench -e packages/hedron-posit \
       -e packages/hedron-django \
       pytest pytest-xdist httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
   else
     uv pip install --python "$venv/bin/python" \
-      -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
+      -e packages/hedron-core -e packages/hedron -e packages/fastapi-workbench -e packages/hedron-posit \
       -e packages/hedron-django \
       pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
   fi
@@ -589,6 +589,13 @@ evidence_gates() {
 }
 
 evidence_verify_pkgs() {
+  if [[ "$GATE_VERSION" == "1.0.0" ]]; then
+    # 1.0 has a consolidated release packet; predecessor verifiers encode
+    # their historical package versions and are covered by their own release
+    # workflows rather than the current 1.0 evidence job.
+    run_py scripts/check_100.py --check-plan
+    return 0
+  fi
   run_py scripts/verify_pkg_34.py --allow-planned
   run_py scripts/verify_pkg_35.py --allow-planned
   # `all` already ran 36–47 during quality; skip the second verification pass.

@@ -8,10 +8,10 @@ from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import (
+    OVERFLOW_MODES,
+    TRACKING,
     TYPE_EFFECTS,
     TYPE_MEASURES,
-    TRACKING,
-    OVERFLOW_MODES,
     Density,
     TypographyEffect,
     TypographyMeasure,
