@@ -6,8 +6,8 @@ Package: [`hedron-posit`](https://pypi.org/project/hedron-posit/).
 [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
 [#522](https://github.com/eddiethedean/hedron/issues/522). Companions
 [#508](https://github.com/eddiethedean/hedron/issues/508)–[#513](https://github.com/eddiethedean/hedron/issues/513).
-Living tip is `v0.66.2` (in-tree and on PyPI). Stage 1 ships the
-deployment lifecycle symbols below.
+The verified repository tip is `v1.0.0`; PyPI continues to serve `v0.66.2`
+until publication. The deployment lifecycle symbols below ship on both lines.
 
 ## Shipped 0.52 surface
 

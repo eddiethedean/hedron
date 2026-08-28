@@ -58,7 +58,8 @@ Timebox a spike before a team commitment. Stop early if a go/no-go row fails.
 [What’s ready](whats-ready.md) Supported rows cover your must-haves, you accept Beta API
 churn and polling for live status.
 
-**No-go / defer:** need SLA or scheduled 1.0; need live SSE/WS as Supported; need
+**No-go / defer:** need a commercial SLA or 1.0 already resolvable from the public index;
+need live SSE/WS as Supported; need
 human AT evidence as Supported; team will not own FastAPI+HTMX literacy.
 
 ## Capability matrix

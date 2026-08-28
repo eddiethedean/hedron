@@ -1,6 +1,6 @@
-# Security control plane APIs (0.56)
+# Security control plane APIs
 
-Phase 0.56 adds opt-in `beta` security control-plane contracts under
+Available as `beta` contracts on 1.0; introduced in phase 0.56 under
 `hedron_core.security_plane` (re-exported as `hedron.security_plane` for FastAPI
 apps). See
 [RFC-0083](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0083-SECURITY-CONTROL-PLANE.md).
@@ -22,7 +22,7 @@ Compatibility: existing `SafeUrl`, `TrustedHtml`, `Secret`, CSRF, and 0.55
 replay/capability/upload APIs retain documented paths and delegate to shared
 authorities where applicable.
 
-Pin and maturity follow the living **.1.0.x** train; new symbols are `beta` for
+Pin and maturity follow the current **1.0.x** train; new symbols are `beta` for
 their first release.
 
 ## Example

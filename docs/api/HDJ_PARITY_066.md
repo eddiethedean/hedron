@@ -1,4 +1,6 @@
-# App-scoped HDJ binding (0.66)
+# App-scoped HDJ binding
+
+This 1.0 surface was completed during the 0.66 HDJ parity work.
 
 Use a frozen binding when templates need registered handles or registry-backed application facts:
 

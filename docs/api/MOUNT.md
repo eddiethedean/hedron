@@ -4,7 +4,8 @@
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
     Mount helpers are part of the production security floor (0.20+) and remain on the
-    living **.1.0.x** train. Package maturity remains **Beta** — pin versions.
+    current **1.0.x** train. Coordinated package maturity is **Stable** in 1.0;
+    public-index users should keep the documented 0.66 pin until publication.
 
 **Status:** Shipped · public exports from `hedron`
 

@@ -180,6 +180,28 @@ INTERNAL_DOC_NAMES = {
 }
 HISTORICAL_PREFIXES = ("whats-new-0.", "RELEASE_0_")
 
+# A verified repository candidate may be absent from PyPI, but maintained pages
+# must not collapse those two facts into either "not implemented" or "on PyPI".
+RELEASE_CANDIDATE_CONTRADICTION = re.compile(
+    r"(?:"
+    r"\b1\.0(?:\.0|\.x)?[^\n]{0,120}\b(?:not implemented|implementation pending|"
+    r"release evidence pending)\b|"
+    r"\bv?1\.0\.0[^\n]{0,100}\b(?:on PyPI|published on PyPI|in-tree and on PyPI)\b|"
+    r"(?<!\d)\.1\.0\.x\b"
+    r")",
+    re.IGNORECASE,
+)
+HISTORICAL_RELEASE_BANNER = "Historical release note"
+SECTION_LANDINGS = {
+    Path("docs/index.md"): "guides/current-release.md",
+    Path("docs/getting-started/index.md"): "installation.md",
+    Path("docs/guides/index.md"): "current-release.md",
+    Path("docs/examples/index.md"): "../guides/current-release.md",
+    Path("docs/api/README.md"): "../guides/current-release.md",
+    Path("docs/packages/index.md"): "installation.md",
+    Path("docs/components/index.md"): "../guides/current-release.md",
+}
+
 
 def _is_historical(path: Path) -> bool:
     return (
@@ -187,6 +209,46 @@ def _is_historical(path: Path) -> bool:
         or path.name in INTERNAL_DOC_NAMES
         or path.name.startswith(HISTORICAL_PREFIXES)
     )
+
+
+def check_release_candidate_status(path: Path, text: str) -> list[str]:
+    """Reject contradictory 1.0 implementation/registry claims on maintained pages."""
+    if _is_historical(path):
+        return []
+    failures: list[str] = []
+    for index, line in enumerate(text.splitlines(), start=1):
+        if RELEASE_CANDIDATE_CONTRADICTION.search(line):
+            failures.append(
+                f"{path}:{index}: contradictory 1.0 candidate status: {line.strip()}"
+            )
+    return failures
+
+
+def check_historical_release_banner(path: Path, text: str) -> list[str]:
+    """Historical What's New pages must point readers back to the living SSOT."""
+    required = (HISTORICAL_RELEASE_BANNER, "current-release.md")
+    missing = [marker for marker in required if marker not in text]
+    if not missing:
+        return []
+    return [
+        f"{path}: historical release page is missing {', '.join(missing)}"
+    ]
+
+
+def check_section_landing(
+    path: Path,
+    text: str,
+    facts: ReleaseFacts = FACTS,
+) -> list[str]:
+    """Every reader-facing section landing must expose its 1.0 release context."""
+    target = SECTION_LANDINGS.get(path)
+    if target is None:
+        return []
+    required = (facts.train, target)
+    missing = [marker for marker in required if marker not in text]
+    if not missing:
+        return []
+    return [f"{path}: section landing is missing {', '.join(missing)}"]
 
 
 def adopter_files() -> list[Path]:
@@ -741,13 +803,17 @@ def main() -> int:
             evaluate_text = text
         failures.extend(check_text(relative, text))
         failures.extend(check_in_tree_deferred_boilerplate(relative, text))
+        failures.extend(check_release_candidate_status(relative, text))
+        failures.extend(check_section_landing(relative, text))
     # Historical release pages may keep their original install commands, but any
     # explicit current/living pointer on those pages must track release.toml.
     for path in sorted((ROOT / "docs" / "guides").glob("whats-new-0.*.md")):
         relative = path.relative_to(ROOT)
+        historical_text = path.read_text(encoding="utf-8")
         failures.extend(
-            check_text(relative, path.read_text(encoding="utf-8"), check_installs=False)
+            check_text(relative, historical_text, check_installs=False)
         )
+        failures.extend(check_historical_release_banner(relative, historical_text))
     failures.extend(check_first_run_registry_honesty(honesty_texts))
     failures.extend(check_tip_honesty(tip_texts))
     if evaluate_text is None:

@@ -1,11 +1,12 @@
 ---
-status: draft
+status: verified
 ---
 
 # Edron 0.1 capability inventories
 
-**Status:** Stage 0 design inventory; Edron is not implemented or published<br>
-**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Status:** Historical 0.1 design inventory, implemented and verified through Edron `0.9.1`<br>
+**Current target:** Edron `0.9.1`; Hedron `>=0.67.0,<2.0`; publication pending<br>
+**Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](../api/EDRON.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](../api/EDRON_STATE_INTERACTION.md)<br>
@@ -15,8 +16,8 @@ status: draft
 **Architecture:** [RFC-0094](../rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Fixtures:** [Edron golden applications](EDRON_GOLDEN_APPS.md)
 
-These inventories account for the complete proposed Edron 0.1 capability set before coding. They
-answer five separate questions that a flat feature checklist would conflate:
+These inventories record the original Edron 0.1 capability set used to authorize and trace the
+implemented facade. They answer five separate questions that a flat feature checklist would conflate:
 
 1. What does a beginner get from plain `pip install edron`?
 2. What Edron vocabulary is planned, and what exact native authority does it lower to?
@@ -54,8 +55,9 @@ Python spelling while the exact output/route/interaction authority is native.
 | `N/A` | Packaging or pure facade behavior has no missing native primitive |
 | `Deferred` | No 0.1 implementation is planned |
 
-All non-deferred Edron rows are **design-only** today. `Ready` never means the Edron implementation
-exists, and it never promotes a native Experimental object to Supported.
+The original disposition records remain historical traceability. Current implementation and
+maturity are governed by the 0.9 public API, roadmap, package metadata, and acceptance packet;
+`Ready` in this inventory never promotes a native Experimental object to Supported.
 
 ### Installation class
 

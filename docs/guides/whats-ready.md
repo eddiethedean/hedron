@@ -3,10 +3,10 @@
 **Ship today (pinned CRUD / admin on FastAPI, Flask, or Django):** pages, HTMX
 fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
-screen-reader claims. Packages are **Beta**. There is no SLA; the Stage 0 Refined 1.0 cut has no
-scheduled release date and is not implemented.
+screen-reader claims. The coordinated 1.0 packages are **Stable** for the enumerated stable
+inventory; independent satellites retain their own Beta/tooling labels. There is no SLA.
 
-This page is the **adopter** maturity summary for the stable **0.66.x** train
+This page is the **adopter** maturity summary for the verified **1.0.x** repository train
 ([Current release and support](current-release.md)). Full capability matrices and
 maintainer gate notes:
 [What’s ready — evidence](whats-ready-evidence.md).
@@ -27,8 +27,10 @@ maintainer gate notes:
 | **Experimental** | Public; may change; prefer documented fallbacks (usually polling) |
 | **Deferred** | Documented, not ready — do not treat as Supported |
 
-The stable release is **0.66.2**. The **0.67.0** train is Beta preview-only. Package maturity, capability readiness, API compatibility, and
-package maturity are three axes — [Maturity labels](../getting-started/how-to-read.md).
+The repository candidate is **1.0.0**; PyPI still serves **0.66.2** until publication.
+The **0.67.0** train is the immutable migration baseline. Package maturity, capability
+readiness, and API compatibility are separate axes —
+[Maturity labels](../getting-started/how-to-read.md).
 
 Human accessibility testing protocol engineering is on the train; **compensated
 screen-reader sessions are not Supported yet**.
@@ -85,7 +87,7 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
     uvicorn app:app --reload
     ```
 
-Pin the stable release: `hedron>=0.66.2,<0.67`. Extras and public-index notes:
+Pin the registry-resolvable release: `hedron>=0.66.2,<0.67`. Extras and public-index notes:
 [Installation](../getting-started/installation.md). Sample kit:
 `hedron-sample-kit>=0.2.2,<0.3`.
 

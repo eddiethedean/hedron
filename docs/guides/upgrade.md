@@ -280,7 +280,8 @@ Public-index notes: [Installation](../getting-started/installation.md).
    exact-origin allowlists; empty prefixes fail closed.
 6. **Generated list views page.** `DataWorkspace` list routes honor `offset` / `limit` /
    `sort` / `q` and allowlisted field filters.
-7. **MCP authorize isolation.** Pin `hedron-mcp>=0.2.1,<0.3` (or `hedron[mcp]`) so a second
+7. **MCP authorize isolation.** Pin `hedron-mcp>=0.2.3,<0.3` with coordinated 1.0
+   artifacts (or use the public `hedron[mcp]>=0.66.2,<0.67` pin until publication) so a second
    `McpExposure.apply` cannot overwrite the first tool's authorize hook.
 
 ## Behavioral notes (0.45 → 0.46)

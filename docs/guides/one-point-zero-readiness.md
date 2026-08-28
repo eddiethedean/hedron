@@ -26,7 +26,7 @@ packet. PyPI still serves `0.66.2` until the release workflow completes.
 |---|---|
 | Technical debt | Tip≠PyPI; undeclared optional edges; stale remediation narrative; root experimental shims |
 | Over-engineering | Historical `verify_pkg_*` forever on PR quality; extras combinatorics; ROADMAP mega-ledger |
-| Under-engineering | Human AT sessions Planned; production plugin discover-all default; symbol→tier mapping incomplete |
+| Under-engineering | Human AT sessions remain outstanding; some advanced symbol→tier documentation remains intentionally narrow |
 | Leaky abstractions | Root/`hedron_core` kitchen-sink exports; satellites importing FastAPI `hedron` |
 | Scaling risks | Every phase adds permanent CI cost; soft FastAPI coupling spreads with each satellite |
 
@@ -50,8 +50,8 @@ packet. PyPI still serves `0.66.2` until the release workflow completes.
    still gates the canonical widgets.
 7. **Process prune — release gate:** Archive old packets; PR CI runs tip + recent only; generated
    remediation truth instead of stale issue tables.
-8. **Package maturity — release gate:** Flagship + claimed adapters move Beta → Stable on PyPI for the
-   **frozen inventory only**.
+8. **Package maturity — verified:** Flagship + claimed adapters are Stable in package metadata for
+   the **frozen inventory only**; PyPI publication remains the final controlled release action.
 
 ## Can wait until 2.0
 

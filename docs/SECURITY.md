@@ -50,7 +50,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes target the current stable repository train (`0.66.x`); see Supported versions above.
+4. Fixes target the current repository train (`1.0.x`); see Supported versions above.
 
 ### Alternate contact
 

@@ -1,6 +1,6 @@
 # Inference, model demos, and workflows
 
-**Status:** Shipped on the **0.18.0** train · RFCs 0045–0050 · Evidence
+**Status:** Available on 1.0 (introduced on the **0.18.0** train) · RFCs 0045–0050 · Evidence
 [release-gate-0.18.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.18.toml)
 
 Adopter guide: [Model demos](../guides/model-demos.md) · Gradio Beta client interop:

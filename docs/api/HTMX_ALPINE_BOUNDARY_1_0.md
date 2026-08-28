@@ -1,12 +1,13 @@
 # Hedron 1.0 HTMX/Alpine boundary
 
-**Status:** Planned normative contract for Hedron 1.0; previewed by 0.67  
-**Decisions:** D-114 / D-115 / D-116  
+**Status:** Verified normative contract for Hedron 1.0; implemented from the 0.67 preview
+**Decisions:** D-114 / D-115 / D-116 / D-117
 **Owning RFCs:**
 [RFC-0095](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md)
 and
 [RFC-0096](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md)  
-**0.67 gate:** `FREEZE-067`, `INTERACTION-067`, `HTMX-067`, `STATE-067`, `FAILURE-067`
+**Evidence:** `FREEZE-067`, `INTERACTION-067`, `HTMX-067`, `STATE-067`, `FAILURE-067`,
+and `INTERACTION-100`
 
 This contract defines the authority boundary between HTMX and Alpine in Hedron 1.0. Its central
 rule is:

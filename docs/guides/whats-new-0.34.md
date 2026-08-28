@@ -1,5 +1,11 @@
 # What's new in Hedron 0.34
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 **Published** as `v0.34.0`. Historical pin: `hedron>=0.34.0,<0.35`.
 For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).
 

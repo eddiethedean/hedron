@@ -11,7 +11,7 @@ status: experimental
     **experimental** (`hedron.experimental`) under Accepted 0.24 **`polling_only`**
     ([LIVE_DISPOSITION](LIVE_DISPOSITION.md)). Prefer polling in production.
 
-**Status:** Shipped in `0.10.0` (experimental)
+**Status:** Experimental on 1.0 (introduced in `0.10.0`)
 
 Helpers: `accept_page_session_channel`, `send_region_update`, `origin_allowed`,
 `ALLOW_MISSING_ORIGIN` — import from `hedron.experimental`. Channel models live in

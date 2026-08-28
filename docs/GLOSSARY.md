@@ -11,9 +11,10 @@ Use the pin the package index can resolve.
 **Train** — A minor version line (`0.46.x`). Compatible patches stay inside the pin;
 the next train is an intentional upgrade.
 
-**Published** — A cut available on the current train. The repository’s published cut is
-`v1.0.0` on PyPI. The `v0.67.0` train is Beta. Pin the latest stable upper-bounded install constraint for reproducible
-installs.
+**Published** — A cut available through the named distribution channel. The repository contains
+the verified `v1.0.0` release candidate, while PyPI still serves `v0.66.2` until publication.
+`v0.67.0` is the immutable migration baseline. Pin the latest registry-resolvable upper-bounded
+constraint for reproducible installs.
 
 **Action** — A typed server operation with an HTTP method, input contract, dependencies, and response behavior.
 
@@ -74,12 +75,13 @@ sandbox for hostile authors.
 
 ## Maturity vocabulary
 
-**Train** — A coordinated package version line (for example `0.25.x` / tag `v0.25.0`) that
-adopters pin together. “Living train” means the current stable published line (`1.0.x`).
+**Train** — A coordinated package version line (for example `1.0.x` / candidate
+`v1.0.0`) that adopters pin together. “Living train” means the current repository line;
+the public registry can lag during a controlled release.
 
-**Package maturity (Beta / Alpha)** — PyPI packaging readiness. **Beta** flagship packages
-are pin-for-production; **Alpha** packages expect more churn. Not the same as capability
-readiness or API `stable`.
+**Package maturity (Stable / Beta / Alpha)** — Distribution readiness. The coordinated
+1.0 inventory is **Stable**; independent satellites retain their own Beta or tooling-grade
+classifications. This is not the same as capability readiness or API `stable`.
 
 **Supported** — Capability readiness: works on the current train when pinned. **Not** a
 commercial SLA and **not** the same as API compatibility level `stable`.

@@ -3,15 +3,41 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 1.0.0 — 2026-08-27 (repository candidate)
+
+Verified release candidate for the first SemVer-stable Hedron train. The Git tag and PyPI
+publication remain maintainer-controlled; PyPI continues to serve `v0.66.2` until that workflow
+completes.
+
+### Changed
+
+- Canonical application roles are `@app.page`, `@app.view`, and `@app.action`; feature
+  composition uses `app.include(...)`.
+- The stable API boundary is an enumerated, machine-checked inventory rather than the full import
+  surface.
+- The HTMX/Alpine/Web Component authority and lifecycle boundary is normative.
+- Coordinated packages move to `1.0.0`; independent satellites keep their own versions.
+- `hedron-workbench` and `hedron[workbench]` were removed. Use `hedron-posit` or
+  `fastapi-workbench` according to the host application.
+
+### Migration
+
+- Static `hedron check --target 1.0` findings cover removed 0.67 authoring spellings.
+- `hedron migrate api --target 1.0` performs conservative, non-executing source migration into a
+  new output tree.
+- The immutable `v0.67.0` baseline/current bridge and all 17 1.0 release gates are Verified.
+
+See [What’s new in 1.0](whats-new-1.0.md) and [Upgrade to 1.0](upgrade.md).
+
 ## 0.67.0 Beta — 2026-08-27
 
-Beta release candidate for Phase 0.67. The stable predecessor remains `v0.66.2`.
+Immutable migration baseline for 1.0. The public PyPI predecessor remains `v0.66.2`.
 This release adds demand-driven Alpine browser enhancement, typed browser-plan closure,
 unified local/request/combined interaction contracts, lifecycle handoff, explicit failure
 behavior, and the verified 0.67 acceptance packet.
 
-Beta evaluation pin: `hedron>=0.67.0,<0.68`. Production applications should remain on
-the stable pin `hedron>=0.66.2,<0.67` until the beta is formally published.
+Historical evaluation pin: `hedron>=0.67.0,<0.68`. New source should target the canonical 1.0
+roles; public-index applications remain on `hedron>=0.66.2,<0.67` until 1.0 publication.
 
 ## 0.64.0 — 2026-08-24 (in-tree)
 

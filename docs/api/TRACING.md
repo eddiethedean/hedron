@@ -8,10 +8,11 @@ status: shipped
 
     Classifications live in [STABILITY.md](STABILITY.md). Optional tracing is a
     **Supported** optional capability via `hedron[otel]` / `hedron.tracing` on the
-    current train. Package maturity remains **Beta** — pin versions. Disabled by
+    current train. The coordinated package is Stable; this optional API retains its
+    documented level. Disabled by
     default; exporter absence must not change component semantics.
 
-**Status:** Shipped in `0.13.0`
+**Status:** Available on 1.0 (introduced in `0.13.0`)
 
 ## Install
 

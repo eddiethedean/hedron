@@ -1,4 +1,4 @@
-# Notebook preview (0.54)
+# Notebook preview
 
 `hedron-notebook` remains **localhost-only / tooling-grade**. It is not a
 Supported production server.

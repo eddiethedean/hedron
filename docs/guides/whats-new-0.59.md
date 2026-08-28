@@ -6,6 +6,12 @@ search:
 
 # What's new in 0.59
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Hedron 0.59 is the modern CSS platform release. It keeps the 0.58 public markers and responsive
 defaults while adding explicit, opt-in capabilities for component-width layouts, theme variants,
 control attributes, logical overlay placement, print, and preference-aware presentation.

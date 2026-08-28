@@ -1,6 +1,6 @@
 # RFC-0096: Hedron 1.0 interface and HTMX/Alpine interaction consolidation
 
-**Status:** Accepted / Stage 0 Refined; implementation pending
+**Status:** Accepted, implemented, and verified as the `v1.0.0` repository candidate; publication pending
 **Target:** `v1.0.0`, after `v0.67.0` Alpine integration is Verified  
 **Decision:** D-114, refined by D-115 / D-116 / D-117
 **Capability baseline:** Hedron `v0.67.0`; no net-new Required runtime capability  
@@ -25,7 +25,7 @@ and the 0.67 compatibility inventory
 [RELEASE_1_0](../acceptance/RELEASE_1_0.md) ·
 [release-gate-1.0.toml](../acceptance/release-gate-1.0.toml)
 
-**Stage 0 revision (2026-08-27):** D-117 rebases the cut plan on Verified Beta `v0.67.0`,
+**Stage 0 revision (2026-08-27):** D-117 rebased the cut plan on Verified Beta `v0.67.0`,
 defines the subtractive release/package/maturity/support boundary, records the incomplete warning
 registry as an explicit W0 blocker, and freezes 17 Planned release gates plus dual-version upgrade
 fixtures. It changes no runtime, package version, maturity classifier, or release claim.

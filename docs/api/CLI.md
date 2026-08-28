@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped in 0.4**
+**Status:** Stable 1.0 command surface; advanced commands retain their documented levels
 
 Entry points: console script `hedron` → `hedron.cli:main`, and
 **`python -m hedron`** (same CLI; PATH-independent).

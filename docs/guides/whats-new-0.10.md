@@ -1,5 +1,11 @@
 # What's new in 0.10
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 The coordinated **`0.10.1`** train (initial cut `0.10.0`) adds live interaction on top of the 0.9 HDJ authoring
 line. Full detail: [What's ready](whats-ready.md) · [Upgrade](upgrade.md) ·
 [Live interaction](live-interaction.md).
