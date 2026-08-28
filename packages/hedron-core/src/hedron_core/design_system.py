@@ -398,6 +398,8 @@ def _theme_summary(theme: Theme) -> dict[str, object]:
         "density": theme.density,
         "shape": dict(sorted(theme.shape.items())),
         "nav_width": theme.nav_width,
+        "content_width": theme.content_width,
+        "typography_features": dict(sorted(theme.typography_features.items())),
         "elevation": dict(sorted(theme.elevation.items())),
         "parent": theme.parent,
     }
@@ -823,6 +825,7 @@ class DesignSystem:
         elevation: ElevationPreset = "subtle",
         motion: MotionPreset = "standard",
         navigation: NavigationPreset = "default",
+        content_width: str = "default",
         recipes: Sequence[StyleRecipe] = (),
     ) -> DesignSystem:
         design_name = _normalize_name(name, label="design")
@@ -842,6 +845,13 @@ class DesignSystem:
                 remediation="Pass a safe absolute color such as '#2f6fed' or Color.oklch(...).",
             ) from exc
         require_choice(density, DENSITIES, label="density")
+        if content_width not in ("narrow", "default", "wide", "full"):
+            raise error(
+                HED_DESIGN_0001,
+                title="Invalid content width preset",
+                explanation=f"content_width={content_width!r} is not supported.",
+                remediation="Use narrow, default, wide, or full.",
+            )
         if geometry not in _GEOMETRY_SHAPE:
             raise error(
                 HED_DESIGN_0001,
@@ -920,6 +930,7 @@ class DesignSystem:
                 density=density,
                 shape=dict(_GEOMETRY_SHAPE[geometry]),
                 nav_width=_NAV_WIDTH[navigation],
+                content_width=content_width,
                 elevation=dict(_ELEVATION_MAP[elevation]),
                 parent=base_theme.name,
             )
@@ -1026,6 +1037,7 @@ class DesignSystem:
                 "elevation": elevation,
                 "motion": motion,
                 "navigation": navigation,
+                "content_width": content_width,
             },
             groups=groups,
             provenance=tuple(provenance),
@@ -1063,6 +1075,12 @@ class DesignSystem:
                 for key, value in (
                     ("density", theme.density),
                     ("nav_width", theme.nav_width),
+                    ("content_width", theme.content_width),
+                    (
+                        "typography_features",
+                        ",".join(f"{k}={v}" for k, v in sorted(theme.typography_features.items()))
+                        or None,
+                    ),
                 )
                 if value is not None
             },

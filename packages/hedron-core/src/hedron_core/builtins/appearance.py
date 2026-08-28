@@ -29,6 +29,7 @@ __all__ = [
     "SIZES",
     "STATE_KINDS",
     "TRACKS",
+    "TRACKING",
     "TYPOGRAPHY_ROLES",
     "TYPE_EFFECTS",
     "TYPE_MEASURES",
@@ -86,6 +87,7 @@ CONTENT_WIDTHS: tuple[str, ...] = ("narrow", "default", "wide", "full")
 WIDTHS: tuple[str, ...] = ("content", "field", "full")
 OVERFLOW_MODES: tuple[str, ...] = ("wrap", "break", "truncate", "clip")
 TRACKS: tuple[str, ...] = ("narrow", "default", "wide", "fluid")
+TRACKING: tuple[str, ...] = ("tight", "normal", "loose")
 RESPONSIVE_POLICIES: tuple[str, ...] = ("scroll", "stack", "priority")
 PADDINGS: tuple[str, ...] = ("none", "sm", "md", "lg")
 ELEVATIONS: tuple[str, ...] = ("none", "sm", "md", "lg")

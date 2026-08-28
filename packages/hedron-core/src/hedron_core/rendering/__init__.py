@@ -404,10 +404,29 @@ def _render_component(
 
         render_key = str(identity.get("key", auto_key))
         token = _push_render_identity(instance, render_key)
+        style_token = None
         try:
+            style_context = getattr(component, "style_context", None)
+            if style_context is not None:
+                from hedron_core.builtins.style_scope import (
+                    current_style_context,
+                    push_style_context,
+                )
+
+                parent_context = current_style_context()
+                if parent_context is not None and style_context.parent is None:
+                    from dataclasses import replace
+
+                    style_context = replace(style_context, parent=parent_context)
+
+                style_token = push_style_context(style_context)
             rendered = component.render()
             children = _normalize(rendered, state, depth=depth + 1)
         finally:
+            if style_token is not None:
+                from hedron_core.builtins.style_scope import pop_style_context
+
+                pop_style_context(style_token)
             _pop_render_identity(token)
         return (
             ComponentBoundaryNode(

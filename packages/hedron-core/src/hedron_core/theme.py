@@ -88,6 +88,13 @@ PRINT_SAFE_TOKENS: tuple[str, ...] = (
 # Mirrors the shared appearance vocabulary in
 # ``hedron_core.builtins.appearance`` without importing the built-ins package.
 THEME_DENSITIES: tuple[str, ...] = ("compact", "comfortable", "spacious")
+THEME_CONTENT_WIDTHS: tuple[str, ...] = ("narrow", "default", "wide", "full")
+_CONTENT_WIDTH_VALUES: dict[str, str] = {
+    "narrow": "52rem",
+    "default": "74rem",
+    "wide": "88rem",
+    "full": "100%",
+}
 
 # Overlays, popovers, and toasts resolve stacking through these tokens so no
 # application CSS is required to place chrome above content. Themes override an
@@ -298,7 +305,7 @@ class Theme:
     """Python-native application design system.
 
     ``tokens``/``modes``/``variants`` are the phase 0.9 semantic contract.
-    ``palette``, ``density``, ``shape``, ``nav_width``, and ``elevation`` are the
+    ``palette``, ``density``, ``shape``, ``nav_width``, ``content_width``, and ``elevation`` are the
     optional 0.54 design-system fields; each is emitted as CSS custom properties
     by :func:`emit_theme_css`. ``parent`` records the theme this one was derived
     from via :meth:`extend`.
@@ -312,6 +319,8 @@ class Theme:
     density: str | None = None
     shape: Mapping[str, str] = field(default_factory=dict)
     nav_width: str | None = None
+    content_width: str | None = None
+    typography_features: Mapping[str, int] = field(default_factory=dict)
     elevation: Mapping[str, str] = field(default_factory=dict)
     parent: str | None = None
     accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
@@ -370,6 +379,30 @@ class Theme:
                 explanation=f"nav_width={self.nav_width!r} is not a safe CSS length.",
                 remediation="Use a length such as '15rem' or '240px'.",
             )
+        if self.content_width is not None:
+            value = self.content_width.strip()
+            if value not in THEME_CONTENT_WIDTHS and not _LENGTH_VALUE.match(value):
+                raise error(
+                    HED_THEME_INVALID,
+                    title="Invalid theme content_width",
+                    explanation=f"content_width={self.content_width!r} is not a supported preset or CSS length.",
+                    remediation="Use narrow, default, wide, full, or a safe CSS length.",
+                )
+        for tag, value in self.typography_features.items():
+            if not re.fullmatch(r"[A-Za-z0-9]{4}", str(tag)):
+                raise error(
+                    HED_THEME_INVALID,
+                    title="Invalid OpenType feature tag",
+                    explanation=f"Feature tag {tag!r} must contain exactly four ASCII letters/digits.",
+                    remediation="Use tags such as 'tnum' or 'cv02'.",
+                )
+            if not isinstance(value, int) or value < 0 or value > 99:
+                raise error(
+                    HED_THEME_INVALID,
+                    title="Invalid OpenType feature value",
+                    explanation=f"Feature {tag!r} value must be an integer from 0 to 99.",
+                    remediation="Pass 0/1 for boolean features or a bounded stylistic-set value.",
+                )
         if self.parent is not None and (
             not self.parent or not self.parent.replace("-", "").replace("_", "").isalnum()
         ):
@@ -402,6 +435,8 @@ class Theme:
         density: str | None = None,
         shape: Mapping[str, str] | None = None,
         nav_width: str | None = None,
+        content_width: str | None = None,
+        typography_features: Mapping[str, int] | None = None,
         elevation: Mapping[str, str] | None = None,
         accessibility_modes: Mapping[str, Mapping[str, str]] | None = None,
     ) -> Theme:
@@ -440,6 +475,11 @@ class Theme:
             density=self.density if density is None else density,
             shape={**dict(self.shape), **dict(shape or {})},
             nav_width=self.nav_width if nav_width is None else nav_width,
+            content_width=self.content_width if content_width is None else content_width,
+            typography_features={
+                **dict(self.typography_features),
+                **dict(typography_features or {}),
+            },
             elevation={**dict(self.elevation), **dict(elevation or {})},
             parent=self.name,
             accessibility_modes=merged_accessibility,
@@ -604,6 +644,8 @@ def design_system_vars(theme: Theme) -> dict[str, str]:
         variables[f"--hedron-shape-{key.replace('.', '-')}"] = value
     if theme.nav_width:
         variables["--hedron-nav-width"] = theme.nav_width
+    for tag, value in sorted(theme.typography_features.items()):
+        variables[f"--hedron-font-feature-{tag}"] = str(value)
     overlays = {**OVERLAY_ELEVATION_TOKENS}
     extra: dict[str, str] = {}
     for key, value in theme.elevation.items():
@@ -739,8 +781,9 @@ def compatibility_theme_vars(theme: Theme) -> dict[str, str]:
     raised_fallback = elevation.get("raised", _DEFAULT_COMPATIBILITY_FALLBACKS["shadow-raised"])
     values["--hedron-default-shadow"] = f"var(--hedron-elevation-raised, {shadow_fallback})"
     values["--hedron-default-shadow-raised"] = f"var(--hedron-elevation-raised, {raised_fallback})"
-    values["--hedron-default-content-width"] = (
-        theme.nav_width or _DEFAULT_COMPATIBILITY_FALLBACKS["content-width"]
+    width = theme.content_width
+    values["--hedron-default-content-width"] = _CONTENT_WIDTH_VALUES.get(
+        width or "default", width or _DEFAULT_COMPATIBILITY_FALLBACKS["content-width"]
     )
     return values
 
