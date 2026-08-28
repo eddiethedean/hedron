@@ -200,6 +200,9 @@ def _exec_supervised(
             )
         )
     export_hedron_state(resolved)
+    # Never pass a full Workbench URL as Uvicorn's root_path during reload or
+    # worker supervision; the resolved public base is handed off separately.
+    os.environ.pop("UVICORN_ROOT_PATH", None)
     os.environ[_SUPERVISED_TARGET_ENV] = target
     os.environ[_SUPERVISED_FACTORY_ENV] = "1" if factory else "0"
     sock.set_inheritable(True)

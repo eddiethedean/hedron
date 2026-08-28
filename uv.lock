@@ -1530,7 +1530,7 @@ provides-extras = ["server"]
 
 [[package]]
 name = "hedron-posit"
-version = "0.67.0"
+version = "0.67.1"
 source = { editable = "packages/hedron-posit" }
 dependencies = [
     { name = "hedron" },

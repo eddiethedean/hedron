@@ -421,6 +421,7 @@ def _exec_supervised(
             )
         )
     export_workbench_state(resolved)
+    os.environ.pop("UVICORN_ROOT_PATH", None)
     os.environ[_SUPERVISED_TARGET_ENV] = target
     os.environ[_SUPERVISED_FACTORY_ENV] = "1" if factory else "0"
     sock.set_inheritable(True)

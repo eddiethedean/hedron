@@ -3,8 +3,11 @@
 Deploy plain FastAPI applications behind Posit Workbench / RStudio Server without
 installing Hedron.
 
-**Package:** `fastapi-workbench` `1.0.0` (independent semver) · import `fastapi_workbench`
+**Package:** `fastapi-workbench` `1.0.1` (independent semver) · import `fastapi_workbench`
 **Requires:** Python 3.11–3.14, FastAPI/Starlette ASGI app
+
+If `python3.11` is unavailable, use the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
+before creating the virtual environment. When finished, return to [Install](#install).
 
 Supported Workbench floor is **2025.05.1** (linux/amd64). Current verified lane is
 Workbench **2026.07.0**.
@@ -12,9 +15,10 @@ Workbench **2026.07.0**.
 ## Install
 
 ```bash
-pip install "fastapi-workbench>=1.0.0,<2.0" "fastapi" "uvicorn[standard]"
-# or
-uv add "fastapi-workbench>=1.0.0,<2.0" "fastapi" "uvicorn[standard]"
+python3.11 -m venv .venv
+source .venv/bin/activate
+python3.11 -m pip install --upgrade pip
+python3.11 -m pip install "fastapi-workbench>=1.0.1,<2.0" "fastapi" "uvicorn[standard]"
 ```
 
 ## Launch on Workbench

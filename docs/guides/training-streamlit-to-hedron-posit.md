@@ -8,9 +8,10 @@ Participants finish with a migrated sales dashboard that has validated URL filte
 server-rendered component tree, an allowlisted HTMX fragment, HTTP-level tests, and one
 application object that adapts to local, Workbench, and Connect environments.
 
-This workshop targets Hedron **0.50.x** (`hedron>=0.66.2,<0.67`) and Python **3.11–3.14**. Before scheduling it,
-check the current [capability matrix](whats-ready.md) and [compatibility guide](../COMPATIBILITY.md)
-against your Posit versions and internal package mirror.
+This workshop targets the current public Hedron **0.66.2** release
+(`hedron>=0.66.2,<0.67`) and Python **3.11–3.14**. The repository checkout is the **0.67.0** beta
+train. Before scheduling it, check the current [capability matrix](whats-ready.md) and
+[compatibility guide](../COMPATIBILITY.md) against your Posit versions and internal package mirror.
 
 ## Training at a glance
 
@@ -25,9 +26,9 @@ against your Posit versions and internal package mirror.
 | Final artifact | A tested Hedron sales dashboard prepared for Connect |
 | Recommended ratio | One facilitator or helper for every 10–12 participants |
 
-If Connect access is unavailable, complete Labs 0–4 and demonstrate Lab 5 from one
-facilitator account. The learning objectives do not depend on every participant publishing
-their own copy.
+If Connect access is unavailable, complete [Labs 0–4](#lab-4--test-the-http-contracts) and demonstrate
+[Lab 5](#lab-5--prepare-and-publish-to-posit-connect) from one facilitator account. The learning
+objectives do not depend on every participant publishing their own copy.
 
 ## Learning objectives
 
@@ -60,7 +61,9 @@ explicit response. See [Should you migrate?](streamlit-migration.md#should-you-m
 
 Complete this checklist several days before the session.
 
-- Verify Python 3.11–3.14 and `uv` are available in every participant environment.
+- Verify Python 3.11–3.14 and that participants can create and activate a project `venv`.
+- If `python3.11` is unavailable, use the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
+  before creating the virtual environment. When finished, return to [Facilitator preparation](#facilitator-preparation).
 - Confirm that the environment can install `hedron>=0.66.2,<0.67` and optional packages
   from PyPI or your approved internal package index.
 - On Workbench, verify that `RS_SERVER_URL` is present and `rserver-url` is executable.
@@ -87,16 +90,21 @@ session.
 
 Send participants these commands before the workshop:
 
+If a participant needs the Python fallback, send the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
+with these commands. When finished, return to [Participant prework](#participant-prework).
+
 ```bash
-python3 --version
-uv --version
-uvx --from "hedron>=0.66.2,<0.67" hedron --version
+python3.11 --version
+python3.11 -m venv .venv
+source .venv/bin/activate
+python3.11 -m pip install "hedron>=0.66.2,<0.67"
+hedron --version
 ```
 
 Expected results:
 
 - Python reports a version from 3.11 through 3.14;
-- `uv` and `hedron` print versions without an import or network error;
+- `hedron` prints its version without an import or network error;
 - on Workbench, `test -n "$RS_SERVER_URL"` succeeds.
 
 Ask participants to bring one small Streamlit workflow they may want to migrate. It should
@@ -164,9 +172,11 @@ Create a workshop directory and verify the target tools:
 ```bash
 mkdir hedron-training
 cd hedron-training
-python3 --version
-uv --version
-uvx --from "hedron>=0.66.2,<0.67" hedron --version
+python3.11 --version
+python3.11 -m venv .venv
+source .venv/bin/activate
+python3.11 -m pip install "hedron>=0.66.2,<0.67"
+hedron --version
 ```
 
 On Workbench, also run:
@@ -191,11 +201,15 @@ the facilitator records the infrastructure issue.
 From `hedron-training/`:
 
 ```bash
-uvx --from "hedron>=0.66.2,<0.67" hedron new hello-hedron
+hedron new hello-hedron
 cd hello-hedron
-uv sync
-uv add "hedron[posit]>=0.66.2,<0.67"
+python3.11 -m venv .venv
+source .venv/bin/activate
+python3.11 -m pip install -e . "hedron-posit>=0.67.0"
 ```
+
+Add `"hedron-posit>=0.67.0",` to the `dependencies` list in `pyproject.toml` so a fresh
+environment can reproduce the adapter installation.
 
 Open `app.py`. Replace `Hedron` in the import and constructor with `HedronPosit`:
 
@@ -219,7 +233,7 @@ The fallback secret is acceptable only for this local lab; Lab 5 removes it.
 ### 2. Inspect the resolved Posit mode
 
 ```bash
-uv run hedron-posit check --discover --format json
+hedron-posit check --discover --format json
 ```
 
 Outside Posit, expect `product` to be `inactive`. In Workbench, expect `product` to be
@@ -228,7 +242,7 @@ Outside Posit, expect `product` to be `inactive`. In Workbench, expect `product`
 ### 3. Run it
 
 ```bash
-uv run hedron-posit run app:app --port 8000 --reload
+hedron-posit run app:app --port 8000 --reload
 ```
 
 Locally, open `http://127.0.0.1:8000`. In Workbench, open port 8000 from the Proxied
@@ -254,7 +268,9 @@ network panel shows a small `/status` response rather than a full document.
 Stop the server with Ctrl+C, then return to the workshop root:
 
 ```bash
+deactivate
 cd ..
+source .venv/bin/activate
 ```
 
 ## Lab 2 — Migrate a Streamlit dashboard
@@ -314,7 +330,7 @@ You do not need to install Streamlit or pandas for the analyzer.
 From `hedron-training/`:
 
 ```bash
-uvx --from "hedron>=0.66.2,<0.67" hedron migrate streamlit \
+hedron migrate streamlit \
   streamlit-source/streamlit_app.py \
   --analyze-only \
   --format text
@@ -326,11 +342,13 @@ Ask which mappings are direct components and which require an architectural deci
 ### 3. Generate into a new directory
 
 ```bash
-uvx --from "hedron>=0.66.2,<0.67" hedron migrate streamlit \
+hedron migrate streamlit \
   streamlit-source/streamlit_app.py \
   --out sales-hedron
 cd sales-hedron
-uv sync
+python3.11 -m venv .venv
+source .venv/bin/activate
+python3.11 -m pip install -e .
 ```
 
 The command refuses to overwrite a non-empty destination. Inspect these files before
@@ -347,7 +365,7 @@ running the app:
 ### 4. Run and compare outcomes
 
 ```bash
-uv run uvicorn app:app --port 8000 --reload
+uvicorn app:app --port 8000 --reload
 ```
 
 Verify these outcomes:
@@ -374,10 +392,11 @@ Use the [component matrix](streamlit-migration-matrix.md) for API lookup and
 
 ### 1. Use the unified Posit facade
 
-Stop the server. Install the adapter:
+Stop the server. Add `"hedron-posit>=0.67.0",` to the `dependencies` list in
+`pyproject.toml`, then install the updated project:
 
 ```bash
-uv add "hedron[posit]>=0.66.2,<0.67"
+python3.11 -m pip install -e .
 ```
 
 In `app.py`, replace the imported `Hedron` class and constructor:
@@ -449,8 +468,8 @@ def refresh_freshness():
 ### 3. Run through the Posit launcher
 
 ```bash
-uv run hedron-posit check --discover --format json
-uv run hedron-posit run app:app --port 8000 --reload
+hedron-posit check --discover --format json
+hedron-posit run app:app --port 8000 --reload
 ```
 
 Open the app and refresh only the dashboard time. Confirm that filters still use a full GET
@@ -469,7 +488,7 @@ fragment whose returned root element has `id="freshness"`.
 Stop the development server and add test dependencies:
 
 ```bash
-uv add --dev "pytest>=8.3" "httpx>=0.28"
+python3.11 -m pip install "pytest>=8.3" "httpx>=0.28"
 ```
 
 Replace the generated `tests/test_migration_smoke.py` with the following focused suite. The
@@ -531,7 +550,7 @@ def test_fragment_rejects_unknown_target(client: TestClient) -> None:
 Run the workshop tests:
 
 ```bash
-uv run python -m pytest
+python3.11 -m pytest
 ```
 
 ### Extension for fast pairs
@@ -577,7 +596,7 @@ deployment command below passes the variable by name so its value does not appea
 command line:
 
 ```bash
-export HEDRON_SESSION_SECRET="$(python -c 'import secrets; print(secrets.token_urlsafe(32))')"
+export HEDRON_SESSION_SECRET="$(python3.11 -c 'import secrets; print(secrets.token_urlsafe(32))')"
 ```
 
 Use your organization's secret manager for real applications. A production session secret
@@ -587,9 +606,9 @@ procedure.
 ### 2. Build and diagnose
 
 ```bash
-uv run hedron --app app:app check
-uv run hedron build
-uv run hedron-posit doctor app:app --live --format json
+hedron --app app:app check
+hedron build
+hedron-posit doctor app:app --live --format json
 ```
 
 Confirm `.hedron/build/manifest.json` exists. If your organization enables
@@ -598,17 +617,19 @@ or startup fails closed.
 
 ### 3. Export reproducible dependencies
 
+Build the deployment requirements in a clean environment outside the application directory. This
+keeps editable project paths and workshop-only test packages out of the Connect bundle:
+
 ```bash
-uv export \
-  --format requirements.txt \
-  --no-dev \
-  --no-hashes \
-  --no-emit-project \
-  --output-file requirements.txt
+python3.11 -m venv ../sales-hedron-deploy-venv
+../sales-hedron-deploy-venv/bin/python3.11 -m pip install --upgrade pip
+../sales-hedron-deploy-venv/bin/python3.11 -m pip install -e .
+../sales-hedron-deploy-venv/bin/python3.11 -m pip freeze --exclude-editable > requirements.txt
 ```
 
 Inspect the file and confirm it contains the Hedron, data, Posit, FastAPI, and Uvicorn
-dependencies needed by `app.py`. Do not include the local virtual environment in the bundle.
+dependencies needed by `app.py`, with no local `-e` path. The deployment environment is a sibling
+of the application directory and therefore is not part of the bundle. Do not move it into the app.
 When targeting the minimum supported Connect 2025.06 lane, follow the
 [Posit deployment guide](posit.md#native-connect) for its additional setuptools constraint.
 
@@ -696,8 +717,8 @@ traffic.
 
 | Symptom | Likely cause | Action |
 |---|---|---|
-| `hedron` is not found | CLI is not installed on PATH | Use `uvx --from ... hedron` or `uv run hedron` in a synced project |
-| `ModuleNotFoundError: hedron_posit` | Posit extra was not added | Run `uv add "hedron[posit]>=0.66.2,<0.67"` |
+| `hedron` is not found | CLI is not installed on PATH | From the current project directory, activate `.venv`, then run `python3.11 -m pip install -e .` |
+| `ModuleNotFoundError: hedron_posit` | Posit adapter was not installed | Run `python3.11 -m pip install "hedron-posit>=0.67.0"` and add it to `pyproject.toml` |
 | Workbench page loads without styles or links break | App was started without prefix discovery | Use `hedron-posit run`; do not hard-code the session URL |
 | `rserver-url` diagnostic fails | Workbench binary/path or session environment is unavailable | Confirm `RS_SERVER_URL`, the binary path, and platform configuration with the administrator |
 | Port 8000 is busy | A previous server is still running | Stop it or choose another port |

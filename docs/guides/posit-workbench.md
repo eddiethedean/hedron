@@ -6,11 +6,14 @@ changing only the launch command of an existing app. For a new application, inst
 [`hedron-posit` beginner walkthrough](../getting-started/first-app-posit-workbench.md) explains each
 step.
 
-**Preferred for new apps:** `hedron-posit>=0.66.2,<0.67` (or
-`hedron[posit]>=0.66.2,<0.67`). **Compatibility surface:**
+**Preferred for new apps:** `hedron-posit>=0.67.0` (or
+`hedron[posit]>=0.67.0`). **Compatibility surface:**
 `hedron-workbench>=0.66.2,<0.67` (or `hedron[workbench]>=0.66.2,<0.67`).
 `hedron-posit` owns Hedron's Workbench runtime directly and does not require the
 standalone `fastapi-workbench` package.
+
+If `python3.11` is unavailable, use the walkthrough's [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
+before creating the virtual environment. When finished, return to [One application class, local and Workbench](#one-application-class-local-and-workbench).
 
 Supported Workbench floor is **2025.05.1** (linux/amd64). Current verified lane is
 Workbench **2026.07.0**. Prefer `HedronPosit` / `hedron-posit run` for new apps;

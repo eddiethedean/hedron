@@ -78,17 +78,37 @@ terminal's `$` prompt.
 Check the remote environment:
 
 ```bash
-python3 --version
-uv --version
+python3.11 --version
 pwd
 ```
 
 Python must report 3.11–3.14. `pwd` prints the current remote directory. Paths such as
 `/home/your-name` belong to the Workbench server, not your laptop.
 
-If `uv` is unavailable, do not install system-wide software or use `sudo`. Ask whether your team
-provides a module, internal installer, or approved virtual-environment workflow, then use the
-[pip fallback](#pip-fallback-without-uv).
+Use the standard `venv` workflow below so all project packages stay inside the application
+environment. Do not install into the Workbench system Python or use `sudo pip`.
+
+## Python 3.11 fallback
+
+If `python3.11` is not installed, use an organization-approved `pyenv`
+installation:
+
+```bash
+command -v pyenv
+pyenv install --list
+# Select the current approved 3.11.x entry, then run:
+pyenv install 3.11.X
+pyenv local 3.11.X
+python3.11 --version
+```
+
+Replace `3.11.X` with the current Python 3.11 patch version approved for the
+Workbench image. If `pyenv` is not available, ask the Workbench administrator
+for the approved installation or module workflow. Do not use `sudo`, modify
+system Python, or install into a shared location.
+
+When Python 3.11 is available, return to [Create the remote project](#3-create-the-remote-project)
+below. If you arrived here from another guide, use that guide's return link instead.
 
 ## 3. Create the remote project
 
@@ -97,25 +117,32 @@ Choose a private project location approved by your organization. The following u
 
 ```bash
 mkdir -p ~/projects
-cd ~/projects
-uvx --from "hedron>=0.66.2,<0.67" hedron new my-workbench-app
-cd my-workbench-app
-uv add "hedron-posit>=0.66.2,<0.67"
+python3.11 -m venv ~/projects/.hedron-scaffold-venv
+source ~/projects/.hedron-scaffold-venv/bin/activate
+python3.11 -m pip install "hedron>=0.66.2,<0.67"
+hedron new my-workbench-app --path ~/projects/my-workbench-app
+deactivate
+cd ~/projects/my-workbench-app
+python3.11 -m venv .venv
+source .venv/bin/activate
+python3.11 -m pip install -e . "hedron-posit>=0.67.0"
 ```
 
-These commands create the project, make its isolated `.venv`, install the declared dependencies,
-and add the Workbench-aware adapter to `pyproject.toml`. They do not alter other users' projects.
+These commands create the project, make its isolated `.venv`, and install the declared dependencies
+plus the Workbench-aware adapter. Keep `~/projects/.hedron-scaffold-venv` only for creating
+additional scaffolds, or remove it after this project is ready.
 
 Open the project in the editor with **File → Open Folder**, then select
 `~/projects/my-workbench-app`. Open a new terminal and confirm:
 
 ```bash
+source .venv/bin/activate
 pwd
-uv run python -c "import hedron, hedron_posit; print(hedron.__version__)"
+python3.11 -c "import hedron, hedron_posit; print(hedron.__version__)"
 ```
 
-Expect the path to end in `my-workbench-app` and the PyPI version to be **`0.64.0`**.
-A repository checkout reports **`0.64.0`**.
+Expect the path to end in `my-workbench-app` and the PyPI version to be **`0.66.2`**.
+A repository checkout reports the **`0.67.0`** beta version.
 
 The project contains:
 
@@ -123,12 +150,14 @@ The project contains:
 my-workbench-app/
 ├── app.py
 ├── components/
-├── pyproject.toml
-└── uv.lock
+└── pyproject.toml
 ```
 
-The lockfile records the exact resolved package set. Commit it with the app; do not edit it by
-hand.
+Keep the dependency declarations in `pyproject.toml` under version control. Reinstall the project
+with `python3.11 -m pip install -e .` after dependency changes.
+
+Add `"hedron-posit>=0.67.0",` to the `dependencies` list in `pyproject.toml` so a fresh
+environment can reproduce the adapter installation.
 
 ## 4. Make the app Workbench-aware
 
@@ -172,7 +201,7 @@ development exercise. Never commit a real secret. Your deployment should supply
 Before importing or starting the app, run:
 
 ```bash
-uv run hedron-posit check
+hedron-posit check
 ```
 
 The result should identify Workbench evidence and a safe loopback bind. The check is deliberately
@@ -186,7 +215,7 @@ a session path.
 Start the Workbench-aware development launcher:
 
 ```bash
-uv run hedron-posit run app:app --port 8000 --reload
+hedron-posit run app:app --port 8000 --reload
 ```
 
 Leave the terminal running. The launcher binds a loopback port, asks Workbench for this session's
@@ -239,7 +268,8 @@ error stops the worker from listening. Undo the last edit, save, and wait for a 
 Open a second terminal so the development server can remain visible. Add test dependencies:
 
 ```bash
-uv add --dev pytest httpx
+source .venv/bin/activate
+python3.11 -m pip install "pytest>=8.3" "httpx>=0.28"
 ```
 
 Create `tests/test_app.py` through the Explorer:
@@ -261,8 +291,8 @@ def test_home_page() -> None:
 Run:
 
 ```bash
-uv run pytest
-uv run hedron --app app:app check
+pytest
+hedron --app app:app check
 ```
 
 Expect `1 passed`. This test runs directly against the application and therefore does not use the
@@ -287,44 +317,13 @@ On later days:
 
 1. Open the project from the Workbench home page in one VS Code session.
 2. Open `my-workbench-app` and confirm the terminal location with `pwd`.
-3. Run `uv sync` after dependency or lockfile changes.
-4. Run `uv run hedron-posit check` when the session environment or launch topology changes.
-5. Run `uv run hedron-posit run app:app --port 8000 --reload`.
-6. Open the current entry under **Posit → Proxied Servers**.
-7. Edit, test, and check the app.
-8. Stop the server with Ctrl+C before exiting the Workbench session.
-
-## Pip fallback without uv
-
-Use this only when your organization supports ordinary virtual environments and pip. From an
-approved parent folder:
-
-```bash
-mkdir -p ~/projects/my-workbench-app
-cd ~/projects/my-workbench-app
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install "hedron>=0.66.2,<0.67" "hedron-posit>=0.66.2,<0.67" "uvicorn[standard]>=0.30"
-python -m hedron new my-workbench-app --path .
-```
-
-Open `pyproject.toml` and add the adapter to the `dependencies` list so another environment can
-reproduce the app:
-
-```toml
-"hedron-posit>=0.66.2,<0.67",
-```
-
-Then install the declared project and run it:
-
-```bash
-python -m pip install -e .
-hedron-posit run app:app --port 8000 --reload
-```
-
-The prompt normally begins with `(.venv)` while the environment is active. In a new terminal, run
-`source .venv/bin/activate` again before project commands. Do not install into the Workbench system
-Python and do not use `sudo pip`.
+3. Activate the project environment with `source .venv/bin/activate` after opening a new terminal.
+4. Run `python3.11 -m pip install -e .` after dependency changes.
+5. Run `hedron-posit check` when the session environment or launch topology changes.
+6. Run `hedron-posit run app:app --port 8000 --reload`.
+7. Open the current entry under **Posit → Proxied Servers**.
+8. Edit, test, and check the app.
+9. Stop the server with Ctrl+C before exiting the Workbench session.
 
 ## If your organization uses RStudio Pro
 
@@ -333,7 +332,7 @@ The application and commands are the same. In an RStudio Pro session:
 1. Select the **Terminal** tab next to the Console. If it is hidden, use
    **Tools → Terminal → Move Focus to Terminal**.
 2. Use the **Files** pane to open `app.py` and `pyproject.toml`.
-3. Run the `uv` or pip commands in Terminal, not the R Console (the R Console prompt begins with
+3. Run the `venv` and pip commands in Terminal, not the R Console (the R Console prompt begins with
    `>` and does not accept shell commands).
 4. Start with `hedron-posit run app:app --port 8000 --reload` so the Workbench mount is discovered
    before the app is imported.
@@ -343,13 +342,16 @@ or viewer integration your administrator provides; do not replace the launcher w
 mount. If your team is choosing an editor for a new Python web project, the primary VS Code path
 above provides the clearest **Proxied Servers** workflow.
 
+After applying the RStudio Pro-specific steps, return to [Common Workbench problems](#common-workbench-problems)
+or continue with [Continue from here](#continue-from-here).
+
 ## Common Workbench problems
 
 | What you see | Likely cause | What to do |
 |---|---|---|
 | VS Code is not a session option | It is not enabled for your account or environment | Ask the Workbench administrator which editor to use |
-| `python3` is missing or too old | Session image lacks a Supported Python | Choose an approved Python environment/profile; do not replace system Python yourself |
-| `uv` / pip cannot download packages | Workbench uses an internal index or blocks outbound traffic | Ask for `UV_INDEX_URL` / `PIP_INDEX_URL` or mirrored current-train Hedron wheels |
+| `python3.11` is missing or too old | Session image lacks a Supported Python | Use the [Python 3.11 pyenv fallback](#python-311-fallback), or choose an approved Python environment/profile; do not replace system Python yourself |
+| pip cannot download packages | Workbench uses an internal index or blocks outbound traffic | Ask for the approved pip index, `PIP_INDEX_URL`, or mirrored current-train Hedron wheels |
 | Proxied Servers is empty | Server did not start, stopped on import, or extension is unavailable | Read the terminal; confirm a listening process; ask whether the Workbench extension is installed |
 | `HED-WB-0003` | `rserver-url` is missing or unusable | Ask the administrator to repair Workbench discovery; do not guess the mount |
 | Page is unstyled or links lose `/s/.../p/...` | App started without the Workbench-aware path handoff | Stop it and use `hedron-posit run app:app --port 8000 --reload` |

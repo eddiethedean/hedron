@@ -8,10 +8,13 @@ New to application development or Workbench? Start with
 installs `hedron-posit`, constructs `HedronPosit`, and uses the Workbench-aware launcher before
 returning here for the deployment contract.
 
-**Requires:** `hedron-posit>=0.66.2,<0.67` (or `hedron[posit]>=0.66.2,<0.67`).
+**Requires:** `hedron-posit>=0.67.0` (or `hedron[posit]>=0.67.0`).
 Compatibility package: `hedron-workbench>=0.66.2,<0.67` (or `hedron[workbench]`).
 Hedron's Workbench ASGI behavior is owned by `hedron-posit`; no standalone
 `fastapi-workbench` installation is required.
+
+If `python3.11` is unavailable, follow the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
+before creating the virtual environment. When finished, return to [Preferred facade](#preferred-facade).
 
 ## Preferred facade
 

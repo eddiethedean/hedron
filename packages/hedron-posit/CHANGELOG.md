@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.67.1] — 2026-08-28
+
+### Fixed
+- Preserve the external Workbench origin when `UVICORN_ROOT_PATH` contains a full
+  session URL (#747).
+- Remove `UVICORN_ROOT_PATH` before supervised reload/worker handoff so Uvicorn
+  cannot interpret the full Workbench URL as an ASGI `root_path` (#748).
+
+### Changed
+- Require Hedron `>=0.67.0`.
+
 ## [0.67.0] — 2026-08-27
 
 ### Changed

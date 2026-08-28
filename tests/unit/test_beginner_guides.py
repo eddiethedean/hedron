@@ -50,9 +50,14 @@ def test_vscode_guide_uses_the_current_flagship_train_without_posit() -> None:
 def test_workbench_guide_uses_the_preferred_hedron_posit_surface() -> None:
     guide = POSIT_PATH.read_text(encoding="utf-8")
 
-    assert f'uv add "hedron-posit{FIRST_RUN_PIN}"' in guide
+    assert "python3.11 -m venv .venv" in guide
+    assert 'python3.11 -m pip install -e . "hedron-posit>=0.67.0"' in guide
+    assert "pyenv install" in guide
+    assert "pyenv local" in guide
     assert "from hedron_posit import HedronPosit" in guide
     assert "app = HedronPosit(" in guide
-    assert "uv run hedron-posit check" in guide
-    assert "uv run hedron-posit run app:app --port 8000 --reload" in guide
+    assert "hedron-posit check" in guide
+    assert "hedron-posit run app:app --port 8000 --reload" in guide
+    assert "uv add" not in guide
+    assert "uv run" not in guide
     assert "from hedron_workbench import HedronWorkbench" not in guide

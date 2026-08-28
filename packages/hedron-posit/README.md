@@ -6,7 +6,7 @@
 
 Unified Posit Workbench / Connect deployment facade for Hedron.
 
-**Package maturity:** Beta · **Stable train:** `0.66.x` (published as `v0.66.2` on PyPI) · **Beta repository train:** `0.67.0` · application pin `>=0.66.2,<0.67`; repository checkouts use `uv sync`
+**Package maturity:** Beta · **Stable train:** `0.66.x` (published as `v0.66.2` on PyPI) · **Beta repository train:** `0.67.1` · application pin `>=0.67.1,<0.68`
 
 ```python
 from hedron_posit import HedronPosit
@@ -14,8 +14,13 @@ from hedron_posit import HedronPosit
 app = HedronPosit(title="My app", session_secret="replace-me")
 ```
 
-Install with `pip install "hedron[posit]>=0.66.2,<0.67"` or
-`pip install "hedron-posit>=0.66.2,<0.67"`.
+Install into a project virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install "hedron-posit>=0.67.0"
+```
 
 Native Connect GUID is Supported on Posit Connect **2025.06.0** through **2026.07.0**.
 Posit Workbench **2025.05.1** through **2026.07.0** is Supported.

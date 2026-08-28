@@ -6,16 +6,16 @@ Starlette-compatible ASGI applications.
 Installing or importing this package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust.
 
-**Package maturity:** Stable independent `1.x` · pin `>=1.0.0,<2.0`
+**Package maturity:** Stable independent `1.x` · pin `>=1.0.1,<2.0`
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
 
 ## Install
 
 ```bash
-pip install "fastapi-workbench>=1.0.0,<2.0"
-# or
-uv add "fastapi-workbench>=1.0.0,<2.0"
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install "fastapi-workbench>=1.0.1,<2.0"
 ```
 
 ## Quick start

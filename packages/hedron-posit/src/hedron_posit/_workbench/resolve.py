@@ -252,6 +252,16 @@ def _uvicorn_root_path_mount(raw: str) -> str:
     return mount or "/"
 
 
+def _uvicorn_root_path_public_base(raw: str) -> str | None:
+    """Return a validated full Workbench URL while preserving its origin."""
+    text = str(raw).strip()
+    parsed = urlsplit(text)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return None
+    origin, mount, _ = _validated_public_base(text)
+    return f"{origin}{mount}" if mount and mount != "/" else origin
+
+
 def _workbench_session_port(mount: str) -> int | None:
     match = _WORKBENCH_SESSION_PORT.match(normalize_mount_path(mount))
     if match is None:
@@ -502,6 +512,15 @@ def resolve_deployment(
         alias_name="PUBLIC_BASE_URL",
         warnings=warnings,
     )
+    if (
+        public_explicit is None
+        and mount_explicit is not None
+        and rs_server_url(env)
+        and not job_context
+    ):
+        uvicorn_root = env.get(_UVICORN_ROOT_PATH)
+        if uvicorn_root:
+            public_explicit = _uvicorn_root_path_public_base(uvicorn_root)
 
     legacy_debug = truthy(env.get("WORKBENCH_DEBUG")) if compatibility_aliases else False
     debug = cfg.debug or truthy(env.get(_ENV_DEBUG)) or legacy_debug
