@@ -129,7 +129,8 @@ This creates one environment, `.venv`, inside the project. `hedron new` fills in
 around that environment, and the same activated `.venv` is used for the app. The first install
 provides both the scaffolder and the Workbench launcher, so no second install is needed to run
 this example. `--force` is safe here because `.venv` is the only item in the new project folder;
-do not use it in a folder that already contains application files.
+it tells the currently installed Hedron version to add the scaffold files around that environment.
+Do not use it in a folder that already contains application files.
 
 Open the project in the editor with **File → Open Folder**, then select
 `~/projects/my-workbench-app`. Open a new terminal and confirm:
