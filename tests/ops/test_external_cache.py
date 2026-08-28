@@ -7,6 +7,7 @@ explicit opt-in marker/job.
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 import pytest
@@ -199,6 +200,34 @@ def test_redis_cache_rejects_bad_json() -> None:
     backend = RedisCacheBackend(client)
     with pytest.raises(ValueError):
         backend.set("x", object())  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("value", [math.nan, math.inf, -math.inf])
+def test_redis_cache_rejects_non_finite_json_without_writes(value: float) -> None:
+    client = _StubRedis()
+    backend = RedisCacheBackend(client)
+    with pytest.raises(ValueError, match="not JSON-serializable"):
+        backend.set("x", {"nested": [value]}, tags=("t",))
+    assert client._store == {}
+    assert client._sets == {}
+
+
+def test_redis_cache_rejects_poisoned_non_standard_json() -> None:
+    client = _StubRedis()
+    backend = RedisCacheBackend(client)
+    client._store["h1:c:v:x"] = '{"value":NaN}'
+    with pytest.raises(ValueError, match="Corrupt cache value"):
+        backend.lookup("x")
+
+
+@pytest.mark.parametrize("ttl", [math.nan, math.inf, -math.inf])
+def test_redis_cache_rejects_non_finite_ttl_without_writes(ttl: float) -> None:
+    client = _StubRedis()
+    backend = RedisCacheBackend(client)
+    with pytest.raises(ValueError, match="finite number"):
+        backend.set("x", {"value": 1}, ttl=ttl, tags=("t",))
+    assert client._store == {}
+    assert client._sets == {}
 
 
 def test_redis_cache_does_not_share_job_keyspace() -> None:
