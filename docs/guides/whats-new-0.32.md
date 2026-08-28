@@ -3,7 +3,7 @@
 !!! note "Historical release note"
 
     This page records the 0.x release named in its title. For current installation,
-    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    support, and published 1.0 status, use [Current release and support](current-release.md).
     Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.32.0`. Historical pin for this train: `hedron>=0.32.0,<0.33`.

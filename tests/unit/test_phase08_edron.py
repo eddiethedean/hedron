@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 from pathlib import Path
 
@@ -10,6 +11,30 @@ import pytest
 import edron as ed
 from edron.cli import main
 from edron.deployment import DeploymentError, artifact_manifest, check_deployment
+
+
+def test_edron_run_preserves_import_target_for_reload(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    cli_module = importlib.import_module("edron.cli.main")
+    calls: list[tuple[object, dict[str, object]]] = []
+    monkeypatch.setattr(
+        "uvicorn.run", lambda target, **kwargs: calls.append((target, kwargs))
+    )
+    monkeypatch.setattr(
+        cli_module,
+        "load_application",
+        lambda target: pytest.fail(f"reload unexpectedly imported {target}"),
+    )
+
+    assert main(["run", "app:app", "--reload"]) == 0
+    assert calls == [
+        ("app:app", {"host": "127.0.0.1", "port": 8000, "reload": True})
+    ]
+
+    assert main(["run", "app.py", "--reload"]) == 1
+    assert "--reload requires an import target such as app:app" in capsys.readouterr().err
 
 
 def test_profiles_are_explicit_and_aliases_are_canonical() -> None:

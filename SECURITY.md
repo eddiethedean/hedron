@@ -2,36 +2,17 @@
 
 ## Supported versions
 
-Security fixes land on the **current repository train** (`1.0.x`), which becomes the stable
-release channel when the deferred tag/PyPI upload completes.
-Older lines should upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately
+Security fixes land on the **current published train** (`1.0.x`). Older lines should upgrade;
+there is **no multi-year LTS**. Best-effort triage for the immediately
 previous minor (`0.67.x`) continues through approximately **2027-02-27** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The current repository train is **`1.0.x`**. Until publication, the public PyPI pin remains
-`>=0.66.2,<0.67`; the `v1.0.0` upload is deferred.
+The current published train is **`1.0.x`**, pinned as `>=1.0.0,<1.1`.
 
 | Version | Supported |
 |---|---|
-| `1.0.x` | Yes (current repository train — public PyPI pin remains `>=0.66.2,<0.67`; upload deferred) |
+| `1.0.x` | Yes (current published train — pin `>=1.0.0,<1.1`; published `v1.0.0`) |
 | `0.67.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.0.x` |
-| `0.56.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.60.x` |
-| `0.55.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
-| `0.53.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.56.x` / `0.57.x` |
-| `0.52.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.53.x` / `0.56.x` |
-| `0.51.x` | Best-effort security triage through approximately 2027-08-20; upgrade to `0.52.x` / `0.53.x` |
-| `0.50.x` | Best-effort security triage through approximately 2027-08-19; upgrade to `0.51.x` / `0.52.x` |
-| `0.49.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.50.x` |
-| `0.48.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.49.x` |
-| `0.47.x` | Best-effort security triage through approximately 2027-08-17; upgrade to `0.48.x` |
-| `0.46.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.47.x` |
-| `0.45.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.46.x` |
-| `0.44.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.45.x` |
-| `0.43.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.44.x` |
-| `0.42.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.43.x` |
-| `0.41.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.42.x` |
-| `0.40.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.41.x` |
-| `0.39.x` | Best-effort security triage through approximately 2027-08-16; upgrade to `0.40.x` |
 
 ## Reporting a vulnerability
 

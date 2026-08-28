@@ -73,7 +73,7 @@ Migration baseline: `v0.67.0`. Pin `hedron` for production; see
 | **0.65** | Integrated styling platform and application CSS: declared local assets, public hooks, application cascade, namespaced tokens, diagnostics, ejection, eight bounded issue slices, and touched-surface fallback evidence | **Implemented and verified in-tree; release candidate `v0.65.0`** ([RFC-0092](rfcs/RFC-0092-INTEGRATED-STYLING-PLATFORM.md); [implementation](implementation/APPLICATION_STYLING_065.md); [scope](acceptance/application-styling-scope-065.md); [acceptance](acceptance/RELEASE_0_65.md)) |
 | **0.66** | HDJ parity and registry integration: app-scoped binding, registry-backed components/assets/themes/styles, live logical-ID interactions, portable HTMX facts, provider parity, and claim-honest evidence | **Stable `v0.66.2`** ([RFC-0093](rfcs/RFC-0093-HDJ-PARITY-AND-REGISTRY-INTEGRATION.md); [implementation](implementation/HDJ_PARITY_066.md); [acceptance](acceptance/RELEASE_0_66.md)) |
 | **0.67** | Alpine browser-local features, bidirectional Alpine/Web-Component engine dispositions, and an opt-in preview of one unified Alpine/HTMX/Hedron interaction and lifecycle model | **Beta `v0.67.0`; implemented and verified in-tree** ([RFC-0095](rfcs/RFC-0095-ALPINE-BROWSER-ENHANCEMENT.md); D-113 / D-115 / D-116; [implementation](implementation/ALPINE_INTEGRATION_067.md); [engine dispositions](implementation/COMPONENT_ENGINE_DISPOSITIONS_067_1_0.md); [acceptance](acceptance/RELEASE_0_67.md)) |
-| **1.0** | Canonical developer-interface, HTMX/Alpine interaction, and component-engine consolidation; removal of fully warned 0.67 compatibility paths | **Implemented and Verified as the `v1.0.0` repository candidate; publication pending** ([RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md); D-114–D-117; [implementation](implementation/HEDRON_1_0.md); [acceptance](acceptance/RELEASE_1_0.md)); every 1.0 application runs unchanged on 0.67 |
+| **1.0** | Canonical developer-interface, HTMX/Alpine interaction, and component-engine consolidation; removal of fully warned 0.67 compatibility paths | **Published as `v1.0.0` on PyPI** ([RFC-0096](rfcs/RFC-0096-HEDRON-1.0-INTERFACE-CONSOLIDATION.md); D-114–D-117; [implementation](implementation/HEDRON_1_0.md); [acceptance](acceptance/RELEASE_1_0.md)); every 1.0 application runs unchanged on 0.67 |
 
 Edron is independently versioned. Edron `1.0.0` directly requires Hedron
 `>=1.0.0,<2.0`; see the [Edron release roadmap](EDRON_ROADMAP.md).
@@ -162,8 +162,8 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
   [compatibility policy](COMPATIBILITY.md).
 - Package maturity is **Stable** for the coordinated 1.0 inventory; satellites retain their
   independent classifications.
-- Hedron `1.0` is implemented and Verified from the 0.67 baseline under D-114–D-117;
-  tag and registry publication remain. `fastapi-workbench` 1.0.1 remains an independently versioned package
+- Hedron `1.0` is implemented, Verified from the 0.67 baseline under D-114–D-117, and
+  published on PyPI. `fastapi-workbench` 1.0.1 remains an independently versioned package
   release, not Hedron 1.0. A **minimal + expanded (0.23) `stable` API
   tier** is catalogued in [STABILITY.md](api/STABILITY.md); most other public APIs remain `beta` or
   `experimental`.
@@ -6863,7 +6863,7 @@ tag-by-tag recommendations are the
 
 ## Hedron 1.0 — interface and HTMX/Alpine interaction consolidation
 
-**Status:** **Verified `v1.0.0` release candidate; tag/PyPI publication pending.** Verified Beta
+**Status:** **Published `v1.0.0` on PyPI.** Verified Beta
 `v0.67.0` is the immutable planning baseline and required predecessor. D-117 turns the D-114–D-116 architecture and 0.67
 freeze into an executable cut packet: the [implementation plan](implementation/HEDRON_1_0.md),
 [acceptance plan](acceptance/RELEASE_1_0.md), [machine release gate](acceptance/release-gate-1.0.toml),

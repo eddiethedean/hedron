@@ -833,7 +833,7 @@ def check_plan() -> list[str]:
 
     roadmap = (ROOT / "docs" / "ROADMAP.md").read_text(encoding="utf-8")
     for token in (
-        "Verified `v1.0.0` release candidate",
+        "Published as `v1.0.0` on PyPI",
         "RELEASE_1_0",
         "release-gate-1.0.toml",
         "D-117",

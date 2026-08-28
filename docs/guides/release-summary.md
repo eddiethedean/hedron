@@ -1,8 +1,6 @@
 # Release process summary
 
-Hedron’s coordinated package train is preparing `v1.0.0`. The candidate is implemented and
-Verified on branch `v1.0`; the public registry still serves `v0.66.2` until the authorized
-publication workflow completes.
+Hedron’s coordinated `v1.0.0` package train is implemented, Verified, tagged, and published.
 
 The exact maintainer commands and publication rules live in
 [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
@@ -11,10 +9,10 @@ The exact maintainer commands and publication rules live in
 
 | Item | Value |
 |---|---|
-| Repository candidate | **v1.0.0** (`hedron` and coordinated packages) |
+| Published release | **v1.0.0** (`hedron` and coordinated packages) |
 | Migration baseline | **v0.67.0** |
-| PyPI latest | **v0.66.2** |
-| Public-index pin | `hedron>=0.66.2,<0.67` |
+| PyPI latest | **v1.0.0** |
+| Public-index pin | `hedron>=1.0.0,<1.1` |
 | Repository development | `uv sync` (editable 1.0.0 workspace) |
 | Charts satellite | `hedron-charts>=0.2.4,<0.3` |
 | Generic Workbench adapter | `fastapi-workbench>=1.0.1,<2.0` |

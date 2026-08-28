@@ -1,8 +1,7 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.66.2,<0.67` from PyPI (stable release `0.66.2`) until the
-1.0.0 cut is published. The current checkout is the verified coordinated 1.0.0 release
-candidate. Treat the **stable** tables below as the SemVer compatibility promise; everything
+**For adopters:** Pin `hedron>=1.0.0,<1.1` from PyPI. The current checkout and published
+release are 1.0.0. Treat the **stable** tables below as the SemVer compatibility promise; everything
 else is `beta` / `experimental` and may change on the documented schedule. Capability readiness
 (Supported vs Experimental) lives on [What’s ready](../guides/whats-ready.md). Coordinated
 package maturity is Stable in the repository; independent satellites retain their own maturity.
@@ -10,8 +9,7 @@ package maturity is Stable in the repository; independent satellites retain thei
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Verified **1.0.x** repository train (`v1.0.0` candidate). The latest
-installable public release remains `v0.66.2`; `v0.67.0` is the immutable migration baseline.
+**Status:** Published **1.0.x** train (`v1.0.0`). `v0.67.0` is the migration baseline.
 Prior: 0.50 Explorer architecture; 0.49 FastAPI/Pydantic; 0.48 HTMX; 0.25 archetype; 0.24
 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below.

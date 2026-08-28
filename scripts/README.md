@@ -19,6 +19,8 @@ scripts here when you add them.
 | `check_package_docs_inventory.py` | Keep the package catalog, README maturity labels, PyPI classifiers, and package pages aligned with the living fleet inventory. CI: quality job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
 | `check_api_docs_coverage.py` | Require every `hedron.__all__` and `hedron_charts.__all__` export in public API reference. CI: quality job |
+| `generate_edron_api_index.py` | Generate the complete Edron public-export inventory from `edron.__all__`; commit the result. |
+| `generate_example_catalog.py` | Generate the public current/historical example catalog from `examples/catalog.toml`. |
 | `check_edron_docs.py` | Keep the Edron RFC, contracts, examples, inventories, roadmap, gates, upstream lock, seven machine-readable acceptance drafts, dependency ranges, and native authorities aligned. CI: docs / quality job |
 | `check_package_readme_links.py` | Reject relative links that break when package READMEs render on PyPI. CI: quality job |
 | `check_public_doc_links.py` | Reject missing public links and relative links into files excluded from MkDocs. CI: quality job |

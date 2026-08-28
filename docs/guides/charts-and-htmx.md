@@ -10,7 +10,7 @@ chart through an HTMX fragment without losing its accessible fallback.
 ## Install the current chart line
 
 ```bash
-pip install "hedron[charts]>=0.66.2,<0.67"
+pip install "hedron[charts]>=1.0.0,<1.1"
 ```
 
 This resolves `hedron-charts>=0.2.4,<0.3`. The plugin entry point registers the first-party

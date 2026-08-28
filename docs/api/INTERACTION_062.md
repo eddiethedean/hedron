@@ -1,4 +1,15 @@
-# Navigation, optimism, and failure isolation
+---
+status: historical
+phase: "0.62"
+search:
+  exclude: true
+---
+
+# Legacy navigation, optimism, and failure isolation
+
+!!! warning "Historical 0.62 contract"
+
+    Use [Interaction](INTERACTION.md) and [API by task](by-task.md) for the current 1.0 API.
 
 These bounded contracts are available on 1.0 and were introduced in phase 0.62. They cover
 navigation, optimistic edits, localized failures, and state identity. The server remains

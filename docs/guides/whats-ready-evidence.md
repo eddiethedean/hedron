@@ -15,9 +15,8 @@ symbols remain API compatibility level **`beta`**. The
 [expanded](../api/STABILITY.md#expanded-stable-tier-023) stable tables are
 compatibility-protected today (narrow Beginner/CRUD facade —
 [STABLE_FACADE](../api/STABLE_FACADE.md)) — not every Supported row on this page.
-The coordinated 1.0 package inventory is **Stable**. Satellite packages retain their
-independent maturity, and no maturity label implies a commercial SLA. PyPI still serves
-the 0.66.2 train until the verified 1.0 candidate is published.
+The coordinated 1.0 package inventory is **Stable** and published. Satellite packages retain
+their independent maturity, and no maturity label implies a commercial SLA.
 
 | Label | Meaning |
 |---|---|
@@ -61,14 +60,14 @@ sessions are not Supported yet** — do not market human AT as done.
 | Posit Workbench / RStudio Server | **Supported** (`hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronPosit`; no import auto-wrap |
 | Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Supported** first-party and Matplotlib/static paths on Beta satellite package | Public PyPI applications use `hedron[charts]>=0.66.2,<0.67`; the 1.0 workspace coordinates `hedron-charts` `0.2.4`. `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
+| Charts | **Supported** first-party and Matplotlib/static paths on Beta satellite package | Public PyPI applications use `hedron[charts]>=1.0.0,<1.1`; the 1.0 workspace coordinates `hedron-charts` `0.2.4`. `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Runnable [model-demo example](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) — [Model demos](model-demos.md) · [Recipes](../examples/recipes/index.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.4` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.3` | Declared allowlisted destinations; pin `>=0.2.3,<0.3` for coordinated 1.0 artifacts; [Gradio migration](gradio-migration.md) |
 | Application DX Stage 1 | **Supported** (API `beta`; repository train `v1.0.0`) | Assets, diagnostics, routes, workflows, testgen, theming, discovery, fleet — [Application DX API](../api/APPLICATION_DX.md) · [What’s new in 0.53](whats-new-0.53.md) |
 | Authoring loop / chrome (0.54) | **Supported** tooling-grade for notebook/sim/sample-kit; chrome APIs `beta` | Package doctor, sim subset/parity, notebook handles, AppShell chrome — [Authoring loop](../api/AUTHORING_LOOP.md) · [What’s new in 0.54](whats-new-0.54.md) |
-| Progressive screens (`Hedron.screen`) | **Supported** on FastAPI (API `beta`; verified repository candidate `v1.0.0`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
+| Progressive screens (`Hedron.screen`) | **Supported** on FastAPI (API `beta`; published in `v1.0.0`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | Form commands (`form_command`) | **Supported** on FastAPI (API `beta`) | [Hedron API](../api/HEDRON.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | DataWorkspace screens (`with_screen`) | **Supported** on FastAPI + `hedron[data]` (API `beta`) | [DATA.md](../api/DATA.md) · [What’s new in 0.58](whats-new-0.58.md) |
 | TaskFlow | **Supported** on FastAPI (API `beta`; polling) | [JOBS.md](../api/JOBS.md) · [What’s new in 0.58](whats-new-0.58.md) |
@@ -82,7 +81,7 @@ sessions are not Supported yet** — do not market human AT as done.
 
     Coordinated packages are **Stable** in the 1.0 inventory; satellite packages retain
     independent maturity. Until publication, public PyPI applications should pin
-    `hedron>=0.66.2,<0.67`. The table above is **capability readiness**
+    `hedron>=1.0.0,<1.1`. The table above is **capability readiness**
     (Supported / Experimental / Deferred), not package maturity.
 
 ## Supported capabilities
@@ -199,13 +198,13 @@ is a runnable classifier. Live interaction sample:
 
 ## Recommended install extras
 
-Pin `hedron>=0.66.2,<0.67`. Public-index notes: [Installation](../getting-started/installation.md).
+Pin `hedron>=1.0.0,<1.1`. Public-index notes: [Installation](../getting-started/installation.md).
 
-Extras: `"hedron[data]>=0.66.2,<0.67"`, `"hedron[extras]>=0.66.2,<0.67"`,
-`"hedron[jinja]>=0.66.2,<0.67"`, `"hedron[dev]>=0.66.2,<0.67"`,
-`"hedron[notebook]>=0.66.2,<0.67"` (tooling / localhost),
-`"hedron[mcp]>=0.66.2,<0.67"` (Beta Supported inventory),
-`"hedron[gradio]>=0.66.2,<0.67"` (Beta satellite; coordinated 1.0 artifact `hedron-gradio>=0.2.3,<0.3`),
-`"hedron[charts]>=0.66.2,<0.67"`, `"hedron[maps]>=0.66.2,<0.67"`,
+Extras: `"hedron[data]>=1.0.0,<1.1"`, `"hedron[extras]>=1.0.0,<1.1"`,
+`"hedron[jinja]>=1.0.0,<1.1"`, `"hedron[dev]>=1.0.0,<1.1"`,
+`"hedron[notebook]>=1.0.0,<1.1"` (tooling / localhost),
+`"hedron[mcp]>=1.0.0,<1.1"` (Beta Supported inventory),
+`"hedron[gradio]>=1.0.0,<1.1"` (Beta satellite; coordinated 1.0 artifact `hedron-gradio>=0.2.3,<0.3`),
+`"hedron[charts]>=1.0.0,<1.1"`, `"hedron[maps]>=1.0.0,<1.1"`,
 `"hedron[posit]>=1.0.0,<2.0"`,
 and `"hedron-sample-kit>=0.2.3,<0.3"`.

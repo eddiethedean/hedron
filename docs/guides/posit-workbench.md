@@ -6,9 +6,8 @@ changing only the launch command of an existing app. For a new application, inst
 [`hedron-posit` beginner walkthrough](../getting-started/first-app-posit-workbench.md) explains each
 step.
 
-**Preferred for new apps:** `hedron-posit>=1.0.0,<2.0` (or
-`hedron[posit]>=1.0.0,<2.0`). The latest public PyPI release remains `0.66.2`
-until the 1.0.0 tag is published. Plain FastAPI applications should use the
+**Preferred for new apps:** `hedron-posit>=1.0.0,<1.1` (or
+`hedron[posit]>=1.0.0,<1.1`). Plain FastAPI applications should use the
 independent `fastapi-workbench>=1.0.1,<2.0` package.
 
 If `python3.11` is unavailable, use the walkthrough's [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)

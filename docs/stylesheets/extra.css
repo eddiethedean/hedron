@@ -5,6 +5,7 @@
   --hedron-muted: #5c6670;
   --hedron-surface: #f7f8fa;
   --hedron-border: #e6e9ed;
+  --hedron-facet-opacity: 0.07;
   --md-primary-fg-color: #ffffff;
   --md-primary-fg-color--light: #ffffff;
   --md-primary-fg-color--dark: #ffffff;
@@ -18,6 +19,7 @@
   --hedron-muted: #aeb9c5;
   --hedron-surface: #18212b;
   --hedron-border: #2d3945;
+  --hedron-facet-opacity: 0.09;
   --md-default-bg-color: #111820;
   --md-default-fg-color: #eef2f6;
   --md-code-bg-color: #18212b;
@@ -222,6 +224,18 @@ body {
   margin-top: 2.4em;
 }
 
+.md-typeset h2::after {
+  background:
+    linear-gradient(90deg, var(--md-accent-fg-color) 0 34%, transparent 34% 41%, var(--md-accent-fg-color) 41% 67%, transparent 67% 74%, var(--md-accent-fg-color) 74%);
+  clip-path: polygon(0 35%, 34% 35%, 38% 0, 42% 65%, 67% 65%, 71% 30%, 75% 100%, 100% 100%, 100% 70%, 76% 70%, 72% 0, 66% 35%, 42% 35%, 38% 100%, 33% 65%, 0 65%);
+  content: "";
+  display: block;
+  height: 0.28rem;
+  margin-top: 0.45rem;
+  opacity: 0.55;
+  width: 3.2rem;
+}
+
 .md-typeset code {
   border-radius: 0.35rem;
 }
@@ -348,6 +362,24 @@ body {
   pointer-events: none;
   position: absolute;
   z-index: -1;
+}
+
+.hedron-hero::after {
+  background: url("../assets/polyhedron-mesh.svg") center / contain no-repeat;
+  content: "";
+  height: clamp(15rem, 28vw, 21rem);
+  opacity: var(--hedron-facet-opacity);
+  pointer-events: none;
+  position: absolute;
+  right: clamp(-5rem, -4vw, -2rem);
+  top: clamp(-3rem, -2.5vw, -1.5rem);
+  transform: rotate(5deg);
+  width: clamp(16rem, 30vw, 22rem);
+}
+
+.hedron-hero > * {
+  position: relative;
+  z-index: 1;
 }
 
 .hedron-eyebrow {
@@ -486,6 +518,27 @@ body {
   display: block;
   padding: 1rem 1.05rem;
   transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hedron-choice::after,
+.hedron-card::after {
+  background: url("../assets/polyhedron-mesh.svg") center / contain no-repeat;
+  content: "";
+  height: 5.4rem;
+  opacity: 0.04;
+  pointer-events: none;
+  position: absolute;
+  right: -1.7rem;
+  top: -1.85rem;
+  transform: rotate(12deg);
+  width: 6rem;
+}
+
+[data-md-color-scheme="slate"] .hedron-choice::after,
+[data-md-color-scheme="slate"] .hedron-card::after {
+  opacity: 0.06;
 }
 
 a.hedron-choice:hover {
@@ -532,6 +585,8 @@ a.hedron-choice:hover {
   color: var(--hedron-muted);
   min-height: 10rem;
   padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
   transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
@@ -679,6 +734,14 @@ a.hedron-card:hover {
 @media screen and (max-width: 50em) {
   .hedron-hero {
     padding-top: 1.7rem;
+  }
+
+  .hedron-hero::after {
+    height: 13rem;
+    opacity: calc(var(--hedron-facet-opacity) * 0.52);
+    right: -8rem;
+    top: -2.25rem;
+    width: 15rem;
   }
 
   .hedron-hero h1 {

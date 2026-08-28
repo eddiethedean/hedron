@@ -10,8 +10,7 @@ status: shipped
     `hedron_jinja`, and `.hdj` is the explicit, versioned template format. After a small static
     TOML prologue, the body is ordinary Jinja and HTML.
 
-    **Package maturity:** Stable in the coordinated **1.0.x** inventory. PyPI remains on
-    **0.66.2** until publication.
+    **Package maturity:** Stable in the published coordinated **1.0.x** inventory.
     The phase 0.9 core authoring surface is **shipped**. Remaining RFC-0031 capability
     edges continue to close without blocking basic `.hdj` use—see [STABILITY](STABILITY.md)
     and [What’s ready](../guides/whats-ready.md).
@@ -37,9 +36,9 @@ every Python component, or silently relax CSP/CSRF/authorization policy.
 ## Install
 
 ```bash
-pip install "hedron[jinja]>=0.66.2,<0.67"
+pip install "hedron[jinja]>=1.0.0,<1.1"
 # or
-pip install "hedron-jinja>=0.66.2,<0.67"
+pip install "hedron-jinja>=1.0.0,<1.1"
 ```
 
 Neither `hedron-core` nor a default `hedron` installation depends on Jinja.

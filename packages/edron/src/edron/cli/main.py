@@ -130,10 +130,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         if hasattr(args, "func"):
             return args.func(args)
         if args.command == "run":
-            application = load_application(args.application)
             import uvicorn
 
-            uvicorn.run(application, host=args.host, port=args.port, reload=args.reload)
+            if args.reload:
+                if ":" not in args.application or Path(args.application).is_file():
+                    raise ValueError(
+                        "--reload requires an import target such as app:app; "
+                        "a loaded application object cannot be re-imported by Uvicorn"
+                    )
+                uvicorn.run(args.application, host=args.host, port=args.port, reload=True)
+            else:
+                application = load_application(args.application)
+                uvicorn.run(application, host=args.host, port=args.port, reload=False)
             return 0
         if args.command == "deploy-check":
             report = check_deployment(

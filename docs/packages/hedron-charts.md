@@ -18,12 +18,12 @@ Experimental explicit opt-ins.
 
 ## Install
 
-The flagship extra below resolves the current public `0.66.2` train. The direct satellite
+The flagship extra below resolves the current public `1.0.0` train. The direct satellite
 pin describes the 1.0 repository package and is intended for the coordinated 1.0 publication
 or an editable workspace checkout.
 
 ```bash
-pip install "hedron[charts]>=0.66.2,<0.67"
+pip install "hedron[charts]>=1.0.0,<1.1"
 
 # Or install the independently versioned satellite:
 pip install "hedron-charts>=0.2.4,<0.3"

@@ -16,7 +16,7 @@ Also ships a first-party bounded QuerySet `DataSource` and Django forms bridge �
 supply an already-authorized base QuerySet; omitted sort/filter allowlists deny
 client refinements.
 
-**Package maturity:** Stable · **Repository release candidate:** `v1.0.0` (Git tag/PyPI upload deferred) · **Latest PyPI release:** `v0.66.2` · public pin `>=0.66.2,<0.67` until publication; checkouts use `uv sync`
+**Package maturity:** Stable · **Published release:** `v1.0.0` · application pin `>=1.0.0,<1.1`
 
 Adapter capability readiness is **Supported** when pinned — see
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
@@ -24,9 +24,9 @@ Adapter capability readiness is **Supported** when pinned — see
 ## Install
 
 ```bash
-pip install "hedron-django>=0.66.2,<0.67"
+pip install "hedron-django>=1.0.0,<1.1"
 # or
-uv add "hedron-django>=0.66.2,<0.67"
+uv add "hedron-django>=1.0.0,<1.1"
 ```
 
 Requires Python 3.10–3.14, `hedron-core`, and Django `>=5.2,<6`.
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 Scaffold a new Django project:
 
 ```bash
-uvx --from "hedron>=0.66.2,<0.67" hedron new --django my-django-app
+uvx --from "hedron>=1.0.0,<1.1" hedron new --django my-django-app
 ```
 
 ## Quick start

@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/edron.svg)](https://pypi.org/project/edron/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/hedron/badge/?version=latest)](https://hedron.readthedocs.io/en/latest/guides/edron-user-guide/)
-[![Status: Beta](https://img.shields.io/badge/status-beta-orange.svg)](https://pypi.org/project/edron/)
+[![Status: Stable](https://img.shields.io/badge/status-stable-brightgreen.svg)](https://pypi.org/project/edron/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/packages/edron/LICENSE)
 
 **Build dashboards, internal tools, CRUD applications, and data workflows in Python—with a
@@ -19,26 +19,26 @@ that renders accessible HTML and adds partial-page interaction through HTMX.
 - No second router, renderer, state store, or security authority
 - Full access to the native Hedron application when you need it
 
-**Package maturity:** Beta · **Release:** `1.0.x` · **Python:** 3.10–3.14
+**Package maturity:** Stable · **Release:** `1.0.x` · **Python:** 3.10–3.14
 
-Pin the major version in applications while the authoring API evolves.
+Pin the minor train in applications and upgrade deliberately after reading the release notes.
 
 ## Quickstart
 
 Create a project with [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "edron>=1.0,<2.0" edron new my-app --template minimal
+uvx --from "edron>=1.0.0,<1.1" edron new my-app --template minimal
 cd my-app
 uv sync
-uv run uvicorn app:app --reload
+uv run edron run app:app --reload
 ```
 
 Or install Edron into an existing project:
 
 ```bash
-uv add "edron>=1.0,<2.0"
-# or: python -m pip install "edron>=1.0,<2.0"
+uv add "edron>=1.0.0,<1.1"
+# or: python -m pip install "edron>=1.0.0,<1.1"
 ```
 
 Create `app.py`:
@@ -59,8 +59,7 @@ class Home(ed.Page):
 Run it and open [http://127.0.0.1:8000](http://127.0.0.1:8000):
 
 ```bash
-edron run app:app
-# For development reload: uvicorn app:app --reload
+edron run app:app --reload
 ```
 
 The `app` object is a normal ASGI application. You can launch it with Edron's convenience command,
@@ -150,7 +149,7 @@ Edron includes the Hedron, data, chart, map, Markdown, sanitization, and Uvicorn
 by its standard API. Optional extras activate third-party data and plotting integrations:
 
 ```bash
-uv add "edron[pandas,plotly,sqlalchemy]>=1.0,<2.0"
+uv add "edron[pandas,plotly,sqlalchemy]>=1.0.0,<1.1"
 ```
 
 Available extras are `pandas`, `polars`, `pyarrow`, `plotly`, `altair`, `matplotlib`, and
@@ -298,7 +297,10 @@ and the broader [security guide](https://hedron.readthedocs.io/en/latest/guides/
 
 ## Learn more
 
+- [Five-minute quick start](https://hedron.readthedocs.io/en/latest/getting-started/edron-quickstart/)
 - [Edron user guide](https://hedron.readthedocs.io/en/latest/guides/edron-user-guide/)
+- [API by task](https://hedron.readthedocs.io/en/latest/api/EDRON_REFERENCE/)
+- [Example catalog](https://hedron.readthedocs.io/en/latest/examples/edron/)
 - [Edron API](https://hedron.readthedocs.io/en/latest/api/EDRON/)
 - [Getting started](https://hedron.readthedocs.io/en/latest/getting-started/)
 - [Cookbook](https://hedron.readthedocs.io/en/latest/guides/cookbook/)

@@ -1,8 +1,7 @@
 # Authoring loop and chrome API (`v0.54`)
 
 **Status:** Implemented (D-093 / D-094 / RFC-0081), introduced in `v0.54.0` and
-available on the verified `1.0.x` repository train. PyPI remains on `v0.66.2`
-until the 1.0 publication.
+available on the published `1.0.x` train.
 
 ## Shared schema
 

@@ -9,11 +9,11 @@ search:
 !!! note "Historical release note"
 
     This page records the 0.x release named in its title. For current installation,
-    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    support, and published 1.0 status, use [Current release and support](current-release.md).
     Keep the historical pins below only when maintaining that release line.
 
 Hedron 0.60 is implemented, verified, tagged, and published on PyPI. Applications use
-`hedron>=0.66.2,<0.67`.
+`hedron>=1.0.0,<1.1`.
 
 ## Highlights
 

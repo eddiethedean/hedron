@@ -3,7 +3,7 @@
 !!! note "Historical release note"
 
     This page records the 0.x release named in its title. For current installation,
-    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    support, and published 1.0 status, use [Current release and support](current-release.md).
     Keep the historical pins below only when maintaining that release line.
 
 Published coordinated train **`0.11.0`** (`v0.11.0`, 2026-08-04). Deepens Flask/Django

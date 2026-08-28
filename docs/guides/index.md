@@ -8,9 +8,9 @@ search:
 
 !!! note "Release context"
 
-    Guides describe the verified 1.0 repository candidate. See
-    [Current release and support](current-release.md) for the public-index pin,
-    migration baseline, package maturity, and publication status.
+    Guides describe the published 1.0 release. See
+    [Current release and support](current-release.md) for PyPI pins,
+    the migration baseline, package maturity, and support status.
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 

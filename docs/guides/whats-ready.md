@@ -6,7 +6,7 @@ fragments, CSRF, polling job status, DataTable, first-party charts.
 screen-reader claims. The coordinated 1.0 packages are **Stable** for the enumerated stable
 inventory; independent satellites retain their own Beta/tooling labels. There is no SLA.
 
-This page is the **adopter** maturity summary for the verified **1.0.x** repository train
+This page is the **adopter** maturity summary for the published **1.0.x** train
 ([Current release and support](current-release.md)). Full capability matrices and
 maintainer gate notes:
 [What’s ready — evidence](whats-ready-evidence.md).
@@ -27,8 +27,8 @@ maintainer gate notes:
 | **Experimental** | Public; may change; prefer documented fallbacks (usually polling) |
 | **Deferred** | Documented, not ready — do not treat as Supported |
 
-The repository candidate is **1.0.0**; PyPI still serves **0.66.2** until publication.
-The **0.67.0** train is the immutable migration baseline. Package maturity, capability
+Edron and Hedron **1.0.0** are published; the **0.67.0** train is the migration baseline.
+Package maturity, capability
 readiness, and API compatibility are separate axes —
 [Maturity labels](../getting-started/how-to-read.md).
 
@@ -73,7 +73,7 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.66.2,<0.67" hedron new my-app
+    uvx --from "hedron>=1.0.0,<1.1" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -81,13 +81,13 @@ Use [What’s ready — evidence](whats-ready-evidence.md).
 === "pip"
 
     ```bash
-    pip install "hedron>=0.66.2,<0.67" "uvicorn[standard]"
+    pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin the registry-resolvable release: `hedron>=0.66.2,<0.67`. Extras and public-index notes:
+Pin the stable release: `hedron>=1.0.0,<1.1`. Extras and compatibility notes:
 [Installation](../getting-started/installation.md). Sample kit:
 `hedron-sample-kit>=0.2.3,<0.3`.
 

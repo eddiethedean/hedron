@@ -1,12 +1,21 @@
 # Examples
 
-!!! note "Release context"
+<!-- hedron-release-status -->
 
-    Examples use the canonical 1.0 APIs. The repository candidate is verified;
-    public-index installs remain on `hedron>=0.66.2,<0.67` until publication.
-    See [Current release and support](../guides/current-release.md).
+These examples target the stable **1.0** API. Version and support details:
+[Current release](../guides/current-release.md).
 
-Ways to try Hedron — prefer a **real server** before simulated docs demos.
+Choose an example by outcome. Prefer a **real server** before simulated documentation demos.
+
+| Outcome | Layer | Difficulty | Time | Start |
+|---|---|---:|---:|---|
+| Complete page-oriented application | Edron | Beginner | 5 min | [Edron quick start](../getting-started/edron-quickstart.md) |
+| FastAPI-native component application | Hedron | Beginner | 10 min | [Hedron quick start](../getting-started/quickstart.md) |
+| Persistent notes application | Hedron | Intermediate | 30 min | [Notes with SQLAlchemy](notes-sqlalchemy.md) |
+| Session-protected application | Hedron | Intermediate | 25 min | [Session authentication](session-auth.md) |
+| Production architecture survey | Hedron | Advanced | 60+ min | [Reference app](reference-app.md) |
+
+See the [Edron example catalog](edron.md) for dashboard, CRUD, task, and migration scaffolds.
 
 There is **no hosted playground**. Use Codespaces / Dev Container, a local clone, or
 `hedron new` from [Build your first app](../getting-started/quickstart.md).

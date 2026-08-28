@@ -4,14 +4,14 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `1.0.0` implemented and verified in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
+**Status:** Edron `1.0.0` implemented, verified, tagged, and published<br>
 **Edron release line:** `1.0` canonical Hedron 1.0 adoption<br>
-**Latest in-tree release:** Edron `1.0.0`; Hedron `>=1.0.0,<2.0`<br>
-**Latest published release:** Edron `0.3.0`; the `1.0.0` candidate requires Hedron 1.x<br>
+**Latest in-tree release:** Edron `1.0.0`; Hedron `>=1.0.0,<1.1`<br>
+**Latest published release:** Edron `1.0.0` on Hedron 1.0.x<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
-**Public API:** [Edron 0.3 data workspaces](api/EDRON_03.md)<br>
-**State and interaction:** [Edron 0.1 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
-**Packaging:** [Edron 0.1 packaging](api/EDRON_PACKAGING.md)<br>
+**Public API:** [Edron 1.0 API by task](api/EDRON_REFERENCE.md)<br>
+**State and interaction:** [Edron 1.0 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
+**Packaging:** [Edron 1.0 packaging](api/EDRON_PACKAGING.md)<br>
 **Acceptance:** [Edron 0.3 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_003.md)
 
 This is the release roadmap for the separately versioned `edron` distribution. It does not assign
@@ -36,9 +36,9 @@ Edron `1.0` is the first release that directly adopts Hedron's canonical 1.0 int
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Implemented in-tree; release evidence required** |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | **Implemented and release-verified in-tree; publication pending** |
 | **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation on Hedron `0.67.0` | Implemented and release-verified in-tree; publication pending |
-| **1.0** | Canonical Hedron 1.0 page/view/action/include adoption and removal of duplicate route-handle ownership | Implemented and verified in-tree; publication pending |
+| **1.0** | Canonical Hedron 1.0 page/view/action/include adoption and removal of duplicate route-handle ownership | **Published and Verified** (`edron-v1.0.0`; Stable) |
 
-Candidate phases after `0.1` are directional themes, not accepted API contracts. A capability may
+Historical phases after `0.1` were directional themes until their contracts were accepted. A capability may
 move, narrow, remain native-only, or be rejected during its design review. Patch releases fix and
 harden an owning phase; they do not silently introduce the next phase's public surface.
 

@@ -35,6 +35,12 @@ class ReleaseFacts:
     pypi_pin_floor: str
     pypi_pin_ceiling: str
     registry_status: str
+    edron_published_version: str
+    edron_development_version: str
+    edron_pin_floor: str
+    edron_pin_ceiling: str
+    edron_pypi_version: str
+    edron_registry_status: str
     satellite_minimum: str
     satellite_maximum: str
     charts_minimum: str
@@ -69,10 +75,15 @@ class ReleaseFacts:
     def charts_pin(self) -> str:
         return f">={self.charts_minimum},<{self.charts_maximum}"
 
+    @property
+    def edron_pin(self) -> str:
+        return f">={self.edron_pin_floor},<{self.edron_pin_ceiling}"
+
 
 def load_release_facts(path: Path = RELEASE_FILE) -> ReleaseFacts:
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     release = data["release"]
+    edron = data["edron"]
     satellites = data["satellites"]
     published = str(release["published_version"])
     return ReleaseFacts(
@@ -88,6 +99,12 @@ def load_release_facts(path: Path = RELEASE_FILE) -> ReleaseFacts:
         pypi_pin_floor=str(release.get("pypi_pin_floor") or release["pin_floor"]),
         pypi_pin_ceiling=str(release.get("pypi_pin_ceiling") or release["pin_ceiling"]),
         registry_status=str(release.get("registry_status") or "uploaded"),
+        edron_published_version=str(edron["published_version"]),
+        edron_development_version=str(edron["development_version"]),
+        edron_pin_floor=str(edron["pin_floor"]),
+        edron_pin_ceiling=str(edron["pin_ceiling"]),
+        edron_pypi_version=str(edron["pypi_version"]),
+        edron_registry_status=str(edron.get("registry_status") or "uploaded"),
         satellite_minimum=satellites["minimum_version"],
         satellite_maximum=satellites["maximum_version"],
         charts_minimum=str(satellites.get("charts_minimum_version") or "0.2.0"),
@@ -127,6 +144,11 @@ INSTALL_LINE = re.compile(r"\b(?:pip(?:3)?\s+install|uv\s+add|uvx\b)", re.I)
 HEDRON_REQUIREMENT = re.compile(
     r"(?<![\w-])(?P<name>hedron-(?:flask|django|core|data|explorer|jinja|conformance|"
     r"extras)(?:\[[^\]]+\])?|hedron(?:\[[^\]]+\])?)"
+    r"(?P<constraint>>=[0-9.]+(?:,<[0-9.]+)?)?(?=[\"'\s]|$)",
+    re.I,
+)
+EDRON_REQUIREMENT = re.compile(
+    r"(?<![\w-])(?P<name>edron(?:\[[^\]]+\])?)"
     r"(?P<constraint>>=[0-9.]+(?:,<[0-9.]+)?)?(?=[\"'\s]|$)",
     re.I,
 )
@@ -192,6 +214,11 @@ RELEASE_CANDIDATE_CONTRADICTION = re.compile(
     r")",
     re.IGNORECASE,
 )
+PUBLISHED_RELEASE_CONTRADICTION = re.compile(
+    r"\bv?1\.0\.0\b[^\n]{0,100}\b(?:release candidate|publication pending|"
+    r"tag/PyPI deferred|upload deferred)\b",
+    re.IGNORECASE,
+)
 HISTORICAL_RELEASE_BANNER = "Historical release note"
 SECTION_LANDINGS = {
     Path("docs/index.md"): "guides/current-release.md",
@@ -212,13 +239,22 @@ def _is_historical(path: Path) -> bool:
     )
 
 
-def check_release_candidate_status(path: Path, text: str) -> list[str]:
-    """Reject contradictory 1.0 implementation/registry claims on maintained pages."""
+def check_release_candidate_status(
+    path: Path,
+    text: str,
+    facts: ReleaseFacts = FACTS,
+) -> list[str]:
+    """Reject contradictory 1.0 registry claims on maintained pages."""
     if _is_historical(path):
         return []
     failures: list[str] = []
     for index, line in enumerate(text.splitlines(), start=1):
-        if RELEASE_CANDIDATE_CONTRADICTION.search(line):
+        pattern = (
+            RELEASE_CANDIDATE_CONTRADICTION
+            if facts.registry_deferred
+            else PUBLISHED_RELEASE_CONTRADICTION
+        )
+        if pattern.search(line):
             failures.append(f"{path}:{index}: contradictory 1.0 candidate status: {line.strip()}")
     return failures
 
@@ -538,6 +574,20 @@ def check_text(
                     f"{expected}; found {constraint or 'no version constraint'}"
                 )
 
+        for match in EDRON_REQUIREMENT.finditer(line):
+            constraint = match.group("constraint") or ""
+            prefix = line[: match.start()]
+            is_requirement_position = bool(
+                re.search(r"(?:pip(?:3)?\s+install|uv\s+add|--from)\s+[\"']?$", prefix, re.I)
+            )
+            if not constraint and not is_requirement_position:
+                continue
+            if constraint != facts.edron_pin:
+                failures.append(
+                    f"{path}:{index}: install for {match.group('name')} must use "
+                    f"{facts.edron_pin}; found {constraint or 'no version constraint'}"
+                )
+
         for match in SATELLITE_REQUIREMENT.finditer(line):
             name = match.group("name") or ""
             if name.startswith("hedron-charts"):
@@ -593,6 +643,18 @@ def check_metadata(facts: ReleaseFacts = FACTS) -> list[str]:
     for version in (facts.published_version, facts.development_version):
         if f"## [{version}]" not in changelog:
             failures.append(f"packages/hedron/CHANGELOG.md has no [{version}] section")
+    edron_project = tomllib.loads(
+        (ROOT / "packages" / "edron" / "pyproject.toml").read_text(encoding="utf-8")
+    )["project"]
+    if edron_project["version"] != facts.edron_development_version:
+        failures.append(
+            "docs/release.toml Edron development_version does not match package metadata"
+        )
+    edron_changelog = (ROOT / "packages" / "edron" / "CHANGELOG.md").read_text(encoding="utf-8")
+    if f"## [{facts.edron_published_version}]" not in edron_changelog:
+        failures.append(
+            f"packages/edron/CHANGELOG.md has no [{facts.edron_published_version}] section"
+        )
     if not facts.published_version.startswith(f"{facts.train}."):
         failures.append("published_version is not on the configured release train")
     if facts.pin_floor != facts.published_version:
@@ -605,6 +667,10 @@ def check_metadata(facts: ReleaseFacts = FACTS) -> list[str]:
         failures.append(
             "deferred registry_status requires pypi_version to differ from published_version"
         )
+    if facts.edron_registry_status != "uploaded":
+        failures.append("Edron registry_status must be 'uploaded' for the coordinated 1.0 docs")
+    if facts.edron_pypi_version != facts.edron_published_version:
+        failures.append("Edron pypi_version must equal published_version")
     return failures
 
 
@@ -830,6 +896,7 @@ def main() -> int:
     print(
         f"ok: adopter docs agree with repository train v{FACTS.published_version}, "
         f"train {FACTS.train_line}, pin {FACTS.pin}, {registry}, "
+        f"Edron v{FACTS.edron_published_version} pin {FACTS.edron_pin}, "
         f"charts floor {FACTS.charts_pin}, and sample-kit floor {FACTS.sample_kit_pin}"
     )
     return 0

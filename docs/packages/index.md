@@ -15,7 +15,7 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 
 Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). `hedron-sim`
 and the sample kit install directly. This catalog describes the verified 1.0 repository
-inventory; PyPI still serves the 0.66.2 coordinated train until publication.
+inventory. Edron and the coordinated Hedron inventory are published on the 1.0 train.
 
 !!! note "Maturity"
 
@@ -40,10 +40,10 @@ inventory; PyPI still serves the 0.66.2 coordinated train until publication.
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Beta Web Component ABI; production-grade for the locked Supported inventory only |
 
 ```bash
-pip install "hedron[data,dev,posit]>=0.66.2,<0.67"
+pip install "hedron[data,dev,posit]>=1.0.0,<1.1"
 ```
 
-The checkout tip is `v1.0.0`; the latest public PyPI release remains `v0.66.2`.
+The checkout and latest public PyPI release are both `v1.0.0`.
 
 ## Tooling-grade and independent Beta lines
 
@@ -62,10 +62,10 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 
 ```bash
-pip install "hedron[charts]>=0.66.2,<0.67"
+pip install "hedron[charts]>=1.0.0,<1.1"
 ```
 
-After the coordinated 1.0 publication (or from a local wheel set built from this checkout):
+Install the compatible tooling packages from PyPI:
 
 ```bash
 pip install "hedron-sample-kit>=0.2.3,<0.3" "hedron-sim>=0.2.2,<0.3"

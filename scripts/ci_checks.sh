@@ -469,6 +469,8 @@ quality_docs() {
   run_py scripts/sync_status_roadmap.py --check
   run_py scripts/generate_sim_demos.py --check
   run_py scripts/generate_component_docs.py --check
+  run_py scripts/generate_edron_api_index.py --check
+  run_py scripts/generate_example_catalog.py --check
   run_py scripts/check_docs_train_ssot.py
   run_py scripts/check_package_docs_inventory.py
   run_py scripts/check_documentation_ownership.py

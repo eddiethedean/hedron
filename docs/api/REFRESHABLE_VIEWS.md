@@ -1,14 +1,21 @@
 ---
 status: historical
 phase: "0.43"
+search:
+  exclude: true
 ---
 
-# Refreshable views and commands
+# Legacy refreshable views and commands
 
-Golden-path FastAPI interaction API: `@app.refreshable` for GET fragments and
+!!! warning "Legacy 0.x API"
+
+    This page is retained for migration compatibility. New 1.0 applications use
+    `@app.page`, `@app.view`, and `@app.action`; start with
+    [API by task](by-task.md) or the [upgrade guide](../guides/upgrade.md).
+
+Historical FastAPI interaction API: `@app.refreshable` for GET fragments and
 `@app.command` for CSRF-backed mutations. Handles compile to the existing region /
-`InteractionResult` stack. Prefer these decorators for new pages; keep
-[Interaction](INTERACTION.md) for explicit HTMX allowlists.
+`InteractionResult` stack. Use [Interaction](INTERACTION.md) for the current contract.
 
 ```python
 from hedron import Hedron, Page, refresh

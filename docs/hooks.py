@@ -17,11 +17,49 @@ from pathlib import Path
 _DOCS = Path(__file__).resolve().parent
 _SIM_INCLUDES = _DOCS / "includes" / "sim"
 _SIM_MARKER = re.compile(r"<!--\s*hedron-sim:([a-z0-9-]+)\s*-->", re.IGNORECASE)
+_RELEASE_STATUS_MARKER = "<!-- hedron-release-status -->"
+_INSTALL_MATRIX_MARKER = "<!-- hedron-install-matrix -->"
 
 
-def on_config(config):  # noqa: ANN001
+def _release_facts() -> dict[str, object]:
+    return tomllib.loads((_DOCS / "release.toml").read_text(encoding="utf-8"))
+
+
+def _release_status_markdown(facts: dict[str, object]) -> str:
+    release = facts["release"]
+    edron = facts["edron"]
+    assert isinstance(release, dict)
+    assert isinstance(edron, dict)
+    return (
+        '!!! success "1.0 is published"\n\n'
+        f'    **Edron {edron["pypi_version"]}** and '
+        f'**Hedron {release["pypi_version"]}** are available from PyPI. '
+        "The documentation describes the 1.0 API contract.\n"
+    )
+
+
+def _install_matrix_markdown(facts: dict[str, object]) -> str:
+    release = facts["release"]
+    edron = facts["edron"]
+    assert isinstance(release, dict)
+    assert isinstance(edron, dict)
+    hedron_pin = f'>={release["pin_floor"]},<{release["pin_ceiling"]}'
+    edron_pin = f'>={edron["pin_floor"]},<{edron["pin_ceiling"]}'
+    return (
+        "| Start with | Install | Best for |\n"
+        "|---|---|---|\n"
+        f'| Edron | `edron{edron_pin}` | Complete applications, dashboards, CRUD, '
+        "and data workflows |\n"
+        f'| Hedron | `hedron{hedron_pin}` | FastAPI-native routes, component trees, '
+        "and host integration |\n"
+    )
+
+
+def on_config(config):
     """Expose release metadata and copy optional simulation assets."""
-    release = tomllib.loads((_DOCS / "release.toml").read_text(encoding="utf-8"))["release"]
+    facts = _release_facts()
+    release = facts["release"]
+    edron = facts["edron"]
     version = os.environ.get("READTHEDOCS_VERSION", "local")
     version_type = os.environ.get("READTHEDOCS_VERSION_TYPE", "branch")
     config.extra["hedron_docs"] = {
@@ -31,6 +69,9 @@ def on_config(config):  # noqa: ANN001
         "development_version": release["development_version"],
         "is_development": version in {"local", "latest", "main"}
         or version_type == "branch",
+        "hedron_pin": f'>={release["pin_floor"]},<{release["pin_ceiling"]}',
+        "edron_version": edron["published_version"],
+        "edron_pin": f'>={edron["pin_floor"]},<{edron["pin_ceiling"]}',
     }
     try:
         from hedron_sim.assets import copy_assets
@@ -56,6 +97,23 @@ def _expand_sim_markers(text: str) -> str:
     return _SIM_MARKER.sub(repl, text)
 
 
-def on_page_content(html: str, **kwargs: object) -> str:  # noqa: ARG001
+def on_page_markdown(markdown: str, **kwargs: object) -> str:
+    """Expand release facts before Markdown rendering."""
+    page = kwargs.get("page")
+    file = getattr(page, "file", None)
+    source = getattr(file, "src_uri", "")
+    if re.fullmatch(r"guides/whats-new-0\.\d+\.md", source):
+        metadata = getattr(page, "meta", None)
+        if isinstance(metadata, dict):
+            search = metadata.setdefault("search", {})
+            if isinstance(search, dict):
+                search["exclude"] = True
+    facts = _release_facts()
+    return markdown.replace(
+        _RELEASE_STATUS_MARKER, _release_status_markdown(facts)
+    ).replace(_INSTALL_MATRIX_MARKER, _install_matrix_markdown(facts))
+
+
+def on_page_content(html: str, **kwargs: object) -> str:
     """Expand sim islands after Markdown so tokens are not mangled."""
     return _expand_sim_markers(html)

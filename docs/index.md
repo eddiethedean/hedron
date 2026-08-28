@@ -9,7 +9,7 @@ search:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first application platform · 1.0 release candidate · Python 3.10–3.14</div>
+<div class="hedron-eyebrow">Python-first application platform · stable 1.0 · Python 3.10–3.14</div>
 
 # Stay in Python. Build the whole application.
 
@@ -18,7 +18,7 @@ React to provide—without creating a separate frontend stack.
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
-[Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
+[Choose your layer](getting-started/choose-layer.md){ .md-button .md-button--primary }
 [Migrate from Streamlit](guides/streamlit-migration.md){ .md-button }
 [Evaluate Hedron](guides/evaluate.md){ .md-button }
 </div>
@@ -46,27 +46,22 @@ All in Python.
   </a>
 </div>
 
-<div class="hedron-quickstart-label">Create an app in about 10 minutes</div>
+<div class="hedron-quickstart-label">Create an Edron app in about 5 minutes</div>
 
-About 10 minutes after Python 3.10+ and uv (or pip) are ready:
+About five minutes after Python 3.10+ and uv are ready:
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "hedron>=0.66.2,<0.67" hedron new my-hedron-app
-cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
-# Open http://127.0.0.1:8000 and click Refresh status
+uvx --from "edron>=1.0.0,<1.1" edron new my-app --template minimal
+cd my-app && uv sync && uv run edron run app:app --reload
+# Open http://127.0.0.1:8000
 ```
 
 Release status: [Current release and support](guides/current-release.md). Pins and extras:
 [Installation](getting-started/installation.md). Before production:
 [What’s ready](guides/whats-ready.md).
 
-!!! note "1.0 documentation, public-index pin"
-
-    These docs describe the verified `v1.0.0` repository candidate. Until its
-    maintainer-controlled PyPI publication completes, copy-paste install commands use the
-    latest public release, `hedron>=0.66.2,<0.67`. Contributors use `uv sync` for the 1.0
-    workspace.
+<!-- hedron-release-status -->
 
 ![Hello from Hedron with Refresh status](assets/hello-refresh.jpg){ .hedron-hero-shot }
 
@@ -74,12 +69,16 @@ Release status: [Current release and support](guides/current-release.md). Pins a
 
 ## Choose your starting point
 
-Start with the path that matches the application you have today.
+Start with the authoring layer that matches the application you have today.
 
 <div class="hedron-path">
+  <a href="getting-started/edron-quickstart/">
+    <strong>Start a complete application with Edron</strong>
+    Scaffold a page-oriented dashboard, CRUD app, or data workflow.
+  </a>
   <a href="getting-started/quickstart/">
-    <strong>Start a new application</strong>
-    Scaffold a working FastAPI app, run it, and change your first screen.
+    <strong>Use Hedron directly</strong>
+    Compose components and FastAPI-native page, view, and action routes.
   </a>
   <a href="guides/streamlit-migration/">
     <strong>Move beyond Streamlit</strong>
@@ -125,10 +124,11 @@ Need a focused pattern or fix? Open the [Cookbook](guides/cookbook.md) or [Troub
 
 ## Next steps
 
-1. [Build your first app](getting-started/quickstart.md) — celebrate Refresh, then edit Hello
-2. [What is HTMX?](getting-started/what-is-htmx.md) — understand regions and HTML swaps
-3. [HTMX interactions](guides/htmx-interactions.md) — add a second region
-4. [Minimal form POST](guides/minimal-form.md) — form updates the notes counter
+1. [Choose Edron or Hedron](getting-started/choose-layer.md)
+2. [Build your first Edron app](getting-started/edron-quickstart.md) or
+   [first Hedron app](getting-started/quickstart.md)
+3. [What is HTMX?](getting-started/what-is-htmx.md) — understand regions and HTML swaps
+4. [Minimal form POST](guides/minimal-form.md) — submit data across an explicit boundary
 5. [Learning path](getting-started/learning-path.md)
 
 Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippets or
@@ -137,10 +137,10 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-The repository is the verified `v1.0.0` release candidate. PyPI still serves `0.66.2`,
-so public-index installs use `hedron>=0.66.2,<0.67` until publication completes.
-For production adoption, continue with
-[What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
+Edron and the coordinated Hedron inventory are published on the stable `1.0.x` train.
+Pin applications to `>=1.0.0,<1.1`, then review capability-specific maturity before
+production adoption: [What’s ready](guides/whats-ready.md) and
+[Evaluate Hedron](guides/evaluate.md).
 </details>
 
 ## What you get (after Hello)

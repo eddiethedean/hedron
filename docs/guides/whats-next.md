@@ -1,9 +1,7 @@
 # What’s next
 
-Hedron `v1.0.0` is implemented and Verified in the repository. The remaining release action is
-the maintainer-controlled Git tag and PyPI publication; PyPI continues to serve `v0.66.2` until
-that workflow completes. See [Current release and support](current-release.md) for the exact
-channel status.
+Hedron `v1.0.0` is implemented, Verified, tagged, and published. See
+[Current release and support](current-release.md) for the exact channel status.
 
 There is no committed 1.1 calendar or commercial SLA. Future work must preserve the 1.0 stable
 inventory and pass the same evidence-driven compatibility, security, accessibility, packaging,

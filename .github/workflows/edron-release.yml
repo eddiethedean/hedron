@@ -170,3 +170,24 @@ jobs:
         with:
           packages-dir: dist/
           skip-existing: true
+
+      - name: Verify the published Edron quick start
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#edron-v}"
+          smoke_dir="$(mktemp -d)"
+          for attempt in 1 2 3 4 5 6; do
+            if uvx --refresh --from "edron==${VERSION}" edron new smoke \
+              --path "${smoke_dir}/app" --template minimal --overwrite; then
+              break
+            fi
+            if [ "${attempt}" -eq 6 ]; then
+              echo "Published edron==${VERSION} did not resolve from PyPI" >&2
+              exit 1
+            fi
+            sleep 20
+          done
+          cd "${smoke_dir}/app"
+          uv sync
+          uv run python -c \
+            "import importlib.metadata as m; import app; assert m.version('edron') == '${VERSION}'; assert app.app"

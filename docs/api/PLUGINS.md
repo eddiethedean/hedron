@@ -35,7 +35,7 @@ PLUGIN_META = PluginMeta(
     name="sample_kit",
     version="0.1.0",
     distribution="hedron-sample-kit",
-    hedron_version=">=1.0,<2.0",
+    hedron_version=">=1.0.0,<1.1",
     capabilities=PluginCapabilities(python=True, styles=True, explorer_panels=True),
 )
 

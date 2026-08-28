@@ -1,9 +1,9 @@
 # Cutting a Hedron release
 
-This runbook covers the coordinated **1.0.0** release candidate on branch `v1.0`.
-The latest public PyPI release is still `v0.66.2`; do not describe the candidate as
-published until the tag, wheels, and registry evidence are verified. Historical cut
-records live under `docs/archive/`.
+This runbook covers coordinated releases after the published **1.0.0** cut. The 1.0
+artifacts, tag, and registry evidence have been verified. Historical cut records live under
+`docs/archive/`; future releases repeat the same build, upload, smoke-test, and documentation
+sequence without moving an existing tag.
 
 Hedron is a Python monorepo with independently publishable distributions. The core
 Hedron packages and `hedron-posit` share the `1.0.0` train. `fastapi-workbench` is an
@@ -29,9 +29,10 @@ publication.
    publication requires an authorized corrective action after metadata and workflow
    fixes.
 7. Before publishing release notes, verify uploaded wheels, trusted publishing,
-   install smoke tests, and `registry_status = "uploaded"` in `docs/release.toml`.
+   both Hedron and Edron install/scaffold smoke tests, and `registry_status = "uploaded"`
+   in `docs/release.toml`.
 
-## Local release candidate
+## Build and validate artifacts
 
 ```bash
 uv sync --locked --all-groups --python 3.12
@@ -50,12 +51,12 @@ uv build --all-packages
 uv run python scripts/check_published_quickstart.py 1.0.0 --dist-dir dist --attempts 1
 ```
 
-The quick-start check is a pre-publication artifact check until the 1.0.0 wheels are
-available from PyPI. After upload, rerun it against the registry and record the result.
+Run the quick-start check first against local artifacts. After upload, rerun it against the
+registry and record the result before changing public documentation.
 
 ## Tag and publish
 
 Tagging and uploading require explicit maintainer authorization through the GitHub
-Release / PyPI trusted-publishing workflow. After publication, update
-`docs/release.toml`, `docs/guides/current-release.md`, and the package changelogs in
-that order, then rerun the documentation and release checks.
+Release / PyPI trusted-publishing workflow. After publication, update `docs/release.toml`
+first; rendered release callouts and validation derive from it. Then update changelogs and
+release notes, rerun the documentation/release checks, and verify both PyPI project pages.

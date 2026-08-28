@@ -4,9 +4,8 @@
 > product readiness use [What’s ready](guides/whats-ready.md); for the public roadmap use
 > [What’s next](guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.0.0` is a Verified release candidate; its Git tag/PyPI upload is
-pending. `v0.66.2` remains the latest release on PyPI, and `v0.67.0` is the immutable migration
-baseline.
+**Roadmap position:** `v1.0.0` is Verified, tagged, and published to PyPI. `v0.67.0` is the
+immutable migration baseline.
 **Date:** 2026-08-28
 **Implementation:** Stable — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
@@ -23,8 +22,8 @@ independent — stable `fastapi-workbench` `1.0.1`; Beta `hedron-maps` `0.1.4`, 
 `hedron-sim`, `hedron-mcp`, `hedron-gradio`. Independent Stable: `fastapi-workbench` `1.0.1`; experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.
 
-**Phase focus:** Phase **1.0** is a **Verified release candidate** against immutable `v0.67.0`;
-all 17 rows, reproducible candidate artifacts, dual-version compatibility, and release approval
+**Phase focus:** Phase **1.0** is **Published and Verified** against immutable `v0.67.0`;
+all 17 rows, reproducible artifacts, dual-version compatibility, and release approval
 are retained. Dynamic, foreign, and installed-package template execution remain explicitly
 Deferred. Phase **0.65** remains the
 verified in-tree predecessor awaiting final tag publication. Phase **0.63** (verified

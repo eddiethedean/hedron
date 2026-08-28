@@ -11,7 +11,7 @@ status: shipped
     [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) remain
     compatibility-protected **`stable`** on the current **1.0.x** train. Pin
     `uv sync` from a checkout. Application users should install
-    `hedron>=0.66.2,<0.67` from PyPI.
+    `hedron>=1.0.0,<1.1` from PyPI.
 
     For the current 1.0 contract, use the machine-enumerated
     [stable inventory](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/stable-inventory-100.toml) and the canonical

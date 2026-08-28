@@ -1,6 +1,6 @@
 # Hedron `v1.0.0` interface-consolidation acceptance plan
 
-**Status:** **Verified release candidate; tag and PyPI publication pending**
+**Status:** **Verified and published as `v1.0.0` on PyPI**
 
 **Baseline:** Verified Beta `v0.67.0`
 **Target:** `v1.0.0`

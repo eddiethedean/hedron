@@ -1,6 +1,6 @@
 # RFC-0096: Hedron 1.0 interface and HTMX/Alpine interaction consolidation
 
-**Status:** Accepted, implemented, and verified as the `v1.0.0` repository candidate; publication pending
+**Status:** Accepted, implemented, verified, and published as `v1.0.0`
 **Target:** `v1.0.0`, after `v0.67.0` Alpine integration is Verified  
 **Decision:** D-114, refined by D-115 / D-116 / D-117
 **Capability baseline:** Hedron `v0.67.0`; no net-new Required runtime capability  

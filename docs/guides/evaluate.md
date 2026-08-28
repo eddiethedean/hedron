@@ -37,12 +37,12 @@ introduces the web concepts as they appear.
 
 | Item | Value |
 |---|---|
-| Stable version | Published **0.66.2** on the `0.66.x` train |
-| Beta preview | `v0.67.0` |
+| Stable version | Published **1.0.0** on the `1.0.x` train |
+| Previous train | `v0.67.0` — upgrade and migration baseline |
 | Python | 3.10–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
-| Scheduled 1.0 | **None** — expect occasional breaking changes on `0.x` |
+| Compatibility | Stable APIs follow the documented 1.x policy |
 
 ## PoC checklist
 
@@ -55,11 +55,10 @@ Timebox a spike before a team commitment. Stop early if a go/no-go row fails.
 | **3** | One recipe: [Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) or [Session auth](../examples/session-auth.md) | Persist or gate a page the way your app would | Host/auth model fights Hedron’s request/page model |
 
 **Go (internal admin / CRUD):** pins held, golden path works, recipe matches your host,
-[What’s ready](whats-ready.md) Supported rows cover your must-haves, you accept Beta API
-churn and polling for live status.
+[What’s ready](whats-ready.md) Supported rows cover your must-haves, and you accept polling
+as the conservative live-status default.
 
-**No-go / defer:** need a commercial SLA or 1.0 already resolvable from the public index;
-need live SSE/WS as Supported; need
+**No-go / defer:** need a commercial SLA; need live SSE/WS as Supported; need
 human AT evidence as Supported; team will not own FastAPI+HTMX literacy.
 
 ## Capability matrix
@@ -84,7 +83,7 @@ Use [What’s ready today](whats-ready.md) for the PoC summary, then
 
 - Pure client-rendered SPA with a separate JS build
 - “Every Streamlit widget on day one”
-- Requirement for a commercial SLA or guaranteed 1.0 stability date
+- Requirement for a commercial SLA
 - Need for a first-party IdP / managed SSO product (optional helpers exist; you still own
   identity — [Authentication](authentication.md))
 

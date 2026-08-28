@@ -10,6 +10,9 @@
 **Build polished, server-rendered Python applications without maintaining a separate
 frontend.**
 
+**Edron 1.0.0 and Hedron 1.0.0 are published on PyPI.** Application pins in this README
+stay within the stable `1.0.x` train.
+
 This repository contains two ways to use the same runtime:
 
 - **[Edron](packages/edron/README.md)** is the batteries-included, class-oriented authoring
@@ -39,7 +42,7 @@ No Node.js toolchain is required. Python 3.10–3.14 is supported.
 Create and run a teaching project with [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "edron>=1.0,<2.0" edron new sales-app --template dashboard
+uvx --from "edron>=1.0.0,<1.1" edron new sales-app --template dashboard
 cd sales-app
 uv sync
 uv run uvicorn app:app --reload
@@ -65,11 +68,12 @@ charts, maps, resources, caching, jobs, deployment checks, and a review-first St
 tool. Install it directly if you already have a project:
 
 ```bash
-uv add "edron>=1.0,<2.0"
-# or: python -m pip install "edron>=1.0,<2.0"
+uv add "edron>=1.0.0,<1.1"
+# or: python -m pip install "edron>=1.0.0,<1.1"
 ```
 
 [Read the Edron package guide](packages/edron/README.md) ·
+[Build your first Edron app](https://hedron.readthedocs.io/en/latest/getting-started/edron-quickstart/) ·
 [Follow the Edron user guide](https://hedron.readthedocs.io/en/latest/guides/edron-user-guide/)
 
 ## Use Hedron directly
@@ -77,7 +81,7 @@ uv add "edron>=1.0,<2.0"
 Choose Hedron when FastAPI-native routes and explicit component composition are the desired API:
 
 ```bash
-uvx --from "hedron>=1.0,<2.0" hedron new operations-app
+uvx --from "hedron>=1.0.0,<1.1" hedron new operations-app
 cd operations-app
 uv sync
 uv run hedron run app:app --reload
@@ -161,10 +165,13 @@ independently versioned satellite packages.
 
 ## Documentation
 
+- [Choose Edron or Hedron](https://hedron.readthedocs.io/en/latest/getting-started/choose-layer/)
 - [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/)
+- [Edron quick start](https://hedron.readthedocs.io/en/latest/getting-started/edron-quickstart/)
 - [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/)
 - [Edron user guide](https://hedron.readthedocs.io/en/latest/guides/edron-user-guide/)
 - [Hedron API](https://hedron.readthedocs.io/en/latest/api/HEDRON/)
+- [Edron API](https://hedron.readthedocs.io/en/latest/api/EDRON_REFERENCE/)
 - [Cookbook](https://hedron.readthedocs.io/en/latest/guides/cookbook/)
 - [Security](SECURITY.md)
 - [Deployment](https://hedron.readthedocs.io/en/latest/guides/deployment/)

@@ -10,7 +10,7 @@ phase: "0.44"
     Published in-tree `v0.44.0` type-driven authoring (D-072 / D-073 / D-076). These symbols are
     **Beta**. They consume the shipped 0.43 handle API
     ([Refreshable views and commands](REFRESHABLE_VIEWS.md)). Pin
-    `hedron>=0.66.2,<0.67`.
+    `hedron>=1.0.0,<1.1`.
 
 Type-driven authoring uses Pydantic models and `typing.Annotated` metadata to describe validated
 view parameters, command forms, result effects, and optional class lifecycles:

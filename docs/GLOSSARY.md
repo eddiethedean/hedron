@@ -5,14 +5,14 @@ HTML `id` stays stable so HTMX can swap it.
 
 **Swap** — Replacing that region's HTML with a fragment the server returned.
 
-**Pin** — An install constraint with an upper bound, for example `hedron>=0.66.2,<0.67`.
+**Pin** — An install constraint with an upper bound, for example `hedron>=1.0.0,<1.1`.
 Use the pin the package index can resolve.
 
-**Train** — A minor version line (`0.46.x`). Compatible patches stay inside the pin;
+**Train** — A minor version line (`1.0.x`). Compatible patches stay inside the pin;
 the next train is an intentional upgrade.
 
-**Published** — A cut available through the named distribution channel. The repository contains
-the verified `v1.0.0` release candidate, while PyPI still serves `v0.66.2` until publication.
+**Published** — A cut available through the named distribution channel. Edron and Hedron
+`v1.0.0` are published on PyPI.
 `v0.67.0` is the immutable migration baseline. Pin the latest registry-resolvable upper-bounded
 constraint for reproducible installs.
 
@@ -75,9 +75,9 @@ sandbox for hostile authors.
 
 ## Maturity vocabulary
 
-**Train** — A coordinated package version line (for example `1.0.x` / candidate
-`v1.0.0`) that adopters pin together. “Living train” means the current repository line;
-the public registry can lag during a controlled release.
+**Train** — A coordinated package version line (for example the published `1.0.x`
+line) that adopters pin together. “Living train” means the current repository line;
+pre-release development can temporarily run ahead of the public registry.
 
 **Package maturity (Stable / Beta / Alpha)** — Distribution readiness. The coordinated
 1.0 inventory is **Stable**; independent satellites retain their own Beta or tooling-grade

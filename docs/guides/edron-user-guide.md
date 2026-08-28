@@ -10,9 +10,8 @@ Edron is a typed, server-rendered Python facade over one native Hedron applicati
 for dashboards, internal tools, data workspaces, and workflows that should remain useful with
 ordinary HTTP and without a separate frontend build system.
 
-This guide targets Edron `1.0.x` and Hedron `1.x` (`>=1.0.0,<2.0`). Edron is a **Beta**
-distribution: pin the package train, keep the supported surface explicit, and treat undocumented
-imports as internal.
+This guide targets the stable Edron and Hedron `1.0.x` train (`>=1.0.0,<1.1`). Pin the minor
+train, keep the supported surface explicit, and treat undocumented imports as internal.
 
 ## The operating model
 
@@ -38,7 +37,7 @@ Use a clean environment and pin the Edron minor train:
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install "edron>=1.0.0,<2.0" "hedron>=1.0.0,<2.0" "hedron-data>=1.0.0,<2.0"
+python -m pip install "edron>=1.0.0,<1.1"
 ```
 
 On Windows, activate `.venv\\Scripts\\activate` instead. Verify the interpreter that will run the
@@ -82,7 +81,6 @@ app = ed.App(title="Sales dashboard", security="standard")
 @app.page("/", title="Sales dashboard")
 class Home(ed.Page):
     def render(self) -> None:
-        self.heading("Sales dashboard")
         self.text("A server-rendered page with an accessible HTML fallback.")
         self.metric("Orders", 128, delta="+12")
 ```

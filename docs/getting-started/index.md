@@ -6,18 +6,21 @@ search:
 
 # Learn Hedron
 
-!!! note "1.0 documentation"
+<!-- hedron-release-status -->
 
-    These tutorials target the verified `v1.0.0` repository candidate. Until its
-    registry publication, use the public `hedron>=0.66.2,<0.67` pin shown in
-    [Installation](installation.md); contributors use `uv sync`.
+These are the stable **1.0** learning paths. Release and support details:
+[Current release](../guides/current-release.md).
+
+Not sure which authoring layer you need? Start with
+[Choose Edron or Hedron](choose-layer.md). New complete applications normally begin with
+Edron; direct FastAPI and component work begins with Hedron.
 
 Get from an empty directory to a CSRF-protected form without introducing a frontend
 build system. The golden path extends one small application across four pages; each step
 has an observable browser result.
 
-**Start now:** [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
-(~10 minutes after Python + uv/pip are ready).
+**Start now:** [Build your first Edron app](edron-quickstart.md) (~5 minutes) or
+[build your first Hedron app](quickstart.md) (~10 minutes).
 
 New to application development, VS Code, or terminals? Choose the slower, fully explained
 walkthrough for your environment:
@@ -58,6 +61,7 @@ Evaluating production use? [What’s ready](../guides/whats-ready.md) ·
 
 | Starting point | Continue with |
 |---|---|
+| New complete Python application | [Build your first Edron app](edron-quickstart.md) |
 | Know Python, new to application development | [Start with VS Code and terminal basics](first-app-vscode.md) |
 | Know Python, developing in Posit Workbench | [Start with `hedron-posit` in Workbench](first-app-posit-workbench.md) |
 | New FastAPI app | [Build your first app](quickstart.md) |

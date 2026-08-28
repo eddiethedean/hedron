@@ -3693,7 +3693,7 @@ hide:
 
 !!! note "Release context"
 
-    Component contracts and demos target the verified 1.0 repository candidate.
+    Component contracts and demos target the published 1.0 release.
     Registry and support details live on
     [Current release and support](../guides/current-release.md).
 

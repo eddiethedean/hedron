@@ -27,8 +27,7 @@ Stable distribution. Pin versions in production and read [upgrade](upgrade.md) n
 before bumping trains. Charts require `hedron-charts>=0.2.4,<0.3`. The sample kit requires
 `hedron-sample-kit>=0.2.3,<0.3` — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current repository train (`1.0.x`); PyPI
-remains on 0.66.2 until publication.
+**Support window:** security fixes target the current published train (`1.0.x`).
 Previous minors receive best-effort triage as documented in
 [SECURITY.md](../SECURITY.md) (no multi-year LTS). Version and pin SoT:
 [Current release and support](current-release.md). Public-index notes:

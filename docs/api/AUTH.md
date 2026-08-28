@@ -27,7 +27,7 @@ Prefer the session-login pattern in [Authentication](../guides/authentication.md
 unless you need an external provider.
 
 ```bash
-pip install "hedron[auth]>=0.66.2,<0.67"
+pip install "hedron[auth]>=1.0.0,<1.1"
 ```
 
 ## OIDC helpers (`hedron.oidc`)
@@ -162,7 +162,7 @@ Recipe: [Session auth](../examples/session-auth.md).
 
 | Code / condition | Behavior |
 |---|---|
-| Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]>=0.66.2,<0.67"` |
+| Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]>=1.0.0,<1.1"` |
 | Invalid `OidcClientConfig` | `ValueError` on empty issuer / client_id / redirect_uri |
 | Provider misconfiguration | Authlib/provider errors bubble to the route |
 | Unsafe `after_login` / missing rate limit | `SessionAuthFlow` fails closed (`HED-AUTHFLOW-*`) |

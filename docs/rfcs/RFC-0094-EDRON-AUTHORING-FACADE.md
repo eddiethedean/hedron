@@ -1,7 +1,8 @@
 # RFC-0094: Edron batteries-included Pythonic authoring facade
 
-**Status:** Draft<br>
-**Proposed target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Status:** Accepted, implemented, and incorporated into published Edron `1.0.0`<br>
+**Original target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Current supported line:** Edron `1.0.x` on Hedron `1.0.x`<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Design fixtures:** [Edron golden applications](../implementation/EDRON_GOLDEN_APPS.md)<br>
 **Public API contract:** [Edron 0.1 public API](../api/EDRON.md)<br>
@@ -82,7 +83,7 @@ Installing either the dependency directly or the matching Edron extra activates 
 
 ```bash
 pip install edron "plotly>=5.18,<7"
-pip install "edron[plotly]"
+pip install "edron[plotly]>=1.0.0,<1.1"
 ```
 
 The extra is only an installation shortcut. Optional methods remain importable and fail at the
@@ -509,7 +510,7 @@ If Plotly is absent, the call raises a structured `ed.MissingCapabilityError` co
 - capability and adapter name;
 - missing distribution and compatible version range;
 - `pip install "plotly>=5.18,<7"` as the direct command;
-- `pip install "edron[plotly]"` as the equivalent shortcut;
+- `pip install "edron[plotly]>=1.0.0,<1.1"` as the equivalent shortcut;
 - the Edron call site; and
 - an offline documentation reference.
 

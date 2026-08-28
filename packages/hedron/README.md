@@ -28,7 +28,7 @@ There is no generated frontend project, Node.js build, virtual DOM, or full-scri
 The fastest path uses [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "hedron>=1.0,<2.0" hedron new my-hedron-app
+uvx --from "hedron>=1.0.0,<1.1" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run hedron run app:app --reload
@@ -42,8 +42,8 @@ demonstrates the canonical page, view, and action roles with progressive form fa
 Install Hedron directly when adding it to an existing project:
 
 ```bash
-uv add "hedron>=1.0,<2.0" "uvicorn[standard]"
-# or: python -m pip install "hedron>=1.0,<2.0" "uvicorn[standard]"
+uv add "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+# or: python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
 ```
 
 ## A small, explicit core
@@ -201,7 +201,7 @@ satellite packages or optional integrations:
 For example:
 
 ```bash
-uv add "hedron[data,charts,dev]>=1.0,<2.0"
+uv add "hedron[data,charts,dev]>=1.0.0,<1.1"
 ```
 
 Satellite packages may have independent versions. Use the
@@ -239,8 +239,8 @@ for lifespan, security, assets, root paths, and response behavior.
 Hedron's renderer is framework-neutral. First-party adapters provide Flask and Django hosts:
 
 ```bash
-uv add "hedron-flask>=1.0,<2.0"
-# or: uv add "hedron-django>=1.0,<2.0"
+uv add "hedron-flask>=1.0.0,<1.1"
+# or: uv add "hedron-django>=1.0.0,<1.1"
 ```
 
 ## Security and ownership boundaries
@@ -295,6 +295,7 @@ acceleration, framework migrations, and offline upgrade reports. Run `hedron --h
 
 ## Learn more
 
+- [Choose Edron or Hedron](https://hedron.readthedocs.io/en/latest/getting-started/choose-layer/)
 - [Documentation](https://hedron.readthedocs.io/en/latest/)
 - [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/)
 - [First application](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/)

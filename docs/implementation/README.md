@@ -92,7 +92,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Hedron 1.0 implementation and cut plan](HEDRON_1_0.md) — **Implemented and Verified** against
   the immutable `v0.67.0` baseline; inventory/warning reconciliation, canonical facade and
   per-slice removals, static migration, interaction/engine cutover, dual-version fleet evidence,
-  and all 17 release gates are complete; tag and registry publication remain
+  and all 17 release gates are complete; `v1.0.0` is published on PyPI
 - [Hedron-native documentation application](HEDRON_NATIVE_DOCUMENTATION.md) — draft unassigned
   workstreams for compiling the Markdown corpus into native Hedron component trees, building the
   docs shell/search/API/live-demo application, proving parity, and cutting over to FastAPI Cloud

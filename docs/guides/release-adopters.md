@@ -2,9 +2,9 @@
 
 The canonical release history now lives on [Releases](release-notes.md).
 
-The repository is the verified **v1.0.0 release candidate**; the latest public PyPI
-release remains **v0.66.2** until publication. Use `hedron>=0.66.2,<0.67` for
-public-index installs. See [Installation](../getting-started/installation.md).
+The repository and latest public PyPI release are **v1.0.0**. Use
+`hedron>=1.0.0,<1.1` for public-index installs. See
+[Installation](../getting-started/installation.md).
 
 Continue with:
 

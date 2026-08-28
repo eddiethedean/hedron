@@ -1,7 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the verified **1.0.x** repository train. The `v1.0.0` tag/PyPI
-publication is pending; the latest public PyPI release remains `v0.66.2`.
+**Status:** Accepted for the published **1.0.x** train (`v1.0.0`).
 **Reviewed:** 2026-08-28
 
 ## Current train (read this first)
@@ -25,8 +24,7 @@ inventory. Independent Beta packages
 `hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
 lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
 also version independently. Independent `fastapi-workbench>=1.0.1,<2` is not on the
-coordinated train. The public registry continues to resolve the 0.66.2 coordinated wheels
-until 1.0.0 publication.
+coordinated train. The public registry resolves the 1.0.0 coordinated wheels.
 
 ### Charts and sample-kit compatibility floor
 
@@ -94,7 +92,7 @@ See [Installation](getting-started/installation.md) and
 | Pydantic | Supported `>=2.12.0,<2.14`; declared `>=2.12.0,<2.15` | Required by `hedron-core`; 2.12 is the first line with official Python 3.14 support. |
 | Starlette | `>=0.40.0` where directly declared | FastAPI 0.121 requires `>=0.40`; deployment adapters share that floor. |
 | HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js`. |
-| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=0.66.2,<0.67`; Matplotlib/static charts are the conservative default. |
+| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=1.0.0,<1.1`; Matplotlib/static charts are the conservative default. |
 | Plotly | `>=5.18,<7` via `hedron-charts[plotly]` | Experimental; local host asset, no CDN callbacks. |
 | Altair | `>=6.0,<7` via `hedron-charts[altair]` | Experimental; Python 3.14 requires Altair 6+ (TypedDict fix). |
 | nh3 | `>=0.2` via `hedron[sanitize]` / `[markdown]` | TrustedHtml.nh3 named constructor. |
@@ -195,7 +193,7 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 
 - RFC-0096 and D-114–D-117 define the implemented and Verified subtractive 1.0 cut from the
   immutable `v0.67.0` baseline. Its enumerated stable inventory, removal evidence, and all
-  17 release gates are complete; only maintainer-controlled tag/registry publication remains.
+  17 release gates are complete, and `v1.0.0` is published on PyPI.
 - Coordinated `stable` contracts are compatibility-protected throughout 1.x; independently
   versioned 0.x satellites retain the compatibility policy stated on their package pages.
   An incompatible change requires an accepted RFC/decision, migration tooling or guidance, a

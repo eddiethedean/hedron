@@ -1,8 +1,8 @@
 # Architecture overview
 
-Hedron is typed, server-rendered UI for Python web apps. The flagship `hedron` package
-extends FastAPI; `hedron-core` renders portable components; Flask/Django adapters share
-the same renderer without FastAPI.
+Edron is the batteries-included application layer; Hedron is the FastAPI-native component and
+route layer beneath it. `hedron-core` renders portable components, while Flask and Django
+adapters share that renderer without requiring FastAPI at runtime.
 
 **Diligence entry:** [Enterprise diligence](guides/enterprise-diligence.md) · maturity:
 [What’s ready](guides/whats-ready.md) · product constraints:
@@ -30,7 +30,7 @@ sequenceDiagram
 1. The request enters ordinary FastAPI/Starlette middleware (sessions, CORS, your auth).
 2. `HedronRoute` uses FastAPI for parsing, dependency injection, and exceptions.
 3. Built-in security profiles validate CSRF on unsafe methods when enabled.
-4. Your `@app.page` / `@app.component` / `@app.action` handler returns a `Page`,
+4. Your `@app.page` / `@app.view` / `@app.action` handler returns a `Page`,
    `InteractionResult`, model, or explicit response.
 5. Hedron selects **PAGE** (full document) or **FRAGMENT** (region HTML) from HTMX
    headers and declared `FragmentRegion` policy — unauthorized targets fail closed.
@@ -80,8 +80,8 @@ Secrets must not enter public metadata, identities, caches, or diagnostics.
 | PAGE | Navigation / full document | `Page(...)` |
 | FRAGMENT | `HX-Request` targeting a declared region | `InteractionResult(content=..., region_id=...)` or Path-A `swap(...)` |
 
-Rendering a component never implies a public route — only `@page` / `@component` /
-`@action` / `@fragment` (or adapter equivalents) expose HTTP endpoints.
+Rendering a component never implies a public route — only registered `@app.page`,
+`@app.view`, and `@app.action` handlers (or adapter equivalents) expose HTTP endpoints.
 
 ## Failure domains
 
@@ -92,7 +92,7 @@ Rendering a component never implies a public route — only `@page` / `@componen
 | Unscoped job HTTP status | Fail closed | Pass `auth_subject` / `tenant_id` |
 | Wrong `HX-Target` | HTTP **403** | Declare `FragmentRegion` / `app.region` |
 | CSRF missing on POST | HTTP **403** | Seed token on GET; include field/header |
-| Chart satellite older than `0.2.0` on 0.38 | Resolver conflict / downgrade | Install `hedron[charts]>=0.66.2,<0.67` |
+| Incompatible chart satellite | Resolver conflict / downgrade | Install `hedron[charts]>=1.0.0,<1.1` and check Compatibility |
 
 ## Multi-worker, jobs, and inference
 
@@ -111,7 +111,7 @@ Accepted work returns HTTP **202** with `Retry-After`. Prefer **`Poll`** +
 **experimental** — configure reverse-proxy buffering/timeouts, and prefer polling when
 load/proxy backpressure proof is required ([What's ready](guides/whats-ready.md)).
 
-### Inference placement (0.18)
+### Inference placement
 
 `InferencePolicy` admits/queues work onto the same `JobBackend`. `ModelDemo` /
 `InferenceWorkflow` never auto-publish callables as HTTP/MCP endpoints. Cancel maps
@@ -190,8 +190,8 @@ hedron                         FastAPI flagship and beginner API
 ├── FastAPI / Starlette        routing, DI, security, ASGI, responses
 └── optional integrations      Explorer, data, charts, extras, notebook, mcp, gradio, sample plugins
 
-hedron-flask ──> hedron-core   Flask adapter (Supported capability; Beta package)
-hedron-django ─> hedron-core   Django adapter (Supported capability; Django >=5.2,<6)
+hedron-flask ──> hedron-core   stable Flask adapter
+hedron-django ─> hedron-core   stable Django >=5.2,<6 adapter
 hedron-jinja ──> hedron-core   optional .hdj format
 hedron-gradio ─> hedron-core   optional allowlisted Gradio client (Beta; bounded Supported inventory)
 ```

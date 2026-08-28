@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail when public flagship or charts exports disappear from API reference."""
+"""Fail when public Edron, Hedron, charts, or CLI exports disappear from reference."""
 
 from __future__ import annotations
 
@@ -14,6 +14,14 @@ CLI_SOURCE = ROOT / "packages/hedron/src/hedron/cli/parser.py"
 CLI_REFERENCE = ROOT / "docs/api/CLI.md"
 CHARTS_INIT = ROOT / "packages/hedron-charts/src/hedron_charts/__init__.py"
 CHARTS_REFERENCE = ROOT / "docs/api/CHART.md"
+EDRON_INIT = ROOT / "packages/edron/src/edron/__init__.py"
+EDRON_EXPORTS = ROOT / "docs/api/EDRON_EXPORTS.md"
+EDRON_AUTODOC = ROOT / "docs/api/EDRON_AUTODOC.md"
+EDRON_CONTRACTS = (
+    ROOT / "docs/api/EDRON.md",
+    ROOT / "docs/api/EDRON_REFERENCE.md",
+    ROOT / "docs/api/EDRON_STATE_INTERACTION.md",
+)
 
 
 def public_exports(source: str) -> set[str]:
@@ -94,8 +102,26 @@ def main() -> int:
         raise SystemExit(
             "docs/api/CHART.md is missing hedron_charts exports:\n  " + "\n  ".join(missing_charts)
         )
+    edron_exports = public_exports(EDRON_INIT.read_text(encoding="utf-8"))
+    edron_documented = documented_symbols(EDRON_EXPORTS.read_text(encoding="utf-8"))
+    missing_edron = sorted(edron_exports - edron_documented)
+    if missing_edron:
+        raise SystemExit(
+            "docs/api/EDRON_EXPORTS.md is missing Edron exports:\n  "
+            + "\n  ".join(missing_edron)
+        )
+    if "::: edron" not in EDRON_AUTODOC.read_text(encoding="utf-8"):
+        raise SystemExit("docs/api/EDRON_AUTODOC.md must render the public edron module")
+    for contract in EDRON_CONTRACTS:
+        text = contract.read_text(encoding="utf-8")
+        if "app.native(" in text:
+            raise SystemExit(
+                f"{contract.relative_to(ROOT)} documents invalid app.native(...); "
+                "use app.native_surface(...)"
+            )
     print(
         f"ok: all {len(exports)} hedron.__all__ exports and "
+        f"{len(edron_exports)} edron.__all__ exports and "
         f"{len(charts_exports)} hedron_charts exports and {len(commands)} CLI commands "
         "appear in API docs"
     )

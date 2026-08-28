@@ -1,14 +1,14 @@
 # Public 1.0 readiness (architectural review)
 
-**Status:** **Verified `v1.0.0` release candidate.** All 17 release gates and the immutable
-`v0.67.0` compatibility bridge pass; the Git tag and PyPI upload remain maintainer-controlled.
+**Status:** **Published `v1.0.0`.** All 17 release gates and the immutable
+`v0.67.0` compatibility bridge pass.
 [D-114–D-117](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) supersede
 D-038's no-1.0 terminus while retaining its evidence-based maturity rules.
 
-**Verdict:** The repository is ready to tag `v1.0.0`. The complete 0.67 public/task/artifact
+**Verdict:** The repository and published artifacts satisfy the 1.0 review. The complete 0.67 public/task/artifact
 inventory, warning reconciliation, enumerated stable surface, dual-version corpus, exact matrix,
 support window, reproducible artifacts, and regression evidence are retained in the acceptance
-packet. PyPI still serves `0.66.2` until the release workflow completes.
+packet.
 
 ## What is already strong
 
@@ -50,8 +50,8 @@ packet. PyPI still serves `0.66.2` until the release workflow completes.
    still gates the canonical widgets.
 7. **Process prune — release gate:** Archive old packets; PR CI runs tip + recent only; generated
    remediation truth instead of stale issue tables.
-8. **Package maturity — verified:** Flagship + claimed adapters are Stable in package metadata for
-   the **frozen inventory only**; PyPI publication remains the final controlled release action.
+8. **Package maturity — complete:** Flagship + claimed adapters are Stable in package metadata for
+   the frozen inventory, and `v1.0.0` is published on PyPI.
 
 ## Can wait until 2.0
 

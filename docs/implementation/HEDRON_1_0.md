@@ -1,6 +1,6 @@
 # Hedron 1.0 implementation and cut plan
 
-**Status:** **Implemented and Verified; `v1.0.0` tag/PyPI publication pending**
+**Status:** **Implemented, Verified, and published as `v1.0.0` on PyPI**
 **Baseline:** Verified Beta `v0.67.0`
 **Target:** `v1.0.0`
 **Authority:** RFC-0096 and D-114–D-117

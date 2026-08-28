@@ -11,8 +11,8 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Current version | **v1.0.0** verified repository candidate; PyPI remains `v0.66.2`; application pin `hedron>=0.66.2,<0.67` until publication |
-| Publication / commercial SLA | 1.0 tag and registry upload pending; **no commercial SLA** |
+| Current version | Published **v1.0.0**; application pin `hedron>=1.0.0,<1.1` |
+| Publication / commercial SLA | Edron and Hedron 1.0.0 are published on PyPI; **no commercial SLA** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner (bus factor: small OSS project — pin versions and follow [Support](support.md)) |
 | Security disclosure | GitHub [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new) (preferred); alternate email in [SECURITY.md](../SECURITY.md) |

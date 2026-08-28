@@ -15,8 +15,7 @@ status: implemented
 **Supported** for Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
 DataSource. Coordinated adapter packages are **Stable** in the 1.0 inventory;
 API-level classifications still apply symbol by symbol.
-Portable contracts live in `hedron-core`. Repository train: **1.0.x** (`v1.0.0` candidate);
-PyPI remains at `v0.66.2` until publication.
+Portable contracts live in `hedron-core`. Published train: **1.0.x** (`v1.0.0`).
 
 Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapters). Quickstarts:
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).
@@ -24,8 +23,8 @@ Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapte
 ## Install
 
 ```bash
-pip install "hedron-flask>=0.66.2,<0.67"
-pip install "hedron-django>=0.66.2,<0.67"   # Django >=5.2,<6
+pip install "hedron-flask>=1.0.0,<1.1"
+pip install "hedron-django>=1.0.0,<1.1"   # Django >=5.2,<6
 ```
 
 ## Portable baseline

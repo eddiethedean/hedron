@@ -8,17 +8,18 @@ common application jobs to the appropriate guide and contract page.
 
 After [First app → What is HTMX → HTMX interactions → Minimal form](../getting-started/index.md):
 
-1. [Hedron](HEDRON.md) — FastAPI application facade
-2. [Router](ROUTER.md) — `@page` / `@component` / `@action`
-3. [Page](PAGE.md) — navigable HTML documents
-4. [Interaction](INTERACTION.md) — `FragmentRegion`, `InteractionResult`, `swap`
-5. [Responses](RESPONSES.md) — PAGE vs FRAGMENT HTML
-6. [Exceptions](EXCEPTIONS.md) — CSRF / region HTTP map
-7. [Mount / path prefix](MOUNT.md) — reverse-proxy subpaths and cookie `Path`
-8. [Auth](AUTH.md) — optional OIDC helpers (`hedron[auth]`)
-9. [CSRF composition](CSRF_COMPOSITION.md)
-10. [Testing](TESTING.md) — `AppScenario`, HTMX asserts
-11. [CLI](CLI.md) — `hedron check`, `routes`, `new`, `build`
+1. [Edron by task](EDRON_REFERENCE.md) — batteries-included application facade
+2. [Hedron](HEDRON.md) — FastAPI application facade
+3. [Router](ROUTER.md) — `@app.page` / `@app.view` / `@app.action`
+4. [Page](PAGE.md) — navigable HTML documents
+5. [Interaction](INTERACTION.md) — `FragmentRegion`, `InteractionResult`, `swap`
+6. [Responses](RESPONSES.md) — PAGE vs FRAGMENT HTML
+7. [Exceptions](EXCEPTIONS.md) — CSRF / region HTTP map
+8. [Mount / path prefix](MOUNT.md) — reverse-proxy subpaths and cookie `Path`
+9. [Auth](AUTH.md) — optional OIDC helpers (`hedron[auth]`)
+10. [CSRF composition](CSRF_COMPOSITION.md)
+11. [Testing](TESTING.md) — `AppScenario`, HTMX asserts
+12. [CLI](CLI.md) — `hedron check`, `routes`, `new`, `build`
 
 !!! tip "`hedron` vs `hedron_core`"
 
@@ -34,14 +35,13 @@ satellite package maturity remains independent.
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-The repository tip is the verified **`v1.0.0` release candidate**. The latest installable
-PyPI release remains **`v0.66.2`**, so public-index users should pin
-`hedron>=0.66.2,<0.67` until 1.0 is published.
+The repository tip and latest installable PyPI release are **`v1.0.0`**. Public-index users
+should pin `hedron>=1.0.0,<1.1`.
 
 !!! note "Contracts vs full reference"
 
-    API pages are hand-maintained contracts, with **mkdocstrings** signatures on
-    [Autodoc](AUTODOC.md) (still a subset of every `hedron.__all__` name). Map of
+    API pages combine hand-maintained contracts with **mkdocstrings** signatures on
+    [Autodoc](AUTODOC.md). Map of
     exports → pages: [Public API coverage map](COVERAGE.md).
 
     **Contract page template** (required for new/edited flagship pages):

@@ -37,12 +37,11 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current repository train is **1.0.x** (`v1.0.0`; tag/PyPI upload deferred). The latest
-version on PyPI is `v0.66.2`.
+The current published train is **1.0.x** (`v1.0.0`) for both Edron and Hedron.
 Install from PyPI:
 
 ```bash
-python -m pip install "hedron>=0.66.2,<0.67"
+python -m pip install "hedron>=1.0.0,<1.1"
 ```
 
 Pins: [Installation](installation.md).

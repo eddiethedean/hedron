@@ -7,7 +7,7 @@ status: published
 !!! tip "Verified on the 0.25 train"
 
     Canonical production archetype packet (`ARCHETYPE-025` … `PKG-025`) is **Verified**.
-    Pin `hedron>=0.66.2,<0.67`.
+    Pin `hedron>=1.0.0,<1.1`.
 
     **Ship today:** [Ship a Hedron app](../guides/ship.md) ·
     [What’s ready](../guides/whats-ready.md) ·

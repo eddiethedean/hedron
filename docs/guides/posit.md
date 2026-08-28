@@ -8,9 +8,8 @@ New to application development or Workbench? Start with
 installs `hedron-posit`, constructs `HedronPosit`, and uses the Workbench-aware launcher before
 returning here for the deployment contract.
 
-**Repository release candidate:** `hedron-posit>=1.0.0,<2.0` (or
-`hedron[posit]>=1.0.0,<2.0`). The latest public PyPI release remains
-`0.66.2` until the 1.0.0 tag is published. For plain FastAPI/ASGI applications,
+**Published release:** `hedron-posit>=1.0.0,<1.1` (or
+`hedron[posit]>=1.0.0,<1.1`). For plain FastAPI/ASGI applications,
 use the independent `fastapi-workbench>=1.0.1,<2.0` package instead.
 
 If `python3.11` is unavailable, follow the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)

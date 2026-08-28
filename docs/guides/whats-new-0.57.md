@@ -3,7 +3,7 @@
 !!! note "Historical release note"
 
     This page records the 0.x release named in its title. For current installation,
-    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    support, and published 1.0 status, use [Current release and support](current-release.md).
     Keep the historical pins below only when maintaining that release line.
 
 Phase **0.57** (`v0.57.0` in-tree; tag/PyPI deferred) lands unified presentation and
@@ -26,7 +26,7 @@ See [PRESENTATION](../api/PRESENTATION.md) and
 [RELEASE_0_57](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_57.md).
 
 The 0.57.0 PyPI upload remained deferred. Current applications should use
-`hedron>=0.66.2,<0.67` from PyPI; the historical repository tip is `0.57.0`.
+`hedron>=1.0.0,<1.1` from PyPI; the historical repository tip is `0.57.0`.
 
 ## Hardening on the tip
 
