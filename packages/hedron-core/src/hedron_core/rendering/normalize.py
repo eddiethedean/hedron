@@ -25,9 +25,14 @@ Normalizer = Callable[[NodeLike, int], tuple[Node, ...]]
 
 
 class ComponentRenderer(Protocol):
-    def render(
-        self, component: Component[Any], state: RenderState, *, depth: int, normalize: Normalizer
-    ) -> tuple[Node, ...]: ...
+    """Provide an unnormalized component body under the core lifecycle boundary."""
+
+    def render(self, component: Component[Any]) -> NodeLike: ...
+
+
+class DefaultComponentRenderer:
+    def render(self, component: Component[Any]) -> NodeLike:
+        return component.render()
 
 
 _ALPINE_DIRECTIVE_FEATURES = {
@@ -65,7 +70,11 @@ def reject_generator(value: object) -> None:
         )
 
 
-class BrowserDemandCollector:
+class BrowserDemandCollector(Protocol):
+    def collect(self, element: _NativeElement, state: RenderState) -> None: ...
+
+
+class DefaultBrowserDemandCollector:
     """Translate native element metadata into browser feature demands."""
 
     def collect(self, element: _NativeElement, state: RenderState) -> None:
@@ -90,6 +99,11 @@ class BrowserDemandCollector:
 
 class ComponentLifecycleRenderer:
     """Render a component with identity, cycle, slot, and style-scope policies."""
+
+    def __init__(self, component_renderer: ComponentRenderer | None = None) -> None:
+        self.component_renderer = (
+            component_renderer if component_renderer is not None else DefaultComponentRenderer()
+        )
 
     def render(
         self,
@@ -149,7 +163,7 @@ class ComponentLifecycleRenderer:
                     if parent_context is not None and style_context.parent is None:
                         style_context = replace(style_context, parent=parent_context)
                     style_token = push_style_context(style_context)
-                children = normalize(component.render(), depth + 1)
+                children = normalize(self.component_renderer.render(component), depth + 1)
             finally:
                 if style_token is not None:
                     from hedron_core.builtins.style_scope import pop_style_context
@@ -180,8 +194,10 @@ class NodeNormalizer:
         browser_collector: BrowserDemandCollector | None = None,
     ) -> None:
         self.state = state
-        self.component_renderer = component_renderer or ComponentLifecycleRenderer()
-        self.browser_collector = browser_collector or BrowserDemandCollector()
+        self.component_lifecycle = ComponentLifecycleRenderer(component_renderer)
+        self.browser_collector = (
+            browser_collector if browser_collector is not None else DefaultBrowserDemandCollector()
+        )
 
     def normalize(self, value: NodeLike, *, depth: int) -> tuple[Node, ...]:
         self.state.consume_node(depth)
@@ -210,7 +226,7 @@ class NodeNormalizer:
                 child_nodes.extend(self.normalize(child, depth=depth + 1))
             return (value.to_element_node(tuple(child_nodes)),)
         if isinstance(value, Component):
-            return self.component_renderer.render(
+            return self.component_lifecycle.render(
                 cast(Component[Any], value),
                 self.state,
                 depth=depth,
