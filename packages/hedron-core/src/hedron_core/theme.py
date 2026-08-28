@@ -28,6 +28,7 @@ __all__ = [
     "PRIVATE_SELECTORS_SUPPORTED",
     "REQUIRED_A11Y_TOKENS",
     "THEME_DENSITIES",
+    "THEME_CONTENT_WIDTHS",
     "Theme",
     "aurora_theme",
     "builtin_themes",
