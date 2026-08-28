@@ -231,10 +231,15 @@ class SimEvent:
         raw_detail: Any = data.get("detail") or {}
         if not isinstance(raw_detail, Mapping):
             raise ValueError(f"sim scenario event detail must be a mapping, got {type(raw_detail)}")
+        raw_at_ms: Any = data.get("at_ms", 0)
+        if isinstance(raw_at_ms, bool) or not isinstance(raw_at_ms, int):
+            raise ValueError(
+                f"sim scenario event at_ms must be an integer, got {type(raw_at_ms).__name__}"
+            )
         return cls(
             kind=kind,
             name=str(data.get("name", "")),
-            at_ms=int(data.get("at_ms", 0)),
+            at_ms=raw_at_ms,
             detail=dict(cast(Mapping[str, Any], raw_detail)),
         )
 
