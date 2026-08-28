@@ -33,10 +33,14 @@ _REDACTED = "[redacted]"
 def _finite_expiry(value: object, *, name: str) -> float:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise ValueError(f"BrowserStorage {name} must be a finite number")
-    normalized = float(value)
+    try:
+        normalized = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"BrowserStorage {name} must be a finite number") from exc
     if not math.isfinite(normalized):
         raise ValueError(f"BrowserStorage {name} must be a finite number")
     return normalized
+
 
 # Cookie / header names whose values are always redacted in helpers.
 _SECRETISH_NAME_FRAGMENTS = frozenset(
