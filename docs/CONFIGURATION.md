@@ -1,6 +1,6 @@
 # Configuration reference
 
-**Status:** Accepted · **Shipped schema in 0.4**
+**Status:** Stable on 1.0 (introduced in 0.4)
 
 Hedron separates build configuration, application construction, deployment configuration,
 and secrets. Unknown `[tool.hedron]` keys fail at load time with suggestions.

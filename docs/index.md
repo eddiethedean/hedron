@@ -9,7 +9,7 @@ search:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first application platform · stable 0.66.2 · beta 0.67.0</div>
+<div class="hedron-eyebrow">Python-first application platform · 1.0 release candidate · Python 3.11–3.14</div>
 
 # Stay in Python. Build the whole application.
 
@@ -60,6 +60,13 @@ cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 Release status: [Current release and support](guides/current-release.md). Pins and extras:
 [Installation](getting-started/installation.md). Before production:
 [What’s ready](guides/whats-ready.md).
+
+!!! note "1.0 documentation, public-index pin"
+
+    These docs describe the verified `v1.0.0` repository candidate. Until its
+    maintainer-controlled PyPI publication completes, copy-paste install commands use the
+    latest public release, `hedron>=0.66.2,<0.67`. Contributors use `uv sync` for the 1.0
+    workspace.
 
 ![Hello from Hedron with Refresh status](assets/hello-refresh.jpg){ .hedron-hero-shot }
 
@@ -130,8 +137,8 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-The current stable release is `0.66.2`. The `0.67.0` train is Beta and intended for
-preview evaluation. Install the stable pin: `hedron>=0.66.2,<0.67`.
+The repository is the verified `v1.0.0` release candidate. PyPI still serves `0.66.2`,
+so public-index installs use `hedron>=0.66.2,<0.67` until publication completes.
 For production adoption, continue with
 [What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
 </details>

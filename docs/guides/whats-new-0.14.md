@@ -1,5 +1,11 @@
 # What's new in Hedron 0.14
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Phase **0.14** ships portable runtimes and acceleration under **D-048**.
 
 ## Highlights

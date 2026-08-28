@@ -1,5 +1,11 @@
 # What's new in 0.53
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 In-tree tip is **0.53.0** (Published; Git tag and PyPI upload deferred). This
 historical cut was superseded by later published trains; current applications
 should use `hedron>=0.66.2,<0.67` from the public index.

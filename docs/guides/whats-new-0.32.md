@@ -1,8 +1,10 @@
 # What’s new in 0.32
 
-!!! note "Living train"
+!!! note "Historical release note"
 
-    Pin `hedron>=0.53.0,<0.54` for this historical checkout (current PyPI pin `>=0.66.2,<0.67`). See [What’s new in 0.51](whats-new-0.51.md).
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
 
 **Published** as `v0.32.0`. Historical pin for this train: `hedron>=0.32.0,<0.33`.
 

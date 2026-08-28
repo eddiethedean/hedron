@@ -1,6 +1,6 @@
-# Workflow APIs (0.55)
+# Workflow APIs
 
-Phase 0.55 adds opt-in `beta` workflow contracts under `hedron.workflow` and related
+Available as `beta` contracts on 1.0; introduced in phase 0.55 under `hedron.workflow` and related
 modules. See [RFC-0082](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0082-SECURE-UPGRADEABLE-WORKFLOWS.md).
 
 ## Public entry points
@@ -22,7 +22,7 @@ FastAPI owns action `capability=` / `idempotency=` enforcement introduced in the
 replay action kwargs remain `unsupported` on those adapters
 (`docs/acceptance/workflow-parity-055.toml`).
 
-Pin and maturity follow the living **.1.0.x** train; 0.55 workflow symbols remain
+Pin and maturity follow the current **1.0.x** train; 0.55 workflow symbols remain
 `beta`.
 
 ## Example

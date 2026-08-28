@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted for phase 0.4
+**Status:** Stable diagnostic record on 1.0 (introduced in 0.4)
 
 Stable `HED-*` records from `hedron_core.diagnostics`. Prefer these codes in CI and
 operator logs — see [Error codes](../guides/error-codes.md).

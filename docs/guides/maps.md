@@ -1,6 +1,8 @@
 # Maps quickstart
 
-Install `hedron[maps]` (or `hedron-maps>=0.1.0,<0.2`) and return `hedron_maps.Map` from a page.
+For the coordinated 1.0 artifacts, install `hedron-maps>=0.1.3,<0.2` and return
+`hedron_maps.Map` from a page. Public PyPI applications should use
+`hedron[maps]>=0.66.2,<0.67` until the 1.0 train is published.
 
 ```python
 from hedron_maps import Map

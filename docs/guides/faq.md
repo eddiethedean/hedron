@@ -4,7 +4,8 @@
 
 Install the latest public release from PyPI:
 `pip install "hedron>=0.66.2,<0.67"`. Contributors working from a git checkout use
-`uv sync` (workspace packages). The current published release is `v1.0.0`. See
+`uv sync` (workspace packages). The repository is the verified `v1.0.0` release
+candidate; PyPI remains on `v0.66.2` until publication. See
 [Installation](../getting-started/installation.md).
 
 ```bash
@@ -14,8 +15,8 @@ uv add "hedron>=0.66.2,<0.67"
 ```
 
 Always use an upper bound so a future minor train cannot install by accident.
-Current packages are **Beta** (usable, not 1.0, no SLA). The 1.0 cut is Stage 0 Refined but is not
-implemented or released. Capability detail:
+The coordinated 1.0 package inventory is **Stable**; satellite maturity remains
+independent, and no package has a commercial SLA. Capability detail:
 [What’s ready](whats-ready.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
@@ -85,9 +86,10 @@ status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
 ## Is Hedron production-ready for internal admin?
 
 For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
-with eyes open: packages are **Beta**, pin `>=0.66.2,<0.67`, prefer polling
-for live status, and read [What’s ready](whats-ready.md). There is no vendor SLA or
-scheduled 1.0. Use the [PoC checklist](evaluate.md#poc-checklist) on
+with eyes open: coordinated packages are Stable in the 1.0 candidate, public-index
+installs still pin `>=0.66.2,<0.67` until publication, and polling remains the
+production fallback for live status. There is no vendor SLA. Use the
+[PoC checklist](evaluate.md#poc-checklist) on
 [Evaluate](evaluate.md).
 
 ## `hedron: command not found`

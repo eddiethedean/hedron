@@ -25,9 +25,10 @@ immutable migration baseline.
 | Building an app from PyPI | `hedron>=0.66.2,<0.67` |
 | Working in this repository | `uv sync` (editable **1.0.0**) |
 
-Always use an upper bound so a future minor train cannot install by accident. Packages
-are **Beta** (usable, no SLA). The 1.0 cut is implemented in this checkout but remains pending
-release evidence. Capability detail:
+Always use an upper bound so a future minor train cannot install by accident. The coordinated
+1.0 package inventory is **Stable**; independently versioned satellites retain their documented
+Beta or tooling-grade maturity. The 1.0 cut is implemented and verified in this checkout; only
+tag/registry publication remains. Capability detail:
 [What’s ready](../guides/whats-ready.md).
 
 ## Install from PyPI
@@ -130,7 +131,7 @@ Then create `app.py` from the complete listing on
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.64.0`** when installed from PyPI and **`0.64.0`** from this source checkout.
+Expect **`0.66.2`** when installed from PyPI and **`1.0.0`** from this source checkout.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
@@ -145,8 +146,8 @@ cd hedron
 uv sync
 ```
 
-This checkout is **`0.64.0`**, matching public application installs. Use
-`hedron>=0.66.2,<0.67` for applications.
+This checkout is the verified **`1.0.0`** release candidate. Use `uv sync` for repository
+development; use `hedron>=0.66.2,<0.67` for public-index applications until publication.
 
 See [Contributing](../CONTRIBUTING.md).
 

@@ -11,7 +11,7 @@ optional package only when needed:
 ```bash
 pip install "hedron[gradio]>=0.66.2,<0.67"
 # or
-pip install "hedron-gradio>=0.2.0,<0.3"
+pip install "hedron-gradio>=0.2.2,<0.3"  # coordinated 1.0 artifact
 # Live remote discovery/predict also needs:
 pip install gradio-client
 ```

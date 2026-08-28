@@ -9,7 +9,8 @@ status: beta
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped in `0.6.0`; high-fidelity first-party line in **`0.38` / `hedron-charts` `0.2.0`**
+**Status:** Beta package on 1.0 · `hedron-charts` `0.2.3`; first-party and Matplotlib
+paths Supported, Plotly/Altair Experimental
 
 !!! info "Phase 0.38 first-party charts"
 
