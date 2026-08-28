@@ -232,3 +232,48 @@ def test_limits_bound_bytes_steps_and_depth() -> None:
 
     with pytest.raises(SimLimitError):
         import_scenario(export_scenario(SimRecorder("x").scenario()), limits=SimLimits(max_bytes=8))
+
+
+def test_deep_mapping_import_fails_with_typed_depth_limit() -> None:
+    detail: dict[str, object] = {}
+    for _ in range(1_100):
+        detail = {"child": detail}
+    payload = {
+        "schema_version": SIM_SCENARIO_SCHEMA,
+        "scenario_id": "deep",
+        "events": [
+            {"kind": "failure", "name": "deep", "at_ms": 0, "detail": detail},
+        ],
+    }
+    with pytest.raises(SimLimitError) as excinfo:
+        import_scenario(payload)
+    assert excinfo.value.limit == "max_depth"
+    assert excinfo.value.code == HED_SIM_LIMIT
+
+
+def test_deep_json_import_translates_parser_recursion_failure() -> None:
+    detail = '{"child":' * 1_100 + "{}" + "}" * 1_100
+    payload = (
+        '{"schema_version":"hedron-sim-scenario-1","scenario_id":"deep","events":'
+        '[{"kind":"failure","name":"deep","at_ms":0,"detail":'
+        + detail
+        + "}]}"
+    )
+    with pytest.raises(SimLimitError) as excinfo:
+        import_scenario(payload)
+    assert excinfo.value.limit == "max_depth"
+
+
+@pytest.mark.parametrize("at_ms", [-1, -500])
+def test_scenario_import_rejects_negative_timestamps(at_ms: int) -> None:
+    payload = {
+        "schema_version": SIM_SCENARIO_SCHEMA,
+        "scenario_id": "negative",
+        "events": [
+            {"kind": "delay", "name": "bad", "at_ms": at_ms, "detail": {"ms": 0}},
+        ],
+    }
+    with pytest.raises(SimLimitError) as excinfo:
+        import_scenario(payload)
+    assert excinfo.value.limit == "max_time_ms"
+    assert excinfo.value.value == at_ms
