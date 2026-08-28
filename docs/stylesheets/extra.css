@@ -37,6 +37,9 @@
 
 body {
   letter-spacing: -0.004em;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .md-banner {
@@ -304,8 +307,11 @@ body {
 }
 
 .md-typeset__scrollwrap .md-typeset__table {
+  display: block;
   margin: 0;
+  max-width: 100%;
   overflow-x: auto;
+  width: 100%;
 }
 
 .md-typeset .admonition,
