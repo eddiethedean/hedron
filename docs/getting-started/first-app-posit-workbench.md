@@ -122,13 +122,14 @@ cd ~/projects/my-workbench-app
 python3.11 -m venv .venv
 source .venv/bin/activate
 python3.11 -m pip install "hedron>=0.67.0,<0.68" "hedron-posit>=0.67.0"
-hedron new my-workbench-app --path .
+hedron new my-workbench-app --path . --force
 ```
 
 This creates one environment, `.venv`, inside the project. `hedron new` fills in the project files
 around that environment, and the same activated `.venv` is used for the app. The first install
 provides both the scaffolder and the Workbench launcher, so no second install is needed to run
-this example.
+this example. `--force` is safe here because `.venv` is the only item in the new project folder;
+do not use it in a folder that already contains application files.
 
 Open the project in the editor with **File → Open Folder**, then select
 `~/projects/my-workbench-app`. Open a new terminal and confirm:

@@ -55,6 +55,7 @@ def test_workbench_guide_uses_the_preferred_hedron_posit_surface() -> None:
         'python3.11 -m pip install "hedron>=0.67.0,<0.68" "hedron-posit>=0.67.0"'
         in guide
     )
+    assert "hedron new my-workbench-app --path . --force" in guide
     assert 'python3.11 -m pip install "hedron>=0.66.2,<0.67"' not in guide
     assert 'python3.11 -m pip install -e . "hedron-posit>=0.67.0"' not in guide
     assert "pyenv install" in guide
