@@ -340,7 +340,14 @@ from hedron_core.htmx_extensions import (
     catalog_facts,
     known_extensions,
 )
-from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
+from hedron_core.icons import (
+    IconEntry,
+    get_icon,
+    list_icons,
+    register_first_party_icons,
+    register_icon,
+    trusted_svg,
+)
 from hedron_core.identity import (
     IdentityRegistry,
     IdentityTarget,
@@ -547,6 +554,7 @@ from hedron_core.theme import (
     PRINT_SAFE_TOKENS,
     PRIVATE_SELECTORS_SUPPORTED,
     REQUIRED_A11Y_TOKENS,
+    THEME_CONTENT_WIDTHS,
     THEME_DENSITIES,
     Theme,
     aurora_theme,
@@ -1084,6 +1092,7 @@ __all__ = [
     "register_component",
     "register_element_definition",
     "register_icon",
+    "register_first_party_icons",
     "register_projection_provider",
     "register_renderer",
     "register_route",
@@ -1195,6 +1204,7 @@ __all__ = [
     "TextInput",
     "Theme",
     "THEME_DENSITIES",
+    "THEME_CONTENT_WIDTHS",
     "theme_element_compatibility",
     "TimeInput",
     "Timeline",

@@ -1,11 +1,12 @@
 ---
-status: draft
+status: verified
 ---
 
-# Edron 0.1 state and interaction contract
+# Edron state and interaction contract
 
-**Status:** Draft design contract; Edron is not implemented or published<br>
-**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Status:** Implemented and verified through Edron `0.9.1`; publication pending<br>
+**Target:** Edron `0.9.1`; Hedron `>=0.67.0,<2.0`<br>
+**Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
 **Packaging:** [Edron 0.1 packaging](EDRON_PACKAGING.md)<br>
@@ -15,8 +16,9 @@ status: draft
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
-This document defines how state is owned and how interactions progress in Edron. It complements
-the Python signatures in the public API contract. Hedron remains the authority for request
+This document began as the 0.1 design contract and now defines how state is owned and how
+interactions progress through Edron 0.9. It complements the Python signatures in the public API
+contract. Hedron remains the authority for request
 binding, sessions, caches, handles, operation identity, action lifecycle, HTMX targets, responses,
 CSRF, jobs, assets, and browser enhancement. Edron selects simpler defaults and maps their native
 consequences back to Edron source.

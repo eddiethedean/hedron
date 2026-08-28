@@ -15,7 +15,7 @@ carry an explicit tier so adopters and CI agree.
 
 | Tier | Meaning |
 |---|---|
-| `stable` | Compatibility-protected on `0.x` (see [STABILITY](STABILITY.md) / FACADE-023) |
+| `stable` | Compatibility-protected throughout `1.x` (see [STABILITY](STABILITY.md) / FACADE-023) |
 | `beta` | May revise at minor boundaries with changelog/migration evidence |
 | `experimental` | May change/remove without major; must stay labeled |
 | `internal` | Not a public contract (should not appear on root long-term) |

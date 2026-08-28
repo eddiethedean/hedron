@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, Literal, Protocol, TypeAlias, TypeVar
+from typing import Any, Generic, Literal, Protocol, TypeAlias, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -265,7 +265,10 @@ class TaskFlow(Generic[InputT, ResultT]):
                     if callable(cancel_form):
                         content = Stack(
                             body,
-                            cancel_form(value={"job_id": job_id}, submit_label="Cancel"),
+                            cast(
+                                NodeLike,
+                                cancel_form(value={"job_id": job_id}, submit_label="Cancel"),
+                            ),
                         )
 
                 ref = ComponentRef(

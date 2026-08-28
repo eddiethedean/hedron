@@ -61,6 +61,7 @@ class JobFlow:
     def to_bundle(self) -> Any:
         if self._bundle is not None:
             return self._bundle
+
         def native_dependency(value: Any) -> Any:
             converter = getattr(value, "native", None)
             return converter() if callable(converter) else value

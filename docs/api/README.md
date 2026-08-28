@@ -28,13 +28,15 @@ After [First app → What is HTMX → HTMX interactions → Minimal form](../get
 
 **Stability:** API levels are defined in [STABILITY.md](STABILITY.md). A **minimal
 `stable` tier** (render/model/interaction/CSRF/router facades and portable adapter
-helpers) is compatibility-protected on the 0.x train. Everything else is `beta` or
-`experimental` unless listed. Package maturity remains **Beta** — pin versions.
+helpers) is compatibility-protected on the 1.0.x repository train. Everything else is `beta` or
+`experimental` unless listed. Coordinated packages are **Stable** in the 1.0 inventory;
+satellite package maturity remains independent.
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
-The repository train tip and latest installable PyPI release are **`v0.66.2`**. Application
-users should pin `hedron>=0.66.2,<0.67` from the public index.
+The repository tip is the verified **`v1.0.0` release candidate**. The latest installable
+PyPI release remains **`v0.66.2`**, so public-index users should pin
+`hedron>=0.66.2,<0.67` until 1.0 is published.
 
 !!! note "Contracts vs full reference"
 
@@ -61,10 +63,10 @@ users should pin `hedron>=0.66.2,<0.67` from the public index.
 
 ## Full catalog
 
-### Proposed Edron facade
+### Edron facade
 
-- [Edron `0.x` release roadmap](../EDRON_ROADMAP.md) — Draft; current phase `0.0`, no release authorized
-- [Edron 0.1 public API](EDRON.md) — Draft design contract; not implemented or published
+- [Edron `0.x` release roadmap](../EDRON_ROADMAP.md) — separately versioned Beta facade
+- [Edron public API](EDRON.md) — Edron `0.9.1`, implemented and verified in-tree
 - [Edron state and interaction](EDRON_STATE_INTERACTION.md)
 - [Edron packaging](EDRON_PACKAGING.md)
 - [Edron acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md) — Draft and blocked
@@ -138,27 +140,21 @@ These contracts compile onto the golden path. They are **not** required for Hell
 - [Maps](MAPS.md)
 - [HTMX extension integration](HTMX_EXTENSIONS.md) — **0.48** Published in-tree (morph Deferred)
 - [Hedron HTMX interaction extension](HTMX_HEDRON_EXTENSION.md) — proposed **0.64** contract
-- [Hedron 1.0 HTMX/Alpine boundary](HTMX_ALPINE_BOUNDARY_1_0.md) — planned normative ownership,
-  handoff, and non-interference contract previewed by 0.67
+- [Hedron 1.0 HTMX/Alpine boundary](HTMX_ALPINE_BOUNDARY_1_0.md) — verified normative ownership,
+  handoff, and non-interference contract established from the 0.67 baseline
 - [Integrated styling and application CSS](APPLICATION_STYLING_065.md) — proposed **0.65** contract
 - [FastAPI/Pydantic convergence](FASTAPI_PYDANTIC_CONVERGENCE.md) — **0.49** Published in-tree
 - [Explorer architecture](EXPLORER_ARCHITECTURE.md) — **0.50** Published in-tree (related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503))
 - [Curated extras](EXTRAS.md) — historical 0.51 contract; see [Current release and support](../guides/current-release.md) for installable versions.
 
-## Draft package contracts
+## Edron supporting contracts
 
-- [Edron 0.1 public API](EDRON.md) — draft class-oriented, batteries-included facade over Hedron;
-  **not implemented or published**.
-- [Edron 0.1 state and interaction](EDRON_STATE_INTERACTION.md) — draft state ownership,
-  lifecycle, HTTP/HTMX, concurrency, and fallback contract; **not implemented or published**.
-- [Edron 0.1 packaging](EDRON_PACKAGING.md) — draft base batteries, native distribution
-  aggregation, optional dependency, extras, artifact, and release contract; **not implemented or
-  published**.
-- [Edron 0.1 capability inventories](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_CAPABILITY_INVENTORIES.md) — draft
-  disposition of base, optional, native, tooling, upstream, deferred, and acceptance capabilities;
-  **not implemented or published**.
-- [Edron 0.1 implementation specification](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_001.md) — draft package/module,
-  compiler, request-lowering, native integration, staged work, test, and release requirements;
-  **implementation is not authorized**.
+- [Edron public API](EDRON.md) — implemented class-oriented, batteries-included facade over Hedron.
+- [Edron state and interaction](EDRON_STATE_INTERACTION.md) — implemented state ownership,
+  lifecycle, HTTP/HTMX, concurrency, and fallback contract.
+- [Edron packaging](EDRON_PACKAGING.md) — implemented base batteries, native distribution
+  aggregation, optional dependencies, extras, artifacts, and release contract.
+- [Edron capability inventories](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_CAPABILITY_INVENTORIES.md) — historical 0.1 inventory retained as traceability for the implemented facade.
+- [Edron implementation specification](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_001.md) — original implementation authority; later phase packets extend it through 0.9.
 
 Public exception types: [EXCEPTIONS.md](EXCEPTIONS.md).

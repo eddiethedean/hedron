@@ -1,6 +1,6 @@
 # Configuration reference
 
-**Status:** Accepted · **Shipped schema in 0.4**
+**Status:** Stable on 1.0 (introduced in 0.4)
 
 Hedron separates build configuration, application construction, deployment configuration,
 and secrets. Unknown `[tool.hedron]` keys fail at load time with suggestions.
@@ -102,7 +102,7 @@ profile expansion, feature IDs, and prologue schema are defined by RFC-0031.
 | `HEDRON_REDIS_URL` | Optional. Used by sample/compose job backends that speak Redis; omit for ordinary page apps |
 | `HEDRON_ROOT_PATH` | Construction-time mount for session/CSRF cookie `Path` and asset prefixes. Required under a reverse-proxy subpath; uvicorn `--root-path` alone does not scope cookies |
 | `HEDRON_TRUSTED_PROXIES` | Optional comma-separated peer allowlist for `X-Forwarded-Proto` (CSRF Secure) and related trusted-header checks |
-| `HEDRON_WORKBENCH_MODE` | `auto` / `on` / `off` for `hedron-workbench` (optional extra) |
+| `HEDRON_WORKBENCH_MODE` | `auto` / `on` / `off` for `hedron-posit` (`hedron[posit]`) |
 | `HEDRON_WORKBENCH_MOUNT` | Explicit browser mount; exported to `HEDRON_ROOT_PATH` before app import |
 | `HEDRON_WORKBENCH_HOST` / `HEDRON_WORKBENCH_PORT` | Loopback bind (default `127.0.0.1`, port `0`) |
 | `HEDRON_WORKBENCH_PUBLIC_BASE_URL` | Optional public origin; must not conflict with mount |
@@ -115,7 +115,7 @@ profile expansion, feature IDs, and prologue schema are defined by RFC-0031.
 | `UVICORN_ROOT_PATH` | Consumed as a validated path or full `http(s)` URL mount only when paired with `RS_SERVER_URL` Workbench evidence; a session path for a different bound port is ignored and rediscovered |
 | `HEDRON_WORKBENCH_JOB` | Mark a non-interactive inherited environment so auto mode does not advertise a browser proxy URL; audited jobs are detected from Posit's `AUDIT_DETAILS_PATH` contract |
 | `RS_SERVER_URL` | Discovery trigger only — never wraps or grants trust |
-| `WORKBENCH_FORCE` / `BASE_PATH` / `PUBLIC_BASE_URL` / `HOST` / `PORT` | Launcher compatibility aliases; warn (`HED-WB-0008`); namespaced vars win. Inactive `HedronWorkbench` ignores broad aliases to preserve ordinary-host behavior |
+| `WORKBENCH_FORCE` / `BASE_PATH` / `PUBLIC_BASE_URL` / `HOST` / `PORT` | Launcher compatibility aliases; warn (`HED-WB-0008`); namespaced vars win. Inactive `HedronPosit` ignores broad aliases to preserve ordinary-host behavior |
 
 ### Session secrets (application-owned)
 

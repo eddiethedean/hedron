@@ -6,6 +6,7 @@ from typing import Any, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.builtins.appearance import Density, appearance_data, require_choice
+from hedron_core.builtins.style_scope import presentation_data
 from hedron_core.codes import HED_HTML_0006
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
@@ -340,6 +341,7 @@ class FlowStep(Component[FlowStepProps]):
                         status if status in {"current", "complete", "blocked", "skipped"} else None
                     ),
                 ),
+                **presentation_data("ProcessFlow.step"),
             },
         }
         if status == "current":

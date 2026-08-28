@@ -21,6 +21,8 @@ from hedron_core.builtins.appearance import (
     PADDINGS,
     RESPONSIVE_POLICIES,
     SIZES,
+    TEXT_WRAPS,
+    TRACKING,
     TYPE_EFFECTS,
     TYPE_MEASURES,
     TYPOGRAPHY_ROLES,
@@ -113,7 +115,7 @@ _FAMILY_FIELDS: Final[Mapping[StyleFamily, frozenset[str]]] = {
     "surface": frozenset({"appearance", "density", "padding", "elevation"}),
     "data": frozenset({"density", "responsive"}),
     "status": frozenset({"size", "appearance"}),
-    "content": frozenset({"role", "overflow", "measure", "effect"}),
+    "content": frozenset({"role", "overflow", "measure", "effect", "tracking", "wrap"}),
 }
 
 _FAMILY_COMPONENTS: Final[Mapping[StyleFamily, frozenset[str]]] = {
@@ -133,13 +135,13 @@ _COMPONENT_FIELDS: Final[Mapping[str, frozenset[str]]] = {
     "Card": frozenset({"appearance", "density", "padding", "elevation"}),
     "Table": frozenset({"density", "responsive"}),
     "DescriptionList": frozenset({"density"}),
-    "PageHeader": frozenset({"density", "measure", "effect"}),
+    "PageHeader": frozenset({"density", "measure", "effect", "tracking", "wrap"}),
     "FormGrid": frozenset({"density"}),
     "Badge": frozenset({"size", "appearance"}),
     "Alert": frozenset({"size", "appearance"}),
     "Status": frozenset({"size", "appearance"}),
-    "Text": frozenset({"role", "overflow", "measure", "effect"}),
-    "Heading": frozenset({"role", "overflow", "measure", "effect"}),
+    "Text": frozenset({"role", "overflow", "measure", "effect", "tracking", "wrap"}),
+    "Heading": frozenset({"role", "overflow", "measure", "effect", "tracking", "wrap"}),
 }
 
 _GEOMETRY_SHAPE: Final[Mapping[GeometryPreset, Mapping[str, str]]] = {
@@ -187,6 +189,8 @@ _FIELD_VOCABULARIES: Final[Mapping[str, tuple[str, ...]]] = {
     "overflow": OVERFLOW_MODES,
     "measure": TYPE_MEASURES,
     "effect": TYPE_EFFECTS,
+    "tracking": TRACKING,
+    "wrap": TEXT_WRAPS,
 }
 
 _RESPONSIVE_RECIPE_FIELDS: Final[Mapping[str, tuple[str, ...]]] = {
@@ -398,6 +402,12 @@ def _theme_summary(theme: Theme) -> dict[str, object]:
         "density": theme.density,
         "shape": dict(sorted(theme.shape.items())),
         "nav_width": theme.nav_width,
+        "content_width": theme.content_width,
+        "typography_features": dict(sorted(theme.typography_features.items())),
+        "typography_role_features": {
+            key: dict(sorted(value.items()))
+            for key, value in sorted(theme.typography_role_features.items())
+        },
         "elevation": dict(sorted(theme.elevation.items())),
         "parent": theme.parent,
     }
@@ -603,6 +613,8 @@ class StyleRecipe:
         overflow: OverflowMode | None = None,
         measure: TypographyMeasure | None = None,
         effect: TypographyEffect | None = None,
+        tracking: str | None = None,
+        wrap: str | None = None,
     ) -> StyleRecipe:
         values = {
             key: value
@@ -611,6 +623,8 @@ class StyleRecipe:
                 ("overflow", overflow),
                 ("measure", measure),
                 ("effect", effect),
+                ("tracking", tracking),
+                ("wrap", wrap),
             )
             if value is not None
         }
@@ -823,6 +837,7 @@ class DesignSystem:
         elevation: ElevationPreset = "subtle",
         motion: MotionPreset = "standard",
         navigation: NavigationPreset = "default",
+        content_width: str = "default",
         recipes: Sequence[StyleRecipe] = (),
     ) -> DesignSystem:
         design_name = _normalize_name(name, label="design")
@@ -842,6 +857,13 @@ class DesignSystem:
                 remediation="Pass a safe absolute color such as '#2f6fed' or Color.oklch(...).",
             ) from exc
         require_choice(density, DENSITIES, label="density")
+        if content_width not in ("narrow", "default", "wide", "full"):
+            raise error(
+                HED_DESIGN_0001,
+                title="Invalid content width preset",
+                explanation=f"content_width={content_width!r} is not supported.",
+                remediation="Use narrow, default, wide, or full.",
+            )
         if geometry not in _GEOMETRY_SHAPE:
             raise error(
                 HED_DESIGN_0001,
@@ -920,6 +942,7 @@ class DesignSystem:
                 density=density,
                 shape=dict(_GEOMETRY_SHAPE[geometry]),
                 nav_width=_NAV_WIDTH[navigation],
+                content_width=content_width,
                 elevation=dict(_ELEVATION_MAP[elevation]),
                 parent=base_theme.name,
             )
@@ -1026,6 +1049,7 @@ class DesignSystem:
                 "elevation": elevation,
                 "motion": motion,
                 "navigation": navigation,
+                "content_width": content_width,
             },
             groups=groups,
             provenance=tuple(provenance),
@@ -1063,6 +1087,20 @@ class DesignSystem:
                 for key, value in (
                     ("density", theme.density),
                     ("nav_width", theme.nav_width),
+                    ("content_width", theme.content_width),
+                    (
+                        "typography_features",
+                        ",".join(f"{k}={v}" for k, v in sorted(theme.typography_features.items()))
+                        or None,
+                    ),
+                    (
+                        "typography_role_features",
+                        ";".join(
+                            f"{role}:" + ",".join(f"{k}={v}" for k, v in sorted(values.items()))
+                            for role, values in sorted(theme.typography_role_features.items())
+                        )
+                        or None,
+                    ),
                 )
                 if value is not None
             },

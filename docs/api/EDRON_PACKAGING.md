@@ -1,11 +1,12 @@
 ---
-status: draft
+status: verified
 ---
 
-# Edron 0.1 packaging contract
+# Edron packaging contract
 
-**Status:** Draft design contract; Edron is not implemented or published<br>
-**Target:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
+**Status:** Implemented and verified through Edron `0.9.1`; publication pending<br>
+**Target:** Edron `0.9.1`; Hedron `>=0.67.0,<2.0`<br>
+**Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
 **Public API:** [Edron 0.1 public API](EDRON.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](EDRON_STATE_INTERACTION.md)<br>
@@ -15,7 +16,8 @@ status: draft
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
-This document defines what installing Edron installs, how Edron composes separately owned Hedron
+This document began as the 0.1 packaging design and now defines what installing Edron installs
+through 0.9, how Edron composes separately owned Hedron
 packages, how optional third-party capabilities activate, and what artifacts and evidence are
 required for release. It complements the Python and interaction contracts. Python packaging
 metadata remains the installation authority; native Hedron packages remain the implementation,

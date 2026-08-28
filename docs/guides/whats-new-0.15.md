@@ -1,5 +1,11 @@
 # What’s new in 0.15
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Phase **0.15** completes the high-value data-app surface — controls, media, maps,
 browser context, and scenario testing — without Streamlit-style whole-script reruns.
 
@@ -14,11 +20,6 @@ browser context, and scenario testing — without Streamlit-style whole-script r
 - **Interaction ergonomics** — `region` / `@fragment` / `swap` authoring (RFC-0039).
 
 ## Upgrade notes
-
-!!! note "Historical phase"
-
-    This page describes **0.15**. The current published train is **1.0.x** (`v1.0.0` on PyPI) —
-    see [What’s new in 0.28](whats-new-0.28.md) and the [upgrade guide](upgrade.md).
 
 Pin `hedron>=0.15.0,<0.16` when staying on the 0.15 line.
 

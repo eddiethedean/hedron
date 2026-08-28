@@ -4,7 +4,8 @@
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
     Mount helpers are part of the production security floor (0.20+) and remain on the
-    living **.1.0.x** train. Package maturity remains **Beta** — pin versions.
+    current **1.0.x** train. Coordinated package maturity is **Stable** in 1.0;
+    public-index users should keep the documented 0.66 pin until publication.
 
 **Status:** Shipped · public exports from `hedron`
 
@@ -21,7 +22,7 @@ These helpers resolve that mount and keep cookie paths consistent.
 3. Confirm CSRF cookies use `Path=/apps/hedron` (not `/` alone) and that Refresh /
    form posts still hit the app.
 
-Posit Workbench: `hedron-workbench run` exports `HEDRON_ROOT_PATH` from discovered
+Posit Workbench: `hedron-posit run` exports `HEDRON_ROOT_PATH` from discovered
 `rserver-url` output **before** importing the app. See
 [Posit Workbench](../guides/posit-workbench.md).
 

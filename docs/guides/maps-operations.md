@@ -1,6 +1,7 @@
 # Map operations
 
-- Pin `hedron-maps>=0.1.0,<0.2` and the living Hedron train.
+- Pin `hedron-maps>=0.1.3,<0.2` with the coordinated 1.0 artifacts. Until publication,
+  public PyPI applications should use `hedron[maps]>=0.66.2,<0.67`.
 - Vendor MapLibre 5.6.1 (strict CSP + worker). Do not load a CDN runtime.
 - Explorer: `/hedron-explorer/maps` inspects origins, CSP, attribution, limits, and
   events without executing untrusted map data.

@@ -1,5 +1,11 @@
 # What’s new in 0.55
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Historical **0.55.0** in-tree Published cut (the 0.55 PyPI upload was deferred;
 the cut was superseded by later published trains). Prefer
 [What’s new in 0.62](whats-new-0.61.md) for the current train.

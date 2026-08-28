@@ -7,10 +7,11 @@ status: shipped
 !!! note "Stability"
 
     Classifications live in [STABILITY.md](STABILITY.md). The audit sink is a
-    **Supported** optional capability. Package maturity remains **Beta** — pin versions.
+    **Supported** optional capability. The coordinated package is Stable; pin the release
+    train and configure the sink explicitly.
     Sinks must never break request handling — emit failures are swallowed and logged.
 
-**Status:** Shipped in `0.13.0`
+**Status:** Available on 1.0 (introduced in `0.13.0`)
 
 Framework-boundary events (CSRF reject, HTMX target reject, Explorer deny, production
 gate failure) can be forwarded to an application sink for SIEM / structured logs.

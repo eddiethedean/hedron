@@ -152,6 +152,38 @@ def test_historical_install_can_be_skipped_without_skipping_current_claims() -> 
     )
 
 
+def test_verified_candidate_status_rejects_implementation_and_registry_contradictions() -> None:
+    path = Path("docs/guides/example.md")
+    assert ssot.check_release_candidate_status(
+        path, "The 1.0 cut is not implemented and release evidence is pending."
+    )
+    assert ssot.check_release_candidate_status(path, "The v1.0.0 candidate is published on PyPI.")
+    assert ssot.check_release_candidate_status(path, "Use the living .1.0.x train.")
+    assert not ssot.check_release_candidate_status(
+        path,
+        "The v1.0.0 repository candidate is verified; PyPI remains on v0.66.2.",
+    )
+
+
+def test_historical_release_pages_require_current_status_banner() -> None:
+    path = Path("docs/guides/whats-new-0.42.md")
+    assert ssot.check_historical_release_banner(path, "# What's new in 0.42\n")
+    assert not ssot.check_historical_release_banner(
+        path,
+        '# What\'s new in 0.42\n\n!!! note "Historical release note"\n'
+        "\n    See [Current release](current-release.md).\n",
+    )
+
+
+def test_section_landings_require_release_context_and_status_link() -> None:
+    path = Path("docs/guides/index.md")
+    assert ssot.check_section_landing(path, "# Guides\n")
+    assert not ssot.check_section_landing(
+        path,
+        "# Guides\n\nTargets 1.0. See [status](current-release.md).\n",
+    )
+
+
 def test_satellite_floors_come_from_release_metadata() -> None:
     charts = ssot.FACTS.charts_pin
     sample = ssot.FACTS.sample_kit_pin

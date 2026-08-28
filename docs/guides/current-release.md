@@ -13,11 +13,19 @@ instead of repeating version numbers.
 
 | Channel | Version | Meaning |
 |---|---|---|
-| Repository train | `1.0.0` / `1.0.x` | Coordinated checkout; release evidence pending |
+| Repository train | `1.0.0` / `1.0.x` | Verified coordinated release candidate; tag and registry publication pending |
 | Stable PyPI | `0.66.2` / `0.66.x` | Current public release and production pin |
 | Migration baseline | `0.67.0` | Immutable predecessor used by the 1.0 bridge |
-| Package maturity | Beta | Beta surfaces remain usable with pins; no SLA |
+| Package maturity | Stable coordinated inventory | Satellite packages retain their independent maturity; no commercial SLA |
 | Supported Python | 3.11–3.14 | CPython only |
+
+The 1.0 package split is intentional:
+
+| Package | 1.0 role | Status |
+|---|---|---|
+| `hedron-posit` | Coordinated Hedron facade for Posit Workbench and Connect | `1.0.0` repository candidate |
+| `fastapi-workbench` | Independent generic adapter for plain FastAPI/ASGI apps | `1.0.1` |
+| `hedron-workbench` | Former compatibility distribution | Removed in 1.0.0 |
 
 Application documentation uses the latest public PyPI pin:
 
@@ -35,12 +43,12 @@ from the workspace.
 | Build an application | Install the stable release: `hedron>=0.66.2,<0.67` |
 | Contribute / hack on Hedron | Clone the repo and `uv sync` (editable workspace) |
 | Evaluate the beta preview | Use `v0.67.0` only for beta evaluation; stable applications should remain on `v0.66.2` |
-| Know security support window | Current stable train `0.66.x` — [SECURITY.md](../SECURITY.md) |
+| Know security support window | Current repository train `1.0.x`; public registry train `0.66.x` until publication — [SECURITY.md](../SECURITY.md) |
 | Know human AT / screen-reader status | Protocol engineering only; compensated sessions **not Supported** — [What’s ready](whats-ready.md) |
 
-The `0.66.2` release is the latest stable public release and is available from PyPI. The
-`0.67.0` beta is the next preview train. See
-`docs/release.toml` for the public registry facts.
+The `0.66.2` release is the latest stable public release available from PyPI. The
+`0.67.0` beta is the immutable migration baseline for the verified `1.0.0` repository
+candidate, not the next development train. See `docs/release.toml` for registry facts.
 
 ## What should I install?
 

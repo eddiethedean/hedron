@@ -363,15 +363,20 @@ COMPONENTS = (
     ComponentDoc(
         "PageHeader",
         "layout",
-        "Eyebrow/title/description header with optional status and actions.",
-        "PageHeader(*, title, eyebrow=None, description=None, status=None, actions=None, id=None, class_=None)",
-        "PageHeader(title='Pipelines', eyebrow='Operate', description='Source to destination jobs.', actions=ActionGroup(Button('New')))",
+        "Eyebrow/title/description header with optional metadata and actions.",
+        "PageHeader(title, *, eyebrow=None, description=None, title_measure=None, description_measure=None, title_effect=None, description_effect=None, title_tracking=None, description_tracking=None, title_wrap=None, description_wrap=None, eyebrow_tone=None, eyebrow_tracking=None, eyebrow_wrap=None, actions=None, meta=None, id=None, class_=None)",
+        "PageHeader(title='Pipelines', eyebrow='Operate', description='Source to destination jobs.', title_wrap='balance', description_wrap='pretty', actions=ActionGroup(Button('New')))",
         (
             p("title", "str | NodeLike", "Primary heading text or node."),
             p("eyebrow", "str | NodeLike | None", "Optional overline label."),
             p("description", "str | NodeLike | None", "Supporting copy under the title."),
-            p("status", "NodeLike | None", "Optional status chip or badge."),
             p("actions", "NodeLike | None", "Primary action cluster (often ActionGroup)."),
+            p("meta", "NodeLike | None", "Optional metadata below the description."),
+            p("title_measure / description_measure", "narrow | default | wide | None", "Independent readable-width tokens."),
+            p("title_effect / description_effect", "none | subtle | display | None", "Independent named text effects."),
+            p("title_tracking / description_tracking / eyebrow_tracking", "tight | normal | loose | wide | None", "Finite letter-spacing choices."),
+            p("title_wrap / description_wrap / eyebrow_wrap", "normal | wrap | balance | pretty | break | truncate | clip | None", "Finite text-wrap and overflow choices."),
+            p("eyebrow_tone", "accent | muted | neutral | None", "Semantic eyebrow color."),
         ),
         "PageHeader is the workspace page pattern for title, context, and actions without application CSS.",
         "Keep one PageHeader per primary view and put long forms below it.",
@@ -575,7 +580,7 @@ COMPONENTS = (
         "HtmxLink",
         "controls",
         "Navigate with a SafeUrl href and typed HTMX attributes for in-shell swaps.",
-        "HtmxLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, preload=None, active=False, class_=None)",
+        "HtmxLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, preload=None, active=False, attrs=None, class_=None)",
         "HtmxLink('Reports', '/reports', target='#main-panel', swap='innerHTML', select='#main-panel')",
         (
             p("label", "str", "Visible link text."),
@@ -605,6 +610,7 @@ COMPONENTS = (
                 "Registers the preload extension; never a compatibility default.",
             ),
             p("active", "bool", "Optional active styling hook for current location."),
+            p("attrs", "dict[str, object] | None", "Safe passthrough limited to `title`, `data-*`, and `aria-*`; URL, HTMX, style, and event attributes are rejected."),
             p("class_", "str | None", "Additional CSS classes."),
         ),
         "HtmxLink keeps ordinary anchor navigation as the progressive-enhancement path while attaching typed HTMX attrs. "
@@ -780,13 +786,16 @@ COMPONENTS = (
         "AppShell",
         "layout",
         "Document shell with optional side nav and a MainPanel body.",
-        "AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', class_=None, id=None)",
+        "AppShell(*body, *, nav=None, nav_groups=None, panel_id='main-panel', content_width='default', nav_collapse='never', nav_collapsed=False, class_=None, id=None)",
         "AppShell(Heading('Home', level=1), nav=Nav(NavGroup('Workspace', NavLink('Home', '/'), NavLink('Reports', '/reports'))), panel_id='main-panel')",
         (
             p("body", "NodeLike", "Primary content placed inside MainPanel."),
             p("nav", "NodeLike | None", "Optional side navigation (often Nav of NavLinks)."),
             p("nav_groups", "Mapping[str, Sequence[NodeLike]] | Sequence[tuple[str, Sequence[NodeLike]]] | None", "Ordered grouped navigation lowered through `NavGroup`."),
             p("panel_id", "str", "Id forwarded to the composed MainPanel."),
+            p("content_width", "narrow | default | wide | full", "Bounded content measure independent of navigation width."),
+            p("nav_collapse", "never | user | always", "Desktop rail policy; `user` adds an accessible persisted toggle."),
+            p("nav_collapsed", "bool", "Initial compact rail state."),
         ),
         "AppShell composes landmark-friendly chrome with a swappable MainPanel so full page loads and HTMX fragment swaps share one layout. "
         "Use HtmxLink/NavLink targeting the panel id for the primary swap. When side chrome must update too, return an explicit "
@@ -1040,7 +1049,7 @@ COMPONENTS = (
         "StyleScope",
         "surfaces",
         "Bound a subtree to theme, finite variant, color mode, and density markers only.",
-        "StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, id=None, class_=None, mark=None)",
+        "StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, presentation=None, recipes=(), id=None, class_=None, mark=None)",
         "StyleScope(Text('Scoped panel'), theme='aurora', variant='dense', color_mode='dark', density='compact')",
         (
             p("nodes", "NodeLike", "StyleScope body content."),
@@ -1048,10 +1057,12 @@ COMPONENTS = (
             p("variant", "str | None", "Optional finite registered variant emitted as `data-hedron-variant`. Unknown names fail closed."),
             p("color_mode", "light | dark | None", "Optional color-mode marker (`data-hedron-color-mode`)."),
             p("density", "compact | comfortable | spacious | None", "Optional density marker (`data-hedron-density`)."),
+            p("presentation", "dict[str, str] | None", "Finite slot-to-recipe defaults inherited by descendants."),
+            p("recipes", "Sequence[StyleRecipe]", "Optional scoped recipe catalog used to resolve presentation names into bounded component markers."),
         ),
-        "StyleScope is a visible boundary for theme, finite variant, color mode, and density only. Presentation is marker-driven (`data-hedron-*`) and styled by first-party CSS; recipe defaults are rejected.",
+        "StyleScope is a visible boundary for theme, finite variant, color mode, density, and presentation mappings. Use `presentation={'PageHeader.title': 'display', 'Heading': 'section-heading'}` to provide nearest-scope recipe defaults; explicit component settings remain authoritative.",
         "Prefer StyleScope when a region must override theme, finite variant, color mode, or density without application CSS.",
-        "Do not pass recipe defaults or arbitrary CSS; only theme, finite variant, color_mode, and density are supported.",
+        "Do not pass arbitrary CSS or unresolved selectors; use finite StyleRecipe values and documented presentation slots.",
     ),
     ComponentDoc(
         "Badge",
@@ -1136,7 +1147,7 @@ COMPONENTS = (
             p("title", "str | None", "Accessible name override when not decorative."),
             p("decorative", "bool", "When true, hide the icon from the accessibility tree."),
         ),
-        "Icon fails closed on unknown names and never accepts raw SVG markup from application authors.",
+        "Icon fails closed on unknown names and never accepts raw SVG markup from application authors. Applications may opt into the small semantic pack with `register_first_party_icons()` and then use names such as `home`, `search`, `pipeline`, `check`, and `chevron-right`; directional icons mirror automatically under RTL.",
         "Prefer decorative=True beside visible text; otherwise supply a title that names the meaning.",
         "Do not use Icon as a button—use IconButton for actionable controls.",
     ),
@@ -2828,11 +2839,12 @@ COMPONENTS = (
         "NavGroup",
         "layout",
         "Standalone labelled navigation group shared by AppShell and fragment responses.",
-        "NavGroup(label=None, *items, children=None, id=None, class_=None, mark=None)",
+        "NavGroup(label=None, *items, children=None, action=None, id=None, class_=None, mark=None)",
         "NavGroup('Workspace', NavLink('Overview', '/'), NavLink('Reports', '/reports'))",
         (
             p("label", "str | None", "Visible and accessible group label; omit when the surrounding nav owns the name."),
             p("items / children", "NodeLike", "Links or other already-authorized navigation items."),
+            p("action", "NodeLike | None", "Optional typed action rendered in the group header."),
         ),
         "A labelled NavGroup emits role=group, aria-label, a visible group label, and stable CSS/data hooks. AppShell nav_groups lowers through the same component.",
         "Keep the surrounding nav landmark labelled and preserve each item’s native focus and link behavior.",
@@ -3507,6 +3519,12 @@ hide:
 ---
 
 # Component demos
+
+!!! note "Release context"
+
+    Component contracts and demos target the verified 1.0 repository candidate.
+    Registry and support details live on
+    [Current release and support](../guides/current-release.md).
 
 Every public Hedron component has a dedicated page (searchable; linked from the category
 pages below). The left nav lists **categories**, not every component — start with the

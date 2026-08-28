@@ -377,7 +377,7 @@ print(urlsplit(value).path if "://" in value else value)
     -e HEDRON_SESSION_SECRET=realwb-proxy-smoke-not-for-production \
     -e PYTHONPATH=/src/examples/workbench-reference \
     python:3.12-slim \
-    sh -lc "pip install -q /src/packages/hedron-core /src/packages/hedron /src/packages/fastapi-workbench /src/packages/hedron-posit /src/packages/hedron-workbench && python -m hedron_workbench.cli run app_facade:app --mode on --host 127.0.0.1 --port ${PROXY_PORT} --mount '${proxy_mount}' --public-base-url 'http://127.0.0.1:8787${proxy_mount}'" \
+    sh -lc "pip install -q /src/packages/hedron-core /src/packages/hedron /src/packages/fastapi-workbench /src/packages/hedron-posit && python -m hedron_posit.cli run app_facade:app --mode on --host 127.0.0.1 --port ${PROXY_PORT} --mount '${proxy_mount}' --public-base-url 'http://127.0.0.1:8787${proxy_mount}'" \
     >/dev/null; then
     fail "HED-WB-0007" "could not start the Workbench-network app sidecar"
   fi
@@ -450,7 +450,7 @@ fi
 
 (
   cd "$COMPOSE_DIR"
-  PYTHONPATH="$COMPOSE_DIR" "$PY" -m hedron_workbench.cli run app_facade:app \
+  PYTHONPATH="$COMPOSE_DIR" "$PY" -m hedron_posit.cli run app_facade:app \
     --mode on --host 127.0.0.1 --port "$APP_PORT" --mount "$MOUNT" \
     --public-base-url "$PUBLIC_BASE"
 ) >"$APP_LOG" 2>&1 &

@@ -32,14 +32,14 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-StyleScope is a visible boundary for theme, finite variant, color mode, and density only. Presentation is marker-driven (`data-hedron-*`) and styled by first-party CSS; recipe defaults are rejected.
+StyleScope is a visible boundary for theme, finite variant, color mode, density, and presentation mappings. Use `presentation={'PageHeader.title': 'display', 'Heading': 'section-heading'}` to provide nearest-scope recipe defaults; explicit component settings remain authoritative.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
 ## Constructor and parameters
 
 ```python
-StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, id=None, class_=None, mark=None)
+StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, presentation=None, recipes=(), id=None, class_=None, mark=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -49,6 +49,8 @@ StyleScope(*nodes, *, theme=None, color_mode=None, density=None, variant=None, i
 | `variant` | `str | None` | Optional finite registered variant emitted as `data-hedron-variant`. Unknown names fail closed. |
 | `color_mode` | `light | dark | None` | Optional color-mode marker (`data-hedron-color-mode`). |
 | `density` | `compact | comfortable | spacious | None` | Optional density marker (`data-hedron-density`). |
+| `presentation` | `dict[str, str] | None` | Finite slot-to-recipe defaults inherited by descendants. |
+| `recipes` | `Sequence[StyleRecipe]` | Optional scoped recipe catalog used to resolve presentation names into bounded component markers. |
 
 ## Composition and backend behavior
 
@@ -69,7 +71,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Do not pass recipe defaults or arbitrary CSS; only theme, finite variant, color_mode, and density are supported.
+- Do not pass arbitrary CSS or unresolved selectors; use finite StyleRecipe values and documented presentation slots.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

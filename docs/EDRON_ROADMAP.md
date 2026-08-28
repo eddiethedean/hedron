@@ -4,10 +4,10 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `0.9.0` implemented and release-verified in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
-**Edron release line:** `0.6` reusable composition and capability promotion<br>
-**Latest in-tree release:** Edron `0.9.0`; Hedron `0.67.0` (`>=0.67.0,<0.68`)<br>
-**Latest published release:** Edron `0.3.0`; the `0.9.0` target train is Hedron `0.67.0`<br>
+**Status:** Edron `0.9.1` implemented and release-verified in-tree (publication pending); `edron-v0.3.0` remains the latest published release<br>
+**Edron release line:** `0.9` long-lived compatibility and consolidation<br>
+**Latest in-tree release:** Edron `0.9.1`; Hedron `>=0.67.0,<2.0`<br>
+**Latest published release:** Edron `0.3.0`; the `0.9.1` candidate accepts Hedron 0.67 and 1.x<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 0.3 data workspaces](api/EDRON_03.md)<br>
 **State and interaction:** [Edron 0.1 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>

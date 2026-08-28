@@ -19,14 +19,14 @@ the [API stability catalog](../api/STABILITY.md).
 
 | API level | Compatibility promise |
 |---|---|
-| **`stable`** | Compatibility-protected across 0.x trains; removal requires deprecation and migration guidance |
+| **`stable`** | Compatibility-protected throughout 1.x; an incompatible change requires a new major release plus migration guidance |
 | **`beta`** | Public and supported where the capability table says so; may change at a documented minor-train boundary |
 | **`experimental`** | May change or be removed at a minor boundary |
 | **`internal` / `deferred`** | Not a public application contract |
 
-Package classifiers provide additional context: the flagship, adapters, and
-`hedron-elements` (Supported inventory) are **Beta**. Always pin package versions. Package maturity
-does not override the two application questions above.
+Package classifiers provide additional context: the coordinated 1.0 inventory is
+**Stable**, while satellites retain independent Beta or tooling-grade maturity. Always
+pin package versions. Package maturity does not override the two application questions above.
 
 ## Example
 
@@ -47,5 +47,5 @@ python -m pip install "hedron>=0.66.2,<0.67"
 
 Pins: [Installation](installation.md).
 
-There is no commercial SLA or scheduled 1.0. See [Evaluate Hedron](../guides/evaluate.md)
+There is no commercial SLA. See [Evaluate Hedron](../guides/evaluate.md)
 for the adoption checklist and [Glossary](../GLOSSARY.md) for project terminology.

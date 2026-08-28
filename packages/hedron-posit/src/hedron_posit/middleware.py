@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from starlette.types import ASGIApp
 
-from hedron_posit._workbench.config import WorkbenchConfig, WorkbenchMode
-from hedron_posit._workbench.middleware import WorkbenchPathMiddleware as _WorkbenchPathMiddleware
-from hedron_posit._workbench.middleware import apply_root_path, encode_raw_path
-from hedron_posit._workbench.middleware import is_workbenchified as _is_workbenchified
+from fastapi_workbench.config import WorkbenchConfig, WorkbenchMode
+from fastapi_workbench.middleware import WorkbenchPathMiddleware as _WorkbenchPathMiddleware
+from fastapi_workbench.middleware import apply_root_path, encode_raw_path
+from fastapi_workbench.middleware import is_workbenchified as _is_workbenchified
 
 __all__ = [
     "WorkbenchPathMiddleware",

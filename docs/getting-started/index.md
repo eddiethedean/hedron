@@ -6,6 +6,12 @@ search:
 
 # Learn Hedron
 
+!!! note "1.0 documentation"
+
+    These tutorials target the verified `v1.0.0` repository candidate. Until its
+    registry publication, use the public `hedron>=0.66.2,<0.67` pin shown in
+    [Installation](installation.md); contributors use `uv sync`.
+
 Get from an empty directory to a CSRF-protected form without introducing a frontend
 build system. The golden path extends one small application across four pages; each step
 has an observable browser result.

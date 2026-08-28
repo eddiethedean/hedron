@@ -1,5 +1,11 @@
 # Examples
 
+!!! note "Release context"
+
+    Examples use the canonical 1.0 APIs. The repository candidate is verified;
+    public-index installs remain on `hedron>=0.66.2,<0.67` until publication.
+    See [Current release and support](../guides/current-release.md).
+
 Ways to try Hedron — prefer a **real server** before simulated docs demos.
 
 There is **no hosted playground**. Use Codespaces / Dev Container, a local clone, or

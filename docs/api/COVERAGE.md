@@ -188,7 +188,7 @@ SQLAlchemy adapter: `hedron_data.sqlalchemy_source.SQLAlchemyDataSource` — see
 | `ColorMode`, `ColorModeToggle`, `apply_color_mode_cookie`, `read_color_mode_preference`, `resolve_color_mode`, `resolved_theme_from_request` | [COLORMODE.md](COLORMODE.md), [THEME.md](THEME.md) |
 | `compile_css`, `styles_from_manifest`, `StyleSymbols` | [THEME.md](THEME.md), [CONFIGURATION.md](../CONFIGURATION.md) |
 | `compile_palette`, `contrast_diagnostics`, `contrast_ratio` | [THEME.md](THEME.md), [AUTHORING_LOOP.md](AUTHORING_LOOP.md) |
-| `get_icon`, `list_icons`, `register_icon`, `trusted_svg` | Component / theme docs; icons live in `hedron_core` |
+| `get_icon`, `list_icons`, `register_icon`, `register_first_party_icons`, `trusted_svg` | Component / theme docs; icons live in `hedron_core` |
 
 ## Async helpers and misc
 

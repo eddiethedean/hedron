@@ -1,8 +1,8 @@
 # Compatibility policy
 
-**Status:** Accepted for the stable **0.66.x** train; the latest public PyPI release is
-`v0.66.2`. The `v0.67.0` train is Beta preview.
-**Reviewed:** 2026-08-18
+**Status:** Accepted for the verified **1.0.x** repository train. The `v1.0.0` tag/PyPI
+publication is pending; the latest public PyPI release remains `v0.66.2`.
+**Reviewed:** 2026-08-27
 
 ## Current train (read this first)
 
@@ -18,15 +18,15 @@
 
 The **Supported matrix** is the CI-tested range. Package metadata may declare a **wider**
 compatible range; versions outside the Supported column are installable but unsupported
-until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
+until evidence is green. The coordinated packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
-`hedron-extras`, `hedron-workbench`, `hedron-posit`, `hedron-elements`)
-stay on the published `0.64.x` train (`v0.64.0` on PyPI). Independent Beta packages
+`hedron-extras`, `hedron-posit`, `hedron-elements`) are Stable in the 1.0 repository
+inventory. Independent Beta packages
 `hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
 lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
-also version independently. Independent `fastapi-workbench>=1.0.0,<2` is not on the
-coordinated 0.51 train. `hedron-elements` is Beta for the declared Supported
-inventory only.
+also version independently. Independent `fastapi-workbench>=1.0.1,<2` is not on the
+coordinated train. The public registry continues to resolve the 0.66.2 coordinated wheels
+until 1.0.0 publication.
 
 ### Charts and sample-kit compatibility floor
 
@@ -184,10 +184,11 @@ Hedron uses documented public upstream APIs. Compatibility shims are isolated by
 Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 (`stable` | `beta` | `experimental` | `internal` | `deferred`).
 
-- The current public/stable and Beta preview trains remain `0.x`. RFC-0096 and D-114–D-117 define
-  a **Stage 0 Refined, not implemented or released** subtractive 1.0 cut from Verified Beta
-  `v0.67.0`; the enumerated stable inventory and removal evidence remain gated by `ENTRY-100`.
-- `stable` contracts are compatibility-protected regardless of the distribution's `0.x` version.
+- RFC-0096 and D-114–D-117 define the implemented and Verified subtractive 1.0 cut from the
+  immutable `v0.67.0` baseline. Its enumerated stable inventory, removal evidence, and all
+  17 release gates are complete; only maintainer-controlled tag/registry publication remains.
+- Coordinated `stable` contracts are compatibility-protected throughout 1.x; independently
+  versioned 0.x satellites retain the compatibility policy stated on their package pages.
   An incompatible change requires an accepted RFC/decision, migration tooling or guidance, a
   deprecation diagnostic when feasible, and at least one intervening minor phase before removal.
 - `beta` contracts may change at a minor phase boundary with the same changelog, migration, and
@@ -201,7 +202,7 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
   - **PATCH** — compatible bug/security fixes, dependency changes within the declared range, and
     documentation;
   - **MAJOR** — requires an Accepted RFC demonstrating a real ecosystem-wide compatibility
-    boundary. RFC-0096 governs the planned 1.0 consolidation; a version number alone never
+    boundary. RFC-0096 governs the 1.0 consolidation; a version number alone never
     authorizes incompatible change.
 - Bundled browser-asset pin changes (exact HTMX version/digest) are at least a **MINOR** and require
   the three-engine browser suite plus asset audit evidence.

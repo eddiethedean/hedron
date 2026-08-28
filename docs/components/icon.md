@@ -32,7 +32,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-Icon fails closed on unknown names and never accepts raw SVG markup from application authors.
+Icon fails closed on unknown names and never accepts raw SVG markup from application authors. Applications may opt into the small semantic pack with `register_first_party_icons()` and then use names such as `home`, `search`, `pipeline`, `check`, and `chevron-right`; directional icons mirror automatically under RTL.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 

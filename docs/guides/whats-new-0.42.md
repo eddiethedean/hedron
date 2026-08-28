@@ -1,5 +1,11 @@
 # What's new in 0.42
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 **Published `v0.42.0`**. Owning decision: D-070.
 Tracking: [#97](https://github.com/eddiethedean/hedron/issues/97).
 

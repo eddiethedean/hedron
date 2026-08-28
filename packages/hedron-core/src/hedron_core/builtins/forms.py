@@ -7,6 +7,7 @@ from typing import ClassVar, Literal
 
 from hedron_core.alpine import AlpineAttrs
 from hedron_core.builtins._base import class_names, collect_children, dom_id_part
+from hedron_core.builtins.style_scope import presentation_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.csrf_strategy import CsrfTokenProvider, resolve_csrf_field_values
 from hedron_core.html import html
@@ -279,7 +280,10 @@ class FormField(Component[FormFieldProps]):
             html.div(
                 control,
                 class_="hedron-form-field-control",
-                data=application_style_hook_data("FormField", "control", state=control_state),
+                data={
+                    **application_style_hook_data("FormField", "control", state=control_state),
+                    **presentation_data("FormField.control"),
+                },
             )
         )
         if self.props.help:

@@ -1,5 +1,11 @@
 # What's new in 0.47
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 **Published `v0.47.0`** (Git tag, GitHub Release, and PyPI). Owning decisions: D-078 / D-082.
 Tracking: [#350](https://github.com/eddiethedean/hedron/issues/350).
 For new apps, use `hedron>=0.58.0,<0.60`; see [What’s new in 0.51](whats-new-0.51.md).

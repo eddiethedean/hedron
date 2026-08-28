@@ -13,7 +13,7 @@ status: experimental
     (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) are **Superseded** — helpers do
     not become Supported. Polling remains the Supported production fallback.
 
-**Status:** Shipped in `0.10.0` (experimental)
+**Status:** Experimental on 1.0 (introduced in `0.10.0`)
 
 Helpers in `hedron.experimental`: `SseResponse`, `sse_response`, `job_status_sse_response`,
 `extension_script_tags`. Framing primitives (`SseEvent`, `encode_sse`) live in `hedron_core.live`.

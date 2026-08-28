@@ -29,6 +29,8 @@ __all__ = [
     "SIZES",
     "STATE_KINDS",
     "TRACKS",
+    "TRACKING",
+    "TEXT_WRAPS",
     "TYPOGRAPHY_ROLES",
     "TYPE_EFFECTS",
     "TYPE_MEASURES",
@@ -46,6 +48,8 @@ __all__ = [
     "Size",
     "StateKind",
     "Track",
+    "Tracking",
+    "TextWrap",
     "TypographyRole",
     "TypographyEffect",
     "TypographyMeasure",
@@ -86,6 +90,16 @@ CONTENT_WIDTHS: tuple[str, ...] = ("narrow", "default", "wide", "full")
 WIDTHS: tuple[str, ...] = ("content", "field", "full")
 OVERFLOW_MODES: tuple[str, ...] = ("wrap", "break", "truncate", "clip")
 TRACKS: tuple[str, ...] = ("narrow", "default", "wide", "fluid")
+TRACKING: tuple[str, ...] = ("tight", "normal", "loose", "wide")
+TEXT_WRAPS: tuple[str, ...] = (
+    "normal",
+    "wrap",
+    "balance",
+    "pretty",
+    "break",
+    "truncate",
+    "clip",
+)
 RESPONSIVE_POLICIES: tuple[str, ...] = ("scroll", "stack", "priority")
 PADDINGS: tuple[str, ...] = ("none", "sm", "md", "lg")
 ELEVATIONS: tuple[str, ...] = ("none", "sm", "md", "lg")
@@ -126,6 +140,8 @@ ContentWidth = Literal["narrow", "default", "wide", "full"]
 Width = Literal["content", "field", "full"]
 OverflowMode = Literal["wrap", "break", "truncate", "clip"]
 Track = Literal["narrow", "default", "wide", "fluid"]
+Tracking = Literal["tight", "normal", "loose", "wide"]
+TextWrap = Literal["normal", "wrap", "balance", "pretty", "break", "truncate", "clip"]
 ResponsivePolicy = Literal["scroll", "stack", "priority"]
 Padding = Literal["none", "sm", "md", "lg"]
 Elevation = Literal["none", "sm", "md", "lg"]

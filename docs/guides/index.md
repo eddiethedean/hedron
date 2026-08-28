@@ -6,6 +6,12 @@ search:
 
 # Guides
 
+!!! note "Release context"
+
+    Guides describe the verified 1.0 repository candidate. See
+    [Current release and support](current-release.md) for the public-index pin,
+    migration baseline, package maturity, and publication status.
+
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
 Complete **Start** first ([Learning path](../getting-started/learning-path.md):
@@ -42,7 +48,7 @@ Shipping? [Ship](ship.md).
 
 - [Comprehensive styling](styling.md) — visual tour of presentation tokens, layout,
   themes, recipes, scoped CSS, and styling checks
-- [Modern CSS in 0.60](modern-css-0.60.md) — compiler v2, container layout, variants,
+- [Modern CSS](modern-css-0.60.md) — compiler v2, container layout, variants,
   progressive CSS tiers, overlays, media, controls, and fallbacks
 
 ## Add data and visuals
@@ -78,7 +84,7 @@ Shipping? [Ship](ship.md).
 
 - [Use plugins](plugin-consumer.md)
 - [Author plugins](plugin-authoring.md)
-- [Curated extras (0.51)](../api/EXTRAS.md)
+- [Curated extras](../api/EXTRAS.md)
 
 ## Other
 

@@ -1,4 +1,4 @@
-"""hedron-workbench launcher discovery guard (issue #159 / fastapi #144 parity)."""
+"""Posit Workbench launcher discovery guard (issue #159 / fastapi #144 parity)."""
 
 from __future__ import annotations
 

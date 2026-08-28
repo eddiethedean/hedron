@@ -1,4 +1,4 @@
-"""SECURITY-029 adversarial corpus for hedron-workbench."""
+"""Security adversarial corpus for the Posit Workbench adapter."""
 
 from __future__ import annotations
 

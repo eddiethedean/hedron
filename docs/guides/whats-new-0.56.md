@@ -1,5 +1,11 @@
 # What’s new in 0.56
 
+!!! note "Historical release note"
+
+    This page records the 0.x release named in its title. For current installation,
+    support, and 1.0 candidate status, use [Current release and support](current-release.md).
+    Keep the historical pins below only when maintaining that release line.
+
 Published **0.56.0** on PyPI. This is a historical train; the current published
 train is **1.0.x** — see [What’s next](whats-next.md). Pin
 `hedron>=0.66.2,<0.67` from PyPI for current applications.

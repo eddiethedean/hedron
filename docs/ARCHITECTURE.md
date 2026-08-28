@@ -156,12 +156,12 @@ Hedron does not invent tenancy. Scope durable jobs and caches with `auth_subject
 workers — wrong scoping is an application bug, not a framework isolation guarantee.
 Guide: [Multi-tenant isolation](guides/multi-tenant.md).
 
-### Stable facade vs Beta APIs
+### Stable packages vs API levels
 
-A small **stable** facade is compatibility-protected on `0.x`
+The enumerated **stable** facade is compatibility-protected throughout 1.x
 ([STABLE_FACADE](api/STABLE_FACADE.md)). Most callable APIs remain compatibility level
-`beta` even when the capability is **Supported**. Package maturity (Beta on PyPI) is a
-third axis — pin versions.
+`beta` even when the capability is **Supported**. Coordinated package maturity is Stable;
+satellite maturity is a third, independent axis — pin versions.
 
 ## Adapter portability
 

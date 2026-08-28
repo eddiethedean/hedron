@@ -4,9 +4,11 @@ status: published
 
 # Maps
 
-First-class maps live in independent Beta **`hedron-maps` `0.1.0`** (D-078 / D-082). Install
-`hedron[maps]` on the 0.47 train or `hedron-maps>=0.1.0,<0.2`. Core `hedron.Map`
-and `sanitize_geojson` from the 0.46 train stay compatible.
+First-class maps live in independent Beta **`hedron-maps` `0.1.3`** (introduced by
+D-078 / D-082). In the 1.0 workspace, install `hedron-maps>=0.1.3,<0.2` alongside
+the coordinated Hedron packages. Public PyPI applications should use the documented
+`hedron[maps]>=0.66.2,<0.67` pin until 1.0 artifacts are published. Core `hedron.Map`
+and `sanitize_geojson` remain compatible.
 
 `hedron.Map`, `sanitize_geojson`, `MarkerSpec`, and `MAP_VIEWPORT_TRIGGER` stay in
 `hedron-core`. `MapInteraction` binds untrusted map events to a registered

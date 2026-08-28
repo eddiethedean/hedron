@@ -11,7 +11,7 @@ status: shipped
     Package maturity (Beta/Alpha) is separate from API level
     (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped in 0.4**
+**Status:** Available on 1.0 (introduced in 0.4)
 
 Plugins declare an entry point in group `hedron.plugins` pointing at a callable that
 receives a `PluginContext`. Discovery and loading live in `hedron_core.plugin_loader`

@@ -385,6 +385,9 @@ class ThemeSpec:
     aliases: Mapping[str, str] = field(default_factory=dict)
     groups: Mapping[str, str] = field(default_factory=dict)
     recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
+    content_width: str | None = None
+    typography_features: Mapping[str, int] = field(default_factory=dict)
+    typography_role_features: Mapping[str, Mapping[str, int]] = field(default_factory=dict)
     metadata: Mapping[str, Any] = field(default_factory=dict)
     schema: str = "hedron.theme-spec/1"
     profile: str = "core"
@@ -422,12 +425,52 @@ class ThemeSpec:
                     or not _NAME.fullmatch(value)
                 ):
                     raise ValueError("theme recipe values must use safe identifiers")
+        if self.content_width is not None and (
+            not isinstance(self.content_width, str)
+            or not self.content_width.strip()
+            or any(char in self.content_width for char in ";{}<>")
+            or "url(" in self.content_width.lower()
+        ):
+            raise ValueError("theme content width must be a safe non-empty value")
+        typography_features = {str(key): value for key, value in self.typography_features.items()}
+        if any(
+            re.fullmatch(r"[A-Za-z0-9]{4}", key) is None
+            or not isinstance(value, int)
+            or isinstance(value, bool)
+            or value < 0
+            or value > 99
+            for key, value in typography_features.items()
+        ):
+            raise ValueError(
+                "theme typography features require four-character tags and values 0..99"
+            )
+        typography_role_features: dict[str, Mapping[str, int]] = {}
+        for role, features in self.typography_role_features.items():
+            normalized = {str(key): value for key, value in features.items()}
+            if role not in {"body", "display", "code", "tabular"} or any(
+                re.fullmatch(r"[A-Za-z0-9]{4}", key) is None
+                or not isinstance(value, int)
+                or isinstance(value, bool)
+                or value < 0
+                or value > 99
+                for key, value in normalized.items()
+            ):
+                raise ValueError("theme role typography features are invalid")
+            typography_role_features[role] = MappingProxyType(dict(sorted(normalized.items())))
         object.__setattr__(self, "tokens", _freeze_mapping(self.tokens))
         object.__setattr__(self, "modes", _freeze_mapping(self.modes))
         object.__setattr__(self, "accessibility_modes", _freeze_mapping(self.accessibility_modes))
         object.__setattr__(self, "aliases", _freeze_mapping(self.aliases))
         object.__setattr__(self, "groups", _freeze_mapping(self.groups))
         object.__setattr__(self, "recipes", _freeze_mapping(self.recipes))
+        object.__setattr__(
+            self, "typography_features", MappingProxyType(dict(sorted(typography_features.items())))
+        )
+        object.__setattr__(
+            self,
+            "typography_role_features",
+            MappingProxyType(dict(sorted(typography_role_features.items()))),
+        )
         object.__setattr__(self, "metadata", _freeze_mapping(self.metadata))
         object.__setattr__(
             self,
@@ -478,6 +521,13 @@ class ThemeSpec:
             aliases=cast(Mapping[str, str], data.get("aliases", {})),
             groups=cast(Mapping[str, str], data.get("groups", {})),
             recipes=cast(Mapping[str, Mapping[str, str]], data.get("recipes", {})),
+            content_width=(
+                str(data["content_width"]) if data.get("content_width") is not None else None
+            ),
+            typography_features=cast(Mapping[str, int], data.get("typography_features", {})),
+            typography_role_features=cast(
+                Mapping[str, Mapping[str, int]], data.get("typography_role_features", {})
+            ),
             metadata=cast(Mapping[str, Any], data.get("metadata", {})),
             schema=str(data.get("schema", "hedron.theme-spec/1")),
             profile=str(data.get("profile", "core")),
@@ -505,6 +555,11 @@ class ThemeSpec:
             "aliases": dict(self.aliases),
             "groups": dict(self.groups),
             "recipes": {key: dict(value) for key, value in self.recipes.items()},
+            "content_width": self.content_width,
+            "typography_features": dict(self.typography_features),
+            "typography_role_features": {
+                key: dict(value) for key, value in self.typography_role_features.items()
+            },
             "metadata": dict(self.metadata),
             "profile": self.profile,
             "provenance": [dict(item) for item in self.provenance],
@@ -560,6 +615,11 @@ class ThemeSpec:
             accessibility_modes={
                 mode: dict(values) for mode, values in self.accessibility_modes.items()
             },
+            content_width=self.content_width,
+            typography_features=dict(self.typography_features),
+            typography_role_features={
+                key: dict(value) for key, value in self.typography_role_features.items()
+            },
         )
 
 
@@ -597,6 +657,11 @@ class ThemePatch:
             aliases={**dict(spec.aliases), **dict(self.aliases)},
             groups={**dict(spec.groups), **dict(self.groups)},
             recipes={**dict(spec.recipes), **dict(self.recipes)},
+            content_width=spec.content_width,
+            typography_features=dict(spec.typography_features),
+            typography_role_features={
+                key: dict(value) for key, value in spec.typography_role_features.items()
+            },
             metadata={**dict(spec.metadata), "last_patch": self.name},
             profile=spec.profile,
             provenance=(*spec.provenance, *self.provenance, {"patch": self.name}),
@@ -636,6 +701,9 @@ class ThemeBuilder:
                 tokens=dict(getattr(base, "tokens", {})),
                 modes=dict(getattr(base, "modes", {})),
                 accessibility_modes=dict(getattr(base, "accessibility_modes", {})),
+                content_width=getattr(base, "content_width", None),
+                typography_features=dict(getattr(base, "typography_features", {})),
+                typography_role_features=dict(getattr(base, "typography_role_features", {})),
                 metadata=dict(getattr(base, "metadata", {})),
             )
         else:
@@ -647,6 +715,11 @@ class ThemeBuilder:
         self._aliases = dict(source.aliases)
         self._groups = dict(getattr(source, "groups", {}))
         self._recipes = {key: dict(value) for key, value in getattr(source, "recipes", {}).items()}
+        self._content_width = source.content_width
+        self._typography_features = dict(source.typography_features)
+        self._typography_role_features = {
+            key: dict(value) for key, value in source.typography_role_features.items()
+        }
         self._metadata = dict(source.metadata)
         self._profile = source.profile
         self._provenance = list(source.provenance)
@@ -660,6 +733,11 @@ class ThemeBuilder:
         clone._aliases = dict(self._aliases)
         clone._groups = dict(self._groups)
         clone._recipes = {key: dict(value) for key, value in self._recipes.items()}
+        clone._content_width = self._content_width
+        clone._typography_features = dict(self._typography_features)
+        clone._typography_role_features = {
+            key: dict(value) for key, value in self._typography_role_features.items()
+        }
         clone._metadata = dict(self._metadata)
         clone._profile = self._profile
         clone._provenance = list(self._provenance)
@@ -678,6 +756,9 @@ class ThemeBuilder:
                 tokens=dict(theme.tokens),
                 modes=dict(theme.modes),
                 accessibility_modes=dict(getattr(theme, "accessibility_modes", {})),
+                content_width=getattr(theme, "content_width", None),
+                typography_features=dict(getattr(theme, "typography_features", {})),
+                typography_role_features=dict(getattr(theme, "typography_role_features", {})),
             ),
         )
 
@@ -770,6 +851,21 @@ class ThemeBuilder:
         builder._metadata.update(values)
         return builder
 
+    def content_width(self, value: str | None) -> ThemeBuilder:
+        builder = self._clone()
+        builder._content_width = value
+        return builder
+
+    def typography_features(self, **features: int) -> ThemeBuilder:
+        builder = self._clone()
+        builder._typography_features.update(features)
+        return builder
+
+    def typography_role_features(self, role: str, **features: int) -> ThemeBuilder:
+        builder = self._clone()
+        builder._typography_role_features.setdefault(role, {}).update(features)
+        return builder
+
     def profile(self, profile: str) -> ThemeBuilder:
         if profile not in THEME_COVERAGE_PROFILES:
             raise ValueError(f"unknown theme coverage profile: {profile}")
@@ -791,6 +887,9 @@ class ThemeBuilder:
             aliases=self._aliases,
             groups=self._groups,
             recipes=self._recipes,
+            content_width=self._content_width,
+            typography_features=self._typography_features,
+            typography_role_features=self._typography_role_features,
             metadata=self._metadata,
             profile=self._profile,
             provenance=tuple(self._provenance),
@@ -877,6 +976,7 @@ class StyleContext:
 
     recipes: Mapping[str, str] = field(default_factory=dict)
     presentation: Mapping[str, str] = field(default_factory=dict)
+    recipe_values: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     parent: StyleContext | None = None
 
     def __post_init__(self) -> None:
@@ -894,6 +994,21 @@ class StyleContext:
             raise ValueError("style context presentation names must be safe identifiers")
         object.__setattr__(
             self, "presentation", MappingProxyType(dict(sorted(presentation.items())))
+        )
+        recipe_values: dict[str, Mapping[str, str]] = {}
+        for name, values in self.recipe_values.items():
+            normalized_name = str(name)
+            normalized_values = {str(key): str(value) for key, value in values.items()}
+            if not _NAME.fullmatch(normalized_name) or any(
+                not _NAME.fullmatch(key) or not _NAME.fullmatch(value)
+                for key, value in normalized_values.items()
+            ):
+                raise ValueError("style context recipe values must use safe identifiers")
+            recipe_values[normalized_name] = MappingProxyType(
+                dict(sorted(normalized_values.items()))
+            )
+        object.__setattr__(
+            self, "recipe_values", MappingProxyType(dict(sorted(recipe_values.items())))
         )
 
     def resolve(self, family: str, explicit: str | None = None) -> str | None:
@@ -915,6 +1030,9 @@ class StyleContext:
         return {
             "recipes": dict(self.recipes),
             "presentation": dict(self.presentation),
+            "recipe_values": {
+                key: dict(value) for key, value in sorted(self.recipe_values.items())
+            },
             "parent": self.parent.to_dict() if self.parent is not None else None,
         }
 
@@ -932,6 +1050,24 @@ class StyleContext:
                 return current.presentation[slot]
             current = current.parent
         return None
+
+    def resolve_presentation_values(self, slot: str) -> Mapping[str, str]:
+        """Resolve the nearest mapped recipe into bounded presentation values."""
+        recipe = self.resolve_presentation(slot)
+        if recipe is None:
+            return MappingProxyType({})
+        current: StyleContext | None = self
+        seen: set[int] = set()
+        while current is not None:
+            marker = id(current)
+            if marker in seen:
+                raise ValueError("style context parent cycle")
+            seen.add(marker)
+            values = current.recipe_values.get(recipe)
+            if values is not None:
+                return values
+            current = current.parent
+        return MappingProxyType({})
 
 
 @dataclass(frozen=True, slots=True)
