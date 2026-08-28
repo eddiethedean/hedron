@@ -8,4 +8,3 @@ own execution in their isolated environments.
 FIXTURE_SCHEMA = "hedron.upgrade-fixture/1"
 BASELINE = "v0.67.0"
 TARGET = "v1.0.0"
-

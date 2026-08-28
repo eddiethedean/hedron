@@ -536,6 +536,11 @@ HED_MIGRATE_0670 = "HED-MIGRATE-0670"  # transitional authoring path found by an
 HED_MIGRATE_0671 = "HED-MIGRATE-0671"  # app.component -> app.view
 HED_MIGRATE_0672 = "HED-MIGRATE-0672"  # app.fragment -> app.view
 HED_MIGRATE_0673 = "HED-MIGRATE-0673"  # app.include_feature -> app.include
+HED_MIGRATE_0674 = "HED-MIGRATE-0674"  # router.component -> router.view
+HED_MIGRATE_0675 = "HED-MIGRATE-0675"  # app.screen -> app.page
+HED_MIGRATE_0676 = "HED-MIGRATE-0676"  # app.refreshable -> app.view
+HED_MIGRATE_0677 = "HED-MIGRATE-0677"  # app.command -> app.action
+HED_MIGRATE_0678 = "HED-MIGRATE-0678"  # app.form_command -> app.action
 
 
 def registered_codes() -> frozenset[str]:

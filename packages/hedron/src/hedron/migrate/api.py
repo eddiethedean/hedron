@@ -454,11 +454,12 @@ def _replace_python(
         replacement = wanted.get((int(node.lineno), dotted or ""))
         if dotted is None or replacement is None:
             continue
+        end_lineno = node.end_lineno
+        end_col_offset = node.end_col_offset
+        if end_lineno is None or end_col_offset is None:
+            continue
         leaf = dotted.rsplit(".", 1)[-1]
-        start = (
-            _offset_for_position(source, int(node.end_lineno), int(node.end_col_offset))
-            - len(leaf)
-        )
+        start = _offset_for_position(source, end_lineno, end_col_offset) - len(leaf)
         end = start + len(leaf)
         replacements.append((start, end, replacement))
     for start, end, replacement in sorted(set(replacements), reverse=True):
@@ -483,9 +484,7 @@ def _replace_text(source: str, findings: Iterable[ApiMigrationFinding] = ()) -> 
         "router.component": "router.view",
     }
     allowed = {
-        item.old_path: item.replacement
-        for item in findings
-        if _replacement_for_finding(item)
+        item.old_path: item.replacement for item in findings if _replacement_for_finding(item)
     }
     count = 0
     for old, new in replacements.items():

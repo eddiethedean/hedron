@@ -84,5 +84,5 @@ window exist. The release is subtractive; it is not waiting for another runtime 
 - [Stability](../api/STABILITY.md)
 - [Enterprise diligence](enterprise-diligence.md)
 - [Production-quality maturity](https://github.com/eddiethedean/hedron/blob/main/docs/guides/production-quality.md)
-- [1.0 implementation and cut plan](../implementation/HEDRON_1_0.md)
-- [1.0 acceptance plan](../acceptance/RELEASE_1_0.md)
+- [1.0 implementation and cut plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_1_0.md)
+- [1.0 acceptance plan](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_1_0.md)

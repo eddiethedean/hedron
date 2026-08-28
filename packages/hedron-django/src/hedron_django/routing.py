@@ -261,7 +261,7 @@ def action(
 
             @wraps(wrapped)
             async def async_action(request: HttpRequest, *args: object, **kwargs: object) -> Any:
-                if request.method.upper() not in {"POST", "PUT", "PATCH", "DELETE"}:
+                if (request.method or "").upper() not in {"POST", "PUT", "PATCH", "DELETE"}:
                     return HttpResponse(status=405)
                 return await wrapped(request, *args, **kwargs)
 
@@ -270,7 +270,7 @@ def action(
 
         @wraps(wrapped)
         def sync_action(request: HttpRequest, *args: object, **kwargs: object) -> Any:
-            if request.method.upper() not in {"POST", "PUT", "PATCH", "DELETE"}:
+            if (request.method or "").upper() not in {"POST", "PUT", "PATCH", "DELETE"}:
                 return HttpResponse(status=405)
             return wrapped(request, *args, **kwargs)
 

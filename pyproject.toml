@@ -145,6 +145,8 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF100", "RUF012", "S110", "S112", "
 "packages/hedron/src/hedron/async_utils.py" = ["UP047"]
 "packages/hedron/src/hedron/state.py" = ["UP046", "UP047"]
 "packages/hedron-data/src/hedron_data/spreadsheet.py" = ["E501"]
+"tests/upgrade/phase_1_0/negative/*.py" = ["B009", "F821"]
+"tests/upgrade/phase_1_0/transitional/*.py" = ["F821"]
 
 [tool.pyright]
 include = [

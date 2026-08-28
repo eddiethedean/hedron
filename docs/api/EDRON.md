@@ -16,8 +16,8 @@ status: verified
 **Executable-design fixtures:** [Edron golden applications](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/EDRON_GOLDEN_APPS.md)
 
 This document records the beginner-facing Python contract through Edron 0.9. The original 0.1
-sections remain the compatibility foundation; current release and migration details are in the
-[Edron user guide](../guides/edron-user-guide.md) and [0.9 acceptance packet](../acceptance/EDRON_009.md).
+sections remain the compatibility foundation; release and migration details are in the
+[Edron user guide](../guides/edron-user-guide.md) and [0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md).
 Signatures use
 Python typing notation; imported native types keep their owning Hedron package and stability level.
 
@@ -98,7 +98,7 @@ The `edron` distribution supports Python 3.11 through 3.14 on the 0.9 train, mat
 
 `pip install edron` requires `hedron>=0.67.0,<0.68` and `hedron-data>=0.67.0,<0.68`, plus the
 compatible `hedron-charts`, `hedron-maps`, Markdown/sanitization, and Uvicorn dependencies. The
-exact train is frozen in the [0.9 acceptance packet](../acceptance/EDRON_009.md).
+exact train is frozen in the [0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md).
 
 The package publishes `py.typed`, wheel, and source distributions. Importing `edron` must not:
 

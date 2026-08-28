@@ -596,7 +596,7 @@ authorization, persistence, and request boundaries reviewable.
 
 - [Edron deployment guide](edron-deployment.md)
 - [Edron 0.9 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_009.md)
-- [Edron 0.8 → 0.9 upgrade fixtures](../acceptance/upgrade-fixtures-09.md)
+- [Edron 0.8 → 0.9 upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-09.md)
 - [Edron packaging and compatibility](../api/EDRON_PACKAGING.md) · [Compatibility policy](../COMPATIBILITY.md)
 - [Security](security.md) · [Accessibility](accessibility.md) · [Test your UI](testing.md)
 - [Edron API contract](../api/EDRON.md) · [Edron roadmap](../EDRON_ROADMAP.md)
