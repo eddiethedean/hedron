@@ -48,6 +48,33 @@ function normalizeTabs(root) {
   }
 }
 
+function setNavCollapsed(shell, collapsed, persist = true) {
+  if (!(shell instanceof HTMLElement)) return;
+  shell.dataset.hedronNavCollapsed = collapsed ? "true" : "false";
+  const toggle = shell.querySelector("[data-hedron-nav-toggle]");
+  if (toggle instanceof HTMLElement) {
+    toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    toggle.textContent = collapsed ? "Expand navigation" : "Collapse navigation";
+  }
+  if (persist) {
+    const key = shell.querySelector("[data-hedron-nav-preference]")?.getAttribute("data-hedron-nav-preference");
+    try { if (key) localStorage.setItem(key, collapsed ? "true" : "false"); } catch (_) { /* storage may be disabled */ }
+  }
+}
+
+function normalizeNavCollapse(root) {
+  const shells = [];
+  if (root instanceof Element && root.matches(".hedron-app-shell[data-hedron-nav-collapse='user']")) shells.push(root);
+  root.querySelectorAll?.(".hedron-app-shell[data-hedron-nav-collapse='user']").forEach((shell) => shells.push(shell));
+  for (const shell of shells) {
+    const key = shell.querySelector("[data-hedron-nav-preference]")?.getAttribute("data-hedron-nav-preference");
+    try {
+      const saved = key ? localStorage.getItem(key) : null;
+      if (saved === "true" || saved === "false") setNavCollapsed(shell, saved === "true", false);
+    } catch (_) { /* storage may be disabled */ }
+  }
+}
+
 function dialogFromTrigger(trigger) {
   const selector = trigger.getAttribute("data-hedron-dialog-open");
   if (!selector || !/^#[A-Za-z][\w:.-]*$/.test(selector)) return null;
@@ -76,6 +103,15 @@ document.addEventListener("click", (event) => {
   const dismiss = event.target.closest("[data-hedron-toast-dismiss]");
   if (dismiss instanceof HTMLElement) {
     dismiss.closest("[data-hedron-toast]")?.remove();
+    return;
+  }
+
+  const navToggle = event.target.closest("[data-hedron-nav-toggle]");
+  if (navToggle instanceof HTMLElement) {
+    const shell = navToggle.closest(".hedron-app-shell");
+    if (shell instanceof HTMLElement) {
+      setNavCollapsed(shell, shell.dataset.hedronNavCollapsed !== "true");
+    }
   }
 });
 
@@ -103,6 +139,7 @@ document.addEventListener("keydown", (event) => {
 
 document.body.addEventListener("htmx:afterSwap", (event) => {
   normalizeTabs(event.target);
+  normalizeNavCollapse(event.target);
   upgradeOpenModalDialogs(event.target);
   const source = event.detail?.requestConfig?.elt;
   const load = source instanceof Element ? source.getAttribute("data-hedron-after-load") : null;
@@ -111,6 +148,7 @@ document.body.addEventListener("htmx:afterSwap", (event) => {
   }
 });
 normalizeTabs(document);
+normalizeNavCollapse(document);
 upgradeOpenModalDialogs(document);
 
 function upgradeOpenModalDialogs(root) {
@@ -270,4 +308,3 @@ document.body.addEventListener("htmx:afterSwap", (event) => {
     requestAnimationFrame(() => node.classList.add("is-revealed"));
   }
 });
-
