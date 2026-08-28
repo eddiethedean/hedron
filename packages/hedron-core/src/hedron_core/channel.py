@@ -88,6 +88,9 @@ class PageSessionChannel:
 
     def encode_region_update(self, update: RegionUpdate) -> ChannelMessage:
         encoded = self._prepare_region_update(update)
+        return self._commit_region_update(encoded)
+
+    def _commit_region_update(self, encoded: ChannelMessage) -> ChannelMessage:
         if self.messages_sent >= self.budget.max_messages:
             raise RuntimeError("channel message budget exhausted")
         self.messages_sent += 1

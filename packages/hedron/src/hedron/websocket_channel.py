@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Mapping
 from typing import Any
 
 from starlette.websockets import WebSocket, WebSocketDisconnect
@@ -22,6 +22,33 @@ __all__ = [
 
 # Include this sentinel in ``allowed_origins`` to permit connections with no Origin header.
 ALLOW_MISSING_ORIGIN = "*"
+
+
+class _OutboundFrameTooLarge(ValueError):
+    """Raised when a serialized WebSocket frame exceeds its channel budget."""
+
+
+def _encode_json_frame(channel: PageSessionChannel, payload: Mapping[str, Any]) -> str:
+    """Serialize an outbound frame and enforce the channel's byte budget."""
+    frame = json.dumps(payload)
+    if len(frame.encode("utf-8")) > channel.budget.max_message_bytes:
+        raise _OutboundFrameTooLarge("outbound message exceeds max_message_bytes")
+    return frame
+
+
+async def _send_json(
+    websocket: WebSocket,
+    channel: PageSessionChannel,
+    payload: Mapping[str, Any],
+) -> bool:
+    """Send a bounded frame, closing when even the response is too large."""
+    try:
+        frame = _encode_json_frame(channel, payload)
+    except _OutboundFrameTooLarge:
+        await websocket.close(code=1009)
+        return False
+    await websocket.send_text(frame)
+    return True
 
 
 def origin_allowed(
@@ -128,32 +155,41 @@ async def accept_page_session_channel(
             try:
                 raw = await receive_with_lifecycle()
             except asyncio.TimeoutError:
-                await websocket.send_text(json.dumps({"kind": "error", "detail": "idle timeout"}))
+                if not await _send_json(
+                    websocket, channel, {"kind": "error", "detail": "idle timeout"}
+                ):
+                    return
                 await websocket.close(code=1008)
                 return
             message_count += 1
             if message_count > channel.budget.max_messages:
-                await websocket.send_text(
-                    json.dumps({"kind": "error", "detail": "message budget exceeded"})
-                )
+                if not await _send_json(
+                    websocket, channel, {"kind": "error", "detail": "message budget exceeded"}
+                ):
+                    return
                 await websocket.close(code=1009)
                 return
             if len(raw.encode("utf-8")) > channel.budget.max_message_bytes:
-                await websocket.send_text(
-                    json.dumps({"kind": "error", "detail": "message too large"})
-                )
+                if not await _send_json(
+                    websocket, channel, {"kind": "error", "detail": "message too large"}
+                ):
+                    return
                 await websocket.close(code=1009)
                 return
             try:
                 data = json.loads(raw)
             except json.JSONDecodeError:
-                await websocket.send_text(json.dumps({"kind": "error", "detail": "invalid json"}))
+                if not await _send_json(
+                    websocket, channel, {"kind": "error", "detail": "invalid json"}
+                ):
+                    return
                 await websocket.close(code=1003)
                 return
             if not isinstance(data, dict):
-                await websocket.send_text(
-                    json.dumps({"kind": "error", "detail": "invalid json message"})
-                )
+                if not await _send_json(
+                    websocket, channel, {"kind": "error", "detail": "invalid json message"}
+                ):
+                    return
                 await websocket.close(code=1003)
                 return
             kind = str(data.get("kind", ""))
@@ -165,24 +201,29 @@ async def accept_page_session_channel(
                 try:
                     channel.validate_client_read(component_id, field)
                 except ValueError as exc:
-                    await websocket.send_text(json.dumps({"kind": "error", "detail": str(exc)}))
+                    if not await _send_json(
+                        websocket, channel, {"kind": "error", "detail": str(exc)}
+                    ):
+                        return
                     await websocket.close(code=1008)
                     return
                 value = None
                 if on_client_state is not None:
                     value = await on_client_state(component_id, field)
-                await websocket.send_text(
-                    json.dumps(
-                        {
-                            "kind": "client-state",
-                            "component_id": component_id,
-                            "field": field,
-                            "value": value,
-                        }
-                    )
-                )
+                if not await _send_json(
+                    websocket,
+                    channel,
+                    {
+                        "kind": "client-state",
+                        "component_id": component_id,
+                        "field": field,
+                        "value": value,
+                    },
+                ):
+                    return
             elif kind == "ping":
-                await websocket.send_text(json.dumps({"kind": "pong"}))
+                if not await _send_json(websocket, channel, {"kind": "pong"}):
+                    return
     except WebSocketDisconnect:
         return
     finally:
@@ -200,5 +241,7 @@ async def send_region_update(
     channel: PageSessionChannel,
     update: RegionUpdate,
 ) -> None:
-    message: ChannelMessage = channel.encode_region_update(update)
-    await websocket.send_text(json.dumps({"kind": message.kind, **dict(message.payload)}))
+    message: ChannelMessage = channel._prepare_region_update(update)
+    frame = _encode_json_frame(channel, {"kind": message.kind, **dict(message.payload)})
+    channel._commit_region_update(message)
+    await websocket.send_text(frame)
