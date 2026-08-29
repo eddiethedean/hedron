@@ -57,6 +57,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     from demos.hello_refresh import build_hello_refresh_demo
     from demos.maps import build_maps_layers_demo, build_maps_markers_demo
+    from demos.showcase import build_showcase_demo
 
     from hedron_sim.assets import copy_assets
 
@@ -92,6 +93,7 @@ def main(argv: list[str] | None = None) -> int:
         "file-upload.html": build_file_upload_demo(),
         "pe-paths.html": build_pe_paths_demo(),
         "tenant-deny.html": build_tenant_deny_demo(),
+        "showcase-dashboard.html": build_showcase_demo(),
         "maps-markers.html": build_maps_markers_demo(),
         "maps-layers.html": build_maps_layers_demo(),
     }

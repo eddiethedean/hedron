@@ -170,6 +170,14 @@ minutes = 20
 status = "current"
 
 [[example]]
+path = "showcase"
+outcome = "Full-feature server-rendered operations console"
+layer = "Hedron"
+difficulty = "Intermediate"
+minutes = 15
+status = "current"
+
+[[example]]
 path = "session-auth"
 outcome = "Session login and protected pages"
 layer = "Hedron"

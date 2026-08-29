@@ -100,6 +100,12 @@ _PAGES: tuple[tuple[str, str, str, str], ...] = (
         "GET /status → 200",
     ),
     (
+        "examples/showcase/index.html",
+        '[data-hedron-sim="showcase-dashboard"]',
+        'button:has-text("Refresh pipeline")',
+        "GET /pipeline/refresh → 200",
+    ),
+    (
         "guides/forms-and-actions/index.html",
         '[data-hedron-sim="forms-invite"]',
         'button:has-text("Send invite")',

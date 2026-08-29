@@ -27,6 +27,7 @@ historical examples are phase evidence and are not recommended starting points.
 | [`reference-app`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/reference-app) | Production architecture kitchen sink | Hedron | Advanced | 60 min | Current |
 | [`sample-kit-consumer`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/sample-kit-consumer) | Third-party component package consumption | Hedron | Intermediate | 20 min | Current |
 | [`session-auth`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/session-auth) | Session login and protected pages | Hedron | Intermediate | 25 min | Current |
+| [`showcase`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/showcase) | Full-feature server-rendered operations console | Hedron | Intermediate | 15 min | Current |
 | [`streamlit-migration`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/streamlit-migration) | Review-first Streamlit migration | Edron | Intermediate | 30 min | Current |
 | [`theme-gallery`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/theme-gallery) | Theme and appearance gallery | Hedron | Intermediate | 20 min | Current |
 | [`workbench-reference`](https://github.com/eddiethedean/hedron/tree/v1.0/examples/workbench-reference) | Posit Workbench application | Hedron | Advanced | 30 min | Current |

@@ -46,6 +46,23 @@ No Node.js toolchain is required. Python 3.10–3.14 is supported. The `hedron-c
 release workflows. Warning-level typing cleanup is tracked separately until the existing
 workspace warning backlog is retired.
 
+## Alpine.js for browser-local behavior
+
+Hedron uses [Alpine.js](https://alpinejs.dev) for small, disposable interactions that belong in
+the browser: disclosures, tabs, menus, focus behavior, local bindings, and other presentation
+state that does not require a server request. HTMX remains responsible for server interaction,
+fragment replacement, and declared request lifecycles; application and domain state remain on the
+server.
+
+The stable platform vendors Alpine.js `3.16.3` as a CSP-compatible runtime and serves it
+same-origin from Hedron's immutable browser feature plan. Alpine assets are not fetched from a
+CDN at runtime, and no Node.js build step is required. Hedron emits Alpine only when a rendered
+page demands it and includes only the required, pinned plugins. Use Hedron's typed Alpine
+attributes and built-in components rather than injecting arbitrary Alpine expressions.
+
+Read [What is Alpine?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-alpine/)
+for the browser/server ownership rule, lifecycle behavior, and extension guidance.
+
 ## Start with Edron
 
 Create and run a teaching project with [`uv`](https://docs.astral.sh/uv/):
@@ -147,7 +164,12 @@ package lowers into the exact Hedron application available as `app.native` / `ap
 | Operations | Static diagnostics, manifests, conformance reports, deployment profiles, build tooling, and observability hooks |
 | Extension | Feature packages, component packages, Web Components, Jinja/HDJ, and a framework-neutral core |
 
-![A Hedron application with a status region refreshed in place](docs/assets/hello-refresh.jpg)
+[See the full interactive Hedron Showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/)
+powered by [`hedron-sim`](packages/hedron-sim/README.md). Explore a complete operations console
+with app chrome, metrics, process flow, tables, status surfaces, fragment refresh, a typed action,
+and an inspectable component map—entirely in the documentation site, without starting a server.
+
+For the smallest first interaction, try the [Hello + Refresh demo](https://hedron.readthedocs.io/en/latest/examples/single-file/).
 
 Hedron is not an ORM, identity provider, database, durable job queue, or hosted service. Your
 application owns authentication, authorization, persistence, transactions, tenancy, secrets,

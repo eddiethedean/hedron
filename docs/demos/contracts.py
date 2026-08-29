@@ -31,6 +31,7 @@ from demos.guides import (
 )
 from demos.hello_refresh import build_hello_refresh_demo
 from demos.maps import build_maps_layers_demo, build_maps_markers_demo
+from demos.showcase import build_showcase_demo
 
 __all__ = ["CONTRACTS", "DemoContract", "Step", "contract_ids"]
 
@@ -149,6 +150,38 @@ CONTRACTS: tuple[DemoContract, ...] = (
                 expect_text="[data-hbs-stamp]",
                 contains="UTC",
                 expect_trace="GET /status → 200",
+            ),
+        ),
+    ),
+    DemoContract(
+        id="showcase-dashboard",
+        builder=build_showcase_demo,
+        min_steps=4,
+        steps=(
+            Step(
+                click=_btn("Refresh pipeline"),
+                expect_text="#showcase-pipeline",
+                contains="Updated just now",
+                expect_trace="GET /pipeline/refresh → 200",
+            ),
+            Step(
+                click=_btn("Needs attention"),
+                expect_text="#showcase-runs",
+                contains="events-replay",
+                not_contains="nightly-warehouse",
+                expect_trace="GET /runs/attention → 200",
+            ),
+            Step(
+                click=_btn("Approve release"),
+                expect_text="#showcase-approval",
+                contains="Publish queued",
+                expect_trace="POST /approve → 200 fragment",
+            ),
+            Step(
+                click=_btn("Inspect surface map"),
+                expect_text="#showcase-inventory",
+                contains="Routes, fragments, and actions",
+                expect_trace="GET /components/map → 200",
             ),
         ),
     ),

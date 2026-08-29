@@ -169,6 +169,7 @@ extra_css:
   - stylesheets/styling-guide.css
   - stylesheets/hello-refresh.css
   - stylesheets/hedron-sim.css
+  - stylesheets/showcase.css
 
 extra:
   generator: false
@@ -275,6 +276,7 @@ nav:
     - Try in Codespaces: examples/try-it.md
     - Runnable examples: examples/runnable.md
     - Single-file apps: examples/single-file.md
+    - Hedron Showcase: examples/showcase.md
     - Simulation gallery: examples/gallery.md
     - Reference app walkthrough: examples/reference-app.md
   - Reference:

@@ -19,6 +19,7 @@ ALIASES: dict[str, str] = {
     "component-nav-link": "component-app-shell",
     "hello-refresh-quickstart": "hello-refresh",
     "jobs-poll": "live-poll",
+    "showcase-dashboard": "showcase",
 }
 
 

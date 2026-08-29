@@ -18,6 +18,24 @@ available beside the UI.
 
 There is no generated frontend project, Node.js build, virtual DOM, or full-script rerun loop.
 
+## Alpine.js and HTMX
+
+Hedron uses [Alpine.js](https://alpinejs.dev) for small browser-local interactions such as
+disclosures, tabs, menus, focus behavior, and local bindings. This state is intentionally
+disposable: it belongs to the browser only when it can be reconstructed from the rendered HTML
+without a server request. HTMX owns server requests, fragment replacement, and declared
+interaction lifecycles; application and domain state stay on the server.
+
+Hedron vendors Alpine.js `3.16.3` using its CSP-compatible runtime and serves the pinned assets
+same-origin from the immutable browser feature plan. It does not fetch Alpine from a CDN or
+require a Node.js toolchain. Alpine assets are emitted only for pages that demand Alpine behavior,
+and only the required plugins are included. Use Hedron's typed `AlpineAttrs` and built-in
+components for browser behavior; arbitrary executable Alpine strings are not part of the stable
+authoring contract.
+
+See [What is Alpine?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-alpine/)
+for the browser/server ownership rule, lifecycle behavior, and typed authoring examples.
+
 **Package maturity:** Stable · **Release:** `1.0.x` · **Python:** 3.10–3.14 ·
 **Typing:** Pyright strict
 
@@ -43,7 +61,12 @@ uv run hedron run app:app --reload
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The generated project is ordinary Python and
 demonstrates the canonical page, view, and action roles with progressive form fallbacks.
 
-![A Hedron application with a status panel refreshed in place](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
+[See the full interactive Hedron Showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/)
+powered by [`hedron-sim`](https://pypi.org/project/hedron-sim/). Explore app chrome, metrics,
+process flow, tables, status surfaces, fragment refresh, a typed action, and an inspectable
+component map without starting a FastAPI process.
+
+For the smallest first interaction, try the [Hello + Refresh demo](https://hedron.readthedocs.io/en/latest/examples/single-file/).
 
 Install Hedron directly when adding it to an existing project:
 
