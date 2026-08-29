@@ -178,6 +178,14 @@ minutes = 15
 status = "current"
 
 [[example]]
+path = "edron-showcase"
+outcome = "Full-feature class-oriented operations console"
+layer = "Edron"
+difficulty = "Intermediate"
+minutes = 15
+status = "current"
+
+[[example]]
 path = "session-auth"
 outcome = "Session login and protected pages"
 layer = "Hedron"

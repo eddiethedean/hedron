@@ -23,6 +23,7 @@ uv sync
 | [file-upload](file-upload.md) | FastAPI | [Try it](file-upload.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/file-upload --reload` |
 | [jobs-poll](jobs-poll.md) | FastAPI | [Try it](jobs-poll.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/jobs-poll --reload` |
 | [showcase](showcase.md) | FastAPI | [Try it](showcase.md#explore-the-offline-simulation) | `uv run uvicorn app:app --app-dir examples/showcase --reload` |
+| [edron-showcase](edron-showcase.md) | Edron | [Try it](edron-showcase.md#explore-the-offline-simulation) | `uv run edron run app:app --app-dir examples/edron-showcase --reload` |
 | [model-demo-0.18](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/model-demo-0.18 --reload` |
 | [package-workflows](https://github.com/eddiethedean/hedron/tree/main/examples/package-workflows) | FastAPI | — | `uv run uvicorn app:app --app-dir examples/package-workflows --reload` |
 | [live-interaction](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) | FastAPI | [Live poll](../guides/live-interaction.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/live-interaction --reload` |

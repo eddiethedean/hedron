@@ -37,6 +37,7 @@ def main(argv: list[str] | None = None) -> int:
     sys.path.insert(0, str(DOCS))
     from demos.components import COMPONENT_DEMO_BUILDERS, build_component_demo
     from demos.core_concepts import build_core_concepts_modes_demo
+    from demos.edron_showcase import build_edron_showcase_demo
     from demos.guides import (
         build_allowlist_403_demo,
         build_auth_login_demo,
@@ -94,6 +95,7 @@ def main(argv: list[str] | None = None) -> int:
         "pe-paths.html": build_pe_paths_demo(),
         "tenant-deny.html": build_tenant_deny_demo(),
         "showcase-dashboard.html": build_showcase_demo(),
+        "edron-showcase-dashboard.html": build_edron_showcase_demo(),
         "maps-markers.html": build_maps_markers_demo(),
         "maps-layers.html": build_maps_layers_demo(),
     }

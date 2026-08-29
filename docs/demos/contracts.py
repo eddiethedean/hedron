@@ -11,6 +11,7 @@ from dataclasses import dataclass, field
 
 from demos.components import COMPONENT_DEMO_BUILDERS
 from demos.core_concepts import build_core_concepts_modes_demo
+from demos.edron_showcase import build_edron_showcase_demo
 from demos.guides import (
     build_allowlist_403_demo,
     build_auth_login_demo,
@@ -181,6 +182,38 @@ CONTRACTS: tuple[DemoContract, ...] = (
                 click=_btn("Inspect surface map"),
                 expect_text="#showcase-inventory",
                 contains="Routes, fragments, and actions",
+                expect_trace="GET /components/map → 200",
+            ),
+        ),
+    ),
+    DemoContract(
+        id="edron-showcase-dashboard",
+        builder=build_edron_showcase_demo,
+        min_steps=4,
+        steps=(
+            Step(
+                click=_btn("Refresh pipeline"),
+                expect_text="#edron-showcase-pipeline",
+                contains="Updated just now",
+                expect_trace="POST /pipeline/refresh → 200",
+            ),
+            Step(
+                click=_btn("Needs attention"),
+                expect_text="#edron-showcase-runs",
+                contains="events-replay",
+                not_contains="nightly-warehouse",
+                expect_trace="GET /runs/attention → 200",
+            ),
+            Step(
+                click=_btn("Approve release"),
+                expect_text="#edron-showcase-approval",
+                contains="Publish queued",
+                expect_trace="POST /approve → 200 fragment",
+            ),
+            Step(
+                click=_btn("Inspect surface map"),
+                expect_text="#edron-showcase-inventory",
+                contains="Pages, fragments, actions, and outcomes",
                 expect_trace="GET /components/map → 200",
             ),
         ),

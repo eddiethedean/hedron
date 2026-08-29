@@ -25,6 +25,9 @@ Open <http://127.0.0.1:8000/>. The data is synthetic and local, but the applicat
 are real: AppShell chrome, typed components, fragment refresh, an unsafe action, and ordinary
 FastAPI-compatible routing.
 
+The built-in theme emits coordinated light/dark tokens and follows the browser color preference;
+the app shell and content grids collapse for narrow screens.
+
 ## Explore the offline simulation
 
 The simulator pre-renders the same kind of component surfaces and intercepts the declared HTMX

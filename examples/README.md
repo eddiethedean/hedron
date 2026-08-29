@@ -10,6 +10,7 @@ on a clean venv — that is the polished first-success path.
 |---|---|---|
 | [`theme-gallery/`](theme-gallery/) | FastAPI | Visual QA across common interfaces in forced light and dark modes |
 | [`showcase/`](showcase/) | FastAPI | Full-feature operations console with real fragment and action routes |
+| [`edron-showcase/`](edron-showcase/) | Edron | Edron-only operations console with pages, layouts, actions, charts, and outcomes |
 | [`chrome-zero-css/`](chrome-zero-css/) | FastAPI | Data Mover-class chrome from `Theme` + built-ins with no application CSS |
 | [`streamlit-migration/`](streamlit-migration/) | FastAPI | Runnable sales-dashboard migration with typed GET filters |
 | [`notes-sqlalchemy/`](notes-sqlalchemy/) | FastAPI | SQLite create / list / delete via `@app.view` + `@app.action` |

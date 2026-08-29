@@ -14,4 +14,7 @@ uv run uvicorn --app-dir examples/showcase app:app --reload
 Open <http://127.0.0.1:8000/>. The data is synthetic and local; the application structure and
 request boundaries are real.
 
+The built-in theme includes coordinated light/dark palettes and follows the browser preference.
+The application shell, grids, action rows, and tables remain usable on narrow screens.
+
 For a no-server tour, open the [interactive `hedron-sim` showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/).

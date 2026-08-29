@@ -22,6 +22,7 @@ _EXAMPLE_EXPECTED_SIMS: dict[str, frozenset[str]] = {
     "examples/file-upload.md": frozenset({"file-upload"}),
     "examples/jobs-poll.md": frozenset({"jobs-poll"}),
     "examples/single-file.md": frozenset({"hello-refresh"}),
+    "examples/edron-showcase.md": frozenset({"edron-showcase-dashboard"}),
     "examples/crud-tutorial.md": frozenset({"minimal-form", "mutations-htmx", "crud-notes"}),
     # The reference app uses HTTP Basic. Session-form auth is demonstrated only by
     # examples/session-auth, so embedding auth-login here would teach the wrong credentials.
@@ -93,6 +94,23 @@ def test_file_upload_demo_routes_and_status_codes() -> None:
     assert reset["status"] == 200
     assert "Upload roster.txt" in reset["html"]
     assert "Upload malware.exe" in reset["html"]
+
+
+@pytest.mark.parametrize(
+    "relative_path",
+    ("examples/showcase/app.py", "examples/edron-showcase/app.py"),
+)
+def test_real_showcases_declare_light_and_dark_theme_modes(relative_path: str) -> None:
+    path = ROOT / relative_path
+    module_name = "showcase_theme_" + path.parent.name.replace("-", "_")
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    theme = module.THEME
+    resolved = theme.to_theme() if hasattr(theme, "to_theme") else theme
+    assert "dark" in resolved.modes
 
 
 @pytest.mark.usefixtures("_docs_on_path")

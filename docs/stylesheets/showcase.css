@@ -4,6 +4,7 @@
   --showcase-accent-soft: var(--hedron-color-accent-soft, rgba(13, 148, 136, 0.12));
   --showcase-success: var(--hedron-default-success, #11855d);
   --showcase-warning: var(--hedron-default-warning, #a86514);
+  color-scheme: light;
 }
 
 [data-md-color-scheme="slate"] .showcase-shell {
@@ -11,11 +12,23 @@
   --showcase-accent-soft: var(--hedron-color-accent-soft, rgba(94, 234, 212, 0.12));
   --showcase-success: var(--hedron-default-success, #5eead4);
   --showcase-warning: var(--hedron-default-warning, #f5bf69);
+  color-scheme: dark;
 }
 
-.showcase-shell {
+.hedron-sim .hedron-app-shell.showcase-shell {
   grid-template-columns: 11rem minmax(0, 1fr);
   min-height: 42rem;
+}
+
+/* Embedded docs can be opened before Material has stamped its scheme marker. */
+@media (prefers-color-scheme: dark) {
+  body:not([data-md-color-scheme]) .showcase-shell {
+    --showcase-accent: var(--hedron-color-accent, #5eead4);
+    --showcase-accent-soft: var(--hedron-color-accent-soft, rgba(94, 234, 212, 0.12));
+    --showcase-success: var(--hedron-default-success, #5eead4);
+    --showcase-warning: var(--hedron-default-warning, #f5bf69);
+    color-scheme: dark;
+  }
 }
 
 .showcase-nav {
@@ -197,10 +210,17 @@
 .showcase-chip--accent { background: var(--showcase-accent-soft); border-color: var(--showcase-accent); color: var(--showcase-accent); }
 
 @media screen and (max-width: 50em) {
-  .showcase-shell { grid-template-columns: 1fr; }
+  .hedron-sim .hedron-app-shell.showcase-shell { grid-template-columns: minmax(0, 1fr); }
   .showcase-nav { display: none; }
   .showcase-two-column, .showcase-two-column--wide { grid-template-columns: 1fr; }
-  .showcase-main { padding: 1.1rem; }
+  .showcase-main { min-width: 0; padding: 1.1rem; }
   .showcase-header-actions { align-items: flex-start; justify-items: start; }
   .showcase-heading { display: grid; }
+  .showcase-card { min-width: 0; }
+  .showcase-card-footer,
+  .showcase-approval-action { align-items: flex-start; flex-direction: column; }
+  .showcase-card-footer .hedron-ui-button,
+  .showcase-approval-action .hedron-ui-button { width: 100%; }
+  .showcase-filters { flex-wrap: wrap; }
+  .showcase-filter { min-height: 2.25rem; }
 }

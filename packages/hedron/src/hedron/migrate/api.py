@@ -373,8 +373,14 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
     # application facade.  Keep this inference syntactic so checking remains
     # non-executing; unknown receivers continue to be reported conservatively.
     simulator_receivers: set[str] = set()
+    edron_receivers: set[str] = set()
     adapter_receivers: dict[str, str] = {}
     for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name == "edron":
+                    edron_receivers.add(alias.asname or alias.name)
+            continue
         if not isinstance(node, (ast.Assign, ast.AnnAssign)):
             continue
         value = node.value
@@ -487,7 +493,11 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
                     "include_feature",
                 }:
                     receiver = _dotted(node.func.value)
-                    if receiver and receiver not in simulator_receivers:
+                    if (
+                        receiver
+                        and receiver not in simulator_receivers
+                        and receiver not in edron_receivers
+                    ):
                         add(
                             node,
                             f"app.{node.func.attr}",
@@ -542,7 +552,11 @@ def _python_findings(path: Path, display_path: str, source: str) -> tuple[ApiMig
                         "include_feature",
                     }:
                         receiver = _dotted(decorator.func.value)
-                        if receiver and receiver not in simulator_receivers:
+                        if (
+                            receiver
+                            and receiver not in simulator_receivers
+                            and receiver not in edron_receivers
+                        ):
                             add(
                                 decorator,
                                 f"app.{decorator.func.attr}",

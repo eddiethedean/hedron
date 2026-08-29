@@ -277,6 +277,7 @@ nav:
     - Runnable examples: examples/runnable.md
     - Single-file apps: examples/single-file.md
     - Hedron Showcase: examples/showcase.md
+    - Edron Showcase: examples/edron-showcase.md
     - Simulation gallery: examples/gallery.md
     - Reference app walkthrough: examples/reference-app.md
   - Reference:

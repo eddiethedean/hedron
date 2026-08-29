@@ -171,6 +171,10 @@ and an inspectable component map—entirely in the documentation site, without s
 
 For the smallest first interaction, try the [Hello + Refresh demo](https://hedron.readthedocs.io/en/latest/examples/single-file/).
 
+Edron has its own [full interactive showcase](https://hedron.readthedocs.io/en/latest/examples/edron-showcase/)
+with pages, layouts, fragments, actions, charts, tables, tabs, themes, and outcomes. Its runnable
+source uses only `edron`, with no Hedron escape hatches.
+
 Hedron is not an ORM, identity provider, database, durable job queue, or hosted service. Your
 application owns authentication, authorization, persistence, transactions, tenancy, secrets,
 audit storage, and deployment decisions. Polling is the conservative production default for job

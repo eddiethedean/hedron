@@ -56,6 +56,23 @@ def test_scan_does_not_treat_simapp_fragment_as_hedron_legacy_api(tmp_path: Path
     assert scan_api(source).findings == ()
 
 
+def test_scan_does_not_treat_edron_fragment_as_hedron_legacy_api(tmp_path: Path) -> None:
+    source = tmp_path / "edron.py"
+    source.write_text(
+        "\n".join(
+            (
+                "import edron as ed",
+                "@ed.fragment(path='/status')",
+                "def status(): pass",
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    assert scan_api(source).findings == ()
+
+
 def test_scan_infers_removed_flask_adapter_methods(tmp_path: Path) -> None:
     source = tmp_path / "flask_adapter.py"
     source.write_text(
