@@ -5,9 +5,9 @@ artifacts, tag, and registry evidence have been verified. Historical cut records
 `docs/archive/`; future releases repeat the same build, upload, smoke-test, and documentation
 sequence without moving an existing tag.
 
-Hedron is a Python monorepo with independently publishable distributions. The core
-Hedron packages and `hedron-posit` share the `1.0.0` train. `fastapi-workbench` is an
-independent package and is currently `1.0.1`. The removed `hedron-workbench` package is
+Hedron is a Python monorepo with independently publishable distributions. Only `hedron-core`
+and `hedron` form the stable `1.0.0` platform. Beta satellites may share version numbers or
+release independently; `fastapi-workbench` is currently `1.0.1`. The removed `hedron-workbench` package is
 not part of the release inventory.
 
 A Git tag includes the `v` prefix; Python metadata does not. Never move or replace a

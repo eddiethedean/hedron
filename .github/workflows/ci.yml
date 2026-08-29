@@ -159,7 +159,7 @@ jobs:
           tests/security/test_workbench_adversarial.py
 
   quality:
-    name: Quality, strict typing, docs, and packages
+    name: Quality, strict core typing, docs, and packages
     needs: changes
     runs-on: ubuntu-latest
     timeout-minutes: 20

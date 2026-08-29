@@ -31,7 +31,7 @@ All in Python.
   <span>Python UI</span>
   <span>FastAPI foundation</span>
   <span>Server-driven interactions</span>
-  <span>Strict typing</span>
+  <span>Strict core typing</span>
 </div>
 
 The `hedron-core` renderer and `hedron` FastAPI runtime are Pyright-strict. Type errors block
@@ -142,7 +142,8 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Edron and the coordinated Hedron inventory are published on the stable `1.0.x` train.
+Hedron **1.0.0** is published on the stable `1.0.x` train. Edron is a Beta satellite on the
+same version line.
 Pin applications to `>=1.0.0,<1.1`, then review capability-specific maturity before
 production adoption: [What’s ready](guides/whats-ready.md) and
 [Evaluate Hedron](guides/evaluate.md).

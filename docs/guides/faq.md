@@ -14,8 +14,8 @@ uv add "hedron>=1.0.0,<1.1"
 ```
 
 Always use an upper bound so a future minor train cannot install by accident.
-The coordinated 1.0 package inventory is **Stable**; satellite maturity remains
-independent, and no package has a commercial SLA. Capability detail:
+Only `hedron-core` and `hedron` are **Stable** packages in 1.0; satellite packages remain Beta,
+and no package has a commercial SLA. Capability detail:
 [What’s ready](whats-ready.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
@@ -85,7 +85,7 @@ status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
 ## Is Hedron production-ready for internal admin?
 
 For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
-with eyes open: coordinated packages are Stable in the published 1.0 release,
+with eyes open: `hedron-core` and `hedron` are Stable in the published 1.0 platform,
 PyPI installs pin `>=1.0.0,<1.1`, and polling remains the
 production fallback for live status. There is no vendor SLA. Use the
 [PoC checklist](evaluate.md#poc-checklist) on

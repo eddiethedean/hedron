@@ -14,7 +14,13 @@ from typing import Any
 
 from hedron.concurrency import ConcurrencyConfig, ConcurrencyLimiter, use_limiter
 from hedron.tracing import TraceConfig, use_trace_config
-from hedron_core.cache import get_cache_backend, use_cache_backend
+from hedron_core.cache import (
+    CacheTraceState,
+    get_cache_backend,
+    new_cache_trace_state,
+    use_cache_backend,
+    use_cache_trace_state,
+)
 from hedron_core.cache.backend import CacheBackend
 from hedron_core.catalog import (
     InteractionCatalog,
@@ -49,6 +55,7 @@ class HedronRuntimeContext:
         tracing: TraceConfig,
         plugins: PluginRegistryState,
         projections: dict[str, ProjectionProvider],
+        cache_traces: CacheTraceState,
     ) -> None:
         self.registry = registry
         self.cache = cache
@@ -57,6 +64,7 @@ class HedronRuntimeContext:
         self.tracing = tracing
         self.plugins = plugins
         self.projections = projections
+        self.cache_traces = cache_traces
         self.limiter = ConcurrencyLimiter(concurrency)
         self.catalog: InteractionCatalog | None = None
 
@@ -99,6 +107,7 @@ class HedronRuntimeContext:
             tracing=tracing,
             plugins=new_plugin_registry(),
             projections=new_projection_registry(),
+            cache_traces=new_cache_trace_state(),
         )
 
     def activate(self) -> ExitStack:
@@ -109,6 +118,7 @@ class HedronRuntimeContext:
         stack.enter_context(use_projection_registry(self.projections))
         stack.enter_context(use_catalog_context(self.catalog))
         stack.enter_context(use_cache_backend(self.cache))
+        stack.enter_context(use_cache_trace_state(self.cache_traces))
         stack.enter_context(use_job_backend(self.jobs))
         stack.enter_context(use_limiter(self.limiter))
         stack.enter_context(use_trace_config(self.tracing))

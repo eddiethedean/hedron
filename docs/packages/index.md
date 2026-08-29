@@ -9,6 +9,7 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 |---|---|---|
 | [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship | [First app](../getting-started/quickstart.md) · [Hedron API](../api/HEDRON.md) |
 | [`hedron-core`](https://pypi.org/project/hedron-core/) | Framework-neutral renderer | [Architecture](../ARCHITECTURE.md) |
+| [`edron`](https://pypi.org/project/edron/) | Beta class-oriented authoring satellite | [Edron quick start](../getting-started/edron-quickstart.md) |
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter | [Flask](../getting-started/flask.md) · [Adapters](../api/ADAPTERS.md) |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter | [Django](../getting-started/django.md) · [Adapters](../api/ADAPTERS.md) |
 | [`fastapi-workbench`](https://pypi.org/project/fastapi-workbench/) | Independent 1.x Posit Workbench adapter for plain FastAPI/ASGI apps | [FastAPI Workbench](../guides/fastapi-workbench.md) |

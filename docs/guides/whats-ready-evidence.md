@@ -15,8 +15,8 @@ symbols remain API compatibility level **`beta`**. The
 [expanded](../api/STABILITY.md#expanded-stable-tier-023) stable tables are
 compatibility-protected today (narrow Beginner/CRUD facade —
 [STABLE_FACADE](../api/STABLE_FACADE.md)) — not every Supported row on this page.
-The coordinated 1.0 package inventory is **Stable** and published. Satellite packages retain
-their independent maturity, and no maturity label implies a commercial SLA.
+Only `hedron-core` and `hedron` are **Stable** packages in the published 1.0 platform. Satellite
+packages retain Beta maturity, and no maturity label implies a commercial SLA.
 
 | Label | Meaning |
 |---|---|
@@ -79,8 +79,8 @@ sessions are not Supported yet** — do not market human AT as done.
 
 !!! note "Package train vs capability"
 
-    Coordinated packages are **Stable** in the 1.0 inventory; satellite packages retain
-    independent maturity. Until publication, public PyPI applications should pin
+    Only `hedron-core` and `hedron` are **Stable** in the 1.0 inventory; satellite packages retain
+    Beta maturity. Public PyPI applications should pin
     `hedron>=1.0.0,<1.1`. The table above is **capability readiness**
     (Supported / Experimental / Deferred), not package maturity.
 

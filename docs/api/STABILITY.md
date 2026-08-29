@@ -3,8 +3,9 @@
 **For adopters:** Pin `hedron>=1.0.0,<1.1` from PyPI. The current checkout and published
 release are 1.0.0. Treat the **stable** tables below as the SemVer compatibility promise; everything
 else is `beta` / `experimental` and may change on the documented schedule. Capability readiness
-(Supported vs Experimental) lives on [What’s ready](../guides/whats-ready.md). Coordinated
-package maturity is Stable in the repository; independent satellites retain their own maturity.
+(Supported vs Experimental) lives on [What’s ready](../guides/whats-ready.md). Only
+`hedron-core` and `hedron` are Stable packages in the repository; all other packages are
+independent Beta satellites.
 
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
@@ -37,15 +38,15 @@ This catalog classifies Hedron's public surface beginning with `v0.8.0` and refl
 | `deferred` | Accepted design not advertised as Supported until a later decision. |
 
 Package maturity classifiers (Stable/Beta/Alpha) describe distribution readiness; the levels above
-describe **API/artifact** promises. The coordinated 1.0 package inventory is Stable;
-satellites keep their independent maturity.
+describe **API/artifact** promises. The stable 1.0 package boundary is `hedron-core` plus
+`hedron`; satellites keep their independent Beta maturity.
 
 ## Minimal `stable` tier
 
 The following contracts are **`stable`** (compatibility-protected throughout 1.x).
 Everything else remains `beta` / `experimental` unless listed in the
-[expanded 0.23 tier](#expanded-stable-tier-023) below. Coordinated package maturity is
-**Stable** in 1.0; continue to pin versions. Maturity source of truth for product claims:
+[expanded 0.23 tier](#expanded-stable-tier-023) below. Satellite packages remain Beta even
+when a capability is Supported. Maturity source of truth for product claims:
 [What’s ready](../guides/whats-ready.md). Beginner import inventory:
 [STABLE_FACADE.md](STABLE_FACADE.md). Full root `__all__` tier map:
 [SYMBOL_TIERS.md](SYMBOL_TIERS.md).
@@ -177,7 +178,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   governance helpers, surface validators).
 - Concrete HTML serializer node classes remain **internal**.
 
-### `hedron-data` (Stable package) — `beta` API
+### `hedron-data` (Beta package) — `beta` API
 
 - `DataTable` / `DataEditor`, column catalog, saved views, `TransformPlan`, grid events: **beta**
 - Dask/Snowflake sources, AG Grid Community host: **beta**
@@ -194,7 +195,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 Schema acceptance is broader than specialized host painting in `hedron-charts 0.2.4`; see the
 [Chart API coverage matrix](CHART.md#compiler-contract-versus-current-host-coverage).
 
-### `hedron-posit` (Stable facade) — `stable` Posit adapter
+### `hedron-posit` (Beta satellite) — `beta` Posit adapter
 
 Install `hedron[posit]` / `hedron-posit>=1.0.0,<2.0`. Supported:
 `HedronPosit`, pre-import Workbench launcher and resolved-state handoff,
@@ -209,22 +210,22 @@ independent `fastapi-workbench>=1.0.1,<2.0` package. The removed
 See [Posit Workbench](../guides/posit-workbench.md) and the
 [current release](../guides/current-release.md).
 
-### `hedron-flask` / `hedron-django` (Stable packages) — `beta` Supported adapters
+### `hedron-flask` / `hedron-django` (Beta packages) — `beta` Supported adapters
 
 Live helpers are **experimental** (polling remains Supported fallback).
 
-### `hedron-explorer` (Stable package) — `beta` for `explorer_router`; panel internals **internal**
+### `hedron-explorer` (Beta package) — `beta` for `explorer_router`; panel internals **internal**
 
 ### `hedron-sample-kit` (Beta tooling-grade; `>=0.2.3,<0.3`) — `beta`
 
-### `hedron-jinja` / HDJ (Stable package) — `beta` API; HDJ format v1 frozen
+### `hedron-jinja` / HDJ (Beta package) — `beta` API; HDJ format v1 frozen
 
-### `hedron-conformance` (Stable package) — `beta` API
+### `hedron-conformance` (Beta package) — `beta` API
 
 Language-neutral fixture kit and runner. Cross-language runtimes that consume the kit remain
 **experimental** until separately labeled Supported.
 
-### `hedron-extras` (Stable package) — `beta` composition/workbenches; specialty **experimental**
+### `hedron-extras` (Beta package) — `beta` composition/workbenches; specialty **experimental**
 
 Optional curated toolkit (`hedron[extras]`). Composition UI, DataExplorer, JSONEditor,
 image tools, calendar/signature/typeahead, and display recipes are **beta**.

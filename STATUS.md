@@ -9,19 +9,19 @@
 **Roadmap position:** `v1.0.0` is Verified, tagged, and published to PyPI. `v0.67.0` is the
 immutable migration baseline.
 **Date:** 2026-08-28
-**Implementation:** Stable — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
-`hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-posit` / `hedron-elements` `1.0.0`;
-independent — stable `fastapi-workbench` `1.0.1`; Beta `hedron-maps` `0.1.4`, `hedron-charts`
+**Implementation:** Stable platform — `hedron` / `hedron-core` `1.0.0`;
+Beta satellites — `edron`, `hedron-explorer`, `hedron-data`, `hedron-flask`, `hedron-django`,
+`hedron-jinja`, `hedron-conformance`, `hedron-extras`, `hedron-posit`, `hedron-elements`,
+`fastapi-workbench` `1.0.1`, `hedron-maps` `0.1.4`, `hedron-charts`
 `0.2.4`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
 `hedron-gradio` `0.2.3`, `hedron-sim` `0.2.2`, `hedron-mcp` `0.2.4`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.66.2`
 (MIT, D-033).
-**Package maturity:** Stable — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
-`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-`hedron-posit`, `hedron-elements` (enumerated stable inventory only). Beta —
-`hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
-`hedron-sim`, `hedron-mcp`, `hedron-gradio`. Independent Stable: `fastapi-workbench` `1.0.1`; experimental runtimes
+**Package maturity:** Stable — `hedron`, `hedron-core` only. Beta — `edron`,
+`hedron-explorer`, `hedron-data`, `hedron-flask`, `hedron-django`, `hedron-jinja`,
+`hedron-conformance`, `hedron-extras`, `hedron-posit`, `hedron-elements`, `hedron-maps`,
+`hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`,
+`hedron-mcp`, `hedron-gradio`, `fastapi-workbench`, and `edron-sim`. Experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.
 
 **Phase focus:** Phase **1.0** is **Published and Verified** against immutable `v0.67.0`;

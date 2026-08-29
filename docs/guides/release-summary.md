@@ -9,7 +9,7 @@ The exact maintainer commands and publication rules live in
 
 | Item | Value |
 |---|---|
-| Published release | **v1.0.0** (`hedron` and coordinated packages) |
+| Published release | **v1.0.0** (`hedron` and `hedron-core`; Beta satellites may share the version line) |
 | Migration baseline | **v0.67.0** |
 | PyPI latest | **v1.0.0** |
 | Public-index pin | `hedron>=1.0.0,<1.1` |

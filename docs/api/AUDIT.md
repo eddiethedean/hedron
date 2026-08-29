@@ -7,7 +7,7 @@ status: shipped
 !!! note "Stability"
 
     Classifications live in [STABILITY.md](STABILITY.md). The audit sink is a
-    **Supported** optional capability. The coordinated package is Stable; pin the release
+    **Supported** optional capability. The stable platform package is `hedron-core`; pin the release
     train and configure the sink explicitly.
     Sinks must never break request handling — emit failures are swallowed and logged.
 

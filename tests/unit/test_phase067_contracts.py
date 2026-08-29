@@ -25,6 +25,7 @@ from hedron_core.browser_assets_067 import ALPINE_067_ARTIFACTS, alpine_artifact
 from hedron_core.diagnostics import HedronError
 from hedron_core.html import html
 from hedron_core.page_assets import inject_page_assets
+from hedron_core.registry import RegistryBuilder, register_route, use_registry_builder
 from hedron_core.rendering import RenderMode, render
 
 
@@ -138,6 +139,35 @@ def test_interaction_and_outcome_are_closed_and_serializable() -> None:
     assert combined.to_dict()["kind"] == "combined"
     assert Outcome.validation({"name": "required"}).to_dict()["role"] == "validation"
     assert Outcome.refresh("orders").to_dict()["payload"] == {"handles": ["orders"]}
+
+
+def test_registered_interaction_lowers_request_lane_to_htmx() -> None:
+    builder = RegistryBuilder()
+    with use_registry_builder(builder):
+        register_route(
+            kind="action",
+            logical_id="save",
+            name="save",
+            path="/save",
+            methods=("POST",),
+            operation_id="save",
+            include_in_schema=True,
+            module="tests",
+        )
+        result = render(
+            html.button(
+                "Save",
+                interaction=Interaction.combined(
+                    "toggle", "save", state_keys=("open",), target="#panel"
+                ),
+            )
+        )
+
+    assert 'hx-post="/save"' in result.html
+    assert 'hx-target="#panel"' in result.html
+    assert 'hx-swap="outerHTML"' in result.html
+    assert 'x-on:click="open = !open"' in result.html
+    assert 'data-hedron-interaction="combined"' in result.html
 
 
 def test_future_warning_registry_is_structured_and_visible() -> None:

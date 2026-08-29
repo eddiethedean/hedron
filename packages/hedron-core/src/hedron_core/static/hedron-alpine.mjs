@@ -13,7 +13,17 @@ const factories = new Map();
 const bundles = new Map();
 const conditionalClones = new WeakMap();
 const repeatedClones = new WeakMap();
+const repeatedSignatures = new WeakMap();
 let started = false;
+
+function reportRuntimeIssue(root, code, detail) {
+  if (!(root instanceof Element)) return;
+  root.setAttribute("data-hedron-alpine-status", "degraded");
+  root.dispatchEvent(new CustomEvent("hedron:alpine-error", {
+    bubbles: true,
+    detail: { code, detail: String(detail || "") },
+  }));
+}
 
 function own(value, key) {
   return Object.prototype.hasOwnProperty.call(value, key);
@@ -181,11 +191,79 @@ function processCreated(element) {
   }
 }
 
+function ownedNodes(root, selector) {
+  return [root, ...root.querySelectorAll(selector)].filter(
+    (element) => element === root || rootFor(element) === root,
+  );
+}
+
+function coerceModelValue(value, modifiers) {
+  if (modifiers.includes("trim") && typeof value === "string") value = value.trim();
+  if (modifiers.includes("number")) {
+    const number = value === "" ? null : Number(value);
+    if (number === null || Number.isNaN(number)) return value;
+    value = number;
+  }
+  if (modifiers.includes("boolean")) {
+    if (value === "true" || value === true) return true;
+    if (value === "false" || value === false) return false;
+  }
+  return value;
+}
+
+function modelValue(element, modifiers, current) {
+  if (element.type === "checkbox") {
+    if (Array.isArray(current)) {
+      const value = coerceModelValue(element.value, modifiers);
+      const next = current.filter((item) => item !== value);
+      if (element.checked) next.push(value);
+      return next;
+    }
+    return element.checked;
+  }
+  if (element.type === "radio") return element.checked ? coerceModelValue(element.value, modifiers) : current;
+  if (element.tagName === "SELECT" && element.multiple) {
+    return [...element.selectedOptions].map((option) => coerceModelValue(option.value, modifiers));
+  }
+  return coerceModelValue(element.value, modifiers);
+}
+
+function modelBinding(element) {
+  const attribute = [...element.attributes].find(
+    (candidate) => candidate.name === "x-model" || candidate.name.startsWith("x-model."),
+  );
+  if (!attribute) return null;
+  return { path: attribute.value, modifiers: attribute.name.split(".").slice(1) };
+}
+
+function modelEventName(element, modifiers) {
+  if (modifiers.includes("blur")) return "blur";
+  if (modifiers.includes("enter")) return "keydown";
+  if (modifiers.includes("lazy") || modifiers.includes("change")) return "change";
+  if (element.type === "checkbox" || element.type === "radio" || element.tagName === "SELECT") return "change";
+  return "input";
+}
+
+function modelDuration(modifiers, kind) {
+  const index = modifiers.indexOf(kind);
+  if (index < 0) return 0;
+  const value = modifiers[index + 1] || "250ms";
+  const match = value.match(/^(\d+)(ms|s)$/);
+  if (!match) return 250;
+  return Number(match[1]) * (match[2] === "s" ? 1000 : 1);
+}
+
 function refresh(root) {
   const scope = roots.get(root);
   if (!scope) return;
-  const nodes = [root, ...root.querySelectorAll("[x-text], [x-show], [x-bind\\:], [x-model]")];
-  for (const template of root.querySelectorAll("template[x-if]")) {
+  const nodes = ownedNodes(root, "*").filter((element) =>
+    element.hasAttribute("x-text")
+      || element.hasAttribute("x-show")
+      || [...element.attributes].some((attribute) =>
+        attribute.name.startsWith("x-bind:") || attribute.name.startsWith("x-model"),
+      ),
+  );
+  for (const template of ownedNodes(root, "template[x-if]")) {
     const visible = Boolean(evaluate(template.getAttribute("x-if"), scope, template, null));
     const clones = conditionalClones.get(template) || [];
     if (visible && clones.length === 0) {
@@ -207,7 +285,7 @@ function refresh(root) {
       conditionalClones.delete(template);
     }
   }
-  for (const template of root.querySelectorAll("template[x-for]")) {
+  for (const template of ownedNodes(root, "template[x-for]")) {
     const match = (template.getAttribute("x-for") || "").match(
       /^([A-Za-z_$][A-Za-z0-9_$]*)\s+in\s+([A-Za-z_$][A-Za-z0-9_$.]*)$/
     );
@@ -215,7 +293,9 @@ function refresh(root) {
     const values = evaluate(match[2], scope, template, null);
     const items = Array.isArray(values) ? values : [];
     const prior = repeatedClones.get(template) || [];
-    if (prior.length !== items.length) {
+    let signature = "";
+    try { signature = JSON.stringify(items); } catch (_) { signature = String(items.length); }
+    if (prior.length !== items.length || repeatedSignatures.get(template) !== signature) {
       for (const element of prior) {
         if (element.nodeType === 1) destroyTree(element);
         element.remove();
@@ -238,6 +318,7 @@ function refresh(root) {
         processCreated(first);
       });
       repeatedClones.set(template, created);
+      repeatedSignatures.set(template, signature);
     }
   }
   for (const element of nodes) {
@@ -266,10 +347,18 @@ function refresh(root) {
     }
     const effect = element.getAttribute("x-effect");
     if (effect !== null) evaluate(effect, scope, element, null);
-    const model = element.getAttribute("x-model");
-    if (model !== null && document.activeElement !== element) {
-      const value = readPath(model, scope, element, null);
-      if (element.type === "checkbox") element.checked = Boolean(value);
+    const binding = modelBinding(element);
+    if (binding !== null && document.activeElement !== element) {
+      const value = readPath(binding.path, scope, element, null);
+      if (element.type === "checkbox") {
+        element.checked = Array.isArray(value)
+          ? value.some((item) => String(item) === String(element.value))
+          : Boolean(value);
+      } else if (element.type === "radio") element.checked = String(value) === String(element.value);
+      else if (element.tagName === "SELECT" && element.multiple) {
+        const selected = Array.isArray(value) ? value.map(String) : [];
+        [...element.options].forEach((option) => { option.selected = selected.includes(option.value); });
+      }
       else element.value = value == null ? "" : String(value);
     }
   }
@@ -307,28 +396,73 @@ function initElement(element, root) {
     if (attribute.name.startsWith("x-on:")) {
       const pieces = attribute.name.slice(5).split(".");
       const eventName = pieces.shift();
+      const listenerTarget = pieces.includes("window") ? window
+        : pieces.includes("document") || pieces.includes("outside") ? document : element;
+      const keyNames = {
+        enter: "Enter", escape: "Escape", tab: "Tab", space: " ",
+        up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight",
+        home: "Home", end: "End", delete: "Delete", backspace: "Backspace",
+      };
+      const keyModifiers = pieces.filter((piece) => own(keyNames, piece));
+      const duration = pieces.includes("debounce") ? modelDuration(pieces, "debounce")
+        : pieces.includes("throttle") ? modelDuration(pieces, "throttle") : 0;
+      let timer = null;
+      let lastRun = 0;
       const handler = (event) => {
+        if (pieces.includes("self") && event.target !== element) return;
+        if (pieces.includes("outside") && element.contains(event.target)) return;
+        if (keyModifiers.length && !keyModifiers.includes(
+          Object.keys(keyNames).find((key) => keyNames[key] === event.key),
+        )) return;
+        if (keyModifiers.length && !event.type.startsWith("key")) return;
+        if (pieces.includes("ctrl") && !event.ctrlKey) return;
+        if (pieces.includes("shift") && !event.shiftKey) return;
+        if (pieces.includes("alt") && !event.altKey) return;
+        if (pieces.includes("meta") && !event.metaKey) return;
         if (pieces.includes("prevent")) event.preventDefault();
         if (pieces.includes("stop")) event.stopPropagation();
-        evaluate(attribute.value, scope, element, event);
-        refresh(root);
+        const run = () => {
+          evaluate(attribute.value, scope, element, event);
+          refresh(root);
+        };
+        if (pieces.includes("debounce")) {
+          if (timer !== null) clearTimeout(timer);
+          timer = setTimeout(run, duration);
+        } else if (pieces.includes("throttle")) {
+          if (Date.now() - lastRun >= duration) {
+            lastRun = Date.now();
+            run();
+          }
+        } else run();
       };
-      element.addEventListener(eventName, handler);
-      disposers.push(() => element.removeEventListener(eventName, handler));
+      listenerTarget.addEventListener(eventName, handler, {
+        once: pieces.includes("once"),
+        capture: pieces.includes("capture"),
+        passive: pieces.includes("passive"),
+      });
+      disposers.push(() => {
+        if (timer !== null) clearTimeout(timer);
+        listenerTarget.removeEventListener(eventName, handler, {
+          capture: pieces.includes("capture"),
+        });
+      });
     }
   }
-  const model = element.getAttribute("x-model");
-  if (model !== null) {
+  const binding = modelBinding(element);
+  if (binding !== null) {
+    const model = binding.path;
+    const modifiers = binding.modifiers;
+    const eventName = modelEventName(element, modifiers);
     const handler = (event) => {
-      const value = element.type === "checkbox" ? element.checked : element.value;
-      writePath(model, value, scope);
+      if (element.type === "radio" && !element.checked) return;
+      if (eventName === "keydown" && event.key !== "Enter") return;
+      const current = readPath(model, scope, element, event);
+      writePath(model, modelValue(element, modifiers, current), scope);
       refresh(root);
     };
-    element.addEventListener("input", handler);
-    element.addEventListener("change", handler);
+    element.addEventListener(eventName, handler);
     disposers.push(() => {
-      element.removeEventListener("input", handler);
-      element.removeEventListener("change", handler);
+      element.removeEventListener(eventName, handler);
     });
   }
   if (element.hasAttribute("x-cloak")) element.removeAttribute("x-cloak");
@@ -349,7 +483,8 @@ function initRoot(root) {
   let data = {};
   try {
     data = JSON.parse(root.getAttribute("x-data") || "{}");
-  } catch (_) {
+  } catch (error) {
+    reportRuntimeIssue(root, "invalid-x-data", error);
     data = {};
   }
   const factoryName = root.getAttribute("x-data-name");

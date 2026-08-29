@@ -17,14 +17,12 @@
 
 The **Supported matrix** is the CI-tested range. Package metadata may declare a **wider**
 compatible range; versions outside the Supported column are installable but unsupported
-until evidence is green. The coordinated packages (`hedron`, `hedron-core`, `hedron-data`,
-`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
-`hedron-extras`, `hedron-posit`, `hedron-elements`) are Stable in the 1.0 repository
-inventory. Independent Beta packages
-`hedron-maps`, `hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
-lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
-also version independently. Independent `fastapi-workbench>=1.0.1,<2` is not on the
-coordinated train. The public registry resolves the 1.0.0 coordinated wheels.
+until evidence is green. In the 1.0 boundary, only `hedron-core` and `hedron` are Stable
+platform packages. `edron`, host adapters, data, Explorer, elements, extras, Posit,
+conformance, Workbench, charts, maps, native, MCP, Gradio, notebook, sample-kit, and
+simulation packages are independent Beta satellites; their capability-level “Supported”
+claims do not promote them into the stable platform. The public registry resolves the
+1.0.0 `hedron-core`/`hedron` pair.
 
 ### Charts and sample-kit compatibility floor
 

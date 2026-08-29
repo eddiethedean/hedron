@@ -10,7 +10,7 @@ status: shipped
     `hedron_jinja`, and `.hdj` is the explicit, versioned template format. After a small static
     TOML prologue, the body is ordinary Jinja and HTML.
 
-    **Package maturity:** Stable in the published coordinated **1.0.x** inventory.
+    **Package maturity:** Beta satellite in the published **1.0.x** inventory.
     The phase 0.9 core authoring surface is **shipped**. Remaining RFC-0031 capability
     edges continue to close without blocking basic `.hdj` use—see [STABILITY](STABILITY.md)
     and [What’s ready](../guides/whats-ready.md).

@@ -21,7 +21,7 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 <!-- hedron-install-matrix -->
 
 Both packages are published at **1.0.0**. Always use an upper bound so a future minor train
-cannot install by accident. The coordinated inventory is **Stable**; independently versioned
+cannot install by accident. Only `hedron-core` and `hedron` are **Stable** packages; independently versioned
 satellites retain their documented Beta or tooling-grade maturity. Capability detail:
 [What’s ready](../guides/whats-ready.md).
 

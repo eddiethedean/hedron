@@ -46,22 +46,9 @@ commercial_sla = false
 multi_year_lts = false
 
 [packages]
-coordinated_cut = [
-  "hedron-core",
-  "hedron",
-  "hedron-explorer",
-  "hedron-data",
-  "hedron-flask",
-  "hedron-django",
-  "hedron-jinja",
-  "hedron-conformance",
-  "hedron-extras",
-  "hedron-workbench",
-  "hedron-posit",
-  "hedron-elements",
-]
+coordinated_cut = ["hedron-core", "hedron"]
 coordinated_version = "1.0.0"
-independent_satellites = "retain independent versions and publish explicit Hedron 0.67/1.x compatibility ranges"
+independent_satellites = "remain Beta, may share a version number, and must publish explicit Hedron 0.67/1.x compatibility ranges"
 root_reexports = "canonical facade only; package-native ownership remains visible"
 
 [migration]

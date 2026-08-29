@@ -18,12 +18,16 @@ from hedron.app.bootstrap import (
 from hedron.app.explorer import ExplorerMode
 from hedron.app.pages import HedronPagesMixin
 from hedron.app.sessions import DEFAULT_SESSION_SECRET
+from hedron.concurrency import ConcurrencyConfig, ConcurrencyLimiter
 from hedron.fastapi_compat import cached_openapi
 from hedron.lifespan import compose_lifespan
 from hedron.routing.router import HedronRouter
 from hedron.runtime import HedronRuntimeContext, RuntimeContextMiddleware
 from hedron.security.policy import SecurityPolicy, SecurityProfileName
+from hedron.tracing import TraceConfig
+from hedron_core.cache.backend import CacheBackend
 from hedron_core.design_system import DesignSystem
+from hedron_core.jobs.backend import JobBackend
 from hedron_core.theme import Theme
 
 __all__ = ["Hedron"]
@@ -56,6 +60,12 @@ class Hedron(HedronPagesMixin, FastAPI):
             not scope cookies.
         bootstrap_steps: Optional extension steps run after Hedron's mandatory
             identity, security, middleware, routing, and integration setup.
+        cache_backend: Application-owned cache backend. If omitted, an isolated
+            in-memory backend is created for this application.
+        job_backend: Application-owned job backend. If omitted, an isolated
+            in-memory backend is created for this application.
+        concurrency_config: Application-owned concurrency policy.
+        tracing_config: Application-owned tracing policy.
         *args: Forwarded to ``FastAPI``.
         **kwargs: Forwarded to ``FastAPI`` (``lifespan`` is composed with Hedron gates).
 
@@ -80,9 +90,22 @@ class Hedron(HedronPagesMixin, FastAPI):
         production: bool | None = None,
         root_path: str | None = None,
         bootstrap_steps: Sequence[HedronBootstrapStep] | None = None,
+        cache_backend: CacheBackend | None = None,
+        job_backend: JobBackend | None = None,
+        concurrency_config: ConcurrencyConfig | None = None,
+        tracing_config: TraceConfig | None = None,
         **kwargs: Any,
     ) -> None:
         self._hedron_runtime = HedronRuntimeContext.from_defaults()
+        if cache_backend is not None:
+            self._hedron_runtime.cache = cache_backend
+        if job_backend is not None:
+            self._hedron_runtime.jobs = job_backend
+        if concurrency_config is not None:
+            self._hedron_runtime.concurrency = concurrency_config
+            self._hedron_runtime.limiter = ConcurrencyLimiter(concurrency_config)
+        if tracing_config is not None:
+            self._hedron_runtime.tracing = tracing_config
         user_lifespan = kwargs.pop("lifespan", None)
         with self._hedron_runtime.activate():
             resolved_theme, design_system = normalize_theme_selection(theme)

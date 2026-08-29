@@ -2,8 +2,8 @@
 """Fail if core-only satellites import the FastAPI ``hedron`` package.
 
 Packages that declare only ``hedron-core`` (or no Hedron flagship dependency) must not
-import ``hedron`` / ``hedron.*``. Known interaction-helper debt is allowlisted until
-handles/refresh protocols move into ``hedron-core`` (1.0 readiness). New violations fail CI.
+import ``hedron`` / ``hedron.*``. The interaction and refresh protocols now live in
+``hedron-core``, so every violation fails CI and there is no compatibility allowlist.
 """
 
 from __future__ import annotations

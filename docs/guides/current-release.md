@@ -13,16 +13,16 @@ maintaining their own release story.
 
 ## At a glance
 
-| Package | Stable version | Application pin | Role |
-|---|---:|---|---|
-| `edron` | `1.0.0` | `edron>=1.0.0,<1.1` | Batteries-included application authoring |
-| `hedron` | `1.0.0` | `hedron>=1.0.0,<1.1` | FastAPI-native component and route authoring |
+| Package | Version | Maturity | Application pin | Role |
+|---|---:|---|---|---|
+| `edron` | `1.0.0` | Beta | `edron>=1.0.0,<1.1` | Batteries-included application authoring |
+| `hedron` | `1.0.0` | Stable | `hedron>=1.0.0,<1.1` | FastAPI-native component and route authoring |
 
 The coordinated train supports CPython **3.10–3.14**. Package maturity, capability
 readiness, and individual API stability are separate: a stable package may contain a
 clearly labeled experimental capability.
 
-The exact 1.0 package boundary is maintained in the repository’s
+The exact 1.0 package and API boundary is maintained in the repository’s
 [`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml). Beta satellites are
 opt-in compatibility surfaces, not part of the stable platform contract.
 
@@ -61,8 +61,9 @@ major release. See [Stability](../api/STABILITY.md) and [Upgrade](upgrade.md).
 
 ## Coordinated and independent packages
 
-Core Edron/Hedron packages use the coordinated 1.0 train. Some satellite packages retain
-independent versions and maturity labels. Do not infer satellite compatibility from a similar
+`hedron-core`, `hedron`, and Edron use the coordinated 1.0 version line; only the first two
+are Stable packages. Other satellite packages retain independent versions and Beta maturity.
+Do not infer satellite compatibility from a similar
 version number; use the [compatibility matrix](../COMPATIBILITY.md).
 
 The Workbench split is intentional:

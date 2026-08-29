@@ -39,19 +39,19 @@ maturity = "stable"
 [hedron-core]
 maturity = "stable"
 [hedron-explorer]
-maturity = "stable"
+maturity = "beta"
 [hedron-data]
-maturity = "stable"
+maturity = "beta"
 [hedron-flask]
-maturity = "stable"
+maturity = "beta"
 [hedron-django]
-maturity = "stable"
+maturity = "beta"
 [hedron-jinja]
-maturity = "stable"
+maturity = "beta"
 [hedron-extras]
-maturity = "stable"
+maturity = "beta"
 [hedron-conformance]
-maturity = "stable"
+maturity = "beta"
 [hedron-charts]
 maturity = "beta"
 [hedron-maps]
@@ -71,11 +71,11 @@ maturity = "beta"
 [hedron-gradio]
 maturity = "beta"
 [hedron-posit]
-maturity = "stable"
+maturity = "beta"
 [hedron-elements]
-maturity = "stable"
+maturity = "beta"
 [fastapi-workbench]
-maturity = "stable"
+maturity = "beta"
 [hedron-runtime-node]
 maturity = "beta"
 [hedron-runtime-java]

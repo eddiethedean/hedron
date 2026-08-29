@@ -64,8 +64,8 @@ complete removal evidence.
 
 ## Release shape
 
-The coordinated 0.67 packages listed in the cut contract move together to `1.0.0`. Independently
-versioned satellites retain their versions and must publish exact Hedron 0.67/1.x ranges. SemVer
+Only `hedron-core` and `hedron` form the stable 1.0 platform cut. Beta satellites may share the
+version number or release independently, and must publish exact Hedron 0.67/1.x ranges. SemVer
 protects the enumerated stable 1.x inventory; Beta/Experimental surfaces stay visibly outside that
 promise. The cut makes no commercial SLA, multi-year LTS, human-AT, or blanket WCAG claim.
 

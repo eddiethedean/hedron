@@ -24,8 +24,8 @@ the [API stability catalog](../api/STABILITY.md).
 | **`experimental`** | May change or be removed at a minor boundary |
 | **`internal` / `deferred`** | Not a public application contract |
 
-Package classifiers provide additional context: the coordinated 1.0 inventory is
-**Stable**, while satellites retain independent Beta or tooling-grade maturity. Always
+Package classifiers provide additional context: only `hedron-core` and `hedron` are
+**Stable** packages in 1.0, while satellites retain Beta or tooling-grade maturity. Always
 pin package versions. Package maturity does not override the two application questions above.
 
 ## Example

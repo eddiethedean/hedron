@@ -63,7 +63,7 @@ jobs:
         run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
 
   quality:
-    name: Quality, strict typing, docs, and packages
+    name: Quality, strict core typing, docs, and packages
     if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20

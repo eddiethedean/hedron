@@ -12,9 +12,17 @@ function ownedPanels(tabs) {
   return Array.from(tabs.querySelectorAll(":scope > [role='tabpanel']"));
 }
 
+function alpineOwnsTabs(tabs) {
+  return tabs.hasAttribute("x-data") || tabs.querySelector("[x-data]") !== null;
+}
+
 function activateTab(tab, { focus = true } = {}) {
   const tabs = tab.closest(".hedron-tabs");
   if (!(tabs instanceof HTMLElement)) return;
+  if (alpineOwnsTabs(tabs)) {
+    if (focus) tab.focus();
+    return;
+  }
 
   const controls = tab.getAttribute("aria-controls");
   for (const candidate of ownedTabs(tabs)) {
@@ -42,6 +50,7 @@ function normalizeTabs(root) {
   for (const tabs of sets) {
     const controls = ownedTabs(tabs);
     if (!controls.length) continue;
+    if (alpineOwnsTabs(tabs)) continue;
     const selected =
       controls.find((tab) => tab.getAttribute("aria-selected") === "true") || controls[0];
     activateTab(selected, { focus: false });
@@ -135,10 +144,11 @@ document.addEventListener("keydown", (event) => {
   else return;
 
   event.preventDefault();
-  activateTab(controls[next]);
+  controls[next].focus();
+  controls[next].click();
 });
 
-document.body.addEventListener("htmx:afterSwap", (event) => {
+document.addEventListener("htmx:afterSwap", (event) => {
   normalizeTabs(event.target);
   normalizeNavCollapse(event.target);
   upgradeOpenModalDialogs(event.target);
@@ -198,7 +208,7 @@ function applyErrorTemplate(elt) {
   host.replaceChildren(tpl.content.cloneNode(true));
 }
 
-document.body.addEventListener("htmx:afterSwap", (event) => {
+document.addEventListener("htmx:afterSwap", (event) => {
   const swapped = event.detail?.elt;
   if (swapped instanceof HTMLElement && swapped.matches("[data-hedron-toast]")) {
     enqueueToast(swapped);
@@ -264,14 +274,14 @@ function setActionPhase(elt, phase) {
   marked.setAttribute("data-hedron-action-phase", phase);
 }
 
-document.body.addEventListener("htmx:beforeRequest", (event) => {
+document.addEventListener("htmx:beforeRequest", (event) => {
   const marked = busyMarked(event.detail?.elt);
   if (marked) {
     setActionPhase(event.detail?.elt, "pending");
     setBusy(marked, true);
   }
 });
-document.body.addEventListener("htmx:afterRequest", (event) => {
+document.addEventListener("htmx:afterRequest", (event) => {
   const marked = busyMarked(event.detail?.elt);
   if (marked) {
     const status = event.detail?.xhr?.status || 0;
@@ -279,21 +289,21 @@ document.body.addEventListener("htmx:afterRequest", (event) => {
     setBusy(marked, false);
   }
 });
-document.body.addEventListener("htmx:responseError", (event) => {
+document.addEventListener("htmx:responseError", (event) => {
   setActionPhase(event.detail?.elt, "error");
   applyErrorTemplate(event.detail?.elt);
   const marked = busyMarked(event.detail?.elt);
   if (marked) setBusy(marked, false);
 });
-document.body.addEventListener("htmx:sendError", (event) => {
+document.addEventListener("htmx:sendError", (event) => {
   setActionPhase(event.detail?.elt, "error");
   applyErrorTemplate(event.detail?.elt);
   const marked = busyMarked(event.detail?.elt);
   if (marked) setBusy(marked, false);
 });
-document.body.addEventListener("htmx:sendAbort", (event) => setActionPhase(event.detail?.elt, "cancelled"));
-document.body.addEventListener("htmx:timeout", (event) => setActionPhase(event.detail?.elt, "error"));
-document.body.addEventListener("htmx:afterSwap", (event) => {
+document.addEventListener("htmx:sendAbort", (event) => setActionPhase(event.detail?.elt, "cancelled"));
+document.addEventListener("htmx:timeout", (event) => setActionPhase(event.detail?.elt, "error"));
+document.addEventListener("htmx:afterSwap", (event) => {
   const root = event.target instanceof Element ? event.target : document;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const nodes = [];

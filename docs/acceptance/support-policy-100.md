@@ -11,7 +11,9 @@ compatibility window used by the 1.0 release gate; it is not a commercial SLA or
   window it receives best-effort migration-blocker and critical-security triage; applications
   should move to `1.0.x`. After that date, upgrade is required.
 - The stable 1.x SemVer promise applies only to symbols enumerated in
-  `stable-inventory-100.toml`. Beta and Experimental interfaces retain their weaker labels.
+  `stable-inventory-100.toml` and packages marked `maturity = "stable"` in
+  `release/support-matrix.toml`. Beta and Experimental interfaces retain their weaker labels,
+  including the `edron` authoring facade and all satellites marked Beta.
 - Fixes after publication move forward in `1.0.x`; removed aliases are not silently restored and
   a published tag is never retagged.
 
@@ -20,7 +22,7 @@ compatibility window used by the 1.0 release gate; it is not a commercial SLA or
 | Boundary | Supported 1.0 range |
 |---|---|
 | Python | CPython `>=3.10,<3.15` |
-| Hedron coordinated packages | `>=1.0.0,<2.0` on one coordinated train |
+| Stable Hedron packages (`hedron-core`, `hedron`) | `>=1.0.0,<2.0` on one coordinated train |
 | FastAPI | `>=0.121.0,<0.150` |
 | Pydantic | `>=2.12.0,<2.15` |
 | Flask adapter | Flask `>=3,<4` |
@@ -29,7 +31,9 @@ compatibility window used by the 1.0 release gate; it is not a commercial SLA or
 | Type checking | Pyright `>=1.1.400` against the locked release environment |
 | Packaging | wheel and sdist artifacts built with `SOURCE_DATE_EPOCH=0`; Python packages use PyPI attestations from the release workflow |
 
-Independent satellites keep their own versions and declare Hedron compatibility explicitly.
+All other packages are independent Beta satellites and must declare their Hedron compatibility
+explicitly. A satellite capability may be useful or individually “Supported” without entering
+the stable platform promise.
 The 1.0 release does not promise support for undocumented imports, unpinned future dependency
 majors, third-party plugins, experimental live transports, human-AT conformance, a commercial SLA,
 or multi-year LTS.

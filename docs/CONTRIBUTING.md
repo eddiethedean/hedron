@@ -178,7 +178,7 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 |---|---|---|
 | `test` | `test` — `pytest -n auto` on Python 3.10–3.14 | Yes, unless **docs-only** |
 | `workbench-dependencies` | `workbench` — Workbench contract tests at minimum/latest Starlette/Uvicorn bounds | Yes, unless **docs-only** |
-| `quality` | `quality` — ruff, workspace pyright, warning-fatal strict Pyright for `hedron-core` + `hedron`, `verify_pkg_*`, wheel build + smoke, docs train SSOT, recipe/sim checks, `mkdocs build --strict` | Yes, unless **docs-only** (then the same job runs `docs` instead) |
+| `quality` | `quality` — ruff, warning-reporting workspace Pyright, warning-fatal strict Pyright for `hedron-core` + `hedron`, `verify_pkg_*`, wheel build + smoke, docs train SSOT, recipe/sim checks, `mkdocs build --strict` | Yes, unless **docs-only** (then the same job runs `docs` instead) |
 | `quality` (docs-only) | `docs` — mkdocs, train SSOT, recipe/sim checks; **no** Rust toolchain and **no** `uv build --all-packages` | Docs-only PRs |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
 | `realwb` | `realwb` — REALWB-030 Docker smoke (skips when `PWB_LICENSE` unset) | Yes, unless **docs-only** or fork PR |

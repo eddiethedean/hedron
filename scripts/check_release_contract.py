@@ -18,6 +18,23 @@ def main() -> int:
     support = tomllib.loads((ROOT / "release/support-matrix.toml").read_text())
     packages = support["packages"]
     errors: list[str] = []
+    stable_packages = {
+        name for name, item in packages.items() if item.get("maturity") == "stable"
+    }
+    stable_api = tomllib.loads((ROOT / "release/stable-api.toml").read_text())
+    stable_api_packages = set(stable_api["packages"])
+    if stable_packages != stable_api_packages:
+        errors.append(
+            "stable package/API boundary disagrees: "
+            f"support={sorted(stable_packages)!r}, api={sorted(stable_api_packages)!r}"
+        )
+    for name, contract in packages.items():
+        maturity = contract.get("maturity")
+        api = contract.get("api")
+        if maturity not in {"stable", "beta"} or api not in {"stable", "beta"}:
+            errors.append(f"{name}: maturity/api must be stable or beta")
+        if maturity == "beta" and api == "stable":
+            errors.append(f"{name}: Beta package cannot claim a stable API")
     for distribution, contract in packages.items():
         project_file = ROOT / "packages" / distribution / "pyproject.toml"
         if not project_file.is_file():
@@ -43,8 +60,7 @@ def main() -> int:
                 if beta.lower() in dependency_names:
                     errors.append(f"{distribution}: stable package depends on Beta {beta}")
 
-    api = tomllib.loads((ROOT / "release/stable-api.toml").read_text())
-    for distribution, contract in api["packages"].items():
+    for distribution, contract in stable_api["packages"].items():
         module = distribution.replace("-", "_")
         try:
             loaded = importlib.import_module(module)

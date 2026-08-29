@@ -17,6 +17,7 @@ from typing import cast
 
 from hedron_core.alpine import AlpineFeatureDemand, AlpineMaturity, json_value
 from hedron_core.compat import StrEnum
+from hedron_core.typing_aliases import HtmlAttrValue
 
 __all__ = [
     "Interaction",
@@ -46,8 +47,13 @@ class LocalEffect:
 
     def __post_init__(self) -> None:
         action = self.action.strip()
-        if not action or len(action) > 128 or any(ord(char) < 32 for char in action):
-            raise ValueError("local action must be a bounded non-empty name")
+        if (
+            not action
+            or len(action) > 128
+            or re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)*", action)
+            is None
+        ):
+            raise ValueError("local action must be a bounded dotted identifier")
         keys = tuple(sorted({key.strip() for key in self.state_keys if key.strip()}))
         if any(not re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$.-]{0,63}", key) for key in keys):
             raise ValueError("local state keys must be bounded identifiers")
@@ -238,9 +244,17 @@ class Interaction:
             result["fingerprint"] = self.fingerprint
         return result
 
-    def to_attributes(self) -> dict[str, str]:
-        """Return inspectable lowering facts, not an executable request."""
-        attrs = {
+    def to_attributes(self) -> dict[str, HtmlAttrValue]:
+        """Lower the interaction into inspectable and executable HTML facts.
+
+        The interaction algebra remains framework-neutral, so the request lane is
+        resolved through the active core route registry rather than importing an
+        adapter.  When a route is available, HTMX receives the same method, target,
+        swap, and event described by the interaction.  The ``data-hedron-*`` facts
+        remain useful for inspection and the native fallback path; they are never a
+        substitute for server-side authorization.
+        """
+        attrs: dict[str, HtmlAttrValue] = {
             "data-hedron-interaction": InteractionKind(self.kind).value,
             "data-hedron-event": self.event,
         }
@@ -248,13 +262,55 @@ class Interaction:
             attrs["data-hedron-local-action"] = self.local_effect.action
             if self.local_effect.state_keys:
                 attrs["data-hedron-state-keys"] = ",".join(self.local_effect.state_keys)
+            local_expression = (
+                f"{self.local_effect.state_keys[0]} = !{self.local_effect.state_keys[0]}"
+                if self.local_effect.state_keys
+                else f"{self.local_effect.action}()"
+            )
+            attrs[f"x-on:{self.event}"] = local_expression
         if self.request_effect:
             attrs["data-hedron-handle"] = self.request_effect.handle
             attrs["data-hedron-method"] = self.request_effect.method
             if self.request_effect.target:
                 attrs["data-hedron-target"] = self.request_effect.target
             attrs["data-hedron-swap"] = self.request_effect.swap
+            route = _resolve_route(self.request_effect.handle)
+            if route is not None:
+                method, path = route
+                hx_name = {
+                    "GET": "hx-get",
+                    "POST": "hx-post",
+                    "PUT": "hx-put",
+                    "PATCH": "hx-patch",
+                    "DELETE": "hx-delete",
+                }[method]
+                from hedron_core.security import SafeUrl, UrlPurpose
+
+                attrs[hx_name] = SafeUrl.parse(path, purpose=UrlPurpose.NAVIGATION)
+                if self.request_effect.target:
+                    attrs["hx-target"] = self.request_effect.target
+                attrs["hx-swap"] = self.request_effect.swap
+                if self.event != "click":
+                    attrs["hx-trigger"] = self.event
         return attrs
+
+
+def _resolve_route(logical_id: str) -> tuple[str, str] | None:
+    """Resolve a registered handle without coupling core to a web adapter."""
+    try:
+        from hedron_core.registry import get_registry
+
+        for route in get_registry().routes():
+            if route.logical_id != logical_id and route.name != logical_id:
+                continue
+            method = route.methods[0].upper() if route.methods else "GET"
+            if method in _METHODS and route.path.startswith("/"):
+                return method, route.path
+    except (ImportError, RuntimeError):
+        # Portable rendering and standalone simulations may not have an active
+        # route registry.  Their metadata remains inspectable and native-safe.
+        return None
+    return None
 
 
 class OutcomeKind(StrEnum):

@@ -3,8 +3,9 @@
 **Ship today (pinned CRUD / admin on FastAPI, Flask, or Django):** pages, HTMX
 fragments, CSRF, polling job status, DataTable, first-party charts.
 **Do not treat as production defaults:** SSE, WebSocket, Plotly/Altair, human
-screen-reader claims. The coordinated 1.0 packages are **Stable** for the enumerated stable
-inventory; independent satellites retain their own Beta/tooling labels. There is no SLA.
+screen-reader claims. Only `hedron-core` and `hedron` are **Stable** packages in the 1.0
+inventory; all other packages, including Edron and host/data/tooling adapters, remain Beta
+satellites. There is no SLA.
 
 This page is the **adopter** maturity summary for the published **1.0.x** train
 ([Current release and support](current-release.md)). Full capability matrices and

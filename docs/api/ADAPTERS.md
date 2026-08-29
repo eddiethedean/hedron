@@ -13,8 +13,8 @@ status: implemented
 
 **Status:** Adapters shipped (`hedron-flask`, `hedron-django`). Capability readiness:
 **Supported** for Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
-DataSource. Coordinated adapter packages are **Stable** in the 1.0 inventory;
-API-level classifications still apply symbol by symbol.
+DataSource. The adapter capabilities are **Supported**, but their packages remain Beta and are
+outside the stable 1.0 platform boundary; API-level classifications still apply symbol by symbol.
 Portable contracts live in `hedron-core`. Published train: **1.0.x** (`v1.0.0`).
 
 Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapters). Quickstarts:

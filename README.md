@@ -27,9 +27,11 @@ Both paths render accessible HTML on the server, progressively enhance interacti
 and preserve one routing, rendering, security, state, and deployment authority.
 
 The stable 1.0 boundary is the package/API contract in
-[`release/support-matrix.toml`](release/support-matrix.toml). Charts, maps, native, notebook,
-MCP, Gradio, simulation, and other Beta satellites remain opt-in Beta compatibility surfaces;
-they are not included in the stable platform guarantee.
+[`release/support-matrix.toml`](release/support-matrix.toml): the stable platform is the
+`hedron-core` rendering contract and the `hedron` FastAPI-native facade. `edron`, host adapters,
+charts, maps, native, notebook, MCP, Gradio, simulation, and all other satellites remain opt-in
+Beta compatibility surfaces; a `1.0.0` package version does not promote a package or symbol into
+the stable platform by itself.
 
 ```text
 Edron pages and workflows       Native Hedron components and routes

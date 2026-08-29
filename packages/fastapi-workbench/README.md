@@ -6,7 +6,7 @@ Starlette-compatible ASGI applications.
 Installing or importing this package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust.
 
-**Package maturity:** Stable independent `1.x` · pin `>=1.0.1,<2.0`
+**Package maturity:** Beta independent `1.x` · pin `>=1.0.1,<2.0`
 
 The package supports Python **3.10–3.14**. The commands below use Python 3.11 as the
 standard Workbench spelling.

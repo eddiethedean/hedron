@@ -50,8 +50,8 @@ packet.
    still gates the canonical widgets.
 7. **Process prune — release gate:** Archive old packets; PR CI runs tip + recent only; generated
    remediation truth instead of stale issue tables.
-8. **Package maturity — complete:** Flagship + claimed adapters are Stable in package metadata for
-   the frozen inventory, and `v1.0.0` is published on PyPI.
+8. **Package maturity — complete:** `hedron-core` and `hedron` are Stable in package metadata;
+   adapters and other satellites are explicitly Beta, and `v1.0.0` is published on PyPI.
 
 ## Can wait until 2.0
 

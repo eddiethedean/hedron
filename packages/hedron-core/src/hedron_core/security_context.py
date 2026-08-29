@@ -139,6 +139,14 @@ class SecurityContext:
         return replace(self, subject_id=next_subject, tenant_id=next_tenant, fingerprint="")
 
     def to_serializable(self) -> dict[str, Any]:
+        """Return the local canonical payload used inside a signed envelope.
+
+        This method is retained for local compatibility and for
+        :meth:`to_authenticated`. It is not an authorization token: never
+        send this unsigned mapping across a process, job, cache, MCP, or client
+        boundary. Use :meth:`to_authenticated` and verify with
+        :meth:`from_authenticated` instead.
+        """
         data = {
             "version": self.version,
             "application_id": self.application_id,
@@ -196,6 +204,12 @@ class SecurityContext:
         *,
         expected_application_id: str | None = None,
     ) -> SecurityContext:
+        """Restore a local payload after an already-authenticated handoff.
+
+        Callers handling untrusted or cross-process data must use
+        :meth:`from_authenticated`; this parser validates shape and the
+        context fingerprint but does not authenticate the sender.
+        """
         _validate_payload_size(payload)
         unknown = set(payload) - _SERIALIZABLE_FIELDS
         if unknown:
