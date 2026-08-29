@@ -51,7 +51,8 @@ packet.
 7. **Process prune — release gate:** Archive old packets; PR CI runs tip + recent only; generated
    remediation truth instead of stale issue tables.
 8. **Package maturity — complete:** `hedron-core` and `hedron` are Stable in package metadata;
-   adapters and other satellites are explicitly Beta, and `v1.0.0` is published on PyPI.
+   adapters and other satellites are explicitly Beta; the untagged `v1.0.0` candidate remains
+   pending Git tag and PyPI publication.
 
 ## Can wait until 2.0
 

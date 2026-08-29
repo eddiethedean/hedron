@@ -1,6 +1,6 @@
 # Edron 1.0 acceptance
 
-**Status:** Implemented, verified, and published as `1.0.0` on PyPI
+**Status:** Implemented and verified in-tree as the untagged `1.0.0` candidate; PyPI publication deferred
 
 **Package target:** `edron==1.0.0` · Hedron `1.0.0` (`>=1.0.0,<2.0`) ·
 hedron-data `1.0.0` (`>=1.0.0,<2.0`)

@@ -20,8 +20,9 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 <!-- hedron-install-matrix -->
 
-Both packages are published at **1.0.0**. Always use an upper bound so a future minor train
-cannot install by accident. Only `hedron-core` and `hedron` are **Stable** packages; independently versioned
+The repository contains the **1.0.0 release candidate**, but its Git tag and PyPI upload are
+deferred. PyPI currently resolves Hedron **0.67.0** and Edron **0.9.0**. Always use an upper
+bound so a future minor train cannot install by accident. Only `hedron-core` and `hedron` are **Stable** packages; independently versioned
 satellites retain their documented Beta or tooling-grade maturity. Capability detail:
 [What’s ready](../guides/whats-ready.md).
 
@@ -138,7 +139,8 @@ Then create `app.py` from the complete listing on
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`1.0.0`** when installed from PyPI or from this source checkout.
+Expect **`0.67.0`** from PyPI until the 1.0.0 candidate is tagged and uploaded; an in-tree
+`uv sync` reports the candidate `1.0.0`.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
@@ -154,7 +156,8 @@ uv sync
 ```
 
 This checkout is the **`1.0.0`** source tree. Use `uv sync` for repository development and
-bounded PyPI requirements for application projects.
+the published bounded PyPI requirement `hedron>=0.67.0,<0.68` for application projects until
+the candidate is released.
 
 See [Contributing](../CONTRIBUTING.md).
 

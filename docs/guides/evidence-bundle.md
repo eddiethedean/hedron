@@ -11,9 +11,9 @@ responsibilities remain with the adopting organization.
 
 | Evidence | Source |
 |---|---|
-| Hedron package and files | [Hedron 1.0.0 on PyPI](https://pypi.org/project/hedron/1.0.0/) |
-| Edron package and files | [Edron 1.0.0 on PyPI](https://pypi.org/project/edron/1.0.0/) |
-| Source tag, wheels, checksums, and attached evidence | [GitHub release v1.0.0](https://github.com/eddiethedean/hedron/releases/tag/v1.0.0) |
+| Hedron package and files | In-tree `1.0.0` candidate; PyPI fallback `0.67.0` |
+| Edron package and files | In-tree `1.0.0` candidate; PyPI fallback `0.9.0` |
+| Source tag, wheels, checksums, and attached evidence | Deferred until the candidate is tagged and published |
 | Current install and support facts | [Current release](current-release.md) |
 
 The GitHub release attaches `release-manifest.json`, built distributions, generated evidence,

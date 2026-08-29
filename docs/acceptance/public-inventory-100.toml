@@ -616,162 +616,162 @@ disposition = "independent-satellite"
 task = "export:fastapi_workbench.ROOT_PATH_ENV"
 canonical = "fastapi_workbench.ROOT_PATH_ENV"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.RESOLVED_MOUNT_ENV"
 canonical = "fastapi_workbench.RESOLVED_MOUNT_ENV"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.RESOLVED_PUBLIC_BASE_ENV"
 canonical = "fastapi_workbench.RESOLVED_PUBLIC_BASE_ENV"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.RESOLVED_MODE_ENV"
 canonical = "fastapi_workbench.RESOLVED_MODE_ENV"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.RESOLVED_SOURCE_ENV"
 canonical = "fastapi_workbench.RESOLVED_SOURCE_ENV"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.ResolvedDeployment"
 canonical = "fastapi_workbench.ResolvedDeployment"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.DeploymentCapabilities"
 canonical = "fastapi_workbench.DeploymentCapabilities"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.WorkbenchConfig"
 canonical = "fastapi_workbench.WorkbenchConfig"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.WorkbenchMode"
 canonical = "fastapi_workbench.WorkbenchMode"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.WorkbenchTopology"
 canonical = "fastapi_workbench.WorkbenchTopology"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.WorkbenchPathMiddleware"
 canonical = "fastapi_workbench.WorkbenchPathMiddleware"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.__version__"
 canonical = "fastapi_workbench.__version__"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.export_workbench_state"
 canonical = "fastapi_workbench.export_workbench_state"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.is_ephemeral_workbench_mount"
 canonical = "fastapi_workbench.is_ephemeral_workbench_mount"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.is_posit_connect_scope"
 canonical = "fastapi_workbench.is_posit_connect_scope"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.is_workbench_env"
 canonical = "fastapi_workbench.is_workbench_env"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.is_workbench_job"
 canonical = "fastapi_workbench.is_workbench_job"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.is_workbench_scope"
 canonical = "fastapi_workbench.is_workbench_scope"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.normalize_http_origin"
 canonical = "fastapi_workbench.normalize_http_origin"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.parse_rserver_url_output"
 canonical = "fastapi_workbench.parse_rserver_url_output"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.prepare_app"
 canonical = "fastapi_workbench.prepare_app"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.resolve_deployment"
 canonical = "fastapi_workbench.resolve_deployment"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[surface]]
 task = "export:fastapi_workbench.workbenchify"
 canonical = "fastapi_workbench.workbenchify"
 owner = "fastapi-workbench"
-disposition = "stable"
-maturity = "stable"
+disposition = "package-native"
+maturity = "beta"
 
 [[package]]
 name = "hedron"

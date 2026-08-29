@@ -6,9 +6,9 @@ search:
 
 # What’s new in Hedron 1.0
 
-Hedron `v1.0.0` is a subtractive, compatibility-reviewed stable release. It turns the proven
+Hedron `v1.0.0` is a subtractive, compatibility-reviewed stable release candidate. It turns the proven
 0.x capabilities into one canonical application model and freezes an enumerated stable surface.
-All 17 release gates are Verified, and `v1.0.0` is published on PyPI.
+All 17 technical release gates are Verified; the Git tag and PyPI upload are deferred.
 
 ## One authoring model
 

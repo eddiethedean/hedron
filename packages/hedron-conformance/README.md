@@ -14,7 +14,7 @@ reference — without matching incidental CPython formatting.
 
 Also available as the flagship extra `hedron[conformance]`.
 
-**Package maturity:** Beta · **Published release:** `v1.0.0` · application pin `>=1.0.0,<1.1`
+**Package maturity:** Beta · **In-tree candidate:** `v1.0.0` · PyPI fallback `0.67.0`
 
 Phase 0.52 authority contract:
 [RFC-0079](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0079-CONFORMANCE-AUTHORITY-POSIT-LIFECYCLE.md) /
@@ -33,7 +33,7 @@ uv add "hedron-conformance>=1.0.0,<1.1"
 pip install "hedron[conformance]>=1.0.0,<1.1"
 ```
 
-The beta checkout tip is `v0.67.0`; stable applications install `>=1.0.0,<1.1` from PyPI.
+The beta checkout tip is the untagged `v1.0.0` candidate; PyPI currently serves `0.67.0`.
 
 Requires Python 3.10–3.14.
 

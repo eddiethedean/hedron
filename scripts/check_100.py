@@ -169,6 +169,61 @@ def _toml(path: Path) -> dict[str, object]:
     return tomllib.loads(path.read_text(encoding="utf-8"))
 
 
+def _expected_coordinated_artifacts() -> set[str]:
+    """Return the exact wheel/sdist names for the coordinated 1.0 cut."""
+    expected: set[str] = set()
+    for distribution in COORDINATED_PACKAGES:
+        project_path = ROOT / "packages" / distribution / "pyproject.toml"
+        project = tomllib.loads(project_path.read_text(encoding="utf-8"))["project"]
+        name = str(project["name"]).replace("-", "_")
+        version = str(project["version"])
+        expected.update(
+            {
+                f"{name}-{version}-py3-none-any.whl",
+                f"{name}-{version}.tar.gz",
+            }
+        )
+    return expected
+
+
+def _evidence_source_blockers(source_commit: object) -> list[str]:
+    """Reject evidence generated from code/docs that have since changed.
+
+    The evidence JSON is committed after the source snapshot it describes, so
+    the evidence files themselves are the only allowed delta. This keeps a
+    candidate ledger reproducible without making a commit hash self-referential.
+    """
+    if not isinstance(source_commit, str) or len(source_commit) != 40:
+        return ["release evidence source_commit must be a full commit hash"]
+    try:
+        current = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, stderr=subprocess.STDOUT
+        ).strip()
+        changed = subprocess.check_output(
+            ["git", "diff", "--name-only", f"{source_commit}..HEAD"],
+            cwd=ROOT,
+            text=True,
+            stderr=subprocess.STDOUT,
+        ).splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        return ["release evidence source_commit is not available in the current checkout"]
+    if current == source_commit:
+        return []
+    allowed = {
+        "docs/acceptance/compatibility-report-100/README.md",
+        "docs/acceptance/compatibility-report-100/local-bridge.json",
+        "docs/acceptance/compatibility-report-100/local-build-evidence.json",
+        "docs/acceptance/compatibility-report-100/verification-100.json",
+    }
+    unexpected = sorted(set(changed) - allowed)
+    if unexpected:
+        return [
+            "release evidence is stale; source_commit predates non-evidence changes: "
+            + ", ".join(unexpected[:5])
+        ]
+    return []
+
+
 def _run(command: list[str], *, extra_env: dict[str, str] | None = None) -> list[str]:
     """Run one repository evidence command and return concise findings."""
     runner = ROOT / ".venv" / "bin" / "python"
@@ -714,8 +769,12 @@ def check_plan() -> list[str]:
     if not isinstance(reproducibility, dict) or reproducibility.get("verified") is not True:
         errors.append("local build evidence must record verified reproducibility")
     artifacts = build_evidence.get("artifacts")
-    if not isinstance(artifacts, list) or len(artifacts) != 24:
-        errors.append("local build evidence must enumerate the 24 coordinated 1.0.0 artifacts")
+    expected_artifacts = _expected_coordinated_artifacts()
+    if not isinstance(artifacts, list) or len(artifacts) != len(expected_artifacts):
+        errors.append(
+            "local build evidence must enumerate exactly "
+            f"{len(expected_artifacts)} coordinated 1.0.0 artifacts"
+        )
     else:
         seen_artifacts: set[str] = set()
         for artifact in artifacts:
@@ -727,12 +786,20 @@ def check_plan() -> list[str]:
             if not name or name in seen_artifacts:
                 errors.append("local build evidence contains a missing or duplicate artifact name")
             seen_artifacts.add(name)
+            if name not in expected_artifacts:
+                errors.append(f"local build evidence contains an unexpected artifact: {name}")
             if len(digest) != hashlib.sha256().digest_size * 2 or any(
                 char not in "0123456789abcdef" for char in digest
             ):
                 errors.append(
                     f"local build evidence has an invalid SHA-256 for {name or '<unknown>'}"
                 )
+        missing_artifacts = expected_artifacts - seen_artifacts
+        if missing_artifacts:
+            errors.append(
+                "local build evidence is missing coordinated artifacts: "
+                + ", ".join(sorted(missing_artifacts)[:5])
+            )
     if (
         verification.get("schema") != "hedron.verification-evidence/1"
         or verification.get("phase") != "1.0"
@@ -741,6 +808,7 @@ def check_plan() -> list[str]:
         or not isinstance(verification.get("retained_command_output"), bool)
     ):
         errors.append("verification evidence has invalid identity or lifecycle metadata")
+    errors.extend(_evidence_source_blockers(build_evidence.get("source_commit")))
     verification_checks = verification.get("checks")
     if not isinstance(verification_checks, list):
         errors.append("verification evidence must contain executable check records")
@@ -837,7 +905,7 @@ def check_plan() -> list[str]:
 
     roadmap = (ROOT / "docs" / "ROADMAP.md").read_text(encoding="utf-8")
     for token in (
-        "Published as `v1.0.0` on PyPI",
+        "Verified in-tree release candidate; tag/PyPI publication deferred",
         "RELEASE_1_0",
         "release-gate-1.0.toml",
         "D-117",

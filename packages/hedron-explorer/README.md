@@ -13,7 +13,7 @@ features, settings, and interaction simulation — plus sanitized JSON APIs
 (`/api/diff`, `/api/package-health`) with rate limiting and audit hooks. Installed
 through `hedron[dev]`; **not required** in production.
 
-**Package maturity:** Beta · **Published release:** `v1.0.0` · application pin `>=1.0.0,<1.1`
+**Package maturity:** Beta · **In-tree candidate:** `v1.0.0` · PyPI fallback `0.67.0`
 
 ## Install
 

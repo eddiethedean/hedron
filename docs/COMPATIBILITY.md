@@ -191,7 +191,7 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 
 - RFC-0096 and D-114–D-117 define the implemented and Verified subtractive 1.0 cut from the
   immutable `v0.67.0` baseline. Its enumerated stable inventory, removal evidence, and all
-  17 release gates are complete, and `v1.0.0` is published on PyPI.
+  17 technical release gates are complete; Git tagging and PyPI publication remain deferred.
 - Coordinated `stable` contracts are compatibility-protected throughout 1.x; independently
   versioned 0.x satellites retain the compatibility policy stated on their package pages.
   An incompatible change requires an accepted RFC/decision, migration tooling or guidance, a

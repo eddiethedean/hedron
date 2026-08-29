@@ -40,6 +40,8 @@ class ReleaseFacts:
     edron_pin_floor: str
     edron_pin_ceiling: str
     edron_pypi_version: str
+    edron_pypi_pin_floor: str
+    edron_pypi_pin_ceiling: str
     edron_registry_status: str
     satellite_minimum: str
     satellite_maximum: str
@@ -79,6 +81,10 @@ class ReleaseFacts:
     def edron_pin(self) -> str:
         return f">={self.edron_pin_floor},<{self.edron_pin_ceiling}"
 
+    @property
+    def edron_pypi_pin(self) -> str:
+        return f">={self.edron_pypi_pin_floor},<{self.edron_pypi_pin_ceiling}"
+
 
 def load_release_facts(path: Path = RELEASE_FILE) -> ReleaseFacts:
     data = tomllib.loads(path.read_text(encoding="utf-8"))
@@ -104,6 +110,8 @@ def load_release_facts(path: Path = RELEASE_FILE) -> ReleaseFacts:
         edron_pin_floor=str(edron["pin_floor"]),
         edron_pin_ceiling=str(edron["pin_ceiling"]),
         edron_pypi_version=str(edron["pypi_version"]),
+        edron_pypi_pin_floor=str(edron.get("pypi_pin_floor") or edron["pin_floor"]),
+        edron_pypi_pin_ceiling=str(edron.get("pypi_pin_ceiling") or edron["pin_ceiling"]),
         edron_registry_status=str(edron.get("registry_status") or "uploaded"),
         satellite_minimum=satellites["minimum_version"],
         satellite_maximum=satellites["maximum_version"],
@@ -591,10 +599,14 @@ def check_text(
             )
             if not constraint and not is_requirement_position:
                 continue
-            if constraint != facts.edron_pin:
+            allowed_edron_pins = {facts.edron_pin}
+            if facts.edron_registry_status == "deferred" and path in FIRST_RUN_INSTALL_PATHS:
+                allowed_edron_pins = {facts.edron_pypi_pin}
+            if constraint not in allowed_edron_pins:
                 failures.append(
                     f"{path}:{index}: install for {match.group('name')} must use "
-                    f"{facts.edron_pin}; found {constraint or 'no version constraint'}"
+                    f"{' or '.join(sorted(allowed_edron_pins))}; found "
+                    f"{constraint or 'no version constraint'}"
                 )
 
         for match in SATELLITE_REQUIREMENT.finditer(line):
@@ -676,10 +688,12 @@ def check_metadata(facts: ReleaseFacts = FACTS) -> list[str]:
         failures.append(
             "deferred registry_status requires pypi_version to differ from published_version"
         )
-    if facts.edron_registry_status != "uploaded":
-        failures.append("Edron registry_status must be 'uploaded' for the coordinated 1.0 docs")
-    if facts.edron_pypi_version != facts.edron_published_version:
-        failures.append("Edron pypi_version must equal published_version")
+    if facts.edron_registry_status not in {"uploaded", "deferred"}:
+        failures.append("Edron registry_status must be 'uploaded' or 'deferred'")
+    if facts.edron_registry_status == "uploaded" and facts.edron_pypi_version != facts.edron_published_version:
+        failures.append("Uploaded Edron registry_status requires pypi_version == published_version")
+    if facts.edron_registry_status == "deferred" and facts.edron_pypi_version == facts.edron_published_version:
+        failures.append("Deferred Edron registry_status requires pypi_version to differ from published_version")
     return failures
 
 

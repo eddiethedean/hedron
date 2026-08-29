@@ -3,14 +3,15 @@
 ## Which version should I install?
 
 Install the latest public release from PyPI:
-`pip install "hedron>=1.0.0,<1.1"`. Contributors working from a git checkout use
-`uv sync` (workspace packages). The repository and PyPI release are `v1.0.0`. See
+`pip install "hedron>=0.67.0,<0.68"`. Contributors working from a git checkout use
+`uv sync` (workspace packages). The repository contains the untagged `v1.0.0` candidate; PyPI
+still serves `v0.67.0`. See
 [Installation](../getting-started/installation.md).
 
 ```bash
-pip install "hedron>=1.0.0,<1.1"
+pip install "hedron>=0.67.0,<0.68"
 # or
-uv add "hedron>=1.0.0,<1.1"
+uv add "hedron>=0.67.0,<0.68"
 ```
 
 Always use an upper bound so a future minor train cannot install by accident.
@@ -20,14 +21,14 @@ and no package has a commercial SLA. Capability detail:
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For DataTable/DataEditor, install `hedron[data]>=1.0.0,<1.1`. For charts, install
-`hedron[charts]>=1.0.0,<1.1`
+For DataTable/DataEditor, install `hedron[data]>=0.67.0,<0.68`. For charts, install
+`hedron[charts]>=0.67.0,<0.68`
 ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=1.0.0,<1.1"
-pip install "hedron-django>=1.0.0,<1.1"   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.67.0,<0.68"
+pip install "hedron-django>=0.67.0,<0.68"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -108,8 +109,8 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then
-`uv add "hedron>=1.0.0,<1.1"`. Or use
-`hedron new my-app` after `pip install "hedron>=1.0.0,<1.1"`.
+`uv add "hedron>=0.67.0,<0.68"`. Or use
+`hedron new my-app` after `pip install "hedron>=0.67.0,<0.68"`.
 
 ## Should I use `uv init` or `hedron new`?
 
@@ -162,8 +163,8 @@ Charts install through `hedron[charts]>=1.0.0,<1.1`; the sample kit installs as
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ```bash
-pip install "hedron[data]>=1.0.0,<1.1"     # DataTable, DataEditor (Auto is already in hedron)
-pip install "hedron[charts]>=1.0.0,<1.1"   # compatible chart satellite
+pip install "hedron[data]>=0.67.0,<0.68"     # DataTable, DataEditor (Auto is already in hedron)
+pip install "hedron[charts]>=0.67.0,<0.68"   # compatible chart satellite
 ```
 
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), and the
@@ -226,9 +227,9 @@ variables / your secret store. Constructor args override both when explicit.
 ## How do I install Jinja templates?
 
 ```bash
-pip install "hedron[jinja]>=1.0.0,<1.1"
+pip install "hedron[jinja]>=0.67.0,<0.68"
 # or
-uv add "hedron[jinja]>=1.0.0,<1.1"
+uv add "hedron[jinja]>=0.67.0,<0.68"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).

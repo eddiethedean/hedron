@@ -9,12 +9,16 @@
 `hedron-core` is the framework-neutral HTML renderer. It has no FastAPI, Flask, or Django
 dependency.
 
+The repository contains the `1.0.0` stable-platform release candidate. Its Git tag and PyPI
+upload are deferred; PyPI currently resolves `hedron-core==0.67.0`. The stable boundary is
+limited to the deliberately enumerated API in `release/stable-api.toml`.
+
 Building an app? Install [`hedron`](https://pypi.org/project/hedron/) instead. Use this
 package if you are writing a host adapter or rendering components outside a web
 framework.
 
-**Package maturity:** Stable · **Published release:** `v1.0.0` · application pin `>=1.0.0,<1.1`
-release `v1.0.0` · pin `>=1.0.0,<1.1` from PyPI.
+**Package maturity:** Stable candidate · **In-tree release:** `v1.0.0` · PyPI fallback
+`hedron-core>=0.67.0,<0.68` until the candidate is tagged and uploaded.
 
 **Typing:** Pyright strict. Commit and release CI fail on type errors over the complete
 `hedron_core` source tree; warning-level cleanup remains a tracked migration until the

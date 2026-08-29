@@ -5,7 +5,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/hedron/badge/?version=latest)](https://hedron.readthedocs.io/en/latest/)
 [![Pyright: strict](https://img.shields.io/badge/Pyright-strict-3178c6.svg)](https://microsoft.github.io/pyright/)
-[![Status: Stable](https://img.shields.io/badge/status-stable-brightgreen.svg)](https://pypi.org/project/hedron/)
+[![Status: Stable candidate](https://img.shields.io/badge/status-stable%20candidate-yellow.svg)](https://pypi.org/project/hedron/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
 **Build FastAPI-native admin tools, CRUD applications, forms, and dashboards with Python
@@ -36,8 +36,12 @@ authoring contract.
 See [What is Alpine?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-alpine/)
 for the browser/server ownership rule, lifecycle behavior, and typed authoring examples.
 
-**Package maturity:** Stable · **Release:** `1.0.x` · **Python:** 3.10–3.14 ·
+**Package maturity:** Stable candidate · **Release:** `1.0.x` · **Python:** 3.10–3.14 ·
 **Typing:** Pyright strict
+
+The `1.0.0` candidate is in this source tree; its Git tag and PyPI upload are deferred. PyPI
+currently resolves `hedron==0.67.0`. Use the published fallback until the candidate is tagged,
+or use `uv sync` from this repository to exercise the candidate.
 
 Commit and release CI fail on type errors over the complete `hedron` source tree. Warning-level
 typing cleanup remains a tracked migration until the existing workspace warning backlog is

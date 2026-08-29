@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import importlib
+import inspect
 import re
 import sys
 import tomllib
@@ -67,9 +68,33 @@ def main() -> int:
         except (ImportError, AttributeError, RuntimeError) as exc:  # pragma: no cover
             errors.append(f"{distribution}: stable API import failed: {exc}")
             continue
-        for symbol in contract["symbols"]:
+        symbols = tuple(contract.get("symbols", ()))
+        if len(symbols) != len(set(symbols)):
+            errors.append(f"{distribution}: stable API symbol list contains duplicates")
+        signatures = contract.get("signatures", {})
+        if not isinstance(signatures, dict):
+            errors.append(f"{distribution}: signatures must be a table")
+            signatures = {}
+        if not set(signatures).issubset(set(symbols)):
+            errors.append(f"{distribution}: signature table contains a non-stable symbol")
+        for symbol in symbols:
             if not hasattr(loaded, symbol):
                 errors.append(f"{distribution}: missing stable symbol {symbol}")
+                continue
+            expected_signature = signatures.get(symbol)
+            if expected_signature is None:
+                continue
+            expected_signature = str(expected_signature).strip()
+            try:
+                actual_signature = str(inspect.signature(getattr(loaded, symbol))).strip()
+            except (TypeError, ValueError) as exc:
+                errors.append(f"{distribution}.{symbol}: signature inspection failed: {exc}")
+                continue
+            if actual_signature != expected_signature:
+                errors.append(
+                    f"{distribution}.{symbol}: signature drifted; "
+                    f"expected {expected_signature!r}, got {actual_signature!r}"
+                )
 
     if errors:
         print("\n".join(errors), file=sys.stderr)

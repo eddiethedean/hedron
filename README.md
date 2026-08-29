@@ -11,8 +11,9 @@
 **Build polished, server-rendered Python applications without maintaining a separate
 frontend.**
 
-**Edron 1.0.0 and Hedron 1.0.0 are published on PyPI.** Application pins in this README
-stay within the stable `1.0.x` train.
+**Hedron 1.0.0 is the in-tree release candidate; its Git tag and PyPI upload are deferred.**
+PyPI currently resolves Hedron `0.67.0` and Edron `0.9.0`. Application pins in this README
+are the future stable `1.0.x` contract; use the published fallback until the cut is tagged.
 
 This repository contains two ways to use the same runtime:
 
@@ -70,7 +71,7 @@ for the browser/server ownership rule, lifecycle behavior, and extension guidanc
 Create and run a teaching project with [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "edron>=1.0.0,<1.1" edron new sales-app --template dashboard
+uvx --from "edron>=0.9.0,<0.10" edron new sales-app --template dashboard
 cd sales-app
 uv sync
 uv run uvicorn app:app --reload
@@ -96,8 +97,8 @@ charts, maps, resources, caching, jobs, deployment checks, and a review-first St
 tool. Install it directly if you already have a project:
 
 ```bash
-uv add "edron>=1.0.0,<1.1"
-# or: python -m pip install "edron>=1.0.0,<1.1"
+uv add "edron>=0.9.0,<0.10"
+# or: python -m pip install "edron>=0.9.0,<0.10"
 ```
 
 [Read the Edron package guide](packages/edron/README.md) ·
@@ -109,7 +110,7 @@ uv add "edron>=1.0.0,<1.1"
 Choose Hedron when FastAPI-native routes and explicit component composition are the desired API:
 
 ```bash
-uvx --from "hedron>=1.0.0,<1.1" hedron new operations-app
+uvx --from "hedron>=0.67.0,<0.68" hedron new operations-app
 cd operations-app
 uv sync
 uv run hedron run app:app --reload

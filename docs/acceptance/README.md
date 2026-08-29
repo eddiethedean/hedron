@@ -46,8 +46,8 @@ status commentary, not a satisfied release gate.
 - [Edron `0.9.1` acceptance packet](EDRON_009.md) — **Implemented and verified in-tree; publication
   pending**; see the [phase gates](edron-phase09.toml) and [0.8-to-0.9 upgrade fixtures](upgrade-fixtures-09.md).
   The predecessor train is Hedron `0.67.0`; this checkout implements the coordinated Hedron
-  verified and published as `1.0.0` on PyPI.
-- [Edron `1.0.0` acceptance packet](EDRON_100.md) — **Implemented, verified, and published**;
+  verified in-tree; tag/PyPI publication pending.
+- [Edron `1.0.0` acceptance packet](EDRON_100.md) — **Implemented and verified in-tree; publication pending**;
   see [edron-100.toml](edron-100.toml). Edron now requires Hedron 1.x and delegates canonical
   page, view, action, include, handle, lifecycle, and result-lowering ownership to Hedron.
 - [Component model](COMPONENT_MODEL.md)

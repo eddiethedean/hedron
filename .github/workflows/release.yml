@@ -45,6 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -70,6 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -96,6 +98,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.publish_tag }}
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -127,6 +130,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -161,6 +165,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -244,6 +249,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ steps.ref.outputs.tag }}
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -278,8 +284,8 @@ jobs:
           mkdir -p dist
           for pyproject in packages/*/pyproject.toml; do
             pkg="$(basename "$(dirname "$pyproject")")"
-            if [ "$pkg" = "edron" ]; then
-              echo "Skipping Edron; publish it only from edron-v* tags"
+            if [ "$pkg" = "edron" ] || [ "$pkg" = "edron-sim" ]; then
+              echo "Skipping $pkg; publish it only from the Edron release workflow"
               continue
             fi
             echo "Building $pkg"
@@ -324,8 +330,8 @@ jobs:
           for pyproject in packages/*/pyproject.toml; do
             pkg_dir="$(dirname "$pyproject")"
             pkg="$(basename "$pkg_dir")"
-            if [ "$pkg" = "edron" ]; then
-              echo "Skipping Edron; publish it only from edron-v* tags"
+            if [ "$pkg" = "edron" ] || [ "$pkg" = "edron-sim" ]; then
+              echo "Skipping $pkg; publish it only from the Edron release workflow"
               continue
             fi
             read -r name pkg_version <<<"$(uv run --python 3.12 python - <<PY
@@ -359,23 +365,40 @@ jobs:
             fi
           done
 
-          # Publish pure-Python / non-native new projects first so a native
-          # manylinux/rate-limit issue does not block notebook/sim creates.
-          if ((${#new_names[@]})); then
-            ordered_new=()
-            for name in "${new_names[@]}"; do
-              case "$name" in
-                *-native|hedron-native) ;;
-                *) ordered_new+=("$name") ;;
-              esac
+          mapfile -t publish_order < <(
+            uv run --python 3.12 python scripts/release_publish_order.py
+          )
+          order_names() {
+            local -n input_names="$1"
+            local -n output_names="$2"
+            output_names=()
+            local ordered candidate found
+            for ordered in "${publish_order[@]}"; do
+              for candidate in "${input_names[@]}"; do
+                if [ "$candidate" = "$ordered" ]; then
+                  output_names+=("$candidate")
+                fi
+              done
             done
-            for name in "${new_names[@]}"; do
-              case "$name" in
-                *-native|hedron-native) ordered_new+=("$name") ;;
-              esac
+            for candidate in "${input_names[@]}"; do
+              found=0
+              for ordered in "${publish_order[@]}"; do
+                if [ "$candidate" = "$ordered" ]; then
+                  found=1
+                  break
+                fi
+              done
+              if [ "$found" -eq 0 ]; then
+                output_names+=("$candidate")
+              fi
             done
-            new_names=("${ordered_new[@]}")
-          fi
+          }
+          ordered_existing=()
+          ordered_new=()
+          order_names existing_names ordered_existing
+          order_names new_names ordered_new
+          existing_names=("${ordered_existing[@]}")
+          new_names=("${ordered_new[@]}")
 
           echo "Existing PyPI projects to publish: ${existing_names[*]:-none}"
           echo "New PyPI projects to publish: ${new_names[*]:-none}"
@@ -452,8 +475,12 @@ jobs:
 
           for name in "${existing_names[@]}"; do
             if ! publish_one "$name" "existing"; then
-              echo "WARN: publish failed for existing project ${name}; continuing with next package" >&2
+              echo "WARN: publish failed for existing project ${name}" >&2
               failed_names+=("$name")
+              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ]; then
+                echo "Foundational package failed; refusing to publish dependents" >&2
+                break
+              fi
             fi
           done
 
@@ -473,11 +500,15 @@ jobs:
               published_new=1
               uploaded_new+=("$name")
             else
-              echo "WARN: publish failed for NEW project ${name}; continuing with next package" >&2
+              echo "WARN: publish failed for NEW project ${name}" >&2
               failed_names+=("$name")
               # Do not set published_new — only successful creates consume the quota spacing.
               if [ "${PUBLISH_ONLY}" = "true" ] && [ "$published_new" -eq 0 ]; then
                 echo "WARN: aborting further NEW creates after early failure in publish_only" >&2
+                break
+              fi
+              if [ "$name" = "hedron-core" ] || [ "$name" = "hedron" ]; then
+                echo "Foundational package failed; refusing to create dependents" >&2
                 break
               fi
             fi

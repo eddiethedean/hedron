@@ -1,26 +1,27 @@
 [release]
 # Public release facts. Adopter-facing "current", "living", and install-pin claims
 # must agree with this file. The workspace may be preparing a later release.
-# Stable release channel. The workspace remains package-compatible with this cut.
+# Stable release channel. The workspace is preparing this cut; it is not yet
+# tagged or published.
 train = "1.0"
 published_version = "1.0.0"
 stable_version = "1.0.0"
 # Beta preview channel; intentionally separate from the stable package metadata.
 beta_version = "0.67.0"
 development_version = "1.0.0"
-published_date = "2026-08-27"
+published_date = ""
 pin_floor = "1.0.0"
 pin_ceiling = "1.1"
 previous_train = "0.67"
 previous_version = "0.67.0"
 previous_security_until = "2027-02-27"
 # Latest version actually on PyPI. Keep in sync with pypi.org (not workspace version).
-# When "uploaded", pypi_version must equal published_version and first-run commands
-# use the same pin as Installation.
-pypi_version = "1.0.0"
-pypi_pin_floor = "1.0.0"
-pypi_pin_ceiling = "1.1"
-registry_status = "uploaded"
+# When "deferred", pypi_version is the latest registry-resolvable fallback;
+# first-run commands must use that fallback rather than the in-tree candidate.
+pypi_version = "0.67.0"
+pypi_pin_floor = "0.67.0"
+pypi_pin_ceiling = "0.68"
+registry_status = "deferred"
 
 [edron]
 # Edron is released in lockstep with the Hedron 1.0 documentation contract.
@@ -28,8 +29,10 @@ published_version = "1.0.0"
 development_version = "1.0.0"
 pin_floor = "1.0.0"
 pin_ceiling = "1.1"
-pypi_version = "1.0.0"
-registry_status = "uploaded"
+pypi_version = "0.9.0"
+pypi_pin_floor = "0.9.0"
+pypi_pin_ceiling = "0.10"
+registry_status = "deferred"
 
 [satellites]
 minimum_version = "0.2.3"
