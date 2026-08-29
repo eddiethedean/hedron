@@ -2,7 +2,7 @@
   "schema": "hedron.verification-evidence/1",
   "phase": "1.0",
   "target": "v1.0.0",
-  "source_commit": "1c62951babd51a38788252a272ced01fa831eb1f",
+  "source_commit": "085712f697cef70804b49d34f906af579523f382",
   "retained_command_output": false,
   "checks": [
     {
@@ -51,7 +51,7 @@
       "id": "BUILD-100",
       "command": "SOURCE_DATE_EPOCH=0 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages (repeated twice)",
       "status": "passed",
-      "summary": "44 publishable workspace artifacts matched byte-for-byte across two builds; 24 coordinated 1.0.0 hashes retained"
+      "summary": "44 publishable workspace artifacts matched byte-for-byte across two builds; 22 coordinated 1.0.0 hashes retained"
     },
     {
       "id": "REGRESS-100",
