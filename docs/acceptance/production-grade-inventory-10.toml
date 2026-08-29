@@ -23,6 +23,7 @@ packages = [
   "hedron-native",
   "hedron-sample-kit",
   "hedron-sim",
+  "edron-sim",
   "hedron-notebook",
   "hedron-mcp",
   "hedron-gradio",
@@ -60,6 +61,8 @@ maturity = "beta"
 [hedron-sample-kit]
 maturity = "beta"
 [hedron-sim]
+maturity = "beta"
+[edron-sim]
 maturity = "beta"
 [hedron-notebook]
 maturity = "beta"

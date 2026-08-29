@@ -58,6 +58,7 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-gradio](hedron-gradio.md) | `hedron[gradio]` | Gradio client interop |
 | [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.2.3,<0.3` |
 | [hedron-sim](hedron-sim.md) | — | Offline HTMX sims for static docs; `>=0.2.2,<0.3` |
+| [edron-sim](edron-sim.md) | — | Static previews from real Edron apps; `>=0.1.0,<0.2` |
 | [hedron-runtime-node](hedron-runtime-node.md) | npm | Portable Node conformance evaluator |
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 

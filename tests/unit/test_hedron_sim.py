@@ -570,6 +570,7 @@ def test_every_sim_include_has_demo_contract() -> None:
     from demos.contracts import CONTRACTS, contract_ids
 
     includes = {path.stem for path in (DOCS / "includes" / "sim").glob("*.html")}
+    includes -= {"edron-showcase"}
     ids = contract_ids()
     assert includes == ids, f"missing={sorted(includes - ids)} extra={sorted(ids - includes)}"
     for contract in CONTRACTS:

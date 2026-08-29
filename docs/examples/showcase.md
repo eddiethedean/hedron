@@ -1,16 +1,12 @@
 ---
-description: A full-feature Hedron operations console, available as a real app and an offline simulation.
+description: A full-feature Hedron operations console built from the real runnable application.
 ---
 
 # Hedron Showcase
 
-Meet Hedron through a complete synthetic operations console instead of a collection of isolated
-snippets. The same product story is available in two forms:
-
-- **Run the real app** with FastAPI, real Hedron routes, server-rendered components, and a
-  CSRF-protected action.
-- **Try the offline simulation** below with `hedron-sim`; it needs no server and exercises the
-  documented fragment contracts in your browser.
+Meet Hedron through the complete synthetic operations console instead of a collection of isolated
+snippets. This page documents the real runnable application, so the UI you run locally is the UI
+represented here; there is no separate documentation-only showcase implementation.
 
 ## Run the real app
 
@@ -25,19 +21,10 @@ Open <http://127.0.0.1:8000/>. The data is synthetic and local, but the applicat
 are real: AppShell chrome, typed components, fragment refresh, an unsafe action, and ordinary
 FastAPI-compatible routing.
 
+The complete source is [`examples/showcase/app.py`](https://github.com/eddiethedean/hedron/blob/v1.0/examples/showcase/app.py).
+
 The built-in theme emits coordinated light/dark tokens and follows the browser color preference;
 the app shell and content grids collapse for narrow screens.
-
-## Explore the offline simulation
-
-The simulator pre-renders the same kind of component surfaces and intercepts the declared HTMX
-requests locally. Try refreshing the pipeline, filtering recent runs, approving the release, and
-inspecting the component surface map.
-
-<!-- hedron-sim:showcase-dashboard -->
-
-The simulation is intentionally not a replacement for the real app. It demonstrates the browser
-experience and request contracts without authentication, persistence, or a running worker.
 
 ## What this showcases
 

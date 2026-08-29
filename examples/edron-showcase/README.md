@@ -19,4 +19,6 @@ CSRF boundary, and Edron-to-runtime lowering are real.
 Edron's generated theme includes coordinated light/dark palettes that follow the browser
 preference, and its shell and column layouts collapse cleanly on narrow screens.
 
-For a serverless version, see the [interactive Edron Showcase](https://hedron.readthedocs.io/en/latest/examples/edron-showcase/).
+The documentation preview is generated from this same application with `edron-sim`; it does not
+maintain a second hand-authored simulator. The preview clock is intentionally fixed so generated
+docs remain reproducible.

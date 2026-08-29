@@ -19,6 +19,7 @@ from edron.diagnostics import source_location
 from edron.errors import BindingError, RegistrationError
 from edron.navigation import LayoutSpec, NavigationError, NavigationTarget
 from edron.page import Page
+from edron.simulation import AppSimulation
 
 MAX_EXPLANATION_PAGES = 256
 MAX_EXPLANATION_SURFACES = 64
@@ -128,6 +129,17 @@ class App:
     def native_surface(self, surface: Any) -> Any:
         """Resolve a registered Edron surface to its exact native projection."""
         return self._native_surface(surface)
+
+    def simulation(self, *, fixtures: Mapping[str, Any] | None = None) -> AppSimulation:
+        """Expose a bounded public callback boundary for simulation tooling.
+
+        The returned object invokes this app's actual registered pages,
+        fragments, and actions. It is intended for deterministic documentation
+        previews and tests; production traffic must continue through the ASGI
+        application so middleware, security policy, and dependency injection
+        remain authoritative.
+        """
+        return AppSimulation(self, fixtures=fixtures)
 
     def interaction(self, value: hedron.Interaction) -> hedron.Interaction:
         """Register and return one native Hedron 1.0 interaction declaration."""
@@ -503,6 +515,7 @@ class App:
             "title": title,
             "name": route_name,
             "show_title": show_title,
+            "dependencies": tuple(page_route_dependencies),
             "source": source_location(page_type) or source_location(render),
             "native": native_page,
         }

@@ -89,6 +89,7 @@ INDEPENDENT_SATELLITES = (
     "hedron-sample-kit",
     "hedron-notebook",
     "hedron-sim",
+    "edron-sim",
     "fastapi-workbench",
     "edron",
 )
@@ -297,6 +298,9 @@ def _check_package_metadata() -> list[str]:
         if distribution == "edron":
             if "hedron>=1.0.0,<2.0" not in joined:
                 errors.append("edron: Hedron dependency must require the canonical 1.x train")
+        elif distribution == "edron-sim":
+            if "edron>=1.0.0,<2.0" not in joined:
+                errors.append("edron-sim: Edron dependency must require the canonical 1.x train")
         elif distribution in PLUGIN_DEFINITION_SATELLITES:
             if "hedron-core>=1.0.0,<2.0" not in joined:
                 errors.append(f"{distribution}: composable plugins require hedron-core>=1.0.0,<2.0")

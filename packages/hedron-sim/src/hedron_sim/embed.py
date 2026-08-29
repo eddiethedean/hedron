@@ -88,6 +88,8 @@ def route_table(app: SimApp) -> dict[str, Any]:
             }
         if route.list_remove:
             entry["listRemove"] = True
+        if route.effects:
+            entry["effects"] = [dict(effect) for effect in route.effects]
         routes[key] = entry
     return {
         "demoId": app.demo_id or "hedron-sim",

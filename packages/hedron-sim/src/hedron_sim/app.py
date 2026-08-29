@@ -53,6 +53,8 @@ class SimRoute:
     """Handler that renders the empty list container (required with ``accumulate``)."""
     list_remove: bool = False
     """DELETE (or similar): remove one list item by ``data-hedron-sim-list-index``."""
+    effects: tuple[Mapping[str, Any], ...] = ()
+    """Deterministic client effects produced by an already-rendered route."""
 
     @property
     def key(self) -> str:
@@ -121,6 +123,7 @@ class SimApp:
         accumulate: str | None = None,
         empty: Handler | None = None,
         list_remove: bool = False,
+        effects: Sequence[Mapping[str, Any]] = (),
     ) -> Callable[[F], F]:
         """Register a fragment endpoint with an optional region allowlist."""
 
@@ -139,6 +142,7 @@ class SimApp:
                 accumulate=accumulate,
                 empty=empty,
                 list_remove=list_remove,
+                effects=tuple(dict(effect) for effect in effects),
             )
             self._register_route(route)
             return fn
@@ -169,6 +173,7 @@ class SimApp:
         accumulate: str | None = None,
         empty: Handler | None = None,
         list_remove: bool = False,
+        effects: Sequence[Mapping[str, Any]] = (),
     ) -> Callable[[F], F]:
         """Register a mutation endpoint (default POST) for form demos."""
         return self.fragment(
@@ -184,6 +189,7 @@ class SimApp:
             accumulate=accumulate,
             empty=empty,
             list_remove=list_remove,
+            effects=effects,
         )
 
     @property

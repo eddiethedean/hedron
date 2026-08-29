@@ -50,6 +50,10 @@ api = "stable"
 maturity = "beta"
 api = "beta"
 
+[packages.edron-sim]
+maturity = "beta"
+api = "beta"
+
 [packages.hedron-charts]
 maturity = "beta"
 api = "beta"

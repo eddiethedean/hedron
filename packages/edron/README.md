@@ -65,11 +65,12 @@ edron run app:app --reload
 The `app` object is a normal ASGI application. You can launch it with Edron's convenience command,
 Uvicorn, or your existing ASGI deployment stack.
 
-## Interactive showcase
+## Showcase
 
-Explore the [interactive Edron Showcase](https://hedron.readthedocs.io/en/latest/examples/edron-showcase/).
-Its runnable source uses only `edron`; the demo covers pages, layouts, fragments, actions, charts,
-tables, tabs, and outcomes without Hedron escape hatches.
+Run the [Edron Showcase](https://hedron.readthedocs.io/en/latest/examples/edron-showcase/)
+locally from the repository. Its documentation points to the same runnable source, which uses
+only `edron`; the app covers pages, layouts, fragments, actions, charts, tables, tabs, and
+outcomes without Hedron escape hatches.
 
 ## The programming model
 

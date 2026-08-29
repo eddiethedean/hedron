@@ -169,7 +169,6 @@ extra_css:
   - stylesheets/styling-guide.css
   - stylesheets/hello-refresh.css
   - stylesheets/hedron-sim.css
-  - stylesheets/showcase.css
 
 extra:
   generator: false

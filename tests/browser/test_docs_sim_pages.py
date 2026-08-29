@@ -100,18 +100,6 @@ _PAGES: tuple[tuple[str, str, str, str], ...] = (
         "GET /status → 200",
     ),
     (
-        "examples/showcase/index.html",
-        '[data-hedron-sim="showcase-dashboard"]',
-        'button:has-text("Refresh pipeline")',
-        "GET /pipeline/refresh → 200",
-    ),
-    (
-        "examples/edron-showcase/index.html",
-        '[data-hedron-sim="edron-showcase-dashboard"]',
-        'button:has-text("Refresh pipeline")',
-        "POST /pipeline/refresh → 200",
-    ),
-    (
         "guides/forms-and-actions/index.html",
         '[data-hedron-sim="forms-invite"]',
         'button:has-text("Send invite")',
@@ -153,11 +141,12 @@ _PAGES: tuple[tuple[str, str, str, str], ...] = (
         'button:has-text("Poll (other tenant)")',
         "404",
     ),
-)
-
-_SHOWCASE_PAGES: tuple[tuple[str, str], ...] = (
-    ("examples/showcase/index.html", '[data-hedron-sim="showcase-dashboard"]'),
-    ("examples/edron-showcase/index.html", '[data-hedron-sim="edron-showcase-dashboard"]'),
+    (
+        "examples/edron-showcase/index.html",
+        '[data-hedron-sim="edron-showcase"]',
+        'a:has-text("Deployments")',
+        "GET /deployments → 200",
+    ),
 )
 
 
@@ -288,46 +277,3 @@ def test_docs_sim_page_under_material(
             assert not leaked, f"{page_path} leaked mutating requests: {leaked}"
         finally:
             browser.close()
-
-
-@pytest.mark.parametrize("page_path,root_sel", _SHOWCASE_PAGES)
-def test_showcases_are_responsive_and_themeable(
-    docs_server: str,
-    page_path: str,
-    root_sel: str,
-) -> None:
-    """Both showcase islands must stack cleanly and honor light/dark docs modes."""
-    with sync_playwright() as pw:
-        browser = _launch(pw)
-        for color_scheme, expected_scheme in (("light", "light"), ("dark", "dark")):
-            page = browser.new_page(
-                viewport={"width": 390, "height": 844}, color_scheme=color_scheme
-            )
-            try:
-                page.goto(f"{docs_server}/{page_path}", wait_until="networkidle", timeout=60000)
-                page.wait_for_timeout(300)
-                values = page.evaluate(
-                    """(selector) => {
-                      const root = document.querySelector(selector);
-                      const shell = root?.querySelector('.showcase-shell');
-                      const nav = shell?.querySelector('.showcase-nav');
-                      const styles = shell ? getComputedStyle(shell) : null;
-                      return {
-                        scheme: document.body.dataset.mdColorScheme,
-                        columns: styles?.gridTemplateColumns,
-                        colorScheme: styles?.colorScheme,
-                        navDisplay: nav ? getComputedStyle(nav).display : null,
-                        scrollWidth: document.documentElement.scrollWidth,
-                        viewportWidth: window.innerWidth,
-                      };
-                    }""",
-                    root_sel,
-                )
-                assert values["scheme"] == ("default" if expected_scheme == "light" else "slate")
-                assert values["colorScheme"] == expected_scheme
-                assert values["navDisplay"] == "none"
-                assert len(values["columns"].split()) == 1
-                assert values["scrollWidth"] <= values["viewportWidth"]
-            finally:
-                page.close()
-        browser.close()

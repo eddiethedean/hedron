@@ -174,6 +174,7 @@ def _is_independent_version_package(project: dict[str, object]) -> bool:
         "hedron-sample-kit",
         "hedron-notebook",
         "hedron-sim",
+        "edron-sim",
         "hedron-posit",
         "edron",
     }:

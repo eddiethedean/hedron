@@ -175,12 +175,6 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
         "Docs simulation — click Refresh status for an HTMX-style fragment swap (no server).",
     ),
     (
-        "examples/edron-showcase.md",
-        "edron-showcase-dashboard",
-        "Full Edron operations console — pages, layouts, fragments, actions, charts, and outcomes. "
-        "Docs simulation.",
-    ),
-    (
         "getting-started/core-concepts.md",
         "core-concepts-modes",
         "Toggle the response shape — docs simulation only.",

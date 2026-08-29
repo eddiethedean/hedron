@@ -61,6 +61,7 @@ PACKAGE_IMPORTS = {
     "hedron-sim": "hedron_sim",
     "fastapi-workbench": "fastapi_workbench",
     "edron": "edron",
+    "edron-sim": "edron_sim",
 }
 
 SKIP_DIRS = frozenset(

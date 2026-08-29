@@ -22,7 +22,6 @@ _EXAMPLE_EXPECTED_SIMS: dict[str, frozenset[str]] = {
     "examples/file-upload.md": frozenset({"file-upload"}),
     "examples/jobs-poll.md": frozenset({"jobs-poll"}),
     "examples/single-file.md": frozenset({"hello-refresh"}),
-    "examples/edron-showcase.md": frozenset({"edron-showcase-dashboard"}),
     "examples/crud-tutorial.md": frozenset({"minimal-form", "mutations-htmx", "crud-notes"}),
     # The reference app uses HTTP Basic. Session-form auth is demonstrated only by
     # examples/session-auth, so embedding auth-login here would teach the wrong credentials.
@@ -111,6 +110,32 @@ def test_real_showcases_declare_light_and_dark_theme_modes(relative_path: str) -
     theme = module.THEME
     resolved = theme.to_theme() if hasattr(theme, "to_theme") else theme
     assert "dark" in resolved.modes
+
+
+@pytest.mark.parametrize(
+    ("relative_path", "source_path", "sim_id"),
+    (
+        ("examples/showcase.md", "examples/showcase/app.py", "showcase-dashboard"),
+        (
+            "examples/edron-showcase.md",
+            "examples/edron-showcase/app.py",
+            "edron-showcase-dashboard",
+        ),
+    ),
+)
+def test_showcase_docs_point_to_real_source_not_simulators(
+    relative_path: str,
+    source_path: str,
+    sim_id: str,
+) -> None:
+    text = (DOCS / relative_path).read_text(encoding="utf-8")
+    assert source_path in text
+    if sim_id == "edron-showcase-dashboard":
+        assert "<!-- hedron-sim:edron-showcase -->" in text
+        assert "edron-sim" in text
+    else:
+        assert sim_id not in text
+        assert "documentation-only showcase implementation" in text
 
 
 @pytest.mark.usefixtures("_docs_on_path")

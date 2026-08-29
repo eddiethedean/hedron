@@ -13,6 +13,7 @@ scripts here when you add them.
 | `smoke_workbench_adapter_docker.sh` | License-independent Linux smoke for mounted Workbench adapter behavior |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
+| `generate_edron_sim_showcase.py` | Regenerates the Edron showcase island from `examples/edron-showcase/app.py` via `edron-sim` (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` (updates root `STATUS.md`; forbids duplicate Hedron roadmap mirrors). CI: `--check` |
 | `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, contradictory 1.0 candidate/PyPI status, missing historical-release banners, unsafe pins, or charts/sample-kit installs missing the compatibility floors. CI: `docs` / `quality` |

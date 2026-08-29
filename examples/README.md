@@ -46,7 +46,8 @@ uv sync
 # then follow each example README
 ```
 
-Docs gallery demos on Read the Docs are **simulations**, not these servers. Matrix:
+Most gallery demos on Read the Docs are **simulations**, not these servers. The Hedron and Edron
+showcase pages intentionally link to and document the real applications above. Matrix:
 [runnable examples](https://hedron.readthedocs.io/en/latest/examples/runnable/).
 
 ## Docker

@@ -11,7 +11,6 @@ class-oriented page, layout, fragment, action, chart, and data vocabulary.
 from __future__ import annotations
 
 import os
-from datetime import datetime, timezone
 
 import edron as ed
 
@@ -182,4 +181,4 @@ class Settings(ShowcasePage):
             "Authentication, authorization, persistence, tenancy, and audit storage remain "
             "application responsibilities."
         )
-        self.caption(f"Rendered at {datetime.now(timezone.utc).strftime('%H:%M:%S UTC')}")
+        self.caption("Preview clock · 12:42:18 UTC · synthetic showcase data")

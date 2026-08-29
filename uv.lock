@@ -13,6 +13,7 @@ resolution-markers = [
 [manifest]
 members = [
     "edron",
+    "edron-sim",
     "fastapi-workbench",
     "hedron",
     "hedron-charts",
@@ -828,6 +829,21 @@ requires-dist = [
     { name = "vl-convert-python", marker = "extra == 'altair'", specifier = ">=1.0" },
 ]
 provides-extras = ["pandas", "polars", "pyarrow", "plotly", "altair", "matplotlib", "sqlalchemy"]
+
+[[package]]
+name = "edron-sim"
+version = "0.1.0"
+source = { editable = "packages/edron-sim" }
+dependencies = [
+    { name = "edron" },
+    { name = "hedron-sim" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "edron", editable = "packages/edron" },
+    { name = "hedron-sim", editable = "packages/hedron-sim" },
+]
 
 [[package]]
 name = "email-validator"
@@ -1745,6 +1761,7 @@ dev = [
     { name = "dask", extra = ["dataframe"] },
     { name = "django" },
     { name = "edron" },
+    { name = "edron-sim" },
     { name = "email-validator" },
     { name = "fastapi-workbench" },
     { name = "flask" },
@@ -1791,6 +1808,7 @@ dev = [
     { name = "waitress" },
 ]
 docs = [
+    { name = "edron-sim" },
     { name = "hedron-sim" },
     { name = "mkdocs" },
     { name = "mkdocs-material" },
@@ -1808,6 +1826,7 @@ dev = [
     { name = "dask", extras = ["dataframe"], specifier = ">=2024.1" },
     { name = "django", specifier = ">=5.2,<6" },
     { name = "edron", editable = "packages/edron" },
+    { name = "edron-sim", editable = "packages/edron-sim" },
     { name = "email-validator", specifier = ">=2.0" },
     { name = "fastapi-workbench", editable = "packages/fastapi-workbench" },
     { name = "flask", specifier = ">=3,<4" },
@@ -1853,6 +1872,7 @@ dev = [
     { name = "waitress", specifier = ">=3,<4" },
 ]
 docs = [
+    { name = "edron-sim", editable = "packages/edron-sim" },
     { name = "hedron-sim", editable = "packages/hedron-sim" },
     { name = "mkdocs", specifier = ">=1.6,<2" },
     { name = "mkdocs-material", specifier = ">=9.5,<9.7.2" },

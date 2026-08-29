@@ -164,16 +164,15 @@ package lowers into the exact Hedron application available as `app.native` / `ap
 | Operations | Static diagnostics, manifests, conformance reports, deployment profiles, build tooling, and observability hooks |
 | Extension | Feature packages, component packages, Web Components, Jinja/HDJ, and a framework-neutral core |
 
-[See the full interactive Hedron Showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/)
-powered by [`hedron-sim`](packages/hedron-sim/README.md). Explore a complete operations console
-with app chrome, metrics, process flow, tables, status surfaces, fragment refresh, a typed action,
-and an inspectable component map—entirely in the documentation site, without starting a server.
+[See the full Hedron Showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/)
+and run the same source locally. It is a complete operations console with app chrome, metrics,
+process flow, tables, status surfaces, fragment refresh, and a typed action.
 
 For the smallest first interaction, try the [Hello + Refresh demo](https://hedron.readthedocs.io/en/latest/examples/single-file/).
 
-Edron has its own [full interactive showcase](https://hedron.readthedocs.io/en/latest/examples/edron-showcase/)
+Edron has its own [full showcase](https://hedron.readthedocs.io/en/latest/examples/edron-showcase/)
 with pages, layouts, fragments, actions, charts, tables, tabs, themes, and outcomes. Its runnable
-source uses only `edron`, with no Hedron escape hatches.
+source uses only `edron`, with no Hedron escape hatches, and is the source represented in the docs.
 
 Hedron is not an ORM, identity provider, database, durable job queue, or hosted service. Your
 application owns authentication, authorization, persistence, transactions, tenancy, secrets,

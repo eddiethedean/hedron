@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate docs HTMX simulation islands from hedron-sim demos.
+"""Generate docs HTMX simulation islands from hedron-sim and edron-sim demos.
 
 Writes HTML snippets under ``docs/includes/sim/`` and syncs JS/CSS assets.
 """
@@ -37,7 +37,6 @@ def main(argv: list[str] | None = None) -> int:
     sys.path.insert(0, str(DOCS))
     from demos.components import COMPONENT_DEMO_BUILDERS, build_component_demo
     from demos.core_concepts import build_core_concepts_modes_demo
-    from demos.edron_showcase import build_edron_showcase_demo
     from demos.guides import (
         build_allowlist_403_demo,
         build_auth_login_demo,
@@ -58,11 +57,19 @@ def main(argv: list[str] | None = None) -> int:
     )
     from demos.hello_refresh import build_hello_refresh_demo
     from demos.maps import build_maps_layers_demo, build_maps_markers_demo
-    from demos.showcase import build_showcase_demo
 
     from hedron_sim.assets import copy_assets
 
     copy_assets(DOCS / "javascript", DOCS / "stylesheets")
+
+    # The Edron showcase is generated from its real application source by the
+    # package-specific builder. Keep it in this single docs-generation gate so
+    # normal docs checks catch drift in either simulator family.
+    from generate_edron_sim_showcase import main as generate_edron_showcase
+
+    edron_rc = generate_edron_showcase(["--check"] if args.check else [])
+    if edron_rc != 0:
+        return edron_rc
 
     demos = {
         "hello-refresh.html": build_hello_refresh_demo(
@@ -94,8 +101,6 @@ def main(argv: list[str] | None = None) -> int:
         "file-upload.html": build_file_upload_demo(),
         "pe-paths.html": build_pe_paths_demo(),
         "tenant-deny.html": build_tenant_deny_demo(),
-        "showcase-dashboard.html": build_showcase_demo(),
-        "edron-showcase-dashboard.html": build_edron_showcase_demo(),
         "maps-markers.html": build_maps_markers_demo(),
         "maps-layers.html": build_maps_layers_demo(),
     }
