@@ -284,8 +284,12 @@ jobs:
           mkdir -p dist
           for pyproject in packages/*/pyproject.toml; do
             pkg="$(basename "$(dirname "$pyproject")")"
-            if [ "$pkg" = "edron" ] || [ "$pkg" = "edron-sim" ]; then
-              echo "Skipping $pkg; publish it only from the Edron release workflow"
+            if [ "$pkg" = "edron" ]; then
+              echo "Skipping Edron; publish it only from edron-v* tags"
+              continue
+            fi
+            if [ "$pkg" = "edron-sim" ]; then
+              echo "Skipping edron-sim; publish it only from the Edron release workflow"
               continue
             fi
             echo "Building $pkg"
@@ -330,8 +334,12 @@ jobs:
           for pyproject in packages/*/pyproject.toml; do
             pkg_dir="$(dirname "$pyproject")"
             pkg="$(basename "$pkg_dir")"
-            if [ "$pkg" = "edron" ] || [ "$pkg" = "edron-sim" ]; then
-              echo "Skipping $pkg; publish it only from the Edron release workflow"
+            if [ "$pkg" = "edron" ]; then
+              echo "Skipping Edron; publish it only from edron-v* tags"
+              continue
+            fi
+            if [ "$pkg" = "edron-sim" ]; then
+              echo "Skipping edron-sim; publish it only from the Edron release workflow"
               continue
             fi
             read -r name pkg_version <<<"$(uv run --python 3.12 python - <<PY
