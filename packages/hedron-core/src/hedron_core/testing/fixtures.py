@@ -2,11 +2,37 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import asdict, dataclass, field, is_dataclass
-from typing import Any
+from typing import Any, TypeGuard, TypeVar, cast
 
 from hedron_core.csrf import redact_secret_like
+from hedron_core.typing_aliases import is_string_mapping
+
+FixtureT = TypeVar("FixtureT")
+
+
+def _is_string_tuple(value: object) -> TypeGuard[tuple[str, ...]]:
+    if not isinstance(value, tuple):
+        return False
+    return all(isinstance(item, str) for item in cast(tuple[object, ...], value))
+
+
+def _is_bool(value: object) -> TypeGuard[bool]:
+    return isinstance(value, bool)
+
+
+def _is_int(value: object) -> TypeGuard[int]:
+    return isinstance(value, int)
+
+
+def _is_bytes(value: object) -> TypeGuard[bytes]:
+    return isinstance(value, bytes)
+
+
+def _is_string(value: object) -> TypeGuard[str]:
+    return isinstance(value, str)
+
 
 __all__ = [
     "AuthPrincipal",
@@ -26,10 +52,10 @@ def _require_nonempty_str(name: str, value: object) -> str:
     return value
 
 
-def _require_mapping(name: str, value: object) -> Mapping[str, Any]:
-    if not isinstance(value, Mapping):
+def _require_mapping(name: str, value: object) -> Mapping[str, object]:
+    if not is_string_mapping(value):
         raise ValueError(f"{name} must be a mapping")
-    return value  # type: ignore[return-value]
+    return value
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,12 +64,12 @@ class AuthPrincipal:
 
     subject: str
     roles: tuple[str, ...] = ()
-    claims: Mapping[str, Any] = field(default_factory=dict)
+    claims: Mapping[str, object] = field(default_factory=dict[str, object])
     session_id: str | None = None
 
     def __post_init__(self) -> None:
         _require_nonempty_str("subject", self.subject)
-        if not isinstance(self.roles, tuple) or not all(isinstance(r, str) for r in self.roles):
+        if not _is_string_tuple(self.roles):
             raise ValueError("roles must be a tuple[str, ...]")
         _require_mapping("claims", self.claims)
         if self.session_id is not None:
@@ -65,7 +91,7 @@ class BrowserHintFixture:
             value = getattr(self, name)
             if value is not None:
                 _require_nonempty_str(name, value)
-        if not isinstance(self.embed, bool):
+        if not _is_bool(self.embed):
             raise ValueError("embed must be a bool")
 
 
@@ -74,14 +100,16 @@ class StoragePayload:
     """Namespaced browser-storage payload for non-secret preferences."""
 
     namespace: str
-    data: Mapping[str, Any] = field(default_factory=dict)
+    data: Mapping[str, object] = field(default_factory=dict[str, object])
     ttl_seconds: int | None = None
 
     def __post_init__(self) -> None:
         _require_nonempty_str("namespace", self.namespace)
         _require_mapping("data", self.data)
         if self.ttl_seconds is not None and (
-            not isinstance(self.ttl_seconds, int) or self.ttl_seconds < 0
+            not _is_int(self.ttl_seconds)
+            or isinstance(self.ttl_seconds, bool)
+            or self.ttl_seconds < 0
         ):
             raise ValueError("ttl_seconds must be a non-negative int")
 
@@ -99,7 +127,7 @@ class UploadFixture:
         _require_nonempty_str("filename", self.filename)
         _require_nonempty_str("content_type", self.content_type)
         _require_nonempty_str("field_name", self.field_name)
-        if not isinstance(self.content, (bytes, bytearray)):
+        if not _is_bytes(self.content):
             raise ValueError("content must be bytes")
 
 
@@ -117,7 +145,7 @@ class OidcCallbackStub:
         _require_nonempty_str("state", self.state)
         if self.error is None:
             _require_nonempty_str("code", self.code)
-        elif not isinstance(self.error, str) or not self.error.strip():
+        elif not _is_string(self.error) or not self.error.strip():
             raise ValueError("error must be a non-empty string when set")
         if self.nonce is not None:
             _require_nonempty_str("nonce", self.nonce)
@@ -135,7 +163,7 @@ class NamedConnectionFixture:
     name: str
     provider: str
     dsn: str | None = None
-    options: Mapping[str, Any] = field(default_factory=dict)
+    options: Mapping[str, object] = field(default_factory=dict[str, object])
 
     def __post_init__(self) -> None:
         _require_nonempty_str("name", self.name)
@@ -145,16 +173,17 @@ class NamedConnectionFixture:
         _require_mapping("options", self.options)
 
 
-def validate_fixture(obj: Any) -> Any:
+def validate_fixture(obj: FixtureT) -> FixtureT:
     """Re-run dataclass field checks; return ``obj`` on success."""
     if not is_dataclass(obj):
         raise TypeError(f"expected a fixture dataclass, got {type(obj)!r}")
     # Frozen dataclasses validate in __post_init__; reconstruct to re-check.
-    type(obj)(**asdict(obj))  # type: ignore[misc]
+    constructor = cast(Callable[..., object], type(obj))
+    constructor(**asdict(cast(Any, obj)))
     return obj
 
 
-def redact_secrets_for_failure(obj: Any) -> Any:
+def redact_secrets_for_failure(obj: object) -> object:
     """Redact secret-bearing keys for assertion failure output."""
     keys = frozenset(
         {
@@ -173,5 +202,5 @@ def redact_secrets_for_failure(obj: Any) -> Any:
         }
     )
     if is_dataclass(obj) and not isinstance(obj, type):
-        return redact_secret_like(asdict(obj), keys=keys)
+        return redact_secret_like(asdict(cast(Any, obj)), keys=keys)
     return redact_secret_like(obj, keys=keys)

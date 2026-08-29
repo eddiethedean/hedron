@@ -8,8 +8,10 @@ import shutil
 import sys
 from pathlib import Path
 
-from hedron.cli.commands.inspect import _accessibility_contract_for
-from hedron.cli.discovery import _find_component, _load_app, _registry_empty_hint
+from hedron.cli.commands.inspect import accessibility_contract_for
+from hedron.cli.discovery import find_component as _find_component
+from hedron.cli.discovery import load_app as _load_app
+from hedron.cli.discovery import registry_empty_hint as _registry_empty_hint
 
 
 def _assert_project_write_path(path: Path, *, cwd: Path) -> Path:
@@ -62,7 +64,7 @@ def _cmd_eject(args: argparse.Namespace) -> int:
             return 1
     out_dir.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
-    contract = _accessibility_contract_for(meta)
+    contract = accessibility_contract_for(meta)
     contract_path = out_dir / "accessibility_contract.json"
     if contract_path.exists() and not args.force:
         print(f"Refusing to overwrite {contract_path} (use --force)", file=sys.stderr)
@@ -170,3 +172,6 @@ def _cmd_eject_feature(args: argparse.Namespace) -> int:
         )
     )
     return 0
+
+
+cmd_eject = _cmd_eject

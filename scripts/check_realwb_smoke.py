@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""REALWB-030: Docker Workbench smoke evidence for hedron-workbench, hedron-posit, and fastapi-workbench.
+"""REALWB-030: Docker Workbench smoke evidence for the three integration packages.
 
 Default: validate redacted RESULT.log files (no Docker on every CI run).
 Live: ``--live`` or ``HEDRON_REALWB=1`` runs ``scripts/realwb_smoke.sh`` (current 2026.07.0 lane).

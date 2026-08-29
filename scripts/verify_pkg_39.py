@@ -161,7 +161,9 @@ def _workspace_version() -> str:
 def _check_versions(*, allow_planned: bool) -> None:
     version = _workspace_version()
     if allow_planned:
-        if version.startswith(("0.60.", "0.61.", "0.62.", "0.63.", "0.64.", "0.65.", "0.66.", "0.67.")):
+        if version.startswith(
+            ("0.60.", "0.61.", "0.62.", "0.63.", "0.64.", "0.65.", "0.66.", "0.67.")
+        ):
             print(f"ok: living tip {version} (0.39 allow-planned)")
             return
         if not (

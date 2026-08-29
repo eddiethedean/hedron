@@ -121,10 +121,10 @@ class BrowserContext:
     """
 
     url: str
-    cookies: Mapping[str, str] = field(default_factory=dict)
+    cookies: Mapping[str, str] = field(default_factory=dict[str, str])
     client_address: str | None = None
-    headers: Mapping[str, str] = field(default_factory=dict)
-    embedding: Mapping[str, str] = field(default_factory=dict)
+    headers: Mapping[str, str] = field(default_factory=dict[str, str])
+    embedding: Mapping[str, str] = field(default_factory=dict[str, str])
     # --- spoofable client-reported hints (never trust for authz) ---
     locale: str | None = None
     timezone: str | None = None
@@ -170,7 +170,7 @@ class BrowserContext:
         normalized: dict[str, str] = {}
         for key, value in headers.items():
             lower = str(key).lower()
-            if lower in _HEADER_SUBSET and value is not None:
+            if lower in _HEADER_SUBSET:
                 normalized[lower] = str(value)
 
         embedding = {k: normalized[k] for k in _EMBEDDING_HEADERS if k in normalized}
@@ -242,7 +242,7 @@ class BrowserStorage:
 
     def __init__(
         self,
-        namespace: str,
+        namespace: object,
         *,
         consent_granted: bool = False,
         unavailable: bool = False,
@@ -250,7 +250,7 @@ class BrowserStorage:
         max_bytes: int = 65_536,
         initial: Mapping[str, JsonValue] | None = None,
     ) -> None:
-        if not namespace or not isinstance(namespace, str):
+        if not isinstance(namespace, str) or not namespace:
             raise ValueError("BrowserStorage namespace must be a non-empty string")
         self.namespace = namespace
         self.consent_granted = consent_granted

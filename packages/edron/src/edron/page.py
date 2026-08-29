@@ -817,7 +817,7 @@ class Page:
         else:
             reference = getattr(value, "identifier", value)
             filename = filename or str(reference)
-        if reference is None or filename is None:
+        if reference is None:
             raise BindingError(
                 "download_button requires a Download or bytes value",
                 code="EDRON_DOWNLOAD_VALUE",

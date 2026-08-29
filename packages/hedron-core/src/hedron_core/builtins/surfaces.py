@@ -111,11 +111,7 @@ class AmbientLayer:
             (self.scale, ("sm", "md", "lg"), "scale"),
         ):
             require_choice(value, choices, label=label)
-        if (
-            isinstance(self.order, bool)
-            or not isinstance(self.order, int)
-            or not 0 <= self.order <= 8
-        ):
+        if isinstance(self.order, bool) or not 0 <= self.order <= 8:
             raise ValueError("AmbientLayer order must be an integer between 0 and 8")
 
 
@@ -148,9 +144,6 @@ class AmbientBackdrop(Component[AmbientBackdropProps]):
         require_choice(tone, ("accent", "muted", "neutral"), label="tone")
         require_choice(intensity, ("subtle", "soft"), label="intensity")
         resolved_layers = tuple(layers or ())
-        for layer in resolved_layers:
-            if not isinstance(layer, AmbientLayer):
-                raise TypeError("AmbientBackdrop layers must contain AmbientLayer values")
         if not resolved_layers:
             resolved_layers = (AmbientLayer(pattern=pattern, tone=tone, intensity=intensity),)
         super().__init__(

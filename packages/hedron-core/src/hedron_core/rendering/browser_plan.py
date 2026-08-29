@@ -6,8 +6,8 @@ from collections.abc import Iterable
 from typing import Protocol
 
 from hedron_core.alpine import (
-    _ALPINE_CORE_ASSET,
-    _HEDRON_BRIDGE_ASSET,
+    ALPINE_CORE_ASSET,
+    HEDRON_BRIDGE_ASSET,
     AlpineFeatureDemand,
     BrowserFeaturePlan,
     browser_assets_for_features,
@@ -26,7 +26,7 @@ class DefaultBrowserPlanBuilder:
         return BrowserFeaturePlan.from_demands(
             collected,
             assets=(
-                (_ALPINE_CORE_ASSET, _HEDRON_BRIDGE_ASSET)
+                (ALPINE_CORE_ASSET, HEDRON_BRIDGE_ASSET)
                 + browser_assets_for_features(demand.feature for demand in collected)
                 if collected
                 else ()

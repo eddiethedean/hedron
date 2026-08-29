@@ -127,7 +127,7 @@ class Diagnostic:
     remediation: str = ""
     owner: str | None = None
     component_id: str | None = None
-    context: Mapping[str, object] = field(default_factory=dict)
+    context: Mapping[str, object] = field(default_factory=dict[str, object])
     docs_url: str | None = None
     span: SourceSpan | None = None
     applicability: ApplicabilityInterval | None = None

@@ -8,9 +8,9 @@ preserved as typed JSON values (never silently stringified).
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import fields, is_dataclass
+from dataclasses import is_dataclass
 from enum import Enum
-from typing import Any, cast
+from typing import Protocol, TypeGuard, cast, runtime_checkable
 
 __all__ = [
     "EFFECT_GRAPH_SCHEMA",
@@ -27,6 +27,32 @@ _REDACTED = "<redacted>"
 _SKIP_ROUTE_KEYS = frozenset({"endpoint", "handler", "callable", "fn", "func"})
 
 
+def _is_object_sequence(value: object) -> TypeGuard[Sequence[object]]:
+    return isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray))
+
+
+@runtime_checkable
+class _RouteSource(Protocol):
+    def routes(self) -> Iterable[object]: ...
+
+
+@runtime_checkable
+class _MappingSource(Protocol):
+    def as_mapping(self) -> object: ...
+
+
+def _dataclass_mapping(value: object) -> dict[object, object]:
+    raw_fields: object = getattr(value, "__dataclass_fields__", {})
+    if not isinstance(raw_fields, Mapping):
+        return {}
+    field_names = cast(Mapping[object, object], raw_fields)
+    return {
+        name: getattr(value, name)
+        for name in field_names
+        if isinstance(name, str) and name not in _SKIP_ROUTE_KEYS
+    }
+
+
 def _is_redact_key(key: str) -> bool:
     lowered = str(key).lower().replace("-", "_")
     if lowered in _REDACT_TOKENS:
@@ -39,34 +65,27 @@ def _normalize_value(value: object) -> object:
     if value is None or isinstance(value, (bool, int, float, str)):
         return value
     if isinstance(value, Enum):
-        return value.value
+        return cast(object, value.value)
     if isinstance(value, Mapping):
-        return _normalize_mapping(value)
+        return _normalize_mapping(cast(Mapping[object, object], value))
     if isinstance(value, (list, tuple)):
-        return [_normalize_value(item) for item in value]
+        return [_normalize_value(item) for item in cast(Iterable[object], value)]
     if isinstance(value, (set, frozenset)):
-        items = [_normalize_value(item) for item in value]
+        items = [_normalize_value(item) for item in cast(Iterable[object], value)]
         return sorted(items, key=lambda item: repr(item))
     if callable(value):
         # Never invoke handlers; omit callables from the document.
         return None
     if is_dataclass(value) and not isinstance(value, type):
-        return _normalize_mapping(
-            {
-                f.name: getattr(value, f.name)
-                for f in fields(value)
-                if f.name not in _SKIP_ROUTE_KEYS
-            }
-        )
-    as_mapping = getattr(value, "as_mapping", None)
-    if callable(as_mapping):
-        mapped = as_mapping()
+        return _normalize_mapping(_dataclass_mapping(value))
+    if isinstance(value, _MappingSource):
+        mapped = value.as_mapping()
         if isinstance(mapped, Mapping):
-            return _normalize_mapping(mapped)
+            return _normalize_mapping(cast(Mapping[object, object], mapped))
     return value
 
 
-def _normalize_mapping(data: Mapping[Any, Any]) -> dict[str, object]:
+def _normalize_mapping(data: Mapping[object, object]) -> dict[str, object]:
     out: dict[str, object] = {}
     for raw_key, raw_value in data.items():
         key = str(raw_key)
@@ -82,40 +101,33 @@ def _normalize_mapping(data: Mapping[Any, Any]) -> dict[str, object]:
     return {key: out[key] for key in sorted(out)}
 
 
-def _iter_routes(routes: Sequence[Mapping[Any, Any]] | object) -> list[Mapping[Any, Any]]:
+def _iter_routes(routes: object) -> list[Mapping[object, object]]:
+    items: list[object]
     if isinstance(routes, Mapping):
-        if "routes" in routes and isinstance(routes["routes"], Sequence):
-            items = list(routes["routes"])
-        else:
-            items = [routes]
-    elif isinstance(routes, Sequence) and not isinstance(routes, (str, bytes, bytearray)):
+        mapping = cast(Mapping[object, object], routes)
+        nested = mapping.get("routes")
+        items = list(nested) if _is_object_sequence(nested) else [mapping]
+    elif _is_object_sequence(routes):
         items = list(routes)
+    elif isinstance(routes, _RouteSource):
+        items = list(routes.routes())
+    elif isinstance(routes, Iterable) and not isinstance(routes, (str, bytes, bytearray)):
+        items = list(cast(Iterable[object], routes))
     else:
-        routes_fn = getattr(routes, "routes", None)
-        if callable(routes_fn):
-            items = list(cast(Iterable[Any], routes_fn()))
-        elif isinstance(routes, Iterable) and not isinstance(routes, (str, bytes, bytearray)):
-            items = list(routes)
-        else:
-            items = [routes]
+        items = [routes]
 
-    out: list[Mapping[Any, Any]] = []
+    out: list[Mapping[object, object]] = []
     for item in items:
         if isinstance(item, Mapping):
-            out.append(item)
+            out.append(cast(Mapping[object, object], item))
         elif is_dataclass(item) and not isinstance(item, type):
-            out.append(
-                {
-                    f.name: getattr(item, f.name)
-                    for f in fields(item)
-                    if f.name not in _SKIP_ROUTE_KEYS
-                }
-            )
+            out.append(_dataclass_mapping(item))
         elif hasattr(item, "__dict__"):
+            attributes = cast(Mapping[str, object], vars(item))
             out.append(
                 {
                     key: value
-                    for key, value in vars(item).items()
+                    for key, value in attributes.items()
                     if not key.startswith("_") and key not in _SKIP_ROUTE_KEYS
                 }
             )
@@ -134,7 +146,7 @@ def _route_sort_key(route: Mapping[str, object]) -> tuple[str, str, str]:
     )
 
 
-def export_routes_document(routes: Sequence[Mapping[Any, Any]] | object) -> dict[str, object]:
+def export_routes_document(routes: object) -> dict[str, object]:
     """Build a versioned, deterministic, redacted route document.
 
     Nested dict/list metadata is preserved as typed values. Callables such as
@@ -148,41 +160,42 @@ def export_routes_document(routes: Sequence[Mapping[Any, Any]] | object) -> dict
     }
 
 
-def _iter_entries(entries: object) -> list[Mapping[Any, Any]]:
+def _iter_entries(entries: object) -> list[Mapping[object, object]]:
+    items: list[object]
     if isinstance(entries, Mapping):
-        if "entries" in entries and isinstance(entries["entries"], Sequence):
-            items = list(entries["entries"])
-        elif "nodes" in entries and isinstance(entries["nodes"], Sequence):
-            items = list(entries["nodes"])
+        mapping = cast(Mapping[object, object], entries)
+        nested_entries = mapping.get("entries")
+        nested_nodes = mapping.get("nodes")
+        if _is_object_sequence(nested_entries):
+            items = list(nested_entries)
+        elif _is_object_sequence(nested_nodes):
+            items = list(nested_nodes)
         else:
-            items = [entries]
-    elif isinstance(entries, Sequence) and not isinstance(entries, (str, bytes, bytearray)):
+            items = [mapping]
+    elif _is_object_sequence(entries):
         items = list(entries)
     else:
-        entries_map = getattr(entries, "entries", None)
+        entries_map: object = getattr(entries, "entries", None)
         if isinstance(entries_map, Mapping):
-            items = list(entries_map.values())
+            mapping = cast(Mapping[object, object], entries_map)
+            items = list(mapping.values())
         elif isinstance(entries, Iterable) and not isinstance(entries, (str, bytes, bytearray)):
-            items = list(entries)
+            items = list(cast(Iterable[object], entries))
         else:
             items = [entries]
 
-    out: list[Mapping[Any, Any]] = []
+    out: list[Mapping[object, object]] = []
     for item in items:
         if isinstance(item, Mapping):
-            out.append(item)
+            out.append(cast(Mapping[object, object], item))
+        elif isinstance(item, _MappingSource):
+            mapped = item.as_mapping()
+            if not isinstance(mapped, Mapping):
+                raise TypeError(f"entry.as_mapping() must return a mapping, got {type(mapped)!r}")
+            out.append(cast(Mapping[object, object], mapped))
         else:
-            as_mapping = getattr(item, "as_mapping", None)
-            if callable(as_mapping):
-                mapped = as_mapping()
-                if isinstance(mapped, Mapping):
-                    out.append(cast(Mapping[Any, Any], mapped))
-                else:
-                    raise TypeError(
-                        f"entry.as_mapping() must return a mapping, got {type(mapped)!r}"
-                    )
-            elif is_dataclass(item) and not isinstance(item, type):
-                out.append({f.name: getattr(item, f.name) for f in fields(item)})
+            if is_dataclass(item) and not isinstance(item, type):
+                out.append(_dataclass_mapping(item))
             else:
                 raise TypeError(
                     f"export_effect_graph expected catalog-like entries, got {type(item)!r}"
@@ -207,7 +220,8 @@ def export_effect_graph(entries: object) -> dict[str, object]:
             node["effect_state"] = _normalize_value(raw["effect_state"])
             node = {key: node[key] for key in sorted(node)}
         nodes.append(node)
-        for target in list(raw.get("declared_target_ids") or ()):
+        targets = raw.get("declared_target_ids")
+        for target in _object_items(targets):
             edges.append(
                 {
                     "from": node_id,
@@ -215,7 +229,8 @@ def export_effect_graph(entries: object) -> dict[str, object]:
                     "kind": "target",
                 }
             )
-        for outcome in list(raw.get("outcome_variant_ids") or ()):
+        outcomes = raw.get("outcome_variant_ids")
+        for outcome in _object_items(outcomes):
             edges.append(
                 {
                     "from": node_id,
@@ -230,3 +245,7 @@ def export_effect_graph(entries: object) -> dict[str, object]:
         "edges": edges,
         "nodes": nodes,
     }
+
+
+def _object_items(value: object) -> Sequence[object]:
+    return value if _is_object_sequence(value) else ()

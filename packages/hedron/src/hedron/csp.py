@@ -6,7 +6,7 @@ import json
 import random
 import secrets
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 __all__ = [
     "CspReporting",
@@ -138,26 +138,28 @@ def ingest_csp_report(
     }:
         return None
     try:
-        payload = json.loads(body.decode("utf-8"))
+        payload: object = json.loads(body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
         return None
     if ctype == "application/reports+json":
         if not isinstance(payload, list):
             return None
         reports: list[dict[str, Any]] = []
-        for item in payload:
-            if not isinstance(item, dict):
+        for item_value in cast(list[object], payload):
+            if not isinstance(item_value, dict):
                 continue
+            item = cast(dict[str, object], item_value)
             if item.get("type") != "csp-violation":
                 continue
             report = item.get("body")
             if isinstance(report, dict):
-                reports.append(_normalize_csp_report(report))
+                reports.append(_normalize_csp_report(cast(dict[str, Any], report)))
         return reports
-    report = payload.get("csp-report") if isinstance(payload, dict) else None
+    payload_mapping = cast(dict[str, object], payload) if isinstance(payload, dict) else {}
+    report = payload_mapping.get("csp-report")
     if not isinstance(report, dict):
-        report = payload if isinstance(payload, dict) else {}
-    return _normalize_csp_report(report)
+        report = payload_mapping
+    return _normalize_csp_report(cast(dict[str, Any], report))
 
 
 def _normalize_csp_report(report: dict[str, Any]) -> dict[str, Any]:

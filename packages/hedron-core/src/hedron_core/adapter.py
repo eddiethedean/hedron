@@ -76,7 +76,7 @@ class AuthSignal:
 class UrlReverseRequest:
     name: str
     args: tuple[Any, ...] = ()
-    kwargs: Mapping[str, JsonValue] = field(default_factory=dict)
+    kwargs: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
     root_path: str = ""
     script_name: str = ""
 

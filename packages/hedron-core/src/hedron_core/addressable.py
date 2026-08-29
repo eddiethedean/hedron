@@ -30,7 +30,7 @@ class AddressableDescriptor(Generic[P, R]):
     cache_private: bool = True
     tags: tuple[str, ...] = ()
     docs: str | None = None
-    extras: dict[str, object] = field(default_factory=dict)
+    extras: dict[str, object] = field(default_factory=dict[str, object])
 
     @property
     def registry_key(self) -> str:

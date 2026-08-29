@@ -42,8 +42,10 @@ class ExampleSet:
     code_version: str = "1"
     preprocessing_version: str = "1"
     page_size: int = 10
-    _items: list[ExampleItem] = field(default_factory=list, init=False)
-    _cache: dict[str, CachedExampleResult] = field(default_factory=dict, init=False)
+    _items: list[ExampleItem] = field(default_factory=list[ExampleItem], init=False)
+    _cache: dict[str, CachedExampleResult] = field(
+        default_factory=dict[str, CachedExampleResult], init=False
+    )
 
     def add(self, item: ExampleItem) -> None:
         self._items.append(item)

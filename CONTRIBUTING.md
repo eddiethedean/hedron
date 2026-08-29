@@ -47,6 +47,7 @@ git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync
 bash scripts/ci_checks.sh test --python 3.12
+bash scripts/ci_checks.sh typing --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
 # Full CI parity (long; skip browser locally if Playwright is not installed):
 # bash scripts/ci_checks.sh all --python 3.12 --skip-browser

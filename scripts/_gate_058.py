@@ -118,9 +118,7 @@ def accepted_contract_present() -> bool:
 
 def contract_refine_present() -> bool:
     decisions = DECISIONS.read_text(encoding="utf-8")
-    combined = "\n".join(
-        path.read_text(encoding="utf-8") for path in (RFC, IMPLEMENTATION, PACKET)
-    )
+    combined = "\n".join(path.read_text(encoding="utf-8") for path in (RFC, IMPLEMENTATION, PACKET))
     return (
         "| D-102 | Accepted |" in decisions
         and "| D-105 | Accepted |" in decisions

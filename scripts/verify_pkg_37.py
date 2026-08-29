@@ -128,7 +128,9 @@ def _check_living_tip(*, allow_planned: bool) -> None:
     data = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
     version = str(data.get("project", {}).get("version", "")).strip()
     if allow_planned:
-        if version.startswith(("0.60.", "0.61.", "0.62.", "0.63.", "0.64.", "0.65.", "0.66.", "0.67.")):
+        if version.startswith(
+            ("0.60.", "0.61.", "0.62.", "0.63.", "0.64.", "0.65.", "0.66.", "0.67.")
+        ):
             print(f"ok: living tip {version} (allow-planned)")
             return
         if not (

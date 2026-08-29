@@ -6,7 +6,7 @@ from collections.abc import Iterable, Iterator, Mapping
 from contextvars import ContextVar, Token
 from dataclasses import dataclass
 from types import MappingProxyType
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, cast
 
 from hedron_core.codes import (
     HED_EXT_0001,
@@ -178,7 +178,15 @@ class ExtensionSet:
 
     __slots__ = ("_ids", "_kind")
 
-    def __init__(self, ids: tuple[str, ...] = (), *, kind: Literal["unset", "empty", "declared"]):
+    _ids: tuple[str, ...]
+    _kind: Literal["unset", "empty", "declared"]
+
+    def __init__(
+        self,
+        ids: tuple[str, ...] = (),
+        *,
+        kind: Literal["unset", "empty", "declared"],
+    ) -> None:
         object.__setattr__(self, "_ids", ids)
         object.__setattr__(self, "_kind", kind)
 
@@ -382,7 +390,7 @@ def parse_htmx_extensions(value: object) -> ExtensionSet:
     if isinstance(value, str):
         return ExtensionSet.of((value,))
     if isinstance(value, Iterable):
-        items = tuple(value)
+        items = tuple(cast(Iterable[object], value))
         if not items:
             return ExtensionSet.empty()
         return ExtensionSet.of(str(item) for item in items)

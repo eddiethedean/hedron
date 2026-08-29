@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
@@ -55,7 +55,7 @@ def require_frame(*phases: str) -> Frame:
 
 
 @contextmanager
-def frame_context(frame: Frame) -> Iterator[Frame]:
+def frame_context(frame: Frame) -> Generator[Frame, None, None]:
     token = _current_frame.set(frame)
     try:
         yield frame

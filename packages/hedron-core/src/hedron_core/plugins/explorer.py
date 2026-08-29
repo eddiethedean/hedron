@@ -115,6 +115,12 @@ _providers: dict[str, ExplorerProvider] = {}
 _diagnostic_owners: dict[str, str] = {}
 _features: dict[str, FeatureManifest] = {}
 
+# Mutable registries are exposed only for the package compatibility façade and
+# transactional plugin-loader snapshots.
+panels_registry = _panels
+diagnostic_owners_registry = _diagnostic_owners
+features_registry = _features
+
 
 def register_feature(manifest: FeatureManifest) -> None:
     key = f"{manifest.plugin}:{manifest.name}"

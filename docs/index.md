@@ -31,7 +31,12 @@ All in Python.
   <span>Python UI</span>
   <span>FastAPI foundation</span>
   <span>Server-driven interactions</span>
+  <span>Zero-warning strict typing</span>
 </div>
+
+The `hedron-core` renderer and `hedron` FastAPI runtime are Pyright-strict and warning-free.
+That is a release gate, not a point-in-time badge: every commit and release must keep both
+complete package trees at zero diagnostics.
 
 <div class="hedron-choice-grid">
   <a class="hedron-choice" href="guides/streamlit-migration/">

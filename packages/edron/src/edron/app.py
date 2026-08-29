@@ -13,7 +13,7 @@ from pydantic import BaseModel
 import hedron
 from edron._internal import Frame, frame_context
 from edron.composition import MAX_PACKAGE_ASSETS, FeaturePackage, PackageConflictError
-from edron.dependencies import Dependency, Resource
+from edron.dependencies import Dependency, Resource, ResourceKind, ResourceScope
 from edron.descriptors import Action, BoundAction, BoundFragment, Fragment
 from edron.diagnostics import source_location
 from edron.errors import BindingError, RegistrationError
@@ -153,8 +153,8 @@ class App:
         name: str | Resource,
         factory: Callable[[], Any] | None = None,
         *,
-        kind: str = "custom",
-        scope: str = "application",
+        kind: ResourceKind = "custom",
+        scope: ResourceScope = "application",
         secret_refs: Mapping[str, str] | None = None,
         config: Mapping[str, object] | None = None,
         healthcheck: Callable[[Any], bool] | None = None,
@@ -176,8 +176,8 @@ class App:
             spec = Resource(
                 name=name,
                 factory=factory,
-                scope=scope,  # type: ignore[arg-type]
-                kind=kind,  # type: ignore[arg-type]
+                scope=scope,
+                kind=kind,
                 secret_refs=secret_refs or {},
                 config=config or {},
                 healthcheck=healthcheck,

@@ -9,7 +9,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 
 from hedron_core.jobs.auth import job_authorized, job_authorized_http
-from hedron_core.jobs.codec import _idempotency_scope_key, _legacy_idempotency_scope_key
+from hedron_core.jobs.codec import idempotency_scope_key, legacy_idempotency_scope_key
 from hedron_core.jobs.types import JobHandle, JobState, JobStatus
 from hedron_core.typing_aliases import JsonValue
 
@@ -17,7 +17,7 @@ from hedron_core.typing_aliases import JsonValue
 @dataclass
 class _JobRecord:
     status: JobStatus
-    payload: dict[str, JsonValue] = field(default_factory=dict)
+    payload: dict[str, JsonValue] = field(default_factory=dict[str, JsonValue])
     idempotency_key: str | None = None
     idempotency_scope_key: str | None = None
 
@@ -42,10 +42,10 @@ class InMemoryJobBackend:
         with self._lock:
             scoped: str | None = None
             if idempotency_key:
-                scoped = _idempotency_scope_key(
+                scoped = idempotency_scope_key(
                     idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
                 )
-                legacy_scoped = _legacy_idempotency_scope_key(
+                legacy_scoped = legacy_idempotency_scope_key(
                     idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
                 )
                 matched_scope = scoped

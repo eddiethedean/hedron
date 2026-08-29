@@ -41,7 +41,7 @@ class RequestBudget:
     """Monotonic nested ledger. Child views cannot reset parent counters."""
 
     limits: RequestBudgetLimits = field(default_factory=RequestBudgetLimits)
-    _used: dict[str, int] = field(default_factory=dict)
+    _used: dict[str, int] = field(default_factory=dict[str, int])
     _parent: RequestBudget | None = None
     _closed: bool = False
 

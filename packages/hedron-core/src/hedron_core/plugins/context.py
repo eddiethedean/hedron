@@ -130,6 +130,16 @@ class PluginContext:
     def on_shutdown(self, hook: Callable[[], None]) -> None:
         self._shutdown.append(hook)
 
+    @property
+    def startup_hooks(self) -> tuple[Callable[[], None], ...]:
+        """Return startup hooks in registration order."""
+        return tuple(self._startup)
+
+    @property
+    def shutdown_hooks(self) -> tuple[Callable[[], None], ...]:
+        """Return shutdown hooks in registration order."""
+        return tuple(self._shutdown)
+
     def register_projection_provider(self, provider: Any) -> None:
         from hedron_core.catalog import register_projection_provider
 

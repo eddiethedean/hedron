@@ -12,8 +12,9 @@ from flask import Flask, Request, Response
 from flask import session as flask_session
 from flask.typing import RouteCallable
 
-from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
+from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal, CapabilityRecord
 from hedron_core.component import Component, NodeLike
+from hedron_core.htmx_contract import HtmxContext
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
@@ -122,10 +123,12 @@ class HedronFlask:
         return app
 
     @property
-    def capabilities(self):
+    def capabilities(self) -> CapabilityRecord:
+        """Return the immutable capability declaration for the Flask adapter."""
         return FLASK_CAPABILITIES
 
-    def route(self, rule: str, **options: Any):
+    def route(self, rule: str, **options: Any) -> Callable[[RouteCallable], RouteCallable]:
+        """Delegate native route registration to the bound Flask application."""
         if self.flask is None:
             raise RuntimeError("HedronFlask.init_app(app) must be called before route()")
         return self.flask.route(rule, **options)
@@ -246,7 +249,13 @@ class HedronFlask:
         extra_headers: Mapping[str, str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-    ):
+    ) -> Response:
+        """Render a Hedron value as a synchronous Flask response.
+
+        Raises:
+            RuntimeError: If called from a running event loop. Async views must
+                await :meth:`respond_async` so component preparation is not lost.
+        """
         from hedron_core.async_bridge import running_loop
 
         if running_loop():
@@ -313,7 +322,7 @@ class HedronFlask:
         extra_headers: Mapping[str, str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
-    ):
+    ) -> Response:
         """Async-safe respond that awaits ``prepare_tree`` before rendering."""
         from hedron_core.prepare import prepare_tree
 
@@ -456,5 +465,6 @@ class HedronFlask:
         )
         return value
 
-    def htmx(self, request: Request):
+    def htmx(self, request: Request) -> HtmxContext:
+        """Parse the request's approved HTMX headers into a typed context."""
         return htmx_context(dict(request.headers))

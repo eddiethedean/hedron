@@ -67,9 +67,9 @@ def validate_production_interactions(
     path = Path(build_dir) / "interactions.json"
     if not path.is_file():
         if catalog.entries:
-            from hedron_core.catalog import _catalog_error
+            from hedron_core.catalog import catalog_error
 
-            raise _catalog_error(
+            raise catalog_error(
                 HED_CATALOG_0006,
                 title="Production interaction manifest missing",
                 explanation=f"Production mode requires {path} when handlers are registered.",

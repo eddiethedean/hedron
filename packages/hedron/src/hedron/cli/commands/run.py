@@ -60,3 +60,6 @@ def _cmd_run_app(args: argparse.Namespace) -> int:
         log_level="debug" if args.debug else "info",
     )
     return 0
+
+
+cmd_run_app = _cmd_run_app

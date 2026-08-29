@@ -139,4 +139,3 @@ def check_gate(gate_id: str) -> int:
             return code
     print(f"ok: {gate_id}")
     return 0
-

@@ -38,6 +38,7 @@ cd hedron
 uv sync
 # Preferred: same suites as GitHub Actions (scripts/ci_checks.sh)
 bash scripts/ci_checks.sh test --python 3.12
+bash scripts/ci_checks.sh typing --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
 # Or the individual tools:
 uv run ruff format --check packages tests examples
@@ -163,7 +164,8 @@ Issue labels and bite-sized tasks vary; prefer small PRs over RFC-scale first pa
 ## PR workflow
 
 1. Fork (or branch from `main`), keep the diff focused.
-2. Run the narrowest tests above locally, then `ruff` + `pyright` on touched packages.
+2. Run the narrowest tests above locally, then `ruff` and the warning-fatal
+   `bash scripts/ci_checks.sh typing --python 3.12` gate for runtime-package changes.
 3. Open a PR against `main`. Draft PRs are fine while CI is red; mark ready when green.
 4. Expect the CI jobs below. Fix failures before asking for review.
 
@@ -176,7 +178,7 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 |---|---|---|
 | `test` | `test` — `pytest -n auto` on Python 3.10–3.14 | Yes, unless **docs-only** |
 | `workbench-dependencies` | `workbench` — Workbench contract tests at minimum/latest Starlette/Uvicorn bounds | Yes, unless **docs-only** |
-| `quality` | `quality` — ruff, pyright, `verify_pkg_*`, wheel build + smoke, docs train SSOT, recipe/sim checks, `mkdocs build --strict` | Yes, unless **docs-only** (then the same job runs `docs` instead) |
+| `quality` | `quality` — ruff, workspace pyright, warning-fatal strict Pyright for `hedron-core` + `hedron`, `verify_pkg_*`, wheel build + smoke, docs train SSOT, recipe/sim checks, `mkdocs build --strict` | Yes, unless **docs-only** (then the same job runs `docs` instead) |
 | `quality` (docs-only) | `docs` — mkdocs, train SSOT, recipe/sim checks; **no** Rust toolchain and **no** `uv build --all-packages` | Docs-only PRs |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
 | `realwb` | `realwb` — REALWB-030 Docker smoke (skips when `PWB_LICENSE` unset) | Yes, unless **docs-only** or fork PR |

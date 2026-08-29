@@ -6,7 +6,7 @@ import colorsys
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
-from typing import cast
+from typing import TypeGuard, cast
 
 from hedron_core.codes import (
     HED_THEME_CONTRAST,
@@ -119,8 +119,16 @@ _LENGTH_VALUE = re.compile(r"^\d+(\.\d+)?(rem|em|px|%|vw|ch)$")
 _HEX_COLOR = re.compile(r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 
 
+def _is_string(value: object) -> TypeGuard[str]:
+    return isinstance(value, str)
+
+
+def _is_int(value: object) -> TypeGuard[int]:
+    return isinstance(value, int)
+
+
 def _validated_css_value(field_name: str, key: str, value: str) -> str:
-    if not isinstance(value, str) or not value.strip():
+    if not _is_string(value) or not value.strip():
         raise error(
             HED_THEME_INVALID,
             title="Invalid design-system value",
@@ -155,9 +163,10 @@ def _contract_names(value: object) -> set[str]:
     if isinstance(value, str):
         return {item for item in re.split(r"[\s,]+", value) if item}
     if isinstance(value, (tuple, list, set, frozenset)):
-        if any(not isinstance(item, str) or not item for item in value):
+        items = cast(tuple[object, ...] | list[object] | set[object] | frozenset[object], value)
+        if any(not isinstance(item, str) or not item for item in items):
             raise ValueError("element style contract names must be non-empty strings")
-        return set(value)
+        return cast(set[str], set(items))
     raise TypeError("element style contract entries must be strings or string collections")
 
 
@@ -316,18 +325,22 @@ class Theme:
 
     name: str
     tokens: Mapping[str, str]
-    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    palette: Mapping[str, str] = field(default_factory=dict)
+    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
+    variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
+    palette: Mapping[str, str] = field(default_factory=dict[str, str])
     density: str | None = None
-    shape: Mapping[str, str] = field(default_factory=dict)
+    shape: Mapping[str, str] = field(default_factory=dict[str, str])
     nav_width: str | None = None
     content_width: str | None = None
-    typography_features: Mapping[str, int] = field(default_factory=dict)
-    typography_role_features: Mapping[str, Mapping[str, int]] = field(default_factory=dict)
-    elevation: Mapping[str, str] = field(default_factory=dict)
+    typography_features: Mapping[str, int] = field(default_factory=dict[str, int])
+    typography_role_features: Mapping[str, Mapping[str, int]] = field(
+        default_factory=dict[str, Mapping[str, int]]
+    )
+    elevation: Mapping[str, str] = field(default_factory=dict[str, str])
     parent: str | None = None
-    accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
+    accessibility_modes: Mapping[str, Mapping[str, str]] = field(
+        default_factory=dict[str, Mapping[str, str]]
+    )
 
     def __post_init__(self) -> None:
         if not self.name or not self.name.replace("-", "").replace("_", "").isalnum():
@@ -339,7 +352,7 @@ class Theme:
             )
         validate_theme_tokens(self.tokens)
         for mode, values in self.modes.items():
-            if not isinstance(mode, str) or not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", mode):
+            if not _is_string(mode) or not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", mode):
                 raise error(
                     HED_THEME_INVALID,
                     title="Invalid theme mode name",
@@ -405,7 +418,7 @@ class Theme:
                     ),
                     remediation="Use tags such as 'tnum' or 'cv02'.",
                 )
-            if not isinstance(value, int) or isinstance(value, bool) or value < 0 or value > 99:
+            if not _is_int(value) or isinstance(value, bool) or value < 0 or value > 99:
                 raise error(
                     HED_THEME_INVALID,
                     title="Invalid OpenType feature value",
@@ -425,7 +438,7 @@ class Theme:
             for tag, value in features.items():
                 feature_name = f"{role}.{tag}"
                 if re.fullmatch(r"[A-Za-z0-9]{4}", str(tag)) is None or (
-                    not isinstance(value, int) or isinstance(value, bool) or value < 0 or value > 99
+                    not _is_int(value) or isinstance(value, bool) or value < 0 or value > 99
                 ):
                     raise error(
                         HED_THEME_INVALID,

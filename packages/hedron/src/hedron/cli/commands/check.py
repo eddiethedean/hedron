@@ -7,12 +7,15 @@ import ast
 import json
 import re
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
-from hedron.cli.discovery import _apply_project_discovery, _load_app
+from hedron.cli.discovery import apply_project_discovery as _apply_project_discovery
+from hedron.cli.discovery import load_app as _load_app
+from hedron_core.diagnostics import Diagnostic
 from hedron_core.registry import get_registry
-from hedron_core.typing_aliases import JsonObject
+from hedron_core.typing_aliases import JsonObject, is_object_list, is_string_mapping
 
 
 def _declared_selectors_for_routes() -> dict[str, set[str]]:
@@ -20,20 +23,26 @@ def _declared_selectors_for_routes() -> dict[str, set[str]]:
     declared: dict[str, set[str]] = {}
     for route in get_registry().routes():
         selectors: set[str] = set()
-        regions = getattr(route.endpoint, "_hedron_fragment_regions", None) or ()
+        raw_regions: object = getattr(route.endpoint, "_hedron_fragment_regions", None)
+        regions = (
+            cast(Sequence[object], raw_regions) if isinstance(raw_regions, (list, tuple)) else ()
+        )
         for region in regions:
-            selectors.add(region.selector)
-        inference = dict(getattr(route, "htmx_inference", {}) or {})
+            selector = getattr(region, "selector", None)
+            if isinstance(selector, str) and selector:
+                selectors.add(selector)
+        raw_inference: object = getattr(route, "htmx_inference", {})
+        inference = dict(raw_inference) if is_string_mapping(raw_inference) else {}
         raw = inference.get("fragment_regions")
-        if isinstance(raw, list):
+        if is_object_list(raw):
             for item in raw:
-                if isinstance(item, dict):
+                if is_string_mapping(item):
                     selector = item.get("selector")
                     if isinstance(selector, str) and selector:
                         selectors.add(selector)
-        elif isinstance(raw, dict):
-            for _rid, value in raw.items():
-                if isinstance(value, dict):
+        elif is_string_mapping(raw):
+            for value in raw.values():
+                if is_string_mapping(value):
                     selector = value.get("selector")
                     if isinstance(selector, str) and selector:
                         selectors.add(selector)
@@ -45,11 +54,11 @@ def _declared_selectors_for_routes() -> dict[str, set[str]]:
             import ast
 
             try:
-                parsed = ast.literal_eval(raw)
+                parsed: object = ast.literal_eval(raw)
             except (SyntaxError, ValueError):
                 parsed = {}
-            if isinstance(parsed, dict):
-                for _rid, value in parsed.items():
+            if is_string_mapping(parsed):
+                for value in parsed.values():
                     selector = str(value).split("|", 1)[0]
                     selectors.add(selector)
         if selectors:
@@ -104,7 +113,7 @@ def _scan_refresh_button_targets(base: Path) -> list[tuple[str, str | None, str 
     return findings
 
 
-def _check_htmx_region_mismatches(base: Path) -> list[Any]:
+def _check_htmx_region_mismatches(base: Path) -> list[Diagnostic]:
     """Detect RefreshButton hx-target that does not match declared route regions."""
     from hedron_core import DiagnosticSeverity
     from hedron_core.codes import HED_HTMX_0001
@@ -113,7 +122,7 @@ def _check_htmx_region_mismatches(base: Path) -> list[Any]:
     declared = _declared_selectors_for_routes()
     if not declared:
         return []
-    diags = []
+    diags: list[Diagnostic] = []
     for file_path, href, target, kind in _scan_refresh_button_targets(base):
         if not href or not target:
             continue
@@ -140,7 +149,7 @@ def _check_htmx_region_mismatches(base: Path) -> list[Any]:
     return diags
 
 
-def _ast_str_kw(node: Any, name: str) -> str | None:
+def _ast_str_kw(node: ast.Call, name: str) -> str | None:
     for kw in getattr(node, "keywords", ()):
         if (
             kw.arg == name
@@ -151,7 +160,7 @@ def _ast_str_kw(node: Any, name: str) -> str | None:
     return None
 
 
-def _ast_call_name(func: Any) -> str | None:
+def _ast_call_name(func: ast.expr) -> str | None:
     if isinstance(func, ast.Name):
         return func.id
     if isinstance(func, ast.Attribute):
@@ -243,14 +252,14 @@ def _scan_select_oob_and_oob_updates(
     return findings
 
 
-def _check_select_oob_conflicts(base: Path) -> list[Any]:
+def _check_select_oob_conflicts(base: Path) -> list[Diagnostic]:
     """Error when the same id is used with both ``select_oob`` and ``OobUpdate``."""
     from hedron_core import DiagnosticSeverity
     from hedron_core.codes import HED_HTMX_0002
     from hedron_core.diagnostics import make_diagnostic
     from hedron_core.interaction import conflicting_select_oob_targets
 
-    diags = []
+    diags: list[Diagnostic] = []
     for file_path, select_ids, oob_ids, unparsed in _scan_select_oob_and_oob_updates(base):
         select_oob = ",".join(f"#{item}" for item in sorted(select_ids))
         conflicts = conflicting_select_oob_targets(select_oob, oob_ids=oob_ids)
@@ -304,7 +313,7 @@ def _check_select_oob_conflicts(base: Path) -> list[Any]:
     return diags
 
 
-def _check_043_handles(base: Path, *, target_100: bool = False) -> list[Any]:
+def _check_043_handles(base: Path, *, target_100: bool = False) -> list[Diagnostic]:
     """IH-DX-006: duplicate mounts, stale paths, foreign handles, missing fallback, fan-out."""
     from hedron_core import DiagnosticSeverity
     from hedron_core.codes import (
@@ -316,7 +325,7 @@ def _check_043_handles(base: Path, *, target_100: bool = False) -> list[Any]:
     from hedron_core.diagnostics import make_diagnostic
     from hedron_core.updates import MAX_REFRESH_TARGETS, list_handle_descriptors
 
-    diags: list[Any] = []
+    diags: list[Diagnostic] = []
     # Apply the same safety checks to canonical 1.0 names while avoiding
     # duplicate transitional diagnostics during a target migration pass.
     view_decorator = "view" if target_100 else "refreshable"
@@ -432,7 +441,7 @@ def _check_043_handles(base: Path, *, target_100: bool = False) -> list[Any]:
     return diags
 
 
-def _check_044_type_authoring(base: Path) -> list[Any]:
+def _check_044_type_authoring(base: Path) -> list[Diagnostic]:
     """Static AST inspection never imports the target project."""
     from hedron_core import DiagnosticSeverity
     from hedron_core.codes import HED_TYPE_0004
@@ -440,7 +449,7 @@ def _check_044_type_authoring(base: Path) -> list[Any]:
     from hedron_core.type_schema import TYPE_SCHEMA_NAMESPACE, type_schema_from_descriptor
     from hedron_core.updates import descriptor_fingerprint, list_handle_descriptors
 
-    diags: list[Any] = []
+    diags: list[Diagnostic] = []
     for path in _iter_project_py_files(base):
         try:
             source = path.read_text(encoding="utf-8")
@@ -470,7 +479,7 @@ def _check_044_type_authoring(base: Path) -> list[Any]:
     return diags
 
 
-def _check_target_100(base: Path) -> list[Any]:
+def _check_target_100(base: Path) -> list[Diagnostic]:
     """Find 0.67 compatibility spellings without importing project code.
 
     The scanner delegates to the same warning registry used by executable
@@ -622,7 +631,7 @@ def _compat_info_diagnostics(
     base: Path,
     app: str | None,
     all_compat: bool,
-) -> list[Any]:
+) -> list[Diagnostic]:
     """Evergreen informational findings; adapter/extra notices are project-scoped (#54)."""
     from hedron_core import DiagnosticSeverity
     from hedron_core.diagnostics import make_diagnostic
@@ -715,7 +724,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
     app = None if static_target_100 else _load_app(args.app)
     base = Path(args.project or Path.cwd()).resolve()
     settings = _apply_project_discovery(base)
-    diags = []
+    diags: list[Diagnostic] = []
     explorer_diff: JsonObject | None = None
     try:
         from hedron_explorer.services.diff import explorer_diff_report
@@ -929,3 +938,11 @@ def _cmd_check(args: argparse.Namespace) -> int:
             print(json.dumps(explorer_diff, indent=2))
     # Exit on real findings only — evergreen INFORMATION never fails the gate.
     return 1 if meets_severity_threshold(diags, threshold) else 0
+
+
+cmd_check = _cmd_check
+check_htmx_region_mismatches = _check_htmx_region_mismatches
+check_select_oob_conflicts = _check_select_oob_conflicts
+compat_info_diagnostics = _compat_info_diagnostics
+compat_surface_active = _compat_surface_active
+registry_has_chart_surface = _registry_has_chart_surface

@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from hedron.cli.discovery import _load_app
+from hedron.cli.discovery import load_app as _load_app
 from hedron_core.catalog import compile_interaction_catalog
 from hedron_core.testgen import GENERATOR_VERSION, generate_interaction_tests
 
@@ -32,3 +32,6 @@ def _cmd_testgen(args: argparse.Namespace) -> int:
     else:
         print(source, end="")
     return 0
+
+
+cmd_testgen = _cmd_testgen

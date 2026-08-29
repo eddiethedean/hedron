@@ -11,9 +11,11 @@ class ThemeMeta:
     logical_id: str
     name: str
     tokens: Mapping[str, str]
-    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
+    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
+    variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
+    accessibility_modes: Mapping[str, Mapping[str, str]] = field(
+        default_factory=dict[str, Mapping[str, str]]
+    )
 
 
 def register_theme(

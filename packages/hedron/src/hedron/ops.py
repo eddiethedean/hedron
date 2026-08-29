@@ -70,8 +70,8 @@ def validate_proxy_trust(
 class ShutdownRegistry:
     """Ordered graceful shutdown for lifecycle resources."""
 
-    resources: list[LifecycleResource] = field(default_factory=list)
-    _callbacks: dict[str, Callable[[], None]] = field(default_factory=dict)
+    resources: list[LifecycleResource] = field(default_factory=list[LifecycleResource])
+    _callbacks: dict[str, Callable[[], None]] = field(default_factory=dict[str, Callable[[], None]])
 
     def register(self, resource: LifecycleResource, callback: Callable[[], None]) -> None:
         self.resources.append(resource)

@@ -10,9 +10,9 @@ from hedron.connections.registry import ClosableConnection as ClosableConnection
 from hedron.connections.registry import ConnectionKind as ConnectionKind
 from hedron.connections.registry import ConnectionRegistry as ConnectionRegistry
 from hedron.connections.registry import ConnectionSpec as ConnectionSpec
-from hedron.connections.registry import _dispose_instance_async as _dispose_instance_async
 from hedron.connections.registry import bind_connection_fixture as bind_connection_fixture
 from hedron.connections.registry import connection_dependency as connection_dependency
+from hedron.connections.registry import dispose_instance_async
 from hedron.connections.registry import get_connection as get_connection
 from hedron.connections.registry import install_connections as install_connections
 from hedron.connections.snowflake import (
@@ -21,6 +21,8 @@ from hedron.connections.snowflake import (
 from hedron.connections.sqlalchemy import (
     sqlalchemy_connection_factory as sqlalchemy_connection_factory,
 )
+
+_dispose_instance_async = dispose_instance_async
 
 __all__ = [
     "ClosableConnection",

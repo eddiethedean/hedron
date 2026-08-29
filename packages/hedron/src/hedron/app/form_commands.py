@@ -10,9 +10,10 @@ from typing import (
     Any,
     Literal,
     ParamSpec,
+    Protocol,
     TypeAlias,
     TypeGuard,
-    TypeVar,
+    cast,
     get_args,
     get_origin,
     get_type_hints,
@@ -38,10 +39,23 @@ __all__ = [
 ]
 
 P = ParamSpec("P")
-R = TypeVar("R")
 
 FormEncoding = Literal["urlencoded", "multipart", "auto"]
 SafeLocalPath: TypeAlias = str
+
+
+class _ActionApp(Protocol):
+    def action(
+        self,
+        path: str,
+        *,
+        name: str | None,
+        fallback: SafeLocalPath,
+        dependencies: Sequence[object] | None,
+        outcomes: object | None,
+    ) -> Callable[[Callable[..., object]], ActionHandle[Any, Any]]: ...
+
+
 Update: TypeAlias = FragmentHandle[Any, Any] | BoundFragment[Any]
 
 _FORM_COMMAND_CONTROLS: dict[str, Mapping[str, Control | NodeLike]] = {}
@@ -155,7 +169,7 @@ def inject_form_body(
     # The explicit tuple form keeps dynamic metadata expansion valid on Python 3.10.
     new_annotation = Annotated[(model, marker, *rest)]
     signature = inspect.signature(fn)
-    params = []
+    params: list[inspect.Parameter] = []
     for parameter in signature.parameters.values():
         if parameter.name == name:
             params.append(parameter.replace(annotation=new_annotation))
@@ -182,7 +196,7 @@ def form_command(
     encoding: FormEncoding = "urlencoded",
     controls: Mapping[str, Control | NodeLike] | None = None,
     dependencies: Sequence[object] | None = None,
-) -> Callable[[Callable[P, R]], ActionHandle[Any, Any]]:
+) -> Callable[[Callable[P, object]], ActionHandle[Any, Any]]:
     """Decorator factory that discovers a form model and registers via ``app.action``."""
     if not is_local_path(str(fallback)):
         raise error(
@@ -192,7 +206,7 @@ def form_command(
             remediation="Use a path starting with '/' and no scheme/host (same as redirect_local).",
         )
 
-    def decorator(fn: Callable[P, R]) -> ActionHandle[Any, Any]:
+    def decorator(fn: Callable[P, object]) -> ActionHandle[Any, Any]:
         _reject_effect_conflicts(
             fn,
             refreshes=refreshes,
@@ -214,7 +228,7 @@ def form_command(
         if outcomes is not None and getattr(annotated, "__hedron_outcomes__", None) is None:
             setattr(annotated, "__hedron_outcomes__", outcomes)  # noqa: B010
 
-        register = app.action(  # type: ignore[attr-defined]
+        register = cast(_ActionApp, app).action(
             path,
             name=name,
             fallback=fallback,
@@ -367,7 +381,7 @@ def _is_injected(parameter: inspect.Parameter, annotation: object) -> bool:
 
     if isinstance(parameter.default, DependsOn):
         return True
-    _, metadata = _split_annotated(annotation)
+    _, metadata = _split_annotated(cast(object, annotation))
     if any(isinstance(item, DependsParam) for item in metadata):
         return True
     return any(isinstance(item, DependsOn) for item in metadata)

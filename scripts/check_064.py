@@ -210,8 +210,10 @@ def check_integrate() -> None:
 
 def check_csp() -> None:
     text = (
-        ROOT / "packages/hedron/src/hedron/static/ext/hedron.js"
-    ).read_text(encoding="utf-8").lower()
+        (ROOT / "packages/hedron/src/hedron/static/ext/hedron.js")
+        .read_text(encoding="utf-8")
+        .lower()
+    )
     for forbidden in (
         "eval(",
         "new function",

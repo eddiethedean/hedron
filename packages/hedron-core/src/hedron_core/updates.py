@@ -18,7 +18,6 @@ from hedron_core.codes import (
     HED_UPDATE_0005,
     HED_UPDATE_0006,
     HED_UPDATE_0007,
-    HED_UPDATE_0008,
     HED_UPDATE_0009,
     HED_VIEW_0001,
     HED_VIEW_0003,
@@ -86,10 +85,14 @@ _INSTANCE_TOKEN_RE = re.compile(r"^[a-z2-7]{20}$")
 
 HandleKind = Literal["view", "command"]
 EffectKnowledge = Literal["dynamic", "observed", "declared"]
-ContentT = TypeVar("ContentT")
+ContentT = TypeVar("ContentT", covariant=True)
 
 _DESCRIPTORS: dict[tuple[str, str], BaseHandleDescriptor] = {}
 _KEYS: dict[tuple[str, str], str] = {}
+
+
+def _empty_extensions() -> dict[str, Mapping[str, JsonValue]]:
+    return {}
 
 
 def normalize_logical_id(name: str) -> str:
@@ -239,7 +242,7 @@ class BaseHandleDescriptor:
             "max_patch_targets": MAX_PATCH_TARGETS,
         }
     )
-    extensions: Mapping[str, Mapping[str, JsonValue]] = field(default_factory=dict)
+    extensions: Mapping[str, Mapping[str, JsonValue]] = field(default_factory=_empty_extensions)
 
     def __post_init__(self) -> None:
         frozen_limits = dict(self.limits)
@@ -393,7 +396,8 @@ def _canonical_params(parameters: Mapping[str, object]) -> dict[str, object]:
     redacted = redact_value(dict(parameters))
     if not isinstance(redacted, dict):
         return {}
-    return {str(key): redacted[key] for key in sorted(redacted)}
+    mapping = cast(dict[object, object], redacted)
+    return {str(key): mapping[key] for key in sorted(mapping, key=str)}
 
 
 def structural_bind(plan: BindingPlan, values: Mapping[str, object], *, path: str) -> BoundValues:
@@ -516,13 +520,6 @@ class PatchSet:
     cache: CacheHint | None = "vary-htmx"
 
     def __post_init__(self) -> None:
-        if self.primary is None:
-            raise error(
-                HED_UPDATE_0008,
-                title="Missing primary patch",
-                explanation="PatchSet requires one primary patch.",
-                remediation="Pass the primary update as the first positional patch.",
-            )
         targets = [self.primary, *self.secondary]
         if len(targets) > MAX_PATCH_TARGETS:
             raise error(
@@ -755,7 +752,7 @@ def compile_to_interaction(value: object, *, expected_app_id: str | None = None)
     if isinstance(value, RefreshIntent):
         return _compile_refresh(value, expected_app_id)
     if isinstance(value, Patch):
-        return _compile_patches(PatchSet(primary=value), expected_app_id)
+        return _compile_patches(PatchSet(primary=cast(Patch[object], value)), expected_app_id)
     if isinstance(value, PatchSet):
         return _compile_patches(value, expected_app_id)
     return value

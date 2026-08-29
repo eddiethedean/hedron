@@ -5,15 +5,16 @@ from __future__ import annotations
 import asyncio
 import inspect
 import time
-from collections.abc import Awaitable, Callable, Mapping, Sequence
+from collections.abc import Awaitable, Callable, Sequence
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any, TypeVar
+from typing import TypeVar, cast
 
 from hedron_core.compat import StrEnum
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
-from hedron_core.html import _NativeElement
+from hedron_core.html import NativeElement
+from hedron_core.models import Props
 
 __all__ = [
     "PartialFailurePolicy",
@@ -60,14 +61,16 @@ class PrepareContext:
     deadline: float | None = None
     cancel_event: asyncio.Event | None = None
     partial_failure: PartialFailurePolicy = PartialFailurePolicy.FAIL_FAST
-    cache: dict[str, Any] = field(default_factory=dict)
-    timings: list[PrepareTiming] = field(default_factory=list)
+    cache: dict[str, object] = field(default_factory=dict[str, object])
+    timings: list[PrepareTiming] = field(default_factory=list[PrepareTiming])
     disconnect_capable: bool = False
-    trace_span: Any | None = None
+    trace_span: object | None = None
     # Injectable clock for ControllableClock / scenario tests (ASYNC-TEST-013).
     clock: Callable[[], float] = field(default_factory=lambda: time.monotonic)
     _cancelled: bool = field(default=False, init=False, repr=False)
-    _inflight: dict[str, asyncio.Future[Any]] = field(default_factory=dict, init=False, repr=False)
+    _inflight: dict[str, asyncio.Future[object]] = field(
+        default_factory=dict[str, asyncio.Future[object]], init=False, repr=False
+    )
 
     def remaining(self, *, now: float | None = None) -> float | None:
         if self.deadline is None:
@@ -105,20 +108,19 @@ class PrepareContext:
         async def _resolve() -> T:
             self.check()
             if key in self.cache:
-                return self.cache[key]  # type: ignore[no-any-return]
+                return cast(T, self.cache[key])
             loop = asyncio.get_running_loop()
-            fut: asyncio.Future[Any] = loop.create_future()
+            fut: asyncio.Future[object] = loop.create_future()
             existing = self._inflight.setdefault(key, fut)
             if existing is not fut:
-                return await asyncio.shield(existing)  # type: ignore[no-any-return]
+                return cast(T, await asyncio.shield(existing))
             try:
-                value = factory()
-                if inspect.isawaitable(value):
-                    value = await value  # type: ignore[assignment]
+                produced = factory()
+                value = await produced if inspect.isawaitable(produced) else produced
                 self.cache[key] = value
                 if not fut.done():
                     fut.set_result(value)
-                return value  # type: ignore[return-value]
+                return cast(T, value)
             except BaseException as exc:
                 if not fut.done():
                     fut.set_exception(exc)
@@ -135,35 +137,33 @@ def reset_prepare_for_tests() -> None:
 
 
 def collect_prepare_targets(
-    value: NodeLike, *, _seen: set[int] | None = None
-) -> list[Component[Any]]:
+    value: object, *, _seen: set[int] | None = None
+) -> list[Component[Props]]:
     """Depth-first collect components that define prepare()."""
-    seen = _seen if _seen is not None else set()
-    targets: list[Component[Any]] = []
+    seen = _seen if _seen is not None else set[int]()
+    targets: list[Component[Props]] = []
     if isinstance(value, Component):
-        obj_id = id(value)
+        component = cast(Component[Props], value)
+        obj_id = id(component)
         if obj_id in seen:
             return targets
         seen.add(obj_id)
-        prepare_fn = type(value).prepare
-        if prepare_fn is not Component.prepare:
-            targets.append(value)
-        children: Sequence[NodeLike] = getattr(value, "_children", ())
-        for child in children:
+        if component.has_prepare_override():
+            targets.append(component)
+        for child in component.child_nodes:
             targets.extend(collect_prepare_targets(child, _seen=seen))
-        slots: Mapping[str, NodeLike | list[NodeLike]] = getattr(value, "_slot_values", {})
-        for slot_value in slots.values():
+        for slot_value in component.slot_values.values():
             if isinstance(slot_value, list):
                 for item in slot_value:
                     targets.extend(collect_prepare_targets(item, _seen=seen))
             else:
                 targets.extend(collect_prepare_targets(slot_value, _seen=seen))
         return targets
-    if isinstance(value, (list, tuple)):
-        for item in value:
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
+        for item in cast(Sequence[object], value):
             targets.extend(collect_prepare_targets(item, _seen=seen))
         return targets
-    if isinstance(value, _NativeElement):
+    if isinstance(value, NativeElement):
         for child in value.children:
             targets.extend(collect_prepare_targets(child, _seen=seen))
     return targets
@@ -174,7 +174,7 @@ async def prepare_tree(
     *,
     context: PrepareContext | None = None,
     concurrency_limit: int | None = None,
-    run: Callable[[Awaitable[Any]], Awaitable[Any]] | None = None,
+    run: Callable[[Awaitable[object]], Awaitable[object]] | None = None,
 ) -> PrepareContext:
     """Run optional prepare() hooks before sync render.
 
@@ -195,7 +195,7 @@ async def prepare_tree(
             else None
         )
 
-        async def _run_one(component: Component[Any]) -> None:
+        async def _run_one(component: Component[Props]) -> None:
             logical = component.logical_id()
             started = ctx.clock()
             cancelled = False

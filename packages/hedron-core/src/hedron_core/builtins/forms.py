@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import ClassVar, Literal
+from typing import ClassVar, Literal, cast
 
 from hedron_core.alpine import AlpineAttrs
 from hedron_core.builtins._base import class_names, collect_children, dom_id_part
 from hedron_core.builtins.style_scope import presentation_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.csrf_strategy import CsrfTokenProvider, resolve_csrf_field_values
-from hedron_core.html import html
+from hedron_core.html import NativeElement, html
 from hedron_core.htmx.attrs import Hx as Hx
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.models import Props
@@ -204,7 +204,8 @@ class FormField(Component[FormFieldProps]):
         }
 
         if isinstance(control, Component):
-            props = control.props
+            component = cast(Component[Props], control)
+            props = component.props
             updates: dict[str, object] = {}
             fields = props.__class__.model_fields
             # Always force the label's for= target onto the control when possible.
@@ -224,17 +225,7 @@ class FormField(Component[FormFieldProps]):
             if "aria_required" in fields and aria["required"] is not None:
                 updates["aria_required"] = aria["required"]
             new_props = props.model_copy(update=updates) if updates else props
-            # Reconstruct a shallow copy of the control with updated props.
-            bound = control.__class__.__new__(control.__class__)
-            Component.__init__(bound, new_props)
-            # Preserve non-props instance state used by built-ins (options, etc.).
-            for attr_name, attr_value in vars(control).items():
-                if attr_name in {"_props", "_children", "_slot_values", "_key"}:
-                    continue
-                setattr(bound, attr_name, attr_value)
-            bound._children = control._children
-            bound._slot_values = dict(control._slot_values)
-            bound._key = control._key
+            bound = component.copy_with_props(new_props)
             # Prefer returning the Component so identity/cycle checks still run.
             # Only fall back to HTML attribute merge when the control has no id/aria props.
             applied_via_props = "id" in fields and any(
@@ -302,12 +293,10 @@ class FormField(Component[FormFieldProps]):
     def _apply_aria(
         self, node: NodeLike, aria: dict[str, HtmlAttrValue], *, element_id: str | None = None
     ) -> NodeLike:
-        from hedron_core.html import _NativeElement
-
-        if not isinstance(node, _NativeElement):
+        if not isinstance(node, NativeElement):
             return node
 
-        def merge_attrs(el: _NativeElement) -> _NativeElement:
+        def merge_attrs(el: NativeElement) -> NativeElement:
             attrs = dict(el.attributes)
             if element_id is not None:
                 attrs["id"] = element_id
@@ -321,12 +310,12 @@ class FormField(Component[FormFieldProps]):
 
         # Prefer applying aria to the interactive control inside wrappers (e.g. Checkbox).
         if node.tag == "div" and node.children:
-            new_children = []
+            new_children: list[NodeLike] = []
             applied = False
             for child in node.children:
                 if (
                     not applied
-                    and isinstance(child, _NativeElement)
+                    and isinstance(child, NativeElement)
                     and child.tag in {"input", "select", "textarea", "button"}
                 ):
                     new_children.append(merge_attrs(child))
@@ -547,7 +536,7 @@ class Select(Component[SelectProps]):
         self._source = source
 
     def render(self) -> NodeLike:
-        opts = []
+        opts: list[NodeLike] = []
         for val, label in self._options:
             attrs: dict[str, HtmlAttrValue] = {"value": val}
             if self._value is not None and self._value == val:
@@ -672,7 +661,7 @@ class RadioGroup(Component[RadioGroupProps]):
         self._value = value
 
     def render(self) -> NodeLike:
-        inputs = []
+        inputs: list[NodeLike] = []
         group_id = self.props.id or (
             f"field-{dom_id_part(self.props.name)}-{self.render_instance_id()[2:10]}"
         )

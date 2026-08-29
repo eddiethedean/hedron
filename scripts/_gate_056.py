@@ -127,9 +127,18 @@ def run_pytest(paths: list[str]) -> int:
     python = str(venv_python) if venv_python.is_file() else sys.executable
     env = os.environ.copy()
     env.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "")
-    command = [python, "-m", "pytest", "-q", "--tb=short", "-n", "0", "-p", "no:cacheprovider", *paths]
-    # Prefer uv-run isolation when available so system site-packages cannot break evidence.
-    uv = ROOT / ".venv" / "bin" / "uv"
+    command = [
+        python,
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-n",
+        "0",
+        "-p",
+        "no:cacheprovider",
+        *paths,
+    ]
     if (ROOT / ".venv" / "bin" / "pytest").is_file():
         command = [
             str(venv_python),

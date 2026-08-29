@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Generic, Literal, ParamSpec, TypeAlias
+from typing import Any, Generic, Literal, ParamSpec, TypeAlias, cast
 
 from hedron_core.builtins.document import Page
 from hedron_core.builtins.layout import Grid, Stack
@@ -43,7 +43,7 @@ class ScreenHandle(Generic[P]):
     handler: Callable[..., Any]
     shell: AppShell | None = None
     navigation: tuple[ScreenHandle[Any], ...] = ()
-    page_options: Mapping[str, object] = field(default_factory=dict)
+    page_options: Mapping[str, object] = field(default_factory=dict[str, object])
     __wrapped__: Callable[..., Any] | None = None
 
     @property
@@ -243,7 +243,7 @@ def _coerce_bounded_nodes(result: object) -> list[NodeLike]:
         )
     if isinstance(result, Sequence):
         try:
-            items = list(result)
+            items = list(cast(Sequence[object], result))
         except TypeError as exc:
             raise error(
                 HED_SCREEN_0003,
@@ -251,7 +251,7 @@ def _coerce_bounded_nodes(result: object) -> list[NodeLike]:
                 explanation="Screen sequences must be bounded and materializable.",
                 remediation="Return a list or tuple of nodes.",
             ) from exc
-        return list(items)
+        return cast(list[NodeLike], items)
     return [result]  # type: ignore[list-item]
 
 

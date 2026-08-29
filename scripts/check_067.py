@@ -276,9 +276,24 @@ def check_plan() -> list[str]:
             for item in directives.get(key, [])
         }
         expected_directives = {
-            "x-data", "x-init", "x-show", "x-bind", "x-on", "x-text", "x-html",
-            "x-model", "x-modelable", "x-for", "x-transition", "x-effect", "x-ignore",
-            "x-ref", "x-cloak", "x-teleport", "x-if", "x-id",
+            "x-data",
+            "x-init",
+            "x-show",
+            "x-bind",
+            "x-on",
+            "x-text",
+            "x-html",
+            "x-model",
+            "x-modelable",
+            "x-for",
+            "x-transition",
+            "x-effect",
+            "x-ignore",
+            "x-ref",
+            "x-cloak",
+            "x-teleport",
+            "x-if",
+            "x-id",
         }
         _require(
             declared_directives == expected_directives,
@@ -289,9 +304,7 @@ def check_plan() -> list[str]:
     _require(isinstance(plugins, dict), "capability inventory requires plugin groups", findings)
     if isinstance(plugins, dict):
         plugin_names = {
-            str(item)
-            for key in ("required", "progressive")
-            for item in plugins.get(key, [])
+            str(item) for key in ("required", "progressive") for item in plugins.get(key, [])
         }
         _require(
             plugin_names

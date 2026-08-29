@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass, field
 from datetime import date, datetime, timezone
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from hedron_core.compat import tomllib
 from hedron_core.security_plane import CONFORMANCE_PROFILE_VERSION, SecurityPolicy
@@ -31,10 +32,10 @@ class PostureFinding:
 class PostureReport:
     profile_version: str
     policy_profile: str
-    findings: list[PostureFinding] = field(default_factory=list)
-    unknowns: list[str] = field(default_factory=list)
-    suppressions: list[dict[str, Any]] = field(default_factory=list)
-    baseline_drift: list[str] = field(default_factory=list)
+    findings: list[PostureFinding] = field(default_factory=list[PostureFinding])
+    unknowns: list[str] = field(default_factory=list[str])
+    suppressions: list[dict[str, Any]] = field(default_factory=list[dict[str, Any]])
+    baseline_drift: list[str] = field(default_factory=list[str])
     conformance_status: str = "unknown"
 
     def redacted_dict(self) -> dict[str, Any]:
@@ -52,9 +53,14 @@ class PostureReport:
 def _load_suppressions(path: Path | None) -> list[dict[str, Any]]:
     if path is None or not path.is_file():
         return []
-    data = json.loads(path.read_text(encoding="utf-8"))
-    rows = data.get("suppressions", []) if isinstance(data, dict) else data
-    return [row for row in rows if isinstance(row, dict)]
+    decoded: object = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(decoded, dict):
+        rows: object = cast(dict[str, object], decoded).get("suppressions", [])
+    else:
+        rows = decoded
+    if not isinstance(rows, list):
+        return []
+    return [cast(dict[str, Any], row) for row in cast(list[object], rows) if isinstance(row, dict)]
 
 
 def _suppression_active(row: dict[str, Any], *, today: date) -> bool:
@@ -128,8 +134,16 @@ def collect_posture(
     visible = [finding for finding in findings if finding.id not in suppressed_ids]
     drift: list[str] = []
     if baseline_path and baseline_path.is_file():
-        baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
-        baseline_fps = set(baseline.get("fingerprints", []))
+        baseline_value: object = json.loads(baseline_path.read_text(encoding="utf-8"))
+        baseline = (
+            cast(dict[str, object], baseline_value) if isinstance(baseline_value, dict) else {}
+        )
+        fingerprints = baseline.get("fingerprints", [])
+        baseline_fps = (
+            {str(item) for item in cast(Sequence[object], fingerprints)}
+            if isinstance(fingerprints, Sequence) and not isinstance(fingerprints, (str, bytes))
+            else set[str]()
+        )
         current_fps = {
             finding.fingerprint for finding in visible if finding.severity in {"error", "warning"}
         }
@@ -151,11 +165,14 @@ def collect_posture(
     conformance_status = "unknown"
     if inventory.is_file():
         data = tomllib.loads(inventory.read_text(encoding="utf-8"))
-        dispositions = [
-            str(row.get("disposition", ""))
-            for row in data.get("control", [])
-            if isinstance(row, dict)
-        ]
+        controls: object = data.get("control", [])
+        dispositions = []
+        if isinstance(controls, list):
+            dispositions = [
+                str(cast(dict[str, object], row).get("disposition", ""))
+                for row in cast(list[object], controls)
+                if isinstance(row, dict)
+            ]
         if dispositions and all(d in {"covered", "tightened"} for d in dispositions):
             conformance_status = "inventory_complete"
         else:
@@ -262,3 +279,6 @@ def _cmd_security_check(args: argparse.Namespace) -> None:
             for item in report.baseline_drift:
                 print(f"  - {item}")
     raise SystemExit(exit_code_for(report, strict=bool(args.strict)))
+
+
+cmd_security_check = _cmd_security_check

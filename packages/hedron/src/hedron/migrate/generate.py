@@ -6,6 +6,7 @@ import json
 import re
 import tempfile
 from pathlib import Path
+from typing import cast
 
 from hedron.migrate.findings import plan_to_diagnostics
 from hedron.migrate.ir import StreamlitCall, StreamlitMigrationPlan
@@ -50,8 +51,10 @@ explorer = "off"
 
 def _select_options(call: StreamlitCall) -> list[str]:
     options = call.args_summary.get("arg1")
-    if isinstance(options, list) and all(isinstance(x, str) for x in options):
-        return list(options)
+    if isinstance(options, list) and all(
+        isinstance(item, str) for item in cast(list[object], options)
+    ):
+        return cast(list[str], options)
     return ["All"]
 
 

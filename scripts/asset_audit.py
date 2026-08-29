@@ -49,7 +49,9 @@ def main() -> int:
                 continue
             got = f"sha256-{hashlib.sha256(asset.read_bytes()).hexdigest()}"
             if got != ext.digest:
-                errors.append(f"{ext.name} digest mismatch at {asset}: got {got}, expected {ext.digest}")
+                errors.append(
+                    f"{ext.name} digest mismatch at {asset}: got {got}, expected {ext.digest}"
+                )
         if ext.deferred and ext.name != "htmx-ext-idiomorph":
             errors.append(f"{ext.name} must not be deferred unless it is the excluded morph pin")
 

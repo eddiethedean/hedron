@@ -5,7 +5,7 @@ from __future__ import annotations
 import contextlib
 import contextvars
 import re
-from collections.abc import Iterator
+from collections.abc import Generator
 
 from hedron_core.security.urls import nfkc_strip_format
 
@@ -54,7 +54,7 @@ def reset_htmx_eval_allowed(token: contextvars.Token[bool]) -> None:
 
 
 @contextlib.contextmanager
-def allow_htmx_eval(enabled: bool = True) -> Iterator[None]:
+def allow_htmx_eval(enabled: bool = True) -> Generator[None, None, None]:
     """Temporarily allow (or deny) ``js:`` on ``hx-vals`` / ``hx-headers`` (HDJ ``htmx.eval``)."""
     token = _allow_htmx_eval.set(enabled)
     try:

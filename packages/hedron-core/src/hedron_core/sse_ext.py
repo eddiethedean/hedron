@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Sequence
 from typing import ClassVar
 
 from hedron_core.builtins._base import collect_children
@@ -154,7 +153,7 @@ class SseTrigger(Component[SseTriggerProps]):
         super().__init__(
             SseTriggerProps(event=token, href=url, target=selector, swap=swap, **kwargs)
         )
-        self._children: Sequence[NodeLike] = collect_children(*children)
+        self._children = collect_children(*children)
 
     def render(self) -> NodeLike:
         require_htmx_extension("sse")

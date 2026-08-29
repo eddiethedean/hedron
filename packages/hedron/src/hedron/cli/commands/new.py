@@ -6,10 +6,10 @@ import argparse
 import sys
 from pathlib import Path
 
-from hedron.cli.scaffold.django import _scaffold_django
-from hedron.cli.scaffold.element import _scaffold_element
-from hedron.cli.scaffold.fastapi import _scaffold_fastapi
-from hedron.cli.scaffold.flask import _scaffold_flask
+from hedron.cli.scaffold.django import scaffold_django as _scaffold_django
+from hedron.cli.scaffold.element import scaffold_element as _scaffold_element
+from hedron.cli.scaffold.fastapi import scaffold_fastapi as _scaffold_fastapi
+from hedron.cli.scaffold.flask import scaffold_flask as _scaffold_flask
 
 
 def _contains_only_project_venv(dest: Path) -> bool:
@@ -86,3 +86,6 @@ def _cmd_new_element(args: argparse.Namespace) -> int:
         return 1
     dest.mkdir(parents=True, exist_ok=True)
     return _scaffold_element(name, dest)
+
+
+cmd_new = _cmd_new

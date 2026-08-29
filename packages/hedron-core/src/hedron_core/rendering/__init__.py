@@ -30,7 +30,7 @@ __all__ = [
 _RenderState = RenderState
 
 
-def _normalize(
+def normalize_compat(
     value: NodeLike,
     state: _RenderState,
     *,
@@ -39,17 +39,22 @@ def _normalize(
     return NodeNormalizer(state).normalize(value, depth=depth)
 
 
-def _reject_generator(value: object) -> None:
+def reject_generator_compat(value: object) -> None:
     reject_generator(value)
 
 
-def _serialize_result(
+def serialize_result_compat(
     value: NodeLike,
     nodes: tuple[Node, ...],
     context: RenderContext,
     mode: RenderMode,
 ) -> str:
     return serialize_result(value, nodes, context, mode)
+
+
+_normalize = normalize_compat
+_reject_generator = reject_generator_compat
+_serialize_result = serialize_result_compat
 
 
 def warn(state: _RenderState, code: str, title: str, explanation: str) -> None:

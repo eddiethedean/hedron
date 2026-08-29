@@ -8,6 +8,7 @@
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh workbench [--python 3.12]
 #   scripts/ci_checks.sh docs [--python 3.12]
+#   scripts/ci_checks.sh typing [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12] [--skip-wheels]
 #   scripts/ci_checks.sh browser [--python 3.12]
 #   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.37.0]
@@ -21,7 +22,7 @@
 #   browser (Chromium; pass --all-browsers for main-branch matrix) → realwb →
 #   realconnect → evidence → packaging
 #
-# Independent checks inside a suite run concurrently (ruff / pyright / docs;
+# Independent checks inside a suite run concurrently (ruff / pyright / strict package types / docs;
 # workbench bounds; evidence bundle vs verifiers). Wheel smoke and verify-pkgs
 # stay sequential after those jobs so `uv build` / `uv run` cannot race the
 # project .venv. Suite order in `all` stays sequential for the same reason.
@@ -337,6 +338,15 @@ quality_pyright() {
   run_uv pyright
 }
 
+quality_strict_package_types() {
+  # Pyright normally exits successfully when it reports warning-severity strict
+  # diagnostics. `--warnings` turns the warning-free hedron-core + hedron
+  # baseline into a ratchet: any new diagnostic fails commit and release CI.
+  run_uv pyright --warnings \
+    packages/hedron-core/src/hedron_core \
+    packages/hedron/src/hedron
+}
+
 quality_wheels_smoke() {
   # Fresh dist avoids conflicting train wheels on local re-runs.
   # Wheel-only: the smoke venv installs `dist/*.whl`; sdists are unused.
@@ -522,6 +532,11 @@ cmd_docs() {
   quality_docs
 }
 
+cmd_typing() {
+  resolve_python
+  quality_strict_package_types
+}
+
 cmd_quality() {
   job_pool_init
   resolve_python
@@ -530,6 +545,7 @@ cmd_quality() {
   # with pyright / docs.
   start_job ruff quality_ruff
   start_job pyright quality_pyright
+  start_job strict-package-types quality_strict_package_types
   start_job core-neutral quality_core_neutral
   start_job docs quality_docs
   wait_jobs
@@ -809,6 +825,7 @@ case "$SUITE" in
   test) cmd_test ;;
   workbench) cmd_workbench ;;
   docs) cmd_docs ;;
+  typing) cmd_typing ;;
   quality) cmd_quality ;;
   browser) cmd_browser ;;
   evidence) cmd_evidence ;;

@@ -83,7 +83,7 @@ class SecurityPolicy:
     intent_required: bool = False
     posture_strict: bool = False
     request_budget_limits: RequestBudgetLimits | None = None
-    egress_allow_hosts: frozenset[str] = field(default_factory=frozenset)
+    egress_allow_hosts: frozenset[str] = field(default_factory=frozenset[str])
     egress_deny_by_default: bool = True
 
     @staticmethod

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 __all__ = [
     "AccessibilityFinding",
@@ -20,7 +21,7 @@ class AccessibilityTreeNode:
     role: str
     name: str = ""
     tag: str = ""
-    state: dict[str, str] = field(default_factory=dict)
+    state: dict[str, str] = field(default_factory=dict[str, str])
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,10 +47,10 @@ class AccessibilityScenario:
     """Vocabulary for structured accessibility evidence steps."""
 
     name: str
-    steps: list[str] = field(default_factory=list)
+    steps: list[str] = field(default_factory=list[str])
     covers: tuple[str, ...] = ()
-    engine_versions: dict[str, str] = field(default_factory=dict)
-    findings: list[AccessibilityFinding] = field(default_factory=list)
+    engine_versions: dict[str, str] = field(default_factory=dict[str, str])
+    findings: list[AccessibilityFinding] = field(default_factory=list[AccessibilityFinding])
 
     def add_step(self, step: str) -> None:
         self.steps.append(step)
@@ -184,15 +185,16 @@ def _node_location_uri(node: object) -> str | None:
         return node or None
     if not isinstance(node, dict):
         return None
-    target = node.get("target")
+    mapping = cast(dict[str, object], node)
+    target = mapping.get("target")
     if isinstance(target, list) and target:
-        return str(target[0])
+        return str(cast(list[object], target)[0])
     if isinstance(target, str) and target:
         return target
-    html = node.get("html")
+    html = mapping.get("html")
     if isinstance(html, str) and html:
         return html[:200]
-    summary = node.get("failureSummary")
+    summary = mapping.get("failureSummary")
     if isinstance(summary, str) and summary:
         return summary[:200]
     return None
@@ -207,14 +209,14 @@ _SARIF_LEVELS = {
 
 
 def axe_to_sarif(
-    violations: list[dict[str, Any]],
+    violations: Sequence[Mapping[str, object]],
     *,
     tool_name: str = "axe-core",
     tool_version: str = "pinned",
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Stable SARIF 2.1.0 provenance for axe findings (TEST-019)."""
-    results = []
-    rules: dict[str, dict[str, Any]] = {}
+    results: list[dict[str, object]] = []
+    rules: dict[str, dict[str, object]] = {}
     for item in violations:
         rule_id = str(item.get("id") or item.get("rule_id") or "unknown")
         impact = str(item.get("impact") or "moderate").lower()
@@ -231,8 +233,10 @@ def axe_to_sarif(
                 "properties": {"axe_impact": impact},
             },
         )
-        locations = []
-        for node in (item.get("nodes") or [])[:5]:
+        locations: list[dict[str, object]] = []
+        raw_nodes = item.get("nodes")
+        nodes = cast(Sequence[object], raw_nodes) if isinstance(raw_nodes, (list, tuple)) else ()
+        for node in nodes[:5]:
             selector = _node_location_uri(node)
             if not selector:
                 continue

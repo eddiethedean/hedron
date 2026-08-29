@@ -14,7 +14,7 @@ from hedron_core.registry import ComponentMeta, get_registry
 
 
 @lru_cache(maxsize=1)
-def _release_pin_bounds() -> tuple[str, str]:
+def release_pin_bounds() -> tuple[str, str]:
     """Return ``(pin_floor, pin_ceiling)`` for scaffold dependency pins.
 
     Prefer ``docs/release.toml`` when running from a monorepo checkout. Fall back to
@@ -52,12 +52,12 @@ def _next_minor_ceiling(package_version: str) -> str:
     return f"{major}.{minor + 1}"
 
 
-def _scaffold_dep(package: str) -> str:
-    floor, ceiling = _release_pin_bounds()
+def scaffold_dep(package: str) -> str:
+    floor, ceiling = release_pin_bounds()
     return f"{package}>={floor},<{ceiling}"
 
 
-def _load_app(app_path: str | None) -> Any | None:
+def load_app(app_path: str | None) -> Any | None:
     if not app_path:
         return None
     if ":" not in app_path:
@@ -90,7 +90,7 @@ def _should_invoke_app_factory(target: Any) -> bool:
     return True
 
 
-def _registry_empty_hint(*, app: str | None, what: str) -> None:
+def registry_empty_hint(*, app: str | None, what: str) -> None:
     if app:
         return
     registry = get_registry()
@@ -103,7 +103,7 @@ def _registry_empty_hint(*, app: str | None, what: str) -> None:
     )
 
 
-def _apply_project_discovery(base: Path | None = None) -> HedronSettings:
+def apply_project_discovery(base: Path | None = None) -> HedronSettings:
     """Load settings, discover folders, and optionally load configured plugins."""
     from hedron.config import load_hedron_settings
     from hedron.plugins import load_plugins
@@ -122,7 +122,7 @@ def _apply_project_discovery(base: Path | None = None) -> HedronSettings:
     return settings
 
 
-def _find_component(name: str) -> ComponentMeta | None:
+def find_component(name: str) -> ComponentMeta | None:
     registry = get_registry()
     aliases = {"NavLink": "HtmxLink"}
     wanted = {name, aliases.get(name, name)}
@@ -132,3 +132,11 @@ def _find_component(name: str) -> ComponentMeta | None:
         if any(c.logical_id.endswith(f".{alias}") for alias in wanted):
             return c
     return None
+
+
+_release_pin_bounds = release_pin_bounds
+_scaffold_dep = scaffold_dep
+_load_app = load_app
+_registry_empty_hint = registry_empty_hint
+_apply_project_discovery = apply_project_discovery
+_find_component = find_component

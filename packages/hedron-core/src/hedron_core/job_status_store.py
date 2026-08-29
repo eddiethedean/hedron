@@ -6,17 +6,17 @@ import json
 import secrets
 import time
 from collections.abc import Iterable, Mapping
-from typing import Any, cast
+from typing import cast
 
 from typing_extensions import TypeIs
 
 from hedron_core.jobs.auth import job_authorized, job_authorized_http
 from hedron_core.jobs.backend import RedisClient, RedisPipeline
 from hedron_core.jobs.codec import (
-    _idempotency_scope_key,
-    _legacy_idempotency_scope_key,
-    _status_from_dict,
-    _status_to_dict,
+    idempotency_scope_key,
+    legacy_idempotency_scope_key,
+    status_from_dict,
+    status_to_dict,
 )
 from hedron_core.jobs.types import JobHandle, JobState, JobStatus
 from hedron_core.typing_aliases import JsonObject, JsonValue
@@ -26,29 +26,30 @@ def _is_json_value(value: object) -> TypeIs[JsonValue]:
     if value is None or isinstance(value, (str, int, float, bool)):
         return True
     if isinstance(value, list):
-        return all(_is_json_value(item) for item in value)
+        return all(_is_json_value(item) for item in cast(list[object], value))
     if isinstance(value, dict):
-        return all(isinstance(key, str) and _is_json_value(item) for key, item in value.items())
+        mapping = cast(dict[object, object], value)
+        return all(isinstance(key, str) and _is_json_value(item) for key, item in mapping.items())
     return False
 
 
 def _as_json_object(value: object) -> JsonObject:
-    if isinstance(value, dict) and all(
-        isinstance(key, str) and _is_json_value(item) for key, item in value.items()
-    ):
+    if _is_json_value(value) and isinstance(value, dict):
         return value
     if isinstance(value, Mapping):
+        mapping = cast(Mapping[object, object], value)
         return {
-            str(key): (item if _is_json_value(item) else str(item)) for key, item in value.items()
+            str(key): (item if _is_json_value(item) else str(item)) for key, item in mapping.items()
         }
     return {}
 
 
 def _loads_object(raw: str) -> dict[str, object]:
-    data = json.loads(raw)
-    if not isinstance(data, dict):
+    data: object = json.loads(raw)
+    if not isinstance(data, Mapping):
         return {}
-    return {str(key): value for key, value in data.items()}
+    mapping = cast(Mapping[object, object], data)
+    return {str(key): value for key, value in mapping.items()}
 
 
 def _as_float(value: object, default: float = 0.0) -> float:
@@ -65,8 +66,8 @@ def _as_float(value: object, default: float = 0.0) -> float:
 
 
 def _payload_mapping(value: object) -> Mapping[str, JsonValue] | None:
-    if isinstance(value, dict):
-        return _as_json_object(value)
+    if isinstance(value, Mapping):
+        return _as_json_object(cast(Mapping[object, object], value))
     return None
 
 
@@ -215,7 +216,7 @@ class RedisStatusStore:
         tenant_id: str | None,
         auth_subject: str | None,
     ) -> str:
-        scoped = _idempotency_scope_key(
+        scoped = idempotency_scope_key(
             idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
         )
         return f"{self._prefix}idem:{scoped}"
@@ -223,7 +224,7 @@ class RedisStatusStore:
     def _decode(self, raw: bytes | str | None) -> str | None:
         return _decode_redis(raw)
 
-    def _load(self, job_id: str) -> dict[str, object] | None:
+    def load(self, job_id: str) -> dict[str, object] | None:
         raw = self._decode(self._client.get(self._key(job_id)))
         if raw is None:
             return None
@@ -279,8 +280,8 @@ class RedisStatusStore:
                 if raw is None:
                     pipe.unwatch()
                     return False
-                current = json.loads(raw)
-                if float(current.get("updated_at", -1)) != float(expected_updated_at):
+                current = _loads_object(raw)
+                if _as_float(current.get("updated_at"), default=-1.0) != expected_updated_at:
                     pipe.unwatch()
                     return False
                 merged = dict(data)
@@ -337,7 +338,7 @@ class RedisStatusStore:
 
     def delete(self, job_id: str) -> None:
         """Remove a job body and any idempotency pointer it owns."""
-        data = self._load(job_id)
+        data = self.load(job_id)
         self._client.delete(self._key(job_id))
         if data is None:
             return
@@ -345,7 +346,7 @@ class RedisStatusStore:
 
     def release_idempotency(self, job_id: str) -> None:
         """Drop the idempotency pointer if it still names ``job_id`` (keep the job body)."""
-        data = self._load(job_id)
+        data = self.load(job_id)
         if data is None:
             return
         self._release_idempotency_pointer(job_id, data)
@@ -360,7 +361,7 @@ class RedisStatusStore:
         if idem_key is None:
             idem = data.get("idempotency_key")
             if isinstance(idem, str) and idem:
-                status = _status_from_dict(data)
+                status = status_from_dict(data)
                 idem_key = self._idem_key(
                     idem,
                     tenant_id=status.tenant_id,
@@ -398,7 +399,7 @@ class RedisStatusStore:
             idem_redis_key = self._idem_key(
                 idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
             )
-            legacy_scoped = _legacy_idempotency_scope_key(
+            legacy_scoped = legacy_idempotency_scope_key(
                 idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
             )
             legacy_redis_key = f"{self._prefix}idem:{legacy_scoped}"
@@ -408,9 +409,9 @@ class RedisStatusStore:
                 existing_raw = self._decode(self._client.get(candidate_key))
                 if existing_raw is None:
                     continue
-                loaded = self._load(existing_raw)
+                loaded = self.load(existing_raw)
                 if loaded is not None:
-                    status = _status_from_dict(loaded)
+                    status = status_from_dict(loaded)
                     if not job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
                         raise PermissionError("Idempotency key is already bound to another scope")
                     if status.state is JobState.FAILED and status.error in ENQUEUE_FAILED_ERRORS:
@@ -438,10 +439,10 @@ class RedisStatusStore:
             created_at=now,
             updated_at=now,
         )
-        data = _status_to_dict(status, payload=payload)
+        data = status_to_dict(status, payload=payload)
         if idempotency_key:
             data["idempotency_key"] = idempotency_key
-            data["idempotency_scope_key"] = _idempotency_scope_key(
+            data["idempotency_scope_key"] = idempotency_scope_key(
                 idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
             )
         # Persist the job body before claiming the idempotency key so losers never
@@ -460,14 +461,14 @@ class RedisStatusStore:
                 existing = self._decode(self._client.get(idem_redis_key))
                 if existing is not None:
                     for _ in range(5):
-                        loaded = self._load(existing)
+                        loaded = self.load(existing)
                         if loaded is not None:
                             return (
                                 JobHandle(job_id=existing, idempotency_key=idempotency_key),
                                 False,
                             )
                         time.sleep(0.01)
-                    if self._load(existing) is not None:
+                    if self.load(existing) is not None:
                         return (
                             JobHandle(job_id=existing, idempotency_key=idempotency_key),
                             False,
@@ -485,10 +486,10 @@ class RedisStatusStore:
         auth_subject: str | None = None,
         tenant_id: str | None = None,
     ) -> JobStatus | None:
-        data = self._load(job_id)
+        data = self.load(job_id)
         if data is None:
             return None
-        status = _status_from_dict(data)
+        status = status_from_dict(data)
         if auth_subject is None and tenant_id is None:
             return status
         if not job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
@@ -503,10 +504,10 @@ class RedisStatusStore:
         tenant_id: str | None = None,
     ) -> bool:
         for _ in range(5):
-            data = self._load(job_id)
+            data = self.load(job_id)
             if data is None:
                 return False
-            status = _status_from_dict(data)
+            status = status_from_dict(data)
             # Fail closed for scoped jobs when credentials are omitted (match RedisJobBackend).
             if not job_authorized_http(status, auth_subject=auth_subject, tenant_id=tenant_id):
                 return False
@@ -527,7 +528,7 @@ class RedisStatusStore:
             )
             payload = data.get("payload")
             stored: dict[str, object] = dict(
-                _status_to_dict(
+                status_to_dict(
                     updated,
                     payload=_payload_mapping(payload),
                 )
@@ -546,14 +547,14 @@ class RedisStatusStore:
         job_id: str,
         state: JobState,
         *,
-        result: Any = None,
+        result: object = None,
         error: str | None = None,
     ) -> JobStatus | None:
         for _ in range(5):
-            data = self._load(job_id)
+            data = self.load(job_id)
             if data is None:
                 return None
-            status = _status_from_dict(data)
+            status = status_from_dict(data)
             if status.state in _TERMINAL and state not in _TERMINAL:
                 return status
             if (
@@ -582,7 +583,7 @@ class RedisStatusStore:
             )
             payload = data.get("payload")
             stored = dict(
-                _status_to_dict(
+                status_to_dict(
                     updated,
                     payload=_payload_mapping(payload),
                 )
@@ -593,10 +594,10 @@ class RedisStatusStore:
             if isinstance(data.get("idempotency_key"), str):
                 stored["idempotency_key"] = str(data["idempotency_key"])
             if self._store_cas(stored, expected_updated_at=status.updated_at):
-                final = self._load(job_id)
-                return _status_from_dict(final) if final is not None else updated
-        data = self._load(job_id)
-        return _status_from_dict(data) if data is not None else None
+                final = self.load(job_id)
+                return status_from_dict(final) if final is not None else updated
+        data = self.load(job_id)
+        return status_from_dict(data) if data is not None else None
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:
         # Prefer SCAN over KEYS to avoid blocking production Redis.
@@ -627,37 +628,45 @@ class RedisStatusStore:
 
 def _iter_redis_keys(client: object, pattern: str) -> list[str]:
     """Prefer SCAN; fall back to KEYS only for test stubs without scan."""
-    scan_fn = getattr(client, "scan_iter", None)
+    scan_fn: object = getattr(client, "scan_iter", None)
     if callable(scan_fn):
-        scanned = cast(Iterable[object], scan_fn(match=pattern))
+        scanned_raw: object = scan_fn(match=pattern)
+        scanned = (
+            cast(Iterable[object], scanned_raw)
+            if isinstance(scanned_raw, Iterable) and not isinstance(scanned_raw, (str, bytes))
+            else ()
+        )
         return [(k.decode("utf-8") if isinstance(k, bytes) else str(k)) for k in scanned]
-    scan = getattr(client, "scan", None)
+    scan: object = getattr(client, "scan", None)
     if callable(scan):
         keys: list[str] = []
         cursor: object = 0
         while True:
-            result = scan(cursor=cursor, match=pattern, count=100)
-            if not isinstance(result, tuple) or len(result) != 2:
+            result: object = scan(cursor=cursor, match=pattern, count=100)
+            if not isinstance(result, tuple):
                 break
-            cursor, batch = result[0], result[1]
+            values = cast(tuple[object, ...], result)
+            if len(values) != 2:
+                break
+            cursor, batch = values
             if not isinstance(batch, Iterable) or isinstance(batch, (str, bytes)):
                 break
-            for key in batch:
+            for key in cast(Iterable[object], batch):
                 keys.append(key.decode("utf-8") if isinstance(key, bytes) else str(key))
             if cursor in {0, b"0", "0"}:
                 break
         return keys
-    keys_fn = getattr(client, "keys", None)
+    keys_fn: object = getattr(client, "keys", None)
     if not callable(keys_fn):
         return []
-    found_raw = keys_fn(pattern)
+    found_raw: object = keys_fn(pattern)
     found: Iterable[object]
     if (
         isinstance(found_raw, list)
         or isinstance(found_raw, Iterable)
         and not isinstance(found_raw, (str, bytes))
     ):
-        found = found_raw
+        found = cast(Iterable[object], found_raw)
     else:
         found = ()
     return [(k.decode("utf-8") if isinstance(k, bytes) else str(k)) for k in found]

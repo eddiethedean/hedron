@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
-from typing import Any
+from importlib import import_module
+from typing import Any, Protocol, cast
 
 __all__ = ["snowflake_connection_factory"]
+
+
+class _SnowflakeConnector(Protocol):
+    def connect(self, **kwargs: object) -> object: ...
 
 
 def snowflake_connection_factory(
@@ -26,9 +31,8 @@ def snowflake_connection_factory(
     def _connect() -> object:
         if connection_factory is not None:
             return connection_factory()
-        import snowflake.connector  # type: ignore[import-not-found]  # optional snowflake extra
-
-        return snowflake.connector.connect(**connect_kwargs)
+        connector = cast(_SnowflakeConnector, import_module("snowflake.connector"))
+        return connector.connect(**connect_kwargs)
 
     def _factory() -> object:
         if statement is not None:

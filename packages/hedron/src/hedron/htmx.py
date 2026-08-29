@@ -60,7 +60,10 @@ def render_mode_for_request(
 
 
 # Re-export for callers that imported _require_local_path indirectly via module attrs.
-def _require_local_path(url: str, header_name: str) -> str:
+def require_local_path(url: str, header_name: str) -> str:
     if not is_local_path(url):
         raise ValueError(f"{header_name} must be a local path")
     return url
+
+
+_require_local_path = require_local_path

@@ -12,7 +12,7 @@ import hashlib
 import secrets
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, TypedDict
+from typing import Any, TypedDict, cast
 from urllib.parse import urljoin, urlparse
 
 from hedron.auth.oauth import require_authlib
@@ -121,7 +121,7 @@ class OidcUserClaims:
     sub: str
     email: str | None = None
     name: str | None = None
-    raw: dict[str, Any] = field(default_factory=dict)
+    raw: dict[str, Any] = field(default_factory=dict[str, Any])
 
     def as_dict(self) -> OidcUserClaimsDict:
         return {
@@ -197,7 +197,7 @@ def store_oidc_handshake(
     existing = session.get(_OIDC_HANDSHAKE_KEY)
     payload: dict[str, str] = {}
     if isinstance(existing, Mapping):
-        for key, value in existing.items():
+        for key, value in cast(Mapping[object, object], existing).items():
             if isinstance(key, str) and isinstance(value, str):
                 payload[key] = value
     payload["state"] = state
@@ -233,11 +233,16 @@ def _mask_email(email: str) -> str:
 
 def redact_claims(claims: OidcUserClaims | Mapping[str, Any]) -> dict[str, Any]:
     """Explorer-safe claim view: keep sub, mask email, scrub token-like raw keys."""
+    data: Mapping[str, Any]
     if isinstance(claims, OidcUserClaims):
         data = claims.as_dict()
     else:
-        raw_candidate = claims.get("raw", claims)
-        raw = dict(raw_candidate) if isinstance(raw_candidate, Mapping) else {}
+        raw_candidate: object = claims.get("raw", claims)
+        raw: dict[str, Any] = (
+            dict(cast(Mapping[str, Any], raw_candidate))
+            if isinstance(raw_candidate, Mapping)
+            else {}
+        )
         data = {
             "sub": claims.get("sub"),
             "email": claims.get("email"),
@@ -245,7 +250,8 @@ def redact_claims(claims: OidcUserClaims | Mapping[str, Any]) -> dict[str, Any]:
             "raw": raw,
         }
     email = data.get("email")
-    raw = data.get("raw") if isinstance(data.get("raw"), dict) else {}
+    raw_value: object = data.get("raw")
+    raw = cast(dict[str, Any], raw_value) if isinstance(raw_value, dict) else {}
     return {
         "sub": data.get("sub"),
         "email": _mask_email(email) if isinstance(email, str) else None,

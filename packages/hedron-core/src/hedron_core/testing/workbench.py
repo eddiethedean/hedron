@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 __all__ = [
     "SandboxBudgetFixture",
@@ -111,7 +111,10 @@ def assert_transform_plan_bounded(plan: Any, *, max_rows: int) -> None:
     if hasattr(plan, "max_rows"):
         rows = int(plan.max_rows)
     elif isinstance(plan, Mapping):
-        rows = int(plan.get("max_rows", -1))
+        row_value = cast(Mapping[str, object], plan).get("max_rows", -1)
+        if isinstance(row_value, bool) or not isinstance(row_value, (int, str)):
+            raise AssertionError("Transform plan max_rows must be an integer")
+        rows = int(row_value)
     else:
         raise AssertionError(f"Not a transform plan: {type(plan)!r}")
     if rows < 1 or rows > max_rows:

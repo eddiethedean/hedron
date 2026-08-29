@@ -85,11 +85,11 @@ class CeleryJobBackend:
         auth_subject: str | None = None,
         tenant_id: str | None = None,
     ) -> bool:
-        prior = self._store._load(job_id)
+        prior = self._store.load(job_id)
         ok = self._store.request_cancel(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
         if not ok:
             return False
-        cancelled = self._store._load(job_id)
+        cancelled = self._store.load(job_id)
         try:
             self._app.control.revoke(job_id, terminate=False)
         except Exception:

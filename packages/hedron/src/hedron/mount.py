@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 from urllib.parse import urljoin
 
 from hedron_core.mount import cookie_path_for_mount, normalize_mount_path
@@ -111,15 +111,30 @@ def external_base_url(
 
 def mount_from_request(request: Any, *, trusted_peers: Sequence[str] | None = None) -> MountPath:
     """Resolve mount path from a Starlette/FastAPI request."""
-    scope = getattr(request, "scope", {}) or {}
-    headers = {
-        k.decode() if isinstance(k, bytes) else str(k): (
-            v.decode() if isinstance(v, bytes) else str(v)
-        )
-        for k, v in (scope.get("headers") or [])
-    }
-    client = scope.get("client")
-    peer = client[0] if isinstance(client, (list, tuple)) and client else None
+    scope_value: object = getattr(request, "scope", {}) or {}
+    scope: Mapping[str, object] = (
+        cast(Mapping[str, object], scope_value)
+        if isinstance(scope_value, Mapping)
+        else dict[str, object]()
+    )
+    headers: dict[str, str] = {}
+    raw_headers: object | None = scope.get("headers")
+    if isinstance(raw_headers, Sequence):
+        for pair in cast(Sequence[object], raw_headers):
+            if not isinstance(pair, (list, tuple)):
+                continue
+            typed_pair = cast(Sequence[object], pair)
+            if len(typed_pair) != 2:
+                continue
+            key, value = typed_pair
+            headers[key.decode() if isinstance(key, bytes) else str(key)] = (
+                value.decode() if isinstance(value, bytes) else str(value)
+            )
+    client: object | None = scope.get("client")
+    peer_value = (
+        cast(Sequence[object], client)[0] if isinstance(client, (list, tuple)) and client else None
+    )
+    peer = peer_value if isinstance(peer_value, str) else None
     return resolve_mount_path(
         root_path=str(scope.get("root_path") or "") or None,
         headers=headers,

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import math
 from collections.abc import Awaitable
 from contextvars import ContextVar
 from dataclasses import dataclass
@@ -34,6 +35,16 @@ class ConcurrencyConfig:
     max_in_flight: int = 32
     degrade_at: int = 24
     prepare_deadline_seconds: float | None = None
+
+    def __post_init__(self) -> None:
+        if self.max_in_flight < 1:
+            raise ValueError("max_in_flight must be at least 1")
+        if self.degrade_at < 1:
+            raise ValueError("degrade_at must be at least 1")
+        if self.prepare_deadline_seconds is not None and (
+            not math.isfinite(self.prepare_deadline_seconds) or self.prepare_deadline_seconds <= 0
+        ):
+            raise ValueError("prepare_deadline_seconds must be a finite positive number")
 
 
 class ConcurrencyLimiter:
@@ -134,11 +145,16 @@ def reset_concurrency_for_tests() -> None:
     _config.set(None)
 
 
-def _get_limiter() -> ConcurrencyLimiter:
+def get_limiter() -> ConcurrencyLimiter:
+    """Return the process-wide concurrency limiter, creating it on first use."""
     global _limiter
     if _limiter is None:
         _limiter = ConcurrencyLimiter(get_concurrency_config())
     return _limiter
+
+
+# Retain the established private import for compatibility.
+_get_limiter = get_limiter
 
 
 async def adaptive_gather(
@@ -148,9 +164,17 @@ async def adaptive_gather(
     """Gather with capacity limits when adaptive concurrency is enabled."""
     if not aws:
         return []
-    limiter = _get_limiter()
+    limiter = get_limiter()
     if not limiter.config.enabled:
-        return list(await asyncio.gather(*aws, return_exceptions=return_exceptions))
+        tasks = [asyncio.ensure_future(awaitable) for awaitable in aws]
+        try:
+            return list(await asyncio.gather(*tasks, return_exceptions=return_exceptions))
+        except BaseException:
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
+            raise
 
     overload_event = asyncio.Event()
 

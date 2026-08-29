@@ -149,6 +149,42 @@ class FragmentHost(Component[FragmentHostProps]):
         self._fallback = fallback
         self._load_on_mount = load_on_mount
 
+    @property
+    def loading(self) -> NodeLike:
+        """Return the placeholder rendered while a fragment is loading."""
+        return self._loading
+
+    @loading.setter
+    def loading(self, value: NodeLike) -> None:
+        self._loading = value
+
+    @property
+    def cache(self) -> CacheHint | None:
+        """Return the cache hint applied to materialized fragment responses."""
+        return self._cache
+
+    @cache.setter
+    def cache(self, value: CacheHint | None) -> None:
+        self._cache = value
+
+    @property
+    def error_content(self) -> NodeLike | str | None:
+        """Return the content rendered into the fragment error template."""
+        return self._error
+
+    @error_content.setter
+    def error_content(self, value: NodeLike | str | None) -> None:
+        self._error = value
+
+    @property
+    def empty_content(self) -> NodeLike:
+        """Return the placeholder configured for an empty fragment."""
+        return self._empty
+
+    @empty_content.setter
+    def empty_content(self, value: NodeLike) -> None:
+        self._empty = value
+
     def materialize(
         self,
         content: NodeLike,

@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, ParamSpec, TypeVar, overload
+from typing import Any, ParamSpec, Protocol, TypeVar, cast, overload
 
 from fastapi import params
 from fastapi.routing import APIRouter
 
-from hedron.handles import ActionHandle, FragmentHandle, _as_node_like
+from hedron.handles import ActionHandle, FragmentHandle, as_node_like
 from hedron.routing.router import HedronRouter
 from hedron.type_authoring.classes import CommandHandler, RefreshableView
 from hedron.type_authoring.normalize import CompiledTypeHandler
@@ -25,19 +25,35 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
+class _HandleState(Protocol):
+    hedron_handles: dict[str, object]
+
+
 def _route_dependencies(
     dependencies: Sequence[params.Depends] | Sequence[object] | None,
 ) -> Sequence[params.Depends] | None:
     """Router APIs accept Depends only; callers may pass a wider sequence type."""
     if dependencies is None:
         return None
-    return dependencies  # type: ignore[return-value]
+    return cast(Sequence[params.Depends], dependencies)
 
 
 def _stamp(obj: object, **attrs: object) -> None:
     """Attach dynamic handler metadata without Any-casts."""
     for name, value in attrs.items():
         setattr(obj, name, value)
+
+
+def _store_handle(state: object | None, logical_id: str, handle: object) -> None:
+    """Store a generated handle on Starlette's dynamically typed application state."""
+    if state is None:
+        return
+    existing: object = getattr(state, "hedron_handles", None)
+    if existing is None:
+        existing = {}
+        cast(_HandleState, state).hedron_handles = existing
+    if isinstance(existing, dict):
+        cast(dict[str, object], existing)[logical_id] = handle
 
 
 def _apply_mapped_outcome(
@@ -62,7 +78,7 @@ def _apply_mapped_outcome(
         app_id=app_id,
     )
     if isinstance(effect_result, (RefreshIntent, Patch, PatchSet)):
-        compiled = compile_to_interaction(effect_result, expected_app_id=app_id)
+        compiled = compile_to_interaction(cast(object, effect_result), expected_app_id=app_id)
         if isinstance(compiled, InteractionResult):
             content = (
                 mapped
@@ -70,7 +86,7 @@ def _apply_mapped_outcome(
                 else compiled.content
             )
             return InteractionResult(
-                content=_as_node_like(content) if content is not None else None,
+                content=as_node_like(content) if content is not None else None,
                 status_code=status,
                 trigger=compiled.trigger,
                 oob=compiled.oob,
@@ -80,8 +96,8 @@ def _apply_mapped_outcome(
     if status != 200 and not isinstance(
         mapped, (RefreshIntent, Patch, PatchSet, InteractionResult)
     ):
-        return InteractionResult(content=_as_node_like(mapped), status_code=status)
-    return mapped
+        return InteractionResult(content=as_node_like(mapped), status_code=status)
+    return cast(object, mapped)
 
 
 class HedronPagesMixin:
@@ -196,7 +212,7 @@ class HedronPagesMixin:
         fallback: str | None = None,
         include_in_schema: bool = True,
         **kwargs: Any,
-    ) -> Callable[[Callable[P, R]], ActionHandle[Any, Any]]:
+    ) -> Callable[[Callable[P, object]], ActionHandle[Any, Any]]:
         """Register the canonical typed mutation and return an ``ActionHandle``.
 
         Args:
@@ -248,7 +264,7 @@ class HedronPagesMixin:
 
         builder = active_builder()
         fail_closed_late_registration(
-            registry_sealed=builder._sealed,
+            registry_sealed=builder.is_sealed,
             catalog_sealed=get_sealed_catalog() is not None,
             openapi_cached=getattr(self, "openapi_schema", None) is not None,
         )
@@ -395,13 +411,13 @@ class HedronPagesMixin:
             mount = str(getattr(getattr(self, "state", None), "hedron_mount_path", "") or "")
             view_host = resolved_host or FragmentHost()
             if resolved_loading is not None:
-                view_host._loading = resolved_loading
+                view_host.loading = resolved_loading
             if resolved_error is not None:
-                view_host._error = resolved_error
+                view_host.error_content = resolved_error
             if resolved_empty is not None:
-                view_host._empty = resolved_empty
+                view_host.empty_content = resolved_empty
             if resolved_cache is not None:
-                view_host._cache = resolved_cache
+                view_host.cache = resolved_cache
             handle = build_view_handle(
                 handler,
                 app_id=app_id,
@@ -415,9 +431,9 @@ class HedronPagesMixin:
             )
             endpoint = wrap_endpoint_result(handle)
             extra_regions = kwargs.pop("fragment_regions", None)
-            from hedron.routing.router import _normalize_fragment_regions
+            from hedron.routing.router import normalize_fragment_regions
 
-            regions = (handle.region, *_normalize_fragment_regions(extra_regions))
+            regions = (handle.region, *normalize_fragment_regions(extra_regions))
             self._root_router.view(
                 handle.path,
                 fragment_regions=regions,
@@ -428,12 +444,7 @@ class HedronPagesMixin:
             )(endpoint)
             self._sync_root_route()
             state = getattr(self, "state", None)
-            handles = getattr(state, "hedron_handles", None)
-            if handles is None and state is not None:
-                state.hedron_handles = {}
-                handles = state.hedron_handles
-            if isinstance(handles, dict):
-                handles[handle.logical_id] = handle
+            _store_handle(state, handle.logical_id, handle)
             return handle
 
         return decorator
@@ -626,10 +637,10 @@ class HedronPagesMixin:
                         endpoint,
                         __signature__=compile_injected_depends(inspect.signature(handler)),
                     )
-            from hedron.routing.router import _normalize_fragment_regions
+            from hedron.routing.router import normalize_fragment_regions
 
             extra_regions = kwargs.pop("fragment_regions", None)
-            regions = (handle.region, *_normalize_fragment_regions(extra_regions))
+            regions = (handle.region, *normalize_fragment_regions(extra_regions))
             self._root_router.action(
                 handle.path,
                 method=handle.method,
@@ -641,12 +652,7 @@ class HedronPagesMixin:
             )(endpoint)
             self._sync_root_route()
             state = getattr(self, "state", None)
-            handles = getattr(state, "hedron_handles", None)
-            if handles is None and state is not None:
-                state.hedron_handles = {}
-                handles = state.hedron_handles
-            if isinstance(handles, dict):
-                handles[handle.logical_id] = handle
+            _store_handle(state, handle.logical_id, handle)
             return handle
 
         return decorator

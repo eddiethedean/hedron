@@ -6,7 +6,7 @@ import inspect
 import secrets
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar, cast, overload
 
 from asgiref.sync import markcoroutinefunction
 from django.http import HttpRequest, HttpResponse
@@ -174,12 +174,30 @@ async def _convert_async(
     )
 
 
+@overload
+def hedron_view(
+    view: F,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> F: ...
+
+
+@overload
+def hedron_view(
+    view: None = None,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> Callable[[F], F]: ...
+
+
 def hedron_view(
     view: F | None = None,
     *,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
-) -> Any:
+) -> F | Callable[[F], F]:
     """Wrap a view so components and InteractionResult values become HttpResponse."""
 
     def decorator(fn: F) -> F:
@@ -226,17 +244,53 @@ def hedron_view(
 # Canonical adapter spellings.  Django's URL resolver owns route registration,
 # so page/view share the response-lowering wrapper and remain ordinary
 # function decorators.  ``hedron_view`` stays exported as the 0.67 spelling.
+@overload
+def view(
+    handler: F,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> F: ...
+
+
+@overload
+def view(
+    handler: None = None,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> Callable[[F], F]: ...
+
+
 def view(
     handler: F | None = None,
     *,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
-) -> Any:
+) -> F | Callable[[F], F]:
     return hedron_view(
         handler,
         fragment_regions=fragment_regions,
         allow_undeclared_targets=allow_undeclared_targets,
     )
+
+
+@overload
+def page(
+    handler: F,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> F: ...
+
+
+@overload
+def page(
+    handler: None = None,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> Callable[[F], F]: ...
 
 
 def page(
@@ -244,7 +298,7 @@ def page(
     *,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
-) -> Any:
+) -> F | Callable[[F], F]:
     return hedron_view(
         handler,
         fragment_regions=fragment_regions,
@@ -252,12 +306,30 @@ def page(
     )
 
 
+@overload
+def action(
+    handler: F,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> F: ...
+
+
+@overload
+def action(
+    handler: None = None,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> Callable[[F], F]: ...
+
+
 def action(
     handler: F | None = None,
     *,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
-) -> Any:
+) -> F | Callable[[F], F]:
     """Wrap a mutation handler with canonical response and CSRF lowering."""
 
     def decorate(fn: F) -> F:

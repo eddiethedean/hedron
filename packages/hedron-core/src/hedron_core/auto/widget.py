@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.auto.factories import is_tabular
 from hedron_core.auto.inspect import inspect_data
@@ -39,7 +39,7 @@ class Auto(Component[AutoProps]):
         inspection: dict[str, object] = {}
         if is_tabular(value) or isinstance(value, Mapping):
             try:
-                report = inspect_data(value)
+                report = inspect_data(cast(object, value))
                 inspection = {
                     "row_count": report.row_count,
                     "columns": list(report.columns),
@@ -80,12 +80,12 @@ class Auto(Component[AutoProps]):
                 matched = False
                 if spec.predicate is not None:
                     try:
-                        matched = bool(spec.predicate(value))
+                        matched = bool(spec.predicate(cast(object, value)))
                     except Exception as exc:  # noqa: BLE001
                         rejected.append((spec.name, f"predicate error: {exc}"))
                         continue
                 elif spec.types:
-                    matched = isinstance(value, spec.types)
+                    matched = isinstance(cast(object, value), spec.types)
                 if not matched:
                     rejected.append((spec.name, "type/predicate mismatch"))
                     continue
@@ -96,7 +96,7 @@ class Auto(Component[AutoProps]):
             raise error(
                 "HED-AUTO-0001",
                 title="No Auto renderer matched",
-                explanation=f"No renderer for value of type {type(value).__name__}.",
+                explanation=f"No renderer for value of type {type(cast(object, value)).__name__}.",
                 remediation="Pass as_= explicitly or register a renderer.",
             )
 
@@ -107,7 +107,7 @@ class Auto(Component[AutoProps]):
             inspection=inspection,
         )
         set_last_auto_decision(self._decision)
-        self._resolved = selected_spec.factory(value)
+        self._resolved = selected_spec.factory(cast(object, value))
         return self._resolved
 
     def render(self) -> NodeLike:

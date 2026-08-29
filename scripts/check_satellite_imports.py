@@ -74,10 +74,7 @@ def main() -> int:
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    print(
-        f"ok: satellite→hedron import boundary "
-        f"({len(ALLOWED)} allowlisted debt file(s))"
-    )
+    print(f"ok: satellite→hedron import boundary ({len(ALLOWED)} allowlisted debt file(s))")
     return 0
 
 

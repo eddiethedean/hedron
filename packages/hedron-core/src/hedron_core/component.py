@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+import copy
+from collections.abc import Mapping, Sequence
 from contextvars import ContextVar, Token
-from typing import Any, ClassVar, Generic, Protocol, TypeAlias, TypeVar, runtime_checkable
+from typing import ClassVar, Generic, Protocol, TypeAlias, TypeVar, cast, runtime_checkable
 
 from pydantic import ValidationError
+from typing_extensions import Self
 
 from hedron_core.diagnostics import error
 from hedron_core.field import hedron_meta
@@ -21,11 +23,13 @@ _render_identity: ContextVar[tuple[str, str] | None] = ContextVar(
 )
 
 
-def _push_render_identity(instance: str, render_key: str) -> Token[tuple[str, str] | None]:
+def push_render_identity(instance: str, render_key: str) -> Token[tuple[str, str] | None]:
+    """Set request-local component identity for the duration of one render call."""
     return _render_identity.set((instance, render_key))
 
 
-def _pop_render_identity(token: Token[tuple[str, str] | None]) -> None:
+def pop_render_identity(token: Token[tuple[str, str] | None]) -> None:
+    """Restore the identity context captured by :func:`push_render_identity`."""
     _render_identity.reset(token)
 
 
@@ -57,7 +61,7 @@ class Component(Generic[PropsT]):
         if getattr(cls, "logical_name", None) is None:
             cls.logical_name = cls.__name__
 
-    def __init__(self, props: PropsT | None = None, /, **kwargs: Any) -> None:
+    def __init__(self, props: PropsT | None = None, /, **kwargs: object) -> None:
         props_cls = getattr(self.__class__, "props_type", None)
         if props_cls is None:
             raise error(
@@ -78,7 +82,7 @@ class Component(Generic[PropsT]):
                     raise TypeError(f"Expected {props_cls.__name__}, got {type(props).__name__}")
                 self._props: PropsT = props
             else:
-                self._props = props_cls(**kwargs)  # type: ignore[assignment]
+                self._props = cast(PropsT, props_cls(**kwargs))
         except ValidationError as exc:
             # Redact potential secrets from validation messages.
             message = "Props validation failed."
@@ -97,6 +101,16 @@ class Component(Generic[PropsT]):
     def props(self) -> PropsT:
         return self._props
 
+    @property
+    def child_nodes(self) -> tuple[NodeLike, ...]:
+        """Return the configured child nodes without exposing mutation."""
+        return self._children
+
+    @property
+    def slot_values(self) -> Mapping[str, NodeLike | list[NodeLike]]:
+        """Return configured slot content through a read-only mapping contract."""
+        return self._slot_values
+
     def key(self, value: str) -> Component[PropsT]:
         self._key = value
         return self
@@ -104,6 +118,20 @@ class Component(Generic[PropsT]):
     def children(self, *nodes: NodeLike) -> Component[PropsT]:
         self._children = nodes
         return self
+
+    def copy_with_props(self, props: Props) -> Self:
+        """Return a shallow component copy with independently owned render state.
+
+        Non-prop subclass state is retained, while children and slot mappings are
+        copied so binding helpers cannot mutate the source component accidentally.
+        """
+        if not isinstance(props, self.props_type):
+            raise TypeError(f"Expected {self.props_type.__name__}, got {type(props).__name__}")
+        clone = copy.copy(self)
+        clone._props = cast(PropsT, props)
+        clone._children = tuple(self._children)
+        clone._slot_values = dict(self._slot_values)
+        return clone
 
     def slot(self, name: str, value: NodeLike) -> Component[PropsT]:
         cardinality = self.slots.get(name)
@@ -197,7 +225,7 @@ class Component(Generic[PropsT]):
             component_id=self.logical_id(),
         )
 
-    async def prepare(self, ctx: Any) -> None:
+    async def prepare(self, ctx: object) -> None:
         """Optional async data preparation before sync ``render()``.
 
         Override to load request-owned data. Constructors must not perform hidden I/O.
@@ -205,11 +233,16 @@ class Component(Generic[PropsT]):
         """
         del ctx
 
+    def has_prepare_override(self) -> bool:
+        """Return whether the concrete component implements async preparation."""
+        for owner in type(self).__mro__:
+            if "prepare" in vars(owner):
+                return owner is not Component
+        return False
+
     def __hedron_node__(self) -> Component[PropsT]:
         return self
 
 
 # Shared public recursive alias (imported by rendering and package root).
-NodeLike: TypeAlias = (
-    Component[Any] | ComponentNode | str | int | float | bool | None | Sequence["NodeLike"]
-)
+NodeLike: TypeAlias = ComponentNode | str | int | float | bool | None | Sequence["NodeLike"]

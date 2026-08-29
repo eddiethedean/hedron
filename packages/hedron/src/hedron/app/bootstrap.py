@@ -12,7 +12,7 @@ import secrets
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol, cast
+from typing import Protocol, TypeGuard, cast
 
 from fastapi import FastAPI
 from fastapi.params import Depends as DependsParam
@@ -47,6 +47,10 @@ __all__ = [
 ]
 
 
+def _is_theme(value: object) -> TypeGuard[Theme]:
+    return isinstance(value, Theme)
+
+
 def normalize_theme_selection(
     theme: str | Theme | DesignSystem | None,
 ) -> tuple[str | None, DesignSystem | None]:
@@ -61,7 +65,7 @@ def normalize_theme_selection(
     if isinstance(theme, DesignSystem):
         design = theme
         theme_obj = theme.to_theme()
-    elif isinstance(theme, Theme):
+    elif _is_theme(theme):
         theme_obj = theme
     else:
         raise TypeError(
@@ -245,7 +249,7 @@ class RoutingStep:
         del context
 
         root_router = HedronRouter()
-        root_router._hedron_host_app = app
+        root_router.attach_host_app(app)
         app._root_router = root_router  # type: ignore[attr-defined]
 
 

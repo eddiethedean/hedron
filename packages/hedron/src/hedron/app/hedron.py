@@ -136,7 +136,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         from hedron_core.registry.builder import active_builder
 
         fail_closed_late_registration(
-            registry_sealed=active_builder()._sealed,
+            registry_sealed=active_builder().is_sealed,
             catalog_sealed=get_sealed_catalog() is not None,
             openapi_cached=self.openapi_schema is not None,
         )
@@ -162,10 +162,10 @@ class Hedron(HedronPagesMixin, FastAPI):
 
         builder = active_builder()
         fail_closed_late_registration(
-            registry_sealed=builder._sealed,
+            registry_sealed=builder.is_sealed,
             catalog_sealed=get_sealed_catalog() is not None,
             openapi_cached=self.openapi_schema is not None,
         )
         if isinstance(router, HedronRouter):
-            router._hedron_host_app = self
+            router.attach_host_app(self)
         super().include_router(router, *args, **kwargs)

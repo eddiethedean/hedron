@@ -58,6 +58,9 @@ dev = [
     "fastapi-workbench",
     "pytest>=8.3",
     "pytest-xdist>=3.6",
+    # Pyright analyzes the declared Python 3.10 floor even when CI runs on a
+    # newer interpreter, so its environment must resolve the 3.10 TOML branch.
+    "tomli>=2.0.1",
     "httpx>=0.28",
     "anyio>=4.8",
     "syrupy>=4.8",
@@ -132,7 +135,7 @@ markers = [
 target-version = "py310"
 line-length = 100
 src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-maps/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-posit/src", "packages/hedron-elements/src", "packages/edron/src", "packages/fastapi-workbench/src", "tests", "examples"]
-extend-exclude = ["docs", "archive", "dist", ".venv"]
+extend-exclude = ["docs", "archive", "dist", ".venv", ".bug_hunt_repros"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF100", "RUF012", "S110", "S112", "BLE001", "ASYNC", "PTH", "DTZ", "RET"]
@@ -174,7 +177,7 @@ include = [
     "packages/edron/src",
     "packages/fastapi-workbench/src",
 ]
-pythonVersion = "3.11"
+pythonVersion = "3.10"
 venvPath = "."
 venv = ".venv"
 extraPaths = [

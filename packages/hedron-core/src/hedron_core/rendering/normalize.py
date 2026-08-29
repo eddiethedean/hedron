@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterator, Sequence
 from dataclasses import replace
 from types import GeneratorType
-from typing import Any, Protocol, cast
+from typing import Protocol, cast
 
 from hedron_core._nodes import ComponentBoundaryNode, EmptyNode, FragmentNode, Node, TextNode
 from hedron_core.alpine import AlpineFeatureDemand
@@ -13,11 +13,12 @@ from hedron_core.component import (
     Component,
     ComponentNode,
     NodeLike,
-    _pop_render_identity,
-    _push_render_identity,
+    pop_render_identity,
+    push_render_identity,
 )
 from hedron_core.diagnostics import error
-from hedron_core.html import _NativeElement, _TrustedRaw
+from hedron_core.html import NativeElement, TrustedRawNode
+from hedron_core.models import Props
 from hedron_core.rendering.state import RenderState
 from hedron_core.security import Secret
 
@@ -27,11 +28,11 @@ Normalizer = Callable[[NodeLike, int], tuple[Node, ...]]
 class ComponentRenderer(Protocol):
     """Provide an unnormalized component body under the core lifecycle boundary."""
 
-    def render(self, component: Component[Any]) -> NodeLike: ...
+    def render(self, component: Component[Props]) -> NodeLike: ...
 
 
 class DefaultComponentRenderer:
-    def render(self, component: Component[Any]) -> NodeLike:
+    def render(self, component: Component[Props]) -> NodeLike:
         return component.render()
 
 
@@ -71,13 +72,13 @@ def reject_generator(value: object) -> None:
 
 
 class BrowserDemandCollector(Protocol):
-    def collect(self, element: _NativeElement, state: RenderState) -> None: ...
+    def collect(self, element: NativeElement, state: RenderState) -> None: ...
 
 
 class DefaultBrowserDemandCollector:
     """Translate native element metadata into browser feature demands."""
 
-    def collect(self, element: _NativeElement, state: RenderState) -> None:
+    def collect(self, element: NativeElement, state: RenderState) -> None:
         attributes = element.attributes
         for demand in element.browser_demands:
             state.add_browser_demand(demand)
@@ -107,7 +108,7 @@ class ComponentLifecycleRenderer:
 
     def render(
         self,
-        component: Component[Any],
+        component: Component[Props],
         state: RenderState,
         *,
         depth: int,
@@ -149,7 +150,7 @@ class ComponentLifecycleRenderer:
             state.identity_map[map_key] = instance
 
             render_key = str(identity.get("key", auto_key))
-            token = _push_render_identity(instance, render_key)
+            token = push_render_identity(instance, render_key)
             style_token = None
             try:
                 style_context = getattr(component, "style_context", None)
@@ -169,7 +170,7 @@ class ComponentLifecycleRenderer:
                     from hedron_core.builtins.style_scope import pop_style_context
 
                     pop_style_context(style_token)
-                _pop_render_identity(token)
+                pop_render_identity(token)
             return (
                 ComponentBoundaryNode(
                     logical_id=logical,
@@ -217,9 +218,9 @@ class NodeNormalizer:
             return (TextNode("true" if value else "false"),)
         if isinstance(value, (int, float)):
             return (TextNode(str(value)),)
-        if isinstance(value, _TrustedRaw):
+        if isinstance(value, TrustedRawNode):
             return (value.to_node(),)
-        if isinstance(value, _NativeElement):
+        if isinstance(value, NativeElement):
             self.browser_collector.collect(value, self.state)
             child_nodes: list[Node] = []
             for child in value.children:
@@ -227,7 +228,7 @@ class NodeNormalizer:
             return (value.to_element_node(tuple(child_nodes)),)
         if isinstance(value, Component):
             return self.component_lifecycle.render(
-                cast(Component[Any], value),
+                cast(Component[Props], value),
                 self.state,
                 depth=depth,
                 normalize=self._normalize_for_renderer,
@@ -246,13 +247,14 @@ class NodeNormalizer:
                 nodes.extend(self.normalize(cast(NodeLike, item), depth=depth + 1))
             return (FragmentNode(tuple(nodes)),)
 
-        reject_generator(value)
+        unsupported = cast(object, value)
+        reject_generator(unsupported)
         raise error(
             "HED-RENDER-0011",
             title="Unsupported render value",
             explanation=(
                 "Value of type "
-                f"{type(value).__name__!r} is not a valid NodeLike at {self.state.path()}."
+                f"{type(unsupported).__name__!r} is not a valid NodeLike at {self.state.path()}."
             ),
             remediation="Return a Component, html element, string, sequence, or None.",
             component_id=self.state.path(),

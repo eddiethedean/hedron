@@ -11,8 +11,8 @@ from hedron_core.builtins.appearance import CONTENT_WIDTHS, require_choice
 from hedron_core.builtins.landmarks import (
     LandmarkProps,
     Nav,
-    _filter_landmark_kwargs,
-    _landmark_attrs,
+    filter_landmark_kwargs,
+    landmark_attrs,
 )
 from hedron_core.codes import HED_EXT_0006, HED_HTML_0006
 from hedron_core.component import Component, NodeLike
@@ -573,7 +573,7 @@ class MainPanel(Component[MainPanelProps]):
         hidden: bool | None = None,
         **kwargs: object,
     ) -> None:
-        filtered = _filter_landmark_kwargs(
+        filtered = filter_landmark_kwargs(
             {
                 "id": id,
                 "class_": class_,
@@ -593,7 +593,7 @@ class MainPanel(Component[MainPanelProps]):
         self._kids = _kids(*children)
 
     def render(self) -> NodeLike:
-        attrs = _landmark_attrs(self.props)
+        attrs = landmark_attrs(self.props)
         attrs["class_"] = class_names("hedron-main-panel", self.props.class_)
         attrs["data"] = _merge_marker_data(
             self.props.mark, self.props.data, **{"hedron-main-panel": "true"}
@@ -768,7 +768,7 @@ class AppShell(Component[AppShellProps]):
                 data=data,
                 hidden=child.props.hidden,
             )
-            return html.nav(*child._children, *extras, **_landmark_attrs(props))
+            return html.nav(*child._children, *extras, **landmark_attrs(props))
         return html.nav(
             *self._nav,
             *extras,

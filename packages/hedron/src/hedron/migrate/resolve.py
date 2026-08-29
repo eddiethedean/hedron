@@ -15,7 +15,7 @@ class ResolvedCall:
     decorator: bool = False
     assigned_to: str | None = None
     in_sidebar: bool = False
-    args_summary: dict[str, Any] = field(default_factory=dict)
+    args_summary: dict[str, Any] = field(default_factory=dict[str, Any])
 
 
 def _literal(node: ast.AST | None) -> Any:

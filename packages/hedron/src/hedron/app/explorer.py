@@ -6,7 +6,7 @@ import logging
 import warnings
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal, cast
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.params import Depends as DependsParam
@@ -26,11 +26,12 @@ def _settings_explorer_hint() -> str | None:
         if not pyproject.is_file():
             return None
         data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
-        tool = data.get("tool") or {}
-        hedron = tool.get("hedron") if isinstance(tool, dict) else None
+        tool_value = data.get("tool")
+        tool = cast(dict[str, Any], tool_value) if isinstance(tool_value, dict) else {}
+        hedron = tool.get("hedron")
         if not isinstance(hedron, dict) or "explorer" not in hedron:
             return None
-        mode = str(hedron["explorer"] or "off")
+        mode = str(cast(dict[str, object], hedron)["explorer"] or "off")
         if mode in {"off", "development", "secured"}:
             return mode
     except (OSError, TypeError, ValueError, KeyError, tomllib.TOMLDecodeError):

@@ -39,7 +39,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Map(*, center: 'tuple[float, float]' = (0.0, 0.0), zoom: 'float' = 2.0, width: 'int | None' = None, height: 'int | None' = 360, tile_allowlist: 'Sequence[str]' = (), tiles: 'str | None' = None, attribution: 'str' = '', markers: 'Sequence[MarkerSpec | Mapping[str, Any]]' = (), geojson: 'Mapping[str, Any] | GeoJSONLayer | None' = None, max_features: 'int' = 500, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
+Map(*, center: 'tuple[float, float]' = (0.0, 0.0), zoom: 'float' = 2.0, width: 'int | None' = None, height: 'int | None' = 360, tile_allowlist: 'Sequence[str]' = (), tiles: 'str | None' = None, attribution: 'str' = '', markers: 'Sequence[MarkerSpec | Mapping[str, object]]' = (), geojson: 'Mapping[str, object] | GeoJSONLayer | None' = None, max_features: 'int' = 500, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
@@ -51,8 +51,8 @@ Map(*, center: 'tuple[float, float]' = (0.0, 0.0), zoom: 'float' = 2.0, width: '
 | `tile_allowlist` | `Sequence[str]` | Allowed tile URL prefixes / hosts. Default: `()`. |
 | `tiles` | `str | None` | Optional tile URL template (must pass allowlist checks). Default: `None`. |
 | `attribution` | `str` | Map attribution text. Default: `''`. |
-| `markers` | `Sequence[MarkerSpec | Mapping[str, Any]]` | Marker specs, mappings, or range tick markers. Default: `()`. |
-| `geojson` | `Mapping[str, Any] | GeoJSONLayer | None` | GeoJSON mapping or `GeoJSONLayer` (feature-capped). Default: `None`. |
+| `markers` | `Sequence[MarkerSpec | Mapping[str, object]]` | Marker specs, mappings, or range tick markers. Default: `()`. |
+| `geojson` | `Mapping[str, object] | GeoJSONLayer | None` | GeoJSON mapping or `GeoJSONLayer` (feature-capped). Default: `None`. |
 | `max_features` | `int` | Maximum GeoJSON features rendered. Default: `500`. |
 | `id` | `str | None` | Optional DOM `id`. Default: `None`. |
 | `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |

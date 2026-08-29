@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -163,11 +164,30 @@ def test_verified_candidate_status_rejects_implementation_and_registry_contradic
     assert ssot.check_release_candidate_status(
         path, "The 1.0 cut is not implemented and release evidence is pending."
     )
-    assert ssot.check_release_candidate_status(path, "The v1.0.0 candidate is published on PyPI.")
     assert ssot.check_release_candidate_status(path, "Use the living .1.0.x train.")
+
+    deferred = replace(ssot.FACTS, registry_status="deferred")
+    assert ssot.check_release_candidate_status(
+        path,
+        "The v1.0.0 candidate is published on PyPI.",
+        deferred,
+    )
     assert not ssot.check_release_candidate_status(
         path,
         "The v1.0.0 repository candidate is verified; PyPI remains on v0.66.2.",
+        deferred,
+    )
+
+    uploaded = replace(ssot.FACTS, registry_status="uploaded")
+    assert ssot.check_release_candidate_status(
+        path,
+        "The v1.0.0 candidate is awaiting publication.",
+        uploaded,
+    )
+    assert not ssot.check_release_candidate_status(
+        path,
+        "Hedron v1.0.0 is published on PyPI.",
+        uploaded,
     )
 
 

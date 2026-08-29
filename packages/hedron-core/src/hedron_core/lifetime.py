@@ -42,7 +42,7 @@ class DependencyPlan:
     edges: tuple[str, ...] = ()
     adapter_disposition: str = "fastapi"
     cleanup: tuple[str, ...] = ()
-    portability: dict[str, str] = field(default_factory=dict)
+    portability: dict[str, str] = field(default_factory=dict[str, str])
 
     def __post_init__(self) -> None:
         if len(self.edges) > MAX_DEPENDENCY_EDGES:

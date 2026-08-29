@@ -99,8 +99,9 @@ def _redact_json(value: object, *, depth: int = 0) -> object:
     if isinstance(value, Secret):
         return "***"
     if isinstance(value, Mapping):
+        mapping = cast(Mapping[object, object], value)
         out: dict[str, object] = {}
-        for k, v in value.items():
+        for k, v in mapping.items():
             key = str(k)
             if "secret" in key.lower() or "password" in key.lower() or "token" in key.lower():
                 out[key] = "***"
@@ -108,7 +109,8 @@ def _redact_json(value: object, *, depth: int = 0) -> object:
                 out[key] = _redact_json(v, depth=depth + 1)
         return out
     if isinstance(value, list):
-        return [_redact_json(v, depth=depth + 1) for v in value[:500]]
+        values = cast(list[object], value)
+        return [_redact_json(item, depth=depth + 1) for item in values[:500]]
     return value
 
 
@@ -527,8 +529,8 @@ class Tabs(Component[TabsProps]):
             )
         tabs_id = self.props.id or f"tabs-{self.render_instance_id()}"
         active = self.props.active or self._panels[0][0]
-        tablist = []
-        panels = []
+        tablist: list[NodeLike] = []
+        panels: list[NodeLike] = []
         root_alpine = AlpineAttrs.data({"active": active}, source=f"component:Tabs:{tabs_id}")
         for idx, (name, content) in enumerate(self._panels):
             tab_id = f"{tabs_id}-tab-{idx}"

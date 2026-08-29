@@ -36,7 +36,7 @@ def install_openapi(app: FastAPI) -> None:
         registry = get_registry()
         route_by_op = {r.operation_id: r for r in registry.routes()}
         handles = getattr(getattr(app, "state", None), "hedron_handles", None)
-        handle_map = handles if isinstance(handles, dict) else {}
+        handle_map = cast(dict[str, object], handles) if isinstance(handles, dict) else {}
         descriptors = {item.logical_id: item for item in list_handle_descriptors()}
         needs_hedron_scopes = False
         paths = schema.get("paths")
@@ -44,9 +44,11 @@ def install_openapi(app: FastAPI) -> None:
             for path_item in paths.values():
                 if not isinstance(path_item, dict):
                     continue
-                for operation in path_item.values():
-                    if not isinstance(operation, dict):
+                typed_path_item = cast(dict[str, JsonValue], path_item)
+                for operation_value in typed_path_item.values():
+                    if not isinstance(operation_value, dict):
                         continue
+                    operation = cast(dict[str, JsonValue], operation_value)
                     op_id = operation.get("operationId")
                     meta = route_by_op.get(op_id) if isinstance(op_id, str) else None
                     if meta is None:
@@ -123,11 +125,11 @@ def install_openapi(app: FastAPI) -> None:
                         needs_hedron_scopes = True
                     callbacks = getattr(meta, "openapi_callbacks", None)
                     if isinstance(callbacks, dict):
-                        operation.setdefault("callbacks", callbacks)
+                        operation.setdefault("callbacks", cast(JsonValue, callbacks))
                     webhooks_note = getattr(meta, "openapi_webhooks", None)
                     if webhooks_note:
                         operation.setdefault("x-hedron-webhooks", webhooks_note)
-                    responses = operation.setdefault("responses", {})
+                    responses = operation.setdefault("responses", cast(JsonValue, {}))
                     if not isinstance(responses, dict):
                         continue
                     ok = responses.setdefault("200", {})

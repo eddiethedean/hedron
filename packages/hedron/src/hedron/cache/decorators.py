@@ -8,7 +8,7 @@ import time
 from collections.abc import Awaitable, Callable, Mapping
 from typing import ParamSpec, TypeVar, cast, overload
 
-from hedron.cache.policy import _should_reject_cache
+from hedron.cache.policy import should_reject_cache
 from hedron_core.cache import (
     CacheEvent,
     InMemoryCacheBackend,
@@ -68,7 +68,7 @@ def _decorate(
         @functools.wraps(fn)
         async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
             bound = _bound_arguments(fn, args, kwargs)
-            reject = _should_reject_cache(
+            reject = should_reject_cache(
                 scope=scope, args=args, kwargs=kwargs, vary_on=vary_on, bound=bound
             )
             if reject:
@@ -130,7 +130,7 @@ def _decorate(
     @functools.wraps(fn)
     def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
         bound = _bound_arguments(fn, args, kwargs)
-        reject = _should_reject_cache(
+        reject = should_reject_cache(
             scope=scope, args=args, kwargs=kwargs, vary_on=vary_on, bound=bound
         )
         if reject:

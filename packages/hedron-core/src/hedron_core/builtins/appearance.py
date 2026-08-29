@@ -262,7 +262,7 @@ def normalize_responsive_int(
                 explanation=f"Breakpoint {breakpoint_name!r} is not supported.",
                 remediation=f"Use one of: {', '.join(BREAKPOINTS)}.",
             )
-        if not isinstance(count, int) or isinstance(count, bool):
+        if isinstance(count, bool):
             raise error(
                 HED_HTML_0006,
                 title=f"Invalid {label} value",

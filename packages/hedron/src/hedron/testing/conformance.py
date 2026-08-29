@@ -3,9 +3,17 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Protocol, cast
 
 __all__ = ["fastapi_conformance_checks"]
+
+
+class _Response(Protocol):
+    status_code: int
+
+
+class _Client(Protocol):
+    def get(self, url: str) -> _Response: ...
 
 
 def fastapi_conformance_checks(app_factory: Callable[[], Any]) -> list[str]:
@@ -21,7 +29,7 @@ def fastapi_conformance_checks(app_factory: Callable[[], Any]) -> list[str]:
         ):
             findings.append("Explorer should be absent when explorer='off'")
         # Smoke GET of OpenAPI
-        response = client.get("/openapi.json")
+        response = cast(_Client, client).get("/openapi.json")
         if response.status_code >= 500:
             findings.append("OpenAPI document failed to render")
     return findings

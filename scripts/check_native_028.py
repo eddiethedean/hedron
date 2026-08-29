@@ -55,7 +55,7 @@ def _check_pypi_wheel_tags(errors: list[str]) -> None:
     version = str(pyproject["project"]["version"])
     url = f"https://pypi.org/pypi/hedron-native/{version}/json"
     try:
-        with urllib.request.urlopen(url, timeout=20) as resp:  # noqa: S310
+        with urllib.request.urlopen(url, timeout=20) as resp:
             payload = json.load(resp)
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
         errors.append(f"unable to query PyPI for hedron-native=={version}: {exc}")

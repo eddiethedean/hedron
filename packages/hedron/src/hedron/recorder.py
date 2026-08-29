@@ -10,7 +10,7 @@ import json
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 __all__ = [
     "RecordedExchange",
@@ -67,11 +67,11 @@ def _is_sensitive_key(key: str) -> bool:
 
 def _redact_value(value: Any) -> Any:
     if isinstance(value, Mapping):
-        return _redact_mapping(value)
+        return _redact_mapping(cast(Mapping[str, Any], value))
     if isinstance(value, list):
-        return [_redact_value(item) for item in value]
+        return [_redact_value(item) for item in cast(list[Any], value)]
     if isinstance(value, tuple):
-        return tuple(_redact_value(item) for item in value)
+        return tuple(_redact_value(item) for item in cast(tuple[Any, ...], value))
     return value
 
 
@@ -90,7 +90,7 @@ class RecordedExchange:
     method: str
     path: str
     public: bool
-    headers: Mapping[str, str] = field(default_factory=dict)
+    headers: Mapping[str, str] = field(default_factory=dict[str, str])
     body: Mapping[str, Any] | None = None
     session_assumptions: tuple[str, ...] = ()
     file_fixtures: tuple[str, ...] = ()
@@ -108,8 +108,8 @@ class RecordingSnippet:
 class InteractionRecorder:
     """Record public endpoint exchanges into redacted client snippets."""
 
-    public_endpoints: set[str] = field(default_factory=set)
-    _exchanges: list[RecordedExchange] = field(default_factory=list, init=False)
+    public_endpoints: set[str] = field(default_factory=set[str])
+    _exchanges: list[RecordedExchange] = field(default_factory=list[RecordedExchange], init=False)
 
     def declare_public(self, *endpoints: str) -> None:
         """Declare paths that may be recorded (method:path or path-only)."""

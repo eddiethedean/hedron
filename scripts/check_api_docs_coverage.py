@@ -107,8 +107,7 @@ def main() -> int:
     missing_edron = sorted(edron_exports - edron_documented)
     if missing_edron:
         raise SystemExit(
-            "docs/api/EDRON_EXPORTS.md is missing Edron exports:\n  "
-            + "\n  ".join(missing_edron)
+            "docs/api/EDRON_EXPORTS.md is missing Edron exports:\n  " + "\n  ".join(missing_edron)
         )
     if "::: edron" not in EDRON_AUTODOC.read_text(encoding="utf-8"):
         raise SystemExit("docs/api/EDRON_AUTODOC.md must render the public edron module")

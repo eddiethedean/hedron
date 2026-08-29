@@ -8,6 +8,7 @@ from fastapi import Depends
 
 T = TypeVar("T")
 ResourceScope = Literal["request", "application"]
+ResourceKind = Literal["sqlalchemy", "snowflake", "custom"]
 
 
 @dataclass
@@ -53,7 +54,7 @@ class Resource:
     name: str
     factory: Callable[[], Any]
     scope: ResourceScope = "application"
-    kind: Literal["sqlalchemy", "snowflake", "custom"] = "custom"
+    kind: ResourceKind = "custom"
     secret_refs: Mapping[str, str] = field(default_factory=dict)
     config: Mapping[str, object] = field(default_factory=dict)
     healthcheck: Callable[[Any], bool] | None = None
@@ -86,7 +87,7 @@ def resource(
     name: str,
     factory: Callable[[], Any] | None = None,
     *,
-    kind: Literal["sqlalchemy", "snowflake", "custom"] = "custom",
+    kind: ResourceKind = "custom",
     scope: ResourceScope = "application",
     secret_refs: Mapping[str, str] | None = None,
     config: Mapping[str, object] | None = None,

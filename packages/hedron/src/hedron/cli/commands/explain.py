@@ -5,9 +5,10 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from typing import Any
+from collections.abc import Sequence
+from typing import Any, cast
 
-from hedron.cli.discovery import _load_app
+from hedron.cli.discovery import load_app as _load_app
 
 
 def _cmd_explain(args: argparse.Namespace) -> int:
@@ -63,11 +64,11 @@ def _format_human(payload: dict[str, Any]) -> str:
                 lines.append(f"{key}: (none)")
                 continue
             lines.append(f"{key}:")
-            for item in value:
+            for item in cast(Sequence[object], value):
                 lines.append(f"  - {_short(item)}")
         elif isinstance(value, dict):
             lines.append(f"{key}:")
-            for nested_key, nested_value in value.items():
+            for nested_key, nested_value in cast(dict[object, object], value).items():
                 lines.append(f"  {nested_key}: {_short(nested_value)}")
         else:
             lines.append(f"{key}: {_short(value)}")
@@ -78,3 +79,6 @@ def _short(value: object) -> str:
     if isinstance(value, (str, int, float, bool)) or value is None:
         return str(value)
     return json.dumps(value, sort_keys=True, default=str)
+
+
+cmd_explain = _cmd_explain

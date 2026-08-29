@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from hedron_core.a11y.profile import ACCESSIBILITY_PROFILE
 from hedron_core.diagnostics import error
@@ -48,6 +48,15 @@ _GATE_IDS = frozenset(
         "REMEDIATE-021",
     }
 )
+
+
+def _string_tuple(value: object, *, label: str) -> tuple[str, ...]:
+    if not isinstance(value, (list, tuple)):
+        raise ValueError(f"HumanAtRecord.{label} must be an array of strings")
+    items = cast(list[object] | tuple[object, ...], value)
+    if any(not isinstance(item, str) for item in items):
+        raise ValueError(f"HumanAtRecord.{label} must be an array of strings")
+    return cast(tuple[str, ...], tuple(items))
 
 
 @dataclass(frozen=True, slots=True)
@@ -179,25 +188,17 @@ class HumanAtRecord:
         os_raw = data.get("os")
         browser_raw = data.get("browser")
         at_raw = data.get("at")
-        os_info: dict[str, Any] = os_raw if isinstance(os_raw, dict) else {}
-        browser: dict[str, Any] = browser_raw if isinstance(browser_raw, dict) else {}
-        at: dict[str, Any] = at_raw if isinstance(at_raw, dict) else {}
-        gate_raw = data.get("gate_ids") or ()
-        task_ids_raw = data.get("task_ids") or ()
-        if not isinstance(gate_raw, (list, tuple)) or any(not isinstance(g, str) for g in gate_raw):
-            raise ValueError("HumanAtRecord.gate_ids must be an array of strings")
-        if not isinstance(task_ids_raw, (list, tuple)) or any(
-            not isinstance(t, str) for t in task_ids_raw
-        ):
-            raise ValueError("HumanAtRecord.task_ids must be an array of strings")
+        os_info = cast(dict[str, object], os_raw) if isinstance(os_raw, dict) else {}
+        browser = cast(dict[str, object], browser_raw) if isinstance(browser_raw, dict) else {}
+        at = cast(dict[str, object], at_raw) if isinstance(at_raw, dict) else {}
+        gate_ids = _string_tuple(data.get("gate_ids") or (), label="gate_ids")
+        task_ids = _string_tuple(data.get("task_ids") or (), label="task_ids")
         redacted = data.get("redacted", False)
         stretch = data.get("stretch", False)
         if not isinstance(redacted, bool):
             raise ValueError("HumanAtRecord.redacted must be a boolean")
         if not isinstance(stretch, bool):
             raise ValueError("HumanAtRecord.stretch must be a boolean")
-        gate_ids = tuple(gate_raw)
-        task_ids = tuple(task_ids_raw)
         at_settings_raw = at.get("settings")
         return cls(
             record_id=str(data.get("record_id") or ""),
@@ -268,12 +269,12 @@ class EvidenceInventory:
     """Collect contract, automation, human AT, and waiver evidence for release governance."""
 
     profile_id: str = ACCESSIBILITY_PROFILE.profile_id
-    contracts: list[str] = field(default_factory=list)
-    automation_results: list[dict[str, Any]] = field(default_factory=list)
-    human_at_results: list[HumanAtRecord] = field(default_factory=list)
-    waivers: list[Waiver] = field(default_factory=list)
-    known_limitations: list[str] = field(default_factory=list)
-    third_party_boundaries: list[str] = field(default_factory=list)
+    contracts: list[str] = field(default_factory=list[str])
+    automation_results: list[dict[str, Any]] = field(default_factory=list[dict[str, Any]])
+    human_at_results: list[HumanAtRecord] = field(default_factory=list[HumanAtRecord])
+    waivers: list[Waiver] = field(default_factory=list[Waiver])
+    known_limitations: list[str] = field(default_factory=list[str])
+    third_party_boundaries: list[str] = field(default_factory=list[str])
     feedback_route: str | None = None
     generated_at: str = field(
         default_factory=lambda: datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -307,9 +308,9 @@ class AccessibilityStatement:
     scope: str = ""
     contact: str = ""
     feedback_route: str = ""
-    known_limitations: list[str] = field(default_factory=list)
-    alternatives: list[str] = field(default_factory=list)
-    tested_environments: list[str] = field(default_factory=list)
+    known_limitations: list[str] = field(default_factory=list[str])
+    alternatives: list[str] = field(default_factory=list[str])
+    tested_environments: list[str] = field(default_factory=list[str])
     assessment_approach: str = "Hedron automation + human review"
     assessment_date: str = field(
         default_factory=lambda: datetime.now(timezone.utc).date().isoformat()

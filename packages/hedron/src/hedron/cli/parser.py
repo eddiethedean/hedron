@@ -3,56 +3,60 @@
 from __future__ import annotations
 
 import argparse
-from typing import Any
+from typing import Protocol
 
-from hedron.cli.commands.accel_status import _cmd_accel_status
-from hedron.cli.commands.audit_components import _cmd_audit_components
-from hedron.cli.commands.build import _cmd_build
-from hedron.cli.commands.check import _cmd_check
-from hedron.cli.commands.conformance import _cmd_conformance
-from hedron.cli.commands.dev import _cmd_dev
-from hedron.cli.commands.discover import _cmd_discover
-from hedron.cli.commands.eject import _cmd_eject
-from hedron.cli.commands.explain import _cmd_explain
-from hedron.cli.commands.fleet import _cmd_fleet
-from hedron.cli.commands.graph import _cmd_graph
-from hedron.cli.commands.inspect import _cmd_inspect
-from hedron.cli.commands.new import _cmd_new
-from hedron.cli.commands.package import _cmd_package_doctor
-from hedron.cli.commands.routes import _cmd_components, _cmd_preview, _cmd_routes
-from hedron.cli.commands.run import _cmd_run_app
-from hedron.cli.commands.security_check import _cmd_security_check
+from hedron.cli.commands.accel_status import cmd_accel_status
+from hedron.cli.commands.audit_components import cmd_audit_components
+from hedron.cli.commands.build import cmd_build
+from hedron.cli.commands.check import cmd_check
+from hedron.cli.commands.conformance import cmd_conformance
+from hedron.cli.commands.dev import cmd_dev
+from hedron.cli.commands.discover import cmd_discover
+from hedron.cli.commands.eject import cmd_eject
+from hedron.cli.commands.explain import cmd_explain
+from hedron.cli.commands.fleet import cmd_fleet
+from hedron.cli.commands.graph import cmd_graph
+from hedron.cli.commands.inspect import cmd_inspect
+from hedron.cli.commands.new import cmd_new
+from hedron.cli.commands.package import cmd_package_doctor
+from hedron.cli.commands.routes import cmd_components, cmd_preview, cmd_routes
+from hedron.cli.commands.run import cmd_run_app
+from hedron.cli.commands.security_check import cmd_security_check
 from hedron.cli.commands.style import (
-    _cmd_style_conform,
-    _cmd_style_custom_css_check,
-    _cmd_style_diff,
-    _cmd_style_eject,
-    _cmd_style_eject_application,
-    _cmd_style_explain,
-    _cmd_style_init,
-    _cmd_style_inspect,
-    _cmd_style_package,
-    _cmd_style_preview,
-    _cmd_style_update_check,
+    cmd_style_conform,
+    cmd_style_custom_css_check,
+    cmd_style_diff,
+    cmd_style_eject,
+    cmd_style_eject_application,
+    cmd_style_explain,
+    cmd_style_init,
+    cmd_style_inspect,
+    cmd_style_package,
+    cmd_style_preview,
+    cmd_style_update_check,
 )
-from hedron.cli.commands.testgen import _cmd_testgen
+from hedron.cli.commands.testgen import cmd_testgen
 from hedron.cli.commands.theme import (
-    _cmd_style_check,
-    _cmd_theme_check,
-    _cmd_theme_contract,
-    _cmd_theme_export,
-    _cmd_theme_inspect,
-    _cmd_theme_manifest,
-    _cmd_theme_matrix,
-    _cmd_theme_metadata,
+    cmd_style_check,
+    cmd_theme_check,
+    cmd_theme_contract,
+    cmd_theme_export,
+    cmd_theme_inspect,
+    cmd_theme_manifest,
+    cmd_theme_matrix,
+    cmd_theme_metadata,
 )
-from hedron.cli.commands.upgrade_report import _cmd_upgrade_report
+from hedron.cli.commands.upgrade_report import cmd_upgrade_report
 
 
-def _cmd_style_check_dispatch(args: Any) -> int:
+class _Subparsers(Protocol):
+    def add_parser(self, name: str, *, help: str | None = None) -> argparse.ArgumentParser: ...
+
+
+def _cmd_style_check_dispatch(args: argparse.Namespace) -> int:
     if args.custom_css:
-        return _cmd_style_custom_css_check(args)
-    return _cmd_style_check(args)
+        return cmd_style_custom_css_check(args)
+    return cmd_style_check(args)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -84,7 +88,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _register_catalog_commands(sub: Any) -> None:
+def _register_catalog_commands(sub: _Subparsers) -> None:
     """Register routes/components/preview/testgen subcommands."""
     routes_p = sub.add_parser("routes", help="List registered Hedron routes")
     routes_p.add_argument(
@@ -92,14 +96,14 @@ def _register_catalog_commands(sub: Any) -> None:
         action="store_true",
         help="Emit a versioned typed route document (hedron-route-document-1)",
     )
-    routes_p.set_defaults(func=_cmd_routes)
+    routes_p.set_defaults(func=cmd_routes)
 
     components_p = sub.add_parser("components", help="List registered components")
-    components_p.set_defaults(func=_cmd_components)
+    components_p.set_defaults(func=cmd_components)
 
     preview_p = sub.add_parser("preview", help="Inspect a route/component preview")
     preview_p.add_argument("logical_id", help="Route logical id or name")
-    preview_p.set_defaults(func=_cmd_preview)
+    preview_p.set_defaults(func=cmd_preview)
 
     testgen_p = sub.add_parser(
         "testgen",
@@ -120,10 +124,10 @@ def _register_catalog_commands(sub: Any) -> None:
         default=None,
         help="Write source to a file instead of stdout",
     )
-    testgen_p.set_defaults(func=_cmd_testgen)
+    testgen_p.set_defaults(func=cmd_testgen)
 
 
-def _register_inspect_commands(sub: Any) -> None:
+def _register_inspect_commands(sub: _Subparsers) -> None:
     """Register inspect and eject subcommands."""
     inspect_p = sub.add_parser(
         "inspect",
@@ -146,7 +150,7 @@ def _register_inspect_commands(sub: Any) -> None:
         default=None,
         help="Read an existing interactions.json without importing the app",
     )
-    inspect_p.set_defaults(func=_cmd_inspect)
+    inspect_p.set_defaults(func=cmd_inspect)
 
     eject_p = sub.add_parser(
         "eject",
@@ -171,7 +175,7 @@ def _register_inspect_commands(sub: Any) -> None:
         default=None,
         help="Feature surface name to select when ejecting features:ID",
     )
-    eject_p.set_defaults(func=_cmd_eject)
+    eject_p.set_defaults(func=cmd_eject)
 
     explain_p = sub.add_parser(
         "explain",
@@ -187,15 +191,15 @@ def _register_inspect_commands(sub: Any) -> None:
         default="human",
         help="Output format (default: human)",
     )
-    explain_p.set_defaults(func=_cmd_explain)
+    explain_p.set_defaults(func=cmd_explain)
 
 
-def _register_scaffold_commands(sub: Any) -> None:
+def _register_scaffold_commands(sub: _Subparsers) -> None:
     """Register build and new subcommands."""
     build_p = sub.add_parser("build", help="Compile CSS/assets into a build manifest")
     build_p.add_argument("--project", default=None)
     build_p.add_argument("--dev", action="store_true", help="Use readable development names")
-    build_p.set_defaults(func=_cmd_build)
+    build_p.set_defaults(func=cmd_build)
 
     new_p = sub.add_parser("new", help="Scaffold a Hedron application or element")
     new_p.add_argument("name", help="Project name, or 'element'")
@@ -218,10 +222,10 @@ def _register_scaffold_commands(sub: Any) -> None:
         default="minimal",
         help="FastAPI scaffold template (default: minimal)",
     )
-    new_p.set_defaults(func=_cmd_new)
+    new_p.set_defaults(func=cmd_new)
 
 
-def _register_check_commands(sub: Any) -> None:
+def _register_check_commands(sub: _Subparsers) -> None:
     """Register check and security-check subcommands."""
     check_p = sub.add_parser("check", help="Run project diagnostics")
     check_p.add_argument("--project", default=None)
@@ -266,7 +270,7 @@ def _register_check_commands(sub: Any) -> None:
             "integrations are not detected in the project under check"
         ),
     )
-    check_p.set_defaults(func=_cmd_check)
+    check_p.set_defaults(func=cmd_check)
 
     security_check_p = sub.add_parser(
         "security-check",
@@ -294,10 +298,10 @@ def _register_check_commands(sub: Any) -> None:
         action="store_true",
         help="Fail on proven warnings and baseline drift",
     )
-    security_check_p.set_defaults(func=_cmd_security_check)
+    security_check_p.set_defaults(func=cmd_security_check)
 
 
-def _register_discovery_commands(sub: Any) -> None:
+def _register_discovery_commands(sub: _Subparsers) -> None:
     """Register discover and fleet subcommands."""
     discover_p = sub.add_parser(
         "discover",
@@ -309,7 +313,7 @@ def _register_discovery_commands(sub: Any) -> None:
         default="json",
         help="Output format (default: json)",
     )
-    discover_p.set_defaults(func=_cmd_discover)
+    discover_p.set_defaults(func=cmd_discover)
 
     fleet_p = sub.add_parser(
         "fleet",
@@ -321,10 +325,10 @@ def _register_discovery_commands(sub: Any) -> None:
         default="json",
         help="Output format (default: json)",
     )
-    fleet_p.set_defaults(func=_cmd_fleet)
+    fleet_p.set_defaults(func=cmd_fleet)
 
 
-def _register_package_commands(sub: Any) -> None:
+def _register_package_commands(sub: _Subparsers) -> None:
     """Register package doctor subcommands."""
     package_p = sub.add_parser(
         "package",
@@ -347,38 +351,38 @@ def _register_package_commands(sub: Any) -> None:
         default="json",
         help="Output format (default: json)",
     )
-    package_doctor_p.set_defaults(func=_cmd_package_doctor)
+    package_doctor_p.set_defaults(func=cmd_package_doctor)
 
 
-def _register_audit_commands(sub: Any) -> None:
+def _register_audit_commands(sub: _Subparsers) -> None:
     """Register graph, audit-components, conformance, and accel-status."""
     graph_p = sub.add_parser("graph", help="Component dependency graph")
-    graph_p.set_defaults(func=_cmd_graph)
+    graph_p.set_defaults(func=cmd_graph)
 
     audit_p = sub.add_parser("audit-components", help="Capability and package audit")
-    audit_p.set_defaults(func=_cmd_audit_components)
+    audit_p.set_defaults(func=cmd_audit_components)
 
     conf_p = sub.add_parser(
         "conformance",
         help="Run the published language-neutral conformance kit (requires hedron[conformance])",
     )
     conf_p.add_argument("--json", action="store_true", help="Emit JSON report")
-    conf_p.set_defaults(func=_cmd_conformance)
+    conf_p.set_defaults(func=cmd_conformance)
 
     accel_p = sub.add_parser(
         "accel-status",
         help="Report optional hedron-native acceleration status",
     )
-    accel_p.set_defaults(func=_cmd_accel_status)
+    accel_p.set_defaults(func=cmd_accel_status)
 
 
-def _register_runtime_commands(sub: Any) -> None:
+def _register_runtime_commands(sub: _Subparsers) -> None:
     """Register dev and run subcommands."""
     dev_p = sub.add_parser("dev", help="Watch Python/Jinja/CSS/assets and rebuild atomically")
     dev_p.add_argument("--project", default=None)
     dev_p.add_argument("--interval", type=float, default=0.5)
     dev_p.add_argument("--once", action="store_true", help="Build once and exit")
-    dev_p.set_defaults(func=_cmd_dev)
+    dev_p.set_defaults(func=cmd_dev)
 
     run_p = sub.add_parser(
         "run",
@@ -409,10 +413,10 @@ def _register_runtime_commands(sub: Any) -> None:
         ),
         default="auto",
     )
-    run_p.set_defaults(func=_cmd_run_app)
+    run_p.set_defaults(func=cmd_run_app)
 
 
-def _register_theme_commands(sub: Any) -> None:
+def _register_theme_commands(sub: _Subparsers) -> None:
     """Register theme and style subcommands."""
     theme_p = sub.add_parser("theme", help="Theme token and contrast diagnostics")
     theme_sub = theme_p.add_subparsers(dest="theme_command", required=True)
@@ -432,7 +436,7 @@ def _register_theme_commands(sub: Any) -> None:
         default="error",
         help="Fail when diagnostics meet or exceed this severity (error|warning|info)",
     )
-    theme_check_p.set_defaults(func=_cmd_theme_check)
+    theme_check_p.set_defaults(func=cmd_theme_check)
 
     theme_export_p = theme_sub.add_parser(
         "export",
@@ -447,19 +451,19 @@ def _register_theme_commands(sub: Any) -> None:
     )
     theme_export_p.add_argument("--format", choices=("css", "json", "report"), default="json")
     theme_export_p.add_argument("--output", default=None)
-    theme_export_p.set_defaults(func=_cmd_theme_export)
+    theme_export_p.set_defaults(func=cmd_theme_export)
 
     theme_manifest_p = theme_sub.add_parser(
         "manifest", help="Emit the registry-derived component theme manifest"
     )
     theme_manifest_p.add_argument("--output", default=None)
-    theme_manifest_p.set_defaults(func=_cmd_theme_manifest)
+    theme_manifest_p.set_defaults(func=cmd_theme_manifest)
 
     theme_metadata_p = theme_sub.add_parser(
         "metadata", help="Emit registry-derived custom-element metadata"
     )
     theme_metadata_p.add_argument("--output", default=None)
-    theme_metadata_p.set_defaults(func=_cmd_theme_metadata)
+    theme_metadata_p.set_defaults(func=cmd_theme_metadata)
 
     theme_matrix_p = theme_sub.add_parser("matrix", help="Emit the bounded component state matrix")
     theme_matrix_p.add_argument("--component", action="append", default=None)
@@ -467,7 +471,7 @@ def _register_theme_commands(sub: Any) -> None:
     theme_matrix_p.add_argument("--mode", action="append", default=None)
     theme_matrix_p.add_argument("--accessibility-mode", action="append", default=None)
     theme_matrix_p.add_argument("--output", default=None)
-    theme_matrix_p.set_defaults(func=_cmd_theme_matrix)
+    theme_matrix_p.set_defaults(func=cmd_theme_matrix)
 
     theme_contract_p = theme_sub.add_parser(
         "contract", help="Emit the complete theme-contract evidence report"
@@ -476,14 +480,14 @@ def _register_theme_commands(sub: Any) -> None:
     theme_contract_p.add_argument("--spec", default=None, help="ThemeSpec JSON input")
     theme_contract_p.add_argument("--stylesheet", default=None)
     theme_contract_p.add_argument("--output", default=None)
-    theme_contract_p.set_defaults(func=_cmd_theme_contract)
+    theme_contract_p.set_defaults(func=cmd_theme_contract)
 
     theme_inspect_p = theme_sub.add_parser(
         "inspect", help="Inspect stylesheet compatibility consumers"
     )
     theme_inspect_p.add_argument("--stylesheet", required=True)
     theme_inspect_p.add_argument("--output", default=None)
-    theme_inspect_p.set_defaults(func=_cmd_theme_inspect)
+    theme_inspect_p.set_defaults(func=cmd_theme_inspect)
 
     style_p = sub.add_parser("style", help="Application presentation audits and design tooling")
     style_sub = style_p.add_subparsers(dest="style_command", required=True)
@@ -510,7 +514,7 @@ def _register_theme_commands(sub: Any) -> None:
         help="Inspect registered application styles, cascade order, and public hooks",
     )
     style_inspect_p.add_argument("--format", choices=("human", "json"), default="human")
-    style_inspect_p.set_defaults(func=_cmd_style_inspect)
+    style_inspect_p.set_defaults(func=cmd_style_inspect)
 
     style_explain_p = style_sub.add_parser(
         "explain",
@@ -528,7 +532,7 @@ def _register_theme_commands(sub: Any) -> None:
         choices=("human", "json"),
         default="human",
     )
-    style_explain_p.set_defaults(func=_cmd_style_explain)
+    style_explain_p.set_defaults(func=cmd_style_explain)
 
     style_preview_p = style_sub.add_parser(
         "preview",
@@ -549,7 +553,7 @@ def _register_theme_commands(sub: Any) -> None:
         choices=("all", "light", "dark"),
         default="all",
     )
-    style_preview_p.set_defaults(func=_cmd_style_preview)
+    style_preview_p.set_defaults(func=cmd_style_preview)
 
     style_diff_p = style_sub.add_parser(
         "diff",
@@ -572,7 +576,7 @@ def _register_theme_commands(sub: Any) -> None:
         choices=("human", "json"),
         default="human",
     )
-    style_diff_p.set_defaults(func=_cmd_style_diff)
+    style_diff_p.set_defaults(func=cmd_style_diff)
 
     style_update_p = style_sub.add_parser(
         "update",
@@ -581,7 +585,7 @@ def _register_theme_commands(sub: Any) -> None:
     style_update_p.add_argument("--check", action="store_true", required=True)
     style_update_p.add_argument("--manifest", default=None)
     style_update_p.add_argument("--format", choices=("human", "json"), default="human")
-    style_update_p.set_defaults(func=_cmd_style_update_check)
+    style_update_p.set_defaults(func=cmd_style_update_check)
 
     style_eject_p = style_sub.add_parser(
         "eject",
@@ -605,7 +609,7 @@ def _register_theme_commands(sub: Any) -> None:
         action="store_true",
         help="Overwrite existing ejected files",
     )
-    style_eject_p.set_defaults(func=_cmd_style_eject)
+    style_eject_p.set_defaults(func=cmd_style_eject)
 
     style_eject_app_p = style_sub.add_parser(
         "eject-css",
@@ -613,7 +617,7 @@ def _register_theme_commands(sub: Any) -> None:
     )
     style_eject_app_p.add_argument("--output", required=True)
     style_eject_app_p.add_argument("--overwrite", action="store_true")
-    style_eject_app_p.set_defaults(func=_cmd_style_eject_application)
+    style_eject_app_p.set_defaults(func=cmd_style_eject_application)
 
     style_init_p = style_sub.add_parser(
         "init",
@@ -621,7 +625,7 @@ def _register_theme_commands(sub: Any) -> None:
     )
     style_init_p.add_argument("--name", default="custom")
     style_init_p.add_argument("--output", required=True)
-    style_init_p.set_defaults(func=_cmd_style_init)
+    style_init_p.set_defaults(func=cmd_style_init)
 
     style_package_p = style_sub.add_parser(
         "package",
@@ -636,7 +640,7 @@ def _register_theme_commands(sub: Any) -> None:
     )
     style_package_p.add_argument("--license", action="append", default=None)
     style_package_p.add_argument("--overwrite", action="store_true")
-    style_package_p.set_defaults(func=_cmd_style_package)
+    style_package_p.set_defaults(func=cmd_style_package)
 
     style_conform_p = style_sub.add_parser(
         "conform",
@@ -648,10 +652,10 @@ def _register_theme_commands(sub: Any) -> None:
         choices=("core", "forms", "data", "workflow", "complete"),
         default=None,
     )
-    style_conform_p.set_defaults(func=_cmd_style_conform)
+    style_conform_p.set_defaults(func=cmd_style_conform)
 
 
-def _register_migrate_commands(sub: Any) -> None:
+def _register_migrate_commands(sub: _Subparsers) -> None:
     """Register migrate assistants."""
     migrate_p = sub.add_parser(
         "migrate",
@@ -665,7 +669,7 @@ def _register_migrate_commands(sub: Any) -> None:
     build_react_parser(migrate_sub)
 
 
-def _register_upgrade_commands(sub: Any) -> None:
+def _register_upgrade_commands(sub: _Subparsers) -> None:
     """Register upgrade-report."""
     upgrade_p = sub.add_parser(
         "upgrade-report",
@@ -689,7 +693,7 @@ def _register_upgrade_commands(sub: Any) -> None:
         action="store_true",
         help="Exit 0 even when definite breaks are present",
     )
-    upgrade_p.set_defaults(func=_cmd_upgrade_report)
+    upgrade_p.set_defaults(func=cmd_upgrade_report)
 
 
 if __name__ == "__main__":

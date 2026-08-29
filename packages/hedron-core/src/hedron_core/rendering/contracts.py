@@ -8,7 +8,7 @@ depending on the façade's implementation details.
 from __future__ import annotations
 
 from collections.abc import Mapping
-from contextvars import ContextVar
+from contextvars import ContextVar, Token
 from dataclasses import dataclass, field
 from types import MappingProxyType
 
@@ -84,9 +84,11 @@ def active_render_context() -> RenderContext | None:
     return _active_render_context.get()
 
 
-def push_render_context(context: RenderContext):
+def push_render_context(context: RenderContext) -> Token[RenderContext | None]:
+    """Install ``context`` and return the token required to restore it."""
     return _active_render_context.set(context)
 
 
-def pop_render_context(token: object) -> None:
-    _active_render_context.reset(token)  # type: ignore[arg-type]
+def pop_render_context(token: Token[RenderContext | None]) -> None:
+    """Restore the render context represented by ``token``."""
+    _active_render_context.reset(token)

@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Generator, Iterator, Mapping
+from collections.abc import Generator, Iterator, Mapping, MutableMapping
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, Protocol, cast
 
 from hedron.testing.adapters import AdapterAppFixture, AdapterResponse
 from hedron_core.registry import get_registry
@@ -23,6 +23,10 @@ __all__ = [
     "override_dependencies",
     "render_html",
 ]
+
+
+class _HeaderClient(Protocol):
+    headers: MutableMapping[str, str]
 
 
 def render_html(node: Any, *, mode: RenderMode = RenderMode.FRAGMENT) -> str:
@@ -80,7 +84,7 @@ def fragment_client(app: Any, *, target: str | None = None) -> Any:
     """
     from fastapi.testclient import TestClient
 
-    client = TestClient(app)
+    client = cast(_HeaderClient, TestClient(app))
     client.headers.update({"HX-Request": "true"})
     if target is not None:
         client.headers.update({"HX-Target": target})

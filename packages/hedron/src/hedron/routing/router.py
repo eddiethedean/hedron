@@ -12,6 +12,7 @@ from typing import Any, Literal, ParamSpec, TypedDict, TypeVar, cast
 
 from fastapi import params
 from fastapi.routing import APIRouter
+from starlette.datastructures import State
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -35,7 +36,9 @@ IdempotencyMode = Literal["off", "optional", "required"]
 
 __all__ = ["HedronRouter", "current_request"]
 
-current_request: ContextVar[Request | None] = ContextVar("hedron_current_request", default=None)
+current_request: ContextVar[Request[State] | None] = ContextVar(
+    "hedron_current_request", default=None
+)
 
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
@@ -81,7 +84,7 @@ def _fragment_regions_for_inference(
     ]
 
 
-def _normalize_fragment_regions(
+def normalize_fragment_regions(
     fragment_regions: Sequence[FragmentRegion | str] | FragmentRegion | str | None,
 ) -> tuple[FragmentRegion, ...]:
     if not fragment_regions:
@@ -96,6 +99,10 @@ def _normalize_fragment_regions(
         name = str(r).removeprefix("#")
         out.append(FragmentRegion(id=name, selector=f"#{name}"))
     return tuple(out)
+
+
+# Compatibility alias retained for integrations that imported the former private name.
+_normalize_fragment_regions = normalize_fragment_regions
 
 
 def _set_hedron_attr(target: object, name: str, value: object) -> None:
@@ -121,20 +128,20 @@ def _annotate_callable(
         _set_hedron_attr(target, "_hedron_view_logical_id", view_logical_id)
 
 
-def _resolve_request(args: tuple[Any, ...], kwargs: dict[str, Any]) -> Request | None:
+def _resolve_request(args: tuple[Any, ...], kwargs: dict[str, Any]) -> Request[State] | None:
     request = current_request.get()
     if request is not None:
         return request
     for arg in args:
         if isinstance(arg, Request):
-            return arg
+            return cast(Request[State], arg)
     maybe = kwargs.get("request")
     if isinstance(maybe, Request):
-        return maybe
+        return cast(Request[State], maybe)
     return None
 
 
-async def _enforce_csrf(request: Request, *, require_csrf: bool) -> None:
+async def _enforce_csrf(request: Request[State], *, require_csrf: bool) -> None:
     if not require_csrf or request.method.upper() in _SAFE_METHODS:
         return
     policy: SecurityPolicy = getattr(
@@ -145,7 +152,7 @@ async def _enforce_csrf(request: Request, *, require_csrf: bool) -> None:
 
 
 async def _begin_replay(
-    request: Request,
+    request: Request[State],
     fn: Callable[..., object],
     *,
     idempotency: str,
@@ -412,10 +419,14 @@ class HedronRouter(APIRouter):
 
         host = self._hedron_host_app
         fail_closed_late_registration(
-            registry_sealed=active_builder()._sealed,
+            registry_sealed=active_builder().is_sealed,
             catalog_sealed=get_sealed_catalog() is not None,
             openapi_cached=getattr(host, "openapi_schema", None) is not None,
         )
+
+    def attach_host_app(self, app: object) -> None:
+        """Associate this router with the application that owns registration state."""
+        self._hedron_host_app = app
 
     def add_api_route(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]  # FastAPI parent kwargs are version-sensitive; keep *args/**kwargs.
         self._fail_closed_late()
@@ -431,7 +442,7 @@ class HedronRouter(APIRouter):
     def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]  # FastAPI parent kwargs are version-sensitive; keep *args/**kwargs.
         self._fail_closed_late()
         if isinstance(router, HedronRouter) and self._hedron_host_app is not None:
-            router._hedron_host_app = self._hedron_host_app
+            router.attach_host_app(self._hedron_host_app)
         super().include_router(router, *args, **kwargs)
 
     def _register_route_or_rollback(self, **kwargs: Any) -> None:
@@ -463,7 +474,7 @@ class HedronRouter(APIRouter):
             logical_id = _logical_id(fn)
             verb_list = list(methods or ["GET"])
             op_id = operation_id_for("page", route_name, path, verb_list[0])
-            regions = _normalize_fragment_regions(fragment_regions)
+            regions = normalize_fragment_regions(fragment_regions)
             _annotate_callable(fn, fragment_regions=regions)
             wrapped = _wrap_endpoint(
                 fn,
@@ -534,7 +545,7 @@ class HedronRouter(APIRouter):
             if _route_kind not in {"component", "view"}:
                 raise ValueError("_route_kind must be component or view")
             op_id = operation_id_for(_route_kind, route_name, path, verb_list[0])
-            regions = _normalize_fragment_regions(fragment_regions)
+            regions = normalize_fragment_regions(fragment_regions)
             _annotate_callable(fn, fragment_regions=regions)
             wrapped = _wrap_endpoint(
                 fn,
@@ -636,7 +647,7 @@ class HedronRouter(APIRouter):
             logical_id = _logical_id(fn)
             primary = verb_list[0].upper()
             op_id = operation_id_for("action", route_name, path, primary)
-            regions = _normalize_fragment_regions(fragment_regions)
+            regions = normalize_fragment_regions(fragment_regions)
             _annotate_callable(
                 fn,
                 fragment_regions=regions,
@@ -730,7 +741,7 @@ class HedronRouter(APIRouter):
             schema = False if include_in_schema is None else include_in_schema
             tag_list = list(tags or [])
 
-        regions = _normalize_fragment_regions(fragment_regions)
+        regions = normalize_fragment_regions(fragment_regions)
         _annotate_callable(factory, fragment_regions=regions)
         op_id = operation_id_for("component", route_name, path, verb_list[0])
         wrapped = _wrap_endpoint(

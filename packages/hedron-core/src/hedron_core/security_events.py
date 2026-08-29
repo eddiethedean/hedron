@@ -25,7 +25,7 @@ class SecurityEvent:
     ownership: str = "hedron-core"
     correlation_id: str = ""
     fingerprint: str = ""
-    detail: Mapping[str, Any] = field(default_factory=dict)
+    detail: Mapping[str, Any] = field(default_factory=dict[str, Any])
 
     def __post_init__(self) -> None:
         if self.code not in EVENT_CODES:

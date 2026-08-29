@@ -91,7 +91,7 @@ def _typography_attrs(
 def _validate_lines(lines: int | None) -> int | None:
     if lines is None:
         return None
-    if not isinstance(lines, int) or isinstance(lines, bool) or lines < 1 or lines > 6:
+    if isinstance(lines, bool) or lines < 1 or lines > 6:
         raise error(
             HED_HTML_0006,
             title="Invalid lines value",

@@ -452,7 +452,7 @@ class MultiSelect(Component[MultiSelectProps]):
         self._values = frozenset(values or ())
 
     def render(self) -> NodeLike:
-        opts = []
+        opts: list[NodeLike] = []
         for val, label in self._options:
             attrs: dict[str, HtmlAttrValue] = {"value": val}
             if val in self._values:

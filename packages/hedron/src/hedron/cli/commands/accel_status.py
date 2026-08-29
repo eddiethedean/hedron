@@ -22,3 +22,6 @@ def _cmd_accel_status(args: argparse.Namespace) -> int:
     status = "loaded" if native_available() else "installed (fallback pure-Python)"
     print(f"hedron-native {native_version}: {status}")
     return 0
+
+
+cmd_accel_status = _cmd_accel_status

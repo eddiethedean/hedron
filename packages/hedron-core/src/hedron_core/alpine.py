@@ -14,7 +14,7 @@ import re
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Final, TypeAlias, cast
+from typing import Final, TypeAlias, TypeGuard, cast
 
 from hedron_core.compat import StrEnum
 
@@ -110,6 +110,8 @@ _ALPINE_PLUGIN_ASSETS = {
 }
 _ALPINE_CORE_ASSET = "/hedron-static/alpine/csp-3.16.3.js"
 _HEDRON_BRIDGE_ASSET = "/hedron-static/hedron-alpine.mjs"
+ALPINE_CORE_ASSET = _ALPINE_CORE_ASSET
+HEDRON_BRIDGE_ASSET = _HEDRON_BRIDGE_ASSET
 
 
 def _asset_sort_key(asset: str) -> tuple[int, str]:
@@ -187,14 +189,38 @@ def _json_value(value: object, *, path: str = "value") -> JsonValue:
         return value
     if isinstance(value, Mapping):
         result: dict[str, JsonValue] = {}
-        for key, item in value.items():
+        for key, item in cast(Mapping[object, object], value).items():
             if not isinstance(key, str) or not key:
                 raise ValueError(f"{path} mapping keys must be non-empty strings")
             result[key] = _json_value(item, path=f"{path}.{key}")
         return result
     if isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray, str)):
-        return [_json_value(item, path=f"{path}[{index}]") for index, item in enumerate(value)]
+        sequence = cast(Sequence[object], value)
+        return [_json_value(item, path=f"{path}[{index}]") for index, item in enumerate(sequence)]
     raise TypeError(f"{path} must be JSON-compatible, got {type(value).__name__}")
+
+
+json_value = _json_value
+
+
+def _is_string(value: object) -> TypeGuard[str]:
+    return isinstance(value, str)
+
+
+def _is_feature_demand(value: object) -> TypeGuard[AlpineFeatureDemand]:
+    return isinstance(value, AlpineFeatureDemand)
+
+
+def _is_browser_feature_plan(value: object) -> TypeGuard[BrowserFeaturePlan]:
+    return isinstance(value, BrowserFeaturePlan)
+
+
+def _is_alpine_directive(value: object) -> TypeGuard[AlpineDirective]:
+    return isinstance(value, AlpineDirective)
+
+
+def _is_alpine_attrs(value: object) -> TypeGuard[AlpineAttrs]:
+    return isinstance(value, AlpineAttrs)
 
 
 @dataclass(frozen=True, slots=True)
@@ -238,7 +264,7 @@ class BrowserFeaturePlan:
         demands = tuple(self.demands)
         by_key: dict[tuple[str, str], AlpineFeatureDemand] = {}
         for demand in demands:
-            if not isinstance(demand, AlpineFeatureDemand):
+            if not _is_feature_demand(demand):
                 raise TypeError("demands must contain AlpineFeatureDemand values")
             by_key[(demand.feature, demand.source)] = demand
         requested_assets = tuple(
@@ -300,7 +326,7 @@ class BrowserFeaturePlan:
         )
 
     def merge(self, other: BrowserFeaturePlan) -> BrowserFeaturePlan:
-        if not isinstance(other, BrowserFeaturePlan):
+        if not _is_browser_feature_plan(other):
             raise TypeError("can only merge another BrowserFeaturePlan")
         return self.add(*other.demands, assets=other.assets)
 
@@ -362,14 +388,14 @@ class BrowserPlanClosure:
     fragments: tuple[tuple[str, BrowserFeaturePlan], ...] = ()
 
     def __post_init__(self) -> None:
-        if not isinstance(self.initial, BrowserFeaturePlan):
+        if not _is_browser_feature_plan(self.initial):
             raise TypeError("initial must be a BrowserFeaturePlan")
         normalized: dict[str, BrowserFeaturePlan] = {}
         for name, plan in self.fragments:
             key = str(name).strip()
             if not key:
                 raise ValueError("fragment name is required")
-            if not isinstance(plan, BrowserFeaturePlan):
+            if not _is_browser_feature_plan(plan):
                 raise TypeError("fragment plans must be BrowserFeaturePlan values")
             if key in normalized:
                 raise ValueError(f"duplicate browser fragment declaration {key!r}")
@@ -553,7 +579,7 @@ class AlpineDirective:
         _validate_modifiers(name)
         if isinstance(self.value, (AlpineExpression, ReviewedExpression)):
             value = self.value.to_source()
-        elif isinstance(self.value, str):
+        elif _is_string(self.value):
             value = self.value
             if value.strip():
                 try:
@@ -594,8 +620,10 @@ class AlpineDirective:
 class AlpineAttrs:
     """Typed Alpine attributes accepted by Python components and ``html.*``."""
 
-    directives: Mapping[str, object] | Sequence[AlpineDirective] = field(default_factory=dict)
-    state: Mapping[str, object] = field(default_factory=dict)
+    directives: Mapping[str, object] | Sequence[AlpineDirective] = field(
+        default_factory=dict[str, object]
+    )
+    state: Mapping[str, object] = field(default_factory=dict[str, object])
     features: tuple[str, ...] = ()
     source: str = "python"
 
@@ -610,7 +638,7 @@ class AlpineAttrs:
             )
         else:
             normalized = tuple(self.directives)
-            if not all(isinstance(item, AlpineDirective) for item in normalized):
+            if not all(_is_alpine_directive(item) for item in normalized):
                 raise TypeError("directives must contain AlpineDirective values")
         by_name: dict[str, AlpineDirective] = {}
         for directive in normalized:
@@ -747,7 +775,7 @@ class AlpineAttrs:
 
     def merge(self, other: AlpineAttrs) -> AlpineAttrs:
         """Compose typed attributes while rejecting duplicate writers."""
-        if not isinstance(other, AlpineAttrs):
+        if not _is_alpine_attrs(other):
             raise TypeError("can only merge another AlpineAttrs value")
         overlap = set(self.state).intersection(other.state)
         for key in overlap:

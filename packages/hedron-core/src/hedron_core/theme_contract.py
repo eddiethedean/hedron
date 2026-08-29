@@ -82,16 +82,20 @@ class ThemeResolution:
 
     name: str
     tokens: Mapping[str, str]
-    derived: Mapping[str, str] = field(default_factory=dict)
-    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    accessibility_modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    aliases: Mapping[str, str] = field(default_factory=dict)
-    groups: Mapping[str, str] = field(default_factory=dict)
-    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
+    derived: Mapping[str, str] = field(default_factory=dict[str, str])
+    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
+    variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
+    accessibility_modes: Mapping[str, Mapping[str, str]] = field(
+        default_factory=dict[str, Mapping[str, str]]
+    )
+    aliases: Mapping[str, str] = field(default_factory=dict[str, str])
+    groups: Mapping[str, str] = field(default_factory=dict[str, str])
+    recipes: Mapping[str, Mapping[str, str]] = field(default_factory=dict[str, Mapping[str, str]])
     content_width: str | None = None
-    typography_features: Mapping[str, int] = field(default_factory=dict)
-    typography_role_features: Mapping[str, Mapping[str, int]] = field(default_factory=dict)
+    typography_features: Mapping[str, int] = field(default_factory=dict[str, int])
+    typography_role_features: Mapping[str, Mapping[str, int]] = field(
+        default_factory=dict[str, Mapping[str, int]]
+    )
     provenance: tuple[Mapping[str, Any], ...] = ()
     source_schema: str = "hedron.theme/1"
 

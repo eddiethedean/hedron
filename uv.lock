@@ -1786,6 +1786,7 @@ dev = [
     { name = "sqlmodel" },
     { name = "streamlit" },
     { name = "syrupy" },
+    { name = "tomli" },
     { name = "uvicorn" },
     { name = "waitress" },
 ]
@@ -1847,6 +1848,7 @@ dev = [
     { name = "sqlmodel", specifier = ">=0.0.22" },
     { name = "streamlit", specifier = ">=1.59.1" },
     { name = "syrupy", specifier = ">=4.8" },
+    { name = "tomli", specifier = ">=2.0.1" },
     { name = "uvicorn", specifier = ">=0.52.1" },
     { name = "waitress", specifier = ">=3,<4" },
 ]

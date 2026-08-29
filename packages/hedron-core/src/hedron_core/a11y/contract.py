@@ -272,7 +272,9 @@ def seed_reviewed_contracts(
 class AccessibilityContractCatalog:
     """Registry-driven catalog of public component contracts."""
 
-    contracts: dict[str, AccessibilityContract] = field(default_factory=dict)
+    contracts: dict[str, AccessibilityContract] = field(
+        default_factory=dict[str, AccessibilityContract]
+    )
     package: str = "hedron-core"
 
     def register(self, contract: AccessibilityContract) -> None:

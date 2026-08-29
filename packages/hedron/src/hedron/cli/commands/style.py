@@ -12,9 +12,9 @@ import sys
 import tempfile
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import TypedDict
 
-from hedron.cli.discovery import _load_app
+from hedron.cli.discovery import load_app as _load_app
 from hedron_core.codes import HED_STYLE_EJECT_0002
 from hedron_core.css.compiler import compile_css
 from hedron_core.css.layers import CASCADE_LAYERS
@@ -30,7 +30,7 @@ from hedron_core.theme import (
     get_theme,
 )
 from hedron_core.theme_platform import ThemeSpec, conformance_report, package_theme
-from hedron_core.typing_aliases import JsonObject
+from hedron_core.typing_aliases import JsonObject, is_object_list, is_string_mapping
 
 DIFF_SCHEMA = "hedron.design-system-diff/1"
 PREVIEW_SCHEMA = "hedron.design-system-preview/1"
@@ -38,6 +38,69 @@ SOURCE_MAP_SCHEMA = "hedron.design-system-source-map/1"
 PREVIEW_FIXTURE_VERSION = "hedron.design-gallery/1"
 APPLICATION_STYLE_EJECTION_SCHEMA = "hedron.style-ejection/1"
 _SHA256_DIGEST = re.compile(r"^sha256-[0-9a-f]{64}$")
+
+
+class _ApplicationStyleEntry(TypedDict):
+    logical_id: str
+    digest: str
+
+
+class _ApplicationStyleBlock(TypedDict):
+    logical_id: str
+    block_digest: str
+    source_digest: str
+
+
+class _ApplicationStyleEjectionPayload(TypedDict):
+    schema: str
+    files: list[str]
+    styles: list[_ApplicationStyleEntry]
+    blocks: list[_ApplicationStyleBlock]
+    css_digest: str
+
+
+class _ApplicationStyleDrift(TypedDict):
+    schema: str
+    manifest: str
+    added: list[str]
+    removed: list[str]
+    changed: list[str]
+    ejected_changed: bool
+    ejected_missing: bool
+    clean: bool
+
+
+class _MappingDiff(TypedDict):
+    added: dict[str, object]
+    removed: dict[str, object]
+    changed: dict[str, object]
+
+
+class _ListDiff(TypedDict):
+    base_count: int
+    candidate_count: int
+    equal: bool
+    base: list[object]
+    candidate: list[object]
+
+
+class _EmittedOutputDiff(TypedDict):
+    css_equal: bool
+    base_sha256: str
+    candidate_sha256: str
+
+
+class _DesignDiff(TypedDict):
+    schema: str
+    base_digest: str
+    candidate_digest: str
+    inputs: _MappingDiff
+    tokens: _MappingDiff
+    groups: _MappingDiff
+    recipes: _ListDiff
+    components: dict[str, _MappingDiff]
+    assets: _ListDiff
+    emitted_output: _EmittedOutputDiff
 
 
 def _require_app(args: argparse.Namespace) -> object:
@@ -176,8 +239,8 @@ def _cmd_style_explain(args: argparse.Namespace) -> int:
         component = parts[0]
         part = parts[1] if len(parts) == 2 else None
         hook = hooks.get(component)
-        part_map = hook.get("parts") if isinstance(hook, Mapping) else None
-        known = isinstance(part_map, Mapping) and (part is None or part in part_map)
+        part_map = hook.get("parts") if is_string_mapping(hook) else None
+        known = is_string_mapping(part_map) and (part is None or part in part_map)
         payload = {
             "schema": "hedron.style-explanation/1",
             "surface": surface,
@@ -358,57 +421,83 @@ def _application_style_manifest_path(path: str | None) -> Path:
     return candidate
 
 
-def _application_style_ejection_payload(manifest_path: Path) -> dict[str, Any]:
+def _application_style_ejection_payload(manifest_path: Path) -> _ApplicationStyleEjectionPayload:
     """Load and strictly validate an application-style ejection sidecar."""
-    raw = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if not isinstance(raw, Mapping):
+    raw: object = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not is_string_mapping(raw):
         raise ValueError("application style manifest must be a JSON object")
-    payload = dict(raw)
-    if payload.get("schema") != APPLICATION_STYLE_EJECTION_SCHEMA:
+    if raw.get("schema") != APPLICATION_STYLE_EJECTION_SCHEMA:
         raise ValueError("unsupported application style manifest schema")
 
-    files = payload.get("files")
+    files = raw.get("files")
     if (
-        not isinstance(files, list)
+        not is_object_list(files)
         or len(files) != 2
         or any(not isinstance(item, str) or not item or Path(item).name != item for item in files)
     ):
         raise ValueError("application style manifest requires two local file names")
-    if not _SHA256_DIGEST.fullmatch(str(payload.get("css_digest") or "")):
+    file_names = [item for item in files if isinstance(item, str)]
+    css_digest = raw.get("css_digest")
+    if not isinstance(css_digest, str) or not _SHA256_DIGEST.fullmatch(css_digest):
         raise ValueError("application style manifest has an invalid CSS digest")
 
-    styles = payload.get("styles")
-    blocks = payload.get("blocks")
-    if not isinstance(styles, list) or not isinstance(blocks, list) or len(blocks) != len(styles):
+    raw_styles = raw.get("styles")
+    raw_blocks = raw.get("blocks")
+    if (
+        not is_object_list(raw_styles)
+        or not is_object_list(raw_blocks)
+        or len(raw_blocks) != len(raw_styles)
+    ):
         raise ValueError("application style manifest styles and blocks must align")
-    for label, entries in (("style", styles), ("block", blocks)):
-        for entry in entries:
-            if (
-                not isinstance(entry, Mapping)
-                or not isinstance(entry.get("logical_id"), str)
-                or not entry.get("logical_id")
-            ):
-                raise ValueError(f"application style manifest has an invalid {label} entry")
-            digest_key = "digest" if label == "style" else "block_digest"
-            if not _SHA256_DIGEST.fullmatch(str(entry.get(digest_key) or "")):
-                raise ValueError(f"application style manifest has an invalid {label} digest")
-            if label == "block" and not _SHA256_DIGEST.fullmatch(
-                str(entry.get("source_digest") or "")
-            ):
-                raise ValueError("application style manifest has an invalid source digest")
-    style_digests = {str(entry["logical_id"]): str(entry["digest"]) for entry in styles}
-    block_sources = {str(entry["logical_id"]): str(entry["source_digest"]) for entry in blocks}
+    styles: list[_ApplicationStyleEntry] = []
+    for entry in raw_styles:
+        if not is_string_mapping(entry):
+            raise ValueError("application style manifest has an invalid style entry")
+        logical_id = entry.get("logical_id")
+        digest = entry.get("digest")
+        if not isinstance(logical_id, str) or not logical_id:
+            raise ValueError("application style manifest has an invalid style entry")
+        if not isinstance(digest, str) or not _SHA256_DIGEST.fullmatch(digest):
+            raise ValueError("application style manifest has an invalid style digest")
+        styles.append({"logical_id": logical_id, "digest": digest})
+
+    blocks: list[_ApplicationStyleBlock] = []
+    for entry in raw_blocks:
+        if not is_string_mapping(entry):
+            raise ValueError("application style manifest has an invalid block entry")
+        logical_id = entry.get("logical_id")
+        block_digest = entry.get("block_digest")
+        source_digest = entry.get("source_digest")
+        if not isinstance(logical_id, str) or not logical_id:
+            raise ValueError("application style manifest has an invalid block entry")
+        if not isinstance(block_digest, str) or not _SHA256_DIGEST.fullmatch(block_digest):
+            raise ValueError("application style manifest has an invalid block digest")
+        if not isinstance(source_digest, str) or not _SHA256_DIGEST.fullmatch(source_digest):
+            raise ValueError("application style manifest has an invalid source digest")
+        blocks.append(
+            {
+                "logical_id": logical_id,
+                "block_digest": block_digest,
+                "source_digest": source_digest,
+            }
+        )
+    style_digests = {entry["logical_id"]: entry["digest"] for entry in styles}
+    block_sources = {entry["logical_id"]: entry["source_digest"] for entry in blocks}
     if style_digests != block_sources:
         raise ValueError("application style manifest block provenance does not match styles")
-    return payload
+    return {
+        "schema": APPLICATION_STYLE_EJECTION_SCHEMA,
+        "files": file_names,
+        "styles": styles,
+        "blocks": blocks,
+        "css_digest": css_digest,
+    }
 
 
-def _application_style_drift(manifest_path: Path) -> dict[str, Any]:
+def _application_style_drift(manifest_path: Path) -> _ApplicationStyleDrift:
     payload = _application_style_ejection_payload(manifest_path)
     expected = {
-        str(item["logical_id"]): str(item.get("digest") or "")
-        for item in payload.get("styles", [])
-        if isinstance(item, Mapping) and item.get("logical_id")
+        str(item["logical_id"]): str(item.get("digest") or "") for item in payload["styles"]
     }
     actual = {
         style.logical_id: style.source_digest for style in get_registry().application_styles()
@@ -471,7 +560,7 @@ def _token_swatches(theme: Theme, *, mode: str) -> str:
     for key, value in sorted(tokens.items()):
         if not key.startswith("color.") and key not in {"focus.ring"}:
             continue
-        safe_bg = value if isinstance(value, str) and value.startswith("#") else "#888888"
+        safe_bg = value if value.startswith("#") else "#888888"
         parts.append(
             '<div class="swatch">'
             f'<span style="background:{html_lib.escape(safe_bg, quote=True)}"></span>'
@@ -562,10 +651,10 @@ def _cmd_style_preview(args: argparse.Namespace) -> int:
     return 0
 
 
-def _mapping_diff(base: Mapping[str, object], candidate: Mapping[str, object]) -> dict[str, object]:
-    added = {k: candidate[k] for k in candidate.keys() - base.keys()}
-    removed = {k: base[k] for k in base.keys() - candidate.keys()}
-    changed = {
+def _mapping_diff(base: Mapping[str, object], candidate: Mapping[str, object]) -> _MappingDiff:
+    added: dict[str, object] = {k: candidate[k] for k in candidate.keys() - base.keys()}
+    removed: dict[str, object] = {k: base[k] for k in base.keys() - candidate.keys()}
+    changed: dict[str, object] = {
         k: {"base": base[k], "candidate": candidate[k]}
         for k in base.keys() & candidate.keys()
         if base[k] != candidate[k]
@@ -573,7 +662,7 @@ def _mapping_diff(base: Mapping[str, object], candidate: Mapping[str, object]) -
     return {"added": added, "removed": removed, "changed": changed}
 
 
-def _list_diff(base: list[object], candidate: list[object]) -> dict[str, object]:
+def _list_diff(base: list[object], candidate: list[object]) -> _ListDiff:
     return {
         "base_count": len(base),
         "candidate_count": len(candidate),
@@ -585,23 +674,22 @@ def _list_diff(base: list[object], candidate: list[object]) -> dict[str, object]
 
 def _components_map(plan: DesignSystemPlan) -> dict[str, object]:
     raw = plan.compatibility.get("components", {})
-    if not isinstance(raw, dict):
+    if not is_string_mapping(raw):
         return {}
     out: dict[str, object] = {}
     for family, names in raw.items():
-        key = str(family)
-        out[key] = tuple(names) if isinstance(names, list) else names
+        out[family] = tuple(names) if is_object_list(names) else names
     return out
 
 
-def _design_diff(base: DesignSystem, candidate: DesignSystem) -> dict[str, object]:
+def _design_diff(base: DesignSystem, candidate: DesignSystem) -> _DesignDiff:
     base_plan = base.explain()
     cand_plan = candidate.explain()
     base_theme = base.to_theme()
     cand_theme = candidate.to_theme()
     base_css = emit_theme_css(base_theme)
     cand_css = emit_theme_css(cand_theme)
-    payload: dict[str, object] = {
+    payload: _DesignDiff = {
         "schema": DIFF_SCHEMA,
         "base_digest": base_plan.digest,
         "candidate_digest": cand_plan.digest,
@@ -625,7 +713,7 @@ def _design_diff(base: DesignSystem, candidate: DesignSystem) -> dict[str, objec
     return payload
 
 
-def _diff_human(payload: dict[str, Any]) -> str:
+def _diff_human(payload: _DesignDiff) -> str:
     lines = [
         f"schema: {payload['schema']}",
         f"base_digest: {payload['base_digest']}",
@@ -823,10 +911,10 @@ def _cmd_style_eject(args: argparse.Namespace) -> int:
 
 def _read_theme_spec(path: Path) -> ThemeSpec:
     try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload: object = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ValueError(f"could not read theme spec {path}: {exc}") from exc
-    if not isinstance(payload, dict):
+    if not is_string_mapping(payload):
         raise ValueError("theme spec JSON must contain an object")
     return ThemeSpec.from_dict(payload)
 
@@ -889,3 +977,16 @@ def _cmd_style_conform(args: argparse.Namespace) -> int:
         return 1
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0 if report["ok"] else 1
+
+
+cmd_style_conform = _cmd_style_conform
+cmd_style_custom_css_check = _cmd_style_custom_css_check
+cmd_style_diff = _cmd_style_diff
+cmd_style_eject = _cmd_style_eject
+cmd_style_eject_application = _cmd_style_eject_application
+cmd_style_explain = _cmd_style_explain
+cmd_style_init = _cmd_style_init
+cmd_style_inspect = _cmd_style_inspect
+cmd_style_package = _cmd_style_package
+cmd_style_preview = _cmd_style_preview
+cmd_style_update_check = _cmd_style_update_check

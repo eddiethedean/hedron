@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from hedron.cli.discovery import _scaffold_dep
+from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
 def _pyproject(*, name: str, extra_deps: list[str] | None = None) -> str:
@@ -297,7 +297,7 @@ _TEMPLATES = {
 }
 
 
-def _scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
+def scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
     template = str(getattr(args, "template", None) or "minimal")
     if template not in _TEMPLATES:
         raise SystemExit(f"Unknown --template {template!r}")
@@ -319,3 +319,6 @@ def _scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
         )
     )
     return 0
+
+
+_scaffold_fastapi = scaffold_fastapi

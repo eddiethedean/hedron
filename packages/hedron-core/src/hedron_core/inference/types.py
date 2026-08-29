@@ -101,3 +101,4 @@ _PRIORITY_RANK = {
     InferencePriority.NORMAL: 1,
     InferencePriority.LOW: 2,
 }
+PRIORITY_RANK = _PRIORITY_RANK

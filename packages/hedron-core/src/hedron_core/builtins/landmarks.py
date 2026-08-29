@@ -93,6 +93,12 @@ def _filter_landmark_kwargs(
     return {k: v for k, v in kwargs.items() if k in allowed}
 
 
+# Public names used by composed landmark components. The private helpers remain
+# available for compatibility with earlier internal imports.
+landmark_attrs = _landmark_attrs
+filter_landmark_kwargs = _filter_landmark_kwargs
+
+
 class Header(Component[LandmarkProps]):
     """Document or section header landmark (`<header>`)."""
 

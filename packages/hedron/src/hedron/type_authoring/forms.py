@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from enum import Enum
 from types import UnionType
-from typing import Any, Literal, Union, cast, get_args, get_origin
+from typing import Literal, Union, cast, get_args, get_origin
 
 from hedron.type_authoring.markers import CONTROL_KINDS, Control
 from hedron.type_authoring.normalize import CompiledTypeHandler, FieldRecord
@@ -26,10 +26,31 @@ from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.rendering import active_render_context
+from hedron_core.security import SafeUrl
+from hedron_core.typing_aliases import HtmlAttrValue
 
 __all__ = ["generate_form"]
 
 _PENDING_CSRF_TOKEN = "hedron-pending-csrf"
+
+
+def _form_attr_map(attrs: Mapping[str, object]) -> dict[str, HtmlAttrValue]:
+    normalized: dict[str, HtmlAttrValue] = {}
+    for name, value in attrs.items():
+        value_type_name = type(value).__name__
+        if value is None or isinstance(value, (str, bool, int, float, SafeUrl)):
+            normalized[name] = value
+            continue
+        if isinstance(value, dict):
+            mapping = cast(dict[object, object], value)
+            if all(
+                isinstance(key, str) and (item is None or isinstance(item, (str, bool, int, float)))
+                for key, item in mapping.items()
+            ):
+                normalized[name] = cast(dict[str, str | bool | int | float | None], mapping)
+                continue
+        raise TypeError(f"form attribute {name!r} has unsupported type {value_type_name}")
+    return normalized
 
 
 class _RenderTimeCsrfProps(Props):
@@ -122,24 +143,30 @@ def generate_form(
         )
         del retained
     nodes.append(SubmitButton(submit_label))
-    attrs = {key: value for key, value in safe_form_attrs.items() if key.isidentifier()}
+    reserved_form_args = {"action", "children", "method", "hx"}
+    attrs = {
+        key: value
+        for key, value in safe_form_attrs.items()
+        if key.isidentifier() and key not in reserved_form_args
+    }
     if compiled.form_encoding == "multipart":
         attrs.setdefault("enctype", "multipart/form-data")
     if fallback:
         attrs.setdefault("data-hedron-fallback", fallback)
-    return Form(*nodes, action=cast("Any", action), **cast("Any", attrs))
+    form_factory = cast(Callable[..., Form], Form)
+    return form_factory(*nodes, action=action, **_form_attr_map(attrs))
 
 
 def _value_map(value: object | Mapping[str, object] | None) -> dict[str, object]:
     if value is None:
         return {}
     if isinstance(value, Mapping):
-        return dict(value)
+        return dict(cast(Mapping[str, object], value))
     dump = getattr(value, "model_dump", None)
     if callable(dump):
         dumped = dump(mode="python")
         if isinstance(dumped, Mapping):
-            return dict(dumped)
+            return dict(cast(Mapping[str, object], dumped))
     return {}
 
 
@@ -150,13 +177,15 @@ def _error_map(errors: Sequence[object]) -> tuple[dict[str, str], list[str]]:
         loc: object
         msg: object
         if isinstance(item, Mapping):
-            loc = item.get("loc") or item.get("path")
-            msg = item.get("msg") or item.get("message") or item
+            row = cast(Mapping[str, object], item)
+            loc = row.get("loc") or row.get("path")
+            msg = row.get("msg") or row.get("message") or row
         else:
             loc = getattr(item, "loc", None) or getattr(item, "path", None)
             msg = getattr(item, "msg", None) or getattr(item, "message", item)
         if isinstance(loc, Sequence) and not isinstance(loc, (str, bytes)):
-            key = ".".join(str(part) for part in loc if part not in {None, "body"})
+            location = cast(Sequence[object], loc)
+            key = ".".join(str(part) for part in location if part not in {None, "body"})
         else:
             key = str(loc or "")
         if key:

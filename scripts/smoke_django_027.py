@@ -29,10 +29,13 @@ def main() -> int:
             errors.append(f"{path.relative_to(ROOT)} imports FastAPI")
 
     ref = ROOT / "examples" / "django-reference"
-    if not (ref / "manage.py").is_file() and not (ref / "asgi.py").is_file():
+    if (
+        not (ref / "manage.py").is_file()
+        and not (ref / "asgi.py").is_file()
+        and not (ref / "hedron_django_ref").is_dir()
+    ):
         # Reference may be a package layout without manage.py.
-        if not (ref / "hedron_django_ref").is_dir():
-            errors.append("missing examples/django-reference package")
+        errors.append("missing examples/django-reference package")
 
     # Lightweight Django configure + system check using package AppConfig.
     try:

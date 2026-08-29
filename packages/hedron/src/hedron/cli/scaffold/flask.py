@@ -6,10 +6,10 @@ import argparse
 import json
 from pathlib import Path
 
-from hedron.cli.discovery import _scaffold_dep
+from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
-def _scaffold_flask(args: argparse.Namespace, dest: Path) -> int:
+def scaffold_flask(args: argparse.Namespace, dest: Path) -> int:
     (dest / "pyproject.toml").write_text(
         f'''[project]
 name = "{args.name}"
@@ -100,3 +100,6 @@ flask_app = app.flask
         )
     )
     return 0
+
+
+_scaffold_flask = scaffold_flask

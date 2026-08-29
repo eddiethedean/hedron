@@ -6,10 +6,10 @@ import json
 import re
 from pathlib import Path
 
-from hedron.cli.discovery import _scaffold_dep
+from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
-def _scaffold_element(name: str, dest: Path) -> int:
+def scaffold_element(name: str, dest: Path) -> int:
     distribution = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-") or "element-plugin"
     package_name = re.sub(r"\W+", "_", name.lower()).strip("_") or "element_plugin"
     if package_name[0].isdigit():
@@ -161,3 +161,6 @@ def test_element_registers() -> None:
         )
     )
     return 0
+
+
+_scaffold_element = scaffold_element

@@ -56,10 +56,7 @@ class ApplicationStyleMeta:
             raise ValueError(f"application style layer must be one of {sorted(_LAYER)}")
         if not self.source:
             raise ValueError("application style source is required")
-        if any(
-            not isinstance(item, str) or not item.strip() or _MEDIA.fullmatch(item.strip()) is None
-            for item in self.media
-        ):
+        if any(not item.strip() or _MEDIA.fullmatch(item.strip()) is None for item in self.media):
             raise ValueError("application style media values must be safe media conditions")
 
     @property

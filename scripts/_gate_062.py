@@ -26,9 +26,22 @@ PACKET_FILES = (
 REPORT = ROOT / "docs" / "acceptance" / "evidence-062" / "gate-results-062.json"
 RELEASE_EVIDENCE_TEST = "tests/unit/test_phase062_navigation.py"
 EXPECTED_GATES = (
-    "CONTRACT-062", "NAV-062", "FALLBACK-062", "PREFETCH-062", "TRANSITION-062",
-    "OPTIMISM-062", "CONFLICT-062", "FAILURE-062", "IDENTITY-062", "SECURITY-062",
-    "A11Y-062", "BROWSER-062", "PERF-062", "DOCS-062", "UPGRADE-062", "PKG-062",
+    "CONTRACT-062",
+    "NAV-062",
+    "FALLBACK-062",
+    "PREFETCH-062",
+    "TRANSITION-062",
+    "OPTIMISM-062",
+    "CONFLICT-062",
+    "FAILURE-062",
+    "IDENTITY-062",
+    "SECURITY-062",
+    "A11Y-062",
+    "BROWSER-062",
+    "PERF-062",
+    "DOCS-062",
+    "UPGRADE-062",
+    "PKG-062",
     "DASHBOARD-062",
 )
 

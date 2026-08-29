@@ -11,7 +11,7 @@ import copy
 import json
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass
-from typing import Literal, TypeGuard
+from typing import Literal, TypeGuard, cast
 
 from hedron_core.codes import (
     HED_PATCH_0001,
@@ -21,6 +21,7 @@ from hedron_core.codes import (
 )
 from hedron_core.compat import StrEnum
 from hedron_core.diagnostics import HedronError, error
+from hedron_core.typing_aliases import is_object_list, is_string_mapping
 
 __all__ = [
     "CollectionPatch",
@@ -48,6 +49,23 @@ _FALLBACK_CODES = frozenset(
 
 def _is_number(value: object) -> TypeGuard[int | float]:
     return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _is_object_mapping(value: object) -> TypeGuard[Mapping[object, object]]:
+    return isinstance(value, Mapping)
+
+
+def _is_object_sequence(value: object) -> TypeGuard[Sequence[object]]:
+    return isinstance(value, Sequence) and not isinstance(value, (str, bytes))
+
+
+def _is_mutable_string_mapping(
+    value: object,
+) -> TypeGuard[MutableMapping[str, object]]:
+    if not isinstance(value, MutableMapping):
+        return False
+    mapping = cast(MutableMapping[object, object], value)
+    return all(isinstance(key, str) for key in mapping)
 
 
 class PatchOp(StrEnum):
@@ -175,7 +193,7 @@ def apply_property_patch(
 
     segments = _path_segments(patch.path)
     op_cost = 1 + len(segments)
-    if op is PatchOp.MERGE and isinstance(patch.value, Mapping):
+    if op is PatchOp.MERGE and _is_object_mapping(patch.value):
         op_cost += len(patch.value)
     if op_cost > max_ops:
         raise _patch_error(
@@ -194,7 +212,7 @@ def apply_property_patch(
         )
 
     current = state[patch.target_id]
-    if not isinstance(current, Mapping):
+    if not is_string_mapping(current):
         raise _patch_error(
             HED_PATCH_0001,
             f"Target {patch.target_id!r} state must be a mapping.",
@@ -203,7 +221,7 @@ def apply_property_patch(
         )
 
     if patch.expected_version is not None:
-        actual = current.get("_version") if isinstance(current, Mapping) else None
+        actual = current.get("_version")
         if actual != patch.expected_version:
             raise _patch_error(
                 HED_PATCH_0002,
@@ -215,7 +233,7 @@ def apply_property_patch(
                 remediation="Refresh the region and retry with the current version.",
             )
 
-    new_target = copy.deepcopy(dict(current))
+    new_target: dict[str, object] = copy.deepcopy(dict(current))
     try:
         _apply_op(new_target, segments, op, patch.value)
     except PatchError:
@@ -228,7 +246,7 @@ def apply_property_patch(
             remediation="Correct the path/op or fall back to a full fragment.",
         ) from exc
 
-    result = {
+    result: dict[str, object] = {
         key: (copy.deepcopy(value) if key != patch.target_id else new_target)
         for key, value in state.items()
     }
@@ -331,7 +349,7 @@ def _op_merge(
     key: str | int | None,
     value: object | None,
 ) -> None:
-    if not isinstance(value, Mapping):
+    if not _is_object_mapping(value):
         raise _patch_error(
             HED_PATCH_0001,
             "merge requires a mapping value.",
@@ -340,9 +358,9 @@ def _op_merge(
         )
     target = _get_at(parent, key) if key is not None else parent
     if target is None:
-        target = {}
+        target = _empty_patch_mapping()
         _set_at(parent, key, target)
-    if not isinstance(target, MutableMapping):
+    if not _is_mutable_string_mapping(target):
         raise _patch_error(
             HED_PATCH_0001,
             "merge target must be a mapping.",
@@ -376,7 +394,7 @@ def _op_extend(
     key: str | int | None,
     value: object | None,
 ) -> None:
-    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+    if not _is_object_sequence(value):
         raise _patch_error(
             HED_PATCH_0001,
             "extend requires a sequence value.",
@@ -392,7 +410,7 @@ def _op_insert(
     key: str | int | None,
     value: object | None,
 ) -> None:
-    if not isinstance(value, Mapping) or "index" not in value or "item" not in value:
+    if not is_string_mapping(value) or "index" not in value or "item" not in value:
         raise _patch_error(
             HED_PATCH_0001,
             "insert requires {'index': int, 'item': ...}.",
@@ -400,7 +418,15 @@ def _op_insert(
             remediation="Provide index and item for insert.",
         )
     seq = _require_list(parent, key, create=True)
-    seq.insert(int(value["index"]), copy.deepcopy(value["item"]))
+    index = value["index"]
+    if not isinstance(index, int) or isinstance(index, bool):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "insert index must be an integer.",
+            title="Invalid insert patch",
+            remediation="Provide an integer index for insert.",
+        )
+    seq.insert(index, copy.deepcopy(value["item"]))
 
 
 def _op_remove(
@@ -430,7 +456,11 @@ def _op_delete(
             title="Invalid delete patch",
             remediation="Provide a property path to delete.",
         )
-    if isinstance(parent, MutableMapping):
+    if isinstance(parent, list):
+        if isinstance(key, int) and 0 <= key < len(parent):
+            del parent[key]
+            return
+    else:
         if str(key) not in parent:
             raise _patch_error(
                 HED_PATCH_0004,
@@ -439,15 +469,13 @@ def _op_delete(
                 remediation="Refresh the fragment; do not assume a missing key was deleted.",
             )
         parent.pop(str(key))
-    elif isinstance(parent, list) and isinstance(key, int) and 0 <= key < len(parent):
-        del parent[key]
-    else:
-        raise _patch_error(
-            HED_PATCH_0004,
-            "delete target is not present.",
-            title="Patch delete missed",
-            remediation="Refresh the fragment; do not assume a missing member was deleted.",
-        )
+        return
+    raise _patch_error(
+        HED_PATCH_0004,
+        "delete target is not present.",
+        title="Patch delete missed",
+        remediation="Refresh the fragment; do not assume a missing member was deleted.",
+    )
 
 
 def _op_clear(
@@ -455,7 +483,7 @@ def _op_clear(
     key: str | int | None,
 ) -> None:
     target = _get_at(parent, key) if key is not None else parent
-    if isinstance(target, (MutableMapping, list)):
+    if is_object_list(target) or _is_mutable_string_mapping(target):
         target.clear()
     else:
         _set_at(parent, key, {})
@@ -467,14 +495,21 @@ def _op_reorder(
     value: object | None,
 ) -> None:
     seq = _require_list(parent, key, create=False)
-    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+    if not _is_object_sequence(value):
         raise _patch_error(
             HED_PATCH_0001,
             "reorder requires a sequence of indices.",
             title="Invalid reorder patch",
             remediation="Pass the new index order as a list of ints.",
         )
-    indices = [int(i) for i in value]
+    if not all(isinstance(item, int) and not isinstance(item, bool) for item in value):
+        raise _patch_error(
+            HED_PATCH_0001,
+            "reorder indices must be integers.",
+            title="Invalid reorder indices",
+            remediation="Provide each integer index exactly once.",
+        )
+    indices = [item for item in value if isinstance(item, int) and not isinstance(item, bool)]
     if sorted(indices) != list(range(len(seq))):
         raise _patch_error(
             HED_PATCH_0001,
@@ -541,7 +576,7 @@ def _op_clamp(
             title="Invalid clamp patch",
             remediation="Target a numeric property.",
         )
-    if not isinstance(value, Mapping):
+    if not is_string_mapping(value):
         raise _patch_error(
             HED_PATCH_0001,
             "clamp requires {'min': ..., 'max': ...}.",
@@ -566,13 +601,13 @@ def _resolve_parent(
 ) -> tuple[MutableMapping[str, object] | list[object], str | int, object]:
     cursor: object = root
     for part in segments[:-1]:
-        if isinstance(cursor, MutableMapping):
+        if _is_mutable_string_mapping(cursor):
             nxt = cursor.get(part)
             if nxt is None:
-                nxt = {}
+                nxt = _empty_patch_mapping()
                 cursor[part] = nxt
             cursor = nxt
-        elif isinstance(cursor, list):
+        elif is_object_list(cursor):
             idx = int(part)
             cursor = cursor[idx]
         else:
@@ -583,9 +618,9 @@ def _resolve_parent(
                 remediation="Use a path that resolves through mappings/lists.",
             )
     last = segments[-1]
-    if isinstance(cursor, MutableMapping):
+    if _is_mutable_string_mapping(cursor):
         return cursor, last, cursor.get(last)
-    if isinstance(cursor, list):
+    if is_object_list(cursor):
         idx = int(last)
         return cursor, idx, cursor[idx] if 0 <= idx < len(cursor) else None
     raise _patch_error(
@@ -602,11 +637,9 @@ def _get_at(
 ) -> object | None:
     if key is None:
         return parent
-    if isinstance(parent, MutableMapping):
-        return parent.get(str(key))
-    if isinstance(parent, list) and isinstance(key, int) and 0 <= key < len(parent):
-        return parent[key]
-    return None
+    if isinstance(parent, list):
+        return parent[key] if isinstance(key, int) and 0 <= key < len(parent) else None
+    return parent.get(str(key))
 
 
 def _set_at(
@@ -615,7 +648,7 @@ def _set_at(
     value: object,
 ) -> None:
     if key is None:
-        if isinstance(parent, MutableMapping) and isinstance(value, Mapping):
+        if not isinstance(parent, list) and is_string_mapping(value):
             parent.clear()
             parent.update(copy.deepcopy(dict(value)))
             return
@@ -625,13 +658,14 @@ def _set_at(
             title="Invalid root assign",
             remediation="Assign nested paths or provide a mapping for the root.",
         )
-    if isinstance(parent, MutableMapping):
+    if isinstance(parent, list):
+        if isinstance(key, int):
+            while len(parent) <= key:
+                parent.append(None)
+            parent[key] = copy.deepcopy(value)
+            return
+    else:
         parent[str(key)] = copy.deepcopy(value)
-        return
-    if isinstance(parent, list) and isinstance(key, int):
-        while len(parent) <= key:
-            parent.append(None)
-        parent[key] = copy.deepcopy(value)
         return
     raise _patch_error(
         HED_PATCH_0001,
@@ -652,7 +686,7 @@ def _require_list(
         created: list[object] = []
         _set_at(parent, key, created)
         return created
-    if not isinstance(current, list):
+    if not is_object_list(current):
         raise _patch_error(
             HED_PATCH_0001,
             "List operation requires a list target.",
@@ -660,6 +694,10 @@ def _require_list(
             remediation="Target a list property for append/prepend/extend/insert.",
         )
     return current
+
+
+def _empty_patch_mapping() -> dict[str, object]:
+    return {}
 
 
 def _patch_error(

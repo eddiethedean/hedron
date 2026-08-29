@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import Literal
 
-from hedron.htmx import _safe_css_selector
+from hedron.htmx import safe_css_selector
 from hedron.routing.reverse import ComponentRef
 from hedron_core.component import NodeLike
 
@@ -41,6 +41,6 @@ def oob_swap(
 def safe_target(target: str | None) -> str | None:
     if target is None:
         return None
-    if not _safe_css_selector(target):
+    if not safe_css_selector(target):
         raise ValueError(f"Unsafe HTMX target selector: {target!r}")
     return target

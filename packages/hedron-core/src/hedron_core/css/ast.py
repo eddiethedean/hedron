@@ -11,17 +11,21 @@ class CssDecl:
     value: str
 
 
+def _css_rule_list() -> list[CssRule]:
+    return []
+
+
 @dataclass
 class CssRule:
     prelude: str
-    decls: list[CssDecl] = field(default_factory=list)
-    children: list[CssRule] = field(default_factory=list)
+    decls: list[CssDecl] = field(default_factory=list[CssDecl])
+    children: list[CssRule] = field(default_factory=_css_rule_list)
     kind: str = "style"  # style | at-rule | statement | comment
 
 
 @dataclass
 class CssStylesheet:
-    rules: list[CssRule] = field(default_factory=list)
+    rules: list[CssRule] = field(default_factory=list[CssRule])
 
 
 def parse_stylesheet(source: str) -> CssStylesheet:

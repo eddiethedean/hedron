@@ -8,7 +8,7 @@ from collections.abc import Callable, Mapping, Sized
 from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Annotated, Any, ClassVar, Literal, Union, get_args, get_origin
+from typing import Annotated, Any, ClassVar, Literal, Union, cast, get_args, get_origin
 
 from pydantic import BaseModel, ConfigDict, model_serializer, model_validator
 from pydantic.fields import FieldInfo
@@ -65,13 +65,13 @@ def _is_supported_annotation(annotation: Any, *, depth: int = 0) -> bool:
     return False
 
 
-def _unwrap_for_constraints(value: Any) -> Any:
+def _unwrap_for_constraints(value: object) -> object:
     if isinstance(value, Secret):
-        return value.reveal()
+        return cast(object, value.reveal())
     return value
 
 
-def _apply_hedron_constraints(field_name: str, value: Any, meta: Mapping[str, object]) -> None:
+def _apply_hedron_constraints(field_name: str, value: object, meta: Mapping[str, object]) -> None:
     if value is None:
         return
     inner = _unwrap_for_constraints(value)
@@ -181,12 +181,13 @@ class Model(BaseModel):
         return self
 
     @model_serializer(mode="wrap")
-    def _serialize_redacted(self, serializer: Any) -> Any:
+    def _serialize_redacted(self, serializer: Callable[[object], object]) -> object:
         data = serializer(self)
         if not isinstance(data, dict):
             return data
+        mapping = cast(dict[str, object], data)
         result: dict[str, object] = {}
-        for key, value in data.items():
+        for key, value in mapping.items():
             field_info: FieldInfo | None = self.__class__.model_fields.get(key)
             meta = hedron_meta(field_info) if field_info is not None else {}
             attr = getattr(self, key, value)

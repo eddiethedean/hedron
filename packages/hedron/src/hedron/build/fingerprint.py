@@ -5,11 +5,11 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from hedron.build.rewrite import _rewrite_module_imports
+from hedron.build.rewrite import rewrite_module_imports
 from hedron_core.assets import fingerprint_bytes
 
 
-def _relink_fingerprinted_modules(
+def relink_fingerprinted_modules(
     assets_dir: Path,
     entries: list[Any],
     *,
@@ -31,7 +31,7 @@ def _relink_fingerprinted_modules(
             if not dest.is_file():
                 continue
             text = dest.read_text(encoding="utf-8")
-            rewritten = _rewrite_module_imports(text, basename_map)
+            rewritten = rewrite_module_imports(text, basename_map)
             if rewritten == text:
                 continue
             original_basename = basename_by_path.get(entry.path, Path(entry.path).name)
@@ -56,3 +56,6 @@ def _relink_fingerprinted_modules(
         if not changed:
             break
     return entries
+
+
+_relink_fingerprinted_modules = relink_fingerprinted_modules

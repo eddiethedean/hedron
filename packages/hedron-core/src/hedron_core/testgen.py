@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping, Sequence
-from typing import Any, Protocol
+from typing import Protocol, cast
 
 __all__ = [
     "GENERATOR_VERSION",
@@ -33,7 +33,7 @@ _IDENT_RE = re.compile(r"[^0-9a-zA-Z_]+")
 
 class _CatalogLike(Protocol):
     @property
-    def entries(self) -> Mapping[str, Any]: ...
+    def entries(self) -> Mapping[str, object]: ...
 
     @property
     def fingerprint(self) -> str: ...
@@ -67,7 +67,7 @@ def _entry_kind(entry: object) -> str:
     if isinstance(kind, str) and kind:
         return kind
     if isinstance(entry, Mapping):
-        raw = entry.get("kind")
+        raw = cast(Mapping[str, object], entry).get("kind")
         if isinstance(raw, str) and raw:
             return raw
     return ""
@@ -78,7 +78,7 @@ def _entry_logical_id(entry: object, fallback: str) -> str:
     if isinstance(logical_id, str) and logical_id:
         return logical_id
     if isinstance(entry, Mapping):
-        raw = entry.get("logical_id")
+        raw = cast(Mapping[str, object], entry).get("logical_id")
         if isinstance(raw, str) and raw:
             return raw
     return fallback
@@ -89,17 +89,14 @@ def _entry_descriptor_fp(entry: object) -> str:
     if isinstance(fp, str) and fp:
         return fp
     if isinstance(entry, Mapping):
-        raw = entry.get("descriptor_fingerprint")
+        raw = cast(Mapping[str, object], entry).get("descriptor_fingerprint")
         if isinstance(raw, str) and raw:
             return raw
     return ""
 
 
 def _sorted_entries(catalog: _CatalogLike) -> list[tuple[str, object]]:
-    entries = getattr(catalog, "entries", None) or {}
-    if not isinstance(entries, Mapping):
-        return []
-    return sorted(entries.items(), key=lambda item: item[0])
+    return sorted(catalog.entries.items(), key=lambda item: item[0])
 
 
 def _select_entries_for_path(

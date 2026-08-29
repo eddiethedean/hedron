@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, Literal, Protocol, TypeVar
+from typing import Any, Generic, Literal, Protocol, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -97,7 +97,7 @@ def _reject_sensitive_filters(model: type[BaseModel]) -> None:
                 remediation="Rename the field or use an explicit non-URL filter strategy.",
             )
         extra = getattr(info, "json_schema_extra", None)
-        if isinstance(extra, Mapping) and extra.get("sensitive"):
+        if isinstance(extra, Mapping) and cast(Mapping[str, object], extra).get("sensitive"):
             raise error(
                 HED_DASH_0003,
                 title="Sensitive filter rejected from URL mode",
@@ -256,7 +256,9 @@ class DashboardWorkspace(Generic[FiltersT, DataT]):
                 flat: dict[str, str] = {}
                 for key, value in raw.items():
                     if isinstance(value, (list, tuple)):
-                        flat[str(key)] = ",".join(str(item) for item in value)
+                        flat[str(key)] = ",".join(
+                            str(item) for item in cast(Sequence[object], value)
+                        )
                     else:
                         flat[str(key)] = str(value)
                 qs = urlencode(flat)

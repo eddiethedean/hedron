@@ -46,7 +46,7 @@ from hedron_core.type_schema import (
     redact_type_payload,
     type_schema_from_descriptor,
 )
-from hedron_core.typing_aliases import JsonObject, JsonValue
+from hedron_core.typing_aliases import JsonObject, JsonValue, is_object_list, is_string_mapping
 from hedron_core.updates import (
     BaseHandleDescriptor,
     descriptor_fingerprint,
@@ -164,9 +164,28 @@ def _catalog_error(
     )
 
 
+catalog_error = _catalog_error
+
+
 def catalog_fingerprint(payload: object) -> str:
     encoded = canonical_json(cast(JsonValue, payload))
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()[:32]
+
+
+def _empty_json_object() -> JsonObject:
+    return {}
+
+
+def _empty_string_mapping() -> dict[str, str]:
+    return {}
+
+
+def _empty_projection_mapping() -> dict[str, PackageProjection]:
+    return {}
+
+
+def _empty_entry_mapping() -> dict[str, CatalogEntry]:
+    return {}
 
 
 def _assert_bounds(value: object, *, depth: int = 0) -> None:
@@ -185,32 +204,35 @@ def _assert_bounds(value: object, *, depth: int = 0) -> None:
             remediation="Bound diagnostic and projection strings.",
         )
     if isinstance(value, Mapping):
-        if len(value) > MAX_CATALOG_ENTRIES:
+        mapping = cast(Mapping[object, object], value)
+        if len(mapping) > MAX_CATALOG_ENTRIES:
             raise _catalog_error(
                 HED_CATALOG_0005,
                 title="Catalog mapping limit exceeded",
-                explanation=f"Mapping has {len(value)} keys.",
+                explanation=f"Mapping has {len(mapping)} keys.",
                 remediation="Split the catalog payload.",
             )
-        for key, item in value.items():
+        for key, item in mapping.items():
             _assert_bounds(str(key), depth=depth + 1)
             _assert_bounds(item, depth=depth + 1)
     elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-        if len(value) > MAX_CATALOG_ENTRIES:
+        sequence = cast(Sequence[object], value)
+        if len(sequence) > MAX_CATALOG_ENTRIES:
             raise _catalog_error(
                 HED_CATALOG_0005,
                 title="Catalog sequence limit exceeded",
-                explanation=f"Sequence has {len(value)} items.",
+                explanation=f"Sequence has {len(sequence)} items.",
                 remediation="Reduce entry or projection volume.",
             )
-        for item in value:
+        for item in sequence:
             _assert_bounds(item, depth=depth + 1)
 
 
 def _walk_forbidden(payload: object, *, production: bool) -> None:
     forbidden = PRODUCTION_FORBIDDEN_KEYS if production else FORBIDDEN_KEYS
     if isinstance(payload, Mapping):
-        overlap = forbidden.intersection(str(key) for key in payload)
+        mapping = cast(Mapping[object, object], payload)
+        overlap = forbidden.intersection(str(key) for key in mapping)
         if overlap:
             raise _catalog_error(
                 HED_CATALOG_0008,
@@ -218,10 +240,11 @@ def _walk_forbidden(payload: object, *, production: bool) -> None:
                 explanation=f"Payload contains forbidden keys {sorted(overlap)}.",
                 remediation="Redact values/defaults/examples/callbacks before serialization.",
             )
-        for item in payload.values():
+        for item in mapping.values():
             _walk_forbidden(item, production=production)
     elif isinstance(payload, Sequence) and not isinstance(payload, (str, bytes)):
-        for item in payload:
+        sequence = cast(Sequence[object], payload)
+        for item in sequence:
             _walk_forbidden(item, production=production)
 
 
@@ -247,7 +270,7 @@ class PackageProjection:
     catalog_fingerprint: str = ""
     entry_fingerprint: str | None = None
     capabilities: tuple[ProjectionCapability, ...] = ()
-    data: Mapping[str, JsonValue] = field(default_factory=dict)
+    data: Mapping[str, JsonValue] = field(default_factory=_empty_json_object)
     limitations: tuple[str, ...] = ()
     disposition: ProjectionDisposition = "native_consumer"
 
@@ -364,14 +387,14 @@ class CatalogEntry:
     model_fingerprint: str | None = None
     boundary_sources: tuple[str, ...] = ()
     field_paths: tuple[Mapping[str, JsonValue], ...] = ()
-    control_dispositions: Mapping[str, str] = field(default_factory=dict)
+    control_dispositions: Mapping[str, str] = field(default_factory=_empty_string_mapping)
     sensitivity_flags: tuple[str, ...] = ()
     identity_flags: tuple[str, ...] = ()
     declared_target_ids: tuple[str, ...] = ()
     outcome_variant_ids: tuple[str, ...] = ()
-    projections: Mapping[str, PackageProjection] = field(default_factory=dict)
+    projections: Mapping[str, PackageProjection] = field(default_factory=_empty_projection_mapping)
     limitations: tuple[str, ...] = ()
-    provenance: Mapping[str, JsonValue] = field(default_factory=dict)
+    provenance: Mapping[str, JsonValue] = field(default_factory=_empty_json_object)
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "control_dispositions", dict(self.control_dispositions))
@@ -508,13 +531,15 @@ def entry_from_descriptor(descriptor: BaseHandleDescriptor) -> CatalogEntry:
 class InteractionCatalog:
     schema_version: int = CATALOG_SCHEMA_VERSION
     app_id: str = ""
-    entries: Mapping[str, CatalogEntry] = field(default_factory=dict)
-    catalog_projections: Mapping[str, PackageProjection] = field(default_factory=dict)
+    entries: Mapping[str, CatalogEntry] = field(default_factory=_empty_entry_mapping)
+    catalog_projections: Mapping[str, PackageProjection] = field(
+        default_factory=_empty_projection_mapping
+    )
     sealed: bool = False
     profile: RedactionProfile = "production"
     limitations: tuple[str, ...] = ()
     diagnostics: tuple[str, ...] = ()
-    provenance: Mapping[str, JsonValue] = field(default_factory=dict)
+    provenance: Mapping[str, JsonValue] = field(default_factory=_empty_json_object)
 
     def __post_init__(self) -> None:
         object.__setattr__(
@@ -655,8 +680,8 @@ class InteractionManifest:
     projections: tuple[JsonObject, ...] = ()
     diagnostics: tuple[str, ...] = ()
     limitations: tuple[str, ...] = ()
-    provenance: Mapping[str, JsonValue] = field(default_factory=dict)
-    payload: Mapping[str, JsonValue] = field(default_factory=dict)
+    provenance: Mapping[str, JsonValue] = field(default_factory=_empty_json_object)
+    payload: Mapping[str, JsonValue] = field(default_factory=_empty_json_object)
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "provenance", dict(self.provenance))
@@ -712,7 +737,7 @@ class InteractionManifest:
                 remediation="Emit canonical UTF-8 JSON via `hedron build`.",
             ) from exc
         try:
-            data = json.loads(text, object_pairs_hook=_reject_duplicate_keys)
+            decoded: object = json.loads(text, object_pairs_hook=_reject_duplicate_keys)
         except (json.JSONDecodeError, CatalogVersionError) as exc:
             if isinstance(exc, CatalogVersionError):
                 raise
@@ -722,13 +747,16 @@ class InteractionManifest:
                 explanation=str(exc),
                 remediation="Regenerate interactions.json; truncated files fail closed.",
             ) from exc
-        if not isinstance(data, dict):
+        if not is_string_mapping(decoded):
             raise _catalog_error(
                 HED_CATALOG_0007,
                 title="Interaction manifest must be an object",
                 explanation="Top-level JSON value was not an object.",
                 remediation="Use the sealed catalog writer.",
             )
+        # The standard JSON decoder and duplicate-key hook admit only
+        # JsonValue members; the top-level guard establishes the object shape.
+        data = cast(JsonObject, decoded)
         version = data.get("format_version")
         if version != MANIFEST_FORMAT_VERSION:
             raise _catalog_error(
@@ -737,16 +765,21 @@ class InteractionManifest:
                 explanation=f"format_version={version!r} is not {MANIFEST_FORMAT_VERSION}.",
                 remediation="Regenerate the manifest with the current Hedron train.",
             )
-        profile = data.get("profile", "production")
-        if profile not in {"production", "development", "conformance"}:
+        profile_value = data.get("profile", "production")
+        if not isinstance(profile_value, str) or profile_value not in {
+            "production",
+            "development",
+            "conformance",
+        }:
             raise _catalog_error(
                 HED_CATALOG_0001,
                 title="Unknown redaction profile",
-                explanation=f"profile={profile!r} is not a closed 0.45 profile.",
+                explanation=f"profile={profile_value!r} is not a closed 0.45 profile.",
                 remediation="Use production, development, or conformance.",
             )
+        profile = cast(RedactionProfile, profile_value)
         _walk_forbidden(data, production=profile == "production")
-        claimed = str(data.get("fingerprint") or "")
+        claimed = _manifest_string(data.get("fingerprint"), field_name="fingerprint")
         body = {key: value for key, value in data.items() if key != "fingerprint"}
         actual = catalog_fingerprint(body)
         if claimed and claimed != actual:
@@ -756,27 +789,22 @@ class InteractionManifest:
                 explanation="Whole-document fingerprint does not match canonical JSON.",
                 remediation="Do not edit interactions.json by hand; regenerate it.",
             )
-        entries = data.get("entries") or []
-        projections = data.get("projections") or []
-        if not isinstance(entries, list) or not isinstance(projections, list):
-            raise _catalog_error(
-                HED_CATALOG_0007,
-                title="Malformed catalog collections",
-                explanation="entries and projections must be arrays.",
-                remediation="Regenerate the sealed manifest.",
-            )
+        entries = _manifest_objects(data.get("entries", []), field_name="entries")
+        projections = _manifest_objects(data.get("projections", []), field_name="projections")
         return cls(
             format_version=MANIFEST_FORMAT_VERSION,
-            profile=cast(RedactionProfile, profile),
-            app_id=str(data.get("app_id") or ""),
-            catalog_fingerprint=str(data.get("catalog_fingerprint") or ""),
+            profile=profile,
+            app_id=_manifest_string(data.get("app_id"), field_name="app_id"),
+            catalog_fingerprint=_manifest_string(
+                data.get("catalog_fingerprint"), field_name="catalog_fingerprint"
+            ),
             fingerprint=actual,
-            entries=tuple(item for item in entries if isinstance(item, dict)),
-            projections=tuple(item for item in projections if isinstance(item, dict)),
-            diagnostics=tuple(str(item) for item in (data.get("diagnostics") or ())),
-            limitations=tuple(str(item) for item in (data.get("limitations") or ())),
+            entries=entries,
+            projections=projections,
+            diagnostics=_manifest_strings(data.get("diagnostics", []), field_name="diagnostics"),
+            limitations=_manifest_strings(data.get("limitations", []), field_name="limitations"),
             provenance=_as_object(data.get("provenance")),
-            payload=cast(JsonObject, data),
+            payload=data,
         )
 
     def validate_against(self, catalog: InteractionCatalog) -> None:
@@ -802,9 +830,7 @@ class InteractionManifest:
                 remediation="Run `hedron build` against the same registered handlers.",
             )
         live_ids = set(catalog.entries)
-        manifest_ids = {
-            str(entry.get("logical_id")) for entry in self.entries if isinstance(entry, Mapping)
-        }
+        manifest_ids = {str(entry.get("logical_id")) for entry in self.entries}
         missing = sorted(live_ids - manifest_ids)
         extra = sorted(manifest_ids - live_ids)
         if missing or extra:
@@ -835,6 +861,44 @@ class InteractionManifest:
                 )
 
 
+def _malformed_manifest(field_name: str, expected: str) -> CatalogVersionError:
+    return _catalog_error(
+        HED_CATALOG_0007,
+        title="Malformed interaction manifest field",
+        explanation=f"{field_name} must be {expected}.",
+        remediation="Regenerate the sealed manifest.",
+    )
+
+
+def _manifest_string(value: object, *, field_name: str) -> str:
+    if value is None:
+        return ""
+    if not isinstance(value, str):
+        raise _malformed_manifest(field_name, "a string")
+    return value
+
+
+def _manifest_strings(value: object, *, field_name: str) -> tuple[str, ...]:
+    if not is_object_list(value):
+        raise _malformed_manifest(field_name, "an array of strings")
+    if not all(isinstance(item, str) for item in value):
+        raise _malformed_manifest(field_name, "an array of strings")
+    return tuple(item for item in value if isinstance(item, str))
+
+
+def _manifest_objects(value: object, *, field_name: str) -> tuple[JsonObject, ...]:
+    if not is_object_list(value):
+        raise _malformed_manifest(field_name, "an array of objects")
+    objects: list[JsonObject] = []
+    for item in value:
+        if not is_string_mapping(item):
+            raise _malformed_manifest(field_name, "an array of objects")
+        # The caller obtains these members from a validated standard-library
+        # JSON decode, so every nested member already satisfies JsonValue.
+        objects.append(cast(JsonObject, item))
+    return tuple(objects)
+
+
 def _reject_duplicate_keys(pairs: list[tuple[str, JsonValue]]) -> dict[str, JsonValue]:
     out: dict[str, JsonValue] = {}
     for key, value in pairs:
@@ -852,7 +916,8 @@ def _reject_duplicate_keys(pairs: list[tuple[str, JsonValue]]) -> dict[str, Json
 def _as_object(value: object) -> JsonObject:
     if not isinstance(value, Mapping):
         return {}
-    return {str(key): cast(JsonValue, item) for key, item in value.items()}
+    mapping = cast(Mapping[object, object], value)
+    return {str(key): cast(JsonValue, item) for key, item in mapping.items()}
 
 
 _LOCK = threading.RLock()

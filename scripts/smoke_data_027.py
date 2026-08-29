@@ -42,9 +42,14 @@ def main() -> int:
 
         table = DataTable(rows=[{"id": 1, "title": "hello"}])
         html = render(table, mode=RenderMode.FRAGMENT).html
-        if "hello" not in html and "id" not in html and "data" not in html.lower():
-            if "hedron" not in html.lower() and "table" not in html.lower():
-                errors.append("DataTable render produced unexpected empty markup")
+        if (
+            "hello" not in html
+            and "id" not in html
+            and "data" not in html.lower()
+            and "hedron" not in html.lower()
+            and "table" not in html.lower()
+        ):
+            errors.append("DataTable render produced unexpected empty markup")
     except Exception as exc:  # noqa: BLE001
         errors.append(f"DataTable smoke failed: {exc}")
 

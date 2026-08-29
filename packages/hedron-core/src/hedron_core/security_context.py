@@ -8,7 +8,7 @@ import hmac
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
-from typing import Any
+from typing import Any, cast
 
 _current_security_context: contextvars.ContextVar[SecurityContext | None] = contextvars.ContextVar(
     "hedron_security_context", default=None
@@ -43,7 +43,7 @@ class SecurityContext:
     application_id: str = ""
     subject_id: str = ""
     tenant_id: str = ""
-    scopes: frozenset[str] = field(default_factory=frozenset)
+    scopes: frozenset[str] = field(default_factory=frozenset[str])
     auth_level: int = 0
     profile_name: str = "standard"
     policy_version: int = 1
@@ -152,8 +152,6 @@ class SecurityContext:
         *,
         expected_application_id: str | None = None,
     ) -> SecurityContext:
-        if not isinstance(payload, Mapping):
-            raise SecurityContextError("security context payload must be a mapping")
         unknown = set(payload) - _SERIALIZABLE_FIELDS
         if unknown:
             raise SecurityContextError(f"foreign security context fields: {sorted(unknown)}")
@@ -171,9 +169,9 @@ class SecurityContext:
         if isinstance(scopes_raw, (str, bytes)):
             raise SecurityContextError("scopes must be a sequence of strings")
         if scopes_raw is None:
-            scopes: frozenset[str] = frozenset()
+            scopes: frozenset[str] = frozenset[str]()
         elif isinstance(scopes_raw, Sequence):
-            scopes = frozenset(str(item) for item in scopes_raw)
+            scopes = frozenset(str(item) for item in cast(Sequence[object], scopes_raw))
         else:
             raise SecurityContextError("scopes must be a sequence of strings")
         ctx = cls(

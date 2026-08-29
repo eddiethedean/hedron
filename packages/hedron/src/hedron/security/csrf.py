@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import os
-from typing import Any
+from collections.abc import Collection, Sequence
+from typing import Any, cast
 
 from fastapi import HTTPException, Request, status
 from starlette.responses import Response
@@ -42,24 +43,27 @@ def _trusted_proxy_peers(request: Request) -> set[str]:
     peers: set[str] = set()
     raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
     peers.update(part.strip() for part in raw_env.split(",") if part.strip())
-    scope = getattr(request, "scope", None)
-    app = scope.get("app") if isinstance(scope, dict) else None
+    app: object | None = request.scope.get("app")
     state = getattr(app, "state", None) if app is not None else None
     configured = getattr(state, "hedron_trusted_peers", None) if state is not None else None
     if isinstance(configured, (list, tuple, set, frozenset)):
-        peers.update(str(item).strip() for item in configured if str(item).strip())
+        peers.update(
+            str(item).strip() for item in cast(Collection[object], configured) if str(item).strip()
+        )
     return peers
 
 
-def _forwarded_proto_https_trusted(request: Request) -> bool:
+def forwarded_proto_https_trusted(request: Request) -> bool:
     """Honor ``X-Forwarded-Proto: https`` only from allowlisted proxy peers."""
     if not _forwarded_proto_https(request):
         return False
     peers = _trusted_proxy_peers(request)
     if not peers:
         return False
-    client = request.scope.get("client") if isinstance(request.scope, dict) else None
-    peer = client[0] if isinstance(client, (list, tuple)) and client else None
+    client: object = request.scope.get("client")
+    peer = (
+        cast(Sequence[object], client)[0] if isinstance(client, (list, tuple)) and client else None
+    )
     return peer is not None and peer in peers
 
 
@@ -80,9 +84,12 @@ def _csrf_cookie_should_be_secure(request: Request | None, policy: SecurityPolic
         force_secure=None,
         request_is_secure=bool(request.url.is_secure) if request is not None else False,
         forwarded_proto_https_trusted=(
-            bool(_forwarded_proto_https_trusted(request)) if request is not None else False
+            bool(forwarded_proto_https_trusted(request)) if request is not None else False
         ),
     )
+
+
+_forwarded_proto_https_trusted = forwarded_proto_https_trusted
 
 
 def _strategy_names(strategy: CsrfStrategy) -> tuple[str, str, str | None]:
@@ -149,8 +156,7 @@ def ensure_csrf_cookie(
     if request is not None:
         # Prefer scope lookup: Request.app raises KeyError when ASGI scope lacks "app"
         # (common in unit tests that build Request(scope) without an application).
-        scope = getattr(request, "scope", None)
-        app = scope.get("app") if isinstance(scope, dict) else None
+        app: object | None = request.scope.get("app")
         state = getattr(app, "state", None) if app is not None else None
         configured = getattr(state, "hedron_cookie_path", None) if state is not None else None
         if isinstance(configured, str) and configured:
@@ -240,6 +246,6 @@ def extract_csrf_from_form(
     field_name: str = "csrf_token",
 ) -> str | None:
     if isinstance(data, dict):
-        token = data.get(field_name)
+        token: object | None = cast(dict[object, object], data).get(field_name)
         return token if isinstance(token, str) else None
     return None

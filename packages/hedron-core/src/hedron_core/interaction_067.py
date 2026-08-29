@@ -13,8 +13,9 @@ import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from types import MappingProxyType
+from typing import cast
 
-from hedron_core.alpine import AlpineFeatureDemand, AlpineMaturity, _json_value
+from hedron_core.alpine import AlpineFeatureDemand, AlpineMaturity, json_value
 from hedron_core.compat import StrEnum
 
 __all__ = [
@@ -124,9 +125,11 @@ class Interaction:
             raise ValueError("fallback must be native, none, full-page, or full-fragment")
         if not self.source.strip():
             raise ValueError("interaction source is required")
-        if self.local_effect is not None and not isinstance(self.local_effect, LocalEffect):
+        local_effect = cast(object, self.local_effect)
+        request_effect = cast(object, self.request_effect)
+        if local_effect is not None and not isinstance(local_effect, LocalEffect):
             raise TypeError("local_effect must be a LocalEffect")
-        if self.request_effect is not None and not isinstance(self.request_effect, RequestEffect):
+        if request_effect is not None and not isinstance(request_effect, RequestEffect):
             raise TypeError("request_effect must be a RequestEffect")
         has_local = self.local_effect is not None
         has_request = self.request_effect is not None
@@ -271,11 +274,11 @@ class Outcome:
     """Closed, role-indexed server outcome description."""
 
     role: OutcomeKind | str
-    payload: Mapping[str, object] = field(default_factory=dict)
+    payload: Mapping[str, object] = field(default_factory=dict[str, object])
 
     def __post_init__(self) -> None:
         role = OutcomeKind(self.role)
-        payload = _json_value(self.payload, path="payload")
+        payload = json_value(self.payload, path="payload")
         if not isinstance(payload, dict):
             raise TypeError("Outcome payload must be a mapping")
         required: dict[OutcomeKind, frozenset[str]] = {
@@ -290,7 +293,7 @@ class Outcome:
             OutcomeKind.DOWNLOAD: frozenset({"url"}),
         }
         expected = required[role]
-        if set(payload) != expected and role is not OutcomeKind.SUCCESS:
+        if set(payload) != set(expected) and role is not OutcomeKind.SUCCESS:
             raise ValueError(
                 f"{role.value} outcome payload must contain exactly {sorted(expected)!r}"
             )
@@ -365,7 +368,7 @@ class Outcome:
     @classmethod
     def patch(cls, target: str, content: object) -> Outcome:
         return cls(
-            OutcomeKind.PATCH, {"target": target, "content": _json_value(content, path="content")}
+            OutcomeKind.PATCH, {"target": target, "content": json_value(content, path="content")}
         )
 
     @classmethod
@@ -380,7 +383,7 @@ class Outcome:
 
     @classmethod
     def validation(cls, errors: Mapping[str, object]) -> Outcome:
-        return cls(OutcomeKind.VALIDATION, {"errors": _json_value(errors, path="errors")})
+        return cls(OutcomeKind.VALIDATION, {"errors": json_value(errors, path="errors")})
 
     @classmethod
     def conflict(cls, revision: str | int) -> Outcome:

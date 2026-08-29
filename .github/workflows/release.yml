@@ -11,7 +11,7 @@ on:
         type: string
         default: ""
       publish_only:
-        description: "Skip test/quality/browser/evidence; only build, publish remaining packages, and create/update the GitHub Release."
+        description: "Skip test/full-quality/browser/evidence; enforce strict package typing, then build and publish remaining packages."
         type: boolean
         default: false
 
@@ -63,7 +63,7 @@ jobs:
         run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
 
   quality:
-    name: Quality, docs, and packages
+    name: Quality, strict typing, docs, and packages
     if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -84,8 +84,30 @@ jobs:
           toolchain: stable
       - name: Install all dependency groups
         run: uv sync --locked --all-groups --python 3.12
-      - name: Run quality suite
+      - name: Run quality suite with strict package typing gate
         run: bash scripts/ci_checks.sh quality --python 3.12
+
+  publish_only_typing:
+    name: Strict package typing (publish-only recovery)
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_only }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.publish_tag }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install typing dependencies
+        run: uv sync --locked --all-groups --python 3.12
+      - name: Run strict package typing gate
+        run: bash scripts/ci_checks.sh typing --python 3.12
 
   browser:
     name: Browser HTMX (${{ matrix.browser }})
@@ -175,7 +197,7 @@ jobs:
 
   publish:
     name: Publish to PyPI
-    needs: [test, quality, browser, evidence]
+    needs: [test, quality, publish_only_typing, browser, evidence]
     if: |
       always() &&
       !cancelled() &&
@@ -185,6 +207,7 @@ jobs:
       ) &&
       (needs.test.result == 'success' || needs.test.result == 'skipped') &&
       (needs.quality.result == 'success' || needs.quality.result == 'skipped') &&
+      (needs.publish_only_typing.result == 'success' || needs.publish_only_typing.result == 'skipped') &&
       (needs.browser.result == 'success' || needs.browser.result == 'skipped') &&
       (needs.evidence.result == 'success' || needs.evidence.result == 'skipped')
     runs-on: ubuntu-latest

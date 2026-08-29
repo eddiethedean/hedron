@@ -21,11 +21,11 @@ class ComponentRef:
     method: str = "GET"
     target: str | None = None
     swap: str = "innerHTML"
-    params: Mapping[str, Any] = field(default_factory=dict)
-    inference: Mapping[str, JsonValue] = field(default_factory=dict)
+    params: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    inference: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
 
     def hx_attrs(self) -> dict[str, str]:
-        from hedron.htmx import _safe_css_selector
+        from hedron.htmx import safe_css_selector
 
         attrs: dict[str, str] = {}
         method = self.method.upper()
@@ -48,7 +48,7 @@ class ComponentRef:
         else:
             attrs["hx-get"] = url
         if self.target:
-            if not _safe_css_selector(self.target):
+            if not safe_css_selector(self.target):
                 raise ValueError(f"Unsafe HTMX target selector: {self.target!r}")
             attrs["hx-target"] = self.target
         if self.swap:

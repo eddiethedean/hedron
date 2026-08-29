@@ -5,6 +5,7 @@
 [![Edron](https://img.shields.io/pypi/v/edron.svg?label=edron)](https://pypi.org/project/edron/)
 [![Hedron](https://img.shields.io/pypi/v/hedron.svg?label=hedron)](https://pypi.org/project/hedron/)
 [![Python](https://img.shields.io/pypi/pyversions/hedron.svg)](https://pypi.org/project/hedron/)
+[![Pyright: strict](https://img.shields.io/badge/Pyright-strict-3178c6.svg)](https://microsoft.github.io/pyright/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Build polished, server-rendered Python applications without maintaining a separate
@@ -35,7 +36,9 @@ Edron pages and workflows       Native Hedron components and routes
                  Browser / HTTP client
 ```
 
-No Node.js toolchain is required. Python 3.10–3.14 is supported.
+No Node.js toolchain is required. Python 3.10–3.14 is supported. The `hedron-core` and
+`hedron` source trees are checked in Pyright strict mode with a **zero-warning CI gate**:
+any new type diagnostic blocks both commit and release workflows.
 
 ## Start with Edron
 
@@ -189,6 +192,8 @@ uv sync
 uv run pytest -q
 uv run ruff check packages tests examples
 uv run pyright
+# Warning-fatal strict gate for the two runtime packages:
+bash scripts/ci_checks.sh typing --python 3.12
 ```
 
 For documentation work:

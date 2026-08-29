@@ -203,19 +203,23 @@ INTERNAL_DOC_NAMES = {
 }
 HISTORICAL_PREFIXES = ("whats-new-0.", "RELEASE_0_")
 
-# A verified repository candidate may be absent from PyPI, but maintained pages
-# must not collapse those two facts into either "not implemented" or "on PyPI".
-RELEASE_CANDIDATE_CONTRADICTION = re.compile(
+# Implementation claims are independent of registry state: a verified release
+# must never be described as unimplemented, and the malformed ``.1.0.x`` token
+# is not a valid train label under either state.
+IMPLEMENTATION_CONTRADICTION = re.compile(
     r"(?:"
     r"\b1\.0(?:\.0|\.x)?[^\n]{0,120}\b(?:not implemented|implementation pending|"
     r"release evidence pending)\b|"
-    r"\bv?1\.0\.0[^\n]{0,100}\b(?:on PyPI|published on PyPI|in-tree and on PyPI)\b|"
     r"(?<!\d)\.1\.0\.x\b"
     r")",
     re.IGNORECASE,
 )
+DEFERRED_REGISTRY_CONTRADICTION = re.compile(
+    r"\bv?1\.0\.0\b[^\n]{0,100}\b(?:on PyPI|published on PyPI|in-tree and on PyPI)\b",
+    re.IGNORECASE,
+)
 PUBLISHED_RELEASE_CONTRADICTION = re.compile(
-    r"\bv?1\.0\.0\b[^\n]{0,100}\b(?:release candidate|publication pending|"
+    r"\bv?1\.0\.0\b[^\n]{0,100}\b(?:release candidate|candidate|publication pending|"
     r"tag/PyPI deferred|upload deferred)\b",
     re.IGNORECASE,
 )
@@ -244,17 +248,22 @@ def check_release_candidate_status(
     text: str,
     facts: ReleaseFacts = FACTS,
 ) -> list[str]:
-    """Reject contradictory 1.0 registry claims on maintained pages."""
+    """Reject stale implementation and registry claims on maintained pages.
+
+    Implementation status is always checked. Registry language is then
+    validated against ``facts.registry_status`` so a deferred candidate cannot
+    be called published and an uploaded release cannot still be called pending.
+    """
     if _is_historical(path):
         return []
     failures: list[str] = []
     for index, line in enumerate(text.splitlines(), start=1):
-        pattern = (
-            RELEASE_CANDIDATE_CONTRADICTION
+        registry_pattern = (
+            DEFERRED_REGISTRY_CONTRADICTION
             if facts.registry_deferred
             else PUBLISHED_RELEASE_CONTRADICTION
         )
-        if pattern.search(line):
+        if IMPLEMENTATION_CONTRADICTION.search(line) or registry_pattern.search(line):
             failures.append(f"{path}:{index}: contradictory 1.0 candidate status: {line.strip()}")
     return failures
 

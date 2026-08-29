@@ -12,6 +12,7 @@ from hedron.migrate.ir import (
     Confidence,
     Disposition,
     SourceSpan,
+    SourceUnit,
     StreamlitCall,
     StreamlitMigrationPlan,
 )
@@ -104,7 +105,7 @@ def analyze_discovered(
 ) -> StreamlitMigrationPlan:
     started = time.monotonic() if started is None else started
     tool_errors = list(tool_errors or [])
-    units = []
+    units: list[SourceUnit] = []
     calls: list[StreamlitCall] = []
     bytes_so_far = 0
     nodes_so_far = 0

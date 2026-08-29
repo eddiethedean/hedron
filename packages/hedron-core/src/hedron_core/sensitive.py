@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Generic, TypeVar
+from typing import Generic, TypeVar, cast
 
 from hedron_core.compat import StrEnum
 from hedron_core.security.secrets import Secret, is_secret, redact_value
@@ -88,10 +88,10 @@ _DECLASSIFICATION_LOG: list[DeclassificationRecord] = []
 _DECLASSIFICATION_LOG_LIMIT = 10_000
 
 
-def label_for(value: Any, *, source: str = "inferred", path: str = "") -> SensitiveLabel | None:
+def label_for(value: object, *, source: str = "inferred", path: str = "") -> SensitiveLabel | None:
     """Derive a label from Secret wrappers or return None for unlabeled values."""
     if isinstance(value, SensitiveValue):
-        return value.label
+        return cast(SensitiveValue[object], value).label
     if is_secret(value) or isinstance(value, Secret):
         return SensitiveLabel(
             classification=SensitivityClass.SECRET,
@@ -102,30 +102,31 @@ def label_for(value: Any, *, source: str = "inferred", path: str = "") -> Sensit
 
 
 def enforce_sink(
-    value: Any,
+    value: object,
     *,
     sink: str,
     path: str = "",
     allow: frozenset[SensitivityClass] | None = None,
-) -> Any:
+) -> object:
     """Reject or redact labeled sensitive values at framework-owned sinks."""
     if isinstance(value, SensitiveValue):
+        sensitive = cast(SensitiveValue[object], value)
         permitted = allow or _DEFAULT_SINK_ALLOW.get(sink, frozenset({SensitivityClass.PUBLIC}))
-        if not value.label.allows_sink(sink, allow=permitted):
+        if not sensitive.label.allows_sink(sink, allow=permitted):
             raise SensitiveSinkError(
                 f"sensitive value denied at sink {sink!r} "
-                f"(class={value.label.classification.value})"
+                f"(class={sensitive.label.classification.value})"
             )
-        if value.label.classification in {
+        if sensitive.label.classification in {
             SensitivityClass.SECRET,
             SensitivityClass.CREDENTIAL,
             SensitivityClass.CONFIDENTIAL,
         } and sink in {"log", "audit", "telemetry", "validation_error", "export"}:
-            redacted = value.redacted()
-            if str(value.reveal()) and str(value.reveal()) in str(redacted):
+            redacted = sensitive.redacted()
+            if str(sensitive.reveal()) and str(sensitive.reveal()) in str(redacted):
                 return "[redacted]"
             return redacted
-        return value.reveal()
+        return sensitive.reveal()
     label = label_for(value, path=path)
     if label is None:
         return value
@@ -172,24 +173,34 @@ def clear_declassification_records() -> None:
     _DECLASSIFICATION_LOG.clear()
 
 
-def walk_and_enforce(obj: Any, *, sink: str, path: str = "") -> Any:
+def walk_and_enforce(obj: object, *, sink: str, path: str = "") -> object:
     """Recursively enforce sink policy on nested containers."""
     if isinstance(obj, SensitiveValue) or is_secret(obj) or isinstance(obj, Secret):
-        return enforce_sink(obj, sink=sink, path=path)
+        return enforce_sink(cast(object, obj), sink=sink, path=path)
     if isinstance(obj, dict):
+        mapping = cast(dict[object, object], obj)
         return {
             key: walk_and_enforce(val, sink=sink, path=f"{path}.{key}" if path else str(key))
-            for key, val in obj.items()
+            for key, val in mapping.items()
         }
     if isinstance(obj, list):
         return [
-            walk_and_enforce(item, sink=sink, path=f"{path}[{idx}]") for idx, item in enumerate(obj)
+            walk_and_enforce(item, sink=sink, path=f"{path}[{idx}]")
+            for idx, item in enumerate(cast(list[object], obj))
         ]
     if isinstance(obj, tuple):
         return tuple(
-            walk_and_enforce(item, sink=sink, path=f"{path}[{idx}]") for idx, item in enumerate(obj)
+            walk_and_enforce(item, sink=sink, path=f"{path}[{idx}]")
+            for idx, item in enumerate(cast(tuple[object, ...], obj))
         )
-    if isinstance(obj, (set, frozenset)):
-        items = [walk_and_enforce(item, sink=sink, path=f"{path}{{item}}") for item in obj]
-        return type(obj)(items)
+    if isinstance(obj, set):
+        return {
+            walk_and_enforce(item, sink=sink, path=f"{path}{{item}}")
+            for item in cast(set[object], obj)
+        }
+    if isinstance(obj, frozenset):
+        return frozenset(
+            walk_and_enforce(item, sink=sink, path=f"{path}{{item}}")
+            for item in cast(frozenset[object], obj)
+        )
     return obj

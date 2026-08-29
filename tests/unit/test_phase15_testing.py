@@ -9,6 +9,7 @@ from hedron.testing import (
     AppScenario,
     AuthPrincipal,
     OidcCallbackStub,
+    UploadFixture,
     as_adapter,
     assert_non_200_fragment,
     fastapi_fixture,
@@ -101,6 +102,15 @@ def test_fixture_validation_and_redaction() -> None:
     redacted = redact_secrets_for_failure(stub)
     assert redacted["code"] == "[redacted]"
     assert redacted["state"] == "st"
+
+
+def test_upload_fixture_rejects_mutable_bytearray_content() -> None:
+    with pytest.raises(ValueError, match="content must be bytes"):
+        UploadFixture(
+            filename="sample.txt",
+            content_type="text/plain",
+            content=bytearray(b"mutable"),  # type: ignore[arg-type]
+        )
 
 
 def test_assert_non_200_fragment() -> None:

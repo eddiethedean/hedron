@@ -19,7 +19,7 @@ class InProcessInferenceQueue:
     """
 
     policy: InferencePolicy
-    _pending: deque[QueuedInference] = field(default_factory=deque)
+    _pending: deque[QueuedInference] = field(default_factory=deque[QueuedInference])
 
     def __post_init__(self) -> None:
         if not self.policy.development_in_process:

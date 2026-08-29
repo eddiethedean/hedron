@@ -153,7 +153,7 @@ jobs:
           tests/security/test_workbench_adversarial.py
 
   quality:
-    name: Quality, docs, and packages
+    name: Quality, strict typing, docs, and packages
     needs: changes
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -182,7 +182,7 @@ jobs:
       - name: Install docs-check dependencies
         if: needs.changes.outputs.docs_only == 'true'
         run: uv sync --locked --all-groups --python 3.12 --no-install-package hedron-native
-      - name: Run quality suite
+      - name: Run quality suite with strict package typing gate
         if: needs.changes.outputs.docs_only != 'true'
         run: bash scripts/ci_checks.sh quality --python 3.12
       - name: Run docs suite

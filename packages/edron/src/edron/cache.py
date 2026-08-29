@@ -12,7 +12,7 @@ from collections import OrderedDict
 from collections.abc import Callable
 from functools import wraps
 from threading import RLock
-from typing import Any, ParamSpec, TypeVar
+from typing import Any, Generic, ParamSpec, TypeVar, cast
 
 from edron.errors import BindingError
 from hedron_core.cache.backend import validate_cache_ttl
@@ -21,12 +21,12 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
-class CachedFunction:
+class CachedFunction(Generic[P, R]):
     """A callable lowered to Hedron's native ``cache_data`` decorator."""
 
     def __init__(
         self,
-        fn: Callable[..., Any],
+        fn: Callable[P, R],
         *,
         ttl: float | None = 60,
         scope: str = "private",
@@ -44,7 +44,7 @@ class CachedFunction:
             raise BindingError("cache max_entries must be positive", code="EDRON_CACHE_BOUNDS")
         if not isinstance(version, str) or not version.strip():
             raise BindingError("cache version must be non-empty", code="EDRON_CACHE_VERSION")
-        self.fn = fn
+        self.fn: Callable[P, R] = fn
         self.ttl = ttl
         self.scope = scope
         self.max_entries = max_entries
@@ -65,7 +65,7 @@ class CachedFunction:
             tags=(*self.tags, self._tag),
             vary_on=self.vary_on,
         )(fn)
-        self._native = native
+        self._native: Callable[P, R] = native
         wraps(fn)(self)
 
     def _key(self, args: tuple[Any, ...], kwargs: dict[str, Any]) -> str:
@@ -99,7 +99,7 @@ class CachedFunction:
                 evicted, _ = self._keys.popitem(last=False)
                 get_cache_backend().invalidate(keys=(evicted,))
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> R:
         key = self._key(args, kwargs)
         result = self._native(*args, **kwargs)
         if inspect.isawaitable(result):
@@ -109,7 +109,9 @@ class CachedFunction:
                 self._remember(key)
                 return value
 
-            return await_result()
+            # ``inspect.isawaitable`` establishes that R is awaitable at runtime,
+            # but Python 3.10 typing cannot express that conditional relationship.
+            return cast(R, await_result())
         self._remember(key)
         return result
 
@@ -139,7 +141,7 @@ def cache_data(
     version: str = "1",
     tags: tuple[str, ...] = (),
     vary_on: tuple[str, ...] = (),
-) -> Callable[[Callable[P, R]], CachedFunction]:
+) -> Callable[[Callable[P, R]], CachedFunction[P, R]]:
     """Decorate a recomputable function with native TTL/scope/cache policy."""
 
     return lambda fn: CachedFunction(

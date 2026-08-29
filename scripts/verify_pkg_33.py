@@ -70,7 +70,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.allow_planned:
         sys.path.insert(0, str(ROOT / "scripts"))
-        import check_release_gate as gate  # noqa: E402
+        import check_release_gate as gate
 
         errors = gate.check_evidence_manifest_lenient(EVIDENCE)
         if errors:

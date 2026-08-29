@@ -27,10 +27,24 @@ PACKET_FILES = (
 REPORT = ROOT / "docs" / "acceptance" / "evidence-061" / "gate-results-061.json"
 RELEASE_EVIDENCE_TEST = "tests/unit/test_phase061_action_state.py"
 EXPECTED_GATES = (
-    "CONTRACT-061", "ACTIONSTATE-061", "OPERATION-061", "ASYNC-061",
-    "SURFACE-061", "VISUAL-061", "CONCURRENCY-061", "STALE-061",
-    "FORM-061", "JOB-061", "HOST-061", "TRACE-061", "SECURITY-061",
-    "A11Y-061", "PERF-061", "DOCS-061", "UPGRADE-061", "PKG-061",
+    "CONTRACT-061",
+    "ACTIONSTATE-061",
+    "OPERATION-061",
+    "ASYNC-061",
+    "SURFACE-061",
+    "VISUAL-061",
+    "CONCURRENCY-061",
+    "STALE-061",
+    "FORM-061",
+    "JOB-061",
+    "HOST-061",
+    "TRACE-061",
+    "SECURITY-061",
+    "A11Y-061",
+    "PERF-061",
+    "DOCS-061",
+    "UPGRADE-061",
+    "PKG-061",
 )
 
 

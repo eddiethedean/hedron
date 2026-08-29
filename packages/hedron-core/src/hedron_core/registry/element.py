@@ -20,7 +20,7 @@ class ElementDefinitionMeta:
     abi_version: int
     module_asset_id: str
     attributes: tuple[str, ...] = ()
-    structured_inputs: Mapping[str, str] = field(default_factory=dict)
+    structured_inputs: Mapping[str, str] = field(default_factory=dict[str, str])
     properties: tuple[str, ...] = ()
     methods: tuple[str, ...] = ()
     state_ownership: tuple[ElementFieldOwnership, ...] = ()
@@ -28,16 +28,16 @@ class ElementDefinitionMeta:
     dom_policy: str = "light"
     server_regions: tuple[str, ...] = ()
     form_contract: Mapping[str, object] | None = None  # reserved stub in 0.36
-    a11y_contract: Mapping[str, str] = field(default_factory=dict)
-    style_contract: Mapping[str, str] = field(default_factory=dict)
+    a11y_contract: Mapping[str, str] = field(default_factory=dict[str, str])
+    style_contract: Mapping[str, str] = field(default_factory=dict[str, str])
     resources: tuple[str, ...] = ()
-    lifecycle: Mapping[str, str] = field(default_factory=dict)
-    fallback: Mapping[str, str] = field(default_factory=dict)
+    lifecycle: Mapping[str, str] = field(default_factory=dict[str, str])
+    fallback: Mapping[str, str] = field(default_factory=dict[str, str])
     parts: tuple[str, ...] = ()
-    slots: Mapping[str, str] = field(default_factory=dict)
+    slots: Mapping[str, str] = field(default_factory=dict[str, str])
     tokens: tuple[str, ...] = ()
     maturity: str = "Supported"
-    compatibility: Mapping[str, str] = field(default_factory=dict)
+    compatibility: Mapping[str, str] = field(default_factory=dict[str, str])
     first_party: bool = True
 
 

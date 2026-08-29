@@ -143,7 +143,8 @@ def Field(
 def hedron_meta(info: FieldInfo) -> dict[str, object]:
     extra = info.json_schema_extra
     if isinstance(extra, dict):
-        meta = extra.get("hedron")
+        extra_mapping = cast(dict[str, object], extra)
+        meta = extra_mapping.get("hedron")
         if isinstance(meta, dict):
-            return dict(meta)
+            return dict(cast(dict[str, object], meta))
     return {}

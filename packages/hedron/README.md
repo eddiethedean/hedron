@@ -4,6 +4,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/hedron.svg)](https://pypi.org/project/hedron/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/hedron/badge/?version=latest)](https://hedron.readthedocs.io/en/latest/)
+[![Pyright: strict](https://img.shields.io/badge/Pyright-strict-3178c6.svg)](https://microsoft.github.io/pyright/)
 [![Status: Stable](https://img.shields.io/badge/status-stable-brightgreen.svg)](https://pypi.org/project/hedron/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
@@ -17,7 +18,12 @@ available beside the UI.
 
 There is no generated frontend project, Node.js build, virtual DOM, or full-script rerun loop.
 
-**Package maturity:** Stable · **Release:** `1.0.x` · **Python:** 3.10–3.14
+**Package maturity:** Stable · **Release:** `1.0.x` · **Python:** 3.10–3.14 ·
+**Typing:** Pyright strict, zero warnings
+
+The warning-free typing baseline is enforced in commit and release CI with
+`pyright --warnings`; a new strict-mode diagnostic fails the build rather than becoming
+untracked typing debt.
 
 > Looking for the shortest application-authoring path? [Edron](https://pypi.org/project/edron/)
 > adds class-oriented pages, a compact dashboard vocabulary, batteries-included data/chart/map

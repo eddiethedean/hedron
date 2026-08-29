@@ -198,7 +198,7 @@ def compile_application_asset_plan(
                     )
                 )
 
-    cycle_nodes = _detect_cycles(by_id) if by_id else set()
+    cycle_nodes = _detect_cycles(by_id) if by_id else set[str]()
     for node in sorted(cycle_nodes):
         diagnostics.append(
             make_diagnostic(

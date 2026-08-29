@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
+from importlib import import_module
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.auto import RendererSpec, register_renderer
 from hedron_core.component import Component
@@ -57,9 +59,9 @@ class Markdown(Component[MarkdownProps]):
 
 def highlight_code(code: str, *, lexer: str = "python") -> TrustedHtml:
     try:
-        from pygments import highlight
-        from pygments.formatters import HtmlFormatter
-        from pygments.lexers import get_lexer_by_name, guess_lexer
+        pygments = import_module("pygments")
+        formatters = import_module("pygments.formatters")
+        lexers = import_module("pygments.lexers")
     except ImportError as exc:
         raise error(
             "HED-CONTENT-0002",
@@ -67,13 +69,17 @@ def highlight_code(code: str, *, lexer: str = "python") -> TrustedHtml:
             explanation="Syntax highlighting requires Pygments.",
             remediation='Install with: pip install "hedron[code]"',
         ) from exc
+    highlight = cast(Callable[[str, object, object], str], pygments.highlight)
+    html_formatter = cast(Callable[..., object], formatters.HtmlFormatter)
+    get_lexer_by_name = cast(Callable[[str], object], lexers.get_lexer_by_name)
+    guess_lexer = cast(Callable[[str], object], lexers.guess_lexer)
     try:
         lex = get_lexer_by_name(lexer)
     except ValueError as exc:
         # pygments.util.ClassNotFound (ValueError subclass) for unknown names
         _logger.debug("Unknown pygments lexer %r; guessing: %s", lexer, exc)
         lex = guess_lexer(code)
-    formatter = HtmlFormatter(nowrap=False)
+    formatter = html_formatter(nowrap=False)
     html_out = highlight(code, lex, formatter)
     if not _nh3_available():
         import html as html_stdlib

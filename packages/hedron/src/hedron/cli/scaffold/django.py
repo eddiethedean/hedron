@@ -6,10 +6,10 @@ import argparse
 import json
 from pathlib import Path
 
-from hedron.cli.discovery import _scaffold_dep
+from hedron.cli.discovery import scaffold_dep as _scaffold_dep
 
 
-def _scaffold_django(args: argparse.Namespace, dest: Path) -> int:
+def scaffold_django(args: argparse.Namespace, dest: Path) -> int:
     (dest / "pyproject.toml").write_text(
         f'''[project]
 name = "{args.name}"
@@ -171,3 +171,6 @@ application = get_wsgi_application()
         )
     )
     return 0
+
+
+_scaffold_django = scaffold_django

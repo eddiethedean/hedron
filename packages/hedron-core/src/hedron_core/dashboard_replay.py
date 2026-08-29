@@ -9,7 +9,7 @@ from __future__ import annotations
 import copy
 from collections.abc import Mapping, MutableMapping
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from hedron_core.codes import HED_GRAPH_0006, HED_PATCH_0002
 from hedron_core.csrf import redact_secret_like
@@ -47,15 +47,15 @@ class GraphReplayEvent:
     correlation_id: str
     binding_id: str
     kind: GraphReplayKind
-    payload: Mapping[str, Any] = field(default_factory=dict)
+    payload: Mapping[str, Any] = field(default_factory=dict[str, Any])
 
 
 @dataclass(slots=True)
 class GraphRecording:
     """Ordered exchange fixture for deterministic graph replay."""
 
-    events: list[GraphReplayEvent] = field(default_factory=list)
-    initial_regions: dict[str, Any] = field(default_factory=dict)
+    events: list[GraphReplayEvent] = field(default_factory=list[GraphReplayEvent])
+    initial_regions: dict[str, Any] = field(default_factory=dict[str, Any])
 
 
 def record_exchange(
@@ -205,7 +205,8 @@ def _apply_trigger(
     payload = dict(event.payload)
     region_updates = payload.get("regions")
     if isinstance(region_updates, Mapping):
-        for target_id, state in region_updates.items():
+        updates = cast(Mapping[object, object], region_updates)
+        for target_id, state in updates.items():
             regions[str(target_id)] = copy.deepcopy(state)
     else:
         binding = _binding(graph, event.binding_id)

@@ -27,10 +27,13 @@ def _result_freshness_errors(text: str, errors: list[str]) -> None:
         errors.append("realconnect-033 RESULT.log missing RESULT=pass")
     if "NATIVE_COOKIES=ok" not in text:
         errors.append("realconnect-033 RESULT.log missing NATIVE_COOKIES=ok")
-    if "CONNECT_VERSION=2026.07.0" not in text and "version=2026.07.0" not in text:
-        # Accept either field name used by probe variants.
-        if "2026.07.0" not in text:
-            errors.append("realconnect-033 RESULT.log missing Connect 2026.07.0 pin")
+    # Accept either field name used by probe variants or an unlabelled version.
+    if (
+        "CONNECT_VERSION=2026.07.0" not in text
+        and "version=2026.07.0" not in text
+        and "2026.07.0" not in text
+    ):
+        errors.append("realconnect-033 RESULT.log missing Connect 2026.07.0 pin")
     match = re.search(r"REALCONNECT-033 start (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)", text)
     if not match:
         errors.append("realconnect-033 RESULT.log missing start timestamp")

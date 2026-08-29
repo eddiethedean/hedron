@@ -12,7 +12,7 @@ from tests.unit._helpers_044 import make_app, reset_044
 
 from hedron import FragmentHandle, Page, Text, ViewParams
 from hedron.type_authoring.adapter import PydanticBindingAdapter
-from hedron_core.codes import HED_TYPE_0001, HED_TYPE_0002
+from hedron_core.codes import HED_TYPE_0001, HED_TYPE_0002, HED_VIEW_0004
 from hedron_core.diagnostics import HedronError
 
 
@@ -40,6 +40,19 @@ def test_viewparams_bind_model_and_fields() -> None:
     assert user_card.schema is not None
     assert user_card.parameter_model is UserCardParams
     assert isinstance(user_card.adapter, PydanticBindingAdapter)
+
+
+def test_viewparams_bind_rejects_non_model_non_mapping_value() -> None:
+    app = make_app()
+
+    @app.refreshable("/users/{user_id}")
+    def user_card(params: Annotated[UserCardParams, ViewParams()]):
+        return Text(str(params.user_id))
+
+    with pytest.raises(HedronError) as caught:
+        user_card.bind(42)  # type: ignore[arg-type]
+
+    assert caught.value.diagnostics[0].code == HED_VIEW_0004
 
 
 def test_unmodeled_handler_has_no_schema() -> None:

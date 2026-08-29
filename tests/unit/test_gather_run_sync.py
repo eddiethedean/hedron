@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from contextvars import ContextVar
 
 import pytest
@@ -21,6 +22,27 @@ async def test_gather_basic() -> None:
         return 2
 
     assert await gather(one(), two()) == [1, 2]
+
+
+async def test_gather_cancels_and_drains_siblings_after_failure() -> None:
+    started = asyncio.Event()
+    cancelled = asyncio.Event()
+
+    async def slow() -> None:
+        started.set()
+        try:
+            await asyncio.Event().wait()
+        except asyncio.CancelledError:
+            cancelled.set()
+            raise
+
+    async def fail() -> None:
+        await started.wait()
+        raise RuntimeError("boom")
+
+    with pytest.raises(RuntimeError, match="boom"):
+        await gather(slow(), fail())
+    assert cancelled.is_set()
 
 
 async def test_run_sync_propagates_contextvar() -> None:

@@ -44,7 +44,7 @@ class RegionUpdate:
 @dataclass(frozen=True, slots=True)
 class ChannelMessage:
     kind: Literal["region-update", "client-state-request", "ping", "close", "error"]
-    payload: Mapping[str, JsonValue] = field(default_factory=dict)
+    payload: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
 
 
 @dataclass(slots=True)
@@ -67,7 +67,7 @@ class PageSessionChannel:
         if (component_id, field) not in allowed:
             raise ValueError(f"undeclared client read {component_id}.{field}")
 
-    def _prepare_region_update(self, update: RegionUpdate) -> ChannelMessage:
+    def prepare_region_update(self, update: RegionUpdate) -> ChannelMessage:
         from hedron_core.htmx_contract import safe_hx_swap
 
         self.validate_region(update.region_id)
@@ -87,10 +87,10 @@ class PageSessionChannel:
         return encoded
 
     def encode_region_update(self, update: RegionUpdate) -> ChannelMessage:
-        encoded = self._prepare_region_update(update)
-        return self._commit_region_update(encoded)
+        encoded = self.prepare_region_update(update)
+        return self.commit_region_update(encoded)
 
-    def _commit_region_update(self, encoded: ChannelMessage) -> ChannelMessage:
+    def commit_region_update(self, encoded: ChannelMessage) -> ChannelMessage:
         if self.messages_sent >= self.budget.max_messages:
             raise RuntimeError("channel message budget exhausted")
         self.messages_sent += 1
@@ -99,7 +99,7 @@ class PageSessionChannel:
     def batch_updates(self, updates: Sequence[RegionUpdate]) -> list[ChannelMessage]:
         if len(updates) > self.budget.max_batch:
             raise ValueError("batch exceeds max_batch")
-        encoded = [self._prepare_region_update(update) for update in updates]
+        encoded = [self.prepare_region_update(update) for update in updates]
         if self.messages_sent + len(encoded) > self.budget.max_messages:
             raise RuntimeError("channel message budget exhausted")
         self.messages_sent += len(encoded)

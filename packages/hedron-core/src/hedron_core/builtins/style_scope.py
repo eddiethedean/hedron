@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import re
 from collections.abc import Sequence
-from contextvars import ContextVar
-from typing import Any, Literal
+from contextvars import ContextVar, Token
+from typing import Any, Literal, cast
 
 from pydantic import Field
 
@@ -47,15 +47,18 @@ _CURRENT_STYLE_CONTEXT: ContextVar[StyleContext | None] = ContextVar(
 
 
 def current_style_context() -> StyleContext | None:
+    """Return the request-local style context, if a scope installed one."""
     return _CURRENT_STYLE_CONTEXT.get()
 
 
-def push_style_context(context: StyleContext):
+def push_style_context(context: StyleContext) -> Token[StyleContext | None]:
+    """Install ``context`` and return the token required to restore it."""
     return _CURRENT_STYLE_CONTEXT.set(context)
 
 
-def pop_style_context(token: object) -> None:
-    _CURRENT_STYLE_CONTEXT.reset(token)  # type: ignore[arg-type]
+def pop_style_context(token: Token[StyleContext | None]) -> None:
+    """Restore the style context represented by ``token``."""
+    _CURRENT_STYLE_CONTEXT.reset(token)
 
 
 def presentation_data(slot: str) -> dict[str, str]:
@@ -172,24 +175,29 @@ class StyleScope(Component[StyleScopeProps]):
                 explanation=f"Unsupported StyleScope keyword(s): {unknown}.",
                 remediation="Pass only theme, color_mode, density, variant, id, class_, and mark.",
             )
-        if scope is not None:
-            if not isinstance(scope, str) or _THEME_NAME_RE.fullmatch(scope.strip()) is None:
+        raw_scope = cast(object, scope)
+        if raw_scope is not None:
+            if (
+                not isinstance(raw_scope, str)
+                or _THEME_NAME_RE.fullmatch(raw_scope.strip()) is None
+            ):
                 raise error(
                     HED_STYLE_SCOPE_0001,
                     title="Invalid application style scope",
                     explanation=f"scope={scope!r} must match [A-Za-z0-9_-]+.",
                     remediation="Use the same scope name passed to app.styles(scope=...).",
                 )
-            scope = scope.strip()
-        if theme is not None:
-            if not isinstance(theme, str) or not theme.strip():
+            scope = raw_scope.strip()
+        raw_theme = cast(object, theme)
+        if raw_theme is not None:
+            if not isinstance(raw_theme, str) or not raw_theme.strip():
                 raise error(
                     HED_STYLE_SCOPE_0001,
                     title="Invalid StyleScope theme",
                     explanation=f"theme={theme!r} must be a non-empty theme name.",
                     remediation="Pass a registered theme name such as 'default' or 'aurora'.",
                 )
-            theme = theme.strip()
+            theme = raw_theme.strip()
             if _THEME_NAME_RE.fullmatch(theme) is None:
                 raise error(
                     HED_STYLE_SCOPE_0001,
@@ -206,15 +214,16 @@ class StyleScope(Component[StyleScopeProps]):
             )
         if density is not None:
             require_choice(density, DENSITIES, label="density")
-        if variant is not None:
-            if not isinstance(variant, str) or not variant.strip():
+        raw_variant = cast(object, variant)
+        if raw_variant is not None:
+            if not isinstance(raw_variant, str) or not raw_variant.strip():
                 raise error(
                     HED_STYLE_SCOPE_0001,
                     title="Invalid StyleScope variant",
                     explanation=f"variant={variant!r} must be a non-empty variant name.",
                     remediation="Pass a registered finite theme variant name.",
                 )
-            variant = variant.strip()
+            variant = raw_variant.strip()
             if _THEME_NAME_RE.fullmatch(variant) is None:
                 raise error(
                     HED_STYLE_SCOPE_0001,

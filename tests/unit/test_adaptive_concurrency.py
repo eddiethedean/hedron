@@ -107,6 +107,43 @@ async def test_opt_out_preserves_semantics() -> None:
 
 
 @pytest.mark.anyio
+async def test_opt_out_still_cancels_siblings_after_failure() -> None:
+    configure_concurrency(enabled=False, max_in_flight=1)
+    started = asyncio.Event()
+    cancelled = asyncio.Event()
+
+    async def slow() -> None:
+        started.set()
+        try:
+            await asyncio.Event().wait()
+        except asyncio.CancelledError:
+            cancelled.set()
+            raise
+
+    async def fail() -> None:
+        await started.wait()
+        raise RuntimeError("boom")
+
+    with pytest.raises(RuntimeError, match="boom"):
+        await adaptive_gather(slow(), fail())
+    assert cancelled.is_set()
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"max_in_flight": 0},
+        {"degrade_at": 0},
+        {"prepare_deadline_seconds": 0.0},
+        {"prepare_deadline_seconds": float("inf")},
+    ],
+)
+def test_invalid_concurrency_configuration_fails_fast(kwargs: dict[str, int | float]) -> None:
+    with pytest.raises(ValueError):
+        configure_concurrency(**kwargs)
+
+
+@pytest.mark.anyio
 async def test_issue_103_cancels_siblings_on_overload() -> None:
     configure_concurrency(enabled=True, max_in_flight=2, degrade_at=1)
     started = asyncio.Event()

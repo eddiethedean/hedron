@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, ClassVar
 
-from hedron.htmx import _safe_css_selector
+from hedron.htmx import safe_css_selector
 from hedron.routing.reverse import ComponentRef
 from hedron_core.builtins.live_ui import ChatMessage
 from hedron_core.component import Component, NodeLike
@@ -47,7 +47,7 @@ class ChatInput(Component[ChatInputProps]):
         )
         self.ref = ref
         self.action = action
-        self.target = target if target is None or _safe_css_selector(target) else None
+        self.target = target if target is None or safe_css_selector(target) else None
         if target is not None and self.target is None:
             raise ValueError(f"Unsafe HTMX target selector: {target!r}")
         self.swap = swap

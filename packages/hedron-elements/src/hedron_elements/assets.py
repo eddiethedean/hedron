@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from importlib import resources
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 
 from hedron_core.diagnostics import error
 
@@ -36,15 +36,13 @@ def asset_bytes(name: str) -> bytes:
     return target.read_bytes()
 
 
-def asset_path(name: str):
+def asset_path(name: str) -> Path:
     """Resolve a packaged static asset path by basename.
 
     Names must be single path segments under ``static/``. Absolute paths,
     ``..``, and separators are rejected. Prefer :func:`asset_bytes` when
     reading content under zipimport.
     """
-    from pathlib import Path
-
     safe = _sanitize_asset_name(name)
     root = resources.files("hedron_elements").joinpath("static")
     with resources.as_file(root) as base:
@@ -68,13 +66,16 @@ def asset_path(name: str):
         return target
 
 
-def bridge_path():
+def bridge_path() -> Path:
+    """Return the filesystem path to the packaged browser bridge."""
     return asset_path("hedron-bridge.mjs")
 
 
-def example_module_path():
+def example_module_path() -> Path:
+    """Return the filesystem path to the packaged example module."""
     return asset_path("hedron-example.mjs")
 
 
-def example_css_path():
+def example_css_path() -> Path:
+    """Return the filesystem path to the packaged example stylesheet."""
     return asset_path("hedron-example.css")

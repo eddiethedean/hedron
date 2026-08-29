@@ -19,7 +19,7 @@ def _artifact_stem(logical_id: str) -> str:
     return logical_id.replace(":", "__").replace("/", "_").replace("\\", "_")
 
 
-def _write_build_manifest(
+def write_build_manifest(
     tmp_root: Path,
     *,
     manifest: BuildManifest,
@@ -33,6 +33,9 @@ def _write_build_manifest(
             tmp_root / "css-symbols" / f"{_artifact_stem(sym.component_id)}.json",
             sym.to_dict(),
         )
+
+
+_write_build_manifest = write_build_manifest
 
 
 def load_build_manifest(build_dir: Path) -> BuildManifest:

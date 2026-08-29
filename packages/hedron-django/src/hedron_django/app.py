@@ -7,8 +7,9 @@ from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 
-from hedron_core.adapter import DJANGO_CAPABILITIES, AuthSignal
+from hedron_core.adapter import DJANGO_CAPABILITIES, AuthSignal, CapabilityRecord
 from hedron_core.component import Component, NodeLike
+from hedron_core.htmx_contract import HtmxContext
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.interaction_067 import Outcome
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
@@ -36,7 +37,8 @@ class HedronDjango:
         run_django_production_gates()
 
     @property
-    def capabilities(self):
+    def capabilities(self) -> CapabilityRecord:
+        """Return the immutable capability declaration for the Django adapter."""
         return DJANGO_CAPABILITIES
 
     def render(
@@ -47,6 +49,7 @@ class HedronDjango:
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
     ) -> str:
+        """Render a Hedron value to HTML using request-derived render mode."""
         from hedron_django.responses import _render_body
 
         result = _render_body(
@@ -68,6 +71,12 @@ class HedronDjango:
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
     ) -> HttpResponse:
+        """Render a Hedron value as a synchronous Django response.
+
+        Raises:
+            RuntimeError: If called from a running event loop. ASGI views must
+                await :meth:`respond_async` so component preparation is not lost.
+        """
         from hedron_core.async_bridge import running_loop
         from hedron_django.csrf import DjangoCsrfError, seed_csrf_cookie, validate_csrf
 
@@ -228,5 +237,6 @@ class HedronDjango:
     def csrf_token(self, request: HttpRequest) -> str:
         return csrf_token_for_request(request)
 
-    def htmx(self, request: HttpRequest):
+    def htmx(self, request: HttpRequest) -> HtmxContext:
+        """Parse the request's approved HTMX headers into a typed context."""
         return htmx_context(_headers_mapping(request))

@@ -68,7 +68,7 @@ def _from_narwhals(obj: object, *, max_rows: int) -> list[dict[str, JsonValue]]:
             explanation="Narwhals is required to normalize Pandas/Polars/PyArrow inputs.",
             remediation='Install with: pip install "hedron-data[dataframes]"',
         ) from exc
-    frame = nw.from_native(obj)  # type: ignore[arg-type]  # type: ignore[arg-type]
+    frame = nw.from_native(obj)  # type: ignore[arg-type]
     native = frame.to_dict(as_series=False)
     if not native:
         return []

@@ -16,15 +16,15 @@ from hedron.responses.html import (
 from hedron.responses.render import (
     _apply_auth_cache_headers as _apply_auth_cache_headers,
 )
-from hedron.responses.render import (
-    _fragment_region_http_detail as _fragment_region_http_detail,
-)
+from hedron.responses.render import fragment_region_http_detail as fragment_region_http_detail
 from hedron.responses.render import hedron_response as hedron_response
 from hedron.responses.render import merge_htmx_headers as merge_htmx_headers
 from hedron.responses.render import (
     render_component_response as render_component_response,
 )
 from hedron.responses.render import render_interaction as render_interaction
+
+_fragment_region_http_detail = fragment_region_http_detail
 
 __all__ = [
     "ComponentResponse",
@@ -33,6 +33,7 @@ __all__ = [
     "HTML",
     "PageResponse",
     "hedron_response",
+    "fragment_region_http_detail",
     "merge_htmx_headers",
     "render_component_response",
     "render_interaction",

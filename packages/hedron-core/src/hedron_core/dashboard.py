@@ -53,7 +53,7 @@ class TriggerContext:
     component_id: str
     changed_fields: tuple[str, ...] = ()
     correlation_id: str = ""
-    snapshots: Mapping[str, JsonValue] = field(default_factory=dict)
+    snapshots: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,7 +74,9 @@ class InteractionGraph:
     """Finite, inspectable page-local interaction graph."""
 
     declared_inputs: frozenset[str] = frozenset()
-    _bindings: dict[str, DashboardBinding] = field(default_factory=dict, init=False, repr=False)
+    _bindings: dict[str, DashboardBinding] = field(
+        default_factory=dict[str, DashboardBinding], init=False, repr=False
+    )
 
     def declare_inputs(self, *input_ids: str) -> None:
         """Declare external trigger sources that are not produced by bindings."""

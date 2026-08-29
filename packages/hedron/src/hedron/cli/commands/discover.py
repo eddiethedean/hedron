@@ -15,3 +15,6 @@ def _cmd_discover(args: argparse.Namespace) -> int:
     else:
         print(payload, end="" if str(payload).endswith("\n") else "\n")
     return 0
+
+
+cmd_discover = _cmd_discover

@@ -92,16 +92,18 @@ def _require_local_fallback(fallback: str) -> None:
 def _is_injected(parameter: inspect.Parameter) -> bool:
     if parameter.name in _REQUEST_NAMES:
         return True
-    annotation = parameter.annotation
-    if annotation is Request or (isinstance(annotation, type) and issubclass(annotation, Request)):
+    annotation: object = parameter.annotation
+    if annotation is Request:
+        return True
+    if isinstance(annotation, type) and issubclass(cast(type[object], annotation), Request):
         return True
     default = parameter.default
     if isinstance(default, DependsParam):
         return True
-    origin = getattr(annotation, "__origin__", None)
-    args = getattr(annotation, "__args__", ())
+    origin: object = getattr(annotation, "__origin__", None)
+    args = cast(tuple[object, ...], getattr(annotation, "__args__", ()))
     if origin is not None and args:
-        metadata = getattr(annotation, "__metadata__", ())
+        metadata = cast(tuple[object, ...], getattr(annotation, "__metadata__", ()))
         if any(isinstance(item, DependsParam) for item in metadata):
             return True
     return False
@@ -137,9 +139,10 @@ def _as_json_value(value: object) -> JsonValue:
     if value is None or isinstance(value, (str, int, float, bool)):
         return value
     if isinstance(value, list):
-        return [_as_json_value(item) for item in value]
+        return [_as_json_value(item) for item in cast(list[object], value)]
     if isinstance(value, Mapping):
-        return {str(key): _as_json_value(item) for key, item in value.items()}
+        mapping = cast(Mapping[object, object], value)
+        return {str(key): _as_json_value(item) for key, item in mapping.items()}
     return str(value)
 
 
@@ -151,9 +154,10 @@ def _is_html_attr_value(value: object) -> TypeIs[HtmlAttrValue]:
     if value is None or isinstance(value, (str, bool, int, float, SafeUrl)):
         return True
     if isinstance(value, dict):
+        mapping = cast(dict[object, object], value)
         return all(
             isinstance(key, str) and (item is None or isinstance(item, (str, bool, int, float)))
-            for key, item in value.items()
+            for key, item in mapping.items()
         )
     return False
 
@@ -165,7 +169,7 @@ def _html_attr_map(attrs: Mapping[str, object]) -> HtmlAttrMap:
             out[key] = value
         elif isinstance(value, dict):
             nested: dict[str, str | bool | int | float | None] = {}
-            for nested_key, nested_value in value.items():
+            for nested_key, nested_value in cast(dict[object, object], value).items():
                 if nested_value is None or isinstance(nested_value, (str, bool, int, float)):
                     nested[str(nested_key)] = nested_value
                 else:
@@ -176,14 +180,14 @@ def _html_attr_map(attrs: Mapping[str, object]) -> HtmlAttrMap:
     return out
 
 
-def _as_node_like(value: object) -> NodeLike:
+def as_node_like(value: object) -> NodeLike:
     """Callable/host results are untyped; narrow to ``NodeLike`` for materialize."""
-    if value is None or isinstance(value, (str, int, float, bool, Component)):
+    if value is None or isinstance(value, (str, int, float, bool)):
         return value
     if isinstance(value, ComponentNode):
         return value
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        return value
+        return cast(Sequence[NodeLike], value)
     # Opaque host objects (e.g. deferred nodes) still participate in render.
     return cast(NodeLike, value)
 
@@ -271,7 +275,7 @@ def _try_initial_render(
         if inspect.iscoroutine(result):
             result.close()
         return None
-    return _as_node_like(result)
+    return as_node_like(result)
 
 
 def _try_initial_render_model(
@@ -285,7 +289,7 @@ def _try_initial_render_model(
         if inspect.iscoroutine(result):
             result.close()
         return None
-    return _as_node_like(result)
+    return as_node_like(result)
 
 
 @dataclass(frozen=False)
@@ -324,6 +328,11 @@ class FragmentHandle(Generic[BindT, ContentT]):
         meta = self.type_meta
         return None if meta is None else meta.model_type
 
+    @property
+    def bound_values(self) -> BoundValues | None:
+        """Return the normalized path/query binding for this handle, if present."""
+        return self._bound
+
     def __post_init__(self) -> None:
         # Keep ``bound`` a concrete bool field so FragmentHandle satisfies UpdateTarget.
         object.__setattr__(
@@ -353,7 +362,7 @@ class FragmentHandle(Generic[BindT, ContentT]):
         get_url = _bound_url(self._bound) if self._bound is not None else self.path
         load_on_mount = content is None
         return self.host.materialize(
-            content if content is not None else self.host._loading,
+            content if content is not None else self.host.loading,
             dom_id=self.dom_id,
             get_url=get_url,
             event_name=refresh_event_name(self.dom_id),
@@ -382,14 +391,20 @@ class FragmentHandle(Generic[BindT, ContentT]):
             value = args[0]
             type_adapter = self.type_meta.adapter if self.type_meta is not None else None
             if type_adapter is not None:
-                if isinstance(value, (BaseModel, Mapping)):
+                if isinstance(value, BaseModel):
                     model = type_adapter.validate(value)
+                elif isinstance(value, Mapping):
+                    model = type_adapter.validate(cast(Mapping[str, object], value))
                 else:
-                    # Untyped bind value; adapter raises if the shape is wrong.
-                    model = type_adapter.validate(value)  # type: ignore[arg-type]
+                    raise error(
+                        HED_VIEW_0004,
+                        title="Unsupported bind() value",
+                        explanation="Modeled handlers accept a model instance or mapping.",
+                        remediation="Call bind(model), bind(mapping), or bind(**fields).",
+                    )
                 parameters = type_adapter.dump(model)
             elif isinstance(value, Mapping):
-                parameters = dict(value)
+                parameters = dict(cast(Mapping[str, object], value))
             else:
                 raise error(
                     HED_VIEW_0004,
@@ -400,7 +415,7 @@ class FragmentHandle(Generic[BindT, ContentT]):
         template = self.descriptor.path or self.path
         values = adapter.bind(self.binding_plan, parameters, path=template)
         extra_token = values.instance_token
-        nested = FragmentHandle(
+        nested: FragmentHandle[Mapping[str, object], ContentT] = FragmentHandle(
             logical_id=self.logical_id,
             name=self.name,
             path=_bound_url(values),
@@ -423,11 +438,11 @@ class FragmentHandle(Generic[BindT, ContentT]):
             bound=True,
             __wrapped__=self.renderer,
         )
-        object.__setattr__(nested, "selector", f"#{nested.dom_id}")
-        object.__setattr__(
-            nested,
-            "region",
-            FragmentRegion(id=nested.dom_id, selector=nested.selector, description=self.logical_id),
+        nested.selector = f"#{nested.dom_id}"
+        nested.region = FragmentRegion(
+            id=nested.dom_id,
+            selector=nested.selector,
+            description=self.logical_id,
         )
         return BoundFragment(handle=nested)
 
@@ -445,7 +460,7 @@ class FragmentHandle(Generic[BindT, ContentT]):
             )
         url = _bound_url(self._bound) if self._bound is not None else self.path
         wrapped = self.host.materialize(
-            _as_node_like(content),
+            as_node_like(content),
             dom_id=self.dom_id,
             get_url=url,
             event_name=refresh_event_name(self.dom_id),
@@ -654,6 +669,16 @@ class ActionHandle(Generic[InputT, ResultT]):
         meta = self.type_meta
         return None if meta is None else meta.model_type
 
+    @property
+    def effect_intent(self) -> object | None:
+        """Return the interaction intent compiled by :meth:`effect`, if any."""
+        return self._effect
+
+    @property
+    def after_load_event(self) -> str | None:
+        """Return the event configured by :meth:`after`, if any."""
+        return self._after_load
+
     def form(
         self,
         *,
@@ -818,18 +843,20 @@ def apply_action_handle_effects(
     from hedron_core.updates import compile_to_interaction
 
     effect = (
-        handle._effect
-        if handle._effect is not None
+        handle.effect_intent
+        if handle.effect_intent is not None
         else _DISPATCH_EFFECTS.get((handle.app_id, handle.logical_id))
     )
-    after_load = handle._after_load or _DISPATCH_AFTER_LOAD.get((handle.app_id, handle.logical_id))
+    after_load = handle.after_load_event or _DISPATCH_AFTER_LOAD.get(
+        (handle.app_id, handle.logical_id)
+    )
     if effect is None and not after_load:
         return result
     compiled: object = result
     if effect is not None:
         effect_ir = compile_to_interaction(effect, expected_app_id=app_id)
         if isinstance(compiled, (RefreshIntent, PatchSet, Patch)):
-            compiled = compile_to_interaction(compiled, expected_app_id=app_id)
+            compiled = compile_to_interaction(cast(object, compiled), expected_app_id=app_id)
         if isinstance(effect_ir, InteractionResult):
             if isinstance(compiled, InteractionResult):
                 compiled = InteractionResult(
@@ -865,7 +892,7 @@ def apply_action_handle_effects(
                 )
             else:
                 compiled = InteractionResult(
-                    content=_as_node_like(compiled) if compiled is not None else None,
+                    content=as_node_like(compiled) if compiled is not None else None,
                     oob=effect_ir.oob,
                     trigger=effect_ir.trigger,
                     swap="none",
@@ -874,7 +901,7 @@ def apply_action_handle_effects(
                 )
     if after_load:
         if isinstance(compiled, (RefreshIntent, PatchSet, Patch)):
-            compiled = compile_to_interaction(compiled, expected_app_id=app_id)
+            compiled = compile_to_interaction(cast(object, compiled), expected_app_id=app_id)
         if isinstance(compiled, InteractionResult):
             compiled = replace(
                 compiled,
@@ -882,7 +909,7 @@ def apply_action_handle_effects(
             )
         else:
             compiled = InteractionResult(
-                content=_as_node_like(compiled) if compiled is not None else None,
+                content=as_node_like(compiled) if compiled is not None else None,
                 swap="none",
                 trigger_after_swap=after_load,
             )
@@ -922,9 +949,8 @@ def patches(
     cache: CacheHint | None = "vary-htmx",
     status_code: int = 200,
 ) -> PatchSet:
-    # Patch is invariant; PatchSet stores Patch[object] at the public boundary.
-    primary_obj: Patch[object] = primary  # type: ignore[assignment]
-    secondary_obj: tuple[Patch[object], ...] = secondary  # type: ignore[assignment]
+    primary_obj: Patch[object] = primary
+    secondary_obj: tuple[Patch[object], ...] = secondary
     return PatchSet(
         primary=primary_obj,
         secondary=secondary_obj,
@@ -936,17 +962,18 @@ def patches(
 
 def wrap_refreshable_result(handle: FragmentHandle[BindT, ContentT], result: object) -> object:
     if isinstance(result, (InteractionResult, Patch, PatchSet, RefreshIntent)):
-        return result
-    url = _bound_url(handle._bound) if handle._bound is not None else handle.path
+        return cast(object, result)
+    bound_values = handle.bound_values
+    url = _bound_url(bound_values) if bound_values is not None else handle.path
     hosted = handle.host.materialize(
-        _as_node_like(result),
+        as_node_like(result),
         dom_id=handle.dom_id,
         get_url=url,
         event_name=refresh_event_name(handle.dom_id),
         logical_id=handle.logical_id,
         fallback=handle.fallback,
     )
-    cache = getattr(handle.host, "_cache", None)
+    cache = handle.host.cache
     if cache is not None:
         return InteractionResult(content=hosted, cache=cache)
     return hosted

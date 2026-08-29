@@ -7,7 +7,7 @@ from typing import Any
 
 from hedron_core.htmx.authorize import authorize_location_selectors, authorize_response_selector
 from hedron_core.htmx.policy import (
-    _EXTRA_HEADER_KWARGS,
+    EXTRA_HEADER_KWARGS,
     InteractionPolicy,
     InteractionResult,
     StatusPolicy,
@@ -31,8 +31,8 @@ def _validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
         if key == "HX-Refresh":
             kwargs["refresh"] = str(value).lower() == "true"
             continue
-        if key in _EXTRA_HEADER_KWARGS:
-            arg = _EXTRA_HEADER_KWARGS[key]
+        if key in EXTRA_HEADER_KWARGS:
+            arg = EXTRA_HEADER_KWARGS[key]
             if arg in {"push_url", "replace_url"} and str(value).lower() in {"true", "false"}:
                 kwargs[arg] = str(value).lower() == "true"
             else:

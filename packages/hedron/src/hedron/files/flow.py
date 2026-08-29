@@ -32,6 +32,10 @@ _SESSION_STORED_PREFIX = "hedron.upload.stored."
 _SESSION_RESULT_PREFIX = "hedron.upload.result."
 
 
+def _runtime_object(value: object) -> object:
+    return value
+
+
 class _UploadFlowApp(Protocol):
     """Minimal Hedron host surface for UploadFlow materialization."""
 
@@ -83,7 +87,8 @@ class UploadFlow(Generic[StoredT, ResultT]):
                 explanation="name must be a non-empty string.",
                 remediation="Pass name=... when constructing UploadFlow.",
             )
-        if not isinstance(field, UploadField):
+        field_value = _runtime_object(field)
+        if not isinstance(field_value, UploadField):
             raise error(
                 HED_UPLOADFLOW_0001,
                 title="UploadFlow requires UploadField",
@@ -137,7 +142,10 @@ class UploadFlow(Generic[StoredT, ResultT]):
         """Return a session/payload-safe opaque representation."""
         scalar_types = (str, int, float, bool)
         if isinstance(stored, list):
-            return [item if isinstance(item, scalar_types) else str(item) for item in stored]
+            return [
+                item if isinstance(item, scalar_types) else str(item)
+                for item in cast(list[object], stored)
+            ]
         return stored if isinstance(stored, scalar_types) else str(stored)
 
     async def _enqueue_process(self, request: object, stored: object) -> str | None:

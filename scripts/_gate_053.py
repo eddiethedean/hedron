@@ -92,8 +92,7 @@ def accepted_contract_present() -> bool:
 def contract_refine_present() -> bool:
     decisions = DECISIONS.read_text(encoding="utf-8")
     combined = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in (RFC, IMPLEMENTATION, API, PACKET)
+        path.read_text(encoding="utf-8") for path in (RFC, IMPLEMENTATION, API, PACKET)
     )
     return "| D-092 | Accepted |" in decisions and all(
         marker in combined for marker in FROZEN_CONTRACT_MARKERS

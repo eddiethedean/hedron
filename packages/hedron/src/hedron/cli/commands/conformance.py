@@ -20,3 +20,6 @@ def _cmd_conformance(args: argparse.Namespace) -> int:
     if args.json:
         argv.append("--json")
     return int(conformance_main(argv))
+
+
+cmd_conformance = _cmd_conformance

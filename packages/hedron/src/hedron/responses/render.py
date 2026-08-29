@@ -40,11 +40,11 @@ from hedron_core.rendering import RenderContext, RenderMode, RenderResult, rende
 
 __all__ = [
     "hedron_response",
+    "fragment_region_http_detail",
     "merge_htmx_headers",
     "render_component_response",
     "render_interaction",
     "_apply_auth_cache_headers",
-    "_fragment_region_http_detail",
 ]
 
 
@@ -68,7 +68,7 @@ def hedron_response(component_type: type[object] | None = None) -> dict[str, obj
 def _fragment_value(value: NodeLike) -> NodeLike:
     """Avoid duplicating the document shell for HTMX fragment navigation."""
     if isinstance(value, Page):
-        children = list(value._children)
+        children = list(value.child_nodes)
         if len(children) == 1:
             return children[0]  # type: ignore[no-any-return]
         return children  # type: ignore[return-value]
@@ -212,7 +212,7 @@ def render_component_response(
             )
             raise HTTPException(
                 status_code=403,
-                detail=_fragment_region_http_detail(exc, request=request),
+                detail=fragment_region_http_detail(exc, request=request),
             ) from exc
 
     force_mode = mode
@@ -319,7 +319,7 @@ def render_component_response(
 merge_htmx_headers = approved_headers
 
 
-def _fragment_region_http_detail(
+def fragment_region_http_detail(
     exc: FragmentRegionError, *, request: Request
 ) -> str | dict[str, object]:
     """Production stays opaque; non-production includes HED-HTMX diagnostics."""
@@ -352,6 +352,9 @@ def _fragment_region_http_detail(
         "requested": requested,
         "declared": declared,
     }
+
+
+_fragment_region_http_detail = fragment_region_http_detail
 
 
 async def render_interaction(
@@ -412,7 +415,7 @@ async def render_interaction(
         )
         raise HTTPException(
             status_code=403,
-            detail=_fragment_region_http_detail(exc, request=request),
+            detail=fragment_region_http_detail(exc, request=request),
         ) from exc
 
     if result.status_code == 204 and result.oob:
@@ -429,7 +432,7 @@ async def render_interaction(
             if isinstance(exc, FragmentRegionError):
                 raise HTTPException(
                     status_code=403,
-                    detail=_fragment_region_http_detail(exc, request=request),
+                    detail=fragment_region_http_detail(exc, request=request),
                 ) from exc
             raise HTTPException(status_code=403, detail=str(exc)) from exc
 
@@ -459,9 +462,9 @@ async def render_interaction(
             ensure_csrf_cookie(response, sec, request=request)
         return response
 
-    from hedron.routing.route import _prepare_endpoint_value
+    from hedron.routing.route import prepare_endpoint_value
 
-    await _prepare_endpoint_value(content, request=request)
+    await prepare_endpoint_value(content, request=request)
     response = render_component_response(
         content,
         request=request,

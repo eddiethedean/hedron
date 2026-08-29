@@ -60,9 +60,7 @@ def main() -> int:
     classified = {k: v for k, v in hedron_table.items() if isinstance(v, str)}
     nested = hedron_table.get("experimental_shims")
     shim_map = (
-        {k: v for k, v in nested.items() if isinstance(v, str)}
-        if isinstance(nested, dict)
-        else {}
+        {k: v for k, v in nested.items() if isinstance(v, str)} if isinstance(nested, dict) else {}
     )
 
     names = read_all(INIT)
@@ -90,9 +88,7 @@ def main() -> int:
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    print(
-        f"ok: symbol tiers ({len(names)} __all__, {len(expected_shims)} experimental shims)"
-    )
+    print(f"ok: symbol tiers ({len(names)} __all__, {len(expected_shims)} experimental shims)")
     return 0
 
 

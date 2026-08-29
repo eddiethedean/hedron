@@ -21,6 +21,13 @@ class EgressError(ValueError):
     """Raised when an outbound fetch is denied."""
 
 
+class SecurityEgressPolicy(Protocol):
+    """Security-policy fields needed to derive an egress policy."""
+
+    egress_allow_hosts: frozenset[str]
+    egress_deny_by_default: bool
+
+
 @dataclass(frozen=True, slots=True)
 class EgressDecision:
     kind: EgressDecisionKind
@@ -36,7 +43,7 @@ class EgressPolicy:
 
     version: int = 1
     allowed_schemes: frozenset[str] = field(default_factory=lambda: frozenset({"https"}))
-    allowed_hosts: frozenset[str] = field(default_factory=frozenset)
+    allowed_hosts: frozenset[str] = field(default_factory=frozenset[str])
     allowed_ports: frozenset[int] = field(default_factory=lambda: frozenset({443, 80}))
     allow_private_addresses: bool = False
     max_redirects: int = 3
@@ -248,10 +255,10 @@ def policy_from_allowlist(
     return EgressPolicy(**base)  # type: ignore[arg-type]
 
 
-def policy_from_security_policy(policy: object) -> EgressPolicy:
+def policy_from_security_policy(policy: SecurityEgressPolicy) -> EgressPolicy:
     """Build an ``EgressPolicy`` from ``SecurityPolicy`` composition knobs."""
-    hosts = getattr(policy, "egress_allow_hosts", frozenset()) or frozenset()
-    deny_by_default = bool(getattr(policy, "egress_deny_by_default", True))
+    hosts = policy.egress_allow_hosts
+    deny_by_default = policy.egress_deny_by_default
     return EgressPolicy(
         allowed_hosts=frozenset(str(item).lower() for item in hosts),
         allowed_schemes=frozenset({"https", "http"}),

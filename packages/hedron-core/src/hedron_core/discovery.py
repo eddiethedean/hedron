@@ -9,8 +9,11 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from types import ModuleType
+from typing import TypeGuard, cast
 
+from hedron_core.component import Component
 from hedron_core.diagnostics import HedronError, error
+from hedron_core.models import Props
 from hedron_core.registry import (
     ComponentMeta,
     get_registry,
@@ -22,6 +25,10 @@ from hedron_core.registry import (
 logger = logging.getLogger("hedron.discovery")
 
 __all__ = ["DiscoveredComponent", "discover_component_folders", "load_component_module"]
+
+
+def _is_component_class(value: object) -> TypeGuard[type[Component[Props]]]:
+    return isinstance(value, type) and issubclass(value, Component) and value is not Component
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,20 +94,17 @@ def apply_discovery_to_registry(
     for item in discovered:
         logical_name = item.name
         module_name = f"hedron_discovered.{logical_name}"
-        cls = None
+        cls: type[Component[Props]] | None = None
         if item.component_py is not None:
             mod = load_component_module(item.component_py, module_name=module_name)
-            cls = getattr(mod, logical_name, None) or getattr(mod, "Component", None)
+            candidate: object = getattr(mod, logical_name, None) or getattr(mod, "Component", None)
+            if _is_component_class(candidate):
+                cls = candidate
             if cls is None:
                 # take first Component subclass
-                from hedron_core.component import Component
-
-                for value in vars(mod).values():
-                    if (
-                        isinstance(value, type)
-                        and issubclass(value, Component)
-                        and value is not Component
-                    ):
+                namespace = cast(dict[str, object], vars(mod))
+                for value in namespace.values():
+                    if _is_component_class(value):
                         cls = value
                         break
         dist = distribution

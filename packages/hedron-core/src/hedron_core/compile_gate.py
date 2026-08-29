@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from typing import Any
@@ -38,7 +38,7 @@ def set_runtime_compile_allowed(allowed: bool) -> None:
 
 
 @contextmanager
-def force_runtime_compile() -> Iterator[None]:
+def force_runtime_compile() -> Generator[None, None, None]:
     """Temporarily allow compile APIs (e.g. ``hedron build`` under HEDRON_ENV=production)."""
     token = _force_allow.set(True)
     try:

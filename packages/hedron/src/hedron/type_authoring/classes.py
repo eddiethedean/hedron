@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import inspect
-from collections.abc import Callable, Mapping, Sequence
-from typing import Any, Generic, TypeVar
+from collections.abc import Awaitable, Callable, Mapping, Sequence
+from typing import Generic, TypeVar, cast
 
 from hedron.type_authoring.markers import Refreshes, Updates
 from hedron.type_authoring.outcomes import OutcomeMap
@@ -32,7 +32,7 @@ class RefreshableView(Generic[ParamsT, DataT]):
     cache: CacheHint | None = None
     fallback: str | None = None
 
-    def load(self, *args: object, **kwargs: object) -> DataT:
+    def load(self, *args: object, **kwargs: object) -> DataT | Awaitable[DataT]:
         raise error(
             HED_TYPE_0008,
             title="RefreshableView.load is required",
@@ -56,7 +56,7 @@ class CommandHandler(Generic[InputT, ResultT]):
     fallback: str | None = None
     effects: Refreshes | Updates | tuple[Refreshes | Updates, ...] | None = None
 
-    def execute(self, *args: object, **kwargs: object) -> ResultT:
+    def execute(self, *args: object, **kwargs: object) -> ResultT | Awaitable[ResultT]:
         raise error(
             HED_TYPE_0008,
             title="CommandHandler.execute is required",
@@ -76,18 +76,31 @@ def _reject_instance(target: object) -> type[object]:
     )
 
 
-def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., object]:
-    view_cls = _reject_instance(cls)
-    if not issubclass(view_cls, RefreshableView):
+def _is_subclass(target: object, base: type[object]) -> bool:
+    return inspect.isclass(target) and issubclass(target, base)
+
+
+def _stamp_callable(target: Callable[..., object], **attributes: object) -> None:
+    for name, value in attributes.items():
+        setattr(target, name, value)
+
+
+def compile_view_class(
+    cls: type[RefreshableView[ParamsT, DataT]],
+) -> Callable[..., object]:
+    _reject_instance(cast(object, cls))
+    if not _is_subclass(cls, RefreshableView):
         raise error(
             HED_TYPE_0008,
             title="Not a RefreshableView",
-            explanation=f"{view_cls!r} does not subclass RefreshableView.",
+            explanation=f"{cls!r} does not subclass RefreshableView.",
             remediation="Subclass hedron.RefreshableView.",
         )
-    load = view_cls.load
-    render = view_cls.render
-    if load is RefreshableView.load or render is RefreshableView.render:
+    load = cls.load
+    render = cls.render
+    if load is RefreshableView.__dict__.get("load") or render is RefreshableView.__dict__.get(
+        "render"
+    ):
         raise error(
             HED_TYPE_0008,
             title="Incomplete RefreshableView",
@@ -96,11 +109,14 @@ def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., ob
         )
 
     async def endpoint(*args: object, **kwargs: object) -> object:
-        instance = view_cls()
-        data = load(instance, *args, **kwargs)
-        if inspect.isawaitable(data):
-            data = await data
-        empty = getattr(view_cls, "empty", None)
+        instance = cls()
+        loaded = load(instance, *args, **kwargs)
+        data = (
+            await cast(Awaitable[DataT], loaded)
+            if inspect.isawaitable(loaded)
+            else cast(DataT, loaded)
+        )
+        empty = cls.empty
         if empty is not None and _is_empty_view_data(data):
             return empty
         result = render(instance, data)
@@ -115,10 +131,13 @@ def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., ob
 
     load_sig = inspect.signature(load)
     params = [item for name, item in load_sig.parameters.items() if name != "self"]
-    endpoint.__signature__ = inspect.Signature(params)  # type: ignore[attr-defined]
-    endpoint.__name__ = getattr(view_cls, "__name__", "refreshable_view")
-    endpoint.__wrapped__ = load  # type: ignore[attr-defined]
-    endpoint.__hedron_handler_class__ = view_cls  # type: ignore[attr-defined]
+    endpoint.__name__ = cls.__name__
+    _stamp_callable(
+        endpoint,
+        __signature__=inspect.Signature(params),
+        __wrapped__=load,
+        __hedron_handler_class__=cls,
+    )
     annotations: dict[str, object] = {}
     for name, param in load_sig.parameters.items():
         if name == "self":
@@ -129,17 +148,19 @@ def compile_view_class(cls: type[RefreshableView[Any, Any]]) -> Callable[..., ob
     return endpoint
 
 
-def compile_command_class(cls: type[CommandHandler[Any, Any]]) -> Callable[..., object]:
-    command_cls = _reject_instance(cls)
-    if not issubclass(command_cls, CommandHandler):
+def compile_command_class(
+    cls: type[CommandHandler[InputT, ResultT]],
+) -> Callable[..., object]:
+    _reject_instance(cast(object, cls))
+    if not _is_subclass(cls, CommandHandler):
         raise error(
             HED_TYPE_0008,
             title="Not a CommandHandler",
-            explanation=f"{command_cls!r} does not subclass CommandHandler.",
+            explanation=f"{cls!r} does not subclass CommandHandler.",
             remediation="Subclass hedron.CommandHandler.",
         )
-    execute = command_cls.execute
-    if execute is CommandHandler.execute:
+    execute = cls.execute
+    if execute is CommandHandler.__dict__.get("execute"):
         raise error(
             HED_TYPE_0008,
             title="Incomplete CommandHandler",
@@ -148,18 +169,19 @@ def compile_command_class(cls: type[CommandHandler[Any, Any]]) -> Callable[..., 
         )
 
     async def endpoint(*args: object, **kwargs: object) -> object:
-        instance = command_cls()
+        instance = cls()
         result = execute(instance, *args, **kwargs)
-        if inspect.isawaitable(result):
-            result = await result
-        return result
+        return await result if inspect.isawaitable(result) else result
 
     exec_sig = inspect.signature(execute)
     params = [item for name, item in exec_sig.parameters.items() if name != "self"]
-    endpoint.__signature__ = inspect.Signature(params)  # type: ignore[attr-defined]
-    endpoint.__name__ = getattr(command_cls, "__name__", "command_handler")
-    endpoint.__wrapped__ = execute  # type: ignore[attr-defined]
-    endpoint.__hedron_handler_class__ = command_cls  # type: ignore[attr-defined]
+    endpoint.__name__ = cls.__name__
+    _stamp_callable(
+        endpoint,
+        __signature__=inspect.Signature(params),
+        __wrapped__=execute,
+        __hedron_handler_class__=cls,
+    )
     annotations: dict[str, object] = {}
     for name, param in exec_sig.parameters.items():
         if name == "self":
@@ -179,9 +201,9 @@ def _is_empty_view_data(data: object) -> bool:
     if isinstance(data, (str, bytes)):
         return len(data) == 0
     if isinstance(data, Mapping):
-        return len(data) == 0
+        return len(cast(Mapping[object, object], data)) == 0
     if isinstance(data, Sequence) and not isinstance(data, (str, bytes)):
-        return len(data) == 0
+        return len(cast(Sequence[object], data)) == 0
     return False
 
 

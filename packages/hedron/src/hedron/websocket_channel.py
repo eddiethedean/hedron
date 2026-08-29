@@ -6,7 +6,7 @@ import asyncio
 import contextlib
 import json
 from collections.abc import Awaitable, Callable, Mapping
-from typing import Any
+from typing import Any, cast
 
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
@@ -177,7 +177,7 @@ async def accept_page_session_channel(
                 await websocket.close(code=1009)
                 return
             try:
-                data = json.loads(raw)
+                data: object = json.loads(raw)
             except json.JSONDecodeError:
                 if not await _send_json(
                     websocket, channel, {"kind": "error", "detail": "invalid json"}
@@ -192,12 +192,13 @@ async def accept_page_session_channel(
                     return
                 await websocket.close(code=1003)
                 return
-            kind = str(data.get("kind", ""))
+            message = cast(dict[str, object], data)
+            kind = str(message.get("kind", ""))
             if kind == "close":
                 break
             if kind == "client-state-request":
-                component_id = str(data.get("component_id", ""))
-                field = str(data.get("field", ""))
+                component_id = str(message.get("component_id", ""))
+                field = str(message.get("field", ""))
                 try:
                     channel.validate_client_read(component_id, field)
                 except ValueError as exc:
@@ -241,7 +242,7 @@ async def send_region_update(
     channel: PageSessionChannel,
     update: RegionUpdate,
 ) -> None:
-    message: ChannelMessage = channel._prepare_region_update(update)
+    message: ChannelMessage = channel.prepare_region_update(update)
     frame = _encode_json_frame(channel, {"kind": message.kind, **dict(message.payload)})
-    channel._commit_region_update(message)
+    channel.commit_region_update(message)
     await websocket.send_text(frame)

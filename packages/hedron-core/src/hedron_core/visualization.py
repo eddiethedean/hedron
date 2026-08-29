@@ -80,7 +80,7 @@ class ChartOutput:
     accessibility: ChartAccessibility
     media_type: str = "application/json"
     assets: tuple[str, ...] = ()
-    metadata: Mapping[str, Any] = field(default_factory=dict)
+    metadata: Mapping[str, Any] = field(default_factory=dict[str, Any])
     payload_bytes: int = 0
 
 
@@ -89,8 +89,8 @@ class ChartEvent:
     kind: str
     trace_id: str
     point_index: int | None = None
-    payload: Mapping[str, Any] = field(default_factory=dict)
-    auth_context: Mapping[str, Any] = field(default_factory=dict)
+    payload: Mapping[str, Any] = field(default_factory=dict[str, Any])
+    auth_context: Mapping[str, Any] = field(default_factory=dict[str, Any])
     debounce_ms: int = 0
     coalesce_key: str | None = None
     accessible_fallback: str | None = None
@@ -100,7 +100,7 @@ class ChartEvent:
 class ChartAnnotation:
     kind: str
     label: str
-    payload: Mapping[str, Any] = field(default_factory=dict)
+    payload: Mapping[str, Any] = field(default_factory=dict[str, Any])
     trace_id: str | None = None
     description: str | None = None
 

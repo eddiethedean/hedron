@@ -8,11 +8,13 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from hedron.cli.discovery import _find_component, _load_app, _registry_empty_hint
+from hedron.cli.discovery import find_component as _find_component
+from hedron.cli.discovery import load_app as _load_app
+from hedron.cli.discovery import registry_empty_hint as _registry_empty_hint
 from hedron_core.typing_aliases import JsonObject
 
 
-def _accessibility_contract_for(meta: object) -> Any:
+def accessibility_contract_for(meta: object) -> Any:
     """Prefer curated reviewed contracts; fall back to an unreviewed stub."""
     from hedron_core.a11y import (
         AccessibilityContractCatalog,
@@ -31,6 +33,9 @@ def _accessibility_contract_for(meta: object) -> Any:
     if existing is not None:
         return existing
     return default_contract(name, package=pkg, notes=notes)
+
+
+_accessibility_contract_for = accessibility_contract_for
 
 
 def _cmd_inspect(args: argparse.Namespace) -> int:
@@ -53,7 +58,7 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
         _registry_empty_hint(app=args.app, what="components")
         print(f"Component {args.component!r} not found", file=sys.stderr)
         return 1
-    contract = _accessibility_contract_for(meta)
+    contract = accessibility_contract_for(meta)
     payload: JsonObject = {
         "logical_id": meta.logical_id,
         "name": meta.name,
@@ -86,6 +91,9 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
         print("hedron-explorer: skipped (not installed)", file=sys.stderr)
     print(json.dumps(payload, indent=2))
     return 0
+
+
+cmd_inspect = _cmd_inspect
 
 
 def _set_inspect_provenance(payload: JsonObject, *, mode: str) -> None:

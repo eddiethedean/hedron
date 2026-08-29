@@ -51,7 +51,7 @@ class LoadedPlugin:
 
 @dataclass
 class PluginLoader:
-    loaded: list[LoadedPlugin] = field(default_factory=list)
+    loaded: list[LoadedPlugin] = field(default_factory=list[LoadedPlugin])
     _started: bool = False
     _rollback: Callable[[], None] | None = None
 
@@ -59,14 +59,14 @@ class PluginLoader:
         started: list[LoadedPlugin] = []
         try:
             for item in self.loaded:
-                for hook in item.context._startup:
+                for hook in item.context.startup_hooks:
                     hook()
                 started.append(item)
             self._started = True
         except Exception:
             # Broad catch: plugin startup hooks are an untrusted boundary.
             for item in reversed(started):
-                for hook in reversed(item.context._shutdown):
+                for hook in reversed(item.context.shutdown_hooks):
                     with suppress(Exception):
                         hook()
             if self._rollback is not None:
@@ -78,7 +78,7 @@ class PluginLoader:
     def shutdown(self) -> None:
         errors: list[Exception] = []
         for item in reversed(self.loaded):
-            for hook in reversed(item.context._shutdown):
+            for hook in reversed(item.context.shutdown_hooks):
                 try:
                     hook()
                 except Exception as exc:  # noqa: BLE001 — plugin shutdown boundary

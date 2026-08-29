@@ -32,6 +32,10 @@ Package maturity, capability
 readiness, and API compatibility are separate axes —
 [Maturity labels](../getting-started/how-to-read.md).
 
+The two foundational runtime distributions, `hedron-core` and `hedron`, are checked in
+Pyright strict mode with zero warnings. Commit and release CI use a warning-fatal package gate,
+so new type diagnostics cannot accumulate behind an otherwise green build.
+
 Human accessibility testing protocol engineering is on the train; **compensated
 screen-reader sessions are not Supported yet**.
 

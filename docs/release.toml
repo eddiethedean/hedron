@@ -37,6 +37,12 @@ maximum_version = "0.3"
 charts_minimum_version = "0.2.4"
 charts_maximum_version = "0.3"
 
+[runtimes]
+# The tooling-grade cross-language evaluators release independently from the
+# coordinated Python workspace train.
+node_version = "0.66.2"
+java_version = "0.66.2"
+
 [documentation]
 canonical_install_page = "getting-started/installation.md"
 canonical_release_page = "guides/release-notes.md"
