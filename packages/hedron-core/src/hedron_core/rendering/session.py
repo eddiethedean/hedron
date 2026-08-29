@@ -98,6 +98,7 @@ class RenderSession:
         previous_identity_keys = set(self._state.identity_map)
         previous_diagnostic_count = len(self._state.diagnostics)
         previous_node_count = self._state.node_count
+        previous_htmx_demand_count = len(self._state.htmx_demands)
         ctx_token = push_render_context(self.context)
         from hedron_core.hosts import begin_host_mount_scope, end_host_mount_scope
         from hedron_core.htmx_extensions import (
@@ -134,6 +135,7 @@ class RenderSession:
             diagnostics=diagnostic_delta + tuple(plan_diagnostics),
             htmx_plan=htmx_plan,
             browser_plan=browser_plan,
+            requires_htmx=len(self._state.htmx_demands) > previous_htmx_demand_count,
             trace=MappingProxyType(
                 {
                     "path": self._state.path(),

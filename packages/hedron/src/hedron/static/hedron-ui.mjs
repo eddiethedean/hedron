@@ -154,8 +154,13 @@ document.addEventListener("htmx:afterSwap", (event) => {
   upgradeOpenModalDialogs(event.target);
   const source = event.detail?.requestConfig?.elt;
   const load = source instanceof Element ? source.getAttribute("data-hedron-after-load") : null;
-  if (load && typeof window.htmx?.ajax === "function") {
-    window.htmx.ajax("GET", load, { source, swap: "none" });
+  if (load && source instanceof Element) {
+    // Compatibility notification only.  Hedron no longer starts a second
+    // request from this lifecycle listener; applications should declare a
+    // typed hx-trigger/hx-get companion for follow-up work.
+    source.dispatchEvent(
+      new CustomEvent("hedron:after-load", { bubbles: true, detail: { url: load } }),
+    );
   }
 });
 normalizeTabs(document);
@@ -239,6 +244,7 @@ document.addEventListener("click", (event) => {
 
 const busyCounts = new WeakMap();
 const actionGenerations = new WeakMap();
+const activeRequests = new WeakMap();
 
 function busyMarked(elt) {
   if (!(elt instanceof Element)) return null;
@@ -274,35 +280,46 @@ function setActionPhase(elt, phase) {
   marked.setAttribute("data-hedron-action-phase", phase);
 }
 
+function requestKey(detail) {
+  return detail?.xhr || detail || null;
+}
+
+function finishRequest(event, phase, { error = false } = {}) {
+  const elt = event.detail?.elt;
+  const marked = busyMarked(elt);
+  if (!(marked instanceof HTMLElement)) return;
+  const key = requestKey(event.detail);
+  if (activeRequests.get(marked) !== key) return;
+  activeRequests.delete(marked);
+  setActionPhase(elt, phase);
+  setBusy(marked, false);
+  if (error) applyErrorTemplate(elt);
+}
+
 document.addEventListener("htmx:beforeRequest", (event) => {
   const marked = busyMarked(event.detail?.elt);
   if (marked) {
+    activeRequests.set(marked, requestKey(event.detail));
     setActionPhase(event.detail?.elt, "pending");
     setBusy(marked, true);
   }
 });
 document.addEventListener("htmx:afterRequest", (event) => {
-  const marked = busyMarked(event.detail?.elt);
-  if (marked) {
-    const status = event.detail?.xhr?.status || 0;
-    setActionPhase(event.detail?.elt, status >= 200 && status < 400 ? "success" : "error");
-    setBusy(marked, false);
-  }
+  const status = event.detail?.xhr?.status || 0;
+  finishRequest(event, status >= 200 && status < 400 ? "success" : "error", {
+    error: !(status >= 200 && status < 400),
+  });
 });
 document.addEventListener("htmx:responseError", (event) => {
-  setActionPhase(event.detail?.elt, "error");
-  applyErrorTemplate(event.detail?.elt);
-  const marked = busyMarked(event.detail?.elt);
-  if (marked) setBusy(marked, false);
+  // finishRequest owns the exactly-once setBusy(false) cleanup.
+  finishRequest(event, "error", { error: true });
 });
 document.addEventListener("htmx:sendError", (event) => {
-  setActionPhase(event.detail?.elt, "error");
-  applyErrorTemplate(event.detail?.elt);
-  const marked = busyMarked(event.detail?.elt);
-  if (marked) setBusy(marked, false);
+  // finishRequest owns the exactly-once setBusy(false) cleanup.
+  finishRequest(event, "error", { error: true });
 });
-document.addEventListener("htmx:sendAbort", (event) => setActionPhase(event.detail?.elt, "cancelled"));
-document.addEventListener("htmx:timeout", (event) => setActionPhase(event.detail?.elt, "error"));
+document.addEventListener("htmx:sendAbort", (event) => finishRequest(event, "cancelled"));
+document.addEventListener("htmx:timeout", (event) => finishRequest(event, "error", { error: true }));
 document.addEventListener("htmx:afterSwap", (event) => {
   const root = event.target instanceof Element ? event.target : document;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

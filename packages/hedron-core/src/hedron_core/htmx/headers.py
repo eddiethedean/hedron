@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx.authorize import authorize_location_selectors, authorize_response_selector
 from hedron_core.htmx.policy import (
     EXTRA_HEADER_KWARGS,
@@ -200,11 +201,8 @@ def status_policy_for(status_code: int) -> StatusPolicy:
 
 def form_sync_attrs(policy: InteractionPolicy | None = None) -> dict[str, str]:
     pol = policy or default_interaction_policy()
-    attrs: dict[str, str] = {}
-    if pol.hx_sync:
-        attrs["hx-sync"] = pol.hx_sync
-    if pol.indicator:
-        attrs["hx-indicator"] = pol.indicator
+    typed = HtmxAttrs(sync=pol.hx_sync, indicator=pol.indicator).as_html_attrs()
+    attrs = {name: str(value) for name, value in typed.items()}
     if pol.aria_busy:
         attrs["aria-busy"] = "true"
     return attrs

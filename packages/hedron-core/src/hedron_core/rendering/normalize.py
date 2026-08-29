@@ -90,6 +90,8 @@ class DefaultBrowserDemandCollector:
                 feature = _ALPINE_DIRECTIVE_FEATURES.get(base)
                 if feature and feature not in typed_features:
                     state.add_browser_demand(AlpineFeatureDemand(feature, "rendered-html"))
+            elif lowered.startswith("hx-") or lowered.startswith("data-hx-"):
+                state.add_htmx_demand(f"{element.tag}:{lowered}")
             elif lowered == "data-hedron-interaction":
                 kind = str(attributes[name])
                 if kind in {"local", "combined"} and "interaction" not in typed_features:

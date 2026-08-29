@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any, ClassVar
 
 from hedron.htmx import safe_css_selector
@@ -9,6 +10,7 @@ from hedron.routing.reverse import ComponentRef
 from hedron_core.builtins.live_ui import ChatMessage
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.models import Props
 
 __all__ = ["ChatInput", "ChatMessage"]
@@ -58,21 +60,27 @@ class ChatInput(Component[ChatInputProps]):
         self.csrf_header_name = csrf_header_name
 
     def render(self) -> NodeLike:
-        import json
-
         attrs: dict[str, Any] = {
             "class_": "hedron-chat-input",
             "method": "post",
         }
         if self.ref is not None:
-            attrs.update(self.ref.hx_attrs())
+            attrs.update(self.ref.htmx_attributes(target=self.target, swap=self.swap))
         elif self.action is not None:
-            attrs["hx-post"] = self.action
-        if self.target:
-            attrs["hx-target"] = self.target
-        attrs["hx-swap"] = self.swap
+            attrs.update(
+                HtmxAttrs(
+                    method="post",
+                    url=self.action,
+                    target=self.target,
+                    swap=self.swap,
+                ).as_html_attrs()
+            )
         if self.csrf_token:
-            attrs["hx-headers"] = json.dumps({self.csrf_header_name: self.csrf_token})
+            attrs.update(
+                HtmxAttrs(
+                    headers=json.dumps({self.csrf_header_name: self.csrf_token})
+                ).as_html_attrs()
+            )
         kids: list[Any] = []
         if self.csrf_token:
             kids.append(

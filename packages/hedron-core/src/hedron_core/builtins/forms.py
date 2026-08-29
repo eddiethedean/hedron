@@ -11,6 +11,7 @@ from hedron_core.builtins.style_scope import presentation_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.csrf_strategy import CsrfTokenProvider, resolve_csrf_field_values
 from hedron_core.html import NativeElement, html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx.attrs import Hx as Hx
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.models import Props
@@ -84,14 +85,16 @@ class Form(Component[FormProps]):
             # Validated Hx attrs win over raw kwargs (cannot override with unsafe strings).
             extras = {**extras, **hx.as_html_attrs()}
         if extras.get("data-hedron-command") and url is not None:
-            hx_attr = {
-                "POST": "hx-post",
-                "PUT": "hx-put",
-                "PATCH": "hx-patch",
-                "DELETE": "hx-delete",
-            }.get(command_verb or "POST", "hx-post")
-            extras.setdefault(hx_attr, str(url))
-            extras.setdefault("hx-swap", "none")
+            command_attrs = HtmxAttrs(
+                method=cast(
+                    Literal["get", "post", "put", "patch", "delete"],
+                    (command_verb or "POST").lower(),
+                ),
+                url=str(url),
+                swap="none",
+            ).as_html_attrs()
+            for key, value in command_attrs.items():
+                extras.setdefault(key, value)
         _validate_hx_attr_map(extras)
         props_kwargs = {k: v for k, v in kwargs.items() if k in FormProps.model_fields}
         super().__init__(FormProps(action=url, method=resolved_method, **props_kwargs))
@@ -342,6 +345,7 @@ class TextInputProps(Props):
     aria_invalid: str | None = None
     aria_required: str | None = None
     class_: str | None = None
+    enhance: Literal["legacy", "native", "alpine"] = "legacy"
 
 
 class TextInput(Component[TextInputProps]):
@@ -362,6 +366,7 @@ class TextInput(Component[TextInputProps]):
         aria_invalid: str | None = None,
         aria_required: str | None = None,
         class_: str | None = None,
+        enhance: Literal["legacy", "native", "alpine"] = "legacy",
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -378,6 +383,7 @@ class TextInput(Component[TextInputProps]):
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
                 class_=class_,
+                enhance=enhance,
                 **kwargs,
             )
         )
@@ -404,11 +410,13 @@ class TextInput(Component[TextInputProps]):
             "invalid": self.props.aria_invalid,
             "required": self.props.aria_required,
         }
-        model = AlpineAttrs(
-            directives=(AlpineDirective("x-model", AlpineExpression.name("value")),),
-            state={"value": self.props.value},
-            source=f"component:TextInput:{self.props.id}",
-        )
+        model = None
+        if self.props.enhance != "native":
+            model = AlpineAttrs(
+                directives=(AlpineDirective("x-model", AlpineExpression.name("value")),),
+                state={"value": self.props.value},
+                source=f"component:TextInput:{self.props.id}",
+            )
         field = html.input(alpine=model, **attrs)
         if self.props.type != "password":
             return field
@@ -424,9 +432,13 @@ class TextInput(Component[TextInputProps]):
             ),
             class_="hedron-password-field",
             data={"hedron-password": "true"},
-            alpine=AlpineAttrs(
-                state={"value": self.props.value},
-                source=f"component:TextInput:{self.props.id}:password",
+            alpine=(
+                AlpineAttrs(
+                    state={"value": self.props.value},
+                    source=f"component:TextInput:{self.props.id}:password",
+                )
+                if self.props.enhance != "native"
+                else None
             ),
         )
 
@@ -442,6 +454,7 @@ class TextAreaProps(Props):
     aria_invalid: str | None = None
     aria_required: str | None = None
     class_: str | None = None
+    enhance: Literal["legacy", "native", "alpine"] = "legacy"
 
 
 class TextArea(Component[TextAreaProps]):
@@ -460,6 +473,7 @@ class TextArea(Component[TextAreaProps]):
         aria_invalid: str | None = None,
         aria_required: str | None = None,
         class_: str | None = None,
+        enhance: Literal["legacy", "native", "alpine"] = "legacy",
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -474,6 +488,7 @@ class TextArea(Component[TextAreaProps]):
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
                 class_=class_,
+                enhance=enhance,
                 **kwargs,
             )
         )
@@ -495,15 +510,14 @@ class TextArea(Component[TextAreaProps]):
             "invalid": self.props.aria_invalid,
             "required": self.props.aria_required,
         }
-        return html.textarea(
-            self.props.value,
-            alpine=AlpineAttrs(
+        alpine = None
+        if self.props.enhance != "native":
+            alpine = AlpineAttrs(
                 directives=(AlpineDirective("x-model", AlpineExpression.name("value")),),
                 state={"value": self.props.value},
                 source=f"component:TextArea:{self.props.id}",
-            ),
-            **attrs,
-        )
+            )
+        return html.textarea(self.props.value, alpine=alpine, **attrs)
 
 
 class SelectProps(Props):
@@ -514,6 +528,7 @@ class SelectProps(Props):
     aria_invalid: str | None = None
     aria_required: str | None = None
     class_: str | None = None
+    enhance: Literal["legacy", "native", "alpine"] = "legacy"
 
 
 class Select(Component[SelectProps]):
@@ -533,6 +548,7 @@ class Select(Component[SelectProps]):
         class_: str | None = None,
         depends_on: str | None = None,
         source: str | None = None,
+        enhance: Literal["legacy", "native", "alpine"] = "legacy",
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -544,6 +560,7 @@ class Select(Component[SelectProps]):
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
                 class_=class_,
+                enhance=enhance,
                 **kwargs,
             )
         )
@@ -571,25 +588,29 @@ class Select(Component[SelectProps]):
             parent = self._depends_on
             if not parent.startswith("#"):
                 parent = f"#field-{dom_id_part(parent)}"
-            attrs["hx-get"] = SafeUrl.parse(self._source, purpose=UrlPurpose.NAVIGATION)
-            attrs["hx-trigger"] = f"change from:{parent}"
-            attrs["hx-include"] = parent
-            attrs["hx-target"] = "this"
-            attrs["hx-swap"] = "outerHTML"
+            attrs.update(
+                HtmxAttrs(
+                    method="get",
+                    url=self._source,
+                    trigger=f"change from:{parent}",
+                    include=parent,
+                    target="this",
+                    swap="outerHTML",
+                ).as_html_attrs()
+            )
         attrs["aria"] = {
             "describedby": self.props.aria_describedby,
             "invalid": self.props.aria_invalid,
             "required": self.props.aria_required,
         }
-        return html.select(
-            *opts,
-            alpine=AlpineAttrs(
+        alpine = None
+        if self.props.enhance != "native":
+            alpine = AlpineAttrs(
                 directives=(AlpineDirective("x-model", AlpineExpression.name("selected")),),
                 state={"selected": self._value or ""},
                 source=f"component:Select:{self.props.id}",
-            ),
-            **attrs,
-        )
+            )
+        return html.select(*opts, alpine=alpine, **attrs)
 
 
 class CheckboxProps(Props):
@@ -602,6 +623,7 @@ class CheckboxProps(Props):
     aria_invalid: str | None = None
     aria_required: str | None = None
     class_: str | None = None
+    enhance: Literal["legacy", "native", "alpine"] = "legacy"
 
 
 class Checkbox(Component[CheckboxProps]):
@@ -619,6 +641,7 @@ class Checkbox(Component[CheckboxProps]):
         aria_invalid: str | None = None,
         aria_required: str | None = None,
         class_: str | None = None,
+        enhance: Literal["legacy", "native", "alpine"] = "legacy",
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -632,6 +655,7 @@ class Checkbox(Component[CheckboxProps]):
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
                 class_=class_,
+                enhance=enhance,
                 **kwargs,
             )
         )
@@ -651,19 +675,23 @@ class Checkbox(Component[CheckboxProps]):
             "invalid": self.props.aria_invalid,
             "required": self.props.aria_required,
         }
+        alpine = None
+        if self.props.enhance != "native":
+            alpine = AlpineAttrs(
+                directives=(AlpineDirective("x-model", AlpineExpression.name("checked")),),
+                source=f"component:Checkbox:{self.props.id}:input",
+            )
         return html.div(
-            html.input(
-                alpine=AlpineAttrs(
-                    directives=(AlpineDirective("x-model", AlpineExpression.name("checked")),),
-                    source=f"component:Checkbox:{self.props.id}:input",
-                ),
-                **attrs,
-            ),
+            html.input(alpine=alpine, **attrs),
             html.label(self.props.label, for_=self.props.id),
             class_=class_names("hedron-checkbox", self.props.class_),
-            alpine=AlpineAttrs(
-                state={"checked": self.props.checked},
-                source=f"component:Checkbox:{self.props.id}",
+            alpine=(
+                AlpineAttrs(
+                    state={"checked": self.props.checked},
+                    source=f"component:Checkbox:{self.props.id}",
+                )
+                if self.props.enhance != "native"
+                else None
             ),
         )
 
@@ -673,6 +701,7 @@ class RadioGroupProps(Props):
     legend: str
     id: str | None = None
     required: bool = False
+    enhance: Literal["legacy", "native", "alpine"] = "legacy"
 
 
 class RadioGroup(Component[RadioGroupProps]):
@@ -687,10 +716,18 @@ class RadioGroup(Component[RadioGroupProps]):
         id: str | None = None,
         value: str | None = None,
         required: bool = False,
+        enhance: Literal["legacy", "native", "alpine"] = "legacy",
         **kwargs: object,
     ) -> None:
         super().__init__(
-            RadioGroupProps(name=name, legend=legend, id=id, required=required, **kwargs)
+            RadioGroupProps(
+                name=name,
+                legend=legend,
+                id=id,
+                required=required,
+                enhance=enhance,
+                **kwargs,
+            )
         )
         self._options = tuple(options)
         self._value = value
@@ -712,25 +749,30 @@ class RadioGroup(Component[RadioGroupProps]):
                 attrs["checked"] = True
             if self.props.required:
                 attrs["required"] = True
+            input_alpine = (
+                AlpineAttrs.model("selected", source=f"component:RadioGroup:{group_id}:{index}")
+                if self.props.enhance != "native"
+                else None
+            )
             inputs.append(
                 html.div(
-                    html.input(
-                        **attrs,
-                        alpine=AlpineAttrs.model(
-                            "selected", source=f"component:RadioGroup:{group_id}:{index}"
-                        ),
-                    ),
+                    html.input(alpine=input_alpine, **attrs),
                     html.label(label, for_=fid),
                     class_="hedron-radio",
                 )
             )
+        group_alpine = (
+            AlpineAttrs.data(
+                {"selected": self._value or ""}, source=f"component:RadioGroup:{group_id}"
+            )
+            if self.props.enhance != "native"
+            else None
+        )
         return html.fieldset(
             html.legend(self.props.legend),
             *inputs,
             id=group_id,
-            alpine=AlpineAttrs.data(
-                {"selected": self._value or ""}, source=f"component:RadioGroup:{group_id}"
-            ),
+            alpine=group_alpine,
         )
 
 

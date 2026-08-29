@@ -53,6 +53,9 @@ class Hedron(HedronPagesMixin, FastAPI):
         theme: Registered theme name, ``Theme``, ``DesignSystem``, or ``None``
             (no construction-time selection; lifespan may still default).
         default_styles: When ``True``, emit default theme styles on PAGE responses.
+        demand_driven_assets: When ``True``, emit HTMX, Alpine, UI, and specialist browser
+            assets only when the rendered document declares the corresponding capability.
+            ``False`` preserves the 1.0 eager-asset compatibility behavior.
         build_dir: Optional precompiled asset manifest directory for production.
         production: Force production gate behavior; ``None`` follows ``HEDRON_ENV``.
         root_path: Optional construction-time mount (cookie Path / asset prefix).
@@ -86,6 +89,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         explorer_dependencies: Sequence[DependsParam] | None = None,
         theme: str | Theme | DesignSystem | None = "default",
         default_styles: bool = True,
+        demand_driven_assets: bool = False,
         build_dir: str | Path | None = None,
         production: bool | None = None,
         root_path: str | None = None,
@@ -137,6 +141,7 @@ class Hedron(HedronPagesMixin, FastAPI):
             )
             extensions = tuple(bootstrap_steps) if bootstrap_steps is not None else ()
             HedronBootstrapper(extension_steps=extensions).bootstrap(self, config)
+            self.state.hedron_demand_driven_assets = demand_driven_assets
             self.add_middleware(
                 RuntimeContextMiddleware,
                 runtime=self._hedron_runtime,

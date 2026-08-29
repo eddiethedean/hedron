@@ -449,7 +449,7 @@ class AlpineExpression:
     args: tuple[AlpineExpression, ...] = ()
 
     def __post_init__(self) -> None:
-        if self.kind not in {"name", "literal", "call", "binary", "assign"}:
+        if self.kind not in {"name", "literal", "call", "binary", "unary", "assign"}:
             raise ValueError("unsupported Alpine expression node")
         if self.kind == "name":
             if not isinstance(self.value, str) or _NAME.fullmatch(self.value) is None:
@@ -477,6 +477,11 @@ class AlpineExpression:
                 raise ValueError("unsupported expression operator")
             if len(self.args) != 2:
                 raise ValueError("binary expressions require two operands")
+        elif self.kind == "unary":
+            if self.value not in {"!"}:
+                raise ValueError("unsupported unary expression operator")
+            if len(self.args) != 1:
+                raise ValueError("unary expressions require one operand")
         elif self.kind == "assign":
             if not isinstance(self.value, str) or _NAME.fullmatch(self.value) is None:
                 raise ValueError("assignment targets must be named local state")
@@ -505,6 +510,16 @@ class AlpineExpression:
     def assign(cls, name: str, value: AlpineExpression) -> AlpineExpression:
         return cls("assign", name, (value,))
 
+    @classmethod
+    def unary(cls, operator: str, value: AlpineExpression) -> AlpineExpression:
+        """Build a bounded unary expression without interpolating JavaScript."""
+        return cls("unary", operator, (value,))
+
+    @classmethod
+    def not_(cls, value: AlpineExpression) -> AlpineExpression:
+        """Build a boolean negation expression."""
+        return cls.unary("!", value)
+
     def to_source(self) -> str:
         if self.kind == "name":
             return str(self.value)
@@ -514,11 +529,13 @@ class AlpineExpression:
             return f"{self.value}({', '.join(arg.to_source() for arg in self.args)})"
         if self.kind == "binary":
             return f"({self.args[0].to_source()} {self.value} {self.args[1].to_source()})"
+        if self.kind == "unary":
+            return f"{self.value}{self.args[0].to_source()}"
         return f"{self.value} = {self.args[0].to_source()}"
 
     def to_dict(self) -> dict[str, object]:
         result: dict[str, object] = {"kind": self.kind}
-        if self.kind in {"name", "literal", "binary", "assign"}:
+        if self.kind in {"name", "literal", "binary", "unary", "assign"}:
             result["value"] = self.value
         if self.args:
             result["args"] = [arg.to_dict() for arg in self.args]

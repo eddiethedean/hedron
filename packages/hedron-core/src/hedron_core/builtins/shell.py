@@ -18,8 +18,9 @@ from hedron_core.codes import HED_EXT_0006, HED_HTML_0006
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
-from hedron_core.htmx_extensions import PRELOAD_INITIATION_MODES, require_htmx_extension
+from hedron_core.htmx_extensions import PRELOAD_INITIATION_MODES
 from hedron_core.models import Props
 from hedron_core.presentation_064 import application_style_hook_data
 from hedron_core.security import SafeUrl, UrlPurpose
@@ -302,26 +303,20 @@ class HtmxLink(Component[HtmxLinkProps]):
         # External links are plain navigation; do not emit hx-* absolute URLs
         # (html URL policy rejects absolute schemes on hx-* attributes).
         if not self.props.external:
-            attrs[f"hx-{method}"] = path
-            if self.props.target:
-                attrs["hx-target"] = self.props.target
-            if self.props.swap:
-                attrs["hx-swap"] = self.props.swap
-            if self.props.select:
-                attrs["hx-select"] = self.props.select
-            if self.props.select_oob:
-                attrs["hx-select-oob"] = self.props.select_oob
-            if self.props.push_url is True:
-                attrs["hx-push-url"] = "true"
-            elif isinstance(self.props.push_url, str) and self.props.push_url:
-                attrs["hx-push-url"] = self.props.push_url
-            if self.props.disabled_elt:
-                attrs["hx-disabled-elt"] = self.props.disabled_elt
-            if self.props.indicator:
-                attrs["hx-indicator"] = self.props.indicator
-            if self.props.preload:
-                require_htmx_extension("preload")
-                attrs["preload"] = self.props.preload
+            attrs.update(
+                HtmxAttrs(
+                    method=method,  # type: ignore[arg-type]
+                    url=path,
+                    target=self.props.target,
+                    swap=self.props.swap,
+                    select=self.props.select,
+                    select_oob=self.props.select_oob,
+                    push_url=self.props.push_url,
+                    disabled_elt=self.props.disabled_elt,
+                    indicator=self.props.indicator,
+                    preload=self.props.preload,
+                ).as_html_attrs()
+            )
         if self.props.id:
             attrs["id"] = self.props.id
         base = "hedron-nav-link"

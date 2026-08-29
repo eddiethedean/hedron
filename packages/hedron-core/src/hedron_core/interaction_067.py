@@ -13,14 +13,23 @@ import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import cast
+from typing import Literal, cast
 
-from hedron_core.alpine import AlpineFeatureDemand, AlpineMaturity, json_value
+from hedron_core.alpine import (
+    AlpineAttrs,
+    AlpineDirective,
+    AlpineExpression,
+    AlpineFeatureDemand,
+    AlpineMaturity,
+    json_value,
+)
 from hedron_core.compat import StrEnum
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.typing_aliases import HtmlAttrValue
 
 __all__ = [
     "Interaction",
+    "InteractionLowering",
     "InteractionKind",
     "LocalEffect",
     "Outcome",
@@ -44,6 +53,7 @@ class LocalEffect:
 
     action: str
     state_keys: tuple[str, ...] = ()
+    state: Mapping[str, object] | None = None
 
     def __post_init__(self) -> None:
         action = self.action.strip()
@@ -57,11 +67,24 @@ class LocalEffect:
         keys = tuple(sorted({key.strip() for key in self.state_keys if key.strip()}))
         if any(not re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$.-]{0,63}", key) for key in keys):
             raise ValueError("local state keys must be bounded identifiers")
+        state = None if self.state is None else json_value(self.state, path="local state")
+        if state is not None and not isinstance(state, dict):
+            raise TypeError("local state must be a mapping")
+        if state is not None and any(key not in state for key in keys):
+            missing = sorted(set(keys).difference(state))
+            raise ValueError(f"local state must initialize every state key: {missing!r}")
         object.__setattr__(self, "action", action)
         object.__setattr__(self, "state_keys", keys)
+        object.__setattr__(self, "state", MappingProxyType(state) if state is not None else None)
 
     def to_dict(self) -> dict[str, object]:
-        return {"action": self.action, "state_keys": list(self.state_keys)}
+        result: dict[str, object] = {
+            "action": self.action,
+            "state_keys": list(self.state_keys),
+        }
+        if self.state is not None:
+            result["state"] = dict(self.state)
+        return result
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,6 +96,7 @@ class RequestEffect:
     target: str | None = None
     swap: str = "outerHTML"
     operation: str | None = None
+    sync: str | None = None
 
     def __post_init__(self) -> None:
         handle = self.handle.strip()
@@ -96,18 +120,62 @@ class RequestEffect:
             r"[A-Za-z][A-Za-z0-9_.:-]{0,95}", self.operation
         ):
             raise ValueError("operation must be a bounded identifier")
+        if self.sync is not None:
+            sync = self.sync.strip()
+            if (
+                not sync
+                or len(sync) > 128
+                or any(ord(char) < 32 for char in sync)
+                or any(token in sync for token in ("<", ">", '"', "'", ";"))
+            ):
+                raise ValueError("sync must be a bounded HTMX synchronization policy")
+            if sync.rsplit(":", 1)[-1].strip() not in {
+                "drop",
+                "abort",
+                "replace",
+                "queue first",
+                "queue last",
+                "queue all",
+            }:
+                raise ValueError("sync must use a supported HTMX synchronization strategy")
         object.__setattr__(self, "handle", handle)
         object.__setattr__(self, "method", method)
         object.__setattr__(self, "swap", self.swap.strip())
 
     def to_dict(self) -> dict[str, object]:
-        return {
+        result: dict[str, object] = {
             "handle": self.handle,
             "method": self.method,
             "target": self.target,
             "swap": self.swap,
             "operation": self.operation,
         }
+        if self.sync is not None:
+            result["sync"] = self.sync
+        return result
+
+
+@dataclass(frozen=True, slots=True)
+class InteractionLowering:
+    """Typed lanes produced by an :class:`Interaction` declaration."""
+
+    metadata: Mapping[str, HtmlAttrValue]
+    alpine: AlpineAttrs | None = None
+    htmx: HtmxAttrs | None = None
+
+    def to_attributes(self) -> dict[str, HtmlAttrValue]:
+        attrs = dict(self.metadata)
+        if self.alpine is not None:
+            for name, value in self.alpine.to_attributes().items():
+                if name in attrs:
+                    raise ValueError(f"duplicate interaction attribute writer {name!r}")
+                attrs[name] = value
+        if self.htmx is not None:
+            for name, value in self.htmx.as_html_attrs().items():
+                if name in attrs:
+                    raise ValueError(f"duplicate interaction attribute writer {name!r}")
+                attrs[name] = value
+        return attrs
 
 
 @dataclass(frozen=True, slots=True)
@@ -160,13 +228,14 @@ class Interaction:
         *,
         event: str = "click",
         state_keys: Sequence[str] = (),
+        state: Mapping[str, object] | None = None,
         fallback: str = "native",
         source: str = "python",
     ) -> Interaction:
         return cls(
             InteractionKind.LOCAL,
             event=event,
-            local_effect=LocalEffect(action, tuple(state_keys)),
+            local_effect=LocalEffect(action, tuple(state_keys), state),
             fallback=fallback,
             source=source,
         )
@@ -181,13 +250,14 @@ class Interaction:
         target: str | None = None,
         swap: str = "outerHTML",
         operation: str | None = None,
+        sync: str | None = None,
         fallback: str = "native",
         source: str = "python",
     ) -> Interaction:
         return cls(
             InteractionKind.REQUEST,
             event=event,
-            request_effect=RequestEffect(handle, method, target, swap, operation),
+            request_effect=RequestEffect(handle, method, target, swap, operation, sync),
             fallback=fallback,
             source=source,
         )
@@ -200,18 +270,20 @@ class Interaction:
         *,
         event: str = "click",
         state_keys: Sequence[str] = (),
+        state: Mapping[str, object] | None = None,
         method: str = "POST",
         target: str | None = None,
         swap: str = "outerHTML",
         operation: str | None = None,
+        sync: str | None = None,
         fallback: str = "native",
         source: str = "python",
     ) -> Interaction:
         return cls(
             InteractionKind.COMBINED,
             event=event,
-            local_effect=LocalEffect(action, tuple(state_keys)),
-            request_effect=RequestEffect(handle, method, target, swap, operation),
+            local_effect=LocalEffect(action, tuple(state_keys), state),
+            request_effect=RequestEffect(handle, method, target, swap, operation, sync),
             fallback=fallback,
             source=source,
         )
@@ -254,20 +326,34 @@ class Interaction:
         remain useful for inspection and the native fallback path; they are never a
         substitute for server-side authorization.
         """
+        return self.to_lowering().to_attributes()
+
+    def to_lowering(self) -> InteractionLowering:
+        """Lower once into typed Alpine/HTMX lanes plus inspectable metadata."""
         attrs: dict[str, HtmlAttrValue] = {
             "data-hedron-interaction": InteractionKind(self.kind).value,
             "data-hedron-event": self.event,
         }
+        alpine: AlpineAttrs | None = None
+        htmx = None
         if self.local_effect:
             attrs["data-hedron-local-action"] = self.local_effect.action
             if self.local_effect.state_keys:
                 attrs["data-hedron-state-keys"] = ",".join(self.local_effect.state_keys)
-            local_expression = (
-                f"{self.local_effect.state_keys[0]} = !{self.local_effect.state_keys[0]}"
-                if self.local_effect.state_keys
-                else f"{self.local_effect.action}()"
+            if self.local_effect.state is not None:
+                attrs["data-hedron-local-scope"] = "self"
+            if self.local_effect.state_keys:
+                key = self.local_effect.state_keys[0]
+                expression = AlpineExpression.assign(
+                    key, AlpineExpression.not_(AlpineExpression.name(key))
+                )
+            else:
+                expression = AlpineExpression.call(self.local_effect.action)
+            alpine = AlpineAttrs(
+                directives=(AlpineDirective(f"x-on:{self.event}", expression),),
+                state=self.local_effect.state or {},
+                source=f"interaction:{self.source}",
             )
-            attrs[f"x-on:{self.event}"] = local_expression
         if self.request_effect:
             attrs["data-hedron-handle"] = self.request_effect.handle
             attrs["data-hedron-method"] = self.request_effect.method
@@ -277,22 +363,15 @@ class Interaction:
             route = _resolve_route(self.request_effect.handle)
             if route is not None:
                 method, path = route
-                hx_name = {
-                    "GET": "hx-get",
-                    "POST": "hx-post",
-                    "PUT": "hx-put",
-                    "PATCH": "hx-patch",
-                    "DELETE": "hx-delete",
-                }[method]
-                from hedron_core.security import SafeUrl, UrlPurpose
-
-                attrs[hx_name] = SafeUrl.parse(path, purpose=UrlPurpose.NAVIGATION)
-                if self.request_effect.target:
-                    attrs["hx-target"] = self.request_effect.target
-                attrs["hx-swap"] = self.request_effect.swap
-                if self.event != "click":
-                    attrs["hx-trigger"] = self.event
-        return attrs
+                htmx = HtmxAttrs(
+                    method=cast(Literal["get", "post", "put", "patch", "delete"], method.lower()),
+                    url=path,
+                    target=self.request_effect.target,
+                    swap=self.request_effect.swap,
+                    trigger=self.event if self.event != "click" else None,
+                    sync=self.request_effect.sync,
+                )
+        return InteractionLowering(attrs, alpine=alpine, htmx=htmx)
 
 
 def _resolve_route(logical_id: str) -> tuple[str, str] | None:

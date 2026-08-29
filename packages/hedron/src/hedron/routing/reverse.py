@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Literal, cast
 
 from hedron_core.registry import get_registry
-from hedron_core.typing_aliases import JsonValue
+from hedron_core.typing_aliases import HtmlAttrValue, JsonValue
 
 __all__ = ["ComponentRef", "resolve_route_path"]
 
@@ -24,10 +24,16 @@ class ComponentRef:
     params: Mapping[str, Any] = field(default_factory=dict[str, Any])
     inference: Mapping[str, JsonValue] = field(default_factory=dict[str, JsonValue])
 
-    def hx_attrs(self) -> dict[str, str]:
-        from hedron.htmx import safe_css_selector
+    def htmx_attributes(
+        self,
+        *,
+        target: str | None = None,
+        swap: str | None = None,
+        trigger: str | None = None,
+    ) -> dict[str, HtmlAttrValue]:
+        """Return validated generic HTMX attributes for this route reference."""
+        from hedron_core.htmx.attrs import HtmxAttrs
 
-        attrs: dict[str, str] = {}
         method = self.method.upper()
         url = self.path
         if self.params:
@@ -35,25 +41,17 @@ class ComponentRef:
 
             query = urlencode({k: str(v) for k, v in self.params.items()})
             url = f"{url}?{query}" if "?" not in url else f"{url}&{query}"
-        if method == "GET":
-            attrs["hx-get"] = url
-        elif method == "POST":
-            attrs["hx-post"] = url
-        elif method == "PUT":
-            attrs["hx-put"] = url
-        elif method == "PATCH":
-            attrs["hx-patch"] = url
-        elif method == "DELETE":
-            attrs["hx-delete"] = url
-        else:
-            attrs["hx-get"] = url
-        if self.target:
-            if not safe_css_selector(self.target):
-                raise ValueError(f"Unsafe HTMX target selector: {self.target!r}")
-            attrs["hx-target"] = self.target
-        if self.swap:
-            attrs["hx-swap"] = self.swap
-        return attrs
+        return HtmxAttrs(
+            method=cast(Literal["get", "post", "put", "patch", "delete"], method.lower()),
+            url=url,
+            target=target if target is not None else self.target,
+            swap=swap if swap is not None else self.swap,
+            trigger=trigger,
+        ).as_html_attrs()
+
+    def hx_attrs(self) -> dict[str, str]:
+        """Compatibility wrapper returning string-valued HTMX attributes."""
+        return {name: str(value) for name, value in self.htmx_attributes().items()}
 
 
 def resolve_route_path(logical_id: str, *, kind: str | None = None) -> ComponentRef | None:

@@ -89,6 +89,13 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Phase 0.67 execution plan](EXECUTION_0_67.md) — entry lock, supply/CSP, browser-plan closure,
   typed directives, unified interaction, lifecycle, component-engine, migration, evidence, and
   release sequence
+- [HTMX/Alpine component usage counts](HTMX_ALPINE_COMPONENT_COUNTS.md) — generated built-in
+  component inventory across the 0.66.2, 0.67.0, and 1.0.0 release boundaries
+- [HTMX/Alpine implementation refinement](HTMX_ALPINE_REFINEMENT_1_1_2_0.md) — proposed 1.1
+  transition and 2.0 cleanup for explicit scopes, typed lowering, native-first controls,
+  lifecycle ownership, concurrency, and demand-driven assets
+- [HTMX/Alpine 1.1 migration](../guides/htmx-alpine-migration.md) — migration table, ownership rules,
+  compatibility shims, and complete release-gate command
 - [Hedron 1.0 implementation and cut plan](HEDRON_1_0.md) — **Implemented and Verified** against
   the immutable `v0.67.0` baseline; inventory/warning reconciliation, canonical facade and
   per-slice removals, static migration, interaction/engine cutover, dual-version fleet evidence,

@@ -435,6 +435,7 @@ class ToastHost(Component[ToastHostProps]):
 class ExpanderProps(ElementProps):
     title: str
     open: bool = False
+    enhance: Literal["legacy", "native", "alpine"] = "legacy"
 
 
 class Expander(Component[ExpanderProps]):
@@ -448,11 +449,21 @@ class Expander(Component[ExpanderProps]):
         *nodes: NodeLike,
         children: NodeLike = None,
         open: bool = False,
+        enhance: Literal["legacy", "native", "alpine"] = "legacy",
         id: str | None = None,
         class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(ExpanderProps(title=title, open=open, id=id, class_=class_, **kwargs))
+        super().__init__(
+            ExpanderProps(
+                title=title,
+                open=open,
+                enhance=enhance,
+                id=id,
+                class_=class_,
+                **kwargs,
+            )
+        )
         self._body = collect_children(*nodes, children=children)
 
     def render(self) -> NodeLike:
@@ -465,6 +476,12 @@ class Expander(Component[ExpanderProps]):
         body = self._slot_values.get("body", self._body)
         if not isinstance(body, tuple):
             body = (body,)
+        if self.props.enhance == "native":
+            return html.details(
+                html.summary(self.props.title),
+                html.div(*body, data={"hedron-optional": "true"}),
+                **attrs,
+            )
         open_state = AlpineExpression.name("open")
         toggle_open = AlpineExpression.assign(
             "open",

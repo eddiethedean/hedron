@@ -37,6 +37,7 @@
 #   --skip-realconnect  Skip REALCONNECT-033 Docker smoke
 #   --skip-wheels       Skip `uv build --all-packages` wheel smoke (`quality` only)
 #   --all-browsers      Run Chromium + Firefox + WebKit (main / release CI)
+#   --release-gate      Treat skipped browser/adapter/backend gates as failures
 #   --with-browser      Deprecated alias (browser runs by default in `all`)
 #
 # Env:
@@ -83,6 +84,8 @@ SKIP_WORKBENCH=0
 SKIP_REALWB=0
 SKIP_REALCONNECT=0
 SKIP_WHEELS=0
+RELEASE_GATE=0
+UNSUPPORTED_GATES=()
 JOBS="${HEDRON_CHECK_JOBS:-}"
 HEDRON_PYTHON_EXE=""
 
@@ -168,6 +171,10 @@ parse_args() {
         SKIP_WHEELS=1
         shift
         ;;
+      --release-gate)
+        RELEASE_GATE=1
+        shift
+        ;;
       --with-browser)
         SKIP_BROWSER=0
         shift
@@ -181,6 +188,28 @@ parse_args() {
         ;;
     esac
   done
+}
+
+record_unsupported() {
+  UNSUPPORTED_GATES+=("$1")
+  echo "unsupported evidence: $1"
+}
+
+report_unsupported() {
+  if [[ "${#UNSUPPORTED_GATES[@]}" -eq 0 ]]; then
+    return 0
+  fi
+  echo
+  echo "Unsupported evidence gates:"
+  local gate
+  for gate in "${UNSUPPORTED_GATES[@]}"; do
+    echo "- $gate"
+  done
+  if [[ "$RELEASE_GATE" -eq 1 ]]; then
+    echo "release gate failed: required evidence was skipped" >&2
+    return 1
+  fi
+  return 0
 }
 
 resolve_python() {
@@ -468,6 +497,7 @@ PY
   test ! -d node_modules
   echo "ok: no Node package tooling in repo"
   run_py scripts/check_satellite_imports.py
+  run_py scripts/check_htmx_alpine_refinement.py
   run_py scripts/check_symbol_tiers.py
 }
 
@@ -490,6 +520,7 @@ quality_docs() {
   run_py scripts/sync_status_roadmap.py --check
   run_py scripts/generate_sim_demos.py --check
   run_py scripts/generate_component_docs.py --check
+  run_py scripts/generate_htmx_alpine_component_counts.py --check
   run_py scripts/generate_edron_api_index.py --check
   run_py scripts/generate_example_catalog.py --check
   run_py scripts/check_docs_train_ssot.py
@@ -737,6 +768,10 @@ cmd_all() {
 
   HEDRON_CI_ALL=1
   export HEDRON_CI_ALL
+  if [[ "$RELEASE_GATE" -eq 1 ]]; then
+    HEDRON_REQUIRED_LIVE_GATES=1
+    export HEDRON_REQUIRED_LIVE_GATES
+  fi
 
   if [[ "$ALL_PYTHONS" -eq 0 && "$PYTHON_EXPLICIT" -eq 0 ]]; then
     ALL_PYTHONS=1
@@ -774,7 +809,7 @@ NOTE
     section "workbench-dependencies"
     cmd_workbench
   else
-    echo "skip: workbench (--skip-workbench)"
+    record_unsupported "workbench dependency/adaptor matrix (--skip-workbench)"
   fi
 
   section "quality"
@@ -790,22 +825,31 @@ NOTE
       export HEDRON_BROWSER_ENGINE="$browser"
       cmd_browser
     done
+    if [[ "$ALL_BROWSERS" -eq 0 ]]; then
+      record_unsupported "Firefox/WebKit browser matrix (--all-browsers not set)"
+    fi
   else
-    echo "skip: browser (--skip-browser)"
+    record_unsupported "browser matrix (--skip-browser)"
   fi
 
   if [[ "$SKIP_REALWB" -eq 0 ]]; then
     section "realwb"
+    if [[ -z "${PWB_LICENSE:-}" ]]; then
+      record_unsupported "REALWB-030 live backend (PWB_LICENSE unavailable)"
+    fi
     cmd_realwb
   else
-    echo "skip: realwb (--skip-realwb)"
+    record_unsupported "REALWB-030 live backend (--skip-realwb)"
   fi
 
   if [[ "$SKIP_REALCONNECT" -eq 0 ]]; then
     section "realconnect"
+    if [[ -z "${CONNECT_LICENSE:-}" ]]; then
+      record_unsupported "REALCONNECT-033 live backend (CONNECT_LICENSE unavailable)"
+    fi
     cmd_realconnect
   else
-    echo "skip: realconnect (--skip-realconnect)"
+    record_unsupported "REALCONNECT-033 live backend (--skip-realconnect)"
   fi
 
   section "evidence"
@@ -813,6 +857,7 @@ NOTE
 
   section "packaging"
   cmd_packaging
+  report_unsupported
 }
 
 # --- dispatch ------------------------------------------------------------------

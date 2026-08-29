@@ -75,7 +75,15 @@ def _inject_build_assets(
     trace_theme = result.trace.get("theme") if result.trace is not None else None
     theme = trace_theme if isinstance(trace_theme, str) else None
     html_text = inject_page_theme(html_text, mode, theme)
-    html_text = _ensure_htmx_asset(html_text, mode, policy=policy, request=request)
+    demand_driven = bool(getattr(request.app.state, "hedron_demand_driven_assets", False))
+    requires_htmx = bool(getattr(result, "requires_htmx", False))
+    html_text = _ensure_htmx_asset(
+        html_text,
+        mode,
+        policy=policy,
+        request=request,
+        required=requires_htmx if demand_driven else None,
+    )
     html_text = inject_alpine_plan(
         html_text,
         mode,
@@ -107,11 +115,22 @@ def _inject_build_assets(
         elif asset.kind in {"js", "module"}:
             typ = ' type="module"' if asset.kind == "module" else ""
             add(f'<script{typ} src="{href}"></script>')
-    # Always offer bundled disclose module from package static for WC proof
-    if "hedron-disclose.mjs" not in html_text:
+    ui_demand = any(
+        marker in html_text
+        for marker in (
+            "hedron-tabs",
+            "data-hedron-password-toggle",
+            "data-hedron-toast",
+            "data-hedron-reveal",
+            "data-hedron-nav-toggle",
+            "data-hedron-after-load",
+        )
+    )
+    disclose_demand = "<hedron-" in html_text
+    if (not demand_driven or disclose_demand) and "hedron-disclose.mjs" not in html_text:
         disclose = _mounted_static_href("/hedron-static/hedron-disclose.mjs", request)
         add(f'<script type="module" src="{disclose}"></script>')
-    if "hedron-ui.mjs" not in html_text:
+    if (not demand_driven or ui_demand) and "hedron-ui.mjs" not in html_text:
         ui = _mounted_static_href("/hedron-static/hedron-ui.mjs", request)
         add(f'<script type="module" src="{ui}"></script>')
     mount = _mounted_static_href("/", request).removesuffix("/")
@@ -134,9 +153,15 @@ def _inject_build_assets(
 
     plan = getattr(result, "htmx_plan", None)
     enabled = isinstance(plan, ExtensionPlan) and "head-support" in plan.ids
-    html_text = merge_registered_head(html_text, result.assets, enabled=enabled)
+    html_text = merge_registered_head(
+        html_text,
+        result.assets,
+        enabled=enabled and (not demand_driven or requires_htmx),
+    )
     # Pin bundled HTMX extensions immediately after the core runtime so deferred
     # scripts execute in dependency order (issue #55 / RFC-0032).
+    if demand_driven and not requires_htmx:
+        return html_text
     return _inject_htmx_extension_assets(html_text, request, plan)
 
 
@@ -169,6 +194,7 @@ def _ensure_htmx_asset(
     *,
     policy: SecurityPolicy | None = None,
     request: Request | None = None,
+    required: bool | None = None,
 ) -> str:
     """Inject the bundled HTMX runtime and profile-driven secure v2 defaults."""
     from hedron_core.page_assets import inject_htmx_core
@@ -176,4 +202,6 @@ def _ensure_htmx_asset(
     def _href(path: str) -> str:
         return _mounted_static_href(path, request)
 
+    if required is False:
+        return html_text
     return inject_htmx_core(html_text, mode, policy=policy, static_href=_href)

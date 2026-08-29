@@ -72,6 +72,7 @@ class RenderResult:
     trace: RenderTrace | Mapping[str, object] | None = None
     htmx_plan: object | None = None
     browser_plan: BrowserFeaturePlan = field(default_factory=BrowserFeaturePlan)
+    requires_htmx: bool = False
 
 
 _active_render_context: ContextVar[RenderContext | None] = ContextVar(

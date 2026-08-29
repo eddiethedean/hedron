@@ -26,6 +26,7 @@ class RenderState:
         self.stack: list[int] = []
         self.stack_labels: list[str] = []
         self.browser_demands: list[AlpineFeatureDemand] = []
+        self.htmx_demands: list[str] = []
 
     def path(self) -> str:
         return " > ".join(self.stack_labels) if self.stack_labels else "<root>"
@@ -51,6 +52,11 @@ class RenderState:
 
     def add_browser_demand(self, demand: AlpineFeatureDemand) -> None:
         self.browser_demands.append(demand)
+
+    def add_htmx_demand(self, source: str) -> None:
+        """Record a typed HTMX request need for demand-driven PAGE assets."""
+        if source.strip():
+            self.htmx_demands.append(source.strip())
 
     def warn(self, code: str, title: str, explanation: str) -> None:
         self.diagnostics.append(

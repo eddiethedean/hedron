@@ -322,6 +322,7 @@ from hedron_core.feature_explanation import (
 from hedron_core.field import Field
 from hedron_core.hosts import FRAGMENT_HOST_TAGS, FragmentHost
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx_064 import (
     HEDRON_LIFECYCLE_SCHEMA,
     HedronLifecycleEvent,
@@ -395,6 +396,7 @@ from hedron_core.interaction import (
 from hedron_core.interaction_067 import (
     Interaction,
     InteractionKind,
+    InteractionLowering,
     LocalEffect,
     Outcome,
     OutcomeKind,
@@ -954,6 +956,7 @@ __all__ = [
     "HtmlAttrValue",
     "htmx_eval_allowed",
     "HtmxContext",
+    "HtmxAttrs",
     "HtmxExtension",
     "HtmxLink",
     "Hx",
@@ -1273,6 +1276,7 @@ __all__ = [
     "HedronLifecycleEvent",
     "Interaction",
     "InteractionKind",
+    "InteractionLowering",
     "LifecycleFact",
     "LifecyclePolicy",
     "LifecycleState",

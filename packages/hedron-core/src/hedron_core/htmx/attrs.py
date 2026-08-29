@@ -11,6 +11,8 @@ from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
 
+__all__ = ["HtmxAttrs", "Hx"]
+
 _BUSY_INDICATOR_ID = re.compile(r"^#[A-Za-z][\w:.-]*$")
 
 
@@ -23,8 +25,13 @@ def _safe_optional_selector(value: str | None, *, label: str) -> str | None:
 
 
 @dataclass(frozen=True, slots=True)
-class Hx:
-    """First-class HTMX options for ``Form`` (FORM-022)."""
+class HtmxAttrs:
+    """Validated HTMX attributes for any native or built-in element.
+
+    ``Hx`` remains an alias below for source compatibility with the original
+    form-focused API.  The builder itself is element-agnostic so components do
+    not need to assemble raw ``hx-*`` dictionaries.
+    """
 
     target: str | None = None
     swap: str = "outerHTML"
@@ -42,6 +49,7 @@ class Hx:
     vals: str | None = None
     headers: str | None = None
     busy: Literal["region", "document"] | None = None
+    sync: str | None = None
 
     def as_html_attrs(self) -> dict[str, HtmlAttrValue]:
         target = _safe_optional_selector(self.target, label="target")
@@ -60,9 +68,40 @@ class Hx:
         indicator = _safe_optional_selector(self.indicator, label="indicator")
         if not safe_hx_swap(self.swap):
             raise ValueError(f"Unsafe HTMX swap value: {self.swap!r}")
+        if self.trigger is not None and (
+            not self.trigger.strip()
+            or len(self.trigger) > 160
+            or any(ord(character) < 32 for character in self.trigger)
+            or any(token in self.trigger for token in ("<", ">", '"', "'"))
+        ):
+            raise ValueError("trigger must be a bounded HTMX trigger expression")
+        if self.sync is not None:
+            sync = self.sync.strip()
+            if (
+                not sync
+                or len(sync) > 128
+                or any(ord(character) < 32 for character in sync)
+                or any(token in sync for token in ("<", ">", '"', "'", ";"))
+            ):
+                raise ValueError("sync must be a bounded HTMX synchronization policy")
+            strategy = sync.rsplit(":", 1)[-1].strip()
+            if strategy not in {
+                "drop",
+                "abort",
+                "replace",
+                "queue first",
+                "queue last",
+                "queue all",
+            }:
+                raise ValueError(
+                    "sync must end in drop, abort, replace, queue first, queue last, or queue all"
+                )
         attrs: dict[str, HtmlAttrValue] = {}
         if self.method and self.url:
-            safe = SafeUrl.parse(self.url, purpose=UrlPurpose.FORM_ACTION)
+            # HTMX request URLs use the same safe local-path policy as navigation
+            # attributes.  Native form actions remain FORM_ACTION URLs at their
+            # own boundary; using that purpose here would fail the hx-* sink check.
+            safe = SafeUrl.parse(self.url, purpose=UrlPurpose.NAVIGATION)
             attrs[f"hx-{self.method.lower()}"] = safe
         if target:
             attrs["hx-target"] = target
@@ -115,6 +154,8 @@ class Hx:
             attrs["preload"] = mode
         if self.trigger:
             attrs["hx-trigger"] = self.trigger
+        if self.sync:
+            attrs["hx-sync"] = self.sync.strip()
         if self.include:
             include = _safe_optional_selector(self.include, label="include")
             if include:
@@ -138,3 +179,7 @@ class Hx:
             if indicator and _BUSY_INDICATOR_ID.fullmatch(indicator):
                 attrs["data-hedron-busy-indicator"] = indicator
         return attrs
+
+
+# Compatibility spelling retained through the 1.1 transition.
+Hx = HtmxAttrs

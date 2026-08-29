@@ -30,6 +30,7 @@ from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.hosts import FragmentHost
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.htmx.policy import CacheHint, FragmentRegion, InteractionPolicy
 from hedron_core.htmx_contract import is_local_path
 from hedron_core.interaction import InteractionResult
@@ -614,28 +615,42 @@ class _CommandButton(Component[_CommandButtonProps]):
         attrs.update(
             {
                 "type": "button" if self._fallback else "submit",
-                "hx-swap": self._swap,
                 "data-hedron-command": self._logical_id,
             }
         )
         attrs.setdefault("id", self._logical_id)
-        attrs.setdefault("hx-target", f"#{self._logical_id}")
         method = self._method.upper()
-        if method == "POST":
-            attrs["hx-post"] = self._path
-        elif method == "PUT":
-            attrs["hx-put"] = self._path
-        elif method == "PATCH":
-            attrs["hx-patch"] = self._path
-        elif method == "DELETE":
-            attrs["hx-delete"] = self._path
+        htmx_attrs: dict[str, HtmlAttrValue] = HtmxAttrs(
+            method=cast(Literal["get", "post", "put", "patch", "delete"], method.lower()),
+            url=self._path,
+            target=f"#{self._logical_id}",
+            swap=self._swap,
+        ).as_html_attrs()
         if self._fallback:
             attrs["data-hedron-fallback"] = self._fallback
         ctx = active_render_context()
         if ctx is not None and ctx.csrf_token:
-            attrs["hx-headers"] = json.dumps({"X-CSRF-Token": ctx.csrf_token})
+            htmx_attrs.update(
+                HtmxAttrs(headers=json.dumps({"X-CSRF-Token": ctx.csrf_token})).as_html_attrs()
+            )
+        attrs.update(htmx_attrs)
         attrs = {key: value for key, value in attrs.items() if value is not None}
-        return html.button(self._label, **_html_attr_map(attrs))
+        button_attrs = _html_attr_map(attrs)
+        if not self._extra.get("data-hedron-after-load"):
+            return html.button(self._label, **button_attrs)
+        sentinel = html.span(
+            "",
+            hidden=True,
+            aria={"hidden": "true"},
+            data={"hedron-after-load-sentinel": "true"},
+            **HtmxAttrs(
+                method="get",
+                url=str(self._extra["data-hedron-after-load"]),
+                trigger="hedron:after-load from:closest [data-hedron-after-load]",
+                swap="none",
+            ).as_html_attrs(),
+        )
+        return html.button(self._label, sentinel, **button_attrs)
 
 
 @dataclass(frozen=False)
@@ -721,6 +736,7 @@ class ActionHandle(Generic[InputT, ResultT]):
             controls=controls,
             fallback=fallback or self.fallback,
             enhance=enhance_mode,
+            after_load=self._after_load,
             **safe_form_attrs,
         )
 
@@ -769,7 +785,7 @@ class ActionHandle(Generic[InputT, ResultT]):
         swap = str(extra.pop("hx-swap", extra.pop("hx_swap", default_swap)))
         trigger = _compile_after_trigger("click", self._after_when, self._after_delay_ms)
         if trigger and "hx-trigger" not in extra and "hx_trigger" not in extra:
-            extra["hx-trigger"] = trigger
+            extra.update(HtmxAttrs(trigger=trigger).as_html_attrs())
         if self._after_load:
             extra.setdefault("data-hedron-after-load", self._after_load)
         method = self.method.upper()
@@ -818,11 +834,16 @@ class Refresh:
         attrs.update(
             {
                 "type": "button",
-                "hx-get": self._handle.path,
-                "hx-target": self._handle.selector,
-                "hx-swap": "outerHTML",
-                "hx-sync": "this:drop",
             }
+        )
+        attrs.update(
+            HtmxAttrs(
+                method="get",
+                url=self._handle.path,
+                target=self._handle.selector,
+                swap="outerHTML",
+                sync="this:drop",
+            ).as_html_attrs()
         )
         fallback = self._handle.fallback
         if fallback:

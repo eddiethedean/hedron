@@ -24,6 +24,7 @@ from hedron_core.codes import HED_TYPE_0005
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.models import Props
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl
@@ -82,6 +83,7 @@ def generate_form(
     controls: Mapping[str, NodeLike | Control] | None = None,
     fallback: str | None = None,
     enhance: Literal["native", "elements"] = "native",
+    after_load: str | None = None,
     **safe_form_attrs: object,
 ) -> Form:
     if compiled.model_type is None or not any(
@@ -142,8 +144,23 @@ def generate_form(
             )
         )
         del retained
+    if after_load:
+        nodes.append(
+            html.span(
+                "",
+                hidden=True,
+                aria={"hidden": "true"},
+                data={"hedron-after-load-sentinel": "true"},
+                **HtmxAttrs(
+                    method="get",
+                    url=after_load,
+                    trigger="hedron:after-load from:closest form",
+                    swap="none",
+                ).as_html_attrs(),
+            )
+        )
     nodes.append(SubmitButton(submit_label))
-    reserved_form_args = {"action", "children", "method", "hx"}
+    reserved_form_args = {"action", "after_load", "children", "method", "hx"}
     attrs = {
         key: value
         for key, value in safe_form_attrs.items()

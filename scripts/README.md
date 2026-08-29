@@ -12,6 +12,8 @@ scripts here when you add them.
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
 | `smoke_workbench_adapter_docker.sh` | License-independent Linux smoke for mounted Workbench adapter behavior |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
+| `generate_htmx_alpine_component_counts.py` | Regenerates the built-in HTMX/Alpine usage report across the 0.66.2, 0.67.0, and 1.0.0 boundaries; `--check` in CI/PR |
+| `check_htmx_alpine_refinement.py` | Enforces the typed-builder, single-runtime, and correlated request-finalization seams |
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
 | `generate_edron_sim_showcase.py` | Regenerates the Edron showcase island from `examples/edron-showcase/app.py` via `edron-sim` (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |

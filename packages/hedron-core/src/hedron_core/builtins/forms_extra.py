@@ -482,6 +482,7 @@ class MultiSelect(Component[MultiSelectProps]):
 class ToggleSwitchProps(_NamedControlProps):
     label: str
     checked: bool = False
+    enhance: Literal["legacy", "native", "alpine"] = "legacy"
 
 
 class ToggleSwitch(Component[ToggleSwitchProps]):
@@ -501,6 +502,7 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
+        enhance: Literal["legacy", "native", "alpine"] = "legacy",
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -515,6 +517,7 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
                 aria_describedby=aria_describedby,
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
+                enhance=enhance,
                 **kwargs,
             )
         )
@@ -545,17 +548,21 @@ class ToggleSwitch(Component[ToggleSwitchProps]):
         data = mark_data(self.props.mark)
         if data:
             wrap["data"] = data
+        input_alpine = (
+            AlpineAttrs.model("checked", source=f"component:ToggleSwitch:{self.props.id}:input")
+            if self.props.enhance != "native"
+            else None
+        )
         return html.div(
-            html.input(
-                **attrs,
-                alpine=AlpineAttrs.model(
-                    "checked", source=f"component:ToggleSwitch:{self.props.id}:input"
-                ),
-            ),
+            html.input(alpine=input_alpine, **attrs),
             html.label(self.props.label, for_=self.props.id),
-            alpine=AlpineAttrs(
-                state={"checked": self.props.checked},
-                source=f"component:ToggleSwitch:{self.props.id}",
+            alpine=(
+                AlpineAttrs(
+                    state={"checked": self.props.checked},
+                    source=f"component:ToggleSwitch:{self.props.id}",
+                )
+                if self.props.enhance != "native"
+                else None
             ),
             **wrap,
         )

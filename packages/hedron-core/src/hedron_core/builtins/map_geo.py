@@ -21,6 +21,7 @@ from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
+from hedron_core.htmx.attrs import HtmxAttrs
 from hedron_core.models import Model
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import (
@@ -582,8 +583,9 @@ class Map(Component[MapProps]):
                 link_cell = html.a(marker.label or marker.id or "Open", href=marker.href)
             elif marker.action:
                 link_cell = html.span(marker.action)
-                row_attrs["hx-get"] = marker.action
-                row_attrs["hx-swap"] = "none"
+                row_attrs.update(
+                    HtmxAttrs(method="get", url=marker.action, swap="none").as_html_attrs()
+                )
             else:
                 link_cell = html.span("")
             rows.append(
