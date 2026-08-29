@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import ClassVar, Literal, cast
 
-from hedron_core.alpine import AlpineAttrs
+from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import class_names, collect_children, dom_id_part
 from hedron_core.builtins.style_scope import presentation_data
 from hedron_core.component import Component, NodeLike
@@ -404,7 +404,12 @@ class TextInput(Component[TextInputProps]):
             "invalid": self.props.aria_invalid,
             "required": self.props.aria_required,
         }
-        field = html.input(**attrs)
+        model = AlpineAttrs(
+            directives=(AlpineDirective("x-model", AlpineExpression.name("value")),),
+            state={"value": self.props.value},
+            source=f"component:TextInput:{self.props.id}",
+        )
+        field = html.input(alpine=model, **attrs)
         if self.props.type != "password":
             return field
         toggle_id = f"{self.props.id}-visibility"
@@ -419,6 +424,10 @@ class TextInput(Component[TextInputProps]):
             ),
             class_="hedron-password-field",
             data={"hedron-password": "true"},
+            alpine=AlpineAttrs(
+                state={"value": self.props.value},
+                source=f"component:TextInput:{self.props.id}:password",
+            ),
         )
 
 
@@ -486,7 +495,15 @@ class TextArea(Component[TextAreaProps]):
             "invalid": self.props.aria_invalid,
             "required": self.props.aria_required,
         }
-        return html.textarea(self.props.value, **attrs)
+        return html.textarea(
+            self.props.value,
+            alpine=AlpineAttrs(
+                directives=(AlpineDirective("x-model", AlpineExpression.name("value")),),
+                state={"value": self.props.value},
+                source=f"component:TextArea:{self.props.id}",
+            ),
+            **attrs,
+        )
 
 
 class SelectProps(Props):
@@ -564,7 +581,15 @@ class Select(Component[SelectProps]):
             "invalid": self.props.aria_invalid,
             "required": self.props.aria_required,
         }
-        return html.select(*opts, **attrs)
+        return html.select(
+            *opts,
+            alpine=AlpineAttrs(
+                directives=(AlpineDirective("x-model", AlpineExpression.name("selected")),),
+                state={"selected": self._value or ""},
+                source=f"component:Select:{self.props.id}",
+            ),
+            **attrs,
+        )
 
 
 class CheckboxProps(Props):
@@ -627,9 +652,19 @@ class Checkbox(Component[CheckboxProps]):
             "required": self.props.aria_required,
         }
         return html.div(
-            html.input(**attrs),
+            html.input(
+                alpine=AlpineAttrs(
+                    directives=(AlpineDirective("x-model", AlpineExpression.name("checked")),),
+                    source=f"component:Checkbox:{self.props.id}:input",
+                ),
+                **attrs,
+            ),
             html.label(self.props.label, for_=self.props.id),
             class_=class_names("hedron-checkbox", self.props.class_),
+            alpine=AlpineAttrs(
+                state={"checked": self.props.checked},
+                source=f"component:Checkbox:{self.props.id}",
+            ),
         )
 
 

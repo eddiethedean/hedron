@@ -486,7 +486,7 @@ body {
 }
 
 .md-typeset .hedron-actions .md-button:focus-visible,
-.md-typeset a.hedron-card:focus-visible,
+.md-typeset a.hedron-card:not(.edron-sim .hedron-card):focus-visible,
 .hedron-not-found__links a:focus-visible {
   outline: 3px solid rgba(0, 139, 138, 0.55);
   outline: 3px solid color-mix(in srgb, var(--md-accent-fg-color) 60%, transparent);
@@ -529,7 +529,7 @@ body {
 }
 
 .hedron-choice::after,
-.hedron-card::after {
+.hedron-card:not(.edron-sim .hedron-card)::after {
   background: url("../assets/polyhedron-mesh.svg") center / contain no-repeat;
   content: "";
   height: 5.4rem;
@@ -543,7 +543,7 @@ body {
 }
 
 [data-md-color-scheme="slate"] .hedron-choice::after,
-[data-md-color-scheme="slate"] .hedron-card::after {
+[data-md-color-scheme="slate"] .hedron-card:not(.edron-sim .hedron-card)::after {
   opacity: 0.06;
 }
 
@@ -577,14 +577,14 @@ a.hedron-choice:hover {
   margin: 0.4rem 0 0;
 }
 
-.hedron-grid {
+.hedron-grid:not(.edron-sim .hedron-grid) {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 1.4rem 0 3.2rem;
 }
 
-.hedron-card {
+.hedron-card:not(.edron-sim .hedron-card) {
   background: var(--hedron-surface);
   border: 1px solid var(--hedron-border);
   border-radius: 0.45rem;
@@ -596,25 +596,25 @@ a.hedron-choice:hover {
   transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
-a.hedron-card:hover {
+a.hedron-card:not(.edron-sim .hedron-card):hover {
   border-color: rgba(0, 139, 138, 0.6);
   box-shadow: 0 8px 20px rgba(23, 33, 43, 0.08);
   transform: translateY(-1px);
 }
 
-.hedron-card strong {
+.hedron-card:not(.edron-sim .hedron-card) strong {
   color: var(--hedron-ink);
   display: block;
   font-size: 1rem;
   margin: 0.55rem 0 0.35rem;
 }
 
-.hedron-card p {
+.hedron-card:not(.edron-sim .hedron-card) p {
   font-size: 0.82rem;
   margin: 0;
 }
 
-.hedron-card__icon {
+.hedron-card__icon:not(.edron-sim .hedron-card__icon) {
   color: var(--md-accent-fg-color);
   display: inline-flex;
   font-size: 1.2rem;
@@ -755,7 +755,7 @@ a.hedron-card:hover {
   }
 
   .hedron-choice-grid,
-  .hedron-grid,
+  .hedron-grid:not(.edron-sim .hedron-grid),
   .hedron-path {
     grid-template-columns: 1fr;
   }
@@ -764,7 +764,7 @@ a.hedron-card:hover {
     margin-top: 1.25rem;
   }
 
-  .hedron-card {
+  .hedron-card:not(.edron-sim .hedron-card) {
     min-height: 0;
   }
 
@@ -1117,7 +1117,7 @@ a.hedron-card:hover {
 .hedron-avatar--teal { background: #178b82; }
 
 .hedron-role,
-.hedron-status,
+.hedron-status:not(.edron-sim .hedron-status),
 .hedron-stable-pill,
 .hedron-method,
 .hedron-ok {
@@ -1131,12 +1131,12 @@ a.hedron-card:hover {
 }
 
 [data-md-color-scheme="slate"] .hedron-role,
-[data-md-color-scheme="slate"] .hedron-status,
+[data-md-color-scheme="slate"] .hedron-status:not(.edron-sim .hedron-status),
 [data-md-color-scheme="slate"] .hedron-stable-pill,
 [data-md-color-scheme="slate"] .hedron-ok { color: #62dfd3; }
 
 .hedron-role--muted { background: rgba(106, 124, 137, 0.12); color: var(--demo-muted); }
-.hedron-status::before { background: #13a36f; border-radius: 50%; content: ""; display: inline-block; height: 0.3rem; margin-right: 0.25rem; width: 0.3rem; }
+.hedron-status:not(.edron-sim .hedron-status)::before { background: #13a36f; border-radius: 50%; content: ""; display: inline-block; height: 0.3rem; margin-right: 0.25rem; width: 0.3rem; }
 .hedron-demo-empty { color: var(--demo-muted); padding: 1rem; text-align: center; }
 
 .hedron-demo-dialog {

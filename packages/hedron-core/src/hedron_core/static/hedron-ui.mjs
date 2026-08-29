@@ -96,6 +96,7 @@ document.addEventListener("click", (event) => {
     if (dialog) {
       if (dialog.dataset.modal === "false") dialog.show();
       else dialog.showModal();
+      dialog.dispatchEvent(new CustomEvent("hedron-dialog-open", { bubbles: true }));
     }
     return;
   }

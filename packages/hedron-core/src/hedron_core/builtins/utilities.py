@@ -465,7 +465,42 @@ class Expander(Component[ExpanderProps]):
         body = self._slot_values.get("body", self._body)
         if not isinstance(body, tuple):
             body = (body,)
-        return html.details(html.summary(self.props.title), *body, **attrs)
+        open_state = AlpineExpression.name("open")
+        toggle_open = AlpineExpression.assign(
+            "open",
+            AlpineExpression.binary("!==", open_state, AlpineExpression.literal(True)),
+        )
+        return html.details(
+            html.summary(
+                self.props.title,
+                alpine=AlpineAttrs(
+                    directives=(
+                        AlpineDirective("x-on:click.prevent", toggle_open),
+                        AlpineDirective("x-bind:aria-expanded", open_state),
+                    ),
+                    source=(
+                        f"component:Expander:{self.props.id or self.render_instance_id()}:summary"
+                    ),
+                ),
+            ),
+            html.div(
+                *body,
+                data={"hedron-optional": "true"},
+                alpine=AlpineAttrs(
+                    directives=(
+                        AlpineDirective("x-show", open_state),
+                        AlpineDirective("x-collapse", features=("collapse",)),
+                    ),
+                    source=f"component:Expander:{self.props.id or self.render_instance_id()}:body",
+                ),
+            ),
+            alpine=AlpineAttrs(
+                state={"open": self.props.open},
+                directives=(AlpineDirective("x-bind:open", open_state),),
+                source=f"component:Expander:{self.props.id or self.render_instance_id()}",
+            ),
+            **attrs,
+        )
 
 
 class TabsProps(ElementProps):

@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Literal
 
-from hedron_core.alpine import AlpineAttrs
+from hedron_core.alpine import AlpineAttrs, AlpineDirective, AlpineExpression
 from hedron_core.builtins._base import (
     ElementProps,
     class_names,
@@ -1065,7 +1065,40 @@ class DirectoryUpload(Component[DirectoryUploadProps]):
             attrs["disabled"] = True
         return html.label(
             self.props.label,
-            html.input(**attrs),
+            html.input(
+                alpine=AlpineAttrs(
+                    directives=(
+                        AlpineDirective(
+                            "x-on:change",
+                            AlpineExpression.assign("has_files", AlpineExpression.literal(True)),
+                        ),
+                    ),
+                    source=f"component:DirectoryUpload:{self.props.id}:input",
+                ),
+                **attrs,
+            ),
+            html.span(
+                "Directory selected",
+                hidden=True,
+                data={"hedron-optional": "true"},
+                alpine=AlpineAttrs(
+                    directives=(
+                        AlpineDirective(
+                            "x-bind:hidden",
+                            AlpineExpression.binary(
+                                "!==",
+                                AlpineExpression.name("has_files"),
+                                AlpineExpression.literal(True),
+                            ),
+                        ),
+                    ),
+                    source=f"component:DirectoryUpload:{self.props.id}:selected",
+                ),
+            ),
             class_=class_names("hedron-directory-upload", self.props.class_),
             for_=self.props.id,
+            alpine=AlpineAttrs(
+                state={"has_files": False},
+                source=f"component:DirectoryUpload:{self.props.id}",
+            ),
         )

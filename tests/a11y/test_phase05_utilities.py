@@ -28,7 +28,7 @@ def test_utility_live_regions_and_semantics() -> None:
     assert "<progress" in render(Progress(1, maximum=5, label="Load")).html
     assert 'aria-live="polite"' in render(Status("Saved")).html
     assert 'aria-live="polite"' in render(Toast("Hi")).html
-    assert "<summary>" in render(Expander("More", "x")).html
+    assert "<summary" in render(Expander("More", "x")).html
     assert 'role="tablist"' in render(Tabs(("A", "1"), ("B", "2"))).html
     assert 'aria-label="Color mode"' in render(ColorModeToggle()).html
 

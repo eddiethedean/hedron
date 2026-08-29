@@ -1175,7 +1175,9 @@
     background: color-mix(in srgb, var(--hedron-default-accent-soft) 45%, transparent);
   }
 
-  .hedron-chart {
+  .hedron-chart,
+  hedron-chart {
+    display: block;
     margin: 0;
     padding: clamp(1rem, 3vw, 1.4rem);
     overflow: hidden;
@@ -1185,20 +1187,27 @@
     box-shadow: var(--hedron-default-shadow);
   }
 
-  .hedron-chart h2 {
+  .hedron-chart h2,
+  hedron-chart h2 {
     font-size: 1.08rem;
   }
 
-  .hedron-chart > p {
+  .hedron-chart > p,
+  hedron-chart > p {
     color: var(--hedron-color-muted, var(--hedron-default-muted));
     font-size: 0.9rem;
   }
 
-  .hedron-chart > svg {
+  .hedron-chart > svg,
+  hedron-chart svg {
     width: 100%;
     height: auto;
     border-radius: var(--hedron-default-radius-sm);
     background: #ffffff;
+  }
+
+  hedron-chart .hedron-chart-fallback-figure {
+    margin: 0;
   }
 
   .hedron-chart-fallback {

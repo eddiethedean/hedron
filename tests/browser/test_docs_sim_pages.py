@@ -277,3 +277,65 @@ def test_docs_sim_page_under_material(
             assert not leaked, f"{page_path} leaked mutating requests: {leaked}"
         finally:
             browser.close()
+
+
+def test_edron_showcase_preserves_native_layout_inside_docs_host(docs_server: str) -> None:
+    """The Edron-only preview must keep Edron styling and fit its docs slot."""
+    with sync_playwright() as pw:
+        browser = _launch(pw)
+        page = browser.new_page(viewport={"width": 1280, "height": 900})
+        try:
+            page.goto(
+                f"{docs_server}/examples/edron-showcase/index.html",
+                wait_until="networkidle",
+                timeout=60000,
+            )
+            root = page.locator('[data-hedron-sim="edron-showcase"]')
+            root.wait_for(state="visible", timeout=10000)
+
+            metrics = page.evaluate(
+                """() => {
+                  const root = document.querySelector('[data-hedron-sim="edron-showcase"]');
+                  const stage = root?.querySelector('[data-hedron-sim-stage]');
+                  const grid = root?.querySelector('.hedron-grid');
+                  const button = root?.querySelector('button');
+                  if (!root || !stage || !grid || !button) return null;
+                  const buttonStyle = getComputedStyle(button);
+                  return {
+                    hasNativeStylesheet: [...document.styleSheets].some((sheet) =>
+                      sheet.href?.endsWith('/stylesheets/hedron-default.css')
+                    ),
+                    gridColumns: getComputedStyle(grid).gridTemplateColumns,
+                    stageWidth: stage.getBoundingClientRect().width,
+                    buttonBackground: buttonStyle.backgroundColor,
+                    buttonPadding: buttonStyle.padding,
+                    hasHorizontalOverflow: root.scrollWidth > root.clientWidth,
+                  };
+                }"""
+            )
+            assert metrics is not None
+            assert metrics["hasNativeStylesheet"] is True
+            assert len(metrics["gridColumns"].split()) == 1
+            assert metrics["stageWidth"] < 700
+            assert metrics["buttonBackground"] not in {"transparent", "rgba(0, 0, 0, 0)"}
+            assert metrics["buttonPadding"] != "0px"
+            assert metrics["hasHorizontalOverflow"] is False
+
+            page.set_viewport_size({"width": 390, "height": 844})
+            page.reload(wait_until="networkidle", timeout=60000)
+            mobile = page.evaluate(
+                """() => {
+                  const root = document.querySelector('[data-hedron-sim="edron-showcase"]');
+                  const grid = root?.querySelector('.hedron-grid');
+                  if (!root || !grid) return null;
+                  return {
+                    gridColumns: getComputedStyle(grid).gridTemplateColumns,
+                    hasHorizontalOverflow: root.scrollWidth > root.clientWidth,
+                  };
+                }"""
+            )
+            assert mobile is not None
+            assert len(mobile["gridColumns"].split()) == 1
+            assert mobile["hasHorizontalOverflow"] is False
+        finally:
+            browser.close()

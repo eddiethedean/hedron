@@ -362,7 +362,7 @@ quality_wheels_smoke() {
   local train_wheels=()
   local wheel
   for wheel in dist/*.whl; do
-    if [[ "$(basename "$wheel")" != edron-*.whl ]]; then
+    if [[ "$(basename "$wheel")" != edron-*.whl && "$(basename "$wheel")" != edron_sim-*.whl ]]; then
       train_wheels+=("$wheel")
     fi
   done
@@ -418,10 +418,17 @@ PY
     return 1
   fi
   uv pip install --python /tmp/hedron-smoke/bin/python "${edron_wheel[0]}"
+  local edron_sim_wheel=(dist/edron_sim-*.whl)
+  if [[ ! -f "${edron_sim_wheel[0]}" || "${edron_sim_wheel[0]}" == 'dist/edron_sim-*.whl' ]]; then
+    echo "missing Edron Sim wheel for stable-train smoke" >&2
+    return 1
+  fi
+  uv pip install --python /tmp/hedron-smoke/bin/python "${edron_sim_wheel[0]}"
   /tmp/hedron-smoke/bin/python - <<'PY'
 import importlib.metadata as metadata
 
 assert metadata.version("edron") == "1.0.0"
+assert metadata.version("edron-sim") == "0.1.0"
 assert metadata.version("hedron") == "1.0.0"
 assert metadata.version("hedron-data") == "1.0.0"
 print("ok: Edron 1.0 installs against the Hedron 1.0 train")

@@ -168,6 +168,7 @@ extra_css:
   - stylesheets/component-demos.css
   - stylesheets/styling-guide.css
   - stylesheets/hello-refresh.css
+  - stylesheets/hedron-default.css
   - stylesheets/hedron-sim.css
 
 extra:
