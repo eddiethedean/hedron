@@ -7,6 +7,7 @@ from typing import cast
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
+from hedron.fastapi_compat import cached_openapi, set_cached_openapi
 from hedron_core.registry import get_registry
 from hedron_core.scopes import RequiresScopes
 from hedron_core.typing_aliases import JsonObject, JsonValue
@@ -22,8 +23,9 @@ def operation_id_for(kind: str, name: str, path: str, method: str) -> str:
 
 def install_openapi(app: FastAPI) -> None:
     def custom_openapi() -> JsonObject:
-        if app.openapi_schema is not None:
-            return cast(JsonObject, app.openapi_schema)
+        cached = cached_openapi(app)
+        if cached is not None:
+            return cast(JsonObject, cached)
         schema = cast(
             JsonObject,
             get_openapi(
@@ -155,7 +157,7 @@ def install_openapi(app: FastAPI) -> None:
                             ),
                         },
                     )
-        app.openapi_schema = schema
+        set_cached_openapi(app, schema)
         return schema
 
     app.openapi = custom_openapi  # type: ignore[method-assign]

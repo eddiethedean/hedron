@@ -24,6 +24,7 @@ from hedron.app.explorer import (
     resolve_explorer_mode,
 )
 from hedron.app.sessions import SessionHost, configure_sessions
+from hedron.fastapi_compat import middleware_classes
 from hedron.openapi import install_openapi
 from hedron.routing.router import HedronRouter
 from hedron.security.headers import SecurityHeadersMiddleware
@@ -322,7 +323,7 @@ class HedronBootstrapper:
             for name in ("hedron_app_id", "hedron_policy", "hedron_explorer_mode", "_root_router")
             if not hasattr(app, name)
         ]
-        middleware_types = {middleware.cls for middleware in app.user_middleware}
+        middleware_types = middleware_classes(app)
         if SecurityHeadersMiddleware not in middleware_types:
             missing.append("SecurityHeadersMiddleware")
         if SecurityPlaneMiddleware not in middleware_types:

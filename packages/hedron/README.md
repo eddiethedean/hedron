@@ -19,11 +19,11 @@ available beside the UI.
 There is no generated frontend project, Node.js build, virtual DOM, or full-script rerun loop.
 
 **Package maturity:** Stable · **Release:** `1.0.x` · **Python:** 3.10–3.14 ·
-**Typing:** Pyright strict, zero warnings
+**Typing:** Pyright strict
 
-The warning-free typing baseline is enforced in commit and release CI with
-`pyright --warnings`; a new strict-mode diagnostic fails the build rather than becoming
-untracked typing debt.
+Commit and release CI fail on type errors over the complete `hedron` source tree. Warning-level
+typing cleanup remains a tracked migration until the existing workspace warning backlog is
+retired.
 
 > Looking for the shortest application-authoring path? [Edron](https://pypi.org/project/edron/)
 > adds class-oriented pages, a compact dashboard vocabulary, batteries-included data/chart/map

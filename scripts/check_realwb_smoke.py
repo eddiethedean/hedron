@@ -92,6 +92,14 @@ SKIP_EXIT_CODE = 42
 MAX_AGE = timedelta(days=45)
 
 
+def _live_gate_required() -> bool:
+    return os.environ.get("HEDRON_REQUIRED_LIVE_GATES", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+
 def _secret_errors(text: str, label: str) -> list[str]:
     errors: list[str] = []
     for needle in FORBIDDEN:
@@ -160,6 +168,12 @@ def main(argv: list[str] | None = None) -> int:
             subprocess.check_call(["bash", str(SCRIPT)], cwd=ROOT)
         except subprocess.CalledProcessError as exc:
             if exc.returncode == SKIP_EXIT_CODE:
+                if _live_gate_required():
+                    print(
+                        "REALWB-030 is required but PWB_LICENSE is unavailable",
+                        file=sys.stderr,
+                    )
+                    return 1
                 print("skip: REALWB-030 (PWB_LICENSE unavailable)")
                 return 0
             print(f"realwb_smoke.sh failed ({exc.returncode})", file=sys.stderr)

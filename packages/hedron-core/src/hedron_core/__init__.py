@@ -502,6 +502,7 @@ from hedron_core.registry import (
     ElementDefinitionMeta,
     ElementFieldOwnership,
     RouteMeta,
+    fork_registry_builder,
     get_registry,
     register_addressable,
     register_application_style,
@@ -513,6 +514,7 @@ from hedron_core.registry import (
     register_theme,
     reset_registry_for_tests,
     seal_registry,
+    use_registry_builder,
 )
 from hedron_core.rendering import (
     AssetRef,
@@ -616,6 +618,7 @@ from hedron_core.trace_contract import (
     encode_interaction_trace,
     profile_interaction_trace,
 )
+from hedron_core.type_markers import FormBody, ViewParams
 from hedron_core.type_schema import (
     TYPE_SCHEMA_NAMESPACE,
     TYPE_SCHEMA_VERSION,
@@ -918,6 +921,7 @@ __all__ = [
     "FormField",
     "FormGrid",
     "FormModel",
+    "FormBody",
     "Fragment",
     "FRAGMENT_HOST_TAGS",
     "FragmentHost",
@@ -933,6 +937,7 @@ __all__ = [
     "get_cache_traces",
     "get_icon",
     "get_registry",
+    "fork_registry_builder",
     "get_security_audit_sink",
     "GraphRecording",
     "GraphReplayEvent",
@@ -1127,6 +1132,7 @@ __all__ = [
     "scoped_identifier",
     "seal_interaction_catalog",
     "seal_registry",
+    "use_registry_builder",
     "Secret",
     "Section",
     "SecurityAuditEvent",
@@ -1232,6 +1238,7 @@ __all__ = [
     "emit_visualization_theme_css",
     "resolve_visualization_theme",
     "Video",
+    "ViewParams",
     "is_safe_navigation_url",
     "ViewportHint",
     "VISUALIZATION_ROLES",

@@ -1,0 +1,83 @@
+[release]
+train = "1.0"
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+[packages."hedron-core"]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-explorer]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-data]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-flask]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-django]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-jinja]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-conformance]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-extras]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-elements]
+maturity = "stable"
+api = "stable"
+
+[packages.hedron-posit]
+maturity = "stable"
+api = "stable"
+
+[packages.edron]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-charts]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-maps]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-native]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-notebook]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-mcp]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-gradio]
+maturity = "beta"
+api = "beta"
+
+[packages.hedron-sim]
+maturity = "beta"
+api = "beta"
+
+[packages.fastapi-workbench]
+maturity = "stable"
+api = "stable"

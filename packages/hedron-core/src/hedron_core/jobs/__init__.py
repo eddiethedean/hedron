@@ -12,7 +12,12 @@ from hedron_core.jobs.codec import (
     status_from_dict,
     status_to_dict,
 )
-from hedron_core.jobs.gate import get_job_backend, reset_jobs_for_tests, set_job_backend
+from hedron_core.jobs.gate import (
+    get_job_backend,
+    reset_jobs_for_tests,
+    set_job_backend,
+    use_job_backend,
+)
 from hedron_core.jobs.memory import InMemoryJobBackend
 from hedron_core.jobs.redis import RedisJobBackend
 from hedron_core.jobs.status_ui import action_state_for_job, job_status_interaction
@@ -37,4 +42,5 @@ __all__ = [
     "job_status_interaction",
     "reset_jobs_for_tests",
     "set_job_backend",
+    "use_job_backend",
 ]

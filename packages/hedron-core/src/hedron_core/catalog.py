@@ -4,9 +4,9 @@ Values are framework-neutral. The catalog indexes 0.43 descriptors and optional
 0.44 TypeSchema extensions. It never routes, validates, authorizes, executes, or
 exposes anything.
 
-Process-global registry: ``seal_interaction_catalog`` / ``get_sealed_catalog`` store a
-single sealed ``InteractionCatalog`` for the process; reset only via
-``reset_catalog_for_tests``.
+The compatibility helpers retain a process-level fallback, while application
+runtimes bind projection providers and sealed catalogs through context-local
+state.
 """
 
 from __future__ import annotations
@@ -15,7 +15,9 @@ import hashlib
 import json
 import re
 import threading
-from collections.abc import Mapping, Sequence
+from collections.abc import Generator, Mapping, Sequence
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Literal, Protocol, cast, runtime_checkable
@@ -134,6 +136,9 @@ __all__ = [
     "compile_interaction_catalog",
     "entry_from_descriptor",
     "get_sealed_catalog",
+    "new_projection_registry",
+    "use_catalog_context",
+    "use_projection_registry",
     "list_projection_providers",
     "register_projection_provider",
     "reset_catalog_for_tests",
@@ -924,12 +929,47 @@ _LOCK = threading.RLock()
 _PROVIDERS: dict[str, ProjectionProvider] = {}
 _sealed = False
 _sealed_catalog: InteractionCatalog | None = None
+_scoped_catalog: ContextVar[InteractionCatalog | None] = ContextVar(
+    "hedron_interaction_catalog", default=None
+)
+_catalog_scope_active: ContextVar[bool] = ContextVar("hedron_catalog_scope_active", default=False)
+_scoped_providers: ContextVar[dict[str, ProjectionProvider] | None] = ContextVar(
+    "hedron_projection_registry", default=None
+)
+
+
+def _active_providers() -> dict[str, ProjectionProvider]:
+    return _scoped_providers.get() or _PROVIDERS
+
+
+def new_projection_registry() -> dict[str, ProjectionProvider]:
+    """Create an application-owned provider registry seeded from compatibility state."""
+    with _LOCK:
+        return dict(_PROVIDERS)
+
+
+@contextmanager
+def use_projection_registry(
+    providers: dict[str, ProjectionProvider],
+) -> Generator[None, None, None]:
+    """Bind projection providers to one application/task context."""
+    token = _scoped_providers.set(providers)
+    try:
+        yield
+    finally:
+        _scoped_providers.reset(token)
+
+
+def _catalog_is_sealed() -> bool:
+    if _catalog_scope_active.get():
+        return _scoped_catalog.get() is not None
+    return _sealed
 
 
 def register_projection_provider(provider: ProjectionProvider, *, plugin: str = "") -> None:
     del plugin
     with _LOCK:
-        if _sealed:
+        if _catalog_is_sealed():
             raise _catalog_error(
                 HED_CATALOG_0003,
                 title="Cannot register projections after catalog seal",
@@ -944,7 +984,8 @@ def register_projection_provider(provider: ProjectionProvider, *, plugin: str = 
                 explanation=f"Namespace {namespace!r} cannot be registered.",
                 remediation="Use reverse-DNS or a Hedron-reserved dotted namespace.",
             )
-        existing = _PROVIDERS.get(namespace)
+        providers = _active_providers()
+        existing = providers.get(namespace)
         if existing is not None and existing is not provider:
             raise _catalog_error(
                 HED_PROJECTION_0001,
@@ -956,39 +997,57 @@ def register_projection_provider(provider: ProjectionProvider, *, plugin: str = 
                 ),
                 remediation="Disable one provider; namespaces do not merge.",
             )
-        _PROVIDERS[namespace] = provider
+        providers[namespace] = provider
 
 
 def unregister_projection_provider(namespace: str) -> None:
     with _LOCK:
-        if _sealed:
+        if _catalog_is_sealed():
             raise _catalog_error(
                 HED_PROJECTION_0006,
                 title="Cannot uninstall projections after catalog seal",
                 explanation=f"Namespace {namespace!r} is sealed with the catalog.",
                 remediation="Disable the plugin before startup seal.",
             )
-        _PROVIDERS.pop(namespace, None)
+        _active_providers().pop(namespace, None)
 
 
 def list_projection_providers() -> tuple[ProjectionProvider, ...]:
     with _LOCK:
-        return tuple(_PROVIDERS[name] for name in sorted(_PROVIDERS))
+        providers = _active_providers()
+        return tuple(providers[name] for name in sorted(providers))
 
 
 def snapshot_projection_providers() -> dict[str, ProjectionProvider]:
     with _LOCK:
-        return dict(_PROVIDERS)
+        return dict(_active_providers())
 
 
 def restore_projection_providers(snapshot: Mapping[str, ProjectionProvider]) -> None:
     with _LOCK:
-        _PROVIDERS.clear()
-        _PROVIDERS.update(snapshot)
+        providers = _active_providers()
+        providers.clear()
+        providers.update(snapshot)
 
 
 def get_sealed_catalog() -> InteractionCatalog | None:
+    if _catalog_scope_active.get():
+        return _scoped_catalog.get()
     return _sealed_catalog
+
+
+@contextmanager
+def use_catalog_context(
+    catalog: InteractionCatalog | None = None,
+) -> Generator[None, None, None]:
+    """Create an application-local catalog scope for startup and requests."""
+    active_token = _catalog_scope_active.set(True)
+    catalog_token = _scoped_catalog.set(catalog)
+    try:
+        yield
+    finally:
+        _scoped_catalog.reset(catalog_token)
+        _catalog_scope_active.reset(active_token)
 
 
 def compile_interaction_catalog(
@@ -1106,6 +1165,20 @@ def seal_interaction_catalog(
     app_id: str | None = None,
     profile: RedactionProfile = "production",
 ) -> InteractionCatalog:
+    scoped = _scoped_catalog.get()
+    if _catalog_scope_active.get():
+        if scoped is None:
+            scoped = compile_interaction_catalog(app_id=app_id, profile=profile, sealed=True)
+            _scoped_catalog.set(scoped)
+            return scoped
+        if app_id and scoped.app_id and scoped.app_id != app_id:
+            raise _catalog_error(
+                HED_CATALOG_0001,
+                title="Catalog already sealed for another app",
+                explanation=f"Sealed {scoped.app_id!r}; requested {app_id!r}.",
+                remediation="Use the application-owned catalog context.",
+            )
+        return scoped
     global _sealed, _sealed_catalog
     with _LOCK:
         if _sealed and _sealed_catalog is not None:

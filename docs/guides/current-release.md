@@ -22,6 +22,10 @@ The coordinated train supports CPython **3.10–3.14**. Package maturity, capabi
 readiness, and individual API stability are separate: a stable package may contain a
 clearly labeled experimental capability.
 
+The exact 1.0 package boundary is maintained in the repository’s
+[`release/support-matrix.toml`](https://github.com/eddiethedean/hedron/blob/main/release/support-matrix.toml). Beta satellites are
+opt-in compatibility surfaces, not part of the stable platform contract.
+
 ## What should I install?
 
 | Goal | Continue with |

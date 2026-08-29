@@ -5,9 +5,10 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping, Sequence
 from typing import Any, ParamSpec, Protocol, TypeVar, cast, overload
 
-from fastapi import params
+from fastapi import FastAPI, params
 from fastapi.routing import APIRouter
 
+from hedron.fastapi_compat import cached_openapi
 from hedron.handles import ActionHandle, FragmentHandle, as_node_like
 from hedron.routing.router import HedronRouter
 from hedron.type_authoring.classes import CommandHandler, RefreshableView
@@ -266,7 +267,7 @@ class HedronPagesMixin:
         fail_closed_late_registration(
             registry_sealed=builder.is_sealed,
             catalog_sealed=get_sealed_catalog() is not None,
-            openapi_cached=getattr(self, "openapi_schema", None) is not None,
+            openapi_cached=cached_openapi(cast(FastAPI, self)) is not None,
         )
         self._root_router.include_component(descriptor, path=path, **kwargs)
         self._sync_root_route()

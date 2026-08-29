@@ -105,8 +105,8 @@ jobs:
       - name: Run test suite
         run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
 
-  workbench-dependencies:
-    name: Workbench dependencies (${{ matrix.bounds }})
+  dependency-bounds:
+    name: Stable dependency bounds (${{ matrix.bounds }})
     needs: changes
     if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
@@ -134,20 +134,26 @@ jobs:
         if: matrix.bounds == 'minimum'
         run: >-
           uv pip install --python .bounds-venv/bin/python
-          -e packages/hedron-core -e packages/hedron -e packages/fastapi-workbench -e packages/hedron-posit
-          -e packages/hedron-django
+          -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer
+          -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django
+          -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras
+          -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench
           pytest pytest-xdist httpx "django>=5.2,<6" "starlette==0.40.0" "uvicorn==0.32.0"
       - name: Install latest supported dependencies
         if: matrix.bounds == 'latest'
         run: >-
           uv pip install --python .bounds-venv/bin/python
-          -e packages/hedron-core -e packages/hedron -e packages/fastapi-workbench -e packages/hedron-posit
-          -e packages/hedron-django
+          -e packages/hedron-core -e packages/hedron -e packages/hedron-explorer
+          -e packages/hedron-data -e packages/hedron-flask -e packages/hedron-django
+          -e packages/hedron-jinja -e packages/hedron-conformance -e packages/hedron-extras
+          -e packages/hedron-elements -e packages/hedron-posit -e packages/fastapi-workbench
           pytest pytest-xdist httpx "django>=5.2,<6" "starlette>=0.40.0" "uvicorn>=0.32"
-      - name: Run Workbench contract suite
+      - name: Run stable adapter contract suite
         run: >-
           .bounds-venv/bin/pytest -q
           tests/adapters/workbench
+          tests/adapters/flask
+          tests/adapters/django
           tests/integration/test_workbench_urls.py
           tests/integration/test_workbench_runner.py
           tests/security/test_workbench_adversarial.py

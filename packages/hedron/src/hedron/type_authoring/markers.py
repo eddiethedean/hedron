@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any
 
 from hedron_core.codes import HED_TYPE_0005, HED_TYPE_0006
 from hedron_core.diagnostics import error
+from hedron_core.type_markers import FormBody, ViewParams
 from hedron_core.updates import MAX_PATCH_TARGETS, MAX_REFRESH_TARGETS
 
 if TYPE_CHECKING:
@@ -51,16 +52,6 @@ __all__ = [
     "Updates",
     "ViewParams",
 ]
-
-
-@dataclass(frozen=True, slots=True)
-class ViewParams:
-    source: Literal["path", "query", "path_query"] = "path_query"
-
-
-@dataclass(frozen=True, slots=True)
-class FormBody:
-    encoding: Literal["urlencoded", "multipart", "auto"] = "auto"
 
 
 @dataclass(frozen=True, slots=True)

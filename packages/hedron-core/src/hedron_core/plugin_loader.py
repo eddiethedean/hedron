@@ -1,9 +1,8 @@
 """Plugin discovery, compatibility, and lifespan orchestration.
 
-Process-global registries: successful ``load_plugins`` mutates the shared registry
-builder, Explorer panels (``plugins._panels``), diagnostic owners, feature map, and
-bundle registry. Failures restore those snapshots via rollback; callers must treat
-plugin load as process-wide until sealed or reset for tests.
+Plugin entry points are discovered process-wide, while successful registrations
+are written to the active application runtime. Failures restore the active
+runtime snapshots via rollback.
 """
 
 from __future__ import annotations
@@ -120,11 +119,10 @@ def load_plugins(
     On failure, registry contributions and Explorer panels are rolled back.
     """
     from hedron_core import __version__ as core_version
-    from hedron_core import plugins as plugins_mod
     from hedron_core.bundles import restore_bundles, snapshot_bundles
 
     version = hedron_version or core_version
-    rollback = _snapshot_rollback(plugins_mod, snapshot_bundles, restore_bundles)
+    rollback = _snapshot_rollback(snapshot_bundles, restore_bundles)
     discovered = list(entry_points) if entry_points is not None else _discover_entry_points()
 
     try:
@@ -149,25 +147,19 @@ def _env_flag(name: str) -> bool:
 
 
 def _snapshot_rollback(
-    plugins_mod: Any,
     snapshot_bundles: Callable[[], tuple[Any, ...]],
     restore_bundles: Callable[..., None],
 ) -> Callable[[], None]:
     """Capture process-global plugin contribution state for fail-closed restore."""
     registry_snapshot = snapshot_registry_builder()
-    panel_snapshot = dict(plugins_mod._panels)
-    owner_snapshot = dict(plugins_mod._diagnostic_owners)
-    feature_snapshot = dict(plugins_mod._features)
+    from hedron_core.plugins.explorer import restore_plugin_state, snapshot_plugin_state
+
+    plugin_snapshot = snapshot_plugin_state()
     bundle_snapshot = snapshot_bundles()
 
     def _rollback() -> None:
         restore_registry_builder(registry_snapshot)
-        plugins_mod._panels.clear()
-        plugins_mod._panels.update(panel_snapshot)
-        plugins_mod._diagnostic_owners.clear()
-        plugins_mod._diagnostic_owners.update(owner_snapshot)
-        plugins_mod._features.clear()
-        plugins_mod._features.update(feature_snapshot)
+        restore_plugin_state(plugin_snapshot)
         restore_bundles(*bundle_snapshot)
 
     return _rollback

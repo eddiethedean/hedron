@@ -2,18 +2,34 @@
 
 from __future__ import annotations
 
+from collections.abc import Generator
+from contextlib import contextmanager
+from contextvars import ContextVar
+
 from hedron_core.durability import is_process_local
 from hedron_core.jobs.backend import JobBackend
 from hedron_core.jobs.memory import InMemoryJobBackend
 
 _backend: JobBackend = InMemoryJobBackend()
+_scoped_backend: ContextVar[JobBackend | None] = ContextVar("hedron_job_backend", default=None)
 
 
 def get_job_backend() -> JobBackend:
-    return _backend
+    return _scoped_backend.get() or _backend
+
+
+@contextmanager
+def use_job_backend(backend: JobBackend) -> Generator[None, None, None]:
+    """Temporarily bind a job backend to the current application context."""
+    token = _scoped_backend.set(backend)
+    try:
+        yield
+    finally:
+        _scoped_backend.reset(token)
 
 
 def set_job_backend(backend: JobBackend) -> None:
+    global _backend
     import logging
 
     from hedron_core.compile_gate import is_production_env
@@ -31,8 +47,11 @@ def set_job_backend(backend: JobBackend) -> None:
             "Call set_job_backend(...) with Redis/Celery/RQ, or unset production "
             "for local demos."
         )
-    global _backend
-    _backend = backend
+    scoped = _scoped_backend.get()
+    if scoped is not None:
+        _scoped_backend.set(backend)
+    else:
+        _backend = backend
     if is_process_local(backend) and not is_production_env():
         logging.getLogger("hedron.jobs").warning(
             "InMemoryJobBackend does not span processes; use Redis/Celery/RQ "

@@ -8,6 +8,7 @@ from hedron_core.cache.gate import (
     invalidate_tags,
     reset_cache_for_tests,
     set_cache_backend,
+    use_cache_backend,
 )
 from hedron_core.cache.keying import build_cache_key
 from hedron_core.cache.memory import InMemoryCacheBackend
@@ -27,4 +28,5 @@ __all__ = [
     "record_cache_trace",
     "reset_cache_for_tests",
     "set_cache_backend",
+    "use_cache_backend",
 ]

@@ -13,11 +13,13 @@ from hedron_core.registry.builder import (
     Registry,
     RegistryBuilder,
     RegistryBuilderSnapshot,
+    fork_registry_builder,
     get_registry,
     reset_registry_for_tests,
     restore_registry_builder,
     seal_registry,
     snapshot_registry_builder,
+    use_registry_builder,
 )
 from hedron_core.registry.component import (
     ComponentMeta,
@@ -44,6 +46,7 @@ __all__ = [
     "Registry",
     "RegistryBuilder",
     "RegistryBuilderSnapshot",
+    "fork_registry_builder",
     "get_registry",
     "register_addressable",
     "register_asset",
@@ -57,6 +60,7 @@ __all__ = [
     "restore_registry_builder",
     "seal_registry",
     "snapshot_registry_builder",
+    "use_registry_builder",
     "component_meta_from_class",
     "update_component_meta",
 ]

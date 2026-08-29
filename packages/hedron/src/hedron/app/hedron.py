@@ -18,8 +18,10 @@ from hedron.app.bootstrap import (
 from hedron.app.explorer import ExplorerMode
 from hedron.app.pages import HedronPagesMixin
 from hedron.app.sessions import DEFAULT_SESSION_SECRET
+from hedron.fastapi_compat import cached_openapi
 from hedron.lifespan import compose_lifespan
 from hedron.routing.router import HedronRouter
+from hedron.runtime import HedronRuntimeContext, RuntimeContextMiddleware
 from hedron.security.policy import SecurityPolicy, SecurityProfileName
 from hedron_core.design_system import DesignSystem
 from hedron_core.theme import Theme
@@ -80,36 +82,42 @@ class Hedron(HedronPagesMixin, FastAPI):
         bootstrap_steps: Sequence[HedronBootstrapStep] | None = None,
         **kwargs: Any,
     ) -> None:
+        self._hedron_runtime = HedronRuntimeContext.from_defaults()
         user_lifespan = kwargs.pop("lifespan", None)
-        resolved_theme, design_system = normalize_theme_selection(theme)
-        kwargs.setdefault(
-            "lifespan",
-            compose_lifespan(
-                user_lifespan,
-                production=production,
-                build_dir=build_dir,
+        with self._hedron_runtime.activate():
+            resolved_theme, design_system = normalize_theme_selection(theme)
+            kwargs.setdefault(
+                "lifespan",
+                compose_lifespan(
+                    user_lifespan,
+                    production=production,
+                    build_dir=build_dir,
+                    theme=resolved_theme,
+                ),
+            )
+            super().__init__(*args, **kwargs)
+            self._explorer_dependencies = (
+                list(explorer_dependencies) if explorer_dependencies is not None else []
+            )
+            config = HedronBootstrapConfig(
+                security=security,
+                explorer=explorer,
+                session_secret=session_secret,
+                enable_sessions=enable_sessions,
+                explorer_dependencies=tuple(self._explorer_dependencies),
                 theme=resolved_theme,
-            ),
-        )
-        super().__init__(*args, **kwargs)
-        self._explorer_dependencies = (
-            list(explorer_dependencies) if explorer_dependencies is not None else []
-        )
-        config = HedronBootstrapConfig(
-            security=security,
-            explorer=explorer,
-            session_secret=session_secret,
-            enable_sessions=enable_sessions,
-            explorer_dependencies=tuple(self._explorer_dependencies),
-            theme=resolved_theme,
-            design_system=design_system,
-            default_styles=default_styles,
-            build_dir=build_dir,
-            production=production,
-            root_path=root_path,
-        )
-        extensions = tuple(bootstrap_steps) if bootstrap_steps is not None else ()
-        HedronBootstrapper(extension_steps=extensions).bootstrap(self, config)
+                design_system=design_system,
+                default_styles=default_styles,
+                build_dir=build_dir,
+                production=production,
+                root_path=root_path,
+            )
+            extensions = tuple(bootstrap_steps) if bootstrap_steps is not None else ()
+            HedronBootstrapper(extension_steps=extensions).bootstrap(self, config)
+            self.add_middleware(
+                RuntimeContextMiddleware,
+                runtime=self._hedron_runtime,
+            )
 
     @property
     def interactions(self) -> object:
@@ -130,30 +138,31 @@ class Hedron(HedronPagesMixin, FastAPI):
         allowed_roots: Sequence[str | Path] | None = None,
     ) -> object:
         """Register one explicit local application stylesheet before the build seal."""
-        from hedron.registration import fail_closed_late_registration
-        from hedron_core.catalog import get_sealed_catalog
-        from hedron_core.registry import register_application_style
-        from hedron_core.registry.builder import active_builder
+        with self._hedron_runtime.activate():
+            from hedron.registration import fail_closed_late_registration
+            from hedron_core.catalog import get_sealed_catalog
+            from hedron_core.registry import register_application_style
+            from hedron_core.registry.builder import active_builder
 
-        fail_closed_late_registration(
-            registry_sealed=active_builder().is_sealed,
-            catalog_sealed=get_sealed_catalog() is not None,
-            openapi_cached=self.openapi_schema is not None,
-        )
-        meta = register_application_style(
-            name=name,
-            source=source,
-            scope=scope,
-            layer=layer,
-            global_=global_,
-            media=media,
-            owner="application",
-            provenance=f"{type(self).__module__}.{type(self).__name__}",
-            allowed_roots=tuple(allowed_roots or (Path.cwd(),)),
-        )
-        existing = tuple(getattr(self.state, "hedron_application_styles", ()))
-        self.state.hedron_application_styles = (*existing, meta.logical_id)
-        return meta
+            fail_closed_late_registration(
+                registry_sealed=active_builder().is_sealed,
+                catalog_sealed=get_sealed_catalog() is not None,
+                openapi_cached=cached_openapi(self) is not None,
+            )
+            meta = register_application_style(
+                name=name,
+                source=source,
+                scope=scope,
+                layer=layer,
+                global_=global_,
+                media=media,
+                owner="application",
+                provenance=f"{type(self).__module__}.{type(self).__name__}",
+                allowed_roots=tuple(allowed_roots or (Path.cwd(),)),
+            )
+            existing = tuple(getattr(self.state, "hedron_application_styles", ()))
+            self.state.hedron_application_styles = (*existing, meta.logical_id)
+            return meta
 
     def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
         from hedron.registration import fail_closed_late_registration
@@ -164,7 +173,7 @@ class Hedron(HedronPagesMixin, FastAPI):
         fail_closed_late_registration(
             registry_sealed=builder.is_sealed,
             catalog_sealed=get_sealed_catalog() is not None,
-            openapi_cached=self.openapi_schema is not None,
+            openapi_cached=cached_openapi(self) is not None,
         )
         if isinstance(router, HedronRouter):
             router.attach_host_app(self)

@@ -66,7 +66,13 @@ class InMemoryDataSource:
         search_fields: Sequence[str] = (),
         version: str = "1",
         audit_hook: Callable[[DataChanges[dict[str, JsonValue]]], None] | None = None,
+        max_rows: int = 100_000,
     ) -> None:
+        if max_rows < 1:
+            raise ValueError("max_rows must be positive")
+        if len(rows) > max_rows:
+            raise ValueError("rows exceeds max_rows; use a query-backed data source")
+        self.max_rows = max_rows
         self._key_field = key_field
         built: dict[str, dict[str, JsonValue]] = {}
         for index, row in enumerate(rows):
@@ -376,6 +382,18 @@ class InMemoryDataSource:
             # working copies until the callback has succeeded.
             self._audit_hook(accepted)
         if ok:
+            if len(rows) > self.max_rows:
+                return DataSaveResult(
+                    ok=False,
+                    errors=(
+                        FieldError(
+                            row_key="*",
+                            field=None,
+                            message="In-memory data source row capacity exceeded",
+                        ),
+                    ),
+                    version=self._dataset_version,
+                )
             self._rows = rows
             self._row_versions = row_versions
             self._version_counter = version_counter

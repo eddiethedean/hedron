@@ -21,7 +21,10 @@ from hedron_core.catalog import PackageProjection, ProjectionCapability
 from hedron_core.codes import HED_BUNDLE_0005, HED_BUNDLE_0007
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
 from hedron_core.models import Model
+from hedron_core.request_context import current_request
+from hedron_core.type_markers import FormBody, ViewParams
 from hedron_core.typing_aliases import JsonValue
+from hedron_core.updates import RefreshIntent, UpdateTarget
 from hedron_data.columns import Column
 from hedron_data.sources import (
     HARD_MAX_PAGE_SIZE,
@@ -33,7 +36,8 @@ from hedron_data.sources import (
 from hedron_data.table import DataTable
 
 if TYPE_CHECKING:
-    from hedron.handles import ActionHandle, FragmentHandle
+    ActionHandle = Any
+    FragmentHandle = Any
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 AuthzHook = Callable[..., bool]
@@ -253,10 +257,6 @@ class DataWorkspace(Generic[ModelT]):
 
     def _request_kwargs(self) -> dict[str, object]:
         kwargs: dict[str, object] = {}
-        try:
-            from hedron.routing.router import current_request
-        except ImportError:
-            return kwargs
         request = current_request.get()
         kwargs["request"] = request
         if request is None:
@@ -269,7 +269,7 @@ class DataWorkspace(Generic[ModelT]):
                 kwargs["user"] = user_attr
                 kwargs["principal"] = user_attr
         if isinstance(scope, Mapping) and "session" in scope:
-            session = cast(object, request.session)
+            session = cast(object, getattr(request, "session", None))
             if isinstance(session, Mapping):
                 session_map = cast(Mapping[str, object], session)
                 for key in ("user", "username", "principal", "sub", "user_id", "_user_id"):
@@ -414,8 +414,6 @@ class DataWorkspace(Generic[ModelT]):
 
             from starlette.exceptions import HTTPException
 
-            from hedron import ViewParams
-
             if workspace.list_override is not None:
                 handle = app.view(f"/{workspace.name}", name=f"{workspace.name}-list")(
                     workspace.list_override
@@ -454,8 +452,6 @@ class DataWorkspace(Generic[ModelT]):
 
             from starlette.exceptions import HTTPException
 
-            from hedron import ViewParams
-
             identity = workspace._identity_model()
             if workspace.detail_override is not None:
                 handle = app.view(
@@ -482,7 +478,7 @@ class DataWorkspace(Generic[ModelT]):
                 row = page.rows[0]
                 if not workspace._allowed(workspace.policy.can_read, row=row):
                     raise HTTPException(status_code=403, detail="forbidden")
-                from hedron import Text
+                from hedron_core import Text
 
                 return Text(str(row.get(workspace.key_field, key)))
 
@@ -493,8 +489,6 @@ class DataWorkspace(Generic[ModelT]):
             from typing import Annotated
 
             from starlette.exceptions import HTTPException
-
-            from hedron import FormBody, Text, refresh
 
             if workspace.create_override is not None:
                 handle = app.action(
@@ -515,6 +509,8 @@ class DataWorkspace(Generic[ModelT]):
                 # Instance attribute holds a runtime model type for FormBody binding.
                 data: Annotated[workspace.create_model, FormBody()],  # type: ignore[valid-type]
             ) -> object:
+                from hedron_core import Text
+
                 payload = _payload_mapping(cast(object, data))
                 if not workspace._allowed(workspace.policy.can_create, data=payload):
                     raise HTTPException(status_code=403, detail="forbidden")
@@ -524,7 +520,7 @@ class DataWorkspace(Generic[ModelT]):
                 if not result.ok:
                     raise HTTPException(status_code=422, detail="validation")
                 if workspace.list_view is not None:
-                    return refresh(workspace.list_view)
+                    return RefreshIntent(targets=(cast(UpdateTarget, workspace.list_view),))
                 return Text("created")
 
             workspace.create_command = create_command
@@ -535,8 +531,6 @@ class DataWorkspace(Generic[ModelT]):
             from typing import Annotated
 
             from starlette.exceptions import HTTPException
-
-            from hedron import FormBody, Text, refresh
 
             if workspace.edit_override is not None:
                 handle = app.action(
@@ -567,6 +561,8 @@ class DataWorkspace(Generic[ModelT]):
                 # EditModel is a runtime type (create_model or edit_model attribute).
                 data: Annotated[EditModel, FormBody()],  # type: ignore[valid-type]
             ) -> object:
+                from hedron_core import Text
+
                 payload = _payload_mapping(cast(object, data))
                 if not workspace._allowed(workspace.policy.can_edit, data=payload, row=payload):
                     raise HTTPException(status_code=403, detail="forbidden")
@@ -582,7 +578,7 @@ class DataWorkspace(Generic[ModelT]):
                 if not result.ok:
                     raise HTTPException(status_code=422, detail="validation")
                 if workspace.list_view is not None:
-                    return refresh(workspace.list_view)
+                    return RefreshIntent(targets=(cast(UpdateTarget, workspace.list_view),))
                 return Text("updated")
 
             workspace.edit_command = edit_command
@@ -629,7 +625,7 @@ class DataWorkspace(Generic[ModelT]):
 
             @app.page(str(meta["path"]), name=str(meta["name"]))
             def workspace_screen() -> object:
-                from hedron import Grid, Page, Stack, Text
+                from hedron_core import Grid, Page, Stack, Text
                 from hedron_core.component import NodeLike
 
                 nodes: list[NodeLike] = [Text(str(meta["title"]))]

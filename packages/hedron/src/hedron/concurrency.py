@@ -6,6 +6,7 @@ import asyncio
 import contextlib
 import math
 from collections.abc import Awaitable
+from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
 from typing import Any
@@ -19,6 +20,8 @@ __all__ = [
     "configure_concurrency",
     "get_concurrency_config",
     "reset_concurrency_for_tests",
+    "use_concurrency",
+    "use_limiter",
 ]
 
 _config: ContextVar[ConcurrencyConfig | None] = ContextVar(
@@ -110,12 +113,38 @@ class ConcurrencyLimiter:
 
 
 _limiter: ConcurrencyLimiter | None = None
+_scoped_limiter: ContextVar[ConcurrencyLimiter | None] = ContextVar(
+    "hedron_concurrency_limiter", default=None
+)
+
+
+@contextmanager
+def use_concurrency(config: ConcurrencyConfig):
+    """Bind an application-specific concurrency limiter to the current context."""
+    token = _scoped_limiter.set(ConcurrencyLimiter(config))
+    try:
+        yield
+    finally:
+        _scoped_limiter.reset(token)
+
+
+@contextmanager
+def use_limiter(limiter: ConcurrencyLimiter):
+    """Bind an already-created limiter without recreating it per request."""
+    token = _scoped_limiter.set(limiter)
+    try:
+        yield
+    finally:
+        _scoped_limiter.reset(token)
 
 
 def get_concurrency_config() -> ConcurrencyConfig:
     current = _config.get()
     if current is not None:
         return current
+    scoped = _scoped_limiter.get()
+    if scoped is not None:
+        return scoped.config
     return _global or ConcurrencyConfig()
 
 
@@ -146,7 +175,10 @@ def reset_concurrency_for_tests() -> None:
 
 
 def get_limiter() -> ConcurrencyLimiter:
-    """Return the process-wide concurrency limiter, creating it on first use."""
+    """Return the current application limiter, falling back to the legacy global."""
+    scoped = _scoped_limiter.get()
+    if scoped is not None:
+        return scoped
     global _limiter
     if _limiter is None:
         _limiter = ConcurrencyLimiter(get_concurrency_config())

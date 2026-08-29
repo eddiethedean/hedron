@@ -31,12 +31,12 @@ All in Python.
   <span>Python UI</span>
   <span>FastAPI foundation</span>
   <span>Server-driven interactions</span>
-  <span>Zero-warning strict typing</span>
+  <span>Strict typing</span>
 </div>
 
-The `hedron-core` renderer and `hedron` FastAPI runtime are Pyright-strict and warning-free.
-That is a release gate, not a point-in-time badge: every commit and release must keep both
-complete package trees at zero diagnostics.
+The `hedron-core` renderer and `hedron` FastAPI runtime are Pyright-strict. Type errors block
+release; warning-level cleanup is tracked as a separate migration until the existing workspace
+backlog is retired.
 
 <div class="hedron-choice-grid">
   <a class="hedron-choice" href="guides/streamlit-migration/">

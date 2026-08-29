@@ -638,7 +638,7 @@ live transports, host-specific behavior, or internal serializer details automati
 Phase `0.9` implementation entry requires the `0.8` acceptance packet to be release-verified, a
 frozen public-surface inventory, named native owners, a compatibility baseline for Hedron `0.67.0`
 and a forward-compatibility target for Hedron `1.0.0`, and the machine-readable [phase 0.9 gate
-lock](acceptance/edron-phase09.toml). The lock must carry the exact 0.67.0 evidence target, the
+lock](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/edron-phase09.toml). The lock must carry the exact 0.67.0 evidence target, the
 future 1.0.0 compatibility policy, package requirement bounds, supported Python/host/browser matrix,
 budget units, deprecation windows, and explicit deferred dispositions. Release exit requires, at
 minimum:

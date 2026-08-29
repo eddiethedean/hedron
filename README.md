@@ -26,6 +26,11 @@ This repository contains two ways to use the same runtime:
 Both paths render accessible HTML on the server, progressively enhance interactions with HTMX,
 and preserve one routing, rendering, security, state, and deployment authority.
 
+The stable 1.0 boundary is the package/API contract in
+[`release/support-matrix.toml`](release/support-matrix.toml). Charts, maps, native, notebook,
+MCP, Gradio, simulation, and other Beta satellites remain opt-in Beta compatibility surfaces;
+they are not included in the stable platform guarantee.
+
 ```text
 Edron pages and workflows       Native Hedron components and routes
              \                    /
@@ -37,8 +42,9 @@ Edron pages and workflows       Native Hedron components and routes
 ```
 
 No Node.js toolchain is required. Python 3.10–3.14 is supported. The `hedron-core` and
-`hedron` source trees are checked in Pyright strict mode with a **zero-warning CI gate**:
-any new type diagnostic blocks both commit and release workflows.
+`hedron` source trees are checked in Pyright strict mode; type errors block both commit and
+release workflows. Warning-level typing cleanup is tracked separately until the existing
+workspace warning backlog is retired.
 
 ## Start with Edron
 

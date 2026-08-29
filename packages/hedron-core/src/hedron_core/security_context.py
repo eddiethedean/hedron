@@ -6,6 +6,7 @@ import contextvars
 import hashlib
 import hmac
 import json
+import time
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Any, cast
@@ -29,6 +30,13 @@ _SERIALIZABLE_FIELDS = frozenset(
         "fingerprint",
     }
 )
+_AUTHENTICATED_FIELDS = frozenset(
+    {"schema_version", "key_id", "audience", "issued_at", "expires_at", "context", "signature"}
+)
+_MAX_CONTEXT_BYTES = 64 * 1024
+_MAX_STRING_LENGTH = 4096
+_MAX_SCOPES = 128
+_MAX_SCOPE_LENGTH = 256
 
 
 class SecurityContextError(ValueError):
@@ -145,6 +153,42 @@ class SecurityContext:
         }
         return {k: v for k, v in data.items() if k in _SERIALIZABLE_FIELDS}
 
+    def to_authenticated(
+        self,
+        secret: str | bytes,
+        *,
+        key_id: str = "default",
+        audience: str = "hedron",
+        ttl_seconds: int = 300,
+        now: float | None = None,
+    ) -> dict[str, Any]:
+        """Serialize this context in an authenticated, short-lived envelope.
+
+        ``to_serializable`` remains as a local compatibility representation. Any
+        context crossing a process, job, cache, MCP, or client boundary should use
+        this method and :meth:`from_authenticated`.
+        """
+        key = _secret_bytes(secret)
+        if not key:
+            raise SecurityContextError("security context signing secret is required")
+        if type(key_id) is not str or not key_id or len(key_id) > 128:
+            raise SecurityContextError("invalid security context key_id")
+        if type(audience) is not str or not audience or len(audience) > _MAX_STRING_LENGTH:
+            raise SecurityContextError("invalid security context audience")
+        if type(ttl_seconds) is not int or not 1 <= ttl_seconds <= 86_400:
+            raise SecurityContextError("ttl_seconds must be between 1 and 86400")
+        issued_at = int(time.time() if now is None else now)
+        envelope: dict[str, Any] = {
+            "schema_version": 1,
+            "key_id": key_id,
+            "audience": audience,
+            "issued_at": issued_at,
+            "expires_at": issued_at + ttl_seconds,
+            "context": self.to_serializable(),
+        }
+        envelope["signature"] = _sign_envelope(envelope, key)
+        return envelope
+
     @classmethod
     def from_serializable(
         cls,
@@ -152,6 +196,7 @@ class SecurityContext:
         *,
         expected_application_id: str | None = None,
     ) -> SecurityContext:
+        _validate_payload_size(payload)
         unknown = set(payload) - _SERIALIZABLE_FIELDS
         if unknown:
             raise SecurityContextError(f"foreign security context fields: {sorted(unknown)}")
@@ -159,10 +204,10 @@ class SecurityContext:
         missing = [key for key in required if key not in payload]
         if missing:
             raise SecurityContextError(f"missing security context fields: {missing}")
-        expected_fp = str(payload.get("fingerprint", "")).strip()
+        expected_fp = _bounded_string(payload.get("fingerprint", ""), "fingerprint").strip()
         if not expected_fp:
             raise SecurityContextError("missing security context fingerprint")
-        app_id = str(payload.get("application_id", ""))
+        app_id = _bounded_string(payload.get("application_id", ""), "application_id")
         if expected_application_id is not None and app_id != expected_application_id:
             raise SecurityContextError("foreign application security context")
         scopes_raw = payload.get("scopes", ())
@@ -171,24 +216,128 @@ class SecurityContext:
         if scopes_raw is None:
             scopes: frozenset[str] = frozenset[str]()
         elif isinstance(scopes_raw, Sequence):
-            scopes = frozenset(str(item) for item in cast(Sequence[object], scopes_raw))
+            if len(cast(Sequence[Any], scopes_raw)) > _MAX_SCOPES:
+                raise SecurityContextError("too many security context scopes")
+            values: list[str] = []
+            for item in cast(Sequence[object], scopes_raw):
+                if not isinstance(item, str) or len(item) > _MAX_SCOPE_LENGTH:
+                    raise SecurityContextError("security context scopes must be bounded strings")
+                values.append(item)
+            scopes = frozenset(values)
         else:
             raise SecurityContextError("scopes must be a sequence of strings")
         ctx = cls(
-            version=int(payload.get("version", 1)),
+            version=_bounded_int(payload.get("version", 1), "version", minimum=1),
             application_id=app_id,
-            subject_id=str(payload.get("subject_id", "")),
-            tenant_id=str(payload.get("tenant_id", "")),
+            subject_id=_bounded_string(payload.get("subject_id", ""), "subject_id"),
+            tenant_id=_bounded_string(payload.get("tenant_id", ""), "tenant_id"),
             scopes=scopes,
-            auth_level=int(payload.get("auth_level", 0)),
-            profile_name=str(payload.get("profile_name", "standard")),
-            policy_version=int(payload.get("policy_version", 1)),
-            correlation_id=str(payload.get("correlation_id", "")),
+            auth_level=_bounded_int(payload.get("auth_level", 0), "auth_level"),
+            profile_name=_bounded_string(payload.get("profile_name", "standard"), "profile_name"),
+            policy_version=_bounded_int(payload.get("policy_version", 1), "policy_version"),
+            correlation_id=_bounded_string(payload.get("correlation_id", ""), "correlation_id"),
             fingerprint="",
         )
         if not hmac.compare_digest(expected_fp, ctx.fingerprint):
             raise SecurityContextError("stale or tampered security context fingerprint")
         return ctx
+
+    @classmethod
+    def from_authenticated(
+        cls,
+        payload: Mapping[str, Any],
+        *,
+        secret: str | bytes,
+        expected_application_id: str | None = None,
+        expected_audience: str = "hedron",
+        now: float | None = None,
+        clock_skew_seconds: int = 30,
+    ) -> SecurityContext:
+        """Restore a context only after verifying its signed envelope and expiry."""
+        _validate_payload_size(payload)
+        if frozenset(payload) != _AUTHENTICATED_FIELDS:
+            raise SecurityContextError("invalid security context envelope fields")
+        key = _secret_bytes(secret)
+        if not key:
+            raise SecurityContextError("security context verification secret is required")
+        key_id = payload.get("key_id")
+        audience = payload.get("audience")
+        issued_at = payload.get("issued_at")
+        expires_at = payload.get("expires_at")
+        signature = payload.get("signature")
+        context = payload.get("context")
+        if (
+            not isinstance(key_id, str)
+            or not key_id
+            or not isinstance(audience, str)
+            or audience != expected_audience
+            or not isinstance(signature, str)
+            or not isinstance(context, Mapping)
+        ):
+            raise SecurityContextError("malformed security context envelope")
+        key_id = _bounded_string(key_id, "key_id")
+        audience = _bounded_string(audience, "audience")
+        issued_at = _bounded_int(issued_at, "issued_at")
+        expires_at = _bounded_int(expires_at, "expires_at")
+        if len(key_id) > 128 or len(signature) != 64:
+            raise SecurityContextError("oversized security context envelope field")
+        if expires_at <= issued_at or expires_at - issued_at > 86_400:
+            raise SecurityContextError("invalid security context lifetime")
+        current = int(time.time() if now is None else now)
+        if issued_at > current + clock_skew_seconds or expires_at < current - clock_skew_seconds:
+            raise SecurityContextError("expired or not-yet-valid security context")
+        unsigned = {key: value for key, value in payload.items() if key != "signature"}
+        expected_signature = _sign_envelope(unsigned, key)
+        if not hmac.compare_digest(signature, expected_signature):
+            raise SecurityContextError("invalid security context signature")
+        return cls.from_serializable(
+            cast(Mapping[str, Any], context),
+            expected_application_id=expected_application_id,
+        )
+
+
+def _secret_bytes(secret: str | bytes) -> bytes:
+    if type(secret) is str:
+        return secret.encode("utf-8")
+    if type(secret) is bytes:
+        return secret
+    raise SecurityContextError("security context secret must be str or bytes")
+
+
+def _bounded_string(value: object, field_name: str) -> str:
+    if not isinstance(value, str) or len(value) > _MAX_STRING_LENGTH:
+        raise SecurityContextError(f"security context {field_name} must be a bounded string")
+    return value
+
+
+def _bounded_int(
+    value: object,
+    field_name: str,
+    *,
+    minimum: int = 0,
+    maximum: int = 2**31 - 1,
+) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or not minimum <= value <= maximum:
+        raise SecurityContextError(f"security context {field_name} must be a bounded integer")
+    return value
+
+
+def _validate_payload_size(payload: Mapping[str, Any]) -> None:
+    if not hasattr(payload, "items"):
+        raise SecurityContextError("security context payload must be an object")
+    try:
+        encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    except (TypeError, ValueError) as exc:
+        raise SecurityContextError("security context payload is not JSON-compatible") from exc
+    if len(encoded.encode("utf-8")) > _MAX_CONTEXT_BYTES:
+        raise SecurityContextError("security context payload is too large")
+
+
+def _sign_envelope(payload: Mapping[str, Any], secret: bytes) -> str:
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
+        "utf-8"
+    )
+    return hmac.new(secret, encoded, hashlib.sha256).hexdigest()
 
 
 def get_security_context() -> SecurityContext | None:

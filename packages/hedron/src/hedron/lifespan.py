@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import AsyncGenerator, Callable
-from contextlib import AbstractAsyncContextManager, asynccontextmanager
+from contextlib import AbstractAsyncContextManager, asynccontextmanager, nullcontext
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -50,6 +50,14 @@ def _configure_startup(
     app.state.hedron_production = is_production
     if is_production:
         set_runtime_compile_allowed(False)
+
+    # A FastAPI ``TestClient`` (and some ASGI servers) may enter the same
+    # application lifespan more than once.  Plugin registration and registry
+    # sealing are one-time operations for an application runtime; replaying
+    # them would try to mutate a sealed builder and run plugin hooks twice.
+    runtime = getattr(app, "_hedron_runtime", None)
+    if runtime is not None and runtime.registry.is_sealed:
+        return is_production
 
     resolved_build = Path(
         build_dir
@@ -138,6 +146,8 @@ def _configure_startup(
     from hedron.interactions import seal_app_catalog, validate_production_interactions
 
     catalog = seal_app_catalog(app)
+    if runtime is not None:
+        runtime.catalog = catalog
     if is_production:
         validate_production_interactions(resolved_build, catalog)
         from hedron_core.production_gate import assert_durable_backends
@@ -173,26 +183,30 @@ def compose_lifespan(
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         is_production = False
-        try:
-            is_production = _configure_startup(
-                app,
-                production=production,
-                build_dir=build_dir,
-                theme=theme,
-            )
-            if user_lifespan is not None:
-                async with user_lifespan(app):
+        runtime = getattr(app, "_hedron_runtime", None)
+        scope = runtime.activate() if runtime is not None else nullcontext()
+        with scope:
+            try:
+                is_production = _configure_startup(
+                    app,
+                    production=production,
+                    build_dir=build_dir,
+                    theme=theme,
+                )
+                if user_lifespan is not None:
+                    async with user_lifespan(app):
+                        yield
+                else:
                     yield
-            else:
-                yield
-        finally:
-            loader = getattr(app.state, "hedron_plugin_loader", None)
-            if loader is not None:
-                from contextlib import suppress
+            finally:
+                loader = getattr(app.state, "hedron_plugin_loader", None)
+                if loader is not None:
+                    from contextlib import suppress
 
-                with suppress(Exception):
-                    loader.shutdown()
-            if is_production:
-                set_runtime_compile_allowed(True)
+                    with suppress(Exception):
+                        loader.shutdown()
+                    app.state.hedron_plugin_loader = None
+                if is_production:
+                    set_runtime_compile_allowed(True)
 
     return lifespan

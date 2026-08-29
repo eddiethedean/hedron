@@ -17,6 +17,7 @@ __all__ = [
     "configure_tracing",
     "get_trace_config",
     "reset_tracing_for_tests",
+    "use_trace_config",
     "span",
     "start_span",
 ]
@@ -130,6 +131,16 @@ def get_trace_config() -> TraceConfig:
     if current is not None:
         return current
     return _global_config or TraceConfig(enabled=False)
+
+
+@contextmanager
+def use_trace_config(config: TraceConfig) -> Generator[None, None, None]:
+    """Bind tracing configuration to the current application context."""
+    token = _config.set(config)
+    try:
+        yield
+    finally:
+        _config.reset(token)
 
 
 def configure_tracing(

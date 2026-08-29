@@ -60,6 +60,14 @@ SECRET_PATTERNS = (
 SKIP_EXIT_CODE = 42
 
 
+def _live_gate_required() -> bool:
+    return os.environ.get("HEDRON_REQUIRED_LIVE_GATES", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+
 def _validate_log(text: str) -> list[str]:
     errors: list[str] = []
     for marker in REQUIRED_MARKERS:
@@ -108,6 +116,12 @@ def main(argv: list[str] | None = None) -> int:
             subprocess.check_call(["bash", str(SCRIPT)], cwd=ROOT)
         except subprocess.CalledProcessError as exc:
             if exc.returncode == SKIP_EXIT_CODE:
+                if _live_gate_required():
+                    print(
+                        "REALCONNECT-033 is required but CONNECT_LICENSE is unavailable",
+                        file=sys.stderr,
+                    )
+                    return 1
                 print("skip: REALCONNECT-033 (CONNECT_LICENSE unavailable)")
                 return 0
             print(f"realconnect_033_probe.sh failed ({exc.returncode})", file=sys.stderr)

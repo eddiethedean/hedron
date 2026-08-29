@@ -1,0 +1,32 @@
+[packages.hedron]
+symbols = [
+  "Hedron",
+  "HedronRouter",
+  "Page",
+  "Text",
+  "HTML",
+  "render",
+  "RenderMode",
+  "RenderContext",
+  "RenderResult",
+  "SafeUrl",
+  "TrustedHtml",
+  "FragmentRegion",
+  "InteractionResult",
+]
+
+[packages.hedron-core]
+symbols = [
+  "Component",
+  "Page",
+  "Text",
+  "render",
+  "RenderMode",
+  "RenderContext",
+  "RenderResult",
+  "SafeUrl",
+  "TrustedHtml",
+  "Secret",
+  "FragmentRegion",
+  "InteractionResult",
+]

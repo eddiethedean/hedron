@@ -8,6 +8,8 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.responses import Response
 from starlette.types import ASGIApp
 
+from hedron.fastapi_compat import append_middleware
+
 __all__ = [
     "install_authenticated_from_session",
     "mark_authenticated",
@@ -56,7 +58,7 @@ def install_authenticated_from_session(
     The session value for ``session_key`` must be a non-empty serialized principal.
     """
 
-    app.user_middleware.append(
-        Middleware(_AuthenticatedFromSessionMiddleware, session_key=session_key)
+    append_middleware(
+        app,
+        Middleware(_AuthenticatedFromSessionMiddleware, session_key=session_key),
     )
-    app.middleware_stack = None

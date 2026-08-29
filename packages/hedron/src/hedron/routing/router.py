@@ -5,18 +5,20 @@ from __future__ import annotations
 import functools
 import inspect
 from collections.abc import Awaitable, Callable, Sequence
+from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Literal, ParamSpec, TypedDict, TypeVar, cast
 
-from fastapi import params
+from fastapi import FastAPI, params
 from fastapi.routing import APIRouter
 from starlette.datastructures import State
 from starlette.requests import Request
 from starlette.responses import Response
 
 from hedron.async_utils import await_if_needed
+from hedron.fastapi_compat import cached_openapi
 from hedron.openapi import operation_id_for
 from hedron.replay import ReplayOutcome, ReplayStore
 from hedron.routing.route import HedronEndpointResult, HedronRoute
@@ -28,6 +30,7 @@ from hedron_core.identifiers import component_type_id
 from hedron_core.interaction import FragmentRegion
 from hedron_core.registry import register_route
 from hedron_core.rendering import RenderMode
+from hedron_core.request_context import current_request as _portable_current_request
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -36,9 +39,7 @@ IdempotencyMode = Literal["off", "optional", "required"]
 
 __all__ = ["HedronRouter", "current_request"]
 
-current_request: ContextVar[Request[State] | None] = ContextVar(
-    "hedron_current_request", default=None
-)
+current_request = cast(ContextVar[Request[State] | None], _portable_current_request)
 
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
@@ -413,6 +414,20 @@ class HedronRouter(APIRouter):
         self._hedron_host_app: object | None = None
 
     def _fail_closed_late(self) -> None:
+        with self._runtime_scope():
+            self._fail_closed_late_scoped()
+
+    @contextmanager
+    def _runtime_scope(self):
+        host = self._hedron_host_app
+        runtime = getattr(host, "_hedron_runtime", None)
+        if runtime is None:
+            yield
+            return
+        with runtime.activate():
+            yield
+
+    def _fail_closed_late_scoped(self) -> None:
         from hedron.registration import fail_closed_late_registration
         from hedron_core.catalog import get_sealed_catalog
         from hedron_core.registry.builder import active_builder
@@ -421,12 +436,17 @@ class HedronRouter(APIRouter):
         fail_closed_late_registration(
             registry_sealed=active_builder().is_sealed,
             catalog_sealed=get_sealed_catalog() is not None,
-            openapi_cached=getattr(host, "openapi_schema", None) is not None,
+            openapi_cached=cached_openapi(cast(FastAPI | None, host)) is not None,
         )
 
     def attach_host_app(self, app: object) -> None:
         """Associate this router with the application that owns registration state."""
         self._hedron_host_app = app
+        runtime = getattr(app, "_hedron_runtime", None)
+        if runtime is not None:
+            from hedron_core.registry.builder import bind_compatibility_builder
+
+            bind_compatibility_builder(runtime.registry)
 
     def add_api_route(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]  # FastAPI parent kwargs are version-sensitive; keep *args/**kwargs.
         self._fail_closed_late()
@@ -447,7 +467,8 @@ class HedronRouter(APIRouter):
 
     def _register_route_or_rollback(self, **kwargs: Any) -> None:
         try:
-            register_route(**kwargs)
+            with self._runtime_scope():
+                register_route(**kwargs)
         except Exception:
             if self.routes:
                 self.routes.pop()

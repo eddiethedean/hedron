@@ -26,14 +26,7 @@ SATELLITES: dict[str, str] = {
     "hedron-native": "hedron_native",
 }
 
-# Known debt: interaction helpers that reach into FastAPI hedron (must shrink, not grow).
-ALLOWED: frozenset[str] = frozenset(
-    {
-        "packages/hedron-data/src/hedron_data/workspace.py",
-        "packages/hedron-charts/src/hedron_charts/interaction.py",
-        "packages/hedron-maps/src/hedron_maps/interaction.py",
-    }
-)
+ALLOWED: frozenset[str] = frozenset()
 
 
 def _imports_hedron_flagship(path: Path) -> bool:

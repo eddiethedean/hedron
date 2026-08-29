@@ -24,6 +24,7 @@ from hedron_core.codes import (
 )
 from hedron_core.cross_filter import MAP_VIEWPORT_TRIGGER
 from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
+from hedron_core.updates import RefreshIntent, UpdateTarget
 from hedron_maps.limits import EVENT_CARDINALITY, EVENT_PAYLOAD_BYTES
 
 SUPPORTED_EVENTS = frozenset(
@@ -247,15 +248,17 @@ class MapInteraction:
                 result = _invoke_command(command, handler, typed)
                 if result is not None:
                     return result
-                from hedron.handles import BoundFragment, FragmentHandle, refresh
-
                 targets = tuple(
                     item
                     for item in refresh_targets
-                    if isinstance(item, (BoundFragment, FragmentHandle))
+                    if hasattr(item, "logical_id")
+                    and hasattr(item, "dom_id")
+                    and hasattr(item, "app_id")
                 )
                 if targets:
-                    return refresh(*targets)
+                    return RefreshIntent(
+                        targets=tuple(cast(UpdateTarget, item) for item in targets)
+                    )
                 return result
 
             on_map_event.__annotations__ = {"payload": payload_type, "return": object}
