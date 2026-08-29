@@ -67,7 +67,7 @@ def _inject_build_assets(
 ) -> str:
     import html as html_lib
 
-    from hedron_core.page_assets import inject_alpine_plan, inject_page_theme
+    from hedron_core.page_assets import inject_alpine_plan, inject_htmx_bridge, inject_page_theme
 
     policy = getattr(request.app.state, "hedron_security", None)
     if not isinstance(policy, SecurityPolicy):
@@ -84,6 +84,12 @@ def _inject_build_assets(
         request=request,
         required=requires_htmx if demand_driven else None,
     )
+    if requires_htmx:
+        html_text = inject_htmx_bridge(
+            html_text,
+            mode,
+            static_href=lambda path: _mounted_static_href(path, request),
+        )
     html_text = inject_alpine_plan(
         html_text,
         mode,

@@ -146,7 +146,7 @@ class HtmlAttributePolicy:
                         explanation="The interaction= escape hatch accepts only Interaction.",
                         remediation="Construct Interaction.local(), .request(), or .combined().",
                     )
-                for interaction_name, interaction_value in value.to_attributes().items():
+                for interaction_name, interaction_value in value.to_attributes(tag=tag).items():
                     if interaction_name in out:
                         raise error(
                             "HED-SEC-0016",

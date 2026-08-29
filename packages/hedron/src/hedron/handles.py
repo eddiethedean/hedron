@@ -630,9 +630,13 @@ class _CommandButton(Component[_CommandButtonProps]):
             attrs["data-hedron-fallback"] = self._fallback
         ctx = active_render_context()
         if ctx is not None and ctx.csrf_token:
-            htmx_attrs.update(
-                HtmxAttrs(headers=json.dumps({"X-CSRF-Token": ctx.csrf_token})).as_html_attrs()
-            )
+            htmx_attrs = HtmxAttrs(
+                method=cast(Literal["get", "post", "put", "patch", "delete"], method.lower()),
+                url=self._path,
+                target=f"#{self._logical_id}",
+                swap=self._swap,
+                headers=json.dumps({"X-CSRF-Token": ctx.csrf_token}),
+            ).as_html_attrs()
         attrs.update(htmx_attrs)
         attrs = {key: value for key, value in attrs.items() if value is not None}
         button_attrs = _html_attr_map(attrs)
@@ -715,10 +719,12 @@ class ActionHandle(Generic[InputT, ResultT]):
                 remediation="Mark a FormBody parameter or build Form(action=handle) manually.",
             )
         if self._effect is not None:
-            safe_form_attrs.setdefault("hx-swap", "none")
+            for name, value in HtmxAttrs(swap="none").as_html_attrs().items():
+                safe_form_attrs.setdefault(name, value)
         trigger = _compile_after_trigger("submit", self._after_when, self._after_delay_ms)
         if trigger:
-            safe_form_attrs.setdefault("hx-trigger", trigger)
+            for name, value in HtmxAttrs(trigger=trigger).as_html_attrs().items():
+                safe_form_attrs.setdefault(name, value)
         if self._after_load:
             safe_form_attrs.setdefault("data-hedron-after-load", self._after_load)
         enhance_mode: Literal["native", "elements"]

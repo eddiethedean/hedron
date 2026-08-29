@@ -12,17 +12,9 @@ function ownedPanels(tabs) {
   return Array.from(tabs.querySelectorAll(":scope > [role='tabpanel']"));
 }
 
-function alpineOwnsTabs(tabs) {
-  return tabs.hasAttribute("x-data") || tabs.querySelector("[x-data]") !== null;
-}
-
 function activateTab(tab, { focus = true } = {}) {
   const tabs = tab.closest(".hedron-tabs");
   if (!(tabs instanceof HTMLElement)) return;
-  if (alpineOwnsTabs(tabs)) {
-    if (focus) tab.focus();
-    return;
-  }
 
   const controls = tab.getAttribute("aria-controls");
   for (const candidate of ownedTabs(tabs)) {
@@ -50,7 +42,6 @@ function normalizeTabs(root) {
   for (const tabs of sets) {
     const controls = ownedTabs(tabs);
     if (!controls.length) continue;
-    if (alpineOwnsTabs(tabs)) continue;
     const selected =
       controls.find((tab) => tab.getAttribute("aria-selected") === "true") || controls[0];
     activateTab(selected, { focus: false });
@@ -242,26 +233,39 @@ document.addEventListener("click", (event) => {
   toggle.textContent = show ? "Hide password" : "Show password";
 });
 
+if (!window.__hedronHtmxLifecycleInstalled) {
+  window.__hedronHtmxLifecycleInstalled = true;
 const busyCounts = new WeakMap();
 const actionGenerations = new WeakMap();
 const activeRequests = new WeakMap();
+const requestsByMarker = new WeakMap();
+const markersByHost = new WeakMap();
 
 function busyMarked(elt) {
   if (!(elt instanceof Element)) return null;
   return elt.closest("[data-hedron-busy]");
 }
 
-function setBusy(marked, busy) {
-  if (!(marked instanceof HTMLElement)) return;
-  const next = (busyCounts.get(marked) || 0) + (busy ? 1 : -1);
+function busyHost(marked) {
+  return marked.getAttribute("data-hedron-busy") === "document"
+    ? document.documentElement
+    : marked;
+}
+
+function setBusyHost(host, busy) {
+  const next = (busyCounts.get(host) || 0) + (busy ? 1 : -1);
   const count = Math.max(0, next);
-  busyCounts.set(marked, count);
+  busyCounts.set(host, count);
   const on = count > 0;
-  const host =
-    marked.getAttribute("data-hedron-busy") === "document"
-      ? document.documentElement
-      : marked;
   host.setAttribute("aria-busy", on ? "true" : "false");
+  const markers = markersByHost.get(host);
+  if (markers) {
+    for (const marked of markers) updateBusyIndicator(marked, on);
+  }
+  return on;
+}
+
+function updateBusyIndicator(marked, on) {
   const indicatorSel = marked.getAttribute("data-hedron-busy-indicator");
   if (indicatorSel && /^#[A-Za-z][\w:.-]*$/.test(indicatorSel)) {
     const indicator = document.querySelector(indicatorSel);
@@ -269,40 +273,75 @@ function setBusy(marked, busy) {
   }
 }
 
-function setActionPhase(elt, phase) {
-  const marked = busyMarked(elt);
+function registerBusyMarker(marked, host) {
+  const markers = markersByHost.get(host) || new Set();
+  markers.add(marked);
+  markersByHost.set(host, markers);
+}
+
+function unregisterBusyMarker(marked, host) {
+  const markers = markersByHost.get(host);
+  if (!markers) return;
+  markers.delete(marked);
+  if (markers.size === 0) markersByHost.delete(host);
+}
+
+function setActionPhase(marked, phase) {
   if (!(marked instanceof HTMLElement)) return;
-  if (phase === "pending") {
-    const generation = (actionGenerations.get(marked) || 0) + 1;
-    actionGenerations.set(marked, generation);
-    marked.setAttribute("data-hedron-action-generation", String(generation));
-  }
   marked.setAttribute("data-hedron-action-phase", phase);
 }
 
 function requestKey(detail) {
-  return detail?.xhr || detail || null;
+  return detail?.xhr && typeof detail.xhr === "object" ? detail.xhr : null;
+}
+
+function finishRecord(record, phase, { error = false } = {}) {
+  if (!record || record.finalized) return;
+  record.finalized = true;
+  activeRequests.delete(record.key);
+  const records = requestsByMarker.get(record.marked);
+  if (records) {
+    records.delete(record);
+    if (records.size === 0) {
+      requestsByMarker.delete(record.marked);
+    }
+  }
+  setBusyHost(record.host, false);
+  if (!records || records.size === 0) unregisterBusyMarker(record.marked, record.host);
+  if (actionGenerations.get(record.marked) === record.generation) {
+    setActionPhase(record.marked, phase);
+    if (error) applyErrorTemplate(record.elt);
+  }
 }
 
 function finishRequest(event, phase, { error = false } = {}) {
-  const elt = event.detail?.elt;
-  const marked = busyMarked(elt);
-  if (!(marked instanceof HTMLElement)) return;
   const key = requestKey(event.detail);
-  if (activeRequests.get(marked) !== key) return;
-  activeRequests.delete(marked);
-  setActionPhase(elt, phase);
-  setBusy(marked, false);
-  if (error) applyErrorTemplate(elt);
+  const record = key ? activeRequests.get(key) : null;
+  finishRecord(record, phase, { error });
 }
 
 document.addEventListener("htmx:beforeRequest", (event) => {
   const marked = busyMarked(event.detail?.elt);
-  if (marked) {
-    activeRequests.set(marked, requestKey(event.detail));
-    setActionPhase(event.detail?.elt, "pending");
-    setBusy(marked, true);
-  }
+  const key = requestKey(event.detail);
+  if (!(marked instanceof HTMLElement) || !key) return;
+  const generation = (actionGenerations.get(marked) || 0) + 1;
+  actionGenerations.set(marked, generation);
+  marked.setAttribute("data-hedron-action-generation", String(generation));
+  setActionPhase(marked, "pending");
+  const record = {
+    key,
+    elt: event.detail?.elt,
+    marked,
+    host: busyHost(marked),
+    generation,
+    finalized: false,
+  };
+  activeRequests.set(key, record);
+  const records = requestsByMarker.get(marked) || new Set();
+  records.add(record);
+  requestsByMarker.set(marked, records);
+  registerBusyMarker(marked, record.host);
+  setBusyHost(record.host, true);
 });
 document.addEventListener("htmx:afterRequest", (event) => {
   const status = event.detail?.xhr?.status || 0;
@@ -320,6 +359,18 @@ document.addEventListener("htmx:sendError", (event) => {
 });
 document.addEventListener("htmx:sendAbort", (event) => finishRequest(event, "cancelled"));
 document.addEventListener("htmx:timeout", (event) => finishRequest(event, "error", { error: true }));
+document.addEventListener("htmx:beforeCleanupElement", (event) => {
+  const cleaned = event.detail?.elt;
+  const marked = cleaned instanceof Element ? cleaned.closest("[data-hedron-busy]") : null;
+  const records = marked instanceof HTMLElement ? requestsByMarker.get(marked) : null;
+  if (!records) return;
+  for (const record of [...records]) {
+    if (cleaned === record.elt || (cleaned instanceof Element && cleaned.contains(record.elt))) {
+      finishRecord(record, "cancelled");
+    }
+  }
+});
+}
 document.addEventListener("htmx:afterSwap", (event) => {
   const root = event.target instanceof Element ? event.target : document;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

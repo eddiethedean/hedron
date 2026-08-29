@@ -13,9 +13,11 @@ from edron.scaffolds import create_scaffold
 def test_public_contract_is_the_native_hedron_contract() -> None:
     assert ed.Interaction is hedron.Interaction
     assert ed.Outcome is hedron.Outcome
-    local = ed.Interaction.local("toggle", state_keys=("open",))
+    local = ed.Interaction.local("toggle", state_keys=("open",), state={"open": False})
     request = ed.Interaction.request("home-status")
-    combined = ed.Interaction.combined("toggle", "home-status", state_keys=("open",))
+    combined = ed.Interaction.combined(
+        "toggle", "home-status", state_keys=("open",), state={"open": False}
+    )
     assert local.kind is ed.InteractionKind.LOCAL
     assert request.kind is ed.InteractionKind.REQUEST
     assert combined.kind is ed.InteractionKind.COMBINED
@@ -36,7 +38,9 @@ def test_browser_plan_is_demand_driven_and_native() -> None:
 
 def test_app_records_interactions_for_explanation() -> None:
     app = ed.App(title="Phase 0.9", session_secret="test")
-    interaction = app.interaction(ed.Interaction.local("toggle", state_keys=("open",)))
+    interaction = app.interaction(
+        ed.Interaction.local("toggle", state_keys=("open",), state={"open": False})
+    )
     facts = app.explain()
     assert facts["interactions"] == [interaction.to_dict()]
     assert facts["browser_contract"]["hedron_train"] == "1.0.0"

@@ -90,7 +90,7 @@ class SseRegion(Component[SseRegionProps]):
     def render(self) -> NodeLike:
         require_htmx_extension("sse")
         attrs: dict[str, HtmlAttrValue] = {
-            "hx-ext": "sse",
+            **HtmxAttrs(extension="sse").as_html_attrs(),
             "sse-connect": self.props.connect,
             "sse-swap": self.props.swap,
         }

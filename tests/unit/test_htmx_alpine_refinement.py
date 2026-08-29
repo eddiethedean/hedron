@@ -13,7 +13,7 @@ from hedron_core import (
     html,
     render,
 )
-from hedron_core.builtins import Checkbox, Expander, Select, TextArea, TextInput, ToggleSwitch
+from hedron_core.builtins import Checkbox, Expander, Select, Tabs, TextArea, TextInput, ToggleSwitch
 from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderMode
 
@@ -68,6 +68,43 @@ def test_generic_htmx_builder_validates_and_emits_any_element_request() -> None:
 
     with pytest.raises(ValueError):
         HtmxAttrs(method="get", url="/orders", sync="this:unknown").as_html_attrs()
+
+
+def test_htmx_builder_composes_headers_without_changing_swap() -> None:
+    attrs = HtmxAttrs(swap="none").merge(HtmxAttrs(headers='{"X-CSRF-Token":"token"}'))
+
+    assert attrs.as_html_attrs() == {
+        "hx-swap": "none",
+        "hx-headers": '{"X-CSRF-Token":"token"}',
+    }
+
+
+def test_htmx_builder_keeps_legacy_default_and_tracks_explicit_omission() -> None:
+    assert HtmxAttrs().as_html_attrs() == {"hx-swap": "outerHTML"}
+    assert HtmxAttrs(swap=None).as_html_attrs() == {}
+    assert HtmxAttrs().merge(HtmxAttrs(swap="innerHTML")).as_html_attrs() == {
+        "hx-swap": "innerHTML"
+    }
+    assert HtmxAttrs(swap=None).merge(HtmxAttrs()).as_html_attrs() == {}
+
+
+def test_htmx_bridge_is_loaded_for_htmx_without_widget_runtime() -> None:
+    request = render(
+        html.button(
+            "Refresh",
+            **HtmxAttrs(method="get", url="/refresh", target="#panel").as_html_attrs(),
+        ),
+        mode=RenderMode.PAGE,
+    )
+    page = inject_page_assets(
+        request.html,
+        request.mode,
+        browser_plan=request.browser_plan,
+        demand_driven=True,
+    )
+
+    assert "hedron-htmx.mjs" in page
+    assert "hedron-ui.mjs" not in page
 
 
 def test_demand_driven_page_assets_leave_native_pages_without_optional_runtime() -> None:
@@ -128,9 +165,36 @@ def test_expander_native_mode_uses_details_without_alpine_or_collapse() -> None:
     assert result.browser_plan.feature_off
 
 
+def test_tabs_have_one_owner_and_no_js_safe_initial_panel_state() -> None:
+    result = render(Tabs(("Overview", "one"), ("History", "two")))
+
+    assert "x-data" not in result.html
+    assert result.html.count('role="tabpanel"') == 2
+    assert 'role="tabpanel" hidden' not in result.html
+
+
+def test_ownerless_local_interaction_is_rejected() -> None:
+    with pytest.raises(ValueError, match="state_keys and state"):
+        Interaction.local("toggle")
+
+
+def test_document_busy_bridge_retains_markers_until_host_is_idle() -> None:
+    bridge = Path("packages/hedron-core/src/hedron_core/static/hedron-htmx.mjs").read_text(
+        encoding="utf-8"
+    )
+
+    assert "if (!on) markersByHost.delete(host);" in bridge
+    assert "record.host !== document.documentElement" in bridge
+
+
 def test_hedron_ui_has_no_parallel_request_api_and_stays_single_source() -> None:
     core = Path("packages/hedron-core/src/hedron_core/static/hedron-ui.mjs")
     package = Path("packages/hedron/src/hedron/static/hedron-ui.mjs")
 
     assert "htmx.ajax" not in core.read_text(encoding="utf-8")
     assert core.read_bytes() == package.read_bytes()
+
+    bridge = Path("packages/hedron-core/src/hedron_core/static/hedron-htmx.mjs")
+    bridge_package = Path("packages/hedron/src/hedron/static/hedron-htmx.mjs")
+    assert "htmx.ajax" not in bridge.read_text(encoding="utf-8")
+    assert bridge.read_bytes() == bridge_package.read_bytes()

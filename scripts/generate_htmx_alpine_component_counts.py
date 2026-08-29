@@ -69,7 +69,14 @@ class _UsageVisitor(ast.NodeVisitor):
     def visit_Name(self, node: ast.Name) -> None:
         if node.id in {"AlpineAttrs", "AlpineDirective", "AlpineExpression"}:
             self.alpine = True
-        if node.id in {"HtmxLink", "Hx", "htmx_attrs", "hx_attr", "hx_attrs"}:
+        if node.id in {
+            "HtmxAttrs",
+            "HtmxLink",
+            "Hx",
+            "htmx_attrs",
+            "hx_attr",
+            "hx_attrs",
+        }:
             self.htmx = True
         if node.id == "require_htmx_extension":
             self.htmx = True
@@ -81,12 +88,13 @@ class _UsageVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_arg(self, node: ast.arg) -> None:
-        if (
-            isinstance(node.annotation, ast.Name)
-            and node.annotation.id in {"AlpineAttrs", "Hx"}
-        ):
+        if isinstance(node.annotation, ast.Name) and node.annotation.id in {
+            "AlpineAttrs",
+            "HtmxAttrs",
+            "Hx",
+        }:
             self.alpine |= node.annotation.id == "AlpineAttrs"
-            self.htmx |= node.annotation.id == "Hx"
+            self.htmx |= node.annotation.id in {"HtmxAttrs", "Hx"}
         self.generic_visit(node)
 
     def visit_keyword(self, node: ast.keyword) -> None:

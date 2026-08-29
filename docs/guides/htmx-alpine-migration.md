@@ -8,7 +8,7 @@ packages, including `edron`, remain Beta and are not part of the stable platform
 
 | 1.0 or legacy path | 1.1 replacement | Transition behavior |
 |---|---|---|
-| `Hx(...)` | `HtmxAttrs(...)` | `Hx` is an alias for `HtmxAttrs`; new code should use the generic name. |
+| `Hx(...)` | `HtmxAttrs(...)` | `Hx` is an outerHTML-default compatibility wrapper; new code should use the generic name. |
 | `Interaction.to_attributes()` | `Interaction.to_lowering().to_attributes()` | The old method delegates to typed Alpine/HTMX lowering. |
 | A standalone local interaction that assumes an ancestor `x-data` | `Interaction.local(..., state={...})` | Explicit state emits a self-contained Alpine scope. |
 | Raw `hx-*` dictionaries in components | `HtmxAttrs(...).as_html_attrs()` | Maintained built-ins use one validated builder. Raw kwargs remain an input compatibility boundary. |
@@ -39,4 +39,3 @@ bash scripts/ci_checks.sh all --python 3.12 --all-browsers --release-gate
 The release flag makes skipped browser, dependency, and optional-backend evidence fail the run.
 Without it, those checks are reported as unsupported evidence so a local convenience run cannot be
 mistaken for a complete release verification.
-

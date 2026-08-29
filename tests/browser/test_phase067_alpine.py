@@ -168,6 +168,7 @@ def browser_app_url() -> Iterator[str]:
                         "toggle",
                         "save",
                         state_keys=("open",),
+                        state={"open": False},
                         method="GET",
                         target="#panel",
                         swap="outerHTML",

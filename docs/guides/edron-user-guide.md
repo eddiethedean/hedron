@@ -195,10 +195,12 @@ For browser-local enhancement, use the native Hedron 0.67 interaction algebra an
 Edron’s thin exports. Local effects are disposable; request effects remain server-owned:
 
 ```python
-toggle = ed.Interaction.local("toggle-panel", state_keys=("open",))
+toggle = ed.Interaction.local(
+    "toggle-panel", state_keys=("open",), state={"open": False}
+)
 save = ed.Interaction.request("sales-save", target="#sales", swap="outerHTML")
 save_and_close = ed.Interaction.combined(
-    "close-panel", "sales-save", state_keys=("open",), target="#sales"
+    "close-panel", "sales-save", state_keys=("open",), state={"open": False}, target="#sales"
 )
 app.interaction(toggle)
 plan = ed.browser_plan(toggle.demands())

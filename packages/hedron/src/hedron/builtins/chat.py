@@ -65,6 +65,7 @@ class ChatInput(Component[ChatInputProps]):
             "method": "post",
         }
         if self.ref is not None:
+            # ComponentRef owns query delimiter handling and URL validation.
             attrs.update(self.ref.htmx_attributes(target=self.target, swap=self.swap))
         elif self.action is not None:
             attrs.update(
@@ -78,7 +79,8 @@ class ChatInput(Component[ChatInputProps]):
         if self.csrf_token:
             attrs.update(
                 HtmxAttrs(
-                    headers=json.dumps({self.csrf_header_name: self.csrf_token})
+                    headers=json.dumps({self.csrf_header_name: self.csrf_token}),
+                    swap=None,
                 ).as_html_attrs()
             )
         kids: list[Any] = []

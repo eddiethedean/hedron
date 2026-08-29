@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import re
+import ast
 import sys
 from pathlib import Path
 
@@ -20,7 +20,48 @@ RAW_HTMX_ROOTS = (
     ROOT / "packages/hedron/src/hedron/handles.py",
     ROOT / "packages/hedron/src/hedron/routing/reverse.py",
 )
-RAW_HTMX_ASSIGNMENT = re.compile(r"\[[\"']hx-[a-z0-9-]+[\"']\]\s*=")
+
+
+class _RawHtmxWriterVisitor(ast.NodeVisitor):
+    """Find literal HTMX writers while ignoring prose and allowlist sets."""
+
+    def __init__(self) -> None:
+        self.lines: list[int] = []
+
+    def _record(self, node: ast.AST) -> None:
+        self.lines.append(node.lineno)
+
+    @staticmethod
+    def _is_hx_key(node: ast.AST | None) -> bool:
+        return (
+            isinstance(node, ast.Constant)
+            and isinstance(node.value, str)
+            and node.value.lower().startswith("hx-")
+        )
+
+    def visit_Dict(self, node: ast.Dict) -> None:
+        for key in node.keys:
+            if self._is_hx_key(key):
+                self._record(key)
+        self.generic_visit(node)
+
+    def visit_Call(self, node: ast.Call) -> None:
+        for keyword in node.keywords:
+            if keyword.arg is not None and keyword.arg.lower().startswith("hx_"):
+                self._record(keyword)
+        self.generic_visit(node)
+
+    def visit_Assign(self, node: ast.Assign) -> None:
+        for target in node.targets:
+            if isinstance(target, ast.Subscript) and self._is_hx_key(target.slice):
+                self._record(target)
+        self.generic_visit(node)
+
+    def visit_AnnAssign(self, node: ast.AnnAssign) -> None:
+        target = node.target
+        if isinstance(target, ast.Subscript) and self._is_hx_key(target.slice):
+            self._record(target)
+        self.generic_visit(node)
 
 
 def main() -> int:
@@ -33,6 +74,18 @@ def main() -> int:
             errors.append(f"{path.relative_to(ROOT)} must not start parallel HTMX requests")
         if "activeRequests" not in source or "finishRequest" not in source:
             errors.append(f"{path.relative_to(ROOT)} must use correlated request finalization")
+    bridge_paths = (
+        ROOT / "packages/hedron-core/src/hedron_core/static/hedron-htmx.mjs",
+        ROOT / "packages/hedron/src/hedron/static/hedron-htmx.mjs",
+    )
+    bridge_sources = [path.read_text(encoding="utf-8") for path in bridge_paths]
+    if len(set(bridge_sources)) != 1:
+        errors.append("Hedron HTMX bridge copies must remain byte-identical")
+    for path, source in zip(bridge_paths, bridge_sources, strict=True):
+        if "htmx.ajax" in source:
+            errors.append(f"{path.relative_to(ROOT)} must not start parallel HTMX requests")
+        if "activeRequests" not in source or "finishRequest" not in source:
+            errors.append(f"{path.relative_to(ROOT)} must use correlated request finalization")
 
     for root in RAW_HTMX_ROOTS:
         paths = (root,) if root.is_file() else sorted(root.rglob("*.py"))
@@ -40,16 +93,19 @@ def main() -> int:
             if path.name == "attrs.py":
                 continue
             source = path.read_text(encoding="utf-8")
-            if RAW_HTMX_ASSIGNMENT.search(source):
+            visitor = _RawHtmxWriterVisitor()
+            visitor.visit(ast.parse(source, filename=str(path)))
+            if visitor.lines:
                 errors.append(
-                    f"{path.relative_to(ROOT)} emits raw hx-* assignment; use HtmxAttrs"
+                    f"{path.relative_to(ROOT)} emits raw hx-* writer(s) on line(s) "
+                    f"{', '.join(str(line) for line in visitor.lines)}; use HtmxAttrs"
                 )
 
     try:
         from hedron_core.htmx.attrs import HtmxAttrs, Hx
 
-        if Hx is not HtmxAttrs:
-            errors.append("Hx must remain a compatibility alias for HtmxAttrs")
+        if not issubclass(Hx, HtmxAttrs) or Hx().swap != "outerHTML":
+            errors.append("Hx must remain an outerHTML-default compatibility wrapper")
     except ImportError as exc:
         errors.append(f"generic HTMX builder is not importable: {exc}")
 

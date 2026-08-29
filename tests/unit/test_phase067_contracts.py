@@ -132,8 +132,10 @@ def test_phase067_supply_catalog_has_exact_csp_and_nine_official_plugins() -> No
 
 
 def test_interaction_and_outcome_are_closed_and_serializable() -> None:
-    local = Interaction.local("toggle", state_keys=("open",))
-    combined = Interaction.combined("toggle", "save", target="#panel")
+    local = Interaction.local("toggle", state_keys=("open",), state={"open": False})
+    combined = Interaction.combined(
+        "toggle", "save", target="#panel", state_keys=("open",), state={"open": False}
+    )
     assert local.to_attributes()["data-hedron-state-keys"] == "open"
     assert local.demands()[0].feature == "interaction"
     assert combined.to_dict()["kind"] == "combined"
@@ -158,7 +160,11 @@ def test_registered_interaction_lowers_request_lane_to_htmx() -> None:
             html.button(
                 "Save",
                 interaction=Interaction.combined(
-                    "toggle", "save", state_keys=("open",), target="#panel"
+                    "toggle",
+                    "save",
+                    state_keys=("open",),
+                    state={"open": False},
+                    target="#panel",
                 ),
             )
         )
@@ -168,6 +174,56 @@ def test_registered_interaction_lowers_request_lane_to_htmx() -> None:
     assert 'hx-swap="outerHTML"' in result.html
     assert 'x-on:click="open = !open"' in result.html
     assert 'data-hedron-interaction="combined"' in result.html
+
+
+def test_registered_interaction_requires_one_request_method_authority() -> None:
+    builder = RegistryBuilder()
+    with use_registry_builder(builder):
+        register_route(
+            kind="action",
+            logical_id="read",
+            name="read",
+            path="/read",
+            methods=("GET",),
+            operation_id="read",
+            include_in_schema=True,
+            module="tests",
+        )
+        with pytest.raises(ValueError, match="does not match registered route method"):
+            render(
+                html.button(
+                    "Read",
+                    interaction=Interaction.request("read", method="POST"),
+                )
+            )
+
+
+@pytest.mark.parametrize(
+    ("tag", "method", "expected"),
+    [
+        ("a", "GET", 'href="/read"'),
+        ("form", "POST", 'method="post" action="/submit"'),
+        ("button", "POST", 'formaction="/submit" formmethod="post"'),
+    ],
+)
+def test_registered_interaction_has_executable_native_fallback(
+    tag: str, method: str, expected: str
+) -> None:
+    builder = RegistryBuilder()
+    with use_registry_builder(builder):
+        register_route(
+            kind="action",
+            logical_id="read" if tag == "a" else "submit",
+            name="read" if tag == "a" else "submit",
+            path="/read" if tag == "a" else "/submit",
+            methods=(method,),
+            operation_id="read" if tag == "a" else "submit",
+            include_in_schema=True,
+            module="tests",
+        )
+        interaction = Interaction.request("read" if tag == "a" else "submit", method=method)
+        element = getattr(html, tag)("Go", interaction=interaction)
+        assert expected in render(element).html
 
 
 def test_future_warning_registry_is_structured_and_visible() -> None:

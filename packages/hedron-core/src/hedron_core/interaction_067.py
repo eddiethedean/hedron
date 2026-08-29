@@ -25,6 +25,7 @@ from hedron_core.alpine import (
 )
 from hedron_core.compat import StrEnum
 from hedron_core.htmx.attrs import HtmxAttrs
+from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
 
 __all__ = [
@@ -41,6 +42,10 @@ _EVENT = re.compile(r"^[a-z][a-z0-9:.-]{0,63}$")
 _METHODS = frozenset({"GET", "POST", "PUT", "PATCH", "DELETE"})
 
 
+def _empty_native_fallback() -> dict[str, HtmlAttrValue]:
+    return {}
+
+
 class InteractionKind(StrEnum):
     LOCAL = "local"
     REQUEST = "request"
@@ -54,6 +59,8 @@ class LocalEffect:
     action: str
     state_keys: tuple[str, ...] = ()
     state: Mapping[str, object] | None = None
+    scope: Literal["self", "ancestor"] = "self"
+    scope_owner: str | None = None
 
     def __post_init__(self) -> None:
         action = self.action.strip()
@@ -65,8 +72,24 @@ class LocalEffect:
         ):
             raise ValueError("local action must be a bounded dotted identifier")
         keys = tuple(sorted({key.strip() for key in self.state_keys if key.strip()}))
-        if any(not re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$.-]{0,63}", key) for key in keys):
+        if any(
+            re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)*", key) is None
+            for key in keys
+        ):
             raise ValueError("local state keys must be bounded identifiers")
+        scope = str(self.scope).strip().lower()
+        if scope not in {"self", "ancestor"}:
+            raise ValueError("local scope must be self or ancestor")
+        owner = self.scope_owner.strip() if self.scope_owner is not None else None
+        if scope == "ancestor":
+            if not owner or re.fullmatch(r"#[A-Za-z][A-Za-z0-9_.:-]{0,95}", owner) is None:
+                raise ValueError("ancestor local scope requires a bounded #id scope_owner")
+            if self.state is not None:
+                raise ValueError("ancestor local scope cannot carry self-owned state")
+        elif owner is not None:
+            raise ValueError("self local scope cannot declare scope_owner")
+        if scope == "self" and (not keys or self.state is None):
+            raise ValueError("self-owned local interactions require non-empty state_keys and state")
         state = None if self.state is None else json_value(self.state, path="local state")
         if state is not None and not isinstance(state, dict):
             raise TypeError("local state must be a mapping")
@@ -76,12 +99,17 @@ class LocalEffect:
         object.__setattr__(self, "action", action)
         object.__setattr__(self, "state_keys", keys)
         object.__setattr__(self, "state", MappingProxyType(state) if state is not None else None)
+        object.__setattr__(self, "scope", scope)
+        object.__setattr__(self, "scope_owner", owner)
 
     def to_dict(self) -> dict[str, object]:
         result: dict[str, object] = {
             "action": self.action,
             "state_keys": list(self.state_keys),
+            "scope": self.scope,
         }
+        if self.scope_owner is not None:
+            result["scope_owner"] = self.scope_owner
         if self.state is not None:
             result["state"] = dict(self.state)
         return result
@@ -162,6 +190,8 @@ class InteractionLowering:
     metadata: Mapping[str, HtmlAttrValue]
     alpine: AlpineAttrs | None = None
     htmx: HtmxAttrs | None = None
+    native_fallback: Mapping[str, HtmlAttrValue] = field(default_factory=_empty_native_fallback)
+    demands: tuple[AlpineFeatureDemand, ...] = ()
 
     def to_attributes(self) -> dict[str, HtmlAttrValue]:
         attrs = dict(self.metadata)
@@ -175,6 +205,10 @@ class InteractionLowering:
                 if name in attrs:
                     raise ValueError(f"duplicate interaction attribute writer {name!r}")
                 attrs[name] = value
+        for name, value in self.native_fallback.items():
+            if name in attrs:
+                raise ValueError(f"duplicate interaction attribute writer {name!r}")
+            attrs[name] = value
         return attrs
 
 
@@ -229,13 +263,15 @@ class Interaction:
         event: str = "click",
         state_keys: Sequence[str] = (),
         state: Mapping[str, object] | None = None,
+        scope: Literal["self", "ancestor"] = "self",
+        scope_owner: str | None = None,
         fallback: str = "native",
         source: str = "python",
     ) -> Interaction:
         return cls(
             InteractionKind.LOCAL,
             event=event,
-            local_effect=LocalEffect(action, tuple(state_keys), state),
+            local_effect=LocalEffect(action, tuple(state_keys), state, scope, scope_owner),
             fallback=fallback,
             source=source,
         )
@@ -271,6 +307,8 @@ class Interaction:
         event: str = "click",
         state_keys: Sequence[str] = (),
         state: Mapping[str, object] | None = None,
+        scope: Literal["self", "ancestor"] = "self",
+        scope_owner: str | None = None,
         method: str = "POST",
         target: str | None = None,
         swap: str = "outerHTML",
@@ -282,7 +320,7 @@ class Interaction:
         return cls(
             InteractionKind.COMBINED,
             event=event,
-            local_effect=LocalEffect(action, tuple(state_keys), state),
+            local_effect=LocalEffect(action, tuple(state_keys), state, scope, scope_owner),
             request_effect=RequestEffect(handle, method, target, swap, operation, sync),
             fallback=fallback,
             source=source,
@@ -316,7 +354,7 @@ class Interaction:
             result["fingerprint"] = self.fingerprint
         return result
 
-    def to_attributes(self) -> dict[str, HtmlAttrValue]:
+    def to_attributes(self, *, tag: str | None = None) -> dict[str, HtmlAttrValue]:
         """Lower the interaction into inspectable and executable HTML facts.
 
         The interaction algebra remains framework-neutral, so the request lane is
@@ -326,22 +364,27 @@ class Interaction:
         remain useful for inspection and the native fallback path; they are never a
         substitute for server-side authorization.
         """
-        return self.to_lowering().to_attributes()
+        return self.to_lowering(tag=tag).to_attributes()
 
-    def to_lowering(self) -> InteractionLowering:
+    def to_lowering(self, *, tag: str | None = None) -> InteractionLowering:
         """Lower once into typed Alpine/HTMX lanes plus inspectable metadata."""
         attrs: dict[str, HtmlAttrValue] = {
             "data-hedron-interaction": InteractionKind(self.kind).value,
             "data-hedron-event": self.event,
+            "data-hedron-fallback": self.fallback,
         }
         alpine: AlpineAttrs | None = None
         htmx = None
+        route: tuple[str, str] | None = None
         if self.local_effect:
             attrs["data-hedron-local-action"] = self.local_effect.action
             if self.local_effect.state_keys:
                 attrs["data-hedron-state-keys"] = ",".join(self.local_effect.state_keys)
             if self.local_effect.state is not None:
                 attrs["data-hedron-local-scope"] = "self"
+            elif self.local_effect.scope == "ancestor":
+                attrs["data-hedron-local-scope"] = "ancestor"
+                attrs["data-hedron-scope-owner"] = self.local_effect.scope_owner or ""
             if self.local_effect.state_keys:
                 key = self.local_effect.state_keys[0]
                 expression = AlpineExpression.assign(
@@ -363,6 +406,11 @@ class Interaction:
             route = _resolve_route(self.request_effect.handle)
             if route is not None:
                 method, path = route
+                if method != self.request_effect.method:
+                    raise ValueError(
+                        f"interaction method {self.request_effect.method!r} does not match "
+                        f"registered route method {method!r} for {self.request_effect.handle!r}"
+                    )
                 htmx = HtmxAttrs(
                     method=cast(Literal["get", "post", "put", "patch", "delete"], method.lower()),
                     url=path,
@@ -371,7 +419,39 @@ class Interaction:
                     trigger=self.event if self.event != "click" else None,
                     sync=self.request_effect.sync,
                 )
-        return InteractionLowering(attrs, alpine=alpine, htmx=htmx)
+        native_fallback: dict[str, HtmlAttrValue] = {}
+        normalized_tag = tag.strip().lower() if tag is not None else None
+        if self.request_effect and route is not None and normalized_tag is not None:
+            method, path = route
+            if self.fallback in {"native", "full-page"}:
+                if normalized_tag == "a":
+                    if method != "GET":
+                        raise ValueError("native anchor fallback requires a GET interaction")
+                    native_fallback["href"] = SafeUrl.parse(path, purpose=UrlPurpose.NAVIGATION)
+                elif normalized_tag == "form":
+                    if method not in {"GET", "POST"}:
+                        raise ValueError("native form fallback supports only GET and POST")
+                    native_fallback["action"] = SafeUrl.parse(path, purpose=UrlPurpose.FORM_ACTION)
+                    native_fallback["method"] = method.lower()
+                elif normalized_tag == "button":
+                    if method not in {"GET", "POST"}:
+                        raise ValueError("native button fallback supports only GET and POST")
+                    native_fallback["formaction"] = SafeUrl.parse(
+                        path, purpose=UrlPurpose.FORM_ACTION
+                    )
+                    native_fallback["formmethod"] = method.lower()
+                else:
+                    raise ValueError(
+                        f"native fallback is unsupported for <{normalized_tag}>; "
+                        "use an anchor, form, or button"
+                    )
+        return InteractionLowering(
+            attrs,
+            alpine=alpine,
+            htmx=htmx,
+            native_fallback=native_fallback,
+            demands=self.demands(),
+        )
 
 
 def _resolve_route(logical_id: str) -> tuple[str, str] | None:
