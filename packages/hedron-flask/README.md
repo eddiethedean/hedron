@@ -20,9 +20,9 @@ Adapter capability readiness is **Supported** when pinned — see
 ## Install
 
 ```bash
-pip install "hedron-flask>=1.0.0,<1.1"
+pip install "hedron-flask>=0.67.0,<0.68"
 # or
-uv add "hedron-flask>=1.0.0,<1.1"
+uv add "hedron-flask>=0.67.0,<0.68"
 ```
 
 Requires Python 3.10–3.14, `hedron-core`, and Flask 3.x.
@@ -30,7 +30,7 @@ Requires Python 3.10–3.14, `hedron-core`, and Flask 3.x.
 Scaffold a new Flask app:
 
 ```bash
-uvx --from "hedron>=1.0.0,<1.1" hedron new --flask my-flask-app
+uvx --from "hedron>=0.67.0,<0.68" hedron new --flask my-flask-app
 ```
 
 ## Quick start

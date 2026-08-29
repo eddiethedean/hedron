@@ -2,7 +2,7 @@
 
 Language-neutral Hedron conformance-test kit and capability runner.
 
-**Package maturity:** Beta · **Published release:** `v1.0.0` · application pin `>=1.0.0,<1.1`
+**Package maturity:** Beta · **In-tree candidate:** `v1.0.0` · PyPI fallback `0.67.0`
 
 **Flagship extra:** `hedron[conformance]` · **Import:** `hedron_conformance`
 
@@ -19,7 +19,8 @@ pip install "hedron[conformance]>=1.0.0,<1.1"
 pip install "hedron-conformance>=1.0.0,<1.1"
 ```
 
-Checkout tip `v1.0.0` uses `uv sync`; applications install `>=1.0.0,<1.1` from PyPI.
+Checkout tip `v1.0.0` uses `uv sync`; applications use the public fallback `>=0.67.0,<0.68`
+from PyPI until publication.
 
 ## When to use
 

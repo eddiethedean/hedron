@@ -1,6 +1,7 @@
 # Compatibility policy
 
-**Status:** Accepted for the published **1.0.x** train (`v1.0.0`).
+**Status:** Accepted for the verified, untagged **1.0.x** candidate (`v1.0.0`); public
+publication is deferred.
 **Reviewed:** 2026-08-28
 
 ## Current train (read this first)

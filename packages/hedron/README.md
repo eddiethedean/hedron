@@ -36,7 +36,7 @@ authoring contract.
 See [What is Alpine?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-alpine/)
 for the browser/server ownership rule, lifecycle behavior, and typed authoring examples.
 
-**Package maturity:** Stable candidate · **Release:** `1.0.x` · **Python:** 3.10–3.14 ·
+**Package maturity:** Stable candidate · **In-tree release:** `1.0.x` · **Public fallback:** `0.67.x` · **Python:** 3.10–3.14 ·
 **Typing:** Pyright strict
 
 The `1.0.0` candidate is in this source tree; its Git tag and PyPI upload are deferred. PyPI
@@ -56,7 +56,7 @@ retired.
 The fastest path uses [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "hedron>=1.0.0,<1.1" hedron new my-hedron-app
+uvx --from "hedron>=0.67.0,<0.68" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run hedron run app:app --reload
@@ -75,8 +75,8 @@ For the smallest first interaction, try the [Hello + Refresh demo](https://hedro
 Install Hedron directly when adding it to an existing project:
 
 ```bash
-uv add "hedron>=1.0.0,<1.1" "uvicorn[standard]"
-# or: python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+uv add "hedron>=0.67.0,<0.68" "uvicorn[standard]"
+# or: python -m pip install "hedron>=0.67.0,<0.68" "uvicorn[standard]"
 ```
 
 ## A small, explicit core
@@ -234,7 +234,7 @@ satellite packages or optional integrations:
 For example:
 
 ```bash
-uv add "hedron[data,charts,dev]>=1.0.0,<1.1"
+uv add "hedron[data,charts,dev]>=0.67.0,<0.68"
 ```
 
 Satellite packages may have independent versions. Use the
@@ -272,8 +272,8 @@ for lifespan, security, assets, root paths, and response behavior.
 Hedron's renderer is framework-neutral. First-party adapters provide Flask and Django hosts:
 
 ```bash
-uv add "hedron-flask>=1.0.0,<1.1"
-# or: uv add "hedron-django>=1.0.0,<1.1"
+uv add "hedron-flask>=0.67.0,<0.68"
+# or: uv add "hedron-django>=0.67.0,<0.68"
 ```
 
 ## Security and ownership boundaries

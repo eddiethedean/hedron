@@ -26,11 +26,11 @@ Phase 0.53 Application DX Stage 1 lives in the flagship package — see
 ## Install
 
 ```bash
-pip install "hedron-conformance>=1.0.0,<1.1"
+pip install "hedron-conformance>=0.67.0,<0.68"
 # or
-uv add "hedron-conformance>=1.0.0,<1.1"
+uv add "hedron-conformance>=0.67.0,<0.68"
 # via flagship:
-pip install "hedron[conformance]>=1.0.0,<1.1"
+pip install "hedron[conformance]>=0.67.0,<0.68"
 ```
 
 The beta checkout tip is the untagged `v1.0.0` candidate; PyPI currently serves `0.67.0`.

@@ -10,7 +10,8 @@ phase: "0.46"
     This is the accepted D-075 / RFC-0073 public contract for phase 0.46, refined by D-079
     against Published `v0.45.0`. Implementation is Published `v0.46.0`.
     Tracking [#334](https://github.com/eddiethedean/hedron/issues/334).
-    New symbols are **Beta**. Pin `hedron>=1.0.0,<1.1`.
+    New symbols are **Beta**. For public installs, pin `hedron>=0.67.0,<0.68` until the
+    1.0.0 candidate is published.
 
 Phase 0.46 lets packages assemble ordinary views, commands, components, scenarios, and catalog
 projections into opt-in features. It does not add a second workflow runtime.

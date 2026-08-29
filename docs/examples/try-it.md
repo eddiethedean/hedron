@@ -37,7 +37,8 @@ cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-Pin production installs with `hedron>=1.0.0,<1.1` from PyPI; use `uv sync` only in this repository.
+Pin production installs with `hedron>=0.67.0,<0.68` from PyPI until 1.0 publication; use
+`uv sync` for the in-tree candidate.
 See [Installation](../getting-started/installation.md).
 
 4. Forward port **8000** and open the URL. You should see **Hello from hedron new**.

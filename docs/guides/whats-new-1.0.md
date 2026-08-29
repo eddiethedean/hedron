@@ -78,10 +78,11 @@ The migrator writes a new output tree and leaves dynamic or ambiguous cases for 
 
 ## Install status
 
-Install the published release from PyPI:
+The candidate is not yet on PyPI. Until the authorized tag and upload, install the public
+fallback from PyPI:
 
 ```bash
-python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+python -m pip install "hedron>=0.67.0,<0.68" "uvicorn[standard]"
 ```
 
 Check [Current release and support](current-release.md) before changing an application pin.

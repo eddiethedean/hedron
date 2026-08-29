@@ -6,8 +6,9 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.0.0` is Verified, tagged, and published to PyPI. `v0.67.0` is the
-immutable migration baseline.
+**Roadmap position:** `v1.0.0` is a Verified, untagged in-tree candidate. The public PyPI
+fallback remains `v0.67.0`; it is the immutable migration baseline until the authorized 1.0
+tag and upload occur.
 **Date:** 2026-08-28
 **Implementation:** Stable platform — `hedron` / `hedron-core` `1.0.0`;
 Beta satellites — `edron`, `hedron-explorer`, `hedron-data`, `hedron-flask`, `hedron-django`,
@@ -24,11 +25,11 @@ Beta satellites — `edron`, `hedron-explorer`, `hedron-data`, `hedron-flask`, `
 `hedron-mcp`, `hedron-gradio`, `fastapi-workbench`, and `edron-sim`. Experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.
 
-**Phase focus:** Phase **1.0** is **Published and Verified** against immutable `v0.67.0`;
-all 17 rows, reproducible artifacts, dual-version compatibility, and release approval
-are retained. Dynamic, foreign, and installed-package template execution remain explicitly
-Deferred. Phase **0.65** remains the
-verified in-tree predecessor awaiting final tag publication. Phase **0.63** (verified
+**Phase focus:** Phase **1.0** is **Verified as an untagged in-tree candidate** against immutable
+`v0.67.0`; all 17 rows, reproducible artifacts, dual-version compatibility, and release
+approval are retained. Public tagging and registry upload are deliberately Deferred.
+Dynamic, foreign, and installed-package template execution remain explicitly Deferred. Phase
+**0.65** remains the verified in-tree predecessor. Phase **0.63** (verified
 RFC-0090) remains implemented and published as `v0.63.0`, with its 27-gate packet and
 executable browser/unit coverage for theme contracts, tooling, and interoperability; human
 assistive-technology evidence remains Planned under phase 0.21; tracking issue #86 is closed,

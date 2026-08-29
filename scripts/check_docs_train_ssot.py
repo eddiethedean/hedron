@@ -271,7 +271,15 @@ def check_release_candidate_status(
             if facts.registry_deferred
             else PUBLISHED_RELEASE_CONTRADICTION
         )
-        if IMPLEMENTATION_CONTRADICTION.search(line) or registry_pattern.search(line):
+        deferred_not_published = bool(
+            facts.registry_deferred
+            and re.search(
+                r"\bnot\s+(?:yet\s+)?on\s+pypi\b|\bpublication\s+is\s+deferred\b", line, re.I
+            )
+        )
+        if IMPLEMENTATION_CONTRADICTION.search(line) or (
+            registry_pattern.search(line) and not deferred_not_published
+        ):
             failures.append(f"{path}:{index}: contradictory 1.0 candidate status: {line.strip()}")
     return failures
 
@@ -600,7 +608,7 @@ def check_text(
             if not constraint and not is_requirement_position:
                 continue
             allowed_edron_pins = {facts.edron_pin}
-            if facts.edron_registry_status == "deferred" and path in FIRST_RUN_INSTALL_PATHS:
+            if facts.edron_registry_status == "deferred":
                 allowed_edron_pins = {facts.edron_pypi_pin}
             if constraint not in allowed_edron_pins:
                 failures.append(
@@ -690,10 +698,18 @@ def check_metadata(facts: ReleaseFacts = FACTS) -> list[str]:
         )
     if facts.edron_registry_status not in {"uploaded", "deferred"}:
         failures.append("Edron registry_status must be 'uploaded' or 'deferred'")
-    if facts.edron_registry_status == "uploaded" and facts.edron_pypi_version != facts.edron_published_version:
+    if (
+        facts.edron_registry_status == "uploaded"
+        and facts.edron_pypi_version != facts.edron_published_version
+    ):
         failures.append("Uploaded Edron registry_status requires pypi_version == published_version")
-    if facts.edron_registry_status == "deferred" and facts.edron_pypi_version == facts.edron_published_version:
-        failures.append("Deferred Edron registry_status requires pypi_version to differ from published_version")
+    if (
+        facts.edron_registry_status == "deferred"
+        and facts.edron_pypi_version == facts.edron_published_version
+    ):
+        failures.append(
+            "Deferred Edron registry_status requires pypi_version to differ from published_version"
+        )
     return failures
 
 

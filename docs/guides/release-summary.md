@@ -1,6 +1,7 @@
 # Release process summary
 
-Hedron’s coordinated `v1.0.0` package train is implemented, Verified, tagged, and published.
+Hedron’s coordinated `v1.0.0` package train is implemented and technically Verified in-tree.
+The candidate is intentionally untagged and unpublished until an authorized release action.
 
 The exact maintainer commands and publication rules live in
 [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
@@ -9,10 +10,10 @@ The exact maintainer commands and publication rules live in
 
 | Item | Value |
 |---|---|
-| Published release | **v1.0.0** (`hedron` and `hedron-core`; Beta satellites may share the version line) |
+| In-tree release candidate | **v1.0.0** (`hedron` and `hedron-core`; Beta satellites may share the version line) |
 | Migration baseline | **v0.67.0** |
-| PyPI latest | **v1.0.0** |
-| Public-index pin | `hedron>=1.0.0,<1.1` |
+| PyPI latest | **v0.67.0** |
+| Public-index pin | `hedron>=0.67.0,<0.68` until publication |
 | Repository development | `uv sync` (editable 1.0.0 workspace) |
 | Charts satellite | `hedron-charts>=0.2.4,<0.3` |
 | Generic Workbench adapter | `fastapi-workbench>=1.0.1,<2.0` |
@@ -29,7 +30,7 @@ Adopter-facing sources of truth: [Current release](current-release.md) ·
 2. Synchronize `docs/STATUS.md` to root `STATUS.md`.
 3. Run `bash scripts/ci_checks.sh docs`, the 1.0 packet checker, tests, lint, and package checks.
 4. Build all packages and test the built artifacts in a clean environment.
-5. Tag and publish only with explicit maintainer authorization.
+5. Tag and publish only with explicit maintainer authorization; this candidate is not yet tagged.
 6. After upload, verify PyPI artifacts and install smoke tests before changing
    `registry_status` to `uploaded` or publishing release notes.
 

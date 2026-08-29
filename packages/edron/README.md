@@ -19,7 +19,7 @@ that renders accessible HTML and adds partial-page interaction through HTMX.
 - No second router, renderer, state store, or security authority
 - Full access to the native Hedron application when you need it
 
-**Package maturity:** Beta · **Release:** `1.0.x` · **Python:** 3.10–3.14
+**Package maturity:** Beta · **In-tree release:** `1.0.x` · **Public fallback:** `0.9.x` · **Python:** 3.10–3.14
 
 Edron is a Beta satellite. The stable 1.0 platform boundary is limited to
 `hedron-core` and `hedron`; Edron's API and release cadence remain independent.
@@ -31,7 +31,7 @@ Pin the minor train in applications and upgrade deliberately after reading the r
 Create a project with [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "edron>=1.0.0,<1.1" edron new my-app --template minimal
+uvx --from "edron>=0.9.0,<0.10" edron new my-app --template minimal
 cd my-app
 uv sync
 uv run edron run app:app --reload
@@ -40,8 +40,8 @@ uv run edron run app:app --reload
 Or install Edron into an existing project:
 
 ```bash
-uv add "edron>=1.0.0,<1.1"
-# or: python -m pip install "edron>=1.0.0,<1.1"
+uv add "edron>=0.9.0,<0.10"
+# or: python -m pip install "edron>=0.9.0,<0.10"
 ```
 
 Create `app.py`:
@@ -159,7 +159,7 @@ Edron includes the Hedron, data, chart, map, Markdown, sanitization, and Uvicorn
 by its standard API. Optional extras activate third-party data and plotting integrations:
 
 ```bash
-uv add "edron[pandas,plotly,sqlalchemy]>=1.0.0,<1.1"
+uv add "edron[pandas,plotly,sqlalchemy]>=0.9.0,<0.10"
 ```
 
 Available extras are `pandas`, `polars`, `pyarrow`, `plotly`, `altair`, `matplotlib`, and

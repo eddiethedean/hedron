@@ -27,11 +27,11 @@ workspace warning backlog is retired.
 ## Install
 
 ```bash
-pip install "hedron-core>=1.0.0,<1.1"
+pip install "hedron-core>=0.67.0,<0.68"
 # or
-uv add "hedron-core>=1.0.0,<1.1"
+uv add "hedron-core>=0.67.0,<0.68"
 # In-tree / source checkout tip:
-# pip install "hedron-core>=1.0.0,<1.1"
+# pip install "hedron-core>=0.67.0,<0.68"
 ```
 
 Requires Python 3.10–3.14.

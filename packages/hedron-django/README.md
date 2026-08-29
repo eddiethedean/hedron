@@ -24,9 +24,9 @@ Adapter capability readiness is **Supported** when pinned — see
 ## Install
 
 ```bash
-pip install "hedron-django>=1.0.0,<1.1"
+pip install "hedron-django>=0.67.0,<0.68"
 # or
-uv add "hedron-django>=1.0.0,<1.1"
+uv add "hedron-django>=0.67.0,<0.68"
 ```
 
 Requires Python 3.10–3.14, `hedron-core`, and Django `>=5.2,<6`.
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 Scaffold a new Django project:
 
 ```bash
-uvx --from "hedron>=1.0.0,<1.1" hedron new --django my-django-app
+uvx --from "hedron>=0.67.0,<0.68" hedron new --django my-django-app
 ```
 
 ## Quick start

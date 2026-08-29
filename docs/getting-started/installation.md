@@ -56,7 +56,7 @@ interpreter for `pip` / `uv` / `uvicorn` (`which python3`, `py -0p` on Windows).
     Point `pip` / `uv` at your internal index (`PIP_INDEX_URL`, `UV_INDEX_URL`, or
     `--index-url`). Mirror **PyPI** wheels for `edron`, `hedron`, `hedron-core`, and matching
     extras onto that index; retain the documented bounded pins.
-    Offline: download wheels on a connected host (`pip download "hedron>=1.0.0,<1.1"`)
+    Offline: download wheels on a connected host (`pip download "hedron>=0.67.0,<0.68"`)
     and `pip install --no-index --find-links=...`. TLS / corporate MITM: install your
     org’s CA into the env (`REQUESTS_CA_BUNDLE` / `SSL_CERT_FILE`, or `pip`/`uv`
     trust-store docs). Codespaces still needs a GitHub account and billed minutes — it is
@@ -82,13 +82,13 @@ Then follow the [Edron quick start](edron-quickstart.md) or
 === "Edron with uv"
 
     ```bash
-    uv add "edron>=1.0.0,<1.1"
+    uv add "edron>=0.9.0,<0.10"
     ```
 
 === "Edron with pip"
 
     ```bash
-    python -m pip install "edron>=1.0.0,<1.1"
+    python -m pip install "edron>=0.9.0,<0.10"
     ```
 
 === "Hedron with uv"
@@ -96,7 +96,7 @@ Then follow the [Edron quick start](edron-quickstart.md) or
     ```bash
     uv init my-hedron-app
     cd my-hedron-app
-    uv add "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+    uv add "hedron>=0.67.0,<0.68" "uvicorn[standard]"
     ```
 
 === "Hedron with pip (macOS/Linux)"
@@ -105,7 +105,7 @@ Then follow the [Edron quick start](edron-quickstart.md) or
     mkdir my-hedron-app && cd my-hedron-app
     python -m venv .venv
     source .venv/bin/activate
-    python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+    python -m pip install "hedron>=0.67.0,<0.68" "uvicorn[standard]"
     ```
 
 === "Hedron with pip (Windows PowerShell)"
@@ -114,7 +114,7 @@ Then follow the [Edron quick start](edron-quickstart.md) or
     mkdir my-hedron-app; cd my-hedron-app
     python -m venv .venv
     .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+    python -m pip install "hedron>=0.67.0,<0.68" "uvicorn[standard]"
     ```
 
     If PowerShell reports that running scripts is disabled, use
@@ -169,8 +169,8 @@ extras only when you need them. Full catalog: [Optional packages](../packages/in
 Registry extras use the same PyPI pin as the flagship:
 
 ```bash
-pip install "hedron[data]>=1.0.0,<1.1"
-pip install "hedron[charts]>=1.0.0,<1.1"
+    pip install "hedron[data]>=0.67.0,<0.68"
+pip install "hedron[charts]>=0.67.0,<0.68"
 pip install "hedron-sample-kit>=0.2.3,<0.3"
 ```
 

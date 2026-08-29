@@ -36,7 +36,7 @@ Edron `1.0` is the first release that directly adopts Hedron's canonical 1.0 int
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Implemented in-tree; release evidence required** |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | **Implemented and release-verified in-tree; publication pending** |
 | **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation on Hedron `0.67.0` | Implemented and release-verified in-tree; publication pending |
-| **1.0** | Canonical Hedron 1.0 page/view/action/include adoption and removal of duplicate route-handle ownership | **Published and Verified** (`edron-v1.0.0`; Stable) |
+| **1.0** | Canonical Hedron 1.0 page/view/action/include adoption and removal of duplicate route-handle ownership | **Verified in-tree, untagged candidate** (`edron-v1.0.0`; Beta; publication deferred) |
 
 Historical phases after `0.1` were directional themes until their contracts were accepted. A capability may
 move, narrow, remain native-only, or be rejected during its design review. Patch releases fix and

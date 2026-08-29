@@ -5,8 +5,8 @@ description: Independent Beta first-class maps for Hedron.
 # `hedron-maps`
 
 **Package maturity:** Beta · **Repository package version:** `0.1.4` · extra `hedron[maps]`
-The source tree requires `hedron-core>=1.0.0,<2.0`; public-index flagship installs remain
-`hedron>=1.0.0,<1.1` for the coordinated 1.0 release.
+The source tree requires the Hedron 1.0 candidate; public-index flagship installs remain
+`hedron>=0.67.0,<0.68` until the coordinated 1.0 release is published.
 
 Package `0.1.0` introduced the phase 0.47 map contract. The coordinated 1.0 workspace
 uses the compatible `0.1.4` patch release; new applications should not select the

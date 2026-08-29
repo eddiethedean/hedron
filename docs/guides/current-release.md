@@ -15,10 +15,10 @@ maintaining their own release story.
 
 | Package | Version | Maturity | Application pin | Role |
 |---|---:|---|---|---|
-| `edron` | `1.0.0` | Beta | `edron>=1.0.0,<1.1` | Batteries-included application authoring |
-| `hedron` | `1.0.0` | Stable | `hedron>=1.0.0,<1.1` | FastAPI-native component and route authoring |
+| `edron` | `1.0.0` candidate | Beta | In-tree only; public fallback `edron>=0.9.0,<0.10` | Batteries-included application authoring |
+| `hedron` | `1.0.0` candidate | Stable | In-tree only; public fallback `hedron>=0.67.0,<0.68` | FastAPI-native component and route authoring |
 
-The coordinated train supports CPython **3.10–3.14**. Package maturity, capability
+The coordinated candidate supports CPython **3.10–3.14**. Package maturity, capability
 readiness, and individual API stability are separate: a stable package may contain a
 clearly labeled experimental capability.
 
@@ -35,14 +35,15 @@ opt-in compatibility surfaces, not part of the stable platform contract.
 | Existing Flask or Django application | [Installation and host adapters](../getting-started/installation.md) |
 | Repository contribution | `uv sync`, then [Contributor day one](contributor-day-one.md) |
 
-Always retain the `<1.1` upper bound in an application. Upgrade deliberately after reading
-the release notes and running the application's own integration tests.
+When using the public registry, retain the fallback upper bounds shown above. When evaluating
+the in-tree candidate, use the repository checkout and retain the `<1.1` upper bound. Upgrade
+deliberately after reading the release notes and running the application's own integration tests.
 
 ## Support lifecycle
 
 | Train | Security support | Compatibility expectation |
 |---|---|---|
-| `1.0.x` | Current supported train | Stable APIs follow the 1.x compatibility policy |
+| `1.0.x` candidate | Verified, not yet public | Stable APIs follow the 1.x compatibility policy once published |
 | `0.67.x` | Best-effort security triage through approximately 2027-02-27 | Upgrade to 1.0; migration aliases are not the new golden path |
 | Earlier `0.x` | Unsupported | Use historical documentation only to plan an upgrade |
 
@@ -61,8 +62,9 @@ major release. See [Stability](../api/STABILITY.md) and [Upgrade](upgrade.md).
 
 ## Coordinated and independent packages
 
-`hedron-core`, `hedron`, and Edron use the coordinated 1.0 version line; only the first two
-are Stable packages. Other satellite packages retain independent versions and Beta maturity.
+`hedron-core`, `hedron`, and Edron use the coordinated 1.0 version line in the repository;
+only the first two are Stable packages. The candidate is not yet published. Other satellite
+packages retain independent versions and Beta maturity.
 Do not infer satellite compatibility from a similar
 version number; use the [compatibility matrix](../COMPATIBILITY.md).
 

@@ -16,11 +16,11 @@ plugin contract. Install as `hedron-data` or via the flagship extra `hedron[data
 ## Install
 
 ```bash
-pip install "hedron-data>=1.0.0,<1.1"
+pip install "hedron-data>=0.67.0,<0.68"
 # or
-uv add "hedron-data>=1.0.0,<1.1"
+uv add "hedron-data>=0.67.0,<0.68"
 # via flagship:
-pip install "hedron[data]>=1.0.0,<1.1"
+pip install "hedron[data]>=0.67.0,<0.68"
 ```
 
 Requires Python 3.10–3.14 and `hedron-core`.
@@ -37,8 +37,8 @@ Requires Python 3.10–3.14 and `hedron-core`.
 | `aggrid` / `spreadsheet` | Reserved feature gates (no heavy deps) |
 
 ```bash
-pip install "hedron-data[dataframes]>=1.0.0,<1.1"
-pip install "hedron-data[sqlalchemy]>=1.0.0,<1.1"
+pip install "hedron-data[dataframes]>=0.67.0,<0.68"
+pip install "hedron-data[sqlalchemy]>=0.67.0,<0.68"
 ```
 
 ## Quick start

@@ -1,11 +1,11 @@
 # Public 1.0 readiness (architectural review)
 
-**Status:** **Published `v1.0.0`.** All 17 release gates and the immutable
+**Status:** **Verified, untagged `v1.0.0` candidate.** All 17 release gates and the immutable
 `v0.67.0` compatibility bridge pass.
 [D-114–D-117](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) supersede
 D-038's no-1.0 terminus while retaining its evidence-based maturity rules.
 
-**Verdict:** The repository and published artifacts satisfy the 1.0 review. The complete 0.67 public/task/artifact
+**Verdict:** The repository and locally built candidate artifacts satisfy the 1.0 review. The complete 0.67 public/task/artifact
 inventory, warning reconciliation, enumerated stable surface, dual-version corpus, exact matrix,
 support window, reproducible artifacts, and regression evidence are retained in the acceptance
 packet.

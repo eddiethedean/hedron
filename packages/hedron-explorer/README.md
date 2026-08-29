@@ -18,11 +18,11 @@ through `hedron[dev]`; **not required** in production.
 ## Install
 
 ```bash
-pip install "hedron[dev]>=1.0.0,<1.1"
+pip install "hedron[dev]>=0.67.0,<0.68"
 # or install the package directly:
-pip install "hedron-explorer>=1.0.0,<1.1"
+pip install "hedron-explorer>=0.67.0,<0.68"
 # or
-uv add "hedron[dev]>=1.0.0,<1.1"
+uv add "hedron[dev]>=0.67.0,<0.68"
 ```
 
 Requires Python 3.10–3.14 and [`hedron`](https://pypi.org/project/hedron/).

@@ -1,9 +1,10 @@
 # Cutting a Hedron release
 
-This runbook covers coordinated releases after the published **1.0.0** cut. The 1.0
-artifacts, tag, and registry evidence have been verified. Historical cut records live under
-`docs/archive/`; future releases repeat the same build, upload, smoke-test, and documentation
-sequence without moving an existing tag.
+This runbook covers the authorized publication of the verified, currently untagged **1.0.0**
+candidate and later coordinated releases. The in-tree artifacts and technical evidence are
+verified; the Git tag and registry upload remain separate, explicit release actions.
+Historical cut records live under `docs/archive/`; future releases repeat the same build,
+upload, smoke-test, and documentation sequence without moving an existing tag.
 
 Hedron is a Python monorepo with independently publishable distributions. Only `hedron-core`
 and `hedron` form the stable `1.0.0` platform. Beta satellites may share version numbers or
@@ -28,9 +29,9 @@ publication.
 6. Confirm the tag does not already exist locally or on the remote. A failed
    publication requires an authorized corrective action after metadata and workflow
    fixes.
-7. Before publishing release notes, verify uploaded wheels, trusted publishing,
-   both Hedron and Edron install/scaffold smoke tests, and `registry_status = "uploaded"`
-   in `docs/release.toml`.
+7. Before publishing release notes, verify uploaded wheels, trusted publishing, both Hedron
+   and Edron install/scaffold smoke tests, and then set `registry_status = "uploaded"` in
+   `docs/release.toml`. Until that point, the public fallback pins remain authoritative.
 
 ## Build and validate artifacts
 
