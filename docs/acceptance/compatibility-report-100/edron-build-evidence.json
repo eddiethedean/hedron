@@ -2,7 +2,7 @@
   "schema": "hedron.edron-build-evidence/1",
   "phase": "1.0",
   "target": "edron-v1.0.0",
-  "source_commit": "5578cfe15f4e62274e965db66666dc4426f230db",
+  "source_commit": "7ac6095e975567e18fd0b1d726add0a6b576682d",
   "command": "SOURCE_DATE_EPOCH=315619200 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages",
   "environment": {
     "python": "3.12.13",
