@@ -3,7 +3,7 @@
   "baseline": "v0.67.0",
   "target": "v1.0.0",
   "status": "passed",
-  "source_commit": "940b11f02e5ae5161fc0bc3843e190b24049108a",
+  "source_commit": "2126aafc18e506a57182bd8492975571579d9cc1",
   "canonical_fixture": {
     "command": ".venv/bin/python -m pytest -n 0 tests/upgrade/test_phase_1_0_fixtures.py",
     "result": "9 passed, 1 warning",
