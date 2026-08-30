@@ -11,7 +11,7 @@ from edron.errors import PhaseError
 
 @dataclass
 class Buffer:
-    entries: list[Any] = field(default_factory=list)
+    entries: list[Any] = field(default_factory=lambda: list[Any]())
     closed: bool = False
 
     def append(self, value: Any) -> None:

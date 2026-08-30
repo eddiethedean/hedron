@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Generic, Literal, TypeVar
+from typing import Any, Generic, Literal, TypeVar, cast
 
 from fastapi import Depends
 
@@ -55,13 +55,14 @@ class Resource:
     factory: Callable[[], Any]
     scope: ResourceScope = "application"
     kind: ResourceKind = "custom"
-    secret_refs: Mapping[str, str] = field(default_factory=dict)
-    config: Mapping[str, object] = field(default_factory=dict)
+    secret_refs: Mapping[str, str] = field(default_factory=lambda: dict[str, str]())
+    config: Mapping[str, object] = field(default_factory=lambda: dict[str, object]())
     healthcheck: Callable[[Any], bool] | None = None
     healthcheck_name: str | None = None
 
     def __post_init__(self) -> None:
-        if not isinstance(self.name, str) or not self.name.strip():
+        raw_name: object = self.name
+        if not isinstance(cast(Any, raw_name), str) or not raw_name.strip():
             raise ValueError("resource name must be a non-empty string")
         if not callable(self.factory):
             raise TypeError("resource factory must be callable")

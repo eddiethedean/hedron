@@ -11,6 +11,7 @@ from __future__ import annotations
 import re
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
+from typing import Any, cast
 
 from hedron_core.bundles import FeatureBundle, FeatureProvider
 from hedron_core.registry import AssetMeta
@@ -58,7 +59,7 @@ class FeaturePackage:
             raise PackageConflictError(f"at most {MAX_PACKAGE_ASSETS} assets may be declared")
         seen: set[str] = set()
         for asset in self.assets:
-            if not isinstance(asset, AssetMeta):
+            if not isinstance(cast(Any, asset), AssetMeta):
                 raise TypeError("FeaturePackage assets must be native AssetMeta values")
             if asset.logical_id in seen:
                 raise PackageConflictError(f"duplicate package asset {asset.logical_id!r}")
@@ -80,7 +81,7 @@ class FeaturePackage:
                 provider_version=self.version,
             )
         value = self.bundle if isinstance(self.bundle, FeatureBundle) else self.bundle.to_bundle()
-        if not isinstance(value, FeatureBundle):
+        if not isinstance(cast(Any, value), FeatureBundle):
             raise TypeError("FeaturePackage provider must return FeatureBundle")
         # Preserve the provider's stable logical id and surfaces while making
         # package identity/version explicit in the native projection.

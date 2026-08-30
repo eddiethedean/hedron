@@ -161,7 +161,7 @@ def check_source(source: str | Path) -> DiagnosticReport:
 
 def load_application(target: str | Path, *, attribute: str = "app") -> Any:
     """Load a trusted application for ``run``, ``check --register``, or ``explain``."""
-    if isinstance(target, Path) or (isinstance(target, str) and Path(target).is_file()):
+    if isinstance(target, Path) or Path(target).is_file():
         path = Path(target).resolve()
         spec = importlib.util.spec_from_file_location("edron_application", path)
         if spec is None or spec.loader is None:

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import base64
-from collections.abc import Mapping, Sequence
+from collections.abc import Generator, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 import hedron
 from edron._internal import require_frame
@@ -18,24 +19,26 @@ class Container:
 
     page: Page
     kind: str = "stack"
-    options: dict[str, Any] = field(default_factory=dict)
-    children: list[Any] = field(default_factory=list)
+    options: dict[str, Any] = field(default_factory=lambda: dict[str, Any]())
+    children: list[Any] = field(default_factory=lambda: list[Any]())
     _entered: bool = field(default=False, init=False)
 
     def _append(self, value: Any) -> None:
         self.children.append(value)
 
+    def append_child(self, value: Any) -> None:
+        """Append one value through the request-local composition boundary."""
+        self._append(value)
+
     def __enter__(self) -> Container:
         if self._entered:
             raise RuntimeError("a container cannot be entered twice")
         self._entered = True
-        self.page._container_stack.append(self)
+        self.page.enter_container(self)
         return self
 
     def __exit__(self, *_: Any) -> None:
-        if not self.page._container_stack or self.page._container_stack[-1] is not self:
-            raise RuntimeError("containers must be exited in nesting order")
-        self.page._container_stack.pop()
+        self.page.exit_container(self)
 
     def text(self, value: str) -> None:
         self.page.text(value, _target=self)
@@ -61,12 +64,8 @@ class Container:
             raise AttributeError(name)
 
         def forward(*args: Any, **kwargs: Any) -> Any:
-            previous = self.page._explicit_target
-            self.page._explicit_target = self
-            try:
+            with self.page.target_container(self):
                 return method(*args, **kwargs)
-            finally:
-                self.page._explicit_target = previous
 
         return forward
 
@@ -104,7 +103,27 @@ class Page:
         if target is None:
             self._frame.buffer.append(value)
         else:
-            target._append(value)
+            target.append_child(value)
+
+    def enter_container(self, container: Container) -> None:
+        """Enter one request-local container in nesting order."""
+        self._container_stack.append(container)
+
+    def exit_container(self, container: Container) -> None:
+        """Exit one request-local container in nesting order."""
+        if not self._container_stack or self._container_stack[-1] is not container:
+            raise RuntimeError("containers must be exited in nesting order")
+        self._container_stack.pop()
+
+    @contextmanager
+    def target_container(self, container: Container) -> Generator[None, None, None]:
+        """Temporarily route forwarded container calls to ``container``."""
+        previous = self._explicit_target
+        self._explicit_target = container
+        try:
+            yield
+        finally:
+            self._explicit_target = previous
 
     def _native(self, name: str, *args: Any, **kwargs: Any) -> Any:
         return getattr(hedron, name)(*args, **kwargs)
@@ -167,8 +186,17 @@ class Page:
             node = DataTable(data, caption=caption)
         except (ImportError, TypeError, ValueError):
             rows = list(data) if data is not None else []
-            headers = list(rows[0].keys()) if rows and isinstance(rows[0], Mapping) else None
-            values = [tuple(row.get(key) for key in headers) for row in rows] if headers else rows
+            first_row: object = rows[0] if rows else None
+            headers = (
+                [str(key) for key in cast(Mapping[str, Any], first_row)]
+                if isinstance(first_row, Mapping)
+                else None
+            )
+            values: list[Any] = (
+                [tuple(cast(Mapping[str, Any], row).get(key) for key in headers) for row in rows]
+                if headers
+                else rows
+            )
             node = self._native("Table", headers=headers, rows=values, caption=caption)
         self._append(node)
 
@@ -240,7 +268,7 @@ class Page:
         node = spec if isinstance(spec, Chart) else Chart(spec=spec)
         self._append(node, _target=_target)
         if alternative is not None:
-            if not isinstance(alternative, str) or not alternative.strip():
+            if not alternative.strip():
                 raise ValueError("chart alternative must be a non-empty string")
             self._append(
                 self._native("Text", alternative, as_="small", class_="edron-visual-alternative"),
@@ -356,7 +384,7 @@ class Page:
             _target=_target,
         )
         if alternative is not None:
-            if not isinstance(alternative, str) or not alternative.strip():
+            if not alternative.strip():
                 raise ValueError("map alternative must be a non-empty string")
             self._append(
                 self._native("Text", alternative, as_="small", class_="edron-visual-alternative"),
@@ -374,7 +402,7 @@ class Page:
         _target: Container | None = None,
     ) -> None:
         """Render a native safe image with required alternative text."""
-        if not isinstance(alt, str) or not alt.strip():
+        if not alt.strip():
             raise ValueError("image alt must be a non-empty string")
         self._append(
             self._native(
@@ -453,16 +481,25 @@ class Page:
         if request is None:
             return default
         query = getattr(request, "query_params", {})
+        if not isinstance(query, Mapping):
+            return default
+        query = cast(Mapping[str, Any], query)
         return query.get(name, default)
 
     @staticmethod
     def _options(options: Sequence[Any]) -> list[tuple[str, Any]]:
-        result = []
+        result: list[tuple[str, Any]] = []
         for item in options:
-            if isinstance(item, (tuple, list)) and len(item) == 2:
-                result.append((str(item[0]), item[1]))
+            value: object = item
+            if isinstance(value, (tuple, list)):
+                pair = cast(Sequence[Any], value)
+                if len(pair) == 2:
+                    result.append((str(pair[0]), pair[1]))
+                    continue
             else:
-                result.append((str(item), item))
+                result.append((str(value), value))
+                continue
+            result.append((str(cast(object, value)), cast(Any, value)))
         return result
 
     def _labelled(self, label: str, control: Any, *, target: Container | None) -> None:
@@ -698,12 +735,13 @@ class Page:
         **options: Any,
     ) -> Container:
         """Open a shared, bounded layout container for imperative composition."""
-        if isinstance(spec, str):
+        raw_spec: object = spec
+        if isinstance(raw_spec, str):
             resolved = LayoutSpec(kind=spec, **options)  # type: ignore[arg-type]
-        elif isinstance(spec, LayoutSpec):
+        elif isinstance(cast(Any, raw_spec), LayoutSpec):
             if options:
                 raise TypeError("layout options cannot be combined with a LayoutSpec")
-            resolved = spec
+            resolved = raw_spec
         else:
             raise TypeError("layout expects a layout kind or edron.LayoutSpec")
         container = Container(
@@ -901,5 +939,10 @@ class Page:
             return self._native("Stack", *children, **options)
         return value
 
-    def _resolved_output(self) -> list[Any]:
+    def resolved_output(self) -> list[Any]:
         return [self._resolve(value) for value in self._frame.buffer.entries]
+
+
+def resolve_output(page: Page) -> list[Any]:
+    """Resolve one page's buffered values for the Edron route adapter."""
+    return page.resolved_output()

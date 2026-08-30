@@ -42,7 +42,8 @@ class CachedFunction(Generic[P, R]):
             raise BindingError("cache ttl must be non-negative", code="EDRON_CACHE_TTL")
         if max_entries < 1:
             raise BindingError("cache max_entries must be positive", code="EDRON_CACHE_BOUNDS")
-        if not isinstance(version, str) or not version.strip():
+        raw_version: object = version
+        if not isinstance(cast(Any, raw_version), str) or not raw_version.strip():
             raise BindingError("cache version must be non-empty", code="EDRON_CACHE_VERSION")
         self.fn: Callable[P, R] = fn
         self.ttl = ttl

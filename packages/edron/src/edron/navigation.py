@@ -59,23 +59,27 @@ class LayoutSpec:
     def __post_init__(self) -> None:
         if self.kind not in LAYOUT_KINDS:
             raise NavigationError(f"layout kind must be one of {LAYOUT_KINDS}")
-        if not isinstance(self.gap, str) or not self.gap.strip() or len(self.gap) > 32:
+        raw_gap: object = self.gap
+        if not isinstance(cast(Any, raw_gap), str) or not raw_gap.strip() or len(raw_gap) > 32:
             raise NavigationError("layout gap must be a bounded non-empty token")
-        if isinstance(self.columns, int) and not 1 <= self.columns <= 6:
+        raw_columns: object = self.columns
+        if not isinstance(cast(Any, raw_columns), (int, Mapping)):
+            raise NavigationError("layout columns must be an integer or responsive mapping")
+        columns_value: Any = raw_columns
+        if isinstance(columns_value, int) and not 1 <= columns_value <= 6:
             raise NavigationError("layout columns must be between 1 and 6")
-        if isinstance(self.columns, Mapping):
-            if not self.columns or len(self.columns) > 8:
+        if isinstance(columns_value, Mapping):
+            columns = cast(Mapping[object, object], columns_value)
+            if not columns or len(columns) > 8:
                 raise NavigationError("responsive layout columns must contain 1-8 entries")
-            if any(
-                not isinstance(value, int) or not 1 <= value <= 6 for value in self.columns.values()
-            ):
+            if any(not isinstance(value, int) or not 1 <= value <= 6 for value in columns.values()):
                 raise NavigationError("responsive layout columns must be integers between 1 and 6")
         for label, value in (
             ("max_width", self.max_width),
             ("align", self.align),
             ("padding", self.padding),
         ):
-            if value is not None and (not isinstance(value, str) or len(value) > 32):
+            if value is not None and (not isinstance(cast(Any, value), str) or len(value) > 32):
                 raise NavigationError(f"layout {label} must be a bounded token")
 
     def compose(self, nodes: Sequence[Any]) -> Any:

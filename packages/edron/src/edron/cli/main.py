@@ -5,6 +5,7 @@ import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import cast
 
 from edron.deployment import PROFILE_NAMES, check_deployment
 from edron.diagnostics import DiagnosticReport, finding
@@ -202,7 +203,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                         version = f" {item['version']}" if item.get("version") else ""
                         print(f"  {item['name']}: {item['status']}{version}")
             deployment = payload.get("deployment")
-            return 0 if not isinstance(deployment, dict) or deployment.get("ok", True) else 2
+            if not isinstance(deployment, dict):
+                return 0
+            deployment = cast(dict[str, object], deployment)
+            return 0 if deployment.get("ok", True) else 2
         if args.command == "new":
             destination = args.path or Path(args.name)
             files = create_scaffold(

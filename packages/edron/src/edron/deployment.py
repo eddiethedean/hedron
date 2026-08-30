@@ -15,7 +15,7 @@ import os
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, cast
 from urllib.parse import urlsplit
 
 from edron.diagnostics import DiagnosticReport, EdronDiagnostic, finding
@@ -169,11 +169,14 @@ class DeploymentProfile:
         external_url = _validate_external_url(
             self.external_url, root_path=root_path, production=self.production
         )
-        if not isinstance(self.bind, str) or not self.bind.strip():
+        raw_bind: object = self.bind
+        if not isinstance(cast(Any, raw_bind), str) or not raw_bind.strip():
             raise DeploymentError("bind must be a non-empty host")
-        if not isinstance(self.port, int) or not 1 <= self.port <= 65_535:
+        raw_port: object = self.port
+        if not isinstance(cast(Any, raw_port), int) or not 1 <= raw_port <= 65_535:
             raise DeploymentError("port must be between 1 and 65535")
-        if not isinstance(self.workers, int) or not 1 <= self.workers <= 256:
+        raw_workers: object = self.workers
+        if not isinstance(cast(Any, raw_workers), int) or not 1 <= raw_workers <= 256:
             raise DeploymentError("workers must be between 1 and 256")
         if _is_external_bind(self.bind) and not self.allow_external_bind:
             raise DeploymentError(
@@ -190,7 +193,9 @@ class DeploymentProfile:
             raise DeploymentError(f"{name} supports only the ASGI host handoff")
         if len(self.trust_proxy) > _MAX_TRUST_PROXIES:
             raise DeploymentError(f"trust_proxy accepts at most {_MAX_TRUST_PROXIES} entries")
-        if any(not isinstance(item, str) or not item.strip() for item in self.trust_proxy):
+        if any(
+            not isinstance(cast(Any, item), str) or not item.strip() for item in self.trust_proxy
+        ):
             raise DeploymentError("trust_proxy entries must be non-empty strings")
         object.__setattr__(self, "name", name)
         object.__setattr__(self, "root_path", root_path)
@@ -231,10 +236,11 @@ class DeploymentProfile:
         trust_proxy = values.get("trust_proxy", ())
         if isinstance(trust_proxy, str):
             trust_proxy = tuple(item.strip() for item in trust_proxy.split(",") if item.strip())
-        if not isinstance(trust_proxy, tuple) or not all(
-            isinstance(item, str) for item in trust_proxy
+        elif not isinstance(trust_proxy, tuple) or not all(
+            isinstance(item, str) for item in cast(tuple[object, ...], trust_proxy)
         ):
             raise DeploymentError("trust_proxy must be a tuple of strings")
+        trust_proxy = cast(tuple[str, ...], trust_proxy)
         state_backend = _validate_backend(
             str(values.get("state_backend", "process-local")), "state_backend"
         )

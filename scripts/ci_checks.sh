@@ -368,12 +368,12 @@ quality_pyright() {
 }
 
 quality_strict_package_types() {
-  # Keep strict mode as the release gate while warning-severity diagnostics are
-  # tracked during the workspace typing migration. Promoting the existing
-  # warning backlog would make the advertised support contract misleading.
-  run_uv pyright \
+  # The stable framework packages and the Edron authoring facade must remain
+  # warning-free under the workspace's strict Pyright configuration.
+  run_uv pyright --warnings \
     packages/hedron-core/src/hedron_core \
-    packages/hedron/src/hedron
+    packages/hedron/src/hedron \
+    packages/edron/src/edron
 }
 
 quality_wheels_smoke() {
