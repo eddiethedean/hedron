@@ -14,7 +14,7 @@ This path takes about five minutes with Python **3.10–3.14** and
 ## 1. Scaffold and run
 
 ```bash
-uvx --from "edron>=0.9.0,<0.10" edron new my-app --template minimal
+uvx --from "edron>=1.0.0,<1.1" edron new my-app --template minimal
 cd my-app
 uv sync
 uv run edron run app:app --reload

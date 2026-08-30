@@ -11,9 +11,9 @@ responsibilities remain with the adopting organization.
 
 | Evidence | Source |
 |---|---|
-| Hedron package and files | In-tree `1.0.0` candidate; PyPI fallback `0.67.0` |
-| Edron package and files | In-tree `1.0.0` candidate; PyPI fallback `0.9.0` |
-| Source tag, wheels, checksums, and attached evidence | Deferred until the candidate is tagged and published |
+| Hedron package and files | Published `1.0.0` |
+| Edron package and files | Published `1.0.0` |
+| Source tag, wheels, checksums, and attached evidence | Published from immutable `v1.0.0` and `edron-v1.0.0` tags |
 | Current install and support facts | [Current release](current-release.md) |
 
 The GitHub release attaches `release-manifest.json`, built distributions, generated evidence,

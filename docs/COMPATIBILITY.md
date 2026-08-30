@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the verified, untagged **1.0.x** candidate (`v1.0.0`); public
+**Status:** Accepted for the verified and published **1.0.x** release (`v1.0.0`); public
 publication is deferred.
 **Reviewed:** 2026-08-28
 

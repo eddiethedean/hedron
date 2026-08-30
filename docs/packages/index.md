@@ -44,8 +44,7 @@ inventory. Edron and the coordinated Hedron inventory are published on the 1.0 t
 pip install "hedron[data,dev,posit]>=1.0.0,<1.1"
 ```
 
-The checkout contains the verified untagged `v1.0.0` candidate. Public PyPI remains on the
-fallback train until the candidate is tagged and uploaded.
+The checkout and public PyPI contain the verified `v1.0.0` release.
 
 ## Tooling-grade and independent Beta lines
 

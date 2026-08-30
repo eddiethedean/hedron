@@ -1,6 +1,6 @@
 # hedron-elements
 
-**Package maturity:** Beta · **In-tree candidate:** `v1.0.0` · PyPI fallback `0.67.0`
+**Package maturity:** Beta · **Published version:** `v1.0.0`
 
 Framework-neutral Web Component ABI and HTMX-safe bridge. The package includes the
 `hedron-example` ABI reference plus Beta form controls (`hedron-field-text`,

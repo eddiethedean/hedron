@@ -124,7 +124,7 @@ mkdir -p ~/projects/my-workbench-app
 cd ~/projects/my-workbench-app
 python3.11 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install "hedron>=0.67.0,<0.68" "hedron-posit>=0.67.0"
+python3.11 -m pip install "hedron>=1.0.0,<1.1" "hedron-posit>=1.0.0,<1.1"
 hedron new my-workbench-app --path . --force
 ```
 
@@ -159,7 +159,7 @@ my-workbench-app/
 Keep the dependency declarations in `pyproject.toml` under version control. Reinstall the project
 with `python3.11 -m pip install -e .` after dependency changes.
 
-Add `"hedron-posit>=0.67.0",` to the `dependencies` list in `pyproject.toml` so a fresh
+Add `"hedron-posit>=1.0.0,<1.1",` to the `dependencies` list in `pyproject.toml` so a fresh
 environment can reproduce the adapter installation.
 
 ## 4. Make the app Workbench-aware

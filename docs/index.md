@@ -59,7 +59,7 @@ About five minutes after Python 3.10+ and uv are ready:
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "edron>=0.9.0,<0.10" edron new my-app --template minimal
+uvx --from "edron>=1.0.0,<1.1" edron new my-app --template minimal
 cd my-app && uv sync && uv run edron run app:app --reload
 # Open http://127.0.0.1:8000
 ```
@@ -144,10 +144,9 @@ Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippet
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron **1.0.0** is the in-tree release candidate; its Git tag and PyPI upload are deferred.
-PyPI currently resolves the older Hedron `0.67.0` and Edron `0.9.0` fallback. Edron is Stable on
-the future version line.
-Pin applications to `>=0.67.0,<0.68` until the 1.0 cut is published, then review
+Hedron **1.0.0** and Edron **1.0.0** are published on PyPI. Both are Stable on the current
+version line.
+Pin applications to `>=1.0.0,<1.1` until the 1.0 cut is published, then review
 capability-specific maturity before production adoption: [What’s ready](guides/whats-ready.md) and
 [Evaluate Hedron](guides/evaluate.md).
 </details>

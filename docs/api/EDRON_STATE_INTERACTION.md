@@ -4,7 +4,7 @@ status: verified
 
 # Edron state and interaction contract
 
-**Status:** In-tree `1.0.0` Stable candidate; PyPI publication is deferred<br>
+**Status:** Published `1.0.0` Stable release<br>
 **Target:** Edron `1.0.x`; Hedron `>=1.0.0,<1.1`<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>

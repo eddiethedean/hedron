@@ -39,6 +39,42 @@ def test_release_evidence_rejects_dirty_non_evidence_source(
     ]
 
 
+def test_published_release_evidence_allows_docs_but_rejects_payload_changes(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    subprocess.run(
+        ["git", "config", "user.email", "test@example.invalid"], cwd=tmp_path, check=True
+    )
+    subprocess.run(["git", "config", "user.name", "Hedron Test"], cwd=tmp_path, check=True)
+    release = tmp_path / "docs" / "release.toml"
+    release.parent.mkdir()
+    release.write_text(
+        '[release]\nregistry_status = "uploaded"\n[edron]\nregistry_status = "uploaded"\n',
+        encoding="utf-8",
+    )
+    status = tmp_path / "docs" / "STATUS.md"
+    status.write_text("candidate\n", encoding="utf-8")
+    source = tmp_path / "packages" / "hedron" / "src" / "hedron" / "app.py"
+    source.parent.mkdir(parents=True)
+    source.write_text("value = 1\n", encoding="utf-8")
+    subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-qm", "baseline"], cwd=tmp_path, check=True)
+    source_commit = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=tmp_path, text=True
+    ).strip()
+    monkeypatch.setattr(check_100, "ROOT", tmp_path)
+
+    status.write_text("published\n", encoding="utf-8")
+    assert check_100._evidence_source_blockers(source_commit) == []
+
+    source.write_text("value = 2\n", encoding="utf-8")
+    assert check_100._evidence_source_blockers(source_commit) == [
+        "release evidence is stale; source_commit predates non-evidence changes: "
+        "packages/hedron/src/hedron/app.py"
+    ]
+
+
 def _toml(relative: str) -> dict[str, object]:
     return tomllib.loads((ROOT / relative).read_text(encoding="utf-8"))
 

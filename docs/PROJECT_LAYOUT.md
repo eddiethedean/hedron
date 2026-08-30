@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Maintainer reference for the untagged **1.0.x** release candidate; tag/PyPI upload deferred.
+**Status:** Maintainer reference for the published **1.0.x** release train.
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -94,7 +94,7 @@ hedron/
 | `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Beta tooling) | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
 | `hedron-elements` | `hedron_elements` | Beta Web Component ABI (Supported inventory only); also `hedron[elements]` | `v0.51.0` |
-| `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | Beta `1.0.0` candidate |
+| `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | Beta `1.0.0` |
 | `fastapi-workbench` | `fastapi_workbench` | Starlette, Uvicorn; independent plain-FastAPI/ASGI Workbench adapter | `v1.0.1` |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
@@ -102,8 +102,8 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated **`v1.0.0`** train is in this repository; its Git tag and PyPI upload are deferred. PyPI currently serves
-PyPI — see [STATUS](STATUS.md).
+**Publish note:** the coordinated **`v1.0.0`** train is tagged and published on PyPI — see
+[STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
 

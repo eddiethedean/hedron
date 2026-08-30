@@ -4,10 +4,10 @@ status: verified
 
 # Edron release roadmap
 
-**Status:** Edron `1.0.0` implemented and verified in-tree; tag/PyPI publication deferred<br>
+**Status:** Edron `1.0.0` implemented, verified, tagged, and published<br>
 **Edron release line:** `1.0` canonical Hedron 1.0 adoption<br>
 **Latest in-tree release:** Edron `1.0.0`; Hedron `>=1.0.0,<1.1`<br>
-**Latest published release:** Edron `0.9.0` on PyPI; `1.0.0` candidate is untagged<br>
+**Latest published release:** Edron `1.0.0` on PyPI (`edron-v1.0.0`)<br>
 **Architecture:** [RFC-0094](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0094-EDRON-AUTHORING-FACADE.md)<br>
 **Public API:** [Edron 1.0 API by task](api/EDRON_REFERENCE.md)<br>
 **State and interaction:** [Edron 1.0 state and interaction](api/EDRON_STATE_INTERACTION.md)<br>
@@ -36,7 +36,7 @@ Edron `1.0` is the first release that directly adopts Hedron's canonical 1.0 int
 | **0.7** | Streamlit migration assistance, codemods, examples, and adoption tooling | **Implemented in-tree; release evidence required** |
 | **0.8** | Deployment profiles, host integration evidence, and production operations guidance | **Implemented and release-verified in-tree; publication pending** |
 | **0.9** | Long-lived `0.x` compatibility, selected stable-tier promotion, performance, security, and accessibility consolidation on Hedron `0.67.0` | Implemented and release-verified in-tree; publication pending |
-| **1.0** | Canonical Hedron 1.0 page/view/action/include adoption and removal of duplicate route-handle ownership | **Stable API verified in-tree; untagged candidate** (`edron-v1.0.0`; publication deferred) |
+| **1.0** | Canonical Hedron 1.0 page/view/action/include adoption and removal of duplicate route-handle ownership | **Published Stable API** (`edron-v1.0.0`) |
 
 Historical phases after `0.1` were directional themes until their contracts were accepted. A capability may
 move, narrow, remain native-only, or be rejected during its design review. Patch releases fix and

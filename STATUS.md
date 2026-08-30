@@ -6,9 +6,8 @@
 > product readiness use [What’s ready](docs/guides/whats-ready.md); for the public roadmap use
 > [What’s next](docs/guides/whats-next.md). Do not treat gate tables as the getting-started guide.
 
-**Roadmap position:** `v1.0.0` is a Verified, untagged in-tree candidate. The public PyPI
-fallback remains `v0.67.0`; it is the immutable migration baseline until the authorized 1.0
-tag and upload occur.
+**Roadmap position:** `v1.0.0` and `edron-v1.0.0` are Verified, tagged, and published on PyPI.
+`v0.67.0` remains the immutable migration baseline for compatibility evidence.
 **Date:** 2026-08-30
 **Implementation:** Stable platform — `hedron`, `hedron-core`, `edron`, `hedron-data`,
 `hedron-charts`, and `hedron-maps` `1.0.0`. Beta satellites — `hedron-explorer`,
@@ -23,9 +22,9 @@ tag and upload occur.
 `hedron-mcp`, `hedron-gradio`, `fastapi-workbench`, and `edron-sim`. Experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.
 
-**Phase focus:** Phase **1.0** is **Verified as an untagged in-tree candidate** against immutable
-`v0.67.0`; all 17 rows, reproducible artifacts, dual-version compatibility, and release
-approval are retained. Public tagging and registry upload are deliberately Deferred.
+**Phase focus:** Phase **1.0** is **Verified and Published** against immutable `v0.67.0`; all 17
+rows, reproducible artifacts, dual-version compatibility, release approval, tags, and registry
+uploads are retained.
 Dynamic, foreign, and installed-package template execution remain explicitly Deferred. Phase
 **0.65** remains the verified in-tree predecessor. Phase **0.63** (verified
 RFC-0090) remains implemented and published as `v0.63.0`, with its 27-gate packet and

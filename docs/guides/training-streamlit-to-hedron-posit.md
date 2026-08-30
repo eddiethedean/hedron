@@ -8,7 +8,7 @@ Participants finish with a migrated sales dashboard that has validated URL filte
 server-rendered component tree, an allowlisted HTMX fragment, HTTP-level tests, and one
 application object that adapts to local, Workbench, and Connect environments.
 
-This workshop targets the Hedron **0.67.x** train (`hedron>=0.67.0,<0.68`) and Python
+This workshop targets the Hedron **0.67.x** train (`hedron>=1.0.0,<1.1`) and Python
 **3.10–3.14** so it matches the current `hedron-posit` adapter. Before scheduling it, check the
 current [capability matrix](whats-ready.md) and
 [compatibility guide](../COMPATIBILITY.md) against your Posit versions and internal package mirror.
@@ -67,7 +67,7 @@ Complete this checklist several days before the session.
 - Verify Python 3.10–3.14 and that participants can create and activate a project `venv`.
 - If `python3.11` is unavailable, use the [Python 3.11 pyenv fallback](../getting-started/first-app-posit-workbench.md#python-311-fallback)
   before creating the virtual environment. When finished, return to [Facilitator preparation](#facilitator-preparation).
-- Confirm that the environment can install `hedron>=0.67.0,<0.68` and optional packages
+- Confirm that the environment can install `hedron>=1.0.0,<1.1` and optional packages
   from PyPI or your approved internal package index.
 - On Workbench, verify that `RS_SERVER_URL` is present and `rserver-url` is executable.
 - Run the complete workshop once from the same Workbench IDE participants will use.
@@ -100,7 +100,7 @@ with these commands. When finished, return to [Participant prework](#participant
 python3.11 --version
 python3.11 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install "hedron>=0.67.0,<0.68"
+python3.11 -m pip install "hedron>=1.0.0,<1.1"
 hedron --version
 ```
 
@@ -178,7 +178,7 @@ cd hedron-training
 python3.11 --version
 python3.11 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install "hedron>=0.67.0,<0.68"
+python3.11 -m pip install "hedron>=1.0.0,<1.1"
 hedron --version
 ```
 
@@ -208,10 +208,10 @@ hedron new hello-hedron
 cd hello-hedron
 python3.11 -m venv .venv
 source .venv/bin/activate
-python3.11 -m pip install -e . "hedron-posit>=0.67.0"
+python3.11 -m pip install -e . "hedron-posit>=1.0.0,<1.1"
 ```
 
-Add `"hedron-posit>=0.67.0",` to the `dependencies` list in `pyproject.toml` so a fresh
+Add `"hedron-posit>=1.0.0,<1.1",` to the `dependencies` list in `pyproject.toml` so a fresh
 environment can reproduce the adapter installation.
 
 Open `app.py`. Replace `Hedron` in the import and constructor with `HedronPosit`:
@@ -397,7 +397,7 @@ Use the [component matrix](streamlit-migration-matrix.md) for API lookup and
 
 ### 1. Use the unified Posit facade
 
-Stop the server. Add `"hedron-posit>=0.67.0",` to the `dependencies` list in
+Stop the server. Add `"hedron-posit>=1.0.0,<1.1",` to the `dependencies` list in
 `pyproject.toml`, then install the updated project:
 
 ```bash
@@ -723,7 +723,7 @@ traffic.
 | Symptom | Likely cause | Action |
 |---|---|---|
 | `hedron` is not found | CLI is not installed on PATH | From the current project directory, activate `.venv`, then run `python3.11 -m pip install -e .` |
-| `ModuleNotFoundError: hedron_posit` | Posit adapter was not installed | Run `python3.11 -m pip install "hedron-posit>=0.67.0"` and add it to `pyproject.toml` |
+| `ModuleNotFoundError: hedron_posit` | Posit adapter was not installed | Run `python3.11 -m pip install "hedron-posit>=1.0.0,<1.1"` and add it to `pyproject.toml` |
 | Workbench page loads without styles or links break | App was started without prefix discovery | Use `hedron-posit run`; do not hard-code the session URL |
 | `rserver-url` diagnostic fails | Workbench binary/path or session environment is unavailable | Confirm `RS_SERVER_URL`, the binary path, and platform configuration with the administrator |
 | Port 8000 is busy | A previous server is still running | Stop it or choose another port |

@@ -1,13 +1,13 @@
 # What’s next
 
-Hedron `v1.0.0` is implemented and Verified in-tree, but remains untagged and unpublished. See
+Hedron `v1.0.0` is implemented, Verified, tagged, and published. See
 [Current release and support](current-release.md) for the exact channel status.
 
 There is no committed 1.1 calendar or commercial SLA. Future work must preserve the 1.0 stable
 inventory and pass the same evidence-driven compatibility, security, accessibility, packaging,
 and migration review used for the 1.0 cut.
 
-## Verified for the 1.0 candidate
+## Shipped in 1.0
 
 - Canonical `@app.page`, `@app.view`, and `@app.action` authoring roles.
 - Static 0.67 migration diagnostics and conservative source migration tooling.

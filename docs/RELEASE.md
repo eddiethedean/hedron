@@ -1,8 +1,8 @@
 # Cutting a Hedron release
 
-This runbook covers the authorized publication of the verified, currently untagged **1.0.0**
-candidate and later coordinated releases. The in-tree artifacts and technical evidence are
-verified; the Git tag and registry upload remain separate, explicit release actions.
+This runbook records the authorized publication of **1.0.0** and governs later coordinated
+releases. The 1.0 artifacts, tags, and registry uploads are complete; future Git tags and registry
+uploads remain separate, explicit release actions.
 Historical cut records live under `docs/archive/`; future releases repeat the same build,
 upload, smoke-test, and documentation sequence without moving an existing tag.
 

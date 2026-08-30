@@ -138,7 +138,7 @@ status commentary, not a satisfied release gate.
   [machine gate](release-gate-0.67.toml), [contract freeze](contract-freeze-067.toml), and
   [compatibility BOM](compatibility-bom-067.toml).
 - [`v1.0` interface and HTMX/Alpine/component-engine consolidation](RELEASE_1_0.md) — **Verified
-  release; verified in-tree as an untagged `v1.0.0` candidate; PyPI publication deferred**. The [cut contract](one-zero-cut-contract.toml), [17-row
+  release; verified, tagged, and published as `v1.0.0`**. The [cut contract](one-zero-cut-contract.toml), [17-row
   machine gate](release-gate-1.0.toml), and [upgrade fixtures](upgrade-fixtures-1.0.md) define a
   subtractive cut from immutable `v0.67.0`; all rows are Verified with retained compatibility,
   regression, reproducibility, support-window, and release evidence.

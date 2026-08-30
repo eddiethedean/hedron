@@ -4,7 +4,7 @@ status: verified
 
 # Edron packaging contract
 
-**Status:** In-tree `1.0.0` Stable candidate; PyPI publication is deferred<br>
+**Status:** Published `1.0.0` Stable release<br>
 **Target:** Edron `1.0.x`; Hedron `>=1.0.0,<1.1`<br>
 **Historical 0.1 target metadata:** Edron `0.1.0`; compatible Hedron train and release phase unassigned<br>
 **Roadmap:** [Edron `0.x` release roadmap](../EDRON_ROADMAP.md)<br>
@@ -25,7 +25,7 @@ plugin, component, asset, and runtime authorities for their features.
 
 ## Installation promise
 
-The candidate beginner path is one ordinary command once the authorized 1.0 publication occurs:
+The published beginner path is one ordinary command:
 
 ```console
 pip install "edron>=1.0.0,<1.1"

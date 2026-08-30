@@ -12,8 +12,7 @@ Use the pin the package index can resolve.
 the next train is an intentional upgrade.
 
 **Published** — A cut available through the named distribution channel. Edron and Hedron
-`v1.0.0` is the in-tree candidate; its PyPI publication is deferred.
-`v0.67.0` is the immutable migration baseline. Pin the latest registry-resolvable upper-bounded
+`v1.0.0` are published on PyPI. `v0.67.0` is the immutable migration baseline. Pin the latest registry-resolvable upper-bounded
 constraint for reproducible installs.
 
 **Action** — A typed server operation with an HTTP method, input contract, dependencies, and response behavior.

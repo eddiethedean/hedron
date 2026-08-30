@@ -6,9 +6,9 @@ search:
 
 # What’s new in Hedron 1.0
 
-Hedron `v1.0.0` is a subtractive, compatibility-reviewed stable release candidate. It turns the proven
+Hedron `v1.0.0` is a subtractive, compatibility-reviewed stable release. It turns the proven
 0.x capabilities into one canonical application model and freezes an enumerated stable surface.
-All 17 technical release gates are Verified; the Git tag and PyPI upload are deferred.
+All 17 technical release gates are Verified; the Git tag and PyPI upload are complete.
 
 ## One authoring model
 
@@ -79,11 +79,10 @@ The migrator writes a new output tree and leaves dynamic or ambiguous cases for 
 
 ## Install status
 
-The candidate is not yet on PyPI. Until the authorized tag and upload, install the public
-fallback from PyPI:
+Install the published release from PyPI:
 
 ```bash
-python -m pip install "hedron>=0.67.0,<0.68" "uvicorn[standard]"
+python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
 ```
 
 Check [Current release and support](current-release.md) before changing an application pin.

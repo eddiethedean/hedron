@@ -2,18 +2,16 @@
 
 ## Supported versions
 
-Security fixes land on the **current repository train** (`1.0.x`). Until the candidate is tagged
-and uploaded, public installs use the `0.67.x` fallback. Older lines should upgrade;
+Security fixes land on the **current published train** (`1.0.x`). Older lines should upgrade;
 there is **no multi-year LTS**. Best-effort triage for the immediately
 previous minor (`0.67.x`) continues through approximately **2027-02-27** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
-The current repository train is **`1.0.x`**, pinned in-tree as `>=1.0.0,<1.1`; the public PyPI
-fallback is `>=0.67.0,<0.68` until upload.
+The current published train is **`1.0.x`**, pinned as `>=1.0.0,<1.1`; PyPI publishes `v1.0.0`.
 
 | Version | Supported |
 |---|---|
-| `1.0.x` | Yes (current repository train — public PyPI pin remains `>=0.67.0,<0.68`; upload deferred) |
+| `1.0.x` | Yes (current published train — pin `>=1.0.0,<1.1`; published `v1.0.0`) |
 | `0.67.x` | Best-effort security triage through approximately 2027-02-27; upgrade to `1.0.x` |
 
 ## Reporting a vulnerability

@@ -4,8 +4,8 @@ Prefer **`DashboardWorkspace`** for validated filters, one request-bound loader,
 render-only panels (phase **0.60**). Phase **0.17** `DashboardBinding` /
 `InteractionGraph` remain available as Advanced linked-interaction primitives.
 
-Capability readiness is **Supported** in the verified **1.0.0** candidate; API compatibility
-remains **`beta`** — until publication, pin the public fallback `hedron>=0.67.0,<0.68`.
+Capability readiness is **Supported** in the published **1.0.0** release; API compatibility
+remains **`beta`**. Pin `hedron>=1.0.0,<1.1`.
 
 ## Start here
 
