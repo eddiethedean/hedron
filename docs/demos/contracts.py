@@ -122,7 +122,7 @@ CONTRACTS: tuple[DemoContract, ...] = (
         id="hello-refresh",
         builder=lambda: build_hello_refresh_demo(
             status_id="service-status",
-            logo_src="assets/hedron-mark.svg",
+            logo_src="../../assets/hedron-mark-light.svg",
         ),
         steps=(
             Step(
@@ -137,7 +137,7 @@ CONTRACTS: tuple[DemoContract, ...] = (
         id="hello-refresh-quickstart",
         builder=lambda: build_hello_refresh_demo(
             status_id="qs-service-status",
-            logo_src="../assets/hedron-mark.svg",
+            logo_src="../../assets/hedron-mark-light.svg",
             caption=(
                 "Docs simulation — click <strong>Refresh status</strong> for an "
                 "HTMX-style fragment swap (no server)."

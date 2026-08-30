@@ -199,6 +199,16 @@ body {
   width: 1.7rem;
 }
 
+/* Brand assets are explicit rather than filter-derived so every facet keeps its
+ * intended contrast when the Material palette is toggled independently of the OS. */
+[data-md-color-scheme="slate"] img[src$="hedron-mark-light.svg"] {
+  content: url("../assets/hedron-mark-dark.svg");
+}
+
+[data-md-color-scheme="slate"] img[src$="hedron-logo-light.svg"] {
+  content: url("../assets/hedron-logo-dark.svg");
+}
+
 .md-typeset h1,
 .md-typeset h2,
 .md-typeset h3 {
@@ -357,6 +367,12 @@ body {
   margin: 0 0 3.5rem;
   padding: 2rem 0 1.2rem;
   position: relative;
+}
+
+.md-typeset .hedron-theme-wordmark {
+  display: block;
+  margin: 0 0 1.35rem;
+  width: min(20.5rem, 72vw);
 }
 
 .hedron-hero::before {

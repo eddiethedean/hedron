@@ -1,8 +1,9 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-mark.svg" width="88" alt="Hedron logo">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-logo-dark.svg">
+    <img src="https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-logo-light.svg" width="500" alt="Hedron">
+  </picture>
 </p>
-
-# Hedron
 
 <p align="center"><strong>FastAPI-native, server-rendered interfaces in pure Python.</strong></p>
 

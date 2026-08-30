@@ -1,8 +1,9 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-mark.svg" width="88" alt="Edron logo">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/edron-logo-dark.svg">
+    <img src="https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/edron-logo-light.svg" width="460" alt="Edron">
+  </picture>
 </p>
-
-# Edron
 
 <p align="center"><strong>Production-minded Python apps with a small, class-oriented API.</strong></p>
 

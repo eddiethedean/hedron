@@ -9,6 +9,8 @@ search:
 
 <div class="hedron-hero" markdown>
 
+<img class="hedron-theme-wordmark" src="assets/hedron-logo-light.svg" alt="Hedron">
+
 <div class="hedron-eyebrow">Python-first application platform · stable 1.0 · Python 3.10–3.14</div>
 
 # Stay in Python. Build the whole application.

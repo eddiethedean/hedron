@@ -74,11 +74,11 @@ def main(argv: list[str] | None = None) -> int:
     demos = {
         "hello-refresh.html": build_hello_refresh_demo(
             status_id="service-status",
-            logo_src="assets/hedron-mark.svg",
+            logo_src="../../assets/hedron-mark-light.svg",
         ),
         "hello-refresh-quickstart.html": build_hello_refresh_demo(
             status_id="qs-service-status",
-            logo_src="../assets/hedron-mark.svg",
+            logo_src="../../assets/hedron-mark-light.svg",
             caption=(
                 "Docs simulation — click <strong>Refresh status</strong> for an "
                 "HTMX-style fragment swap (no server)."

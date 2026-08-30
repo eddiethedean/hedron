@@ -1,4 +1,9 @@
-# Hedron
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-logo-dark.svg">
+    <img src="https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-logo-light.svg" width="500" alt="Hedron">
+  </picture>
+</p>
 
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/hedron/badge/?version=latest)](https://hedron.readthedocs.io/en/latest/)

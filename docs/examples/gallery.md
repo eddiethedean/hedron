@@ -53,7 +53,7 @@ Decorative preview chrome below is **not** a real `localhost` server.
   <div class="hedron-app-shell">
     <aside class="hedron-app-nav">
       <div class="hedron-app-brand">
-        <img src="../../assets/hedron-mark.svg" alt="">
+        <img src="../../assets/hedron-mark-light.svg" alt="">
         <span>Acme Console</span>
       </div>
       <nav aria-label="Example application">
@@ -117,7 +117,7 @@ response. Switch between the preview, declared props, and request contract below
   </div>
   <div class="hedron-explorer-shell">
     <aside class="hedron-explorer-nav" aria-label="Registered components">
-      <div class="hedron-app-brand"><img src="../../assets/hedron-mark.svg" alt=""><span>Explorer</span></div>
+      <div class="hedron-app-brand"><img src="../../assets/hedron-mark-light.svg" alt=""><span>Explorer</span></div>
       <label class="hedron-explorer-mobile-select"><span class="sr-only">Component</span>
         <select data-demo-component-select aria-label="Select component">
           <option value="UserCard" selected>UserCard</option>

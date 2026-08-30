@@ -61,7 +61,7 @@ def hello_refresh_app(*, status_id: str = "service-status") -> SimApp:
 def build_hello_refresh_demo(
     *,
     status_id: str = "service-status",
-    logo_src: str = "assets/hedron-mark.svg",
+    logo_src: str = "../../assets/hedron-mark-light.svg",
     caption: str | None = None,
 ) -> str:
     """HTML island wrapped in docs browser chrome."""

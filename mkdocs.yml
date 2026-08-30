@@ -10,8 +10,8 @@ site_url: !ENV [READTHEDOCS_CANONICAL_URL, "https://hedron.readthedocs.io/en/lat
 theme:
   name: material
   custom_dir: docs/overrides
-  logo: assets/hedron-mark.svg
-  favicon: assets/hedron-mark.svg
+  logo: assets/hedron-mark-light.svg
+  favicon: assets/hedron-mark-light.svg
   font:
     text: Inter
     code: JetBrains Mono
