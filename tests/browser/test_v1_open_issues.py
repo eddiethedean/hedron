@@ -7,10 +7,53 @@ from pathlib import Path
 
 import pytest
 
-from hedron_core import render
+from hedron_core import (
+    AlpineAttrs,
+    AlpineDirective,
+    AlpineExpression,
+    Interaction,
+    html,
+    render,
+)
 from hedron_core.builtins.shell import AppShell
 
 pytestmark = pytest.mark.browser
+
+
+@pytest.mark.parametrize("engine", ("chromium", "firefox", "webkit"))
+def test_legacy_ownerless_local_interaction_has_live_alpine_state(engine: str) -> None:
+    if os.environ.get("HEDRON_BROWSER", "").strip() not in {"1", "true", "yes"}:
+        pytest.skip("HEDRON_BROWSER not set")
+    selected = os.environ.get("HEDRON_BROWSER_ENGINE")
+    if selected and selected != engine:
+        pytest.skip(f"engine filter {selected}")
+    pytest.importorskip("playwright")
+    from playwright.sync_api import sync_playwright
+
+    runtime = (
+        Path(__file__).resolve().parents[2]
+        / "packages/hedron-core/src/hedron_core/static/hedron-alpine.mjs"
+    ).read_text(encoding="utf-8")
+    value_component = html.span(
+        alpine=AlpineAttrs(directives=(AlpineDirective("x-text", AlpineExpression.name("toggle")),))
+    )
+    markup = render(
+        html.button(value_component, id="toggle", interaction=Interaction.local("toggle"))
+    ).html
+
+    with sync_playwright() as pw:
+        browser = getattr(pw, engine).launch(headless=True)
+        page = browser.new_page()
+        page.set_content(f"{markup}<script type='module'>{runtime}</script>")
+        button = page.locator("#toggle")
+        value_locator = button.locator("span")
+        page.wait_for_function(
+            "document.querySelector('#toggle')?.dataset.hedronAlpineRoot === 'initialized'"
+        )
+        assert value_locator.inner_text() == "false"
+        button.click()
+        assert value_locator.inner_text() == "true"
+        browser.close()
 
 
 @pytest.mark.parametrize("engine", ("chromium", "firefox", "webkit"))

@@ -13,7 +13,7 @@ import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Literal, cast
+from typing import Literal, TypeGuard, cast
 
 from hedron_core.alpine import (
     AlpineAttrs,
@@ -44,6 +44,42 @@ _METHODS = frozenset({"GET", "POST", "PUT", "PATCH", "DELETE"})
 
 def _empty_native_fallback() -> dict[str, HtmlAttrValue]:
     return {}
+
+
+def _false_state(paths: Sequence[str]) -> dict[str, object]:
+    """Build a bounded nested Alpine scope for legacy ownerless toggles."""
+    state: dict[str, object] = {}
+    for path in paths:
+        cursor = state
+        parts = path.split(".")
+        for part in parts[:-1]:
+            child = cursor.get(part)
+            if child is None:
+                nested: dict[str, object] = {}
+                cursor[part] = nested
+                cursor = nested
+                continue
+            if not isinstance(child, dict):
+                raise ValueError(f"local state keys overlap at {path!r}")
+            cursor = cast(dict[str, object], child)
+        leaf = parts[-1]
+        if isinstance(cursor.get(leaf), dict):
+            raise ValueError(f"local state keys overlap at {path!r}")
+        cursor[leaf] = False
+    return state
+
+
+def _is_state_mapping(value: object) -> TypeGuard[Mapping[str, object]]:
+    return isinstance(value, Mapping)
+
+
+def _state_has_path(state: Mapping[str, object], path: str) -> bool:
+    cursor: object = state
+    for part in path.split("."):
+        if not _is_state_mapping(cursor) or part not in cursor:
+            return False
+        cursor = cursor[part]
+    return True
 
 
 class InteractionKind(StrEnum):
@@ -88,13 +124,19 @@ class LocalEffect:
                 raise ValueError("ancestor local scope cannot carry self-owned state")
         elif owner is not None:
             raise ValueError("self local scope cannot declare scope_owner")
-        if scope == "self" and (not keys or self.state is None):
-            raise ValueError("self-owned local interactions require non-empty state_keys and state")
         state = None if self.state is None else json_value(self.state, path="local state")
         if state is not None and not isinstance(state, dict):
             raise TypeError("local state must be a mapping")
-        if state is not None and any(key not in state for key in keys):
-            missing = sorted(set(keys).difference(state))
+        if scope == "self":
+            # The 0.67 API allowed ownerless local effects. Keep that source valid
+            # while ensuring the executable Alpine directive always has a real
+            # scope: explicit keys become false-valued toggles, and a bare action
+            # becomes its own toggle key.
+            keys = keys or (action,)
+            if state is None:
+                state = _false_state(keys)
+        if state is not None and any(not _state_has_path(state, key) for key in keys):
+            missing = sorted(key for key in keys if not _state_has_path(state, key))
             raise ValueError(f"local state must initialize every state key: {missing!r}")
         object.__setattr__(self, "action", action)
         object.__setattr__(self, "state_keys", keys)

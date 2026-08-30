@@ -173,9 +173,31 @@ def test_tabs_have_one_owner_and_no_js_safe_initial_panel_state() -> None:
     assert 'role="tabpanel" hidden' not in result.html
 
 
-def test_ownerless_local_interaction_is_rejected() -> None:
-    with pytest.raises(ValueError, match="state_keys and state"):
-        Interaction.local("toggle")
+def test_ownerless_local_interaction_synthesizes_a_real_scope() -> None:
+    interaction = Interaction.local("toggle")
+    rendered = render(html.button("Toggle", interaction=interaction)).html
+
+    assert interaction.local_effect is not None
+    assert interaction.local_effect.state_keys == ("toggle",)
+    assert dict(interaction.local_effect.state or {}) == {"toggle": False}
+    assert 'x-data="{&quot;toggle&quot;:false}"' in rendered
+    assert 'x-on:click="toggle = !toggle"' in rendered
+
+
+def test_legacy_ownerless_state_keys_receive_false_defaults() -> None:
+    interaction = Interaction.local("toggle", state_keys=("open",))
+
+    assert interaction.local_effect is not None
+    assert dict(interaction.local_effect.state or {}) == {"open": False}
+
+
+def test_self_owned_state_without_keys_uses_the_action_as_its_key() -> None:
+    interaction = Interaction.local("toggle", state={"toggle": True})
+    rendered = render(html.button("Toggle", interaction=interaction)).html
+
+    assert interaction.local_effect is not None
+    assert interaction.local_effect.state_keys == ("toggle",)
+    assert 'x-on:click="toggle = !toggle"' in rendered
 
 
 def test_document_busy_bridge_retains_markers_until_host_is_idle() -> None:

@@ -11,7 +11,7 @@ remain Beta and are not part of the stable platform promise.
 |---|---|---|
 | `Hx(...)` | `HtmxAttrs(...)` | `Hx` is an outerHTML-default compatibility wrapper; new code should use the generic name. |
 | `Interaction.to_attributes()` | `Interaction.to_lowering().to_attributes()` | The old method delegates to typed Alpine/HTMX lowering. |
-| A standalone local interaction that assumes an ancestor `x-data` | `Interaction.local(..., state={...})` | Explicit state emits a self-contained Alpine scope. |
+| A standalone local interaction that assumes an ancestor `x-data` | `Interaction.local(..., state={...})` | Explicit state emits a self-contained Alpine scope. For 0.67 compatibility, omitted self-owned state is initialized to `False` for each declared key (or the action name when no key is declared). |
 | Raw `hx-*` dictionaries in components | `HtmxAttrs(...).as_html_attrs()` | Maintained built-ins use one validated builder. Raw kwargs remain an input compatibility boundary. |
 | Alpine bindings on basic text/select/check/radio controls | `enhance="native"` | Native mode is available now; the legacy default remains during the 1.1 transition. |
 | Alpine animated disclosure | `Expander(..., enhance="native")` | Native mode renders `<details>/<summary>`; Alpine collapse remains opt-in. |

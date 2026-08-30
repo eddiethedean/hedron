@@ -86,7 +86,7 @@ def home():
         ),
         html.button(
             "Toggle",
-            interaction=Interaction.local("toggle", state_keys=("open",), state={"open": False}),
+            interaction=Interaction.local("toggle", state_keys=("open",)),
         ),
         html.button(
             "Save",
@@ -94,7 +94,6 @@ def home():
                 "close",
                 "ping",
                 state_keys=("open",),
-                state={"open": False},
                 method="POST",
             ),
         ),

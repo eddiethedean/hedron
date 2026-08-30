@@ -8,6 +8,7 @@ import inspect
 import re
 import sys
 import tomllib
+from enum import Enum
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,13 +16,24 @@ STABLE = "Development Status :: 5 - Production/Stable"
 BETA = "Development Status :: 4 - Beta"
 
 
+def _canonical_signature(value: object) -> str:
+    signature = str(inspect.signature(value)).strip()
+    return re.sub(
+        r"<object object at 0x[0-9A-Fa-f]+>",
+        "<object sentinel>",
+        signature,
+    )
+
+
+def _requires_signature(value: object) -> bool:
+    return callable(value) and not (inspect.isclass(value) and issubclass(value, Enum))
+
+
 def main() -> int:
     support = tomllib.loads((ROOT / "release/support-matrix.toml").read_text())
     packages = support["packages"]
     errors: list[str] = []
-    stable_packages = {
-        name for name, item in packages.items() if item.get("maturity") == "stable"
-    }
+    stable_packages = {name for name, item in packages.items() if item.get("maturity") == "stable"}
     stable_api = tomllib.loads((ROOT / "release/stable-api.toml").read_text())
     stable_api_packages = set(stable_api["packages"])
     if stable_packages != stable_api_packages:
@@ -53,11 +65,7 @@ def main() -> int:
                 re.split(r"[<>=!~;\s]", dependency, maxsplit=1)[0].lower()
                 for dependency in project.get("dependencies", [])
             }
-            for beta in (
-                name
-                for name, item in packages.items()
-                if item["maturity"] == "beta"
-            ):
+            for beta in (name for name, item in packages.items() if item["maturity"] == "beta"):
                 if beta.lower() in dependency_names:
                     errors.append(f"{distribution}: stable package depends on Beta {beta}")
 
@@ -81,12 +89,17 @@ def main() -> int:
             if not hasattr(loaded, symbol):
                 errors.append(f"{distribution}: missing stable symbol {symbol}")
                 continue
+            value = getattr(loaded, symbol)
             expected_signature = signatures.get(symbol)
             if expected_signature is None:
+                if _requires_signature(value):
+                    errors.append(
+                        f"{distribution}.{symbol}: stable callable/class lacks a locked signature"
+                    )
                 continue
             expected_signature = str(expected_signature).strip()
             try:
-                actual_signature = str(inspect.signature(getattr(loaded, symbol))).strip()
+                actual_signature = _canonical_signature(value)
             except (TypeError, ValueError) as exc:
                 errors.append(f"{distribution}.{symbol}: signature inspection failed: {exc}")
                 continue

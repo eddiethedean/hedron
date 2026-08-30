@@ -78,11 +78,11 @@ COORDINATED_PACKAGES = (
     "hedron-extras",
     "hedron-posit",
     "hedron-elements",
+    "hedron-charts",
+    "hedron-maps",
 )
 
 INDEPENDENT_SATELLITES = (
-    "hedron-charts",
-    "hedron-maps",
     "hedron-native",
     "hedron-mcp",
     "hedron-gradio",

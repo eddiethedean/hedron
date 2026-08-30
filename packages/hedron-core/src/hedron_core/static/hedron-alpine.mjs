@@ -157,6 +157,7 @@ function evaluate(source, scope, element, event) {
       if (operator === "-") return left - right;
     }
   }
+  if (text.startsWith("!")) return !evaluate(text.slice(1), scope, element, event);
   const literal = parseLiteral(text);
   if (literal !== undefined) return literal;
   const called = callExpression(text, scope, element, event);

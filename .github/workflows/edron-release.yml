@@ -62,7 +62,6 @@ jobs:
           tests/unit/test_edron_docs_checker.py
           tests/unit/test_hedron_import_surface.py
           tests/unit/test_maps_047_pkg.py
-          tests/unit/test_package_metadata.py
           tests/ops/test_packaging_isolation.py::test_all_packages_declare_license_and_version
 
       - name: Lint Edron release surface

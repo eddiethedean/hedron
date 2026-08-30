@@ -396,7 +396,7 @@ def test_phase_1_0_local_build_evidence_is_reproducible_and_retained() -> None:
     assert evidence["reproducibility"]["verified"] is True
     assert evidence["artifact_retention"] is True
     assert evidence["release_claim"] is True
-    assert len(evidence["artifacts"]) == 22
+    assert len(evidence["artifacts"]) == 26
 
 
 def test_phase_1_0_verification_ledger_is_green() -> None:
