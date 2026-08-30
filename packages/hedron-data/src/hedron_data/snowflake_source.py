@@ -5,7 +5,7 @@ from __future__ import annotations
 import importlib
 import re
 from collections.abc import Callable, Sequence
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, cast
 
 from hedron_core.diagnostics import error
 from hedron_data.plans import TransformPlan, plan_from_query
@@ -279,7 +279,7 @@ class SnowflakeDataSource(Generic[T]):
         self._statement = assert_select_only(statement)
         self._connection_factory = connection_factory
         self._schema = tuple(schema)
-        self._to_row = to_row or (lambda r: r)  # type: ignore[assignment]
+        self._to_row: Callable[[dict[str, Any]], T] = to_row or (lambda r: cast(T, r))
         self._max_page_size = max_page_size
         self._params = tuple(params or ())
 
@@ -306,15 +306,17 @@ class SnowflakeDataSource(Generic[T]):
             cur = conn.cursor()
             try:
                 cur.execute(sql, (*self._params, q.limit, q.offset))
-                colnames = [col[0] for col in (cur.description or [])]
-                raw_rows = cur.fetchmany(q.limit)
-                rows = [
+                descriptions = cast(Sequence[Sequence[Any]], cur.description or ())
+                colnames: list[str] = [str(col[0]) for col in descriptions]
+                raw_rows = cast(Sequence[Sequence[Any]], cur.fetchmany(q.limit))
+                rows: list[T] = [
                     self._to_row({colnames[i]: value for i, value in enumerate(row)})
                     for row in raw_rows
                 ]
                 count_sql = f"SELECT COUNT(*) FROM ({self._statement}) AS hedron_src"
                 cur.execute(count_sql, self._params)
-                total = int(cur.fetchone()[0])  # type: ignore[index]
+                count_row = cast(Sequence[Any], cur.fetchone() or (0,))
+                total = int(count_row[0])
             finally:
                 cur.close()
         finally:

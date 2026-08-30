@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import cast
+from typing import Any, Protocol, cast
 
 from hedron_core.diagnostics import error
 from hedron_core.models import Model
@@ -13,21 +13,27 @@ from hedron_core.typing_aliases import JsonValue
 _MAX_INLINE_ROWS = 10_000
 
 
+class _NarwhalsFrame(Protocol):
+    def to_dict(self, *, as_series: bool) -> Mapping[object, Sequence[object]]: ...
+
+
 def _cell(value: object) -> JsonValue:
     return cast(JsonValue, redact_value(value))
 
 
 def _row_to_mapping(row: object) -> dict[str, JsonValue]:
     if isinstance(row, Model):
-        data = row.model_dump()
-        return {k: _cell(v) for k, v in data.items()}
+        data = cast(Mapping[object, object], row.model_dump())
+        return {str(k): _cell(v) for k, v in data.items()}
     if isinstance(row, Mapping):
-        return {str(k): _cell(v) for k, v in row.items()}
+        mapping = cast(Mapping[object, object], row)
+        return {str(k): _cell(v) for k, v in mapping.items()}
     model_dump = getattr(row, "model_dump", None)
     if callable(model_dump):
-        data = model_dump()
+        data = cast(Any, model_dump)()
         if isinstance(data, Mapping):
-            return {str(k): _cell(v) for k, v in data.items()}
+            mapping = cast(Mapping[object, object], data)
+            return {str(k): _cell(v) for k, v in mapping.items()}
     raise error(
         "HED-DATA-0001",
         title="Unsupported row type",
@@ -68,7 +74,7 @@ def _from_narwhals(obj: object, *, max_rows: int) -> list[dict[str, JsonValue]]:
             explanation="Narwhals is required to normalize Pandas/Polars/PyArrow inputs.",
             remediation='Install with: pip install "hedron-data[dataframes]"',
         ) from exc
-    frame = nw.from_native(obj)  # type: ignore[arg-type]
+    frame = cast(_NarwhalsFrame, nw.from_native(obj))  # type: ignore[arg-type]
     native = frame.to_dict(as_series=False)
     if not native:
         return []
@@ -81,7 +87,7 @@ def _from_narwhals(obj: object, *, max_rows: int) -> list[dict[str, JsonValue]]:
             explanation=f"Refusing to inline {length} rows (max {max_rows}).",
             remediation="Use a paged DataEditorSource instead of passing the full frame.",
         )
-    return [{k: cast(JsonValue, native[k][i]) for k in keys} for i in range(length)]
+    return [{str(k): cast(JsonValue, native[k][i]) for k in keys} for i in range(length)]
 
 
 def normalize_rows(data: object, *, max_rows: int = _MAX_INLINE_ROWS) -> list[dict[str, JsonValue]]:
@@ -95,13 +101,18 @@ def normalize_rows(data: object, *, max_rows: int = _MAX_INLINE_ROWS) -> list[di
         module.startswith(("pandas.", "polars.", "pyarrow.")) and hasattr(data, "columns")
     ):
         return _from_narwhals(data, max_rows=max_rows)
-    if isinstance(data, Mapping) and not isinstance(data, Model):
-        if not data:
+    data_mapping = cast(Mapping[object, object], data) if isinstance(data, Mapping) else None
+    if data_mapping is not None and not isinstance(data, Model):
+        if not data_mapping:
             return []
         # column-oriented dict of sequences
-        if all(isinstance(v, Sequence) and not isinstance(v, (str, bytes)) for v in data.values()):
-            keys = list(data.keys())
-            lengths = [len(data[k]) for k in keys]
+        if all(
+            isinstance(v, Sequence) and not isinstance(v, (str, bytes))
+            for v in data_mapping.values()
+        ):
+            keys = list(data_mapping.keys())
+            columns = {key: cast(Sequence[object], data_mapping[key]) for key in keys}
+            lengths = [len(columns[key]) for key in keys]
             if not lengths:
                 return []
             length = lengths[0]
@@ -124,22 +135,23 @@ def normalize_rows(data: object, *, max_rows: int = _MAX_INLINE_ROWS) -> list[di
                 )
             if length == 0:
                 return []
-            return [{str(k): _cell(data[k][i]) for k in keys} for i in range(length)]
-        return [_row_to_mapping(data)]
+            return [{str(k): _cell(columns[k][i]) for k in keys} for i in range(length)]
+        return [_row_to_mapping(data_mapping)]
     if isinstance(data, Sequence) and not isinstance(data, (str, bytes)):
-        if len(data) > max_rows:
+        sequence = cast(Sequence[object], data)
+        if len(sequence) > max_rows:
             raise error(
                 "HED-DATA-0004",
                 title="Inline dataset too large",
-                explanation=f"Refusing to inline {len(data)} rows (max {max_rows}).",
+                explanation=f"Refusing to inline {len(sequence)} rows (max {max_rows}).",
                 remediation="Use a paged DataEditorSource.",
             )
-        return [_row_to_mapping(row) for row in data]
+        return [_row_to_mapping(row) for row in sequence]
     if isinstance(data, Model):
         return [_row_to_mapping(data)]
     raise error(
         "HED-DATA-0001",
         title="Unsupported tabular input",
-        explanation=f"Cannot normalize type {type(data).__name__}.",
+        explanation=f"Cannot normalize type {type_name}.",
         remediation="Pass list[dict], Hedron models, or optional dataframe extras.",
     )

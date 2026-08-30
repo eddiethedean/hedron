@@ -108,24 +108,46 @@ class InMemoryDataSource:
         self._row_versions: dict[str, str] = {k: version for k in self._rows}
         self._schema = tuple(schema)
         # Deny-by-default: omitted writable_fields means no field is writable.
-        self._writable = frozenset() if writable_fields is None else writable_fields
+        self._writable: frozenset[str] = (
+            frozenset[str]() if writable_fields is None else writable_fields
+        )
         self._sort_allow = (
             frozenset[str]() if allowlisted_sort_fields is None else allowlisted_sort_fields
         )
+        self._sort_allow_was_omitted = allowlisted_sort_fields is None
         self._filter_allow = (
             frozenset[str]() if allowlisted_filter_fields is None else allowlisted_filter_fields
         )
+        self._filter_allow_was_omitted = allowlisted_filter_fields is None
         self._projection_allow = (
             frozenset[str]()
             if allowlisted_projection_fields is None
             else allowlisted_projection_fields
         )
+        self._projection_allow_was_omitted = allowlisted_projection_fields is None
         self._secret_fields = frozenset(c.name for c in self._schema if c.secret)
         self._search_fields = tuple(search_fields)
         self._dataset_version = version
         self._audit_hook = audit_hook
         self._version_counter = int(version) if version.isdigit() else 1
         self._lock = threading.RLock()
+
+    def _configure_allowlists(self, fields: frozenset[str]) -> None:
+        """Fill omitted query allowlists from a trusted application schema.
+
+        Existing explicit restrictions are never widened. Secret columns remain
+        excluded from projection regardless of the supplied schema.
+        """
+        with self._lock:
+            if self._sort_allow_was_omitted:
+                self._sort_allow = fields
+                self._sort_allow_was_omitted = False
+            if self._filter_allow_was_omitted:
+                self._filter_allow = fields
+                self._filter_allow_was_omitted = False
+            if self._projection_allow_was_omitted:
+                self._projection_allow = fields - self._secret_fields
+                self._projection_allow_was_omitted = False
 
     @property
     def dataset_version(self) -> str:

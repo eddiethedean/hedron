@@ -87,6 +87,43 @@ def test_workspace_does_not_overwrite_empty_search_fields() -> None:
         src.fetch(DataQuery(search="classified", limit=10))
 
 
+def test_workspace_does_not_widen_explicit_empty_query_allowlists() -> None:
+    class Row(BaseModel):
+        id: str
+        name: str
+
+    src = InMemoryDataSource(
+        [{"id": "1", "name": "Ada"}],
+        key_field="id",
+        allowlisted_sort_fields=frozenset(),
+        allowlisted_filter_fields=frozenset(),
+        allowlisted_projection_fields=frozenset(),
+    )
+    DataWorkspace(name="items", source=src, model=Row, policy=DataWorkspacePolicy())
+
+    with pytest.raises(ValueError, match="Sort field 'name' is not allowlisted"):
+        src.fetch(
+            DataQuery(
+                sort=(("name", "asc"),),
+                allowlisted_sort_fields=frozenset({"name"}),
+            )
+        )
+    with pytest.raises(ValueError, match="Filter field 'name' is not allowlisted"):
+        src.fetch(
+            DataQuery(
+                filters={"name": "Ada"},
+                allowlisted_filter_fields=frozenset({"name"}),
+            )
+        )
+    with pytest.raises(ValueError, match="Projection field 'name' is not allowlisted"):
+        src.fetch(
+            DataQuery(
+                projection=("name",),
+                allowlisted_projection_fields=frozenset({"name"}),
+            )
+        )
+
+
 def test_css_import_url_not_class_rewritten_and_expression_rejected() -> None:
     with pytest.raises(HedronError, match="Remote CSS URL|HED-CSS"):
         compile_css(

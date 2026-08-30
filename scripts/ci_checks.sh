@@ -373,6 +373,7 @@ quality_strict_package_types() {
   run_uv pyright --warnings \
     packages/hedron-core/src/hedron_core \
     packages/hedron/src/hedron \
+    packages/hedron-data/src/hedron_data \
     packages/edron/src/edron
 }
 

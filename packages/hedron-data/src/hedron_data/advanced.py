@@ -6,7 +6,7 @@ import ast
 import math
 import operator
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
@@ -24,13 +24,16 @@ __all__ = [
 ]
 
 _COLUMN_REF = re.compile(r"\[([A-Za-z_][A-Za-z0-9_]*)\]")
-_BIN_OPS: dict[type[ast.operator], Any] = {
+_BIN_OPS: dict[type[ast.operator], Callable[[float, float], float]] = {
     ast.Add: operator.add,
     ast.Sub: operator.sub,
     ast.Mult: operator.mul,
-    ast.Div: operator.truediv,
+    ast.Div: lambda a, b: a / b,
 }
-_UNARY_OPS: dict[type[ast.unaryop], Any] = {ast.UAdd: operator.pos, ast.USub: operator.neg}
+_UNARY_OPS: dict[type[ast.unaryop], Callable[[float], float]] = {
+    ast.UAdd: operator.pos,
+    ast.USub: operator.neg,
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,14 +76,15 @@ def evaluate_formula(
     allowed_names: frozenset[str] | None = None,
 ) -> JsonValue:
     """Evaluate a constrained numeric formula with ``[field]`` column refs."""
-    if not isinstance(expr, str) or not expr.strip():
+    raw_expr: Any = expr
+    if not isinstance(raw_expr, str) or not raw_expr.strip():
         raise error(
             "HED-DATA-0030",
             title="Empty formula",
             explanation="Formulas must be non-empty strings.",
             remediation="Provide a formula such as '=[price]*[qty]'.",
         )
-    text = expr.strip()
+    text = raw_expr.strip()
     if text.startswith("="):
         text = text[1:]
     refs = _COLUMN_REF.findall(text)

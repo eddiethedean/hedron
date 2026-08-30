@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from hedron_core.typing_aliases import JsonValue
 
@@ -19,7 +19,7 @@ class SavedView:
     version: str = "1"
     scope: ViewScope = "user"
     columns: tuple[str, ...] = ()
-    filters: Mapping[str, JsonValue] = field(default_factory=dict)
+    filters: Mapping[str, JsonValue] = field(default_factory=lambda: dict[str, JsonValue]())
     sort: tuple[tuple[str, str], ...] = ()
     selection: tuple[str, ...] = ()
     owner_id: str | None = None
@@ -58,16 +58,18 @@ class SavedView:
 
     @classmethod
     def deserialize(cls, data: Mapping[str, Any]) -> SavedView:
-        sort_raw = data.get("sort") or ()
-        columns_raw = data.get("columns") or ()
-        selection_raw = data.get("selection") or ()
-        filters_raw = data.get("filters", {})
+        sort_raw: object = data.get("sort") or ()
+        columns_raw: object = data.get("columns") or ()
+        selection_raw: object = data.get("selection") or ()
+        filters_raw: object = data.get("filters", {})
         if not isinstance(columns_raw, (list, tuple)) or any(
-            not isinstance(item, str) for item in columns_raw
+            not isinstance(item, str)
+            for item in cast(list[object] | tuple[object, ...], columns_raw)
         ):
             raise ValueError("SavedView.columns must be an array of strings")
         if not isinstance(selection_raw, (list, tuple)) or any(
-            not isinstance(item, str) for item in selection_raw
+            not isinstance(item, str)
+            for item in cast(list[object] | tuple[object, ...], selection_raw)
         ):
             raise ValueError("SavedView.selection must be an array of strings")
         if not isinstance(filters_raw, Mapping):
@@ -75,18 +77,24 @@ class SavedView:
         if not isinstance(sort_raw, (list, tuple)):
             raise ValueError("SavedView.sort must be an array of pairs")
         sort: list[tuple[str, str]] = []
-        for item in sort_raw:
-            if isinstance(item, (list, tuple)) and len(item) == 2:
-                sort.append((str(item[0]), str(item[1])))
-            else:
+        typed_sort = cast(list[object] | tuple[object, ...], sort_raw)
+        for item in typed_sort:
+            if not isinstance(item, (list, tuple)):
                 raise ValueError("SavedView.sort entries must be two-item arrays")
+            pair = cast(list[object] | tuple[object, ...], item)
+            if len(pair) != 2:
+                raise ValueError("SavedView.sort entries must be two-item arrays")
+            sort.append((str(pair[0]), str(pair[1])))
+        columns = cast(list[str] | tuple[str, ...], columns_raw)
+        selection = cast(list[str] | tuple[str, ...], selection_raw)
+        filters = cast(Mapping[str, JsonValue], filters_raw)
         return cls(
             name=str(data.get("name") or ""),
             version=str(data.get("version") or "1"),
             scope=str(data.get("scope") or "user"),  # type: ignore[arg-type]
-            columns=tuple(columns_raw),
-            filters=dict(filters_raw),
+            columns=tuple(columns),
+            filters=dict(filters),
             sort=tuple(sort),
-            selection=tuple(selection_raw),
+            selection=tuple(selection),
             owner_id=(str(data["owner_id"]) if data.get("owner_id") is not None else None),
         ).validated()

@@ -102,7 +102,7 @@ class TransformPlan:
     max_bytes: int = 1_000_000
     tenant_id: str | None = None
     cancel_token: str | None = None
-    auth_context: Mapping[str, JsonValue] = field(default_factory=dict)
+    auth_context: Mapping[str, JsonValue] = field(default_factory=lambda: dict[str, JsonValue]())
 
     def validated(self) -> TransformPlan:
         if self.max_rows < 1:

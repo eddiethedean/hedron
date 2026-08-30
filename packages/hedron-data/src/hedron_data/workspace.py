@@ -193,12 +193,7 @@ class DataWorkspace(Generic[ModelT]):
         if not isinstance(source, InMemoryDataSource):
             return
         names = frozenset(self._column_names())
-        if not source._sort_allow:
-            source._sort_allow = names
-        if not source._filter_allow:
-            source._filter_allow = names
-        if not source._projection_allow:
-            source._projection_allow = names - source._secret_fields
+        cast(Any, source)._configure_allowlists(names)
 
     def with_screen(
         self,
@@ -264,7 +259,8 @@ class DataWorkspace(Generic[ModelT]):
         scope = cast(object, getattr(request, "scope", None))
         # Prefer scope["user"] — Request.user asserts AuthenticationMiddleware.
         if isinstance(scope, Mapping) and "user" in scope:
-            user_attr = scope.get("user")
+            scope_map = cast(Mapping[str, object], scope)
+            user_attr: object = scope_map.get("user")
             if user_attr is not None and user_attr not in (False, ""):
                 kwargs["user"] = user_attr
                 kwargs["principal"] = user_attr

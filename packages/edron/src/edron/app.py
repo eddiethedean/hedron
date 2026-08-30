@@ -18,7 +18,7 @@ from edron.descriptors import Action, BoundAction, BoundFragment, Fragment
 from edron.diagnostics import source_location
 from edron.errors import BindingError, RegistrationError
 from edron.navigation import LayoutSpec, NavigationError, NavigationTarget
-from edron.page import Page, resolve_output
+from edron.page import Page
 from edron.simulation import AppSimulation
 
 MAX_EXPLANATION_PAGES = 256
@@ -488,7 +488,7 @@ class App:
                 if result is not None:
                     instance.include(result)
                 return hedron_core_page(
-                    *resolve_output(instance), title=title if show_title else None
+                    *cast(Any, instance)._resolved_output(), title=title if show_title else None
                 )
 
         endpoint.__name__ = f"edron_{route_name}"
@@ -506,7 +506,7 @@ class App:
                     if result is not None:
                         instance.include(result)
                     return hedron_core_page(
-                        *resolve_output(instance), title=title if show_title else None
+                        *cast(Any, instance)._resolved_output(), title=title if show_title else None
                     )
 
             async_endpoint.__name__ = endpoint.__name__
@@ -585,7 +585,7 @@ class App:
                     raise RuntimeError("async fragments require the async route adapter")
                 if result is not None:
                     instance.include(result)
-                return hedron_core_fragment(*resolve_output(instance))
+                return hedron_core_fragment(*cast(Any, instance)._resolved_output())
 
         endpoint.__name__ = f"edron_fragment_{page_type.__name__}_{member_name}"
         endpoint.__module__ = page_type.__module__
@@ -601,7 +601,7 @@ class App:
                     result = await self._call_with_kwargs(definition.fn, instance, kwargs)
                     if result is not None:
                         instance.include(result)
-                    return hedron_core_fragment(*resolve_output(instance))
+                    return hedron_core_fragment(*cast(Any, instance)._resolved_output())
 
             async_endpoint.__name__ = endpoint.__name__
             async_endpoint.__module__ = endpoint.__module__
@@ -614,7 +614,7 @@ class App:
             include_in_schema=False,
             dependencies=[self._native_dependency(x) for x in route_dependencies],
         )(endpoint)
-        definition.bind_native(native)
+        cast(Any, definition)._native = native
         self._fragments[id(definition)] = native
 
     def _register_action(
@@ -674,7 +674,7 @@ class App:
             include_in_schema=True,
             dependencies=[self._native_dependency(x) for x in route_dependencies],
         )(endpoint)
-        definition.bind_native(native)
+        cast(Any, definition)._native = native
         self._actions[id(definition)] = native
 
     def _request(self) -> Any:
@@ -754,8 +754,9 @@ class App:
                 if len(entries) >= MAX_SOURCE_MAP_ENTRIES:
                     truncated = True
                     break
-                native = member.native_handle
-                source = member.source
+                internal_member = cast(Any, member)
+                native = internal_member._native
+                source = internal_member._source
                 entries.append(
                     {
                         "kind": "fragment" if isinstance(member, Fragment) else "action",
@@ -764,8 +765,8 @@ class App:
                         "native_id": getattr(native, "logical_id", None),
                         "source": source.to_mapping() if source is not None else None,
                         **(
-                            {"inherited_from": member.inherited_from}
-                            if member.inherited_from
+                            {"inherited_from": internal_member._inherited_from}
+                            if internal_member._inherited_from
                             else {}
                         ),
                     }
@@ -785,7 +786,8 @@ class App:
             surfaces: list[dict[str, Any]] = []
             for member_name, member in page_type.__dict__.items():
                 if isinstance(member, Fragment):
-                    native = member.native_handle
+                    internal_member = cast(Any, member)
+                    native = internal_member._native
                     surfaces.append(
                         {
                             "name": member_name,
@@ -793,11 +795,16 @@ class App:
                             "logical_id": member.logical_id,
                             "method": "GET",
                             "path": getattr(native, "path", None),
-                            "source": member.source.to_mapping() if member.source else None,
+                            "source": (
+                                internal_member._source.to_mapping()
+                                if internal_member._source
+                                else None
+                            ),
                         }
                     )
                 elif isinstance(member, Action):
-                    native = member.native_handle
+                    internal_member = cast(Any, member)
+                    native = internal_member._native
                     surfaces.append(
                         {
                             "name": member_name,
@@ -805,7 +812,11 @@ class App:
                             "logical_id": member.logical_id,
                             "method": member.method.upper(),
                             "path": getattr(native, "path", None),
-                            "source": member.source.to_mapping() if member.source else None,
+                            "source": (
+                                internal_member._source.to_mapping()
+                                if internal_member._source
+                                else None
+                            ),
                         }
                     )
             if len(surfaces) > MAX_EXPLANATION_SURFACES:

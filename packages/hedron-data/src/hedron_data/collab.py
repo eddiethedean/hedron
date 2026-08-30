@@ -72,8 +72,8 @@ def merge_changes(
             return str(row["id"])
         return str(next(iter(row.values()), ""))
 
-    local_inserts = {_insert_key(row) for row in local.inserts if isinstance(row, Mapping)}
-    remote_inserts = {_insert_key(row) for row in remote.inserts if isinstance(row, Mapping)}
+    local_inserts = {_insert_key(row) for row in local.inserts}
+    remote_inserts = {_insert_key(row) for row in remote.inserts}
     local_deletes = set(local.deletes)
     remote_deletes = set(remote.deletes)
     local_update_rows = {u.row_key for u in local.updates}

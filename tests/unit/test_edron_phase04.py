@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from pydantic import BaseModel
 from starlette.testclient import TestClient
 
@@ -78,6 +79,43 @@ def test_image_requires_meaningful_alt_text() -> None:
 
     response = TestClient(app.native, raise_server_exceptions=False).get("/")
     assert response.status_code == 500
+
+
+@pytest.mark.parametrize("helper", ["chart", "map", "image"])
+def test_visual_alternatives_reject_non_string_values_with_value_error(helper: str) -> None:
+    app = ed.App(title="Visual validation", session_secret="test")
+
+    @app.page("/", title="Visual validation")
+    class Visuals(ed.Page):
+        def render(self) -> None:
+            if helper == "chart":
+                self.chart(_chart(), alternative=123)  # type: ignore[arg-type]
+            elif helper == "map":
+                self.map(alternative=123)  # type: ignore[arg-type]
+            else:
+                self.image("/assets/hero.png", alt=123)  # type: ignore[arg-type]
+
+    with pytest.raises(ValueError, match="non-empty string"):
+        TestClient(app.native).get("/")
+
+
+def test_table_fallback_preserves_non_string_mapping_keys(monkeypatch: pytest.MonkeyPatch) -> None:
+    import hedron_data
+
+    def unavailable_table(*_args: object, **_kwargs: object) -> None:
+        raise TypeError("force native table fallback")
+
+    monkeypatch.setattr(hedron_data, "DataTable", unavailable_table)
+    app = ed.App(title="Table fallback", session_secret="test")
+
+    @app.page("/", title="Table fallback")
+    class FallbackTable(ed.Page):
+        def render(self) -> None:
+            self.table([{1: "preserved"}])
+
+    response = TestClient(app.native).get("/")
+    assert response.status_code == 200
+    assert "preserved" in response.text
 
 
 def test_chart_interaction_resolves_edron_action_and_is_explained() -> None:

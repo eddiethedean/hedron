@@ -89,29 +89,6 @@ class Fragment(Generic[P]):
             return getattr(self._native, "logical_id", self.name or self.fn.__name__)
         return self.name or self.fn.__name__
 
-    @property
-    def native_handle(self) -> Any:
-        """Return the app-local native projection, when materialized."""
-        return self._native
-
-    @property
-    def source(self) -> SourceLocation | None:
-        """Return the source location captured for this definition."""
-        return self._source
-
-    @property
-    def inherited_from(self) -> str | None:
-        """Return the logical id of the descriptor this surface inherited."""
-        return self._inherited_from
-
-    def bind_native(self, native: Any) -> None:
-        """Attach the app-local native projection during registration."""
-        self._native = native
-
-    def set_inherited_from(self, logical_id: str) -> None:
-        """Record the source descriptor for an inherited surface."""
-        self._inherited_from = logical_id
-
     def __set_name__(self, owner: type[Any], name: str) -> None:
         self._owner = owner
         if self.name is None or self.name == self.fn.__name__:
@@ -180,29 +157,6 @@ class Action(Generic[P, R]):
         if self._native is not None:
             return getattr(self._native, "logical_id", self.name or self.fn.__name__)
         return self.name or self.fn.__name__
-
-    @property
-    def native_handle(self) -> Any:
-        """Return the app-local native projection, when materialized."""
-        return self._native
-
-    @property
-    def source(self) -> SourceLocation | None:
-        """Return the source location captured for this definition."""
-        return self._source
-
-    @property
-    def inherited_from(self) -> str | None:
-        """Return the logical id of the descriptor this surface inherited."""
-        return self._inherited_from
-
-    def bind_native(self, native: Any) -> None:
-        """Attach the app-local native projection during registration."""
-        self._native = native
-
-    def set_inherited_from(self, logical_id: str) -> None:
-        """Record the source descriptor for an inherited surface."""
-        self._inherited_from = logical_id
 
     def __set_name__(self, owner: type[Any], name: str) -> None:
         self._owner = owner
@@ -299,7 +253,7 @@ def inherit(
         },
         **overrides,
     )
-    cloned.set_inherited_from(surface.logical_id)
+    cast(Any, cloned)._inherited_from = surface.logical_id
     return cloned
 
 

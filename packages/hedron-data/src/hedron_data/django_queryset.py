@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Sequence
-from typing import Protocol, cast
+from collections.abc import Callable, Iterable, Mapping, Sequence
+from typing import Any, Protocol, cast
 
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
@@ -127,9 +127,11 @@ class DjangoQuerySetDataSource:
             # Prefer model_to_dict when available without importing django at module import
             # for non-Django environments that only construct the class.
             try:
-                from django.forms.models import model_to_dict
+                from django.forms import models as django_models
 
-                data.update(cast(dict[str, JsonValue], model_to_dict(obj)))
+                model_to_dict_fn: Any = vars(django_models)["model_to_dict"]
+                dumped = cast(Mapping[object, object], model_to_dict_fn(obj))
+                data.update({str(key): cast(JsonValue, value) for key, value in dumped.items()})
             except Exception:  # noqa: BLE001
                 meta = getattr(obj, "_meta", None)
                 fields = getattr(meta, "fields", ()) if meta is not None else ()
@@ -196,9 +198,10 @@ class DjangoQuerySetDataSource:
             from django.db.models import Q
 
             # Build OR of icontains lookups without relying on django-stubs Q| typing.
-            search_q = Q()
+            q_factory: Any = Q
+            search_q: object = q_factory()
             for field_name in self._search_fields:
-                search_q |= Q(**{f"{field_name}__icontains": q.search})  # type: ignore[operator]
+                search_q = cast(Any, search_q) | q_factory(**{f"{field_name}__icontains": q.search})
             qs = qs.filter(search_q)
             diag.record()
 

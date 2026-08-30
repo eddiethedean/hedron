@@ -31,8 +31,8 @@ class GridCellEvent:
     kind: Literal["cell"] = "cell"
     row_key: str = ""
     field: str | None = None
-    payload: Mapping[str, JsonValue] = dc_field(default_factory=dict)
-    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=dict)
+    payload: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
+    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
     debounce_ms: int = 0
     coalesce_key: str | None = None
 
@@ -42,8 +42,8 @@ class GridEditEvent:
     kind: Literal["edit"] = "edit"
     row_key: str = ""
     field: str | None = None
-    payload: Mapping[str, JsonValue] = dc_field(default_factory=dict)
-    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=dict)
+    payload: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
+    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
     debounce_ms: int = 0
     coalesce_key: str | None = None
 
@@ -53,8 +53,8 @@ class GridSelectionEvent:
     kind: Literal["selection"] = "selection"
     row_key: str = ""
     field: str | None = None
-    payload: Mapping[str, JsonValue] = dc_field(default_factory=dict)
-    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=dict)
+    payload: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
+    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
     debounce_ms: int = 0
     coalesce_key: str | None = None
 
@@ -64,8 +64,8 @@ class GridViewportEvent:
     kind: Literal["viewport"] = "viewport"
     row_key: str = ""
     field: str | None = None
-    payload: Mapping[str, JsonValue] = dc_field(default_factory=dict)
-    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=dict)
+    payload: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
+    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
     debounce_ms: int = 0
     coalesce_key: str | None = None
 
@@ -75,8 +75,8 @@ class GridDragEvent:
     kind: Literal["drag"] = "drag"
     row_key: str = ""
     field: str | None = None
-    payload: Mapping[str, JsonValue] = dc_field(default_factory=dict)
-    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=dict)
+    payload: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
+    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
     debounce_ms: int = 0
     coalesce_key: str | None = None
 
@@ -86,8 +86,8 @@ class GridPaginationEvent:
     kind: Literal["pagination"] = "pagination"
     row_key: str = ""
     field: str | None = None
-    payload: Mapping[str, JsonValue] = dc_field(default_factory=dict)
-    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=dict)
+    payload: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
+    auth_context: Mapping[str, JsonValue] = dc_field(default_factory=lambda: dict[str, JsonValue]())
     debounce_ms: int = 0
     coalesce_key: str | None = None
 

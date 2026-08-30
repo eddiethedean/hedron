@@ -5,6 +5,8 @@ from __future__ import annotations
 import tomllib
 from pathlib import Path
 
+from edron import Action, Container, Fragment, Page
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -32,6 +34,24 @@ def test_edron_runtime_does_not_reimplement_hedron_route_handles() -> None:
         "self.hedron._sync_root_route",
     ):
         assert forbidden not in source
+
+
+def test_edron_internal_collaboration_does_not_expand_the_stable_class_api() -> None:
+    assert hasattr(Page, "_resolved_output")
+    for owner, names in (
+        (Page, ("enter_container", "exit_container", "target_container", "resolved_output")),
+        (Container, ("append_child",)),
+        (
+            Fragment,
+            ("native_handle", "source", "inherited_from", "bind_native", "set_inherited_from"),
+        ),
+        (
+            Action,
+            ("native_handle", "source", "inherited_from", "bind_native", "set_inherited_from"),
+        ),
+    ):
+        for name in names:
+            assert not hasattr(owner, name)
 
 
 def test_edron_metadata_and_generated_projects_require_1_x() -> None:

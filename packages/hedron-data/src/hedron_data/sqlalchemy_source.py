@@ -186,7 +186,7 @@ class SQLAlchemyDataSource(Generic[T]):
                 remediation="Pass select(Model) or an equivalent Select statement.",
             )
         self._session_factory = session_factory
-        self._statement = statement
+        self._statement: object = statement
         self._row_key = row_key
 
         def _identity(row: object) -> T:
