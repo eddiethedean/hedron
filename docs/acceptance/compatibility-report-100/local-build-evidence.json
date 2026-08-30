@@ -2,7 +2,7 @@
   "schema": "hedron.local-build-evidence/1",
   "phase": "1.0",
   "target": "v1.0.0",
-  "source_commit": "7ac6095e975567e18fd0b1d726add0a6b576682d",
+  "source_commit": "1418780d38be1b6156a4de80269ae6d7b1676ba4",
   "command": "SOURCE_DATE_EPOCH=315619200 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages",
   "environment": {
     "python": "3.12.13",
