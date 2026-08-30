@@ -8,11 +8,11 @@ against the immutable 0.67 snapshot and the current 1.0.0 checkout, and the
 workspace build produces all 22 declared distributions. The target-side rows are
 verified against reproducible candidate artifacts and a committed hash lock;
 temporary build output is not treated as a public release. Packaging
-rehearsals fix `SOURCE_DATE_EPOCH=0` and disable maturin's non-deterministic
+rehearsals fix `SOURCE_DATE_EPOCH=315619200` and disable maturin's non-deterministic
 generated Rust SBOM; all 44 workspace artifacts, including the native wheel,
 are byte-for-byte reproducible under that input. The retained
 [`local-build-evidence.json`](local-build-evidence.json) records SHA-256s for
-the 22 coordinated 1.0.0 artifacts; the corresponding files remain temporary
+the 26 coordinated 1.0.0 artifacts; the corresponding files remain temporary
 and are deliberately not treated as published release artifacts.
 
 The [`verification-100.json`](verification-100.json) ledger records the exact

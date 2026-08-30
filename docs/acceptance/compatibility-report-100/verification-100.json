@@ -2,7 +2,7 @@
   "schema": "hedron.verification-evidence/1",
   "phase": "1.0",
   "target": "v1.0.0",
-  "source_commit": "eb21386836c45f54c9310844164bcad88019dc4d",
+  "source_commit": "6794570adab36d908b6f7ae8a4a7b64a73be7937",
   "retained_command_output": false,
   "checks": [
     {
@@ -25,39 +25,39 @@
     },
     {
       "id": "QUALITY-100",
-      "command": "bash scripts/ci_checks.sh quality --python 3.11 --skip-wheels",
+      "command": "bash scripts/ci_checks.sh quality --python 3.12 --skip-wheels",
       "status": "passed",
-      "summary": "Ruff, Pyright (0 errors), core-neutral checks, strict docs, package verification, wheel smoke, Edron compatibility, and quickstart passed"
+      "summary": "Ruff, Pyright (0 errors), strict Stable-package typing (0 errors and 0 warnings), core-neutral checks, strict docs, package verification, Edron compatibility, and quickstart passed; reproducible artifacts are covered by BUILD-100"
     },
     {
       "id": "BROWSER-100",
-      "command": "bash scripts/ci_checks.sh browser --python 3.11",
+      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=chromium bash scripts/ci_checks.sh browser --python 3.12",
       "status": "passed",
-      "summary": "Chromium: 115 passed, 52 skipped, 3781 deselected"
+      "summary": "Chromium: 118 passed, 61 skipped, 3956 deselected"
     },
     {
       "id": "BROWSER-FIREFOX-100",
-      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=firefox bash scripts/ci_checks.sh browser --python 3.11",
+      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=firefox bash scripts/ci_checks.sh browser --python 3.12",
       "status": "passed",
-      "summary": "Firefox: 113 passed, 54 skipped, 3781 deselected"
+      "summary": "Firefox: 116 passed, 63 skipped, 3956 deselected"
     },
     {
       "id": "BROWSER-WEBKIT-100",
-      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=webkit bash scripts/ci_checks.sh browser --python 3.11",
+      "command": "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=webkit bash scripts/ci_checks.sh browser --python 3.12",
       "status": "passed",
-      "summary": "WebKit: 113 passed, 54 skipped, 3781 deselected"
+      "summary": "WebKit: 116 passed, 63 skipped, 3956 deselected"
     },
     {
       "id": "BUILD-100",
-      "command": "SOURCE_DATE_EPOCH=0 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages (repeated twice)",
+      "command": "SOURCE_DATE_EPOCH=315619200 PYTHONDONTWRITEBYTECODE=1 uv build --all-packages (repeated twice)",
       "status": "passed",
-      "summary": "44 publishable workspace artifacts matched byte-for-byte across two builds; 22 coordinated 1.0.0 hashes retained"
+      "summary": "44 publishable workspace artifacts matched byte-for-byte across two builds; 26 coordinated 1.0.0 hashes retained"
     },
     {
       "id": "REGRESS-100",
       "command": ".venv/bin/pytest -q --tb=short -n 0",
       "status": "passed",
-      "summary": "3445 passed, 508 skipped; historical 0.x alias fixtures are retired on the 1.0 train and remain runnable against v0.67"
+      "summary": "3621 passed, 515 skipped; historical 0.x alias fixtures are retired on the 1.0 train and remain runnable against v0.67"
     },
     {
       "id": "RELEASE-100",

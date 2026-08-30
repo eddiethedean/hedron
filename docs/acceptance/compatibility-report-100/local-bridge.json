@@ -3,7 +3,7 @@
   "baseline": "v0.67.0",
   "target": "v1.0.0",
   "status": "passed",
-  "source_commit": "eb21386836c45f54c9310844164bcad88019dc4d",
+  "source_commit": "6794570adab36d908b6f7ae8a4a7b64a73be7937",
   "canonical_fixture": {
     "command": ".venv/bin/python -m pytest -n 0 tests/upgrade/test_phase_1_0_fixtures.py",
     "result": "9 passed, 1 warning",
@@ -14,7 +14,7 @@
     "result": "22 Python distributions produced 44 publishable wheel/sdist artifacts twice",
     "versions": "coordinated workspace metadata declares 1.0.0; independent satellites retain their declared versions",
     "artifact_retention": "candidate artifacts retained in ignored dist/; the coordinated SHA-256 ledger is committed in local-build-evidence.json",
-    "reproducibility": "all 44 publishable artifacts, including the hedron-native Mach-O extension, matched byte-for-byte across two SOURCE_DATE_EPOCH=0 builds; final platform attestations are produced by the tag workflow"
+    "reproducibility": "all 44 publishable artifacts, including the hedron-native Mach-O extension, matched byte-for-byte across two SOURCE_DATE_EPOCH=315619200 builds; final platform attestations are produced by the tag workflow"
   },
   "bridge_run": {
     "command": "python scripts/check_upgrade_100.py --baseline v0.67.0 --json",
@@ -45,7 +45,7 @@
   },
   "target_artifact": {
     "available": true,
-    "reason": "Reproducible v1.0.0 candidate wheels/sdists were built from source commit eb213868; coordinated hashes and the exact lock are committed",
+    "reason": "Reproducible v1.0.0 candidate wheels/sdists were built twice from source commit 6794570a; 26 coordinated hashes and the exact lock are committed",
     "required_before": ["COMPAT-100", "FLEET-100", "PKG-100", "RELEASE-100"]
   },
   "release_claim": true
