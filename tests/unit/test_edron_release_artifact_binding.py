@@ -26,7 +26,16 @@ def test_edron_release_artifact_verifier_authenticates_exact_inventory(
         rows.append({"name": name, "sha256": hashlib.sha256(payload).hexdigest()})
     evidence = tmp_path / "evidence.json"
     evidence.write_text(
-        json.dumps({"source_commit": "a" * 40, "artifacts": rows}), encoding="utf-8"
+        json.dumps(
+            {
+                "schema": "hedron.edron-build-evidence/1",
+                "target": "edron-v1.0.0",
+                "source_commit": "a" * 40,
+                "reproducibility": {"verified": True},
+                "artifacts": rows,
+            }
+        ),
+        encoding="utf-8",
     )
     monkeypatch.setattr(verify_edron_release_artifacts, "EVIDENCE", evidence)
     monkeypatch.setattr(

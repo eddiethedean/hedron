@@ -32,6 +32,13 @@ def main() -> int:
     required_prefixes = ("edron-", "edron_sim-")
     errors: list[str] = []
     errors.extend(evidence_source_errors(evidence.get("source_commit")))
+    if evidence.get("schema") != "hedron.edron-build-evidence/1":
+        errors.append("approved Edron ledger has an invalid schema")
+    if evidence.get("target") != "edron-v1.0.0":
+        errors.append("approved Edron ledger has an invalid release target")
+    reproducibility = evidence.get("reproducibility")
+    if not isinstance(reproducibility, dict) or reproducibility.get("verified") is not True:
+        errors.append("approved Edron ledger lacks verified reproducibility")
     if len(expected) != 4 or any(
         sum(name.startswith(prefix) for name in expected) != 2 for prefix in required_prefixes
     ):
