@@ -2,6 +2,47 @@
 
 Practical defaults for production Hedron apps from the 0.8 compatibility baseline onward.
 
+## A production-minded baseline
+
+Keep the application constructor, page shell, and replaceable views explicit. Read secrets
+from the environment and let authenticated responses select a private cache policy:
+
+```python
+import os
+
+from fastapi import Request
+
+from hedron import Hedron, InteractionResult, Stack, Text
+
+app = Hedron(
+    title="Account console",
+    security="standard",
+    explorer="off",
+    session_secret=os.environ["HEDRON_SESSION_SECRET"],
+)
+
+
+@app.view("/account/status")
+def account_status(request: Request) -> InteractionResult:
+    signed_in = bool(request.session.get("user_id"))
+    return InteractionResult(
+        content=Text("Signed in" if signed_in else "Signed out"),
+        cache="private" if signed_in else "vary-htmx",
+    )
+
+
+@app.page("/")
+def home():
+    return Stack(
+        Text("Account console"),
+        account_status(),
+        account_status.refresh_button("Refresh status"),
+    )
+```
+
+This keeps one application authority: the session remains server-owned, the view owns its
+cache decision, and the page composes the resulting handle without hand-writing HTMX attributes.
+
 ## Pages vs fragments
 
 - Use `@app.page` (or full `Page`) for document shells and first paint.

@@ -22,6 +22,62 @@
 4. On logout: delete the server row. **Signed cookies alone cannot revoke early** —
    clients may still present a valid cookie until max-age; server state is authoritative.
 
+Stamp the session when login succeeds, then enforce both idle and absolute limits in the
+same dependency used by protected pages and actions:
+
+```python
+import os
+from typing import Annotated
+
+from fastapi import Depends, HTTPException, Request, status
+
+from hedron import Hedron, Text
+from hedron.security import SessionTimeoutError, check_session_timeout, touch_session
+
+app = Hedron(
+    title="Private workspace",
+    security="standard",
+    session_secret=os.environ["HEDRON_SESSION_SECRET"],
+)
+
+
+def establish_session(request: Request, user_id: str) -> None:
+    request.session.clear()
+    request.session["user_id"] = user_id
+    touch_session(request.session)
+
+
+def require_live_session(request: Request) -> str:
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sign in required",
+        )
+    try:
+        check_session_timeout(
+            request.session,
+            idle_seconds=30 * 60,
+            absolute_seconds=8 * 60 * 60,
+            touch=True,
+        )
+    except SessionTimeoutError as exc:
+        request.session.clear()
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session expired",
+        ) from exc
+    return str(user_id)
+
+
+@app.page("/account")
+def account(user_id: Annotated[str, Depends(require_live_session)]):
+    return Text(f"Signed in as {user_id}")
+```
+
+Call `establish_session()` only after authentication succeeds. Immediate cross-device
+revocation still requires a shared server-side session or refresh-token store.
+
 ## Cookie vs Bearer CSRF
 
 | Client | Auth | CSRF |

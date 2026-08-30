@@ -38,6 +38,49 @@ Pin `hedron>=1.0.0,<1.1` (and matching adapters/extras) in your lockfile.
 10. **Smoke** — Hit Hello + Refresh (or your primary fragment) and one CSRF form POST behind
     the real proxy.
 
+## Production application constructor
+
+Make production mode and secrets explicit in the application module. A missing secret should
+fail startup instead of silently falling back to a development value:
+
+```python
+import os
+
+import redis
+
+from hedron import Hedron
+from hedron_core.cache import set_cache_backend
+from hedron_core.jobs import RedisJobBackend, set_job_backend
+from hedron_core.redis_cache import RedisCacheBackend
+
+redis_client = redis.Redis.from_url(
+    os.environ["HEDRON_REDIS_URL"],
+    decode_responses=True,
+)
+set_job_backend(RedisJobBackend(redis_client))
+set_cache_backend(RedisCacheBackend(redis_client))
+
+app = Hedron(
+    title="Operations",
+    security="strict",
+    production=os.environ.get("HEDRON_ENV") == "production",
+    explorer="off",
+    session_secret=os.environ["HEDRON_SESSION_SECRET"],
+)
+```
+
+Build before starting that process:
+
+```bash
+pip install "redis>=5,<6"
+hedron build
+HEDRON_ENV=production uvicorn app:app --host 0.0.0.0 --port 8000
+```
+
+The environment variable is an adopter convention read by your application module; Hedron does
+not load `HEDRON_SESSION_SECRET` automatically. Every worker must use the same Redis URL and
+session secret.
+
 ## High availability (multi-replica)
 
 Hedron does **not** ship a first-party shared session store. When you run more than one

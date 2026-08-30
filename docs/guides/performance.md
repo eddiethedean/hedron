@@ -56,6 +56,35 @@ Record HTML size, fragment latency, open SSE/WS count, and worker CPU for repres
 CRUD/admin flows. Add complexity only when measurements justify it
 ([design principles](https://github.com/eddiethedean/hedron/blob/main/docs/foundations/03_DESIGN_PRINCIPLES.md)).
 
+Start with a small integration measurement around the actual route. Keep the assertion tied
+to your application budget rather than treating Hedron's CI ceilings as an SLO:
+
+```python
+from time import perf_counter
+
+from fastapi.testclient import TestClient
+
+from app import app, status_view
+
+
+def test_status_fragment_budget() -> None:
+    with TestClient(app) as client:
+        started = perf_counter()
+        response = client.get(
+            status_view.path,
+            headers={"HX-Request": "true", "HX-Target": status_view.dom_id},
+        )
+        elapsed_ms = (perf_counter() - started) * 1_000
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert len(response.content) < 16_000
+    assert elapsed_ms < 250  # Replace with a budget measured in your CI environment.
+```
+
+For stable timing data, warm the application first and collect a distribution across many
+requests; the single-request form above is a readable regression guard, not a load test.
+
 ## See also
 
 - [Deployment](deployment.md) · [Best practices](best-practices.md) · [Live interaction](live-interaction.md) · [Observability](observability.md)

@@ -17,6 +17,38 @@ status: shipped
     symbol. Prefer the [component catalog](../components/index.md) for props and
     [Autodoc](AUTODOC.md) for generated signatures.
 
+## Example
+
+Utility components retain semantic text and accessible status even without browser enhancement:
+
+```python
+from hedron import Card, Grid, JSONViewer, Metric, Progress, Stack, Status
+
+
+def deployment_snapshot():
+    return Grid(
+        Card(
+            Metric("Deployments", 42, delta="+5", delta_tone="up"),
+            title="This week",
+        ),
+        Card(
+            Stack(
+                Progress(68, label="68 percent deployed"),
+                Status("Deploying to region 3 of 4", variant="activity"),
+            ),
+            title="Current rollout",
+        ),
+        Card(
+            JSONViewer({"release": "1.0.0", "token": "redacted automatically"}),
+            title="Last check",
+        ),
+        columns={"base": 1, "md": 3},
+    )
+```
+
+`JSONViewer` redacts keys containing `secret`, `password`, or `token`, but that is a display
+guard—not permission to pass credentials into presentation data.
+
 ## Constructors (summary)
 
 | Component | Key parameters | Returns / notes |

@@ -31,6 +31,67 @@ export SESSION_SECRET="$(python -c 'import secrets; print(secrets.token_urlsafe(
 uvicorn app:app --reload
 ```
 
+The critical wiring in the runnable example is ordinary Authlib plus a small Hedron session
+projection:
+
+```python
+import os
+from collections.abc import Mapping
+
+from fastapi import Request, status
+from fastapi.responses import RedirectResponse
+
+from hedron import Hedron
+from hedron.auth import create_oauth_client, install_authenticated_from_session
+from hedron.oidc import normalize_claims
+
+app = Hedron(
+    title="OIDC application",
+    security="standard",
+    explorer="off",
+    session_secret=os.environ["SESSION_SECRET"],
+)
+install_authenticated_from_session(app, session_key="oidc_sub")
+
+oauth = create_oauth_client()
+provider = oauth.register(
+    name="provider",
+    client_id=os.environ["OIDC_CLIENT_ID"],
+    client_secret=os.environ["OIDC_CLIENT_SECRET"],
+    server_metadata_url=(
+        f"{os.environ['OIDC_ISSUER'].rstrip('/')}/.well-known/openid-configuration"
+    ),
+    client_kwargs={"scope": "openid profile email"},
+)
+
+
+@app.get("/login")
+async def login(request: Request) -> RedirectResponse:
+    redirect_uri = os.environ.get(
+        "OIDC_REDIRECT_URI",
+        "http://127.0.0.1:8000/auth/callback",
+    )
+    return await provider.authorize_redirect(request, redirect_uri)
+
+
+@app.get("/auth/callback")
+async def callback(request: Request) -> RedirectResponse:
+    token = await provider.authorize_access_token(request)
+    raw_claims = token.get("userinfo")
+    if not isinstance(raw_claims, Mapping):
+        raw_claims = await provider.userinfo(token=token)
+    claims = normalize_claims(raw_claims)
+
+    request.session.clear()
+    request.session["oidc_sub"] = claims.sub
+    request.session["oidc_name"] = claims.name or claims.email or claims.sub
+    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+```
+
+The complete example also catches provider errors and implements CSRF-protected local logout.
+Keep those paths when adapting this excerpt; do not store access, refresh, or ID tokens in the
+signed cookie session.
+
 Open <http://127.0.0.1:8000>, choose **Sign in**, authenticate with the provider, and
 confirm that the app displays the returned name. Sign out clears the local session.
 

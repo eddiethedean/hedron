@@ -15,6 +15,55 @@ not require a telemetry SDK.
 - Never log session secrets, CSRF tokens, or raw credentials. Diagnostics redact secrets
   before formatting.
 
+### Request IDs, timing, and tracing
+
+Use ordinary FastAPI middleware for application-owned request logs. Optional Hedron spans can
+share the same service name without changing behavior when an exporter is unavailable:
+
+```python
+import logging
+from time import perf_counter
+from uuid import uuid4
+
+from fastapi import Request
+
+from hedron import Hedron
+from hedron.tracing import configure_tracing
+
+logger = logging.getLogger("app.http")
+configure_tracing(enabled=True, sample_rate=0.1, service_name="operations-ui")
+
+app = Hedron(title="Operations", security="standard")
+
+
+@app.middleware("http")
+async def log_request(request: Request, call_next):
+    request_id = request.headers.get("X-Request-ID") or uuid4().hex
+    started = perf_counter()
+    response = await call_next(request)
+    duration_ms = (perf_counter() - started) * 1_000
+
+    response.headers["X-Request-ID"] = request_id
+    logger.info(
+        "request.complete",
+        extra={
+            "request_id": request_id,
+            "route": request.url.path,
+            "status_code": response.status_code,
+            "duration_ms": round(duration_ms, 2),
+        },
+    )
+    return response
+
+
+@app.get("/healthz", include_in_schema=False)
+def healthz() -> dict[str, str]:
+    return {"status": "ok"}
+```
+
+If `hedron[otel]` is not installed, tracing is a no-op; the middleware and health endpoint
+continue to work through FastAPI and standard-library logging.
+
 ## Health and readiness
 
 Expose ordinary FastAPI (or host) health endpoints yourself. Suggested split:

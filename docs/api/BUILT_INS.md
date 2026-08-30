@@ -34,6 +34,33 @@ manual.
 3. For HTMX interaction patterns, see [HTMX interactions](../guides/htmx-interactions.md).
 4. For inference presentation widgets, also see [Inference API](INFERENCE.md).
 
+## Composition example
+
+Built-ins are ordinary components. Compose them into a page without templates or custom CSS:
+
+```python
+from hedron import Alert, Card, Grid, Heading, Hedron, Metric, Stack, Text
+
+app = Hedron(title="Operations", security="standard")
+
+
+@app.page("/")
+def operations():
+    return Stack(
+        Heading("Operations", level=1),
+        Alert("All production regions are healthy.", tone="success"),
+        Grid(
+            Card(Metric("Requests", "18.4k", delta="+7%", delta_tone="up"), title="Traffic"),
+            Card(Text("p95 latency: 84 ms"), title="Latency"),
+            Card(Text("No active incidents"), title="Incidents"),
+            columns={"base": 1, "md": 3},
+        ),
+    )
+```
+
+Use each linked component page below for its exact constructor, accessibility behavior,
+and rendering notes.
+
 ## Document and composition
 
 [`Page`](../components/page.md) · [`Fragment`](../components/fragment.md) ·
