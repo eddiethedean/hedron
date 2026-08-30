@@ -25,10 +25,10 @@ plugin, component, asset, and runtime authorities for their features.
 
 ## Installation promise
 
-The public beginner path remains one ordinary command while the 1.0 candidate is unpublished:
+The candidate beginner path is one ordinary command once the authorized 1.0 publication occurs:
 
 ```console
-pip install "edron>=0.9.0,<0.10"
+pip install "edron>=1.0.0,<1.1"
 ```
 
 That command must be sufficient to import Edron, run the development server, and use every
@@ -43,7 +43,7 @@ same Plotly adapter:
 
 ```console
 pip install "plotly>=5.18,<7"
-pip install "edron[plotly]>=0.9.0,<0.10"
+pip install "edron[plotly]>=1.0.0,<1.1"
 ```
 
 The second command is only an installation shortcut. Edron does not require, record, or inspect
@@ -329,9 +329,9 @@ EDR-CAP-0001: Plotly support is not installed
 Capability: chart.plotly
 Required: plotly>=5.18,<7
 Direct:   pip install "plotly>=5.18,<7"
-Shortcut: pip install "edron[plotly]>=0.9.0,<0.10"
+Shortcut: pip install "edron[plotly]>=1.0.0,<1.1"
 uv:       uv add "plotly>=5.18,<7"
-Shortcut: uv add "edron[plotly]>=0.9.0,<0.10"
+Shortcut: uv add "edron[plotly]>=1.0.0,<1.1"
 Restart the Edron process after changing the environment.
 ```
 
