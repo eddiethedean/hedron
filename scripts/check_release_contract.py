@@ -48,6 +48,22 @@ def main() -> int:
     support = tomllib.loads((ROOT / "release/support-matrix.toml").read_text())
     packages = support["packages"]
     errors: list[str] = []
+    workspace = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    workspace_members = workspace["tool"]["uv"]["workspace"]["members"]
+    workspace_packages: set[str] = set()
+    for member in workspace_members:
+        project_path = ROOT / member / "pyproject.toml"
+        if not project_path.is_file():
+            errors.append(f"workspace member {member}: missing pyproject.toml")
+            continue
+        project = tomllib.loads(project_path.read_text(encoding="utf-8"))["project"]
+        workspace_packages.add(str(project["name"]))
+    if workspace_packages != set(packages):
+        errors.append(
+            "support matrix/workspace package inventory drifted: "
+            f"missing={sorted(workspace_packages - set(packages))!r}, "
+            f"stale={sorted(set(packages) - workspace_packages)!r}"
+        )
     stable_packages = {name for name, item in packages.items() if item.get("maturity") == "stable"}
     if stable_packages != set(STABLE_BOUNDARY):
         errors.append(

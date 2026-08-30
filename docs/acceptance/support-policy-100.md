@@ -30,7 +30,7 @@ compatibility window used by the 1.0 release gate; it is not a commercial SLA or
 | Flask adapter | Flask `>=3,<4` |
 | Django adapter | Django `>=5.2,<6` |
 | Browser automation evidence | Playwright `1.62.0`, Chromium, Firefox, and WebKit |
-| Stable-package typing | Pyright `>=1.1.400`, warning-fatal with 0 warnings across the six Stable packages; Beta satellite warnings are outside the Stable claim |
+| Package typing enforcement | Pyright `>=1.1.400`, warning-fatal with 0 errors and 0 warnings across all 22 uv workspace packages; the Stable API promise remains limited to packages marked `maturity = "stable"` |
 | Packaging | wheel and sdist artifacts built with `SOURCE_DATE_EPOCH=315619200`; approved hashes are verified before Python packages use PyPI attestations |
 
 All other packages are independent Beta satellites and must declare their Hedron compatibility

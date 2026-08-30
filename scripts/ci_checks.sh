@@ -399,7 +399,9 @@ quality_pyright() {
 
 quality_strict_package_types() {
   # Every shipped Python package must remain warning-free under the workspace's
-  # strict Pyright configuration. Keeping paths explicit makes additions reviewable.
+  # strict Pyright configuration. Keep paths explicit for reviewability, and
+  # verify the list stays in sync with the uv workspace before running Pyright.
+  run_py scripts/check_package_typing_inventory.py
   if rg -n '# pyright:.*reportUnknown[A-Za-z]*Type=false' packages --glob '*.py'; then
     echo "Package-wide unknown-type suppressions are forbidden; type or cast the boundary instead." >&2
     return 1
