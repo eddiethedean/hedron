@@ -4,12 +4,18 @@ on:
   push:
     tags:
       - "edron-v*.*.*"
+  workflow_dispatch:
+    inputs:
+      release_ref:
+        description: Existing immutable edron-v tag to recover
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: edron-release-${{ github.ref }}
+  group: edron-release-${{ inputs.release_ref || github.ref }}
   cancel-in-progress: false
 
 env:
@@ -17,6 +23,8 @@ env:
   UV_VERSION: "0.12.1"
   SOURCE_DATE_EPOCH: "315619200"
   PYTHONDONTWRITEBYTECODE: "1"
+  RELEASE_REF: ${{ inputs.release_ref || github.ref }}
+  RELEASE_TAG: ${{ inputs.release_ref || github.ref_name }}
 
 jobs:
   test:
@@ -34,7 +42,7 @@ jobs:
       - name: Check out tagged source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ env.RELEASE_REF }}
           persist-credentials: false
 
       - name: Install uv
@@ -104,7 +112,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ env.RELEASE_REF }}
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -125,7 +133,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ env.RELEASE_REF }}
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -157,7 +165,7 @@ jobs:
       - name: Check out tagged source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ env.RELEASE_REF }}
           persist-credentials: false
 
       - name: Install uv
@@ -170,9 +178,12 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
 
+      - name: Sync locked workspace
+        run: uv sync --locked --python 3.12
+
       - name: Verify tag and package version
         env:
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ env.RELEASE_TAG }}
         run: |
           set -euo pipefail
 
@@ -213,10 +224,10 @@ jobs:
           uv build --package edron --out-dir dist
           uv build --package edron-sim --out-dir dist
           ls -la dist
-          VERSION="${GITHUB_REF_NAME#edron-v}"
-          uv run --no-project --python 3.12 python scripts/check_edron_10_release.py \
+          VERSION="${RELEASE_TAG#edron-v}"
+          .venv/bin/python scripts/check_edron_10_release.py \
             --dist-dir dist --version "${VERSION}"
-          uv run --no-project --python 3.12 python scripts/verify_edron_release_artifacts.py \
+          .venv/bin/python scripts/verify_edron_release_artifacts.py \
             --dist-dir dist
 
       - name: Attest build provenance
@@ -246,7 +257,7 @@ jobs:
       - name: Verify the published Edron quick start
         run: |
           set -euo pipefail
-          VERSION="${GITHUB_REF_NAME#edron-v}"
+          VERSION="${RELEASE_TAG#edron-v}"
           smoke_dir="$(mktemp -d)"
           for attempt in 1 2 3 4 5 6; do
             if uvx --refresh --from "edron==${VERSION}" edron new smoke \

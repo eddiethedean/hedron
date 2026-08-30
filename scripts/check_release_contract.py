@@ -122,8 +122,11 @@ def main() -> int:
         errors.append("main release must not share crates.io ownership with native-wheels.yml")
     required_edron_release_facts = (
         "environment: release",
+        "workflow_dispatch:",
+        "RELEASE_REF:",
         'SOURCE_DATE_EPOCH: "315619200"',
         "uv build --package edron-sim",
+        ".venv/bin/python scripts/check_edron_10_release.py",
         "scripts/verify_edron_release_artifacts.py",
         "dist/edron_sim-*.whl",
         "edron-sim==${SIM_VERSION}",
