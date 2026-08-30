@@ -107,6 +107,8 @@ def test_edron_has_an_independent_release_path() -> None:
     assert "Recover Edron and edron-sim publication" in edron
     assert "secrets.PYPI_API_TOKEN" in edron
     assert "--check-url https://pypi.org/simple/" in edron
+    assert "uv sync --no-install-project" in edron
+    assert "uv run --no-sync python" in edron
     assert "Preflight published Stable dependencies from PyPI" in edron
     assert "tests/unit/test_edron_runtime.py" in edron
     assert "tests/unit/test_edron_phase02.py" in edron

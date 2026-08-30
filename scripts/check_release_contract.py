@@ -132,6 +132,8 @@ def main() -> int:
         "Recover Edron and edron-sim publication",
         "secrets.PYPI_API_TOKEN",
         "--check-url https://pypi.org/simple/",
+        "uv sync --no-install-project",
+        "uv run --no-sync python",
         "dist/edron_sim-*.whl",
         "edron-sim==${SIM_VERSION}",
     )

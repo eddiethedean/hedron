@@ -288,8 +288,8 @@ jobs:
             sleep 20
           done
           cd "${smoke_dir}/app"
-          uv sync
-          uv run python -c \
+          uv sync --no-install-project
+          uv run --no-sync python -c \
             "import importlib.metadata as m; import app; assert m.version('edron') == '${VERSION}'; assert app.app"
 
       - name: Verify published edron-sim
