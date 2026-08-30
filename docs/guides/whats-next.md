@@ -35,8 +35,8 @@ continued experimentation, or non-admission:
 | **1.5** | Stateful browser composition | Can partial updates retain local state safely? |
 | **1.6** | Controlled ecosystem expansion | Which advanced integrations have a trustworthy operating model? |
 
-See the [full 1.X planning sequence](../ROADMAP.md#proposed-1x-sequence) for scope and shared
-entry/exit policy.
+See the [full 1.X planning sequence](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#proposed-1x-sequence)
+for scope and shared entry/exit policy.
 
 ## Deliberately not planned as defaults
 
