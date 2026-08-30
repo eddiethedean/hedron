@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from collections.abc import Mapping, Sequence
 from typing import cast
@@ -115,15 +116,35 @@ def _reject_pollution(obj: object, path: str = "$") -> None:
             _reject_pollution(item, f"{path}[{index}]")
 
 
+def _reject_nonfinite(obj: object, path: str = "$") -> None:
+    if isinstance(obj, float) and not math.isfinite(obj):
+        raise _map_error(
+            HED_MAP_SPEC_0001,
+            "Invalid MapSpec numeric value",
+            f"Non-finite numeric value at {path} is not valid JSON.",
+            "Replace NaN and infinity with finite values or null.",
+        )
+    if isinstance(obj, Mapping):
+        for key, value in cast(Mapping[object, object], obj).items():
+            _reject_nonfinite(value, f"{path}.{key}")
+    elif isinstance(obj, (list, tuple)):
+        for index, item in enumerate(cast(Sequence[object], obj)):
+            _reject_nonfinite(item, f"{path}[{index}]")
+
+
 def _byte_size(payload: object) -> int:
-    return len(json.dumps(payload, default=str, separators=(",", ":")).encode("utf-8"))
+    return len(
+        json.dumps(payload, default=str, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    )
 
 
 def parse_map_spec(raw: MapSpec | Mapping[str, object]) -> MapSpec:
     if isinstance(raw, MapSpec):
+        _reject_nonfinite(raw.model_dump(mode="python"))
         _reject_pollution(raw.to_json_dict())
         return raw
     _reject_pollution(raw)
+    _reject_nonfinite(raw)
     try:
         return MapSpec.model_validate(dict(raw))
     except Exception as exc:
@@ -165,6 +186,13 @@ def _origin_of(url: str) -> str | None:
 
 
 def _validate_url(url: str, *, allow_relative: bool = True) -> str:
+    if url != url.strip() or any(ord(ch) < 32 or ord(ch) == 127 or ch.isspace() for ch in url):
+        raise _map_error(
+            HED_MAP_POLICY_0002,
+            "Unsafe URL rejected",
+            f"Refused {url!r}.",
+            "Use a canonical HTTPS or same-origin path without whitespace or controls.",
+        )
     if url.startswith("//"):
         raise _map_error(
             HED_MAP_POLICY_0002,
@@ -210,6 +238,13 @@ def _validate_url(url: str, *, allow_relative: bool = True) -> str:
             "HTTP remote tiles rejected",
             "Remote production tiles must be HTTPS.",
             "Serve tiles over https:// or use a same-origin asset path.",
+        )
+    if parsed.scheme == "https" and (not parsed.netloc or not parsed.hostname):
+        raise _map_error(
+            HED_MAP_POLICY_0002,
+            "HTTPS resource host missing",
+            f"Refused malformed absolute URL {url!r}.",
+            "Use https:// followed by an explicit host.",
         )
     if not parsed.scheme:
         if not allow_relative or not url.startswith("/"):
@@ -324,12 +359,14 @@ def _as_float(value: object) -> float | None:
     if value is None or isinstance(value, bool):
         return None
     if isinstance(value, (int, float)):
-        return float(value)
+        number = float(value)
+        return number if math.isfinite(number) else None
     if isinstance(value, str):
         try:
-            return float(value)
-        except ValueError:
+            number = float(value)
+        except (ValueError, OverflowError):
             return None
+        return number if math.isfinite(number) else None
     return None
 
 

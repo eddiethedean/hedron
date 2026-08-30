@@ -66,13 +66,18 @@ class LayoutSpec:
         if not isinstance(cast(Any, raw_columns), (int, Mapping)):
             raise NavigationError("layout columns must be an integer or responsive mapping")
         columns_value: Any = raw_columns
+        if isinstance(columns_value, bool):
+            raise NavigationError("layout columns must not be boolean")
         if isinstance(columns_value, int) and not 1 <= columns_value <= 6:
             raise NavigationError("layout columns must be between 1 and 6")
         if isinstance(columns_value, Mapping):
             columns = cast(Mapping[object, object], columns_value)
             if not columns or len(columns) > 8:
                 raise NavigationError("responsive layout columns must contain 1-8 entries")
-            if any(not isinstance(value, int) or not 1 <= value <= 6 for value in columns.values()):
+            if any(
+                isinstance(value, bool) or not isinstance(value, int) or not 1 <= value <= 6
+                for value in columns.values()
+            ):
                 raise NavigationError("responsive layout columns must be integers between 1 and 6")
         for label, value in (
             ("max_width", self.max_width),

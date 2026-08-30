@@ -162,6 +162,18 @@ class StaticImage(MapModel):
     attribution: str = ""
     bounds: tuple[float, float, float, float] | None = None
 
+    @field_validator("bounds")
+    @classmethod
+    def finite_bounds(
+        cls, value: tuple[float, float, float, float] | None
+    ) -> tuple[float, float, float, float] | None:
+        if value is not None:
+            import math
+
+            if any(not math.isfinite(item) for item in value):
+                raise ValueError("static image bounds must be finite")
+        return value
+
 
 class PMTiles(MapModel):
     kind: Literal["pmtiles"] = "pmtiles"

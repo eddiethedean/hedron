@@ -399,10 +399,6 @@ class InMemoryDataSource:
             deletes=tuple(accepted_deletes),
             dataset_version=dataset_version,
         )
-        if ok and self._audit_hook is not None:
-            # Audit is part of the transaction boundary. Do not publish the
-            # working copies until the callback has succeeded.
-            self._audit_hook(accepted)
         if ok:
             if len(rows) > self.max_rows:
                 return DataSaveResult(
@@ -416,6 +412,10 @@ class InMemoryDataSource:
                     ),
                     version=self._dataset_version,
                 )
+            if self._audit_hook is not None:
+                # Audit is part of the transaction boundary. Capacity checks
+                # must pass first so rejected writes are never reported as accepted.
+                self._audit_hook(accepted)
             self._rows = rows
             self._row_versions = row_versions
             self._version_counter = version_counter

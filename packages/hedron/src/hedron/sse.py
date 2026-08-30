@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import AsyncIterator, Callable, Iterator, Mapping
 
 from fastapi import HTTPException, status
@@ -25,17 +26,44 @@ __all__ = [
 
 _TERMINAL = frozenset({JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED})
 _MIN_POLL_INTERVAL_SECONDS = 0.05
+_MAX_POLL_INTERVAL_SECONDS = 60.0
 
 
 def _poll_interval(poll_interval_seconds: float | None, *, retry_after: float) -> float:
-    """Resolve the next sleep interval; clamp non-positive values to a floor.
+    """Resolve a finite next sleep interval within the progressive polling budget.
 
-    Explicit ``0`` / negative values previously reached ``asyncio.sleep(0)`` and
-    busy-looped on unchanged non-terminal jobs (issue #143).
+    Invalid explicit values fall back to the backend retry hint. Invalid backend
+    hints use the floor, and extreme values are capped at 60 seconds.
     """
-    if poll_interval_seconds is not None and poll_interval_seconds > 0:
-        return float(poll_interval_seconds)
-    return max(_MIN_POLL_INTERVAL_SECONDS, float(retry_after))
+    normalized: float | None = None
+    if poll_interval_seconds is not None:
+        try:
+            explicit = float(poll_interval_seconds)
+        except (TypeError, ValueError, OverflowError):
+            explicit = math.nan
+        if math.isfinite(explicit) and explicit > 0:
+            normalized = explicit
+    if normalized is None:
+        try:
+            fallback = float(retry_after)
+        except (TypeError, ValueError, OverflowError):
+            fallback = _MIN_POLL_INTERVAL_SECONDS
+        normalized = (
+            fallback if math.isfinite(fallback) and fallback > 0 else _MIN_POLL_INTERVAL_SECONDS
+        )
+    return min(_MAX_POLL_INTERVAL_SECONDS, max(_MIN_POLL_INTERVAL_SECONDS, normalized))
+
+
+def _retry_ms(value: object) -> int:
+    if isinstance(value, bool) or not isinstance(value, (str, int, float)):
+        return 1000
+    try:
+        seconds = float(value)
+    except (TypeError, ValueError, OverflowError):
+        seconds = 1.0
+    if not math.isfinite(seconds) or seconds <= 0:
+        seconds = 1.0
+    return int(min(_MAX_POLL_INTERVAL_SECONDS, max(1.0, seconds)) * 1000)
 
 
 def _reject_header_controls(name: str, value: str) -> None:
@@ -170,7 +198,7 @@ def job_status_sse_response(
                         state=status_obj.state.value,
                         message_html=_html(status_obj),
                         event_id=event_id,
-                        retry_ms=max(1000, int(status_obj.retry_after) * 1000),
+                        retry_ms=_retry_ms(status_obj.retry_after),
                         terminal=True,
                     ):
                         yield encode_sse(event).encode("utf-8")
@@ -195,7 +223,7 @@ def job_status_sse_response(
                 state=status_obj.state.value,
                 message_html=_html(status_obj),
                 event_id=event_id,
-                retry_ms=max(1000, int(status_obj.retry_after) * 1000),
+                retry_ms=_retry_ms(status_obj.retry_after),
                 terminal=terminal,
             ):
                 yield encode_sse(event).encode("utf-8")

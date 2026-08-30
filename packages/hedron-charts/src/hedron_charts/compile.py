@@ -9,6 +9,7 @@ import statistics
 from collections.abc import Mapping, Sequence
 from typing import Any, cast
 
+from hedron_charts.limits import redact_rows
 from hedron_charts.operators import (
     ALLOWED_OPERATORS,
     SUPPORTED_ENCODINGS,
@@ -36,6 +37,7 @@ from hedron_charts.spec import (
 )
 from hedron_core.diagnostics import HedronError, error
 from hedron_core.theme import default_theme
+from hedron_core.typing_aliases import JsonValue
 from hedron_core.visualization import DEFAULT_MAX_CHART_ROWS, DEFAULT_MAX_PAYLOAD_BYTES
 from hedron_core.visualization_theme import resolve_visualization_theme
 
@@ -87,10 +89,40 @@ def _reject_pollution(obj: object, path: str = "$") -> None:
             _reject_pollution(item, f"{path}[{i}]")
 
 
+def _reject_nonfinite(obj: object, path: str = "$") -> None:
+    if isinstance(obj, float) and not math.isfinite(obj):
+        raise _chart_error(
+            "HED-CHART-0022",
+            "Invalid ChartSpec",
+            f"Non-finite numeric value at {path} is not valid JSON.",
+            "Replace NaN and infinity with finite values or null.",
+        )
+    if isinstance(obj, Mapping):
+        for key, value in cast(Mapping[object, object], obj).items():
+            _reject_nonfinite(value, f"{path}.{key}")
+    elif isinstance(obj, (list, tuple)):
+        for index, item in enumerate(cast(Sequence[object], obj)):
+            _reject_nonfinite(item, f"{path}[{index}]")
+
+
 def parse_chart_spec(value: Mapping[str, object] | ChartSpec) -> ChartSpec:
     if isinstance(value, ChartSpec):
+        _reject_nonfinite(value.model_dump(mode="python"))
+        dumped = value.to_json_dict()
+        _reject_pollution(dumped)
+        if value.schema_version != SCHEMA_VERSION:
+            raise _chart_error(
+                "HED-CHART-0020",
+                "Unsupported ChartSpec schema version",
+                (
+                    f"schema_version {value.schema_version!r} is not supported; "
+                    f"expected {SCHEMA_VERSION}."
+                ),
+                "Upgrade the spec or pin hedron-charts to a compatible line.",
+            )
         return value
     _reject_pollution(value)
+    _reject_nonfinite(value)
     version = value.get("schema_version", SCHEMA_VERSION)
     if version != SCHEMA_VERSION:
         raise _chart_error(
@@ -200,13 +232,13 @@ def _as_number(value: Any) -> float | None:
     if isinstance(value, bool):
         return float(value)
     if isinstance(value, (int, float)):
-        if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
-            return None
-        return float(value)
+        number = float(value)
+        return number if math.isfinite(number) else None
     try:
-        return float(value)
-    except (TypeError, ValueError):
+        number = float(value)
+    except (TypeError, ValueError, OverflowError):
         return None
+    return number if math.isfinite(number) else None
 
 
 def _sort_key(value: object) -> tuple[int, str, object]:
@@ -236,7 +268,7 @@ def _as_int(value: object, *, default: int = 0) -> int:
     if isinstance(value, int):
         return value
     if isinstance(value, float):
-        return int(value)
+        return int(value) if math.isfinite(value) else default
     if isinstance(value, str):
         try:
             return int(value)
@@ -535,6 +567,13 @@ def apply_transforms(
             current = _apply_bin(current, tr)
         elif tr.op == "fold":
             fields = _as_str_list(tr.params.get("fields"))
+            if len(fields) > MAX_FIELDS or len(current) * len(fields) > MAX_ROWS:
+                raise _chart_error(
+                    "HED-CHART-0071",
+                    "Transform row limit exceeded",
+                    "fold would expand the transformed data beyond the bounded row budget.",
+                    "Reduce fold fields, sample first, or aggregate server-side.",
+                )
             raw_key = tr.params.get("as_key")
             raw_value = tr.params.get("as_value")
             as_key = raw_key if isinstance(raw_key, str) else "key"
@@ -556,6 +595,13 @@ def apply_transforms(
                 "Unknown transform operator",
                 f"Operator {tr.op!r} is not in the closed catalog.",
                 "Use only operators listed in CHART_SPEC.md.",
+            )
+        if len(current) > MAX_ROWS:
+            raise _chart_error(
+                "HED-CHART-0071",
+                "Transform row limit exceeded",
+                f"Transform {tr.op!r} produced {len(current)} rows; max is {MAX_ROWS}.",
+                "Sample or aggregate before expanding rows.",
             )
     return current
 
@@ -675,6 +721,27 @@ def compile_chart(spec: ChartSpec | Mapping[str, object]) -> ChartPlan:
     _validate_marks(parsed.marks)
     _validate_scales(parsed.scales)
 
+    try:
+        encoded_spec = json.dumps(
+            parsed.to_json_dict(),
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    except (TypeError, ValueError) as exc:
+        raise _chart_error(
+            "HED-CHART-0022",
+            "Invalid ChartSpec",
+            "ChartSpec values must be finite JSON.",
+            "Replace NaN/infinity and non-JSON values before compiling.",
+        ) from exc
+    if len(encoded_spec) > MAX_PAYLOAD_BYTES:
+        raise _chart_error(
+            "HED-CHART-0003",
+            "Chart payload limit exceeded",
+            f"ChartSpec payload is {len(encoded_spec)} bytes; max is {MAX_PAYLOAD_BYTES}.",
+            "Reduce row/field size or aggregate server-side.",
+        )
+
     rows = list(parsed.data.rows)
     if len(rows) > MAX_ROWS:
         raise _chart_error(
@@ -764,15 +831,11 @@ def compile_chart(spec: ChartSpec | Mapping[str, object]) -> ChartPlan:
         "height_hint": {"compact": 200, "ordinary": 360, "wide": 480}[density],
     }
 
-    redacted_rows: list[dict[str, object]] = []
-    for row in transformed:
-        cleaned: dict[str, object] = {}
-        for k, v in row.items():
-            if "secret" in str(k).lower() or "password" in str(k).lower():
-                cleaned[str(k)] = "***"
-            else:
-                cleaned[str(k)] = v
-        redacted_rows.append(cleaned)
+    # Reuse the exact-key, recursive redaction authority used by adapters.
+    redacted_rows = cast(
+        list[dict[str, object]],
+        redact_rows(cast(Sequence[Mapping[str, JsonValue]], transformed)),
+    )
 
     spec_fp = _fingerprint(parsed.to_json_dict())
     data_fp = _fingerprint(redacted_rows)

@@ -46,7 +46,9 @@ class InMemoryJobBackend:
     ) -> JobHandle:
         with self._lock:
             try:
-                payload_size = len(json.dumps(payload, separators=(",", ":")).encode("utf-8"))
+                payload_size = len(
+                    json.dumps(payload, separators=(",", ":"), allow_nan=False).encode("utf-8")
+                )
             except (TypeError, ValueError) as exc:
                 raise ValueError("job payload must be JSON-compatible") from exc
             if payload_size > self.max_payload_bytes:

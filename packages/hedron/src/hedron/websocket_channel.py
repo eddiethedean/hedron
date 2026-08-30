@@ -30,7 +30,7 @@ class _OutboundFrameTooLarge(ValueError):
 
 def _encode_json_frame(channel: PageSessionChannel, payload: Mapping[str, Any]) -> str:
     """Serialize an outbound frame and enforce the channel's byte budget."""
-    frame = json.dumps(payload)
+    frame = json.dumps(payload, allow_nan=False)
     if len(frame.encode("utf-8")) > channel.budget.max_message_bytes:
         raise _OutboundFrameTooLarge("outbound message exceeds max_message_bytes")
     return frame

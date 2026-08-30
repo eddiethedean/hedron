@@ -24,7 +24,7 @@ compatibility window used by the 1.0 release gate; it is not a commercial SLA or
 | Stable coordinated packages (`hedron-core`, `hedron`, `hedron-data`, `hedron-charts`, `hedron-maps`) | `>=1.0.0,<2.0` on one coordinated train |
 | Stable Edron facade (`edron`) | `>=1.0.0,<2.0`; independently tagged after the coordinated train |
 | FastAPI | `>=0.121.0,<0.150` |
-| Starlette | `>=0.40.0,<1.0` |
+| Starlette | `>=0.40.0,<2.0` |
 | Pydantic | `>=2.12.0,<2.15` |
 | Uvicorn | `>=0.32,<1.0` |
 | Flask adapter | Flask `>=3,<4` |

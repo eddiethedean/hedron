@@ -471,10 +471,14 @@ class DataWorkspace:
             if values.get(name) not in (None, "")
         }
         try:
-            offset = int(values.get("offset", 0) or 0)
-            limit = int(values.get("limit", self.page_size) or self.page_size)
+            raw_offset = values.get("offset", 0)
+            raw_limit = values.get("limit", self.page_size)
+            offset = int(0 if raw_offset in (None, "") else raw_offset)
+            limit = int(self.page_size if raw_limit in (None, "") else raw_limit)
         except (TypeError, ValueError) as exc:
             raise BindingError("invalid workspace paging", code="EDRON_DATA_QUERY") from exc
+        if offset < 0 or limit < 1 or limit > self.max_page_size:
+            raise BindingError("invalid workspace paging", code="EDRON_DATA_QUERY")
         return PageRequest(
             offset=offset,
             limit=limit,

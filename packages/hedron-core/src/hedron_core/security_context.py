@@ -6,6 +6,7 @@ import contextvars
 import hashlib
 import hmac
 import json
+import math
 import time
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
@@ -59,8 +60,10 @@ class SecurityContext:
     fingerprint: str = ""
 
     def __post_init__(self) -> None:
-        if not self.fingerprint:
-            object.__setattr__(self, "fingerprint", self.compute_fingerprint())
+        expected = self.compute_fingerprint()
+        if self.fingerprint and not hmac.compare_digest(self.fingerprint, expected):
+            raise SecurityContextError("stale or tampered security context fingerprint")
+        object.__setattr__(self, "fingerprint", expected)
 
     def compute_fingerprint(self) -> str:
         payload = {
@@ -185,7 +188,12 @@ class SecurityContext:
             raise SecurityContextError("invalid security context audience")
         if type(ttl_seconds) is not int or not 1 <= ttl_seconds <= 86_400:
             raise SecurityContextError("ttl_seconds must be between 1 and 86400")
-        issued_at = int(time.time() if now is None else now)
+        timestamp: Any = time.time() if now is None else now
+        if isinstance(timestamp, bool) or not isinstance(timestamp, (int, float)):
+            raise SecurityContextError("security context clock must be a finite number")
+        if not math.isfinite(float(timestamp)):
+            raise SecurityContextError("security context clock must be a finite number")
+        issued_at = int(timestamp)
         envelope: dict[str, Any] = {
             "schema_version": 1,
             "key_id": key_id,
@@ -268,6 +276,13 @@ class SecurityContext:
         clock_skew_seconds: int = 30,
     ) -> SecurityContext:
         """Restore a context only after verifying its signed envelope and expiry."""
+        raw_clock_skew: Any = clock_skew_seconds
+        if (
+            isinstance(raw_clock_skew, bool)
+            or not isinstance(raw_clock_skew, int)
+            or not 0 <= raw_clock_skew <= 3600
+        ):
+            raise SecurityContextError("clock_skew_seconds must be between 0 and 3600")
         _validate_payload_size(payload)
         if frozenset(payload) != _AUTHENTICATED_FIELDS:
             raise SecurityContextError("invalid security context envelope fields")
@@ -291,13 +306,18 @@ class SecurityContext:
             raise SecurityContextError("malformed security context envelope")
         key_id = _bounded_string(key_id, "key_id")
         audience = _bounded_string(audience, "audience")
-        issued_at = _bounded_int(issued_at, "issued_at")
-        expires_at = _bounded_int(expires_at, "expires_at")
+        issued_at = _bounded_int(issued_at, "issued_at", maximum=2**63 - 1)
+        expires_at = _bounded_int(expires_at, "expires_at", maximum=2**63 - 1)
         if len(key_id) > 128 or len(signature) != 64:
             raise SecurityContextError("oversized security context envelope field")
         if expires_at <= issued_at or expires_at - issued_at > 86_400:
             raise SecurityContextError("invalid security context lifetime")
-        current = int(time.time() if now is None else now)
+        timestamp: Any = time.time() if now is None else now
+        if isinstance(timestamp, bool) or not isinstance(timestamp, (int, float)):
+            raise SecurityContextError("security context clock must be a finite number")
+        if not math.isfinite(float(timestamp)):
+            raise SecurityContextError("security context clock must be a finite number")
+        current = int(timestamp)
         if issued_at > current + clock_skew_seconds or expires_at < current - clock_skew_seconds:
             raise SecurityContextError("expired or not-yet-valid security context")
         unsigned = {key: value for key, value in payload.items() if key != "signature"}
@@ -340,7 +360,7 @@ def _validate_payload_size(payload: Mapping[str, Any]) -> None:
     if not hasattr(payload, "items"):
         raise SecurityContextError("security context payload must be an object")
     try:
-        encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+        encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False)
     except (TypeError, ValueError) as exc:
         raise SecurityContextError("security context payload is not JSON-compatible") from exc
     if len(encoded.encode("utf-8")) > _MAX_CONTEXT_BYTES:
@@ -348,9 +368,16 @@ def _validate_payload_size(payload: Mapping[str, Any]) -> None:
 
 
 def _sign_envelope(payload: Mapping[str, Any], secret: bytes) -> str:
-    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
-        "utf-8"
-    )
+    try:
+        encoded = json.dumps(
+            payload,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+            allow_nan=False,
+        ).encode("utf-8")
+    except (TypeError, ValueError) as exc:
+        raise SecurityContextError("security context payload is not JSON-compatible") from exc
     return hmac.new(secret, encoded, hashlib.sha256).hexdigest()
 
 

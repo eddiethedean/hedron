@@ -50,6 +50,12 @@ class VisualizationLimits:
     max_rows: int = DEFAULT_MAX_CHART_ROWS
     max_payload_bytes: int = DEFAULT_MAX_PAYLOAD_BYTES
 
+    def __post_init__(self) -> None:
+        for name in ("max_rows", "max_payload_bytes"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise ValueError(f"VisualizationLimits.{name} must be a positive integer")
+
 
 @dataclass(frozen=True, slots=True)
 class ChartAccessibility:
@@ -122,7 +128,10 @@ def validate_chart_event(event: ChartEvent, *, max_payload_bytes: int = 65_536) 
         )
     if event.debounce_ms < 0:
         raise ValueError("debounce_ms must be >= 0")
-    encoded = json.dumps(dict(event.payload), default=str).encode("utf-8")
+    try:
+        encoded = json.dumps(dict(event.payload), default=str, allow_nan=False).encode("utf-8")
+    except (TypeError, ValueError) as exc:
+        raise ValueError("chart event payload must be finite JSON") from exc
     if len(encoded) > max_payload_bytes:
         raise error(
             "HED-CHART-0012",

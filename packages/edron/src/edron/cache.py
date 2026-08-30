@@ -15,10 +15,11 @@ from threading import RLock
 from typing import Any, Generic, ParamSpec, TypeVar, cast
 
 from edron.errors import BindingError
-from hedron_core.cache.backend import validate_cache_ttl
+from hedron_core.cache.backend import CacheBackend, validate_cache_ttl
 
 P = ParamSpec("P")
 R = TypeVar("R")
+_MAX_TRACKED_BACKENDS = 128
 
 
 class CachedFunction(Generic[P, R]):
@@ -54,7 +55,9 @@ class CachedFunction(Generic[P, R]):
         self.vary_on = tuple(vary_on)
         self._identity = f"{fn.__module__}.{fn.__qualname__}"
         self._tag = f"edron:{self._identity}:{id(self)}"
-        self._keys: OrderedDict[str, None] = OrderedDict()
+        # Retain the exact backend that owns each key. A CachedFunction may be
+        # imported once and called by multiple application runtime contexts.
+        self._keys: OrderedDict[int, tuple[CacheBackend, OrderedDict[str, None]]] = OrderedDict()
         self._lock = RLock()
 
         from hedron.cache import cache_data as native_cache_data
@@ -93,12 +96,30 @@ class CachedFunction(Generic[P, R]):
     def _remember(self, key: str) -> None:
         from hedron_core.cache import get_cache_backend
 
+        backend = get_cache_backend()
+        backend_id = id(backend)
+        evicted_keys: list[str] = []
+        evicted_backends: list[CacheBackend] = []
         with self._lock:
-            self._keys[key] = None
-            self._keys.move_to_end(key)
-            while len(self._keys) > self.max_entries:
-                evicted, _ = self._keys.popitem(last=False)
-                get_cache_backend().invalidate(keys=(evicted,))
+            record = self._keys.get(backend_id)
+            if record is None or record[0] is not backend:
+                entries: OrderedDict[str, None] = OrderedDict()
+                self._keys[backend_id] = (backend, entries)
+            else:
+                entries = record[1]
+            self._keys.move_to_end(backend_id)
+            entries[key] = None
+            entries.move_to_end(key)
+            while len(entries) > self.max_entries:
+                evicted_key, _ = entries.popitem(last=False)
+                evicted_keys.append(evicted_key)
+            while len(self._keys) > _MAX_TRACKED_BACKENDS:
+                _, (old_backend, _) = self._keys.popitem(last=False)
+                evicted_backends.append(old_backend)
+        if evicted_keys:
+            backend.invalidate(keys=tuple(evicted_keys))
+        for old_backend in evicted_backends:
+            old_backend.invalidate(tags=(self._tag,))
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> R:
         key = self._key(args, kwargs)
@@ -121,17 +142,22 @@ class CachedFunction(Generic[P, R]):
         from hedron_core.cache import get_cache_backend
 
         key = self._key(args, kwargs)
-        get_cache_backend().invalidate(keys=(key,))
+        backend = get_cache_backend()
+        backend.invalidate(keys=(key,))
         with self._lock:
-            self._keys.pop(key, None)
+            record = self._keys.get(id(backend))
+            if record is not None and record[0] is backend:
+                record[1].pop(key, None)
 
     def invalidate_all(self) -> None:
         """Invalidate all invocations of this callable."""
-        from hedron_core.cache import invalidate_tags
-
-        invalidate_tags(self._tag)
         with self._lock:
+            backends = {backend_id: record[0] for backend_id, record in self._keys.items()}
             self._keys.clear()
+        # Invalidate every application backend this facade has populated, not
+        # merely whichever ContextVar happens to be active at this call site.
+        for backend in backends.values():
+            backend.invalidate(tags=(self._tag,))
 
 
 def cache_data(

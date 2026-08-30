@@ -6,7 +6,7 @@ import json
 from collections.abc import Mapping
 from dataclasses import dataclass
 from dataclasses import field as dc_field
-from typing import Literal
+from typing import Any, Literal
 
 from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
@@ -103,6 +103,13 @@ GridEvent = (
 
 
 def validate_grid_event(event: GridEvent, *, max_payload_bytes: int = 65_536) -> GridEvent:
+    raw_max_payload_bytes: Any = max_payload_bytes
+    if (
+        isinstance(raw_max_payload_bytes, bool)
+        or not isinstance(raw_max_payload_bytes, int)
+        or raw_max_payload_bytes < 1
+    ):
+        raise ValueError("max_payload_bytes must be a positive integer")
     if not event.row_key and event.kind not in {"viewport", "pagination"}:
         raise error(
             "HED-DATA-0025",
@@ -112,7 +119,10 @@ def validate_grid_event(event: GridEvent, *, max_payload_bytes: int = 65_536) ->
         )
     if event.debounce_ms < 0:
         raise ValueError("debounce_ms must be >= 0")
-    encoded = json.dumps(dict(event.payload), default=str).encode("utf-8")
+    try:
+        encoded = json.dumps(dict(event.payload), default=str, allow_nan=False).encode("utf-8")
+    except (TypeError, ValueError) as exc:
+        raise ValueError("grid event payload must be finite JSON") from exc
     if len(encoded) > max_payload_bytes:
         raise error(
             "HED-DATA-0026",

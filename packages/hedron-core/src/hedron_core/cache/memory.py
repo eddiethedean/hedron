@@ -90,14 +90,16 @@ class InMemoryCacheBackend:
         expires = None if normalized_ttl is None else time.monotonic() + normalized_ttl
         try:
             size = len(json.dumps(value, default=str))
-        except TypeError:
-            size = 0
+        except (TypeError, ValueError) as exc:
+            raise ValueError("cache value cannot be bounded for in-memory storage") from exc
+        if size > self.max_bytes:
+            # Validate before mutating so a rejected replacement cannot evict a
+            # previously valid value for the same key.
+            raise ValueError("cache entry exceeds max_bytes")
         with self._lock:
             previous = self._store.pop(key, None)
             if previous is not None:
                 self._total_size -= previous.size
-            if size > self.max_bytes:
-                raise ValueError("cache entry exceeds max_bytes")
             while self._store and (
                 len(self._store) >= self.max_entries or self._total_size + size > self.max_bytes
             ):

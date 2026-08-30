@@ -41,6 +41,15 @@ def redirect_external(
     status_code: int = 303,
     policy: SecurityPolicy | None = None,
 ) -> Response:
+    if (
+        url != url.strip()
+        or "\\" in url
+        or any(ord(ch) < 32 or ord(ch) == 127 or ch.isspace() for ch in url)
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid external redirect URL",
+        )
     try:
         parsed = urlparse(url)
         _ = parsed.port
@@ -49,7 +58,12 @@ def redirect_external(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid external redirect URL",
         ) from None
-    if parsed.scheme not in {"http", "https"} or not parsed.netloc or not parsed.hostname:
+    if (
+        parsed.scheme not in {"http", "https"}
+        or not parsed.netloc
+        or not parsed.hostname
+        or "%" in parsed.netloc
+    ):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid external redirect URL",

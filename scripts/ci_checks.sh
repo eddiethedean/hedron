@@ -227,6 +227,36 @@ resolve_python() {
   HEDRON_PYTHON_EXE="$(uv run --python "$PYTHON" python -c 'import sys; print(sys.executable)')"
 }
 
+secret_available() {
+  # Match the live probes' non-exporting .env lookup without sourcing secrets
+  # into this shell or printing their values.
+  local name="$1"
+  if [[ -n "${!name:-}" ]]; then
+    return 0
+  fi
+  if [[ ! -f "$ROOT/.env" ]]; then
+    return 1
+  fi
+  resolve_python
+  HEDRON_SECRET_NAME="$name" "$HEDRON_PYTHON_EXE" - "$ROOT/.env" <<'PY'
+import os
+import shlex
+import sys
+
+name = os.environ["HEDRON_SECRET_NAME"]
+prefix = f"{name}="
+for raw in open(sys.argv[1], encoding="utf-8"):
+    line = raw.strip()
+    if line.startswith("export "):
+        line = line[7:].lstrip()
+    if not line.startswith(prefix):
+        continue
+    parsed = shlex.split(line.split("=", 1)[1].strip(), comments=True, posix=True)
+    raise SystemExit(0 if len(parsed) == 1 and parsed[0] else 1)
+raise SystemExit(1)
+PY
+}
+
 run_py() {
   resolve_python
   run "$HEDRON_PYTHON_EXE" "$@"
@@ -847,7 +877,7 @@ NOTE
 
   if [[ "$SKIP_REALWB" -eq 0 ]]; then
     section "realwb"
-    if [[ -z "${PWB_LICENSE:-}" ]]; then
+    if ! secret_available PWB_LICENSE; then
       record_unsupported "REALWB-030 live backend (PWB_LICENSE unavailable)"
     fi
     cmd_realwb
@@ -857,7 +887,7 @@ NOTE
 
   if [[ "$SKIP_REALCONNECT" -eq 0 ]]; then
     section "realconnect"
-    if [[ -z "${CONNECT_LICENSE:-}" ]]; then
+    if ! secret_available CONNECT_LICENSE && ! secret_available CONNECT_API_KEY; then
       record_unsupported "REALCONNECT-033 live backend (CONNECT_LICENSE unavailable)"
     fi
     cmd_realconnect
