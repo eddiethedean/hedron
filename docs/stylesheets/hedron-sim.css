@@ -240,6 +240,31 @@
   }
 }
 
+/* MkDocs uses a 20px root while the application uses 16px. Preserve the
+ * desktop shell once the docs island has at least 680px of physical space;
+ * genuinely narrow islands continue to use the single-column rule above. */
+@container (min-width: 34rem) and (max-width: 48rem) {
+  .edron-sim .hedron-grid:has(> .hedron-sidebar) {
+    grid-template-columns: minmax(11rem, 14rem) minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+
+  .edron-sim
+    .hedron-grid:has(> .hedron-sidebar)
+    > .hedron-stack
+    > .hedron-grid[data-hedron-columns="2"],
+  .edron-sim
+    .hedron-grid:has(> .hedron-sidebar)
+    > .hedron-stack
+    > .hedron-grid[data-hedron-columns="4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .edron-sim .hedron-sidebar {
+    position: sticky;
+  }
+}
+
 .hedron-sim-card {
   background: var(--hs-raised);
   border: 1px solid var(--hs-line);

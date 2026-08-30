@@ -334,7 +334,18 @@ def _is_inventory_page(path: Path) -> bool:
 
 
 CANONICAL_INSTALL_PAGE = Path("docs/getting-started/installation.md")
-CANDIDATE_INSTALL_PATHS = frozenset({Path("docs/api/EDRON_PACKAGING.md")})
+ARTIFACT_TARGET_READMES = frozenset(
+    {
+        Path("packages/hedron/README.md"),
+        Path("packages/edron/README.md"),
+    }
+)
+CANDIDATE_INSTALL_PATHS = frozenset(
+    {
+        Path("docs/api/EDRON_PACKAGING.md"),
+        *ARTIFACT_TARGET_READMES,
+    }
+)
 
 # The Posit adapter is released on the beta 0.67 train, so its Workbench
 # walkthroughs intentionally use the matching Hedron bridge rather than the
@@ -364,7 +375,6 @@ FIRST_RUN_INSTALL_PATHS = frozenset(
 REGISTRY_HONESTY_PATHS = frozenset(
     {
         CANONICAL_INSTALL_PAGE,
-        Path("packages/hedron/README.md"),
         Path("packages/hedron-core/README.md"),
     }
 )
@@ -473,6 +483,10 @@ def _line_describes_pypi_latest(line: str) -> bool:
 
 
 def _allowed_install_pins(facts: ReleaseFacts, path: Path | None = None) -> set[str]:
+    if path == Path("packages/hedron/README.md"):
+        return {facts.pin}
+    if path == Path("packages/edron/README.md"):
+        return {facts.pin, ">=1.0.0,<2.0"}
     allowed = {facts.pin}
     if path in POSIT_WORKBENCH_PATHS:
         allowed.add(">=0.67.0,<0.68")

@@ -22,7 +22,7 @@ From a repository checkout:
 
 ```bash
 uv sync
-uv run edron run app:app --app-dir examples/edron-showcase --reload
+uv run uvicorn --app-dir examples/edron-showcase app:app --reload
 ```
 
 Open <http://127.0.0.1:8000/>. The data is synthetic and local, but the Edron page lifecycle,

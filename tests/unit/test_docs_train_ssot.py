@@ -129,6 +129,31 @@ def test_first_run_install_commands_require_current_pin() -> None:
     assert not ssot.check_text(path, f'uvx --from "hedron{ssot.FACTS.pin}" hedron new demo')
 
 
+def test_artifact_readmes_document_the_version_their_wheels_ship() -> None:
+    hedron_readme = Path("packages/hedron/README.md")
+    edron_readme = Path("packages/edron/README.md")
+
+    assert not ssot.check_text(
+        hedron_readme,
+        f'uvx --from "hedron{ssot.FACTS.pin}" hedron new demo',
+    )
+    assert not ssot.check_text(
+        edron_readme,
+        f'uvx --from "edron{ssot.FACTS.edron_pin}" edron new demo',
+    )
+
+    if ssot.FACTS.registry_deferred:
+        assert ssot.check_text(
+            hedron_readme,
+            f'uvx --from "hedron{ssot.FACTS.pypi_pin}" hedron new demo',
+        )
+    if ssot.FACTS.edron_registry_status == "deferred":
+        assert ssot.check_text(
+            edron_readme,
+            f'uvx --from "edron{ssot.FACTS.edron_pypi_pin}" edron new demo',
+        )
+
+
 def test_in_tree_deferred_boilerplate_is_restricted() -> None:
     blob = (
         f"**Published in-tree `v{ssot.FACTS.published_version}`.** "

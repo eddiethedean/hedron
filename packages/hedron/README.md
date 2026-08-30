@@ -1,107 +1,85 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-mark.svg" width="88" alt="Hedron logo">
+</p>
+
 # Hedron
+
+<p align="center"><strong>FastAPI-native, server-rendered interfaces in pure Python.</strong></p>
+
+<p align="center">
+  Typed components · HTMX requests · Alpine.js local behavior · No frontend build
+</p>
 
 [![PyPI](https://img.shields.io/pypi/v/hedron.svg)](https://pypi.org/project/hedron/)
 [![Python](https://img.shields.io/pypi/pyversions/hedron.svg)](https://pypi.org/project/hedron/)
-[![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=v1.0&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/hedron/badge/?version=latest)](https://hedron.readthedocs.io/en/latest/)
 [![Pyright: strict](https://img.shields.io/badge/Pyright-strict-3178c6.svg)](https://microsoft.github.io/pyright/)
-[![Status: Stable candidate](https://img.shields.io/badge/status-stable%20candidate-yellow.svg)](https://pypi.org/project/hedron/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
+[![API: Stable](https://img.shields.io/badge/API-stable-brightgreen.svg)](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/v1.0/LICENSE)
 
-**Build FastAPI-native admin tools, CRUD applications, forms, and dashboards with Python
-components and server-rendered HTML.**
+[Documentation](https://hedron.readthedocs.io/en/latest/) ·
+[Quickstart](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) ·
+[Showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/) ·
+[API](https://hedron.readthedocs.io/en/latest/api/HEDRON/) ·
+[Security](https://hedron.readthedocs.io/en/latest/guides/security/)
 
-Hedron combines FastAPI, a typed component model, and HTMX-style partial-page interaction. Routes
-return Python component trees; Hedron renders safe HTML documents or fragments. Your ordinary
-FastAPI routes, dependencies, middleware, lifespan hooks, JSON endpoints, and OpenAPI remain
-available beside the UI.
+Hedron lets FastAPI applications return Python component trees as safe HTML pages and fragments.
+It adds a typed UI model and progressive interaction without taking away FastAPI routes,
+dependencies, middleware, lifespan hooks, JSON endpoints, responses, or OpenAPI.
 
-There is no generated frontend project, Node.js build, virtual DOM, or full-script rerun loop.
+The result is one application with one routing, rendering, security, state, and deployment
+authority—without a generated frontend project, Node.js toolchain, virtual DOM, or whole-script
+rerun loop.
 
-## Alpine.js and HTMX
+[![Hedron Showcase command center in dark mode](https://raw.githubusercontent.com/eddiethedean/hedron/v1.0/docs/assets/hedron-showcase.jpg)](https://hedron.readthedocs.io/en/latest/examples/showcase/)
 
-Hedron uses [Alpine.js](https://alpinejs.dev) for small browser-local interactions such as
-disclosures, tabs, menus, focus behavior, and local bindings. This state is intentionally
-disposable: it belongs to the browser only when it can be reconstructed from the rendered HTML
-without a server request. HTMX owns server requests, fragment replacement, and declared
-interaction lifecycles; application and domain state stay on the server.
+<p align="center"><strong><a href="https://hedron.readthedocs.io/en/latest/examples/showcase/">Explore the complete showcase →</a> · <a href="https://github.com/eddiethedean/hedron/blob/v1.0/examples/showcase/app.py">View the reproducible source</a></strong></p>
 
-Hedron vendors Alpine.js `3.16.3` using its CSP-compatible runtime and serves the pinned assets
-same-origin from the immutable browser feature plan. It does not fetch Alpine from a CDN or
-require a Node.js toolchain. Alpine assets are emitted only for pages that demand Alpine behavior,
-and only the required plugins are included. Use Hedron's typed `AlpineAttrs` and built-in
-components for browser behavior; arbitrary executable Alpine strings are not part of the stable
-authoring contract.
+> **Package maturity:** Stable · **Version documented:** `1.0.0`
+>
+> Every command and example below targets the Hedron 1.0 API. Until the `1.0.0` artifact appears on
+> PyPI, evaluate it from the `v1.0` repository branch with `uv sync`. Supported Python versions are
+> 3.10–3.14.
 
-See [What is Alpine?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-alpine/)
-for the browser/server ownership rule, lifecycle behavior, and typed authoring examples.
-
-**Package maturity:** Stable candidate · **In-tree release:** `1.0.x` · **Public fallback:** `0.67.x` · **Python:** 3.10–3.14 ·
-**Typing:** Pyright strict
-
-The `1.0.0` candidate is in this source tree; its Git tag and PyPI upload are deferred. PyPI
-currently resolves `hedron==0.67.0`. Use the published fallback until the candidate is tagged,
-or use `uv sync` from this repository to exercise the candidate.
-
-Commit and release CI fail on type errors over the complete `hedron` source tree. Warning-level
-typing cleanup remains a tracked migration until the existing workspace warning backlog is
-retired.
-
-> Looking for the shortest application-authoring path? [Edron](https://pypi.org/project/edron/)
-> adds class-oriented pages, a compact dashboard vocabulary, batteries-included data/chart/map
-> dependencies, and Streamlit migration tooling on top of this exact Hedron runtime.
-
-## Quickstart
+## Start in under a minute
 
 The fastest path uses [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-uvx --from "hedron>=0.67.0,<0.68" hedron new my-hedron-app
+uvx --from "hedron>=1.0.0,<1.1" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run hedron run app:app --reload
 ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The generated project is ordinary Python and
-demonstrates the canonical page, view, and action roles with progressive form fallbacks.
+includes a complete page, an addressable view, a typed action, built-in styling, and progressive
+HTTP fallbacks.
 
-[See the full interactive Hedron Showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/)
-powered by [`hedron-sim`](https://pypi.org/project/hedron-sim/). Explore app chrome, metrics,
-process flow, tables, status surfaces, fragment refresh, a typed action, and an inspectable
-component map without starting a FastAPI process.
-
-For the smallest first interaction, try the [Hello + Refresh demo](https://hedron.readthedocs.io/en/latest/examples/single-file/).
-
-Install Hedron directly when adding it to an existing project:
+Adding Hedron to an existing project is just as direct:
 
 ```bash
-uv add "hedron>=0.67.0,<0.68" "uvicorn[standard]"
-# or: python -m pip install "hedron>=0.67.0,<0.68" "uvicorn[standard]"
+uv add "hedron>=1.0.0,<1.1" "uvicorn[standard]"
+# or: python -m pip install "hedron>=1.0.0,<1.1" "uvicorn[standard]"
 ```
 
-## A small, explicit core
+## The core model
 
-The canonical 1.0 function roles are `page`, `view`, and `action`:
+Hedron deliberately gives each route one clear responsibility:
 
-| Role | HTTP responsibility | Typical return value |
+| Role | Responsibility | Typical result |
 |---|---|---|
-| `@app.page` | Render a complete navigable page | A component tree or explicit `Page` |
+| `@app.page` | Render a complete navigable document | A component tree or explicit `Page` |
 | `@app.view` | Render an independently addressable read fragment | A component or fragment tree |
-| `@app.action` | Process an unsafe request and declare its result | An outcome such as `refresh(...)` |
-
-Here is the central page/view model in one file:
+| `@app.action` | Process an unsafe request and declare its outcome | Refresh, redirect, validation, or another typed outcome |
 
 ```python
-import os
 from datetime import datetime, timezone
 
-from hedron import Hedron, Stack, Text, html
+from hedron import Hedron, Heading, Stack, Text, html
 
-app = Hedron(
-    title="Operations",
-    security="standard",
-    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
-)
+app = Hedron(title="Operations", security="standard")
 
 
 @app.view("/status")
@@ -117,7 +95,7 @@ def status():
 @app.page("/")
 def home():
     return Stack(
-        Text("Operations"),
+        Heading("Operations"),
         status(),
         status.refresh_button("Refresh status"),
     )
@@ -125,12 +103,13 @@ def home():
 
 Run it with `hedron run app:app --reload` or `uvicorn app:app --reload`.
 
-The `status` handle is both composable and addressable: calling it inside `home()` places its
-initial output in the page, while `status.path` gives the browser a declared endpoint for later
-refreshes. Hedron validates fragment targets against the route's policy and fails closed when a
-request tries to update an undeclared target.
+Calling `status()` composes its initial output into the page. Its route handle also carries the
+declared endpoint and target policy needed for later fragment refreshes. Hedron rejects requests
+that attempt to update an undeclared target.
 
-Actions add a typed unsafe-request boundary:
+### Typed actions
+
+Unsafe requests cross an explicit validation and CSRF boundary:
 
 ```python
 from typing import Annotated
@@ -150,38 +129,50 @@ def add_note(note: Annotated[Note, FormBody()]):
     return Text("Note saved")
 
 
-# In a page component tree:
+# Compose the native progressive form in any page:
 # add_note.form(submit_label="Save note")
 ```
 
-Validation happens at the typed action boundary. Authentication, row-level authorization,
-transactions, idempotency, and audit persistence remain application responsibilities.
+Hedron owns request parsing, validation lowering, CSRF integration, and response semantics.
+Authentication, row authorization, transactions, idempotency, and durable audit records remain
+application responsibilities.
 
-## Why Hedron
+## What you get
 
-| Need | Hedron provides |
+| Concern | Built-in capability |
 |---|---|
-| Server-rendered UI | Typed components for pages, layouts, forms, tables, dialogs, navigation, status, and media |
-| Partial-page interaction | Addressable views, declared targets, HTMX swaps, out-of-band updates, actions, and progressive fallbacks |
-| FastAPI integration | Standard dependencies, middleware, lifespan, responses, mounts, JSON routes, and OpenAPI alongside UI routes |
-| Safer defaults | Contextual escaping, safe URL types, explicit trusted-HTML boundaries, CSRF profiles, security headers, and conservative caching |
-| Production building blocks | Typed forms, polling jobs, build manifests, diagnostics, test generation, conformance reports, and observability hooks |
-| Extension | Feature bundles, package workflows, Jinja/HDJ, Web Components, charts, maps, adapters, and a framework-neutral renderer |
+| UI composition | Application shells, navigation, grids, cards, forms, tables, dialogs, media, status, and accessibility primitives |
+| Interaction | Addressable views, typed actions, declared targets, HTMX swaps, out-of-band updates, polling, and ordinary HTTP fallbacks |
+| Styling | Responsive built-in themes, light/dark modes, design tokens, recipes, and component styling with no app-authored CSS required |
+| FastAPI integration | Dependencies, middleware, lifespan, mounts, responses, JSON routes, OpenAPI, and root-path support |
+| Safety | Contextual escaping, typed safe URLs, explicit trusted-HTML boundaries, CSRF profiles, security headers, and conservative caching |
+| Operations | Build manifests, diagnostics, generated interaction tests, conformance reports, observability hooks, and deployment checks |
+| Extension | Feature packages, component packages, Jinja/HDJ, Web Components, charts, maps, adapters, and a framework-neutral renderer |
 
-Hedron is especially useful when raw FastAPI + Jinja + HTMX would leave your team rebuilding the
-same component, fragment, target, CSRF, asset, accessibility, and diagnostic conventions.
+The built-in theme follows the browser color preference, supports explicit light/dark selection,
+and collapses application shells and content grids for narrow screens. Custom CSS is optional,
+not a prerequisite for a finished application.
 
-Choose another tool when its execution model is a better fit:
+## Browser behavior has clear ownership
 
-- Choose **Edron** for higher-level, class-oriented application authoring.
-- Choose **Streamlit** for notebook-style exploration built around full-script reruns.
-- Choose **plain FastAPI and templates** when you do not want a component framework.
-- Choose a **client-side framework** when the product genuinely needs a large browser-owned state
-  model or offline-first client runtime.
+Hedron uses two small, complementary runtimes:
+
+```text
+Browser-local presentation state       Server interaction and domain state
+Alpine.js                               HTMX + FastAPI
+disclosures, tabs, menus, focus         requests, fragments, actions, jobs
+```
+
+Alpine state is disposable and reconstructable from rendered HTML. HTMX owns requests, fragment
+replacement, and declared request lifecycles. Application and domain state stay on the server.
+
+Hedron vendors Alpine.js `3.16.3` as a CSP-compatible, same-origin asset and emits it only when a
+page needs Alpine behavior. Required plugins are pinned and demand-driven. Use built-in components
+and typed `AlpineAttrs`; arbitrary executable Alpine strings are outside the stable authoring API.
+
+[Read the HTMX/Alpine ownership guide](https://hedron.readthedocs.io/en/latest/getting-started/what-is-alpine/).
 
 ## Components are ordinary Python values
-
-Components compose into explicit trees and render with contextual escaping:
 
 ```python
 from hedron import Card, Heading, SafeUrl, Stack, Text, UrlPurpose, html
@@ -198,52 +189,40 @@ summary = Card(
 )
 ```
 
-Hedron includes application shells, navigation, grids, cards, fields, forms, alerts, dialogs,
-tables, pagination, uploads, media, progress/status components, accessibility primitives, and a
-typed HTML builder. Project-owned components are normal Python packages and can participate in the
-same theme, asset, accessibility, and inspection contracts.
+User-controlled strings remain text. HTML and URLs cross explicit trust boundaries, so database,
+tenant, upload, and generated content cannot silently become executable markup.
 
-User-controlled strings remain text. Raw HTML and URLs cross explicit trust boundaries; use safe
-URL types and sanitization instead of passing database, tenant, upload, or prompt content as
-trusted markup.
+Project-owned components are normal Python packages. They can participate in the same theme,
+asset, accessibility, inspection, and conformance contracts as built-ins.
 
-## Add only what you need
+## Use only the packages you need
 
-The base package includes the FastAPI application, component API, renderer integration,
-interaction primitives, security profiles, state foundations, and CLI. Extras install coordinated
-satellite packages or optional integrations:
+The stable 1.0 family is intentionally small:
 
-| Install | Adds |
+| Package | Purpose |
 |---|---|
-| `hedron[data]` | DataTable, DataEditor, and data workspace foundations |
-| `hedron[charts]` | First-party chart components and adapters |
-| `hedron[maps]` | Accessible map components and layer policies |
-| `hedron[jinja]` | Optional `.hdj` component templates |
-| `hedron[dev]` | Component Explorer |
-| `hedron[markdown]` | Markdown rendering and sanitization |
-| `hedron[auth]` | Authlib OIDC integration helpers |
-| `hedron[extras]` | Curated higher-level workbenches |
-| `hedron[native]` | Optional native acceleration |
-| `hedron[elements]` | Web Component authoring and ABI support |
-| `hedron[conformance]` | Published language-neutral conformance tooling |
-| `hedron[notebook]` | Localhost notebook preview tooling |
-| `hedron[gradio]` | Allowlisted Gradio/Hugging Face client interop |
-| `hedron[mcp]` | MCP projection and capability inventory |
-| `hedron[posit]` | Posit Workbench and Connect lifecycle integration |
+| `hedron-core` | Framework-neutral components, rendering, interaction, and security contracts |
+| `hedron` | FastAPI-native application and authoring facade |
+| `hedron-data` | Bounded data tables, editors, queries, and workspaces |
+| `hedron-charts` | First-party chart specifications, rendering, and adapters |
+| `hedron-maps` | Accessible maps, layers, markers, and URL policies |
+| `edron` | Higher-level class-oriented application authoring |
 
-For example:
+Install coordinated capabilities through extras:
 
 ```bash
-uv add "hedron[data,charts,dev]>=0.67.0,<0.68"
+uv add "hedron[data,charts,maps]>=1.0.0,<1.1"
 ```
 
-Satellite packages may have independent versions. Use the
-[compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/) instead of guessing
+Other extras activate optional or Beta integrations such as `dev`, `jinja`, `markdown`, `auth`,
+`native`, `elements`, `conformance`, `notebook`, `gradio`, `mcp`, and `posit`. Those packages may
+release independently; consult the
+[compatibility matrix](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/) rather than guessing
 compatible floors.
 
-## Bring Hedron to an existing FastAPI app
+## Add Hedron to an existing FastAPI application
 
-You can mount Hedron routes and static assets without replacing application construction:
+Hedron can supply UI routes and static assets without replacing application construction:
 
 ```python
 from fastapi import FastAPI
@@ -266,82 +245,81 @@ def hello():
 app.include_router(ui)
 ```
 
-Read [Add Hedron to an existing FastAPI application](https://hedron.readthedocs.io/en/latest/guides/plain-fastapi/)
-for lifespan, security, assets, root paths, and response behavior.
+[Read the integration guide](https://hedron.readthedocs.io/en/latest/guides/plain-fastapi/) for
+lifespan, assets, root paths, and response behavior. The renderer is framework-neutral, with
+first-party Beta host adapters for Flask and Django.
 
-Hedron's renderer is framework-neutral. First-party adapters provide Flask and Django hosts:
+## Production checklist
 
-```bash
-uv add "hedron-flask>=0.67.0,<0.68"
-# or: uv add "hedron-django>=0.67.0,<0.68"
-```
+Hedron provides secure defaults and inspectable boundaries. Before deployment:
 
-## Security and ownership boundaries
-
-Hedron supplies tools and safer defaults, but your application remains the authority for domain
-and platform decisions:
-
-- Configure a production session secret; never ship the scaffold fallback.
+- Set a strong application-specific session secret; never ship a scaffold fallback.
 - Authenticate users and authorize every protected page, view, action, row, and download.
-- Keep database transactions, tenancy, persistence, and durable audit records in application
+- Use shared state, cache, and job backends for multi-worker deployments.
+- Keep tenancy, persistence, transactions, retries, idempotency, and audit storage in application
   services.
-- Use shared cache, state, and job backends when running multiple workers.
-- Treat all user, database, upload, and generated content as untrusted input.
-- Prefer polling for production job status unless proxy buffering, timeouts, and backpressure are
-  verified for SSE or WebSockets.
-- Run security and deployment checks against the topology you will actually operate.
+- Treat user, database, upload, and generated content as untrusted input.
+- Validate proxy trust, root paths, HTTPS, cookies, CSP, artifact paths, and topology-specific
+  behavior with deployment checks.
+- Prefer polling for durable job status unless SSE/WebSocket proxy buffering, timeouts, and
+  backpressure have been verified.
 
-Hedron is not an ORM, identity provider, database, job broker, hosted service, or client-side SPA
-runtime. Start with the [security guide](https://hedron.readthedocs.io/en/latest/guides/security/),
-[threat model](https://hedron.readthedocs.io/en/latest/guides/threat-model/), and
-[deployment guide](https://hedron.readthedocs.io/en/latest/guides/deployment/).
+Hedron is not an ORM, identity provider, database, durable job broker, hosted service, or
+client-side SPA runtime.
 
-## CLI workflow
-
-Hedron's CLI is designed to make application structure and release facts inspectable:
+## Inspect before you ship
 
 ```bash
-# Create teaching projects
-hedron new demo --template minimal
-hedron new admin --template crud
-hedron new metrics --template dashboard
-hedron new worker-ui --template task
-
 # Inspect a trusted application
 hedron --app app:app routes
 hedron --app app:app components
 hedron --app app:app graph
 
-# Run diagnostics and static 1.0 migration checks
+# Run diagnostics and static migration checks
 hedron --app app:app check
 hedron check --project . --target 1.0 --format sarif
 
-# Build registered assets and inspect the installed package fleet
+# Build assets and inspect the installed package fleet
 hedron --app app:app build
 hedron fleet
 ```
 
-Other commands cover component previews, accessibility inspection/ejection, security posture,
-themes and styles, generated interaction tests, conformance, package authoring, native
-acceleration, framework migrations, and offline upgrade reports. Run `hedron --help` or read the
-[CLI reference](https://hedron.readthedocs.io/en/latest/api/CLI/).
+The CLI also covers component previews, accessibility inspection, security posture, themes,
+generated interaction tests, conformance, package authoring, and offline upgrade reports.
+
+## Hedron or Edron?
+
+Choose **Hedron** when you want direct component-tree composition, FastAPI-native function routes,
+host integration, or framework extension points.
+
+Choose **[Edron](https://pypi.org/project/edron/)** when you want a smaller class-oriented API,
+batteries-included data/chart/map dependencies, familiar dashboard vocabulary, and Streamlit
+migration tooling. Edron lowers into this same Hedron runtime; it is not a parallel framework.
+
+## See the complete application
+
+The [Hedron Showcase](https://hedron.readthedocs.io/en/latest/examples/showcase/) is a responsive,
+light/dark operations console built from the same public source linked by the documentation. It
+covers application chrome, metrics, workflow status, tables, fragment refresh, and a typed action
+without documentation-only UI or custom application CSS.
+
+For the smallest interaction, use the
+[Hello + Refresh example](https://hedron.readthedocs.io/en/latest/examples/single-file/).
 
 ## Learn more
 
-- [Choose Edron or Hedron](https://hedron.readthedocs.io/en/latest/getting-started/choose-layer/)
-- [Documentation](https://hedron.readthedocs.io/en/latest/)
 - [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/)
-- [First application](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/)
 - [Core concepts](https://hedron.readthedocs.io/en/latest/getting-started/core-concepts/)
-- [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/)
-- [Hedron API](https://hedron.readthedocs.io/en/latest/api/HEDRON/)
+- [Choose Edron or Hedron](https://hedron.readthedocs.io/en/latest/getting-started/choose-layer/)
 - [Cookbook](https://hedron.readthedocs.io/en/latest/guides/cookbook/)
 - [Testing](https://hedron.readthedocs.io/en/latest/guides/testing/)
+- [Deployment](https://hedron.readthedocs.io/en/latest/guides/deployment/)
+- [Threat model](https://hedron.readthedocs.io/en/latest/guides/threat-model/)
 - [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/)
-- [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron)
-- [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron/CHANGELOG.md)
+- [Source](https://github.com/eddiethedean/hedron/tree/v1.0/packages/hedron)
+- [Changelog](https://github.com/eddiethedean/hedron/blob/v1.0/packages/hedron/CHANGELOG.md)
 - [Issues](https://github.com/eddiethedean/hedron/issues)
 
 ## License
 
-Hedron is available under the [MIT License](https://github.com/eddiethedean/hedron/blob/main/LICENSE).
+Hedron is available under the [MIT License](https://github.com/eddiethedean/hedron/blob/v1.0/LICENSE).
