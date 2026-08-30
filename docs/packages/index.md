@@ -9,14 +9,13 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 |---|---|---|
 | [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship | [First app](../getting-started/quickstart.md) · [Hedron API](../api/HEDRON.md) |
 | [`hedron-core`](https://pypi.org/project/hedron-core/) | Framework-neutral renderer | [Architecture](../ARCHITECTURE.md) |
-| [`edron`](https://pypi.org/project/edron/) | Stable class-oriented authoring facade | [Edron quick start](../getting-started/edron-quickstart.md) |
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter | [Flask](../getting-started/flask.md) · [Adapters](../api/ADAPTERS.md) |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter | [Django](../getting-started/django.md) · [Adapters](../api/ADAPTERS.md) |
 | [`fastapi-workbench`](https://pypi.org/project/fastapi-workbench/) | Independent 1.x Posit Workbench adapter for plain FastAPI/ASGI apps | [FastAPI Workbench](../guides/fastapi-workbench.md) |
 
 Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). `hedron-sim`
 and the sample kit install directly. This catalog describes the verified 1.0 repository
-inventory. Edron and the coordinated Hedron inventory are published on the 1.0 train.
+inventory. The coordinated stable inventory is published on the 1.0 train.
 
 !!! note "Maturity"
 
@@ -45,6 +44,13 @@ pip install "hedron[data,dev,posit]>=1.0.0,<1.1"
 ```
 
 The checkout and public PyPI contain the verified `v1.0.0` release.
+
+## Alternate facade
+
+[`edron`](https://pypi.org/project/edron/) is a Stable, independently documented
+class-oriented facade over the Hedron application authority. It is available for teams
+that deliberately choose the alternate authoring model; Hedron remains the primary path
+through this catalog.
 
 ## Tooling-grade and independent Beta lines
 

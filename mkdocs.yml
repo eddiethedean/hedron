@@ -1,5 +1,5 @@
-site_name: Edron + Hedron
-site_description: Build complete server-rendered Python applications with Edron or compose FastAPI-native interfaces with Hedron.
+site_name: Hedron
+site_description: Build production-minded, server-rendered Python interfaces on FastAPI with Hedron.
 site_author: Odos Matthews
 repo_url: https://github.com/eddiethedean/hedron
 repo_name: eddiethedean/hedron
@@ -194,10 +194,8 @@ nav:
   - Home: index.md
   - Start:
     - Overview: getting-started/index.md
-    - Choose Edron or Hedron: getting-started/choose-layer.md
     - Installation: getting-started/installation.md
-    - Build your first Edron app: getting-started/edron-quickstart.md
-    - Build your first Hedron app: getting-started/quickstart.md
+    - Build your first app: getting-started/quickstart.md
     - What is HTMX?: getting-started/what-is-htmx.md
     - What is Alpine?: getting-started/what-is-alpine.md
     - Core concepts: getting-started/core-concepts.md
@@ -212,7 +210,6 @@ nav:
       - New developer — Posit Workbench: getting-started/first-app-posit-workbench.md
   - Build:
     - Overview: guides/index.md
-    - Edron user guide: guides/edron-user-guide.md
     - Cookbook: guides/cookbook.md
     - Comprehensive styling: guides/styling.md
     - Modern CSS: guides/modern-css.md
@@ -245,7 +242,6 @@ nav:
       - Notebook preview: guides/notebook-preview.md
       - Curated extras: api/EXTRAS.md
     - Migrate:
-      - Edron 0.9 to 1.0: guides/edron-upgrade-1.0.md
       - From Streamlit: guides/streamlit-migration.md
       - Other frameworks:
         - Dash: guides/dash-migration.md
@@ -266,7 +262,6 @@ nav:
     - Best practices: guides/best-practices.md
   - Examples:
     - Overview: examples/index.md
-    - Edron examples: examples/edron.md
     - Repository catalog: examples/catalog.md
     - Build a notes app: examples/build-notes-app.md
     - Recipe index: examples/recipes/index.md
@@ -277,15 +272,10 @@ nav:
     - Runnable examples: examples/runnable.md
     - Single-file apps: examples/single-file.md
     - Hedron Showcase: examples/showcase.md
-    - Edron Showcase: examples/edron-showcase.md
     - Simulation gallery: examples/gallery.md
     - Reference app walkthrough: examples/reference-app.md
   - Reference:
     - API by task: api/by-task.md
-    - Edron API by task: api/EDRON_REFERENCE.md
-    - Edron symbols: api/EDRON_AUTODOC.md
-    - Edron export index: api/EDRON_EXPORTS.md
-    - Edron design contract: api/EDRON.md
     - Hedron: api/HEDRON.md
     - Router: api/ROUTER.md
     - Page: api/PAGE.md

@@ -1,5 +1,5 @@
 ---
-description: Build server-rendered Python applications with FastAPI and HTMX—without a frontend build chain.
+description: Build production-minded, server-rendered Python interfaces on FastAPI with Hedron.
 hide:
   - navigation
   - toc
@@ -11,56 +11,49 @@ search:
 
 <img class="hedron-theme-wordmark" src="assets/hedron-logo-light.svg" alt="Hedron">
 
-<div class="hedron-eyebrow">Python-first application platform · stable 1.0 · Python 3.10–3.14</div>
+<div class="hedron-eyebrow">FastAPI-native Python UI · stable 1.0 · Python 3.10–3.14</div>
 
-# Stay in Python. Build the whole application.
+# Build the interface in Python. Keep the web architecture.
 
-Move with the speed of Streamlit. Get the structure and composability teams reach for
-React to provide—without creating a separate frontend stack.
+Hedron gives FastAPI applications server-rendered components, explicit interactions,
+and production-minded boundaries—without introducing a separate frontend project.
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
-[Choose your layer](getting-started/choose-layer.md){ .md-button .md-button--primary }
-[Migrate from Streamlit](guides/streamlit-migration.md){ .md-button }
+[Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
+[See the showcase](examples/showcase.md){ .md-button }
 [Evaluate Hedron](guides/evaluate.md){ .md-button }
 </div>
 
-Composable interfaces. Explicit interactions. Production-minded application architecture.
-All in Python.
+Composable interfaces. Typed routes. Ordinary HTTP. One Python application.
 { .hedron-proof }
 
 <div class="hedron-signal-row">
-  <span>Python UI</span>
-  <span>FastAPI foundation</span>
-  <span>Server-driven interactions</span>
+  <span>FastAPI native</span>
+  <span>HTML over the wire</span>
+  <span>HTMX + Alpine</span>
   <span>Strict core typing</span>
 </div>
 
-The `hedron-core` renderer and `hedron` FastAPI runtime are Pyright-strict. Type errors block
-release; warning-level cleanup is tracked as a separate migration until the existing workspace
-backlog is retired.
-
 <div class="hedron-choice-grid">
-  <a class="hedron-choice" href="guides/streamlit-migration/">
-    <span>Coming from Streamlit</span>
-    <strong>Keep Python. Gain application structure.</strong>
-    <p>Move one workflow at a time from script reruns to explicit state, actions, and routes.</p>
+  <a class="hedron-choice" href="getting-started/quickstart/">
+    <span>Starting a Python application</span>
+    <strong>Scaffold a working Hedron app.</strong>
+    <p>Go from an empty directory to a typed page and refreshable region in about ten minutes.</p>
   </a>
-  <a class="hedron-choice" href="guides/why-hedron/">
-    <span>Considering React</span>
-    <strong>Keep composability. Skip the split stack.</strong>
-    <p>Build reusable interfaces without creating a second frontend application and toolchain.</p>
+  <a class="hedron-choice" href="guides/plain-fastapi/">
+    <span>Already using FastAPI</span>
+    <strong>Add UI without replacing your app.</strong>
+    <p>Keep dependencies, middleware, lifespan, JSON routes, and OpenAPI beside Hedron pages.</p>
   </a>
 </div>
 
-<div class="hedron-quickstart-label">Create an Edron app in about 5 minutes</div>
-
-About five minutes after Python 3.10+ and uv are ready:
+<div class="hedron-quickstart-label">Create a Hedron app in about 10 minutes</div>
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/
-uvx --from "edron>=1.0.0,<1.1" edron new my-app --template minimal
-cd my-app && uv sync && uv run edron run app:app --reload
+uvx --from "hedron>=1.0.0,<1.1" hedron new my-app
+cd my-app && uv sync && uv run hedron run app:app --reload
 # Open http://127.0.0.1:8000
 ```
 
@@ -74,26 +67,26 @@ Release status: [Current release and support](guides/current-release.md). Pins a
 
 </div>
 
-## Choose your starting point
+## Start from where you are
 
-Start with the authoring layer that matches the application you have today.
+Every primary route in these docs leads through Hedron's public API.
 
 <div class="hedron-path">
-  <a href="getting-started/edron-quickstart/">
-    <strong>Start a complete application with Edron</strong>
-    Scaffold a page-oriented dashboard, CRUD app, or data workflow.
-  </a>
   <a href="getting-started/quickstart/">
-    <strong>Use Hedron directly</strong>
-    Compose components and FastAPI-native page, view, and action routes.
+    <strong>Build a new application</strong>
+    Scaffold the FastAPI runtime, a page, and a refreshable view.
+  </a>
+  <a href="guides/plain-fastapi/">
+    <strong>Extend an existing FastAPI app</strong>
+    Include Hedron routes and static assets beside the API you already operate.
   </a>
   <a href="guides/streamlit-migration/">
     <strong>Move beyond Streamlit</strong>
-    Check fit, map state, convert a workflow, and plan an incremental cutover.
+    Translate reruns and session state into explicit routes, state, and interactions.
   </a>
-  <a href="guides/plain-fastapi/">
-    <strong>Add Hedron to FastAPI</strong>
-    Mount Python pages and interactions beside routes you already operate.
+  <a href="getting-started/installation/#other-hosts">
+    <strong>Use Flask or Django</strong>
+    Adopt the same component model through a first-party host adapter.
   </a>
   <a href="guides/evaluate/">
     <strong>Evaluate for production</strong>
@@ -101,68 +94,68 @@ Start with the authoring layer that matches the application you have today.
   </a>
 </div>
 
-Using Flask, Django, VS Code, or Posit Workbench? [Choose your host and environment](getting-started/index.md#choose-your-path).
-Need a focused pattern or fix? Open the [Cookbook](guides/cookbook.md) or [Troubleshooting](guides/troubleshooting.md).
+Need a focused pattern? Open the [Cookbook](guides/cookbook.md). Diagnosing a failure?
+Start with [Troubleshooting](guides/troubleshooting.md).
 
-## Python velocity, application architecture
+### Prefer a higher-level authoring facade?
+
+[Take the alternate Edron route](getting-started/edron-quickstart.md){ .md-button }
+
+## One application, explicit responsibilities
 
 <div class="hedron-grid">
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">ϟ</span>
     <strong>FastAPI-native foundation</strong>
-    <p>Keep dependency injection, OpenAPI, async I/O, ordinary routes, and explicit request boundaries.</p>
+    <p>Keep dependency injection, OpenAPI, async I/O, middleware, lifespan, and ordinary routes.</p>
   </div>
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">⌁</span>
     <strong>Composable Python UI</strong>
-    <p>Build screens from reusable components and validated props. Your editor, type checker, and tests stay in the loop.</p>
+    <p>Build screens from reusable components and validated props with editor and type-checker support.</p>
+  </div>
+  <div class="hedron-card">
+    <span class="hedron-card__icon" aria-hidden="true">↔</span>
+    <strong>Server-driven interaction</strong>
+    <p>Use HTMX for bounded requests and swaps, Alpine for local presentation state, and HTTP fallbacks.</p>
   </div>
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">◇</span>
     <strong>Production-minded boundaries</strong>
-    <p>Contextual escaping, CSRF validation, safe URL types, and conservative cache behavior.</p>
+    <p>Rely on contextual escaping, CSRF validation, safe URL types, bounded state, and explicit ownership.</p>
   </div>
-  <a class="hedron-card" href="guides/streamlit-migration/">
-    <span class="hedron-card__icon" aria-hidden="true">→</span>
-    <strong>Grow without a rewrite</strong>
-    <p>Convert one Streamlit workflow at a time or start with a structure designed to grow from day one.</p>
-  </a>
 </div>
 
-## Next steps
+## From first page to production
 
-1. [Choose Edron or Hedron](getting-started/choose-layer.md)
-2. [Build your first Edron app](getting-started/edron-quickstart.md) or
-   [first Hedron app](getting-started/quickstart.md)
-3. [What is HTMX?](getting-started/what-is-htmx.md) — understand regions and HTML swaps
-4. [Minimal form POST](guides/minimal-form.md) — submit data across an explicit boundary
-5. [Learning path](getting-started/learning-path.md)
+1. [Build your first app](getting-started/quickstart.md)
+2. [Understand the component and request model](getting-started/core-concepts.md)
+3. [Add an HTMX interaction](guides/htmx-interactions.md)
+4. [Post a CSRF-protected form](guides/minimal-form.md)
+5. [Continue through the learning path](getting-started/learning-path.md)
+6. [Ship with the production checklist](guides/ship.md)
 
-Already building? Jump to the [Cookbook](guides/cookbook.md) for focused snippets or
-[Troubleshooting](guides/troubleshooting.md) for symptom-first fixes.
+Already building? Use [API by task](api/by-task.md) to move from an outcome to the right
+symbol, or browse the [runnable examples](examples/runnable.md).
 
 <details markdown>
-<summary>Package maturity and production pins</summary>
+<summary>Release, typing, and maturity</summary>
 
-Hedron **1.0.0** and Edron **1.0.0** are published on PyPI. Both are Stable on the current
-version line.
-Pin applications to `>=1.0.0,<1.1` until the 1.0 cut is published, then review
-capability-specific maturity before production adoption: [What’s ready](guides/whats-ready.md) and
-[Evaluate Hedron](guides/evaluate.md).
+Hedron **1.0.0** is published on PyPI. Pin applications to `hedron>=1.0.0,<1.1` and
+review capability-specific maturity before production adoption. The `hedron-core` renderer
+and `hedron` FastAPI runtime are Pyright-strict; type errors block release.
+
+Stable core packages and independently versioned satellites do not share one maturity claim.
+Use [Current release and support](guides/current-release.md),
+[What’s ready](guides/whats-ready.md), and [Compatibility](COMPATIBILITY.md) as the authority.
 </details>
-
-## What you get (after Hello)
-
-Python pages and HTMX fragment regions on FastAPI, with CSRF profiles, dependency
-injection, and multi-worker job status — without assembling a hand-rolled Jinja+HTMX
-stack. See [Architecture](ARCHITECTURE.md).
 
 ## Designed for inspectability
 
-Hedron does not hide the web platform. It gives Python applications a component
-model while preserving ordinary HTML, CSS, HTTP, and FastAPI boundaries. Automatic
-choices (cache, Explorer, assets) are inspectable and overrideable; components become
-HTTP endpoints only when you address them explicitly.
+Hedron does not hide the web platform. Components render ordinary HTML; interactions remain
+ordinary HTTP; FastAPI stays available underneath. Automatic choices around assets, caches,
+and diagnostics are inspectable and overrideable, and a component becomes an endpoint only
+when you address it explicitly.
 
-[Read the architecture](ARCHITECTURE.md) · [Runnable examples](examples/runnable.md) ·
-[What’s next](guides/whats-next.md)
+[Read the architecture](ARCHITECTURE.md) · [Explore the API](api/HEDRON.md) ·
+[See what’s next](guides/whats-next.md)

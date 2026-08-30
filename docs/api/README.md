@@ -8,18 +8,17 @@ common application jobs to the appropriate guide and contract page.
 
 After [First app → What is HTMX → HTMX interactions → Minimal form](../getting-started/index.md):
 
-1. [Edron by task](EDRON_REFERENCE.md) — batteries-included application facade
-2. [Hedron](HEDRON.md) — FastAPI application facade
-3. [Router](ROUTER.md) — `@app.page` / `@app.view` / `@app.action`
-4. [Page](PAGE.md) — navigable HTML documents
-5. [Interaction](INTERACTION.md) — `FragmentRegion`, `InteractionResult`, `swap`
-6. [Responses](RESPONSES.md) — PAGE vs FRAGMENT HTML
-7. [Exceptions](EXCEPTIONS.md) — CSRF / region HTTP map
-8. [Mount / path prefix](MOUNT.md) — reverse-proxy subpaths and cookie `Path`
-9. [Auth](AUTH.md) — optional OIDC helpers (`hedron[auth]`)
-10. [CSRF composition](CSRF_COMPOSITION.md)
-11. [Testing](TESTING.md) — `AppScenario`, HTMX asserts
-12. [CLI](CLI.md) — `hedron check`, `routes`, `new`, `build`
+1. [Hedron](HEDRON.md) — FastAPI application facade
+2. [Router](ROUTER.md) — `@app.page` / `@app.view` / `@app.action`
+3. [Page](PAGE.md) — navigable HTML documents
+4. [Interaction](INTERACTION.md) — `FragmentRegion`, `InteractionResult`, `swap`
+5. [Responses](RESPONSES.md) — PAGE vs FRAGMENT HTML
+6. [Exceptions](EXCEPTIONS.md) — CSRF / region HTTP map
+7. [Mount / path prefix](MOUNT.md) — reverse-proxy subpaths and cookie `Path`
+8. [Auth](AUTH.md) — optional OIDC helpers (`hedron[auth]`)
+9. [CSRF composition](CSRF_COMPOSITION.md)
+10. [Testing](TESTING.md) — `AppScenario`, HTMX asserts
+11. [CLI](CLI.md) — `hedron check`, `routes`, `new`, `build`
 
 !!! tip "`hedron` vs `hedron_core`"
 
@@ -62,14 +61,6 @@ Public-index users should pin `hedron>=1.0.0,<1.1`.
     Human error index: [Error codes](../guides/error-codes.md).
 
 ## Full catalog
-
-### Edron facade
-
-- [Edron release roadmap](../EDRON_ROADMAP.md) — separately versioned Stable facade
-- [Edron public API](EDRON.md) — Edron `1.0.0`, implemented, verified, and published
-- [Edron state and interaction](EDRON_STATE_INTERACTION.md)
-- [Edron packaging](EDRON_PACKAGING.md)
-- [Edron acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EDRON_001.md) — Draft and blocked
 
 ### Application
 
@@ -147,9 +138,11 @@ These contracts compile onto the golden path. They are **not** required for Hell
 - [Explorer architecture](EXPLORER_ARCHITECTURE.md) — **0.50** Published in-tree (related [#496](https://github.com/eddiethedean/hedron/issues/496)–[#500](https://github.com/eddiethedean/hedron/issues/500) / [#502](https://github.com/eddiethedean/hedron/issues/502) / [#503](https://github.com/eddiethedean/hedron/issues/503))
 - [Curated extras](EXTRAS.md) — historical 0.51 contract; see [Current release and support](../guides/current-release.md) for installable versions.
 
-## Edron supporting contracts
+## Alternate Edron facade
 
-- [Edron public API](EDRON.md) — implemented class-oriented, batteries-included facade over Hedron.
+- [Edron API by task](EDRON_REFERENCE.md) — task-oriented entry point for the alternate facade.
+- [Edron public API](EDRON.md) — implemented class-oriented facade over Hedron.
+- [Edron symbols](EDRON_AUTODOC.md) · [export index](EDRON_EXPORTS.md)
 - [Edron state and interaction](EDRON_STATE_INTERACTION.md) — implemented state ownership,
   lifecycle, HTTP/HTMX, concurrency, and fallback contract.
 - [Edron packaging](EDRON_PACKAGING.md) — implemented base batteries, native distribution

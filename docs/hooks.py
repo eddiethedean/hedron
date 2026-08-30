@@ -27,31 +27,23 @@ def _release_facts() -> dict[str, object]:
 
 def _release_status_markdown(facts: dict[str, object]) -> str:
     release = facts["release"]
-    edron = facts["edron"]
     assert isinstance(release, dict)
-    assert isinstance(edron, dict)
     return (
         '!!! success "1.0 is published"\n\n'
-        f'    **Edron {edron["pypi_version"]}** and '
-        f'**Hedron {release["pypi_version"]}** are available from PyPI. '
-        "The documentation describes the 1.0 API contract.\n"
+        f'    **Hedron {release["pypi_version"]}** is available from PyPI. '
+        "The documentation describes the stable Hedron 1.0 API contract.\n"
     )
 
 
 def _install_matrix_markdown(facts: dict[str, object]) -> str:
     release = facts["release"]
-    edron = facts["edron"]
     assert isinstance(release, dict)
-    assert isinstance(edron, dict)
     hedron_pin = f'>={release["pin_floor"]},<{release["pin_ceiling"]}'
-    edron_pin = f'>={edron["pin_floor"]},<{edron["pin_ceiling"]}'
     return (
-        "| Start with | Install | Best for |\n"
+        "| Package | Install | Best for |\n"
         "|---|---|---|\n"
-        f'| Edron | `edron{edron_pin}` | Complete applications, dashboards, CRUD, '
-        "and data workflows |\n"
         f'| Hedron | `hedron{hedron_pin}` | FastAPI-native routes, component trees, '
-        "and host integration |\n"
+        "data applications, and host integration |\n"
     )
 
 

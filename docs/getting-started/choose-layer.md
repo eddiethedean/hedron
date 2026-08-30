@@ -1,41 +1,26 @@
 ---
-description: Decide whether Edron or Hedron is the right public API for your application.
+description: Understand why Hedron is the primary API and when the alternate Edron facade is appropriate.
 search:
   boost: 2
 ---
 
-# Choose Edron or Hedron
+# Choose an authoring API
 
-Edron and Hedron are two authoring layers over the same server-rendered runtime. They are
-designed to compose; choosing Edron does not close off Hedron's lower-level APIs.
+Start with **Hedron** unless you have deliberately chosen the alternate class-oriented
+facade. Hedron is the primary documentation, examples, extension, and integration target.
+It exposes the FastAPI-native application model directly.
 
 <!-- hedron-release-status -->
 
 ## The short answer
 
-Choose **Edron** for a new dashboard, internal tool, CRUD application, or data workflow.
-It provides a compact, class-oriented page API and coordinated application features.
+Choose **Hedron** for new applications, direct FastAPI route functions, explicit
+component-tree composition, Flask or Django hosts, and framework-extension work.
 
-Choose **Hedron** when you want direct FastAPI route functions, explicit component-tree
-composition, a Flask or Django host, or framework-extension work.
-
-<!-- hedron-install-matrix -->
+Choose **Edron** only when its class-oriented page vocabulary is itself a requirement.
+It lowers into the same Hedron runtime and remains available as an alternate facade.
 
 ## Compare the authoring models
-
-=== "Edron"
-
-    ```python
-    import edron as ed
-
-    app = ed.App(title="Sales", security="standard")
-
-    @app.page("/", title="Sales dashboard")
-    class Home(ed.Page):
-        def render(self) -> None:
-            self.metric("Orders", 128, delta="+12")
-            self.text("A complete page from a small Python class.")
-    ```
 
 === "Hedron"
 
@@ -49,17 +34,31 @@ composition, a Flask or Django host, or framework-extension work.
         return Stack(Text("Operations"), Text("Direct component composition."))
     ```
 
+=== "Alternate: Edron"
+
+    ```python
+    import edron as ed
+
+    app = ed.App(title="Sales", security="standard")
+
+    @app.page("/", title="Sales dashboard")
+    class Home(ed.Page):
+        def render(self) -> None:
+            self.metric("Orders", 128, delta="+12")
+            self.text("A complete page from a small Python class.")
+    ```
+
 ## Decision table
 
 | Requirement | Start with |
 |---|---|
-| Fastest path to a complete Python application | Edron |
-| Familiar page, metric, input, table, and chart vocabulary | Edron |
-| Data workspace, resource, cache, and job conventions | Edron |
+| Primary learning path and documentation | Hedron |
+| New dashboard, CRUD app, or data workflow | Hedron |
+| Data workspace, resource, cache, and job contracts | Hedron |
 | Direct control over FastAPI dependencies and routes | Hedron |
 | Reusable component or integration package | Hedron |
 | Flask or Django runtime without FastAPI | Hedron |
-| Mix high-level pages with low-level components | Edron, then use `self.include(...)` and `app.native` |
+| Class-oriented page vocabulary is a hard requirement | Edron |
 
 ## What stays the same
 
@@ -69,7 +68,7 @@ requires Node.js, owns your database, or replaces application authorization.
 
 ## Continue
 
-- [Build your first Edron app](edron-quickstart.md)
 - [Build your first Hedron app](quickstart.md)
+- [Build with the alternate Edron facade](edron-quickstart.md)
 - [Understand the architecture](../ARCHITECTURE.md)
 - [Compare production fit](../guides/evaluate.md)

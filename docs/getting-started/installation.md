@@ -1,12 +1,12 @@
 ---
-description: Install Edron or Hedron 1.0, optional extras, and host adapters.
+description: Install Hedron 1.0, optional extras, and host adapters.
 search:
   boost: 1.7
 ---
 
 # Installation
 
-Prerequisites, layer selection, extras, host adapters, and troubleshooting.
+Prerequisites, version pins, extras, host adapters, and troubleshooting.
 
 <!-- hedron-release-status -->
 
@@ -20,8 +20,8 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 <!-- hedron-install-matrix -->
 
-Hedron **1.0.0** and Edron **1.0.0** are published on PyPI. Always use an upper bound so a future
-minor train cannot install by accident. `hedron-core`, `hedron`,
+Hedron **1.0.0** is published on PyPI. Always use an upper bound so a future minor train
+cannot install by accident. `hedron-core`, `hedron`,
 `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps` are **Stable** packages; host/tooling
 satellites retain their documented Beta or tooling-grade maturity. Capability detail:
 [What’s ready](../guides/whats-ready.md).
@@ -54,7 +54,7 @@ interpreter for `pip` / `uv` / `uvicorn` (`which python3`, `py -0p` on Windows).
 !!! note "Corporate proxy / air-gapped installs"
 
     Point `pip` / `uv` at your internal index (`PIP_INDEX_URL`, `UV_INDEX_URL`, or
-    `--index-url`). Mirror **PyPI** wheels for `edron`, `hedron`, `hedron-core`, and matching
+    `--index-url`). Mirror **PyPI** wheels for `hedron`, `hedron-core`, and matching
     extras onto that index; retain the documented bounded pins.
     Offline: download wheels on a connected host (`pip download "hedron>=1.0.0,<1.1"`)
     and `pip install --no-index --find-links=...`. TLS / corporate MITM: install your
@@ -76,20 +76,7 @@ interpreter for `pip` / `uv` / `uvicorn` (`which python3`, `py -0p` on Windows).
     Prefer `python3` on macOS/Linux and `py -3` on Windows when `python` is missing or
     points at the wrong interpreter. Prefer **`python -m hedron`** so PATH never matters.
 
-Then follow the [Edron quick start](edron-quickstart.md) or
-[Hedron quick start](quickstart.md). To add a layer to an existing project:
-
-=== "Edron with uv"
-
-    ```bash
-    uv add "edron>=1.0.0,<1.1"
-    ```
-
-=== "Edron with pip"
-
-    ```bash
-    python -m pip install "edron>=1.0.0,<1.1"
-    ```
+Then follow the [Hedron quick start](quickstart.md). To add Hedron to an existing project:
 
 === "Hedron with uv"
 
@@ -167,7 +154,7 @@ extras only when you need them. Full catalog: [Optional packages](../packages/in
 Registry extras use the same PyPI pin as the flagship:
 
 ```bash
-    pip install "hedron[data]>=1.0.0,<1.1"
+pip install "hedron[data]>=1.0.0,<1.1"
 pip install "hedron[charts]>=1.0.0,<1.1"
 pip install "hedron-sample-kit>=0.2.3,<0.3"
 ```

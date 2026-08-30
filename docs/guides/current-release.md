@@ -1,5 +1,5 @@
 ---
-description: The authoritative release, installation, compatibility, and support status for Edron and Hedron.
+description: The authoritative Hedron release, installation, compatibility, and support status.
 search:
   boost: 2
 ---
@@ -15,11 +15,11 @@ maintaining their own release story.
 
 | Package | Version | Maturity | Application pin | Role |
 |---|---:|---|---|---|
-| `edron` | `1.0.0` | Stable | `edron>=1.0.0,<1.1` | Batteries-included application authoring |
 | `hedron` | `1.0.0` | Stable | `hedron>=1.0.0,<1.1` | FastAPI-native component and route authoring |
 | `hedron-data` | `1.0.0` | Stable | `hedron-data>=1.0.0,<1.1` | DataTable, DataEditor, and bounded data contracts |
 | `hedron-charts` | `1.0.0` | Stable | `hedron-charts>=1.0.0,<2.0` | First-party charts and static/Matplotlib output |
 | `hedron-maps` | `1.0.0` | Stable | `hedron-maps>=1.0.0,<2.0` | Bounded first-party maps and offline presentation |
+| `edron` | `1.0.0` | Stable | `edron>=1.0.0,<1.1` | Alternate class-oriented facade over Hedron |
 
 The coordinated release supports CPython **3.10–3.14**. Package maturity, capability
 readiness, and individual API stability are separate: a stable package may contain a
@@ -33,8 +33,8 @@ host/tooling satellites are opt-in compatibility surfaces, not part of the stabl
 
 | Goal | Continue with |
 |---|---|
-| New dashboard, CRUD app, or data workflow | [Edron quick start](../getting-started/edron-quickstart.md) |
-| Direct FastAPI/component application | [Hedron quick start](../getting-started/quickstart.md) |
+| New FastAPI/component application | [Hedron quick start](../getting-started/quickstart.md) |
+| Dashboard, CRUD app, or data workflow | [Hedron guides](index.md) |
 | Existing Flask or Django application | [Installation and host adapters](../getting-started/installation.md) |
 | Repository contribution | `uv sync`, then [Contributor day one](contributor-day-one.md) |
 
