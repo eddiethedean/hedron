@@ -2,7 +2,7 @@
   "schema": "hedron.verification-evidence/1",
   "phase": "1.0",
   "target": "v1.0.0",
-  "source_commit": "970ae96fed404454499d3e0e9f60eeb9aa698f69",
+  "source_commit": "d944b9be19e757cfa4b0fd57ebede476f96aabc0",
   "retained_command_output": false,
   "checks": [
     {
@@ -75,7 +75,7 @@
       "id": "REGRESS-100",
       "command": ".venv/bin/pytest -q --tb=short -n 0",
       "status": "passed",
-      "summary": "3625 passed, 515 skipped; historical 0.x alias fixtures are retired on the 1.0 train and remain runnable against v0.67"
+      "summary": "3648 passed, 515 skipped; historical 0.x alias fixtures are retired on the 1.0 train and remain runnable against v0.67"
     },
     {
       "id": "RELEASE-100",

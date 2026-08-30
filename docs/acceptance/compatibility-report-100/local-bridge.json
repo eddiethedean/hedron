@@ -3,7 +3,7 @@
   "baseline": "v0.67.0",
   "target": "v1.0.0",
   "status": "passed",
-  "source_commit": "970ae96fed404454499d3e0e9f60eeb9aa698f69",
+  "source_commit": "d944b9be19e757cfa4b0fd57ebede476f96aabc0",
   "canonical_fixture": {
     "command": ".venv/bin/python -m pytest -n 0 tests/upgrade/test_phase_1_0_fixtures.py",
     "result": "9 passed, 1 warning",
@@ -45,7 +45,7 @@
   },
   "target_artifact": {
     "available": true,
-    "reason": "Reproducible v1.0.0 candidate wheels/sdists were built twice from source commit 970ae96f; 26 coordinated hashes and the exact lock are committed",
+    "reason": "Reproducible v1.0.0 candidate wheels/sdists were built twice from source commit d944b9be; 26 coordinated hashes and the exact lock are committed",
     "required_before": ["COMPAT-100", "FLEET-100", "PKG-100", "RELEASE-100"]
   },
   "release_claim": true
