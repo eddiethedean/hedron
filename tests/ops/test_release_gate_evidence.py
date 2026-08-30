@@ -101,6 +101,7 @@ def test_edron_has_an_independent_release_path() -> None:
     assert '"edron-v*.*.*"' in edron
     assert "workflow_dispatch:" in edron
     assert "RELEASE_REF:" in edron
+    assert "fetch-depth: 0" in edron[edron.index("  publish:") :]
     assert "needs: [test, dependency_bounds, browser]" in edron
     assert ".venv/bin/python scripts/check_edron_10_release.py" in edron
     assert "Preflight published Stable dependencies from PyPI" in edron

@@ -124,6 +124,7 @@ def main() -> int:
         "environment: release",
         "workflow_dispatch:",
         "RELEASE_REF:",
+        "fetch-depth: 0",
         'SOURCE_DATE_EPOCH: "315619200"',
         "uv build --package edron-sim",
         ".venv/bin/python scripts/check_edron_10_release.py",
