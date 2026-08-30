@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import sys
 import tomllib
 from pathlib import Path
@@ -103,7 +104,9 @@ def test_edron_has_an_independent_release_path() -> None:
     assert "tests/unit/test_edron_runtime.py" in edron
     assert "tests/unit/test_edron_phase02.py" in edron
     assert "id-token: write" in edron
-    assert "pypa/gh-action-pypi-publish@release/v1" in edron
+    publisher = re.search(r"pypa/gh-action-pypi-publish@([^\s]+)", edron)
+    assert publisher is not None
+    assert re.fullmatch(r"[0-9a-f]{40}", publisher.group(1))
 
 
 def test_v1_branch_has_one_stable_required_ci_context() -> None:
