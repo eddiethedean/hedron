@@ -9,19 +9,17 @@
 **Roadmap position:** `v1.0.0` is a Verified, untagged in-tree candidate. The public PyPI
 fallback remains `v0.67.0`; it is the immutable migration baseline until the authorized 1.0
 tag and upload occur.
-**Date:** 2026-08-28
-**Implementation:** Stable platform — `hedron` / `hedron-core` `1.0.0`;
-Beta satellites — `edron`, `hedron-explorer`, `hedron-data`, `hedron-flask`, `hedron-django`,
-`hedron-jinja`, `hedron-conformance`, `hedron-extras`, `hedron-posit`, `hedron-elements`,
-`fastapi-workbench` `1.0.1`, `hedron-maps` `0.1.4`, `hedron-charts`
-`0.2.4`, `hedron-native` `0.1.2`, `hedron-sample-kit` / `hedron-notebook` /
-`hedron-gradio` `0.2.3`, `hedron-sim` `0.2.2`, `hedron-mcp` `0.2.4`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.66.2`
-(MIT, D-033).
-**Package maturity:** Stable — `hedron`, `hedron-core` only. Beta — `edron`,
-`hedron-explorer`, `hedron-data`, `hedron-flask`, `hedron-django`, `hedron-jinja`,
-`hedron-conformance`, `hedron-extras`, `hedron-posit`, `hedron-elements`, `hedron-maps`,
-`hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`,
+**Date:** 2026-08-30
+**Implementation:** Stable platform — `hedron`, `hedron-core`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps` `1.0.0`. Beta satellites — `hedron-explorer`,
+`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
+`hedron-posit`, and `hedron-elements` `1.0.0`; `fastapi-workbench` `1.0.1`;
+`hedron-native` `0.1.3`; `hedron-sample-kit`, `hedron-notebook`, and `hedron-gradio` `0.2.3`;
+`hedron-sim` `0.2.2`; `hedron-mcp` `0.2.4`; and `edron-sim` `0.1.0` (MIT, D-033).
+**Package maturity:** Stable — `hedron`, `hedron-core`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps`. Beta — `hedron-explorer`, `hedron-flask`,
+`hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`, `hedron-posit`,
+`hedron-elements`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`, `hedron-sim`,
 `hedron-mcp`, `hedron-gradio`, `fastapi-workbench`, and `edron-sim`. Experimental runtimes
 `hedron-runtime-node` / `hedron-runtime-java` `0.66.2`.
 

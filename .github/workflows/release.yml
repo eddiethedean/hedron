@@ -298,6 +298,7 @@ jobs:
       (needs.browser.result == 'success' || needs.browser.result == 'skipped') &&
       (needs.evidence.result == 'success' || needs.evidence.result == 'skipped')
     runs-on: ubuntu-latest
+    environment: release
     # PyPI caps new-project creates (~4/day). Retries wait up to ~6h on 429.
     timeout-minutes: 420
     permissions:
@@ -370,6 +371,10 @@ jobs:
               echo "Skipping edron-sim; publish it only from the Edron release workflow"
               continue
             fi
+            if [ "$pkg" = "hedron-native" ]; then
+              echo "Skipping hedron-native; publish it only from native-wheels.yml"
+              continue
+            fi
             echo "Building $pkg"
             uv build --package "$pkg"
           done
@@ -421,6 +426,10 @@ jobs:
             fi
             if [ "$pkg" = "edron-sim" ]; then
               echo "Skipping edron-sim; publish it only from the Edron release workflow"
+              continue
+            fi
+            if [ "$pkg" = "hedron-native" ]; then
+              echo "Skipping hedron-native; publish it only from native-wheels.yml"
               continue
             fi
             read -r name pkg_version <<<"$(uv run --python 3.12 python - <<PY
@@ -649,35 +658,6 @@ jobs:
             exit 1
           fi
           echo "publish_failed=0" >> "$GITHUB_OUTPUT"
-      - name: Install Rust for crates.io publish
-        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
-        with:
-          toolchain: stable
-      - name: Publish hedron-native to crates.io
-        id: crates
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        working-directory: packages/hedron-native
-        run: |
-          set -euo pipefail
-          if [ -z "${CARGO_REGISTRY_TOKEN:-}" ]; then
-            echo "CARGO_REGISTRY_TOKEN secret is not set" >&2
-            exit 1
-          fi
-          cargo publish --dry-run
-          set +e
-          out="$(cargo publish 2>&1)"
-          status=$?
-          set -e
-          printf '%s\n' "$out"
-          if [ "$status" -eq 0 ]; then
-            exit 0
-          fi
-          if printf '%s' "$out" | grep -Eqi 'already exists|already uploaded'; then
-            echo "INFO: crates.io already has this version; treating as success"
-            exit 0
-          fi
-          exit "$status"
       - name: Publish hedron-runtime-node to npm
         id: npm_runtime
         env:

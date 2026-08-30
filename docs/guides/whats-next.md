@@ -13,8 +13,9 @@ and migration review used for the 1.0 cut.
 - Static 0.67 migration diagnostics and conservative source migration tooling.
 - A frozen stable inventory with SemVer compatibility protection.
 - One explicit HTMX/Alpine/Web Component authority boundary.
-- Stable `hedron-core` and `hedron` platform; Beta satellites, including `hedron-posit`, remain
-  outside that boundary; `hedron-workbench` was removed.
+- Stable `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`
+  platform; Beta satellites, including `hedron-posit`, remain outside that boundary;
+  `hedron-workbench` was removed.
 - Python 3.10–3.14, FastAPI, Flask, Django, HDJ, browser, security, and package evidence.
 - Polling as the Supported production fallback for asynchronous status.
 

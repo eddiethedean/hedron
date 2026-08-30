@@ -218,6 +218,7 @@ def _evidence_source_blockers(source_commit: object) -> list[str]:
         return ["release evidence source_commit is not available in the current checkout"]
     allowed = {
         "docs/acceptance/compatibility-report-100/README.md",
+        "docs/acceptance/compatibility-report-100/edron-build-evidence.json",
         "docs/acceptance/compatibility-report-100/local-bridge.json",
         "docs/acceptance/compatibility-report-100/local-build-evidence.json",
         "docs/acceptance/compatibility-report-100/verification-100.json",

@@ -2,7 +2,7 @@
 
 Optional Rust acceleration for Hedron bulk HTML escaping.
 
-**Package maturity:** Beta (`0.1.x`) · pin `>=0.1.2,<0.2`
+**Package maturity:** Beta (`0.1.x`) · pin `>=0.1.3,<0.2`
 **Flagship extra:** `hedron[native]` · **Import:** `hedron_native`
 Pure Python remains the **Supported** semantic fallback. Absence never changes
 public rendering semantics.
@@ -18,7 +18,7 @@ public rendering semantics.
 ```bash
 pip install "hedron[native]>=1.0.0,<1.1"
 # or
-pip install "hedron-native>=0.1.2,<0.2"
+pip install "hedron-native>=0.1.3,<0.2"
 ```
 
 Supported wheel tags cover **manylinux x86_64 + aarch64**, **macOS arm64**, and

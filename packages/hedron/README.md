@@ -39,9 +39,8 @@ rerun loop.
 
 > **Package maturity:** Stable · **Version documented:** `1.0.0`
 >
-> Every command and example below targets the Hedron 1.0 API. Until the `1.0.0` artifact appears on
-> PyPI, evaluate it from the `v1.0` repository branch with `uv sync`. Supported Python versions are
-> 3.10–3.14.
+> Every command and example below targets the Hedron 1.0 API. Supported Python versions are
+> 3.10–3.14; applications should retain the `<1.1` upper bound shown below.
 
 ## Start in under a minute
 

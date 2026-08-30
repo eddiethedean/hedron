@@ -15,6 +15,8 @@ concurrency:
 env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
+  SOURCE_DATE_EPOCH: "315619200"
+  PYTHONDONTWRITEBYTECODE: "1"
 
 jobs:
   test:
@@ -144,6 +146,7 @@ jobs:
     name: Build and publish Edron
     needs: [test, dependency_bounds, browser]
     runs-on: ubuntu-latest
+    environment: release
     timeout-minutes: 15
     permissions:
       contents: read
@@ -203,15 +206,18 @@ jobs:
 
           echo "Publishing edron==$package_version from $TAG"
 
-      - name: Build Edron artifacts
+      - name: Build Edron release artifacts
         run: |
           set -euo pipefail
           rm -rf dist
           uv build --package edron --out-dir dist
+          uv build --package edron-sim --out-dir dist
           ls -la dist
           VERSION="${GITHUB_REF_NAME#edron-v}"
           uv run --no-project --python 3.12 python scripts/check_edron_10_release.py \
             --dist-dir dist --version "${VERSION}"
+          uv run --no-project --python 3.12 python scripts/verify_edron_release_artifacts.py \
+            --dist-dir dist
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
@@ -219,18 +225,20 @@ jobs:
           subject-path: |
             dist/edron-*.whl
             dist/edron-*.tar.gz
+            dist/edron_sim-*.whl
+            dist/edron_sim-*.tar.gz
 
       - name: Preflight published Stable dependencies from PyPI
         run: |
           set -euo pipefail
           uv venv .edron-release-preflight --python 3.12
           uv pip install --python .edron-release-preflight/bin/python \
-            dist/edron-*.whl
+            dist/edron-*.whl dist/edron_sim-*.whl
           .edron-release-preflight/bin/python -c \
-            "import edron, hedron, hedron_data, hedron_charts, hedron_maps"
+            "import edron, edron_sim, hedron, hedron_data, hedron_charts, hedron_maps"
 
-      - name: Publish Edron to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Publish Edron and edron-sim to PyPI
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
         with:
           packages-dir: dist/
           skip-existing: true
@@ -255,3 +263,27 @@ jobs:
           uv sync
           uv run python -c \
             "import importlib.metadata as m; import app; assert m.version('edron') == '${VERSION}'; assert app.app"
+
+      - name: Verify published edron-sim
+        run: |
+          set -euo pipefail
+          SIM_VERSION="$(uv run --no-project --python 3.12 python -c '
+          import tomllib
+          from pathlib import Path
+          print(tomllib.loads(Path("packages/edron-sim/pyproject.toml").read_text())["project"]["version"])
+          ')"
+          smoke_dir="$(mktemp -d)"
+          uv venv "${smoke_dir}/venv" --python 3.12
+          for attempt in 1 2 3 4 5 6; do
+            if uv pip install --refresh --python "${smoke_dir}/venv/bin/python" \
+              "edron-sim==${SIM_VERSION}"; then
+              break
+            fi
+            if [ "${attempt}" -eq 6 ]; then
+              echo "Published edron-sim==${SIM_VERSION} did not resolve from PyPI" >&2
+              exit 1
+            fi
+            sleep 20
+          done
+          "${smoke_dir}/venv/bin/python" -c \
+            "import edron_sim; assert edron_sim.__version__ == '${SIM_VERSION}'"

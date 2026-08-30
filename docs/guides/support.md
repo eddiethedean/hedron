@@ -21,10 +21,11 @@ issues for undisclosed security problems.
 
 ## What package maturity means for operators
 
-Only `hedron-core` and `hedron` are **Stable** packages in 1.0; independent satellites remain
-Beta or tooling-grade. API-level `beta` and `experimental` classifications still apply within
-the stable packages. Pin versions in production and read [upgrade](upgrade.md) notes
-before bumping trains. Charts require `hedron-charts>=0.2.4,<0.3`. The sample kit requires
+The Stable 1.0 package boundary is `hedron-core`, `hedron`, `edron`, `hedron-data`,
+`hedron-charts`, and `hedron-maps`; every other satellite remains Beta or tooling-grade.
+API-level `beta` and `experimental` classifications still apply within the stable packages.
+Pin versions in production and read [upgrade](upgrade.md) notes before bumping trains. Charts
+require `hedron-charts>=1.0.0,<2.0`. The sample kit requires
 `hedron-sample-kit>=0.2.3,<0.3` — see [Compatibility](../COMPATIBILITY.md).
 
 **Support window:** security fixes target the current repository train (`1.0.x`) while its

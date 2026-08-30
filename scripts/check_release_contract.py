@@ -73,6 +73,97 @@ def main() -> int:
     for distribution in STABLE_BOUNDARY:
         if f"`{distribution}`" not in support_policy:
             errors.append(f"support-policy-100.md omits Stable package {distribution}")
+
+    release_runbook = (ROOT / "docs/RELEASE.md").read_text(encoding="utf-8")
+    runbook_boundary = (
+        "The Stable 1.0 package\n"
+        "boundary is `hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, "
+        "and `hedron-maps`."
+    )
+    if runbook_boundary not in release_runbook:
+        errors.append("docs/RELEASE.md does not state the exact Stable 1.0 package boundary")
+    for required_release_fact in ("`main`", "`v1.0.0`", "`edron-v1.0.0`", "`edron-sim`"):
+        if required_release_fact not in release_runbook:
+            errors.append(f"docs/RELEASE.md omits release sequence fact {required_release_fact}")
+
+    current_boundary_docs = (
+        ROOT / "docs/STATUS.md",
+        ROOT / "docs/ARCHITECTURE.md",
+        ROOT / "docs/api/README.md",
+        ROOT / "docs/api/MOUNT.md",
+        ROOT / "docs/guides/support.md",
+        ROOT / "docs/guides/whats-next.md",
+        ROOT / "docs/guides/whats-ready-evidence.md",
+    )
+    for policy_path in current_boundary_docs:
+        policy_text = policy_path.read_text(encoding="utf-8")
+        for distribution in STABLE_BOUNDARY:
+            if f"`{distribution}`" not in policy_text:
+                errors.append(
+                    f"{policy_path.relative_to(ROOT)} omits Stable package {distribution}"
+                )
+        if re.search(
+            r"Only\s+`hedron-core`\s+and\s+`hedron`\s+are\s+(?:\*\*)?Stable",
+            policy_text,
+            re.I,
+        ):
+            errors.append(
+                f"{policy_path.relative_to(ROOT)} retains the obsolete two-package boundary"
+            )
+
+    main_release = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+    edron_release = (ROOT / ".github/workflows/edron-release.yml").read_text(encoding="utf-8")
+    native_release = (ROOT / ".github/workflows/native-wheels.yml").read_text(encoding="utf-8")
+    if "environment: release" not in main_release:
+        errors.append("main publication job is not protected by the release environment")
+    if main_release.count('if [ "$pkg" = "hedron-native" ]') != 2:
+        errors.append("main release must exclude hedron-native from build and publication")
+    if "cargo publish" in main_release:
+        errors.append("main release must not share crates.io ownership with native-wheels.yml")
+    required_edron_release_facts = (
+        "environment: release",
+        'SOURCE_DATE_EPOCH: "315619200"',
+        "uv build --package edron-sim",
+        "scripts/verify_edron_release_artifacts.py",
+        "dist/edron_sim-*.whl",
+        "edron-sim==${SIM_VERSION}",
+    )
+    for fact in required_edron_release_facts:
+        if fact not in edron_release:
+            errors.append(f"Edron release workflow omits required fact {fact!r}")
+    pypi_action = re.search(r"pypa/gh-action-pypi-publish@([^\s]+)", edron_release)
+    if pypi_action is None or not re.fullmatch(r"[0-9a-f]{40}", pypi_action.group(1)):
+        errors.append("Edron PyPI publication action must be pinned to a full commit SHA")
+    if native_release.count("environment: release") != 2:
+        errors.append("native PyPI and crates.io jobs must both use the release environment")
+    if 'SOURCE_DATE_EPOCH: "315619200"' not in native_release:
+        errors.append("native release workflow must use the reproducible release epoch")
+    native_project = tomllib.loads(
+        (ROOT / "packages/hedron-native/pyproject.toml").read_text(encoding="utf-8")
+    )["project"]
+    if native_project.get("version") != "0.1.3":
+        errors.append("hedron-native must publish corrected immutable release 0.1.3")
+
+    transient_readme_patterns = {
+        "candidate": re.compile(r"\b(?:in-tree|release|stable-platform)?\s*candidate\b", re.I),
+        "deferred upload": re.compile(r"(?:upload|publication|PyPI)[^\n]{0,80}\bdeferred\b", re.I),
+        "future artifact": re.compile(
+            r"\buntil\b[^\n]{0,100}\b(?:artifact|PyPI|tagged|uploaded)\b", re.I
+        ),
+        "PyPI fallback": re.compile(r"\bPyPI fallback\b", re.I),
+    }
+    for project_file in sorted((ROOT / "packages").glob("*/pyproject.toml")):
+        project = tomllib.loads(project_file.read_text(encoding="utf-8"))["project"]
+        version = str(project.get("version", ""))
+        if version != "1.0.0":
+            continue
+        readme = project_file.parent / str(project.get("readme", "README.md"))
+        readme_text = readme.read_text(encoding="utf-8")
+        for label, pattern in transient_readme_patterns.items():
+            if pattern.search(readme_text):
+                errors.append(
+                    f"{project['name']}: immutable 1.0 README contains transient {label} language"
+                )
     current_edron_docs = (
         ROOT / "docs/api/EDRON.md",
         ROOT / "docs/api/EDRON_STATE_INTERACTION.md",

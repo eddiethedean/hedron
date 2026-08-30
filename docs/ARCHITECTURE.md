@@ -160,8 +160,9 @@ Guide: [Multi-tenant isolation](guides/multi-tenant.md).
 
 The enumerated **stable** facade is compatibility-protected throughout 1.x
 ([STABLE_FACADE](api/STABLE_FACADE.md)). Most callable APIs remain compatibility level
-`beta` even when the capability is **Supported**. Only `hedron-core` and `hedron` are stable
-packages in 1.0; satellite maturity is a third, independent axis — pin versions.
+`beta` even when the capability is **Supported**. The Stable 1.0 package boundary is
+`hedron-core`, `hedron`, `edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`;
+all other satellite maturity is a third, independent axis — pin versions.
 
 ## Adapter portability
 

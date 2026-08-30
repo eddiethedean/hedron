@@ -30,8 +30,8 @@ After [First app → What is HTMX → HTMX interactions → Minimal form](../get
 **Stability:** API levels are defined in [STABILITY.md](STABILITY.md). A **minimal
 `stable` tier** (render/model/interaction/CSRF/router facades and portable adapter
 helpers) is compatibility-protected on the 1.0.x repository train. Everything else is `beta` or
-`experimental` unless listed. Only `hedron-core` and `hedron` are **Stable** packages in the
-1.0 inventory; satellite package maturity remains Beta.
+`experimental` unless listed. The **Stable** 1.0 package inventory is `hedron-core`, `hedron`,
+`edron`, `hedron-data`, `hedron-charts`, and `hedron-maps`; every other satellite remains Beta.
 Live transports stay **experimental**; prefer polling. Upgrade notes:
 [upgrade guide](../guides/upgrade.md).
 
